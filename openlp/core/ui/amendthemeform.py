@@ -155,7 +155,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                     self.theme.background_direction)
             else:
                 filename = \
-                    os.path.split(unicode(self.theme.background_filename))[0]
+                    os.path.split(unicode(self.theme.background_filename))[1]
                 new_theme.add_background_image(filename)
                 save_to = os.path.join(self.path, theme_name, filename)
                 save_from = self.theme.background_filename

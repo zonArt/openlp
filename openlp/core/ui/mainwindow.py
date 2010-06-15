@@ -452,8 +452,8 @@ class Ui_MainWindow(object):
             translate(u'MainWindow', u'Choose System language, if available'))
         for item in self.LanguageGroup.actions():
             item.setText(item.objectName())
-            item.setStatusTip(translate(u'MainWindow',
-                u'Set the interface language to %1').arg(item.objectName()))
+            item.setStatusTip(unicode(translate(u'MainWindow',
+                u'Set the interface language to %s')) % item.objectName())
         self.ToolsAddToolItem.setText(translate(u'MainWindow', u'Add &Tool...'))
         self.ToolsAddToolItem.setStatusTip(
             translate(u'MainWindow',
@@ -488,7 +488,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.displayManager = DisplayManager(screens)
         self.aboutForm = AboutForm(self, applicationVersion)
         self.settingsForm = SettingsForm(self.screens, self, self)
-        self.recentFiles = []
+        self.recentFiles = QtCore.QStringList()
         # Set up the path with plugins
         pluginpath = AppLocation.get_directory(AppLocation.PluginsDir)
         self.plugin_manager = PluginManager(pluginpath)
@@ -849,5 +849,4 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if filename and filename not in self.recentFiles:
             self.recentFiles.insert(0, QtCore.QString(filename))
             while self.recentFiles.count() > recentFileCount:
-                self.recentFiles.pop()
-
+                self.recentFiles.removeLast()

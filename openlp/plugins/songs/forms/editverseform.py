@@ -104,7 +104,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
             verse_type = match.group(1)
             verse_number = int(match.group(2))
             verse_type_index = VerseType.from_string(verse_type)
-            if verse_type_index:
+            if verse_type_index is not None:
                 self.VerseTypeComboBox.setCurrentIndex(verse_type_index)
                 self.VerseNumberBox.setValue(verse_number)
 
@@ -112,8 +112,9 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         tag=u'%s:1' % VerseType.to_string(VerseType.Verse)):
         if single:
             verse_type, verse_number = tag.split(u':')
-            self.VerseTypeComboBox.setCurrentIndex(
-                VerseType.from_string(verse_type))
+            verse_type_index = VerseType.from_string(verse_type)
+            if verse_type_index is not None:
+                self.VerseTypeComboBox.setCurrentIndex(verse_type_index)
             self.VerseNumberBox.setValue(int(verse_number))
             self.InsertButton.setVisible(False)
         else:

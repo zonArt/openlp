@@ -563,8 +563,7 @@ class SlideController(QtGui.QWidget):
                 if self.isLive and frame[u'verseTag'] is not None:
                     if tag1 not in self.slideList:
                         self.slideList[tag1] = framenumber
-                        self.SongMenu.menu().addAction(
-                            translate(u'SlideController', u'%s'%tag1),
+                        self.SongMenu.menu().addAction(tag1,
                             self.onSongBarHandler)
                 item.setText(frame[u'text'])
             else:

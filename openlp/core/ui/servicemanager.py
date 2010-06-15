@@ -599,11 +599,11 @@ class ServiceManager(QtGui.QWidget):
                             path_from = unicode(os.path.join(
                                 frame[u'path'],
                                 frame[u'title']))
-                            zip.write(path_from)
+                            zip.write(path_from.encode(u'utf-8'))
                 file = open(servicefile, u'wb')
                 cPickle.dump(service, file)
                 file.close()
-                zip.write(servicefile)
+                zip.write(servicefile.encode(u'utf-8'))
             except IOError:
                 log.exception(u'Failed to save service to disk')
             finally:
@@ -669,7 +669,18 @@ class ServiceManager(QtGui.QWidget):
             try:
                 zip = zipfile.ZipFile(unicode(filename))
                 for file in zip.namelist():
-                    osfile = unicode(QtCore.QDir.toNativeSeparators(file))
+                    try:
+                        ucsfile = file.decode(u'utf-8')
+                    except UnicodeDecodeError:
+                        QtGui.QMessageBox.critical(
+                            self, translate(u'ServiceManager', u'Error'),
+                            translate(u'ServiceManager',
+                                u'File is not a valid service.\n'
+                                u'The content encoding is not UTF-8.'))
+                        log.exception(u'Filename "%s" is not valid UTF-8' % \
+                            file.decode(u'utf-8', u'replace'))
+                        continue
+                    osfile = unicode(QtCore.QDir.toNativeSeparators(ucsfile))
                     names = osfile.split(os.path.sep)
                     file_path = os.path.join(self.servicePath,
                         names[len(names) - 1])
@@ -679,22 +690,29 @@ class ServiceManager(QtGui.QWidget):
                     file_to.close()
                     if file_path.endswith(u'osd'):
                         p_file = file_path
-                file_to = open(p_file, u'r')
-                items = cPickle.load(file_to)
-                file_to.close()
-                self.onNewService()
-                for item in items:
-                    serviceitem = ServiceItem()
-                    serviceitem.RenderManager = self.parent.RenderManager
-                    serviceitem.set_from_service(item, self.servicePath)
-                    self.validateItem(serviceitem)
-                    self.addServiceItem(serviceitem)
-                try:
-                    if os.path.isfile(p_file):
-                        os.remove(p_file)
-                except (IOError, OSError):
-                    log.exception(u'Failed to remove osd file')
-            except IOError:
+                if 'p_file' in locals():
+                    file_to = open(p_file, u'r')
+                    items = cPickle.load(file_to)
+                    file_to.close()
+                    self.onNewService()
+                    for item in items:
+                        serviceitem = ServiceItem()
+                        serviceitem.RenderManager = self.parent.RenderManager
+                        serviceitem.set_from_service(item, self.servicePath)
+                        self.validateItem(serviceitem)
+                        self.addServiceItem(serviceitem)
+                    try:
+                        if os.path.isfile(p_file):
+                            os.remove(p_file)
+                    except (IOError, OSError):
+                        log.exception(u'Failed to remove osd file')
+                else:
+                    QtGui.QMessageBox.critical(
+                        self, translate(u'ServiceManager', u'Error'),
+                        translate(u'ServiceManager',
+                            u'File is not a valid service.'))
+                    log.exception(u'File contains no service data')
+            except (IOError, NameError):
                 log.exception(u'Problem loading a service file')
             finally:
                 if file_to:
