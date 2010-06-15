@@ -180,7 +180,7 @@ class PresentationMediaItem(MediaManagerItem):
             self.ListView.takeItem(row)
             SettingsManager.set_list(self.settingsSection,
                 self.settingsSection, self.getFileList())
-            filepath = unicode((item.data(QtCore.Qt.UserRole)).toString())
+            filepath = unicode(item.data(QtCore.Qt.UserRole).toString())
             #not sure of this has errors
             #John please can you look at .
             for cidx in self.controllers:
@@ -198,7 +198,7 @@ class PresentationMediaItem(MediaManagerItem):
         if shortname:
             for item in items:
                 bitem = self.ListView.item(item.row())
-                filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
+                filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
                 if shortname == self.Automatic:
                     service_item.shortname = self.findControllerByType(filename)
                     if not service_item.shortname:

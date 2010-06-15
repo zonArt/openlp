@@ -44,8 +44,8 @@ class AboutForm(QtGui.QDialog, Ui_AboutDialog):
         about_text = about_text.replace(u'<version>',
             self.applicationVersion[u'version'])
         if self.applicationVersion[u'build']:
-            build_text = u' %s %s' % (translate(u'AboutForm', u'build'),
-                self.applicationVersion[u'build'])
+            build_text = unicode(translate(u'AboutForm', u' build %s')) % \
+                self.applicationVersion[u'build']
         else:
             build_text = u''
         about_text = about_text.replace(u'<revision>', build_text)
