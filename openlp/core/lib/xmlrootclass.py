@@ -26,7 +26,7 @@
 import os
 import sys
 
-from xml.etree.ElementTree import ElementTree, XML
+from lxml.etree import ElementTree, XML
 
 sys.path.append(os.path.abspath(os.path.join(u'.', u'..', u'..')))
 
