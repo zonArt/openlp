@@ -74,13 +74,20 @@ class Manager(object):
     """
     Provide generic object persistence management
     """
-    def __init__(self, plugin_name, init_schema):
+    def __init__(self, plugin_name, init_schema, db_file_name=None):
         """
         Runs the initialisation process that includes creating the connection
         to the database and the tables if they don't exist.
 
         ``plugin_name``
             The name to setup paths and settings section names
+
+        ``init_schema``
+            The init_schema function for this database
+
+        ``db_file_name``
+            The file name to use for this database.  Defaults to None resulting
+            in the plugin_name being used.
         """
         settings = QtCore.QSettings()
         settings.beginGroup(plugin_name)
@@ -88,8 +95,13 @@ class Manager(object):
         db_type = unicode(
             settings.value(u'db type', QtCore.QVariant(u'sqlite')).toString())
         if db_type == u'sqlite':
-            self.db_url = u'sqlite:///%s/%s.sqlite' % (
-                AppLocation.get_section_data_path(plugin_name), plugin_name)
+            if db_file_name:
+                self.db_url = u'sqlite:///%s/%s' % (
+                    AppLocation.get_section_data_path(plugin_name),
+                    db_file_name)
+            else:
+                self.db_url = u'sqlite:///%s/%s.sqlite' % (
+                    AppLocation.get_section_data_path(plugin_name), plugin_name)
         else:
             self.db_url = u'%s://%s:%s@%s/%s' % (db_type,
                 unicode(settings.value(u'db username').toString()),
@@ -98,6 +110,30 @@ class Manager(object):
                 unicode(settings.value(u'db database').toString()))
         settings.endGroup()
         self.session = init_schema(self.db_url)
+
+    def delete_database(self, plugin_name, db_file_name=None):
+        """
+        Remove a database file from the system.
+
+        ``plugin_name``
+            The name of the plugin to remove the database for
+
+        ``db_file_name``
+            The database file name.  Defaults to None resulting in the
+            plugin_name being used.
+        """
+        db_file_path = None
+        if db_file_name:
+            db_file_path = os.path.join(
+                AppLocation.get_section_data_path(plugin_name), db_file_name)
+        else:
+            db_file_path = os.path.join(
+                AppLocation.get_section_data_path(plugin_name), plugin_name)
+        try:
+            os.remove(db_file_path)
+            return True
+        except OSError:
+            return False
 
     def insert_object(self, object_instance):
         """

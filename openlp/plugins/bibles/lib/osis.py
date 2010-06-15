@@ -136,7 +136,7 @@ class OSISBible(BibleDB):
                             self.wizard.ImportProgressBar.setMaximum(260)
                     if last_chapter != chapter:
                         if last_chapter != 0:
-                            self.commit()
+                            self.session.commit()
                         self.wizard.incrementProgressBar(
                             u'Importing %s %s...' % \
                             (self.books[match.group(1)][0], chapter))
@@ -162,7 +162,7 @@ class OSISBible(BibleDB):
                     verse_text = self.spaces_regex.sub(u' ', verse_text)
                     self.create_verse(db_book.id, chapter, verse, verse_text)
                     Receiver.send_message(u'openlp_process_events')
-            self.commit()
+            self.session.commit()
             self.wizard.incrementProgressBar(u'Finishing import...')
             if match_count == 0:
                 success = False

@@ -90,7 +90,7 @@ class OpenSongBible(BibleDB):
                         QtCore.QString('%s %s %s' % (
                             translate(u'BiblesPlugin.Opensong', u'Importing'), \
                             db_book.name, chapter.attrib[u'n'])))
-                    self.commit()
+                    self.session.commit()
         except IOError:
             log.exception(u'Loading bible from OpenSong file failed')
             success = False
