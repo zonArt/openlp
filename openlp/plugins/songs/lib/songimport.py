@@ -277,7 +277,6 @@ class SongImport(object):
         if len(self.authors) == 0:
             self.authors.append(u'Author unknown')
         self.commit_song()
-        #self.print_song()
 
     def commit_song(self):
         """
@@ -316,7 +315,8 @@ class SongImport(object):
         song.theme_name = self.theme_name
         song.ccli_number = self.ccli_number
         for authortext in self.authors:
-            author = self.manager.get_author_by_name(authortext)
+            filter_string = u'display_name=%s' % authortext
+            author = self.manager.get_object_filtered(Author, filter_string)
             if author is None:
                 author = Author()
                 author.display_name = authortext
@@ -325,7 +325,8 @@ class SongImport(object):
                 self.manager.insert_object(author)
             song.authors.append(author)
         if self.song_book_name:
-            song_book = self.manager.get_book_by_name(self.song_book_name)
+            filter_string = u'name=%s' % self.song_book_name
+            song_book = self.manager.get_object_filtered(Book, filter_string)
             if song_book is None:
                 song_book = Book()
                 song_book.name = self.song_book_name
@@ -333,7 +334,8 @@ class SongImport(object):
                 self.manager.insert_object(song_book)
             song.song_book_id = song_book.id
         for topictext in self.topics:
-            topic = self.manager.get_topic_by_name(topictext)
+            filter_string = u'name=%s' % topictext
+            topic = self.manager.get_object_filtered(Topic, filter_string)
             if topic is None:
                 topic = Topic()
                 topic.name = topictext
@@ -370,5 +372,3 @@ class SongImport(object):
             print u'THEME: ' + self.theme_name
         if self.ccli_number:
             print u'CCLI: ' + self.ccli_number
-
-

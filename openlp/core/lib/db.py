@@ -166,6 +166,18 @@ class Manager(object):
         else:
             return self.session.query(object_class).get(id)
 
+    def get_object_filtered(self, object_class, filter_string):
+        """
+        Returns an object matching specified criteria
+
+        ``object_class``
+            The type of object to return
+
+        ``filter_string``
+            The criteria to select the object by
+        """
+        return self.session.query(object_class).filter(filter_string).first()
+
     def get_all_objects(self, object_class, order_by_ref=None):
         """
         Returns all the objects from the database

@@ -26,7 +26,7 @@
 import logging
 
 from openlp.core.lib.db import Manager
-from openlp.plugins.songs.lib.db import init_schema, Song, Author, Topic, Book
+from openlp.plugins.songs.lib.db import init_schema, Song, Author
 #from openlp.plugins.songs.lib import OpenLyricsSong, OpenSongSong, CCLISong, \
 #    CSVSong
 
@@ -114,21 +114,3 @@ class SongManager(Manager):
         """
         return self.session.query(Author).filter(Author.display_name.like(
             u'%' + keywords + u'%')).order_by(Author.display_name.asc()).all()
-
-    def get_author_by_name(self, name):
-        """
-        Get author by display name
-        """
-        return self.session.query(Author).filter_by(display_name=name).first() 
-
-    def get_topic_by_name(self, name):
-        """
-        Get topic by name
-        """
-        return self.session.query(Topic).filter_by(name=name).first() 
-
-    def get_book_by_name(self, name):
-        """
-        Get book by name
-        """
-        return self.session.query(Book).filter_by(name=name).first() 
