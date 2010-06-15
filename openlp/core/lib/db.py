@@ -171,7 +171,7 @@ class Manager(object):
         Returns all the objects from the database
 
         ``object_class``
-            The type of object to return
+            The type of objects to return
 
         ``order_by_ref``
             Any parameters to order the returned objects by.  Defaults to None.
@@ -179,6 +179,18 @@ class Manager(object):
         if order_by_ref:
             return self.session.query(object_class).order_by(order_by_ref).all()
         return self.session.query(object_class).all()
+
+    def get_all_objects_filtered(self, object_class, filter_string):
+        """
+        Returns a selection of objects from the database
+
+        ``object_class``
+            The type of objects to return
+
+        ``filter_string``
+            The filter governing selection of objects to return
+        """
+        return self.session.query(object_class).filter(filter_string).all()
 
     def delete_object(self, object_class, id):
         """

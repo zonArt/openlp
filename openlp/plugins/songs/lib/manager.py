@@ -132,6 +132,3 @@ class SongManager(Manager):
         Get book by name
         """
         return self.session.query(Book).filter_by(name=name).first() 
-
-    def get_songs_for_theme(self, theme):
-        return self.session.query(Song).filter(Song.theme_name == theme).all()
