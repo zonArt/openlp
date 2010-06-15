@@ -22,7 +22,6 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
 """
 The :mod:`lib` module contains most of the components and libraries that make
 OpenLP work.
@@ -47,6 +46,10 @@ def translate(context, text, comment=None):
 
     ``text``
         The text to put into the translation tables for translation.
+
+    ``comment``
+        An identifying string for when the same text is used in different roles
+        within the same context.
     """
     return QtCore.QCoreApplication.translate(context, text, comment)
 
@@ -115,6 +118,18 @@ def build_icon(icon):
 def context_menu_action(base, icon, text, slot):
     """
     Utility method to help build context menus for plugins
+
+    ``base``
+        The parent menu to add this menu item to
+
+    ``icon``
+        An icon for this action
+
+    ``text``
+        The text to display for this action
+
+    ``slot``
+        The code to run when this action is triggered
     """
     action = QtGui.QAction(text, base)
     if icon:
@@ -125,6 +140,15 @@ def context_menu_action(base, icon, text, slot):
 def context_menu(base, icon, text):
     """
     Utility method to help build context menus for plugins
+
+    ``base``
+        The parent object to add this menu to
+
+    ``icon``
+        An icon for this menu
+
+    ``text``
+        The text to display for this menu
     """
     action = QtGui.QMenu(text, base)
     action.setIcon(build_icon(icon))
@@ -133,6 +157,9 @@ def context_menu(base, icon, text):
 def context_menu_separator(base):
     """
     Add a separator to a context menu
+
+    ``base``
+        The menu object to add the separator to
     """
     action = QtGui.QAction(u'', base)
     action.setSeparator(True)

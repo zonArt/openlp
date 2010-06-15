@@ -34,7 +34,7 @@ from openlp.core.lib.db import BaseModel, init_db
 
 class CustomSlide(BaseModel):
     """
-    Custom Slide model
+    CustomSlide model
     """
     pass
 

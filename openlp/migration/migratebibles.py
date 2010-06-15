@@ -33,7 +33,7 @@ from sqlalchemy.orm import mapper
 from openlp.core.lib import SettingsManager
 from openlp.core.lib.db import BaseModel
 from openlp.core.utils import AppLocation
-from openlp.plugins.bibles.lib.models import *
+from openlp.plugins.bibles.lib.db import BibleMeta, Book, Testament, Verse
     
 class TBibleMeta(BaseModel):
     """
@@ -196,4 +196,3 @@ class MigrateBibles(object):
         conn.commit()
         conn.execute(u'vacuum;')
         conn.commit()
-

@@ -48,6 +48,9 @@ class alertsPlugin(Plugin):
         self.status = PluginStatus.Active
 
     def get_settings_tab(self):
+        """
+        Return the settings tab for the Alerts plugin
+        """
         self.alertsTab = AlertsTab(self)
         return self.alertsTab
 

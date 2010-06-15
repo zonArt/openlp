@@ -34,10 +34,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker, mapper, relation
 from openlp.core.lib import SettingsManager
 from openlp.core.lib.db import BaseModel
 from openlp.core.utils import AppLocation
-from openlp.plugins.songs.lib.models import metadata, songs_table, Song, \
-    Author, Topic, Book
-from openlp.plugins.songs.lib.tables import *
-from openlp.plugins.songs.lib.classes import *
+from openlp.plugins.songs.lib.db import songs_table, Song, Author, Topic, Book
 
 def init_models(url):
     engine = create_engine(url)

@@ -197,18 +197,11 @@ class BibleDB(QtCore.QObject, Manager):
             The actual Qt wizard form.
         """
         self.wizard = wizard
-        self.create_tables()
-        return self.name
-
-    def create_tables(self):
-        """
-        Create some initial metadata.
-        """
-        log.debug(u'createTables')
         self.create_meta(u'dbversion', u'2')
         self.insert_object(Testament.populate(name=u'Old Testament'))
         self.insert_object(Testament.populate(name=u'New Testament'))
         self.insert_object(Testament.populate(name=u'Apocrypha'))
+        return self.name
 
     def create_book(self, name, abbrev, testament=1):
         """
@@ -284,26 +277,32 @@ class BibleDB(QtCore.QObject, Manager):
         return verse
 
     def create_meta(self, key, value):
+        """
+        Utility method to save BibleMeta objects in a Bible database
+
+        ``key``
+            The key for this instance
+
+        ``value``
+            The value for this instance
+        """
         log.debug(u'save_meta %s/%s', key, value)
         self.insert_object(BibleMeta.populate(key=key, value=value))
 
     def get_book(self, book):
-        log.debug(u'BibleDb.get_book("%s")', book)
-        db_book = self.session.query(Book)\
-            .filter(Book.name.like(book + u'%'))\
-            .first()
-        if db_book is None:
-            db_book = self.session.query(Book)\
-                .filter(Book.abbreviation.like(book + u'%'))\
-                .first()
-        return db_book
+        """
+        Return a book object from the database
 
-    def get_chapter(self, id, chapter):
-        log.debug(u'BibleDB.get_chapter("%s", %s)', id, chapter)
-        return self.session.query(Verse)\
-            .filter_by(chapter=chapter)\
-            .filter_by(book_id=id)\
-            .first()
+        ``book``
+            The name of the book to return
+        """
+        log.debug(u'BibleDb.get_book("%s")', book)
+        db_book = self.session.query(Book).filter(
+            Book.name.like(book + u'%')).first()
+        if db_book is None:
+            db_book = self.session.query(Book).filter(
+                Book.abbreviation.like(book + u'%')).first()
+        return db_book
 
     def get_verses(self, reference_list):
         """
@@ -370,6 +369,12 @@ class BibleDB(QtCore.QObject, Manager):
         return verses
 
     def get_chapter_count(self, book):
+        """
+        Return the number of chapters in a book
+
+        ``book``
+            The book to get the chapter count for
+        """
         log.debug(u'BibleDB.get_chapter_count("%s")', book)
         count = self.session.query(Verse.chapter).join(Book)\
             .filter(Book.name==book)\
@@ -380,6 +385,15 @@ class BibleDB(QtCore.QObject, Manager):
             return count
 
     def get_verse_count(self, book, chapter):
+        """
+        Return the number of verses in a chapter
+
+        ``book``
+            The book containing the chapter
+
+        ``chapter``
+            The chapter to get the verse count for
+        """
         log.debug(u'BibleDB.get_verse_count("%s", %s)', book, chapter)
         count = self.session.query(Verse).join(Book)\
             .filter(Book.name==book)\
@@ -391,6 +405,9 @@ class BibleDB(QtCore.QObject, Manager):
             return count
 
     def dump_bible(self):
+        """
+        Utility debugging method to dump the contents of a bible
+        """
         log.debug(u'.........Dumping Bible Database')
         log.debug('...............................Books ')
         books = self.session.query(Book).all()
