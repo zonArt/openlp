@@ -1,8 +1,14 @@
-import openlp.plugins.songs.lib.opensongimport
+from openlp.plugins.songs.lib.opensongimport import OpenSongImport
+from openlp.plugins.songs.lib.manager import SongManager
 
 def test():
-    o=opensongimport.opensongimport(0)# xxx needs a song manager here
-    o.osimport(u'test.opensong')
+    manager=SongManager()
+    o=OpenSongImport(manager)
+    o.do_import(u'test.opensong')
+    # xxx need some more asserts in here to test it...
+    assert (1)
+    # now to XML
+    # asserts
     pass
 
 if __name__=="__main__":

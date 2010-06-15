@@ -26,9 +26,11 @@
 import os
 import re
 
-# from songimport import SongImport
+from songimport import SongImport
+from lxml.etree import Element
+from lxml import objectify
 
-class opensongimport:
+class OpenSongImport:
     """
     Import songs exported from OpenSong - the format is described loosly here:
     http://www.opensong.org/d/manual/song_file_format_specification
@@ -82,35 +84,94 @@ class opensongimport:
         self.songmanager=songmanager
         self.song = None
         
-    def osimport(self, filename):
+    def do_import(self, filename):
         """
         Process the OpenSong file
         """            
-        self.new_song()
+        self.song = SongImport(self.songmanager)
         f=open(filename)
         tree=objectify.parse(f)
         root=tree.getroot()
-        print "Title", zroot.title
+        # xxx this bit ought to be more "iterable"... esp. if song had attributes not getters and setters...
+        if root.copyright:
+            self.song.add_copyright(unicode(root.copyright))
+        if root.author:
+            self.song.parse_author(unicode(root.author))
+        if root.title:
+            self.song.set_title(unicode(root.title))
+        if root.aka:
+            self.song.set_alternate_title(unicode(root.aka))
+        if root.hymn_number:
+            self.song.set_song_number(unicode(root.hymn_number))
+        
         # data storage while importing
-        self.verses=[]
-        
+        verses={}
+        lyrics=str(root.lyrics)
+        # xxx what to do if no presentation order - need to figure it out on the fly
+        for l in lyrics.split('\n'):
+            # remove comments
+            semicolon = l.find(';')
+            if semicolon >= 0:
+                l=l[:semicolon]
+            l=l.strip()
+            if l=='':
+                continue
+            # skip inline guitar chords
+            if l[0] == u'.':
+                continue
 
-        # xxx this is common with SOF
-    def new_song(self):
-        """
-        A change of song. Store the old, create a new
-        ... but only if the last song was complete. If not, stick with it
-        """
-        if self.song:
-            self.finish_verse()
-            if not self.song.check_complete():
-                return
-            self.song.finish()
+            # verse/chorus/etc. marker
+            if l[0] == u'[':
+                versetype=l[1].upper()
+                if not verses.has_key(versetype):
+                    verses[versetype]={}
+                if l[2] != u']':
+                    # there's a number to go with it - extract that as well
+                    right_bracket=l.find(u']')
+                    versenum=int(l[2:right_bracket])
+                else:
+                    versenum = None # allow error trap
+                continue
+            words=None
 
-        self.song = SongImport(self.manager)
-        self.skip_to_close_bracket = False
-        self.is_chorus = False
-        self.italics = False
-        self.currentverse = u''
+            # number at start of line => verse number
+            if l[0] >= u'0' and l[0] <= u'9':
+                versenum=int(l[0])
+                words=l[1:].strip()
+            
+            if words is None and \
+                   versenum is not None and \
+                   versetype is not None:
+                words=l
+            if versenum is not None and \
+                   not verses[versetype].has_key(versenum):
+                verses[versetype][versenum]=[] # storage for lines in this verse
+            if words:
+                # remove the ____s from extended words
+                words=words.replace(u'_', u'')
+                verses[versetype][versenum].append(words)
+        # done parsing
+        print u'Title:', root.title
+        versetypes=verses.keys()
+        versetypes.sort()
+        versetags={}
+        for v in versetypes:
+            versenums=verses[v].keys()
+            versenums.sort()
+            for n in versenums:
+                versetag= u'%s%s' %(v,n)
+                lines=u'\n'.join(verses[v][n])
+                self.song.verses.append([versetag, lines])
+                versetags[versetag]=1 # keep track of what we have for error checking later
+        # now figure out the presentation order
+        if root.presentation:
+            order=unicode(root.presentation).split(u' ')
+            for tag in order:
+                if not versetags.has_key(tag):
+                    raise OpenSongImportError
+                else:
+                    self.song.verse_order_list.append(tag)
+            
         
+        self.song.print_song()
 

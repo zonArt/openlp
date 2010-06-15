@@ -23,11 +23,11 @@
 2 v2 Line 1___
 . A B C7
 1 V1 Line 2
-2 V1 Line 2
+2 V2 Line 2
  
 [b1]
  Bridge 1
- 
+ Bridge 1 line 2
 [C1]
  Chorus 1
  
