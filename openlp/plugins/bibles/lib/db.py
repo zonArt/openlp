@@ -29,8 +29,9 @@ import chardet
 import re
 
 from sqlalchemy import or_
-from PyQt4 import QtCore
+from PyQt4 import QtCore, QtGui
 
+from openlp.core.lib import translate
 from openlp.plugins.bibles.lib.models import *
 
 log = logging.getLogger(__name__)
@@ -304,14 +305,22 @@ class BibleDB(QtCore.QObject):
             if db_book:
                 book = db_book.name
                 log.debug(u'Book name corrected to "%s"', book)
-            verses = self.session.query(Verse)\
-                .filter_by(book_id=db_book.id)\
-                .filter_by(chapter=chapter)\
-                .filter(Verse.verse >= start_verse)\
-                .filter(Verse.verse <= end_verse)\
-                .order_by(Verse.verse)\
-                .all()
-            verse_list.extend(verses)
+                verses = self.session.query(Verse)\
+                    .filter_by(book_id=db_book.id)\
+                    .filter_by(chapter=chapter)\
+                    .filter(Verse.verse >= start_verse)\
+                    .filter(Verse.verse <= end_verse)\
+                    .order_by(Verse.verse)\
+                    .all()
+                verse_list.extend(verses)
+            else:
+                log.debug(u'OpenLP failed to find book %s', book)
+                QtGui.QMessageBox.information(self.bible_plugin.media_item,
+                    translate(u'BibleDB', u'Book not found'),
+                    translate(u'BibleDB', u'The book you requested could not '
+                        u'be found in this bible.  Please check your spelling '
+                        u'and that this is a complete bible not just one '
+                        u'testament.'))
         return verse_list
 
     def verse_search(self, text):
@@ -383,4 +392,3 @@ class BibleDB(QtCore.QObject):
         log.debug(u'...............................Verses ')
         verses = self.session.query(Verse).all()
         log.debug(verses)
-
