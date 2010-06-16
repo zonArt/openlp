@@ -325,6 +325,19 @@ class MediaManagerItem(QtGui.QWidget):
         """
         pass
 
+    def checkItemSelected(self, message):
+        """
+        Check if a list item is selected so an action may be performed on it
+
+        ``message``
+            The message to give the user if no item is selected
+        """
+        if not self.ListView.selectedIndexes():
+            QtGui.QMessageBox.information(self,
+                self.trUtf8('No Items Selected'), message)
+            return False
+        return True
+
     def onFileClick(self):
         files = QtGui.QFileDialog.getOpenFileNames(
             self, self.OnNewPrompt,
@@ -392,7 +405,7 @@ class MediaManagerItem(QtGui.QWidget):
         if not self.ListView.selectedIndexes() and not self.remoteTriggered:
             QtGui.QMessageBox.information(self,
                 self.trUtf8('No Items Selected'),
-                self.trUtf8('You must select one or more items.'))
+                self.trUtf8('You must select one or more items to preview.'))
         else:
             log.debug(self.PluginNameShort + u' Preview requested')
             service_item = self.buildServiceItem()
@@ -404,7 +417,7 @@ class MediaManagerItem(QtGui.QWidget):
         if not self.ListView.selectedIndexes():
             QtGui.QMessageBox.information(self,
                 self.trUtf8('No Items Selected'),
-                self.trUtf8('You must select one or more items.'))
+                self.trUtf8('You must select one or more items to send live.'))
         else:
             log.debug(self.PluginNameShort + u' Live requested')
             service_item = self.buildServiceItem()

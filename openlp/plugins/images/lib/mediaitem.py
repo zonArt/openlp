@@ -116,14 +116,18 @@ class ImageMediaItem(MediaManagerItem):
         self.PageLayout.addWidget(self.ImageWidget)
 
     def onDeleteClick(self):
-        items = self.ListView.selectedIndexes()
-        if items:
+        """
+        Remove an image item from the list
+        """
+        if self.checkItemSelected(translate(u'ImagePlugin.MediaItem',
+            u'You must select an item to delete.')):
+            items = self.ListView.selectedIndexes()
             for item in items:
                 text = self.ListView.item(item.row())
                 if text:
                     try:
-                        os.remove(
-                            os.path.join(self.servicePath, unicode(text.text())))
+                        os.remove(os.path.join(self.servicePath,
+                            unicode(text.text())))
                     except OSError:
                         #if not present do not worry
                         pass
