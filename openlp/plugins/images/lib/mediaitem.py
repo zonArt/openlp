@@ -120,12 +120,13 @@ class ImageMediaItem(MediaManagerItem):
         if items:
             for item in items:
                 text = self.ListView.item(item.row())
-                try:
-                    os.remove(
-                        os.path.join(self.servicePath, unicode(text.text())))
-                except OSError:
-                    #if not present do not worry
-                    pass
+                if text:
+                    try:
+                        os.remove(
+                            os.path.join(self.servicePath, unicode(text.text())))
+                    except OSError:
+                        #if not present do not worry
+                        pass
                 self.ListView.takeItem(item.row())
                 SettingsManager.set_list(self.settingsSection,
                     self.settingsSection, self.getFileList())
@@ -157,7 +158,7 @@ class ImageMediaItem(MediaManagerItem):
             service_item.add_capability(ItemCapabilities.AllowsAdditions)
             for item in items:
                 bitem = self.ListView.item(item.row())
-                filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
+                filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
                 frame = QtGui.QImage(unicode(filename))
                 (path, name) = os.path.split(filename)
                 service_item.add_from_image(path, name, frame)
@@ -174,7 +175,7 @@ class ImageMediaItem(MediaManagerItem):
         items = self.ListView.selectedIndexes()
         for item in items:
             bitem = self.ListView.item(item.row())
-            filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
+            filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
             frame = QtGui.QImage(unicode(filename))
             self.parent.maindisplay.addImageWithText(frame)
 

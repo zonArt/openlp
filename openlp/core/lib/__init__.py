@@ -80,9 +80,9 @@ def str_to_bool(stringvalue):
     ``stringvalue``
         The string value to examine and convert to a boolean type.
     """
-    if stringvalue is True or stringvalue is False:
+    if isinstance(stringvalue, bool):
         return stringvalue
-    return stringvalue.strip().lower() in (u'true', u'yes', u'y')
+    return unicode(stringvalue).strip().lower() in (u'true', u'yes', u'y')
 
 def build_icon(icon):
     """

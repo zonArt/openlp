@@ -343,7 +343,7 @@ class MediaManagerItem(QtGui.QWidget):
         filelist = []
         while count < self.ListView.count():
             bitem = self.ListView.item(count)
-            filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
+            filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
             filelist.append(filename)
             count += 1
         return filelist
