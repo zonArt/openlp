@@ -31,7 +31,6 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import context_menu_action, context_menu_separator, \
     SettingsManager, OpenLPToolbar, ServiceItem, build_icon, translate
 
-
 log = logging.getLogger(__name__)
 
 class MediaManagerItem(QtGui.QWidget):
