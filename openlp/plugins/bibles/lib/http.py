@@ -288,8 +288,7 @@ class CWExtract(BibleCommon):
         ``chapter``
             Chapter number
         """
-        log.debug(u'get_bible_chapter %s,%s,%s',
-            version, bookname, chapter)
+        log.debug(u'get_bible_chapter %s,%s,%s', version, bookname, chapter)
         urlbookname = bookname.replace(u' ', u'-')
         chapter_url = u'http://www.biblestudytools.com/%s/%s/%s.html' % \
             (version, urlbookname.lower(), chapter)

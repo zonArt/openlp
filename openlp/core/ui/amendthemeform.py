@@ -155,7 +155,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                     self.theme.background_direction)
             else:
                 filename = \
-                    os.path.split(unicode(self.theme.background_filename))[0]
+                    os.path.split(unicode(self.theme.background_filename))[1]
                 new_theme.add_background_image(filename)
                 save_to = os.path.join(self.path, theme_name, filename)
                 save_from = self.theme.background_filename
@@ -239,12 +239,13 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         self.previewTheme()
 
     def onFontMainColorPushButtonClicked(self):
-        self.theme.font_main_color = QtGui.QColorDialog.getColor(
-            QtGui.QColor(self.theme.font_main_color), self).name()
-
-        self.FontMainColorPushButton.setStyleSheet(
-            u'background-color: %s' % unicode(self.theme.font_main_color))
-        self.previewTheme()
+        new_color = QtGui.QColorDialog.getColor(
+            QtGui.QColor(self.theme.font_main_color), self)
+        if new_color.isValid():
+            self.theme.font_main_color = new_color.name()
+            self.FontMainColorPushButton.setStyleSheet(
+                u'background-color: %s' % unicode(self.theme.font_main_color))
+            self.previewTheme()
 
     def onFontMainSizeSpinBoxChanged(self):
         if self.theme.font_main_proportion != self.FontMainSizeSpinBox.value():
@@ -332,11 +333,13 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         self.previewTheme()
 
     def onFontFooterColorPushButtonClicked(self):
-        self.theme.font_footer_color = QtGui.QColorDialog.getColor(
-            QtGui.QColor(self.theme.font_footer_color), self).name()
-        self.FontFooterColorPushButton.setStyleSheet(
-            'background-color: %s' % unicode(self.theme.font_footer_color))
-        self.previewTheme()
+        new_color = QtGui.QColorDialog.getColor(
+            QtGui.QColor(self.theme.font_footer_color), self)
+        if new_color.isValid():
+            self.theme.font_footer_color = new_color.name()
+            self.FontFooterColorPushButton.setStyleSheet(
+                u'background-color: %s' % unicode(self.theme.font_footer_color))
+            self.previewTheme()
 
     def onFontFooterSizeSpinBoxChanged(self):
         if self.theme.font_footer_proportion != \
@@ -431,24 +434,29 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
 
     def onColor1PushButtonClicked(self):
         if self.theme.background_type == u'solid':
-            self.theme.background_color = QtGui.QColorDialog.getColor(
-                QtGui.QColor(self.theme.background_color), self).name()
-            self.Color1PushButton.setStyleSheet(
-                u'background-color: %s' % unicode(self.theme.background_color))
+            new_color = QtGui.QColorDialog.getColor(
+                QtGui.QColor(self.theme.background_color), self)
+            if new_color.isValid():
+                self.theme.background_color = new_color.name()
+                self.Color1PushButton.setStyleSheet(u'background-color: %s' %
+                    unicode(self.theme.background_color))
         else:
-            self.theme.background_startColor = QtGui.QColorDialog.getColor(
-                QtGui.QColor(self.theme.background_startColor), self).name()
-            self.Color1PushButton.setStyleSheet(
-                u'background-color: %s' % \
+            new_color = QtGui.QColorDialog.getColor(
+                QtGui.QColor(self.theme.background_startColor), self)
+            if new_color.isValid():
+                self.theme.background_startColor = new_color.name()
+                self.Color1PushButton.setStyleSheet(u'background-color: %s' %
                     unicode(self.theme.background_startColor))
         self.previewTheme()
 
     def onColor2PushButtonClicked(self):
-        self.theme.background_endColor = QtGui.QColorDialog.getColor(
-            QtGui.QColor(self.theme.background_endColor), self).name()
-        self.Color2PushButton.setStyleSheet(
-            u'background-color: %s' % unicode(self.theme.background_endColor))
-        self.previewTheme()
+        new_color = QtGui.QColorDialog.getColor(
+            QtGui.QColor(self.theme.background_endColor), self)
+        if new_color.isValid():
+            self.theme.background_endColor = new_color.name()
+            self.Color2PushButton.setStyleSheet(u'background-color: %s' %
+                unicode(self.theme.background_endColor))
+            self.previewTheme()
 
     #
     #Other Tab
@@ -472,11 +480,13 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.previewTheme()
 
     def onOutlineColorPushButtonClicked(self):
-        self.theme.display_outline_color = QtGui.QColorDialog.getColor(
-            QtGui.QColor(self.theme.display_outline_color), self).name()
-        self.OutlineColorPushButton.setStyleSheet(
-            u'background-color: %s' % unicode(self.theme.display_outline_color))
-        self.previewTheme()
+        new_color = QtGui.QColorDialog.getColor(
+            QtGui.QColor(self.theme.display_outline_color), self)
+        if new_color.isValid():
+            self.theme.display_outline_color = new_color.name()
+            self.OutlineColorPushButton.setStyleSheet(u'background-color: %s' %
+                unicode(self.theme.display_outline_color))
+            self.previewTheme()
 
     def onShadowCheckBoxChanged(self, value):
         if value == 2:  # checked
@@ -495,11 +505,13 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         self.previewTheme()
 
     def onShadowColorPushButtonClicked(self):
-        self.theme.display_shadow_color = QtGui.QColorDialog.getColor(
-            QtGui.QColor(self.theme.display_shadow_color), self).name()
-        self.ShadowColorPushButton.setStyleSheet(
-            u'background-color: %s' % unicode(self.theme.display_shadow_color))
-        self.previewTheme()
+        new_color = QtGui.QColorDialog.getColor(
+            QtGui.QColor(self.theme.display_shadow_color), self)
+        if new_color.isValid():
+            self.theme.display_shadow_color = new_color.name()
+            self.ShadowColorPushButton.setStyleSheet(u'background-color: %s' %
+                unicode(self.theme.display_shadow_color))
+            self.previewTheme()
 
     def onHorizontalComboBoxSelected(self, currentIndex):
         self.theme.display_horizontalAlign = currentIndex

@@ -153,8 +153,8 @@ class Theme(object):
             The data to initialise the theme with
         """
         # init to defaults
-        self._set_from_XML(BLANK_STYLE_XML)
-        self._set_from_XML(xml)
+        self._set_from_xml(BLANK_STYLE_XML)
+        self._set_from_xml(xml)
 
     def _get_as_string(self):
         """
@@ -176,9 +176,9 @@ class Theme(object):
             The data to apply to the theme
         """
         root = ElementTree(element=XML(xml))
-        iter = root.getiterator()
-        for element in iter:
-            delphiColorChange = False
+        xml_iter = root.getiterator()
+        for element in xml_iter:
+            delphi_color_change = False
             if element.tag != u'Theme':
                 element_text = element.text
                 val = 0
@@ -194,7 +194,7 @@ class Theme(object):
                             pass
                     elif DELPHI_COLORS.has_key(element_text):
                         val = DELPHI_COLORS[element_text]
-                        delphiColorChange = True
+                        delphi_color_change = True
                     else:
                         try:
                             val = int(element_text)
@@ -204,7 +204,7 @@ class Theme(object):
                     (element.tag.find(u'BackgroundParameter') == 0 and
                     type(val) == type(0))):
                     # convert to a wx.Colour
-                    if not delphiColorChange:
+                    if not delphi_color_change:
                         val = QtGui.QColor(
                             val&0xFF, (val>>8)&0xFF, (val>>16)&0xFF)
                     else:

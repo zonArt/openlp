@@ -29,7 +29,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    ItemCapabilities, SettingsManager, contextMenuAction, Receiver, translate
+    ItemCapabilities, SettingsManager, context_menu_action, Receiver, translate
 
 log = logging.getLogger(__name__)
 
@@ -77,7 +77,7 @@ class MediaMediaItem(MediaManagerItem):
         MediaManagerItem.addListViewToToolBar(self)
         self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.ListView.addAction(
-            contextMenuAction(self.ListView, u':/slides/slide_blank.png',
+            context_menu_action(self.ListView, u':/slides/slide_blank.png',
                 translate(u'MediaPlugin.MediaItem', u'Replace Live Background'),
                 self.onReplaceClick))
 
@@ -112,7 +112,7 @@ class MediaMediaItem(MediaManagerItem):
             items = self.ListView.selectedIndexes()
             for item in items:
                 bitem = self.ListView.item(item.row())
-                filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
+                filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
                 Receiver.send_message(u'videodisplay_background', filename)
 
     def generateSlideData(self, service_item, item=None):
@@ -120,7 +120,7 @@ class MediaMediaItem(MediaManagerItem):
             item = self.ListView.currentItem()
             if item is None:
                 return False
-        filename = unicode((item.data(QtCore.Qt.UserRole)).toString())
+        filename = unicode(item.data(QtCore.Qt.UserRole).toString())
         service_item.title = unicode(
             translate(u'MediaPlugin.MediaItem', u'Media'))
         service_item.add_capability(ItemCapabilities.RequiresMedia)
