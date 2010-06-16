@@ -231,7 +231,8 @@ class Plugin(QtCore.QObject):
         Show a dialog when the user clicks on the 'About' button in the plugin
         manager.
         """
-        pass
+        raise NotImplementedError(
+            u'Plugin.about needs to be defined by the plugin')
 
     def initialise(self):
         """
