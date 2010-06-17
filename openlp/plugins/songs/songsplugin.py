@@ -95,9 +95,9 @@ class SongsPlugin(Plugin):
         self.SongImportItem = QtGui.QAction(import_menu)
         self.SongImportItem.setObjectName(u'SongImportItem')
         self.SongImportItem.setText(translate(
-            u'SongsPlugin.SongsPlugin', u'&Song'))
+            u'SongsPlugin', u'&Song'))
         self.SongImportItem.setToolTip(
-            translate(u'SongsPlugin.SongsPlugin', 
+            translate(u'SongsPlugin', 
                 u'Import songs using the import wizard.'))
         import_menu.addAction(self.SongImportItem)
         # Songs of Fellowship import menu item - will be removed and the
@@ -105,14 +105,14 @@ class SongsPlugin(Plugin):
         self.ImportSofItem = QtGui.QAction(import_menu)
         self.ImportSofItem.setObjectName(u'ImportSofItem')
         self.ImportSofItem.setText(
-            translate(u'SongsPlugin.SongsPlugin', 
+            translate(u'SongsPlugin', 
                 u'Songs of Fellowship (temp menu item)'))
         self.ImportSofItem.setToolTip(
-            translate(u'SongsPlugin.SongsPlugin', 
+            translate(u'SongsPlugin', 
                 u'Import songs from the VOLS1_2.RTF, sof3words' \
                 + u'.rtf and sof4words.rtf supplied with the music books'))
         self.ImportSofItem.setStatusTip(
-            translate(u'SongsPlugin.SongsPlugin', 
+            translate(u'SongsPlugin', 
                 u'Import songs from the VOLS1_2.RTF, sof3words' \
                 + u'.rtf and sof4words.rtf supplied with the music books'))
         import_menu.addAction(self.ImportSofItem)
@@ -121,15 +121,15 @@ class SongsPlugin(Plugin):
         self.ImportOooItem = QtGui.QAction(import_menu)
         self.ImportOooItem.setObjectName(u'ImportOooItem')
         self.ImportOooItem.setText(
-            translate(u'SongsPlugin.SongsPlugin', 
+            translate(u'SongsPlugin', 
                 u'Generic Document/Presentation Import '
                 u'(temp menu item)'))
         self.ImportOooItem.setToolTip(
-            translate(u'SongsPlugin.SongsPlugin', 
+            translate(u'SongsPlugin', 
                 u'Import songs from '
                 u'Word/Writer/Powerpoint/Impress'))
         self.ImportOooItem.setStatusTip(
-            translate(u'SongsPlugin.SongsPlugin', 
+            translate(u'SongsPlugin', 
                 u'Import songs from '
                 u'Word/Writer/Powerpoint/Impress'))
         import_menu.addAction(self.ImportOooItem)
@@ -159,7 +159,7 @@ class SongsPlugin(Plugin):
 
     def onImportSofItemClick(self):
         filenames = QtGui.QFileDialog.getOpenFileNames(
-            None, translate(u'SongsPlugin.Songsplugin',
+            None, translate(u'SongsPlugin',
                 u'Open Songs of Fellowship file'),
             u'', u'Songs of Fellowship file (*.rtf *.RTF)')
         try:
@@ -169,9 +169,9 @@ class SongsPlugin(Plugin):
         except:
             log.exception('Could not import SoF file')
             QtGui.QMessageBox.critical(None,
-                translate(u'SongsPlugin.SongsPlugin', 
+                translate(u'SongsPlugin', 
                     u'Import Error'),
-                translate(u'SongsPlugin.SongsPlugin', 
+                translate(u'SongsPlugin', 
                     u'Error importing Songs of ' 
                     u'Fellowship file.\nOpenOffice.org must be installed' 
                     u' and you must be using an unedited copy of the RTF'
@@ -182,7 +182,7 @@ class SongsPlugin(Plugin):
 
     def onImportOooItemClick(self):
         filenames = QtGui.QFileDialog.getOpenFileNames(
-            None, translate(u'SongsPlugin.Songsplugin',
+            None, translate(u'SongsPlugin',
             u'Open documents or presentations'),
             u'', u'All Files(*.*)')
         oooimport = OooImport(self.manager)        
@@ -190,7 +190,7 @@ class SongsPlugin(Plugin):
         Receiver.send_message(u'songs_load_list')
 
     def about(self):
-        about_text = translate(u'SongsPlugin.Songsplugin',
+        about_text = translate(u'SongsPlugin',
             u'<strong>Song Plugin</strong><br />'
             u'This plugin allows songs to be managed and displayed.')
         return about_text

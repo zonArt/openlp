@@ -71,7 +71,7 @@ class BiblePlugin(Plugin):
         self.ImportBibleItem.setObjectName(u'ImportBibleItem')
         import_menu.addAction(self.ImportBibleItem)
         self.ImportBibleItem.setText(
-            translate(u'BiblesPlugin.BiblePlugin', u'&Bible'))
+            translate(u'BiblePlugin', u'&Bible'))
         # Signals and slots
         QtCore.QObject.connect(self.ImportBibleItem,
             QtCore.SIGNAL(u'triggered()'), self.onBibleImportClick)
@@ -82,7 +82,7 @@ class BiblePlugin(Plugin):
         self.ExportBibleItem.setObjectName(u'ExportBibleItem')
         export_menu.addAction(self.ExportBibleItem)
         self.ExportBibleItem.setText(translate(
-            u'BiblesPlugin.BiblePlugin', u'&Bible'))
+            u'BiblePlugin', u'&Bible'))
         self.ExportBibleItem.setVisible(False)
 
     def onBibleImportClick(self):
@@ -90,7 +90,7 @@ class BiblePlugin(Plugin):
             self.media_item.onImportClick()
 
     def about(self):
-        about_text = translate(u'BiblesPlugin.BiblePlugin',
+        about_text = translate(u'BiblePlugin',
             u'<strong>Bible Plugin</strong><br />This '
             u'plugin allows bible verses from different sources to be '
             u'displayed on the screen during the service.')

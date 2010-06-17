@@ -224,7 +224,7 @@ class MediaManagerItem(QtGui.QWidget):
         ## New Button ##
         if self.hasNewIcon:
             self.addToolbarButton(
-                unicode(translate(u'MediaManagerItem',  u'New %s')) % \
+                unicode(translate(u'MediaManagerItem', u'New %s')) % \
                 self.PluginNameShort,
                 unicode(translate(u'MediaManagerItem', u'Add a new %s')) % \
                 self.PluginNameVisible,
@@ -232,7 +232,7 @@ class MediaManagerItem(QtGui.QWidget):
         ## Edit Button ##
         if self.hasEditIcon:
             self.addToolbarButton(
-                unicode(translate(u'MediaManagerItem',  u'Edit %s')) % \
+                unicode(translate(u'MediaManagerItem', u'Edit %s')) % \
                 self.PluginNameShort,
                 unicode(translate(
                     u'MediaManagerItem', u'Edit the selected %s')) % \
@@ -241,7 +241,7 @@ class MediaManagerItem(QtGui.QWidget):
         ## Delete Button ##
         if self.hasDeleteIcon:
             self.addToolbarButton(
-                unicode(translate(u'MediaManagerItem',  u'Delete %s')) % \
+                unicode(translate(u'MediaManagerItem', u'Delete %s')) % \
                 self.PluginNameShort,
                 translate(u'MediaManagerItem', u'Delete the selected item'),
                 u':/general/general_delete.png', self.onDeleteClick)
@@ -260,7 +260,7 @@ class MediaManagerItem(QtGui.QWidget):
             u':/general/general_live.png', self.onLiveClick)
         ## Add to service Button ##
         self.addToolbarButton(
-            unicode(translate(u'MediaManagerItem',  u'Add %s to Service')) % \
+            unicode(translate(u'MediaManagerItem', u'Add %s to Service')) % \
             self.PluginNameShort,
             translate(u'MediaManagerItem', 
                 u'Add the selected item(s) to the service'),

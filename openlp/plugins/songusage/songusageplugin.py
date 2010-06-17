@@ -60,23 +60,23 @@ class SongUsagePlugin(Plugin):
         self.SongUsageMenu = QtGui.QMenu(tools_menu)
         self.SongUsageMenu.setObjectName(u'SongUsageMenu')
         self.SongUsageMenu.setTitle(translate(
-            u'SongUsagePlugin.SongUsagePlugin', u'&Song Usage'))
+            u'SongUsagePlugin', u'&Song Usage'))
         #SongUsage Delete
         self.SongUsageDelete = QtGui.QAction(tools_menu)
         self.SongUsageDelete.setText(
-            translate(u'SongUsagePlugin.SongUsagePlugin', 
+            translate(u'SongUsagePlugin', 
                 u'&Delete recorded data'))
         self.SongUsageDelete.setStatusTip(
-            translate(u'SongUsagePlugin.SongUsagePlugin',
+            translate(u'SongUsagePlugin',
                 u'Delete song usage to specified date'))
         self.SongUsageDelete.setObjectName(u'SongUsageDelete')
         #SongUsage Report
         self.SongUsageReport = QtGui.QAction(tools_menu)
         self.SongUsageReport.setText(
-            translate(u'SongUsagePlugin.SongUsagePlugin', 
+            translate(u'SongUsagePlugin', 
                 u'&Extract recorded data'))
         self.SongUsageReport.setStatusTip(
-            translate(u'SongUsagePlugin.SongUsagePlugin', 
+            translate(u'SongUsagePlugin', 
                 u'Generate report on Song Usage'))
         self.SongUsageReport.setObjectName(u'SongUsageReport')
         #SongUsage activation
@@ -86,9 +86,9 @@ class SongUsagePlugin(Plugin):
         self.SongUsageStatus.setCheckable(True)
         self.SongUsageStatus.setChecked(False)
         self.SongUsageStatus.setText(translate(
-            u'SongUsagePlugin.SongUsagePlugin', u'Song Usage Status'))
+            u'SongUsagePlugin', u'Song Usage Status'))
         self.SongUsageStatus.setStatusTip(
-            translate(u'SongUsagePlugin.SongUsagePlugin', 
+            translate(u'SongUsagePlugin', 
                 u'Start/Stop live song usage recording'))
         self.SongUsageStatus.setShortcut(u'F4')
         self.SongUsageStatus.setObjectName(u'SongUsageStatus')
@@ -163,7 +163,7 @@ class SongUsagePlugin(Plugin):
         self.SongUsagedetailform.exec_()
 
     def about(self):
-        about_text = translate(u'SongsPlugin.SongUsagePlugin',
+        about_text = translate(u'SongUsagePlugin',
             u'<b>SongUsage Plugin</b><br>This plugin '
             u'records the use of songs and when they have been used during '
             u'a live service')
