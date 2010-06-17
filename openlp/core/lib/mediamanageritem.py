@@ -110,7 +110,6 @@ class MediaManagerItem(QtGui.QWidget):
         self.remoteTriggered = None
         self.ServiceItemIconName = None
         self.singleServiceItem = True
-        self.addToServiceItem = False
         self.PageLayout = QtGui.QVBoxLayout(self)
         self.PageLayout.setSpacing(0)
         self.PageLayout.setContentsMargins(4, 0, 4, 0)
@@ -133,6 +132,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.hasEditIcon = True
         self.hasFileIcon = False
         self.hasDeleteIcon = True
+        self.addToServiceItem = False
 
     def retranslateUi(self):
         """
@@ -306,7 +306,8 @@ class MediaManagerItem(QtGui.QWidget):
         self.ListView.addAction(
             context_menu_action(
                 self.ListView, u':/general/general_live.png',
-                translate(u'MediaManagerItem', u'&Show Live'), self.onLiveClick))
+                translate(u'MediaManagerItem', u'&Show Live'),
+                self.onLiveClick))
         self.ListView.addAction(
             context_menu_action(
                 self.ListView, u':/general/general_add.png',
@@ -341,6 +342,19 @@ class MediaManagerItem(QtGui.QWidget):
         Slot at end of toolbar for plugin to add widgets
         """
         pass
+
+    def checkItemSelected(self, message):
+        """
+        Check if a list item is selected so an action may be performed on it
+
+        ``message``
+            The message to give the user if no item is selected
+        """
+        if not self.ListView.selectedIndexes():
+            QtGui.QMessageBox.information(self,
+                translate(u'MediaManagerItem', u'No Items Selected'), message)
+            return False
+        return True
 
     def onFileClick(self):
         files = QtGui.QFileDialog.getOpenFileNames(
@@ -410,7 +424,7 @@ class MediaManagerItem(QtGui.QWidget):
             QtGui.QMessageBox.information(self,
                 translate(u'MediaManagerItem', u'No Items Selected'),
                 translate(u'MediaManagerItem', 
-                    u'You must select one or more items.'))
+                    u'You must select one or more items to preview.'))
         else:
             log.debug(self.PluginNameShort + u' Preview requested')
             service_item = self.buildServiceItem()
@@ -423,7 +437,7 @@ class MediaManagerItem(QtGui.QWidget):
             QtGui.QMessageBox.information(self,
                 translate(u'MediaManagerItem', u'No Items Selected'),
                 translate(u'MediaManagerItem', 
-                    u'You must select one or more items.'))
+                    u'You must select one or more items to send live.'))
         else:
             log.debug(self.PluginNameShort + u' Live requested')
             service_item = self.buildServiceItem()
