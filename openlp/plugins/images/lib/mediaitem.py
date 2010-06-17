@@ -54,7 +54,6 @@ class ImageMediaItem(MediaManagerItem):
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = ImageListView
         MediaManagerItem.__init__(self, parent, icon, title)
-        self.addToServiceItem = True
 
     def initPluginNameVisible(self):
         self.PluginNameVisible = translate(u'ImagePlugin.MediaItem', u'Image')
@@ -74,6 +73,7 @@ class ImageMediaItem(MediaManagerItem):
         self.hasFileIcon = True
         self.hasNewIcon = False
         self.hasEditIcon = False
+        self.addToServiceItem = True
 
     def initialise(self):
         log.debug(u'initialise')

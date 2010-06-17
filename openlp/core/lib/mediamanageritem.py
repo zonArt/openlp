@@ -110,7 +110,6 @@ class MediaManagerItem(QtGui.QWidget):
         self.remoteTriggered = None
         self.ServiceItemIconName = None
         self.singleServiceItem = True
-        self.addToServiceItem = False
         self.PageLayout = QtGui.QVBoxLayout(self)
         self.PageLayout.setSpacing(0)
         self.PageLayout.setContentsMargins(4, 0, 4, 0)
@@ -133,6 +132,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.hasEditIcon = True
         self.hasFileIcon = False
         self.hasDeleteIcon = True
+        self.addToServiceItem = False
 
     def retranslateUi(self):
         """

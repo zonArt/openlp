@@ -57,7 +57,6 @@ class BibleMediaItem(MediaManagerItem):
         self.IconPath = u'songs/song'
         self.ListViewWithDnD_class = BibleListView
         self.lastReference = []
-        self.addToServiceItem = True
         MediaManagerItem.__init__(self, parent, icon, title)
         # place to store the search results
         self.search_results = {}
@@ -79,6 +78,7 @@ class BibleMediaItem(MediaManagerItem):
         self.hasNewIcon = False
         self.hasEditIcon = False
         self.hasDeleteIcon = False
+        self.addToServiceItem = True
 
     def addEndHeaderBar(self):
         self.SearchTabWidget = QtGui.QTabWidget(self)
