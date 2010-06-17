@@ -301,17 +301,20 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         self.setField(u'csv_versefile', QtCore.QVariant(''))
         self.setField(u'opensong_file', QtCore.QVariant(''))
         self.setField(u'web_location', QtCore.QVariant(WebDownload.Crosswalk))
-        self.setField(u'web_biblename', QtCore.QVariant(self.BibleComboBox))
+        self.setField(u'web_biblename',
+            QtCore.QVariant(self.BibleComboBox.currentIndex()))
         self.setField(u'proxy_server',
             settings.value(u'proxy address', QtCore.QVariant(u'')))
         self.setField(u'proxy_username',
             settings.value(u'proxy username', QtCore.QVariant(u'')))
         self.setField(u'proxy_password',
             settings.value(u'proxy password', QtCore.QVariant(u'')))
-        self.setField(u'license_version', QtCore.QVariant(self.VersionNameEdit))
-        self.setField(u'license_copyright', QtCore.QVariant(self.CopyrightEdit))
+        self.setField(u'license_version',
+            QtCore.QVariant(self.VersionNameEdit.text()))
+        self.setField(u'license_copyright',
+            QtCore.QVariant(self.CopyrightEdit.text()))
         self.setField(u'license_permission',
-            QtCore.QVariant(self.PermissionEdit))
+            QtCore.QVariant(self.PermissionEdit.text()))
         self.onLocationComboBoxChanged(WebDownload.Crosswalk)
         settings.endGroup()
 

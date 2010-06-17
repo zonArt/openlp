@@ -276,15 +276,23 @@ class SongMediaItem(MediaManagerItem):
             self.edit_song_form.exec_()
 
     def onEditClick(self):
-        item = self.ListView.currentItem()
-        if item:
+        """
+        Edit a song
+        """
+        if self.checkItemSelected(translate(u'SongsPlugin.MediaItem',
+            u'You must select an item to edit.')):
+            item = self.ListView.currentItem()
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.edit_song_form.loadSong(item_id, False)
             self.edit_song_form.exec_()
 
     def onDeleteClick(self):
-        items = self.ListView.selectedIndexes()
-        if items:
+        """
+        Remove a song from the list and database
+        """
+        if self.checkItemSelected(translate(u'SongsPlugin.MediaItem',
+            u'You must select an item to delete.')):
+            items = self.ListView.selectedIndexes()
             if len(items) == 1:
                 del_message = translate(u'SongsPlugin.MediaItem',
                     u'Delete song?')
@@ -372,4 +380,3 @@ class SongMediaItem(MediaManagerItem):
             song.title, author_audit, song.copyright, song.ccli_number
         ]
         return True
-

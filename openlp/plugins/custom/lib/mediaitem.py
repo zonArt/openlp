@@ -117,16 +117,24 @@ class CustomMediaItem(MediaManagerItem):
             self.parent.edit_custom_form.exec_()
 
     def onEditClick(self):
-        item = self.ListView.currentItem()
-        if item:
+        """
+        Edit a custom item
+        """
+        if self.checkItemSelected(translate(u'CustomPlugin.MediaItem',
+            u'You must select an item to edit.')):
+            item = self.ListView.currentItem()
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.parent.edit_custom_form.loadCustom(item_id, False)
             self.parent.edit_custom_form.exec_()
             self.initialise()
 
     def onDeleteClick(self):
-        item = self.ListView.currentItem()
-        if item:
+        """
+        Remove a custom item from the list and database
+        """
+        if self.checkItemSelected(translate(u'CustomPlugin.MediaItem',
+            u'You must select an item to delete.')):
+            item = self.ListView.currentItem()
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.parent.custommanager.delete_object(CustomSlide, item_id)
             row = self.ListView.row(item)
