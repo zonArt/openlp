@@ -67,9 +67,11 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             if plugin.status == PluginStatus.Active:
                 status_text = unicode(translate(u'PluginForm', u'%s (Active)'))
             elif plugin.status == PluginStatus.Inactive:
-                status_text = unicode(translate(u'PluginForm', u'%s (Inactive)'))
+                status_text = unicode(
+                    translate(u'PluginForm', u'%s (Inactive)'))
             elif plugin.status == PluginStatus.Disabled:
-                status_text = unicode(translate(u'PluginForm', u'%s (Disabled)'))
+                status_text = unicode(
+                    translate(u'PluginForm', u'%s (Disabled)'))
             item.setText(status_text % plugin.name)
             # If the plugin has an icon, set it!
             if plugin.icon:

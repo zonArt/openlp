@@ -113,7 +113,8 @@ class Ui_SongImportWizard(object):
         self.OpenIcon.addPixmap(QtGui.QPixmap(u':/general/general_open.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.DeleteIcon = QtGui.QIcon()
-        self.DeleteIcon.addPixmap(QtGui.QPixmap(u':/general/general_delete.png'),
+        self.DeleteIcon.addPixmap(
+            QtGui.QPixmap(u':/general/general_delete.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.OpenLyricsAddButton.setIcon(self.OpenIcon)
         self.OpenLyricsAddButton.setObjectName(u'OpenLyricsAddButton')
@@ -185,7 +186,8 @@ class Ui_SongImportWizard(object):
         self.CSVLayout.setObjectName(u'CSVLayout')
         self.CSVFilenameLabel = QtGui.QLabel(self.CSVPage)
         self.CSVFilenameLabel.setObjectName(u'CSVFilenameLabel')
-        self.CSVLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.CSVFilenameLabel)
+        self.CSVLayout.setWidget(0, QtGui.QFormLayout.LabelRole,
+            self.CSVFilenameLabel)
         self.CSVFileLayout = QtGui.QHBoxLayout()
         self.CSVFileLayout.setSpacing(8)
         self.CSVFileLayout.setObjectName(u'CSVFileLayout')
@@ -196,7 +198,8 @@ class Ui_SongImportWizard(object):
         self.CSVBrowseButton.setIcon(self.OpenIcon)
         self.CSVBrowseButton.setObjectName(u'CSVBrowseButton')
         self.CSVFileLayout.addWidget(self.CSVBrowseButton)
-        self.CSVLayout.setLayout(0, QtGui.QFormLayout.FieldRole, self.CSVFileLayout)
+        self.CSVLayout.setLayout(0, QtGui.QFormLayout.FieldRole,
+            self.CSVFileLayout)
         self.FormatStackedWidget.addWidget(self.CSVPage)
         self.SourceLayout.addWidget(self.FormatStackedWidget)
         SongImportWizard.addPage(self.SourcePage)
