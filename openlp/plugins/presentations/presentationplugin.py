@@ -108,7 +108,7 @@ class PresentationPlugin(Plugin):
             return False
 
     def about(self):
-        about_text = translate(u'PresentationPlugin.PresentationPlugin', 
+        about_text = translate(u'PresentationPlugin', 
             u'<b>Presentation Plugin</b> <br> Delivers '
             u'the ability to show presentations using a number of different '
             u'programs. The choice of available presentation programs is '
