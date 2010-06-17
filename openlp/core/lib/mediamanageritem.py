@@ -334,7 +334,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         if not self.ListView.selectedIndexes():
             QtGui.QMessageBox.information(self,
-                self.trUtf8('No Items Selected'), message)
+                translate(u'MediaManagerItem', u'No Items Selected'), message)
             return False
         return True
 
