@@ -137,10 +137,10 @@ class HTTPBooks(object):
             u'verses FROM chapters WHERE book_id = ?', (book[u'id'],))
         if chapters:
             return {
-                u'id': chapters[0][0],
-                u'book_id': chapters[0][1],
-                u'chapter': chapters[0][2],
-                u'verses': chapters[0][3]
+                u'id': chapters[chapter][0],
+                u'book_id': chapters[chapter][1],
+                u'chapter': chapters[chapter][2],
+                u'verses': chapters[chapter][3]
             }
         else:
             return None
@@ -288,8 +288,7 @@ class CWExtract(BibleCommon):
         ``chapter``
             Chapter number
         """
-        log.debug(u'get_bible_chapter %s,%s,%s',
-            version, bookname, chapter)
+        log.debug(u'get_bible_chapter %s,%s,%s', version, bookname, chapter)
         urlbookname = bookname.replace(u' ', u'-')
         chapter_url = u'http://www.biblestudytools.com/%s/%s/%s.html' % \
             (version, urlbookname.lower(), chapter)

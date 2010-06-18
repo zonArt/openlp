@@ -57,7 +57,6 @@ class BibleMediaItem(MediaManagerItem):
         self.IconPath = u'songs/song'
         self.ListViewWithDnD_class = BibleListView
         self.lastReference = []
-        self.addToServiceItem = True
         MediaManagerItem.__init__(self, parent, icon, title)
         # place to store the search results
         self.search_results = {}
@@ -147,7 +146,7 @@ class BibleMediaItem(MediaManagerItem):
         self.QuickMessage = QtGui.QLabel(self.QuickTab)
         self.QuickMessage.setObjectName(u'QuickMessage')
         self.QuickLayout.addWidget(self.QuickMessage, 6, 0, 1, 3)
-        self.SearchTabWidget.addTab(self.QuickTab, 
+        self.SearchTabWidget.addTab(self.QuickTab,
             translate(u'BiblesPlugin.MediaItem', u'Quick'))
         QuickSpacerItem = QtGui.QSpacerItem(20, 35, QtGui.QSizePolicy.Minimum,
             QtGui.QSizePolicy.Expanding)
@@ -232,7 +231,7 @@ class BibleMediaItem(MediaManagerItem):
         self.AdvancedMessage = QtGui.QLabel(self.AdvancedTab)
         self.AdvancedMessage.setObjectName(u'AdvancedMessage')
         self.AdvancedLayout.addWidget(self.AdvancedMessage, 8, 0, 1, 3)
-        self.SearchTabWidget.addTab(self.AdvancedTab, 
+        self.SearchTabWidget.addTab(self.AdvancedTab,
             translate(u'BiblesPlugin.MediaItem', u'Advanced'))
         # Add the search tab widget to the page layout
         self.PageLayout.addWidget(self.SearchTabWidget)
@@ -387,7 +386,7 @@ class BibleMediaItem(MediaManagerItem):
     def onNoBookFound(self):
         QtGui.QMessageBox.critical(self,
             translate(u'BiblesPlugin.MediaItem', u'No Book Found'),
-            translate(u'BiblesPlugin.MediaItem', 
+            translate(u'BiblesPlugin.MediaItem',
                 u'No matching book could be found in this Bible.'),
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
             QtGui.QMessageBox.Ok
@@ -454,7 +453,7 @@ class BibleMediaItem(MediaManagerItem):
     def onQuickSearchButton(self):
         log.debug(u'Quick Search Button pressed')
         bible = unicode(self.QuickVersionComboBox.currentText())
-        text = unicode(self.QuickSearchEdit.displayText())
+        text = unicode(self.QuickSearchEdit.text())
         if self.ClearQuickSearchComboBox.currentIndex() == 0:
             self.ListView.clear()
             self.lastReference = []
@@ -495,7 +494,7 @@ class BibleMediaItem(MediaManagerItem):
             if bible2_version:
                 bible2_version = bible2_version.value
             else:
-                bible2_version = u''            
+                bible2_version = u''
             if bible2_copyright:
                 bible2_copyright = bible2_copyright.value
             else:
@@ -558,7 +557,7 @@ class BibleMediaItem(MediaManagerItem):
                 service_item.title = u'%s %s' % (book, verse_text)
             elif service_item.title.find(
                 translate(u'BiblesPlugin.MediaItem', u'etc')) == -1:
-                service_item.title = u'%s, %s' % (service_item.title, 
+                service_item.title = u'%s, %s' % (service_item.title,
                        translate(u'BiblesPlugin.MediaItem', u'etc'))
         if len(self.parent.settings_tab.bible_theme) == 0:
             service_item.theme = None
@@ -569,7 +568,11 @@ class BibleMediaItem(MediaManagerItem):
             raw_slides.append(bible_text)
         for slide in raw_slides:
             service_item.add_from_text(slide[:30], slide)
-        service_item.raw_footer = raw_footer
+        if service_item.raw_footer:
+            for foot in raw_footer:
+                service_item.raw_footer.append(foot)
+        else:
+            service_item.raw_footer = raw_footer
         return True
 
     def formatVerse(self, old_chapter, chapter, verse, opening, closing):

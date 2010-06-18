@@ -29,7 +29,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    contextMenuAction, ItemCapabilities, SettingsManager, translate
+    context_menu_action, ItemCapabilities, SettingsManager, translate
 from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
@@ -93,7 +93,7 @@ class ImageMediaItem(MediaManagerItem):
         MediaManagerItem.addListViewToToolBar(self)
         self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.ListView.addAction(
-            contextMenuAction(
+            context_menu_action(
                 self.ListView, u':/slides/slide_blank.png',
                 translate(u'ImagePlugin.MediaItem', u'Replace Live Background'),
                 self.onReplaceClick))
@@ -116,16 +116,21 @@ class ImageMediaItem(MediaManagerItem):
         self.PageLayout.addWidget(self.ImageWidget)
 
     def onDeleteClick(self):
-        items = self.ListView.selectedIndexes()
-        if items:
+        """
+        Remove an image item from the list
+        """
+        if self.checkItemSelected(translate(u'ImagePlugin.MediaItem',
+            u'You must select an item to delete.')):
+            items = self.ListView.selectedIndexes()
             for item in items:
                 text = self.ListView.item(item.row())
-                try:
-                    os.remove(
-                        os.path.join(self.servicePath, unicode(text.text())))
-                except OSError:
-                    #if not present do not worry
-                    pass
+                if text:
+                    try:
+                        os.remove(os.path.join(self.servicePath,
+                            unicode(text.text())))
+                    except OSError:
+                        #if not present do not worry
+                        pass
                 self.ListView.takeItem(item.row())
                 SettingsManager.set_list(self.settingsSection,
                     self.settingsSection, self.getFileList())
@@ -157,7 +162,7 @@ class ImageMediaItem(MediaManagerItem):
             service_item.add_capability(ItemCapabilities.AllowsAdditions)
             for item in items:
                 bitem = self.ListView.item(item.row())
-                filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
+                filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
                 frame = QtGui.QImage(unicode(filename))
                 (path, name) = os.path.split(filename)
                 service_item.add_from_image(path, name, frame)
@@ -174,7 +179,7 @@ class ImageMediaItem(MediaManagerItem):
         items = self.ListView.selectedIndexes()
         for item in items:
             bitem = self.ListView.item(item.row())
-            filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
+            filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
             frame = QtGui.QImage(unicode(filename))
             self.parent.maindisplay.addImageWithText(frame)
 

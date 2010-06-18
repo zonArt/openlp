@@ -94,36 +94,44 @@ class SongsPlugin(Plugin):
         # Main song import menu item - will eventually be the only one
         self.SongImportItem = QtGui.QAction(import_menu)
         self.SongImportItem.setObjectName(u'SongImportItem')
-        self.SongImportItem.setText(import_menu.trUtf8('&Song'))
+        self.SongImportItem.setText(translate(
+            u'SongsPlugin', u'&Song'))
         self.SongImportItem.setToolTip(
-            import_menu.trUtf8('Import songs using the import wizard.'))
+            translate(u'SongsPlugin', 
+                u'Import songs using the import wizard.'))
         import_menu.addAction(self.SongImportItem)
         # Songs of Fellowship import menu item - will be removed and the
         # functionality will be contained within the import wizard
         self.ImportSofItem = QtGui.QAction(import_menu)
         self.ImportSofItem.setObjectName(u'ImportSofItem')
         self.ImportSofItem.setText(
-            import_menu.trUtf8('Songs of Fellowship (temp menu item)'))
+            translate(u'SongsPlugin', 
+                u'Songs of Fellowship (temp menu item)'))
         self.ImportSofItem.setToolTip(
-            import_menu.trUtf8('Import songs from the VOLS1_2.RTF, sof3words' \
-                + '.rtf and sof4words.rtf supplied with the music books'))
+            translate(u'SongsPlugin', 
+                u'Import songs from the VOLS1_2.RTF, sof3words' \
+                + u'.rtf and sof4words.rtf supplied with the music books'))
         self.ImportSofItem.setStatusTip(
-            import_menu.trUtf8('Import songs from the VOLS1_2.RTF, sof3words' \
-                + '.rtf and sof4words.rtf supplied with the music books'))
+            translate(u'SongsPlugin', 
+                u'Import songs from the VOLS1_2.RTF, sof3words' \
+                + u'.rtf and sof4words.rtf supplied with the music books'))
         import_menu.addAction(self.ImportSofItem)
         # OpenOffice.org import menu item - will be removed and the
         # functionality will be contained within the import wizard
         self.ImportOooItem = QtGui.QAction(import_menu)
         self.ImportOooItem.setObjectName(u'ImportOooItem')
         self.ImportOooItem.setText(
-            import_menu.trUtf8('Generic Document/Presentation Import '
-                '(temp menu item)'))
+            translate(u'SongsPlugin', 
+                u'Generic Document/Presentation Import '
+                u'(temp menu item)'))
         self.ImportOooItem.setToolTip(
-            import_menu.trUtf8('Import songs from '
-                'Word/Writer/Powerpoint/Impress'))
+            translate(u'SongsPlugin', 
+                u'Import songs from '
+                u'Word/Writer/Powerpoint/Impress'))
         self.ImportOooItem.setStatusTip(
-            import_menu.trUtf8('Import songs from '
-                'Word/Writer/Powerpoint/Impress'))
+            translate(u'SongsPlugin', 
+                u'Import songs from '
+                u'Word/Writer/Powerpoint/Impress'))
         import_menu.addAction(self.ImportOooItem)
         # Signals and slots
         QtCore.QObject.connect(self.SongImportItem,
@@ -151,7 +159,7 @@ class SongsPlugin(Plugin):
 
     def onImportSofItemClick(self):
         filenames = QtGui.QFileDialog.getOpenFileNames(
-            None, translate(u'SongsPlugin.Songsplugin',
+            None, translate(u'SongsPlugin',
                 u'Open Songs of Fellowship file'),
             u'', u'Songs of Fellowship file (*.rtf *.RTF)')
         try:
@@ -161,18 +169,20 @@ class SongsPlugin(Plugin):
         except:
             log.exception('Could not import SoF file')
             QtGui.QMessageBox.critical(None,
-                self.ImportSongMenu.trUtf8('Import Error'),
-                self.ImportSongMenu.trUtf8('Error importing Songs of ' 
-                    'Fellowship file.\nOpenOffice.org must be installed' 
-                    ' and you must be using an unedited copy of the RTF'
-                    ' included with the Songs of Fellowship Music Editions'),
+                translate(u'SongsPlugin', 
+                    u'Import Error'),
+                translate(u'SongsPlugin', 
+                    u'Error importing Songs of ' 
+                    u'Fellowship file.\nOpenOffice.org must be installed' 
+                    u' and you must be using an unedited copy of the RTF'
+                    u' included with the Songs of Fellowship Music Editions'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
         Receiver.send_message(u'songs_load_list')
 
     def onImportOooItemClick(self):
         filenames = QtGui.QFileDialog.getOpenFileNames(
-            None, translate(u'SongsPlugin.Songsplugin',
+            None, translate(u'SongsPlugin',
             u'Open documents or presentations'),
             u'', u'All Files(*.*)')
         oooimport = OooImport(self.manager)        
@@ -180,7 +190,7 @@ class SongsPlugin(Plugin):
         Receiver.send_message(u'songs_load_list')
 
     def about(self):
-        about_text = translate(u'SongsPlugin.Songsplugin',
+        about_text = translate(u'SongsPlugin',
             u'<strong>Song Plugin</strong><br />'
             u'This plugin allows songs to be managed and displayed.')
         return about_text

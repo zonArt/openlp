@@ -56,7 +56,7 @@ class ImagePlugin(Plugin):
         return ImageMediaItem(self, self.icon, self.name)
 
     def about(self):
-        about_text = translate(u'ImagePlugin.ImagePlugin', u'<b>Image Plugin'
+        about_text = translate(u'ImagePlugin', u'<b>Image Plugin'
             u'</b><br>Allows images of all types to be displayed. If a number '
             u'of images are selected together and presented on the live '
             u'controller it is possible to turn them into a timed loop.<br<br>'

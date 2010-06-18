@@ -27,7 +27,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib.plugin import PluginStatus
+from openlp.core.lib import PluginStatus, translate
 from plugindialog import Ui_PluginViewDialog
 
 log = logging.getLogger(__name__)
@@ -63,14 +63,16 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             # sometimes when it's loaded from the config, it isn't cast to int.
             plugin.status = int(plugin.status)
             # Set the little status text in brackets next to the plugin name.
-            status_text = 'Inactive'
+            status_text = unicode(translate(u'PluginForm', u'%s (Inactive)'))
             if plugin.status == PluginStatus.Active:
-                status_text = 'Active'
+                status_text = unicode(translate(u'PluginForm', u'%s (Active)'))
             elif plugin.status == PluginStatus.Inactive:
-                status_text = 'Inactive'
+                status_text = unicode(
+                    translate(u'PluginForm', u'%s (Inactive)'))
             elif plugin.status == PluginStatus.Disabled:
-                status_text = 'Disabled'
-            item.setText(u'%s (%s)' % (plugin.name, status_text))
+                status_text = unicode(
+                    translate(u'PluginForm', u'%s (Disabled)'))
+            item.setText(status_text % plugin.name)
             # If the plugin has an icon, set it!
             if plugin.icon:
                 item.setIcon(plugin.icon)

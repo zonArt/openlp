@@ -277,7 +277,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         rowLabel = []
         for row in range(0, self.VerseListWidget.rowCount()):
             item = self.VerseListWidget.item(row, 0)
-            data = unicode((item.data(QtCore.Qt.UserRole)).toString())
+            data = unicode(item.data(QtCore.Qt.UserRole).toString())
             bit = data.split(u':')
             rowTag = u'%s\n%s' % (bit[0][0:1], bit[1])
             rowLabel.append(rowTag)
@@ -418,7 +418,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         item = self.VerseListWidget.currentItem()
         if item:
             tempText = item.text()
-            verseId = unicode((item.data(QtCore.Qt.UserRole)).toString())
+            verseId = unicode(item.data(QtCore.Qt.UserRole).toString())
             self.verse_form.setVerse(tempText, True, verseId)
             if self.verse_form.exec_():
                 afterText, verse, subVerse = self.verse_form.getVerse()
@@ -449,7 +449,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if self.VerseListWidget.rowCount() > 0:
             for row in range(0, self.VerseListWidget.rowCount()):
                 item = self.VerseListWidget.item(row, 0)
-                field = unicode((item.data(QtCore.Qt.UserRole)).toString())
+                field = unicode(item.data(QtCore.Qt.UserRole).toString())
                 verse_list += u'---[%s]---\n' % field
                 verse_list += item.text()
                 verse_list += u'\n'
@@ -540,7 +540,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def onCopyrightInsertButtonTriggered(self):
         text = self.CopyrightEditItem.text()
         pos = self.CopyrightEditItem.cursorPosition()
-        text = text[:pos] + u'©' + text[pos:]
+        text = text[:pos] + u'\xa9' + text[pos:]
         self.CopyrightEditItem.setText(text)
         self.CopyrightEditItem.setFocus()
         self.CopyrightEditItem.setCursorPosition(pos + 1)
@@ -598,7 +598,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             text = u' '
             for i in range (0, self.VerseListWidget.rowCount()):
                 item = self.VerseListWidget.item(i, 0)
-                verseId = unicode((item.data(QtCore.Qt.UserRole)).toString())
+                verseId = unicode(item.data(QtCore.Qt.UserRole).toString())
                 bits = verseId.split(u':')
                 sxml.add_verse_to_lyrics(bits[0], bits[1], unicode(item.text()))
                 text = text + unicode(self.VerseListWidget.item(i, 0).text()) \

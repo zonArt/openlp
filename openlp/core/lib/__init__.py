@@ -80,9 +80,9 @@ def str_to_bool(stringvalue):
     ``stringvalue``
         The string value to examine and convert to a boolean type.
     """
-    if stringvalue is True or stringvalue is False:
+    if isinstance(stringvalue, bool):
         return stringvalue
-    return stringvalue.strip().lower() in (u'true', u'yes', u'y')
+    return unicode(stringvalue).strip().lower() in (u'true', u'yes', u'y')
 
 def build_icon(icon):
     """
@@ -95,24 +95,24 @@ def build_icon(icon):
         The icon to build. This can be a QIcon, a resource string in the form
         ``:/resource/file.png``, or a file location like ``/path/to/file.png``.
     """
-    ButtonIcon = None
+    button_icon = None
     if isinstance(icon, QtGui.QIcon):
-        ButtonIcon = icon
+        button_icon = icon
     elif isinstance(icon, basestring):
-        ButtonIcon = QtGui.QIcon()
+        button_icon = QtGui.QIcon()
         if icon.startswith(u':/'):
-            ButtonIcon.addPixmap(
-                QtGui.QPixmap(icon), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            button_icon.addPixmap(QtGui.QPixmap(icon), QtGui.QIcon.Normal,
+                QtGui.QIcon.Off)
         else:
-            ButtonIcon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
+            button_icon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
                 QtGui.QIcon.Normal, QtGui.QIcon.Off)
     elif isinstance(icon, QtGui.QImage):
-        ButtonIcon = QtGui.QIcon()
-        ButtonIcon.addPixmap(
-            QtGui.QPixmap.fromImage(icon), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-    return ButtonIcon
+        button_icon = QtGui.QIcon()
+        button_icon.addPixmap(QtGui.QPixmap.fromImage(icon),
+            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+    return button_icon
 
-def contextMenuAction(base, icon, text, slot):
+def context_menu_action(base, icon, text, slot):
     """
     Utility method to help build context menus for plugins
     """
@@ -122,7 +122,7 @@ def contextMenuAction(base, icon, text, slot):
     QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), slot)
     return action
 
-def contextMenu(base, icon, text):
+def context_menu(base, icon, text):
     """
     Utility method to help build context menus for plugins
     """
@@ -130,7 +130,7 @@ def contextMenu(base, icon, text):
     action.setIcon(build_icon(icon))
     return action
 
-def contextMenuSeparator(base):
+def context_menu_separator(base):
     """
     Add a separator to a context menu
     """
@@ -152,12 +152,12 @@ def resize_image(image, width, height):
     realw = preview.width()
     realh = preview.height()
     # and move it to the centre of the preview space
-    newImage = QtGui.QImage(width, height,
+    new_image = QtGui.QImage(width, height,
         QtGui.QImage.Format_ARGB32_Premultiplied)
-    newImage.fill(QtCore.Qt.black)
-    painter = QtGui.QPainter(newImage)
+    new_image.fill(QtCore.Qt.black)
+    painter = QtGui.QPainter(new_image)
     painter.drawImage((width - realw) / 2, (height - realh) / 2, preview)
-    return newImage
+    return new_image
 
 
 class ThemeLevel(object):
