@@ -927,13 +927,9 @@ class ServiceManager(QtGui.QWidget):
                     endpos = len(self.serviceItems)
                 else:
                     endpos = self._getParentItemData(item) - 1
-                if endpos < startpos:
-                    newpos = endpos
-                else:
-                    newpos = endpos + 1
                 serviceItem = self.serviceItems[startpos]
                 self.serviceItems.remove(serviceItem)
-                self.serviceItems.insert(newpos, serviceItem)
+                self.serviceItems.insert(endpos, serviceItem)
                 self.repaintServiceList(endpos, startCount)
             else:
                 #we are not over anything so drop
