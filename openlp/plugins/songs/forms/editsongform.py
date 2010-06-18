@@ -228,6 +228,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.VerseListWidget.clear()
         self.VerseListWidget.setRowCount(0)
         self.VerseListWidget.setColumnWidth(0, self.width)
+        # This is just because occasionally the lyrics come back as a "buffer"
         if isinstance(self.song.lyrics, buffer):
             self.song.lyrics = unicode(self.song.lyrics)
         if self.song.lyrics.startswith(u'<?xml version='):
@@ -288,9 +289,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         text = unicode(self.AuthorsSelectionComboItem.currentText())
         if item == 0 and text:
             if QtGui.QMessageBox.question(self,
-                translate(u'EditSongForm', u'Add Author'),
-                translate(u'EditSongForm', u'This author does not exist, do '
-                    u'you want to add them?'),
+                translate('SongsPlugin.EditSongForm', 'Add Author'),
+                translate('SongsPlugin.EditSongForm', 'This author does not '
+                    'exist, do you want to add them?'),
                 QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
                 QtGui.QMessageBox.Yes) == QtGui.QMessageBox.Yes:
                 author = Author.populate(display_name=text)
@@ -300,6 +301,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 author_item.setData(QtCore.Qt.UserRole, QtCore.QVariant(author.id))
                 self.AuthorsListView.addItem(author_item)
                 self.loadAuthors()
+                self.AuthorsSelectionComboItem.setCurrentIndex(0)
             else:
                 return
         elif item > 0:
@@ -309,13 +311,14 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             author_item = QtGui.QListWidgetItem(unicode(author.display_name))
             author_item.setData(QtCore.Qt.UserRole, QtCore.QVariant(author.id))
             self.AuthorsListView.addItem(author_item)
+            self.AuthorsSelectionComboItem.setCurrentIndex(0)
         else:
             QtGui.QMessageBox.warning(self,
-                translate(u'EditSongForm', u'No Author Selected'),
-                translate(u'EditSongForm', u'You have not selected a valid '
-                    u'author. Either select an author from the list, or type '
-                    u'in a new author and click the "Add Author to Song" '
-                    u'button to add the new author.'),
+                translate('SongsPlugin.EditSongForm', 'No Author Selected'),
+                translate('SongsPlugin.EditSongForm', 'You have not selected '
+                    'a valid author. Either select an author from the list, '
+                    'or type in a new author and click the "Add Author to '
+                    'Song" button to add the new author.'),
                 QtGui.QMessageBox.Ok, QtGui.QMessageBox.Ok)
 
     def onAuthorsListViewPressed(self):
@@ -336,9 +339,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         text = unicode(self.SongTopicCombo.currentText())
         if item == 0 and text:
             if QtGui.QMessageBox.question(self,
-                translate(u'EditSongForm', u'Add Topic'),
-                translate(u'EditSongForm', u'This topic does not exist, do '
-                    u'you want to add it?'),
+                translate('SongsPlugin.EditSongForm', 'Add Topic'),
+                translate('SongsPlugin.EditSongForm', 'This topic does not '
+                    'exist, do you want to add it?'),
                 QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
                 QtGui.QMessageBox.Yes) == QtGui.QMessageBox.Yes:
                 topic = Topic.populate(name=text)
@@ -348,6 +351,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 topic_item.setData(QtCore.Qt.UserRole, QtCore.QVariant(topic.id))
                 self.TopicsListView.addItem(topic_item)
                 self.loadTopics()
+                self.SongTopicCombo.setCurrentIndex(0)
             else:
                 return
         elif item > 0:
@@ -357,13 +361,14 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             topic_item = QtGui.QListWidgetItem(unicode(topic.name))
             topic_item.setData(QtCore.Qt.UserRole, QtCore.QVariant(topic.id))
             self.TopicsListView.addItem(topic_item)
+            self.SongTopicCombo.setCurrentIndex(0)
         else:
             QtGui.QMessageBox.warning(self,
-                translate(u'EditSongForm', u'No Topic Selected'),
-                translate(u'EditSongForm', u'You have not selected a valid '
-                    u'topic. Either select a topic from the list, or type '
-                    u'in a new topic and click the "Add Topic to Song" '
-                    u'button to add the new topic.'),
+                translate('SongsPlugin.EditSongForm', 'No Topic Selected'),
+                translate('SongsPlugin.EditSongForm', 'You have not selected '
+                    'a valid topic. Either select a topic from the list, or '
+                    'type in a new topic and click the "Add Topic to Song" '
+                    'button to add the new topic.'),
                 QtGui.QMessageBox.Ok, QtGui.QMessageBox.Ok)
 
     def onTopicListViewPressed(self):
@@ -379,12 +384,27 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.TopicsListView.takeItem(row)
 
     def onSongBookComboChanged(self, item):
-        if item == 0:
-            self.song.song_book_id = 0
-        else:
+        item = int(self.SongbookCombo.currentIndex())
+        text = unicode(self.SongbookCombo.currentText())
+        if item == 0 and text:
+            if QtGui.QMessageBox.question(self,
+                translate('SongsPlugin.EditSongForm', 'Add Book'),
+                translate('SongsPlugin.EditSongForm', 'This song book does '
+                    'not exist, do you want to add it?'),
+                QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
+                QtGui.QMessageBox.Yes) == QtGui.QMessageBox.Yes:
+                book = Book.populate(name=text)
+                self.songmanager.save_book(book)
+                self.song.book = book
+                self.loadBooks()
+            else:
+                return
+        elif item > 1:
             item = int(self.SongbookCombo.currentIndex())
             self.song.song_book_id = \
                 (self.SongbookCombo.itemData(item)).toInt()[0]
+        else:
+            self.song.song_book_id = 0
 
     def onThemeComboChanged(self, item):
         if item == 0:

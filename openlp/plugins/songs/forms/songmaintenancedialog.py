@@ -211,28 +211,28 @@ class Ui_SongMaintenanceDialog(object):
 
     def retranslateUi(self, SongMaintenanceDialog):
         SongMaintenanceDialog.setWindowTitle(
-            translate(u'SongsPlugin.SongMaintenanceForm', u'Song Maintenance'))
+            translate('SongsPlugin.SongMaintenanceForm', 'Song Maintenance'))
         self.TypeListWidget.item(0).setText(
-            translate(u'SongsPlugin.SongMaintenanceForm', u'Authors'))
+            translate('SongsPlugin.SongMaintenanceForm', 'Authors'))
         self.TypeListWidget.item(1).setText(
-            translate(u'SongsPlugin.SongMaintenanceForm', u'Topics'))
+            translate('SongsPlugin.SongMaintenanceForm', 'Topics'))
         self.TypeListWidget.item(2).setText(
-            translate(u'SongsPlugin.SongMaintenanceForm', u'Books/Hymnals'))
+            translate('SongsPlugin.SongMaintenanceForm', 'Books/Hymnals'))
         self.AuthorAddButton.setText(
-            translate(u'SongsPlugin.SongMaintenanceForm', u'Add'))
+            translate('SongsPlugin.SongMaintenanceForm', '&Add'))
         self.AuthorEditButton.setText(
-            translate(u'SongsPlugin.SongMaintenanceForm', u'Edit'))
+            translate('SongsPlugin.SongMaintenanceForm', '&Edit'))
         self.AuthorDeleteButton.setText(
-            translate(u'SongsPlugin.SongMaintenanceForm', u'Delete'))
+            translate('SongsPlugin.SongMaintenanceForm', '&Delete'))
         self.TopicAddButton.setText(
-            translate(u'SongsPlugin.SongMaintenanceForm', u'Add'))
+            translate('SongsPlugin.SongMaintenanceForm', '&Add'))
         self.TopicEditButton.setText(
-            translate(u'SongsPlugin.SongMaintenanceForm', u'Edit'))
+            translate('SongsPlugin.SongMaintenanceForm', '&Edit'))
         self.TopicDeleteButton.setText(
-            translate(u'SongsPlugin.SongMaintenanceForm', u'Delete'))
+            translate('SongsPlugin.SongMaintenanceForm', '&Delete'))
         self.BookAddButton.setText(
-            translate(u'SongsPlugin.SongMaintenanceForm', u'Add'))
+            translate('SongsPlugin.SongMaintenanceForm', '&Add'))
         self.BookEditButton.setText(
-            translate(u'SongsPlugin.SongMaintenanceForm', u'Edit'))
+            translate('SongsPlugin.SongMaintenanceForm', '&Edit'))
         self.BookDeleteButton.setText(
-            translate(u'SongsPlugin.SongMaintenanceForm', u'Delete'))
+            translate('SongsPlugin.SongMaintenanceForm', '&Delete'))
