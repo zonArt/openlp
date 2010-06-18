@@ -172,6 +172,13 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         author_id = self._getCurrentItemId(self.AuthorsListWidget)
         if author_id != -1:
             author = self.songmanager.get_author(author_id)
+            # Just make sure none of the fields is None
+            if author.first_name is None:
+                author.first_name = u''
+            if author.last_name is None:
+                author.last_name = u''
+            if author.display_name is None:
+                author.display_name = u''
             self.authorform.setAutoDisplayName(False)
             self.authorform.FirstNameEdit.setText(author.first_name)
             self.authorform.LastNameEdit.setText(author.last_name)
