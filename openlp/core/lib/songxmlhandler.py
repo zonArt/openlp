@@ -22,6 +22,20 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The :mod:`songxmlhandler` module provides the XML functionality for songs
+
+The basic XML is of the format::
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <song version="1.0">
+        <lyrics language="en">
+            <verse type="chorus" label="1">
+                <![CDATA[ ... ]]>
+            </verse>
+        </lyrics>
+    </song>
+"""
 
 import logging
 
@@ -34,17 +48,6 @@ log = logging.getLogger(__name__)
 class SongXMLBuilder(object):
     """
     This class builds the XML used to describe songs.
-
-    The basic XML looks like this::
-
-        <?xml version="1.0" encoding="UTF-8"?>
-        <song version="1.0">
-          <lyrics language="en">
-            <verse type="chorus" label="1">
-              <![CDATA[ ... ]]>
-            </verse>
-          </lyrics>
-        </song>
     """
     log.info(u'SongXMLBuilder Loaded')
 
@@ -113,17 +116,6 @@ class SongXMLBuilder(object):
 class SongXMLParser(object):
     """
     A class to read in and parse a song's XML.
-
-    The basic XML looks like this::
-
-        <?xml version="1.0" encoding="UTF-8"?>
-        <song version="1.0">
-          <lyrics language="en">
-            <verse type="chorus" label="1">
-              <![CDATA[ ... ]]>
-            </verse>
-          </lyrics>
-        </song>
     """
     log.info(u'SongXMLParser Loaded')
 

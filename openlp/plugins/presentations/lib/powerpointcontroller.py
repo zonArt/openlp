@@ -104,7 +104,7 @@ class PowerpointController(PresentationController):
 class PowerpointDocument(PresentationDocument):
     def __init__(self, controller, presentation):
         log.debug(u'Init Presentation Powerpoint')
-        PresentationDocument.__init__(controller, presentation)
+        PresentationDocument.__init__(self, controller, presentation)
         self.presentation = None
 
     def load_presentation(self):
@@ -142,7 +142,7 @@ class PowerpointDocument(PresentationDocument):
         if self.check_thumbnails():
             return
         self.presentation.Export(os.path.join(self.thumbnailpath, ''), 'png',
-            640, 480)
+            320, 240)
 
     def close_presentation(self):
         """
@@ -268,20 +268,6 @@ class PowerpointDocument(PresentationDocument):
         Triggers the previous slide on the running presentation
         """
         self.presentation.SlideShowWindow.View.Previous()
-
-    def get_slide_preview_file(self, slide_no):
-        """
-        Returns an image path containing a preview for the requested slide
-
-        ``slide_no``
-        The slide an image is required for, starting at 1
-        """
-        path = os.path.join(self.thumbnailpath,
-            self.controller.thumbnailprefix + unicode(slide_no) + u'.png')
-        if os.path.isfile(path):
-            return path
-        else:
-            return None
 
     def get_slide_text(self, slide_no):
         """

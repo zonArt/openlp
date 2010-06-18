@@ -181,7 +181,7 @@ class ImpressController(PresentationController):
 class ImpressDocument(PresentationDocument):
     def __init__(self, controller, presentation):
         log.debug(u'Init Presentation OpenOffice')
-        PresentationDocument.__init__(controller, presentation)
+        PresentationDocument.__init__(self, controller, presentation)
         self.document = None
         self.presentation = None
         self.control = None
@@ -369,21 +369,6 @@ class ImpressDocument(PresentationDocument):
         Triggers the previous slide on the running presentation
         """
         self.control.gotoPreviousSlide()
-
-    def get_slide_preview_file(self, slide_no):
-        """
-        Returns an image path containing a preview for the
-        requested slide
-
-        ``slide_no``
-        The slide an image is required for, starting at 1
-        """
-        path = os.path.join(self.thumbnailpath,
-            self.controller.thumbnailprefix + unicode(slide_no) + u'.png')
-        if os.path.isfile(path):
-            return path
-        else:
-            return None
 
     def get_slide_text(self, slide_no):
         """

@@ -174,8 +174,12 @@ class PresentationMediaItem(MediaManagerItem):
                 self.ListView.addItem(item_name)
 
     def onDeleteClick(self):
-        item = self.ListView.currentItem()
-        if item:
+        """
+        Remove a presentation item from the list
+        """
+        if self.checkItemSelected(translate(u'PresentationPlugin.MediaItem',
+            u'You must select an item to delete.')):
+            item = self.ListView.currentItem()
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
             SettingsManager.set_list(self.settingsSection,

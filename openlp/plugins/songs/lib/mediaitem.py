@@ -275,15 +275,23 @@ class SongMediaItem(MediaManagerItem):
             self.edit_song_form.exec_()
 
     def onEditClick(self):
-        item = self.ListView.currentItem()
-        if item:
+        """
+        Edit a song
+        """
+        if self.checkItemSelected(translate(u'SongsPlugin.MediaItem',
+            u'You must select an item to edit.')):
+            item = self.ListView.currentItem()
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.edit_song_form.loadSong(item_id, False)
             self.edit_song_form.exec_()
 
     def onDeleteClick(self):
-        items = self.ListView.selectedIndexes()
-        if items:
+        """
+        Remove a song from the list and database
+        """
+        if self.checkItemSelected(translate(u'SongsPlugin.MediaItem',
+            u'You must select an item to delete.')):
+            items = self.ListView.selectedIndexes()
             if len(items) == 1:
                 del_message = translate(u'SongsPlugin.MediaItem',
                     u'Delete song?')
@@ -333,7 +341,7 @@ class SongMediaItem(MediaManagerItem):
                 for verse in verseList:
                     verseTag = u'%s:%s' % (
                         verse[0][u'type'], verse[0][u'label'])
-                    service_item.add_from_text(\
+                    service_item.add_from_text(
                         verse[1][:30], unicode(verse[1]), verseTag)
             else:
                 #Loop through the verse list and expand the song accordingly.
@@ -345,8 +353,8 @@ class SongMediaItem(MediaManagerItem):
                             verse[0][u'type'][0] == order[0]:
                             verseTag = u'%s:%s' % \
                                 (verse[0][u'type'], verse[0][u'label'])
-                            service_item.add_from_text\
-                                (verse[1][:30], verse[1], verseTag)
+                            service_item.add_from_text(
+                                verse[1][:30], verse[1], verseTag)
         else:
             verses = song.lyrics.split(u'\n\n')
             for slide in verses:
@@ -371,4 +379,3 @@ class SongMediaItem(MediaManagerItem):
             song.title, author_audit, song.copyright, song.ccli_number
         ]
         return True
-

@@ -356,7 +356,7 @@ class Ui_MainWindow(object):
         """
         MainWindow.mainTitle = translate(u'MainWindow', u'OpenLP 2.0')
         MainWindow.language = translate(u'MainWindow', u'English')
-        MainWindow.defaultThemeText = translate(u'MainWindow', 
+        MainWindow.defaultThemeText = translate(u'MainWindow',
             u'Default Theme: ')
         MainWindow.setWindowTitle(MainWindow.mainTitle)
         self.FileMenu.setTitle(translate(u'MainWindow', u'&File'))
@@ -456,7 +456,7 @@ class Ui_MainWindow(object):
                 u'Set the interface language to %s')) % item.objectName())
         self.ToolsAddToolItem.setText(translate(u'MainWindow', u'Add &Tool...'))
         self.ToolsAddToolItem.setStatusTip(
-            translate(u'MainWindow', 
+            translate(u'MainWindow',
                 u'Add an application to the list of tools'))
         self.action_Preview_Panel.setText(
             translate(u'MainWindow', u'&Preview Pane'))
@@ -652,15 +652,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         settings = QtCore.QSettings()
         settings.beginGroup(self.generalSettingsSection)
-        if settings.value(u'screen blank', QtCore.QVariant(False)).toBool() \
-        and settings.value(u'blank warning', QtCore.QVariant(False)).toBool():
-            self.LiveController.onBlankDisplay(True)
-            QtGui.QMessageBox.question(self,
-                translate(u'MainWindow', u'OpenLP Main Display Blanked'),
-                translate(u'MainWindow', 
-                     u'The Main Display has been blanked out'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
-                QtGui.QMessageBox.Ok)
+        if settings.value(u'screen blank', QtCore.QVariant(False)).toBool():
+            self.LiveController.mainDisplaySetBackground()
+            if settings.value(u'blank warning',
+                QtCore.QVariant(False)).toBool():
+                QtGui.QMessageBox.question(self,
+                    translate(u'MainWindow', u'OpenLP Main Display Blanked'),
+                    translate(u'MainWindow',
+                         u'The Main Display has been blanked out'))
         settings.endGroup()
 
     def versionThread(self):

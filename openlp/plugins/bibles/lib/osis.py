@@ -86,13 +86,6 @@ class OSISBible(BibleDB):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'bibles_stop_import'), self.stop_import)
 
-    def stop_import(self):
-        """
-        Stops the import of the Bible.
-        """
-        log.debug('Stopping import!')
-        self.stop_import_flag = True
-
     def do_import(self):
         """
         Loads a Bible from file.

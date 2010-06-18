@@ -29,16 +29,19 @@ from openlp.core.lib import SettingsTab, Receiver, translate
 
 class DisplayTab(SettingsTab):
     """
-    Class documentation goes here.
+    Provide the UI for managing display related settings
     """
     def __init__(self, screens):
         """
-        Constructor
+        Initialise the display tab from a SettingsTab
         """
         self.screens = screens
         SettingsTab.__init__(self, u'Display')
 
     def setupUi(self):
+        """
+        Set up the UI widgets to show the settings
+        """
         self.tabTitleVisible = translate(u'DisplayTab', u'Displays')
         self.layoutWidget = QtGui.QWidget(self)
         self.layoutWidget.setGeometry(QtCore.QRect(0, 40, 241, 79))
@@ -158,6 +161,9 @@ class DisplayTab(SettingsTab):
             QtCore.SIGNAL(u'stateChanged(int)'), self.onOverrideCheckBoxChanged)
 
     def retranslateUi(self):
+        """
+        Provide i18n support for this UI
+        """
         self.setWindowTitle(translate(u'DisplayTab', u'Amend Display Settings'))
         self.CurrentGroupBox.setTitle(
             translate(u'DisplayTab', u'Default Settings'))
@@ -179,6 +185,9 @@ class DisplayTab(SettingsTab):
             translate(u'DisplayTab', u'Override Output Display'))
 
     def load(self):
+        """
+        Load current display settings
+        """
         settings = QtCore.QSettings()
         settings.beginGroup(self.settingsSection)
         self.Xpos.setText(unicode(self.screens.current[u'size'].x()))
@@ -209,6 +218,9 @@ class DisplayTab(SettingsTab):
             self.amend_display = True
 
     def save(self):
+        """
+        Save chosen settings
+        """
         settings = QtCore.QSettings()
         settings.beginGroup(self.settingsSection)
         settings.setValue('x position', QtCore.QVariant(self.XposEdit.text()))

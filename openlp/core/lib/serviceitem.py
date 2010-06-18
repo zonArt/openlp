@@ -22,6 +22,10 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The :mod:`serviceitem` provides the service item functionality including the
+type and capability of an item.
+"""
 
 import logging
 import os
@@ -43,6 +47,9 @@ class ServiceItemType(object):
     Command = 3
 
 class ItemCapabilities(object):
+    """
+    Provides an enumeration of a serviceitem's capabilities
+    """
     AllowsPreview = 1
     AllowsEdit = 2
     AllowsMaintain = 3
@@ -66,9 +73,10 @@ class ServiceItem(object):
             The plugin that this service item belongs to.
         """
         if plugin:
-            self.RenderManager = plugin.render_manager
+            self.render_manager = plugin.render_manager
             self.name = plugin.name
         self.title = u''
+        self.shortname = u''
         self.audit = u''
         self.items = []
         self.iconic_representation = None
@@ -83,14 +91,27 @@ class ServiceItem(object):
         self.capabilities = []
         self.is_valid = True
         self.cache = []
+        self.icon = None
 
     def add_capability(self, capability):
+        """
+        Add an ItemCapability to a ServiceItem
+
+        ``capability``
+            The capability to add
+        """
         self.capabilities.append(capability)
 
     def is_capable(self, capability):
+        """
+        Tell the caller if a ServiceItem has a capability
+
+        ``capability``
+            The capability to test for
+        """
         return capability in self.capabilities
 
-    def addIcon(self, icon):
+    def add_icon(self, icon):
         """
         Add an icon to the service item. This is used when displaying the
         service item in the service manager.
@@ -112,12 +133,12 @@ class ServiceItem(object):
         if self.service_item_type == ServiceItemType.Text:
             log.debug(u'Formatting slides')
             if self.theme is None:
-                self.RenderManager.set_override_theme(None)
+                self.render_manager.set_override_theme(None)
             else:
-                self.RenderManager.set_override_theme(self.theme)
+                self.render_manager.set_override_theme(self.theme)
             for slide in self._raw_frames:
                 before = time.time()
-                formated = self.RenderManager.format_slide(slide[u'raw_slide'])
+                formated = self.render_manager.format_slide(slide[u'raw_slide'])
                 for format in formated:
                     lines = u''
                     title = u''
@@ -132,9 +153,8 @@ class ServiceItem(object):
                 log.log(15, u'Formatting took %4s' % (time.time() - before))
         elif self.service_item_type == ServiceItemType.Image:
             for slide in self._raw_frames:
-                slide[u'image'] = \
-                    resize_image(slide[u'image'], self.RenderManager.width,
-                                 self.RenderManager.height)
+                slide[u'image'] = resize_image(slide[u'image'],
+                    self.render_manager.width, self.render_manager.height)
         elif self.service_item_type == ServiceItemType.Command:
             pass
         else:
@@ -148,19 +168,19 @@ class ServiceItem(object):
         """
         log.debug(u'render individual')
         if self.theme is None:
-            self.RenderManager.set_override_theme(None)
+            self.render_manager.set_override_theme(None)
         else:
-            self.RenderManager.set_override_theme(self.theme)
+            self.render_manager.set_override_theme(self.theme)
         format = self._display_frames[row][u'text'].split(u'\n')
         #if screen blank then do not display footer
-        if self.cache[row] is not None:
+        if len(self.cache) > 0 and self.cache[row] is not None:
             frame = self.cache[row]
         else:
             if format[0]:
-                frame = self.RenderManager.generate_slide(format,
-                                self.raw_footer)
+                frame = self.render_manager.generate_slide(format,
+                    self.raw_footer)
             else:
-                frame = self.RenderManager.generate_slide(format, u'')
+                frame = self.render_manager.generate_slide(format, u'')
             self.cache[row] = frame
         return frame
 
@@ -181,7 +201,7 @@ class ServiceItem(object):
         self._raw_frames.append(
             {u'title': title, u'image': image, u'path': path})
 
-    def add_from_text(self, title, raw_slide, verseTag=None):
+    def add_from_text(self, title, raw_slide, verse_tag=None):
         """
         Add a text slide to the service item.
 
@@ -194,7 +214,7 @@ class ServiceItem(object):
         self.service_item_type = ServiceItemType.Text
         title = title.split(u'\n')[0]
         self._raw_frames.append(
-            {u'title': title, u'raw_slide': raw_slide, u'verseTag':verseTag})
+            {u'title': title, u'raw_slide': raw_slide, u'verseTag':verse_tag})
 
     def add_from_command(self, path, file_name, image):
         """
@@ -261,7 +281,7 @@ class ServiceItem(object):
         self.service_item_type = header[u'type']
         self.shortname = header[u'plugin']
         self.theme = header[u'theme']
-        self.addIcon(header[u'icon'])
+        self.add_icon(header[u'icon'])
         self.raw_footer = header[u'footer']
         self.audit = header[u'audit']
         self.notes = header[u'notes']
@@ -304,22 +324,40 @@ class ServiceItem(object):
         return self._uuid != other._uuid
 
     def is_media(self):
+        """
+        Confirms if the ServiceItem is media
+        """
         return ItemCapabilities.RequiresMedia in self.capabilities
 
     def is_command(self):
+        """
+        Confirms if the ServiceItem is a command
+        """
         return self.service_item_type == ServiceItemType.Command
 
     def is_image(self):
+        """
+        Confirms if the ServiceItem is an image
+        """
         return self.service_item_type == ServiceItemType.Image
 
     def uses_file(self):
+        """
+        Confirms if the ServiceItem uses a file
+        """
         return self.service_item_type == ServiceItemType.Image or \
             self.service_item_type == ServiceItemType.Command
 
     def is_text(self):
+        """
+        Confirms if the ServiceItem is text
+        """
         return self.service_item_type == ServiceItemType.Text
 
     def get_frames(self):
+        """
+        Returns the frames for the ServiceItem
+        """
         if self.service_item_type == ServiceItemType.Text:
             return self._display_frames
         else:

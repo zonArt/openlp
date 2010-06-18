@@ -29,7 +29,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    ItemCapabilities, SettingsManager, contextMenuAction, Receiver, translate
+    ItemCapabilities, SettingsManager, context_menu_action, Receiver, translate
 
 log = logging.getLogger(__name__)
 
@@ -77,7 +77,7 @@ class MediaMediaItem(MediaManagerItem):
         MediaManagerItem.addListViewToToolBar(self)
         self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.ListView.addAction(
-            contextMenuAction(self.ListView, u':/slides/slide_blank.png',
+            context_menu_action(self.ListView, u':/slides/slide_blank.png',
                 translate(u'MediaPlugin.MediaItem', u'Replace Live Background'),
                 self.onReplaceClick))
 
@@ -137,8 +137,12 @@ class MediaMediaItem(MediaManagerItem):
             self.settingsSection))
 
     def onDeleteClick(self):
-        item = self.ListView.currentItem()
-        if item:
+        """
+        Remove a media item from the list
+        """
+        if self.checkItemSelected(translate(u'MediaPlugin.MediaItem',
+            u'You must select an item to delete.')):
+            item = self.ListView.currentItem()
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
             SettingsManager.set_list(self.settingsSection,
@@ -152,4 +156,3 @@ class MediaMediaItem(MediaManagerItem):
             item_name.setIcon(build_icon(img))
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.ListView.addItem(item_name)
-
