@@ -112,7 +112,7 @@ class MediaMediaItem(MediaManagerItem):
             items = self.ListView.selectedIndexes()
             for item in items:
                 bitem = self.ListView.item(item.row())
-                filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
+                filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
                 Receiver.send_message(u'videodisplay_background', filename)
 
     def generateSlideData(self, service_item, item=None):
@@ -120,7 +120,7 @@ class MediaMediaItem(MediaManagerItem):
             item = self.ListView.currentItem()
             if item is None:
                 return False
-        filename = unicode((item.data(QtCore.Qt.UserRole)).toString())
+        filename = unicode(item.data(QtCore.Qt.UserRole).toString())
         service_item.title = unicode(
             translate(u'MediaPlugin.MediaItem', u'Media'))
         service_item.add_capability(ItemCapabilities.RequiresMedia)
@@ -137,8 +137,12 @@ class MediaMediaItem(MediaManagerItem):
             self.settingsSection))
 
     def onDeleteClick(self):
-        item = self.ListView.currentItem()
-        if item:
+        """
+        Remove a media item from the list
+        """
+        if self.checkItemSelected(translate(u'MediaPlugin.MediaItem',
+            u'You must select an item to delete.')):
+            item = self.ListView.currentItem()
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
             SettingsManager.set_list(self.settingsSection,
@@ -152,4 +156,3 @@ class MediaMediaItem(MediaManagerItem):
             item_name.setIcon(build_icon(img))
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.ListView.addItem(item_name)
-

@@ -102,7 +102,7 @@ class PptviewController(PresentationController):
 class PptviewDocument(PresentationDocument):
     def __init__(self, controller, presentation):
         log.debug(u'Init Presentation PowerPoint')
-        PresentationDocument.__init__(controller, presentation)
+        PresentationDocument.__init__(self, controller, presentation)
         self.presentation = None
         self.pptid = None
         self.blanked = False

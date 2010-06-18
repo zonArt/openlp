@@ -57,7 +57,6 @@ class BibleMediaItem(MediaManagerItem):
         self.IconPath = u'songs/song'
         self.ListViewWithDnD_class = BibleListView
         self.lastReference = []
-        self.addToServiceItem = True
         MediaManagerItem.__init__(self, parent, icon, title)
         # place to store the search results
         self.search_results = {}
@@ -454,7 +453,7 @@ class BibleMediaItem(MediaManagerItem):
     def onQuickSearchButton(self):
         log.debug(u'Quick Search Button pressed')
         bible = unicode(self.QuickVersionComboBox.currentText())
-        text = unicode(self.QuickSearchEdit.displayText())
+        text = unicode(self.QuickSearchEdit.text())
         if self.ClearQuickSearchComboBox.currentIndex() == 0:
             self.ListView.clear()
             self.lastReference = []

@@ -181,7 +181,7 @@ class ImpressController(PresentationController):
 class ImpressDocument(PresentationDocument):
     def __init__(self, controller, presentation):
         log.debug(u'Init Presentation OpenOffice')
-        PresentationDocument.__init__(controller, presentation)
+        PresentationDocument.__init__(self, controller, presentation)
         self.document = None
         self.presentation = None
         self.control = None
