@@ -27,6 +27,7 @@ import os
 import sys
 import sqlite3
 
+from sqlalchemy import Column, MetaData, Table, types
 from sqlalchemy.exceptions import InvalidRequestError
 from sqlalchemy.orm import mapper
 
@@ -34,7 +35,9 @@ from openlp.core.lib import SettingsManager
 from openlp.core.lib.db import BaseModel
 from openlp.core.utils import AppLocation
 from openlp.plugins.bibles.lib.db import BibleMeta, Book, Testament, Verse
-    
+
+metadata = MetaData()
+
 class TBibleMeta(BaseModel):
     """
     Bible Meta Data

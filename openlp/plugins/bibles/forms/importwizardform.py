@@ -32,6 +32,7 @@ from PyQt4 import QtCore, QtGui
 
 from bibleimportwizard import Ui_BibleImportWizard
 from openlp.core.lib import Receiver, SettingsManager, translate
+from openlp.core.lib.db import delete_database
 from openlp.core.utils import AppLocation
 from openlp.plugins.bibles.lib.manager import BibleFormat
 
@@ -449,8 +450,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
             self.ImportProgressLabel.setText(
                 translate(u'BiblesPlugin.ImportWizardForm',
                     u'Your Bible import failed.'))
-            importer.delete_database(self.bibleplugin.settingsSection,
-                importer.file)
+            delete_database(self.bibleplugin.settingsSection, importer.file)
 
     def postImport(self):
         self.ImportProgressBar.setValue(self.ImportProgressBar.maximum())

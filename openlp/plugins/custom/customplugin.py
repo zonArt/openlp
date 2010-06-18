@@ -26,6 +26,7 @@
 import logging
 
 from forms import EditCustomForm
+
 from openlp.core.lib import Plugin, build_icon, PluginStatus, translate
 from openlp.core.lib.db import Manager
 from openlp.plugins.custom.lib import CustomMediaItem, CustomTab
@@ -77,7 +78,8 @@ class CustomPlugin(Plugin):
         return about_text
 
     def can_delete_theme(self, theme):
-        filter = u'theme_name=%s' % theme
-        if not self.custommanager.get_all_objects_filtered(CustomSlide, filter):
+        filter_string = u'theme_name=%s' % theme
+        if not self.custommanager.get_all_objects_filtered(CustomSlide,
+            filter_string):
             return True
         return False

@@ -26,6 +26,7 @@
 The :mod:`db` module provides the core database functionality for OpenLP
 """
 import logging
+import os
 
 from PyQt4 import QtCore
 from sqlalchemy import create_engine, MetaData
@@ -55,11 +56,34 @@ def init_db(url, auto_flush=True, auto_commit=False):
         autocommit=auto_commit, bind=engine))
     return session, metadata
 
+def delete_database(plugin_name, db_file_name=None):
+    """
+    Remove a database file from the system.
+
+    ``plugin_name``
+        The name of the plugin to remove the database for
+
+    ``db_file_name``
+        The database file name.  Defaults to None resulting in the
+        plugin_name being used.
+    """
+    db_file_path = None
+    if db_file_name:
+        db_file_path = os.path.join(
+            AppLocation.get_section_data_path(plugin_name), db_file_name)
+    else:
+        db_file_path = os.path.join(
+            AppLocation.get_section_data_path(plugin_name), plugin_name)
+    try:
+        os.remove(db_file_path)
+        return True
+    except OSError:
+        return False
+
 class BaseModel(object):
     """
     BaseModel provides a base object with a set of generic functions
     """
-
     @classmethod
     def populate(cls, **kwargs):
         """
@@ -111,30 +135,6 @@ class Manager(object):
         settings.endGroup()
         self.session = init_schema(self.db_url)
 
-    def delete_database(self, plugin_name, db_file_name=None):
-        """
-        Remove a database file from the system.
-
-        ``plugin_name``
-            The name of the plugin to remove the database for
-
-        ``db_file_name``
-            The database file name.  Defaults to None resulting in the
-            plugin_name being used.
-        """
-        db_file_path = None
-        if db_file_name:
-            db_file_path = os.path.join(
-                AppLocation.get_section_data_path(plugin_name), db_file_name)
-        else:
-            db_file_path = os.path.join(
-                AppLocation.get_section_data_path(plugin_name), plugin_name)
-        try:
-            os.remove(db_file_path)
-            return True
-        except OSError:
-            return False
-
     def insert_object(self, object_instance):
         """
         Save an object to the database
@@ -151,20 +151,20 @@ class Manager(object):
             log.exception(u'Object save failed')
             return False
 
-    def get_object(self, object_class, id=None):
+    def get_object(self, object_class, key=None):
         """
         Return the details of an object
 
         ``object_class``
             The type of object to return
 
-        ``id``
-            The unique reference for the class instance to return
+        ``key``
+            The unique reference or primary key for the instance to return
         """
-        if not id:
+        if not key:
             return object_class()
         else:
-            return self.session.query(object_class).get(id)
+            return self.session.query(object_class).get(key)
 
     def get_object_filtered(self, object_class, filter_string):
         """
@@ -204,20 +204,20 @@ class Manager(object):
         """
         return self.session.query(object_class).filter(filter_string).all()
 
-    def delete_object(self, object_class, id):
+    def delete_object(self, object_class, key):
         """
         Delete an object from the database
 
         ``object_class``
             The type of object to delete
 
-        ``id``
-            The unique reference for the class instance to be deleted
+        ``key``
+            The unique reference or primary key for the instance to be deleted
         """
-        if id != 0:
-            object = self.get_object(object_class, id)
+        if key != 0:
+            object_instance = self.get_object(object_class, key)
             try:
-                self.session.delete(object)
+                self.session.delete(object_instance)
                 self.session.commit()
                 return True
             except InvalidRequestError:

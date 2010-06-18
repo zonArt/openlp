@@ -197,7 +197,7 @@ class SongsPlugin(Plugin):
         return about_text
 
     def can_delete_theme(self, theme):
-        filter = u'theme_name=%s' % theme
-        if not self.manager.get_all_objects_filtered(Song, filter):
+        filter_string = u'theme_name=%s' % theme
+        if not self.manager.get_all_objects_filtered(Song, filter_string):
             return True
         return False

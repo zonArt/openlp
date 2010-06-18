@@ -27,14 +27,16 @@ import os
 import sys
 import sqlite3
 
-from sqlalchemy import create_engine
+from sqlalchemy import Column, create_engine, MetaData, Table, types
 from sqlalchemy.exceptions import InvalidRequestError
 from sqlalchemy.orm import scoped_session, sessionmaker, mapper, relation
 
 from openlp.core.lib import SettingsManager
 from openlp.core.lib.db import BaseModel
 from openlp.core.utils import AppLocation
-from openlp.plugins.songs.lib.db import songs_table, Song, Author, Topic, Book
+from openlp.plugins.songs.lib.db import Author, Book, Song, Topic
+
+metadata = MetaData()
 
 def init_models(url):
     engine = create_engine(url)
@@ -57,14 +59,14 @@ def init_models(url):
 
 temp_authors_table = Table(u'authors_temp', metadata,
     Column(u'authorid', types.Integer, primary_key=True),
-    Column(u'authorname', String(40))
+    Column(u'authorname', types.Unicode(40))
 )
 
 temp_songs_table = Table(u'songs_temp', metadata,
     Column(u'songid', types.Integer, primary_key=True),
-    Column(u'songtitle', String(60)),
+    Column(u'songtitle', types.Unicode(60)),
     Column(u'lyrics', types.UnicodeText),
-    Column(u'copyrightinfo', String(255)),
+    Column(u'copyrightinfo', types.Unicode(255)),
     Column(u'settingsid', types.Integer)
 )
 
@@ -101,8 +103,8 @@ class MigrateSongs(object):
 
     def process(self):
         self.display.output(u'Songs processing started')
-        for f in self.database_files:
-            self.v_1_9_0(f)
+        for data_file in self.database_files:
+            self.v_1_9_0(data_file)
         self.display.output(u'Songs processing finished')
 
     def v_1_9_0(self, database):

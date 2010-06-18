@@ -154,6 +154,7 @@ class BibleDB(QtCore.QObject, Manager):
         Manager.__init__(self, u'bibles', init_schema, self.file)
         if u'file' in kwargs:
             self.get_name()
+        self.wizard = None
 
     def stop_import(self):
         """
