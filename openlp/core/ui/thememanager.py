@@ -435,7 +435,8 @@ class ThemeManager(QtGui.QWidget):
                 QtGui.QMessageBox.critical(
                     self, translate(u'ThemeManager', u'Error'),
                     translate(u'ThemeManager', u'File is not a valid theme.'))
-                log.exception(u'Theme file dosen\'t contain XML data %s' % filename)
+                log.exception(u'Theme file dosen\'t contain XML data %s' %
+                    filename)
         except (IOError, NameError):
             QtGui.QMessageBox.critical(
                 self, translate(u'ThemeManager', u'Error'),
