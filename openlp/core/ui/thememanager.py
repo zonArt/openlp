@@ -54,25 +54,25 @@ class ThemeManager(QtGui.QWidget):
         self.amendThemeForm = AmendThemeForm(self)
         self.Toolbar = OpenLPToolbar(self)
         self.Toolbar.addToolbarButton(
-            translate(u'ThemeManager', u'New Theme'), u':/themes/theme_new.png',
-            translate(u'ThemeManager', u'Create a new theme'), self.onAddTheme)
+            translate('ThemeManager', 'New Theme'), u':/themes/theme_new.png',
+            translate('ThemeManager', 'Create a new theme.'), self.onAddTheme)
         self.Toolbar.addToolbarButton(
-            translate(u'ThemeManager', u'Edit Theme'),
+            translate('ThemeManager', 'Edit Theme'),
             u':/themes/theme_edit.png',
-            translate(u'ThemeManager', u'Edit a theme'), self.onEditTheme)
+            translate('ThemeManager', 'Edit a theme.'), self.onEditTheme)
         self.Toolbar.addToolbarButton(
-            translate(u'ThemeManager', u'Delete Theme'),
+            translate('ThemeManager', 'Delete Theme'),
             u':/general/general_delete.png',
-            translate(u'ThemeManager', u'Delete a theme'), self.onDeleteTheme)
+            translate('ThemeManager', 'Delete a theme.'), self.onDeleteTheme)
         self.Toolbar.addSeparator()
         self.Toolbar.addToolbarButton(
-            translate(u'ThemeManager', u'Import Theme'), 
+            translate('ThemeManager', 'Import Theme'), 
             u':/general/general_import.png',
-            translate(u'ThemeManager', u'Import a theme'), self.onImportTheme)
+            translate('ThemeManager', 'Import a theme.'), self.onImportTheme)
         self.Toolbar.addToolbarButton(
-            translate(u'ThemeManager', u'Export Theme'),
+            translate('ThemeManager', 'Export Theme'),
             u':/general/general_export.png',
-            translate(u'ThemeManager', u'Export a theme'), self.onExportTheme)
+            translate('ThemeManager', 'Export a theme.'), self.onExportTheme)
         self.ThemeWidget = QtGui.QWidgetAction(self.Toolbar)
         self.Layout.addWidget(self.Toolbar)
         self.ThemeListWidget = QtGui.QListWidget(self)
@@ -83,23 +83,23 @@ class ThemeManager(QtGui.QWidget):
         self.ThemeListWidget.addAction(
             context_menu_action(self.ThemeListWidget,
             u':/themes/theme_edit.png',
-            translate(u'ThemeManager', u'Edit a theme'), self.onEditTheme))
+            translate('ThemeManager', '&Edit Theme'), self.onEditTheme))
         self.ThemeListWidget.addAction(
             context_menu_separator(self.ThemeListWidget))
         self.ThemeListWidget.addAction(
             context_menu_action(self.ThemeListWidget,
                 u':/general/general_delete.png',
-                translate(u'ThemeManager', u'Delete theme'),
+                translate('ThemeManager', '&Delete Theme'),
             self.onDeleteTheme))
         self.ThemeListWidget.addAction(
             context_menu_action(self.ThemeListWidget,
                 u':/general/general_export.png',
-                translate(u'ThemeManager', u'Make Global'),
+                translate('ThemeManager', 'Set As &Global Default'),
             self.changeGlobalFromScreen))
         self.ThemeListWidget.addAction(
             context_menu_action(self.ThemeListWidget,
                 u':/general/general_export.png',
-                translate(u'ThemeManager', u'Export theme'),
+                translate('ThemeManager', 'E&xport Theme'),
                 self.onExportTheme))
         self.ThemeListWidget.addAction(
             context_menu_separator(self.ThemeListWidget))
@@ -136,7 +136,7 @@ class ThemeManager(QtGui.QWidget):
                 self.ThemeListWidget.item(count).setText(newName)
             #Set the new name
             if themeName == newName:
-                name = unicode(translate(u'ThemeManager', u'%s (default)')) % \
+                name = unicode(translate('ThemeManager', '%s (default)')) % \
                     newName
                 self.ThemeListWidget.item(count).setText(name)
 
@@ -158,7 +158,7 @@ class ThemeManager(QtGui.QWidget):
             if count == selected_row:
                 self.global_theme = unicode(
                     self.ThemeListWidget.item(count).text())
-                name = unicode(translate(u'ThemeManager', u'%s (default)')) % \
+                name = unicode(translate('ThemeManager', '%s (default)')) % \
                     self.global_theme
                 self.ThemeListWidget.item(count).setText(name)
                 QtCore.QSettings().setValue(
@@ -203,26 +203,26 @@ class ThemeManager(QtGui.QWidget):
             theme = unicode(item.text())
             # should be the same unless default
             if theme != unicode(item.data(QtCore.Qt.UserRole).toString()):
-                QtGui.QMessageBox.critical(
-                    self, translate(u'ThemeManager', u'Error'),
-                    translate(u'ThemeManager',
-                        u'You are unable to delete the default theme.'),
+                QtGui.QMessageBox.critical(self,
+                    translate('ThemeManager', 'Error'),
+                    translate('ThemeManager',
+                        'You are unable to delete the default theme.'),
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             else:
                 for plugin in self.parent.plugin_manager.plugins:
                     if not plugin.can_delete_theme(theme):
                         QtGui.QMessageBox.critical(self, 
-                            translate(u'ThemeManager', u'Error'),
-                            translate(u'ThemeManager',  
-                                u'Theme %s is use in %s plugin' % (theme,
-                            plugin.name)))
+                            translate('ThemeManager', 'Error'),
+                            unicode(translate('ThemeManager',
+                                'Theme %s is use in %s plugin.')) % \
+                                (theme, plugin.name))
                         return
                 if unicode(self.parent.ServiceManagerContents.ThemeComboBox \
                     .currentText()) == theme:
                     QtGui.QMessageBox.critical(self,
-                        translate(u'ThemeManager', u'Error'),
-                        translate(u'ThemeManager',
-                            u'Theme %s is use by Service Manager' % theme))
+                        translate('ThemeManager', 'Error'),
+                        unicode(translate('ThemeManager',
+                            'Theme %s is use by the service manager.')) % theme)
                     return
                 self.themelist.remove(theme)
                 th = theme + u'.png'
@@ -249,12 +249,12 @@ class ThemeManager(QtGui.QWidget):
         item = self.ThemeListWidget.currentItem()
         if item is None:
             QtGui.QMessageBox.critical(self, 
-                translate(u'ThemeManager', u'Error'),
-                translate(u'ThemeManager', u'You have not selected a theme.'))
+                translate('ThemeManager', 'Error'),
+                translate('ThemeManager', 'You have not selected a theme.'))
             return
         theme = unicode(item.data(QtCore.Qt.UserRole).toString())
         path = QtGui.QFileDialog.getExistingDirectory(self,
-            unicode(translate(u'ThemeManager', u'Save Theme - (%s)')) %  theme,
+            unicode(translate('ThemeManager', 'Save Theme - (%s)')) %  theme,
             SettingsManager.get_last_dir(self.settingsSection, 1))
         path = unicode(path)
         if path:
@@ -270,15 +270,15 @@ class ThemeManager(QtGui.QWidget):
                             os.path.join(source, name).encode(u'utf-8'),
                             os.path.join(theme, name).encode(u'utf-8'))
                 QtGui.QMessageBox.information(self,
-                    translate(u'ThemeManager', u'Theme Exported'),
-                    translate(u'ThemeManager',
-                        u'Your theme has been successfully exported.'))
+                    translate('ThemeManager', 'Theme Exported'),
+                    translate('ThemeManager',
+                        'Your theme has been successfully exported.'))
             except (IOError, OSError):
                 log.exception(u'Export Theme Failed')
                 QtGui.QMessageBox.critical(self,
-                    translate(u'ThemeManager', u'Theme Export Failed'),
-                    translate(u'ThemeManager',
-                        u'Your theme could not be exported due to an error.'))
+                    translate('ThemeManager', 'Theme Export Failed'),
+                    translate('ThemeManager',
+                        'Your theme could not be exported due to an error.'))
             finally:
                 if zip:
                     zip.close()
@@ -289,9 +289,10 @@ class ThemeManager(QtGui.QWidget):
         attempting to extract OpenLP themes from those files.  This process
         will load both OpenLP version 1 and version 2 themes.
         """
-        files = QtGui.QFileDialog.getOpenFileNames(
-            self, translate(u'ThemeManager', u'Select Theme Import File'),
-            SettingsManager.get_last_dir(self.settingsSection), u'Theme (*.*)')
+        files = QtGui.QFileDialog.getOpenFileNames(self,
+            translate('ThemeManager', 'Select Theme Import File'),
+            SettingsManager.get_last_dir(self.settingsSection),
+            translate('ThemeManager', 'Theme (*.*)'))
         log.info(u'New Themes %s', unicode(files))
         if files:
             for file in files:
@@ -318,8 +319,8 @@ class ThemeManager(QtGui.QWidget):
                 if os.path.exists(theme):
                     textName = os.path.splitext(name)[0]
                     if textName == self.global_theme:
-                        name = unicode(translate(u'ThemeManager',
-                            u'%s (default)')) % textName
+                        name = unicode(translate('ThemeManager',
+                            '%s (default)')) % textName
                     else:
                         name = textName
                     thumb = os.path.join(self.thumbPath, u'%s.png' % textName)
@@ -394,9 +395,9 @@ class ThemeManager(QtGui.QWidget):
                     ucsfile = file.decode(u'utf-8')
                 except UnicodeDecodeError:
                     QtGui.QMessageBox.critical(
-                        self, translate(u'ThemeManager', u'Error'),
-                        translate(u'ThemeManager', u'File is not a valid '
-                            u'theme.\nThe content encoding is not UTF-8.'))
+                        self, translate('ThemeManager', 'Error'),
+                        translate('ThemeManager', 'File is not a valid theme.\n'
+                            'The content encoding is not UTF-8.'))
                     log.exception(u'Filename "%s" is not valid UTF-8' % \
                         file.decode(u'utf-8', u'replace'))
                     continue
@@ -417,30 +418,36 @@ class ThemeManager(QtGui.QWidget):
                             theme_dir = os.path.join(dir, names[0])
                             if not os.path.exists(theme_dir):
                                 os.mkdir(os.path.join(dir, names[0]))
-                        xml_data = zip.read(file)
                         if os.path.splitext(ucsfile)[1].lower() in [u'.xml']:
+                            xml_data = zip.read(file)
+                            try:
+                                xml_data = xml_data.decode(u'utf-8')
+                            except UnicodeDecodeError:
+                                log.exception(u'Theme XML is not UTF-8 '
+                                    'encoded.')
+                                break;
                             if self.checkVersion1(xml_data):
                                 # upgrade theme xml
                                 filexml = self.migrateVersion122(xml_data)
                             else:
                                 filexml = xml_data
                             outfile = open(fullpath, u'w')
-                            outfile.write(filexml)
+                            outfile.write(filexml.encode(u'utf-8'))
                         else:
                             outfile = open(fullpath, u'wb')
                             outfile.write(zip.read(file))
             if filexml:
                 self.generateAndSaveImage(dir, themename, filexml)
             else:
-                QtGui.QMessageBox.critical(
-                    self, translate(u'ThemeManager', u'Error'),
-                    translate(u'ThemeManager', u'File is not a valid theme.'))
+                QtGui.QMessageBox.critical(self,
+                    translate('ThemeManager', 'Error'),
+                    translate('ThemeManager', 'File is not a valid theme.'))
                 log.exception(u'Theme file dosen\'t contain XML data %s' %
                     filename)
         except (IOError, NameError):
-            QtGui.QMessageBox.critical(
-                self, translate(u'ThemeManager', u'Error'),
-                translate(u'ThemeManager', u'File is not a valid theme.'))
+            QtGui.QMessageBox.critical(self,
+                translate('ThemeManager', 'Error'),
+                translate('ThemeManager', 'File is not a valid theme.'))
             log.exception(u'Importing theme from zip file failed %s' % filename)
         finally:
             if zip:
@@ -456,7 +463,7 @@ class ThemeManager(QtGui.QWidget):
             Theme XML to check the version of
         """
         log.debug(u'checkVersion1 ')
-        theme = xmlfile
+        theme = xmlfile.encode(u'ascii', u'xmlcharrefreplace')
         tree = ElementTree(element=XML(theme)).getroot()
         if tree.find(u'BackgroundType') is None:
             return False
@@ -526,11 +533,11 @@ class ThemeManager(QtGui.QWidget):
         result = QtGui.QMessageBox.Yes
         if self.saveThemeName != name:
             if os.path.exists(theme_file):
-                result = QtGui.QMessageBox.question(
-                    self, translate(u'ThemeManager', u'Theme Exists'),
-                    translate(u'ThemeManager',
-                        u'A theme with this name already exists, '
-                        u'would you like to overwrite it?'),
+                result = QtGui.QMessageBox.question(self,
+                    translate('ThemeManager', 'Theme Exists'),
+                    translate('ThemeManager',
+                        'A theme with this name already exists. '
+                        'Would you like to overwrite it?'),
                     (QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
                     QtGui.QMessageBox.No)
         if result == QtGui.QMessageBox.Yes:
@@ -598,7 +605,7 @@ class ThemeManager(QtGui.QWidget):
         """
         log.debug(u'base theme created')
         newtheme = ThemeXML()
-        newtheme.new_document(unicode(translate(u'ThemeManager', u'New Theme')))
+        newtheme.new_document(unicode(translate('ThemeManager', 'New Theme')))
         newtheme.add_background_solid(unicode(u'#000000'))
         newtheme.add_font(unicode(QtGui.QFont().family()), unicode(u'#FFFFFF'),
             unicode(30), u'False')
