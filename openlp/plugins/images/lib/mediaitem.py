@@ -61,9 +61,6 @@ class ImageMediaItem(MediaManagerItem):
     def retranslateUi(self):
         self.OnNewPrompt = translate('ImagePlugin.MediaItem',
             'Select Image(s)')
-        #file_formats = u''
-        #for file_format in QtGui.QImageReader.supportedImageFormats():
-        #    file_formats += u'*.%s ' % file_format
         file_formats = get_images_filter()
         self.OnNewFileMasks = u'%s;;%s (*.*) (*)' % (file_formats,
             unicode(translate('ImagePlugin.MediaItem', 'All Files')))
