@@ -187,15 +187,10 @@ def get_images_filter():
     global images_filter
     if not images_filter:
         log.debug(u'Generating images filter.')
-        old_formats = [str(fmt).lower()
+        formats = [unicode(fmt)
             for fmt in QtGui.QImageReader.supportedImageFormats()]
-        new_formats = []
-        for fmt in old_formats:
-            if fmt not in new_formats:
-                new_formats.append(fmt)
-        new_formats.sort()
-        visible_formats = u'(*.%s)' % u'; *.'.join(new_formats)
-        actual_formats = u'(*.%s)' % u' *.'.join(new_formats)
+        visible_formats = u'(*.%s)' % u'; *.'.join(formats)
+        actual_formats = u'(*.%s)' % u' *.'.join(formats)
         images_filter = u'%s %s %s' % (translate('OpenLP', 'Image Files'),
             visible_formats, actual_formats)
     return images_filter
