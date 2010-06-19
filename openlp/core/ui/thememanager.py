@@ -418,15 +418,21 @@ class ThemeManager(QtGui.QWidget):
                             theme_dir = os.path.join(dir, names[0])
                             if not os.path.exists(theme_dir):
                                 os.mkdir(os.path.join(dir, names[0]))
-                        xml_data = zip.read(file)
                         if os.path.splitext(ucsfile)[1].lower() in [u'.xml']:
+                            xml_data = zip.read(file)
+                            try:
+                                xml_data = xml_data.decode(u'utf-8')
+                            except UnicodeDecodeError:
+                                log.exception(u'Theme XML is not UTF-8 '
+                                    'encoded.')
+                                break;
                             if self.checkVersion1(xml_data):
                                 # upgrade theme xml
                                 filexml = self.migrateVersion122(xml_data)
                             else:
                                 filexml = xml_data
                             outfile = open(fullpath, u'w')
-                            outfile.write(filexml)
+                            outfile.write(filexml.encode(u'utf-8'))
                         else:
                             outfile = open(fullpath, u'wb')
                             outfile.write(zip.read(file))
@@ -457,7 +463,7 @@ class ThemeManager(QtGui.QWidget):
             Theme XML to check the version of
         """
         log.debug(u'checkVersion1 ')
-        theme = xmlfile
+        theme = xmlfile.encode(u'ascii', u'xmlcharrefreplace')
         tree = ElementTree(element=XML(theme)).getroot()
         if tree.find(u'BackgroundType') is None:
             return False

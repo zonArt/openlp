@@ -334,13 +334,13 @@ class ThemeXML(object):
         Pull out the XML string.
         """
         # Print our newly created XML
-        return self.theme_xml.toxml()
+        return self.theme_xml.toxml(u'utf-8').decode(u'utf-8')
 
     def extract_formatted_xml(self):
         """
         Pull out the XML string formatted for human consumption
         """
-        return self.theme_xml.toprettyxml(indent=u'    ', newl=u'\n')
+        return self.theme_xml.toprettyxml(indent=u'    ', newl=u'\n', encoding=u'utf-8')
 
     def parse(self, xml):
         """
@@ -365,11 +365,12 @@ class ThemeXML(object):
         ``xml``
             The XML string to parse.
         """
-        theme_xml = ElementTree(element=XML(xml))
+        theme_xml = ElementTree(element=XML(xml.encode(u'ascii', u'xmlcharrefreplace')))
         xml_iter = theme_xml.getiterator()
         master = u''
         for element in xml_iter:
-            element.text = unicode(element.text).decode('unicode-escape')
+            if not isinstance(element.text, unicode):
+                element.text = unicode(str(element.text), u'utf-8')
             if element.getchildren():
                 master = element.tag + u'_'
             else:
