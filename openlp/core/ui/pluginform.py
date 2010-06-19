@@ -63,15 +63,15 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             # sometimes when it's loaded from the config, it isn't cast to int.
             plugin.status = int(plugin.status)
             # Set the little status text in brackets next to the plugin name.
-            status_text = unicode(translate(u'PluginForm', u'%s (Inactive)'))
+            status_text = unicode(translate('PluginForm', '%s (Inactive)'))
             if plugin.status == PluginStatus.Active:
-                status_text = unicode(translate(u'PluginForm', u'%s (Active)'))
+                status_text = unicode(translate('PluginForm', '%s (Active)'))
             elif plugin.status == PluginStatus.Inactive:
                 status_text = unicode(
-                    translate(u'PluginForm', u'%s (Inactive)'))
+                    translate('PluginForm', '%s (Inactive)'))
             elif plugin.status == PluginStatus.Disabled:
                 status_text = unicode(
-                    translate(u'PluginForm', u'%s (Disabled)'))
+                    translate('PluginForm', '%s (Disabled)'))
             item.setText(status_text % plugin.name)
             # If the plugin has an icon, set it!
             if plugin.icon:

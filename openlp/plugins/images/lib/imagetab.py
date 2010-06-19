@@ -36,7 +36,7 @@ class ImageTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'ImageTab')
-        self.tabTitleVisible = translate(u'ImagePlugin.ImageTab', u'Images')
+        self.tabTitleVisible = translate('ImagePlugin.ImageTab', 'Images')
         self.ImageLayout = QtGui.QFormLayout(self)
         self.ImageLayout.setObjectName(u'ImageLayout')
         self.ImageSettingsGroupBox = QtGui.QGroupBox(self)
@@ -64,11 +64,11 @@ class ImageTab(SettingsTab):
 
     def retranslateUi(self):
         self.ImageSettingsGroupBox.setTitle(
-            translate(u'ImagePlugin.ImageTab', u'Image Settings'))
+            translate('ImagePlugin.ImageTab', 'Image Settings'))
         self.TimeoutLabel.setText(
-            translate(u'ImagePlugin.ImageTab', u'Slide Loop Delay:'))
+            translate('ImagePlugin.ImageTab', 'Slide Loop Delay:'))
         self.TimeoutSpinBox.setSuffix(
-            translate(u'ImagePlugin.ImageTab', u'sec'))
+            translate('ImagePlugin.ImageTab', 'sec'))
 
     def onTimeoutSpinBoxChanged(self):
         self.loop_delay = self.TimeoutSpinBox.value()
@@ -82,9 +82,9 @@ class ImageTab(SettingsTab):
     def save(self):
         QtCore.QSettings().setValue(self.settingsSection + u'/loop delay',
             QtCore.QVariant(self.loop_delay))
-        Receiver.send_message(u'slidecontroller_live_spin_delay', 
+        Receiver.send_message(u'slidecontroller_live_spin_delay',
             self.loop_delay)
 
     def postSetUp(self):
-        Receiver.send_message(u'slidecontroller_live_spin_delay', 
+        Receiver.send_message(u'slidecontroller_live_spin_delay',
             self.loop_delay)
