@@ -96,9 +96,8 @@ class ThemeXML(object):
             The path name to be added.
         """
         if self.background_filename and path:
-            self.theme_name = self.theme_name.rstrip().lstrip()
-            self.background_filename = \
-                self.background_filename.rstrip().lstrip()
+            self.theme_name = self.theme_name.strip()
+            self.background_filename = self.background_filename.strip()
             self.background_filename = os.path.join(path, self.theme_name,
                 self.background_filename)
 

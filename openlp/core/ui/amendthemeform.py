@@ -138,8 +138,8 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
 
     def accept(self):
         new_theme = ThemeXML()
-        theme_name = unicode(self.ThemeNameEdit.displayText())
-        new_theme.new_document(theme_name.encode('unicode-escape'))
+        theme_name = unicode(self.ThemeNameEdit.text())
+        new_theme.new_document(theme_name)
         save_from = None
         save_to = None
         if self.theme.background_mode == u'transparent':
@@ -209,8 +209,8 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         self.previewTheme()
 
     def onImageToolButtonClicked(self):
-        filename = QtGui.QFileDialog.getOpenFileName(
-            self, translate('AmendThemeForm', 'Open File'))
+        filename = unicode(QtGui.QFileDialog.getOpenFileName(
+            self, translate('AmendThemeForm', 'Open File')))
         if filename:
             self.ImageLineEdit.setText(filename)
             self.theme.background_filename = filename
