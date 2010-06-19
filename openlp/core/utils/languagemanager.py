@@ -39,7 +39,7 @@ class LanguageManager(object):
     """
     __qmList__ = None
     AutoLanguage = False
-    
+
     @staticmethod
     def get_translator(language):
         if LanguageManager.AutoLanguage:
@@ -62,9 +62,9 @@ class LanguageManager(object):
 
     @staticmethod
     def language_name(qmFile):
-        translator = QtCore.QTranslator() 
+        translator = QtCore.QTranslator()
         translator.load(qmFile)
-        return translator.translate(u'MainWindow', u'English')
+        return translator.translate('MainWindow', 'English')
 
     @staticmethod
     def get_language():
@@ -89,10 +89,10 @@ class LanguageManager(object):
         QtCore.QSettings().setValue(
             u'general/language', QtCore.QVariant(language))
         log.info(u'Language file: \'%s\' written to conf file' % language)
-        QtGui.QMessageBox.information(None,  
-            translate(u'LanguageManager', u'Language'), 
-            translate(u'LanguageManager', 
-                u'After restart new Language settings will be used.'))
+        QtGui.QMessageBox.information(None,
+            translate('LanguageManager', 'Language'),
+            translate('LanguageManager',
+                'After restart new Language settings will be used.'))
 
     @staticmethod
     def init_qm_list():
@@ -103,7 +103,7 @@ class LanguageManager(object):
             if regEx.exactMatch(qmf):
                 langName = regEx.cap(1)
                 LanguageManager.__qmList__[u'%#2i %s' % (i+1,
-                    LanguageManager.language_name(qmf))] = langName 
+                    LanguageManager.language_name(qmf))] = langName
 
     @staticmethod
     def get_qm_list():

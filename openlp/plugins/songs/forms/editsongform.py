@@ -30,7 +30,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SongXMLBuilder, SongXMLParser, Receiver, translate
 from openlp.plugins.songs.forms import EditVerseForm
-from openlp.plugins.songs.lib.models import Song
+from openlp.plugins.songs.lib.models import Song, Author, Topic, Book
 from editsongdialog import Ui_EditSongDialog
 
 log = logging.getLogger(__name__)
@@ -126,12 +126,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def loadAuthors(self):
         authors = self.songmanager.get_authors()
-        authorsCompleter = QtGui.QCompleter(
-            [author.display_name for author in authors],
-            self.AuthorsSelectionComboItem)
-        authorsCompleter.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
-        self.AuthorsSelectionComboItem.setCompleter(authorsCompleter)
         self.AuthorsSelectionComboItem.clear()
+        self.AuthorsSelectionComboItem.addItem(u'')
         for author in authors:
             row = self.AuthorsSelectionComboItem.count()
             self.AuthorsSelectionComboItem.addItem(author.display_name)
@@ -140,11 +136,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def loadTopics(self):
         topics = self.songmanager.get_topics()
-        topicsCompleter = QtGui.QCompleter(
-            [topic.name for topic in topics], self.SongTopicCombo)
-        topicsCompleter.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
-        self.SongTopicCombo.setCompleter(topicsCompleter)
         self.SongTopicCombo.clear()
+        self.SongTopicCombo.addItem(u'')
         for topic in topics:
             row = self.SongTopicCombo.count()
             self.SongTopicCombo.addItem(topic.name)
@@ -152,25 +145,16 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def loadBooks(self):
         books = self.songmanager.get_books()
-        booksCompleter = QtGui.QCompleter(
-            [book.name for book in books], self.SongbookCombo)
-        booksCompleter.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
-        self.SongbookCombo.setCompleter(booksCompleter)
         self.SongbookCombo.clear()
-        self.SongbookCombo.addItem(u' ')
+        self.SongbookCombo.addItem(u'')
         for book in books:
             row = self.SongbookCombo.count()
             self.SongbookCombo.addItem(book.name)
             self.SongbookCombo.setItemData(row, QtCore.QVariant(book.id))
 
     def loadThemes(self, theme_list):
-        themesCompleter = QtGui.QCompleter(
-            [theme for theme in theme_list],
-            self.ThemeSelectionComboItem)
-        themesCompleter.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
-        self.ThemeSelectionComboItem.setCompleter(themesCompleter)
         self.ThemeSelectionComboItem.clear()
-        self.ThemeSelectionComboItem.addItem(u' ')
+        self.ThemeSelectionComboItem.addItem(u'')
         for theme in theme_list:
             self.ThemeSelectionComboItem.addItem(theme)
 
@@ -244,6 +228,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.VerseListWidget.clear()
         self.VerseListWidget.setRowCount(0)
         self.VerseListWidget.setColumnWidth(0, self.width)
+        # This is just because occasionally the lyrics come back as a "buffer"
+        if isinstance(self.song.lyrics, buffer):
+            self.song.lyrics = unicode(self.song.lyrics)
         if self.song.lyrics.startswith(u'<?xml version='):
             songXML = SongXMLParser(self.song.lyrics)
             verseList = songXML.get_verses()
@@ -299,13 +286,41 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def onAuthorAddButtonClicked(self):
         item = int(self.AuthorsSelectionComboItem.currentIndex())
-        if item > -1:
+        text = unicode(self.AuthorsSelectionComboItem.currentText())
+        if item == 0 and text:
+            if QtGui.QMessageBox.question(self,
+                translate('SongsPlugin.EditSongForm', 'Add Author'),
+                translate('SongsPlugin.EditSongForm', 'This author does not '
+                    'exist, do you want to add them?'),
+                QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
+                QtGui.QMessageBox.Yes) == QtGui.QMessageBox.Yes:
+                author = Author.populate(first_name=text.rsplit(u' ', 1)[0],
+                    last_name=text.rsplit(u' ', 1)[1], display_name=text)
+                self.songmanager.save_author(author)
+                self.song.authors.append(author)
+                author_item = QtGui.QListWidgetItem(unicode(author.display_name))
+                author_item.setData(QtCore.Qt.UserRole, QtCore.QVariant(author.id))
+                self.AuthorsListView.addItem(author_item)
+                self.loadAuthors()
+                self.AuthorsSelectionComboItem.setCurrentIndex(0)
+            else:
+                return
+        elif item > 0:
             item_id = (self.AuthorsSelectionComboItem.itemData(item)).toInt()[0]
             author = self.songmanager.get_author(item_id)
             self.song.authors.append(author)
             author_item = QtGui.QListWidgetItem(unicode(author.display_name))
             author_item.setData(QtCore.Qt.UserRole, QtCore.QVariant(author.id))
             self.AuthorsListView.addItem(author_item)
+            self.AuthorsSelectionComboItem.setCurrentIndex(0)
+        else:
+            QtGui.QMessageBox.warning(self,
+                translate('SongsPlugin.EditSongForm', 'No Author Selected'),
+                translate('SongsPlugin.EditSongForm', 'You have not selected '
+                    'a valid author. Either select an author from the list, '
+                    'or type in a new author and click the "Add Author to '
+                    'Song" button to add the new author.'),
+                QtGui.QMessageBox.Ok, QtGui.QMessageBox.Ok)
 
     def onAuthorsListViewPressed(self):
         if self.AuthorsListView.count() > 1:
@@ -322,13 +337,40 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def onTopicAddButtonClicked(self):
         item = int(self.SongTopicCombo.currentIndex())
-        if item > -1:
+        text = unicode(self.SongTopicCombo.currentText())
+        if item == 0 and text:
+            if QtGui.QMessageBox.question(self,
+                translate('SongsPlugin.EditSongForm', 'Add Topic'),
+                translate('SongsPlugin.EditSongForm', 'This topic does not '
+                    'exist, do you want to add it?'),
+                QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
+                QtGui.QMessageBox.Yes) == QtGui.QMessageBox.Yes:
+                topic = Topic.populate(name=text)
+                self.songmanager.save_topic(topic)
+                self.song.topics.append(topic)
+                topic_item = QtGui.QListWidgetItem(unicode(topic.name))
+                topic_item.setData(QtCore.Qt.UserRole, QtCore.QVariant(topic.id))
+                self.TopicsListView.addItem(topic_item)
+                self.loadTopics()
+                self.SongTopicCombo.setCurrentIndex(0)
+            else:
+                return
+        elif item > 0:
             item_id = (self.SongTopicCombo.itemData(item)).toInt()[0]
             topic = self.songmanager.get_topic(item_id)
             self.song.topics.append(topic)
             topic_item = QtGui.QListWidgetItem(unicode(topic.name))
             topic_item.setData(QtCore.Qt.UserRole, QtCore.QVariant(topic.id))
             self.TopicsListView.addItem(topic_item)
+            self.SongTopicCombo.setCurrentIndex(0)
+        else:
+            QtGui.QMessageBox.warning(self,
+                translate('SongsPlugin.EditSongForm', 'No Topic Selected'),
+                translate('SongsPlugin.EditSongForm', 'You have not selected '
+                    'a valid topic. Either select a topic from the list, or '
+                    'type in a new topic and click the "Add Topic to Song" '
+                    'button to add the new topic.'),
+                QtGui.QMessageBox.Ok, QtGui.QMessageBox.Ok)
 
     def onTopicListViewPressed(self):
         self.TopicRemoveButton.setEnabled(True)
@@ -343,12 +385,27 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.TopicsListView.takeItem(row)
 
     def onSongBookComboChanged(self, item):
-        if item == 0:
-            self.song.song_book_id = 0
-        else:
+        item = int(self.SongbookCombo.currentIndex())
+        text = unicode(self.SongbookCombo.currentText())
+        if item == 0 and text:
+            if QtGui.QMessageBox.question(self,
+                translate('SongsPlugin.EditSongForm', 'Add Book'),
+                translate('SongsPlugin.EditSongForm', 'This song book does '
+                    'not exist, do you want to add it?'),
+                QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
+                QtGui.QMessageBox.Yes) == QtGui.QMessageBox.Yes:
+                book = Book.populate(name=text)
+                self.songmanager.save_book(book)
+                self.song.book = book
+                self.loadBooks()
+            else:
+                return
+        elif item > 1:
             item = int(self.SongbookCombo.currentIndex())
             self.song.song_book_id = \
                 (self.SongbookCombo.itemData(item)).toInt()[0]
+        else:
+            self.song.song_book_id = 0
 
     def onThemeComboChanged(self, item):
         if item == 0:
@@ -404,8 +461,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                         self.VerseListWidget.setItem(row, 0, item)
                     self.VerseListWidget.resizeRowsToContents()
                     self.VerseListWidget.repaint()
-        self.VerseEditButton.setEnabled(False)
-        self.VerseDeleteButton.setEnabled(False)
         self.tagRows()
 
     def onVerseEditAllButtonClicked(self):
@@ -484,7 +539,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 else:
                     self.SongTabWidget.setCurrentIndex(0)
                     self.VerseOrderEdit.setFocus()
-                    return False, translate(u'SongsPlugin.EditSongForm', 
+                    return False, translate(u'SongsPlugin.EditSongForm',
                         u'Invalid verse entry, values must be I,B,T,P,E,O,V,C '
                         u'followed by a number')
         return True, u''
