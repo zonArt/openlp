@@ -630,6 +630,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             sxml.new_document()
             sxml.add_lyrics_to_song()
             text = u''
+            multiple = []
             for i in range (0, self.VerseListWidget.rowCount()):
                 item = self.VerseListWidget.item(i, 0)
                 verseId = unicode(item.data(QtCore.Qt.UserRole).toString())
@@ -637,8 +638,16 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 sxml.add_verse_to_lyrics(bits[0], bits[1], unicode(item.text()))
                 text = text + re.sub(r'\W+', u' ',
                     unicode(self.VerseListWidget.item(i, 0).text())) + u' '
+                if (bits[1] > u'1') and (bits[0][0] not in multiple):
+                   multiple.append(bits[0][0])
+                   print bits[0][0]
             self.song.search_lyrics = text
             self.song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
+            for verse in multiple:
+                self.song.verse_order = self.song.verse_order.replace(
+                    verse.upper() + u' ', verse.upper() + u'1 ')
+                self.song.verse_order = self.song.verse_order.replace(
+                    verse.lower() + u' ', verse.lower() + u'1 ')
         except:
             log.exception(u'Problem processing song Lyrics \n%s',
                 sxml.dump_xml())
