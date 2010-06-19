@@ -17,7 +17,6 @@ Contents:
 
    openlp
    core/index
-   migration/index
    plugins/index
 
 Indices and tables
