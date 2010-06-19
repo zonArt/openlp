@@ -398,7 +398,7 @@ class ThemeManager(QtGui.QWidget):
                         self, translate('ThemeManager', 'Error'),
                         translate('ThemeManager', 'File is not a valid theme.\n'
                             'The content encoding is not UTF-8.'))
-                    log.exception(u'Filename "%s" is not valid UTF-8' % \
+                    log.exception(u'Filename "%s" is not valid UTF-8' %
                         file.decode(u'utf-8', u'replace'))
                     continue
                 osfile = unicode(QtCore.QDir.toNativeSeparators(ucsfile))

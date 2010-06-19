@@ -208,40 +208,40 @@ class MediaManagerItem(QtGui.QWidget):
         ## Import Button ##
         if self.hasImportIcon:
             self.addToolbarButton(
-                unicode(translate('MediaManagerItem', 'Import %s')) % \
+                unicode(translate('MediaManagerItem', 'Import %s')) %
                 self.PluginNameShort,
-                unicode(translate('MediaManagerItem', 'Import a %s')) % \
+                unicode(translate('MediaManagerItem', 'Import a %s')) %
                 self.PluginNameVisible,
                 u':/general/general_import.png', self.onImportClick)
         ## File Button ##
         if self.hasFileIcon:
             self.addToolbarButton(
-                unicode(translate('MediaManagerItem', 'Load %s')) % \
+                unicode(translate('MediaManagerItem', 'Load %s')) %
                 self.PluginNameShort,
-                unicode(translate('MediaManagerItem', 'Load a new %s')) % \
+                unicode(translate('MediaManagerItem', 'Load a new %s')) %
                 self.PluginNameVisible,
                 u':/general/general_open.png', self.onFileClick)
         ## New Button ##
         if self.hasNewIcon:
             self.addToolbarButton(
-                unicode(translate('MediaManagerItem', 'New %s')) % \
+                unicode(translate('MediaManagerItem', 'New %s')) %
                 self.PluginNameShort,
-                unicode(translate('MediaManagerItem', 'Add a new %s')) % \
+                unicode(translate('MediaManagerItem', 'Add a new %s')) %
                 self.PluginNameVisible,
                 u':/general/general_new.png', self.onNewClick)
         ## Edit Button ##
         if self.hasEditIcon:
             self.addToolbarButton(
-                unicode(translate('MediaManagerItem', 'Edit %s')) % \
+                unicode(translate('MediaManagerItem', 'Edit %s')) %
                 self.PluginNameShort,
                 unicode(translate(
-                    'MediaManagerItem', 'Edit the selected %s')) % \
+                    'MediaManagerItem', 'Edit the selected %s')) %
                 self.PluginNameVisible,
                 u':/general/general_edit.png', self.onEditClick)
         ## Delete Button ##
         if self.hasDeleteIcon:
             self.addToolbarButton(
-                unicode(translate('MediaManagerItem', 'Delete %s')) % \
+                unicode(translate('MediaManagerItem', 'Delete %s')) %
                 self.PluginNameShort,
                 translate('MediaManagerItem', 'Delete the selected item'),
                 u':/general/general_delete.png', self.onDeleteClick)
@@ -249,7 +249,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.addToolbarSeparator()
         ## Preview ##
         self.addToolbarButton(
-            unicode(translate('MediaManagerItem', 'Preview %s')) % \
+            unicode(translate('MediaManagerItem', 'Preview %s')) %
             self.PluginNameShort,
             translate('MediaManagerItem', 'Preview the selected item'),
             u':/general/general_preview.png', self.onPreviewClick)
@@ -260,7 +260,7 @@ class MediaManagerItem(QtGui.QWidget):
             u':/general/general_live.png', self.onLiveClick)
         ## Add to service Button ##
         self.addToolbarButton(
-            unicode(translate('MediaManagerItem', 'Add %s to Service')) % \
+            unicode(translate('MediaManagerItem', 'Add %s to Service')) %
             self.PluginNameShort,
             translate('MediaManagerItem',
                 'Add the selected item(s) to the service'),
@@ -285,7 +285,7 @@ class MediaManagerItem(QtGui.QWidget):
             self.ListView.addAction(
                 context_menu_action(
                     self.ListView, u':/general/general_edit.png',
-                    unicode(translate('MediaManagerItem', '&Edit %s')) % \
+                    unicode(translate('MediaManagerItem', '&Edit %s')) %
                     self.PluginNameVisible,
                     self.onEditClick))
             self.ListView.addAction(context_menu_separator(self.ListView))
@@ -293,14 +293,14 @@ class MediaManagerItem(QtGui.QWidget):
             self.ListView.addAction(
                 context_menu_action(
                     self.ListView, u':/general/general_delete.png',
-                    unicode(translate('MediaManagerItem', '&Delete %s')) % \
+                    unicode(translate('MediaManagerItem', '&Delete %s')) %
                     self.PluginNameVisible,
                     self.onDeleteClick))
             self.ListView.addAction(context_menu_separator(self.ListView))
         self.ListView.addAction(
             context_menu_action(
                 self.ListView, u':/general/general_preview.png',
-                unicode(translate('MediaManagerItem', '&Preview %s')) % \
+                unicode(translate('MediaManagerItem', '&Preview %s')) %
                 self.PluginNameVisible,
                 self.onPreviewClick))
         self.ListView.addAction(

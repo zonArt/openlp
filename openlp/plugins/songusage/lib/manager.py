@@ -53,7 +53,7 @@ class SongUsageManager(object):
         db_type = unicode(
             settings.value(u'db type', QtCore.QVariant(u'sqlite')).toString())
         if db_type == u'sqlite':
-            self.db_url = u'sqlite:///%s/songusage.sqlite' % \
+            self.db_url = u'sqlite:///%s/songusage.sqlite' %
                 AppLocation.get_section_data_path(u'songusage')
         else:
             self.db_url = u'%s://%s:%s@%s/%s' % (db_type,
