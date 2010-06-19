@@ -356,8 +356,6 @@ class Ui_MainWindow(object):
         """
         MainWindow.mainTitle = translate('MainWindow', 'OpenLP 2.0')
         MainWindow.language = translate('MainWindow', 'English')
-        MainWindow.defaultThemeText = translate('MainWindow',
-            'Default Theme: ')
         MainWindow.setWindowTitle(MainWindow.mainTitle)
         self.FileMenu.setTitle(translate('MainWindow', '&File'))
         self.FileImportMenu.setTitle(translate('MainWindow', '&Import'))
@@ -774,7 +772,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def defaultThemeChanged(self, theme):
         self.DefaultThemeLabel.setText(
-            u'%s %s' % (self.defaultThemeText, theme))
+            unicode(translate('MainWindow', 'Default Theme: %s')) % theme)
 
     def toggleMediaManager(self, visible):
         if self.MediaManagerDock.isVisible() != visible:

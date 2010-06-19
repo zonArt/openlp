@@ -298,8 +298,10 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     last_name=text.rsplit(u' ', 1)[1], display_name=text)
                 self.songmanager.save_author(author)
                 self.song.authors.append(author)
-                author_item = QtGui.QListWidgetItem(unicode(author.display_name))
-                author_item.setData(QtCore.Qt.UserRole, QtCore.QVariant(author.id))
+                author_item = QtGui.QListWidgetItem(
+                    unicode(author.display_name))
+                author_item.setData(QtCore.Qt.UserRole,
+                    QtCore.QVariant(author.id))
                 self.AuthorsListView.addItem(author_item)
                 self.loadAuthors()
                 self.AuthorsSelectionComboItem.setCurrentIndex(0)
@@ -349,7 +351,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 self.songmanager.save_topic(topic)
                 self.song.topics.append(topic)
                 topic_item = QtGui.QListWidgetItem(unicode(topic.name))
-                topic_item.setData(QtCore.Qt.UserRole, QtCore.QVariant(topic.id))
+                topic_item.setData(QtCore.Qt.UserRole,
+                    QtCore.QVariant(topic.id))
                 self.TopicsListView.addItem(topic_item)
                 self.loadTopics()
                 self.SongTopicCombo.setCurrentIndex(0)
