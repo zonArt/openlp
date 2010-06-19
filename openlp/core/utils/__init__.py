@@ -30,17 +30,20 @@ import os
 import sys
 import logging
 import urllib2
-
 from datetime import datetime
-from PyQt4 import QtCore
+
+from PyQt4 import QtGui, QtCore
 
 import openlp
+from openlp.core.lib import translate
 
 log = logging.getLogger(__name__)
+images_filter = None
 
 class AppLocation(object):
     """
-    Retrieve a directory based on the directory type.
+    The :class:`AppLocation` class is a static class which retrieves a
+    directory based on the directory type.
     """
     AppDir = 1
     ConfigDir = 2
@@ -175,6 +178,27 @@ def get_filesystem_encoding():
     if encoding is None:
         encoding = sys.getdefaultencoding()
     return encoding
+
+def get_images_filter():
+    """
+    Returns a filter string for a file dialog containing all the supported
+    image formats.
+    """
+    global images_filter
+    if not images_filter:
+        log.debug(u'Generating images filter.')
+        old_formats = [str(fmt).lower()
+            for fmt in QtGui.QImageReader.supportedImageFormats()]
+        new_formats = []
+        for fmt in old_formats:
+            if fmt not in new_formats:
+                new_formats.append(fmt)
+        new_formats.sort()
+        visible_formats = u'(*.%s)' % u'; *.'.join(new_formats)
+        actual_formats = u'(*.%s)' % u' *.'.join(new_formats)
+        images_filter = u'%s %s %s' % (translate('OpenLP', 'Image Files'),
+            visible_formats, actual_formats)
+    return images_filter
 
 from languagemanager import LanguageManager
 
