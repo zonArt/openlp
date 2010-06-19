@@ -72,9 +72,6 @@ class OpenLPToolbar(QtGui.QToolBar):
         ToolbarButton = None
         if icon:
             ButtonIcon = build_icon(icon)
-        else:
-            ButtonIcon = None
-        if ButtonIcon:
             if slot and not checkable:
                 ToolbarButton = self.addAction(ButtonIcon, title, slot)
             else:
