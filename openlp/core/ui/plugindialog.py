@@ -100,14 +100,14 @@ class Ui_PluginViewDialog(object):
 
     def retranslateUi(self, PluginViewDialog):
         PluginViewDialog.setWindowTitle(
-            translate(u'PluginForm', u'Plugin List'))
+            translate('PluginForm', 'Plugin List'))
         self.PluginInfoGroupBox.setTitle(
-            translate(u'PluginForm', u'Plugin Details'))
+            translate('PluginForm', 'Plugin Details'))
         self.VersionLabel.setText(
-            translate(u'PluginForm', u'Version:'))
-        self.VersionNumberLabel.setText(translate(u'PluginForm', u'TextLabel'))
-        self.AboutLabel.setText(translate(u'PluginForm', u'About:'))
-        self.StatusLabel.setText(translate(u'PluginForm', u'Status:'))
-        self.StatusComboBox.setItemText(0, translate(u'PluginForm', u'Active'))
-        self.StatusComboBox.setItemText(1, 
-            translate(u'PluginForm', u'Inactive'))
+            translate('PluginForm', 'Version:'))
+        self.VersionNumberLabel.setText(translate('PluginForm', 'TextLabel'))
+        self.AboutLabel.setText(translate('PluginForm', 'About:'))
+        self.StatusLabel.setText(translate('PluginForm', 'Status:'))
+        self.StatusComboBox.setItemText(0, translate('PluginForm', 'Active'))
+        self.StatusComboBox.setItemText(1,
+            translate('PluginForm', 'Inactive'))
