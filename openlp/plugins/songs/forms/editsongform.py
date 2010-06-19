@@ -294,7 +294,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     'exist, do you want to add them?'),
                 QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
                 QtGui.QMessageBox.Yes) == QtGui.QMessageBox.Yes:
-                author = Author.populate(display_name=text)
+                author = Author.populate(first_name=text.rsplit(u' ', 1)[0],
+                    last_name=text.rsplit(u' ', 1)[1], display_name=text)
                 self.songmanager.save_author(author)
                 self.song.authors.append(author)
                 author_item = QtGui.QListWidgetItem(unicode(author.display_name))
