@@ -23,7 +23,6 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import re
 import logging
 
 from PyQt4 import QtCore, QtGui
@@ -161,7 +160,6 @@ class SongMediaItem(MediaManagerItem):
 
     def onSearchTextButtonClick(self):
         search_keywords = unicode(self.SearchTextEdit.displayText())
-        search_keywords = re.sub(r'\W+', u' ', search_keywords)
         search_results = []
         search_type = self.SearchTypeComboBox.currentIndex()
         if search_type == 0:
