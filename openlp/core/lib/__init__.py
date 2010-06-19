@@ -95,11 +95,10 @@ def build_icon(icon):
         The icon to build. This can be a QIcon, a resource string in the form
         ``:/resource/file.png``, or a file location like ``/path/to/file.png``.
     """
-    button_icon = None
+    button_icon = QtGui.QIcon()
     if isinstance(icon, QtGui.QIcon):
         button_icon = icon
     elif isinstance(icon, basestring):
-        button_icon = QtGui.QIcon()
         if icon.startswith(u':/'):
             button_icon.addPixmap(QtGui.QPixmap(icon), QtGui.QIcon.Normal,
                 QtGui.QIcon.Off)
@@ -107,7 +106,6 @@ def build_icon(icon):
             button_icon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
                 QtGui.QIcon.Normal, QtGui.QIcon.Off)
     elif isinstance(icon, QtGui.QImage):
-        button_icon = QtGui.QIcon()
         button_icon.addPixmap(QtGui.QPixmap.fromImage(icon),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
     return button_icon
