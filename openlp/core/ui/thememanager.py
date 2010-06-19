@@ -424,8 +424,8 @@ class ThemeManager(QtGui.QWidget):
                                 xml_data = xml_data.decode(u'utf-8')
                             except UnicodeDecodeError:
                                 log.exception(u'Theme XML is not UTF-8 '
-                                    'encoded.')
-                                break;
+                                    u'encoded.')
+                                break
                             if self.checkVersion1(xml_data):
                                 # upgrade theme xml
                                 filexml = self.migrateVersion122(xml_data)
