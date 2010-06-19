@@ -96,6 +96,7 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
                 self.itemList.remove(self.itemList[row])
                 self.itemList.insert(row - 1, temp)
                 self.loadData()
+                self.listWidget.setCurrentRow(row - 1)
 
     def onItemDown(self):
         """
@@ -109,3 +110,4 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
                 self.itemList.remove(self.itemList[row])
                 self.itemList.insert(row + 1, temp)
                 self.loadData()
+                self.listWidget.setCurrentRow(row + 1)

@@ -219,6 +219,7 @@ class SongMediaItem(MediaManagerItem):
         Clear the search text.
         """
         self.SearchTextEdit.clear()
+        self.onSearchTextButtonClick()
 
     def onSearchTextEditChanged(self, text):
         """

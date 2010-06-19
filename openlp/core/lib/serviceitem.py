@@ -173,7 +173,7 @@ class ServiceItem(object):
             self.render_manager.set_override_theme(self.theme)
         format = self._display_frames[row][u'text'].split(u'\n')
         #if screen blank then do not display footer
-        if self.cache[row] is not None:
+        if len(self.cache) > 0 and self.cache[row] is not None:
             frame = self.cache[row]
         else:
             if format[0]:
