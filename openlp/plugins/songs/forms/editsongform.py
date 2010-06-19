@@ -555,10 +555,13 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 if item not in verses:
                     self.SongTabWidget.setCurrentIndex(0)
                     self.VerseOrderEdit.setFocus()
+                    valid = verses.pop(0)
+                    for verse in verses:
+                        valid = valid + u', ' + verse
                     return u'failed', unicode(translate(
                         'SongsPlugin.EditSongForm', 'The verse order is '
-                        'invalid. There is no verse corresponding to %s.')) % \
-                         order_names[count]
+                        'invalid. There is no verse corresponding to %s. '
+                        'Valid entries are %s.')) % (order_names[count], valid)
             for count, verse in enumerate(verses):
                 if verse not in order:
                     self.SongTabWidget.setCurrentIndex(0)
