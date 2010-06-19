@@ -131,7 +131,7 @@ class Ui_customEditDialog(object):
         self.horizontalLayout_2.addWidget(self.CreditEdit)
         self.gridLayout.addLayout(self.horizontalLayout_2, 4, 0, 1, 1)
         self.buttonBox = QtGui.QDialogButtonBox(customEditDialog)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel | 
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
             QtGui.QDialogButtonBox.Save)
         self.buttonBox.setObjectName(u'buttonBox')
         self.gridLayout.addWidget(self.buttonBox, 5, 0, 1, 1)
@@ -156,43 +156,43 @@ class Ui_customEditDialog(object):
 
     def retranslateUi(self, customEditDialog):
         customEditDialog.setWindowTitle(
-            translate(u'CustomPlugin.EditCustomForm', u'Edit Custom Slides'))
-        self.UpButton.setToolTip(translate(u'CustomPlugin.EditCustomForm'
-            u'CustomPlugin.EditCustomForm', u'Move slide Up 1'))
+            translate('CustomPlugin.EditCustomForm', 'Edit Custom Slides'))
+        self.UpButton.setToolTip(
+            translate('CustomPlugin.EditCustomForm', 'Move slide Up 1'))
         self.DownButton.setToolTip(
-            translate(u'CustomPlugin.EditCustomForm', u'Move slide down 1'))
+            translate('CustomPlugin.EditCustomForm', 'Move slide down 1'))
         self.TitleLabel.setText(
-            translate(u'CustomPlugin.EditCustomForm', u'Title:'))
+            translate('CustomPlugin.EditCustomForm', 'Title:'))
         self.AddButton.setText(
-            translate(u'CustomPlugin.EditCustomForm', u'Add New'))
-        self.AddButton.setToolTip(translate(u'CustomPlugin.EditCustomForm',
-            u'Add new slide at bottom'))
+            translate('CustomPlugin.EditCustomForm', 'Add New'))
+        self.AddButton.setToolTip(
+            translate('CustomPlugin.EditCustomForm', 'Add new slide at bottom'))
         self.EditButton.setText(
-            translate(u'CustomPlugin.EditCustomForm', u'Edit'))
+            translate('CustomPlugin.EditCustomForm', 'Edit'))
         self.EditButton.setToolTip(
-            translate(u'CustomPlugin.EditCustomForm', u'Edit selected slide'))
+            translate('CustomPlugin.EditCustomForm', 'Edit selected slide'))
         self.EditAllButton.setText(
-            translate(u'CustomPlugin.EditCustomForm', u'Edit All'))
+            translate('CustomPlugin.EditCustomForm', 'Edit All'))
         self.EditAllButton.setToolTip(
-            translate(u'CustomPlugin.EditCustomForm', u'Edit all slides'))
+            translate('CustomPlugin.EditCustomForm', 'Edit all slides'))
         self.SaveButton.setText(
-            translate(u'CustomPlugin.EditCustomForm', u'Save'))
+            translate('CustomPlugin.EditCustomForm', 'Save'))
         self.SaveButton.setToolTip(
-            translate(u'CustomPlugin.EditCustomForm', u'Replace edited slide'))
+            translate('CustomPlugin.EditCustomForm', 'Replace edited slide'))
         self.DeleteButton.setText(
-            translate(u'CustomPlugin.EditCustomForm', u'Delete'))
+            translate('CustomPlugin.EditCustomForm', 'Delete'))
         self.DeleteButton.setToolTip(
-            translate(u'CustomPlugin.EditCustomForm', u'Delete selected slide'))
+            translate('CustomPlugin.EditCustomForm', 'Delete selected slide'))
         self.ClearButton.setText(
-            translate(u'CustomPlugin.EditCustomForm', u'Clear'))
+            translate('CustomPlugin.EditCustomForm', 'Clear'))
         self.ClearButton.setToolTip(
-            translate(u'CustomPlugin.EditCustomForm', u'Clear edit area'))
+            translate('CustomPlugin.EditCustomForm', 'Clear edit area'))
         self.SplitButton.setText(
-            translate(u'CustomPlugin.EditCustomForm', u'Split Slide'))
+            translate('CustomPlugin.EditCustomForm', 'Split Slide'))
         self.SplitButton.setToolTip(
-            translate(u'CustomPlugin.EditCustomForm', u'Add slide split'))
+            translate('CustomPlugin.EditCustomForm', 'Add slide split'))
         self.ThemeLabel.setText(
-            translate(u'CustomPlugin.EditCustomForm', u'Theme:'))
+            translate('CustomPlugin.EditCustomForm', 'Theme:'))
         self.CreditLabel.setText(
-            translate(u'CustomPlugin.EditCustomForm', u'Credits:'))
+            translate('CustomPlugin.EditCustomForm', 'Credits:'))
 

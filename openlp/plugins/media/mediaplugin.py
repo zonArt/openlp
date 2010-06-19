@@ -81,8 +81,8 @@ class MediaPlugin(Plugin):
         return MediaMediaItem(self, self.icon, self.name)
 
     def about(self):
-        about_text = translate(u'MediaPlugin',
-            u'<b>Media Plugin</b><br>This plugin '
-            u'allows the playing of audio and video media')
+        about_text = translate('MediaPlugin',
+            '<b>Media Plugin</b><br>This plugin '
+            'allows the playing of audio and video media')
         return about_text
 
