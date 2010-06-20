@@ -90,7 +90,7 @@ class ServiceItem(object):
         self.from_plugin = False
         self.capabilities = []
         self.is_valid = True
-        self.cache = []
+        self.cache = {}
         self.icon = None
 
     def add_capability(self, capability):
@@ -129,7 +129,7 @@ class ServiceItem(object):
         """
         log.debug(u'Render called')
         self._display_frames = []
-        self.cache = []
+        self.clear_cache()
         if self.service_item_type == ServiceItemType.Text:
             log.debug(u'Formatting slides')
             if self.theme is None:
@@ -149,7 +149,8 @@ class ServiceItem(object):
                     self._display_frames.append({u'title': title,
                         u'text': lines.rstrip(),
                         u'verseTag': slide[u'verseTag'] })
-                    self.cache.insert(len(self._display_frames), None)
+                    if len(self._display_frames) in self.cache.keys():
+                        del self.cache[len(self._display_frames)]
                 log.log(15, u'Formatting took %4s' % (time.time() - before))
         elif self.service_item_type == ServiceItemType.Image:
             for slide in self._raw_frames:
@@ -172,8 +173,7 @@ class ServiceItem(object):
         else:
             self.render_manager.set_override_theme(self.theme)
         format = self._display_frames[row][u'text'].split(u'\n')
-        #if screen blank then do not display footer
-        if len(self.cache) > 0 and self.cache[row] is not None:
+        if self.cache.get(row):
             frame = self.cache[row]
         else:
             if format[0]:
@@ -385,3 +385,8 @@ class ServiceItem(object):
         """
         return self._raw_frames[row][u'path']
 
+    def clear_cache(self):
+        """
+        Clear's the service item's cache.
+        """
+        self.cache = {}
