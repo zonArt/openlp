@@ -384,9 +384,6 @@ class Ui_EditSongDialog(object):
         self.CommentsLayout.addWidget(self.CommentsEdit)
         self.ThemeCopyCommentsLayout.addWidget(self.CommentsGroupBox)
         self.ThemeTabLayout.addWidget(self.ThemeCopyCommentsWidget)
-        spacerItem5 = QtGui.QSpacerItem(20, 40,
-            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.ThemeTabLayout.addItem(spacerItem5)
         self.SongTabWidget.addTab(self.ThemeTab, u'')
         self.verticalLayout.addWidget(self.SongTabWidget)
         self.ButtonBox = QtGui.QDialogButtonBox(EditSongDialog)

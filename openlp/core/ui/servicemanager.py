@@ -661,8 +661,7 @@ class ServiceManager(QtGui.QWidget):
         filename = unicode(filename)
         name = filename.split(os.path.sep)
         if filename:
-            SettingsManager.set_last_dir(
-                self.parent.serviceSettingsSection,
+            SettingsManager.set_last_dir(self.parent.serviceSettingsSection,
                 os.path.split(filename)[0])
             zip = None
             file_to = None
@@ -697,7 +696,7 @@ class ServiceManager(QtGui.QWidget):
                     self.onNewService()
                     for item in items:
                         serviceitem = ServiceItem()
-                        serviceitem.RenderManager = self.parent.RenderManager
+                        serviceitem.render_manager = self.parent.RenderManager
                         serviceitem.set_from_service(item, self.servicePath)
                         self.validateItem(serviceitem)
                         self.addServiceItem(serviceitem)
