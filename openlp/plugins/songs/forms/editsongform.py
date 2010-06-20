@@ -258,7 +258,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             topic_name = QtGui.QListWidgetItem(unicode(topic.name))
             topic_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(topic.id))
             self.TopicsListView.addItem(topic_name)
-        self._validate_song()
         self.TitleEditItem.setFocus(QtCore.Qt.OtherFocusReason)
         #if not preview hide the preview button
         self.previewButton.setVisible(False)
@@ -516,13 +515,19 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if len(self.TitleEditItem.displayText()) == 0:
             self.SongTabWidget.setCurrentIndex(0)
             self.TitleEditItem.setFocus()
-            return u'failed', translate(u'SongsPlugin.EditSongForm',
-                u'You need to enter a song title.')
+            QtGui.QMessageBox.critical(self,
+                translate(u'SongsPlugin.EditSongForm', u'Error'),
+                translate(u'SongsPlugin.EditSongForm',
+                    u'You need to enter a song title.'))
+            return False
         if self.VerseListWidget.rowCount() == 0:
             self.SongTabWidget.setCurrentIndex(0)
             self.VerseListWidget.setFocus()
-            return u'failed', translate('uSongsPlugin.EditSongForm',
-                u'You need to enter some verses.')
+            QtGui.QMessageBox.critical(self,
+                translate(u'SongsPlugin.EditSongForm', u'Error'),
+                translate('uSongsPlugin.EditSongForm',
+                    u'You need to enter some verses.'))
+            return False
         if self.AuthorsListView.count() == 0:
             self.SongTabWidget.setCurrentIndex(1)
             self.AuthorsListView.setFocus()
@@ -533,7 +538,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     'Do you want to add now a author?'),
                 QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
             if answer == QtGui.QMessageBox.Yes:
-                return u'aborted', u''
+                return False
         if self.song.verse_order:
             order = []
             order_names = self.song.verse_order.split(u' ')
@@ -558,10 +563,13 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     valid = verses.pop(0)
                     for verse in verses:
                         valid = valid + u', ' + verse
-                    return u'failed', unicode(translate(
-                        'SongsPlugin.EditSongForm', 'The verse order is '
-                        'invalid. There is no verse corresponding to %s. '
-                        'Valid entries are %s.')) % (order_names[count], valid)
+                    QtGui.QMessageBox.critical(self,
+                        translate(u'SongsPlugin.EditSongForm', u'Error'),
+                        unicode(translate('SongsPlugin.EditSongForm',
+                            'The verse order is invalid. There is no verse '
+                            'corresponding to %s. Valid entries are %s.')) % \
+                            (order_names[count], valid))
+                    return False
             for count, verse in enumerate(verses):
                 if verse not in order:
                     self.SongTabWidget.setCurrentIndex(0)
@@ -571,11 +579,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                         unicode(translate('SongsPlugin.EditSongForm',
                             '%s is not addressed in the verse order.\n'
                             'Do you want to save anyhow?')) % \
-                            order_names[count].replace(u':', u' '),
+                            verse_names[count].replace(u':', u' '),
                         QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
                     if answer == QtGui.QMessageBox.No:
-                        return u'aborted', u''
-        return u'passed', u''
+                        return False
+        return True
 
     def onCopyrightInsertButtonTriggered(self):
         text = self.CopyrightEditItem.text()
@@ -618,16 +626,12 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.song.comments = unicode(self.CommentsEdit.toPlainText())
         self.song.verse_order = unicode(self.VerseOrderEdit.text())
         self.song.ccli_number = unicode(self.CCLNumberEdit.text())
-        status, message = self._validate_song()
-        if status == u'failed':
-            QtGui.QMessageBox.critical(self,
-                translate(u'SongsPlugin.EditSongForm', u'Error'), message)
-        if status != u'passed':
-            return False
-        self.processLyrics()
-        self.processTitle()
-        self.songmanager.save_song(self.song)
-        return True
+        if self._validate_song():
+            self.processLyrics()
+            self.processTitle()
+            self.songmanager.save_song(self.song)
+            return True
+        return False
 
     def processLyrics(self):
         log.debug(u'processLyrics')
@@ -646,14 +650,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     unicode(self.VerseListWidget.item(i, 0).text())) + u' '
                 if (bits[1] > u'1') and (bits[0][0] not in multiple):
                    multiple.append(bits[0][0])
-                   print bits[0][0]
             self.song.search_lyrics = text
             self.song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
             for verse in multiple:
-                self.song.verse_order = self.song.verse_order.replace(
-                    verse.upper() + u' ', verse.upper() + u'1 ')
-                self.song.verse_order = self.song.verse_order.replace(
-                    verse.lower() + u' ', verse.lower() + u'1 ')
+                self.song.verse_order = re.sub(u'([' + verse.upper() +
+                    verse.lower() + u'])(\W|$)', r'\g<1>1\2', self.song.verse_order)
         except:
             log.exception(u'Problem processing song Lyrics \n%s',
                 sxml.dump_xml())
