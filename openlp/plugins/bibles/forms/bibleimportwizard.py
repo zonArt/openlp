@@ -309,7 +309,7 @@ class Ui_BibleImportWizard(object):
 
     def retranslateUi(self, BibleImportWizard):
         BibleImportWizard.setWindowTitle(
-            translate(u'BiblesPlugin.ImportWizardForm', u'Bible Import Wizard'))
+            translate('BiblesPlugin.ImportWizardForm', 'Bible Import Wizard'))
         self.TitleLabel.setText(
             u'<span style="font-size:14pt; font-weight:600;">%s</span>' % \
             translate(u'BiblesPlugin.ImportWizardForm', 
@@ -325,61 +325,60 @@ class Ui_BibleImportWizard(object):
             translate(u'BiblesPlugin.ImportWizardForm', 
                 u'Select the import format, and where to import from.'))
         self.FormatLabel.setText(
-            translate(u'BiblesPlugin.ImportWizardForm', u'Format:'))
+            translate('BiblesPlugin.ImportWizardForm', 'Format:'))
         self.FormatComboBox.setItemText(0, 
-            translate(u'BiblesPlugin.ImportWizardForm', u'OSIS'))
+            translate('BiblesPlugin.ImportWizardForm', 'OSIS'))
         self.FormatComboBox.setItemText(1, 
-            translate(u'BiblesPlugin.ImportWizardForm', u'CSV'))
+            translate('BiblesPlugin.ImportWizardForm', 'CSV'))
         self.FormatComboBox.setItemText(2, 
-            translate(u'BiblesPlugin.ImportWizardForm', u'OpenSong'))
+            translate('BiblesPlugin.ImportWizardForm', 'OpenSong'))
         self.FormatComboBox.setItemText(3,
-            translate(u'BiblesPlugin.ImportWizardForm', u'Web Download'))
+            translate('BiblesPlugin.ImportWizardForm', 'Web Download'))
         self.OsisLocationLabel.setText(
-            translate(u'BiblesPlugin.ImportWizardForm', u'File Location:'))
+            translate('BiblesPlugin.ImportWizardForm', 'File Location:'))
         self.BooksLocationLabel.setText(
-            translate(u'BiblesPlugin.ImportWizardForm', u'Books Location:'))
+            translate('BiblesPlugin.ImportWizardForm', 'Books Location:'))
         self.VerseLocationLabel.setText(
-            translate(u'BiblesPlugin.ImportWizardForm', u'Verse Location:'))
+            translate('BiblesPlugin.ImportWizardForm', 'Verse Location:'))
         self.OpenSongFileLabel.setText(
-            translate(u'BiblesPlugin.ImportWizardForm', u'Bible Filename:'))
+            translate('BiblesPlugin.ImportWizardForm', 'Bible Filename:'))
         self.LocationLabel.setText(
-            translate(u'BiblesPlugin.ImportWizardForm', u'Location:'))
+            translate('BiblesPlugin.ImportWizardForm', 'Location:'))
         self.LocationComboBox.setItemText(0, 
-            translate(u'BiblesPlugin.ImportWizardForm', u'Crosswalk'))
+            translate('BiblesPlugin.ImportWizardForm', 'Crosswalk'))
         self.LocationComboBox.setItemText(1, 
-            translate(u'BiblesPlugin.ImportWizardForm', u'BibleGateway'))
+            translate('BiblesPlugin.ImportWizardForm', 'BibleGateway'))
         self.BibleLabel.setText(
-            translate(u'BiblesPlugin.ImportWizardForm', u'Bible:'))
+            translate('BiblesPlugin.ImportWizardForm', 'Bible:'))
         self.WebDownloadTabWidget.setTabText(
             self.WebDownloadTabWidget.indexOf(self.DownloadOptionsTab),
-            translate(u'BiblesPlugin.ImportWizardForm', u'Download Options'))
+            translate('BiblesPlugin.ImportWizardForm', 'Download Options'))
         self.AddressLabel.setText(
-            translate(u'BiblesPlugin.ImportWizardForm', u'Server:'))
+            translate('BiblesPlugin.ImportWizardForm', 'Server:'))
         self.UsernameLabel.setText(
-            translate(u'BiblesPlugin.ImportWizardForm', u'Username:'))
+            translate('BiblesPlugin.ImportWizardForm', 'Username:'))
         self.PasswordLabel.setText(
-            translate(u'BiblesPlugin.ImportWizardForm', u'Password:'))
+            translate('BiblesPlugin.ImportWizardForm', 'Password:'))
         self.WebDownloadTabWidget.setTabText(
             self.WebDownloadTabWidget.indexOf(self.ProxyServerTab),
             translate(u'BiblesPlugin.ImportWizardForm', 
                 u'Proxy Server (Optional)'))
         self.LicenseDetailsPage.setTitle(
-            translate(u'BiblesPlugin.ImportWizardForm', u'License Details'))
+            translate('BiblesPlugin.ImportWizardForm', 'License Details'))
         self.LicenseDetailsPage.setSubTitle(
             translate(u'BiblesPlugin.ImportWizardForm', 
                 u'Set up the Bible\'s license details.'))
         self.VersionNameLabel.setText(
-            translate(u'BiblesPlugin.ImportWizardForm', u'Version Name:'))
+            translate('BiblesPlugin.ImportWizardForm', 'Version Name:'))
         self.CopyrightLabel.setText(
-            translate(u'BiblesPlugin.ImportWizardForm', u'Copyright:'))
+            translate('BiblesPlugin.ImportWizardForm', 'Copyright:'))
         self.PermissionLabel.setText(
-            translate(u'BiblesPlugin.ImportWizardForm', u'Permission:'))
+            translate('BiblesPlugin.ImportWizardForm', 'Permission:'))
         self.ImportPage.setTitle(
-            translate(u'BiblesPlugin.ImportWizardForm', u'Importing'))
+            translate('BiblesPlugin.ImportWizardForm', 'Importing'))
         self.ImportPage.setSubTitle(
             translate(u'BiblesPlugin.ImportWizardForm',
                 u'Please wait while your Bible is imported.'))
         self.ImportProgressLabel.setText(
-            translate(u'BiblesPlugin.ImportWizardForm', u'Ready.'))
+            translate('BiblesPlugin.ImportWizardForm', 'Ready.'))
         self.ImportProgressBar.setFormat(u'%p%')
-

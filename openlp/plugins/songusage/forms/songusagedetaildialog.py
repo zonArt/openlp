@@ -90,8 +90,8 @@ class Ui_SongUsageDetailDialog(object):
             translate(u'SongsPlugin.AuditDetailDialog',
                 u'Song Usage Extraction'))
         self.DateRangeGroupBox.setTitle(
-            translate(u'SongsPlugin.AuditDetailDialog', u'Select Date Range'))
+            translate('SongsPlugin.AuditDetailDialog', 'Select Date Range'))
         self.ToLabel.setText(
-            translate(u'SongsPlugin.AuditDetailDialog', u'to'))
+            translate('SongsPlugin.AuditDetailDialog', 'to'))
         self.FileGroupBox.setTitle(
-            translate(u'SongsPlugin.AuditDetailDialog', u'Report Location'))
+            translate('SongsPlugin.AuditDetailDialog', 'Report Location'))

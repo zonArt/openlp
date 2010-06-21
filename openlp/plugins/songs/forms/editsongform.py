@@ -96,7 +96,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.previewButton = QtGui.QPushButton()
         self.previewButton.setObjectName(u'previewButton')
         self.previewButton.setText(
-            translate(u'SongsPlugin.EditSongForm', u'Save && Preview'))
+            translate('SongsPlugin.EditSongForm', 'Save && Preview'))
         self.ButtonBox.addButton(
             self.previewButton, QtGui.QDialogButtonBox.ActionRole)
         QtCore.QObject.connect(self.ButtonBox,
@@ -516,26 +516,26 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.SongTabWidget.setCurrentIndex(0)
             self.TitleEditItem.setFocus()
             QtGui.QMessageBox.critical(self,
-                translate(u'SongsPlugin.EditSongForm', u'Error'),
-                translate(u'SongsPlugin.EditSongForm',
-                    u'You need to enter a song title.'))
+                translate('SongsPlugin.EditSongForm', 'Error'),
+                translate('SongsPlugin.EditSongForm',
+                    'You need to type in a song title.'))
             return False
         if self.VerseListWidget.rowCount() == 0:
             self.SongTabWidget.setCurrentIndex(0)
             self.VerseListWidget.setFocus()
             QtGui.QMessageBox.critical(self,
-                translate(u'SongsPlugin.EditSongForm', u'Error'),
-                translate('uSongsPlugin.EditSongForm',
-                    u'You need to enter some verses.'))
+                translate('SongsPlugin.EditSongForm', 'Error'),
+                translate('SongsPlugin.EditSongForm',
+                    'You need to type in at least one verse.'))
             return False
         if self.AuthorsListView.count() == 0:
             self.SongTabWidget.setCurrentIndex(1)
             self.AuthorsListView.setFocus()
             answer = QtGui.QMessageBox.warning(self,
-                translate(u'SongsPlugin.EditSongForm', u'Warning'),
+                translate('SongsPlugin.EditSongForm', 'Warning'),
                 translate('SongsPlugin.EditSongForm',
-                    'You have set no author.\n'
-                    'Do you want to add now a author?'),
+                    'You have not added any authors for this song. Do you '
+                    'want to add an author now?'),
                 QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
             if answer == QtGui.QMessageBox.Yes:
                 return False
@@ -564,7 +564,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     for verse in verses:
                         valid = valid + u', ' + verse
                     QtGui.QMessageBox.critical(self,
-                        translate(u'SongsPlugin.EditSongForm', u'Error'),
+                        translate('SongsPlugin.EditSongForm', 'Error'),
                         unicode(translate('SongsPlugin.EditSongForm',
                             'The verse order is invalid. There is no verse '
                             'corresponding to %s. Valid entries are %s.')) % \
@@ -575,10 +575,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     self.SongTabWidget.setCurrentIndex(0)
                     self.VerseOrderEdit.setFocus()
                     answer = QtGui.QMessageBox.warning(self,
-                        translate(u'SongsPlugin.EditSongForm', u'Warning'),
+                        translate('SongsPlugin.EditSongForm', 'Warning'),
                         unicode(translate('SongsPlugin.EditSongForm',
-                            '%s is not addressed in the verse order.\n'
-                            'Do you want to save anyhow?')) % \
+                            'You have not used %s anywhere in the verse '
+                            'order. Are you sure you want to save the song '
+                            'like this?')) % \
                             verse_names[count].replace(u':', u' '),
                         QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
                     if answer == QtGui.QMessageBox.No:

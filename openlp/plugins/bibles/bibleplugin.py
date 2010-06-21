@@ -71,7 +71,7 @@ class BiblePlugin(Plugin):
         self.ImportBibleItem.setObjectName(u'ImportBibleItem')
         import_menu.addAction(self.ImportBibleItem)
         self.ImportBibleItem.setText(
-            translate(u'BiblePlugin', u'&Bible'))
+            translate('BiblePlugin', '&Bible'))
         # Signals and slots
         QtCore.QObject.connect(self.ImportBibleItem,
             QtCore.SIGNAL(u'triggered()'), self.onBibleImportClick)
