@@ -22,7 +22,10 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The :mod:`resources` module provides application images and icons in a central
+store for use by OpenLP.
+"""
 from PyQt4 import QtCore
 
 qt_resource_data = "\
@@ -48661,8 +48664,16 @@ qt_resource_struct = "\
 "
 
 def qInitResources():
-    QtCore.qRegisterResourceData(0x01, qt_resource_struct, qt_resource_name, qt_resource_data)
+    """
+    Initialise OpenLP resources at application startup.
+    """
+    QtCore.qRegisterResourceData(0x01, qt_resource_struct, qt_resource_name,
+        qt_resource_data)
 
 def qCleanupResources():
-    QtCore.qUnregisterResourceData(0x01, qt_resource_struct, qt_resource_name, qt_resource_data)
+    """
+    Cleanup OpenLP resources when the application shuts down.
+    """
+    QtCore.qUnregisterResourceData(0x01, qt_resource_struct, qt_resource_name,
+        qt_resource_data)
 
