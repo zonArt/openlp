@@ -66,7 +66,7 @@ class CustomMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'custom_preview'), self.onPreviewClick)
 
     def initPluginNameVisible(self):
-        self.PluginNameVisible = translate(u'CustomPlugin.MediaItem', u'Custom')
+        self.PluginNameVisible = translate('CustomPlugin.MediaItem', 'Custom')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)

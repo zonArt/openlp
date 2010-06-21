@@ -224,7 +224,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         Show the file open dialog for the OSIS file.
         """
         self.getFileName(
-                translate(u'BiblesPlugin.ImportWizardForm', u'Open OSIS File'),
+                translate('BiblesPlugin.ImportWizardForm', 'Open OSIS File'),
             self.OSISLocationEdit)
 
     def onBooksFileButtonClicked(self):
@@ -232,7 +232,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         Show the file open dialog for the books CSV file.
         """
         self.getFileName(
-            translate(u'BiblesPlugin.ImportWizardForm', u'Open Books CSV File'),
+            translate('BiblesPlugin.ImportWizardForm', 'Open Books CSV File'),
             self.BooksLocationEdit)
 
     def onCsvVersesFileButtonClicked(self):
@@ -249,7 +249,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         Show the file open dialog for the OpenSong file.
         """
         self.getFileName(
-            translate(u'BiblesPlugin.ImportWizardForm', u'Open OpenSong Bible'),
+            translate('BiblesPlugin.ImportWizardForm', 'Open OpenSong Bible'),
             self.OpenSongFileEdit)
 
     def onCancelButtonClicked(self, checked):
@@ -389,7 +389,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         self.ImportProgressBar.setMaximum(1188)
         self.ImportProgressBar.setValue(0)
         self.ImportProgressLabel.setText(
-            translate(u'BiblesPlugin.ImportWizardForm', u'Starting import...'))
+            translate('BiblesPlugin.ImportWizardForm', 'Starting import...'))
         Receiver.send_message(u'openlp_process_events')
 
     def performImport(self):
@@ -458,4 +458,3 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         self.finishButton.setVisible(True)
         self.cancelButton.setVisible(False)
         Receiver.send_message(u'openlp_process_events')
-

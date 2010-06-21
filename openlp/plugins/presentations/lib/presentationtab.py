@@ -97,7 +97,7 @@ class PresentationTab(SettingsTab):
             checkbox = self.PresenterCheckboxes[controller.name]
             checkbox.setText(
                 u'%s %s' % (controller.name, 
-                translate(u'PresentationPlugin.PresentationTab', u'available')))
+                translate('PresentationPlugin.PresentationTab', 'available')))
 
     def load(self):
         for key in self.controllers:

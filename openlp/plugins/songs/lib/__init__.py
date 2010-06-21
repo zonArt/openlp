@@ -47,19 +47,19 @@ class VerseType(object):
             The type to return a string for
         """
         if verse_type == VerseType.Verse:
-            return translate(u'VerseType', u'Verse')
+            return translate('VerseType', 'Verse')
         elif verse_type == VerseType.Chorus:
-            return translate(u'VerseType', u'Chorus')
+            return translate('VerseType', 'Chorus')
         elif verse_type == VerseType.Bridge:
-            return translate(u'VerseType', u'Bridge')
+            return translate('VerseType', 'Bridge')
         elif verse_type == VerseType.PreChorus:
-            return translate(u'VerseType', u'Pre-Chorus')
+            return translate('VerseType', 'Pre-Chorus')
         elif verse_type == VerseType.Intro:
-            return translate(u'VerseType', u'Intro')
+            return translate('VerseType', 'Intro')
         elif verse_type == VerseType.Ending:
-            return translate(u'VerseType', u'Ending')
+            return translate('VerseType', 'Ending')
         elif verse_type == VerseType.Other:
-            return translate(u'VerseType', u'Other')
+            return translate('VerseType', 'Other')
 
     @staticmethod
     def from_string(verse_type):

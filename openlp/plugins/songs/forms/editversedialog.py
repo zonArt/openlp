@@ -87,9 +87,9 @@ class Ui_EditVerseDialog(object):
 
     def retranslateUi(self, EditVerseDialog):
         EditVerseDialog.setWindowTitle(
-            translate(u'SongsPlugin.EditVerseForm', u'Edit Verse'))
+            translate('SongsPlugin.EditVerseForm', 'Edit Verse'))
         self.VerseTypeLabel.setText(
-            translate(u'SongsPlugin.EditVerseForm', u'Verse Type:'))
+            translate('SongsPlugin.EditVerseForm', '&Verse type:'))
         self.VerseTypeComboBox.setItemText(0,
             VerseType.to_string(VerseType.Verse))
         self.VerseTypeComboBox.setItemText(1,
@@ -105,5 +105,5 @@ class Ui_EditVerseDialog(object):
         self.VerseTypeComboBox.setItemText(6,
             VerseType.to_string(VerseType.Other))
         self.InsertButton.setText(
-            translate(u'SongsPlugin.EditVerseForm', u'Insert'))
+            translate('SongsPlugin.EditVerseForm', '&Insert'))
 

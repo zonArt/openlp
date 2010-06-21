@@ -106,7 +106,7 @@ class PresentationMediaItem(MediaManagerItem):
         self.DisplayTypeLabel.setObjectName(u'SearchTypeLabel')
         self.DisplayLayout.addWidget(self.DisplayTypeLabel, 0, 0, 1, 1)
         self.DisplayTypeLabel.setText(
-            translate(u'PresentationPlugin.MediaItem', u'Present using:'))
+            translate('PresentationPlugin.MediaItem', 'Present using:'))
         # Add the Presentation widget to the page layout
         self.PageLayout.addWidget(self.PresentationWidget)
 

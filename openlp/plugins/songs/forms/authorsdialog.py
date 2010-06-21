@@ -75,10 +75,10 @@ class Ui_AuthorsDialog(object):
 
     def retranslateUi(self, AuthorsDialog):
         AuthorsDialog.setWindowTitle(
-            translate(u'SongsPlugin.AuthorsForm', u'Author Maintenance'))
+            translate('SongsPlugin.AuthorsForm', 'Author Maintenance'))
         self.DisplayLabel.setText(
-            translate(u'SongsPlugin.AuthorsForm', u'Display name:'))
+            translate('SongsPlugin.AuthorsForm', 'Display name:'))
         self.FirstNameLabel.setText(
-             translate(u'SongsPlugin.AuthorsForm', u'First name:'))
+            translate('SongsPlugin.AuthorsForm', 'First name:'))
         self.LastNameLabel.setText(
-            translate(u'SongsPlugin.AuthorsForm', u'Last name:'))
+            translate('SongsPlugin.AuthorsForm', 'Last name:'))

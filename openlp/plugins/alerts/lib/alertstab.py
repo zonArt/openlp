@@ -38,7 +38,7 @@ class AlertsTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'AlertsTab')
-        self.tabTitleVisible = translate(u'AlertsPlugin.AlertsTab', u'Alerts')
+        self.tabTitleVisible = translate('AlertsPlugin.AlertsTab', 'Alerts')
         self.AlertsLayout = QtGui.QHBoxLayout(self)
         self.AlertsLayout.setSpacing(8)
         self.AlertsLayout.setMargin(8)
@@ -187,31 +187,31 @@ class AlertsTab(SettingsTab):
 
     def retranslateUi(self):
         self.FontGroupBox.setTitle(
-            translate(u'AlertsPlugin.AlertsTab', u'Font'))
+            translate('AlertsPlugin.AlertsTab', 'Font'))
         self.FontLabel.setText(
-            translate(u'AlertsPlugin.AlertsTab', u'Font Name:'))
+            translate('AlertsPlugin.AlertsTab', 'Font Name:'))
         self.FontColorLabel.setText(
-            translate(u'AlertsPlugin.AlertsTab', u'Font Color:'))
+            translate('AlertsPlugin.AlertsTab', 'Font Color:'))
         self.BackgroundColorLabel.setText(
-            translate(u'AlertsPlugin.AlertsTab', u'Background Color:'))
+            translate('AlertsPlugin.AlertsTab', 'Background Color:'))
         self.FontSizeLabel.setText(
-            translate(u'AlertsPlugin.AlertsTab', u'Font Size:'))
+            translate('AlertsPlugin.AlertsTab', 'Font Size:'))
         self.FontSizeSpinBox.setSuffix(
-            translate(u'AlertsPlugin.AlertsTab', u'pt'))
+            translate('AlertsPlugin.AlertsTab', 'pt'))
         self.TimeoutLabel.setText(
-            translate(u'AlertsPlugin.AlertsTab', u'Alert timeout:'))
+            translate('AlertsPlugin.AlertsTab', 'Alert timeout:'))
         self.TimeoutSpinBox.setSuffix(
-            translate(u'AlertsPlugin.AlertsTab', u's'))
+            translate('AlertsPlugin.AlertsTab', 's'))
         self.LocationLabel.setText(
-            translate(u'AlertsPlugin.AlertsTab', u'Location:'))
+            translate('AlertsPlugin.AlertsTab', 'Location:'))
         self.PreviewGroupBox.setTitle(
-            translate(u'AlertsPlugin.AlertsTab', u'Preview'))
+            translate('AlertsPlugin.AlertsTab', 'Preview'))
         self.FontPreview.setText(
-            translate(u'AlertsPlugin.AlertsTab', u'openlp.org'))
+            translate('AlertsPlugin.AlertsTab', 'openlp.org'))
         self.LocationComboBox.setItemText(0, 
-            translate(u'AlertsPlugin.AlertsTab', u'Top'))
+            translate('AlertsPlugin.AlertsTab', 'Top'))
         self.LocationComboBox.setItemText(1, 
-            translate(u'AlertsPlugin.AlertsTab', u'Bottom'))
+            translate('AlertsPlugin.AlertsTab', 'Bottom'))
 
     def onBackgroundColorButtonClicked(self):
         new_color = QtGui.QColorDialog.getColor(
