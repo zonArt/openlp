@@ -71,12 +71,11 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
 
     def accept(self):
         log.debug(u'Detailed report generated')
-        filename = u'usage_detail_%s_%s.txt' % \
-            (self.FromDate.selectedDate().toString(u'ddMMyyyy'),
-             self.ToDate.selectedDate().toString(u'ddMMyyyy'))
-        usage = self.parent.songusagemanager.get_all_songusage(\
-                                    self.FromDate.selectedDate(), \
-                                    self.ToDate.selectedDate())
+        filename = u'usage_detail_%s_%s.txt' % (
+            self.FromDate.selectedDate().toString(u'ddMMyyyy'),
+            self.ToDate.selectedDate().toString(u'ddMMyyyy'))
+        usage = self.parent.songusagemanager.get_all_songusage(
+            self.FromDate.selectedDate(), self.ToDate.selectedDate())
         outname = os.path.join(unicode(self.FileLineEdit.text()), filename)
         file = None
         try:

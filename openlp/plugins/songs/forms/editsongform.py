@@ -650,12 +650,13 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 text = text + re.sub(r'\W+', u' ',
                     unicode(self.VerseListWidget.item(i, 0).text())) + u' '
                 if (bits[1] > u'1') and (bits[0][0] not in multiple):
-                   multiple.append(bits[0][0])
+                    multiple.append(bits[0][0])
             self.song.search_lyrics = text
             self.song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
             for verse in multiple:
                 self.song.verse_order = re.sub(u'([' + verse.upper() +
-                    verse.lower() + u'])(\W|$)', r'\g<1>1\2', self.song.verse_order)
+                    verse.lower() + u'])(\W|$)', r'\g<1>1\2',
+                    self.song.verse_order)
         except:
             log.exception(u'Problem processing song Lyrics \n%s',
                 sxml.dump_xml())
