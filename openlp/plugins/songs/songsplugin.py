@@ -64,16 +64,12 @@ class SongsPlugin(Plugin):
         #    self.songmanager = SongManager()
         Plugin.initialise(self)
         self.insert_toolbox_item()
-        #self.ImportSongMenu.menuAction().setVisible(True)
-        #self.ExportSongMenu.menuAction().setVisible(True)
         self.media_item.displayResultsSong(self.manager.get_songs())
 
     def finalise(self):
         log.info(u'Plugin Finalise')
         Plugin.finalise(self)
         self.remove_toolbox_item()
-        #self.ImportSongMenu.menuAction().setVisible(False)
-        #self.ExportSongMenu.menuAction().setVisible(False)
 
     def get_media_manager_item(self):
         """
@@ -97,7 +93,7 @@ class SongsPlugin(Plugin):
         self.SongImportItem.setText(translate(
             u'SongsPlugin', u'&Song'))
         self.SongImportItem.setToolTip(
-            translate(u'SongsPlugin', 
+            translate(u'SongsPlugin',
                 u'Import songs using the import wizard.'))
         import_menu.addAction(self.SongImportItem)
         # Songs of Fellowship import menu item - will be removed and the
@@ -105,14 +101,14 @@ class SongsPlugin(Plugin):
         self.ImportSofItem = QtGui.QAction(import_menu)
         self.ImportSofItem.setObjectName(u'ImportSofItem')
         self.ImportSofItem.setText(
-            translate(u'SongsPlugin', 
+            translate(u'SongsPlugin',
                 u'Songs of Fellowship (temp menu item)'))
         self.ImportSofItem.setToolTip(
-            translate(u'SongsPlugin', 
+            translate(u'SongsPlugin',
                 u'Import songs from the VOLS1_2.RTF, sof3words' \
                 + u'.rtf and sof4words.rtf supplied with the music books'))
         self.ImportSofItem.setStatusTip(
-            translate(u'SongsPlugin', 
+            translate(u'SongsPlugin',
                 u'Import songs from the VOLS1_2.RTF, sof3words' \
                 + u'.rtf and sof4words.rtf supplied with the music books'))
         import_menu.addAction(self.ImportSofItem)
@@ -121,15 +117,15 @@ class SongsPlugin(Plugin):
         self.ImportOooItem = QtGui.QAction(import_menu)
         self.ImportOooItem.setObjectName(u'ImportOooItem')
         self.ImportOooItem.setText(
-            translate(u'SongsPlugin', 
+            translate(u'SongsPlugin',
                 u'Generic Document/Presentation Import '
                 u'(temp menu item)'))
         self.ImportOooItem.setToolTip(
-            translate(u'SongsPlugin', 
+            translate(u'SongsPlugin',
                 u'Import songs from '
                 u'Word/Writer/Powerpoint/Impress'))
         self.ImportOooItem.setStatusTip(
-            translate(u'SongsPlugin', 
+            translate(u'SongsPlugin',
                 u'Import songs from '
                 u'Word/Writer/Powerpoint/Impress'))
         import_menu.addAction(self.ImportOooItem)
@@ -169,11 +165,11 @@ class SongsPlugin(Plugin):
         except:
             log.exception('Could not import SoF file')
             QtGui.QMessageBox.critical(None,
-                translate(u'SongsPlugin', 
+                translate(u'SongsPlugin',
                     u'Import Error'),
-                translate(u'SongsPlugin', 
-                    u'Error importing Songs of ' 
-                    u'Fellowship file.\nOpenOffice.org must be installed' 
+                translate(u'SongsPlugin',
+                    u'Error importing Songs of '
+                    u'Fellowship file.\nOpenOffice.org must be installed'
                     u' and you must be using an unedited copy of the RTF'
                     u' included with the Songs of Fellowship Music Editions'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
@@ -185,7 +181,7 @@ class SongsPlugin(Plugin):
             None, translate(u'SongsPlugin',
             u'Open documents or presentations'),
             u'', u'All Files(*.*)')
-        oooimport = OooImport(self.manager)        
+        oooimport = OooImport(self.manager)
         oooimport.import_docs(filenames)
         Receiver.send_message(u'songs_load_list')
 
