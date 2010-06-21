@@ -440,7 +440,7 @@ class Ui_EditSongDialog(object):
         self.TitleLabel.setText(
             translate('SongsPlugin.EditSongForm', '&Title:'))
         self.AlternativeTitleLabel.setText(
-            translate('SongsPlugin.EditSongForm', 'Alt&ernative Title:'))
+            translate('SongsPlugin.EditSongForm', 'Alt&ernate Title:'))
         self.LyricsLabel.setText(
             translate('SongsPlugin.EditSongForm', '&Lyrics:'))
         self.VerseOrderLabel.setText(
@@ -478,11 +478,11 @@ class Ui_EditSongDialog(object):
         self.ThemeGroupBox.setTitle(
             translate('SongsPlugin.EditSongForm', 'Theme'))
         self.ThemeAddButton.setText(
-            translate('SongsPlugin.EditSongForm', 'Add a &Theme'))
+            translate('SongsPlugin.EditSongForm', 'New &Theme'))
         self.CopyrightGroupBox.setTitle(
             translate('SongsPlugin.EditSongForm', 'Copyright Information'))
         self.CopyrightInsertButton.setText(
-            translate('SongsPlugin.EditSongForm', u'\xa9'))
+            translate('SongsPlugin.EditSongForm', '\xa9'))
         self.CCLILabel.setText(
             translate('SongsPlugin.EditSongForm', 'CCLI Number:'))
         self.CommentsGroupBox.setTitle(

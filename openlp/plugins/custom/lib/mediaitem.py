@@ -66,7 +66,7 @@ class CustomMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'custom_preview'), self.onPreviewClick)
 
     def initPluginNameVisible(self):
-        self.PluginNameVisible = translate(u'CustomPlugin.MediaItem', u'Custom')
+        self.PluginNameVisible = translate('CustomPlugin.MediaItem', 'Custom')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -118,8 +118,8 @@ class CustomMediaItem(MediaManagerItem):
         """
         Edit a custom item
         """
-        if self.checkItemSelected(translate(u'CustomPlugin.MediaItem',
-            u'You must select an item to edit.')):
+        if self.checkItemSelected(translate('CustomPlugin.MediaItem',
+            'You must select an item to edit.')):
             item = self.ListView.currentItem()
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.parent.edit_custom_form.loadCustom(item_id, False)
@@ -130,8 +130,8 @@ class CustomMediaItem(MediaManagerItem):
         """
         Remove a custom item from the list and database
         """
-        if self.checkItemSelected(translate(u'CustomPlugin.MediaItem',
-            u'You must select an item to delete.')):
+        if self.checkItemSelected(translate('CustomPlugin.MediaItem',
+            'You must select an item to delete.')):
             item = self.ListView.currentItem()
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.parent.custommanager.delete_custom(item_id)
