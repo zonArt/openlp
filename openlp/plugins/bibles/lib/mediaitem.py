@@ -386,8 +386,8 @@ class BibleMediaItem(MediaManagerItem):
     def onNoBookFound(self):
         QtGui.QMessageBox.critical(self,
             translate('BiblesPlugin.MediaItem', 'No Book Found'),
-            translate(u'BiblesPlugin.MediaItem',
-                u'No matching book could be found in this Bible.'),
+            translate('BiblesPlugin.MediaItem',
+                'No matching book could be found in this Bible.'),
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
             QtGui.QMessageBox.Ok
         )
