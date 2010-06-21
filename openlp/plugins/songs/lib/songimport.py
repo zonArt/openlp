@@ -23,7 +23,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import string
+import re
 
 from PyQt4 import QtGui
 
@@ -89,9 +89,6 @@ class SongImport(object):
         Get rid of some dodgy unicode and formatting characters we're not
         interested in. Some can be converted to ascii.
         """
-        text = text.replace(u'\t', u' ')
-        text = text.replace(u'\r\n', u'\n')
-        text = text.replace(u'\r', u'\n')
         text = text.replace(u'\u2018', u'\'')
         text = text.replace(u'\u2019', u'\'')
         text = text.replace(u'\u201c', u'"')
@@ -100,15 +97,9 @@ class SongImport(object):
         text = text.replace(u'\u2013', u'-')
         text = text.replace(u'\u2014', u'-')
         # Remove surplus blank lines, spaces, trailing/leading spaces
-        while text.find(u'  ') >= 0:
-            text = text.replace(u'  ', u' ')
-        text = text.replace(u'\n ', u'\n')
-        text = text.replace(u' \n', u'\n')
-        text = text.replace(u'\n\n\n\n\n', u'\f')
-        text = text.replace(u'\f ', u'\f')
-        text = text.replace(u' \f', u'\f')
-        while text.find(u'\f\f') >= 0:
-            text = text.replace(u'\f\f', u'\f')
+        text = re.sub(r'[ \t\v]+', u' ', text)
+        text = re.sub(r' ?(\r\n?|\n) ?', u'\n', text)
+        text = re.sub(r' ?(\n{5}|\f)+ ?', u'\f', text)
         return text
 
     def process_song_text(self, text):
@@ -264,11 +255,9 @@ class SongImport(object):
 
     def remove_punctuation(self, text):
         """
-        Remove punctuation from the string for searchable fields
+        Extracts alphanumeric words for searchable fields
         """
-        for character in string.punctuation:
-            text = text.replace(character, u'')
-        return text
+        return re.sub(r'\W+', u' ', text)
 
     def finish(self):
         """
