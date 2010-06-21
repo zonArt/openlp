@@ -82,7 +82,7 @@ class BiblePlugin(Plugin):
         self.ExportBibleItem.setObjectName(u'ExportBibleItem')
         export_menu.addAction(self.ExportBibleItem)
         self.ExportBibleItem.setText(translate(
-            u'BiblePlugin', u'&Bible'))
+            'BiblePlugin', '&Bible'))
         self.ExportBibleItem.setVisible(False)
 
     def onBibleImportClick(self):
