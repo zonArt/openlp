@@ -491,7 +491,7 @@ class MediaManagerItem(QtGui.QWidget):
                 #Turn off the remote edit update message indicator
                 QtGui.QMessageBox.information(self,
                     translate('MediaManagerItem', 'Invalid Service Item'),
-                    translate(unicode('MediaManagerItem',
+                    unicode(translate('MediaManagerItem',
                         'You must select a %s service item.')) % self.title)
 
     def buildServiceItem(self, item=None):
