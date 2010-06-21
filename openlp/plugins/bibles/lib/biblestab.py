@@ -152,30 +152,30 @@ class BiblesTab(SettingsTab):
         self.VerseDisplayGroupBox.setTitle(
             translate('BiblesPlugin,BiblesTab', 'Verse Display'))
         self.NewChaptersCheckBox.setText(
-            translate(u'BiblesPlugin,BiblesTab', 
-            u'Only show new chapter numbers'))
+            translate('BiblesPlugin,BiblesTab',
+            'Only show new chapter numbers'))
         self.LayoutStyleLabel.setText(
             translate('BiblesPlugin,BiblesTab', 'Layout Style:'))
         self.DisplayStyleLabel.setText(
             translate('BiblesPlugin,BiblesTab', 'Display Style:'))
         self.BibleThemeLabel.setText(
             translate('BiblesPlugin,BiblesTab', 'Bible Theme:'))
-        self.LayoutStyleComboBox.setItemText(0, 
+        self.LayoutStyleComboBox.setItemText(0,
             translate('BiblesPlugin,BiblesTab', 'verse per slide'))
-        self.LayoutStyleComboBox.setItemText(1, 
+        self.LayoutStyleComboBox.setItemText(1,
             translate('BiblesPlugin,BiblesTab', 'verse per line'))
-        self.LayoutStyleComboBox.setItemText(2, 
+        self.LayoutStyleComboBox.setItemText(2,
             translate('BiblesPlugin,BiblesTab', 'continuous'))
-        self.DisplayStyleComboBox.setItemText(0, 
+        self.DisplayStyleComboBox.setItemText(0,
             translate('BiblesPlugin,BiblesTab', 'No brackets'))
-        self.DisplayStyleComboBox.setItemText(1, 
+        self.DisplayStyleComboBox.setItemText(1,
             translate('BiblesPlugin,BiblesTab', '( and )'))
         self.DisplayStyleComboBox.setItemText(2,
             translate('BiblesPlugin,BiblesTab', '{ and }'))
-        self.DisplayStyleComboBox.setItemText(3, 
+        self.DisplayStyleComboBox.setItemText(3,
             translate('BiblesPlugin,BiblesTab', '[ and ]'))
-        self.ChangeNoteLabel.setText(translate(u'BiblesPlugin.BiblesTab',
-            u'Note:\nChanges don\'t affect verses already in the service'))
+        self.ChangeNoteLabel.setText(translate('BiblesPlugin.BiblesTab',
+            'Note:\nChanges don\'t affect verses already in the service'))
         self.BibleDualCheckBox.setText(
             translate('BiblesPlugin,BiblesTab', 'Display Dual Bible Verses'))
 

@@ -64,20 +64,20 @@ class SongUsagePlugin(Plugin):
         #SongUsage Delete
         self.SongUsageDelete = QtGui.QAction(tools_menu)
         self.SongUsageDelete.setText(
-            translate(u'SongUsagePlugin', 
-                u'&Delete recorded data'))
+            translate('SongUsagePlugin',
+                '&Delete recorded data'))
         self.SongUsageDelete.setStatusTip(
-            translate(u'SongUsagePlugin',
-                u'Delete song usage to specified date'))
+            translate('SongUsagePlugin',
+                'Delete song usage to specified date'))
         self.SongUsageDelete.setObjectName(u'SongUsageDelete')
         #SongUsage Report
         self.SongUsageReport = QtGui.QAction(tools_menu)
         self.SongUsageReport.setText(
-            translate(u'SongUsagePlugin', 
-                u'&Extract recorded data'))
+            translate('SongUsagePlugin',
+                '&Extract recorded data'))
         self.SongUsageReport.setStatusTip(
-            translate(u'SongUsagePlugin', 
-                u'Generate report on Song Usage'))
+            translate('SongUsagePlugin',
+                'Generate report on Song Usage'))
         self.SongUsageReport.setObjectName(u'SongUsageReport')
         #SongUsage activation
         SongUsageIcon = build_icon(u':/tools/tools_alert.png')
@@ -86,10 +86,10 @@ class SongUsagePlugin(Plugin):
         self.SongUsageStatus.setCheckable(True)
         self.SongUsageStatus.setChecked(False)
         self.SongUsageStatus.setText(translate(
-            u'SongUsagePlugin', u'Song Usage Status'))
+            'SongUsagePlugin', 'Song Usage Status'))
         self.SongUsageStatus.setStatusTip(
-            translate(u'SongUsagePlugin', 
-                u'Start/Stop live song usage recording'))
+            translate('SongUsagePlugin',
+                'Start/Stop live song usage recording'))
         self.SongUsageStatus.setShortcut(u'F4')
         self.SongUsageStatus.setObjectName(u'SongUsageStatus')
         #Add Menus together
@@ -163,8 +163,8 @@ class SongUsagePlugin(Plugin):
         self.SongUsagedetailform.exec_()
 
     def about(self):
-        about_text = translate(u'SongUsagePlugin',
-            u'<b>SongUsage Plugin</b><br>This plugin '
-            u'records the use of songs and when they have been used during '
-            u'a live service')
+        about_text = translate('SongUsagePlugin',
+            '<b>SongUsage Plugin</b><br>This plugin '
+            'records the use of songs and when they have been used during '
+            'a live service')
         return about_text

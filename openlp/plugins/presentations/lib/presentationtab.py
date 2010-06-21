@@ -37,8 +37,8 @@ class PresentationTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'PresentationTab')
-        self.tabTitleVisible = translate(u'PresentationPlugin.PresentationTab',
-            u'Presentations')
+        self.tabTitleVisible = translate('PresentationPlugin.PresentationTab',
+            'Presentations')
         self.PresentationLayout = QtGui.QHBoxLayout(self)
         self.PresentationLayout.setSpacing(8)
         self.PresentationLayout.setMargin(8)
@@ -90,13 +90,13 @@ class PresentationTab(SettingsTab):
 
     def retranslateUi(self):
         self.VerseDisplayGroupBox.setTitle(
-            translate(u'PresentationPlugin.PresentationTab',
-            u'Available Controllers'))
+            translate('PresentationPlugin.PresentationTab',
+            'Available Controllers'))
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = self.PresenterCheckboxes[controller.name]
             checkbox.setText(
-                u'%s %s' % (controller.name, 
+                u'%s %s' % (controller.name,
                 translate('PresentationPlugin.PresentationTab', 'available')))
 
     def load(self):
