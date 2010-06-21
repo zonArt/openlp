@@ -60,24 +60,20 @@ class SongUsagePlugin(Plugin):
         self.SongUsageMenu = QtGui.QMenu(tools_menu)
         self.SongUsageMenu.setObjectName(u'SongUsageMenu')
         self.SongUsageMenu.setTitle(translate(
-            u'SongUsagePlugin', u'&Song Usage'))
+            'SongUsagePlugin', '&Song Usage'))
         #SongUsage Delete
         self.SongUsageDelete = QtGui.QAction(tools_menu)
-        self.SongUsageDelete.setText(
-            translate('SongUsagePlugin',
-                '&Delete recorded data'))
-        self.SongUsageDelete.setStatusTip(
-            translate('SongUsagePlugin',
-                'Delete song usage to specified date'))
+        self.SongUsageDelete.setText(translate('SongUsagePlugin',
+            '&Delete recorded data'))
+        self.SongUsageDelete.setStatusTip(translate('SongUsagePlugin',
+            'Delete song usage to specified date'))
         self.SongUsageDelete.setObjectName(u'SongUsageDelete')
         #SongUsage Report
         self.SongUsageReport = QtGui.QAction(tools_menu)
         self.SongUsageReport.setText(
-            translate('SongUsagePlugin',
-                '&Extract recorded data'))
+            translate('SongUsagePlugin', '&Extract recorded data'))
         self.SongUsageReport.setStatusTip(
-            translate('SongUsagePlugin',
-                'Generate report on Song Usage'))
+            translate('SongUsagePlugin', 'Generate report on Song Usage'))
         self.SongUsageReport.setObjectName(u'SongUsageReport')
         #SongUsage activation
         SongUsageIcon = build_icon(u':/tools/tools_alert.png')
@@ -87,8 +83,7 @@ class SongUsagePlugin(Plugin):
         self.SongUsageStatus.setChecked(False)
         self.SongUsageStatus.setText(translate(
             'SongUsagePlugin', 'Song Usage Status'))
-        self.SongUsageStatus.setStatusTip(
-            translate('SongUsagePlugin',
+        self.SongUsageStatus.setStatusTip(translate('SongUsagePlugin',
                 'Start/Stop live song usage recording'))
         self.SongUsageStatus.setShortcut(u'F4')
         self.SongUsageStatus.setObjectName(u'SongUsageStatus')
