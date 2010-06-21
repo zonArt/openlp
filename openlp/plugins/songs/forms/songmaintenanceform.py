@@ -239,7 +239,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         self._deleteItem(
             self.AuthorsListWidget, self.songmanager.get_author,
             self.songmanager.delete_author, self.resetAuthors,
-            translate(u'SongsPlugin.SongMaintenanceForm', u'Delete Author'),
+            translate('SongsPlugin.SongMaintenanceForm', 'Delete Author'),
             translate(u'SongsPlugin.SongMaintenanceForm', 
                 u'Are you sure you want to delete the selected author?'),
             translate(u'SongsPlugin.SongMaintenanceForm',
@@ -255,7 +255,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         self._deleteItem(
             self.TopicsListWidget, self.songmanager.get_topic,
             self.songmanager.delete_topic, self.resetTopics,
-            translate(u'SongsPlugin.SongMaintenanceForm', u'Delete Topic'),
+            translate('SongsPlugin.SongMaintenanceForm', 'Delete Topic'),
             translate(u'SongsPlugin.SongMaintenanceForm', 
                 u'Are you sure you want to delete the selected topic?'),
             translate(u'SongsPlugin.SongMaintenanceForm', 
@@ -271,10 +271,10 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         self._deleteItem(
             self.BooksListWidget, self.songmanager.get_book,
             self.songmanager.delete_book, self.resetBooks,
-            translate(u'SongsPlugin.SongMaintenanceForm', u'Delete Book'),
+            translate('SongsPlugin.SongMaintenanceForm', 'Delete Book'),
             translate(u'SongsPlugin.SongMaintenanceForm',
                 u'Are you sure you want to delete the selected book?'),
             translate(u'SongsPlugin.SongMaintenanceForm', 
                 u'This book can\'t be deleted, it is currently '
                 u'assigned to at least one song.'),
-            translate(u'SongsPlugin.SongMaintenanceForm', u'No book selected!'))
+            translate('SongsPlugin.SongMaintenanceForm', 'No book selected!'))
