@@ -25,7 +25,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab
+from openlp.core.lib import SettingsTab, translate
 
 class AlertsTab(SettingsTab):
     """
@@ -38,7 +38,7 @@ class AlertsTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'AlertsTab')
-        self.tabTitleVisible = self.trUtf8('Alerts')
+        self.tabTitleVisible = translate('AlertsPlugin.AlertsTab', 'Alerts')
         self.AlertsLayout = QtGui.QHBoxLayout(self)
         self.AlertsLayout.setSpacing(8)
         self.AlertsLayout.setMargin(8)
@@ -186,26 +186,41 @@ class AlertsTab(SettingsTab):
             QtCore.SIGNAL(u'valueChanged(int)'), self.onFontSizeSpinBoxChanged)
 
     def retranslateUi(self):
-        self.FontGroupBox.setTitle(self.trUtf8('Font'))
-        self.FontLabel.setText(self.trUtf8('Font Name:'))
-        self.FontColorLabel.setText(self.trUtf8('Font Color:'))
-        self.BackgroundColorLabel.setText(self.trUtf8('Background Color:'))
-        self.FontSizeLabel.setText(self.trUtf8('Font Size:'))
-        self.FontSizeSpinBox.setSuffix(self.trUtf8('pt'))
-        self.TimeoutLabel.setText(self.trUtf8('Alert timeout:'))
-        self.TimeoutSpinBox.setSuffix(self.trUtf8('s'))
-        self.LocationLabel.setText(self.trUtf8('Location:'))
-        self.PreviewGroupBox.setTitle(self.trUtf8('Preview'))
-        self.FontPreview.setText(self.trUtf8('openlp.org'))
-        self.LocationComboBox.setItemText(0, self.trUtf8('Top'))
-        self.LocationComboBox.setItemText(1, self.trUtf8('Bottom'))
+        self.FontGroupBox.setTitle(
+            translate('AlertsPlugin.AlertsTab', 'Font'))
+        self.FontLabel.setText(
+            translate('AlertsPlugin.AlertsTab', 'Font Name:'))
+        self.FontColorLabel.setText(
+            translate('AlertsPlugin.AlertsTab', 'Font Color:'))
+        self.BackgroundColorLabel.setText(
+            translate('AlertsPlugin.AlertsTab', 'Background Color:'))
+        self.FontSizeLabel.setText(
+            translate('AlertsPlugin.AlertsTab', 'Font Size:'))
+        self.FontSizeSpinBox.setSuffix(
+            translate('AlertsPlugin.AlertsTab', 'pt'))
+        self.TimeoutLabel.setText(
+            translate('AlertsPlugin.AlertsTab', 'Alert timeout:'))
+        self.TimeoutSpinBox.setSuffix(
+            translate('AlertsPlugin.AlertsTab', 's'))
+        self.LocationLabel.setText(
+            translate('AlertsPlugin.AlertsTab', 'Location:'))
+        self.PreviewGroupBox.setTitle(
+            translate('AlertsPlugin.AlertsTab', 'Preview'))
+        self.FontPreview.setText(
+            translate('AlertsPlugin.AlertsTab', 'openlp.org'))
+        self.LocationComboBox.setItemText(0, 
+            translate('AlertsPlugin.AlertsTab', 'Top'))
+        self.LocationComboBox.setItemText(1, 
+            translate('AlertsPlugin.AlertsTab', 'Bottom'))
 
     def onBackgroundColorButtonClicked(self):
-        self.bg_color = QtGui.QColorDialog.getColor(
-            QtGui.QColor(self.bg_color), self).name()
-        self.BackgroundColorButton.setStyleSheet(
-            u'background-color: %s' % self.bg_color)
-        self.updateDisplay()
+        new_color = QtGui.QColorDialog.getColor(
+            QtGui.QColor(self.bg_color), self)
+        if new_color.isValid():
+            self.bg_color = new_color.name()
+            self.BackgroundColorButton.setStyleSheet(
+                u'background-color: %s' % self.bg_color)
+            self.updateDisplay()
 
     def onFontComboBoxClicked(self):
         self.updateDisplay()
@@ -214,11 +229,13 @@ class AlertsTab(SettingsTab):
         self.location = location
 
     def onFontColorButtonClicked(self):
-        self.font_color = QtGui.QColorDialog.getColor(
-            QtGui.QColor(self.font_color), self).name()
-        self.FontColorButton.setStyleSheet(
-            u'background-color: %s' % self.font_color)
-        self.updateDisplay()
+        new_color = QtGui.QColorDialog.getColor(
+            QtGui.QColor(self.font_color), self)
+        if new_color.isValid():
+            self.font_color = new_color.name()
+            self.FontColorButton.setStyleSheet(
+                u'background-color: %s' % self.font_color)
+            self.updateDisplay()
 
     def onTimeoutSpinBoxChanged(self):
         self.timeout = self.TimeoutSpinBox.value()
@@ -277,5 +294,5 @@ class AlertsTab(SettingsTab):
         font.setBold(True)
         font.setPointSize(self.font_size)
         self.FontPreview.setFont(font)
-        self.FontPreview.setStyleSheet(u'background-color: %s; color: %s' % \
+        self.FontPreview.setStyleSheet(u'background-color: %s; color: %s' %
             (self.bg_color, self.font_color))

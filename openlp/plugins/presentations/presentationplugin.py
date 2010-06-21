@@ -26,7 +26,7 @@
 import os
 import logging
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus
+from openlp.core.lib import Plugin, build_icon, PluginStatus, translate
 from openlp.core.utils import AppLocation
 from openlp.plugins.presentations.lib import *
 
@@ -95,10 +95,9 @@ class PresentationPlugin(Plugin):
                     log.debug(u'Importing controller %s', modulename)
                     try:
                         __import__(modulename, globals(), locals(), [])
-                    except ImportError, e:
-                        log.error(
-                            u'Failed to import %s on path %s for reason %s',
-                            modulename, path, e.args[0])
+                    except ImportError:
+                        log.exception(u'Failed to import %s on path %s',
+                            modulename, path)
         controller_classes = PresentationController.__subclasses__()
         for controller_class in controller_classes:
             controller = controller_class(self)
@@ -109,8 +108,10 @@ class PresentationPlugin(Plugin):
             return False
 
     def about(self):
-        about_text = self.trUtf8('<b>Presentation Plugin</b> <br> Delivers '
+        about_text = translate('PresentationPlugin',
+            '<b>Presentation Plugin</b> <br> Delivers '
             'the ability to show presentations using a number of different '
             'programs. The choice of available presentation programs is '
             'available to the user in a drop down box.')
         return about_text
+

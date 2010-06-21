@@ -100,16 +100,17 @@ class PresentationController(object):
         self.docs = []
         self.plugin = plugin
         self.name = name
-        self.settingsSection = self.plugin.settingsSection
+        self.settings_section = self.plugin.settingsSection
         self.available = self.check_available()
         if self.available:
             self.enabled = QtCore.QSettings().value(
-                self.settingsSection + u'/' + name,
-                QtCore.Qt.Unchecked).toInt()[0] == QtCore.Qt.Checked
+                self.settings_section + u'/' + name,
+                QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0] == \
+                    QtCore.Qt.Checked
         else:
             self.enabled = False
         self.thumbnailroot = os.path.join(
-            AppLocation.get_section_data_path(self.settingsSection),
+            AppLocation.get_section_data_path(self.settings_section),
             name, u'thumbnails')
         self.thumbnailprefix = u'slide'
         if not os.path.isdir(self.thumbnailroot):
@@ -123,7 +124,8 @@ class PresentationController(object):
 
     def start_process(self):
         """
-        Loads a running version of the presentation application in the background.
+        Loads a running version of the presentation application in the
+        background.
         """
         pass
 
@@ -151,7 +153,7 @@ class PresentationController(object):
         if doc is None:
             return
         if doc in self.docs:
-           self.docs.remove(doc)
+            self.docs.remove(doc)
 
     def close_presentation(self):
         pass
@@ -231,7 +233,10 @@ class PresentationDocument(object):
         Cleans up/deletes any controller specific files created for
         a file, e.g. thumbnails
         """
-        shutil.rmtree(self.thumbnailpath)
+        try:
+            shutil.rmtree(self.thumbnailpath)
+        except OSError:
+            log.exception(u'Failed to delete presentation controller files')
 
     def store_filename(self, presentation):
         """
@@ -352,7 +357,12 @@ class PresentationDocument(object):
         ``slide_no``
             The slide an image is required for, starting at 1
         """
-        return None
+        path = os.path.join(self.thumbnailpath,
+            self.controller.thumbnailprefix + unicode(slide_no) + u'.png')
+        if os.path.isfile(path):
+            return path
+        else:
+            return None
 
     def poll_slidenumber(self, is_live):
         """
@@ -376,7 +386,7 @@ class PresentationDocument(object):
         Returns the text on the slide
 
         ``slide_no``
-        The slide the text  is required for, starting at 1
+        The slide the text is required for, starting at 1
         """
         return ''
 
@@ -388,3 +398,4 @@ class PresentationDocument(object):
         The slide the notes are required for, starting at 1
         """
         return ''
+

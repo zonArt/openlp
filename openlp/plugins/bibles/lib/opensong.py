@@ -28,7 +28,7 @@ import logging
 from lxml import objectify
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import Receiver, translate
 from db import BibleDB
 
 log = logging.getLogger(__name__)
@@ -50,13 +50,6 @@ class OpenSongBible(BibleDB):
         self.filename = kwargs['filename']
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'bibles_stop_import'), self.stop_import)
-
-    def stop_import(self):
-        """
-        Stops the import of the Bible.
-        """
-        log.debug('Stopping import!')
-        self.stop_import_flag = True
 
     def do_import(self):
         """
@@ -94,10 +87,11 @@ class OpenSongBible(BibleDB):
                         )
                         Receiver.send_message(u'openlp_process_events')
                     self.wizard.incrementProgressBar(
-                        QtCore.QString('%s %s %s' % (self.trUtf8('Importing'),\
+                        QtCore.QString('%s %s %s' % (
+                            translate('BiblesPlugin.Opensong', 'Importing'), \
                             db_book.name, chapter.attrib[u'n'])))
                     self.commit()
-        except:
+        except IOError:
             log.exception(u'Loading bible from OpenSong file failed')
             success = False
         finally:
@@ -108,3 +102,4 @@ class OpenSongBible(BibleDB):
             return False
         else:
             return success
+

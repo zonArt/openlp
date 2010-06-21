@@ -74,7 +74,7 @@ class DisplayWidget(QtGui.QWidget):
             QtCore.Qt.Key_Backspace: 'slidecontroller_live_previous_noloop'}
 
     def keyPressEvent(self, event):
-        if type(event) == QtGui.QKeyEvent:
+        if isinstance(event, QtGui.QKeyEvent):
             #here accept the event and do something
             if event.key() == QtCore.Qt.Key_Up:
                 Receiver.send_message(u'slidecontroller_live_previous')
@@ -116,9 +116,15 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'Initialisation started')
         DisplayWidget.__init__(self, parent)
+        self.setWindowFlags(QtCore.Qt.Window | QtCore.Qt.FramelessWindowHint)
+        self.setWindowState(QtCore.Qt.WindowFullScreen)
         self.parent = parent
         self.setWindowTitle(u'OpenLP Display')
-        self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+        # WA_TranslucentBackground is not available in QT4.4
+        try:
+            self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+        except AttributeError:
+            pass
         self.screens = screens
         self.display_image = QtGui.QLabel(self)
         self.display_image.setScaledContents(True)
@@ -127,7 +133,6 @@ class MainDisplay(DisplayWidget):
         self.display_alert = QtGui.QLabel(self)
         self.display_alert.setScaledContents(True)
         self.primary = True
-        self.displayBlank = False
         self.blankFrame = None
         self.frame = None
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -274,15 +279,15 @@ class MainDisplay(DisplayWidget):
             self.display_alert.setPixmap(frame)
         self.moveToTop()
 
-    def frameView(self, frame, transition=False):
+    def frameView(self, frame, transition=False, display=True):
         """
         Called from a slide controller to display a frame
         if the alert is in progress the alert is added on top
         ``frame``
             Image frame to be rendered
         """
-        log.debug(u'frameView %d' % (self.displayBlank))
-        if not self.displayBlank:
+        log.debug(u'frameView %d' % (display))
+        if display:
             if transition:
                 if self.frame is not None:
                     self.display_text.setPixmap(
@@ -308,8 +313,7 @@ class MainDisplay(DisplayWidget):
                 self.setVisible(True)
                 self.showFullScreen()
         else:
-            self.waitingFrame = frame
-            self.waitingFrameTrans = transition
+            self.storeText = QtGui.QPixmap.fromImage(frame[u'main'])
 
 class VideoDisplay(Phonon.VideoWidget):
     """
@@ -340,8 +344,14 @@ class VideoDisplay(Phonon.VideoWidget):
         self.audioObject = Phonon.AudioOutput(Phonon.VideoCategory)
         Phonon.createPath(self.mediaObject, self)
         Phonon.createPath(self.mediaObject, self.audioObject)
-        self.setWindowFlags(QtCore.Qt.WindowStaysOnBottomHint |
-            QtCore.Qt.FramelessWindowHint | QtCore.Qt.Dialog)
+        flags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Dialog
+        # WindowsStaysOnBottomHint is not available in QT4.4
+        try:
+            flags = flags | QtCore.Qt.WindowStaysOnBottomHint
+        except AttributeError:
+            pass
+        self.setWindowFlags(flags)
+
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'maindisplay_hide'), self.mediaHide)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -363,7 +373,7 @@ class VideoDisplay(Phonon.VideoWidget):
         self.setVisible(False)
 
     def keyPressEvent(self, event):
-        if type(event) == QtGui.QKeyEvent:
+        if isinstance(event, QtGui.QKeyEvent):
             #here accept the event and do something
             if event.key() == QtCore.Qt.Key_Escape:
                 self.onMediaStop()

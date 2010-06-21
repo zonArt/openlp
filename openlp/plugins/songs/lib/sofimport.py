@@ -67,7 +67,7 @@ class SofImport(OooImport):
         Initialise the class. Requires a songmanager class which is passed
         to SongImport for writing song to disk
         """
-        OooImport.__init__(self,songmanager)
+        OooImport.__init__(self, songmanager)
 
     def import_sof(self, filename):
         self.start_ooo()
@@ -332,105 +332,205 @@ class SofImport(OooImport):
         Because someone at Kingsway forgot to check the 1+2 RTF file, 
         some verses were not formatted correctly.
         """
-        if song_number == 11: return 8
-        if song_number == 18: return 5
-        if song_number == 21: return 6
-        if song_number == 23: return 4
-        if song_number == 24: return 7
-        if song_number == 27: return 4
-        if song_number == 31: return 6
-        if song_number == 49: return 4
-        if song_number == 50: return 8
-        if song_number == 70: return 4	
-        if song_number == 75: return 8
-        if song_number == 79: return 6
-        if song_number == 97: return 7
-        if song_number == 107: return 4
-        if song_number == 109: return 4
-        if song_number == 133: return 4
-        if song_number == 155: return 10
-        if song_number == 156: return 8
-        if song_number == 171: return 4
-        if song_number == 188: return 7
-        if song_number == 192: return 4
-        if song_number == 208: return 8
-        if song_number == 215: return 8
-        if song_number == 220: return 4
-        if song_number == 247: return 6
-        if song_number == 248: return 6
-        if song_number == 251: return 8
-        if song_number == 295: return 8
-        if song_number == 307: return 5
-        if song_number == 314: return 6
-        if song_number == 325: return 8
-        if song_number == 386: return 6
-        if song_number == 415: return 4
-        if song_number == 426: return 4
-        if song_number == 434: return 5
-        if song_number == 437: return 4
-        if song_number == 438: return 6
-        if song_number == 456: return 8
-        if song_number == 461: return 4
-        if song_number == 469: return 4
-        if song_number == 470: return 5
-        if song_number == 476: return 6
-        if song_number == 477: return 7
-        if song_number == 480: return 8
-        if song_number == 482: return 4
-        if song_number == 512: return 4
-        if song_number == 513: return 8
-        if song_number == 518: return 5
-        if song_number == 520: return 4
-        if song_number == 523: return 6
-        if song_number == 526: return 8
-        if song_number == 527: return 4
-        if song_number == 529: return 4
-        if song_number == 537: return 4
-        if song_number == 555: return 6
-        if song_number == 581: return 4
-        if song_number == 589: return 6
-        if song_number == 590: return 4
-        if song_number == 593: return 8
-        if song_number == 596: return 4
-        if song_number == 610: return 6
-        if song_number == 611: return 6
-        if song_number == 619: return 8
-        if song_number == 645: return 5
-        if song_number == 653: return 6
-        if song_number == 683: return 7
-        if song_number == 686: return 4
-        if song_number == 697: return 8
-        if song_number == 698: return 4
-        if song_number == 704: return 6
-        if song_number == 716: return 4
-        if song_number == 717: return 6
-        if song_number == 730: return 4
-        if song_number == 731: return 8
-        if song_number == 732: return 8
-        if song_number == 738: return 4
-        if song_number == 756: return 9
-        if song_number == 815: return 6
-        if song_number == 830: return 8
-        if song_number == 831: return 4
-        if song_number == 876: return 6
-        if song_number == 877: return 6
-        if song_number == 892: return 4
-        if song_number == 894: return 6
-        if song_number == 902: return 8
-        if song_number == 905: return 8
-        if song_number == 921: return 6
-        if song_number == 940: return 7
-        if song_number == 955: return 9
-        if song_number == 968: return 8		
-        if song_number == 972: return 7
-        if song_number == 974: return 4
-        if song_number == 988: return 6
-        if song_number == 991: return 5
-        if song_number == 1002: return 8
-        if song_number == 1024: return 8
-        if song_number == 1044: return 9
-        if song_number == 1088: return 6
-        if song_number == 1117: return 6
-        if song_number == 1119: return 7
+        if song_number == 11:
+            return 8
+        if song_number == 18:
+            return 5
+        if song_number == 21:
+            return 6
+        if song_number == 23:
+            return 4
+        if song_number == 24:
+            return 7
+        if song_number == 27:
+            return 4
+        if song_number == 31:
+            return 6
+        if song_number == 49:
+            return 4
+        if song_number == 50:
+            return 8
+        if song_number == 70:
+            return 4	
+        if song_number == 75:
+            return 8
+        if song_number == 79:
+            return 6
+        if song_number == 97:
+            return 7
+        if song_number == 107:
+            return 4
+        if song_number == 109:
+            return 4
+        if song_number == 133:
+            return 4
+        if song_number == 155:
+            return 10
+        if song_number == 156:
+            return 8
+        if song_number == 171:
+            return 4
+        if song_number == 188:
+            return 7
+        if song_number == 192:
+            return 4
+        if song_number == 208:
+            return 8
+        if song_number == 215:
+            return 8
+        if song_number == 220:
+            return 4
+        if song_number == 247:
+            return 6
+        if song_number == 248:
+            return 6
+        if song_number == 251:
+            return 8
+        if song_number == 295:
+            return 8
+        if song_number == 307:
+            return 5
+        if song_number == 314:
+            return 6
+        if song_number == 325:
+            return 8
+        if song_number == 386:
+            return 6
+        if song_number == 415:
+            return 4
+        if song_number == 426:
+            return 4
+        if song_number == 434:
+            return 5
+        if song_number == 437:
+            return 4
+        if song_number == 438:
+            return 6
+        if song_number == 456:
+            return 8
+        if song_number == 461:
+            return 4
+        if song_number == 469:
+            return 4
+        if song_number == 470:
+            return 5
+        if song_number == 476:
+            return 6
+        if song_number == 477:
+            return 7
+        if song_number == 480:
+            return 8
+        if song_number == 482:
+            return 4
+        if song_number == 512:
+            return 4
+        if song_number == 513:
+            return 8
+        if song_number == 518:
+            return 5
+        if song_number == 520:
+            return 4
+        if song_number == 523:
+            return 6
+        if song_number == 526:
+            return 8
+        if song_number == 527:
+            return 4
+        if song_number == 529:
+            return 4
+        if song_number == 537:
+            return 4
+        if song_number == 555:
+            return 6
+        if song_number == 581:
+            return 4
+        if song_number == 589:
+            return 6
+        if song_number == 590:
+            return 4
+        if song_number == 593:
+            return 8
+        if song_number == 596:
+            return 4
+        if song_number == 610:
+            return 6
+        if song_number == 611:
+            return 6
+        if song_number == 619:
+            return 8
+        if song_number == 645:
+            return 5
+        if song_number == 653:
+            return 6
+        if song_number == 683:
+            return 7
+        if song_number == 686:
+            return 4
+        if song_number == 697:
+            return 8
+        if song_number == 698:
+            return 4
+        if song_number == 704:
+            return 6
+        if song_number == 716:
+            return 4
+        if song_number == 717:
+            return 6
+        if song_number == 730:
+            return 4
+        if song_number == 731:
+            return 8
+        if song_number == 732:
+            return 8
+        if song_number == 738:
+            return 4
+        if song_number == 756:
+            return 9
+        if song_number == 815:
+            return 6
+        if song_number == 830:
+            return 8
+        if song_number == 831:
+            return 4
+        if song_number == 876:
+            return 6
+        if song_number == 877:
+            return 6
+        if song_number == 892:
+            return 4
+        if song_number == 894:
+            return 6
+        if song_number == 902:
+            return 8
+        if song_number == 905:
+            return 8
+        if song_number == 921:
+            return 6
+        if song_number == 940:
+            return 7
+        if song_number == 955:
+            return 9
+        if song_number == 968:
+            return 8		
+        if song_number == 972:
+            return 7
+        if song_number == 974:
+            return 4
+        if song_number == 988:
+            return 6
+        if song_number == 991:
+            return 5
+        if song_number == 1002:
+            return 8
+        if song_number == 1024:
+            return 8
+        if song_number == 1044:
+            return 9
+        if song_number == 1088:
+            return 6
+        if song_number == 1117:
+            return 6
+        if song_number == 1119:
+            return 7
         return None
-                    
+

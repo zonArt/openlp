@@ -230,7 +230,7 @@ class EventReceiver(QtCore.QObject):
         self.emit(QtCore.SIGNAL(event), msg)
 
 
-class Receiver():
+class Receiver(object):
     """
     Class to allow events to be passed from different parts of the system. This
     is a static wrapper around the ``EventReceiver`` class. As there is only

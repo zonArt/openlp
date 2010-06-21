@@ -37,7 +37,7 @@ log = logging.getLogger()
 from openlp.core.lib import Receiver
 from openlp.core.resources import qInitResources
 from openlp.core.ui import MainWindow, SplashScreen, ScreenList
-from openlp.core.utils import AppLocation
+from openlp.core.utils import AppLocation, LanguageManager
 
 application_stylesheet = u"""
 QMainWindow::separator
@@ -100,7 +100,7 @@ class OpenLP(QtGui.QApplication):
                 )
             else:
                 log.info(u'Openlp version %s' % app_version[u'version'])
-        except:
+        except IOError:
             log.exception('Error in version file.')
             app_version = {
                 u'full': u'1.9.0-bzr000',
@@ -169,7 +169,7 @@ def main():
     filename = os.path.join(log_path, u'openlp.log')
     logfile = FileHandler(filename, u'w')
     logfile.setFormatter(logging.Formatter(
-        u'%(asctime)s %(name)-20s %(levelname)-8s %(message)s'))
+        u'%(asctime)s %(name)-55s %(levelname)-8s %(message)s'))
     log.addHandler(logfile)
     logging.addLevelName(15, u'Timer')
     # Parse command line options and deal with them.
@@ -190,6 +190,11 @@ def main():
     qInitResources()
     # Now create and actually run the application.
     app = OpenLP(qt_args)
+    #i18n Set Language
+    language = LanguageManager.get_language()
+    appTranslator = LanguageManager.get_translator(language)
+    app.installTranslator(appTranslator)
+
     sys.exit(app.run())
 
 if __name__ == u'__main__':

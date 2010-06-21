@@ -29,7 +29,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    SettingsManager
+    SettingsManager, translate
 from openlp.core.utils import AppLocation
 from openlp.plugins.presentations.lib import MessageListener
 
@@ -61,11 +61,14 @@ class PresentationMediaItem(MediaManagerItem):
         self.message_listener = MessageListener(self)
 
     def initPluginNameVisible(self):
-        self.PluginNameVisible = self.trUtf8('Presentation')
+        self.PluginNameVisible = translate('PresentationPlugin.MediaItem',
+            'Presentation')
 
     def retranslateUi(self):
-        self.OnNewPrompt = self.trUtf8('Select Presentation(s)')
-        self.Automatic = self.trUtf8('Automatic')
+        self.OnNewPrompt = translate('PresentationPlugin.MediaItem',
+            'Select Presentation(s)')
+        self.Automatic = translate('PresentationPlugin.MediaItem',
+            'Automatic')
         fileType = u''
         for controller in self.controllers:
             if self.controllers[controller].enabled:
@@ -74,7 +77,9 @@ class PresentationMediaItem(MediaManagerItem):
                 for type in types:
                     if fileType.find(type) == -1:
                         fileType += u'*%s ' % type
-        self.OnNewFileMasks = self.trUtf8('Presentations (%s)' % fileType)
+                        self.parent.service_manager.supportedSuffixes(type)
+        self.OnNewFileMasks = translate('PresentationPlugin.MediaItem',
+            'Presentations (%s)' % fileType)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -100,7 +105,8 @@ class PresentationMediaItem(MediaManagerItem):
         self.DisplayTypeLabel = QtGui.QLabel(self.PresentationWidget)
         self.DisplayTypeLabel.setObjectName(u'SearchTypeLabel')
         self.DisplayLayout.addWidget(self.DisplayTypeLabel, 0, 0, 1, 1)
-        self.DisplayTypeLabel.setText(self.trUtf8('Present using:'))
+        self.DisplayTypeLabel.setText(
+            translate('PresentationPlugin.MediaItem', 'Present using:'))
         # Add the Presentation widget to the page layout
         self.PageLayout.addWidget(self.PresentationWidget)
 
@@ -108,7 +114,7 @@ class PresentationMediaItem(MediaManagerItem):
         self.servicePath = os.path.join(
             AppLocation.get_section_data_path(self.settingsSection),
             u'thumbnails')
-        self.ListView.setIconSize(QtCore.QSize(88,50))
+        self.ListView.setIconSize(QtCore.QSize(88, 50))
         if not os.path.exists(self.servicePath):
             os.mkdir(self.servicePath)
         list = SettingsManager.load_list(
@@ -130,10 +136,12 @@ class PresentationMediaItem(MediaManagerItem):
         for file in list:
             if currlist.count(file) > 0:
                 continue
-            (path, filename) = os.path.split(unicode(file))
+            filename = os.path.split(unicode(file))[1]
             if titles.count(filename) > 0:
                 QtGui.QMessageBox.critical(
-                    self, self.trUtf8('File exists'), self.trUtf8(
+                    self, translate('PresentationPlugin.MediaItem',
+                    'File exists'),
+                        translate('PresentationPlugin.MediaItem',
                         'A presentation with that filename already exists.'),
                     QtGui.QMessageBox.Ok)
             else:
@@ -166,13 +174,17 @@ class PresentationMediaItem(MediaManagerItem):
                 self.ListView.addItem(item_name)
 
     def onDeleteClick(self):
-        item = self.ListView.currentItem()
-        if item:
+        """
+        Remove a presentation item from the list
+        """
+        if self.checkItemSelected(translate('PresentationPlugin.MediaItem',
+            'You must select an item to delete.')):
+            item = self.ListView.currentItem()
             row = self.ListView.row(item)
             self.ListView.takeItem(row)
             SettingsManager.set_list(self.settingsSection,
                 self.settingsSection, self.getFileList())
-            filepath = unicode((item.data(QtCore.Qt.UserRole)).toString())
+            filepath = unicode(item.data(QtCore.Qt.UserRole).toString())
             #not sure of this has errors
             #John please can you look at .
             for cidx in self.controllers:
@@ -190,7 +202,7 @@ class PresentationMediaItem(MediaManagerItem):
         if shortname:
             for item in items:
                 bitem = self.ListView.item(item.row())
-                filename = unicode((bitem.data(QtCore.Qt.UserRole)).toString())
+                filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
                 if shortname == self.Automatic:
                     service_item.shortname = self.findControllerByType(filename)
                     if not service_item.shortname:

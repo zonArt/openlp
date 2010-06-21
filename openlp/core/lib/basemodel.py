@@ -22,3 +22,19 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+
+class BaseModel(object):
+    """
+    BaseModel provides a base object with a set of generic functions
+    """
+
+    @classmethod
+    def populate(cls, **kwargs):
+        """
+        Creates an instance of a class and populates it, returning the instance
+        """
+        me = cls()
+        for key in kwargs:
+            me.__setattr__(key, kwargs[key])
+        return me
+

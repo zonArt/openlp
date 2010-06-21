@@ -53,7 +53,7 @@ class SettingsManager(object):
         self.slidecontroller_image = self.slidecontroller - 50
 
         self.showPreviewPanel = QtCore.QSettings().value(
-            u'user interface/preview panel', True).toBool()
+            u'user interface/preview panel', QtCore.QVariant(True)).toBool()
 
     def togglePreviewPanel(self, isVisible):
         QtCore.QSettings().setValue(u'user interface/preview panel',
@@ -172,11 +172,12 @@ class SettingsManager(object):
             path = os.path.join(path, section)
         try:
             files = os.listdir(path)
-        except:
+        except OSError:
             return []
         if extension:
-            return [file for file in files
-                if extension == os.path.splitext(file)[1]]
+            return [filename for filename in files
+                if extension == os.path.splitext(filename)[1]]
         else:
             # no filtering required
             return files
+

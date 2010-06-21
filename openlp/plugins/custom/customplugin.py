@@ -26,7 +26,7 @@
 import logging
 
 from forms import EditCustomForm
-from openlp.core.lib import Plugin, build_icon, PluginStatus
+from openlp.core.lib import Plugin, build_icon, PluginStatus, translate
 from openlp.plugins.custom.lib import CustomManager, CustomMediaItem, CustomTab
 
 log = logging.getLogger(__name__)
@@ -67,7 +67,8 @@ class CustomPlugin(Plugin):
         self.remove_toolbox_item()
 
     def about(self):
-        about_text = self.trUtf8('<b>Custom Plugin</b><br>This plugin '
+        about_text = translate('CustomPlugin',
+            '<b>Custom Plugin</b><br>This plugin '
             'allows slides to be displayed on the screen in the same way '
             'songs are. This plugin provides greater freedom over the '
             'songs plugin.<br>')

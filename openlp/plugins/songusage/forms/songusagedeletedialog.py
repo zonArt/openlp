@@ -24,12 +24,13 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+from openlp.core.lib import translate
 
 class Ui_SongUsageDeleteDialog(object):
-    def setupUi(self, AuditDeleteDialog):
-        AuditDeleteDialog.setObjectName(u'AuditDeleteDialog')
-        AuditDeleteDialog.resize(291, 243)
-        self.layoutWidget = QtGui.QWidget(AuditDeleteDialog)
+    def setupUi(self, SongUsageDeleteDialog):
+        SongUsageDeleteDialog.setObjectName(u'SongUsageDeleteDialog')
+        SongUsageDeleteDialog.resize(291, 243)
+        self.layoutWidget = QtGui.QWidget(SongUsageDeleteDialog)
         self.layoutWidget.setGeometry(QtCore.QRect(20, 10, 247, 181))
         self.layoutWidget.setObjectName(u'layoutWidget')
         self.verticalLayout = QtGui.QVBoxLayout(self.layoutWidget)
@@ -41,20 +42,21 @@ class Ui_SongUsageDeleteDialog(object):
             QtGui.QCalendarWidget.NoVerticalHeader)
         self.DeleteCalendar.setObjectName(u'DeleteCalendar')
         self.verticalLayout.addWidget(self.DeleteCalendar)
-        self.buttonBox = QtGui.QDialogButtonBox(AuditDeleteDialog)
+        self.buttonBox = QtGui.QDialogButtonBox(SongUsageDeleteDialog)
         self.buttonBox.setGeometry(QtCore.QRect(30, 210, 245, 25))
         self.buttonBox.setStandardButtons(
             QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(u'buttonBox')
 
-        self.retranslateUi(AuditDeleteDialog)
+        self.retranslateUi(SongUsageDeleteDialog)
         QtCore.QObject.connect(
             self.buttonBox, QtCore.SIGNAL(u'accepted()'),
-            AuditDeleteDialog.accept)
+            SongUsageDeleteDialog.accept)
         QtCore.QObject.connect(
             self.buttonBox, QtCore.SIGNAL(u'rejected()'),
-            AuditDeleteDialog.close)
-        QtCore.QMetaObject.connectSlotsByName(AuditDeleteDialog)
+            SongUsageDeleteDialog.close)
+        QtCore.QMetaObject.connectSlotsByName(SongUsageDeleteDialog)
 
-    def retranslateUi(self, AuditDeleteDialog):
-        AuditDeleteDialog.setWindowTitle(self.trUtf8('Song Usage Delete'))
+    def retranslateUi(self, SongUsageDeleteDialog):
+        SongUsageDeleteDialog.setWindowTitle(
+            translate('SongsPlugin.AuditDeleteDialog', 'Song Usage Delete'))

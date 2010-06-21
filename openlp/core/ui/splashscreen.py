@@ -24,13 +24,15 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import build_icon
+
+from openlp.core.lib import build_icon, translate
 
 class SplashScreen(object):
     def __init__(self, version):
         self.splash_screen = QtGui.QSplashScreen()
         self.setupUi()
-        self.message = self.splash_screen.trUtf8('Starting')\
+        self.message = translate(
+            'Splashscreen',  'Starting')\
             + '..... ' + version
 
     def setupUi(self):
@@ -58,7 +60,7 @@ class SplashScreen(object):
 
     def retranslateUi(self):
         self.splash_screen.setWindowTitle(
-            self.splash_screen.trUtf8('Splash Screen'))
+            translate('Splashscreen', 'Splash Screen'))
 
     def show(self):
         self.splash_screen.show()

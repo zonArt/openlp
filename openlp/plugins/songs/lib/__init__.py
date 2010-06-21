@@ -23,6 +23,74 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+from openlp.core.lib import translate
+
+class VerseType(object):
+    """
+    VerseType provides an enumeration for the tags that may be associated
+    with verses in songs.
+    """
+    Verse = 0
+    Chorus = 1
+    Bridge = 2
+    PreChorus = 3
+    Intro = 4
+    Ending = 5
+    Other = 6
+
+    @staticmethod
+    def to_string(verse_type):
+        """
+        Return a string for a given VerseType
+
+        ``verse_type``
+            The type to return a string for
+        """
+        if verse_type == VerseType.Verse:
+            return translate('VerseType', 'Verse')
+        elif verse_type == VerseType.Chorus:
+            return translate('VerseType', 'Chorus')
+        elif verse_type == VerseType.Bridge:
+            return translate('VerseType', 'Bridge')
+        elif verse_type == VerseType.PreChorus:
+            return translate('VerseType', 'Pre-Chorus')
+        elif verse_type == VerseType.Intro:
+            return translate('VerseType', 'Intro')
+        elif verse_type == VerseType.Ending:
+            return translate('VerseType', 'Ending')
+        elif verse_type == VerseType.Other:
+            return translate('VerseType', 'Other')
+
+    @staticmethod
+    def from_string(verse_type):
+        """
+        Return the VerseType for a given string
+
+        ``verse_type``
+            The string to return a VerseType for
+        """
+        verse_type = verse_type.lower()
+        if verse_type == unicode(VerseType.to_string(VerseType.Verse)).lower():
+            return VerseType.Verse
+        elif verse_type == \
+            unicode(VerseType.to_string(VerseType.Chorus)).lower():
+            return VerseType.Chorus
+        elif verse_type == \
+            unicode(VerseType.to_string(VerseType.Bridge)).lower():
+            return VerseType.Bridge
+        elif verse_type == \
+            unicode(VerseType.to_string(VerseType.PreChorus)).lower():
+            return VerseType.PreChorus
+        elif verse_type == \
+            unicode(VerseType.to_string(VerseType.Intro)).lower():
+            return VerseType.Intro
+        elif verse_type == \
+            unicode(VerseType.to_string(VerseType.Ending)).lower():
+            return VerseType.Ending
+        elif verse_type == \
+            unicode(VerseType.to_string(VerseType.Other)).lower():
+            return VerseType.Other
+
 from manager import SongManager
 from songstab import SongsTab
 from mediaitem import SongMediaItem

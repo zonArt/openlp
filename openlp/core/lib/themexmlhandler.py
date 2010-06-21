@@ -30,7 +30,7 @@ from xml.etree.ElementTree import ElementTree, XML
 
 from openlp.core.lib import str_to_bool
 
-blankthemexml=\
+BLANK_THEME_XML = \
 '''<?xml version="1.0" encoding="utf-8"?>
  <theme version="1.0">
    <name>BlankStyle</name>
@@ -96,8 +96,8 @@ class ThemeXML(object):
             The path name to be added.
         """
         if self.background_filename and path:
-            self.theme_name = self.theme_name.rstrip().lstrip()
-            self.background_filename = self.background_filename.rstrip().lstrip()
+            self.theme_name = self.theme_name.strip()
+            self.background_filename = self.background_filename.strip()
             self.background_filename = os.path.join(path, self.theme_name,
                 self.background_filename)
 
@@ -215,7 +215,7 @@ class ThemeXML(object):
             The height of the text block.
         """
         background = self.theme_xml.createElement(u'font')
-        background.setAttribute(u'type',fonttype)
+        background.setAttribute(u'type', fonttype)
         self.theme.appendChild(background)
         #Create Font name element
         self.child_element(background, u'name', name)
@@ -230,11 +230,12 @@ class ThemeXML(object):
         #Create indentation name element
         self.child_element(background, u'indentation', unicode(indentation))
         #Create indentation name element
-        self.child_element(background, u'line_adjustment', unicode(line_adjustment))
+        self.child_element(
+            background, u'line_adjustment', unicode(line_adjustment))
 
         #Create Location element
         element = self.theme_xml.createElement(u'location')
-        element.setAttribute(u'override',override)
+        element.setAttribute(u'override', override)
         if override == u'True':
             element.setAttribute(u'x', xpos)
             element.setAttribute(u'y', ypos)
@@ -243,7 +244,8 @@ class ThemeXML(object):
         background.appendChild(element)
 
     def add_display(self, shadow, shadow_color, outline, outline_color,
-        horizontal, vertical, wrap, transition, shadow_pixel=5, outline_pixel=2):
+        horizontal, vertical, wrap, transition, shadow_pixel=5,
+        outline_pixel=2):
         """
         Add a Display options.
 
@@ -331,13 +333,14 @@ class ThemeXML(object):
         Pull out the XML string.
         """
         # Print our newly created XML
-        return self.theme_xml.toxml()
+        return self.theme_xml.toxml(u'utf-8').decode(u'utf-8')
 
     def extract_formatted_xml(self):
         """
         Pull out the XML string formatted for human consumption
         """
-        return self.theme_xml.toprettyxml(indent=u'    ', newl=u'\n')
+        return self.theme_xml.toprettyxml(indent=u'    ', newl=u'\n',
+            encoding=u'utf-8')
 
     def parse(self, xml):
         """
@@ -348,13 +351,12 @@ class ThemeXML(object):
         """
         self.base_parse_xml()
         self.parse_xml(xml)
-        self.theme_filename_extended = False
 
     def base_parse_xml(self):
         """
         Pull in the blank theme XML as a starting point.
         """
-        self.parse_xml(blankthemexml)
+        self.parse_xml(BLANK_THEME_XML)
 
     def parse_xml(self, xml):
         """
@@ -363,11 +365,13 @@ class ThemeXML(object):
         ``xml``
             The XML string to parse.
         """
-        theme_xml = ElementTree(element=XML(xml))
-        iter = theme_xml.getiterator()
+        theme_xml = ElementTree(element=XML(xml.encode(u'ascii',
+            u'xmlcharrefreplace')))
+        xml_iter = theme_xml.getiterator()
         master = u''
-        for element in iter:
-            element.text = unicode(element.text).decode('unicode-escape')
+        for element in xml_iter:
+            if not isinstance(element.text, unicode):
+                element.text = unicode(str(element.text), u'utf-8')
             if element.getchildren():
                 master = element.tag + u'_'
             else:
@@ -408,3 +412,4 @@ class ThemeXML(object):
             if key[0:1] != u'_':
                 theme_strings.append(u'%30s: %s' % (key, getattr(self, key)))
         return u'\n'.join(theme_strings)
+

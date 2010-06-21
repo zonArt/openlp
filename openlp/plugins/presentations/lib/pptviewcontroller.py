@@ -73,7 +73,7 @@ class PptviewController(PresentationController):
                 self.start_process()
                 return self.process.CheckInstalled()
             except:
-               return False
+                return False
 
         def start_process(self):
             """
@@ -102,11 +102,10 @@ class PptviewController(PresentationController):
 class PptviewDocument(PresentationDocument):
     def __init__(self, controller, presentation):
         log.debug(u'Init Presentation PowerPoint')
+        PresentationDocument.__init__(self, controller, presentation)
         self.presentation = None
         self.pptid = None
         self.blanked = False
-        self.controller = controller
-        self.store_filename(presentation)
 
     def load_presentation(self):
         """
@@ -126,7 +125,8 @@ class PptviewDocument(PresentationDocument):
         filepath = str(self.filepath.replace(u'/', u'\\'))
         try:
             self.pptid = self.controller.process.OpenPPT(filepath, None, rect,
-                str(os.path.join(self.thumbnailpath, self.controller.thumbnailprefix)))
+                str(os.path.join(self.thumbnailpath,
+                self.controller.thumbnailprefix)))
             self.stop_presentation()
         except:
             log.exception(u'Failed to load presentation')
@@ -234,3 +234,4 @@ class PptviewDocument(PresentationDocument):
             return path
         else:
             return None
+

@@ -33,8 +33,9 @@ from BeautifulSoup import BeautifulSoup, Tag, NavigableString
 
 from openlp.core.lib import Receiver
 from openlp.core.utils import AppLocation
-from common import BibleCommon, SearchResults, unescape
-from db import BibleDB
+from openlp.plugins.bibles.lib.common import BibleCommon, SearchResults, \
+    unescape
+from openlp.plugins.bibles.lib.db import BibleDB
 from openlp.plugins.bibles.lib.models import Book
 
 log = logging.getLogger(__name__)
@@ -136,10 +137,10 @@ class HTTPBooks(object):
             u'verses FROM chapters WHERE book_id = ?', (book[u'id'],))
         if chapters:
             return {
-                u'id': chapters[0][0],
-                u'book_id': chapters[0][1],
-                u'chapter': chapters[0][2],
-                u'verses': chapters[0][3]
+                u'id': chapters[chapter][0],
+                u'book_id': chapters[chapter][1],
+                u'chapter': chapters[chapter][2],
+                u'verses': chapters[chapter][3]
             }
         else:
             return None
@@ -183,7 +184,7 @@ class BGExtract(BibleCommon):
         log.debug(u'init %s', proxyurl)
         self.proxyurl = proxyurl
 
-    def get_bible_chapter(self, version, bookname, chapter) :
+    def get_bible_chapter(self, version, bookname, chapter):
         """
         Access and decode bibles via the BibleGateway website
 
@@ -287,8 +288,7 @@ class CWExtract(BibleCommon):
         ``chapter``
             Chapter number
         """
-        log.debug(u'get_bible_chapter %s,%s,%s',
-            version, bookname, chapter)
+        log.debug(u'get_bible_chapter %s,%s,%s', version, bookname, chapter)
         urlbookname = bookname.replace(u' ', u'-')
         chapter_url = u'http://www.biblestudytools.com/%s/%s/%s.html' % \
             (version, urlbookname.lower(), chapter)
@@ -418,12 +418,13 @@ class HTTPBible(BibleDB):
                     Receiver.send_message(u'bibles_nobook')
                     return []
                 db_book = self.create_book(book_details[u'name'],
-                    book_details[u'abbreviation'], book_details[u'testament_id'])
+                    book_details[u'abbreviation'],
+                    book_details[u'testament_id'])
             book = db_book.name
             if BibleDB.get_verse_count(self, book, reference[1]) == 0:
                 Receiver.send_message(u'bibles_showprogress')
                 Receiver.send_message(u'openlp_process_events')
-                search_results = self.get_chapter(self.name, book, reference[1])
+                search_results = self.get_chapter(book, reference[1])
                 if search_results and search_results.has_verselist():
                     ## We have found a book of the bible lets check to see
                     ## if it was there.  By reusing the returned book name
@@ -433,18 +434,19 @@ class HTTPBible(BibleDB):
                     Receiver.send_message(u'openlp_process_events')
                     # check to see if book/chapter exists
                     db_book = self.get_book(bookname)
-                    self.create_chapter(db_book.id, search_results.get_chapter(),
+                    self.create_chapter(db_book.id,
+                        search_results.get_chapter(),
                         search_results.get_verselist())
                     Receiver.send_message(u'openlp_process_events')
                 Receiver.send_message(u'bibles_hideprogress')
             Receiver.send_message(u'openlp_process_events')
         return BibleDB.get_verses(self, reference_list)
 
-    def get_chapter(self, version, book, chapter):
+    def get_chapter(self, book, chapter):
         """
         Receive the request and call the relevant handler methods
         """
-        log.debug(u'get_chapter %s, %s, %s', version, book, chapter)
+        log.debug(u'get_chapter %s, %s', book, chapter)
         log.debug(u'source = %s', self.download_source)
         try:
             if self.download_source.lower() == u'crosswalk':
@@ -460,7 +462,8 @@ class HTTPBible(BibleDB):
         """
         Return the list of books.
         """
-        return [Book.populate(name=book['name']) for book in HTTPBooks.get_books()]
+        return [Book.populate(name=book['name'])
+            for book in HTTPBooks.get_books()]
 
     def lookup_book(self, book):
         """

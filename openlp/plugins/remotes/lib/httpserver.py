@@ -191,7 +191,7 @@ class HttpConnection(object):
         path = os.path.normpath(os.path.join(self.parent.html_dir, filename))
         if not path.startswith(self.parent.html_dir):
             return None
-        (fileroot, ext) = os.path.splitext(filename)
+        ext = os.path.splitext(filename)[1]
         if ext == u'.html':
             mimetype = u'text/html'
         elif ext == u'.css':
@@ -206,14 +206,17 @@ class HttpConnection(object):
             mimetype = u'image/png'
         else:
             return (None, None)
+        file_handle = None
         try:
-            f = open(path, u'rb')
-        except:
+            file_handle = open(path, u'rb')
+            log.debug(u'Opened %s' % path)
+            html = file_handle.read()
+        except IOError:
             log.exception(u'Failed to open %s' % path)
             return None
-        log.debug(u'Opened %s' % path)
-        html = f.read()
-        f.close()
+        finally:
+            if file_handle:
+                file_handle.close()
         return (mimetype, html)
 
     def load_params(self, query):
@@ -314,7 +317,7 @@ class HttpConnection(object):
         """
         if not self.socket:
             return
-        html = self.send_408_timeout()
+        self.send_408_timeout()
         self.close()
                 
     def disconnected(self):
@@ -334,4 +337,3 @@ class HttpConnection(object):
         self.socket.close()
         self.socket = None
         self.parent.close_connection(self)
-

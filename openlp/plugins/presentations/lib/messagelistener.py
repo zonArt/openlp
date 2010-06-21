@@ -29,6 +29,7 @@ import os
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver
+from openlp.core.ui import HideMode
 
 log = logging.getLogger(__name__)
 
@@ -55,7 +56,7 @@ class Controller(object):
             self.doc.start_presentation()
             if isBlank:
                 self.blank()
-            Receiver.send_message(u'maindisplay_hide')
+            Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
         self.doc.slidenumber = 0
 
     def activate(self):
@@ -179,6 +180,7 @@ class Controller(object):
             self.doc.slidenumber != self.doc.get_slide_number():
             self.doc.goto_slide(self.doc.slidenumber)
         self.doc.unblank_screen()
+        Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
 
     def poll(self):
         self.doc.poll_slidenumber(self.isLive)
@@ -256,35 +258,35 @@ class MessageListener(object):
             self.previewHandler.slide(slide, isLive)
 
     def first(self, message):
-        isLive, item = self.decode_message(message)
+        isLive = self.decode_message(message)[0]
         if isLive:
             self.liveHandler.first()
         else:
             self.previewHandler.first()
 
     def last(self, message):
-        isLive, item = self.decode_message(message)
+        isLive = self.decode_message(message)[0]
         if isLive:
             self.liveHandler.last()
         else:
             self.previewHandler.last()
 
     def next(self, message):
-        isLive, item = self.decode_message(message)
+        isLive = self.decode_message(message)[0]
         if isLive:
             self.liveHandler.next()
         else:
             self.previewHandler.next()
 
     def previous(self, message):
-        isLive, item = self.decode_message(message)
+        isLive = self.decode_message(message)[0]
         if isLive:
             self.liveHandler.previous()
         else:
             self.previewHandler.previous()
 
     def shutdown(self, message):
-        isLive, item = self.decode_message(message)
+        isLive = self.decode_message(message)[0]
         if isLive:
             Receiver.send_message(u'maindisplay_show')
             self.liveHandler.shutdown()
@@ -292,17 +294,17 @@ class MessageListener(object):
             self.previewHandler.shutdown()
 
     def hide(self, message):
-        isLive, item = self.decode_message(message)
+        isLive = self.decode_message(message)[0]
         if isLive:
             self.liveHandler.stop()
 
     def blank(self, message):
-        isLive, item = self.decode_message(message)
+        isLive = self.decode_message(message)[0]
         if isLive:
             self.liveHandler.blank()
 
     def unblank(self, message):
-        isLive, item = self.decode_message(message)
+        isLive = self.decode_message(message)[0]
         if isLive:
             self.liveHandler.unblank()
 

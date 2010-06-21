@@ -25,7 +25,6 @@
 
 import os
 import sys
-from types import StringType, NoneType, UnicodeType
 
 from xml.etree.ElementTree import ElementTree, XML
 
@@ -42,7 +41,7 @@ class XmlRootClass(object):
 
         (element.tag, val) = self.post_tag_hook(element.tag, val)
     """
-    def _setFromXml(self, xml, root_tag):
+    def _set_from_xml(self, xml, root_tag):
         """
         Set song properties from given xml content.
 
@@ -52,15 +51,13 @@ class XmlRootClass(object):
             The root tag of the xml.
         """
         root = ElementTree(element=XML(xml))
-        iter = root.getiterator()
-        for element in iter:
+        xml_iter = root.getiterator()
+        for element in xml_iter:
             if element.tag != root_tag:
                 text = element.text
-                if type(text) is NoneType:
+                if text is None:
                     val = text
-                elif type(text) is UnicodeType :
-                    val = text
-                elif type(text) is StringType:
+                elif isinstance(text, basestring):
                     # Strings need special handling to sort the colours out
                     if text[0] == u'$':
                         # This might be a hex number, let's try to convert it.
@@ -76,7 +73,8 @@ class XmlRootClass(object):
                             # Ok, it seems to be a string.
                             val = text
                     if hasattr(self, u'post_tag_hook'):
-                        (element.tag, val) = self.post_tag_hook(element.tag, val)
+                        (element.tag, val) = \
+                            self.post_tag_hook(element.tag, val)
                 setattr(self, element.tag, val)
 
     def __str__(self):
@@ -90,7 +88,8 @@ class XmlRootClass(object):
         attributes = []
         for attrib in dir(self):
             if not attrib.startswith(u'_'):
-                attributes.append(u'%30s : %s' % (attrib, getattr(self, attrib)))
+                attributes.append(
+                    u'%30s : %s' % (attrib, getattr(self, attrib)))
         return u'\n'.join(attributes)
 
     def _get_as_string(self):
@@ -102,3 +101,4 @@ class XmlRootClass(object):
             if not attrib.startswith(u'_'):
                 result += u'_%s_' % getattr(self, attrib)
         return result
+

@@ -145,7 +145,7 @@ class Renderer(object):
         return split_text
 
     def pre_render_text(self, text):
-        metrics = QtGui.QFontMetrics(self.mainFont)
+        metrics = QtGui.QFontMetrics(self.main_font)
         #work out line width
         line_width = self._rect.width()
         #number of lines on a page - adjust for rounding up.
@@ -189,7 +189,8 @@ class Renderer(object):
                             pos = split_text.rfind(u' ')
                             #no more spaces and we are still too long
                             if pos == -1:
-                                while metrics.width(split_text, -1) > line_width:
+                                while \
+                                    metrics.width(split_text, -1) > line_width:
                                     split_text = split_text[:-1]
                                     pos = len(split_text)
                             else:
@@ -199,12 +200,14 @@ class Renderer(object):
                 #if we have more text add up to 10 spaces on the front.
                 if line and self._theme.font_main_indentation > 0:
                     line = u'%s%s' % \
-                        (u'          '[:int(self._theme.font_main_indentation)], line)
+                        (u'          '[:int(self._theme.font_main_indentation)],
+                        line)
                 #Text fits in a line now
         for count, line in enumerate(split_lines):
             page.append(line)
             #last but one line and only 2 lines to go or end of page
-            if (len(page) == page_length - 1 and len(split_lines) - 3 == count) or \
+            if (len(page) == page_length - 1 and
+                len(split_lines) - 3 == count) or \
                 len(page) == page_length:
                 split_pages.append(page)
                 page = []
@@ -245,7 +248,7 @@ class Renderer(object):
         self.frame = QtGui.QImage(self.bg_frame)
         if self._theme.display_slideTransition:
             self.frame_opaque = QtGui.QImage(self.bg_frame)
-        x, y = self._correctAlignment(self._rect, bbox)
+        x, y = self._correct_alignment(self._rect, bbox)
         bbox = self._render_lines_unaligned(lines, False, (x, y), True)
         if footer_lines:
             bbox = self._render_lines_unaligned(footer_lines, True,
@@ -301,15 +304,15 @@ class Renderer(object):
                 gradient.setColorAt(1,
                     QtGui.QColor(self._theme.background_endColor))
                 painter.setBrush(QtGui.QBrush(gradient))
-                rectPath = QtGui.QPainterPath()
+                rect_path = QtGui.QPainterPath()
                 max_x = self.frame.width()
                 max_y = self.frame.height()
-                rectPath.moveTo(0, 0)
-                rectPath.lineTo(0, max_y)
-                rectPath.lineTo(max_x, max_y)
-                rectPath.lineTo(max_x, 0)
-                rectPath.closeSubpath()
-                painter.drawPath(rectPath)
+                rect_path.moveTo(0, 0)
+                rect_path.lineTo(0, max_y)
+                rect_path.lineTo(max_x, max_y)
+                rect_path.lineTo(max_x, 0)
+                rect_path.closeSubpath()
+                painter.drawPath(rect_path)
             elif self._theme.background_type == u'image':
                 # image
                 painter.fillRect(self.frame.rect(), QtCore.Qt.black)
@@ -318,7 +321,7 @@ class Renderer(object):
         painter.end()
         log.debug(u'render background End')
 
-    def _correctAlignment(self, rect, bbox):
+    def _correct_alignment(self, rect, bbox):
         """
         Corrects the vertical alignment of text.
 
@@ -465,7 +468,7 @@ class Renderer(object):
                     self._get_extent_and_render(line, footer,
                         tlcorner=(x + display_shadow_size,
                             y + display_shadow_size),
-                            draw=True, color = self._theme.display_shadow_color)
+                            draw=True, color=self._theme.display_shadow_color)
                 self._get_extent_and_render(line, footer, tlcorner=(x, y),
                         draw=True, outline_size=display_outline_size)
             y += h
@@ -474,7 +477,7 @@ class Renderer(object):
         # draw a box around the text - debug only
 
         if self._debug:
-            self.painter.setPen(QtGui.QPen(QtGui.QColor(0,255,0)))
+            self.painter.setPen(QtGui.QPen(QtGui.QColor(0, 255, 0)))
             self.painter.drawRect(startx, starty, rightextent-startx, y-starty)
         brcorner = (rightextent, y)
         self.painter.end()
@@ -490,19 +493,19 @@ class Renderer(object):
         if self._theme.font_footer_weight == u'Bold':
             footer_weight = 75
         #TODO Add  myfont.setPixelSize((screen_height / 100) * font_size)
-        self.footerFont = QtGui.QFont(self._theme.font_footer_name,
+        self.footer_font = QtGui.QFont(self._theme.font_footer_name,
                      self._theme.font_footer_proportion, # size
                      footer_weight, # weight
                      self._theme.font_footer_italics) # italic
-        self.footerFont.setPixelSize(self._theme.font_footer_proportion)
+        self.footer_font.setPixelSize(self._theme.font_footer_proportion)
         main_weight = 50
         if self._theme.font_main_weight == u'Bold':
             main_weight = 75
-        self.mainFont = QtGui.QFont(self._theme.font_main_name,
+        self.main_font = QtGui.QFont(self._theme.font_main_name,
                      self._theme.font_main_proportion, # size
                      main_weight, # weight
                      self._theme.font_main_italics)# italic
-        self.mainFont.setPixelSize(self._theme.font_main_proportion)
+        self.main_font.setPixelSize(self._theme.font_main_proportion)
 
     def _get_extent_and_render(self, line, footer, tlcorner=(0, 0), draw=False,
         color=None, outline_size=0):
@@ -527,13 +530,16 @@ class Renderer(object):
             Defaults to *None*. The colour to draw with.
         """
         # setup defaults
-        if footer :
-            font = self.footerFont
+        if footer:
+            font = self.footer_font
         else:
-            font = self.mainFont
+            font = self.main_font
         metrics = QtGui.QFontMetrics(font)
         w = metrics.width(line)
-        h = metrics.height() + int(self._theme.font_main_line_adjustment)
+        if footer:
+            h = metrics.height()
+        else:
+            h = metrics.height() + int(self._theme.font_main_line_adjustment)
         if draw:
             self.painter.setFont(font)
             if color is None:
@@ -556,7 +562,8 @@ class Renderer(object):
             self.painter.drawText(x, rowpos, line)
             if self._theme.display_slideTransition:
                 # Print 2nd image with 70% weight
-                if self._theme.display_outline and outline_size != 0 and not footer:
+                if self._theme.display_outline and outline_size != 0 and \
+                    not footer:
                     path = QtGui.QPainterPath()
                     path.addText(QtCore.QPointF(x, rowpos), font, line)
                     self.painter2.setBrush(self.painter2.pen().brush())
@@ -569,7 +576,7 @@ class Renderer(object):
                 self.painter2.drawText(x, rowpos, line)
         return (w, h)
 
-    def snoop_Image(self, image, image2=None):
+    def snoop_image(self, image, image2=None):
         """
         Debugging method to allow images to be viewed.
 

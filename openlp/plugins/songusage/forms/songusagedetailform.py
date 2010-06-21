@@ -28,17 +28,18 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsManager
+from openlp.core.lib import SettingsManager, translate
 
 from songusagedetaildialog import Ui_SongUsageDetailDialog
 
 log = logging.getLogger(__name__)
 
 class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
-    log.info(u'SongUsage Detail Form loaded')
     """
     Class documentation goes here.
     """
+    log.info(u'SongUsage Detail Form Loaded')
+
     def __init__(self, parent=None):
         """
         Constructor
@@ -60,7 +61,8 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
 
     def defineOutputLocation(self):
         path = QtGui.QFileDialog.getExistingDirectory(self,
-            self.trUtf8('Output File Location'),
+            translate('SongsPlugin.SongUsageDetailForm',
+                'Output File Location'),
             SettingsManager.get_last_dir(self.parent.settingsSection, 1))
         path = unicode(path)
         if path != u'':
@@ -69,12 +71,11 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
 
     def accept(self):
         log.debug(u'Detailed report generated')
-        filename = u'usage_detail_%s_%s.txt' % \
-            (self.FromDate.selectedDate().toString(u'ddMMyyyy'),
-             self.ToDate.selectedDate().toString(u'ddMMyyyy'))
-        usage = self.parent.songusagemanager.get_all_songusage(\
-                                    self.FromDate.selectedDate(), \
-                                    self.ToDate.selectedDate())
+        filename = u'usage_detail_%s_%s.txt' % (
+            self.FromDate.selectedDate().toString(u'ddMMyyyy'),
+            self.ToDate.selectedDate().toString(u'ddMMyyyy'))
+        usage = self.parent.songusagemanager.get_all_songusage(
+            self.FromDate.selectedDate(), self.ToDate.selectedDate())
         outname = os.path.join(unicode(self.FileLineEdit.text()), filename)
         file = None
         try:
@@ -84,7 +85,7 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
                     (instance.usagedate,instance.usagetime, instance.title,
                     instance.copyright, instance.ccl_number , instance.authors)
                 file.write(record)
-        except:
+        except IOError:
             log.exception(u'Failed to write out song usage records')
         finally:
             if file:

@@ -25,7 +25,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, Receiver
+from openlp.core.lib import SettingsTab, Receiver, translate
 
 class GeneralTab(SettingsTab):
     """
@@ -44,7 +44,7 @@ class GeneralTab(SettingsTab):
         settings = QtCore.QSettings()
         settings.beginGroup(self.settingsSection)
         self.MonitorNumber = settings.value(u'monitor',
-            QtCore.QVariant(self.screens.monitor_number)).toInt()[0]
+            QtCore.QVariant(self.screens.display_count - 1)).toInt()[0]
         self.screens.set_current_display(self.MonitorNumber)
         self.screens.monitor_number = self.MonitorNumber
         self.DisplayOnMonitor = settings.value(
@@ -54,7 +54,7 @@ class GeneralTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'GeneralTab')
-        self.tabTitleVisible = self.trUtf8('General')
+        self.tabTitleVisible = translate('GeneralTab', 'General')
         self.GeneralLayout = QtGui.QHBoxLayout(self)
         self.GeneralLayout.setSpacing(8)
         self.GeneralLayout.setMargin(8)
@@ -177,25 +177,32 @@ class GeneralTab(SettingsTab):
             QtCore.SIGNAL(u'editingFinished()'), self.onPasswordEditLostFocus)
 
     def retranslateUi(self):
-        self.MonitorGroupBox.setTitle(self.trUtf8('Monitors'))
+        self.MonitorGroupBox.setTitle(translate('GeneralTab', 'Monitors'))
         self.MonitorLabel.setText(
-            self.trUtf8('Select monitor for output display:'))
+            translate('GeneralTab', 'Select monitor for output display:'))
         self.DisplayOnMonitorCheck.setText(
-            self.trUtf8('Display if a single screen'))
-        self.StartupGroupBox.setTitle(self.trUtf8('Application Startup'))
-        self.WarningCheckBox.setText(self.trUtf8('Show blank screen warning'))
+            translate('GeneralTab', 'Display if a single screen'))
+        self.StartupGroupBox.setTitle(
+            translate('GeneralTab', 'Application Startup'))
+        self.WarningCheckBox.setText(
+            translate('GeneralTab', 'Show blank screen warning'))
         self.AutoOpenCheckBox.setText(
-            self.trUtf8('Automatically open the last service'))
-        self.ShowSplashCheckBox.setText(self.trUtf8('Show the splash screen'))
-        self.SettingsGroupBox.setTitle(self.trUtf8('Application Settings'))
+            translate('GeneralTab', 'Automatically open the last service'))
+        self.ShowSplashCheckBox.setText(
+            translate('GeneralTab', 'Show the splash screen'))
+        self.SettingsGroupBox.setTitle(
+            translate('GeneralTab', 'Application Settings'))
         self.SaveCheckServiceCheckBox.setText(
-            self.trUtf8('Prompt to save Service before starting New'))
+            translate('GeneralTab', 
+            'Prompt to save Service before starting New'))
         self.AutoPreviewCheckBox.setText(
-            self.trUtf8('Preview Next Song from Service Manager'))
-        self.CCLIGroupBox.setTitle(self.trUtf8('CCLI Details'))
-        self.NumberLabel.setText(self.trUtf8('CCLI Number:'))
-        self.UsernameLabel.setText(self.trUtf8('SongSelect Username:'))
-        self.PasswordLabel.setText(self.trUtf8('SongSelect Password:'))
+            translate('GeneralTab', 'Preview Next Song from Service Manager'))
+        self.CCLIGroupBox.setTitle(translate('GeneralTab', 'CCLI Details'))
+        self.NumberLabel.setText(translate('GeneralTab', 'CCLI Number:'))
+        self.UsernameLabel.setText(
+            translate('GeneralTab', 'SongSelect Username:'))
+        self.PasswordLabel.setText(
+            translate('GeneralTab', 'SongSelect Password:'))
 
     def onMonitorComboBoxChanged(self):
         self.MonitorNumber = self.MonitorComboBox.currentIndex()
@@ -231,10 +238,11 @@ class GeneralTab(SettingsTab):
         settings = QtCore.QSettings()
         settings.beginGroup(self.settingsSection)
         for screen in self.screens.screen_list:
-            screen_name = u'%s %d' % (self.trUtf8('Screen'),
+            screen_name = u'%s %d' % (translate('GeneralTab', 'Screen'),
                 screen[u'number'] + 1)
             if screen[u'primary']:
-                screen_name = u'%s (%s)' % (screen_name, self.trUtf8('primary'))
+                screen_name = u'%s (%s)' % (screen_name, 
+                    translate('GeneralTab', 'primary'))
             self.MonitorComboBox.addItem(screen_name)
         # Get the configs
         self.Warning = settings.value(

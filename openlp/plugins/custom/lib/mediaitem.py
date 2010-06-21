@@ -28,7 +28,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, SongXMLParser, BaseListWithDnD, \
-    Receiver, ItemCapabilities
+    Receiver, ItemCapabilities, translate
 
 log = logging.getLogger(__name__)
 
@@ -66,11 +66,10 @@ class CustomMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'custom_preview'), self.onPreviewClick)
 
     def initPluginNameVisible(self):
-        self.PluginNameVisible = self.trUtf8('Custom')
+        self.PluginNameVisible = translate('CustomPlugin.MediaItem', 'Custom')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
-        self.hasFileIcon = False
 
     def initialise(self):
         self.loadCustomListView(self.parent.custommanager.get_all_slides())
@@ -116,16 +115,24 @@ class CustomMediaItem(MediaManagerItem):
             self.parent.edit_custom_form.exec_()
 
     def onEditClick(self):
-        item = self.ListView.currentItem()
-        if item:
+        """
+        Edit a custom item
+        """
+        if self.checkItemSelected(translate('CustomPlugin.MediaItem',
+            'You must select an item to edit.')):
+            item = self.ListView.currentItem()
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.parent.edit_custom_form.loadCustom(item_id, False)
             self.parent.edit_custom_form.exec_()
             self.initialise()
 
     def onDeleteClick(self):
-        item = self.ListView.currentItem()
-        if item:
+        """
+        Remove a custom item from the list and database
+        """
+        if self.checkItemSelected(translate('CustomPlugin.MediaItem',
+            'You must select an item to delete.')):
+            item = self.ListView.currentItem()
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.parent.custommanager.delete_custom(item_id)
             row = self.ListView.row(item)

@@ -78,20 +78,13 @@ class OSISBible(BibleDB):
                 book = line.split(u',')
                 self.books[book[0]] = (book[1].lstrip().rstrip(),
                     book[2].lstrip().rstrip())
-        except:
+        except IOError:
             log.exception(u'OSIS bible import failed')
         finally:
             if fbibles:
                 fbibles.close()
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'bibles_stop_import'), self.stop_import)
-
-    def stop_import(self):
-        """
-        Stops the import of the Bible.
-        """
-        log.debug('Stopping import!')
-        self.stop_import_flag = True
 
     def do_import(self):
         """
@@ -104,7 +97,7 @@ class OSISBible(BibleDB):
         try:
             detect_file = open(self.filename, u'r')
             details = chardet.detect(detect_file.read())
-        except:
+        except IOError:
             log.exception(u'Failed to detect OSIS file encoding')
             return
         finally:
@@ -173,7 +166,7 @@ class OSISBible(BibleDB):
             self.wizard.incrementProgressBar(u'Finishing import...')
             if match_count == 0:
                 success = False
-        except:
+        except (ValueError, IOError):
             log.exception(u'Loading bible from OSIS file failed')
             success = False
         finally:
@@ -184,3 +177,4 @@ class OSISBible(BibleDB):
             return False
         else:
             return success
+

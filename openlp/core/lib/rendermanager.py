@@ -181,7 +181,8 @@ class RenderManager(object):
         footer.append(u'CCLI 123456')
         formatted = self.renderer.format_slide(verse, False)
         #Only Render the first slide page returned
-        return self.renderer.generate_frame_from_lines(formatted[0], footer)[u'main']
+        return self.renderer.generate_frame_from_lines(formatted[0],
+            footer)[u'main']
 
     def format_slide(self, words):
         """
