@@ -91,10 +91,9 @@ class SongsPlugin(Plugin):
         self.SongImportItem = QtGui.QAction(import_menu)
         self.SongImportItem.setObjectName(u'SongImportItem')
         self.SongImportItem.setText(translate(
-            u'SongsPlugin', u'&Song'))
-        self.SongImportItem.setToolTip(
-            translate('SongsPlugin',
-                'Import songs using the import wizard.'))
+            'SongsPlugin', '&Song'))
+        self.SongImportItem.setToolTip(translate('SongsPlugin',
+            'Import songs using the import wizard.'))
         import_menu.addAction(self.SongImportItem)
         # Songs of Fellowship import menu item - will be removed and the
         # functionality will be contained within the import wizard

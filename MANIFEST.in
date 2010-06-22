@@ -1,6 +1,8 @@
 recursive-include openlp *.py
 recursive-include openlp *.sqlite
 recursive-include openlp *.csv
+recursive-include openlp *.html
+recursive-include openlp *.js
 recursive-include documentation *
 recursive-include resources/forms *
 recursive-include resources/i18n *
