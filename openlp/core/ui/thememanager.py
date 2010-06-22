@@ -66,7 +66,7 @@ class ThemeManager(QtGui.QWidget):
             translate('ThemeManager', 'Delete a theme.'), self.onDeleteTheme)
         self.Toolbar.addSeparator()
         self.Toolbar.addToolbarButton(
-            translate('ThemeManager', 'Import Theme'), 
+            translate('ThemeManager', 'Import Theme'),
             u':/general/general_import.png',
             translate('ThemeManager', 'Import a theme.'), self.onImportTheme)
         self.Toolbar.addToolbarButton(
@@ -211,7 +211,7 @@ class ThemeManager(QtGui.QWidget):
             else:
                 for plugin in self.parent.plugin_manager.plugins:
                     if not plugin.can_delete_theme(theme):
-                        QtGui.QMessageBox.critical(self, 
+                        QtGui.QMessageBox.critical(self,
                             translate('ThemeManager', 'Error'),
                             unicode(translate('ThemeManager',
                                 'Theme %s is use in %s plugin.')) % \
@@ -248,7 +248,7 @@ class ThemeManager(QtGui.QWidget):
         """
         item = self.ThemeListWidget.currentItem()
         if item is None:
-            QtGui.QMessageBox.critical(self, 
+            QtGui.QMessageBox.critical(self,
                 translate('ThemeManager', 'Error'),
                 translate('ThemeManager', 'You have not selected a theme.'))
             return
