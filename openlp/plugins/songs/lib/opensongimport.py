@@ -48,6 +48,7 @@ class OpenSongImport:
 
     or:
     <lyrics>
+    [V]
     1List of words
     2Some words for the 2nd Verse
 
@@ -55,9 +56,9 @@ class OpenSongImport:
     2etc...
     </lyrics>
 
-    Either or both forms can be used in one song.
+    Either or both forms can be used in one song.  The Number does not necessarily appear at the start of the line
 
-    The [v1] labels can have either upper or loewr case Vs
+    The [v1] labels can have either upper or lower case Vs
     Other labels can be used also:
       C - Chorus
       B - Bridge
@@ -134,7 +135,7 @@ class OpenSongImport:
                     versenum=int(l[2:right_bracket])
                     versetag=u'%s%d'%(versetype,versenum)
                 else:
-                    versenum = None # allow error trap
+                    versenum = 1
                 continue
             words=None
 
@@ -180,6 +181,7 @@ class OpenSongImport:
             assert len(our_verse_order)>0
             order=our_verse_order
         for tag in order:
+            print tag
             if not versetags.has_key(tag):
                 raise OpenSongImportError
             else:

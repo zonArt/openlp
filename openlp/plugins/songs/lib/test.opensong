@@ -27,10 +27,12 @@
 [b1]
  Bridge 1
  Bridge 1 line 2
-[C1]
+[C]
+. A     B
  Chorus 1
  
 [C2]
+.  A    B
  Chorus 2
  </lyrics>
   <style index="default_style">
