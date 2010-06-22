@@ -4,7 +4,7 @@
   <author>Martin Thompson</author>
   <copyright>2010 Martin Thompson</copyright>
   <hymn_number>1</hymn_number>
-  <presentation>V1 C1 V2 C2 B1 V1</presentation>
+  <presentation>V1 C V2 C2 V3 B1 V1</presentation>
   <ccli>Blah</ccli>
   <capo print="false"></capo>
   <key></key>
@@ -24,6 +24,10 @@
 1 V1 Line 2
 2 V2 Line 2
  
+[3]
+V3 Line 1
+V3 Line 2
+
 [b1]
  Bridge 1
  Bridge 1 line 2

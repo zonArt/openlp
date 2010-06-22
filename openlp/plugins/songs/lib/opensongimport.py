@@ -30,6 +30,9 @@ from songimport import SongImport
 from lxml.etree import Element
 from lxml import objectify
 
+class OpenSongImportError(Exception):
+    pass
+
 class OpenSongImport:
     """
     Import songs exported from OpenSong - the format is described loosly here:
@@ -46,6 +49,7 @@ class OpenSongImport:
     etc...
     </lyrics>
 
+    The 'v' can be left out - it is implied
     or:
     <lyrics>
     [V]
@@ -114,41 +118,43 @@ class OpenSongImport:
         verses_seen={}
         # in the absence of any other indication, verses are the default, erm, versetype!
         versetype=u'V'
-        for l in lyrics.split('\n'):
+        for l in lyrics.split(u'\n'):
             # remove comments
-            semicolon = l.find(';')
+            semicolon = l.find(u';')
             if semicolon >= 0:
                 l=l[:semicolon]
             l=l.strip()
-            if l=='':
+            if l==u'':
                 continue
             # skip inline guitar chords
             if l[0] == u'.':
                 continue
-
+            
             # verse/chorus/etc. marker
             if l[0] == u'[':
                 versetype=l[1].upper()
-                if l[2] != u']':
+                if versetype.isdigit():
+                    versenum=versetype
+                    versetype=u'V'
+                elif l[2] != u']':
                     # there's a number to go with it - extract that as well
                     right_bracket=l.find(u']')
-                    versenum=int(l[2:right_bracket])
-                    versetag=u'%s%d'%(versetype,versenum)
+                    versenum=l[2:right_bracket]
                 else:
-                    versenum = 1
+                    versenum = u''
                 continue
             words=None
 
             # number at start of line.. it's verse number
-            if l[0] >= u'0' and l[0] <= u'9':
-                versenum=int(l[0])
+            if l[0].isdigit():
+                versenum=l[0]
                 words=l[1:].strip()
-                versetag=u'%s%d'%(versetype,versenum)
             if words is None and \
                    versenum is not None and \
                    versetype is not None:
                 words=l
             if versenum is not None:
+                versetag=u'%s%s'%(versetype,versenum)
                 if not verses.has_key(versetype):
                     verses[versetype]={}
                 if not verses[versetype].has_key(versenum):
@@ -174,15 +180,15 @@ class OpenSongImport:
                 self.song.verses.append([versetag, lines])
                 versetags[versetag]=1 # keep track of what we have for error checking later
         # now figure out the presentation order
-        if 'presentation' in fields and root.presentation != u'':
+        if u'presentation' in fields and root.presentation != u'':
             order=unicode(root.presentation)
             order=order.split()
         else:
             assert len(our_verse_order)>0
             order=our_verse_order
         for tag in order:
-            print tag
             if not versetags.has_key(tag):
+                print u'Got order', tag, u'but not in versetags, skipping'
                 raise OpenSongImportError
             else:
                 self.song.verse_order_list.append(tag)
