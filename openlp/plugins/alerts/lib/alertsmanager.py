@@ -79,7 +79,7 @@ class AlertsManager(QtCore.QObject):
             self.displayAlert(message[0])
         else:
             self.displayAlert(u'')
-            
+
     def displayAlert(self, text=u''):
         """
         Called from the Alert Tab to display an alert
@@ -93,8 +93,8 @@ class AlertsManager(QtCore.QObject):
         self.alertList.append(text)
         if self.timer_id != 0:
             Receiver.send_message(u'maindisplay_status_text',
-                translate(u'AlertsPlugin.AlertsManager',
-                u'Alert message created and delayed'))
+                translate('AlertsPlugin.AlertsManager',
+                'Alert message created and delayed'))
             return
         Receiver.send_message(u'maindisplay_status_text', u'')
         self.generateAlert()

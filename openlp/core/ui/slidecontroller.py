@@ -537,7 +537,7 @@ class SlideController(QtGui.QWidget):
         before = time.time()
         #Clear the old serviceItem cache to release memory
         if self.serviceItem and self.serviceItem is not serviceItem:
-            self.serviceItem.cache = []
+            self.serviceItem.clear_cache()
         self.serviceItem = serviceItem
         self.PreviewListWidget.clear()
         self.PreviewListWidget.setRowCount(0)

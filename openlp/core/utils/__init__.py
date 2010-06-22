@@ -30,23 +30,27 @@ import os
 import sys
 import logging
 import urllib2
-
 from datetime import datetime
-from PyQt4 import QtCore
+
+from PyQt4 import QtGui, QtCore
 
 import openlp
+from openlp.core.lib import translate
 
 log = logging.getLogger(__name__)
+images_filter = None
 
 class AppLocation(object):
     """
-    Retrieve a directory based on the directory type.
+    The :class:`AppLocation` class is a static class which retrieves a
+    directory based on the directory type.
     """
     AppDir = 1
     ConfigDir = 2
     DataDir = 3
     PluginsDir = 4
     VersionDir = 5
+    CacheDir = 6
 
     @staticmethod
     def get_directory(dir_type=1):
@@ -100,6 +104,20 @@ class AppLocation(object):
             else:
                 plugin_path = os.path.split(openlp.__file__)[0]
             return plugin_path
+        elif dir_type == AppLocation.CacheDir:
+            if sys.platform == u'win32':
+                path = os.path.join(os.getenv(u'APPDATA'), u'openlp')
+            elif sys.platform == u'darwin':
+                path = os.path.join(os.getenv(u'HOME'), u'Library',
+                    u'Application Support', u'openlp')
+            else:
+                try:
+                    from xdg import BaseDirectory
+                    path = os.path.join(
+                        BaseDirectory.xdg_cache_home, u'openlp')
+                except ImportError:
+                    path = os.path.join(os.getenv(u'HOME'), u'.openlp')
+            return path
 
     @staticmethod
     def get_data_path():
@@ -175,6 +193,22 @@ def get_filesystem_encoding():
     if encoding is None:
         encoding = sys.getdefaultencoding()
     return encoding
+
+def get_images_filter():
+    """
+    Returns a filter string for a file dialog containing all the supported
+    image formats.
+    """
+    global images_filter
+    if not images_filter:
+        log.debug(u'Generating images filter.')
+        formats = [unicode(fmt)
+            for fmt in QtGui.QImageReader.supportedImageFormats()]
+        visible_formats = u'(*.%s)' % u'; *.'.join(formats)
+        actual_formats = u'(*.%s)' % u' *.'.join(formats)
+        images_filter = u'%s %s %s' % (translate('OpenLP', 'Image Files'),
+            visible_formats, actual_formats)
+    return images_filter
 
 from languagemanager import LanguageManager
 

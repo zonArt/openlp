@@ -93,8 +93,8 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
     def onNewClick(self):
         if len(self.AlertTextEdit.text()) == 0:
             QtGui.QMessageBox.information(self,
-                translate(u'AlertsPlugin.AlertForm', u'Item selected to Add'),
-                translate(u'AlertsPlugin.AlertForm', u'Missing data'))
+                translate('AlertsPlugin.AlertForm', 'Item selected to Add'),
+                translate('AlertsPlugin.AlertForm', 'Missing data'))
         else:
             alert = AlertItem()
             alert.text = unicode(self.AlertTextEdit.text())

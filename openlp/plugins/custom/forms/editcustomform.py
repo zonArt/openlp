@@ -85,9 +85,8 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
 
     def onPreview(self, button):
         log.debug(u'onPreview')
-        if button.text() == \
-            unicode(translate('CustomPlugin.EditCustomForm', 'Save && Preview')) \
-            and self.saveCustom():
+        if button.text() == unicode(translate('CustomPlugin.EditCustomForm',
+            'Save && Preview')) and self.saveCustom():
             Receiver.send_message(u'custom_preview')
 
     def initialise(self):

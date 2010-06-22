@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#!/bin/sh
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
 ###############################################################################
@@ -22,37 +22,33 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+#
+# This script automates the generation of resources.py for OpenLP saving a
+# backup of the old resources, inserting the coding and copyright header and
+# conforming it to the project coding standards.
+#
+# To make use of the script:
+# 1 - Add the new image files in resources/images/
+# 2 - Modify resources/images/openlp-2.qrc as appropriate
+# 3 - run sh scripts/generate_resources.sh
+#
+# Once you have confirmed the resources are correctly modified to an updated,
+# working state you may optionally remove openlp/core/resources.py.old
+#
+###############################################################################
+# Backup the existing resources
+mv openlp/core/resources.py openlp/core/resources.py.old
 
-from PyQt4 import QtGui
+# Create the new data from the updated qrc
+pyrcc4 -o openlp/core/resources.py.new resources/images/openlp-2.qrc
 
-from openlp.core.lib import translate
-from openlp.plugins.songs.forms.topicsdialog import Ui_TopicsDialog
+# Remove patch breaking lines
+cat openlp/core/resources.py.new | sed '/# Created: /d;/#      by: /d' \
+    > openlp/core/resources.py
 
-class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
-    """
-    Class documentation goes here.
-    """
-    def __init__(self, parent=None):
-        """
-        Constructor
-        """
-        QtGui.QDialog.__init__(self, parent)
-        self.setupUi(self)
+# Patch resources.py to OpenLP coding style
+patch --posix -s openlp/core/resources.py scripts/resources.patch
 
-    def exec_(self, clear=True):
-        if clear:
-            self.NameEdit.clear()
-        self.NameEdit.setFocus()
-        return QtGui.QDialog.exec_(self)
+# Remove temporary file
+rm openlp/core/resources.py.new
 
-    def accept(self):
-        if not self.NameEdit.text():
-            QtGui.QMessageBox.critical(
-                self, translate('SongsPlugin.TopicsForm', 'Error'),
-                translate('SongsPlugin.TopicsForm',
-                    'You need to type in a topic name!'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
-            self.NameEdit.setFocus()
-            return False
-        else:
-            return QtGui.QDialog.accept(self)

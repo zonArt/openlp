@@ -61,14 +61,14 @@ class PresentationMediaItem(MediaManagerItem):
         self.message_listener = MessageListener(self)
 
     def initPluginNameVisible(self):
-        self.PluginNameVisible = translate(u'PresentationPlugin.MediaItem',
-            u'Presentation')
+        self.PluginNameVisible = translate('PresentationPlugin.MediaItem',
+            'Presentation')
 
     def retranslateUi(self):
-        self.OnNewPrompt = translate(u'PresentationPlugin.MediaItem',
-            u'Select Presentation(s)')
-        self.Automatic = translate(u'PresentationPlugin.MediaItem',
-            u'Automatic')
+        self.OnNewPrompt = translate('PresentationPlugin.MediaItem',
+            'Select Presentation(s)')
+        self.Automatic = translate('PresentationPlugin.MediaItem',
+            'Automatic')
         fileType = u''
         for controller in self.controllers:
             if self.controllers[controller].enabled:
@@ -78,8 +78,8 @@ class PresentationMediaItem(MediaManagerItem):
                     if fileType.find(type) == -1:
                         fileType += u'*%s ' % type
                         self.parent.service_manager.supportedSuffixes(type)
-        self.OnNewFileMasks = translate(u'PresentationPlugin.MediaItem',
-            u'Presentations (%s)' % fileType)
+        self.OnNewFileMasks = translate('PresentationPlugin.MediaItem',
+            'Presentations (%s)' % fileType)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -106,7 +106,7 @@ class PresentationMediaItem(MediaManagerItem):
         self.DisplayTypeLabel.setObjectName(u'SearchTypeLabel')
         self.DisplayLayout.addWidget(self.DisplayTypeLabel, 0, 0, 1, 1)
         self.DisplayTypeLabel.setText(
-            translate(u'PresentationPlugin.MediaItem', u'Present using:'))
+            translate('PresentationPlugin.MediaItem', 'Present using:'))
         # Add the Presentation widget to the page layout
         self.PageLayout.addWidget(self.PresentationWidget)
 
@@ -139,10 +139,10 @@ class PresentationMediaItem(MediaManagerItem):
             filename = os.path.split(unicode(file))[1]
             if titles.count(filename) > 0:
                 QtGui.QMessageBox.critical(
-                    self, translate(u'PresentationPlugin.MediaItem',
-                    u'File exists'), 
-                        translate(u'PresentationPlugin.MediaItem',
-                        u'A presentation with that filename already exists.'),
+                    self, translate('PresentationPlugin.MediaItem',
+                    'File exists'),
+                        translate('PresentationPlugin.MediaItem',
+                        'A presentation with that filename already exists.'),
                     QtGui.QMessageBox.Ok)
             else:
                 icon = None
@@ -177,8 +177,8 @@ class PresentationMediaItem(MediaManagerItem):
         """
         Remove a presentation item from the list
         """
-        if self.checkItemSelected(translate(u'PresentationPlugin.MediaItem',
-            u'You must select an item to delete.')):
+        if self.checkItemSelected(translate('PresentationPlugin.MediaItem',
+            'You must select an item to delete.')):
             item = self.ListView.currentItem()
             row = self.ListView.row(item)
             self.ListView.takeItem(row)

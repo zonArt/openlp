@@ -124,32 +124,32 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
             if self.field(u'source_format').toInt()[0] == BibleFormat.OSIS:
                 if self.field(u'osis_location').toString() == u'':
                     QtGui.QMessageBox.critical(self,
-                        translate(u'BiblesPlugin.ImportWizardForm', 
-                            u'Invalid Bible Location'),
-                        translate(u'BiblesPlugin.ImportWizardForm', 
-                            u'You need to specify a file to import your '
-                            u'Bible from.'),
+                        translate('BiblesPlugin.ImportWizardForm',
+                            'Invalid Bible Location'),
+                        translate('BiblesPlugin.ImportWizardForm',
+                            'You need to specify a file to import your '
+                            'Bible from.'),
                         QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                     self.OSISLocationEdit.setFocus()
                     return False
             elif self.field(u'source_format').toInt()[0] == BibleFormat.CSV:
                 if self.field(u'csv_booksfile').toString() == u'':
                     QtGui.QMessageBox.critical(self,
-                        translate(u'BiblesPlugin.ImportWizardForm', 
-                            u'Invalid Books File'),
-                        translate(u'BiblesPlugin.ImportWizardForm', 
-                            u'You need to specify a file with books of '
-                            u'the Bible to use in the import.'),
+                        translate('BiblesPlugin.ImportWizardForm',
+                            'Invalid Books File'),
+                        translate('BiblesPlugin.ImportWizardForm',
+                            'You need to specify a file with books of '
+                            'the Bible to use in the import.'),
                         QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                     self.BooksLocationEdit.setFocus()
                     return False
                 elif self.field(u'csv_versefile').toString() == u'':
                     QtGui.QMessageBox.critical(self,
-                        translate(u'BiblesPlugin.ImportWizardForm', 
-                            u'Invalid Verse File'),
-                        translate(u'BiblesPlugin.ImportWizardForm', 
-                            u'You need to specify a file of Bible '
-                            u'verses to import.'),
+                        translate('BiblesPlugin.ImportWizardForm',
+                            'Invalid Verse File'),
+                        translate('BiblesPlugin.ImportWizardForm',
+                            'You need to specify a file of Bible '
+                            'verses to import.'),
                         QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                     self.CsvVerseLocationEdit.setFocus()
                     return False
@@ -157,11 +157,11 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                 BibleFormat.OpenSong:
                 if self.field(u'opensong_file').toString() == u'':
                     QtGui.QMessageBox.critical(self,
-                        translate(u'BiblesPlugin.ImportWizardForm', 
-                            u'Invalid OpenSong Bible'),
-                        translate(u'BiblesPlugin.ImportWizardForm', 
-                            u'You need to specify an OpenSong Bible '
-                            u'file to import.'),
+                        translate('BiblesPlugin.ImportWizardForm',
+                            'Invalid OpenSong Bible'),
+                        translate('BiblesPlugin.ImportWizardForm',
+                            'You need to specify an OpenSong Bible '
+                            'file to import.'),
                         QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                     self.OpenSongFileEdit.setFocus()
                     return False
@@ -173,32 +173,32 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                 unicode(self.field(u'license_copyright').toString())
             if license_version == u'':
                 QtGui.QMessageBox.critical(self,
-                    translate(u'BiblesPlugin.ImportWizardForm', 
-                        u'Empty Version Name'),
-                    translate(u'BiblesPlugin.ImportWizardForm', 
-                        u'You need to specify a version name for your '
-                        u'Bible.'),
+                    translate('BiblesPlugin.ImportWizardForm',
+                        'Empty Version Name'),
+                    translate('BiblesPlugin.ImportWizardForm',
+                        'You need to specify a version name for your '
+                        'Bible.'),
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                 self.VersionNameEdit.setFocus()
                 return False
             elif license_copyright == u'':
                 QtGui.QMessageBox.critical(self,
-                    translate(u'BiblesPlugin.ImportWizardForm', 
-                        u'Empty Copyright'),
-                    translate(u'BiblesPlugin.ImportWizardForm', 
-                        u'You need to set a copyright for your Bible! '
-                        u'Bibles in the Public Domain need to be marked as '
-                        u'such.'),
+                    translate('BiblesPlugin.ImportWizardForm',
+                        'Empty Copyright'),
+                    translate('BiblesPlugin.ImportWizardForm',
+                        'You need to set a copyright for your Bible! '
+                        'Bibles in the Public Domain need to be marked as '
+                        'such.'),
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                 self.CopyrightEdit.setFocus()
                 return False
             elif self.manager.exists(license_version):
                 QtGui.QMessageBox.critical(self,
-                    translate(u'BiblesPlugin.ImportWizardForm', 
-                        u'Bible Exists'),
-                    translate(u'BiblesPlugin.ImportWizardForm', 
-                        u'This Bible already exists! Please import '
-                        u'a different Bible or first delete the existing one.'),
+                    translate('BiblesPlugin.ImportWizardForm',
+                        'Bible Exists'),
+                    translate('BiblesPlugin.ImportWizardForm',
+                        'This Bible already exists! Please import '
+                        'a different Bible or first delete the existing one.'),
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                 self.VersionNameEdit.setFocus()
                 return False
@@ -218,14 +218,14 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         self.BibleComboBox.clear()
         for bible in self.web_bible_list[index].keys():
             self.BibleComboBox.addItem(unicode(
-                translate(u'BiblesPlugin.ImportWizardForm', bible)))
+                translate('BiblesPlugin.ImportWizardForm', bible)))
 
     def onOsisFileButtonClicked(self):
         """
         Show the file open dialog for the OSIS file.
         """
         self.getFileName(
-            translate(u'BiblesPlugin.ImportWizardForm', u'Open OSIS File'),
+            translate('BiblesPlugin.ImportWizardForm', 'Open OSIS File'),
             self.OSISLocationEdit)
 
     def onBooksFileButtonClicked(self):
@@ -233,22 +233,22 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         Show the file open dialog for the books CSV file.
         """
         self.getFileName(
-            translate(u'BiblesPlugin.ImportWizardForm', u'Open Books CSV File'),
+            translate('BiblesPlugin.ImportWizardForm', 'Open Books CSV File'),
             self.BooksLocationEdit)
 
     def onCsvVersesFileButtonClicked(self):
         """
         Show the file open dialog for the verses CSV file.
         """
-        self.getFileName(translate(u'BiblesPlugin.ImportWizardForm',
-            u'Open Verses CSV File'), self.CsvVerseLocationEdit)
+        self.getFileName(translate('BiblesPlugin.ImportWizardForm',
+            'Open Verses CSV File'), self.CsvVerseLocationEdit)
 
     def onOpenSongBrowseButtonClicked(self):
         """
         Show the file open dialog for the OpenSong file.
         """
         self.getFileName(
-            translate(u'BiblesPlugin.ImportWizardForm', u'Open OpenSong Bible'),
+            translate('BiblesPlugin.ImportWizardForm', 'Open OpenSong Bible'),
             self.OpenSongFileEdit)
 
     def onCancelButtonClicked(self, checked):
@@ -388,7 +388,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         self.ImportProgressBar.setMaximum(1188)
         self.ImportProgressBar.setValue(0)
         self.ImportProgressLabel.setText(
-            translate(u'BiblesPlugin.ImportWizardForm', u'Starting import...'))
+            translate('BiblesPlugin.ImportWizardForm', 'Starting import...'))
         Receiver.send_message(u'openlp_process_events')
 
     def performImport(self):
@@ -444,12 +444,12 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                 license_copyright, license_permission)
             self.manager.reload_bibles()
             self.ImportProgressLabel.setText(
-                translate(u'BiblesPlugin.ImportWizardForm',
-                    u'Finished import.'))
+                translate('BiblesPlugin.ImportWizardForm',
+                    'Finished import.'))
         else:
             self.ImportProgressLabel.setText(
-                translate(u'BiblesPlugin.ImportWizardForm',
-                    u'Your Bible import failed.'))
+                translate('BiblesPlugin.ImportWizardForm',
+                    'Your Bible import failed.'))
             delete_database(self.bibleplugin.settingsSection, importer.file)
 
     def postImport(self):

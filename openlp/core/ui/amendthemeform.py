@@ -30,15 +30,16 @@ import os.path
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import ThemeXML, translate
+from openlp.core.utils import get_images_filter
 from amendthemedialog import Ui_AmendThemeDialog
 
 log = logging.getLogger(u'AmendThemeForm')
 
 class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
 
-    def __init__(self, thememanager, parent=None):
+    def __init__(self, parent):
         QtGui.QDialog.__init__(self, parent)
-        self.thememanager = thememanager
+        self.thememanager = parent
         self.path = None
         self.theme = ThemeXML()
         self.setupUi(self)
@@ -209,8 +210,11 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         self.previewTheme()
 
     def onImageToolButtonClicked(self):
-        filename = unicode(QtGui.QFileDialog.getOpenFileName(
-            self, translate('AmendThemeForm', 'Open File')))
+        images_filter = get_images_filter()
+        images_filter = '%s;;%s (*.*) (*)' % (images_filter,
+            translate('AmendThemeForm', 'All Files'))
+        filename = QtGui.QFileDialog.getOpenFileName(self,
+            translate('AmendThemeForm', 'Select Image'), u'', images_filter)
         if filename:
             self.ImageLineEdit.setText(filename)
             self.theme.background_filename = filename
