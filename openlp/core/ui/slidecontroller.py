@@ -655,7 +655,8 @@ class SlideController(QtGui.QWidget):
         """
         Allow the main display to blank the main display at startup time
         """
-        self.blankButton.setChecked(True)
+        if not self.mainDisplay.primary:
+            self.blankButton.setChecked(True)
 
     def onSlideBlank(self):
         """
