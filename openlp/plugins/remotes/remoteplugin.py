@@ -64,14 +64,14 @@ class RemotesPlugin(Plugin):
         Create the settings Tab
         """
         return RemoteTab(self.name)
-            
+
     def about(self):
         """
         Information about this plugin
         """
-        about_text = translate(u'RemotePlugin.RemotePlugin',
-            u'<b>Remote Plugin</b><br>This plugin '
-            u'provides the ability to send messages to a running version of '
-            u'openlp on a different computer via a web browser or other app<br>'
-            u'The Primary use for this would be to send alerts from a creche')
+        about_text = translate('RemotePlugin',
+            '<b>Remote Plugin</b><br>This plugin '
+            'provides the ability to send messages to a running version of '
+            'openlp on a different computer via a web browser or other app<br>'
+            'The Primary use for this would be to send alerts from a creche')
         return about_text

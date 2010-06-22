@@ -30,7 +30,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
     context_menu_action, ItemCapabilities, SettingsManager, translate
-from openlp.core.utils import AppLocation
+from openlp.core.utils import AppLocation, get_images_filter
 
 log = logging.getLogger(__name__)
 
@@ -54,26 +54,23 @@ class ImageMediaItem(MediaManagerItem):
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = ImageListView
         MediaManagerItem.__init__(self, parent, icon, title)
-        self.addToServiceItem = True
 
     def initPluginNameVisible(self):
-        self.PluginNameVisible = translate(u'ImagePlugin.MediaItem', u'Image')
+        self.PluginNameVisible = translate('ImagePlugin.MediaItem', 'Image')
 
     def retranslateUi(self):
-        self.OnNewPrompt = translate(u'ImagePlugin.MediaItem', 
-            u'Select Image(s)')
-        file_formats = u''
-        for file_format in QtGui.QImageReader.supportedImageFormats():
-            file_formats += u'*.%s ' % file_format
-        self.OnNewFileMasks = unicode(
-            translate(u'ImagePlugin.MediaItem', 
-                u'Images (%s);; All files (*)')) % file_formats
+        self.OnNewPrompt = translate('ImagePlugin.MediaItem',
+            'Select Image(s)')
+        file_formats = get_images_filter()
+        self.OnNewFileMasks = u'%s;;%s (*.*) (*)' % (file_formats,
+            unicode(translate('ImagePlugin.MediaItem', 'All Files')))
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
         self.hasFileIcon = True
         self.hasNewIcon = False
         self.hasEditIcon = False
+        self.addToServiceItem = True
 
     def initialise(self):
         log.debug(u'initialise')
@@ -95,7 +92,7 @@ class ImageMediaItem(MediaManagerItem):
         self.ListView.addAction(
             context_menu_action(
                 self.ListView, u':/slides/slide_blank.png',
-                translate(u'ImagePlugin.MediaItem', u'Replace Live Background'),
+                translate('ImagePlugin.MediaItem', 'Replace Live Background'),
                 self.onReplaceClick))
 
     def addEndHeaderBar(self):
@@ -110,20 +107,24 @@ class ImageMediaItem(MediaManagerItem):
         self.ImageWidget.setObjectName(u'ImageWidget')
         self.blankButton = self.Toolbar.addToolbarButton(
             u'Replace Background', u':/slides/slide_blank.png',
-            translate(u'ImagePlugin.MediaItem', u'Replace Live Background'),
+            translate('ImagePlugin.MediaItem', 'Replace Live Background'),
                 self.onReplaceClick, False)
         # Add the song widget to the page layout
         self.PageLayout.addWidget(self.ImageWidget)
 
     def onDeleteClick(self):
-        items = self.ListView.selectedIndexes()
-        if items:
+        """
+        Remove an image item from the list
+        """
+        if self.checkItemSelected(translate('ImagePlugin.MediaItem',
+            'You must select an item to delete.')):
+            items = self.ListView.selectedIndexes()
             for item in items:
                 text = self.ListView.item(item.row())
                 if text:
                     try:
-                        os.remove(
-                            os.path.join(self.servicePath, unicode(text.text())))
+                        os.remove(os.path.join(self.servicePath,
+                            unicode(text.text())))
                     except OSError:
                         #if not present do not worry
                         pass
@@ -151,7 +152,7 @@ class ImageMediaItem(MediaManagerItem):
         items = self.ListView.selectedIndexes()
         if items:
             service_item.title = unicode(
-                translate(u'ImagePlugin.MediaItem', u'Image(s)'))
+                translate('ImagePlugin.MediaItem', 'Image(s)'))
             service_item.add_capability(ItemCapabilities.AllowsMaintain)
             service_item.add_capability(ItemCapabilities.AllowsPreview)
             service_item.add_capability(ItemCapabilities.AllowsLoop)
@@ -169,9 +170,9 @@ class ImageMediaItem(MediaManagerItem):
     def onReplaceClick(self):
         if not self.ListView.selectedIndexes():
             QtGui.QMessageBox.information(self,
-                translate(u'ImagePlugin.MediaItem', u'No item selected'),
-                translate(u'ImagePlugin.MediaItem',
-                    u'You must select one item'))
+                translate('ImagePlugin.MediaItem', 'No item selected'),
+                translate('ImagePlugin.MediaItem',
+                    'You must select one item'))
         items = self.ListView.selectedIndexes()
         for item in items:
             bitem = self.ListView.item(item.row())

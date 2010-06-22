@@ -30,15 +30,16 @@ import os.path
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import ThemeXML, translate
+from openlp.core.utils import get_images_filter
 from amendthemedialog import Ui_AmendThemeDialog
 
 log = logging.getLogger(u'AmendThemeForm')
 
 class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
 
-    def __init__(self, thememanager, parent=None):
+    def __init__(self, parent):
         QtGui.QDialog.__init__(self, parent)
-        self.thememanager = thememanager
+        self.thememanager = parent
         self.path = None
         self.theme = ThemeXML()
         self.setupUi(self)
@@ -138,8 +139,8 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
 
     def accept(self):
         new_theme = ThemeXML()
-        theme_name = unicode(self.ThemeNameEdit.displayText())
-        new_theme.new_document(theme_name.encode('unicode-escape'))
+        theme_name = unicode(self.ThemeNameEdit.text())
+        new_theme.new_document(theme_name)
         save_from = None
         save_to = None
         if self.theme.background_mode == u'transparent':
@@ -209,8 +210,11 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         self.previewTheme()
 
     def onImageToolButtonClicked(self):
-        filename = QtGui.QFileDialog.getOpenFileName(
-            self, translate(u'AmendThemeForm', u'Open file'))
+        images_filter = get_images_filter()
+        images_filter = '%s;;%s (*.*) (*)' % (images_filter,
+            translate('AmendThemeForm', 'All Files'))
+        filename = QtGui.QFileDialog.getOpenFileName(self,
+            translate('AmendThemeForm', 'Select Image'), u'', images_filter)
         if filename:
             self.ImageLineEdit.setText(filename)
             self.theme.background_filename = filename
@@ -647,7 +651,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                 self.Color1PushButton.setStyleSheet(
                     u'background-color: %s' % unicode(theme.background_color))
                 self.Color1Label.setText(
-                    translate(u'AmendThemeForm', u'Background Color:'))
+                    translate('AmendThemeForm', 'Color:'))
                 self.Color1Label.setVisible(True)
                 self.Color1PushButton.setVisible(True)
                 self.Color2Label.setVisible(False)
@@ -663,9 +667,9 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                 self.Color2PushButton.setStyleSheet(u'background-color: %s' \
                     % unicode(theme.background_endColor))
                 self.Color1Label.setText(
-                    translate(u'AmendThemeForm', u'First Color:'))
+                    translate('AmendThemeForm', 'First color:'))
                 self.Color2Label.setText(
-                    translate(u'AmendThemeForm', u'Second Color:'))
+                    translate('AmendThemeForm', 'Second color:'))
                 self.Color1Label.setVisible(True)
                 self.Color1PushButton.setVisible(True)
                 self.Color2Label.setVisible(True)
@@ -734,7 +738,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                 (self.FontMainHeightSpinBox.value(), metrics.height(),
                 page_length))
             page_length_text = unicode(
-                translate(u'AmendThemeForm', u'Slide Height is %s rows'))
+                translate('AmendThemeForm', 'Slide height is %s rows.'))
             self.FontMainLinesPageLabel.setText(page_length_text % page_length)
             frame = self.thememanager.generateImage(self.theme)
             self.ThemePreview.setPixmap(QtGui.QPixmap.fromImage(frame))

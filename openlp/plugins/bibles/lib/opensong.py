@@ -88,7 +88,7 @@ class OpenSongBible(BibleDB):
                         Receiver.send_message(u'openlp_process_events')
                     self.wizard.incrementProgressBar(
                         QtCore.QString('%s %s %s' % (
-                            translate(u'BiblesPlugin.Opensong', u'Importing'), \
+                            translate('BiblesPlugin.Opensong', 'Importing'), \
                             db_book.name, chapter.attrib[u'n'])))
                     self.commit()
         except IOError:
@@ -102,5 +102,4 @@ class OpenSongBible(BibleDB):
             return False
         else:
             return success
-
 

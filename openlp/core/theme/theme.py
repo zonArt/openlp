@@ -175,7 +175,8 @@ class Theme(object):
         ``xml``
             The data to apply to the theme
         """
-        root = ElementTree(element=XML(xml))
+        root = ElementTree(element=XML(xml.encode(u'ascii',
+            u'xmlcharrefreplace')))
         xml_iter = root.getiterator()
         for element in xml_iter:
             delphi_color_change = False

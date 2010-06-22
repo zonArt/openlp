@@ -29,6 +29,7 @@ import os
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver
+from openlp.core.ui import HideMode
 
 log = logging.getLogger(__name__)
 
@@ -55,7 +56,7 @@ class Controller(object):
             self.doc.start_presentation()
             if isBlank:
                 self.blank()
-            Receiver.send_message(u'maindisplay_hide')
+            Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
         self.doc.slidenumber = 0
 
     def activate(self):
@@ -179,6 +180,7 @@ class Controller(object):
             self.doc.slidenumber != self.doc.get_slide_number():
             self.doc.goto_slide(self.doc.slidenumber)
         self.doc.unblank_screen()
+        Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
 
     def poll(self):
         self.doc.poll_slidenumber(self.isLive)
