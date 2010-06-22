@@ -32,7 +32,8 @@ from sqlalchemy import Column, ForeignKey, or_, Table, types
 from sqlalchemy.orm import class_mapper, mapper, relation
 from sqlalchemy.orm.exc import UnmappedClassError
 
-from openlp.core.lib.db import BaseModel, init_db, Manager, translate
+from openlp.core.lib import translate
+from openlp.core.lib.db import BaseModel, init_db, Manager
 
 log = logging.getLogger(__name__)
 

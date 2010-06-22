@@ -86,10 +86,10 @@ class CustomMediaItem(MediaManagerItem):
 
     def loadCustomListView(self, list):
         self.ListView.clear()
-        for CustomSlide in list:
-            custom_name = QtGui.QListWidgetItem(CustomSlide.title)
+        for customSlide in list:
+            custom_name = QtGui.QListWidgetItem(customSlide.title)
             custom_name.setData(
-                QtCore.Qt.UserRole, QtCore.QVariant(CustomSlide.id))
+                QtCore.Qt.UserRole, QtCore.QVariant(customSlide.id))
             self.ListView.addItem(custom_name)
 
     def onNewClick(self):
