@@ -45,6 +45,7 @@ class DisplayManager(QtGui.QWidget):
         QtGui.QWidget.__init__(self)
         self.screens = screens
         self.videoDisplay = VideoDisplay(self, screens)
+        self.audioPlayer = AudioPlayer(self)
         self.mainDisplay = MainDisplay(self, screens)
 
     def setup(self):
@@ -53,10 +54,11 @@ class DisplayManager(QtGui.QWidget):
 
     def close(self):
         self.videoDisplay.close()
+        self.audioPlayer.close()
         self.mainDisplay.close()
 
 
-class DisplayWidget(QtGui.QWidget):
+class DisplayWidget(QtGui.QGraphicsView):
     """
     Customised version of QTableWidget which can respond to keyboard
     events.
@@ -116,22 +118,23 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'Initialisation started')
         DisplayWidget.__init__(self, parent)
-        self.setWindowFlags(QtCore.Qt.Window | QtCore.Qt.FramelessWindowHint)
-        self.setWindowState(QtCore.Qt.WindowFullScreen)
+#        self.setWindowFlags(QtCore.Qt.Window | QtCore.Qt.FramelessWindowHint)
+#        self.setWindowState(QtCore.Qt.WindowFullScreen)
+        self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.parent = parent
-        self.setWindowTitle(u'OpenLP Display')
+        #self.setWindowTitle(u'OpenLP Display')
         # WA_TranslucentBackground is not available in QT4.4
         try:
             self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
         except AttributeError:
             pass
         self.screens = screens
-        self.display_image = QtGui.QLabel(self)
-        self.display_image.setScaledContents(True)
-        self.display_text = QtGui.QLabel(self)
-        self.display_text.setScaledContents(True)
-        self.display_alert = QtGui.QLabel(self)
-        self.display_alert.setScaledContents(True)
+        self.setupScene()
+        self.setupImage()
+        self.setupText()
+        self.setupAlert()
+        self.setupBlank()
         self.primary = True
         self.blankFrame = None
         self.frame = None
@@ -153,11 +156,11 @@ class MainDisplay(DisplayWidget):
         self.setVisible(False)
         self.screen = self.screens.current
         #Sort out screen locations and sizes
-        self.display_alert.setGeometry(self.screen[u'size'])
-        self.display_image.resize(
-            self.screen[u'size'].width(), self.screen[u'size'].height())
-        self.display_text.resize(
-            self.screen[u'size'].width(), self.screen[u'size'].height())
+#        self.display_alert.setGeometry(self.screen[u'size'])
+#        self.display_image.resize(
+#            self.screen[u'size'].width(), self.screen[u'size'].height())
+#        self.display_text.resize(
+#            self.screen[u'size'].width(), self.screen[u'size'].height())
         self.setGeometry(self.screen[u'size'])
         #Build a custom splash screen
         self.InitialFrame = QtGui.QImage(
@@ -186,8 +189,8 @@ class MainDisplay(DisplayWidget):
         self.transparent = QtGui.QPixmap(
             self.screen[u'size'].width(), self.screen[u'size'].height())
         self.transparent.fill(QtCore.Qt.transparent)
-        self.display_alert.setPixmap(self.transparent)
-        self.display_text.setPixmap(self.transparent)
+#        self.display_alert.setPixmap(self.transparent)
+#        self.display_text.setPixmap(self.transparent)
         self.frameView(self.transparent)
         # To display or not to display?
         if not self.screen[u'primary']:
@@ -196,6 +199,37 @@ class MainDisplay(DisplayWidget):
         else:
             self.setVisible(False)
             self.primary = True
+
+    def setupScene(self):
+        self.scene = QtGui.QGraphicsScene(self)
+        self.scene.setSceneRect(0,0,self.size().width()-2, self.size().height()-2)
+        self.setScene(self.scene)
+
+    def setupImage(self):
+        self.display_image = QtGui.QGraphicsPixmapItem()
+        self.display_image.setZValue(2)
+        self.scene.addItem(self.display_image)
+
+    def setupText(self):
+        #self.display_text = QtGui.QGraphicsTextItem()
+        self.display_text = QtGui.QGraphicsPixmapItem()
+        self.display_text.setPos(0,self.size().height()/2)
+        #self.display_text.setTextWidth(self.size().width())
+        self.display_text.setZValue(4)
+        self.scene.addItem(self.display_text)
+
+    def setupAlert(self):
+        self.alertText = QtGui.QGraphicsTextItem()
+        self.alertText.setPos(0,self.size().height()/2)
+        self.alertText.setPos(0,self.size().height() - 76)
+        self.alertText.setTextWidth(self.size().width())
+        self.alertText.setZValue(8)
+        self.scene.addItem(self.alertText)
+
+    def setupBlank(self):
+        self.display_blank = QtGui.QGraphicsPixmapItem()
+        self.display_blank.setZValue(10)
+        self.scene.addItem(self.display_blank)
 
     def resetDisplay(self):
         log.debug(u'resetDisplay')
@@ -219,27 +253,21 @@ class MainDisplay(DisplayWidget):
         log.debug(u'hideDisplay mode = %d', mode)
         self.storeImage = QtGui.QPixmap(self.display_image.pixmap())
         self.storeText = QtGui.QPixmap(self.display_text.pixmap())
-        self.display_alert.setPixmap(self.transparent)
-        self.display_text.setPixmap(self.transparent)
+        #self.display_alert.setPixmap(self.transparent)
+        #self.display_text.setPixmap(self.transparent)
         if mode == HideMode.Screen:
-            self.display_image.setPixmap(self.transparent)
+            #self.display_image.setPixmap(self.transparent)
+            self.setVisible(False)
         elif mode == HideMode.Blank:
-            self.display_image.setPixmap(
+            self.display_blank.setPixmap(
                 QtGui.QPixmap.fromImage(self.blankFrame))
         else:
             if self.parent.renderManager.renderer.bg_frame:
-                self.display_image.setPixmap(QtGui.QPixmap.fromImage(
+                self.display_blank.setPixmap(QtGui.QPixmap.fromImage(
                     self.parent.renderManager.renderer.bg_frame))
             else:
-                self.display_image.setPixmap(
+                self.display_blank.setPixmap(
                     QtGui.QPixmap.fromImage(self.blankFrame))
-        self.moveToTop()
-
-    def moveToTop(self):
-        log.debug(u'moveToTop')
-        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint |
-            QtCore.Qt.FramelessWindowHint | QtCore.Qt.Dialog)
-        self.show()
 
     def showDisplay(self):
         """
@@ -255,7 +283,6 @@ class MainDisplay(DisplayWidget):
             self.display_text.setPixmap(self.storeText)
         self.storeImage = None
         self.store = None
-        self.moveToTop()
         Receiver.send_message(u'maindisplay_active')
 
     def addImageWithText(self, frame):
@@ -263,7 +290,6 @@ class MainDisplay(DisplayWidget):
         frame = resize_image(
             frame, self.screen[u'size'].width(), self.screen[u'size'].height())
         self.display_image.setPixmap(QtGui.QPixmap.fromImage(frame))
-        self.moveToTop()
 
     def setAlertSize(self, top, height):
         log.debug(u'setAlertSize')
@@ -277,7 +303,6 @@ class MainDisplay(DisplayWidget):
             self.display_alert.setPixmap(self.transparent)
         else:
             self.display_alert.setPixmap(frame)
-        self.moveToTop()
 
     def frameView(self, frame, transition=False, display=True):
         """
@@ -345,11 +370,11 @@ class VideoDisplay(Phonon.VideoWidget):
         Phonon.createPath(self.mediaObject, self)
         Phonon.createPath(self.mediaObject, self.audioObject)
         flags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Dialog
-        # WindowsStaysOnBottomHint is not available in QT4.4
-        try:
-            flags = flags | QtCore.Qt.WindowStaysOnBottomHint
-        except AttributeError:
-            pass
+#        # WindowsStaysOnBottomHint is not available in QT4.4
+#        try:
+#            flags = flags | QtCore.Qt.WindowStaysOnBottomHint
+#        except AttributeError:
+#            pass
         self.setWindowFlags(flags)
 
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -392,12 +417,21 @@ class VideoDisplay(Phonon.VideoWidget):
         #Sort out screen locations and sizes
         self.setGeometry(self.screen[u'size'])
         # To display or not to display?
-        if not self.screen[u'primary'] and self.isVisible():
-            self.showFullScreen()
+        if not self.screen[u'primary']: # and self.isVisible():
+            #self.showFullScreen()
+            self.setVisible(True)
             self.primary = False
         else:
             self.setVisible(False)
             self.primary = True
+
+    def closeEvent(self, event):
+        """
+        Shutting down so clean up connections
+        """
+        self.onMediaStop()
+        for pth in self.outputPaths():
+          disconnected = pth.disconnect()
 
     def onMediaBackground(self, message=None):
         """
@@ -442,7 +476,7 @@ class VideoDisplay(Phonon.VideoWidget):
         log.debug(u'VideoDisplay _play called')
         self.mediaObject.play()
         self.setVisible(True)
-        self.showFullScreen()
+        #self.showFullScreen()
 
     def onMediaPause(self):
         """
@@ -484,3 +518,97 @@ class VideoDisplay(Phonon.VideoWidget):
         if self.hidden:
             self.hidden = False
             self._play()
+
+class AudioPlayer(QtCore.QObject):
+    """
+    This Class will play audio only allowing components to work witn a
+    soundtrack which does not take over the user interface.
+    """
+    log.info(u'AudioPlayer Loaded')
+
+    def __init__(self, parent):
+        """
+        The constructor for the display form.
+
+        ``parent``
+            The parent widget.
+
+        ``screens``
+            The list of screens.
+        """
+        log.debug(u'AudioPlayer Initialisation started')
+        QtCore.QObject.__init__(self)
+        self.parent = parent
+        self.message = None
+        self.mediaObject = Phonon.MediaObject()
+        self.audioObject = Phonon.AudioOutput(Phonon.VideoCategory)
+        Phonon.createPath(self.mediaObject, self.audioObject)
+
+#        QtCore.QObject.connect(Receiver.get_receiver(),
+#            QtCore.SIGNAL(u'videodisplay_start'), self.onMediaQueue)
+#        QtCore.QObject.connect(Receiver.get_receiver(),
+#            QtCore.SIGNAL(u'videodisplay_play'), self.onMediaPlay)
+#        QtCore.QObject.connect(Receiver.get_receiver(),
+#            QtCore.SIGNAL(u'videodisplay_pause'), self.onMediaPause)
+#        QtCore.QObject.connect(Receiver.get_receiver(),
+#            QtCore.SIGNAL(u'videodisplay_stop'), self.onMediaStop)
+#        QtCore.QObject.connect(Receiver.get_receiver(),
+#            QtCore.SIGNAL(u'videodisplay_background'), self.onMediaBackground)
+#        QtCore.QObject.connect(Receiver.get_receiver(),
+#            QtCore.SIGNAL(u'config_updated'), self.setup)
+#        QtCore.QObject.connect(self.mediaObject,
+#            QtCore.SIGNAL(u'finished()'), self.onMediaBackground)
+
+    def setup(self):
+        """
+        Sets up the Audio Player for use
+        """
+        log.debug(u'AudioPlayer Setup')
+
+    def close(self):
+        """
+        Shutting down so clean up connections
+        """
+        self.onMediaStop()
+        for pth in self.mediaObject.outputPaths():
+            disconnected = pth.disconnect()
+
+    def onMediaQueue(self, message):
+        """
+        Set up a video to play from the serviceitem.
+        """
+        log.debug(u'AudioPlayer Queue new media message %s' % message)
+        file = os.path.join(message[0].get_frame_path(),
+            message[0].get_frame_title())
+        self.mediaObject.setCurrentSource(Phonon.MediaSource(file))
+        self.onMediaPlay()
+
+    def onMediaPlay(self):
+        """
+        We want to play the play so start it
+        """
+        log.debug(u'AudioPlayer _play called')
+        self.mediaObject.play()
+
+    def onMediaPause(self):
+        """
+        Pause the Audio
+        """
+        log.debug(u'AudioPlayer Media paused by user')
+        self.mediaObject.pause()
+
+    def onMediaStop(self):
+        """
+        Stop the Audio and clean up
+        """
+        log.debug(u'AudioPlayer Media stopped by user')
+        self.message = None
+        self.mediaObject.stop()
+        self.onMediaFinish()
+
+    def onMediaFinish(self):
+        """
+        Clean up the Object queue
+        """
+        log.debug(u'AudioPlayer Reached end of media playlist')
+        self.mediaObject.clearQueue()
