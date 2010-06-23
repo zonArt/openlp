@@ -32,7 +32,7 @@ class SplashScreen(object):
         self.splash_screen = QtGui.QSplashScreen()
         self.setupUi()
         self.message = translate(
-            u'Splashscreen',  u'Starting')\
+            'Splashscreen',  'Starting')\
             + '..... ' + version
 
     def setupUi(self):
@@ -60,7 +60,7 @@ class SplashScreen(object):
 
     def retranslateUi(self):
         self.splash_screen.setWindowTitle(
-            translate(u'Splashscreen', u'Splash Screen'))
+            translate('Splashscreen', 'Splash Screen'))
 
     def show(self):
         self.splash_screen.show()

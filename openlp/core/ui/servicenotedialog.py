@@ -49,4 +49,4 @@ class Ui_ServiceNoteEdit(object):
 
     def retranslateUi(self, ServiceNoteEdit):
         ServiceNoteEdit.setWindowTitle(
-            translate(u'ServiceNoteForm', u'Service Item Notes'))
+            translate('ServiceNoteForm', 'Service Item Notes'))

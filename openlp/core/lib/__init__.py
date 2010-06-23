@@ -52,9 +52,10 @@ def translate(context, text, comment=None):
 
 def get_text_file_string(text_file):
     """
-    Open a file and return the contents of the file.  If the supplied file name
-    is not a file then the function returns False.  If there is an error
-    loading the file then the function will return None.
+    Open a file and return its content as unicode string.  If the supplied file
+    name is not a file then the function returns False.  If there is an error
+    loading the file or the content can't be decoded then the function will
+    return None.
 
     ``textfile``
         The name of the file.
@@ -65,8 +66,9 @@ def get_text_file_string(text_file):
     content_string = None
     try:
         file_handle = open(text_file, u'r')
-        content_string = file_handle.read()
-    except IOError:
+        content = file_handle.read()
+        content_string = content.decode(u'utf-8')
+    except (IOError, UnicodeError):
         log.exception(u'Failed to open text file %s' % text_file)
     finally:
         if file_handle:
@@ -95,11 +97,10 @@ def build_icon(icon):
         The icon to build. This can be a QIcon, a resource string in the form
         ``:/resource/file.png``, or a file location like ``/path/to/file.png``.
     """
-    button_icon = None
+    button_icon = QtGui.QIcon()
     if isinstance(icon, QtGui.QIcon):
         button_icon = icon
     elif isinstance(icon, basestring):
-        button_icon = QtGui.QIcon()
         if icon.startswith(u':/'):
             button_icon.addPixmap(QtGui.QPixmap(icon), QtGui.QIcon.Normal,
                 QtGui.QIcon.Off)
@@ -107,7 +108,6 @@ def build_icon(icon):
             button_icon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
                 QtGui.QIcon.Normal, QtGui.QIcon.Off)
     elif isinstance(icon, QtGui.QImage):
-        button_icon = QtGui.QIcon()
         button_icon.addPixmap(QtGui.QPixmap.fromImage(icon),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
     return button_icon

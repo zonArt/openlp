@@ -45,7 +45,7 @@ class BiblesTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'BiblesTab')
-        self.tabTitleVisible = translate(u'BiblesPlugin,BiblesTab', u'Bibles')
+        self.tabTitleVisible = translate('BiblesPlugin,BiblesTab', 'Bibles')
         self.BibleLayout = QtGui.QHBoxLayout(self)
         self.BibleLayout.setSpacing(8)
         self.BibleLayout.setMargin(8)
@@ -150,34 +150,34 @@ class BiblesTab(SettingsTab):
 
     def retranslateUi(self):
         self.VerseDisplayGroupBox.setTitle(
-            translate(u'BiblesPlugin,BiblesTab', u'Verse Display'))
+            translate('BiblesPlugin,BiblesTab', 'Verse Display'))
         self.NewChaptersCheckBox.setText(
-            translate(u'BiblesPlugin,BiblesTab', 
-            u'Only show new chapter numbers'))
+            translate('BiblesPlugin,BiblesTab',
+            'Only show new chapter numbers'))
         self.LayoutStyleLabel.setText(
-            translate(u'BiblesPlugin,BiblesTab', u'Layout Style:'))
+            translate('BiblesPlugin,BiblesTab', 'Layout Style:'))
         self.DisplayStyleLabel.setText(
-            translate(u'BiblesPlugin,BiblesTab', u'Display Style:'))
+            translate('BiblesPlugin,BiblesTab', 'Display Style:'))
         self.BibleThemeLabel.setText(
-            translate(u'BiblesPlugin,BiblesTab', u'Bible Theme:'))
-        self.LayoutStyleComboBox.setItemText(0, 
-            translate(u'BiblesPlugin,BiblesTab', u'verse per slide'))
-        self.LayoutStyleComboBox.setItemText(1, 
-            translate(u'BiblesPlugin,BiblesTab', u'verse per line'))
-        self.LayoutStyleComboBox.setItemText(2, 
-            translate(u'BiblesPlugin,BiblesTab', u'continuous'))
-        self.DisplayStyleComboBox.setItemText(0, 
-            translate(u'BiblesPlugin,BiblesTab', u'No brackets'))
-        self.DisplayStyleComboBox.setItemText(1, 
-            translate(u'BiblesPlugin,BiblesTab', u'( and )'))
+            translate('BiblesPlugin,BiblesTab', 'Bible Theme:'))
+        self.LayoutStyleComboBox.setItemText(0,
+            translate('BiblesPlugin,BiblesTab', 'verse per slide'))
+        self.LayoutStyleComboBox.setItemText(1,
+            translate('BiblesPlugin,BiblesTab', 'verse per line'))
+        self.LayoutStyleComboBox.setItemText(2,
+            translate('BiblesPlugin,BiblesTab', 'continuous'))
+        self.DisplayStyleComboBox.setItemText(0,
+            translate('BiblesPlugin,BiblesTab', 'No brackets'))
+        self.DisplayStyleComboBox.setItemText(1,
+            translate('BiblesPlugin,BiblesTab', '( and )'))
         self.DisplayStyleComboBox.setItemText(2,
-            translate(u'BiblesPlugin,BiblesTab', u'{ and }'))
-        self.DisplayStyleComboBox.setItemText(3, 
-            translate(u'BiblesPlugin,BiblesTab', u'[ and ]'))
-        self.ChangeNoteLabel.setText(translate(u'BiblesPlugin.BiblesTab',
-            u'Note:\nChanges don\'t affect verses already in the service'))
+            translate('BiblesPlugin,BiblesTab', '{ and }'))
+        self.DisplayStyleComboBox.setItemText(3,
+            translate('BiblesPlugin,BiblesTab', '[ and ]'))
+        self.ChangeNoteLabel.setText(translate('BiblesPlugin.BiblesTab',
+            'Note:\nChanges don\'t affect verses already in the service'))
         self.BibleDualCheckBox.setText(
-            translate(u'BiblesPlugin,BiblesTab', u'Display Dual Bible Verses'))
+            translate('BiblesPlugin,BiblesTab', 'Display Dual Bible Verses'))
 
     def onBibleThemeComboBoxChanged(self):
         self.bible_theme = self.BibleThemeComboBox.currentText()

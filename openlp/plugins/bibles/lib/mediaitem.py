@@ -70,7 +70,7 @@ class BibleMediaItem(MediaManagerItem):
         return unicode(obj)
 
     def initPluginNameVisible(self):
-        self.PluginNameVisible = translate(u'BiblesPlugin.MediaItem', u'Bible')
+        self.PluginNameVisible = translate('BiblesPlugin.MediaItem', 'Bible')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -146,8 +146,8 @@ class BibleMediaItem(MediaManagerItem):
         self.QuickMessage = QtGui.QLabel(self.QuickTab)
         self.QuickMessage.setObjectName(u'QuickMessage')
         self.QuickLayout.addWidget(self.QuickMessage, 6, 0, 1, 3)
-        self.SearchTabWidget.addTab(self.QuickTab, 
-            translate(u'BiblesPlugin.MediaItem', u'Quick'))
+        self.SearchTabWidget.addTab(self.QuickTab,
+            translate('BiblesPlugin.MediaItem', 'Quick'))
         QuickSpacerItem = QtGui.QSpacerItem(20, 35, QtGui.QSizePolicy.Minimum,
             QtGui.QSizePolicy.Expanding)
         self.QuickLayout.addItem(QuickSpacerItem, 6, 2, 1, 1)
@@ -231,8 +231,8 @@ class BibleMediaItem(MediaManagerItem):
         self.AdvancedMessage = QtGui.QLabel(self.AdvancedTab)
         self.AdvancedMessage.setObjectName(u'AdvancedMessage')
         self.AdvancedLayout.addWidget(self.AdvancedMessage, 8, 0, 1, 3)
-        self.SearchTabWidget.addTab(self.AdvancedTab, 
-            translate(u'BiblesPlugin.MediaItem', u'Advanced'))
+        self.SearchTabWidget.addTab(self.AdvancedTab,
+            translate('BiblesPlugin.MediaItem', 'Advanced'))
         # Add the search tab widget to the page layout
         self.PageLayout.addWidget(self.SearchTabWidget)
         # Combo Boxes
@@ -291,47 +291,47 @@ class BibleMediaItem(MediaManagerItem):
     def retranslateUi(self):
         log.debug(u'retranslateUi')
         self.QuickVersionLabel.setText(
-            translate(u'BiblesPlugin.MediaItem', u'Version:'))
+            translate('BiblesPlugin.MediaItem', 'Version:'))
         self.QuickSecondVersionLabel.setText(
-            translate(u'BiblesPlugin.MediaItem', u'Dual:'))
+            translate('BiblesPlugin.MediaItem', 'Dual:'))
         self.QuickSearchLabel.setText(
-            translate(u'BiblesPlugin.MediaItem', u'Search Type:'))
+            translate('BiblesPlugin.MediaItem', 'Search Type:'))
         self.QuickSearchLabel.setText(
-            translate(u'BiblesPlugin.MediaItem', u'Find:'))
+            translate('BiblesPlugin.MediaItem', 'Find:'))
         self.QuickSearchButton.setText(
-            translate(u'BiblesPlugin.MediaItem', u'Search'))
+            translate('BiblesPlugin.MediaItem', 'Search'))
         self.QuickClearLabel.setText(
-            translate(u'BiblesPlugin.MediaItem', u'Results:'))
+            translate('BiblesPlugin.MediaItem', 'Results:'))
         self.AdvancedVersionLabel.setText(
-            translate(u'BiblesPlugin.MediaItem', u'Version:'))
+            translate('BiblesPlugin.MediaItem', 'Version:'))
         self.AdvancedSecondBibleLabel.setText(
-            translate(u'BiblesPlugin.MediaItem', u'Dual:'))
+            translate('BiblesPlugin.MediaItem', 'Dual:'))
         self.AdvancedBookLabel.setText(
-            translate(u'BiblesPlugin.MediaItem', u'Book:'))
+            translate('BiblesPlugin.MediaItem', 'Book:'))
         self.AdvancedChapterLabel.setText(
-            translate(u'BiblesPlugin.MediaItem', u'Chapter:'))
+            translate('BiblesPlugin.MediaItem', 'Chapter:'))
         self.AdvancedVerseLabel.setText(
-            translate(u'BiblesPlugin.MediaItem', u'Verse:'))
+            translate('BiblesPlugin.MediaItem', 'Verse:'))
         self.AdvancedFromLabel.setText(
-            translate(u'BiblesPlugin.MediaItem', u'From:'))
+            translate('BiblesPlugin.MediaItem', 'From:'))
         self.AdvancedToLabel.setText(
-            translate(u'BiblesPlugin.MediaItem', u'To:'))
+            translate('BiblesPlugin.MediaItem', 'To:'))
         self.AdvancedClearLabel.setText(
-            translate(u'BiblesPlugin.MediaItem', u'Results:'))
+            translate('BiblesPlugin.MediaItem', 'Results:'))
         self.AdvancedSearchButton.setText(
-            translate(u'BiblesPlugin.MediaItem', u'Search'))
+            translate('BiblesPlugin.MediaItem', 'Search'))
         self.QuickSearchComboBox.addItem(
-            translate(u'BiblesPlugin.MediaItem', u'Verse Search'))
+            translate('BiblesPlugin.MediaItem', 'Verse Search'))
         self.QuickSearchComboBox.addItem(
-            translate(u'BiblesPlugin.MediaItem', u'Text Search'))
+            translate('BiblesPlugin.MediaItem', 'Text Search'))
         self.ClearQuickSearchComboBox.addItem(
-            translate(u'BiblesPlugin.MediaItem', u'Clear'))
+            translate('BiblesPlugin.MediaItem', 'Clear'))
         self.ClearQuickSearchComboBox.addItem(
-            translate(u'BiblesPlugin.MediaItem', u'Keep'))
+            translate('BiblesPlugin.MediaItem', 'Keep'))
         self.ClearAdvancedSearchComboBox.addItem(
-            translate(u'BiblesPlugin.MediaItem', u'Clear'))
+            translate('BiblesPlugin.MediaItem', 'Clear'))
         self.ClearAdvancedSearchComboBox.addItem(
-            translate(u'BiblesPlugin.MediaItem', u'Keep'))
+            translate('BiblesPlugin.MediaItem', 'Keep'))
 
     def initialise(self):
         log.debug(u'bible manager initialise')
@@ -385,9 +385,9 @@ class BibleMediaItem(MediaManagerItem):
 
     def onNoBookFound(self):
         QtGui.QMessageBox.critical(self,
-            translate(u'BiblesPlugin.MediaItem', u'No Book Found'),
-            translate(u'BiblesPlugin.MediaItem', 
-                u'No matching book could be found in this Bible.'),
+            translate('BiblesPlugin.MediaItem', 'No Book Found'),
+            translate('BiblesPlugin.MediaItem',
+                'No matching book could be found in this Bible.'),
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
             QtGui.QMessageBox.Ok
         )
@@ -494,7 +494,7 @@ class BibleMediaItem(MediaManagerItem):
             if bible2_version:
                 bible2_version = bible2_version.value
             else:
-                bible2_version = u''            
+                bible2_version = u''
             if bible2_copyright:
                 bible2_copyright = bible2_copyright.value
             else:
@@ -556,9 +556,9 @@ class BibleMediaItem(MediaManagerItem):
             if not service_item.title:
                 service_item.title = u'%s %s' % (book, verse_text)
             elif service_item.title.find(
-                translate(u'BiblesPlugin.MediaItem', u'etc')) == -1:
-                service_item.title = u'%s, %s' % (service_item.title, 
-                       translate(u'BiblesPlugin.MediaItem', u'etc'))
+                translate('BiblesPlugin.MediaItem', 'etc')) == -1:
+                service_item.title = u'%s, %s' % (service_item.title,
+                       translate('BiblesPlugin.MediaItem', 'etc'))
         if len(self.parent.settings_tab.bible_theme) == 0:
             service_item.theme = None
         else:
@@ -568,7 +568,11 @@ class BibleMediaItem(MediaManagerItem):
             raw_slides.append(bible_text)
         for slide in raw_slides:
             service_item.add_from_text(slide[:30], slide)
-        service_item.raw_footer = raw_footer
+        if service_item.raw_footer:
+            for foot in raw_footer:
+                service_item.raw_footer.append(foot)
+        else:
+            service_item.raw_footer = raw_footer
         return True
 
     def formatVerse(self, old_chapter, chapter, verse, opening, closing):
@@ -608,7 +612,7 @@ class BibleMediaItem(MediaManagerItem):
         if self.verses == 0:
             self.AdvancedSearchButton.setEnabled(False)
             self.AdvancedMessage.setText(
-                translate(u'BiblesPlugin.MediaItem', u'Bible not fully loaded'))
+                translate('BiblesPlugin.MediaItem', 'Bible not fully loaded'))
         else:
             self.AdvancedSearchButton.setEnabled(True)
             self.AdvancedMessage.setText(u'')
@@ -656,4 +660,3 @@ class BibleMediaItem(MediaManagerItem):
     def searchByReference(self, bible, search):
         log.debug(u'searchByReference %s, %s', bible, search)
         self.search_results = self.parent.manager.get_verses(bible, search)
-
