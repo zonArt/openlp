@@ -64,9 +64,9 @@ class SongImport(object):
         self.versecount = 0
         self.choruscount = 0
         self.copyright_string = unicode(translate(
-            u'SongsPlugin.SongImport', u'copyright'))
+            'SongsPlugin.SongImport', 'copyright'))
         self.copyright_symbol = unicode(translate(
-            u'SongsPlugin.SongImport', u'\xa9'))
+            'SongsPlugin.SongImport', '\xa9'))
 
     @staticmethod
     def process_songs_text(manager, text):
