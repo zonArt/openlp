@@ -37,7 +37,7 @@ class RemotesPlugin(Plugin):
         """
         remotes constructor
         """
-        Plugin.__init__(self, u'Remotes', u'1.9.1', plugin_helpers)
+        Plugin.__init__(self, u'Remotes', u'1.9.2', plugin_helpers)
         self.weight = -1
         self.server = None
 
