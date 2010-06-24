@@ -28,7 +28,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, SongXMLParser, BaseListWithDnD, \
-    Receiver, ItemCapabilities, translate
+    Receiver, ItemCapabilities, translate, check_item_selected
 
 log = logging.getLogger(__name__)
 
@@ -118,7 +118,8 @@ class CustomMediaItem(MediaManagerItem):
         """
         Edit a custom item
         """
-        if self.checkItemSelected(translate('CustomPlugin.MediaItem',
+        if check_item_selected(self.ListView,
+            translate('CustomPlugin.MediaItem',
             'You must select an item to edit.')):
             item = self.ListView.currentItem()
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
@@ -130,7 +131,8 @@ class CustomMediaItem(MediaManagerItem):
         """
         Remove a custom item from the list and database
         """
-        if self.checkItemSelected(translate('CustomPlugin.MediaItem',
+        if check_item_selected(self.ListView,
+            translate('CustomPlugin.MediaItem',
             'You must select an item to delete.')):
             item = self.ListView.currentItem()
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]

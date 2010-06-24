@@ -28,7 +28,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, SongXMLParser, \
-    BaseListWithDnD, Receiver, ItemCapabilities, translate
+    BaseListWithDnD, Receiver, ItemCapabilities, translate, check_item_selected
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     ImportWizardForm
 
@@ -279,7 +279,7 @@ class SongMediaItem(MediaManagerItem):
         """
         Edit a song
         """
-        if self.checkItemSelected(translate('SongsPlugin.MediaItem',
+        if check_item_selected(self.ListView, translate('SongsPlugin.MediaItem',
             'You must select an item to edit.')):
             item = self.ListView.currentItem()
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
@@ -290,7 +290,7 @@ class SongMediaItem(MediaManagerItem):
         """
         Remove a song from the list and database
         """
-        if self.checkItemSelected(translate('SongsPlugin.MediaItem',
+        if check_item_selected(self.ListView, translate('SongsPlugin.MediaItem',
             'You must select an item to delete.')):
             items = self.ListView.selectedIndexes()
             if len(items) == 1:

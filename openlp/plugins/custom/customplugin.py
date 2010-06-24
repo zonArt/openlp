@@ -43,7 +43,7 @@ class CustomPlugin(Plugin):
     log.info(u'Custom Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Custom', u'1.9.1', plugin_helpers)
+        Plugin.__init__(self, u'Custom', u'1.9.2', plugin_helpers)
         self.weight = -5
         self.custommanager = CustomManager()
         self.edit_custom_form = EditCustomForm(self.custommanager)
