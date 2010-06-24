@@ -780,7 +780,7 @@ class SlideController(QtGui.QWidget):
                 log.log(
                     15, u'Slide Rendering took %4s' % (time.time() - before))
                 if self.isLive:
-                    self.mainDisplay.frameView(frame, True, self.canDisplay)
+                    self.mainDisplay.frameView(frame, True)#, self.canDisplay)
             self.selectedRow = row
         Receiver.send_message(u'slidecontroller_%s_changed' % self.typePrefix,
             row)

@@ -118,12 +118,10 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'Initialisation started')
         DisplayWidget.__init__(self, parent)
-#        self.setWindowFlags(QtCore.Qt.Window | QtCore.Qt.FramelessWindowHint)
-#        self.setWindowState(QtCore.Qt.WindowFullScreen)
+        self.setWindowFlags(QtCore.Qt.Window | QtCore.Qt.FramelessWindowHint)
         self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.parent = parent
-        #self.setWindowTitle(u'OpenLP Display')
         # WA_TranslucentBackground is not available in QT4.4
         try:
             self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
@@ -146,6 +144,7 @@ class MainDisplay(DisplayWidget):
             QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'videodisplay_background'), self.hideDisplayForVideo)
+        self.setVisible(False)
 
     def setup(self):
         """
@@ -156,12 +155,8 @@ class MainDisplay(DisplayWidget):
         self.setVisible(False)
         self.screen = self.screens.current
         #Sort out screen locations and sizes
-#        self.display_alert.setGeometry(self.screen[u'size'])
-#        self.display_image.resize(
-#            self.screen[u'size'].width(), self.screen[u'size'].height())
-#        self.display_text.resize(
-#            self.screen[u'size'].width(), self.screen[u'size'].height())
         self.setGeometry(self.screen[u'size'])
+        self.scene.setSceneRect(0,0,self.size().width(), self.size().height())
         #Build a custom splash screen
         self.InitialFrame = QtGui.QImage(
             self.screen[u'size'].width(),
@@ -191,10 +186,10 @@ class MainDisplay(DisplayWidget):
         self.transparent.fill(QtCore.Qt.transparent)
 #        self.display_alert.setPixmap(self.transparent)
 #        self.display_text.setPixmap(self.transparent)
-        self.frameView(self.transparent)
+        #self.frameView(self.transparent)
         # To display or not to display?
         if not self.screen[u'primary']:
-            self.showFullScreen()
+            self.setVisible(True)
             self.primary = False
         else:
             self.setVisible(False)
@@ -202,7 +197,7 @@ class MainDisplay(DisplayWidget):
 
     def setupScene(self):
         self.scene = QtGui.QGraphicsScene(self)
-        self.scene.setSceneRect(0,0,self.size().width()-2, self.size().height()-2)
+        self.scene.setSceneRect(0,0,self.size().width(), self.size().height())
         self.setScene(self.scene)
 
     def setupImage(self):
@@ -213,7 +208,7 @@ class MainDisplay(DisplayWidget):
     def setupText(self):
         #self.display_text = QtGui.QGraphicsTextItem()
         self.display_text = QtGui.QGraphicsPixmapItem()
-        self.display_text.setPos(0,self.size().height()/2)
+        #self.display_text.setPos(0,self.size().height()/2)
         #self.display_text.setTextWidth(self.size().width())
         self.display_text.setZValue(4)
         self.scene.addItem(self.display_text)
@@ -278,9 +273,9 @@ class MainDisplay(DisplayWidget):
         log.debug(u'showDisplay')
         if self.storeImage:
             self.display_image.setPixmap(self.storeImage)
-        self.display_alert.setPixmap(self.transparent)
         if self.storeText:
             self.display_text.setPixmap(self.storeText)
+        #self.display_alert.setPixmap(self.transparent)
         self.storeImage = None
         self.store = None
         Receiver.send_message(u'maindisplay_active')
@@ -293,9 +288,9 @@ class MainDisplay(DisplayWidget):
 
     def setAlertSize(self, top, height):
         log.debug(u'setAlertSize')
-        self.display_alert.setGeometry(
-            QtCore.QRect(0, top,
-                        self.screen[u'size'].width(), height))
+#        self.display_alert.setGeometry(
+#            QtCore.QRect(0, top,
+#                        self.screen[u'size'].width(), height))
 
     def addAlertImage(self, frame, blank=False):
         log.debug(u'addAlertImage')
@@ -311,13 +306,14 @@ class MainDisplay(DisplayWidget):
         ``frame``
             Image frame to be rendered
         """
-        log.debug(u'frameView %d' % (display))
+        log.debug(u'frameView %d' % display)
+        print "display ", display
         if display:
             if transition:
                 if self.frame is not None:
                     self.display_text.setPixmap(
                         QtGui.QPixmap.fromImage(self.frame))
-                    self.repaint()
+                    self.update()
                 self.frame = None
                 if frame[u'trans'] is not None:
                     self.display_text.setPixmap(
@@ -419,7 +415,7 @@ class VideoDisplay(Phonon.VideoWidget):
         # To display or not to display?
         if not self.screen[u'primary']: # and self.isVisible():
             #self.showFullScreen()
-            self.setVisible(True)
+            self.setVisible(False)
             self.primary = False
         else:
             self.setVisible(False)
