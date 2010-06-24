@@ -43,7 +43,8 @@ class BibleListView(BaseListWithDnD):
         BaseListWithDnD.__init__(self, parent)
 
     def resizeEvent(self, event):
-        self.parent.onListViewResize(event.size().width(), event.size().width())
+        self.parent().onListViewResize(event.size().width(),
+            event.size().width())
 
 
 class BibleMediaItem(MediaManagerItem):
