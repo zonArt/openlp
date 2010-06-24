@@ -29,7 +29,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    ItemCapabilities, SettingsManager, translate
+    ItemCapabilities, SettingsManager, translate, check_item_selected
 
 log = logging.getLogger(__name__)
 
@@ -141,7 +141,7 @@ class MediaMediaItem(MediaManagerItem):
         """
         Remove a media item from the list
         """
-        if self.checkItemSelected(translate('MediaPlugin.MediaItem',
+        if check_item_selected(self.ListView, translate('MediaPlugin.MediaItem',
             'You must select an item to delete.')):
             item = self.ListView.currentItem()
             row = self.ListView.row(item)

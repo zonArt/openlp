@@ -29,7 +29,8 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    context_menu_action, ItemCapabilities, SettingsManager, translate
+    context_menu_action, ItemCapabilities, SettingsManager, translate, \
+    check_item_selected
 from openlp.core.utils import AppLocation, get_images_filter
 
 log = logging.getLogger(__name__)
@@ -116,7 +117,7 @@ class ImageMediaItem(MediaManagerItem):
         """
         Remove an image item from the list
         """
-        if self.checkItemSelected(translate('ImagePlugin.MediaItem',
+        if check_item_selected(self.ListView, translate('ImagePlugin.MediaItem',
             'You must select an item to delete.')):
             items = self.ListView.selectedIndexes()
             for item in items:

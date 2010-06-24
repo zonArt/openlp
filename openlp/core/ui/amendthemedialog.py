@@ -50,6 +50,7 @@ class Ui_AmendThemeDialog(object):
         self.ThemeNameLayout.addWidget(self.ThemeNameLabel)
         self.ThemeNameEdit = QtGui.QLineEdit(self.ThemeNameWidget)
         self.ThemeNameEdit.setObjectName(u'ThemeNameEdit')
+        self.ThemeNameLabel.setBuddy(self.ThemeNameEdit)
         self.ThemeNameLayout.addWidget(self.ThemeNameEdit)
         self.AmendThemeLayout.addWidget(self.ThemeNameWidget)
         self.ContentWidget = QtGui.QWidget(AmendThemeDialog)
@@ -72,6 +73,7 @@ class Ui_AmendThemeDialog(object):
             self.BackgroundLabel)
         self.BackgroundComboBox = QtGui.QComboBox(self.BackgroundTab)
         self.BackgroundComboBox.setObjectName(u'BackgroundComboBox')
+        self.BackgroundLabel.setBuddy(self.BackgroundComboBox)
         self.BackgroundComboBox.addItem(QtCore.QString())
         self.BackgroundComboBox.addItem(QtCore.QString())
         self.BackgroundLayout.setWidget(0, QtGui.QFormLayout.FieldRole,
@@ -752,9 +754,9 @@ class Ui_AmendThemeDialog(object):
         AmendThemeDialog.setWindowTitle(
             translate('AmendThemeForm', 'Theme Maintenance'))
         self.ThemeNameLabel.setText(
-            translate('AmendThemeForm', 'Theme Name:'))
+            translate('AmendThemeForm', 'Theme &Name:'))
         self.BackgroundLabel.setText(
-            translate('AmendThemeForm', 'Visibility:'))
+            translate('AmendThemeForm', '&Visibility:'))
         self.BackgroundComboBox.setItemText(0,
             translate('AmendThemeForm', 'Opaque'))
         self.BackgroundComboBox.setItemText(1,
