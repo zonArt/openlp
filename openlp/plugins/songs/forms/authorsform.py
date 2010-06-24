@@ -80,27 +80,27 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
     def accept(self):
         if not self.FirstNameEdit.text():
             QtGui.QMessageBox.critical(
-                self, translate(u'SongsPlugin.AuthorsForm', u'Error'),
-                translate(u'SongsPlugin.AuthorsForm',
-                    u'You need to type in the first name of the author.'),
+                self, translate('SongsPlugin.AuthorsForm', 'Error'),
+                translate('SongsPlugin.AuthorsForm',
+                    'You need to type in the first name of the author.'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             self.FirstNameEdit.setFocus()
             return False
         elif not self.LastNameEdit.text():
             QtGui.QMessageBox.critical(
-                self, translate(u'SongsPlugin.AuthorsForm', u'Error'),
-                translate(u'SongsPlugin.AuthorsForm',
-                    u'You need to type in the last name of the author.'),
+                self, translate('SongsPlugin.AuthorsForm', 'Error'),
+                translate('SongsPlugin.AuthorsForm',
+                    'You need to type in the last name of the author.'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             self.LastNameEdit.setFocus()
             return False
         elif not self.DisplayEdit.text():
             if QtGui.QMessageBox.critical(
-                    self, translate(u'SongsPlugin.AuthorsForm', u'Error'),
-                    translate(u'SongsPlugin.AuthorsForm',
-                        u'You haven\'t set a display name for the '
-                        u'author, would you like me to combine the first and '
-                        u'last names for you?'),
+                    self, translate('SongsPlugin.AuthorsForm', 'Error'),
+                    translate('SongsPlugin.AuthorsForm',
+                        'You haven\'t set a display name for the '
+                        'author, would you like me to combine the first and '
+                        'last names for you?'),
                     QtGui.QMessageBox.StandardButtons(
                         QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
                     ) == QtGui.QMessageBox.Yes:

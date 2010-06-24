@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#!/bin/sh
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
 ###############################################################################
@@ -22,45 +22,33 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+#
+# This script automates the generation of resources.py for OpenLP saving a
+# backup of the old resources, inserting the coding and copyright header and
+# conforming it to the project coding standards.
+#
+# To make use of the script:
+# 1 - Add the new image files in resources/images/
+# 2 - Modify resources/images/openlp-2.qrc as appropriate
+# 3 - run sh scripts/generate_resources.sh
+#
+# Once you have confirmed the resources are correctly modified to an updated,
+# working state you may optionally remove openlp/core/resources.py.old
+#
+###############################################################################
+# Backup the existing resources
+mv openlp/core/resources.py openlp/core/resources.py.old
 
-from PyQt4 import QtCore, QtGui
+# Create the new data from the updated qrc
+pyrcc4 -o openlp/core/resources.py.new resources/images/openlp-2.qrc
 
-from openlp.core.lib import SettingsTab, translate
+# Remove patch breaking lines
+cat openlp/core/resources.py.new | sed '/# Created: /d;/#      by: /d' \
+    > openlp/core/resources.py
 
-class RemoteTab(SettingsTab):
-    """
-    RemoteTab is the Remotes settings tab in the settings dialog.
-    """
-    def __init__(self, title):
-        SettingsTab.__init__(self, title)
+# Patch resources.py to OpenLP coding style
+patch --posix -s openlp/core/resources.py scripts/resources.patch
 
-    def setupUi(self):
-        self.setObjectName(u'RemoteTab')
-        self.tabTitleVisible = translate('RemotePlugin.RemoteTab', 'Remotes')
-        self.RemoteLayout = QtGui.QFormLayout(self)
-        self.RemoteLayout.setObjectName(u'RemoteLayout')
-        self.RemoteModeGroupBox = QtGui.QGroupBox(self)
-        self.RemoteModeGroupBox.setObjectName(u'RemoteModeGroupBox')
-        self.RemoteModeLayout = QtGui.QVBoxLayout(self.RemoteModeGroupBox)
-        self.RemoteModeLayout.setSpacing(8)
-        self.RemoteModeLayout.setMargin(8)
-        self.RemoteModeLayout.setObjectName(u'RemoteModeLayout')
-        self.RemotePortSpinBox = QtGui.QSpinBox(self.RemoteModeGroupBox)
-        self.RemotePortSpinBox.setObjectName(u'RemotePortSpinBox')
-        self.RemotePortSpinBox.setMaximum(32767)
-        self.RemoteModeLayout.addWidget(self.RemotePortSpinBox)
-        self.RemoteLayout.setWidget(
-            0, QtGui.QFormLayout.LabelRole, self.RemoteModeGroupBox)
+# Remove temporary file
+rm openlp/core/resources.py.new
 
-    def retranslateUi(self):
-        self.RemoteModeGroupBox.setTitle(
-            translate('RemotePlugin.RemoteTab', 'Remotes Receiver Port'))
-
-    def load(self):
-        self.RemotePortSpinBox.setValue(
-            QtCore.QSettings().value(self.settingsSection + u'/remote port',
-                QtCore.QVariant(4316)).toInt()[0])
-
-    def save(self):
-        QtCore.QSettings().setValue(self.settingsSection + u'/remote port',
-            QtCore.QVariant(self.RemotePortSpinBox.value()))
