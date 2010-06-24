@@ -35,7 +35,7 @@ from openlp.core.ui import AmendThemeForm
 from openlp.core.theme import Theme
 from openlp.core.lib import OpenLPToolbar, context_menu_action, \
     ThemeXML, str_to_bool, get_text_file_string, build_icon, Receiver, \
-    context_menu_separator, SettingsManager, translate
+    context_menu_separator, SettingsManager, translate, check_item_selected
 from openlp.core.utils import AppLocation, get_filesystem_encoding
 
 log = logging.getLogger(__name__)
@@ -182,8 +182,9 @@ class ThemeManager(QtGui.QWidget):
         Loads the settings for the theme that is to be edited and launches the
         theme editing form so the user can make their changes.
         """
-        item = self.ThemeListWidget.currentItem()
-        if item:
+        if check_item_selected(self.ThemeListWidget, translate('ThemeManager',
+            'You must select a theme to edit.')):
+            item = self.ThemeListWidget.currentItem()
             theme = self.getThemeData(
                 unicode(item.data(QtCore.Qt.UserRole).toString()))
             self.amendThemeForm.loadTheme(theme)
@@ -198,8 +199,9 @@ class ThemeManager(QtGui.QWidget):
         self.global_theme = unicode(QtCore.QSettings().value(
             self.settingsSection + u'/global theme',
             QtCore.QVariant(u'')).toString())
-        item = self.ThemeListWidget.currentItem()
-        if item:
+        if check_item_selected(self.ThemeListWidget, translate('ThemeManager',
+            'You must select a theme to delete.')):
+            item = self.ThemeListWidget.currentItem()
             theme = unicode(item.text())
             # should be the same unless default
             if theme != unicode(item.data(QtCore.Qt.UserRole).toString()):
