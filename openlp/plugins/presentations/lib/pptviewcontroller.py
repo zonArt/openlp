@@ -58,10 +58,7 @@ class PptviewController(PresentationController):
         log.debug(u'check_available')
         if os.name != u'nt':
             return False
-        try:
-            return self.check_installed()
-        except:
-            return False
+        return self.check_installed()
 
     if os.name == u'nt':
         def check_installed(self):

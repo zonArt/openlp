@@ -186,9 +186,7 @@ class PowerpointDocument(PresentationDocument):
                 return False
             if self.presentation.SlideShowWindow.View is None:
                 return False
-        except AttributeError:
-            return False
-        except pywintypes.com_error:
+        except (AttributeError, pywintypes.com_error):
             return False
         return True
 
@@ -210,9 +208,9 @@ class PowerpointDocument(PresentationDocument):
         """
         Returns true if screen is blank
         """
-        try:
+        if self.is_active():
             return self.presentation.SlideShowWindow.View.State == 3
-        except pywintypes.com_error:
+        else:
             return False
 
     def stop_presentation(self):
