@@ -168,9 +168,7 @@ class PowerpointDocument(PresentationDocument):
                 return False
             if self.controller.process.Presentations.Count == 0:
                 return False
-        except AttributeError:
-            return False
-        except pywintypes.com_error:
+        except (AttributeError, pywintypes.com_error):
             return False
         return True
 
