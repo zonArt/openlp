@@ -590,7 +590,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def onCopyrightInsertButtonTriggered(self):
         text = self.CopyrightEditItem.text()
         pos = self.CopyrightEditItem.cursorPosition()
-        text = text[:pos] + u'\xa9' + text[pos:]
+        text = text[:pos] + '\xa9' + text[pos:]
         self.CopyrightEditItem.setText(text)
         self.CopyrightEditItem.setFocus()
         self.CopyrightEditItem.setCursorPosition(pos + 1)
