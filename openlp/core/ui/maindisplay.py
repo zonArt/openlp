@@ -195,6 +195,7 @@ class MainDisplay(DisplayWidget):
             self.setVisible(False)
             self.primary = True
 
+
     def setupScene(self):
         self.scene = QtGui.QGraphicsScene(self)
         self.scene.setSceneRect(0,0,self.size().width(), self.size().height())
@@ -232,7 +233,8 @@ class MainDisplay(DisplayWidget):
         if self.primary:
             self.setVisible(False)
         else:
-            self.showFullScreen()
+            self.setVisible(True)
+            #self.showFullScreen()
 
     def hideDisplayForVideo(self):
         """
@@ -307,7 +309,6 @@ class MainDisplay(DisplayWidget):
             Image frame to be rendered
         """
         log.debug(u'frameView %d' % display)
-        print "display ", display
         if display:
             if transition:
                 if self.frame is not None:
@@ -332,7 +333,7 @@ class MainDisplay(DisplayWidget):
                 self.display_frame = frame
             if not self.isVisible() and self.screens.display:
                 self.setVisible(True)
-                self.showFullScreen()
+                #self.showFullScreen()
         else:
             self.storeText = QtGui.QPixmap.fromImage(frame[u'main'])
 
@@ -367,10 +368,10 @@ class VideoDisplay(Phonon.VideoWidget):
         Phonon.createPath(self.mediaObject, self.audioObject)
         flags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Dialog
 #        # WindowsStaysOnBottomHint is not available in QT4.4
-#        try:
-#            flags = flags | QtCore.Qt.WindowStaysOnBottomHint
-#        except AttributeError:
-#            pass
+        try:
+            flags = flags | QtCore.Qt.WindowStaysOnBottomHint
+        except AttributeError:
+            pass
         self.setWindowFlags(flags)
 
         QtCore.QObject.connect(Receiver.get_receiver(),

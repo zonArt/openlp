@@ -253,6 +253,16 @@ class SlideController(QtGui.QWidget):
             translate('SlideController', 'Start playing media'),
             self.onMediaStop)
         if self.isLive:
+            self.button = QtGui.QToolButton(self.Toolbar)
+            self.Toolbar.addToolbarWidget(u'Hide Menu', self.button)
+            self.button.setText(translate('SlideController', 'Hide'))
+            self.menu = QtGui.QMenu(self.button)
+            blank_screen = QtGui.QAction(QtGui.QIcon( u':/slides/slide_blank.png'), u'Blank Screen', self.button)
+            theme_screen = QtGui.QAction(QtGui.QIcon(u':/slides/slide_theme.png'), u'Blank to Theme', self.button)
+            desktop_screen = QtGui.QAction(QtGui.QIcon(u':/slides/slide_desktop.png'), u'Show Desktop', self.button)
+            self.menu.addAction(blank_screen)
+            self.menu.addAction(theme_screen)
+            self.menu.addAction(desktop_screen)
             self.blankButton = self.Mediabar.addToolbarButton(
                 u'Blank Screen', u':/slides/slide_blank.png',
                 translate('SlideController', 'Blank Screen'),
