@@ -94,6 +94,10 @@ class VerseType(object):
 from manager import SongManager
 from songstab import SongsTab
 from mediaitem import SongMediaItem
-from sofimport import SofImport
-from oooimport import OooImport
 from songimport import SongImport
+try:
+    from sofimport import SofImport
+    from oooimport import OooImport
+except ImportError:
+    pass
+
