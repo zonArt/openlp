@@ -132,18 +132,13 @@ class ImpressController(PresentationController):
 
     def get_com_desktop(self):
         log.debug(u'get COM Desktop OpenOffice')
-        try:
-            desktop = self.manager.createInstance(u'com.sun.star.frame.Desktop')
-            return desktop
-        except:
-            log.exception(u'Failed to get COM desktop')
-        return None
+        return self.manager.createInstance(u'com.sun.star.frame.Desktop')
 
     def get_com_servicemanager(self):
         log.debug(u'get_com_servicemanager openoffice')
         try:
             return Dispatch(u'com.sun.star.ServiceManager')
-        except:
+        except pywintypes.com_error:
             log.exception(u'Failed to get COM service manager')
             return None
 
