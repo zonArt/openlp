@@ -73,6 +73,10 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         for frame in self.itemList:
             item_name = QtGui.QListWidgetItem(frame[u'title'])
             self.listWidget.addItem(item_name)
+        if self.listWidget.count() == 1:
+            self.deleteButton.setEnabled(False)
+        else:
+            self.deleteButton.setEnabled(True)
 
     def onItemDelete(self):
         """
