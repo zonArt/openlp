@@ -304,7 +304,7 @@ class ServiceItem(object):
     def merge(self, other):
         """
         Updates the _uuid with the value from the original one
-        The _uuid is unique for a give service item but this allows one to
+        The _uuid is unique for a given service item but this allows one to
         replace an original version.
         """
         self._uuid = other._uuid

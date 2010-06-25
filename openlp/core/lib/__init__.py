@@ -170,7 +170,7 @@ def check_item_selected(list_widget, message):
         The message to give the user if no item is selected
     """
     if not list_widget.selectedIndexes():
-        QtGui.QMessageBox.information(self,
+        QtGui.QMessageBox.information(list_widget.parent(),
             translate('MediaManagerItem', 'No Items Selected'), message)
         return False
     return True
