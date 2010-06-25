@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <song>
   <title>Martins Test</title>
-  <author>Martin Thompson</author>
+  <author>MartiÑ Thómpson</author>
   <copyright>2010 Martin Thompson</copyright>
   <hymn_number>1</hymn_number>
   <presentation>V1 C V2 C2 V3 B1 V1</presentation>
@@ -25,8 +25,8 @@
 2 V2 Line 2
  
 [3]
-V3 Line 1
-V3 Line 2
+ V3 Line 1
+ V3 Line 2
 
 [b1]
  Bridge 1

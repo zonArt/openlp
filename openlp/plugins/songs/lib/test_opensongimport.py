@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from openlp.plugins.songs.lib.opensongimport import OpenSongImport
 from openlp.plugins.songs.lib.manager import SongManager
 
@@ -8,7 +9,7 @@ def test():
     # o.finish()
     o.song.print_song()
     assert o.song.copyright == u'2010 Martin Thompson'
-    assert o.song.authors == [u'Martin Thompson']
+    assert o.song.authors == [u'MartiÑ Thómpson']
     assert o.song.title == u'Martins Test'
     assert o.song.alternate_title == u''
     assert o.song.song_number == u'1'
