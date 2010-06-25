@@ -29,8 +29,13 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, build_icon, PluginStatus, Receiver, \
     translate
-from openlp.plugins.songs.lib import SongManager, SongMediaItem, SongsTab, \
-    SofImport, OooImport
+from openlp.plugins.songs.lib import SongManager, SongMediaItem, SongsTab
+
+try:
+    from openlp.plugins.songs.lib import SofImport, OooImport
+    OOo_available = True
+except ImportError:
+    OOo_available = False
 
 log = logging.getLogger(__name__)
 
@@ -95,46 +100,48 @@ class SongsPlugin(Plugin):
         self.SongImportItem.setToolTip(translate('SongsPlugin',
             'Import songs using the import wizard.'))
         import_menu.addAction(self.SongImportItem)
-        # Songs of Fellowship import menu item - will be removed and the
-        # functionality will be contained within the import wizard
-        self.ImportSofItem = QtGui.QAction(import_menu)
-        self.ImportSofItem.setObjectName(u'ImportSofItem')
-        self.ImportSofItem.setText(
-            translate('SongsPlugin',
-                'Songs of Fellowship (temp menu item)'))
-        self.ImportSofItem.setToolTip(
-            translate('SongsPlugin',
-                'Import songs from the VOLS1_2.RTF, sof3words' \
-                + '.rtf and sof4words.rtf supplied with the music books'))
-        self.ImportSofItem.setStatusTip(
-            translate('SongsPlugin',
-                'Import songs from the VOLS1_2.RTF, sof3words' \
-                + '.rtf and sof4words.rtf supplied with the music books'))
-        import_menu.addAction(self.ImportSofItem)
-        # OpenOffice.org import menu item - will be removed and the
-        # functionality will be contained within the import wizard
-        self.ImportOooItem = QtGui.QAction(import_menu)
-        self.ImportOooItem.setObjectName(u'ImportOooItem')
-        self.ImportOooItem.setText(
-            translate('SongsPlugin',
-                'Generic Document/Presentation Import '
-                '(temp menu item)'))
-        self.ImportOooItem.setToolTip(
-            translate('SongsPlugin',
-                'Import songs from '
-                'Word/Writer/Powerpoint/Impress'))
-        self.ImportOooItem.setStatusTip(
-            translate('SongsPlugin',
-                'Import songs from '
-                'Word/Writer/Powerpoint/Impress'))
-        import_menu.addAction(self.ImportOooItem)
         # Signals and slots
         QtCore.QObject.connect(self.SongImportItem,
             QtCore.SIGNAL(u'triggered()'), self.onSongImportItemClicked)
-        QtCore.QObject.connect(self.ImportSofItem,
-            QtCore.SIGNAL(u'triggered()'), self.onImportSofItemClick)
-        QtCore.QObject.connect(self.ImportOooItem,
-            QtCore.SIGNAL(u'triggered()'), self.onImportOooItemClick)
+        if OOo_available:
+            # Songs of Fellowship import menu item - will be removed and the
+            # functionality will be contained within the import wizard
+            self.ImportSofItem = QtGui.QAction(import_menu)
+            self.ImportSofItem.setObjectName(u'ImportSofItem')
+            self.ImportSofItem.setText(
+                translate('SongsPlugin',
+                    'Songs of Fellowship (temp menu item)'))
+            self.ImportSofItem.setToolTip(
+                translate('SongsPlugin',
+                    'Import songs from the VOLS1_2.RTF, sof3words' \
+                    + '.rtf and sof4words.rtf supplied with the music books'))
+            self.ImportSofItem.setStatusTip(
+                translate('SongsPlugin',
+                    'Import songs from the VOLS1_2.RTF, sof3words' \
+                    + '.rtf and sof4words.rtf supplied with the music books'))
+            import_menu.addAction(self.ImportSofItem)
+            # OpenOffice.org import menu item - will be removed and the
+            # functionality will be contained within the import wizard
+            self.ImportOooItem = QtGui.QAction(import_menu)
+            self.ImportOooItem.setObjectName(u'ImportOooItem')
+            self.ImportOooItem.setText(
+                translate('SongsPlugin',
+                    'Generic Document/Presentation Import '
+                    '(temp menu item)'))
+            self.ImportOooItem.setToolTip(
+                translate('SongsPlugin',
+                    'Import songs from '
+                    'Word/Writer/Powerpoint/Impress'))
+            self.ImportOooItem.setStatusTip(
+                translate('SongsPlugin',
+                    'Import songs from '
+                    'Word/Writer/Powerpoint/Impress'))
+            import_menu.addAction(self.ImportOooItem)
+            # Signals and slots
+            QtCore.QObject.connect(self.ImportSofItem,
+                QtCore.SIGNAL(u'triggered()'), self.onImportSofItemClick)
+            QtCore.QObject.connect(self.ImportOooItem,
+                QtCore.SIGNAL(u'triggered()'), self.onImportOooItemClick)
 
     def add_export_menu_item(self, export_menu):
         """
