@@ -66,7 +66,7 @@ class SongImport(object):
         self.copyright_string = unicode(translate(
             'SongsPlugin.SongImport', 'copyright'))
         self.copyright_symbol = unicode(translate(
-            'SongsPlugin.SongImport', u'\u00a9'.encode('utf8')))
+            'SongsPlugin.SongImport', '\xa9'))
 
     @staticmethod
     def process_songs_text(manager, text):

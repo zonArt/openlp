@@ -23,6 +23,8 @@ This README.TXT must be distributed with the pptviewlib.dll
 
 This library has a limit of 50 PowerPoints which can be opened simultaneously.
 
+This project can be built with the free Microsoft Visual C++ 2008 Express Edition.
+
 USAGE
 -----
 BOOL CheckInstalled(void);

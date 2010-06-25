@@ -159,6 +159,22 @@ def resize_image(image, width, height):
     painter.drawImage((width - realw) / 2, (height - realh) / 2, preview)
     return new_image
 
+def check_item_selected(list_widget, message):
+    """
+    Check if a list item is selected so an action may be performed on it
+
+    ``list_widget``
+        The list to check for selected items
+
+    ``message``
+        The message to give the user if no item is selected
+    """
+    if not list_widget.selectedIndexes():
+        QtGui.QMessageBox.information(list_widget.parent(),
+            translate('MediaManagerItem', 'No Items Selected'), message)
+        return False
+    return True
+
 
 class ThemeLevel(object):
     """
