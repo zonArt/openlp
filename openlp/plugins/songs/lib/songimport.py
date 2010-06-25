@@ -27,7 +27,7 @@ import re
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import SongXMLBuilder
+from openlp.core.lib import SongXMLBuilder, translate
 from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.models import Song, Author, Topic, Book
 
@@ -63,10 +63,10 @@ class SongImport(object):
         self.verses = []
         self.versecount = 0
         self.choruscount = 0
-        self.copyright_string = unicode(QtGui.QApplication.translate(
-            u'SongsPlugin.SongImport', u'copyright'))
-        self.copyright_symbol = unicode(QtGui.QApplication.translate(
-            u'SongsPlugin.SongImport', u'\xa9'))
+        self.copyright_string = unicode(translate(
+            'SongsPlugin.SongImport', 'copyright'))
+        self.copyright_symbol = unicode(translate(
+            'SongsPlugin.SongImport', '\xa9'))
 
     @staticmethod
     def process_songs_text(manager, text):
