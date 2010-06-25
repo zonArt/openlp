@@ -40,7 +40,7 @@ class SongUsagePlugin(Plugin):
     log.info(u'SongUsage Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'SongUsage', u'1.9.1', plugin_helpers)
+        Plugin.__init__(self, u'SongUsage', u'1.9.2', plugin_helpers)
         self.weight = -4
         self.icon = build_icon(u':/media/media_image.png')
         self.songusagemanager = None

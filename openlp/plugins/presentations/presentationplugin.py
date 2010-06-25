@@ -38,7 +38,7 @@ class PresentationPlugin(Plugin):
     def __init__(self, plugin_helpers):
         log.debug(u'Initialised')
         self.controllers = {}
-        Plugin.__init__(self, u'Presentations', u'1.9.1', plugin_helpers)
+        Plugin.__init__(self, u'Presentations', u'1.9.2', plugin_helpers)
         self.weight = -8
         self.icon = build_icon(u':/media/media_presentation.png')
         self.status = PluginStatus.Active
@@ -114,4 +114,3 @@ class PresentationPlugin(Plugin):
             'programs. The choice of available presentation programs is '
             'available to the user in a drop down box.')
         return about_text
-

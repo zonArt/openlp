@@ -153,7 +153,6 @@ def check_latest_version(current_version):
     settings.setValue(u'last version test', QtCore.QVariant(this_test))
     settings.endGroup()
     if last_test != this_test:
-        version_string = u''
         if current_version[u'build']:
             req = urllib2.Request(
                 u'http://www.openlp.org/files/dev_version.txt')
