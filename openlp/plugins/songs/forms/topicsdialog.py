@@ -61,6 +61,6 @@ class Ui_TopicsDialog(object):
 
     def retranslateUi(self, TopicsDialog):
         TopicsDialog.setWindowTitle(
-            translate(u'SongsPlugin.TopicsForm', u'Topic Maintenance'))
+            translate('SongsPlugin.TopicsForm', 'Topic Maintenance'))
         self.NameLabel.setText(
-            translate(u'SongsPlugin.TopicsForm', u'Topic name:'))
+            translate('SongsPlugin.TopicsForm', 'Topic name:'))

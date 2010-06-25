@@ -36,7 +36,7 @@ class MediaPlugin(Plugin):
     log.info(u'%s MediaPlugin loaded', __name__)
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Media', u'1.9.1', plugin_helpers)
+        Plugin.__init__(self, u'Media', u'1.9.2', plugin_helpers)
         self.weight = -6
         self.icon = build_icon(u':/media/media_video.png')
         # passed with drag and drop messages
@@ -85,4 +85,3 @@ class MediaPlugin(Plugin):
             '<b>Media Plugin</b><br>This plugin '
             'allows the playing of audio and video media')
         return about_text
-

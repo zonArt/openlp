@@ -537,7 +537,7 @@ class SlideController(QtGui.QWidget):
         before = time.time()
         #Clear the old serviceItem cache to release memory
         if self.serviceItem and self.serviceItem is not serviceItem:
-            self.serviceItem.cache = []
+            self.serviceItem.clear_cache()
         self.serviceItem = serviceItem
         self.PreviewListWidget.clear()
         self.PreviewListWidget.setRowCount(0)
@@ -655,7 +655,9 @@ class SlideController(QtGui.QWidget):
         """
         Allow the main display to blank the main display at startup time
         """
-        self.blankButton.setChecked(True)
+        log.debug(u'mainDisplaySetBackground')
+        if not self.mainDisplay.primary:
+            self.blankButton.setChecked(True)
 
     def onSlideBlank(self):
         """
@@ -671,12 +673,12 @@ class SlideController(QtGui.QWidget):
 
     def onBlankDisplay(self, checked):
         """
-        Handle the blank screen button
+        Handle the blank screen button actions
         """
         log.debug(u'onBlankDisplay %d' % checked)
         self.hideButton.setChecked(False)
         self.themeButton.setChecked(False)
-        self.canDisplay =  not checked
+        self.canDisplay = not checked
         QtCore.QSettings().setValue(
             self.parent.generalSettingsSection + u'/screen blank',
             QtCore.QVariant(checked))
@@ -721,6 +723,7 @@ class SlideController(QtGui.QWidget):
         """
         Blank the display screen within a plugin if required.
         """
+        log.debug(u'blankPlugin %d ', blank)
         if self.serviceItem is not None:
             if blank:
                 Receiver.send_message(u'%s_blank'

@@ -331,7 +331,10 @@ class ImpressDocument(PresentationDocument):
 
     def stop_presentation(self):
         log.debug(u'stop presentation OpenOffice')
-        self.control.deactivate()
+        # deactivate should hide the screen according to docs, but doesn't
+        #self.control.deactivate()
+        self.presentation.end()
+        self.control = None
 
     def start_presentation(self):
         log.debug(u'start presentation OpenOffice')

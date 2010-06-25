@@ -37,7 +37,7 @@ class alertsPlugin(Plugin):
     log.info(u'Alerts Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Alerts', u'1.9.1', plugin_helpers)
+        Plugin.__init__(self, u'Alerts', u'1.9.2', plugin_helpers)
         self.weight = -3
         self.icon = build_icon(u':/media/media_image.png')
         self.alertsmanager = AlertsManager(self)
@@ -64,9 +64,9 @@ class alertsPlugin(Plugin):
         self.toolsAlertItem.setIcon(AlertIcon)
         self.toolsAlertItem.setObjectName(u'toolsAlertItem')
         self.toolsAlertItem.setText(
-            translate(u'AlertsPlugin', u'&Alert'))
+            translate('AlertsPlugin', '&Alert'))
         self.toolsAlertItem.setStatusTip(
-            translate(u'AlertsPlugin', u'Show an alert message'))
+            translate('AlertsPlugin', 'Show an alert message'))
         self.toolsAlertItem.setShortcut(u'F7')
         self.service_manager.parent.ToolsMenu.addAction(self.toolsAlertItem)
         QtCore.QObject.connect(self.toolsAlertItem,
@@ -94,7 +94,7 @@ class alertsPlugin(Plugin):
         self.alertForm.exec_()
 
     def about(self):
-        about_text = translate(u'AlertsPlugin', 
-            u'<b>Alerts Plugin</b><br>This plugin '
-            u'controls the displaying of alerts on the presentations screen')
+        about_text = translate('AlertsPlugin',
+            '<b>Alerts Plugin</b><br>This plugin '
+            'controls the displaying of alerts on the presentations screen')
         return about_text

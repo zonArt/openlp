@@ -43,7 +43,7 @@ class CustomPlugin(Plugin):
     log.info(u'Custom Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Custom', u'1.9.1', plugin_helpers)
+        Plugin.__init__(self, u'Custom', u'1.9.2', plugin_helpers)
         self.weight = -5
         self.custommanager = CustomManager()
         self.edit_custom_form = EditCustomForm(self.custommanager)
@@ -67,11 +67,11 @@ class CustomPlugin(Plugin):
         self.remove_toolbox_item()
 
     def about(self):
-        about_text = translate(u'CustomPlugin',
-            u'<b>Custom Plugin</b><br>This plugin '
-            u'allows slides to be displayed on the screen in the same way '
-            u'songs are. This plugin provides greater freedom over the '
-            u'songs plugin.<br>')
+        about_text = translate('CustomPlugin',
+            '<b>Custom Plugin</b><br>This plugin '
+            'allows slides to be displayed on the screen in the same way '
+            'songs are. This plugin provides greater freedom over the '
+            'songs plugin.<br>')
         return about_text
 
     def can_delete_theme(self, theme):
