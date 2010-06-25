@@ -43,6 +43,7 @@ class Ui_customEditDialog(object):
         self.TitleLabel.setObjectName(u'TitleLabel')
         self.horizontalLayout.addWidget(self.TitleLabel)
         self.TitleEdit = QtGui.QLineEdit(customEditDialog)
+        self.TitleLabel.setBuddy(self.TitleEdit)
         self.TitleEdit.setObjectName(u'TitleEdit')
         self.horizontalLayout.addWidget(self.TitleEdit)
         self.gridLayout.addLayout(self.horizontalLayout, 0, 0, 1, 1)
@@ -118,6 +119,7 @@ class Ui_customEditDialog(object):
         self.ThemeLabel.setObjectName(u'ThemeLabel')
         self.horizontalLayout_3.addWidget(self.ThemeLabel)
         self.ThemeComboBox = QtGui.QComboBox(customEditDialog)
+        self.ThemeLabel.setBuddy(self.ThemeComboBox)
         self.ThemeComboBox.setObjectName(u'ThemeComboBox')
         self.horizontalLayout_3.addWidget(self.ThemeComboBox)
         self.gridLayout.addLayout(self.horizontalLayout_3, 3, 0, 1, 1)
@@ -127,6 +129,7 @@ class Ui_customEditDialog(object):
         self.CreditLabel.setObjectName(u'CreditLabel')
         self.horizontalLayout_2.addWidget(self.CreditLabel)
         self.CreditEdit = QtGui.QLineEdit(customEditDialog)
+        self.CreditLabel.setBuddy(self.CreditEdit)
         self.CreditEdit.setObjectName(u'CreditEdit')
         self.horizontalLayout_2.addWidget(self.CreditEdit)
         self.gridLayout.addLayout(self.horizontalLayout_2, 4, 0, 1, 1)
@@ -162,7 +165,7 @@ class Ui_customEditDialog(object):
         self.DownButton.setToolTip(
             translate('CustomPlugin.EditCustomForm', 'Move slide down 1'))
         self.TitleLabel.setText(
-            translate('CustomPlugin.EditCustomForm', 'Title:'))
+            translate('CustomPlugin.EditCustomForm', '&Title:'))
         self.AddButton.setText(
             translate('CustomPlugin.EditCustomForm', 'Add New'))
         self.AddButton.setToolTip(
@@ -192,7 +195,7 @@ class Ui_customEditDialog(object):
         self.SplitButton.setToolTip(
             translate('CustomPlugin.EditCustomForm', 'Add slide split'))
         self.ThemeLabel.setText(
-            translate('CustomPlugin.EditCustomForm', 'Theme:'))
+            translate('CustomPlugin.EditCustomForm', 'The&me:'))
         self.CreditLabel.setText(
-            translate('CustomPlugin.EditCustomForm', 'Credits:'))
+            translate('CustomPlugin.EditCustomForm', '&Credits:'))
 
