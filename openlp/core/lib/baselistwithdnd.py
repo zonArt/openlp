@@ -32,7 +32,6 @@ class BaseListWithDnD(QtGui.QListWidget):
 
     def __init__(self, parent=None):
         QtGui.QListWidget.__init__(self, parent)
-        self.parent = parent
         # this must be set by the class which is inheriting
         assert(self.PluginName)
 

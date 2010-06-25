@@ -29,7 +29,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    SettingsManager, translate
+    SettingsManager, translate, check_item_selected
 from openlp.core.utils import AppLocation
 from openlp.plugins.presentations.lib import MessageListener
 
@@ -177,7 +177,8 @@ class PresentationMediaItem(MediaManagerItem):
         """
         Remove a presentation item from the list
         """
-        if self.checkItemSelected(translate('PresentationPlugin.MediaItem',
+        if check_item_selected(self.ListView,
+            translate('PresentationPlugin.MediaItem',
             'You must select an item to delete.')):
             item = self.ListView.currentItem()
             row = self.ListView.row(item)

@@ -343,19 +343,6 @@ class MediaManagerItem(QtGui.QWidget):
         """
         pass
 
-    def checkItemSelected(self, message):
-        """
-        Check if a list item is selected so an action may be performed on it
-
-        ``message``
-            The message to give the user if no item is selected
-        """
-        if not self.ListView.selectedIndexes():
-            QtGui.QMessageBox.information(self,
-                translate('MediaManagerItem', 'No Items Selected'), message)
-            return False
-        return True
-
     def onFileClick(self):
         files = QtGui.QFileDialog.getOpenFileNames(
             self, self.OnNewPrompt,
