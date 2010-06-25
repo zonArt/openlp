@@ -58,10 +58,7 @@ class PptviewController(PresentationController):
         log.debug(u'check_available')
         if os.name != u'nt':
             return False
-        try:
-            return self.check_installed()
-        except:
-            return False
+        return self.check_installed()
 
     if os.name == u'nt':
         def check_installed(self):
@@ -72,7 +69,7 @@ class PptviewController(PresentationController):
             try:
                 self.start_process()
                 return self.process.CheckInstalled()
-            except:
+            except WindowsError:
                 return False
 
         def start_process(self):
@@ -84,6 +81,7 @@ class PptviewController(PresentationController):
             log.debug(u'start PPTView')
             self.process = cdll.LoadLibrary(
                 r'openlp\plugins\presentations\lib\pptviewlib\pptviewlib.dll')
+            #self.process.SetDebug(1)
 
         def kill(self):
             """
@@ -106,6 +104,7 @@ class PptviewDocument(PresentationDocument):
         self.presentation = None
         self.pptid = None
         self.blanked = False
+        self.hidden = False
 
     def load_presentation(self):
         """
@@ -123,13 +122,11 @@ class PptviewDocument(PresentationDocument):
         rect = rendermanager.screens.current[u'size']
         rect = RECT(rect.x(), rect.y(), rect.right(), rect.bottom())
         filepath = str(self.filepath.replace(u'/', u'\\'))
-        try:
-            self.pptid = self.controller.process.OpenPPT(filepath, None, rect,
-                str(os.path.join(self.thumbnailpath,
-                self.controller.thumbnailprefix)))
+        self.pptid = self.controller.process.OpenPPT(filepath, None, rect,
+            str(os.path.join(self.thumbnailpath,
+            self.controller.thumbnailprefix)))
+        if self.pptid:
             self.stop_presentation()
-        except:
-            log.exception(u'Failed to load presentation')
 
     def close_presentation(self):
         """
@@ -156,7 +153,7 @@ class PptviewDocument(PresentationDocument):
         """
         Returns true if a presentation is currently active
         """
-        return self.is_loaded()
+        return self.is_loaded() and not self.hidden
 
     def blank_screen(self):
         """
@@ -183,13 +180,18 @@ class PptviewDocument(PresentationDocument):
         """
         Stops the current presentation and hides the output
         """
+        self.hidden = True
         self.controller.process.Stop(self.pptid)
 
     def start_presentation(self):
         """
         Starts a presentation from the beginning
         """
-        self.controller.process.RestartShow(self.pptid)
+        if self.hidden:
+            self.hidden = False
+            self.controller.process.Resume(self.pptid)
+        else:
+            self.controller.process.RestartShow(self.pptid)
 
     def get_slide_number(self):
         """
