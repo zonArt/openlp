@@ -196,18 +196,25 @@ class SlideController(QtGui.QWidget):
                 self.onSlideSelectedLast)
         if self.isLive:
             self.Toolbar.addToolbarSeparator(u'Close Separator')
-            self.blankButton = self.Toolbar.addToolbarButton(
-                u'Blank Screen', u':/slides/slide_blank.png',
-                translate('SlideController', 'Blank Screen'),
-                self.onBlankDisplay, True)
-            self.themeButton = self.Toolbar.addToolbarButton(
-                u'Display Theme', u':/slides/slide_theme.png',
-                translate('SlideController', 'Theme Screen'),
-                self.onThemeDisplay, True)
-            self.hideButton = self.Toolbar.addToolbarButton(
-                u'Hide screen', u':/slides/slide_desktop.png',
-                translate('SlideController', 'Hide Screen'),
-                self.onHideDisplay, True)
+            self.HideMenu = QtGui.QToolButton(self.Toolbar)
+            self.HideMenu.setText(translate('SlideController', 'Hide'))
+            self.HideMenu.setPopupMode(QtGui.QToolButton.MenuButtonPopup)
+            self.Toolbar.addToolbarWidget(u'Hide Menu', self.HideMenu)
+            self.HideMenu.setMenu(QtGui.QMenu(
+                translate('SlideController', 'Hide'), self.Toolbar))
+            self.BlankScreen = QtGui.QAction(QtGui.QIcon( u':/slides/slide_blank.png'), u'Blank Screen', self.HideMenu)
+            self.BlankScreen.setCheckable(True)
+            QtCore.QObject.connect(self.BlankScreen, QtCore.SIGNAL("triggered(bool)"), self.onBlankDisplay)
+            self.ThemeScreen = QtGui.QAction(QtGui.QIcon(u':/slides/slide_theme.png'), u'Blank to Theme', self.HideMenu)
+            self.ThemeScreen.setCheckable(True)
+            QtCore.QObject.connect(self.BlankScreen, QtCore.SIGNAL("triggered(bool)"), self.onThemeDisplay)
+            self.DesktopScreen = QtGui.QAction(QtGui.QIcon(u':/slides/slide_desktop.png'), u'Show Desktop', self.HideMenu)
+            self.DesktopScreen.setCheckable(True)
+            QtCore.QObject.connect(self.BlankScreen, QtCore.SIGNAL("triggered(bool)"), self.onHideDisplay)
+            self.HideMenu.setDefaultAction(self.BlankScreen)
+            self.HideMenu.menu().addAction(self.BlankScreen)
+            self.HideMenu.menu().addAction(self.ThemeScreen)
+            self.HideMenu.menu().addAction(self.DesktopScreen)
         if not self.isLive:
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.Toolbar.addToolbarButton(
@@ -252,29 +259,6 @@ class SlideController(QtGui.QWidget):
             u'Media Stop', u':/slides/media_playback_stop.png',
             translate('SlideController', 'Start playing media'),
             self.onMediaStop)
-        if self.isLive:
-            self.button = QtGui.QToolButton(self.Toolbar)
-            self.Toolbar.addToolbarWidget(u'Hide Menu', self.button)
-            self.button.setText(translate('SlideController', 'Hide'))
-            self.menu = QtGui.QMenu(self.button)
-            blank_screen = QtGui.QAction(QtGui.QIcon( u':/slides/slide_blank.png'), u'Blank Screen', self.button)
-            theme_screen = QtGui.QAction(QtGui.QIcon(u':/slides/slide_theme.png'), u'Blank to Theme', self.button)
-            desktop_screen = QtGui.QAction(QtGui.QIcon(u':/slides/slide_desktop.png'), u'Show Desktop', self.button)
-            self.menu.addAction(blank_screen)
-            self.menu.addAction(theme_screen)
-            self.menu.addAction(desktop_screen)
-            self.blankButton = self.Mediabar.addToolbarButton(
-                u'Blank Screen', u':/slides/slide_blank.png',
-                translate('SlideController', 'Blank Screen'),
-                self.onBlankDisplay, True)
-            self.themeButton = self.Mediabar.addToolbarButton(
-                u'Display Theme', u':/slides/slide_theme.png',
-                translate('SlideController', 'Theme Screen'),
-                self.onThemeDisplay, True)
-            self.hideButton = self.Mediabar.addToolbarButton(
-                u'Hide screen', u':/slides/slide_desktop.png',
-                translate('SlideController', 'Hide Screen'),
-                self.onHideDisplay, True)
         if not self.isLive:
             self.seekSlider = Phonon.SeekSlider()
             self.seekSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
@@ -686,8 +670,11 @@ class SlideController(QtGui.QWidget):
         Handle the blank screen button actions
         """
         log.debug(u'onBlankDisplay %d' % checked)
-        self.hideButton.setChecked(False)
-        self.themeButton.setChecked(False)
+        self.HideMenu.setDefaultAction(self.BlankScreen)
+        self.BlankScreen.setCheckable(True)
+        self.BlankScreen.setChecked(True)
+        self.ThemeScreen.setChecked(False)
+        self.DesktopScreen.setChecked(False)
         self.canDisplay = not checked
         QtCore.QSettings().setValue(
             self.parent.generalSettingsSection + u'/screen blank',
@@ -704,8 +691,11 @@ class SlideController(QtGui.QWidget):
         Handle the Theme screen button
         """
         log.debug(u'onThemeDisplay %d' % checked)
-        self.blankButton.setChecked(False)
-        self.hideButton.setChecked(False)
+        self.HideMenu.setDefaultAction(self.ThemeScreen)
+        self.ThemeScreen.setCheckable(True)
+        self.BlankScreen.setChecked(False)
+        self.ThemeScreen.setChecked(True)
+        self.DesktopScreen.setChecked(False)
         self.canDisplay = False
         if checked:
             Receiver.send_message(u'maindisplay_hide', HideMode.Theme)
@@ -719,8 +709,11 @@ class SlideController(QtGui.QWidget):
         Handle the Hide screen button
         """
         log.debug(u'onHideDisplay %d' % checked)
-        self.blankButton.setChecked(False)
-        self.themeButton.setChecked(False)
+        self.HideMenu.setDefaultAction(self.DesktopScreen)
+        self.DesktopScreen.setCheckable(True)
+        self.BlankScreen.setChecked(False)
+        self.ThemeScreen.setChecked(False)
+        self.DesktopScreen.setChecked(True)
         self.canDisplay = False
         if checked:
             Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
