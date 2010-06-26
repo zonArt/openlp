@@ -85,6 +85,9 @@ class AlertsManager(QtCore.QObject):
         self.generateAlert()
 
     def generateAlert(self):
+        """
+        Format and request the Alert and start the timer
+        """
         log.debug(u'Generate Alert called')
         if len(self.alertList) == 0:
             return
@@ -98,9 +101,17 @@ class AlertsManager(QtCore.QObject):
             self.timer_id = self.startTimer(int(alertTab.timeout) * 1000)
 
     def timerEvent(self, event):
+        """
+        Time has finished so if our time then request the next Alert
+        if there is one and reset the timer.
+        ``event``
+            the QT event that has been triggered.
+
+        """
         log.debug(u'timer event')
+        alertTab = self.parent.alertsTab
         if event.timerId() == self.timer_id:
-            self.parent.preview_controller.parent.displayManager.addAlert(u'', self.alertTab.location)
+            self.parent.preview_controller.parent.displayManager.addAlert(u'', alertTab.location)
         self.killTimer(self.timer_id)
         self.timer_id = 0
         self.generateAlert()

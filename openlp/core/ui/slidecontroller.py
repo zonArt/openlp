@@ -207,10 +207,10 @@ class SlideController(QtGui.QWidget):
             QtCore.QObject.connect(self.BlankScreen, QtCore.SIGNAL("triggered(bool)"), self.onBlankDisplay)
             self.ThemeScreen = QtGui.QAction(QtGui.QIcon(u':/slides/slide_theme.png'), u'Blank to Theme', self.HideMenu)
             self.ThemeScreen.setCheckable(True)
-            QtCore.QObject.connect(self.BlankScreen, QtCore.SIGNAL("triggered(bool)"), self.onThemeDisplay)
+            QtCore.QObject.connect(self.ThemeScreen, QtCore.SIGNAL("triggered(bool)"), self.onThemeDisplay)
             self.DesktopScreen = QtGui.QAction(QtGui.QIcon(u':/slides/slide_desktop.png'), u'Show Desktop', self.HideMenu)
             self.DesktopScreen.setCheckable(True)
-            QtCore.QObject.connect(self.BlankScreen, QtCore.SIGNAL("triggered(bool)"), self.onHideDisplay)
+            QtCore.QObject.connect(self.DesktopScreen, QtCore.SIGNAL("triggered(bool)"), self.onHideDisplay)
             self.HideMenu.setDefaultAction(self.BlankScreen)
             self.HideMenu.menu().addAction(self.BlankScreen)
             self.HideMenu.menu().addAction(self.ThemeScreen)
@@ -655,7 +655,7 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'mainDisplaySetBackground')
         if not self.mainDisplay.primary:
-            self.blankButton.setChecked(True)
+            self.onBlankDisplay(True)
 
     def onSlideBlank(self):
         """
@@ -673,64 +673,55 @@ class SlideController(QtGui.QWidget):
         """
         Handle the blank screen button actions
         """
-        log.debug(u'onBlankDisplay %d' % checked)
+        log.debug(u'onBlankDisplay %s' % checked)
         self.HideMenu.setDefaultAction(self.BlankScreen)
-        self.BlankScreen.setCheckable(True)
-        self.BlankScreen.setChecked(True)
+        self.BlankScreen.setChecked(checked)
         self.ThemeScreen.setChecked(False)
         self.DesktopScreen.setChecked(False)
-        self.canDisplay = not checked
         QtCore.QSettings().setValue(
             self.parent.generalSettingsSection + u'/screen blank',
             QtCore.QVariant(checked))
         if checked:
             Receiver.send_message(u'maindisplay_hide', HideMode.Blank)
-            self.blankPlugin(True)
         else:
             Receiver.send_message(u'maindisplay_show')
-            self.blankPlugin(False)
+        self.blankPlugin(checked)
 
     def onThemeDisplay(self, checked):
         """
         Handle the Theme screen button
         """
-        log.debug(u'onThemeDisplay %d' % checked)
+        log.debug(u'onThemeDisplay %s' % checked)
         self.HideMenu.setDefaultAction(self.ThemeScreen)
-        self.ThemeScreen.setCheckable(True)
         self.BlankScreen.setChecked(False)
-        self.ThemeScreen.setChecked(True)
+        self.ThemeScreen.setChecked(checked)
         self.DesktopScreen.setChecked(False)
-        self.canDisplay = False
         if checked:
             Receiver.send_message(u'maindisplay_hide', HideMode.Theme)
-            self.blankPlugin(True)
         else:
             Receiver.send_message(u'maindisplay_show')
-            self.blankPlugin(False)
+        self.blankPlugin(checked)
 
     def onHideDisplay(self, checked):
         """
         Handle the Hide screen button
         """
-        log.debug(u'onHideDisplay %d' % checked)
+        log.debug(u'onHideDisplay %s' % checked)
         self.HideMenu.setDefaultAction(self.DesktopScreen)
-        self.DesktopScreen.setCheckable(True)
         self.BlankScreen.setChecked(False)
         self.ThemeScreen.setChecked(False)
-        self.DesktopScreen.setChecked(True)
-        self.canDisplay = False
+        self.DesktopScreen.setChecked(checked)
         if checked:
             Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
-            self.hidePlugin(True)
         else:
             Receiver.send_message(u'maindisplay_show')
-            self.hidePlugin(False)
+        self.hidePlugin(checked)
 
     def blankPlugin(self, blank):
         """
         Blank the display screen within a plugin if required.
         """
-        log.debug(u'blankPlugin %d ', blank)
+        log.debug(u'blankPlugin %s ', blank)
         if self.serviceItem is not None:
             if blank:
                 Receiver.send_message(u'%s_blank'
@@ -743,8 +734,9 @@ class SlideController(QtGui.QWidget):
 
     def hidePlugin(self, hide):
         """
-        Blank the display screen.
+        Tell the plugin to hide the display screen.
         """
+        log.debug(u'hidePlugin %s ', hide)
         if self.serviceItem is not None:
             if hide:
                 Receiver.send_message(u'%s_hide'

@@ -47,10 +47,30 @@ class DisplayManager(QtGui.QWidget):
         self.videoDisplay = VideoDisplay(self, screens)
         self.audioPlayer = AudioPlayer(self)
         self.mainDisplay = MainDisplay(self, screens)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'maindisplay_hide'), self.hideDisplay)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
+#        QtCore.QObject.connect(Receiver.get_receiver(),
+#            QtCore.SIGNAL(u'videodisplay_start'), self.hideDisplayForVideo)
 
     def setup(self):
         self.videoDisplay.setup()
         self.mainDisplay.setup()
+
+    def hideDisplay(self, message):
+        """
+        Hide the output displays
+        """
+        self.videoDisplay.mediaHide(message)
+        self.mainDisplay.hideDisplay(message)
+
+    def showDisplay(self, message):
+        """
+        Hide the output displays
+        """
+        self.videoDisplay.mediaShow(message)
+        self.mainDisplay.showDisplay(message)
 
     def addAlert(self, alertMessage, location):
         """
@@ -145,14 +165,8 @@ class MainDisplay(DisplayWidget):
         self.primary = True
         self.blankFrame = None
         self.frame = None
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'videodisplay_start'), self.hideDisplayForVideo)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'maindisplay_hide'), self.hideDisplay)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'videodisplay_background'), self.hideDisplayForVideo)
+        #Hide desktop for now untill we know where to put it
+        #and what size it should be.
         self.setVisible(False)
 
     def setup(self):
@@ -240,11 +254,11 @@ class MainDisplay(DisplayWidget):
         else:
             self.setVisible(True)
 
-    def hideDisplayForVideo(self):
-        """
-        Hides the main display if for the video to be played
-        """
-        self.hideDisplay(HideMode.Screen)
+#    def hideDisplayForVideo(self):
+#        """
+#        Hides the main display if for the video to be played
+#        """
+#        self.hideDisplay(HideMode.Screen)
 
     def hideDisplay(self, mode=HideMode.Screen):
         """
@@ -252,8 +266,6 @@ class MainDisplay(DisplayWidget):
         Store the images so they can be replaced when required
         """
         log.debug(u'hideDisplay mode = %d', mode)
-        self.storeImage = QtGui.QPixmap(self.display_image.pixmap())
-        self.storeText = QtGui.QPixmap(self.display_text.pixmap())
         #self.display_text.setPixmap(self.transparent)
         if mode == HideMode.Screen:
             #self.display_image.setPixmap(self.transparent)
@@ -269,19 +281,14 @@ class MainDisplay(DisplayWidget):
                 self.display_blank.setPixmap(
                     QtGui.QPixmap.fromImage(self.blankFrame))
 
-    def showDisplay(self):
+    def showDisplay(self, message=u''):
         """
         Show the stored layers so the screen reappears as it was
         originally.
         Make the stored images None to release memory.
         """
         log.debug(u'showDisplay')
-        if self.storeImage:
-            self.display_image.setPixmap(self.storeImage)
-        if self.storeText:
-            self.display_text.setPixmap(self.storeText)
-        self.storeImage = None
-        self.store = None
+        self.display_blank.setPixmap(self.transparent)
         Receiver.send_message(u'maindisplay_active')
 
     def addImageWithText(self, frame):
@@ -293,6 +300,11 @@ class MainDisplay(DisplayWidget):
     def addAlert(self, message, location):
         """
         Places the Alert text on the display at the correct location
+        ``messgae``
+            Text to be displayed
+        ``location``
+            Where on the screen the text should be.  From the AlertTab
+            Combo box.
         """
         log.debug(u'addAlertImage')
         if location == 0:
@@ -309,6 +321,8 @@ class MainDisplay(DisplayWidget):
         if the alert is in progress the alert is added on top
         ``frame``
             Image frame to be rendered
+        ``transition``
+            Are transitions required.
         """
         log.debug(u'frameView %d' % display)
         if display:
@@ -374,11 +388,6 @@ class VideoDisplay(Phonon.VideoWidget):
         except AttributeError:
             pass
         self.setWindowFlags(flags)
-
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'maindisplay_hide'), self.mediaHide)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'maindisplay_show'), self.mediaShow)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'videodisplay_start'), self.onMediaQueue)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -501,7 +510,7 @@ class VideoDisplay(Phonon.VideoWidget):
         self.mediaObject.clearQueue()
         self.setVisible(False)
 
-    def mediaHide(self):
+    def mediaHide(self, message=u''):
         """
         Hide the video display
         """
@@ -509,7 +518,7 @@ class VideoDisplay(Phonon.VideoWidget):
         self.hidden = True
         self.setVisible(False)
 
-    def mediaShow(self):
+    def mediaShow(self, message=''):
         """
         Show the video disaply if it was already hidden
         """
