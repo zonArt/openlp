@@ -52,7 +52,16 @@ class DisplayManager(QtGui.QWidget):
         self.videoDisplay.setup()
         self.mainDisplay.setup()
 
+    def addAlert(self, alertMessage, location):
+        """
+        Handles the add Alert Message to the Displays
+        """
+        self.mainDisplay.addAlert(alertMessage, location)
+
     def close(self):
+        """
+        Handles the closure of the displays
+        """
         self.videoDisplay.close()
         self.audioPlayer.close()
         self.mainDisplay.close()
@@ -184,7 +193,6 @@ class MainDisplay(DisplayWidget):
         self.transparent = QtGui.QPixmap(
             self.screen[u'size'].width(), self.screen[u'size'].height())
         self.transparent.fill(QtCore.Qt.transparent)
-#        self.display_alert.setPixmap(self.transparent)
 #        self.display_text.setPixmap(self.transparent)
         #self.frameView(self.transparent)
         # To display or not to display?
@@ -194,7 +202,6 @@ class MainDisplay(DisplayWidget):
         else:
             self.setVisible(False)
             self.primary = True
-
 
     def setupScene(self):
         self.scene = QtGui.QGraphicsScene(self)
@@ -209,15 +216,13 @@ class MainDisplay(DisplayWidget):
     def setupText(self):
         #self.display_text = QtGui.QGraphicsTextItem()
         self.display_text = QtGui.QGraphicsPixmapItem()
-        #self.display_text.setPos(0,self.size().height()/2)
+        #self.display_text.setPos(0,0)
         #self.display_text.setTextWidth(self.size().width())
         self.display_text.setZValue(4)
         self.scene.addItem(self.display_text)
 
     def setupAlert(self):
         self.alertText = QtGui.QGraphicsTextItem()
-        self.alertText.setPos(0,self.size().height()/2)
-        self.alertText.setPos(0,self.size().height() - 76)
         self.alertText.setTextWidth(self.size().width())
         self.alertText.setZValue(8)
         self.scene.addItem(self.alertText)
@@ -234,7 +239,6 @@ class MainDisplay(DisplayWidget):
             self.setVisible(False)
         else:
             self.setVisible(True)
-            #self.showFullScreen()
 
     def hideDisplayForVideo(self):
         """
@@ -250,7 +254,6 @@ class MainDisplay(DisplayWidget):
         log.debug(u'hideDisplay mode = %d', mode)
         self.storeImage = QtGui.QPixmap(self.display_image.pixmap())
         self.storeText = QtGui.QPixmap(self.display_text.pixmap())
-        #self.display_alert.setPixmap(self.transparent)
         #self.display_text.setPixmap(self.transparent)
         if mode == HideMode.Screen:
             #self.display_image.setPixmap(self.transparent)
@@ -277,7 +280,6 @@ class MainDisplay(DisplayWidget):
             self.display_image.setPixmap(self.storeImage)
         if self.storeText:
             self.display_text.setPixmap(self.storeText)
-        #self.display_alert.setPixmap(self.transparent)
         self.storeImage = None
         self.store = None
         Receiver.send_message(u'maindisplay_active')
@@ -288,18 +290,18 @@ class MainDisplay(DisplayWidget):
             frame, self.screen[u'size'].width(), self.screen[u'size'].height())
         self.display_image.setPixmap(QtGui.QPixmap.fromImage(frame))
 
-    def setAlertSize(self, top, height):
-        log.debug(u'setAlertSize')
-#        self.display_alert.setGeometry(
-#            QtCore.QRect(0, top,
-#                        self.screen[u'size'].width(), height))
-
-    def addAlertImage(self, frame, blank=False):
+    def addAlert(self, message, location):
+        """
+        Places the Alert text on the display at the correct location
+        """
         log.debug(u'addAlertImage')
-        if blank:
-            self.display_alert.setPixmap(self.transparent)
+        if location == 0:
+            self.alertText.setPos(0, 0)
+        elif location == 1:
+            self.alertText.setPos(0,self.size().height()/2)
         else:
-            self.display_alert.setPixmap(frame)
+            self.alertText.setPos(0,self.size().height() - 76)
+        self.alertText.setHtml(message)
 
     def frameView(self, frame, transition=False, display=True):
         """
@@ -333,7 +335,6 @@ class MainDisplay(DisplayWidget):
                 self.display_frame = frame
             if not self.isVisible() and self.screens.display:
                 self.setVisible(True)
-                #self.showFullScreen()
         else:
             self.storeText = QtGui.QPixmap.fromImage(frame[u'main'])
 
