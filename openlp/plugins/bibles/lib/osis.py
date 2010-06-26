@@ -62,10 +62,14 @@ class OSISBible(BibleDB):
         self.fi_regex = re.compile(r'<FI>(.*?)<Fi>')
         self.rf_regex = re.compile(r'<RF>(.*?)<Rf>')
         self.lb_regex = re.compile(r'<lb(.*?)>')
+        self.lg_regex = re.compile(r'<lg(.*?)>')
         self.l_regex = re.compile(r'<l (.*?)>')
         self.w_regex = re.compile(r'<w (.*?)>')
-        self.q_regex = re.compile(r'<q (.*?)>')
+        self.q1_regex = re.compile(r'<q(.*?)level="1"(.*?)>')
+        self.q2_regex = re.compile(r'<q(.*?)level="2"(.*?)>')
         self.trans_regex = re.compile(r'<transChange(.*?)>(.*?)</transChange>')
+        self.divineName_regex = re.compile(
+            r'<divineName(.*?)>(.*?)</divineName>')
         self.spaces_regex = re.compile(r'([ ]{2,})')
         self.books = {}
         filepath = os.path.join(
@@ -78,7 +82,7 @@ class OSISBible(BibleDB):
                 book = line.split(u',')
                 self.books[book[0]] = (book[1].lstrip().rstrip(),
                     book[2].lstrip().rstrip())
-        except:
+        except IOError:
             log.exception(u'OSIS bible import failed')
         finally:
             if fbibles:
@@ -86,24 +90,18 @@ class OSISBible(BibleDB):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'bibles_stop_import'), self.stop_import)
 
-    def stop_import(self):
-        """
-        Stops the import of the Bible.
-        """
-        log.debug('Stopping import!')
-        self.stop_import_flag = True
-
     def do_import(self):
         """
         Loads a Bible from file.
         """
         log.debug(u'Starting OSIS import from "%s"' % self.filename)
-        self.wizard.incrementProgressBar(u'Detecting encoding (this may take a few minutes)...')
+        self.wizard.incrementProgressBar(
+            u'Detecting encoding (this may take a few minutes)...')
         detect_file = None
         try:
             detect_file = open(self.filename, u'r')
-            details = chardet.detect(detect_file.read())
-        except:
+            details = chardet.detect(detect_file.read(1048576))
+        except IOError:
             log.exception(u'Failed to detect OSIS file encoding')
             return
         finally:
@@ -156,15 +154,18 @@ class OSISBible(BibleDB):
                     verse_text = self.milestone_regex.sub(u'', verse_text)
                     verse_text = self.fi_regex.sub(u'', verse_text)
                     verse_text = self.rf_regex.sub(u'', verse_text)
-                    verse_text = self.lb_regex.sub(u'', verse_text)
+                    verse_text = self.lb_regex.sub(u' ', verse_text)
+                    verse_text = self.lg_regex.sub(u'', verse_text)
                     verse_text = self.l_regex.sub(u'', verse_text)
                     verse_text = self.w_regex.sub(u'', verse_text)
-                    verse_text = self.q_regex.sub(u'', verse_text)
+                    verse_text = self.q1_regex.sub(u'"', verse_text)
+                    verse_text = self.q2_regex.sub(u'\'', verse_text)
                     verse_text = self.trans_regex.sub(u'', verse_text)
+                    verse_text = self.divineName_regex.sub(u'', verse_text)
                     verse_text = verse_text.replace(u'</lb>', u'')\
                         .replace(u'</l>', u'').replace(u'<lg>', u'')\
                         .replace(u'</lg>', u'').replace(u'</q>', u'')\
-                        .replace(u'</div>', u'').replace(u'</w>',  u'')
+                        .replace(u'</div>', u'').replace(u'</w>', u'')
                     verse_text = self.spaces_regex.sub(u' ', verse_text)
                     self.create_verse(db_book.id, chapter, verse, verse_text)
                     Receiver.send_message(u'openlp_process_events')
@@ -172,7 +173,7 @@ class OSISBible(BibleDB):
             self.wizard.incrementProgressBar(u'Finishing import...')
             if match_count == 0:
                 success = False
-        except:
+        except (ValueError, IOError):
             log.exception(u'Loading bible from OSIS file failed')
             success = False
         finally:
@@ -183,3 +184,4 @@ class OSISBible(BibleDB):
             return False
         else:
             return success
+

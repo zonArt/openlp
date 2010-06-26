@@ -22,6 +22,19 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The :mod:`ui` module provides the core user interface for OpenLP
+"""
+
+class HideMode(object):
+    """
+    This is basically an enumeration class which specifies the mode of a Bible.
+    Mode refers to whether or not a Bible in OpenLP is a full Bible or needs to
+    be downloaded from the Internet on an as-needed basis.
+    """
+    Blank = 1
+    Theme = 2
+    Screen = 3
 
 from slidecontroller import HideMode
 from servicenoteform import ServiceNoteForm
@@ -33,6 +46,7 @@ from maindisplay import DisplayManager
 from amendthemeform import AmendThemeForm
 from slidecontroller import SlideController
 from splashscreen import SplashScreen
+from displaytab import DisplayTab
 from generaltab import GeneralTab
 from themestab import ThemesTab
 from aboutform import AboutForm

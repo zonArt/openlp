@@ -25,7 +25,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, Receiver, ThemeLevel
+from openlp.core.lib import SettingsTab, Receiver, ThemeLevel, translate
 
 class ThemesTab(SettingsTab):
     """
@@ -37,7 +37,7 @@ class ThemesTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'ThemesTab')
-        self.tabTitleVisible = self.trUtf8('Themes')
+        self.tabTitleVisible = translate('ThemesTab', 'Themes')
         self.ThemesTabLayout = QtGui.QHBoxLayout(self)
         self.ThemesTabLayout.setSpacing(8)
         self.ThemesTabLayout.setMargin(8)
@@ -106,26 +106,35 @@ class ThemesTab(SettingsTab):
             QtCore.SIGNAL(u'theme_update_list'), self.updateThemeList)
 
     def retranslateUi(self):
-        self.GlobalGroupBox.setTitle(self.trUtf8('Global theme'))
-        self.LevelGroupBox.setTitle(self.trUtf8('Theme level'))
-        self.SongLevelRadioButton.setText(self.trUtf8('Song level'))
-        self.SongLevelLabel.setText(self.trUtf8('Use the theme from each song '
+        self.GlobalGroupBox.setTitle(translate('ThemesTab', 'Global Theme'))
+        self.LevelGroupBox.setTitle(translate('ThemesTab', 'Theme Level'))
+        self.SongLevelRadioButton.setText(
+            translate('ThemesTab', 'S&ong Level'))
+        self.SongLevelLabel.setText(
+            translate('ThemesTab', 'Use the theme from each song '
             'in the database. If a song doesn\'t have a theme associated with '
             'it, then use the service\'s theme. If the service doesn\'t have '
             'a theme, then use the global theme.'))
-        self.ServiceLevelRadioButton.setText(self.trUtf8('Service level'))
-        self.ServiceLevelLabel.setText(self.trUtf8('Use the theme from the '
-            'service, overriding any of the individual songs\' themes. If the '
+        self.ServiceLevelRadioButton.setText(
+            translate('ThemesTab', '&Service Level'))
+        self.ServiceLevelLabel.setText(
+            translate('ThemesTab', 'Use the theme from the service, '
+            'overriding any of the individual songs\' themes. If the '
             'service doesn\'t have a theme, then use the global theme.'))
-        self.GlobalLevelRadioButton.setText(self.trUtf8('Global level'))
-        self.GlobalLevelLabel.setText(self.trUtf8('Use the global theme, '
-            'overriding any themes associated with either the service or the '
-            'songs.'))
+        self.GlobalLevelRadioButton.setText(
+            translate('ThemesTab', '&Global Level'))
+        self.GlobalLevelLabel.setText(
+            translate('ThemesTab', 'Use the global theme, overriding any '
+            'themes associated with either the service or the songs.'))
 
     def load(self):
-        self.theme_level = int(self.config.get_config(u'theme level',
-            ThemeLevel.Global))
-        self.global_theme = self.config.get_config(u'global theme', u'')
+        settings = QtCore.QSettings()
+        settings.beginGroup(self.settingsSection)
+        self.theme_level = settings.value(
+            u'theme level', QtCore.QVariant(ThemeLevel.Global)).toInt()[0]
+        self.global_theme = unicode(settings.value(
+            u'global theme', QtCore.QVariant(u'')).toString())
+        settings.endGroup()
         if self.theme_level == ThemeLevel.Global:
             self.GlobalLevelRadioButton.setChecked(True)
         elif self.theme_level == ThemeLevel.Service:
@@ -134,8 +143,13 @@ class ThemesTab(SettingsTab):
             self.SongLevelRadioButton.setChecked(True)
 
     def save(self):
-        self.config.set_config(u'theme level', self.theme_level)
-        self.config.set_config(u'global theme',self.global_theme)
+        settings = QtCore.QSettings()
+        settings.beginGroup(self.settingsSection)
+        settings.setValue(u'theme level',
+            QtCore.QVariant(self.theme_level))
+        settings.setValue(u'global theme',
+            QtCore.QVariant(self.global_theme))
+        settings.endGroup()
         Receiver.send_message(u'theme_update_global', self.global_theme)
         self.parent.RenderManager.set_global_theme(
             self.global_theme, self.theme_level)
@@ -169,7 +183,9 @@ class ThemesTab(SettingsTab):
         Called from ThemeManager when the Themes have changed
         """
         #reload as may have been triggered by the ThemeManager
-        self.global_theme = self.config.get_config(u'global theme', u'')
+        self.global_theme = unicode(QtCore.QSettings().value(
+            self.settingsSection + u'/global theme',
+            QtCore.QVariant(u'')).toString())
         self.DefaultComboBox.clear()
         for theme in theme_list:
             self.DefaultComboBox.addItem(theme)

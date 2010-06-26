@@ -23,4 +23,4 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from theme import Theme
+from openlp.core.theme.theme import Theme

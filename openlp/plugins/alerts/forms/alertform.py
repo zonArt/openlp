@@ -26,54 +26,46 @@
 from PyQt4 import QtGui, QtCore
 
 from openlp.plugins.alerts.lib.models import AlertItem
+from openlp.core.lib import translate
 
 from alertdialog import Ui_AlertDialog
 
 class AlertForm(QtGui.QDialog, Ui_AlertDialog):
     """
-    Class documentation goes here.
+    Provide UI for the alert system
     """
     def __init__(self, manager, parent):
         """
-        Constructor
+        Initialise the alert form
         """
         self.manager = manager
         self.parent = parent
         self.item_id = None
         QtGui.QDialog.__init__(self, None)
         self.setupUi(self)
-        QtCore.QObject.connect(self.DisplayButton,
-                               QtCore.SIGNAL(u'clicked()'),
-                               self.onDisplayClicked)
+        QtCore.QObject.connect(self.DisplayButton, QtCore.SIGNAL(u'clicked()'),
+            self.onDisplayClicked)
         QtCore.QObject.connect(self.DisplayCloseButton,
-                               QtCore.SIGNAL(u'clicked()'),
-                               self.onDisplayCloseClicked)
+            QtCore.SIGNAL(u'clicked()'), self.onDisplayCloseClicked)
         QtCore.QObject.connect(self.AlertTextEdit,
-            QtCore.SIGNAL(u'textChanged(const QString&)'),
-            self.onTextChanged)
-        QtCore.QObject.connect(self.NewButton,
-                               QtCore.SIGNAL(u'clicked()'),
-                               self.onNewClick)
-        QtCore.QObject.connect(self.DeleteButton,
-                               QtCore.SIGNAL(u'clicked()'),
-                               self.onDeleteClick)
-        QtCore.QObject.connect(self.SaveButton,
-                               QtCore.SIGNAL(u'clicked()'),
-                               self.onSaveClick)
+            QtCore.SIGNAL(u'textChanged(const QString&)'), self.onTextChanged)
+        QtCore.QObject.connect(self.NewButton, QtCore.SIGNAL(u'clicked()'),
+            self.onNewClick)
+        QtCore.QObject.connect(self.DeleteButton, QtCore.SIGNAL(u'clicked()'),
+            self.onDeleteClick)
+        QtCore.QObject.connect(self.SaveButton, QtCore.SIGNAL(u'clicked()'),
+            self.onSaveClick)
         QtCore.QObject.connect(self.AlertListWidget,
-            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
-            self.onDoubleClick)
+            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onDoubleClick)
         QtCore.QObject.connect(self.AlertListWidget,
-            QtCore.SIGNAL(u'clicked(QModelIndex)'),
-            self.onSingleClick)
+            QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSingleClick)
 
     def loadList(self):
         self.AlertListWidget.clear()
         alerts = self.manager.get_all_alerts()
         for alert in alerts:
             item_name = QtGui.QListWidgetItem(alert.text)
-            item_name.setData(
-                QtCore.Qt.UserRole, QtCore.QVariant(alert.id))
+            item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(alert.id))
             self.AlertListWidget.addItem(item_name)
         self.SaveButton.setEnabled(False)
         self.DeleteButton.setEnabled(False)
@@ -101,8 +93,8 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
     def onNewClick(self):
         if len(self.AlertTextEdit.text()) == 0:
             QtGui.QMessageBox.information(self,
-                self.trUtf8('Item selected to Add'),
-                self.trUtf8('Missing data'))
+                translate('AlertsPlugin.AlertForm', 'Item selected to Add'),
+                translate('AlertsPlugin.AlertForm', 'Missing data'))
         else:
             alert = AlertItem()
             alert.text = unicode(self.AlertTextEdit.text())
@@ -111,6 +103,9 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         self.loadList()
 
     def onSaveClick(self):
+        """
+        Save an alert
+        """
         if self.item_id:
             alert = self.manager.get_alert(self.item_id)
             alert.text = unicode(self.AlertTextEdit.text())
@@ -121,7 +116,9 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             self.onNewClick()
 
     def onTextChanged(self):
-        #Data has changed by editing it so potential storage required
+        """
+        Enable save button when data has been changed by editing the form
+        """
         self.SaveButton.setEnabled(True)
 
     def onDoubleClick(self):

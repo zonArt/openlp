@@ -26,6 +26,7 @@
 from PyQt4 import QtGui
 
 from songusagedeletedialog import Ui_SongUsageDeleteDialog
+from openlp.core.lib import translate
 
 class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
     """
@@ -41,8 +42,10 @@ class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
 
     def accept(self):
         ret = QtGui.QMessageBox.question(self,
-            self.trUtf8('Delete Selected Song Usage Events?'),
-            self.trUtf8('Are you sure you want to delete selected Song Usage data?'),
+            translate('SongsPlugin.SongUsageDeleteForm',
+                'Delete Selected Song Usage Events?'),
+            translate('SongsPlugin.SongUsageDeleteForm',
+                'Are you sure you want to delete selected Song Usage data?'),
             QtGui.QMessageBox.StandardButtons(
                 QtGui.QMessageBox.Ok |
                 QtGui.QMessageBox.Cancel),
@@ -51,3 +54,4 @@ class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
             deleteDate = self.DeleteCalendar.selectedDate().toPyDate()
             self.songusagemanager.delete_to_date(deleteDate)
         self.close()
+

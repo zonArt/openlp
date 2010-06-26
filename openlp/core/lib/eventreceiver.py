@@ -22,7 +22,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+Provide event handling code for OpenLP
+"""
 import logging
 
 from PyQt4 import QtCore
@@ -65,11 +67,29 @@ class EventReceiver(QtCore.QObject):
     ``slidecontroller_{live|preview}_last``
         Moves to the last slide
 
+    ``slidecontroller_{live|preview}_set``
+        Moves to a specific slide, by index
+
     ``slidecontroller_{live|preview}_started``
         Broadcasts that an item has been made live/previewed
 
     ``slidecontroller_{live|preview}_change``
-        Informs the slidecontroller that a slide change has occurred
+        Informs the slidecontroller that a slide change has occurred and to 
+        update itself
+
+    ``slidecontroller_{live|preview}_changed``
+        Broadcasts that the slidecontroller has changed the current slide
+
+    ``slidecontroller_{live|preview}_text_request``
+        Request the text for the current item in the controller
+        Returns a slidecontroller_{live|preview}_text_response with an 
+        array of dictionaries with the tag and verse text
+
+    ``slidecontroller_{live|preview}_blank``
+        Request that the output screen is blanked
+
+    ``slidecontroller_{live|preview}_unblank``
+        Request that the output screen is unblanked
 
     ``slidecontroller_live_spin_delay``
         Pushes out the loop delay
@@ -77,8 +97,18 @@ class EventReceiver(QtCore.QObject):
     ``slidecontroller_live_stop_loop``
         Stop the loop on the main display
 
-    ``servicecontroller_next_item``
+    ``servicemanager_previous_item``
+        Display the previous item in the service
+
+    ``servicemanager_next_item``
         Display the next item in the service
+
+    ``servicemanager_set_item``
+        Go live on a specific item, by index
+        
+    ``servicemanager_list_request``
+        Request the service list. Responds with servicemanager_list_response
+        containing a array of dictionaries
 
     ``maindisplay_blank``
         Blank the maindisplay window 
@@ -109,6 +139,9 @@ class EventReceiver(QtCore.QObject):
 
     ``videodisplay_stop``
         Stop playing a media item
+
+    ``videodisplay_background``
+        Replace the background video
 
     ``theme_update_list``
         send out message with new themes
@@ -174,6 +207,10 @@ class EventReceiver(QtCore.QObject):
     ``bibles_stop_import``
         Stops the Bible Import
 
+    ``remotes_poll_request``
+        Waits for openlp to do something "interesting" and sends a
+        remotes_poll_response signal when it does
+
     """
     def __init__(self):
         """
@@ -195,7 +232,7 @@ class EventReceiver(QtCore.QObject):
         self.emit(QtCore.SIGNAL(event), msg)
 
 
-class Receiver():
+class Receiver(object):
     """
     Class to allow events to be passed from different parts of the system. This
     is a static wrapper around the ``EventReceiver`` class. As there is only
@@ -206,7 +243,11 @@ class Receiver():
        ``Receiver.send_message(u'<<Message ID>>', data)``
 
     To receive a Message
-        ``QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'<<Message ID>>'), <<ACTION>>)``
+        ``QtCore.QObject.connect(
+            Receiver.get_receiver(),
+            QtCore.SIGNAL(u'<<Message ID>>'),
+            <<ACTION>>
+        )``
     """
     eventreceiver = EventReceiver()
 

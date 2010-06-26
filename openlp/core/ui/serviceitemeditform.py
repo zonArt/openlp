@@ -38,21 +38,16 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         self.setupUi(self)
         self.itemList = []
         # enable drop
-        QtCore.QObject.connect(self.upButton,
-                               QtCore.SIGNAL(u'clicked()'),
-                               self.onItemUp)
-        QtCore.QObject.connect(self.downButton,
-                               QtCore.SIGNAL(u'clicked()'),
-                               self.onItemDown)
-        QtCore.QObject.connect(self.deleteButton,
-                               QtCore.SIGNAL(u'clicked()'),
-                               self.onItemDelete)
-        QtCore.QObject.connect(self.buttonBox,
-                               QtCore.SIGNAL(u'accepted()'),
-                               self.accept)
-        QtCore.QObject.connect(self.buttonBox,
-                               QtCore.SIGNAL(u'rejected()'),
-                               self.reject)
+        QtCore.QObject.connect(self.upButton, QtCore.SIGNAL(u'clicked()'),
+            self.onItemUp)
+        QtCore.QObject.connect(self.downButton, QtCore.SIGNAL(u'clicked()'),
+            self.onItemDown)
+        QtCore.QObject.connect(self.deleteButton, QtCore.SIGNAL(u'clicked()'),
+            self.onItemDelete)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'),
+            self.accept)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
+            self.reject)
 
     def setServiceItem(self, item):
         self.item = item
@@ -68,8 +63,8 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
             self.item._raw_frames = []
             if self.item.is_image():
                 for item in self.itemList:
-                    self.item.add_from_image(item[u'path'],
-                                             item[u'title'], item[u'image'])
+                    self.item.add_from_image(item[u'path'], item[u'title'],
+                        item[u'image'])
             self.item.render()
         return self.item
 
@@ -78,6 +73,14 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         for frame in self.itemList:
             item_name = QtGui.QListWidgetItem(frame[u'title'])
             self.listWidget.addItem(item_name)
+        if self.listWidget.count() == 1:
+            self.downButton.setEnabled(False)
+            self.upButton.setEnabled(False)
+            self.deleteButton.setEnabled(False)
+        else:
+            self.downButton.setEnabled(True)
+            self.upButton.setEnabled(True)
+            self.deleteButton.setEnabled(True)
 
     def onItemDelete(self):
         """
@@ -85,9 +88,13 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         """
         items = self.listWidget.selectedItems()
         for item in items:
-            row =  self.listWidget.row(item)
+            row = self.listWidget.row(item)
             self.itemList.remove(self.itemList[row])
             self.loadData()
+            if row == self.listWidget.count():
+                self.listWidget.setCurrentRow(row - 1)
+            else:
+                self.listWidget.setCurrentRow(row)
 
     def onItemUp(self):
         """
@@ -95,12 +102,13 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         """
         items = self.listWidget.selectedItems()
         for item in items:
-            row =  self.listWidget.row(item)
+            row = self.listWidget.row(item)
             if row > 0:
                 temp = self.itemList[row]
                 self.itemList.remove(self.itemList[row])
                 self.itemList.insert(row - 1, temp)
                 self.loadData()
+                self.listWidget.setCurrentRow(row - 1)
 
     def onItemDown(self):
         """
@@ -108,9 +116,10 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         """
         items = self.listWidget.selectedItems()
         for item in items:
-            row =  self.listWidget.row(item)
+            row = self.listWidget.row(item)
             if row < len(self.itemList) and row is not -1:
                 temp = self.itemList[row]
                 self.itemList.remove(self.itemList[row])
                 self.itemList.insert(row + 1, temp)
                 self.loadData()
+                self.listWidget.setCurrentRow(row + 1)
