@@ -42,9 +42,14 @@ if os.name == u'nt':
     PAGE_AFTER = 5
     PAGE_BOTH = 6
 else:
-    from com.sun.star.awt.FontWeight import BOLD
-    from com.sun.star.awt.FontSlant import ITALIC
-    from com.sun.star.style.BreakType import PAGE_BEFORE, PAGE_AFTER, PAGE_BOTH
+    try:
+        from com.sun.star.awt.FontWeight import BOLD
+        from com.sun.star.awt.FontSlant import ITALIC
+        from com.sun.star.style.BreakType import PAGE_BEFORE, PAGE_AFTER, \
+            PAGE_BOTH
+    except ImportError:
+        pass
+
 
 class SofImport(OooImport):
     """
