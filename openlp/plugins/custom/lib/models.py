@@ -34,6 +34,6 @@ def init_models(url):
     engine = create_engine(url)
     metadata.bind = engine
     session = scoped_session(sessionmaker(autoflush=True, autocommit=False,
-                                          bind=engine))
+        bind=engine))
     mapper(CustomSlide, custom_slide_table)
     return session

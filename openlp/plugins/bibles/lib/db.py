@@ -29,8 +29,9 @@ import chardet
 import re
 
 from sqlalchemy import or_
-from PyQt4 import QtCore
+from PyQt4 import QtCore, QtGui
 
+from openlp.core.lib import translate
 from openlp.plugins.bibles.lib.models import *
 
 log = logging.getLogger(__name__)
@@ -56,20 +57,15 @@ class BibleDB(QtCore.QObject):
         ``name``
             The name of the database. This is also used as the file name for
             SQLite databases.
-
-        ``config``
-            The configuration object, passed in from the plugin.
         """
         log.info(u'BibleDB loaded')
         QtCore.QObject.__init__(self)
+        self.bible_plugin = parent
         if u'path' not in kwargs:
             raise KeyError(u'Missing keyword argument "path".')
-        if u'config' not in kwargs:
-            raise KeyError(u'Missing keyword argument "config".')
         if u'name' not in kwargs and u'file' not in kwargs:
             raise KeyError(u'Missing keyword argument "name" or "file".')
         self.stop_import_flag = False
-        self.config = kwargs[u'config']
         if u'name' in kwargs:
             self.name = kwargs[u'name']
             if not isinstance(self.name, unicode):
@@ -79,20 +75,31 @@ class BibleDB(QtCore.QObject):
             self.file = kwargs[u'file']
         self.db_file = os.path.join(kwargs[u'path'], self.file)
         log.debug(u'Load bible %s on path %s', self.file, self.db_file)
-        db_type = self.config.get_config(u'db type', u'sqlite')
+        settings = QtCore.QSettings()
+        settings.beginGroup(u'bibles')
+        db_type = unicode(
+            settings.value(u'db type', QtCore.QVariant(u'sqlite')).toString())
         db_url = u''
         if db_type == u'sqlite':
             db_url = u'sqlite:///' + self.db_file
         else:
-            db_url = u'%s://%s:%s@%s/%s' % \
-                (db_type, self.config.get_config(u'db username'),
-                    self.config.get_config(u'db password'),
-                    self.config.get_config(u'db hostname'),
-                    self.config.get_config(u'db database'))
-        self.metadata, self.session = init_models(db_url)
-        self.metadata.create_all(checkfirst=True)
+            db_url = u'%s://%s:%s@%s/%s' % (db_type,
+                unicode(settings.value(u'db username').toString()),
+                unicode(settings.value(u'db password').toString()),
+                unicode(settings.value(u'db hostname').toString()),
+                unicode(settings.value(u'db database').toString()))
+        settings.endGroup()
+        self.session = init_models(db_url)
+        metadata.create_all(checkfirst=True)
         if u'file' in kwargs:
             self.get_name()
+
+    def stop_import(self):
+        """
+        Stops the import of the Bible.
+        """
+        log.debug('Stopping import')
+        self.stop_import_flag = True
 
     def get_name(self):
         """
@@ -113,7 +120,7 @@ class BibleDB(QtCore.QObject):
         ``old_filename``
             The "dirty" file name or version name.
         """
-        if not isinstance(old_filename,  unicode):
+        if not isinstance(old_filename, unicode):
             old_filename = unicode(old_filename, u'utf-8')
         old_filename = re.sub(r'[^\w]+', u'_', old_filename).strip(u'_')
         return old_filename + u'.sqlite'
@@ -125,7 +132,7 @@ class BibleDB(QtCore.QObject):
         try:
             os.remove(self.db_file)
             return True
-        except:
+        except OSError:
             return False
 
     def register(self, wizard):
@@ -298,14 +305,22 @@ class BibleDB(QtCore.QObject):
             if db_book:
                 book = db_book.name
                 log.debug(u'Book name corrected to "%s"', book)
-            verses = self.session.query(Verse)\
-                .filter_by(book_id=db_book.id)\
-                .filter_by(chapter=chapter)\
-                .filter(Verse.verse >= start_verse)\
-                .filter(Verse.verse <= end_verse)\
-                .order_by(Verse.verse)\
-                .all()
-            verse_list.extend(verses)
+                verses = self.session.query(Verse)\
+                    .filter_by(book_id=db_book.id)\
+                    .filter_by(chapter=chapter)\
+                    .filter(Verse.verse >= start_verse)\
+                    .filter(Verse.verse <= end_verse)\
+                    .order_by(Verse.verse)\
+                    .all()
+                verse_list.extend(verses)
+            else:
+                log.debug(u'OpenLP failed to find book %s', book)
+                QtGui.QMessageBox.information(self.bible_plugin.media_item,
+                    translate('BibleDB', 'Book not found'),
+                    translate('BibleDB', u'The book you requested could not '
+                        'be found in this bible.  Please check your spelling '
+                        'and that this is a complete bible not just one '
+                        'testament.'))
         return verse_list
 
     def verse_search(self, text):
@@ -322,12 +337,14 @@ class BibleDB(QtCore.QObject):
         verses = self.session.query(Verse)
         if text.find(u',') > -1:
             or_clause = []
-            keywords = [u'%%%s%%' % keyword.strip() for keyword in text.split(u',')]
+            keywords = [u'%%%s%%' % keyword.strip()
+                for keyword in text.split(u',')]
             for keyword in keywords:
                 or_clause.append(Verse.text.like(keyword))
             verses = verses.filter(or_(*or_clause))
         else:
-            keywords = [u'%%%s%%' % keyword.strip() for keyword in text.split(u' ')]
+            keywords = [u'%%%s%%' % keyword.strip()
+                for keyword in text.split(u' ')]
             for keyword in keywords:
                 verses = verses.filter(Verse.text.like(keyword))
         verses = verses.all()
@@ -375,4 +392,3 @@ class BibleDB(QtCore.QObject):
         log.debug(u'...............................Verses ')
         verses = self.session.query(Verse).all()
         log.debug(verses)
-

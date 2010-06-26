@@ -22,17 +22,20 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+Extend QListWidget to handle drag and drop functionality
+"""
 from PyQt4 import QtCore, QtGui
 
 class BaseListWithDnD(QtGui.QListWidget):
     """
-    Please put a short description of what this class does in here.
+    Provide a list widget to store objects and handle drag and drop events
     """
-
     def __init__(self, parent=None):
+        """
+        Initialise the list widget
+        """
         QtGui.QListWidget.__init__(self, parent)
-        self.parent = parent
         # this must be set by the class which is inheriting
         assert(self.PluginName)
 
@@ -48,5 +51,4 @@ class BaseListWithDnD(QtGui.QListWidget):
         mimeData = QtCore.QMimeData()
         drag.setMimeData(mimeData)
         mimeData.setText(self.PluginName)
-        dropAction = drag.start(QtCore.Qt.CopyAction)
-
+        drag.start(QtCore.Qt.CopyAction)

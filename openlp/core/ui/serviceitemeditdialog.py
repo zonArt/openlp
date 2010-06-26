@@ -24,6 +24,7 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+from openlp.core.lib import translate
 
 class Ui_ServiceItemEditDialog(object):
     def setupUi(self, ServiceItemEditDialog):
@@ -66,8 +67,10 @@ class Ui_ServiceItemEditDialog(object):
         QtCore.QMetaObject.connectSlotsByName(ServiceItemEditDialog)
 
     def retranslateUi(self, ServiceItemEditDialog):
-        ServiceItemEditDialog.setWindowTitle(self.trUtf8('Service Item Maintenance'))
-        self.upButton.setText(self.trUtf8('Up'))
-        self.deleteButton.setText(self.trUtf8('Delete'))
-        self.downButton.setText(self.trUtf8('Down'))
+        ServiceItemEditDialog.setWindowTitle(
+            translate('ServiceItemEditForm', 'Service Item Maintenance'))
+        self.upButton.setText(translate('ServiceItemEditForm', 'Up'))
+        self.deleteButton.setText(translate('ServiceItemEditForm', 'Delete'))
+        self.downButton.setText(translate('ServiceItemEditForm', 'Down'))
+
 

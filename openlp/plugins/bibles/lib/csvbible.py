@@ -27,6 +27,8 @@ import logging
 import chardet
 import csv
 
+from PyQt4 import QtCore
+
 from openlp.core.lib import Receiver
 from db import BibleDB
 
@@ -52,14 +54,7 @@ class CSVBible(BibleDB):
             raise KeyError(u'You have to supply a file to import verses from.')
         self.versesfile = kwargs[u'versesfile']
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'openlpstopimport'), self.stop_import)
-
-    def stop_import(self):
-        """
-        Stops the import of the Bible.
-        """
-        log.debug('Stopping import!')
-        self.stop_import_flag = True
+            QtCore.SIGNAL(u'bibles_stop_import'), self.stop_import)
 
     def do_import(self):
         #Populate the Tables
@@ -77,8 +72,8 @@ class CSVBible(BibleDB):
                 details = chardet.detect(line[1])
                 self.create_book(unicode(line[1], details['encoding']),
                     line[2], int(line[0]))
-                Receiver.send_message(u'process_events')
-        except:
+                Receiver.send_message(u'openlp_process_events')
+        except IOError:
             log.exception(u'Loading books from file failed')
             success = False
         finally:
@@ -89,7 +84,7 @@ class CSVBible(BibleDB):
         verse_file = None
         try:
             book_ptr = None
-            verse_file = open(versesfile, 'r')
+            verse_file = open(self.versesfile, 'r')
             dialect = csv.Sniffer().sniff(verse_file.read(1024))
             verse_file.seek(0)
             verse_reader = csv.reader(verse_file, dialect)
@@ -105,9 +100,9 @@ class CSVBible(BibleDB):
                     self.commit()
                 self.create_verse(book.id, line[1], line[2],
                                   unicode(line[3], details['encoding']))
-                Receiver.send_message(u'process_events')
+                Receiver.send_message(u'openlp_process_events')
             self.commit()
-        except:
+        except IOError:
             log.exception(u'Loading verses from file failed')
             success = False
         finally:
@@ -118,4 +113,5 @@ class CSVBible(BibleDB):
             return False
         else:
             return success
+
 

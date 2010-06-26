@@ -27,7 +27,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus
+from openlp.core.lib import Plugin, build_icon, PluginStatus, translate
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
 
 log = logging.getLogger(__name__)
@@ -36,7 +36,7 @@ class BiblePlugin(Plugin):
     log.info(u'Bible Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Bibles', u'1.9.1', plugin_helpers)
+        Plugin.__init__(self, u'Bibles', u'1.9.2', plugin_helpers)
         self.weight = -9
         self.icon = build_icon(u':/media/media_bible.png')
         #Register the bible Manager
@@ -46,7 +46,7 @@ class BiblePlugin(Plugin):
     def initialise(self):
         log.info(u'bibles Initialising')
         if self.manager is None:
-            self.manager = BibleManager(self, self.config)
+            self.manager = BibleManager(self)
         Plugin.initialise(self)
         self.insert_toolbox_item()
         self.ImportBibleItem.setVisible(True)
@@ -70,7 +70,8 @@ class BiblePlugin(Plugin):
         self.ImportBibleItem = QtGui.QAction(import_menu)
         self.ImportBibleItem.setObjectName(u'ImportBibleItem')
         import_menu.addAction(self.ImportBibleItem)
-        self.ImportBibleItem.setText(import_menu.trUtf8('&Bible'))
+        self.ImportBibleItem.setText(
+            translate('BiblePlugin', '&Bible'))
         # Signals and slots
         QtCore.QObject.connect(self.ImportBibleItem,
             QtCore.SIGNAL(u'triggered()'), self.onBibleImportClick)
@@ -80,7 +81,8 @@ class BiblePlugin(Plugin):
         self.ExportBibleItem = QtGui.QAction(export_menu)
         self.ExportBibleItem.setObjectName(u'ExportBibleItem')
         export_menu.addAction(self.ExportBibleItem)
-        self.ExportBibleItem.setText(export_menu.trUtf8('&Bible'))
+        self.ExportBibleItem.setText(translate(
+            'BiblePlugin', '&Bible'))
         self.ExportBibleItem.setVisible(False)
 
     def onBibleImportClick(self):
@@ -88,7 +90,8 @@ class BiblePlugin(Plugin):
             self.media_item.onImportClick()
 
     def about(self):
-        about_text = self.trUtf8('<strong>Bible Plugin</strong><br />This '
+        about_text = translate('BiblePlugin',
+            '<strong>Bible Plugin</strong><br />This '
             'plugin allows bible verses from different sources to be '
             'displayed on the screen during the service.')
         return about_text

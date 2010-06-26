@@ -22,27 +22,32 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The :mod:`songxmlhandler` module provides the XML functionality for songs
+
+The basic XML is of the format::
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <song version="1.0">
+        <lyrics language="en">
+            <verse type="chorus" label="1">
+                <![CDATA[ ... ]]>
+            </verse>
+        </lyrics>
+    </song>
+"""
 
 import logging
+
 from xml.dom.minidom import Document
 from xml.etree.ElementTree import ElementTree, XML, dump
+from xml.parsers.expat import ExpatError
 
 log = logging.getLogger(__name__)
 
 class SongXMLBuilder(object):
     """
     This class builds the XML used to describe songs.
-
-    The basic XML looks like this::
-
-        <?xml version="1.0" encoding="UTF-8"?>
-        <song version="1.0">
-          <lyrics language="en">
-            <verse type="chorus" label="1">
-              <![CDATA[ ... ]]>
-            </verse>
-          </lyrics>
-        </song>
     """
     log.info(u'SongXMLBuilder Loaded')
 
@@ -111,17 +116,6 @@ class SongXMLBuilder(object):
 class SongXMLParser(object):
     """
     A class to read in and parse a song's XML.
-
-    The basic XML looks like this::
-
-        <?xml version="1.0" encoding="UTF-8"?>
-        <song version="1.0">
-          <lyrics language="en">
-            <verse type="chorus" label="1">
-              <![CDATA[ ... ]]>
-            </verse>
-          </lyrics>
-        </song>
     """
     log.info(u'SongXMLParser Loaded')
 
@@ -136,7 +130,7 @@ class SongXMLParser(object):
         try:
             self.song_xml = ElementTree(
                 element=XML(unicode(xml).encode('unicode-escape')))
-        except:
+        except ExpatError:
             log.exception(u'Invalid xml %s', xml)
 
     def get_verses(self):
@@ -144,9 +138,9 @@ class SongXMLParser(object):
         Iterates through the verses in the XML and returns a list of verses
         and their attributes.
         """
-        iter = self.song_xml.getiterator()
+        xml_iter = self.song_xml.getiterator()
         verse_list = []
-        for element in iter:
+        for element in xml_iter:
             if element.tag == u'verse':
                 if element.text is None:
                     element.text = u''

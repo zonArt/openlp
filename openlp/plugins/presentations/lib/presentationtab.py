@@ -23,21 +23,22 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtGui
+from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab
+from openlp.core.lib import SettingsTab, translate
 
 class PresentationTab(SettingsTab):
     """
     PresentationsTab is the Presentations settings tab in the settings dialog.
     """
-    def __init__(self, title, controllers, section=None):
+    def __init__(self, title, controllers):
         self.controllers = controllers
-        SettingsTab.__init__(self, title, section)
+        SettingsTab.__init__(self, title)
 
     def setupUi(self):
         self.setObjectName(u'PresentationTab')
-        self.tabTitleVisible = self.trUtf8('Presentations')
+        self.tabTitleVisible = translate('PresentationPlugin.PresentationTab',
+            'Presentations')
         self.PresentationLayout = QtGui.QHBoxLayout(self)
         self.PresentationLayout.setSpacing(8)
         self.PresentationLayout.setMargin(8)
@@ -88,24 +89,29 @@ class PresentationTab(SettingsTab):
         self.PresentationLayout.addWidget(self.PresentationRightWidget)
 
     def retranslateUi(self):
-        self.VerseDisplayGroupBox.setTitle(self.trUtf8('Available Controllers'))
+        self.VerseDisplayGroupBox.setTitle(
+            translate('PresentationPlugin.PresentationTab',
+            'Available Controllers'))
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = self.PresenterCheckboxes[controller.name]
             checkbox.setText(
-                u'%s %s:' % (controller.name, self.trUtf8('available')))
+                u'%s %s' % (controller.name,
+                translate('PresentationPlugin.PresentationTab', 'available')))
 
     def load(self):
         for key in self.controllers:
             controller = self.controllers[key]
             if controller.available:
                 checkbox = self.PresenterCheckboxes[controller.name]
-                checkbox.setChecked(
-                    int(self.config.get_config(controller.name, 0)))
+                checkbox.setChecked(QtCore.QSettings().value(
+                    self.settingsSection + u'/' + controller.name,
+                    QtCore.QVariant(0)).toInt()[0])
 
     def save(self):
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = self.PresenterCheckboxes[controller.name]
-            self.config.set_config(
-                controller.name, unicode(checkbox.checkState()))
+            QtCore.QSettings().setValue(
+                self.settingsSection + u'/' + controller.name,
+                QtCore.QVariant(checkbox.checkState()))

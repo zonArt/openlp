@@ -30,7 +30,8 @@ import chardet
 import htmlentitydefs
 
 only_verses = re.compile(r'([\w .]+)[ ]+([0-9]+)[ ]*[:|v|V][ ]*([0-9]+)'
-    r'(?:[ ]*-[ ]*([0-9]+|end))?(?:[ ]*,[ ]*([0-9]+)(?:[ ]*-[ ]*([0-9]+|end))?)?',
+    r'(?:[ ]*-[ ]*([0-9]+|end))?(?:[ ]*,[ ]*([0-9]+)'
+    r'(?:[ ]*-[ ]*([0-9]+|end))?)?',
     re.UNICODE)
 chapter_range = re.compile(r'([\w .]+)[ ]+([0-9]+)[ ]*[:|v|V][ ]*'
     r'([0-9]+|end)[ ]*-[ ]*([0-9]+)[ ]*[:|v|V][ ]*([0-9]+|end)',
@@ -241,7 +242,7 @@ class BibleCommon(object):
         text = text.replace(u'&apos;', u'\'')
         # Remove some other tags
         start_tag = text.find(u'<')
-        while start_tag > -1 :
+        while start_tag > -1:
             end_tag = text.find(u'>', start_tag)
             text = text[:start_tag] + text[end_tag + 1:]
             start_tag = text.find(u'<')
@@ -257,12 +258,12 @@ def unescape(text):
     @param text The HTML (or XML) source text.
     @return The plain text, as a Unicode string, if necessary.
     """
-    def fixup(m):
-        text = m.group(0)
-        if text[:2] == u'&#':
+    def fixup(markup):
+        text = markup.group(0)
+        if text.startswith(u'&#'):
             # character reference
             try:
-                if text[:3] == u'&#x':
+                if text.startswith(u'&#x'):
                     return unichr(int(text[3:-1], 16))
                 else:
                     return unichr(int(text[2:-1]))

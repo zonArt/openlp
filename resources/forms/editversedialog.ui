@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
-    <height>521</height>
+    <width>474</width>
+    <height>442</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,174 +16,118 @@
   <property name="modal">
    <bool>true</bool>
   </property>
-  <widget class="QWidget" name="layoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>11</x>
-     <y>1</y>
-     <width>471</width>
-     <height>491</height>
-    </rect>
+  <layout class="QVBoxLayout" name="EditVerseLayout">
+   <property name="spacing">
+    <number>8</number>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout_3">
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
-         <widget class="QLabel" name="VerseTypeLabel">
-          <property name="text">
-           <string>Verse Type</string>
-          </property>
-          <property name="textFormat">
-           <enum>Qt::PlainText</enum>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="VerseListComboBox">
-          <item>
-           <property name="text">
-            <string>Intro</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Verse</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Pre-Chorus</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Chorus</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Bridge</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Ending</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Other</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
-        <item>
-         <widget class="QLabel" name="VerseNumberLabel">
-          <property name="text">
-           <string>Number</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="SubVerseListComboBox"/>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <widget class="QTextEdit" name="VerseTextEdit">
-      <property name="acceptRichText">
-       <bool>false</bool>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
-       <widget class="QPushButton" name="addBridge">
-        <property name="text">
-         <string>Bridge</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="addVerse">
+   <property name="margin">
+    <number>8</number>
+   </property>
+   <item>
+    <widget class="QTextEdit" name="VerseTextEdit">
+     <property name="acceptRichText">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="VerseTypeLayout">
+     <property name="spacing">
+      <number>8</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="VerseTypeLabel">
+       <property name="text">
+        <string>Verse Type:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="VerseTypeComboBox">
+       <item>
         <property name="text">
          <string>Verse</string>
         </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="addChorus">
+       </item>
+       <item>
         <property name="text">
          <string>Chorus</string>
         </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
-      <item>
-       <widget class="QPushButton" name="addPreChorus">
+       </item>
+       <item>
+        <property name="text">
+         <string>Bridge</string>
+        </property>
+       </item>
+       <item>
         <property name="text">
          <string>Pre-Chorus</string>
         </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="addIntro">
+       </item>
+       <item>
         <property name="text">
          <string>Intro</string>
         </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="addOther">
-        <property name="text">
-         <string>Other</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="addEnding">
+       </item>
+       <item>
         <property name="text">
          <string>Ending</string>
         </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <widget class="QDialogButtonBox" name="ButtonBox">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="standardButtons">
-       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
+       </item>
+       <item>
+        <property name="text">
+         <string>Other</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="VerseNumberBox"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="InsertButton">
+       <property name="text">
+        <string>Insert</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../images/openlp-2.qrc">
+         <normaloff>:/general/general_add.png</normaloff>:/general/general_add.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="VerseTypeSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="EditButtonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../images/openlp-2.qrc"/>
+ </resources>
  <connections>
   <connection>
-   <sender>ButtonBox</sender>
+   <sender>EditButtonBox</sender>
    <signal>accepted()</signal>
    <receiver>EditVerseDialog</receiver>
    <slot>accept()</slot>
@@ -199,7 +143,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>ButtonBox</sender>
+   <sender>EditButtonBox</sender>
    <signal>rejected()</signal>
    <receiver>EditVerseDialog</receiver>
    <slot>reject()</slot>

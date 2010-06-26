@@ -25,22 +25,20 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, str_to_bool
-from openlp.plugins.alerts.lib.models import AlertItem
+from openlp.core.lib import SettingsTab, translate
 
 class AlertsTab(SettingsTab):
     """
     AlertsTab is the alerts settings tab in the settings dialog.
     """
-    def __init__(self, parent, section=None):
+    def __init__(self, parent):
         self.parent = parent
         self.manager = parent.manager
-        self.alertsmanager = parent.alertsmanager
-        SettingsTab.__init__(self, parent.name, section)
+        SettingsTab.__init__(self, parent.name)
 
     def setupUi(self):
         self.setObjectName(u'AlertsTab')
-        self.tabTitleVisible = self.trUtf8('Alerts')
+        self.tabTitleVisible = translate('AlertsPlugin.AlertsTab', 'Alerts')
         self.AlertsLayout = QtGui.QHBoxLayout(self)
         self.AlertsLayout.setSpacing(8)
         self.AlertsLayout.setMargin(8)
@@ -136,22 +134,6 @@ class AlertsTab(SettingsTab):
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.LocationLayout.addItem(self.LocationSpacer)
         self.FontLayout.addWidget(self.LocationWidget)
-        self.HistoryWidget = QtGui.QWidget(self.FontGroupBox)
-        self.HistoryWidget.setObjectName(u'HistoryWidget')
-        self.HistoryLayout = QtGui.QHBoxLayout(self.HistoryWidget)
-        self.HistoryLayout.setSpacing(8)
-        self.HistoryLayout.setMargin(0)
-        self.HistoryLayout.setObjectName(u'HistoryLayout')
-        self.HistoryLabel = QtGui.QLabel(self.HistoryWidget)
-        self.HistoryLabel.setObjectName(u'HistoryLabel')
-        self.HistoryLayout.addWidget(self.HistoryLabel)
-        self.HistoryCheckBox = QtGui.QCheckBox(self.HistoryWidget)
-        self.HistoryCheckBox.setObjectName(u'HistoryCheckBox')
-        self.HistoryLayout.addWidget(self.HistoryCheckBox)
-        self.HistorySpacer = QtGui.QSpacerItem(147, 20,
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.HistoryLayout.addItem(self.HistorySpacer)
-        self.FontLayout.addWidget(self.HistoryWidget)
         self.SlideLeftLayout.addWidget(self.FontGroupBox)
         self.SlideLeftSpacer = QtGui.QSpacerItem(20, 94,
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
@@ -188,48 +170,8 @@ class AlertsTab(SettingsTab):
         self.SlideRightSpacer = QtGui.QSpacerItem(20, 40,
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.SlideRightLayout.addItem(self.SlideRightSpacer)
-        self.layoutWidget = QtGui.QWidget(self)
-        self.layoutWidget.setGeometry(QtCore.QRect(20, 10, 361, 251))
-        self.layoutWidget.setObjectName(u'layoutWidget')
-        self.verticalLayout_2 = QtGui.QVBoxLayout(self.layoutWidget)
-        self.verticalLayout_2.setObjectName(u'verticalLayout_2')
-        self.horizontalLayout_2 = QtGui.QHBoxLayout()
-        self.horizontalLayout_2.setObjectName(u'horizontalLayout_2')
-        self.AlertLineEdit = QtGui.QLineEdit(self.layoutWidget)
-        self.AlertLineEdit.setObjectName(u'AlertLineEdit')
-        self.horizontalLayout_2.addWidget(self.AlertLineEdit)
-        self.verticalLayout_2.addLayout(self.horizontalLayout_2)
-        self.horizontalLayout = QtGui.QHBoxLayout()
-        self.horizontalLayout.setObjectName(u'horizontalLayout')
-        self.AlertListWidget = QtGui.QListWidget(self.layoutWidget)
-        self.AlertListWidget.setAlternatingRowColors(True)
-        self.AlertListWidget.setObjectName(u'AlertListWidget')
-        self.horizontalLayout.addWidget(self.AlertListWidget)
-        self.verticalLayout = QtGui.QVBoxLayout()
-        self.verticalLayout.setObjectName(u'verticalLayout')
-        self.SaveButton = QtGui.QPushButton(self.layoutWidget)
-        self.SaveButton.setObjectName(u'SaveButton')
-        self.verticalLayout.addWidget(self.SaveButton)
-        self.ClearButton = QtGui.QPushButton(self.layoutWidget)
-        self.ClearButton.setObjectName(u'ClearButton')
-        self.verticalLayout.addWidget(self.ClearButton)
-        self.AddButton = QtGui.QPushButton(self.layoutWidget)
-        self.AddButton.setObjectName(u'AddButton')
-        self.verticalLayout.addWidget(self.AddButton)
-        self.EditButton = QtGui.QPushButton(self.layoutWidget)
-        self.EditButton.setObjectName(u'EditButton')
-        self.verticalLayout.addWidget(self.EditButton)
-        self.DeleteButton = QtGui.QPushButton(self.layoutWidget)
-        self.DeleteButton.setObjectName(u'DeleteButton')
-        self.verticalLayout.addWidget(self.DeleteButton)
-        self.horizontalLayout.addLayout(self.verticalLayout)
-        self.verticalLayout_2.addLayout(self.horizontalLayout)
-        self.SlideRightLayout.addWidget(self.layoutWidget)
         self.AlertsLayout.addWidget(self.AlertRightColumn)
         # Signals and slots
-        QtCore.QObject.connect(self.HistoryCheckBox,
-            QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onHistoryCheckBoxChanged)
         QtCore.QObject.connect(self.BackgroundColorButton,
             QtCore.SIGNAL(u'pressed()'), self.onBackgroundColorButtonClicked)
         QtCore.QObject.connect(self.FontColorButton,
@@ -242,55 +184,43 @@ class AlertsTab(SettingsTab):
             QtCore.SIGNAL(u'valueChanged(int)'), self.onTimeoutSpinBoxChanged)
         QtCore.QObject.connect(self.FontSizeSpinBox,
             QtCore.SIGNAL(u'valueChanged(int)'), self.onFontSizeSpinBoxChanged)
-        QtCore.QObject.connect(self.DeleteButton,
-                               QtCore.SIGNAL(u'clicked()'),
-                               self.onDeleteClick)
-        QtCore.QObject.connect(self.ClearButton,
-                               QtCore.SIGNAL(u'clicked()'),
-                               self.onClearClick)
-        QtCore.QObject.connect(self.EditButton,
-                               QtCore.SIGNAL(u'clicked()'),
-                               self.onEditClick)
-        QtCore.QObject.connect(self.AddButton,
-                               QtCore.SIGNAL(u'clicked()'),
-                               self.onAddClick)
-        QtCore.QObject.connect(self.SaveButton,
-                               QtCore.SIGNAL(u'clicked()'),
-                               self.onSaveClick)
-        QtCore.QObject.connect(self.AlertListWidget,
-            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
-            self.onItemSelected)
-        QtCore.QObject.connect(self.AlertListWidget,
-            QtCore.SIGNAL(u'clicked(QModelIndex)'),
-            self.onItemSelected)
 
     def retranslateUi(self):
-        self.FontGroupBox.setTitle(self.trUtf8('Font'))
-        self.FontLabel.setText(self.trUtf8('Font Name:'))
-        self.FontColorLabel.setText(self.trUtf8('Font Color:'))
-        self.BackgroundColorLabel.setText(self.trUtf8('Background Color:'))
-        self.FontSizeLabel.setText(self.trUtf8('Font Size:'))
-        self.FontSizeSpinBox.setSuffix(self.trUtf8('pt'))
-        self.TimeoutLabel.setText(self.trUtf8('Alert timeout:'))
-        self.TimeoutSpinBox.setSuffix(self.trUtf8('s'))
-        self.LocationLabel.setText(self.trUtf8('Location:'))
-        self.HistoryLabel.setText(self.trUtf8('Keep History:'))
-        self.PreviewGroupBox.setTitle(self.trUtf8('Preview'))
-        self.FontPreview.setText(self.trUtf8('openlp.org'))
-        self.LocationComboBox.setItemText(0, self.trUtf8('Top'))
-        self.LocationComboBox.setItemText(1, self.trUtf8('Bottom'))
-        self.SaveButton.setText(self.trUtf8('Save'))
-        self.ClearButton.setText(self.trUtf8('Clear'))
-        self.AddButton.setText(self.trUtf8('Add'))
-        self.EditButton.setText(self.trUtf8('Edit'))
-        self.DeleteButton.setText(self.trUtf8('Delete'))
+        self.FontGroupBox.setTitle(
+            translate('AlertsPlugin.AlertsTab', 'Font'))
+        self.FontLabel.setText(
+            translate('AlertsPlugin.AlertsTab', 'Font Name:'))
+        self.FontColorLabel.setText(
+            translate('AlertsPlugin.AlertsTab', 'Font Color:'))
+        self.BackgroundColorLabel.setText(
+            translate('AlertsPlugin.AlertsTab', 'Background Color:'))
+        self.FontSizeLabel.setText(
+            translate('AlertsPlugin.AlertsTab', 'Font Size:'))
+        self.FontSizeSpinBox.setSuffix(
+            translate('AlertsPlugin.AlertsTab', 'pt'))
+        self.TimeoutLabel.setText(
+            translate('AlertsPlugin.AlertsTab', 'Alert timeout:'))
+        self.TimeoutSpinBox.setSuffix(
+            translate('AlertsPlugin.AlertsTab', 's'))
+        self.LocationLabel.setText(
+            translate('AlertsPlugin.AlertsTab', 'Location:'))
+        self.PreviewGroupBox.setTitle(
+            translate('AlertsPlugin.AlertsTab', 'Preview'))
+        self.FontPreview.setText(
+            translate('AlertsPlugin.AlertsTab', 'openlp.org'))
+        self.LocationComboBox.setItemText(0, 
+            translate('AlertsPlugin.AlertsTab', 'Top'))
+        self.LocationComboBox.setItemText(1, 
+            translate('AlertsPlugin.AlertsTab', 'Bottom'))
 
     def onBackgroundColorButtonClicked(self):
-        self.bg_color = QtGui.QColorDialog.getColor(
-            QtGui.QColor(self.bg_color), self).name()
-        self.BackgroundColorButton.setStyleSheet(
-            u'background-color: %s' % self.bg_color)
-        self.updateDisplay()
+        new_color = QtGui.QColorDialog.getColor(
+            QtGui.QColor(self.bg_color), self)
+        if new_color.isValid():
+            self.bg_color = new_color.name()
+            self.BackgroundColorButton.setStyleSheet(
+                u'background-color: %s' % self.bg_color)
+            self.updateDisplay()
 
     def onFontComboBoxClicked(self):
         self.updateDisplay()
@@ -298,18 +228,14 @@ class AlertsTab(SettingsTab):
     def onLocationComboBoxClicked(self, location):
         self.location = location
 
-    def onHistoryCheckBoxChanged(self, check_state):
-        self.save_history = False
-        # we have a set value convert to True/False
-        if check_state == QtCore.Qt.Checked:
-            self.save_history = True
-
     def onFontColorButtonClicked(self):
-        self.font_color = QtGui.QColorDialog.getColor(
-            QtGui.QColor(self.font_color), self).name()
-        self.FontColorButton.setStyleSheet(
-            u'background-color: %s' % self.font_color)
-        self.updateDisplay()
+        new_color = QtGui.QColorDialog.getColor(
+            QtGui.QColor(self.font_color), self)
+        if new_color.isValid():
+            self.font_color = new_color.name()
+            self.FontColorButton.setStyleSheet(
+                u'background-color: %s' % self.font_color)
+            self.updateDisplay()
 
     def onTimeoutSpinBoxChanged(self):
         self.timeout = self.TimeoutSpinBox.value()
@@ -319,17 +245,20 @@ class AlertsTab(SettingsTab):
         self.updateDisplay()
 
     def load(self):
-        self.timeout = int(self.config.get_config(u'timeout', 5))
-        self.font_color = unicode(
-            self.config.get_config(u'font color', u'#ffffff'))
-        self.font_size = int(self.config.get_config(u'font size', 40))
-        self.bg_color = unicode(
-            self.config.get_config(u'background color', u'#660000'))
-        self.font_face = unicode(
-            self.config.get_config(u'font face', QtGui.QFont().family()))
-        self.location = int(self.config.get_config(u'location', 0))
-        self.save_history = str_to_bool(
-            self.config.get_config(u'save history', u'False'))
+        settings = QtCore.QSettings()
+        settings.beginGroup(self.settingsSection)
+        self.timeout = settings.value(u'timeout', QtCore.QVariant(5)).toInt()[0]
+        self.font_color = unicode(settings.value(
+            u'font color', QtCore.QVariant(u'#ffffff')).toString())
+        self.font_size = settings.value(
+            u'font size', QtCore.QVariant(40)).toInt()[0]
+        self.bg_color = unicode(settings.value(
+            u'background color', QtCore.QVariant(u'#660000')).toString())
+        self.font_face = unicode(settings.value(
+            u'font face', QtCore.QVariant(QtGui.QFont().family())).toString())
+        self.location = settings.value(
+            u'location', QtCore.QVariant(0)).toInt()[0]
+        settings.endGroup()
         self.FontSizeSpinBox.setValue(self.font_size)
         self.TimeoutSpinBox.setValue(self.timeout)
         self.FontColorButton.setStyleSheet(
@@ -337,91 +266,27 @@ class AlertsTab(SettingsTab):
         self.BackgroundColorButton.setStyleSheet(
             u'background-color: %s' % self.bg_color)
         self.LocationComboBox.setCurrentIndex(self.location)
-        self.HistoryCheckBox.setChecked(self.save_history)
         font = QtGui.QFont()
         font.setFamily(self.font_face)
         self.FontComboBox.setCurrentFont(font)
         self.updateDisplay()
-        self.loadList()
-
-    def loadList(self):
-        self.AlertListWidget.clear()
-        alerts = self.manager.get_all_alerts()
-        for alert in alerts:
-            item_name = QtGui.QListWidgetItem(alert.text)
-            item_name.setData(
-                QtCore.Qt.UserRole, QtCore.QVariant(alert.id))
-            self.AlertListWidget.addItem(item_name)
-        self.AddButton.setEnabled(True)
-        self.ClearButton.setEnabled(False)
-        self.SaveButton.setEnabled(False)
-        self.EditButton.setEnabled(False)
-        self.DeleteButton.setEnabled(False)
 
     def onItemSelected(self):
         self.EditButton.setEnabled(True)
         self.DeleteButton.setEnabled(True)
 
-    def onDeleteClick(self):
-        item = self.AlertListWidget.currentItem()
-        if item:
-            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-            self.parent.manager.delete_alert(item_id)
-            row = self.AlertListWidget.row(item)
-            self.AlertListWidget.takeItem(row)
-        self.AddButton.setEnabled(True)
-        self.SaveButton.setEnabled(False)
-        self.DeleteButton.setEnabled(False)
-        self.EditButton.setEnabled(False)
-
-    def onEditClick(self):
-        item = self.AlertListWidget.currentItem()
-        if item:
-            self.item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-            self.AlertLineEdit.setText(unicode(item.text()))
-        self.AddButton.setEnabled(True)
-        self.ClearButton.setEnabled(True)
-        self.SaveButton.setEnabled(True)
-        self.DeleteButton.setEnabled(True)
-        self.EditButton.setEnabled(False)
-
-    def onClearClick(self):
-        self.AlertLineEdit.setText(u'')
-        self.AddButton.setEnabled(False)
-        self.ClearButton.setEnabled(True)
-        self.SaveButton.setEnabled(False)
-        self.DeleteButton.setEnabled(False)
-        self.EditButton.setEnabled(False)
-
-    def onAddClick(self):
-        if len(self.AlertLineEdit.text()) == 0:
-            QtGui.QMessageBox.information(self,
-                self.trUtf8('Item selected to Add'),
-                self.trUtf8('Missing data'))
-        else:
-            alert = AlertItem()
-            alert.text = unicode(self.AlertLineEdit.text())
-            self.manager.save_alert(alert)
-        self.onClearClick()
-        self.loadList()
-
-    def onSaveClick(self):
-        alert = self.manager.get_alert(self.item_id)
-        alert.text = unicode(self.AlertLineEdit.text())
-        self.manager.save_alert(alert)
-        self.onClearClick()
-        self.loadList()
-
     def save(self):
+        settings = QtCore.QSettings()
+        settings.beginGroup(self.settingsSection)
         self.font_face = self.FontComboBox.currentFont().family()
-        self.config.set_config(u'background color', unicode(self.bg_color))
-        self.config.set_config(u'font color', unicode(self.font_color))
-        self.config.set_config(u'font size', unicode(self.font_size))
-        self.config.set_config(u'font face', unicode(self.font_face))
-        self.config.set_config(u'timeout', unicode(self.timeout))
-        self.config.set_config(u'location',
-                        unicode(self.LocationComboBox.currentIndex()))
-        self.config.set_config(u'save history', unicode(self.save_history))
+        settings.setValue(u'background color', QtCore.QVariant(self.bg_color))
+        settings.setValue(u'font color', QtCore.QVariant(self.font_color))
+        settings.setValue(u'font size', QtCore.QVariant(self.font_size))
+        settings.setValue(u'font face', QtCore.QVariant(self.font_face))
+        settings.setValue(u'timeout', QtCore.QVariant(self.timeout))
+        settings.setValue(u'location',
+            QtCore.QVariant(self.LocationComboBox.currentIndex()))
+        settings.endGroup()
 
     def updateDisplay(self):
         font = QtGui.QFont()
@@ -429,5 +294,5 @@ class AlertsTab(SettingsTab):
         font.setBold(True)
         font.setPointSize(self.font_size)
         self.FontPreview.setFont(font)
-        self.FontPreview.setStyleSheet(u'background-color: %s; color: %s' % \
+        self.FontPreview.setStyleSheet(u'background-color: %s; color: %s' %
             (self.bg_color, self.font_color))

@@ -23,27 +23,18 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from openlp.core.utils import ConfigHelper
+class BaseModel(object):
+    """
+    BaseModel provides a base object with a set of generic functions
+    """
 
-class MigrateFiles():
-    def __init__(self, display):
-        self.display = display
+    @classmethod
+    def populate(cls, **kwargs):
+        """
+        Creates an instance of a class and populates it, returning the instance
+        """
+        me = cls()
+        for key in kwargs:
+            me.__setattr__(key, kwargs[key])
+        return me
 
-    def process(self):
-        self.display.output(u'Files process started')
-        self._initial_setup()
-        self.display.output(u'Files process finished')
-
-    def _initial_setup(self):
-        self.display.output(u'Initial Setup started')
-        ConfigHelper.get_data_path()
-        self.display.sub_output(u'Config created')
-        ConfigHelper.get_config(u'bible', u'data path')
-        self.display.sub_output(u'Config created')
-        ConfigHelper.get_config(u'videos', u'data path')
-        self.display.sub_output(u'videos created')
-        ConfigHelper.get_config(u'images', u'data path')
-        self.display.sub_output(u'images created')
-        ConfigHelper.get_config(u'presentations', u'data path')
-        self.display.sub_output(u'presentations created')
-        self.display.output(u'Initial Setup finished')

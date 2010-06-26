@@ -47,7 +47,7 @@ else:
 
 from PyQt4 import QtCore
 
-from presentationcontroller import PresentationController,  PresentationDocument
+from presentationcontroller import PresentationController, PresentationDocument
 
 log = logging.getLogger(__name__)
 
@@ -106,20 +106,23 @@ class ImpressController(PresentationController):
         loop = 0
         log.debug(u'get UNO Desktop Openoffice - getComponentContext')
         context = uno.getComponentContext()
-        log.debug(u'get UNO Desktop Openoffice - createInstaneWithContext - UnoUrlResolver')
+        log.debug(u'get UNO Desktop Openoffice - createInstaneWithContext - '
+            u'UnoUrlResolver')
         resolver = context.ServiceManager.createInstanceWithContext(
             u'com.sun.star.bridge.UnoUrlResolver', context)
         while ctx is None and loop < 3:
             try:
                 log.debug(u'get UNO Desktop Openoffice - resolve')
-                ctx = resolver.resolve(u'uno:socket,host=localhost,port=2002;urp;StarOffice.ComponentContext')
+                ctx = resolver.resolve(u'uno:socket,host=localhost,port=2002;'
+                    u'urp;StarOffice.ComponentContext')
             except:
                 log.exception(u'Unable to find running instance ')
                 self.start_process()
                 loop += 1
         try:
             self.manager = ctx.ServiceManager
-            log.debug(u'get UNO Desktop Openoffice - createInstanceWithContext - Desktop')
+            log.debug(u'get UNO Desktop Openoffice - createInstanceWithContext'
+                u' - Desktop')
             desktop = self.manager.createInstanceWithContext(
                 "com.sun.star.frame.Desktop", ctx )
             return desktop
@@ -129,18 +132,13 @@ class ImpressController(PresentationController):
 
     def get_com_desktop(self):
         log.debug(u'get COM Desktop OpenOffice')
-        try:
-            desktop = self.manager.createInstance(u'com.sun.star.frame.Desktop')
-            return desktop
-        except:
-            log.exception(u'Failed to get COM desktop')
-        return None
+        return self.manager.createInstance(u'com.sun.star.frame.Desktop')
 
     def get_com_servicemanager(self):
         log.debug(u'get_com_servicemanager openoffice')
         try:
             return Dispatch(u'com.sun.star.ServiceManager')
-        except:
+        except pywintypes.com_error:
             log.exception(u'Failed to get COM service manager')
             return None
 
@@ -155,6 +153,10 @@ class ImpressController(PresentationController):
             desktop = self.get_uno_desktop()
         else:
             desktop = self.get_com_desktop()
+        #Sometimes we get a failure and desktop is None
+        if not desktop:
+            log.exception(u'Failed to terminate OpenOffice')
+            return
         docs = desktop.getComponents()
         if docs.hasElements():
             log.debug(u'OpenOffice not terminated')
@@ -167,19 +169,17 @@ class ImpressController(PresentationController):
 
     def add_doc(self, name):
         log.debug(u'Add Doc OpenOffice')
-        doc = ImpressDocument(self,  name)
+        doc = ImpressDocument(self, name)
         self.docs.append(doc)
         return doc
 
 class ImpressDocument(PresentationDocument):
-
-    def __init__(self,  controller,  presentation):
+    def __init__(self, controller, presentation):
         log.debug(u'Init Presentation OpenOffice')
-        self.controller = controller
+        PresentationDocument.__init__(self, controller, presentation)
         self.document = None
         self.presentation = None
         self.control = None
-        self.store_filename(presentation)
 
     def load_presentation(self):
         """
@@ -199,7 +199,8 @@ class ImpressDocument(PresentationDocument):
             if desktop is None:
                 self.controller.start_process()
                 desktop = self.controller.get_com_desktop()
-            url = u'file:///' + self.filepath.replace(u'\\', u'/').replace(u':', u'|').replace(u' ', u'%20')
+            url = u'file:///' + self.filepath.replace(u'\\', u'/').replace(
+                u':', u'|').replace(u' ', u'%20')
         else:
             desktop = self.controller.get_uno_desktop()
             url = uno.systemPathToFileUrl(self.filepath)
@@ -217,7 +218,8 @@ class ImpressDocument(PresentationDocument):
             log.exception(u'Failed to load presentation')
             return
         self.presentation = self.document.getPresentation()
-        self.presentation.Display = self.controller.plugin.render_manager.screens.current_display + 1
+        self.presentation.Display = \
+            self.controller.plugin.render_manager.screens.current_display + 1
         self.control = None
         self.create_thumbnails()
 
@@ -324,18 +326,23 @@ class ImpressDocument(PresentationDocument):
 
     def stop_presentation(self):
         log.debug(u'stop presentation OpenOffice')
-        self.control.deactivate()
+        # deactivate should hide the screen according to docs, but doesn't
+        #self.control.deactivate()
+        self.presentation.end()
+        self.control = None
 
     def start_presentation(self):
         log.debug(u'start presentation OpenOffice')
         if self.control is None or not self.control.isRunning():
             self.presentation.start()
-            # start() returns before the getCurrentComponent is ready. Try for 5 seconds
+            # start() returns before the getCurrentComponent is ready.
+            # Try for 5 seconds
             i = 1
             while self.desktop.getCurrentComponent() is None and i < 50:
                 time.sleep(0.1)
                 i = i + 1
-            self.control = self.desktop.getCurrentComponent().Presentation.getController()
+            self.control = \
+                self.desktop.getCurrentComponent().Presentation.getController()
         else:
             self.control.activate()
             self.goto_slide(1)
@@ -350,10 +357,10 @@ class ImpressDocument(PresentationDocument):
         self.control.gotoSlideIndex(slideno-1)
 
     def next_step(self):
-       """
-       Triggers the next effect of slide on the running presentation
-       """
-       self.control.gotoNextEffect()
+        """
+        Triggers the next effect of slide on the running presentation
+        """
+        self.control.gotoNextEffect()
 
     def previous_step(self):
         """
@@ -361,27 +368,12 @@ class ImpressDocument(PresentationDocument):
         """
         self.control.gotoPreviousSlide()
 
-    def get_slide_preview_file(self, slide_no):
-        """
-        Returns an image path containing a preview for the
-        requested slide
-
-        ``slide_no``
-        The slide an image is required for, starting at 1
-        """
-        path = os.path.join(self.thumbnailpath,
-            self.controller.thumbnailprefix + unicode(slide_no) + u'.png')
-        if os.path.isfile(path):
-            return path
-        else:
-            return None
-
     def get_slide_text(self, slide_no):
         """
         Returns the text on the slide
 
         ``slide_no``
-        The slide the text  is required for, starting at 1
+        The slide the text is required for, starting at 1
         """
         doc = self.document
         pages = doc.getDrawPages()
@@ -410,3 +402,4 @@ class ImpressDocument(PresentationDocument):
             if shape.supportsService("com.sun.star.drawing.Text"):
                 text += shape.getString() + '\n'
         return text
+

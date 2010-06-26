@@ -25,9 +25,10 @@
 
 import logging
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus
-from openlp.plugins.media.lib import MediaMediaItem
 from PyQt4.phonon import Phonon
+
+from openlp.core.lib import Plugin, build_icon, PluginStatus, translate
+from openlp.plugins.media.lib import MediaMediaItem
 
 log = logging.getLogger(__name__)
 
@@ -35,7 +36,7 @@ class MediaPlugin(Plugin):
     log.info(u'%s MediaPlugin loaded', __name__)
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Media', u'1.9.1', plugin_helpers)
+        Plugin.__init__(self, u'Media', u'1.9.2', plugin_helpers)
         self.weight = -6
         self.icon = build_icon(u':/media/media_video.png')
         # passed with drag and drop messages
@@ -46,18 +47,23 @@ class MediaPlugin(Plugin):
         for mimetype in Phonon.BackendCapabilities.availableMimeTypes():
             mimetype = unicode(mimetype)
             type = mimetype.split(u'audio/x-')
-            self.audio_list, mimetype = self._add_to_list(self.audio_list, type, mimetype)
+            self.audio_list, mimetype = self._add_to_list(self.audio_list,
+                type, mimetype)
             type = mimetype.split(u'audio/')
-            self.audio_list, mimetype = self._add_to_list(self.audio_list, type, mimetype)
+            self.audio_list, mimetype = self._add_to_list(self.audio_list,
+                type, mimetype)
             type = mimetype.split(u'video/x-')
-            self.video_list, mimetype = self._add_to_list(self.video_list, type, mimetype)
+            self.video_list, mimetype = self._add_to_list(self.video_list,
+                type, mimetype)
             type = mimetype.split(u'video/')
-            self.video_list, mimetype = self._add_to_list(self.video_list, type, mimetype)
+            self.video_list, mimetype = self._add_to_list(self.video_list,
+                type, mimetype)
 
     def _add_to_list(self, list, value, type):
         if len(value) == 2:
             if list.find(value[1]) == -1:
                 list += u'*.%s ' % value[1]
+                self.service_manager.supportedSuffixes(value[1])
             type = u''
         return list, type
 
@@ -75,6 +81,7 @@ class MediaPlugin(Plugin):
         return MediaMediaItem(self, self.icon, self.name)
 
     def about(self):
-        about_text = self.trUtf8('<b>Media Plugin</b><br>This plugin '
+        about_text = translate('MediaPlugin',
+            '<b>Media Plugin</b><br>This plugin '
             'allows the playing of audio and video media')
         return about_text

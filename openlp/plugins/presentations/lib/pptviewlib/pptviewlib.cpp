@@ -150,7 +150,7 @@ DllExport int OpenPPT(char *filename, HWND hParentWnd, RECT rect, char *previewp
 		pptviewobj[id].rect.bottom = rect.bottom;
 		pptviewobj[id].rect.right = rect.right;
 	}
-	strcat_s(cmdline, MAX_PATH * 2, "/S \"");
+	strcat_s(cmdline, MAX_PATH * 2, "/F /S \"");
 	strcat_s(cmdline, MAX_PATH * 2, filename);
 	strcat_s(cmdline, MAX_PATH * 2, "\"");
 	memset(&si, 0, sizeof(si));
@@ -211,7 +211,7 @@ DllExport int OpenPPT(char *filename, HWND hParentWnd, RECT rect, char *previewp
 		}
 		DEBUG("OpenPPT: Steps %d, first slide steps %d\n",pptviewobj[id].steps,pptviewobj[id].firstSlideSteps);
 		SavePPTInfo(id);
-	    if(pptviewobj[id].state==PPT_CLOSING){
+	    if(pptviewobj[id].state==PPT_CLOSING||pptviewobj[id].slideCount<=0){
 	        ClosePPT(id);
 	        id=-1;
 	    }

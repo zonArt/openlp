@@ -22,11 +22,14 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+Provide the generic plugin functionality for OpenLP plugins.
+"""
 import logging
+
 from PyQt4 import QtCore
 
-from openlp.core.lib import PluginConfig, Receiver
+from openlp.core.lib import Receiver
 
 log = logging.getLogger(__name__)
 
@@ -50,12 +53,11 @@ class Plugin(QtCore.QObject):
     ``version``
         The version number of this iteration of the plugin.
 
+    ``settingsSection``
+        The namespace to store settings for the plugin.
+
     ``icon``
         An instance of QIcon, which holds an icon for this plugin.
-
-    ``config``
-        An instance of PluginConfig, which allows plugins to read and write to
-        openlp.org's configuration. This is pre-instantiated.
 
     ``log``
         A log object used to log debugging messages. This is pre-instantiated.
@@ -78,7 +80,8 @@ class Plugin(QtCore.QObject):
         Add an item to the Export menu.
 
     ``get_settings_tab()``
-        Returns an instance of SettingsTabItem to be used in the Settings dialog.
+        Returns an instance of SettingsTabItem to be used in the Settings
+        dialog.
 
     ``add_to_menu(menubar)``
         A method to add a menu item to anywhere in the menu, given the menu bar.
@@ -115,8 +118,8 @@ class Plugin(QtCore.QObject):
         self.name = name
         if version:
             self.version = version
+        self.settingsSection = self.name.lower()
         self.icon = None
-        self.config = PluginConfig(self.name)
         self.weight = 0
         self.status = PluginStatus.Inactive
         # Set up logging
@@ -125,7 +128,7 @@ class Plugin(QtCore.QObject):
         self.live_controller = plugin_helpers[u'live']
         self.render_manager = plugin_helpers[u'render']
         self.service_manager = plugin_helpers[u'service']
-        self.settings = plugin_helpers[u'settings']
+        self.settings_form = plugin_helpers[u'settings form']
         self.mediadock = plugin_helpers[u'toolbox']
         self.maindisplay = plugin_helpers[u'maindisplay']
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -145,15 +148,17 @@ class Plugin(QtCore.QObject):
         """
         Sets the status of the plugin
         """
-        self.status = int(self.config.get_config(u'status',
-            PluginStatus.Inactive))
+        self.status = QtCore.QSettings().value(
+            self.settingsSection + u'/status',
+            QtCore.QVariant(PluginStatus.Inactive)).toInt()[0]
 
     def toggle_status(self, new_status):
         """
         Changes the status of the plugin and remembers it
         """
         self.status = new_status
-        self.config.set_config(u'status', self.status)
+        QtCore.QSettings().setValue(
+            self.settingsSection + u'/status', QtCore.QVariant(self.status))
 
     def is_active(self):
         """
@@ -212,19 +217,24 @@ class Plugin(QtCore.QObject):
         """
         pass
 
-    def process_add_service_event(self):
+    def process_add_service_event(self, replace=False):
         """
         Generic Drag and drop handler triggered from service_manager.
         """
-        log.debug(u'process_add_service_event event called for plugin %s' % self.name)
-        self.media_item.onAddClick()
+        log.debug(u'process_add_service_event event called for plugin %s' %
+            self.name)
+        if replace:
+            self.media_item.onAddEditClick()
+        else:
+            self.media_item.onAddClick()
 
     def about(self):
         """
         Show a dialog when the user clicks on the 'About' button in the plugin
         manager.
         """
-        pass
+        raise NotImplementedError(
+            u'Plugin.about needs to be defined by the plugin')
 
     def initialise(self):
         """
@@ -244,7 +254,7 @@ class Plugin(QtCore.QObject):
         Called by the plugin to remove toolbar
         """
         self.mediadock.remove_dock(self.name)
-        self.settings.removeTab(self.name)
+        self.settings_form.removeTab(self.name)
 
     def insert_toolbox_item(self):
         """
@@ -253,7 +263,7 @@ class Plugin(QtCore.QObject):
         if self.media_item:
             self.mediadock.insert_dock(self.media_item, self.icon, self.weight)
         if self.settings_tab:
-            self.settings.insertTab(self.settings_tab, self.weight)
+            self.settings_form.insertTab(self.settings_tab, self.weight)
 
     def can_delete_theme(self, theme):
         """

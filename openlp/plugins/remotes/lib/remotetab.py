@@ -23,20 +23,20 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtGui
+from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab
+from openlp.core.lib import SettingsTab, translate
 
 class RemoteTab(SettingsTab):
     """
     RemoteTab is the Remotes settings tab in the settings dialog.
     """
-    def __init__(self, title, section=None):
-        SettingsTab.__init__(self, title, section)
+    def __init__(self, title):
+        SettingsTab.__init__(self, title)
 
     def setupUi(self):
         self.setObjectName(u'RemoteTab')
-        self.tabTitleVisible = self.trUtf8('Remotes')
+        self.tabTitleVisible = translate('RemotePlugin.RemoteTab', 'Remotes')
         self.RemoteLayout = QtGui.QFormLayout(self)
         self.RemoteLayout.setObjectName(u'RemoteLayout')
         self.RemoteModeGroupBox = QtGui.QGroupBox(self)
@@ -53,12 +53,14 @@ class RemoteTab(SettingsTab):
             0, QtGui.QFormLayout.LabelRole, self.RemoteModeGroupBox)
 
     def retranslateUi(self):
-        self.RemoteModeGroupBox.setTitle(self.trUtf8('Remotes Receiver Port'))
+        self.RemoteModeGroupBox.setTitle(
+            translate('RemotePlugin.RemoteTab', 'Remotes Receiver Port'))
 
     def load(self):
         self.RemotePortSpinBox.setValue(
-            int(self.config.get_config(u'remote port', 4316)))
+            QtCore.QSettings().value(self.settingsSection + u'/remote port',
+                QtCore.QVariant(4316)).toInt()[0])
 
     def save(self):
-        self.config.set_config(
-            u'remote port', unicode(self.RemotePortSpinBox.value()))
+        QtCore.QSettings().setValue(self.settingsSection + u'/remote port',
+            QtCore.QVariant(self.RemotePortSpinBox.value()))

@@ -22,7 +22,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+Provide common toolbar handling for OpenLP
+"""
 import logging
 
 from PyQt4 import QtCore, QtGui
@@ -72,9 +74,6 @@ class OpenLPToolbar(QtGui.QToolBar):
         ToolbarButton = None
         if icon:
             ButtonIcon = build_icon(icon)
-        else:
-            ButtonIcon = None
-        if ButtonIcon:
             if slot and not checkable:
                 ToolbarButton = self.addAction(ButtonIcon, title, slot)
             else:
@@ -117,10 +116,11 @@ class OpenLPToolbar(QtGui.QToolBar):
             The title of the icon to search for.
         """
         title = QtCore.QString(title)
-        if self.icons[title]:
-            return self.icons[title]
-        else:
-            log.error(u'getIconFromTitle - no icon for %s' % title)
+        try:
+            if self.icons[title]:
+                return self.icons[title]
+        except KeyError:
+            log.exception(u'getIconFromTitle - no icon for %s' % title)
             return QtGui.QIcon()
 
     def makeWidgetsInvisible(self, widgets):

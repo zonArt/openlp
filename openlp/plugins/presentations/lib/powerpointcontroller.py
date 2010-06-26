@@ -30,8 +30,9 @@ if os.name == u'nt':
     from win32com.client import Dispatch
     import _winreg
     import win32ui
+    import pywintypes
 
-from presentationcontroller import PresentationController,  PresentationDocument
+from presentationcontroller import PresentationController, PresentationDocument
 
 log = logging.getLogger(__name__)
 
@@ -62,9 +63,10 @@ class PowerpointController(PresentationController):
         log.debug(u'check_available')
         if os.name == u'nt':
             try:
-                _winreg.OpenKey(_winreg.HKEY_CLASSES_ROOT, u'PowerPoint.Application').Close()
+                _winreg.OpenKey(_winreg.HKEY_CLASSES_ROOT,
+                    u'PowerPoint.Application').Close()
                 return True
-            except:
+            except WindowsError:
                 pass
         return False
 
@@ -90,23 +92,21 @@ class PowerpointController(PresentationController):
                 return
             try:
                 self.process.Quit()
-            except:
+            except pywintypes.com_error:
                 pass
             self.process = None
 
         def add_doc(self, name):
             log.debug(u'Add Doc PowerPoint')
-            doc = PowerpointDocument(self,  name)
+            doc = PowerpointDocument(self, name)
             self.docs.append(doc)
             return doc
 
 class PowerpointDocument(PresentationDocument):
-
-    def __init__(self,  controller,  presentation):
+    def __init__(self, controller, presentation):
         log.debug(u'Init Presentation Powerpoint')
+        PresentationDocument.__init__(self, controller, presentation)
         self.presentation = None
-        self.controller = controller
-        self.store_filename(presentation)
 
     def load_presentation(self):
         """
@@ -122,10 +122,8 @@ class PowerpointDocument(PresentationDocument):
         log.debug(u'LoadPresentation')
         if not self.controller.process.Visible:
             self.controller.start_process()
-        #try:
-        self.controller.process.Presentations.Open(self.filepath, False, False, True)
-        #except:
-        #    return
+        self.controller.process.Presentations.Open(self.filepath, False, False,
+            True)
         self.presentation = self.controller.process.Presentations(
             self.controller.process.Presentations.Count)
         self.create_thumbnails()
@@ -141,8 +139,8 @@ class PowerpointDocument(PresentationDocument):
         """
         if self.check_thumbnails():
             return
-        self.presentation.Export(os.path.join(self.thumbnailpath, '')
-                                 , 'png', 640, 480)
+        self.presentation.Export(os.path.join(self.thumbnailpath, ''), 'png',
+            320, 240)
 
     def close_presentation(self):
         """
@@ -154,7 +152,7 @@ class PowerpointDocument(PresentationDocument):
         if self.presentation:
             try:
                 self.presentation.Close()
-            except:
+            except pywintypes.com_error:
                 pass
         self.presentation = None
         self.controller.remove_doc(self)
@@ -170,7 +168,7 @@ class PowerpointDocument(PresentationDocument):
                 return False
             if self.controller.process.Presentations.Count == 0:
                 return False
-        except:
+        except (AttributeError, pywintypes.com_error):
             return False
         return True
 
@@ -186,7 +184,7 @@ class PowerpointDocument(PresentationDocument):
                 return False
             if self.presentation.SlideShowWindow.View is None:
                 return False
-        except:
+        except (AttributeError, pywintypes.com_error):
             return False
         return True
 
@@ -208,7 +206,10 @@ class PowerpointDocument(PresentationDocument):
         """
         Returns true if screen is blank
         """
-        return self.presentation.SlideShowWindow.View.State == 3
+        if self.is_active():
+            return self.presentation.SlideShowWindow.View.State == 3
+        else:
+            return False
 
     def stop_presentation(self):
         """
@@ -224,10 +225,11 @@ class PowerpointDocument(PresentationDocument):
             #SlideShowWindow measures its size/position by points, not pixels
             try:
                 dpi = win32ui.GetActiveWindow().GetDC().GetDeviceCaps(88)
-            except:
+            except win32ui.error:
                 try:
-                    dpi = win32ui.GetForegroundWindow().GetDC().GetDeviceCaps(88)
-                except:
+                    dpi = \
+                        win32ui.GetForegroundWindow().GetDC().GetDeviceCaps(88)
+                except win32ui.error:
                     dpi = 96
             self.presentation.SlideShowSettings.Run()
             self.presentation.SlideShowWindow.View.GotoSlide(1)
@@ -268,26 +270,12 @@ class PowerpointDocument(PresentationDocument):
         """
         self.presentation.SlideShowWindow.View.Previous()
 
-    def get_slide_preview_file(self, slide_no):
-        """
-        Returns an image path containing a preview for the requested slide
-
-        ``slide_no``
-        The slide an image is required for, starting at 1
-        """
-        path = os.path.join(self.thumbnailpath,
-            self.controller.thumbnailprefix + unicode(slide_no) + u'.png')
-        if os.path.isfile(path):
-            return path
-        else:
-            return None
-
     def get_slide_text(self, slide_no):
         """
         Returns the text on the slide
 
         ``slide_no``
-        The slide the text  is required for, starting at 1
+        The slide the text is required for, starting at 1
         """
         text = ''
         shapes = self.presentation.Slides(slide_no).Shapes
