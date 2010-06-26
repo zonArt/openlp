@@ -513,21 +513,21 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'processManagerItem')
         self.onStopLoop()
-        #If old item was a command tell it to stop        
+        #If old item was a command tell it to stop
         if self.serviceItem:
             if self.serviceItem.is_command():
-                Receiver.send_message(u'%s_stop' % 
+                Receiver.send_message(u'%s_stop' %
                     self.serviceItem.name.lower(), [serviceItem, self.isLive])
             if self.serviceItem.is_media():
                 self.onMediaStop()
         if serviceItem.is_media():
             self.onMediaStart(serviceItem)
-        if self.isLive:
-            blanked = self.blankButton.isChecked()
-        else:
-            blanked = False
-        Receiver.send_message(u'%s_start' % serviceItem.name.lower(),
-            [serviceItem, self.isLive, blanked, slideno])
+#        if self.isLive:
+#            blanked = self.blankButton.isChecked()
+#        else:
+#            blanked = False
+#        Receiver.send_message(u'%s_start' % serviceItem.name.lower(),
+#            [serviceItem, self.isLive, blanked, slideno])
         self.slideList = {}
         width = self.parent.ControlSplitter.sizes()[self.split]
         #Set pointing cursor when we have somthing to point at
