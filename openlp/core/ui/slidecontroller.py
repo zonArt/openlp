@@ -513,9 +513,13 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'processManagerItem')
         self.onStopLoop()
-        #If old item was a command tell it to stop
-        if self.serviceItem and self.serviceItem.is_command():
-            self.onMediaStop()
+        #If old item was a command tell it to stop        
+        if self.serviceItem:
+            if self.serviceItem.is_command():
+                Receiver.send_message(u'%s_stop' % 
+                    self.serviceItem.name.lower(), [serviceItem, self.isLive])
+            if self.serviceItem.is_media():
+                self.onMediaStop()
         if serviceItem.is_media():
             self.onMediaStart(serviceItem)
         if self.isLive:
@@ -830,7 +834,7 @@ class SlideController(QtGui.QWidget):
             return
         Receiver.send_message(u'%s_next' % self.serviceItem.name.lower(),
             [self.serviceItem, self.isLive])
-        if self.serviceItem.is_command():
+        if self.serviceItem.is_command() and self.isLive:
             self.updatePreview()
         else:
             row = self.PreviewListWidget.currentRow() + 1
@@ -854,7 +858,7 @@ class SlideController(QtGui.QWidget):
             return
         Receiver.send_message(u'%s_previous' % self.serviceItem.name.lower(),
             [self.serviceItem, self.isLive])
-        if self.serviceItem.is_command():
+        if self.serviceItem.is_command() and self.isLive:
             self.updatePreview()
         else:
             row = self.PreviewListWidget.currentRow() - 1
