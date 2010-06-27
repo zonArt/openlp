@@ -51,8 +51,10 @@ class DisplayManager(QtGui.QWidget):
             QtCore.SIGNAL(u'maindisplay_hide'), self.hideDisplay)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
-#        QtCore.QObject.connect(Receiver.get_receiver(),
-#            QtCore.SIGNAL(u'videodisplay_start'), self.hideDisplayForVideo)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'videodisplay_start'), self.onStartVideo)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'videodisplay_stop'), self.onStopVideo)
 
     def setup(self):
         self.videoDisplay.setup()
@@ -77,6 +79,22 @@ class DisplayManager(QtGui.QWidget):
         Handles the add Alert Message to the Displays
         """
         self.mainDisplay.addAlert(alertMessage, location)
+
+    def onStartVideo(self, item):
+        """
+        Handles the Starting of a Video and Display Management
+        """
+        self.videoDisplay.setVisible(True)
+        self.mainDisplay.setVisible(False)
+        self.videoDisplay.onMediaQueue(item)
+
+    def onStopVideo(self):
+        """
+        Handles the Stopping of a Video and Display Management
+        """
+        self.mainDisplay.setVisible(True)
+        self.videoDisplay.setVisible(False)
+        self.videoDisplay.onMediaStop()
 
     def close(self):
         """
@@ -389,13 +407,9 @@ class VideoDisplay(Phonon.VideoWidget):
             pass
         self.setWindowFlags(flags)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'videodisplay_start'), self.onMediaQueue)
-        QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'videodisplay_play'), self.onMediaPlay)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'videodisplay_pause'), self.onMediaPause)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'videodisplay_stop'), self.onMediaStop)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'videodisplay_background'), self.onMediaBackground)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -462,8 +476,8 @@ class VideoDisplay(Phonon.VideoWidget):
         Set up a video to play from the serviceitem.
         """
         log.debug(u'VideoDisplay Queue new media message %s' % message)
-        file = os.path.join(message[0].get_frame_path(),
-            message[0].get_frame_title())
+        file = os.path.join(message.get_frame_path(),
+            message.get_frame_title())
         self.mediaObject.setCurrentSource(Phonon.MediaSource(file))
         self._play()
 
@@ -550,21 +564,6 @@ class AudioPlayer(QtCore.QObject):
         self.mediaObject = Phonon.MediaObject()
         self.audioObject = Phonon.AudioOutput(Phonon.VideoCategory)
         Phonon.createPath(self.mediaObject, self.audioObject)
-
-#        QtCore.QObject.connect(Receiver.get_receiver(),
-#            QtCore.SIGNAL(u'videodisplay_start'), self.onMediaQueue)
-#        QtCore.QObject.connect(Receiver.get_receiver(),
-#            QtCore.SIGNAL(u'videodisplay_play'), self.onMediaPlay)
-#        QtCore.QObject.connect(Receiver.get_receiver(),
-#            QtCore.SIGNAL(u'videodisplay_pause'), self.onMediaPause)
-#        QtCore.QObject.connect(Receiver.get_receiver(),
-#            QtCore.SIGNAL(u'videodisplay_stop'), self.onMediaStop)
-#        QtCore.QObject.connect(Receiver.get_receiver(),
-#            QtCore.SIGNAL(u'videodisplay_background'), self.onMediaBackground)
-#        QtCore.QObject.connect(Receiver.get_receiver(),
-#            QtCore.SIGNAL(u'config_updated'), self.setup)
-#        QtCore.QObject.connect(self.mediaObject,
-#            QtCore.SIGNAL(u'finished()'), self.onMediaBackground)
 
     def setup(self):
         """

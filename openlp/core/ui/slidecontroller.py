@@ -923,8 +923,7 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'SlideController onMediaStart')
         if self.isLive:
-            Receiver.send_message(u'videodisplay_start',
-                [item, self.blankButton.isChecked()])
+            Receiver.send_message(u'videodisplay_start', item)
         else:
             self.mediaObject.stop()
             self.mediaObject.clearQueue()
