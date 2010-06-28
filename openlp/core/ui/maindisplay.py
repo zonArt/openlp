@@ -307,6 +307,7 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'showDisplay')
         self.display_blank.setPixmap(self.transparent)
+        #Trigger actions when display is active again
         Receiver.send_message(u'maindisplay_active')
 
     def addImageWithText(self, frame):
@@ -394,28 +395,29 @@ class VideoDisplay(Phonon.VideoWidget):
         self.screens = screens
         self.hidden = False
         self.message = None
+        self.mediaActive = False
         self.mediaObject = Phonon.MediaObject()
         self.setAspectRatio(aspect)
         self.audioObject = Phonon.AudioOutput(Phonon.VideoCategory)
         Phonon.createPath(self.mediaObject, self)
         Phonon.createPath(self.mediaObject, self.audioObject)
         flags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Dialog
-#        # WindowsStaysOnBottomHint is not available in QT4.4
-        try:
-            flags = flags | QtCore.Qt.WindowStaysOnBottomHint
-        except AttributeError:
-            pass
+##        # WindowsStaysOnBottomHint is not available in QT4.4
+#        try:
+#            flags = flags | QtCore.Qt.WindowStaysOnBottomHint
+#        except AttributeError:
+#            pass
         self.setWindowFlags(flags)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'videodisplay_play'), self.onMediaPlay)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'videodisplay_pause'), self.onMediaPause)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'videodisplay_background'), self.onMediaBackground)
+#        QtCore.QObject.connect(Receiver.get_receiver(),
+#            QtCore.SIGNAL(u'videodisplay_background'), self.onMediaBackground)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.setup)
         QtCore.QObject.connect(self.mediaObject,
-            QtCore.SIGNAL(u'finished()'), self.onMediaBackground)
+            QtCore.SIGNAL(u'finished()'), self.onMediaStop)
         self.setVisible(False)
 
     def keyPressEvent(self, event):
@@ -454,22 +456,22 @@ class VideoDisplay(Phonon.VideoWidget):
         for pth in self.outputPaths():
           disconnected = pth.disconnect()
 
-    def onMediaBackground(self, message=None):
-        """
-        Play a video triggered from the video plugin with the
-        file name passed in on the event.
-        Also triggered from the Finish event so the video will loop
-        if it is triggered from the plugin
-        """
-        log.debug(u'VideoDisplay Queue new media message %s' % message)
-        #If not file take the stored one
-        if not message:
-            message = self.message
-        # still no file name then stop as it was a normal video stopping
-        if message:
-            self.mediaObject.setCurrentSource(Phonon.MediaSource(message))
-            self.message = message
-            self._play()
+#    def onMediaBackground(self, message=None):
+#        """
+#        Play a video triggered from the video plugin with the
+#        file name passed in on the event.
+#        Also triggered from the Finish event so the video will loop
+#        if it is triggered from the plugin
+#        """
+#        log.debug(u'VideoDisplay Queue new media message %s' % message)
+#        #If not file take the stored one
+#        if not message:
+#            message = self.message
+#        # still no file name then stop as it was a normal video stopping
+#        if message:
+#            self.mediaObject.setCurrentSource(Phonon.MediaSource(message))
+#            self.message = message
+#            self._play()
 
     def onMediaQueue(self, message):
         """
@@ -479,6 +481,7 @@ class VideoDisplay(Phonon.VideoWidget):
         file = os.path.join(message.get_frame_path(),
             message.get_frame_title())
         self.mediaObject.setCurrentSource(Phonon.MediaSource(file))
+        self.mediaActive = True
         self._play()
 
     def onMediaPlay(self):
@@ -497,7 +500,6 @@ class VideoDisplay(Phonon.VideoWidget):
         log.debug(u'VideoDisplay _play called')
         self.mediaObject.play()
         self.setVisible(True)
-        #self.showFullScreen()
 
     def onMediaPause(self):
         """
@@ -513,6 +515,7 @@ class VideoDisplay(Phonon.VideoWidget):
         """
         log.debug(u'VideoDisplay Media stopped by user')
         self.message = None
+        self.mediaActive = False
         self.mediaObject.stop()
         self.onMediaFinish()
 
@@ -538,7 +541,8 @@ class VideoDisplay(Phonon.VideoWidget):
         """
         if self.hidden:
             self.hidden = False
-            self._play()
+            if self.mediaActive:
+                self._play()
 
 class AudioPlayer(QtCore.QObject):
     """
