@@ -309,7 +309,7 @@ class SongImport(object):
                 author.display_name = authortext
                 author.last_name = authortext.split(u' ')[-1]
                 author.first_name = u' '.join(authortext.split(u' ')[:-1])
-                self.manager.insert_object(author)
+                self.manager.save_object(author)
             song.authors.append(author)
         if self.song_book_name:
             filter_string = u'name=%s' % self.song_book_name
@@ -318,7 +318,7 @@ class SongImport(object):
                 song_book = Book()
                 song_book.name = self.song_book_name
                 song_book.publisher = self.song_book_pub
-                self.manager.insert_object(song_book)
+                self.manager.save_object(song_book)
             song.song_book_id = song_book.id
         for topictext in self.topics:
             filter_string = u'name=%s' % topictext
@@ -326,9 +326,9 @@ class SongImport(object):
             if topic is None:
                 topic = Topic()
                 topic.name = topictext
-                self.manager.insert_object(topic)
+                self.manager.save_object(topic)
             song.topics.append(topictext)
-        self.manager.insert_object(song)
+        self.manager.save_object(song)
 
     def print_song(self):
         """

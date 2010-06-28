@@ -135,7 +135,7 @@ class Manager(object):
         settings.endGroup()
         self.session = init_schema(self.db_url)
 
-    def insert_object(self, object_instance):
+    def save_object(self, object_instance):
         """
         Save an object to the database
 

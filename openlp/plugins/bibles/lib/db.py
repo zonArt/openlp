@@ -200,9 +200,9 @@ class BibleDB(QtCore.QObject, Manager):
         """
         self.wizard = wizard
         self.create_meta(u'dbversion', u'2')
-        self.insert_object(Testament.populate(name=u'Old Testament'))
-        self.insert_object(Testament.populate(name=u'New Testament'))
-        self.insert_object(Testament.populate(name=u'Apocrypha'))
+        self.save_object(Testament.populate(name=u'Old Testament'))
+        self.save_object(Testament.populate(name=u'New Testament'))
+        self.save_object(Testament.populate(name=u'Apocrypha'))
         return self.name
 
     def create_book(self, name, abbrev, testament=1):
@@ -221,7 +221,7 @@ class BibleDB(QtCore.QObject, Manager):
         log.debug(u'create_book %s,%s', name, abbrev)
         book = Book.populate(name=name, abbreviation=abbrev,
             testament_id=testament)
-        self.insert_object(book)
+        self.save_object(book)
         return book
 
     def create_chapter(self, book_id, chapter, textlist):
@@ -289,7 +289,7 @@ class BibleDB(QtCore.QObject, Manager):
             The value for this instance
         """
         log.debug(u'save_meta %s/%s', key, value)
-        self.insert_object(BibleMeta.populate(key=key, value=value))
+        self.save_object(BibleMeta.populate(key=key, value=value))
 
     def get_book(self, book):
         """

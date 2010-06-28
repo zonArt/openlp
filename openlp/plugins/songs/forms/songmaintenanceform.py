@@ -131,7 +131,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 first_name=unicode(self.authorform.FirstNameEdit.text()),
                 last_name=unicode(self.authorform.LastNameEdit.text()),
                 display_name=unicode(self.authorform.DisplayEdit.text()))
-            if self.songmanager.insert_object(author):
+            if self.songmanager.save_object(author):
                 self.resetAuthors()
             else:
                 QtGui.QMessageBox.critical(
@@ -143,7 +143,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
     def onTopicAddButtonClick(self):
         if self.topicform.exec_():
             topic = Topic.populate(name=unicode(self.topicform.NameEdit.text()))
-            if self.songmanager.insert_object(topic):
+            if self.songmanager.save_object(topic):
                 self.resetTopics()
             else:
                 QtGui.QMessageBox.critical(
@@ -157,7 +157,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             book = Book.populate(
                 name=unicode(self.bookform.NameEdit.text()),
                 publisher=unicode(self.bookform.PublisherEdit.text()))
-            if self.songmanager.insert_object(book):
+            if self.songmanager.save_object(book):
                 self.resetBooks()
             else:
                 QtGui.QMessageBox.critical(
@@ -187,7 +187,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 author.last_name = unicode(self.authorform.LastNameEdit.text())
                 author.display_name = unicode(
                     self.authorform.DisplayEdit.text())
-                if self.songmanager.insert_object(author):
+                if self.songmanager.save_object(author):
                     self.resetAuthors()
                 else:
                     QtGui.QMessageBox.critical(
@@ -203,7 +203,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             self.topicform.NameEdit.setText(topic.name)
             if self.topicform.exec_(False):
                 topic.name = unicode(self.topicform.NameEdit.text())
-                if self.songmanager.insert_object(topic):
+                if self.songmanager.save_object(topic):
                     self.resetTopics()
                 else:
                     QtGui.QMessageBox.critical(
@@ -221,7 +221,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             if self.bookform.exec_(False):
                 book.name = unicode(self.bookform.NameEdit.text())
                 book.publisher = unicode(self.bookform.PublisherEdit.text())
-                if self.songmanager.insert_object(book):
+                if self.songmanager.save_object(book):
                     self.resetBooks()
                 else:
                     QtGui.QMessageBox.critical(

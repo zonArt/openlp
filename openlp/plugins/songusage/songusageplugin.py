@@ -148,7 +148,7 @@ class SongUsagePlugin(Plugin):
             song_usage_item.authors = u''
             for author in audit[1]:
                 song_usage_item.authors += author + u' '
-            self.songusagemanager.insert_object(song_usage_item)
+            self.songusagemanager.save_object(song_usage_item)
 
     def onSongUsageDelete(self):
         self.SongUsagedeleteform.exec_()

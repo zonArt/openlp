@@ -98,7 +98,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         else:
             alert = AlertItem()
             alert.text = unicode(self.AlertTextEdit.text())
-            self.manager.insert_object(alert)
+            self.manager.save_object(alert)
         self.AlertTextEdit.setText(u'')
         self.loadList()
 
@@ -109,7 +109,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         if self.item_id:
             alert = self.manager.get_object(AlertItem, self.item_id)
             alert.text = unicode(self.AlertTextEdit.text())
-            self.manager.insert_object(alert)
+            self.manager.save_object(alert)
             self.item_id = None
             self.loadList()
         else:

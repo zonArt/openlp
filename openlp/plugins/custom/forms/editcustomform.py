@@ -166,7 +166,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             u'utf-8')
         self.customSlide.theme_name = unicode(self.ThemeComboBox.currentText(),
             u'utf-8')
-        return self.custommanager.insert_object(self.customSlide)
+        return self.custommanager.save_object(self.customSlide)
 
     def onUpButtonPressed(self):
         selectedRow = self.VerseListView.currentRow()
