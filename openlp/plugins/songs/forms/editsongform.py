@@ -290,7 +290,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 QtGui.QMessageBox.Yes) == QtGui.QMessageBox.Yes:
                 author = Author.populate(first_name=text.rsplit(u' ', 1)[0],
                     last_name=text.rsplit(u' ', 1)[1], display_name=text)
-                self.songmanager.save_author(author)
+                self.songmanager.insert_object(author)
                 self.song.authors.append(author)
                 author_item = QtGui.QListWidgetItem(
                     unicode(author.display_name))
@@ -342,7 +342,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
                 QtGui.QMessageBox.Yes) == QtGui.QMessageBox.Yes:
                 topic = Topic.populate(name=text)
-                self.songmanager.save_topic(topic)
+                self.songmanager.insert_object(topic)
                 self.song.topics.append(topic)
                 topic_item = QtGui.QListWidgetItem(unicode(topic.name))
                 topic_item.setData(QtCore.Qt.UserRole,
@@ -392,7 +392,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
                 QtGui.QMessageBox.Yes) == QtGui.QMessageBox.Yes:
                 book = Book.populate(name=text)
-                self.songmanager.save_book(book)
+                self.songmanager.insert_object(book)
                 self.song.book = book
                 self.loadBooks()
             else:
