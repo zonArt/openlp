@@ -63,7 +63,7 @@ class VersionThread(QtCore.QThread):
         self.parent = parent
         self.app_version = app_version
         self.version_splitter = re.compile(
-            r'([0-9]+).([0-9]+).([0-9]+)(?:-bzr([0-9]+))')
+            r'([0-9]+).([0-9]+).([0-9]+)(?:-bzr([0-9]+))?')
 
     def run(self):
         """
@@ -79,14 +79,14 @@ class VersionThread(QtCore.QThread):
             remote_version[u'major'] = int(match.group(1))
             remote_version[u'minor'] = int(match.group(2))
             remote_version[u'release'] = int(match.group(3))
-            if len(match.groups()) > 3:
+            if len(match.groups()) > 3 and match.group(4):
                 remote_version[u'revision'] = int(match.group(4))
         match = self.version_splitter.match(self.app_version[u'full'])
         if match:
             local_version[u'major'] = int(match.group(1))
             local_version[u'minor'] = int(match.group(2))
             local_version[u'release'] = int(match.group(3))
-            if len(match.groups()) > 3:
+            if len(match.groups()) > 3 and match.group(4):
                 local_version[u'revision'] = int(match.group(4))
         if remote_version[u'major'] > local_version[u'major'] or \
             remote_version[u'minor'] > local_version[u'minor'] or \
