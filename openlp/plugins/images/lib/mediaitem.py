@@ -120,11 +120,11 @@ class ImageMediaItem(MediaManagerItem):
         if check_item_selected(self.ListView, translate('ImagePlugin.MediaItem',
             'You must select an item to delete.')):
             items = self.ListView.selectedIndexes()
-            row_count = []
+            row_list = []
             for item in items:
-                row_count.append(item.row())
-            row_count.sort(reverse=True)
-            for item in row_count:
+                row_list.append(item.row())
+            row_list.sort(reverse=True)
+            for item in row_list:
                 text = self.ListView.item(item)
                 if text:
                     try:
