@@ -396,7 +396,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 self.loadBooks()
             else:
                 return
-        elif item > 1:
+        elif item >= 1:
             item = int(self.SongbookCombo.currentIndex())
             self.song.song_book_id = \
                 (self.SongbookCombo.itemData(item)).toInt()[0]
