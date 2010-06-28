@@ -30,6 +30,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Plugin, build_icon, PluginStatus, Receiver, \
     translate
 from openlp.plugins.songs.lib import SongManager, SongMediaItem, SongsTab
+from openlp.plugins.songs.lib.db import Song
 
 try:
     from openlp.plugins.songs.lib import SofImport, OooImport
@@ -38,7 +39,6 @@ except ImportError:
     OOo_available = False
 
 log = logging.getLogger(__name__)
-
 
 class SongsPlugin(Plugin):
     """
@@ -69,7 +69,8 @@ class SongsPlugin(Plugin):
         #    self.songmanager = SongManager()
         Plugin.initialise(self)
         self.insert_toolbox_item()
-        self.media_item.displayResultsSong(self.manager.get_songs())
+        self.media_item.displayResultsSong(
+            self.manager.get_all_objects(Song, Song.title))
 
     def finalise(self):
         log.info(u'Plugin Finalise')
@@ -198,6 +199,7 @@ class SongsPlugin(Plugin):
         return about_text
 
     def can_delete_theme(self, theme):
-        if len(self.manager.get_songs_for_theme(theme)) == 0:
+        filter_string = u'theme_name=%s' % theme
+        if not self.manager.get_all_objects_filtered(Song, filter_string):
             return True
         return False

@@ -97,11 +97,11 @@ class CSVBible(BibleDB):
                     book_ptr = book.name
                     self.wizard.incrementProgressBar(
                         u'Importing %s %s' % (book.name, line[1]))
-                    self.commit()
+                    self.session.commit()
                 self.create_verse(book.id, line[1], line[2],
                                   unicode(line[3], details['encoding']))
                 Receiver.send_message(u'openlp_process_events')
-            self.commit()
+            self.session.commit()
         except IOError:
             log.exception(u'Loading verses from file failed')
             success = False
@@ -113,5 +113,3 @@ class CSVBible(BibleDB):
             return False
         else:
             return success
-
-

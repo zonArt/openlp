@@ -26,8 +26,11 @@
 import logging
 
 from forms import EditCustomForm
+
 from openlp.core.lib import Plugin, build_icon, PluginStatus, translate
-from openlp.plugins.custom.lib import CustomManager, CustomMediaItem, CustomTab
+from openlp.core.lib.db import Manager
+from openlp.plugins.custom.lib import CustomMediaItem, CustomTab
+from openlp.plugins.custom.lib.db import CustomSlide, init_schema
 
 log = logging.getLogger(__name__)
 
@@ -45,7 +48,7 @@ class CustomPlugin(Plugin):
     def __init__(self, plugin_helpers):
         Plugin.__init__(self, u'Custom', u'1.9.2', plugin_helpers)
         self.weight = -5
-        self.custommanager = CustomManager()
+        self.custommanager = Manager(u'custom', init_schema)
         self.edit_custom_form = EditCustomForm(self.custommanager)
         self.icon = build_icon(u':/media/media_custom.png')
         self.status = PluginStatus.Active
@@ -75,6 +78,8 @@ class CustomPlugin(Plugin):
         return about_text
 
     def can_delete_theme(self, theme):
-        if len(self.custommanager.get_customs_for_theme(theme)) == 0:
+        filter_string = u'theme_name=%s' % theme
+        if not self.custommanager.get_all_objects_filtered(CustomSlide,
+            filter_string):
             return True
         return False
