@@ -147,8 +147,8 @@ class MediaMediaItem(MediaManagerItem):
             row_list.sort(reverse=True)
             for row in row_list:
                 self.ListView.takeItem(row)
-                SettingsManager.set_list(self.settingsSection,
-                    self.settingsSection, self.getFileList())
+            SettingsManager.set_list(self.settingsSection,
+                self.settingsSection, self.getFileList())
 
     def loadList(self, list):
         for file in list:

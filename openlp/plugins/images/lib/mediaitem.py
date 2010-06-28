@@ -131,8 +131,8 @@ class ImageMediaItem(MediaManagerItem):
                         #if not present do not worry
                         pass
                 self.ListView.takeItem(row)
-                SettingsManager.set_list(self.settingsSection,
-                    self.settingsSection, self.getFileList())
+            SettingsManager.set_list(self.settingsSection,
+                self.settingsSection, self.getFileList())
 
     def loadList(self, list):
         for file in list:

@@ -194,8 +194,8 @@ class PresentationMediaItem(MediaManagerItem):
                     doc.close_presentation()
             for row in row_list:
                 self.ListView.takeItem(row)
-                SettingsManager.set_list(self.settingsSection,
-                    self.settingsSection, self.getFileList())
+            SettingsManager.set_list(self.settingsSection,
+                self.settingsSection, self.getFileList())
 
     def generateSlideData(self, service_item, item=None):
         items = self.ListView.selectedIndexes()
