@@ -29,6 +29,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, SongXMLParser, BaseListWithDnD, \
     Receiver, ItemCapabilities, translate, check_item_selected
+from openlp.plugins.custom.lib.db import CustomSlide
 
 log = logging.getLogger(__name__)
 
@@ -72,7 +73,8 @@ class CustomMediaItem(MediaManagerItem):
         MediaManagerItem.requiredIcons(self)
 
     def initialise(self):
-        self.loadCustomListView(self.parent.custommanager.get_all_slides())
+        self.loadCustomListView(self.parent.custommanager.get_all_objects(
+            CustomSlide, CustomSlide.title))
         #Called to redisplay the song list screen edith from a search
         #or from the exit of the Song edit dialog.  If remote editing is active
         #Trigger it and clean up so it will not update again.
@@ -84,10 +86,10 @@ class CustomMediaItem(MediaManagerItem):
 
     def loadCustomListView(self, list):
         self.ListView.clear()
-        for CustomSlide in list:
-            custom_name = QtGui.QListWidgetItem(CustomSlide.title)
+        for customSlide in list:
+            custom_name = QtGui.QListWidgetItem(customSlide.title)
             custom_name.setData(
-                QtCore.Qt.UserRole, QtCore.QVariant(CustomSlide.id))
+                QtCore.Qt.UserRole, QtCore.QVariant(customSlide.id))
             self.ListView.addItem(custom_name)
 
     def onNewClick(self):
@@ -106,7 +108,7 @@ class CustomMediaItem(MediaManagerItem):
         type of display is required.
         """
         fields = customid.split(u':')
-        valid = self.parent.custommanager.get_custom(fields[1])
+        valid = self.parent.custommanager.get_object(CustomSlide, fields[1])
         if valid:
             self.remoteCustom = fields[1]
             self.remoteTriggered = fields[0]
@@ -142,6 +144,11 @@ class CustomMediaItem(MediaManagerItem):
                 self.parent.custommanager.delete_custom(id)
             for row in row_list:
                 self.ListView.takeItem(row)
+            item = self.ListView.currentItem()
+            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            self.parent.custommanager.delete_object(CustomSlide, item_id)
+            row = self.ListView.row(item)
+            self.ListView.takeItem(row)
 
     def generateSlideData(self, service_item, item=None):
         raw_slides = []
@@ -161,7 +168,7 @@ class CustomMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.AllowsEdit)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
-        customSlide = self.parent.custommanager.get_custom(item_id)
+        customSlide = self.parent.custommanager.get_object(CustomSlide, item_id)
         title = customSlide.title
         credit = customSlide.credits
         service_item.editId = item_id

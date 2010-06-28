@@ -35,8 +35,7 @@ from openlp.core.lib import Receiver
 from openlp.core.utils import AppLocation
 from openlp.plugins.bibles.lib.common import BibleCommon, SearchResults, \
     unescape
-from openlp.plugins.bibles.lib.db import BibleDB
-from openlp.plugins.bibles.lib.models import Book
+from openlp.plugins.bibles.lib.db import BibleDB, Book
 
 log = logging.getLogger(__name__)
 
