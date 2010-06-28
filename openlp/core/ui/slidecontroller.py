@@ -107,7 +107,6 @@ class SlideController(QtGui.QWidget):
         self.mainDisplay = self.parent.displayManager.mainDisplay
         self.loopList = [
             u'Start Loop',
-            u'Stop Loop',
             u'Loop Separator',
             u'Image SpinBox'
         ]
@@ -334,6 +333,7 @@ class SlideController(QtGui.QWidget):
                     self.receiveSpinDelay)
         if isLive:
             self.Toolbar.makeWidgetsInvisible(self.loopList)
+            self.Toolbar.actions[u'Stop Loop'].setVisible(False)
         else:
             self.Toolbar.makeWidgetsInvisible(self.songEditList)
         self.Mediabar.setVisible(False)
@@ -430,8 +430,8 @@ class SlideController(QtGui.QWidget):
         self.Mediabar.setVisible(False)
         self.Toolbar.makeWidgetsInvisible([u'Song Menu'])
         self.Toolbar.makeWidgetsInvisible(self.loopList)
+        self.Toolbar.actions[u'Stop Loop'].setVisible(False)
         if item.is_text():
-            self.Toolbar.makeWidgetsInvisible(self.loopList)
             if QtCore.QSettings().value(
                 self.parent.songsSettingsSection + u'/show songbar',
                 QtCore.QVariant(True)).toBool() and len(self.slideList) > 0:
@@ -884,6 +884,8 @@ class SlideController(QtGui.QWidget):
         if self.PreviewListWidget.rowCount() > 1:
             self.timer_id = self.startTimer(
                 int(self.DelaySpinBox.value()) * 1000)
+            self.Toolbar.actions[u'Stop Loop'].setVisible(True)
+            self.Toolbar.actions[u'Start Loop'].setVisible(False)
 
     def onStopLoop(self):
         """
@@ -892,6 +894,8 @@ class SlideController(QtGui.QWidget):
         if self.timer_id != 0:
             self.killTimer(self.timer_id)
             self.timer_id = 0
+            self.Toolbar.actions[u'Start Loop'].setVisible(True)
+            self.Toolbar.actions[u'Stop Loop'].setVisible(False)
 
     def timerEvent(self, event):
         """
