@@ -86,11 +86,11 @@ class OpenSongImport:
         Initialise the class. Requires a songmanager class which is passed
         to SongImport for writing song to disk
         """
-        self.songmanager=songmanager
+        self.songmanager = songmanager
         self.song = None
 
     def do_import(self, filename):
-        file=open(filename)
+        file = open(filename)
         self.do_import_file(file)
         
     def do_import_file(self, file):
@@ -98,10 +98,10 @@ class OpenSongImport:
         Process the OpenSong file
         """            
         self.song = SongImport(self.songmanager)
-        tree=objectify.parse(file)
-        root=tree.getroot()
-        fields=dir(root)
-        decode={u'copyright':self.song.add_copyright,
+        tree = objectify.parse(file)
+        root = tree.getroot()
+        fields = dir(root)
+        decode = {u'copyright':self.song.add_copyright,
                 u'author':self.song.parse_author,
                 u'title':self.song.set_title,
                 u'aka':self.song.set_alternate_title,
@@ -111,20 +111,20 @@ class OpenSongImport:
                 fn(unicode(root.__getattr__(attr)))
         
         # data storage while importing
-        verses={}
-        lyrics=unicode(root.lyrics)
+        verses = {}
+        lyrics = unicode(root.lyrics)
         # keep track of a "default" verse order, in case none is specified
-        our_verse_order=[]
-        verses_seen={}
+        our_verse_order = []
+        verses_seen = {}
         # in the absence of any other indication, verses are the default, erm, versetype!
-        versetype=u'V'
+        versetype = u'V'
         for l in lyrics.split(u'\n'):
             # remove comments
             semicolon = l.find(u';')
             if semicolon >= 0:
-                l=l[:semicolon]
-            l=l.strip()
-            if l==u'':
+                l = l[:semicolon]
+            l = l.strip()
+            if len(l) == 0:
                 continue
             # skip inline guitar chords
             if l[0] == u'.':
@@ -132,14 +132,14 @@ class OpenSongImport:
             
             # verse/chorus/etc. marker
             if l[0] == u'[':
-                versetype=l[1].upper()
+                versetype = l[1].upper()
                 if versetype.isdigit():
-                    versenum=versetype
-                    versetype=u'V'
+                    versenum = versetype
+                    versetype = u'V'
                 elif l[2] != u']':
                     # there's a number to go with it - extract that as well
-                    right_bracket=l.find(u']')
-                    versenum=l[2:right_bracket]
+                    right_bracket = l.find(u']')
+                    versenum = l[2:right_bracket]
                 else:
                     versenum = u''
                 continue
@@ -147,18 +147,18 @@ class OpenSongImport:
 
             # number at start of line.. it's verse number
             if l[0].isdigit():
-                versenum=l[0]
-                words=l[1:].strip()
+                versenum = l[0]
+                words = l[1:].strip()
             if words is None and \
                    versenum is not None and \
                    versetype is not None:
                 words=l
             if versenum is not None:
-                versetag=u'%s%s'%(versetype,versenum)
+                versetag = u'%s%s'%(versetype,versenum)
                 if not verses.has_key(versetype):
-                    verses[versetype]={}
+                    verses[versetype] = {}
                 if not verses[versetype].has_key(versenum):
-                    verses[versetype][versenum]=[] # storage for lines in this verse
+                    verses[versetype][versenum] = [] # storage for lines in this verse
                 if not verses_seen.has_key(versetag):
                     verses_seen[versetag] = 1
                     our_verse_order.append(versetag)
@@ -168,28 +168,28 @@ class OpenSongImport:
                 words=words.replace('_', '')
                 verses[versetype][versenum].append(words)
         # done parsing
-        versetypes=verses.keys()
+        versetypes = verses.keys()
         versetypes.sort()
-        versetags={}
+        versetags = {}
         for v in versetypes:
-            versenums=verses[v].keys()
+            versenums = verses[v].keys()
             versenums.sort()
             for n in versenums:
-                versetag= u'%s%s' %(v,n)
-                lines=u'\n'.join(verses[v][n])
+                versetag = u'%s%s' %(v,n)
+                lines = u'\n'.join(verses[v][n])
                 self.song.verses.append([versetag, lines])
-                versetags[versetag]=1 # keep track of what we have for error checking later
+                versetags[versetag] = 1 # keep track of what we have for error checking later
         # now figure out the presentation order
         if u'presentation' in fields and root.presentation != u'':
-            order=unicode(root.presentation)
-            order=order.split()
+            order = unicode(root.presentation)
+            order = order.split()
         else:
             assert len(our_verse_order)>0
-            order=our_verse_order
+            order = our_verse_order
         for tag in order:
             if not versetags.has_key(tag):
                 print u'Got order', tag, u'but not in versetags, skipping'
-                raise OpenSongImportError
+                raise OpenSongImportError # xxx keep error, or just warn?
             else:
                 self.song.verse_order_list.append(tag)
     def finish(self):

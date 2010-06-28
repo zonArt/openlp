@@ -1,10 +1,33 @@
 # -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
 from openlp.plugins.songs.lib.opensongimport import OpenSongImport
 from openlp.plugins.songs.lib.manager import SongManager
 
 def test():
-    manager=SongManager()
-    o=OpenSongImport(manager)
+    manager = SongManager()
+    o = OpenSongImport(manager)
     o.do_import(u'test.opensong')
     # o.finish()
     o.song.print_song()
@@ -21,7 +44,7 @@ def test():
     assert [u'V2', u'v2 Line 1\nV2 Line 2'] in o.song.verses
     assert o.song.verse_order_list == [u'V1', u'C', u'V2', u'C2', u'V3', u'B1', u'V1']
 
-    o=OpenSongImport(manager)
+    o = OpenSongImport(manager)
     o.do_import(u'test2.opensong')
     # o.finish()
     o.song.print_song()
