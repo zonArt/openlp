@@ -25,8 +25,6 @@
 
 import re
 
-from PyQt4 import QtGui
-
 from openlp.core.lib import SongXMLBuilder, translate
 from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.db import Song, Author, Topic, Book

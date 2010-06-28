@@ -41,10 +41,15 @@ from openlp.core.lib import resize_image
 
 if os.name == u'nt':
     from win32com.client import Dispatch
+    import pywintypes
 else:
-    import uno
-    from com.sun.star.beans import PropertyValue
-
+    try:
+        import uno
+        from com.sun.star.beans import PropertyValue
+        uno_available = True
+    except ImportError:
+        uno_available = False
+        
 from PyQt4 import QtCore
 
 from presentationcontroller import PresentationController, PresentationDocument
@@ -78,9 +83,7 @@ class ImpressController(PresentationController):
         if os.name == u'nt':
             return self.get_com_servicemanager() is not None
         else:
-            # If not windows, and we've got this far then probably
-            # installed else the import uno would likely have failed
-            return True
+            return uno_available
 
     def start_process(self):
         """
@@ -132,18 +135,13 @@ class ImpressController(PresentationController):
 
     def get_com_desktop(self):
         log.debug(u'get COM Desktop OpenOffice')
-        try:
-            desktop = self.manager.createInstance(u'com.sun.star.frame.Desktop')
-            return desktop
-        except:
-            log.exception(u'Failed to get COM desktop')
-        return None
+        return self.manager.createInstance(u'com.sun.star.frame.Desktop')
 
     def get_com_servicemanager(self):
         log.debug(u'get_com_servicemanager openoffice')
         try:
             return Dispatch(u'com.sun.star.ServiceManager')
-        except:
+        except pywintypes.com_error:
             log.exception(u'Failed to get COM service manager')
             return None
 
@@ -327,7 +325,10 @@ class ImpressDocument(PresentationDocument):
         Returns true if screen is blank
         """
         log.debug(u'is blank OpenOffice')
-        return self.control.isPaused()
+        if self.control:
+            return self.control.isPaused()
+        else:
+            return False
 
     def stop_presentation(self):
         log.debug(u'stop presentation OpenOffice')

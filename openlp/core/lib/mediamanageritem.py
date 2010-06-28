@@ -22,7 +22,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+Provides the generic functions for interfacing plugins with the Media Manager.
+"""
 import logging
 import os
 
@@ -204,7 +206,9 @@ class MediaManagerItem(QtGui.QWidget):
         self.addListViewToToolBar()
 
     def addMiddleHeaderBar(self):
-        # Create buttons for the toolbar
+        """
+        Create buttons for the media item toolbar
+        """
         ## Import Button ##
         if self.hasImportIcon:
             self.addToolbarButton(
@@ -267,6 +271,9 @@ class MediaManagerItem(QtGui.QWidget):
             u':/general/general_add.png', self.onAddClick)
 
     def addListViewToToolBar(self):
+        """
+        Creates the main widget for listing items the media item is tracking
+        """
         #Add the List widget
         self.ListView = self.ListViewWithDnD_class(self)
         self.ListView.uniformItemSizes = True
@@ -344,6 +351,9 @@ class MediaManagerItem(QtGui.QWidget):
         pass
 
     def onFileClick(self):
+        """
+        Add a file to the list widget to make it available for showing
+        """
         files = QtGui.QFileDialog.getOpenFileNames(
             self, self.OnNewPrompt,
             SettingsManager.get_last_dir(self.settingsSection),
@@ -357,6 +367,9 @@ class MediaManagerItem(QtGui.QWidget):
                 self.settingsSection, self.getFileList())
 
     def getFileList(self):
+        """
+        Return the current list of files
+        """
         count = 0
         filelist = []
         while count < self.ListView.count():
@@ -380,6 +393,15 @@ class MediaManagerItem(QtGui.QWidget):
         return False
 
     def IconFromFile(self, file, thumb):
+        """
+        Create a thumbnail icon from a given file
+
+        ``file``
+            The file to create the icon from
+
+        ``thumb``
+            The filename to save the thumbnail to
+        """
         icon = build_icon(unicode(file))
         pixmap = icon.pixmap(QtCore.QSize(88, 50))
         ext = os.path.splitext(thumb)[1].lower()
@@ -407,6 +429,10 @@ class MediaManagerItem(QtGui.QWidget):
             u'to be defined by the plugin')
 
     def onPreviewClick(self):
+        """
+        Preview an item by building a service item then adding that service
+        item to the preview slide controller.
+        """
         if not self.ListView.selectedIndexes() and not self.remoteTriggered:
             QtGui.QMessageBox.information(self,
                 translate('MediaManagerItem', 'No Items Selected'),
@@ -420,6 +446,10 @@ class MediaManagerItem(QtGui.QWidget):
                 self.parent.preview_controller.addServiceItem(service_item)
 
     def onLiveClick(self):
+        """
+        Send an item live by building a service item then adding that service
+        item to the live slide controller.
+        """
         if not self.ListView.selectedIndexes():
             QtGui.QMessageBox.information(self,
                 translate('MediaManagerItem', 'No Items Selected'),
@@ -433,6 +463,9 @@ class MediaManagerItem(QtGui.QWidget):
                 self.parent.live_controller.addServiceItem(service_item)
 
     def onAddClick(self):
+        """
+        Add a selected item to the current service
+        """
         if not self.ListView.selectedIndexes() and not self.remoteTriggered:
             QtGui.QMessageBox.information(self,
                 translate('MediaManagerItem', 'No Items Selected'),
@@ -457,6 +490,9 @@ class MediaManagerItem(QtGui.QWidget):
                         self.parent.service_manager.addServiceItem(service_item)
 
     def onAddEditClick(self):
+        """
+        Add a selected item to an existing item in the current service.
+        """
         if not self.ListView.selectedIndexes() and not self.remoteTriggered:
             QtGui.QMessageBox.information(self,
                 translate('MediaManagerItem', 'No items selected'),
