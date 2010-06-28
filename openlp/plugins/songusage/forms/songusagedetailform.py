@@ -74,16 +74,16 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         filename = u'usage_detail_%s_%s.txt' % (
             self.FromDate.selectedDate().toString(u'ddMMyyyy'),
             self.ToDate.selectedDate().toString(u'ddMMyyyy'))
-        usage = self.parent.songusagemanager.get_all_songusage(
+        usage = self.parent.songusagemanager.get_songusage_for_period(
             self.FromDate.selectedDate(), self.ToDate.selectedDate())
         outname = os.path.join(unicode(self.FileLineEdit.text()), filename)
         file = None
         try:
             file = open(outname, u'w')
             for instance in usage:
-                record = u'\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"\n' % \
-                    (instance.usagedate,instance.usagetime, instance.title,
-                    instance.copyright, instance.ccl_number , instance.authors)
+                record = u'\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"\n' % (
+                    instance.usagedate, instance.usagetime, instance.title,
+                    instance.copyright, instance.ccl_number, instance.authors)
                 file.write(record)
         except IOError:
             log.exception(u'Failed to write out song usage records')

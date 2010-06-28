@@ -25,8 +25,8 @@
 
 from PyQt4 import QtGui, QtCore
 
-from openlp.plugins.alerts.lib.models import AlertItem
 from openlp.core.lib import translate
+from openlp.plugins.alerts.lib.db import AlertItem
 
 from alertdialog import Ui_AlertDialog
 
@@ -62,7 +62,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
 
     def loadList(self):
         self.AlertListWidget.clear()
-        alerts = self.manager.get_all_alerts()
+        alerts = self.manager.get_all_objects(AlertItem, AlertItem.text)
         for alert in alerts:
             item_name = QtGui.QListWidgetItem(alert.text)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(alert.id))
@@ -82,7 +82,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         item = self.AlertListWidget.currentItem()
         if item:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-            self.parent.manager.delete_alert(item_id)
+            self.manager.delete_object(AlertItem, item_id)
             row = self.AlertListWidget.row(item)
             self.AlertListWidget.takeItem(row)
         self.AlertTextEdit.setText(u'')
@@ -98,7 +98,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         else:
             alert = AlertItem()
             alert.text = unicode(self.AlertTextEdit.text())
-            self.manager.save_alert(alert)
+            self.manager.save_object(alert)
         self.AlertTextEdit.setText(u'')
         self.loadList()
 
@@ -107,9 +107,9 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         Save an alert
         """
         if self.item_id:
-            alert = self.manager.get_alert(self.item_id)
+            alert = self.manager.get_object(AlertItem, self.item_id)
             alert.text = unicode(self.AlertTextEdit.text())
-            self.manager.save_alert(alert)
+            self.manager.save_object(alert)
             self.item_id = None
             self.loadList()
         else:
