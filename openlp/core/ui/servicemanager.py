@@ -108,7 +108,7 @@ class ServiceManager(QtGui.QWidget):
         #is a new service and has not been saved
         self.isNew = True
         self.serviceNoteForm = ServiceNoteForm()
-        self.serviceItemEditForm = ServiceItemEditForm()
+        self.serviceItemEditForm = ServiceItemEditForm(self)
         #start with the layout
         self.Layout = QtGui.QVBoxLayout(self)
         self.Layout.setSpacing(0)

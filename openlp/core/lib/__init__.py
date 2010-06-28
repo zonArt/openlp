@@ -35,7 +35,7 @@ from PyQt4 import QtCore, QtGui
 
 log = logging.getLogger(__name__)
 
-def translate(context, text, comment=None):
+def translate(context, text, comment=None, count=-1):
     """
     A special shortcut method to wrap around the Qt4 translation functions.
     This abstracts the translation procedure so that we can change it if at a
@@ -47,6 +47,13 @@ def translate(context, text, comment=None):
 
     ``text``
         The text to put into the translation tables for translation.
+
+    ``comment``
+        A optional comment for translators.
+
+    ``count``
+        If count is given it replaces %n in the text. A propper plural form is
+        chosen.
     """
     return QtCore.QCoreApplication.translate(context, text, comment)
 

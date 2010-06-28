@@ -802,7 +802,7 @@ class SlideController(QtGui.QWidget):
             QtCore.QTimer.singleShot(2.5, self.grabMainDisplay)
         else:
             label = self.PreviewListWidget.cellWidget(
-                self.PreviewListWidget.currentRow(), 1)
+                self.PreviewListWidget.currentRow(), 0)
             self.SlidePreview.setPixmap(label.pixmap())
 
     def grabMainDisplay(self):

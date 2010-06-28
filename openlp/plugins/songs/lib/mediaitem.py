@@ -74,45 +74,60 @@ class SongMediaItem(MediaManagerItem):
             u'Maintain the lists of authors, topics and books'),
             ':/songs/song_maintenance.png', self.onSongMaintenanceClick)
         self.PageLayout.setSpacing(4)
-        self.SearchLayout = QtGui.QFormLayout()
-        self.SearchLayout.setMargin(0)
-        self.SearchLayout.setSpacing(4)
-        self.SearchLayout.setObjectName(u'SearchLayout')
+        self.SearchLineLayout = QtGui.QHBoxLayout()
+        self.SearchLineLayout.setMargin(0)
+        self.SearchLineLayout.setSpacing(4)
+        self.SearchLineLayout.setObjectName(u'SearchLineLayout')
+        self.PageLayout.addLayout(self.SearchLineLayout)
         self.SearchTextLabel = QtGui.QLabel(self)
-        self.SearchTextLabel.setAlignment(
-            QtCore.Qt.AlignBottom|QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft)
         self.SearchTextLabel.setObjectName(u'SearchTextLabel')
-        self.SearchLayout.setWidget(
-            0, QtGui.QFormLayout.LabelRole, self.SearchTextLabel)
+        self.SearchLineLayout.addWidget(self.SearchTextLabel)
         self.SearchTextEdit = QtGui.QLineEdit(self)
         self.SearchTextEdit.setObjectName(u'SearchTextEdit')
-        self.SearchLayout.setWidget(
-            0, QtGui.QFormLayout.FieldRole, self.SearchTextEdit)
-        self.SearchTypeLabel = QtGui.QLabel(self)
-        self.SearchTypeLabel.setAlignment(
-            QtCore.Qt.AlignBottom|QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft)
-        self.SearchTypeLabel.setObjectName(u'SearchTypeLabel')
-        self.SearchLayout.setWidget(
-            1, QtGui.QFormLayout.LabelRole, self.SearchTypeLabel)
-        self.SearchTypeComboBox = QtGui.QComboBox(self)
-        self.SearchTypeComboBox.setObjectName(u'SearchTypeComboBox')
-        self.SearchLayout.setWidget(
-            1, QtGui.QFormLayout.FieldRole, self.SearchTypeComboBox)
-        self.PageLayout.addLayout(self.SearchLayout)
+        self.SearchLineLayout.addWidget(self.SearchTextEdit)
         self.SearchButtonLayout = QtGui.QHBoxLayout()
         self.SearchButtonLayout.setMargin(0)
         self.SearchButtonLayout.setSpacing(4)
         self.SearchButtonLayout.setObjectName(u'SearchButtonLayout')
+        self.PageLayout.addLayout(self.SearchButtonLayout)
         self.SearchButtonSpacer = QtGui.QSpacerItem(40, 20,
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.SearchButtonLayout.addItem(self.SearchButtonSpacer)
-        self.SearchTextButton = QtGui.QPushButton(self)
-        self.SearchTextButton.setObjectName(u'SearchTextButton')
-        self.SearchButtonLayout.addWidget(self.SearchTextButton)
+        self.SearchButtonLayout.addSpacerItem(self.SearchButtonSpacer)
         self.ClearTextButton = QtGui.QPushButton(self)
         self.ClearTextButton.setObjectName(u'ClearTextButton')
         self.SearchButtonLayout.addWidget(self.ClearTextButton)
-        self.PageLayout.addLayout(self.SearchButtonLayout)
+        self.SearchTextButton = QtGui.QToolButton(self)
+        self.SearchTextButton.setObjectName(u'SearchTextButton')
+        self.SearchButtonLayout.addWidget(self.SearchTextButton)
+        self.SearchTitlesAction = QtGui.QAction(self)
+        self.SearchTitlesAction.setObjectName(u'SearchTitlesAction')
+        self.SearchTitlesAction.setCheckable(True)
+        self.SearchLyricsAction = QtGui.QAction(self)
+        self.SearchLyricsAction.setObjectName(u'SearchLyricsAction')
+        self.SearchLyricsAction.setCheckable(True)
+        self.SearchAuthorsAction = QtGui.QAction(self)
+        self.SearchAuthorsAction.setObjectName(u'SearchAuthorsAction')
+        self.SearchAuthorsAction.setCheckable(True)
+        self.SearchActionGroup = QtGui.QActionGroup(self)
+        self.SearchActionGroup.setObjectName(u'SearchActionGroup')
+        self.SearchActionGroup.setExclusive(True)
+        self.SearchActionGroup.addAction(self.SearchTitlesAction)
+        self.SearchActionGroup.addAction(self.SearchLyricsAction)
+        self.SearchActionGroup.addAction(self.SearchAuthorsAction)
+        self.SearchTypeMenu = QtGui.QMenu(self)
+        self.SearchTypeMenu.setObjectName(u'SearchTypeMenu')
+        self.SearchTypeMenu.addAction(self.SearchTitlesAction)
+        self.SearchTypeMenu.addAction(self.SearchLyricsAction)
+        self.SearchTypeMenu.addAction(self.SearchAuthorsAction)
+        self.SearchTextButton.setPopupMode(QtGui.QToolButton.MenuButtonPopup)
+        self.SearchTextButton.setMenu(self.SearchTypeMenu)
+        QtCore.QObject.connect(self.SearchTitlesAction,
+            QtCore.SIGNAL(u'triggered()'), self.onSearchTextButtonClick)
+        QtCore.QObject.connect(self.SearchLyricsAction,
+            QtCore.SIGNAL(u'triggered()'), self.onSearchTextButtonClick)
+        QtCore.QObject.connect(self.SearchAuthorsAction,
+            QtCore.SIGNAL(u'triggered()'), self.onSearchTextButtonClick)
+
         # Signals and slots
         QtCore.QObject.connect(self.SearchTextEdit,
             QtCore.SIGNAL(u'returnPressed()'), self.onSearchTextButtonClick)
@@ -142,38 +157,45 @@ class SongMediaItem(MediaManagerItem):
     def retranslateUi(self):
         self.SearchTextLabel.setText(
             translate(u'SongsPlugin.MediaItem', u'Search:'))
-        self.SearchTypeLabel.setText(
-            translate(u'SongsPlugin.MediaItem', u'Type:'))
         self.ClearTextButton.setText(
             translate(u'SongsPlugin.MediaItem', u'Clear'))
-        self.SearchTextButton.setText(
-            translate(u'SongsPlugin.MediaItem', u'Search'))
+        self.SearchTitlesAction.setText(
+            translate(u'SongsPlugin.MediaItem', u'Search Titles'))
+        self.SearchLyricsAction.setText(
+            translate(u'SongsPlugin.MediaItem', u'Search Lyrics'))
+        self.SearchAuthorsAction.setText(
+            translate(u'SongsPlugin.MediaItem', u'Search Authors'))
+        if self.SearchTitlesAction.isChecked():
+            self.SearchTextButton.setText(self.SearchTitlesAction.text())
+        if self.SearchLyricsAction.isChecked():
+            self.SearchTextButton.setText(self.SearchLyricsAction.text())
+        if self.SearchAuthorsAction.isChecked():
+            self.SearchTextButton.setText(self.SearchAuthorsAction.text())
 
     def initialise(self):
-        self.SearchTypeComboBox.addItem(
-            translate(u'SongsPlugin.MediaItem', u'Titles'))
-        self.SearchTypeComboBox.addItem(
-            translate(u'SongsPlugin.MediaItem', u'Lyrics'))
-        self.SearchTypeComboBox.addItem(
-            translate(u'SongsPlugin.MediaItem', u'Authors'))
+        self.SearchTitlesAction.setChecked(True)
+        self.SearchTextButton.setText(self.SearchTitlesAction.text())
         self.configUpdated()
 
     def onSearchTextButtonClick(self):
         search_keywords = unicode(self.SearchTextEdit.displayText())
         search_results = []
-        search_type = self.SearchTypeComboBox.currentIndex()
-        if search_type == 0:
+#        search_type = self.SearchTypeComboBox.currentIndex()
+        if self.SearchTitlesAction.isChecked(): #search_type == 0:
             log.debug(u'Titles Search')
+            self.SearchTextButton.setText(self.SearchTitlesAction.text())
             search_results = self.parent.manager.search_song_title(
                 search_keywords)
             self.displayResultsSong(search_results)
-        elif search_type == 1:
+        elif self.SearchLyricsAction.isChecked(): #search_type == 1:
             log.debug(u'Lyrics Search')
+            self.SearchTextButton.setText(self.SearchLyricsAction.text())
             search_results = self.parent.manager.search_song_lyrics(
                 search_keywords)
             self.displayResultsSong(search_results)
-        elif search_type == 2:
+        elif self.SearchAuthorsAction.isChecked(): #search_type == 2:
             log.debug(u'Authors Search')
+            self.SearchTextButton.setText(self.SearchAuthorsAction.text())
             search_results = self.parent.manager.get_song_from_author(
                 search_keywords)
             self.displayResultsAuthor(search_results)
@@ -228,7 +250,7 @@ class SongMediaItem(MediaManagerItem):
         """
         if self.searchAsYouType:
             search_length = 1
-            if self.SearchTypeComboBox.currentIndex() == 1:
+            if self.SearchLyricsAction.isChecked(): # self.SearchTypeComboBox.currentIndex() == 1:
                 search_length = 7
             if len(text) > search_length:
                 self.onSearchTextButtonClick()
