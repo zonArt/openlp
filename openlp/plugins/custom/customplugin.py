@@ -78,7 +78,7 @@ class CustomPlugin(Plugin):
         return about_text
 
     def can_delete_theme(self, theme):
-        filter_string = u'theme_name=%s' % theme
+        filter_string = u'theme_name=\'%s\'' % theme
         if not self.custommanager.get_all_objects_filtered(CustomSlide,
             filter_string):
             return True
