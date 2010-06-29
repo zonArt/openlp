@@ -136,11 +136,14 @@ class CustomMediaItem(MediaManagerItem):
         if check_item_selected(self.ListView,
             translate('CustomPlugin.MediaItem',
             'You must select an item to delete.')):
-            item = self.ListView.currentItem()
-            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-            self.parent.custommanager.delete_object(CustomSlide, item_id)
-            row = self.ListView.row(item)
-            self.ListView.takeItem(row)
+            row_list = [item.row() for item in self.ListView.selectedIndexes()]
+            row_list.sort(reverse=True)
+            id_list = [(item.data(QtCore.Qt.UserRole)).toInt()[0]
+                for item in self.ListView.selectedIndexes()]
+            for id in id_list:
+                self.parent.custommanager.delete_custom(id)
+            for row in row_list:
+                self.ListView.takeItem(row)
 
     def generateSlideData(self, service_item, item=None):
         raw_slides = []
