@@ -143,9 +143,10 @@ class MediaMediaItem(MediaManagerItem):
         """
         if check_item_selected(self.ListView, translate('MediaPlugin.MediaItem',
             'You must select an item to delete.')):
-            item = self.ListView.currentItem()
-            row = self.ListView.row(item)
-            self.ListView.takeItem(row)
+            row_list = [item.row() for item in self.ListView.selectedIndexes()]
+            row_list.sort(reverse=True)
+            for row in row_list:
+                self.ListView.takeItem(row)
             SettingsManager.set_list(self.settingsSection,
                 self.settingsSection, self.getFileList())
 

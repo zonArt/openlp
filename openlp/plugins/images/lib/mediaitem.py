@@ -119,9 +119,10 @@ class ImageMediaItem(MediaManagerItem):
         """
         if check_item_selected(self.ListView, translate('ImagePlugin.MediaItem',
             'You must select an item to delete.')):
-            items = self.ListView.selectedIndexes()
-            for item in items:
-                text = self.ListView.item(item.row())
+            row_list = [item.row() for item in self.ListView.selectedIndexes()]
+            row_list.sort(reverse=True)
+            for row in row_list:
+                text = self.ListView.item(row)
                 if text:
                     try:
                         os.remove(os.path.join(self.servicePath,
@@ -129,9 +130,9 @@ class ImageMediaItem(MediaManagerItem):
                     except OSError:
                         #if not present do not worry
                         pass
-                self.ListView.takeItem(item.row())
-                SettingsManager.set_list(self.settingsSection,
-                    self.settingsSection, self.getFileList())
+                self.ListView.takeItem(row)
+            SettingsManager.set_list(self.settingsSection,
+                self.settingsSection, self.getFileList())
 
     def loadList(self, list):
         for file in list:
