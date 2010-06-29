@@ -662,7 +662,7 @@ class ServiceManager(QtGui.QWidget):
         name = filename.split(os.path.sep)
         if filename:
             SettingsManager.set_last_dir(self.parent.serviceSettingsSection,
-                os.path.split(filename)[0])
+                name[0])
             zip = None
             file_to = None
             try:
