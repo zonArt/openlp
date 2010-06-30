@@ -302,8 +302,8 @@ class SongImport(object):
         song.theme_name = self.theme_name
         song.ccli_number = self.ccli_number
         for authortext in self.authors:
-            filter_string = u'display_name=%s' % authortext
-            author = self.manager.get_object_filtered(Author, filter_string)
+            author = self.manager.get_object_filtered(Author,
+                Author.display_name == authortext)
             if author is None:
                 author = Author()
                 author.display_name = authortext
@@ -312,8 +312,8 @@ class SongImport(object):
                 self.manager.save_object(author)
             song.authors.append(author)
         if self.song_book_name:
-            filter_string = u'name=%s' % self.song_book_name
-            song_book = self.manager.get_object_filtered(Book, filter_string)
+            song_book = self.manager.get_object_filtered(Book,
+                Book.name == self.song_book_name)
             if song_book is None:
                 song_book = Book()
                 song_book.name = self.song_book_name
@@ -321,8 +321,8 @@ class SongImport(object):
                 self.manager.save_object(song_book)
             song.song_book_id = song_book.id
         for topictext in self.topics:
-            filter_string = u'name=%s' % topictext
-            topic = self.manager.get_object_filtered(Topic, filter_string)
+            topic = self.manager.get_object_filtered(Topic,
+                Topic.name == topictext)
             if topic is None:
                 topic = Topic()
                 topic.name = topictext
