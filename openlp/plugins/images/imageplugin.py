@@ -36,7 +36,7 @@ class ImagePlugin(Plugin):
     def __init__(self, plugin_helpers):
         Plugin.__init__(self, u'Images', u'1.9.2', plugin_helpers)
         self.weight = -7
-        self.icon = build_icon(u':/media/media_image.png')
+        self.icon = build_icon(u':/plugins/plugin_images.png')
         self.status = PluginStatus.Active
 
     def initialise(self):

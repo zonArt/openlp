@@ -38,7 +38,7 @@ class BiblePlugin(Plugin):
     def __init__(self, plugin_helpers):
         Plugin.__init__(self, u'Bibles', u'1.9.2', plugin_helpers)
         self.weight = -9
-        self.icon = build_icon(u':/media/media_bible.png')
+        self.icon = build_icon(u':/plugins/plugin_bibles.png')
         #Register the bible Manager
         self.status = PluginStatus.Active
         self.manager = None
