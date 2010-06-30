@@ -30,6 +30,11 @@ from songimport import SongImport
 from lxml.etree import Element
 from lxml import objectify
 
+from zipfile import ZipFile
+
+import logging
+log = logging.getLogger(__name__)
+
 class OpenSongImportError(Exception):
     pass
 
@@ -89,10 +94,26 @@ class OpenSongImport:
         self.songmanager = songmanager
         self.song = None
 
-    def do_import(self, filename):
-        file = open(filename)
-        self.do_import_file(file)
-        
+    def do_import(self, filename, commit=True):
+        ext=os.path.splitext(filename)[1]
+        if ext.lower() == ".zip":
+            log.info('Zipfile found %s', filename)
+            z=ZipFile(filename, u'r')
+            for song in z.infolist():
+                parts=os.path.split(song.filename)
+                if parts[-1] == u'':
+                    #No final part => directory
+                    continue
+                songfile=z.open(song)
+                self.do_import_file(songfile)
+                if commit:
+                    self.finish()
+        else:
+            log.info('Direct import %s', filename)
+            file = open(filename)
+            self.do_import_file(file)
+            if commit:
+                self.finish()
     def do_import_file(self, file):
         """
         Process the OpenSong file

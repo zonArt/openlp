@@ -27,9 +27,9 @@ def opensong_import_lots():
                 #No final part => directory
                 continue
             print "  ", file, ":",filename,
-            # songfile=z.open(song)
-            z.extract(song)
-            songfile=open(filename, u'r')
+            songfile=z.open(song)
+            #z.extract(song)
+            #songfile=open(filename, u'r')
             o=OpenSongImport(manager)
             try:
                 o.do_import_file(songfile)
@@ -49,7 +49,7 @@ def opensong_import_lots():
                 # continue
             # o.finish()
             print "OK"
-            os.unlink(filename)
+            #os.unlink(filename)
             # o.song.print_song()
 if __name__=="__main__":
     opensong_import_lots()
