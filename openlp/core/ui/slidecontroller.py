@@ -105,6 +105,7 @@ class SlideController(QtGui.QWidget):
         self.isLive = isLive
         self.parent = parent
         self.mainDisplay = self.parent.displayManager.mainDisplay
+        self.displayManager = self.parent.displayManager
         self.loopList = [
             u'Start Loop',
             u'Loop Separator',
@@ -526,8 +527,8 @@ class SlideController(QtGui.QWidget):
 #            blanked = self.blankButton.isChecked()
 #        else:
 #            blanked = False
-#        Receiver.send_message(u'%s_start' % serviceItem.name.lower(),
-#            [serviceItem, self.isLive, blanked, slideno])
+        Receiver.send_message(u'%s_start' % serviceItem.name.lower(),
+            [serviceItem, self.isLive, True, slideno])
         self.slideList = {}
         width = self.parent.ControlSplitter.sizes()[self.split]
         #Set pointing cursor when we have somthing to point at
@@ -781,7 +782,10 @@ class SlideController(QtGui.QWidget):
                 log.log(
                     15, u'Slide Rendering took %4s' % (time.time() - before))
                 if self.isLive:
-                    self.mainDisplay.frameView(frame, True)#, self.canDisplay)
+                    if self.serviceItem.is_text():
+                        self.mainDisplay.frameView(frame, True)
+                    else:
+                        self.displayManager.displayImage(frame[u'display'])
             self.selectedRow = row
         Receiver.send_message(u'slidecontroller_%s_changed' % self.typePrefix,
             row)
