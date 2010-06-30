@@ -211,7 +211,7 @@ class MainDisplay(DisplayWidget):
         #Sort out screen locations and sizes
         self.setGeometry(self.screen[u'size'])
         self.scene.setSceneRect(0,0,self.size().width(), self.size().height())
-        self.imageDisplay.setGeometry(0, 0, self.size().width(), self.size().height())
+        self.webView.setGeometry(0, 0, self.size().width(), self.size().height())
         #Build a custom splash screen
         self.InitialFrame = QtGui.QImage(
             self.screen[u'size'].width(),
@@ -255,12 +255,13 @@ class MainDisplay(DisplayWidget):
         self.setScene(self.scene)
 
     def setupImage(self):
-#        self.display_image = QtGui.QGraphmaindisplay.pyicsPixmapItem()
-#        self.display_image.setZValue(2)
-#        self.scene.addItem(self.display_image)
-        self.imageDisplay = QtWebKit.QWebView()
+        self.webView = QtWebKit.QWebView()
+        self.page = self.webView.page()
+        self.imageDisplay = self.page.mainFrame()
+        self.imageDisplay.setScrollBarPolicy(QtCore.Qt.Vertical, QtCore.Qt.ScrollBarAlwaysOff)
+        self.imageDisplay.setScrollBarPolicy(QtCore.Qt.Horizontal, QtCore.Qt.ScrollBarAlwaysOff)
         self.proxy = QtGui.QGraphicsProxyWidget()
-        self.proxy.setWidget(self.imageDisplay)
+        self.proxy.setWidget(self.webView)
         self.proxy.setWindowFlags(QtCore.Qt.Window | QtCore.Qt.FramelessWindowHint)
         self.proxy.setZValue(2)
         self.scene.addItem(self.proxy)

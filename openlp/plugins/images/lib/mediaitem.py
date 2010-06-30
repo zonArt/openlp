@@ -175,12 +175,12 @@ class ImageMediaItem(MediaManagerItem):
                 translate('ImagePlugin.MediaItem', 'No item selected'),
                 translate('ImagePlugin.MediaItem',
                     'You must select one item'))
-        items = self.ListView.selectedIndexes()
-        for item in items:
-            bitem = self.ListView.item(item.row())
-            filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
-            frame = QtGui.QImage(unicode(filename))
-            self.parent.maindisplay.addImageWithText(frame)
+            return
+        item = self.buildServiceItem()
+        item.render()
+        self.parent.live_controller.displayManager. \
+            displayImage(item.get_rendered_frame(0)[u'display'])
+
 
     def onPreviewClick(self):
         MediaManagerItem.onPreviewClick(self)
