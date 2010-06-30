@@ -35,8 +35,7 @@ from openlp.core.lib import Receiver
 from openlp.core.utils import AppLocation
 from openlp.plugins.bibles.lib.common import BibleCommon, SearchResults, \
     unescape
-from openlp.plugins.bibles.lib.db import BibleDB
-from openlp.plugins.bibles.lib.models import Book
+from openlp.plugins.bibles.lib.db import BibleDB, Book
 
 log = logging.getLogger(__name__)
 
@@ -137,10 +136,10 @@ class HTTPBooks(object):
             u'verses FROM chapters WHERE book_id = ?', (book[u'id'],))
         if chapters:
             return {
-                u'id': chapters[0][0],
-                u'book_id': chapters[0][1],
-                u'chapter': chapters[0][2],
-                u'verses': chapters[0][3]
+                u'id': chapters[chapter][0],
+                u'book_id': chapters[chapter][1],
+                u'chapter': chapters[chapter][2],
+                u'verses': chapters[chapter][3]
             }
         else:
             return None

@@ -22,3 +22,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The :mod:`media` module provides the Media plugin which allows OpenLP to
+display videos.  The media supported depends not only on the Python support
+but also extensively on the codecs installed on the underlying operating system
+being picked up and usable by Python.
+"""

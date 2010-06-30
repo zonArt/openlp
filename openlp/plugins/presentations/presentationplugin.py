@@ -38,9 +38,9 @@ class PresentationPlugin(Plugin):
     def __init__(self, plugin_helpers):
         log.debug(u'Initialised')
         self.controllers = {}
-        Plugin.__init__(self, u'Presentations', u'1.9.1', plugin_helpers)
+        Plugin.__init__(self, u'Presentations', u'1.9.2', plugin_helpers)
         self.weight = -8
-        self.icon = build_icon(u':/media/media_presentation.png')
+        self.icon = build_icon(u':/plugins/plugin_presentations.png')
         self.status = PluginStatus.Active
 
     def get_settings_tab(self):
@@ -108,10 +108,9 @@ class PresentationPlugin(Plugin):
             return False
 
     def about(self):
-        about_text = translate(u'PresentationPlugin.PresentationPlugin', 
-            u'<b>Presentation Plugin</b> <br> Delivers '
-            u'the ability to show presentations using a number of different '
-            u'programs. The choice of available presentation programs is '
-            u'available to the user in a drop down box.')
+        about_text = translate('PresentationPlugin',
+            '<b>Presentation Plugin</b> <br> Delivers '
+            'the ability to show presentations using a number of different '
+            'programs. The choice of available presentation programs is '
+            'available to the user in a drop down box.')
         return about_text
-

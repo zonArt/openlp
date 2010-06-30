@@ -35,6 +35,7 @@ import uuid
 from PyQt4 import QtGui
 
 from openlp.core.lib import build_icon, resize_image
+from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
 
@@ -90,8 +91,9 @@ class ServiceItem(object):
         self.from_plugin = False
         self.capabilities = []
         self.is_valid = True
-        self.cache = []
+        self.cache = {}
         self.icon = None
+        self.serviceItemPath = AppLocation.get_section_data_path(u'serviceItems')
 
     def add_capability(self, capability):
         """
@@ -129,7 +131,7 @@ class ServiceItem(object):
         """
         log.debug(u'Render called')
         self._display_frames = []
-        self.cache = []
+        self.clear_cache()
         if self.service_item_type == ServiceItemType.Text:
             log.debug(u'Formatting slides')
             if self.theme is None:
@@ -149,12 +151,16 @@ class ServiceItem(object):
                     self._display_frames.append({u'title': title,
                         u'text': lines.rstrip(),
                         u'verseTag': slide[u'verseTag'] })
-                    self.cache.insert(len(self._display_frames), None)
+                    if len(self._display_frames) in self.cache.keys():
+                        del self.cache[len(self._display_frames)]
                 log.log(15, u'Formatting took %4s' % (time.time() - before))
         elif self.service_item_type == ServiceItemType.Image:
-            for slide in self._raw_frames:
+            for count, slide in enumerate(self._raw_frames):
                 slide[u'image'] = resize_image(slide[u'image'],
                     self.render_manager.width, self.render_manager.height)
+                path = os.path.join(self.serviceItemPath, self._uuid + unicode(count) + u'.png')
+                slide[u'image'].save(path)
+                slide[u'display'] = path
         elif self.service_item_type == ServiceItemType.Command:
             pass
         else:
@@ -172,8 +178,7 @@ class ServiceItem(object):
         else:
             self.render_manager.set_override_theme(self.theme)
         format = self._display_frames[row][u'text'].split(u'\n')
-        #if screen blank then do not display footer
-        if self.cache[row] is not None:
+        if self.cache.get(row):
             frame = self.cache[row]
         else:
             if format[0]:
@@ -304,7 +309,7 @@ class ServiceItem(object):
     def merge(self, other):
         """
         Updates the _uuid with the value from the original one
-        The _uuid is unique for a give service item but this allows one to
+        The _uuid is unique for a given service item but this allows one to
         replace an original version.
         """
         self._uuid = other._uuid
@@ -371,7 +376,8 @@ class ServiceItem(object):
         if self.service_item_type == ServiceItemType.Text:
             return self.render_individual(row)
         else:
-            return {u'main':self._raw_frames[row][u'image'], u'trans':None}
+            return {u'main':self._raw_frames[row][u'image'],
+                    u'trans':None, u'display':self._raw_frames[row][u'display']}
 
     def get_frame_title(self, row=0):
         """
@@ -385,3 +391,8 @@ class ServiceItem(object):
         """
         return self._raw_frames[row][u'path']
 
+    def clear_cache(self):
+        """
+        Clear's the service item's cache.
+        """
+        self.cache = {}

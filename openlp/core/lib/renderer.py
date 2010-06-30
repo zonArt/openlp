@@ -22,7 +22,10 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The :mod:`renderer` module enables OpenLP to take the input from plugins and
+format it for the output display.
+"""
 import logging
 
 from PyQt4 import QtGui, QtCore
@@ -468,7 +471,7 @@ class Renderer(object):
                     self._get_extent_and_render(line, footer,
                         tlcorner=(x + display_shadow_size,
                             y + display_shadow_size),
-                            draw=True, color = self._theme.display_shadow_color)
+                            draw=True, color=self._theme.display_shadow_color)
                 self._get_extent_and_render(line, footer, tlcorner=(x, y),
                         draw=True, outline_size=display_outline_size)
             y += h

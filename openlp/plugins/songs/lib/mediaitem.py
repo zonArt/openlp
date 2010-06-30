@@ -28,9 +28,10 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, SongXMLParser, \
-    BaseListWithDnD, Receiver, ItemCapabilities, translate
+    BaseListWithDnD, Receiver, ItemCapabilities, translate, check_item_selected
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     ImportWizardForm
+from openlp.plugins.songs.lib.db import Song
 
 log = logging.getLogger(__name__)
 
@@ -60,7 +61,7 @@ class SongMediaItem(MediaManagerItem):
         self.remoteSong = -1
 
     def initPluginNameVisible(self):
-        self.PluginNameVisible = translate(u'SongsPlugin.MediaItem', u'Song')
+        self.PluginNameVisible = translate('SongsPlugin.MediaItem', 'Song')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -69,9 +70,9 @@ class SongMediaItem(MediaManagerItem):
         self.addToolbarSeparator()
         ## Song Maintenance Button ##
         self.addToolbarButton(
-            translate(u'SongsPlugin.MediaItem', u'Song Maintenance'),
-            translate(u'SongsPlugin.MediaItem',
-            u'Maintain the lists of authors, topics and books'),
+            translate('SongsPlugin.MediaItem', 'Song Maintenance'),
+            translate('SongsPlugin.MediaItem',
+            'Maintain the lists of authors, topics and books'),
             ':/songs/song_maintenance.png', self.onSongMaintenanceClick)
         self.PageLayout.setSpacing(4)
         self.SearchLayout = QtGui.QFormLayout()
@@ -141,21 +142,21 @@ class SongMediaItem(MediaManagerItem):
 
     def retranslateUi(self):
         self.SearchTextLabel.setText(
-            translate(u'SongsPlugin.MediaItem', u'Search:'))
+            translate('SongsPlugin.MediaItem', 'Search:'))
         self.SearchTypeLabel.setText(
-            translate(u'SongsPlugin.MediaItem', u'Type:'))
+            translate('SongsPlugin.MediaItem', 'Type:'))
         self.ClearTextButton.setText(
-            translate(u'SongsPlugin.MediaItem', u'Clear'))
+            translate('SongsPlugin.MediaItem', 'Clear'))
         self.SearchTextButton.setText(
-            translate(u'SongsPlugin.MediaItem', u'Search'))
+            translate('SongsPlugin.MediaItem', 'Search'))
 
     def initialise(self):
         self.SearchTypeComboBox.addItem(
-            translate(u'SongsPlugin.MediaItem', u'Titles'))
+            translate('SongsPlugin.MediaItem', 'Titles'))
         self.SearchTypeComboBox.addItem(
-            translate(u'SongsPlugin.MediaItem', u'Lyrics'))
+            translate('SongsPlugin.MediaItem', 'Lyrics'))
         self.SearchTypeComboBox.addItem(
-            translate(u'SongsPlugin.MediaItem', u'Authors'))
+            translate('SongsPlugin.MediaItem', 'Authors'))
         self.configUpdated()
 
     def onSearchTextButtonClick(self):
@@ -207,7 +208,7 @@ class SongMediaItem(MediaManagerItem):
         for author in searchresults:
             for song in author.songs:
                 song_detail = unicode(
-                    translate(u'SongsPlugin.MediaItem', u'%s (%s)')) % \
+                    translate('SongsPlugin.MediaItem', '%s (%s)')) % \
                     (author.display_name, song.title)
                 song_name = QtGui.QListWidgetItem(song_detail)
                 song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
@@ -218,6 +219,7 @@ class SongMediaItem(MediaManagerItem):
         Clear the search text.
         """
         self.SearchTextEdit.clear()
+        self.onSearchTextButtonClick()
 
     def onSearchTextEditChanged(self, text):
         """
@@ -267,7 +269,7 @@ class SongMediaItem(MediaManagerItem):
         type of display is required.
         """
         fields = songid.split(u':')
-        valid = self.parent.manager.get_song(fields[1])
+        valid = self.parent.manager.get_object(Song, fields[1])
         if valid:
             self.remoteSong = fields[1]
             self.remoteTriggered = fields[0]
@@ -275,24 +277,32 @@ class SongMediaItem(MediaManagerItem):
             self.edit_song_form.exec_()
 
     def onEditClick(self):
-        item = self.ListView.currentItem()
-        if item:
+        """
+        Edit a song
+        """
+        if check_item_selected(self.ListView, translate('SongsPlugin.MediaItem',
+            'You must select an item to edit.')):
+            item = self.ListView.currentItem()
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.edit_song_form.loadSong(item_id, False)
             self.edit_song_form.exec_()
 
     def onDeleteClick(self):
-        items = self.ListView.selectedIndexes()
-        if items:
+        """
+        Remove a song from the list and database
+        """
+        if check_item_selected(self.ListView, translate('SongsPlugin.MediaItem',
+            'You must select an item to delete.')):
+            items = self.ListView.selectedIndexes()
             if len(items) == 1:
-                del_message = translate(u'SongsPlugin.MediaItem',
-                    u'Delete song?')
+                del_message = translate('SongsPlugin.MediaItem',
+                    'Delete song?')
             else:
                 del_message = unicode(
-                    translate(u'SongsPlugin.MediaItem',
-                        u'Delete %d songs?'))  % len(items)
+                    translate('SongsPlugin.MediaItem',
+                        'Delete %d songs?'))  % len(items)
             ans = QtGui.QMessageBox.question(self,
-                translate(u'SongsPlugin.MediaItem', u'Delete Confirmation'),
+                translate('SongsPlugin.MediaItem', 'Delete Confirmation'),
                 del_message,
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok|
                      QtGui.QMessageBox.Cancel),
@@ -301,7 +311,7 @@ class SongMediaItem(MediaManagerItem):
                 return
             for item in items:
                 item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-                self.parent.manager.delete_song(item_id)
+                self.parent.manager.delete_object(Song, item_id)
             self.onSearchTextButtonClick()
 
     def generateSlideData(self, service_item, item=None):
@@ -322,7 +332,7 @@ class SongMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.AllowsEdit)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
-        song = self.parent.manager.get_song(item_id)
+        song = self.parent.manager.get_object(Song, item_id)
         service_item.theme = song.theme_name
         service_item.editId = item_id
         if song.lyrics.startswith(u'<?xml version='):
@@ -341,8 +351,8 @@ class SongMediaItem(MediaManagerItem):
                     if len(order) == 0:
                         break
                     for verse in verseList:
-                        if verse[0][u'label'] == order[1:] and \
-                            verse[0][u'type'][0] == order[0]:
+                        if verse[0][u'type'][0] == order[0] and \
+                            (verse[0][u'label'] == order[1:] or not order[1:]):
                             verseTag = u'%s:%s' % \
                                 (verse[0][u'type'], verse[0][u'label'])
                             service_item.add_from_text(
@@ -365,10 +375,9 @@ class SongMediaItem(MediaManagerItem):
         raw_footer.append(author_list)
         raw_footer.append(song.copyright )
         raw_footer.append(unicode(
-            translate(u'SongsPlugin.MediaItem', u'CCLI Licence: ') + ccli))
+            translate('SongsPlugin.MediaItem', 'CCLI Licence: ') + ccli))
         service_item.raw_footer = raw_footer
         service_item.audit = [
             song.title, author_audit, song.copyright, song.ccli_number
         ]
         return True
-

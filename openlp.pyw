@@ -163,7 +163,7 @@ def main():
     parser.add_option("-s", "--style", dest="style",
                       help="Set the Qt4 style (passed directly to Qt4).")
     # Set up logging
-    log_path = AppLocation.get_directory(AppLocation.ConfigDir)
+    log_path = AppLocation.get_directory(AppLocation.CacheDir)
     if not os.path.exists(log_path):
         os.makedirs(log_path)
     filename = os.path.join(log_path, u'openlp.log')

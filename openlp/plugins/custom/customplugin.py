@@ -26,8 +26,11 @@
 import logging
 
 from forms import EditCustomForm
+
 from openlp.core.lib import Plugin, build_icon, PluginStatus, translate
-from openlp.plugins.custom.lib import CustomManager, CustomMediaItem, CustomTab
+from openlp.core.lib.db import Manager
+from openlp.plugins.custom.lib import CustomMediaItem, CustomTab
+from openlp.plugins.custom.lib.db import CustomSlide, init_schema
 
 log = logging.getLogger(__name__)
 
@@ -43,11 +46,11 @@ class CustomPlugin(Plugin):
     log.info(u'Custom Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Custom', u'1.9.1', plugin_helpers)
+        Plugin.__init__(self, u'Custom', u'1.9.2', plugin_helpers)
         self.weight = -5
-        self.custommanager = CustomManager()
+        self.custommanager = Manager(u'custom', init_schema)
         self.edit_custom_form = EditCustomForm(self.custommanager)
-        self.icon = build_icon(u':/media/media_custom.png')
+        self.icon = build_icon(u':/plugins/plugin_custom.png')
         self.status = PluginStatus.Active
 
     def get_settings_tab(self):
@@ -67,14 +70,16 @@ class CustomPlugin(Plugin):
         self.remove_toolbox_item()
 
     def about(self):
-        about_text = translate(u'CustomPlugin.CustomPlugin',
-            u'<b>Custom Plugin</b><br>This plugin '
-            u'allows slides to be displayed on the screen in the same way '
-            u'songs are. This plugin provides greater freedom over the '
-            u'songs plugin.<br>')
+        about_text = translate('CustomPlugin',
+            '<b>Custom Plugin</b><br>This plugin '
+            'allows slides to be displayed on the screen in the same way '
+            'songs are. This plugin provides greater freedom over the '
+            'songs plugin.<br>')
         return about_text
 
     def can_delete_theme(self, theme):
-        if len(self.custommanager.get_customs_for_theme(theme)) == 0:
+        filter_string = u'theme_name=\'%s\'' % theme
+        if not self.custommanager.get_all_objects_filtered(CustomSlide,
+            filter_string):
             return True
         return False

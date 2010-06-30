@@ -22,7 +22,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+Provide the theme XML and handling functions for OpenLP v2 themes.
+"""
 import os
 
 from xml.dom.minidom import Document
@@ -96,9 +98,8 @@ class ThemeXML(object):
             The path name to be added.
         """
         if self.background_filename and path:
-            self.theme_name = self.theme_name.rstrip().lstrip()
-            self.background_filename = \
-                self.background_filename.rstrip().lstrip()
+            self.theme_name = self.theme_name.strip()
+            self.background_filename = self.background_filename.strip()
             self.background_filename = os.path.join(path, self.theme_name,
                 self.background_filename)
 
@@ -334,13 +335,14 @@ class ThemeXML(object):
         Pull out the XML string.
         """
         # Print our newly created XML
-        return self.theme_xml.toxml()
+        return self.theme_xml.toxml(u'utf-8').decode(u'utf-8')
 
     def extract_formatted_xml(self):
         """
         Pull out the XML string formatted for human consumption
         """
-        return self.theme_xml.toprettyxml(indent=u'    ', newl=u'\n')
+        return self.theme_xml.toprettyxml(indent=u'    ', newl=u'\n',
+            encoding=u'utf-8')
 
     def parse(self, xml):
         """
@@ -365,11 +367,13 @@ class ThemeXML(object):
         ``xml``
             The XML string to parse.
         """
-        theme_xml = ElementTree(element=XML(xml))
+        theme_xml = ElementTree(element=XML(xml.encode(u'ascii',
+            u'xmlcharrefreplace')))
         xml_iter = theme_xml.getiterator()
         master = u''
         for element in xml_iter:
-            element.text = unicode(element.text).decode('unicode-escape')
+            if not isinstance(element.text, unicode):
+                element.text = unicode(str(element.text), u'utf-8')
             if element.getchildren():
                 master = element.tag + u'_'
             else:

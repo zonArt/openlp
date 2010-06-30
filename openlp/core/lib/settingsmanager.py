@@ -22,7 +22,12 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+Provide handling for persisting OpenLP settings.  OpenLP uses QSettings to
+manage settings persistence.  QSettings provides a single API for saving and
+retrieving settings from the application but writes to disk in an OS dependant
+format.
+"""
 import os
 
 from PyQt4 import QtCore
@@ -56,6 +61,9 @@ class SettingsManager(object):
             u'user interface/preview panel', QtCore.QVariant(True)).toBool()
 
     def togglePreviewPanel(self, isVisible):
+        """
+        Toggle the preview panel visibility.
+        """
         QtCore.QSettings().setValue(u'user interface/preview panel',
             QtCore.QVariant(isVisible))
 

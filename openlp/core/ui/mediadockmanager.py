@@ -76,6 +76,7 @@ class MediaDockManager(object):
         log.debug(u'remove %s dock' % name)
         for dock_index in range(0, self.media_dock.count()):
             if self.media_dock.widget(dock_index):
-                if self.media_dock.widget(dock_index).settingsSection == name:
+                if self.media_dock.widget(dock_index).settingsSection == \
+                    name.lower():
                     self.media_dock.widget(dock_index).hide()
                     self.media_dock.removeItem(dock_index)

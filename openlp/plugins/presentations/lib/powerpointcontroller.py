@@ -30,6 +30,7 @@ if os.name == u'nt':
     from win32com.client import Dispatch
     import _winreg
     import win32ui
+    import pywintypes
 
 from presentationcontroller import PresentationController, PresentationDocument
 
@@ -65,7 +66,7 @@ class PowerpointController(PresentationController):
                 _winreg.OpenKey(_winreg.HKEY_CLASSES_ROOT,
                     u'PowerPoint.Application').Close()
                 return True
-            except:
+            except WindowsError:
                 pass
         return False
 
@@ -91,7 +92,7 @@ class PowerpointController(PresentationController):
                 return
             try:
                 self.process.Quit()
-            except:
+            except pywintypes.com_error:
                 pass
             self.process = None
 
@@ -104,7 +105,7 @@ class PowerpointController(PresentationController):
 class PowerpointDocument(PresentationDocument):
     def __init__(self, controller, presentation):
         log.debug(u'Init Presentation Powerpoint')
-        PresentationDocument.__init__(controller, presentation)
+        PresentationDocument.__init__(self, controller, presentation)
         self.presentation = None
 
     def load_presentation(self):
@@ -121,11 +122,8 @@ class PowerpointDocument(PresentationDocument):
         log.debug(u'LoadPresentation')
         if not self.controller.process.Visible:
             self.controller.start_process()
-        #try:
         self.controller.process.Presentations.Open(self.filepath, False, False,
             True)
-        #except:
-        #    return
         self.presentation = self.controller.process.Presentations(
             self.controller.process.Presentations.Count)
         self.create_thumbnails()
@@ -142,7 +140,7 @@ class PowerpointDocument(PresentationDocument):
         if self.check_thumbnails():
             return
         self.presentation.Export(os.path.join(self.thumbnailpath, ''), 'png',
-            640, 480)
+            320, 240)
 
     def close_presentation(self):
         """
@@ -154,7 +152,7 @@ class PowerpointDocument(PresentationDocument):
         if self.presentation:
             try:
                 self.presentation.Close()
-            except:
+            except pywintypes.com_error:
                 pass
         self.presentation = None
         self.controller.remove_doc(self)
@@ -170,7 +168,7 @@ class PowerpointDocument(PresentationDocument):
                 return False
             if self.controller.process.Presentations.Count == 0:
                 return False
-        except:
+        except (AttributeError, pywintypes.com_error):
             return False
         return True
 
@@ -186,7 +184,7 @@ class PowerpointDocument(PresentationDocument):
                 return False
             if self.presentation.SlideShowWindow.View is None:
                 return False
-        except:
+        except (AttributeError, pywintypes.com_error):
             return False
         return True
 
@@ -208,7 +206,10 @@ class PowerpointDocument(PresentationDocument):
         """
         Returns true if screen is blank
         """
-        return self.presentation.SlideShowWindow.View.State == 3
+        if self.is_active():
+            return self.presentation.SlideShowWindow.View.State == 3
+        else:
+            return False
 
     def stop_presentation(self):
         """
@@ -224,11 +225,11 @@ class PowerpointDocument(PresentationDocument):
             #SlideShowWindow measures its size/position by points, not pixels
             try:
                 dpi = win32ui.GetActiveWindow().GetDC().GetDeviceCaps(88)
-            except:
+            except win32ui.error:
                 try:
                     dpi = \
                         win32ui.GetForegroundWindow().GetDC().GetDeviceCaps(88)
-                except:
+                except win32ui.error:
                     dpi = 96
             self.presentation.SlideShowSettings.Run()
             self.presentation.SlideShowWindow.View.GotoSlide(1)

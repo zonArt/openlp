@@ -23,16 +23,16 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from datetime import datetime
 import logging
 
+from datetime import datetime
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, Receiver, build_icon, translate
 from openlp.plugins.songusage.lib import SongUsageManager
 from openlp.plugins.songusage.forms import SongUsageDetailForm, \
     SongUsageDeleteForm
-from openlp.plugins.songusage.lib.models import SongUsageItem
+from openlp.plugins.songusage.lib.db import SongUsageItem
 
 log = logging.getLogger(__name__)
 
@@ -40,9 +40,9 @@ class SongUsagePlugin(Plugin):
     log.info(u'SongUsage Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'SongUsage', u'1.9.1', plugin_helpers)
+        Plugin.__init__(self, u'SongUsage', u'1.9.2', plugin_helpers)
         self.weight = -4
-        self.icon = build_icon(u':/media/media_image.png')
+        self.icon = build_icon(u':/plugins/plugin_songusage.png')
         self.songusagemanager = None
         self.songusageActive = False
 
@@ -59,30 +59,32 @@ class SongUsagePlugin(Plugin):
         self.toolsMenu = tools_menu
         self.SongUsageMenu = QtGui.QMenu(tools_menu)
         self.SongUsageMenu.setObjectName(u'SongUsageMenu')
-        self.SongUsageMenu.setTitle(tools_menu.trUtf8('&Song Usage'))
+        self.SongUsageMenu.setTitle(translate(
+            'SongUsagePlugin', '&Song Usage'))
         #SongUsage Delete
         self.SongUsageDelete = QtGui.QAction(tools_menu)
-        self.SongUsageDelete.setText(
-            tools_menu.trUtf8('&Delete recorded data'))
-        self.SongUsageDelete.setStatusTip(
-            tools_menu.trUtf8('Delete song usage to specified date'))
+        self.SongUsageDelete.setText(translate('SongUsagePlugin',
+            '&Delete recorded data'))
+        self.SongUsageDelete.setStatusTip(translate('SongUsagePlugin',
+            'Delete song usage to specified date'))
         self.SongUsageDelete.setObjectName(u'SongUsageDelete')
         #SongUsage Report
         self.SongUsageReport = QtGui.QAction(tools_menu)
         self.SongUsageReport.setText(
-            tools_menu.trUtf8('&Extract recorded data'))
+            translate('SongUsagePlugin', '&Extract recorded data'))
         self.SongUsageReport.setStatusTip(
-            tools_menu.trUtf8('Generate report on Song Usage'))
+            translate('SongUsagePlugin', 'Generate report on Song Usage'))
         self.SongUsageReport.setObjectName(u'SongUsageReport')
         #SongUsage activation
-        SongUsageIcon = build_icon(u':/tools/tools_alert.png')
+        SongUsageIcon = build_icon(u':/plugins/plugin_songusage.png')
         self.SongUsageStatus = QtGui.QAction(tools_menu)
         self.SongUsageStatus.setIcon(SongUsageIcon)
         self.SongUsageStatus.setCheckable(True)
         self.SongUsageStatus.setChecked(False)
-        self.SongUsageStatus.setText(tools_menu.trUtf8('Song Usage Status'))
-        self.SongUsageStatus.setStatusTip(
-            tools_menu.trUtf8('Start/Stop live song usage recording'))
+        self.SongUsageStatus.setText(translate(
+            'SongUsagePlugin', 'Song Usage Status'))
+        self.SongUsageStatus.setStatusTip(translate('SongUsagePlugin',
+                'Start/Stop live song usage recording'))
         self.SongUsageStatus.setShortcut(u'F4')
         self.SongUsageStatus.setObjectName(u'SongUsageStatus')
         #Add Menus together
@@ -146,7 +148,7 @@ class SongUsagePlugin(Plugin):
             song_usage_item.authors = u''
             for author in audit[1]:
                 song_usage_item.authors += author + u' '
-            self.songusagemanager.insert_songusage(song_usage_item)
+            self.songusagemanager.save_object(song_usage_item)
 
     def onSongUsageDelete(self):
         self.SongUsagedeleteform.exec_()
@@ -156,8 +158,8 @@ class SongUsagePlugin(Plugin):
         self.SongUsagedetailform.exec_()
 
     def about(self):
-        about_text = translate(u'SongsPlugin.SongUsagePlugin',
-            u'<b>SongUsage Plugin</b><br>This plugin '
-            u'records the use of songs and when they have been used during '
-            u'a live service')
+        about_text = translate('SongUsagePlugin',
+            '<b>SongUsage Plugin</b><br>This plugin '
+            'records the use of songs and when they have been used during '
+            'a live service')
         return about_text
