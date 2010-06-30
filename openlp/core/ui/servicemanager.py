@@ -625,13 +625,13 @@ class ServiceManager(QtGui.QWidget):
 
     def onLoadService(self, lastService=False):
         if lastService:
-            filename = SettingsManager.get_last_dir(
-                self.parent.serviceSettingsSection)
+            filename = self.parent.recentFiles[0]
         else:
             filename = QtGui.QFileDialog.getOpenFileName(
                 self, translate('ServiceManager', 'Open Service'),
                 SettingsManager.get_last_dir(
                 self.parent.serviceSettingsSection), u'Services (*.osz)')
+        filename = QtCore.QDir.toNativeSeparators(filename)
         self.loadService(filename)
 
     def loadService(self, filename=None):
@@ -662,7 +662,7 @@ class ServiceManager(QtGui.QWidget):
         name = filename.split(os.path.sep)
         if filename:
             SettingsManager.set_last_dir(self.parent.serviceSettingsSection,
-                name[0])
+                os.path.split(filename)[0])
             zip = None
             file_to = None
             try:

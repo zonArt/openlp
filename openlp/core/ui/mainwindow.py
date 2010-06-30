@@ -845,7 +845,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         recentFileCount = QtCore.QSettings().value(
             self.generalSettingsSection + u'/max recent files',
             QtCore.QVariant(4)).toInt()[0]
-        if filename and filename not in self.recentFiles:
+        if filename:
+            position = self.recentFiles.indexOf(filename)
+            if position != -1:
+                self.recentFiles.removeAt(position)
             self.recentFiles.insert(0, QtCore.QString(filename))
             while self.recentFiles.count() > recentFileCount:
                 self.recentFiles.removeLast()
