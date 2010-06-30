@@ -41,7 +41,7 @@ class alertsPlugin(Plugin):
     def __init__(self, plugin_helpers):
         Plugin.__init__(self, u'Alerts', u'1.9.2', plugin_helpers)
         self.weight = -3
-        self.icon = build_icon(u':/media/media_image.png')
+        self.icon = build_icon(u':/plugins/plugin_alerts.png')
         self.alertsmanager = AlertsManager(self)
         self.manager = Manager(u'alerts', init_schema)
         self.alertForm = AlertForm(self.manager, self)
@@ -65,7 +65,7 @@ class alertsPlugin(Plugin):
         """
         log.info(u'add tools menu')
         self.toolsAlertItem = QtGui.QAction(tools_menu)
-        AlertIcon = build_icon(u':/tools/tools_alert.png')
+        AlertIcon = build_icon(u':/plugins/plugin_alerts.png')
         self.toolsAlertItem.setIcon(AlertIcon)
         self.toolsAlertItem.setObjectName(u'toolsAlertItem')
         self.toolsAlertItem.setText(

@@ -42,7 +42,7 @@ class SongUsagePlugin(Plugin):
     def __init__(self, plugin_helpers):
         Plugin.__init__(self, u'SongUsage', u'1.9.2', plugin_helpers)
         self.weight = -4
-        self.icon = build_icon(u':/media/media_image.png')
+        self.icon = build_icon(u':/plugins/plugin_songusage.png')
         self.songusagemanager = None
         self.songusageActive = False
 
@@ -76,7 +76,7 @@ class SongUsagePlugin(Plugin):
             translate('SongUsagePlugin', 'Generate report on Song Usage'))
         self.SongUsageReport.setObjectName(u'SongUsageReport')
         #SongUsage activation
-        SongUsageIcon = build_icon(u':/tools/tools_alert.png')
+        SongUsageIcon = build_icon(u':/plugins/plugin_songusage.png')
         self.SongUsageStatus = QtGui.QAction(tools_menu)
         self.SongUsageStatus.setIcon(SongUsageIcon)
         self.SongUsageStatus.setCheckable(True)
