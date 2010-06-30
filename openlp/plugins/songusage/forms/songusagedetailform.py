@@ -42,7 +42,7 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
 
     def __init__(self, parent=None):
         """
-        Constructor
+        Initialise the form
         """
         QtGui.QDialog.__init__(self, None)
         self.parent = parent
