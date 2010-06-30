@@ -25,7 +25,7 @@
 
 import logging
 
-from openlp.core.lib import Plugin, translate
+from openlp.core.lib import Plugin, translate, build_icon
 from openlp.plugins.remotes.lib import RemoteTab, HttpServer
 
 log = logging.getLogger(__name__)
@@ -38,6 +38,7 @@ class RemotesPlugin(Plugin):
         remotes constructor
         """
         Plugin.__init__(self, u'Remotes', u'1.9.2', plugin_helpers)
+        self.icon = build_icon(u':/plugins/plugin_remote.png')
         self.weight = -1
         self.server = None
 
