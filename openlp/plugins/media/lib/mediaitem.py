@@ -29,7 +29,8 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    ItemCapabilities, SettingsManager, translate, check_item_selected
+    ItemCapabilities, SettingsManager, translate, check_item_selected,  \
+    context_menu_action
 
 log = logging.getLogger(__name__)
 
@@ -73,13 +74,13 @@ class MediaMediaItem(MediaManagerItem):
         self.hasNewIcon = False
         self.hasEditIcon = False
 
-#    def addListViewToToolBar(self):
-#        MediaManagerItem.addListViewToToolBar(self)
-#        self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-#        self.ListView.addAction(
-#            context_menu_action(self.ListView, u':/slides/slide_blank.png',
-#                translate('MediaPlugin.MediaItem', 'Replace Live Background'),
-#                self.onReplaceClick))
+    def addListViewToToolBar(self):
+        MediaManagerItem.addListViewToToolBar(self)
+        self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.ListView.addAction(
+            context_menu_action(self.ListView, u':/slides/slide_blank.png',
+                translate('MediaPlugin.MediaItem', 'Replace Live Background'),
+                self.onReplaceClick))
 
     def addEndHeaderBar(self):
         self.ImageWidget = QtGui.QWidget(self)
@@ -92,24 +93,31 @@ class MediaMediaItem(MediaManagerItem):
         self.ImageWidget.setSizePolicy(sizePolicy)
         self.ImageWidget.setObjectName(u'ImageWidget')
         #Replace backgrounds do not work at present so remove functionality.
-#        self.blankButton = self.Toolbar.addToolbarButton(
-#            u'Replace Background', u':/slides/slide_blank.png',
-#            translate('MediaPlugin.MediaItem', 'Replace Live Background'),
-#                self.onReplaceClick, False)
+        self.blankButton = self.Toolbar.addToolbarButton(
+            u'Replace Background', u':/slides/slide_blank.png',
+            translate('MediaPlugin.MediaItem', 'Replace Live Background'),
+                self.onReplaceClick, False)
         # Add the song widget to the page layout
         self.PageLayout.addWidget(self.ImageWidget)
 
-#    def onReplaceClick(self):
+    def onReplaceClick(self):
 #        if self.background:
 #            self.background = False
 #            Receiver.send_message(u'videodisplay_stop')
 #        else:
 #            self.background = True
-#            if not self.ListView.selectedIndexes():
-#                QtGui.QMessageBox.information(self,
-#                    translate('MediaPlugin.MediaItem', 'No item selected'),
-#                    translate('MediaPlugin.MediaItem',
-#                        'You must select one item'))
+        if not self.ListView.selectedIndexes():
+            QtGui.QMessageBox.information(self,
+                translate('MediaPlugin.MediaItem', 'No item selected'),
+                translate('MediaPlugin.MediaItem',
+                    'You must select one item'))
+            return
+        item = self.ListView.currentItem()
+        if item is None:
+            return False
+        filename = unicode(item.data(QtCore.Qt.UserRole).toString())
+        print filename
+        self.parent.live_controller.displayManager.displayVideo(filename)
 #            items = self.ListView.selectedIndexes()
 #            for item in items:
 #                bitem = self.ListView.item(item.row())

@@ -41,6 +41,23 @@ HTMLIMAGE = """<html>
     </body></html>
     """
 
+#http://www.steveheffernan.com/html5-video-player/demo-video-player.html
+HTMLVIDEO = u"""<html>
+  <script type="text/javascript" charset="utf-8">
+    var video;
+    var bodyLoaded = function(){
+        video = document.getElementById("video");
+        video.volume = 0;
+    }
+  </script>
+        <body id=\"body\" onload=\"bodyLoaded();>\"
+        <video id=\"video\" src=\"%s\"
+            autoplay loop width=%s height=%s autobuffer=\"autobuffer\" preload >
+            your browser does not support the video tag
+        </video>
+        </body></html>
+    """
+
 class DisplayManager(QtGui.QWidget):
     """
     Wrapper class to hold the display widgets.
@@ -92,6 +109,12 @@ class DisplayManager(QtGui.QWidget):
         Handles the addition of a background Image to the displays
         """
         self.mainDisplay.displayImage(path)
+
+    def displayVideo(self, path):
+        """
+        Handles the addition of a background Video to the displays
+        """
+        self.mainDisplay.displayVideo(path)
 
     def onStartVideo(self, item):
         """
@@ -363,6 +386,16 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'adddisplayImage')
         self.imageDisplay.setHtml(HTMLIMAGE % path)
+
+    def displayVideo(self, path):
+        """
+        Places the Video passed on the display screen
+        ``path``
+            The path to the image to be displayed
+        """
+        log.debug(u'adddisplayVideo')
+        self.imageDisplay.setHtml(HTMLVIDEO %
+            (path, self.screen[u'size'].width(), self.screen[u'size'].height()))
 
     def frameView(self, frame, transition=False):
         """
