@@ -24,5 +24,5 @@
 ###############################################################################
 """
 The :mod:`alerts` module provides the Alerts plugin for producing impromptu
-on-screen announcements during a service
+on-screen announcements during a service.
 """

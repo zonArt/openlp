@@ -29,7 +29,7 @@ from PyQt4 import QtCore, QtGui
 
 from editcustomdialog import Ui_customEditDialog
 from openlp.core.lib import SongXMLBuilder, SongXMLParser, Receiver, translate
-from openlp.plugins.custom.lib.models import CustomSlide
+from openlp.plugins.custom.lib.db import CustomSlide
 
 log = logging.getLogger(__name__)
 
@@ -85,9 +85,8 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
 
     def onPreview(self, button):
         log.debug(u'onPreview')
-        if button.text() == \
-            unicode(translate('CustomPlugin.EditCustomForm', 'Save && Preview')) \
-            and self.saveCustom():
+        if button.text() == unicode(translate('CustomPlugin.EditCustomForm',
+            'Save && Preview')) and self.saveCustom():
             Receiver.send_message(u'custom_preview')
 
     def initialise(self):
@@ -117,7 +116,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         self.customSlide = CustomSlide()
         self.initialise()
         if id != 0:
-            self.customSlide = self.custommanager.get_custom(id)
+            self.customSlide = self.custommanager.get_object(CustomSlide, id)
             self.TitleEdit.setText(self.customSlide.title)
             self.CreditEdit.setText(self.customSlide.credits)
             songXML = SongXMLParser(self.customSlide.text)
@@ -167,8 +166,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             u'utf-8')
         self.customSlide.theme_name = unicode(self.ThemeComboBox.currentText(),
             u'utf-8')
-        self.custommanager.save_slide(self.customSlide)
-        return True
+        return self.custommanager.save_object(self.customSlide)
 
     def onUpButtonPressed(self):
         selectedRow = self.VerseListView.currentRow()

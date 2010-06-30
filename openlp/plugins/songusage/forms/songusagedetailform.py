@@ -42,7 +42,7 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
 
     def __init__(self, parent=None):
         """
-        Constructor
+        Initialise the form
         """
         QtGui.QDialog.__init__(self, None)
         self.parent = parent
@@ -61,8 +61,8 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
 
     def defineOutputLocation(self):
         path = QtGui.QFileDialog.getExistingDirectory(self,
-            translate(u'SongsPlugin.SongUsageDetailForm',
-                u'Output File Location'),
+            translate('SongsPlugin.SongUsageDetailForm',
+                'Output File Location'),
             SettingsManager.get_last_dir(self.parent.settingsSection, 1))
         path = unicode(path)
         if path != u'':
@@ -71,20 +71,19 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
 
     def accept(self):
         log.debug(u'Detailed report generated')
-        filename = u'usage_detail_%s_%s.txt' % \
-            (self.FromDate.selectedDate().toString(u'ddMMyyyy'),
-             self.ToDate.selectedDate().toString(u'ddMMyyyy'))
-        usage = self.parent.songusagemanager.get_all_songusage(\
-                                    self.FromDate.selectedDate(), \
-                                    self.ToDate.selectedDate())
+        filename = u'usage_detail_%s_%s.txt' % (
+            self.FromDate.selectedDate().toString(u'ddMMyyyy'),
+            self.ToDate.selectedDate().toString(u'ddMMyyyy'))
+        usage = self.parent.songusagemanager.get_songusage_for_period(
+            self.FromDate.selectedDate(), self.ToDate.selectedDate())
         outname = os.path.join(unicode(self.FileLineEdit.text()), filename)
         file = None
         try:
             file = open(outname, u'w')
             for instance in usage:
-                record = u'\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"\n' % \
-                    (instance.usagedate,instance.usagetime, instance.title,
-                    instance.copyright, instance.ccl_number , instance.authors)
+                record = u'\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"\n' % (
+                    instance.usagedate, instance.usagetime, instance.title,
+                    instance.copyright, instance.ccl_number, instance.authors)
                 file.write(record)
         except IOError:
             log.exception(u'Failed to write out song usage records')

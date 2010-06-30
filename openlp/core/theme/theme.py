@@ -168,14 +168,15 @@ class Theme(object):
                 theme_strings.append(u'_%s_' % (getattr(self, key)))
         return u''.join(theme_strings)
 
-    def _set_from_XML(self, xml):
+    def _set_from_xml(self, xml):
         """
         Set theme class attributes with data from XML
 
         ``xml``
             The data to apply to the theme
         """
-        root = ElementTree(element=XML(xml.encode(u'ascii', u'xmlcharrefreplace')))
+        root = ElementTree(element=XML(xml.encode(u'ascii',
+            u'xmlcharrefreplace')))
         xml_iter = root.getiterator()
         for element in xml_iter:
             delphi_color_change = False

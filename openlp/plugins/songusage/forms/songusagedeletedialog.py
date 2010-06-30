@@ -59,4 +59,4 @@ class Ui_SongUsageDeleteDialog(object):
 
     def retranslateUi(self, SongUsageDeleteDialog):
         SongUsageDeleteDialog.setWindowTitle(
-            translate(u'SongsPlugin.AuditDeleteDialog', u'Song Usage Delete'))
+            translate('SongsPlugin.AuditDeleteDialog', 'Song Usage Delete'))

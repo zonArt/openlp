@@ -35,7 +35,7 @@ from openlp.core.ui import AmendThemeForm
 from openlp.core.theme import Theme
 from openlp.core.lib import OpenLPToolbar, context_menu_action, \
     ThemeXML, str_to_bool, get_text_file_string, build_icon, Receiver, \
-    context_menu_separator, SettingsManager, translate
+    context_menu_separator, SettingsManager, translate, check_item_selected
 from openlp.core.utils import AppLocation, get_filesystem_encoding
 
 log = logging.getLogger(__name__)
@@ -66,7 +66,7 @@ class ThemeManager(QtGui.QWidget):
             translate('ThemeManager', 'Delete a theme.'), self.onDeleteTheme)
         self.Toolbar.addSeparator()
         self.Toolbar.addToolbarButton(
-            translate('ThemeManager', 'Import Theme'), 
+            translate('ThemeManager', 'Import Theme'),
             u':/general/general_import.png',
             translate('ThemeManager', 'Import a theme.'), self.onImportTheme)
         self.Toolbar.addToolbarButton(
@@ -182,8 +182,9 @@ class ThemeManager(QtGui.QWidget):
         Loads the settings for the theme that is to be edited and launches the
         theme editing form so the user can make their changes.
         """
-        item = self.ThemeListWidget.currentItem()
-        if item:
+        if check_item_selected(self.ThemeListWidget, translate('ThemeManager',
+            'You must select a theme to edit.')):
+            item = self.ThemeListWidget.currentItem()
             theme = self.getThemeData(
                 unicode(item.data(QtCore.Qt.UserRole).toString()))
             self.amendThemeForm.loadTheme(theme)
@@ -198,8 +199,9 @@ class ThemeManager(QtGui.QWidget):
         self.global_theme = unicode(QtCore.QSettings().value(
             self.settingsSection + u'/global theme',
             QtCore.QVariant(u'')).toString())
-        item = self.ThemeListWidget.currentItem()
-        if item:
+        if check_item_selected(self.ThemeListWidget, translate('ThemeManager',
+            'You must select a theme to delete.')):
+            item = self.ThemeListWidget.currentItem()
             theme = unicode(item.text())
             # should be the same unless default
             if theme != unicode(item.data(QtCore.Qt.UserRole).toString()):
@@ -211,7 +213,7 @@ class ThemeManager(QtGui.QWidget):
             else:
                 for plugin in self.parent.plugin_manager.plugins:
                     if not plugin.can_delete_theme(theme):
-                        QtGui.QMessageBox.critical(self, 
+                        QtGui.QMessageBox.critical(self,
                             translate('ThemeManager', 'Error'),
                             unicode(translate('ThemeManager',
                                 'Theme %s is use in %s plugin.')) % \
@@ -248,7 +250,7 @@ class ThemeManager(QtGui.QWidget):
         """
         item = self.ThemeListWidget.currentItem()
         if item is None:
-            QtGui.QMessageBox.critical(self, 
+            QtGui.QMessageBox.critical(self,
                 translate('ThemeManager', 'Error'),
                 translate('ThemeManager', 'You have not selected a theme.'))
             return
@@ -398,7 +400,7 @@ class ThemeManager(QtGui.QWidget):
                         self, translate('ThemeManager', 'Error'),
                         translate('ThemeManager', 'File is not a valid theme.\n'
                             'The content encoding is not UTF-8.'))
-                    log.exception(u'Filename "%s" is not valid UTF-8' % \
+                    log.exception(u'Filename "%s" is not valid UTF-8' %
                         file.decode(u'utf-8', u'replace'))
                     continue
                 osfile = unicode(QtCore.QDir.toNativeSeparators(ucsfile))
@@ -424,8 +426,8 @@ class ThemeManager(QtGui.QWidget):
                                 xml_data = xml_data.decode(u'utf-8')
                             except UnicodeDecodeError:
                                 log.exception(u'Theme XML is not UTF-8 '
-                                    'encoded.')
-                                break;
+                                    u'encoded.')
+                                break
                             if self.checkVersion1(xml_data):
                                 # upgrade theme xml
                                 filexml = self.migrateVersion122(xml_data)

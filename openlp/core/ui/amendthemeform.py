@@ -37,9 +37,9 @@ log = logging.getLogger(u'AmendThemeForm')
 
 class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
 
-    def __init__(self, thememanager, parent=None):
+    def __init__(self, parent):
         QtGui.QDialog.__init__(self, parent)
-        self.thememanager = thememanager
+        self.thememanager = parent
         self.path = None
         self.theme = ThemeXML()
         self.setupUi(self)

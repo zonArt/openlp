@@ -29,7 +29,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    SettingsManager, translate
+    SettingsManager, translate, check_item_selected
 from openlp.core.utils import AppLocation
 from openlp.plugins.presentations.lib import MessageListener
 
@@ -61,14 +61,14 @@ class PresentationMediaItem(MediaManagerItem):
         self.message_listener = MessageListener(self)
 
     def initPluginNameVisible(self):
-        self.PluginNameVisible = translate(u'PresentationPlugin.MediaItem',
-            u'Presentation')
+        self.PluginNameVisible = translate('PresentationPlugin.MediaItem',
+            'Presentation')
 
     def retranslateUi(self):
-        self.OnNewPrompt = translate(u'PresentationPlugin.MediaItem',
-            u'Select Presentation(s)')
-        self.Automatic = translate(u'PresentationPlugin.MediaItem',
-            u'Automatic')
+        self.OnNewPrompt = translate('PresentationPlugin.MediaItem',
+            'Select Presentation(s)')
+        self.Automatic = translate('PresentationPlugin.MediaItem',
+            'Automatic')
         fileType = u''
         for controller in self.controllers:
             if self.controllers[controller].enabled:
@@ -78,8 +78,8 @@ class PresentationMediaItem(MediaManagerItem):
                     if fileType.find(type) == -1:
                         fileType += u'*%s ' % type
                         self.parent.service_manager.supportedSuffixes(type)
-        self.OnNewFileMasks = translate(u'PresentationPlugin.MediaItem',
-            u'Presentations (%s)' % fileType)
+        self.OnNewFileMasks = translate('PresentationPlugin.MediaItem',
+            'Presentations (%s)' % fileType)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -106,7 +106,7 @@ class PresentationMediaItem(MediaManagerItem):
         self.DisplayTypeLabel.setObjectName(u'SearchTypeLabel')
         self.DisplayLayout.addWidget(self.DisplayTypeLabel, 0, 0, 1, 1)
         self.DisplayTypeLabel.setText(
-            translate(u'PresentationPlugin.MediaItem', u'Present using:'))
+            translate('PresentationPlugin.MediaItem', 'Present using:'))
         # Add the Presentation widget to the page layout
         self.PageLayout.addWidget(self.PresentationWidget)
 
@@ -139,10 +139,10 @@ class PresentationMediaItem(MediaManagerItem):
             filename = os.path.split(unicode(file))[1]
             if titles.count(filename) > 0:
                 QtGui.QMessageBox.critical(
-                    self, translate(u'PresentationPlugin.MediaItem',
-                    u'File exists'), 
-                        translate(u'PresentationPlugin.MediaItem',
-                        u'A presentation with that filename already exists.'),
+                    self, translate('PresentationPlugin.MediaItem',
+                    'File exists'),
+                        translate('PresentationPlugin.MediaItem',
+                        'A presentation with that filename already exists.'),
                     QtGui.QMessageBox.Ok)
             else:
                 icon = None
@@ -177,20 +177,25 @@ class PresentationMediaItem(MediaManagerItem):
         """
         Remove a presentation item from the list
         """
-        if self.checkItemSelected(translate(u'PresentationPlugin.MediaItem',
-            u'You must select an item to delete.')):
-            item = self.ListView.currentItem()
-            row = self.ListView.row(item)
-            self.ListView.takeItem(row)
+        if check_item_selected(self.ListView,
+            translate('PresentationPlugin.MediaItem',
+            'You must select an item to delete.')):
+            items = self.ListView.selectedIndexes()
+            row_list = [item.row() for item in items]
+            row_list.sort(reverse=True)
+            for item in items:
+                filepath = unicode(item.data(
+                    QtCore.Qt.UserRole).toString())
+                #not sure of this has errors
+                #John please can you look at .
+                for cidx in self.controllers:
+                    doc = self.controllers[cidx].add_doc(filepath)
+                    doc.presentation_deleted()
+                    doc.close_presentation()
+            for row in row_list:
+                self.ListView.takeItem(row)
             SettingsManager.set_list(self.settingsSection,
                 self.settingsSection, self.getFileList())
-            filepath = unicode(item.data(QtCore.Qt.UserRole).toString())
-            #not sure of this has errors
-            #John please can you look at .
-            for cidx in self.controllers:
-                doc = self.controllers[cidx].add_doc(filepath)
-                doc.presentation_deleted()
-                doc.close_presentation()
 
     def generateSlideData(self, service_item, item=None):
         items = self.ListView.selectedIndexes()

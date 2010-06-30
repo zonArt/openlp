@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import SongXMLBuilder, SongXMLParser, Receiver, translate
 from openlp.plugins.songs.forms import EditVerseForm
 from openlp.plugins.songs.lib import VerseType
-from openlp.plugins.songs.lib.models import Song, Author, Topic, Book
+from openlp.plugins.songs.lib.db import Book, Song, Author, Topic
 from editsongdialog import Ui_EditSongDialog
 
 log = logging.getLogger(__name__)
@@ -96,7 +96,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.previewButton = QtGui.QPushButton()
         self.previewButton.setObjectName(u'previewButton')
         self.previewButton.setText(
-            translate(u'SongsPlugin.EditSongForm', u'Save && Preview'))
+            translate('SongsPlugin.EditSongForm', 'Save && Preview'))
         self.ButtonBox.addButton(
             self.previewButton, QtGui.QDialogButtonBox.ActionRole)
         QtCore.QObject.connect(self.ButtonBox,
@@ -118,7 +118,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.TopicRemoveButton.setEnabled(False)
 
     def loadAuthors(self):
-        authors = self.songmanager.get_authors()
+        authors = self.songmanager.get_all_objects(Author, Author.display_name)
         self.AuthorsSelectionComboItem.clear()
         self.AuthorsSelectionComboItem.addItem(u'')
         for author in authors:
@@ -128,7 +128,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 row, QtCore.QVariant(author.id))
 
     def loadTopics(self):
-        topics = self.songmanager.get_topics()
+        topics = self.songmanager.get_all_objects(Topic, Topic.name)
         self.SongTopicCombo.clear()
         self.SongTopicCombo.addItem(u'')
         for topic in topics:
@@ -137,7 +137,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.SongTopicCombo.setItemData(row, QtCore.QVariant(topic.id))
 
     def loadBooks(self):
-        books = self.songmanager.get_books()
+        books = self.songmanager.get_all_objects(Book, Book.name)
         self.SongbookCombo.clear()
         self.SongbookCombo.addItem(u'')
         for book in books:
@@ -178,11 +178,12 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.loadAuthors()
         self.loadTopics()
         self.loadBooks()
-        self.song = self.songmanager.get_song(id)
+        self.song = self.songmanager.get_object(Song, id)
         self.TitleEditItem.setText(self.song.title)
         title = self.song.search_title.split(u'@')
         if self.song.song_book_id != 0:
-            book_name = self.songmanager.get_book(self.song.song_book_id)
+            book_name = self.songmanager.get_object(Book,
+                self.song.song_book_id)
             id = self.SongbookCombo.findText(
                 unicode(book_name.name), QtCore.Qt.MatchExactly)
             if id == -1:
@@ -289,7 +290,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 QtGui.QMessageBox.Yes) == QtGui.QMessageBox.Yes:
                 author = Author.populate(first_name=text.rsplit(u' ', 1)[0],
                     last_name=text.rsplit(u' ', 1)[1], display_name=text)
-                self.songmanager.save_author(author)
+                self.songmanager.save_object(author)
                 self.song.authors.append(author)
                 author_item = QtGui.QListWidgetItem(
                     unicode(author.display_name))
@@ -302,7 +303,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 return
         elif item > 0:
             item_id = (self.AuthorsSelectionComboItem.itemData(item)).toInt()[0]
-            author = self.songmanager.get_author(item_id)
+            author = self.songmanager.get_object(Author, item_id)
             self.song.authors.append(author)
             author_item = QtGui.QListWidgetItem(unicode(author.display_name))
             author_item.setData(QtCore.Qt.UserRole, QtCore.QVariant(author.id))
@@ -325,7 +326,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.AuthorRemoveButton.setEnabled(False)
         item = self.AuthorsListView.currentItem()
         author_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-        author = self.songmanager.get_author(author_id)
+        author = self.songmanager.get_object(Author, author_id)
         self.song.authors.remove(author)
         row = self.AuthorsListView.row(item)
         self.AuthorsListView.takeItem(row)
@@ -341,7 +342,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
                 QtGui.QMessageBox.Yes) == QtGui.QMessageBox.Yes:
                 topic = Topic.populate(name=text)
-                self.songmanager.save_topic(topic)
+                self.songmanager.save_object(topic)
                 self.song.topics.append(topic)
                 topic_item = QtGui.QListWidgetItem(unicode(topic.name))
                 topic_item.setData(QtCore.Qt.UserRole,
@@ -353,7 +354,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 return
         elif item > 0:
             item_id = (self.SongTopicCombo.itemData(item)).toInt()[0]
-            topic = self.songmanager.get_topic(item_id)
+            topic = self.songmanager.get_object(Topic, item_id)
             self.song.topics.append(topic)
             topic_item = QtGui.QListWidgetItem(unicode(topic.name))
             topic_item.setData(QtCore.Qt.UserRole, QtCore.QVariant(topic.id))
@@ -375,7 +376,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.TopicRemoveButton.setEnabled(False)
         item = self.TopicsListView.currentItem()
         topic_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-        topic = self.songmanager.get_topic(topic_id)
+        topic = self.songmanager.get_object(Topic, topic_id)
         self.song.topics.remove(topic)
         row = self.TopicsListView.row(item)
         self.TopicsListView.takeItem(row)
@@ -391,12 +392,12 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
                 QtGui.QMessageBox.Yes) == QtGui.QMessageBox.Yes:
                 book = Book.populate(name=text)
-                self.songmanager.save_book(book)
+                self.songmanager.save_object(book)
                 self.song.book = book
                 self.loadBooks()
             else:
                 return
-        elif item > 1:
+        elif item >= 1:
             item = int(self.SongbookCombo.currentIndex())
             self.song.song_book_id = \
                 (self.SongbookCombo.itemData(item)).toInt()[0]
@@ -516,26 +517,26 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.SongTabWidget.setCurrentIndex(0)
             self.TitleEditItem.setFocus()
             QtGui.QMessageBox.critical(self,
-                translate(u'SongsPlugin.EditSongForm', u'Error'),
-                translate(u'SongsPlugin.EditSongForm',
-                    u'You need to enter a song title.'))
+                translate('SongsPlugin.EditSongForm', 'Error'),
+                translate('SongsPlugin.EditSongForm',
+                    'You need to type in a song title.'))
             return False
         if self.VerseListWidget.rowCount() == 0:
             self.SongTabWidget.setCurrentIndex(0)
             self.VerseListWidget.setFocus()
             QtGui.QMessageBox.critical(self,
-                translate(u'SongsPlugin.EditSongForm', u'Error'),
-                translate('uSongsPlugin.EditSongForm',
-                    u'You need to enter some verses.'))
+                translate('SongsPlugin.EditSongForm', 'Error'),
+                translate('SongsPlugin.EditSongForm',
+                    'You need to type in at least one verse.'))
             return False
         if self.AuthorsListView.count() == 0:
             self.SongTabWidget.setCurrentIndex(1)
             self.AuthorsListView.setFocus()
             answer = QtGui.QMessageBox.warning(self,
-                translate(u'SongsPlugin.EditSongForm', u'Warning'),
+                translate('SongsPlugin.EditSongForm', 'Warning'),
                 translate('SongsPlugin.EditSongForm',
-                    'You have set no author.\n'
-                    'Do you want to add now a author?'),
+                    'You have not added any authors for this song. Do you '
+                    'want to add an author now?'),
                 QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
             if answer == QtGui.QMessageBox.Yes:
                 return False
@@ -564,7 +565,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     for verse in verses:
                         valid = valid + u', ' + verse
                     QtGui.QMessageBox.critical(self,
-                        translate(u'SongsPlugin.EditSongForm', u'Error'),
+                        translate('SongsPlugin.EditSongForm', 'Error'),
                         unicode(translate('SongsPlugin.EditSongForm',
                             'The verse order is invalid. There is no verse '
                             'corresponding to %s. Valid entries are %s.')) % \
@@ -575,10 +576,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     self.SongTabWidget.setCurrentIndex(0)
                     self.VerseOrderEdit.setFocus()
                     answer = QtGui.QMessageBox.warning(self,
-                        translate(u'SongsPlugin.EditSongForm', u'Warning'),
+                        translate('SongsPlugin.EditSongForm', 'Warning'),
                         unicode(translate('SongsPlugin.EditSongForm',
-                            '%s is not addressed in the verse order.\n'
-                            'Do you want to save anyhow?')) % \
+                            'You have not used %s anywhere in the verse '
+                            'order. Are you sure you want to save the song '
+                            'like this?')) % \
                             verse_names[count].replace(u':', u' '),
                         QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
                     if answer == QtGui.QMessageBox.No:
@@ -588,7 +590,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def onCopyrightInsertButtonTriggered(self):
         text = self.CopyrightEditItem.text()
         pos = self.CopyrightEditItem.cursorPosition()
-        text = text[:pos] + u'\xa9' + text[pos:]
+        text = text[:pos] + '\xa9' + text[pos:]
         self.CopyrightEditItem.setText(text)
         self.CopyrightEditItem.setFocus()
         self.CopyrightEditItem.setCursorPosition(pos + 1)
@@ -629,7 +631,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if self._validate_song():
             self.processLyrics()
             self.processTitle()
-            self.songmanager.save_song(self.song)
+            self.songmanager.save_object(self.song)
             return True
         return False
 
@@ -649,12 +651,13 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 text = text + re.sub(r'\W+', u' ',
                     unicode(self.VerseListWidget.item(i, 0).text())) + u' '
                 if (bits[1] > u'1') and (bits[0][0] not in multiple):
-                   multiple.append(bits[0][0])
+                    multiple.append(bits[0][0])
             self.song.search_lyrics = text
             self.song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
             for verse in multiple:
                 self.song.verse_order = re.sub(u'([' + verse.upper() +
-                    verse.lower() + u'])(\W|$)', r'\g<1>1\2', self.song.verse_order)
+                    verse.lower() + u'])(\W|$)', r'\g<1>1\2',
+                    self.song.verse_order)
         except:
             log.exception(u'Problem processing song Lyrics \n%s',
                 sxml.dump_xml())

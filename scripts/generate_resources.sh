@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#!/bin/sh
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
 ###############################################################################
@@ -22,27 +22,33 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+#
+# This script automates the generation of resources.py for OpenLP saving a
+# backup of the old resources, inserting the coding and copyright header and
+# conforming it to the project coding standards.
+#
+# To make use of the script:
+# 1 - Add the new image files in resources/images/
+# 2 - Modify resources/images/openlp-2.qrc as appropriate
+# 3 - run sh scripts/generate_resources.sh
+#
+# Once you have confirmed the resources are correctly modified to an updated,
+# working state you may optionally remove openlp/core/resources.py.old
+#
+###############################################################################
+# Backup the existing resources
+mv openlp/core/resources.py openlp/core/resources.py.old
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker, mapper, relation
+# Create the new data from the updated qrc
+pyrcc4 -o openlp/core/resources.py.new resources/images/openlp-2.qrc
 
-from openlp.plugins.songs.lib.meta import metadata
-from openlp.plugins.songs.lib.tables import *
-from openlp.plugins.songs.lib.classes import *
+# Remove patch breaking lines
+cat openlp/core/resources.py.new | sed '/# Created: /d;/#      by: /d' \
+    > openlp/core/resources.py
 
-def init_models(url):
-    engine = create_engine(url)
-    metadata.bind = engine
-    session = scoped_session(sessionmaker(autoflush=False, autocommit=False,
-        bind=engine))
-    mapper(Author, authors_table)
-    mapper(Book, song_books_table)
-    mapper(Song, songs_table,
-        properties={'authors': relation(Author, backref='songs',
-            secondary=authors_songs_table),
-            'book': relation(Book, backref='songs'),
-            'topics': relation(Topic, backref='songs',
-            secondary=songs_topics_table)})
-    mapper(Topic, topics_table)
-    return session
+# Patch resources.py to OpenLP coding style
+patch --posix -s openlp/core/resources.py scripts/resources.patch
+
+# Remove temporary file
+rm openlp/core/resources.py.new
 

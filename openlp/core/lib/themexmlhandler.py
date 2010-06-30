@@ -22,7 +22,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+Provide the theme XML and handling functions for OpenLP v2 themes.
+"""
 import os
 
 from xml.dom.minidom import Document
@@ -339,7 +341,8 @@ class ThemeXML(object):
         """
         Pull out the XML string formatted for human consumption
         """
-        return self.theme_xml.toprettyxml(indent=u'    ', newl=u'\n', encoding=u'utf-8')
+        return self.theme_xml.toprettyxml(indent=u'    ', newl=u'\n',
+            encoding=u'utf-8')
 
     def parse(self, xml):
         """
@@ -364,7 +367,8 @@ class ThemeXML(object):
         ``xml``
             The XML string to parse.
         """
-        theme_xml = ElementTree(element=XML(xml.encode(u'ascii', u'xmlcharrefreplace')))
+        theme_xml = ElementTree(element=XML(xml.encode(u'ascii',
+            u'xmlcharrefreplace')))
         xml_iter = theme_xml.getiterator()
         master = u''
         for element in xml_iter:

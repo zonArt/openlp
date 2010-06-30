@@ -50,6 +50,7 @@ class AppLocation(object):
     DataDir = 3
     PluginsDir = 4
     VersionDir = 5
+    CacheDir = 6
 
     @staticmethod
     def get_directory(dir_type=1):
@@ -103,6 +104,20 @@ class AppLocation(object):
             else:
                 plugin_path = os.path.split(openlp.__file__)[0]
             return plugin_path
+        elif dir_type == AppLocation.CacheDir:
+            if sys.platform == u'win32':
+                path = os.path.join(os.getenv(u'APPDATA'), u'openlp')
+            elif sys.platform == u'darwin':
+                path = os.path.join(os.getenv(u'HOME'), u'Library',
+                    u'Application Support', u'openlp')
+            else:
+                try:
+                    from xdg import BaseDirectory
+                    path = os.path.join(
+                        BaseDirectory.xdg_cache_home, u'openlp')
+                except ImportError:
+                    path = os.path.join(os.getenv(u'HOME'), u'.openlp')
+            return path
 
     @staticmethod
     def get_data_path():
@@ -138,7 +153,6 @@ def check_latest_version(current_version):
     settings.setValue(u'last version test', QtCore.QVariant(this_test))
     settings.endGroup()
     if last_test != this_test:
-        version_string = u''
         if current_version[u'build']:
             req = urllib2.Request(
                 u'http://www.openlp.org/files/dev_version.txt')

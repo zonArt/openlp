@@ -24,9 +24,8 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import translate
 
-from openlp.core.lib import build_icon
+from openlp.core.lib import build_icon, translate
 
 class Ui_EditSongDialog(object):
     def setupUi(self, EditSongDialog):
@@ -50,6 +49,7 @@ class Ui_EditSongDialog(object):
         self.TitleLabel.setObjectName(u'TitleLabel')
         self.LyricsTabLayout.addWidget(self.TitleLabel, 0, 0, 1, 1)
         self.TitleEditItem = QtGui.QLineEdit(self.LyricsTab)
+        self.TitleLabel.setBuddy(self.TitleEditItem)
         sizePolicy = QtGui.QSizePolicy(
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -63,6 +63,7 @@ class Ui_EditSongDialog(object):
         self.AlternativeTitleLabel.setObjectName(u'AlternativeTitleLabel')
         self.LyricsTabLayout.addWidget(self.AlternativeTitleLabel, 1, 0, 1, 1)
         self.AlternativeEdit = QtGui.QLineEdit(self.LyricsTab)
+        self.AlternativeTitleLabel.setBuddy(self.AlternativeEdit)
         self.AlternativeEdit.setObjectName(u'AlternativeEdit')
         self.LyricsTabLayout.addWidget(self.AlternativeEdit, 1, 1, 1, 2)
         self.LyricsLabel = QtGui.QLabel(self.LyricsTab)
@@ -71,6 +72,7 @@ class Ui_EditSongDialog(object):
         self.LyricsLabel.setObjectName(u'LyricsLabel')
         self.LyricsTabLayout.addWidget(self.LyricsLabel, 2, 0, 1, 1)
         self.VerseListWidget = QtGui.QTableWidget(self.LyricsTab)
+        self.LyricsLabel.setBuddy(self.VerseListWidget)
         self.VerseListWidget.setColumnCount(1)
         self.VerseListWidget.horizontalHeader().setVisible(False)
         self.VerseListWidget.setSelectionBehavior(1)
@@ -83,6 +85,7 @@ class Ui_EditSongDialog(object):
         self.VerseOrderLabel.setObjectName(u'VerseOrderLabel')
         self.LyricsTabLayout.addWidget(self.VerseOrderLabel, 4, 0, 1, 1)
         self.VerseOrderEdit = QtGui.QLineEdit(self.LyricsTab)
+        self.VerseOrderLabel.setBuddy(self.VerseOrderEdit)
         self.VerseOrderEdit.setObjectName(u'VerseOrderEdit')
         self.LyricsTabLayout.addWidget(self.VerseOrderEdit, 4, 1, 1, 2)
         self.VerseButtonWidget = QtGui.QWidget(self.LyricsTab)
@@ -440,7 +443,7 @@ class Ui_EditSongDialog(object):
         self.TitleLabel.setText(
             translate('SongsPlugin.EditSongForm', '&Title:'))
         self.AlternativeTitleLabel.setText(
-            translate('SongsPlugin.EditSongForm', 'Alt&ernative Title:'))
+            translate('SongsPlugin.EditSongForm', 'Alt&ernate Title:'))
         self.LyricsLabel.setText(
             translate('SongsPlugin.EditSongForm', '&Lyrics:'))
         self.VerseOrderLabel.setText(
@@ -478,11 +481,11 @@ class Ui_EditSongDialog(object):
         self.ThemeGroupBox.setTitle(
             translate('SongsPlugin.EditSongForm', 'Theme'))
         self.ThemeAddButton.setText(
-            translate('SongsPlugin.EditSongForm', 'Add a &Theme'))
+            translate('SongsPlugin.EditSongForm', 'New &Theme'))
         self.CopyrightGroupBox.setTitle(
             translate('SongsPlugin.EditSongForm', 'Copyright Information'))
         self.CopyrightInsertButton.setText(
-            translate('SongsPlugin.EditSongForm', u'\xa9'))
+            translate('SongsPlugin.EditSongForm', '\xa9'))
         self.CCLILabel.setText(
             translate('SongsPlugin.EditSongForm', 'CCLI Number:'))
         self.CommentsGroupBox.setTitle(

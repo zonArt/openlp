@@ -23,6 +23,6 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`bibles' modules provides the Bible plugin to enable OpenLP to display
-scripture
+The :mod:`bibles' module provides the Bible plugin to enable OpenLP to display
+scripture.
 """
