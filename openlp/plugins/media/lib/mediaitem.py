@@ -106,18 +106,12 @@ class MediaMediaItem(MediaManagerItem):
 #            Receiver.send_message(u'videodisplay_stop')
 #        else:
 #            self.background = True
-        if not self.ListView.selectedIndexes():
-            QtGui.QMessageBox.information(self,
-                translate('MediaPlugin.MediaItem', 'No item selected'),
-                translate('MediaPlugin.MediaItem',
-                    'You must select one item'))
-            return
-        item = self.ListView.currentItem()
-        if item is None:
-            return False
-        filename = unicode(item.data(QtCore.Qt.UserRole).toString())
-        print filename
-        self.parent.live_controller.displayManager.displayVideo(filename)
+        if check_item_selected(self.ListView,
+            translate('ImagePlugin.MediaItem',
+            'You must select an item to process.')):
+            item = self.ListView.currentItem()
+            filename = unicode(item.data(QtCore.Qt.UserRole).toString())
+            self.parent.live_controller.displayManager.displayVideo(filename)
 #            items = self.ListView.selectedIndexes()
 #            for item in items:
 #                bitem = self.ListView.item(item.row())

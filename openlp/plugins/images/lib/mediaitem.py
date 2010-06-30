@@ -170,16 +170,13 @@ class ImageMediaItem(MediaManagerItem):
             return False
 
     def onReplaceClick(self):
-        if not self.ListView.selectedIndexes():
-            QtGui.QMessageBox.information(self,
-                translate('ImagePlugin.MediaItem', 'No item selected'),
-                translate('ImagePlugin.MediaItem',
-                    'You must select one item'))
-            return
-        item = self.buildServiceItem()
-        item.render()
-        self.parent.live_controller.displayManager. \
-            displayImage(item.get_rendered_frame(0)[u'display'])
+        if check_item_selected(self.ListView,
+            translate('ImagePlugin.MediaItem',
+            'You must select an item to process.')):
+            item = self.buildServiceItem()
+            item.render()
+            self.parent.live_controller.displayManager. \
+                displayImage(item.get_rendered_frame(0)[u'display'])
 
 
     def onPreviewClick(self):
