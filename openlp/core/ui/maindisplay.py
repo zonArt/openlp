@@ -26,13 +26,37 @@
 import logging
 import os
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore, QtGui, QtWebKit
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver, resize_image
 from openlp.core.ui import HideMode
+from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
+
+HTMLIMAGE = """<html>
+    <body>
+    <img src=\"file://%s\" alt\"Hello\">
+    </body></html>
+    """
+
+#http://www.steveheffernan.com/html5-video-player/demo-video-player.html
+HTMLVIDEO = u"""<html>
+  <script type="text/javascript" charset="utf-8">
+    var video;
+    var bodyLoaded = function(){
+        video = document.getElementById("video");
+        video.volume = 0;
+    }
+  </script>
+        <body id=\"body\" onload=\"bodyLoaded();>\"
+        <video id=\"video\" src=\"%s\"
+            autoplay loop width=%s height=%s autobuffer=\"autobuffer\" preload >
+            your browser does not support the video tag
+        </video>
+        </body></html>
+    """
 
 class DisplayManager(QtGui.QWidget):
     """
@@ -76,9 +100,21 @@ class DisplayManager(QtGui.QWidget):
 
     def addAlert(self, alertMessage, location):
         """
-        Handles the add Alert Message to the Displays
+        Handles the addition of an Alert Message to the Displays
         """
         self.mainDisplay.addAlert(alertMessage, location)
+
+    def displayImage(self, path):
+        """
+        Handles the addition of a background Image to the displays
+        """
+        self.mainDisplay.displayImage(path)
+
+    def displayVideo(self, path):
+        """
+        Handles the addition of a background Video to the displays
+        """
+        self.mainDisplay.displayVideo(path)
 
     def onStartVideo(self, item):
         """
@@ -183,7 +219,7 @@ class MainDisplay(DisplayWidget):
         self.primary = True
         self.blankFrame = None
         self.frame = None
-        #Hide desktop for now untill we know where to put it
+        #Hide desktop for now until we know where to put it
         #and what size it should be.
         self.setVisible(False)
 
@@ -198,6 +234,7 @@ class MainDisplay(DisplayWidget):
         #Sort out screen locations and sizes
         self.setGeometry(self.screen[u'size'])
         self.scene.setSceneRect(0,0,self.size().width(), self.size().height())
+        self.webView.setGeometry(0, 0, self.size().width(), self.size().height())
         #Build a custom splash screen
         self.InitialFrame = QtGui.QImage(
             self.screen[u'size'].width(),
@@ -211,7 +248,7 @@ class MainDisplay(DisplayWidget):
             (self.screen[u'size'].width() - splash_image.width()) / 2,
             (self.screen[u'size'].height() - splash_image.height()) / 2,
             splash_image)
-        self.display_image.setPixmap(QtGui.QPixmap.fromImage(self.InitialFrame))
+        #self.display_image.setPixmap(QtGui.QPixmap.fromImage(self.InitialFrame))
         self.repaint()
         #Build a Black screen
         painter = QtGui.QPainter()
@@ -241,9 +278,16 @@ class MainDisplay(DisplayWidget):
         self.setScene(self.scene)
 
     def setupImage(self):
-        self.display_image = QtGui.QGraphicsPixmapItem()
-        self.display_image.setZValue(2)
-        self.scene.addItem(self.display_image)
+        self.webView = QtWebKit.QWebView()
+        self.page = self.webView.page()
+        self.imageDisplay = self.page.mainFrame()
+        self.imageDisplay.setScrollBarPolicy(QtCore.Qt.Vertical, QtCore.Qt.ScrollBarAlwaysOff)
+        self.imageDisplay.setScrollBarPolicy(QtCore.Qt.Horizontal, QtCore.Qt.ScrollBarAlwaysOff)
+        self.proxy = QtGui.QGraphicsProxyWidget()
+        self.proxy.setWidget(self.webView)
+        self.proxy.setWindowFlags(QtCore.Qt.Window | QtCore.Qt.FramelessWindowHint)
+        self.proxy.setZValue(2)
+        self.scene.addItem(self.proxy)
 
     def setupText(self):
         #self.display_text = QtGui.QGraphicsTextItem()
@@ -319,7 +363,7 @@ class MainDisplay(DisplayWidget):
     def addAlert(self, message, location):
         """
         Places the Alert text on the display at the correct location
-        ``messgae``
+        ``message``
             Text to be displayed
         ``location``
             Where on the screen the text should be.  From the AlertTab
@@ -334,7 +378,26 @@ class MainDisplay(DisplayWidget):
             self.alertText.setPos(0,self.size().height() - 76)
         self.alertText.setHtml(message)
 
-    def frameView(self, frame, transition=False, display=True):
+    def displayImage(self, path):
+        """
+        Places the Image passed on the display screen
+        ``path``
+            The path to the image to be displayed
+        """
+        log.debug(u'adddisplayImage')
+        self.imageDisplay.setHtml(HTMLIMAGE % path)
+
+    def displayVideo(self, path):
+        """
+        Places the Video passed on the display screen
+        ``path``
+            The path to the image to be displayed
+        """
+        log.debug(u'adddisplayVideo')
+        self.imageDisplay.setHtml(HTMLVIDEO %
+            (path, self.screen[u'size'].width(), self.screen[u'size'].height()))
+
+    def frameView(self, frame, transition=False):
         """
         Called from a slide controller to display a frame
         if the alert is in progress the alert is added on top
@@ -343,33 +406,44 @@ class MainDisplay(DisplayWidget):
         ``transition``
             Are transitions required.
         """
-        log.debug(u'frameView %d' % display)
-        if display:
-            if transition:
-                if self.frame is not None:
-                    self.display_text.setPixmap(
-                        QtGui.QPixmap.fromImage(self.frame))
-                    self.update()
-                self.frame = None
-                if frame[u'trans'] is not None:
-                    self.display_text.setPixmap(
-                        QtGui.QPixmap.fromImage(frame[u'trans']))
-                    self.repaint()
-                    self.frame = frame[u'trans']
+        log.debug(u'frameView')
+        if transition:
+            if self.frame is not None:
                 self.display_text.setPixmap(
-                    QtGui.QPixmap.fromImage(frame[u'main']))
-                self.display_frame = frame[u'main']
+                    QtGui.QPixmap.fromImage(self.frame))
+                self.update()
+            self.frame = None
+            if frame[u'trans'] is not None:
+                self.display_text.setPixmap(
+                    QtGui.QPixmap.fromImage(frame[u'trans']))
                 self.repaint()
-            else:
-                if isinstance(frame, QtGui.QPixmap):
-                    self.display_text.setPixmap(frame)
-                else:
-                    self.display_text.setPixmap(QtGui.QPixmap.fromImage(frame))
-                self.display_frame = frame
-            if not self.isVisible() and self.screens.display:
-                self.setVisible(True)
+                self.frame = frame[u'trans']
+            self.display_text.setPixmap(
+                QtGui.QPixmap.fromImage(frame[u'main']))
+            self.display_frame = frame[u'main']
+            self.repaint()
         else:
-            self.storeText = QtGui.QPixmap.fromImage(frame[u'main'])
+            if isinstance(frame, QtGui.QPixmap):
+                self.display_text.setPixmap(frame)
+            else:
+                self.display_text.setPixmap(QtGui.QPixmap.fromImage(frame))
+            self.display_frame = frame
+        if not self.isVisible() and self.screens.display:
+            self.setVisible(True)
+
+    def closeEvent(self, event):
+        """
+        Shutting down cleans up background files
+        """
+        serviceItemPath = AppLocation.get_section_data_path(u'serviceItems')
+        for file in os.listdir(serviceItemPath):
+            file_path = os.path.join(serviceItemPath, file)
+            try:
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
+            except OSError:
+                log.exception(u'Failed to clean up servicePath')
+
 
 class VideoDisplay(Phonon.VideoWidget):
     """

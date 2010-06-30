@@ -35,6 +35,7 @@ import uuid
 from PyQt4 import QtGui
 
 from openlp.core.lib import build_icon, resize_image
+from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
 
@@ -92,6 +93,7 @@ class ServiceItem(object):
         self.is_valid = True
         self.cache = {}
         self.icon = None
+        self.serviceItemPath = AppLocation.get_section_data_path(u'serviceItems')
 
     def add_capability(self, capability):
         """
@@ -153,9 +155,12 @@ class ServiceItem(object):
                         del self.cache[len(self._display_frames)]
                 log.log(15, u'Formatting took %4s' % (time.time() - before))
         elif self.service_item_type == ServiceItemType.Image:
-            for slide in self._raw_frames:
+            for count, slide in enumerate(self._raw_frames):
                 slide[u'image'] = resize_image(slide[u'image'],
                     self.render_manager.width, self.render_manager.height)
+                path = os.path.join(self.serviceItemPath, self._uuid + unicode(count) + u'.png')
+                slide[u'image'].save(path)
+                slide[u'display'] = path
         elif self.service_item_type == ServiceItemType.Command:
             pass
         else:
@@ -371,7 +376,8 @@ class ServiceItem(object):
         if self.service_item_type == ServiceItemType.Text:
             return self.render_individual(row)
         else:
-            return {u'main':self._raw_frames[row][u'image'], u'trans':None}
+            return {u'main':self._raw_frames[row][u'image'],
+                    u'trans':None, u'display':self._raw_frames[row][u'display']}
 
     def get_frame_title(self, row=0):
         """
