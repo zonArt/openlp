@@ -95,6 +95,10 @@ class OpenSongImport:
         self.song = None
 
     def do_import(self, filename, commit=True):
+        """
+        Import either a single opensong file, or a zipfile containing multiple opensong files
+        If the commit parameter is set False, the import will not be committed to the database (useful for test scripts)
+        """
         ext=os.path.splitext(filename)[1]
         if ext.lower() == ".zip":
             log.info('Zipfile found %s', filename)
@@ -116,7 +120,7 @@ class OpenSongImport:
                 self.finish()
     def do_import_file(self, file):
         """
-        Process the OpenSong file
+        Process the OpenSong file - pass in a file-like object, not a filename
         """            
         self.song = SongImport(self.songmanager)
         tree = objectify.parse(file)
@@ -209,8 +213,7 @@ class OpenSongImport:
             order = our_verse_order
         for tag in order:
             if not versetags.has_key(tag):
-                print u'Got order', tag, u'but not in versetags, skipping'
-                raise OpenSongImportError # xxx keep error, or just warn?
+                log.warn(u'Got order %s but not in versetags, skipping', tag)
             else:
                 self.song.verse_order_list.append(tag)
     def finish(self):

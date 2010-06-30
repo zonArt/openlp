@@ -38,6 +38,8 @@ try:
 except ImportError:
     OOo_available = False
 
+from openlp.plugins.songs.lib import OpenSongImport
+
 log = logging.getLogger(__name__)
 
 class SongsPlugin(Plugin):
@@ -143,6 +145,25 @@ class SongsPlugin(Plugin):
                 QtCore.SIGNAL(u'triggered()'), self.onImportSofItemClick)
             QtCore.QObject.connect(self.ImportOooItem,
                 QtCore.SIGNAL(u'triggered()'), self.onImportOooItemClick)
+        # OpenSong import menu item - will be removed and the
+        # functionality will be contained within the import wizard
+        self.ImportOpenSongItem = QtGui.QAction(import_menu)
+        self.ImportOpenSongItem.setObjectName(u'ImportOpenSongItem')
+        self.ImportOpenSongItem.setText(
+            translate('SongsPlugin',
+                'OpenSong (temp menu item)'))
+        self.ImportOpenSongItem.setToolTip(
+            translate('SongsPlugin',
+                'Import songs from OpenSong files' +
+                '(either raw text or ZIPfiles)'))
+        self.ImportOpenSongItem.setStatusTip(
+            translate('SongsPlugin',
+                'Import songs from OpenSong files' +
+                '(either raw text or ZIPfiles)'))
+        import_menu.addAction(self.ImportOpenSongItem)
+        QtCore.QObject.connect(self.ImportOpenSongItem,
+                QtCore.SIGNAL(u'triggered()'), self.onImportOpenSongItemClick)
+
 
     def add_export_menu_item(self, export_menu):
         """
@@ -179,6 +200,26 @@ class SongsPlugin(Plugin):
                     'Fellowship file.\nOpenOffice.org must be installed'
                     ' and you must be using an unedited copy of the RTF'
                     ' included with the Songs of Fellowship Music Editions'),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
+                QtGui.QMessageBox.Ok)
+        Receiver.send_message(u'songs_load_list')
+
+    def onImportOpenSongItemClick(self):
+        filenames = QtGui.QFileDialog.getOpenFileNames(
+            None, translate('SongsPlugin',
+                'Open OpenSong file'),
+            u'', u'OpenSong file (*. *.zip *.ZIP)')
+        try:
+            for filename in filenames:
+                importer = OpenSongImport(self.manager)
+                importer.do_import(unicode(filename))
+        except:
+            log.exception('Could not import OpenSong file')
+            QtGui.QMessageBox.critical(None,
+                translate('SongsPlugin',
+                    'Import Error'),
+                translate('SongsPlugin',
+                    'Error importing OpenSong file'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
         Receiver.send_message(u'songs_load_list')
