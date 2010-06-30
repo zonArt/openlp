@@ -19,6 +19,12 @@
   </qresource>
   <qresource prefix="plugins">
     <file>plugin_alerts.png</file>
+    <file>plugin_bibles.png</file>
+    <file>plugin_custom.png</file>
+    <file>plugin_images.png</file>
+    <file>plugin_media.png</file>
+    <file>plugin_presentations.png</file>
+    <file>plugin_songs.png</file>
     <file>plugin_remote.png</file>
     <file>plugin_songusage.png</file>
   </qresource>
@@ -95,12 +101,6 @@
     <file>system_settings.png</file>
   </qresource>
   <qresource prefix="media">
-    <file>media_custom.png</file>
-    <file>media_presentation.png</file>
-    <file>media_image.png</file>
-    <file>media_song.png</file>
-    <file>media_bible.png</file>
-    <file>media_video.png</file>
     <file>media_time.png</file>
     <file>media_stop.png</file>
     <file>image_clapperboard.png</file>
