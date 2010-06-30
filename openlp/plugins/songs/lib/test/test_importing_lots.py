@@ -9,9 +9,10 @@ import codecs
 def opensong_import_lots():
     ziploc=u'/home/mjt/openlp/OpenSong_Data/'
     files=[]
+    files=['test.opensong.zip']
 #    files.extend(glob(ziploc+u'Songs.zip'))
 #    files.extend(glob(ziploc+u'SOF.zip'))
-    files.extend(glob(ziploc+u'spanish_songs_for_opensong.zip'))
+    # files.extend(glob(ziploc+u'spanish_songs_for_opensong.zip'))
 #    files.extend(glob(ziploc+u'opensong_*.zip'))
     errfile=codecs.open(u'import_lots_errors.txt', u'w', u'utf8')
     manager=SongManager()
@@ -32,6 +33,7 @@ def opensong_import_lots():
             o=OpenSongImport(manager)
             try:
                 o.do_import_file(songfile)
+                o.song.print_song()
             except:
                 print "Failure",
                 
