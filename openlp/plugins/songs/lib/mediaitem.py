@@ -165,18 +165,21 @@ class SongMediaItem(MediaManagerItem):
         search_type = self.SearchTypeComboBox.currentIndex()
         if search_type == 0:
             log.debug(u'Titles Search')
-            search_results = self.parent.manager.search_song_title(
-                search_keywords)
+            search_results = self.parent.manager.get_all_objects_filtered(Song,
+                Song.search_title.like(u'%' + keywords + u'%'),
+                Song.search_title.asc())
             self.displayResultsSong(search_results)
         elif search_type == 1:
             log.debug(u'Lyrics Search')
-            search_results = self.parent.manager.search_song_lyrics(
-                search_keywords)
+            search_results = self.parent.manager.get_all_objects_filtered(Song,
+                Song.search_lyrics.like(u'%' + keywords + u'%'),
+                Song.search_lyrics.asc())
             self.displayResultsSong(search_results)
         elif search_type == 2:
             log.debug(u'Authors Search')
-            search_results = self.parent.manager.get_song_from_author(
-                search_keywords)
+            search_results = self.parent.manager.get_all_objects_filtered(
+                Author, Author.display_name.like(u'%' + search_keywords + u'%'),
+                Author.display_name.asc())
             self.displayResultsAuthor(search_results)
         #Called to redisplay the song list screen edith from a search
         #or from the exit of the Song edit dialog.  If remote editing is active

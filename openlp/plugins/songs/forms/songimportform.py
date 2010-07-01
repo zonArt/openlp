@@ -30,7 +30,7 @@ from PyQt4 import QtCore, QtGui
 from songimportwizard import Ui_SongImportWizard
 from openlp.core.lib import Receiver, SettingsManager, translate
 #from openlp.core.utils import AppLocation
-from openlp.plugins.songs.lib.manager import SongFormat
+from openlp.plugins.songs.lib import SongFormat
 
 log = logging.getLogger(__name__)
 
