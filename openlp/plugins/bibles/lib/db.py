@@ -299,11 +299,10 @@ class BibleDB(QtCore.QObject, Manager):
             The name of the book to return
         """
         log.debug(u'BibleDb.get_book("%s")', book)
-        db_book = self.session.query(Book).filter(
-            Book.name.like(book + u'%')).first()
+        db_book = self.get_object_filtered(Book, Book.name.like(book + u'%'))
         if db_book is None:
-            db_book = self.session.query(Book).filter(
-                Book.abbreviation.like(book + u'%')).first()
+            db_book = self.get_object_filtered(Book,
+                Book.abbreviation.like(book + u'%'))
         return db_book
 
     def get_verses(self, reference_list):
