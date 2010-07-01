@@ -188,9 +188,10 @@ class Manager(object):
         ``order_by_ref``
             Any parameters to order the returned objects by.  Defaults to None.
         """
+        query = self.session.query(object_class)
         if order_by_ref:
-            return self.session.query(object_class).order_by(order_by_ref).all()
-        return self.session.query(object_class).all()
+            return query.order_by(order_by_ref).all()
+        return query.all()
 
     def get_all_objects_filtered(self, object_class, filter_clause,
         order_by_ref=None):
@@ -206,10 +207,10 @@ class Manager(object):
         ``order_by_ref``
             Any parameters to order the returned objects by.  Defaults to None.
         """
+        query = self.session.query(object_class).filter(filter_clause)
         if order_by_ref:
-            return self.session.query(object_class).filter(filter_clause) \
-                .order_by(order_by_ref).all()
-        return self.session.query(object_class).filter(filter_clause).all()
+            return query.order_by(order_by_ref).all()
+        return query.all()
 
     def delete_object(self, object_class, key):
         """

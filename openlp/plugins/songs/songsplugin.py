@@ -31,7 +31,7 @@ from openlp.core.lib import Plugin, build_icon, PluginStatus, Receiver, \
     translate
 from openlp.core.lib.db import Manager
 from openlp.plugins.songs.lib import SongMediaItem, SongsTab
-from openlp.plugins.songs.lib.db import Song
+from openlp.plugins.songs.lib.db import init_schema, Song
 
 try:
     from openlp.plugins.songs.lib import SofImport, OooImport
