@@ -43,8 +43,8 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         self.path = None
         self.theme = ThemeXML()
         self.setupUi(self)
-        # Define signals
-        # Buttons
+        #define signals
+        #Buttons
         QtCore.QObject.connect(self.Color1PushButton,
             QtCore.SIGNAL(u'pressed()'), self.onColor1PushButtonClicked)
         QtCore.QObject.connect(self.Color2PushButton,
@@ -60,7 +60,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             QtCore.SIGNAL(u'pressed()'), self.onShadowColorPushButtonClicked)
         QtCore.QObject.connect(self.ImageToolButton,
             QtCore.SIGNAL(u'pressed()'), self.onImageToolButtonClicked)
-        # Combo boxes
+        #Combo boxes
         QtCore.QObject.connect(self.BackgroundComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onBackgroundComboBoxSelected)
         QtCore.QObject.connect(self.BackgroundTypeComboBox,
@@ -82,58 +82,57 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             QtCore.SIGNAL(u'activated(int)'), self.onHorizontalComboBoxSelected)
         QtCore.QObject.connect(self.VerticalComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onVerticalComboBoxSelected)
-        # Spin boxes
+        #Spin boxes
         QtCore.QObject.connect(self.FontMainSizeSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'),
+            QtCore.SIGNAL(u'editingFinished()'),
             self.onFontMainSizeSpinBoxChanged)
         QtCore.QObject.connect(self.FontFooterSizeSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'),
+            QtCore.SIGNAL(u'editingFinished()'),
             self.onFontFooterSizeSpinBoxChanged)
-        QtCore.QObject.connect(self.FontMainXSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'), self.onFontMainXSpinBoxChanged)
-        QtCore.QObject.connect(self.FontMainYSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'), self.onFontMainYSpinBoxChanged)
-        QtCore.QObject.connect(self.FontMainWidthSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'),
-            self.onFontMainWidthSpinBoxChanged)
-        QtCore.QObject.connect(self.FontMainHeightSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'),
-            self.onFontMainHeightSpinBoxChanged)
-        QtCore.QObject.connect(self.FontMainLineAdjustmentSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'),
-            self.onFontMainLineAdjustmentSpinBoxChanged)
-        QtCore.QObject.connect(self.FontMainLineSpacingSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'),
-            self.onFontMainLineSpacingSpinBoxChanged)
-        QtCore.QObject.connect(self.FontFooterXSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'),
-            self.onFontFooterXSpinBoxChanged)
-        QtCore.QObject.connect(self.FontFooterYSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'),
-            self.onFontFooterYSpinBoxChanged)
-        QtCore.QObject.connect(self.FontFooterWidthSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'),
-            self.onFontFooterWidthSpinBoxChanged)
-        QtCore.QObject.connect(self.FontFooterHeightSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'),
-            self.onFontFooterHeightSpinBoxChanged)
-        QtCore.QObject.connect(self.ShadowSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'),
-            self.onShadowSpinBoxChanged)
-        QtCore.QObject.connect(self.ShadowCheckBox,
-            QtCore.SIGNAL(u'valueChanged(int)'), self.onShadowCheckBoxChanged)
-        QtCore.QObject.connect(self.OutlineSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'),
-            self.onOutlineSpinBoxChanged)
-        # Checkboxes
         QtCore.QObject.connect(self.FontMainDefaultCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onFontMainDefaultCheckBoxChanged)
+        QtCore.QObject.connect(self.FontMainXSpinBox,
+            QtCore.SIGNAL(u'editingFinished()'), self.onFontMainXSpinBoxChanged)
+        QtCore.QObject.connect(self.FontMainYSpinBox,
+            QtCore.SIGNAL(u'editingFinished()'), self.onFontMainYSpinBoxChanged)
+        QtCore.QObject.connect(self.FontMainWidthSpinBox,
+            QtCore.SIGNAL(u'editingFinished()'),
+            self.onFontMainWidthSpinBoxChanged)
+        QtCore.QObject.connect(self.FontMainHeightSpinBox,
+            QtCore.SIGNAL(u'editingFinished()'),
+            self.onFontMainHeightSpinBoxChanged)
+        QtCore.QObject.connect(self.FontMainLineAdjustmentSpinBox,
+            QtCore.SIGNAL(u'editingFinished()'),
+            self.onFontMainLineAdjustmentSpinBoxChanged)
+        QtCore.QObject.connect(self.FontMainLineSpacingSpinBox,
+            QtCore.SIGNAL(u'editingFinished()'),
+            self.onFontMainLineSpacingSpinBoxChanged)
         QtCore.QObject.connect(self.FontFooterDefaultCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onFontFooterDefaultCheckBoxChanged)
+        QtCore.QObject.connect(self.FontFooterXSpinBox,
+            QtCore.SIGNAL(u'editingFinished()'),
+            self.onFontFooterXSpinBoxChanged)
+        QtCore.QObject.connect(self.FontFooterYSpinBox,
+            QtCore.SIGNAL(u'editingFinished()'),
+            self.onFontFooterYSpinBoxChanged)
+        QtCore.QObject.connect(self.FontFooterWidthSpinBox,
+            QtCore.SIGNAL(u'editingFinished()'),
+            self.onFontFooterWidthSpinBoxChanged)
+        QtCore.QObject.connect(self.FontFooterHeightSpinBox,
+            QtCore.SIGNAL(u'editingFinished()'),
+            self.onFontFooterHeightSpinBoxChanged)
         QtCore.QObject.connect(self.OutlineCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'), self.onOutlineCheckBoxChanged)
+        QtCore.QObject.connect(self.ShadowSpinBox,
+            QtCore.SIGNAL(u'editingFinished()'),
+            self.onShadowSpinBoxChanged)
+        QtCore.QObject.connect(self.ShadowCheckBox,
+            QtCore.SIGNAL(u'stateChanged(int)'), self.onShadowCheckBoxChanged)
+        QtCore.QObject.connect(self.OutlineSpinBox,
+            QtCore.SIGNAL(u'editingFinished()'),
+            self.onOutlineSpinBoxChanged)
         QtCore.QObject.connect(self.SlideTransitionCheckedBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onSlideTransitionCheckedBoxChanged)
