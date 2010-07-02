@@ -79,8 +79,9 @@ class PptviewController(PresentationController):
             if self.process:
                 return
             log.debug(u'start PPTView')
-            self.process = cdll.LoadLibrary(
-                r'openlp\plugins\presentations\lib\pptviewlib\pptviewlib.dll')
+            dllpath = os.path.join(self.plugin.pluginManager.basepath,
+                u'presentations', u'lib', u'pptviewlib', u'pptviewlib.dll')
+            self.process = cdll.LoadLibrary(dllpath)
             #self.process.SetDebug(1)
 
         def kill(self):
@@ -118,7 +119,7 @@ class PptviewDocument(PresentationDocument):
         log.debug(u'LoadPresentation')
         #if self.pptid >= 0:
         #    self.close_presentation()
-        rendermanager = self.controller.plugin.render_manager
+        rendermanager = self.controller.plugin.renderManager
         rect = rendermanager.screens.current[u'size']
         rect = RECT(rect.x(), rect.y(), rect.right(), rect.bottom())
         filepath = str(self.filepath.replace(u'/', u'\\'))
