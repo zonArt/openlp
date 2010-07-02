@@ -84,9 +84,3 @@
 .. autoclass:: openlp.core.lib.toolbar.OpenLPToolbar
    :members:
 
-:mod:`XmlRootClass`
--------------------
-
-.. autoclass:: openlp.core.lib.xmlrootclass.XmlRootClass
-   :members:
-

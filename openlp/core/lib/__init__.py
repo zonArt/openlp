@@ -216,7 +216,6 @@ from settingsmanager import SettingsManager
 from plugin import PluginStatus, Plugin
 from pluginmanager import PluginManager
 from settingstab import SettingsTab
-from xmlrootclass import XmlRootClass
 from serviceitem import ServiceItem
 from serviceitem import ServiceItemType
 from serviceitem import ItemCapabilities
