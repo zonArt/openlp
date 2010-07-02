@@ -411,9 +411,9 @@ class MainDisplay(DisplayWidget):
             The path to the image to be displayed
         """
         log.debug(u'adddisplayVideo')
+        self.displayImage(self.transparent)
         self.videoDisplay.setHtml(HTMLVIDEO %
             (path, self.screen[u'size'].width(), self.screen[u'size'].height()))
-        self.displayImage(self.transparent)
 
     def frameView(self, frame, transition=False):
         """
