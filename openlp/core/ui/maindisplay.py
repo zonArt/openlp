@@ -25,6 +25,7 @@
 
 import logging
 import os
+import time
 
 from PyQt4 import QtCore, QtGui, QtWebKit
 from PyQt4.phonon import Phonon
@@ -262,7 +263,7 @@ class MainDisplay(DisplayWidget):
         self.transparent = QtGui.QPixmap(
             self.screen[u'size'].width(), self.screen[u'size'].height())
         self.transparent.fill(QtCore.Qt.transparent)
-#        self.display_text.setPixmap(self.transparent)
+#        self.displayText.setPixmap(self.transparent)
         #self.frameView(self.transparent)
         # To display or not to display?
         if not self.screen[u'primary']:
@@ -290,12 +291,12 @@ class MainDisplay(DisplayWidget):
         self.scene.addItem(self.proxy)
 
     def setupText(self):
-        #self.display_text = QtGui.QGraphicsTextItem()
-        self.display_text = QtGui.QGraphicsPixmapItem()
-        #self.display_text.setPos(0,0)
-        #self.display_text.setTextWidth(self.size().width())
-        self.display_text.setZValue(4)
-        self.scene.addItem(self.display_text)
+        #self.displayText = QtGui.QGraphicsTextItem()
+        self.displayText = QtGui.QGraphicsPixmapItem()
+        #self.displayText.setPos(0,0)
+        #self.displayText.setTextWidth(self.size().width())
+        self.displayText.setZValue(4)
+        self.scene.addItem(self.displayText)
 
     def setupAlert(self):
         self.alertText = QtGui.QGraphicsTextItem()
@@ -328,7 +329,7 @@ class MainDisplay(DisplayWidget):
         Store the images so they can be replaced when required
         """
         log.debug(u'hideDisplay mode = %d', mode)
-        #self.display_text.setPixmap(self.transparent)
+        #self.displayText.setPixmap(self.transparent)
         if mode == HideMode.Screen:
             #self.display_image.setPixmap(self.transparent)
             self.setVisible(False)
@@ -409,25 +410,26 @@ class MainDisplay(DisplayWidget):
         log.debug(u'frameView')
         if transition:
             if self.frame is not None:
-                self.display_text.setPixmap(
+                self.displayText.setPixmap(
                     QtGui.QPixmap.fromImage(self.frame))
-                self.update()
+                self.repaint()
+                Receiver.send_message(u'openlp_process_events')
+                time.sleep(0.1)
             self.frame = None
             if frame[u'trans'] is not None:
-                self.display_text.setPixmap(
+                self.displayText.setPixmap(
                     QtGui.QPixmap.fromImage(frame[u'trans']))
                 self.repaint()
+                Receiver.send_message(u'openlp_process_events')
+                time.sleep(0.1)
                 self.frame = frame[u'trans']
-            self.display_text.setPixmap(
+            self.displayText.setPixmap(
                 QtGui.QPixmap.fromImage(frame[u'main']))
-            self.display_frame = frame[u'main']
-            self.repaint()
         else:
             if isinstance(frame, QtGui.QPixmap):
-                self.display_text.setPixmap(frame)
+                self.displayText.setPixmap(frame)
             else:
-                self.display_text.setPixmap(QtGui.QPixmap.fromImage(frame))
-            self.display_frame = frame
+                self.displayText.setPixmap(QtGui.QPixmap.fromImage(frame))
         if not self.isVisible() and self.screens.display:
             self.setVisible(True)
 
