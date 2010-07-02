@@ -56,7 +56,7 @@ class RemotesPlugin(Plugin):
         Tidy up and close down the http server
         """
         log.debug(u'finalise')
-        self.remove_toolbox_item()
+        Plugin.finalise(self)
         if self.server:
             self.server.close()
 

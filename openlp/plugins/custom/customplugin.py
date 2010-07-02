@@ -60,15 +60,6 @@ class CustomPlugin(Plugin):
         # Create the CustomManagerItem object
         return CustomMediaItem(self, self.icon, self.name)
 
-    def initialise(self):
-        log.info(u'Plugin Initialising')
-        Plugin.initialise(self)
-        self.insert_toolbox_item()
-
-    def finalise(self):
-        log.info(u'Plugin Finalise')
-        self.remove_toolbox_item()
-
     def about(self):
         about_text = translate('CustomPlugin',
             '<b>Custom Plugin</b><br>This plugin '
