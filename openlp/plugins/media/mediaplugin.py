@@ -67,15 +67,6 @@ class MediaPlugin(Plugin):
             type = u''
         return list, type
 
-    def initialise(self):
-        log.info(u'Plugin Initialising')
-        Plugin.initialise(self)
-        self.insert_toolbox_item()
-
-    def finalise(self):
-        log.info(u'Plugin Finalise')
-        self.remove_toolbox_item()
-
     def get_media_manager_item(self):
         # Create the MediaManagerItem object
         return MediaMediaItem(self, self.icon, self.name)

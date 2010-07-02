@@ -64,7 +64,7 @@ class PresentationPlugin(Plugin):
             controller = self.controllers[key]
             if controller.enabled:
                 controller.kill()
-        self.remove_toolbox_item()
+        Plugin.finalise(self)
 
     def get_media_manager_item(self):
         """

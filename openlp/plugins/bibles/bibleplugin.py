@@ -48,14 +48,12 @@ class BiblePlugin(Plugin):
         if self.manager is None:
             self.manager = BibleManager(self)
         Plugin.initialise(self)
-        self.insert_toolbox_item()
         self.ImportBibleItem.setVisible(True)
         self.ExportBibleItem.setVisible(True)
 
     def finalise(self):
         log.info(u'Plugin Finalise')
         Plugin.finalise(self)
-        self.remove_toolbox_item()
         self.ImportBibleItem.setVisible(False)
         self.ExportBibleItem.setVisible(False)
 
