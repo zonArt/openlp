@@ -371,7 +371,8 @@ class SongMediaItem(MediaManagerItem):
             author_list = author_list + unicode(author.display_name)
             author_audit.append(unicode(author.display_name))
         if song.ccli_number is None or len(song.ccli_number) == 0:
-            ccli = self.parent.settings_form.GeneralTab.CCLINumber
+            ccli = QtCore.QSettings().value(u'general/ccli number',
+                QtCore.QVariant(u'')).toString()
         else:
             ccli = unicode(song.ccli_number)
         raw_footer.append(song.title)
