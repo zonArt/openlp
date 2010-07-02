@@ -67,7 +67,7 @@ class SongsPlugin(Plugin):
     def initialise(self):
         log.info(u'Songs Initialising')
         Plugin.initialise(self)
-        self.media_item.displayResultsSong(
+        self.mediaItem.displayResultsSong(
             self.manager.get_all_objects(Song, Song.title))
 
     def get_media_manager_item(self):

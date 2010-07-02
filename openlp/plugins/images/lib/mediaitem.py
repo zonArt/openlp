@@ -178,7 +178,7 @@ class ImageMediaItem(MediaManagerItem):
                 bitem = self.ListView.item(item.row())
                 filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
                 frame = QtGui.QImage(unicode(filename))
-                self.parent.live_controller.displayManager.displayImageWithText(frame)
+                self.parent.displayManager.displayImageWithText(frame)
 
     def onPreviewClick(self):
         MediaManagerItem.onPreviewClick(self)

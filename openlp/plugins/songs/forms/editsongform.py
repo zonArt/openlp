@@ -88,7 +88,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL(u'activated(int)'), self.onThemeComboChanged)
         QtCore.QObject.connect(self.ThemeAddButton,
             QtCore.SIGNAL(u'clicked()'),
-            self.parent.parent.render_manager.theme_manager.onAddTheme)
+            self.parent.parent.renderManager.theme_manager.onAddTheme)
         QtCore.QObject.connect(self.MaintenanceButton,
             QtCore.SIGNAL(u'clicked()'), self.onMaintenanceButtonClicked)
         QtCore.QObject.connect(Receiver.get_receiver(),

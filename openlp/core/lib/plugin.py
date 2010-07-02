@@ -124,13 +124,13 @@ class Plugin(QtCore.QObject):
         self.status = PluginStatus.Inactive
         # Set up logging
         self.log = logging.getLogger(self.name)
-        self.preview_controller = plugin_helpers[u'preview']
-        self.live_controller = plugin_helpers[u'live']
-        self.render_manager = plugin_helpers[u'render']
-        self.service_manager = plugin_helpers[u'service']
-        self.settings_form = plugin_helpers[u'settings form']
+        self.previewController = plugin_helpers[u'preview']
+        self.liveController = plugin_helpers[u'live']
+        self.renderManager = plugin_helpers[u'render']
+        self.serviceManager = plugin_helpers[u'service']
+        self.settingsForm = plugin_helpers[u'settings form']
         self.mediadock = plugin_helpers[u'toolbox']
-        self.maindisplay = plugin_helpers[u'maindisplay']
+        self.displayManager = plugin_helpers[u'displaymanager']
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_add_service_item' % self.name),
             self.process_add_service_event)
@@ -175,29 +175,29 @@ class Plugin(QtCore.QObject):
         """
         pass
 
-    def add_import_menu_item(self, import_menu):
+    def add_import_menu_item(self, importMenu):
         """
         Create a menu item and add it to the "Import" menu.
 
-        ``import_menu``
+        ``importMenu``
             The Import menu.
         """
         pass
 
-    def add_export_menu_item(self, export_menu):
+    def add_export_menu_item(self, exportMenu):
         """
         Create a menu item and add it to the "Export" menu.
 
-        ``export_menu``
+        ``exportMenu``
             The Export menu
         """
         pass
 
-    def add_tools_menu_item(self, tools_menu):
+    def add_tools_menu_item(self, toolsMenu):
         """
         Create a menu item and add it to the "Tools" menu.
 
-        ``tools_menu``
+        ``toolsMenu``
             The Tools menu
         """
         pass
@@ -224,9 +224,9 @@ class Plugin(QtCore.QObject):
         log.debug(u'process_add_service_event event called for plugin %s' %
             self.name)
         if replace:
-            self.media_item.onAddEditClick()
+            self.mediaItem.onAddEditClick()
         else:
-            self.media_item.onAddClick()
+            self.mediaItem.onAddClick()
 
     def about(self):
         """
@@ -240,8 +240,8 @@ class Plugin(QtCore.QObject):
         """
         Called by the plugin Manager to initialise anything it needs.
         """
-        if self.media_item:
-            self.media_item.initialise()
+        if self.mediaItem:
+            self.mediaItem.initialise()
         self.insert_toolbox_item()
 
     def finalise(self):
@@ -254,19 +254,19 @@ class Plugin(QtCore.QObject):
         """
         Called by the plugin to remove toolbar
         """
-        if self.media_item:
+        if self.mediaItem:
             self.mediadock.remove_dock(self.name)
         if self.settings_tab:
-            self.settings_form.removeTab(self.name)
+            self.settingsForm.removeTab(self.name)
 
     def insert_toolbox_item(self):
         """
         Called by plugin to replace toolbar
         """
-        if self.media_item:
-            self.mediadock.insert_dock(self.media_item, self.icon, self.weight)
+        if self.mediaItem:
+            self.mediadock.insert_dock(self.mediaItem, self.icon, self.weight)
         if self.settings_tab:
-            self.settings_form.insertTab(self.settings_tab, self.weight)
+            self.settingsForm.insertTab(self.settings_tab, self.weight)
 
     def can_delete_theme(self, theme):
         """
