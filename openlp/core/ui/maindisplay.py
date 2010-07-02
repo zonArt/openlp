@@ -25,13 +25,13 @@
 
 import logging
 import os
+import time
 
 from PyQt4 import QtCore, QtGui, QtWebKit
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver, resize_image
 from openlp.core.ui import HideMode
-from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
 
@@ -104,11 +104,17 @@ class DisplayManager(QtGui.QWidget):
         """
         self.mainDisplay.addAlert(alertMessage, location)
 
-    def displayImage(self, path):
+    def displayImageWithText(self, frame):
         """
         Handles the addition of a background Image to the displays
         """
-        self.mainDisplay.displayImage(path)
+        self.mainDisplay.addImageWithText(frame)
+
+    def displayImage(self, frame):
+        """
+        Handles the addition of a background Image to the displays
+        """
+        self.mainDisplay.displayImage(frame)
 
     def displayVideo(self, path):
         """
@@ -212,6 +218,7 @@ class MainDisplay(DisplayWidget):
             pass
         self.screens = screens
         self.setupScene()
+        self.setupVideo()
         self.setupImage()
         self.setupText()
         self.setupAlert()
@@ -248,7 +255,7 @@ class MainDisplay(DisplayWidget):
             (self.screen[u'size'].width() - splash_image.width()) / 2,
             (self.screen[u'size'].height() - splash_image.height()) / 2,
             splash_image)
-        #self.display_image.setPixmap(QtGui.QPixmap.fromImage(self.InitialFrame))
+        self.displayImage(self.InitialFrame)
         self.repaint()
         #Build a Black screen
         painter = QtGui.QPainter()
@@ -262,7 +269,7 @@ class MainDisplay(DisplayWidget):
         self.transparent = QtGui.QPixmap(
             self.screen[u'size'].width(), self.screen[u'size'].height())
         self.transparent.fill(QtCore.Qt.transparent)
-#        self.display_text.setPixmap(self.transparent)
+#        self.displayText.setPixmap(self.transparent)
         #self.frameView(self.transparent)
         # To display or not to display?
         if not self.screen[u'primary']:
@@ -277,25 +284,30 @@ class MainDisplay(DisplayWidget):
         self.scene.setSceneRect(0,0,self.size().width(), self.size().height())
         self.setScene(self.scene)
 
-    def setupImage(self):
+    def setupVideo(self):
         self.webView = QtWebKit.QWebView()
         self.page = self.webView.page()
-        self.imageDisplay = self.page.mainFrame()
-        self.imageDisplay.setScrollBarPolicy(QtCore.Qt.Vertical, QtCore.Qt.ScrollBarAlwaysOff)
-        self.imageDisplay.setScrollBarPolicy(QtCore.Qt.Horizontal, QtCore.Qt.ScrollBarAlwaysOff)
+        self.videoDisplay = self.page.mainFrame()
+        self.videoDisplay.setScrollBarPolicy(QtCore.Qt.Vertical, QtCore.Qt.ScrollBarAlwaysOff)
+        self.videoDisplay.setScrollBarPolicy(QtCore.Qt.Horizontal, QtCore.Qt.ScrollBarAlwaysOff)
         self.proxy = QtGui.QGraphicsProxyWidget()
         self.proxy.setWidget(self.webView)
         self.proxy.setWindowFlags(QtCore.Qt.Window | QtCore.Qt.FramelessWindowHint)
-        self.proxy.setZValue(2)
+        self.proxy.setZValue(1)
         self.scene.addItem(self.proxy)
 
+    def setupImage(self):
+        self.imageDisplay = QtGui.QGraphicsPixmapItem()
+        self.imageDisplay.setZValue(2)
+        self.scene.addItem(self.imageDisplay)
+
     def setupText(self):
-        #self.display_text = QtGui.QGraphicsTextItem()
-        self.display_text = QtGui.QGraphicsPixmapItem()
-        #self.display_text.setPos(0,0)
-        #self.display_text.setTextWidth(self.size().width())
-        self.display_text.setZValue(4)
-        self.scene.addItem(self.display_text)
+        #self.displayText = QtGui.QGraphicsTextItem()
+        self.displayText = QtGui.QGraphicsPixmapItem()
+        #self.displayText.setPos(0,0)
+        #self.displayText.setTextWidth(self.size().width())
+        self.displayText.setZValue(4)
+        self.scene.addItem(self.displayText)
 
     def setupAlert(self):
         self.alertText = QtGui.QGraphicsTextItem()
@@ -304,9 +316,9 @@ class MainDisplay(DisplayWidget):
         self.scene.addItem(self.alertText)
 
     def setupBlank(self):
-        self.display_blank = QtGui.QGraphicsPixmapItem()
-        self.display_blank.setZValue(10)
-        self.scene.addItem(self.display_blank)
+        self.displayBlank = QtGui.QGraphicsPixmapItem()
+        self.displayBlank.setZValue(10)
+        self.scene.addItem(self.displayBlank)
 
     def resetDisplay(self):
         log.debug(u'resetDisplay')
@@ -328,19 +340,19 @@ class MainDisplay(DisplayWidget):
         Store the images so they can be replaced when required
         """
         log.debug(u'hideDisplay mode = %d', mode)
-        #self.display_text.setPixmap(self.transparent)
+        #self.displayText.setPixmap(self.transparent)
         if mode == HideMode.Screen:
             #self.display_image.setPixmap(self.transparent)
             self.setVisible(False)
         elif mode == HideMode.Blank:
-            self.display_blank.setPixmap(
+            self.displayBlank.setPixmap(
                 QtGui.QPixmap.fromImage(self.blankFrame))
         else:
             if self.parent.renderManager.renderer.bg_frame:
-                self.display_blank.setPixmap(QtGui.QPixmap.fromImage(
+                self.displayBlank.setPixmap(QtGui.QPixmap.fromImage(
                     self.parent.renderManager.renderer.bg_frame))
             else:
-                self.display_blank.setPixmap(
+                self.displayBlank.setPixmap(
                     QtGui.QPixmap.fromImage(self.blankFrame))
 
     def showDisplay(self, message=u''):
@@ -350,7 +362,7 @@ class MainDisplay(DisplayWidget):
         Make the stored images None to release memory.
         """
         log.debug(u'showDisplay')
-        self.display_blank.setPixmap(self.transparent)
+        self.displayBlank.setPixmap(self.transparent)
         #Trigger actions when display is active again
         Receiver.send_message(u'maindisplay_active')
 
@@ -358,7 +370,8 @@ class MainDisplay(DisplayWidget):
         log.debug(u'addImageWithText')
         frame = resize_image(
             frame, self.screen[u'size'].width(), self.screen[u'size'].height())
-        self.display_image.setPixmap(QtGui.QPixmap.fromImage(frame))
+        self.imageDisplay.setPixmap(QtGui.QPixmap.fromImage(frame))
+        self.videoDisplay.setHtml(u'<html></html>')
 
     def addAlert(self, message, location):
         """
@@ -378,14 +391,18 @@ class MainDisplay(DisplayWidget):
             self.alertText.setPos(0,self.size().height() - 76)
         self.alertText.setHtml(message)
 
-    def displayImage(self, path):
+    def displayImage(self, frame):
         """
         Places the Image passed on the display screen
-        ``path``
-            The path to the image to be displayed
+        ``frame``
+            The image to be displayed
         """
         log.debug(u'adddisplayImage')
-        self.imageDisplay.setHtml(HTMLIMAGE % path)
+        if isinstance(frame, QtGui.QImage):
+            self.imageDisplay.setPixmap(QtGui.QPixmap.fromImage(frame))
+        else:
+            self.imageDisplay.setPixmap(frame)
+        self.videoDisplay.setHtml(u'<html></html>')
 
     def displayVideo(self, path):
         """
@@ -394,7 +411,8 @@ class MainDisplay(DisplayWidget):
             The path to the image to be displayed
         """
         log.debug(u'adddisplayVideo')
-        self.imageDisplay.setHtml(HTMLVIDEO %
+        self.displayImage(self.transparent)
+        self.videoDisplay.setHtml(HTMLVIDEO %
             (path, self.screen[u'size'].width(), self.screen[u'size'].height()))
 
     def frameView(self, frame, transition=False):
@@ -409,41 +427,28 @@ class MainDisplay(DisplayWidget):
         log.debug(u'frameView')
         if transition:
             if self.frame is not None:
-                self.display_text.setPixmap(
+                self.displayText.setPixmap(
                     QtGui.QPixmap.fromImage(self.frame))
-                self.update()
+                self.repaint()
+                Receiver.send_message(u'openlp_process_events')
+                time.sleep(0.1)
             self.frame = None
             if frame[u'trans'] is not None:
-                self.display_text.setPixmap(
+                self.displayText.setPixmap(
                     QtGui.QPixmap.fromImage(frame[u'trans']))
                 self.repaint()
+                Receiver.send_message(u'openlp_process_events')
+                time.sleep(0.1)
                 self.frame = frame[u'trans']
-            self.display_text.setPixmap(
+            self.displayText.setPixmap(
                 QtGui.QPixmap.fromImage(frame[u'main']))
-            self.display_frame = frame[u'main']
-            self.repaint()
         else:
             if isinstance(frame, QtGui.QPixmap):
-                self.display_text.setPixmap(frame)
+                self.displayText.setPixmap(frame)
             else:
-                self.display_text.setPixmap(QtGui.QPixmap.fromImage(frame))
-            self.display_frame = frame
+                self.displayText.setPixmap(QtGui.QPixmap.fromImage(frame))
         if not self.isVisible() and self.screens.display:
             self.setVisible(True)
-
-    def closeEvent(self, event):
-        """
-        Shutting down cleans up background files
-        """
-        serviceItemPath = AppLocation.get_section_data_path(u'serviceItems')
-        for file in os.listdir(serviceItemPath):
-            file_path = os.path.join(serviceItemPath, file)
-            try:
-                if os.path.isfile(file_path):
-                    os.remove(file_path)
-            except OSError:
-                log.exception(u'Failed to clean up servicePath')
-
 
 class VideoDisplay(Phonon.VideoWidget):
     """
