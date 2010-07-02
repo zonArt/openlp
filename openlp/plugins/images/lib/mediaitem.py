@@ -119,9 +119,10 @@ class ImageMediaItem(MediaManagerItem):
         """
         if check_item_selected(self.ListView, translate('ImagePlugin.MediaItem',
             'You must select an item to delete.')):
-            items = self.ListView.selectedIndexes()
-            for item in items:
-                text = self.ListView.item(item.row())
+            row_list = [item.row() for item in self.ListView.selectedIndexes()]
+            row_list.sort(reverse=True)
+            for row in row_list:
+                text = self.ListView.item(row)
                 if text:
                     try:
                         os.remove(os.path.join(self.servicePath,
@@ -129,9 +130,9 @@ class ImageMediaItem(MediaManagerItem):
                     except OSError:
                         #if not present do not worry
                         pass
-                self.ListView.takeItem(item.row())
-                SettingsManager.set_list(self.settingsSection,
-                    self.settingsSection, self.getFileList())
+                self.ListView.takeItem(row)
+            SettingsManager.set_list(self.settingsSection,
+                self.settingsSection, self.getFileList())
 
     def loadList(self, list):
         for file in list:
@@ -169,17 +170,14 @@ class ImageMediaItem(MediaManagerItem):
             return False
 
     def onReplaceClick(self):
-        if not self.ListView.selectedIndexes():
-            QtGui.QMessageBox.information(self,
-                translate('ImagePlugin.MediaItem', 'No item selected'),
-                translate('ImagePlugin.MediaItem',
-                    'You must select one item'))
-        items = self.ListView.selectedIndexes()
-        for item in items:
-            bitem = self.ListView.item(item.row())
-            filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
-            frame = QtGui.QImage(unicode(filename))
-            self.parent.maindisplay.addImageWithText(frame)
+        if check_item_selected(self.ListView,
+            translate('ImagePlugin.MediaItem',
+            'You must select an item to process.')):
+            item = self.buildServiceItem()
+            item.render()
+            self.parent.live_controller.displayManager. \
+                displayImage(item.get_rendered_frame(0)[u'display'])
+
 
     def onPreviewClick(self):
         MediaManagerItem.onPreviewClick(self)

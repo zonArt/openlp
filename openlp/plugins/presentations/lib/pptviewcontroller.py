@@ -27,7 +27,7 @@ import os
 import logging
 
 if os.name == u'nt':
-    from ctypes import *
+    from ctypes import cdll
     from ctypes.wintypes import RECT
 
 from presentationcontroller import PresentationController, PresentationDocument

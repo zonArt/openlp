@@ -22,7 +22,10 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The :mod:`renderer` module enables OpenLP to take the input from plugins and
+format it for the output display.
+"""
 import logging
 
 from PyQt4 import QtGui, QtCore

@@ -36,17 +36,8 @@ class ImagePlugin(Plugin):
     def __init__(self, plugin_helpers):
         Plugin.__init__(self, u'Images', u'1.9.2', plugin_helpers)
         self.weight = -7
-        self.icon = build_icon(u':/media/media_image.png')
+        self.icon = build_icon(u':/plugins/plugin_images.png')
         self.status = PluginStatus.Active
-
-    def initialise(self):
-        log.info(u'Plugin Initialising')
-        Plugin.initialise(self)
-        self.insert_toolbox_item()
-
-    def finalise(self):
-        log.info(u'Plugin Finalise')
-        self.remove_toolbox_item()
 
     def get_settings_tab(self):
         return ImageTab(self.name)

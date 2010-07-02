@@ -29,12 +29,12 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import SettingsManager
 from openlp.core.utils import AppLocation
+from openlp.plugins.bibles.lib.db import BibleDB, Book, BibleMeta
 
 from common import parse_reference
 from opensong import OpenSongBible
 from osis import OSISBible
 from csvbible import CSVBible
-from db import BibleDB
 from http import HTTPBible
 
 log = logging.getLogger(__name__)
@@ -137,11 +137,13 @@ class BibleManager(object):
             log.debug(u'Bible Name: "%s"', name)
             self.db_cache[name] = bible
             # look to see if lazy load bible exists and get create getter.
-            source = self.db_cache[name].get_meta(u'download source')
+            source = self.db_cache[name].get_object(BibleMeta,
+                u'download source')
             if source:
-                download_name = \
-                    self.db_cache[name].get_meta(u'download name').value
-                meta_proxy = self.db_cache[name].get_meta(u'proxy url')
+                download_name = self.db_cache[name].get_object(BibleMeta,
+                    u'download name').value
+                meta_proxy = self.db_cache[name].get_object(BibleMeta,
+                    u'proxy url')
                 web_bible = HTTPBible(self.parent, path=self.path,
                     file=filename, download_source=source.value,
                     download_name=download_name)
@@ -196,7 +198,7 @@ class BibleManager(object):
                 u'name': book.name,
                 u'chapters': self.db_cache[bible].get_chapter_count(book.name)
             }
-            for book in self.db_cache[bible].get_books()
+            for book in self.db_cache[bible].get_all_objects(Book, Book.id)
         ]
 
     def get_chapter_count(self, bible, book):
@@ -249,7 +251,7 @@ class BibleManager(object):
         Returns the meta data for a given key
         """
         log.debug(u'get_meta %s,%s', bible, key)
-        return self.db_cache[bible].get_meta(key)
+        return self.db_cache[bible].get_object(BibleMeta, key)
 
     def exists(self, name):
         """

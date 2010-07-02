@@ -128,6 +128,7 @@ class AlertsTab(SettingsTab):
         self.LocationComboBox = QtGui.QComboBox(self.LocationWidget)
         self.LocationComboBox.addItem(QtCore.QString())
         self.LocationComboBox.addItem(QtCore.QString())
+        self.LocationComboBox.addItem(QtCore.QString())
         self.LocationComboBox.setObjectName(u'LocationComboBox')
         self.LocationLayout.addWidget(self.LocationComboBox)
         self.LocationSpacer = QtGui.QSpacerItem(147, 20,
@@ -208,9 +209,11 @@ class AlertsTab(SettingsTab):
             translate('AlertsPlugin.AlertsTab', 'Preview'))
         self.FontPreview.setText(
             translate('AlertsPlugin.AlertsTab', 'openlp.org'))
-        self.LocationComboBox.setItemText(0, 
+        self.LocationComboBox.setItemText(0,
             translate('AlertsPlugin.AlertsTab', 'Top'))
-        self.LocationComboBox.setItemText(1, 
+        self.LocationComboBox.setItemText(1,
+            translate('AlertsPlugin.AlertsTab', 'Middle'))
+        self.LocationComboBox.setItemText(2,
             translate('AlertsPlugin.AlertsTab', 'Bottom'))
 
     def onBackgroundColorButtonClicked(self):

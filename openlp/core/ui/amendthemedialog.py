@@ -178,13 +178,11 @@ class Ui_AmendThemeDialog(object):
         self.MainFontLayout.setWidget(2, QtGui.QFormLayout.LabelRole,
             self.FontMainSize)
         self.FontMainSizeSpinBox = QtGui.QSpinBox(self.FontMainGroupBox)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum,
+        defaultSizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum,
             QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
+        defaultSizePolicy.setHeightForWidth(
             self.FontMainSizeSpinBox.sizePolicy().hasHeightForWidth())
-        self.FontMainSizeSpinBox.setSizePolicy(sizePolicy)
+        self.FontMainSizeSpinBox.setSizePolicy(defaultSizePolicy)
         self.FontMainSizeSpinBox.setMinimumSize(QtCore.QSize(70, 0))
         self.FontMainSizeSpinBox.setProperty(u'value', QtCore.QVariant(16))
         self.FontMainSizeSpinBox.setMaximum(999)
@@ -230,8 +228,7 @@ class Ui_AmendThemeDialog(object):
             self.FontMainLineSpacingSpinBox)
         self.FontMainLinesPageLabel = QtGui.QLabel(self.FontMainGroupBox)
         self.FontMainLinesPageLabel.setObjectName(u'FontMainLinesPageLabel')
-        self.MainFontLayout.setWidget(6, QtGui.QFormLayout.LabelRole,
-            self.FontMainLinesPageLabel)
+        self.MainFontLayout.addRow(self.FontMainLinesPageLabel)
         spacerItem1 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum,
             QtGui.QSizePolicy.Expanding)
         self.MainLeftLayout.addItem(spacerItem1)
@@ -275,13 +272,9 @@ class Ui_AmendThemeDialog(object):
         self.MainLocationLayout.setWidget(4, QtGui.QFormLayout.LabelRole,
             self.FontMainHeightLabel)
         self.FontMainXSpinBox = QtGui.QSpinBox(self.MainLocationGroupBox)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum,
-            QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
+        defaultSizePolicy.setHeightForWidth(
             self.FontMainXSpinBox.sizePolicy().hasHeightForWidth())
-        self.FontMainXSpinBox.setSizePolicy(sizePolicy)
+        self.FontMainXSpinBox.setSizePolicy(defaultSizePolicy)
         self.FontMainXSpinBox.setMinimumSize(QtCore.QSize(78, 0))
         self.FontMainXSpinBox.setProperty(u'value', QtCore.QVariant(0))
         self.FontMainXSpinBox.setMaximum(9999)
@@ -289,39 +282,27 @@ class Ui_AmendThemeDialog(object):
         self.MainLocationLayout.setWidget(1, QtGui.QFormLayout.FieldRole,
             self.FontMainXSpinBox)
         self.FontMainYSpinBox = QtGui.QSpinBox(self.MainLocationGroupBox)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum,
-            QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
+        defaultSizePolicy.setHeightForWidth(
             self.FontMainYSpinBox.sizePolicy().hasHeightForWidth())
-        self.FontMainYSpinBox.setSizePolicy(sizePolicy)
+        self.FontMainYSpinBox.setSizePolicy(defaultSizePolicy)
         self.FontMainYSpinBox.setMinimumSize(QtCore.QSize(78, 0))
         self.FontMainYSpinBox.setMaximum(9999)
         self.FontMainYSpinBox.setObjectName(u'FontMainYSpinBox')
         self.MainLocationLayout.setWidget(2, QtGui.QFormLayout.FieldRole,
             self.FontMainYSpinBox)
         self.FontMainWidthSpinBox = QtGui.QSpinBox(self.MainLocationGroupBox)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum,
-            QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
+        defaultSizePolicy.setHeightForWidth(
             self.FontMainWidthSpinBox.sizePolicy().hasHeightForWidth())
-        self.FontMainWidthSpinBox.setSizePolicy(sizePolicy)
+        self.FontMainWidthSpinBox.setSizePolicy(defaultSizePolicy)
         self.FontMainWidthSpinBox.setMinimumSize(QtCore.QSize(78, 0))
         self.FontMainWidthSpinBox.setMaximum(9999)
         self.FontMainWidthSpinBox.setObjectName(u'FontMainWidthSpinBox')
         self.MainLocationLayout.setWidget(3, QtGui.QFormLayout.FieldRole,
             self.FontMainWidthSpinBox)
         self.FontMainHeightSpinBox = QtGui.QSpinBox(self.MainLocationGroupBox)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum,
-            QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
+        defaultSizePolicy.setHeightForWidth(
             self.FontMainHeightSpinBox.sizePolicy().hasHeightForWidth())
-        self.FontMainHeightSpinBox.setSizePolicy(sizePolicy)
+        self.FontMainHeightSpinBox.setSizePolicy(defaultSizePolicy)
         self.FontMainHeightSpinBox.setMinimumSize(QtCore.QSize(78, 0))
         self.FontMainHeightSpinBox.setMaximum(9999)
         self.FontMainHeightSpinBox.setObjectName(u'FontMainHeightSpinBox')
@@ -378,13 +359,9 @@ class Ui_AmendThemeDialog(object):
         self.FooterFontLayout.setWidget(2, QtGui.QFormLayout.LabelRole,
             self.FontFooterSizeLabel)
         self.FontFooterSizeSpinBox = QtGui.QSpinBox(self.FooterFontGroupBox)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum,
-            QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
+        defaultSizePolicy.setHeightForWidth(
             self.FontFooterSizeSpinBox.sizePolicy().hasHeightForWidth())
-        self.FontFooterSizeSpinBox.setSizePolicy(sizePolicy)
+        self.FontFooterSizeSpinBox.setSizePolicy(defaultSizePolicy)
         self.FontFooterSizeSpinBox.setMinimumSize(QtCore.QSize(70, 0))
         self.FontFooterSizeSpinBox.setProperty(u'value', QtCore.QVariant(10))
         self.FontFooterSizeSpinBox.setMaximum(999)
@@ -453,13 +430,9 @@ class Ui_AmendThemeDialog(object):
         self.LocationFooterLayout.setWidget(4, QtGui.QFormLayout.LabelRole,
             self.FontFooterHeightLabel)
         self.FontFooterXSpinBox = QtGui.QSpinBox(self.LocationFooterGroupBox)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum,
-            QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
+        defaultSizePolicy.setHeightForWidth(
             self.FontFooterXSpinBox.sizePolicy().hasHeightForWidth())
-        self.FontFooterXSpinBox.setSizePolicy(sizePolicy)
+        self.FontFooterXSpinBox.setSizePolicy(defaultSizePolicy)
         self.FontFooterXSpinBox.setMinimumSize(QtCore.QSize(78, 0))
         self.FontFooterXSpinBox.setProperty(u'value', QtCore.QVariant(0))
         self.FontFooterXSpinBox.setMaximum(9999)
@@ -467,13 +440,9 @@ class Ui_AmendThemeDialog(object):
         self.LocationFooterLayout.setWidget(1, QtGui.QFormLayout.FieldRole,
             self.FontFooterXSpinBox)
         self.FontFooterYSpinBox = QtGui.QSpinBox(self.LocationFooterGroupBox)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum,
-            QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.FontFooterYSpinBox.sizePolicy().hasHeightForWidth())
-        self.FontFooterYSpinBox.setSizePolicy(sizePolicy)
+        defaultSizePolicy.setHeightForWidth(
+            self.FontFooterXSpinBox.sizePolicy().hasHeightForWidth())
+        self.FontFooterYSpinBox.setSizePolicy(defaultSizePolicy)
         self.FontFooterYSpinBox.setMinimumSize(QtCore.QSize(78, 0))
         self.FontFooterYSpinBox.setProperty(u'value', QtCore.QVariant(0))
         self.FontFooterYSpinBox.setMaximum(9999)
@@ -901,4 +870,3 @@ class Ui_AmendThemeDialog(object):
             self.ThemeTabWidget.indexOf(self.OtherOptionsTab),
             translate('AmendThemeForm', '&Other Options'))
         self.PreviewGroupBox.setTitle(translate('AmendThemeForm', 'Preview'))
-

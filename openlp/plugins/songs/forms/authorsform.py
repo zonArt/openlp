@@ -28,7 +28,6 @@ from PyQt4 import QtGui, QtCore
 from openlp.core.lib import translate
 from openlp.plugins.songs.forms.authorsdialog import Ui_AuthorsDialog
 
-
 class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
     """
     Class to control the Maintenance of Authors Dialog

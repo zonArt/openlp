@@ -22,19 +22,19 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The :mod:`manager` module provides song usage specific database query code
+"""
 import logging
 
-from PyQt4 import QtCore
 from sqlalchemy.exceptions import InvalidRequestError
 
-from openlp.core.utils import AppLocation
-from openlp.plugins.songusage.lib.models import init_models, metadata, \
-    SongUsageItem
+from openlp.core.lib.db import Manager
+from openlp.plugins.songusage.lib.db import init_schema, SongUsageItem
 
 log = logging.getLogger(__name__)
 
-class SongUsageManager(object):
+class SongUsageManager(Manager):
     """
     The Song Manager provides a central location for all database code. This
     class takes care of connecting to the database and running all the queries.
@@ -47,98 +47,31 @@ class SongUsageManager(object):
         don't exist.
         """
         log.debug(u'SongUsage Initialising')
-        settings = QtCore.QSettings()
-        settings.beginGroup(u'songusage')
-        self.db_url = u''
-        db_type = unicode(
-            settings.value(u'db type', QtCore.QVariant(u'sqlite')).toString())
-        if db_type == u'sqlite':
-            self.db_url = u'sqlite:///%s/songusage.sqlite' % \
-                AppLocation.get_section_data_path(u'songusage')
-        else:
-            self.db_url = u'%s://%s:%s@%s/%s' % (db_type,
-                unicode(settings.value(u'db username',
-                    QtCore.QVariant(u'')).toString()),
-                unicode(settings.value(u'db password',
-                    QtCore.QVariant(u'')).toString()),
-                unicode(settings.value(u'db hostname',
-                    QtCore.QVariant(u'')).toString()),
-                unicode(settings.value(u'db database',
-                    QtCore.QVariant(u'')).toString()))
-        self.session = init_models(self.db_url)
-        metadata.create_all(checkfirst=True)
-        settings.endGroup()
+        Manager.__init__(self, u'songusage', init_schema)
         log.debug(u'SongUsage Initialised')
 
-    def get_all_songusage(self, start_date, end_date):
+    def get_songusage_for_period(self, start_date, end_date):
         """
-        Returns the details of SongUsage
+        Returns the details of SongUsage for a designated time period
+
+        ``start_date``
+            The start of the period to return
+
+        ``end_date``
+            The end of the period to return
         """
         return self.session.query(SongUsageItem) \
             .filter(SongUsageItem.usagedate >= start_date.toPyDate()) \
             .filter(SongUsageItem.usagedate < end_date.toPyDate()) \
-            .order_by(SongUsageItem.usagedate, SongUsageItem.usagetime ).all()
-
-    def insert_songusage(self, songusageitem):
-        """
-        Saves an SongUsage to the database
-        """
-        log.debug(u'SongUsage added')
-        try:
-            self.session.add(songusageitem)
-            self.session.commit()
-            return True
-        except InvalidRequestError:
-            self.session.rollback()
-            log.exception(u'SongUsage item failed to save')
-            return False
-
-    def get_songusage(self, id=None):
-        """
-        Returns the details of a SongUsage
-        """
-        if id is None:
-            return SongUsageItem()
-        else:
-            return self.session.query(SongUsageItem).get(id)
-
-    def delete_songusage(self, id):
-        """
-        Delete a SongUsage record
-        """
-        if id != 0:
-            songusageitem = self.get_songusage(id)
-            try:
-                self.session.delete(songusageitem)
-                self.session.commit()
-                return True
-            except InvalidRequestError:
-                self.session.rollback()
-                log.exception(u'SongUsage Item failed to delete')
-                return False
-        else:
-            return True
-
-    def delete_all(self):
-        """
-        Delete all Song Usage records
-        """
-        try:
-            self.session.query(SongUsageItem).delete(synchronize_session=False)
-            self.session.commit()
-            return True
-        except InvalidRequestError:
-            self.session.rollback()
-            log.exception(u'Failed to delete all Song Usage items')
-            return False
+            .order_by(SongUsageItem.usagedate, SongUsageItem.usagetime).all()
 
     def delete_to_date(self, date):
         """
         Delete SongUsage records before given date
         """
         try:
-            self.session.query(SongUsageItem)\
-                .filter(SongUsageItem.usagedate <= date)\
+            self.session.query(SongUsageItem) \
+                .filter(SongUsageItem.usagedate <= date) \
                 .delete(synchronize_session=False)
             self.session.commit()
             return True
@@ -146,4 +79,3 @@ class SongUsageManager(object):
             self.session.rollback()
             log.exception(u'Failed to delete all Song Usage items to %s' % date)
             return False
-

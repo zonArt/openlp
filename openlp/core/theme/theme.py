@@ -168,7 +168,7 @@ class Theme(object):
                 theme_strings.append(u'_%s_' % (getattr(self, key)))
         return u''.join(theme_strings)
 
-    def _set_from_XML(self, xml):
+    def _set_from_xml(self, xml):
         """
         Set theme class attributes with data from XML
 

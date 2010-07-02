@@ -32,6 +32,7 @@ from PyQt4 import QtCore, QtGui
 
 from bibleimportwizard import Ui_BibleImportWizard
 from openlp.core.lib import Receiver, SettingsManager, translate
+from openlp.core.lib.db import delete_database
 from openlp.core.utils import AppLocation
 from openlp.plugins.bibles.lib.manager import BibleFormat
 
@@ -224,7 +225,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         Show the file open dialog for the OSIS file.
         """
         self.getFileName(
-                translate('BiblesPlugin.ImportWizardForm', 'Open OSIS File'),
+            translate('BiblesPlugin.ImportWizardForm', 'Open OSIS File'),
             self.OSISLocationEdit)
 
     def onBooksFileButtonClicked(self):
@@ -239,10 +240,8 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         """
         Show the file open dialog for the verses CSV file.
         """
-        self.getFileName(
-            translate('BiblesPlugin.ImportWizardForm',
-                'Open Verses CSV File'),
-            self.CsvVerseLocationEdit)
+        self.getFileName(translate('BiblesPlugin.ImportWizardForm',
+            'Open Verses CSV File'), self.CsvVerseLocationEdit)
 
     def onOpenSongBrowseButtonClicked(self):
         """
@@ -451,7 +450,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
             self.ImportProgressLabel.setText(
                 translate('BiblesPlugin.ImportWizardForm',
                     'Your Bible import failed.'))
-            importer.delete()
+            delete_database(self.bibleplugin.settingsSection, importer.file)
 
     def postImport(self):
         self.ImportProgressBar.setValue(self.ImportProgressBar.maximum())
