@@ -242,19 +242,22 @@ class Plugin(QtCore.QObject):
         """
         if self.media_item:
             self.media_item.initialise()
+        self.insert_toolbox_item()
 
     def finalise(self):
         """
         Called by the plugin Manager to cleanup things.
         """
-        pass
+        self.remove_toolbox_item()
 
     def remove_toolbox_item(self):
         """
         Called by the plugin to remove toolbar
         """
-        self.mediadock.remove_dock(self.name)
-        self.settings_form.removeTab(self.name)
+        if self.media_item:
+            self.mediadock.remove_dock(self.name)
+        if self.settings_tab:
+            self.settings_form.removeTab(self.name)
 
     def insert_toolbox_item(self):
         """

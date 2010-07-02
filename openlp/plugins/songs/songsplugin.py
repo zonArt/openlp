@@ -67,14 +67,8 @@ class SongsPlugin(Plugin):
     def initialise(self):
         log.info(u'Songs Initialising')
         Plugin.initialise(self)
-        self.insert_toolbox_item()
         self.media_item.displayResultsSong(
             self.manager.get_all_objects(Song, Song.title))
-
-    def finalise(self):
-        log.info(u'Plugin Finalise')
-        Plugin.finalise(self)
-        self.remove_toolbox_item()
 
     def get_media_manager_item(self):
         """

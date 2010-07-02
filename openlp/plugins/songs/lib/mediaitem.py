@@ -166,13 +166,13 @@ class SongMediaItem(MediaManagerItem):
         if search_type == 0:
             log.debug(u'Titles Search')
             search_results = self.parent.manager.get_all_objects_filtered(Song,
-                Song.search_title.like(u'%' + keywords + u'%'),
+                Song.search_title.like(u'%' + search_keywords + u'%'),
                 Song.search_title.asc())
             self.displayResultsSong(search_results)
         elif search_type == 1:
             log.debug(u'Lyrics Search')
             search_results = self.parent.manager.get_all_objects_filtered(Song,
-                Song.search_lyrics.like(u'%' + keywords + u'%'),
+                Song.search_lyrics.like(u'%' + search_keywords + u'%'),
                 Song.search_lyrics.asc())
             self.displayResultsSong(search_results)
         elif search_type == 2:
@@ -371,7 +371,8 @@ class SongMediaItem(MediaManagerItem):
             author_list = author_list + unicode(author.display_name)
             author_audit.append(unicode(author.display_name))
         if song.ccli_number is None or len(song.ccli_number) == 0:
-            ccli = self.parent.settings_form.GeneralTab.CCLINumber
+            ccli = QtCore.QSettings().value(u'general/ccli number',
+                QtCore.QVariant(u'')).toString()
         else:
             ccli = unicode(song.ccli_number)
         raw_footer.append(song.title)

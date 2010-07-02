@@ -242,4 +242,3 @@ class DisplayTab(SettingsTab):
         if self.amend_display_start != self.amend_display:
             self.amend_display_start = self.amend_display
             Receiver.send_message(u'config_screen_changed')
-

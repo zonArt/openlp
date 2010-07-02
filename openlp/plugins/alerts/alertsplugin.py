@@ -85,8 +85,8 @@ class alertsPlugin(Plugin):
 
     def finalise(self):
         log.info(u'Plugin Finalise')
+        Plugin.finalise(self)
         self.toolsAlertItem.setVisible(False)
-        #stop any events being processed
 
     def togglealertsState(self):
         self.alertsActive = not self.alertsActive
