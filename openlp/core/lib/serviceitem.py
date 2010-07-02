@@ -73,7 +73,7 @@ class ServiceItem(object):
             The plugin that this service item belongs to.
         """
         if plugin:
-            self.render_manager = plugin.render_manager
+            self.render_manager = plugin.renderManager
             self.name = plugin.name
         self.title = u''
         self.shortname = u''
