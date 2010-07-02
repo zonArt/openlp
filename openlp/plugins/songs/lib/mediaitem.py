@@ -31,6 +31,7 @@ from openlp.core.lib import MediaManagerItem, SongXMLParser, \
     BaseListWithDnD, Receiver, ItemCapabilities, translate, check_item_selected
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     ImportWizardForm
+from openlp.plugins.songs.lib.db import Song
 
 log = logging.getLogger(__name__)
 
@@ -164,18 +165,21 @@ class SongMediaItem(MediaManagerItem):
         search_type = self.SearchTypeComboBox.currentIndex()
         if search_type == 0:
             log.debug(u'Titles Search')
-            search_results = self.parent.manager.search_song_title(
-                search_keywords)
+            search_results = self.parent.manager.get_all_objects_filtered(Song,
+                Song.search_title.like(u'%' + search_keywords + u'%'),
+                Song.search_title.asc())
             self.displayResultsSong(search_results)
         elif search_type == 1:
             log.debug(u'Lyrics Search')
-            search_results = self.parent.manager.search_song_lyrics(
-                search_keywords)
+            search_results = self.parent.manager.get_all_objects_filtered(Song,
+                Song.search_lyrics.like(u'%' + search_keywords + u'%'),
+                Song.search_lyrics.asc())
             self.displayResultsSong(search_results)
         elif search_type == 2:
             log.debug(u'Authors Search')
-            search_results = self.parent.manager.get_song_from_author(
-                search_keywords)
+            search_results = self.parent.manager.get_all_objects_filtered(
+                Author, Author.display_name.like(u'%' + search_keywords + u'%'),
+                Author.display_name.asc())
             self.displayResultsAuthor(search_results)
         #Called to redisplay the song list screen edith from a search
         #or from the exit of the Song edit dialog.  If remote editing is active
@@ -268,7 +272,7 @@ class SongMediaItem(MediaManagerItem):
         type of display is required.
         """
         fields = songid.split(u':')
-        valid = self.parent.manager.get_song(fields[1])
+        valid = self.parent.manager.get_object(Song, fields[1])
         if valid:
             self.remoteSong = fields[1]
             self.remoteTriggered = fields[0]
@@ -310,7 +314,7 @@ class SongMediaItem(MediaManagerItem):
                 return
             for item in items:
                 item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-                self.parent.manager.delete_song(item_id)
+                self.parent.manager.delete_object(Song, item_id)
             self.onSearchTextButtonClick()
 
     def generateSlideData(self, service_item, item=None):
@@ -331,7 +335,7 @@ class SongMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.AllowsEdit)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
-        song = self.parent.manager.get_song(item_id)
+        song = self.parent.manager.get_object(Song, item_id)
         service_item.theme = song.theme_name
         service_item.editId = item_id
         if song.lyrics.startswith(u'<?xml version='):
@@ -367,7 +371,8 @@ class SongMediaItem(MediaManagerItem):
             author_list = author_list + unicode(author.display_name)
             author_audit.append(unicode(author.display_name))
         if song.ccli_number is None or len(song.ccli_number) == 0:
-            ccli = self.parent.settings_form.GeneralTab.CCLINumber
+            ccli = QtCore.QSettings().value(u'general/ccli number',
+                QtCore.QVariant(u'')).toString()
         else:
             ccli = unicode(song.ccli_number)
         raw_footer.append(song.title)

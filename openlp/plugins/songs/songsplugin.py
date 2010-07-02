@@ -29,7 +29,9 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, build_icon, PluginStatus, Receiver, \
     translate
-from openlp.plugins.songs.lib import SongManager, SongMediaItem, SongsTab
+from openlp.core.lib.db import Manager
+from openlp.plugins.songs.lib import SongMediaItem, SongsTab
+from openlp.plugins.songs.lib.db import init_schema, Song
 
 try:
     from openlp.plugins.songs.lib import SofImport, OooImport
@@ -38,7 +40,6 @@ except ImportError:
     OOo_available = False
 
 log = logging.getLogger(__name__)
-
 
 class SongsPlugin(Plugin):
     """
@@ -56,8 +57,8 @@ class SongsPlugin(Plugin):
         """
         Plugin.__init__(self, u'Songs', u'1.9.2', plugin_helpers)
         self.weight = -10
-        self.manager = SongManager()
-        self.icon = build_icon(u':/media/media_song.png')
+        self.manager = Manager(u'songs', init_schema)
+        self.icon = build_icon(u':/plugins/plugin_songs.png')
         self.status = PluginStatus.Active
 
     def get_settings_tab(self):
@@ -65,16 +66,9 @@ class SongsPlugin(Plugin):
 
     def initialise(self):
         log.info(u'Songs Initialising')
-        #if self.songmanager is None:
-        #    self.songmanager = SongManager()
         Plugin.initialise(self)
-        self.insert_toolbox_item()
-        self.media_item.displayResultsSong(self.manager.get_songs())
-
-    def finalise(self):
-        log.info(u'Plugin Finalise')
-        Plugin.finalise(self)
-        self.remove_toolbox_item()
+        self.mediaItem.displayResultsSong(
+            self.manager.get_all_objects(Song, Song.title))
 
     def get_media_manager_item(self):
         """
@@ -198,6 +192,7 @@ class SongsPlugin(Plugin):
         return about_text
 
     def can_delete_theme(self, theme):
-        if len(self.manager.get_songs_for_theme(theme)) == 0:
+        if not self.manager.get_all_objects_filtered(Song,
+            Song.theme_name == theme):
             return True
         return False

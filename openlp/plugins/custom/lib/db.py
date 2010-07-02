@@ -22,18 +22,40 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The :mod:`db` module provides the database and schema that is the backend for
+the Custom plugin
+"""
 
 from sqlalchemy import Column, Table, types
+from sqlalchemy.orm import mapper
 
-from openlp.plugins.songusage.lib.meta import metadata
+from openlp.core.lib.db import BaseModel, init_db
 
-# Definition of the "songusage" table
-songusage_table = Table(u'songusage_data', metadata,
-    Column(u'id', types.Integer(), primary_key=True),
-    Column(u'usagedate', types.Date, index=True, nullable=False),
-    Column(u'usagetime', types.Time, index=True, nullable=False),
-    Column(u'title', types.Unicode(255), nullable=False),
-    Column(u'authors', types.Unicode(255), nullable=False),
-    Column(u'copyright', types.Unicode(255)),
-    Column(u'ccl_number', types.Unicode(65))
-)
+class CustomSlide(BaseModel):
+    """
+    CustomSlide model
+    """
+    pass
+
+def init_schema(url):
+    """
+    Setup the custom database connection and initialise the database schema
+
+    ``url``
+        The database to setup
+    """
+    session, metadata = init_db(url)
+
+    custom_slide_table = Table(u'custom_slide', metadata,
+        Column(u'id', types.Integer(), primary_key=True),
+        Column(u'title', types.Unicode(255), nullable=False),
+        Column(u'text', types.UnicodeText, nullable=False),
+        Column(u'credits', types.UnicodeText),
+        Column(u'theme_name', types.Unicode(128))
+    )
+
+    mapper(CustomSlide, custom_slide_table)
+
+    metadata.create_all(checkfirst=True)
+    return session

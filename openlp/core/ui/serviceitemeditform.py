@@ -88,9 +88,13 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         """
         items = self.listWidget.selectedItems()
         for item in items:
-            row =  self.listWidget.row(item)
+            row = self.listWidget.row(item)
             self.itemList.remove(self.itemList[row])
             self.loadData()
+            if row == self.listWidget.count():
+                self.listWidget.setCurrentRow(row - 1)
+            else:
+                self.listWidget.setCurrentRow(row)
 
     def onItemUp(self):
         """
@@ -98,7 +102,7 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         """
         items = self.listWidget.selectedItems()
         for item in items:
-            row =  self.listWidget.row(item)
+            row = self.listWidget.row(item)
             if row > 0:
                 temp = self.itemList[row]
                 self.itemList.remove(self.itemList[row])
@@ -112,7 +116,7 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         """
         items = self.listWidget.selectedItems()
         for item in items:
-            row =  self.listWidget.row(item)
+            row = self.listWidget.row(item)
             if row < len(self.itemList) and row is not -1:
                 temp = self.itemList[row]
                 self.itemList.remove(self.itemList[row])

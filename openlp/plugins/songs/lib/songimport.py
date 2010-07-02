@@ -27,7 +27,7 @@ import re
 
 from openlp.core.lib import SongXMLBuilder, translate
 from openlp.plugins.songs.lib import VerseType
-from openlp.plugins.songs.lib.models import Song, Author, Topic, Book
+from openlp.plugins.songs.lib.db import Song, Author, Topic, Book
 
 class SongImport(object):
     """
@@ -264,7 +264,6 @@ class SongImport(object):
         if len(self.authors) == 0:
             self.authors.append(u'Author unknown')
         self.commit_song()
-        #self.print_song()
 
     def commit_song(self):
         """
@@ -303,30 +302,33 @@ class SongImport(object):
         song.theme_name = self.theme_name
         song.ccli_number = self.ccli_number
         for authortext in self.authors:
-            author = self.manager.get_author_by_name(authortext)
+            author = self.manager.get_object_filtered(Author,
+                Author.display_name == authortext)
             if author is None:
                 author = Author()
                 author.display_name = authortext
                 author.last_name = authortext.split(u' ')[-1]
                 author.first_name = u' '.join(authortext.split(u' ')[:-1])
-                self.manager.save_author(author)
+                self.manager.save_object(author)
             song.authors.append(author)
         if self.song_book_name:
-            song_book = self.manager.get_book_by_name(self.song_book_name)
+            song_book = self.manager.get_object_filtered(Book,
+                Book.name == self.song_book_name)
             if song_book is None:
                 song_book = Book()
                 song_book.name = self.song_book_name
                 song_book.publisher = self.song_book_pub
-                self.manager.save_book(song_book)
+                self.manager.save_object(song_book)
             song.song_book_id = song_book.id
         for topictext in self.topics:
-            topic = self.manager.get_topic_by_name(topictext)
+            topic = self.manager.get_object_filtered(Topic,
+                Topic.name == topictext)
             if topic is None:
                 topic = Topic()
                 topic.name = topictext
-                self.manager.save_topic(topic)
+                self.manager.save_object(topic)
             song.topics.append(topictext)
-        self.manager.save_song(song)
+        self.manager.save_object(song)
 
     def print_song(self):
         """
@@ -357,5 +359,3 @@ class SongImport(object):
             print u'THEME: ' + self.theme_name
         if self.ccli_number:
             print u'CCLI: ' + self.ccli_number
-
-

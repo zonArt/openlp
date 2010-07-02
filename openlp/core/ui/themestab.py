@@ -150,9 +150,9 @@ class ThemesTab(SettingsTab):
         settings.setValue(u'global theme',
             QtCore.QVariant(self.global_theme))
         settings.endGroup()
-        Receiver.send_message(u'theme_update_global', self.global_theme)
         self.parent.RenderManager.set_global_theme(
             self.global_theme, self.theme_level)
+        Receiver.send_message(u'theme_update_global', self.global_theme)
 
     def postSetUp(self):
         Receiver.send_message(u'theme_update_global', self.global_theme)

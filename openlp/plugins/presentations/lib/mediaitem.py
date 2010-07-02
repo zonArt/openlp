@@ -180,18 +180,22 @@ class PresentationMediaItem(MediaManagerItem):
         if check_item_selected(self.ListView,
             translate('PresentationPlugin.MediaItem',
             'You must select an item to delete.')):
-            item = self.ListView.currentItem()
-            row = self.ListView.row(item)
-            self.ListView.takeItem(row)
+            items = self.ListView.selectedIndexes()
+            row_list = [item.row() for item in items]
+            row_list.sort(reverse=True)
+            for item in items:
+                filepath = unicode(item.data(
+                    QtCore.Qt.UserRole).toString())
+                #not sure of this has errors
+                #John please can you look at .
+                for cidx in self.controllers:
+                    doc = self.controllers[cidx].add_doc(filepath)
+                    doc.presentation_deleted()
+                    doc.close_presentation()
+            for row in row_list:
+                self.ListView.takeItem(row)
             SettingsManager.set_list(self.settingsSection,
                 self.settingsSection, self.getFileList())
-            filepath = unicode(item.data(QtCore.Qt.UserRole).toString())
-            #not sure of this has errors
-            #John please can you look at .
-            for cidx in self.controllers:
-                doc = self.controllers[cidx].add_doc(filepath)
-                doc.presentation_deleted()
-                doc.close_presentation()
 
     def generateSlideData(self, service_item, item=None):
         items = self.ListView.selectedIndexes()

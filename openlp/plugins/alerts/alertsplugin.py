@@ -28,7 +28,9 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, build_icon, PluginStatus, translate
-from openlp.plugins.alerts.lib import AlertsManager, AlertsTab, DBManager
+from openlp.core.lib.db import Manager
+from openlp.plugins.alerts.lib import AlertsManager, AlertsTab
+from openlp.plugins.alerts.lib.db import init_schema
 from openlp.plugins.alerts.forms import AlertForm
 
 log = logging.getLogger(__name__)
@@ -39,13 +41,16 @@ class alertsPlugin(Plugin):
     def __init__(self, plugin_helpers):
         Plugin.__init__(self, u'Alerts', u'1.9.2', plugin_helpers)
         self.weight = -3
-        self.icon = build_icon(u':/media/media_image.png')
+        self.icon = build_icon(u':/plugins/plugin_alerts.png')
         self.alertsmanager = AlertsManager(self)
-        self.manager = DBManager()
+        self.manager = Manager(u'alerts', init_schema)
         self.alertForm = AlertForm(self.manager, self)
         self.status = PluginStatus.Active
 
     def get_settings_tab(self):
+        """
+        Return the settings tab for the Alerts plugin
+        """
         self.alertsTab = AlertsTab(self)
         return self.alertsTab
 
@@ -60,7 +65,7 @@ class alertsPlugin(Plugin):
         """
         log.info(u'add tools menu')
         self.toolsAlertItem = QtGui.QAction(tools_menu)
-        AlertIcon = build_icon(u':/tools/tools_alert.png')
+        AlertIcon = build_icon(u':/plugins/plugin_alerts.png')
         self.toolsAlertItem.setIcon(AlertIcon)
         self.toolsAlertItem.setObjectName(u'toolsAlertItem')
         self.toolsAlertItem.setText(
@@ -68,7 +73,7 @@ class alertsPlugin(Plugin):
         self.toolsAlertItem.setStatusTip(
             translate('AlertsPlugin', 'Show an alert message'))
         self.toolsAlertItem.setShortcut(u'F7')
-        self.service_manager.parent.ToolsMenu.addAction(self.toolsAlertItem)
+        self.serviceManager.parent.ToolsMenu.addAction(self.toolsAlertItem)
         QtCore.QObject.connect(self.toolsAlertItem,
             QtCore.SIGNAL(u'triggered()'), self.onAlertsTrigger)
         self.toolsAlertItem.setVisible(False)
@@ -80,8 +85,8 @@ class alertsPlugin(Plugin):
 
     def finalise(self):
         log.info(u'Plugin Finalise')
+        Plugin.finalise(self)
         self.toolsAlertItem.setVisible(False)
-        #stop any events being processed
 
     def togglealertsState(self):
         self.alertsActive = not self.alertsActive

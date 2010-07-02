@@ -138,7 +138,7 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.media_item = plugin.get_media_manager_item()
+                plugin.mediaItem = plugin.get_media_manager_item()
 
     def hook_settings_tabs(self, settingsform=None):
         """

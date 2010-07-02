@@ -23,16 +23,16 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from datetime import datetime
 import logging
 
+from datetime import datetime
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, Receiver, build_icon, translate
 from openlp.plugins.songusage.lib import SongUsageManager
 from openlp.plugins.songusage.forms import SongUsageDetailForm, \
     SongUsageDeleteForm
-from openlp.plugins.songusage.lib.models import SongUsageItem
+from openlp.plugins.songusage.lib.db import SongUsageItem
 
 log = logging.getLogger(__name__)
 
@@ -42,7 +42,7 @@ class SongUsagePlugin(Plugin):
     def __init__(self, plugin_helpers):
         Plugin.__init__(self, u'SongUsage', u'1.9.2', plugin_helpers)
         self.weight = -4
-        self.icon = build_icon(u':/media/media_image.png')
+        self.icon = build_icon(u':/plugins/plugin_songusage.png')
         self.songusagemanager = None
         self.songusageActive = False
 
@@ -76,7 +76,7 @@ class SongUsagePlugin(Plugin):
             translate('SongUsagePlugin', 'Generate report on Song Usage'))
         self.SongUsageReport.setObjectName(u'SongUsageReport')
         #SongUsage activation
-        SongUsageIcon = build_icon(u':/tools/tools_alert.png')
+        SongUsageIcon = build_icon(u':/plugins/plugin_songusage.png')
         self.SongUsageStatus = QtGui.QAction(tools_menu)
         self.SongUsageStatus.setIcon(SongUsageIcon)
         self.SongUsageStatus.setCheckable(True)
@@ -148,7 +148,7 @@ class SongUsagePlugin(Plugin):
             song_usage_item.authors = u''
             for author in audit[1]:
                 song_usage_item.authors += author + u' '
-            self.songusagemanager.insert_songusage(song_usage_item)
+            self.songusagemanager.save_object(song_usage_item)
 
     def onSongUsageDelete(self):
         self.SongUsagedeleteform.exec_()

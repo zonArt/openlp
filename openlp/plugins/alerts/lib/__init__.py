@@ -25,4 +25,3 @@
 
 from alertsmanager import AlertsManager
 from alertstab import AlertsTab
-from manager import DBManager

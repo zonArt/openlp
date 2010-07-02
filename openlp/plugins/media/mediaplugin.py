@@ -38,7 +38,7 @@ class MediaPlugin(Plugin):
     def __init__(self, plugin_helpers):
         Plugin.__init__(self, u'Media', u'1.9.2', plugin_helpers)
         self.weight = -6
-        self.icon = build_icon(u':/media/media_video.png')
+        self.icon = build_icon(u':/plugins/plugin_media.png')
         # passed with drag and drop messages
         self.dnd_id = u'Media'
         self.status = PluginStatus.Active
@@ -63,18 +63,9 @@ class MediaPlugin(Plugin):
         if len(value) == 2:
             if list.find(value[1]) == -1:
                 list += u'*.%s ' % value[1]
-                self.service_manager.supportedSuffixes(value[1])
+                self.serviceManager.supportedSuffixes(value[1])
             type = u''
         return list, type
-
-    def initialise(self):
-        log.info(u'Plugin Initialising')
-        Plugin.initialise(self)
-        self.insert_toolbox_item()
-
-    def finalise(self):
-        log.info(u'Plugin Finalise')
-        self.remove_toolbox_item()
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object

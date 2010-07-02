@@ -33,7 +33,7 @@ log = logging.getLogger(__name__)
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, ServiceItem, context_menu_action, \
-    Receiver, build_icon, ItemCapabilities, SettingsManager, translate
+    Receiver, build_icon, ItemCapabilities, SettingsManager, translate, ThemeLevel
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm
 from openlp.core.utils import AppLocation
 
@@ -134,15 +134,13 @@ class ServiceManager(QtGui.QWidget):
         self.ThemeLabel = QtGui.QLabel(translate('ServiceManager', 'Theme:'),
             self)
         self.ThemeLabel.setMargin(3)
-        self.Toolbar.addWidget(self.ThemeLabel)
+        self.Toolbar.addToolbarWidget(u'ThemeLabel', self.ThemeLabel)
         self.ThemeComboBox = QtGui.QComboBox(self.Toolbar)
         self.ThemeComboBox.setToolTip(translate('ServiceManager',
             'Select a theme for the service'))
         self.ThemeComboBox.setSizeAdjustPolicy(
             QtGui.QComboBox.AdjustToContents)
-        self.ThemeWidget = QtGui.QWidgetAction(self.Toolbar)
-        self.ThemeWidget.setDefaultWidget(self.ThemeComboBox)
-        self.Toolbar.addAction(self.ThemeWidget)
+        self.Toolbar.addToolbarWidget(u'ThemeWidget', self.ThemeComboBox)
         self.Layout.addWidget(self.Toolbar)
         # Create the service manager list
         self.ServiceManagerList = ServiceManagerList(self)
@@ -214,6 +212,8 @@ class ServiceManager(QtGui.QWidget):
             QtCore.SIGNAL(u'servicemanager_list_request'), self.listRequest)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.regenerateServiceItems)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'theme_update_global'), self.themeChange)
         # Last little bits of setting up
         self.service_theme = unicode(QtCore.QSettings().value(
             self.parent.serviceSettingsSection + u'/service theme',
@@ -625,13 +625,13 @@ class ServiceManager(QtGui.QWidget):
 
     def onLoadService(self, lastService=False):
         if lastService:
-            filename = SettingsManager.get_last_dir(
-                self.parent.serviceSettingsSection)
+            filename = self.parent.recentFiles[0]
         else:
             filename = QtGui.QFileDialog.getOpenFileName(
                 self, translate('ServiceManager', 'Open Service'),
                 SettingsManager.get_last_dir(
                 self.parent.serviceSettingsSection), u'Services (*.osz)')
+        filename = QtCore.QDir.toNativeSeparators(filename)
         self.loadService(filename)
 
     def loadService(self, filename=None):
@@ -755,6 +755,18 @@ class ServiceManager(QtGui.QWidget):
             self.parent.serviceSettingsSection + u'/service theme',
             QtCore.QVariant(self.service_theme))
         self.regenerateServiceItems()
+
+    def themeChange(self):
+        """
+        The theme may have changed in the settings dialog so make
+        sure the theme combo box is in the correct state.
+        """
+        if self.parent.RenderManager.theme_level == ThemeLevel.Global:
+            self.Toolbar.actions[u'ThemeLabel'].setVisible(False)
+            self.Toolbar.actions[u'ThemeWidget'].setVisible(False)
+        else:
+            self.Toolbar.actions[u'ThemeLabel'].setVisible(True)
+            self.Toolbar.actions[u'ThemeWidget'].setVisible(True)
 
     def regenerateServiceItems(self):
         """
