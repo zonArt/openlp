@@ -141,7 +141,7 @@ class CustomMediaItem(MediaManagerItem):
             id_list = [(item.data(QtCore.Qt.UserRole)).toInt()[0]
                 for item in self.ListView.selectedIndexes()]
             for id in id_list:
-                self.parent.custommanager.delete_custom(id)
+                self.parent.custommanager.delete_object(CustomSlide, id)
             for row in row_list:
                 self.ListView.takeItem(row)
 

@@ -24,8 +24,8 @@
 ###############################################################################
 
 import logging
-import sys
-import os
+#import sys
+#import os
 
 from types import ListType
 from xml.etree.ElementTree import ElementTree, XML

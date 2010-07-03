@@ -63,18 +63,9 @@ class MediaPlugin(Plugin):
         if len(value) == 2:
             if list.find(value[1]) == -1:
                 list += u'*.%s ' % value[1]
-                self.service_manager.supportedSuffixes(value[1])
+                self.serviceManager.supportedSuffixes(value[1])
             type = u''
         return list, type
-
-    def initialise(self):
-        log.info(u'Plugin Initialising')
-        Plugin.initialise(self)
-        self.insert_toolbox_item()
-
-    def finalise(self):
-        log.info(u'Plugin Finalise')
-        self.remove_toolbox_item()
 
     def get_media_manager_item(self):
         # Create the MediaManagerItem object

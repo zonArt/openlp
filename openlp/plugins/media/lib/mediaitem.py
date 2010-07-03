@@ -101,22 +101,13 @@ class MediaMediaItem(MediaManagerItem):
         self.PageLayout.addWidget(self.ImageWidget)
 
     def onReplaceClick(self):
-#        if self.background:
-#            self.background = False
-#            Receiver.send_message(u'videodisplay_stop')
-#        else:
-#            self.background = True
+
         if check_item_selected(self.ListView,
             translate('ImagePlugin.MediaItem',
             'You must select an item to process.')):
             item = self.ListView.currentItem()
             filename = unicode(item.data(QtCore.Qt.UserRole).toString())
-            self.parent.live_controller.displayManager.displayVideo(filename)
-#            items = self.ListView.selectedIndexes()
-#            for item in items:
-#                bitem = self.ListView.item(item.row())
-#                filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
-#                Receiver.send_message(u'videodisplay_background', filename)
+            self.parent.displayManager.displayVideo(filename)
 
     def generateSlideData(self, service_item, item=None):
         if item is None:
