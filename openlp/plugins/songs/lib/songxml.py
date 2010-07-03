@@ -317,14 +317,6 @@ class Song(object):
         self.set_lyrics(u'')
         return
 
-    def set_songid(self, songid):
-        """Set the songid for the database"""
-        self.songid = songid
-
-    def get_songid(self):
-        """Return the songid for the database"""
-        return self.songid
-
     def from_opensong_buffer(self, xmlcontent):
         """Initialize from buffer(string) of xml lines in opensong format"""
         self._reset()
@@ -387,10 +379,6 @@ class Song(object):
     def get_title(self):
         """Return title value"""
         return self.title
-
-    def get_search_title(self):
-        """Return search_title"""
-        return self.search_title
 
     def from_ccli_text_buffer(self, textList):
         """
