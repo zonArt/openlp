@@ -38,10 +38,10 @@ The basic XML is of the format::
 """
 
 import logging
+import StringIO
 
-from xml.dom.minidom import Document
-from xml.etree.ElementTree import ElementTree, XML, dump
-from xml.parsers.expat import ExpatError
+from lxml import etree, objectify
+#from lxml.etree import SubElement, XMLSyntaxError, dump
 
 log = logging.getLogger(__name__)
 
@@ -51,31 +51,18 @@ class SongXMLBuilder(object):
     """
     log.info(u'SongXMLBuilder Loaded')
 
-    def __init__(self):
+    def __init__(self, song_language=None):
         """
         Set up the song builder.
-        """
-        # Create the minidom document
-        self.song_xml = Document()
 
-    def new_document(self):
+        ``song_language``
+            The language used in this song
         """
-        Create a new song XML document.
-        """
-        # Create the <song> base element
-        self.song = self.song_xml.createElement(u'song')
-        self.song_xml.appendChild(self.song)
-        self.song.setAttribute(u'version', u'1.0')
-
-    def add_lyrics_to_song(self):
-        """
-        Set up and add a ``<lyrics>`` tag which contains the lyrics of the
-        song.
-        """
-        # Create the main <lyrics> element
-        self.lyrics = self.song_xml.createElement(u'lyrics')
-        self.lyrics.setAttribute(u'language', u'en')
-        self.song.appendChild(self.lyrics)
+        lang = u'en'
+        if song_language:
+            lang = song_language
+        self.song_xml = objectify.fromstring(u'<song version="1.0" />')
+        self.lyrics = etree.SubElement(self.song_xml, u'lyrics', language=lang)
 
     def add_verse_to_lyrics(self, type, number, content):
         """
@@ -92,25 +79,20 @@ class SongXMLBuilder(object):
             The actual text of the verse to be stored.
         """
         #log.debug(u'add_verse_to_lyrics %s, %s\n%s' % (type, number, content))
-        verse = self.song_xml.createElement(u'verse')
-        verse.setAttribute(u'type', type)
-        verse.setAttribute(u'label', number)
-        self.lyrics.appendChild(verse)
-        # add data as a CDATA section to protect the XML from special chars
-        cds = self.song_xml.createCDATASection(content)
-        verse.appendChild(cds)
+        verse = etree.SubElement(self.lyrics, u'verse', type=type, label=number)
+        verse.text = etree.CDATA(content)
 
     def dump_xml(self):
         """
         Debugging aid to dump XML so that we can see what we have.
         """
-        return self.song_xml.toprettyxml(indent=u'  ')
+        return etree.tostring(self.song_xml, pretty_print=True)
 
     def extract_xml(self):
         """
         Extract our newly created XML song.
         """
-        return self.song_xml.toxml(u'utf-8')
+        return etree.tostring(self.song_xml, encoding=u'utf-8')
 
 
 class SongXMLParser(object):
@@ -128,9 +110,8 @@ class SongXMLParser(object):
         """
         self.song_xml = None
         try:
-            self.song_xml = ElementTree(
-                element=XML(unicode(xml).encode('unicode-escape')))
-        except ExpatError:
+            self.song_xml = objectify.fromstring(str(xml))
+        except etree.XMLSyntaxError:
             log.exception(u'Invalid xml %s', xml)
 
     def get_verses(self):

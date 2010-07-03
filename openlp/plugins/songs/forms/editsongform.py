@@ -639,8 +639,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         log.debug(u'processLyrics')
         try:
             sxml = SongXMLBuilder()
-            sxml.new_document()
-            sxml.add_lyrics_to_song()
             text = u''
             multiple = []
             for i in range (0, self.VerseListWidget.rowCount()):

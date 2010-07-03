@@ -276,8 +276,6 @@ class SongImport(object):
         song.song_number = self.song_number
         song.search_lyrics = u''
         sxml = SongXMLBuilder()
-        sxml.new_document()
-        sxml.add_lyrics_to_song()
         for (versetag, versetext) in self.verses:
             if versetag[0] == u'C':
                 versetype = VerseType.to_string(VerseType.Chorus)
