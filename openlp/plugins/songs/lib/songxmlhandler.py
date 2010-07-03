@@ -133,4 +133,4 @@ class SongXMLParser(object):
         """
         Debugging aid to dump XML so that we can see what we have.
         """
-        return dump(self.song_xml)
+        return etree.dump(self.song_xml)
