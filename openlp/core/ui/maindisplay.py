@@ -44,7 +44,7 @@ HTMLVIDEO = u"""<html>
         padding:0
     }
     </style>
-    <script type=\"text/javascript\" charset=\"utf-8\">
+    <script type="text/javascript" charset="utf-8">
     var video;
     var bodyLoaded = function(){
         video = document.getElementById(\"video\");
@@ -52,10 +52,10 @@ HTMLVIDEO = u"""<html>
     }
     </script>
     </head>
-    <body id=\"body\" onload=\"bodyLoaded();\">
-    <video id=\"video\" src=\"%s\"
-        autoplay loop width=\"%s\" height=\"%s\"
-        autobuffer=\"autobuffer\" preload >
+    <body id="body" onload="bodyLoaded();">
+    <video id="video" src="%s"
+        autoplay loop width="%s" height="%s"
+        autobuffer="autobuffer" preload >
         your browser does not support the video tag
     </video>
     </body></html>
