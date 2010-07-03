@@ -35,12 +35,6 @@ from openlp.core.ui import HideMode
 
 log = logging.getLogger(__name__)
 
-HTMLIMAGE = """<html>
-    <body>
-    <img src=\"file://%s\" alt\"Hello\">
-    </body></html>
-    """
-
 #http://www.steveheffernan.com/html5-video-player/demo-video-player.html
 HTMLVIDEO = u"""<html>
     <head>
