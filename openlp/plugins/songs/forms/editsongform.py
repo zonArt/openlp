@@ -664,4 +664,3 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         log.debug(u'processTitle')
         self.song.search_title = \
             re.sub(r'[\'"`,;:(){}?]+', u'', unicode(self.song.search_title))
-

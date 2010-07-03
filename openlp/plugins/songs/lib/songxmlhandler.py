@@ -38,10 +38,8 @@ The basic XML is of the format::
 """
 
 import logging
-import StringIO
 
 from lxml import etree, objectify
-#from lxml.etree import SubElement, XMLSyntaxError, dump
 
 log = logging.getLogger(__name__)
 
@@ -86,13 +84,15 @@ class SongXMLBuilder(object):
         """
         Debugging aid to dump XML so that we can see what we have.
         """
-        return etree.tostring(self.song_xml, pretty_print=True)
+        return etree.tostring(self.song_xml, encoding=u'UTF-8',
+            xml_declaration=True, pretty_print=True)
 
     def extract_xml(self):
         """
         Extract our newly created XML song.
         """
-        return etree.tostring(self.song_xml, encoding=u'utf-8')
+        return etree.tostring(self.song_xml, encoding=u'UTF-8',
+            xml_declaration=True)
 
 
 class SongXMLParser(object):
