@@ -34,9 +34,7 @@ from xml.etree.ElementTree import ElementTree, XML
 #sys.path.append(os.path.abspath(u'./../../../..'))
 #sys.path.append(os.path.abspath(os.path.join(u'.', u'..', u'..')))
 
-
 log = logging.getLogger(__name__)
-
 
 class SongException(Exception):
     pass
@@ -84,7 +82,9 @@ class _OpenSong(object):
         """
         Initialize from given xml content
         """
-        self.from_buffer(xmlContent)
+        self._set_from_xml(_BLANK_OPENSONG_XML, 'song')
+        if xmlContent:
+            self._set_from_xml(xmlContent, 'song')
 
     def _set_from_xml(self, xml, root_tag):
         """
@@ -146,16 +146,6 @@ class _OpenSong(object):
             if not attrib.startswith(u'_'):
                 result += u'_%s_' % getattr(self, attrib)
         return result
-
-    def _reset(self):
-        """Reset all song attributes"""
-        self._setFromXml(_BLANK_OPENSONG_XML, 'song')
-
-    def from_buffer(self, xmlContent):
-        """Initialize from buffer(string) with xml content"""
-        self._reset()
-        if xmlContent:
-            self._setFromXml(xmlContent, 'song')
 
     def get_author_list(self):
         """Convert author field to an authorlist

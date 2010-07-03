@@ -136,4 +136,3 @@ class LyricsXML(object):
         song_output = u'<?xml version="1.0" encoding="UTF-8"?>' + \
             u'<song version="1.0">%s</song>' % lyrics_output
         return song_output
-

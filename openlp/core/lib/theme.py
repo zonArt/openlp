@@ -79,6 +79,14 @@ BLANK_THEME_XML = \
  </theme>
 '''
 
+class ThemeLevel(object):
+    """
+    Provides an enumeration for the level a theme applies to
+    """
+    Global = 1
+    Service = 2
+    Song = 3
+
 class ThemeXML(object):
     """
     A class to encapsulate the Theme XML.
@@ -313,7 +321,6 @@ class ThemeXML(object):
         element.appendChild(value)
         background.appendChild(element)
 
-
     def child_element(self, element, tag, value):
         """
         Generic child element creator.
@@ -414,4 +421,3 @@ class ThemeXML(object):
             if key[0:1] != u'_':
                 theme_strings.append(u'%30s: %s' % (key, getattr(self, key)))
         return u'\n'.join(theme_strings)
-
