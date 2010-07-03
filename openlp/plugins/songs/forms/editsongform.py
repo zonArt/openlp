@@ -28,9 +28,9 @@ import re
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SongXMLBuilder, SongXMLParser, Receiver, translate
+from openlp.core.lib import Receiver, translate
 from openlp.plugins.songs.forms import EditVerseForm
-from openlp.plugins.songs.lib import VerseType
+from openlp.plugins.songs.lib import SongXMLBuilder, SongXMLParser, VerseType
 from openlp.plugins.songs.lib.db import Book, Song, Author, Topic
 from editsongdialog import Ui_EditSongDialog
 

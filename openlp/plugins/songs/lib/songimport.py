@@ -25,8 +25,8 @@
 
 import re
 
-from openlp.core.lib import SongXMLBuilder, translate
-from openlp.plugins.songs.lib import VerseType
+from openlp.core.lib import translate
+from openlp.plugins.songs.lib import SongXMLBuilder, VerseType
 from openlp.plugins.songs.lib.db import Song, Author, Topic, Book
 
 class SongImport(object):

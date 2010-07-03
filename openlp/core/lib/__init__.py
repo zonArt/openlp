@@ -221,7 +221,6 @@ from serviceitem import ServiceItemType
 from serviceitem import ItemCapabilities
 from toolbar import OpenLPToolbar
 from dockwidget import OpenLPDockWidget
-from songxmlhandler import SongXMLBuilder, SongXMLParser
 from themexmlhandler import ThemeXML
 from renderer import Renderer
 from rendermanager import RenderManager

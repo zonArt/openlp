@@ -60,18 +60,6 @@
 .. autoclass:: openlp.core.lib.settingstab.SettingsTab
    :members:
 
-:mod:`SongXMLBuilder`
----------------------
-
-.. autoclass:: openlp.core.lib.songxmlhandler.SongXMLBuilder
-   :members:
-
-:mod:`SongXMLParser`
---------------------
-
-.. autoclass:: openlp.core.lib.songxmlhandler.SongXMLParser
-   :members:
-
 :mod:`ThemeXML`
 ---------------
 
@@ -83,4 +71,3 @@
 
 .. autoclass:: openlp.core.lib.toolbar.OpenLPToolbar
    :members:
-
