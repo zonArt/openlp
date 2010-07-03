@@ -57,6 +57,7 @@ HTMLVIDEO = u"""<html>
         video.volume = 0;
     }
     </script>
+    </head>
     <body id=\"body\" onload=\"bodyLoaded();\">
     <video id=\"video\" src=\"%s\"
         autoplay loop width=\"%s\" height=\"%s\"
