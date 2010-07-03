@@ -47,7 +47,7 @@ HTMLVIDEO = u"""<html>
     <script type="text/javascript" charset="utf-8">
     var video;
     var bodyLoaded = function(){
-        video = document.getElementById(\"video\");
+        video = document.getElementById("video");
         video.volume = 0;
     }
     </script>
