@@ -53,11 +53,8 @@ HTMLVIDEO = u"""<html>
     </script>
     </head>
     <body id="body" onload="bodyLoaded();">
-    <video id="video" src="%s"
-        autoplay loop width="%s" height="%s"
-        autobuffer="autobuffer" preload >
-        your browser does not support the video tag
-    </video>
+    <video id="video" src="%s" autoplay="autoplay" loop="loop"
+    width="%s" height="%s" autobuffer="autobuffer" preload="preload" />
     </body></html>
     """
 
