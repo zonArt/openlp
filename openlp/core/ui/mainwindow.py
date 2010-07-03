@@ -147,16 +147,20 @@ class Ui_MainWindow(object):
         self.FileImportMenu.setObjectName(u'FileImportMenu')
         self.FileExportMenu = QtGui.QMenu(self.FileMenu)
         self.FileExportMenu.setObjectName(u'FileExportMenu')
-        self.OptionsMenu = QtGui.QMenu(self.MenuBar)
-        self.OptionsMenu.setObjectName(u'OptionsMenu')
-        self.OptionsViewMenu = QtGui.QMenu(self.OptionsMenu)
-        self.OptionsViewMenu.setObjectName(u'OptionsViewMenu')
-        self.ViewModeMenu = QtGui.QMenu(self.OptionsViewMenu)
+        # View Menu
+        self.ViewMenu = QtGui.QMenu(self.MenuBar)
+        self.ViewMenu.setObjectName(u'ViewMenu')
+        self.ViewModeMenu = QtGui.QMenu(self.ViewMenu)
         self.ViewModeMenu.setObjectName(u'ViewModeMenu')
-        self.OptionsLanguageMenu = QtGui.QMenu(self.OptionsMenu)
-        self.OptionsLanguageMenu.setObjectName(u'OptionsLanguageMenu')
+        # Tools Menu
         self.ToolsMenu = QtGui.QMenu(self.MenuBar)
         self.ToolsMenu.setObjectName(u'ToolsMenu')
+        # Settings Menu
+        self.SettingsMenu = QtGui.QMenu(self.MenuBar)
+        self.SettingsMenu.setObjectName(u'SettingsMenu')
+        self.SettingsLanguageMenu = QtGui.QMenu(self.SettingsMenu)
+        self.SettingsLanguageMenu.setObjectName(u'SettingsLanguageMenu')
+        # Help Menu
         self.HelpMenu = QtGui.QMenu(self.MenuBar)
         self.HelpMenu.setObjectName(u'HelpMenu')
         MainWindow.setMenuBar(self.MenuBar)
@@ -240,10 +244,10 @@ class Ui_MainWindow(object):
         self.ExportLanguageItem.setObjectName(u'ExportLanguageItem')
         self.actionLook_Feel = QtGui.QAction(MainWindow)
         self.actionLook_Feel.setObjectName(u'actionLook_Feel')
-        self.OptionsSettingsItem = QtGui.QAction(MainWindow)
+        self.SettingsConfigureItem = QtGui.QAction(MainWindow)
         SettingsIcon = build_icon(u':/system/system_settings.png')
-        self.OptionsSettingsItem.setIcon(SettingsIcon)
-        self.OptionsSettingsItem.setObjectName(u'OptionsSettingsItem')
+        self.SettingsConfigureItem.setIcon(SettingsIcon)
+        self.SettingsConfigureItem.setObjectName(u'SettingsConfigureItem')
         self.ViewMediaManagerItem = QtGui.QAction(MainWindow)
         self.ViewMediaManagerItem.setCheckable(True)
         self.ViewMediaManagerItem.setChecked(self.MediaManagerDock.isVisible())
@@ -260,9 +264,9 @@ class Ui_MainWindow(object):
             self.ServiceManagerDock.isVisible())
         self.ViewServiceManagerItem.setIcon(ServiceManagerIcon)
         self.ViewServiceManagerItem.setObjectName(u'ViewServiceManagerItem')
-        self.PluginItem = QtGui.QAction(MainWindow)
-        #self.PluginItem.setIcon(AlertIcon)
-        self.PluginItem.setObjectName(u'PluginItem')
+        self.SettingsPluginListItem = QtGui.QAction(MainWindow)
+        #self.SettingsPluginListItem.setIcon(AlertIcon)
+        self.SettingsPluginListItem.setObjectName(u'SettingsPluginListItem')
         self.HelpDocumentationItem = QtGui.QAction(MainWindow)
         ContentsIcon = build_icon(u':/system/system_help_contents.png')
         self.HelpDocumentationItem.setIcon(ContentsIcon)
@@ -297,11 +301,11 @@ class Ui_MainWindow(object):
         AddToolIcon = build_icon(u':/tools/tools_add.png')
         self.ToolsAddToolItem.setIcon(AddToolIcon)
         self.ToolsAddToolItem.setObjectName(u'ToolsAddToolItem')
-        self.action_Preview_Panel = QtGui.QAction(MainWindow)
-        self.action_Preview_Panel.setCheckable(True)
-        self.action_Preview_Panel.setChecked(
+        self.ViewPreviewPanel = QtGui.QAction(MainWindow)
+        self.ViewPreviewPanel.setCheckable(True)
+        self.ViewPreviewPanel.setChecked(
             self.settingsmanager.showPreviewPanel)
-        self.action_Preview_Panel.setObjectName(u'action_Preview_Panel')
+        self.ViewPreviewPanel.setObjectName(u'ViewPreviewPanel')
         self.PreviewController.Panel.setVisible(
             self.settingsmanager.showPreviewPanel)
         self.ModeLiveItem = QtGui.QAction(MainWindow)
@@ -315,22 +319,24 @@ class Ui_MainWindow(object):
             self.FileImportMenu.menuAction(), self.FileExportMenu.menuAction(),
             self.FileExitItem)
         add_actions(self.ViewModeMenu, [self.ModeLiveItem])
-        add_actions(self.OptionsViewMenu, (self.ViewModeMenu.menuAction(),
+        add_actions(self.ViewMenu, (self.ViewModeMenu.menuAction(),
             None, self.ViewMediaManagerItem, self.ViewServiceManagerItem,
-            self.ViewThemeManagerItem, None, self.action_Preview_Panel))
+            self.ViewThemeManagerItem, None, self.ViewPreviewPanel))
         #i18n add Language Actions
-        add_actions(self.OptionsLanguageMenu, (self.AutoLanguageItem, None))
-        add_actions(self.OptionsLanguageMenu, self.LanguageGroup.actions())
-        add_actions(self.OptionsMenu, (self.OptionsLanguageMenu.menuAction(),
-            self.OptionsViewMenu.menuAction(), None, self.OptionsSettingsItem))
+        add_actions(self.SettingsLanguageMenu, (self.AutoLanguageItem, None))
+        add_actions(self.SettingsLanguageMenu, self.LanguageGroup.actions())
+        add_actions(self.SettingsMenu, (self.SettingsPluginListItem,
+            self.SettingsLanguageMenu.menuAction(), None,
+            self.SettingsConfigureItem))
         add_actions(self.ToolsMenu,
-            (self.PluginItem, None, self.ToolsAddToolItem))
+            (self.ToolsAddToolItem, None))
         add_actions(self.HelpMenu,
             (self.HelpDocumentationItem, self.HelpOnlineHelpItem, None,
             self.HelpWebSiteItem, self.HelpAboutItem))
         add_actions(self.MenuBar,
-            (self.FileMenu.menuAction(), self.OptionsMenu.menuAction(),
-            self.ToolsMenu.menuAction(), self.HelpMenu.menuAction()))
+            (self.FileMenu.menuAction(), self.ViewMenu.menuAction(),
+            self.ToolsMenu.menuAction(), self.SettingsMenu.menuAction(),
+            self.HelpMenu.menuAction()))
         # Initialise the translation
         self.retranslateUi(MainWindow)
         self.MediaToolBox.setCurrentIndex(0)
@@ -360,12 +366,12 @@ class Ui_MainWindow(object):
         self.FileMenu.setTitle(translate('MainWindow', '&File'))
         self.FileImportMenu.setTitle(translate('MainWindow', '&Import'))
         self.FileExportMenu.setTitle(translate('MainWindow', '&Export'))
-        self.OptionsMenu.setTitle(translate('MainWindow', '&Options'))
-        self.OptionsViewMenu.setTitle(translate('MainWindow', '&View'))
+        self.ViewMenu.setTitle(translate('MainWindow', '&View'))
         self.ViewModeMenu.setTitle(translate('MainWindow', 'M&ode'))
-        self.OptionsLanguageMenu.setTitle(translate('MainWindow',
-            '&Language'))
         self.ToolsMenu.setTitle(translate('MainWindow', '&Tools'))
+        self.SettingsMenu.setTitle(translate('MainWindow', '&Settings'))
+        self.SettingsLanguageMenu.setTitle(translate('MainWindow',
+            '&Language'))
         self.HelpMenu.setTitle(translate('MainWindow', '&Help'))
         self.MediaManagerDock.setWindowTitle(
             translate('MainWindow', 'Media Manager'))
@@ -376,23 +382,23 @@ class Ui_MainWindow(object):
         self.FileNewItem.setText(translate('MainWindow', '&New'))
         self.FileNewItem.setToolTip(translate('MainWindow', 'New Service'))
         self.FileNewItem.setStatusTip(
-            translate('MainWindow', 'Create a new Service'))
+            translate('MainWindow', 'Create a new service.'))
         self.FileNewItem.setShortcut(translate('MainWindow', 'Ctrl+N'))
         self.FileOpenItem.setText(translate('MainWindow', '&Open'))
         self.FileOpenItem.setToolTip(translate('MainWindow', 'Open Service'))
         self.FileOpenItem.setStatusTip(
-            translate('MainWindow', 'Open an existing service'))
+            translate('MainWindow', 'Open an existing service.'))
         self.FileOpenItem.setShortcut(translate('MainWindow', 'Ctrl+O'))
         self.FileSaveItem.setText(translate('MainWindow', '&Save'))
         self.FileSaveItem.setToolTip(translate('MainWindow', 'Save Service'))
         self.FileSaveItem.setStatusTip(
-            translate('MainWindow', 'Save the current service to disk'))
+            translate('MainWindow', 'Save the current service to disk.'))
         self.FileSaveItem.setShortcut(translate('MainWindow', 'Ctrl+S'))
         self.FileSaveAsItem.setText(translate('MainWindow', 'Save &As...'))
         self.FileSaveAsItem.setToolTip(
             translate('MainWindow', 'Save Service As'))
         self.FileSaveAsItem.setStatusTip(translate('MainWindow',
-            'Save the current service under a new name'))
+            'Save the current service under a new name.'))
         self.FileSaveAsItem.setShortcut(translate('MainWindow', 'F12'))
         self.FileExitItem.setText(translate('MainWindow', 'E&xit'))
         self.FileExitItem.setStatusTip(translate('MainWindow', 'Quit OpenLP'))
@@ -402,39 +408,41 @@ class Ui_MainWindow(object):
         self.ExportThemeItem.setText(translate('MainWindow', '&Theme'))
         self.ExportLanguageItem.setText(translate('MainWindow', '&Language'))
         self.actionLook_Feel.setText(translate('MainWindow', 'Look && &Feel'))
-        self.OptionsSettingsItem.setText(translate('MainWindow', '&Settings'))
+        self.SettingsConfigureItem.setText(translate('MainWindow',
+            '&Configure OpenLP...'))
         self.ViewMediaManagerItem.setText(
             translate('MainWindow', '&Media Manager'))
         self.ViewMediaManagerItem.setToolTip(
             translate('MainWindow', 'Toggle Media Manager'))
         self.ViewMediaManagerItem.setStatusTip(translate('MainWindow',
-            'Toggle the visibility of the Media Manager'))
+            'Toggle the visibility of the media manager.'))
         self.ViewMediaManagerItem.setShortcut(translate('MainWindow', 'F8'))
         self.ViewThemeManagerItem.setText(
             translate('MainWindow', '&Theme Manager'))
         self.ViewThemeManagerItem.setToolTip(
             translate('MainWindow', 'Toggle Theme Manager'))
         self.ViewThemeManagerItem.setStatusTip(translate('MainWindow',
-            'Toggle the visibility of the Theme Manager'))
+            'Toggle the visibility of the theme manager.'))
         self.ViewThemeManagerItem.setShortcut(translate('MainWindow', 'F10'))
         self.ViewServiceManagerItem.setText(
             translate('MainWindow', '&Service Manager'))
         self.ViewServiceManagerItem.setToolTip(
             translate('MainWindow', 'Toggle Service Manager'))
         self.ViewServiceManagerItem.setStatusTip(translate('MainWindow',
-            'Toggle the visibility of the Service Manager'))
+            'Toggle the visibility of the service manager.'))
         self.ViewServiceManagerItem.setShortcut(translate('MainWindow', 'F9'))
-        self.action_Preview_Panel.setText(
+        self.ViewPreviewPanel.setText(
             translate('MainWindow', '&Preview Panel'))
-        self.action_Preview_Panel.setToolTip(
+        self.ViewPreviewPanel.setToolTip(
             translate('MainWindow', 'Toggle Preview Panel'))
-        self.action_Preview_Panel.setStatusTip(translate('MainWindow',
-            'Toggle the visibility of the Preview Panel'))
-        self.action_Preview_Panel.setShortcut(translate('MainWindow', 'F11'))
-        self.PluginItem.setText(translate('MainWindow', '&Plugin List'))
-        self.PluginItem.setStatusTip(
+        self.ViewPreviewPanel.setStatusTip(translate('MainWindow',
+            'Toggle the visibility of the preview panel.'))
+        self.ViewPreviewPanel.setShortcut(translate('MainWindow', 'F11'))
+        self.SettingsPluginListItem.setText(translate('MainWindow',
+            '&Plugin List'))
+        self.SettingsPluginListItem.setStatusTip(
             translate('MainWindow', 'List the Plugins'))
-        self.PluginItem.setShortcut(translate('MainWindow', 'Alt+F7'))
+        self.SettingsPluginListItem.setShortcut(translate('MainWindow', 'Alt+F7'))
         self.HelpDocumentationItem.setText(
             translate('MainWindow', '&User Guide'))
         self.HelpAboutItem.setText(translate('MainWindow', '&About'))
@@ -456,8 +464,6 @@ class Ui_MainWindow(object):
         self.ToolsAddToolItem.setStatusTip(
             translate('MainWindow',
                 'Add an application to the list of tools'))
-        self.action_Preview_Panel.setText(
-            translate('MainWindow', '&Preview Pane'))
         self.ModeLiveItem.setText(translate('MainWindow', '&Live'))
 
 
@@ -514,7 +520,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(self.ViewThemeManagerItem,
             QtCore.SIGNAL(u'triggered(bool)'),
             self.toggleThemeManager)
-        QtCore.QObject.connect(self.action_Preview_Panel,
+        QtCore.QObject.connect(self.ViewPreviewPanel,
             QtCore.SIGNAL(u'toggled(bool)'),
             self.togglePreviewPanel)
         QtCore.QObject.connect(self.MediaManagerDock,
@@ -528,14 +534,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.ViewThemeManagerItem.setChecked)
         QtCore.QObject.connect(self.PreviewController.Panel,
             QtCore.SIGNAL(u'visibilityChanged(bool)'),
-            self.action_Preview_Panel.setChecked)
+            self.ViewPreviewPanel.setChecked)
         QtCore.QObject.connect(self.HelpWebSiteItem,
             QtCore.SIGNAL(u'triggered()'), self.onHelpWebSiteClicked)
         QtCore.QObject.connect(self.HelpAboutItem,
             QtCore.SIGNAL(u'triggered()'), self.onHelpAboutItemClicked)
-        QtCore.QObject.connect(self.PluginItem,
+        QtCore.QObject.connect(self.SettingsPluginListItem,
             QtCore.SIGNAL(u'triggered()'), self.onPluginItemClicked)
-        QtCore.QObject.connect(self.OptionsSettingsItem,
+        QtCore.QObject.connect(self.SettingsConfigureItem,
             QtCore.SIGNAL(u'triggered()'), self.onOptionsSettingsItemClicked)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'theme_update_global'), self.defaultThemeChanged)
