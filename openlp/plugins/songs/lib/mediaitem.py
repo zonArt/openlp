@@ -32,7 +32,7 @@ from openlp.core.lib import MediaManagerItem, BaseListWithDnD, Receiver, \
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     ImportWizardForm
 from openlp.plugins.songs.lib import SongXMLParser
-from openlp.plugins.songs.lib.db import Song
+from openlp.plugins.songs.lib.db import Author, Song
 
 log = logging.getLogger(__name__)
 
