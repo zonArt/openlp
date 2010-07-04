@@ -27,11 +27,11 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, SongXMLParser, \
-    BaseListWithDnD, Receiver, ItemCapabilities, translate, check_item_selected
+from openlp.core.lib import MediaManagerItem, SongXMLParser, Receiver, \
+    BaseListWithDnD, ItemCapabilities, translate, check_item_selected
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     ImportWizardForm
-from openlp.plugins.songs.lib.db import Song
+from openlp.plugins.songs.lib.db import Author, Song
 
 log = logging.getLogger(__name__)
 
