@@ -28,9 +28,9 @@ import re
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SongXMLBuilder, SongXMLParser, Receiver, translate
+from openlp.core.lib import Receiver, translate
 from openlp.plugins.songs.forms import EditVerseForm
-from openlp.plugins.songs.lib import VerseType
+from openlp.plugins.songs.lib import SongXMLBuilder, SongXMLParser, VerseType
 from openlp.plugins.songs.lib.db import Book, Song, Author, Topic
 from editsongdialog import Ui_EditSongDialog
 
@@ -639,8 +639,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         log.debug(u'processLyrics')
         try:
             sxml = SongXMLBuilder()
-            sxml.new_document()
-            sxml.add_lyrics_to_song()
             text = u''
             multiple = []
             for i in range (0, self.VerseListWidget.rowCount()):
@@ -666,4 +664,3 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         log.debug(u'processTitle')
         self.song.search_title = \
             re.sub(r'[\'"`,;:(){}?]+', u'', unicode(self.song.search_title))
-
