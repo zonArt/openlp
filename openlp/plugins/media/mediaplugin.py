@@ -67,7 +67,7 @@ class MediaPlugin(Plugin):
             type = u''
         return list, type
 
-    def get_media_manager_item(self):
+    def getMediaManagerItem(self):
         # Create the MediaManagerItem object
         return MediaMediaItem(self, self.icon, self.name)
 

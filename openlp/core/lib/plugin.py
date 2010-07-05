@@ -67,23 +67,23 @@ class Plugin(QtCore.QObject):
 
     **Hook Functions**
 
-    ``check_pre_conditions()``
+    ``checkPreConditions()``
         Provides the Plugin with a handle to check if it can be loaded.
 
-    ``get_media_manager_item()``
+    ``getMediaManagerItem()``
         Returns an instance of MediaManagerItem to be used in the Media Manager.
 
-    ``add_import_menu_item(import_menu)``
+    ``addImportMenuItem(import_menu)``
         Add an item to the Import menu.
 
-    ``add_export_menu_item(export_menu)``
+    ``addExportMenuItem(export_menu)``
         Add an item to the Export menu.
 
-    ``get_settings_tab()``
+    ``getSettingsTab()``
         Returns an instance of SettingsTabItem to be used in the Settings
         dialog.
 
-    ``add_to_menu(menubar)``
+    ``addToMenu(menubar)``
         A method to add a menu item to anywhere in the menu, given the menu bar.
 
     ``handle_event(event)``
@@ -134,9 +134,9 @@ class Plugin(QtCore.QObject):
         self.pluginManager = plugin_helpers[u'pluginmanager']
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_add_service_item' % self.name),
-            self.process_add_service_event)
+            self.processAddServiceEvent)
 
-    def check_pre_conditions(self):
+    def checkPreConditions(self):
         """
         Provides the Plugin with a handle to check if it can be loaded.
         Failing Preconditions does not stop a settings Tab being created
@@ -145,7 +145,7 @@ class Plugin(QtCore.QObject):
         """
         return True
 
-    def set_status(self):
+    def setStatus(self):
         """
         Sets the status of the plugin
         """
@@ -153,7 +153,7 @@ class Plugin(QtCore.QObject):
             self.settingsSection + u'/status',
             QtCore.QVariant(PluginStatus.Inactive)).toInt()[0]
 
-    def toggle_status(self, new_status):
+    def toggleStatus(self, new_status):
         """
         Changes the status of the plugin and remembers it
         """
@@ -161,7 +161,7 @@ class Plugin(QtCore.QObject):
         QtCore.QSettings().setValue(
             self.settingsSection + u'/status', QtCore.QVariant(self.status))
 
-    def is_active(self):
+    def isActive(self):
         """
         Indicates if the plugin is active
 
@@ -169,14 +169,14 @@ class Plugin(QtCore.QObject):
         """
         return self.status == PluginStatus.Active
 
-    def get_media_manager_item(self):
+    def getMediaManagerItem(self):
         """
         Construct a MediaManagerItem object with all the buttons and things
         you need, and return it for integration into openlp.org.
         """
         pass
 
-    def add_import_menu_item(self, importMenu):
+    def addImportMenuItem(self, importMenu):
         """
         Create a menu item and add it to the "Import" menu.
 
@@ -185,7 +185,7 @@ class Plugin(QtCore.QObject):
         """
         pass
 
-    def add_export_menu_item(self, exportMenu):
+    def addExportMenuItem(self, exportMenu):
         """
         Create a menu item and add it to the "Export" menu.
 
@@ -194,7 +194,7 @@ class Plugin(QtCore.QObject):
         """
         pass
 
-    def add_tools_menu_item(self, toolsMenu):
+    def addToolsMenuItem(self, toolsMenu):
         """
         Create a menu item and add it to the "Tools" menu.
 
@@ -203,13 +203,13 @@ class Plugin(QtCore.QObject):
         """
         pass
 
-    def get_settings_tab(self):
+    def getSettingsTab(self):
         """
         Create a tab for the settings window.
         """
         pass
 
-    def add_to_menu(self, menubar):
+    def addToMenu(self, menubar):
         """
         Add menu items to the menu, given the menubar.
 
@@ -218,11 +218,11 @@ class Plugin(QtCore.QObject):
         """
         pass
 
-    def process_add_service_event(self, replace=False):
+    def processAddServiceEvent(self, replace=False):
         """
         Generic Drag and drop handler triggered from service_manager.
         """
-        log.debug(u'process_add_service_event event called for plugin %s' %
+        log.debug(u'processAddServiceEvent event called for plugin %s' %
             self.name)
         if replace:
             self.mediaItem.onAddEditClick()
@@ -243,15 +243,15 @@ class Plugin(QtCore.QObject):
         """
         if self.mediaItem:
             self.mediaItem.initialise()
-        self.insert_toolbox_item()
+        self.insertToolboxItem()
 
     def finalise(self):
         """
         Called by the plugin Manager to cleanup things.
         """
-        self.remove_toolbox_item()
+        self.removeToolboxItem()
 
-    def remove_toolbox_item(self):
+    def removeToolboxItem(self):
         """
         Called by the plugin to remove toolbar
         """
@@ -260,7 +260,7 @@ class Plugin(QtCore.QObject):
         if self.settings_tab:
             self.settingsForm.removeTab(self.name)
 
-    def insert_toolbox_item(self):
+    def insertToolboxItem(self):
         """
         Called by plugin to replace toolbar
         """
@@ -269,7 +269,7 @@ class Plugin(QtCore.QObject):
         if self.settings_tab:
             self.settingsForm.insertTab(self.settings_tab, self.weight)
 
-    def can_delete_theme(self, theme):
+    def canDeleteTheme(self, theme):
         """
         Called to ask the plugin if a theme can be deleted
         """
