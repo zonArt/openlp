@@ -358,14 +358,8 @@ class ThemeXML(object):
         ``xml``
             The XML string to parse.
         """
-        self.base_parse_xml()
-        self.parse_xml(xml)
-
-    def base_parse_xml(self):
-        """
-        Pull in the blank theme XML as a starting point.
-        """
         self.parse_xml(BLANK_THEME_XML)
+        self.parse_xml(xml)
 
     def parse_xml(self, xml):
         """
