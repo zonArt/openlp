@@ -25,8 +25,8 @@
 
 import re
 
-from openlp.core.lib import SongXMLBuilder, translate
-from openlp.plugins.songs.lib import VerseType
+from openlp.core.lib import translate
+from openlp.plugins.songs.lib import SongXMLBuilder, VerseType
 from openlp.plugins.songs.lib.db import Song, Author, Topic, Book
 
 class SongImport(object):
@@ -276,8 +276,6 @@ class SongImport(object):
         song.song_number = self.song_number
         song.search_lyrics = u''
         sxml = SongXMLBuilder()
-        sxml.new_document()
-        sxml.add_lyrics_to_song()
         for (versetag, versetext) in self.verses:
             if versetag[0] == u'C':
                 versetype = VerseType.to_string(VerseType.Chorus)
@@ -302,7 +300,8 @@ class SongImport(object):
         song.theme_name = self.theme_name
         song.ccli_number = self.ccli_number
         for authortext in self.authors:
-            author = self.manager.get_object_filtered(Author, Author.display_name == authortext)
+            author = self.manager.get_object_filtered(Author,
+                Author.display_name == authortext)
             if author is None:
                 author = Author()
                 author.display_name = authortext
@@ -311,7 +310,8 @@ class SongImport(object):
                 self.manager.save_object(author)
             song.authors.append(author)
         if self.song_book_name:
-            song_book = self.manager.get_object_filtered(Book, Book.name == self.song_book_name)
+            song_book = self.manager.get_object_filtered(Book,
+                Book.name == self.song_book_name)
             if song_book is None:
                 song_book = Book()
                 song_book.name = self.song_book_name

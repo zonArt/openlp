@@ -28,7 +28,8 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from editcustomdialog import Ui_customEditDialog
-from openlp.core.lib import SongXMLBuilder, SongXMLParser, Receiver, translate
+from openlp.core.lib import Receiver, translate
+from openlp.plugins.custom.lib import CustomXMLBuilder, CustomXMLParser
 from openlp.plugins.custom.lib.db import CustomSlide
 
 log = logging.getLogger(__name__)
@@ -119,8 +120,8 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
             self.customSlide = self.custommanager.get_object(CustomSlide, id)
             self.TitleEdit.setText(self.customSlide.title)
             self.CreditEdit.setText(self.customSlide.credits)
-            songXML = SongXMLParser(self.customSlide.text)
-            verseList = songXML.get_verses()
+            customXML = CustomXMLParser(self.customSlide.text)
+            verseList = customXML.get_verses()
             for verse in verseList:
                 self.VerseListView.addItem(verse[1])
             theme = self.customSlide.theme_name
@@ -152,7 +153,7 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
                 translate('CustomPlugin.EditCustomForm', 'Error'), message,
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             return False
-        sxml = SongXMLBuilder()
+        sxml = CustomXMLBuilder()
         sxml.new_document()
         sxml.add_lyrics_to_song()
         count = 1

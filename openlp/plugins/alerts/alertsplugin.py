@@ -47,14 +47,14 @@ class alertsPlugin(Plugin):
         self.alertForm = AlertForm(self.manager, self)
         self.status = PluginStatus.Active
 
-    def get_settings_tab(self):
+    def getSettingsTab(self):
         """
         Return the settings tab for the Alerts plugin
         """
         self.alertsTab = AlertsTab(self)
         return self.alertsTab
 
-    def add_tools_menu_item(self, tools_menu):
+    def addToolsMenuItem(self, tools_menu):
         """
         Give the alerts plugin the opportunity to add items to the
         **Tools** menu.
@@ -73,7 +73,7 @@ class alertsPlugin(Plugin):
         self.toolsAlertItem.setStatusTip(
             translate('AlertsPlugin', 'Show an alert message'))
         self.toolsAlertItem.setShortcut(u'F7')
-        self.service_manager.parent.ToolsMenu.addAction(self.toolsAlertItem)
+        self.serviceManager.parent.ToolsMenu.addAction(self.toolsAlertItem)
         QtCore.QObject.connect(self.toolsAlertItem,
             QtCore.SIGNAL(u'triggered()'), self.onAlertsTrigger)
         self.toolsAlertItem.setVisible(False)
@@ -85,8 +85,8 @@ class alertsPlugin(Plugin):
 
     def finalise(self):
         log.info(u'Plugin Finalise')
+        Plugin.finalise(self)
         self.toolsAlertItem.setVisible(False)
-        #stop any events being processed
 
     def togglealertsState(self):
         self.alertsActive = not self.alertsActive

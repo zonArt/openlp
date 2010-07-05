@@ -23,7 +23,8 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`songxmlhandler` module provides the XML functionality for songs
+The :mod:`customxmlhandler` module provides the XML functionality for custom
+slides
 
 The basic XML is of the format::
 
@@ -39,32 +40,32 @@ The basic XML is of the format::
 
 import logging
 
-from lxml.etree import ElementTree, XML, dump
-from xml.parsers.expat import ExpatError
 from xml.dom.minidom import Document
+from xml.etree.ElementTree import ElementTree, XML, dump
+from xml.parsers.expat import ExpatError
 
 log = logging.getLogger(__name__)
 
-class SongXMLBuilder(object):
+class CustomXMLBuilder(object):
     """
     This class builds the XML used to describe songs.
     """
-    log.info(u'SongXMLBuilder Loaded')
+    log.info(u'CustomXMLBuilder Loaded')
 
     def __init__(self):
         """
         Set up the song builder.
         """
         # Create the minidom document
-        self.song_xml = Document()
+        self.custom_xml = Document()
 
     def new_document(self):
         """
         Create a new song XML document.
         """
         # Create the <song> base element
-        self.song = self.song_xml.createElement(u'song')
-        self.song_xml.appendChild(self.song)
+        self.song = self.custom_xml.createElement(u'song')
+        self.custom_xml.appendChild(self.song)
         self.song.setAttribute(u'version', u'1.0')
 
     def add_lyrics_to_song(self):
@@ -73,7 +74,7 @@ class SongXMLBuilder(object):
         song.
         """
         # Create the main <lyrics> element
-        self.lyrics = self.song_xml.createElement(u'lyrics')
+        self.lyrics = self.custom_xml.createElement(u'lyrics')
         self.lyrics.setAttribute(u'language', u'en')
         self.song.appendChild(self.lyrics)
 
@@ -92,32 +93,32 @@ class SongXMLBuilder(object):
             The actual text of the verse to be stored.
         """
         #log.debug(u'add_verse_to_lyrics %s, %s\n%s' % (type, number, content))
-        verse = self.song_xml.createElement(u'verse')
+        verse = self.custom_xml.createElement(u'verse')
         verse.setAttribute(u'type', type)
         verse.setAttribute(u'label', number)
         self.lyrics.appendChild(verse)
         # add data as a CDATA section to protect the XML from special chars
-        cds = self.song_xml.createCDATASection(content)
+        cds = self.custom_xml.createCDATASection(content)
         verse.appendChild(cds)
 
     def dump_xml(self):
         """
         Debugging aid to dump XML so that we can see what we have.
         """
-        return self.song_xml.toprettyxml(indent=u'  ')
+        return self.custom_xml.toprettyxml(indent=u'  ')
 
     def extract_xml(self):
         """
         Extract our newly created XML song.
         """
-        return self.song_xml.toxml(u'utf-8')
+        return self.custom_xml.toxml(u'utf-8')
 
 
-class SongXMLParser(object):
+class CustomXMLParser(object):
     """
     A class to read in and parse a song's XML.
     """
-    log.info(u'SongXMLParser Loaded')
+    log.info(u'CustomXMLParser Loaded')
 
     def __init__(self, xml):
         """
@@ -126,9 +127,9 @@ class SongXMLParser(object):
         ``xml``
             The XML of the song to be parsed.
         """
-        self.song_xml = None
+        self.custom_xml = None
         try:
-            self.song_xml = ElementTree(
+            self.custom_xml = ElementTree(
                 element=XML(unicode(xml).encode('unicode-escape')))
         except ExpatError:
             log.exception(u'Invalid xml %s', xml)
@@ -138,7 +139,7 @@ class SongXMLParser(object):
         Iterates through the verses in the XML and returns a list of verses
         and their attributes.
         """
-        xml_iter = self.song_xml.getiterator()
+        xml_iter = self.custom_xml.getiterator()
         verse_list = []
         for element in xml_iter:
             if element.tag == u'verse':
@@ -152,4 +153,4 @@ class SongXMLParser(object):
         """
         Debugging aid to dump XML so that we can see what we have.
         """
-        return dump(self.song_xml)
+        return dump(self.custom_xml)

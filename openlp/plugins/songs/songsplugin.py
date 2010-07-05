@@ -29,8 +29,9 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, build_icon, PluginStatus, Receiver, \
     translate
-from openlp.plugins.songs.lib import SongManager, SongMediaItem, SongsTab
-from openlp.plugins.songs.lib.db import Song
+from openlp.core.lib.db import Manager
+from openlp.plugins.songs.lib import SongMediaItem, SongsTab
+from openlp.plugins.songs.lib.db import init_schema, Song
 
 try:
     from openlp.plugins.songs.lib import SofImport, OooImport
@@ -58,35 +59,27 @@ class SongsPlugin(Plugin):
         """
         Plugin.__init__(self, u'Songs', u'1.9.2', plugin_helpers)
         self.weight = -10
-        self.manager = SongManager()
+        self.manager = Manager(u'songs', init_schema)
         self.icon = build_icon(u':/plugins/plugin_songs.png')
         self.status = PluginStatus.Active
 
-    def get_settings_tab(self):
+    def getSettingsTab(self):
         return SongsTab(self.name)
 
     def initialise(self):
         log.info(u'Songs Initialising')
-        #if self.songmanager is None:
-        #    self.songmanager = SongManager()
         Plugin.initialise(self)
-        self.insert_toolbox_item()
-        self.media_item.displayResultsSong(
+        self.mediaItem.displayResultsSong(
             self.manager.get_all_objects(Song, Song.title))
 
-    def finalise(self):
-        log.info(u'Plugin Finalise')
-        Plugin.finalise(self)
-        self.remove_toolbox_item()
-
-    def get_media_manager_item(self):
+    def getMediaManagerItem(self):
         """
         Create the MediaManagerItem object, which is displaed in the
         Media Manager.
         """
         return SongMediaItem(self, self.icon, self.name)
 
-    def add_import_menu_item(self, import_menu):
+    def addImportMenuItem(self, import_menu):
         """
         Give the Songs plugin the opportunity to add items to the
         **Import** menu.
@@ -165,7 +158,7 @@ class SongsPlugin(Plugin):
                 QtCore.SIGNAL(u'triggered()'), self.onImportOpenSongItemClick)
 
 
-    def add_export_menu_item(self, export_menu):
+    def addExportMenuItem(self, export_menu):
         """
         Give the Songs plugin the opportunity to add items to the
         **Export** menu.
@@ -239,8 +232,8 @@ class SongsPlugin(Plugin):
             'This plugin allows songs to be managed and displayed.')
         return about_text
 
-    def can_delete_theme(self, theme):
-        filter_string = u'theme_name=\'%s\'' % theme
-        if not self.manager.get_all_objects_filtered(Song, filter_string):
+    def canDeleteTheme(self, theme):
+        if not self.manager.get_all_objects_filtered(Song,
+            Song.theme_name == theme):
             return True
         return False

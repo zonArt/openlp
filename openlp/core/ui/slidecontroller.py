@@ -785,7 +785,7 @@ class SlideController(QtGui.QWidget):
                     if self.serviceItem.is_text():
                         self.mainDisplay.frameView(frame, True)
                     else:
-                        self.displayManager.displayImage(frame[u'display'])
+                        self.displayManager.displayImage(frame[u'main'])
             self.selectedRow = row
         Receiver.send_message(u'slidecontroller_%s_changed' % self.typePrefix,
             row)

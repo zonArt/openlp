@@ -166,17 +166,17 @@ class Manager(object):
         else:
             return self.session.query(object_class).get(key)
 
-    def get_object_filtered(self, object_class, filter_string):
+    def get_object_filtered(self, object_class, filter_clause):
         """
         Returns an object matching specified criteria
 
         ``object_class``
             The type of object to return
 
-        ``filter_string``
+        ``filter_clause``
             The criteria to select the object by
         """
-        return self.session.query(object_class).filter(filter_string).first()
+        return self.session.query(object_class).filter(filter_clause).first()
 
     def get_all_objects(self, object_class, order_by_ref=None):
         """
@@ -188,21 +188,29 @@ class Manager(object):
         ``order_by_ref``
             Any parameters to order the returned objects by.  Defaults to None.
         """
-        if order_by_ref:
-            return self.session.query(object_class).order_by(order_by_ref).all()
-        return self.session.query(object_class).all()
+        query = self.session.query(object_class)
+        if order_by_ref is not None:
+            return query.order_by(order_by_ref).all()
+        return query.all()
 
-    def get_all_objects_filtered(self, object_class, filter_string):
+    def get_all_objects_filtered(self, object_class, filter_clause,
+        order_by_ref=None):
         """
         Returns a selection of objects from the database
 
         ``object_class``
             The type of objects to return
 
-        ``filter_string``
+        ``filter_clause``
             The filter governing selection of objects to return
+
+        ``order_by_ref``
+            Any parameters to order the returned objects by.  Defaults to None.
         """
-        return self.session.query(object_class).filter(filter_string).all()
+        query = self.session.query(object_class).filter(filter_clause)
+        if order_by_ref is not None:
+            return query.order_by(order_by_ref).all()
+        return query.all()
 
     def delete_object(self, object_class, key):
         """

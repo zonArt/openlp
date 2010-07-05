@@ -27,8 +27,7 @@ import logging
 
 from PyQt4 import QtCore
 
-from renderer import Renderer
-from openlp.core.lib import ThemeLevel
+from openlp.core.lib import Renderer, ThemeLevel
 
 log = logging.getLogger(__name__)
 

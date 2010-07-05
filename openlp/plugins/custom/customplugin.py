@@ -53,21 +53,12 @@ class CustomPlugin(Plugin):
         self.icon = build_icon(u':/plugins/plugin_custom.png')
         self.status = PluginStatus.Active
 
-    def get_settings_tab(self):
+    def getSettingsTab(self):
         return CustomTab(self.name)
 
-    def get_media_manager_item(self):
+    def getMediaManagerItem(self):
         # Create the CustomManagerItem object
         return CustomMediaItem(self, self.icon, self.name)
-
-    def initialise(self):
-        log.info(u'Plugin Initialising')
-        Plugin.initialise(self)
-        self.insert_toolbox_item()
-
-    def finalise(self):
-        log.info(u'Plugin Finalise')
-        self.remove_toolbox_item()
 
     def about(self):
         about_text = translate('CustomPlugin',
@@ -77,9 +68,8 @@ class CustomPlugin(Plugin):
             'songs plugin.<br>')
         return about_text
 
-    def can_delete_theme(self, theme):
-        filter_string = u'theme_name=\'%s\'' % theme
+    def canDeleteTheme(self, theme):
         if not self.custommanager.get_all_objects_filtered(CustomSlide,
-            filter_string):
+            CustomSlide.theme_name == theme):
             return True
         return False

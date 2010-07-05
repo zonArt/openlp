@@ -580,7 +580,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.plugin_helpers[u'service'] = self.ServiceManagerContents
         self.plugin_helpers[u'settings form'] = self.settingsForm
         self.plugin_helpers[u'toolbox'] = self.mediaDockManager
-        self.plugin_helpers[u'maindisplay'] = self.displayManager.mainDisplay
+        self.plugin_helpers[u'displaymanager'] = self.displayManager
+        self.plugin_helpers[u'pluginmanager'] = self.plugin_manager
         self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers)
         # hook methods have to happen after find_plugins. Find plugins needs
         # the controllers hence the hooks have moved from setupUI() to here

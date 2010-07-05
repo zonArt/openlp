@@ -77,7 +77,7 @@ class PresentationMediaItem(MediaManagerItem):
                 for type in types:
                     if fileType.find(type) == -1:
                         fileType += u'*%s ' % type
-                        self.parent.service_manager.supportedSuffixes(type)
+                        self.parent.serviceManager.supportedSuffixes(type)
         self.OnNewFileMasks = translate('PresentationPlugin.MediaItem',
             'Presentations (%s)' % fileType)
 

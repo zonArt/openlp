@@ -24,17 +24,17 @@
 ###############################################################################
 
 import logging
-import sys
-import os
+#import sys
+#import os
 
 from types import ListType
+from xml.etree.ElementTree import ElementTree, XML
 
-sys.path.append(os.path.abspath(u'./../../../..'))
-
-from openlp.core.lib import XmlRootClass
+# Do we need these two lines?
+#sys.path.append(os.path.abspath(u'./../../../..'))
+#sys.path.append(os.path.abspath(os.path.join(u'.', u'..', u'..')))
 
 log = logging.getLogger(__name__)
-
 
 class SongException(Exception):
     pass
@@ -74,23 +74,78 @@ _BLANK_OPENSONG_XML = \
 </song>
 '''
 
-class _OpenSong(XmlRootClass):
-    """Class for import of OpenSong"""
-
+class _OpenSong(object):
+    """
+    Class for import of OpenSong
+    """
     def __init__(self, xmlContent = None):
-        """Initialize from given xml content"""
-        super(_OpenSong, self).__init__()
-        self.from_buffer(xmlContent)
-
-    def _reset(self):
-        """Reset all song attributes"""
-        self._setFromXml(_BLANK_OPENSONG_XML, 'song')
-
-    def from_buffer(self, xmlContent):
-        """Initialize from buffer(string) with xml content"""
-        self._reset()
+        """
+        Initialize from given xml content
+        """
+        self._set_from_xml(_BLANK_OPENSONG_XML, 'song')
         if xmlContent:
-            self._setFromXml(xmlContent, 'song')
+            self._set_from_xml(xmlContent, 'song')
+
+    def _set_from_xml(self, xml, root_tag):
+        """
+        Set song properties from given xml content.
+
+        ``xml``
+            Formatted xml tags and values.
+        ``root_tag``
+            The root tag of the xml.
+        """
+        root = ElementTree(element=XML(xml))
+        xml_iter = root.getiterator()
+        for element in xml_iter:
+            if element.tag != root_tag:
+                text = element.text
+                if text is None:
+                    val = text
+                elif isinstance(text, basestring):
+                    # Strings need special handling to sort the colours out
+                    if text[0] == u'$':
+                        # This might be a hex number, let's try to convert it.
+                        try:
+                            val = int(text[1:], 16)
+                        except ValueError:
+                            pass
+                    else:
+                        # Let's just see if it's a integer.
+                        try:
+                            val = int(text)
+                        except ValueError:
+                            # Ok, it seems to be a string.
+                            val = text
+                    if hasattr(self, u'post_tag_hook'):
+                        (element.tag, val) = \
+                            self.post_tag_hook(element.tag, val)
+                setattr(self, element.tag, val)
+
+    def __str__(self):
+        """
+        Return string with all public attributes
+
+        The string is formatted with one attribute per line
+        If the string is split on newline then the length of the
+        list is equal to the number of attributes
+        """
+        attributes = []
+        for attrib in dir(self):
+            if not attrib.startswith(u'_'):
+                attributes.append(
+                    u'%30s : %s' % (attrib, getattr(self, attrib)))
+        return u'\n'.join(attributes)
+
+    def _get_as_string(self):
+        """
+        Return one string with all public attributes
+        """
+        result = u''
+        for attrib in dir(self):
+            if not attrib.startswith(u'_'):
+                result += u'_%s_' % getattr(self, attrib)
+        return result
 
     def get_author_list(self):
         """Convert author field to an authorlist
@@ -252,14 +307,6 @@ class Song(object):
         self.set_lyrics(u'')
         return
 
-    def set_songid(self, songid):
-        """Set the songid for the database"""
-        self.songid = songid
-
-    def get_songid(self):
-        """Return the songid for the database"""
-        return self.songid
-
     def from_opensong_buffer(self, xmlcontent):
         """Initialize from buffer(string) of xml lines in opensong format"""
         self._reset()
@@ -322,10 +369,6 @@ class Song(object):
     def get_title(self):
         """Return title value"""
         return self.title
-
-    def get_search_title(self):
-        """Return search_title"""
-        return self.search_title
 
     def from_ccli_text_buffer(self, textList):
         """
