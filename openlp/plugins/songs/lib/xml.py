@@ -109,8 +109,10 @@ class SongXMLParser(object):
             The XML of the song to be parsed.
         """
         self.song_xml = None
+        if xml[:5] == u'<?xml':
+            xml = xml[38:]
         try:
-            self.song_xml = objectify.fromstring(str(xml))
+            self.song_xml = objectify.fromstring(xml)
         except etree.XMLSyntaxError:
             log.exception(u'Invalid xml %s', xml)
 
@@ -125,8 +127,7 @@ class SongXMLParser(object):
             if element.tag == u'verse':
                 if element.text is None:
                     element.text = u''
-                verse_list.append([element.attrib,
-                    unicode(element.text).decode('unicode-escape')])
+                verse_list.append([element.attrib, unicode(element.text)])
         return verse_list
 
     def dump_xml(self):

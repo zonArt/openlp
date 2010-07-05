@@ -189,7 +189,7 @@ class Manager(object):
             Any parameters to order the returned objects by.  Defaults to None.
         """
         query = self.session.query(object_class)
-        if order_by_ref:
+        if order_by_ref is not None:
             return query.order_by(order_by_ref).all()
         return query.all()
 
@@ -208,7 +208,7 @@ class Manager(object):
             Any parameters to order the returned objects by.  Defaults to None.
         """
         query = self.session.query(object_class).filter(filter_clause)
-        if order_by_ref:
+        if order_by_ref is not None:
             return query.order_by(order_by_ref).all()
         return query.all()
 

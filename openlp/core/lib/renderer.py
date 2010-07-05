@@ -29,6 +29,7 @@ format it for the output display.
 import logging
 
 from PyQt4 import QtGui, QtCore
+
 from openlp.core.lib import resize_image
 
 log = logging.getLogger(__name__)
