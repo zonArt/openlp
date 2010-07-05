@@ -28,6 +28,9 @@ from openlp.plugins.songs.lib.manager import SongManager
 def test():
     manager = SongManager()
     o = OpenSongImport(manager)
+    o.do_import(u'/home/mjt/openlp/OpenSong_Data/ADond', commit=False)
+    o.song.print_song()
+    sys.exit(1)
     o.do_import(u'test.opensong', commit=False)
     # o.finish()
     o.song.print_song()
