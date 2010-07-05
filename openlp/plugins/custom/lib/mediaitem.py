@@ -27,8 +27,9 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, SongXMLParser, BaseListWithDnD, \
+from openlp.core.lib import MediaManagerItem, BaseListWithDnD, \
     Receiver, ItemCapabilities, translate, check_item_selected
+from openlp.plugins.custom.lib import CustomXMLParser
 from openlp.plugins.custom.lib.db import CustomSlide
 
 log = logging.getLogger(__name__)
@@ -170,8 +171,8 @@ class CustomMediaItem(MediaManagerItem):
         theme = customSlide.theme_name
         if theme:
             service_item.theme = theme
-        songXML = SongXMLParser(customSlide.text)
-        verseList = songXML.get_verses()
+        customXML = CustomXMLParser(customSlide.text)
+        verseList = customXML.get_verses()
         for verse in verseList:
             raw_slides.append(verse[1])
         service_item.title = title
