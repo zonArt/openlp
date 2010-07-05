@@ -57,14 +57,14 @@ class BiblePlugin(Plugin):
         self.ImportBibleItem.setVisible(False)
         self.ExportBibleItem.setVisible(False)
 
-    def get_settings_tab(self):
+    def getSettingsTab(self):
         return BiblesTab(self.name)
 
-    def get_media_manager_item(self):
+    def getMediaManagerItem(self):
         # Create the BibleManagerItem object
         return BibleMediaItem(self, self.icon, self.name)
 
-    def add_import_menu_item(self, import_menu):
+    def addImportMenuItem(self, import_menu):
         self.ImportBibleItem = QtGui.QAction(import_menu)
         self.ImportBibleItem.setObjectName(u'ImportBibleItem')
         import_menu.addAction(self.ImportBibleItem)
@@ -75,7 +75,7 @@ class BiblePlugin(Plugin):
             QtCore.SIGNAL(u'triggered()'), self.onBibleImportClick)
         self.ImportBibleItem.setVisible(False)
 
-    def add_export_menu_item(self, export_menu):
+    def addExportMenuItem(self, export_menu):
         self.ExportBibleItem = QtGui.QAction(export_menu)
         self.ExportBibleItem.setObjectName(u'ExportBibleItem')
         export_menu.addAction(self.ExportBibleItem)
@@ -94,7 +94,7 @@ class BiblePlugin(Plugin):
             'displayed on the screen during the service.')
         return about_text
 
-    def can_delete_theme(self, theme):
+    def canDeleteTheme(self, theme):
         if self.settings_tab.bible_theme == theme:
             return False
         return True

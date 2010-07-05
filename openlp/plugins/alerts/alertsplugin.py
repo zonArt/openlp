@@ -47,14 +47,14 @@ class alertsPlugin(Plugin):
         self.alertForm = AlertForm(self.manager, self)
         self.status = PluginStatus.Active
 
-    def get_settings_tab(self):
+    def getSettingsTab(self):
         """
         Return the settings tab for the Alerts plugin
         """
         self.alertsTab = AlertsTab(self)
         return self.alertsTab
 
-    def add_tools_menu_item(self, tools_menu):
+    def addToolsMenuItem(self, tools_menu):
         """
         Give the alerts plugin the opportunity to add items to the
         **Tools** menu.

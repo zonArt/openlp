@@ -61,7 +61,7 @@ class SongsPlugin(Plugin):
         self.icon = build_icon(u':/plugins/plugin_songs.png')
         self.status = PluginStatus.Active
 
-    def get_settings_tab(self):
+    def getSettingsTab(self):
         return SongsTab(self.name)
 
     def initialise(self):
@@ -70,14 +70,14 @@ class SongsPlugin(Plugin):
         self.mediaItem.displayResultsSong(
             self.manager.get_all_objects(Song, Song.title))
 
-    def get_media_manager_item(self):
+    def getMediaManagerItem(self):
         """
         Create the MediaManagerItem object, which is displaed in the
         Media Manager.
         """
         return SongMediaItem(self, self.icon, self.name)
 
-    def add_import_menu_item(self, import_menu):
+    def addImportMenuItem(self, import_menu):
         """
         Give the Songs plugin the opportunity to add items to the
         **Import** menu.
@@ -137,7 +137,7 @@ class SongsPlugin(Plugin):
             QtCore.QObject.connect(self.ImportOooItem,
                 QtCore.SIGNAL(u'triggered()'), self.onImportOooItemClick)
 
-    def add_export_menu_item(self, export_menu):
+    def addExportMenuItem(self, export_menu):
         """
         Give the Songs plugin the opportunity to add items to the
         **Export** menu.
@@ -191,7 +191,7 @@ class SongsPlugin(Plugin):
             'This plugin allows songs to be managed and displayed.')
         return about_text
 
-    def can_delete_theme(self, theme):
+    def canDeleteTheme(self, theme):
         if not self.manager.get_all_objects_filtered(Song,
             Song.theme_name == theme):
             return True
