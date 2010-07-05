@@ -23,5 +23,6 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+from customxmlhandler import CustomXMLBuilder, CustomXMLParser
 from mediaitem import CustomMediaItem
 from customtab import CustomTab

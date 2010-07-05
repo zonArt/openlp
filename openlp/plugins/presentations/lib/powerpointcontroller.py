@@ -173,7 +173,7 @@ class PowerpointDocument(PresentationDocument):
         return True
 
 
-    def is_active(self):
+    def isActive(self):
         """
         Returns true if a presentation is currently active
         """
@@ -206,7 +206,7 @@ class PowerpointDocument(PresentationDocument):
         """
         Returns true if screen is blank
         """
-        if self.is_active():
+        if self.isActive():
             return self.presentation.SlideShowWindow.View.State == 3
         else:
             return False
