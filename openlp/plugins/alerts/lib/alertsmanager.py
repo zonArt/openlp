@@ -95,7 +95,7 @@ class AlertsManager(QtCore.QObject):
         alertTab = self.parent.alertsTab
         text = HTMLCODE % (alertTab.font_color, alertTab.bg_color,
                            alertTab.font_face, alertTab.font_size, text)
-        self.parent.preview_controller.parent.displayManager.addAlert(text,
+        self.parent.previewController.parent.displayManager.addAlert(text,
             alertTab.location)
         # check to see if we have a timer running
         if self.timer_id == 0:
@@ -112,8 +112,9 @@ class AlertsManager(QtCore.QObject):
         log.debug(u'timer event')
         alertTab = self.parent.alertsTab
         if event.timerId() == self.timer_id:
-            self.parent.preview_controller.parent.displayManager.addAlert(u'',
+            self.parent.previewController.parent.displayManager.addAlert(u'',
                 alertTab.location)
         self.killTimer(self.timer_id)
         self.timer_id = 0
         self.generateAlert()
+

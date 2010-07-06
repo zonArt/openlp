@@ -88,13 +88,14 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         self.AlertTextEdit.setText(u'')
         self.SaveButton.setEnabled(False)
         self.DeleteButton.setEnabled(False)
-        self.EditButton.setEnabled(False)
 
     def onNewClick(self):
         if len(self.AlertTextEdit.text()) == 0:
             QtGui.QMessageBox.information(self,
-                translate('AlertsPlugin.AlertForm', 'Item selected to Add'),
-                translate('AlertsPlugin.AlertForm', 'Missing data'))
+                translate('AlertsPlugin.AlertForm', 'New Alert'),
+                translate('AlertsPlugin.AlertForm', 'You haven\'t specified '
+                    'any text for your alert. Please type in some text before '
+                    'clicking New.'))
         else:
             alert = AlertItem()
             alert.text = unicode(self.AlertTextEdit.text())
