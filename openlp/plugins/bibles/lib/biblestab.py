@@ -175,7 +175,7 @@ class BiblesTab(SettingsTab):
         self.DisplayStyleComboBox.setItemText(3,
             translate('BiblesPlugin.BiblesTab', '[ And ]'))
         self.ChangeNoteLabel.setText(translate('BiblesPlugin.BiblesTab',
-            'Note:\nChanges don\'t affect verses already in the service'))
+            'Note:\nChanges do not affect verses already in the service.'))
         self.BibleDualCheckBox.setText(
             translate('BiblesPlugin.BiblesTab', 'Display dual Bible verses'))
 
