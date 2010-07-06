@@ -164,25 +164,25 @@ class DisplayTab(SettingsTab):
         """
         Provide i18n support for this UI
         """
-        self.setWindowTitle(translate('DisplayTab', 'Amend Display Settings'))
+        #self.setWindowTitle(translate('DisplayTab', 'Amend Display Settings'))
         self.CurrentGroupBox.setTitle(
             translate('DisplayTab', 'Default Settings'))
-        self.XLabel.setText(translate('DisplayTab', 'X'))
+        self.XLabel.setText(translate('DisplayTab', 'X:'))
         self.Xpos.setText(u'0')
-        self.YLabel.setText(translate('DisplayTab', 'Y'))
+        self.YLabel.setText(translate('DisplayTab', 'Y:'))
         self.Ypos.setText(u'0')
-        self.HeightLabel.setText(translate('DisplayTab', 'Height'))
+        self.HeightLabel.setText(translate('DisplayTab', 'Height:'))
         self.Height.setText(u'0')
-        self.WidthLabel.setText(translate('DisplayTab', 'Width'))
+        self.WidthLabel.setText(translate('DisplayTab', 'Width:'))
         self.Width.setText(u'0')
         self.CurrentGroupBox_2.setTitle(
-            translate('DisplayTab', 'Amend Settings'))
-        self.XAmendLabel.setText(translate('DisplayTab', 'X'))
-        self.YAmendLabel.setText(translate('DisplayTab', 'Y'))
-        self.HeightAmendLabel.setText(translate('DisplayTab', 'Height'))
+            translate('DisplayTab', 'Custom Settings'))
+        self.XAmendLabel.setText(translate('DisplayTab', 'X:'))
+        self.YAmendLabel.setText(translate('DisplayTab', 'Y:'))
+        self.HeightAmendLabel.setText(translate('DisplayTab', 'Height:'))
         self.WidthAmendLabel.setText(translate('DisplayTab', 'Width'))
         self.OverrideCheckBox.setText(
-            translate('DisplayTab', 'Override Output Display'))
+            translate('DisplayTab', 'Override display settings'))
 
     def load(self):
         """
