@@ -233,7 +233,7 @@ class PowerpointDocument(PresentationDocument):
                     dpi = 96
             self.presentation.SlideShowSettings.Run()
             self.presentation.SlideShowWindow.View.GotoSlide(1)
-            rendermanager = self.controller.plugin.render_manager
+            rendermanager = self.controller.plugin.renderManager
             rect = rendermanager.screens.current[u'size']
             self.presentation.SlideShowWindow.Top = rect.y() * 72 / dpi
             self.presentation.SlideShowWindow.Height = rect.height() * 72 / dpi

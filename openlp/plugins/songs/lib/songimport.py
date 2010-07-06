@@ -25,8 +25,8 @@
 
 import re
 
-from openlp.core.lib import SongXMLBuilder, translate
-from openlp.plugins.songs.lib import VerseType
+from openlp.core.lib import translate
+from openlp.plugins.songs.lib import SongXMLBuilder, VerseType
 from openlp.plugins.songs.lib.db import Song, Author, Topic, Book
 
 class SongImport(object):
@@ -276,8 +276,6 @@ class SongImport(object):
         song.song_number = self.song_number
         song.search_lyrics = u''
         sxml = SongXMLBuilder()
-        sxml.new_document()
-        sxml.add_lyrics_to_song()
         for (versetag, versetext) in self.verses:
             if versetag[0] == u'C':
                 versetype = VerseType.to_string(VerseType.Chorus)

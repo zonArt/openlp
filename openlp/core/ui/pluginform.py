@@ -115,10 +115,10 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         if self.programaticChange:
             return
         if status == 0:
-            self.activePlugin.toggle_status(PluginStatus.Active)
+            self.activePlugin.toggleStatus(PluginStatus.Active)
             self.activePlugin.initialise()
         else:
-            self.activePlugin.toggle_status(PluginStatus.Inactive)
+            self.activePlugin.toggleStatus(PluginStatus.Inactive)
             self.activePlugin.finalise()
         status_text = 'Inactive'
         if self.activePlugin.status == PluginStatus.Active:

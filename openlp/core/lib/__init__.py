@@ -202,28 +202,17 @@ def check_item_selected(list_widget, message):
         return False
     return True
 
-
-class ThemeLevel(object):
-    """
-    Provides an enumeration for the level a theme applies to
-    """
-    Global = 1
-    Service = 2
-    Song = 3
-
 from eventreceiver import Receiver
 from settingsmanager import SettingsManager
 from plugin import PluginStatus, Plugin
 from pluginmanager import PluginManager
 from settingstab import SettingsTab
-from xmlrootclass import XmlRootClass
 from serviceitem import ServiceItem
 from serviceitem import ServiceItemType
 from serviceitem import ItemCapabilities
 from toolbar import OpenLPToolbar
 from dockwidget import OpenLPDockWidget
-from songxmlhandler import SongXMLBuilder, SongXMLParser
-from themexmlhandler import ThemeXML
+from theme import ThemeLevel, ThemeXML
 from renderer import Renderer
 from rendermanager import RenderManager
 from mediamanageritem import MediaManagerItem

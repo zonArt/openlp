@@ -43,7 +43,7 @@ class PresentationPlugin(Plugin):
         self.icon = build_icon(u':/plugins/plugin_presentations.png')
         self.status = PluginStatus.Active
 
-    def get_settings_tab(self):
+    def getSettingsTab(self):
         """
         Create the settings Tab
         """
@@ -52,7 +52,7 @@ class PresentationPlugin(Plugin):
     def initialise(self):
         log.info(u'Presentations Initialising')
         Plugin.initialise(self)
-        self.insert_toolbox_item()
+        self.insertToolboxItem()
         for controller in self.controllers:
             if self.controllers[controller].enabled:
                 self.controllers[controller].start_process()
@@ -66,7 +66,7 @@ class PresentationPlugin(Plugin):
                 controller.kill()
         Plugin.finalise(self)
 
-    def get_media_manager_item(self):
+    def getMediaManagerItem(self):
         """
         Create the Media Manager List
         """
@@ -76,12 +76,12 @@ class PresentationPlugin(Plugin):
     def registerControllers(self, controller):
         self.controllers[controller.name] = controller
 
-    def check_pre_conditions(self):
+    def checkPreConditions(self):
         """
         Check to see if we have any presentation software available
         If Not do not install the plugin.
         """
-        log.debug(u'check_pre_conditions')
+        log.debug(u'checkPreConditions')
         controller_dir = os.path.join(
             AppLocation.get_directory(AppLocation.PluginsDir),
             u'presentations', u'lib')
