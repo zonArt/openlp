@@ -35,7 +35,7 @@ from openlp.plugins.alerts.forms import AlertForm
 
 log = logging.getLogger(__name__)
 
-class alertsPlugin(Plugin):
+class AlertsPlugin(Plugin):
     log.info(u'Alerts Plugin loaded')
 
     def __init__(self, plugin_helpers):
@@ -88,7 +88,7 @@ class alertsPlugin(Plugin):
         Plugin.finalise(self)
         self.toolsAlertItem.setVisible(False)
 
-    def togglealertsState(self):
+    def toggleAlertsState(self):
         self.alertsActive = not self.alertsActive
         QtCore.QSettings().setValue(
             self.settingsSection + u'/active',
@@ -103,3 +103,4 @@ class alertsPlugin(Plugin):
             '<b>Alerts Plugin</b><br>This plugin '
             'controls the displaying of alerts on the presentations screen')
         return about_text
+
