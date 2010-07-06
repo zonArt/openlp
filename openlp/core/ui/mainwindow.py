@@ -753,12 +753,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.MediaManagerDock.setVisible(True)
         self.ServiceManagerDock.setVisible(True)
         self.ThemeManagerDock.setVisible(True)
-        self.PreviewController.Panel.setVisible(True)
-        self.LiveController.Panel.setVisible(True)
-        self.settingsmanager.set_preview_visibility(True)
-        self.settingsmanager.set_live_visibility(True)
-        self.ViewPreviewPanel.setChecked(True)
-        self.ViewLivePanel.setChecked(True)
+        self.togglePreviewPanel(True)
+        self.toggleLivePanel(True)
 
     def onModeSetupItemClicked(self):
         """
@@ -767,12 +763,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.MediaManagerDock.setVisible(True)
         self.ServiceManagerDock.setVisible(True)
         self.ThemeManagerDock.setVisible(False)
-        self.PreviewController.Panel.setVisible(True)
-        self.LiveController.Panel.setVisible(False)
-        self.settingsmanager.set_preview_visibility(True)
-        self.settingsmanager.set_live_visibility(False)
-        self.ViewPreviewPanel.setChecked(True)
-        self.ViewLivePanel.setChecked(False)
+        self.togglePreviewPanel(True)
+        self.toggleLivePanel(False)
 
     def onModeLiveItemClicked(self):
         """
@@ -781,12 +773,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.MediaManagerDock.setVisible(False)
         self.ServiceManagerDock.setVisible(True)
         self.ThemeManagerDock.setVisible(False)
-        self.PreviewController.Panel.setVisible(False)
-        self.LiveController.Panel.setVisible(True)
-        self.settingsmanager.set_preview_visibility(False)
-        self.settingsmanager.set_live_visibility(True)
-        self.ViewPreviewPanel.setChecked(False)
-        self.ViewLivePanel.setChecked(True)
+        self.togglePreviewPanel(False)
+        self.toggleLivePanel(True)
 
     def screenChanged(self):
         """
@@ -881,11 +869,29 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.ThemeManagerDock.setVisible(visible)
 
     def togglePreviewPanel(self, visible):
+        """
+        Sets the visibility of the preview panel including saving the setting
+        and updating the menu.
+
+        ``visible``
+            A bool giving the state to set the panel to
+                True - Visible
+                False - Hidden
+        """
         self.PreviewController.Panel.setVisible(visible)
         self.settingsmanager.set_preview_visibility(visible)
         self.ViewPreviewPanel.setChecked(visible)
 
     def toggleLivePanel(self, visible):
+        """
+        Sets the visibility of the live panel including saving the setting and
+        updating the menu.
+
+        ``visible``
+            A bool giving the state to set the panel to
+                True - Visible
+                False - Hidden
+        """
         self.LiveController.Panel.setVisible(visible)
         self.settingsmanager.set_live_visibility(visible)
         self.ViewLivePanel.setChecked(visible)
