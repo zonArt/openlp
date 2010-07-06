@@ -222,7 +222,7 @@ class ImpressDocument(PresentationDocument):
             return
         self.presentation = self.document.getPresentation()
         self.presentation.Display = \
-            self.controller.plugin.render_manager.screens.current_display + 1
+            self.controller.plugin.renderManager.screens.current_display + 1
         self.control = None
         self.create_thumbnails()
 
