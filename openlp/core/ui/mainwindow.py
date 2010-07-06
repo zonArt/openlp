@@ -785,7 +785,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.LiveController.Panel.setVisible(True)
         self.settingsmanager.set_preview_visibility(False)
         self.settingsmanager.set_live_visibility(True)
-        self.ViewPreviewPanel.setChecked(True)
+        self.ViewPreviewPanel.setChecked(False)
         self.ViewLivePanel.setChecked(True)
 
     def screenChanged(self):
