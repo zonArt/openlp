@@ -596,15 +596,15 @@ class Ui_AmendThemeDialog(object):
         self.TransitionGroupBox.setObjectName(u'TransitionGroupBox')
         self.gridLayout_5 = QtGui.QGridLayout(self.TransitionGroupBox)
         self.gridLayout_5.setObjectName(u'gridLayout_5')
-        self.SlideTransitionCheckedBoxLabel = QtGui.QLabel(
+        self.SlideTransitionCheckBoxLabel = QtGui.QLabel(
             self.TransitionGroupBox)
-        self.SlideTransitionCheckedBoxLabel.setObjectName(
-            u'SlideTransitionCheckedBoxLabel')
+        self.SlideTransitionCheckBoxLabel.setObjectName(
+            u'SlideTransitionCheckBoxLabel')
         self.gridLayout_5.addWidget(
-            self.SlideTransitionCheckedBoxLabel, 0, 0, 1, 1)
-        self.SlideTransitionCheckedBox = QtGui.QCheckBox(self.AlignmentGroupBox)
-        self.SlideTransitionCheckedBox.setTristate(False)
-        self.gridLayout_5.addWidget(self.SlideTransitionCheckedBox, 0, 1, 1, 1)
+            self.SlideTransitionCheckBoxLabel, 0, 0, 1, 1)
+        self.SlideTransitionCheckBox = QtGui.QCheckBox(self.AlignmentGroupBox)
+        self.SlideTransitionCheckBox.setTristate(False)
+        self.gridLayout_5.addWidget(self.SlideTransitionCheckBox, 0, 1, 1, 1)
         self.OptionsRightLayout.addWidget(self.TransitionGroupBox)
         spacerItem6 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum,
             QtGui.QSizePolicy.Expanding)
@@ -864,7 +864,7 @@ class Ui_AmendThemeDialog(object):
             translate('AmendThemeForm', 'Bottom'))
         self.TransitionGroupBox.setTitle(
             translate('AmendThemeForm', 'Slide Transition'))
-        self.SlideTransitionCheckedBoxLabel.setText(
+        self.SlideTransitionCheckBoxLabel.setText(
             translate('AmendThemeForm', 'Transition active:'))
         self.ThemeTabWidget.setTabText(
             self.ThemeTabWidget.indexOf(self.OtherOptionsTab),
