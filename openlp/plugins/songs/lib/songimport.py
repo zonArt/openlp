@@ -51,8 +51,8 @@ class SongImport(object):
         self.alternate_title = u''
         self.copyright = u''
         self.comment = u''
-        self.theme_name = u''
-        self.ccli_number = u''
+        self.theme = u''
+        self.song_cclino = u''
         self.authors = []
         self.topics = []
         self.song_book_name = u''
@@ -303,8 +303,8 @@ class SongImport(object):
         song.verse_order = u' '.join(self.verse_order_list)
         song.copyright = self.copyright
         song.comment = self.comment
-        song.theme_name = self.theme_name
-        song.ccli_number = self.ccli_number
+        song.theme = self.theme
+        song.song_cclino = self.song_cclino
         for authortext in self.authors:
             author = self.manager.get_object_filtered(Author,
                 Author.display_name == authortext)
@@ -358,7 +358,7 @@ class SongImport(object):
             print u'TOPIC: ' + topictext
         if self.comment:
             print u'COMMENT: ' + self.comment
-        if self.theme_name:
-            print u'THEME: ' + self.theme_name
-        if self.ccli_number:
-            print u'CCLI: ' + self.ccli_number
+        if self.theme:
+            print u'THEME: ' + self.theme
+        if self.song_cclino:
+            print u'CCLI: ' + self.song_cclino
