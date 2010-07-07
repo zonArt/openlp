@@ -30,7 +30,7 @@ def test():
     manager = SongManager()
     o = OpenSongImport(manager)
     o.do_import(u'test.opensong', commit=False)
-    # o.finish()
+    o.finish()
     o.song.print_song()
     assert o.song.copyright == u'2010 Martin Thompson'
     assert o.song.authors == [u'MartiÑ Thómpson']
@@ -45,7 +45,8 @@ def test():
     assert [u'V2', u'v2 Line 1\nV2 Line 2'] in o.song.verses
     assert o.song.verse_order_list == [u'V1', u'C', u'V2', u'C2', u'V3', u'B1', u'V1']
     assert o.song.ccli_number == u'Blah'
-    
+    print u':%s:'%o.song.theme
+    assert o.song.theme == u'TestTheme, TestAltTheme'
     o.do_import(u'test.opensong.zip', commit=False)
     # o.finish()
     o.song.print_song()

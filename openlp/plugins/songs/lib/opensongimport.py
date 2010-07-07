@@ -118,6 +118,8 @@ class OpenSongImport:
             self.do_import_file(file)
             if commit:
                 self.finish()
+
+   
     def do_import_file(self, file):
         """
         Process the OpenSong file - pass in a file-like object, not a filename
@@ -135,6 +137,13 @@ class OpenSongImport:
         for (attr, fn) in decode.items():
             if attr in fields:
                 fn(unicode(root.__getattr__(attr)))
+
+        res = []
+        if u'theme' in fields:
+            res.append(unicode(root.theme))
+        if u'alttheme' in fields:
+            res.append(unicode(root.alttheme))
+        self.song.theme=u', '.join(res)
         
         # data storage while importing
         verses = {}
