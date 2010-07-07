@@ -247,8 +247,10 @@ class MainDisplay(DisplayWidget):
         self.screen = self.screens.current
         #Sort out screen locations and sizes
         self.setGeometry(self.screen[u'size'])
-        self.scene.setSceneRect(0, 0, self.size().width(), self.size().height())
-        self.webView.setGeometry(0, 0, self.size().width(), self.size().height())
+        self.scene.setSceneRect(0, 0, self.size().width(),
+            self.size().height())
+        self.webView.setGeometry(0, 0, self.size().width(),
+            self.size().height())
         #Build a custom splash screen
         self.initialFrame = QtGui.QImage(
             self.screen[u'size'].width(),
@@ -295,11 +297,14 @@ class MainDisplay(DisplayWidget):
         self.webView = QtWebKit.QWebView()
         self.page = self.webView.page()
         self.videoDisplay = self.page.mainFrame()
-        self.videoDisplay.setScrollBarPolicy(QtCore.Qt.Vertical, QtCore.Qt.ScrollBarAlwaysOff)
-        self.videoDisplay.setScrollBarPolicy(QtCore.Qt.Horizontal, QtCore.Qt.ScrollBarAlwaysOff)
+        self.videoDisplay.setScrollBarPolicy(QtCore.Qt.Vertical,
+            QtCore.Qt.ScrollBarAlwaysOff)
+        self.videoDisplay.setScrollBarPolicy(QtCore.Qt.Horizontal,
+            QtCore.Qt.ScrollBarAlwaysOff)
         self.proxy = QtGui.QGraphicsProxyWidget()
         self.proxy.setWidget(self.webView)
-        self.proxy.setWindowFlags(QtCore.Qt.Window | QtCore.Qt.FramelessWindowHint)
+        self.proxy.setWindowFlags(QtCore.Qt.Window |
+            QtCore.Qt.FramelessWindowHint)
         self.proxy.setZValue(1)
         self.scene.addItem(self.proxy)
 
@@ -412,7 +417,8 @@ class MainDisplay(DisplayWidget):
         log.debug(u'adddisplayVideo')
         self.displayImage(self.transparent)
         self.videoDisplay.setHtml(HTMLVIDEO %
-            (path, self.screen[u'size'].width(), self.screen[u'size'].height()))
+            (path, self.screen[u'size'].width(),
+            self.screen[u'size'].height()))
 
     def frameView(self, frame, transition=False):
         """
@@ -513,7 +519,7 @@ class VideoDisplay(Phonon.VideoWidget):
         Sets up the screen on a particular screen.
         """
         log.debug(u'VideoDisplay Setup %s for %s ' % (self.screens,
-             self.screens.monitor_number))
+            self.screens.monitor_number))
         self.screen = self.screens.current
         #Sort out screen locations and sizes
         self.setGeometry(self.screen[u'size'])
