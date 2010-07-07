@@ -250,19 +250,19 @@ class MainDisplay(DisplayWidget):
         self.scene.setSceneRect(0, 0, self.size().width(), self.size().height())
         self.webView.setGeometry(0, 0, self.size().width(), self.size().height())
         #Build a custom splash screen
-        self.InitialFrame = QtGui.QImage(
+        self.initialFrame = QtGui.QImage(
             self.screen[u'size'].width(),
             self.screen[u'size'].height(),
             QtGui.QImage.Format_ARGB32_Premultiplied)
         splash_image = QtGui.QImage(u':/graphics/openlp-splash-screen.png')
         painter_image = QtGui.QPainter()
-        painter_image.begin(self.InitialFrame)
-        painter_image.fillRect(self.InitialFrame.rect(), QtCore.Qt.white)
+        painter_image.begin(self.initialFrame)
+        painter_image.fillRect(self.initialFrame.rect(), QtCore.Qt.white)
         painter_image.drawImage(
             (self.screen[u'size'].width() - splash_image.width()) / 2,
             (self.screen[u'size'].height() - splash_image.height()) / 2,
             splash_image)
-        self.displayImage(self.InitialFrame)
+        self.displayImage(self.initialFrame)
         self.repaint()
         #Build a Black screen
         painter = QtGui.QPainter()
