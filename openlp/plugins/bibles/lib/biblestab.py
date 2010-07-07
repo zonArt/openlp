@@ -45,7 +45,7 @@ class BiblesTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'BiblesTab')
-        self.tabTitleVisible = translate('BiblesPlugin,BiblesTab', 'Bibles')
+        self.tabTitleVisible = translate('BiblesPlugin.BiblesTab', 'Bibles')
         self.BibleLayout = QtGui.QHBoxLayout(self)
         self.BibleLayout.setSpacing(8)
         self.BibleLayout.setMargin(8)

@@ -210,7 +210,6 @@ class MainDisplay(DisplayWidget):
         self.setWindowFlags(QtCore.Qt.Window | QtCore.Qt.FramelessWindowHint)
         self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.parent = parent
         # WA_TranslucentBackground is not available in QT4.4
         try:
             self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
@@ -616,7 +615,7 @@ class VideoDisplay(Phonon.VideoWidget):
 
     def mediaShow(self, message=''):
         """
-        Show the video disaply if it was already hidden
+        Show the video display if it was already hidden
         """
         if self.hidden:
             self.hidden = False
@@ -625,7 +624,7 @@ class VideoDisplay(Phonon.VideoWidget):
 
 class AudioPlayer(QtCore.QObject):
     """
-    This Class will play audio only allowing components to work witn a
+    This Class will play audio only allowing components to work with a
     soundtrack which does not take over the user interface.
     """
     log.info(u'AudioPlayer Loaded')
@@ -641,8 +640,7 @@ class AudioPlayer(QtCore.QObject):
             The list of screens.
         """
         log.debug(u'AudioPlayer Initialisation started')
-        QtCore.QObject.__init__(self)
-        self.parent = parent
+        QtCore.QObject.__init__(self, parent)
         self.message = None
         self.mediaObject = Phonon.MediaObject()
         self.audioObject = Phonon.AudioOutput(Phonon.VideoCategory)

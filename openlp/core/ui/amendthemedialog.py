@@ -596,15 +596,15 @@ class Ui_AmendThemeDialog(object):
         self.TransitionGroupBox.setObjectName(u'TransitionGroupBox')
         self.gridLayout_5 = QtGui.QGridLayout(self.TransitionGroupBox)
         self.gridLayout_5.setObjectName(u'gridLayout_5')
-        self.SlideTransitionCheckedBoxLabel = QtGui.QLabel(
+        self.SlideTransitionCheckBoxLabel = QtGui.QLabel(
             self.TransitionGroupBox)
-        self.SlideTransitionCheckedBoxLabel.setObjectName(
-            u'SlideTransitionCheckedBoxLabel')
+        self.SlideTransitionCheckBoxLabel.setObjectName(
+            u'SlideTransitionCheckBoxLabel')
         self.gridLayout_5.addWidget(
-            self.SlideTransitionCheckedBoxLabel, 0, 0, 1, 1)
-        self.SlideTransitionCheckedBox = QtGui.QCheckBox(self.AlignmentGroupBox)
-        self.SlideTransitionCheckedBox.setTristate(False)
-        self.gridLayout_5.addWidget(self.SlideTransitionCheckedBox, 0, 1, 1, 1)
+            self.SlideTransitionCheckBoxLabel, 0, 0, 1, 1)
+        self.SlideTransitionCheckBox = QtGui.QCheckBox(self.AlignmentGroupBox)
+        self.SlideTransitionCheckBox.setTristate(False)
+        self.gridLayout_5.addWidget(self.SlideTransitionCheckBox, 0, 1, 1, 1)
         self.OptionsRightLayout.addWidget(self.TransitionGroupBox)
         spacerItem6 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum,
             QtGui.QSizePolicy.Expanding)
@@ -723,7 +723,7 @@ class Ui_AmendThemeDialog(object):
         AmendThemeDialog.setWindowTitle(
             translate('AmendThemeForm', 'Theme Maintenance'))
         self.ThemeNameLabel.setText(
-            translate('AmendThemeForm', 'Theme &Name:'))
+            translate('AmendThemeForm', 'Theme &name:'))
         self.BackgroundLabel.setText(
             translate('AmendThemeForm', '&Visibility:'))
         self.BackgroundComboBox.setItemText(0,
@@ -775,7 +775,7 @@ class Ui_AmendThemeDialog(object):
         self.MainLocationGroupBox.setTitle(
             translate('AmendThemeForm', 'Display Location'))
         self.DefaultLocationLabel.setText(
-            translate('AmendThemeForm', 'Use default location:'))
+            translate('AmendThemeForm', 'Use default location'))
         self.FontMainXLabel.setText(
             translate('AmendThemeForm', 'X position:'))
         self.FontMainYLabel.setText(
@@ -811,7 +811,7 @@ class Ui_AmendThemeDialog(object):
         self.LocationFooterGroupBox.setTitle(
             translate('AmendThemeForm', 'Display Location'))
         self.FontFooterDefaultLabel.setText(
-            translate('AmendThemeForm', 'Use default location:'))
+            translate('AmendThemeForm', 'Use default location'))
         self.FontFooterXLabel.setText(
             translate('AmendThemeForm', 'X position:'))
         self.FontFooterYLabel.setText(
@@ -864,9 +864,10 @@ class Ui_AmendThemeDialog(object):
             translate('AmendThemeForm', 'Bottom'))
         self.TransitionGroupBox.setTitle(
             translate('AmendThemeForm', 'Slide Transition'))
-        self.SlideTransitionCheckedBoxLabel.setText(
-            translate('AmendThemeForm', 'Transition active:'))
+        self.SlideTransitionCheckBoxLabel.setText(
+            translate('AmendThemeForm', 'Transition active'))
         self.ThemeTabWidget.setTabText(
             self.ThemeTabWidget.indexOf(self.OtherOptionsTab),
             translate('AmendThemeForm', '&Other Options'))
         self.PreviewGroupBox.setTitle(translate('AmendThemeForm', 'Preview'))
+
