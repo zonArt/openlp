@@ -294,8 +294,8 @@ class MainDisplay(DisplayWidget):
             QtCore.Qt.ScrollBarAlwaysOff)
         self.proxy = QtGui.QGraphicsProxyWidget()
         self.proxy.setWidget(self.webView)
-        self.proxy.setWindowFlags(
-            QtCore.Qt.Window | QtCore.Qt.FramelessWindowHint)
+        self.proxy.setWindowFlags(QtCore.Qt.Window |
+            QtCore.Qt.FramelessWindowHint)
         self.proxy.setZValue(1)
         self.scene.addItem(self.proxy)
 
