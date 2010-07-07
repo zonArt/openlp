@@ -212,7 +212,7 @@ class ThemeManager(QtGui.QWidget):
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             else:
                 for plugin in self.parent.plugin_manager.plugins:
-                    if not plugin.can_delete_theme(theme):
+                    if not plugin.canDeleteTheme(theme):
                         QtGui.QMessageBox.critical(self,
                             translate('ThemeManager', 'Error'),
                             unicode(translate('ThemeManager',
@@ -682,4 +682,3 @@ class ThemeManager(QtGui.QWidget):
         #theme.theme_mode
         theme.theme_name = theme.theme_name.strip()
         #theme.theme_version
-

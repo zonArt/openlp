@@ -222,4 +222,3 @@ class Theme(object):
             if key[0:1] != u'_':
                 theme_strings.append(u'%30s : %s' % (key, getattr(self, key)))
         return u'\n'.join(theme_strings)
-

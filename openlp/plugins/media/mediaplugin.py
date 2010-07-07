@@ -47,27 +47,27 @@ class MediaPlugin(Plugin):
         for mimetype in Phonon.BackendCapabilities.availableMimeTypes():
             mimetype = unicode(mimetype)
             type = mimetype.split(u'audio/x-')
-            self.audio_list, mimetype = self._add_to_list(self.audio_list,
+            self.audio_list, mimetype = self._addToList(self.audio_list,
                 type, mimetype)
             type = mimetype.split(u'audio/')
-            self.audio_list, mimetype = self._add_to_list(self.audio_list,
+            self.audio_list, mimetype = self._addToList(self.audio_list,
                 type, mimetype)
             type = mimetype.split(u'video/x-')
-            self.video_list, mimetype = self._add_to_list(self.video_list,
+            self.video_list, mimetype = self._addToList(self.video_list,
                 type, mimetype)
             type = mimetype.split(u'video/')
-            self.video_list, mimetype = self._add_to_list(self.video_list,
+            self.video_list, mimetype = self._addToList(self.video_list,
                 type, mimetype)
 
-    def _add_to_list(self, list, value, type):
+    def _addToList(self, list, value, type):
         if len(value) == 2:
             if list.find(value[1]) == -1:
                 list += u'*.%s ' % value[1]
-                self.service_manager.supportedSuffixes(value[1])
+                self.serviceManager.supportedSuffixes(value[1])
             type = u''
         return list, type
 
-    def get_media_manager_item(self):
+    def getMediaManagerItem(self):
         # Create the MediaManagerItem object
         return MediaMediaItem(self, self.icon, self.name)
 

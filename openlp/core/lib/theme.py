@@ -79,6 +79,14 @@ BLANK_THEME_XML = \
  </theme>
 '''
 
+class ThemeLevel(object):
+    """
+    Provides an enumeration for the level a theme applies to
+    """
+    Global = 1
+    Service = 2
+    Song = 3
+
 class ThemeXML(object):
     """
     A class to encapsulate the Theme XML.
@@ -313,7 +321,6 @@ class ThemeXML(object):
         element.appendChild(value)
         background.appendChild(element)
 
-
     def child_element(self, element, tag, value):
         """
         Generic child element creator.
@@ -351,14 +358,8 @@ class ThemeXML(object):
         ``xml``
             The XML string to parse.
         """
-        self.base_parse_xml()
-        self.parse_xml(xml)
-
-    def base_parse_xml(self):
-        """
-        Pull in the blank theme XML as a starting point.
-        """
         self.parse_xml(BLANK_THEME_XML)
+        self.parse_xml(xml)
 
     def parse_xml(self, xml):
         """
@@ -414,4 +415,3 @@ class ThemeXML(object):
             if key[0:1] != u'_':
                 theme_strings.append(u'%30s: %s' % (key, getattr(self, key)))
         return u'\n'.join(theme_strings)
-

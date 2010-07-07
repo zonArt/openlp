@@ -443,7 +443,7 @@ class MediaManagerItem(QtGui.QWidget):
             service_item = self.buildServiceItem()
             if service_item:
                 service_item.from_plugin = True
-                self.parent.preview_controller.addServiceItem(service_item)
+                self.parent.previewController.addServiceItem(service_item)
 
     def onLiveClick(self):
         """
@@ -460,7 +460,7 @@ class MediaManagerItem(QtGui.QWidget):
             service_item = self.buildServiceItem()
             if service_item:
                 service_item.from_plugin = True
-                self.parent.live_controller.addServiceItem(service_item)
+                self.parent.liveController.addServiceItem(service_item)
 
     def onAddClick(self):
         """
@@ -479,7 +479,7 @@ class MediaManagerItem(QtGui.QWidget):
                 service_item = self.buildServiceItem()
                 if service_item:
                     service_item.from_plugin = False
-                    self.parent.service_manager.addServiceItem(service_item,
+                    self.parent.serviceManager.addServiceItem(service_item,
                         replace=self.remoteTriggered)
             else:
                 items = self.ListView.selectedIndexes()
@@ -487,7 +487,7 @@ class MediaManagerItem(QtGui.QWidget):
                     service_item = self.buildServiceItem(item)
                     if service_item:
                         service_item.from_plugin = False
-                        self.parent.service_manager.addServiceItem(service_item)
+                        self.parent.serviceManager.addServiceItem(service_item)
 
     def onAddEditClick(self):
         """
@@ -500,7 +500,7 @@ class MediaManagerItem(QtGui.QWidget):
                     'You must select one or more items'))
         else:
             log.debug(self.PluginNameShort + u' Add requested')
-            service_item = self.parent.service_manager.getServiceItem()
+            service_item = self.parent.serviceManager.getServiceItem()
             if not service_item:
                 QtGui.QMessageBox.information(self,
                     translate('MediaManagerItem', 'No Service Item Selected'),
@@ -508,7 +508,7 @@ class MediaManagerItem(QtGui.QWidget):
                         'You must select an existing service item to add to.'))
             elif self.title.lower() == service_item.name.lower():
                 self.generateSlideData(service_item)
-                self.parent.service_manager.addServiceItem(service_item,
+                self.parent.serviceManager.addServiceItem(service_item,
                     replace=True)
             else:
                 #Turn off the remote edit update message indicator

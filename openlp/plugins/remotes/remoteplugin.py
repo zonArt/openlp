@@ -48,7 +48,7 @@ class RemotesPlugin(Plugin):
         """
         log.debug(u'initialise')
         Plugin.initialise(self)
-        self.insert_toolbox_item()
+        self.insertToolboxItem()
         self.server = HttpServer(self)
 
     def finalise(self):
@@ -60,7 +60,7 @@ class RemotesPlugin(Plugin):
         if self.server:
             self.server.close()
 
-    def get_settings_tab(self):
+    def getSettingsTab(self):
         """
         Create the settings Tab
         """

@@ -173,11 +173,12 @@ class ImageMediaItem(MediaManagerItem):
         if check_item_selected(self.ListView,
             translate('ImagePlugin.MediaItem',
             'You must select an item to process.')):
-            item = self.buildServiceItem()
-            item.render()
-            self.parent.live_controller.displayManager. \
-                displayImage(item.get_rendered_frame(0)[u'display'])
-
+            items = self.ListView.selectedIndexes()
+            for item in items:
+                bitem = self.ListView.item(item.row())
+                filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
+                frame = QtGui.QImage(unicode(filename))
+                self.parent.displayManager.displayImageWithText(frame)
 
     def onPreviewClick(self):
         MediaManagerItem.onPreviewClick(self)

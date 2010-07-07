@@ -39,10 +39,10 @@ class ImagePlugin(Plugin):
         self.icon = build_icon(u':/plugins/plugin_images.png')
         self.status = PluginStatus.Active
 
-    def get_settings_tab(self):
+    def getSettingsTab(self):
         return ImageTab(self.name)
 
-    def get_media_manager_item(self):
+    def getMediaManagerItem(self):
         # Create the MediaManagerItem object
         return ImageMediaItem(self, self.icon, self.name)
 
