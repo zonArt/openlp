@@ -75,10 +75,10 @@ class ImageMediaItem(MediaManagerItem):
 
     def initialise(self):
         log.debug(u'initialise')
-        self.ListView.clear()
-        self.ListView.setSelectionMode(
+        self.listView.clear()
+        self.listView.setSelectionMode(
             QtGui.QAbstractItemView.ExtendedSelection)
-        self.ListView.setIconSize(QtCore.QSize(88, 50))
+        self.listView.setIconSize(QtCore.QSize(88, 50))
         self.servicePath = os.path.join(
             AppLocation.get_section_data_path(self.settingsSection),
             u'thumbnails')
@@ -89,10 +89,10 @@ class ImageMediaItem(MediaManagerItem):
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
-        self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-        self.ListView.addAction(
+        self.listView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.listView.addAction(
             context_menu_action(
-                self.ListView, u':/slides/slide_blank.png',
+                self.listView, u':/slides/slide_blank.png',
                 translate('ImagePlugin.MediaItem', 'Replace Live Background'),
                 self.onReplaceClick))
 
@@ -106,23 +106,23 @@ class ImageMediaItem(MediaManagerItem):
             self.ImageWidget.sizePolicy().hasHeightForWidth())
         self.ImageWidget.setSizePolicy(sizePolicy)
         self.ImageWidget.setObjectName(u'ImageWidget')
-        self.blankButton = self.Toolbar.addToolbarButton(
+        self.blankButton = self.toolbar.addToolbarButton(
             u'Replace Background', u':/slides/slide_blank.png',
             translate('ImagePlugin.MediaItem', 'Replace Live Background'),
                 self.onReplaceClick, False)
         # Add the song widget to the page layout
-        self.PageLayout.addWidget(self.ImageWidget)
+        self.pageLayout.addWidget(self.ImageWidget)
 
     def onDeleteClick(self):
         """
         Remove an image item from the list
         """
-        if check_item_selected(self.ListView, translate('ImagePlugin.MediaItem',
+        if check_item_selected(self.listView, translate('ImagePlugin.MediaItem',
             'You must select an item to delete.')):
-            row_list = [item.row() for item in self.ListView.selectedIndexes()]
+            row_list = [item.row() for item in self.listView.selectedIndexes()]
             row_list.sort(reverse=True)
             for row in row_list:
-                text = self.ListView.item(row)
+                text = self.listView.item(row)
                 if text:
                     try:
                         os.remove(os.path.join(self.servicePath,
@@ -130,7 +130,7 @@ class ImageMediaItem(MediaManagerItem):
                     except OSError:
                         #if not present do not worry
                         pass
-                self.ListView.takeItem(row)
+                self.listView.takeItem(row)
             SettingsManager.set_list(self.settingsSection,
                 self.settingsSection, self.getFileList())
 
@@ -144,14 +144,14 @@ class ImageMediaItem(MediaManagerItem):
                 else:
                     icon = build_icon(u':/general/general_delete.png')
             else:
-                icon = self.IconFromFile(file, thumb)
+                icon = self.iconFromFile(file, thumb)
             item_name = QtGui.QListWidgetItem(filename)
             item_name.setIcon(icon)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
-            self.ListView.addItem(item_name)
+            self.listView.addItem(item_name)
 
     def generateSlideData(self, service_item, item=None):
-        items = self.ListView.selectedIndexes()
+        items = self.listView.selectedIndexes()
         if items:
             service_item.title = unicode(
                 translate('ImagePlugin.MediaItem', 'Image(s)'))
@@ -160,7 +160,7 @@ class ImageMediaItem(MediaManagerItem):
             service_item.add_capability(ItemCapabilities.AllowsLoop)
             service_item.add_capability(ItemCapabilities.AllowsAdditions)
             for item in items:
-                bitem = self.ListView.item(item.row())
+                bitem = self.listView.item(item.row())
                 filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
                 frame = QtGui.QImage(unicode(filename))
                 (path, name) = os.path.split(filename)
@@ -170,12 +170,12 @@ class ImageMediaItem(MediaManagerItem):
             return False
 
     def onReplaceClick(self):
-        if check_item_selected(self.ListView,
+        if check_item_selected(self.listView,
             translate('ImagePlugin.MediaItem',
             'You must select an item to process.')):
-            items = self.ListView.selectedIndexes()
+            items = self.listView.selectedIndexes()
             for item in items:
-                bitem = self.ListView.item(item.row())
+                bitem = self.listView.item(item.row())
                 filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
                 frame = QtGui.QImage(unicode(filename))
                 self.parent.displayManager.displayImageWithText(frame)

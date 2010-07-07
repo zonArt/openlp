@@ -75,7 +75,7 @@ class SongMediaItem(MediaManagerItem):
             translate('SongsPlugin.MediaItem',
             'Maintain the lists of authors, topics and books'),
             ':/songs/song_maintenance.png', self.onSongMaintenanceClick)
-        self.PageLayout.setSpacing(4)
+        self.pageLayout.setSpacing(4)
         self.SearchLayout = QtGui.QFormLayout()
         self.SearchLayout.setMargin(0)
         self.SearchLayout.setSpacing(4)
@@ -100,7 +100,7 @@ class SongMediaItem(MediaManagerItem):
         self.SearchTypeComboBox.setObjectName(u'SearchTypeComboBox')
         self.SearchLayout.setWidget(
             1, QtGui.QFormLayout.FieldRole, self.SearchTypeComboBox)
-        self.PageLayout.addLayout(self.SearchLayout)
+        self.pageLayout.addLayout(self.SearchLayout)
         self.SearchButtonLayout = QtGui.QHBoxLayout()
         self.SearchButtonLayout.setMargin(0)
         self.SearchButtonLayout.setSpacing(4)
@@ -114,7 +114,7 @@ class SongMediaItem(MediaManagerItem):
         self.ClearTextButton = QtGui.QPushButton(self)
         self.ClearTextButton.setObjectName(u'ClearTextButton')
         self.SearchButtonLayout.addWidget(self.ClearTextButton)
-        self.PageLayout.addLayout(self.SearchButtonLayout)
+        self.pageLayout.addLayout(self.SearchButtonLayout)
         # Signals and slots
         QtCore.QObject.connect(self.SearchTextEdit,
             QtCore.SIGNAL(u'returnPressed()'), self.onSearchTextButtonClick)
@@ -193,7 +193,7 @@ class SongMediaItem(MediaManagerItem):
 
     def displayResultsSong(self, searchresults):
         log.debug(u'display results Song')
-        self.ListView.clear()
+        self.listView.clear()
         for song in searchresults:
             author_list = u''
             for author in song.authors:
@@ -204,11 +204,11 @@ class SongMediaItem(MediaManagerItem):
             song_detail = u'%s (%s)' % (song_title, author_list)
             song_name = QtGui.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
-            self.ListView.addItem(song_name)
+            self.listView.addItem(song_name)
 
     def displayResultsAuthor(self, searchresults):
         log.debug(u'display results Author')
-        self.ListView.clear()
+        self.listView.clear()
         for author in searchresults:
             for song in author.songs:
                 song_detail = unicode(
@@ -216,7 +216,7 @@ class SongMediaItem(MediaManagerItem):
                     (author.display_name, song.title)
                 song_name = QtGui.QListWidgetItem(song_detail)
                 song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
-                self.ListView.addItem(song_name)
+                self.listView.addItem(song_name)
 
     def onClearTextButtonClick(self):
         """
@@ -284,9 +284,9 @@ class SongMediaItem(MediaManagerItem):
         """
         Edit a song
         """
-        if check_item_selected(self.ListView, translate('SongsPlugin.MediaItem',
+        if check_item_selected(self.listView, translate('SongsPlugin.MediaItem',
             'You must select an item to edit.')):
-            item = self.ListView.currentItem()
+            item = self.listView.currentItem()
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.edit_song_form.loadSong(item_id, False)
             self.edit_song_form.exec_()
@@ -295,9 +295,9 @@ class SongMediaItem(MediaManagerItem):
         """
         Remove a song from the list and database
         """
-        if check_item_selected(self.ListView, translate('SongsPlugin.MediaItem',
+        if check_item_selected(self.listView, translate('SongsPlugin.MediaItem',
             'You must select an item to delete.')):
-            items = self.ListView.selectedIndexes()
+            items = self.listView.selectedIndexes()
             if len(items) == 1:
                 del_message = translate('SongsPlugin.MediaItem',
                     'Delete song?')
@@ -325,7 +325,7 @@ class SongMediaItem(MediaManagerItem):
         ccli = u''
         if item is None:
             if self.remoteTriggered is None:
-                item = self.ListView.currentItem()
+                item = self.listView.currentItem()
                 if item is None:
                     return False
                 item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]

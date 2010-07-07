@@ -108,13 +108,13 @@ class PresentationMediaItem(MediaManagerItem):
         self.DisplayTypeLabel.setText(
             translate('PresentationPlugin.MediaItem', 'Present using:'))
         # Add the Presentation widget to the page layout
-        self.PageLayout.addWidget(self.PresentationWidget)
+        self.pageLayout.addWidget(self.PresentationWidget)
 
     def initialise(self):
         self.servicePath = os.path.join(
             AppLocation.get_section_data_path(self.settingsSection),
             u'thumbnails')
-        self.ListView.setIconSize(QtCore.QSize(88, 50))
+        self.listView.setIconSize(QtCore.QSize(88, 50))
         if not os.path.exists(self.servicePath):
             os.mkdir(self.servicePath)
         list = SettingsManager.load_list(
@@ -165,22 +165,22 @@ class PresentationMediaItem(MediaManagerItem):
                                     u':/general/general_delete.png')
                         else:
                             os.makedirs(thumbPath)
-                            icon = self.IconFromFile(preview, thumb)
+                            icon = self.iconFromFile(preview, thumb)
                 if not icon:
                     icon = build_icon(u':/general/general_delete.png')
                 item_name = QtGui.QListWidgetItem(filename)
                 item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
                 item_name.setIcon(icon)
-                self.ListView.addItem(item_name)
+                self.listView.addItem(item_name)
 
     def onDeleteClick(self):
         """
         Remove a presentation item from the list
         """
-        if check_item_selected(self.ListView,
+        if check_item_selected(self.listView,
             translate('PresentationPlugin.MediaItem',
             'You must select an item to delete.')):
-            items = self.ListView.selectedIndexes()
+            items = self.listView.selectedIndexes()
             row_list = [item.row() for item in items]
             row_list.sort(reverse=True)
             for item in items:
@@ -193,12 +193,12 @@ class PresentationMediaItem(MediaManagerItem):
                     doc.presentation_deleted()
                     doc.close_presentation()
             for row in row_list:
-                self.ListView.takeItem(row)
+                self.listView.takeItem(row)
             SettingsManager.set_list(self.settingsSection,
                 self.settingsSection, self.getFileList())
 
     def generateSlideData(self, service_item, item=None):
-        items = self.ListView.selectedIndexes()
+        items = self.listView.selectedIndexes()
         if len(items) > 1:
             return False
         service_item.title = unicode(self.DisplayTypeComboBox.currentText())
@@ -206,7 +206,7 @@ class PresentationMediaItem(MediaManagerItem):
         shortname = service_item.shortname
         if shortname:
             for item in items:
-                bitem = self.ListView.item(item.row())
+                bitem = self.listView.item(item.row())
                 filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
                 if shortname == self.Automatic:
                     service_item.shortname = self.findControllerByType(filename)
