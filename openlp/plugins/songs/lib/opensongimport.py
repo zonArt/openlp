@@ -127,6 +127,7 @@ class OpenSongImport:
         root = tree.getroot()
         fields = dir(root)
         decode = {u'copyright':self.song.add_copyright,
+                u'ccli':self.song.set_ccli_number,
                 u'author':self.song.parse_author,
                 u'title':self.song.set_title,
                 u'aka':self.song.set_alternate_title,

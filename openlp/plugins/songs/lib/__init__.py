@@ -137,7 +137,7 @@ class VerseType(object):
             unicode(VerseType.to_string(VerseType.Other)).lower():
             return VerseType.Other
 
-from xml import LyricsXML, SongXMLBuilder, SongXMLParser
+from lyrics_xml import LyricsXML, SongXMLBuilder, SongXMLParser
 from songstab import SongsTab
 from mediaitem import SongMediaItem
 from songimport import SongImport

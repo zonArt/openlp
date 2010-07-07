@@ -24,13 +24,11 @@
 ###############################################################################
 from openlp.plugins.songs.lib.opensongimport import OpenSongImport
 from openlp.plugins.songs.lib.manager import SongManager
+import sys
 
 def test():
     manager = SongManager()
     o = OpenSongImport(manager)
-    o.do_import(u'/home/mjt/openlp/OpenSong_Data/ADond', commit=False)
-    o.song.print_song()
-    sys.exit(1)
     o.do_import(u'test.opensong', commit=False)
     # o.finish()
     o.song.print_song()
@@ -46,7 +44,8 @@ def test():
     assert [u'V1', u'v1 Line 1\nV1 Line 2'] in o.song.verses 
     assert [u'V2', u'v2 Line 1\nV2 Line 2'] in o.song.verses
     assert o.song.verse_order_list == [u'V1', u'C', u'V2', u'C2', u'V3', u'B1', u'V1']
-
+    assert o.song.ccli_number == u'Blah'
+    
     o.do_import(u'test.opensong.zip', commit=False)
     # o.finish()
     o.song.print_song()
