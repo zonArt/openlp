@@ -245,18 +245,6 @@ class SongMediaItem(MediaManagerItem):
         self.edit_song_form.newSong()
         self.edit_song_form.exec_()
 
-    def onEditAuthorClick(self):
-        self.authors_form.load_form()
-        self.authors_form.exec_()
-
-    def onEditTopicClick(self):
-        self.topics_form.load_form()
-        self.topics_form.exec_()
-
-    def onEditBookClick(self):
-        self.song_book_form.load_form()
-        self.song_book_form.exec_()
-
     def onSongMaintenanceClick(self):
         self.song_maintenance_form.exec_()
 
