@@ -25,16 +25,14 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate
+from openlp.core.lib import build_icon, translate
 
 class Ui_customEditDialog(object):
     def setupUi(self, customEditDialog):
         customEditDialog.setObjectName(u'customEditDialog')
         customEditDialog.resize(590, 541)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(u':/icon/openlp.org-icon-32.bmp'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        customEditDialog.setWindowIcon(icon)
+        customEditDialog.setWindowIcon(
+            build_icon(u':/icon/openlp.org-icon-32.bmp'))
         self.gridLayout = QtGui.QGridLayout(customEditDialog)
         self.gridLayout.setObjectName(u'gridLayout')
         self.horizontalLayout = QtGui.QHBoxLayout()
@@ -56,20 +54,14 @@ class Ui_customEditDialog(object):
         self.verticalLayout = QtGui.QVBoxLayout()
         self.verticalLayout.setObjectName(u'verticalLayout')
         self.UpButton = QtGui.QPushButton(customEditDialog)
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(u':/services/service_up.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.UpButton.setIcon(icon1)
+        self.UpButton.setIcon(build_icon(u':/services/service_up.png'))
         self.UpButton.setObjectName(u'UpButton')
         self.verticalLayout.addWidget(self.UpButton)
         spacerItem = QtGui.QSpacerItem(20, 128, QtGui.QSizePolicy.Minimum,
             QtGui.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacerItem)
         self.DownButton = QtGui.QPushButton(customEditDialog)
-        icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(u':/services/service_down.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.DownButton.setIcon(icon2)
+        self.DownButton.setIcon(build_icon(u':/services/service_down.png'))
         self.DownButton.setObjectName(u'DownButton')
         self.verticalLayout.addWidget(self.DownButton)
         self.horizontalLayout_4.addLayout(self.verticalLayout)
@@ -138,7 +130,6 @@ class Ui_customEditDialog(object):
             QtGui.QDialogButtonBox.Save)
         self.buttonBox.setObjectName(u'buttonBox')
         self.gridLayout.addWidget(self.buttonBox, 5, 0, 1, 1)
-
         self.retranslateUi(customEditDialog)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'),
             customEditDialog.accept)
