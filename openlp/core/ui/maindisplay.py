@@ -538,7 +538,7 @@ class VideoDisplay(Phonon.VideoWidget):
         """
         self.onMediaStop()
         for path in self.outputPaths():
-            disconnected = path.disconnect()
+            path.disconnect()
 
 #    def onMediaBackground(self, message=None):
 #        """
@@ -664,7 +664,7 @@ class AudioPlayer(QtCore.QObject):
         """
         self.onMediaStop()
         for path in self.mediaObject.outputPaths():
-            disconnected = path.disconnect()
+            path.disconnect()
 
     def onMediaQueue(self, message):
         """
