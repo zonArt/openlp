@@ -47,6 +47,7 @@ class CustomMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title):
         self.PluginNameShort = u'Custom'
+        self.pluginNameVisible = translate('CustomPlugin.MediaItem', 'Custom')
         self.IconPath = u'custom/custom'
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
@@ -66,9 +67,6 @@ class CustomMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'custom_load_list'), self.initialise)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'custom_preview'), self.onPreviewClick)
-
-    def initPluginNameVisible(self):
-        self.PluginNameVisible = translate('CustomPlugin.MediaItem', 'Custom')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)

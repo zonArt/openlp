@@ -52,6 +52,8 @@ class PresentationMediaItem(MediaManagerItem):
     def __init__(self, parent, icon, title, controllers):
         self.controllers = controllers
         self.PluginNameShort = u'Presentation'
+        self.pluginNameVisible = translate('PresentationPlugin.MediaItem',
+            'Presentation')
         self.IconPath = u'presentations/presentation'
         self.Automatic = u''
         # this next is a class, not an instance of a class - it will
@@ -59,10 +61,6 @@ class PresentationMediaItem(MediaManagerItem):
         self.ListViewWithDnD_class = PresentationListView
         MediaManagerItem.__init__(self, parent, icon, title)
         self.message_listener = MessageListener(self)
-
-    def initPluginNameVisible(self):
-        self.PluginNameVisible = translate('PresentationPlugin.MediaItem',
-            'Presentation')
 
     def retranslateUi(self):
         self.OnNewPrompt = translate('PresentationPlugin.MediaItem',

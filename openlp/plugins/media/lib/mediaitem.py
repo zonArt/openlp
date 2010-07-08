@@ -47,6 +47,7 @@ class MediaMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title):
         self.PluginNameShort = u'Media'
+        self.pluginNameVisible = translate('MediaPlugin.MediaItem', 'Media')
         self.IconPath = u'images/image'
         self.background = False
         # this next is a class, not an instance of a class - it will
@@ -57,9 +58,6 @@ class MediaMediaItem(MediaManagerItem):
         MediaManagerItem.__init__(self, parent, icon, title)
         self.singleServiceItem = False
         self.serviceItemIconName = u':/media/media_video.png'
-
-    def initPluginNameVisible(self):
-        self.PluginNameVisible = translate('MediaPlugin.MediaItem', 'Media')
 
     def retranslateUi(self):
         self.OnNewPrompt = translate('MediaPlugin.MediaItem', 'Select Media')

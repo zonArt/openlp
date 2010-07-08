@@ -49,6 +49,7 @@ class SongMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title):
         self.PluginNameShort = u'Song'
+        self.pluginNameVisible = translate('SongsPlugin.MediaItem', 'Song')
         self.IconPath = u'songs/song'
         self.ListViewWithDnD_class = SongListView
         MediaManagerItem.__init__(self, parent, icon, title)
@@ -60,9 +61,6 @@ class SongMediaItem(MediaManagerItem):
         # Holds information about whether the edit is remotly triggered and
         # which Song is required.
         self.remoteSong = -1
-
-    def initPluginNameVisible(self):
-        self.PluginNameVisible = translate('SongsPlugin.MediaItem', 'Song')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)

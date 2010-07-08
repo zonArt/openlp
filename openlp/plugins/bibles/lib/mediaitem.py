@@ -55,6 +55,7 @@ class BibleMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title):
         self.PluginNameShort = u'Bible'
+        self.pluginNameVisible = translate('BiblesPlugin.MediaItem', 'Bible')
         self.IconPath = u'songs/song'
         self.ListViewWithDnD_class = BibleListView
         self.lastReference = []
@@ -69,9 +70,6 @@ class BibleMediaItem(MediaManagerItem):
         if isinstance(obj, QtCore.QVariant):
             obj = obj.toPyObject()
         return unicode(obj)
-
-    def initPluginNameVisible(self):
-        self.PluginNameVisible = translate('BiblesPlugin.MediaItem', 'Bible')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
