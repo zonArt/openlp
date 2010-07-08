@@ -24,7 +24,8 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import translate
+
+from openlp.core.lib import build_icon, translate
 
 class Ui_BibleImportWizard(object):
     def setupUi(self, BibleImportWizard):
@@ -104,10 +105,7 @@ class Ui_BibleImportWizard(object):
         self.OsisLocationLayout.addWidget(self.OSISLocationEdit)
         self.OsisFileButton = QtGui.QToolButton(self.OsisPage)
         self.OsisFileButton.setMaximumSize(QtCore.QSize(32, 16777215))
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(u':/general/general_open.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.OsisFileButton.setIcon(icon)
+        self.OsisFileButton.setIcon(build_icon(u':/general/general_open.png'))
         self.OsisFileButton.setObjectName(u'OsisFileButton')
         self.OsisLocationLayout.addWidget(self.OsisFileButton)
         self.OsisLayout.setLayout(1, QtGui.QFormLayout.FieldRole,

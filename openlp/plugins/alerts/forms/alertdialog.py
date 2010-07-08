@@ -25,16 +25,13 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate
+from openlp.core.lib import build_icon, translate
 
 class Ui_AlertDialog(object):
     def setupUi(self, AlertDialog):
         AlertDialog.setObjectName(u'AlertDialog')
         AlertDialog.resize(567, 440)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(u':/icon/openlp.org-icon-32.bmp'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        AlertDialog.setWindowIcon(icon)
+        AlertDialog.setWindowIcon(build_icon(u':/icon/openlp.org-icon-32.bmp'))
         self.AlertDialogLayout = QtGui.QVBoxLayout(AlertDialog)
         self.AlertDialogLayout.setSpacing(8)
         self.AlertDialogLayout.setMargin(8)
@@ -79,25 +76,16 @@ class Ui_AlertDialog(object):
         self.ManageButtonLayout.setSpacing(8)
         self.ManageButtonLayout.setObjectName(u'ManageButtonLayout')
         self.NewButton = QtGui.QPushButton(AlertDialog)
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(u':/general/general_new.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.NewButton.setIcon(icon1)
+        self.NewButton.setIcon(build_icon(u':/general/general_new.png'))
         self.NewButton.setObjectName(u'NewButton')
         self.ManageButtonLayout.addWidget(self.NewButton)
         self.SaveButton = QtGui.QPushButton(AlertDialog)
         self.SaveButton.setEnabled(False)
-        icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(u':/general/general_save.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.SaveButton.setIcon(icon2)
+        self.SaveButton.setIcon(build_icon(u':/general/general_save.png'))
         self.SaveButton.setObjectName(u'SaveButton')
         self.ManageButtonLayout.addWidget(self.SaveButton)
         self.DeleteButton = QtGui.QPushButton(AlertDialog)
-        icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap(u':/general/general_delete.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.DeleteButton.setIcon(icon3)
+        self.DeleteButton.setIcon(build_icon(u':/general/general_delete.png'))
         self.DeleteButton.setObjectName(u'DeleteButton')
         self.ManageButtonLayout.addWidget(self.DeleteButton)
         spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum,
@@ -112,10 +100,7 @@ class Ui_AlertDialog(object):
             QtGui.QSizePolicy.Minimum)
         self.AlertButtonLayout.addItem(spacerItem1)
         self.DisplayButton = QtGui.QPushButton(AlertDialog)
-        icon4 = QtGui.QIcon()
-        icon4.addPixmap(QtGui.QPixmap(u':/general/general_live.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.DisplayButton.setIcon(icon4)
+        self.DisplayButton.setIcon(build_icon(u':/general/general_live.png'))
         self.DisplayButton.setObjectName(u'DisplayButton')
         self.AlertButtonLayout.addWidget(self.DisplayButton)
         self.DisplayCloseButton = QtGui.QPushButton(AlertDialog)
@@ -123,10 +108,7 @@ class Ui_AlertDialog(object):
         self.DisplayCloseButton.setObjectName(u'DisplayCloseButton')
         self.AlertButtonLayout.addWidget(self.DisplayCloseButton)
         self.CloseButton = QtGui.QPushButton(AlertDialog)
-        icon5 = QtGui.QIcon()
-        icon5.addPixmap(QtGui.QPixmap(u':/system/system_close.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.CloseButton.setIcon(icon5)
+        self.CloseButton.setIcon(build_icon(u':/system/system_close.png'))
         self.CloseButton.setObjectName(u'CloseButton')
         self.AlertButtonLayout.addWidget(self.CloseButton)
         self.AlertDialogLayout.addLayout(self.AlertButtonLayout)
