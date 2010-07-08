@@ -131,7 +131,8 @@ class BibleMediaItem(MediaManagerItem):
         self.QuickClearLabel.setObjectName(u'QuickSearchLabel')
         self.QuickLayout.addWidget(self.QuickClearLabel, 4, 0, 1, 1)
         self.ClearQuickSearchComboBox = QtGui.QComboBox(self.QuickTab)
-        self.ClearQuickSearchComboBox.setObjectName(u'ClearQuickSearchComboBox')
+        self.ClearQuickSearchComboBox.setObjectName(
+            u'ClearQuickSearchComboBox')
         self.QuickLayout.addWidget(self.ClearQuickSearchComboBox, 4, 1, 1, 2)
         self.QuickSearchButtonLayout = QtGui.QHBoxLayout()
         self.QuickSearchButtonLayout.setMargin(0)
@@ -169,7 +170,8 @@ class BibleMediaItem(MediaManagerItem):
         self.AdvancedVersionComboBox.setObjectName(u'AdvancedVersionComboBox')
         self.AdvancedLayout.addWidget(self.AdvancedVersionComboBox, 0, 1, 1, 2)
         self.AdvancedSecondBibleLabel = QtGui.QLabel(self.AdvancedTab)
-        self.AdvancedSecondBibleLabel.setObjectName(u'AdvancedSecondBibleLabel')
+        self.AdvancedSecondBibleLabel.setObjectName(
+            u'AdvancedSecondBibleLabel')
         self.AdvancedLayout.addWidget(self.AdvancedSecondBibleLabel, 1, 0, 1, 1)
         self.AdvancedSecondBibleComboBox = QtGui.QComboBox(self.AdvancedTab)
         self.AdvancedSecondBibleComboBox.setSizeAdjustPolicy(
@@ -223,7 +225,8 @@ class BibleMediaItem(MediaManagerItem):
             u'AdvancedSearchButtonLayout')
         self.AdvancedSearchButtonSpacer = QtGui.QSpacerItem(40, 20,
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.AdvancedSearchButtonLayout.addItem(self.AdvancedSearchButtonSpacer)
+        self.AdvancedSearchButtonLayout.addItem(
+            self.AdvancedSearchButtonSpacer)
         self.AdvancedSearchButton = QtGui.QPushButton(self.AdvancedTab)
         self.AdvancedSearchButton.setObjectName(u'AdvancedSearchButton')
         self.AdvancedSearchButtonLayout.addWidget(self.AdvancedSearchButton)
@@ -617,7 +620,8 @@ class BibleMediaItem(MediaManagerItem):
         else:
             self.AdvancedSearchButton.setEnabled(True)
             self.AdvancedMessage.setText(u'')
-            self.adjustComboBox(1, self.chapters_from, self.AdvancedFromChapter)
+            self.adjustComboBox(1, self.chapters_from,
+                self.AdvancedFromChapter)
             self.adjustComboBox(1, self.chapters_from, self.AdvancedToChapter)
             self.adjustComboBox(1, self.verses, self.AdvancedFromVerse)
             self.adjustComboBox(1, self.verses, self.AdvancedToVerse)
