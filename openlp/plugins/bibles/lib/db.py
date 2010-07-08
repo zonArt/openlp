@@ -342,7 +342,7 @@ class BibleDB(QtCore.QObject, Manager):
                 verse_list.extend(verses)
             else:
                 log.debug(u'OpenLP failed to find book %s', book)
-                QtGui.QMessageBox.information(self.bible_plugin.media_item,
+                QtGui.QMessageBox.information(self.bible_plugin.mediaItem,
                     translate('BibleDB', 'Book not found'),
                     translate('BibleDB', u'The book you requested could not '
                         'be found in this bible.  Please check your spelling '
