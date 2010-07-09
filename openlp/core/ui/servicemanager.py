@@ -33,7 +33,8 @@ log = logging.getLogger(__name__)
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, ServiceItem, context_menu_action, \
-    Receiver, build_icon, ItemCapabilities, SettingsManager, translate, ThemeLevel
+    Receiver, build_icon, ItemCapabilities, SettingsManager, translate, \
+    ThemeLevel
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm
 from openlp.core.utils import AppLocation
 

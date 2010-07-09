@@ -65,14 +65,17 @@ class OpenSongImport:
     2etc...
     </lyrics>
 
-    Either or both forms can be used in one song.  The Number does not necessarily appear at the start of the line
+    Either or both forms can be used in one song.  The Number does not
+    necessarily appear at the start of the line
 
     The [v1] labels can have either upper or lower case Vs
     Other labels can be used also:
       C - Chorus
       B - Bridge
 
-    Guitar chords can be provided 'above' the lyrics (the line is preceeded by a'.') and _s can be used to signify long-drawn-out words:
+    Guitar chords can be provided 'above' the lyrics (the line is
+    preceeded by a'.') and _s can be used to signify long-drawn-out
+    words:
 
     . A7        Bm
     1 Some____ Words
@@ -88,16 +91,18 @@ class OpenSongImport:
     """
     def __init__(self, songmanager):
         """
-        Initialise the class. Requires a songmanager class which is passed
-        to SongImport for writing song to disk
+        Initialise the class. Requires a songmanager class which 
+        is passed to SongImport for writing song to disk
         """
         self.songmanager = songmanager
         self.song = None
 
     def do_import(self, filename, commit=True):
         """
-        Import either a single opensong file, or a zipfile containing multiple opensong files
-        If the commit parameter is set False, the import will not be committed to the database (useful for test scripts)
+        Import either a single opensong file, or a zipfile
+        containing multiple opensong files If the commit parameter is
+        set False, the import will not be committed to the database
+        (useful for test scripts)
         """
         ext=os.path.splitext(filename)[1]
         if ext.lower() == ".zip":
@@ -108,7 +113,7 @@ class OpenSongImport:
                 if parts[-1] == u'':
                     #No final part => directory
                     continue
-                songfile=z.open(song)
+                songfile = z.open(song)
                 self.do_import_file(songfile)
                 if commit:
                     self.finish()
@@ -122,14 +127,15 @@ class OpenSongImport:
    
     def do_import_file(self, file):
         """
-        Process the OpenSong file - pass in a file-like object, not a filename
+        Process the OpenSong file - pass in a file-like object,
+        not a filename
         """            
         self.song = SongImport(self.songmanager)
         tree = objectify.parse(file)
         root = tree.getroot()
         fields = dir(root)
         decode = {u'copyright':self.song.add_copyright,
-                u'ccli':self.song.set_ccli_number,
+                u'ccli':self.song.set_song_cclino,
                 u'author':self.song.parse_author,
                 u'title':self.song.set_title,
                 u'aka':self.song.set_alternate_title,
@@ -143,7 +149,7 @@ class OpenSongImport:
             res.append(unicode(root.theme))
         if u'alttheme' in fields:
             res.append(unicode(root.alttheme))
-        self.song.theme=u', '.join(res)
+        self.song.theme = u', '.join(res)
         
         # data storage while importing
         verses = {}
@@ -151,7 +157,8 @@ class OpenSongImport:
         # keep track of a "default" verse order, in case none is specified
         our_verse_order = []
         verses_seen = {}
-        # in the absence of any other indication, verses are the default, erm, versetype!
+        # in the absence of any other indication, verses are the default,
+        # erm, versetype!
         versetype = u'V'
         for l in lyrics.split(u'\n'):
             # remove comments
@@ -161,8 +168,8 @@ class OpenSongImport:
             l = l.strip()
             if len(l) == 0:
                 continue
-            # skip inline guitar chords
-            if l[0] == u'.':
+            # skip inline guitar chords and page and column breaks
+            if l[0] == u'.' or l.startswith(u'---') or l.startswith(u'-!!'):
                 continue
             
             # verse/chorus/etc. marker
@@ -176,9 +183,10 @@ class OpenSongImport:
                     right_bracket = l.find(u']')
                     versenum = l[2:right_bracket]
                 else:
-                    versenum = u''
+                    # if there's no number, assume it's no.1
+                    versenum = u'1'
                 continue
-            words=None
+            words = None
 
             # number at start of line.. it's verse number
             if l[0].isdigit():
@@ -187,7 +195,7 @@ class OpenSongImport:
             if words is None and \
                    versenum is not None and \
                    versetype is not None:
-                words=l
+                words = l
             if versenum is not None:
                 versetag = u'%s%s'%(versetype,versenum)
                 if not verses.has_key(versetype):
@@ -206,6 +214,7 @@ class OpenSongImport:
         versetypes = verses.keys()
         versetypes.sort()
         versetags = {}
+        verse_renames = {}
         for v in versetypes:
             versenums = verses[v].keys()
             versenums.sort()
@@ -222,6 +231,8 @@ class OpenSongImport:
             assert len(our_verse_order)>0
             order = our_verse_order
         for tag in order:
+            if len(tag) == 1:
+                tag = tag + u'1' # Assume it's no.1 if it's not there
             if not versetags.has_key(tag):
                 log.warn(u'Got order %s but not in versetags, skipping', tag)
             else:

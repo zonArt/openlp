@@ -84,8 +84,8 @@ class BiblePlugin(Plugin):
         self.ExportBibleItem.setVisible(False)
 
     def onBibleImportClick(self):
-        if self.media_item:
-            self.media_item.onImportClick()
+        if self.mediaItem:
+            self.mediaItem.onImportClick()
 
     def about(self):
         about_text = translate('BiblePlugin',

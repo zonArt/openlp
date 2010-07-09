@@ -163,11 +163,11 @@ class SongImport(object):
         """
         self.song_number = song_number
 
-    def set_ccli_number(self, ccli_number):
+    def set_song_cclino(self, cclino):
         """
         Set the ccli number
         """
-        self.ccli_number = ccli_number
+        self.song_cclino = cclino
 
     def set_song_book(self, song_book, publisher):
         """

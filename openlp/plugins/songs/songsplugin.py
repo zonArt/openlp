@@ -171,8 +171,8 @@ class SongsPlugin(Plugin):
         pass
 
     def onSongImportItemClicked(self):
-        if self.media_item:
-            self.media_item.onImportClick()
+        if self.mediaItem:
+            self.mediaItem.onImportClick()
 
     def onImportSofItemClick(self):
         filenames = QtGui.QFileDialog.getOpenFileNames(

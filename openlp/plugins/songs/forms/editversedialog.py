@@ -25,7 +25,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate
+from openlp.core.lib import build_icon, translate
 from openlp.plugins.songs.lib import VerseType
 
 class Ui_EditVerseDialog(object):
@@ -61,10 +61,7 @@ class Ui_EditVerseDialog(object):
         self.VerseNumberBox.setObjectName(u'VerseNumberBox')
         self.VerseTypeLayout.addWidget(self.VerseNumberBox)
         self.InsertButton = QtGui.QPushButton(EditVerseDialog)
-        self.AddIcon = QtGui.QIcon()
-        self.AddIcon.addPixmap(QtGui.QPixmap(u':/general/general_add.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.InsertButton.setIcon(self.AddIcon)
+        self.InsertButton.setIcon(build_icon(u':/general/general_add.png'))
         self.InsertButton.setObjectName(u'InsertButton')
         self.VerseTypeLayout.addWidget(self.InsertButton)
         self.VerseTypeSpacer = QtGui.QSpacerItem(40, 20,

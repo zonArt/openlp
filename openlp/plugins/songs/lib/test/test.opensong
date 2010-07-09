@@ -31,7 +31,10 @@
 
 [b1]
  Bridge 1
+---
+-!!
  Bridge 1 line 2
+
 [C]
 . A     B
  Chorus 1

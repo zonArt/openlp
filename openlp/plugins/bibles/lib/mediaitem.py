@@ -55,6 +55,7 @@ class BibleMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title):
         self.PluginNameShort = u'Bible'
+        self.pluginNameVisible = translate('BiblesPlugin.MediaItem', 'Bible')
         self.IconPath = u'songs/song'
         self.ListViewWithDnD_class = BibleListView
         self.lastReference = []
@@ -69,9 +70,6 @@ class BibleMediaItem(MediaManagerItem):
         if isinstance(obj, QtCore.QVariant):
             obj = obj.toPyObject()
         return unicode(obj)
-
-    def initPluginNameVisible(self):
-        self.PluginNameVisible = translate('BiblesPlugin.MediaItem', 'Bible')
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -131,7 +129,8 @@ class BibleMediaItem(MediaManagerItem):
         self.QuickClearLabel.setObjectName(u'QuickSearchLabel')
         self.QuickLayout.addWidget(self.QuickClearLabel, 4, 0, 1, 1)
         self.ClearQuickSearchComboBox = QtGui.QComboBox(self.QuickTab)
-        self.ClearQuickSearchComboBox.setObjectName(u'ClearQuickSearchComboBox')
+        self.ClearQuickSearchComboBox.setObjectName(
+            u'ClearQuickSearchComboBox')
         self.QuickLayout.addWidget(self.ClearQuickSearchComboBox, 4, 1, 1, 2)
         self.QuickSearchButtonLayout = QtGui.QHBoxLayout()
         self.QuickSearchButtonLayout.setMargin(0)
@@ -169,7 +168,8 @@ class BibleMediaItem(MediaManagerItem):
         self.AdvancedVersionComboBox.setObjectName(u'AdvancedVersionComboBox')
         self.AdvancedLayout.addWidget(self.AdvancedVersionComboBox, 0, 1, 1, 2)
         self.AdvancedSecondBibleLabel = QtGui.QLabel(self.AdvancedTab)
-        self.AdvancedSecondBibleLabel.setObjectName(u'AdvancedSecondBibleLabel')
+        self.AdvancedSecondBibleLabel.setObjectName(
+            u'AdvancedSecondBibleLabel')
         self.AdvancedLayout.addWidget(self.AdvancedSecondBibleLabel, 1, 0, 1, 1)
         self.AdvancedSecondBibleComboBox = QtGui.QComboBox(self.AdvancedTab)
         self.AdvancedSecondBibleComboBox.setSizeAdjustPolicy(
@@ -223,7 +223,8 @@ class BibleMediaItem(MediaManagerItem):
             u'AdvancedSearchButtonLayout')
         self.AdvancedSearchButtonSpacer = QtGui.QSpacerItem(40, 20,
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.AdvancedSearchButtonLayout.addItem(self.AdvancedSearchButtonSpacer)
+        self.AdvancedSearchButtonLayout.addItem(
+            self.AdvancedSearchButtonSpacer)
         self.AdvancedSearchButton = QtGui.QPushButton(self.AdvancedTab)
         self.AdvancedSearchButton.setObjectName(u'AdvancedSearchButton')
         self.AdvancedSearchButtonLayout.addWidget(self.AdvancedSearchButton)
@@ -235,7 +236,7 @@ class BibleMediaItem(MediaManagerItem):
         self.SearchTabWidget.addTab(self.AdvancedTab,
             translate('BiblesPlugin.MediaItem', 'Advanced'))
         # Add the search tab widget to the page layout
-        self.PageLayout.addWidget(self.SearchTabWidget)
+        self.pageLayout.addWidget(self.SearchTabWidget)
         # Combo Boxes
         QtCore.QObject.connect(self.AdvancedVersionComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onAdvancedVersionComboBox)
@@ -271,8 +272,8 @@ class BibleMediaItem(MediaManagerItem):
         self.SearchProgress.setFormat('')
         self.SearchProgress.setMinimum(0)
         self.SearchProgress.setMaximum(0)
-        self.SearchProgress.setGeometry(self.ListView.geometry().left(),
-            self.ListView.geometry().top(), 81, 23)
+        self.SearchProgress.setGeometry(self.listView.geometry().left(),
+            self.listView.geometry().top(), 81, 23)
         self.SearchProgress.setVisible(False)
         self.SearchProgress.setObjectName(u'SearchProgress')
 
@@ -370,9 +371,9 @@ class BibleMediaItem(MediaManagerItem):
                     self.initialiseBible(bible)
 
     def onListViewResize(self, width, height):
-        self.SearchProgress.setGeometry(self.ListView.geometry().x(),
-            (self.ListView.geometry().y() + self.ListView.geometry().height())\
-                - 23, 81, 23)
+        listViewGeometry = self.listView.geometry()
+        self.SearchProgress.setGeometry(listViewGeometry.x(),
+            (listViewGeometry.y() + listViewGeometry.height()) - 23, 81, 23)
 
     def onSearchProgressShow(self):
         self.SearchProgress.setVisible(True)
@@ -436,7 +437,7 @@ class BibleMediaItem(MediaManagerItem):
                                          chapter_to, verse_to)
         self.search_results = self.parent.manager.get_verses(bible, versetext)
         if self.ClearAdvancedSearchComboBox.currentIndex() == 0:
-            self.ListView.clear()
+            self.listView.clear()
             self.lastReference = []
         self.lastReference.append(versetext)
         self.displayResults(bible)
@@ -456,7 +457,7 @@ class BibleMediaItem(MediaManagerItem):
         bible = unicode(self.QuickVersionComboBox.currentText())
         text = unicode(self.QuickSearchEdit.text())
         if self.ClearQuickSearchComboBox.currentIndex() == 0:
-            self.ListView.clear()
+            self.listView.clear()
             self.lastReference = []
         self.lastReference.append(text)
         self.search_results = self.parent.manager.get_verses(bible, text)
@@ -465,7 +466,7 @@ class BibleMediaItem(MediaManagerItem):
 
     def generateSlideData(self, service_item, item=None):
         log.debug(u'generating slide data')
-        items = self.ListView.selectedIndexes()
+        items = self.listView.selectedIndexes()
         if len(items) == 0:
             return False
         old_chapter = u''
@@ -506,7 +507,7 @@ class BibleMediaItem(MediaManagerItem):
                 bible2_permission = u''
         # Let's loop through the main lot, and assemble our verses
         for item in items:
-            bitem = self.ListView.item(item.row())
+            bitem = self.listView.item(item.row())
             reference = bitem.data(QtCore.Qt.UserRole)
             if isinstance(reference, QtCore.QVariant):
                 reference = reference.toPyObject()
@@ -617,7 +618,8 @@ class BibleMediaItem(MediaManagerItem):
         else:
             self.AdvancedSearchButton.setEnabled(True)
             self.AdvancedMessage.setText(u'')
-            self.adjustComboBox(1, self.chapters_from, self.AdvancedFromChapter)
+            self.adjustComboBox(1, self.chapters_from,
+                self.AdvancedFromChapter)
             self.adjustComboBox(1, self.chapters_from, self.AdvancedToChapter)
             self.adjustComboBox(1, self.verses, self.AdvancedFromVerse)
             self.adjustComboBox(1, self.verses, self.AdvancedToVerse)
@@ -653,8 +655,8 @@ class BibleMediaItem(MediaManagerItem):
                 'text': QtCore.QVariant(verse.text)
             }
             bible_verse.setData(QtCore.Qt.UserRole, QtCore.QVariant(vdict))
-            self.ListView.addItem(bible_verse)
-            row = self.ListView.setCurrentRow(count)
+            self.listView.addItem(bible_verse)
+            row = self.listView.setCurrentRow(count)
             if row:
                 row.setSelected(True)
 

@@ -203,7 +203,7 @@ class Theme(object):
                             val = element_text
                 if (element.tag.find(u'Color') > 0 or
                     (element.tag.find(u'BackgroundParameter') == 0 and
-                    type(val) == type(0))):
+                    isinstance(int, val))):
                     # convert to a wx.Colour
                     if not delphi_color_change:
                         val = QtGui.QColor(

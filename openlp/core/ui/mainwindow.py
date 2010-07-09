@@ -38,7 +38,7 @@ from openlp.core.utils import check_latest_version, AppLocation, add_actions, \
 
 log = logging.getLogger(__name__)
 
-media_manager_style = """
+MEDIA_MANAGER_STYLE = """
   QToolBox::tab {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
         stop: 0 palette(button), stop: 1.0 palette(dark));
@@ -174,7 +174,7 @@ class Ui_MainWindow(object):
         self.MediaManagerDock = OpenLPDockWidget(MainWindow)
         self.MediaManagerDock.setWindowIcon(
             build_icon(u':/system/system_mediamanager.png'))
-        self.MediaManagerDock.setStyleSheet(media_manager_style)
+        self.MediaManagerDock.setStyleSheet(MEDIA_MANAGER_STYLE)
         self.MediaManagerDock.setMinimumWidth(
             self.settingsmanager.mainwindow_left)
         self.MediaManagerDock.setObjectName(u'MediaManagerDock')

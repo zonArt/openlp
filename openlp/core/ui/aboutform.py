@@ -40,7 +40,7 @@ class AboutForm(QtGui.QDialog, Ui_AboutDialog):
         QtGui.QDialog.__init__(self, parent)
         self.applicationVersion = applicationVersion
         self.setupUi(self)
-        about_text = self.AboutTextEdit.toPlainText()
+        about_text = self.aboutTextEdit.toPlainText()
         about_text = about_text.replace(u'<version>',
             self.applicationVersion[u'version'])
         if self.applicationVersion[u'build']:
@@ -49,8 +49,8 @@ class AboutForm(QtGui.QDialog, Ui_AboutDialog):
         else:
             build_text = u''
         about_text = about_text.replace(u'<revision>', build_text)
-        self.AboutTextEdit.setPlainText(about_text)
-        QtCore.QObject.connect(self.ContributeButton,
+        self.aboutTextEdit.setPlainText(about_text)
+        QtCore.QObject.connect(self.contributeButton,
             QtCore.SIGNAL(u'clicked()'), self.onContributeButtonClicked)
 
     def onContributeButtonClicked(self):
