@@ -137,6 +137,12 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onSlideTransitionCheckBoxChanged)
 
+    def saveAs(self):
+        self.ThemeNameEdit.setEnabled(True)
+        self.SaveAsButton.setEnabled(False)
+        self.ThemeNameEdit.setText(u'')
+        self.ThemeNameEdit.setFocus()
+
     def accept(self):
         new_theme = ThemeXML()
         theme_name = unicode(self.ThemeNameEdit.text())
@@ -200,7 +206,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             save_from, save_to) is not False:
             return QtGui.QDialog.accept(self)
 
-    def loadTheme(self, theme):
+    def loadTheme(self, theme, newTheme=False):
         log.debug(u'LoadTheme %s', theme)
         self.theme = theme
         # Stop the initial screen setup generating 1 preview per field!
@@ -208,6 +214,12 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         self.paintUi(self.theme)
         self.allowPreview = True
         self.previewTheme()
+        self.ThemeNameEdit.setEnabled(True)
+        self.SaveAsButton.setEnabled(False)
+        if not newTheme:
+            self.ThemeNameEdit.setEnabled(False)
+            self.SaveAsButton.setEnabled(True)
+
 
     def onImageToolButtonClicked(self):
         images_filter = get_images_filter()

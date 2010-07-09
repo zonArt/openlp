@@ -173,7 +173,7 @@ class ThemeManager(QtGui.QWidget):
         editing form for the user to make their customisations.
         """
         theme = self.createThemeFromXml(self.baseTheme(), self.path)
-        self.amendThemeForm.loadTheme(theme)
+        self.amendThemeForm.loadTheme(theme, True)
         self.saveThemeName = u''
         self.amendThemeForm.exec_()
 
