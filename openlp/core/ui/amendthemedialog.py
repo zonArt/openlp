@@ -646,20 +646,13 @@ class Ui_AmendThemeDialog(object):
             QtGui.QDialogButtonBox.Ok)
         self.ThemeButtonBox.setObjectName(u'ThemeButtonBox')
         self.AmendThemeLayout.addWidget(self.ThemeButtonBox)
-        self.SaveAsButton = QtGui.QPushButton(
-            translate('AmendThemeForm','Save &as'))
-        self.SaveAsButton.setCheckable(True)
-        self.SaveAsButton.setAutoDefault(False)
-        self.ThemeButtonBox.addButton(self.SaveAsButton,
-            QtGui.QDialogButtonBox.ActionRole)
+
         self.retranslateUi(AmendThemeDialog)
         self.ThemeTabWidget.setCurrentIndex(0)
         QtCore.QObject.connect(self.ThemeButtonBox,
             QtCore.SIGNAL(u'accepted()'), AmendThemeDialog.accept)
         QtCore.QObject.connect(self.ThemeButtonBox,
             QtCore.SIGNAL(u'rejected()'), AmendThemeDialog.reject)
-        QtCore.QObject.connect(self.SaveAsButton,
-            QtCore.SIGNAL(u'clicked()'), AmendThemeDialog.saveAs)
         QtCore.QMetaObject.connectSlotsByName(AmendThemeDialog)
         AmendThemeDialog.setTabOrder(self.ThemeButtonBox, self.ThemeNameEdit)
         AmendThemeDialog.setTabOrder(self.ThemeNameEdit, self.ThemeTabWidget)
@@ -855,19 +848,19 @@ class Ui_AmendThemeDialog(object):
             translate('AmendThemeForm', 'Alignment'))
         self.HorizontalLabel.setText(
             translate('AmendThemeForm', 'Horizontal align:'))
-        self.HorizontalComboBox.setItemText(0,
+        self.HorizontalComboBox.setItemText(0, 
             translate('AmendThemeForm', 'Left'))
-        self.HorizontalComboBox.setItemText(1,
+        self.HorizontalComboBox.setItemText(1, 
             translate('AmendThemeForm', 'Right'))
-        self.HorizontalComboBox.setItemText(2,
+        self.HorizontalComboBox.setItemText(2, 
             translate('AmendThemeForm', 'Center'))
         self.VerticalLabel.setText(
             translate('AmendThemeForm', 'Vertical align:'))
-        self.VerticalComboBox.setItemText(0,
+        self.VerticalComboBox.setItemText(0, 
             translate('AmendThemeForm', 'Top'))
-        self.VerticalComboBox.setItemText(1,
+        self.VerticalComboBox.setItemText(1, 
             translate('AmendThemeForm', 'Middle'))
-        self.VerticalComboBox.setItemText(2,
+        self.VerticalComboBox.setItemText(2, 
             translate('AmendThemeForm', 'Bottom'))
         self.TransitionGroupBox.setTitle(
             translate('AmendThemeForm', 'Slide Transition'))
