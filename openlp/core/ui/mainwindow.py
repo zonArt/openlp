@@ -897,6 +897,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.ViewLivePanel.setChecked(visible)
 
     def loadSettings(self):
+        """
+        Load the main window settings.
+        """
         log.debug(u'Loading QSettings')
         settings = QtCore.QSettings()
         settings.beginGroup(self.generalSettingsSection)
@@ -911,6 +914,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         settings.endGroup()
 
     def saveSettings(self):
+        """
+        Save the main window settings.
+        """
         log.debug(u'Saving QSettings')
         settings = QtCore.QSettings()
         settings.beginGroup(self.generalSettingsSection)
@@ -928,15 +934,19 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         settings.endGroup()
 
     def updateFileMenu(self):
+        """
+        Updates the file menu with the latest list of service files accessed.
+        """
+        recentFileCount = QtCore.QSettings().value(
+            u'advanced/recent file count', QtCore.QVariant(4)).toInt()[0]
         self.FileMenu.clear()
         add_actions(self.FileMenu, self.FileMenuActions[:-1])
-        existingRecentFiles = []
-        for file in self.recentFiles:
-            if QtCore.QFile.exists(file):
-                existingRecentFiles.append(file)
-        if existingRecentFiles:
+        existingRecentFiles = [file for file in self.recentFiles
+            if QtCore.QFile.exists(file)]
+        recentFilesToDisplay = existingRecentFiles[0:recentFileCount]
+        if recentFilesToDisplay:
             self.FileMenu.addSeparator()
-            for fileId, filename in enumerate(existingRecentFiles):
+            for fileId, filename in enumerate(recentFilesToDisplay):
                 action = QtGui.QAction(u'&%d %s' % (fileId +1,
                     QtCore.QFileInfo(filename).fileName()), self)
                 action.setData(QtCore.QVariant(filename))
@@ -947,13 +957,21 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.FileMenu.addAction(self.FileMenuActions[-1])
 
     def addRecentFile(self, filename):
-        recentFileCount = QtCore.QSettings().value(
-            self.generalSettingsSection + u'/max recent files',
-            QtCore.QVariant(4)).toInt()[0]
+        """
+        Adds a service to the list of recently used files.
+
+        ``filename``
+            The service filename to add
+        """
+        # The maxRecentFiles value does not have an interface and so never gets
+        # actually stored in the settings therefore the default value of 20
+        # will always be used.
+        maxRecentFiles = QtCore.QSettings().value(u'advanced/max recent files',
+            QtCore.QVariant(20)).toInt()[0]
         if filename:
             position = self.recentFiles.indexOf(filename)
             if position != -1:
                 self.recentFiles.removeAt(position)
             self.recentFiles.insert(0, QtCore.QString(filename))
-            while self.recentFiles.count() > recentFileCount:
+            while self.recentFiles.count() > maxRecentFiles:
                 self.recentFiles.removeLast()

@@ -1,0 +1,162 @@
+# -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
+# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
+"""
+The :mod:`advancedtab` provides an advanced settings facility.
+"""
+from PyQt4 import QtCore, QtGui
+
+from openlp.core.lib import SettingsTab, translate
+
+class AdvancedTab(SettingsTab):
+    """
+    The :class:`AdvancedTab` manages the advanced settings tab including the UI
+    and the loading and saving of the displayed settings.
+    """
+    def __init__(self):
+        """
+        Initialise the settings tab
+        """
+        SettingsTab.__init__(self, u'Advanced')
+
+    def setupUi(self):
+        """
+        Configure the UI elements for the tab.
+        """
+        self.setObjectName(u'AdvancedTab')
+        self.tabTitleVisible = translate('AdvancedTab', 'Advanced')
+        self.advancedTabLayout = QtGui.QHBoxLayout(self)
+        self.advancedTabLayout.setSpacing(8)
+        self.advancedTabLayout.setMargin(8)
+        self.leftWidget = QtGui.QWidget(self)
+        self.leftLayout = QtGui.QVBoxLayout(self.leftWidget)
+        self.leftLayout.setSpacing(8)
+        self.leftLayout.setMargin(0)
+        self.recentGroupBox = QtGui.QGroupBox(self.leftWidget)
+        self.recentGroupBox.setObjectName(u'recentGroupBox')
+        self.recentGroupBox.setGeometry(QtCore.QRect(0, 0, 220, 57))
+        self.recentGroupBox.setMaximumSize(QtCore.QSize(220, 57))
+        self.recentLayout = QtGui.QHBoxLayout(self.recentGroupBox)
+        self.recentLayout.setSpacing(8)
+        self.recentLayout.setMargin(6)
+        self.recentLayout.setObjectName(u'recentLayout')
+        self.recentLabel = QtGui.QLabel(self.recentGroupBox)
+        self.recentLabel.setObjectName(u'recentLabel')
+        self.recentLayout.addWidget(self.recentLabel)
+        self.recentSpinBox = QtGui.QSpinBox(self.recentGroupBox)
+        self.recentSpinBox.setMinimum(0)
+        self.recentSpinBox.setObjectName(u'recentSpinBox')
+        self.recentLayout.addWidget(self.recentSpinBox)
+        self.leftLayout.addWidget(self.recentGroupBox)
+#        self.sharedDirGroupBox = QtGui.QGroupBox(self.leftWidget)
+#        self.sharedDirGroupBox.setObjectName(u'sharedDirGroupBox')
+#        self.sharedDirGroupBox.setGeometry(QtCore.QRect(0, 65, 500, 85))
+#        self.sharedDirGroupBox.setMaximumSize(QtCore.QSize(500, 85))
+#        self.sharedDirLayout = QtGui.QVBoxLayout(self.sharedDirGroupBox)
+#        self.sharedDirLayout.setSpacing(8)
+#        self.sharedDirLayout.setMargin(8)
+#        self.sharedCheckBox = QtGui.QCheckBox(self.sharedDirGroupBox)
+#        self.sharedCheckBox.setObjectName(u'sharedCheckBox')
+#        self.sharedDirLayout.addWidget(self.sharedCheckBox)
+#        self.sharedSubLayout = QtGui.QHBoxLayout()
+#        self.sharedSubLayout.setSpacing(8)
+#        self.sharedSubLayout.setMargin(0)
+#        self.sharedLabel = QtGui.QLabel(self.sharedDirGroupBox)
+#        self.sharedLabel.setObjectName(u'sharedLabel')
+#        self.sharedSubLayout.addWidget(self.sharedLabel)
+#        self.sharedLineEdit = QtGui.QLineEdit(self.sharedDirGroupBox)
+#        self.sharedLineEdit.setObjectName(u'sharedLineEdit')
+#        self.sharedSubLayout.addWidget(self.sharedLineEdit)
+#        self.sharedPushButton = QtGui.QPushButton(self.sharedDirGroupBox)
+#        self.sharedPushButton.setObjectName(u'sharedPushButton')
+#        self.sharedSubLayout.addWidget(self.sharedPushButton)
+#        self.sharedDirLayout.addLayout(self.sharedSubLayout)
+#        self.leftLayout.addWidget(self.sharedDirGroupBox)
+        self.leftSpacer = QtGui.QSpacerItem(20, 40,
+            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.leftLayout.addItem(self.leftSpacer)
+        self.advancedTabLayout.addWidget(self.leftWidget)
+#        self.rightWidget = QtGui.QWidget(self)
+#        self.rightLayout = QtGui.QVBoxLayout(self.rightWidget)
+#        self.rightLayout.setSpacing(8)
+#        self.rightLayout.setMargin(0)
+#        self.databaseGroupBox = QtGui.QGroupBox(self.rightWidget)
+#        self.databaseGroupBox.setObjectName(u'databaseGroupBox')
+#        self.databaseGroupBox.setEnabled(False)
+#        self.databaseLayout = QtGui.QVBoxLayout(self.databaseGroupBox)
+#        self.databaseLayout.setSpacing(8)
+#        self.databaseLayout.setMargin(8)
+#        self.rightLayout.addWidget(self.databaseGroupBox)
+#        self.advancedTabLayout.addWidget(self.rightWidget)
+#        QtCore.QObject.connect(self.sharedCheckBox,
+#            QtCore.SIGNAL(u'stateChanged(int)'), self.onSharedCheckBoxChanged)
+
+    def retranslateUi(self):
+        """
+        Setup the interface translation strings.
+        """
+        self.recentGroupBox.setTitle(translate('AdvancedTab', 'Recent Files'))
+        self.recentLabel.setText(
+            translate('AdvancedTab', 'Number of recent files to list:'))
+#        self.sharedDirGroupBox.setTitle(
+#            translate('AdvancedTab', 'Central Data Store'))
+#        self.sharedCheckBox.setText(
+#            translate('AdvancedTab', 'Enable a shared data location'))
+#        self.sharedLabel.setText(translate('AdvancedTab', 'Store location:'))
+#        self.sharedPushButton.setText(translate('AdvancedTab', 'Browse...'))
+#        self.databaseGroupBox.setTitle(translate('AdvancedTab', 'Databases'))
+
+    def load(self):
+        """
+        Load settings from disk.
+        """
+        settings = QtCore.QSettings()
+        settings.beginGroup(self.settingsSection)
+        # The max recent files value does not have an interface and so never
+        # gets actually stored in the settings therefore the default value of
+        # 20 will always be used.
+        self.recentSpinBox.setMaximum(QtCore.QSettings().value(
+            u'max recent files', QtCore.QVariant(20)).toInt()[0])
+        self.recentSpinBox.setValue(settings.value(u'recent file count',
+            QtCore.QVariant(4)).toInt()[0])
+        settings.endGroup()
+
+    def save(self):
+        """
+        Save settings to disk.
+        """
+        settings = QtCore.QSettings()
+        settings.beginGroup(self.settingsSection)
+        settings.setValue(u'recent file count',
+            QtCore.QVariant(self.recentSpinBox.value()))
+        settings.endGroup()
+
+    def onSharedCheckBoxChanged(self, checked):
+        """
+        Enables the widgets to allow a shared data location
+        """
+        self.sharedLabel.setEnabled(checked)
+        self.sharedTextEdit.setEnabled(checked)
+        self.sharedPushButton.setEnabled(checked)
+
