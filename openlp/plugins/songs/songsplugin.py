@@ -201,7 +201,7 @@ class SongsPlugin(Plugin):
         filenames = QtGui.QFileDialog.getOpenFileNames(
             None, translate('SongsPlugin',
                 'Open OpenSong file'),
-            u'', u'OpenSong file (*. *.zip *.ZIP)')
+            u'', u'All files (*.*)')
         try:
             for filename in filenames:
                 importer = OpenSongImport(self.manager)
