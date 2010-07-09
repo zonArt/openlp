@@ -105,7 +105,8 @@ class Ui_BibleImportWizard(object):
         self.OsisLocationLayout.addWidget(self.OSISLocationEdit)
         self.OsisFileButton = QtGui.QToolButton(self.OsisPage)
         self.OsisFileButton.setMaximumSize(QtCore.QSize(32, 16777215))
-        self.OsisFileButton.setIcon(build_icon(u':/general/general_open.png'))
+        generalIcon = build_icon(u':/general/general_open.png')
+        self.OsisFileButton.setIcon(generalIcon)
         self.OsisFileButton.setObjectName(u'OsisFileButton')
         self.OsisLocationLayout.addWidget(self.OsisFileButton)
         self.OsisLayout.setLayout(1, QtGui.QFormLayout.FieldRole,
@@ -135,7 +136,7 @@ class Ui_BibleImportWizard(object):
         self.CsvBooksLayout.addWidget(self.BooksLocationEdit)
         self.BooksFileButton = QtGui.QToolButton(self.CsvPage)
         self.BooksFileButton.setMaximumSize(QtCore.QSize(32, 16777215))
-        self.BooksFileButton.setIcon(icon)
+        self.BooksFileButton.setIcon(generalIcon)
         self.BooksFileButton.setObjectName(u'BooksFileButton')
         self.CsvBooksLayout.addWidget(self.BooksFileButton)
         self.CsvSourceLayout.setLayout(0, QtGui.QFormLayout.FieldRole,
@@ -152,7 +153,7 @@ class Ui_BibleImportWizard(object):
         self.CsvVerseLayout.addWidget(self.CsvVerseLocationEdit)
         self.CsvVersesFileButton = QtGui.QToolButton(self.CsvPage)
         self.CsvVersesFileButton.setMaximumSize(QtCore.QSize(32, 16777215))
-        self.CsvVersesFileButton.setIcon(icon)
+        self.CsvVersesFileButton.setIcon(generalIcon)
         self.CsvVersesFileButton.setObjectName(u'CsvVersesFileButton')
         self.CsvVerseLayout.addWidget(self.CsvVersesFileButton)
         self.CsvSourceLayout.setLayout(1, QtGui.QFormLayout.FieldRole,
@@ -175,7 +176,7 @@ class Ui_BibleImportWizard(object):
         self.OpenSongFileEdit.setObjectName(u'OpenSongFileEdit')
         self.OpenSongFileLayout.addWidget(self.OpenSongFileEdit)
         self.OpenSongBrowseButton = QtGui.QToolButton(self.OpenSongPage)
-        self.OpenSongBrowseButton.setIcon(icon)
+        self.OpenSongBrowseButton.setIcon(generalIcon)
         self.OpenSongBrowseButton.setObjectName(u'OpenSongBrowseButton')
         self.OpenSongFileLayout.addWidget(self.OpenSongBrowseButton)
         self.OpenSongLayout.setLayout(0, QtGui.QFormLayout.FieldRole,
