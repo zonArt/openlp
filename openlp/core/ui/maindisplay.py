@@ -154,9 +154,10 @@ class DisplayWidget(QtGui.QGraphicsView):
     """
     log.info(u'MainDisplay loaded')
 
-    def __init__(self, parent=None, name=None):
+    def __init__(self, parent=None, name=None, primary=False):
         QtGui.QWidget.__init__(self, None)
         self.parent = parent
+        self.primary = primary
         self.hotkey_map = {
             QtCore.Qt.Key_Return: 'servicemanager_next_item',
             QtCore.Qt.Key_Space: 'slidecontroller_live_next_noloop',
@@ -189,6 +190,14 @@ class DisplayWidget(QtGui.QGraphicsView):
         else:
             event.ignore()
 
+    def resetDisplay(self):
+        log.debug(u'resetDisplay')
+        Receiver.send_message(u'slidecontroller_live_stop_loop')
+        if self.primary:
+            self.setVisible(False)
+        else:
+            self.setVisible(True)
+
 class MainDisplay(DisplayWidget):
     """
     This is the form that is used to display things on the projector.
@@ -206,7 +215,7 @@ class MainDisplay(DisplayWidget):
             The list of screens.
         """
         log.debug(u'Initialisation started')
-        DisplayWidget.__init__(self, parent)
+        DisplayWidget.__init__(self, parent, primary=True)
         self.setWindowFlags(QtCore.Qt.Window | QtCore.Qt.FramelessWindowHint)
         self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
@@ -222,7 +231,6 @@ class MainDisplay(DisplayWidget):
         self.setupText()
         self.setupAlert()
         self.setupBlank()
-        self.primary = True
         self.blankFrame = None
         self.frame = None
         #Hide desktop for now until we know where to put it
@@ -239,23 +247,24 @@ class MainDisplay(DisplayWidget):
         self.screen = self.screens.current
         #Sort out screen locations and sizes
         self.setGeometry(self.screen[u'size'])
-        self.scene.setSceneRect(0,0,self.size().width(), self.size().height())
+        self.scene.setSceneRect(0, 0, self.size().width(),
+            self.size().height())
         self.webView.setGeometry(0, 0, self.size().width(),
             self.size().height())
         #Build a custom splash screen
-        self.InitialFrame = QtGui.QImage(
+        self.initialFrame = QtGui.QImage(
             self.screen[u'size'].width(),
             self.screen[u'size'].height(),
             QtGui.QImage.Format_ARGB32_Premultiplied)
         splash_image = QtGui.QImage(u':/graphics/openlp-splash-screen.png')
         painter_image = QtGui.QPainter()
-        painter_image.begin(self.InitialFrame)
-        painter_image.fillRect(self.InitialFrame.rect(), QtCore.Qt.white)
+        painter_image.begin(self.initialFrame)
+        painter_image.fillRect(self.initialFrame.rect(), QtCore.Qt.white)
         painter_image.drawImage(
             (self.screen[u'size'].width() - splash_image.width()) / 2,
             (self.screen[u'size'].height() - splash_image.height()) / 2,
             splash_image)
-        self.displayImage(self.InitialFrame)
+        self.displayImage(self.initialFrame)
         self.repaint()
         #Build a Black screen
         painter = QtGui.QPainter()
@@ -281,7 +290,7 @@ class MainDisplay(DisplayWidget):
 
     def setupScene(self):
         self.scene = QtGui.QGraphicsScene(self)
-        self.scene.setSceneRect(0,0,self.size().width(), self.size().height())
+        self.scene.setSceneRect(0, 0, self.size().width(), self.size().height())
         self.setScene(self.scene)
 
     def setupVideo(self):
@@ -322,14 +331,6 @@ class MainDisplay(DisplayWidget):
         self.displayBlank = QtGui.QGraphicsPixmapItem()
         self.displayBlank.setZValue(10)
         self.scene.addItem(self.displayBlank)
-
-    def resetDisplay(self):
-        log.debug(u'resetDisplay')
-        Receiver.send_message(u'slidecontroller_live_stop_loop')
-        if self.primary:
-            self.setVisible(False)
-        else:
-            self.setVisible(True)
 
 #    def hideDisplayForVideo(self):
 #        """
@@ -389,9 +390,9 @@ class MainDisplay(DisplayWidget):
         if location == 0:
             self.alertText.setPos(0, 0)
         elif location == 1:
-            self.alertText.setPos(0,self.size().height()/2)
+            self.alertText.setPos(0, self.size().height() / 2)
         else:
-            self.alertText.setPos(0,self.size().height() - 76)
+            self.alertText.setPos(0, self.size().height() - 76)
         self.alertText.setHtml(message)
 
     def displayImage(self, frame):
@@ -536,8 +537,8 @@ class VideoDisplay(Phonon.VideoWidget):
         Shutting down so clean up connections
         """
         self.onMediaStop()
-        for pth in self.outputPaths():
-          disconnected = pth.disconnect()
+        for path in self.outputPaths():
+            path.disconnect()
 
 #    def onMediaBackground(self, message=None):
 #        """
@@ -662,8 +663,8 @@ class AudioPlayer(QtCore.QObject):
         Shutting down so clean up connections
         """
         self.onMediaStop()
-        for pth in self.mediaObject.outputPaths():
-            disconnected = pth.disconnect()
+        for path in self.mediaObject.outputPaths():
+            path.disconnect()
 
     def onMediaQueue(self, message):
         """
