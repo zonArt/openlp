@@ -145,7 +145,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 author.last_name == new_author.last_name and \
                 author.display_name == new_author.display_name:
                 author_exists = True
-                #If we edit an exsisting Author, we need to make sure that we do
+                #If we edit an existing Author, we need to make sure that we do
                 #not return True when nothing has changed (because this would
                 #cause an error message later on)
                 if edit:
@@ -162,7 +162,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         for topic in topics:
             if topic.name == new_topic.name:
                 topic_exists = True
-                #If we edit an exsisting Topic, we need to make sure that we do
+                #If we edit an existing Topic, we need to make sure that we do
                 #not return True when nothing has changed (because this would
                 #cause an error message later on)
                 if edit:
@@ -180,7 +180,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             if book.publisher == new_book.publisher and \
                 book.name == new_book.name:
                 book_exists = True
-                #If we edit an exsisting Book, we need to make sure that we do
+                #If we edit an existing Book, we need to make sure that we do
                 #not return True when nothing has changed (because this would
                 #cause an error message later on)
                 if edit:
@@ -302,7 +302,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             translate('SongsPlugin.SongMaintenanceForm',
             'Are you sure you want to delete the selected author?'),
             translate('SongsPlugin.SongMaintenanceForm',
-            'This author ca not be deleted, they are currently '
+            'This author cannot be deleted, they are currently '
             'assigned to at least one song.'),
             translate('SongsPlugin.SongMaintenanceForm', 'No author selected!'))
 
