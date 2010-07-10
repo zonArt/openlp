@@ -250,7 +250,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 author.last_name = unicode(self.authorform.LastNameEdit.text())
                 author.display_name = unicode(
                     self.authorform.DisplayEdit.text())
-                if self.checkAuthor(author, True) is False and \
+                if not self.checkAuthor(author, True) and \
                     self.songmanager.save_object(author):
                     self.resetAuthors()
                 else:
@@ -266,8 +266,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             self.topicform.NameEdit.setText(topic.name)
             if self.topicform.exec_(False):
                 topic.name = unicode(self.topicform.NameEdit.text())
-                if self.checkTopic(topic, True) is False and \
-                    self.songmanager.save_object(topic):
+                if not self.checkTopic(topic, True) and \
+                        self.songmanager.save_object(topic):
                     self.resetTopics()
                 else:
                     QtGui.QMessageBox.critical(self,
@@ -284,8 +284,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             if self.bookform.exec_(False):
                 book.name = unicode(self.bookform.NameEdit.text())
                 book.publisher = unicode(self.bookform.PublisherEdit.text())
-                if self.checkBook(book, True) is False and \
-                    self.songmanager.save_object(book):
+                if not self.checkBook(book, True) and \
+                        self.songmanager.save_object(book):
                     self.resetBooks()
                 else:
                     QtGui.QMessageBox.critical(self,
