@@ -29,7 +29,7 @@ import logging
 
 from PyQt4 import QtGui
 
-from openlp.core.ui import GeneralTab, ThemesTab, DisplayTab
+from openlp.core.ui import AdvancedTab, GeneralTab, ThemesTab, DisplayTab
 from settingsdialog import Ui_SettingsDialog
 
 log = logging.getLogger(__name__)
@@ -53,6 +53,9 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         # Display tab
         self.DisplayTab = DisplayTab(screens)
         self.addTab(u'Display', self.DisplayTab)
+        # Advanced tab
+        self.advancedTab = AdvancedTab()
+        self.addTab(u'Advanced', self.advancedTab)
 
     def addTab(self, name, tab):
         """
@@ -68,7 +71,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         log.debug(u'Inserting %s tab' % tab.tabTitle)
         #13 : There are 3 tables currently and locations starts at -10
         self.SettingsTabWidget.insertTab(
-            location + 13, tab, tab.tabTitleVisible)
+            location + 14, tab, tab.tabTitleVisible)
 
     def removeTab(self, name):
         """
