@@ -186,7 +186,7 @@ class PresentationMediaItem(MediaManagerItem):
             item_name = QtGui.QListWidgetItem(filename)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             item_name.setIcon(icon)
-            self.ListView.addItem(item_name)
+            self.listView.addItem(item_name)
 
     def onDeleteClick(self):
         """
