@@ -59,6 +59,8 @@ class PresentationMediaItem(MediaManagerItem):
         """
         self.controllers = controllers
         self.PluginNameShort = u'Presentation'
+        self.pluginNameVisible = translate('PresentationPlugin.MediaItem',
+            'Presentation')
         self.IconPath = u'presentations/presentation'
         self.Automatic = u''
         # this next is a class, not an instance of a class - it will
@@ -66,13 +68,6 @@ class PresentationMediaItem(MediaManagerItem):
         self.ListViewWithDnD_class = PresentationListView
         MediaManagerItem.__init__(self, parent, icon, title)
         self.message_listener = MessageListener(self)
-
-    def initPluginNameVisible(self):
-        """
-        The name of the plugin media displayed in UI
-        """
-        self.PluginNameVisible = translate('PresentationPlugin.MediaItem',
-            'Presentation')
 
     def retranslateUi(self):
         """
@@ -127,13 +122,13 @@ class PresentationMediaItem(MediaManagerItem):
         self.DisplayTypeLabel.setText(
             translate('PresentationPlugin.MediaItem', 'Present using:'))
         # Add the Presentation widget to the page layout
-        self.PageLayout.addWidget(self.PresentationWidget)
+        self.pageLayout.addWidget(self.PresentationWidget)
 
     def initialise(self):
         """
         Populate the media manager tab
         """
-        self.ListView.setIconSize(QtCore.QSize(88, 50))
+        self.listView.setIconSize(QtCore.QSize(88, 50))
         list = SettingsManager.load_list(
             self.settingsSection, u'presentations')
         self.loadList(list)
@@ -197,10 +192,10 @@ class PresentationMediaItem(MediaManagerItem):
         """
         Remove a presentation item from the list
         """
-        if check_item_selected(self.ListView,
+        if check_item_selected(self.listView,
             translate('PresentationPlugin.MediaItem',
             'You must select an item to delete.')):
-            items = self.ListView.selectedIndexes()
+            items = self.listView.selectedIndexes()
             row_list = [item.row() for item in items]
             row_list.sort(reverse=True)
             for item in items:
@@ -211,7 +206,7 @@ class PresentationMediaItem(MediaManagerItem):
                     doc.presentation_deleted()
                     doc.close_presentation()
             for row in row_list:
-                self.ListView.takeItem(row)
+                self.listView.takeItem(row)
             SettingsManager.set_list(self.settingsSection,
                 self.settingsSection, self.getFileList())
 
@@ -221,7 +216,7 @@ class PresentationMediaItem(MediaManagerItem):
         in the slidecontroller. In the case of powerpoints, an image
         for each slide
         """
-        items = self.ListView.selectedIndexes()
+        items = self.listView.selectedIndexes()
         if len(items) > 1:
             return False
         service_item.title = unicode(self.DisplayTypeComboBox.currentText())
@@ -229,7 +224,7 @@ class PresentationMediaItem(MediaManagerItem):
         shortname = service_item.shortname
         if shortname:
             for item in items:
-                bitem = self.ListView.item(item.row())
+                bitem = self.listView.item(item.row())
                 filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
                 if shortname == self.Automatic:
                     service_item.shortname = self.findControllerByType(filename)

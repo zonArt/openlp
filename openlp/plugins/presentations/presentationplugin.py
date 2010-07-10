@@ -48,7 +48,8 @@ class PresentationPlugin(Plugin):
         self.controllers = {}
         Plugin.__init__(self, u'Presentations', u'1.9.2', plugin_helpers)
         self.weight = -8
-        self.icon = build_icon(u':/plugins/plugin_presentations.png')
+        self.icon_path = u':/plugins/plugin_presentations.png'
+        self.icon = build_icon(self.icon_path)
         self.status = PluginStatus.Active
 
     def getSettingsTab(self):

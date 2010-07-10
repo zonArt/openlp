@@ -24,98 +24,89 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import translate
+
+from openlp.core.lib import build_icon, translate
 
 class Ui_AboutDialog(object):
-    def setupUi(self, AboutDialog):
-        AboutDialog.setObjectName(u'AboutDialog')
-        AboutDialog.resize(516, 481)
-        LogoIcon = QtGui.QIcon()
-        LogoIcon.addPixmap(QtGui.QPixmap(u':/icon/openlp-logo-16x16.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        AboutDialog.setWindowIcon(LogoIcon)
-        self.AboutDialogLayout = QtGui.QVBoxLayout(AboutDialog)
-        self.AboutDialogLayout.setSpacing(8)
-        self.AboutDialogLayout.setMargin(8)
-        self.AboutDialogLayout.setObjectName(u'AboutDialogLayout')
-        self.LogoLabel = QtGui.QLabel(AboutDialog)
-        self.LogoLabel.setPixmap(
+    def setupUi(self, aboutDialog):
+        aboutDialog.setObjectName(u'aboutDialog')
+        aboutDialog.resize(516, 481)
+        aboutDialog.setWindowIcon(build_icon(u':/icon/openlp-logo-16x16.png'))
+        self.aboutDialogLayout = QtGui.QVBoxLayout(aboutDialog)
+        self.aboutDialogLayout.setSpacing(8)
+        self.aboutDialogLayout.setMargin(8)
+        self.aboutDialogLayout.setObjectName(u'aboutDialogLayout')
+        self.logoLabel = QtGui.QLabel(aboutDialog)
+        self.logoLabel.setPixmap(
             QtGui.QPixmap(u':/graphics/openlp-about-logo.png'))
-        self.LogoLabel.setScaledContents(False)
-        self.LogoLabel.setIndent(0)
-        self.LogoLabel.setObjectName(u'LogoLabel')
-        self.AboutDialogLayout.addWidget(self.LogoLabel)
-        self.AboutNotebook = QtGui.QTabWidget(AboutDialog)
-        self.AboutNotebook.setObjectName(u'AboutNotebook')
-        self.AboutTab = QtGui.QWidget()
-        self.AboutTab.setObjectName(u'AboutTab')
-        self.AboutTabLayout = QtGui.QVBoxLayout(self.AboutTab)
-        self.AboutTabLayout.setSpacing(0)
-        self.AboutTabLayout.setMargin(8)
-        self.AboutTabLayout.setObjectName(u'AboutTabLayout')
-        self.AboutTextEdit = QtGui.QPlainTextEdit(self.AboutTab)
-        self.AboutTextEdit.setReadOnly(True)
-        self.AboutTextEdit.setObjectName(u'AboutTextEdit')
-        self.AboutTabLayout.addWidget(self.AboutTextEdit)
-        self.AboutNotebook.addTab(self.AboutTab, '')
-        self.CreditsTab = QtGui.QWidget()
-        self.CreditsTab.setObjectName(u'CreditsTab')
-        self.CreditsTabLayout = QtGui.QVBoxLayout(self.CreditsTab)
-        self.CreditsTabLayout.setSpacing(0)
-        self.CreditsTabLayout.setMargin(8)
-        self.CreditsTabLayout.setObjectName(u'CreditsTabLayout')
-        self.CreditsTextEdit = QtGui.QPlainTextEdit(self.CreditsTab)
-        self.CreditsTextEdit.setReadOnly(True)
-        self.CreditsTextEdit.setObjectName(u'CreditsTextEdit')
-        self.CreditsTabLayout.addWidget(self.CreditsTextEdit)
-        self.AboutNotebook.addTab(self.CreditsTab, '')
-        self.LicenseTab = QtGui.QWidget()
-        self.LicenseTab.setObjectName(u'LicenseTab')
-        self.LicenseTabLayout = QtGui.QVBoxLayout(self.LicenseTab)
-        self.LicenseTabLayout.setSpacing(8)
-        self.LicenseTabLayout.setMargin(8)
-        self.LicenseTabLayout.setObjectName(u'LicenseTabLayout')
-        self.LicenseTextEdit = QtGui.QPlainTextEdit(self.LicenseTab)
-        self.LicenseTextEdit.setReadOnly(True)
-        self.LicenseTextEdit.setObjectName(u'LicenseTextEdit')
-        self.LicenseTabLayout.addWidget(self.LicenseTextEdit)
-        self.AboutNotebook.addTab(self.LicenseTab, '')
-        self.AboutDialogLayout.addWidget(self.AboutNotebook)
-        self.ButtonWidget = QtGui.QWidget(AboutDialog)
-        self.ButtonWidget.setObjectName(u'ButtonWidget')
-        self.ButtonWidgetLayout = QtGui.QHBoxLayout(self.ButtonWidget)
-        self.ButtonWidgetLayout.setSpacing(8)
-        self.ButtonWidgetLayout.setMargin(0)
-        self.ButtonWidgetLayout.setObjectName(u'ButtonWidgetLayout')
-        ButtonSpacer = QtGui.QSpacerItem(275, 20,
+        self.logoLabel.setScaledContents(False)
+        self.logoLabel.setIndent(0)
+        self.logoLabel.setObjectName(u'logoLabel')
+        self.aboutDialogLayout.addWidget(self.logoLabel)
+        self.aboutNotebook = QtGui.QTabWidget(aboutDialog)
+        self.aboutNotebook.setObjectName(u'aboutNotebook')
+        self.aboutTab = QtGui.QWidget()
+        self.aboutTab.setObjectName(u'aboutTab')
+        self.aboutTabLayout = QtGui.QVBoxLayout(self.aboutTab)
+        self.aboutTabLayout.setSpacing(0)
+        self.aboutTabLayout.setMargin(8)
+        self.aboutTabLayout.setObjectName(u'aboutTabLayout')
+        self.aboutTextEdit = QtGui.QPlainTextEdit(self.aboutTab)
+        self.aboutTextEdit.setReadOnly(True)
+        self.aboutTextEdit.setObjectName(u'aboutTextEdit')
+        self.aboutTabLayout.addWidget(self.aboutTextEdit)
+        self.aboutNotebook.addTab(self.aboutTab, '')
+        self.creditsTab = QtGui.QWidget()
+        self.creditsTab.setObjectName(u'creditsTab')
+        self.creditsTabLayout = QtGui.QVBoxLayout(self.creditsTab)
+        self.creditsTabLayout.setSpacing(0)
+        self.creditsTabLayout.setMargin(8)
+        self.creditsTabLayout.setObjectName(u'creditsTabLayout')
+        self.creditsTextEdit = QtGui.QPlainTextEdit(self.creditsTab)
+        self.creditsTextEdit.setReadOnly(True)
+        self.creditsTextEdit.setObjectName(u'creditsTextEdit')
+        self.creditsTabLayout.addWidget(self.creditsTextEdit)
+        self.aboutNotebook.addTab(self.creditsTab, '')
+        self.licenseTab = QtGui.QWidget()
+        self.licenseTab.setObjectName(u'licenseTab')
+        self.licenseTabLayout = QtGui.QVBoxLayout(self.licenseTab)
+        self.licenseTabLayout.setSpacing(8)
+        self.licenseTabLayout.setMargin(8)
+        self.licenseTabLayout.setObjectName(u'licenseTabLayout')
+        self.licenseTextEdit = QtGui.QPlainTextEdit(self.licenseTab)
+        self.licenseTextEdit.setReadOnly(True)
+        self.licenseTextEdit.setObjectName(u'licenseTextEdit')
+        self.licenseTabLayout.addWidget(self.licenseTextEdit)
+        self.aboutNotebook.addTab(self.licenseTab, '')
+        self.aboutDialogLayout.addWidget(self.aboutNotebook)
+        self.buttonWidget = QtGui.QWidget(aboutDialog)
+        self.buttonWidget.setObjectName(u'buttonWidget')
+        self.buttonWidgetLayout = QtGui.QHBoxLayout(self.buttonWidget)
+        self.buttonWidgetLayout.setSpacing(8)
+        self.buttonWidgetLayout.setMargin(0)
+        self.buttonWidgetLayout.setObjectName(u'buttonWidgetLayout')
+        buttonSpacer = QtGui.QSpacerItem(275, 20,
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.ButtonWidgetLayout.addItem(ButtonSpacer)
-        self.ContributeButton = QtGui.QPushButton(self.ButtonWidget)
-        ContributeIcon = QtGui.QIcon()
-        ContributeIcon.addPixmap(
-            QtGui.QPixmap(u':/system/system_contribute.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.ContributeButton.setIcon(ContributeIcon)
-        self.ContributeButton.setObjectName(u'ContributeButton')
-        self.ButtonWidgetLayout.addWidget(self.ContributeButton)
-        self.CloseButton = QtGui.QPushButton(self.ButtonWidget)
-        CloseIcon = QtGui.QIcon()
-        CloseIcon.addPixmap(QtGui.QPixmap(u':/system/system_close.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.CloseButton.setIcon(CloseIcon)
-        self.CloseButton.setObjectName(u'CloseButton')
-        self.ButtonWidgetLayout.addWidget(self.CloseButton)
-        self.AboutDialogLayout.addWidget(self.ButtonWidget)
+        self.buttonWidgetLayout.addItem(buttonSpacer)
+        self.contributeButton = QtGui.QPushButton(self.buttonWidget)
+        self.contributeButton.setIcon(
+            build_icon(u':/system/system_contribute.png'))
+        self.contributeButton.setObjectName(u'contributeButton')
+        self.buttonWidgetLayout.addWidget(self.contributeButton)
+        self.closeButton = QtGui.QPushButton(self.buttonWidget)
+        self.closeButton.setIcon(build_icon(u':/system/system_close.png'))
+        self.closeButton.setObjectName(u'closeButton')
+        self.buttonWidgetLayout.addWidget(self.closeButton)
+        self.aboutDialogLayout.addWidget(self.buttonWidget)
+        self.retranslateUi(aboutDialog)
+        self.aboutNotebook.setCurrentIndex(0)
+        QtCore.QObject.connect(self.closeButton, QtCore.SIGNAL(u'clicked()'),
+            aboutDialog.close)
+        QtCore.QMetaObject.connectSlotsByName(aboutDialog)
 
-        self.retranslateUi(AboutDialog)
-        self.AboutNotebook.setCurrentIndex(0)
-        QtCore.QObject.connect(self.CloseButton, QtCore.SIGNAL(u'clicked()'),
-            AboutDialog.close)
-        QtCore.QMetaObject.connectSlotsByName(AboutDialog)
-
-    def retranslateUi(self, AboutDialog):
-        AboutDialog.setWindowTitle(translate('AboutForm', 'About OpenLP'))
-        self.AboutTextEdit.setPlainText(translate('AboutForm',
+    def retranslateUi(self, aboutDialog):
+        aboutDialog.setWindowTitle(translate('AboutForm', 'About OpenLP'))
+        self.aboutTextEdit.setPlainText(translate('AboutForm',
             'OpenLP <version><revision> - Open Source Lyrics '
             'Projection\n'
             '\n'
@@ -131,11 +122,10 @@ class Ui_AboutDialog(object):
             'like to see more free Christian software being written, please '
             'consider contributing by using the button below.'
         ))
-        self.AboutNotebook.setTabText(
-
-            self.AboutNotebook.indexOf(self.AboutTab),
+        self.aboutNotebook.setTabText(
+            self.aboutNotebook.indexOf(self.aboutTab),
             translate('AboutForm', 'About'))
-        self.CreditsTextEdit.setPlainText(translate('AboutForm', 
+        self.creditsTextEdit.setPlainText(translate('AboutForm', 
             'Project Lead\n'
             '    Raoul "superfly" Snyman\n'
             '\n'
@@ -165,10 +155,10 @@ class Ui_AboutDialog(object):
             '    Matthias "matthub" Hub (Mac OS X)\n'
             '    Raoul "superfly" Snyman (Windows)\n'
         ))
-        self.AboutNotebook.setTabText(
-            self.AboutNotebook.indexOf(self.CreditsTab),
+        self.aboutNotebook.setTabText(
+            self.aboutNotebook.indexOf(self.creditsTab),
             translate('AboutForm', 'Credits'))
-        self.LicenseTextEdit.setPlainText(translate('AboutForm', 
+        self.licenseTextEdit.setPlainText(translate('AboutForm', 
             'Copyright \xa9 2004-2010 Raoul Snyman\n'
             'Portions copyright \xa9 2004-2010 '
             'Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri, '
@@ -557,8 +547,8 @@ class Ui_AboutDialog(object):
             'linking proprietary applications with the library.  If this is '
             'what you want to do, use the GNU Lesser General Public License '
             'instead of this License.'))
-        self.AboutNotebook.setTabText(
-            self.AboutNotebook.indexOf(self.LicenseTab),
+        self.aboutNotebook.setTabText(
+            self.aboutNotebook.indexOf(self.licenseTab),
             translate('AboutForm', 'License'))
-        self.ContributeButton.setText(translate('AboutForm', 'Contribute'))
-        self.CloseButton.setText(translate('AboutForm', 'Close'))
+        self.contributeButton.setText(translate('AboutForm', 'Contribute'))
+        self.closeButton.setText(translate('AboutForm', 'Close'))

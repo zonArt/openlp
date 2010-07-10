@@ -24,7 +24,8 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import translate
+
+from openlp.core.lib import build_icon, translate
 
 class Ui_SongUsageDetailDialog(object):
     def setupUi(self, SongUsageDetailDialog):
@@ -60,10 +61,8 @@ class Ui_SongUsageDetailDialog(object):
         self.FileLineEdit.setObjectName(u'FileLineEdit')
         self.horizontalLayout.addWidget(self.FileLineEdit)
         self.SaveFilePushButton = QtGui.QPushButton(self.FileGroupBox)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(u':/general/general_load.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.SaveFilePushButton.setIcon(icon)
+        self.SaveFilePushButton.setIcon(
+            build_icon(u':/general/general_load.png'))
         self.SaveFilePushButton.setObjectName(u'SaveFilePushButton')
         self.horizontalLayout.addWidget(self.SaveFilePushButton)
         self.verticalLayout_4.addLayout(self.horizontalLayout)

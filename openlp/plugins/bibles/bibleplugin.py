@@ -38,7 +38,8 @@ class BiblePlugin(Plugin):
     def __init__(self, plugin_helpers):
         Plugin.__init__(self, u'Bibles', u'1.9.2', plugin_helpers)
         self.weight = -9
-        self.icon = build_icon(u':/plugins/plugin_bibles.png')
+        self.icon_path = u':/plugins/plugin_bibles.png'
+        self.icon = build_icon(self.icon_path)
         #Register the bible Manager
         self.status = PluginStatus.Active
         self.manager = None
@@ -84,8 +85,8 @@ class BiblePlugin(Plugin):
         self.ExportBibleItem.setVisible(False)
 
     def onBibleImportClick(self):
-        if self.media_item:
-            self.media_item.onImportClick()
+        if self.mediaItem:
+            self.mediaItem.onImportClick()
 
     def about(self):
         about_text = translate('BiblePlugin',

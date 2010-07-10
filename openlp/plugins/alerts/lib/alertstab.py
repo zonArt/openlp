@@ -274,10 +274,6 @@ class AlertsTab(SettingsTab):
         self.FontComboBox.setCurrentFont(font)
         self.updateDisplay()
 
-    def onItemSelected(self):
-        self.EditButton.setEnabled(True)
-        self.DeleteButton.setEnabled(True)
-
     def save(self):
         settings = QtCore.QSettings()
         settings.beginGroup(self.settingsSection)
