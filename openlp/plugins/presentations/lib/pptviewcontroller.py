@@ -31,6 +31,7 @@ if os.name == u'nt':
     from ctypes.wintypes import RECT
 
 from presentationcontroller import PresentationController, PresentationDocument
+from openlp.core.lib import resize_image
 
 log = logging.getLogger(__name__)
 
@@ -93,13 +94,22 @@ class PptviewController(PresentationController):
                 self.docs[0].close_presentation()
 
         def add_doc(self, name):
+            """
+            Called when a new powerpoint document is opened
+            """
             log.debug(u'Add Doc PPTView')
             doc = PptviewDocument(self, name)
             self.docs.append(doc)
             return doc
 
 class PptviewDocument(PresentationDocument):
+    """
+    Class which holds information and controls a single presentation
+    """
     def __init__(self, controller, presentation):
+        """
+        Constructor, store information about the file and initialise 
+        """
         log.debug(u'Init Presentation PowerPoint')
         PresentationDocument.__init__(self, controller, presentation)
         self.presentation = None
@@ -117,17 +127,29 @@ class PptviewDocument(PresentationDocument):
         The file name of the presentations to run.
         """
         log.debug(u'LoadPresentation')
-        #if self.pptid >= 0:
-        #    self.close_presentation()
         rendermanager = self.controller.plugin.renderManager
         rect = rendermanager.screens.current[u'size']
         rect = RECT(rect.x(), rect.y(), rect.right(), rect.bottom())
         filepath = str(self.filepath.replace(u'/', u'\\'))
         self.pptid = self.controller.process.OpenPPT(filepath, None, rect,
-            str(os.path.join(self.thumbnailpath,
-            self.controller.thumbnailprefix)))
+            str(self.get_temp_folder()) + '\\')
         if self.pptid:
+            self.create_thumbnails()
             self.stop_presentation()
+            return True
+        else:
+            return False
+
+    def create_thumbnails(self):
+        """
+        PPTviewLib creates large BMP's, but we want small PNG's for consistency.
+        Convert them here.
+        """
+        if self.check_thumbnails():
+            return
+        for idx in range(self.get_slide_count()):
+            path = u'%s\\%s.bmp' % (self.get_temp_folder(), unicode(idx + 1))            
+            self.convert_image(path, idx)
 
     def close_presentation(self):
         """
@@ -223,18 +245,4 @@ class PptviewDocument(PresentationDocument):
         Triggers the previous slide on the running presentation
         """
         self.controller.process.PrevStep(self.pptid)
-
-    def get_slide_preview_file(self, slide_no):
-        """
-        Returns an image path containing a preview for the requested slide
-
-        ``slide_no``
-            The slide an image is required for, starting at 1
-        """
-        path = os.path.join(self.thumbnailpath,
-            self.controller.thumbnailprefix + unicode(slide_no) + u'.bmp')
-        if os.path.isfile(path):
-            return path
-        else:
-            return None
 

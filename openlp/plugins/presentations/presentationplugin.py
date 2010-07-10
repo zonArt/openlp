@@ -33,9 +33,17 @@ from openlp.plugins.presentations.lib import *
 log = logging.getLogger(__name__)
 
 class PresentationPlugin(Plugin):
+    """
+    This plugin allowed a Presentation to be opened, controlled and displayed
+    on the output display. The plugin controls third party applications such
+    as OpenOffice.org Impress, Microsoft PowerPoint and the PowerPoint viewer
+    """
     log = logging.getLogger(u'PresentationPlugin')
 
     def __init__(self, plugin_helpers):
+        """
+        PluginPresentation constructor. 
+        """
         log.debug(u'Initialised')
         self.controllers = {}
         Plugin.__init__(self, u'Presentations', u'1.9.2', plugin_helpers)
@@ -50,6 +58,10 @@ class PresentationPlugin(Plugin):
         return PresentationTab(self.name, self.controllers)
 
     def initialise(self):
+        """
+        Initialise the plugin. Determine which controllers are enabled
+        are start their processes.
+        """
         log.info(u'Presentations Initialising')
         Plugin.initialise(self)
         self.insertToolboxItem()
@@ -58,6 +70,10 @@ class PresentationPlugin(Plugin):
                 self.controllers[controller].start_process()
 
     def finalise(self):
+        """
+        Finalise the plugin. Ask all the enabled presentation applications
+        to close down their applications and release resources.
+        """
         log.info(u'Plugin Finalise')
         #Ask each controller to tidy up
         for key in self.controllers:
@@ -74,6 +90,10 @@ class PresentationPlugin(Plugin):
             self, self.icon, self.name, self.controllers)
 
     def registerControllers(self, controller):
+        """
+        Register each presentation controller (Impress, PPT etc) and
+        store for later use
+        """
         self.controllers[controller.name] = controller
 
     def checkPreConditions(self):
@@ -108,6 +128,9 @@ class PresentationPlugin(Plugin):
             return False
 
     def about(self):
+        """
+        Return information about this plugin
+        """
         about_text = translate('PresentationPlugin',
             '<b>Presentation Plugin</b> <br> Delivers '
             'the ability to show presentations using a number of different '
