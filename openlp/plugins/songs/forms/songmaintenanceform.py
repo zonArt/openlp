@@ -134,7 +134,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             book_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(book.id))
             self.BooksListWidget.addItem(book_name)
 
-    def checkAuthor(self, new_author,  edit=False):
+    def checkAuthor(self, new_author, edit=False):
         """
         Returns True when the given Author is already in the list elsewise False.
         """
@@ -182,7 +182,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                         topic_exsists = False
         return topic_exsists
 
-    def checkBook(self, new_book,  edit=False):
+    def checkBook(self, new_book, edit=False):
         """
         Returns True when the given Book is already in the list elsewise False.
         """
