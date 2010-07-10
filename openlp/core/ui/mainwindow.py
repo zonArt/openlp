@@ -469,7 +469,8 @@ class Ui_MainWindow(object):
             '&Plugin List'))
         self.SettingsPluginListItem.setStatusTip(
             translate('MainWindow', 'List the Plugins'))
-        self.SettingsPluginListItem.setShortcut(translate('MainWindow', 'Alt+F7'))
+        self.SettingsPluginListItem.setShortcut(
+            translate('MainWindow', 'Alt+F7'))
         self.HelpDocumentationItem.setText(
             translate('MainWindow', '&User Guide'))
         self.HelpAboutItem.setText(translate('MainWindow', '&About'))
@@ -973,5 +974,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             if position != -1:
                 self.recentFiles.removeAt(position)
             self.recentFiles.insert(0, QtCore.QString(filename))
-            while self.recentFiles.count() > maxRecentFiles:
-                self.recentFiles.removeLast()
+            while self.recentFiles.count() > recentFileCount:
+                # Don't care what API says takeLast works, removeLast doesn't!
+                self.recentFiles.takeLast()

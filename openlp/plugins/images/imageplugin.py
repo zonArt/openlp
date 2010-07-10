@@ -36,7 +36,8 @@ class ImagePlugin(Plugin):
     def __init__(self, plugin_helpers):
         Plugin.__init__(self, u'Images', u'1.9.2', plugin_helpers)
         self.weight = -7
-        self.icon = build_icon(u':/plugins/plugin_images.png')
+        self.icon_path = u':/plugins/plugin_images.png'
+        self.icon = build_icon(self.icon_path)
         self.status = PluginStatus.Active
 
     def getSettingsTab(self):

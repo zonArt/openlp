@@ -69,7 +69,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         Add a tab to the form at a specific location
         """
         log.debug(u'Inserting %s tab' % tab.tabTitle)
-        #13 : There are 3 tables currently and locations starts at -10
+        # 14 : There are 3 tables currently and locations starts at -10
         self.SettingsTabWidget.insertTab(
             location + 14, tab, tab.tabTitleVisible)
 

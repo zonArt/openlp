@@ -117,8 +117,7 @@ class ServiceItem(object):
         service item in the service manager.
 
         ``icon``
-            An instance of QIcon or a string to an icon in the resource or on
-            disk.
+            A string to an icon in the resources or on disk.
         """
         self.icon = icon
         self.iconic_representation = build_icon(icon)

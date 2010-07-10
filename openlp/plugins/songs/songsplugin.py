@@ -58,7 +58,8 @@ class SongsPlugin(Plugin):
         Plugin.__init__(self, u'Songs', u'1.9.2', plugin_helpers)
         self.weight = -10
         self.manager = Manager(u'songs', init_schema)
-        self.icon = build_icon(u':/plugins/plugin_songs.png')
+        self.icon_path = u':/plugins/plugin_songs.png'
+        self.icon = build_icon(self.icon_path)
         self.status = PluginStatus.Active
 
     def getSettingsTab(self):
