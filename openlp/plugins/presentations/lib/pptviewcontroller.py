@@ -31,7 +31,6 @@ if os.name == u'nt':
     from ctypes.wintypes import RECT
 
 from presentationcontroller import PresentationController, PresentationDocument
-from openlp.core.lib import resize_image
 
 log = logging.getLogger(__name__)
 
