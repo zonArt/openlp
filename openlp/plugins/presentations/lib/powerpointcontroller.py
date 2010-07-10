@@ -24,7 +24,7 @@
 ###############################################################################
 
 import os
-import loggin
+import logging
 
 if os.name == u'nt':
     from win32com.client import Dispatch
@@ -127,7 +127,7 @@ class PowerpointDocument(PresentationDocument):
         The file name of the presentations to run.
         """
         log.debug(u'LoadPresentation')
-        if not self.controller.process.Visible:
+        if not self.controller.process or not self.controller.process.Visible:
             self.controller.start_process()
         try:
             self.controller.process.Presentations.Open(self.filepath, False, 
