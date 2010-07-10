@@ -50,7 +50,8 @@ class CustomPlugin(Plugin):
         self.weight = -5
         self.custommanager = Manager(u'custom', init_schema)
         self.edit_custom_form = EditCustomForm(self.custommanager)
-        self.icon = build_icon(u':/plugins/plugin_custom.png')
+        self.icon_path = u':/plugins/plugin_custom.png'
+        self.icon = build_icon(self.icon_path)
         self.status = PluginStatus.Active
 
     def getSettingsTab(self):
