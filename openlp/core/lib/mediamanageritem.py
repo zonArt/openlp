@@ -521,7 +521,7 @@ class MediaManagerItem(QtGui.QWidget):
         if self.serviceItemIconName:
             service_item.add_icon(self.serviceItemIconName)
         else:
-            service_item.add_icon(self.parent.icon)
+            service_item.add_icon(self.parent.icon_path)
         if self.generateSlideData(service_item, item):
             return service_item
         else:

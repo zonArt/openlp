@@ -956,4 +956,5 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 self.recentFiles.removeAt(position)
             self.recentFiles.insert(0, QtCore.QString(filename))
             while self.recentFiles.count() > recentFileCount:
-                self.recentFiles.removeLast()
+                # Don't care what API says takeLast works, removeLast doesn't!
+                self.recentFiles.takeLast()
