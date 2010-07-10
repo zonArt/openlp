@@ -142,7 +142,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         new_author_last_name = new_author.last_name
         new_author_display_name = new_author.display_name
         authors = self.songmanager.get_all_objects(Author)
-        author_exsists = False
+        author_exists = False
         for author in authors:
             author_fist_name = author.first_name
             author_last_name = author.last_name
@@ -150,7 +150,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             if author_fist_name == new_author_first_name and \
                 author_last_name == new_author_last_name and \
                 author_display_name == new_author_display_name:
-                author_exsists = True
+                author_exists = True
                 #If we edit an exsisting Author, we need to make sure that we do
                 #not return True when nothing has changed (because this would
                 #cause an error message later on)
@@ -158,8 +158,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     new_author_id = new_author.id
                     author_id = author.id
                     if new_author_id == author_id:
-                        author_exsists = False
-        return author_exsists
+                        author_exists = False
+        return author_exists
 
     def checkTopic(self, new_topic, edit=False):
         """
@@ -167,11 +167,11 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         """
         new_topic_name = new_topic.name
         topics = self.songmanager.get_all_objects(Topic)
-        topic_exsists = False
+        topic_exists = False
         for topic in topics:
             topic_name = topic.name
             if topic_name == new_topic_name:
-                topic_exsists = True
+                topic_exists = True
                 #If we edit an exsisting Topic, we need to make sure that we do
                 #not return True when nothing has changed (because this would
                 #cause an error message later on)
@@ -179,8 +179,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     new_topic_id = new_topic.id
                     topic_id = topic.id
                     if new_topic_id == topic_id:
-                        topic_exsists = False
-        return topic_exsists
+                        topic_exists = False
+        return topic_exists
 
     def checkBook(self, new_book, edit=False):
         """
@@ -189,13 +189,13 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         new_book_name = new_book.name
         new_book_publisher = new_book.publisher
         books = self.songmanager.get_all_objects(Book)
-        book_exsists = False
+        book_exists = False
         for book in books:
             book_name = book.name
             book_publisher = book.publisher
             if book_publisher == new_book_publisher and \
                 book_name == new_book_name:
-                book_exsists = True
+                book_exists = True
                 #If we edit an exsisting Book, we need to make sure that we do
                 #not return True when nothing has changed (because this would
                 #cause an error message later on)
@@ -203,8 +203,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     new_book_id = new_book.id
                     book_id = book.id
                     if new_book_id == book_id:
-                        book_exsists = False
-        return book_exsists
+                        book_exists = False
+        return book_exists
 
     def onAuthorAddButtonClick(self):
         self.authorform.setAutoDisplayName(True)
