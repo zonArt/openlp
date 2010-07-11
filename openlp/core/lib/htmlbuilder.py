@@ -38,6 +38,7 @@ HTMLSRC = u"""
 %s
 %s
 %s
+%s
 </style>
 <script language="javascript">
     var t = null;
@@ -79,13 +80,12 @@ HTMLSRC = u"""
 def build_html(theme, screen, alert, image):
     width = screen[u'size'].width()
     height = screen[u'size'].height()
-    aa =  build_image_src(theme, width, height, alert, image)
     html = HTMLSRC % (build_video(theme, width, height, alert),
                       build_image(theme, width, height, alert),
                       build_lyrics(theme, width, height, alert),
                       build_alert(theme, width, height, alert),
-                      build_image(theme, width, height, alert), aa)
-                      #build_image_src(theme, width, height, alert, image))
+                      build_image(theme, width, height, alert),
+                      build_image_src(theme, width, height, alert, image))
     return html
 
 def build_video(theme, width, height, alert):
@@ -119,7 +119,7 @@ def build_image_src(theme, width, height, alert, image):
     image_src = """
     <img src="data:image/png;base64,%s">";
     """
-    return unicode(image_src % unicode(image_to_byte(image)))
+    return str(image_src % image_to_byte(image))
 
 def build_lyrics(theme, width, height, alert):
     lyrics = """
