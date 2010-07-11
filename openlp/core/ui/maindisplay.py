@@ -79,10 +79,28 @@ class DisplayManager(QtGui.QWidget):
             QtCore.SIGNAL(u'videodisplay_start'), self.onStartVideo)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'videodisplay_stop'), self.onStopVideo)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'config_updated'), self.setup)
 
     def setup(self):
+        log.debug(u'mainDisplay - setup')
         self.videoDisplay.setup()
         self.mainDisplay.setup()
+        #Build the initial frame.
+        self.initialFrame = QtGui.QImage(
+            self.screens.current[u'size'].width(),
+            self.screens.current[u'size'].height(),
+            QtGui.QImage.Format_ARGB32_Premultiplied)
+        print self.screens.current
+        splash_image = QtGui.QImage(u':/graphics/openlp-splash-screen.png')
+        painter_image = QtGui.QPainter()
+        painter_image.begin(self.initialFrame)
+        painter_image.fillRect(self.initialFrame.rect(), QtCore.Qt.white)
+        painter_image.drawImage(
+            (self.screens.current[u'size'].width() - splash_image.width()) / 2,
+            (self.screens.current[u'size'].height() - splash_image.height()) / 2,
+            splash_image)
+        self.mainDisplay.displayImage(self.initialFrame)
 
     def hideDisplay(self, message):
         """
@@ -252,19 +270,6 @@ class MainDisplay(DisplayWidget):
         self.webView.setGeometry(0, 0, self.size().width(),
             self.size().height())
         #Build a custom splash screen
-        self.initialFrame = QtGui.QImage(
-            self.screen[u'size'].width(),
-            self.screen[u'size'].height(),
-            QtGui.QImage.Format_ARGB32_Premultiplied)
-        splash_image = QtGui.QImage(u':/graphics/openlp-splash-screen.png')
-        painter_image = QtGui.QPainter()
-        painter_image.begin(self.initialFrame)
-        painter_image.fillRect(self.initialFrame.rect(), QtCore.Qt.white)
-        painter_image.drawImage(
-            (self.screen[u'size'].width() - splash_image.width()) / 2,
-            (self.screen[u'size'].height() - splash_image.height()) / 2,
-            splash_image)
-        self.displayImage(self.initialFrame)
         self.repaint()
         #Build a Black screen
         painter = QtGui.QPainter()
@@ -498,8 +503,7 @@ class VideoDisplay(Phonon.VideoWidget):
             QtCore.SIGNAL(u'videodisplay_pause'), self.onMediaPause)
 #        QtCore.QObject.connect(Receiver.get_receiver(),
 #            QtCore.SIGNAL(u'videodisplay_background'), self.onMediaBackground)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'config_updated'), self.setup)
+
         QtCore.QObject.connect(self.mediaObject,
             QtCore.SIGNAL(u'finished()'), self.onMediaStop)
         self.setVisible(False)

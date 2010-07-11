@@ -178,6 +178,11 @@ def resize_image(image, width, height):
             QtCore.Qt.SmoothTransformation)
     realw = preview.width()
     realh = preview.height()
+    #Only resize if different size
+    print realw, realh,  width,  height
+    if realw == width and realh == height:
+        return image
+    print "different"
     # and move it to the centre of the preview space
     new_image = QtGui.QImage(width, height,
         QtGui.QImage.Format_ARGB32_Premultiplied)

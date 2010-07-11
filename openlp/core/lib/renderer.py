@@ -145,6 +145,41 @@ class Renderer(object):
             for line in lines:
                 text.append(line)
         split_text = self.pre_render_text(text)
+
+        doc = QtGui.QTextDocument()
+        doc.setPageSize(QtCore.QSizeF(self._rect.width(), self._rect.height()))
+        df = doc.defaultFont()
+        df.setPixelSize(self._theme.font_main_proportion)
+        df.setFamily(self._theme.font_main_name)
+        main_weight = 50
+        if self._theme.font_main_weight == u'Bold':
+            main_weight = 75
+        df.setWeight(main_weight)
+        doc.setDefaultFont(df)
+        myCursor = QtGui.QTextCursor(doc)
+        layout = doc.documentLayout()
+        formatted = []
+        if self._theme.display_horizontalAlign == 2:
+            shell = "<p align=center>%s</font></p>"
+        elif self._theme.display_horizontalAlign == 1:
+            shell = "<p align=right>%s</font></p>"
+        else:
+            shell = "<p>%s</p>"
+        temp_text = u''
+        old_html_text = u''
+        for line in text:
+            #do we need a <br> here?
+            temp_text = temp_text + line
+            html_text = shell % temp_text
+            doc.setHtml(html_text)
+            if layout.pageCount() != 1:
+                formatted.append(old_html_text)
+                temp_text = line
+            old_html_text = temp_text
+        formatted.append(old_html_text)
+        for f in formatted:
+            print "f", f
+        print "st", split_text
         log.debug(u'format_slide - End')
         return split_text
 
