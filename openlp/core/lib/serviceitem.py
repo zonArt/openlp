@@ -171,15 +171,15 @@ class ServiceItem(object):
             self.render_manager.set_override_theme(None)
         else:
             self.render_manager.set_override_theme(self.theme)
-        format = self._display_frames[row][u'text'].split(u'\n')
+        raw_html = self._display_frames[row][u'text'].split(u'\n')
         if self.cache.get(row):
             frame = self.cache[row]
         else:
-            if format[0]:
-                frame = self.render_manager.generate_slide(format,
+            if raw_html[0]:
+                frame = self.render_manager.generate_slide(raw_html,
                     self.raw_footer)
             else:
-                frame = self.render_manager.generate_slide(format, u'')
+                frame = self.render_manager.generate_slide(raw_html, u'')
             self.cache[row] = frame
         return frame
 

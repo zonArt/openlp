@@ -527,7 +527,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.songsSettingsSection = u'songs'
         self.serviceNotSaved = False
         self.settingsmanager = SettingsManager(screens)
-        self.displayManager = DisplayManager(screens)
+        self.displayManager = DisplayManager(self, screens)
         self.aboutForm = AboutForm(self, applicationVersion)
         self.settingsForm = SettingsForm(self.screens, self, self)
         self.recentFiles = QtCore.QStringList()

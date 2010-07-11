@@ -783,7 +783,8 @@ class SlideController(QtGui.QWidget):
                     15, u'Slide Rendering took %4s' % (time.time() - before))
                 if self.isLive:
                     if self.serviceItem.is_text():
-                        self.mainDisplay.frameView(frame, True)
+                        pass
+                        #self.mainDisplay.frameView(frame, True)
                     else:
                         self.displayManager.displayImage(frame[u'main'])
             self.selectedRow = row

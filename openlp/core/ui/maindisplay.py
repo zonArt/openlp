@@ -65,11 +65,13 @@ class DisplayManager(QtGui.QWidget):
     extra displays to be added.
     RenderManager is poked in by MainWindow
     """
-    def __init__(self, screens):
+    def __init__(self, parent, screens):
         QtGui.QWidget.__init__(self)
+        self.parent = parent
         self.screens = screens
         self.audioPlayer = AudioPlayer(self)
-        self.mainDisplay = WebViewer(self, screens)
+        self.mainDisplay = WebViewer(self, screens, True)
+        self.previewDisplay = WebViewer(self, screens, False)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'maindisplay_hide'), self.hideDisplay)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -83,12 +85,12 @@ class DisplayManager(QtGui.QWidget):
 
     def setup(self):
         log.debug(u'mainDisplay - setup')
+        self.parent.RenderManager.previewDisplay = self.previewDisplay
         #Build the initial frame.
         self.initialFrame = QtGui.QImage(
             self.screens.current[u'size'].width(),
             self.screens.current[u'size'].height(),
             QtGui.QImage.Format_ARGB32_Premultiplied)
-        print self.screens.current
         splash_image = QtGui.QImage(u':/graphics/openlp-splash-screen.png')
         painter_image = QtGui.QPainter()
         painter_image.begin(self.initialFrame)
@@ -98,6 +100,7 @@ class DisplayManager(QtGui.QWidget):
             (self.screens.current[u'size'].height() - splash_image.height()) / 2,
             splash_image)
         self.mainDisplay.setup()
+        self.previewDisplay.setup()
         self.mainDisplay.newDisplay(self.initialFrame, None, None)
         self.mainDisplay.show()
 
@@ -163,11 +166,14 @@ class DisplayWidget(QtGui.QGraphicsView):
     """
     log.info(u'Display Widget loaded')
 
-    def __init__(self, parent=None, name=None):
+    def __init__(self, live, parent=None, name=None):
         QtGui.QGraphicsView.__init__(self)
         self.parent = parent
+        self.live = live
 
     def keyPressEvent(self, event):
+        if not live:
+            return
         if type(event) == QtGui.QKeyEvent:
             #here accept the event and do something
             if event.key() == QtCore.Qt.Key_Down:
@@ -205,8 +211,8 @@ class DisplayWidget(QtGui.QGraphicsView):
 
 class WebViewer(DisplayWidget):
 
-    def __init__(self, parent, screens):
-        DisplayWidget.__init__(self, parent=None)
+    def __init__(self, parent, screens, live):
+        DisplayWidget.__init__(self, live, parent=None)
         self.screens = screens
         self.setWindowTitle(u'OpenLP Display')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint |
@@ -285,13 +291,19 @@ class WebViewer(DisplayWidget):
         self.frame.setScrollBarPolicy(QtCore.Qt.Horizontal,
             QtCore.Qt.ScrollBarAlwaysOff)
 
-    def preview(self):
+    def preview(self, image, text):
         self.setVisible(False)
-        preview = QtGui.QImage(QtCore.QSize(640, 480), QtGui.QImage.Format_ARGB32_Premultiplied)
+        html = build_html(text, self.screen, None, image)
+        self.webView.setHtml(html)
+        self.frame.findFirstElement('div#lyrics').setInnerXml(text)
+        preview = QtGui.QImage(self.screen[u'size'].width(),
+            self.screen[u'size'].height(),
+            QtGui.QImage.Format_ARGB32_Premultiplied)
         painter = QtGui.QPainter(preview)
         painter.setRenderHint(QtGui.QPainter.Antialiasing)
         self.frame.render(painter)
         painter.end()
+        #save preview for debugging
         preview.save("temp.png", "png")
         return preview
 

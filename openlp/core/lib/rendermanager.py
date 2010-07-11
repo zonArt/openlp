@@ -205,9 +205,10 @@ class RenderManager(object):
             The text for the slide footer.
         """
         log.debug(u'generate slide')
-        self.build_text_rectangle(self.themedata)
-        self.renderer.set_frame_dest(self.width, self.height)
-        return self.renderer.generate_frame_from_lines(main_text, footer_text)
+        #self.build_text_rectangle(self.themedata)
+        #self.renderer.set_frame_dest(self.width, self.height)
+        image = self.previewDisplay.preview(self.renderer.bg_image, main_text[0])
+        return image #self.renderer.generate_frame_from_lines(main_text, footer_text)
 
     def calculate_default(self, screen):
         """
