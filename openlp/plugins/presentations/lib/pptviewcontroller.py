@@ -130,9 +130,11 @@ class PptviewDocument(PresentationDocument):
         rect = rendermanager.screens.current[u'size']
         rect = RECT(rect.x(), rect.y(), rect.right(), rect.bottom())
         filepath = str(self.filepath.replace(u'/', u'\\'))
+        if not os.path.isdir(self.get_temp_folder()):
+            os.makedirs(self.get_temp_folder())
         self.pptid = self.controller.process.OpenPPT(filepath, None, rect,
-            str(self.get_temp_folder()) + '\\')
-        if self.pptid:
+            str(self.get_temp_folder()) + '\\slide')
+        if self.pptid >= 0:
             self.create_thumbnails()
             self.stop_presentation()
             return True
@@ -147,8 +149,8 @@ class PptviewDocument(PresentationDocument):
         if self.check_thumbnails():
             return
         for idx in range(self.get_slide_count()):
-            path = u'%s\\%s.bmp' % (self.get_temp_folder(), unicode(idx + 1))            
-            self.convert_image(path, idx)
+            path = u'%s\\slide%s.bmp' % (self.get_temp_folder(), unicode(idx + 1))            
+            self.convert_thumbnail(path, idx + 1)
 
     def close_presentation(self):
         """

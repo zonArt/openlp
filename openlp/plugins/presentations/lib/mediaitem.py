@@ -131,7 +131,7 @@ class PresentationMediaItem(MediaManagerItem):
         self.listView.setIconSize(QtCore.QSize(88, 50))
         list = SettingsManager.load_list(
             self.settingsSection, u'presentations')
-        self.loadList(list)
+        self.loadList(list, True)
         for item in self.controllers:
             #load the drop down selection
             if self.controllers[item].enabled:
@@ -140,7 +140,7 @@ class PresentationMediaItem(MediaManagerItem):
             self.DisplayTypeComboBox.insertItem(0, self.Automatic)
             self.DisplayTypeComboBox.setCurrentIndex(0)
 
-    def loadList(self, list):
+    def loadList(self, list, initialLoad=False):
         """
         Add presentations into the media manager
         This is called both on initial load of the plugin to populate with
@@ -155,34 +155,39 @@ class PresentationMediaItem(MediaManagerItem):
                 continue
             filename = os.path.split(unicode(file))[1]
             if titles.count(filename) > 0:
-                QtGui.QMessageBox.critical(
-                    self, translate('PresentationPlugin.MediaItem',
-                    'File exists'),
-                    translate('PresentationPlugin.MediaItem',
-                    'A presentation with that filename already exists.'),
-                    QtGui.QMessageBox.Ok)
+                if not initialLoad:
+                    QtGui.QMessageBox.critical(
+                        self, translate('PresentationPlugin.MediaItem',
+                        'File exists'),
+                        translate('PresentationPlugin.MediaItem',
+                        'A presentation with that filename already exists.'),
+                        QtGui.QMessageBox.Ok)
                 continue
             controller_name = self.findControllerByType(filename)
-            if not controller_name:
-                QtGui.QMessageBox.critical(
-                    self, translate('PresentationPlugin.MediaItem',
-                    'Unsupported file'),
-                    translate('PresentationPlugin.MediaItem',
-                    'This type of presentation is not supported'),
-                    QtGui.QMessageBox.Ok)
-                continue
-            controller = self.controllers[controller_name]
-            doc = controller.add_doc(unicode(file))
-            thumb = os.path.join(doc.get_thumbnail_folder(), u'icon.png')
-            preview = doc.get_thumbnail_path(1, True)
-            if not preview:
-                doc.load_presentation()
+            if controller_name:
+                controller = self.controllers[controller_name]
+                doc = controller.add_doc(unicode(file))
+                thumb = os.path.join(doc.get_thumbnail_folder(), u'icon.png')
                 preview = doc.get_thumbnail_path(1, True)
-            doc.close_presentation()
-            if preview and self.validate(preview, thumb):
-                icon = build_icon(thumb)
+                if not preview and not initialLoad:
+                    doc.load_presentation()
+                    preview = doc.get_thumbnail_path(1, True)
+                doc.close_presentation()
+                if preview and self.validate(preview, thumb):
+                    icon = build_icon(thumb)
+                else:
+                    icon = build_icon(u':/general/general_delete.png')
             else:
-                icon = build_icon(u':/general/general_delete.png')
+                if initialLoad:
+                    icon = build_icon(u':/general/general_delete.png')
+                else:
+                    QtGui.QMessageBox.critical(
+                        self, translate('PresentationPlugin.MediaItem',
+                        'Unsupported file'),
+                        translate('PresentationPlugin.MediaItem',
+                        'This type of presentation is not supported'),
+                        QtGui.QMessageBox.Ok)
+                    continue
             item_name = QtGui.QListWidgetItem(filename)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             item_name.setIcon(icon)

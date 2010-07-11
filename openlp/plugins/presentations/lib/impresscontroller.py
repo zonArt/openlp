@@ -74,6 +74,7 @@ class ImpressController(PresentationController):
         self.alsosupports = [u'.ppt', u'.pps', u'.pptx', u'.ppsx']
         self.process = None
         self.desktop = None
+        self.manager = None
 
     def check_available(self):
         """
@@ -143,6 +144,8 @@ class ImpressController(PresentationController):
         will be used to manage Impress
         """
         log.debug(u'get COM Desktop OpenOffice')
+        if not self.manager:
+            return None
         return self.manager.createInstance(u'com.sun.star.frame.Desktop')
 
     def get_com_servicemanager(self):
@@ -264,6 +267,8 @@ class ImpressDocument(PresentationDocument):
         props = tuple(props)
         doc = self.document
         pages = doc.getDrawPages()
+        if not os.path.isdir(self.get_temp_folder()):
+            os.makedirs(self.get_temp_folder())
         for idx in range(pages.getCount()):
             page = pages.getByIndex(idx)
             doc.getCurrentController().setCurrentPage(page)
@@ -272,7 +277,7 @@ class ImpressDocument(PresentationDocument):
                 unicode(idx + 1) + u'.png')
             try:
                 doc.storeToURL(urlpath, props)
-                self.convert_thumbnail(path, idx)
+                self.convert_thumbnail(path, idx + 1)
                 if os.path.exists(path):
                     os.remove(path)
             except:
