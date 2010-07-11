@@ -300,10 +300,10 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         self._deleteItem(Author, self.AuthorsListWidget, self.resetAuthors,
             translate('SongsPlugin.SongMaintenanceForm', 'Delete Author'),
             translate('SongsPlugin.SongMaintenanceForm',
-            'Are you sure you want to delete the selected author?'),
+                'Are you sure you want to delete the selected author?'),
             translate('SongsPlugin.SongMaintenanceForm',
-            'This author cannot be deleted, they are currently '
-            'assigned to at least one song.'),
+                'This author cannot be deleted, they are currently '
+                'assigned to at least one song.'),
             translate('SongsPlugin.SongMaintenanceForm', 'No author selected!'))
 
     def onTopicDeleteButtonClick(self):
@@ -313,10 +313,10 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         self._deleteItem(Topic, self.TopicsListWidget, self.resetTopics,
             translate('SongsPlugin.SongMaintenanceForm', 'Delete Topic'),
             translate('SongsPlugin.SongMaintenanceForm',
-            'Are you sure you want to delete the selected topic?'),
+                'Are you sure you want to delete the selected topic?'),
             translate('SongsPlugin.SongMaintenanceForm',
-            'This topic cannot be deleted, it is currently '
-            'assigned to at least one song.'),
+                'This topic cannot be deleted, it is currently '
+                'assigned to at least one song.'),
             translate('SongsPlugin.SongMaintenanceForm', 'No topic selected!'))
 
     def onBookDeleteButtonClick(self):
@@ -326,8 +326,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         self._deleteItem(Book, self.BooksListWidget, self.resetBooks,
             translate('SongsPlugin.SongMaintenanceForm', 'Delete Book'),
             translate('SongsPlugin.SongMaintenanceForm',
-            'Are you sure you want to delete the selected book?'),
+                'Are you sure you want to delete the selected book?'),
             translate('SongsPlugin.SongMaintenanceForm',
-            'This book cannot be deleted, it is currently '
-            'assigned to at least one song.'),
+                'This book cannot be deleted, it is currently '
+                'assigned to at least one song.'),
             translate('SongsPlugin.SongMaintenanceForm', 'No book selected!'))
