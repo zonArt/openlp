@@ -68,7 +68,6 @@ class DisplayManager(QtGui.QWidget):
     def __init__(self, screens):
         QtGui.QWidget.__init__(self)
         self.screens = screens
-        #self.videoDisplay = VideoDisplay(self, screens)
         self.audioPlayer = AudioPlayer(self)
         self.mainDisplay = WebViewer(self, screens)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -82,11 +81,8 @@ class DisplayManager(QtGui.QWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.setup)
 
-
     def setup(self):
         log.debug(u'mainDisplay - setup')
-        #self.videoDisplay.setup()
-        self.mainDisplay.setup()
         #Build the initial frame.
         self.initialFrame = QtGui.QImage(
             self.screens.current[u'size'].width(),
@@ -101,6 +97,7 @@ class DisplayManager(QtGui.QWidget):
             (self.screens.current[u'size'].width() - splash_image.width()) / 2,
             (self.screens.current[u'size'].height() - splash_image.height()) / 2,
             splash_image)
+        self.mainDisplay.setup()
         self.mainDisplay.newDisplay(self.initialFrame, None, None)
         self.mainDisplay.show()
 
@@ -210,8 +207,10 @@ class WebViewer(DisplayWidget):
 
     def __init__(self, parent, screens):
         DisplayWidget.__init__(self, parent=None)
-        self.screen = screens
-        self.setupSelf()
+        self.screens = screens
+        self.setWindowTitle(u'OpenLP Display')
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint |
+            QtCore.Qt.WindowStaysOnTopHint)
         self.currimage = False
 #        self.byteArray = QtCore.QByteArray()
 #        buffer = QtCore.QBuffer(self.byteArray) #// use buffer to store pixmap into byteArray
@@ -223,7 +222,6 @@ class WebViewer(DisplayWidget):
 #        buffer.open(QtCore.QIODevice.WriteOnly)
 #        pixmap = QtGui.QPixmap("file:///home/timali/Pictures/out.png")
 #        pixmap.save(buffer, "PNG")
-        self.setup()
 #        self.image1 = "file:///home/timali/Pictures/IMG_0726.jpg"
 #        self.image2 = "file:///home/timali/Pictures/out.png"
         self.currvideo = False
@@ -272,18 +270,15 @@ class WebViewer(DisplayWidget):
         self.frame.evaluateJavaScript("document.getElementById('video').play()")
         self.currimage = not self.currimage
 
-    def setupSelf(self):
-        self.setWindowTitle(u'OpenLP Display')
-        self.setWindowFlags(QtCore.Qt.FramelessWindowHint |
-            QtCore.Qt.WindowStaysOnTopHint)
-        self.setGeometry(1440, 0, self.screen.current[u'size'].width(), self.screen.current[u'size'].height())
-
     def setup(self):
+        log.debug(u'Setup %s for %s ' % (
+            self.screens, self.screens.monitor_number))
+        self.screen = self.screens.current
+        self.setVisible(False)
+        self.setGeometry(self.screen[u'size'])
         self.webView = QtWebKit.QWebView(self)
-        self.webView.setGeometry(0, 0, self.screen.current[u'size'].width(), self.screen.current[u'size'].height())
+        self.webView.setGeometry(0, 0, self.screen[u'size'].width(), self.screen[u'size'].height())
         self.page = self.webView.page()
-#        html = build_html(None, self.screen, None, self.byteArray)
-#        self.webView.setHtml(html)
         self.frame = self.page.mainFrame()
         self.frame.setScrollBarPolicy(QtCore.Qt.Vertical,
             QtCore.Qt.ScrollBarAlwaysOff)
@@ -302,7 +297,7 @@ class WebViewer(DisplayWidget):
 
     def newDisplay(self, image, text, video=None):
         if not video:
-            html = build_html(None, self.screen.current, None, image)
+            html = build_html(None, self.screen, None, image)
             self.webView.setHtml(html)
 
 #class DisplayWidget(QtGui.QGraphicsView):

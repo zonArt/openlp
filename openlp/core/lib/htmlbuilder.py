@@ -84,9 +84,8 @@ def build_html(theme, screen, alert, image):
                       build_image(theme, width, height, alert),
                       build_lyrics(theme, width, height, alert),
                       build_alert(theme, width, height, alert),
-                      build_image(theme, width, height, alert))
+                      build_image(theme, width, height, alert), aa)
                       #build_image_src(theme, width, height, alert, image))
-    print html
     return html
 
 def build_video(theme, width, height, alert):
