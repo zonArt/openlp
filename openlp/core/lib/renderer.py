@@ -167,21 +167,25 @@ class Renderer(object):
             shell = "<p>%s</p>"
         temp_text = u''
         old_html_text = u''
+        page = []
         for line in text:
-            #do we need a <br> here?
-            temp_text = temp_text + line
+            # mark line ends
+            temp_text = temp_text + line + u'<br>'
             html_text = shell % temp_text
             doc.setHtml(html_text)
+            #Text too long so gone to next mage
             if layout.pageCount() != 1:
-                formatted.append(old_html_text)
+                page.append(shell % old_html_text)
+                formatted.append(page)
                 temp_text = line
             old_html_text = temp_text
-        formatted.append(old_html_text)
-        for f in formatted:
-            print "f", f
+        page.append(shell % old_html_text)
+        formatted.append(page)
+        print "ft", formatted
         print "st", split_text
         log.debug(u'format_slide - End')
-        return split_text
+        #return split_text
+        return formatted
 
     def pre_render_text(self, text):
         metrics = QtGui.QFontMetrics(self.main_font)
