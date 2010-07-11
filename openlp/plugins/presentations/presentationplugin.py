@@ -138,3 +138,4 @@ class PresentationPlugin(Plugin):
             'programs. The choice of available presentation programs is '
             'available to the user in a drop down box.')
         return about_text
+
