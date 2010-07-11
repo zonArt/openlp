@@ -251,7 +251,7 @@ class WebViewer(DisplayWidget):
         self.currslide = not self.currslide
 
     def text(self, slide):
-        self.frame.findFirstElement('div#lyrics').setInnerXml(self.slides(slide))
+        self.frame.findFirstElement('div#lyrics').setInnerXml(slide)
 
     def alert(self):
         self.frame.findFirstElement('div#alert').setInnerXml(self.alerttext)

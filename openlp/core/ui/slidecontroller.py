@@ -769,24 +769,18 @@ class SlideController(QtGui.QWidget):
                 self.updatePreview()
             else:
                 before = time.time()
-                frame = self.serviceItem.get_rendered_frame(row)
+                frame, raw_html = self.serviceItem.get_rendered_frame(row)
                 if isinstance(frame, QtGui.QImage):
                     self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
                 else:
-                    if isinstance(frame[u'main'], basestring):
-                        self.SlidePreview.setPixmap(
-                            QtGui.QPixmap(frame[u'main']))
-                    else:
-                        self.SlidePreview.setPixmap(
-                            QtGui.QPixmap.fromImage(frame[u'main']))
+                    self.SlidePreview.setPixmap(QtGui.QPixmap(frame))
                 log.log(
                     15, u'Slide Rendering took %4s' % (time.time() - before))
                 if self.isLive:
                     if self.serviceItem.is_text():
-                        pass
-                        #self.mainDisplay.frameView(frame, True)
+                        self.mainDisplay.text(raw_html)
                     else:
-                        self.displayManager.displayImage(frame[u'main'])
+                        self.displayManager.displayImage(frame)
             self.selectedRow = row
         Receiver.send_message(u'slidecontroller_%s_changed' % self.typePrefix,
             row)

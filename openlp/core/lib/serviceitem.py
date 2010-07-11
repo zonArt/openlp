@@ -181,7 +181,7 @@ class ServiceItem(object):
             else:
                 frame = self.render_manager.generate_slide(raw_html, u'')
             self.cache[row] = frame
-        return frame
+        return frame, raw_html[0]
 
     def add_from_image(self, path, title, image):
         """
