@@ -165,23 +165,6 @@ def context_menu_separator(base):
     action.setSeparator(True)
     return action
 
-def resize_image_for_web(image, width, height, background=QtCore.Qt.black):
-    """
-    Resize an image to fit on the current screen for the web and retuns
-    it as a byte stream.
-
-    ``image``
-        The image to resize.
-    ``width``
-        The new image width.
-    ``height``
-        The new image height.
-     ``background ``
-        The background colour defaults to black.
-    """
-    new_image = resize_image(image, width, height, background)
-    return image_to_byte(image)
-
 def image_to_byte(image):
     """
     Resize an image to fit on the current screen for the web and retuns
@@ -193,10 +176,13 @@ def image_to_byte(image):
     byte_array = QtCore.QByteArray()
     buffer = QtCore.QBuffer(byte_array) #// use buffer to store pixmap into byteArray
     buffer.open(QtCore.QIODevice.WriteOnly)
-    pixmap = QtGui.QPixmap(image)
+    if isinstance(image, QtGui.QImage):
+        pixmap = QtGui.QPixmap.fromImage(image)
+    else:
+        pixmap = QtGui.QPixmap(image)
     pixmap.save(buffer, "PNG")
     #convert to base64 encoding so does not get missed!
-    return byte_array
+    return byte_array.toBase64()
 
 def resize_image(image, width, height, background=QtCore.Qt.black):
     """
