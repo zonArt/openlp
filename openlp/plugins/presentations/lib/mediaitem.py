@@ -30,7 +30,6 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
     SettingsManager, translate, check_item_selected
-from openlp.core.utils import AppLocation
 from openlp.plugins.presentations.lib import MessageListener
 
 log = logging.getLogger(__name__)
