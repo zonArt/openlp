@@ -199,15 +199,13 @@ def resize_image(image, width, height, background=QtCore.Qt.black):
     """
     preview = QtGui.QImage(image)
     if not preview.isNull():
+        #Only resize if different size
+        if preview.width() == width and preview.height == height:
+            return preview
         preview = preview.scaled(width, height, QtCore.Qt.KeepAspectRatio,
             QtCore.Qt.SmoothTransformation)
     realw = preview.width()
     realh = preview.height()
-    #Only resize if different size
-    print realw, realh,  width,  height
-    if realw == width and realh == height:
-        return image
-    print "different"
     # and move it to the centre of the preview space
     new_image = QtGui.QImage(width, height,
         QtGui.QImage.Format_ARGB32_Premultiplied)
