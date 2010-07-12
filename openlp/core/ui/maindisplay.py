@@ -104,7 +104,7 @@ class DisplayManager(QtGui.QWidget):
             splash_image)
         self.mainDisplay.setup()
         self.previewDisplay.setup()
-        self.mainDisplay.newDisplay(self.initialFrame, None, None)
+        self.mainDisplay.buildHtml(self.initialFrame)
         self.mainDisplay.show()
 
     def hideDisplay(self, message):
@@ -130,6 +130,18 @@ class DisplayManager(QtGui.QWidget):
         Handles the addition of a background Image to the displays
         """
         self.mainDisplay.addImageWithText(frame)
+
+    def buildHtml(self, image=None):
+        """
+        Handles the addition of a background Image to the displays
+        """
+        self.mainDisplay.buildHtml(image)
+
+    def text(self, text):
+        """
+        Handles the addition of a background Image to the displays
+        """
+        self.mainDisplay.text(text)
 
     def displayImage(self, frame):
         """
@@ -312,10 +324,17 @@ class WebViewer(DisplayWidget):
         preview.save("temp.png", "png")
         return preview
 
-    def newDisplay(self, image, text, video=None):
+    def initialDisplay(self, image, video=False):
         if not video:
             html = build_html(self.parent.renderManager.themedata, self.screen, None, image)
             self.webView.setHtml(html)
+
+    def buildHtml(self, image=None):
+        if not image:
+            html = build_html(self.parent.renderManager.themedata, self.screen, None, self.parent.renderManager.renderer.bg_frame)
+        else:
+            html = build_html(self.parent.renderManager.themedata, self.screen, None, image)
+        self.webView.setHtml(html)
 
 #class DisplayWidget(QtGui.QGraphicsView):
 #    """

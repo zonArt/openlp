@@ -129,6 +129,7 @@ class RenderManager(object):
             self.calculate_default(self.screens.current[u'size'])
             self.renderer.set_theme(self.themedata)
             self.build_text_rectangle(self.themedata)
+        return self.renderer.bg_frame
 
     def build_text_rectangle(self, theme):
         """
@@ -212,7 +213,7 @@ class RenderManager(object):
         self.renderer.set_frame_dest(self.width, self.height)
         image = self.previewDisplay.preview(self.renderer.bg_frame,
             main_text[0], self.themedata)
-        return image #self.renderer.generate_frame_from_lines(main_text, footer_text)
+        return image
 
     def calculate_default(self, screen):
         """

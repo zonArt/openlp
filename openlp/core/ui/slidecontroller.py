@@ -590,6 +590,7 @@ class SlideController(QtGui.QWidget):
         else:
             self.PreviewListWidget.selectRow(slideno)
         self.enableToolBar(serviceItem)
+        #Reset the display html
         self.onSlideSelected()
         self.PreviewListWidget.setFocus()
         Receiver.send_message(u'slidecontroller_%s_started' % self.typePrefix,
@@ -769,7 +770,7 @@ class SlideController(QtGui.QWidget):
                 self.updatePreview()
             else:
                 before = time.time()
-                frame, raw_html = self.serviceItem.get_rendered_frame(row)
+                changed, frame, raw_html = self.serviceItem.get_rendered_frame(row)
                 if isinstance(frame, QtGui.QImage):
                     self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
                 else:
@@ -778,7 +779,8 @@ class SlideController(QtGui.QWidget):
                     15, u'Slide Rendering took %4s' % (time.time() - before))
                 if self.isLive:
                     if self.serviceItem.is_text():
-                        self.mainDisplay.text(raw_html)
+                        self.displayManager.buildHtml(changed)
+                        self.displayManager.text(raw_html)
                     else:
                         self.displayManager.displayImage(frame)
             self.selectedRow = row

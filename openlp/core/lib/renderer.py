@@ -181,8 +181,7 @@ class Renderer(object):
             old_html_text = temp_text
         page.append(shell % old_html_text)
         formatted.append(page)
-        print "ft", formatted
-        print "st", split_text
+
         log.debug(u'format_slide - End')
         #return split_text
         return formatted

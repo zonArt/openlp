@@ -86,6 +86,7 @@ def build_html(theme, screen, alert, image):
                       build_alert(theme, width, height, alert),
                       build_image(theme, width, height, alert),
                       build_image_src(theme, width, height, alert, image))
+    print html
     return html
 
 def build_video(theme, width, height, alert):
@@ -119,7 +120,7 @@ def build_image_src(theme, width, height, alert, image):
     image_src = """
     <img src="data:image/png;base64,%s">";
     """
-    return str(image_src % image_to_byte(image))
+    return image_src % image_to_byte(image)
 
 def build_lyrics(theme, width, height, alert):
     lyrics = """
@@ -130,13 +131,18 @@ def build_lyrics(theme, width, height, alert):
         width: 640px;
         height: 480px;
         z-index:3;
-        text-shadow: 2px 2px 2px green;
+        %s;
+        font-family %s;
         font-size: %spx;
     }
     """
     lyrics_html = u''
+    shadow = u''
+    outline = u''
     if theme:
-        lyrics_html = lyrics % theme.font_main_proportion
+        if theme.display_shadow:
+            shadow = u'text-shadow: %spx %spx %spx %s' % (theme.display_shadow_size, theme.display_shadow_size, theme.display_shadow_size, theme.display_shadow_color)
+        lyrics_html = lyrics % (shadow,theme. font_main_name, theme.font_main_proportion)
         print lyrics_html
     return lyrics_html
 
