@@ -245,7 +245,7 @@ class MainDisplay(DisplayWidget):
             self.screens, self.screens.monitor_number))
         self.setVisible(False)
         self.screen = self.screens.current
-        # Sort out screen locations and sizes
+        # Sort out screen locations and sizes.
         self.setGeometry(self.screen[u'size'])
         self.scene.setSceneRect(0, 0, self.size().width(), self.size().height())
         self.webView.setGeometry(0, 0, self.size().width(),
@@ -296,13 +296,13 @@ class MainDisplay(DisplayWidget):
         self.webView = QtWebKit.QWebView()
         self.page = self.webView.page()
         self.videoDisplay = self.page.mainFrame()
-        self.videoDisplay.setScrollBarPolicy(QtCore.Qt.Vertical, 
+        self.videoDisplay.setScrollBarPolicy(QtCore.Qt.Vertical,
             QtCore.Qt.ScrollBarAlwaysOff)
-        self.videoDisplay.setScrollBarPolicy(QtCore.Qt.Horizontal, 
+        self.videoDisplay.setScrollBarPolicy(QtCore.Qt.Horizontal,
             QtCore.Qt.ScrollBarAlwaysOff)
         self.proxy = QtGui.QGraphicsProxyWidget()
         self.proxy.setWidget(self.webView)
-        self.proxy.setWindowFlags(QtCore.Qt.Window | 
+        self.proxy.setWindowFlags(QtCore.Qt.Window |
             QtCore.Qt.FramelessWindowHint)
         self.proxy.setZValue(1)
         self.scene.addItem(self.proxy)
@@ -546,10 +546,10 @@ class VideoDisplay(Phonon.VideoWidget):
 #        if it is triggered from the plugin
 #        """
 #        log.debug(u'VideoDisplay Queue new media message %s' % message)
-#        #If not file take the stored one
+#        # If not file take the stored one.
 #        if not message:
 #            message = self.message
-#        # still no file name then stop as it was a normal video stopping
+#        # Still no file name then stop as it was a normal video stopping.
 #        if message:
 #            self.mediaObject.setCurrentSource(Phonon.MediaSource(message))
 #            self.message = message
