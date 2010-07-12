@@ -53,22 +53,32 @@ class AdvancedTab(SettingsTab):
         self.leftLayout = QtGui.QVBoxLayout(self.leftWidget)
         self.leftLayout.setSpacing(8)
         self.leftLayout.setMargin(0)
-        self.recentGroupBox = QtGui.QGroupBox(self.leftWidget)
-        self.recentGroupBox.setObjectName(u'recentGroupBox')
-        self.recentGroupBox.setGeometry(QtCore.QRect(0, 0, 220, 57))
-        self.recentGroupBox.setMaximumSize(QtCore.QSize(220, 57))
-        self.recentLayout = QtGui.QHBoxLayout(self.recentGroupBox)
+        self.uiGroupBox = QtGui.QGroupBox(self.leftWidget)
+        self.uiGroupBox.setObjectName(u'uiGroupBox')
+        self.uiGroupBox.setMaximumWidth(260)
+        self.uiLayout = QtGui.QVBoxLayout(self.uiGroupBox)
+        self.uiLayout.setSpacing(8)
+        self.uiLayout.setMargin(6)
+        self.uiLayout.setObjectName(u'uiLayout')
+        self.recentLayout = QtGui.QHBoxLayout()
         self.recentLayout.setSpacing(8)
-        self.recentLayout.setMargin(6)
+        self.recentLayout.setMargin(0)
         self.recentLayout.setObjectName(u'recentLayout')
-        self.recentLabel = QtGui.QLabel(self.recentGroupBox)
+        self.recentLabel = QtGui.QLabel(self.uiGroupBox)
         self.recentLabel.setObjectName(u'recentLabel')
         self.recentLayout.addWidget(self.recentLabel)
-        self.recentSpinBox = QtGui.QSpinBox(self.recentGroupBox)
-        self.recentSpinBox.setMinimum(0)
+        self.recentSpinBox = QtGui.QSpinBox(self.uiGroupBox)
         self.recentSpinBox.setObjectName(u'recentSpinBox')
+        self.recentSpinBox.setMinimum(0)
         self.recentLayout.addWidget(self.recentSpinBox)
-        self.leftLayout.addWidget(self.recentGroupBox)
+        self.recentSpacer = QtGui.QSpacerItem(50, 20,
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.recentLayout.addItem(self.recentSpacer)
+        self.uiLayout.addLayout(self.recentLayout)
+        self.mediaPluginCheckBox = QtGui.QCheckBox(self.uiGroupBox)
+        self.mediaPluginCheckBox.setObjectName(u'mediaPluginCheckBox')
+        self.uiLayout.addWidget(self.mediaPluginCheckBox)
+        self.leftLayout.addWidget(self.uiGroupBox)
 #        self.sharedDirGroupBox = QtGui.QGroupBox(self.leftWidget)
 #        self.sharedDirGroupBox.setObjectName(u'sharedDirGroupBox')
 #        self.sharedDirGroupBox.setGeometry(QtCore.QRect(0, 65, 500, 85))
@@ -108,6 +118,8 @@ class AdvancedTab(SettingsTab):
 #        self.databaseLayout.setSpacing(8)
 #        self.databaseLayout.setMargin(8)
 #        self.rightLayout.addWidget(self.databaseGroupBox)
+#        self.rightSpacer = QtGui.QSpacerItem(20, 40,
+#            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
 #        self.advancedTabLayout.addWidget(self.rightWidget)
 #        QtCore.QObject.connect(self.sharedCheckBox,
 #            QtCore.SIGNAL(u'stateChanged(int)'), self.onSharedCheckBoxChanged)
@@ -116,9 +128,11 @@ class AdvancedTab(SettingsTab):
         """
         Setup the interface translation strings.
         """
-        self.recentGroupBox.setTitle(translate('AdvancedTab', 'Recent Files'))
+        self.uiGroupBox.setTitle(translate('AdvancedTab', 'UI Settings'))
         self.recentLabel.setText(
-            translate('AdvancedTab', 'Number of recent files to list:'))
+            translate('AdvancedTab', 'Number of recent files to display:'))
+        self.mediaPluginCheckBox.setText(translate('AdvancedTab',
+            'Save currently selected media manager plugin'))
 #        self.sharedDirGroupBox.setTitle(
 #            translate('AdvancedTab', 'Central Data Store'))
 #        self.sharedCheckBox.setText(
@@ -140,6 +154,9 @@ class AdvancedTab(SettingsTab):
             u'max recent files', QtCore.QVariant(20)).toInt()[0])
         self.recentSpinBox.setValue(settings.value(u'recent file count',
             QtCore.QVariant(4)).toInt()[0])
+        self.mediaPluginCheckBox.setChecked(
+            settings.value(u'save current plugin',
+            QtCore.QVariant(False)).toBool())
         settings.endGroup()
 
     def save(self):
@@ -150,6 +167,8 @@ class AdvancedTab(SettingsTab):
         settings.beginGroup(self.settingsSection)
         settings.setValue(u'recent file count',
             QtCore.QVariant(self.recentSpinBox.value()))
+        settings.setValue(u'save current plugin',
+            QtCore.QVariant(self.mediaPluginCheckBox.isChecked()))
         settings.endGroup()
 
     def onSharedCheckBoxChanged(self, checked):
