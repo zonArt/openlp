@@ -37,8 +37,6 @@ import logging
 import os
 import time
 
-from openlp.core.lib import resize_image
-
 if os.name == u'nt':
     from win32com.client import Dispatch
     import pywintypes
