@@ -36,15 +36,21 @@ from amendthemedialog import Ui_AmendThemeDialog
 log = logging.getLogger(u'AmendThemeForm')
 
 class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
-
+    """
+    The :class:`AmendThemeForm` class provides the user interface to set up
+    new and edit existing themes.
+    """
     def __init__(self, parent):
+        """
+        Initialise the theme editor user interface
+        """
         QtGui.QDialog.__init__(self, parent)
         self.thememanager = parent
         self.path = None
         self.theme = ThemeXML()
         self.setupUi(self)
-        #define signals
-        #Buttons
+        # define signals
+        # Buttons
         QtCore.QObject.connect(self.Color1PushButton,
             QtCore.SIGNAL(u'pressed()'), self.onColor1PushButtonClicked)
         QtCore.QObject.connect(self.Color2PushButton,
@@ -60,7 +66,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             QtCore.SIGNAL(u'pressed()'), self.onShadowColorPushButtonClicked)
         QtCore.QObject.connect(self.ImageToolButton,
             QtCore.SIGNAL(u'pressed()'), self.onImageToolButtonClicked)
-        #Combo boxes
+        # Combo boxes
         QtCore.QObject.connect(self.BackgroundComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onBackgroundComboBoxSelected)
         QtCore.QObject.connect(self.BackgroundTypeComboBox,
@@ -82,16 +88,13 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             QtCore.SIGNAL(u'activated(int)'), self.onHorizontalComboBoxSelected)
         QtCore.QObject.connect(self.VerticalComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onVerticalComboBoxSelected)
-        #Spin boxes
+        # Spin boxes
         QtCore.QObject.connect(self.FontMainSizeSpinBox,
             QtCore.SIGNAL(u'editingFinished()'),
             self.onFontMainSizeSpinBoxChanged)
         QtCore.QObject.connect(self.FontFooterSizeSpinBox,
             QtCore.SIGNAL(u'editingFinished()'),
             self.onFontFooterSizeSpinBoxChanged)
-        QtCore.QObject.connect(self.FontMainDefaultCheckBox,
-            QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onFontMainDefaultCheckBoxChanged)
         QtCore.QObject.connect(self.FontMainXSpinBox,
             QtCore.SIGNAL(u'editingFinished()'), self.onFontMainXSpinBoxChanged)
         QtCore.QObject.connect(self.FontMainYSpinBox,
@@ -108,9 +111,6 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         QtCore.QObject.connect(self.FontMainLineSpacingSpinBox,
             QtCore.SIGNAL(u'editingFinished()'),
             self.onFontMainLineSpacingSpinBoxChanged)
-        QtCore.QObject.connect(self.FontFooterDefaultCheckBox,
-            QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onFontFooterDefaultCheckBoxChanged)
         QtCore.QObject.connect(self.FontFooterXSpinBox,
             QtCore.SIGNAL(u'editingFinished()'),
             self.onFontFooterXSpinBoxChanged)
@@ -123,16 +123,23 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         QtCore.QObject.connect(self.FontFooterHeightSpinBox,
             QtCore.SIGNAL(u'editingFinished()'),
             self.onFontFooterHeightSpinBoxChanged)
-        QtCore.QObject.connect(self.OutlineCheckBox,
-            QtCore.SIGNAL(u'stateChanged(int)'), self.onOutlineCheckBoxChanged)
         QtCore.QObject.connect(self.ShadowSpinBox,
             QtCore.SIGNAL(u'editingFinished()'),
             self.onShadowSpinBoxChanged)
-        QtCore.QObject.connect(self.ShadowCheckBox,
-            QtCore.SIGNAL(u'stateChanged(int)'), self.onShadowCheckBoxChanged)
         QtCore.QObject.connect(self.OutlineSpinBox,
             QtCore.SIGNAL(u'editingFinished()'),
             self.onOutlineSpinBoxChanged)
+        # CheckBoxes
+        QtCore.QObject.connect(self.FontMainDefaultCheckBox,
+            QtCore.SIGNAL(u'stateChanged(int)'),
+            self.onFontMainDefaultCheckBoxChanged)
+        QtCore.QObject.connect(self.FontFooterDefaultCheckBox,
+            QtCore.SIGNAL(u'stateChanged(int)'),
+            self.onFontFooterDefaultCheckBoxChanged)
+        QtCore.QObject.connect(self.OutlineCheckBox,
+            QtCore.SIGNAL(u'stateChanged(int)'), self.onOutlineCheckBoxChanged)
+        QtCore.QObject.connect(self.ShadowCheckBox,
+            QtCore.SIGNAL(u'stateChanged(int)'), self.onShadowCheckBoxChanged)
         QtCore.QObject.connect(self.SlideTransitionCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onSlideTransitionCheckBoxChanged)
