@@ -123,7 +123,7 @@ def build_image_src(theme, width, height, alert, image):
 
 def build_lyrics(theme, width, height, alert):
     lyrics = """
-    .lyrics {
+    #lyrics {
         position: absolute;
         left: 0px;
         top: 0px;
@@ -131,10 +131,14 @@ def build_lyrics(theme, width, height, alert):
         height: 480px;
         z-index:3;
         text-shadow: 2px 2px 2px green;
-        font-size: 40px;
+        font-size: %spx;
     }
     """
-    return lyrics
+    lyrics_html = u''
+    if theme:
+        lyrics_html = lyrics % theme.font_main_proportion
+        print lyrics_html
+    return lyrics_html
 
 def build_alert(theme, width, height, alert):
     alert = """

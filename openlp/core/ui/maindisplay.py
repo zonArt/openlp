@@ -70,7 +70,9 @@ class DisplayManager(QtGui.QWidget):
         self.parent = parent
         self.screens = screens
         self.audioPlayer = AudioPlayer(self)
+        # Live display
         self.mainDisplay = WebViewer(self, screens, True)
+        # Display for Preview and Theme previews
         self.previewDisplay = WebViewer(self, screens, False)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'maindisplay_hide'), self.hideDisplay)
@@ -85,6 +87,7 @@ class DisplayManager(QtGui.QWidget):
 
     def setup(self):
         log.debug(u'mainDisplay - setup')
+        # let the render manager have the preview display.
         self.parent.RenderManager.previewDisplay = self.previewDisplay
         #Build the initial frame.
         self.initialFrame = QtGui.QImage(
@@ -213,6 +216,7 @@ class WebViewer(DisplayWidget):
 
     def __init__(self, parent, screens, live):
         DisplayWidget.__init__(self, live, parent=None)
+        self.parent = parent
         self.screens = screens
         self.setWindowTitle(u'OpenLP Display')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint |
@@ -251,6 +255,7 @@ class WebViewer(DisplayWidget):
         self.currslide = not self.currslide
 
     def text(self, slide):
+        print slide
         self.frame.findFirstElement('div#lyrics').setInnerXml(slide)
 
     def alert(self):
@@ -291,9 +296,9 @@ class WebViewer(DisplayWidget):
         self.frame.setScrollBarPolicy(QtCore.Qt.Horizontal,
             QtCore.Qt.ScrollBarAlwaysOff)
 
-    def preview(self, image, text):
+    def preview(self, image, text, theme):
         self.setVisible(False)
-        html = build_html(text, self.screen, None, image)
+        html = build_html(theme, self.screen, None, image)
         self.webView.setHtml(html)
         self.frame.findFirstElement('div#lyrics').setInnerXml(text)
         preview = QtGui.QImage(self.screen[u'size'].width(),
@@ -309,7 +314,7 @@ class WebViewer(DisplayWidget):
 
     def newDisplay(self, image, text, video=None):
         if not video:
-            html = build_html(None, self.screen, None, image)
+            html = build_html(self.parent.renderManager.themedata, self.screen, None, image)
             self.webView.setHtml(html)
 
 #class DisplayWidget(QtGui.QGraphicsView):
