@@ -59,7 +59,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         QtCore.QObject.connect(self.ShadowColorPushButton,
             QtCore.SIGNAL(u'pressed()'), self.onShadowColorPushButtonClicked)
         QtCore.QObject.connect(self.ImageToolButton,
-            QtCore.SIGNAL(u'pressed()'), self.onImageToolButtonClicked)
+            QtCore.SIGNAL(u'clicked()'), self.onImageToolButtonClicked)
         #Combo boxes
         QtCore.QObject.connect(self.BackgroundComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onBackgroundComboBoxSelected)

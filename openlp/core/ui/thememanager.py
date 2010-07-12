@@ -116,6 +116,7 @@ class ThemeManager(QtGui.QWidget):
         self.thumbPath = os.path.join(self.path, u'thumbnails')
         self.checkThemesExists(self.thumbPath)
         self.amendThemeForm.path = self.path
+        self.oldBackgroundImage = None
         # Last little bits of setting up
         self.global_theme = unicode(QtCore.QSettings().value(
             self.settingsSection + u'/global theme',
@@ -187,6 +188,8 @@ class ThemeManager(QtGui.QWidget):
             item = self.ThemeListWidget.currentItem()
             theme = self.getThemeData(
                 unicode(item.data(QtCore.Qt.UserRole).toString()))
+            if theme.background_type == u'image':
+                self.oldBackgroundImage = theme.background_filename
             self.amendThemeForm.loadTheme(theme)
             self.saveThemeName = unicode(
                 item.data(QtCore.Qt.UserRole).toString())
@@ -544,6 +547,12 @@ class ThemeManager(QtGui.QWidget):
                     QtGui.QMessageBox.No)
         if result == QtGui.QMessageBox.Yes:
             # Save the theme, overwriting the existing theme if necessary.
+            if image_to and self.oldBackgroundImage and \
+                image_to != self.oldBackgroundImage:
+                try:
+                    os.remove(self.oldBackgroundImage)
+                except OSError:
+                    log.exception(u'Unable to remove old theme background')
             outfile = None
             try:
                 outfile = open(theme_file, u'w')
