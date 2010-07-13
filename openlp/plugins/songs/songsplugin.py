@@ -192,8 +192,30 @@ class SongsPlugin(Plugin):
             'This plugin allows songs to be managed and displayed.')
         return about_text
 
-    def canDeleteTheme(self, theme):
-        if not self.manager.get_all_objects_filtered(Song,
+    def usesTheme(self, theme):
+        """
+        Called to find out if the song plugin is currently using a theme.
+
+        Returns True if the theme is being used, otherwise returns False.
+        """
+        if self.manager.get_all_objects_filtered(Song,
             Song.theme_name == theme):
             return True
         return False
+
+    def renameTheme(self, oldTheme, newTheme):
+        """
+        Renames a theme the song plugin is using making the plugin use the new
+        name.
+
+        ``oldTheme``
+            The name of the theme the plugin should stop using.
+
+        ``newTheme``
+            The new name the plugin should now use.
+        """
+        songsUsingTheme = self.manager.get_all_objects_filtered(Song,
+            Song.theme_name == oldTheme)
+        for song in songsUsingTheme:
+            song.theme_name = newTheme
+            self.custommanager.save_object(song)
