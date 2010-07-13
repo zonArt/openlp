@@ -332,10 +332,11 @@ class SlideController(QtGui.QWidget):
         # Signals
         QtCore.QObject.connect(self.PreviewListWidget,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
-        if QtCore.QSettings().value(u'advanced/double click live',
-            QtCore.QVariant(False)).toBool():
-            QtCore.QObject.connect(self.PreviewListWidget,
-                QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onGoLive)
+        if not self.isLive:
+            if QtCore.QSettings().value(u'advanced/double click live',
+                QtCore.QVariant(False)).toBool():
+                QtCore.QObject.connect(self.PreviewListWidget,
+                    QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onGoLive)
         if isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'slidecontroller_live_spin_delay'),
