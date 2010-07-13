@@ -55,7 +55,7 @@ class AdvancedTab(SettingsTab):
         self.leftLayout.setMargin(0)
         self.uiGroupBox = QtGui.QGroupBox(self.leftWidget)
         self.uiGroupBox.setObjectName(u'uiGroupBox')
-        self.uiGroupBox.setMaximumWidth(260)
+        self.uiGroupBox.setMaximumWidth(320)
         self.uiLayout = QtGui.QVBoxLayout(self.uiGroupBox)
         self.uiLayout.setSpacing(8)
         self.uiLayout.setMargin(6)
@@ -78,6 +78,9 @@ class AdvancedTab(SettingsTab):
         self.mediaPluginCheckBox = QtGui.QCheckBox(self.uiGroupBox)
         self.mediaPluginCheckBox.setObjectName(u'mediaPluginCheckBox')
         self.uiLayout.addWidget(self.mediaPluginCheckBox)
+        self.doubleClickLiveCheckBox = QtGui.QCheckBox(self.uiGroupBox)
+        self.doubleClickLiveCheckBox.setObjectName(u'doubleClickLiveCheckBox')
+        self.uiLayout.addWidget(self.doubleClickLiveCheckBox)
         self.leftLayout.addWidget(self.uiGroupBox)
 #        self.sharedDirGroupBox = QtGui.QGroupBox(self.leftWidget)
 #        self.sharedDirGroupBox.setObjectName(u'sharedDirGroupBox')
@@ -133,6 +136,8 @@ class AdvancedTab(SettingsTab):
             translate('AdvancedTab', 'Number of recent files to display:'))
         self.mediaPluginCheckBox.setText(translate('AdvancedTab',
             'Save currently selected media manager plugin'))
+        self.doubleClickLiveCheckBox.setText(translate('AdvancedTab',
+            'Double-click to send items straight to live (requires restart)'))
 #        self.sharedDirGroupBox.setTitle(
 #            translate('AdvancedTab', 'Central Data Store'))
 #        self.sharedCheckBox.setText(
@@ -157,6 +162,9 @@ class AdvancedTab(SettingsTab):
         self.mediaPluginCheckBox.setChecked(
             settings.value(u'save current plugin',
             QtCore.QVariant(False)).toBool())
+        self.doubleClickLiveCheckBox.setChecked(
+            settings.value(u'double click live',
+            QtCore.QVariant(False)).toBool())
         settings.endGroup()
 
     def save(self):
@@ -169,6 +177,8 @@ class AdvancedTab(SettingsTab):
             QtCore.QVariant(self.recentSpinBox.value()))
         settings.setValue(u'save current plugin',
             QtCore.QVariant(self.mediaPluginCheckBox.isChecked()))
+        settings.setValue(u'double click live',
+            QtCore.QVariant(self.doubleClickLiveCheckBox.isChecked()))
         settings.endGroup()
 
     def onSharedCheckBoxChanged(self, checked):
@@ -178,4 +188,3 @@ class AdvancedTab(SettingsTab):
         self.sharedLabel.setEnabled(checked)
         self.sharedTextEdit.setEnabled(checked)
         self.sharedPushButton.setEnabled(checked)
-

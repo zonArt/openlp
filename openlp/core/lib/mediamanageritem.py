@@ -323,9 +323,15 @@ class MediaManagerItem(QtGui.QWidget):
                     translate('MediaManagerItem',
                         '&Add to selected Service Item'),
                     self.onAddEditClick))
-        QtCore.QObject.connect(
-            self.listView, QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
-            self.onPreviewClick)
+        if QtCore.QSettings().value(u'advanced/double click live',
+            QtCore.QVariant(False)).toBool():
+            QtCore.QObject.connect(self.listView,
+                QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
+                self.onLiveClick)
+        else:
+            QtCore.QObject.connect(self.listView,
+                QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
+                self.onPreviewClick)
 
     def initialise(self):
         """
