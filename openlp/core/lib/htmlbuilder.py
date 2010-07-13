@@ -132,6 +132,7 @@ def build_lyrics(theme, width, height, alert):
         height: 480px;
         z-index:3;
         %s;
+        %s;
         font-family %s;
         font-size: %spx;
     }
@@ -141,8 +142,14 @@ def build_lyrics(theme, width, height, alert):
     outline = u''
     if theme:
         if theme.display_shadow:
-            shadow = u'text-shadow: %spx %spx %spx %s' % (theme.display_shadow_size, theme.display_shadow_size, theme.display_shadow_size, theme.display_shadow_color)
-        lyrics_html = lyrics % (shadow,theme. font_main_name, theme.font_main_proportion)
+            shadow = u'text-shadow: %spx %spx %spx %s' %\
+                (theme.display_shadow_size, theme.display_shadow_size,
+                theme.display_shadow_size, theme.display_shadow_color)
+        if theme.display_outline:
+            # 1px is the blur radius
+            outline = u'text-outline: %spx 1px %s' %\
+                (theme.display_outline_size, theme.display_outline_color)
+        lyrics_html = lyrics % (shadow, outline, theme.font_main_name, theme.font_main_proportion)
         print lyrics_html
     return lyrics_html
 

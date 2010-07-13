@@ -183,7 +183,7 @@ class RenderManager(object):
         footer.append(u'CCLI 123456')
         formatted = self.renderer.format_slide(verse, False)
         #Only Render the first slide page returned
-        image = self.previewDisplay.preview(self.renderer.bg_frame, main_text[0])
+        image = self.previewDisplay.preview(self.renderer.bg_frame, verse, self.themedata)
         return image #self.renderer.generate_frame_from_lines(formatted[0],
             #footer)[u'main']
 
