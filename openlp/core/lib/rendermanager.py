@@ -98,9 +98,11 @@ class RenderManager(object):
     def set_override_theme(self, theme):
         """
         Set the appropriate theme depending on the theme level.
+        Called by the service item when building a display frame
 
         ``theme``
-            The name of the song-level theme.
+            The name of the song-level theme. None means the service
+            item wants to use the given value.
         """
         log.debug(u'set override theme to %s', theme)
         if self.theme_level == ThemeLevel.Global:
@@ -127,6 +129,7 @@ class RenderManager(object):
             self.calculate_default(self.screens.current[u'size'])
             self.renderer.set_theme(self.themedata)
             self.build_text_rectangle(self.themedata)
+        return self.renderer.bg_frame
 
     def build_text_rectangle(self, theme):
         """
@@ -180,8 +183,9 @@ class RenderManager(object):
         footer.append(u'CCLI 123456')
         formatted = self.renderer.format_slide(verse, False)
         #Only Render the first slide page returned
-        return self.renderer.generate_frame_from_lines(formatted[0],
-            footer)[u'main']
+        image = self.previewDisplay.preview(self.renderer.bg_frame, verse, self.themedata)
+        return image #self.renderer.generate_frame_from_lines(formatted[0],
+            #footer)[u'main']
 
     def format_slide(self, words):
         """
@@ -207,7 +211,9 @@ class RenderManager(object):
         log.debug(u'generate slide')
         self.build_text_rectangle(self.themedata)
         self.renderer.set_frame_dest(self.width, self.height)
-        return self.renderer.generate_frame_from_lines(main_text, footer_text)
+        image = self.previewDisplay.preview(self.renderer.bg_frame,
+            main_text[0], self.themedata)
+        return image
 
     def calculate_default(self, screen):
         """

@@ -145,8 +145,46 @@ class Renderer(object):
             for line in lines:
                 text.append(line)
         split_text = self.pre_render_text(text)
+
+        doc = QtGui.QTextDocument()
+        doc.setPageSize(QtCore.QSizeF(self._rect.width(), self._rect.height()))
+        df = doc.defaultFont()
+        df.setPixelSize(self._theme.font_main_proportion)
+        df.setFamily(self._theme.font_main_name)
+        main_weight = 50
+        if self._theme.font_main_weight == u'Bold':
+            main_weight = 75
+        df.setWeight(main_weight)
+        doc.setDefaultFont(df)
+        myCursor = QtGui.QTextCursor(doc)
+        layout = doc.documentLayout()
+        formatted = []
+        if self._theme.display_horizontalAlign == 2:
+            shell = "<p align=center>%s</font></p>"
+        elif self._theme.display_horizontalAlign == 1:
+            shell = "<p align=right>%s</font></p>"
+        else:
+            shell = "<p>%s</p>"
+        temp_text = u''
+        old_html_text = u''
+        page = []
+        for line in text:
+            # mark line ends
+            temp_text = temp_text + line + u'<br>'
+            html_text = shell % temp_text
+            doc.setHtml(html_text)
+            #Text too long so gone to next mage
+            if layout.pageCount() != 1:
+                page.append(shell % old_html_text)
+                formatted.append(page)
+                temp_text = line
+            old_html_text = temp_text
+        page.append(shell % old_html_text)
+        formatted.append(page)
+
         log.debug(u'format_slide - End')
-        return split_text
+        #return split_text
+        return formatted
 
     def pre_render_text(self, text):
         metrics = QtGui.QFontMetrics(self.main_font)

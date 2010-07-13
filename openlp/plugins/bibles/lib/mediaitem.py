@@ -521,16 +521,16 @@ class BibleMediaItem(MediaManagerItem):
             permission = self._decodeQtObject(reference, 'permission')
             if self.parent.settings_tab.display_style == 1:
                 verse_text = self.formatVerse(old_chapter, chapter, verse,
-                    u'(u', u')')
+                    u'<sup>(u', u')</sup>')
             elif self.parent.settings_tab.display_style == 2:
                 verse_text = self.formatVerse(old_chapter, chapter, verse,
-                    u'{', u'}')
+                    u'<sup>{', u'}</sup>')
             elif self.parent.settings_tab.display_style == 3:
                 verse_text = self.formatVerse(old_chapter, chapter, verse,
-                    u'[', u']')
+                    u'<sup>[', u']</sup>')
             else:
                 verse_text = self.formatVerse(old_chapter, chapter, verse,
-                    u'', u'')
+                    u'<sup>', u'</sup>')
             old_chapter = chapter
             footer = u'%s (%s %s)' % (book, version, copyright)
             #If not found add to footer

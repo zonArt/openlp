@@ -165,15 +165,41 @@ def context_menu_separator(base):
     action.setSeparator(True)
     return action
 
-def resize_image(image, width, height):
+def image_to_byte(image):
+    """
+    Resize an image to fit on the current screen for the web and retuns
+    it as a byte stream.
+
+    ``image``
+        The image to converted.
+    """
+    byte_array = QtCore.QByteArray()
+    buffer = QtCore.QBuffer(byte_array) #// use buffer to store pixmap into byteArray
+    buffer.open(QtCore.QIODevice.WriteOnly)
+    if isinstance(image, QtGui.QImage):
+        pixmap = QtGui.QPixmap.fromImage(image)
+    else:
+        pixmap = QtGui.QPixmap(image)
+    pixmap.save(buffer, "PNG")
+    #convert to base64 encoding so does not get missed!
+    return byte_array.toBase64()
+
+def resize_image(image, width, height, background=QtCore.Qt.black):
     """
     Resize an image to fit on the current screen.
 
     ``image``
         The image to resize.
+    ``width``
+        The new image width.
+    ``height``
+        The new image height.
+     ``background ``
+        The background colour defaults to black.
     """
     preview = QtGui.QImage(image)
     if not preview.isNull():
+        #Only resize if different size
         if preview.width() == width and preview.height == height:
             return preview
         preview = preview.scaled(width, height, QtCore.Qt.KeepAspectRatio,
@@ -183,7 +209,7 @@ def resize_image(image, width, height):
     # and move it to the centre of the preview space
     new_image = QtGui.QImage(width, height,
         QtGui.QImage.Format_ARGB32_Premultiplied)
-    new_image.fill(QtCore.Qt.black)
+    new_image.fill(background)
     painter = QtGui.QPainter(new_image)
     painter.drawImage((width - realw) / 2, (height - realh) / 2, preview)
     return new_image
@@ -212,6 +238,7 @@ from settingstab import SettingsTab
 from serviceitem import ServiceItem
 from serviceitem import ServiceItemType
 from serviceitem import ItemCapabilities
+from htmlbuilder import build_html
 from toolbar import OpenLPToolbar
 from dockwidget import OpenLPDockWidget
 from theme import ThemeLevel, ThemeXML
