@@ -55,7 +55,6 @@ class AdvancedTab(SettingsTab):
         self.leftLayout.setMargin(0)
         self.uiGroupBox = QtGui.QGroupBox(self.leftWidget)
         self.uiGroupBox.setObjectName(u'uiGroupBox')
-        self.uiGroupBox.setMaximumWidth(320)
         self.uiLayout = QtGui.QVBoxLayout(self.uiGroupBox)
         self.uiLayout.setSpacing(8)
         self.uiLayout.setMargin(6)
@@ -110,10 +109,10 @@ class AdvancedTab(SettingsTab):
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.leftLayout.addItem(self.leftSpacer)
         self.advancedTabLayout.addWidget(self.leftWidget)
-#        self.rightWidget = QtGui.QWidget(self)
-#        self.rightLayout = QtGui.QVBoxLayout(self.rightWidget)
-#        self.rightLayout.setSpacing(8)
-#        self.rightLayout.setMargin(0)
+        self.rightWidget = QtGui.QWidget(self)
+        self.rightLayout = QtGui.QVBoxLayout(self.rightWidget)
+        self.rightLayout.setSpacing(8)
+        self.rightLayout.setMargin(0)
 #        self.databaseGroupBox = QtGui.QGroupBox(self.rightWidget)
 #        self.databaseGroupBox.setObjectName(u'databaseGroupBox')
 #        self.databaseGroupBox.setEnabled(False)
@@ -121,9 +120,10 @@ class AdvancedTab(SettingsTab):
 #        self.databaseLayout.setSpacing(8)
 #        self.databaseLayout.setMargin(8)
 #        self.rightLayout.addWidget(self.databaseGroupBox)
-#        self.rightSpacer = QtGui.QSpacerItem(20, 40,
-#            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
-#        self.advancedTabLayout.addWidget(self.rightWidget)
+        self.rightSpacer = QtGui.QSpacerItem(20, 40,
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        self.rightLayout.addItem(self.rightSpacer)
+        self.advancedTabLayout.addWidget(self.rightWidget)
 #        QtCore.QObject.connect(self.sharedCheckBox,
 #            QtCore.SIGNAL(u'stateChanged(int)'), self.onSharedCheckBoxChanged)
 
