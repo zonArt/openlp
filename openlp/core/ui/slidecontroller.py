@@ -202,15 +202,21 @@ class SlideController(QtGui.QWidget):
             self.Toolbar.addToolbarWidget(u'Hide Menu', self.HideMenu)
             self.HideMenu.setMenu(QtGui.QMenu(
                 translate('SlideController', 'Hide'), self.Toolbar))
-            self.BlankScreen = QtGui.QAction(QtGui.QIcon( u':/slides/slide_blank.png'), u'Blank Screen', self.HideMenu)
+            self.BlankScreen = QtGui.QAction(QtGui.QIcon(
+                u':/slides/slide_blank.png'), u'Blank Screen', self.HideMenu)
             self.BlankScreen.setCheckable(True)
-            QtCore.QObject.connect(self.BlankScreen, QtCore.SIGNAL("triggered(bool)"), self.onBlankDisplay)
-            self.ThemeScreen = QtGui.QAction(QtGui.QIcon(u':/slides/slide_theme.png'), u'Blank to Theme', self.HideMenu)
+            QtCore.QObject.connect(self.BlankScreen,
+                QtCore.SIGNAL("triggered(bool)"), self.onBlankDisplay)
+            self.ThemeScreen = QtGui.QAction(QtGui.QIcon(
+                u':/slides/slide_theme.png'), u'Blank to Theme', self.HideMenu)
             self.ThemeScreen.setCheckable(True)
-            QtCore.QObject.connect(self.ThemeScreen, QtCore.SIGNAL("triggered(bool)"), self.onThemeDisplay)
-            self.DesktopScreen = QtGui.QAction(QtGui.QIcon(u':/slides/slide_desktop.png'), u'Show Desktop', self.HideMenu)
+            QtCore.QObject.connect(self.ThemeScreen,
+                QtCore.SIGNAL("triggered(bool)"), self.onThemeDisplay)
+            self.DesktopScreen = QtGui.QAction(QtGui.QIcon(
+                u':/slides/slide_desktop.png'), u'Show Desktop', self.HideMenu)
             self.DesktopScreen.setCheckable(True)
-            QtCore.QObject.connect(self.DesktopScreen, QtCore.SIGNAL("triggered(bool)"), self.onHideDisplay)
+            QtCore.QObject.connect(self.DesktopScreen,
+                QtCore.SIGNAL("triggered(bool)"), self.onHideDisplay)
             self.HideMenu.setDefaultAction(self.BlankScreen)
             self.HideMenu.menu().addAction(self.BlankScreen)
             self.HideMenu.menu().addAction(self.ThemeScreen)
@@ -241,9 +247,8 @@ class SlideController(QtGui.QWidget):
             self.Toolbar.addToolbarWidget(
                 u'Image SpinBox', self.DelaySpinBox)
             self.DelaySpinBox.setSuffix(translate('SlideController', 's'))
-            self.DelaySpinBox.setToolTip(
-                translate('SlideController',
-                    'Delay between slides in seconds'))
+            self.DelaySpinBox.setToolTip(translate('SlideController',
+                'Delay between slides in seconds'))
         self.ControllerLayout.addWidget(self.Toolbar)
         #Build a Media ToolBar
         self.Mediabar = OpenLPToolbar(self)
@@ -268,8 +273,7 @@ class SlideController(QtGui.QWidget):
         self.volumeSlider = Phonon.VolumeSlider()
         self.volumeSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
         self.volumeSlider.setObjectName(u'volumeSlider')
-        self.Mediabar.addToolbarWidget(
-            u'Audio Volume', self.volumeSlider)
+        self.Mediabar.addToolbarWidget(u'Audio Volume', self.volumeSlider)
         self.ControllerLayout.addWidget(self.Mediabar)
         # Build the Song Toolbar
         if isLive:
@@ -328,6 +332,11 @@ class SlideController(QtGui.QWidget):
         # Signals
         QtCore.QObject.connect(self.PreviewListWidget,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
+        if not self.isLive:
+            if QtCore.QSettings().value(u'advanced/double click live',
+                QtCore.QVariant(False)).toBool():
+                QtCore.QObject.connect(self.PreviewListWidget,
+                    QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onGoLive)
         if isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'slidecontroller_live_spin_delay'),
