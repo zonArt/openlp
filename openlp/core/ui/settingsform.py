@@ -29,7 +29,7 @@ import logging
 
 from PyQt4 import QtGui
 
-from openlp.core.ui import AdvancedTab, GeneralTab, ThemesTab, DisplayTab
+from openlp.core.ui import AdvancedTab, GeneralTab, ThemesTab #, DisplayTab
 from settingsdialog import Ui_SettingsDialog
 
 log = logging.getLogger(__name__)
@@ -45,14 +45,14 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         # General tab
-        self.GeneralTab = GeneralTab(screens)
-        self.addTab(u'General', self.GeneralTab)
+        self.generalTab = GeneralTab(screens)
+        self.addTab(u'General', self.generalTab)
         # Themes tab
-        self.ThemesTab = ThemesTab(mainWindow)
-        self.addTab(u'Themes', self.ThemesTab)
+        self.themesTab = ThemesTab(mainWindow)
+        self.addTab(u'Themes', self.themesTab)
         # Display tab
-        self.DisplayTab = DisplayTab(screens)
-        self.addTab(u'Display', self.DisplayTab)
+        #self.DisplayTab = DisplayTab(screens)
+        #self.addTab(u'Display', self.DisplayTab)
         # Advanced tab
         self.advancedTab = AdvancedTab()
         self.addTab(u'Advanced', self.advancedTab)
@@ -62,7 +62,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         Add a tab to the form
         """
         log.info(u'Adding %s tab' % tab.tabTitle)
-        self.SettingsTabWidget.addTab(tab, tab.tabTitleVisible)
+        self.settingsTabWidget.addTab(tab, tab.tabTitleVisible)
 
     def insertTab(self, tab, location):
         """
@@ -70,7 +70,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         log.debug(u'Inserting %s tab' % tab.tabTitle)
         # 14 : There are 3 tables currently and locations starts at -10
-        self.SettingsTabWidget.insertTab(
+        self.settingsTabWidget.insertTab(
             location + 14, tab, tab.tabTitleVisible)
 
     def removeTab(self, name):
@@ -78,22 +78,22 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         Remove a tab from the form
         """
         log.debug(u'remove %s tab' % name)
-        for tab_index in range(0, self.SettingsTabWidget.count()):
-            if self.SettingsTabWidget.widget(tab_index):
-                if self.SettingsTabWidget.widget(tab_index).tabTitle == name:
-                    self.SettingsTabWidget.removeTab(tab_index)
+        for tab_index in range(0, self.settingsTabWidget.count()):
+            if self.settingsTabWidget.widget(tab_index):
+                if self.settingsTabWidget.widget(tab_index).tabTitle == name:
+                    self.settingsTabWidget.removeTab(tab_index)
 
     def accept(self):
         """
         Process the form saving the settings
         """
-        for tab_index in range(0, self.SettingsTabWidget.count()):
-            self.SettingsTabWidget.widget(tab_index).save()
+        for tab_index in range(0, self.settingsTabWidget.count()):
+            self.settingsTabWidget.widget(tab_index).save()
         return QtGui.QDialog.accept(self)
 
     def postSetUp(self):
         """
         Run any post-setup code for the tabs on the form
         """
-        for tab_index in range(0, self.SettingsTabWidget.count()):
-            self.SettingsTabWidget.widget(tab_index).postSetUp()
+        for tab_index in range(0, self.settingsTabWidget.count()):
+            self.settingsTabWidget.widget(tab_index).postSetUp()
