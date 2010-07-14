@@ -1,5 +1,6 @@
 from openlp.plugins.songs.lib.opensongimport import OpenSongImport
-from openlp.plugins.songs.lib.manager import SongManager
+from openlp.plugins.songs.lib.db import init_schema
+from openlp.core.lib.db import Manager
 from glob import glob
 from zipfile import ZipFile
 import os
@@ -9,13 +10,13 @@ import codecs
 def opensong_import_lots():
     ziploc = u'/home/mjt/openlp/OpenSong_Data/'
     files = []
-    files = [u'test.opensong.zip', ziploc+u'ADond.zip']
-    #files.extend(glob(ziploc+u'Songs.zip'))
+    #files = [u'test.opensong.zip', ziploc+u'ADond.zip']
+    files.extend(glob(ziploc+u'Songs.zip'))
     #files.extend(glob(ziploc+u'SOF.zip'))
-    files.extend(glob(ziploc+u'spanish_songs_for_opensong.zip'))
+    #files.extend(glob(ziploc+u'spanish_songs_for_opensong.zip'))
 #    files.extend(glob(ziploc+u'opensong_*.zip'))
     errfile=codecs.open(u'import_lots_errors.txt', u'w', u'utf8')
-    manager=SongManager()
+    manager = Manager(u'songs', init_schema)
     for file in files:
         print u'Importing', file
         z = ZipFile(file, u'r')

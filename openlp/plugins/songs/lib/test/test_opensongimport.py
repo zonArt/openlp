@@ -24,7 +24,7 @@
 ###############################################################################
 from openlp.plugins.songs.lib.opensongimport import OpenSongImport
 from openlp.core.lib.db import Manager
-from openlp.plugins.songs.lib.db import init_schema#, Song
+from openlp.plugins.songs.lib.db import init_schema
 from openlp.plugins.songs.songsplugin import SongsPlugin
 import sys
 
@@ -46,9 +46,8 @@ def test():
     assert [u'V1', u'v1 Line 1\nV1 Line 2'] in o.song.verses 
     assert [u'V2', u'v2 Line 1\nV2 Line 2'] in o.song.verses
     assert o.song.verse_order_list == [u'V1', u'C1', u'V2', u'C2', u'V3', u'B1', u'V1']
-    assert o.song.song_cclino == u'Blah'
-    print u':%s:'%o.song.theme
-    assert o.song.theme == u'TestTheme, TestAltTheme'
+    assert o.song.ccli_number == u'Blah'
+    assert o.song.theme_name == u'TestTheme, TestAltTheme'
     o.do_import(u'test.opensong.zip', commit=False)
     o.finish()
     o.song.print_song()

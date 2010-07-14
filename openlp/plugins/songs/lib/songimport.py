@@ -51,8 +51,8 @@ class SongImport(object):
         self.alternate_title = u''
         self.copyright = u''
         self.comment = u''
-        self.theme = u''
-        self.song_cclino = u''
+        self.theme_name = u''
+        self.ccli_number = u''
         self.authors = []
         self.topics = []
         self.song_book_name = u''
@@ -163,11 +163,11 @@ class SongImport(object):
         """
         self.song_number = song_number
 
-    def set_song_cclino(self, cclino):
+    def set_ccli_number(self, cclino):
         """
         Set the ccli number
         """
-        self.song_cclino = cclino
+        self.ccli_number = cclino
 
     def set_song_book(self, song_book, publisher):
         """
@@ -273,7 +273,7 @@ class SongImport(object):
 
     def commit_song(self):
         """
-        Write the song and it's fields to disk
+        Write the song and its fields to disk
         """
         song = Song()
         song.title = self.title
@@ -303,8 +303,8 @@ class SongImport(object):
         song.verse_order = u' '.join(self.verse_order_list)
         song.copyright = self.copyright
         song.comment = self.comment
-        song.theme = self.theme
-        song.song_cclino = self.song_cclino
+        song.theme_name = self.theme_name
+        song.ccli_number = self.ccli_number
         for authortext in self.authors:
             author = self.manager.get_object_filtered(Author,
                 Author.display_name == authortext)
@@ -358,7 +358,7 @@ class SongImport(object):
             print u'TOPIC: ' + topictext
         if self.comment:
             print u'COMMENT: ' + self.comment
-        if self.theme:
-            print u'THEME: ' + self.theme
-        if self.song_cclino:
-            print u'CCLI: ' + self.song_cclino
+        if self.theme_name:
+            print u'THEME: ' + self.theme_name
+        if self.ccli_number:
+            print u'CCLI: ' + self.ccli_number

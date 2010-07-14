@@ -106,7 +106,7 @@ class Song(object):
         show_author_list -- 0: no show, 1: show
         show_copyright -- 0: no show, 1: show
         show_song_cclino -- 0: no show, 1: show
-        theme -- name of theme or blank
+        theme_name -- name of theme or blank
         category_array -- list of user defined properties (hymn, gospel)
         song_book -- name of originating book
         song_number -- number of the song, related to a songbook
@@ -129,7 +129,7 @@ class Song(object):
         self.show_copyright = 1
         self.show_song_cclino = 1
         self.show_title = 1
-        self.theme = ""
+        self.theme_name = ""
         self.category_array = None
         self.song_book = ""
         self.song_number = ""
@@ -221,7 +221,7 @@ class Song(object):
         self.set_title(sName)
         self.set_author_list(author_list)
         self.set_copyright(sCopyright)
-        self.set_song_cclino(sCcli)
+        self.set_ccli_number(sCcli)
         self.set_lyrics(lyrics)
 
     def from_ccli_text_file(self, textFileName):
@@ -276,21 +276,21 @@ class Song(object):
         """Set the copyright string"""
         self.copyright = copyright
 
-    def get_song_cclino(self):
+    def get_ccli_number(self):
         """Return the songCclino"""
-        return self._assure_string(self.song_cclino)
+        return self._assure_string(self.ccli_number)
 
-    def set_song_cclino(self, song_cclino):
-        """Set the song_cclino"""
-        self.song_cclino = song_cclino
+    def set_ccli_number(self, ccli_number):
+        """Set the ccli_number"""
+        self.ccli_number = ccli_number
 
-    def get_theme(self):
+    def get_theme_name(self):
         """Return the theme name for the song"""
-        return self._assure_string(self.theme)
+        return self._assure_string(self.theme_name)
 
-    def set_theme(self, theme):
+    def set_theme_name(self, theme_name):
         """Set the theme name (string)"""
-        self.theme = theme
+        self.theme_name = theme_name
 
     def get_song_book(self):
         """Return the song_book (string)"""
@@ -329,9 +329,9 @@ class Song(object):
 
         asOneString
         True -- string:
-          "John Newton, A Parker"
+          'John Newton, A Parker'
         False -- list of strings
-          ["John Newton", u'A Parker"]
+          ['John Newton', u'A Parker']
         """
         if asOneString:
             res = self._assure_string(self.author_list)
@@ -354,9 +354,9 @@ class Song(object):
 
         asOneString
         True -- string:
-          "Hymn, Gospel"
+          'Hymn, Gospel'
         False -- list of strings
-          ["Hymn", u'Gospel"]
+          ['Hymn', u'Gospel']
         """
         if asOneString:
             res = self._assure_string(self.category_array)
@@ -398,13 +398,13 @@ class Song(object):
         """Set the show_copyright flag (bool)"""
         self.show_copyright = show_copyright
 
-    def get_show_song_cclino(self):
+    def get_show_ccli_number(self):
         """Return the showSongCclino (string)"""
-        return self.show_song_cclino
+        return self.show_ccli_number
 
-    def set_show_song_cclino(self, show_song_cclino):
-        """Set the show_song_cclino flag (bool)"""
-        self.show_song_cclino = show_song_cclino
+    def set_show_ccli_number(self, show_ccli_number):
+        """Set the show_ccli_number flag (bool)"""
+        self.show_ccli_number = show_ccli_number
 
     def get_lyrics(self):
         """Return the lyrics as a list of strings
@@ -471,7 +471,7 @@ class Song(object):
 
         slideNumber -- 1 .. numberOfSlides
         Returns a list as:
-        [theme (string),
+        [theme_name (string),
          title (string),
          authorlist (string),
          copyright (string),
@@ -496,13 +496,13 @@ class Song(object):
             cpright = self.get_copyright()
         else:
             cpright = ""
-        if self.show_song_cclino:
-            ccli = self.get_song_cclino()
+        if self.show_ccli_number:
+            ccli = self.get_ccli_number()
         else:
             ccli = ""
-        theme = self.get_theme()
+        theme_name = self.get_theme_name()
         # examine the slide for a theme
-        res.append(theme)
+        res.append(theme_name)
         res.append(title)
         res.append(author)
         res.append(cpright)
