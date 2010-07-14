@@ -358,6 +358,9 @@ class MainDisplay(DisplayWidget):
             else:
                 self.displayBlank.setPixmap(
                     QtGui.QPixmap.fromImage(self.blankFrame))
+        if mode != HideMode.Screen and self.isHidden():
+            self.setVisible(True)
+
 
     def showDisplay(self, message=u''):
         """
@@ -367,6 +370,8 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'showDisplay')
         self.displayBlank.setPixmap(self.transparent)
+        if self.isHidden():
+            self.setVisible(True)
         #Trigger actions when display is active again
         Receiver.send_message(u'maindisplay_active')
 
