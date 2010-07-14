@@ -129,6 +129,7 @@ class RenderManager(object):
             self.calculate_default(self.screens.current[u'size'])
             self.renderer.set_theme(self.themedata)
             self.build_text_rectangle(self.themedata)
+            self.renderer.set_frame_dest(self.width, self.height)
         return self.renderer.bg_frame
 
     def build_text_rectangle(self, theme):

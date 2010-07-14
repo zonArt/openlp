@@ -98,6 +98,20 @@ class Renderer(object):
                                          self.frame.width(),
                                          self.frame.height())
 
+    def set_text_rectangle(self, rect_main, rect_footer):
+        """
+        Sets the rectangle within which text should be rendered.
+
+        ``rect_main``
+            The main text block.
+
+        ``rect_footer``
+            The footer text block.
+        """
+        log.debug(u'set_text_rectangle %s , %s' % (rect_main, rect_footer))
+        self._rect = rect_main
+        self._rect_footer = rect_footer
+
     def set_frame_dest(self, frame_width, frame_height, preview=False):
         """
         Set the size of the slide.
@@ -181,7 +195,6 @@ class Renderer(object):
             old_html_text = temp_text
         page.append(shell % old_html_text)
         formatted.append(page)
-
         log.debug(u'format_slide - End')
         #return split_text
         return formatted
@@ -256,20 +269,6 @@ class Renderer(object):
         if page and page != u' ':
             split_pages.append(page)
         return split_pages
-
-    def set_text_rectangle(self, rect_main, rect_footer):
-        """
-        Sets the rectangle within which text should be rendered.
-
-        ``rect_main``
-            The main text block.
-
-        ``rect_footer``
-            The footer text block.
-        """
-        log.debug(u'set_text_rectangle %s , %s' % (rect_main, rect_footer))
-        self._rect = rect_main
-        self._rect_footer = rect_footer
 
     def generate_frame_from_lines(self, lines, footer_lines=None):
         """

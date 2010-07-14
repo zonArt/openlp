@@ -86,7 +86,6 @@ def build_html(theme, screen, alert, image):
                       build_alert(theme, width, height, alert),
                       build_image(theme, width, height, alert),
                       build_image_src(theme, width, height, alert, image))
-    print html
     return html
 
 def build_video(theme, width, height, alert):
@@ -128,8 +127,8 @@ def build_lyrics(theme, width, height, alert):
         position: absolute;
         left: 0px;
         top: 0px;
-        width: 640px;
-        height: 480px;
+        width: 1024px;
+        height: 768px;
         z-index:3;
         %s;
         %s;
@@ -149,6 +148,7 @@ def build_lyrics(theme, width, height, alert):
             # 1px is the blur radius
             outline = u'text-outline: %spx 1px %s' %\
                 (theme.display_outline_size, theme.display_outline_color)
+            outline = u'text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white'
         lyrics_html = lyrics % (shadow, outline, theme.font_main_name, theme.font_main_proportion)
         print lyrics_html
     return lyrics_html

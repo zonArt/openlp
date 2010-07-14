@@ -779,7 +779,11 @@ class SlideController(QtGui.QWidget):
                 self.updatePreview()
             else:
                 before = time.time()
-                changed, frame, raw_html = self.serviceItem.get_rendered_frame(row)
+                if self.serviceItem.just_rendered:
+                    self.serviceItem.just_rendered = False
+                    if self.isLive:
+                        self.displayManager.buildHtml(self.serviceItem.bg_frame)
+                frame, raw_html = self.serviceItem.get_rendered_frame(row)
                 if isinstance(frame, QtGui.QImage):
                     self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
                 else:
@@ -788,7 +792,6 @@ class SlideController(QtGui.QWidget):
                     15, u'Slide Rendering took %4s' % (time.time() - before))
                 if self.isLive:
                     if self.serviceItem.is_text():
-                        self.displayManager.buildHtml(changed)
                         self.displayManager.text(raw_html)
                     else:
                         self.displayManager.displayImage(frame)

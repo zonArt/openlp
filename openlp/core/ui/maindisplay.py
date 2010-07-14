@@ -255,13 +255,10 @@ class WebViewer(DisplayWidget):
         self.alerttext = "<p>Red Alert! Raise Shields!</p>"
 
     def next(self):
-        print "next"
         if self.currslide:
-            print "2"
             self.frame.evaluateJavaScript("startfade('" + self.slide2 + "')")
             #self.frame.findFirstElement('div#lyrics').setInnerXml(self.slide2)
         else:
-            print "1"
             self.frame.evaluateJavaScript("startfade('" + self.slide1 + "')")
             #self.frame.findFirstElement('div#lyrics').setInnerXml(self.slide1)
         self.currslide = not self.currslide
