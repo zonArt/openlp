@@ -233,10 +233,6 @@ class SongsPlugin(Plugin):
             'This plugin allows songs to be managed and displayed.')
         return about_text
 
-    def canDeleteTheme(self, theme_name):
-        if not self.manager.get_all_objects_filtered(Song,
-            Song.theme_name == theme_name):
-
     def usesTheme(self, theme):
         """
         Called to find out if the song plugin is currently using a theme.
