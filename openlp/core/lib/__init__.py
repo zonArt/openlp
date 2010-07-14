@@ -174,6 +174,8 @@ def resize_image(image, width, height):
     """
     preview = QtGui.QImage(image)
     if not preview.isNull():
+        if preview.width() == width and preview.height == height:
+            return preview
         preview = preview.scaled(width, height, QtCore.Qt.KeepAspectRatio,
             QtCore.Qt.SmoothTransformation)
     realw = preview.width()

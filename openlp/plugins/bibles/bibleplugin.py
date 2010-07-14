@@ -38,7 +38,8 @@ class BiblePlugin(Plugin):
     def __init__(self, plugin_helpers):
         Plugin.__init__(self, u'Bibles', u'1.9.2', plugin_helpers)
         self.weight = -9
-        self.icon = build_icon(u':/plugins/plugin_bibles.png')
+        self.icon_path = u':/plugins/plugin_bibles.png'
+        self.icon = build_icon(self.icon_path)
         #Register the bible Manager
         self.status = PluginStatus.Active
         self.manager = None
@@ -94,7 +95,26 @@ class BiblePlugin(Plugin):
             'displayed on the screen during the service.')
         return about_text
 
-    def canDeleteTheme(self, theme):
+    def usesTheme(self, theme):
+        """
+        Called to find out if the bible plugin is currently using a theme.
+
+        Returns True if the theme is being used, otherwise returns False.
+        """
         if self.settings_tab.bible_theme == theme:
-            return False
-        return True
+            return True
+        return False
+
+    def renameTheme(self, oldTheme, newTheme):
+        """
+        Rename the theme the bible plugin is using making the plugin use the
+        new name.
+
+        ``oldTheme``
+            The name of the theme the plugin should stop using. Unused for
+            this particular plugin.
+
+        ``newTheme``
+            The new name the plugin should now use.
+        """
+        self.settings_tab.bible_theme = newTheme
