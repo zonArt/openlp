@@ -59,7 +59,7 @@ class AdvancedTab(SettingsTab):
         self.recentGroupBox.setMaximumSize(QtCore.QSize(220, 57))
         self.recentLayout = QtGui.QHBoxLayout(self.recentGroupBox)
         self.recentLayout.setSpacing(8)
-        self.recentLayout.setMargin(6)
+        self.recentLayout.setMargin(0)
         self.recentLayout.setObjectName(u'recentLayout')
         self.recentLabel = QtGui.QLabel(self.recentGroupBox)
         self.recentLabel.setObjectName(u'recentLabel')
