@@ -15,7 +15,7 @@ def opensong_import_lots():
     #files.extend(glob(ziploc+u'SOF.zip'))
     #files.extend(glob(ziploc+u'spanish_songs_for_opensong.zip'))
 #    files.extend(glob(ziploc+u'opensong_*.zip'))
-    errfile=codecs.open(u'import_lots_errors.txt', u'w', u'utf8')
+    errfile = codecs.open(u'import_lots_errors.txt', u'w', u'utf8')
     manager = Manager(u'songs', init_schema)
     for file in files:
         print u'Importing', file
@@ -41,8 +41,8 @@ def opensong_import_lots():
                 errfile.write(u'Failure: %s:%s\n' %(file, filename.decode('cp437')))
                 songfile = z.open(song)
                 for l in songfile.readlines():
-                    l=l.decode('utf8')
-                    print(u'  |%s\n'%l.strip())
+                    l = l.decode('utf8')
+                    print(u'  |%s\n' % l.strip())
                     errfile.write(u'  |%s\n'%l.strip())   
                 print_exc(3, file = errfile)
                 print_exc(3)
