@@ -78,22 +78,22 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         Remove a tab from the form
         """
         log.debug(u'remove %s tab' % name)
-        for tab_index in range(0, self.settingsTabWidget.count()):
-            if self.settingsTabWidget.widget(tab_index):
-                if self.settingsTabWidget.widget(tab_index).tabTitle == name:
-                    self.settingsTabWidget.removeTab(tab_index)
+        for tabIndex in range(0, self.settingsTabWidget.count()):
+            if self.settingsTabWidget.widget(tabIndex):
+                if self.settingsTabWidget.widget(tabIndex).tabTitle == name:
+                    self.settingsTabWidget.removeTab(tabIndex)
 
     def accept(self):
         """
         Process the form saving the settings
         """
-        for tab_index in range(0, self.settingsTabWidget.count()):
-            self.settingsTabWidget.widget(tab_index).save()
+        for tabIndex in range(0, self.settingsTabWidget.count()):
+            self.settingsTabWidget.widget(tabIndex).save()
         return QtGui.QDialog.accept(self)
 
     def postSetUp(self):
         """
         Run any post-setup code for the tabs on the form
         """
-        for tab_index in range(0, self.settingsTabWidget.count()):
-            self.settingsTabWidget.widget(tab_index).postSetUp()
+        for tabIndex in range(0, self.settingsTabWidget.count()):
+            self.settingsTabWidget.widget(tabIndex).postSetUp()
