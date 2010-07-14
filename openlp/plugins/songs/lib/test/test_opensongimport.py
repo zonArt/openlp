@@ -23,11 +23,13 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 from openlp.plugins.songs.lib.opensongimport import OpenSongImport
-from openlp.plugins.songs.lib.manager import SongManager
+from openlp.core.lib.db import Manager
+from openlp.plugins.songs.lib.db import init_schema#, Song
+from openlp.plugins.songs.songsplugin import SongsPlugin
 import sys
 
 def test():
-    manager = SongManager()
+    manager = Manager(u'songs', init_schema)
     o = OpenSongImport(manager)
     o.do_import(u'test.opensong', commit=False)
     o.finish()
