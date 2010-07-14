@@ -32,10 +32,16 @@ class PresentationTab(SettingsTab):
     PresentationsTab is the Presentations settings tab in the settings dialog.
     """
     def __init__(self, title, controllers):
+        """
+        Constructor
+        """
         self.controllers = controllers
         SettingsTab.__init__(self, title)
 
     def setupUi(self):
+        """
+        Create the controls for the settings tab
+        """
         self.setObjectName(u'PresentationTab')
         self.tabTitleVisible = translate('PresentationPlugin.PresentationTab',
             'Presentations')
@@ -89,6 +95,9 @@ class PresentationTab(SettingsTab):
         self.PresentationLayout.addWidget(self.PresentationRightWidget)
 
     def retranslateUi(self):
+        """
+        Make any translation changes
+        """
         self.VerseDisplayGroupBox.setTitle(
             translate('PresentationPlugin.PresentationTab',
             'Available Controllers'))
@@ -100,6 +109,9 @@ class PresentationTab(SettingsTab):
                 translate('PresentationPlugin.PresentationTab', 'available')))
 
     def load(self):
+        """
+        Load the settings.
+        """
         for key in self.controllers:
             controller = self.controllers[key]
             if controller.available:
@@ -109,6 +121,9 @@ class PresentationTab(SettingsTab):
                     QtCore.QVariant(0)).toInt()[0])
 
     def save(self):
+        """
+        Save the settings.
+        """
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = self.PresenterCheckboxes[controller.name]

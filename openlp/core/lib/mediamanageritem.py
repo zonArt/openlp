@@ -323,9 +323,15 @@ class MediaManagerItem(QtGui.QWidget):
                     translate('MediaManagerItem',
                         '&Add to selected Service Item'),
                     self.onAddEditClick))
-        QtCore.QObject.connect(
-            self.listView, QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
-            self.onPreviewClick)
+        if QtCore.QSettings().value(u'advanced/double click live',
+            QtCore.QVariant(False)).toBool():
+            QtCore.QObject.connect(self.listView,
+                QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
+                self.onLiveClick)
+        else:
+            QtCore.QObject.connect(self.listView,
+                QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
+                self.onPreviewClick)
 
     def initialise(self):
         """
@@ -379,14 +385,17 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Validates to see if the file still exists or thumbnail is up to date
         """
-        if os.path.exists(file):
+        if not os.path.exists(file):
+            return False
+        if os.path.exists(thumb):
             filedate = os.stat(file).st_mtime
             thumbdate = os.stat(thumb).st_mtime
             #if file updated rebuild icon
             if filedate > thumbdate:
                 self.iconFromFile(file, thumb)
-            return True
-        return False
+        else:
+            self.iconFromFile(file, thumb)
+        return True
 
     def iconFromFile(self, file, thumb):
         """
