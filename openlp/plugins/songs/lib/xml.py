@@ -49,7 +49,7 @@ class SongXMLBuilder(object):
     """
     log.info(u'SongXMLBuilder Loaded')
 
-    def __init__(self, song_language = None):
+    def __init__(self, song_language=None):
         """
         Set up the song builder.
 
@@ -85,14 +85,14 @@ class SongXMLBuilder(object):
         """
         Debugging aid to dump XML so that we can see what we have.
         """
-        return etree.tostring(self.song_xml, encoding = u'UTF-8',
+        return etree.tostring(self.song_xml, encoding=u'UTF-8',
             xml_declaration=True, pretty_print=True)
 
     def extract_xml(self):
         """
         Extract our newly created XML song.
         """
-        return etree.tostring(self.song_xml, encoding = u'UTF-8',
+        return etree.tostring(self.song_xml, encoding=u'UTF-8',
             xml_declaration=True)
 
 
