@@ -29,7 +29,7 @@ import logging
 
 from PyQt4 import QtGui
 
-from openlp.core.ui import AdvancedTab, GeneralTab, ThemesTab #, DisplayTab
+from openlp.core.ui import AdvancedTab, GeneralTab, ThemesTab
 from settingsdialog import Ui_SettingsDialog
 
 log = logging.getLogger(__name__)
@@ -50,9 +50,6 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         # Themes tab
         self.themesTab = ThemesTab(mainWindow)
         self.addTab(u'Themes', self.themesTab)
-        # Display tab
-        #self.DisplayTab = DisplayTab(screens)
-        #self.addTab(u'Display', self.DisplayTab)
         # Advanced tab
         self.advancedTab = AdvancedTab()
         self.addTab(u'Advanced', self.advancedTab)
