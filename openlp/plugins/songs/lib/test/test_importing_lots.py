@@ -7,6 +7,7 @@ import os
 from traceback import print_exc
 import sys
 import codecs
+
 def opensong_import_lots():
     ziploc = u'/home/mjt/openlp/OpenSong_Data/'
     files = []
@@ -34,7 +35,7 @@ def opensong_import_lots():
             o = OpenSongImport(manager)
             try:
                 o.do_import_file(songfile)
-                o.song.print_song()
+                # o.song_import.print_song()
             except:
                 print "Failure",
                 
@@ -51,6 +52,6 @@ def opensong_import_lots():
             #o.finish()
             print "OK"
             #os.unlink(filename)
-            # o.song.print_song()
+            # o.song_import.print_song()
 if __name__ == "__main__":
     opensong_import_lots()

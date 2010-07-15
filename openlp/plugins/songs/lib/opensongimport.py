@@ -38,7 +38,7 @@ log = logging.getLogger(__name__)
 class OpenSongImportError(Exception):
     pass
 
-class OpenSongImport:
+class OpenSongImport(object):
     """
     Import songs exported from OpenSong - the format is described loosly here:
     http://www.opensong.org/d/manual/song_file_format_specification
@@ -130,27 +130,25 @@ class OpenSongImport:
         Process the OpenSong file - pass in a file-like object,
         not a filename
         """            
-        self.song = SongImport(self.songmanager)
+        self.song_import = SongImport(self.songmanager)
         tree = objectify.parse(file)
         root = tree.getroot()
         fields = dir(root)
-        decode = {u'copyright':self.song.add_copyright,
-                u'ccli':self.song.set_ccli_number,
-                u'author':self.song.parse_author,
-                u'title':self.song.set_title,
-                u'aka':self.song.set_alternate_title,
-                u'hymn_number':self.song.set_song_number}
+        decode = {u'copyright':self.song_import.add_copyright,
+                u'ccli':self.song_import.set_ccli_number,
+                u'author':self.song_import.parse_author,
+                u'title':self.song_import.set_title,
+                u'aka':self.song_import.set_alternate_title,
+                u'hymn_number':self.song_import.set_song_number}
         for (attr, fn) in decode.items():
             if attr in fields:
                 fn(unicode(root.__getattr__(attr)))
 
         res = []
         if u'theme' in fields:
-            res.append(unicode(root.theme))
+            self.song_import.topics.append(unicode(root.theme))
         if u'alttheme' in fields:
-            res.append(unicode(root.alttheme))
-        self.song.theme_name = u', '.join(res)
-        
+            self.song_import.topics.append(unicode(root.alttheme))
         # data storage while importing
         verses = {}
         lyrics = unicode(root.lyrics)
@@ -207,7 +205,7 @@ class OpenSongImport:
                     our_verse_order.append(versetag)
             if words:
                 # Tidy text and remove the ____s from extended words
-                # words=self.song.tidy_text(words)
+                words=self.song_import.tidy_text(words)
                 words=words.replace('_', '')
                 verses[versetype][versenum].append(words)
         # done parsing
@@ -221,7 +219,7 @@ class OpenSongImport:
             for n in versenums:
                 versetag = u'%s%s' %(v,n)
                 lines = u'\n'.join(verses[v][n])
-                self.song.verses.append([versetag, lines])
+                self.song_import.verses.append([versetag, lines])
                 versetags[versetag] = 1 # keep track of what we have for error checking later
         # now figure out the presentation order
         if u'presentation' in fields and root.presentation != u'':
@@ -236,7 +234,7 @@ class OpenSongImport:
             if not versetags.has_key(tag):
                 log.warn(u'Got order %s but not in versetags, skipping', tag)
             else:
-                self.song.verse_order_list.append(tag)
+                self.song_import.verse_order_list.append(tag)
     def finish(self):
         """ Separate function, allows test suite to not pollute database"""
-        self.song.finish()
+        self.song_import.finish()
