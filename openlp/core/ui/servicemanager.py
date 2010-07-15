@@ -575,16 +575,16 @@ class ServiceManager(QtGui.QWidget):
             SettingsManager.get_last_dir(self.parent.serviceSettingsSection),
             translate('ServiceManager', 'OpenLP Service Files (*.osz)'))
         else:
-            filename = SettingsManager.get_last_dir(
-                self.parent.serviceSettingsSection)
+            filename = os.path.join(SettingsManager.get_last_dir(
+                self.parent.serviceSettingsSection), self.serviceName)
         if filename:
+            filename = QtCore.QDir.toNativeSeparators(filename)
             splittedFile = filename.split(u'.')
             if splittedFile[-1] != u'osz':
                 filename = filename + u'.osz'
             filename = unicode(filename)
             self.isNew = False
-            SettingsManager.set_last_dir(
-                self.parent.serviceSettingsSection,
+            SettingsManager.set_last_dir(self.parent.serviceSettingsSection,
                 os.path.split(filename)[0])
             service = []
             servicefile = filename + u'.osd'
