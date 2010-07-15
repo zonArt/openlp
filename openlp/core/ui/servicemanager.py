@@ -130,7 +130,7 @@ class ServiceManager(QtGui.QWidget):
             translate('ServiceManager', 'Save Service'),
             u':/general/general_save.png',
             translate('ServiceManager', 'Save this service'),
-            self.onSaveService)
+            self.onQuickSaveService)
         self.Toolbar.addSeparator()
         self.ThemeLabel = QtGui.QLabel(translate('ServiceManager', 'Theme:'),
             self)
