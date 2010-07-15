@@ -24,40 +24,44 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import translate
+
+from openlp.core.lib import translate, build_icon
 
 class Ui_SettingsDialog(object):
     def setupUi(self, SettingsDialog):
         SettingsDialog.setObjectName(u'SettingsDialog')
         SettingsDialog.resize(724, 502)
-        self.SettingsLayout = QtGui.QVBoxLayout(SettingsDialog)
-        self.SettingsLayout.setSpacing(8)
-        self.SettingsLayout.setMargin(8)
-        self.SettingsLayout.setObjectName(u'SettingsLayout')
-        self.SettingsTabWidget = QtGui.QTabWidget(SettingsDialog)
-        self.SettingsTabWidget.setObjectName(u'SettingsTabWidget')
-        self.SettingsLayout.addWidget(self.SettingsTabWidget)
-        self.ButtonsBox = QtGui.QDialogButtonBox(SettingsDialog)
+        SettingsDialog.setWindowIcon(
+            build_icon(u':/system/system_settings.png'))
+        self.settingsLayout = QtGui.QVBoxLayout(SettingsDialog)
+        self.settingsLayout.setSpacing(8)
+        self.settingsLayout.setMargin(8)
+        self.settingsLayout.setObjectName(u'settingsLayout')
+        self.settingsTabWidget = QtGui.QTabWidget(SettingsDialog)
+        self.settingsTabWidget.setObjectName(u'settingsTabWidget')
+        self.settingsLayout.addWidget(self.settingsTabWidget)
+        self.buttonBox = QtGui.QDialogButtonBox(SettingsDialog)
         sizePolicy = QtGui.QSizePolicy(
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
-            self.ButtonsBox.sizePolicy().hasHeightForWidth())
-        self.ButtonsBox.setSizePolicy(sizePolicy)
-        self.ButtonsBox.setMaximumSize(QtCore.QSize(16777215, 16777215))
-        self.ButtonsBox.setOrientation(QtCore.Qt.Horizontal)
-        self.ButtonsBox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-        self.ButtonsBox.setObjectName(u'ButtonsBox')
-        self.SettingsLayout.addWidget(self.ButtonsBox)
+            self.buttonBox.sizePolicy().hasHeightForWidth())
+        self.buttonBox.setSizePolicy(sizePolicy)
+        self.buttonBox.setMaximumSize(QtCore.QSize(16777215, 16777215))
+        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
+        self.buttonBox.setStandardButtons(
+            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
+        self.buttonBox.setObjectName(u'buttonBox')
+        self.settingsLayout.addWidget(self.buttonBox)
         self.retranslateUi(SettingsDialog)
-        self.SettingsTabWidget.setCurrentIndex(0)
-        QtCore.QObject.connect(self.ButtonsBox,
+        self.settingsTabWidget.setCurrentIndex(0)
+        QtCore.QObject.connect(self.buttonBox,
             QtCore.SIGNAL(u'accepted()'), SettingsDialog.accept)
-        QtCore.QObject.connect(self.ButtonsBox,
+        QtCore.QObject.connect(self.buttonBox,
             QtCore.SIGNAL(u'rejected()'), SettingsDialog.reject)
         QtCore.QMetaObject.connectSlotsByName(SettingsDialog)
 
     def retranslateUi(self, SettingsDialog):
-        SettingsDialog.setWindowTitle(translate('SettingsForm', 'Settings'))
+        SettingsDialog.setWindowTitle(translate('SettingsForm',
+            'Configure OpenLP'))
