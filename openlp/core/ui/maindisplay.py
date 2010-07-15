@@ -361,7 +361,6 @@ class MainDisplay(DisplayWidget):
         if mode != HideMode.Screen and self.isHidden():
             self.setVisible(True)
 
-
     def showDisplay(self, message=u''):
         """
         Show the stored layers so the screen reappears as it was
