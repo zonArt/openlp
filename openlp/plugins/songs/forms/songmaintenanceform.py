@@ -225,7 +225,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 QtGui.QMessageBox.critical(self,
                     translate('SongsPlugin.SongMaintenanceForm', 'Error'),
                     translate('SongsPlugin.SongMaintenanceForm',
-                    'Could not add your author, because he already exists.'))
+                    'This author already exists.'))
 
     def onTopicAddButtonClick(self):
         if self.topicform.exec_():
@@ -242,7 +242,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 QtGui.QMessageBox.critical(self,
                     translate('SongsPlugin.SongMaintenanceForm', 'Error'),
                     translate('SongsPlugin.SongMaintenanceForm',
-                    'Could not add your topic, because it already exists.'))
+                    'This topic already exists.'))
 
     def onBookAddButtonClick(self):
         if self.bookform.exec_():
@@ -261,7 +261,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 QtGui.QMessageBox.critical(self,
                     translate('SongsPlugin.SongMaintenanceForm', 'Error'),
                     translate('SongsPlugin.SongMaintenanceForm',
-                    'Could not add your book, because it already exists.'))
+                    'This book already exists.'))
 
     def onAuthorEditButtonClick(self):
         author_id = self._getCurrentItemId(self.AuthorsListWidget)
