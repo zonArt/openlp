@@ -879,14 +879,6 @@ A GNU General Public License nem engedi meg, hogy a program része legyen szelle
     </message>
 </context>
 <context>
-    <name>BiblesPlugin,BiblesTab</name>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="48"/>
-        <source>Bibles</source>
-        <translation type="unfinished">Bibliák</translation>
-    </message>
-</context>
-<context>
     <name>BiblesPlugin.BiblesTab</name>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="152"/>
@@ -958,6 +950,11 @@ Changes do not affect verses already in the service.</source>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="179"/>
         <source>Display dual Bible verses</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/biblestab.py" line="48"/>
+        <source>Bibles</source>
+        <translation type="unfinished">Bibliák</translation>
     </message>
 </context>
 <context>
