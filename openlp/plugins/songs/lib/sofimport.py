@@ -167,7 +167,7 @@ class SofImport(OooImport):
             self.song.repeat_verse()
             return
         if self.song.title == u'':
-            if self.song.get_copyright() == u'':
+            if self.song.copyright == u'':
                 self.add_author(text)
             else:
                 self.song.add_copyright(text)
@@ -187,7 +187,7 @@ class SofImport(OooImport):
             return text
         if textportion.CharWeight == BOLD:
             boldtext = text.strip()
-            if boldtext.isdigit() and self.song.get_song_number() == '':
+            if boldtext.isdigit() and self.song.song_number == '':
                 self.add_songnumber(boldtext)
                 return u''
             if self.song.title == u'':
@@ -220,20 +220,17 @@ class SofImport(OooImport):
         Add a song number, store as alternate title. Also use the song
         number to work out which songbook we're in
         """
-        self.song.set_song_number(song_no)
-        self.song.set_alternate_title(song_no + u'.')
+        self.song.song_number = song_no
+        self.song.alternate_title = song_no + u'.'
+        self.song.song_book_pub = u'Kingsway Publications'
         if int(song_no) <= 640:
-            self.song.set_song_book(u'Songs of Fellowship 1', 
-                u'Kingsway Publications')
+            self.song.song_book = u'Songs of Fellowship 1'
         elif int(song_no) <= 1150:
-            self.song.set_song_book(u'Songs of Fellowship 2', 
-                u'Kingsway Publications')
+            self.song.song_book = u'Songs of Fellowship 2'
         elif int(song_no) <= 1690:
-            self.song.set_song_book(u'Songs of Fellowship 3', 
-                u'Kingsway Publications')
+            self.song.song_book = u'Songs of Fellowship 3'
         else:
-            self.song.set_song_book(u'Songs of Fellowship 4', 
-                u'Kingsway Publications')
+            self.song.song_book = u'Songs of Fellowship 4'
 
     def add_title(self, text):
         """
@@ -283,7 +280,7 @@ class SofImport(OooImport):
             splitat = None
         else:
             versetag = u'V'
-            splitat = self.verse_splits(self.song.get_song_number())
+            splitat = self.verse_splits(self.song.song_number)
         if splitat:
             ln = 0
             verse = u''
