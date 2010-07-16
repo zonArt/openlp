@@ -28,7 +28,7 @@ from sqlalchemy.sql import and_
 
 from openlp.core.lib import translate
 from openlp.plugins.songs.forms import AuthorsForm, TopicsForm, SongBookForm
-from openlp.plugins.songs.lib.db import Author, Book, Topic
+from openlp.plugins.songs.lib.db import Author, Book, Topic,  Song
 from songmaintenancedialog import Ui_SongMaintenanceDialog
 
 class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
@@ -188,7 +188,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         """
         books = self.songmanager.get_all_objects_filtered(Book,
             and_(
-                Book.name == new_book.name, 
+                Book.name == new_book.name,
                 Book.publisher == new_book.publisher
                 )
             )
@@ -349,15 +349,46 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                             translate('SongsPlugin.SongMaintenanceForm', 'Error'),
                             translate('SongsPlugin.SongMaintenanceForm',
                             'Could not save your changes.'))
+                elif self.mergeItems(Book, book):
+                    self.resetBooks()
                 else:
-                    # We restore the book's old name and publisher.
+                    # We restore the book's old name and publisher, because
+                    # the user did not want to merge the two topics.
                     book.name = temp_name
                     book.publisher = temp_publisher
-                    QtGui.QMessageBox.critical(self,
-                        translate('SongsPlugin.SongMaintenanceForm', 'Error'),
-                        translate('SongsPlugin.SongMaintenanceForm',
-                        'Could not save your modified book, because it already '
-                        'exists.'))
+
+    def mergeItems(self, item_class, existing_item):
+        '''
+        Called when a song book is edited, but the modified song book is a
+        duplicate (of an existing one). The user can merges the modified item
+        with the existing one in terms to be able to fix e. g. spelling mistakes in
+        the name.
+        '''
+        if QtGui.QMessageBox.critical(self,
+            translate('SongsPlugin.SongMaintenanceForm', 'Error'),
+            translate('SongsPlugin.SongMaintenanceForm', 'The book "bla"'
+            'already exists. Would you like to make songs with book "blu" use '
+            'the existing book "bla"?'),
+            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No | \
+            QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.Yes:
+            #if item_class == Author:
+            #if item_class == Topic:
+            if item_class == Book:
+                songs = self.songmanager.get_all_objects_filtered(Song,
+                    Song.song_book_id == existing_item.id)
+                book = self.songmanager.get_object_filtered(Book,
+                    and_(
+                        Book.name == existing_item.name,
+                        Book.publisher == existing_item.publisher
+                        )
+                    )
+                for song in songs:
+                    song.song_book_id = book.id
+                    self.songmanager.save_object(song)
+                self.songmanager.delete_object(Book, existing_item.id)
+            return True
+        else:
+            return False
 
     def onAuthorDeleteButtonClick(self):
         """
