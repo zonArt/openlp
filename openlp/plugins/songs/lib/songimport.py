@@ -123,15 +123,9 @@ class SongImport(object):
         if len(lines) == 1:
             self.parse_author(lines[0])
             return
-        if not self.get_title():
-            self.set_title(lines[0])
+        if not self.title:
+            self.title = lines[0]
         self.add_verse(text)
-
-    def get_title(self):
-        """
-        Return the title
-        """
-        return self.title
 
     def get_copyright(self):
         """
@@ -144,12 +138,6 @@ class SongImport(object):
         Return the song number
         """
         return self.song_number
-
-    def set_title(self, title):
-        """
-        Set the title
-        """
-        self.title = title
 
     def set_alternate_title(self, title):
         """

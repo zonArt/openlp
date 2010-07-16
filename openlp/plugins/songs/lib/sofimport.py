@@ -142,7 +142,7 @@ class SofImport(OooImport):
             self.blanklines += 1
             if self.blanklines > 1:
                 return
-            if self.song.get_title() != u'':
+            if self.song.title != u'':
                 self.finish_verse()
             return
         self.blanklines = 0
@@ -166,7 +166,7 @@ class SofImport(OooImport):
             self.finish_verse()
             self.song.repeat_verse()
             return
-        if self.song.get_title() == u'':
+        if self.song.title == u'':
             if self.song.get_copyright() == u'':
                 self.add_author(text)
             else:
@@ -190,7 +190,7 @@ class SofImport(OooImport):
             if boldtext.isdigit() and self.song.get_song_number() == '':
                 self.add_songnumber(boldtext)
                 return u''
-            if self.song.get_title() == u'':
+            if self.song.title == u'':
                 text = self.uncap_text(text)
                 self.add_title(text)
             return text
@@ -245,7 +245,7 @@ class SofImport(OooImport):
             title = title[1:]
         if title.endswith(u','):
             title = title[:-1]
-        self.song.set_title(title)
+        self.song.title = title
 
     def add_author(self, text):
         """
