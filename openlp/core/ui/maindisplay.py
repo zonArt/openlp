@@ -504,7 +504,7 @@ class VideoDisplay(Phonon.VideoWidget):
 
     def keyPressEvent(self, event):
         if isinstance(event, QtGui.QKeyEvent):
-            # here accept the event and do something
+            # Here accept the event and do something.
             if event.key() == QtCore.Qt.Key_Escape:
                 self.onMediaStop()
                 event.accept()
