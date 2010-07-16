@@ -406,6 +406,201 @@ class WebViewer(DisplayWidget):
 #        self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
 #        self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
 #        # WA_TranslucentBackground is not available in QT4.4
+#        self.videoDisplay = self.page.mainFrame()
+#        self.videoDisplay.setScrollBarPolicy(QtCore.Qt.Vertical,
+#            QtCore.Qt.ScrollBarAlwaysOff)
+#        self.videoDisplay.setScrollBarPolicy(QtCore.Qt.Horizontal,
+#            QtCore.Qt.ScrollBarAlwaysOff)
+#        self.proxy = QtGui.QGraphicsProxyWidget()
+#        self.proxy.setWidget(self.webView)
+#        self.proxy.setWindowFlags(QtCore.Qt.Window |
+#            QtCore.Qt.FramelessWindowHint)
+#        self.proxy.setZValue(1)
+#        self.scene.addItem(self.proxy)
+#
+#    def setupImage(self):
+#        self.imageDisplay = QtGui.QGraphicsPixmapItem()
+#        self.imageDisplay.setZValue(2)
+#        self.scene.addItem(self.imageDisplay)
+#
+#    def setupText(self):
+#        #self.displayText = QtGui.QGraphicsTextItem()
+#        self.displayText = QtGui.QGraphicsPixmapItem()
+#        #self.displayText.setPos(0,0)
+#        #self.displayText.setTextWidth(self.size().width())
+#        self.displayText.setZValue(4)
+#        self.scene.addItem(self.displayText)
+#
+#    def setupAlert(self):
+#        self.alertText = QtGui.QGraphicsTextItem()
+#        self.alertText.setTextWidth(self.size().width())
+#        self.alertText.setZValue(8)
+#        self.scene.addItem(self.alertText)
+#
+#    def setupBlank(self):
+#        self.displayBlank = QtGui.QGraphicsPixmapItem()
+#        self.displayBlank.setZValue(10)
+#        self.scene.addItem(self.displayBlank)
+#
+##    def hideDisplayForVideo(self):
+##        """
+##        Hides the main display if for the video to be played
+##        """
+##        self.hideDisplay(HideMode.Screen)
+#
+#    def hideDisplay(self, mode=HideMode.Screen):
+#        """
+#        Hide the display by making all layers transparent
+#        Store the images so they can be replaced when required
+#        """
+#        log.debug(u'hideDisplay mode = %d', mode)
+#        #self.displayText.setPixmap(self.transparent)
+#        if mode == HideMode.Screen:
+#            #self.display_image.setPixmap(self.transparent)
+#            self.setVisible(False)
+#        elif mode == HideMode.Blank:
+#            self.displayBlank.setPixmap(
+#                QtGui.QPixmap.fromImage(self.blankFrame))
+#        else:
+#            if self.parent.renderManager.renderer.bg_frame:
+#                self.displayBlank.setPixmap(QtGui.QPixmap.fromImage(
+#                    self.parent.renderManager.renderer.bg_frame))
+#            else:
+#                self.displayBlank.setPixmap(
+#                    QtGui.QPixmap.fromImage(self.blankFrame))
+#        if mode != HideMode.Screen and self.isHidden():
+#            self.setVisible(True)
+#
+#    def showDisplay(self, message=u''):
+#        """
+#        Show the stored layers so the screen reappears as it was
+#        originally.
+#        Make the stored images None to release memory.
+#        """
+#        log.debug(u'showDisplay')
+#        self.displayBlank.setPixmap(self.transparent)
+#        if self.isHidden():
+#            self.setVisible(True)
+#        #Trigger actions when display is active again
+#        Receiver.send_message(u'maindisplay_active')
+#
+#    def addImageWithText(self, frame):
+#        log.debug(u'addImageWithText')
+#        frame = resize_image(
+#            frame, self.screen[u'size'].width(), self.screen[u'size'].height())
+#        self.imageDisplay.setPixmap(QtGui.QPixmap.fromImage(frame))
+#        self.videoDisplay.setHtml(u'<html></html>')
+#
+#    def addAlert(self, message, location):
+#        """
+#        Places the Alert text on the display at the correct location
+#        ``message``
+#            Text to be displayed
+#        ``location``
+#            Where on the screen the text should be.  From the AlertTab
+#            Combo box.
+#        """
+#        log.debug(u'addAlertImage')
+#        if location == 0:
+#            self.alertText.setPos(0, 0)
+#        elif location == 1:
+#            self.alertText.setPos(0, self.size().height() / 2)
+#        else:
+#            self.alertText.setPos(0, self.size().height() - 76)
+#        self.alertText.setHtml(message)
+#
+#    def displayImage(self, frame):
+#        """
+#        Places the Image passed on the display screen
+#        ``frame``
+#            The image to be displayed
+#        """
+#        log.debug(u'adddisplayImage')
+#        if isinstance(frame, QtGui.QImage):
+#            self.imageDisplay.setPixmap(QtGui.QPixmap.fromImage(frame))
+#        else:
+#            self.imageDisplay.setPixmap(frame)
+#        self.videoDisplay.setHtml(u'<html></html>')
+#
+#    def displayVideo(self, path):
+#        """
+#        Places the Video passed on the display screen
+#        ``path``
+#            The path to the image to be displayed
+#        """
+#        log.debug(u'adddisplayVideo')
+#        self.displayImage(self.transparent)
+#        self.videoDisplay.setHtml(HTMLVIDEO %
+#            (path, self.screen[u'size'].width(),
+#            self.screen[u'size'].height()))
+#
+#    def frameView(self, frame, transition=False):
+#        """
+#        Called from a slide controller to display a frame
+#        if the alert is in progress the alert is added on top
+#        ``frame``
+#            Image frame to be rendered
+#        ``transition``
+#            Are transitions required.
+#        """
+#        log.debug(u'frameView')
+#        if transition:
+#            if self.frame is not None:
+#                self.displayText.setPixmap(
+#                    QtGui.QPixmap.fromImage(self.frame))
+#                self.repaint()
+#                Receiver.send_message(u'openlp_process_events')
+#                time.sleep(0.1)
+#            self.frame = None
+#            if frame[u'trans'] is not None:
+#                self.displayText.setPixmap(
+#                    QtGui.QPixmap.fromImage(frame[u'trans']))
+#                self.repaint()
+#                Receiver.send_message(u'openlp_process_events')
+#                time.sleep(0.1)
+#                self.frame = frame[u'trans']
+#            self.displayText.setPixmap(
+#                QtGui.QPixmap.fromImage(frame[u'main']))
+#        else:
+#            if isinstance(frame, QtGui.QPixmap):
+#                self.displayText.setPixmap(frame)
+#            else:
+#                self.displayText.setPixmap(QtGui.QPixmap.fromImage(frame))
+#        if not self.isVisible() and self.screens.display:
+#            self.setVisible(True)
+#
+#class VideoDisplay(Phonon.VideoWidget):
+#    """
+#    This is the form that is used to display videos on the projector.
+#    """
+#    log.info(u'VideoDisplay Loaded')
+#
+#    def __init__(self, parent, screens,
+#        aspect=Phonon.VideoWidget.AspectRatioWidget):
+#        """
+#        The constructor for the display form.
+#
+#        ``parent``
+#            The parent widget.
+#
+#        ``screens``
+#            The list of screens.
+#        """
+#        log.debug(u'VideoDisplay Initialisation started')
+#        Phonon.VideoWidget.__init__(self)
+#        self.setWindowTitle(u'OpenLP Video Display')
+#        self.parent = parent
+#        self.screens = screens
+#        self.hidden = False
+#        self.message = None
+#        self.mediaActive = False
+#        self.mediaObject = Phonon.MediaObject()
+#        self.setAspectRatio(aspect)
+#        self.audioObject = Phonon.AudioOutput(Phonon.VideoCategory)
+#        Phonon.createPath(self.mediaObject, self)
+#        Phonon.createPath(self.mediaObject, self.audioObject)
+#        flags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Dialog
+##        # WindowsStaysOnBottomHint is not available in QT4.4
 #        try:
 #            self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
 #        except AttributeError:

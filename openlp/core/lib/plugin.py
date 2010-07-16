@@ -269,8 +269,22 @@ class Plugin(QtCore.QObject):
         if self.settings_tab:
             self.settingsForm.insertTab(self.settings_tab, self.weight)
 
-    def canDeleteTheme(self, theme):
+    def usesTheme(self, theme):
         """
-        Called to ask the plugin if a theme can be deleted
+        Called to find out if a plugin is currently using a theme.
+
+        Returns True if the theme is being used, otherwise returns False.
         """
-        return True
+        return False
+
+    def renameTheme(self, oldTheme, newTheme):
+        """
+        Renames a theme a plugin is using making the plugin use the new name.
+
+        ``oldTheme``
+            The name of the theme the plugin should stop using.
+
+        ``newTheme``
+            The new name the plugin should now use.
+        """
+        pass
