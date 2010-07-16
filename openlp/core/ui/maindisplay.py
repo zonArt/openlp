@@ -167,7 +167,7 @@ class DisplayWidget(QtGui.QGraphicsView):
 
     def keyPressEvent(self, event):
         if isinstance(event, QtGui.QKeyEvent):
-            # here accept the event and do something
+            # Here accept the event and do something.
             if event.key() == QtCore.Qt.Key_Up:
                 Receiver.send_message(u'slidecontroller_live_previous')
                 event.accept()
