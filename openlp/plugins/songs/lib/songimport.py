@@ -303,28 +303,22 @@ class SongImport(object):
             author = self.manager.get_object_filtered(Author,
                 Author.display_name == authortext)
             if author is None:
-                author = Author()
-                author.display_name = authortext
-                author.last_name = authortext.split(u' ')[-1]
-                author.first_name = u' '.join(authortext.split(u' ')[:-1])
-                self.manager.save_object(author)
+                author = Author.populate(display_name = authortext,
+                    last_name=authortext.split(u' ')[-1],
+                    first_name=u' '.join(authortext.split(u' ')[:-1]))
             song.authors.append(author)
         if self.song_book_name:
             song_book = self.manager.get_object_filtered(Book,
                 Book.name == self.song_book_name)
             if song_book is None:
-                song_book = Book()
-                song_book.name = self.song_book_name
-                song_book.publisher = self.song_book_pub
-                self.manager.save_object(song_book)
-            song.song_book_id = song_book.id
+                song_book = Book.populate(name=self.song_book_name,
+                    publisher=self.song_book_pub)
+            song.book = song_book
         for topictext in self.topics:
             topic = self.manager.get_object_filtered(Topic,
                 Topic.name == topictext)
             if topic is None:
-                topic = Topic()
-                topic.name = topictext
-                self.manager.save_object(topic)
+                topic = Topic.populate(name=topictext)
             song.topics.append(topictext)
         self.manager.save_object(song)
 

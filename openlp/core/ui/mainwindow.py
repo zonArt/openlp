@@ -658,6 +658,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         log.info(u'Load Themes')
         self.ThemeManagerContents.loadThemes()
         log.info(u'Load data from Settings')
+        if QtCore.QSettings().value(u'advanced/save current plugin',
+            QtCore.QVariant(False)).toBool():
+            savedPlugin = QtCore.QSettings().value(
+                u'advanced/current media plugin', QtCore.QVariant()).toInt()[0]
+            if savedPlugin != -1:
+                self.MediaToolBox.setCurrentIndex(savedPlugin)
         self.settingsForm.postSetUp()
 
     def setAutoLanguage(self, value):
@@ -820,6 +826,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         # Clean temporary files used by services
         self.ServiceManagerContents.cleanUp()
+        if QtCore.QSettings().value(u'advanced/save current plugin',
+            QtCore.QVariant(False)).toBool():
+            QtCore.QSettings().setValue(u'advanced/current media plugin',
+                QtCore.QVariant(self.MediaToolBox.currentIndex()))
         # Call the cleanup method to shutdown plugins.
         log.info(u'cleanup plugins')
         self.plugin_manager.finalise_plugins()
@@ -974,6 +984,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             if position != -1:
                 self.recentFiles.removeAt(position)
             self.recentFiles.insert(0, QtCore.QString(filename))
-            while self.recentFiles.count() > recentFileCount:
+            while self.recentFiles.count() > maxRecentFiles:
                 # Don't care what API says takeLast works, removeLast doesn't!
                 self.recentFiles.takeLast()
