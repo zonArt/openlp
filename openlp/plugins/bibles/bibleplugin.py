@@ -40,7 +40,7 @@ class BiblePlugin(Plugin):
         self.weight = -9
         self.icon_path = u':/plugins/plugin_bibles.png'
         self.icon = build_icon(self.icon_path)
-        #Register the bible Manager
+        # Register the bible Manager.
         self.status = PluginStatus.Active
         self.manager = None
 
@@ -62,7 +62,7 @@ class BiblePlugin(Plugin):
         return BiblesTab(self.name)
 
     def getMediaManagerItem(self):
-        # Create the BibleManagerItem object
+        # Create the BibleManagerItem object.
         return BibleMediaItem(self, self.icon, self.name)
 
     def addImportMenuItem(self, import_menu):
@@ -71,7 +71,7 @@ class BiblePlugin(Plugin):
         import_menu.addAction(self.ImportBibleItem)
         self.ImportBibleItem.setText(
             translate('BiblePlugin', '&Bible'))
-        # Signals and slots
+        # signals and slots
         QtCore.QObject.connect(self.ImportBibleItem,
             QtCore.SIGNAL(u'triggered()'), self.onBibleImportClick)
         self.ImportBibleItem.setVisible(False)
