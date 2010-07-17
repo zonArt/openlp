@@ -366,10 +366,6 @@ class Song(object):
         if len(self.search_title) < 1:
             raise SongTitleError(u'The searchable title is empty')
 
-    def get_title(self):
-        """Return title value"""
-        return self.title
-
     def from_ccli_text_buffer(self, textList):
         """
         Create song from a list of texts (strings) - CCLI text format expected
@@ -688,7 +684,7 @@ class Song(object):
             raise SongSlideError(u'Slide number too high')
         res = []
         if self.show_title:
-            title = self.get_title()
+            title = self.title
         else:
             title = ""
         if self.show_author_list:
