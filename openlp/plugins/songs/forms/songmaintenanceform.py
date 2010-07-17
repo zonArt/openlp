@@ -388,9 +388,16 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         songs = self.songmanager.get_all_objects_filtered(AuthorsSongs,
             AuthorsSongs.author_id == existing_author.id)
         for song in songs:
-            song.author_id = new_author.id
-            self.songmanager.save_object(song)
-        self.songmanager.delete_object(Author, existing_author.id)  
+            # We have to check if the song has already the new_author as author.
+            # If that is the case we must not change song.author_id to the
+            # new_author's id, because then they were not unique.
+            temp_song = self.songmanager.get_all_objects_filtered(AuthorsSongs,
+                and_(AuthorsSongs.author_id == new_author.id,
+                    AuthorsSongs.song_id == song.song_id))
+            if len(temp_song) < 1:
+                song.author_id = new_author.id
+                self.songmanager.save_object(song)
+        self.songmanager.delete_object(Author, existing_author.id)
 
     def mergeTopics(self, existing_topic):
         '''
@@ -400,10 +407,15 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         songs = self.songmanager.get_all_objects_filtered(SongsTopics,
             SongsTopics.topic_id == existing_topic.id)
         for song in songs:
-            song.topic_id = new_topic.id
-            self.songmanager.save_object(song)
-        songs = self.songmanager.get_all_objects_filtered(SongsTopics,
-            SongsTopics.topic_id == new_topic.id)
+            # We have to check if the song has already the new_topic as topic.
+            # If that is the case we must not change song.topic_id to the
+            # new_topic's id, because then they were not unique.
+            temp_song = self.songmanager.get_all_objects_filtered(SongsTopics,
+                and_(SongsTopics.topic_id == new_topic.id,
+                    SongsTopics.song_id == song.song_id))
+            if len(temp_song) < 1:
+                song.topic_id = new_topic.id
+                self.songmanager.save_object(song)
         self.songmanager.delete_object(Topic, existing_topic.id)
 
     def mergeBooks(self, existing_book):
