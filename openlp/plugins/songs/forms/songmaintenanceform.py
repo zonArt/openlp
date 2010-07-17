@@ -359,7 +359,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                         self.resetBooks()
                     else:
                         QtGui.QMessageBox.critical(self,
-                            translate('SongsPlugin.SongMaintenanceForm', 'Error'),
+                            translate('SongsPlugin.SongMaintenanceForm',
+                            'Error'),
                             translate('SongsPlugin.SongMaintenanceForm',
                             'Could not save your changes.'))
                 elif QtGui.QMessageBox.critical(self,
@@ -380,6 +381,10 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
 
     def mergeAuthors(self, existing_author):
         '''
+        Merges two authors into one author.
+        
+        ``existing_author``
+            The author which will be deleted afterwards.
         '''
         new_author = self.songmanager.get_object_filtered(Author,
             and_(Author.first_name == existing_author.first_name,
@@ -401,6 +406,10 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
 
     def mergeTopics(self, existing_topic):
         '''
+        Merges two topics into one topic.
+        
+        ``existing_topic``
+            The topic which will be deleted afterwards.
         '''
         new_topic = self.songmanager.get_object_filtered(Topic,
             Topic.name == existing_topic.name)
@@ -420,6 +429,10 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
 
     def mergeBooks(self, existing_book):
         '''
+        Merges two books into one book.
+        
+        ``existing_book``
+            The book which will be deleted afterwards.
         '''
         new_book = self.songmanager.get_object_filtered(Book,
             and_(Book.name == existing_book.name,
