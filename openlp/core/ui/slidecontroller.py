@@ -781,13 +781,11 @@ class SlideController(QtGui.QWidget):
                 self.updatePreview()
             else:
                 before = time.time()
-                if self.serviceItem.just_rendered:
-                    self.serviceItem.just_rendered = False
                 frame, raw_html = self.serviceItem.get_rendered_frame(row)
                 if self.serviceItem.is_text():
                     frame = self.display.text(raw_html)
                 else:
-                    self.displayManager.displayImage(frame)
+                    self.display.image(frame)
                 if isinstance(frame, QtGui.QImage):
                     self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
                 else:

@@ -25,12 +25,11 @@
 
 import logging
 import os
-import time
 
 from PyQt4 import QtCore, QtGui, QtWebKit
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import Receiver, resize_image, build_html, ServiceItem
+from openlp.core.lib import Receiver, resize_image, build_html, ServiceItem, image_to_byte
 from openlp.core.ui import HideMode
 
 log = logging.getLogger(__name__)
@@ -236,19 +235,7 @@ class WebViewer(DisplayWidget):
         self.setWindowTitle(u'OpenLP Display')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint |
             QtCore.Qt.WindowStaysOnTopHint)
-        self.currimage = False
-#        self.byteArray = QtCore.QByteArray()
-#        buffer = QtCore.QBuffer(self.byteArray) #// use buffer to store pixmap into byteArray
-#        buffer.open(QtCore.QIODevice.WriteOnly)
-#        pixmap = QtGui.QPixmap("/home/timali/Pictures/IMG_0726.jpg")
-#        pixmap.save(buffer, "PNG")
-#        self.byteArray2 = QtCore.QByteArray()
-#        buffer = QtCore.QBuffer(self.byteArray) #// use buffer to store pixmap into byteArray
-#        buffer.open(QtCore.QIODevice.WriteOnly)
-#        pixmap = QtGui.QPixmap("file:///home/timali/Pictures/out.png")
-#        pixmap.save(buffer, "PNG")
-#        self.image1 = "file:///home/timali/Pictures/IMG_0726.jpg"
-#        self.image2 = "file:///home/timali/Pictures/out.png"
+
         self.currvideo = False
         self.video1 = "c:\\users\\jonathan\\Desktop\\Wildlife.wmv"
         self.video2 = "c:\\users\\jonathan\\Desktop\\movie.ogg"
@@ -274,15 +261,13 @@ class WebViewer(DisplayWidget):
     def alert(self):
         self.frame.findFirstElement('div#alert').setInnerXml(self.alerttext)
 
-    def image(self, byteImage):
+    def image(self, image):
         self.frame.evaluateJavaScript(
             "document.getElementById('video').style.visibility = 'hidden'")
         self.frame.evaluateJavaScript(
             "document.getElementById('image').style.visibility = 'visible'")
-        if self.currimage:
-            self.frame.findFirstElement('img').setAttribute(
-                'src', unicode('data:image/png;base64,%s' % byteImage.toBase64()))
-        self.currimage = not self.currimage
+        self.frame.findFirstElement('img').setAttribute(
+            'src', unicode('data:image/png;base64,%s' % image_to_byte(image)))
 
     def video(self, videoPath, noSound=False):
         if self.currimage:
@@ -333,8 +318,8 @@ class WebViewer(DisplayWidget):
             self.show()
 
     def preview(self):
-        # Wait for the screen to update before geting the preview.
-        # Important otherwise first preview will miss the background
+        # Wait for the webview to update before geting the preview.
+        # Important otherwise first preview will miss the background !
         while not self.loaded:
             Receiver.send_message(u'openlp_process_events')
         preview = QtGui.QImage(self.screen[u'size'].width(),
@@ -348,11 +333,6 @@ class WebViewer(DisplayWidget):
             #save preview for debugging
             preview.save("temp.png", "png")
         return preview
-
-    def initialDisplay(self, image, video=False):
-        if not video:
-            html = build_html(self.parent.renderManager.themedata, self.screen, None, image)
-            self.webView.setHtml(html)
 
     def buildHtml(self, serviceItem):
         """

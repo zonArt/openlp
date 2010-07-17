@@ -379,7 +379,7 @@ class ServiceItem(object):
         if self.service_item_type == ServiceItemType.Text:
             return self.render_individual(row)
         else:
-            return self._raw_frames[row][u'image']
+            return self._raw_frames[row][u'image'], u''
 
     def get_frame_title(self, row=0):
         """
