@@ -26,7 +26,7 @@
 from PyQt4 import QtGui, QtCore
 from sqlalchemy.sql import and_
 
-from openlp.core.lib import translate
+from openlp.core.lib import Receiver, translate
 from openlp.plugins.songs.forms import AuthorsForm, TopicsForm, SongBookForm
 from openlp.plugins.songs.lib.db import Author, Book, Topic, Song, \
     SongsTopics, AuthorsSongs
@@ -278,9 +278,11 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 if self.checkAuthor(author, True):
                     if self.songmanager.save_object(author):
                         self.resetAuthors()
+                        Receiver.send_message(u'songs_load_list')
                     else:
                         QtGui.QMessageBox.critical(self,
-                            translate('SongsPlugin.SongMaintenanceForm', 'Error'),
+                            translate('SongsPlugin.SongMaintenanceForm',
+                            'Error'),
                             translate('SongsPlugin.SongMaintenanceForm',
                             'Could not save your changes.'))
                 elif QtGui.QMessageBox.critical(self,
@@ -293,6 +295,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.Yes:
                     self.mergeAuthors(author)
                     self.resetAuthors()
+                    Receiver.send_message(u'songs_load_list')
                 else:
                     # We restore the author's old first and last name as well as
                     # his display name.
@@ -319,7 +322,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                         self.resetTopics()
                     else:
                         QtGui.QMessageBox.critical(self,
-                            translate('SongsPlugin.SongMaintenanceForm', 'Error'),
+                            translate('SongsPlugin.SongMaintenanceForm',
+                            'Error'),
                             translate('SongsPlugin.SongMaintenanceForm',
                             'Could not save your changes.'))
                 elif QtGui.QMessageBox.critical(self,
