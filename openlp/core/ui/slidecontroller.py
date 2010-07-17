@@ -30,7 +30,7 @@ import os
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
-from openlp.core.ui import HideMode
+from openlp.core.ui import HideMode, WebViewer
 from openlp.core.lib import OpenLPToolbar, Receiver, resize_image, \
     ItemCapabilities, translate
 
@@ -96,7 +96,7 @@ class SlideController(QtGui.QWidget):
     SlideController is the slide controller widget. This widget is what the
     user uses to control the displaying of verses/slides/etc on the screen.
     """
-    def __init__(self, parent, settingsmanager, isLive=False):
+    def __init__(self, parent, settingsmanager, screens, isLive=False):
         """
         Set up the Slide Controller.
         """
@@ -104,8 +104,9 @@ class SlideController(QtGui.QWidget):
         self.settingsmanager = settingsmanager
         self.isLive = isLive
         self.parent = parent
-        self.mainDisplay = self.parent.displayManager.mainDisplay
-        self.displayManager = self.parent.displayManager
+        self.screens = screens
+        self.display = WebViewer(self, screens, isLive)
+        #self.displayManager = self.parent.displayManager
         self.loopList = [
             u'Start Loop',
             u'Loop Separator',
@@ -599,7 +600,8 @@ class SlideController(QtGui.QWidget):
         else:
             self.PreviewListWidget.selectRow(slideno)
         self.enableToolBar(serviceItem)
-        #Reset the display html
+        # Pass to display for viewing
+        self.display.buildHtml(self.serviceItem)
         self.onSlideSelected()
         self.PreviewListWidget.setFocus()
         Receiver.send_message(u'slidecontroller_%s_started' % self.typePrefix,
@@ -781,20 +783,17 @@ class SlideController(QtGui.QWidget):
                 before = time.time()
                 if self.serviceItem.just_rendered:
                     self.serviceItem.just_rendered = False
-                    if self.isLive:
-                        self.displayManager.buildHtml(self.serviceItem.bg_frame)
                 frame, raw_html = self.serviceItem.get_rendered_frame(row)
+                if self.serviceItem.is_text():
+                    frame = self.display.text(raw_html)
+                else:
+                    self.displayManager.displayImage(frame)
                 if isinstance(frame, QtGui.QImage):
                     self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
                 else:
                     self.SlidePreview.setPixmap(QtGui.QPixmap(frame))
                 log.log(
                     15, u'Slide Rendering took %4s' % (time.time() - before))
-                if self.isLive:
-                    if self.serviceItem.is_text():
-                        self.displayManager.text(raw_html)
-                    else:
-                        self.displayManager.displayImage(frame)
             self.selectedRow = row
         Receiver.send_message(u'slidecontroller_%s_changed' % self.typePrefix,
             row)

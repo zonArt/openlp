@@ -130,7 +130,7 @@ class RenderManager(object):
             self.renderer.set_theme(self.themedata)
             self.build_text_rectangle(self.themedata)
             self.renderer.set_frame_dest(self.width, self.height)
-        return self.renderer.bg_frame
+        return self.renderer._rect, self.renderer._rect_footer
 
     def build_text_rectangle(self, theme):
         """

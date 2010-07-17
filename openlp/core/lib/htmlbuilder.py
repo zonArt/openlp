@@ -77,31 +77,32 @@ HTMLSRC = u"""
 </body>
 </html>
     """
-def build_html(theme, screen, alert, image):
+def build_html(item, screen, alert):
     width = screen[u'size'].width()
     height = screen[u'size'].height()
-    html = HTMLSRC % (build_video(theme, width, height, alert),
-                      build_image(theme, width, height, alert),
-                      build_lyrics(theme, width, height, alert),
-                      build_alert(theme, width, height, alert),
-                      build_image(theme, width, height, alert),
-                      build_image_src(theme, width, height, alert, image))
+    html = HTMLSRC % (build_video(width, height),
+                      build_image(width, height),
+                      build_lyrics(item, width, height),
+                      build_alert(width, height, alert),
+                      build_image(width, height),
+                      build_image_src(item.bg_frame))
     return html
 
-def build_video(theme, width, height, alert):
+def build_video(width, height):
     video = """
     #video {
         position: absolute;
         left: 0px;
         top: 0px;
-        width: 640px
-        height: 480px;
+        width: %spx
+        height: %spx;
         z-index:1;
     }
     """
-    return video
+    return video % (width, height)
 
-def build_image(theme, width, height, alert):
+
+def build_image(width, height):
     image = """
     #image {
         position: absolute;
@@ -114,14 +115,14 @@ def build_image(theme, width, height, alert):
     """
     return image % (width, height)
 
-def build_image_src(theme, width, height, alert, image):
+def build_image_src(image):
     #    <img src="" height="480" width="640" />
     image_src = """
     <img src="data:image/png;base64,%s">";
     """
     return image_src % image_to_byte(image)
 
-def build_lyrics(theme, width, height, alert):
+def build_lyrics(item, width, height):
     lyrics = """
     #lyrics {
         position: absolute;
@@ -136,6 +137,7 @@ def build_lyrics(theme, width, height, alert):
         font-size: %spx;
     }
     """
+    theme = item.themedata
     lyrics_html = u''
     shadow = u''
     outline = u''
@@ -150,10 +152,10 @@ def build_lyrics(theme, width, height, alert):
                 (theme.display_outline_size, theme.display_outline_color)
             outline = u'text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white'
         lyrics_html = lyrics % (shadow, outline, theme.font_main_name, theme.font_main_proportion)
-        print lyrics_html
+    print lyrics_html
     return lyrics_html
 
-def build_alert(theme, width, height, alert):
+def build_alert(width, height, alert):
     alert = """
     #alert {
         position: absolute;

@@ -36,10 +36,12 @@ class HideMode(object):
     Theme = 2
     Screen = 3
 
+from maindisplay import WebViewer
 from slidecontroller import HideMode
 from servicenoteform import ServiceNoteForm
 from serviceitemeditform import ServiceItemEditForm
 from screen import ScreenList
+from maindisplay import WebViewer
 from maindisplay import DisplayManager
 from amendthemeform import AmendThemeForm
 from slidecontroller import SlideController

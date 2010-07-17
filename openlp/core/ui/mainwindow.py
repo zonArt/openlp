@@ -135,8 +135,8 @@ class Ui_MainWindow(object):
         self.ControlSplitter.setObjectName(u'ControlSplitter')
         self.MainContentLayout.addWidget(self.ControlSplitter)
         # Create slide controllers
-        self.PreviewController = SlideController(self, self.settingsmanager)
-        self.LiveController = SlideController(self, self.settingsmanager, True)
+        self.PreviewController = SlideController(self, self.settingsmanager, self.screens)
+        self.LiveController = SlideController(self, self.settingsmanager, self.screens,  True)
         # Create menu
         self.MenuBar = QtGui.QMenuBar(MainWindow)
         self.MenuBar.setGeometry(QtCore.QRect(0, 0, 1087, 27))
@@ -692,10 +692,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Show the main form, as well as the display form
         """
         QtGui.QWidget.show(self)
-        #screen_number = self.getMonitorNumber()
-        self.displayManager.setup()
-        if self.displayManager.mainDisplay.isVisible():
-            self.displayManager.mainDisplay.setFocus()
+        self.LiveController.display.setup()
+        if self.LiveController.display.isVisible():
+            self.LiveController.display.setFocus()
         self.activateWindow()
         if QtCore.QSettings().value(
             self.generalSettingsSection + u'/auto open',
@@ -835,8 +834,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.plugin_manager.finalise_plugins()
         # Save settings
         self.saveSettings()
-        #Close down the displays
-        self.displayManager.close()
+        #Close down the display
+        self.LiveController.display.close()
 
     def serviceChanged(self, reset=False, serviceName=None):
         """

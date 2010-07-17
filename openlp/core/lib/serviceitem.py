@@ -92,6 +92,7 @@ class ServiceItem(object):
         self.is_valid = True
         self.cache = {}
         self.icon = None
+        self.themedata = None
 
     def add_capability(self, capability):
         """
@@ -136,10 +137,12 @@ class ServiceItem(object):
         self.just_rendered = True
         if self.service_item_type == ServiceItemType.Text:
             log.debug(u'Formatting slides')
-            if self.theme is None:
-                self.render_manager.set_override_theme(None)
-            else:
-                self.render_manager.set_override_theme(self.theme)
+            theme = None;
+            if not self.theme:
+                theme = self.theme
+            self.main, self.footer = self.render_manager.set_override_theme(theme)
+            self.bg_frame = self.render_manager.renderer.bg_frame
+            self.themedata = self.render_manager.themedata
             for slide in self._raw_frames:
                 before = time.time()
                 formated = self.render_manager.format_slide(slide[u'raw_slide'])
@@ -156,8 +159,6 @@ class ServiceItem(object):
                     if len(self._display_frames) in self.cache.keys():
                         del self.cache[len(self._display_frames)]
                 log.log(15, u'Formatting took %4s' % (time.time() - before))
-            self.bg_frame = self.render_manager.renderer.bg_frame
-            self.themedata = self.render_manager.themedata
         elif self.service_item_type == ServiceItemType.Image:
             for slide in self._raw_frames:
                 slide[u'image'] = resize_image(slide[u'image'],
@@ -182,11 +183,12 @@ class ServiceItem(object):
 #        if self.cache.get(row):
 #            frame = self.cache[row]
 #        else:
-        if raw_html[0]:
-            frame = self.render_manager.generate_slide(raw_html,
-                self.raw_footer)
-        else:
-            frame = self.render_manager.generate_slide(raw_html, u'')
+#        if raw_html[0]:
+#            frame = self.render_manager.generate_slide(raw_html,
+#                self.raw_footer)
+#        else:
+#            frame = self.render_manager.generate_slide(raw_html, u'')
+        frame = None
         self.cache[row] = frame
         return frame, raw_html[0]
 

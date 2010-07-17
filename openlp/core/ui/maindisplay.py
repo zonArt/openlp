@@ -30,7 +30,7 @@ import time
 from PyQt4 import QtCore, QtGui, QtWebKit
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import Receiver, resize_image, build_html
+from openlp.core.lib import Receiver, resize_image, build_html, ServiceItem
 from openlp.core.ui import HideMode
 
 log = logging.getLogger(__name__)
@@ -59,6 +59,7 @@ HTMLVIDEO = u"""<html>
     """
 
 class DisplayManager(QtGui.QWidget):
+    pass
     """
     Wrapper class to hold the display widgets.
     I will provide API's in future to access the screens allow for
@@ -71,24 +72,24 @@ class DisplayManager(QtGui.QWidget):
         self.screens = screens
         self.audioPlayer = AudioPlayer(self)
         # Live display
-        self.mainDisplay = WebViewer(self, screens, True)
+        #self.mainDisplay = WebViewer(self, screens, True)
         # Display for Preview and Theme previews
-        self.previewDisplay = WebViewer(self, screens, False)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'maindisplay_hide'), self.hideDisplay)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'videodisplay_start'), self.onStartVideo)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'videodisplay_stop'), self.onStopVideo)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'config_updated'), self.setup)
+        #self.previewDisplay = WebViewer(self, screens, False)
+#        QtCore.QObject.connect(Receiver.get_receiver(),
+#            QtCore.SIGNAL(u'maindisplay_hide'), self.hideDisplay)
+#        QtCore.QObject.connect(Receiver.get_receiver(),
+#            QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
+#        QtCore.QObject.connect(Receiver.get_receiver(),
+#            QtCore.SIGNAL(u'videodisplay_start'), self.onStartVideo)
+#        QtCore.QObject.connect(Receiver.get_receiver(),
+#            QtCore.SIGNAL(u'videodisplay_stop'), self.onStopVideo)
+#        QtCore.QObject.connect(Receiver.get_receiver(),
+#            QtCore.SIGNAL(u'config_updated'), self.setup)
 
     def setup(self):
         log.debug(u'mainDisplay - setup')
         # let the render manager have the preview display.
-        self.parent.RenderManager.previewDisplay = self.previewDisplay
+        #self.parent.RenderManager.previewDisplay = self.previewDisplay
         #Build the initial frame.
         self.initialFrame = QtGui.QImage(
             self.screens.current[u'size'].width(),
@@ -102,77 +103,78 @@ class DisplayManager(QtGui.QWidget):
             (self.screens.current[u'size'].width() - splash_image.width()) / 2,
             (self.screens.current[u'size'].height() - splash_image.height()) / 2,
             splash_image)
-        self.mainDisplay.setup()
-        self.previewDisplay.setup()
-        self.mainDisplay.buildHtml(self.initialFrame)
-        self.mainDisplay.show()
+#        self.mainDisplay.setup()
+#        self.previewDisplay.setup()
+#        if self.isLive
+#        self.mainDisplay.buildHtml(self.initialFrame)
+#        self.mainDisplay.show()
 
-    def hideDisplay(self, message):
-        """
-        Hide the output displays
-        """
-        self.mainDisplay.hideDisplay(message)
-
-    def showDisplay(self, message):
-        """
-        Hide the output displays
-        """
-        self.mainDisplay.showDisplay(message)
-
-    def addAlert(self, alertMessage, location):
-        """
-        Handles the addition of an Alert Message to the Displays
-        """
-        self.mainDisplay.addAlert(alertMessage, location)
-
-    def displayImageWithText(self, frame):
-        """
-        Handles the addition of a background Image to the displays
-        """
-        self.mainDisplay.addImageWithText(frame)
-
-    def buildHtml(self, image=None):
-        """
-        Handles the addition of a background Image to the displays
-        """
-        self.mainDisplay.buildHtml(image)
-
-    def text(self, text):
-        """
-        Handles the addition of a background Image to the displays
-        """
-        self.mainDisplay.text(text)
-
-    def displayImage(self, frame):
-        """
-        Handles the addition of a background Image to the displays
-        """
-        self.mainDisplay.displayImage(frame)
-
-    def displayVideo(self, path):
-        """
-        Handles the addition of a background Video to the displays
-        """
-        self.mainDisplay.displayVideo(path)
-
-    def onStartVideo(self, item):
-        """
-        Handles the Starting of a Video and Display Management
-        """
-        self.mainDisplay.setVisible(False)
-
-    def onStopVideo(self):
-        """
-        Handles the Stopping of a Video and Display Management
-        """
-        self.mainDisplay.setVisible(True)
-
-    def close(self):
-        """
-        Handles the closure of the displays
-        """
-
-        self.mainDisplay.close()
+#    def hideDisplay(self, message):
+#        """
+#        Hide the output displays
+#        """
+#        self.mainDisplay.hideDisplay(message)
+#
+#    def showDisplay(self, message):
+#        """
+#        Hide the output displays
+#        """
+#        self.mainDisplay.showDisplay(message)
+#
+#    def addAlert(self, alertMessage, location):
+#        """
+#        Handles the addition of an Alert Message to the Displays
+#        """
+#        self.mainDisplay.addAlert(alertMessage, location)
+#
+#    def displayImageWithText(self, frame):
+#        """
+#        Handles the addition of a background Image to the displays
+#        """
+#        self.mainDisplay.addImageWithText(frame)
+#
+#    def buildHtml(self, image=None):
+#        """
+#        Handles the addition of a background Image to the displays
+#        """
+#        self.mainDisplay.buildHtml(image)
+#
+#    def text(self, text):
+#        """
+#        Handles the addition of a background Image to the displays
+#        """
+#        self.mainDisplay.text(text)
+#
+#    def displayImage(self, frame):
+#        """
+#        Handles the addition of a background Image to the displays
+#        """
+#        self.mainDisplay.displayImage(frame)
+#
+#    def displayVideo(self, path):
+#        """
+#        Handles the addition of a background Video to the displays
+#        """
+#        self.mainDisplay.displayVideo(path)
+#
+#    def onStartVideo(self, item):
+#        """
+#        Handles the Starting of a Video and Display Management
+#        """
+#        self.mainDisplay.setVisible(False)
+#
+#    def onStopVideo(self):
+#        """
+#        Handles the Stopping of a Video and Display Management
+#        """
+#        self.mainDisplay.setVisible(True)
+#
+#    def close(self):
+#        """
+#        Handles the closure of the displays
+#        """
+#
+#        self.mainDisplay.close()
 
 class DisplayWidget(QtGui.QGraphicsView):
     """
@@ -230,6 +232,7 @@ class WebViewer(DisplayWidget):
         DisplayWidget.__init__(self, live, parent=None)
         self.parent = parent
         self.screens = screens
+        self.isLive = live
         self.setWindowTitle(u'OpenLP Display')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint |
             QtCore.Qt.WindowStaysOnTopHint)
@@ -266,6 +269,7 @@ class WebViewer(DisplayWidget):
     def text(self, slide):
         print slide
         self.frame.findFirstElement('div#lyrics').setInnerXml(slide)
+        return self.preview()
 
     def alert(self):
         self.frame.findFirstElement('div#alert').setInnerXml(self.alerttext)
@@ -304,12 +308,26 @@ class WebViewer(DisplayWidget):
             QtCore.Qt.ScrollBarAlwaysOff)
         self.frame.setScrollBarPolicy(QtCore.Qt.Horizontal,
             QtCore.Qt.ScrollBarAlwaysOff)
+        if self.isLive:
+            #Build the initial frame.
+            initialFrame = QtGui.QImage(
+                self.screens.current[u'size'].width(),
+                self.screens.current[u'size'].height(),
+                QtGui.QImage.Format_ARGB32_Premultiplied)
+            splash_image = QtGui.QImage(u':/graphics/openlp-splash-screen.png')
+            painter_image = QtGui.QPainter()
+            painter_image.begin(initialFrame)
+            painter_image.fillRect(initialFrame.rect(), QtCore.Qt.white)
+            painter_image.drawImage(
+                (self.screens.current[u'size'].width() - splash_image.width()) / 2,
+                (self.screens.current[u'size'].height() - splash_image.height()) / 2,
+                splash_image)
+            item = ServiceItem()
+            item.bg_frame = initialFrame
+            self.webView.setHtml(build_html(item, self.screen, None))
+            self.show()
 
-    def preview(self, image, text, theme):
-        self.setVisible(False)
-        html = build_html(theme, self.screen, None, image)
-        self.webView.setHtml(html)
-        self.frame.findFirstElement('div#lyrics').setInnerXml(text)
+    def preview(self):
         preview = QtGui.QImage(self.screen[u'size'].width(),
             self.screen[u'size'].height(),
             QtGui.QImage.Format_ARGB32_Premultiplied)
@@ -326,11 +344,13 @@ class WebViewer(DisplayWidget):
             html = build_html(self.parent.renderManager.themedata, self.screen, None, image)
             self.webView.setHtml(html)
 
-    def buildHtml(self, image=None):
-        if not image:
-            html = build_html(self.parent.renderManager.themedata, self.screen, None, self.parent.renderManager.renderer.bg_frame)
-        else:
-            html = build_html(self.parent.renderManager.themedata, self.screen, None, image)
+    def buildHtml(self, serviceItem):
+        """
+        Store the serviceItem and build the new HTML from it. Add the
+        HTML to the display
+        """
+        self.serviceItem = serviceItem
+        html = build_html(self.serviceItem, self.screen, None)
         self.webView.setHtml(html)
 
 #class DisplayWidget(QtGui.QGraphicsView):
