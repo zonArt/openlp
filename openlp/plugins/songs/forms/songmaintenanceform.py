@@ -28,7 +28,8 @@ from sqlalchemy.sql import and_
 
 from openlp.core.lib import translate
 from openlp.plugins.songs.forms import AuthorsForm, TopicsForm, SongBookForm
-from openlp.plugins.songs.lib.db import Author, Book, Topic, Song
+from openlp.plugins.songs.lib.db import Author, Book, Topic, Song, \
+    SongsTopics, AuthorsSongs
 from songmaintenancedialog import Ui_SongMaintenanceDialog
 
 class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
@@ -290,7 +291,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     temp_display_name, author.display_name)),
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No | \
                     QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.Yes:
-                    self.mergeAuthors(authors)
+                    self.mergeAuthors(author)
                     self.resetAuthors()
                 else:
                     # We restore the author's old first and last name as well as
@@ -377,31 +378,33 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     book.name = temp_name
                     book.publisher = temp_publisher
 
-#    def mergeAuthors(self, existing_author):
-#        '''
-#        '''
-#        new_author = self.songmanager.get_object_filtered(Author,
-#            and_(Author.first_name == existing_author.first_name,
-#                Author.last_name == existing_author.last_name, 
-#                Author.display_name == existing_author.display_name))
-#        songs = self.songmanager.get_all_objects_filtered(......,
-#            Song.song_book_id == existing_book.id)
-#        for song in songs:
-#            #
-#            self.songmanager.save_object(song)
-#        self.songmanager.delete_object(Author, existing_author.id)  
+    def mergeAuthors(self, existing_author):
+        '''
+        '''
+        new_author = self.songmanager.get_object_filtered(Author,
+            and_(Author.first_name == existing_author.first_name,
+                Author.last_name == existing_author.last_name, 
+                Author.display_name == existing_author.display_name))
+        songs = self.songmanager.get_all_objects_filtered(AuthorsSongs,
+            AuthorsSongs.author_id == existing_author.id)
+        for song in songs:
+            song.author_id = new_author.id
+            self.songmanager.save_object(song)
+        self.songmanager.delete_object(Author, existing_author.id)  
 
-#    def mergeTopics(self, existing_topic):
-#       '''
-#       '''
-#        new_topic = self.songmanager.get_object_filtered(Topic,
-#            Topic.name == existing_topic.name)
-#        songs = self.songmanager.get_all_objects_filtered(.....,
-#            songs_topics.topic_id == existing_topic.id)
-#        for song in songs:
-#            #
-#            self.songmanager.save_object(song)
-#        self.songmanager.delete_object(Book, existing_topic.id)
+    def mergeTopics(self, existing_topic):
+        '''
+        '''
+        new_topic = self.songmanager.get_object_filtered(Topic,
+            Topic.name == existing_topic.name)
+        songs = self.songmanager.get_all_objects_filtered(SongsTopics,
+            SongsTopics.topic_id == existing_topic.id)
+        for song in songs:
+            song.topic_id = new_topic.id
+            self.songmanager.save_object(song)
+        songs = self.songmanager.get_all_objects_filtered(SongsTopics,
+            SongsTopics.topic_id == new_topic.id)
+        self.songmanager.delete_object(Topic, existing_topic.id)
 
     def mergeBooks(self, existing_book):
         '''
