@@ -180,7 +180,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.loadBooks()
         self.song = self.songmanager.get_object(Song, id)
         self.TitleEditItem.setText(self.song.title)
-        title = self.song.search_title.split(u'@')
+        self.AlternativeEdit.setText(self.song.alternate_title)
         if self.song.song_book_id != 0:
             book_name = self.songmanager.get_object(Book,
                 self.song.song_book_id)
@@ -198,8 +198,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 id = 0
                 self.song.theme_name = None
             self.ThemeSelectionComboItem.setCurrentIndex(id)
-        if len(title) > 1:
-            self.AlternativeEdit.setText(title[1])
         if self.song.copyright:
             self.CopyrightEditItem.setText(self.song.copyright)
         else:
@@ -622,6 +620,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def saveSong(self):
         self.song.title = unicode(self.TitleEditItem.text())
+        self.song.alternate_title = unicode(self.AlternativeEdit.text())
         self.song.copyright = unicode(self.CopyrightEditItem.text())
         self.song.search_title = self.song.title + u'@' + \
             unicode(self.AlternativeEdit.text())

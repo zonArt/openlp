@@ -88,6 +88,7 @@ def init_schema(url):
         Column(u'song_book_id', types.Integer,
             ForeignKey(u'song_books.id'), default=0),
         Column(u'title', types.Unicode(255), nullable=False),
+        Column(u'alternate_title', types.Unicode(255)),
         Column(u'lyrics', types.UnicodeText, nullable=False),
         Column(u'verse_order', types.Unicode(128)),
         Column(u'copyright', types.Unicode(255)),
