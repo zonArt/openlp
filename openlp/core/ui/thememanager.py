@@ -118,6 +118,7 @@ class ThemeManager(QtGui.QWidget):
         self.checkThemesExists(self.thumbPath)
         self.amendThemeForm.path = self.path
         self.oldBackgroundImage = None
+        self.editingDefault = False
         # Last little bits of setting up
         self.global_theme = unicode(QtCore.QSettings().value(
             self.settingsSection + u'/global theme',
@@ -184,7 +185,6 @@ class ThemeManager(QtGui.QWidget):
         Loads the settings for the theme that is to be edited and launches the
         theme editing form so the user can make their changes.
         """
-        self.editingDefault = False
         if check_item_selected(self.ThemeListWidget, translate('ThemeManager',
             'You must select a theme to edit.')):
             item = self.ThemeListWidget.currentItem()
@@ -610,6 +610,7 @@ class ThemeManager(QtGui.QWidget):
                     self.settingsSection + u'/global theme',
                     QtCore.QVariant(self.global_theme))
                 Receiver.send_message(u'theme_update_global', self.global_theme)
+                self.editingDefault = False
                 self.pushThemes()
         else:
             # Don't close the dialog - allow the user to change the name of
