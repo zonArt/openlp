@@ -215,8 +215,8 @@ class ThemeManager(QtGui.QWidget):
             answer = QtGui.QMessageBox.question(self,
                 translate('ThemeManager', 'Delete Confirmation'),
                 translate('ThemeManager', 'Delete theme?'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes|
-                QtGui.QMessageBox.No),QtGui.QMessageBox.No)
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
+                QtGui.QMessageBox.No), QtGui.QMessageBox.No)
             if answer == QtGui.QMessageBox.No:
                 return
             # should be the same unless default
