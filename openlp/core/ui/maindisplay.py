@@ -294,6 +294,9 @@ class WebViewer(DisplayWidget):
         self.frame.evaluateJavaScript("document.getElementById('video').play()")
         self.currimage = not self.currimage
 
+    def loaded(self):
+        self.loaded = True
+
     def setup(self):
         log.debug(u'Setup %s for %s ' % (
             self.screens, self.screens.monitor_number))
@@ -304,6 +307,8 @@ class WebViewer(DisplayWidget):
         self.webView.setGeometry(0, 0, self.screen[u'size'].width(), self.screen[u'size'].height())
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
+        QtCore.QObject.connect(self.webView,
+            QtCore.SIGNAL(u'loadFinished(bool)'), self.loaded)
         self.frame.setScrollBarPolicy(QtCore.Qt.Vertical,
             QtCore.Qt.ScrollBarAlwaysOff)
         self.frame.setScrollBarPolicy(QtCore.Qt.Horizontal,
@@ -328,6 +333,10 @@ class WebViewer(DisplayWidget):
             self.show()
 
     def preview(self):
+        # Wait for the screen to update before geting the preview.
+        # Important otherwise first preview will miss the background
+        while not self.loaded:
+            Receiver.send_message(u'openlp_process_events')
         preview = QtGui.QImage(self.screen[u'size'].width(),
             self.screen[u'size'].height(),
             QtGui.QImage.Format_ARGB32_Premultiplied)
@@ -335,8 +344,9 @@ class WebViewer(DisplayWidget):
         painter.setRenderHint(QtGui.QPainter.Antialiasing)
         self.frame.render(painter)
         painter.end()
-        #save preview for debugging
-        preview.save("temp.png", "png")
+        if log.isEnabledFor(logging.DEBUG):
+            #save preview for debugging
+            preview.save("temp.png", "png")
         return preview
 
     def initialDisplay(self, image, video=False):
@@ -349,6 +359,7 @@ class WebViewer(DisplayWidget):
         Store the serviceItem and build the new HTML from it. Add the
         HTML to the display
         """
+        self.loaded = False
         self.serviceItem = serviceItem
         html = build_html(self.serviceItem, self.screen, None)
         self.webView.setHtml(html)
