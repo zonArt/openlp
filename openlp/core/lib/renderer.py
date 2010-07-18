@@ -173,18 +173,9 @@ class Renderer(object):
         myCursor = QtGui.QTextCursor(doc)
         layout = doc.documentLayout()
         formatted = []
-#        if self._theme.display_horizontalAlign == 2:
-#            shell = """<p color="%s" align=center>""" %\
-#                self._theme.font_main_color
-#        elif self._theme.display_horizontalAlign == 1:
-#            shell = """<p color="%s" align=right>""" %\
-#                self._theme.font_main_color
-#        else:
-#            shell = """<p color="%s">""" % self._theme.font_main_color
         shell = u'<p>%s</p>'
         temp_text = u''
         old_html_text = u''
-        page = []
         for line in text:
             # mark line ends
             temp_text = temp_text + line + u'<br>'
@@ -192,12 +183,10 @@ class Renderer(object):
             doc.setHtml(html_text)
             #Text too long so gone to next mage
             if layout.pageCount() != 1:
-                page.append(shell % old_html_text)
-                formatted.append(page)
+                formatted.append(shell % old_html_text)
                 temp_text = line
             old_html_text = temp_text
-        page.append(shell % old_html_text)
-        formatted.append(page)
+        formatted.append(shell % old_html_text)
         log.debug(u'format_slide - End')
         #return split_text
         return formatted

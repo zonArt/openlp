@@ -90,7 +90,7 @@ class ServiceItem(object):
         self.from_plugin = False
         self.capabilities = []
         self.is_valid = True
-        self.cache = {}
+        #self.cache = {}
         self.icon = None
         self.themedata = None
 
@@ -132,7 +132,7 @@ class ServiceItem(object):
         """
         log.debug(u'Render called')
         self._display_frames = []
-        self.clear_cache()
+        #self.clear_cache()
         self.bg_frame = None
         self.just_rendered = True
         if self.service_item_type == ServiceItemType.Text:
@@ -147,17 +147,11 @@ class ServiceItem(object):
                 before = time.time()
                 formated = self.render_manager.format_slide(slide[u'raw_slide'])
                 for format in formated:
-                    lines = u''
-                    title = u''
-                    for line in format:
-                        if title == u'':
-                            title = line
-                        lines += line + u'\n'
-                    self._display_frames.append({u'title': title,
-                        u'text': lines.rstrip(),
+                    self._display_frames.append({u'title': format,
+                        u'text': format.rstrip(),
                         u'verseTag': slide[u'verseTag'] })
-                    if len(self._display_frames) in self.cache.keys():
-                        del self.cache[len(self._display_frames)]
+#                    if len(self._display_frames) in self.cache.keys():
+#                        del self.cache[len(self._display_frames)]
                 log.log(15, u'Formatting took %4s' % (time.time() - before))
         elif self.service_item_type == ServiceItemType.Image:
             for slide in self._raw_frames:
@@ -189,7 +183,7 @@ class ServiceItem(object):
 #        else:
 #            frame = self.render_manager.generate_slide(raw_html, u'')
         frame = None
-        self.cache[row] = frame
+        #self.cache[row] = frame
         return frame, raw_html[0]
 
     def add_from_image(self, path, title, image):
@@ -393,8 +387,8 @@ class ServiceItem(object):
         """
         return self._raw_frames[row][u'path']
 
-    def clear_cache(self):
-        """
-        Clear's the service item's cache.
-        """
-        self.cache = {}
+#    def clear_cache(self):
+#        """
+#        Clear's the service item's cache.
+#        """
+#        self.cache = {}
