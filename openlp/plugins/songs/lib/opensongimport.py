@@ -136,14 +136,18 @@ class OpenSongImport(object):
         root = tree.getroot()
         fields = dir(root)
         decode = {u'copyright':self.song_import.add_copyright,
-                u'ccli':self.song_import.set_ccli_number,
+                u'ccli':u'ccli_number',
                 u'author':self.song_import.parse_author,
-                u'title':self.song_import.set_title,
-                u'aka':self.song_import.set_alternate_title,
-                u'hymn_number':self.song_import.set_song_number}
-        for (attr, fn) in decode.items():
+                u'title':u'title',
+                u'aka':u'alternate_title',
+                u'hymn_number':u'song_number'}
+        for (attr, fn_or_string) in decode.items():
             if attr in fields:
-                fn(unicode(root.__getattr__(attr)))
+                ustring = unicode(root.__getattr__(attr))
+                if type(fn_or_string) == type(u''):
+                    self.song_import.__setattr__(fn_or_string, ustring)
+                else:
+                    fn_or_string(ustring)
 
         res = []
         if u'theme' in fields:

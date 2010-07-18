@@ -123,58 +123,9 @@ class SongImport(object):
         if len(lines) == 1:
             self.parse_author(lines[0])
             return
-        if not self.get_title():
-            self.set_title(lines[0])
+        if not self.title:
+            self.title = lines[0]
         self.add_verse(text)
-
-    def get_title(self):
-        """
-        Return the title
-        """
-        return self.title
-
-    def get_copyright(self):
-        """
-        Return the copyright
-        """
-        return self.copyright
-
-    def get_song_number(self):
-        """
-        Return the song number
-        """
-        return self.song_number
-
-    def set_title(self, title):
-        """
-        Set the title
-        """
-        self.title = title
-
-    def set_alternate_title(self, title):
-        """
-        Set the alternate title
-        """
-        self.alternate_title = title
-
-    def set_song_number(self, song_number):
-        """
-        Set the song number
-        """
-        self.song_number = song_number
-
-    def set_ccli_number(self, cclino):
-        """
-        Set the ccli number
-        """
-        self.ccli_number = cclino
-
-    def set_song_book(self, song_book, publisher):
-        """
-        Set the song book name and publisher
-        """
-        self.song_book_name = song_book
-        self.song_book_pub = publisher
 
     def add_copyright(self, copyright):
         """
@@ -309,29 +260,23 @@ class SongImport(object):
             author = self.manager.get_object_filtered(Author,
                 Author.display_name == authortext)
             if author is None:
-                author = Author()
-                author.display_name = authortext
-                author.last_name = authortext.split(u' ')[-1]
-                author.first_name = u' '.join(authortext.split(u' ')[:-1])
-                self.manager.save_object(author)
+                author = Author.populate(display_name = authortext,
+                    last_name=authortext.split(u' ')[-1],
+                    first_name=u' '.join(authortext.split(u' ')[:-1]))
             song.authors.append(author)
         if self.song_book_name:
             song_book = self.manager.get_object_filtered(Book,
                 Book.name == self.song_book_name)
             if song_book is None:
-                song_book = Book()
-                song_book.name = self.song_book_name
-                song_book.publisher = self.song_book_pub
-                self.manager.save_object(song_book)
-            song.song_book_id = song_book.id
+                song_book = Book.populate(name=self.song_book_name,
+                    publisher=self.song_book_pub)
+            song.book = song_book
         for topictext in self.topics:
             if len(topictext) == 0:
                 continue
             topic = self.manager.get_object_filtered(Topic, Topic.name == topictext)
             if topic is None:
-                topic = Topic()
-                topic.name = topictext
-                self.manager.save_object(topic)
+                topic = Topic.populate(name=topictext)
             song.topics.append(topic)
         self.manager.save_object(song)
 
