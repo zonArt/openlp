@@ -118,7 +118,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.TopicRemoveButton.setEnabled(False)
 
     def loadAuthors(self):
-        authors = self.songmanager.get_all_objects(Author, Author.display_name)
+        authors = self.songmanager.get_all_objects(Author,
+            order_by_ref=Author.display_name)
         self.AuthorsSelectionComboItem.clear()
         self.AuthorsSelectionComboItem.addItem(u'')
         for author in authors:
@@ -128,7 +129,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 row, QtCore.QVariant(author.id))
 
     def loadTopics(self):
-        topics = self.songmanager.get_all_objects(Topic, Topic.name)
+        topics = self.songmanager.get_all_objects(Topic,
+            order_by_ref=Topic.name)
         self.SongTopicCombo.clear()
         self.SongTopicCombo.addItem(u'')
         for topic in topics:
@@ -137,7 +139,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.SongTopicCombo.setItemData(row, QtCore.QVariant(topic.id))
 
     def loadBooks(self):
-        books = self.songmanager.get_all_objects(Book, Book.name)
+        books = self.songmanager.get_all_objects(Book, order_by_ref=Book.name)
         self.SongbookCombo.clear()
         self.SongbookCombo.addItem(u'')
         for book in books:

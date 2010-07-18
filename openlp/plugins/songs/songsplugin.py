@@ -69,7 +69,7 @@ class SongsPlugin(Plugin):
         log.info(u'Songs Initialising')
         Plugin.initialise(self)
         self.mediaItem.displayResultsSong(
-            self.manager.get_all_objects(Song, Song.title))
+            self.manager.get_all_objects(Song, order_by_ref=Song.title))
 
     def getMediaManagerItem(self):
         """
@@ -198,8 +198,7 @@ class SongsPlugin(Plugin):
 
         Returns True if the theme is being used, otherwise returns False.
         """
-        if self.manager.get_all_objects_filtered(Song,
-            Song.theme_name == theme):
+        if self.manager.get_all_objects(Song, Song.theme_name == theme):
             return True
         return False
 
@@ -214,7 +213,7 @@ class SongsPlugin(Plugin):
         ``newTheme``
             The new name the plugin should now use.
         """
-        songsUsingTheme = self.manager.get_all_objects_filtered(Song,
+        songsUsingTheme = self.manager.get_all_objects(Song,
             Song.theme_name == oldTheme)
         for song in songsUsingTheme:
             song.theme_name = newTheme
