@@ -173,12 +173,15 @@ class Renderer(object):
         myCursor = QtGui.QTextCursor(doc)
         layout = doc.documentLayout()
         formatted = []
-        if self._theme.display_horizontalAlign == 2:
-            shell = "<p align=center>%s</font></p>"
-        elif self._theme.display_horizontalAlign == 1:
-            shell = "<p align=right>%s</font></p>"
-        else:
-            shell = "<p>%s</p>"
+#        if self._theme.display_horizontalAlign == 2:
+#            shell = """<p color="%s" align=center>""" %\
+#                self._theme.font_main_color
+#        elif self._theme.display_horizontalAlign == 1:
+#            shell = """<p color="%s" align=right>""" %\
+#                self._theme.font_main_color
+#        else:
+#            shell = """<p color="%s">""" % self._theme.font_main_color
+        shell = u'<p>%s</p>'
         temp_text = u''
         old_html_text = u''
         page = []
