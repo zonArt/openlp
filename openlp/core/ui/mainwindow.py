@@ -693,6 +693,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         QtGui.QWidget.show(self)
         self.LiveController.display.setup()
+        self.PreviewController.display.setup()
         if self.LiveController.display.isVisible():
             self.LiveController.display.setFocus()
         self.activateWindow()

@@ -574,7 +574,7 @@ class SlideController(QtGui.QWidget):
                         self.slideList[tag1] = framenumber
                         self.SongMenu.menu().addAction(tag1,
                             self.onSongBarHandler)
-                item.setText(frame[u'text'])
+                item.setText(self.clean(frame[u'text']))
             else:
                 label = QtGui.QLabel()
                 label.setMargin(4)
@@ -981,3 +981,9 @@ class SlideController(QtGui.QWidget):
             self.video.hide()
         self.SlidePreview.clear()
         self.SlidePreview.show()
+
+    def clean(self, text):
+        text = text.replace(u'<br>', u'\n').replace(u'<p>', u'')\
+            .replace(u'</p>', u'').replace(u'<sup>', u'')\
+            .replace(u'</sup>', u'')
+        return text
