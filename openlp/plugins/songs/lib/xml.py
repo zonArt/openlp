@@ -77,7 +77,8 @@ class SongXMLBuilder(object):
             The actual text of the verse to be stored.
         """
         # log.debug(u'add_verse_to_lyrics %s, %s\n%s' % (type, number, content))
-        verse = etree.Element(u'verse', type = unicode(type), label = unicode(number))
+        verse = etree.Element(u'verse', type = unicode(type),
+            label = unicode(number))
         verse.text = etree.CDATA(content)
         self.lyrics.append(verse)
 

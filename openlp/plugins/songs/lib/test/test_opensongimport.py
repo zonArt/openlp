@@ -32,17 +32,16 @@ def test():
     manager = Manager(u'songs', init_schema)
     o = OpenSongImport(manager)
     o.do_import(u'test.opensong', commit=False)
-    o.finish()
     o.song_import.print_song()
     assert o.song_import.copyright == u'2010 Martin Thompson'
     assert o.song_import.authors == [u'MartiÑ Thómpson']
     assert o.song_import.title == u'Martins Test'
     assert o.song_import.alternate_title == u''
     assert o.song_import.song_number == u'1'
-    assert [u'B1', u'Bridge 1\nBridge 1 line 2'] in o.song_import.verses 
     assert [u'C1', u'Chorus 1'] in o.song_import.verses 
     assert [u'C2', u'Chorus 2'] in o.song_import.verses 
     assert not [u'C3', u'Chorus 3'] in o.song_import.verses 
+    assert [u'B1', u'Bridge 1\nBridge 1 line 2'] in o.song_import.verses 
     assert [u'V1', u'v1 Line 1\nV1 Line 2'] in o.song_import.verses 
     assert [u'V2', u'v2 Line 1\nV2 Line 2'] in o.song_import.verses
     assert o.song_import.verse_order_list == [u'V1', u'C1', u'V2', u'C2', u'V3', u'B1', u'V1']
