@@ -211,6 +211,14 @@ class ThemeManager(QtGui.QWidget):
             'You must select a theme to delete.')):
             item = self.ThemeListWidget.currentItem()
             theme = unicode(item.text())
+            # confirm deletion
+            answer = QtGui.QMessageBox.question(self,
+                translate('ThemeManager', 'Delete Confirmation'),
+                translate('ThemeManager', 'Delete theme?'),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
+                QtGui.QMessageBox.No), QtGui.QMessageBox.No)
+            if answer == QtGui.QMessageBox.No:
+                return
             # should be the same unless default
             if theme != unicode(item.data(QtCore.Qt.UserRole).toString()):
                 QtGui.QMessageBox.critical(self,
