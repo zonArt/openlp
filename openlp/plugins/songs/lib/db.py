@@ -73,18 +73,18 @@ def init_schema(url):
     """
     session, metadata = init_db(url, auto_flush=False)
 
+    # Definition of the "audio_files" table
+    audio_files_table = Table(u'audio_files', metadata,
+        Column(u'id', types.Integer, primary_key=True),
+        Column(u'file_name', types.Unicode(255), nullable=False)
+    )
+
     # Definition of the "authors" table
     authors_table = Table(u'authors', metadata,
         Column(u'id', types.Integer, primary_key=True),
         Column(u'first_name', types.Unicode(128)),
         Column(u'last_name', types.Unicode(128)),
         Column(u'display_name', types.Unicode(255), nullable=False)
-    )
-
-    # Definition of the "audio_files" table
-    audio_files_table = Table(u'audio_files', metadata,
-        Column(u'id', types.Integer, primary_key=True),
-        Column(u'file_name', types.Unicode(255), nullable=False)
     )
 
     # Definition of the "song_books" table
@@ -118,20 +118,20 @@ def init_schema(url):
         Column(u'name', types.Unicode(128), nullable=False)
     )
 
+    # Definition of the "audio_files_songs" table
+    audio_files_songs_table = Table(u'audio_files_songs', metadata,
+        Column(u'audio_file_id', types.Integer,
+            ForeignKey(u'audio_files.id'), primary_key=True),
+        Column(u'song_id', types.Integer,
+            ForeignKey(u'songs.id'), primary_key=True)
+    )
+
     # Definition of the "authors_songs" table
     authors_songs_table = Table(u'authors_songs', metadata,
         Column(u'author_id', types.Integer,
             ForeignKey(u'authors.id'), primary_key=True),
         Column(u'song_id', types.Integer,
             ForeignKey(u'songs.id'), primary_key=True)
-    )
-
-    # Definition of the "songs_audio_files" table
-    songs_audio_files_table = Table(u'songs_audio_files', metadata,
-        Column(u'song_id', types.Integer,
-            ForeignKey(u'songs.id'), primary_key=True),
-        Column(u'audio_file_id', types.Integer,
-            ForeignKey(u'audio_files.id'), primary_key=True)
     )
 
     # Definition of the "songs_topics" table
@@ -150,14 +150,14 @@ def init_schema(url):
     Index(u'song_books_id', song_books_table.c.id)
     Index(u'songs_id', songs_table.c.id)
     Index(u'topics_id', topics_table.c.id)
+    Index(u'audio_files_songs_file', audio_files_songs_table.c.audio_file_id,
+        audio_files_songs_table.c.song_id)
+    Index(u'audio_files_songs_song', audio_files_songs_table.c.song_id,
+        audio_files_songs_table.c.audio_file_id)
     Index(u'authors_songs_author', authors_songs_table.c.author_id,
         authors_songs_table.c.song_id)
     Index(u'authors_songs_song', authors_songs_table.c.song_id,
         authors_songs_table.c.author_id)
-    Index(u'songs_audio_files_file', songs_audio_files_table.c.audio_file_id,
-        songs_audio_files_table.c.song_id)
-    Index(u'songs_audio_files_song', songs_audio_files_table.c.song_id,
-        songs_audio_files_table.c.audio_file_id)
     Index(u'topics_song_topic', songs_topics_table.c.topic_id,
         songs_topics_table.c.song_id)
     Index(u'topics_song_song', songs_topics_table.c.song_id,
@@ -169,7 +169,7 @@ def init_schema(url):
     mapper(Song, songs_table,
         properties={
             'audio_files': relation(AudioFile, backref='songs',
-                secondary=songs_audio_files_table),
+                secondary=audio_files_songs_table),
             'authors': relation(Author, backref='songs',
                 secondary=authors_songs_table),
             'book': relation(Book, backref='songs'),
