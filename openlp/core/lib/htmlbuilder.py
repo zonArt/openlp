@@ -39,6 +39,7 @@ HTMLSRC = u"""
 %s
 %s
 %s
+%s
 </style>
 <script language="javascript">
     var t = null;
@@ -70,7 +71,7 @@ HTMLSRC = u"""
 </head>
 <body>
 <div id="lyrics" class="lyrics"></div>
-<div id="lyrics2" class="lyrics"></div>
+<div id="footer" class="footer"></div>
 <div id="alert"></div>
 <video id="video"></video>
 %s
@@ -83,6 +84,7 @@ def build_html(item, screen, alert):
     html = HTMLSRC % (build_video(width, height),
                       build_image(width, height),
                       build_lyrics(item, width, height),
+                      build_footer(item, width, height),
                       build_alert(width, height, alert),
                       build_image(width, height),
                       build_image_src(item.bg_frame))
@@ -124,15 +126,7 @@ def build_image_src(image):
 
 def build_lyrics(item, width, height):
     lyrics = """
-    #lyrics {
-        position: absolute;
-        %s
-        z-index:3;
-        %s;
-        %s;
-        %s
-        %s
-    }
+    #lyrics {position: absolute; %s z-index:3; %s; %s; %s %s }
     """
     theme = item.themedata
     lyrics_html = u''
@@ -157,7 +151,7 @@ def build_lyrics(item, width, height):
             valign = u'vertical-align=middle;'
         else:
             valign = u'vertical-align=bottom;'
-        text = u'color:%s;%s%s' % (theme.font_main_color, align, valign)
+        text = u'color:%s; %s %s' % (theme.font_main_color, align, valign)
         if theme.display_shadow:
             shadow = u'text-shadow: %spx %spx %spx %s' %\
                 (theme.display_shadow_size, theme.display_shadow_size,
@@ -170,6 +164,48 @@ def build_lyrics(item, width, height):
     lyrics_html = lyrics % (position, shadow, outline, font, text)
     print lyrics_html
     return lyrics_html
+
+def build_footer(item, width, height):
+    lyrics = """
+    #footer {position: absolute; %s z-index:3; %s; %s; %s %s }
+    """
+    theme = item.themedata
+    lyrics_html = u''
+    position = u''
+    shadow = u''
+    outline = u''
+    font = u''
+    text = u''
+    if theme:
+        position =  u' left: %spx; top: %spx; width: %spx; height: %spx; ' %\
+            (item.footer.x(),  item.footer.y(), item.footer.width(), item.footer.height())
+        font = u' font-family %s; font-size: %spx;' %\
+            (theme.font_footer_name, theme.font_footer_proportion)
+        align = u''
+        if theme.display_horizontalAlign == 2:
+            align = u'align=center;'
+        elif theme.display_horizontalAlign == 1:
+            align = u'align=right;'
+        if theme.display_verticalAlign == 2:
+            valign = u'vertical-align=top;'
+        elif theme.display_verticalAlign == 1:
+            valign = u'vertical-align=middle;'
+        else:
+            valign = u'vertical-align=bottom;'
+        text = u'color:%s; %s %s' % (theme.font_footer_color, align, valign)
+        if theme.display_shadow:
+            shadow = u'text-shadow: %spx %spx %spx %s' %\
+                (theme.display_shadow_size, theme.display_shadow_size,
+                theme.display_shadow_size, theme.display_shadow_color)
+        if theme.display_outline:
+            # 1px is the blur radius
+            outline = u'text-outline: %spx 1px %s' %\
+                (theme.display_outline_size, theme.display_outline_color)
+            outline = u'text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white'
+    lyrics_html = lyrics % (position, shadow, outline, font, text)
+    print lyrics_html
+    return lyrics_html
+
 
 def build_alert(width, height, alert):
     alert = """

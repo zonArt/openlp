@@ -81,6 +81,7 @@ class ServiceItem(object):
         self.items = []
         self.iconic_representation = None
         self.raw_footer = None
+        self.foot_text = None
         self.theme = None
         self.service_item_type = None
         self._raw_frames = []
@@ -147,7 +148,8 @@ class ServiceItem(object):
                 before = time.time()
                 formated = self.render_manager.format_slide(slide[u'raw_slide'])
                 for format in formated:
-                    self._display_frames.append({u'title': format,
+                    self._display_frames.append(
+                        {u'title': format.replace(u'<p>', u''),
                         u'text': format.rstrip(),
                         u'verseTag': slide[u'verseTag'] })
 #                    if len(self._display_frames) in self.cache.keys():
@@ -161,6 +163,13 @@ class ServiceItem(object):
             pass
         else:
             log.error(u'Invalid value renderer :%s' % self.service_item_type)
+        self.foot_text = None
+        if self.raw_footer:
+            for foot in self.raw_footer:
+                if not self.foot_text:
+                    self.foot_text = foot
+                else:
+                    self.foot_text = u'%s<br>%s' % (self.foot_text, foot)
 
     def render_individual(self, row):
         """

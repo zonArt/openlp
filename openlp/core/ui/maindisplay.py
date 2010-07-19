@@ -343,6 +343,8 @@ class WebViewer(DisplayWidget):
         self.serviceItem = serviceItem
         html = build_html(self.serviceItem, self.screen, None)
         self.webView.setHtml(html)
+        if serviceItem.footer:
+            self.frame.findFirstElement('div#footer').setInnerXml(serviceItem.foot_text)
 
 #class DisplayWidget(QtGui.QGraphicsView):
 #    """
