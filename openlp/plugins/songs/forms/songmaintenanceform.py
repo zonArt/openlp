@@ -290,7 +290,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     ' already exists. Would you like to make songs with author '
                     '%s use the existing author %s?' % (author.display_name,
                     temp_display_name, author.display_name)),
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No | \
+                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
                     QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.Yes:
                     self.mergeAuthors(author)
                     self.resetAuthors()
@@ -331,7 +331,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     'already exists. Would you like to make songs with topic %s'
                     ' use the existing topic %s?' % (topic.name, temp_name,
                     topic.name)),
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No | \
+                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
                     QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.Yes:
                     self.mergeTopics(topic)
                     self.resetTopics()
@@ -372,7 +372,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     'already exists. Would you like to make songs with book %s '
                     'use the existing book %s?' % (book.name, temp_name,
                     book.name)),
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No | \
+                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
                     QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.Yes:
                     self.mergeBooks(book)
                     self.resetBooks()
