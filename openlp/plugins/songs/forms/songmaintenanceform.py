@@ -137,7 +137,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
 
     def checkAuthor(self, new_author, edit=False):
         """
-        Returns False when the given Author is already in the list elsewise
+        Returns False if the given Author is already in the list otherwise
         True.
         """
         authors = self.songmanager.get_all_objects_filtered(Author, 
@@ -163,11 +163,10 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
 
     def checkTopic(self, new_topic, edit=False):
         """
-        Returns False when the given Topic is already in the list elsewise True.
+        Returns False if the given Topic is already in the list otherwise True.
         """
         topics = self.songmanager.get_all_objects_filtered(Topic,
-            Topic.name == new_topic.name
-            )
+            Topic.name == new_topic.name)
         if len(topics) > 0:
             # If we edit an existing Topic, we need to make sure that we do
             # not return False when nothing has changed (because this would
@@ -184,25 +183,22 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
 
     def checkBook(self, new_book, edit=False):
         """
-        Returns False when the given Book is already in the list elsewise True.
+        Returns False if the given Book is already in the list otherwise True.
         """
         books = self.songmanager.get_all_objects_filtered(Book,
-            and_(
-                Book.name == new_book.name, 
-                Book.publisher == new_book.publisher
-                )
-            )
+            and_(Book.name == new_book.name, 
+                Book.publisher == new_book.publisher))
         if len(books) > 0:
-                # If we edit an existing Book, we need to make sure that we do
-                # not return False when nothing has changed (because this would
-                # cause an error message later on).
-                if edit:
-                    if books[0].id == new_book.id:
-                        return True
-                    else:
-                        return False
+            # If we edit an existing Book, we need to make sure that we do
+            # not return False when nothing has changed (because this would
+            # cause an error message later on).
+            if edit:
+                if books[0].id == new_book.id:
+                    return True
                 else:
                     return False
+            else:
+                return False
         else:
             return True
 
