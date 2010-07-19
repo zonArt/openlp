@@ -394,7 +394,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             and_(Author.first_name == old_author.first_name,
                 Author.last_name == old_author.last_name, 
                 Author.display_name == old_author.display_name))
-        songs = self.songmanager.get_all_objects_filtered(Song,
+        songs = self.songmanager.get_all_objects(Song,
             Song.authors.contains(old_author))
         for song in songs:
             # We check if the song has already existing_author as author. If
@@ -414,7 +414,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         '''
         existing_topic = self.songmanager.get_object_filtered(Topic,
             Topic.name == old_topic.name)
-        songs = self.songmanager.get_all_objects_filtered(Song,
+        songs = self.songmanager.get_all_objects(Song,
             Song.topics.contains(old_topic))
         for song in songs:
             # We check if the song has already existing_topic as topic. If that
@@ -435,7 +435,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         existing_book = self.songmanager.get_object_filtered(Book,
             and_(Book.name == old_book.name,
                 Book.publisher == old_book.publisher))
-        songs = self.songmanager.get_all_objects_filtered(Song,
+        songs = self.songmanager.get_all_objects(Song,
             Song.song_book_id == old_book.id)
         for song in songs:
             song.song_book_id = existing_book.id
