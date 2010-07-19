@@ -381,64 +381,64 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     book.name = temp_name
                     book.publisher = temp_publisher
 
-    def mergeAuthors(self, existing_author):
+    def mergeAuthors(self, old_author):
         '''
         Merges two authors into one author.
         
-        ``existing_author``
+        ``old_author``
             The author which will be deleted afterwards.
         '''
-        new_author = self.songmanager.get_object_filtered(Author,
-            and_(Author.first_name == existing_author.first_name,
-                Author.last_name == existing_author.last_name, 
-                Author.display_name == existing_author.display_name))
+        existing_author = self.songmanager.get_object_filtered(Author,
+            and_(Author.first_name == old_author.first_name,
+                Author.last_name == old_author.last_name, 
+                Author.display_name == old_author.display_name))
         songs = self.songmanager.get_all_objects(Song)
         for song in songs:
-            if existing_author in song.authors:
-                # We check if the song has already the new_author as author.
-                # If that is not the case we add it.
-                if new_author not in song.authors:
-                    song.authors.append(new_author)
-                song.authors.remove(existing_author)
+            if old_author in song.authors:
+                # We check if the song has already existing_author
+                # as author. If that is not the case we add it.
+                if existing_author not in song.authors:
+                    song.authors.append(existing_author)
+                song.authors.remove(old_author)
                 self.songmanager.save_object(song)
-        self.songmanager.delete_object(Author, existing_author.id)
+        self.songmanager.delete_object(Author, old_author.id)
 
-    def mergeTopics(self, existing_topic):
+    def mergeTopics(self, old_topic):
         '''
         Merges two topics into one topic.
         
-        ``existing_topic``
+        ``old_topic``
             The topic which will be deleted afterwards.
         '''
-        new_topic = self.songmanager.get_object_filtered(Topic,
-            Topic.name == existing_topic.name)
+        existing_topic = self.songmanager.get_object_filtered(Topic,
+            Topic.name == old_topic.name)
         songs = self.songmanager.get_all_objects(Song)
         for song in songs:
-            if existing_topic in song.topics:
-                # We check if the song has already the new_topic as topic.
-                # If that is not the case we add it.
-                if new_topic not in song.topics:
-                    song.topics.append(new_topic)
-                song.topics.remove(existing_topic)
+            if old_topic in song.topics:
+                # We check if the song has already existing_topic
+                # as topic. If that is not the case we add it.
+                if existing_topic not in song.topics:
+                    song.topics.append(existing_topic)
+                song.topics.remove(old_topic)
                 self.songmanager.save_object(song)
-        self.songmanager.delete_object(Topic, existing_topic.id)
+        self.songmanager.delete_object(Topic, old_topic.id)
 
-    def mergeBooks(self, existing_book):
+    def mergeBooks(self, old_book):
         '''
         Merges two books into one book.
         
-        ``existing_book``
+        ``old_book``
             The book which will be deleted afterwards.
         '''
-        new_book = self.songmanager.get_object_filtered(Book,
-            and_(Book.name == existing_book.name,
-                Book.publisher == existing_book.publisher))
+        existing_book = self.songmanager.get_object_filtered(Book,
+            and_(Book.name == old_book.name,
+                Book.publisher == old_book.publisher))
         songs = self.songmanager.get_all_objects_filtered(Song,
-            Song.song_book_id == existing_book.id)
+            Song.song_book_id == old_book.id)
         for song in songs:
-            song.song_book_id = new_book.id
+            song.song_book_id = existing_book.id
             self.songmanager.save_object(song)
-        self.songmanager.delete_object(Book, existing_book.id)
+        self.songmanager.delete_object(Book, old_book.id)
 
     def onAuthorDeleteButtonClick(self):
         """
