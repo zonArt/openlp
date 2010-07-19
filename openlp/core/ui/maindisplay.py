@@ -263,6 +263,10 @@ class MainDisplay(DisplayWidget):
             (self.screen[u'size'].width() - splash_image.width()) / 2,
             (self.screen[u'size'].height() - splash_image.height()) / 2,
             splash_image)
+        #build a blank transparent image
+        self.transparent = QtGui.QPixmap(
+            self.screen[u'size'].width(), self.screen[u'size'].height())
+        self.transparent.fill(QtCore.Qt.transparent)
         self.displayImage(self.initialFrame)
         self.repaint()
         # Build a Black screen.
@@ -273,12 +277,6 @@ class MainDisplay(DisplayWidget):
             QtGui.QImage.Format_ARGB32_Premultiplied)
         painter.begin(self.blankFrame)
         painter.fillRect(self.blankFrame.rect(), QtCore.Qt.black)
-        # Build a blank transparent image.
-        self.transparent = QtGui.QPixmap(
-            self.screen[u'size'].width(), self.screen[u'size'].height())
-        self.transparent.fill(QtCore.Qt.transparent)
-        #self.displayText.setPixmap(self.transparent)
-        #self.frameView(self.transparent)
         # To display or not to display?
         if not self.screen[u'primary']:
             self.setVisible(True)
@@ -409,6 +407,7 @@ class MainDisplay(DisplayWidget):
             self.imageDisplay.setPixmap(QtGui.QPixmap.fromImage(frame))
         else:
             self.imageDisplay.setPixmap(frame)
+        self.frameView(self.transparent)
         self.videoDisplay.setHtml(u'<html></html>')
 
     def displayVideo(self, path):
