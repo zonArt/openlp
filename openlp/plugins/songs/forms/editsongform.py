@@ -182,7 +182,10 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.loadBooks()
         self.song = self.songmanager.get_object(Song, id)
         self.TitleEditItem.setText(self.song.title)
-        self.AlternativeEdit.setText(self.song.alternate_title)
+        if self.song.alternate_title:
+            self.AlternativeEdit.setText(self.song.alternate_title)
+        else:
+            self.AlternativeEdit.setText(u'')
         if self.song.song_book_id != 0:
             book_name = self.songmanager.get_object(Book,
                 self.song.song_book_id)
