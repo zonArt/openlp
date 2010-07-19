@@ -32,6 +32,12 @@ from sqlalchemy.orm import mapper, relation
 
 from openlp.core.lib.db import BaseModel, init_db
 
+class AudioFile(BaseModel):
+    """
+    AudioFile model
+    """
+    pass
+
 class Author(BaseModel):
     """
     Author model
@@ -75,6 +81,12 @@ def init_schema(url):
         Column(u'display_name', types.Unicode(255), nullable=False)
     )
 
+    # Definition of the "audio_files" table
+    audio_files_table = Table(u'audio_files', metadata,
+        Column(u'id', types.Integer, primary_key=True),
+        Column(u'file_name', types.Unicode(255), nullable=False)
+    )
+
     # Definition of the "song_books" table
     song_books_table = Table(u'song_books', metadata,
         Column(u'id', types.Integer, primary_key=True),
@@ -114,6 +126,14 @@ def init_schema(url):
             ForeignKey(u'songs.id'), primary_key=True)
     )
 
+    # Definition of the "songs_audio_files" table
+    songs_audio_files_table = Table(u'songs_audio_files', metadata,
+        Column(u'song_id', types.Integer,
+            ForeignKey(u'songs.id'), primary_key=True),
+        Column(u'audio_file_id', types.Integer,
+            ForeignKey(u'audio_files.id'), primary_key=True)
+    )
+
     # Definition of the "songs_topics" table
     songs_topics_table = Table(u'songs_topics', metadata,
         Column(u'song_id', types.Integer,
@@ -123,6 +143,7 @@ def init_schema(url):
     )
 
     # Define table indexes
+    Index(u'audio_files_id', audio_files_table.c.id)
     Index(u'authors_id', authors_table.c.id)
     Index(u'authors_display_name_id', authors_table.c.display_name,
         authors_table.c.id)
@@ -133,19 +154,28 @@ def init_schema(url):
         authors_songs_table.c.song_id)
     Index(u'authors_songs_song', authors_songs_table.c.song_id,
         authors_songs_table.c.author_id)
+    Index(u'songs_audio_files_file', songs_audio_files_table.c.audio_file_id,
+        songs_audio_files_table.c.song_id)
+    Index(u'songs_audio_files_song', songs_audio_files_table.c.song_id,
+        songs_audio_files_table.c.audio_file_id)
     Index(u'topics_song_topic', songs_topics_table.c.topic_id,
         songs_topics_table.c.song_id)
     Index(u'topics_song_song', songs_topics_table.c.song_id,
         songs_topics_table.c.topic_id)
 
+    mapper(AudioFile, audio_files_table)
     mapper(Author, authors_table)
     mapper(Book, song_books_table)
     mapper(Song, songs_table,
-        properties={'authors': relation(Author, backref='songs',
-            secondary=authors_songs_table),
+        properties={
+            'audio_files': relation(AudioFile, backref='songs',
+                secondary=songs_audio_files_table),
+            'authors': relation(Author, backref='songs',
+                secondary=authors_songs_table),
             'book': relation(Book, backref='songs'),
             'topics': relation(Topic, backref='songs',
-            secondary=songs_topics_table)})
+                secondary=songs_topics_table)
+        })
     mapper(Topic, topics_table)
 
     metadata.create_all(checkfirst=True)
