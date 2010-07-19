@@ -392,15 +392,15 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             and_(Author.first_name == old_author.first_name,
                 Author.last_name == old_author.last_name, 
                 Author.display_name == old_author.display_name))
-        songs = self.songmanager.get_all_objects(Song)
+        songs = self.songmanager.get_all_objects_filtered(Song,
+            Song.authors.contains(old_author))
         for song in songs:
-            if old_author in song.authors:
-                # We check if the song has already existing_author
-                # as author. If that is not the case we add it.
-                if existing_author not in song.authors:
-                    song.authors.append(existing_author)
-                song.authors.remove(old_author)
-                self.songmanager.save_object(song)
+            # We check if the song has already existing_author as author. If
+            # that is not the case we add it.
+            if existing_author not in song.authors:
+                song.authors.append(existing_author)
+            song.authors.remove(old_author)
+            self.songmanager.save_object(song)
         self.songmanager.delete_object(Author, old_author.id)
 
     def mergeTopics(self, old_topic):
@@ -412,15 +412,15 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         '''
         existing_topic = self.songmanager.get_object_filtered(Topic,
             Topic.name == old_topic.name)
-        songs = self.songmanager.get_all_objects(Song)
+        songs = self.songmanager.get_all_objects_filtered(Song,
+            Song.topics.contains(old_topic))
         for song in songs:
-            if old_topic in song.topics:
-                # We check if the song has already existing_topic
-                # as topic. If that is not the case we add it.
-                if existing_topic not in song.topics:
-                    song.topics.append(existing_topic)
-                song.topics.remove(old_topic)
-                self.songmanager.save_object(song)
+            # We check if the song has already existing_topic as topic. If that
+            # is not the case we add it.
+            if existing_topic not in song.topics:
+                song.topics.append(existing_topic)
+            song.topics.remove(old_topic)
+            self.songmanager.save_object(song)
         self.songmanager.delete_object(Topic, old_topic.id)
 
     def mergeBooks(self, old_book):
