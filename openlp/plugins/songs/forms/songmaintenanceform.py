@@ -377,8 +377,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     self.mergeBooks(book)
                     self.resetBooks()
                 else:
-                    # We restore the book's old name and publisher, because
-                    # the user did not want to merge the two topics.
+                    # We restore the book's old name and publisher.
                     book.name = temp_name
                     book.publisher = temp_publisher
 
