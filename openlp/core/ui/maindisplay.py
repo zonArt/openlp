@@ -167,7 +167,7 @@ class DisplayWidget(QtGui.QGraphicsView):
 
     def keyPressEvent(self, event):
         if isinstance(event, QtGui.QKeyEvent):
-            # Here accept the event and do something.
+            #here accept the event and do something
             if event.key() == QtCore.Qt.Key_Up:
                 Receiver.send_message(u'slidecontroller_live_previous')
                 event.accept()
@@ -233,8 +233,8 @@ class MainDisplay(DisplayWidget):
         self.setupBlank()
         self.blankFrame = None
         self.frame = None
-        # Hide desktop for now until we know where to put it
-        # and what size it should be.
+        #Hide desktop for now until we know where to put it
+        #and what size it should be.
         self.setVisible(False)
 
     def setup(self):
@@ -245,12 +245,13 @@ class MainDisplay(DisplayWidget):
             self.screens, self.screens.monitor_number))
         self.setVisible(False)
         self.screen = self.screens.current
-        # Sort out screen locations and sizes.
+        #Sort out screen locations and sizes
         self.setGeometry(self.screen[u'size'])
-        self.scene.setSceneRect(0, 0, self.size().width(), self.size().height())
+        self.scene.setSceneRect(0, 0, self.size().width(),
+            self.size().height())
         self.webView.setGeometry(0, 0, self.size().width(),
             self.size().height())
-        # Build a custom splash screen.
+        #Build a custom splash screen
         self.initialFrame = QtGui.QImage(
             self.screen[u'size'].width(),
             self.screen[u'size'].height(),
@@ -269,7 +270,7 @@ class MainDisplay(DisplayWidget):
         self.transparent.fill(QtCore.Qt.transparent)
         self.displayImage(self.initialFrame)
         self.repaint()
-        # Build a Black screen.
+        #Build a Black screen
         painter = QtGui.QPainter()
         self.blankFrame = QtGui.QImage(
             self.screen[u'size'].width(),
@@ -368,7 +369,7 @@ class MainDisplay(DisplayWidget):
         self.displayBlank.setPixmap(self.transparent)
         if self.isHidden():
             self.setVisible(True)
-        # Trigger actions when display is active again.
+        #Trigger actions when display is active again
         Receiver.send_message(u'maindisplay_active')
 
     def addImageWithText(self, frame):
@@ -419,7 +420,8 @@ class MainDisplay(DisplayWidget):
         log.debug(u'adddisplayVideo')
         self.displayImage(self.transparent)
         self.videoDisplay.setHtml(HTMLVIDEO %
-            (path, self.screen[u'size'].width(), self.screen[u'size'].height()))
+            (path, self.screen[u'size'].width(),
+            self.screen[u'size'].height()))
 
     def frameView(self, frame, transition=False):
         """
@@ -507,7 +509,7 @@ class VideoDisplay(Phonon.VideoWidget):
 
     def keyPressEvent(self, event):
         if isinstance(event, QtGui.QKeyEvent):
-            # Here accept the event and do something.
+            #here accept the event and do something
             if event.key() == QtCore.Qt.Key_Escape:
                 self.onMediaStop()
                 event.accept()
@@ -522,7 +524,7 @@ class VideoDisplay(Phonon.VideoWidget):
         log.debug(u'VideoDisplay Setup %s for %s ' % (self.screens,
             self.screens.monitor_number))
         self.screen = self.screens.current
-        # Sort out screen locations and sizes.
+        #Sort out screen locations and sizes
         self.setGeometry(self.screen[u'size'])
         # To display or not to display?
         if not self.screen[u'primary']: # and self.isVisible():
@@ -549,10 +551,10 @@ class VideoDisplay(Phonon.VideoWidget):
 #        if it is triggered from the plugin
 #        """
 #        log.debug(u'VideoDisplay Queue new media message %s' % message)
-#        # If not file take the stored one.
+#        #If not file take the stored one
 #        if not message:
 #            message = self.message
-#        # Still no file name then stop as it was a normal video stopping.
+#        # still no file name then stop as it was a normal video stopping
 #        if message:
 #            self.mediaObject.setCurrentSource(Phonon.MediaSource(message))
 #            self.message = message

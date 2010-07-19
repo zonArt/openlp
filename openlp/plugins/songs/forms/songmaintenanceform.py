@@ -28,8 +28,7 @@ from sqlalchemy.sql import and_
 
 from openlp.core.lib import Receiver, translate
 from openlp.plugins.songs.forms import AuthorsForm, TopicsForm, SongBookForm
-from openlp.plugins.songs.lib.db import Author, Book, Topic, Song, \
-    SongsTopics, AuthorsSongs
+from openlp.plugins.songs.lib.db import Author, Book, Topic, Song
 from songmaintenancedialog import Ui_SongMaintenanceDialog
 
 class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
@@ -394,17 +393,14 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             and_(Author.first_name == existing_author.first_name,
                 Author.last_name == existing_author.last_name, 
                 Author.display_name == existing_author.display_name))
-        songs = self.songmanager.get_all_objects_filtered(AuthorsSongs,
-            AuthorsSongs.author_id == existing_author.id)
+        songs = self.songmanager.get_all_objects(Song)
         for song in songs:
-            # We have to check if the song has already the new_author as author.
-            # If that is the case we must not change song.author_id to the
-            # new_author's id, because then they were not unique.
-            temp_song = self.songmanager.get_all_objects_filtered(AuthorsSongs,
-                and_(AuthorsSongs.author_id == new_author.id,
-                    AuthorsSongs.song_id == song.song_id))
-            if len(temp_song) < 1:
-                song.author_id = new_author.id
+            if existing_author in song.authors:
+                # We check if the song has already the new_author as author.
+                # If that is not the case we add it.
+                if new_author not in song.authors:
+                    song.authors.append(new_author)
+                song.authors.remove(existing_author)
                 self.songmanager.save_object(song)
         self.songmanager.delete_object(Author, existing_author.id)
 
@@ -417,17 +413,14 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         '''
         new_topic = self.songmanager.get_object_filtered(Topic,
             Topic.name == existing_topic.name)
-        songs = self.songmanager.get_all_objects_filtered(SongsTopics,
-            SongsTopics.topic_id == existing_topic.id)
+        songs = self.songmanager.get_all_objects(Song)
         for song in songs:
-            # We have to check if the song has already the new_topic as topic.
-            # If that is the case we must not change song.topic_id to the
-            # new_topic's id, because then they were not unique.
-            temp_song = self.songmanager.get_all_objects_filtered(SongsTopics,
-                and_(SongsTopics.topic_id == new_topic.id,
-                    SongsTopics.song_id == song.song_id))
-            if len(temp_song) < 1:
-                song.topic_id = new_topic.id
+            if existing_topic in song.topics:
+                # We check if the song has already the new_topic as topic.
+                # If that is not the case we add it.
+                if new_topic not in song.topics:
+                    song.topics.append(new_topic)
+                song.topics.remove(existing_topic)
                 self.songmanager.save_object(song)
         self.songmanager.delete_object(Topic, existing_topic.id)
 

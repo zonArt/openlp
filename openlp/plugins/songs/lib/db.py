@@ -58,18 +58,6 @@ class Topic(BaseModel):
     """
     pass
 
-class SongsTopics(BaseModel):
-    """
-    Songs topics model
-    """
-    pass
-    
-class AuthorsSongs(BaseModel):
-    """
-    Songs authors model
-    """
-    pass
-
 def init_schema(url):
     """
     Setup the songs database connection and initialise the database schema
@@ -158,8 +146,6 @@ def init_schema(url):
             'topics': relation(Topic, backref='songs',
             secondary=songs_topics_table)})
     mapper(Topic, topics_table)
-    mapper(SongsTopics, songs_topics_table)
-    mapper(AuthorsSongs,  authors_songs_table)
 
     metadata.create_all(checkfirst=True)
     return session
