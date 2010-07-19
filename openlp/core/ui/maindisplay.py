@@ -262,12 +262,18 @@ class WebViewer(DisplayWidget):
         self.frame.findFirstElement('div#alert').setInnerXml(self.alerttext)
 
     def image(self, image):
+        image = resize_image(image, self.screen[u'size'].width(),
+            self.screen[u'size'].height())
         self.frame.evaluateJavaScript(
             "document.getElementById('video').style.visibility = 'hidden'")
         self.frame.evaluateJavaScript(
             "document.getElementById('image').style.visibility = 'visible'")
         self.frame.findFirstElement('img').setAttribute(
             'src', unicode('data:image/png;base64,%s' % image_to_byte(image)))
+
+    def reset(self):
+        self.frame.findFirstElement('img').setAttribute(
+            'src', unicode('data:image/png;base64,%s' % image_to_byte(self.serviceItem.bg_frame)))
 
     def video(self, videoPath, noSound=False):
         if self.currimage:
@@ -312,9 +318,9 @@ class WebViewer(DisplayWidget):
                 (self.screens.current[u'size'].width() - splash_image.width()) / 2,
                 (self.screens.current[u'size'].height() - splash_image.height()) / 2,
                 splash_image)
-            item = ServiceItem()
-            item.bg_frame = initialFrame
-            self.webView.setHtml(build_html(item, self.screen, None))
+            self.serviceItem = ServiceItem()
+            self.serviceItem.bg_frame = initialFrame
+            self.webView.setHtml(build_html(self.serviceItem, self.screen, None))
             self.show()
 
     def preview(self):

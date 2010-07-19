@@ -95,17 +95,26 @@ class MediaMediaItem(MediaManagerItem):
             u'Replace Background', u':/slides/slide_blank.png',
             translate('MediaPlugin.MediaItem', 'Replace Live Background'),
                 self.onReplaceClick, False)
+        self.resetButton = self.toolbar.addToolbarButton(
+            u'Reset Background', u':/system/system_close.png',
+            translate('ImagePlugin.MediaItem', 'Reset Live Background'),
+                self.onResetClick, False)
         # Add the song widget to the page layout
         self.pageLayout.addWidget(self.ImageWidget)
+        self.resetButton.setVisible(False)
+
+    def onResetClick(self):
+        self.resetButton.setVisible(False)
+        self.parent.liveController.display.reset()
 
     def onReplaceClick(self):
-
         if check_item_selected(self.listView,
             translate('ImagePlugin.MediaItem',
             'You must select an item to process.')):
             item = self.listView.currentItem()
             filename = unicode(item.data(QtCore.Qt.UserRole).toString())
             self.parent.displayManager.displayVideo(filename)
+        self.resetButton.setVisible(True)
 
     def generateSlideData(self, service_item, item=None):
         if item is None:
