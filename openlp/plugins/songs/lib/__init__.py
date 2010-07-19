@@ -141,6 +141,7 @@ from xml import LyricsXML, SongXMLBuilder, SongXMLParser
 from songstab import SongsTab
 from mediaitem import SongMediaItem
 from songimport import SongImport
+from opensongimport import OpenSongImport
 try:
     from sofimport import SofImport
     from oooimport import OooImport
