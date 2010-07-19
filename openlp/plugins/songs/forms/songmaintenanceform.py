@@ -28,8 +28,7 @@ from sqlalchemy.sql import and_
 
 from openlp.core.lib import Receiver, translate
 from openlp.plugins.songs.forms import AuthorsForm, TopicsForm, SongBookForm
-from openlp.plugins.songs.lib.db import Author, Book, Topic, Song, \
-    SongsTopics, AuthorsSongs
+from openlp.plugins.songs.lib.db import Author, Book, Topic, Song
 from songmaintenancedialog import Ui_SongMaintenanceDialog
 
 class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
