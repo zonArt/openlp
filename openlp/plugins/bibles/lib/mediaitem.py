@@ -508,14 +508,14 @@ class BibleMediaItem(MediaManagerItem):
             reference = bitem.data(QtCore.Qt.UserRole)
             if isinstance(reference, QtCore.QVariant):
                 reference = reference.toPyObject()
-            bible = self._decodeQtObject(reference, 'bible')
+            #bible = self._decodeQtObject(reference, 'bible')
             book = self._decodeQtObject(reference, 'book')
             chapter = self._decodeQtObject(reference, 'chapter')
             verse = self._decodeQtObject(reference, 'verse')
             text = self._decodeQtObject(reference, 'text')
             version = self._decodeQtObject(reference, 'version')
             copyright = self._decodeQtObject(reference, 'copyright')
-            permission = self._decodeQtObject(reference, 'permission')
+            #permission = self._decodeQtObject(reference, 'permission')
             if self.parent.settings_tab.display_style == 1:
                 verse_text = self.formatVerse(old_chapter, chapter, verse,
                     u'<sup>(u', u')</sup>')

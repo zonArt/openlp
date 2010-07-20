@@ -25,4 +25,3 @@
 """
 The :mod:`lib` module contains the library functions for the songusage plugin.
 """
-from openlp.plugins.songusage.lib.manager import SongUsageManager
