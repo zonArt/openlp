@@ -30,7 +30,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Plugin, build_icon, PluginStatus, Receiver, \
     translate
 from openlp.core.lib.db import Manager
-from openlp.plugins.songs.lib import SongMediaItem, SongsTab
+from openlp.plugins.songs.lib import OpenLPSongImport, SongMediaItem, SongsTab
 from openlp.plugins.songs.lib.db import init_schema, Song
 
 try:
@@ -157,7 +157,19 @@ class SongsPlugin(Plugin):
         import_menu.addAction(self.ImportOpenSongItem)
         QtCore.QObject.connect(self.ImportOpenSongItem,
                 QtCore.SIGNAL(u'triggered()'), self.onImportOpenSongItemClick)
-
+        # OpenLP v2 import menu item - ditto above regarding refactoring into
+        # an import wizard
+        self.ImportOpenLPSongItem = QtGui.QAction(import_menu)
+        self.ImportOpenLPSongItem.setObjectName(u'ImportOpenLPSongItem')
+        self.ImportOpenLPSongItem.setText(translate('SongsPlugin',
+            'OpenLP v2 (temporary)'))
+        self.ImportOpenLPSongItem.setToolTip(translate('SongsPlugin',
+            'Import an OpenLP v2 song database'))
+        self.ImportOpenLPSongItem.setStatusTip(translate('SongsPlugin',
+            'Import an OpenLP v2 song database'))
+        import_menu.addAction(self.ImportOpenLPSongItem)
+        QtCore.QObject.connect(self.ImportOpenLPSongItem,
+            QtCore.SIGNAL(u'triggered()'), self.onImportOpenLPSongItemClick)
 
     def addExportMenuItem(self, export_menu):
         """
@@ -216,6 +228,25 @@ class SongsPlugin(Plugin):
                     'Error importing OpenSong file'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
+        Receiver.send_message(u'songs_load_list')
+
+    def onImportOpenLPSongItemClick(self):
+        filenames = QtGui.QFileDialog.getOpenFileNames(None,
+            translate('SongsPlugin', 'Select OpenLP database(s) to import...'),
+            u'', u'OpenLP databases (*.sqlite);;All Files (*)')
+        try:
+            for filename in filenames:
+                db_url = u'sqlite:///%s' % filename
+                importer = OpenLPSongImport(self.manager, db_url)
+                importer.import_source_v2_db()
+            QtGui.QMessageBox.information(None, translate('SongsPlugin',
+                'Database(s) imported'), translate('SongsPlugin', 'Your '
+                'OpenLP v2 song databases have been successfully imported'))
+        except:
+            log.exception(u'Failed to import OpenLP v2 database(s)')
+            QtGui.QMessageBox.critical(None, translate('SongsPlugin',
+                'Import Error'), translate('SongsPlugin',
+                'Error importing OpenLP v2 database(s)'))
         Receiver.send_message(u'songs_load_list')
 
     def onImportOooItemClick(self):
