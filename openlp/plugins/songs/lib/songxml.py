@@ -28,7 +28,6 @@ import logging
 #import os
 
 from types import ListType
-from xml.etree.ElementTree import ElementTree, XML
 
 # Do we need these two lines?
 #sys.path.append(os.path.abspath(u'./../../../..'))

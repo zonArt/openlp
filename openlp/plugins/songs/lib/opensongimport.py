@@ -23,17 +23,13 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import logging
 import os
-import re
-
 from zipfile import ZipFile
-
-from lxml.etree import Element
 from lxml import objectify
 
 from openlp.plugins.songs.lib.songimport import SongImport
 
-import logging
 log = logging.getLogger(__name__)
 
 class OpenSongImportError(Exception):
@@ -148,8 +144,6 @@ class OpenSongImport(object):
                     self.song_import.__setattr__(fn_or_string, ustring)
                 else:
                     fn_or_string(ustring)
-
-        res = []
         if u'theme' in fields:
             self.song_import.topics.append(unicode(root.theme))
         if u'alttheme' in fields:
@@ -218,7 +212,6 @@ class OpenSongImport(object):
         versetypes = verses.keys()
         versetypes.sort()
         versetags = {}
-        verse_renames = {}
         for versetype in versetypes:
             versenums = verses[versetype].keys()
             versenums.sort()
@@ -241,6 +234,7 @@ class OpenSongImport(object):
                 log.warn(u'Got order %s but not in versetags, skipping', tag)
             else:
                 self.song_import.verse_order_list.append(tag)
+
     def finish(self):
         """ Separate function, allows test suite to not pollute database"""
         self.song_import.finish()

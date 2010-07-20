@@ -50,7 +50,7 @@ class SongImport(object):
         self.song_number = u''
         self.alternate_title = u''
         self.copyright = u''
-        self.comment = u''
+        self.comments = u''
         self.theme_name = u''
         self.ccli_number = u''
         self.authors = []
@@ -253,7 +253,7 @@ class SongImport(object):
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
         song.verse_order = u' '.join(self.verse_order_list)
         song.copyright = self.copyright
-        song.comment = self.comment
+        song.comments = self.comments
         song.theme_name = self.theme_name
         song.ccli_number = self.ccli_number
         for authortext in self.authors:
@@ -274,7 +274,8 @@ class SongImport(object):
         for topictext in self.topics:
             if len(topictext) == 0:
                 continue
-            topic = self.manager.get_object_filtered(Topic, Topic.name == topictext)
+            topic = self.manager.get_object_filtered(Topic,
+                Topic.name == topictext)
             if topic is None:
                 topic = Topic.populate(name=topictext)
             song.topics.append(topic)
@@ -303,8 +304,8 @@ class SongImport(object):
             print u'NUMBER: ' + self.song_number
         for topictext in self.topics:
             print u'TOPIC: ' + topictext
-        if self.comment:
-            print u'COMMENT: ' + self.comment
+        if self.comments:
+            print u'COMMENTS: ' + self.comments
         if self.theme_name:
             print u'THEME: ' + self.theme_name
         if self.ccli_number:
