@@ -217,7 +217,7 @@ class Ui_SongMaintenanceDialog(object):
         self.TypeListWidget.item(1).setText(
             translate('SongsPlugin.SongMaintenanceForm', 'Topics'))
         self.TypeListWidget.item(2).setText(
-            translate('SongsPlugin.SongMaintenanceForm', 'Books/Hymnals'))
+            translate('SongsPlugin.SongMaintenanceForm', 'Song Books'))
         self.AuthorAddButton.setText(
             translate('SongsPlugin.SongMaintenanceForm', '&Add'))
         self.AuthorEditButton.setText(

@@ -68,7 +68,7 @@ class Ui_SongBookDialog(object):
 
     def retranslateUi(self, SongBookDialog):
         SongBookDialog.setWindowTitle(
-            translate('SongsPlugin.SongBookForm', 'Edit Book'))
+            translate('SongsPlugin.SongBookForm', 'Song Book Maintenance'))
         self.NameLabel.setText(translate('SongsPlugin.SongBookForm', '&Name:'))
         self.PublisherLabel.setText(
             translate('SongsPlugin.SongBookForm', '&Publisher:'))

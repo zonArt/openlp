@@ -120,14 +120,6 @@ class Ui_AlertDialog(object):
         QtCore.QObject.connect(self.CloseButton, QtCore.SIGNAL(u'clicked()'),
             AlertDialog.close)
         QtCore.QMetaObject.connectSlotsByName(AlertDialog)
-        AlertDialog.setTabOrder(self.AlertTextEdit, self.ParameterEdit)
-        AlertDialog.setTabOrder(self.ParameterEdit, self.AlertListWidget)
-        AlertDialog.setTabOrder(self.AlertListWidget, self.NewButton)
-        AlertDialog.setTabOrder(self.NewButton, self.SaveButton)
-        AlertDialog.setTabOrder(self.SaveButton, self.DeleteButton)
-        AlertDialog.setTabOrder(self.DeleteButton, self.DisplayButton)
-        AlertDialog.setTabOrder(self.DisplayButton, self.DisplayCloseButton)
-        AlertDialog.setTabOrder(self.DisplayCloseButton, self.CloseButton)
 
     def retranslateUi(self, AlertDialog):
         AlertDialog.setWindowTitle(

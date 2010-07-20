@@ -136,17 +136,6 @@ class Ui_customEditDialog(object):
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
             customEditDialog.closePressed)
         QtCore.QMetaObject.connectSlotsByName(customEditDialog)
-        customEditDialog.setTabOrder(self.TitleEdit, self.VerseTextEdit)
-        customEditDialog.setTabOrder(self.VerseTextEdit, self.AddButton)
-        customEditDialog.setTabOrder(self.AddButton, self.VerseListView)
-        customEditDialog.setTabOrder(self.VerseListView, self.EditButton)
-        customEditDialog.setTabOrder(self.EditButton, self.EditAllButton)
-        customEditDialog.setTabOrder(self.EditAllButton, self.SaveButton)
-        customEditDialog.setTabOrder(self.SaveButton, self.DeleteButton)
-        customEditDialog.setTabOrder(self.DeleteButton, self.CreditEdit)
-        customEditDialog.setTabOrder(self.CreditEdit, self.UpButton)
-        customEditDialog.setTabOrder(self.UpButton, self.DownButton)
-        customEditDialog.setTabOrder(self.DownButton, self.ThemeComboBox)
 
     def retranslateUi(self, customEditDialog):
         customEditDialog.setWindowTitle(
