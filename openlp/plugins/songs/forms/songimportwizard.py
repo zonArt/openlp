@@ -25,7 +25,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate
+from openlp.core.lib import build_icon, translate
 
 class Ui_SongImportWizard(object):
     def setupUi(self, SongImportWizard):
@@ -109,21 +109,16 @@ class Ui_SongImportWizard(object):
         self.OpenLyricsButtonLayout.setSpacing(8)
         self.OpenLyricsButtonLayout.setObjectName(u'OpenLyricsButtonLayout')
         self.OpenLyricsAddButton = QtGui.QPushButton(self.OpenLyricsPage)
-        self.OpenIcon = QtGui.QIcon()
-        self.OpenIcon.addPixmap(QtGui.QPixmap(u':/general/general_open.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.DeleteIcon = QtGui.QIcon()
-        self.DeleteIcon.addPixmap(
-            QtGui.QPixmap(u':/general/general_delete.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.OpenLyricsAddButton.setIcon(self.OpenIcon)
+        self.OpenLyricsAddButton.setIcon(
+            build_icon(u':/general/general_open.png'))
         self.OpenLyricsAddButton.setObjectName(u'OpenLyricsAddButton')
         self.OpenLyricsButtonLayout.addWidget(self.OpenLyricsAddButton)
         self.OpenLyricsButtonSpacer = QtGui.QSpacerItem(40, 20,
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.OpenLyricsButtonLayout.addItem(self.OpenLyricsButtonSpacer)
         self.OpenLyricsRemoveButton = QtGui.QPushButton(self.OpenLyricsPage)
-        self.OpenLyricsRemoveButton.setIcon(self.DeleteIcon)
+        self.OpenLyricsRemoveButton.setIcon(
+            build_icon(u':/general/general_delete.png'))
         self.OpenLyricsRemoveButton.setObjectName(u'OpenLyricsRemoveButton')
         self.OpenLyricsButtonLayout.addWidget(self.OpenLyricsRemoveButton)
         self.OpenLyricsLayout.addLayout(self.OpenLyricsButtonLayout)

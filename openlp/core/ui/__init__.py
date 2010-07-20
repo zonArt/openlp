@@ -46,9 +46,9 @@ from maindisplay import DisplayManager
 from amendthemeform import AmendThemeForm
 from slidecontroller import SlideController
 from splashscreen import SplashScreen
-from displaytab import DisplayTab
 from generaltab import GeneralTab
 from themestab import ThemesTab
+from advancedtab import AdvancedTab
 from aboutform import AboutForm
 from pluginform import PluginForm
 from settingsform import SettingsForm

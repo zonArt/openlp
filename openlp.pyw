@@ -27,9 +27,8 @@
 import os
 import sys
 import logging
-
-from logging import FileHandler
 from optparse import OptionParser
+
 from PyQt4 import QtCore, QtGui
 
 log = logging.getLogger()
@@ -167,7 +166,7 @@ def main():
     if not os.path.exists(log_path):
         os.makedirs(log_path)
     filename = os.path.join(log_path, u'openlp.log')
-    logfile = FileHandler(filename, u'w')
+    logfile = logging.FileHandler(filename, u'w')
     logfile.setFormatter(logging.Formatter(
         u'%(asctime)s %(name)-55s %(levelname)-8s %(message)s'))
     log.addHandler(logfile)

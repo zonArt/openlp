@@ -130,9 +130,9 @@ class Ui_AmendThemeDialog(object):
         self.ImageLineEdit.setObjectName(u'ImageLineEdit')
         self.horizontalLayout_2.addWidget(self.ImageLineEdit)
         self.ImageToolButton = QtGui.QToolButton(self.ImageFilenameWidget)
-        icon1 = build_icon(u':/general/general_open.png')
-        self.ImageToolButton.setIcon(icon1)
+        self.ImageToolButton.setIcon(build_icon(u':/general/general_open.png'))
         self.ImageToolButton.setObjectName(u'ImageToolButton')
+        self.ImageToolButton.setAutoRaise(True)
         self.horizontalLayout_2.addWidget(self.ImageToolButton)
         self.BackgroundLayout.setWidget(4, QtGui.QFormLayout.FieldRole,
             self.ImageFilenameWidget)

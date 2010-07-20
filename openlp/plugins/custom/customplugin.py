@@ -50,7 +50,8 @@ class CustomPlugin(Plugin):
         self.weight = -5
         self.custommanager = Manager(u'custom', init_schema)
         self.edit_custom_form = EditCustomForm(self.custommanager)
-        self.icon = build_icon(u':/plugins/plugin_custom.png')
+        self.icon_path = u':/plugins/plugin_custom.png'
+        self.icon = build_icon(self.icon_path)
         self.status = PluginStatus.Active
 
     def getSettingsTab(self):
@@ -68,8 +69,30 @@ class CustomPlugin(Plugin):
             'songs plugin.<br>')
         return about_text
 
-    def canDeleteTheme(self, theme):
-        if not self.custommanager.get_all_objects_filtered(CustomSlide,
+    def usesTheme(self, theme):
+        """
+        Called to find out if the custom plugin is currently using a theme.
+
+        Returns True if the theme is being used, otherwise returns False.
+        """
+        if self.custommanager.get_all_objects_filtered(CustomSlide,
             CustomSlide.theme_name == theme):
             return True
         return False
+
+    def renameTheme(self, oldTheme, newTheme):
+        """
+        Renames a theme the custom plugin is using making the plugin use the
+        new name.
+
+        ``oldTheme``
+            The name of the theme the plugin should stop using.
+
+        ``newTheme``
+            The new name the plugin should now use.
+        """
+        customsUsingTheme = self.custommanager.get_all_objects_filtered(
+            CustomSlide, CustomSlide.theme_name == oldTheme)
+        for custom in customsUsingTheme:
+            custom.theme_name = newTheme
+            self.custommanager.save_object(custom)

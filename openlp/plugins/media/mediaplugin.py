@@ -38,7 +38,8 @@ class MediaPlugin(Plugin):
     def __init__(self, plugin_helpers):
         Plugin.__init__(self, u'Media', u'1.9.2', plugin_helpers)
         self.weight = -6
-        self.icon = build_icon(u':/plugins/plugin_media.png')
+        self.icon_path = u':/plugins/plugin_media.png'
+        self.icon = build_icon(self.icon_path)
         # passed with drag and drop messages
         self.dnd_id = u'Media'
         self.status = PluginStatus.Active

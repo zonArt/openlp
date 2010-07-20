@@ -58,7 +58,8 @@ class SongsPlugin(Plugin):
         Plugin.__init__(self, u'Songs', u'1.9.2', plugin_helpers)
         self.weight = -10
         self.manager = Manager(u'songs', init_schema)
-        self.icon = build_icon(u':/plugins/plugin_songs.png')
+        self.icon_path = u':/plugins/plugin_songs.png'
+        self.icon = build_icon(self.icon_path)
         self.status = PluginStatus.Active
 
     def getSettingsTab(self):
@@ -150,8 +151,8 @@ class SongsPlugin(Plugin):
         pass
 
     def onSongImportItemClicked(self):
-        if self.media_item:
-            self.media_item.onImportClick()
+        if self.mediaItem:
+            self.mediaItem.onImportClick()
 
     def onImportSofItemClick(self):
         filenames = QtGui.QFileDialog.getOpenFileNames(
@@ -191,8 +192,30 @@ class SongsPlugin(Plugin):
             'This plugin allows songs to be managed and displayed.')
         return about_text
 
-    def canDeleteTheme(self, theme):
-        if not self.manager.get_all_objects_filtered(Song,
+    def usesTheme(self, theme):
+        """
+        Called to find out if the song plugin is currently using a theme.
+
+        Returns True if the theme is being used, otherwise returns False.
+        """
+        if self.manager.get_all_objects_filtered(Song,
             Song.theme_name == theme):
             return True
         return False
+
+    def renameTheme(self, oldTheme, newTheme):
+        """
+        Renames a theme the song plugin is using making the plugin use the new
+        name.
+
+        ``oldTheme``
+            The name of the theme the plugin should stop using.
+
+        ``newTheme``
+            The new name the plugin should now use.
+        """
+        songsUsingTheme = self.manager.get_all_objects_filtered(Song,
+            Song.theme_name == oldTheme)
+        for song in songsUsingTheme:
+            song.theme_name = newTheme
+            self.custommanager.save_object(song)
