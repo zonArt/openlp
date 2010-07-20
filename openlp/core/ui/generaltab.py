@@ -287,16 +287,16 @@ class GeneralTab(SettingsTab):
         Translate the general settings tab to the currently selected language
         """
         self.MonitorGroupBox.setTitle(translate('GeneralTab', 'Monitors'))
-        self.MonitorLabel.setText(
-            translate('OpenLP.GeneralTab', 'Select monitor for output display:'))
+        self.MonitorLabel.setText(translate('OpenLP.GeneralTab',
+            'Select monitor for output display:'))
         self.DisplayOnMonitorCheck.setText(
             translate('OpenLP.GeneralTab', 'Display if a single screen'))
         self.StartupGroupBox.setTitle(
             translate('OpenLP.GeneralTab', 'Application Startup'))
         self.WarningCheckBox.setText(
             translate('OpenLP.GeneralTab', 'Show blank screen warning'))
-        self.AutoOpenCheckBox.setText(
-            translate('OpenLP.GeneralTab', 'Automatically open the last service'))
+        self.AutoOpenCheckBox.setText(translate('OpenLP.GeneralTab',
+            'Automatically open the last service'))
         self.ShowSplashCheckBox.setText(
             translate('OpenLP.GeneralTab', 'Show the splash screen'))
         self.SettingsGroupBox.setTitle(translate('OpenLP.GeneralTab',
@@ -318,7 +318,8 @@ class GeneralTab(SettingsTab):
         self.currentXValueLabel.setText(u'0')
         self.currentYLabel.setText(translate('OpenLP.GeneralTab', 'Y'))
         self.currentYValueLabel.setText(u'0')
-        self.currentHeightLabel.setText(translate('OpenLP.GeneralTab', 'Height'))
+        self.currentHeightLabel.setText(
+            translate('OpenLP.GeneralTab', 'Height'))
         self.currentHeightValueLabel.setText(u'0')
         self.currentWidthLabel.setText(translate('OpenLP.GeneralTab', 'Width'))
         self.currentWidthValueLabel.setText(u'0')
@@ -375,10 +376,12 @@ class GeneralTab(SettingsTab):
                 QtCore.QVariant(self.screens.current[u'size'].x())).toString())
             self.customYValueEdit.setText(settings.value(u'y position',
                 QtCore.QVariant(self.screens.current[u'size'].y())).toString())
-            self.customHeightValueEdit.setText(settings.value(u'height',
-                QtCore.QVariant(self.screens.current[u'size'].height())).toString())
-            self.customWidthValueEdit.setText(settings.value(u'width',
-                QtCore.QVariant(self.screens.current[u'size'].width())).toString())
+            self.customHeightValueEdit.setText(
+                settings.value(u'height', QtCore.QVariant(
+                self.screens.current[u'size'].height())).toString())
+            self.customWidthValueEdit.setText(
+                settings.value(u'width', QtCore.QVariant(
+                self.screens.current[u'size'].width())).toString())
         else:
             self.customXValueEdit.setText(
                 unicode(self.screens.current[u'size'].x()))
