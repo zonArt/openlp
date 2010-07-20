@@ -304,10 +304,18 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         elif item > 0:
             item_id = (self.AuthorsSelectionComboItem.itemData(item)).toInt()[0]
             author = self.songmanager.get_object(Author, item_id)
-            self.song.authors.append(author)
-            author_item = QtGui.QListWidgetItem(unicode(author.display_name))
-            author_item.setData(QtCore.Qt.UserRole, QtCore.QVariant(author.id))
-            self.AuthorsListView.addItem(author_item)
+            if author in self.song.authors:
+                QtGui.QMessageBox.warning(self,
+                    translate('SongsPlugin.EditSongForm', 'Error'), 
+                    translate('SongsPlugin.EditSongForm', 'This author is '
+                    'already in the list.'))
+            else:
+                self.song.authors.append(author)
+                author_item = QtGui.QListWidgetItem(unicode(
+                    author.display_name))
+                author_item.setData(QtCore.Qt.UserRole,
+                    QtCore.QVariant(author.id))
+                self.AuthorsListView.addItem(author_item)
             self.AuthorsSelectionComboItem.setCurrentIndex(0)
         else:
             QtGui.QMessageBox.warning(self,
@@ -355,10 +363,17 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         elif item > 0:
             item_id = (self.SongTopicCombo.itemData(item)).toInt()[0]
             topic = self.songmanager.get_object(Topic, item_id)
-            self.song.topics.append(topic)
-            topic_item = QtGui.QListWidgetItem(unicode(topic.name))
-            topic_item.setData(QtCore.Qt.UserRole, QtCore.QVariant(topic.id))
-            self.TopicsListView.addItem(topic_item)
+            if topic in self.song.topics:
+                QtGui.QMessageBox.warning(self,
+                    translate('SongsPlugin.EditSongForm', 'Error'),
+                    translate('SongsPlugin.EditSongForm', 'This topic is '
+                    'already in the list.'))
+            else:
+                self.song.topics.append(topic)
+                topic_item = QtGui.QListWidgetItem(unicode(topic.name))
+                topic_item.setData(QtCore.Qt.UserRole,
+                    QtCore.QVariant(topic.id))
+                self.TopicsListView.addItem(topic_item)
             self.SongTopicCombo.setCurrentIndex(0)
         else:
             QtGui.QMessageBox.warning(self,
