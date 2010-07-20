@@ -32,12 +32,6 @@ from sqlalchemy.orm import mapper, relation
 
 from openlp.core.lib.db import BaseModel, init_db
 
-class AudioFile(BaseModel):
-    """
-    AudioFile model
-    """
-    pass
-
 class Author(BaseModel):
     """
     Author model
@@ -51,6 +45,12 @@ class Book(BaseModel):
     def __repr__(self):
         return u'<Book id="%s" name="%s" publisher="%s" />' % (
             str(self.id), self.name, self.publisher)
+
+class MediaFile(BaseModel):
+    """
+    MediaFile model
+    """
+    pass
 
 class Song(BaseModel):
     """
@@ -73,18 +73,19 @@ def init_schema(url):
     """
     session, metadata = init_db(url, auto_flush=False)
 
-    # Definition of the "audio_files" table
-    audio_files_table = Table(u'audio_files', metadata,
-        Column(u'id', types.Integer, primary_key=True),
-        Column(u'file_name', types.Unicode(255), nullable=False)
-    )
-
     # Definition of the "authors" table
     authors_table = Table(u'authors', metadata,
         Column(u'id', types.Integer, primary_key=True),
         Column(u'first_name', types.Unicode(128)),
         Column(u'last_name', types.Unicode(128)),
         Column(u'display_name', types.Unicode(255), nullable=False)
+    )
+
+    # Definition of the "media_files" table
+    media_files_table = Table(u'media_files', metadata,
+        Column(u'id', types.Integer, primary_key=True),
+        Column(u'file_name', types.Unicode(255), nullable=False),
+        Column(u'type', types.Unicode(64), nullable=False, default=u'audio')
     )
 
     # Definition of the "song_books" table
@@ -118,18 +119,18 @@ def init_schema(url):
         Column(u'name', types.Unicode(128), nullable=False)
     )
 
-    # Definition of the "audio_files_songs" table
-    audio_files_songs_table = Table(u'audio_files_songs', metadata,
-        Column(u'audio_file_id', types.Integer,
-            ForeignKey(u'audio_files.id'), primary_key=True),
-        Column(u'song_id', types.Integer,
-            ForeignKey(u'songs.id'), primary_key=True)
-    )
-
     # Definition of the "authors_songs" table
     authors_songs_table = Table(u'authors_songs', metadata,
         Column(u'author_id', types.Integer,
             ForeignKey(u'authors.id'), primary_key=True),
+        Column(u'song_id', types.Integer,
+            ForeignKey(u'songs.id'), primary_key=True)
+    )
+
+    # Definition of the "media_files_songs" table
+    media_files_songs_table = Table(u'media_files_songs', metadata,
+        Column(u'media_file_id', types.Integer,
+            ForeignKey(u'media_files.id'), primary_key=True),
         Column(u'song_id', types.Integer,
             ForeignKey(u'songs.id'), primary_key=True)
     )
@@ -143,36 +144,36 @@ def init_schema(url):
     )
 
     # Define table indexes
-    Index(u'audio_files_id', audio_files_table.c.id)
     Index(u'authors_id', authors_table.c.id)
     Index(u'authors_display_name_id', authors_table.c.display_name,
         authors_table.c.id)
+    Index(u'media_files_id', media_files_table.c.id)
     Index(u'song_books_id', song_books_table.c.id)
     Index(u'songs_id', songs_table.c.id)
     Index(u'topics_id', topics_table.c.id)
-    Index(u'audio_files_songs_file', audio_files_songs_table.c.audio_file_id,
-        audio_files_songs_table.c.song_id)
-    Index(u'audio_files_songs_song', audio_files_songs_table.c.song_id,
-        audio_files_songs_table.c.audio_file_id)
     Index(u'authors_songs_author', authors_songs_table.c.author_id,
         authors_songs_table.c.song_id)
     Index(u'authors_songs_song', authors_songs_table.c.song_id,
         authors_songs_table.c.author_id)
+    Index(u'media_files_songs_file', media_files_songs_table.c.media_file_id,
+        media_files_songs_table.c.song_id)
+    Index(u'media_files_songs_song', media_files_songs_table.c.song_id,
+        media_files_songs_table.c.media_file_id)
     Index(u'topics_song_topic', songs_topics_table.c.topic_id,
         songs_topics_table.c.song_id)
     Index(u'topics_song_song', songs_topics_table.c.song_id,
         songs_topics_table.c.topic_id)
 
-    mapper(AudioFile, audio_files_table)
     mapper(Author, authors_table)
     mapper(Book, song_books_table)
+    mapper(MediaFile, media_files_table)
     mapper(Song, songs_table,
         properties={
-            'audio_files': relation(AudioFile, backref='songs',
-                secondary=audio_files_songs_table),
             'authors': relation(Author, backref='songs',
                 secondary=authors_songs_table),
             'book': relation(Book, backref='songs'),
+            'media_files': relation(MediaFile, backref='songs',
+                secondary=media_files_songs_table),
             'topics': relation(Topic, backref='songs',
                 secondary=songs_topics_table)
         })

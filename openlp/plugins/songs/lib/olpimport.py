@@ -34,15 +34,9 @@ from sqlalchemy.orm import class_mapper, mapper, relation, scoped_session, \
 from sqlalchemy.orm.exc import UnmappedClassError
 
 from openlp.core.lib.db import BaseModel
-from openlp.plugins.songs.lib.db import Author, Book, Song, Topic #, AudioFile
+from openlp.plugins.songs.lib.db import Author, Book, Song, Topic #, MediaFile
 
 log = logging.getLogger(__name__)
-
-class OldAudioFile(BaseModel):
-    """
-    AudioFile model
-    """
-    pass
 
 class OldAuthor(BaseModel):
     """
@@ -53,6 +47,12 @@ class OldAuthor(BaseModel):
 class OldBook(BaseModel):
     """
     Book model
+    """
+    pass
+
+class OldMediaFile(BaseModel):
+    """
+    MediaFile model
     """
     pass
 
@@ -88,24 +88,24 @@ class OpenLPSongImport(object):
         source_meta = MetaData()
         source_meta.reflect(engine)
         self.source_session = scoped_session(sessionmaker(bind=engine))
-        if u'audio_files' in source_meta.tables.keys():
-            has_audio_files = True
+        if u'media_files' in source_meta.tables.keys():
+            has_media_files = True
         else:
-            has_audio_files = False
+            has_media_files = False
         source_authors_table = source_meta.tables[u'authors']
         source_song_books_table = source_meta.tables[u'song_books']
         source_songs_table = source_meta.tables[u'songs']
         source_topics_table = source_meta.tables[u'topics']
         source_authors_songs_table = source_meta.tables[u'authors_songs']
         source_songs_topics_table = source_meta.tables[u'songs_topics']
-        if has_audio_files:
-            source_audio_files_table = source_meta.tables[u'audio_files']
-            source_audio_files_songs_table = \
-                source_meta.tables[u'audio_files_songs']
+        if has_media_files:
+            source_media_files_table = source_meta.tables[u'media_files']
+            source_media_files_songs_table = \
+                source_meta.tables[u'media_files_songs']
             try:
-                class_mapper(OldAudioFile)
+                class_mapper(OldMediaFile)
             except UnmappedClassError:
-                mapper(OldAudioFile, source_audio_files_table)
+                mapper(OldMediaFile, source_media_files_table)
         song_props = {
             'authors': relation(OldAuthor, backref='songs',
                 secondary=source_authors_songs_table),
@@ -113,9 +113,9 @@ class OpenLPSongImport(object):
             'topics': relation(OldTopic, backref='songs',
                 secondary=source_songs_topics_table)
         }
-        if has_audio_files:
-            song_props['audio_files'] = relation(OldAudioFile, backref='songs',
-                secondary=source_audio_files_songs_table)
+        if has_media_files:
+            song_props['media_files'] = relation(OldMediaFile, backref='songs',
+                secondary=source_media_files_songs_table)
         try:
             class_mapper(OldAuthor)
         except UnmappedClassError:
@@ -137,7 +137,7 @@ class OpenLPSongImport(object):
         for song in source_songs:
             new_song = Song()
             new_song.title = song.title
-            if has_audio_files:
+            if has_media_files:
                 new_song.alternate_title = song.alternate_title
             else:
                 new_song.alternate_title = u''
@@ -185,14 +185,16 @@ class OpenLPSongImport(object):
                         new_song.topics.append(existing_topic)
                     else:
                         new_song.topics.append(Topic.populate(name=topic.name))
-#            if has_audio_files:
-#                if song.audio_files:
-#                    for audio_file in song.audio_files:
-#                        existing_audio_file = \
-#                            self.master_manager.get_object_filtered(AudioFile,
-#                                AudioFile.file_name == audio_file.file_name)
-#                        if existing_audio_file:
-#                            new_song.audio_files.remove(audio_file)
-#                            new_song.audio_files.append(existing_audio_file)
+#            if has_media_files:
+#                if song.media_files:
+#                    for media_file in song.media_files:
+#                        existing_media_file = \
+#                            self.master_manager.get_object_filtered(MediaFile,
+#                                MediaFile.file_name == media_file.file_name)
+#                        if existing_media_file:
+#                            new_song.media_files.append(existing_media_file)
+#                        else:
+#                            new_song.media_files.append(MediaFile.populate(
+#                                file_name=media_file.file_name))
             self.master_manager.save_object(new_song)
         engine.dispose()
