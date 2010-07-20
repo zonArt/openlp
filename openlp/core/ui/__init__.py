@@ -42,7 +42,6 @@ from servicenoteform import ServiceNoteForm
 from serviceitemeditform import ServiceItemEditForm
 from screen import ScreenList
 from maindisplay import WebViewer
-from maindisplay import DisplayManager
 from amendthemeform import AmendThemeForm
 from slidecontroller import SlideController
 from splashscreen import SplashScreen

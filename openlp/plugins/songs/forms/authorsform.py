@@ -97,7 +97,7 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
             if QtGui.QMessageBox.critical(
                     self, translate('SongsPlugin.AuthorsForm', 'Error'),
                     translate('SongsPlugin.AuthorsForm',
-                        'You haven\'t set a display name for the '
+                        'You have not set a display name for the '
                         'author, would you like me to combine the first and '
                         'last names for you?'),
                     QtGui.QMessageBox.StandardButtons(

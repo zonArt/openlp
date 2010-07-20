@@ -30,7 +30,7 @@ import re
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
-    ThemeManager, SlideController, PluginForm, MediaDockManager, DisplayManager
+    ThemeManager, SlideController, PluginForm, MediaDockManager
 from openlp.core.lib import RenderManager, build_icon, OpenLPDockWidget, \
     SettingsManager, PluginManager, Receiver, translate
 from openlp.core.utils import check_latest_version, AppLocation, add_actions, \
@@ -527,7 +527,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.songsSettingsSection = u'songs'
         self.serviceNotSaved = False
         self.settingsmanager = SettingsManager(screens)
-        self.displayManager = DisplayManager(self, screens)
         self.aboutForm = AboutForm(self, applicationVersion)
         self.settingsForm = SettingsForm(self.screens, self, self)
         self.recentFiles = QtCore.QStringList()
@@ -622,7 +621,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         #ThemeManager needs to call RenderManager
         self.RenderManager = RenderManager(
             self.ThemeManagerContents, self.screens)
-        self.displayManager.renderManager = self.RenderManager
         #Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.MediaToolBox)
         log.info(u'Load Plugins')
@@ -633,7 +631,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.plugin_helpers[u'service'] = self.ServiceManagerContents
         self.plugin_helpers[u'settings form'] = self.settingsForm
         self.plugin_helpers[u'toolbox'] = self.mediaDockManager
-        self.plugin_helpers[u'displaymanager'] = self.displayManager
         self.plugin_helpers[u'pluginmanager'] = self.plugin_manager
         self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers)
         # hook methods have to happen after find_plugins. Find plugins needs
@@ -789,7 +786,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         their locations
         """
         self.RenderManager.update_display()
-        self.displayManager.setup()
+        #self.displayManager.setup()
         self.setFocus()
         self.activateWindow()
 
