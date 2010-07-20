@@ -141,8 +141,8 @@ class SongImport(object):
         """
         Add the author. OpenLP stores them individually so split by 'and', '&'
         and comma.
-        However need to check for "Mr and Mrs Smith" and turn it to
-        "Mr Smith" and "Mrs Smith".
+        However need to check for 'Mr and Mrs Smith' and turn it to
+        'Mr Smith' and 'Mrs Smith'.
         """
         for author in text.split(u','):
             authors = author.split(u'&')
@@ -224,7 +224,7 @@ class SongImport(object):
 
     def commit_song(self):
         """
-        Write the song and it's fields to disk
+        Write the song and its fields to disk
         """
         song = Song()
         song.title = self.title
@@ -272,11 +272,12 @@ class SongImport(object):
                     publisher=self.song_book_pub)
             song.book = song_book
         for topictext in self.topics:
-            topic = self.manager.get_object_filtered(Topic,
-                Topic.name == topictext)
+            if len(topictext) == 0:
+                continue
+            topic = self.manager.get_object_filtered(Topic, Topic.name == topictext)
             if topic is None:
                 topic = Topic.populate(name=topictext)
-            song.topics.append(topictext)
+            song.topics.append(topic)
         self.manager.save_object(song)
 
     def print_song(self):

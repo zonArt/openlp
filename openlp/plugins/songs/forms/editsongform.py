@@ -397,23 +397,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.TopicsListView.takeItem(row)
 
     def onSongBookComboChanged(self, item):
-        item = int(self.SongbookCombo.currentIndex())
-        text = unicode(self.SongbookCombo.currentText())
-        if item == 0 and text:
-            if QtGui.QMessageBox.question(self,
-                translate('SongsPlugin.EditSongForm', 'Add Book'),
-                translate('SongsPlugin.EditSongForm', 'This song book does '
-                    'not exist, do you want to add it?'),
-                QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
-                QtGui.QMessageBox.Yes) == QtGui.QMessageBox.Yes:
-                book = Book.populate(name=text)
-                self.songmanager.save_object(book)
-                self.song.book = book
-                self.loadBooks()
-            else:
-                return
-        elif item >= 1:
-            item = int(self.SongbookCombo.currentIndex())
+        if item >= 1:
             self.song.song_book_id = \
                 (self.SongbookCombo.itemData(item)).toInt()[0]
         else:
@@ -631,6 +615,21 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def accept(self):
         log.debug(u'accept')
+        item = int(self.SongbookCombo.currentIndex())
+        text = unicode(self.SongbookCombo.currentText())
+        if item == 0 and text:
+            if QtGui.QMessageBox.question(self,
+                translate('SongsPlugin.EditSongForm', 'Add Book'),
+                translate('SongsPlugin.EditSongForm', 'This song book does '
+                    'not exist, do you want to add it?'),
+                QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
+                QtGui.QMessageBox.Yes) == QtGui.QMessageBox.Yes:
+                book = Book.populate(name=text)
+                self.songmanager.save_object(book)
+                self.song.book = book
+                self.loadBooks()
+            else:
+                return
         if self.saveSong():
             Receiver.send_message(u'songs_load_list')
             self.close()

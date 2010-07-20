@@ -60,175 +60,6 @@ class SongFeatureError(SongException):
 # TODO: Song: Import ChangingSong
 # TODO: Song: Export ChangingSong
 
-_BLANK_OPENSONG_XML = \
-'''<?xml version="1.0" encoding="UTF-8"?>
-<song>
-  <title></title>
-  <author></author>
-  <copyright></copyright>
-  <presentation></presentation>
-  <ccli></ccli>
-  <lyrics></lyrics>
-  <theme></theme>
-  <alttheme></alttheme>
-</song>
-'''
-
-class _OpenSong(object):
-    """
-    Class for import of OpenSong
-    """
-    def __init__(self, xmlContent = None):
-        """
-        Initialize from given xml content
-        """
-        self._set_from_xml(_BLANK_OPENSONG_XML, 'song')
-        if xmlContent:
-            self._set_from_xml(xmlContent, 'song')
-
-    def _set_from_xml(self, xml, root_tag):
-        """
-        Set song properties from given xml content.
-
-        ``xml``
-            Formatted xml tags and values.
-        ``root_tag``
-            The root tag of the xml.
-        """
-        root = ElementTree(element=XML(xml))
-        xml_iter = root.getiterator()
-        for element in xml_iter:
-            if element.tag != root_tag:
-                text = element.text
-                if text is None:
-                    val = text
-                elif isinstance(text, basestring):
-                    # Strings need special handling to sort the colours out
-                    if text[0] == u'$':
-                        # This might be a hex number, let's try to convert it.
-                        try:
-                            val = int(text[1:], 16)
-                        except ValueError:
-                            pass
-                    else:
-                        # Let's just see if it's a integer.
-                        try:
-                            val = int(text)
-                        except ValueError:
-                            # Ok, it seems to be a string.
-                            val = text
-                    if hasattr(self, u'post_tag_hook'):
-                        (element.tag, val) = \
-                            self.post_tag_hook(element.tag, val)
-                setattr(self, element.tag, val)
-
-    def __str__(self):
-        """
-        Return string with all public attributes
-
-        The string is formatted with one attribute per line
-        If the string is split on newline then the length of the
-        list is equal to the number of attributes
-        """
-        attributes = []
-        for attrib in dir(self):
-            if not attrib.startswith(u'_'):
-                attributes.append(
-                    u'%30s : %s' % (attrib, getattr(self, attrib)))
-        return u'\n'.join(attributes)
-
-    def _get_as_string(self):
-        """
-        Return one string with all public attributes
-        """
-        result = u''
-        for attrib in dir(self):
-            if not attrib.startswith(u'_'):
-                result += u'_%s_' % getattr(self, attrib)
-        return result
-
-    def get_author_list(self):
-        """Convert author field to an authorlist
-
-        in OpenSong an author list may be separated by '/'
-        return as a string
-        """
-        if self.author:
-            list = self.author.split(u' and ')
-            res = [item.strip() for item in list]
-            return u', '.join(res)
-
-    def get_category_array(self):
-        """Convert theme and alttheme into category_array
-
-        return as a string
-        """
-        res = []
-        if self.theme:
-            res.append(self.theme)
-        if self.alttheme:
-            res.append(self.alttheme)
-        return u', u'.join(res)
-
-    def _reorder_verse(self, tag, tmpVerse):
-        """
-        Reorder the verse in case of first char is a number
-        tag -- the tag of this verse / verse group
-        tmpVerse -- list of strings
-        """
-        res = []
-        for digit in '1234567890 ':
-            tagPending = True
-            for line in tmpVerse:
-                if line.startswith(digit):
-                    if tagPending:
-                        tagPending = False
-                        tagChar = tag.strip(u'[]').lower()
-                        if 'v' == tagChar:
-                            newtag = "Verse"
-                        elif 'c' == tagChar:
-                            newtag = "Chorus"
-                        elif 'b' == tagChar:
-                            newtag = "Bridge"
-                        elif 'p' == tagChar:
-                            newtag = "Pre-chorus"
-                        else:
-                            newtag = tagChar
-                        tagString = (u'# %s %s' % (newtag, digit)).rstrip()
-                        res.append(tagString)
-                    res.append(line[1:])
-                if (len(line) == 0) and (not tagPending):
-                    res.append(line)
-        return res
-
-    def get_lyrics(self):
-        """
-        Convert the lyrics to openlp lyrics format
-        return as list of strings
-        """
-        lyrics = self.lyrics.split(u'\n')
-        tmpVerse = []
-        finalLyrics = []
-        tag = ""
-        for lyric in lyrics:
-            line = lyric.rstrip()
-            if not line.startswith(u'.'):
-                # drop all chords
-                tmpVerse.append(line)
-                if line:
-                    if line.startswith(u'['):
-                        tag = line
-                else:
-                    reorderedVerse = self._reorder_verse(tag, tmpVerse)
-                    finalLyrics.extend(reorderedVerse)
-                    tag = ""
-                    tmpVerse = []
-        # catch up final verse
-        reorderedVerse = self._reorder_verse(tag, tmpVerse)
-        finalLyrics.extend(reorderedVerse)
-        return finalLyrics
-
-
 class Song(object):
     """Handling song properties and methods
 
@@ -275,7 +106,7 @@ class Song(object):
         show_author_list -- 0: no show, 1: show
         show_copyright -- 0: no show, 1: show
         show_song_cclino -- 0: no show, 1: show
-        theme -- name of theme or blank
+        theme_name -- name of theme or blank
         category_array -- list of user defined properties (hymn, gospel)
         song_book -- name of originating book
         song_number -- number of the song, related to a songbook
@@ -298,7 +129,7 @@ class Song(object):
         self.show_copyright = 1
         self.show_song_cclino = 1
         self.show_title = 1
-        self.theme = ""
+        self.theme_name = ""
         self.category_array = None
         self.song_book = ""
         self.song_number = ""
@@ -306,40 +137,6 @@ class Song(object):
         self.verse_order = ""
         self.set_lyrics(u'')
         return
-
-    def from_opensong_buffer(self, xmlcontent):
-        """Initialize from buffer(string) of xml lines in opensong format"""
-        self._reset()
-        opensong = _OpenSong(xmlcontent)
-        if opensong.title:
-            self.set_title(opensong.title)
-        if opensong.copyright:
-            self.set_copyright(opensong.copyright)
-        if opensong.presentation:
-            self.set_verse_order(opensong.presentation)
-        if opensong.ccli:
-            self.set_song_cclino(opensong.ccli)
-        self.set_author_list(opensong.get_author_list())
-        self.set_category_array(opensong.get_category_array())
-        self.set_lyrics(opensong.get_lyrics())
-
-    def from_opensong_file(self, xmlfilename):
-        """
-        Initialize from file containing xml
-        xmlfilename -- path to xml file
-        """
-        osfile = None
-        try:
-            osfile = open(xmlfilename, 'r')
-            list = [line for line in osfile]
-            osfile.close()
-            xml = "".join(list)
-            self.from_opensong_buffer(xml)
-        except IOError:
-            log.exception(u'Failed to load opensong xml file')
-        finally:
-            if osfile:
-                osfile.close()
 
     def _remove_punctuation(self, title):
         """Remove the puntuation chars from title
@@ -420,7 +217,7 @@ class Song(object):
         self.set_title(sName)
         self.set_author_list(author_list)
         self.set_copyright(sCopyright)
-        self.set_song_cclino(sCcli)
+        self.set_ccli_number(sCcli)
         self.set_lyrics(lyrics)
 
     def from_ccli_text_file(self, textFileName):
@@ -475,21 +272,21 @@ class Song(object):
         """Set the copyright string"""
         self.copyright = copyright
 
-    def get_song_cclino(self):
+    def get_ccli_number(self):
         """Return the songCclino"""
-        return self._assure_string(self.song_cclino)
+        return self._assure_string(self.ccli_number)
 
-    def set_song_cclino(self, song_cclino):
-        """Set the song_cclino"""
-        self.song_cclino = song_cclino
+    def set_ccli_number(self, ccli_number):
+        """Set the ccli_number"""
+        self.ccli_number = ccli_number
 
-    def get_theme(self):
+    def get_theme_name(self):
         """Return the theme name for the song"""
-        return self._assure_string(self.theme)
+        return self._assure_string(self.theme_name)
 
-    def set_theme(self, theme):
+    def set_theme_name(self, theme_name):
         """Set the theme name (string)"""
-        self.theme = theme
+        self.theme_name = theme_name
 
     def get_song_book(self):
         """Return the song_book (string)"""
@@ -528,9 +325,9 @@ class Song(object):
 
         asOneString
         True -- string:
-          "John Newton, A Parker"
+          'John Newton, A Parker'
         False -- list of strings
-          ["John Newton", u'A Parker"]
+          ['John Newton', u'A Parker']
         """
         if asOneString:
             res = self._assure_string(self.author_list)
@@ -553,9 +350,9 @@ class Song(object):
 
         asOneString
         True -- string:
-          "Hymn, Gospel"
+          'Hymn, Gospel'
         False -- list of strings
-          ["Hymn", u'Gospel"]
+          ['Hymn', u'Gospel']
         """
         if asOneString:
             res = self._assure_string(self.category_array)
@@ -597,13 +394,13 @@ class Song(object):
         """Set the show_copyright flag (bool)"""
         self.show_copyright = show_copyright
 
-    def get_show_song_cclino(self):
+    def get_show_ccli_number(self):
         """Return the showSongCclino (string)"""
-        return self.show_song_cclino
+        return self.show_ccli_number
 
-    def set_show_song_cclino(self, show_song_cclino):
-        """Set the show_song_cclino flag (bool)"""
-        self.show_song_cclino = show_song_cclino
+    def set_show_ccli_number(self, show_ccli_number):
+        """Set the show_ccli_number flag (bool)"""
+        self.show_ccli_number = show_ccli_number
 
     def get_lyrics(self):
         """Return the lyrics as a list of strings
@@ -670,7 +467,7 @@ class Song(object):
 
         slideNumber -- 1 .. numberOfSlides
         Returns a list as:
-        [theme (string),
+        [theme_name (string),
          title (string),
          authorlist (string),
          copyright (string),
@@ -695,13 +492,13 @@ class Song(object):
             cpright = self.get_copyright()
         else:
             cpright = ""
-        if self.show_song_cclino:
-            ccli = self.get_song_cclino()
+        if self.show_ccli_number:
+            ccli = self.get_ccli_number()
         else:
             ccli = ""
-        theme = self.get_theme()
+        theme_name = self.get_theme_name()
         # examine the slide for a theme
-        res.append(theme)
+        res.append(theme_name)
         res.append(title)
         res.append(author)
         res.append(cpright)
