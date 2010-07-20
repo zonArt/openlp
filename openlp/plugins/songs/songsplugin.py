@@ -162,7 +162,7 @@ class SongsPlugin(Plugin):
         self.ImportOpenLPSongItem = QtGui.QAction(import_menu)
         self.ImportOpenLPSongItem.setObjectName(u'ImportOpenLPSongItem')
         self.ImportOpenLPSongItem.setText(translate('SongsPlugin',
-            'OpenLP v2 (temporary)'))
+            'OpenLP v2 Songs (temporary)'))
         self.ImportOpenLPSongItem.setToolTip(translate('SongsPlugin',
             'Import an OpenLP v2 song database'))
         self.ImportOpenLPSongItem.setStatusTip(translate('SongsPlugin',
