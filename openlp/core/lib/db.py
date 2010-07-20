@@ -135,16 +135,20 @@ class Manager(object):
         settings.endGroup()
         self.session = init_schema(self.db_url)
 
-    def save_object(self, object_instance):
+    def save_object(self, object_instance, commit=True):
         """
         Save an object to the database
 
         ``object_instance``
             The object to save
+
+        ``commit``
+            Commit the session with this object
         """
         try:
             self.session.add(object_instance)
-            self.session.commit()
+            if commit:
+                self.session.commit()
             return True
         except InvalidRequestError:
             self.session.rollback()
