@@ -167,13 +167,11 @@ def build_lyrics(item, width, height):
 
 def build_footer(item, width, height):
     lyrics = """
-    #footer {position: absolute; %s z-index:3; %s; %s; %s %s }
+    #footer {position: absolute; %s z-index:3; %s; %s }
     """
     theme = item.themedata
     lyrics_html = u''
     position = u''
-    shadow = u''
-    outline = u''
     font = u''
     text = u''
     if theme:
@@ -193,16 +191,7 @@ def build_footer(item, width, height):
         else:
             valign = u'vertical-align=bottom;'
         text = u'color:%s; %s %s' % (theme.font_footer_color, align, valign)
-        if theme.display_shadow:
-            shadow = u'text-shadow: %spx %spx %spx %s' %\
-                (theme.display_shadow_size, theme.display_shadow_size,
-                theme.display_shadow_size, theme.display_shadow_color)
-        if theme.display_outline:
-            # 1px is the blur radius
-            outline = u'text-outline: %spx 1px %s' %\
-                (theme.display_outline_size, theme.display_outline_color)
-            outline = u'text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white'
-    lyrics_html = lyrics % (position, shadow, outline, font, text)
+    lyrics_html = lyrics % (position, font, text)
     print lyrics_html
     return lyrics_html
 

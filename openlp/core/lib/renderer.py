@@ -131,8 +131,8 @@ class Renderer(object):
             frame_height)
         self.frame = QtGui.QImage(frame_width, frame_height,
             QtGui.QImage.Format_ARGB32_Premultiplied)
-        self.frame_opaque = QtGui.QImage(frame_width, frame_height,
-            QtGui.QImage.Format_ARGB32_Premultiplied)
+#        self.frame_opaque = QtGui.QImage(frame_width, frame_height,
+#            QtGui.QImage.Format_ARGB32_Premultiplied)
         if self._bg_image_filename and not self.bg_image:
             self.bg_image = resize_image(self._bg_image_filename,
                 self.frame.width(), self.frame.height())
@@ -158,8 +158,6 @@ class Renderer(object):
             lines = verse.split(u'\n')
             for line in lines:
                 text.append(line)
-        split_text = self.pre_render_text(text)
-
         doc = QtGui.QTextDocument()
         doc.setPageSize(QtCore.QSizeF(self._rect.width(), self._rect.height()))
         df = doc.defaultFont()
@@ -188,109 +186,108 @@ class Renderer(object):
             old_html_text = temp_text
         formatted.append(shell % old_html_text)
         log.debug(u'format_slide - End')
-        #return split_text
         return formatted
 
-    def pre_render_text(self, text):
-        metrics = QtGui.QFontMetrics(self.main_font)
-        #work out line width
-        line_width = self._rect.width()
-        #number of lines on a page - adjust for rounding up.
-        line_height = metrics.height()
-        if self._theme.display_shadow:
-            line_height += int(self._theme.display_shadow_size)
-        if self._theme.display_outline:
-            #  pixels top/bottom
-            line_height += 2 * int(self._theme.display_outline_size)
-        page_length = int(self._rect.height() / line_height )
-        #Average number of characters in line
-        ave_line_width = line_width / metrics.averageCharWidth()
-        #Maximum size of a character
-        max_char_width = metrics.maxWidth()
-        #Max characters pre line based on min size of a character
-        char_per_line = line_width / metrics.width(u'i')
-        log.debug(u'Page Length  area height %s , metrics %s , lines %s' %
-                  (int(self._rect.height()), metrics.height(), page_length ))
-        split_pages = []
-        page = []
-        split_lines = []
-        count = 0
-        for line in text:
-            #Must be a blank line so keep it.
-            if len(line) == 0:
-                line = u' '
-            while line:
-                pos = char_per_line
-                split_text = line[:pos]
-                #line needs splitting
-                if metrics.width(split_text, -1) > line_width:
-                    #We have no spaces
-                    if split_text.find(u' ') == -1:
-                        #Move back 1 char at a time till it fits
-                        while metrics.width(split_text, -1) > line_width:
-                            split_text = split_text[:-1]
-                            pos = len(split_text)
-                    else:
-                        #We have spaces so split at previous one
-                        while metrics.width(split_text, -1) > line_width:
-                            pos = split_text.rfind(u' ')
-                            #no more spaces and we are still too long
-                            if pos == -1:
-                                while \
-                                    metrics.width(split_text, -1) > line_width:
-                                    split_text = split_text[:-1]
-                                    pos = len(split_text)
-                            else:
-                                split_text = line[:pos]
-                split_lines.append(split_text)
-                line = line[pos:].lstrip()
-                #if we have more text add up to 10 spaces on the front.
-                if line and self._theme.font_main_indentation > 0:
-                    line = u'%s%s' % \
-                        (u'          '[:int(self._theme.font_main_indentation)],
-                        line)
-                #Text fits in a line now
-        for count, line in enumerate(split_lines):
-            page.append(line)
-            #last but one line and only 2 lines to go or end of page
-            if (len(page) == page_length - 1 and
-                len(split_lines) - 3 == count) or \
-                len(page) == page_length:
-                split_pages.append(page)
-                page = []
-        if page and page != u' ':
-            split_pages.append(page)
-        return split_pages
-
-    def generate_frame_from_lines(self, lines, footer_lines=None):
-        """
-        Render a set of lines according to the theme, and return the block
-        dimensions.
-
-        ``lines``
-            The lines to be rendered.
-
-        ``footer_lines``
-            Defaults to *None*. The footer to render.
-        """
-        log.debug(u'generate_frame_from_lines - Start')
-        bbox = self._render_lines_unaligned(lines, False)
-        if footer_lines:
-            bbox1 = self._render_lines_unaligned(footer_lines, True)
-        # reset the frame. first time do not worry about what you paint on.
-        self.frame = QtGui.QImage(self.bg_frame)
-        if self._theme.display_slideTransition:
-            self.frame_opaque = QtGui.QImage(self.bg_frame)
-        x, y = self._correct_alignment(self._rect, bbox)
-        bbox = self._render_lines_unaligned(lines, False, (x, y), True)
-        if footer_lines:
-            bbox = self._render_lines_unaligned(footer_lines, True,
-                (self._rect_footer.left(), self._rect_footer.top()), True)
-        log.debug(u'generate_frame_from_lines - Finish')
-        if self._theme.display_slideTransition:
-            return {u'main':self.frame, u'trans':self.frame_opaque}
-        else:
-            return {u'main':self.frame, u'trans':None}
+#    def pre_render_text(self, text):
+#        metrics = QtGui.QFontMetrics(self.main_font)
+#        #work out line width
+#        line_width = self._rect.width()
+#        #number of lines on a page - adjust for rounding up.
+#        line_height = metrics.height()
+#        if self._theme.display_shadow:
+#            line_height += int(self._theme.display_shadow_size)
+#        if self._theme.display_outline:
+#            #  pixels top/bottom
+#            line_height += 2 * int(self._theme.display_outline_size)
+#        page_length = int(self._rect.height() / line_height )
+#        #Average number of characters in line
+#        ave_line_width = line_width / metrics.averageCharWidth()
+#        #Maximum size of a character
+#        max_char_width = metrics.maxWidth()
+#        #Max characters pre line based on min size of a character
+#        char_per_line = line_width / metrics.width(u'i')
+#        log.debug(u'Page Length  area height %s , metrics %s , lines %s' %
+#                  (int(self._rect.height()), metrics.height(), page_length ))
+#        split_pages = []
+#        page = []
+#        split_lines = []
+#        count = 0
+#        for line in text:
+#            #Must be a blank line so keep it.
+#            if len(line) == 0:
+#                line = u' '
+#            while line:
+#                pos = char_per_line
+#                split_text = line[:pos]
+#                #line needs splitting
+#                if metrics.width(split_text, -1) > line_width:
+#                    #We have no spaces
+#                    if split_text.find(u' ') == -1:
+#                        #Move back 1 char at a time till it fits
+#                        while metrics.width(split_text, -1) > line_width:
+#                            split_text = split_text[:-1]
+#                            pos = len(split_text)
+#                    else:
+#                        #We have spaces so split at previous one
+#                        while metrics.width(split_text, -1) > line_width:
+#                            pos = split_text.rfind(u' ')
+#                            #no more spaces and we are still too long
+#                            if pos == -1:
+#                                while \
+#                                    metrics.width(split_text, -1) > line_width:
+#                                    split_text = split_text[:-1]
+#                                    pos = len(split_text)
+#                            else:
+#                                split_text = line[:pos]
+#                split_lines.append(split_text)
+#                line = line[pos:].lstrip()
+#                #if we have more text add up to 10 spaces on the front.
+#                if line and self._theme.font_main_indentation > 0:
+#                    line = u'%s%s' % \
+#                        (u'          '[:int(self._theme.font_main_indentation)],
+#                        line)
+#                #Text fits in a line now
+#        for count, line in enumerate(split_lines):
+#            page.append(line)
+#            #last but one line and only 2 lines to go or end of page
+#            if (len(page) == page_length - 1 and
+#                len(split_lines) - 3 == count) or \
+#                len(page) == page_length:
+#                split_pages.append(page)
+#                page = []
+#        if page and page != u' ':
+#            split_pages.append(page)
+#        return split_pages
+#
+#    def generate_frame_from_lines(self, lines, footer_lines=None):
+#        """
+#        Render a set of lines according to the theme, and return the block
+#        dimensions.
+#
+#        ``lines``
+#            The lines to be rendered.
+#
+#        ``footer_lines``
+#            Defaults to *None*. The footer to render.
+#        """
+#        log.debug(u'generate_frame_from_lines - Start')
+#        bbox = self._render_lines_unaligned(lines, False)
+#        if footer_lines:
+#            bbox1 = self._render_lines_unaligned(footer_lines, True)
+#        # reset the frame. first time do not worry about what you paint on.
+#        self.frame = QtGui.QImage(self.bg_frame)
+#        if self._theme.display_slideTransition:
+#            self.frame_opaque = QtGui.QImage(self.bg_frame)
+#        x, y = self._correct_alignment(self._rect, bbox)
+#        bbox = self._render_lines_unaligned(lines, False, (x, y), True)
+#        if footer_lines:
+#            bbox = self._render_lines_unaligned(footer_lines, True,
+#                (self._rect_footer.left(), self._rect_footer.top()), True)
+#        log.debug(u'generate_frame_from_lines - Finish')
+#        if self._theme.display_slideTransition:
+#            return {u'main':self.frame, u'trans':self.frame_opaque}
+#        else:
+#            return {u'main':self.frame, u'trans':None}
 
     def _generate_background_frame(self):
         """
