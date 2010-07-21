@@ -1,3 +1,4 @@
+import os.path
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
@@ -253,15 +254,14 @@ class ThemeManager(QtGui.QWidget):
             The theme to delete.
         """
         self.themelist.remove(theme)
-        th = theme + u'.png'
+        thumb = theme + u'.png'
         try:
-            os.remove(os.path.join(self.path, th))
-            os.remove(os.path.join(self.thumbPath, th))
+            os.remove(os.path.join(self.path, thumb))
+            os.remove(os.path.join(self.thumbPath, thumb))
             encoding = get_filesystem_encoding()
             shutil.rmtree(os.path.join(self.path, theme).encode(encoding))
         except OSError:
-            #if not present do not worry
-            pass
+            log.exception(u'Error deleting theme %s', theme)
         # As we do not reload the themes push out the change
         # Reaload the list as the internal lists and events need
         # to be triggered
