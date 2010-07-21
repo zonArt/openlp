@@ -59,7 +59,7 @@ class GeneralTab(SettingsTab):
         Create the user interface for the general settings tab
         """
         self.setObjectName(u'GeneralTab')
-        self.tabTitleVisible = translate('GeneralTab', 'General')
+        self.tabTitleVisible = translate('OpenLP.GeneralTab', 'General')
         self.GeneralLayout = QtGui.QHBoxLayout(self)
         self.GeneralLayout.setSpacing(8)
         self.GeneralLayout.setMargin(8)
@@ -286,7 +286,7 @@ class GeneralTab(SettingsTab):
         """
         Translate the general settings tab to the currently selected language
         """
-        self.MonitorGroupBox.setTitle(translate('GeneralTab', 'Monitors'))
+        self.MonitorGroupBox.setTitle(translate('OpenLP.GeneralTab', 'Monitors'))
         self.MonitorLabel.setText(
             translate('OpenLP.GeneralTab', 'Select monitor for output display:'))
         self.DisplayOnMonitorCheck.setText(
@@ -299,16 +299,18 @@ class GeneralTab(SettingsTab):
             translate('OpenLP.GeneralTab', 'Automatically open the last service'))
         self.ShowSplashCheckBox.setText(
             translate('OpenLP.GeneralTab', 'Show the splash screen'))
-        self.SettingsGroupBox.setTitle(translate('OpenLP.GeneralTab',
-            'Application Settings'))
+        self.SettingsGroupBox.setTitle(
+            translate('OpenLP.GeneralTab', 'Application Settings'))
         self.SaveCheckServiceCheckBox.setText(translate('OpenLP.GeneralTab',
             'Prompt to save Service before starting New'))
         self.AutoPreviewCheckBox.setText(translate('OpenLP.GeneralTab',
             'Preview Next Song from Service Manager'))
-        self.CCLIGroupBox.setTitle(translate('GeneralTab', 'CCLI Details'))
-        self.NumberLabel.setText(translate('GeneralTab', 'CCLI Number:'))
-        self.UsernameLabel.setText(translate('OpenLP.GeneralTab',
-            'SongSelect Username:'))
+        self.CCLIGroupBox.setTitle(
+            translate('OpenLP.GeneralTab', 'CCLI Details'))
+        self.NumberLabel.setText(
+            translate('OpenLP.GeneralTab', 'CCLI Number:'))
+        self.UsernameLabel.setText(
+            translate('OpenLP.GeneralTab', 'SongSelect Username:'))
         self.PasswordLabel.setText(
             translate('OpenLP.GeneralTab', 'SongSelect Password:'))
         # Moved from display tab
@@ -318,16 +320,18 @@ class GeneralTab(SettingsTab):
         self.currentXValueLabel.setText(u'0')
         self.currentYLabel.setText(translate('OpenLP.GeneralTab', 'Y'))
         self.currentYValueLabel.setText(u'0')
-        self.currentHeightLabel.setText(translate('OpenLP.GeneralTab', 'Height'))
+        self.currentHeightLabel.setText(
+            translate('OpenLP.GeneralTab', 'Height'))
         self.currentHeightValueLabel.setText(u'0')
-        self.currentWidthLabel.setText(translate('OpenLP.GeneralTab', 'Width'))
+        self.currentWidthLabel.setText(
+            translate('OpenLP.GeneralTab', 'Width'))
         self.currentWidthValueLabel.setText(u'0')
         self.overrideCheckBox.setText(translate('OpenLP.GeneralTab',
             'Override display position'))
-        self.customXLabel.setText(translate('DisplayTab', 'X'))
-        self.customYLabel.setText(translate('DisplayTab', 'Y'))
-        self.customHeightLabel.setText(translate('DisplayTab', 'Height'))
-        self.customWidthLabel.setText(translate('DisplayTab', 'Width'))
+        self.customXLabel.setText(translate('OpenLP.GeneralTab', 'X'))
+        self.customYLabel.setText(translate('OpenLP.GeneralTab', 'Y'))
+        self.customHeightLabel.setText(translate('OpenLP.GeneralTab', 'Height'))
+        self.customWidthLabel.setText(translate('OpenLP.GeneralTab', 'Width'))
 
     def load(self):
         """
@@ -336,11 +340,11 @@ class GeneralTab(SettingsTab):
         settings = QtCore.QSettings()
         settings.beginGroup(self.settingsSection)
         for screen in self.screens.screen_list:
-            screen_name = u'%s %d' % (translate('GeneralTab', 'Screen'),
+            screen_name = u'%s %d' % (translate('OpenLP.GeneralTab', 'Screen'),
                 screen[u'number'] + 1)
             if screen[u'primary']:
                 screen_name = u'%s (%s)' % (screen_name,
-                    translate('GeneralTab', 'primary'))
+                    translate('OpenLP.GeneralTab', 'primary'))
             self.MonitorComboBox.addItem(screen_name)
         self.NumberEdit.setText(unicode(settings.value(
             u'ccli number', QtCore.QVariant(u'')).toString()))
@@ -458,3 +462,4 @@ class GeneralTab(SettingsTab):
         self.customHeightValueEdit.setEnabled(checked)
         self.customWidthValueEdit.setEnabled(checked)
         self.override_changed = True
+

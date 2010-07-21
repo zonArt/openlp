@@ -66,7 +66,7 @@ class ImageTab(SettingsTab):
         self.ImageSettingsGroupBox.setTitle(
             translate('ImagePlugin.ImageTab', 'Image Settings'))
         self.TimeoutLabel.setText(
-            translate('ImagePlugin.ImageTab', 'Slide Loop Delay:'))
+            translate('ImagePlugin.ImageTab', 'Slide loop delay:'))
         self.TimeoutSpinBox.setSuffix(
             translate('ImagePlugin.ImageTab', 'sec'))
 
@@ -88,3 +88,4 @@ class ImageTab(SettingsTab):
     def postSetUp(self):
         Receiver.send_message(u'slidecontroller_live_spin_delay',
             self.loop_delay)
+

@@ -82,7 +82,7 @@ class LanguageManager(object):
         """
         translator = QtCore.QTranslator()
         translator.load(qm_file)
-        return translator.translate('MainWindow', 'English')
+        return translator.translate('OpenLP.MainWindow', 'English')
 
     @staticmethod
     def get_language():
@@ -117,9 +117,9 @@ class LanguageManager(object):
             u'general/language', QtCore.QVariant(language))
         log.info(u'Language file: \'%s\' written to conf file' % language)
         QtGui.QMessageBox.information(None,
-            translate('LanguageManager', 'Language'),
-            translate('LanguageManager',
-                'After restart new Language settings will be used.'))
+            translate('OpenLP.LanguageManager', 'Language'),
+            translate('OpenLP.LanguageManager',
+                'Please restart OpenLP to use your new language setting.'))
 
     @staticmethod
     def init_qm_list():

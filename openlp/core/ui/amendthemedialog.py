@@ -657,153 +657,173 @@ class Ui_AmendThemeDialog(object):
 
     def retranslateUi(self, AmendThemeDialog):
         AmendThemeDialog.setWindowTitle(
-            translate('AmendThemeForm', 'Theme Maintenance'))
+            translate('OpenLP.AmendThemeForm', 'Theme Maintenance'))
         self.ThemeNameLabel.setText(
-            translate('AmendThemeForm', 'Theme &name:'))
+            translate('OpenLP.AmendThemeForm', 'Theme &name:'))
         self.BackgroundLabel.setText(
-            translate('AmendThemeForm', '&Visibility:'))
+            translate('OpenLP.AmendThemeForm', '&Visibility:'))
         self.BackgroundComboBox.setItemText(0,
-            translate('AmendThemeForm', 'Opaque'))
+            translate('OpenLP.AmendThemeForm', 'Opaque'))
         self.BackgroundComboBox.setItemText(1,
-            translate('AmendThemeForm', 'Transparent'))
+            translate('OpenLP.AmendThemeForm', 'Transparent'))
         self.BackgroundTypeLabel.setText(
-            translate('AmendThemeForm', 'Type:'))
+            translate('OpenLP.AmendThemeForm', 'Type:'))
         self.BackgroundTypeComboBox.setItemText(0,
-            translate('AmendThemeForm', 'Solid Color'))
+            translate('OpenLP.AmendThemeForm', 'Solid Color'))
         self.BackgroundTypeComboBox.setItemText(1,
-            translate('AmendThemeForm', 'Gradient'))
+            translate('OpenLP.AmendThemeForm', 'Gradient'))
         self.BackgroundTypeComboBox.setItemText(2,
-            translate('AmendThemeForm', 'Image'))
+            translate('OpenLP.AmendThemeForm', 'Image'))
         self.Color1Label.setText(u'<Color1>:')
         self.Color2Label.setText(u'<Color2>:')
-        self.ImageLabel.setText(translate('AmendThemeForm', 'Image:'))
-        self.GradientLabel.setText(translate('AmendThemeForm', 'Gradient:'))
+        self.ImageLabel.setText(
+            translate('OpenLP.AmendThemeForm', 'Image:'))
+        self.GradientLabel.setText(
+            translate('OpenLP.AmendThemeForm', 'Gradient:'))
         self.GradientComboBox.setItemText(0,
-            translate('AmendThemeForm', 'Horizontal'))
+            translate('OpenLP.AmendThemeForm', 'Horizontal'))
         self.GradientComboBox.setItemText(1,
-            translate('AmendThemeForm', 'Vertical'))
+            translate('OpenLP.AmendThemeForm', 'Vertical'))
         self.GradientComboBox.setItemText(2,
-            translate('AmendThemeForm', 'Circular'))
+            translate('OpenLP.AmendThemeForm', 'Circular'))
         self.ThemeTabWidget.setTabText(
             self.ThemeTabWidget.indexOf(self.BackgroundTab),
-            translate('AmendThemeForm', '&Background'))
+            translate('OpenLP.AmendThemeForm', '&Background'))
         self.FontMainGroupBox.setTitle(
-            translate('AmendThemeForm', 'Main Font'))
-        self.FontMainlabel.setText(translate('AmendThemeForm', 'Font:'))
+            translate('OpenLP.AmendThemeForm', 'Main Font'))
+        self.FontMainlabel.setText(
+            translate('OpenLP.AmendThemeForm', 'Font:'))
         self.FontMainColorLabel.setText(
-            translate('AmendThemeForm', 'Color:'))
-        self.FontMainSize.setText(translate('AmendThemeForm', 'Size:'))
-        self.FontMainSizeSpinBox.setSuffix(translate('AmendThemeForm', 'pt'))
+            translate('OpenLP.AmendThemeForm', 'Color:'))
+        self.FontMainSize.setText(
+            translate('OpenLP.AmendThemeForm', 'Size:'))
+        self.FontMainSizeSpinBox.setSuffix(
+            translate('OpenLP.AmendThemeForm', 'pt'))
         self.FontMainWrapIndentationLabel.setText(
-            translate('AmendThemeForm', 'Wrap indentation:'))
+            translate('OpenLP.AmendThemeForm', 'Wrap indentation:'))
         self.FontMainWrapLineAdjustmentLabel.setText(
-            translate('AmendThemeForm', 'Adjust line spacing:'))
+            translate('OpenLP.AmendThemeForm', 'Adjust line spacing:'))
         self.FontMainWeightComboBox.setItemText(0,
-            translate('AmendThemeForm', 'Normal'))
+            translate('OpenLP.AmendThemeForm', 'Normal'))
         self.FontMainWeightComboBox.setItemText(1,
-            translate('AmendThemeForm', 'Bold'))
+            translate('OpenLP.AmendThemeForm', 'Bold'))
         self.FontMainWeightComboBox.setItemText(2,
-            translate('AmendThemeForm', 'Italics'))
+            translate('OpenLP.AmendThemeForm', 'Italics'))
         self.FontMainWeightComboBox.setItemText(3,
-            translate('AmendThemeForm', 'Bold/Italics'))
+            translate('OpenLP.AmendThemeForm', 'Bold/Italics'))
         self.FontMainWeightLabel.setText(
-            translate('AmendThemeForm', 'Style:'))
+            translate('OpenLP.AmendThemeForm', 'Style:'))
         self.MainLocationGroupBox.setTitle(
-            translate('AmendThemeForm', 'Display Location'))
+            translate('OpenLP.AmendThemeForm', 'Display Location'))
         self.DefaultLocationLabel.setText(
-            translate('AmendThemeForm', 'Use default location'))
+            translate('OpenLP.AmendThemeForm', 'Use default location'))
         self.FontMainXLabel.setText(
-            translate('AmendThemeForm', 'X position:'))
+            translate('OpenLP.AmendThemeForm', 'X position:'))
         self.FontMainYLabel.setText(
-            translate('AmendThemeForm', 'Y position:'))
+            translate('OpenLP.AmendThemeForm', 'Y position:'))
         self.FontMainWidthLabel.setText(
-            translate('AmendThemeForm', 'Width:'))
+            translate('OpenLP.AmendThemeForm', 'Width:'))
         self.FontMainHeightLabel.setText(
-            translate('AmendThemeForm', 'Height:'))
-        self.FontMainXSpinBox.setSuffix(translate('AmendThemeForm', 'px'))
-        self.FontMainYSpinBox.setSuffix(translate('AmendThemeForm', 'px'))
-        self.FontMainWidthSpinBox.setSuffix(translate('AmendThemeForm', 'px'))
-        self.FontMainHeightSpinBox.setSuffix(translate('AmendThemeForm', 'px'))
+            translate('OpenLP.AmendThemeForm', 'Height:'))
+        self.FontMainXSpinBox.setSuffix(
+            translate('OpenLP.AmendThemeForm', 'px'))
+        self.FontMainYSpinBox.setSuffix(
+            translate('OpenLP.AmendThemeForm', 'px'))
+        self.FontMainWidthSpinBox.setSuffix(
+            translate('OpenLP.AmendThemeForm', 'px'))
+        self.FontMainHeightSpinBox.setSuffix(
+            translate('OpenLP.AmendThemeForm', 'px'))
         self.ThemeTabWidget.setTabText(
             self.ThemeTabWidget.indexOf(self.FontMainTab),
-            translate('AmendThemeForm', '&Main Font'))
+            translate('OpenLP.AmendThemeForm', '&Main Font'))
         self.FooterFontGroupBox.setTitle(
-            translate('AmendThemeForm', 'Footer Font'))
-        self.FontFooterLabel.setText(translate('AmendThemeForm', 'Font:'))
+            translate('OpenLP.AmendThemeForm', 'Footer Font'))
+        self.FontFooterLabel.setText(
+            translate('OpenLP.AmendThemeForm', 'Font:'))
         self.FontFooterColorLabel.setText(
-            translate('AmendThemeForm', 'Color:'))
-        self.FontFooterSizeLabel.setText(translate('AmendThemeForm', 'Size:'))
-        self.FontFooterSizeSpinBox.setSuffix(translate('AmendThemeForm', 'pt'))
+            translate('OpenLP.AmendThemeForm', 'Color:'))
+        self.FontFooterSizeLabel.setText(
+            translate('OpenLP.AmendThemeForm', 'Size:'))
+        self.FontFooterSizeSpinBox.setSuffix(
+            translate('OpenLP.AmendThemeForm', 'pt'))
         self.FontFooterWeightComboBox.setItemText(0,
-            translate('AmendThemeForm', 'Normal'))
+            translate('OpenLP.AmendThemeForm', 'Normal'))
         self.FontFooterWeightComboBox.setItemText(1,
-            translate('AmendThemeForm', 'Bold'))
+            translate('OpenLP.AmendThemeForm', 'Bold'))
         self.FontFooterWeightComboBox.setItemText(2,
-            translate('AmendThemeForm', 'Italics'))
+            translate('OpenLP.AmendThemeForm', 'Italics'))
         self.FontFooterWeightComboBox.setItemText(3,
-            translate('AmendThemeForm', 'Bold/Italics'))
+            translate('OpenLP.AmendThemeForm', 'Bold/Italics'))
         self.FontFooterWeightLabel.setText(
-            translate('AmendThemeForm', 'Style:'))
+            translate('OpenLP.AmendThemeForm', 'Style:'))
         self.LocationFooterGroupBox.setTitle(
-            translate('AmendThemeForm', 'Display Location'))
+            translate('OpenLP.AmendThemeForm', 'Display Location'))
         self.FontFooterDefaultLabel.setText(
-            translate('AmendThemeForm', 'Use default location'))
+            translate('OpenLP.AmendThemeForm', 'Use default location'))
         self.FontFooterXLabel.setText(
-            translate('AmendThemeForm', 'X position:'))
+            translate('OpenLP.AmendThemeForm', 'X position:'))
         self.FontFooterYLabel.setText(
-            translate('AmendThemeForm', 'Y position:'))
+            translate('OpenLP.AmendThemeForm', 'Y position:'))
         self.FontFooterWidthLabel.setText(
-            translate('AmendThemeForm', 'Width:'))
+            translate('OpenLP.AmendThemeForm', 'Width:'))
         self.FontFooterHeightLabel.setText(
-            translate('AmendThemeForm', 'Height:'))
-        self.FontFooterXSpinBox.setSuffix(translate('AmendThemeForm', 'px'))
-        self.FontFooterYSpinBox.setSuffix(translate('AmendThemeForm', 'px'))
-        self.FontFooterWidthSpinBox.setSuffix(translate('AmendThemeForm', 'px'))
+            translate('OpenLP.AmendThemeForm', 'Height:'))
+        self.FontFooterXSpinBox.setSuffix(
+            translate('OpenLP.AmendThemeForm', 'px'))
+        self.FontFooterYSpinBox.setSuffix(
+            translate('OpenLP.AmendThemeForm', 'px'))
+        self.FontFooterWidthSpinBox.setSuffix(
+            translate('OpenLP.AmendThemeForm', 'px'))
         self.FontFooterHeightSpinBox.setSuffix(
-            translate('AmendThemeForm', 'px'))
+            translate('OpenLP.AmendThemeForm', 'px'))
         self.ThemeTabWidget.setTabText(
             self.ThemeTabWidget.indexOf(self.FontFooterTab),
-            translate('AmendThemeForm', '&Footer Font'))
-        self.OutlineGroupBox.setTitle(translate('AmendThemeForm', 'Outline'))
+            translate('OpenLP.AmendThemeForm', '&Footer Font'))
+        self.OutlineGroupBox.setTitle(
+            translate('OpenLP.AmendThemeForm', 'Outline'))
         self.OutlineSpinBoxLabel.setText(
-            translate('AmendThemeForm', 'Outline size:'))
-        self.OutlineSpinBox.setSuffix(translate('AmendThemeForm', 'px'))
+            translate('OpenLP.AmendThemeForm', 'Outline size:'))
+        self.OutlineSpinBox.setSuffix(
+            translate('OpenLP.AmendThemeForm', 'px'))
         self.OutlineColorLabel.setText(
-            translate('AmendThemeForm', 'Outline color:'))
+            translate('OpenLP.AmendThemeForm', 'Outline color:'))
         self.OutlineEnabledLabel.setText(
-            translate('AmendThemeForm', 'Show outline:'))
-        self.ShadowGroupBox.setTitle(translate('AmendThemeForm', 'Shadow'))
+            translate('OpenLP.AmendThemeForm', 'Show outline:'))
+        self.ShadowGroupBox.setTitle(
+            translate('OpenLP.AmendThemeForm', 'Shadow'))
         self.ShadowSpinBoxLabel.setText(
-            translate('AmendThemeForm', 'Shadow size:'))
-        self.ShadowSpinBox.setSuffix(translate('AmendThemeForm', 'px'))
+            translate('OpenLP.AmendThemeForm', 'Shadow size:'))
+        self.ShadowSpinBox.setSuffix(
+            translate('OpenLP.AmendThemeForm', 'px'))
         self.ShadowColorLabel.setText(
-            translate('AmendThemeForm', 'Shadow color:'))
+            translate('OpenLP.AmendThemeForm', 'Shadow color:'))
         self.ShadowEnabledLabel.setText(
-            translate('AmendThemeForm', 'Show shadow:'))
+            translate('OpenLP.AmendThemeForm', 'Show shadow:'))
         self.AlignmentGroupBox.setTitle(
-            translate('AmendThemeForm', 'Alignment'))
+            translate('OpenLP.AmendThemeForm', 'Alignment'))
         self.HorizontalLabel.setText(
-            translate('AmendThemeForm', 'Horizontal align:'))
+            translate('OpenLP.AmendThemeForm', 'Horizontal align:'))
         self.HorizontalComboBox.setItemText(0, 
-            translate('AmendThemeForm', 'Left'))
+            translate('OpenLP.AmendThemeForm', 'Left'))
         self.HorizontalComboBox.setItemText(1, 
-            translate('AmendThemeForm', 'Right'))
+            translate('OpenLP.AmendThemeForm', 'Right'))
         self.HorizontalComboBox.setItemText(2, 
-            translate('AmendThemeForm', 'Center'))
+            translate('OpenLP.AmendThemeForm', 'Center'))
         self.VerticalLabel.setText(
-            translate('AmendThemeForm', 'Vertical align:'))
+            translate('OpenLP.AmendThemeForm', 'Vertical align:'))
         self.VerticalComboBox.setItemText(0, 
-            translate('AmendThemeForm', 'Top'))
+            translate('OpenLP.AmendThemeForm', 'Top'))
         self.VerticalComboBox.setItemText(1, 
-            translate('AmendThemeForm', 'Middle'))
+            translate('OpenLP.AmendThemeForm', 'Middle'))
         self.VerticalComboBox.setItemText(2, 
-            translate('AmendThemeForm', 'Bottom'))
+            translate('OpenLP.AmendThemeForm', 'Bottom'))
         self.TransitionGroupBox.setTitle(
-            translate('AmendThemeForm', 'Slide Transition'))
+            translate('OpenLP.AmendThemeForm', 'Slide Transition'))
         self.SlideTransitionCheckBoxLabel.setText(
-            translate('AmendThemeForm', 'Transition active'))
+            translate('OpenLP.AmendThemeForm', 'Transition active'))
         self.ThemeTabWidget.setTabText(
             self.ThemeTabWidget.indexOf(self.OtherOptionsTab),
-            translate('AmendThemeForm', '&Other Options'))
-        self.PreviewGroupBox.setTitle(translate('AmendThemeForm', 'Preview'))
+            translate('OpenLP.AmendThemeForm', '&Other Options'))
+        self.PreviewGroupBox.setTitle(
+            translate('OpenLP.AmendThemeForm', 'Preview'))
 
