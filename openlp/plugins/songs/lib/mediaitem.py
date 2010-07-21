@@ -164,20 +164,20 @@ class SongMediaItem(MediaManagerItem):
         search_type = self.SearchTypeComboBox.currentIndex()
         if search_type == 0:
             log.debug(u'Titles Search')
-            search_results = self.parent.manager.get_all_objects_filtered(Song,
+            search_results = self.parent.manager.get_all_objects(Song,
                 Song.search_title.like(u'%' + search_keywords + u'%'),
                 Song.search_title.asc())
             self.displayResultsSong(search_results)
         elif search_type == 1:
             log.debug(u'Lyrics Search')
-            search_results = self.parent.manager.get_all_objects_filtered(Song,
+            search_results = self.parent.manager.get_all_objects(Song,
                 Song.search_lyrics.like(u'%' + search_keywords + u'%'),
                 Song.search_lyrics.asc())
             self.displayResultsSong(search_results)
         elif search_type == 2:
             log.debug(u'Authors Search')
-            search_results = self.parent.manager.get_all_objects_filtered(
-                Author, Author.display_name.like(u'%' + search_keywords + u'%'),
+            search_results = self.parent.manager.get_all_objects(Author,
+                Author.display_name.like(u'%' + search_keywords + u'%'),
                 Author.display_name.asc())
             self.displayResultsAuthor(search_results)
         #Called to redisplay the song list screen edith from a search

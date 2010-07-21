@@ -178,7 +178,8 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
             SettingsManager.get_last_dir(self.songsplugin.settingsSection, 1))
         if filename:
             editbox.setText(filename)
-            self.config.set_last_dir(filename, 1)
+            SettingsManager.set_last_dir(self.songsplugin.settingsSection,
+                filename, 1)
 
     def incrementProgressBar(self, status_text):
         log.debug(u'IncrementBar %s', status_text)

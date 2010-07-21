@@ -73,7 +73,7 @@ class CustomMediaItem(MediaManagerItem):
 
     def initialise(self):
         self.loadCustomListView(self.parent.custommanager.get_all_objects(
-            CustomSlide, CustomSlide.title))
+            CustomSlide, order_by_ref=CustomSlide.title))
         #Called to redisplay the song list screen edith from a search
         #or from the exit of the Song edit dialog.  If remote editing is active
         #Trigger it and clean up so it will not update again.

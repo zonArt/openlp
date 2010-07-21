@@ -26,9 +26,9 @@
 from PyQt4 import QtGui, QtCore
 from sqlalchemy.sql import and_
 
-from openlp.core.lib import translate
+from openlp.core.lib import Receiver, translate
 from openlp.plugins.songs.forms import AuthorsForm, TopicsForm, SongBookForm
-from openlp.plugins.songs.lib.db import Author, Book, Topic
+from openlp.plugins.songs.lib.db import Author, Book, Topic, Song
 from songmaintenancedialog import Ui_SongMaintenanceDialog
 
 class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
@@ -102,7 +102,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         Reloads the Authors list.
         """
         self.AuthorsListWidget.clear()
-        authors = self.songmanager.get_all_objects(Author, Author.display_name)
+        authors = self.songmanager.get_all_objects(Author,
+            order_by_ref=Author.display_name)
         for author in authors:
             if author.display_name:
                 author_name = QtGui.QListWidgetItem(author.display_name)
@@ -117,7 +118,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         Reloads the Topics list.
         """
         self.TopicsListWidget.clear()
-        topics = self.songmanager.get_all_objects(Topic, Topic.name)
+        topics = self.songmanager.get_all_objects(Topic,
+            order_by_ref=Topic.name)
         for topic in topics:
             topic_name = QtGui.QListWidgetItem(topic.name)
             topic_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(topic.id))
@@ -128,7 +130,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         Reloads the Books list.
         """
         self.BooksListWidget.clear()
-        books = self.songmanager.get_all_objects(Book, Book.name)
+        books = self.songmanager.get_all_objects(Book, order_by_ref=Book.name)
         for book in books:
             book_name = QtGui.QListWidgetItem(u'%s (%s)' % (book.name,
                 book.publisher))
@@ -137,16 +139,13 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
 
     def checkAuthor(self, new_author, edit=False):
         """
-        Returns False when the given Author is already in the list elsewise
+        Returns False if the given Author is already in the list otherwise
         True.
         """
-        authors = self.songmanager.get_all_objects_filtered(Author, 
-            and_(
-                Author.first_name == new_author.first_name, 
-                Author.last_name == new_author.last_name, 
-                Author.display_name == new_author.display_name
-                )
-            )
+        authors = self.songmanager.get_all_objects(Author,
+            and_(Author.first_name == new_author.first_name,
+                Author.last_name == new_author.last_name,
+                Author.display_name == new_author.display_name))
         if len(authors) > 0:
             # If we edit an existing Author, we need to make sure that we do
             # not return False when nothing has changed (because this would
@@ -163,11 +162,10 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
 
     def checkTopic(self, new_topic, edit=False):
         """
-        Returns False when the given Topic is already in the list elsewise True.
+        Returns False if the given Topic is already in the list otherwise True.
         """
-        topics = self.songmanager.get_all_objects_filtered(Topic,
-            Topic.name == new_topic.name
-            )
+        topics = self.songmanager.get_all_objects(Topic,
+            Topic.name == new_topic.name)
         if len(topics) > 0:
             # If we edit an existing Topic, we need to make sure that we do
             # not return False when nothing has changed (because this would
@@ -184,25 +182,22 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
 
     def checkBook(self, new_book, edit=False):
         """
-        Returns False when the given Book is already in the list elsewise True.
+        Returns False if the given Book is already in the list otherwise True.
         """
-        books = self.songmanager.get_all_objects_filtered(Book,
-            and_(
-                Book.name == new_book.name, 
-                Book.publisher == new_book.publisher
-                )
-            )
+        books = self.songmanager.get_all_objects(Book,
+            and_(Book.name == new_book.name,
+                Book.publisher == new_book.publisher))
         if len(books) > 0:
-                # If we edit an existing Book, we need to make sure that we do
-                # not return False when nothing has changed (because this would
-                # cause an error message later on).
-                if edit:
-                    if books[0].id == new_book.id:
-                        return True
-                    else:
-                        return False
+            # If we edit an existing Book, we need to make sure that we do
+            # not return False when nothing has changed (because this would
+            # cause an error message later on).
+            if edit:
+                if books[0].id == new_book.id:
+                    return True
                 else:
                     return False
+            else:
+                return False
         else:
             return True
 
@@ -216,11 +211,16 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             if self.checkAuthor(author):
                 if self.songmanager.save_object(author):
                     self.resetAuthors()
+                else:
+                    QtGui.QMessageBox.critical(self,
+                        translate('SongsPlugin.SongMaintenanceForm', 'Error'),
+                        translate('SongsPlugin.SongMaintenanceForm',
+                        'Could not add your author.'))
             else:
                 QtGui.QMessageBox.critical(self,
                     translate('SongsPlugin.SongMaintenanceForm', 'Error'),
                     translate('SongsPlugin.SongMaintenanceForm',
-                    'Could not add your author.'))
+                    'This author already exists.'))
 
     def onTopicAddButtonClick(self):
         if self.topicform.exec_():
@@ -228,25 +228,34 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             if self.checkTopic(topic):
                 if self.songmanager.save_object(topic):
                     self.resetTopics()
+                else:
+                    QtGui.QMessageBox.critical(self,
+                        translate('SongsPlugin.SongMaintenanceForm', 'Error'),
+                        translate('SongsPlugin.SongMaintenanceForm',
+                        'Could not add your topic.'))
             else:
                 QtGui.QMessageBox.critical(self,
                     translate('SongsPlugin.SongMaintenanceForm', 'Error'),
                     translate('SongsPlugin.SongMaintenanceForm',
-                    'Could not add your topic.'))
+                    'This topic already exists.'))
 
     def onBookAddButtonClick(self):
         if self.bookform.exec_():
-            book = Book.populate(
-                name=unicode(self.bookform.NameEdit.text()),
+            book = Book.populate(name=unicode(self.bookform.NameEdit.text()),
                 publisher=unicode(self.bookform.PublisherEdit.text()))
             if self.checkBook(book):
                 if self.songmanager.save_object(book):
                     self.resetBooks()
+                else:
+                    QtGui.QMessageBox.critical(self,
+                        translate('SongsPlugin.SongMaintenanceForm', 'Error'),
+                        translate('SongsPlugin.SongMaintenanceForm',
+                        'Could not add your book.'))
             else:
                 QtGui.QMessageBox.critical(self,
                     translate('SongsPlugin.SongMaintenanceForm', 'Error'),
                     translate('SongsPlugin.SongMaintenanceForm',
-                    'Could not add your book.'))
+                    'This book already exists.'))
 
     def onAuthorEditButtonClick(self):
         author_id = self._getCurrentItemId(self.AuthorsListWidget)
@@ -270,6 +279,24 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 if self.checkAuthor(author, True):
                     if self.songmanager.save_object(author):
                         self.resetAuthors()
+                        Receiver.send_message(u'songs_load_list')
+                    else:
+                        QtGui.QMessageBox.critical(self,
+                            translate('SongsPlugin.SongMaintenanceForm',
+                            'Error'),
+                            translate('SongsPlugin.SongMaintenanceForm',
+                            'Could not save your changes.'))
+                elif QtGui.QMessageBox.critical(self,
+                    translate('SongsPlugin.SongMaintenanceForm', 'Error'),
+                    translate('SongsPlugin.SongMaintenanceForm', 'The author %s'
+                    ' already exists. Would you like to make songs with author '
+                    '%s use the existing author %s?' % (author.display_name,
+                    temp_display_name, author.display_name)),
+                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
+                    QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.Yes:
+                    self.mergeAuthors(author)
+                    self.resetAuthors()
+                    Receiver.send_message(u'songs_load_list')
                 else:
                     # We restore the author's old first and last name as well as
                     # his display name.
@@ -279,7 +306,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     QtGui.QMessageBox.critical(self,
                         translate('SongsPlugin.SongMaintenanceForm', 'Error'),
                         translate('SongsPlugin.SongMaintenanceForm',
-                        'Could not save your author.'))
+                        'Could not save your modified author, because he '
+                        'already exists.'))
 
     def onTopicEditButtonClick(self):
         topic_id = self._getCurrentItemId(self.TopicsListWidget)
@@ -293,18 +321,37 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 if self.checkTopic(topic, True):
                     if self.songmanager.save_object(topic):
                         self.resetTopics()
+                    else:
+                        QtGui.QMessageBox.critical(self,
+                            translate('SongsPlugin.SongMaintenanceForm',
+                            'Error'),
+                            translate('SongsPlugin.SongMaintenanceForm',
+                            'Could not save your changes.'))
+                elif QtGui.QMessageBox.critical(self,
+                    translate('SongsPlugin.SongMaintenanceForm', 'Error'),
+                    translate('SongsPlugin.SongMaintenanceForm', 'The topic %s '
+                    'already exists. Would you like to make songs with topic %s'
+                    ' use the existing topic %s?' % (topic.name, temp_name,
+                    topic.name)),
+                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
+                    QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.Yes:
+                    self.mergeTopics(topic)
+                    self.resetTopics()
                 else:
                     # We restore the topics's old name.
                     topic.name = temp_name
                     QtGui.QMessageBox.critical(self,
                         translate('SongsPlugin.SongMaintenanceForm', 'Error'),
                         translate('SongsPlugin.SongMaintenanceForm',
-                        'Could not save your topic.'))
+                        'Could not save your modified topic, because it '
+                        'already exists.'))
 
     def onBookEditButtonClick(self):
         book_id = self._getCurrentItemId(self.BooksListWidget)
         if book_id != -1:
             book = self.songmanager.get_object(Book, book_id)
+            if book.publisher is None:
+                book.publisher = u''
             self.bookform.NameEdit.setText(book.name)
             self.bookform.PublisherEdit.setText(book.publisher)
             # Save the book's name and publisher for the case that they have to
@@ -317,18 +364,89 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 if self.checkBook(book, True):
                     if self.songmanager.save_object(book):
                         self.resetBooks()
+                    else:
+                        QtGui.QMessageBox.critical(self,
+                            translate('SongsPlugin.SongMaintenanceForm',
+                            'Error'),
+                            translate('SongsPlugin.SongMaintenanceForm',
+                            'Could not save your changes.'))
+                elif QtGui.QMessageBox.critical(self,
+                    translate('SongsPlugin.SongMaintenanceForm', 'Error'),
+                    translate('SongsPlugin.SongMaintenanceForm', 'The book %s '
+                    'already exists. Would you like to make songs with book %s '
+                    'use the existing book %s?' % (book.name, temp_name,
+                    book.name)),
+                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
+                    QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.Yes:
+                    self.mergeBooks(book)
+                    self.resetBooks()
                 else:
                     # We restore the book's old name and publisher.
                     book.name = temp_name
                     book.publisher = temp_publisher
-                    QtGui.QMessageBox.critical(self,
-                        translate('SongsPlugin.SongMaintenanceForm', 'Error'),
-                        translate('SongsPlugin.SongMaintenanceForm',
-                        'Could not save your book.'))
+
+    def mergeAuthors(self, old_author):
+        '''
+        Merges two authors into one author.
+        
+        ``old_author``
+            The author which will be deleted afterwards.
+        '''
+        existing_author = self.songmanager.get_object_filtered(Author,
+            and_(Author.first_name == old_author.first_name,
+                Author.last_name == old_author.last_name, 
+                Author.display_name == old_author.display_name))
+        songs = self.songmanager.get_all_objects(Song,
+            Song.authors.contains(old_author))
+        for song in songs:
+            # We check if the song has already existing_author as author. If
+            # that is not the case we add it.
+            if existing_author not in song.authors:
+                song.authors.append(existing_author)
+            song.authors.remove(old_author)
+            self.songmanager.save_object(song)
+        self.songmanager.delete_object(Author, old_author.id)
+
+    def mergeTopics(self, old_topic):
+        '''
+        Merges two topics into one topic.
+        
+        ``old_topic``
+            The topic which will be deleted afterwards.
+        '''
+        existing_topic = self.songmanager.get_object_filtered(Topic,
+            Topic.name == old_topic.name)
+        songs = self.songmanager.get_all_objects(Song,
+            Song.topics.contains(old_topic))
+        for song in songs:
+            # We check if the song has already existing_topic as topic. If that
+            # is not the case we add it.
+            if existing_topic not in song.topics:
+                song.topics.append(existing_topic)
+            song.topics.remove(old_topic)
+            self.songmanager.save_object(song)
+        self.songmanager.delete_object(Topic, old_topic.id)
+
+    def mergeBooks(self, old_book):
+        '''
+        Merges two books into one book.
+        
+        ``old_book``
+            The book which will be deleted afterwards.
+        '''
+        existing_book = self.songmanager.get_object_filtered(Book,
+            and_(Book.name == old_book.name,
+                Book.publisher == old_book.publisher))
+        songs = self.songmanager.get_all_objects(Song,
+            Song.song_book_id == old_book.id)
+        for song in songs:
+            song.song_book_id = existing_book.id
+            self.songmanager.save_object(song)
+        self.songmanager.delete_object(Book, old_book.id)
 
     def onAuthorDeleteButtonClick(self):
         """
-        Delete the author if the author is not attached to any songs
+        Delete the author if the author is not attached to any songs.
         """
         self._deleteItem(Author, self.AuthorsListWidget, self.resetAuthors,
             translate('SongsPlugin.SongMaintenanceForm', 'Delete Author'),
@@ -341,7 +459,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
 
     def onTopicDeleteButtonClick(self):
         """
-        Delete the Book is the Book is not attached to any songs
+        Delete the Book is the Book is not attached to any songs.
         """
         self._deleteItem(Topic, self.TopicsListWidget, self.resetTopics,
             translate('SongsPlugin.SongMaintenanceForm', 'Delete Topic'),
@@ -354,7 +472,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
 
     def onBookDeleteButtonClick(self):
         """
-        Delete the Book is the Book is not attached to any songs
+        Delete the Book is the Book is not attached to any songs.
         """
         self._deleteItem(Book, self.BooksListWidget, self.resetBooks,
             translate('SongsPlugin.SongMaintenanceForm', 'Delete Book'),

@@ -109,16 +109,16 @@ class Ui_SongImportWizard(object):
         self.OpenLyricsButtonLayout.setSpacing(8)
         self.OpenLyricsButtonLayout.setObjectName(u'OpenLyricsButtonLayout')
         self.OpenLyricsAddButton = QtGui.QPushButton(self.OpenLyricsPage)
-        self.OpenLyricsAddButton.setIcon(
-            build_icon(u':/general/general_open.png'))
+        openIcon = build_icon(u':/general/general_open.png')
+        self.OpenLyricsAddButton.setIcon(openIcon)
         self.OpenLyricsAddButton.setObjectName(u'OpenLyricsAddButton')
         self.OpenLyricsButtonLayout.addWidget(self.OpenLyricsAddButton)
         self.OpenLyricsButtonSpacer = QtGui.QSpacerItem(40, 20,
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.OpenLyricsButtonLayout.addItem(self.OpenLyricsButtonSpacer)
         self.OpenLyricsRemoveButton = QtGui.QPushButton(self.OpenLyricsPage)
-        self.OpenLyricsRemoveButton.setIcon(
-            build_icon(u':/general/general_delete.png'))
+        deleteIcon = build_icon(u':/general/general_delete.png')
+        self.OpenLyricsRemoveButton.setIcon(deleteIcon)
         self.OpenLyricsRemoveButton.setObjectName(u'OpenLyricsRemoveButton')
         self.OpenLyricsButtonLayout.addWidget(self.OpenLyricsRemoveButton)
         self.OpenLyricsLayout.addLayout(self.OpenLyricsButtonLayout)
@@ -136,14 +136,14 @@ class Ui_SongImportWizard(object):
         self.OpenSongButtonLayout.setSpacing(8)
         self.OpenSongButtonLayout.setObjectName(u'OpenSongButtonLayout')
         self.OpenSongAddButton = QtGui.QPushButton(self.OpenSongPage)
-        self.OpenSongAddButton.setIcon(self.OpenIcon)
+        self.OpenSongAddButton.setIcon(openIcon)
         self.OpenSongAddButton.setObjectName(u'OpenSongAddButton')
         self.OpenSongButtonLayout.addWidget(self.OpenSongAddButton)
         self.OpenSongButtonSpacer = QtGui.QSpacerItem(40, 20,
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.OpenSongButtonLayout.addItem(self.OpenSongButtonSpacer)
         self.OpenSongRemoveButton = QtGui.QPushButton(self.OpenSongPage)
-        self.OpenSongRemoveButton.setIcon(self.DeleteIcon)
+        self.OpenSongRemoveButton.setIcon(deleteIcon)
         self.OpenSongRemoveButton.setObjectName(u'OpenSongRemoveButton')
         self.OpenSongButtonLayout.addWidget(self.OpenSongRemoveButton)
         self.OpenSongLayout.addLayout(self.OpenSongButtonLayout)
@@ -161,14 +161,14 @@ class Ui_SongImportWizard(object):
         self.CCLIButtonLayout.setSpacing(8)
         self.CCLIButtonLayout.setObjectName(u'CCLIButtonLayout')
         self.CCLIAddButton = QtGui.QPushButton(self.CCLIPage)
-        self.CCLIAddButton.setIcon(self.OpenIcon)
+        self.CCLIAddButton.setIcon(openIcon)
         self.CCLIAddButton.setObjectName(u'CCLIAddButton')
         self.CCLIButtonLayout.addWidget(self.CCLIAddButton)
         self.CCLIButtonSpacer = QtGui.QSpacerItem(40, 20,
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.CCLIButtonLayout.addItem(self.CCLIButtonSpacer)
         self.CCLIRemoveButton = QtGui.QPushButton(self.CCLIPage)
-        self.CCLIRemoveButton.setIcon(self.DeleteIcon)
+        self.CCLIRemoveButton.setIcon(deleteIcon)
         self.CCLIRemoveButton.setObjectName(u'CCLIRemoveButton')
         self.CCLIButtonLayout.addWidget(self.CCLIRemoveButton)
         self.CCLILayout.addLayout(self.CCLIButtonLayout)
@@ -190,7 +190,7 @@ class Ui_SongImportWizard(object):
         self.CSVFilenameEdit.setObjectName(u'CSVFilenameEdit')
         self.CSVFileLayout.addWidget(self.CSVFilenameEdit)
         self.CSVBrowseButton = QtGui.QToolButton(self.CSVPage)
-        self.CSVBrowseButton.setIcon(self.OpenIcon)
+        self.CSVBrowseButton.setIcon(openIcon)
         self.CSVBrowseButton.setObjectName(u'CSVBrowseButton')
         self.CSVFileLayout.addWidget(self.CSVBrowseButton)
         self.CSVLayout.setLayout(0, QtGui.QFormLayout.FieldRole,
@@ -213,14 +213,11 @@ class Ui_SongImportWizard(object):
         self.ImportProgressBar.setObjectName(u'ImportProgressBar')
         self.ImportLayout.addWidget(self.ImportProgressBar)
         SongImportWizard.addPage(self.ImportPage)
-
         self.retranslateUi(SongImportWizard)
         self.FormatStackedWidget.setCurrentIndex(0)
-        QtCore.QObject.connect(
-            self.FormatComboBox,
+        QtCore.QObject.connect(self.FormatComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
-            self.FormatStackedWidget.setCurrentIndex
-        )
+            self.FormatStackedWidget.setCurrentIndex)
         QtCore.QMetaObject.connectSlotsByName(SongImportWizard)
 
     def retranslateUi(self, SongImportWizard):
@@ -275,4 +272,3 @@ class Ui_SongImportWizard(object):
             translate('SongsPlugin.ImportWizardForm', 'Ready.'))
         self.ImportProgressBar.setFormat(
             translate('SongsPlugin.ImportWizardForm', '%p%'))
-

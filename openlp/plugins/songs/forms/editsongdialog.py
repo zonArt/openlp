@@ -430,7 +430,7 @@ class Ui_EditSongDialog(object):
         self.AuthorRemoveButton.setText(
             translate('SongsPlugin.EditSongForm', '&Remove'))
         self.MaintenanceButton.setText(translate('SongsPlugin.EditSongForm',
-            '&Manage Authors, Topics, Books'))
+            '&Manage Authors, Topics, Song Books'))
         self.TopicGroupBox.setTitle(
             translate('SongsPlugin.EditSongForm', 'Topic'))
         self.TopicAddButton.setText(
@@ -441,7 +441,8 @@ class Ui_EditSongDialog(object):
             translate('SongsPlugin.EditSongForm', 'Song Book'))
         self.SongTabWidget.setTabText(
             self.SongTabWidget.indexOf(self.AuthorsTab),
-            translate('SongsPlugin.EditSongForm', 'Authors, Topics && Book'))
+            translate('SongsPlugin.EditSongForm',
+                'Authors, Topics && Song Book'))
         self.ThemeGroupBox.setTitle(
             translate('SongsPlugin.EditSongForm', 'Theme'))
         self.ThemeAddButton.setText(
