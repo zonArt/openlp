@@ -102,7 +102,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         Reloads the Authors list.
         """
         self.AuthorsListWidget.clear()
-        authors = self.songmanager.get_all_objects(Author, Author.display_name)
+        authors = self.songmanager.get_all_objects(Author,
+            order_by_ref=Author.display_name)
         for author in authors:
             if author.display_name:
                 author_name = QtGui.QListWidgetItem(author.display_name)
@@ -117,7 +118,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         Reloads the Topics list.
         """
         self.TopicsListWidget.clear()
-        topics = self.songmanager.get_all_objects(Topic, Topic.name)
+        topics = self.songmanager.get_all_objects(Topic,
+            order_by_ref=Topic.name)
         for topic in topics:
             topic_name = QtGui.QListWidgetItem(topic.name)
             topic_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(topic.id))
@@ -128,7 +130,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         Reloads the Books list.
         """
         self.BooksListWidget.clear()
-        books = self.songmanager.get_all_objects(Book, Book.name)
+        books = self.songmanager.get_all_objects(Book, order_by_ref=Book.name)
         for book in books:
             book_name = QtGui.QListWidgetItem(u'%s (%s)' % (book.name,
                 book.publisher))
@@ -140,7 +142,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         Returns False if the given Author is already in the list otherwise
         True.
         """
-        authors = self.songmanager.get_all_objects_filtered(Author,
+        authors = self.songmanager.get_all_objects(Author,
             and_(Author.first_name == new_author.first_name,
                 Author.last_name == new_author.last_name,
                 Author.display_name == new_author.display_name))
@@ -162,7 +164,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         """
         Returns False if the given Topic is already in the list otherwise True.
         """
-        topics = self.songmanager.get_all_objects_filtered(Topic,
+        topics = self.songmanager.get_all_objects(Topic,
             Topic.name == new_topic.name)
         if len(topics) > 0:
             # If we edit an existing Topic, we need to make sure that we do
@@ -182,7 +184,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         """
         Returns False if the given Book is already in the list otherwise True.
         """
-        books = self.songmanager.get_all_objects_filtered(Book,
+        books = self.songmanager.get_all_objects(Book,
             and_(Book.name == new_book.name,
                 Book.publisher == new_book.publisher))
         if len(books) > 0:
@@ -392,7 +394,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             and_(Author.first_name == old_author.first_name,
                 Author.last_name == old_author.last_name, 
                 Author.display_name == old_author.display_name))
-        songs = self.songmanager.get_all_objects_filtered(Song,
+        songs = self.songmanager.get_all_objects(Song,
             Song.authors.contains(old_author))
         for song in songs:
             # We check if the song has already existing_author as author. If
@@ -412,7 +414,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         '''
         existing_topic = self.songmanager.get_object_filtered(Topic,
             Topic.name == old_topic.name)
-        songs = self.songmanager.get_all_objects_filtered(Song,
+        songs = self.songmanager.get_all_objects(Song,
             Song.topics.contains(old_topic))
         for song in songs:
             # We check if the song has already existing_topic as topic. If that
@@ -433,7 +435,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         existing_book = self.songmanager.get_object_filtered(Book,
             and_(Book.name == old_book.name,
                 Book.publisher == old_book.publisher))
-        songs = self.songmanager.get_all_objects_filtered(Song,
+        songs = self.songmanager.get_all_objects(Song,
             Song.song_book_id == old_book.id)
         for song in songs:
             song.song_book_id = existing_book.id

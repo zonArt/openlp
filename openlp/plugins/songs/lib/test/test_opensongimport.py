@@ -22,11 +22,10 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+
 from openlp.plugins.songs.lib.opensongimport import OpenSongImport
 from openlp.core.lib.db import Manager
 from openlp.plugins.songs.lib.db import init_schema
-from openlp.plugins.songs.songsplugin import SongsPlugin
-import sys
 
 def test():
     manager = Manager(u'songs', init_schema)

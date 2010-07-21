@@ -41,6 +41,7 @@ class Ui_SongBookDialog(object):
             QtGui.QFormLayout.LabelRole, self.NameLabel)
         self.NameEdit = QtGui.QLineEdit(SongBookDialog)
         self.NameEdit.setObjectName(u'NameEdit')
+        self.NameLabel.setBuddy(self.NameEdit)
         self.SongBookLayout.setWidget(0,
             QtGui.QFormLayout.FieldRole, self.NameEdit)
         self.PublisherLabel = QtGui.QLabel(SongBookDialog)
@@ -49,6 +50,7 @@ class Ui_SongBookDialog(object):
             QtGui.QFormLayout.LabelRole, self.PublisherLabel)
         self.PublisherEdit = QtGui.QLineEdit(SongBookDialog)
         self.PublisherEdit.setObjectName(u'PublisherEdit')
+        self.PublisherLabel.setBuddy(self.PublisherEdit)
         self.SongBookLayout.setWidget(1,
             QtGui.QFormLayout.FieldRole, self.PublisherEdit)
         self.ButtonBox = QtGui.QDialogButtonBox(SongBookDialog)

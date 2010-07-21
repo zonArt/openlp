@@ -75,7 +75,7 @@ class CustomPlugin(Plugin):
 
         Returns True if the theme is being used, otherwise returns False.
         """
-        if self.custommanager.get_all_objects_filtered(CustomSlide,
+        if self.custommanager.get_all_objects(CustomSlide,
             CustomSlide.theme_name == theme):
             return True
         return False
@@ -91,8 +91,8 @@ class CustomPlugin(Plugin):
         ``newTheme``
             The new name the plugin should now use.
         """
-        customsUsingTheme = self.custommanager.get_all_objects_filtered(
-            CustomSlide, CustomSlide.theme_name == oldTheme)
+        customsUsingTheme = self.custommanager.get_all_objects(CustomSlide,
+            CustomSlide.theme_name == oldTheme)
         for custom in customsUsingTheme:
             custom.theme_name = newTheme
             self.custommanager.save_object(custom)
