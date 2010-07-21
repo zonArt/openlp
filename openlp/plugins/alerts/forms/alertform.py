@@ -62,7 +62,8 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
 
     def loadList(self):
         self.AlertListWidget.clear()
-        alerts = self.manager.get_all_objects(AlertItem, AlertItem.text)
+        alerts = self.manager.get_all_objects(AlertItem,
+            order_by_ref=AlertItem.text)
         for alert in alerts:
             item_name = QtGui.QListWidgetItem(alert.text)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(alert.id))

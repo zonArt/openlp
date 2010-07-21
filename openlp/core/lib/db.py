@@ -135,16 +135,20 @@ class Manager(object):
         settings.endGroup()
         self.session = init_schema(self.db_url)
 
-    def save_object(self, object_instance):
+    def save_object(self, object_instance, commit=True):
         """
         Save an object to the database
 
         ``object_instance``
             The object to save
+
+        ``commit``
+            Commit the session with this object
         """
         try:
             self.session.add(object_instance)
-            self.session.commit()
+            if commit:
+                self.session.commit()
             return True
         except InvalidRequestError:
             self.session.rollback()
@@ -178,36 +182,24 @@ class Manager(object):
         """
         return self.session.query(object_class).filter(filter_clause).first()
 
-    def get_all_objects(self, object_class, order_by_ref=None):
+    def get_all_objects(self, object_class, filter_clause=None,
+        order_by_ref=None):
         """
         Returns all the objects from the database
 
         ``object_class``
             The type of objects to return
 
+        ``filter_clause``
+            The filter governing selection of objects to return.  Defaults to
+            None.
+
         ``order_by_ref``
             Any parameters to order the returned objects by.  Defaults to None.
         """
         query = self.session.query(object_class)
-        if order_by_ref is not None:
-            return query.order_by(order_by_ref).all()
-        return query.all()
-
-    def get_all_objects_filtered(self, object_class, filter_clause,
-        order_by_ref=None):
-        """
-        Returns a selection of objects from the database
-
-        ``object_class``
-            The type of objects to return
-
-        ``filter_clause``
-            The filter governing selection of objects to return
-
-        ``order_by_ref``
-            Any parameters to order the returned objects by.  Defaults to None.
-        """
-        query = self.session.query(object_class).filter(filter_clause)
+        if filter_clause:
+            query = query.filter(filter_clause)
         if order_by_ref is not None:
             return query.order_by(order_by_ref).all()
         return query.all()
@@ -235,7 +227,7 @@ class Manager(object):
         else:
             return True
 
-    def delete_all_objects(self, object_class):
+    def delete_all_objects(self, object_class, filter_clause=None):
         """
         Delete all object records
 
@@ -243,11 +235,13 @@ class Manager(object):
             The type of object to delete
         """
         try:
-            self.session.query(object_class).delete(synchronize_session=False)
+            query = self.session.query(object_class)
+            if filter_clause:
+                query = query.filter(filter_clause)
+            query.delete(synchronize_session=False)
             self.session.commit()
             return True
         except InvalidRequestError:
             self.session.rollback()
-            log.exception(u'Failed to delete all %s records',
-                object_class.__name__)
+            log.exception(u'Failed to delete %s records', object_class.__name__)
             return False
