@@ -195,11 +195,12 @@ class OpenSongImport(object):
                    versetype is not None:
                 words = thisline
             if versenum is not None:
-                versetag = u'%s%s'%(versetype,versenum)
+                versetag = u'%s%s' % (versetype, versenum)
                 if not verses.has_key(versetype):
                     verses[versetype] = {}
                 if not verses[versetype].has_key(versenum):
-                    verses[versetype][versenum] = [] # storage for lines in this verse
+                    # storage for lines in this verse
+                    verses[versetype][versenum] = []
                 if not verses_seen.has_key(versetag):
                     verses_seen[versetag] = 1
                     our_verse_order.append(versetag)
@@ -216,10 +217,11 @@ class OpenSongImport(object):
             versenums = verses[versetype].keys()
             versenums.sort()
             for num in versenums:
-                versetag = u'%s%s' %(versetype,num)
+                versetag = u'%s%s' % (versetype, num)
                 lines = u'\n'.join(verses[versetype][num])
                 self.song_import.verses.append([versetag, lines])
-                versetags[versetag] = 1 # keep track of what we have for error checking later
+                # Keep track of what we have for error checking later
+                versetags[versetag] = 1
         # now figure out the presentation order
         if u'presentation' in fields and root.presentation != u'':
             order = unicode(root.presentation)
