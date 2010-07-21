@@ -41,15 +41,14 @@ log = logging.getLogger(__name__)
 MEDIA_MANAGER_STYLE = """
   QToolBox::tab:selected {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-        stop: 0 palette(mid), stop: 0.4999 palette(button), stop: 0.5 palette(dark), stop: 1.0 palette(mid));
+        stop: 0 palette(light), stop: 0.5 palette(button), stop: 1.0 palette(dark));
+    border: 1px groove palette(dark);
   }
   QToolBox::tab {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-        stop: 0 palette(button), stop: 0.4999 palette(light), stop: 0.5 palette(mid), stop: 1.0 palette(button));
-    border-width: 1px;
-    border-style: outset;
-    border-color: palette(dark);
-    border-radius: 5px;
+        stop: 0 palette(midlight), stop: 0.5 palette(button), stop: 1.0 palette(mid));
+    border: 1px groove palette(mid);
+    border-radius: 6px;
   }
 """
 class VersionThread(QtCore.QThread):
