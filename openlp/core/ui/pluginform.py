@@ -63,15 +63,17 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             # sometimes when it's loaded from the config, it isn't cast to int.
             plugin.status = int(plugin.status)
             # Set the little status text in brackets next to the plugin name.
-            status_text = unicode(translate('PluginForm', '%s (Inactive)'))
+            status_text = unicode(
+                translate('OpenLP.PluginForm', '%s (Inactive)'))
             if plugin.status == PluginStatus.Active:
-                status_text = unicode(translate('PluginForm', '%s (Active)'))
+                status_text = unicode(
+                    translate('OpenLP.PluginForm', '%s (Active)'))
             elif plugin.status == PluginStatus.Inactive:
                 status_text = unicode(
-                    translate('PluginForm', '%s (Inactive)'))
+                    translate('OpenLP.PluginForm', '%s (Inactive)'))
             elif plugin.status == PluginStatus.Disabled:
                 status_text = unicode(
-                    translate('PluginForm', '%s (Disabled)'))
+                    translate('OpenLP.PluginForm', '%s (Disabled)'))
             item.setText(status_text % plugin.name)
             # If the plugin has an icon, set it!
             if plugin.icon:
@@ -120,12 +122,17 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         else:
             self.activePlugin.toggleStatus(PluginStatus.Inactive)
             self.activePlugin.finalise()
-        status_text = 'Inactive'
+        status_text = unicode(
+            translate('OpenLP.PluginForm', '%s (Inactive)'))
         if self.activePlugin.status == PluginStatus.Active:
-            status_text = 'Active'
+            status_text = unicode(
+                translate('OpenLP.PluginForm', '%s (Active)'))
         elif self.activePlugin.status == PluginStatus.Inactive:
-            status_text = 'Inactive'
+            status_text = unicode(
+                translate('OpenLP.PluginForm', '%s (Inactive)'))
         elif self.activePlugin.status == PluginStatus.Disabled:
-            status_text = 'Disabled'
+            status_text = unicode(
+                translate('OpenLP.PluginForm', '%s (Disabled)'))
         self.PluginListWidget.currentItem().setText(
-            u'%s (%s)' % (self.activePlugin.name, status_text))
+            status_text % self.activePlugin.name)
+

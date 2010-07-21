@@ -308,11 +308,11 @@ class GeneralTab(SettingsTab):
         self.CCLIGroupBox.setTitle(
             translate('OpenLP.GeneralTab', 'CCLI Details'))
         self.NumberLabel.setText(
-            translate('OpenLP.GeneralTab', 'CCLI Number:'))
+            translate('OpenLP.GeneralTab', 'CCLI number:'))
         self.UsernameLabel.setText(
-            translate('OpenLP.GeneralTab', 'SongSelect Username:'))
+            translate('OpenLP.GeneralTab', 'SongSelect username:'))
         self.PasswordLabel.setText(
-            translate('OpenLP.GeneralTab', 'SongSelect Password:'))
+            translate('OpenLP.GeneralTab', 'SongSelect password:'))
         # Moved from display tab
         self.displayGroupBox.setTitle(
             translate('OpenLP.GeneralTab', 'Display Position'))

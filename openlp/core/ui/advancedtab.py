@@ -135,7 +135,7 @@ class AdvancedTab(SettingsTab):
         self.recentLabel.setText(
             translate('OpenLP.AdvancedTab', 'Number of recent files to display:'))
         self.mediaPluginCheckBox.setText(translate('OpenLP.AdvancedTab',
-            'Save currently selected media manager plugin'))
+            'Remember active media manager tab on startup'))
         self.doubleClickLiveCheckBox.setText(translate('OpenLP.AdvancedTab',
             'Double-click to send items straight to live (requires restart)'))
 #        self.sharedDirGroupBox.setTitle(
