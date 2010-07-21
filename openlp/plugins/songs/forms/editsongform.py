@@ -291,7 +291,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 'exist, do you want to add them?'),
                 QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
                 QtGui.QMessageBox.Yes) == QtGui.QMessageBox.Yes:
-                if text.find(' ') == -1:
+                if text.find(u' ') == -1:
                     author = Author.populate(first_name=u'', last_name=u'',
                         display_name=text)
                 else:
