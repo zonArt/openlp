@@ -140,7 +140,11 @@ class OpenLPSongImport(object):
             if has_media_files:
                 new_song.alternate_title = song.alternate_title
             else:
-                new_song.alternate_title = u''
+                old_titles = song.search_title.split(u'@')
+                if len(old_titles) > 1:
+                    new_song.alternate_title = old_titles[1]
+                else:
+                    new_song.alternate_title = u''
             new_song.search_title = song.search_title
             new_song.song_number = song.song_number
             new_song.lyrics = song.lyrics
