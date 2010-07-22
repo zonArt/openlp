@@ -211,6 +211,14 @@ class ThemeManager(QtGui.QWidget):
             'You must select a theme to delete.')):
             item = self.ThemeListWidget.currentItem()
             theme = unicode(item.text())
+            # confirm deletion
+            answer = QtGui.QMessageBox.question(self,
+                translate('ThemeManager', 'Delete Confirmation'),
+                translate('ThemeManager', 'Delete theme?'),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
+                QtGui.QMessageBox.No), QtGui.QMessageBox.No)
+            if answer == QtGui.QMessageBox.No:
+                return
             # should be the same unless default
             if theme != unicode(item.data(QtCore.Qt.UserRole).toString()):
                 QtGui.QMessageBox.critical(self,
@@ -245,15 +253,14 @@ class ThemeManager(QtGui.QWidget):
             The theme to delete.
         """
         self.themelist.remove(theme)
-        th = theme + u'.png'
+        thumb = theme + u'.png'
         try:
-            os.remove(os.path.join(self.path, th))
-            os.remove(os.path.join(self.thumbPath, th))
+            os.remove(os.path.join(self.path, thumb))
+            os.remove(os.path.join(self.thumbPath, thumb))
             encoding = get_filesystem_encoding()
             shutil.rmtree(os.path.join(self.path, theme).encode(encoding))
         except OSError:
-            #if not present do not worry
-            pass
+            log.exception(u'Error deleting theme %s', theme)
         # As we do not reload the themes push out the change
         # Reaload the list as the internal lists and events need
         # to be triggered
@@ -597,19 +604,21 @@ class ThemeManager(QtGui.QWidget):
                 if newThemeIndex != -1:
                     self.serviceComboBox.setCurrentIndex(newThemeIndex)
             if self.editingDefault:
-                newThemeItem = self.ThemeListWidget.findItems(name,
-                    QtCore.Qt.MatchExactly)[0]
-                newThemeIndex = self.ThemeListWidget.indexFromItem(
-                    newThemeItem).row()
-                self.global_theme = unicode(
-                    self.ThemeListWidget.item(newThemeIndex).text())
-                newName = unicode(translate('ThemeManager', '%s (default)')) % \
-                    self.global_theme
-                self.ThemeListWidget.item(newThemeIndex).setText(newName)
-                QtCore.QSettings().setValue(
-                    self.settingsSection + u'/global theme',
-                    QtCore.QVariant(self.global_theme))
-                Receiver.send_message(u'theme_update_global', self.global_theme)
+                if self.saveThemeName != name:
+                    newThemeItem = self.ThemeListWidget.findItems(name,
+                        QtCore.Qt.MatchExactly)[0]
+                    newThemeIndex = self.ThemeListWidget.indexFromItem(
+                        newThemeItem).row()
+                    self.global_theme = unicode(
+                        self.ThemeListWidget.item(newThemeIndex).text())
+                    newName = unicode(translate('ThemeManager',
+                        '%s (default)')) % self.global_theme
+                    self.ThemeListWidget.item(newThemeIndex).setText(newName)
+                    QtCore.QSettings().setValue(
+                        self.settingsSection + u'/global theme',
+                        QtCore.QVariant(self.global_theme))
+                    Receiver.send_message(u'theme_update_global',
+                        self.global_theme)
                 self.editingDefault = False
                 self.pushThemes()
         else:

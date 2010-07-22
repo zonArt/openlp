@@ -24,15 +24,15 @@
 ###############################################################################
 
 import logging
-
 from datetime import datetime
+
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, Receiver, build_icon, translate
-from openlp.plugins.songusage.lib import SongUsageManager
+from openlp.core.lib.db import Manager
 from openlp.plugins.songusage.forms import SongUsageDetailForm, \
     SongUsageDeleteForm
-from openlp.plugins.songusage.lib.db import SongUsageItem
+from openlp.plugins.songusage.lib.db import init_schema, SongUsageItem
 
 log = logging.getLogger(__name__)
 
@@ -117,7 +117,7 @@ class SongUsagePlugin(Plugin):
             QtCore.QVariant(False)).toBool()
         self.SongUsageStatus.setChecked(self.SongUsageActive)
         if self.songusagemanager is None:
-            self.songusagemanager = SongUsageManager()
+            self.songusagemanager = Manager(u'songusage', init_schema)
         self.SongUsagedeleteform = SongUsageDeleteForm(self.songusagemanager)
         self.SongUsagedetailform = SongUsageDetailForm(self)
         self.SongUsageMenu.menuAction().setVisible(True)

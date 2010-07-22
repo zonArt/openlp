@@ -27,9 +27,10 @@ import logging
 import os
 
 from PyQt4 import QtCore, QtGui
+from sqlalchemy.sql import and_
 
 from openlp.core.lib import SettingsManager, translate
-
+from openlp.plugins.songusage.lib.db import SongUsageItem
 from songusagedetaildialog import Ui_SongUsageDetailDialog
 
 log = logging.getLogger(__name__)
@@ -74,8 +75,11 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         filename = u'usage_detail_%s_%s.txt' % (
             self.FromDate.selectedDate().toString(u'ddMMyyyy'),
             self.ToDate.selectedDate().toString(u'ddMMyyyy'))
-        usage = self.parent.songusagemanager.get_songusage_for_period(
-            self.FromDate.selectedDate(), self.ToDate.selectedDate())
+        usage = self.parent.songusagemanager.get_all_objects(
+            SongUsageItem, and_(
+            SongUsageItem.usagedate >= self.FromDate.selectedDate().toPyDate(),
+            SongUsageItem.usagedate < self.ToDate.selectedDate().toPyDate()),
+            [SongUsageItem.usagedate, SongUsageItem.usagetime])
         outname = os.path.join(unicode(self.FileLineEdit.text()), filename)
         file = None
         try:
