@@ -126,13 +126,13 @@ def build_image_src(image):
 
 def build_lyrics(item, width, height):
     lyrics = """
-    #lyrics {position: absolute; %s z-index:3; %s; %s; %s %s }
+    #lyrics {position: absolute; %s z-index:3; %s; %s %s }
+    table {border=0;margin=0padding=0;}
     """
     theme = item.themedata
     lyrics_html = u''
     position = u''
-    shadow = u''
-    outline = u''
+    fontworks = u''
     font = u''
     text = u''
     if theme:
@@ -152,16 +152,25 @@ def build_lyrics(item, width, height):
         else:
             valign = u'vertical-align=bottom;'
         text = u'color:%s; %s %s' % (theme.font_main_color, align, valign)
-        if theme.display_shadow:
-            shadow = u'text-shadow: %spx %spx %spx %s' %\
+        if theme.display_shadow and theme.display_outline:
+            fontworks = u'text-shadow: -%spx 0 %s, 0 %spx %s, %spx 0 %s, 0 -%spx %s, %spx %spx %spx %s' %\
+                (theme.display_outline_size, theme.display_outline_color,
+                theme.display_outline_size, theme.display_outline_color,
+                theme.display_outline_size, theme.display_outline_color,
+                theme.display_outline_size, theme.display_outline_color,
+                theme.display_shadow_size, theme.display_shadow_size,
+                theme.display_shadow_size, theme.display_shadow_color)
+        elif theme.display_shadow:
+            fontworks = u'text-shadow: %spx %spx %spx %s' %\
                 (theme.display_shadow_size, theme.display_shadow_size,
                 theme.display_shadow_size, theme.display_shadow_color)
-        if theme.display_outline:
-            # 1px is the blur radius
-            outline = u'text-outline: %spx 1px %s' %\
-                (theme.display_outline_size, theme.display_outline_color)
-            outline = u'text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white'
-    lyrics_html = lyrics % (position, shadow, outline, font, text)
+        elif theme.display_outline:
+            fontworks = u'text-shadow: -%spx 0 %s, 0 %spx %s, %spx 0 %s, 0 -%spx %s' %\
+                (theme.display_outline_size, theme.display_outline_color,
+                theme.display_outline_size, theme.display_outline_color,
+                theme.display_outline_size, theme.display_outline_color,
+                theme.display_outline_size, theme.display_outline_color)
+    lyrics_html = lyrics % (position, fontworks, font, text)
     print lyrics_html
     return lyrics_html
 
