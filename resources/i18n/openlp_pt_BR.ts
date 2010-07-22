@@ -2272,6 +2272,302 @@ You can download the latest version from &lt;a href=&quot;http://openlp.org/&quo
     </message>
 </context>
 <context>
+    <name>OpenLP.ServiceItemEditForm</name>
+    <message>
+        <location filename="openlp/core/ui/serviceitemeditdialog.py" line="70"/>
+        <source>Reorder Service Item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/serviceitemeditdialog.py" line="72"/>
+        <source>Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/serviceitemeditdialog.py" line="73"/>
+        <source>Delete</source>
+        <translation type="unfinished">Deletar</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/serviceitemeditdialog.py" line="74"/>
+        <source>Down</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OpenLP.ServiceManager</name>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="119"/>
+        <source>New Service</source>
+        <translation type="unfinished">Novo Culto</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="119"/>
+        <source>Create a new service</source>
+        <translation type="unfinished">Criar um novo culto</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="638"/>
+        <source>Open Service</source>
+        <translation type="unfinished">Abrir Culto</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="124"/>
+        <source>Load an existing service</source>
+        <translation type="unfinished">Carregar um culto existente</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="580"/>
+        <source>Save Service</source>
+        <translation type="unfinished">Salvar Culto</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="129"/>
+        <source>Save this service</source>
+        <translation type="unfinished">Salvar este culto</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="135"/>
+        <source>Theme:</source>
+        <translation type="unfinished">Tema:</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="140"/>
+        <source>Select a theme for the service</source>
+        <translation type="unfinished">Selecione um tema para o culto</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="170"/>
+        <source>Move to &amp;top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="176"/>
+        <source>Move &amp;up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="182"/>
+        <source>Move &amp;down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="188"/>
+        <source>Move to &amp;bottom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="249"/>
+        <source>&amp;Delete From Service</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="232"/>
+        <source>&amp;Add New Item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="235"/>
+        <source>&amp;Add to Selected Item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="240"/>
+        <source>&amp;Edit Item</source>
+        <translation type="unfinished">&amp;Editar Item</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="243"/>
+        <source>&amp;Reorder Item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="246"/>
+        <source>&amp;Notes</source>
+        <translation type="unfinished">&amp;Notas</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="254"/>
+        <source>&amp;Preview Verse</source>
+        <translation type="unfinished">&amp;Pré-Visualizar Versículo</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="257"/>
+        <source>&amp;Live Verse</source>
+        <translation type="unfinished">&amp;Versículo Ao Vivo</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="262"/>
+        <source>&amp;Change Item Theme</source>
+        <translation type="unfinished">&amp;Alterar Tema do Item</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="652"/>
+        <source>Save Changes to Service?</source>
+        <translation type="unfinished">Salvar Mudanças no Culto?</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="494"/>
+        <source>Your service is unsaved, do you want to save those changes before creating a new one?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="580"/>
+        <source>OpenLP Service Files (*.osz)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="652"/>
+        <source>Your current service is unsaved, do you want to save the changes before opening a new one?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="717"/>
+        <source>Error</source>
+        <translation type="unfinished">Erro</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="682"/>
+        <source>File is not a valid service.
+The content encoding is not UTF-8.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="717"/>
+        <source>File is not a valid service.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="882"/>
+        <source>Missing Display Handler</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="882"/>
+        <source>Your item cannot be displayed as there is no handler to display it</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="170"/>
+        <source>Move item to the top of the service.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="176"/>
+        <source>Move item up one position in the service.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="182"/>
+        <source>Move item down one position in the service.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="188"/>
+        <source>Move item to the end of the service.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="195"/>
+        <source>Delete the selected item from the service.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OpenLP.ServiceNoteForm</name>
+    <message>
+        <location filename="openlp/core/ui/servicenotedialog.py" line="51"/>
+        <source>Service Item Notes</source>
+        <translation type="unfinished">Item de Notas de Culto</translation>
+    </message>
+</context>
+<context>
+    <name>OpenLP.SettingsForm</name>
+    <message>
+        <location filename="openlp/core/ui/settingsdialog.py" line="66"/>
+        <source>Configure OpenLP</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OpenLP.SlideController</name>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="131"/>
+        <source>Live</source>
+        <translation type="unfinished">Ao Vivo</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="135"/>
+        <source>Preview</source>
+        <translation type="unfinished">Pré-Visualizar</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="180"/>
+        <source>Move to first</source>
+        <translation type="unfinished">Mover para o primeiro</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="184"/>
+        <source>Move to previous</source>
+        <translation type="unfinished">Mover para o anterior</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="188"/>
+        <source>Move to next</source>
+        <translation type="unfinished">Mover para o próximo</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="193"/>
+        <source>Move to last</source>
+        <translation type="unfinished">Mover para o último</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="203"/>
+        <source>Hide</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="226"/>
+        <source>Move to live</source>
+        <translation type="unfinished">Mover para ao vivo</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="230"/>
+        <source>Edit and re-preview Song</source>
+        <translation type="unfinished">Editar e pré-visualizar Música novamente</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="236"/>
+        <source>Start continuous loop</source>
+        <translation type="unfinished">Iniciar repetição contínua</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="240"/>
+        <source>Stop continuous loop</source>
+        <translation type="unfinished">Parar repetição contínua</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="249"/>
+        <source>s</source>
+        <translation type="unfinished">s</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="250"/>
+        <source>Delay between slides in seconds</source>
+        <translation type="unfinished">Intervalo entre slides em segundos</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="263"/>
+        <source>Start playing media</source>
+        <translation type="unfinished">Iniciar a reprodução de mídia</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="284"/>
+        <source>Go to Verse</source>
+        <translation type="unfinished">Ir ao Versículo</translation>
+    </message>
+</context>
+<context>
     <name>PresentationPlugin</name>
     <message>
         <location filename="openlp/plugins/presentations/presentationplugin.py" line="135"/>
@@ -2372,302 +2668,6 @@ You can download the latest version from &lt;a href=&quot;http://openlp.org/&quo
     </message>
 </context>
 <context>
-    <name>ServiceItemEditForm</name>
-    <message>
-        <location filename="openlp/core/ui/serviceitemeditdialog.py" line="70"/>
-        <source>Service Item Maintenance</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/serviceitemeditdialog.py" line="72"/>
-        <source>Up</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/serviceitemeditdialog.py" line="73"/>
-        <source>Delete</source>
-        <translation type="unfinished">Deletar</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/serviceitemeditdialog.py" line="74"/>
-        <source>Down</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>ServiceManager</name>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="645"/>
-        <source>Save Changes to Service?</source>
-        <translation>Salvar Mudanças no Culto?</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="631"/>
-        <source>Open Service</source>
-        <translation>Abrir Culto</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="170"/>
-        <source>Move to top</source>
-        <translation>Mover para o topo</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="119"/>
-        <source>Create a new service</source>
-        <translation>Criar um novo culto</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="129"/>
-        <source>Save this service</source>
-        <translation>Salvar este culto</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="135"/>
-        <source>Theme:</source>
-        <translation>Tema:</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="189"/>
-        <source>Delete From Service</source>
-        <translation>Deletar do Culto</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="255"/>
-        <source>&amp;Change Item Theme</source>
-        <translation>&amp;Alterar Tema do Item</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="573"/>
-        <source>Save Service</source>
-        <translation>Salvar Culto</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="250"/>
-        <source>&amp;Live Verse</source>
-        <translation>&amp;Versículo Ao Vivo</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="119"/>
-        <source>New Service</source>
-        <translation>Novo Culto</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="239"/>
-        <source>&amp;Notes</source>
-        <translation>&amp;Notas</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="183"/>
-        <source>Move to end</source>
-        <translation>Mover para o fim</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="140"/>
-        <source>Select a theme for the service</source>
-        <translation>Selecione um tema para o culto</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="174"/>
-        <source>Move up order</source>
-        <translation>Mover ordem para cima</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="178"/>
-        <source>Move down order</source>
-        <translation>Mover ordem para baixo</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="124"/>
-        <source>Load an existing service</source>
-        <translation>Carregar um culto existente</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="247"/>
-        <source>&amp;Preview Verse</source>
-        <translation>&amp;Pré-Visualizar Versículo</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="233"/>
-        <source>&amp;Edit Item</source>
-        <translation>&amp;Editar Item</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="170"/>
-        <source>Move to &amp;top</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="174"/>
-        <source>Move &amp;up</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="178"/>
-        <source>Move &amp;down</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="183"/>
-        <source>Move to &amp;bottom</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="242"/>
-        <source>&amp;Delete From Service</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="225"/>
-        <source>&amp;Add New Item</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="228"/>
-        <source>&amp;Add to Selected Item</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="236"/>
-        <source>&amp;Maintain Item</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="487"/>
-        <source>Your service is unsaved, do you want to save those changes before creating a new one?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="573"/>
-        <source>OpenLP Service Files (*.osz)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="645"/>
-        <source>Your current service is unsaved, do you want to save the changes before opening a new one?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="710"/>
-        <source>Error</source>
-        <translation type="unfinished">Erro</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="675"/>
-        <source>File is not a valid service.
-The content encoding is not UTF-8.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="710"/>
-        <source>File is not a valid service.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="875"/>
-        <source>Missing Display Handler</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="875"/>
-        <source>Your item cannot be displayed as there is no handler to display it</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>ServiceNoteForm</name>
-    <message>
-        <location filename="openlp/core/ui/servicenotedialog.py" line="51"/>
-        <source>Service Item Notes</source>
-        <translation type="unfinished">Item de Notas de Culto</translation>
-    </message>
-</context>
-<context>
-    <name>SettingsForm</name>
-    <message>
-        <location filename="openlp/core/ui/settingsdialog.py" line="66"/>
-        <source>Configure OpenLP</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>SlideController</name>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="184"/>
-        <source>Move to previous</source>
-        <translation>Mover para o anterior</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="284"/>
-        <source>Go to Verse</source>
-        <translation>Ir ao Versículo</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="236"/>
-        <source>Start continuous loop</source>
-        <translation>Iniciar repetição contínua</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="131"/>
-        <source>Live</source>
-        <translation>Ao Vivo</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="263"/>
-        <source>Start playing media</source>
-        <translation>Iniciar a reprodução de mídia</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="226"/>
-        <source>Move to live</source>
-        <translation>Mover para ao vivo</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="135"/>
-        <source>Preview</source>
-        <translation>Pré-Visualizar</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="193"/>
-        <source>Move to last</source>
-        <translation>Mover para o último</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="230"/>
-        <source>Edit and re-preview Song</source>
-        <translation>Editar e pré-visualizar Música novamente</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="250"/>
-        <source>Delay between slides in seconds</source>
-        <translation>Intervalo entre slides em segundos</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="188"/>
-        <source>Move to next</source>
-        <translation>Mover para o próximo</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="180"/>
-        <source>Move to first</source>
-        <translation>Mover para o primeiro</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="240"/>
-        <source>Stop continuous loop</source>
-        <translation>Parar repetição contínua</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="249"/>
-        <source>s</source>
-        <translation>s</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="203"/>
-        <source>Hide</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>SongUsagePlugin</name>
     <message>
         <location filename="openlp/plugins/songusage/songusageplugin.py" line="66"/>
@@ -2708,6 +2708,58 @@ The content encoding is not UTF-8.</source>
         <location filename="openlp/plugins/songusage/songusageplugin.py" line="62"/>
         <source>&amp;Song Usage</source>
         <translation>&amp;Uso das Músicas</translation>
+    </message>
+</context>
+<context>
+    <name>SongUsagePlugin.AuditDeleteDialog</name>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedeletedialog.py" line="61"/>
+        <source>Delete Song Usage Data</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SongUsagePlugin.AuditDetailDialog</name>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="88"/>
+        <source>Song Usage Extraction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="91"/>
+        <source>Select Date Range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="93"/>
+        <source>to</source>
+        <translation type="unfinished">para</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="95"/>
+        <source>Report Location</source>
+        <translation type="unfinished">Localização do Relatório</translation>
+    </message>
+</context>
+<context>
+    <name>SongUsagePlugin.SongUsageDeleteForm</name>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="45"/>
+        <source>Delete Selected Song Usage Events?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="45"/>
+        <source>Are you sure you want to delete selected Song Usage data?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SongUsagePlugin.SongUsageDetailForm</name>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="64"/>
+        <source>Output File Location</source>
+        <translation type="unfinished">Local do arquivo de saída</translation>
     </message>
 </context>
 <context>
@@ -2817,37 +2869,6 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
         <location filename="openlp/plugins/songs/songsplugin.py" line="247"/>
         <source>Error importing OpenLP v2 database(s)</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>SongsPlugin.AuditDeleteDialog</name>
-    <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedeletedialog.py" line="61"/>
-        <source>Song Usage Delete</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>SongsPlugin.AuditDetailDialog</name>
-    <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="88"/>
-        <source>Song Usage Extraction</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="91"/>
-        <source>Select Date Range</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="93"/>
-        <source>to</source>
-        <translation type="unfinished">para</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="95"/>
-        <source>Report Location</source>
-        <translation type="unfinished">Localização do Relatório</translation>
     </message>
 </context>
 <context>
@@ -2991,37 +3012,37 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="445"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="446"/>
         <source>Theme</source>
         <translation type="unfinished">Tema</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="447"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="448"/>
         <source>New &amp;Theme</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="449"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="450"/>
         <source>Copyright Information</source>
         <translation type="unfinished">Informação de Direitos Autorais</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="451"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="452"/>
         <source>&#xa9;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="453"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="454"/>
         <source>CCLI Number:</source>
         <translation type="unfinished">Número CCLI:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="455"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="456"/>
         <source>Comments</source>
         <translation type="unfinished">Comentários</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="457"/>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="458"/>
         <source>Theme, Copyright Info &amp;&amp; Comments</source>
         <translation type="unfinished">Tema, Direitos Autorais &amp;&amp; Comentários</translation>
     </message>
@@ -3041,87 +3062,87 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="324"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="328"/>
         <source>No Author Selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="324"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="328"/>
         <source>You have not selected a valid author. Either select an author from the list, or type in a new author and click the &quot;Add Author to Song&quot; button to add the new author.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="349"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="353"/>
         <source>Add Topic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="349"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="353"/>
         <source>This topic does not exist, do you want to add it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="382"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="386"/>
         <source>No Topic Selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="382"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="386"/>
         <source>You have not selected a valid topic. Either select a topic from the list, or type in a new topic and click the &quot;Add Topic to Song&quot; button to add the new topic.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="624"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="627"/>
         <source>Add Book</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="624"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="627"/>
         <source>This song book does not exist, do you want to add it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="569"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="573"/>
         <source>Error</source>
         <translation type="unfinished">Erro</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="521"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="525"/>
         <source>You need to type in a song title.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="529"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="533"/>
         <source>You need to type in at least one verse.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="580"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="584"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="537"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="541"/>
         <source>You have not added any authors for this song. Do you want to add an author now?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="569"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="573"/>
         <source>The verse order is invalid. There is no verse corresponding to %s. Valid entries are %s.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="580"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="584"/>
         <source>You have not used %s anywhere in the verse order. Are you sure you want to save the song like this?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="311"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="315"/>
         <source>This author is already in the list.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="370"/>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="374"/>
         <source>This topic is already in the list.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3449,7 +3470,7 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="371"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="373"/>
         <source>Error</source>
         <translation type="unfinished">Erro</translation>
     </message>
@@ -3484,7 +3505,7 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="366"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="368"/>
         <source>Could not save your changes.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3499,85 +3520,64 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="449"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="451"/>
         <source>Delete Author</source>
         <translation type="unfinished">Deletar Autor</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="449"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="451"/>
         <source>Are you sure you want to delete the selected author?</source>
         <translation type="unfinished">Você tem certeza que deseja deletar o autor selecionado?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="449"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="451"/>
         <source>This author cannot be deleted, they are currently assigned to at least one song.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="449"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="451"/>
         <source>No author selected!</source>
         <translation type="unfinished">Nenhum autor selecionado!</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="462"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="464"/>
         <source>Delete Topic</source>
         <translation type="unfinished">Deletar Tópico</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="462"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="464"/>
         <source>Are you sure you want to delete the selected topic?</source>
         <translation type="unfinished">Você tem certeza que deseja deletar o tópico selecionado?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="462"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="464"/>
         <source>This topic cannot be deleted, it is currently assigned to at least one song.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="462"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="464"/>
         <source>No topic selected!</source>
         <translation type="unfinished">Nenhum tópico selecionado!</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="475"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="477"/>
         <source>Delete Book</source>
         <translation type="unfinished">Deletar Livro</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="475"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="477"/>
         <source>Are you sure you want to delete the selected book?</source>
         <translation type="unfinished">Você tem certeza que deseja deletar o livro selecionado?</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="475"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="477"/>
         <source>This book cannot be deleted, it is currently assigned to at least one song.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="475"/>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="477"/>
         <source>No book selected!</source>
         <translation type="unfinished">Nenhum livro selecionado!</translation>
-    </message>
-</context>
-<context>
-    <name>SongsPlugin.SongUsageDeleteForm</name>
-    <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="45"/>
-        <source>Delete Selected Song Usage Events?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="45"/>
-        <source>Are you sure you want to delete selected Song Usage data?</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>SongsPlugin.SongUsageDetailForm</name>
-    <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="64"/>
-        <source>Output File Location</source>
-        <translation type="unfinished">Local do arquivo de saída</translation>
     </message>
 </context>
 <context>
@@ -3652,7 +3652,7 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
         <translation>Deletar Tema</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="473"/>
+        <location filename="openlp/core/ui/thememanager.py" line="472"/>
         <source>Error</source>
         <translation>Erro</translation>
     </message>
@@ -3667,22 +3667,22 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
         <translation>Exportar Tema</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="562"/>
+        <location filename="openlp/core/ui/thememanager.py" line="561"/>
         <source>Theme Exists</source>
         <translation>Tema Existe</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="281"/>
+        <location filename="openlp/core/ui/thememanager.py" line="280"/>
         <source>Save Theme - (%s)</source>
         <translation>Salvar Tema - (%s)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="317"/>
+        <location filename="openlp/core/ui/thememanager.py" line="316"/>
         <source>Select Theme Import File</source>
         <translation>Selecionar Arquivo de Importação de Tema</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="667"/>
+        <location filename="openlp/core/ui/thememanager.py" line="668"/>
         <source>New Theme</source>
         <translation>Novo Tema</translation>
     </message>
@@ -3772,48 +3772,48 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="276"/>
+        <location filename="openlp/core/ui/thememanager.py" line="275"/>
         <source>You have not selected a theme.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="297"/>
+        <location filename="openlp/core/ui/thememanager.py" line="296"/>
         <source>Theme Exported</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="297"/>
+        <location filename="openlp/core/ui/thememanager.py" line="296"/>
         <source>Your theme has been successfully exported.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="303"/>
+        <location filename="openlp/core/ui/thememanager.py" line="302"/>
         <source>Theme Export Failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="303"/>
+        <location filename="openlp/core/ui/thememanager.py" line="302"/>
         <source>Your theme could not be exported due to an error.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="317"/>
+        <location filename="openlp/core/ui/thememanager.py" line="316"/>
         <source>Theme (*.*)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="422"/>
+        <location filename="openlp/core/ui/thememanager.py" line="421"/>
         <source>File is not a valid theme.
 The content encoding is not UTF-8.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="473"/>
+        <location filename="openlp/core/ui/thememanager.py" line="472"/>
         <source>File is not a valid theme.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="562"/>
+        <location filename="openlp/core/ui/thememanager.py" line="561"/>
         <source>A theme with this name already exists.  Would you like to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>

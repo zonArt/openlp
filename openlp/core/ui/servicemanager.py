@@ -117,27 +117,27 @@ class ServiceManager(QtGui.QWidget):
         # Create the top toolbar
         self.Toolbar = OpenLPToolbar(self)
         self.Toolbar.addToolbarButton(
-            translate('ServiceManager', 'New Service'),
+            translate('OpenLP.ServiceManager', 'New Service'),
             u':/general/general_new.png',
-            translate('ServiceManager', 'Create a new service'),
+            translate('OpenLP.ServiceManager', 'Create a new service'),
             self.onNewService)
         self.Toolbar.addToolbarButton(
-            translate('ServiceManager', 'Open Service'),
+            translate('OpenLP.ServiceManager', 'Open Service'),
             u':/general/general_open.png',
-            translate('ServiceManager', 'Load an existing service'),
+            translate('OpenLP.ServiceManager', 'Load an existing service'),
             self.onLoadService)
         self.Toolbar.addToolbarButton(
-            translate('ServiceManager', 'Save Service'),
+            translate('OpenLP.ServiceManager', 'Save Service'),
             u':/general/general_save.png',
-            translate('ServiceManager', 'Save this service'),
+            translate('OpenLP.ServiceManager', 'Save this service'),
             self.onQuickSaveService)
         self.Toolbar.addSeparator()
-        self.ThemeLabel = QtGui.QLabel(translate('ServiceManager', 'Theme:'),
+        self.ThemeLabel = QtGui.QLabel(translate('OpenLP.ServiceManager', 'Theme:'),
             self)
         self.ThemeLabel.setMargin(3)
         self.Toolbar.addToolbarWidget(u'ThemeLabel', self.ThemeLabel)
         self.ThemeComboBox = QtGui.QComboBox(self.Toolbar)
-        self.ThemeComboBox.setToolTip(translate('ServiceManager',
+        self.ThemeComboBox.setToolTip(translate('OpenLP.ServiceManager',
             'Select a theme for the service'))
         self.ThemeComboBox.setSizeAdjustPolicy(
             QtGui.QComboBox.AdjustToContents)
@@ -168,28 +168,35 @@ class ServiceManager(QtGui.QWidget):
         # Add the bottom toolbar
         self.OrderToolbar = OpenLPToolbar(self)
         self.OrderToolbar.addToolbarButton(
-            translate('ServiceManager', 'Move to &top'),
+            translate('OpenLP.ServiceManager', 'Move to &top'),
             u':/services/service_top.png',
-            translate('ServiceManager', 'Move to top'), self.onServiceTop)
+            translate('OpenLP.ServiceManager',
+            'Move item to the top of the service.'),
+            self.onServiceTop)
         self.OrderToolbar.addToolbarButton(
-            translate('ServiceManager', 'Move &up'),
+            translate('OpenLP.ServiceManager', 'Move &up'),
             u':/services/service_up.png',
-            translate('ServiceManager', 'Move up order'), self.onServiceUp)
+            translate('OpenLP.ServiceManager',
+            'Move item up one position in the service.'),
+            self.onServiceUp)
         self.OrderToolbar.addToolbarButton(
-            translate('ServiceManager', 'Move &down'),
+            translate('OpenLP.ServiceManager', 'Move &down'),
             u':/services/service_down.png',
-            translate('ServiceManager', 'Move down order'),
+            translate('OpenLP.ServiceManager',
+            'Move item down one position in the service.'),
             self.onServiceDown)
         self.OrderToolbar.addToolbarButton(
-            translate('ServiceManager', 'Move to &bottom'),
+            translate('OpenLP.ServiceManager', 'Move to &bottom'),
             u':/services/service_bottom.png',
-            translate('ServiceManager', 'Move to end'),
+            translate('OpenLP.ServiceManager',
+            'Move item to the end of the service.'),
             self.onServiceEnd)
         self.OrderToolbar.addSeparator()
         self.OrderToolbar.addToolbarButton(
-            translate('ServiceManager', '&Delete From Service'),
+            translate('OpenLP.ServiceManager', '&Delete From Service'),
             u':/general/general_delete.png',
-            translate('ServiceManager', 'Delete From Service'),
+            translate('OpenLP.ServiceManager',
+            'Delete the selected item from the service.'),
             self.onDeleteFromService)
         self.Layout.addWidget(self.OrderToolbar)
         # Connect up our signals and slots
@@ -223,37 +230,37 @@ class ServiceManager(QtGui.QWidget):
         #build the drag and drop context menu
         self.dndMenu = QtGui.QMenu()
         self.newAction = self.dndMenu.addAction(
-            translate('ServiceManager', '&Add New Item'))
+            translate('OpenLP.ServiceManager', '&Add New Item'))
         self.newAction.setIcon(build_icon(u':/general/general_edit.png'))
         self.addToAction = self.dndMenu.addAction(
-            translate('ServiceManager', '&Add to Selected Item'))
+            translate('OpenLP.ServiceManager', '&Add to Selected Item'))
         self.addToAction.setIcon(build_icon(u':/general/general_edit.png'))
         #build the context menu
         self.menu = QtGui.QMenu()
         self.editAction = self.menu.addAction(
-            translate('ServiceManager', '&Edit Item'))
+            translate('OpenLP.ServiceManager', '&Edit Item'))
         self.editAction.setIcon(build_icon(u':/general/general_edit.png'))
         self.maintainAction = self.menu.addAction(
-            translate('ServiceManager', '&Maintain Item'))
+            translate('OpenLP.ServiceManager', '&Reorder Item'))
         self.maintainAction.setIcon(build_icon(u':/general/general_edit.png'))
         self.notesAction = self.menu.addAction(
-            translate('ServiceManager', '&Notes'))
+            translate('OpenLP.ServiceManager', '&Notes'))
         self.notesAction.setIcon(build_icon(u':/services/service_notes.png'))
         self.deleteAction = self.menu.addAction(
-            translate('ServiceManager', '&Delete From Service'))
+            translate('OpenLP.ServiceManager', '&Delete From Service'))
         self.deleteAction.setIcon(build_icon(u':/general/general_delete.png'))
         self.sep1 = self.menu.addAction(u'')
         self.sep1.setSeparator(True)
         self.previewAction = self.menu.addAction(
-            translate('ServiceManager', '&Preview Verse'))
+            translate('OpenLP.ServiceManager', '&Preview Verse'))
         self.previewAction.setIcon(build_icon(u':/general/general_preview.png'))
         self.liveAction = self.menu.addAction(
-            translate('ServiceManager', '&Live Verse'))
+            translate('OpenLP.ServiceManager', '&Live Verse'))
         self.liveAction.setIcon(build_icon(u':/general/general_live.png'))
         self.sep2 = self.menu.addAction(u'')
         self.sep2.setSeparator(True)
         self.themeMenu = QtGui.QMenu(
-            translate('ServiceManager', '&Change Item Theme'))
+            translate('OpenLP.ServiceManager', '&Change Item Theme'))
         self.menu.addMenu(self.themeMenu)
 
     def supportedSuffixes(self, suffix):
@@ -485,8 +492,8 @@ class ServiceManager(QtGui.QWidget):
             self.parent.generalSettingsSection + u'/save prompt',
             QtCore.QVariant(False)).toBool():
             ret = QtGui.QMessageBox.question(self,
-                translate('ServiceManager', 'Save Changes to Service?'),
-                translate('ServiceManager',
+                translate('OpenLP.ServiceManager', 'Save Changes to Service?'),
+                translate('OpenLP.ServiceManager',
                     'Your service is unsaved, do you want to save '
                     'those changes before creating a new one?'),
                 QtGui.QMessageBox.StandardButtons(
@@ -571,9 +578,9 @@ class ServiceManager(QtGui.QWidget):
         log.debug(u'onSaveService')
         if not quick or self.isNew:
             filename = QtGui.QFileDialog.getSaveFileName(self,
-            translate('ServiceManager', 'Save Service'),
+            translate('OpenLP.ServiceManager', 'Save Service'),
             SettingsManager.get_last_dir(self.parent.serviceSettingsSection),
-            translate('ServiceManager', 'OpenLP Service Files (*.osz)'))
+            translate('OpenLP.ServiceManager', 'OpenLP Service Files (*.osz)'))
         else:
             filename = os.path.join(SettingsManager.get_last_dir(
                 self.parent.serviceSettingsSection), self.serviceName)
@@ -629,7 +636,7 @@ class ServiceManager(QtGui.QWidget):
             filename = self.parent.recentFiles[0]
         else:
             filename = QtGui.QFileDialog.getOpenFileName(
-                self, translate('ServiceManager', 'Open Service'),
+                self, translate('OpenLP.ServiceManager', 'Open Service'),
                 SettingsManager.get_last_dir(
                 self.parent.serviceSettingsSection), u'Services (*.osz)')
         filename = QtCore.QDir.toNativeSeparators(filename)
@@ -643,8 +650,8 @@ class ServiceManager(QtGui.QWidget):
         """
         if self.parent.serviceNotSaved:
             ret = QtGui.QMessageBox.question(self,
-                translate('ServiceManager', 'Save Changes to Service?'),
-                translate('ServiceManager',
+                translate('OpenLP.ServiceManager', 'Save Changes to Service?'),
+                translate('OpenLP.ServiceManager',
                     'Your current service is unsaved, do you want to '
                     'save the changes before opening a new one?'),
                 QtGui.QMessageBox.StandardButtons(
@@ -673,8 +680,8 @@ class ServiceManager(QtGui.QWidget):
                         ucsfile = file.decode(u'utf-8')
                     except UnicodeDecodeError:
                         QtGui.QMessageBox.critical(
-                            self, translate('ServiceManager', 'Error'),
-                            translate('ServiceManager',
+                            self, translate('OpenLP.ServiceManager', 'Error'),
+                            translate('OpenLP.ServiceManager',
                                 'File is not a valid service.\n'
                                 'The content encoding is not UTF-8.'))
                         log.exception(u'Filename "%s" is not valid UTF-8' %
@@ -708,8 +715,8 @@ class ServiceManager(QtGui.QWidget):
                         log.exception(u'Failed to remove osd file')
                 else:
                     QtGui.QMessageBox.critical(
-                        self, translate('ServiceManager', 'Error'),
-                        translate('ServiceManager',
+                        self, translate('OpenLP.ServiceManager', 'Error'),
+                        translate('OpenLP.ServiceManager',
                             'File is not a valid service.'))
                     log.exception(u'File contains no service data')
             except (IOError, NameError):
@@ -837,8 +844,8 @@ class ServiceManager(QtGui.QWidget):
                 self.serviceItems[item][u'service_item'], count)
         else:
             QtGui.QMessageBox.critical(self,
-                translate('ServiceManager', 'Missing Display Handler'),
-                translate('ServiceManager', 'Your item cannot be displayed '
+                translate('OpenLP.ServiceManager', 'Missing Display Handler'),
+                translate('OpenLP.ServiceManager', 'Your item cannot be displayed '
                     'as there is no handler to display it'),
                 QtGui.QMessageBox.StandardButtons(
                     QtGui.QMessageBox.Ok),
@@ -873,8 +880,8 @@ class ServiceManager(QtGui.QWidget):
                         self.serviceItems[item][u'service_item'], 0)
         else:
             QtGui.QMessageBox.critical(self,
-                translate('ServiceManager', 'Missing Display Handler'),
-                translate('ServiceManager', 'Your item cannot be displayed '
+                translate('OpenLP.ServiceManager', 'Missing Display Handler'),
+                translate('OpenLP.ServiceManager', 'Your item cannot be displayed '
                     'as there is no handler to display it'),
                 QtGui.QMessageBox.StandardButtons(
                     QtGui.QMessageBox.Ok),
