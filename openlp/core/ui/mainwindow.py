@@ -49,6 +49,7 @@ MEDIA_MANAGER_STYLE = """
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
         stop: 0 palette(light), stop: 0.5 palette(midlight), stop: 1.0 palette(dark));
     border: 1px groove palette(dark);
+    font-weight: bold;
   }
 """
 class VersionThread(QtCore.QThread):
