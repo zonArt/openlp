@@ -68,7 +68,7 @@ class PresentationPlugin(Plugin):
         Plugin.initialise(self)
         self.insertToolboxItem()
         for controller in self.controllers:
-            if self.controllers[controller].enabled:
+            if self.controllers[controller].enabled():
                 self.controllers[controller].start_process()
 
     def finalise(self):
@@ -80,7 +80,7 @@ class PresentationPlugin(Plugin):
         #Ask each controller to tidy up
         for key in self.controllers:
             controller = self.controllers[key]
-            if controller.enabled:
+            if controller.enabled():
                 controller.kill()
         Plugin.finalise(self)
 

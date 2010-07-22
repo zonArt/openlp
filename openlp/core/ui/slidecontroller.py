@@ -532,12 +532,12 @@ class SlideController(QtGui.QWidget):
                 self.onMediaStop()
         if serviceItem.is_media():
             self.onMediaStart(serviceItem)
-#        if self.isLive:
-#            blanked = self.blankButton.isChecked()
-#        else:
-#            blanked = False
+        if self.isLive:
+            blanked = self.BlankScreen.isChecked()
+        else:
+            blanked = False
         Receiver.send_message(u'%s_start' % serviceItem.name.lower(),
-            [serviceItem, self.isLive, True, slideno])
+            [serviceItem, self.isLive, blanked, slideno])
         self.slideList = {}
         width = self.parent.ControlSplitter.sizes()[self.split]
         #Set pointing cursor when we have somthing to point at
