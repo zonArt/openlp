@@ -39,6 +39,9 @@ from openlp.core.utils import check_latest_version, AppLocation, add_actions, \
 log = logging.getLogger(__name__)
 
 MEDIA_MANAGER_STYLE = """
+  QToolBox {
+    padding-bottom: 2px;
+  }
   QToolBox::tab {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
         stop: 0 palette(button), stop: 0.5 palette(button), stop: 1.0 palette(mid));
