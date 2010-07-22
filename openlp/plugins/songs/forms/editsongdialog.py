@@ -441,7 +441,8 @@ class Ui_EditSongDialog(object):
             translate('SongsPlugin.EditSongForm', 'Song Book'))
         self.SongTabWidget.setTabText(
             self.SongTabWidget.indexOf(self.AuthorsTab),
-            translate('SongsPlugin.EditSongForm', 'Authors, Topics && Song Book'))
+            translate('SongsPlugin.EditSongForm',
+                'Authors, Topics && Song Book'))
         self.ThemeGroupBox.setTitle(
             translate('SongsPlugin.EditSongForm', 'Theme'))
         self.ThemeAddButton.setText(

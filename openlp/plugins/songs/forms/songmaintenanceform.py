@@ -350,6 +350,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         book_id = self._getCurrentItemId(self.BooksListWidget)
         if book_id != -1:
             book = self.songmanager.get_object(Book, book_id)
+            if book.publisher is None:
+                book.publisher = u''
             self.bookform.NameEdit.setText(book.name)
             self.bookform.PublisherEdit.setText(book.publisher)
             # Save the book's name and publisher for the case that they have to
