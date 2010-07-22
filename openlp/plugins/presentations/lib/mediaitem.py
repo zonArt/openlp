@@ -29,7 +29,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    SettingsManager, translate, check_item_selected
+    SettingsManager, translate, check_item_selected, Receiver
 from openlp.plugins.presentations.lib import MessageListener
 
 log = logging.getLogger(__name__)
@@ -67,7 +67,9 @@ class PresentationMediaItem(MediaManagerItem):
         self.ListViewWithDnD_class = PresentationListView
         MediaManagerItem.__init__(self, parent, icon, title)
         self.message_listener = MessageListener(self)
-
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'mediaitem_presentation_rebuild'), self.rebuild)
+        
     def retranslateUi(self):
         """
         The name of the plugin media displayed in UI
@@ -76,9 +78,12 @@ class PresentationMediaItem(MediaManagerItem):
             'Select Presentation(s)')
         self.Automatic = translate('PresentationPlugin.MediaItem',
             'Automatic')
+        self.buildFileMaskString()
+
+    def buildFileMaskString(self):
         fileType = u''
         for controller in self.controllers:
-            if self.controllers[controller].enabled:
+            if self.controllers[controller].enabled():
                 types = self.controllers[controller].supports + \
                     self.controllers[controller].alsosupports
                 for type in types:
@@ -131,13 +136,26 @@ class PresentationMediaItem(MediaManagerItem):
         list = SettingsManager.load_list(
             self.settingsSection, u'presentations')
         self.loadList(list, True)
+        self.populateDisplayTypes()
+
+    def rebuild(self):
+        self.populateDisplayTypes()
+        self.buildFileMaskString()
+
+    def populateDisplayTypes(self):
+        self.DisplayTypeComboBox.clear()
         for item in self.controllers:
             #load the drop down selection
-            if self.controllers[item].enabled:
+            if self.controllers[item].enabled():
                 self.DisplayTypeComboBox.addItem(item)
         if self.DisplayTypeComboBox.count() > 1:
             self.DisplayTypeComboBox.insertItem(0, self.Automatic)
             self.DisplayTypeComboBox.setCurrentIndex(0)
+        if QtCore.QSettings().value(self.settingsSection + u'/override app', 
+            QtCore.QVariant(QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:          
+            self.PresentationWidget.show()
+        else:
+            self.PresentationWidget.hide()
 
     def loadList(self, list, initialLoad=False):
         """
@@ -262,11 +280,11 @@ class PresentationMediaItem(MediaManagerItem):
         if not filetype:
             return None
         for controller in self.controllers:
-            if self.controllers[controller].enabled:
+            if self.controllers[controller].enabled():
                 if filetype in self.controllers[controller].supports:
                     return controller
         for controller in self.controllers:
-            if self.controllers[controller].enabled:
+            if self.controllers[controller].enabled():
                 if filetype in self.controllers[controller].alsosupports:
                     return controller
         return None

@@ -109,13 +109,6 @@ class PresentationController(object):
         self.name = name
         self.settings_section = self.plugin.settingsSection
         self.available = self.check_available()
-        if self.available:
-            self.enabled = QtCore.QSettings().value(
-                self.settings_section + u'/' + name,
-                QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0] == \
-                    QtCore.Qt.Checked
-        else:
-            self.enabled = False
         self.temp_folder = os.path.join(
             AppLocation.get_section_data_path(self.settings_section), name)
         self.thumbnail_folder = os.path.join(
@@ -126,6 +119,18 @@ class PresentationController(object):
             os.makedirs(self.thumbnail_folder)
         if not os.path.isdir(self.temp_folder):
             os.makedirs(self.temp_folder)
+
+    def enabled(self):
+        """
+        Return whether the controller is currently enabled
+        """
+        if self.available:
+            return QtCore.QSettings().value(
+                self.settings_section + u'/' + self.name,
+                QtCore.QVariant(QtCore.Qt.Checked)).toInt()[0] == \
+                    QtCore.Qt.Checked
+        else:
+            return False
 
     def check_available(self):
         """
