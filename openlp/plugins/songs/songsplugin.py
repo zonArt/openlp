@@ -259,9 +259,9 @@ class SongsPlugin(Plugin):
         Receiver.send_message(u'songs_load_list')
 
     def about(self):
-        about_text = translate('SongsPlugin',
-            '<strong>Song Plugin</strong><br />'
-            'This plugin allows songs to be managed and displayed.')
+        about_text = translate('SongsPlugin', '<strong>Songs Plugin</strong>'
+            '<br />The songs plugin provides the ability to display and '
+            'manage songs.')
         return about_text
 
     def usesTheme(self, theme):

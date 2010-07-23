@@ -99,8 +99,7 @@ class AlertsPlugin(Plugin):
         self.alertForm.exec_()
 
     def about(self):
-        about_text = translate('AlertsPlugin',
-            '<b>Alerts Plugin</b><br>This plugin '
-            'controls the displaying of alerts on the presentations screen')
+        about_text = translate('AlertsPlugin', '<strong>Alerts Plugin</strong>'
+            '<br />The alert plugin controls the displaying of nursery alerts '
+            'on the display screen')
         return about_text
-

@@ -89,10 +89,9 @@ class BiblePlugin(Plugin):
             self.mediaItem.onImportClick()
 
     def about(self):
-        about_text = translate('BiblesPlugin',
-            '<strong>Bible Plugin</strong><br />This '
-            'plugin allows bible verses from different sources to be '
-            'displayed on the screen during the service.')
+        about_text = translate('BiblesPlugin', '<strong>Bible Plugin</strong>'
+            '<br />The Bible plugin provides the ability to display bible '
+            'verses from different sources during the service.')
         return about_text
 
     def usesTheme(self, theme):
