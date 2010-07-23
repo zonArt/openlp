@@ -29,12 +29,11 @@ import os
 import sqlite3
 import re
 
-from BeautifulSoup import BeautifulSoup, Tag, NavigableString
+from BeautifulSoup import BeautifulSoup, NavigableString
 
 from openlp.core.lib import Receiver
 from openlp.core.utils import AppLocation
-from openlp.plugins.bibles.lib.common import BibleCommon, SearchResults, \
-    unescape
+from openlp.plugins.bibles.lib.common import BibleCommon, SearchResults    
 from openlp.plugins.bibles.lib.db import BibleDB, Book
 
 log = logging.getLogger(__name__)
@@ -205,63 +204,15 @@ class BGExtract(BibleCommon):
         Receiver.send_message(u'openlp_process_events')
         soup = BeautifulSoup(page)
         Receiver.send_message(u'openlp_process_events')
-        verses = soup.find(u'div', u'result-text-style-normal')
-        verse_number = 0
-        verse_list = {0: u''}
-        # http://www.codinghorror.com/blog/2009/11/parsing-html-the-cthulhu-way.html
-        # This is a PERFECT example of opening the Cthulu tag!
-        # O Bible Gateway, why doth ye such horrific HTML produce?
+        text = str(soup.find(u'div', u'result-text-style-normal'))
+        useful_soup = BeautifulSoup(text)
+        verses = useful_soup.findAll(u'p')
+        verses.pop(0)
+        verses.pop()
+        verse_list = {}
         for verse in verses:
-            Receiver.send_message(u'openlp_process_events')
-            if isinstance(verse, Tag) and verse.name == u'div' and filter(lambda a: a[0] == u'class', verse.attrs)[0][1] == u'footnotes':
-                break
-            if isinstance(verse, Tag) and verse.name == u'sup' and filter(lambda a: a[0] == u'class', verse.attrs)[0][1] != u'versenum':
-                continue
-            if isinstance(verse, Tag) and verse.name == u'p' and not verse.contents:
-                continue
-            if isinstance(verse, Tag) and (verse.name == u'p' or verse.name == u'font') and verse.contents:
-                for item in verse.contents:
-                    Receiver.send_message(u'openlp_process_events')
-                    if isinstance(item, Tag) and (item.name == u'h4' or item.name == u'h5'):
-                        continue
-                    if isinstance(item, Tag) and item.name == u'sup' and filter(lambda a: a[0] == u'class', item.attrs)[0][1] != u'versenum':
-                        continue
-                    if isinstance(item, Tag) and item.name == u'p' and not item.contents:
-                        continue
-                    if isinstance(item, Tag) and item.name == u'sup':
-                        verse_number = int(str(item.contents[0]))
-                        verse_list[verse_number] = u''
-                        continue
-                    if isinstance(item, Tag) and item.name == u'font':
-                        for subitem in item.contents:
-                            Receiver.send_message(u'openlp_process_events')
-                            if isinstance(subitem, Tag) and subitem.name == u'sup' and filter(lambda a: a[0] == u'class', subitem.attrs)[0][1] != u'versenum':
-                                continue
-                            if isinstance(subitem, Tag) and subitem.name == u'p' and not subitem.contents:
-                                continue
-                            if isinstance(subitem, Tag) and subitem.name == u'sup':
-                                verse_number = int(str(subitem.contents[0]))
-                                verse_list[verse_number] = u''
-                                continue
-                            if isinstance(subitem, NavigableString):
-                                verse_list[verse_number] = verse_list[verse_number] + subitem.replace(u'&nbsp;', u' ')
-                        continue
-                    if isinstance(item, NavigableString):
-                        verse_list[verse_number] = verse_list[verse_number] + item.replace(u'&nbsp;', u' ')
-                continue
-            if isinstance(verse, Tag) and verse.name == u'sup':
-                verse_number = int(str(verse.contents[0]))
-                verse_list[verse_number] = u''
-                continue
-            if isinstance(verse, NavigableString):
-                if not isinstance(verse, unicode):
-                    verse = unicode(verse, u'utf8')
-                verse_list[verse_number] = verse_list[verse_number] + \
-                    unescape(verse.replace(u'&nbsp;', u' '))
-        # Delete the "0" element, since we don't need it, it's just there for
-        # some stupid initial whitespace, courtesy of Bible Gateway.
-        del verse_list[0]
-        # Finally, return the list of verses in a "SearchResults" object.
+            verse_list[int(str(verse.sup.contents[0]))] = \
+                unicode(verse.contents[2])
         return SearchResults(bookname, chapter, verse_list)
 
 class CWExtract(BibleCommon):
