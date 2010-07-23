@@ -207,12 +207,11 @@ class BGExtract(BibleCommon):
         text = str(soup.find(u'div', u'result-text-style-normal'))
         useful_soup = BeautifulSoup(text)
         verses = useful_soup.findAll(u'p')
-        verses.pop(0)
-        verses.pop()
         verse_list = {}
         for verse in verses:
-            verse_list[int(str(verse.sup.contents[0]))] = \
-                unicode(verse.contents[2])
+            if verse.sup:
+                verse_list[int(str(verse.sup.contents[0]))] = \
+                    unicode(verse.contents[2])
         return SearchResults(bookname, chapter, verse_list)
 
 class CWExtract(BibleCommon):
