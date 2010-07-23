@@ -178,7 +178,6 @@ class BGExtract(BibleCommon):
     """
     Extract verses from BibleGateway
     """
-
     def __init__(self, proxyurl=None):
         log.debug(u'init %s', proxyurl)
         self.proxyurl = proxyurl
@@ -269,7 +268,6 @@ class CWExtract(BibleCommon):
     """
     Extract verses from CrossWalk/BibleStudyTools
     """
-
     def __init__(self, proxyurl=None):
         log.debug(u'init %s', proxyurl)
         self.proxyurl = proxyurl
@@ -429,13 +427,12 @@ class HTTPBible(BibleDB):
                     ## if it was there.  By reusing the returned book name
                     ## we get a correct book.  For example it is possible
                     ## to request ac and get Acts back.
-                    bookname = search_results.get_book()
+                    bookname = search_results.book
                     Receiver.send_message(u'openlp_process_events')
                     # check to see if book/chapter exists
                     db_book = self.get_book(bookname)
-                    self.create_chapter(db_book.id,
-                        search_results.get_chapter(),
-                        search_results.get_verselist())
+                    self.create_chapter(db_book.id, search_results.chapter,
+                        search_results.verselist)
                     Receiver.send_message(u'openlp_process_events')
                 Receiver.send_message(u'bibles_hideprogress')
             Receiver.send_message(u'openlp_process_events')
@@ -487,14 +484,3 @@ class HTTPBible(BibleDB):
             The chapter whose verses are being counted.
         """
         return HTTPBooks.get_verse_count(book, chapter)
-
-    def set_proxy_server(self, server):
-        """
-        Sets the proxy server.
-
-        **Note: This is not actually used.**
-
-        ``server``
-            The hostname or IP address of the proxy server.
-        """
-        self.proxy_server = server

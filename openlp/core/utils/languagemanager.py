@@ -143,4 +143,3 @@ class LanguageManager(object):
         if LanguageManager.__qmList__ is None:
             LanguageManager.init_qm_list()
         return LanguageManager.__qmList__
-

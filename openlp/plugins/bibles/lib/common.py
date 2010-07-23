@@ -138,24 +138,6 @@ class SearchResults(object):
         self.chapter = chapter
         self.verselist = verselist
 
-    def get_verselist(self):
-        """
-        Returns the list of verses.
-        """
-        return self.verselist
-
-    def get_book(self):
-        """
-        Returns the book of the Bible.
-        """
-        return self.book
-
-    def get_chapter(self):
-        """
-        Returns the chapter of the book.
-        """
-        return self.chapter
-
     def has_verselist(self):
         """
         Returns whether or not the verse list contains verses.
@@ -277,4 +259,3 @@ def unescape(text):
                 pass
         return text # leave as is
     return re.sub(u'&#?\w+;', fixup, text)
-

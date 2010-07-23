@@ -148,7 +148,7 @@ class BibleManager(object):
                     file=filename, download_source=source.value,
                     download_name=download_name)
                 if meta_proxy:
-                    web_bible.set_proxy_server(meta_proxy.value)
+                    web_bible.proxy_server = meta_proxy.value
                 self.db_cache[name] = web_bible
         log.debug(u'Bibles reloaded')
 

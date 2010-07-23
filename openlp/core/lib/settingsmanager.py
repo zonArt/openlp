@@ -57,34 +57,6 @@ class SettingsManager(object):
             self.mainwindow_left + self.mainwindow_right) - 100 ) / 2
         self.slidecontroller_image = self.slidecontroller - 50
 
-    def get_preview_visibility(self):
-        """
-        Return the preview panel's visibility.
-        """
-        return QtCore.QSettings().value(u'user interface/preview panel',
-            QtCore.QVariant(True)).toBool()
-
-    def set_preview_visibility(self, visible):
-        """
-        Set the preview panel's visibility.
-        """
-        QtCore.QSettings().setValue(u'user interface/preview panel',
-            QtCore.QVariant(visible))
-
-    def get_live_visibility(self):
-        """
-        Return the live panel's visibility.
-        """
-        return QtCore.QSettings().value(u'user interface/live panel',
-            QtCore.QVariant(True)).toBool()
-
-    def set_live_visibility(self, visible):
-        """
-        Set the live panel's visibility.
-        """
-        QtCore.QSettings().setValue(u'user interface/live panel',
-            QtCore.QVariant(visible))
-
     @staticmethod
     def get_last_dir(section, num=None):
         """
@@ -206,4 +178,3 @@ class SettingsManager(object):
         else:
             # no filtering required
             return files
-
