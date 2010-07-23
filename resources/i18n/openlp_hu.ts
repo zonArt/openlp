@@ -43,7 +43,7 @@
     <message>
         <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="133"/>
         <source>&amp;Save</source>
-        <translation type="unfinished">M&amp;entés</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="135"/>
@@ -97,6 +97,26 @@
         <translation type="unfinished">Betűkészlet</translation>
     </message>
     <message>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="192"/>
+        <source>Font name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="194"/>
+        <source>Font color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="196"/>
+        <source>Background color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="198"/>
+        <source>Font size:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="200"/>
         <source>pt</source>
         <translation type="unfinished"></translation>
@@ -122,9 +142,14 @@
         <translation type="unfinished">Előnézet</translation>
     </message>
     <message>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="210"/>
+        <source>OpenLP 2.0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="212"/>
         <source>Top</source>
-        <translation type="unfinished">Felülre</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="214"/>
@@ -134,31 +159,6 @@
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="216"/>
         <source>Bottom</source>
-        <translation type="unfinished">Alulra</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="192"/>
-        <source>Font name:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="194"/>
-        <source>Font color:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="196"/>
-        <source>Background color:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="198"/>
-        <source>Font size:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="210"/>
-        <source>OpenLP 2.0</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -844,14 +844,14 @@ Changes do not affect verses already in the service.</source>
         <translation type="unfinished">Kép beállítások</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/imagetab.py" line="70"/>
-        <source>sec</source>
-        <translation type="unfinished"> mp</translation>
-    </message>
-    <message>
         <location filename="openlp/plugins/images/lib/imagetab.py" line="68"/>
         <source>Slide loop delay:</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/images/lib/imagetab.py" line="70"/>
+        <source>sec</source>
+        <translation type="unfinished"> mp</translation>
     </message>
 </context>
 <context>
@@ -877,11 +877,6 @@ Changes do not affect verses already in the service.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/images/lib/mediaitem.py" line="155"/>
-        <source>Image(s)</source>
-        <translation type="unfinished">Kép(ek)</translation>
-    </message>
-    <message>
         <location filename="openlp/plugins/images/lib/mediaitem.py" line="107"/>
         <source>Replace Background</source>
         <translation type="unfinished"></translation>
@@ -890,6 +885,11 @@ Changes do not affect verses already in the service.</source>
         <location filename="openlp/plugins/images/lib/mediaitem.py" line="119"/>
         <source>You must select an image to delete.</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/images/lib/mediaitem.py" line="155"/>
+        <source>Image(s)</source>
+        <translation type="unfinished">Kép(ek)</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/lib/mediaitem.py" line="172"/>
@@ -1341,13 +1341,13 @@ A GNU General Public License nem engedi meg, hogy a program része legyen szelle
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="139"/>
-        <source>Double-click to send items straight to live (requires restart)</source>
+        <location filename="openlp/core/ui/advancedtab.py" line="137"/>
+        <source>Remember active media manager tab on startup</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="137"/>
-        <source>Remember active media manager tab on startup</source>
+        <location filename="openlp/core/ui/advancedtab.py" line="139"/>
+        <source>Double-click to send items straight to live (requires restart)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1611,7 +1611,7 @@ A GNU General Public License nem engedi meg, hogy a program része legyen szelle
     <message>
         <location filename="openlp/core/ui/amendthemedialog.py" line="814"/>
         <source>Top</source>
-        <translation type="unfinished">Felülre</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/amendthemedialog.py" line="816"/>
@@ -1621,7 +1621,7 @@ A GNU General Public License nem engedi meg, hogy a program része legyen szelle
     <message>
         <location filename="openlp/core/ui/amendthemedialog.py" line="818"/>
         <source>Bottom</source>
-        <translation type="unfinished">Alulra</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/amendthemedialog.py" line="820"/>
@@ -1672,6 +1672,16 @@ A GNU General Public License nem engedi meg, hogy a program része legyen szelle
 <context>
     <name>OpenLP.GeneralTab</name>
     <message>
+        <location filename="openlp/core/ui/generaltab.py" line="62"/>
+        <source>General</source>
+        <translation type="unfinished">Általános</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/generaltab.py" line="289"/>
+        <source>Monitors</source>
+        <translation type="unfinished">Monitorok</translation>
+    </message>
+    <message>
         <location filename="openlp/core/ui/generaltab.py" line="290"/>
         <source>Select monitor for output display:</source>
         <translation type="unfinished">Válassza ki a vetítési képernyőt:</translation>
@@ -1717,6 +1727,26 @@ A GNU General Public License nem engedi meg, hogy a program része legyen szelle
         <translation type="unfinished">Következő dal előnézete a szolgálatkezelőből</translation>
     </message>
     <message>
+        <location filename="openlp/core/ui/generaltab.py" line="308"/>
+        <source>CCLI Details</source>
+        <translation type="unfinished">CCLI részletek</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/generaltab.py" line="310"/>
+        <source>CCLI number:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/generaltab.py" line="312"/>
+        <source>SongSelect username:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/generaltab.py" line="314"/>
+        <source>SongSelect password:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/core/ui/generaltab.py" line="317"/>
         <source>Display Position</source>
         <translation type="unfinished"></translation>
@@ -1747,16 +1777,6 @@ A GNU General Public License nem engedi meg, hogy a program része legyen szelle
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="62"/>
-        <source>General</source>
-        <translation type="unfinished">Általános</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/generaltab.py" line="289"/>
-        <source>Monitors</source>
-        <translation type="unfinished">Monitorok</translation>
-    </message>
-    <message>
         <location filename="openlp/core/ui/generaltab.py" line="343"/>
         <source>Screen</source>
         <translation type="unfinished">Képernyő</translation>
@@ -1765,26 +1785,6 @@ A GNU General Public License nem engedi meg, hogy a program része legyen szelle
         <location filename="openlp/core/ui/generaltab.py" line="346"/>
         <source>primary</source>
         <translation type="unfinished">elsődleges</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/generaltab.py" line="308"/>
-        <source>CCLI Details</source>
-        <translation type="unfinished">CCLI részletek</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/generaltab.py" line="310"/>
-        <source>CCLI number:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/generaltab.py" line="312"/>
-        <source>SongSelect username:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/generaltab.py" line="314"/>
-        <source>SongSelect password:</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1803,14 +1803,14 @@ A GNU General Public License nem engedi meg, hogy a program része legyen szelle
 <context>
     <name>OpenLP.MainWindow</name>
     <message>
-        <location filename="openlp/core/utils/languagemanager.py" line="85"/>
-        <source>English</source>
-        <translation type="unfinished">Magyar</translation>
-    </message>
-    <message>
         <location filename="openlp/core/ui/mainwindow.py" line="384"/>
         <source>OpenLP 2.0</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/utils/languagemanager.py" line="85"/>
+        <source>English</source>
+        <translation type="unfinished">Magyar</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="387"/>
@@ -1915,7 +1915,7 @@ A GNU General Public License nem engedi meg, hogy a program része legyen szelle
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="415"/>
         <source>&amp;Save</source>
-        <translation type="unfinished">M&amp;entés</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="416"/>
@@ -2202,7 +2202,7 @@ You can download the latest version from &lt;a href=&quot;http://openlp.org/&quo
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="824"/>
         <source>Save Changes to Service?</source>
-        <translation type="unfinished">Változások mentése a szolgálatban?</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="824"/>
@@ -2217,6 +2217,11 @@ You can download the latest version from &lt;a href=&quot;http://openlp.org/&quo
 </context>
 <context>
     <name>OpenLP.MediaManagerItem</name>
+    <message>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="475"/>
+        <source>No Items Selected</source>
+        <translation type="unfinished">Nincs kiválasztott elem</translation>
+    </message>
     <message>
         <location filename="openlp/core/lib/mediamanageritem.py" line="210"/>
         <source>Import %s</source>
@@ -2321,11 +2326,6 @@ You can download the latest version from &lt;a href=&quot;http://openlp.org/&quo
         <location filename="openlp/core/lib/mediamanageritem.py" line="320"/>
         <source>&amp;Add to selected Service Item</source>
         <translation type="unfinished">&amp;Hozzáadás a kiválasztott szolgálat elemhez</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="475"/>
-        <source>No Items Selected</source>
-        <translation type="unfinished">Nincs kiválasztott elem</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/mediamanageritem.py" line="442"/>
@@ -2502,9 +2502,19 @@ You can download the latest version from &lt;a href=&quot;http://openlp.org/&quo
         <translation type="unfinished">Mozgatás &amp;felülre</translation>
     </message>
     <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="170"/>
+        <source>Move item to the top of the service.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/core/ui/servicemanager.py" line="176"/>
         <source>Move &amp;up</source>
         <translation type="unfinished">Mozgatás f&amp;eljebb</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="176"/>
+        <source>Move item up one position in the service.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="182"/>
@@ -2512,14 +2522,29 @@ You can download the latest version from &lt;a href=&quot;http://openlp.org/&quo
         <translation type="unfinished">Mozgatás &amp;lejjebb</translation>
     </message>
     <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="182"/>
+        <source>Move item down one position in the service.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/core/ui/servicemanager.py" line="188"/>
         <source>Move to &amp;bottom</source>
         <translation type="unfinished">Mozgatás &amp;alulra</translation>
     </message>
     <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="188"/>
+        <source>Move item to the end of the service.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/core/ui/servicemanager.py" line="249"/>
         <source>&amp;Delete From Service</source>
         <translation type="unfinished">&amp;Törlés a szolgálatból</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="195"/>
+        <source>Delete the selected item from the service.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="232"/>
@@ -2564,7 +2589,7 @@ You can download the latest version from &lt;a href=&quot;http://openlp.org/&quo
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="652"/>
         <source>Save Changes to Service?</source>
-        <translation type="unfinished">Változások mentése a szolgálatban?</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="494"/>
@@ -2606,31 +2631,6 @@ The content encoding is not UTF-8.</source>
         <location filename="openlp/core/ui/servicemanager.py" line="882"/>
         <source>Your item cannot be displayed as there is no handler to display it</source>
         <translation type="unfinished">Az elemet nem lehet megjeleníteni, mert nincs kezelő, amely megjelenítené</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="170"/>
-        <source>Move item to the top of the service.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="176"/>
-        <source>Move item up one position in the service.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="182"/>
-        <source>Move item down one position in the service.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="188"/>
-        <source>Move item to the end of the service.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="195"/>
-        <source>Delete the selected item from the service.</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2759,8 +2759,18 @@ The content encoding is not UTF-8.</source>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="158"/>
+        <source>File Exists</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="158"/>
         <source>A presentation with that filename already exists.</source>
         <translation type="unfinished">Ilyen fájlnéven már létezik egy bemutató.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="183"/>
+        <source>Unsupported File</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="183"/>
@@ -2770,16 +2780,6 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="199"/>
         <source>You must select an item to delete.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="158"/>
-        <source>File Exists</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="183"/>
-        <source>Unsupported File</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2980,6 +2980,16 @@ The content encoding is not UTF-8.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="164"/>
+        <source>OpenLP v2 Songs (temporary)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="168"/>
+        <source>Import an OpenLP v2 song database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="247"/>
         <source>Import Error</source>
         <translation type="unfinished">Importálás hiba</translation>
@@ -2998,16 +3008,6 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="224"/>
         <source>Error importing OpenSong file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="164"/>
-        <source>OpenLP v2 Songs (temporary)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="168"/>
-        <source>Import an OpenLP v2 song database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3222,6 +3222,16 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="573"/>
+        <source>Error</source>
+        <translation type="unfinished">Hiba</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="315"/>
+        <source>This author is already in the list.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/plugins/songs/forms/editsongform.py" line="328"/>
         <source>No Author Selected</source>
         <translation type="unfinished"></translation>
@@ -3242,6 +3252,11 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="374"/>
+        <source>This topic is already in the list.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/plugins/songs/forms/editsongform.py" line="386"/>
         <source>No Topic Selected</source>
         <translation type="unfinished"></translation>
@@ -3250,21 +3265,6 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
         <location filename="openlp/plugins/songs/forms/editsongform.py" line="386"/>
         <source>You have not selected a valid topic. Either select a topic from the list, or type in a new topic and click the &quot;Add Topic to Song&quot; button to add the new topic.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="627"/>
-        <source>Add Book</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="627"/>
-        <source>This song book does not exist, do you want to add it?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="573"/>
-        <source>Error</source>
-        <translation type="unfinished">Hiba</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongform.py" line="525"/>
@@ -3297,13 +3297,13 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="315"/>
-        <source>This author is already in the list.</source>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="627"/>
+        <source>Add Book</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongform.py" line="374"/>
-        <source>This topic is already in the list.</source>
+        <location filename="openlp/plugins/songs/forms/editsongform.py" line="627"/>
+        <source>This song book does not exist, do you want to add it?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

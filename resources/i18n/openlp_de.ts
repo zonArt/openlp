@@ -132,11 +132,6 @@
         <translation>Unten</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="214"/>
-        <source>Middle</source>
-        <translation type="unfinished">Mittig</translation>
-    </message>
-    <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="192"/>
         <source>Font name:</source>
         <translation type="unfinished"></translation>
@@ -160,6 +155,11 @@
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="210"/>
         <source>OpenLP 2.0</source>
         <translation type="unfinished">OpenLP 2.0</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/alerts/lib/alertstab.py" line="214"/>
+        <source>Middle</source>
+        <translation type="unfinished">Mittig</translation>
     </message>
 </context>
 <context>
@@ -1181,13 +1181,13 @@ This General Public License does not permit incorporating your program into prop
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="139"/>
-        <source>Double-click to send items straight to live (requires restart)</source>
+        <location filename="openlp/core/ui/advancedtab.py" line="137"/>
+        <source>Remember active media manager tab on startup</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="137"/>
-        <source>Remember active media manager tab on startup</source>
+        <location filename="openlp/core/ui/advancedtab.py" line="139"/>
+        <source>Double-click to send items straight to live (requires restart)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1512,6 +1512,16 @@ This General Public License does not permit incorporating your program into prop
 <context>
     <name>OpenLP.GeneralTab</name>
     <message>
+        <location filename="openlp/core/ui/generaltab.py" line="62"/>
+        <source>General</source>
+        <translation type="unfinished">Allgemein</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/generaltab.py" line="289"/>
+        <source>Monitors</source>
+        <translation type="unfinished">Monitore</translation>
+    </message>
+    <message>
         <location filename="openlp/core/ui/generaltab.py" line="290"/>
         <source>Select monitor for output display:</source>
         <translation type="unfinished">Projektionsbildschirm:</translation>
@@ -1557,6 +1567,26 @@ This General Public License does not permit incorporating your program into prop
         <translation type="unfinished">Vorschau des nächsten Lieds</translation>
     </message>
     <message>
+        <location filename="openlp/core/ui/generaltab.py" line="308"/>
+        <source>CCLI Details</source>
+        <translation type="unfinished">CCLI-Details</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/generaltab.py" line="310"/>
+        <source>CCLI number:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/generaltab.py" line="312"/>
+        <source>SongSelect username:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/generaltab.py" line="314"/>
+        <source>SongSelect password:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/core/ui/generaltab.py" line="317"/>
         <source>Display Position</source>
         <translation type="unfinished"></translation>
@@ -1587,16 +1617,6 @@ This General Public License does not permit incorporating your program into prop
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/generaltab.py" line="62"/>
-        <source>General</source>
-        <translation type="unfinished">Allgemein</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/generaltab.py" line="289"/>
-        <source>Monitors</source>
-        <translation type="unfinished">Monitore</translation>
-    </message>
-    <message>
         <location filename="openlp/core/ui/generaltab.py" line="343"/>
         <source>Screen</source>
         <translation type="unfinished">Bildschirm</translation>
@@ -1605,26 +1625,6 @@ This General Public License does not permit incorporating your program into prop
         <location filename="openlp/core/ui/generaltab.py" line="346"/>
         <source>primary</source>
         <translation type="unfinished">Hauptbildschirm</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/generaltab.py" line="308"/>
-        <source>CCLI Details</source>
-        <translation type="unfinished">CCLI-Details</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/generaltab.py" line="310"/>
-        <source>CCLI number:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/generaltab.py" line="312"/>
-        <source>SongSelect username:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/generaltab.py" line="314"/>
-        <source>SongSelect password:</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1643,14 +1643,14 @@ This General Public License does not permit incorporating your program into prop
 <context>
     <name>OpenLP.MainWindow</name>
     <message>
-        <location filename="openlp/core/utils/languagemanager.py" line="85"/>
-        <source>English</source>
-        <translation type="unfinished">Deutsch</translation>
-    </message>
-    <message>
         <location filename="openlp/core/ui/mainwindow.py" line="384"/>
         <source>OpenLP 2.0</source>
         <translation type="unfinished">OpenLP 2.0</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/utils/languagemanager.py" line="85"/>
+        <source>English</source>
+        <translation type="unfinished">Deutsch</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="387"/>
@@ -2058,6 +2058,11 @@ You can download the latest version from &lt;a href=&quot;http://openlp.org/&quo
 <context>
     <name>OpenLP.MediaManagerItem</name>
     <message>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="475"/>
+        <source>No Items Selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/core/lib/mediamanageritem.py" line="210"/>
         <source>Import %s</source>
         <translation type="unfinished"></translation>
@@ -2160,11 +2165,6 @@ You can download the latest version from &lt;a href=&quot;http://openlp.org/&quo
     <message>
         <location filename="openlp/core/lib/mediamanageritem.py" line="320"/>
         <source>&amp;Add to selected Service Item</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="475"/>
-        <source>No Items Selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2342,8 +2342,18 @@ You can download the latest version from &lt;a href=&quot;http://openlp.org/&quo
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="170"/>
+        <source>Move item to the top of the service.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/core/ui/servicemanager.py" line="176"/>
         <source>Move &amp;up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="176"/>
+        <source>Move item up one position in the service.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2352,13 +2362,28 @@ You can download the latest version from &lt;a href=&quot;http://openlp.org/&quo
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="182"/>
+        <source>Move item down one position in the service.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/core/ui/servicemanager.py" line="188"/>
         <source>Move to &amp;bottom</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="188"/>
+        <source>Move item to the end of the service.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/core/ui/servicemanager.py" line="249"/>
         <source>&amp;Delete From Service</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="195"/>
+        <source>Delete the selected item from the service.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2445,31 +2470,6 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="882"/>
         <source>Your item cannot be displayed as there is no handler to display it</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="170"/>
-        <source>Move item to the top of the service.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="176"/>
-        <source>Move item up one position in the service.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="182"/>
-        <source>Move item down one position in the service.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="188"/>
-        <source>Move item to the end of the service.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="195"/>
-        <source>Delete the selected item from the service.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2608,11 +2608,6 @@ The content encoding is not UTF-8.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="183"/>
-        <source>This type of presentation is not supported</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="158"/>
         <source>File Exists</source>
         <translation type="unfinished"></translation>
@@ -2620,6 +2615,11 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="183"/>
         <source>Unsupported File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="183"/>
+        <source>This type of presentation is not supported</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2831,16 +2831,6 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="214"/>
-        <source>Open OpenSong file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="224"/>
-        <source>Error importing OpenSong file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="164"/>
         <source>OpenLP v2 Songs (temporary)</source>
         <translation type="unfinished"></translation>
@@ -2848,6 +2838,16 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="168"/>
         <source>Import an OpenLP v2 song database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="214"/>
+        <source>Open OpenSong file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="224"/>
+        <source>Error importing OpenSong file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
