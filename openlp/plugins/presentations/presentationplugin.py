@@ -22,7 +22,10 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The :mod:`presentationplugin` module provides the ability for OpenLP to display
+presentations from a variety of document formats.
+"""
 import os
 import logging
 
@@ -67,7 +70,7 @@ class PresentationPlugin(Plugin):
         Plugin.initialise(self)
         self.insertToolboxItem()
         for controller in self.controllers:
-            if self.controllers[controller].enabled:
+            if self.controllers[controller].enabled():
                 self.controllers[controller].start_process()
 
     def finalise(self):
@@ -79,7 +82,7 @@ class PresentationPlugin(Plugin):
         #Ask each controller to tidy up
         for key in self.controllers:
             controller = self.controllers[key]
-            if controller.enabled:
+            if controller.enabled():
                 controller.kill()
         Plugin.finalise(self)
 
