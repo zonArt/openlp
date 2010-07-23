@@ -2744,37 +2744,6 @@ The content encoding is not UTF-8.</source>
     </message>
 </context>
 <context>
-    <name>SongUsagePlugin.AuditDeleteDialog</name>
-    <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedeletedialog.py" line="61"/>
-        <source>Delete Song Usage Data</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>SongUsagePlugin.AuditDetailDialog</name>
-    <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="88"/>
-        <source>Song Usage Extraction</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="91"/>
-        <source>Select Date Range</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="93"/>
-        <source>to</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="95"/>
-        <source>Report Location</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>SongUsagePlugin.SongUsageDeleteForm</name>
     <message>
         <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="45"/>
@@ -2786,12 +2755,37 @@ The content encoding is not UTF-8.</source>
         <source>Are you sure you want to delete selected Song Usage data?</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedeletedialog.py" line="61"/>
+        <source>Delete Song Usage Data</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SongUsagePlugin.SongUsageDetailForm</name>
     <message>
         <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="64"/>
         <source>Output File Location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="88"/>
+        <source>Song Usage Extraction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="91"/>
+        <source>Select Date Range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="94"/>
+        <source>to</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="96"/>
+        <source>Report Location</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

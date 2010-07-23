@@ -787,7 +787,7 @@ Changes do not affect verses already in the service.</source>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomform.py" line="152"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Feil</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomform.py" line="271"/>
@@ -2449,7 +2449,7 @@ You can download the latest version from &lt;a href=&quot;http://openlp.org/&quo
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="717"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Feil</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="682"/>
@@ -2711,37 +2711,6 @@ The content encoding is not UTF-8.</source>
     </message>
 </context>
 <context>
-    <name>SongUsagePlugin.AuditDeleteDialog</name>
-    <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedeletedialog.py" line="61"/>
-        <source>Delete Song Usage Data</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>SongUsagePlugin.AuditDetailDialog</name>
-    <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="88"/>
-        <source>Song Usage Extraction</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="91"/>
-        <source>Select Date Range</source>
-        <translation type="unfinished">Velg dato-område </translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="93"/>
-        <source>to</source>
-        <translation type="unfinished">til</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="95"/>
-        <source>Report Location</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>SongUsagePlugin.SongUsageDeleteForm</name>
     <message>
         <location filename="openlp/plugins/songusage/forms/songusagedeleteform.py" line="45"/>
@@ -2753,12 +2722,37 @@ The content encoding is not UTF-8.</source>
         <source>Are you sure you want to delete selected Song Usage data?</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedeletedialog.py" line="61"/>
+        <source>Delete Song Usage Data</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SongUsagePlugin.SongUsageDetailForm</name>
     <message>
         <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="64"/>
         <source>Output File Location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="88"/>
+        <source>Song Usage Extraction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="91"/>
+        <source>Select Date Range</source>
+        <translation type="unfinished">Velg dato-område </translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="94"/>
+        <source>to</source>
+        <translation type="unfinished">til</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songusage/forms/songusagedetaildialog.py" line="96"/>
+        <source>Report Location</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2896,7 +2890,7 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
     <message>
         <location filename="openlp/plugins/songs/forms/authorsform.py" line="97"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Feil</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/authorsform.py" line="81"/>
@@ -3064,7 +3058,7 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
     <message>
         <location filename="openlp/plugins/songs/forms/editsongform.py" line="573"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Feil</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongform.py" line="315"/>
@@ -3411,7 +3405,7 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
     <message>
         <location filename="openlp/plugins/songs/forms/songbookform.py" line="51"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Feil</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songbookform.py" line="51"/>
@@ -3472,7 +3466,7 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
     <message>
         <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="373"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Feil</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="215"/>
@@ -3618,7 +3612,7 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
     <message>
         <location filename="openlp/plugins/songs/forms/topicsform.py" line="50"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Feil</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/topicsform.py" line="50"/>
