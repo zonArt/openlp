@@ -8,13 +8,13 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/alertsplugin.py" line="102"/>
-        <source>&lt;b&gt;Alerts Plugin&lt;/b&gt;&lt;br&gt;This plugin controls the displaying of alerts on the presentations screen</source>
+        <location filename="openlp/plugins/alerts/alertsplugin.py" line="73"/>
+        <source>Show an alert message.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/alerts/alertsplugin.py" line="73"/>
-        <source>Show an alert message.</source>
+        <location filename="openlp/plugins/alerts/alertsplugin.py" line="102"/>
+        <source>&lt;strong&gt;Alerts Plugin&lt;/strong&gt;&lt;br /&gt;The alert plugin controls the displaying of nursery alerts on the display screen</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -171,7 +171,7 @@
     </message>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="92"/>
-        <source>&lt;strong&gt;Bible Plugin&lt;/strong&gt;&lt;br /&gt;This plugin allows bible verses from different sources to be displayed on the screen during the service.</source>
+        <source>&lt;strong&gt;Bible Plugin&lt;/strong&gt;&lt;br /&gt;The Bible plugin provides the ability to display bible verses from different sources during the service.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -655,7 +655,7 @@ Changes do not affect verses already in the service.</source>
     <name>CustomPlugin</name>
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="65"/>
-        <source>&lt;b&gt;Custom Plugin&lt;/b&gt;&lt;br&gt;This plugin allows slides to be displayed on the screen in the same way songs are. This plugin provides greater freedom over the songs plugin.&lt;br&gt;</source>
+        <source>&lt;strong&gt;Custom Plugin&lt;/strong&gt;&lt;br /&gt;The custom plugin provides the ability to set up custom text slides that can be displayed on the screen the same way songs are. This plugin provides greater freedom over the songs plugin.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -827,7 +827,7 @@ Changes do not affect verses already in the service.</source>
     <name>ImagePlugin</name>
     <message>
         <location filename="openlp/plugins/images/imageplugin.py" line="51"/>
-        <source>&lt;b&gt;Image Plugin&lt;/b&gt;&lt;br&gt;Allows images of all types to be displayed. If a number of images are selected together and presented on the live controller it is possible to turn them into a timed loop.&lt;br&lt;br&gt;From the plugin if the &lt;i&gt;Override background&lt;/i&gt; is chosen and an image is selected any songs which are rendered will use the selected image from the background instead of the one provied by the theme.&lt;br&gt;</source>
+        <source>&lt;strong&gt;Image Plugin&lt;/strong&gt;&lt;br /&gt;The image plugin provides displaying of images.&lt;br /&gt;One of the distinguishing features of this plugin is the ability to group a number of images together in the service manager, making the displaying of multiple images easier. This plugin can also make use of OpenLP&apos;s &quot;timed looping&quot; feature to create a slide show that runs automatically. In addition to this, images from the plugin can be used to override the current theme&apos;s background, which renders text-based items like songs with the selected image as a background instead of the background provided by the theme.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -906,8 +906,8 @@ Changes do not affect verses already in the service.</source>
     <name>MediaPlugin</name>
     <message>
         <location filename="openlp/plugins/media/mediaplugin.py" line="76"/>
-        <source>&lt;b&gt;Media Plugin&lt;/b&gt;&lt;br&gt;This plugin allows the playing of audio and video media</source>
-        <translation>&lt;b&gt;Meedia plugin&lt;/b&gt;&lt;br&gt;See plugin võimaldab audio ja video esitamise</translation>
+        <source>&lt;strong&gt;Media Plugin&lt;/strong&gt;&lt;br /&gt;The media plugin provides playback of audio and video.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1681,409 +1681,409 @@ This General Public License does not permit incorporating your program into prop
         <translation type="unfinished">Eesti</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="384"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="388"/>
         <source>OpenLP 2.0</source>
         <translation type="unfinished">OpenLP 2.0</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="387"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="391"/>
         <source>&amp;File</source>
         <translation type="unfinished">&amp;Fail</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="388"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="392"/>
         <source>&amp;Import</source>
         <translation type="unfinished">&amp;Impordi</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="389"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="393"/>
         <source>&amp;Export</source>
         <translation type="unfinished">&amp;Ekspordi</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="390"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="394"/>
         <source>&amp;View</source>
         <translation type="unfinished">&amp;Vaade</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="391"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="395"/>
         <source>M&amp;ode</source>
         <translation type="unfinished">&amp;Režiim</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="392"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="396"/>
         <source>&amp;Tools</source>
         <translation type="unfinished">&amp;Tööriistad</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="393"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="397"/>
         <source>&amp;Settings</source>
         <translation type="unfinished">&amp;Sätted</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="441"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="445"/>
         <source>&amp;Language</source>
         <translation type="unfinished">&amp;Keel</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="396"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="400"/>
         <source>&amp;Help</source>
         <translation type="unfinished">A&amp;bi</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="397"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="401"/>
         <source>Media Manager</source>
         <translation type="unfinished">Meediahaldur</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="399"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="403"/>
         <source>Service Manager</source>
         <translation type="unfinished">Teenistuse haldur</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="401"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="405"/>
         <source>Theme Manager</source>
         <translation type="unfinished">Kujunduse haldur</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="403"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="407"/>
         <source>&amp;New</source>
         <translation type="unfinished">&amp;Uus</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="404"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="408"/>
         <source>New Service</source>
         <translation type="unfinished">Uus teenistus</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="406"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="410"/>
         <source>Create a new service.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="408"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="412"/>
         <source>Ctrl+N</source>
         <translation type="unfinished">Ctrl+N</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="409"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="413"/>
         <source>&amp;Open</source>
         <translation type="unfinished">&amp;Ava</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="410"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="414"/>
         <source>Open Service</source>
         <translation type="unfinished">Teenistuse avamine</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="412"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="416"/>
         <source>Open an existing service.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="414"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="418"/>
         <source>Ctrl+O</source>
         <translation type="unfinished">Ctrl+O</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="415"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="419"/>
         <source>&amp;Save</source>
         <translation type="unfinished">&amp;Salvesta</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="416"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="420"/>
         <source>Save Service</source>
         <translation type="unfinished">Salvesta teenistus</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="418"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="422"/>
         <source>Save the current service to disk.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="420"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="424"/>
         <source>Ctrl+S</source>
         <translation type="unfinished">Ctrl+S</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="421"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="425"/>
         <source>Save &amp;As...</source>
         <translation type="unfinished">Salvesta &amp;kui...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="423"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="427"/>
         <source>Save Service As</source>
         <translation type="unfinished">Salvesta teenistus kui</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="425"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="429"/>
         <source>Save the current service under a new name.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="427"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="431"/>
         <source>Ctrl+Shift+S</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="429"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="433"/>
         <source>E&amp;xit</source>
         <translation type="unfinished">&amp;Välju</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="431"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="435"/>
         <source>Quit OpenLP</source>
         <translation type="unfinished">Lahku OpenLPst</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="433"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="437"/>
         <source>Alt+F4</source>
         <translation type="unfinished">Alt+F4</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="439"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="443"/>
         <source>&amp;Theme</source>
         <translation type="unfinished">&amp;Kujundus</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="443"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="447"/>
         <source>&amp;Configure OpenLP...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="445"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="449"/>
         <source>&amp;Media Manager</source>
         <translation type="unfinished">&amp;Meediahaldur</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="447"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="451"/>
         <source>Toggle Media Manager</source>
         <translation type="unfinished">Meediahalduri lüliti</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="449"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="453"/>
         <source>Toggle the visibility of the media manager.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="451"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="455"/>
         <source>F8</source>
         <translation type="unfinished">F8</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="453"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="457"/>
         <source>&amp;Theme Manager</source>
         <translation type="unfinished">&amp;Kujunduse haldur</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="455"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="459"/>
         <source>Toggle Theme Manager</source>
         <translation type="unfinished">Kujunduse halduri lüliti</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="457"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="461"/>
         <source>Toggle the visibility of the theme manager.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="459"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="463"/>
         <source>F10</source>
         <translation type="unfinished">F10</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="461"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="465"/>
         <source>&amp;Service Manager</source>
         <translation type="unfinished">&amp;Teenistuse haldur</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="463"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="467"/>
         <source>Toggle Service Manager</source>
         <translation type="unfinished">Teenistuse halduri lüliti</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="465"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="469"/>
         <source>Toggle the visibility of the service manager.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="467"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="471"/>
         <source>F9</source>
         <translation type="unfinished">F9</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="469"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="473"/>
         <source>&amp;Preview Panel</source>
         <translation type="unfinished">&amp;Eelvaatluspaneel</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="471"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="475"/>
         <source>Toggle Preview Panel</source>
         <translation type="unfinished">Eelvaatluspaneeli lüliti</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="473"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="477"/>
         <source>Toggle the visibility of the preview panel.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="475"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="479"/>
         <source>F11</source>
         <translation type="unfinished">F11</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="477"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="481"/>
         <source>&amp;Live Panel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="479"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="483"/>
         <source>Toggle Live Panel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="481"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="485"/>
         <source>Toggle the visibility of the live panel.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="483"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="487"/>
         <source>F12</source>
         <translation type="unfinished">F12</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="485"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="489"/>
         <source>&amp;Plugin List</source>
         <translation type="unfinished">&amp;Pluginate loend</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="487"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="491"/>
         <source>List the Plugins</source>
         <translation type="unfinished">Pluginate loend</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="489"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="493"/>
         <source>Alt+F7</source>
         <translation type="unfinished">Alt+F7</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="491"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="495"/>
         <source>&amp;User Guide</source>
         <translation type="unfinished">&amp;Kasutajajuhend</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="493"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="497"/>
         <source>&amp;About</source>
         <translation type="unfinished">&amp;Lähemalt</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="494"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="498"/>
         <source>More information about OpenLP</source>
         <translation type="unfinished">Lähem teave OpenLP kohta</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="496"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="500"/>
         <source>Ctrl+F1</source>
         <translation type="unfinished">Ctrl+F1</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="497"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="501"/>
         <source>&amp;Online Help</source>
         <translation type="unfinished">&amp;Abi veebis</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="499"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="503"/>
         <source>&amp;Web Site</source>
         <translation type="unfinished">&amp;Veebileht</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="501"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="505"/>
         <source>&amp;Auto Detect</source>
         <translation type="unfinished">&amp;Isetuvastus</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="503"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="507"/>
         <source>Use the system language, if available.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="508"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="512"/>
         <source>Set the interface language to %s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="510"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="514"/>
         <source>Add &amp;Tool...</source>
         <translation type="unfinished">Lisa &amp;tööriist...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="512"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="516"/>
         <source>Add an application to the list of tools.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="515"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="519"/>
         <source>&amp;Default</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="517"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="521"/>
         <source>Set the view mode back to the default.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="520"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="524"/>
         <source>&amp;Setup</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="521"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="525"/>
         <source>Set the view mode to Setup.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="524"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="528"/>
         <source>&amp;Live</source>
         <translation type="unfinished">&amp;Otse</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="525"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="529"/>
         <source>Set the view mode to Live.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="702"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="706"/>
         <source>Version %s of OpenLP is now available for download (you are currently running version %s). 
 
 You can download the latest version from &lt;a href=&quot;http://openlp.org/&quot;&gt;http://openlp.org/&lt;/a&gt;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="706"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="710"/>
         <source>OpenLP Version Updated</source>
         <translation type="unfinished">OpenLP uuendus</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="738"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="742"/>
         <source>OpenLP Main Display Blanked</source>
         <translation type="unfinished">OpenLP peakuva on tühi</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="738"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="742"/>
         <source>The Main Display has been blanked out</source>
         <translation type="unfinished">Peakuva on tühi</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="824"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="828"/>
         <source>Save Changes to Service?</source>
         <translation type="unfinished">Kas salvestada teenistusse tehtud muudatused?</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="824"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="828"/>
         <source>Your service has changed. Do you want to save those changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="890"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="894"/>
         <source>Default Theme: %s</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2601,17 +2601,244 @@ The content encoding is not UTF-8.</source>
     </message>
 </context>
 <context>
+    <name>OpenLP.ThemeManager</name>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="684"/>
+        <source>New Theme</source>
+        <translation type="unfinished">Uus kujundus</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="57"/>
+        <source>Create a new theme.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="62"/>
+        <source>Edit Theme</source>
+        <translation type="unfinished">Kujunduse muutmine</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="62"/>
+        <source>Edit a theme.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="67"/>
+        <source>Delete Theme</source>
+        <translation type="unfinished">Teema kustutamine</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="67"/>
+        <source>Delete a theme.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="73"/>
+        <source>Import Theme</source>
+        <translation type="unfinished">Teema importimine</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="73"/>
+        <source>Import a theme.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="78"/>
+        <source>Export Theme</source>
+        <translation type="unfinished">Kujunduse eksportimine</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="78"/>
+        <source>Export a theme.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="90"/>
+        <source>&amp;Edit Theme</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="97"/>
+        <source>&amp;Delete Theme</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="102"/>
+        <source>Set As &amp;Global Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="107"/>
+        <source>E&amp;xport Theme</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="630"/>
+        <source>%s (default)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="196"/>
+        <source>You must select a theme to edit.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="219"/>
+        <source>You must select a theme to delete.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="225"/>
+        <source>Delete Confirmation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="225"/>
+        <source>Delete theme?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="486"/>
+        <source>Error</source>
+        <translation type="unfinished">Viga</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="234"/>
+        <source>You are unable to delete the default theme.</source>
+        <translation type="unfinished">Vaikimisi kujundust pole võimalik kustutada.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="242"/>
+        <source>Theme %s is use in %s plugin.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="249"/>
+        <source>Theme %s is use by the service manager.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="285"/>
+        <source>You have not selected a theme.</source>
+        <translation type="unfinished">Sa ei ole teemat valinud.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="291"/>
+        <source>Save Theme - (%s)</source>
+        <translation type="unfinished">Salvesta kujundus - (%s)</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="308"/>
+        <source>Theme Exported</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="308"/>
+        <source>Your theme has been successfully exported.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="314"/>
+        <source>Theme Export Failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="314"/>
+        <source>Your theme could not be exported due to an error.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="328"/>
+        <source>Select Theme Import File</source>
+        <translation type="unfinished">Importimiseks kujunduse faili valimine</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="328"/>
+        <source>Theme (*.*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="433"/>
+        <source>File is not a valid theme.
+The content encoding is not UTF-8.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="486"/>
+        <source>File is not a valid theme.</source>
+        <translation type="unfinished">See fail ei ole sobilik kujundus.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="576"/>
+        <source>Theme Exists</source>
+        <translation type="unfinished">Kujundus on juba olemas</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="576"/>
+        <source>A theme with this name already exists.  Would you like to overwrite it?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OpenLP.ThemesTab</name>
+    <message>
+        <location filename="openlp/core/ui/themestab.py" line="40"/>
+        <source>Themes</source>
+        <translation type="unfinished">Kujundused</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themestab.py" line="109"/>
+        <source>Global Theme</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themestab.py" line="111"/>
+        <source>Theme Level</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themestab.py" line="113"/>
+        <source>S&amp;ong Level</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themestab.py" line="115"/>
+        <source>Use the theme from each song in the database. If a song doesn&apos;t have a theme associated with it, then use the service&apos;s theme. If the service doesn&apos;t have a theme, then use the global theme.</source>
+        <translation type="unfinished">Iga laulu jaoks kasutatakse andmebaasis sellele määratud kujundust. Kui laulul kujundus puudub, kasutatakse teenistuse teemat. Kui teenistusel kujundus puudub, siis kasutatakse üleüldist teemat.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themestab.py" line="120"/>
+        <source>&amp;Service Level</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themestab.py" line="122"/>
+        <source>Use the theme from the service, overriding any of the individual songs&apos; themes. If the service doesn&apos;t have a theme, then use the global theme.</source>
+        <translation type="unfinished">Kasutatakse teenistuse kujundust, eirates laulude kujundusi. Kui teenistusel kujundust pole, kasutatakse globaalset.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themestab.py" line="126"/>
+        <source>&amp;Global Level</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themestab.py" line="128"/>
+        <source>Use the global theme, overriding any themes associated with either the service or the songs.</source>
+        <translation type="unfinished">Kasutatakse globaalset kujundust, eirates nii teenistuse kui laulu kujundust.</translation>
+    </message>
+</context>
+<context>
     <name>PresentationPlugin</name>
     <message>
-        <location filename="openlp/plugins/presentations/presentationplugin.py" line="135"/>
-        <source>&lt;b&gt;Presentation Plugin&lt;/b&gt; &lt;br&gt; Delivers the ability to show presentations using a number of different programs. The choice of available presentation programs is available to the user in a drop down box.</source>
+        <location filename="openlp/plugins/presentations/presentationplugin.py" line="138"/>
+        <source>&lt;strong&gt;Presentation Plugin&lt;/strong&gt;&lt;br /&gt;The presentation plugin provides the ability to show presentations using a number of different programs. The choice of available presentation programs is available to the user in a drop down box.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>PresentationPlugin.MediaItem</name>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="121"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="129"/>
         <source>Present using:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2621,37 +2848,37 @@ The content encoding is not UTF-8.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="75"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="77"/>
         <source>Select Presentation(s)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="77"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="79"/>
         <source>Automatic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="158"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="187"/>
         <source>A presentation with that filename already exists.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="199"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="228"/>
         <source>You must select an item to delete.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="183"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="212"/>
         <source>This type of presentation is not supported</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="158"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="187"/>
         <source>File Exists</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="183"/>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="212"/>
         <source>Unsupported File</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2664,8 +2891,18 @@ The content encoding is not UTF-8.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="101"/>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="111"/>
         <source>Available Controllers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="118"/>
+        <source>Advanced</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/presentations/lib/presentationtab.py" line="121"/>
+        <source>Allow presentation application to be overriden</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2673,7 +2910,7 @@ The content encoding is not UTF-8.</source>
     <name>RemotePlugin</name>
     <message>
         <location filename="openlp/plugins/remotes/remoteplugin.py" line="73"/>
-        <source>&lt;b&gt;Remote Plugin&lt;/b&gt;&lt;br&gt;This plugin provides the ability to send messages to a running version of openlp on a different computer via a web browser or other app&lt;br&gt;The Primary use for this would be to send alerts from a creche</source>
+        <source>&lt;strong&gt;Remote Plugin&lt;/strong&gt;&lt;br/ &gt;The remote plugin provides the ability to send messages to a running version of OpenLP on a different computer via a web browser or through the remote API.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2704,42 +2941,42 @@ The content encoding is not UTF-8.</source>
     <name>SongUsagePlugin</name>
     <message>
         <location filename="openlp/plugins/songusage/songusageplugin.py" line="62"/>
-        <source>&amp;Song Usage</source>
+        <source>&amp;Song Usage Tracking</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songusage/songusageplugin.py" line="66"/>
-        <source>&amp;Delete recorded data</source>
+        <source>&amp;Delete Tracking Data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songusage/songusageplugin.py" line="68"/>
-        <source>Delete song usage to specified date</source>
+        <source>Delete song usage data up to a specified date.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songusage/songusageplugin.py" line="73"/>
-        <source>&amp;Extract recorded data</source>
+        <source>&amp;Extract Tracking Data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songusage/songusageplugin.py" line="75"/>
-        <source>Generate report on Song Usage</source>
+        <source>Generate a report on song usage.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="84"/>
-        <source>Song Usage Status</source>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="83"/>
+        <source>Toggle Tracking</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="86"/>
-        <source>Start/Stop live song usage recording</source>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="85"/>
+        <source>Toggle the tracking of song usage.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songusage/songusageplugin.py" line="161"/>
-        <source>&lt;b&gt;SongUsage Plugin&lt;/b&gt;&lt;br&gt;This plugin records the use of songs and when they have been used during a live service</source>
+        <location filename="openlp/plugins/songusage/songusageplugin.py" line="160"/>
+        <source>&lt;strong&gt;SongUsage Plugin&lt;/strong&gt;&lt;br /&gt;This plugin tracks the usage of songs in services.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2843,11 +3080,6 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="262"/>
-        <source>&lt;strong&gt;Song Plugin&lt;/strong&gt;&lt;br /&gt;This plugin allows songs to be managed and displayed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="146"/>
         <source>OpenSong (temp menu item)</source>
         <translation type="unfinished"></translation>
@@ -2895,6 +3127,11 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="247"/>
         <source>Error importing OpenLP v2 database(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="262"/>
+        <source>&lt;strong&gt;Songs Plugin&lt;/strong&gt;&lt;br /&gt;The songs plugin provides the ability to display and manage songs.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2956,11 +3193,6 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
     <message>
         <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="411"/>
         <source>&amp;Lyrics:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="413"/>
-        <source>&amp;Verse Order:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3034,11 +3266,6 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
         <translation type="unfinished">Autoriõiguse andmed</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="454"/>
-        <source>CCLI Number:</source>
-        <translation type="unfinished">CCLI number:</translation>
-    </message>
-    <message>
         <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="456"/>
         <source>Comments</source>
         <translation type="unfinished">Kommentaarid</translation>
@@ -3104,11 +3331,6 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="409"/>
-        <source>Alt&amp;ernate Title:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="448"/>
         <source>New &amp;Theme</source>
         <translation type="unfinished"></translation>
@@ -3171,6 +3393,21 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
     <message>
         <location filename="openlp/plugins/songs/forms/editsongform.py" line="374"/>
         <source>This topic is already in the list.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="409"/>
+        <source>Alt&amp;ernate title:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="413"/>
+        <source>&amp;Verse order:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="454"/>
+        <source>CCLI number:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3378,16 +3615,6 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="212"/>
-        <source>%s (%s)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="294"/>
-        <source>Delete Confirmation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="openlp/plugins/songs/lib/mediaitem.py" line="368"/>
         <source>CCLI Licence: </source>
         <translation type="unfinished"></translation>
@@ -3398,23 +3625,28 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="273"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="271"/>
         <source>You must select an item to edit.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="284"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="283"/>
         <source>You must select an item to delete.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/mediaitem.py" line="288"/>
-        <source>Delete song?</source>
+        <source>Are you sure you want to delete the selected song?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/mediaitem.py" line="291"/>
-        <source>Delete %d songs?</source>
+        <source>Are you sure you want to delete the %d selected songs?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="294"/>
+        <source>Delete Song(s)?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3626,7 +3858,7 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/songstab.py" line="68"/>
-        <source>Display Verses on Live Tool bar</source>
+        <source>Display verses on live tool bar</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3654,247 +3886,7 @@ OpenOffice.org must be installed and you must be using an unedited copy of the R
     </message>
 </context>
 <context>
-    <name>Splashscreen</name>
-    <message>
-        <location filename="openlp/core/ui/splashscreen.py" line="34"/>
-        <source>Starting</source>
-        <translation type="unfinished">Käivitumine</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/splashscreen.py" line="62"/>
-        <source>Splash Screen</source>
-        <translation type="unfinished">Käivitusekraan</translation>
-    </message>
-</context>
-<context>
-    <name>ThemeManager</name>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="69"/>
-        <source>Import Theme</source>
-        <translation>Teema importimine</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="64"/>
-        <source>Delete Theme</source>
-        <translation>Teema kustutamine</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="472"/>
-        <source>Error</source>
-        <translation>Viga</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="60"/>
-        <source>Edit Theme</source>
-        <translation>Kujunduse muutmine</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="73"/>
-        <source>Export Theme</source>
-        <translation>Kujunduse eksportimine</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="224"/>
-        <source>You are unable to delete the default theme.</source>
-        <translation>Vaikimisi kujundust pole võimalik kustutada.</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="472"/>
-        <source>File is not a valid theme.</source>
-        <translation>See fail ei ole sobilik kujundus.</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="561"/>
-        <source>Theme Exists</source>
-        <translation>Kujundus on juba olemas</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="280"/>
-        <source>Save Theme - (%s)</source>
-        <translation>Salvesta kujundus - (%s)</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="316"/>
-        <source>Select Theme Import File</source>
-        <translation>Importimiseks kujunduse faili valimine</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="668"/>
-        <source>New Theme</source>
-        <translation>Uus kujundus</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="275"/>
-        <source>You have not selected a theme.</source>
-        <translation>Sa ei ole teemat valinud.</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="57"/>
-        <source>Create a new theme.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="60"/>
-        <source>Edit a theme.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="64"/>
-        <source>Delete a theme.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="69"/>
-        <source>Import a theme.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="73"/>
-        <source>Export a theme.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="84"/>
-        <source>&amp;Edit Theme</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="90"/>
-        <source>&amp;Delete Theme</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="95"/>
-        <source>Set As &amp;Global Default</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="100"/>
-        <source>E&amp;xport Theme</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="614"/>
-        <source>%s (default)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="232"/>
-        <source>Theme %s is use in %s plugin.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="239"/>
-        <source>Theme %s is use by the service manager.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="296"/>
-        <source>Theme Exported</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="296"/>
-        <source>Your theme has been successfully exported.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="302"/>
-        <source>Theme Export Failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="302"/>
-        <source>Your theme could not be exported due to an error.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="316"/>
-        <source>Theme (*.*)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="421"/>
-        <source>File is not a valid theme.
-The content encoding is not UTF-8.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="188"/>
-        <source>You must select a theme to edit.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="210"/>
-        <source>You must select a theme to delete.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="215"/>
-        <source>Delete Confirmation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="215"/>
-        <source>Delete theme?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="561"/>
-        <source>A theme with this name already exists.  Would you like to overwrite it?</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>ThemesTab</name>
-    <message>
-        <location filename="openlp/core/ui/themestab.py" line="126"/>
-        <source>Use the global theme, overriding any themes associated with either the service or the songs.</source>
-        <translation>Kasutatakse globaalset kujundust, eirates nii teenistuse kui laulu kujundust.</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/themestab.py" line="113"/>
-        <source>Use the theme from each song in the database. If a song doesn&apos;t have a theme associated with it, then use the service&apos;s theme. If the service doesn&apos;t have a theme, then use the global theme.</source>
-        <translation>Iga laulu jaoks kasutatakse andmebaasis sellele määratud kujundust. Kui laulul kujundus puudub, kasutatakse teenistuse teemat. Kui teenistusel kujundus puudub, siis kasutatakse üleüldist teemat.</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/themestab.py" line="120"/>
-        <source>Use the theme from the service, overriding any of the individual songs&apos; themes. If the service doesn&apos;t have a theme, then use the global theme.</source>
-        <translation>Kasutatakse teenistuse kujundust, eirates laulude kujundusi. Kui teenistusel kujundust pole, kasutatakse globaalset.</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/themestab.py" line="40"/>
-        <source>Themes</source>
-        <translation>Kujundused</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/themestab.py" line="109"/>
-        <source>Global Theme</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/themestab.py" line="110"/>
-        <source>Theme Level</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/themestab.py" line="111"/>
-        <source>S&amp;ong Level</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/themestab.py" line="118"/>
-        <source>&amp;Service Level</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/themestab.py" line="124"/>
-        <source>&amp;Global Level</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>VerseType</name>
+    <name>SongsPlugin.VerseType</name>
     <message>
         <location filename="openlp/plugins/songs/lib/__init__.py" line="96"/>
         <source>Verse</source>

@@ -66,7 +66,7 @@ class SongsTab(SettingsTab):
         self.SearchAsTypeCheckBox.setText(
             translate('SongsPlugin.SongsTab', 'Enable search as you type'))
         self.SongBarActiveCheckBox.setText(translate('SongsPlugin.SongsTab',
-            'Display Verses on Live Tool bar'))
+            'Display verses on live tool bar'))
 
     def onSearchAsTypeCheckBoxChanged(self, check_state):
         self.song_search = False
