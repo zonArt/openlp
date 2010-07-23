@@ -81,6 +81,9 @@ class PresentationMediaItem(MediaManagerItem):
         self.buildFileMaskString()
 
     def buildFileMaskString(self):
+        """
+        Build the list of file extensions to be used in the Open file dialog
+        """
         fileType = u''
         for controller in self.controllers:
             if self.controllers[controller].enabled():
@@ -139,10 +142,18 @@ class PresentationMediaItem(MediaManagerItem):
         self.populateDisplayTypes()
 
     def rebuild(self):
+        """
+        Rebuild the tab in the media manager when changes are made in
+        the settings
+        """
         self.populateDisplayTypes()
         self.buildFileMaskString()
 
     def populateDisplayTypes(self):
+        """
+        Load the combobox with the enabled presentation controllers,
+        allowing user to select a specific app if settings allow
+        """
         self.DisplayTypeComboBox.clear()
         for item in self.controllers:
             #load the drop down selection
