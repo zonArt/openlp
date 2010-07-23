@@ -27,7 +27,8 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Renderer, ThemeLevel
+from openlp.core.lib import Renderer, ThemeLevel, ServiceItem
+from openlp.core.ui import MainDisplay
 
 log = logging.getLogger(__name__)
 
@@ -54,6 +55,8 @@ class RenderManager(object):
         """
         log.debug(u'Initilisation started')
         self.screens = screens
+        self.display = self.display = MainDisplay(self, screens, False)
+        self.display.setup()
         self.theme_manager = theme_manager
         self.renderer = Renderer()
         self.calculate_default(self.screens.current[u'size'])
@@ -184,9 +187,14 @@ class RenderManager(object):
         footer.append(u'CCLI 123456')
         formatted = self.renderer.format_slide(verse, False)
         #Only Render the first slide page returned
-        image = self.previewDisplay.preview(self.renderer.bg_frame, verse, self.themedata)
-        return image #self.renderer.generate_frame_from_lines(formatted[0],
-            #footer)[u'main']
+        serviceItem = ServiceItem()
+        serviceItem.add_from_text(u'', verse, u'')
+        serviceItem.render_manager = self
+        serviceItem.render()
+        serviceItem.raw_footer = footer
+        self.display.buildHtml(serviceItem)
+        self.display.frame.findFirstElement('div#footer').setInnerXml(serviceItem.foot_text)
+        return #image
 
     def format_slide(self, words):
         """

@@ -35,8 +35,9 @@ log = logging.getLogger()
 
 from openlp.core.lib import Receiver
 from openlp.core.resources import qInitResources
-from openlp.core.ui import MainWindow, SplashScreen, ScreenList
+from openlp.core.ui import SplashScreen, ScreenList
 from openlp.core.utils import AppLocation, LanguageManager
+from openlp.core.ui.mainwindow import MainWindow
 
 application_stylesheet = u"""
 QMainWindow::separator

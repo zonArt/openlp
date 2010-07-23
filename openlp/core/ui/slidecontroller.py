@@ -30,7 +30,7 @@ import os
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
-from openlp.core.ui import HideMode, WebViewer
+from openlp.core.ui import HideMode, MainDisplay
 from openlp.core.lib import OpenLPToolbar, Receiver, resize_image, \
     ItemCapabilities, translate
 
@@ -105,7 +105,7 @@ class SlideController(QtGui.QWidget):
         self.isLive = isLive
         self.parent = parent
         self.screens = screens
-        self.display = WebViewer(self, screens, isLive)
+        self.display = MainDisplay(self, screens, isLive)
         #self.displayManager = self.parent.displayManager
         self.loopList = [
             u'Start Loop',
