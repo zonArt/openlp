@@ -211,7 +211,7 @@ class BGExtract(BibleCommon):
         for verse in verses:
             if verse.sup:
                 verse_list[int(str(verse.sup.contents[0]))] = \
-                    unicode(verse.contents[2])
+                    unicode(verse.contents[-1])
         return SearchResults(bookname, chapter, verse_list)
 
 class CWExtract(BibleCommon):
