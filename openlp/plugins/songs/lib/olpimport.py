@@ -70,11 +70,18 @@ class OldTopic(BaseModel):
 
 class OpenLPSongImport(object):
     """
-
+    The :class:`OpenLPSongImport` class provides OpenLP with the ability to
+    import song databases from other installations of OpenLP.
     """
     def __init__(self, master_manager, source_db):
         """
+        Initialise the import.
 
+        ``master_manager``
+            The song manager for the running OpenLP installation.
+
+        ``source_db``
+            The database providing the data to import.
         """
         self.master_manager = master_manager
         self.import_source = source_db
@@ -82,7 +89,7 @@ class OpenLPSongImport(object):
 
     def import_source_v2_db(self):
         """
-
+        Run the import for an OpenLP version 2 song database.
         """
         engine = create_engine(self.import_source)
         source_meta = MetaData()
