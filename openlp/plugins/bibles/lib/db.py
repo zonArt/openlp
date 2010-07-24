@@ -305,6 +305,13 @@ class BibleDB(QtCore.QObject, Manager):
                 Book.abbreviation.like(book + u'%'))
         return db_book
 
+    def get_books(self):
+        """
+        A wrapper so both local and web bibles have a get_books() method that
+        manager can call.  Used in the media manager advanced search tab.
+        """
+        return self.get_all_objects(Book, order_by_ref=Book.id)
+
     def get_verses(self, reference_list):
         """
         This is probably the most used function. It retrieves the list of

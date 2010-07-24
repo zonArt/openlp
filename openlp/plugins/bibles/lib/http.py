@@ -135,10 +135,10 @@ class HTTPBooks(object):
             u'verses FROM chapters WHERE book_id = ?', (book[u'id'],))
         if chapters:
             return {
-                u'id': chapters[chapter][0],
-                u'book_id': chapters[chapter][1],
-                u'chapter': chapters[chapter][2],
-                u'verses': chapters[chapter][3]
+                u'id': chapters[chapter-1][0],
+                u'book_id': chapters[chapter-1][1],
+                u'chapter': chapters[chapter-1][2],
+                u'verses': chapters[chapter-1][3]
             }
         else:
             return None

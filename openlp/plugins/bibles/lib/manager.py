@@ -198,8 +198,7 @@ class BibleManager(object):
                 u'name': book.name,
                 u'chapters': self.db_cache[bible].get_chapter_count(book.name)
             }
-            for book in self.db_cache[bible].get_all_objects(Book,
-                order_by_ref=Book.id)
+            for book in self.db_cache[bible].get_books()
         ]
 
     def get_chapter_count(self, bible, book):
