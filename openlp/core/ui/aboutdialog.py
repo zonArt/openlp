@@ -127,7 +127,7 @@ class Ui_AboutDialog(object):
         self.aboutNotebook.setTabText(
             self.aboutNotebook.indexOf(self.aboutTab),
             translate('OpenLP.AboutForm', 'About'))
-        self.creditsTextEdit.setPlainText(translate('OpenLP.AboutForm', 
+        self.creditsTextEdit.setPlainText(translate('OpenLP.AboutForm',
             'Project Lead\n'
             '    Raoul "superfly" Snyman\n'
             '\n'
@@ -142,9 +142,12 @@ class Ui_AboutDialog(object):
             '\n'
             'Contributors\n'
             '    Meinert "m2j" Jordan\n'
+            '    Andreas "googol" Preikschat\n'
             '    Christian "crichter" Richter\n'
+            '    Philip "Phill" Ridout\n'
             '    Maikel Stuivenberg\n'
             '    Carsten "catini" Tingaard\n'
+            '    Frode "frodus" Woldsund\n'
             '\n'
             'Testers\n'
             '    Philip "Phill" Ridout\n'
@@ -155,12 +158,12 @@ class Ui_AboutDialog(object):
             '    Tim "TRB143" Bentley (Fedora)\n'
             '    Michael "cocooncrash" Gorven (Ubuntu)\n'
             '    Matthias "matthub" Hub (Mac OS X)\n'
-            '    Raoul "superfly" Snyman (Windows)\n'
+            '    Raoul "superfly" Snyman (Windows, Ubuntu)\n'
         ))
         self.aboutNotebook.setTabText(
             self.aboutNotebook.indexOf(self.creditsTab),
             translate('OpenLP.AboutForm', 'Credits'))
-        self.licenseTextEdit.setPlainText(translate('OpenLP.AboutForm', 
+        self.licenseTextEdit.setPlainText(translate('OpenLP.AboutForm',
             'Copyright \xa9 2004-2010 Raoul Snyman\n'
             'Portions copyright \xa9 2004-2010 '
             'Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri, '
