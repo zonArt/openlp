@@ -38,6 +38,8 @@ class SongsTab(SettingsTab):
         self.setObjectName(u'SongsTab')
         self.tabTitleVisible = translate('SongsPlugin.SongsTab', 'Songs')
         self.SongsLayout = QtGui.QFormLayout(self)
+        self.SongsLayout.setSpacing(8)
+        self.SongsLayout.setMargin(8)
         self.SongsLayout.setObjectName(u'SongsLayout')
         self.SongsModeGroupBox = QtGui.QGroupBox(self)
         self.SongsModeGroupBox.setObjectName(u'SongsModeGroupBox')

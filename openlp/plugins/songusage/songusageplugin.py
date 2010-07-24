@@ -76,7 +76,6 @@ class SongUsagePlugin(Plugin):
             translate('SongUsagePlugin', 'Generate a report on song usage.'))
         self.SongUsageReport.setObjectName(u'SongUsageReport')
         #SongUsage activation
-        SongUsageIcon = build_icon(u':/plugins/plugin_songusage.png')
         self.SongUsageStatus = QtGui.QAction(tools_menu)
         self.SongUsageStatus.setCheckable(True)
         self.SongUsageStatus.setChecked(False)
