@@ -198,20 +198,20 @@ class BGExtract(BibleCommon):
         urlstring = u'http://www.biblegateway.com/passage/?search=%s+%s' \
             u'&version=%s' % (bookname, chapter, version)
         log.debug(u'BibleGateway url = %s' % urlstring)
-        # Let's get the page, and then open it in BeautifulSoup, so as to
-        # attempt to make "easy" work of bad HTML.
         page = urllib2.urlopen(urlstring)
         Receiver.send_message(u'openlp_process_events')
         soup = BeautifulSoup(page)
         Receiver.send_message(u'openlp_process_events')
-        text = str(soup.find(u'div', u'result-text-style-normal'))
-        useful_soup = BeautifulSoup(text)
-        verses = useful_soup.findAll(u'p')
+        content = soup.find(u'div', u'result-text-style-normal')
+        verse_count = len(soup.findAll(u'sup', u'versenum'))
+        found_count = 0
         verse_list = {}
-        for verse in verses:
-            if verse.sup:
-                verse_list[int(str(verse.sup.contents[0]))] = \
-                    unicode(verse.contents[-1])
+        while found_count < verse_count:
+            content = content.findNext(u'sup', u'versenum')
+            raw_verse_num = content.next
+            raw_verse_text = raw_verse_num.next
+            verse_list[int(str(raw_verse_num))] = unicode(raw_verse_text)
+            found_count += 1
         return SearchResults(bookname, chapter, verse_list)
 
 class CWExtract(BibleCommon):
