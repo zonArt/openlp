@@ -442,6 +442,7 @@ class GeneralTab(SettingsTab):
             self.screens.set_current_display(self.monitorNumber)
             Receiver.send_message(u'config_screen_changed')
         Receiver.send_message(u'config_updated')
+        self.postSetUp()
 
     def postSetUp(self):
         self.screens.override[u'size'] = QtCore.QRect(

@@ -396,6 +396,11 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'%s_slide_cache' % self.typePrefix), self.slideCache)
 
     def screenSizeChanged(self):
+        """
+        Settings dialog has changed the screen size of adjust output and
+        screen previews
+        """
+        log.debug(u'screenSizeChanged live = %s' % self.isLive)
         # rebuild display as screen size changed
         self.display = MainDisplay(self, self.screens, self.isLive)
         self.ratio = float(self.screens.current[u'size'].width()) / \
@@ -410,6 +415,7 @@ class SlideController(QtGui.QWidget):
         Handle changes of width from the splitter between the live and preview
         controller.  Event only issues when changes have finished
         """
+        log.debug(u'widthChanged live = %s' % self.isLive)
         width = self.parent.ControlSplitter.sizes()[self.split]
         height = width * self.parent.RenderManager.screen_ratio
         self.PreviewListWidget.setColumnWidth(0, width)
@@ -487,7 +493,7 @@ class SlideController(QtGui.QWidget):
         """
         Method to update the service item if the screen has changed
         """
-        log.debug(u'refreshServiceItem')
+        log.debug(u'refreshServiceItem live = %s' % self.isLive)
         if self.serviceItem:
             if self.serviceItem.is_text() or self.serviceItem.is_image():
                 item = self.serviceItem
@@ -499,7 +505,7 @@ class SlideController(QtGui.QWidget):
         Method to install the service item into the controller
         Called by plugins
         """
-        log.debug(u'addServiceItem')
+        log.debug(u'addServiceItem live = %s' % self.isLive)
         before = time.time()
         item.render()
         log.log(15, u'Rendering took %4s' % (time.time() - before))
@@ -522,7 +528,7 @@ class SlideController(QtGui.QWidget):
         request the correct toolbar for the plugin.
         Called by ServiceManager
         """
-        log.debug(u'addServiceManagerItem')
+        log.debug(u'addServiceManagerItem live = %s' % self.isLive)
         #If service item is the same as the current on only change slide
         if item.__eq__(self.serviceItem):
             self.PreviewListWidget.selectRow(slideno)
@@ -535,7 +541,7 @@ class SlideController(QtGui.QWidget):
         Loads a ServiceItem into the system from ServiceManager
         Display the slide number passed
         """
-        log.debug(u'processManagerItem')
+        log.debug(u'processManagerItem live = %s' % self.isLive)
         self.onStopLoop()
         #If old item was a command tell it to stop
         if self.serviceItem:
@@ -679,7 +685,7 @@ class SlideController(QtGui.QWidget):
         """
         Allow the main display to blank the main display at startup time
         """
-        log.debug(u'mainDisplaySetBackground')
+        log.debug(u'mainDisplaySetBackground live = %s' % self.isLive)
         if not self.display.primary:
             self.display.hideDisplay()
 
@@ -819,8 +825,7 @@ class SlideController(QtGui.QWidget):
             row)
 
     def updatePreview(self):
-        rm = self.parent.RenderManager
-        if not rm.screens.current[u'primary']:
+        if not self.screens.current[u'primary']:
             # Grab now, but try again in a couple of seconds if slide change
             # is slow
             QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
@@ -831,9 +836,8 @@ class SlideController(QtGui.QWidget):
             self.SlidePreview.setPixmap(label.pixmap())
 
     def grabMainDisplay(self):
-        rm = self.parent.RenderManager
         winid = QtGui.QApplication.desktop().winId()
-        rect = rm.screens.current[u'size']
+        rect = self.screens.current[u'size']
         winimg = QtGui.QPixmap.grabWindow(winid, rect.x(),
             rect.y(), rect.width(), rect.height())
         self.SlidePreview.setPixmap(winimg)
