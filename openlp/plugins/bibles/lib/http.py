@@ -104,6 +104,7 @@ class HTTPBooks(object):
         """
         if not isinstance(name, unicode):
             name = unicode(name)
+        name = name.title()
         books = HTTPBooks.run_sql(u'SELECT id, testament_id, name, '
                 u'abbreviation, chapters FROM books WHERE name = ? OR '
                 u'abbreviation = ?', (name, name))
