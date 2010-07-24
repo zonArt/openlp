@@ -29,7 +29,7 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import SettingsManager
 from openlp.core.utils import AppLocation
-from openlp.plugins.bibles.lib.db import BibleDB, Book, BibleMeta
+from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
 
 from common import parse_reference
 from opensong import OpenSongBible
