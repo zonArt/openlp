@@ -24,10 +24,11 @@
 ###############################################################################
 
 import logging
-import urllib2
 import os
-import sqlite3
 import re
+import sqlite3
+import urllib
+import urllib2
 
 from BeautifulSoup import BeautifulSoup, Tag, NavigableString
 
@@ -197,12 +198,14 @@ class BGExtract(BibleCommon):
             Chapter number
         """
         log.debug(u'get_bible_chapter %s, %s, %s', version, bookname, chapter)
-        urlstring = u'http://www.biblegateway.com/passage/?search=%s+%s' \
-            u'&version=%s' % (bookname, chapter, version)
-        log.debug(u'BibleGateway url = %s' % urlstring)
+        url_params = urllib.urlencode(
+            {u'search': u'%s %s' % (bookname, chapter),
+            u'version': u'%s' % version})
         # Let's get the page, and then open it in BeautifulSoup, so as to
         # attempt to make "easy" work of bad HTML.
-        page = urllib2.urlopen(urlstring)
+        page = urllib2.urlopen(
+            u'http://www.biblegateway.com/passage/?%s' % url_params)
+        log.debug(u'BibleGateway url = %s' % page.geturl())
         Receiver.send_message(u'openlp_process_events')
         soup = BeautifulSoup(page)
         Receiver.send_message(u'openlp_process_events')
