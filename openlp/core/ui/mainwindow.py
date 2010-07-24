@@ -385,127 +385,149 @@ class Ui_MainWindow(object):
         """
         Set up the translation system
         """
-        MainWindow.mainTitle = translate('MainWindow', 'OpenLP 2.0')
-        MainWindow.language = translate('MainWindow', 'English')
+        MainWindow.mainTitle = translate('OpenLP.MainWindow', 'OpenLP 2.0')
+        MainWindow.language = translate('OpenLP.MainWindow', 'English')
         MainWindow.setWindowTitle(MainWindow.mainTitle)
-        self.FileMenu.setTitle(translate('MainWindow', '&File'))
-        self.FileImportMenu.setTitle(translate('MainWindow', '&Import'))
-        self.FileExportMenu.setTitle(translate('MainWindow', '&Export'))
-        self.ViewMenu.setTitle(translate('MainWindow', '&View'))
-        self.ViewModeMenu.setTitle(translate('MainWindow', 'M&ode'))
-        self.ToolsMenu.setTitle(translate('MainWindow', '&Tools'))
-        self.SettingsMenu.setTitle(translate('MainWindow', '&Settings'))
-        self.SettingsLanguageMenu.setTitle(translate('MainWindow',
+        self.FileMenu.setTitle(translate('OpenLP.MainWindow', '&File'))
+        self.FileImportMenu.setTitle(translate('OpenLP.MainWindow', '&Import'))
+        self.FileExportMenu.setTitle(translate('OpenLP.MainWindow', '&Export'))
+        self.ViewMenu.setTitle(translate('OpenLP.MainWindow', '&View'))
+        self.ViewModeMenu.setTitle(translate('OpenLP.MainWindow', 'M&ode'))
+        self.ToolsMenu.setTitle(translate('OpenLP.MainWindow', '&Tools'))
+        self.SettingsMenu.setTitle(translate('OpenLP.MainWindow', '&Settings'))
+        self.SettingsLanguageMenu.setTitle(translate('OpenLP.MainWindow',
             '&Language'))
-        self.HelpMenu.setTitle(translate('MainWindow', '&Help'))
+        self.HelpMenu.setTitle(translate('OpenLP.MainWindow', '&Help'))
         self.MediaManagerDock.setWindowTitle(
-            translate('MainWindow', 'Media Manager'))
+            translate('OpenLP.MainWindow', 'Media Manager'))
         self.ServiceManagerDock.setWindowTitle(
-            translate('MainWindow', 'Service Manager'))
+            translate('OpenLP.MainWindow', 'Service Manager'))
         self.ThemeManagerDock.setWindowTitle(
-            translate('MainWindow', 'Theme Manager'))
-        self.FileNewItem.setText(translate('MainWindow', '&New'))
-        self.FileNewItem.setToolTip(translate('MainWindow', 'New Service'))
+            translate('OpenLP.MainWindow', 'Theme Manager'))
+        self.FileNewItem.setText(translate('OpenLP.MainWindow', '&New'))
+        self.FileNewItem.setToolTip(
+            translate('OpenLP.MainWindow', 'New Service'))
         self.FileNewItem.setStatusTip(
-            translate('MainWindow', 'Create a new service.'))
-        self.FileNewItem.setShortcut(translate('MainWindow', 'Ctrl+N'))
-        self.FileOpenItem.setText(translate('MainWindow', '&Open'))
-        self.FileOpenItem.setToolTip(translate('MainWindow', 'Open Service'))
+            translate('OpenLP.MainWindow', 'Create a new service.'))
+        self.FileNewItem.setShortcut(translate('OpenLP.MainWindow', 'Ctrl+N'))
+        self.FileOpenItem.setText(translate('OpenLP.MainWindow', '&Open'))
+        self.FileOpenItem.setToolTip(
+            translate('OpenLP.MainWindow', 'Open Service'))
         self.FileOpenItem.setStatusTip(
-            translate('MainWindow', 'Open an existing service.'))
-        self.FileOpenItem.setShortcut(translate('MainWindow', 'Ctrl+O'))
-        self.FileSaveItem.setText(translate('MainWindow', '&Save'))
-        self.FileSaveItem.setToolTip(translate('MainWindow', 'Save Service'))
+            translate('OpenLP.MainWindow', 'Open an existing service.'))
+        self.FileOpenItem.setShortcut(translate('OpenLP.MainWindow', 'Ctrl+O'))
+        self.FileSaveItem.setText(translate('OpenLP.MainWindow', '&Save'))
+        self.FileSaveItem.setToolTip(
+            translate('OpenLP.MainWindow', 'Save Service'))
         self.FileSaveItem.setStatusTip(
-            translate('MainWindow', 'Save the current service to disk.'))
-        self.FileSaveItem.setShortcut(translate('MainWindow', 'Ctrl+S'))
-        self.FileSaveAsItem.setText(translate('MainWindow', 'Save &As...'))
+            translate('OpenLP.MainWindow', 'Save the current service to disk.'))
+        self.FileSaveItem.setShortcut(translate('OpenLP.MainWindow', 'Ctrl+S'))
+        self.FileSaveAsItem.setText(
+            translate('OpenLP.MainWindow', 'Save &As...'))
         self.FileSaveAsItem.setToolTip(
-            translate('MainWindow', 'Save Service As'))
-        self.FileSaveAsItem.setStatusTip(translate('MainWindow',
+            translate('OpenLP.MainWindow', 'Save Service As'))
+        self.FileSaveAsItem.setStatusTip(translate('OpenLP.MainWindow',
             'Save the current service under a new name.'))
-        self.FileSaveAsItem.setShortcut(translate('MainWindow', 'Ctrl+Shift+S'))
-        self.FileExitItem.setText(translate('MainWindow', 'E&xit'))
-        self.FileExitItem.setStatusTip(translate('MainWindow', 'Quit OpenLP'))
-        self.FileExitItem.setShortcut(translate('MainWindow', 'Alt+F4'))
-        self.ImportThemeItem.setText(translate('MainWindow', '&Theme'))
-        self.ImportLanguageItem.setText(translate('MainWindow', '&Language'))
-        self.ExportThemeItem.setText(translate('MainWindow', '&Theme'))
-        self.ExportLanguageItem.setText(translate('MainWindow', '&Language'))
-        self.SettingsConfigureItem.setText(translate('MainWindow',
-            '&Configure OpenLP...'))
+        self.FileSaveAsItem.setShortcut(
+            translate('OpenLP.MainWindow', 'Ctrl+Shift+S'))
+        self.FileExitItem.setText(
+            translate('OpenLP.MainWindow', 'E&xit'))
+        self.FileExitItem.setStatusTip(
+            translate('OpenLP.MainWindow', 'Quit OpenLP'))
+        self.FileExitItem.setShortcut(
+            translate('OpenLP.MainWindow', 'Alt+F4'))
+        self.ImportThemeItem.setText(
+            translate('OpenLP.MainWindow', '&Theme'))
+        self.ImportLanguageItem.setText(
+            translate('OpenLP.MainWindow', '&Language'))
+        self.ExportThemeItem.setText(
+            translate('OpenLP.MainWindow', '&Theme'))
+        self.ExportLanguageItem.setText(
+            translate('OpenLP.MainWindow', '&Language'))
+        self.SettingsConfigureItem.setText(
+            translate('OpenLP.MainWindow', '&Configure OpenLP...'))
         self.ViewMediaManagerItem.setText(
-            translate('MainWindow', '&Media Manager'))
+            translate('OpenLP.MainWindow', '&Media Manager'))
         self.ViewMediaManagerItem.setToolTip(
-            translate('MainWindow', 'Toggle Media Manager'))
-        self.ViewMediaManagerItem.setStatusTip(translate('MainWindow',
+            translate('OpenLP.MainWindow', 'Toggle Media Manager'))
+        self.ViewMediaManagerItem.setStatusTip(translate('OpenLP.MainWindow',
             'Toggle the visibility of the media manager.'))
-        self.ViewMediaManagerItem.setShortcut(translate('MainWindow', 'F8'))
+        self.ViewMediaManagerItem.setShortcut(
+            translate('OpenLP.MainWindow', 'F8'))
         self.ViewThemeManagerItem.setText(
-            translate('MainWindow', '&Theme Manager'))
+            translate('OpenLP.MainWindow', '&Theme Manager'))
         self.ViewThemeManagerItem.setToolTip(
-            translate('MainWindow', 'Toggle Theme Manager'))
-        self.ViewThemeManagerItem.setStatusTip(translate('MainWindow',
+            translate('OpenLP.MainWindow', 'Toggle Theme Manager'))
+        self.ViewThemeManagerItem.setStatusTip(translate('OpenLP.MainWindow',
             'Toggle the visibility of the theme manager.'))
-        self.ViewThemeManagerItem.setShortcut(translate('MainWindow', 'F10'))
+        self.ViewThemeManagerItem.setShortcut(
+            translate('OpenLP.MainWindow', 'F10'))
         self.ViewServiceManagerItem.setText(
-            translate('MainWindow', '&Service Manager'))
+            translate('OpenLP.MainWindow', '&Service Manager'))
         self.ViewServiceManagerItem.setToolTip(
-            translate('MainWindow', 'Toggle Service Manager'))
-        self.ViewServiceManagerItem.setStatusTip(translate('MainWindow',
+            translate('OpenLP.MainWindow', 'Toggle Service Manager'))
+        self.ViewServiceManagerItem.setStatusTip(translate('OpenLP.MainWindow',
             'Toggle the visibility of the service manager.'))
-        self.ViewServiceManagerItem.setShortcut(translate('MainWindow', 'F9'))
+        self.ViewServiceManagerItem.setShortcut(
+            translate('OpenLP.MainWindow', 'F9'))
         self.ViewPreviewPanel.setText(
-            translate('MainWindow', '&Preview Panel'))
+            translate('OpenLP.MainWindow', '&Preview Panel'))
         self.ViewPreviewPanel.setToolTip(
-            translate('MainWindow', 'Toggle Preview Panel'))
-        self.ViewPreviewPanel.setStatusTip(translate('MainWindow',
+            translate('OpenLP.MainWindow', 'Toggle Preview Panel'))
+        self.ViewPreviewPanel.setStatusTip(translate('OpenLP.MainWindow',
             'Toggle the visibility of the preview panel.'))
-        self.ViewPreviewPanel.setShortcut(translate('MainWindow', 'F11'))
+        self.ViewPreviewPanel.setShortcut(
+            translate('OpenLP.MainWindow', 'F11'))
         self.ViewLivePanel.setText(
-            translate('MainWindow', '&Live Panel'))
+            translate('OpenLP.MainWindow', '&Live Panel'))
         self.ViewLivePanel.setToolTip(
-            translate('MainWindow', 'Toggle Live Panel'))
-        self.ViewLivePanel.setStatusTip(translate('MainWindow',
+            translate('OpenLP.MainWindow', 'Toggle Live Panel'))
+        self.ViewLivePanel.setStatusTip(translate('OpenLP.MainWindow',
             'Toggle the visibility of the live panel.'))
-        self.ViewLivePanel.setShortcut(translate('MainWindow', 'F12'))
-        self.SettingsPluginListItem.setText(translate('MainWindow',
+        self.ViewLivePanel.setShortcut(
+            translate('OpenLP.MainWindow', 'F12'))
+        self.SettingsPluginListItem.setText(translate('OpenLP.MainWindow',
             '&Plugin List'))
         self.SettingsPluginListItem.setStatusTip(
-            translate('MainWindow', 'List the Plugins'))
+            translate('OpenLP.MainWindow', 'List the Plugins'))
         self.SettingsPluginListItem.setShortcut(
-            translate('MainWindow', 'Alt+F7'))
+            translate('OpenLP.MainWindow', 'Alt+F7'))
         self.HelpDocumentationItem.setText(
-            translate('MainWindow', '&User Guide'))
-        self.HelpAboutItem.setText(translate('MainWindow', '&About'))
+            translate('OpenLP.MainWindow', '&User Guide'))
+        self.HelpAboutItem.setText(translate('OpenLP.MainWindow', '&About'))
         self.HelpAboutItem.setStatusTip(
-            translate('MainWindow', 'More information about OpenLP'))
-        self.HelpAboutItem.setShortcut(translate('MainWindow', 'Ctrl+F1'))
+            translate('OpenLP.MainWindow', 'More information about OpenLP'))
+        self.HelpAboutItem.setShortcut(translate('OpenLP.MainWindow', 'Ctrl+F1'))
         self.HelpOnlineHelpItem.setText(
-            translate('MainWindow', '&Online Help'))
-        self.HelpWebSiteItem.setText(translate('MainWindow', '&Web Site'))
-        self.AutoLanguageItem.setText(translate('MainWindow', '&Auto Detect'))
+            translate('OpenLP.MainWindow', '&Online Help'))
+        self.HelpWebSiteItem.setText(
+            translate('OpenLP.MainWindow', '&Web Site'))
+        self.AutoLanguageItem.setText(
+            translate('OpenLP.MainWindow', '&Auto Detect'))
         self.AutoLanguageItem.setStatusTip(
-            translate('MainWindow', 'Use the system language, if available.'))
+            translate('OpenLP.MainWindow',
+                'Use the system language, if available.'))
         for item in self.LanguageGroup.actions():
             item.setText(item.objectName())
-            item.setStatusTip(unicode(translate('MainWindow',
+            item.setStatusTip(unicode(translate('OpenLP.MainWindow',
                 'Set the interface language to %s')) % item.objectName())
-        self.ToolsAddToolItem.setText(translate('MainWindow', 'Add &Tool...'))
+        self.ToolsAddToolItem.setText(
+            translate('OpenLP.MainWindow', 'Add &Tool...'))
         self.ToolsAddToolItem.setStatusTip(
-            translate('MainWindow',
+            translate('OpenLP.MainWindow',
                 'Add an application to the list of tools.'))
-        self.ModeDefaultItem.setText(translate('MainWindow', '&Default'))
+        self.ModeDefaultItem.setText(
+            translate('OpenLP.MainWindow', '&Default'))
         self.ModeDefaultItem.setStatusTip(
-            translate('MainWindow',
+            translate('OpenLP.MainWindow',
                 'Set the view mode back to the default.'))
-        self.ModeSetupItem.setText(translate('MainWindow', '&Setup'))
+        self.ModeSetupItem.setText(translate('OpenLP.MainWindow', '&Setup'))
         self.ModeSetupItem.setStatusTip(
-            translate('MainWindow',
+            translate('OpenLP.MainWindow',
                 'Set the view mode to Setup.'))
-        self.ModeLiveItem.setText(translate('MainWindow', '&Live'))
+        self.ModeLiveItem.setText(translate('OpenLP.MainWindow', '&Live'))
         self.ModeLiveItem.setStatusTip(
-            translate('MainWindow',
+            translate('OpenLP.MainWindow',
                 'Set the view mode to Live.'))
 
 
@@ -681,12 +703,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Triggered by delay thread.
         """
         app_version = self.applicationVersion[u'full']
-        version_text = unicode(translate('MainWindow', 'Version %s of OpenLP '
-            'is now available for download (you are currently running version '
-            ' %s). \n\nYou can download the latest version from '
-            'http://openlp.org'))
+        version_text = unicode(translate('OpenLP.MainWindow',
+            'Version %s of OpenLP is now available for download (you are '
+            'currently running version %s). \n\nYou can download the latest '
+            'version from <a href="http://openlp.org/">http://openlp.org/</a>.'))
         QtGui.QMessageBox.question(self,
-            translate('MainWindow', 'OpenLP Version Updated'),
+            translate('OpenLP.MainWindow', 'OpenLP Version Updated'),
             version_text % (version, app_version),
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
             QtGui.QMessageBox.Ok)
@@ -718,8 +740,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             if settings.value(u'blank warning',
                 QtCore.QVariant(False)).toBool():
                 QtGui.QMessageBox.question(self,
-                    translate('MainWindow', 'OpenLP Main Display Blanked'),
-                    translate('MainWindow',
+                    translate('OpenLP.MainWindow',
+                        'OpenLP Main Display Blanked'),
+                    translate('OpenLP.MainWindow',
                          'The Main Display has been blanked out'))
         settings.endGroup()
 
@@ -803,8 +826,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         if self.serviceNotSaved:
             ret = QtGui.QMessageBox.question(self,
-                translate('MainWindow', 'Save Changes to Service?'),
-                translate('MainWindow', 'Your service has changed. '
+                translate('OpenLP.MainWindow', 'Save Changes to Service?'),
+                translate('OpenLP.MainWindow', 'Your service has changed. '
                     'Do you want to save those changes?'),
                 QtGui.QMessageBox.StandardButtons(
                     QtGui.QMessageBox.Cancel |
@@ -869,7 +892,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def defaultThemeChanged(self, theme):
         self.DefaultThemeLabel.setText(
-            unicode(translate('MainWindow', 'Default Theme: %s')) % theme)
+            unicode(translate('OpenLP.MainWindow', 'Default Theme: %s')) % theme)
 
     def toggleMediaManager(self, visible):
         if self.MediaManagerDock.isVisible() != visible:

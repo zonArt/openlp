@@ -45,7 +45,7 @@ class AdvancedTab(SettingsTab):
         Configure the UI elements for the tab.
         """
         self.setObjectName(u'AdvancedTab')
-        self.tabTitleVisible = translate('AdvancedTab', 'Advanced')
+        self.tabTitleVisible = translate('OpenLP.AdvancedTab', 'Advanced')
         self.advancedTabLayout = QtGui.QHBoxLayout(self)
         self.advancedTabLayout.setSpacing(8)
         self.advancedTabLayout.setMargin(8)
@@ -131,12 +131,12 @@ class AdvancedTab(SettingsTab):
         """
         Setup the interface translation strings.
         """
-        self.uiGroupBox.setTitle(translate('AdvancedTab', 'UI Settings'))
+        self.uiGroupBox.setTitle(translate('OpenLP.AdvancedTab', 'UI Settings'))
         self.recentLabel.setText(
-            translate('AdvancedTab', 'Number of recent files to display:'))
-        self.mediaPluginCheckBox.setText(translate('AdvancedTab',
-            'Save currently selected media manager plugin'))
-        self.doubleClickLiveCheckBox.setText(translate('AdvancedTab',
+            translate('OpenLP.AdvancedTab', 'Number of recent files to display:'))
+        self.mediaPluginCheckBox.setText(translate('OpenLP.AdvancedTab',
+            'Remember active media manager tab on startup'))
+        self.doubleClickLiveCheckBox.setText(translate('OpenLP.AdvancedTab',
             'Double-click to send items straight to live (requires restart)'))
 #        self.sharedDirGroupBox.setTitle(
 #            translate('AdvancedTab', 'Central Data Store'))
@@ -188,3 +188,4 @@ class AdvancedTab(SettingsTab):
         self.sharedLabel.setEnabled(checked)
         self.sharedTextEdit.setEnabled(checked)
         self.sharedPushButton.setEnabled(checked)
+

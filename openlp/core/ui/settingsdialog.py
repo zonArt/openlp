@@ -63,5 +63,5 @@ class Ui_SettingsDialog(object):
         QtCore.QMetaObject.connectSlotsByName(SettingsDialog)
 
     def retranslateUi(self, SettingsDialog):
-        SettingsDialog.setWindowTitle(translate('SettingsForm',
+        SettingsDialog.setWindowTitle(translate('OpenLP.SettingsForm',
             'Configure OpenLP'))

@@ -43,9 +43,9 @@ class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
 
     def accept(self):
         ret = QtGui.QMessageBox.question(self,
-            translate('SongsPlugin.SongUsageDeleteForm',
+            translate('SongUsagePlugin.SongUsageDeleteForm',
                 'Delete Selected Song Usage Events?'),
-            translate('SongsPlugin.SongUsageDeleteForm',
+            translate('SongUsagePlugin.SongUsageDeleteForm',
                 'Are you sure you want to delete selected Song Usage data?'),
             QtGui.QMessageBox.StandardButtons(
                 QtGui.QMessageBox.Ok |
@@ -56,3 +56,4 @@ class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
             self.songusagemanager.delete_all_objects(SongUsageItem,
                 SongUsageItem.usagedate <= deleteDate)
         self.close()
+

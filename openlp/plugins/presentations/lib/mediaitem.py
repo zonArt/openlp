@@ -184,9 +184,9 @@ class PresentationMediaItem(MediaManagerItem):
             filename = os.path.split(unicode(file))[1]
             if titles.count(filename) > 0:
                 if not initialLoad:
-                    QtGui.QMessageBox.critical(
-                        self, translate('PresentationPlugin.MediaItem',
-                        'File exists'),
+                    QtGui.QMessageBox.critical(self,
+                        translate('PresentationPlugin.MediaItem',
+                        'File Exists'),
                         translate('PresentationPlugin.MediaItem',
                         'A presentation with that filename already exists.'),
                         QtGui.QMessageBox.Ok)
@@ -211,7 +211,7 @@ class PresentationMediaItem(MediaManagerItem):
                 else:
                     QtGui.QMessageBox.critical(
                         self, translate('PresentationPlugin.MediaItem',
-                        'Unsupported file'),
+                        'Unsupported File'),
                         translate('PresentationPlugin.MediaItem',
                         'This type of presentation is not supported'),
                         QtGui.QMessageBox.Ok)
@@ -299,3 +299,4 @@ class PresentationMediaItem(MediaManagerItem):
                 if filetype in self.controllers[controller].alsosupports:
                     return controller
         return None
+

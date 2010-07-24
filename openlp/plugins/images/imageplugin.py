@@ -48,12 +48,15 @@ class ImagePlugin(Plugin):
         return ImageMediaItem(self, self.icon, self.name)
 
     def about(self):
-        about_text = translate('ImagePlugin', '<b>Image Plugin'
-            '</b><br>Allows images of all types to be displayed. If a number '
-            'of images are selected together and presented on the live '
-            'controller it is possible to turn them into a timed loop.<br<br>'
-            'From the plugin if the <i>Override background</i> is chosen and '
-            'an image is selected any songs which are rendered will use the '
-            'selected image from the background instead of the one provied by '
-            'the theme.<br>')
+        about_text = translate('ImagePlugin', '<strong>Image Plugin</strong>'
+            '<br />The image plugin provides displaying of images.<br />One '
+            'of the distinguishing features of this plugin is the ability to '
+            'group a number of images together in the service manager, making '
+            'the displaying of multiple images easier. This plugin can also '
+            'make use of OpenLP\'s "timed looping" feature to create a slide '
+            'show that runs automatically. In addition to this, images from '
+            'the plugin can be used to override the current theme\'s '
+            'background, which renders text-based items like songs with the '
+            'selected image as a background instead of the background '
+            'provided by the theme.')
         return about_text
