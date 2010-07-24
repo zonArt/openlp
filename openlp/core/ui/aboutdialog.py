@@ -159,6 +159,13 @@ class Ui_AboutDialog(object):
             '    Michael "cocooncrash" Gorven (Ubuntu)\n'
             '    Matthias "matthub" Hub (Mac OS X)\n'
             '    Raoul "superfly" Snyman (Windows, Ubuntu)\n'
+            '\n'
+            'Built With\n'
+            '    Python: http://www.python.org/\n'
+            '    Qt4: http://qt.nokia.com/\n'
+            '    PyQt4: http://www.riverbankcomputing.co.uk/software/pyqt/'
+            'intro\n'
+            '    Oxygen Icons: http://oxygen-icons.org/\n'
         ))
         self.aboutNotebook.setTabText(
             self.aboutNotebook.indexOf(self.creditsTab),
