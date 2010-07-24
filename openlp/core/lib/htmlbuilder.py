@@ -40,6 +40,7 @@ HTMLSRC = u"""
 %s
 %s
 %s
+%s
 </style>
 <script language="javascript">
     var t = null;
@@ -74,6 +75,7 @@ HTMLSRC = u"""
 <div id="footer" class="footer"></div>
 <div id="alert"></div>
 <video id="video"></video>
+<blank id="blank"></blank>
 %s
 </body>
 </html>
@@ -83,11 +85,13 @@ def build_html(item, screen, alert):
     height = screen[u'size'].height()
     html = HTMLSRC % (build_video(width, height),
                       build_image(width, height),
-                      build_lyrics(item, width, height),
-                      build_footer(item, width, height),
-                      build_alert(width, height, alert),
+                      build_lyrics(item),
+                      build_footer(item),
+                      build_alert(width, alert),
                       build_image(width, height),
+                      build_blank(width, height),
                       build_image_src(item.bg_frame))
+    print html
     return html
 
 def build_video(width, height):
@@ -103,6 +107,18 @@ def build_video(width, height):
     """
     return video % (width, height)
 
+def build_blank(width, height):
+    blank = """
+    #blank {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        width: %spx
+        height: %spx;
+        z-index:10;
+    }
+    """
+    return blank % (width, height)
 
 def build_image(width, height):
     image = """
@@ -124,7 +140,7 @@ def build_image_src(image):
     """
     return image_src % image_to_byte(image)
 
-def build_lyrics(item, width, height):
+def build_lyrics(item):
     lyrics = """
     #lyrics {position: absolute; %s z-index:3; %s; %s %s }
     table {border=0;margin=0padding=0;}
@@ -136,9 +152,10 @@ def build_lyrics(item, width, height):
     font = u''
     text = u''
     if theme:
-        position =  u' left: %spx; top: %spx; width: %spx; height: %spx; ' %\
-            (item.main.x(),  item.main.y(), item.main.width(), item.main.height())
-        font = u' font-family %s; font-size: %spx;' %\
+        position =  u' left: %spx; top: %spx; width: %spx; height: %spx; ' % \
+            (item.main.x(),  item.main.y(), item.main.width(),
+            item.main.height())
+        font = u' font-family %s; font-size: %spx;' % \
             (theme.font_main_name, theme.font_main_proportion)
         align = u''
         if theme.display_horizontalAlign == 2:
@@ -153,7 +170,8 @@ def build_lyrics(item, width, height):
             valign = u'vertical-align=bottom;'
         text = u'color:%s; %s %s' % (theme.font_main_color, align, valign)
         if theme.display_shadow and theme.display_outline:
-            fontworks = u'text-shadow: -%spx 0 %s, 0 %spx %s, %spx 0 %s, 0 -%spx %s, %spx %spx %spx %s' %\
+            fontworks = u'text-shadow: -%spx 0 %s, 0 %spx %s, %spx 0 %s, 0 ' \
+                '-%spx %s, %spx %spx %spx %s' % \
                 (theme.display_outline_size, theme.display_outline_color,
                 theme.display_outline_size, theme.display_outline_color,
                 theme.display_outline_size, theme.display_outline_color,
@@ -161,11 +179,12 @@ def build_lyrics(item, width, height):
                 theme.display_shadow_size, theme.display_shadow_size,
                 theme.display_shadow_size, theme.display_shadow_color)
         elif theme.display_shadow:
-            fontworks = u'text-shadow: %spx %spx %spx %s' %\
+            fontworks = u'text-shadow: %spx %spx %spx %s' % \
                 (theme.display_shadow_size, theme.display_shadow_size,
                 theme.display_shadow_size, theme.display_shadow_color)
         elif theme.display_outline:
-            fontworks = u'text-shadow: -%spx 0 %s, 0 %spx %s, %spx 0 %s, 0 -%spx %s' %\
+            fontworks = u'text-shadow: -%spx 0 %s, 0 %spx %s,' \
+                ' %spx 0 %s, 0 -%spx %s' % \
                 (theme.display_outline_size, theme.display_outline_color,
                 theme.display_outline_size, theme.display_outline_color,
                 theme.display_outline_size, theme.display_outline_color,
@@ -174,7 +193,7 @@ def build_lyrics(item, width, height):
     print lyrics_html
     return lyrics_html
 
-def build_footer(item, width, height):
+def build_footer(item):
     lyrics = """
     #footer {position: absolute; %s z-index:3; %s; %s }
     """
@@ -184,9 +203,10 @@ def build_footer(item, width, height):
     font = u''
     text = u''
     if theme:
-        position =  u' left: %spx; top: %spx; width: %spx; height: %spx; ' %\
-            (item.footer.x(),  item.footer.y(), item.footer.width(), item.footer.height())
-        font = u' font-family %s; font-size: %spx;' %\
+        position =  u' left: %spx; top: %spx; width: %spx; height: %spx; ' % \
+            (item.footer.x(),  item.footer.y(), item.footer.width(),
+            item.footer.height())
+        font = u' font-family %s; font-size: %spx;' % \
             (theme.font_footer_name, theme.font_footer_proportion)
         align = u''
         if theme.display_horizontalAlign == 2:
@@ -205,7 +225,7 @@ def build_footer(item, width, height):
     return lyrics_html
 
 
-def build_alert(width, height, alert):
+def build_alert(width, alert):
     alert = """
     #alert {
         position: absolute;

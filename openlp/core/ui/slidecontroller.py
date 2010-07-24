@@ -36,23 +36,23 @@ from openlp.core.lib import OpenLPToolbar, Receiver, resize_image, \
 
 log = logging.getLogger(__name__)
 
-class SlideThread(QtCore.QThread):
-    """
-    A special Qt thread class to speed up the display of text based frames.
-    This is threaded so it loads the frames in background
-    """
-    def __init__(self, parent, prefix, count):
-        QtCore.QThread.__init__(self, parent)
-        self.prefix = prefix
-        self.count = count
-
-    def run(self):
-        """
-        Run the thread.
-        """
-        time.sleep(1)
-        for i in range(0, self.count):
-            Receiver.send_message(u'%s_slide_cache' % self.prefix, i)
+#class SlideThread(QtCore.QThread):
+#    """
+#    A special Qt thread class to speed up the display of text based frames.
+#    This is threaded so it loads the frames in background
+#    """
+#    def __init__(self, parent, prefix, count):
+#        QtCore.QThread.__init__(self, parent)
+#        self.prefix = prefix
+#        self.count = count
+#
+#    def run(self):
+#        """
+#        Run the thread.
+#        """
+#        time.sleep(1)
+#        for i in range(0, self.count):
+#            Receiver.send_message(u'%s_slide_cache' % self.prefix, i)
 
 class SlideList(QtGui.QTableWidget):
     """
@@ -105,8 +105,9 @@ class SlideController(QtGui.QWidget):
         self.isLive = isLive
         self.parent = parent
         self.screens = screens
+        self.ratio = float(self.screens.current[u'size'].width()) / \
+            float(self.screens.current[u'size'].height())
         self.display = MainDisplay(self, screens, isLive)
-        #self.displayManager = self.parent.displayManager
         self.loopList = [
             u'Start Loop',
             u'Loop Separator',
@@ -322,7 +323,7 @@ class SlideController(QtGui.QWidget):
         self.SlidePreview.setSizePolicy(sizePolicy)
         self.SlidePreview.setFixedSize(
             QtCore.QSize(self.settingsmanager.slidecontroller_image,
-                         self.settingsmanager.slidecontroller_image / 1.3 ))
+            self.settingsmanager.slidecontroller_image / self.ratio ))
         self.SlidePreview.setFrameShape(QtGui.QFrame.Box)
         self.SlidePreview.setFrameShadow(QtGui.QFrame.Plain)
         self.SlidePreview.setLineWidth(1)
@@ -390,7 +391,19 @@ class SlideController(QtGui.QWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.refreshServiceItem)
         QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'config_screen_changed'), self.screenSizeChanged)
+        QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_slide_cache' % self.typePrefix), self.slideCache)
+
+    def screenSizeChanged(self):
+        # rebuild display as screen size changed
+        self.display = MainDisplay(self, self.screens, self.isLive)
+        self.ratio = float(self.screens.current[u'size'].width()) / \
+            float(self.screens.current[u'size'].height())
+        self.display.setup()
+        self.SlidePreview.setFixedSize(
+            QtCore.QSize(self.settingsmanager.slidecontroller_image,
+            self.settingsmanager.slidecontroller_image / (self.ratio )))
 
     def widthChanged(self):
         """
@@ -606,10 +619,10 @@ class SlideController(QtGui.QWidget):
         self.PreviewListWidget.setFocus()
         Receiver.send_message(u'slidecontroller_%s_started' % self.typePrefix,
             [serviceItem])
-        if self.serviceItem.is_text():
-            st = SlideThread(
-                self, self.typePrefix, len(self.serviceItem.get_frames()))
-            st.start()
+#        if self.serviceItem.is_text():
+#            st = SlideThread(
+#                self, self.typePrefix, len(self.serviceItem.get_frames()))
+#            st.start()
         log.log(15, u'Display Rendering took %4s' % (time.time() - before))
 
     def onTextRequest(self):
@@ -632,7 +645,7 @@ class SlideController(QtGui.QWidget):
         Receiver.send_message(u'slidecontroller_%s_text_response'
             % self.typePrefix, data)
 
-    #Screen event methods
+    # Screen event methods
     def onSlideSelectedFirst(self):
         """
         Go to the first slide.
@@ -667,8 +680,8 @@ class SlideController(QtGui.QWidget):
         Allow the main display to blank the main display at startup time
         """
         log.debug(u'mainDisplaySetBackground')
-        if not self.mainDisplay.primary:
-            self.onBlankDisplay(True)
+        if not self.display.primary:
+            self.display.hideDisplay()
 
     def onSlideBlank(self):
         """

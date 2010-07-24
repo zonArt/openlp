@@ -36,18 +36,6 @@ log = logging.getLogger(__name__)
 
 #http://www.steveheffernan.com/html5-video-player/demo-video-player.html
 
-##        QtCore.QObject.connect(Receiver.get_receiver(),
-##            QtCore.SIGNAL(u'maindisplay_hide'), self.hideDisplay)
-##        QtCore.QObject.connect(Receiver.get_receiver(),
-##            QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
-##        QtCore.QObject.connect(Receiver.get_receiver(),
-##            QtCore.SIGNAL(u'videodisplay_start'), self.onStartVideo)
-##        QtCore.QObject.connect(Receiver.get_receiver(),
-##            QtCore.SIGNAL(u'videodisplay_stop'), self.onStopVideo)
-##        QtCore.QObject.connect(Receiver.get_receiver(),
-##            QtCore.SIGNAL(u'config_updated'), self.setup)
-
-
 class DisplayWidget(QtGui.QGraphicsView):
     """
     Customised version of QTableWidget which can respond to keyboard
@@ -55,44 +43,44 @@ class DisplayWidget(QtGui.QGraphicsView):
     """
     log.info(u'Display Widget loaded')
 
-    def __init__(self, live, parent=None, name=None):
+    def __init__(self, live, parent=None):
         QtGui.QGraphicsView.__init__(self)
         self.parent = parent
         self.live = live
-#        self.hotkey_map = {
-#            QtCore.Qt.Key_Return: 'servicemanager_next_item',
-#            QtCore.Qt.Key_Space: 'slidecontroller_live_next_noloop',
-#            QtCore.Qt.Key_Enter: 'slidecontroller_live_next_noloop',
-#            QtCore.Qt.Key_0: 'servicemanager_next_item',
-#            QtCore.Qt.Key_Backspace: 'slidecontroller_live_previous_noloop'}
+        self.hotkey_map = {
+            QtCore.Qt.Key_Return: 'servicemanager_next_item',
+            QtCore.Qt.Key_Space: 'slidecontroller_live_next_noloop',
+            QtCore.Qt.Key_Enter: 'slidecontroller_live_next_noloop',
+            QtCore.Qt.Key_0: 'servicemanager_next_item',
+            QtCore.Qt.Key_Backspace: 'slidecontroller_live_previous_noloop'}
 
     def keyPressEvent(self, event):
         # Key events only needed for live
         if not self.live:
             return
-#        if isinstance(event, QtGui.QKeyEvent):
-#            #here accept the event and do something
-#            if event.key() == QtCore.Qt.Key_Up:
-#                Receiver.send_message(u'slidecontroller_live_previous')
-#                event.accept()
-#            elif event.key() == QtCore.Qt.Key_Down:
-#                Receiver.send_message(u'slidecontroller_live_next')
-#                event.accept()
-#            elif event.key() == QtCore.Qt.Key_PageUp:
-#                Receiver.send_message(u'slidecontroller_live_first')
-#                event.accept()
-#            elif event.key() == QtCore.Qt.Key_PageDown:
-#                Receiver.send_message(u'slidecontroller_live_last')
-#                event.accept()
-#            elif event.key() in self.hotkey_map:
-#                Receiver.send_message(self.hotkey_map[event.key()])
-#                event.accept()
-#            elif event.key() == QtCore.Qt.Key_Escape:
-#                self.resetDisplay()
-#                event.accept()
-#            event.ignore()
-#        else:
-#            event.ignore()
+        if isinstance(event, QtGui.QKeyEvent):
+            # Here accept the event and do something
+            if event.key() == QtCore.Qt.Key_Up:
+                Receiver.send_message(u'slidecontroller_live_previous')
+                event.accept()
+            elif event.key() == QtCore.Qt.Key_Down:
+                Receiver.send_message(u'slidecontroller_live_next')
+                event.accept()
+            elif event.key() == QtCore.Qt.Key_PageUp:
+                Receiver.send_message(u'slidecontroller_live_first')
+                event.accept()
+            elif event.key() == QtCore.Qt.Key_PageDown:
+                Receiver.send_message(u'slidecontroller_live_last')
+                event.accept()
+            elif event.key() in self.hotkey_map:
+                Receiver.send_message(self.hotkey_map[event.key()])
+                event.accept()
+            elif event.key() == QtCore.Qt.Key_Escape:
+                self.resetDisplay()
+                event.accept()
+            event.ignore()
+        else:
+            event.ignore()
 
 class MainDisplay(DisplayWidget):
 
@@ -104,14 +92,18 @@ class MainDisplay(DisplayWidget):
         self.setWindowTitle(u'OpenLP Display')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint |
             QtCore.Qt.WindowStaysOnTopHint)
-
-        self.currvideo = False
-        self.video1 = "c:\\users\\jonathan\\Desktop\\Wildlife.wmv"
-        self.video2 = "c:\\users\\jonathan\\Desktop\\movie.ogg"
-        self.currslide = False
-        self.slide1 = "<sup>[1:1]</sup> In the beginning God created the heavens and the earth.<br/><br/><sup> [1:2]</sup> Now the earth was formless and empty, darkness was over the surface of the deep, and the Spirit of God was hovering over the waters.<br/><br/><sup>[1:3]</sup> And God said, \"Let there be light,\" and there was light.<br/><br/><sup>[1:4]</sup> God saw that the light was good, and he separated the light from the darkness.<br/><br/>"
-        self.slide2 = "<br /><br />This is the chorus<br />Blah Blah Blah<br />Blah Blah Blah<br />Blah Blah Blah<br />Blah Blah Blah<br />Blah Blah Blah"
         self.alerttext = "<p>Red Alert! Raise Shields!</p>"
+        if self.isLive:
+            QtCore.QObject.connect(Receiver.get_receiver(),
+                QtCore.SIGNAL(u'maindisplay_hide'), self.hideDisplay)
+            QtCore.QObject.connect(Receiver.get_receiver(),
+                QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
+##        QtCore.QObject.connect(Receiver.get_receiver(),
+##            QtCore.SIGNAL(u'videodisplay_start'), self.onStartVideo)
+##        QtCore.QObject.connect(Receiver.get_receiver(),
+##            QtCore.SIGNAL(u'videodisplay_stop'), self.onStopVideo)
+##        QtCore.QObject.connect(Receiver.get_receiver(),
+##            QtCore.SIGNAL(u'config_updated'), self.setup)
 
     def setup(self):
         log.debug(u'Setup %s for %s ' % (
@@ -130,6 +122,14 @@ class MainDisplay(DisplayWidget):
         self.frame.setScrollBarPolicy(QtCore.Qt.Horizontal,
             QtCore.Qt.ScrollBarAlwaysOff)
         if self.isLive:
+            # Build the initial frame.
+            self.black = QtGui.QImage(
+                self.screens.current[u'size'].width(),
+                self.screens.current[u'size'].height(),
+                QtGui.QImage.Format_ARGB32_Premultiplied)
+            painter_image = QtGui.QPainter()
+            painter_image.begin(self.black)
+            painter_image.fillRect(self.black.rect(), QtCore.Qt.black)
             #Build the initial frame.
             initialFrame = QtGui.QImage(
                 self.screens.current[u'size'].width(),
@@ -147,6 +147,11 @@ class MainDisplay(DisplayWidget):
             serviceItem.bg_frame = initialFrame
             self.webView.setHtml(build_html(serviceItem, self.screen, None))
             self.show()
+            # To display or not to display?
+            if not self.screen[u'primary']:
+                self.primary = False
+            else:
+                self.primary = True
 
     def next(self):
         if self.currslide:
@@ -158,14 +163,33 @@ class MainDisplay(DisplayWidget):
         self.currslide = not self.currslide
 
     def text(self, slide):
+        """
+        Add the slide text from slideController
+
+        `slide`
+            The slide text to be displayed
+        """
         print slide
         self.frame.findFirstElement('div#lyrics').setInnerXml(slide)
         return self.preview()
 
     def alert(self):
+        """
+        Add the alert text
+
+        `slide`
+            The slide text to be displayed
+        """
         self.frame.findFirstElement('div#alert').setInnerXml(self.alerttext)
 
     def image(self, image):
+        """
+        Add an image as the background.  The image is converted to a
+        bytestream on route.
+
+        `Image`
+            The Image to be displayed can be QImage or QPixmap
+        """
         image = resize_image(image, self.screen[u'size'].width(),
             self.screen[u'size'].height())
         self.frame.evaluateJavaScript(
@@ -180,14 +204,14 @@ class MainDisplay(DisplayWidget):
             'src', unicode('data:image/png;base64,%s' % image_to_byte(self.serviceItem.bg_frame)))
 
     def video(self, videoPath, noSound=False):
-        if self.currimage:
-            self.frame.findFirstElement('video').setAttribute('src', videoPath)
+        self.frame.findFirstElement('video').setAttribute('src', videoPath)
         self.frame.evaluateJavaScript(
             "document.getElementById('video').style.visibility = 'visible'")
         self.frame.evaluateJavaScript(
             "document.getElementById('image').style.visibility = 'hidden'")
         self.frame.evaluateJavaScript("document.getElementById('video').play()")
-        self.currimage = not self.currimage
+        if noSound:
+            self.frame.evaluateJavaScript("document.getElementById('video').mute()")
 
     def loaded(self):
         self.loaded = True
@@ -227,20 +251,20 @@ class MainDisplay(DisplayWidget):
         Store the images so they can be replaced when required
         """
         log.debug(u'hideDisplay mode = %d', mode)
-        #self.displayText.setPixmap(self.transparent)
         if mode == HideMode.Screen:
-            #self.display_image.setPixmap(self.transparent)
             self.setVisible(False)
         elif mode == HideMode.Blank:
-            self.displayBlank.setPixmap(
-                QtGui.QPixmap.fromImage(self.blankFrame))
+            self.frame.findFirstElement('img').setAttribute(
+                'src', unicode('data:image/png;base64,%s' \
+                % image_to_byte(self.black)))
         else:
-            if self.parent.renderManager.renderer.bg_frame:
+            if self.serviceItem:
                 self.displayBlank.setPixmap(QtGui.QPixmap.fromImage(
                     self.parent.renderManager.renderer.bg_frame))
             else:
-                self.displayBlank.setPixmap(
-                    QtGui.QPixmap.fromImage(self.blankFrame))
+                self.frame.findFirstElement('img').setAttribute(
+                    'src', unicode('data:image/png;base64,%s' \
+                    % image_to_byte(self.black)))
         if mode != HideMode.Screen and self.isHidden():
             self.setVisible(True)
 
@@ -251,10 +275,10 @@ class MainDisplay(DisplayWidget):
         Make the stored images None to release memory.
         """
         log.debug(u'showDisplay')
-        self.displayBlank.setPixmap(self.transparent)
+        self.frame.findFirstElement('img').setAttribute('src', u'')
         if self.isHidden():
             self.setVisible(True)
-        #Trigger actions when display is active again
+        # Trigger actions when display is active again
         Receiver.send_message(u'maindisplay_active')
 
 class AudioPlayer(QtCore.QObject):

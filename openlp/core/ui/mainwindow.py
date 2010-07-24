@@ -786,7 +786,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         their locations
         """
         self.RenderManager.update_display()
-        #self.displayManager.setup()
         self.setFocus()
         self.activateWindow()
 
