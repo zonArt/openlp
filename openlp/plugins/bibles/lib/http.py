@@ -197,12 +197,13 @@ class BGExtract(BibleCommon):
             Chapter number
         """
         log.debug(u'get_bible_chapter %s, %s, %s', version, bookname, chapter)
-        urlstring = u'http://www.biblegateway.com/passage/?search=%s+%s' \
+        urlstring = u'http://www.biblegateway.com/passage/?search=%s %s' \
             u'&version=%s' % (bookname, chapter, version)
-        log.debug(u'BibleGateway url = %s' % urlstring)
+        url = urlstring.replace(u' ', u'%20')
+        log.debug(u'BibleGateway url = %s' % url)
         # Let's get the page, and then open it in BeautifulSoup, so as to
         # attempt to make "easy" work of bad HTML.
-        page = urllib2.urlopen(urlstring)
+        page = urllib2.urlopen(url)
         Receiver.send_message(u'openlp_process_events')
         soup = BeautifulSoup(page)
         Receiver.send_message(u'openlp_process_events')
