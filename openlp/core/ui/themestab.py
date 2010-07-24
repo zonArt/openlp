@@ -37,7 +37,7 @@ class ThemesTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'ThemesTab')
-        self.tabTitleVisible = translate('ThemesTab', 'Themes')
+        self.tabTitleVisible = translate('OpenLP.ThemesTab', 'Themes')
         self.ThemesTabLayout = QtGui.QHBoxLayout(self)
         self.ThemesTabLayout.setSpacing(8)
         self.ThemesTabLayout.setMargin(8)
@@ -106,26 +106,28 @@ class ThemesTab(SettingsTab):
             QtCore.SIGNAL(u'theme_update_list'), self.updateThemeList)
 
     def retranslateUi(self):
-        self.GlobalGroupBox.setTitle(translate('ThemesTab', 'Global Theme'))
-        self.LevelGroupBox.setTitle(translate('ThemesTab', 'Theme Level'))
+        self.GlobalGroupBox.setTitle(
+            translate('OpenLP.ThemesTab', 'Global Theme'))
+        self.LevelGroupBox.setTitle(
+            translate('OpenLP.ThemesTab', 'Theme Level'))
         self.SongLevelRadioButton.setText(
-            translate('ThemesTab', 'S&ong Level'))
+            translate('OpenLP.ThemesTab', 'S&ong Level'))
         self.SongLevelLabel.setText(
-            translate('ThemesTab', 'Use the theme from each song '
+            translate('OpenLP.ThemesTab', 'Use the theme from each song '
             'in the database. If a song doesn\'t have a theme associated with '
             'it, then use the service\'s theme. If the service doesn\'t have '
             'a theme, then use the global theme.'))
         self.ServiceLevelRadioButton.setText(
-            translate('ThemesTab', '&Service Level'))
+            translate('OpenLP.ThemesTab', '&Service Level'))
         self.ServiceLevelLabel.setText(
-            translate('ThemesTab', 'Use the theme from the service, '
+            translate('OpenLP.ThemesTab', 'Use the theme from the service, '
             'overriding any of the individual songs\' themes. If the '
             'service doesn\'t have a theme, then use the global theme.'))
         self.GlobalLevelRadioButton.setText(
-            translate('ThemesTab', '&Global Level'))
+            translate('OpenLP.ThemesTab', '&Global Level'))
         self.GlobalLevelLabel.setText(
-            translate('ThemesTab', 'Use the global theme, overriding any '
-            'themes associated with either the service or the songs.'))
+            translate('OpenLP.ThemesTab', 'Use the global theme, overriding '
+            'any themes associated with either the service or the songs.'))
 
     def load(self):
         settings = QtCore.QSettings()

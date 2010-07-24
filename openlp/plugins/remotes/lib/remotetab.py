@@ -37,30 +37,43 @@ class RemoteTab(SettingsTab):
     def setupUi(self):
         self.setObjectName(u'RemoteTab')
         self.tabTitleVisible = translate('RemotePlugin.RemoteTab', 'Remotes')
-        self.RemoteLayout = QtGui.QFormLayout(self)
-        self.RemoteLayout.setObjectName(u'RemoteLayout')
-        self.RemoteModeGroupBox = QtGui.QGroupBox(self)
-        self.RemoteModeGroupBox.setObjectName(u'RemoteModeGroupBox')
-        self.RemoteModeLayout = QtGui.QVBoxLayout(self.RemoteModeGroupBox)
-        self.RemoteModeLayout.setSpacing(8)
-        self.RemoteModeLayout.setMargin(8)
-        self.RemoteModeLayout.setObjectName(u'RemoteModeLayout')
-        self.RemotePortSpinBox = QtGui.QSpinBox(self.RemoteModeGroupBox)
-        self.RemotePortSpinBox.setObjectName(u'RemotePortSpinBox')
-        self.RemotePortSpinBox.setMaximum(32767)
-        self.RemoteModeLayout.addWidget(self.RemotePortSpinBox)
-        self.RemoteLayout.setWidget(
-            0, QtGui.QFormLayout.LabelRole, self.RemoteModeGroupBox)
+        self.remoteLayout = QtGui.QFormLayout(self)
+        self.remoteLayout.setObjectName(u'remoteLayout')
+        self.serverSettingsGroupBox = QtGui.QGroupBox(self)
+        self.serverSettingsGroupBox.setObjectName(u'serverSettingsGroupBox')
+        self.serverSettingsLayout = QtGui.QFormLayout(self.serverSettingsGroupBox)
+        self.serverSettingsLayout.setSpacing(8)
+        self.serverSettingsLayout.setMargin(8)
+        self.serverSettingsLayout.setObjectName(u'serverSettingsLayout')
+        self.addressEdit = QtGui.QLineEdit(self.serverSettingsGroupBox)
+        self.addressEdit.setObjectName(u'addressEdit')
+        self.serverSettingsLayout.addRow(
+            translate('RemotePlugin.RemoteTab', 'Serve on IP address:'),
+            self.addressEdit)
+        self.portSpinBox = QtGui.QSpinBox(self.serverSettingsGroupBox)
+        self.portSpinBox.setObjectName(u'portSpinBox')
+        self.portSpinBox.setMaximum(32767)
+        self.serverSettingsLayout.addRow(
+            translate('RemotePlugin.RemoteTab', 'Port number:'),
+            self.portSpinBox)
+        self.remoteLayout.setWidget(
+            0, QtGui.QFormLayout.LabelRole, self.serverSettingsGroupBox)
 
     def retranslateUi(self):
-        self.RemoteModeGroupBox.setTitle(
-            translate('RemotePlugin.RemoteTab', 'Remotes Receiver Port'))
+        self.serverSettingsGroupBox.setTitle(
+            translate('RemotePlugin.RemoteTab', 'Server Settings'))
 
     def load(self):
-        self.RemotePortSpinBox.setValue(
-            QtCore.QSettings().value(self.settingsSection + u'/remote port',
+        self.portSpinBox.setValue(
+            QtCore.QSettings().value(self.settingsSection + u'/port',
                 QtCore.QVariant(4316)).toInt()[0])
+        self.addressEdit.setText(
+            QtCore.QSettings().value(self.settingsSection + u'/ip address',
+                QtCore.QVariant(u'0.0.0.0')).toString())
 
     def save(self):
-        QtCore.QSettings().setValue(self.settingsSection + u'/remote port',
-            QtCore.QVariant(self.RemotePortSpinBox.value()))
+        QtCore.QSettings().setValue(self.settingsSection + u'/port',
+            QtCore.QVariant(self.portSpinBox.value()))
+        QtCore.QSettings().setValue(self.settingsSection + u'/ip address',
+            QtCore.QVariant(self.addressEdit.text()))
+

@@ -269,14 +269,16 @@ class EditCustomForm(QtGui.QDialog, Ui_customEditDialog):
         if len(self.TitleEdit.displayText()) == 0:
             self.TitleEdit.setFocus()
             return False, translate('CustomPlugin.EditCustomForm',
-                'You need to enter a title')
+                'You need to type in a title.')
         # must have 1 slide
         if self.VerseListView.count() == 0:
             self.VerseTextEdit.setFocus()
             return False, translate('CustomPlugin.EditCustomForm',
-                'You need to enter a slide')
+                'You need to add at least one slide')
         if self.VerseTextEdit.toPlainText():
             self.VerseTextEdit.setFocus()
-            return False, translate('CustomPlugin.editCustomForm',
-                'You have unsaved data, please save or clear')
+            return False, translate('CustomPlugin.EditCustomForm',
+                'You have one or more unsaved slides, please either save your '
+                'slide(s) or clear your changes.')
         return True, u''
+

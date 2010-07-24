@@ -62,11 +62,11 @@ class CustomPlugin(Plugin):
         return CustomMediaItem(self, self.icon, self.name)
 
     def about(self):
-        about_text = translate('CustomPlugin',
-            '<b>Custom Plugin</b><br>This plugin '
-            'allows slides to be displayed on the screen in the same way '
-            'songs are. This plugin provides greater freedom over the '
-            'songs plugin.<br>')
+        about_text = translate('CustomPlugin', '<strong>Custom Plugin</strong>'
+            '<br />The custom plugin provides the ability to set up custom '
+            'text slides that can be displayed on the screen the same way '
+            'songs are. This plugin provides greater freedom over the songs '
+            'plugin.')
         return about_text
 
     def usesTheme(self, theme):

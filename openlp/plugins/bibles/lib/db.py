@@ -350,11 +350,11 @@ class BibleDB(QtCore.QObject, Manager):
             else:
                 log.debug(u'OpenLP failed to find book %s', book)
                 QtGui.QMessageBox.information(self.bible_plugin.mediaItem,
-                    translate('BibleDB', 'Book not found'),
-                    translate('BibleDB', u'The book you requested could not '
-                        'be found in this bible.  Please check your spelling '
-                        'and that this is a complete bible not just one '
-                        'testament.'))
+                    translate('BiblesPlugin.BibleDB', 'Book not found'),
+                    translate('BiblesPlugin.BibleDB', 'The book you requested '
+                        'could not be found in this bible.  Please check your '
+                        'spelling and that this is a complete bible not just '
+                        'one testament.'))
         return verse_list
 
     def verse_search(self, text):

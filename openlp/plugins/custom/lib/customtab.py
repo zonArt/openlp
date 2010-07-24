@@ -58,7 +58,7 @@ class CustomTab(SettingsTab):
         self.CustomModeGroupBox.setTitle(translate('CustomPlugin.CustomTab',
             'Custom Display'))
         self.DisplayFooterCheckBox.setText(
-            translate('CustomPlugin.CustomTab', 'Display Footer'))
+            translate('CustomPlugin.CustomTab', 'Display footer'))
 
     def onDisplayFooterCheckBoxChanged(self, check_state):
         self.displayFooter = False

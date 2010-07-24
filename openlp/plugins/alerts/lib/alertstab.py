@@ -190,13 +190,13 @@ class AlertsTab(SettingsTab):
         self.FontGroupBox.setTitle(
             translate('AlertsPlugin.AlertsTab', 'Font'))
         self.FontLabel.setText(
-            translate('AlertsPlugin.AlertsTab', 'Font Name:'))
+            translate('AlertsPlugin.AlertsTab', 'Font name:'))
         self.FontColorLabel.setText(
-            translate('AlertsPlugin.AlertsTab', 'Font Color:'))
+            translate('AlertsPlugin.AlertsTab', 'Font color:'))
         self.BackgroundColorLabel.setText(
-            translate('AlertsPlugin.AlertsTab', 'Background Color:'))
+            translate('AlertsPlugin.AlertsTab', 'Background color:'))
         self.FontSizeLabel.setText(
-            translate('AlertsPlugin.AlertsTab', 'Font Size:'))
+            translate('AlertsPlugin.AlertsTab', 'Font size:'))
         self.FontSizeSpinBox.setSuffix(
             translate('AlertsPlugin.AlertsTab', 'pt'))
         self.TimeoutLabel.setText(
@@ -208,7 +208,7 @@ class AlertsTab(SettingsTab):
         self.PreviewGroupBox.setTitle(
             translate('AlertsPlugin.AlertsTab', 'Preview'))
         self.FontPreview.setText(
-            translate('AlertsPlugin.AlertsTab', 'openlp.org'))
+            translate('AlertsPlugin.AlertsTab', 'OpenLP 2.0'))
         self.LocationComboBox.setItemText(0,
             translate('AlertsPlugin.AlertsTab', 'Top'))
         self.LocationComboBox.setItemText(1,
