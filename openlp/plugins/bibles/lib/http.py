@@ -204,10 +204,15 @@ class BGExtract(BibleCommon):
             u'http://www.biblegateway.com/passage/?%s' % url_params)
         log.debug(u'BibleGateway url = %s' % page.geturl())
         Receiver.send_message(u'openlp_process_events')
-        soup = BeautifulSoup(page)
+        cleaner = [(re.compile('&nbsp;|<br />'), lambda match: '')]
+        soup = BeautifulSoup(page, markupMassage=cleaner)
         Receiver.send_message(u'openlp_process_events')
-        content = soup.find(u'div', u'result-text-style-normal')
-        verse_count = len(soup.findAll(u'sup', u'versenum'))
+        footnotes = soup.findAll(u'sup', u'footnote')
+        [footnote.extract() for footnote in footnotes]
+        cleanup = [(re.compile('\s+'), lambda match: ' ')]
+        verses = BeautifulSoup(str(soup), markupMassage=cleanup)
+        content = verses.find(u'div', u'result-text-style-normal')
+        verse_count = len(verses.findAll(u'sup', u'versenum'))
         found_count = 0
         verse_list = {}
         while found_count < verse_count:
