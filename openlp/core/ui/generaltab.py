@@ -302,9 +302,9 @@ class GeneralTab(SettingsTab):
         self.SettingsGroupBox.setTitle(
             translate('OpenLP.GeneralTab', 'Application Settings'))
         self.SaveCheckServiceCheckBox.setText(translate('OpenLP.GeneralTab',
-            'Prompt to save Service before starting New'))
+            'Prompt to save before starting a new service'))
         self.AutoPreviewCheckBox.setText(translate('OpenLP.GeneralTab',
-            'Preview Next Song from Service Manager'))
+            'Automatically preview next item in service'))
         self.CCLIGroupBox.setTitle(
             translate('OpenLP.GeneralTab', 'CCLI Details'))
         self.NumberLabel.setText(
@@ -330,7 +330,8 @@ class GeneralTab(SettingsTab):
             'Override display position'))
         self.customXLabel.setText(translate('OpenLP.GeneralTab', 'X'))
         self.customYLabel.setText(translate('OpenLP.GeneralTab', 'Y'))
-        self.customHeightLabel.setText(translate('OpenLP.GeneralTab', 'Height'))
+        self.customHeightLabel.setText(
+            translate('OpenLP.GeneralTab', 'Height'))
         self.customWidthLabel.setText(translate('OpenLP.GeneralTab', 'Width'))
 
     def load(self):

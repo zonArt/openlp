@@ -38,6 +38,8 @@ class RemoteTab(SettingsTab):
         self.setObjectName(u'RemoteTab')
         self.tabTitleVisible = translate('RemotePlugin.RemoteTab', 'Remotes')
         self.remoteLayout = QtGui.QFormLayout(self)
+        self.remoteLayout.setSpacing(8)
+        self.remoteLayout.setMargin(8)
         self.remoteLayout.setObjectName(u'remoteLayout')
         self.serverSettingsGroupBox = QtGui.QGroupBox(self)
         self.serverSettingsGroupBox.setObjectName(u'serverSettingsGroupBox')
