@@ -68,9 +68,9 @@ class Ui_ServiceItemEditDialog(object):
 
     def retranslateUi(self, ServiceItemEditDialog):
         ServiceItemEditDialog.setWindowTitle(
-            translate('ServiceItemEditForm', 'Service Item Maintenance'))
-        self.upButton.setText(translate('ServiceItemEditForm', 'Up'))
-        self.deleteButton.setText(translate('ServiceItemEditForm', 'Delete'))
-        self.downButton.setText(translate('ServiceItemEditForm', 'Down'))
+            translate('OpenLP.ServiceItemEditForm', 'Reorder Service Item'))
+        self.upButton.setText(translate('OpenLP.ServiceItemEditForm', 'Up'))
+        self.deleteButton.setText(translate('OpenLP.ServiceItemEditForm', 'Delete'))
+        self.downButton.setText(translate('OpenLP.ServiceItemEditForm', 'Down'))
 
 

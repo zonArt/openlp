@@ -105,13 +105,15 @@ class ImageMediaItem(MediaManagerItem):
         self.ImageWidget.setSizePolicy(sizePolicy)
         self.ImageWidget.setObjectName(u'ImageWidget')
         self.blankButton = self.toolbar.addToolbarButton(
-            u'Replace Background', u':/slides/slide_blank.png',
+            translate('ImagePlugin.MediaItem', 'Replace Background'),
+            u':/slides/slide_blank.png',
             translate('ImagePlugin.MediaItem', 'Replace Live Background'),
-                self.onReplaceClick, False)
+            self.onReplaceClick, False)
         self.resetButton = self.toolbar.addToolbarButton(
-            u'Reset Background', u':/system/system_close.png',
+            translate('ImagePlugin.MediaItem', u'Reset Background'),
+            u':/system/system_close.png',
             translate('ImagePlugin.MediaItem', 'Reset Live Background'),
-                self.onResetClick, False)
+            self.onResetClick, False)
         # Add the song widget to the page layout
         self.pageLayout.addWidget(self.ImageWidget)
         self.resetButton.setVisible(False)
@@ -121,7 +123,7 @@ class ImageMediaItem(MediaManagerItem):
         Remove an image item from the list
         """
         if check_item_selected(self.listView, translate('ImagePlugin.MediaItem',
-            'You must select an item to delete.')):
+            'You must select an image to delete.')):
             row_list = [item.row() for item in self.listView.selectedIndexes()]
             row_list.sort(reverse=True)
             for row in row_list:
@@ -179,7 +181,7 @@ class ImageMediaItem(MediaManagerItem):
     def onReplaceClick(self):
         if check_item_selected(self.listView,
             translate('ImagePlugin.MediaItem',
-            'You must select an item to process.')):
+            'You must select an image to replace the background with.')):
             items = self.listView.selectedIndexes()
             for item in items:
                 bitem = self.listView.item(item.row())
@@ -190,3 +192,4 @@ class ImageMediaItem(MediaManagerItem):
 
     def onPreviewClick(self):
         MediaManagerItem.onPreviewClick(self)
+

@@ -209,9 +209,7 @@ class SongMediaItem(MediaManagerItem):
         self.listView.clear()
         for author in searchresults:
             for song in author.songs:
-                song_detail = unicode(
-                    translate('SongsPlugin.MediaItem', '%s (%s)')) % \
-                    (author.display_name, song.title)
+                song_detail = '%s (%s)' % (author.display_name, song.title)
                 song_name = QtGui.QListWidgetItem(song_detail)
                 song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
                 self.listView.addItem(song_name)
@@ -270,7 +268,8 @@ class SongMediaItem(MediaManagerItem):
         """
         Edit a song
         """
-        if check_item_selected(self.listView, translate('SongsPlugin.MediaItem',
+        if check_item_selected(self.listView,
+            translate('SongsPlugin.MediaItem',
             'You must select an item to edit.')):
             item = self.listView.currentItem()
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
@@ -281,18 +280,19 @@ class SongMediaItem(MediaManagerItem):
         """
         Remove a song from the list and database
         """
-        if check_item_selected(self.listView, translate('SongsPlugin.MediaItem',
+        if check_item_selected(self.listView,
+            translate('SongsPlugin.MediaItem',
             'You must select an item to delete.')):
             items = self.listView.selectedIndexes()
             if len(items) == 1:
                 del_message = translate('SongsPlugin.MediaItem',
-                    'Delete song?')
+                    'Are you sure you want to delete the selected song?')
             else:
-                del_message = unicode(
-                    translate('SongsPlugin.MediaItem',
-                        'Delete %d songs?'))  % len(items)
+                del_message = unicode(translate('SongsPlugin.MediaItem',
+                    'Are you sure you want to delete the %d selected '
+                    'songs?')) % len(items)
             ans = QtGui.QMessageBox.question(self,
-                translate('SongsPlugin.MediaItem', 'Delete Confirmation'),
+                translate('SongsPlugin.MediaItem', 'Delete Song(s)?'),
                 del_message,
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok|
                      QtGui.QMessageBox.Cancel),

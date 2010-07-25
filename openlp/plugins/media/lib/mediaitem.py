@@ -92,7 +92,8 @@ class MediaMediaItem(MediaManagerItem):
         self.ImageWidget.setObjectName(u'ImageWidget')
         #Replace backgrounds do not work at present so remove functionality.
         self.blankButton = self.toolbar.addToolbarButton(
-            u'Replace Background', u':/slides/slide_blank.png',
+            translate('MediaPlugin.MediaItem', 'Replace Background'),
+            u':/slides/slide_blank.png',
             translate('MediaPlugin.MediaItem', 'Replace Live Background'),
                 self.onReplaceClick, False)
         self.resetButton = self.toolbar.addToolbarButton(
@@ -110,7 +111,7 @@ class MediaMediaItem(MediaManagerItem):
     def onReplaceClick(self):
         if check_item_selected(self.listView,
             translate('ImagePlugin.MediaItem',
-            'You must select an item to process.')):
+            'You must select a media file to replace the background with.')):
             item = self.listView.currentItem()
             filename = unicode(item.data(QtCore.Qt.UserRole).toString())
             self.parent.displayManager.displayVideo(filename)
@@ -142,7 +143,7 @@ class MediaMediaItem(MediaManagerItem):
         Remove a media item from the list
         """
         if check_item_selected(self.listView, translate('MediaPlugin.MediaItem',
-            'You must select an item to delete.')):
+            'You must select a media file to delete.')):
             row_list = [item.row() for item in self.listView.selectedIndexes()]
             row_list.sort(reverse=True)
             for row in row_list:
@@ -158,3 +159,4 @@ class MediaMediaItem(MediaManagerItem):
             item_name.setIcon(build_icon(img))
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.listView.addItem(item_name)
+

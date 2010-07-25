@@ -121,7 +121,7 @@ class CustomMediaItem(MediaManagerItem):
         """
         if check_item_selected(self.listView,
             translate('CustomPlugin.MediaItem',
-            'You must select an item to edit.')):
+            'You haven\'t selected an item to edit.')):
             item = self.listView.currentItem()
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.parent.edit_custom_form.loadCustom(item_id, False)
@@ -134,7 +134,7 @@ class CustomMediaItem(MediaManagerItem):
         """
         if check_item_selected(self.listView,
             translate('CustomPlugin.MediaItem',
-            'You must select an item to delete.')):
+            'You haven\'t selected an item to delete.')):
             row_list = [item.row() for item in self.listView.selectedIndexes()]
             row_list.sort(reverse=True)
             id_list = [(item.data(QtCore.Qt.UserRole)).toInt()[0]

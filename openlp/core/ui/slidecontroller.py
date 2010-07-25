@@ -130,11 +130,11 @@ class SlideController(QtGui.QWidget):
         # Type label for the top of the slide controller
         self.TypeLabel = QtGui.QLabel(self.Panel)
         if self.isLive:
-            self.TypeLabel.setText(translate('SlideController', 'Live'))
+            self.TypeLabel.setText(translate('OpenLP.SlideController', 'Live'))
             self.split = 1
             self.typePrefix = u'live'
         else:
-            self.TypeLabel.setText(translate('SlideController', 'Preview'))
+            self.TypeLabel.setText(translate('OpenLP.SlideController', 'Preview'))
             self.split = 0
             self.typePrefix = u'preview'
         self.TypeLabel.setStyleSheet(u'font-weight: bold; font-size: 12pt;')
@@ -181,29 +181,29 @@ class SlideController(QtGui.QWidget):
         if self.isLive:
             self.Toolbar.addToolbarButton(
                 u'First Slide', u':/slides/slide_first.png',
-                translate('SlideController', 'Move to first'),
+                translate('OpenLP.SlideController', 'Move to first'),
                 self.onSlideSelectedFirst)
         self.Toolbar.addToolbarButton(
             u'Previous Slide', u':/slides/slide_previous.png',
-            translate('SlideController', 'Move to previous'),
+            translate('OpenLP.SlideController', 'Move to previous'),
             self.onSlideSelectedPrevious)
         self.Toolbar.addToolbarButton(
             u'Next Slide', u':/slides/slide_next.png',
-            translate('SlideController', 'Move to next'),
+            translate('OpenLP.SlideController', 'Move to next'),
             self.onSlideSelectedNext)
         if self.isLive:
             self.Toolbar.addToolbarButton(
                 u'Last Slide', u':/slides/slide_last.png',
-                translate('SlideController', 'Move to last'),
+                translate('OpenLP.SlideController', 'Move to last'),
                 self.onSlideSelectedLast)
         if self.isLive:
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.HideMenu = QtGui.QToolButton(self.Toolbar)
-            self.HideMenu.setText(translate('SlideController', 'Hide'))
+            self.HideMenu.setText(translate('OpenLP.SlideController', 'Hide'))
             self.HideMenu.setPopupMode(QtGui.QToolButton.MenuButtonPopup)
             self.Toolbar.addToolbarWidget(u'Hide Menu', self.HideMenu)
             self.HideMenu.setMenu(QtGui.QMenu(
-                translate('SlideController', 'Hide'), self.Toolbar))
+                translate('OpenLP.SlideController', 'Hide'), self.Toolbar))
             self.BlankScreen = QtGui.QAction(QtGui.QIcon(
                 u':/slides/slide_blank.png'), u'Blank Screen', self.HideMenu)
             self.BlankScreen.setCheckable(True)
@@ -227,44 +227,44 @@ class SlideController(QtGui.QWidget):
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.Toolbar.addToolbarButton(
                 u'Go Live', u':/general/general_live.png',
-                translate('SlideController', 'Move to live'), self.onGoLive)
+                translate('OpenLP.SlideController', 'Move to live'), self.onGoLive)
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.Toolbar.addToolbarButton(
                 u'Edit Song', u':/general/general_edit.png',
-                translate('SlideController', 'Edit and re-preview Song'),
+                translate('OpenLP.SlideController', 'Edit and re-preview Song'),
                 self.onEditSong)
         if isLive:
             self.Toolbar.addToolbarSeparator(u'Loop Separator')
             self.Toolbar.addToolbarButton(
                 u'Start Loop', u':/media/media_time.png',
-                translate('SlideController', 'Start continuous loop'),
+                translate('OpenLP.SlideController', 'Start continuous loop'),
                 self.onStartLoop)
             self.Toolbar.addToolbarButton(
                 u'Stop Loop', u':/media/media_stop.png',
-                translate('SlideController', 'Stop continuous loop'),
+                translate('OpenLP.SlideController', 'Stop continuous loop'),
                 self.onStopLoop)
             self.DelaySpinBox = QtGui.QSpinBox()
             self.DelaySpinBox.setMinimum(1)
             self.DelaySpinBox.setMaximum(180)
             self.Toolbar.addToolbarWidget(
                 u'Image SpinBox', self.DelaySpinBox)
-            self.DelaySpinBox.setSuffix(translate('SlideController', 's'))
-            self.DelaySpinBox.setToolTip(translate('SlideController',
+            self.DelaySpinBox.setSuffix(translate('OpenLP.SlideController', 's'))
+            self.DelaySpinBox.setToolTip(translate('OpenLP.SlideController',
                 'Delay between slides in seconds'))
         self.ControllerLayout.addWidget(self.Toolbar)
         #Build a Media ToolBar
         self.Mediabar = OpenLPToolbar(self)
         self.Mediabar.addToolbarButton(
             u'Media Start', u':/slides/media_playback_start.png',
-            translate('SlideController', 'Start playing media'),
+            translate('OpenLP.SlideController', 'Start playing media'),
             self.onMediaPlay)
         self.Mediabar.addToolbarButton(
             u'Media Pause', u':/slides/media_playback_pause.png',
-            translate('SlideController', 'Start playing media'),
+            translate('OpenLP.SlideController', 'Start playing media'),
             self.onMediaPause)
         self.Mediabar.addToolbarButton(
             u'Media Stop', u':/slides/media_playback_stop.png',
-            translate('SlideController', 'Start playing media'),
+            translate('OpenLP.SlideController', 'Start playing media'),
             self.onMediaStop)
         if not self.isLive:
             self.seekSlider = Phonon.SeekSlider()
@@ -280,11 +280,11 @@ class SlideController(QtGui.QWidget):
         # Build the Song Toolbar
         if isLive:
             self.SongMenu = QtGui.QToolButton(self.Toolbar)
-            self.SongMenu.setText(translate('SlideController', 'Go to Verse'))
+            self.SongMenu.setText(translate('OpenLP.SlideController', 'Go to Verse'))
             self.SongMenu.setPopupMode(QtGui.QToolButton.InstantPopup)
             self.Toolbar.addToolbarWidget(u'Song Menu', self.SongMenu)
             self.SongMenu.setMenu(QtGui.QMenu(
-                translate('SlideController', 'Go to Verse'), self.Toolbar))
+                translate('OpenLP.SlideController', 'Go to Verse'), self.Toolbar))
             self.Toolbar.makeWidgetsInvisible([u'Song Menu'])
         # Screen preview area
         self.PreviewFrame = QtGui.QFrame(self.Splitter)

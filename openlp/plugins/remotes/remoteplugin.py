@@ -70,9 +70,8 @@ class RemotesPlugin(Plugin):
         """
         Information about this plugin
         """
-        about_text = translate('RemotePlugin',
-            '<b>Remote Plugin</b><br>This plugin '
-            'provides the ability to send messages to a running version of '
-            'openlp on a different computer via a web browser or other app<br>'
-            'The Primary use for this would be to send alerts from a creche')
+        about_text = translate('RemotePlugin', '<strong>Remote Plugin</strong>'
+            '<br/ >The remote plugin provides the ability to send messages to '
+            'a running version of OpenLP on a different computer via a web '
+            'browser or through the remote API.')
         return about_text
