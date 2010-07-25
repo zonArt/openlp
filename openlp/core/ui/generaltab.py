@@ -446,12 +446,12 @@ class GeneralTab(SettingsTab):
             self.screens.set_current_display(self.monitorNumber)
             Receiver.send_message(u'config_screen_changed')
         Receiver.send_message(u'config_updated')
-        # On save update the strings as well
+        # On save update the screens as well
         self.postSetUp()
 
     def postSetUp(self):
         """
-        Set Strings after initial definition
+        Reset screens after initial definition
         """
         self.screens.override[u'size'] = QtCore.QRect(
             int(self.customXValueEdit.text()),
