@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -38,6 +39,8 @@ class CustomTab(SettingsTab):
         self.setObjectName(u'CustomTab')
         self.tabTitleVisible = translate('CustomPlugin.CustomTab', 'Custom')
         self.CustomLayout = QtGui.QFormLayout(self)
+        self.CustomLayout.setSpacing(8)
+        self.CustomLayout.setMargin(8)
         self.CustomLayout.setObjectName(u'CustomLayout')
         self.CustomModeGroupBox = QtGui.QGroupBox(self)
         self.CustomModeGroupBox.setObjectName(u'CustomModeGroupBox')

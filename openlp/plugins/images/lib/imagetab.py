@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -38,6 +39,8 @@ class ImageTab(SettingsTab):
         self.setObjectName(u'ImageTab')
         self.tabTitleVisible = translate('ImagePlugin.ImageTab', 'Images')
         self.ImageLayout = QtGui.QFormLayout(self)
+        self.ImageLayout.setSpacing(8)
+        self.ImageLayout.setMargin(8)
         self.ImageLayout.setObjectName(u'ImageLayout')
         self.ImageSettingsGroupBox = QtGui.QGroupBox(self)
         self.ImageSettingsGroupBox.setObjectName(u'ImageSettingsGroupBox')
@@ -88,4 +91,3 @@ class ImageTab(SettingsTab):
     def postSetUp(self):
         Receiver.send_message(u'slidecontroller_live_spin_delay',
             self.loop_delay)
-

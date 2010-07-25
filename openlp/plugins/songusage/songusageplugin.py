@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -76,7 +77,6 @@ class SongUsagePlugin(Plugin):
             translate('SongUsagePlugin', 'Generate a report on song usage.'))
         self.SongUsageReport.setObjectName(u'SongUsageReport')
         #SongUsage activation
-        SongUsageIcon = build_icon(u':/plugins/plugin_songusage.png')
         self.SongUsageStatus = QtGui.QAction(tools_menu)
         self.SongUsageStatus.setCheckable(True)
         self.SongUsageStatus.setChecked(False)

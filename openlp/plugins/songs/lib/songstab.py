@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -38,6 +39,8 @@ class SongsTab(SettingsTab):
         self.setObjectName(u'SongsTab')
         self.tabTitleVisible = translate('SongsPlugin.SongsTab', 'Songs')
         self.SongsLayout = QtGui.QFormLayout(self)
+        self.SongsLayout.setSpacing(8)
+        self.SongsLayout.setMargin(8)
         self.SongsLayout.setObjectName(u'SongsLayout')
         self.SongsModeGroupBox = QtGui.QGroupBox(self)
         self.SongsModeGroupBox.setObjectName(u'SongsModeGroupBox')

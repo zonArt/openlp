@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -302,9 +303,9 @@ class GeneralTab(SettingsTab):
         self.SettingsGroupBox.setTitle(
             translate('OpenLP.GeneralTab', 'Application Settings'))
         self.SaveCheckServiceCheckBox.setText(translate('OpenLP.GeneralTab',
-            'Prompt to save Service before starting New'))
+            'Prompt to save before starting a new service'))
         self.AutoPreviewCheckBox.setText(translate('OpenLP.GeneralTab',
-            'Preview Next Song from Service Manager'))
+            'Automatically preview next item in service'))
         self.CCLIGroupBox.setTitle(
             translate('OpenLP.GeneralTab', 'CCLI Details'))
         self.NumberLabel.setText(
@@ -330,7 +331,8 @@ class GeneralTab(SettingsTab):
             'Override display position'))
         self.customXLabel.setText(translate('OpenLP.GeneralTab', 'X'))
         self.customYLabel.setText(translate('OpenLP.GeneralTab', 'Y'))
-        self.customHeightLabel.setText(translate('OpenLP.GeneralTab', 'Height'))
+        self.customHeightLabel.setText(
+            translate('OpenLP.GeneralTab', 'Height'))
         self.customWidthLabel.setText(translate('OpenLP.GeneralTab', 'Width'))
 
     def load(self):
@@ -445,8 +447,13 @@ class GeneralTab(SettingsTab):
             self.screens.set_current_display(self.monitorNumber)
             Receiver.send_message(u'config_screen_changed')
         Receiver.send_message(u'config_updated')
+        # On save update the screens as well
+        self.postSetUp()
 
     def postSetUp(self):
+        """
+        Reset screens after initial definition
+        """
         self.screens.override[u'size'] = QtCore.QRect(
             int(self.customXValueEdit.text()),
             int(self.customYValueEdit.text()),
@@ -459,9 +466,11 @@ class GeneralTab(SettingsTab):
             self.screens.reset_current_display()
 
     def onOverrideCheckBoxToggled(self, checked):
+        """
+        Toggle screen state depending on check box state
+        """
         self.customXValueEdit.setEnabled(checked)
         self.customYValueEdit.setEnabled(checked)
         self.customHeightValueEdit.setEnabled(checked)
         self.customWidthValueEdit.setEnabled(checked)
         self.override_changed = True
-
