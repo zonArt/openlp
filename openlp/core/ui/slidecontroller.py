@@ -408,7 +408,7 @@ class SlideController(QtGui.QWidget):
         self.display.setup()
         self.SlidePreview.setFixedSize(
             QtCore.QSize(self.settingsmanager.slidecontroller_image,
-            self.settingsmanager.slidecontroller_image / (self.ratio )))
+            self.settingsmanager.slidecontroller_image / self.ratio ))
 
     def widthChanged(self):
         """
@@ -419,7 +419,7 @@ class SlideController(QtGui.QWidget):
         width = self.parent.ControlSplitter.sizes()[self.split]
         height = width * self.parent.RenderManager.screen_ratio
         self.PreviewListWidget.setColumnWidth(0, width)
-        #Sort out image heights (Songs, bibles excluded)
+        # Sort out image heights (Songs, bibles excluded)
         if self.serviceItem and not self.serviceItem.is_text():
             for framenumber in range(len(self.serviceItem.get_frames())):
                 self.PreviewListWidget.setRowHeight(framenumber, height)
@@ -506,9 +506,7 @@ class SlideController(QtGui.QWidget):
         Called by plugins
         """
         log.debug(u'addServiceItem live = %s' % self.isLive)
-        before = time.time()
         item.render()
-        log.log(15, u'Rendering took %4s' % (time.time() - before))
         slideno = 0
         if self.songEdit:
             slideno = self.selectedRow
@@ -529,7 +527,7 @@ class SlideController(QtGui.QWidget):
         Called by ServiceManager
         """
         log.debug(u'addServiceManagerItem live = %s' % self.isLive)
-        #If service item is the same as the current on only change slide
+        # If service item is the same as the current on only change slide
         if item.__eq__(self.serviceItem):
             self.PreviewListWidget.selectRow(slideno)
             self.onSlideSelected()
@@ -543,7 +541,7 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'processManagerItem live = %s' % self.isLive)
         self.onStopLoop()
-        #If old item was a command tell it to stop
+        # If old item was a command tell it to stop
         if self.serviceItem:
             if self.serviceItem.is_command():
                 Receiver.send_message(u'%s_stop' %
@@ -560,9 +558,8 @@ class SlideController(QtGui.QWidget):
             [serviceItem, self.isLive, blanked, slideno])
         self.slideList = {}
         width = self.parent.ControlSplitter.sizes()[self.split]
-        #Set pointing cursor when we have somthing to point at
+        # Set pointing cursor when we have somthing to point at
         self.PreviewListWidget.setCursor(QtCore.Qt.PointingHandCursor)
-        before = time.time()
         #Clear the old serviceItem cache to release memory
 #        if self.serviceItem and self.serviceItem is not serviceItem:
 #            self.serviceItem.clear_cache()
@@ -579,20 +576,19 @@ class SlideController(QtGui.QWidget):
                 self.PreviewListWidget.rowCount() + 1)
             item = QtGui.QTableWidgetItem()
             slideHeight = 0
-            #It is a based Text Render
             if self.serviceItem.is_text():
                 if frame[u'verseTag']:
                     bits = frame[u'verseTag'].split(u':')
                     tag = u'%s\n%s' % (bits[0][0], bits[1][0:] )
                     tag1 = u'%s%s' % (bits[0][0], bits[1][0:] )
                     row = tag
+                    if self.isLive:
+                        if tag1 not in self.slideList:
+                            self.slideList[tag1] = framenumber
+                            self.SongMenu.menu().addAction(tag1,
+                                self.onSongBarHandler)
                 else:
                     row += 1
-                if self.isLive and frame[u'verseTag'] is not None:
-                    if tag1 not in self.slideList:
-                        self.slideList[tag1] = framenumber
-                        self.SongMenu.menu().addAction(tag1,
-                            self.onSongBarHandler)
                 item.setText(self.clean(frame[u'text']))
             else:
                 label = QtGui.QLabel()
@@ -629,7 +625,6 @@ class SlideController(QtGui.QWidget):
 #            st = SlideThread(
 #                self, self.typePrefix, len(self.serviceItem.get_frames()))
 #            st.start()
-        log.log(15, u'Display Rendering took %4s' % (time.time() - before))
 
     def onTextRequest(self):
         """
@@ -799,7 +794,6 @@ class SlideController(QtGui.QWidget):
             if self.serviceItem.is_command() and self.isLive:
                 self.updatePreview()
             else:
-                before = time.time()
                 frame, raw_html = self.serviceItem.get_rendered_frame(row)
                 if self.serviceItem.is_text():
                     frame = self.display.text(raw_html)
@@ -809,8 +803,6 @@ class SlideController(QtGui.QWidget):
                     self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
                 else:
                     self.SlidePreview.setPixmap(QtGui.QPixmap(frame))
-                log.log(
-                    15, u'Slide Rendering took %4s' % (time.time() - before))
             self.selectedRow = row
         Receiver.send_message(u'slidecontroller_%s_changed' % self.typePrefix,
             row)

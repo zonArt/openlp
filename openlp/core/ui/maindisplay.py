@@ -228,8 +228,8 @@ class MainDisplay(DisplayWidget):
         painter.setRenderHint(QtGui.QPainter.Antialiasing)
         self.frame.render(painter)
         painter.end()
+        # save preview for debugging
         if log.isEnabledFor(logging.DEBUG):
-            #save preview for debugging
             preview.save("temp.png", "png")
         return preview
 
@@ -242,7 +242,7 @@ class MainDisplay(DisplayWidget):
         self.serviceItem = serviceItem
         html = build_html(self.serviceItem, self.screen, None)
         self.webView.setHtml(html)
-        if serviceItem.footer:
+        if serviceItem.footer and serviceItem.foot_text:
             self.frame.findFirstElement('div#footer').setInnerXml(serviceItem.foot_text)
 
     def hideDisplay(self, mode=HideMode.Screen):

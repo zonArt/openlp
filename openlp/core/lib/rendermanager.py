@@ -193,8 +193,9 @@ class RenderManager(object):
         serviceItem.render()
         serviceItem.raw_footer = footer
         self.display.buildHtml(serviceItem)
-        self.display.frame.findFirstElement('div#footer').setInnerXml(serviceItem.foot_text)
-        return #image
+        frame, raw_html = serviceItem.get_rendered_frame(0)
+        frame = self.display.text(raw_html)
+        return frame
 
     def format_slide(self, words):
         """
