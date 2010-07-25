@@ -185,8 +185,7 @@ class RenderManager(object):
         footer.append(u'Amazing Grace (John Newton)' )
         footer.append(u'Public Domain')
         footer.append(u'CCLI 123456')
-        formatted = self.renderer.format_slide(verse, False)
-        #Only Render the first slide page returned
+        # build a service item to generate preview
         serviceItem = ServiceItem()
         serviceItem.add_from_text(u'', verse, u'')
         serviceItem.render_manager = self
@@ -194,8 +193,7 @@ class RenderManager(object):
         serviceItem.raw_footer = footer
         self.display.buildHtml(serviceItem)
         frame, raw_html = serviceItem.get_rendered_frame(0)
-        frame = self.display.text(raw_html)
-        return frame
+        return self.display.text(raw_html)
 
     def format_slide(self, words):
         """
@@ -208,22 +206,19 @@ class RenderManager(object):
         self.build_text_rectangle(self.themedata)
         return self.renderer.format_slide(words, False)
 
-    def generate_slide(self, main_text, footer_text):
-        """
-        Generate the actual slide image.
-
-        ``main_text``
-            The text for the main area of the slide.
-
-        ``footer_text``
-            The text for the slide footer.
-        """
-        log.debug(u'generate slide')
-        self.build_text_rectangle(self.themedata)
-        self.renderer.set_frame_dest(self.width, self.height)
-        image = self.previewDisplay.preview(self.renderer.bg_frame,
-            main_text[0], self.themedata)
-        return image
+#    def generate_slide(self, main_text):
+#        """
+#        Generate the actual slide image.
+#
+#        ``main_text``
+#            The text for the main area of the slide.
+#        """
+#        log.debug(u'generate slide')
+#        self.build_text_rectangle(self.themedata)
+#        self.renderer.set_frame_dest(self.width, self.height)
+#        image = self.previewDisplay.preview(self.renderer.bg_frame,
+#            main_text[0], self.themedata)
+#        return image
 
     def calculate_default(self, screen):
         """

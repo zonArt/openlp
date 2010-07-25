@@ -81,6 +81,16 @@ HTMLSRC = u"""
 </html>
     """
 def build_html(item, screen, alert):
+    """
+    Build the full web paged structure for display
+
+    `item`
+        Service Item to be displayed
+    `screen`
+        Current display information
+    `alert`
+        Alert display display information
+    """
     width = screen[u'size'].width()
     height = screen[u'size'].height()
     html = HTMLSRC % (build_video(width, height),
@@ -91,10 +101,17 @@ def build_html(item, screen, alert):
                       build_image(width, height),
                       build_blank(width, height),
                       build_image_src(item.bg_frame))
-    print html
     return html
 
 def build_video(width, height):
+    """
+    Build the video display div
+
+    `width`
+        Screen width
+    `height`
+        Screen height
+    """
     video = """
     #video {
         position: absolute;
@@ -108,6 +125,14 @@ def build_video(width, height):
     return video % (width, height)
 
 def build_blank(width, height):
+    """
+    Build the blank display div
+
+    `width`
+        Screen width
+    `height`
+        Screen height
+    """
     blank = """
     #blank {
         position: absolute;
@@ -121,6 +146,14 @@ def build_blank(width, height):
     return blank % (width, height)
 
 def build_image(width, height):
+    """
+    Build the image display div
+
+    `width`
+        Screen width
+    `height`
+        Screen height
+    """
     image = """
     #image {
         position: absolute;
@@ -141,6 +174,12 @@ def build_image_src(image):
     return image_src % image_to_byte(image)
 
 def build_lyrics(item):
+    """
+    Build the video display div
+
+    `item`
+        Service Item containing theme and location information
+    """
     lyrics = """
     #lyrics {position: absolute; %s z-index:3; %s; %s %s }
     table {border=0;margin=0padding=0;}

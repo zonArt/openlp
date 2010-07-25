@@ -169,6 +169,7 @@ class MainDisplay(DisplayWidget):
         `slide`
             The slide text to be displayed
         """
+        log.debug(u'text')
         print slide
         self.frame.findFirstElement('div#lyrics').setInnerXml(slide)
         return self.preview()
@@ -180,6 +181,7 @@ class MainDisplay(DisplayWidget):
         `slide`
             The slide text to be displayed
         """
+        log.debug(u'alert')
         self.frame.findFirstElement('div#alert').setInnerXml(self.alerttext)
 
     def image(self, image):
@@ -190,6 +192,7 @@ class MainDisplay(DisplayWidget):
         `Image`
             The Image to be displayed can be QImage or QPixmap
         """
+        log.debug(u'image')
         image = resize_image(image, self.screen[u'size'].width(),
             self.screen[u'size'].height())
         self.frame.evaluateJavaScript(
@@ -200,10 +203,12 @@ class MainDisplay(DisplayWidget):
             'src', unicode('data:image/png;base64,%s' % image_to_byte(image)))
 
     def reset(self):
+        log.debug(u'reset')
         self.frame.findFirstElement('img').setAttribute(
             'src', unicode('data:image/png;base64,%s' % image_to_byte(self.serviceItem.bg_frame)))
 
     def video(self, videoPath, noSound=False):
+        log.debug(u'video')
         self.frame.findFirstElement('video').setAttribute('src', videoPath)
         self.frame.evaluateJavaScript(
             "document.getElementById('video').style.visibility = 'visible'")
@@ -214,9 +219,13 @@ class MainDisplay(DisplayWidget):
             self.frame.evaluateJavaScript("document.getElementById('video').mute()")
 
     def loaded(self):
+        """
+        Called by webView event to show display is fully loaded
+        """
         self.loaded = True
 
     def preview(self):
+        log.debug(u'preview')
         # Wait for the webview to update before geting the preview.
         # Important otherwise first preview will miss the background !
         while not self.loaded:
@@ -238,6 +247,7 @@ class MainDisplay(DisplayWidget):
         Store the serviceItem and build the new HTML from it. Add the
         HTML to the display
         """
+        log.debug(u'buildHtml')
         self.loaded = False
         self.serviceItem = serviceItem
         html = build_html(self.serviceItem, self.screen, None)
