@@ -200,7 +200,7 @@ def check_item_selected(list_widget, message):
     """
     if not list_widget.selectedIndexes():
         QtGui.QMessageBox.information(list_widget.parent(),
-            translate('MediaManagerItem', 'No Items Selected'), message)
+            translate('OpenLP.MediaManagerItem', 'No Items Selected'), message)
         return False
     return True
 

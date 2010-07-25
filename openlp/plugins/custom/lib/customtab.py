@@ -38,6 +38,8 @@ class CustomTab(SettingsTab):
         self.setObjectName(u'CustomTab')
         self.tabTitleVisible = translate('CustomPlugin.CustomTab', 'Custom')
         self.CustomLayout = QtGui.QFormLayout(self)
+        self.CustomLayout.setSpacing(8)
+        self.CustomLayout.setMargin(8)
         self.CustomLayout.setObjectName(u'CustomLayout')
         self.CustomModeGroupBox = QtGui.QGroupBox(self)
         self.CustomModeGroupBox.setObjectName(u'CustomModeGroupBox')
@@ -58,7 +60,7 @@ class CustomTab(SettingsTab):
         self.CustomModeGroupBox.setTitle(translate('CustomPlugin.CustomTab',
             'Custom Display'))
         self.DisplayFooterCheckBox.setText(
-            translate('CustomPlugin.CustomTab', 'Display Footer'))
+            translate('CustomPlugin.CustomTab', 'Display footer'))
 
     def onDisplayFooterCheckBoxChanged(self, check_state):
         self.displayFooter = False

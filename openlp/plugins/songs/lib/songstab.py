@@ -38,6 +38,8 @@ class SongsTab(SettingsTab):
         self.setObjectName(u'SongsTab')
         self.tabTitleVisible = translate('SongsPlugin.SongsTab', 'Songs')
         self.SongsLayout = QtGui.QFormLayout(self)
+        self.SongsLayout.setSpacing(8)
+        self.SongsLayout.setMargin(8)
         self.SongsLayout.setObjectName(u'SongsLayout')
         self.SongsModeGroupBox = QtGui.QGroupBox(self)
         self.SongsModeGroupBox.setObjectName(u'SongsModeGroupBox')
@@ -66,7 +68,7 @@ class SongsTab(SettingsTab):
         self.SearchAsTypeCheckBox.setText(
             translate('SongsPlugin.SongsTab', 'Enable search as you type'))
         self.SongBarActiveCheckBox.setText(translate('SongsPlugin.SongsTab',
-            'Display Verses on Live Tool bar'))
+            'Display verses on live tool bar'))
 
     def onSearchAsTypeCheckBoxChanged(self, check_state):
         self.song_search = False

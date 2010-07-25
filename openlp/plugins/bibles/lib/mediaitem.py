@@ -294,7 +294,7 @@ class BibleMediaItem(MediaManagerItem):
         self.QuickSecondVersionLabel.setText(
             translate('BiblesPlugin.MediaItem', 'Dual:'))
         self.QuickSearchLabel.setText(
-            translate('BiblesPlugin.MediaItem', 'Search Type:'))
+            translate('BiblesPlugin.MediaItem', 'Search type:'))
         self.QuickSearchLabel.setText(
             translate('BiblesPlugin.MediaItem', 'Find:'))
         self.QuickSearchButton.setText(
@@ -611,7 +611,7 @@ class BibleMediaItem(MediaManagerItem):
         if self.verses == 0:
             self.AdvancedSearchButton.setEnabled(False)
             self.AdvancedMessage.setText(
-                translate('BiblesPlugin.MediaItem', 'Bible not fully loaded'))
+                translate('BiblesPlugin.MediaItem', 'Bible not fully loaded.'))
         else:
             self.AdvancedSearchButton.setEnabled(True)
             self.AdvancedMessage.setText(u'')

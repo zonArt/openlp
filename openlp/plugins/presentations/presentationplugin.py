@@ -45,7 +45,7 @@ class PresentationPlugin(Plugin):
 
     def __init__(self, plugin_helpers):
         """
-        PluginPresentation constructor. 
+        PluginPresentation constructor.
         """
         log.debug(u'Initialised')
         self.controllers = {}
@@ -135,9 +135,9 @@ class PresentationPlugin(Plugin):
         """
         Return information about this plugin
         """
-        about_text = translate('PresentationPlugin',
-            '<b>Presentation Plugin</b> <br> Delivers '
-            'the ability to show presentations using a number of different '
+        about_text = translate('PresentationPlugin', '<strong>Presentation '
+            'Plugin</strong><br />The presentation plugin provides the '
+            'ability to show presentations using a number of different '
             'programs. The choice of available presentation programs is '
             'available to the user in a drop down box.')
         return about_text

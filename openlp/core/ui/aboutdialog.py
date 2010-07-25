@@ -105,8 +105,9 @@ class Ui_AboutDialog(object):
         QtCore.QMetaObject.connectSlotsByName(aboutDialog)
 
     def retranslateUi(self, aboutDialog):
-        aboutDialog.setWindowTitle(translate('AboutForm', 'About OpenLP'))
-        self.aboutTextEdit.setPlainText(translate('AboutForm',
+        aboutDialog.setWindowTitle(translate('OpenLP.AboutForm',
+            'About OpenLP'))
+        self.aboutTextEdit.setPlainText(translate('OpenLP.AboutForm',
             'OpenLP <version><revision> - Open Source Lyrics '
             'Projection\n'
             '\n'
@@ -124,8 +125,8 @@ class Ui_AboutDialog(object):
         ))
         self.aboutNotebook.setTabText(
             self.aboutNotebook.indexOf(self.aboutTab),
-            translate('AboutForm', 'About'))
-        self.creditsTextEdit.setPlainText(translate('AboutForm', 
+            translate('OpenLP.AboutForm', 'About'))
+        self.creditsTextEdit.setPlainText(translate('OpenLP.AboutForm', 
             'Project Lead\n'
             '    Raoul "superfly" Snyman\n'
             '\n'
@@ -157,8 +158,8 @@ class Ui_AboutDialog(object):
         ))
         self.aboutNotebook.setTabText(
             self.aboutNotebook.indexOf(self.creditsTab),
-            translate('AboutForm', 'Credits'))
-        self.licenseTextEdit.setPlainText(translate('AboutForm', 
+            translate('OpenLP.AboutForm', 'Credits'))
+        self.licenseTextEdit.setPlainText(translate('OpenLP.AboutForm', 
             'Copyright \xa9 2004-2010 Raoul Snyman\n'
             'Portions copyright \xa9 2004-2010 '
             'Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri, '
@@ -549,6 +550,6 @@ class Ui_AboutDialog(object):
             'instead of this License.'))
         self.aboutNotebook.setTabText(
             self.aboutNotebook.indexOf(self.licenseTab),
-            translate('AboutForm', 'License'))
-        self.contributeButton.setText(translate('AboutForm', 'Contribute'))
-        self.closeButton.setText(translate('AboutForm', 'Close'))
+            translate('OpenLP.AboutForm', 'License'))
+        self.contributeButton.setText(translate('OpenLP.AboutForm', 'Contribute'))
+        self.closeButton.setText(translate('OpenLP.AboutForm', 'Close'))
