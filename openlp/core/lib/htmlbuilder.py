@@ -102,6 +102,7 @@ def build_html(item, screen, alert):
                       build_image(width, height),
                       build_blank(width, height),
                       build_image_src(item.bg_frame))
+    print html
     return html
 
 def build_video(width, height):
@@ -114,14 +115,8 @@ def build_video(width, height):
         Screen height
     """
     video = """
-    #video {
-        position: absolute;
-        left: 0px;
-        top: 0px;
-        width: %spx
-        height: %spx;
-        z-index:1;
-    }
+    #video { position: absolute; left: 0px; top: 0px;
+        width: %spx; height: %spx; z-index:1; }
     """
     return video % (width, height)
 
@@ -139,7 +134,7 @@ def build_blank(width, height):
         position: absolute;
         left: 0px;
         top: 0px;
-        width: %spx
+        width: %spx;
         height: %spx;
         z-index:10;
     }
@@ -170,7 +165,7 @@ def build_image(width, height):
 def build_image_src(image):
     #    <img src="" height="480" width="640" />
     image_src = """
-    <img src="data:image/png;base64,%s">";
+    <img src="data:image/png;base64,%s">
     """
     return image_src % image_to_byte(image)
 
@@ -267,14 +262,8 @@ def build_footer(item):
 
 def build_alert(width, alert):
     alert = """
-    #alert {
-        position: absolute;
-        left: 0px;
-        top: 70px;
-        width: %spx;
-        height: 10px;
-        z-index:4;
-        font-size: 50px;
+    #alert { position: absolute; left: 0px; top: 70px;
+        width: %spx; height: 10px; z-index:4; font-size: 50px;
     }
     #alert p {
         background-color: red;

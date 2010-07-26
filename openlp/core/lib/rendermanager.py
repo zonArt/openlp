@@ -188,7 +188,7 @@ class RenderManager(object):
         footer.append(u'CCLI 123456')
         # build a service item to generate preview
         serviceItem = ServiceItem()
-        serviceItem.add_from_text(u'', verse, u'')
+        serviceItem.add_from_text(u'', verse, footer)
         serviceItem.render_manager = self
         # serviceItem gets the theme data so switch it.
         temp_themedata = self.themedata

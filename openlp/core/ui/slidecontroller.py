@@ -549,8 +549,6 @@ class SlideController(QtGui.QWidget):
                     self.serviceItem.name.lower(), [serviceItem, self.isLive])
             if self.serviceItem.is_media():
                 self.onMediaStop()
-        if serviceItem.is_media():
-            self.onMediaStart(serviceItem)
         if self.isLive:
             blanked = self.BlankScreen.isChecked()
         else:
@@ -561,7 +559,7 @@ class SlideController(QtGui.QWidget):
         width = self.parent.ControlSplitter.sizes()[self.split]
         # Set pointing cursor when we have somthing to point at
         self.PreviewListWidget.setCursor(QtCore.Qt.PointingHandCursor)
-        #Clear the old serviceItem cache to release memory
+        # Clear the old serviceItem cache to release memory
 #        if self.serviceItem and self.serviceItem is not serviceItem:
 #            self.serviceItem.clear_cache()
         self.serviceItem = serviceItem
@@ -618,6 +616,8 @@ class SlideController(QtGui.QWidget):
         self.enableToolBar(serviceItem)
         # Pass to display for viewing
         self.display.buildHtml(self.serviceItem)
+        if serviceItem.is_media():
+            self.onMediaStart(serviceItem)
         self.onSlideSelected()
         self.PreviewListWidget.setFocus()
         Receiver.send_message(u'slidecontroller_%s_started' % self.typePrefix,
@@ -947,7 +947,9 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'SlideController onMediaStart')
         if self.isLive:
-            Receiver.send_message(u'videodisplay_start', item)
+            file = os.path.join(item.get_frame_path(), item.get_frame_title())
+            self.display.video(file)
+            #Receiver.send_message(u'videodisplay_start', item)
         else:
             self.mediaObject.stop()
             self.mediaObject.clearQueue()
