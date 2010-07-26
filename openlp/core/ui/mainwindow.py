@@ -308,18 +308,18 @@ class Ui_MainWindow(object):
         self.ToolsAddToolItem.setObjectName(u'ToolsAddToolItem')
         self.ViewPreviewPanel = QtGui.QAction(MainWindow)
         self.ViewPreviewPanel.setCheckable(True)
-        self.ViewPreviewPanel.setChecked(
-            self.settingsmanager.get_preview_visibility())
+        previewVisible = QtCore.QSettings().value(
+            u'user interface/preview panel', QtCore.QVariant(True)).toBool()
+        self.ViewPreviewPanel.setChecked(previewVisible)
         self.ViewPreviewPanel.setObjectName(u'ViewPreviewPanel')
-        self.PreviewController.Panel.setVisible(
-            self.settingsmanager.get_preview_visibility())
+        self.PreviewController.Panel.setVisible(previewVisible)
         self.ViewLivePanel = QtGui.QAction(MainWindow)
         self.ViewLivePanel.setCheckable(True)
-        self.ViewLivePanel.setChecked(
-            self.settingsmanager.get_live_visibility())
+        liveVisible = QtCore.QSettings().value(u'user interface/live panel',
+            QtCore.QVariant(True)).toBool()
+        self.ViewLivePanel.setChecked(liveVisible)
         self.ViewLivePanel.setObjectName(u'ViewLivePanel')
-        self.LiveController.Panel.setVisible(
-            self.settingsmanager.get_live_visibility())
+        self.LiveController.Panel.setVisible(liveVisible)
         self.ModeDefaultItem = QtGui.QAction(MainWindow)
         self.ModeDefaultItem.setCheckable(True)
         self.ModeDefaultItem.setObjectName(u'ModeDefaultItem')
@@ -914,7 +914,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 False - Hidden
         """
         self.PreviewController.Panel.setVisible(visible)
-        self.settingsmanager.set_preview_visibility(visible)
+        QtCore.QSettings().setValue(u'user interface/preview panel',
+            QtCore.QVariant(visible))
         self.ViewPreviewPanel.setChecked(visible)
 
     def setLivePanelVisibility(self, visible):
@@ -928,7 +929,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 False - Hidden
         """
         self.LiveController.Panel.setVisible(visible)
-        self.settingsmanager.set_live_visibility(visible)
+        QtCore.QSettings().setValue(u'user interface/live panel',
+            QtCore.QVariant(visible))
         self.ViewLivePanel.setChecked(visible)
 
     def loadSettings(self):
