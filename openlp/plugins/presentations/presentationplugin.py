@@ -32,7 +32,8 @@ import logging
 
 from openlp.core.lib import Plugin, build_icon, PluginStatus, translate
 from openlp.core.utils import AppLocation
-from openlp.plugins.presentations.lib import *
+from openlp.plugins.presentations.lib import PresentationController, \
+    PresentationMediaItem, PresentationTab
 
 log = logging.getLogger(__name__)
 

@@ -30,7 +30,7 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import SettingsManager
 from openlp.core.utils import AppLocation
-from openlp.plugins.bibles.lib.db import BibleDB, Book, BibleMeta
+from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
 
 from common import parse_reference
 from opensong import OpenSongBible
@@ -149,7 +149,7 @@ class BibleManager(object):
                     file=filename, download_source=source.value,
                     download_name=download_name)
                 if meta_proxy:
-                    web_bible.set_proxy_server(meta_proxy.value)
+                    web_bible.proxy_server = meta_proxy.value
                 self.db_cache[name] = web_bible
         log.debug(u'Bibles reloaded')
 
@@ -199,8 +199,7 @@ class BibleManager(object):
                 u'name': book.name,
                 u'chapters': self.db_cache[bible].get_chapter_count(book.name)
             }
-            for book in self.db_cache[bible].get_all_objects(Book,
-                order_by_ref=Book.id)
+            for book in self.db_cache[bible].get_books()
         ]
 
     def get_chapter_count(self, bible, book):
