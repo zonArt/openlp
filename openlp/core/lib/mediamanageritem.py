@@ -298,8 +298,8 @@ class MediaManagerItem(QtGui.QWidget):
             self.listView.addAction(
                 context_menu_action(
                     self.listView, u':/general/general_delete.png',
-                    unicode(translate(
-                        'OpenLP.MediaManagerItem', '&Delete %s')) %
+                    unicode(translate('OpenLP.MediaManagerItem',
+                        '&Delete %s')) %
                     self.pluginNameVisible,
                     self.onDeleteClick))
             self.listView.addAction(context_menu_separator(self.listView))
