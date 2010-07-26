@@ -56,7 +56,7 @@ class RenderManager(object):
         """
         log.debug(u'Initilisation started')
         self.screens = screens
-        self.display = self.display = MainDisplay(self, screens, False)
+        self.display = MainDisplay(self, screens, False)
         self.display.setup()
         self.theme_manager = theme_manager
         self.renderer = Renderer()
@@ -190,7 +190,11 @@ class RenderManager(object):
         serviceItem = ServiceItem()
         serviceItem.add_from_text(u'', verse, u'')
         serviceItem.render_manager = self
+        # serviceItem gets the theme data so switch it.
+        temp_themedata = self.themedata
+        self.themedata = themedata
         serviceItem.render()
+        self.themedata = temp_themedata
         serviceItem.raw_footer = footer
         self.display.buildHtml(serviceItem)
         frame, raw_html = serviceItem.get_rendered_frame(0)

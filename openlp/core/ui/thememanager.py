@@ -661,7 +661,7 @@ class ThemeManager(QtGui.QWidget):
         """
         Call the RenderManager to build a Sample Image
         """
-        log.debug(u'generateImage %s ', themedata)
+        log.debug(u'generateImage \n%s ', themedata)
         return self.parent.RenderManager.generate_preview(themedata)
 
     def getPreviewImage(self, theme):
