@@ -134,7 +134,8 @@ class AdvancedTab(SettingsTab):
         """
         self.uiGroupBox.setTitle(translate('OpenLP.AdvancedTab', 'UI Settings'))
         self.recentLabel.setText(
-            translate('OpenLP.AdvancedTab', 'Number of recent files to display:'))
+            translate('OpenLP.AdvancedTab',
+                'Number of recent files to display:'))
         self.mediaPluginCheckBox.setText(translate('OpenLP.AdvancedTab',
             'Remember active media manager tab on startup'))
         self.doubleClickLiveCheckBox.setText(translate('OpenLP.AdvancedTab',

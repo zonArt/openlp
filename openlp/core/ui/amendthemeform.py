@@ -222,7 +222,8 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         images_filter = '%s;;%s (*.*) (*)' % (images_filter,
             translate('OpenLP.AmendThemeForm', 'All Files'))
         filename = QtGui.QFileDialog.getOpenFileName(self,
-            translate('OpenLP.AmendThemeForm', 'Select Image'), u'', images_filter)
+            translate('OpenLP.AmendThemeForm', 'Select Image'), u'',
+            images_filter)
         if filename:
             self.ImageLineEdit.setText(filename)
             self.theme.background_filename = filename

@@ -562,5 +562,6 @@ class Ui_AboutDialog(object):
         self.aboutNotebook.setTabText(
             self.aboutNotebook.indexOf(self.licenseTab),
             translate('OpenLP.AboutForm', 'License'))
-        self.contributeButton.setText(translate('OpenLP.AboutForm', 'Contribute'))
+        self.contributeButton.setText(
+            translate('OpenLP.AboutForm', 'Contribute'))
         self.closeButton.setText(translate('OpenLP.AboutForm', 'Close'))
