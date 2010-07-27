@@ -56,9 +56,9 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
             year -= 1
         toDate = QtCore.QDate(year, 8, 31)
         fromDate = QtCore.QDate(year - 1, 9, 1)
-        self.FromDate.setSelectedDate(fromDate)
-        self.ToDate.setSelectedDate(toDate)
-        self.FileLineEdit.setText(
+        self.fromDate.setSelectedDate(fromDate)
+        self.toDate.setSelectedDate(toDate)
+        self.fileLineEdit.setText(
             SettingsManager.get_last_dir(self.parent.settingsSection, 1))
 
     def defineOutputLocation(self):
@@ -69,19 +69,19 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         path = unicode(path)
         if path != u'':
             SettingsManager.set_last_dir(self.parent.settingsSection, path, 1)
-            self.FileLineEdit.setText(path)
+            self.fileLineEdit.setText(path)
 
     def accept(self):
         log.debug(u'Detailed report generated')
         filename = u'usage_detail_%s_%s.txt' % (
-            self.FromDate.selectedDate().toString(u'ddMMyyyy'),
-            self.ToDate.selectedDate().toString(u'ddMMyyyy'))
+            self.fromDate.selectedDate().toString(u'ddMMyyyy'),
+            self.toDate.selectedDate().toString(u'ddMMyyyy'))
         usage = self.parent.songusagemanager.get_all_objects(
             SongUsageItem, and_(
-            SongUsageItem.usagedate >= self.FromDate.selectedDate().toPyDate(),
-            SongUsageItem.usagedate < self.ToDate.selectedDate().toPyDate()),
+            SongUsageItem.usagedate >= self.fromDate.selectedDate().toPyDate(),
+            SongUsageItem.usagedate < self.toDate.selectedDate().toPyDate()),
             [SongUsageItem.usagedate, SongUsageItem.usagetime])
-        outname = os.path.join(unicode(self.FileLineEdit.text()), filename)
+        outname = os.path.join(unicode(self.fileLineEdit.text()), filename)
         file = None
         try:
             file = open(outname, u'w')
