@@ -29,12 +29,12 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import build_icon, translate
 
 class Ui_SongUsageDetailDialog(object):
-    def setupUi(self, SongUsageDetailDialog):
-        SongUsageDetailDialog.setObjectName(u'SongUsageDetailDialog')
-        SongUsageDetailDialog.resize(609, 413)
-        self.verticalLayout = QtGui.QVBoxLayout(SongUsageDetailDialog)
+    def setupUi(self, songUsageDetailDialog):
+        songUsageDetailDialog.setObjectName(u'songUsageDetailDialog')
+        songUsageDetailDialog.resize(609, 413)
+        self.verticalLayout = QtGui.QVBoxLayout(songUsageDetailDialog)
         self.verticalLayout.setObjectName(u'verticalLayout')
-        self.dateRangeGroupBox = QtGui.QGroupBox(SongUsageDetailDialog)
+        self.dateRangeGroupBox = QtGui.QGroupBox(songUsageDetailDialog)
         self.dateRangeGroupBox.setObjectName(u'dateRangeGroupBox')
         self.verticalLayout2 = QtGui.QVBoxLayout(self.dateRangeGroupBox)
         self.verticalLayout2.setObjectName(u'verticalLayout2')
@@ -69,24 +69,24 @@ class Ui_SongUsageDetailDialog(object):
         self.verticalLayout4.addLayout(self.horizontalLayout)
         self.verticalLayout2.addWidget(self.fileGroupBox)
         self.verticalLayout.addWidget(self.dateRangeGroupBox)
-        self.buttonBox = QtGui.QDialogButtonBox(SongUsageDetailDialog)
+        self.buttonBox = QtGui.QDialogButtonBox(songUsageDetailDialog)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
             QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(u'buttonBox')
         self.verticalLayout.addWidget(self.buttonBox)
 
-        self.retranslateUi(SongUsageDetailDialog)
+        self.retranslateUi(songUsageDetailDialog)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'),
-            SongUsageDetailDialog.accept)
+            songUsageDetailDialog.accept)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
-            SongUsageDetailDialog.close)
+            songUsageDetailDialog.close)
         QtCore.QObject.connect(self.saveFilePushButton,
             QtCore.SIGNAL(u'pressed()'),
-            SongUsageDetailDialog.defineOutputLocation)
-        QtCore.QMetaObject.connectSlotsByName(SongUsageDetailDialog)
+            songUsageDetailDialog.defineOutputLocation)
+        QtCore.QMetaObject.connectSlotsByName(songUsageDetailDialog)
 
-    def retranslateUi(self, SongUsageDetailDialog):
-        SongUsageDetailDialog.setWindowTitle(
+    def retranslateUi(self, songUsageDetailDialog):
+        songUsageDetailDialog.setWindowTitle(
             translate('SongUsagePlugin.SongUsageDetailForm',
             'Song Usage Extraction'))
         self.dateRangeGroupBox.setTitle(
