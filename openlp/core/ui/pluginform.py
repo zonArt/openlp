@@ -45,11 +45,11 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         self._clearDetails()
         # Right, now let's put some signals and slots together!
         QtCore.QObject.connect(
-            self.PluginListWidget,
+            self.pluginListWidget,
             QtCore.SIGNAL(u'itemSelectionChanged()'),
             self.onPluginListWidgetSelectionChanged)
         QtCore.QObject.connect(
-            self.StatusComboBox,
+            self.statusComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
             self.onStatusComboBoxChanged)
 
@@ -57,9 +57,9 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         """
         Load the plugin details into the screen
         """
-        self.PluginListWidget.clear()
+        self.pluginListWidget.clear()
         for plugin in self.parent.plugin_manager.plugins:
-            item = QtGui.QListWidgetItem(self.PluginListWidget)
+            item = QtGui.QListWidgetItem(self.pluginListWidget)
             # We do this just to make 100% sure the status is an integer as
             # sometimes when it's loaded from the config, it isn't cast to int.
             plugin.status = int(plugin.status)
@@ -79,31 +79,31 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             # If the plugin has an icon, set it!
             if plugin.icon:
                 item.setIcon(plugin.icon)
-            self.PluginListWidget.addItem(item)
+            self.pluginListWidget.addItem(item)
 
     def _clearDetails(self):
-        self.StatusComboBox.setCurrentIndex(-1)
-        self.VersionNumberLabel.setText(u'')
-        self.AboutTextBrowser.setHtml(u'')
-        self.StatusComboBox.setEnabled(False)
+        self.statusComboBox.setCurrentIndex(-1)
+        self.versionNumberLabel.setText(u'')
+        self.aboutTextBrowser.setHtml(u'')
+        self.statusComboBox.setEnabled(False)
 
     def _setDetails(self):
         log.debug('PluginStatus: %s', str(self.activePlugin.status))
-        self.VersionNumberLabel.setText(self.activePlugin.version)
-        self.AboutTextBrowser.setHtml(self.activePlugin.about())
+        self.versionNumberLabel.setText(self.activePlugin.version)
+        self.aboutTextBrowser.setHtml(self.activePlugin.about())
         self.programaticChange = True
         status = 1
         if self.activePlugin.status == PluginStatus.Active:
             status = 0
-        self.StatusComboBox.setCurrentIndex(status)
-        self.StatusComboBox.setEnabled(True)
+        self.statusComboBox.setCurrentIndex(status)
+        self.statusComboBox.setEnabled(True)
         self.programaticChange = False
 
     def onPluginListWidgetSelectionChanged(self):
-        if self.PluginListWidget.currentItem() is None:
+        if self.pluginListWidget.currentItem() is None:
             self._clearDetails()
             return
-        plugin_name = self.PluginListWidget.currentItem().text().split(u' ')[0]
+        plugin_name = self.pluginListWidget.currentItem().text().split(u' ')[0]
         self.activePlugin = None
         for plugin in self.parent.plugin_manager.plugins:
             if plugin.name == plugin_name:
@@ -134,5 +134,5 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         elif self.activePlugin.status == PluginStatus.Disabled:
             status_text = unicode(
                 translate('OpenLP.PluginForm', '%s (Disabled)'))
-        self.PluginListWidget.currentItem().setText(
+        self.pluginListWidget.currentItem().setText(
             status_text % self.activePlugin.name)
