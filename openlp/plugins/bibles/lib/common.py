@@ -64,7 +64,7 @@ def parse_reference(reference):
         to_verse = match.group(5)
         if int(match.group(2)) == int(match.group(4)):
             reference_list.append(
-                (match.group(1), int(match.group(2)), from_verse, to_verse)
+                (book, int(match.group(2)), from_verse, to_verse)
             )
         else:
             if int(match.group(2)) > int(match.group(4)):
@@ -75,17 +75,11 @@ def parse_reference(reference):
                 to_chapter = int(match.group(4))
             for chapter in xrange(from_chapter, to_chapter + 1):
                 if chapter == from_chapter:
-                    reference_list.append(
-                        (match.group(1), chapter, from_verse, -1)
-                    )
+                    reference_list.append((book, chapter, from_verse, -1))
                 elif chapter == to_chapter:
-                    reference_list.append(
-                        (match.group(1), chapter, 1, to_verse)
-                    )
+                    reference_list.append((book, chapter, 1, to_verse))
                 else:
-                    reference_list.append(
-                        (match.group(1), chapter, 1, -1)
-                    )
+                    reference_list.append((book, chapter, 1, -1))
     else:
         match = only_verses.match(reference)
         if match:
