@@ -244,7 +244,8 @@ class MediaManagerItem(QtGui.QWidget):
             self.addToolbarButton(
                 unicode(translate('OpenLP.MediaManagerItem', 'Delete %s')) %
                 self.PluginNameShort,
-                translate('OpenLP.MediaManagerItem', 'Delete the selected item'),
+                translate('OpenLP.MediaManagerItem',
+                    'Delete the selected item'),
                 u':/general/general_delete.png', self.onDeleteClick)
         ## Separator Line ##
         self.addToolbarSeparator()
@@ -297,7 +298,8 @@ class MediaManagerItem(QtGui.QWidget):
             self.listView.addAction(
                 context_menu_action(
                     self.listView, u':/general/general_delete.png',
-                    unicode(translate('OpenLP.MediaManagerItem', '&Delete %s')) %
+                    unicode(translate('OpenLP.MediaManagerItem',
+                        '&Delete %s')) %
                     self.pluginNameVisible,
                     self.onDeleteClick))
             self.listView.addAction(context_menu_separator(self.listView))
@@ -509,7 +511,8 @@ class MediaManagerItem(QtGui.QWidget):
             service_item = self.parent.serviceManager.getServiceItem()
             if not service_item:
                 QtGui.QMessageBox.information(self,
-                    translate('OpenLP.MediaManagerItem', 'No Service Item Selected'),
+                    translate('OpenLP.MediaManagerItem',
+                        'No Service Item Selected'),
                     translate('OpenLP.MediaManagerItem',
                         'You must select an existing service item to add to.'))
             elif self.title.lower() == service_item.name.lower():
@@ -519,7 +522,8 @@ class MediaManagerItem(QtGui.QWidget):
             else:
                 #Turn off the remote edit update message indicator
                 QtGui.QMessageBox.information(self,
-                    translate('OpenLP.MediaManagerItem', 'Invalid Service Item'),
+                    translate('OpenLP.MediaManagerItem',
+                        'Invalid Service Item'),
                     unicode(translate('OpenLP.MediaManagerItem',
                         'You must select a %s service item.')) % self.title)
 

@@ -287,7 +287,8 @@ class GeneralTab(SettingsTab):
         """
         Translate the general settings tab to the currently selected language
         """
-        self.MonitorGroupBox.setTitle(translate('OpenLP.GeneralTab', 'Monitors'))
+        self.MonitorGroupBox.setTitle(translate('OpenLP.GeneralTab',
+            'Monitors'))
         self.MonitorLabel.setText(translate('OpenLP.GeneralTab',
             'Select monitor for output display:'))
         self.DisplayOnMonitorCheck.setText(

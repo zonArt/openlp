@@ -133,8 +133,8 @@ class ServiceManager(QtGui.QWidget):
             translate('OpenLP.ServiceManager', 'Save this service'),
             self.onQuickSaveService)
         self.Toolbar.addSeparator()
-        self.ThemeLabel = QtGui.QLabel(translate('OpenLP.ServiceManager', 'Theme:'),
-            self)
+        self.ThemeLabel = QtGui.QLabel(translate('OpenLP.ServiceManager',
+            'Theme:'), self)
         self.ThemeLabel.setMargin(3)
         self.Toolbar.addToolbarWidget(u'ThemeLabel', self.ThemeLabel)
         self.ThemeComboBox = QtGui.QComboBox(self.Toolbar)
@@ -846,8 +846,8 @@ class ServiceManager(QtGui.QWidget):
         else:
             QtGui.QMessageBox.critical(self,
                 translate('OpenLP.ServiceManager', 'Missing Display Handler'),
-                translate('OpenLP.ServiceManager', 'Your item cannot be displayed '
-                    'as there is no handler to display it'),
+                translate('OpenLP.ServiceManager', 'Your item cannot be '
+                    'displayed as there is no handler to display it'),
                 QtGui.QMessageBox.StandardButtons(
                     QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
@@ -882,8 +882,8 @@ class ServiceManager(QtGui.QWidget):
         else:
             QtGui.QMessageBox.critical(self,
                 translate('OpenLP.ServiceManager', 'Missing Display Handler'),
-                translate('OpenLP.ServiceManager', 'Your item cannot be displayed '
-                    'as there is no handler to display it'),
+                translate('OpenLP.ServiceManager', 'Your item cannot be '
+                    'displayed as there is no handler to display it'),
                 QtGui.QMessageBox.StandardButtons(
                     QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)

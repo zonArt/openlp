@@ -498,7 +498,8 @@ class Ui_MainWindow(object):
         self.HelpAboutItem.setText(translate('OpenLP.MainWindow', '&About'))
         self.HelpAboutItem.setStatusTip(
             translate('OpenLP.MainWindow', 'More information about OpenLP'))
-        self.HelpAboutItem.setShortcut(translate('OpenLP.MainWindow', 'Ctrl+F1'))
+        self.HelpAboutItem.setShortcut(translate('OpenLP.MainWindow',
+            'Ctrl+F1'))
         self.HelpOnlineHelpItem.setText(
             translate('OpenLP.MainWindow', '&Online Help'))
         self.HelpWebSiteItem.setText(
@@ -707,7 +708,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         version_text = unicode(translate('OpenLP.MainWindow',
             'Version %s of OpenLP is now available for download (you are '
             'currently running version %s). \n\nYou can download the latest '
-            'version from <a href="http://openlp.org/">http://openlp.org/</a>.'))
+            'version from '
+            '<a href="http://openlp.org/">http://openlp.org/</a>.'))
         QtGui.QMessageBox.question(self,
             translate('OpenLP.MainWindow', 'OpenLP Version Updated'),
             version_text % (version, app_version),
@@ -893,7 +895,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def defaultThemeChanged(self, theme):
         self.DefaultThemeLabel.setText(
-            unicode(translate('OpenLP.MainWindow', 'Default Theme: %s')) % theme)
+            unicode(translate('OpenLP.MainWindow', 'Default Theme: %s')) %
+                theme)
 
     def toggleMediaManager(self, visible):
         if self.MediaManagerDock.isVisible() != visible:

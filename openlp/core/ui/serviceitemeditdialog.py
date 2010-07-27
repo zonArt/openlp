@@ -71,5 +71,6 @@ class Ui_ServiceItemEditDialog(object):
         ServiceItemEditDialog.setWindowTitle(
             translate('OpenLP.ServiceItemEditForm', 'Reorder Service Item'))
         self.upButton.setText(translate('OpenLP.ServiceItemEditForm', 'Up'))
-        self.deleteButton.setText(translate('OpenLP.ServiceItemEditForm', 'Delete'))
+        self.deleteButton.setText(translate('OpenLP.ServiceItemEditForm',
+            'Delete'))
         self.downButton.setText(translate('OpenLP.ServiceItemEditForm', 'Down'))
