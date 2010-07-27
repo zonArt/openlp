@@ -260,13 +260,16 @@ def build_footer(item):
     return lyrics_html
 
 
-def build_alert(width, alert):
+def build_alert(width, alertTab):
     alert = """
     #alert { position: absolute; left: 0px; top: 70px;
-        width: %spx; height: 10px; z-index:4; font-size: 50px;
+        width: %spx; height: 10px; z-index:4; font-size: %spx;
     }
     #alert p {
-        background-color: red;
+        background-color: %s;
     }
     """
-    return alert % (width)
+    alertText = u''
+    if alertTab:
+        alertText = alert % (width, alertTab.font_size, alertTab.bg_color)
+    return alertText
