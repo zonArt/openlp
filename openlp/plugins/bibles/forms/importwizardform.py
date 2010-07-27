@@ -327,6 +327,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         #Load and store Crosswalk Bibles
         filepath = AppLocation.get_directory(AppLocation.PluginsDir)
         filepath = os.path.join(filepath, u'bibles', u'resources')
+        books_file = None
         try:
             self.web_bible_list[WebDownload.Crosswalk] = {}
             books_file = open(
@@ -348,6 +349,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
             if books_file:
                 books_file.close()
         #Load and store BibleGateway Bibles
+        books_file = None
         try:
             self.web_bible_list[WebDownload.BibleGateway] = {}
             books_file = open(os.path.join(filepath, u'biblegateway.csv'), 'r')
