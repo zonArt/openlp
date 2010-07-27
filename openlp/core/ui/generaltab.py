@@ -401,7 +401,7 @@ class GeneralTab(SettingsTab):
         self.customYValueEdit.setEnabled(self.overrideCheckBox.isChecked())
         self.customHeightValueEdit.setEnabled(self.overrideCheckBox.isChecked())
         self.customWidthValueEdit.setEnabled(self.overrideCheckBox.isChecked())
-        self.override_changed = False
+        self.overrideChanged = False
 
     def save(self):
         """
@@ -473,4 +473,4 @@ class GeneralTab(SettingsTab):
         self.customYValueEdit.setEnabled(checked)
         self.customHeightValueEdit.setEnabled(checked)
         self.customWidthValueEdit.setEnabled(checked)
-        self.override_changed = True
+        self.overrideChanged = True
