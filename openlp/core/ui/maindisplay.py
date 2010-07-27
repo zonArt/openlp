@@ -116,6 +116,7 @@ class MainDisplay(DisplayWidget):
         self.webView.setGeometry(0, 0, self.screen[u'size'].width(), self.screen[u'size'].height())
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
+        self.alertTab = None
         QtCore.QObject.connect(self.webView,
             QtCore.SIGNAL(u'loadFinished(bool)'), self.loaded)
         self.frame.setScrollBarPolicy(QtCore.Qt.Vertical,
@@ -156,11 +157,11 @@ class MainDisplay(DisplayWidget):
 
     def next(self):
         if self.currslide:
-            self.frame.evaluateJavaScript("startfade('" + self.slide2 + "')")
-            #self.frame.findFirstElement('div#lyrics').setInnerXml(self.slide2)
+            #self.frame.evaluateJavaScript("startfade('" + self.slide2 + "')")
+            self.frame.findFirstElement('td#lyrics').setInnerXml(self.slide2)
         else:
-            self.frame.evaluateJavaScript("startfade('" + self.slide1 + "')")
-            #self.frame.findFirstElement('div#lyrics').setInnerXml(self.slide1)
+            #self.frame.evaluateJavaScript("startfade('" + self.slide1 + "')")
+            self.frame.findFirstElement('td#lyrics').setInnerXml(self.slide1)
         self.currslide = not self.currslide
 
     def text(self, slide):
@@ -172,7 +173,7 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'text')
         print slide
-        self.frame.findFirstElement('div#lyrics').setInnerXml(slide)
+        self.frame.findFirstElement('td#lyrics').setInnerXml(slide)
         return self.preview()
 
     def alert(self):

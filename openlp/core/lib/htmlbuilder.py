@@ -72,7 +72,7 @@ HTMLSRC = u"""
 </script>
 </head>
 <body>
-<div id="lyrics" class="lyrics"></div>
+<table class="lyricstable"><tr><td id="lyrics" class="lyrics"></td?</tr></table>
 <div id="footer" class="footer"></div>
 <div id="alert"></div>
 <video id="video"></video>
@@ -81,6 +81,7 @@ HTMLSRC = u"""
 </body>
 </html>
     """
+
 def build_html(item, screen, alert):
     """
     Build the full web paged structure for display
@@ -177,8 +178,9 @@ def build_lyrics(item):
         Service Item containing theme and location information
     """
     lyrics = """
-    #lyrics {position: absolute; %s z-index:3; %s; %s %s }
-    table {border=0;margin=0padding=0;}
+    .lyricstable {position: absolute; %s z-index:3;}
+    .lyrics { %s; %s %s }
+    table {border=0; margin=0;padding=0;}
     """
     theme = item.themedata
     lyrics_html = u''
@@ -194,15 +196,15 @@ def build_lyrics(item):
             (theme.font_main_name, theme.font_main_proportion)
         align = u''
         if theme.display_horizontalAlign == 2:
-            align = u'align=center;'
+            align = u'align:center;'
         elif theme.display_horizontalAlign == 1:
-            align = u'align=right;'
+            align = u'align:right;'
         if theme.display_verticalAlign == 2:
-            valign = u'vertical-align=top;'
+            valign = u'vertical-align:bottom;'
         elif theme.display_verticalAlign == 1:
-            valign = u'vertical-align=middle;'
+            valign = u'vertical-align:middle;'
         else:
-            valign = u'vertical-align=bottom;'
+            valign = u'vertical-align:top;'
         text = u'color:%s; %s %s' % (theme.font_main_color, align, valign)
         if theme.display_shadow and theme.display_outline:
             fontworks = u'text-shadow: -%spx 0 %s, 0 %spx %s, %spx 0 %s, 0 ' \
@@ -245,15 +247,15 @@ def build_footer(item):
             (theme.font_footer_name, theme.font_footer_proportion)
         align = u''
         if theme.display_horizontalAlign == 2:
-            align = u'align=center;'
+            align = u'align:center;'
         elif theme.display_horizontalAlign == 1:
-            align = u'align=right;'
+            align = u'align:right;'
         if theme.display_verticalAlign == 2:
-            valign = u'vertical-align=top;'
+            valign = u'vertical-align:bottom;'
         elif theme.display_verticalAlign == 1:
-            valign = u'vertical-align=middle;'
+            valign = u'vertical-align:middle;'
         else:
-            valign = u'vertical-align=bottom;'
+            valign = u'vertical-align:top;'
         text = u'color:%s; %s %s' % (theme.font_footer_color, align, valign)
     lyrics_html = lyrics % (position, font, text)
     print lyrics_html
