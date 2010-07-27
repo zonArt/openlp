@@ -30,6 +30,7 @@ import re
 import sqlite3
 import urllib
 import urllib2
+from HTMLParser import HTMLParseError
 
 from BeautifulSoup import BeautifulSoup, NavigableString
 
@@ -201,12 +202,26 @@ class BGExtract(BibleCommon):
         url_params = urllib.urlencode(
             {u'search': u'%s %s' % (bookname, chapter),
             u'version': u'%s' % version})
-        page = urllib2.urlopen(
-            u'http://www.biblegateway.com/passage/?%s' % url_params)
-        log.debug(u'BibleGateway url = %s' % page.geturl())
-        Receiver.send_message(u'openlp_process_events')
+        page = None
+        try:
+            page = urllib2.urlopen(
+                u'http://www.biblegateway.com/passage/?%s' % url_params)
+            log.debug(u'BibleGateway url = %s' % page.geturl())
+            Receiver.send_message(u'openlp_process_events')
+        except urllib2.URLError:
+            log.exception(u'The web bible page could not be downloaded.')
+        finally:
+            if not page:
+                return None
         cleaner = [(re.compile('&nbsp;|<br />'), lambda match: '')]
-        soup = BeautifulSoup(page, markupMassage=cleaner)
+        soup = None
+        try:
+            soup = BeautifulSoup(page, markupMassage=cleaner)
+        except HTMLParseError:
+            log.exception(u'BeautifulSoup could not parse the bible page.')
+        finally:
+            if not soup:
+                return None
         Receiver.send_message(u'openlp_process_events')
         footnotes = soup.findAll(u'sup', u'footnote')
         [footnote.extract() for footnote in footnotes]
@@ -250,11 +265,23 @@ class CWExtract(BibleCommon):
         chapter_url = u'http://www.biblestudytools.com/%s/%s/%s.html' % \
             (version, urlbookname.lower(), chapter)
         log.debug(u'URL: %s', chapter_url)
-        page = urllib2.urlopen(chapter_url)
-        Receiver.send_message(u'openlp_process_events')
-        if not page:
-            return None
-        soup = BeautifulSoup(page)
+        page = None
+        try:
+            page = urllib2.urlopen(chapter_url)
+            Receiver.send_message(u'openlp_process_events')
+        except urllib2.URLError:
+            log.exception(u'The web bible page could not be downloaded.')
+        finally:
+            if not page:
+                return None
+        soup = None
+        try:
+            soup = BeautifulSoup(page)
+        except HTMLParseError:
+            log.exception(u'BeautifulSoup could not parse the bible page.')
+        finally:
+            if not soup:
+                return None
         Receiver.send_message(u'openlp_process_events')
         htmlverses = soup.findAll(u'span', u'versetext')
         verses = {}
@@ -404,15 +431,11 @@ class HTTPBible(BibleDB):
         """
         log.debug(u'get_chapter %s, %s', book, chapter)
         log.debug(u'source = %s', self.download_source)
-        try:
-            if self.download_source.lower() == u'crosswalk':
-                ev = CWExtract(self.proxy_server)
-            else:
-                ev = BGExtract(self.proxy_server)
-            return ev.get_bible_chapter(self.download_name, book, chapter)
-        except:
-            log.exception("Failed to get bible chapter")
-            return None
+        if self.download_source.lower() == u'crosswalk':
+            ev = CWExtract(self.proxy_server)
+        else:
+            ev = BGExtract(self.proxy_server)
+        return ev.get_bible_chapter(self.download_name, book, chapter)
 
     def get_books(self):
         """

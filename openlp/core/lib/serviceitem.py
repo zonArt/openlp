@@ -400,4 +400,3 @@ class ServiceItem(object):
 #        Clear's the service item's cache.
 #        """
 #        self.cache = {}
-

@@ -164,7 +164,7 @@ class PresentationMediaItem(MediaManagerItem):
             self.DisplayTypeComboBox.insertItem(0, self.Automatic)
             self.DisplayTypeComboBox.setCurrentIndex(0)
         if QtCore.QSettings().value(self.settingsSection + u'/override app', 
-            QtCore.QVariant(QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:          
+            QtCore.QVariant(QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
             self.PresentationWidget.show()
         else:
             self.PresentationWidget.hide()

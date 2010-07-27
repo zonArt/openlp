@@ -519,7 +519,7 @@ class BibleMediaItem(MediaManagerItem):
             #permission = self._decodeQtObject(reference, 'permission')
             if self.parent.settings_tab.display_style == 1:
                 verse_text = self.formatVerse(old_chapter, chapter, verse,
-                    u'<sup>(u', u')</sup>')
+                    u'<sup>(', u')</sup>')
             elif self.parent.settings_tab.display_style == 2:
                 verse_text = self.formatVerse(old_chapter, chapter, verse,
                     u'<sup>{', u'}</sup>')
