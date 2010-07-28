@@ -173,7 +173,8 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'text')
         print slide
-        self.frame.findFirstElement('td#lyrics').setInnerXml(slide)
+        self.frame.findFirstElement('td#lyricsmain').setInnerXml(slide)
+        self.frame.findFirstElement('td#lyricsoutline').setInnerXml(slide)
         return self.preview()
 
     def alert(self):

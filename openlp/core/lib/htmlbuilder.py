@@ -72,7 +72,12 @@ HTMLSRC = u"""
 </script>
 </head>
 <body>
-<table class="lyricstable"><tr><td id="lyrics" class="lyrics"></td?</tr></table>
+<table class="lyricsmaintable" class="lyricstable">
+    <tr><td id="lyricsmain" class="lyrics"></td></tr>
+</table>
+<table class="lyricsoutlinetable" class="lyricstable">
+    <tr><td id="lyricsoutline" class="lyrics"></td></tr>
+</table>
 <div id="footer" class="footer"></div>
 <div id="alert"></div>
 <video id="video"></video>
@@ -177,56 +182,55 @@ def build_lyrics(item):
     `item`
         Service Item containing theme and location information
     """
-    lyrics = """
-    .lyricstable {position: absolute; %s z-index:3;}
-    .lyrics { %s; %s %s }
-    table {border=0; margin=0;padding=0;}
+    style = """
+    .lyricstable { %s }
+    .lyrics { %s }
+    #lyricsmain { %s }
+    #lyricsoutline { %s }
+    #lyricsmaintable { z-index:4; }
+    #lyricsoutlinetable { z-index:3; }
+    table {border=0; margin=0; padding=0; }
     """
     theme = item.themedata
-    lyrics_html = u''
     position = u''
+    outline = u'display: none;'
+    shadow = u''
     fontworks = u''
+    lyrics = u''
+    lyricsmain = u''
     font = u''
     text = u''
     if theme:
-        position =  u' left: %spx; top: %spx; width: %spx; height: %spx; ' % \
+        position =  u'position: absolute; left: %spx; top: %spx;' \
+            ' width: %spx; height: %spx; ' % \
             (item.main.x(),  item.main.y(), item.main.width(),
             item.main.height())
         font = u' font-family %s; font-size: %spx;' % \
             (theme.font_main_name, theme.font_main_proportion)
         align = u''
         if theme.display_horizontalAlign == 2:
-            align = u'align:center;'
+            align = u'text-align:center;'
         elif theme.display_horizontalAlign == 1:
-            align = u'align:right;'
+            align = u'text-align:right;'
+        else:
+            align = u'text-align:left;'
         if theme.display_verticalAlign == 2:
             valign = u'vertical-align:bottom;'
         elif theme.display_verticalAlign == 1:
             valign = u'vertical-align:middle;'
         else:
             valign = u'vertical-align:top;'
-        text = u'color:%s; %s %s' % (theme.font_main_color, align, valign)
-        if theme.display_shadow and theme.display_outline:
-            fontworks = u'text-shadow: -%spx 0 %s, 0 %spx %s, %spx 0 %s, 0 ' \
-                '-%spx %s, %spx %spx %spx %s' % \
-                (theme.display_outline_size, theme.display_outline_color,
-                theme.display_outline_size, theme.display_outline_color,
-                theme.display_outline_size, theme.display_outline_color,
-                theme.display_outline_size, theme.display_outline_color,
-                theme.display_shadow_size, theme.display_shadow_size,
-                theme.display_shadow_size, theme.display_shadow_color)
-        elif theme.display_shadow:
-            fontworks = u'text-shadow: %spx %spx %spx %s' % \
-                (theme.display_shadow_size, theme.display_shadow_size,
-                theme.display_shadow_size, theme.display_shadow_color)
-        elif theme.display_outline:
-            fontworks = u'text-shadow: -%spx 0 %s, 0 %spx %s,' \
-                ' %spx 0 %s, 0 -%spx %s' % \
-                (theme.display_outline_size, theme.display_outline_color,
-                theme.display_outline_size, theme.display_outline_color,
-                theme.display_outline_size, theme.display_outline_color,
-                theme.display_outline_size, theme.display_outline_color)
-    lyrics_html = lyrics % (position, fontworks, font, text)
+        lyrics = u'%s %s %s' % (font, align, valign)
+        if theme.display_outline:
+            outline = u'-webkit-text-stroke: %sem %s;' % \
+                (float(theme.display_outline_size) / 16,
+                theme.display_outline_color)
+        if theme.display_shadow:
+            shadow_size = str(float(theme.display_shadow_size) / 16)
+            shadow = u'text-shadow: %sem %sem %s;' % \
+                (shadow_size,  shadow_size, theme.display_shadow_color)
+        lyricsmain = u'color:%s; %s' % (theme.font_main_color,  shadow)
+    lyrics_html = style % (position, lyrics, lyricsmain, outline)
     print lyrics_html
     return lyrics_html
 
