@@ -50,8 +50,8 @@ class WebDownload(object):
     }
 
     @classmethod
-    def get_name(cls, id):
-        return cls.Names[id]
+    def get_name(cls, name):
+        return cls.Names[name]
 
 
 class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
@@ -260,8 +260,8 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         if self.currentId() == 3:
             Receiver.send_message(u'bibles_stop_import')
 
-    def onCurrentIdChanged(self, id):
-        if id == 3:
+    def onCurrentIdChanged(self, pageId):
+        if pageId == 3:
             self.preImport()
             self.performImport()
             self.postImport()
@@ -327,6 +327,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         #Load and store Crosswalk Bibles
         filepath = AppLocation.get_directory(AppLocation.PluginsDir)
         filepath = os.path.join(filepath, u'bibles', u'resources')
+        books_file = None
         try:
             self.web_bible_list[WebDownload.Crosswalk] = {}
             books_file = open(
@@ -348,6 +349,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
             if books_file:
                 books_file.close()
         #Load and store BibleGateway Bibles
+        books_file = None
         try:
             self.web_bible_list[WebDownload.BibleGateway] = {}
             books_file = open(os.path.join(filepath, u'biblegateway.csv'), 'r')

@@ -42,20 +42,20 @@ class SongFormat(object):
     CSV = 3
 
     @staticmethod
-    def get_class(id):
+    def get_class(format):
         """
         Return the appropriate imeplementation class.
 
-        ``id``
+        ``format``
             The song format.
         """
-#        if id == SongFormat.OpenLyrics:
+#        if format == SongFormat.OpenLyrics:
 #            return OpenLyricsSong
-#        elif id == SongFormat.OpenSong:
+#        elif format == SongFormat.OpenSong:
 #            return OpenSongSong
-#        elif id == SongFormat.CCLI:
+#        elif format == SongFormat.CCLI:
 #            return CCLISong
-#        elif id == SongFormat.CSV:
+#        elif format == SongFormat.CSV:
 #            return CSVSong
 #        else:
         return None

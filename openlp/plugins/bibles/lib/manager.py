@@ -63,20 +63,20 @@ class BibleFormat(object):
     WebDownload = 3
 
     @staticmethod
-    def get_class(id):
+    def get_class(format):
         """
         Return the appropriate imeplementation class.
 
-        ``id``
+        ``format``
             The Bible format.
         """
-        if id == BibleFormat.OSIS:
+        if format == BibleFormat.OSIS:
             return OSISBible
-        elif id == BibleFormat.CSV:
+        elif format == BibleFormat.CSV:
             return CSVBible
-        elif id == BibleFormat.OpenSong:
+        elif format == BibleFormat.OpenSong:
             return OpenSongBible
-        elif id == BibleFormat.WebDownload:
+        elif format == BibleFormat.WebDownload:
             return HTTPBible
         else:
             return None

@@ -49,7 +49,7 @@ class ThemeManager(QtGui.QWidget):
         QtGui.QWidget.__init__(self, parent)
         self.parent = parent
         self.settingsSection = u'themes'
-        self.serviceComboBox = self.parent.ServiceManagerContents.ThemeComboBox
+        self.serviceComboBox = self.parent.ServiceManagerContents.themeComboBox
         self.layout = QtGui.QVBoxLayout(self)
         self.layout.setSpacing(0)
         self.layout.setMargin(0)
