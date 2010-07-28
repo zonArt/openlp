@@ -104,17 +104,23 @@ class GeneralTab(SettingsTab):
         self.generalLeftLayout.addWidget(self.startupGroupBox)
         self.settingsGroupBox = QtGui.QGroupBox(self)
         self.settingsGroupBox.setObjectName(u'settingsGroupBox')
-        self.settingsLayout = QtGui.QVBoxLayout(self.settingsGroupBox)
+        self.settingsLayout = QtGui.QGridLayout(self.settingsGroupBox)
         self.settingsLayout.setSpacing(8)
         self.settingsLayout.setMargin(8)
         self.settingsLayout.setObjectName(u'settingsLayout')
         self.saveCheckServiceCheckBox = QtGui.QCheckBox(self.settingsGroupBox)
         self.saveCheckServiceCheckBox.setObjectName(u'saveCheckServiceCheckBox')
-        self.settingsLayout.addWidget(self.saveCheckServiceCheckBox)
-        self.generalLeftLayout.addWidget(self.settingsGroupBox)
+        self.settingsLayout.addWidget(self.saveCheckServiceCheckBox, 0, 0, 1, 2)
         self.autoPreviewCheckBox = QtGui.QCheckBox(self.settingsGroupBox)
         self.autoPreviewCheckBox.setObjectName(u'autoPreviewCheckBox')
-        self.settingsLayout.addWidget(self.autoPreviewCheckBox)
+        self.settingsLayout.addWidget(self.autoPreviewCheckBox, 1, 0, 1, 2)
+        # Moved here from image tab
+        self.timeoutLabel = QtGui.QLabel(self.settingsGroupBox)
+        self.timeoutLabel.setObjectName("timeoutLabel")
+        self.settingsLayout.addWidget(self.timeoutLabel, 2, 0, 1, 1)
+        self.timeoutSpinBox = QtGui.QSpinBox(self.settingsGroupBox)
+        self.timeoutSpinBox.setObjectName("timeoutSpinBox")
+        self.settingsLayout.addWidget(self.timeoutSpinBox, 2,1, 1, 1)
         self.generalLeftLayout.addWidget(self.settingsGroupBox)
         self.generalLeftSpacer = QtGui.QSpacerItem(20, 40,
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
@@ -306,6 +312,10 @@ class GeneralTab(SettingsTab):
             'Prompt to save before starting a new service'))
         self.autoPreviewCheckBox.setText(translate('OpenLP.GeneralTab',
             'Automatically preview next item in service'))
+        self.timeoutLabel.setText(translate('OpenLP.GeneralTab',
+            'Slide loop delay:'))
+        self.timeoutSpinBox.setSuffix(
+            translate('OpenLP.GeneralTab', ' sec'))
         self.ccliGroupBox.setTitle(
             translate('OpenLP.GeneralTab', 'CCLI Details'))
         self.numberLabel.setText(
@@ -366,6 +376,8 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(True)).toBool())
         self.autoPreviewCheckBox.setChecked(settings.value(u'auto preview',
             QtCore.QVariant(False)).toBool())
+        self.timeoutSpinBox.setValue(settings.value(u'loop delay',
+           QtCore.QVariant(5)).toInt()[0])
         self.currentXValueLabel.setText(
             unicode(self.screens.current[u'size'].x()))
         self.currentYValueLabel.setText(
@@ -423,6 +435,10 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(self.saveCheckServiceCheckBox.isChecked()))
         settings.setValue(u'auto preview',
             QtCore.QVariant(self.autoPreviewCheckBox.isChecked()))
+        settings.setValue(u'loop delay', 
+            QtCore.QVariant(self.timeoutSpinBox.value()))
+        Receiver.send_message(u'slidecontroller_live_spin_delay',
+            self.timeoutSpinBox.value())            
         settings.setValue(u'ccli number',
             QtCore.QVariant(self.numberEdit.displayText()))
         settings.setValue(u'songselect username',
@@ -452,8 +468,11 @@ class GeneralTab(SettingsTab):
 
     def postSetUp(self):
         """
-        Reset screens after initial definition
+        Apply settings after settings tab has loaded
         """
+        Receiver.send_message(u'slidecontroller_live_spin_delay',
+            self.timeoutSpinBox.value())
+        # Reset screens after initial definition
         self.screens.override[u'size'] = QtCore.QRect(
             int(self.customXValueEdit.text()),
             int(self.customYValueEdit.text()),
