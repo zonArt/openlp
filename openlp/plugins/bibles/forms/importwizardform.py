@@ -50,8 +50,8 @@ class WebDownload(object):
     }
 
     @classmethod
-    def get_name(cls, id):
-        return cls.Names[id]
+    def get_name(cls, name):
+        return cls.Names[name]
 
 
 class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
@@ -260,8 +260,8 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         if self.currentId() == 3:
             Receiver.send_message(u'bibles_stop_import')
 
-    def onCurrentIdChanged(self, id):
-        if id == 3:
+    def onCurrentIdChanged(self, pageId):
+        if pageId == 3:
             self.preImport()
             self.performImport()
             self.postImport()

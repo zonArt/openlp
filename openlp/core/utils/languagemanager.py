@@ -54,10 +54,10 @@ class LanguageManager(object):
         """
         if LanguageManager.AutoLanguage:
             language = QtCore.QLocale.system().name()
-        lang_Path = AppLocation.get_directory(AppLocation.AppDir)
-        lang_Path = os.path.join(lang_Path, u'resources', u'i18n')
+        lang_path = AppLocation.get_directory(AppLocation.AppDir)
+        lang_path = os.path.join(lang_path, u'resources', u'i18n')
         app_translator = QtCore.QTranslator()
-        if app_translator.load("openlp_" + language, lang_Path):
+        if app_translator.load("openlp_" + language, lang_path):
             return app_translator
 
     @staticmethod

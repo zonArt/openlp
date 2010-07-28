@@ -66,11 +66,9 @@ class AlertsPlugin(Plugin):
         """
         log.info(u'add tools menu')
         self.toolsAlertItem = QtGui.QAction(tools_menu)
-        AlertIcon = build_icon(u':/plugins/plugin_alerts.png')
-        self.toolsAlertItem.setIcon(AlertIcon)
+        self.toolsAlertItem.setIcon(build_icon(u':/plugins/plugin_alerts.png'))
         self.toolsAlertItem.setObjectName(u'toolsAlertItem')
-        self.toolsAlertItem.setText(
-            translate('AlertsPlugin', '&Alert'))
+        self.toolsAlertItem.setText(translate('AlertsPlugin', '&Alert'))
         self.toolsAlertItem.setStatusTip(
             translate('AlertsPlugin', 'Show an alert message.'))
         self.toolsAlertItem.setShortcut(u'F7')
