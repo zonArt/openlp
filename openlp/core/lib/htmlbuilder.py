@@ -209,7 +209,8 @@ def build_lyrics(item):
             valign = u'vertical-align:middle;'
         else:
             valign = u'vertical-align:top;'
-        lyrics = u'%s %s %s' % (font, align, valign)
+        line_height = u'line-height: %d%%' % (100 + int(theme.font_main_line_adjustment))
+        lyrics = u'%s %s %s %s' % (font, align, valign, line_height)
         if theme.display_outline:
             outline = u'-webkit-text-stroke: %sem %s;' % \
                 (float(theme.display_outline_size) / 16,
