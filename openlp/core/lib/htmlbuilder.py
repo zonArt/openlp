@@ -72,10 +72,10 @@ HTMLSRC = u"""
 </script>
 </head>
 <body>
-<table class="lyricsmaintable" class="lyricstable">
+<table id="lyricsmaintable" class="lyricstable">
     <tr><td id="lyricsmain" class="lyrics"></td></tr>
 </table>
-<table class="lyricsoutlinetable" class="lyricstable">
+<table id="lyricsoutlinetable" class="lyricstable">
     <tr><td id="lyricsoutline" class="lyrics"></td></tr>
 </table>
 <div id="footer" class="footer"></div>
@@ -136,13 +136,8 @@ def build_blank(width, height):
         Screen height
     """
     blank = """
-    #blank {
-        position: absolute;
-        left: 0px;
-        top: 0px;
-        width: %spx;
-        height: %spx;
-        z-index:10;
+    #blank { position: absolute; left: 0px; top: 0px;
+        width: %spx; height: %spx; z-index:10;
     }
     """
     return blank % (width, height)
@@ -157,19 +152,13 @@ def build_image(width, height):
         Screen height
     """
     image = """
-    #image {
-        position: absolute;
-        left: 0px;
-        top: 0px;
-        width: %spx;
-        height: %spx;
-        z-index:2;
+    #image { position: absolute; left: 0px; top: 0px;
+        width: %spx; height: %spx; z-index:2;
     }
     """
     return image % (width, height)
 
 def build_image_src(image):
-    #    <img src="" height="480" width="640" />
     image_src = """
     <img src="data:image/png;base64,%s">
     """
@@ -236,7 +225,7 @@ def build_lyrics(item):
 
 def build_footer(item):
     lyrics = """
-    #footer {position: absolute; %s z-index:3; %s; %s }
+    #footer {position: absolute; %s z-index:5; %s; %s }
     """
     theme = item.themedata
     lyrics_html = u''
@@ -269,7 +258,7 @@ def build_footer(item):
 def build_alert(width, alertTab):
     alert = """
     #alert { position: absolute; left: 0px; top: 70px;
-        width: %spx; height: 10px; z-index:4; font-size: %spx;
+        width: %spx; height: 10px; z-index:6; font-size: %spx;
     }
     #alert p {
         background-color: %s;

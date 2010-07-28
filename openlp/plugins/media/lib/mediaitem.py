@@ -107,7 +107,7 @@ class MediaMediaItem(MediaManagerItem):
 
     def onResetClick(self):
         self.resetButton.setVisible(False)
-        self.parent.liveController.display.reset()
+        self.parent.liveController.display.resetVideo()
 
     def onReplaceClick(self):
         if check_item_selected(self.listView,

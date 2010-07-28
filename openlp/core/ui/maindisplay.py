@@ -202,13 +202,17 @@ class MainDisplay(DisplayWidget):
             "document.getElementById('video').style.visibility = 'hidden'")
         self.frame.evaluateJavaScript(
             "document.getElementById('image').style.visibility = 'visible'")
-        self.frame.findFirstElement('img').setAttribute(
-            'src', unicode('data:image/png;base64,%s' % image_to_byte(image)))
+        self.frame.findFirstElement(u'img').setAttribute(
+            u'src', unicode(u'data:image/png;base64,%s' % image_to_byte(image)))
 
-    def reset(self):
-        log.debug(u'reset')
-        self.frame.findFirstElement('img').setAttribute(
-            'src', unicode('data:image/png;base64,%s' % image_to_byte(self.serviceItem.bg_frame)))
+    def resetImage(self):
+        log.debug(u'resetImage')
+        self.frame.findFirstElement(u'img').setAttribute(
+            u'src', unicode(u'data:image/png;base64,%s' % image_to_byte(self.serviceItem.bg_frame)))
+
+    def resetVideo(self):
+        log.debug(u'resetVideo')
+        self.frame.findFirstElement('img').setAttribute(u'src',u'display: none;' )
 
     def video(self, videoPath, noSound=False):
         log.debug(u'video')
