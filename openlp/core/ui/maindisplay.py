@@ -456,7 +456,7 @@ class MainDisplay(DisplayWidget):
                 self.displayText.setPixmap(frame)
             else:
                 self.displayText.setPixmap(QtGui.QPixmap.fromImage(frame))
-        if not self.isVisible() and self.screens.display:
+        if not self.isVisible() and self.screens.current['primary']:
             self.setVisible(True)
 
 class VideoDisplay(Phonon.VideoWidget):
