@@ -120,7 +120,7 @@ class GeneralTab(SettingsTab):
         self.settingsLayout.addWidget(self.timeoutLabel, 2, 0, 1, 1)
         self.timeoutSpinBox = QtGui.QSpinBox(self.settingsGroupBox)
         self.timeoutSpinBox.setObjectName("timeoutSpinBox")
-        self.settingsLayout.addWidget(self.timeoutSpinBox, 2,1, 1, 1)
+        self.settingsLayout.addWidget(self.timeoutSpinBox, 2, 1, 1, 1)
         self.generalLeftLayout.addWidget(self.settingsGroupBox)
         self.generalLeftSpacer = QtGui.QSpacerItem(20, 40,
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
