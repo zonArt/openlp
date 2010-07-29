@@ -37,24 +37,6 @@ from openlp.core.lib import OpenLPToolbar, Receiver, resize_image, \
 
 log = logging.getLogger(__name__)
 
-#class SlideThread(QtCore.QThread):
-#    """
-#    A special Qt thread class to speed up the display of text based frames.
-#    This is threaded so it loads the frames in background
-#    """
-#    def __init__(self, parent, prefix, count):
-#        QtCore.QThread.__init__(self, parent)
-#        self.prefix = prefix
-#        self.count = count
-#
-#    def run(self):
-#        """
-#        Run the thread.
-#        """
-#        time.sleep(1)
-#        for i in range(0, self.count):
-#            Receiver.send_message(u'%s_slide_cache' % self.prefix, i)
-
 class SlideList(QtGui.QTableWidget):
     """
     Customised version of QTableWidget which can respond to keyboard
@@ -215,15 +197,17 @@ class SlideController(QtGui.QWidget):
             self.ThemeScreen.setCheckable(True)
             QtCore.QObject.connect(self.ThemeScreen,
                 QtCore.SIGNAL("triggered(bool)"), self.onThemeDisplay)
-            self.DesktopScreen = QtGui.QAction(QtGui.QIcon(
-                u':/slides/slide_desktop.png'), u'Show Desktop', self.HideMenu)
-            self.DesktopScreen.setCheckable(True)
-            QtCore.QObject.connect(self.DesktopScreen,
-                QtCore.SIGNAL("triggered(bool)"), self.onHideDisplay)
+            if self.screens.display_count > 1:
+                self.DesktopScreen = QtGui.QAction(QtGui.QIcon(
+                    u':/slides/slide_desktop.png'), u'Show Desktop', self.HideMenu)
+                self.DesktopScreen.setCheckable(True)
+                QtCore.QObject.connect(self.DesktopScreen,
+                    QtCore.SIGNAL("triggered(bool)"), self.onHideDisplay)
             self.HideMenu.setDefaultAction(self.BlankScreen)
             self.HideMenu.menu().addAction(self.BlankScreen)
             self.HideMenu.menu().addAction(self.ThemeScreen)
-            self.HideMenu.menu().addAction(self.DesktopScreen)
+            if self.screens.display_count > 1:
+                self.HideMenu.menu().addAction(self.DesktopScreen)
         if not self.isLive:
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.Toolbar.addToolbarButton(
@@ -559,9 +543,6 @@ class SlideController(QtGui.QWidget):
         width = self.parent.ControlSplitter.sizes()[self.split]
         # Set pointing cursor when we have somthing to point at
         self.PreviewListWidget.setCursor(QtCore.Qt.PointingHandCursor)
-        # Clear the old serviceItem cache to release memory
-#        if self.serviceItem and self.serviceItem is not serviceItem:
-#            self.serviceItem.clear_cache()
         self.serviceItem = serviceItem
         self.PreviewListWidget.clear()
         self.PreviewListWidget.setRowCount(0)
@@ -588,7 +569,7 @@ class SlideController(QtGui.QWidget):
                                 self.onSongBarHandler)
                 else:
                     row += 1
-                item.setText(self.clean(frame[u'text']))
+                item.setText(frame[u'text'])
             else:
                 label = QtGui.QLabel()
                 label.setMargin(4)
@@ -622,10 +603,6 @@ class SlideController(QtGui.QWidget):
         self.PreviewListWidget.setFocus()
         Receiver.send_message(u'slidecontroller_%s_started' % self.typePrefix,
             [serviceItem])
-#        if self.serviceItem.is_text():
-#            st = SlideThread(
-#                self, self.typePrefix, len(self.serviceItem.get_frames()))
-#            st.start()
 
     def onTextRequest(self):
         """
@@ -637,7 +614,7 @@ class SlideController(QtGui.QWidget):
                 dataItem = {}
                 if self.serviceItem.is_text():
                     dataItem[u'tag'] = unicode(frame[u'verseTag'])
-                    dataItem[u'text'] = unicode(frame[u'text'])
+                    dataItem[u'text'] = unicode(frame[u'html'])
                 else:
                     dataItem[u'tag'] = unicode(framenumber)
                     dataItem[u'text'] = u''
@@ -993,9 +970,3 @@ class SlideController(QtGui.QWidget):
             self.video.hide()
         self.SlidePreview.clear()
         self.SlidePreview.show()
-
-    def clean(self, text):
-        text = text.replace(u'<br>', u'\n').replace(u'<p>', u'')\
-            .replace(u'</p>', u'').replace(u'<sup>', u'')\
-            .replace(u'</sup>', u'')
-        return text
