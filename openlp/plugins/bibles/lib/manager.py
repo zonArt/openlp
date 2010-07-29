@@ -242,7 +242,7 @@ class BibleManager(object):
         if reflist:
             return self.db_cache[bible].get_verses(reflist)
         else:
-            QtGui.QMessageBox.information(self.parent.mediaitem,
+            QtGui.QMessageBox.information(self.parent.mediaItem,
                 translate('BiblesPlugin.BibleManager',
                 'Scripture Reference Error'),
                 translate('BiblesPlugin.BibleManager', 'Your scripture '
