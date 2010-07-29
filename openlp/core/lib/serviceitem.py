@@ -97,16 +97,6 @@ class ServiceItem(object):
         self.main = None
         self.footer = None
 
-        # TODO make external and configurable
-        self.html_expands = {
-            u'{r}': u'<font color=red>',
-            u'{b}': u'<font color=black>',
-            u'{u}': u'<font color=blue>',
-            u'{y}': u'<font color=yellow>',
-            u'{g}': u'<font color=green>',
-            u'{/}': u'</font>'
-        }
-
     def add_capability(self, capability):
         """
         Add an ItemCapability to a ServiceItem
@@ -153,7 +143,8 @@ class ServiceItem(object):
             theme = None;
             if not self.theme:
                 theme = self.theme
-            self.main, self.footer = self.render_manager.set_override_theme(theme)
+            self.main, self.footer = \
+                self.render_manager.set_override_theme(theme)
             self.bg_frame = self.render_manager.renderer.bg_frame
             self.themedata = self.render_manager.themedata
             for slide in self._raw_frames:
@@ -162,8 +153,8 @@ class ServiceItem(object):
                 for format in formated:
                     self._display_frames.append(
                         {u'title': format.replace(u'<p>', u''),
-                        u'text': self.clean(format.rstrip()),
-                        u'html': self.expand(format.rstrip()),
+                        u'text': self.render_manager.clean(format.rstrip()),
+                        u'html': self.render_manager.expand(format.rstrip()),
                         u'verseTag': slide[u'verseTag'] })
                 log.log(15, u'Formatting took %4s' % (time.time() - before))
         elif self.service_item_type == ServiceItemType.Image:
@@ -382,22 +373,3 @@ class ServiceItem(object):
         Returns the title of the raw frame
         """
         return self._raw_frames[row][u'path']
-
-    def clean(self, text):
-        """
-        Remove Tags from text for display
-        """
-        text = text.replace(u'<br>', u'\n').replace(u'<p>', u'')\
-            .replace(u'</p>', u'').replace(u'<sup>', u'')\
-            .replace(u'</sup>', u'')
-        for key, value in self.html_expands.iteritems():
-            text = text.replace(key, u'')
-        return text
-
-    def expand(self, text):
-        """
-        Expand tags fto HTML for display
-        """
-        for key, value in self.html_expands.iteritems():
-            text = text.replace(key, value)
-        return text

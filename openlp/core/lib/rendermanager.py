@@ -67,6 +67,16 @@ class RenderManager(object):
         self.override_background = None
         self.themedata = None
 
+        # TODO make external and configurable
+        self.html_expands = {
+            u'{r}': u'<font color=red>',
+            u'{b}': u'<font color=black>',
+            u'{u}': u'<font color=blue>',
+            u'{y}': u'<font color=yellow>',
+            u'{g}': u'<font color=green>',
+            u'{/}': u'</font>'
+        }
+
     def update_display(self):
         """
         Updates the render manager's information about the current screen.
@@ -240,3 +250,23 @@ class RenderManager(object):
             self.width, self.height, self.screen_ratio )
         # 90% is start of footer
         self.footer_start = int(self.height * 0.90)
+
+    def clean(self, text):
+        """
+        Remove Tags from text for display
+        """
+        text = text.replace(u'<br>', u'\n').replace(u'<p>', u'')\
+            .replace(u'</p>', u'').replace(u'<sup>', u'')\
+            .replace(u'</sup>', u'')
+        for key, value in self.html_expands.iteritems():
+            text = text.replace(key, u'')
+        return text
+
+    def expand(self, text):
+        """
+        Expand tags fto HTML for display
+        """
+        for key, value in self.html_expands.iteritems():
+            text = text.replace(key, value)
+        return text
+
