@@ -431,8 +431,8 @@ class BibleMediaItem(MediaManagerItem):
         chapter_to = int(self.AdvancedToChapter.currentText())
         verse_from = int(self.AdvancedFromVerse.currentText())
         verse_to = int(self.AdvancedToVerse.currentText())
-        versetext = u'%s %s:%s-%s:%s' % (book, chapter_from, verse_from, \
-                                         chapter_to, verse_to)
+        versetext = u'%s %s:%s-%s:%s' % (book, chapter_from, verse_from,
+            chapter_to, verse_to)
         self.search_results = self.parent.manager.get_verses(bible, versetext)
         if self.ClearAdvancedSearchComboBox.currentIndex() == 0:
             self.listView.clear()
@@ -656,7 +656,3 @@ class BibleMediaItem(MediaManagerItem):
             row = self.listView.setCurrentRow(count)
             if row:
                 row.setSelected(True)
-
-    def searchByReference(self, bible, search):
-        log.debug(u'searchByReference %s, %s', bible, search)
-        self.search_results = self.parent.manager.get_verses(bible, search)

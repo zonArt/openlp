@@ -220,17 +220,17 @@ class Ui_MainWindow(object):
         # Create the menu items
         self.FileNewItem = QtGui.QAction(MainWindow)
         self.FileNewItem.setIcon(
-            self.ServiceManagerContents.Toolbar.getIconFromTitle(
+            self.ServiceManagerContents.toolbar.getIconFromTitle(
             u'New Service'))
         self.FileNewItem.setObjectName(u'FileNewItem')
         self.FileOpenItem = QtGui.QAction(MainWindow)
         self.FileOpenItem.setIcon(
-            self.ServiceManagerContents.Toolbar.getIconFromTitle(
+            self.ServiceManagerContents.toolbar.getIconFromTitle(
             u'Open Service'))
         self.FileOpenItem.setObjectName(u'FileOpenItem')
         self.FileSaveItem = QtGui.QAction(MainWindow)
         self.FileSaveItem.setIcon(
-            self.ServiceManagerContents.Toolbar.getIconFromTitle(
+            self.ServiceManagerContents.toolbar.getIconFromTitle(
             u'Save Service'))
         self.FileSaveItem.setObjectName(u'FileSaveItem')
         self.FileSaveAsItem = QtGui.QAction(MainWindow)
