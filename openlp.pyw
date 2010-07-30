@@ -122,7 +122,7 @@ class OpenLP(QtGui.QApplication):
         show_splash = QtCore.QSettings().value(
             u'general/show splash', QtCore.QVariant(True)).toBool()
         if show_splash:
-            self.splash = SplashScreen(self.applicationVersion())
+            self.splash = SplashScreen()
             self.splash.show()
         # make sure Qt really display the splash screen
         self.processEvents()

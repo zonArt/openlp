@@ -663,7 +663,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             sxml = SongXMLBuilder()
             text = u''
             multiple = []
-            for i in range (0, self.VerseListWidget.rowCount()):
+            for i in range(0, self.VerseListWidget.rowCount()):
                 item = self.VerseListWidget.item(i, 0)
                 verseId = unicode(item.data(QtCore.Qt.UserRole).toString())
                 bits = verseId.split(u':')
