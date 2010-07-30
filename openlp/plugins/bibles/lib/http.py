@@ -36,7 +36,7 @@ from BeautifulSoup import BeautifulSoup, NavigableString
 
 from openlp.core.lib import Receiver
 from openlp.core.utils import AppLocation
-from openlp.plugins.bibles.lib.common import BibleCommon, SearchResults    
+from openlp.plugins.bibles.lib import SearchResults    
 from openlp.plugins.bibles.lib.db import BibleDB, Book
 
 log = logging.getLogger(__name__)
@@ -177,7 +177,7 @@ class HTTPBooks(object):
         return 0
 
 
-class BGExtract(BibleCommon):
+class BGExtract(object):
     """
     Extract verses from BibleGateway
     """
@@ -239,7 +239,8 @@ class BGExtract(BibleCommon):
             found_count += 1
         return SearchResults(bookname, chapter, verse_list)
 
-class CWExtract(BibleCommon):
+
+class CWExtract(object):
     """
     Extract verses from CrossWalk/BibleStudyTools
     """

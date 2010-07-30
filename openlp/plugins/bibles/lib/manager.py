@@ -26,13 +26,13 @@
 
 import logging
 
-from PyQt4 import QtCore
+from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsManager
+from openlp.core.lib import SettingsManager, translate
 from openlp.core.utils import AppLocation
+from openlp.plugins.bibles.lib import parse_reference
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
 
-from common import parse_reference
 from opensong import OpenSongBible
 from osis import OSISBible
 from csvbible import CSVBible
@@ -229,13 +229,33 @@ class BibleManager(object):
         ``versetext``
             Unicode. The scripture reference. Valid scripture references are:
 
+                - Genesis 1
+                - Genesis 1-2
                 - Genesis 1:1
                 - Genesis 1:1-10
+                - Genesis 1:1-10,15-20
                 - Genesis 1:1-2:10
+                - Genesis 1:1-10,2:1-10
         """
         log.debug(u'BibleManager.get_verses("%s", "%s")', bible, versetext)
         reflist = parse_reference(versetext)
-        return self.db_cache[bible].get_verses(reflist)
+        if reflist:
+            return self.db_cache[bible].get_verses(reflist)
+        else:
+            QtGui.QMessageBox.information(self.parent.mediaItem,
+                translate('BiblesPlugin.BibleManager',
+                'Scripture Reference Error'),
+                translate('BiblesPlugin.BibleManager', 'Your scripture '
+                'reference is either not supported by OpenLP or invalid.  '
+                'Please make sure your reference conforms to one of the '
+                'following patterns:\n\n'
+                'Book Chapter\n'
+                'Book Chapter-Chapter\n'
+                'Book Chapter:Verse-Verse\n'
+                'Book Chapter:Verse-Verse,Verse-Verse\n'
+                'Book Chapter:Verse-Verse,Chapter:Verse-Verse\n'
+                'Book Chapter:Verse-Chapter:Verse\n'))
+            return None
 
     def save_meta_data(self, bible, version, copyright, permissions):
         """
