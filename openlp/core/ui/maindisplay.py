@@ -155,15 +155,6 @@ class MainDisplay(DisplayWidget):
             else:
                 self.primary = True
 
-    def next(self):
-        if self.currslide:
-            #self.frame.evaluateJavaScript("startfade('" + self.slide2 + "')")
-            self.frame.findFirstElement('td#lyrics').setInnerXml(self.slide2)
-        else:
-            #self.frame.evaluateJavaScript("startfade('" + self.slide1 + "')")
-            self.frame.findFirstElement('td#lyrics').setInnerXml(self.slide1)
-        self.currslide = not self.currslide
-
     def text(self, slide):
         """
         Add the slide text from slideController
@@ -172,9 +163,9 @@ class MainDisplay(DisplayWidget):
             The slide text to be displayed
         """
         log.debug(u'text')
-        print slide
-        self.frame.findFirstElement('td#lyricsmain').setInnerXml(slide)
-        self.frame.findFirstElement('td#lyricsoutline').setInnerXml(slide)
+        print slide 
+        self.frame.evaluateJavaScript("startfade('" + 
+            slide.replace("\\", "\\\\").replace("\'", "\\\'") + "')")
         return self.preview()
 
     def alert(self):
@@ -223,7 +214,7 @@ class MainDisplay(DisplayWidget):
             "document.getElementById('image').style.visibility = 'hidden'")
         self.frame.evaluateJavaScript("document.getElementById('video').play()")
         if noSound:
-            self.frame.evaluateJavaScript("document.getElementById('video').mute()")
+            self.frame.evaluateJavaScript("document.getElementById('video').volume = 0")
 
     def loaded(self):
         """
@@ -268,6 +259,8 @@ class MainDisplay(DisplayWidget):
         Store the images so they can be replaced when required
         """
         log.debug(u'hideDisplay mode = %d', mode)
+        self.frame.evaluateJavaScript(
+            "document.getElementById('blank').style.visibility = 'visible'")
         if mode == HideMode.Screen:
             self.setVisible(False)
         elif mode == HideMode.Blank:
@@ -292,7 +285,8 @@ class MainDisplay(DisplayWidget):
         Make the stored images None to release memory.
         """
         log.debug(u'showDisplay')
-        self.frame.findFirstElement('img').setAttribute('src', u'')
+        self.frame.evaluateJavaScript(
+            "document.getElementById('blank').style.visibility = 'hidden'")
         if self.isHidden():
             self.setVisible(True)
         # Trigger actions when display is active again

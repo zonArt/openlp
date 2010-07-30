@@ -45,38 +45,90 @@ HTMLSRC = u"""
 </style>
 <script language="javascript">
     var t = null;
-
+    var transition = %s;
+    
     function startfade(newtext){
-        var text1 = document.getElementById('lyrics');
-        var text2 = document.getElementById('lyrics2');
+        var text1 = document.getElementById('lyricsmain');
+        var texto1 = document.getElementById('lyricsoutline');
+        var texts1 = document.getElementById('lyricsshadow');
+        if(!transition){
+            text1.innerHTML = newtext;
+            texto1.innerHTML = newtext;
+            texts1.innerHTML = newtext;
+            return;
+        }            
+        var text2 = document.getElementById('lyricsmain2');
+        var texto2 = document.getElementById('lyricsoutline2');
+        var texts2 = document.getElementById('lyricsshadow2');
         if(text2.style.opacity==''||parseFloat(text2.style.opacity) < 0.5){
             text2.innerHTML = text1.innerHTML;
             text2.style.opacity = text1.style.opacity;
+            texto2.innerHTML = text1.innerHTML;
+            texto2.style.opacity = text1.style.opacity;
+            texts2.innerHTML = text1.innerHTML;
+            texts2.style.opacity = text1.style.opacity;
         }
         text1.style.opacity = 0;
         text1.innerHTML = newtext;
+        texto1.style.opacity = 0;
+        texto1.innerHTML = newtext;
+        texts1.style.opacity = 0;
+        texts1.innerHTML = newtext;
+        // temp:
+        texts2.style.opacity = 0;
+        // end temp
         if(t!=null)
             clearTimeout(t);
         t = setTimeout('fade()', 50);
     }
     function fade(){
-        var text1 = document.getElementById('lyrics');
-        var text2 = document.getElementById('lyrics2');
-        if(parseFloat(text1.style.opacity) < 1)
-            text1.style.opacity = parseFloat(text1.style.opacity) + 0.02;
-        if(parseFloat(text2.style.opacity) > 0)
-            text2.style.opacity = parseFloat(text2.style.opacity) - 0.02;
+        var text1 = document.getElementById('lyricsmain');
+        var texto1 = document.getElementById('lyricsoutline');
+        var texts1 = document.getElementById('lyricsshadow');
+        var text2 = document.getElementById('lyricsmain2');
+        var texto2 = document.getElementById('lyricsoutline2');
+        var texts2 = document.getElementById('lyricsshadow2');
+        if(parseFloat(text1.style.opacity) < 1){
+            text1.style.opacity = parseFloat(text1.style.opacity) + 0.1;
+            texto1.style.opacity = parseFloat(texto1.style.opacity) + 0.1;
+            //texts1.style.opacity = parseFloat(texts1.style.opacity) + 0.1;
+        }
+        if(parseFloat(text2.style.opacity) > 0){
+            text2.style.opacity = parseFloat(text2.style.opacity) - 0.1;
+            texto2.style.opacity = parseFloat(texto2.style.opacity) - 0.1;
+            //texts2.style.opacity = parseFloat(texts2.style.opacity) - 0.1;
+        }
         if((parseFloat(text1.style.opacity) < 1)||(parseFloat(text2.style.opacity) > 0))
             t = setTimeout('fade()', 50);
+        else{
+            text1.style.opacity = 1
+            texto1.style.opacity = 1
+            texts1.style.opacity = 1
+            text2.style.opacity = 0
+            texto2.style.opacity = 0
+            texts2.style.opacity = 0
+        }
     }
 </script>
 </head>
 <body>
-<table id="lyricsmaintable" class="lyricstable">
+<table class="lyricstable lyricscommon">
     <tr><td id="lyricsmain" class="lyrics"></td></tr>
 </table>
-<table id="lyricsoutlinetable" class="lyricstable">
-    <tr><td id="lyricsoutline" class="lyrics"></td></tr>
+<table class="lyricsoutlinetable lyricscommon">
+    <tr><td id="lyricsoutline" class="lyricsoutline lyrics"></td></tr>
+</table>
+<table class="lyricsshadowtable lyricscommon">
+    <tr><td id="lyricsshadow" class="lyricsshadow lyrics"></td></tr>
+</table>
+<table class="lyricstable lyricscommon">
+    <tr><td id="lyricsmain2" class="lyrics"></td></tr>
+</table>
+<table class="lyricsoutlinetable lyricscommon">
+    <tr><td id="lyricsoutline2" class="lyricsoutline lyrics"></td></tr>
+</table>
+<table class="lyricsshadowtable lyricscommon">
+    <tr><td id="lyricsshadow2" class="lyricsshadow lyrics"></td></tr>
 </table>
 <div id="footer" class="footer"></div>
 <div id="alert"></div>
@@ -100,6 +152,7 @@ def build_html(item, screen, alert):
     """
     width = screen[u'size'].width()
     height = screen[u'size'].height()
+    theme = item.themedata
     html = HTMLSRC % (build_video(width, height),
                       build_image(width, height),
                       build_lyrics(item),
@@ -107,6 +160,7 @@ def build_html(item, screen, alert):
                       build_alert(width, alert),
                       build_image(width, height),
                       build_blank(width, height),
+                      "true" if theme and theme.display_slideTransition else "false",
                       build_image_src(item.bg_frame))
     print html
     return html
@@ -172,30 +226,36 @@ def build_lyrics(item):
         Service Item containing theme and location information
     """
     style = """
-    .lyricstable { %s }
+    .lyricscommon { position: absolute;  %s }
+    .lyricstable { z-index:4;  %s }
+    .lyricsoutlinetable { z-index:3; %s }
+    .lyricsshadowtable { z-index:2; %s }
     .lyrics { %s }
-    #lyricsmain { %s }
-    #lyricsoutline { %s }
-    #lyricsmaintable { z-index:4; }
-    #lyricsoutlinetable { z-index:3; }
+    .lyricsoutline { %s }
+    .lyricsshadow { %s }    
     table {border=0; margin=0; padding=0; }
-    """
+     """
     theme = item.themedata
-    position = u''
-    outline = u'display: none;'
-    shadow = u''
-    fontworks = u''
+    lyricscommon = u''
+    lyricstable = u''
+    outlinetable = u''
+    shadowtable = u''
     lyrics = u''
-    lyricsmain = u''
-    font = u''
-    text = u''
+    outline = u'display: none;'
+    shadow = u'display: none;'
     if theme:
-        position =  u'position: absolute; left: %spx; top: %spx;' \
-            ' width: %spx; height: %spx; ' % \
-            (item.main.x(),  item.main.y(), item.main.width(),
-            item.main.height())
-        font = u' font-family %s; font-size: %spx;' % \
-            (theme.font_main_name, theme.font_main_proportion)
+        lyricscommon =  u'width: %spx; height: %spx; ' \
+            u'font-family %s; font-size: %spx; color: %s; line-height: %d%%' % \
+            (item.main.width(), item.main.height(),
+            theme.font_main_name, theme.font_main_proportion, 
+            theme.font_main_color, 100 + int(theme.font_main_line_adjustment))
+        lyricstable = u'left: %spx; top: %spx;' % \
+            (item.main.x(), item.main.y())
+        outlinetable = u'left: %spx; top: %spx;' % \
+            (item.main.x(),  item.main.y())
+        shadowtable = u'left: %spx; top: %spx;' % \
+            (item.main.x() + float(theme.display_shadow_size),
+            item.main.y() + float(theme.display_shadow_size))
         align = u''
         if theme.display_horizontalAlign == 2:
             align = u'text-align:center;'
@@ -209,18 +269,21 @@ def build_lyrics(item):
             valign = u'vertical-align:middle;'
         else:
             valign = u'vertical-align:top;'
-        line_height = u'line-height: %d%%' % (100 + int(theme.font_main_line_adjustment))
-        lyrics = u'%s %s %s %s' % (font, align, valign, line_height)
+        lyrics = u'%s %s' % (align, valign)
         if theme.display_outline:
-            outline = u'-webkit-text-stroke: %sem %s;' % \
+            outline = u'-webkit-text-stroke: %sem %s; ' % \
                 (float(theme.display_outline_size) / 16,
                 theme.display_outline_color)
-        if theme.display_shadow:
-            shadow_size = str(float(theme.display_shadow_size) / 16)
-            shadow = u'text-shadow: %sem %sem %s;' % \
-                (shadow_size,  shadow_size, theme.display_shadow_color)
-        lyricsmain = u'color:%s; %s' % (theme.font_main_color,  shadow)
-    lyrics_html = style % (position, lyrics, lyricsmain, outline)
+            if theme.display_shadow:
+                shadow = u'-webkit-text-stroke: %sem %s; ' % \
+                    (float(theme.display_outline_size) / 16,
+                    theme.display_shadow_color)
+        else:
+            if theme.display_shadow:
+                shadow = u'color: %s;' % (theme.display_shadow_color)
+        
+    lyrics_html = style % (lyricscommon, lyricstable, outlinetable,
+        shadowtable, lyrics, outline, shadow)
     print lyrics_html
     return lyrics_html
 

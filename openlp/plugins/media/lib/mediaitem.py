@@ -115,7 +115,7 @@ class MediaMediaItem(MediaManagerItem):
             'You must select a media file to replace the background with.')):
             item = self.listView.currentItem()
             filename = unicode(item.data(QtCore.Qt.UserRole).toString())
-            self.parent.liveController.display.video(filename)
+            self.parent.liveController.display.video(filename, True)
         self.resetButton.setVisible(True)
 
     def generateSlideData(self, service_item, item=None):
