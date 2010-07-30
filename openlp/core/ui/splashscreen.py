@@ -27,7 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 class SplashScreen(object):
-    def __init__(self, version):
+    def __init__(self):
         self.splash_screen = QtGui.QSplashScreen()
         self.setupUi()
 

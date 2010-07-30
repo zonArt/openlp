@@ -118,11 +118,11 @@ def parse_reference(reference):
                 unified_ref_list.append((book, chapter, vr1_start, vr1_end))
                 vr2_end = check_end(match.group(6))
                 if int(match.group(4)) > chapter:
-                    for x in range(chapter + 1, int(match.group(4)) + 1):
-                        if x == int(match.group(4)):
-                            unified_ref_list.append((book, x, 1, vr2_end))
+                    for i in range(chapter + 1, int(match.group(4)) + 1):
+                        if i == int(match.group(4)):
+                            unified_ref_list.append((book, i, 1, vr2_end))
                         else:
-                            unified_ref_list.append((book, x, 1, -1))
+                            unified_ref_list.append((book, i, 1, -1))
         elif match.group(4):
             # Chapter range or chapter and verse range
             if match.group(3):
@@ -134,8 +134,8 @@ def parse_reference(reference):
                     log.debug(u'Ambiguous reference: %s' % reference)
                     return None
             elif match.group(4) != u'end':
-                for x in range(chapter, int(match.group(4)) + 1):
-                    unified_ref_list.append((book, x, 1, -1))
+                for i in range(chapter, int(match.group(4)) + 1):
+                    unified_ref_list.append((book, i, 1, -1))
             else:
                 log.debug(u'Unsupported reference: %s' % reference)
                 return None

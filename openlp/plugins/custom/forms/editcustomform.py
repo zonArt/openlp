@@ -158,7 +158,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         sxml.new_document()
         sxml.add_lyrics_to_song()
         count = 1
-        for i in range (0, self.verseListView.count()):
+        for i in range(0, self.verseListView.count()):
             sxml.add_verse_to_lyrics(u'custom', unicode(count),
                 unicode(self.verseListView.item(i).text()))
             count += 1
