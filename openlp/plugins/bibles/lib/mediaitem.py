@@ -548,13 +548,15 @@ class BibleMediaItem(MediaManagerItem):
                 #Paragraph style force new line per verse
                 if self.parent.settings_tab.layout_style == 1:
                     text = text + u'\n\n'
+                else:
+                    text = text + u'\n'
                 bible_text = u'%s %s %s' % (bible_text, verse_text, text)
                 #if we are verse per slide then create slide
                 if self.parent.settings_tab.layout_style == 0:
                     raw_slides.append(bible_text)
                     bible_text = u''
             if not service_item.title:
-                service_item.title = u'%s %s' % (book, verse_text)
+                service_item.title = u'%s %s:%s' % (book, chapter, verse)
             elif service_item.title.find(
                 translate('BiblesPlugin.MediaItem', 'etc')) == -1:
                 service_item.title = u'%s, %s' % (service_item.title,

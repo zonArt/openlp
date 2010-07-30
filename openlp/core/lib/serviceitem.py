@@ -96,6 +96,7 @@ class ServiceItem(object):
         self.themedata = None
         self.main = None
         self.footer = None
+        self.bg_frame = None
 
     def add_capability(self, capability):
         """
@@ -135,12 +136,10 @@ class ServiceItem(object):
         """
         log.debug(u'Render called')
         self._display_frames = []
-        #self.clear_cache()
         self.bg_frame = None
-        self.just_rendered = True
         if self.service_item_type == ServiceItemType.Text:
             log.debug(u'Formatting slides')
-            theme = None;
+            theme = None
             if not self.theme:
                 theme = self.theme
             self.main, self.footer = \
@@ -150,11 +149,11 @@ class ServiceItem(object):
             for slide in self._raw_frames:
                 before = time.time()
                 formated = self.render_manager.format_slide(slide[u'raw_slide'])
-                for format in formated:
+                for page in formated:
                     self._display_frames.append(
-                        {u'title': self.render_manager.clean(format),
-                        u'text': self.render_manager.clean(format.rstrip()),
-                        u'html': self.render_manager.expand(format.rstrip()),
+                        {u'title': self.render_manager.clean(page),
+                        u'text': self.render_manager.clean(page.rstrip()),
+                        u'html': self.render_manager.expand(page.rstrip()),
                         u'verseTag': slide[u'verseTag'] })
                 log.log(15, u'Formatting took %4s' % (time.time() - before))
         elif self.service_item_type == ServiceItemType.Image:

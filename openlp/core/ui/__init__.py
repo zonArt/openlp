@@ -55,6 +55,6 @@ from mediadockmanager import MediaDockManager
 from servicemanager import ServiceManager
 from thememanager import ThemeManager
 
-__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainWindow',
+__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm',
     'MainDisplay', 'SlideController', 'ServiceManager', 'ThemeManager',
     'AmendThemeForm', 'MediaDockManager', 'ServiceItemEditForm']
