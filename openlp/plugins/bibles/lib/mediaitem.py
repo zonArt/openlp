@@ -549,7 +549,7 @@ class BibleMediaItem(MediaManagerItem):
                 if self.parent.settings_tab.layout_style == 1:
                     text = text + u'\n\n'
                 else:
-                    text = text + u'\n'
+                    text = text + u'\ngus   '
                 bible_text = u'%s %s %s' % (bible_text, verse_text, text)
                 #if we are verse per slide then create slide
                 if self.parent.settings_tab.layout_style == 0:

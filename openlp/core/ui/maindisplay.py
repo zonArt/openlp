@@ -93,7 +93,6 @@ class MainDisplay(DisplayWidget):
         self.setWindowTitle(u'OpenLP Display')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint |
             QtCore.Qt.WindowStaysOnTopHint)
-        self.alerttext = "<p>Red Alert! Raise Shields!</p>"
         if self.isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'maindisplay_hide'), self.hideDisplay)
@@ -163,12 +162,12 @@ class MainDisplay(DisplayWidget):
             The slide text to be displayed
         """
         log.debug(u'text')
-        print slide 
-        self.frame.evaluateJavaScript("startfade('" + 
+        print slide
+        self.frame.evaluateJavaScript("startfade('" +
             slide.replace("\\", "\\\\").replace("\'", "\\\'") + "')")
         return self.preview()
 
-    def alert(self):
+    def alert(self, text):
         """
         Add the alert text
 
@@ -176,7 +175,7 @@ class MainDisplay(DisplayWidget):
             The slide text to be displayed
         """
         log.debug(u'alert')
-        self.frame.findFirstElement('div#alert').setInnerXml(self.alerttext)
+        self.frame.findFirstElement('div#alert').setInnerXml(text)
 
     def image(self, image):
         """
