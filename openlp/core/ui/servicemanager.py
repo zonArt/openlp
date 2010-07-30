@@ -167,39 +167,39 @@ class ServiceManager(QtGui.QWidget):
         self.serviceManagerList.__class__.dropEvent = self.dropEvent
         self.layout.addWidget(self.serviceManagerList)
         # Add the bottom toolbar
-        self.OrderToolbar = OpenLPToolbar(self)
-        self.OrderToolbar.addToolbarButton(
+        self.orderToolbar = OpenLPToolbar(self)
+        self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', 'Move to &top'),
             u':/services/service_top.png',
             translate('OpenLP.ServiceManager',
             'Move item to the top of the service.'),
             self.onServiceTop)
-        self.OrderToolbar.addToolbarButton(
+        self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', 'Move &up'),
             u':/services/service_up.png',
             translate('OpenLP.ServiceManager',
             'Move item up one position in the service.'),
             self.onServiceUp)
-        self.OrderToolbar.addToolbarButton(
+        self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', 'Move &down'),
             u':/services/service_down.png',
             translate('OpenLP.ServiceManager',
             'Move item down one position in the service.'),
             self.onServiceDown)
-        self.OrderToolbar.addToolbarButton(
+        self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', 'Move to &bottom'),
             u':/services/service_bottom.png',
             translate('OpenLP.ServiceManager',
             'Move item to the end of the service.'),
             self.onServiceEnd)
-        self.OrderToolbar.addSeparator()
-        self.OrderToolbar.addToolbarButton(
+        self.orderToolbar.addSeparator()
+        self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', '&Delete From Service'),
             u':/general/general_delete.png',
             translate('OpenLP.ServiceManager',
             'Delete the selected item from the service.'),
             self.onDeleteFromService)
-        self.layout.addWidget(self.OrderToolbar)
+        self.layout.addWidget(self.orderToolbar)
         # Connect up our signals and slots
         QtCore.QObject.connect(self.themeComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onThemeComboBoxSelected)
