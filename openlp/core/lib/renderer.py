@@ -80,7 +80,7 @@ class Renderer(object):
         self.bg_image = None
         self._bg_image_filename = None
         self.theme_name = theme.theme_name
-        self._set_theme_font()
+        #self._set_theme_font()
         if theme.background_type == u'image':
             if theme.background_filename:
                 self.set_bg_image(theme.background_filename)
@@ -132,24 +132,19 @@ class Renderer(object):
             frame_height)
         self.frame = QtGui.QImage(frame_width, frame_height,
             QtGui.QImage.Format_ARGB32_Premultiplied)
-#        self.frame_opaque = QtGui.QImage(frame_width, frame_height,
-#            QtGui.QImage.Format_ARGB32_Premultiplied)
         if self._bg_image_filename and not self.bg_image:
             self.bg_image = resize_image(self._bg_image_filename,
                 self.frame.width(), self.frame.height())
         if self.bg_frame is None:
             self._generate_background_frame()
 
-    def format_slide(self, words, footer):
+    def format_slide(self, words):
         """
         Figure out how much text can appear on a slide, using the current
         theme settings.
 
         ``words``
             The words to be fitted on the slide.
-
-        ``footer``
-            The footer of the slide.
         """
         log.debug(u'format_slide - Start')
         words = words.replace(u'\r\n', u'\n')
@@ -169,7 +164,6 @@ class Renderer(object):
             main_weight = 75
         df.setWeight(main_weight)
         doc.setDefaultFont(df)
-        myCursor = QtGui.QTextCursor(doc)
         layout = doc.documentLayout()
         formatted = []
         shell = u'<p>%s</p>'
@@ -352,271 +346,271 @@ class Renderer(object):
         painter.end()
         log.debug(u'render background End')
 
-    def _correct_alignment(self, rect, bbox):
-        """
-        Corrects the vertical alignment of text.
-
-        ``rect``
-            The block dimentions.
-
-        ``bbox``
-            Footer dimensions?
-        """
-        x = rect.left()
-        if self._theme.display_verticalAlign == 0:
-            # top align
-            y = rect.top()
-        elif self._theme.display_verticalAlign == 2:
-            # bottom align
-            y = rect.bottom() - bbox.height()
-        elif self._theme.display_verticalAlign == 1:
-            # centre align
-            y = rect.top() + (rect.height() - bbox.height()) / 2
-        else:
-            log.error(u'Invalid value for theme.VerticalAlign:%s',
-                self._theme.display_verticalAlign)
-        return x, y
-
-    def _render_lines_unaligned(self, lines, footer, tlcorner=(0, 0),
-        live=False):
-        """
-        Given a list of lines to render, render each one in turn (using the
-        ``_render_single_line`` fn - which may result in going off the bottom).
-        They are expected to be pre-arranged to less than a screenful (eg. by
-        using split_set_of_lines).
-
-        Returns the bounding box of the text as QRect.
-
-        ``lines``
-            The lines of text to render.
-
-        ``footer``
-            The slide footer.
-
-        ``tlcorner``
-            Defaults to *``(0, 0)``*. Co-ordinates of the top left corner.
-
-        ``live``
-            Defaults to *False*. Whether or not this is a live screen.
-        """
-        x, y = tlcorner
-        brx = x
-        bry = y
-        for line in lines:
-            # render after current bottom, but at original left edge
-            # keep track of right edge to see which is biggest
-            (thisx, bry) = self._render_and_wrap_single_line(line, footer,
-                (x, bry), live)
-            if (thisx > brx):
-                brx = thisx
-        retval = QtCore.QRect(x, y, brx - x, bry - y)
-        if self._debug:
-            painter = QtGui.QPainter()
-            painter.begin(self.frame)
-            painter.setPen(QtGui.QPen(QtGui.QColor(0, 0, 255)))
-            painter.drawRect(retval)
-            painter.end()
-        return retval
-
-    def _render_and_wrap_single_line(self, line, footer, tlcorner=(0, 0),
-        live=False):
-        """
-        Render a single line of words onto the DC, top left corner specified.
-        If the line is too wide for the context, it wraps, but right-aligns
-        the surplus words in the manner of song lyrics.
-
-        Returns the bottom-right corner (of what was rendered) as a tuple(x, y).
-
-        ``line``
-            Line of text to be rendered.
-
-        ``footer``
-            The footer of the slide.
-
-        ``tlcorner``
-            Defaults to *``(0, 0)``*. The top left corner.
-
-        ``live``
-            Defaults to *False*. Whether or not this is a live screen.
-        """
-        x, y = tlcorner
-        maxx = self._rect.width()
-        maxy = self._rect.height()
-        lines = []
-        lines.append(line)
-        startx = x
-        starty = y
-        rightextent = None
-        self.painter = QtGui.QPainter()
-        self.painter.begin(self.frame)
-        self.painter.setRenderHint(QtGui.QPainter.Antialiasing)
-        if self._theme.display_slideTransition:
-            self.painter2 = QtGui.QPainter()
-            self.painter2.begin(self.frame_opaque)
-            self.painter2.setRenderHint(QtGui.QPainter.Antialiasing)
-            self.painter2.setOpacity(0.7)
-        # dont allow alignment messing with footers
-        if footer:
-            align = 0
-            display_shadow_size = self._display_shadow_size_footer
-            display_outline_size = self._display_outline_size_footer
-        else:
-            align = self._theme.display_horizontalAlign
-            display_shadow_size = int(self._theme.display_shadow_size)
-            display_outline_size = int(self._theme.display_outline_size)
-        for linenum in range(len(lines)):
-            line = lines[linenum]
-            #find out how wide line is
-            w, h = self._get_extent_and_render(line, footer, tlcorner=(x, y),
-                draw=False)
-            if self._theme.display_shadow:
-                w += display_shadow_size
-                h += display_shadow_size
-            if self._theme.display_outline:
-                # pixels either side
-                w += 2 * display_outline_size
-                #  pixels top/bottom
-                h += 2 * display_outline_size
-            if align == 0: # left align
-                rightextent = x + w
-                # shift right from last line's rh edge
-                if self._theme.display_wrapStyle == 1 and linenum != 0:
-                    rightextent = self._first_line_right_extent
-                    if rightextent > maxx:
-                        rightextent = maxx
-                    x = rightextent - w
-            # right align
-            elif align == 1:
-                rightextent = maxx
-                x = maxx - w
-            # centre
-            elif align == 2:
-                x = (maxx - w) / 2
-                rightextent = x + w
-            if live:
-                # now draw the text, and any outlines/shadows
-                if self._theme.display_shadow:
-                    self._get_extent_and_render(line, footer,
-                        tlcorner=(x + display_shadow_size,
-                            y + display_shadow_size),
-                            draw=True, color=self._theme.display_shadow_color)
-                self._get_extent_and_render(line, footer, tlcorner=(x, y),
-                        draw=True, outline_size=display_outline_size)
-            y += h
-            if linenum == 0:
-                self._first_line_right_extent = rightextent
-        # draw a box around the text - debug only
-
-        if self._debug:
-            self.painter.setPen(QtGui.QPen(QtGui.QColor(0, 255, 0)))
-            self.painter.drawRect(startx, starty, rightextent-startx, y-starty)
-        brcorner = (rightextent, y)
-        self.painter.end()
-        if self._theme.display_slideTransition:
-            self.painter2.end()
-        return brcorner
-
-    def _set_theme_font(self):
-        """
-        Set the fonts from the current theme settings.
-        """
-        footer_weight = 50
-        if self._theme.font_footer_weight == u'Bold':
-            footer_weight = 75
-        #TODO Add  myfont.setPixelSize((screen_height / 100) * font_size)
-        self.footer_font = QtGui.QFont(self._theme.font_footer_name,
-                     self._theme.font_footer_proportion, # size
-                     footer_weight, # weight
-                     self._theme.font_footer_italics) # italic
-        self.footer_font.setPixelSize(self._theme.font_footer_proportion)
-        main_weight = 50
-        if self._theme.font_main_weight == u'Bold':
-            main_weight = 75
-        self.main_font = QtGui.QFont(self._theme.font_main_name,
-                     self._theme.font_main_proportion, # size
-                     main_weight, # weight
-                     self._theme.font_main_italics)# italic
-        self.main_font.setPixelSize(self._theme.font_main_proportion)
-
-    def _get_extent_and_render(self, line, footer, tlcorner=(0, 0), draw=False,
-        color=None, outline_size=0):
-        """
-        Find bounding box of text - as render_single_line. If draw is set,
-        actually draw the text to the current DC as well return width and
-        height of text as a tuple (w, h).
-
-        ``line``
-            The line of text to render.
-
-        ``footer``
-            The footer text.
-
-        ``tlcorner``
-            Defaults to *``(0, 0)``*. The top left corner co-ordinates.
-
-        ``draw``
-            Defaults to *False*. Draw the text to the current surface.
-
-        ``color``
-            Defaults to *None*. The colour to draw with.
-        """
-        # setup defaults
-        if footer:
-            font = self.footer_font
-        else:
-            font = self.main_font
-        metrics = QtGui.QFontMetrics(font)
-        w = metrics.width(line)
-        if footer:
-            h = metrics.height()
-        else:
-            h = metrics.height() + int(self._theme.font_main_line_adjustment)
-        if draw:
-            self.painter.setFont(font)
-            if color is None:
-                if footer:
-                    pen = QtGui.QColor(self._theme.font_footer_color)
-                else:
-                    pen = QtGui.QColor(self._theme.font_main_color)
-            else:
-                pen = QtGui.QColor(color)
-            x, y = tlcorner
-            rowpos = y + metrics.ascent()
-            if self._theme.display_outline and outline_size != 0 and not footer:
-                path = QtGui.QPainterPath()
-                path.addText(QtCore.QPointF(x, rowpos), font, line)
-                self.painter.setBrush(self.painter.pen().brush())
-                self.painter.setPen(QtGui.QPen(QtGui.QColor(
-                    self._theme.display_outline_color), outline_size))
-                self.painter.drawPath(path)
-            self.painter.setPen(pen)
-            self.painter.drawText(x, rowpos, line)
-            if self._theme.display_slideTransition:
-                # Print 2nd image with 70% weight
-                if self._theme.display_outline and outline_size != 0 and \
-                    not footer:
-                    path = QtGui.QPainterPath()
-                    path.addText(QtCore.QPointF(x, rowpos), font, line)
-                    self.painter2.setBrush(self.painter2.pen().brush())
-                    self.painter2.setPen(QtGui.QPen(
-                            QtGui.QColor(self._theme.display_outline_color),
-                            outline_size))
-                    self.painter2.drawPath(path)
-                self.painter2.setFont(font)
-                self.painter2.setPen(pen)
-                self.painter2.drawText(x, rowpos, line)
-        return (w, h)
-
-    def snoop_image(self, image, image2=None):
-        """
-        Debugging method to allow images to be viewed.
-
-        ``image``
-            An image to save to disk.
-
-        ``image2``
-            Defaults to *None*. Another image to save to disk.
-        """
-        image.save(u'renderer.png', u'png')
-        if image2:
-            image2.save(u'renderer2.png', u'png')
+#    def _correct_alignment(self, rect, bbox):
+#        """
+#        Corrects the vertical alignment of text.
+#
+#        ``rect``
+#            The block dimentions.
+#
+#        ``bbox``
+#            Footer dimensions?
+#        """
+#        x = rect.left()
+#        if self._theme.display_verticalAlign == 0:
+#            # top align
+#            y = rect.top()
+#        elif self._theme.display_verticalAlign == 2:
+#            # bottom align
+#            y = rect.bottom() - bbox.height()
+#        elif self._theme.display_verticalAlign == 1:
+#            # centre align
+#            y = rect.top() + (rect.height() - bbox.height()) / 2
+#        else:
+#            log.error(u'Invalid value for theme.VerticalAlign:%s',
+#                self._theme.display_verticalAlign)
+#        return x, y
+#
+#    def _render_lines_unaligned(self, lines, footer, tlcorner=(0, 0),
+#        live=False):
+#        """
+#        Given a list of lines to render, render each one in turn (using the
+#        ``_render_single_line`` fn - which may result in going off the bottom).
+#        They are expected to be pre-arranged to less than a screenful (eg. by
+#        using split_set_of_lines).
+#
+#        Returns the bounding box of the text as QRect.
+#
+#        ``lines``
+#            The lines of text to render.
+#
+#        ``footer``
+#            The slide footer.
+#
+#        ``tlcorner``
+#            Defaults to *``(0, 0)``*. Co-ordinates of the top left corner.
+#
+#        ``live``
+#            Defaults to *False*. Whether or not this is a live screen.
+#        """
+#        x, y = tlcorner
+#        brx = x
+#        bry = y
+#        for line in lines:
+#            # render after current bottom, but at original left edge
+#            # keep track of right edge to see which is biggest
+#            (thisx, bry) = self._render_and_wrap_single_line(line, footer,
+#                (x, bry), live)
+#            if (thisx > brx):
+#                brx = thisx
+#        retval = QtCore.QRect(x, y, brx - x, bry - y)
+#        if self._debug:
+#            painter = QtGui.QPainter()
+#            painter.begin(self.frame)
+#            painter.setPen(QtGui.QPen(QtGui.QColor(0, 0, 255)))
+#            painter.drawRect(retval)
+#            painter.end()
+#        return retval
+#
+#    def _render_and_wrap_single_line(self, line, footer, tlcorner=(0, 0),
+#        live=False):
+#        """
+#        Render a single line of words onto the DC, top left corner specified.
+#        If the line is too wide for the context, it wraps, but right-aligns
+#        the surplus words in the manner of song lyrics.
+#
+#        Returns the bottom-right corner (of what was rendered) as a tuple(x, y).
+#
+#        ``line``
+#            Line of text to be rendered.
+#
+#        ``footer``
+#            The footer of the slide.
+#
+#        ``tlcorner``
+#            Defaults to *``(0, 0)``*. The top left corner.
+#
+#        ``live``
+#            Defaults to *False*. Whether or not this is a live screen.
+#        """
+#        x, y = tlcorner
+#        maxx = self._rect.width()
+#        maxy = self._rect.height()
+#        lines = []
+#        lines.append(line)
+#        startx = x
+#        starty = y
+#        rightextent = None
+#        self.painter = QtGui.QPainter()
+#        self.painter.begin(self.frame)
+#        self.painter.setRenderHint(QtGui.QPainter.Antialiasing)
+#        if self._theme.display_slideTransition:
+#            self.painter2 = QtGui.QPainter()
+#            self.painter2.begin(self.frame_opaque)
+#            self.painter2.setRenderHint(QtGui.QPainter.Antialiasing)
+#            self.painter2.setOpacity(0.7)
+#        # dont allow alignment messing with footers
+#        if footer:
+#            align = 0
+#            display_shadow_size = self._display_shadow_size_footer
+#            display_outline_size = self._display_outline_size_footer
+#        else:
+#            align = self._theme.display_horizontalAlign
+#            display_shadow_size = int(self._theme.display_shadow_size)
+#            display_outline_size = int(self._theme.display_outline_size)
+#        for linenum in range(len(lines)):
+#            line = lines[linenum]
+#            #find out how wide line is
+#            w, h = self._get_extent_and_render(line, footer, tlcorner=(x, y),
+#                draw=False)
+#            if self._theme.display_shadow:
+#                w += display_shadow_size
+#                h += display_shadow_size
+#            if self._theme.display_outline:
+#                # pixels either side
+#                w += 2 * display_outline_size
+#                #  pixels top/bottom
+#                h += 2 * display_outline_size
+#            if align == 0: # left align
+#                rightextent = x + w
+#                # shift right from last line's rh edge
+#                if self._theme.display_wrapStyle == 1 and linenum != 0:
+#                    rightextent = self._first_line_right_extent
+#                    if rightextent > maxx:
+#                        rightextent = maxx
+#                    x = rightextent - w
+#            # right align
+#            elif align == 1:
+#                rightextent = maxx
+#                x = maxx - w
+#            # centre
+#            elif align == 2:
+#                x = (maxx - w) / 2
+#                rightextent = x + w
+#            if live:
+#                # now draw the text, and any outlines/shadows
+#                if self._theme.display_shadow:
+#                    self._get_extent_and_render(line, footer,
+#                        tlcorner=(x + display_shadow_size,
+#                            y + display_shadow_size),
+#                            draw=True, color=self._theme.display_shadow_color)
+#                self._get_extent_and_render(line, footer, tlcorner=(x, y),
+#                        draw=True, outline_size=display_outline_size)
+#            y += h
+#            if linenum == 0:
+#                self._first_line_right_extent = rightextent
+#        # draw a box around the text - debug only
+#
+#        if self._debug:
+#            self.painter.setPen(QtGui.QPen(QtGui.QColor(0, 255, 0)))
+#            self.painter.drawRect(startx, starty, rightextent-startx, y-starty)
+#        brcorner = (rightextent, y)
+#        self.painter.end()
+#        if self._theme.display_slideTransition:
+#            self.painter2.end()
+#        return brcorner
+#
+#    def _set_theme_font(self):
+#        """
+#        Set the fonts from the current theme settings.
+#        """
+#        footer_weight = 50
+#        if self._theme.font_footer_weight == u'Bold':
+#            footer_weight = 75
+#        #TODO Add  myfont.setPixelSize((screen_height / 100) * font_size)
+#        self.footer_font = QtGui.QFont(self._theme.font_footer_name,
+#                     self._theme.font_footer_proportion, # size
+#                     footer_weight, # weight
+#                     self._theme.font_footer_italics) # italic
+#        self.footer_font.setPixelSize(self._theme.font_footer_proportion)
+#        main_weight = 50
+#        if self._theme.font_main_weight == u'Bold':
+#            main_weight = 75
+#        self.main_font = QtGui.QFont(self._theme.font_main_name,
+#                     self._theme.font_main_proportion, # size
+#                     main_weight, # weight
+#                     self._theme.font_main_italics)# italic
+#        self.main_font.setPixelSize(self._theme.font_main_proportion)
+#
+#    def _get_extent_and_render(self, line, footer, tlcorner=(0, 0), draw=False,
+#        color=None, outline_size=0):
+#        """
+#        Find bounding box of text - as render_single_line. If draw is set,
+#        actually draw the text to the current DC as well return width and
+#        height of text as a tuple (w, h).
+#
+#        ``line``
+#            The line of text to render.
+#
+#        ``footer``
+#            The footer text.
+#
+#        ``tlcorner``
+#            Defaults to *``(0, 0)``*. The top left corner co-ordinates.
+#
+#        ``draw``
+#            Defaults to *False*. Draw the text to the current surface.
+#
+#        ``color``
+#            Defaults to *None*. The colour to draw with.
+#        """
+#        # setup defaults
+#        if footer:
+#            font = self.footer_font
+#        else:
+#            font = self.main_font
+#        metrics = QtGui.QFontMetrics(font)
+#        w = metrics.width(line)
+#        if footer:
+#            h = metrics.height()
+#        else:
+#            h = metrics.height() + int(self._theme.font_main_line_adjustment)
+#        if draw:
+#            self.painter.setFont(font)
+#            if color is None:
+#                if footer:
+#                    pen = QtGui.QColor(self._theme.font_footer_color)
+#                else:
+#                    pen = QtGui.QColor(self._theme.font_main_color)
+#            else:
+#                pen = QtGui.QColor(color)
+#            x, y = tlcorner
+#            rowpos = y + metrics.ascent()
+#            if self._theme.display_outline and outline_size != 0 and not footer:
+#                path = QtGui.QPainterPath()
+#                path.addText(QtCore.QPointF(x, rowpos), font, line)
+#                self.painter.setBrush(self.painter.pen().brush())
+#                self.painter.setPen(QtGui.QPen(QtGui.QColor(
+#                    self._theme.display_outline_color), outline_size))
+#                self.painter.drawPath(path)
+#            self.painter.setPen(pen)
+#            self.painter.drawText(x, rowpos, line)
+#            if self._theme.display_slideTransition:
+#                # Print 2nd image with 70% weight
+#                if self._theme.display_outline and outline_size != 0 and \
+#                    not footer:
+#                    path = QtGui.QPainterPath()
+#                    path.addText(QtCore.QPointF(x, rowpos), font, line)
+#                    self.painter2.setBrush(self.painter2.pen().brush())
+#                    self.painter2.setPen(QtGui.QPen(
+#                            QtGui.QColor(self._theme.display_outline_color),
+#                            outline_size))
+#                    self.painter2.drawPath(path)
+#                self.painter2.setFont(font)
+#                self.painter2.setPen(pen)
+#                self.painter2.drawText(x, rowpos, line)
+#        return (w, h)
+#
+#    def snoop_image(self, image, image2=None):
+#        """
+#        Debugging method to allow images to be viewed.
+#
+#        ``image``
+#            An image to save to disk.
+#
+#        ``image2``
+#            Defaults to *None*. Another image to save to disk.
+#        """
+#        image.save(u'renderer.png', u'png')
+#        if image2:
+#            image2.save(u'renderer2.png', u'png')

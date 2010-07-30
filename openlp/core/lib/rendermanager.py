@@ -219,7 +219,7 @@ class RenderManager(object):
         """
         log.debug(u'format slide')
         self.build_text_rectangle(self.themedata)
-        return self.renderer.format_slide(words, False)
+        return self.renderer.format_slide(words)
 
 #    def generate_slide(self, main_text):
 #        """
