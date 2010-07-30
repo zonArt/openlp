@@ -32,23 +32,6 @@ import re
 
 log = logging.getLogger(__name__)
 
-###############################################################################
-# BIBLE_REFERENCE regular expression produces the following match groups:
-#
-# 0     This is a special group consisting of the whole string that matched.
-# 1     [\w ]+              The book the reference is from.
-# 2     [0-9]+              The first (possibly only) chapter in the reference.
-# 3     None|[0-9]+         None or the only verse or the first verse in a
-#                           verse range or the start verse in a chapter range.
-# 4     None|[0-9]+|end     None or the end verse of the first verse range or
-#                           the end chapter of a chapter range.
-# 5     None|[0-9]+         None or the second chapter in multiple (non-ranged)
-#                           chapters.
-# 6     None|[0-9]+|end     None, the start of the second verse range or the
-#                           end of a chapter range.
-# 7     None|[0-9]+|end     None or the end of the second verse range.
-###############################################################################
-
 BIBLE_REFERENCE = re.compile(
     r'^([\w ]+?) *([0-9]+)'          # Initial book and chapter
     r'(?: *[:|v|V] *([0-9]+))?'      # Verse for first chapter
@@ -76,6 +59,20 @@ def parse_reference(reference):
     This is the über-awesome function that takes a person's typed in string
     and converts it to a reference list, a list of references to be queried
     from the Bible database files.
+
+    BIBLE_REFERENCE regular expression produces the following match groups:
+    0     This is a special group consisting of the whole string that matched.
+    1     [\w ]+            The book the reference is from.
+    2     [0-9]+            The first (or only) chapter in the reference.
+    3     None|[0-9]+       None or the only verse or the first verse in a
+                            verse range or the start verse in a chapter range.
+    4     None|[0-9]+|end   None or the end verse of the first verse range or
+                            the end chapter of a chapter range.
+    5     None|[0-9]+       None or the second chapter in multiple
+                            (non-ranged) chapters.
+    6     None|[0-9]+|end   None, the start of the second verse range or the
+                            end of a chapter range.
+    7     None|[0-9]+|end   None or the end of the second verse range.
 
     The reference list is a list of tuples, with each tuple structured like
     this::
