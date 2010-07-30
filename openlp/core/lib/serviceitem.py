@@ -152,7 +152,7 @@ class ServiceItem(object):
                 formated = self.render_manager.format_slide(slide[u'raw_slide'])
                 for format in formated:
                     self._display_frames.append(
-                        {u'title': format.replace(u'<p>', u''),
+                        {u'title': self.render_manager.clean(format),
                         u'text': self.render_manager.clean(format.rstrip()),
                         u'html': self.render_manager.expand(format.rstrip()),
                         u'verseTag': slide[u'verseTag'] })
