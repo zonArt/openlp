@@ -198,15 +198,11 @@ class SongsPlugin(Plugin):
         except:
             log.exception('Could not import SoF file')
             QtGui.QMessageBox.critical(None,
-                translate('SongsPlugin',
-                    'Import Error'),
-                translate('SongsPlugin',
-                    'Error importing Songs of '
+                translate('SongsPlugin', 'Import Error'),
+                translate('SongsPlugin', 'Error importing Songs of '
                     'Fellowship file.\nOpenOffice.org must be installed'
                     ' and you must be using an unedited copy of the RTF'
-                    ' included with the Songs of Fellowship Music Editions'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
-                QtGui.QMessageBox.Ok)
+                    ' included with the Songs of Fellowship Music Editions'))
         Receiver.send_message(u'songs_load_list')
 
     def onImportOpenSongItemClick(self):
@@ -221,12 +217,8 @@ class SongsPlugin(Plugin):
         except:
             log.exception('Could not import OpenSong file')
             QtGui.QMessageBox.critical(None,
-                translate('SongsPlugin',
-                    'Import Error'),
-                translate('SongsPlugin',
-                    'Error importing OpenSong file'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
-                QtGui.QMessageBox.Ok)
+                translate('SongsPlugin', 'Import Error'),
+                translate('SongsPlugin', 'Error importing OpenSong file'))
         Receiver.send_message(u'songs_load_list')
 
     def onImportOpenLPSongItemClick(self):
@@ -250,8 +242,7 @@ class SongsPlugin(Plugin):
 
     def onImportOooItemClick(self):
         filenames = QtGui.QFileDialog.getOpenFileNames(
-            None, translate('SongsPlugin',
-            'Open documents or presentations'),
+            None, translate('SongsPlugin', 'Open documents or presentations'),
             '', u'All Files(*.*)')
         oooimport = OooImport(self.manager)
         oooimport.import_docs(filenames)

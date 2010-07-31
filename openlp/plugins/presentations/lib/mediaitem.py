@@ -188,8 +188,7 @@ class PresentationMediaItem(MediaManagerItem):
                         translate('PresentationPlugin.MediaItem',
                         'File Exists'),
                         translate('PresentationPlugin.MediaItem',
-                        'A presentation with that filename already exists.'),
-                        QtGui.QMessageBox.Ok)
+                        'A presentation with that filename already exists.'))
                 continue
             controller_name = self.findControllerByType(filename)
             if controller_name:
@@ -213,8 +212,7 @@ class PresentationMediaItem(MediaManagerItem):
                         self, translate('PresentationPlugin.MediaItem',
                         'Unsupported File'),
                         translate('PresentationPlugin.MediaItem',
-                        'This type of presentation is not supported'),
-                        QtGui.QMessageBox.Ok)
+                        'This type of presentation is not supported'))
                     continue
             item_name = QtGui.QListWidgetItem(filename)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))

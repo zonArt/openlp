@@ -82,16 +82,14 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
             QtGui.QMessageBox.critical(
                 self, translate('SongsPlugin.AuthorsForm', 'Error'),
                 translate('SongsPlugin.AuthorsForm',
-                    'You need to type in the first name of the author.'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                    'You need to type in the first name of the author.'))
             self.FirstNameEdit.setFocus()
             return False
         elif not self.LastNameEdit.text():
             QtGui.QMessageBox.critical(
                 self, translate('SongsPlugin.AuthorsForm', 'Error'),
                 translate('SongsPlugin.AuthorsForm',
-                    'You need to type in the last name of the author.'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                    'You need to type in the last name of the author.'))
             self.LastNameEdit.setFocus()
             return False
         elif not self.DisplayEdit.text():
