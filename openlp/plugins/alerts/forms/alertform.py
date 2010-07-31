@@ -35,13 +35,14 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
     """
     Provide UI for the alert system
     """
-    def __init__(self, manager, parent):
+    def __init__(self, plugin):
         """
         Initialise the alert form
         """
-        self.manager = manager
+        self.manager = plugin.manager
+        self.parent = plugin
         self.item_id = None
-        QtGui.QDialog.__init__(self, parent)
+        QtGui.QDialog.__init__(self, plugin.formparent)
         self.setupUi(self)
         QtCore.QObject.connect(self.DisplayButton, QtCore.SIGNAL(u'clicked()'),
             self.onDisplayClicked)
@@ -152,6 +153,6 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
     def triggerAlert(self, text):
         if text:
             text = text.replace(u'<>', unicode(self.ParameterEdit.text()))
-            self.parent().alertsmanager.displayAlert(text)
+            self.parent.alertsmanager.displayAlert(text)
             return True
         return False
