@@ -498,8 +498,7 @@ class ServiceManager(QtGui.QWidget):
                     'Your service is unsaved, do you want to save '
                     'those changes before creating a new one?'),
                 QtGui.QMessageBox.StandardButtons(
-                    QtGui.QMessageBox.Cancel |
-                    QtGui.QMessageBox.Save),
+                    QtGui.QMessageBox.Cancel | QtGui.QMessageBox.Save),
                 QtGui.QMessageBox.Save)
             if ret == QtGui.QMessageBox.Save:
                 self.onSaveService()
@@ -656,8 +655,7 @@ class ServiceManager(QtGui.QWidget):
                     'Your current service is unsaved, do you want to '
                     'save the changes before opening a new one?'),
                 QtGui.QMessageBox.StandardButtons(
-                    QtGui.QMessageBox.Discard |
-                    QtGui.QMessageBox.Save),
+                    QtGui.QMessageBox.Discard | QtGui.QMessageBox.Save),
                 QtGui.QMessageBox.Save)
             if ret == QtGui.QMessageBox.Save:
                 self.onSaveService()
@@ -802,7 +800,6 @@ class ServiceManager(QtGui.QWidget):
 
         ``item``
             Service Item to be added
-
         """
         sitem = self.findServiceItem()[0]
         item.render()
@@ -847,10 +844,7 @@ class ServiceManager(QtGui.QWidget):
             QtGui.QMessageBox.critical(self,
                 translate('OpenLP.ServiceManager', 'Missing Display Handler'),
                 translate('OpenLP.ServiceManager', 'Your item cannot be '
-                    'displayed as there is no handler to display it'),
-                QtGui.QMessageBox.StandardButtons(
-                    QtGui.QMessageBox.Ok),
-                QtGui.QMessageBox.Ok)
+                    'displayed as there is no handler to display it'))
 
     def getServiceItem(self):
         """
@@ -883,10 +877,7 @@ class ServiceManager(QtGui.QWidget):
             QtGui.QMessageBox.critical(self,
                 translate('OpenLP.ServiceManager', 'Missing Display Handler'),
                 translate('OpenLP.ServiceManager', 'Your item cannot be '
-                    'displayed as there is no handler to display it'),
-                QtGui.QMessageBox.StandardButtons(
-                    QtGui.QMessageBox.Ok),
-                QtGui.QMessageBox.Ok)
+                    'displayed as there is no handler to display it'))
 
     def remoteEdit(self):
         """

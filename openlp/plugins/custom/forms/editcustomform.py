@@ -151,8 +151,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         valid, message = self._validate()
         if not valid:
             QtGui.QMessageBox.critical(self,
-                translate('CustomPlugin.EditCustomForm', 'Error'), message,
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                translate('CustomPlugin.EditCustomForm', 'Error'), message)
             return False
         sxml = CustomXMLBuilder()
         sxml.new_document()

@@ -32,12 +32,12 @@ from optparse import OptionParser
 
 from PyQt4 import QtCore, QtGui
 
-log = logging.getLogger()
-
 from openlp.core.lib import Receiver
 from openlp.core.resources import qInitResources
 from openlp.core.ui import MainWindow, SplashScreen, ScreenList
-from openlp.core.utils import AppLocation, LanguageManager
+from openlp.core.utils import AppLocation, LanguageManager, VersionThread
+
+log = logging.getLogger()
 
 application_stylesheet = u"""
 QMainWindow::separator
@@ -141,7 +141,7 @@ class OpenLP(QtGui.QApplication):
             # now kill the splashscreen
             self.splash.finish(self.mainWindow)
         self.mainWindow.repaint()
-        self.mainWindow.versionThread()
+        VersionThread(self.mainWindow, app_version).start()
         return self.exec_()
 
 def main():

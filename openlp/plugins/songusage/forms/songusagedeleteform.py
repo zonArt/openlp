@@ -34,7 +34,7 @@ class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
     """
     Class documentation goes here.
     """
-    def __init__(self, songusagemanager, parent=None):
+    def __init__(self, songusagemanager, parent):
         """
         Constructor
         """

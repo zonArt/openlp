@@ -109,8 +109,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
                             'No OpenLyrics Files Selected'),
                         translate('SongsPlugin.ImportWizardForm',
                             'You need to add at least one OpenLyrics '
-                            'song file to import from.'),
-                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                            'song file to import from.'))
                     self.OpenLyricsAddButton.setFocus()
                     return False
             elif source_format == SongFormat.OpenSong:
@@ -120,8 +119,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
                             'No OpenSong Files Selected'),
                         translate('SongsPlugin.ImportWizardForm',
                             'You need to add at least one OpenSong '
-                            'song file to import from.'),
-                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                            'song file to import from.'))
                     self.OpenSongAddButton.setFocus()
                     return False
             elif source_format == SongFormat.CCLI:
@@ -131,8 +129,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
                             'No CCLI Files Selected'),
                         translate('SongsPlugin.ImportWizardForm',
                             'You need to add at least one CCLI file '
-                            'to import from.'),
-                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                            'to import from.'))
                     self.CCLIAddButton.setFocus()
                     return False
             elif source_format == SongFormat.CSV:
@@ -141,8 +138,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
                         translate('SongsPlugin.ImportWizardForm',
                             'No CSV File Selected'),
                         translate('SongsPlugin.ImportWizardForm',
-                            'You need to specify a CSV file to import from.'),
-                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                            'You need to specify a CSV file to import from.'))
                     self.CSVFilenameEdit.setFocus()
                     return False
             return True

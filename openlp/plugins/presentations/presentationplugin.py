@@ -30,7 +30,7 @@ presentations from a variety of document formats.
 import os
 import logging
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus, translate
+from openlp.core.lib import Plugin, build_icon, translate
 from openlp.core.utils import AppLocation
 from openlp.plugins.presentations.lib import PresentationController, \
     PresentationMediaItem, PresentationTab
@@ -55,7 +55,6 @@ class PresentationPlugin(Plugin):
         self.weight = -8
         self.icon_path = u':/plugins/plugin_presentations.png'
         self.icon = build_icon(self.icon_path)
-        self.status = PluginStatus.Active
 
     def getSettingsTab(self):
         """
@@ -74,6 +73,7 @@ class PresentationPlugin(Plugin):
         for controller in self.controllers:
             if self.controllers[controller].enabled():
                 self.controllers[controller].start_process()
+        self.mediaItem.buildFileMaskString()
 
     def finalise(self):
         """

@@ -235,8 +235,7 @@ class ThemeManager(QtGui.QWidget):
                 QtGui.QMessageBox.critical(self,
                     translate('OpenLP.ThemeManager', 'Error'),
                     translate('OpenLP.ThemeManager',
-                        'You are unable to delete the default theme.'),
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                        'You are unable to delete the default theme.'))
             else:
                 for plugin in self.parent.plugin_manager.plugins:
                     if plugin.usesTheme(theme):

@@ -42,12 +42,12 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
     """
     log.info(u'SongUsage Detail Form Loaded')
 
-    def __init__(self, parent=None):
+    def __init__(self, plugin, parent):
         """
         Initialise the form
         """
-        QtGui.QDialog.__init__(self, None)
-        self.parent = parent
+        QtGui.QDialog.__init__(self, parent)
+        self.plugin = plugin
         self.setupUi(self)
 
     def initialise(self):
@@ -59,16 +59,16 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         self.fromDate.setSelectedDate(fromDate)
         self.toDate.setSelectedDate(toDate)
         self.fileLineEdit.setText(
-            SettingsManager.get_last_dir(self.parent.settingsSection, 1))
+            SettingsManager.get_last_dir(self.plugin.settingsSection, 1))
 
     def defineOutputLocation(self):
         path = QtGui.QFileDialog.getExistingDirectory(self,
             translate('SongUsagePlugin.SongUsageDetailForm',
                 'Output File Location'),
-            SettingsManager.get_last_dir(self.parent.settingsSection, 1))
+            SettingsManager.get_last_dir(self.plugin.settingsSection, 1))
         path = unicode(path)
         if path != u'':
-            SettingsManager.set_last_dir(self.parent.settingsSection, path, 1)
+            SettingsManager.set_last_dir(self.plugin.settingsSection, path, 1)
             self.fileLineEdit.setText(path)
 
     def accept(self):
@@ -76,7 +76,7 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         filename = u'usage_detail_%s_%s.txt' % (
             self.fromDate.selectedDate().toString(u'ddMMyyyy'),
             self.toDate.selectedDate().toString(u'ddMMyyyy'))
-        usage = self.parent.songusagemanager.get_all_objects(
+        usage = self.plugin.songusagemanager.get_all_objects(
             SongUsageItem, and_(
             SongUsageItem.usagedate >= self.fromDate.selectedDate().toPyDate(),
             SongUsageItem.usagedate < self.toDate.selectedDate().toPyDate()),
@@ -95,3 +95,4 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         finally:
             if file:
                 file.close()
+        self.close()
