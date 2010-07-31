@@ -28,7 +28,7 @@ import logging
 
 from forms import EditCustomForm
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus, translate
+from openlp.core.lib import Plugin, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.plugins.custom.lib import CustomMediaItem, CustomTab
 from openlp.plugins.custom.lib.db import CustomSlide, init_schema
@@ -53,7 +53,6 @@ class CustomPlugin(Plugin):
         self.edit_custom_form = EditCustomForm(self.custommanager)
         self.icon_path = u':/plugins/plugin_custom.png'
         self.icon = build_icon(self.icon_path)
-        self.status = PluginStatus.Active
 
     def getSettingsTab(self):
         return CustomTab(self.name)

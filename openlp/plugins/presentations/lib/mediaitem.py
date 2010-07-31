@@ -79,7 +79,6 @@ class PresentationMediaItem(MediaManagerItem):
             'Select Presentation(s)')
         self.Automatic = translate('PresentationPlugin.MediaItem',
             'Automatic')
-        self.buildFileMaskString()
 
     def buildFileMaskString(self):
         """
@@ -92,7 +91,7 @@ class PresentationMediaItem(MediaManagerItem):
                     self.controllers[controller].alsosupports
                 for type in types:
                     if fileType.find(type) == -1:
-                        fileType += u'*%s ' % type
+                        fileType += u'*.%s ' % type
                         self.parent.serviceManager.supportedSuffixes(type)
         self.OnNewFileMasks = translate('PresentationPlugin.MediaItem',
             'Presentations (%s)' % fileType)
@@ -288,7 +287,7 @@ class PresentationMediaItem(MediaManagerItem):
         "supports" the extension. If none found, then look for a controller
         which "alsosupports" it instead.
         """
-        filetype = os.path.splitext(filename)[1]
+        filetype = filename.split(u'.')[1]
         if not filetype:
             return None
         for controller in self.controllers:

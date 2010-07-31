@@ -28,8 +28,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus, Receiver, \
-    translate
+from openlp.core.lib import Plugin, build_icon, Receiver, translate
 from openlp.core.lib.db import Manager
 from openlp.plugins.songs.lib import OpenLPSongImport, SongMediaItem, SongsTab
 from openlp.plugins.songs.lib.db import init_schema, Song
@@ -63,7 +62,6 @@ class SongsPlugin(Plugin):
         self.manager = Manager(u'songs', init_schema)
         self.icon_path = u':/plugins/plugin_songs.png'
         self.icon = build_icon(self.icon_path)
-        self.status = PluginStatus.Active
 
     def getSettingsTab(self):
         return SongsTab(self.name)
