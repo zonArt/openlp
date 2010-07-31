@@ -113,6 +113,12 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     u'%s %s' % (author.first_name, author.last_name))
             author_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(author.id))
             self.AuthorsListWidget.addItem(author_name)
+        if self.AuthorsListWidget.count() == 0:
+            self.AuthorDeleteButton.setEnabled(False)
+            self.AuthorEditButton.setEnabled(False)
+        else:
+            self.AuthorDeleteButton.setEnabled(True)
+            self.AuthorEditButton.setEnabled(True)
 
     def resetTopics(self):
         """
@@ -125,6 +131,12 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             topic_name = QtGui.QListWidgetItem(topic.name)
             topic_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(topic.id))
             self.TopicsListWidget.addItem(topic_name)
+        if self.TopicsListWidget.count() == 0:
+            self.TopicDeleteButton.setEnabled(False)
+            self.TopicEditButton.setEnabled(False)
+        else:
+            self.TopicDeleteButton.setEnabled(True)
+            self.TopicEditButton.setEnabled(True)
 
     def resetBooks(self):
         """
@@ -137,6 +149,12 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 book.publisher))
             book_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(book.id))
             self.BooksListWidget.addItem(book_name)
+        if self.BooksListWidget.count() == 0:
+            self.BookDeleteButton.setEnabled(False)
+            self.BookEditButton.setEnabled(False)
+        else:
+            self.BookDeleteButton.setEnabled(True)
+            self.BookEditButton.setEnabled(True)
 
     def checkAuthor(self, new_author, edit=False):
         """
