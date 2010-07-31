@@ -117,8 +117,9 @@ class SongUsagePlugin(Plugin):
         self.SongUsageStatus.setChecked(self.SongUsageActive)
         if self.songusagemanager is None:
             self.songusagemanager = Manager(u'songusage', init_schema)
-        self.SongUsagedeleteform = SongUsageDeleteForm(self.songusagemanager)
-        self.SongUsagedetailform = SongUsageDetailForm(self)
+        self.SongUsagedeleteform = SongUsageDeleteForm(self.songusagemanager,
+            self.formparent)
+        self.SongUsagedetailform = SongUsageDetailForm(self, self.formparent)
         self.SongUsageMenu.menuAction().setVisible(True)
 
     def finalise(self):

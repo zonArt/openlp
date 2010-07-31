@@ -40,9 +40,8 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         Initialise the alert form
         """
         self.manager = manager
-        self.parent = parent
         self.item_id = None
-        QtGui.QDialog.__init__(self, None)
+        QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         QtCore.QObject.connect(self.DisplayButton, QtCore.SIGNAL(u'clicked()'),
             self.onDisplayClicked)
@@ -153,6 +152,6 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
     def triggerAlert(self, text):
         if text:
             text = text.replace(u'<>', unicode(self.ParameterEdit.text()))
-            self.parent.alertsmanager.displayAlert(text)
+            self.parent().alertsmanager.displayAlert(text)
             return True
         return False

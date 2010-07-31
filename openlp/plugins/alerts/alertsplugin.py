@@ -45,7 +45,7 @@ class AlertsPlugin(Plugin):
         self.icon = build_icon(u':/plugins/plugin_alerts.png')
         self.alertsmanager = AlertsManager(self)
         self.manager = Manager(u'alerts', init_schema)
-        self.alertForm = AlertForm(self.manager, self)
+        self.alertForm = AlertForm(self.manager, self.formparent)
 
     def getSettingsTab(self):
         """
