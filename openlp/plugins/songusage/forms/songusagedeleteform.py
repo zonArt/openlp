@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -33,7 +34,7 @@ class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
     """
     Class documentation goes here.
     """
-    def __init__(self, songusagemanager, parent=None):
+    def __init__(self, songusagemanager, parent):
         """
         Constructor
         """
@@ -43,16 +44,15 @@ class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
 
     def accept(self):
         ret = QtGui.QMessageBox.question(self,
-            translate('SongsPlugin.SongUsageDeleteForm',
+            translate('SongUsagePlugin.SongUsageDeleteForm',
                 'Delete Selected Song Usage Events?'),
-            translate('SongsPlugin.SongUsageDeleteForm',
+            translate('SongUsagePlugin.SongUsageDeleteForm',
                 'Are you sure you want to delete selected Song Usage data?'),
-            QtGui.QMessageBox.StandardButtons(
-                QtGui.QMessageBox.Ok |
+            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok |
                 QtGui.QMessageBox.Cancel),
             QtGui.QMessageBox.Cancel)
         if ret == QtGui.QMessageBox.Ok:
-            deleteDate = self.DeleteCalendar.selectedDate().toPyDate()
+            deleteDate = self.deleteCalendar.selectedDate().toPyDate()
             self.songusagemanager.delete_all_objects(SongUsageItem,
                 SongUsageItem.usagedate <= deleteDate)
         self.close()

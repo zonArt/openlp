@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -330,8 +331,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 translate('SongsPlugin.EditSongForm', 'You have not selected '
                 'a valid author. Either select an author from the list, '
                 'or type in a new author and click the "Add Author to '
-                'Song" button to add the new author.'),
-                QtGui.QMessageBox.Ok, QtGui.QMessageBox.Ok)
+                'Song" button to add the new author.'))
 
     def onAuthorsListViewPressed(self):
         if self.AuthorsListView.count() > 1:
@@ -388,8 +388,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 translate('SongsPlugin.EditSongForm', 'You have not selected '
                 'a valid topic. Either select a topic from the list, or '
                 'type in a new topic and click the "Add Topic to Song" '
-                'button to add the new topic.'),
-                QtGui.QMessageBox.Ok, QtGui.QMessageBox.Ok)
+                'button to add the new topic.'))
 
     def onTopicListViewPressed(self):
         self.TopicRemoveButton.setEnabled(True)
@@ -662,7 +661,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             sxml = SongXMLBuilder()
             text = u''
             multiple = []
-            for i in range (0, self.VerseListWidget.rowCount()):
+            for i in range(0, self.VerseListWidget.rowCount()):
                 item = self.VerseListWidget.item(i, 0)
                 verseId = unicode(item.data(QtCore.Qt.UserRole).toString())
                 bits = verseId.split(u':')

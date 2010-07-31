@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -92,17 +93,17 @@ class MediaMediaItem(MediaManagerItem):
         self.ImageWidget.setObjectName(u'ImageWidget')
         #Replace backgrounds do not work at present so remove functionality.
         self.blankButton = self.toolbar.addToolbarButton(
-            u'Replace Background', u':/slides/slide_blank.png',
+            translate('MediaPlugin.MediaItem', 'Replace Background'),
+            u':/slides/slide_blank.png',
             translate('MediaPlugin.MediaItem', 'Replace Live Background'),
                 self.onReplaceClick, False)
         # Add the song widget to the page layout
         self.pageLayout.addWidget(self.ImageWidget)
 
     def onReplaceClick(self):
-
         if check_item_selected(self.listView,
             translate('ImagePlugin.MediaItem',
-            'You must select an item to process.')):
+            'You must select a media file to replace the background with.')):
             item = self.listView.currentItem()
             filename = unicode(item.data(QtCore.Qt.UserRole).toString())
             self.parent.displayManager.displayVideo(filename)
@@ -133,7 +134,7 @@ class MediaMediaItem(MediaManagerItem):
         Remove a media item from the list
         """
         if check_item_selected(self.listView, translate('MediaPlugin.MediaItem',
-            'You must select an item to delete.')):
+            'You must select a media file to delete.')):
             row_list = [item.row() for item in self.listView.selectedIndexes()]
             row_list.sort(reverse=True)
             for row in row_list:

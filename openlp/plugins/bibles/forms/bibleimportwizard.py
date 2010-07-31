@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -334,13 +335,13 @@ class Ui_BibleImportWizard(object):
         self.FormatComboBox.setItemText(3,
             translate('BiblesPlugin.ImportWizardForm', 'Web Download'))
         self.OsisLocationLabel.setText(
-            translate('BiblesPlugin.ImportWizardForm', 'File Location:'))
+            translate('BiblesPlugin.ImportWizardForm', 'File location:'))
         self.BooksLocationLabel.setText(
-            translate('BiblesPlugin.ImportWizardForm', 'Books Location:'))
+            translate('BiblesPlugin.ImportWizardForm', 'Books location:'))
         self.VerseLocationLabel.setText(
-            translate('BiblesPlugin.ImportWizardForm', 'Verse Location:'))
+            translate('BiblesPlugin.ImportWizardForm', 'Verse location:'))
         self.OpenSongFileLabel.setText(
-            translate('BiblesPlugin.ImportWizardForm', 'Bible Filename:'))
+            translate('BiblesPlugin.ImportWizardForm', 'Bible filename:'))
         self.LocationLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'Location:'))
         self.LocationComboBox.setItemText(0,
@@ -368,7 +369,7 @@ class Ui_BibleImportWizard(object):
             translate('BiblesPlugin.ImportWizardForm',
                 'Set up the Bible\'s license details.'))
         self.VersionNameLabel.setText(
-            translate('BiblesPlugin.ImportWizardForm', 'Version Name:'))
+            translate('BiblesPlugin.ImportWizardForm', 'Version name:'))
         self.CopyrightLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'Copyright:'))
         self.PermissionLabel.setText(

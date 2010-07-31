@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -190,13 +191,13 @@ class AlertsTab(SettingsTab):
         self.FontGroupBox.setTitle(
             translate('AlertsPlugin.AlertsTab', 'Font'))
         self.FontLabel.setText(
-            translate('AlertsPlugin.AlertsTab', 'Font Name:'))
+            translate('AlertsPlugin.AlertsTab', 'Font name:'))
         self.FontColorLabel.setText(
-            translate('AlertsPlugin.AlertsTab', 'Font Color:'))
+            translate('AlertsPlugin.AlertsTab', 'Font color:'))
         self.BackgroundColorLabel.setText(
-            translate('AlertsPlugin.AlertsTab', 'Background Color:'))
+            translate('AlertsPlugin.AlertsTab', 'Background color:'))
         self.FontSizeLabel.setText(
-            translate('AlertsPlugin.AlertsTab', 'Font Size:'))
+            translate('AlertsPlugin.AlertsTab', 'Font size:'))
         self.FontSizeSpinBox.setSuffix(
             translate('AlertsPlugin.AlertsTab', 'pt'))
         self.TimeoutLabel.setText(
@@ -208,7 +209,7 @@ class AlertsTab(SettingsTab):
         self.PreviewGroupBox.setTitle(
             translate('AlertsPlugin.AlertsTab', 'Preview'))
         self.FontPreview.setText(
-            translate('AlertsPlugin.AlertsTab', 'openlp.org'))
+            translate('AlertsPlugin.AlertsTab', 'OpenLP 2.0'))
         self.LocationComboBox.setItemText(0,
             translate('AlertsPlugin.AlertsTab', 'Top'))
         self.LocationComboBox.setItemText(1,

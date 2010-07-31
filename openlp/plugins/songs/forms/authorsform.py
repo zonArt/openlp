@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -81,16 +82,14 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
             QtGui.QMessageBox.critical(
                 self, translate('SongsPlugin.AuthorsForm', 'Error'),
                 translate('SongsPlugin.AuthorsForm',
-                    'You need to type in the first name of the author.'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                    'You need to type in the first name of the author.'))
             self.FirstNameEdit.setFocus()
             return False
         elif not self.LastNameEdit.text():
             QtGui.QMessageBox.critical(
                 self, translate('SongsPlugin.AuthorsForm', 'Error'),
                 translate('SongsPlugin.AuthorsForm',
-                    'You need to type in the last name of the author.'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                    'You need to type in the last name of the author.'))
             self.LastNameEdit.setFocus()
             return False
         elif not self.DisplayEdit.text():
@@ -111,4 +110,3 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
                 return False
         else:
             return QtGui.QDialog.accept(self)
-

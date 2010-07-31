@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,7 +30,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    SettingsManager, translate, check_item_selected
+    SettingsManager, translate, check_item_selected, Receiver
 from openlp.plugins.presentations.lib import MessageListener
 
 log = logging.getLogger(__name__)
@@ -67,7 +68,9 @@ class PresentationMediaItem(MediaManagerItem):
         self.ListViewWithDnD_class = PresentationListView
         MediaManagerItem.__init__(self, parent, icon, title)
         self.message_listener = MessageListener(self)
-
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'mediaitem_presentation_rebuild'), self.rebuild)
+        
     def retranslateUi(self):
         """
         The name of the plugin media displayed in UI
@@ -76,14 +79,19 @@ class PresentationMediaItem(MediaManagerItem):
             'Select Presentation(s)')
         self.Automatic = translate('PresentationPlugin.MediaItem',
             'Automatic')
+
+    def buildFileMaskString(self):
+        """
+        Build the list of file extensions to be used in the Open file dialog
+        """
         fileType = u''
         for controller in self.controllers:
-            if self.controllers[controller].enabled:
+            if self.controllers[controller].enabled():
                 types = self.controllers[controller].supports + \
                     self.controllers[controller].alsosupports
                 for type in types:
                     if fileType.find(type) == -1:
-                        fileType += u'*%s ' % type
+                        fileType += u'*.%s ' % type
                         self.parent.serviceManager.supportedSuffixes(type)
         self.OnNewFileMasks = translate('PresentationPlugin.MediaItem',
             'Presentations (%s)' % fileType)
@@ -131,13 +139,34 @@ class PresentationMediaItem(MediaManagerItem):
         list = SettingsManager.load_list(
             self.settingsSection, u'presentations')
         self.loadList(list, True)
+        self.populateDisplayTypes()
+
+    def rebuild(self):
+        """
+        Rebuild the tab in the media manager when changes are made in
+        the settings
+        """
+        self.populateDisplayTypes()
+        self.buildFileMaskString()
+
+    def populateDisplayTypes(self):
+        """
+        Load the combobox with the enabled presentation controllers,
+        allowing user to select a specific app if settings allow
+        """
+        self.DisplayTypeComboBox.clear()
         for item in self.controllers:
             #load the drop down selection
-            if self.controllers[item].enabled:
+            if self.controllers[item].enabled():
                 self.DisplayTypeComboBox.addItem(item)
         if self.DisplayTypeComboBox.count() > 1:
             self.DisplayTypeComboBox.insertItem(0, self.Automatic)
             self.DisplayTypeComboBox.setCurrentIndex(0)
+        if QtCore.QSettings().value(self.settingsSection + u'/override app', 
+            QtCore.QVariant(QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
+            self.PresentationWidget.show()
+        else:
+            self.PresentationWidget.hide()
 
     def loadList(self, list, initialLoad=False):
         """
@@ -155,12 +184,11 @@ class PresentationMediaItem(MediaManagerItem):
             filename = os.path.split(unicode(file))[1]
             if titles.count(filename) > 0:
                 if not initialLoad:
-                    QtGui.QMessageBox.critical(
-                        self, translate('PresentationPlugin.MediaItem',
-                        'File exists'),
+                    QtGui.QMessageBox.critical(self,
                         translate('PresentationPlugin.MediaItem',
-                        'A presentation with that filename already exists.'),
-                        QtGui.QMessageBox.Ok)
+                        'File Exists'),
+                        translate('PresentationPlugin.MediaItem',
+                        'A presentation with that filename already exists.'))
                 continue
             controller_name = self.findControllerByType(filename)
             if controller_name:
@@ -182,10 +210,9 @@ class PresentationMediaItem(MediaManagerItem):
                 else:
                     QtGui.QMessageBox.critical(
                         self, translate('PresentationPlugin.MediaItem',
-                        'Unsupported file'),
+                        'Unsupported File'),
                         translate('PresentationPlugin.MediaItem',
-                        'This type of presentation is not supported'),
-                        QtGui.QMessageBox.Ok)
+                        'This type of presentation is not supported'))
                     continue
             item_name = QtGui.QListWidgetItem(filename)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
@@ -258,15 +285,15 @@ class PresentationMediaItem(MediaManagerItem):
         "supports" the extension. If none found, then look for a controller
         which "alsosupports" it instead.
         """
-        filetype = os.path.splitext(filename)[1]
+        filetype = filename.split(u'.')[1]
         if not filetype:
             return None
         for controller in self.controllers:
-            if self.controllers[controller].enabled:
+            if self.controllers[controller].enabled():
                 if filetype in self.controllers[controller].supports:
                     return controller
         for controller in self.controllers:
-            if self.controllers[controller].enabled:
+            if self.controllers[controller].enabled():
                 if filetype in self.controllers[controller].alsosupports:
                     return controller
         return None

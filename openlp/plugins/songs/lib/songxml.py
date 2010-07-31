@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,14 +25,8 @@
 ###############################################################################
 
 import logging
-#import sys
-#import os
 
 from types import ListType
-
-# Do we need these two lines?
-#sys.path.append(os.path.abspath(u'./../../../..'))
-#sys.path.append(os.path.abspath(os.path.join(u'.', u'..', u'..')))
 
 log = logging.getLogger(__name__)
 
@@ -70,14 +65,7 @@ class Song(object):
         from_ccli_text_buffer
         to_ccli_text_buffer
 
-    OpenSong:
-        from_opensong_file
-        to_opensong_file
-        from_opensong_buffer
-        to_opensong_buffer
-
     presentation (screen):
-        get_number_of_slides
         get_preview_slide
         get_render_slide
 
@@ -215,8 +203,8 @@ class Song(object):
         author_list = u', '.join(lst)
         self.set_title(sName)
         self.set_author_list(author_list)
-        self.set_copyright(sCopyright)
-        self.set_ccli_number(sCcli)
+        self.copyright = sCopyright
+        self.ccli_number = sCcli
         self.set_lyrics(lyrics)
 
     def from_ccli_text_file(self, textFileName):
@@ -267,57 +255,29 @@ class Song(object):
         """Return copyright info string"""
         return self._assure_string(self.copyright)
 
-    def set_copyright(self, copyright):
-        """Set the copyright string"""
-        self.copyright = copyright
-
     def get_ccli_number(self):
         """Return the songCclino"""
         return self._assure_string(self.ccli_number)
-
-    def set_ccli_number(self, ccli_number):
-        """Set the ccli_number"""
-        self.ccli_number = ccli_number
 
     def get_theme_name(self):
         """Return the theme name for the song"""
         return self._assure_string(self.theme_name)
 
-    def set_theme_name(self, theme_name):
-        """Set the theme name (string)"""
-        self.theme_name = theme_name
-
     def get_song_book(self):
         """Return the song_book (string)"""
         return self._assure_string(self.song_book)
-
-    def set_song_book(self, song_book):
-        """Set the song_book (string)"""
-        self.song_book = song_book
 
     def get_song_number(self):
         """Return the song_number (string)"""
         return self._assure_string(self.song_number)
 
-    def set_song_number(self, song_number):
-        """Set the song_number (string)"""
-        self.song_number = song_number
-
     def get_comments(self):
         """Return the comments (string)"""
         return self._assure_string(self.comments)
 
-    def set_comments(self, comments):
-        """Set the comments (string)"""
-        self.comments = comments
-
     def get_verse_order(self):
         """Get the verseOrder (string) - preferably space delimited"""
         return self._assure_string(self.verse_order)
-
-    def set_verse_order(self, verse_order):
-        """Set the verse order (string) - space delimited"""
-        self.verse_order = verse_order
 
     def get_author_list(self, asOneString = True):
         """Return the list of authors as a string
@@ -369,45 +329,6 @@ class Song(object):
         else:
             self.category_array = self._list_to_string(category_array)
 
-    def get_show_title(self):
-        """Return the show_title flag (bool)"""
-        return self.show_title
-
-    def set_show_title(self, show_title):
-        """Set the show_title flag (bool)"""
-        self.show_title = show_title
-
-    def get_show_author_list(self):
-        """Return the show_author_list flag"""
-        return self.show_author_list
-
-    def set_show_author_list(self, show_author_list):
-        """Set the show_author_list flag (bool)"""
-        self.show_author_list = show_author_list
-
-    def get_show_copyright(self):
-        """Return the show_copyright flag"""
-        return self.show_copyright
-
-    def set_show_copyright(self, show_copyright):
-        """Set the show_copyright flag (bool)"""
-        self.show_copyright = show_copyright
-
-    def get_show_ccli_number(self):
-        """Return the showSongCclino (string)"""
-        return self.show_ccli_number
-
-    def set_show_ccli_number(self, show_ccli_number):
-        """Set the show_ccli_number flag (bool)"""
-        self.show_ccli_number = show_ccli_number
-
-    def get_lyrics(self):
-        """Return the lyrics as a list of strings
-
-        this will return all the strings in the song
-        """
-        return self.lyrics
-
     def set_lyrics(self, lyrics):
         """Set the lyrics as a list of strings"""
         self.lyrics = lyrics
@@ -430,11 +351,6 @@ class Song(object):
                     tmpSlide = []
         if tmpSlide:
             self.slideList.append(tmpSlide)
-
-    def get_number_of_slides(self):
-        """Return the number of slides in the song (int)"""
-        numOfSlides = len(self.slideList)
-        return numOfSlides
 
     def get_preview_slide(self, slideNumber):
         """Return the preview text for specified slide number

@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -79,7 +80,7 @@ class AlertsManager(QtCore.QObject):
         if self.timer_id != 0:
             Receiver.send_message(u'maindisplay_status_text',
                 translate('AlertsPlugin.AlertsManager',
-                'Alert message created and delayed'))
+                'Alert message created and displayed.'))
             return
         Receiver.send_message(u'maindisplay_status_text', u'')
         self.generateAlert()
@@ -117,4 +118,3 @@ class AlertsManager(QtCore.QObject):
         self.killTimer(self.timer_id)
         self.timer_id = 0
         self.generateAlert()
-

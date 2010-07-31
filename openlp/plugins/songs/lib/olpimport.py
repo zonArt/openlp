@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -70,11 +71,18 @@ class OldTopic(BaseModel):
 
 class OpenLPSongImport(object):
     """
-
+    The :class:`OpenLPSongImport` class provides OpenLP with the ability to
+    import song databases from other installations of OpenLP.
     """
     def __init__(self, master_manager, source_db):
         """
+        Initialise the import.
 
+        ``master_manager``
+            The song manager for the running OpenLP installation.
+
+        ``source_db``
+            The database providing the data to import.
         """
         self.master_manager = master_manager
         self.import_source = source_db
@@ -82,7 +90,7 @@ class OpenLPSongImport(object):
 
     def import_source_v2_db(self):
         """
-
+        Run the import for an OpenLP version 2 song database.
         """
         engine = create_engine(self.import_source)
         source_meta = MetaData()
@@ -140,7 +148,11 @@ class OpenLPSongImport(object):
             if has_media_files:
                 new_song.alternate_title = song.alternate_title
             else:
-                new_song.alternate_title = u''
+                old_titles = song.search_title.split(u'@')
+                if len(old_titles) > 1:
+                    new_song.alternate_title = old_titles[1]
+                else:
+                    new_song.alternate_title = u''
             new_song.search_title = song.search_title
             new_song.song_number = song.song_number
             new_song.lyrics = song.lyrics
@@ -169,7 +181,7 @@ class OpenLPSongImport(object):
                 else:
                     new_song.authors.append(Author.populate(
                         display_name=u'Author Unknown'))
-            if song.song_book_id != 0:
+            if song.book:
                 existing_song_book = self.master_manager.get_object_filtered(
                     Book, Book.name == song.book.name)
                 if existing_song_book:

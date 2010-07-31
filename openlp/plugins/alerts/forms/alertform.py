@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -34,14 +35,14 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
     """
     Provide UI for the alert system
     """
-    def __init__(self, manager, parent):
+    def __init__(self, plugin):
         """
         Initialise the alert form
         """
-        self.manager = manager
-        self.parent = parent
+        self.manager = plugin.manager
+        self.parent = plugin
         self.item_id = None
-        QtGui.QDialog.__init__(self, None)
+        QtGui.QDialog.__init__(self, plugin.formparent)
         self.setupUi(self)
         QtCore.QObject.connect(self.DisplayButton, QtCore.SIGNAL(u'clicked()'),
             self.onDisplayClicked)
