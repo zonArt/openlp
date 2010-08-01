@@ -205,6 +205,26 @@ class MainDisplay(DisplayWidget):
         log.debug(u'resetVideo')
         self.frame.findFirstElement('img').setAttribute(u'src',u'display: none;' )
 
+    def videoPlay(self):
+        log.debug(u'videoPlay')
+        self.frame.evaluateJavaScript("document.getElementById('video').play()")
+
+    def videoPause(self):
+        log.debug(u'videoPause')
+        self.frame.evaluateJavaScript("document.getElementById('video').pause()")
+
+    def videoStop(self):
+        log.debug(u'videoStop')
+        self.frame.evaluateJavaScript("document.getElementById('video').pause()")
+        self.frame.evaluateJavaScript(
+            "document.getElementById('video').style.visibility = 'hidden'")
+        self.frame.evaluateJavaScript(
+            "document.getElementById('image').style.visibility = 'visible'")
+
+    def videoVolume(self, amount):
+        log.debug(u'videoVolume')
+        self.frame.evaluateJavaScript("document.getElementById('video').volume = 0")
+
     def video(self, videoPath, noSound=False):
         log.debug(u'video')
         self.frame.findFirstElement('video').setAttribute('src', videoPath)
@@ -212,9 +232,9 @@ class MainDisplay(DisplayWidget):
             "document.getElementById('video').style.visibility = 'visible'")
         self.frame.evaluateJavaScript(
             "document.getElementById('image').style.visibility = 'hidden'")
-        self.frame.evaluateJavaScript("document.getElementById('video').play()")
+        self.videoPlay()
         if noSound:
-            self.frame.evaluateJavaScript("document.getElementById('video').volume = 0")
+            self.videoVolume(0)
 
     def loaded(self):
         """

@@ -257,10 +257,10 @@ class SlideController(QtGui.QWidget):
             self.seekSlider.setObjectName(u'seekSlider')
             self.Mediabar.addToolbarWidget(
                 u'Seek Slider', self.seekSlider)
-        self.volumeSlider = Phonon.VolumeSlider()
-        self.volumeSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
-        self.volumeSlider.setObjectName(u'volumeSlider')
-        self.Mediabar.addToolbarWidget(u'Audio Volume', self.volumeSlider)
+            self.volumeSlider = Phonon.VolumeSlider()
+            self.volumeSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
+            self.volumeSlider.setObjectName(u'volumeSlider')
+            self.Mediabar.addToolbarWidget(u'Audio Volume', self.volumeSlider)
         self.ControllerLayout.addWidget(self.Mediabar)
         # Build the Song Toolbar
         if isLive:
@@ -458,8 +458,6 @@ class SlideController(QtGui.QWidget):
         if item.is_media():
             self.Toolbar.setVisible(False)
             self.Mediabar.setVisible(True)
-            #self.volumeSlider.setAudioOutput(
-            #    self.mainDisplay.videoDisplay.audio)
 
     def enablePreviewToolBar(self, item):
         """
@@ -927,7 +925,6 @@ class SlideController(QtGui.QWidget):
         if self.isLive:
             file = os.path.join(item.get_frame_path(), item.get_frame_title())
             self.display.video(file)
-            #Receiver.send_message(u'videodisplay_start', item)
         else:
             self.mediaObject.stop()
             self.mediaObject.clearQueue()
@@ -943,7 +940,7 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'SlideController onMediaPause')
         if self.isLive:
-            Receiver.send_message(u'videodisplay_pause')
+            self.display.videoPause()
         else:
             self.mediaObject.pause()
 
@@ -953,7 +950,7 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'SlideController onMediaPlay')
         if self.isLive:
-            Receiver.send_message(u'videodisplay_play')
+            self.display.videoPlay()
         else:
             self.SlidePreview.hide()
             self.video.show()
@@ -965,7 +962,7 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'SlideController onMediaStop')
         if self.isLive:
-            Receiver.send_message(u'videodisplay_stop')
+            self.display.videoStop()
         else:
             self.mediaObject.stop()
             self.video.hide()
