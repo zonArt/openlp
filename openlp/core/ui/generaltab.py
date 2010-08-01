@@ -38,7 +38,8 @@ class GeneralTab(SettingsTab):
         """
         self.screens = screens
         self.monitorNumber = 0
-        self.overrideChanged = False
+        # Set to True to allow PostSetup to work on application start up
+        self.overrideChanged = True
         SettingsTab.__init__(self, u'General')
 
     def preLoad(self):
@@ -414,7 +415,6 @@ class GeneralTab(SettingsTab):
         self.customYValueEdit.setEnabled(self.overrideCheckBox.isChecked())
         self.customHeightValueEdit.setEnabled(self.overrideCheckBox.isChecked())
         self.customWidthValueEdit.setEnabled(self.overrideCheckBox.isChecked())
-        self.overrideChanged = False
 
     def save(self):
         """
@@ -458,7 +458,7 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(self.overrideCheckBox.isChecked()))
         settings.endGroup()
         self.screens.display = self.displayOnMonitorCheck.isChecked()
-        #Monitor Number has changed.
+        # Monitor Number has changed.
         if self.screens.monitor_number != self.monitorNumber:
             self.screens.monitor_number = self.monitorNumber
             self.screens.set_current_display(self.monitorNumber)
