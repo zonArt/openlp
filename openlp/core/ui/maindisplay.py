@@ -90,6 +90,7 @@ class MainDisplay(DisplayWidget):
         self.parent = parent
         self.screens = screens
         self.isLive = live
+        self.alertTab = None
         self.setWindowTitle(u'OpenLP Display')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint |
             QtCore.Qt.WindowStaysOnTopHint)
@@ -115,7 +116,6 @@ class MainDisplay(DisplayWidget):
         self.webView.setGeometry(0, 0, self.screen[u'size'].width(), self.screen[u'size'].height())
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
-        self.alertTab = None
         QtCore.QObject.connect(self.webView,
             QtCore.SIGNAL(u'loadFinished(bool)'), self.loaded)
         self.frame.setScrollBarPolicy(QtCore.Qt.Vertical,
@@ -175,7 +175,7 @@ class MainDisplay(DisplayWidget):
             The slide text to be displayed
         """
         log.debug(u'alert')
-        self.frame.findFirstElement('div#alert').setInnerXml(text)
+        self.frame.findFirstElement('td#alertmain').setInnerXml(text)
 
     def image(self, image):
         """
@@ -247,7 +247,7 @@ class MainDisplay(DisplayWidget):
         log.debug(u'buildHtml')
         self.loaded = False
         self.serviceItem = serviceItem
-        html = build_html(self.serviceItem, self.screen, self.alertTab)
+        html = build_html(self.serviceItem, self.screen, self.parent.alertTab)
         self.webView.setHtml(html)
         if serviceItem.footer and serviceItem.foot_text:
             self.frame.findFirstElement('div#footer').setInnerXml(serviceItem.foot_text)

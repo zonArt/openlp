@@ -103,9 +103,9 @@ class SlideController(QtGui.QWidget):
         self.songEdit = False
         self.selectedRow = 0
         self.serviceItem = None
+        self.alertTab = None
         self.Panel = QtGui.QWidget(parent.ControlSplitter)
         self.slideList = {}
-        self.canDisplay = True
         # Layout for holding panel
         self.PanelLayout = QtGui.QVBoxLayout(self.Panel)
         self.PanelLayout.setSpacing(0)
@@ -388,6 +388,7 @@ class SlideController(QtGui.QWidget):
         log.debug(u'screenSizeChanged live = %s' % self.isLive)
         # rebuild display as screen size changed
         self.display = MainDisplay(self, self.screens, self.isLive)
+        self.display.alertTab = self.alertTab
         self.ratio = float(self.screens.current[u'size'].width()) / \
             float(self.screens.current[u'size'].height())
         self.display.setup()

@@ -46,7 +46,7 @@ HTMLSRC = u"""
 <script language="javascript">
     var t = null;
     var transition = %s;
-    
+
     function startfade(newtext){
         var text1 = document.getElementById('lyricsmain');
         var texto1 = document.getElementById('lyricsoutline');
@@ -56,7 +56,7 @@ HTMLSRC = u"""
             texto1.innerHTML = newtext;
             texts1.innerHTML = newtext;
             return;
-        }            
+        }
         var text2 = document.getElementById('lyricsmain2');
         var texto2 = document.getElementById('lyricsoutline2');
         var texts2 = document.getElementById('lyricsshadow2');
@@ -130,8 +130,10 @@ HTMLSRC = u"""
 <table class="lyricsshadowtable lyricscommon">
     <tr><td id="lyricsshadow2" class="lyricsshadow lyrics"></td></tr>
 </table>
+<table class="alerttable alertcommon">
+    <tr><td id="alertmain" class="alert"></td></tr>
+</table>
 <div id="footer" class="footer"></div>
-<div id="alert"></div>
 <video id="video"></video>
 <blank id="blank"></blank>
 %s
@@ -162,7 +164,6 @@ def build_html(item, screen, alert):
                       build_blank(width, height),
                       "true" if theme and theme.display_slideTransition else "false",
                       build_image_src(item.bg_frame))
-    print html
     return html
 
 def build_video(width, height):
@@ -232,7 +233,7 @@ def build_lyrics(item):
     .lyricsshadowtable { z-index:2; %s }
     .lyrics { %s }
     .lyricsoutline { %s }
-    .lyricsshadow { %s }    
+    .lyricsshadow { %s }
     table {border=0; margin=0; padding=0; }
      """
     theme = item.themedata
@@ -247,7 +248,7 @@ def build_lyrics(item):
         lyricscommon =  u'width: %spx; height: %spx; ' \
             u'font-family %s; font-size: %spx; color: %s; line-height: %d%%' % \
             (item.main.width(), item.main.height(),
-            theme.font_main_name, theme.font_main_proportion, 
+            theme.font_main_name, theme.font_main_proportion,
             theme.font_main_color, 100 + int(theme.font_main_line_adjustment))
         lyricstable = u'left: %spx; top: %spx;' % \
             (item.main.x(), item.main.y())
@@ -281,7 +282,7 @@ def build_lyrics(item):
         else:
             if theme.display_shadow:
                 shadow = u'color: %s;' % (theme.display_shadow_color)
-        
+
     lyrics_html = style % (lyricscommon, lyricstable, outlinetable,
         shadowtable, lyrics, outline, shadow)
     print lyrics_html
@@ -315,20 +316,31 @@ def build_footer(item):
             valign = u'vertical-align:top;'
         text = u'color:%s; %s %s' % (theme.font_footer_color, align, valign)
     lyrics_html = lyrics % (position, font, text)
-    print lyrics_html
     return lyrics_html
 
 
-def build_alert(width, alertTab):
-    alert = """
-    #alert { position: absolute; left: 0px; top: 70px;
-        width: %spx; height: 10px; z-index:6; font-size: %spx;
-    }
-    #alert p {
-        background-color: %s;
-    }
-    """
-    alertText = u''
+def build_alert(width, alertTab):#
+    style = """
+    .alertcommon { position: absolute;  %s }
+    .alerttable { z-index:8;  %s }
+    .alert { %s }
+    table {border=0; margin=0; padding=0; }
+     """
+    alertcommon = u''
+    alerttable = u''
+    valign = u''
     if alertTab:
-        alertText = alert % (width, alertTab.font_size, alertTab.bg_color)
-    return alertText
+        alertcommon = u'width: %spx; height: %spx; ' \
+            u'font-family %s; font-size: %spx; color: %s; ' % \
+            (width, 70, alertTab.font_face, alertTab.font_size,
+            alertTab.bg_color)
+        alerttable = u'left: %spx; top: %spx;' % (0, 0)
+        if alertTab.location == 2:
+            valign = u'vertical-align:bottom;'
+        elif alertTab.location == 1:
+            valign = u'vertical-align:middle;'
+        else:
+            valign = u'vertical-align:top;'
+    alert_html = style % (alertcommon, alerttable, valign)
+    print alert_html
+    return alert_html
