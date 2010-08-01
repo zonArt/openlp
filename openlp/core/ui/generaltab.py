@@ -38,7 +38,7 @@ class GeneralTab(SettingsTab):
         """
         self.screens = screens
         self.monitorNumber = 0
-        # Set to true to allow PostSetUp to work first time
+        # Set to True to allow PostSetup to work on application start up
         self.overrideChanged = True
         SettingsTab.__init__(self, u'General')
 
