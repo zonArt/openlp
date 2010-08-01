@@ -28,7 +28,7 @@ import logging
 
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus, translate
+from openlp.core.lib import Plugin, build_icon, translate
 from openlp.plugins.media.lib import MediaMediaItem
 
 log = logging.getLogger(__name__)
@@ -43,7 +43,6 @@ class MediaPlugin(Plugin):
         self.icon = build_icon(self.icon_path)
         # passed with drag and drop messages
         self.dnd_id = u'Media'
-        self.status = PluginStatus.Active
         self.audio_list = u''
         self.video_list = u''
         for mimetype in Phonon.BackendCapabilities.availableMimeTypes():

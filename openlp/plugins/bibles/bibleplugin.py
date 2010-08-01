@@ -28,7 +28,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus, translate
+from openlp.core.lib import Plugin, build_icon, translate
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
 
 log = logging.getLogger(__name__)
@@ -41,8 +41,6 @@ class BiblePlugin(Plugin):
         self.weight = -9
         self.icon_path = u':/plugins/plugin_bibles.png'
         self.icon = build_icon(self.icon_path)
-        # Register the bible Manager.
-        self.status = PluginStatus.Active
         self.manager = None
 
     def initialise(self):

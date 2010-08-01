@@ -387,10 +387,7 @@ class BibleMediaItem(MediaManagerItem):
         QtGui.QMessageBox.critical(self,
             translate('BiblesPlugin.MediaItem', 'No Book Found'),
             translate('BiblesPlugin.MediaItem',
-                'No matching book could be found in this Bible.'),
-            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
-            QtGui.QMessageBox.Ok
-        )
+                'No matching book could be found in this Bible.'))
 
     def onAdvancedVersionComboBox(self):
         self.initialiseBible(
