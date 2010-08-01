@@ -252,6 +252,7 @@ class MainDisplay(DisplayWidget):
             self.size().height())
         self.webView.setGeometry(0, 0, self.size().width(),
             self.size().height())
+        self.alertText.setTextWidth(self.size().width())
         #Build a custom splash screen
         self.initialFrame = QtGui.QImage(
             self.screen[u'size'].width(),
@@ -322,7 +323,6 @@ class MainDisplay(DisplayWidget):
 
     def setupAlert(self):
         self.alertText = QtGui.QGraphicsTextItem()
-        self.alertText.setTextWidth(self.size().width())
         self.alertText.setZValue(8)
         self.scene.addItem(self.alertText)
 
