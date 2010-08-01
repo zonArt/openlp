@@ -27,19 +27,65 @@
 The :mod:`utils` module provides the utility libraries for OpenLP
 """
 
-import os
-import sys
 import logging
+import os
+import re
+import sys
+import time
 import urllib2
 from datetime import datetime
 
 from PyQt4 import QtGui, QtCore
 
 import openlp
-from openlp.core.lib import translate
+from openlp.core.lib import Receiver, translate
 
 log = logging.getLogger(__name__)
 images_filter = None
+
+class VersionThread(QtCore.QThread):
+    """
+    A special Qt thread class to fetch the version of OpenLP from the website.
+    This is threaded so that it doesn't affect the loading time of OpenLP.
+    """
+    def __init__(self, parent, app_version):
+        QtCore.QThread.__init__(self, parent)
+        self.app_version = app_version
+        self.version_splitter = re.compile(
+            r'([0-9]+).([0-9]+).([0-9]+)(?:-bzr([0-9]+))?')
+
+    def run(self):
+        """
+        Run the thread.
+        """
+        time.sleep(1)
+        Receiver.send_message(u'maindisplay_blank_check')
+        version = check_latest_version(self.app_version)
+        remote_version = {}
+        local_version = {}
+        match = self.version_splitter.match(version)
+        if match:
+            remote_version[u'major'] = int(match.group(1))
+            remote_version[u'minor'] = int(match.group(2))
+            remote_version[u'release'] = int(match.group(3))
+            if len(match.groups()) > 3 and match.group(4):
+                remote_version[u'revision'] = int(match.group(4))
+        match = self.version_splitter.match(self.app_version[u'full'])
+        if match:
+            local_version[u'major'] = int(match.group(1))
+            local_version[u'minor'] = int(match.group(2))
+            local_version[u'release'] = int(match.group(3))
+            if len(match.groups()) > 3 and match.group(4):
+                local_version[u'revision'] = int(match.group(4))
+        if remote_version[u'major'] > local_version[u'major'] or \
+            remote_version[u'minor'] > local_version[u'minor'] or \
+            remote_version[u'release'] > local_version[u'release']:
+            Receiver.send_message(u'openlp_version_check', u'%s' % version)
+        elif remote_version.get(u'revision') and \
+            local_version.get(u'revision') and \
+            remote_version[u'revision'] > local_version[u'revision']:
+            Receiver.send_message(u'openlp_version_check', u'%s' % version)
+
 
 class AppLocation(object):
     """

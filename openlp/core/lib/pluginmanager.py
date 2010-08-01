@@ -77,7 +77,6 @@ class PluginManager(object):
         startdepth = len(os.path.abspath(plugin_dir).split(os.sep))
         log.debug(u'finding plugins in %s at depth %d',
             unicode(plugin_dir), startdepth)
-
         for root, dirs, files in os.walk(plugin_dir):
             for name in files:
                 if name.endswith(u'.py') and not name.startswith(u'__'):

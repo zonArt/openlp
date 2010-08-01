@@ -44,7 +44,8 @@ class RemoteTab(SettingsTab):
         self.remoteLayout.setObjectName(u'remoteLayout')
         self.serverSettingsGroupBox = QtGui.QGroupBox(self)
         self.serverSettingsGroupBox.setObjectName(u'serverSettingsGroupBox')
-        self.serverSettingsLayout = QtGui.QFormLayout(self.serverSettingsGroupBox)
+        self.serverSettingsLayout = QtGui.QFormLayout(
+            self.serverSettingsGroupBox)
         self.serverSettingsLayout.setSpacing(8)
         self.serverSettingsLayout.setMargin(8)
         self.serverSettingsLayout.setObjectName(u'serverSettingsLayout')

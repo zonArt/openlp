@@ -26,8 +26,8 @@
 
 import logging
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus, translate
-from openlp.plugins.images.lib import ImageMediaItem, ImageTab
+from openlp.core.lib import Plugin, build_icon, translate
+from openlp.plugins.images.lib import ImageMediaItem
 
 log = logging.getLogger(__name__)
 
@@ -39,10 +39,6 @@ class ImagePlugin(Plugin):
         self.weight = -7
         self.icon_path = u':/plugins/plugin_images.png'
         self.icon = build_icon(self.icon_path)
-        self.status = PluginStatus.Active
-
-    def getSettingsTab(self):
-        return ImageTab(self.name)
 
     def getMediaManagerItem(self):
         # Create the MediaManagerItem object

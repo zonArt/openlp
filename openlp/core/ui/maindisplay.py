@@ -92,12 +92,12 @@ class DisplayManager(QtGui.QWidget):
         self.videoDisplay.mediaHide(message)
         self.mainDisplay.hideDisplay(message)
 
-    def showDisplay(self, message):
+    def showDisplay(self):
         """
         Hide the output displays
         """
-        self.videoDisplay.mediaShow(message)
-        self.mainDisplay.showDisplay(message)
+        self.videoDisplay.mediaShow()
+        self.mainDisplay.showDisplay()
 
     def addAlert(self, alertMessage, location):
         """
@@ -456,7 +456,7 @@ class MainDisplay(DisplayWidget):
                 self.displayText.setPixmap(frame)
             else:
                 self.displayText.setPixmap(QtGui.QPixmap.fromImage(frame))
-        if not self.isVisible() and self.screens.display:
+        if not self.isVisible() and self.screens.current['primary']:
             self.setVisible(True)
 
 class VideoDisplay(Phonon.VideoWidget):
@@ -623,7 +623,7 @@ class VideoDisplay(Phonon.VideoWidget):
         self.hidden = True
         self.setVisible(False)
 
-    def mediaShow(self, message=''):
+    def mediaShow(self):
         """
         Show the video display if it was already hidden
         """

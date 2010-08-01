@@ -28,7 +28,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus, translate
+from openlp.core.lib import Plugin, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.plugins.alerts.lib import AlertsManager, AlertsTab
 from openlp.plugins.alerts.lib.db import init_schema
@@ -45,8 +45,7 @@ class AlertsPlugin(Plugin):
         self.icon = build_icon(u':/plugins/plugin_alerts.png')
         self.alertsmanager = AlertsManager(self)
         self.manager = Manager(u'alerts', init_schema)
-        self.alertForm = AlertForm(self.manager, self)
-        self.status = PluginStatus.Active
+        self.alertForm = AlertForm(self)
 
     def getSettingsTab(self):
         """
@@ -66,11 +65,9 @@ class AlertsPlugin(Plugin):
         """
         log.info(u'add tools menu')
         self.toolsAlertItem = QtGui.QAction(tools_menu)
-        AlertIcon = build_icon(u':/plugins/plugin_alerts.png')
-        self.toolsAlertItem.setIcon(AlertIcon)
+        self.toolsAlertItem.setIcon(build_icon(u':/plugins/plugin_alerts.png'))
         self.toolsAlertItem.setObjectName(u'toolsAlertItem')
-        self.toolsAlertItem.setText(
-            translate('AlertsPlugin', '&Alert'))
+        self.toolsAlertItem.setText(translate('AlertsPlugin', '&Alert'))
         self.toolsAlertItem.setStatusTip(
             translate('AlertsPlugin', 'Show an alert message.'))
         self.toolsAlertItem.setShortcut(u'F7')

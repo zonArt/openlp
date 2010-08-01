@@ -387,10 +387,7 @@ class BibleMediaItem(MediaManagerItem):
         QtGui.QMessageBox.critical(self,
             translate('BiblesPlugin.MediaItem', 'No Book Found'),
             translate('BiblesPlugin.MediaItem',
-                'No matching book could be found in this Bible.'),
-            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
-            QtGui.QMessageBox.Ok
-        )
+                'No matching book could be found in this Bible.'))
 
     def onAdvancedVersionComboBox(self):
         self.initialiseBible(
@@ -431,8 +428,8 @@ class BibleMediaItem(MediaManagerItem):
         chapter_to = int(self.AdvancedToChapter.currentText())
         verse_from = int(self.AdvancedFromVerse.currentText())
         verse_to = int(self.AdvancedToVerse.currentText())
-        versetext = u'%s %s:%s-%s:%s' % (book, chapter_from, verse_from, \
-                                         chapter_to, verse_to)
+        versetext = u'%s %s:%s-%s:%s' % (book, chapter_from, verse_from,
+            chapter_to, verse_to)
         self.search_results = self.parent.manager.get_verses(bible, versetext)
         if self.ClearAdvancedSearchComboBox.currentIndex() == 0:
             self.listView.clear()
@@ -519,7 +516,7 @@ class BibleMediaItem(MediaManagerItem):
             #permission = self._decodeQtObject(reference, 'permission')
             if self.parent.settings_tab.display_style == 1:
                 verse_text = self.formatVerse(old_chapter, chapter, verse,
-                    u'(u', u')')
+                    u'(', u')')
             elif self.parent.settings_tab.display_style == 2:
                 verse_text = self.formatVerse(old_chapter, chapter, verse,
                     u'{', u'}')
@@ -656,7 +653,3 @@ class BibleMediaItem(MediaManagerItem):
             row = self.listView.setCurrentRow(count)
             if row:
                 row.setSelected(True)
-
-    def searchByReference(self, bible, search):
-        log.debug(u'searchByReference %s, %s', bible, search)
-        self.search_results = self.parent.manager.get_verses(bible, search)
