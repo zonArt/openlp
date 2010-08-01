@@ -38,7 +38,8 @@ class GeneralTab(SettingsTab):
         """
         self.screens = screens
         self.monitorNumber = 0
-        self.overrideChanged = False
+        # Set to true to allow PostSetUp to work first time
+        self.overrideChanged = True
         SettingsTab.__init__(self, u'General')
 
     def preLoad(self):
@@ -414,7 +415,6 @@ class GeneralTab(SettingsTab):
         self.customYValueEdit.setEnabled(self.overrideCheckBox.isChecked())
         self.customHeightValueEdit.setEnabled(self.overrideCheckBox.isChecked())
         self.customWidthValueEdit.setEnabled(self.overrideCheckBox.isChecked())
-        self.overrideChanged = False
 
     def save(self):
         """
@@ -436,10 +436,10 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(self.saveCheckServiceCheckBox.isChecked()))
         settings.setValue(u'auto preview',
             QtCore.QVariant(self.autoPreviewCheckBox.isChecked()))
-        settings.setValue(u'loop delay', 
+        settings.setValue(u'loop delay',
             QtCore.QVariant(self.timeoutSpinBox.value()))
         Receiver.send_message(u'slidecontroller_live_spin_delay',
-            self.timeoutSpinBox.value())            
+            self.timeoutSpinBox.value())
         settings.setValue(u'ccli number',
             QtCore.QVariant(self.numberEdit.displayText()))
         settings.setValue(u'songselect username',
@@ -458,7 +458,7 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(self.overrideCheckBox.isChecked()))
         settings.endGroup()
         self.screens.display = self.displayOnMonitorCheck.isChecked()
-        #Monitor Number has changed.
+        # Monitor Number has changed.
         if self.screens.monitor_number != self.monitorNumber:
             self.screens.monitor_number = self.monitorNumber
             self.screens.set_current_display(self.monitorNumber)
@@ -466,6 +466,7 @@ class GeneralTab(SettingsTab):
         Receiver.send_message(u'config_updated')
         # On save update the screens as well
         self.postSetUp()
+        self.overrideChanged = False
 
     def postSetUp(self):
         """

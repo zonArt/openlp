@@ -47,6 +47,11 @@ HTMLSRC = u"""
     var t = null;
     var transition = %s;
 
+    function displayAlert(alert){
+        var text1 = document.getElementById('alertmain');
+        text1.innerHTML = newtext;
+    }
+
     function startfade(newtext){
         var text1 = document.getElementById('lyricsmain');
         var texto1 = document.getElementById('lyricsoutline');
@@ -159,7 +164,7 @@ def build_html(item, screen, alert):
                       build_image(width, height),
                       build_lyrics(item),
                       build_footer(item),
-                      build_alert(width, alert),
+                      build_alert(width, height, alert),
                       build_image(width, height),
                       build_blank(width, height),
                       "true" if theme and theme.display_slideTransition else "false",
@@ -282,7 +287,6 @@ def build_lyrics(item):
         else:
             if theme.display_shadow:
                 shadow = u'color: %s;' % (theme.display_shadow_color)
-
     lyrics_html = style % (lyricscommon, lyricstable, outlinetable,
         shadowtable, lyrics, outline, shadow)
     print lyrics_html
@@ -319,9 +323,9 @@ def build_footer(item):
     return lyrics_html
 
 
-def build_alert(width, alertTab):#
+def build_alert(width, height, alertTab):#
     style = """
-    .alertcommon { position: absolute;  %s }
+    .alertcommon { position: absolute; %s }
     .alerttable { z-index:8;  %s }
     .alert { %s }
     table {border=0; margin=0; padding=0; }
@@ -332,7 +336,7 @@ def build_alert(width, alertTab):#
     if alertTab:
         alertcommon = u'width: %spx; height: %spx; ' \
             u'font-family %s; font-size: %spx; color: %s; ' % \
-            (width, 70, alertTab.font_face, alertTab.font_size,
+            (width, height, alertTab.font_face, alertTab.font_size,
             alertTab.bg_color)
         alerttable = u'left: %spx; top: %spx;' % (0, 0)
         if alertTab.location == 2:

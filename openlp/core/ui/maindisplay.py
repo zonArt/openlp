@@ -175,7 +175,8 @@ class MainDisplay(DisplayWidget):
             The slide text to be displayed
         """
         log.debug(u'alert')
-        self.frame.findFirstElement('td#alertmain').setInnerXml(text)
+        self.frame.evaluateJavaScript("displayAlert('" +
+            text.replace("\\", "\\\\").replace("\'", "\\\'") + "')")
 
     def image(self, image):
         """
