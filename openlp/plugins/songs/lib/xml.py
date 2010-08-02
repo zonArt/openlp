@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -76,8 +77,9 @@ class SongXMLBuilder(object):
         ``content``
             The actual text of the verse to be stored.
         """
-        #log.debug(u'add_verse_to_lyrics %s, %s\n%s' % (type, number, content))
-        verse = etree.Element(u'verse', type=type, label=number)
+        # log.debug(u'add_verse_to_lyrics %s, %s\n%s' % (type, number, content))
+        verse = etree.Element(u'verse', type = unicode(type),
+            label = unicode(number))
         verse.text = etree.CDATA(content)
         self.lyrics.append(verse)
 

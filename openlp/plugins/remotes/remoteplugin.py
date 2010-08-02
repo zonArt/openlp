@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -70,9 +71,8 @@ class RemotesPlugin(Plugin):
         """
         Information about this plugin
         """
-        about_text = translate('RemotePlugin',
-            '<b>Remote Plugin</b><br>This plugin '
-            'provides the ability to send messages to a running version of '
-            'openlp on a different computer via a web browser or other app<br>'
-            'The Primary use for this would be to send alerts from a creche')
+        about_text = translate('RemotePlugin', '<strong>Remote Plugin</strong>'
+            '<br />The remote plugin provides the ability to send messages to '
+            'a running version of OpenLP on a different computer via a web '
+            'browser or through the remote API.')
         return about_text

@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -50,7 +51,7 @@ class SongImport(object):
         self.song_number = u''
         self.alternate_title = u''
         self.copyright = u''
-        self.comment = u''
+        self.comments = u''
         self.theme_name = u''
         self.ccli_number = u''
         self.authors = []
@@ -141,8 +142,8 @@ class SongImport(object):
         """
         Add the author. OpenLP stores them individually so split by 'and', '&'
         and comma.
-        However need to check for "Mr and Mrs Smith" and turn it to
-        "Mr Smith" and "Mrs Smith".
+        However need to check for 'Mr and Mrs Smith' and turn it to
+        'Mr Smith' and 'Mrs Smith'.
         """
         for author in text.split(u','):
             authors = author.split(u'&')
@@ -224,7 +225,7 @@ class SongImport(object):
 
     def commit_song(self):
         """
-        Write the song and it's fields to disk
+        Write the song and its fields to disk
         """
         song = Song()
         song.title = self.title
@@ -253,7 +254,7 @@ class SongImport(object):
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
         song.verse_order = u' '.join(self.verse_order_list)
         song.copyright = self.copyright
-        song.comment = self.comment
+        song.comments = self.comments
         song.theme_name = self.theme_name
         song.ccli_number = self.ccli_number
         for authortext in self.authors:
@@ -272,11 +273,13 @@ class SongImport(object):
                     publisher=self.song_book_pub)
             song.book = song_book
         for topictext in self.topics:
+            if len(topictext) == 0:
+                continue
             topic = self.manager.get_object_filtered(Topic,
                 Topic.name == topictext)
             if topic is None:
                 topic = Topic.populate(name=topictext)
-            song.topics.append(topictext)
+            song.topics.append(topic)
         self.manager.save_object(song)
 
     def print_song(self):
@@ -302,8 +305,8 @@ class SongImport(object):
             print u'NUMBER: ' + self.song_number
         for topictext in self.topics:
             print u'TOPIC: ' + topictext
-        if self.comment:
-            print u'COMMENT: ' + self.comment
+        if self.comments:
+            print u'COMMENTS: ' + self.comments
         if self.theme_name:
             print u'THEME: ' + self.theme_name
         if self.ccli_number:

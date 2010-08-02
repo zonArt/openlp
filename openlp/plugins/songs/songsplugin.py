@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,10 +28,9 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus, Receiver, \
-    translate
+from openlp.core.lib import Plugin, build_icon, Receiver, translate
 from openlp.core.lib.db import Manager
-from openlp.plugins.songs.lib import SongMediaItem, SongsTab
+from openlp.plugins.songs.lib import OpenLPSongImport, SongMediaItem, SongsTab
 from openlp.plugins.songs.lib.db import init_schema, Song
 
 try:
@@ -38,6 +38,8 @@ try:
     OOo_available = True
 except ImportError:
     OOo_available = False
+
+from openlp.plugins.songs.lib import OpenSongImport
 
 log = logging.getLogger(__name__)
 
@@ -60,7 +62,6 @@ class SongsPlugin(Plugin):
         self.manager = Manager(u'songs', init_schema)
         self.icon_path = u':/plugins/plugin_songs.png'
         self.icon = build_icon(self.icon_path)
-        self.status = PluginStatus.Active
 
     def getSettingsTab(self):
         return SongsTab(self.name)
@@ -69,7 +70,7 @@ class SongsPlugin(Plugin):
         log.info(u'Songs Initialising')
         Plugin.initialise(self)
         self.mediaItem.displayResultsSong(
-            self.manager.get_all_objects(Song, Song.title))
+            self.manager.get_all_objects(Song, order_by_ref=Song.title))
 
     def getMediaManagerItem(self):
         """
@@ -137,6 +138,37 @@ class SongsPlugin(Plugin):
                 QtCore.SIGNAL(u'triggered()'), self.onImportSofItemClick)
             QtCore.QObject.connect(self.ImportOooItem,
                 QtCore.SIGNAL(u'triggered()'), self.onImportOooItemClick)
+        # OpenSong import menu item - will be removed and the
+        # functionality will be contained within the import wizard
+        self.ImportOpenSongItem = QtGui.QAction(import_menu)
+        self.ImportOpenSongItem.setObjectName(u'ImportOpenSongItem')
+        self.ImportOpenSongItem.setText(
+            translate('SongsPlugin',
+                'OpenSong (temp menu item)'))
+        self.ImportOpenSongItem.setToolTip(
+            translate('SongsPlugin',
+                'Import songs from OpenSong files' +
+                '(either raw text or ZIPfiles)'))
+        self.ImportOpenSongItem.setStatusTip(
+            translate('SongsPlugin',
+                'Import songs from OpenSong files' +
+                '(either raw text or ZIPfiles)'))
+        import_menu.addAction(self.ImportOpenSongItem)
+        QtCore.QObject.connect(self.ImportOpenSongItem,
+                QtCore.SIGNAL(u'triggered()'), self.onImportOpenSongItemClick)
+        # OpenLP v2 import menu item - ditto above regarding refactoring into
+        # an import wizard
+        self.ImportOpenLPSongItem = QtGui.QAction(import_menu)
+        self.ImportOpenLPSongItem.setObjectName(u'ImportOpenLPSongItem')
+        self.ImportOpenLPSongItem.setText(translate('SongsPlugin',
+            'OpenLP v2 Songs (temporary)'))
+        self.ImportOpenLPSongItem.setToolTip(translate('SongsPlugin',
+            'Import an OpenLP v2 song database'))
+        self.ImportOpenLPSongItem.setStatusTip(translate('SongsPlugin',
+            'Import an OpenLP v2 song database'))
+        import_menu.addAction(self.ImportOpenLPSongItem)
+        QtCore.QObject.connect(self.ImportOpenLPSongItem,
+            QtCore.SIGNAL(u'triggered()'), self.onImportOpenLPSongItemClick)
 
     def addExportMenuItem(self, export_menu):
         """
@@ -166,30 +198,60 @@ class SongsPlugin(Plugin):
         except:
             log.exception('Could not import SoF file')
             QtGui.QMessageBox.critical(None,
-                translate('SongsPlugin',
-                    'Import Error'),
-                translate('SongsPlugin',
-                    'Error importing Songs of '
+                translate('SongsPlugin', 'Import Error'),
+                translate('SongsPlugin', 'Error importing Songs of '
                     'Fellowship file.\nOpenOffice.org must be installed'
                     ' and you must be using an unedited copy of the RTF'
-                    ' included with the Songs of Fellowship Music Editions'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
-                QtGui.QMessageBox.Ok)
+                    ' included with the Songs of Fellowship Music Editions'))
+        Receiver.send_message(u'songs_load_list')
+
+    def onImportOpenSongItemClick(self):
+        filenames = QtGui.QFileDialog.getOpenFileNames(
+            None, translate('SongsPlugin',
+                'Open OpenSong file'),
+            u'', u'All files (*.*)')
+        try:
+            for filename in filenames:
+                importer = OpenSongImport(self.manager)
+                importer.do_import(unicode(filename))
+        except:
+            log.exception('Could not import OpenSong file')
+            QtGui.QMessageBox.critical(None,
+                translate('SongsPlugin', 'Import Error'),
+                translate('SongsPlugin', 'Error importing OpenSong file'))
+        Receiver.send_message(u'songs_load_list')
+
+    def onImportOpenLPSongItemClick(self):
+        filenames = QtGui.QFileDialog.getOpenFileNames(None,
+            translate('SongsPlugin', 'Select OpenLP database(s) to import...'),
+            u'', u'OpenLP databases (*.sqlite);;All Files (*)')
+        try:
+            for filename in filenames:
+                db_url = u'sqlite:///%s' % filename
+                importer = OpenLPSongImport(self.manager, db_url)
+                importer.import_source_v2_db()
+            QtGui.QMessageBox.information(None, translate('SongsPlugin',
+                'Database(s) imported'), translate('SongsPlugin', 'Your '
+                'OpenLP v2 song databases have been successfully imported'))
+        except:
+            log.exception(u'Failed to import OpenLP v2 database(s)')
+            QtGui.QMessageBox.critical(None, translate('SongsPlugin',
+                'Import Error'), translate('SongsPlugin',
+                'Error importing OpenLP v2 database(s)'))
         Receiver.send_message(u'songs_load_list')
 
     def onImportOooItemClick(self):
         filenames = QtGui.QFileDialog.getOpenFileNames(
-            None, translate('SongsPlugin',
-            'Open documents or presentations'),
+            None, translate('SongsPlugin', 'Open documents or presentations'),
             '', u'All Files(*.*)')
         oooimport = OooImport(self.manager)
         oooimport.import_docs(filenames)
         Receiver.send_message(u'songs_load_list')
 
     def about(self):
-        about_text = translate('SongsPlugin',
-            '<strong>Song Plugin</strong><br />'
-            'This plugin allows songs to be managed and displayed.')
+        about_text = translate('SongsPlugin', '<strong>Songs Plugin</strong>'
+            '<br />The songs plugin provides the ability to display and '
+            'manage songs.')
         return about_text
 
     def usesTheme(self, theme):
@@ -198,8 +260,7 @@ class SongsPlugin(Plugin):
 
         Returns True if the theme is being used, otherwise returns False.
         """
-        if self.manager.get_all_objects_filtered(Song,
-            Song.theme_name == theme):
+        if self.manager.get_all_objects(Song, Song.theme_name == theme):
             return True
         return False
 
@@ -214,7 +275,7 @@ class SongsPlugin(Plugin):
         ``newTheme``
             The new name the plugin should now use.
         """
-        songsUsingTheme = self.manager.get_all_objects_filtered(Song,
+        songsUsingTheme = self.manager.get_all_objects(Song,
             Song.theme_name == oldTheme)
         for song in songsUsingTheme:
             song.theme_name = newTheme

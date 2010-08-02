@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -129,8 +130,7 @@ class BibleMediaItem(MediaManagerItem):
         self.QuickClearLabel.setObjectName(u'QuickSearchLabel')
         self.QuickLayout.addWidget(self.QuickClearLabel, 4, 0, 1, 1)
         self.ClearQuickSearchComboBox = QtGui.QComboBox(self.QuickTab)
-        self.ClearQuickSearchComboBox.setObjectName(
-            u'ClearQuickSearchComboBox')
+        self.ClearQuickSearchComboBox.setObjectName(u'ClearQuickSearchComboBox')
         self.QuickLayout.addWidget(self.ClearQuickSearchComboBox, 4, 1, 1, 2)
         self.QuickSearchButtonLayout = QtGui.QHBoxLayout()
         self.QuickSearchButtonLayout.setMargin(0)
@@ -168,8 +168,7 @@ class BibleMediaItem(MediaManagerItem):
         self.AdvancedVersionComboBox.setObjectName(u'AdvancedVersionComboBox')
         self.AdvancedLayout.addWidget(self.AdvancedVersionComboBox, 0, 1, 1, 2)
         self.AdvancedSecondBibleLabel = QtGui.QLabel(self.AdvancedTab)
-        self.AdvancedSecondBibleLabel.setObjectName(
-            u'AdvancedSecondBibleLabel')
+        self.AdvancedSecondBibleLabel.setObjectName(u'AdvancedSecondBibleLabel')
         self.AdvancedLayout.addWidget(self.AdvancedSecondBibleLabel, 1, 0, 1, 1)
         self.AdvancedSecondBibleComboBox = QtGui.QComboBox(self.AdvancedTab)
         self.AdvancedSecondBibleComboBox.setSizeAdjustPolicy(
@@ -223,8 +222,7 @@ class BibleMediaItem(MediaManagerItem):
             u'AdvancedSearchButtonLayout')
         self.AdvancedSearchButtonSpacer = QtGui.QSpacerItem(40, 20,
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.AdvancedSearchButtonLayout.addItem(
-            self.AdvancedSearchButtonSpacer)
+        self.AdvancedSearchButtonLayout.addItem(self.AdvancedSearchButtonSpacer)
         self.AdvancedSearchButton = QtGui.QPushButton(self.AdvancedTab)
         self.AdvancedSearchButton.setObjectName(u'AdvancedSearchButton')
         self.AdvancedSearchButtonLayout.addWidget(self.AdvancedSearchButton)
@@ -297,7 +295,7 @@ class BibleMediaItem(MediaManagerItem):
         self.QuickSecondVersionLabel.setText(
             translate('BiblesPlugin.MediaItem', 'Dual:'))
         self.QuickSearchLabel.setText(
-            translate('BiblesPlugin.MediaItem', 'Search Type:'))
+            translate('BiblesPlugin.MediaItem', 'Search type:'))
         self.QuickSearchLabel.setText(
             translate('BiblesPlugin.MediaItem', 'Find:'))
         self.QuickSearchButton.setText(
@@ -389,10 +387,7 @@ class BibleMediaItem(MediaManagerItem):
         QtGui.QMessageBox.critical(self,
             translate('BiblesPlugin.MediaItem', 'No Book Found'),
             translate('BiblesPlugin.MediaItem',
-                'No matching book could be found in this Bible.'),
-            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
-            QtGui.QMessageBox.Ok
-        )
+                'No matching book could be found in this Bible.'))
 
     def onAdvancedVersionComboBox(self):
         self.initialiseBible(
@@ -433,8 +428,8 @@ class BibleMediaItem(MediaManagerItem):
         chapter_to = int(self.AdvancedToChapter.currentText())
         verse_from = int(self.AdvancedFromVerse.currentText())
         verse_to = int(self.AdvancedToVerse.currentText())
-        versetext = u'%s %s:%s-%s:%s' % (book, chapter_from, verse_from, \
-                                         chapter_to, verse_to)
+        versetext = u'%s %s:%s-%s:%s' % (book, chapter_from, verse_from,
+            chapter_to, verse_to)
         self.search_results = self.parent.manager.get_verses(bible, versetext)
         if self.ClearAdvancedSearchComboBox.currentIndex() == 0:
             self.listView.clear()
@@ -511,17 +506,17 @@ class BibleMediaItem(MediaManagerItem):
             reference = bitem.data(QtCore.Qt.UserRole)
             if isinstance(reference, QtCore.QVariant):
                 reference = reference.toPyObject()
-            bible = self._decodeQtObject(reference, 'bible')
+            #bible = self._decodeQtObject(reference, 'bible')
             book = self._decodeQtObject(reference, 'book')
             chapter = self._decodeQtObject(reference, 'chapter')
             verse = self._decodeQtObject(reference, 'verse')
             text = self._decodeQtObject(reference, 'text')
             version = self._decodeQtObject(reference, 'version')
             copyright = self._decodeQtObject(reference, 'copyright')
-            permission = self._decodeQtObject(reference, 'permission')
+            #permission = self._decodeQtObject(reference, 'permission')
             if self.parent.settings_tab.display_style == 1:
                 verse_text = self.formatVerse(old_chapter, chapter, verse,
-                    u'(u', u')')
+                    u'(', u')')
             elif self.parent.settings_tab.display_style == 2:
                 verse_text = self.formatVerse(old_chapter, chapter, verse,
                     u'{', u'}')
@@ -614,12 +609,11 @@ class BibleMediaItem(MediaManagerItem):
         if self.verses == 0:
             self.AdvancedSearchButton.setEnabled(False)
             self.AdvancedMessage.setText(
-                translate('BiblesPlugin.MediaItem', 'Bible not fully loaded'))
+                translate('BiblesPlugin.MediaItem', 'Bible not fully loaded.'))
         else:
             self.AdvancedSearchButton.setEnabled(True)
             self.AdvancedMessage.setText(u'')
-            self.adjustComboBox(1, self.chapters_from,
-                self.AdvancedFromChapter)
+            self.adjustComboBox(1, self.chapters_from, self.AdvancedFromChapter)
             self.adjustComboBox(1, self.chapters_from, self.AdvancedToChapter)
             self.adjustComboBox(1, self.verses, self.AdvancedFromVerse)
             self.adjustComboBox(1, self.verses, self.AdvancedToVerse)
@@ -659,7 +653,3 @@ class BibleMediaItem(MediaManagerItem):
             row = self.listView.setCurrentRow(count)
             if row:
                 row.setSelected(True)
-
-    def searchByReference(self, bible, search):
-        log.debug(u'searchByReference %s, %s', bible, search)
-        self.search_results = self.parent.manager.get_verses(bible, search)
