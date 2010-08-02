@@ -35,7 +35,7 @@ import uuid
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import build_icon, resize_image
+from openlp.core.lib import build_icon, resize_image, Receiver
 
 log = logging.getLogger(__name__)
 
@@ -390,3 +390,14 @@ class ServiceItem(object):
         Clear's the service item's cache.
         """
         self.cache = {}
+
+    def trigger_song_usage(self):
+        """
+        Send the audit data if it exists
+        """
+        if self.audit:
+            Receiver.send_message(u'songs_live_started', self.audit)
+
+
+
+

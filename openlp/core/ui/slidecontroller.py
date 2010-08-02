@@ -602,6 +602,8 @@ class SlideController(QtGui.QWidget):
         self.enableToolBar(serviceItem)
         self.onSlideSelected()
         self.PreviewListWidget.setFocus()
+        if self.isLive:
+            self.serviceItem.trigger_song_usage()
         Receiver.send_message(u'slidecontroller_%s_started' % self.typePrefix,
             [serviceItem])
         if self.serviceItem.is_text():

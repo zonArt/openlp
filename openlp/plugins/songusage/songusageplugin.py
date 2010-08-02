@@ -133,11 +133,10 @@ class SongUsagePlugin(Plugin):
         QtCore.QSettings().setValue(self.settingsSection + u'/active',
             QtCore.QVariant(self.SongUsageActive))
 
-    def onReceiveSongUsage(self, items):
+    def onReceiveSongUsage(self, audit):
         """
-        SongUsage a live song from SlideController
+        Song Usage for live song from SlideController
         """
-        audit = items[0].audit
         if self.SongUsageActive and audit:
             song_usage_item = SongUsageItem()
             song_usage_item.usagedate = datetime.today()
