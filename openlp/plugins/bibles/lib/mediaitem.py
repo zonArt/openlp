@@ -474,34 +474,11 @@ class BibleMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.AllowsLoop)
         service_item.add_capability(ItemCapabilities.AllowsAdditions)
         # If we want to use a 2nd translation / version.
-        bible2 = u''
-        if self.SearchTabWidget.currentIndex() == 0:
-            bible2 = unicode(self.QuickSecondBibleComboBox.currentText())
-        else:
-            bible2 = unicode(self.AdvancedSecondBibleComboBox.currentText())
         if bible2:
             bible2_verses = []
             for scripture in self.lastReference:
                 bible2_verses.extend(self.parent.manager.get_verses(bible2,
                     scripture))
-            bible2_version = self.parent.manager.get_meta_data(bible2,
-                u'Version')
-            bible2_copyright = self.parent.manager.get_meta_data(bible2,
-                u'Copyright')
-            bible2_permission = self.parent.manager.get_meta_data(bible2,
-                u'Permissions')
-            if bible2_version:
-                bible2_version = bible2_version.value
-            else:
-                bible2_version = u''
-            if bible2_copyright:
-                bible2_copyright = bible2_copyright.value
-            else:
-                bible2_copyright = u''
-            if bible2_permission:
-                bible2_permission = bible2_permission.value
-            else:
-                bible2_permission = u''
         # Let's loop through the main lot, and assemble our verses.
         for item in items:
             bitem = self.listView.item(item.row())
@@ -516,6 +493,14 @@ class BibleMediaItem(MediaManagerItem):
             version = self._decodeQtObject(reference, 'version')
             copyright = self._decodeQtObject(reference, 'copyright')
             #permission = self._decodeQtObject(reference, 'permission')
+            bible2 = self._decodeQtObject(reference, 'bible2')
+            if bible2:
+                bible2_version = self._decodeQtObject(reference,
+                    'bible2_version')
+                bible2_copyright = self._decodeQtObject(reference,
+                    'bible2_copyright')
+                #bible2_permission = self._decodeQtObject(reference,
+                #    'bible2_permission')
             if self.parent.settings_tab.display_style == 1:
                 verse_text = self.formatVerse(old_chapter, chapter, verse,
                     u'(', u')')
@@ -636,32 +621,48 @@ class BibleMediaItem(MediaManagerItem):
         copyright = self.parent.manager.get_meta_data(bible, u'Copyright')
         permission = self.parent.manager.get_meta_data(bible, u'Permissions')
         if bible2:
-            bible2_version = self.parent.manager.get_meta_data(bible2, u'Version')
-            if bible2_version:
-                bible2_version = bible2_version.value
+            bible2_version = self.parent.manager.get_meta_data(bible2,
+                u'Version')
+            bible2_copyright = self.parent.manager.get_meta_data(bible2,
+                u'Copyright')
+            bible2_permission = self.parent.manager.get_meta_data(bible2,
+                u'Permissions')
+            if bible2_permission:
+                bible2_permission = bible2_permission.value
             else:
-                bible2_version = u''
-        if version:
-            version = version.value
-        else:
-            version = u''
+                bible2_permission = u''
         for count, verse in enumerate(self.search_results):
-            vdict = {
-                'bible': QtCore.QVariant(bible),
-                'version': QtCore.QVariant(version),
-                'copyright': QtCore.QVariant(copyright.value),
-                'permission': QtCore.QVariant(permission.value),
-                'book': QtCore.QVariant(verse.book.name),
-                'chapter': QtCore.QVariant(verse.chapter),
-                'verse': QtCore.QVariant(verse.verse),
-                'text': QtCore.QVariant(verse.text)
-            }
             if bible2:
+                vdict = {
+                    'bible': QtCore.QVariant(bible),
+                    'version': QtCore.QVariant(version.value),
+                    'copyright': QtCore.QVariant(copyright.value),
+                    'permission': QtCore.QVariant(permission.value),
+                    'bible2': QtCore.QVariant(bible2),
+                    'bible2_version': QtCore.QVariant(bible2_version.value),
+                    'bible2_copyright': QtCore.QVariant(bible2_copyright.value),
+                    'bible2_permission': QtCore.QVariant(bible2_permission),
+                    'book': QtCore.QVariant(verse.book.name),
+                    'chapter': QtCore.QVariant(verse.chapter),
+                    'verse': QtCore.QVariant(verse.verse),
+                    'text': QtCore.QVariant(verse.text)
+                }
                 bible_text = u' %s %d:%d (%s, %s)' % (verse.book.name,
-                    verse.chapter, verse.verse, version, bible2_version)
+                    verse.chapter, verse.verse, version.value, bible2_version.value)
             else:
+                vdict = {
+                    'bible': QtCore.QVariant(bible),
+                    'version': QtCore.QVariant(version.value),
+                    'copyright': QtCore.QVariant(copyright.value),
+                    'permission': QtCore.QVariant(permission.value),
+                    'bible2': QtCore.QVariant(bible2),
+                    'book': QtCore.QVariant(verse.book.name),
+                    'chapter': QtCore.QVariant(verse.chapter),
+                    'verse': QtCore.QVariant(verse.verse),
+                    'text': QtCore.QVariant(verse.text)
+                }
                 bible_text = u' %s %d:%d (%s)' % (verse.book.name,
-                    verse.chapter, verse.verse, bible)
+                    verse.chapter, verse.verse, version.value)
             bible_verse = QtGui.QListWidgetItem(bible_text)
             #bible_verse.setData(QtCore.Qt.UserRole,
             #    QtCore.QVariant(bible_text))
