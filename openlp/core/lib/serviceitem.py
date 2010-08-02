@@ -397,7 +397,3 @@ class ServiceItem(object):
         """
         if self.audit:
             Receiver.send_message(u'songs_live_started', self.audit)
-
-
-
-
