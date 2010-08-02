@@ -38,6 +38,8 @@ class GeneralTab(SettingsTab):
         """
         self.screens = screens
         self.monitorNumber = 0
+        # Set to True to allow PostSetup to work on application start up
+        self.overrideChanged = True
         SettingsTab.__init__(self, u'General')
 
     def preLoad(self):
@@ -413,7 +415,6 @@ class GeneralTab(SettingsTab):
         self.customYValueEdit.setEnabled(self.overrideCheckBox.isChecked())
         self.customHeightValueEdit.setEnabled(self.overrideCheckBox.isChecked())
         self.customWidthValueEdit.setEnabled(self.overrideCheckBox.isChecked())
-        self.overrideChanged = False
 
     def save(self):
         """
@@ -457,7 +458,7 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(self.overrideCheckBox.isChecked()))
         settings.endGroup()
         self.screens.display = self.displayOnMonitorCheck.isChecked()
-        #Monitor Number has changed.
+        # Monitor Number has changed.
         if self.screens.monitor_number != self.monitorNumber:
             self.screens.monitor_number = self.monitorNumber
             self.screens.set_current_display(self.monitorNumber)
@@ -473,16 +474,18 @@ class GeneralTab(SettingsTab):
         Receiver.send_message(u'slidecontroller_live_spin_delay',
             self.timeoutSpinBox.value())
         # Reset screens after initial definition
-        self.screens.override[u'size'] = QtCore.QRect(
-            int(self.customXValueEdit.text()),
-            int(self.customYValueEdit.text()),
-            int(self.customWidthValueEdit.text()),
-            int(self.customHeightValueEdit.text()))
-        if self.overrideCheckBox.isChecked():
-            self.screens.set_override_display()
-            Receiver.send_message(u'config_screen_changed')
-        else:
-            self.screens.reset_current_display()
+        if self.overrideChanged:
+            self.screens.override[u'size'] = QtCore.QRect(
+                int(self.customXValueEdit.text()),
+                int(self.customYValueEdit.text()),
+                int(self.customWidthValueEdit.text()),
+                int(self.customHeightValueEdit.text()))
+            if self.overrideCheckBox.isChecked():
+                self.screens.set_override_display()
+                Receiver.send_message(u'config_screen_changed')
+            else:
+                self.screens.reset_current_display()
+                Receiver.send_message(u'config_screen_changed')
 
     def onOverrideCheckBoxToggled(self, checked):
         """
