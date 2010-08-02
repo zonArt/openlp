@@ -95,7 +95,7 @@ class ServiceItem(object):
         self.icon = None
 
     def _new_item(self):
-        self._uuid =unicode(uuid.uuid1())
+        self._uuid = unicode(uuid.uuid1())
 
     def add_capability(self, capability):
         """
