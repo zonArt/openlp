@@ -370,6 +370,6 @@ class SongMediaItem(MediaManagerItem):
             translate('SongsPlugin.MediaItem', 'CCLI Licence: ') + ccli))
         service_item.raw_footer = raw_footer
         service_item.audit = [
-            song.title, author_audit, song.copyright, song.ccli_number
+            song.title, author_audit, song.copyright, unicode(ccli)
         ]
         return True
