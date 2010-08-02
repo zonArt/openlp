@@ -99,6 +99,7 @@ class SlideController(QtGui.QWidget):
         self.songEditList = [
             u'Edit Song',
         ]
+        self.volume = 10
         self.timer_id = 0
         self.songEdit = False
         self.selectedRow = 0
@@ -261,6 +262,15 @@ class SlideController(QtGui.QWidget):
             self.volumeSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
             self.volumeSlider.setObjectName(u'volumeSlider')
             self.Mediabar.addToolbarWidget(u'Audio Volume', self.volumeSlider)
+        else:
+            self.volumeSlider = QtGui.QSlider(QtCore.Qt.Horizontal)
+            self.volumeSlider.setTickInterval(1)
+            self.volumeSlider.setTickPosition(QtGui.QSlider.TicksAbove)
+            self.volumeSlider.setMinimum(0)
+            self.volumeSlider.setMaximum(10)
+            self.volumeSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
+            self.volumeSlider.setObjectName(u'volumeSlider')
+            self.Mediabar.addToolbarWidget(u'Audio Volume', self.volumeSlider)
         self.ControllerLayout.addWidget(self.Mediabar)
         # Build the Song Toolbar
         if isLive:
@@ -379,6 +389,9 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'config_screen_changed'), self.screenSizeChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_slide_cache' % self.typePrefix), self.slideCache)
+        if self.isLive:
+            QtCore.QObject.connect(self.volumeSlider,
+                QtCore.SIGNAL(u'sliderReleased()'), self.mediaVolume)
 
     def screenSizeChanged(self):
         """
@@ -925,6 +938,7 @@ class SlideController(QtGui.QWidget):
         if self.isLive:
             file = os.path.join(item.get_frame_path(), item.get_frame_title())
             self.display.video(file)
+            self.volumeSlider.setValue(self.volume)
         else:
             self.mediaObject.stop()
             self.mediaObject.clearQueue()
@@ -933,6 +947,14 @@ class SlideController(QtGui.QWidget):
             self.seekSlider.setMediaObject(self.mediaObject)
             self.seekSlider.show()
             self.onMediaPlay()
+
+    def mediaVolume(self):
+        """
+        Respond to the release of Volume Slider
+        """
+        log.debug(u'SlideController mediaVolume')
+        self.volume = self.volumeSlider.value()
+        self.display.videoVolume(self.volume)
 
     def onMediaPause(self):
         """

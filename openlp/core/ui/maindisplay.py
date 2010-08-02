@@ -197,23 +197,40 @@ class MainDisplay(DisplayWidget):
             u'src', unicode(u'data:image/png;base64,%s' % image_to_byte(image)))
 
     def resetImage(self):
+        """
+        Reset the backgound image to the service item image.
+        Used after Image plugin has changed the background
+        """
         log.debug(u'resetImage')
         self.frame.findFirstElement(u'img').setAttribute(
             u'src', unicode(u'data:image/png;base64,%s' % image_to_byte(self.serviceItem.bg_frame)))
 
     def resetVideo(self):
+        """
+        Reset the backgound image to the service item image.
+        Used after Video plugin has changed the background
+        """
         log.debug(u'resetVideo')
         self.frame.findFirstElement('img').setAttribute(u'src',u'display: none;' )
 
     def videoPlay(self):
+        """
+        Responds to the request to play a loaded video
+        """
         log.debug(u'videoPlay')
         self.frame.evaluateJavaScript("document.getElementById('video').play()")
 
     def videoPause(self):
+        """
+        Responds to the request to pause a loaded video
+        """
         log.debug(u'videoPause')
         self.frame.evaluateJavaScript("document.getElementById('video').pause()")
 
     def videoStop(self):
+        """
+        Responds to the request to stop a loaded video
+        """
         log.debug(u'videoStop')
         self.frame.evaluateJavaScript("document.getElementById('video').pause()")
         self.frame.evaluateJavaScript(
@@ -222,10 +239,16 @@ class MainDisplay(DisplayWidget):
             "document.getElementById('image').style.visibility = 'visible'")
 
     def videoVolume(self, amount):
+        """
+        Changes the volume of a running video
+        """
         log.debug(u'videoVolume')
         self.frame.evaluateJavaScript("document.getElementById('video').volume = 0")
 
     def video(self, videoPath, noSound=False):
+        """
+        Loads and starts a video to run with the option of sound
+        """
         log.debug(u'video')
         self.frame.findFirstElement('video').setAttribute('src', videoPath)
         self.frame.evaluateJavaScript(
@@ -243,6 +266,9 @@ class MainDisplay(DisplayWidget):
         self.loaded = True
 
     def preview(self):
+        """
+        Generates a preview of the image displayed.
+        """
         log.debug(u'preview')
         # Wait for the webview to update before geting the preview.
         # Important otherwise first preview will miss the background !
