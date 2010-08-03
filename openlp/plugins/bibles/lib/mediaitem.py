@@ -466,20 +466,14 @@ class BibleMediaItem(MediaManagerItem):
         items = self.listView.selectedIndexes()
         if len(items) == 0:
             return False
-        old_chapter = u''
-        raw_slides = []
-        raw_footer = []
         bible_text = u''
+        old_chapter = u''
+        raw_footer = []
+        raw_slides = []
+        bible2_verses = []
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
         service_item.add_capability(ItemCapabilities.AllowsAdditions)
-        # If we want to use a 2nd translation / version.
-        if bible2:
-            bible2_verses = []
-            for scripture in self.lastReference:
-                bible2_verses.extend(self.parent.manager.get_verses(bible2,
-                    scripture))
-        # Let's loop through the main lot, and assemble our verses.
         for item in items:
             bitem = self.listView.item(item.row())
             reference = bitem.data(QtCore.Qt.UserRole)
@@ -501,6 +495,11 @@ class BibleMediaItem(MediaManagerItem):
                     'bible2_copyright')
                 #bible2_permission = self._decodeQtObject(reference,
                 #    'bible2_permission')
+                for scripture in self.lastReference:
+                    bible2_verses.extend(self.parent.manager.get_verses(bible2,
+                        scripture))
+                log.debug(u'aaaaaaaaa')
+                log.debug(bible2_verses)
             if self.parent.settings_tab.display_style == 1:
                 verse_text = self.formatVerse(old_chapter, chapter, verse,
                     u'(', u')')
@@ -631,6 +630,8 @@ class BibleMediaItem(MediaManagerItem):
                 bible2_permission = bible2_permission.value
             else:
                 bible2_permission = u''
+        # We count the number of rows which are maybe already present.
+        start_count = self.listView.count()
         for count, verse in enumerate(self.search_results):
             if bible2:
                 vdict = {
@@ -668,6 +669,6 @@ class BibleMediaItem(MediaManagerItem):
             #    QtCore.QVariant(bible_text))
             bible_verse.setData(QtCore.Qt.UserRole, QtCore.QVariant(vdict))
             self.listView.addItem(bible_verse)
-            row = self.listView.setCurrentRow(count)
+            row = self.listView.setCurrentRow(count + start_count)
             if row:
                 row.setSelected(True)
