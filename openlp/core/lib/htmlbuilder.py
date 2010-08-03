@@ -341,7 +341,7 @@ def build_alert(width, height, alertTab):
         Details from the Alert tab for fonts etc
     """
     style = """
-    .alertcommon { position: absolute; z-index:8; left 0px; top 0px; %s }
+    .alerttable { position: absolute; z-index:8; left 0px; top 0px; %s }
     .alert { %s }
     table {border=0; margin=0; padding=0; }
      """
