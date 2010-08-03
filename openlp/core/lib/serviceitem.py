@@ -57,6 +57,7 @@ class ItemCapabilities(object):
     RequiresMedia = 4
     AllowsLoop = 5
     AllowsAdditions = 6
+    NoLineBreaks = 7
 
 class ServiceItem(object):
     """
@@ -140,6 +141,9 @@ class ServiceItem(object):
         log.debug(u'Render called')
         self._display_frames = []
         self.bg_frame = None
+        line_break = True
+        if self.is_capable(ItemCapabilities.NoLineBreaks):
+            line_break = False
         if self.service_item_type == ServiceItemType.Text:
             log.debug(u'Formatting slides')
             theme = None
@@ -151,7 +155,8 @@ class ServiceItem(object):
             self.themedata = self.render_manager.themedata
             for slide in self._raw_frames:
                 before = time.time()
-                formated = self.render_manager.format_slide(slide[u'raw_slide'])
+                formated = self.render_manager \
+                    .format_slide(slide[u'raw_slide'], line_break)
                 for page in formated:
                     self._display_frames.append(
                         {u'title': self.render_manager.clean(page),

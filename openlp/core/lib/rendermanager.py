@@ -210,7 +210,7 @@ class RenderManager(object):
         frame, raw_html = serviceItem.get_rendered_frame(0)
         return self.display.text(raw_html)
 
-    def format_slide(self, words):
+    def format_slide(self, words, line_break):
         """
         Calculate how much text can fit on a slide.
 
@@ -219,7 +219,7 @@ class RenderManager(object):
         """
         log.debug(u'format slide')
         self.build_text_rectangle(self.themedata)
-        return self.renderer.format_slide(words)
+        return self.renderer.format_slide(words, line_break)
 
 #    def generate_slide(self, main_text):
 #        """

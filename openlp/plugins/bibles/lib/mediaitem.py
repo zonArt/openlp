@@ -544,9 +544,11 @@ class BibleMediaItem(MediaManagerItem):
             else:
                 #Paragraph style force new line per verse
                 if self.parent.settings_tab.layout_style == 1:
-                    text = text + u'\n\n'
+                    text = text + u'\n'
                 else:
-                    text = text + u'\ngus   '
+                    # split the line but do not replace line breaks in renderer
+                    service_item.add_capability(ItemCapabilities.NoLineBreaks)
+                    text = text + u'\n'
                 bible_text = u'%s %s %s' % (bible_text, verse_text, text)
                 #if we are verse per slide then create slide
                 if self.parent.settings_tab.layout_style == 0:

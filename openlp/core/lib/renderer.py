@@ -138,7 +138,7 @@ class Renderer(object):
         if self.bg_frame is None:
             self._generate_background_frame()
 
-    def format_slide(self, words):
+    def format_slide(self, words, line_break):
         """
         Figure out how much text can appear on a slide, using the current
         theme settings.
@@ -147,6 +147,9 @@ class Renderer(object):
             The words to be fitted on the slide.
         """
         log.debug(u'format_slide - Start')
+        line_end = u''
+        if line_break:
+            line_end = u'<br>'
         words = words.replace(u'\r\n', u'\n')
         verses_text = words.split(u'\n')
         text = []
@@ -171,7 +174,7 @@ class Renderer(object):
         old_html_text = u''
         for line in text:
             # mark line ends
-            temp_text = temp_text + line + u'<br>'
+            temp_text = temp_text + line + line_end
             html_text = shell % temp_text
             doc.setHtml(html_text)
             #Text too long so gone to next mage
