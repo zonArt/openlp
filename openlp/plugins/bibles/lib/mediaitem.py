@@ -59,10 +59,10 @@ class BibleMediaItem(MediaManagerItem):
         self.pluginNameVisible = translate('BiblesPlugin.MediaItem', 'Bible')
         self.IconPath = u'songs/song'
         self.ListViewWithDnD_class = BibleListView
-        self.lastReference = []
         MediaManagerItem.__init__(self, parent, icon, title)
-        # place to store the search results
+        # place to store the search results for both bibles
         self.search_results = {}
+        self.search_results2 = {}
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'bibles_load_list'), self.reloadBibles)
 
@@ -387,7 +387,7 @@ class BibleMediaItem(MediaManagerItem):
         QtGui.QMessageBox.critical(self,
             translate('BiblesPlugin.MediaItem', 'No Book Found'),
             translate('BiblesPlugin.MediaItem',
-                'No matching book could be found in this Bible.'))
+            'No matching book could be found in this Bible.'))
 
     def onAdvancedVersionComboBox(self):
         self.initialiseBible(
@@ -432,10 +432,11 @@ class BibleMediaItem(MediaManagerItem):
         versetext = u'%s %s:%s-%s:%s' % (book, chapter_from, verse_from,
             chapter_to, verse_to)
         self.search_results = self.parent.manager.get_verses(bible, versetext)
+        if bible2:
+            self.search_results2 = self.parent.manager.get_verses(bible2,
+                versetext)
         if self.ClearAdvancedSearchComboBox.currentIndex() == 0:
             self.listView.clear()
-            self.lastReference = []
-        self.lastReference.append(versetext)
         self.displayResults(bible, bible2)
 
     def onAdvancedFromChapter(self):
@@ -455,9 +456,9 @@ class BibleMediaItem(MediaManagerItem):
         text = unicode(self.QuickSearchEdit.text())
         if self.ClearQuickSearchComboBox.currentIndex() == 0:
             self.listView.clear()
-            self.lastReference = []
-        self.lastReference.append(text)
         self.search_results = self.parent.manager.get_verses(bible, text)
+        if bible2:
+            self.search_results2 = self.parent.manager.get_verses(bible2, text)
         if self.search_results:
             self.displayResults(bible, bible2)
 
@@ -474,6 +475,7 @@ class BibleMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
         service_item.add_capability(ItemCapabilities.AllowsAdditions)
+        # Let's loop through the main lot, and assemble our verses.
         for item in items:
             bitem = self.listView.item(item.row())
             reference = bitem.data(QtCore.Qt.UserRole)
@@ -495,9 +497,7 @@ class BibleMediaItem(MediaManagerItem):
                     'bible2_copyright')
                 #bible2_permission = self._decodeQtObject(reference,
                 #    'bible2_permission')
-                for scripture in self.lastReference:
-                    bible2_verses.extend(self.parent.manager.get_verses(bible2,
-                        scripture))
+                text2 = self._decodeQtObject(reference, 'text2')
             if self.parent.settings_tab.display_style == 1:
                 verse_text = self.formatVerse(old_chapter, chapter, verse,
                     u'(', u')')
@@ -522,7 +522,7 @@ class BibleMediaItem(MediaManagerItem):
                 if footer not in raw_footer:
                     raw_footer.append(footer)
                 bible_text = u'%s %s \n\n %s %s' % (verse_text, text,
-                    verse_text, bible2_verses[item.row()].text)
+                    verse_text, text2)
                 raw_slides.append(bible_text)
                 bible_text = u''
             else:
@@ -534,17 +534,19 @@ class BibleMediaItem(MediaManagerItem):
                 if self.parent.settings_tab.layout_style == 0:
                     raw_slides.append(bible_text)
                     bible_text = u''
-            if not service_item.title:
-                if bible2:
-                    service_item.title = u'%s (%s, %s) %s' % (book, version,
-                        bible2_version, verse_text)
-                else:
-                    service_item.title = u'%s (%s) %s' % (book, version,
-                        verse_text)
-            elif service_item.title.find(
-                translate('BiblesPlugin.MediaItem', 'etc')) == -1:
-                service_item.title = u'%s, %s' % (service_item.title,
-                       translate('BiblesPlugin.MediaItem', 'etc'))
+        # service item title
+        if not service_item.title:
+            if bible2:
+                service_item.title = u'%s (%s, %s) %s' % (book, version,
+                    bible2_version, verse_text)
+            else:
+                service_item.title = u'%s (%s) %s' % (book, version,
+                    verse_text)
+        elif service_item.title.find(translate('BiblesPlugin.MediaItem',
+            'etc')) == -1:
+            service_item.title = u'%s, %s' % (service_item.title,
+                translate('BiblesPlugin.MediaItem', 'etc'))
+        # item theme
         if len(self.parent.settings_tab.bible_theme) == 0:
             service_item.theme = None
         else:
@@ -636,15 +638,16 @@ class BibleMediaItem(MediaManagerItem):
                     'bible': QtCore.QVariant(bible),
                     'version': QtCore.QVariant(version.value),
                     'copyright': QtCore.QVariant(copyright.value),
-                    'permission': QtCore.QVariant(permission.value),
+                    #'permission': QtCore.QVariant(permission.value),
                     'bible2': QtCore.QVariant(bible2),
                     'bible2_version': QtCore.QVariant(bible2_version.value),
                     'bible2_copyright': QtCore.QVariant(bible2_copyright.value),
-                    'bible2_permission': QtCore.QVariant(bible2_permission),
+                    #'bible2_permission': QtCore.QVariant(bible2_permission),
                     'book': QtCore.QVariant(verse.book.name),
                     'chapter': QtCore.QVariant(verse.chapter),
                     'verse': QtCore.QVariant(verse.verse),
-                    'text': QtCore.QVariant(verse.text)
+                    'text': QtCore.QVariant(verse.text),
+                    'text2': QtCore.QVariant(self.search_results2[count].text)
                 }
                 bible_text = u' %s %d:%d (%s, %s)' % (verse.book.name,
                     verse.chapter, verse.verse, version.value, bible2_version.value)
@@ -653,7 +656,7 @@ class BibleMediaItem(MediaManagerItem):
                     'bible': QtCore.QVariant(bible),
                     'version': QtCore.QVariant(version.value),
                     'copyright': QtCore.QVariant(copyright.value),
-                    'permission': QtCore.QVariant(permission.value),
+                    #'permission': QtCore.QVariant(permission.value),
                     'bible2': QtCore.QVariant(bible2),
                     'book': QtCore.QVariant(verse.book.name),
                     'chapter': QtCore.QVariant(verse.chapter),
