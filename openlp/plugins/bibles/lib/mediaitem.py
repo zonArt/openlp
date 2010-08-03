@@ -471,7 +471,6 @@ class BibleMediaItem(MediaManagerItem):
         old_chapter = u''
         raw_footer = []
         raw_slides = []
-        bible2_verses = []
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
         service_item.add_capability(ItemCapabilities.AllowsAdditions)
