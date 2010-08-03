@@ -294,7 +294,7 @@ class MainDisplay(DisplayWidget):
         log.debug(u'buildHtml')
         self.loaded = False
         self.serviceItem = serviceItem
-        html = build_html(self.serviceItem, self.screen, None)
+        html = build_html(self.serviceItem, self.screen, self.parent.alertTab)
         self.webView.setHtml(html)
         if serviceItem.footer and serviceItem.foot_text:
             self.frame.findFirstElement('div#footer').setInnerXml(serviceItem.foot_text)

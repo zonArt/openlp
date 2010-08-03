@@ -49,7 +49,7 @@ HTMLSRC = u"""
 
     function displayAlert(alert){
         var text1 = document.getElementById('alertmain');
-        text1.innerHTML = newtext;
+        text1.innerHTML = alert;
     }
 
     function startfade(newtext){
@@ -135,7 +135,7 @@ HTMLSRC = u"""
 <table class="lyricsshadowtable lyricscommon">
     <tr><td id="lyricsshadow2" class="lyricsshadow lyrics"></td></tr>
 </table>
-<table class="alerttable alertcommon">
+<table class="alerttable">
     <tr><td id="alertmain" class="alert"></td></tr>
 </table>
 <div id="footer" class="footer"></div>
@@ -341,26 +341,23 @@ def build_alert(width, height, alertTab):
         Details from the Alert tab for fonts etc
     """
     style = """
-    .alertcommon { position: absolute; %s }
-    .alerttable { z-index:8;  %s }
+    .alertcommon { position: absolute; z-index:8; left 0px; top 0px; %s }
     .alert { %s }
     table {border=0; margin=0; padding=0; }
      """
     alertcommon = u''
-    alerttable = u''
     valign = u''
     if alertTab:
         alertcommon = u'width: %spx; height: %spx; ' \
             u'font-family %s; font-size: %spx; color: %s; ' % \
             (width, height, alertTab.font_face, alertTab.font_size,
             alertTab.bg_color)
-        alerttable = u'left: %spx; top: %spx;' % (0, 0)
         if alertTab.location == 2:
             valign = u'vertical-align:bottom;'
         elif alertTab.location == 1:
             valign = u'vertical-align:middle;'
         else:
             valign = u'vertical-align:top;'
-    alert_html = style % (alertcommon, alerttable, valign)
+    alert_html = style % (alertcommon, valign)
     print alert_html
     return alert_html
