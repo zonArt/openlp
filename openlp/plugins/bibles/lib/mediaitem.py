@@ -498,8 +498,6 @@ class BibleMediaItem(MediaManagerItem):
                 for scripture in self.lastReference:
                     bible2_verses.extend(self.parent.manager.get_verses(bible2,
                         scripture))
-                log.debug(u'aaaaaaaaa')
-                log.debug(bible2_verses)
             if self.parent.settings_tab.display_style == 1:
                 verse_text = self.formatVerse(old_chapter, chapter, verse,
                     u'(', u')')
