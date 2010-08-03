@@ -167,7 +167,8 @@ def build_html(item, screen, alert):
                       build_alert(width, height, alert),
                       build_image(width, height),
                       build_blank(width, height),
-                      "true" if theme and theme.display_slideTransition else "false",
+                      "true" if theme and
+                        theme.display_slideTransition else "false",
                       build_image_src(item.bg_frame))
     return html
 
@@ -219,6 +220,12 @@ def build_image(width, height):
     return image % (width, height)
 
 def build_image_src(image):
+    """
+    Build display for the backgroung image
+
+    `image`
+        Image to be displayed
+    """
     image_src = """
     <img src="data:image/png;base64,%s">
     """
@@ -293,6 +300,12 @@ def build_lyrics(item):
     return lyrics_html
 
 def build_footer(item):
+    """
+    Build the display of the item footer
+
+    `item`
+        Service Item to be processed.
+    """
     lyrics = """
     #footer {position: absolute; %s z-index:5; %s; %s }
     """
@@ -312,18 +325,21 @@ def build_footer(item):
             align = u'align:center;'
         elif theme.display_horizontalAlign == 1:
             align = u'align:right;'
-        if theme.display_verticalAlign == 2:
-            valign = u'vertical-align:bottom;'
-        elif theme.display_verticalAlign == 1:
-            valign = u'vertical-align:middle;'
-        else:
-            valign = u'vertical-align:top;'
-        text = u'color:%s; %s %s' % (theme.font_footer_color, align, valign)
+        text = u'color:%s; %s ' % (theme.font_footer_color, align)
     lyrics_html = lyrics % (position, font, text)
     return lyrics_html
 
+def build_alert(width, height, alertTab):
+    """
+    Build the display of the footer
 
-def build_alert(width, height, alertTab):#
+    `width`
+        Screen Width
+    `height`
+        Screen height
+    `alertTab`
+        Details from the Alert tab for fonts etc
+    """
     style = """
     .alertcommon { position: absolute; %s }
     .alerttable { z-index:8;  %s }
