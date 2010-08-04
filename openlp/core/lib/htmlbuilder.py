@@ -47,9 +47,9 @@ HTMLSRC = u"""
     var t = null;
     var transition = %s;
 
-    function displayAlert(alert){
+    function displayAlert(alerttext){
         var text1 = document.getElementById('alertmain');
-        text1.innerHTML = alert;
+        text1.innerHTML = alerttext;
     }
 
     function startfade(newtext){
@@ -136,7 +136,9 @@ HTMLSRC = u"""
     <tr><td id="lyricsshadow2" class="lyricsshadow lyrics"></td></tr>
 </table>
 <table class="alerttable">
-    <tr><td id="alertmain" class="alert"></td></tr>
+    <tr><td class="alertcell">
+        <div class="alert" id="alertmain"></div>
+    </td></tr>
 </table>
 <div id="footer" class="footer"></div>
 <video id="video"></video>
@@ -342,22 +344,24 @@ def build_alert(width, height, alertTab):
     """
     style = """
     .alerttable { position: absolute; z-index:8; left 0px; top 0px; %s }
+    .alertcell { %s }
     .alert { %s }
-    table {border=0; margin=0; padding=0; }
      """
-    alertcommon = u''
-    valign = u''
+    alerttable = u''
+    alertcell = u''
+    alert = u''
     if alertTab:
-        alertcommon = u'width: %spx; height: %spx; ' \
-            u'font-family %s; font-size: %spx; color: %s; ' % \
-            (width, height, alertTab.font_face, alertTab.font_size,
-            alertTab.bg_color)
         if alertTab.location == 2:
-            valign = u'vertical-align:bottom;'
+            alertcell = u'vertical-align:bottom;'
         elif alertTab.location == 1:
-            valign = u'vertical-align:middle;'
+            alertcell = u'vertical-align:middle;'
         else:
-            valign = u'vertical-align:top;'
-    alert_html = style % (alertcommon, valign)
+            alertcell = u'vertical-align:top;'
+        alerttable = u'width: %spx; height: %spx; ' % (width, height)
+        alert = u'font-family %s; font-size: %spx; color: %s; ' \
+            u'background-color: %s' % \
+            (alertTab.font_face, alertTab.font_size, alertTab.font_color,
+            alertTab.bg_color)
+    alert_html = style % (alerttable, alertcell, alert)
     print alert_html
     return alert_html

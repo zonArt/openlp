@@ -32,15 +32,6 @@ from openlp.core.lib import Receiver, translate
 
 log = logging.getLogger(__name__)
 
-HTMLCODE = u"""
-   <p style=\"color:%s;
-   background-color:%s;
-   font-family:%s;
-   font-size: %spt; \">
-    %s
-    </p>
-"""
-
 class AlertsManager(QtCore.QObject):
     """
     AlertsTab is the Alerts settings tab in the settings dialog.
@@ -94,8 +85,6 @@ class AlertsManager(QtCore.QObject):
             return
         text = self.alertList.pop(0)
         alertTab = self.parent.alertsTab
-        text = HTMLCODE % (alertTab.font_color, alertTab.bg_color,
-                           alertTab.font_face, alertTab.font_size, text)
         self.parent.liveController.display.alert(text)
         # check to see if we have a timer running
         if self.timer_id == 0:

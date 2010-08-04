@@ -146,7 +146,7 @@ class MainDisplay(DisplayWidget):
                 splash_image)
             serviceItem = ServiceItem()
             serviceItem.bg_frame = initialFrame
-            self.webView.setHtml(build_html(serviceItem, self.screen, None))
+            self.webView.setHtml(build_html(serviceItem, self.screen, self.parent.alertTab))
             self.show()
             # To display or not to display?
             if not self.screen[u'primary']:
@@ -175,8 +175,10 @@ class MainDisplay(DisplayWidget):
             The slide text to be displayed
         """
         log.debug(u'alert')
-        self.frame.evaluateJavaScript("displayAlert('" +
-            text.replace("\\", "\\\\").replace("\'", "\\\'") + "')")
+        js = "displayAlert('" + \
+            text.replace("\\", "\\\\").replace("\'", "\\\'") + "')"
+        print js
+        self.frame.evaluateJavaScript(js)
 
     def image(self, image):
         """
