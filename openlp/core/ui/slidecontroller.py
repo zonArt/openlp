@@ -672,7 +672,7 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'mainDisplaySetBackground live = %s' % self.isLive)
         if not self.display.primary:
-            self.display.hideDisplay()
+            self.onHideDisplay(True)
 
     def onSlideBlank(self):
         """
@@ -937,7 +937,7 @@ class SlideController(QtGui.QWidget):
         log.debug(u'SlideController onMediaStart')
         if self.isLive:
             file = os.path.join(item.get_frame_path(), item.get_frame_title())
-            self.display.video(file)
+            self.display.video(file, self.volume)
             self.volumeSlider.setValue(self.volume)
         else:
             self.mediaObject.stop()
@@ -954,6 +954,7 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'SlideController mediaVolume')
         self.volume = self.volumeSlider.value()
+        print self.volume
         self.display.videoVolume(self.volume)
 
     def onMediaPause(self):

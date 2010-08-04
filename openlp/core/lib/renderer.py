@@ -293,59 +293,59 @@ class Renderer(object):
         Results are cached for performance reasons.
         """
         assert(self._theme)
-        if self._theme.background_mode == u'transparent':
-            self.bg_frame = \
-                QtGui.QPixmap(self.frame.width(), self.frame.height())
-            self.bg_frame.fill(QtCore.Qt.transparent)
-        else:
-            self.bg_frame = QtGui.QImage(self.frame.width(),
-                self.frame.height(), QtGui.QImage.Format_ARGB32_Premultiplied)
+#        if self._theme.background_mode == u'transparent':
+#            self.bg_frame = \
+#                QtGui.QPixmap(self.frame.width(), self.frame.height())
+#            self.bg_frame.fill(QtCore.Qt.transparent)
+#        else:
+        self.bg_frame = QtGui.QImage(self.frame.width(),
+            self.frame.height(), QtGui.QImage.Format_ARGB32_Premultiplied)
         log.debug(u'render background %s start', self._theme.background_type)
         painter = QtGui.QPainter()
         painter.begin(self.bg_frame)
-        if self._theme.background_mode == u'transparent':
-            painter.fillRect(self.frame.rect(), QtCore.Qt.transparent)
-        else:
-            if self._theme.background_type == u'solid':
-                painter.fillRect(self.frame.rect(),
-                    QtGui.QColor(self._theme.background_color))
-            elif self._theme.background_type == u'gradient':
-                # gradient
-                gradient = None
-                if self._theme.background_direction == u'horizontal':
-                    w = int(self.frame.width()) / 2
-                    # vertical
-                    gradient = QtGui.QLinearGradient(w, 0, w,
-                        self.frame.height())
-                elif self._theme.background_direction == u'vertical':
-                    h = int(self.frame.height()) / 2
-                    # Horizontal
-                    gradient = QtGui.QLinearGradient(0, h, self.frame.width(),
-                        h)
-                else:
-                    w = int(self.frame.width()) / 2
-                    h = int(self.frame.height()) / 2
-                    # Circular
-                    gradient = QtGui.QRadialGradient(w, h, w)
-                gradient.setColorAt(0,
-                    QtGui.QColor(self._theme.background_startColor))
-                gradient.setColorAt(1,
-                    QtGui.QColor(self._theme.background_endColor))
-                painter.setBrush(QtGui.QBrush(gradient))
-                rect_path = QtGui.QPainterPath()
-                max_x = self.frame.width()
-                max_y = self.frame.height()
-                rect_path.moveTo(0, 0)
-                rect_path.lineTo(0, max_y)
-                rect_path.lineTo(max_x, max_y)
-                rect_path.lineTo(max_x, 0)
-                rect_path.closeSubpath()
-                painter.drawPath(rect_path)
-            elif self._theme.background_type == u'image':
-                # image
-                painter.fillRect(self.frame.rect(), QtCore.Qt.black)
-                if self.bg_image:
-                    painter.drawImage(0, 0, self.bg_image)
+#        if self._theme.background_mode == u'transparent':
+#            painter.fillRect(self.frame.rect(), QtCore.Qt.transparent)
+#        else:
+        if self._theme.background_type == u'solid':
+            painter.fillRect(self.frame.rect(),
+                QtGui.QColor(self._theme.background_color))
+        elif self._theme.background_type == u'gradient':
+            # gradient
+            gradient = None
+            if self._theme.background_direction == u'horizontal':
+                w = int(self.frame.width()) / 2
+                # vertical
+                gradient = QtGui.QLinearGradient(w, 0, w,
+                    self.frame.height())
+            elif self._theme.background_direction == u'vertical':
+                h = int(self.frame.height()) / 2
+                # Horizontal
+                gradient = QtGui.QLinearGradient(0, h, self.frame.width(),
+                    h)
+            else:
+                w = int(self.frame.width()) / 2
+                h = int(self.frame.height()) / 2
+                # Circular
+                gradient = QtGui.QRadialGradient(w, h, w)
+            gradient.setColorAt(0,
+                QtGui.QColor(self._theme.background_startColor))
+            gradient.setColorAt(1,
+                QtGui.QColor(self._theme.background_endColor))
+            painter.setBrush(QtGui.QBrush(gradient))
+            rect_path = QtGui.QPainterPath()
+            max_x = self.frame.width()
+            max_y = self.frame.height()
+            rect_path.moveTo(0, 0)
+            rect_path.lineTo(0, max_y)
+            rect_path.lineTo(max_x, max_y)
+            rect_path.lineTo(max_x, 0)
+            rect_path.closeSubpath()
+            painter.drawPath(rect_path)
+        elif self._theme.background_type == u'image':
+            # image
+            painter.fillRect(self.frame.rect(), QtCore.Qt.black)
+            if self.bg_image:
+                painter.drawImage(0, 0, self.bg_image)
         painter.end()
         log.debug(u'render background End')
 

@@ -175,10 +175,8 @@ class MainDisplay(DisplayWidget):
             The slide text to be displayed
         """
         log.debug(u'alert')
-        js = "displayAlert('" + \
-            text.replace("\\", "\\\\").replace("\'", "\\\'") + "')"
-        print js
-        self.frame.evaluateJavaScript(js)
+        self.frame.evaluateJavaScript( "displayAlert('" + \
+            text.replace("\\", "\\\\").replace("\'", "\\\'") + "')")
 
     def image(self, image):
         """
@@ -240,14 +238,16 @@ class MainDisplay(DisplayWidget):
         self.frame.evaluateJavaScript(
             "document.getElementById('image').style.visibility = 'visible'")
 
-    def videoVolume(self, amount):
+    def videoVolume(self, volume):
         """
         Changes the volume of a running video
         """
-        log.debug(u'videoVolume')
-        self.frame.evaluateJavaScript("document.getElementById('video').volume = 0")
+        log.debug(u'videoVolume %d' % volume)
+        self.frame.evaluateJavaScript(
+            "document.getElementById('video').volume = %s" %
+            str(float(volume)/float(10)))
 
-    def video(self, videoPath, noSound=False):
+    def video(self, videoPath, volume):
         """
         Loads and starts a video to run with the option of sound
         """
@@ -258,8 +258,7 @@ class MainDisplay(DisplayWidget):
         self.frame.evaluateJavaScript(
             "document.getElementById('image').style.visibility = 'hidden'")
         self.videoPlay()
-        if noSound:
-            self.videoVolume(0)
+        self.videoVolume(volume)
 
     def loaded(self):
         """
