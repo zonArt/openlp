@@ -30,7 +30,8 @@ import os
 from PyQt4 import QtCore, QtGui, QtWebKit
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import Receiver, resize_image, build_html, ServiceItem, image_to_byte
+from openlp.core.lib import Receiver, resize_image, build_html, ServiceItem, \
+image_to_byte
 from openlp.core.ui import HideMode
 
 log = logging.getLogger(__name__)
@@ -107,7 +108,8 @@ class MainDisplay(DisplayWidget):
         self.setVisible(False)
         self.setGeometry(self.screen[u'size'])
         self.webView = QtWebKit.QWebView(self)
-        self.webView.setGeometry(0, 0, self.screen[u'size'].width(), self.screen[u'size'].height())
+        self.webView.setGeometry(0, 0, self.screen[u'size'].width(), \
+            self.screen[u'size'].height())
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
         QtCore.QObject.connect(self.webView,
@@ -135,12 +137,15 @@ class MainDisplay(DisplayWidget):
             painter_image.begin(initialFrame)
             painter_image.fillRect(initialFrame.rect(), QtCore.Qt.white)
             painter_image.drawImage(
-                (self.screens.current[u'size'].width() - splash_image.width()) / 2,
-                (self.screens.current[u'size'].height() - splash_image.height()) / 2,
+                (self.screens.current[u'size'].width() \
+                    - splash_image.width()) / 2,
+                (self.screens.current[u'size'].height() \
+                    - splash_image.height()) / 2,
                 splash_image)
             serviceItem = ServiceItem()
             serviceItem.bg_frame = initialFrame
-            self.webView.setHtml(build_html(serviceItem, self.screen, self.parent.alertTab))
+            self.webView.setHtml(build_html(serviceItem, self.screen, \
+                self.parent.alertTab))
             self.initialFrame = True
             self.show()
             # To display or not to display?
@@ -157,7 +162,6 @@ class MainDisplay(DisplayWidget):
             The slide text to be displayed
         """
         log.debug(u'text')
-        print slide
         self.frame.evaluateJavaScript("startfade('" +
             slide.replace("\\", "\\\\").replace("\'", "\\\'") + "')")
         return self.preview()
@@ -186,8 +190,6 @@ class MainDisplay(DisplayWidget):
             self.screen[u'size'].height())
         self.frame.evaluateJavaScript(
             "document.getElementById('video').style.visibility = 'hidden'")
-#        self.frame.evaluateJavaScript(
-#            "document.getElementById('image').style.visibility = 'visible'")
         self.frame.findFirstElement(u'img').setAttribute(
             u'src', unicode(u'data:image/png;base64,%s' % image_to_byte(image)))
 
@@ -198,7 +200,8 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'resetImage')
         self.frame.findFirstElement(u'img').setAttribute(
-            u'src', unicode(u'data:image/png;base64,%s' % image_to_byte(self.serviceItem.bg_frame)))
+            u'src', unicode(u'data:image/png;base64,%s' % \
+                image_to_byte(self.serviceItem.bg_frame)))
 
     def resetVideo(self):
         """
@@ -231,8 +234,6 @@ class MainDisplay(DisplayWidget):
         self.frame.evaluateJavaScript("document.getElementById('video').pause()")
         self.frame.evaluateJavaScript(
             "document.getElementById('video').style.visibility = 'hidden'")
-#        self.frame.evaluateJavaScript(
-#            "document.getElementById('image').style.visibility = 'visible'")
 
     def videoVolume(self, volume):
         """
@@ -251,8 +252,6 @@ class MainDisplay(DisplayWidget):
         self.frame.findFirstElement('video').setAttribute('src', videoPath)
         self.frame.evaluateJavaScript(
             "document.getElementById('video').style.visibility = 'visible'")
-#        self.frame.evaluateJavaScript(
-#            "document.getElementById('image').style.visibility = 'hidden'")
         self.videoPlay()
         self.videoVolume(volume)
         return self.preview()
@@ -372,9 +371,9 @@ class AudioPlayer(QtCore.QObject):
         Set up a video to play from the serviceitem.
         """
         log.debug(u'AudioPlayer Queue new media message %s' % message)
-        file = os.path.join(message[0].get_frame_path(),
+        mfile = os.path.join(message[0].get_frame_path(),
             message[0].get_frame_title())
-        self.mediaObject.setCurrentSource(Phonon.MediaSource(file))
+        self.mediaObject.setCurrentSource(Phonon.MediaSource(mfile))
         self.onMediaPlay()
 
     def onMediaPlay(self):
