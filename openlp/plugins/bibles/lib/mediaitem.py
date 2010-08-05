@@ -468,7 +468,8 @@ class BibleMediaItem(MediaManagerItem):
         '''
         log.debug(u'generating slide data')
         items = self.listView.selectedIndexes()
-        if len(items) == 0:
+        items_length = len(items)
+        if items_length == 0:
             return False
         bible_text = u''
         old_chapter = u''
@@ -486,7 +487,7 @@ class BibleMediaItem(MediaManagerItem):
             book = self._decodeQtObject(reference, 'book')
             chapter = self._decodeQtObject(reference, 'chapter')
             verse = self._decodeQtObject(reference, 'verse')
-            #bible = self._decodeQtObject(reference, 'bible')
+            bible = self._decodeQtObject(reference, 'bible')
             version = self._decodeQtObject(reference, 'version')
             copyright = self._decodeQtObject(reference, 'copyright')
             #permission = self._decodeQtObject(reference, 'permission')
@@ -528,17 +529,33 @@ class BibleMediaItem(MediaManagerItem):
                 raw_slides.append(bible_text)
                 bible_text = u''
             else:
-                # Paragraph style force new line per verse
+                # If we are 'Verse Per Line' then force a new line.
                 if self.parent.settings_tab.layout_style == 1:
                     text = text + u'\n\n'
                 bible_text = u'%s %s %s' % (bible_text, verse_text, text)
-                # if we are verse per slide then create slide
+                # If we are 'Verse Per Slide' then create a new slide.
                 if self.parent.settings_tab.layout_style == 0:
                     raw_slides.append(bible_text)
                     bible_text = u''
-        # if we are verse per slide we have already been added
-        if self.parent.settings_tab.layout_style != 0 and not bible2:
-            raw_slides.append(bible_text)
+                # If we are 'Verse Per Slide' we have already been added.
+                if self.parent.settings_tab.layout_style != 0 and not bible2:
+                    if item.row() < items_length - 1:
+                        log.debug(items.size())
+                        bitem = items[item.row() + 1]
+                        reference = bitem.data(QtCore.Qt.UserRole)
+                        if isinstance(reference, QtCore.QVariant):
+                            reference = reference.toPyObject()
+                        bible_new = self._decodeQtObject(reference, 'bible')
+                        bible2_new = self._decodeQtObject(reference, 'bible2')
+                        if bible2_new:
+                            raw_slides.append(bible_text)
+                            bible_text = u''
+                        elif bible != bible_new:
+                            raw_slides.append(bible_text)
+                            bible_text = u''
+                    else:
+                        raw_slides.append(bible_text)
+                        bible_text = u''
         # service item title
         if not service_item.title:
             if bible2:
@@ -643,7 +660,7 @@ class BibleMediaItem(MediaManagerItem):
                     'book':QtCore.QVariant(verse.book.name),
                     'chapter':QtCore.QVariant(verse.chapter),
                     'verse':QtCore.QVariant(verse.verse),
-                    #'bible':QtCore.QVariant(bible),
+                    'bible':QtCore.QVariant(bible),
                     'version':QtCore.QVariant(version.value),
                     'copyright':QtCore.QVariant(copyright.value),
                     #'permission':QtCore.QVariant(permission.value),
@@ -659,15 +676,15 @@ class BibleMediaItem(MediaManagerItem):
                     verse.chapter, verse.verse, version.value, bible2_version.value)
             else:
                 vdict = {
-                    'book': QtCore.QVariant(verse.book.name),
-                    'chapter': QtCore.QVariant(verse.chapter),
-                    'verse': QtCore.QVariant(verse.verse),
-                    #'bible': QtCore.QVariant(bible),
-                    'version': QtCore.QVariant(version.value),
-                    'copyright': QtCore.QVariant(copyright.value),
-                    #'permission': QtCore.QVariant(permission.value),
-                    'text': QtCore.QVariant(verse.text),
-                    'bible2': QtCore.QVariant(bible2)
+                    'book':QtCore.QVariant(verse.book.name),
+                    'chapter':QtCore.QVariant(verse.chapter),
+                    'verse':QtCore.QVariant(verse.verse),
+                    'bible':QtCore.QVariant(bible),
+                    'version':QtCore.QVariant(version.value),
+                    'copyright':QtCore.QVariant(copyright.value),
+                    #'permission':QtCore.QVariant(permission.value),
+                    'text':QtCore.QVariant(verse.text),
+                    'bible2':QtCore.QVariant(bible2)
                 }
                 bible_text = u' %s %d:%d (%s)' % (verse.book.name,
                     verse.chapter, verse.verse, version.value)
