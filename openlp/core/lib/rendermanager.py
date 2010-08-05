@@ -84,6 +84,8 @@ class RenderManager(object):
         """
         log.debug(u'Update Display')
         self.calculate_default(self.screens.current[u'size'])
+        self.display = MainDisplay(self, self.screens, False)
+        self.display.setup()
         self.renderer.bg_frame = None
 
     def set_global_theme(self, global_theme, theme_level=ThemeLevel.Global):

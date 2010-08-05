@@ -275,6 +275,7 @@ class MainDisplay(DisplayWidget):
         preview = QtGui.QImage(self.screen[u'size'].width(),
             self.screen[u'size'].height(),
             QtGui.QImage.Format_ARGB32_Premultiplied)
+        print self.screen
         painter = QtGui.QPainter(preview)
         painter.setRenderHint(QtGui.QPainter.Antialiasing)
         self.frame.render(painter)
