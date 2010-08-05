@@ -77,7 +77,7 @@ class DisplayWidget(QtGui.QGraphicsView):
                 Receiver.send_message(self.hotkey_map[event.key()])
                 event.accept()
             elif event.key() == QtCore.Qt.Key_Escape:
-                self.resetDisplay()
+                self.setVisible(False)
                 event.accept()
             event.ignore()
         else:
@@ -99,12 +99,6 @@ class MainDisplay(DisplayWidget):
                 QtCore.SIGNAL(u'maindisplay_hide'), self.hideDisplay)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
-##        QtCore.QObject.connect(Receiver.get_receiver(),
-##            QtCore.SIGNAL(u'videodisplay_start'), self.onStartVideo)
-##        QtCore.QObject.connect(Receiver.get_receiver(),
-##            QtCore.SIGNAL(u'videodisplay_stop'), self.onStopVideo)
-##        QtCore.QObject.connect(Receiver.get_receiver(),
-##            QtCore.SIGNAL(u'config_updated'), self.setup)
 
     def setup(self):
         log.debug(u'Setup %s for %s ' % (
@@ -147,6 +141,7 @@ class MainDisplay(DisplayWidget):
             serviceItem = ServiceItem()
             serviceItem.bg_frame = initialFrame
             self.webView.setHtml(build_html(serviceItem, self.screen, self.parent.alertTab))
+            self.initialFrame = True
             self.show()
             # To display or not to display?
             if not self.screen[u'primary']:
@@ -294,6 +289,7 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'buildHtml')
         self.loaded = False
+        self.initialFrame = False
         self.serviceItem = serviceItem
         html = build_html(self.serviceItem, self.screen, self.parent.alertTab)
         self.webView.setHtml(html)
@@ -310,13 +306,9 @@ class MainDisplay(DisplayWidget):
             "document.getElementById('blank').style.visibility = 'visible'")
         if mode == HideMode.Screen:
             self.setVisible(False)
-        elif mode == HideMode.Blank:
+        elif mode == HideMode.Blank or self.initialFrame:
             self.frame.evaluateJavaScript('blankState("black");')
         else:
-            #if self.serviceItem:
-            #    self.displayBlank.setPixmap(QtGui.QPixmap.fromImage(
-            #        self.parent.renderManager.renderer.bg_frame))
-            #else:         
             self.frame.evaluateJavaScript('blankState("theme");')
         if mode != HideMode.Screen and self.isHidden():
             self.setVisible(True)
