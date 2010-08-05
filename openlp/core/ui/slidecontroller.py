@@ -694,7 +694,7 @@ class SlideController(QtGui.QWidget):
         self.HideMenu.setDefaultAction(self.BlankScreen)
         self.BlankScreen.setChecked(checked)
         self.ThemeScreen.setChecked(False)
-        self.DesktopScreen.setChecked(False)
+        #self.DesktopScreen.setChecked(False)
         QtCore.QSettings().setValue(
             self.parent.generalSettingsSection + u'/screen blank',
             QtCore.QVariant(checked))
@@ -712,7 +712,7 @@ class SlideController(QtGui.QWidget):
         self.HideMenu.setDefaultAction(self.ThemeScreen)
         self.BlankScreen.setChecked(False)
         self.ThemeScreen.setChecked(checked)
-        self.DesktopScreen.setChecked(False)
+        #self.DesktopScreen.setChecked(False)
         if checked:
             Receiver.send_message(u'maindisplay_hide', HideMode.Theme)
         else:
@@ -727,7 +727,7 @@ class SlideController(QtGui.QWidget):
         self.HideMenu.setDefaultAction(self.DesktopScreen)
         self.BlankScreen.setChecked(False)
         self.ThemeScreen.setChecked(False)
-        self.DesktopScreen.setChecked(checked)
+        #self.DesktopScreen.setChecked(checked)
         if checked:
             Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
         else:

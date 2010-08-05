@@ -311,17 +311,13 @@ class MainDisplay(DisplayWidget):
         if mode == HideMode.Screen:
             self.setVisible(False)
         elif mode == HideMode.Blank:
-            self.frame.findFirstElement('img').setAttribute(
-                'src', unicode('data:image/png;base64,%s' \
-                % image_to_byte(self.black)))
+            self.frame.evaluateJavaScript('blankState("black");')
         else:
-            if self.serviceItem:
-                self.displayBlank.setPixmap(QtGui.QPixmap.fromImage(
-                    self.parent.renderManager.renderer.bg_frame))
-            else:
-                self.frame.findFirstElement('img').setAttribute(
-                    'src', unicode('data:image/png;base64,%s' \
-                    % image_to_byte(self.black)))
+            #if self.serviceItem:
+            #    self.displayBlank.setPixmap(QtGui.QPixmap.fromImage(
+            #        self.parent.renderManager.renderer.bg_frame))
+            #else:         
+            self.frame.evaluateJavaScript('blankState("theme");')
         if mode != HideMode.Screen and self.isHidden():
             self.setVisible(True)
 
@@ -332,8 +328,7 @@ class MainDisplay(DisplayWidget):
         Make the stored images None to release memory.
         """
         log.debug(u'showDisplay')
-        self.frame.evaluateJavaScript(
-            "document.getElementById('blank').style.visibility = 'hidden'")
+        self.frame.evaluateJavaScript('blankState("show");')
         if self.isHidden():
             self.setVisible(True)
         # Trigger actions when display is active again

@@ -47,6 +47,24 @@ HTMLSRC = u"""
     var t = null;
     var transition = %s;
 
+    function blankState(state){
+        var black = 'none';
+        var lyrics = '';
+        switch(state){
+            case 'theme':
+                lyrics = 'none';
+                break;
+            case 'black':
+                black = 'inline';
+                break;   
+        }
+        document.getElementById('black').style.display = black;
+        document.getElementById('lyricsmain').style.display = lyrics;
+        document.getElementById('lyricsoutline').style.display = lyrics;
+        document.getElementById('lyricsshadow').style.display = lyrics;
+        document.getElementById('footer').style.display = lyrics;
+    }
+
     function displayAlert(alerttext){
         var text1 = document.getElementById('alertmain');
         text1.innerHTML = alerttext;
@@ -142,7 +160,7 @@ HTMLSRC = u"""
 </table>
 <div id="footer" class="footer"></div>
 <video id="video"></video>
-<blank id="blank"></blank>
+<div id="black"></div>
 %s
 </body>
 </html>
@@ -168,7 +186,7 @@ def build_html(item, screen, alert):
                       build_footer(item),
                       build_alert(width, height, alert),
                       build_image(width, height),
-                      build_blank(width, height),
+                      build_black(width, height),
                       "true" if theme and
                         theme.display_slideTransition else "false",
                       build_image_src(item.bg_frame))
@@ -189,21 +207,22 @@ def build_video(width, height):
     """
     return video % (width, height)
 
-def build_blank(width, height):
+def build_black(width, height):
     """
-    Build the blank display div
+    Build the black display div
 
     `width`
         Screen width
     `height`
         Screen height
     """
-    blank = """
-    #blank { position: absolute; left: 0px; top: 0px;
+    black = """
+    #black { position: absolute; left: 0px; top: 0px;
         width: %spx; height: %spx; z-index:10;
+        background-color: black; display: none;
     }
     """
-    return blank % (width, height)
+    return black % (width, height)
 
 def build_image(width, height):
     """
