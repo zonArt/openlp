@@ -162,11 +162,11 @@ class SlideController(QtGui.QWidget):
         sizeToolbarPolicy.setHeightForWidth(
             self.Toolbar.sizePolicy().hasHeightForWidth())
         self.Toolbar.setSizePolicy(sizeToolbarPolicy)
-        if self.isLive:
-            self.Toolbar.addToolbarButton(
-                u'First Slide', u':/slides/slide_first.png',
-                translate('OpenLP.SlideController', 'Move to first'),
-                self.onSlideSelectedFirst)
+#        if self.isLive:
+#            self.Toolbar.addToolbarButton(
+#                u'First Slide', u':/slides/slide_first.png',
+#                translate('OpenLP.SlideController', 'Move to first'),
+#                self.onSlideSelectedFirst)
         self.Toolbar.addToolbarButton(
             u'Previous Slide', u':/slides/slide_previous.png',
             translate('OpenLP.SlideController', 'Move to previous'),
@@ -175,11 +175,11 @@ class SlideController(QtGui.QWidget):
             u'Next Slide', u':/slides/slide_next.png',
             translate('OpenLP.SlideController', 'Move to next'),
             self.onSlideSelectedNext)
-        if self.isLive:
-            self.Toolbar.addToolbarButton(
-                u'Last Slide', u':/slides/slide_last.png',
-                translate('OpenLP.SlideController', 'Move to last'),
-                self.onSlideSelectedLast)
+#        if self.isLive:
+#            self.Toolbar.addToolbarButton(
+#                u'Last Slide', u':/slides/slide_last.png',
+#                translate('OpenLP.SlideController', 'Move to last'),
+#                self.onSlideSelectedLast)
         if self.isLive:
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.HideMenu = QtGui.QToolButton(self.Toolbar)
@@ -694,7 +694,8 @@ class SlideController(QtGui.QWidget):
         self.HideMenu.setDefaultAction(self.BlankScreen)
         self.BlankScreen.setChecked(checked)
         self.ThemeScreen.setChecked(False)
-        #self.DesktopScreen.setChecked(False)
+        if self.screens.display_count > 1:
+            self.DesktopScreen.setChecked(False)
         QtCore.QSettings().setValue(
             self.parent.generalSettingsSection + u'/screen blank',
             QtCore.QVariant(checked))
@@ -712,7 +713,8 @@ class SlideController(QtGui.QWidget):
         self.HideMenu.setDefaultAction(self.ThemeScreen)
         self.BlankScreen.setChecked(False)
         self.ThemeScreen.setChecked(checked)
-        #self.DesktopScreen.setChecked(False)
+        if self.screens.display_count > 1:
+            self.DesktopScreen.setChecked(False)
         if checked:
             Receiver.send_message(u'maindisplay_hide', HideMode.Theme)
         else:
@@ -727,7 +729,8 @@ class SlideController(QtGui.QWidget):
         self.HideMenu.setDefaultAction(self.DesktopScreen)
         self.BlankScreen.setChecked(False)
         self.ThemeScreen.setChecked(False)
-        #self.DesktopScreen.setChecked(checked)
+        if self.screens.display_count > 1:
+            self.DesktopScreen.setChecked(checked)
         if checked:
             Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
         else:

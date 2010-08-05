@@ -186,8 +186,8 @@ class MainDisplay(DisplayWidget):
             self.screen[u'size'].height())
         self.frame.evaluateJavaScript(
             "document.getElementById('video').style.visibility = 'hidden'")
-        self.frame.evaluateJavaScript(
-            "document.getElementById('image').style.visibility = 'visible'")
+#        self.frame.evaluateJavaScript(
+#            "document.getElementById('image').style.visibility = 'visible'")
         self.frame.findFirstElement(u'img').setAttribute(
             u'src', unicode(u'data:image/png;base64,%s' % image_to_byte(image)))
 
@@ -206,7 +206,8 @@ class MainDisplay(DisplayWidget):
         Used after Video plugin has changed the background
         """
         log.debug(u'resetVideo')
-        self.frame.findFirstElement('img').setAttribute(u'src',u'display: none;' )
+        self.frame.evaluateJavaScript(
+            "document.getElementById('video').style.visibility = 'hidden'")
 
     def videoPlay(self):
         """
@@ -230,8 +231,8 @@ class MainDisplay(DisplayWidget):
         self.frame.evaluateJavaScript("document.getElementById('video').pause()")
         self.frame.evaluateJavaScript(
             "document.getElementById('video').style.visibility = 'hidden'")
-        self.frame.evaluateJavaScript(
-            "document.getElementById('image').style.visibility = 'visible'")
+#        self.frame.evaluateJavaScript(
+#            "document.getElementById('image').style.visibility = 'visible'")
 
     def videoVolume(self, volume):
         """
@@ -250,10 +251,11 @@ class MainDisplay(DisplayWidget):
         self.frame.findFirstElement('video').setAttribute('src', videoPath)
         self.frame.evaluateJavaScript(
             "document.getElementById('video').style.visibility = 'visible'")
-        self.frame.evaluateJavaScript(
-            "document.getElementById('image').style.visibility = 'hidden'")
+#        self.frame.evaluateJavaScript(
+#            "document.getElementById('image').style.visibility = 'hidden'")
         self.videoPlay()
         self.videoVolume(volume)
+        return self.preview()
 
     def loaded(self):
         """

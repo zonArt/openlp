@@ -56,7 +56,7 @@ HTMLSRC = u"""
                 break;
             case 'black':
                 black = 'inline';
-                break;   
+                break;
         }
         document.getElementById('black').style.display = black;
         document.getElementById('lyricsmain').style.display = lyrics;
@@ -203,7 +203,7 @@ def build_video(width, height):
     """
     video = """
     #video { position: absolute; left: 0px; top: 0px;
-        width: %spx; height: %spx; z-index:1; }
+        width: %spx; height: %spx; z-index:2; }
     """
     return video % (width, height)
 
@@ -235,7 +235,7 @@ def build_image(width, height):
     """
     image = """
     #image { position: absolute; left: 0px; top: 0px;
-        width: %spx; height: %spx; z-index:2;
+        width: %spx; height: %spx; z-index:1;
     }
     """
     return image % (width, height)
@@ -382,5 +382,4 @@ def build_alert(width, height, alertTab):
             (alertTab.font_face, alertTab.font_size, alertTab.font_color,
             alertTab.bg_color)
     alert_html = style % (alerttable, alertcell, alert)
-    print alert_html
     return alert_html

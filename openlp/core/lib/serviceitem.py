@@ -152,7 +152,7 @@ class ServiceItem(object):
             self.main, self.footer = \
                 self.render_manager.set_override_theme(theme)
             self.bg_frame = self.render_manager.renderer.bg_frame
-            self.themedata = self.render_manager.themedata
+            self.themedata = self.render_manager.renderer._theme
             for slide in self._raw_frames:
                 before = time.time()
                 formated = self.render_manager \

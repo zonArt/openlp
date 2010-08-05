@@ -66,6 +66,7 @@ class RenderManager(object):
         self.theme_level = u''
         self.override_background = None
         self.themedata = None
+        self.alertTab = None
 
         # TODO make external and configurable
         self.html_expands = {
@@ -180,12 +181,12 @@ class RenderManager(object):
             The theme to generated a preview for.
         """
         log.debug(u'generate preview')
-        #set the default image size for previews
+        # set the default image size for previews
         self.calculate_default(self.screens.preview[u'size'])
         self.renderer.set_theme(themedata)
         self.build_text_rectangle(themedata)
         self.renderer.set_frame_dest(self.width, self.height, True)
-        #Reset the real screen size for subsequent render requests
+        # Reset the real screen size for subsequent render requests
         self.calculate_default(self.screens.current[u'size'])
         verse = u'Amazing Grace!\n'\
         'How sweet the sound\n'\
@@ -200,11 +201,7 @@ class RenderManager(object):
         serviceItem = ServiceItem()
         serviceItem.add_from_text(u'', verse, footer)
         serviceItem.render_manager = self
-        # serviceItem gets the theme data so switch it.
-        temp_themedata = self.themedata
-        self.themedata = themedata
         serviceItem.render()
-        self.themedata = temp_themedata
         serviceItem.raw_footer = footer
         self.display.buildHtml(serviceItem)
         frame, raw_html = serviceItem.get_rendered_frame(0)
