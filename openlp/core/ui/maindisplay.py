@@ -164,7 +164,6 @@ class MainDisplay(DisplayWidget):
         log.debug(u'text')
         self.frame.evaluateJavaScript("startfade('" +
             slide.replace("\\", "\\\\").replace("\'", "\\\'") + "')")
-        print self.frame.evaluateJavaScript("fadeFinished()").toString()
         return self.preview()
 
     def alert(self, text):
@@ -270,6 +269,8 @@ class MainDisplay(DisplayWidget):
         log.debug(u'preview')
         # Wait for the webview to update before geting the preview.
         # Important otherwise first preview will miss the background !
+        while self.frame.evaluateJavaScript("fadeFinished()").toString() == u'false':
+            Receiver.send_message(u'openlp_process_events')
         while not self.loaded:
             Receiver.send_message(u'openlp_process_events')
         preview = QtGui.QImage(self.screen[u'size'].width(),

@@ -46,7 +46,6 @@ HTMLSRC = u"""
 <script language="javascript">
     var t = null;
     var transition = %s;
-    var fadeComplete = null;
 
     function blankState(state){
         var black = 'none';
@@ -75,12 +74,10 @@ HTMLSRC = u"""
         var text1 = document.getElementById('lyricsmain');
         var texto1 = document.getElementById('lyricsoutline');
         var texts1 = document.getElementById('lyricsshadow');
-        fadeComplete = 'false';
         if(!transition){
             text1.innerHTML = newtext;
             texto1.innerHTML = newtext;
             texts1.innerHTML = newtext;
-            fadeComplete = 'true';
             return;
         }
         var text2 = document.getElementById('lyricsmain2');
@@ -135,11 +132,10 @@ HTMLSRC = u"""
             texto2.style.opacity = 0
             texts2.style.opacity = 0
         }
-        fadeComplete = 'true';
     }
 
-    function fadeFinsihed(){
-        return fadeComplete;
+    function fadeFinished(){
+       return (document.getElementById('lyricsmain').style.opacity==1);
     }
 </script>
 </head>
