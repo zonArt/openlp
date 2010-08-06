@@ -468,8 +468,7 @@ class BibleMediaItem(MediaManagerItem):
         '''
         log.debug(u'generating slide data')
         items = self.listView.selectedIndexes()
-        items_length = len(items)
-        if items_length == 0:
+        if len(items) == 0:
             return False
         bible_text = u''
         old_chapter = u''
@@ -540,7 +539,7 @@ class BibleMediaItem(MediaManagerItem):
                 # If we are not 'Verse Per Slide' we have to make sure, that we
                 # add more verses.
                 else:
-                    if item.row() < items_length - 1:
+                    if item.row() < len(items) - 1:
                         bitem = items[item.row() + 1]
                         reference = bitem.data(QtCore.Qt.UserRole)
                         if isinstance(reference, QtCore.QVariant):
