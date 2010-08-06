@@ -537,10 +537,10 @@ class BibleMediaItem(MediaManagerItem):
                 if self.parent.settings_tab.layout_style == 0:
                     raw_slides.append(bible_text)
                     bible_text = u''
-                # If we are 'Verse Per Slide' we have already been added.
+                # If we are not 'Verse Per Slide' we have to make sure, that we
+                # add more verses.
                 else:
                     if item.row() < items_length - 1:
-                        log.debug(items.size())
                         bitem = items[item.row() + 1]
                         reference = bitem.data(QtCore.Qt.UserRole)
                         if isinstance(reference, QtCore.QVariant):
