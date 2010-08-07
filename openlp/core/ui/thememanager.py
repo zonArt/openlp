@@ -758,5 +758,6 @@ class ThemeManager(QtGui.QWidget):
         #theme.theme_version
         # Remove the Transparent settings as they are not relevent
         if theme.background_mode == u'transparent':
+            theme.background_mode = u'opaque'
             theme.background_type = u'solid'
             theme.background_startColor = u'#000000'

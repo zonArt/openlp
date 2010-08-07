@@ -35,6 +35,9 @@ HTMLSRC = u"""
     margin: 0;
     padding:0
 }
+body {
+    background-color: black;
+}
 %s
 %s
 %s
@@ -47,27 +50,105 @@ HTMLSRC = u"""
     var t = null;
     var transition = %s;
 
+    function video(state, path, volume, loop){
+        var vid = document.getElementById('video');
+        if(path!=null)
+            vid.src = path;
+        if(loop!=null){
+            if(loop)
+                vid.loop = 'loop';
+            else
+                vid.loop = '';
+        }
+        switch(state){
+            case 'play':
+                vid.play();
+                vid.style.display = 'block';
+                break;
+            case 'pause':
+                vid.pause();
+                vid.style.display = 'block';
+                break;
+            case 'stop':
+                vid.pause();
+                vid.style.display = 'none';
+                break;
+            case 'close':
+                vid.pause();
+                vid.style.display = 'none';
+                vid.setAttribute('src', '');
+                break;
+        if(volume!=null)
+            vid.volume = volume;
+        }
+    }
+
+    function setImage(src){
+        var img = document.getElementById('image');
+        img.src = src;
+        if(src=='')
+            img.style.display = 'none';
+        else
+            img.style.display = 'block';
+    }
     function blankState(state){
         var black = 'none';
         var lyrics = '';
+        var pause = false;
         switch(state){
             case 'theme':
-                lyrics = 'none';
+                lyrics = 'hidden';
+                pause = true;
                 break;
             case 'black':
-                black = 'inline';
+                black = 'block';
+                pause = true;
+                break;
+            case 'desktop':
+                pause = true;
                 break;
         }
         document.getElementById('black').style.display = black;
-        document.getElementById('lyricsmain').style.display = lyrics;
-        document.getElementById('lyricsoutline').style.display = lyrics;
-        document.getElementById('lyricsshadow').style.display = lyrics;
-        document.getElementById('footer').style.display = lyrics;
+        document.getElementById('lyricsmain').style.visibility = lyrics;
+        document.getElementById('lyricsoutline').style.visibility = lyrics;
+        document.getElementById('lyricsshadow').style.visibility = lyrics;
+        document.getElementById('footer').style.visibility = lyrics;
+        var vid = document.getElementById('video');
+        if(vid.src != ''){
+            if(pause)
+                vid.pause();
+            else
+                vid.play();
+        }
     }
 
-    function displayAlert(alerttext){
-        var text1 = document.getElementById('alertmain');
-        text1.innerHTML = alerttext;
+    function displayAlert(alerttext, shrink){
+        var text = document.getElementById('alert');
+        text.innerHTML = alerttext;
+        if(alerttext=='') {
+            text.style.visibility = 'hidden';
+            return 0;
+        }
+        if(shrink){
+            text.style.top = '0px';
+        }
+        else
+        {
+            switch(window.getComputedStyle(text, '').verticalAlign)
+            {
+                case 'top':
+                    text.style.top = '0px';
+                    break;
+                case 'middle':
+                    text.style.top = ((window.innerHeight - text.clientHeight) / 2) + 'px';
+                    break;
+                case 'bottom':
+                    text.style.top = (window.innerHeight - text.clientHeight) + 'px';
+                    break;
+            }
+        }
+        text.style.visibility = 'visible';
+        return text.clientHeight;
     }
 
     function startfade(newtext){
@@ -125,12 +206,12 @@ HTMLSRC = u"""
         if((parseFloat(text1.style.opacity) < 1)||(parseFloat(text2.style.opacity) > 0))
             t = setTimeout('fade()', 50);
         else{
-            text1.style.opacity = 1
-            texto1.style.opacity = 1
-            texts1.style.opacity = 1
-            text2.style.opacity = 0
-            texto2.style.opacity = 0
-            texts2.style.opacity = 0
+            text1.style.opacity = 1;
+            texto1.style.opacity = 1;
+            texts1.style.opacity = 1;
+            text2.style.opacity = 0;
+            texto2.style.opacity = 0;
+            texts2.style.opacity = 0;
         }
     }
 
@@ -158,11 +239,14 @@ HTMLSRC = u"""
 <table class="lyricsshadowtable lyricscommon">
     <tr><td id="lyricsshadow2" class="lyricsshadow lyrics"></td></tr>
 </table>
+<!--
 <table class="alerttable">
     <tr><td class="alertcell">
         <div class="alert" id="alertmain"></div>
     </td></tr>
 </table>
+-->
+<div id="alert" style="visibility:hidden;"></div>
 <div id="footer" class="footer"></div>
 <video id="video"></video>
 <div id="black"></div>
@@ -223,7 +307,7 @@ def build_black(width, height):
     """
     black = """
     #black { position: absolute; left: 0px; top: 0px;
-        width: %spx; height: %spx; z-index:10;
+        width: %spx; height: %spx; z-index:8;
         background-color: black; display: none;
     }
     """
@@ -252,10 +336,12 @@ def build_image_src(image):
     `image`
         Image to be displayed
     """
-    image_src = """
-    <img src="data:image/png;base64,%s">
-    """
-    return image_src % image_to_byte(image)
+    if image:
+        return '<img id="image" src="data:image/png;base64,%s" />' % \
+            image_to_byte(image)
+    else:
+        return '<img id="image" />'
+
 
 def build_lyrics(item):
     """
@@ -283,7 +369,7 @@ def build_lyrics(item):
     outline = u'display: none;'
     shadow = u'display: none;'
     if theme:
-        lyricscommon =  u'width: %spx; height: %spx; ' \
+        lyricscommon =  u'width: %spx; height: %spx; word-wrap: break-word  ' \
             u'font-family %s; font-size: %spx; color: %s; line-height: %d%%' % \
             (item.main.width(), item.main.height(),
             theme.font_main_name, theme.font_main_proportion,
@@ -367,10 +453,13 @@ def build_alert(width, height, alertTab):
         Details from the Alert tab for fonts etc
     """
     style = """
-    .alerttable { position: absolute; z-index:8; left 0px; top 0px; %s }
+    .alerttable { position: absolute; z-index:10; left 0px; top 0px; %s }
     .alertcell { %s }
     .alert { %s }
      """
+    style2 = """
+    #alert {position: absolute; z-index:10; left 0px; top 0px; width: %spx; %s %s}
+    """
     alerttable = u''
     alertcell = u''
     alert = u''
@@ -386,5 +475,7 @@ def build_alert(width, height, alertTab):
             u'background-color: %s' % \
             (alertTab.font_face, alertTab.font_size, alertTab.font_color,
             alertTab.bg_color)
-    alert_html = style % (alerttable, alertcell, alert)
+    #alert_html = style % (alerttable, alertcell, alert)
+    alert_html = style2 % (width, alertcell, alert)
+    print alert_html
     return alert_html

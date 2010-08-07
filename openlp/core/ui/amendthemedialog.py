@@ -68,17 +68,17 @@ class Ui_AmendThemeDialog(object):
         self.backgroundLayout.setMargin(8)
         self.backgroundLayout.setSpacing(8)
         self.backgroundLayout.setObjectName(u'backgroundLayout')
-        self.backgroundLabel = QtGui.QLabel(self.backgroundTab)
-        self.backgroundLabel.setObjectName(u'backgroundLabel')
-        self.backgroundLayout.setWidget(0, QtGui.QFormLayout.LabelRole,
-            self.backgroundLabel)
-        self.backgroundComboBox = QtGui.QComboBox(self.backgroundTab)
-        self.backgroundComboBox.setObjectName(u'backgroundComboBox')
-        self.backgroundLabel.setBuddy(self.backgroundComboBox)
-        self.backgroundComboBox.addItem(QtCore.QString())
-        self.backgroundComboBox.addItem(QtCore.QString())
-        self.backgroundLayout.setWidget(0, QtGui.QFormLayout.FieldRole,
-            self.backgroundComboBox)
+#        self.backgroundLabel = QtGui.QLabel(self.backgroundTab)
+#        self.backgroundLabel.setObjectName(u'backgroundLabel')
+#        self.backgroundLayout.setWidget(0, QtGui.QFormLayout.LabelRole,
+#            self.backgroundLabel)
+#        self.backgroundComboBox = QtGui.QComboBox(self.backgroundTab)
+#        self.backgroundComboBox.setObjectName(u'backgroundComboBox')
+#        self.backgroundLabel.setBuddy(self.backgroundComboBox)
+#        self.backgroundComboBox.addItem(QtCore.QString())
+#        self.backgroundComboBox.addItem(QtCore.QString())
+#        self.backgroundLayout.setWidget(0, QtGui.QFormLayout.FieldRole,
+#            self.backgroundComboBox)
         self.backgroundTypeLabel = QtGui.QLabel(self.backgroundTab)
         self.backgroundTypeLabel.setObjectName(u'backgroundTypeLabel')
         self.backgroundLayout.setWidget(1, QtGui.QFormLayout.LabelRole,
@@ -661,12 +661,12 @@ class Ui_AmendThemeDialog(object):
             translate('OpenLP.AmendThemeForm', 'Theme Maintenance'))
         self.themeNameLabel.setText(
             translate('OpenLP.AmendThemeForm', 'Theme &name:'))
-        self.backgroundLabel.setText(
-            translate('OpenLP.AmendThemeForm', '&Visibility:'))
-        self.backgroundComboBox.setItemText(0,
-            translate('OpenLP.AmendThemeForm', 'Opaque'))
-        self.backgroundComboBox.setItemText(1,
-            translate('OpenLP.AmendThemeForm', 'Transparent'))
+#        self.backgroundLabel.setText(
+#            translate('OpenLP.AmendThemeForm', '&Visibility:'))
+#        self.backgroundComboBox.setItemText(0,
+#            translate('OpenLP.AmendThemeForm', 'Opaque'))
+#        self.backgroundComboBox.setItemText(1,
+#            translate('OpenLP.AmendThemeForm', 'Transparent'))
         self.backgroundTypeLabel.setText(
             translate('OpenLP.AmendThemeForm', 'Type:'))
         self.backgroundTypeComboBox.setItemText(0,

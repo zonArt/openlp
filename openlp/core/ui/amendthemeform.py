@@ -68,8 +68,8 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         QtCore.QObject.connect(self.imageToolButton,
             QtCore.SIGNAL(u'clicked()'), self.onImageToolButtonClicked)
         # Combo boxes
-        QtCore.QObject.connect(self.backgroundComboBox,
-            QtCore.SIGNAL(u'activated(int)'), self.onBackgroundComboBoxSelected)
+#        QtCore.QObject.connect(self.backgroundComboBox,
+#            QtCore.SIGNAL(u'activated(int)'), self.onBackgroundComboBoxSelected)
         QtCore.QObject.connect(self.backgroundTypeComboBox,
             QtCore.SIGNAL(u'activated(int)'),
             self.onBackgroundTypeComboBoxSelected)
@@ -151,23 +151,23 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         new_theme.new_document(theme_name)
         save_from = None
         save_to = None
-        if self.theme.background_mode == u'transparent':
-            new_theme.add_background_transparent()
+#        if self.theme.background_mode == u'transparent':
+#            new_theme.add_background_transparent()
+#        else:
+        if self.theme.background_type == u'solid':
+            new_theme.add_background_solid(
+                unicode(self.theme.background_color))
+        elif self.theme.background_type == u'gradient':
+            new_theme.add_background_gradient(
+                unicode(self.theme.background_startColor),
+                unicode(self.theme.background_endColor),
+                self.theme.background_direction)
         else:
-            if self.theme.background_type == u'solid':
-                new_theme.add_background_solid(
-                    unicode(self.theme.background_color))
-            elif self.theme.background_type == u'gradient':
-                new_theme.add_background_gradient(
-                    unicode(self.theme.background_startColor),
-                    unicode(self.theme.background_endColor),
-                    self.theme.background_direction)
-            else:
-                filename = \
-                    os.path.split(unicode(self.theme.background_filename))[1]
-                new_theme.add_background_image(filename)
-                save_to = os.path.join(self.path, theme_name, filename)
-                save_from = self.theme.background_filename
+            filename = \
+                os.path.split(unicode(self.theme.background_filename))[1]
+            new_theme.add_background_image(filename)
+            save_to = os.path.join(self.path, theme_name, filename)
+            save_from = self.theme.background_filename
         new_theme.add_font(unicode(self.theme.font_main_name),
                 unicode(self.theme.font_main_color),
                 unicode(self.theme.font_main_proportion),
@@ -230,7 +230,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.previewTheme()
 
     #
-    #Main Font Tab
+    # Main Font Tab
     #
     def onFontMainComboBoxSelected(self):
         self.theme.font_main_name = self.fontMainComboBox.currentFont().family()
@@ -323,7 +323,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.previewTheme()
 
     #
-    #Footer Font Tab
+    # Footer Font Tab
     #
     def onFontFooterComboBoxSelected(self):
         self.theme.font_footer_name = \
@@ -404,19 +404,19 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.previewTheme()
 
     #
-    #Background Tab
+    # Background Tab
     #
     def onGradientComboBoxSelected(self, currentIndex):
         self.setBackground(self.backgroundTypeComboBox.currentIndex(),
             currentIndex)
 
-    def onBackgroundComboBoxSelected(self, currentIndex):
-        if currentIndex == 0: # Opaque
-            self.theme.background_mode = u'opaque'
-        else:
-            self.theme.background_mode = u'transparent'
-        self.stateChanging(self.theme)
-        self.previewTheme()
+#    def onBackgroundComboBoxSelected(self, currentIndex):
+#        if currentIndex == 0: # Opaque
+#            self.theme.background_mode = u'opaque'
+#        else:
+#            self.theme.background_mode = u'transparent'
+#        self.stateChanging(self.theme)
+#        self.previewTheme()
 
     def onBackgroundTypeComboBoxSelected(self, currentIndex):
         self.setBackground(currentIndex, self.gradientComboBox.currentIndex())
@@ -472,7 +472,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.previewTheme()
 
     #
-    #Other Tab
+    # Other Tab
     #
     def onOutlineCheckBoxChanged(self, value):
         if value == 2:  # checked
@@ -537,16 +537,16 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         self.previewTheme()
 
     #
-    #Local Methods
+    # Local Methods
     #
     def paintUi(self, theme):
         self.stateChanging(theme)
         self.themeNameEdit.setText(self.theme.theme_name)
         # Background Tab
-        if self.theme.background_mode == u'opaque':
-            self.backgroundComboBox.setCurrentIndex(0)
-        else:
-            self.backgroundComboBox.setCurrentIndex(1)
+#        if self.theme.background_mode == u'opaque':
+#            self.backgroundComboBox.setCurrentIndex(0)
+#        else:
+#            self.backgroundComboBox.setCurrentIndex(1)
         self.imageLineEdit.setText(u'')
         if theme.background_type == u'solid':
             self.backgroundTypeComboBox.setCurrentIndex(0)
@@ -641,9 +641,28 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         self.verticalComboBox.setCurrentIndex(self.theme.display_verticalAlign)
 
     def stateChanging(self, theme):
-        if theme.background_mode == u'transparent':
-            self.color1Label.setVisible(False)
-            self.color1PushButton.setVisible(False)
+#        if theme.background_mode == u'transparent':
+#            self.color1Label.setVisible(False)
+#            self.color1PushButton.setVisible(False)
+#            self.color2Label.setVisible(False)
+#            self.color2PushButton.setVisible(False)
+#            self.imageLabel.setVisible(False)
+#            self.imageLineEdit.setVisible(False)
+#            self.imageFilenameWidget.setVisible(False)
+#            self.gradientLabel.setVisible(False)
+#            self.gradientComboBox.setVisible(False)
+#            self.backgroundTypeComboBox.setVisible(False)
+#            self.backgroundTypeLabel.setVisible(False)
+#        else:
+        self.backgroundTypeComboBox.setVisible(True)
+        self.backgroundTypeLabel.setVisible(True)
+        if theme.background_type == u'solid':
+            self.color1PushButton.setStyleSheet(
+                u'background-color: %s' % unicode(theme.background_color))
+            self.color1Label.setText(
+                translate('OpenLP.AmendThemeForm', 'Color:'))
+            self.color1Label.setVisible(True)
+            self.color1PushButton.setVisible(True)
             self.color2Label.setVisible(False)
             self.color2PushButton.setVisible(False)
             self.imageLabel.setVisible(False)
@@ -651,53 +670,34 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.imageFilenameWidget.setVisible(False)
             self.gradientLabel.setVisible(False)
             self.gradientComboBox.setVisible(False)
-            self.backgroundTypeComboBox.setVisible(False)
-            self.backgroundTypeLabel.setVisible(False)
-        else:
-            self.backgroundTypeComboBox.setVisible(True)
-            self.backgroundTypeLabel.setVisible(True)
-            if theme.background_type == u'solid':
-                self.color1PushButton.setStyleSheet(
-                    u'background-color: %s' % unicode(theme.background_color))
-                self.color1Label.setText(
-                    translate('OpenLP.AmendThemeForm', 'Color:'))
-                self.color1Label.setVisible(True)
-                self.color1PushButton.setVisible(True)
-                self.color2Label.setVisible(False)
-                self.color2PushButton.setVisible(False)
-                self.imageLabel.setVisible(False)
-                self.imageLineEdit.setVisible(False)
-                self.imageFilenameWidget.setVisible(False)
-                self.gradientLabel.setVisible(False)
-                self.gradientComboBox.setVisible(False)
-            elif theme.background_type == u'gradient':
-                self.color1PushButton.setStyleSheet(u'background-color: %s' \
-                    % unicode(theme.background_startColor))
-                self.color2PushButton.setStyleSheet(u'background-color: %s' \
-                    % unicode(theme.background_endColor))
-                self.color1Label.setText(
-                    translate('OpenLP.AmendThemeForm', 'First color:'))
-                self.color2Label.setText(
-                    translate('OpenLP.AmendThemeForm', 'Second color:'))
-                self.color1Label.setVisible(True)
-                self.color1PushButton.setVisible(True)
-                self.color2Label.setVisible(True)
-                self.color2PushButton.setVisible(True)
-                self.imageLabel.setVisible(False)
-                self.imageLineEdit.setVisible(False)
-                self.imageFilenameWidget.setVisible(False)
-                self.gradientLabel.setVisible(True)
-                self.gradientComboBox.setVisible(True)
-            else: # must be image
-                self.color1Label.setVisible(False)
-                self.color1PushButton.setVisible(False)
-                self.color2Label.setVisible(False)
-                self.color2PushButton.setVisible(False)
-                self.imageLabel.setVisible(True)
-                self.imageLineEdit.setVisible(True)
-                self.imageFilenameWidget.setVisible(True)
-                self.gradientLabel.setVisible(False)
-                self.gradientComboBox.setVisible(False)
+        elif theme.background_type == u'gradient':
+            self.color1PushButton.setStyleSheet(u'background-color: %s' \
+                % unicode(theme.background_startColor))
+            self.color2PushButton.setStyleSheet(u'background-color: %s' \
+                % unicode(theme.background_endColor))
+            self.color1Label.setText(
+                translate('OpenLP.AmendThemeForm', 'First color:'))
+            self.color2Label.setText(
+                translate('OpenLP.AmendThemeForm', 'Second color:'))
+            self.color1Label.setVisible(True)
+            self.color1PushButton.setVisible(True)
+            self.color2Label.setVisible(True)
+            self.color2PushButton.setVisible(True)
+            self.imageLabel.setVisible(False)
+            self.imageLineEdit.setVisible(False)
+            self.imageFilenameWidget.setVisible(False)
+            self.gradientLabel.setVisible(True)
+            self.gradientComboBox.setVisible(True)
+        else: # must be image
+            self.color1Label.setVisible(False)
+            self.color1PushButton.setVisible(False)
+            self.color2Label.setVisible(False)
+            self.color2PushButton.setVisible(False)
+            self.imageLabel.setVisible(True)
+            self.imageLineEdit.setVisible(True)
+            self.imageFilenameWidget.setVisible(True)
+            self.gradientLabel.setVisible(False)
+            self.gradientComboBox.setVisible(False)
         if not theme.font_main_override:
             self.fontMainXSpinBox.setEnabled(False)
             self.fontMainYSpinBox.setEnabled(False)

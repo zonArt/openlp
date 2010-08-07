@@ -166,7 +166,7 @@ class MainDisplay(DisplayWidget):
             slide.replace("\\", "\\\\").replace("\'", "\\\'") + "')")
         return self.preview()
 
-    def alert(self, text):
+    def alert(self, text, shrink=False):
         """
         Add the alert text
 
@@ -174,8 +174,15 @@ class MainDisplay(DisplayWidget):
             The slide text to be displayed
         """
         log.debug(u'alert')
-        self.frame.evaluateJavaScript( "displayAlert('" + \
-            text.replace("\\", "\\\\").replace("\'", "\\\'") + "')")
+        js =  "displayAlert('" + \
+            text.replace("\\", "\\\\").replace("\'", "\\\'") + "', %s)" % \
+            ('true' if shrink else 'false')
+        height = self.frame.evaluateJavaScript(js)
+        if shrink:
+            if text:
+                self.resize(self.width(), int(height.toString()))
+            else:
+                self.setGeometry(self.screen[u'size'])
 
     def image(self, image):
         """
@@ -188,10 +195,19 @@ class MainDisplay(DisplayWidget):
         log.debug(u'image')
         image = resize_image(image, self.screen[u'size'].width(),
             self.screen[u'size'].height())
-        self.frame.evaluateJavaScript(
-            "document.getElementById('video').style.visibility = 'hidden'")
-        self.frame.findFirstElement(u'img').setAttribute(
-            u'src', unicode(u'data:image/png;base64,%s' % image_to_byte(image)))
+        self.resetVideo()
+        self.displayImage(image)
+
+    def displayImage(self, image):
+        """
+        Display an image, as is.
+        """
+        if image:
+            js = "setImage('" + \
+                u'data:image/png;base64,%s' % image_to_byte(image) + "');"
+        else:
+            js = "setImage('');"
+        self.frame.evaluateJavaScript(js)
 
     def resetImage(self):
         """
@@ -199,49 +215,42 @@ class MainDisplay(DisplayWidget):
         Used after Image plugin has changed the background
         """
         log.debug(u'resetImage')
-        self.frame.findFirstElement(u'img').setAttribute(
-            u'src', unicode(u'data:image/png;base64,%s' % \
-                image_to_byte(self.serviceItem.bg_frame)))
+        self.displayImage(self.serviceItem.bg_frame)
 
     def resetVideo(self):
         """
-        Reset the backgound image to the service item image.
         Used after Video plugin has changed the background
         """
         log.debug(u'resetVideo')
-        self.frame.evaluateJavaScript(
-            "document.getElementById('video').style.visibility = 'hidden'")
+        self.frame.evaluateJavaScript('video("close");')
 
     def videoPlay(self):
         """
         Responds to the request to play a loaded video
         """
         log.debug(u'videoPlay')
-        self.frame.evaluateJavaScript("document.getElementById('video').play()")
+        self.frame.evaluateJavaScript('video("play");')
 
     def videoPause(self):
         """
         Responds to the request to pause a loaded video
         """
         log.debug(u'videoPause')
-        self.frame.evaluateJavaScript("document.getElementById('video').pause()")
+        self.frame.evaluateJavaScript('video("pause");')
 
     def videoStop(self):
         """
         Responds to the request to stop a loaded video
         """
         log.debug(u'videoStop')
-        self.frame.evaluateJavaScript("document.getElementById('video').pause()")
-        self.frame.evaluateJavaScript(
-            "document.getElementById('video').style.visibility = 'hidden'")
+        self.frame.evaluateJavaScript('video("stop");')
 
     def videoVolume(self, volume):
         """
         Changes the volume of a running video
         """
         log.debug(u'videoVolume %d' % volume)
-        self.frame.evaluateJavaScript(
-            "document.getElementById('video').volume = %s" %
+        self.frame.evaluateJavaScript('video(null,null,%s);' %
             str(float(volume)/float(10)))
 
     def video(self, videoPath, volume):
@@ -249,17 +258,18 @@ class MainDisplay(DisplayWidget):
         Loads and starts a video to run with the option of sound
         """
         log.debug(u'video')
-        self.frame.findFirstElement('video').setAttribute('src', videoPath)
-        self.frame.evaluateJavaScript(
-            "document.getElementById('video').style.visibility = 'visible'")
-        self.videoPlay()
-        self.videoVolume(volume)
+        self.loaded = True
+        js = 'video("play","%s",%s,true);' % \
+            (videoPath.replace("\\", "\\\\"), str(float(volume)/float(10)))
+        self.frame.evaluateJavaScript(js)
+        print js
         return self.preview()
 
     def loaded(self):
         """
         Called by webView event to show display is fully loaded
         """
+        log.debug(u'loaded')
         self.loaded = True
 
     def preview(self):
@@ -267,10 +277,12 @@ class MainDisplay(DisplayWidget):
         Generates a preview of the image displayed.
         """
         log.debug(u'preview')
-        # Wait for the webview to update before geting the preview.
-        # Important otherwise first preview will miss the background !
+        # Wait for the fade to finish before geting the preview.
+        # Important otherwise preview will have incorrect text if at all !
         while self.frame.evaluateJavaScript("fadeFinished()").toString() == u'false':
             Receiver.send_message(u'openlp_process_events')
+        # Wait for the webview to update before geting the preview.
+        # Important otherwise first preview will miss the background !
         while not self.loaded:
             Receiver.send_message(u'openlp_process_events')
         preview = QtGui.QImage(self.screen[u'size'].width(),
@@ -308,6 +320,7 @@ class MainDisplay(DisplayWidget):
         self.frame.evaluateJavaScript(
             "document.getElementById('blank').style.visibility = 'visible'")
         if mode == HideMode.Screen:
+            self.frame.evaluateJavaScript('blankState("desktop");')
             self.setVisible(False)
         elif mode == HideMode.Blank or self.initialFrame:
             self.frame.evaluateJavaScript('blankState("black");')
