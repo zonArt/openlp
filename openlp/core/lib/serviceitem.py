@@ -131,7 +131,7 @@ class ServiceItem(object):
         self.icon = icon
         self.iconic_representation = build_icon(icon)
 
-    def render(self):
+    def render(self, useOverride=False):
         """
         The render method is what generates the frames for the screen and
         obtains the display information from the renderemanager.
@@ -150,7 +150,7 @@ class ServiceItem(object):
             if not self.theme:
                 theme = self.theme
             self.main, self.footer = \
-                self.render_manager.set_override_theme(theme)
+                self.render_manager.set_override_theme(theme, useOverride)
             self.bg_frame = self.render_manager.renderer.bg_frame
             self.themedata = self.render_manager.renderer._theme
             for slide in self._raw_frames:
