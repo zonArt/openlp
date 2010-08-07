@@ -146,7 +146,10 @@ class RenderManager(object):
         if self.theme != self.renderer.theme_name or self.themedata is None \
             or overrideLevels:
             log.debug(u'theme is now %s', self.theme)
-            self.themedata = self.theme_manager.getThemeData(self.theme)
+            if overrideLevels:
+                self.themedata = theme
+            else:
+                self.themedata = self.theme_manager.getThemeData(self.theme)
             self.calculate_default(self.screens.current[u'size'])
             self.renderer.set_theme(self.themedata)
             self.build_text_rectangle(self.themedata)
@@ -198,6 +201,8 @@ class RenderManager(object):
         footer.append(u'Amazing Grace (John Newton)' )
         footer.append(u'Public Domain')
         footer.append(u'CCLI 123456')
+        # Previews do not need the transition switched on!
+        themedata.display_slideTransition = False
         # build a service item to generate preview
         serviceItem = ServiceItem()
         serviceItem.theme = themedata

@@ -279,8 +279,9 @@ class MainDisplay(DisplayWidget):
         log.debug(u'preview')
         # Wait for the fade to finish before geting the preview.
         # Important otherwise preview will have incorrect text if at all !
-        while self.frame.evaluateJavaScript("fadeFinished()").toString() == u'false':
-            Receiver.send_message(u'openlp_process_events')
+        if self.serviceItem.themedata.display_slideTransition:
+            while self.frame.evaluateJavaScript("fadeFinished()").toString() == u'false':
+                Receiver.send_message(u'openlp_process_events')
         # Wait for the webview to update before geting the preview.
         # Important otherwise first preview will miss the background !
         while not self.loaded:
