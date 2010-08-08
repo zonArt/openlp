@@ -37,12 +37,12 @@ log = logging.getLogger(__name__)
 
 class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
     """
-    This is the Bible Import Wizard, which allows easy importing of Bibles
-    into OpenLP from other formats like OSIS, CSV and OpenSong.
+    This is the Song Import Wizard, which allows easy importing of Songs
+    into OpenLP from other formats like OpenLyrics, OpenSong and CCLI.
     """
-    log.info(u'BibleImportForm loaded')
+    log.info(u'SongImportForm loaded')
 
-    def __init__(self, parent, manager, songsplugin):
+    def __init__(self, parent, manager, plugin):
         """
         Instantiate the wizard, and run any extra setup we need to.
 
@@ -53,10 +53,10 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
             The configuration object for storing and retrieving settings.
 
         ``manager``
-            The Bible manager.
+            The songs manager.
 
-        ``bibleplugin``
-            The Bible plugin.
+        ``plugin``
+            The songs plugin.
         """
         QtGui.QWizard.__init__(self, parent)
         self.setupUi(self)
@@ -64,11 +64,14 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         self.finishButton = self.button(QtGui.QWizard.FinishButton)
         self.cancelButton = self.button(QtGui.QWizard.CancelButton)
         self.manager = manager
-        self.songsplugin = songsplugin
+        self.plugin = plugin
         #self.manager.set_process_dialog(self)
-#        QtCore.QObject.connect(self.OsisFileButton,
-#            QtCore.SIGNAL(u'clicked()'),
-#            self.onOsisFileButtonClicked)
+        QtCore.QObject.connect(self.OpenLyricsAddButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onOpenLyricsAddButtonClicked)
+        QtCore.QObject.connect(self.OpenLyricsRemoveButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onOpenLyricsRemoveButtonClicked)
 #        QtCore.QObject.connect(self.BooksFileButton,
 #            QtCore.SIGNAL(u'clicked()'),
 #            self.onBooksFileButtonClicked)
@@ -145,6 +148,29 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         elif self.currentId() == 2:
             # Progress page
             return True
+
+    def getFiles(self, title, listbox):
+        filenames = QtGui.QFileDialog.getOpenFileNames(self, title,
+            SettingsManager.get_last_dir(self.plugin.settingsSection, 1))
+        if filenames:
+            listbox.addItems(filenames)
+            #SettingsManager.set_last_dir(
+            #    self.plugin.settingsSection,
+            #    os.path.split(unicode(filenames[0]))[0], 1)
+
+    def removeSelectedItems(self, listbox):
+        for item in listbox.selectedItems():
+            item = listbox.takeItem(listbox.row(item))
+            del item
+
+    def onOpenLyricsAddButtonClicked(self):
+        self.getFiles(
+            translate('SongsPlugin.ImportWizard', 'Select OpenLyrics Files'),
+            self.OpenLyricsFileListWidget
+        )
+
+    def onOpenLyricsRemoveButtonClicked(self):
+        self.removeSelectedItems(self.OpenLyricsFileListWidget)
 
     def onCancelButtonClicked(self, checked):
         """

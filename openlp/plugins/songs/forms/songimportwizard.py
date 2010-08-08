@@ -104,6 +104,8 @@ class Ui_SongImportWizard(object):
         self.OpenLyricsLayout.setMargin(0)
         self.OpenLyricsLayout.setObjectName(u'OpenLyricsLayout')
         self.OpenLyricsFileListWidget = QtGui.QListWidget(self.OpenLyricsPage)
+        self.OpenLyricsFileListWidget.setSelectionMode(
+            QtGui.QAbstractItemView.ExtendedSelection)
         self.OpenLyricsFileListWidget.setObjectName(u'OpenLyricsFileListWidget')
         self.OpenLyricsLayout.addWidget(self.OpenLyricsFileListWidget)
         self.OpenLyricsButtonLayout = QtGui.QHBoxLayout()
