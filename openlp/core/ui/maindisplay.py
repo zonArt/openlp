@@ -113,7 +113,7 @@ class MainDisplay(DisplayWidget):
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
         QtCore.QObject.connect(self.webView,
-            QtCore.SIGNAL(u'loadFinished(bool)'), self.loaded)
+            QtCore.SIGNAL(u'loadFinished(bool)'), self.isLoaded)
         self.frame.setScrollBarPolicy(QtCore.Qt.Vertical,
             QtCore.Qt.ScrollBarAlwaysOff)
         self.frame.setScrollBarPolicy(QtCore.Qt.Horizontal,
@@ -162,11 +162,11 @@ class MainDisplay(DisplayWidget):
             The slide text to be displayed
         """
         log.debug(u'text')
-        self.frame.evaluateJavaScript("startfade('" +
-            slide.replace("\\", "\\\\").replace("\'", "\\\'") + "')")
+        self.frame.evaluateJavaScript(u'show_text("%s")' % \
+            slide.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
         return self.preview()
 
-    def alert(self, text, shrink=False):
+    def alert(self, text):
         """
         Add the alert text
 
@@ -174,15 +174,22 @@ class MainDisplay(DisplayWidget):
             The slide text to be displayed
         """
         log.debug(u'alert')
-        js =  "displayAlert('" + \
-            text.replace("\\", "\\\\").replace("\'", "\\\'") + "', %s)" % \
-            ('true' if shrink else 'false')
+        if self.height() != self.screen[u'size'].height() \
+            or not self.isVisible():
+            shrink = True
+        else:
+            shrink = False            
+        js =  u'show_alert("%s", "%s")' % (
+            text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'),
+            u'top' if shrink else u'')
         height = self.frame.evaluateJavaScript(js)
         if shrink:
             if text:
                 self.resize(self.width(), int(height.toString()))
+                self.setVisible(True)
             else:
                 self.setGeometry(self.screen[u'size'])
+                self.setVisible(False)
 
     def image(self, image):
         """
@@ -203,10 +210,10 @@ class MainDisplay(DisplayWidget):
         Display an image, as is.
         """
         if image:
-            js = "setImage('" + \
-                u'data:image/png;base64,%s' % image_to_byte(image) + "');"
+            js = u'show_image("data:image/png;base64,%s");' % \
+                image_to_byte(image)
         else:
-            js = "setImage('');"
+            js = u'show_image("");'
         self.frame.evaluateJavaScript(js)
 
     def resetImage(self):
@@ -222,35 +229,35 @@ class MainDisplay(DisplayWidget):
         Used after Video plugin has changed the background
         """
         log.debug(u'resetVideo')
-        self.frame.evaluateJavaScript('video("close");')
+        self.frame.evaluateJavaScript(u'show_video("close");')
 
     def videoPlay(self):
         """
         Responds to the request to play a loaded video
         """
         log.debug(u'videoPlay')
-        self.frame.evaluateJavaScript('video("play");')
+        self.frame.evaluateJavaScript(u'show_video("play");')
 
     def videoPause(self):
         """
         Responds to the request to pause a loaded video
         """
         log.debug(u'videoPause')
-        self.frame.evaluateJavaScript('video("pause");')
+        self.frame.evaluateJavaScript(u'show_video("pause");')
 
     def videoStop(self):
         """
         Responds to the request to stop a loaded video
         """
         log.debug(u'videoStop')
-        self.frame.evaluateJavaScript('video("stop");')
+        self.frame.evaluateJavaScript(u'show_video("stop");')
 
     def videoVolume(self, volume):
         """
         Changes the volume of a running video
         """
         log.debug(u'videoVolume %d' % volume)
-        self.frame.evaluateJavaScript('video(null,null,%s);' %
+        self.frame.evaluateJavaScript(u'show_video(null, null, %s);' %
             str(float(volume)/float(10)))
 
     def video(self, videoPath, volume):
@@ -259,13 +266,12 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'video')
         self.loaded = True
-        js = 'video("play","%s",%s,true);' % \
-            (videoPath.replace("\\", "\\\\"), str(float(volume)/float(10)))
+        js = u'show_video("play", "%s", %s, true);' % \
+            (videoPath.replace(u'\\', u'\\\\'), str(float(volume)/float(10)))
         self.frame.evaluateJavaScript(js)
-        print js
         return self.preview()
 
-    def loaded(self):
+    def isLoaded(self):
         """
         Called by webView event to show display is fully loaded
         """
@@ -280,7 +286,7 @@ class MainDisplay(DisplayWidget):
         # Wait for the fade to finish before geting the preview.
         # Important otherwise preview will have incorrect text if at all !
         if self.serviceItem.themedata.display_slideTransition:
-            while self.frame.evaluateJavaScript("fadeFinished()").toString() == u'false':
+            while self.frame.evaluateJavaScript(u'show_text_complete()').toString() == u'false':
                 Receiver.send_message(u'openlp_process_events')
         # Wait for the webview to update before geting the preview.
         # Important otherwise first preview will miss the background !
@@ -295,7 +301,7 @@ class MainDisplay(DisplayWidget):
         painter.end()
         # save preview for debugging
         if log.isEnabledFor(logging.DEBUG):
-            preview.save("temp.png", "png")
+            preview.save(u'temp.png', u'png')
         return preview
 
     def buildHtml(self, serviceItem):
@@ -310,7 +316,13 @@ class MainDisplay(DisplayWidget):
         html = build_html(self.serviceItem, self.screen, self.parent.alertTab)
         self.webView.setHtml(html)
         if serviceItem.footer and serviceItem.foot_text:
-            self.frame.findFirstElement('div#footer').setInnerXml(serviceItem.foot_text)
+            self.footer(serviceItem.foot_text)
+
+    def footer(self, text):
+        log.debug(u'footer')
+        js =  "show_footer('" + \
+            text.replace("\\", "\\\\").replace("\'", "\\\'") + "')" 
+        self.frame.evaluateJavaScript(js)
 
     def hideDisplay(self, mode=HideMode.Screen):
         """
@@ -318,15 +330,13 @@ class MainDisplay(DisplayWidget):
         Store the images so they can be replaced when required
         """
         log.debug(u'hideDisplay mode = %d', mode)
-        self.frame.evaluateJavaScript(
-            "document.getElementById('blank').style.visibility = 'visible'")
         if mode == HideMode.Screen:
-            self.frame.evaluateJavaScript('blankState("desktop");')
+            self.frame.evaluateJavaScript(u'show_blank("desktop");')
             self.setVisible(False)
         elif mode == HideMode.Blank or self.initialFrame:
-            self.frame.evaluateJavaScript('blankState("black");')
+            self.frame.evaluateJavaScript(u'show_blank("black");')
         else:
-            self.frame.evaluateJavaScript('blankState("theme");')
+            self.frame.evaluateJavaScript(u'show_blank("theme");')
         if mode != HideMode.Screen and self.isHidden():
             self.setVisible(True)
 
@@ -337,7 +347,7 @@ class MainDisplay(DisplayWidget):
         Make the stored images None to release memory.
         """
         log.debug(u'showDisplay')
-        self.frame.evaluateJavaScript('blankState("show");')
+        self.frame.evaluateJavaScript('show_blank("show");')
         if self.isHidden():
             self.setVisible(True)
         # Trigger actions when display is active again

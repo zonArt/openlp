@@ -33,32 +33,59 @@ HTMLSRC = u"""
 <style>
 *{
     margin: 0;
-    padding:0
+    padding: 0;
+    border: 0;
 }
 body {
     background-color: black;
 }
+.dim {
+    position: absolute; 
+    left: 0px; 
+    top: 0px;
+    width: %spx; 
+    height: %spx; 
+}
+#black { 
+    z-index:8;
+    background-color: black; 
+    display: none;
+}
+#video { 
+    z-index:2; 
+}
+#alert {
+    position: absolute; 
+    left: 0px; 
+    top: 0px;
+    z-index:10; 
+    %s
+}
+#footer {
+    position: absolute; 
+    z-index:5; 
+    %s
+}
+/* lyric css */
 %s
-%s
-%s
-%s
-%s
-%s
-%s
+
 </style>
 <script language="javascript">
-    var t = null;
+    var timer = null;
     var transition = %s;
 
-    function video(state, path, volume, loop){
+    function show_video(state, path, volume, loop){
         var vid = document.getElementById('video');
-        if(path!=null)
+        if(path != null)
             vid.src = path;
-        if(loop!=null){
+        if(loop != null){
             if(loop)
                 vid.loop = 'loop';
             else
                 vid.loop = '';
+        }
+        if(volume != null){
+            vid.volume = volume;
         }
         switch(state){
             case 'play':
@@ -76,22 +103,20 @@ body {
             case 'close':
                 vid.pause();
                 vid.style.display = 'none';
-                vid.setAttribute('src', '');
+                vid.src = '';
                 break;
-        if(volume!=null)
-            vid.volume = volume;
         }
     }
 
-    function setImage(src){
+    function show_image(src){
         var img = document.getElementById('image');
         img.src = src;
-        if(src=='')
+        if(src == '')
             img.style.display = 'none';
         else
             img.style.display = 'block';
     }
-    function blankState(state){
+    function show_blank(state){
         var black = 'none';
         var lyrics = '';
         var pause = false;
@@ -122,36 +147,39 @@ body {
         }
     }
 
-    function displayAlert(alerttext, shrink){
+    function show_alert(alerttext, position){
         var text = document.getElementById('alert');
         text.innerHTML = alerttext;
-        if(alerttext=='') {
+        if(alerttext == '') {
             text.style.visibility = 'hidden';
             return 0;
         }
-        if(shrink){
-            text.style.top = '0px';
+        if(position == ''){
+            position = window.getComputedStyle(text, '').verticalAlign;
         }
-        else
+        switch(position)
         {
-            switch(window.getComputedStyle(text, '').verticalAlign)
-            {
-                case 'top':
-                    text.style.top = '0px';
-                    break;
-                case 'middle':
-                    text.style.top = ((window.innerHeight - text.clientHeight) / 2) + 'px';
-                    break;
-                case 'bottom':
-                    text.style.top = (window.innerHeight - text.clientHeight) + 'px';
-                    break;
-            }
+            case 'top':
+                text.style.top = '0px';
+                break;
+            case 'middle':
+                text.style.top = ((window.innerHeight - text.clientHeight) / 2)   
+                    + 'px';
+                break;
+            case 'bottom':
+                text.style.top = (window.innerHeight - text.clientHeight) 
+                    + 'px';
+                break;
         }
         text.style.visibility = 'visible';
         return text.clientHeight;
     }
 
-    function startfade(newtext){
+    function show_footer(text){
+        document.getElementById('footer').innerHTML(text);
+    }
+    
+    function show_text(newtext){
         var text1 = document.getElementById('lyricsmain');
         var texto1 = document.getElementById('lyricsoutline');
         var texts1 = document.getElementById('lyricsshadow');
@@ -164,7 +192,8 @@ body {
         var text2 = document.getElementById('lyricsmain2');
         var texto2 = document.getElementById('lyricsoutline2');
         var texts2 = document.getElementById('lyricsshadow2');
-        if(text2.style.opacity==''||parseFloat(text2.style.opacity) < 0.5){
+        if((text2.style.opacity == '')||(parseFloat(text2.style.opacity) < 0.5))
+        {
             text2.innerHTML = text1.innerHTML;
             text2.style.opacity = text1.style.opacity;
             texto2.innerHTML = text1.innerHTML;
@@ -178,15 +207,14 @@ body {
         texto1.innerHTML = newtext;
         texts1.style.opacity = 0;
         texts1.innerHTML = newtext;
-        // temp:
+        // For performance reasons, we'll not animate the shadow for now
         texts2.style.opacity = 0;
-        // end temp
-        if(t!=null)
-            clearTimeout(t);
-        t = setTimeout('fade()', 50);
+        if(timer != null)
+            clearTimeout(timer);
+        timer = setTimeout('text_fade()', 50);
     }
 
-    function fade(){
+    function text_fade(){
         var text1 = document.getElementById('lyricsmain');
         var texto1 = document.getElementById('lyricsoutline');
         var texts1 = document.getElementById('lyricsshadow');
@@ -196,16 +224,19 @@ body {
         if(parseFloat(text1.style.opacity) < 1){
             text1.style.opacity = parseFloat(text1.style.opacity) + 0.1;
             texto1.style.opacity = parseFloat(texto1.style.opacity) + 0.1;
+            // Don't animate shadow (performance)
             //texts1.style.opacity = parseFloat(texts1.style.opacity) + 0.1;
         }
         if(parseFloat(text2.style.opacity) > 0){
             text2.style.opacity = parseFloat(text2.style.opacity) - 0.1;
             texto2.style.opacity = parseFloat(texto2.style.opacity) - 0.1;
+            // Don't animate shadow (performance)
             //texts2.style.opacity = parseFloat(texts2.style.opacity) - 0.1;
         }
-        if((parseFloat(text1.style.opacity) < 1)||(parseFloat(text2.style.opacity) > 0))
-            t = setTimeout('fade()', 50);
-        else{
+        if((parseFloat(text1.style.opacity) < 1) ||
+            (parseFloat(text2.style.opacity) > 0)){
+            t = setTimeout('text_fade()', 50);
+        } else {
             text1.style.opacity = 1;
             texto1.style.opacity = 1;
             texts1.style.opacity = 1;
@@ -215,12 +246,22 @@ body {
         }
     }
 
-    function fadeFinished(){
-       return (document.getElementById('lyricsmain').style.opacity==1);
+    function show_text_complete(){
+       return (document.getElementById('lyricsmain').style.opacity == 1);
     }
 </script>
 </head>
 <body>
+<!--
+Using tables, rather than div's to make use of the vertical-align style that
+doesn't work on div's. This avoids the need to do positioning manually which
+could get messy when changing verses esp. with transitions
+
+Would prefer to use a single table and make use of -webkit-text-fill-color
+-webkit-text-stroke and text-shadow styles, but they have problems working/
+co-operating in qwebkit. https://bugs.webkit.org/show_bug.cgi?id=43187
+Therefore one table for text, one for outline and one for shadow.
+-->
 <table class="lyricstable lyricscommon">
     <tr><td id="lyricsmain" class="lyrics"></td></tr>
 </table>
@@ -239,18 +280,11 @@ body {
 <table class="lyricsshadowtable lyricscommon">
     <tr><td id="lyricsshadow2" class="lyricsshadow lyrics"></td></tr>
 </table>
-<!--
-<table class="alerttable">
-    <tr><td class="alertcell">
-        <div class="alert" id="alertmain"></div>
-    </td></tr>
-</table>
--->
 <div id="alert" style="visibility:hidden;"></div>
 <div id="footer" class="footer"></div>
-<video id="video"></video>
-<div id="black"></div>
-%s
+<video class="dim" id="video"></video>
+<div class="dim" id="black"></div>
+<img class="dim" id="image" src="%s" />
 </body>
 </html>
     """
@@ -269,79 +303,17 @@ def build_html(item, screen, alert):
     width = screen[u'size'].width()
     height = screen[u'size'].height()
     theme = item.themedata
-    html = HTMLSRC % (build_video(width, height),
-                      build_image(width, height),
-                      build_lyrics(item),
-                      build_footer(item),
-                      build_alert(width, height, alert),
-                      build_image(width, height),
-                      build_black(width, height),
-                      "true" if theme and
-                        theme.display_slideTransition else "false",
-                      build_image_src(item.bg_frame))
-    return html
-
-def build_video(width, height):
-    """
-    Build the video display div
-
-    `width`
-        Screen width
-    `height`
-        Screen height
-    """
-    video = """
-    #video { position: absolute; left: 0px; top: 0px;
-        width: %spx; height: %spx; z-index:2; }
-    """
-    return video % (width, height)
-
-def build_black(width, height):
-    """
-    Build the black display div
-
-    `width`
-        Screen width
-    `height`
-        Screen height
-    """
-    black = """
-    #black { position: absolute; left: 0px; top: 0px;
-        width: %spx; height: %spx; z-index:8;
-        background-color: black; display: none;
-    }
-    """
-    return black % (width, height)
-
-def build_image(width, height):
-    """
-    Build the image display div
-
-    `width`
-        Screen width
-    `height`
-        Screen height
-    """
-    image = """
-    #image { position: absolute; left: 0px; top: 0px;
-        width: %spx; height: %spx; z-index:1;
-    }
-    """
-    return image % (width, height)
-
-def build_image_src(image):
-    """
-    Build display for the backgroung image
-
-    `image`
-        Image to be displayed
-    """
-    if image:
-        return '<img id="image" src="data:image/png;base64,%s" />' % \
-            image_to_byte(image)
+    if item.bg_frame:
+        image = u'data:image/png;base64,%s' % image_to_byte(item.bg_frame)
     else:
-        return '<img id="image" />'
-
+        image = u''
+    html = HTMLSRC % (width, height,
+        build_alert(alert, width),
+        build_footer(item),
+        build_lyrics(item),
+        u'true' if theme and theme.display_slideTransition else u'false',
+        image)
+    return html
 
 def build_lyrics(item):
     """
@@ -358,7 +330,6 @@ def build_lyrics(item):
     .lyrics { %s }
     .lyricsoutline { %s }
     .lyricsshadow { %s }
-    table {border=0; margin=0; padding=0; }
      """
     theme = item.themedata
     lyricscommon = u''
@@ -408,7 +379,6 @@ def build_lyrics(item):
                 shadow = u'color: %s;' % (theme.display_shadow_color)
     lyrics_html = style % (lyricscommon, lyricstable, outlinetable,
         shadowtable, lyrics, outline, shadow)
-    print lyrics_html
     return lyrics_html
 
 def build_footer(item):
@@ -418,64 +388,54 @@ def build_footer(item):
     `item`
         Service Item to be processed.
     """
-    lyrics = """
-    #footer {position: absolute; %s z-index:5; %s; %s }
+    style = """
+    left: %spx; 
+    top: %spx; 
+    width: %spx; 
+    height: %spx;
+    font-family: %s; 
+    font-size: %spx; 
+    color: %s; 
+    align: %s;     
     """
     theme = item.themedata
-    lyrics_html = u''
-    position = u''
-    font = u''
-    text = u''
-    if theme:
-        position =  u' left: %spx; top: %spx; width: %spx; height: %spx; ' % \
-            (item.footer.x(),  item.footer.y(), item.footer.width(),
-            item.footer.height())
-        font = u' font-family %s; font-size: %spx;' % \
-            (theme.font_footer_name, theme.font_footer_proportion)
-        align = u''
-        if theme.display_horizontalAlign == 2:
-            align = u'align:center;'
-        elif theme.display_horizontalAlign == 1:
-            align = u'align:right;'
-        text = u'color:%s; %s ' % (theme.font_footer_color, align)
-    lyrics_html = lyrics % (position, font, text)
+    if not theme:
+        return u''
+    if theme.display_horizontalAlign == 2:
+        align = u'center'
+    elif theme.display_horizontalAlign == 1:
+        align = u'right'
+    else:
+        align = u'left'
+    lyrics_html = style % (item.footer.x(),  item.footer.y(), 
+        item.footer.width(), item.footer.height(), theme.font_footer_name, 
+        theme.font_footer_proportion, theme.font_footer_color, align)
     return lyrics_html
 
-def build_alert(width, height, alertTab):
+def build_alert(alertTab, width):
     """
     Build the display of the footer
 
-    `width`
-        Screen Width
-    `height`
-        Screen height
     `alertTab`
         Details from the Alert tab for fonts etc
     """
     style = """
-    .alerttable { position: absolute; z-index:10; left 0px; top 0px; %s }
-    .alertcell { %s }
-    .alert { %s }
-     """
-    style2 = """
-    #alert {position: absolute; z-index:10; left 0px; top 0px; width: %spx; %s %s}
+    width: %s; 
+    vertical-align: %s; 
+    font-family %s; 
+    font-size: %spx; 
+    color: %s; 
+    background-color: %s;
     """
-    alerttable = u''
-    alertcell = u''
-    alert = u''
-    if alertTab:
-        if alertTab.location == 2:
-            alertcell = u'vertical-align:bottom;'
-        elif alertTab.location == 1:
-            alertcell = u'vertical-align:middle;'
-        else:
-            alertcell = u'vertical-align:top;'
-        alerttable = u'width: %spx; height: %spx; ' % (width, height)
-        alert = u'font-family %s; font-size: %spx; color: %s; ' \
-            u'background-color: %s' % \
-            (alertTab.font_face, alertTab.font_size, alertTab.font_color,
-            alertTab.bg_color)
-    #alert_html = style % (alerttable, alertcell, alert)
-    alert_html = style2 % (width, alertcell, alert)
-    print alert_html
-    return alert_html
+    if not alertTab:
+        return u''
+    align = u''
+    if alertTab.location == 2:
+        align = u'bottom'
+    elif alertTab.location == 1:
+        align = u'middle'
+    else:
+        align = u'top'
+    alert = style % (width, align, alertTab.font_face, alertTab.font_size, 
+        alertTab.font_color, alertTab.bg_color)
+    return alert
