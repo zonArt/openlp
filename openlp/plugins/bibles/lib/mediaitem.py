@@ -563,8 +563,8 @@ class BibleMediaItem(MediaManagerItem):
                     dual_version, verse_text)
             else:
                 service_item.title = u'%s (%s) %s' % (book, version, verse_text)
-        elif service_item.title.find(translate('BiblesPlugin.MediaItem',
-            'etc')) == -1:
+        elif service_item.title.find(
+            translate('BiblesPlugin.MediaItem', 'etc')) == -1:
             service_item.title = u'%s, %s' % (service_item.title,
                 translate('BiblesPlugin.MediaItem', 'etc'))
         # item theme
