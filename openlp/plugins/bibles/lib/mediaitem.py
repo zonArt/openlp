@@ -617,8 +617,8 @@ class BibleMediaItem(MediaManagerItem):
         self.verses = self.parent.manager.get_verse_count(bible, book, 1)
         if self.verses == 0:
             self.AdvancedSearchButton.setEnabled(False)
-            self.AdvancedMessage.setText(translate('BiblesPlugin.MediaItem',
-                'Bible not fully loaded.'))
+            self.AdvancedMessage.setText(
+                translate('BiblesPlugin.MediaItem', 'Bible not fully loaded.'))
         else:
             self.AdvancedSearchButton.setEnabled(True)
             self.AdvancedMessage.setText(u'')
