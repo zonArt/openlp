@@ -471,6 +471,7 @@ class BibleMediaItem(MediaManagerItem):
         items = self.listView.selectedIndexes()
         if len(items) == 0:
             return False
+        first = True
         bible_text = u''
         old_chapter = u''
         raw_footer = []
@@ -501,61 +502,52 @@ class BibleMediaItem(MediaManagerItem):
                 #dual_permission = self._decodeQtObject(reference,
                 #    'dual_permission')
                 dual_text = self._decodeQtObject(reference, 'dual_text')
-            if self.parent.settings_tab.display_style == 1:
-                verse_text = self.formatVerse(old_chapter, chapter, verse,
-                    u'(', u')')
-            elif self.parent.settings_tab.display_style == 2:
-                verse_text = self.formatVerse(old_chapter, chapter, verse,
-                    u'{', u'}')
-            elif self.parent.settings_tab.display_style == 3:
-                verse_text = self.formatVerse(old_chapter, chapter, verse,
-                    u'[', u']')
-            else:
-                verse_text = self.formatVerse(old_chapter, chapter, verse,
-                    u'', u'')
-            old_chapter = chapter
+            verse_text = self.formatVerse(old_chapter, chapter, verse)
+            # footer
             footer = u'%s (%s %s)' % (book, version, copyright)
-            # If not found add to footer
             if footer not in raw_footer:
                 raw_footer.append(footer)
             if dual_bible:
-                footer = u'%s (%s %s)' % (book, dual_version,
-                    dual_copyright)
-                # If not found add second version and copyright to footer.
+                footer = u'%s (%s %s)' % (book, dual_version, dual_copyright)
                 if footer not in raw_footer:
                     raw_footer.append(footer)
-                bible_text = u'%s %s \n\n %s %s' % (verse_text, text,
+                # If we were previously 'Verse Per Line' we have to add the old
+                # bible_text, because it was not added until now.
+                if bible_text:
+                    raw_slides.append(bible_text)
+                    bible_text = u''
+                bible_text = u'%s %s\n\n%s %s' % (verse_text, text,
                     verse_text, dual_text)
                 raw_slides.append(bible_text)
                 bible_text = u''
+            # If we are 'Verse Per Slide' then create a new slide.
+            elif self.parent.settings_tab.layout_style == 0:
+                bible_text = u'%s %s' % (verse_text, text)
+                raw_slides.append(bible_text)
+                bible_text = u''
+            # If we are 'Verse Per Line' then force a new line.
+            elif self.parent.settings_tab.layout_style == 1:
+                bible_text = u'%s %s %s\n\n' % (bible_text, verse_text, text)
+            # We have to be 'Continuous'.
             else:
-                # If we are 'Verse Per Line' then force a new line.
-                if self.parent.settings_tab.layout_style == 1:
-                    text = text + u'\n\n'
-                bible_text = u'%s %s %s' % (bible_text, verse_text, text)
-                # If we are 'Verse Per Slide' then create a new slide.
-                if self.parent.settings_tab.layout_style == 0:
-                    raw_slides.append(bible_text)
-                    bible_text = u''
-                # If we are not 'Verse Per Slide' we have to make sure, that we
-                # add more verses.
+                # We add a line break if the previously verse has a different
+                # book or bible version.
+                if first:
+                    bible_text = u'%s %s %s' % (bible_text, verse_text, text)
+                elif bible != old_bible or book != old_book:
+                    bible_text = u'%s\n\n%s %s' % (bible_text, verse_text,
+                        text)
                 else:
-                    if item.row() < len(items) - 1:
-                        bitem = items[item.row() + 1]
-                        reference = bitem.data(QtCore.Qt.UserRole)
-                        if isinstance(reference, QtCore.QVariant):
-                            reference = reference.toPyObject()
-                        bible_new = self._decodeQtObject(reference, 'bible')
-                        dual_bible_new = self._decodeQtObject(reference, 'dual_bible')
-                        if dual_bible_new:
-                            raw_slides.append(bible_text)
-                            bible_text = u''
-                        elif bible != bible_new:
-                            raw_slides.append(bible_text)
-                            bible_text = u''
-                    else:
-                        raw_slides.append(bible_text)
-                        bible_text = u''
+                    bible_text = u'%s %s %s' % (bible_text, verse_text, text)
+            if first:
+                first = False
+            old_chapter = chapter
+            old_book = book
+            old_bible = bible
+        # If there are no more items we check whether we have to add bible_text.
+        if bible_text:
+            raw_slides.append(bible_text)
+            bible_text = u''
         # service item title
         if not service_item.title:
             if dual_bible:
@@ -581,14 +573,17 @@ class BibleMediaItem(MediaManagerItem):
             service_item.raw_footer = raw_footer
         return True
 
-    def formatVerse(self, old_chapter, chapter, verse, opening, closing):
-        verse_text = opening
-        if old_chapter != chapter:
-            verse_text += chapter + u':'
-        elif not self.parent.settings_tab.show_new_chapters:
-            verse_text += chapter + u':'
+    def formatVerse(self, old_chapter, chapter, verse):
+        if not self.parent.settings_tab.show_new_chapters or \
+            old_chapter != chapter:
+            verse_text = chapter + u':'
         verse_text += verse
-        verse_text += closing
+        if self.parent.settings_tab.display_style == 1:
+            verse_text = u'(' + verse_text + u')'
+        elif self.parent.settings_tab.display_style == 2:
+            verse_text = u'{' + verse_text + u'}'
+        elif self.parent.settings_tab.display_style == 3:
+            verse_text = u'[' + verse_text + u']'
         return verse_text
 
     def reloadBibles(self):
