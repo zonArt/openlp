@@ -465,7 +465,8 @@ class BibleMediaItem(MediaManagerItem):
 
     def generateSlideData(self, service_item, item=None):
         '''
-        Generates and formats the slides for the service item.
+        Generates and formats the slides for the service item as well as the
+        service item's title.
         '''
         log.debug(u'generating slide data')
         items = self.listView.selectedIndexes()
@@ -628,10 +629,10 @@ class BibleMediaItem(MediaManagerItem):
         for i in range(int(range_from), int(range_to) + 1):
             combo.addItem(unicode(i))
 
-    def displayResults(self, bible, dual_bible=None):
+    def displayResults(self, bible, dual_bible=u''):
         '''
-        Displays the search results in the media manager. All data needed for further
-        action is saved for/in each row.
+        Displays the search results in the media manager. All data needed for
+        further action is saved for/in each row.
         '''
         version = self.parent.manager.get_meta_data(bible, u'Version')
         copyright = self.parent.manager.get_meta_data(bible, u'Copyright')
@@ -652,34 +653,34 @@ class BibleMediaItem(MediaManagerItem):
         for count, verse in enumerate(self.search_results):
             if dual_bible:
                 vdict = {
-                    'book':QtCore.QVariant(verse.book.name),
-                    'chapter':QtCore.QVariant(verse.chapter),
-                    'verse':QtCore.QVariant(verse.verse),
-                    'bible':QtCore.QVariant(bible),
-                    'version':QtCore.QVariant(version.value),
-                    'copyright':QtCore.QVariant(copyright.value),
-                    #'permission':QtCore.QVariant(permission.value),
-                    'text':QtCore.QVariant(verse.text),
-                    'dual_bible':QtCore.QVariant(dual_bible),
-                    'dual_version':QtCore.QVariant(dual_version.value),
-                    'dual_copyright':QtCore.QVariant(dual_copyright.value),
-                    #'dual_permission':QtCore.QVariant(dual_permission),
-                    'dual_text':QtCore.QVariant(
+                    'book': QtCore.QVariant(verse.book.name),
+                    'chapter': QtCore.QVariant(verse.chapter),
+                    'verse': QtCore.QVariant(verse.verse),
+                    'bible': QtCore.QVariant(bible),
+                    'version': QtCore.QVariant(version.value),
+                    'copyright': QtCore.QVariant(copyright.value),
+                    #'permission': QtCore.QVariant(permission.value),
+                    'text': QtCore.QVariant(verse.text),
+                    'dual_bible': QtCore.QVariant(dual_bible),
+                    'dual_version': QtCore.QVariant(dual_version.value),
+                    'dual_copyright': QtCore.QVariant(dual_copyright.value),
+                    #'dual_permission': QtCore.QVariant(dual_permission),
+                    'dual_text': QtCore.QVariant(
                         self.dual_search_results[count].text)
                 }
                 bible_text = u' %s %d:%d (%s, %s)' % (verse.book.name,
                     verse.chapter, verse.verse, version.value, dual_version.value)
             else:
                 vdict = {
-                    'book':QtCore.QVariant(verse.book.name),
-                    'chapter':QtCore.QVariant(verse.chapter),
-                    'verse':QtCore.QVariant(verse.verse),
-                    'bible':QtCore.QVariant(bible),
-                    'version':QtCore.QVariant(version.value),
-                    'copyright':QtCore.QVariant(copyright.value),
-                    #'permission':QtCore.QVariant(permission.value),
-                    'text':QtCore.QVariant(verse.text),
-                    'dual_bible':QtCore.QVariant(dual_bible)
+                    'book': QtCore.QVariant(verse.book.name),
+                    'chapter': QtCore.QVariant(verse.chapter),
+                    'verse': QtCore.QVariant(verse.verse),
+                    'bible': QtCore.QVariant(bible),
+                    'version': QtCore.QVariant(version.value),
+                    'copyright': QtCore.QVariant(copyright.value),
+                    #'permission': QtCore.QVariant(permission.value),
+                    'text': QtCore.QVariant(verse.text),
+                    'dual_bible': QtCore.QVariant(dual_bible)
                 }
                 bible_text = u' %s %d:%d (%s)' % (verse.book.name,
                     verse.chapter, verse.verse, version.value)
