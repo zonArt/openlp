@@ -144,6 +144,7 @@ from mediaitem import SongMediaItem
 from songimport import SongImport
 from opensongimport import OpenSongImport
 from olpimport import OpenLPSongImport
+from songselectfileimport import SongSelectFileImport
 try:
     from sofimport import SofImport
     from oooimport import OooImport

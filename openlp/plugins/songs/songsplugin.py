@@ -41,6 +41,8 @@ except ImportError:
 
 from openlp.plugins.songs.lib import OpenSongImport
 
+from openlp.plugins.songs.lib import SongSelectFileImport
+
 log = logging.getLogger(__name__)
 
 class SongsPlugin(Plugin):
@@ -169,6 +171,19 @@ class SongsPlugin(Plugin):
         import_menu.addAction(self.ImportOpenLPSongItem)
         QtCore.QObject.connect(self.ImportOpenLPSongItem,
             QtCore.SIGNAL(u'triggered()'), self.onImportOpenLPSongItemClick)
+        # SongSelect file import menu item
+        # an import wizard
+        self.ImportSongSelectSongItem = QtGui.QAction(import_menu)
+        self.ImportSongSelectSongItem.setObjectName(u'ImportSongSelectSongItem')
+        self.ImportSongSelectSongItem.setText(translate('SongsPlugin',
+            'SongSelect File (temporary)'))
+        self.ImportSongSelectSongItem.setToolTip(translate('SongsPlugin',
+            'Import a SongSelect song file'))
+        self.ImportSongSelectSongItem.setStatusTip(translate('SongsPlugin',
+            'Import a SongSelect song file'))
+        import_menu.addAction(self.ImportSongSelectSongItem)
+        QtCore.QObject.connect(self.ImportSongSelectSongItem,
+            QtCore.SIGNAL(u'triggered()'), self.onImportSongSelectSongItemClick)
 
     def addExportMenuItem(self, export_menu):
         """
@@ -246,6 +261,22 @@ class SongsPlugin(Plugin):
             '', u'All Files(*.*)')
         oooimport = OooImport(self.manager)
         oooimport.import_docs(filenames)
+        Receiver.send_message(u'songs_load_list')
+
+    def onImportSongSelectSongItemClick(self):
+        filenames = QtGui.QFileDialog.getOpenFileNames(
+            None, translate('SongsPlugin',
+                'Open SongSelect file'),
+            u'', u'SongSelect files (*.usr *.txt)')
+        try:
+            for filename in filenames:
+                importer = SongSelectFileImport(self.manager)
+                importer.do_import(unicode(filename))
+        except:
+            log.exception('Could not import SongSelect file')
+            QtGui.QMessageBox.critical(None,
+                translate('SongsPlugin', 'Import Error'),
+                translate('SongsPlugin', 'Error importing SongSelect file'))
         Receiver.send_message(u'songs_load_list')
 
     def about(self):
