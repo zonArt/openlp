@@ -68,17 +68,6 @@ class Ui_AmendThemeDialog(object):
         self.backgroundLayout.setMargin(8)
         self.backgroundLayout.setSpacing(8)
         self.backgroundLayout.setObjectName(u'backgroundLayout')
-#        self.backgroundLabel = QtGui.QLabel(self.backgroundTab)
-#        self.backgroundLabel.setObjectName(u'backgroundLabel')
-#        self.backgroundLayout.setWidget(0, QtGui.QFormLayout.LabelRole,
-#            self.backgroundLabel)
-#        self.backgroundComboBox = QtGui.QComboBox(self.backgroundTab)
-#        self.backgroundComboBox.setObjectName(u'backgroundComboBox')
-#        self.backgroundLabel.setBuddy(self.backgroundComboBox)
-#        self.backgroundComboBox.addItem(QtCore.QString())
-#        self.backgroundComboBox.addItem(QtCore.QString())
-#        self.backgroundLayout.setWidget(0, QtGui.QFormLayout.FieldRole,
-#            self.backgroundComboBox)
         self.backgroundTypeLabel = QtGui.QLabel(self.backgroundTab)
         self.backgroundTypeLabel.setObjectName(u'backgroundTypeLabel')
         self.backgroundLayout.setWidget(1, QtGui.QFormLayout.LabelRole,
@@ -216,17 +205,6 @@ class Ui_AmendThemeDialog(object):
         self.fontMainLineAdjustmentSpinBox.setMinimum(-99)
         self.mainFontLayout.setWidget(4, QtGui.QFormLayout.FieldRole,
             self.fontMainLineAdjustmentSpinBox)
-#        self.fontMainWrapIndentationLabel = QtGui.QLabel(self.fontMainGroupBox)
-#        self.fontMainWrapIndentationLabel.setObjectName(
-#            u'fontMainWrapIndentationLabel')
-#        self.mainFontLayout.setWidget(5, QtGui.QFormLayout.LabelRole,
-#            self.fontMainWrapIndentationLabel)
-#        self.fontMainLineSpacingSpinBox = QtGui.QSpinBox(self.fontMainGroupBox)
-#        self.fontMainLineSpacingSpinBox.setObjectName(
-#            u'fontMainLineSpacingSpinBox')
-#        self.fontMainLineSpacingSpinBox.setMaximum(10)
-#        self.mainFontLayout.setWidget(5, QtGui.QFormLayout.FieldRole,
-#            self.fontMainLineSpacingSpinBox)
         self.fontMainLinesPageLabel = QtGui.QLabel(self.fontMainGroupBox)
         self.fontMainLinesPageLabel.setObjectName(u'fontMainLinesPageLabel')
         self.mainFontLayout.addRow(self.fontMainLinesPageLabel)
