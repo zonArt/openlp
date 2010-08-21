@@ -169,7 +169,16 @@ class Renderer(object):
         doc.setDefaultFont(df)
         layout = doc.documentLayout()
         formatted = []
-        shell = u'<p>%s</p>'
+        if self._theme.font_main_weight == u'Bold' and \
+            self._theme.font_main_italics:
+            shell = u'{p}{st}{it}%s{/it}{/st}{/p}'
+        elif self._theme.font_main_weight == u'Bold' and \
+            not self._theme.font_main_italics:
+            shell = u'{p}{st}%s{/st}{/p}'
+        elif self._theme.font_main_italics:
+            shell = u'{p}{it}%s{/it}{/p}'
+        else:
+            shell = u'{p}%s{/p}'
         temp_text = u''
         old_html_text = u''
         for line in text:

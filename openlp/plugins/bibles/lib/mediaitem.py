@@ -503,16 +503,16 @@ class BibleMediaItem(MediaManagerItem):
                 dual_text = self._decodeQtObject(reference, 'dual_text')
             if self.parent.settings_tab.display_style == 1:
                 verse_text = self.formatVerse(old_chapter, chapter, verse,
-                    u'<sup>(', u')</sup>')
+                    u'{su}(', u'){/su}')
             elif self.parent.settings_tab.display_style == 2:
                 verse_text = self.formatVerse(old_chapter, chapter, verse,
-                    u'<sup>{', u'}</sup>')
+                    u'{su}{', u'}{/su}')
             elif self.parent.settings_tab.display_style == 3:
                 verse_text = self.formatVerse(old_chapter, chapter, verse,
-                    u'<sup>[', u']</sup>')
+                    u'{su}[', u']{/su}')
             else:
                 verse_text = self.formatVerse(old_chapter, chapter, verse,
-                    u'<sup>', u'</sup>')
+                    u'{su}', u'{/su}')
             old_chapter = chapter
             footer = u'%s (%s %s)' % (book, version, copyright)
             # If not found add to footer
@@ -572,7 +572,6 @@ class BibleMediaItem(MediaManagerItem):
             service_item.title = u'%s, %s' % (service_item.title,
                 translate('BiblesPlugin.MediaItem', 'etc'))
         # item theme
->>>>>>> MERGE-SOURCE
         if len(self.parent.settings_tab.bible_theme) == 0:
             service_item.theme = None
         else:
