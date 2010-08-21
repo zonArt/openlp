@@ -216,17 +216,17 @@ class Ui_AmendThemeDialog(object):
         self.fontMainLineAdjustmentSpinBox.setMinimum(-99)
         self.mainFontLayout.setWidget(4, QtGui.QFormLayout.FieldRole,
             self.fontMainLineAdjustmentSpinBox)
-        self.fontMainWrapIndentationLabel = QtGui.QLabel(self.fontMainGroupBox)
-        self.fontMainWrapIndentationLabel.setObjectName(
-            u'fontMainWrapIndentationLabel')
-        self.mainFontLayout.setWidget(5, QtGui.QFormLayout.LabelRole,
-            self.fontMainWrapIndentationLabel)
-        self.fontMainLineSpacingSpinBox = QtGui.QSpinBox(self.fontMainGroupBox)
-        self.fontMainLineSpacingSpinBox.setObjectName(
-            u'fontMainLineSpacingSpinBox')
-        self.fontMainLineSpacingSpinBox.setMaximum(10)
-        self.mainFontLayout.setWidget(5, QtGui.QFormLayout.FieldRole,
-            self.fontMainLineSpacingSpinBox)
+#        self.fontMainWrapIndentationLabel = QtGui.QLabel(self.fontMainGroupBox)
+#        self.fontMainWrapIndentationLabel.setObjectName(
+#            u'fontMainWrapIndentationLabel')
+#        self.mainFontLayout.setWidget(5, QtGui.QFormLayout.LabelRole,
+#            self.fontMainWrapIndentationLabel)
+#        self.fontMainLineSpacingSpinBox = QtGui.QSpinBox(self.fontMainGroupBox)
+#        self.fontMainLineSpacingSpinBox.setObjectName(
+#            u'fontMainLineSpacingSpinBox')
+#        self.fontMainLineSpacingSpinBox.setMaximum(10)
+#        self.mainFontLayout.setWidget(5, QtGui.QFormLayout.FieldRole,
+#            self.fontMainLineSpacingSpinBox)
         self.fontMainLinesPageLabel = QtGui.QLabel(self.fontMainGroupBox)
         self.fontMainLinesPageLabel.setObjectName(u'fontMainLinesPageLabel')
         self.mainFontLayout.addRow(self.fontMainLinesPageLabel)
@@ -700,8 +700,8 @@ class Ui_AmendThemeDialog(object):
             translate('OpenLP.AmendThemeForm', 'Size:'))
         self.fontMainSizeSpinBox.setSuffix(
             translate('OpenLP.AmendThemeForm', 'pt'))
-        self.fontMainWrapIndentationLabel.setText(
-            translate('OpenLP.AmendThemeForm', 'Wrap indentation:'))
+#        self.fontMainWrapIndentationLabel.setText(
+#            translate('OpenLP.AmendThemeForm', 'Wrap indentation:'))
         self.fontMainWrapLineAdjustmentLabel.setText(
             translate('OpenLP.AmendThemeForm', 'Adjust line spacing:'))
         self.fontMainWeightComboBox.setItemText(0,
