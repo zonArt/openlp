@@ -91,6 +91,22 @@ class RenderManager(object):
                                   u'start html':u'<font color=green>', \
                                   u'end tag':u'{/g}', u'end html':u'</font>', \
                                   u'protected':False})
+        self.html_expands.append({u'desc':u'Pink', u'start tag':u'{pk}', \
+                                  u'start html':u'<font color=#CC33CC>', \
+                                  u'end tag':u'{/pk}', u'end html':u'</font>', \
+                                  u'protected':False})
+        self.html_expands.append({u'desc':u'Orange', u'start tag':u'{o}', \
+                                  u'start html':u'<font color=#CC0033>', \
+                                  u'end tag':u'{/o}', u'end html':u'</font>', \
+                                  u'protected':False})
+        self.html_expands.append({u'desc':u'Purple', u'start tag':u'{pp}', \
+                                  u'start html':u'<font color=#9900FF>', \
+                                  u'end tag':u'{/pp}', u'end html':u'</font>', \
+                                  u'protected':False})
+        self.html_expands.append({u'desc':u'White', u'start tag':u'{w}', \
+                                  u'start html':u'<font color=white>', \
+                                  u'end tag':u'{/w}', u'end html':u'</font>', \
+                                  u'protected':False})
         self.html_expands.append({u'desc':u'Superscript', u'start tag':u'{su}', \
                                   u'start html':u'<sup>', \
                                   u'end tag':u'{/su}', u'end html':u'</sup>', \
@@ -243,8 +259,8 @@ class RenderManager(object):
         serviceItem.theme = themedata
         serviceItem.add_from_text(u'', verse, footer)
         serviceItem.render_manager = self
-        serviceItem.render(True)
         serviceItem.raw_footer = footer
+        serviceItem.render(True)
         self.display.buildHtml(serviceItem)
         frame, raw_html = serviceItem.get_rendered_frame(0)
         preview = self.display.text(raw_html)

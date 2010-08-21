@@ -176,8 +176,8 @@ body {
         return text.clientHeight;
     }
 
-    function show_footer(text){
-        document.getElementById('footer').innerHTML(text);
+    function show_footer(footertext){
+        document.getElementById('footer').innerHTML(footertext);
     }
 
     function show_text(newtext){
@@ -314,6 +314,7 @@ def build_html(item, screen, alert):
         build_lyrics(item),
         u'true' if theme and theme.display_slideTransition else u'false',
         image)
+    print html
     return html
 
 def build_lyrics(item):
