@@ -68,67 +68,6 @@ class RenderManager(object):
         self.themedata = None
         self.alertTab = None
 
-        # TODO make external and configurable in alpha 4
-        self.html_expands = []
-
-        self.html_expands.append({u'desc':u'Red', u'start tag':u'{r}', \
-                                  u'start html':u'<font color=red>', \
-                                  u'end tag':u'{/r}', u'end html':u'</font>', \
-                                  u'protected':False})
-        self.html_expands.append({u'desc':u'Black', u'start tag':u'{b}', \
-                                  u'start html':u'<font color=black>', \
-                                  u'end tag':u'{/b}', u'end html':u'</font>', \
-                                  u'protected':False})
-        self.html_expands.append({u'desc':u'Blue', u'start tag':u'{bl}', \
-                                  u'start html':u'<font color=blue>', \
-                                  u'end tag':u'{/bl}', u'end html':u'</font>', \
-                                  u'protected':False})
-        self.html_expands.append({u'desc':u'Yellow', u'start tag':u'{y}', \
-                                  u'start html':u'<font color=yellow>', \
-                                  u'end tag':u'{/y}', u'end html':u'</font>', \
-                                  u'protected':False})
-        self.html_expands.append({u'desc':u'Green', u'start tag':u'{g}', \
-                                  u'start html':u'<font color=green>', \
-                                  u'end tag':u'{/g}', u'end html':u'</font>', \
-                                  u'protected':False})
-        self.html_expands.append({u'desc':u'Pink', u'start tag':u'{pk}', \
-                                  u'start html':u'<font color=#CC33CC>', \
-                                  u'end tag':u'{/pk}', u'end html':u'</font>', \
-                                  u'protected':False})
-        self.html_expands.append({u'desc':u'Orange', u'start tag':u'{o}', \
-                                  u'start html':u'<font color=#CC0033>', \
-                                  u'end tag':u'{/o}', u'end html':u'</font>', \
-                                  u'protected':False})
-        self.html_expands.append({u'desc':u'Purple', u'start tag':u'{pp}', \
-                                  u'start html':u'<font color=#9900FF>', \
-                                  u'end tag':u'{/pp}', u'end html':u'</font>', \
-                                  u'protected':False})
-        self.html_expands.append({u'desc':u'White', u'start tag':u'{w}', \
-                                  u'start html':u'<font color=white>', \
-                                  u'end tag':u'{/w}', u'end html':u'</font>', \
-                                  u'protected':False})
-        self.html_expands.append({u'desc':u'Superscript', u'start tag':u'{su}', \
-                                  u'start html':u'<sup>', \
-                                  u'end tag':u'{/su}', u'end html':u'</sup>', \
-                                  u'protected':True})
-        self.html_expands.append({u'desc':u'Subscript', u'start tag':u'{sb}', \
-                                  u'start html':u'<sub>', \
-                                  u'end tag':u'{/sb}', u'end html':u'</sub>', \
-                                  u'protected':True})
-        self.html_expands.append({u'desc':u'Paragraph', u'start tag':u'{p}', \
-                                  u'start html':u'<p>', \
-                                  u'end tag':u'{/p}', u'end html':u'</p>', \
-                                  u'protected':True})
-        self.html_expands.append({u'desc':u'Bold', u'start tag':u'{st}', \
-                                  u'start html':u'<strong>', \
-                                  u'end tag':u'{/st}', \
-                                  u'end html':u'</strong>', \
-                                  u'protected':True})
-        self.html_expands.append({u'desc':u'Italics', u'start tag':u'{it}', \
-                                  u'start html':u'<em>', \
-                                  u'end tag':u'{/it}', u'end html':u'</em>', \
-                                  u'protected':True})
-
     def update_display(self):
         """
         Updates the render manager's information about the current screen.
@@ -294,22 +233,3 @@ class RenderManager(object):
             self.width, self.height, self.screen_ratio )
         # 90% is start of footer
         self.footer_start = int(self.height * 0.90)
-
-    def clean(self, text):
-        """
-        Remove Tags from text for display
-        """
-        text = text.replace(u'<br>', u'\n')
-        for tag in self.html_expands:
-            text = text.replace(tag[u'start tag'], u'')
-            text = text.replace(tag[u'end tag'], u'')
-        return text
-
-    def expand(self, text):
-        """
-        Expand tags HTML for display
-        """
-        for tag in self.html_expands:
-            text = text.replace(tag[u'start tag'], tag[u'start html'])
-            text = text.replace(tag[u'end tag'], tag[u'end html'])
-        return text

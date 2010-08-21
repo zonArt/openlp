@@ -31,7 +31,7 @@ import logging
 
 from PyQt4 import QtGui, QtCore
 
-from openlp.core.lib import resize_image
+from openlp.core.lib import resize_image, expand_tags
 
 log = logging.getLogger(__name__)
 
@@ -183,7 +183,7 @@ class Renderer(object):
         for line in text:
             # mark line ends
             temp_text = temp_text + line + line_end
-            html_text = shell % temp_text
+            html_text = shell % expand_tags(temp_text)
             doc.setHtml(html_text)
             # Text too long so gone to next mage
             if layout.pageCount() != 1:
