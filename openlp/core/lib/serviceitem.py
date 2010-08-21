@@ -100,6 +100,11 @@ class ServiceItem(object):
         self.bg_frame = None
 
     def _new_item(self):
+        """
+        Method to set the internal id of the item
+        This is used to compare service items to see if they are
+        the same
+        """
         self._uuid = unicode(uuid.uuid1())
 
     def add_capability(self, capability):

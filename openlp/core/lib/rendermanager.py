@@ -71,43 +71,44 @@ class RenderManager(object):
         # TODO make external and configurable in alpha 4
         self.html_expands = []
 
-        self.html_expands.append({u'desc':u'Red',u'start tag':u'{r}', \
+        self.html_expands.append({u'desc':u'Red', u'start tag':u'{r}', \
                                   u'start html':u'<font color=red>', \
                                   u'end tag':u'{/r}', u'end html':u'</font>', \
                                   u'protected':False})
-        self.html_expands.append({u'desc':u'Black',u'start tag':u'{b}', \
+        self.html_expands.append({u'desc':u'Black', u'start tag':u'{b}', \
                                   u'start html':u'<font color=black>', \
                                   u'end tag':u'{/b}', u'end html':u'</font>', \
                                   u'protected':False})
-        self.html_expands.append({u'desc':u'Blue',u'start tag':u'{bl}', \
+        self.html_expands.append({u'desc':u'Blue', u'start tag':u'{bl}', \
                                   u'start html':u'<font color=blue>', \
                                   u'end tag':u'{/bl}', u'end html':u'</font>', \
                                   u'protected':False})
-        self.html_expands.append({u'desc':u'Yellow',u'start tag':u'{y}', \
+        self.html_expands.append({u'desc':u'Yellow', u'start tag':u'{y}', \
                                   u'start html':u'<font color=yellow>', \
                                   u'end tag':u'{/y}', u'end html':u'</font>', \
                                   u'protected':False})
-        self.html_expands.append({u'desc':u'Green',u'start tag':u'{g}', \
+        self.html_expands.append({u'desc':u'Green', u'start tag':u'{g}', \
                                   u'start html':u'<font color=green>', \
                                   u'end tag':u'{/g}', u'end html':u'</font>', \
                                   u'protected':False})
-        self.html_expands.append({u'desc':u'Superscript',u'start tag':u'{su}', \
+        self.html_expands.append({u'desc':u'Superscript', u'start tag':u'{su}', \
                                   u'start html':u'<sup>', \
                                   u'end tag':u'{/su}', u'end html':u'</sup>', \
                                   u'protected':True})
-        self.html_expands.append({u'desc':u'Subscript',u'start tag':u'{sb}', \
+        self.html_expands.append({u'desc':u'Subscript', u'start tag':u'{sb}', \
                                   u'start html':u'<sub>', \
                                   u'end tag':u'{/sb}', u'end html':u'</sub>', \
                                   u'protected':True})
-        self.html_expands.append({u'desc':u'Paragraph',u'start tag':u'{p}', \
+        self.html_expands.append({u'desc':u'Paragraph', u'start tag':u'{p}', \
                                   u'start html':u'<p>', \
                                   u'end tag':u'{/p}', u'end html':u'</p>', \
                                   u'protected':True})
-        self.html_expands.append({u'desc':u'Bold',u'start tag':u'{st}', \
+        self.html_expands.append({u'desc':u'Bold', u'start tag':u'{st}', \
                                   u'start html':u'<strong>', \
-                                  u'end tag':u'{/st}', u'end html':u'</strong>', \
+                                  u'end tag':u'{/st}', \
+                                  u'end html':u'</strong>', \
                                   u'protected':True})
-        self.html_expands.append({u'desc':u'Italics',u'start tag':u'{it}', \
+        self.html_expands.append({u'desc':u'Italics', u'start tag':u'{it}', \
                                   u'start html':u'<em>', \
                                   u'end tag':u'{/it}', u'end html':u'</em>', \
                                   u'protected':True})
@@ -262,20 +263,6 @@ class RenderManager(object):
         self.build_text_rectangle(self.themedata)
         return self.renderer.format_slide(words, line_break)
 
-#    def generate_slide(self, main_text):
-#        """
-#        Generate the actual slide image.
-#
-#        ``main_text``
-#            The text for the main area of the slide.
-#        """
-#        log.debug(u'generate slide')
-#        self.build_text_rectangle(self.themedata)
-#        self.renderer.set_frame_dest(self.width, self.height)
-#        image = self.previewDisplay.preview(self.renderer.bg_frame,
-#            main_text[0], self.themedata)
-#        return image
-
     def calculate_default(self, screen):
         """
         Calculate the default dimentions of the screen.
@@ -304,10 +291,9 @@ class RenderManager(object):
 
     def expand(self, text):
         """
-        Expand tags fto HTML for display
+        Expand tags HTML for display
         """
         for tag in self.html_expands:
             text = text.replace(tag[u'start tag'], tag[u'start html'])
             text = text.replace(tag[u'end tag'], tag[u'end html'])
         return text
-

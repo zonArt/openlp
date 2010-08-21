@@ -957,7 +957,6 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'SlideController mediaVolume')
         self.volume = self.volumeSlider.value()
-        print self.volume
         self.display.videoVolume(self.volume)
 
     def onMediaPause(self):

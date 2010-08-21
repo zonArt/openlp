@@ -183,7 +183,7 @@ def image_to_byte(image):
     else:
         pixmap = QtGui.QPixmap(image)
     pixmap.save(buffie, "PNG")
-    #convert to base64 encoding so does not get missed!
+    # convert to base64 encoding so does not get missed!
     return byte_array.toBase64()
 
 def resize_image(image, width, height, background=QtCore.Qt.black):
@@ -201,7 +201,7 @@ def resize_image(image, width, height, background=QtCore.Qt.black):
     """
     preview = QtGui.QImage(image)
     if not preview.isNull():
-        #Only resize if different size
+        # Only resize if different size
         if preview.width() == width and preview.height == height:
             return preview
         preview = preview.scaled(width, height, QtCore.Qt.KeepAspectRatio,

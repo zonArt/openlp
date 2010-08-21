@@ -661,12 +661,6 @@ class Ui_AmendThemeDialog(object):
             translate('OpenLP.AmendThemeForm', 'Theme Maintenance'))
         self.themeNameLabel.setText(
             translate('OpenLP.AmendThemeForm', 'Theme &name:'))
-#        self.backgroundLabel.setText(
-#            translate('OpenLP.AmendThemeForm', '&Visibility:'))
-#        self.backgroundComboBox.setItemText(0,
-#            translate('OpenLP.AmendThemeForm', 'Opaque'))
-#        self.backgroundComboBox.setItemText(1,
-#            translate('OpenLP.AmendThemeForm', 'Transparent'))
         self.backgroundTypeLabel.setText(
             translate('OpenLP.AmendThemeForm', 'Type:'))
         self.backgroundTypeComboBox.setItemText(0,
@@ -700,8 +694,6 @@ class Ui_AmendThemeDialog(object):
             translate('OpenLP.AmendThemeForm', 'Size:'))
         self.fontMainSizeSpinBox.setSuffix(
             translate('OpenLP.AmendThemeForm', 'pt'))
-#        self.fontMainWrapIndentationLabel.setText(
-#            translate('OpenLP.AmendThemeForm', 'Wrap indentation:'))
         self.fontMainWrapLineAdjustmentLabel.setText(
             translate('OpenLP.AmendThemeForm', 'Adjust line spacing:'))
         self.fontMainWeightComboBox.setItemText(0,
