@@ -68,16 +68,6 @@ class RenderManager(object):
         self.themedata = None
         self.alertTab = None
 
-        # TODO make external and configurable
-        self.html_expands = {
-            u'{r}': u'<font color=red>',
-            u'{b}': u'<font color=black>',
-            u'{u}': u'<font color=blue>',
-            u'{y}': u'<font color=yellow>',
-            u'{g}': u'<font color=green>',
-            u'{/}': u'</font>'
-        }
-
     def update_display(self):
         """
         Updates the render manager's information about the current screen.
@@ -208,8 +198,8 @@ class RenderManager(object):
         serviceItem.theme = themedata
         serviceItem.add_from_text(u'', verse, footer)
         serviceItem.render_manager = self
-        serviceItem.render(True)
         serviceItem.raw_footer = footer
+        serviceItem.render(True)
         self.display.buildHtml(serviceItem)
         frame, raw_html = serviceItem.get_rendered_frame(0)
         preview = self.display.text(raw_html)
@@ -228,20 +218,6 @@ class RenderManager(object):
         self.build_text_rectangle(self.themedata)
         return self.renderer.format_slide(words, line_break)
 
-#    def generate_slide(self, main_text):
-#        """
-#        Generate the actual slide image.
-#
-#        ``main_text``
-#            The text for the main area of the slide.
-#        """
-#        log.debug(u'generate slide')
-#        self.build_text_rectangle(self.themedata)
-#        self.renderer.set_frame_dest(self.width, self.height)
-#        image = self.previewDisplay.preview(self.renderer.bg_frame,
-#            main_text[0], self.themedata)
-#        return image
-
     def calculate_default(self, screen):
         """
         Calculate the default dimentions of the screen.
@@ -257,23 +233,3 @@ class RenderManager(object):
             self.width, self.height, self.screen_ratio )
         # 90% is start of footer
         self.footer_start = int(self.height * 0.90)
-
-    def clean(self, text):
-        """
-        Remove Tags from text for display
-        """
-        text = text.replace(u'<br>', u'\n').replace(u'<p>', u'')\
-            .replace(u'</p>', u'').replace(u'<sup>', u'')\
-            .replace(u'</sup>', u'')
-        for key, value in self.html_expands.iteritems():
-            text = text.replace(key, u'')
-        return text
-
-    def expand(self, text):
-        """
-        Expand tags fto HTML for display
-        """
-        for key, value in self.html_expands.iteritems():
-            text = text.replace(key, value)
-        return text
-

@@ -40,30 +40,30 @@ body {
     background-color: black;
 }
 .dim {
-    position: absolute; 
-    left: 0px; 
+    position: absolute;
+    left: 0px;
     top: 0px;
-    width: %spx; 
-    height: %spx; 
+    width: %spx;
+    height: %spx;
 }
-#black { 
+#black {
     z-index:8;
-    background-color: black; 
+    background-color: black;
     display: none;
 }
-#video { 
-    z-index:2; 
+#video {
+    z-index:2;
 }
 #alert {
-    position: absolute; 
-    left: 0px; 
+    position: absolute;
+    left: 0px;
     top: 0px;
-    z-index:10; 
+    z-index:10;
     %s
 }
 #footer {
-    position: absolute; 
-    z-index:5; 
+    position: absolute;
+    z-index:5;
     %s
 }
 /* lyric css */
@@ -116,6 +116,7 @@ body {
         else
             img.style.display = 'block';
     }
+
     function show_blank(state){
         var black = 'none';
         var lyrics = '';
@@ -163,11 +164,11 @@ body {
                 text.style.top = '0px';
                 break;
             case 'middle':
-                text.style.top = ((window.innerHeight - text.clientHeight) / 2)   
+                text.style.top = ((window.innerHeight - text.clientHeight) / 2)
                     + 'px';
                 break;
             case 'bottom':
-                text.style.top = (window.innerHeight - text.clientHeight) 
+                text.style.top = (window.innerHeight - text.clientHeight)
                     + 'px';
                 break;
         }
@@ -175,10 +176,10 @@ body {
         return text.clientHeight;
     }
 
-    function show_footer(text){
-        document.getElementById('footer').innerHTML(text);
+    function show_footer(footertext){
+        document.getElementById('footer').innerHTML(footertext);
     }
-    
+
     function show_text(newtext){
         var text1 = document.getElementById('lyricsmain');
         var texto1 = document.getElementById('lyricsoutline');
@@ -389,14 +390,14 @@ def build_footer(item):
         Service Item to be processed.
     """
     style = """
-    left: %spx; 
-    top: %spx; 
-    width: %spx; 
+    left: %spx;
+    top: %spx;
+    width: %spx;
     height: %spx;
-    font-family: %s; 
-    font-size: %spx; 
-    color: %s; 
-    align: %s;     
+    font-family: %s;
+    font-size: %spx;
+    color: %s;
+    align: %s;
     """
     theme = item.themedata
     if not theme:
@@ -407,8 +408,8 @@ def build_footer(item):
         align = u'right'
     else:
         align = u'left'
-    lyrics_html = style % (item.footer.x(),  item.footer.y(), 
-        item.footer.width(), item.footer.height(), theme.font_footer_name, 
+    lyrics_html = style % (item.footer.x(),  item.footer.y(),
+        item.footer.width(), item.footer.height(), theme.font_footer_name,
         theme.font_footer_proportion, theme.font_footer_color, align)
     return lyrics_html
 
@@ -420,11 +421,11 @@ def build_alert(alertTab, width):
         Details from the Alert tab for fonts etc
     """
     style = """
-    width: %s; 
-    vertical-align: %s; 
-    font-family %s; 
-    font-size: %spx; 
-    color: %s; 
+    width: %s;
+    vertical-align: %s;
+    font-family %s;
+    font-size: %spx;
+    color: %s;
     background-color: %s;
     """
     if not alertTab:
@@ -436,6 +437,6 @@ def build_alert(alertTab, width):
         align = u'middle'
     else:
         align = u'top'
-    alert = style % (width, align, alertTab.font_face, alertTab.font_size, 
+    alert = style % (width, align, alertTab.font_face, alertTab.font_size,
         alertTab.font_color, alertTab.bg_color)
     return alert

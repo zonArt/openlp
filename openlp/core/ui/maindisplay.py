@@ -178,7 +178,7 @@ class MainDisplay(DisplayWidget):
             or not self.isVisible():
             shrink = True
         else:
-            shrink = False            
+            shrink = False
         js =  u'show_alert("%s", "%s")' % (
             text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'),
             u'top' if shrink else u'')
@@ -315,13 +315,13 @@ class MainDisplay(DisplayWidget):
         self.serviceItem = serviceItem
         html = build_html(self.serviceItem, self.screen, self.parent.alertTab)
         self.webView.setHtml(html)
-        if serviceItem.footer and serviceItem.foot_text:
+        if serviceItem.foot_text and serviceItem.foot_text:
             self.footer(serviceItem.foot_text)
 
     def footer(self, text):
         log.debug(u'footer')
         js =  "show_footer('" + \
-            text.replace("\\", "\\\\").replace("\'", "\\\'") + "')" 
+            text.replace("\\", "\\\\").replace("\'", "\\\'") + "')"
         self.frame.evaluateJavaScript(js)
 
     def hideDisplay(self, mode=HideMode.Screen):

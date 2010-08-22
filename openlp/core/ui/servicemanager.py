@@ -873,6 +873,7 @@ class ServiceManager(QtGui.QWidget):
                     ItemCapabilities.AllowsPreview):
                     self.parent.PreviewController.addServiceManagerItem(
                         self.serviceItems[item][u'service_item'], 0)
+                    self.parent.LiveController.PreviewListWidget.setFocus()
         else:
             QtGui.QMessageBox.critical(self,
                 translate('OpenLP.ServiceManager', 'Missing Display Handler'),

@@ -35,7 +35,7 @@ import uuid
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import build_icon, resize_image
+from openlp.core.lib import build_icon, resize_image, clean_tags, expand_tags
 
 log = logging.getLogger(__name__)
 
@@ -100,6 +100,11 @@ class ServiceItem(object):
         self.bg_frame = None
 
     def _new_item(self):
+        """
+        Method to set the internal id of the item
+        This is used to compare service items to see if they are
+        the same
+        """
         self._uuid = unicode(uuid.uuid1())
 
     def add_capability(self, capability):
@@ -159,9 +164,9 @@ class ServiceItem(object):
                     .format_slide(slide[u'raw_slide'], line_break)
                 for page in formated:
                     self._display_frames.append(
-                        {u'title': self.render_manager.clean(page),
-                        u'text': self.render_manager.clean(page.rstrip()),
-                        u'html': self.render_manager.expand(page.rstrip()),
+                        {u'title': clean_tags(page),
+                        u'text': clean_tags(page.rstrip()),
+                        u'html': expand_tags(page.rstrip()),
                         u'verseTag': slide[u'verseTag'] })
                 log.log(15, u'Formatting took %4s' % (time.time() - before))
         elif self.service_item_type == ServiceItemType.Image:
