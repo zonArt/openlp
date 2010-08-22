@@ -314,7 +314,6 @@ def build_html(item, screen, alert):
         build_lyrics(item),
         u'true' if theme and theme.display_slideTransition else u'false',
         image)
-    print html
     return html
 
 def build_lyrics(item):

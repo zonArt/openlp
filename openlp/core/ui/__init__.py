@@ -34,16 +34,17 @@ import sys
 import enchant
 
 from PyQt4 import QtCore, QtGui
+from openlp.core.lib import html_expands, translate, context_menu_action
 
-class SpellTextEdit(QtGui.QPlainTextEdit):
+class BaseSpellTextEdit(QtGui.QPlainTextEdit):
 
     def __init__(self, *args):
         QtGui.QPlainTextEdit.__init__(self, *args)
-
         # Default dictionary based on the current locale.
         self.dict = enchant.Dict()
         self.highlighter = Highlighter(self.document())
         self.highlighter.setDict(self.dict)
+        print html_expands
 
     def mousePressEvent(self, event):
         if event.button() == QtCore.Qt.RightButton:
@@ -66,7 +67,8 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         if self.textCursor().hasSelection():
             text = unicode(self.textCursor().selectedText())
             if not self.dict.check(text):
-                spell_menu = QtGui.QMenu(u'Spelling Suggestions')
+                spell_menu = QtGui.QMenu(translate('OpenLP.SpellTextEdit',
+                    'Spelling Suggestions'))
                 for word in self.dict.suggest(text):
                     action = SpellAction(word, spell_menu)
                     action.correct.connect(self.correctWord)
@@ -76,6 +78,14 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
                 if len(spell_menu.actions()) != 0:
                     popup_menu.insertSeparator(popup_menu.actions()[0])
                     popup_menu.insertMenu(popup_menu.actions()[0], spell_menu)
+        tag_menu = QtGui.QMenu(translate('OpenLP.SpellTextEdit',
+            'Formatting Tags'))
+        for html in html_expands:
+            action = context_menu_action(self, None, html[u'desc'],
+                self.onHtmlAction)
+            tag_menu.addAction(action)
+        popup_menu.insertSeparator(popup_menu.actions()[0])
+        popup_menu.insertMenu(popup_menu.actions()[0], tag_menu)
 
         popup_menu.exec_(event.globalPos())
 
@@ -129,6 +139,13 @@ class SpellAction(QtGui.QAction):
 
         self.triggered.connect(lambda x: self.correct.emit(
             unicode(self.text())))
+
+class SpellTextEdit(BaseSpellTextEdit):
+    def __init__(self, *args):
+        BaseSpellTextEdit.__init__(self, *args)
+
+    def onHtmlAction(self):
+        print "hello "
 
 class HideMode(object):
     """
