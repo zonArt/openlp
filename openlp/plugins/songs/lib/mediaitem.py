@@ -236,9 +236,10 @@ class SongMediaItem(MediaManagerItem):
                 self.onSearchTextButtonClick()
 
     def onImportClick(self):
-        songimportform = ImportWizardForm(self, self.parent.manager,
-            self.parent)
-        songimportform.exec_()
+        if not hasattr(self, u'import_wizard'):
+            self.import_wizard = ImportWizardForm(self, self.parent.manager,
+                self.parent)
+        self.import_wizard.exec_()
 
     def onNewClick(self):
         self.edit_song_form.newSong()

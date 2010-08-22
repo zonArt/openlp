@@ -26,62 +26,6 @@
 
 from openlp.core.lib import translate
 
-from openlp.plugins.songs.lib import OpenLPSongImport, OpenSongImport, \
-    OooImport, SofImport
-#    CSVSong
-
-class SongFormat(object):
-    """
-    This is a special enumeration class that holds the various types of songs,
-    plus a few helper functions to facilitate generic handling of song types
-    for importing.
-    """
-    Unknown = -1
-    OpenLP2 = 0
-    OpenLP1 = 1
-    OpenLyrics = 2
-    OpenSong = 3
-    WordsOfWorship = 4
-    CCLI = 5
-    SongsOfFellowship = 6
-    Generic = 7
-    CSV = 8
-
-    @staticmethod
-    def get_class(format):
-        """
-        Return the appropriate imeplementation class.
-
-        ``format``
-            The song format.
-        """
-        if format == SongFormat.OpenLP2:
-            return OpenLPSongImport
-        elif format == SongFormat.OpenSong:
-            return OpenSongImport
-        elif format == SongFormat.SongsOfFellowship:
-            return SofImport
-        elif format == SongFormat.Generic:
-            return OooImport
-#        else:
-        return None
-
-    @staticmethod
-    def list():
-        """
-        Return a list of the supported song formats.
-        """
-        return [
-            SongFormat.OpenLP2,
-            SongFormat.OpenLP1,
-            SongFormat.OpenLyrics,
-            SongFormat.OpenSong,
-            SongFormat.WordsOfWorship,
-            SongFormat.CCLI,
-            SongFormat.SongsOfFellowship,
-            SongFormat.Generic
-        ]
-
 class VerseType(object):
     """
     VerseType provides an enumeration for the tags that may be associated
@@ -148,14 +92,7 @@ class VerseType(object):
             unicode(VerseType.to_string(VerseType.Other)).lower():
             return VerseType.Other
 
+
 from xml import LyricsXML, SongXMLBuilder, SongXMLParser
 from songstab import SongsTab
 from mediaitem import SongMediaItem
-from songimport import SongImport
-from opensongimport import OpenSongImport
-from olpimport import OpenLPSongImport
-try:
-    from sofimport import SofImport
-    from oooimport import OooImport
-except ImportError:
-    pass
