@@ -36,7 +36,7 @@ import enchant
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import html_expands, translate, context_menu_action
 
-class BaseSpellTextEdit(QtGui.QPlainTextEdit):
+class SpellTextEdit(QtGui.QPlainTextEdit):
 
     def __init__(self, *args):
         QtGui.QPlainTextEdit.__init__(self, *args)
@@ -44,7 +44,6 @@ class BaseSpellTextEdit(QtGui.QPlainTextEdit):
         self.dict = enchant.Dict()
         self.highlighter = Highlighter(self.document())
         self.highlighter.setDict(self.dict)
-        print html_expands
 
     def mousePressEvent(self, event):
         if event.button() == QtCore.Qt.RightButton:
@@ -81,8 +80,8 @@ class BaseSpellTextEdit(QtGui.QPlainTextEdit):
         tag_menu = QtGui.QMenu(translate('OpenLP.SpellTextEdit',
             'Formatting Tags'))
         for html in html_expands:
-            action = context_menu_action(self, None, html[u'desc'],
-                self.onHtmlAction)
+            action = SpellAction( html[u'desc'], tag_menu)
+            action.correct.connect(self.htmlTag)
             tag_menu.addAction(action)
         popup_menu.insertSeparator(popup_menu.actions()[0])
         popup_menu.insertMenu(popup_menu.actions()[0], tag_menu)
@@ -100,6 +99,26 @@ class BaseSpellTextEdit(QtGui.QPlainTextEdit):
         cursor.insertText(word)
 
         cursor.endEditBlock()
+
+    def htmlTag(self, tag):
+        '''
+        Replaces the selected text with word.
+        '''
+        for html in html_expands:
+            if tag == html[u'desc']:
+                cursor = self.textCursor()
+                if self.textCursor().hasSelection():
+                    text = cursor.selectedText()
+                    cursor.beginEditBlock()
+                    cursor.removeSelectedText()
+                    cursor.insertText(html[u'start tag'])
+                    cursor.insertText(text)
+                    cursor.insertText(html[u'end tag'])
+                    cursor.endEditBlock()
+                else:
+                    cursor = self.textCursor()
+                    cursor.insertText(html[u'start tag'])
+                    cursor.insertText(html[u'end tag'])
 
 class Highlighter(QtGui.QSyntaxHighlighter):
 
@@ -139,13 +158,6 @@ class SpellAction(QtGui.QAction):
 
         self.triggered.connect(lambda x: self.correct.emit(
             unicode(self.text())))
-
-class SpellTextEdit(BaseSpellTextEdit):
-    def __init__(self, *args):
-        BaseSpellTextEdit.__init__(self, *args)
-
-    def onHtmlAction(self):
-        print "hello "
 
 class HideMode(object):
     """

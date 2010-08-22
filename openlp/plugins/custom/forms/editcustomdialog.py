@@ -74,7 +74,7 @@ class Ui_CustomEditDialog(object):
         self.editLayout3.setSpacing(8)
         self.editLayout3.setMargin(0)
         self.editLayout3.setObjectName(u'editLayout3')
-        self.verseTextEdit = SpellTextEdit(self.editWidget)
+        self.verseTextEdit = SpellTextEdit(self)
         self.verseTextEdit.setObjectName(u'verseTextEdit')
         self.editLayout3.addWidget(self.verseTextEdit)
         self.buttonWidget = QtGui.QWidget(self.editWidget)
