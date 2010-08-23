@@ -91,9 +91,12 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         QtCore.QObject.connect(self.wordsOfWorshipRemoveButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onWordsOfWorshipRemoveButtonClicked)
-        QtCore.QObject.connect(self.songsOfFellowshipBrowseButton,
+        QtCore.QObject.connect(self.songsOfFellowshipAddButton,
             QtCore.SIGNAL(u'clicked()'),
-            self.onSongsOfFellowshipBrowseButtonClicked)
+            self.onSongsOfFellowshipAddButtonClicked)
+        QtCore.QObject.connect(self.songsOfFellowshipRemoveButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onSongsOfFellowshipRemoveButtonClicked)
         QtCore.QObject.connect(self.genericBrowseButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onGenericBrowseButtonClicked)
@@ -279,12 +282,15 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
     def onWordsOfWorshipRemoveButtonClicked(self):
         self.removeSelectedItems(self.wordsOfWorshipFileListWidget)
 
-    def onSongsOfFellowshipBrowseButtonClicked(self):
-        self.getFileName(
+    def onSongsOfFellowshipAddButtonClicked(self):
+        self.getFiles(
             translate('SongsPlugin.ImportWizardForm',
-            'Select Songs of Fellowship File'),
-            self.songsOfFellowshipFilenameEdit
+            'Select Songs of Fellowship Files'),
+            self.songsOfFellowshipFileListWidget
         )
+
+    def onSongsOfFellowshipRemoveButtonClicked(self):
+        self.removeSelectedItems(self.songsOfFellowshipFileListWidget)
 
     def onGenericBrowseButtonClicked(self):
         self.getFileName(
@@ -318,7 +324,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         self.openSongFileListWidget.clear()
         self.wordsOfWorshipFileListWidget.clear()
         self.ccliFileListWidget.clear()
-        self.songsOfFellowshipFilenameEdit.setText(u'')
+        self.songsOfFellowshipFileListWidget.clear()
         self.genericFilenameEdit.setText(u'')
         #self.csvFilenameEdit.setText(u'')
 
@@ -378,7 +384,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         elif source_format == SongFormat.SongsOfFellowship:
             # Import a Songs of Fellowship RTF file
             importer = self.plugin.importSongs(SongFormat.SongsOfFellowship,
-                filename=unicode(self.songsOfFellowshipFilenameEdit.text())
+                filenames=self.getListOfFiles(self.songsOfFellowshipFileListWidget)
             )
         success = importer.do_import()
         if success:
