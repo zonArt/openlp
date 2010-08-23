@@ -31,7 +31,11 @@ The :mod:`ui` module provides the core user interface for OpenLP
 
 import re
 import sys
-import enchant
+try:
+    import enchant
+    enchant_available = True
+except ImportError:
+    enchant_available = False
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import html_expands, translate, context_menu_action
@@ -41,9 +45,10 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
     def __init__(self, *args):
         QtGui.QPlainTextEdit.__init__(self, *args)
         # Default dictionary based on the current locale.
-        self.dict = enchant.Dict()
-        self.highlighter = Highlighter(self.document())
-        self.highlighter.setDict(self.dict)
+        if enchant_available:
+            self.dict = enchant.Dict()
+            self.highlighter = Highlighter(self.document())
+            self.highlighter.setDict(self.dict)
 
     def mousePressEvent(self, event):
         if event.button() == QtCore.Qt.RightButton:
@@ -63,7 +68,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
 
         # Check if the selected word is misspelled and offer spelling
         # suggestions if it is.
-        if self.textCursor().hasSelection():
+        if enchant_available and self.textCursor().hasSelection():
             text = unicode(self.textCursor().selectedText())
             if not self.dict.check(text):
                 spell_menu = QtGui.QMenu(translate('OpenLP.SpellTextEdit',
