@@ -55,6 +55,7 @@ class DisplayWidget(QtGui.QGraphicsView):
             QtCore.Qt.Key_Enter: 'slidecontroller_live_next_noloop',
             QtCore.Qt.Key_0: 'servicemanager_next_item',
             QtCore.Qt.Key_Backspace: 'slidecontroller_live_previous_noloop'}
+        self.setStyleSheet(u'border: none;')
 
     def keyPressEvent(self, event):
         # Key events only needed for live
