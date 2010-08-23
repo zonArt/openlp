@@ -53,6 +53,7 @@ class OooImport(SongImport):
         Initialise the class. Requires a songmanager class which is passed
         to SongImport for writing song to disk
         """
+        SongImport.__init__(self, master_manager)
         self.song = None
         self.master_manager = master_manager
         self.document = None
@@ -64,6 +65,9 @@ class OooImport(SongImport):
     def do_import(self):
         self.abort = False
         self.start_ooo()
+        # Note this doesn't work, because kwargs[u'filenames'] doesn't appear
+        # to be anything sensible like an array of strings. No idea what it is
+        # though, I'm meant to guess
         for filename in self.filenames:
             if self.abort:
                 self.wizard.incrementProgressBar(u'Import cancelled')

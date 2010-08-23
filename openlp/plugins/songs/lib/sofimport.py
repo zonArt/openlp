@@ -73,7 +73,7 @@ class SofImport(OooImport):
         Initialise the class. Requires a songmanager class which is passed
         to SongImport for writing song to disk
         """
-        OooImport.__init__(self,master_manager, **kwargs)
+        OooImport.__init__(self, master_manager, **kwargs)
 
     def do_import(self):
         self.abort = False
