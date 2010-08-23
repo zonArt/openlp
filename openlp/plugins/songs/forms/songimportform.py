@@ -97,9 +97,12 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         QtCore.QObject.connect(self.songsOfFellowshipRemoveButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onSongsOfFellowshipRemoveButtonClicked)
-        QtCore.QObject.connect(self.genericBrowseButton,
+        QtCore.QObject.connect(self.genericAddButton,
             QtCore.SIGNAL(u'clicked()'),
-            self.onGenericBrowseButtonClicked)
+            self.onGenericAddButtonClicked)
+        QtCore.QObject.connect(self.genericRemoveButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onGenericRemoveButtonClicked)
         QtCore.QObject.connect(self.cancelButton,
             QtCore.SIGNAL(u'clicked(bool)'),
             self.onCancelButtonClicked)
@@ -185,24 +188,24 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
                     self.ccliAddButton.setFocus()
                     return False
             elif source_format == SongFormat.SongsOfFellowship:
-                if self.songsOfFellowshipFilenameEdit.text().isEmpty():
+                if self.songsOfFellowshipFileListWidget.count() == 0:
                     QtGui.QMessageBox.critical(self,
                         translate('SongsPlugin.ImportWizardForm',
                             'No Songs of Fellowship File Selected'),
                         translate('SongsPlugin.ImportWizardForm',
-                            'You need to select a Songs of Fellowship file to '
-                            'import from.'))
-                    self.songsOfFellowshipBrowseButton.setFocus()
+                            'You need to add at least one Songs of Fellowship '
+                            'file to import from.'))
+                    self.songsOfFellowshipAddButton.setFocus()
                     return False
             elif source_format == SongFormat.Generic:
-                if self.genericFilenameEdit.text().isEmpty():
+                if self.genericFileListWidget.count() == 0:
                     QtGui.QMessageBox.critical(self,
                         translate('SongsPlugin.ImportWizardForm',
                             'No Document/Presentation Selected'),
                         translate('SongsPlugin.ImportWizardForm',
-                            'You need to select a document/presentation file '
-                            'to import from.'))
-                    self.genericBrowseButton.setFocus()
+                            'You need to add at least one document or '
+                            'presentation file to import from.'))
+                    self.genericAddButton.setFocus()
                     return False
             return True
         elif self.currentId() == 2:
@@ -292,12 +295,15 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
     def onSongsOfFellowshipRemoveButtonClicked(self):
         self.removeSelectedItems(self.songsOfFellowshipFileListWidget)
 
-    def onGenericBrowseButtonClicked(self):
-        self.getFileName(
+    def onGenericAddButtonClicked(self):
+        self.getFiles(
             translate('SongsPlugin.ImportWizardForm',
-            'Select Document/Presentation File'),
-            self.genericFilenameEdit
+            'Select Document/Presentation Files'),
+            self.genericFileListWidget
         )
+
+    def onGenericRemoveButtonClicked(self):
+        self.removeSelectedItems(self.genericFileListWidget)
 
     def onCancelButtonClicked(self, checked):
         """
@@ -325,7 +331,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         self.wordsOfWorshipFileListWidget.clear()
         self.ccliFileListWidget.clear()
         self.songsOfFellowshipFileListWidget.clear()
-        self.genericFilenameEdit.setText(u'')
+        self.genericFileListWidget.clear()
         #self.csvFilenameEdit.setText(u'')
 
     def incrementProgressBar(self, status_text):
@@ -385,6 +391,11 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
             # Import a Songs of Fellowship RTF file
             importer = self.plugin.importSongs(SongFormat.SongsOfFellowship,
                 filenames=self.getListOfFiles(self.songsOfFellowshipFileListWidget)
+            )
+        elif source_format == SongFormat.Generic:
+            # Import a generic document or presentatoin
+            importer = self.plugin.importSongs(SongFormat.Generic,
+                filenames=self.getListOfFiles(self.genericFileListWidget)
             )
         success = importer.do_import()
         if success:

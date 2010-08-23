@@ -291,46 +291,34 @@ class Ui_SongImportWizard(object):
         self.songsOfFellowshipRemoveButton.setObjectName(u'songsOfFellowshipRemoveButton')
         self.songsOfFellowshipButtonLayout.addWidget(self.songsOfFellowshipRemoveButton)
         self.songsOfFellowshipLayout.addLayout(self.songsOfFellowshipButtonLayout)
-#        self.songsOfFellowshipFilenameLabel = QtGui.QLabel(self.songsOfFellowshipPage)
-#        self.songsOfFellowshipFilenameLabel.setObjectName(u'songsOfFellowshipFilenameLabel')
-#        self.songsOfFellowshipLayout.setWidget(0, QtGui.QFormLayout.LabelRole,
-#            self.songsOfFellowshipFilenameLabel)
-#        self.songsOfFellowshipFileLayout = QtGui.QHBoxLayout()
-#        self.songsOfFellowshipFileLayout.setSpacing(8)
-#        self.songsOfFellowshipFileLayout.setObjectName(u'songsOfFellowshipFileLayout')
-#        self.songsOfFellowshipFilenameEdit = QtGui.QLineEdit(self.songsOfFellowshipPage)
-#        self.songsOfFellowshipFilenameEdit.setObjectName(u'songsOfFellowshipFilenameEdit')
-#        self.songsOfFellowshipFileLayout.addWidget(self.songsOfFellowshipFilenameEdit)
-#        self.songsOfFellowshipBrowseButton = QtGui.QToolButton(self.songsOfFellowshipPage)
-#        self.songsOfFellowshipBrowseButton.setIcon(openIcon)
-#        self.songsOfFellowshipBrowseButton.setObjectName(u'songsOfFellowshipBrowseButton')
-#        self.songsOfFellowshipFileLayout.addWidget(self.songsOfFellowshipBrowseButton)
-#        self.songsOfFellowshipLayout.setLayout(0, QtGui.QFormLayout.FieldRole,
-#            self.songsOfFellowshipFileLayout)
         self.formatStackedWidget.addWidget(self.songsOfFellowshipPage)
         # Generic Document/Presentation import
         self.genericPage = QtGui.QWidget()
         self.genericPage.setObjectName(u'genericPage')
-        self.genericLayout = QtGui.QFormLayout(self.genericPage)
+        self.genericLayout = QtGui.QVBoxLayout(self.genericPage)
         self.genericLayout.setMargin(0)
         self.genericLayout.setSpacing(8)
         self.genericLayout.setObjectName(u'genericLayout')
-        self.genericFilenameLabel = QtGui.QLabel(self.genericPage)
-        self.genericFilenameLabel.setObjectName(u'genericFilenameLabel')
-        self.genericLayout.setWidget(0, QtGui.QFormLayout.LabelRole,
-            self.genericFilenameLabel)
-        self.genericFileLayout = QtGui.QHBoxLayout()
-        self.genericFileLayout.setSpacing(8)
-        self.genericFileLayout.setObjectName(u'genericFileLayout')
-        self.genericFilenameEdit = QtGui.QLineEdit(self.genericPage)
-        self.genericFilenameEdit.setObjectName(u'genericFilenameEdit')
-        self.genericFileLayout.addWidget(self.genericFilenameEdit)
-        self.genericBrowseButton = QtGui.QToolButton(self.genericPage)
-        self.genericBrowseButton.setIcon(openIcon)
-        self.genericBrowseButton.setObjectName(u'genericBrowseButton')
-        self.genericFileLayout.addWidget(self.genericBrowseButton)
-        self.genericLayout.setLayout(0, QtGui.QFormLayout.FieldRole,
-            self.genericFileLayout)
+        self.genericFileListWidget = QtGui.QListWidget(self.genericPage)
+        self.genericFileListWidget.setSelectionMode(
+            QtGui.QAbstractItemView.ExtendedSelection)
+        self.genericFileListWidget.setObjectName(u'genericFileListWidget')
+        self.genericLayout.addWidget(self.genericFileListWidget)
+        self.genericButtonLayout = QtGui.QHBoxLayout()
+        self.genericButtonLayout.setSpacing(8)
+        self.genericButtonLayout.setObjectName(u'genericButtonLayout')
+        self.genericAddButton = QtGui.QPushButton(self.genericPage)
+        self.genericAddButton.setIcon(openIcon)
+        self.genericAddButton.setObjectName(u'genericAddButton')
+        self.genericButtonLayout.addWidget(self.genericAddButton)
+        self.genericButtonSpacer = QtGui.QSpacerItem(40, 20,
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.genericButtonLayout.addItem(self.genericButtonSpacer)
+        self.genericRemoveButton = QtGui.QPushButton(self.genericPage)
+        self.genericRemoveButton.setIcon(deleteIcon)
+        self.genericRemoveButton.setObjectName(u'genericRemoveButton')
+        self.genericButtonLayout.addWidget(self.genericRemoveButton)
+        self.genericLayout.addLayout(self.genericButtonLayout)
         self.formatStackedWidget.addWidget(self.genericPage)
 #        Commented out for future use.
 #        self.csvPage = QtGui.QWidget()
@@ -382,18 +370,18 @@ class Ui_SongImportWizard(object):
 
     def retranslateUi(self, songImportWizard):
         songImportWizard.setWindowTitle(
-            translate('SongsPlugin.ImportWizardForm', 'Song import Wizard'))
+            translate('SongsPlugin.ImportWizardForm', 'Song Import Wizard'))
         self.titleLabel.setText(
             u'<span style="font-size:14pt; font-weight:600;">%s</span>' % \
             translate('SongsPlugin.ImportWizardForm',
-                'Welcome to the Song import Wizard'))
+                'Welcome to the Song Import Wizard'))
         self.informationLabel.setText(
             translate('SongsPlugin.ImportWizardForm',
                 'This wizard will help you to import songs from a variety of '
                 'formats. Click the next button below to start the process by '
                 'selecting a format to import from.'))
         self.sourcePage.setTitle(
-            translate('SongsPlugin.ImportWizardForm', 'Select import Source'))
+            translate('SongsPlugin.ImportWizardForm', 'Select Import Source'))
         self.sourcePage.setSubTitle(
             translate('SongsPlugin.ImportWizardForm',
             'Select the import format, and where to import from.'))
@@ -410,7 +398,7 @@ class Ui_SongImportWizard(object):
         self.formatComboBox.setItemText(4,
             translate('SongsPlugin.ImportWizardForm', 'Words of Worship'))
         self.formatComboBox.setItemText(5,
-            translate('SongsPlugin.ImportWizardForm', 'CCLI'))
+            translate('SongsPlugin.ImportWizardForm', 'CCLI/SongSelect'))
         self.formatComboBox.setItemText(6,
             translate('SongsPlugin.ImportWizardForm', 'Songs of Fellowship'))
         self.formatComboBox.setItemText(7,
@@ -446,16 +434,16 @@ class Ui_SongImportWizard(object):
             translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
         self.songsOfFellowshipRemoveButton.setText(
             translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
-        self.genericFilenameLabel.setText(
-            translate('SongsPlugin.ImportWizardForm', 'Filename:'))
-        self.genericBrowseButton.setText(
-            translate('SongsPlugin.ImportWizardForm', 'Browse...'))
+        self.genericAddButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
+        self.genericRemoveButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
 #        self.csvFilenameLabel.setText(
 #            translate('SongsPlugin.ImportWizardForm', 'Filename:'))
 #        self.csvBrowseButton.setText(
 #            translate('SongsPlugin.ImportWizardForm', 'Browse...'))
         self.importPage.setTitle(
-            translate('SongsPlugin.ImportWizardForm', 'importing'))
+            translate('SongsPlugin.ImportWizardForm', 'Importing'))
         self.importPage.setSubTitle(
             translate('SongsPlugin.ImportWizardForm',
                 'Please wait while your songs are imported.'))
