@@ -65,9 +65,6 @@ class OooImport(SongImport):
     def do_import(self):
         self.abort = False
         self.start_ooo()
-        # Note this doesn't work, because kwargs[u'filenames'] doesn't appear
-        # to be anything sensible like an array of strings. No idea what it is
-        # though, I'm meant to guess
         for filename in self.filenames:
             if self.abort:
                 self.wizard.incrementProgressBar(u'Import cancelled')
