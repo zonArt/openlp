@@ -177,7 +177,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
                             'file to import from.'))
                     self.wordsOfWorshipAddButton.setFocus()
                     return False
-            elif source_format == SongFormat.ccli:
+            elif source_format == SongFormat.CCLI:
                 if self.ccliFileListWidget.count() == 0:
                     QtGui.QMessageBox.critical(self,
                         translate('SongsPlugin.ImportWizardForm',
@@ -233,7 +233,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
     def getListOfFiles(self, listbox):
         files = []
         for row in range(0, listbox.count()):
-            files.append(unicode(listbox.item(row)))
+            files.append(unicode(listbox.item(row).text()))
         return files
 
     def removeSelectedItems(self, listbox):
