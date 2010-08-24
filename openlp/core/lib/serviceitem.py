@@ -177,6 +177,7 @@ class ServiceItem(object):
             pass
         else:
             log.error(u'Invalid value renderer :%s' % self.service_item_type)
+        self.title = clean_tags(self.title)
         self.foot_text = None
         if self.raw_footer:
             for foot in self.raw_footer:
