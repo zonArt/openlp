@@ -334,10 +334,12 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         self.genericFileListWidget.clear()
         #self.csvFilenameEdit.setText(u'')
 
-    def incrementProgressBar(self, status_text):
+    def incrementProgressBar(self, status_text, increment=1):
         log.debug(u'IncrementBar %s', status_text)
-        self.importProgressLabel.setText(status_text)
-        self.importProgressBar.setValue(self.importProgressBar.value() + 1)
+        if increment > 0:
+            self.importProgressLabel.setText(status_text)
+            self.importProgressBar.setValue(self.importProgressBar.value() +
+                increment)
         Receiver.send_message(u'openlp_process_events')
 
     def preImport(self):
