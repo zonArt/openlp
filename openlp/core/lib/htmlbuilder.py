@@ -177,7 +177,7 @@ body {
     }
 
     function show_footer(footertext){
-        document.getElementById('footer').innerHTML(footertext);
+        document.getElementById('footer').innerHTML = footertext;
     }
 
     function show_text(newtext){
@@ -341,8 +341,8 @@ def build_lyrics(item):
     outline = u'display: none;'
     shadow = u'display: none;'
     if theme:
-        lyricscommon =  u'width: %spx; height: %spx; word-wrap: break-word  ' \
-            u'font-family %s; font-size: %spx; color: %s; line-height: %d%%' % \
+        lyricscommon =  u'width: %spx; height: %spx; word-wrap: break-word;  ' \
+            u'font-family: %s; font-size: %spx; color: %s; line-height: %d%%' % \
             (item.main.width(), item.main.height(),
             theme.font_main_name, theme.font_main_proportion,
             theme.font_main_color, 100 + int(theme.font_main_line_adjustment))
@@ -397,7 +397,7 @@ def build_footer(item):
     font-family: %s;
     font-size: %spx;
     color: %s;
-    align: %s;
+    text-align: %s;
     """
     theme = item.themedata
     if not theme:
@@ -423,7 +423,7 @@ def build_alert(alertTab, width):
     style = """
     width: %s;
     vertical-align: %s;
-    font-family %s;
+    font-family: %s;
     font-size: %spx;
     color: %s;
     background-color: %s;
