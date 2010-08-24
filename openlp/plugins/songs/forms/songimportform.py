@@ -311,7 +311,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         """
         log.debug('Cancel button pressed!')
         if self.currentId() == 3:
-            Receiver.send_message(u'openlp_stop_song_import')
+            Receiver.send_message(u'song_stop_import')
 
     def onCurrentIdChanged(self, id):
         if id == 2:
@@ -338,7 +338,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         log.debug(u'IncrementBar %s', status_text)
         self.importProgressLabel.setText(status_text)
         self.importProgressBar.setValue(self.importProgressBar.value() + 1)
-        Receiver.send_message(u'process_events')
+        Receiver.send_message(u'openlp_process_events')
 
     def preImport(self):
         self.finishButton.setVisible(False)
@@ -347,7 +347,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         self.importProgressBar.setValue(0)
         self.importProgressLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Starting import...'))
-        Receiver.send_message(u'process_events')
+        Receiver.send_message(u'openlp_process_events')
 
     def performImport(self):
         """
@@ -411,4 +411,4 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         self.importProgressBar.setValue(self.importProgressBar.maximum())
         self.finishButton.setVisible(True)
         self.cancelButton.setVisible(False)
-        Receiver.send_message(u'process_events')
+        Receiver.send_message(u'openlp_process_events')
