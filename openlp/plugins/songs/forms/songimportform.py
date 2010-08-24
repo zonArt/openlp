@@ -336,8 +336,9 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
 
     def incrementProgressBar(self, status_text, increment=1):
         log.debug(u'IncrementBar %s', status_text)
-        if increment > 0:
+        if status_text:
             self.importProgressLabel.setText(status_text)
+        if increment > 0:
             self.importProgressBar.setValue(self.importProgressBar.value() +
                 increment)
         Receiver.send_message(u'openlp_process_events')
