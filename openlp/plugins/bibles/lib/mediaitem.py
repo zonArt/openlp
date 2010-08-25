@@ -401,9 +401,10 @@ class BibleMediaItem(MediaManagerItem):
             self.AdvancedBookComboBox.itemData(item).toInt()[0])
 
     def onImportClick(self):
-        self.bibleimportform = ImportWizardForm(self,
-            self.parent.manager, self.parent)
-        self.bibleimportform.exec_()
+        if not hasattr(self, u'import_wizard'):
+            self.import_wizard = ImportWizardForm(self, self.parent.manager,
+                self.parent)
+        self.import_wizard.exec_()
         self.reloadBibles()
 
     def onAdvancedFromVerse(self):
