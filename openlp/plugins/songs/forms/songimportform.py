@@ -25,59 +25,76 @@
 ###############################################################################
 
 import logging
+import os
 
 from PyQt4 import QtCore, QtGui
 
 from songimportwizard import Ui_SongImportWizard
 from openlp.core.lib import Receiver, SettingsManager, translate
 #from openlp.core.utils import AppLocation
-from openlp.plugins.songs.lib import SongFormat
+from openlp.plugins.songs.lib.importer import SongFormat
 
 log = logging.getLogger(__name__)
 
 class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
     """
-    This is the Bible Import Wizard, which allows easy importing of Bibles
-    into OpenLP from other formats like OSIS, CSV and OpenSong.
+    This is the Song Import Wizard, which allows easy importing of Songs
+    into OpenLP from other formats like OpenLyrics, OpenSong and CCLI.
     """
-    log.info(u'BibleImportForm loaded')
+    log.info(u'SongImportForm loaded')
 
-    def __init__(self, parent, manager, songsplugin):
+    def __init__(self, parent, plugin):
         """
         Instantiate the wizard, and run any extra setup we need to.
 
         ``parent``
             The QWidget-derived parent of the wizard.
 
-        ``config``
-            The configuration object for storing and retrieving settings.
-
-        ``manager``
-            The Bible manager.
-
-        ``bibleplugin``
-            The Bible plugin.
+        ``plugin``
+            The songs plugin.
         """
         QtGui.QWizard.__init__(self, parent)
         self.setupUi(self)
         self.registerFields()
         self.finishButton = self.button(QtGui.QWizard.FinishButton)
         self.cancelButton = self.button(QtGui.QWizard.CancelButton)
-        self.manager = manager
-        self.songsplugin = songsplugin
-        #self.manager.set_process_dialog(self)
-#        QtCore.QObject.connect(self.OsisFileButton,
-#            QtCore.SIGNAL(u'clicked()'),
-#            self.onOsisFileButtonClicked)
-#        QtCore.QObject.connect(self.BooksFileButton,
-#            QtCore.SIGNAL(u'clicked()'),
-#            self.onBooksFileButtonClicked)
-#        QtCore.QObject.connect(self.CsvVersesFileButton,
-#            QtCore.SIGNAL(u'clicked()'),
-#            self.onCsvVersesFileButtonClicked)
-#        QtCore.QObject.connect(self.OpenSongBrowseButton,
-#            QtCore.SIGNAL(u'clicked()'),
-#            self.onOpenSongBrowseButtonClicked)
+        self.plugin = plugin
+        QtCore.QObject.connect(self.openLP2BrowseButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onOpenLP2BrowseButtonClicked)
+        QtCore.QObject.connect(self.openLP1BrowseButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onOpenLP1BrowseButtonClicked)
+        QtCore.QObject.connect(self.openLyricsAddButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onOpenLyricsAddButtonClicked)
+        QtCore.QObject.connect(self.openLyricsRemoveButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onOpenLyricsRemoveButtonClicked)
+        QtCore.QObject.connect(self.openSongAddButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onOpenSongAddButtonClicked)
+        QtCore.QObject.connect(self.openSongRemoveButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onOpenSongRemoveButtonClicked)
+        QtCore.QObject.connect(self.wordsOfWorshipAddButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onWordsOfWorshipAddButtonClicked)
+        QtCore.QObject.connect(self.wordsOfWorshipRemoveButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onWordsOfWorshipRemoveButtonClicked)
+        QtCore.QObject.connect(self.songsOfFellowshipAddButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onSongsOfFellowshipAddButtonClicked)
+        QtCore.QObject.connect(self.songsOfFellowshipRemoveButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onSongsOfFellowshipRemoveButtonClicked)
+        QtCore.QObject.connect(self.genericAddButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onGenericAddButtonClicked)
+        QtCore.QObject.connect(self.genericRemoveButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onGenericRemoveButtonClicked)
         QtCore.QObject.connect(self.cancelButton,
             QtCore.SIGNAL(u'clicked(bool)'),
             self.onCancelButtonClicked)
@@ -101,50 +118,184 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
             return True
         elif self.currentId() == 1:
             # Select page
-            source_format = self.field(u'source_format').toInt()[0]
-            if source_format == SongFormat.OpenLyrics:
-                if self.OpenLyricsFileListWidget.count() == 0:
+            source_format = self.formatComboBox.currentIndex()
+            if source_format == SongFormat.OpenLP2:
+                if self.openLP2FilenameEdit.text().isEmpty():
+                    QtGui.QMessageBox.critical(self,
+                        translate('SongsPlugin.ImportWizardForm',
+                            'No OpenLP 2.0 Song Database Selected'),
+                        translate('SongsPlugin.ImportWizardForm',
+                            'You need to select an OpenLP 2.0 song database '
+                            'file to import from.'))
+                    self.openLP2BrowseButton.setFocus()
+                    return False
+            elif source_format == SongFormat.OpenLP1:
+                if self.openSongFilenameEdit.text().isEmpty():
+                    QtGui.QMessageBox.critical(self,
+                        translate('SongsPlugin.ImportWizardForm',
+                            'No openlp.org 1.x Song Database Selected'),
+                        translate('SongsPlugin.ImportWizardForm',
+                            'You need to select an openlp.org 1.x song '
+                            'database file to import from.'))
+                    self.openLP1BrowseButton.setFocus()
+                    return False
+            elif source_format == SongFormat.OpenLyrics:
+                if self.openLyricsFileListWidget.count() == 0:
                     QtGui.QMessageBox.critical(self,
                         translate('SongsPlugin.ImportWizardForm',
                             'No OpenLyrics Files Selected'),
                         translate('SongsPlugin.ImportWizardForm',
                             'You need to add at least one OpenLyrics '
                             'song file to import from.'))
-                    self.OpenLyricsAddButton.setFocus()
+                    self.openLyricsAddButton.setFocus()
                     return False
             elif source_format == SongFormat.OpenSong:
-                if self.OpenSongFileListWidget.count() == 0:
+                if self.openSongFileListWidget.count() == 0:
                     QtGui.QMessageBox.critical(self,
                         translate('SongsPlugin.ImportWizardForm',
                             'No OpenSong Files Selected'),
                         translate('SongsPlugin.ImportWizardForm',
                             'You need to add at least one OpenSong '
                             'song file to import from.'))
-                    self.OpenSongAddButton.setFocus()
+                    self.openSongAddButton.setFocus()
+                    return False
+            elif source_format == SongFormat.WordsOfWorship:
+                if self.wordsOfWorshipListWidget.count() == 0:
+                    QtGui.QMessageBox.critical(self,
+                        translate('SongsPlugin.ImportWizardForm',
+                            'No Words of Worship Files Selected'),
+                        translate('SongsPlugin.ImportWizardForm',
+                            'You need to add at least one Words of Worship '
+                            'file to import from.'))
+                    self.wordsOfWorshipAddButton.setFocus()
                     return False
             elif source_format == SongFormat.CCLI:
-                if self.CCLIFileListWidget.count() == 0:
+                if self.ccliFileListWidget.count() == 0:
                     QtGui.QMessageBox.critical(self,
                         translate('SongsPlugin.ImportWizardForm',
                             'No CCLI Files Selected'),
                         translate('SongsPlugin.ImportWizardForm',
                             'You need to add at least one CCLI file '
                             'to import from.'))
-                    self.CCLIAddButton.setFocus()
+                    self.ccliAddButton.setFocus()
                     return False
-            elif source_format == SongFormat.CSV:
-                if self.CSVFilenameEdit.text().isEmpty():
+            elif source_format == SongFormat.SongsOfFellowship:
+                if self.songsOfFellowshipFileListWidget.count() == 0:
                     QtGui.QMessageBox.critical(self,
                         translate('SongsPlugin.ImportWizardForm',
-                            'No CSV File Selected'),
+                            'No Songs of Fellowship File Selected'),
                         translate('SongsPlugin.ImportWizardForm',
-                            'You need to specify a CSV file to import from.'))
-                    self.CSVFilenameEdit.setFocus()
+                            'You need to add at least one Songs of Fellowship '
+                            'file to import from.'))
+                    self.songsOfFellowshipAddButton.setFocus()
+                    return False
+            elif source_format == SongFormat.Generic:
+                if self.genericFileListWidget.count() == 0:
+                    QtGui.QMessageBox.critical(self,
+                        translate('SongsPlugin.ImportWizardForm',
+                            'No Document/Presentation Selected'),
+                        translate('SongsPlugin.ImportWizardForm',
+                            'You need to add at least one document or '
+                            'presentation file to import from.'))
+                    self.genericAddButton.setFocus()
                     return False
             return True
         elif self.currentId() == 2:
             # Progress page
             return True
+
+    def getFileName(self, title, editbox):
+        filename = QtGui.QFileDialog.getOpenFileName(self, title,
+            SettingsManager.get_last_dir(self.plugin.settingsSection, 1))
+        if filename:
+            editbox.setText(filename)
+            SettingsManager.set_last_dir(
+                self.plugin.settingsSection,
+                os.path.split(unicode(filename))[0], 1)
+
+    def getFiles(self, title, listbox):
+        filenames = QtGui.QFileDialog.getOpenFileNames(self, title,
+            SettingsManager.get_last_dir(self.plugin.settingsSection, 1))
+        if filenames:
+            listbox.addItems(filenames)
+            SettingsManager.set_last_dir(
+                self.plugin.settingsSection,
+                os.path.split(unicode(filenames[0]))[0], 1)
+
+    def getListOfFiles(self, listbox):
+        files = []
+        for row in range(0, listbox.count()):
+            files.append(unicode(listbox.item(row).text()))
+        return files
+
+    def removeSelectedItems(self, listbox):
+        for item in listbox.selectedItems():
+            item = listbox.takeItem(listbox.row(item))
+            del item
+
+    def onOpenLP2BrowseButtonClicked(self):
+        self.getFileName(
+            translate('SongsPlugin.ImportWizardForm',
+            'Select OpenLP 2.0 Database File'),
+            self.openLP2FilenameEdit
+        )
+
+    def onOpenLP1BrowseButtonClicked(self):
+        self.getFileName(
+            translate('SongsPlugin.ImportWizardForm',
+            'Select openlp.org 1.x Database File'),
+            self.openLP1FilenameEdit
+        )
+
+    def onOpenLyricsAddButtonClicked(self):
+        self.getFiles(
+            translate('SongsPlugin.ImportWizardForm',
+            'Select OpenLyrics Files'),
+            self.openLyricsFileListWidget
+        )
+
+    def onOpenLyricsRemoveButtonClicked(self):
+        self.removeSelectedItems(self.openLyricsFileListWidget)
+
+    def onOpenSongAddButtonClicked(self):
+        self.getFiles(
+            translate('SongsPlugin.ImportWizardForm',
+            'Select Open Song Files'),
+            self.openSongFileListWidget
+        )
+
+    def onOpenSongRemoveButtonClicked(self):
+        self.removeSelectedItems(self.openSongFileListWidget)
+
+    def onWordsOfWorshipAddButtonClicked(self):
+        self.getFiles(
+            translate('SongsPlugin.ImportWizardForm',
+            'Select Words of Worship Files'),
+            self.wordsOfWorshipFileListWidget
+        )
+
+    def onWordsOfWorshipRemoveButtonClicked(self):
+        self.removeSelectedItems(self.wordsOfWorshipFileListWidget)
+
+    def onSongsOfFellowshipAddButtonClicked(self):
+        self.getFiles(
+            translate('SongsPlugin.ImportWizardForm',
+            'Select Songs of Fellowship Files'),
+            self.songsOfFellowshipFileListWidget
+        )
+
+    def onSongsOfFellowshipRemoveButtonClicked(self):
+        self.removeSelectedItems(self.songsOfFellowshipFileListWidget)
+
+    def onGenericAddButtonClicked(self):
+        self.getFiles(
+            translate('SongsPlugin.ImportWizardForm',
+            'Select Document/Presentation Files'),
+            self.genericFileListWidget
+        )
+
+    def onGenericRemoveButtonClicked(self):
+        self.removeSelectedItems(self.genericFileListWidget)
 
     def onCancelButtonClicked(self, checked):
         """
@@ -152,103 +303,109 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         """
         log.debug('Cancel button pressed!')
         if self.currentId() == 3:
-            Receiver.send_message(u'openlp_stop_song_import')
+            Receiver.send_message(u'song_stop_import')
 
     def onCurrentIdChanged(self, id):
-        if id == 3:
+        if id == 2:
             self.preImport()
             self.performImport()
             self.postImport()
 
     def registerFields(self):
-        self.SourcePage.registerField(u'source_format', self.FormatComboBox)
+        pass
 
     def setDefaults(self):
-        self.setField(u'source_format', QtCore.QVariant(0))
-        self.OpenLyricsFileListWidget.clear()
-        self.OpenSongFileListWidget.clear()
-        self.CCLIFileListWidget.clear()
-        self.CSVFilenameEdit.setText(u'')
+        self.formatComboBox.setCurrentIndex(0)
+        self.openLP2FilenameEdit.setText(u'')
+        self.openLP1FilenameEdit.setText(u'')
+        self.openLyricsFileListWidget.clear()
+        self.openSongFileListWidget.clear()
+        self.wordsOfWorshipFileListWidget.clear()
+        self.ccliFileListWidget.clear()
+        self.songsOfFellowshipFileListWidget.clear()
+        self.genericFileListWidget.clear()
+        #self.csvFilenameEdit.setText(u'')
 
-    def getFileName(self, title, editbox):
-        filename = QtGui.QFileDialog.getOpenFileName(self, title,
-            SettingsManager.get_last_dir(self.songsplugin.settingsSection, 1))
-        if filename:
-            editbox.setText(filename)
-            SettingsManager.set_last_dir(self.songsplugin.settingsSection,
-                filename, 1)
-
-    def incrementProgressBar(self, status_text):
+    def incrementProgressBar(self, status_text, increment=1):
         log.debug(u'IncrementBar %s', status_text)
-        self.ImportProgressLabel.setText(status_text)
-        self.ImportProgressBar.setValue(self.ImportProgressBar.value() + 1)
-        Receiver.send_message(u'process_events')
+        if status_text:
+            self.importProgressLabel.setText(status_text)
+        if increment > 0:
+            self.importProgressBar.setValue(self.importProgressBar.value() +
+                increment)
+        Receiver.send_message(u'openlp_process_events')
 
     def preImport(self):
         self.finishButton.setVisible(False)
-        self.ImportProgressBar.setMinimum(0)
-        self.ImportProgressBar.setMaximum(1188)
-        self.ImportProgressBar.setValue(0)
-        self.ImportProgressLabel.setText(
+        self.importProgressBar.setMinimum(0)
+        self.importProgressBar.setMaximum(1188)
+        self.importProgressBar.setValue(0)
+        self.importProgressLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Starting import...'))
-        Receiver.send_message(u'process_events')
+        Receiver.send_message(u'openlp_process_events')
 
     def performImport(self):
-        pass
-#        source_format = self.field(u'source_format').toInt()[0]
-#        importer = None
-#        if bible_type == BibleFormat.OSIS:
-#            # Import an OSIS bible
-#            importer = self.manager.import_bible(BibleFormat.OSIS,
-#                name=license_version,
-#                filename=unicode(self.field(u'osis_location').toString())
-#            )
-#        elif bible_type == BibleFormat.CSV:
-#            # Import a CSV bible
-#            importer = self.manager.import_bible(BibleFormat.CSV,
-#                name=license_version,
-#                booksfile=unicode(self.field(u'csv_booksfile').toString()),
-#                versefile=unicode(self.field(u'csv_versefile').toString())
-#            )
-#        elif bible_type == BibleFormat.OpenSong:
-#            # Import an OpenSong bible
-#            importer = self.manager.import_bible(BibleFormat.OpenSong,
-#                name=license_version,
-#                filename=unicode(self.field(u'opensong_file').toString())
-#            )
-#        elif bible_type == BibleFormat.WebDownload:
-#            # Import a bible from the web
-#            self.ImportProgressBar.setMaximum(1)
-#            download_location = self.field(u'web_location').toInt()[0]
-#            bible_version = self.BibleComboBox.currentText()
-#            if not isinstance(bible_version, unicode):
-#                bible_version = unicode(bible_version, u'utf8')
-#            if download_location == WebDownload.Crosswalk:
-#                bible = self.web_bible_list[WebDownload.Crosswalk][bible_version]
-#            elif download_location == WebDownload.BibleGateway:
-#                bible = self.web_bible_list[WebDownload.BibleGateway][bible_version]
-#            importer = self.manager.import_bible(
-#                BibleFormat.WebDownload,
-#                name=license_version,
-#                download_source=WebDownload.get_name(download_location),
-#                download_name=bible,
-#                proxy_server=unicode(self.field(u'proxy_server').toString()),
-#                proxy_username=unicode(self.field(u'proxy_username').toString()),
-#                proxy_password=unicode(self.field(u'proxy_password').toString())
-#            )
-#        success = importer.do_import()
-#        if success:
-#            self.manager.save_meta_data(license_version, license_version,
-#                license_copyright, license_permission)
-#            self.manager.reload_bibles()
-#            self.ImportProgressLabel.setText(translate('SongsPlugin.SongImportForm', 'Finished import.'))
-#        else:
-#            self.ImportProgressLabel.setText(
-#                translate('SongsPlugin.SongImportForm', 'Your Bible import failed.'))
-#            importer.delete()
+        """
+        Perform the actual import. This method pulls in the correct importer
+        class, and then runs the ``do_import`` method of the importer to do
+        the actual importing.
+        """
+        source_format = self.formatComboBox.currentIndex()
+        importer = None
+        if source_format == SongFormat.OpenLP2:
+            # Import an OpenLP 2.0 database
+            importer = self.plugin.importSongs(SongFormat.OpenLP2,
+                filename=unicode(self.openLP2FilenameEdit.text())
+            )
+        #elif source_format == SongFormat.OpenLP1:
+        #    # Import an openlp.org database
+        #    importer = self.plugin.importSongs(SongFormat.OpenLP1,
+        #        filename=unicode(self.field(u'openlp1_filename').toString())
+        #    )
+        elif source_format == SongFormat.OpenLyrics:
+            # Import OpenLyrics songs
+            importer = self.plugin.importSongs(SongFormat.OpenLyrics,
+                filenames=self.getListOfFiles(self.openLyricsFileListWidget)
+            )
+        elif source_format == SongFormat.OpenSong:
+            # Import OpenSong songs
+            importer = self.plugin.importSongs(SongFormat.OpenSong,
+                filenames=self.getListOfFiles(self.openSongFileListWidget)
+            )
+        elif source_format == SongFormat.WordsOfWorship:
+            # Import Words Of Worship songs
+            importer = self.plugin.importSongs(SongFormat.WordsOfWorship,
+                filenames=self.getListOfFiles(
+                    self.wordsOfWorshipFileListWidget)
+            )
+        elif source_format == SongFormat.CCLI:
+            # Import Words Of Worship songs
+            importer = self.plugin.importSongs(SongFormat.CCLI,
+                filenames=self.getListOfFiles(self.ccliFileListWidget)
+            )
+        elif source_format == SongFormat.SongsOfFellowship:
+            # Import a Songs of Fellowship RTF file
+            importer = self.plugin.importSongs(SongFormat.SongsOfFellowship,
+                filenames=self.getListOfFiles(
+                    self.songsOfFellowshipFileListWidget)
+            )
+        elif source_format == SongFormat.Generic:
+            # Import a generic document or presentatoin
+            importer = self.plugin.importSongs(SongFormat.Generic,
+                filenames=self.getListOfFiles(self.genericFileListWidget)
+            )
+        success = importer.do_import()
+        if success:
+            # reload songs
+            self.importProgressLabel.setText(
+                translate('SongsPlugin.SongImportForm', 'Finished import.'))
+        else:
+            self.importProgressLabel.setText(
+                translate('SongsPlugin.SongImportForm',
+                'Your song import failed.'))
 
     def postImport(self):
-        self.ImportProgressBar.setValue(self.ImportProgressBar.maximum())
+        self.importProgressBar.setValue(self.importProgressBar.maximum())
         self.finishButton.setVisible(True)
         self.cancelButton.setVisible(False)
-        Receiver.send_message(u'process_events')
+        Receiver.send_message(u'openlp_process_events')
