@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -305,6 +306,13 @@ class BibleDB(QtCore.QObject, Manager):
                 Book.abbreviation.like(book + u'%'))
         return db_book
 
+    def get_books(self):
+        """
+        A wrapper so both local and web bibles have a get_books() method that
+        manager can call.  Used in the media manager advanced search tab.
+        """
+        return self.get_all_objects(Book, order_by_ref=Book.id)
+
     def get_verses(self, reference_list):
         """
         This is probably the most used function. It retrieves the list of
@@ -343,11 +351,11 @@ class BibleDB(QtCore.QObject, Manager):
             else:
                 log.debug(u'OpenLP failed to find book %s', book)
                 QtGui.QMessageBox.information(self.bible_plugin.mediaItem,
-                    translate('BibleDB', 'Book not found'),
-                    translate('BibleDB', u'The book you requested could not '
-                        'be found in this bible.  Please check your spelling '
-                        'and that this is a complete bible not just one '
-                        'testament.'))
+                    translate('BiblesPlugin.BibleDB', 'Book not found'),
+                    translate('BiblesPlugin.BibleDB', 'The book you requested '
+                        'could not be found in this bible.  Please check your '
+                        'spelling and that this is a complete bible not just '
+                        'one testament.'))
         return verse_list
 
     def verse_search(self, text):

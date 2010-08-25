@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -91,12 +92,12 @@ class DisplayManager(QtGui.QWidget):
         self.videoDisplay.mediaHide(message)
         self.mainDisplay.hideDisplay(message)
 
-    def showDisplay(self, message):
+    def showDisplay(self):
         """
         Hide the output displays
         """
-        self.videoDisplay.mediaShow(message)
-        self.mainDisplay.showDisplay(message)
+        self.videoDisplay.mediaShow()
+        self.mainDisplay.showDisplay()
 
     def addAlert(self, alertMessage, location):
         """
@@ -251,6 +252,7 @@ class MainDisplay(DisplayWidget):
             self.size().height())
         self.webView.setGeometry(0, 0, self.size().width(),
             self.size().height())
+        self.alertText.setTextWidth(self.size().width())
         #Build a custom splash screen
         self.initialFrame = QtGui.QImage(
             self.screen[u'size'].width(),
@@ -321,7 +323,6 @@ class MainDisplay(DisplayWidget):
 
     def setupAlert(self):
         self.alertText = QtGui.QGraphicsTextItem()
-        self.alertText.setTextWidth(self.size().width())
         self.alertText.setZValue(8)
         self.scene.addItem(self.alertText)
 
@@ -359,7 +360,7 @@ class MainDisplay(DisplayWidget):
         if mode != HideMode.Screen and self.isHidden():
             self.setVisible(True)
 
-    def showDisplay(self, message=u''):
+    def showDisplay(self):
         """
         Show the stored layers so the screen reappears as it was
         originally.
@@ -455,7 +456,7 @@ class MainDisplay(DisplayWidget):
                 self.displayText.setPixmap(frame)
             else:
                 self.displayText.setPixmap(QtGui.QPixmap.fromImage(frame))
-        if not self.isVisible() and self.screens.display:
+        if not self.isVisible() and self.screens.current['primary']:
             self.setVisible(True)
 
 class VideoDisplay(Phonon.VideoWidget):
@@ -622,7 +623,7 @@ class VideoDisplay(Phonon.VideoWidget):
         self.hidden = True
         self.setVisible(False)
 
-    def mediaShow(self, message=''):
+    def mediaShow(self):
         """
         Show the video display if it was already hidden
         """

@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -53,10 +54,10 @@ class LanguageManager(object):
         """
         if LanguageManager.AutoLanguage:
             language = QtCore.QLocale.system().name()
-        lang_Path = AppLocation.get_directory(AppLocation.AppDir)
-        lang_Path = os.path.join(lang_Path, u'resources', u'i18n')
+        lang_path = AppLocation.get_directory(AppLocation.AppDir)
+        lang_path = os.path.join(lang_path, u'resources', u'i18n')
         app_translator = QtCore.QTranslator()
-        if app_translator.load("openlp_" + language, lang_Path):
+        if app_translator.load("openlp_" + language, lang_path):
             return app_translator
 
     @staticmethod
@@ -82,7 +83,7 @@ class LanguageManager(object):
         """
         translator = QtCore.QTranslator()
         translator.load(qm_file)
-        return translator.translate('MainWindow', 'English')
+        return translator.translate('OpenLP.MainWindow', 'English')
 
     @staticmethod
     def get_language():
@@ -117,9 +118,9 @@ class LanguageManager(object):
             u'general/language', QtCore.QVariant(language))
         log.info(u'Language file: \'%s\' written to conf file' % language)
         QtGui.QMessageBox.information(None,
-            translate('LanguageManager', 'Language'),
-            translate('LanguageManager',
-                'After restart new Language settings will be used.'))
+            translate('OpenLP.LanguageManager', 'Language'),
+            translate('OpenLP.LanguageManager',
+                'Please restart OpenLP to use your new language setting.'))
 
     @staticmethod
     def init_qm_list():
@@ -143,4 +144,3 @@ class LanguageManager(object):
         if LanguageManager.__qmList__ is None:
             LanguageManager.init_qm_list()
         return LanguageManager.__qmList__
-

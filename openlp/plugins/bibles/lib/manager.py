@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,13 +26,13 @@
 
 import logging
 
-from PyQt4 import QtCore
+from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsManager
+from openlp.core.lib import SettingsManager, translate
 from openlp.core.utils import AppLocation
-from openlp.plugins.bibles.lib.db import BibleDB, Book, BibleMeta
+from openlp.plugins.bibles.lib import parse_reference
+from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
 
-from common import parse_reference
 from opensong import OpenSongBible
 from osis import OSISBible
 from csvbible import CSVBible
@@ -62,20 +63,20 @@ class BibleFormat(object):
     WebDownload = 3
 
     @staticmethod
-    def get_class(id):
+    def get_class(format):
         """
         Return the appropriate imeplementation class.
 
-        ``id``
+        ``format``
             The Bible format.
         """
-        if id == BibleFormat.OSIS:
+        if format == BibleFormat.OSIS:
             return OSISBible
-        elif id == BibleFormat.CSV:
+        elif format == BibleFormat.CSV:
             return CSVBible
-        elif id == BibleFormat.OpenSong:
+        elif format == BibleFormat.OpenSong:
             return OpenSongBible
-        elif id == BibleFormat.WebDownload:
+        elif format == BibleFormat.WebDownload:
             return HTTPBible
         else:
             return None
@@ -148,7 +149,7 @@ class BibleManager(object):
                     file=filename, download_source=source.value,
                     download_name=download_name)
                 if meta_proxy:
-                    web_bible.set_proxy_server(meta_proxy.value)
+                    web_bible.proxy_server = meta_proxy.value
                 self.db_cache[name] = web_bible
         log.debug(u'Bibles reloaded')
 
@@ -198,7 +199,7 @@ class BibleManager(object):
                 u'name': book.name,
                 u'chapters': self.db_cache[bible].get_chapter_count(book.name)
             }
-            for book in self.db_cache[bible].get_all_objects(Book, Book.id)
+            for book in self.db_cache[bible].get_books()
         ]
 
     def get_chapter_count(self, bible, book):
@@ -228,13 +229,33 @@ class BibleManager(object):
         ``versetext``
             Unicode. The scripture reference. Valid scripture references are:
 
+                - Genesis 1
+                - Genesis 1-2
                 - Genesis 1:1
                 - Genesis 1:1-10
+                - Genesis 1:1-10,15-20
                 - Genesis 1:1-2:10
+                - Genesis 1:1-10,2:1-10
         """
         log.debug(u'BibleManager.get_verses("%s", "%s")', bible, versetext)
         reflist = parse_reference(versetext)
-        return self.db_cache[bible].get_verses(reflist)
+        if reflist:
+            return self.db_cache[bible].get_verses(reflist)
+        else:
+            QtGui.QMessageBox.information(self.parent.mediaItem,
+                translate('BiblesPlugin.BibleManager',
+                'Scripture Reference Error'),
+                translate('BiblesPlugin.BibleManager', 'Your scripture '
+                'reference is either not supported by OpenLP or invalid.  '
+                'Please make sure your reference conforms to one of the '
+                'following patterns:\n\n'
+                'Book Chapter\n'
+                'Book Chapter-Chapter\n'
+                'Book Chapter:Verse-Verse\n'
+                'Book Chapter:Verse-Verse,Verse-Verse\n'
+                'Book Chapter:Verse-Verse,Chapter:Verse-Verse\n'
+                'Book Chapter:Verse-Chapter:Verse\n'))
+            return None
 
     def save_meta_data(self, bible, version, copyright, permissions):
         """

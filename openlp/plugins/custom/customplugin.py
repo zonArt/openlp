@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,7 +28,7 @@ import logging
 
 from forms import EditCustomForm
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus, translate
+from openlp.core.lib import Plugin, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.plugins.custom.lib import CustomMediaItem, CustomTab
 from openlp.plugins.custom.lib.db import CustomSlide, init_schema
@@ -52,7 +53,6 @@ class CustomPlugin(Plugin):
         self.edit_custom_form = EditCustomForm(self.custommanager)
         self.icon_path = u':/plugins/plugin_custom.png'
         self.icon = build_icon(self.icon_path)
-        self.status = PluginStatus.Active
 
     def getSettingsTab(self):
         return CustomTab(self.name)
@@ -62,11 +62,11 @@ class CustomPlugin(Plugin):
         return CustomMediaItem(self, self.icon, self.name)
 
     def about(self):
-        about_text = translate('CustomPlugin',
-            '<b>Custom Plugin</b><br>This plugin '
-            'allows slides to be displayed on the screen in the same way '
-            'songs are. This plugin provides greater freedom over the '
-            'songs plugin.<br>')
+        about_text = translate('CustomPlugin', '<strong>Custom Plugin</strong>'
+            '<br />The custom plugin provides the ability to set up custom '
+            'text slides that can be displayed on the screen the same way '
+            'songs are. This plugin provides greater freedom over the songs '
+            'plugin.')
         return about_text
 
     def usesTheme(self, theme):
@@ -75,7 +75,7 @@ class CustomPlugin(Plugin):
 
         Returns True if the theme is being used, otherwise returns False.
         """
-        if self.custommanager.get_all_objects_filtered(CustomSlide,
+        if self.custommanager.get_all_objects(CustomSlide,
             CustomSlide.theme_name == theme):
             return True
         return False
@@ -91,8 +91,8 @@ class CustomPlugin(Plugin):
         ``newTheme``
             The new name the plugin should now use.
         """
-        customsUsingTheme = self.custommanager.get_all_objects_filtered(
-            CustomSlide, CustomSlide.theme_name == oldTheme)
+        customsUsingTheme = self.custommanager.get_all_objects(CustomSlide,
+            CustomSlide.theme_name == oldTheme)
         for custom in customsUsingTheme:
             custom.theme_name = newTheme
             self.custommanager.save_object(custom)

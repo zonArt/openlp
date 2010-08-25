@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -85,13 +86,16 @@ class ServiceItem(object):
         self.service_item_type = None
         self._raw_frames = []
         self._display_frames = []
-        self._uuid = unicode(uuid.uuid1())
+        self._uuid = 0
         self.notes = u''
         self.from_plugin = False
         self.capabilities = []
         self.is_valid = True
         self.cache = {}
         self.icon = None
+
+    def _new_item(self):
+        self._uuid = unicode(uuid.uuid1())
 
     def add_capability(self, capability):
         """
@@ -199,6 +203,7 @@ class ServiceItem(object):
         self.service_item_type = ServiceItemType.Image
         self._raw_frames.append(
             {u'title': title, u'image': image, u'path': path})
+        self._new_item()
 
     def add_from_text(self, title, raw_slide, verse_tag=None):
         """
@@ -214,6 +219,7 @@ class ServiceItem(object):
         title = title.split(u'\n')[0]
         self._raw_frames.append(
             {u'title': title, u'raw_slide': raw_slide, u'verseTag':verse_tag})
+        self._new_item()
 
     def add_from_command(self, path, file_name, image):
         """
@@ -231,6 +237,7 @@ class ServiceItem(object):
         self.service_item_type = ServiceItemType.Command
         self._raw_frames.append(
             {u'title': file_name, u'image': image, u'path': path})
+        self._new_item()
 
     def get_service_repr(self):
         """

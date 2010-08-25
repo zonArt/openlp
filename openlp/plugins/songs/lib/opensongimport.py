@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -23,17 +24,13 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import logging
 import os
-import re
-
 from zipfile import ZipFile
-
-from lxml.etree import Element
 from lxml import objectify
 
 from openlp.plugins.songs.lib.songimport import SongImport
 
-import logging
 log = logging.getLogger(__name__)
 
 class OpenSongImportError(Exception):
@@ -148,8 +145,6 @@ class OpenSongImport(object):
                     self.song_import.__setattr__(fn_or_string, ustring)
                 else:
                     fn_or_string(ustring)
-
-        res = []
         if u'theme' in fields:
             self.song_import.topics.append(unicode(root.theme))
         if u'alttheme' in fields:
@@ -201,11 +196,12 @@ class OpenSongImport(object):
                    versetype is not None:
                 words = thisline
             if versenum is not None:
-                versetag = u'%s%s'%(versetype,versenum)
+                versetag = u'%s%s' % (versetype, versenum)
                 if not verses.has_key(versetype):
                     verses[versetype] = {}
                 if not verses[versetype].has_key(versenum):
-                    verses[versetype][versenum] = [] # storage for lines in this verse
+                    # storage for lines in this verse
+                    verses[versetype][versenum] = []
                 if not verses_seen.has_key(versetag):
                     verses_seen[versetag] = 1
                     our_verse_order.append(versetag)
@@ -218,15 +214,15 @@ class OpenSongImport(object):
         versetypes = verses.keys()
         versetypes.sort()
         versetags = {}
-        verse_renames = {}
         for versetype in versetypes:
             versenums = verses[versetype].keys()
             versenums.sort()
             for num in versenums:
-                versetag = u'%s%s' %(versetype,num)
+                versetag = u'%s%s' % (versetype, num)
                 lines = u'\n'.join(verses[versetype][num])
                 self.song_import.verses.append([versetag, lines])
-                versetags[versetag] = 1 # keep track of what we have for error checking later
+                # Keep track of what we have for error checking later
+                versetags[versetag] = 1
         # now figure out the presentation order
         if u'presentation' in fields and root.presentation != u'':
             order = unicode(root.presentation)
@@ -241,6 +237,7 @@ class OpenSongImport(object):
                 log.warn(u'Got order %s but not in versetags, skipping', tag)
             else:
                 self.song_import.verse_order_list.append(tag)
+
     def finish(self):
         """ Separate function, allows test suite to not pollute database"""
         self.song_import.finish()

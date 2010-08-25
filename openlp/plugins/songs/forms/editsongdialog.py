@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -407,11 +408,11 @@ class Ui_EditSongDialog(object):
         self.TitleLabel.setText(
             translate('SongsPlugin.EditSongForm', '&Title:'))
         self.AlternativeTitleLabel.setText(
-            translate('SongsPlugin.EditSongForm', 'Alt&ernate Title:'))
+            translate('SongsPlugin.EditSongForm', 'Alt&ernate title:'))
         self.LyricsLabel.setText(
             translate('SongsPlugin.EditSongForm', '&Lyrics:'))
         self.VerseOrderLabel.setText(
-            translate('SongsPlugin.EditSongForm', '&Verse Order:'))
+            translate('SongsPlugin.EditSongForm', '&Verse order:'))
         self.VerseAddButton.setText(
             translate('SongsPlugin.EditSongForm', '&Add'))
         self.VerseEditButton.setText(
@@ -430,7 +431,7 @@ class Ui_EditSongDialog(object):
         self.AuthorRemoveButton.setText(
             translate('SongsPlugin.EditSongForm', '&Remove'))
         self.MaintenanceButton.setText(translate('SongsPlugin.EditSongForm',
-            '&Manage Authors, Topics, Books'))
+            '&Manage Authors, Topics, Song Books'))
         self.TopicGroupBox.setTitle(
             translate('SongsPlugin.EditSongForm', 'Topic'))
         self.TopicAddButton.setText(
@@ -441,7 +442,8 @@ class Ui_EditSongDialog(object):
             translate('SongsPlugin.EditSongForm', 'Song Book'))
         self.SongTabWidget.setTabText(
             self.SongTabWidget.indexOf(self.AuthorsTab),
-            translate('SongsPlugin.EditSongForm', 'Authors, Topics && Book'))
+            translate('SongsPlugin.EditSongForm',
+                'Authors, Topics && Song Book'))
         self.ThemeGroupBox.setTitle(
             translate('SongsPlugin.EditSongForm', 'Theme'))
         self.ThemeAddButton.setText(
@@ -451,7 +453,7 @@ class Ui_EditSongDialog(object):
         self.CopyrightInsertButton.setText(
             translate('SongsPlugin.EditSongForm', '\xa9'))
         self.CCLILabel.setText(
-            translate('SongsPlugin.EditSongForm', 'CCLI Number:'))
+            translate('SongsPlugin.EditSongForm', 'CCLI number:'))
         self.CommentsGroupBox.setTitle(
             translate('SongsPlugin.EditSongForm', 'Comments'))
         self.SongTabWidget.setTabText(

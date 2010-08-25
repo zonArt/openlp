@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,8 +27,9 @@
 import re
 
 from openlp.core.lib import translate
-from openlp.plugins.songs.lib import SongXMLBuilder, VerseType
+from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.db import Song, Author, Topic, Book
+from openlp.plugins.songs.lib.xml import SongXMLBuilder
 
 class SongImport(object):
     """
@@ -38,19 +40,19 @@ class SongImport(object):
     as necessary
     """
 
-    def __init__(self, song_manager):
+    def __init__(self, manager):
         """
         Initialise and create defaults for properties
 
         song_manager is an instance of a SongManager, through which all
         database access is performed
         """
-        self.manager = song_manager
+        self.manager = manager
         self.title = u''
         self.song_number = u''
         self.alternate_title = u''
         self.copyright = u''
-        self.comment = u''
+        self.comments = u''
         self.theme_name = u''
         self.ccli_number = u''
         self.authors = []
@@ -65,6 +67,9 @@ class SongImport(object):
             'SongsPlugin.SongImport', 'copyright'))
         self.copyright_symbol = unicode(translate(
             'SongsPlugin.SongImport', '\xa9'))
+
+    def register(self, import_wizard):
+        self.import_wizard = import_wizard
 
     @staticmethod
     def process_songs_text(manager, text):
@@ -253,7 +258,7 @@ class SongImport(object):
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
         song.verse_order = u' '.join(self.verse_order_list)
         song.copyright = self.copyright
-        song.comment = self.comment
+        song.comments = self.comments
         song.theme_name = self.theme_name
         song.ccli_number = self.ccli_number
         for authortext in self.authors:
@@ -274,7 +279,8 @@ class SongImport(object):
         for topictext in self.topics:
             if len(topictext) == 0:
                 continue
-            topic = self.manager.get_object_filtered(Topic, Topic.name == topictext)
+            topic = self.manager.get_object_filtered(Topic,
+                Topic.name == topictext)
             if topic is None:
                 topic = Topic.populate(name=topictext)
             song.topics.append(topic)
@@ -303,8 +309,8 @@ class SongImport(object):
             print u'NUMBER: ' + self.song_number
         for topictext in self.topics:
             print u'TOPIC: ' + topictext
-        if self.comment:
-            print u'COMMENT: ' + self.comment
+        if self.comments:
+            print u'COMMENTS: ' + self.comments
         if self.theme_name:
             print u'THEME: ' + self.theme_name
         if self.ccli_number:
