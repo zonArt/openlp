@@ -106,6 +106,8 @@ class MainDisplay(DisplayWidget):
     def setup(self):
         log.debug(u'Setup %s %s for %s ' % (self.isLive,
             self.screens, self.screens.monitor_number))
+        print (u'Setup %s %s for %s ' % (self.isLive,
+            self.screens, self.screens.monitor_number))
         self.screen = self.screens.current
         self.setVisible(False)
         self.setGeometry(self.screen[u'size'])

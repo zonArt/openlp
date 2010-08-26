@@ -457,7 +457,8 @@ class GeneralTab(SettingsTab):
 
     def postSetUp(self, postUpdate=False):
         """
-        Apply settings after settings tab has loaded
+        Apply settings after settings tab has loaded and most of the
+        system so must be delayed
         """
         Receiver.send_message(u'slidecontroller_live_spin_delay',
             self.timeoutSpinBox.value())
@@ -472,7 +473,7 @@ class GeneralTab(SettingsTab):
             self.screens.set_override_display()
         else:
             self.screens.reset_current_display()
-        # Order is important so be carefull if you change
+        # Order is important so be careful if you change
         if self.overrideChanged:
             Receiver.send_message(u'config_screen_changed')
         if postUpdate:
