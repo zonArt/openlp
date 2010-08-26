@@ -206,11 +206,14 @@ def check_latest_version(current_version):
         else:
             req = urllib2.Request(u'http://www.openlp.org/files/version.txt')
         req.add_header(u'User-Agent', u'OpenLP/%s' % current_version[u'full'])
+        remote_version = None
         try:
-            version_string = unicode(urllib2.urlopen(req, None).read()).strip()
+            remote_version = unicode(urllib2.urlopen(req, None).read()).strip()
         except IOError, e:
             if hasattr(e, u'reason'):
                 log.exception(u'Reason for failure: %s', e.reason)
+        if remote_version:
+            version_string = remote_version
     return version_string
 
 def add_actions(target, actions):
