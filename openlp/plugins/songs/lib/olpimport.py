@@ -36,6 +36,7 @@ from sqlalchemy.orm.exc import UnmappedClassError
 
 from openlp.core.lib.db import BaseModel
 from openlp.plugins.songs.lib.db import Author, Book, Song, Topic #, MediaFile
+from songimport import SongImport
 
 log = logging.getLogger(__name__)
 
@@ -69,12 +70,12 @@ class OldTopic(BaseModel):
     """
     pass
 
-class OpenLPSongImport(object):
+class OpenLPSongImport(SongImport):
     """
     The :class:`OpenLPSongImport` class provides OpenLP with the ability to
     import song databases from other installations of OpenLP.
     """
-    def __init__(self, master_manager, source_db):
+    def __init__(self, master_manager, **kwargs):
         """
         Initialise the import.
 
@@ -84,11 +85,13 @@ class OpenLPSongImport(object):
         ``source_db``
             The database providing the data to import.
         """
+        SongImport.__init__(self, master_manager)
         self.master_manager = master_manager
-        self.import_source = source_db
+        self.import_source = u'sqlite:///%s' % kwargs[u'filename']
+        log.debug(self.import_source)
         self.source_session = None
 
-    def import_source_v2_db(self):
+    def do_import(self):
         """
         Run the import for an OpenLP version 2 song database.
         """
