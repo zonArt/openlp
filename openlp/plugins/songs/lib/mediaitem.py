@@ -237,9 +237,9 @@ class SongMediaItem(MediaManagerItem):
 
     def onImportClick(self):
         if not hasattr(self, u'import_wizard'):
-            self.import_wizard = ImportWizardForm(self, self.parent.manager,
-                self.parent)
+            self.import_wizard = ImportWizardForm(self, self.parent)
         self.import_wizard.exec_()
+        Receiver.send_message(u'songs_load_list')
 
     def onNewClick(self):
         self.edit_song_form.newSong()

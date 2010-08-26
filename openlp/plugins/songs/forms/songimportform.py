@@ -43,18 +43,12 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
     """
     log.info(u'SongImportForm loaded')
 
-    def __init__(self, parent, manager, plugin):
+    def __init__(self, parent, plugin):
         """
         Instantiate the wizard, and run any extra setup we need to.
 
         ``parent``
             The QWidget-derived parent of the wizard.
-
-        ``config``
-            The configuration object for storing and retrieving settings.
-
-        ``manager``
-            The songs manager.
 
         ``plugin``
             The songs plugin.
@@ -64,9 +58,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         self.registerFields()
         self.finishButton = self.button(QtGui.QWizard.FinishButton)
         self.cancelButton = self.button(QtGui.QWizard.CancelButton)
-        self.manager = manager
         self.plugin = plugin
-        #self.manager.set_process_dialog(self)
         QtCore.QObject.connect(self.openLP2BrowseButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onOpenLP2BrowseButtonClicked)
@@ -311,7 +303,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         """
         log.debug('Cancel button pressed!')
         if self.currentId() == 3:
-            Receiver.send_message(u'openlp_stop_song_import')
+            Receiver.send_message(u'song_stop_import')
 
     def onCurrentIdChanged(self, id):
         if id == 2:
@@ -334,10 +326,13 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         self.genericFileListWidget.clear()
         #self.csvFilenameEdit.setText(u'')
 
-    def incrementProgressBar(self, status_text):
+    def incrementProgressBar(self, status_text, increment=1):
         log.debug(u'IncrementBar %s', status_text)
-        self.importProgressLabel.setText(status_text)
-        self.importProgressBar.setValue(self.importProgressBar.value() + 1)
+        if status_text:
+            self.importProgressLabel.setText(status_text)
+        if increment > 0:
+            self.importProgressBar.setValue(self.importProgressBar.value() +
+                increment)
         Receiver.send_message(u'openlp_process_events')
 
     def preImport(self):
@@ -380,7 +375,8 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         elif source_format == SongFormat.WordsOfWorship:
             # Import Words Of Worship songs
             importer = self.plugin.importSongs(SongFormat.WordsOfWorship,
-                filenames=self.getListOfFiles(self.wordsOfWorshipFileListWidget)
+                filenames=self.getListOfFiles(
+                    self.wordsOfWorshipFileListWidget)
             )
         elif source_format == SongFormat.CCLI:
             # Import Words Of Worship songs
@@ -390,7 +386,8 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         elif source_format == SongFormat.SongsOfFellowship:
             # Import a Songs of Fellowship RTF file
             importer = self.plugin.importSongs(SongFormat.SongsOfFellowship,
-                filenames=self.getListOfFiles(self.songsOfFellowshipFileListWidget)
+                filenames=self.getListOfFiles(
+                    self.songsOfFellowshipFileListWidget)
             )
         elif source_format == SongFormat.Generic:
             # Import a generic document or presentatoin
@@ -400,10 +397,10 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         success = importer.do_import()
         if success:
             # reload songs
-            self.ImportProgressLabel.setText(
+            self.importProgressLabel.setText(
                 translate('SongsPlugin.SongImportForm', 'Finished import.'))
         else:
-            self.ImportProgressLabel.setText(
+            self.importProgressLabel.setText(
                 translate('SongsPlugin.SongImportForm',
                 'Your song import failed.'))
 
