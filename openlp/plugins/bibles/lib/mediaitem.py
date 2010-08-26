@@ -641,7 +641,7 @@ class BibleMediaItem(MediaManagerItem):
         '''
         version = self.parent.manager.get_meta_data(bible, u'Version')
         copyright = self.parent.manager.get_meta_data(bible, u'Copyright')
-        permission = self.parent.manager.get_meta_data(bible, u'Permissions')
+        #permission = self.parent.manager.get_meta_data(bible, u'Permissions')
         if dual_bible:
             dual_version = self.parent.manager.get_meta_data(dual_bible,
                 u'Version')
