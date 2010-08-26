@@ -104,10 +104,8 @@ class MainDisplay(DisplayWidget):
                 QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
 
     def setup(self):
-        log.debug(u'Setup %s %s for %s ' % (self.isLive,
-            self.screens, self.screens.monitor_number))
-        print (u'Setup %s %s for %s ' % (self.isLive,
-            self.screens, self.screens.monitor_number))
+        log.debug(u'Setup live = %s for %s ' % (self.isLive,
+            self.screens.monitor_number))
         self.screen = self.screens.current
         self.setVisible(False)
         self.setGeometry(self.screen[u'size'])

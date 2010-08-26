@@ -474,10 +474,9 @@ class GeneralTab(SettingsTab):
         else:
             self.screens.reset_current_display()
         # Order is important so be careful if you change
-        if self.overrideChanged:
+        if self.overrideChanged or postUpdate:
             Receiver.send_message(u'config_screen_changed')
-        if postUpdate:
-            Receiver.send_message(u'config_updated')
+        Receiver.send_message(u'config_updated')
         self.overrideChanged = False
 
     def onOverrideCheckBoxToggled(self, checked):
