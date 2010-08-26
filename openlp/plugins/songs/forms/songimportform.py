@@ -233,7 +233,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
     def getListOfFiles(self, listbox):
         files = []
         for row in range(0, listbox.count()):
-            files.append(unicode(listbox.item(row)))
+            files.append(unicode(listbox.item(row).text()))
         return files
 
     def removeSelectedItems(self, listbox):
@@ -338,7 +338,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         log.debug(u'IncrementBar %s', status_text)
         self.importProgressLabel.setText(status_text)
         self.importProgressBar.setValue(self.importProgressBar.value() + 1)
-        Receiver.send_message(u'process_events')
+        Receiver.send_message(u'openlp_process_events')
 
     def preImport(self):
         self.finishButton.setVisible(False)
@@ -347,7 +347,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         self.importProgressBar.setValue(0)
         self.importProgressLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Starting import...'))
-        Receiver.send_message(u'process_events')
+        Receiver.send_message(u'openlp_process_events')
 
     def performImport(self):
         """
@@ -411,4 +411,4 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         self.importProgressBar.setValue(self.importProgressBar.maximum())
         self.finishButton.setVisible(True)
         self.cancelButton.setVisible(False)
-        Receiver.send_message(u'process_events')
+        Receiver.send_message(u'openlp_process_events')

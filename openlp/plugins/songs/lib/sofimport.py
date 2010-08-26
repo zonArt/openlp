@@ -80,7 +80,7 @@ class SofImport(OooImport):
         self.start_ooo()
         for filename in self.filenames:
             if self.abort:
-                self.wizard.incrementProgressBar(u'Import cancelled')
+                self.import_wizard.incrementProgressBar(u'Import cancelled')
                 return
             filename = unicode(filename)
             if os.path.isfile(filename):
@@ -99,7 +99,7 @@ class SofImport(OooImport):
         paragraphs = self.document.getText().createEnumeration()
         while paragraphs.hasMoreElements():
             if self.abort:
-                self.wizard.incrementProgressBar(u'Import cancelled')
+                self.import_wizard.incrementProgressBar(u'Import cancelled')
                 return
             paragraph = paragraphs.nextElement()
             if paragraph.supportsService("com.sun.star.text.Paragraph"):
@@ -255,7 +255,7 @@ class SofImport(OooImport):
         if title.endswith(u','):
             title = title[:-1]
         self.song.title = title
-        self.wizard.incrementProgressBar(u'Processing song ' + title)
+        self.import_wizard.incrementProgressBar(u'Processing song ' + title)
 
     def add_author(self, text):
         """

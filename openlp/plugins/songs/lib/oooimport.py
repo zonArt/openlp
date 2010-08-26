@@ -59,6 +59,7 @@ class OooImport(SongImport):
         self.document = None
         self.process_started = False
         self.filenames = kwargs[u'filenames']
+        self.import_wizard.importProgressBar.setMaximum(0)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlp_stop_song_import'), self.stop_import)
 
@@ -67,7 +68,7 @@ class OooImport(SongImport):
         self.start_ooo()
         for filename in self.filenames:
             if self.abort:
-                self.wizard.incrementProgressBar(u'Import cancelled')
+                self.import_wizard.incrementProgressBar(u'Import cancelled')
                 return
             filename = unicode(filename)
             if os.path.isfile(filename):
@@ -148,7 +149,7 @@ class OooImport(SongImport):
                 self.document.supportsService("com.sun.star.text.TextDocument"):
                 self.close_ooo_file()
             else:
-                self.wizard.incrementProgressBar(u'Processing file ' + filepath)
+                self.import_wizard.incrementProgressBar(u'Processing file ' + filepath)
         except:
             pass
         return   
@@ -176,7 +177,7 @@ class OooImport(SongImport):
         text = u''
         for slide_no in range(slides.getCount()):
             if self.abort:
-                self.wizard.incrementProgressBar(u'Import cancelled')
+                self.import_wizard.incrementProgressBar(u'Import cancelled')
                 return
             slide = slides.getByIndex(slide_no)   
             slidetext = u''
