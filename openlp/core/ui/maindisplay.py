@@ -80,6 +80,7 @@ class DisplayWidget(QtGui.QGraphicsView):
                 event.accept()
             elif event.key() == QtCore.Qt.Key_Escape:
                 self.setVisible(False)
+                self.videoStop()
                 event.accept()
             event.ignore()
         else:
@@ -103,7 +104,7 @@ class MainDisplay(DisplayWidget):
                 QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
 
     def setup(self):
-        log.debug(u'Setup %s for %s ' % (
+        log.debug(u'Setup %s %s for %s ' % (self.isLive,
             self.screens, self.screens.monitor_number))
         self.screen = self.screens.current
         self.setVisible(False)
@@ -205,6 +206,9 @@ class MainDisplay(DisplayWidget):
             self.screen[u'size'].height())
         self.resetVideo()
         self.displayImage(image)
+        # show screen
+        if self.isLive:
+            self.setVisible(True)
 
     def displayImage(self, image):
         """
@@ -238,6 +242,9 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'videoPlay')
         self.frame.evaluateJavaScript(u'show_video("play");')
+        # show screen
+        if self.isLive:
+            self.setVisible(True)
 
     def videoPause(self):
         """
@@ -283,7 +290,7 @@ class MainDisplay(DisplayWidget):
         """
         Generates a preview of the image displayed.
         """
-        log.debug(u'preview')
+        log.debug(u'preview for %s', self.isLive)
         # Wait for the fade to finish before geting the preview.
         # Important otherwise preview will have incorrect text if at all !
         if self.serviceItem.themedata and \
@@ -302,6 +309,9 @@ class MainDisplay(DisplayWidget):
         painter.setRenderHint(QtGui.QPainter.Antialiasing)
         self.frame.render(painter)
         painter.end()
+        # Make display show up if in single screen mode
+        if self.isLive:
+            self.setVisible(True)
         # save preview for debugging
         if log.isEnabledFor(logging.DEBUG):
             preview.save(u'temp.png', u'png')

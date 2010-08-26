@@ -386,8 +386,6 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'config_updated'), self.refreshServiceItem)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_screen_changed'), self.screenSizeChanged)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%s_slide_cache' % self.typePrefix), self.slideCache)
         if self.isLive:
             QtCore.QObject.connect(self.volumeSlider,
                 QtCore.SIGNAL(u'sliderReleased()'), self.mediaVolume)
@@ -494,7 +492,7 @@ class SlideController(QtGui.QWidget):
             if self.serviceItem.is_text() or self.serviceItem.is_image():
                 item = self.serviceItem
                 item.render()
-                self.addServiceManagerItem(item, self.selectedRow)
+                self._processItem(item, self.selectedRow)
 
     def addServiceItem(self, item):
         """
@@ -766,13 +764,6 @@ class SlideController(QtGui.QWidget):
                     % self.serviceItem.name.lower(),
                     [self.serviceItem, self.isLive])
 
-    def slideCache(self, slide):
-        """
-        Generate a slide cache item rendered and ready for use
-        in the background.
-        """
-        self.serviceItem.get_rendered_frame(int(slide))
-
     def onSlideSelected(self):
         """
         Generate the preview when you click on a slide.
@@ -817,7 +808,8 @@ class SlideController(QtGui.QWidget):
         else:
             label = self.PreviewListWidget.cellWidget(
                 self.PreviewListWidget.currentRow(), 1)
-            self.SlidePreview.setPixmap(label.pixmap())
+            if label:
+                self.SlidePreview.setPixmap(label.pixmap())
 
     def grabMainDisplay(self):
         winid = QtGui.QApplication.desktop().winId()
