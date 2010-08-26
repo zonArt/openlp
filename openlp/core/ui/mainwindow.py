@@ -743,6 +743,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         The screen has changed to so tell the displays to update_display
         their locations
         """
+        log.debug(u'screenChanged')
         self.RenderManager.update_display()
         self.setFocus()
         self.activateWindow()

@@ -77,6 +77,7 @@ class RenderManager(object):
         self.display = MainDisplay(self, self.screens, False)
         self.display.setup()
         self.renderer.bg_frame = None
+        self.themedata = None
 
     def set_global_theme(self, global_theme, theme_level=ThemeLevel.Global):
         """
