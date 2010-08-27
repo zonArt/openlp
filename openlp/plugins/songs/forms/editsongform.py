@@ -600,6 +600,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.CopyrightEditItem.setCursorPosition(pos + 1)
 
     def onMaintenanceButtonClicked(self):
+        self.parent.song_maintenance_form.songFormLaunch = True
         self.parent.song_maintenance_form.exec_()
         self.loadAuthors()
         self.loadBooks()

@@ -42,6 +42,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
+        self.songFormLaunch = False
+        self.commitOnSave = True
         self.songmanager = songmanager
         self.authorform = AuthorsForm(self)
         self.topicform = TopicsForm(self)
@@ -70,6 +72,11 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         self.resetAuthors()
         self.resetTopics()
         self.resetBooks()
+        if self.songFormLaunch:
+            self.commitOnSave = False
+            self.songFormLaunch = False
+        else:
+            self.commitOnSave = True
         self.TypeListWidget.setFocus()
         return QtGui.QDialog.exec_(self)
 
@@ -227,7 +234,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 last_name=unicode(self.authorform.LastNameEdit.text()),
                 display_name=unicode(self.authorform.DisplayEdit.text()))
             if self.checkAuthor(author):
-                if self.songmanager.save_object(author):
+                if self.songmanager.save_object(author, self.commitOnSave):
                     self.resetAuthors()
                 else:
                     QtGui.QMessageBox.critical(self,
@@ -244,7 +251,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         if self.topicform.exec_():
             topic = Topic.populate(name=unicode(self.topicform.NameEdit.text()))
             if self.checkTopic(topic):
-                if self.songmanager.save_object(topic):
+                if self.songmanager.save_object(topic, self.commitOnSave):
                     self.resetTopics()
                 else:
                     QtGui.QMessageBox.critical(self,
@@ -262,7 +269,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             book = Book.populate(name=unicode(self.bookform.NameEdit.text()),
                 publisher=unicode(self.bookform.PublisherEdit.text()))
             if self.checkBook(book):
-                if self.songmanager.save_object(book):
+                if self.songmanager.save_object(book, self.commitOnSave):
                     self.resetBooks()
                 else:
                     QtGui.QMessageBox.critical(self,
@@ -295,7 +302,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 author.display_name = unicode(
                     self.authorform.DisplayEdit.text())
                 if self.checkAuthor(author, True):
-                    if self.songmanager.save_object(author):
+                    if self.songmanager.save_object(author, self.commitOnSave):
                         self.resetAuthors()
                         Receiver.send_message(u'songs_load_list')
                     else:
@@ -337,7 +344,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             if self.topicform.exec_(False):
                 topic.name = unicode(self.topicform.NameEdit.text())
                 if self.checkTopic(topic, True):
-                    if self.songmanager.save_object(topic):
+                    if self.songmanager.save_object(topic, self.commitOnSave):
                         self.resetTopics()
                     else:
                         QtGui.QMessageBox.critical(self,
@@ -380,7 +387,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 book.name = unicode(self.bookform.NameEdit.text())
                 book.publisher = unicode(self.bookform.PublisherEdit.text())
                 if self.checkBook(book, True):
-                    if self.songmanager.save_object(book):
+                    if self.songmanager.save_object(book, self.commitOnSave):
                         self.resetBooks()
                     else:
                         QtGui.QMessageBox.critical(self,
@@ -404,12 +411,12 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     book.publisher = temp_publisher
 
     def mergeAuthors(self, old_author):
-        '''
+        """
         Merges two authors into one author.
         
         ``old_author``
             The author which will be deleted afterwards.
-        '''
+        """
         existing_author = self.songmanager.get_object_filtered(Author,
             and_(Author.first_name == old_author.first_name,
                 Author.last_name == old_author.last_name, 
@@ -422,16 +429,16 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             if existing_author not in song.authors:
                 song.authors.append(existing_author)
             song.authors.remove(old_author)
-            self.songmanager.save_object(song)
+            self.songmanager.save_object(song, self.commitOnSave)
         self.songmanager.delete_object(Author, old_author.id)
 
     def mergeTopics(self, old_topic):
-        '''
+        """
         Merges two topics into one topic.
         
         ``old_topic``
             The topic which will be deleted afterwards.
-        '''
+        """
         existing_topic = self.songmanager.get_object_filtered(Topic,
             Topic.name == old_topic.name)
         songs = self.songmanager.get_all_objects(Song,
@@ -442,16 +449,16 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             if existing_topic not in song.topics:
                 song.topics.append(existing_topic)
             song.topics.remove(old_topic)
-            self.songmanager.save_object(song)
+            self.songmanager.save_object(song, self.commitOnSave)
         self.songmanager.delete_object(Topic, old_topic.id)
 
     def mergeBooks(self, old_book):
-        '''
+        """
         Merges two books into one book.
         
         ``old_book``
             The book which will be deleted afterwards.
-        '''
+        """
         existing_book = self.songmanager.get_object_filtered(Book,
             and_(Book.name == old_book.name,
                 Book.publisher == old_book.publisher))
@@ -459,7 +466,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             Song.song_book_id == old_book.id)
         for song in songs:
             song.song_book_id = existing_book.id
-            self.songmanager.save_object(song)
+            self.songmanager.save_object(song, self.commitOnSave)
         self.songmanager.delete_object(Book, old_book.id)
 
     def onAuthorDeleteButtonClick(self):
