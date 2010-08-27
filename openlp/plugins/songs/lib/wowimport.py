@@ -116,13 +116,14 @@ class WowImport(SongImport):
             self.import_wizard.importProgressBar.setMaximum(
                 len(self.import_source))
             for file in self.import_source:
-                # TODO: check that it is a valid words of worship file (could check 
-                # header for WoW File Song Word)
+                # TODO: check that it is a valid words of worship file (could 
+                # check header for WoW File Song Word)
                 self.author = u''
                 self.copyright= u''
                 # Get the song title
                 self.file_name = os.path.split(file)[1]
-                self.import_wizard.incrementProgressBar("Importing %s" % (self.file_name),  0)
+                self.import_wizard.incrementProgressBar(
+                    "Importing %s" % (self.file_name),  0)
                 self.title = self.file_name.rpartition(u'.')[0]
                 self.songData = open(file, 'rb')
                 # Seek to byte which stores number of blocks in the song
@@ -155,16 +156,17 @@ class WowImport(SongImport):
                 # Now to extact the author
                 self.author_length = ord(self.songData.read(1))
                 if self.author_length != 0:
-                    self.author = unicode(self.songData.read(self.author_length),
-                        u'cp1252')
+                    self.author = unicode(
+                        self.songData.read(self.author_length), u'cp1252')
                 # Finally the copyright
                 self.copyright_length = ord(self.songData.read(1))
                 if self.copyright_length != 0:
-                    self.copyright = unicode(self.songData.read(self.copyright_length),
-                        u'cp1252')
+                    self.copyright = unicode(
+                        self.songData.read(self.copyright_length), u'cp1252')
                 self.parse_author(self.author)
                 self.add_copyright(self.copyright)
                 self.songData.close()
                 self.finish()
-                self.import_wizard.incrementProgressBar("Importing %s" % (self.file_name))
+                self.import_wizard.incrementProgressBar(
+                    "Importing %s" % (self.file_name))
             return True
