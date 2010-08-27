@@ -302,8 +302,8 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         Stop the import on pressing the cancel button.
         """
         log.debug('Cancel button pressed!')
-        if self.currentId() == 3:
-            Receiver.send_message(u'song_stop_import')
+        if self.currentId() == 2:
+            Receiver.send_message(u'songs_stop_import')
 
     def onCurrentIdChanged(self, id):
         if id == 2:
