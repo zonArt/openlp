@@ -312,7 +312,8 @@ def build_html(item, screen, alert):
         build_alert(alert, width),
         build_footer(item),
         build_lyrics(item),
-        u'true' if theme and theme.display_slideTransition else u'false',
+        u'true' if theme and theme.display_slideTransition \
+            else u'false',
         image)
     return html
 

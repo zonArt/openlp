@@ -192,8 +192,6 @@ class RenderManager(object):
         footer.append(u'Amazing Grace (John Newton)' )
         footer.append(u'Public Domain')
         footer.append(u'CCLI 123456')
-        # Previews do not need the transition switched on!
-        themedata.display_slideTransition = False
         # build a service item to generate preview
         serviceItem = ServiceItem()
         serviceItem.theme = themedata
