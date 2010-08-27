@@ -52,6 +52,13 @@ class SongImport(QtCore.QObject):
         """
         self.manager = manager
         self.stop_import_flag = False
+        self.copyright_string = unicode(translate(
+            'SongsPlugin.SongImport', 'copyright'))
+        self.copyright_symbol = unicode(translate(
+            'SongsPlugin.SongImport', '\xa9'))
+        self.setDefaults()
+    
+    def setDefaults(self):
         self.title = u''
         self.song_number = u''
         self.alternate_title = u''
@@ -67,13 +74,7 @@ class SongImport(QtCore.QObject):
         self.verses = []
         self.versecount = 0
         self.choruscount = 0
-        self.copyright_string = unicode(translate(
-            'SongsPlugin.SongImport', 'copyright'))
-        self.copyright_symbol = unicode(translate(
-            'SongsPlugin.SongImport', '\xa9'))
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'songs_stop_import'), self.stop_import)
-
+ 
     def stop_import(self):
         """
         Sets the flag for importers to stop their import
@@ -298,6 +299,7 @@ class SongImport(QtCore.QObject):
                 topic = Topic.populate(name=topictext)
             song.topics.append(topic)
         self.manager.save_object(song)
+        self.setDefaults()
 
     def print_song(self):
         """
