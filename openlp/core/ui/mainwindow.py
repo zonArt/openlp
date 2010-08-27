@@ -649,8 +649,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         version_text = unicode(translate('OpenLP.MainWindow',
             'Version %s of OpenLP is now available for download (you are '
             'currently running version %s). \n\nYou can download the latest '
-            'version from '
-            '<a href="http://openlp.org/">http://openlp.org/</a>.'))
+            'version from http://openlp.org/.'))
         QtGui.QMessageBox.question(self,
             translate('OpenLP.MainWindow', 'OpenLP Version Updated'),
             version_text % (version, self.applicationVersion[u'full']))
