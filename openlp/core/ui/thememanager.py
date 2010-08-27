@@ -295,7 +295,7 @@ class ThemeManager(QtGui.QWidget):
         path = unicode(path)
         if path:
             SettingsManager.set_last_dir(self.settingsSection, path, 1)
-            themePath = os.path.join(path, theme + u'.theme')
+            themePath = os.path.join(path, theme + u'.thz')
             zip = None
             try:
                 zip = zipfile.ZipFile(themePath, u'w')
