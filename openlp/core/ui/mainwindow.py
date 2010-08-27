@@ -95,7 +95,7 @@ class Ui_MainWindow(object):
         self.MainContentLayout.addWidget(self.ControlSplitter)
         # Create slide controllers
         self.PreviewController = SlideController(self, self.settingsmanager, self.screens)
-        self.LiveController = SlideController(self, self.settingsmanager, self.screens,  True)
+        self.LiveController = SlideController(self, self.settingsmanager, self.screens, True)
         # Create menu
         self.MenuBar = QtGui.QMenuBar(MainWindow)
         self.MenuBar.setGeometry(QtCore.QRect(0, 0, 1087, 27))
@@ -649,8 +649,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         version_text = unicode(translate('OpenLP.MainWindow',
             'Version %s of OpenLP is now available for download (you are '
             'currently running version %s). \n\nYou can download the latest '
-            'version from '
-            '<a href="http://openlp.org/">http://openlp.org/</a>.'))
+            'version from http://openlp.org/.'))
         QtGui.QMessageBox.question(self,
             translate('OpenLP.MainWindow', 'OpenLP Version Updated'),
             version_text % (version, self.applicationVersion[u'full']))
@@ -743,6 +742,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         The screen has changed to so tell the displays to update_display
         their locations
         """
+        log.debug(u'screenChanged')
         self.RenderManager.update_display()
         self.setFocus()
         self.activateWindow()

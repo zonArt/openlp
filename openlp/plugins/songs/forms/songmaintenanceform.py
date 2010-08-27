@@ -88,9 +88,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             item = self.songmanager.get_object(item_class, item_id)
             if item and len(item.songs) == 0:
                 if QtGui.QMessageBox.warning(self, dlg_title, del_text,
-                        QtGui.QMessageBox.StandardButtons(
-                            QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)
-                        ) == QtGui.QMessageBox.Yes:
+                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
+                    QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.Yes:
                     self.songmanager.delete_object(item_class, item.id)
                     reset_func()
             else:

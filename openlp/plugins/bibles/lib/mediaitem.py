@@ -401,9 +401,10 @@ class BibleMediaItem(MediaManagerItem):
             self.AdvancedBookComboBox.itemData(item).toInt()[0])
 
     def onImportClick(self):
-        self.bibleimportform = ImportWizardForm(self,
-            self.parent.manager, self.parent)
-        self.bibleimportform.exec_()
+        if not hasattr(self, u'import_wizard'):
+            self.import_wizard = ImportWizardForm(self, self.parent.manager,
+                self.parent)
+        self.import_wizard.exec_()
         self.reloadBibles()
 
     def onAdvancedFromVerse(self):
@@ -644,7 +645,7 @@ class BibleMediaItem(MediaManagerItem):
         '''
         version = self.parent.manager.get_meta_data(bible, u'Version')
         copyright = self.parent.manager.get_meta_data(bible, u'Copyright')
-        permission = self.parent.manager.get_meta_data(bible, u'Permissions')
+        #permission = self.parent.manager.get_meta_data(bible, u'Permissions')
         if dual_bible:
             dual_version = self.parent.manager.get_meta_data(dual_bible,
                 u'Version')

@@ -27,8 +27,9 @@
 import re
 
 from openlp.core.lib import translate
-from openlp.plugins.songs.lib import SongXMLBuilder, VerseType
+from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.db import Song, Author, Topic, Book
+from openlp.plugins.songs.lib.xml import SongXMLBuilder
 
 class SongImport(object):
     """
@@ -39,14 +40,14 @@ class SongImport(object):
     as necessary
     """
 
-    def __init__(self, song_manager):
+    def __init__(self, manager):
         """
         Initialise and create defaults for properties
 
         song_manager is an instance of a SongManager, through which all
         database access is performed
         """
-        self.manager = song_manager
+        self.manager = manager
         self.title = u''
         self.song_number = u''
         self.alternate_title = u''
@@ -66,6 +67,9 @@ class SongImport(object):
             'SongsPlugin.SongImport', 'copyright'))
         self.copyright_symbol = unicode(translate(
             'SongsPlugin.SongImport', '\xa9'))
+
+    def register(self, import_wizard):
+        self.import_wizard = import_wizard
 
     @staticmethod
     def process_songs_text(manager, text):

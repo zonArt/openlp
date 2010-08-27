@@ -34,7 +34,7 @@ log = logging.getLogger(__name__)
 
 class AlertsManager(QtCore.QObject):
     """
-    AlertsTab is the Alerts settings tab in the settings dialog.
+    AlertsManager manages the settings of Alerts.
     """
     log.info(u'Alert Manager loaded')
 
@@ -99,7 +99,6 @@ class AlertsManager(QtCore.QObject):
 
         """
         log.debug(u'timer event')
-        alertTab = self.parent.alertsTab
         if event.timerId() == self.timer_id:
             self.parent.liveController.display.alert(u'')
         self.killTimer(self.timer_id)

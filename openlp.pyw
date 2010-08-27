@@ -48,7 +48,6 @@ QMainWindow::separator
 
 QDockWidget::title
 {
-  /*background: palette(dark);*/
   border: 1px solid palette(dark);
   padding-left: 5px;
   padding-top: 2px;

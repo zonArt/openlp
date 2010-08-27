@@ -312,7 +312,8 @@ def build_html(item, screen, alert):
         build_alert(alert, width),
         build_footer(item),
         build_lyrics(item),
-        u'true' if theme and theme.display_slideTransition else u'false',
+        u'true' if theme and theme.display_slideTransition \
+            else u'false',
         image)
     return html
 
@@ -349,7 +350,7 @@ def build_lyrics(item):
         lyricstable = u'left: %spx; top: %spx;' % \
             (item.main.x(), item.main.y())
         outlinetable = u'left: %spx; top: %spx;' % \
-            (item.main.x(),  item.main.y())
+            (item.main.x(), item.main.y())
         shadowtable = u'left: %spx; top: %spx;' % \
             (item.main.x() + float(theme.display_shadow_size),
             item.main.y() + float(theme.display_shadow_size))
@@ -408,7 +409,7 @@ def build_footer(item):
         align = u'right'
     else:
         align = u'left'
-    lyrics_html = style % (item.footer.x(),  item.footer.y(),
+    lyrics_html = style % (item.footer.x(), item.footer.y(),
         item.footer.width(), item.footer.height(), theme.font_footer_name,
         theme.font_footer_proportion, theme.font_footer_color, align)
     return lyrics_html

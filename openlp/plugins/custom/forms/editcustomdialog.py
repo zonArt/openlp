@@ -143,7 +143,7 @@ class Ui_CustomEditDialog(object):
         customEditDialog.setWindowTitle(
             translate('CustomPlugin.EditCustomForm', 'Edit Custom Slides'))
         self.upButton.setToolTip(
-            translate('CustomPlugin.EditCustomForm', 'Move slide up once '
+            translate('CustomPlugin.EditCustomForm', 'Move slide up one '
                 'position.'))
         self.downButton.setToolTip(
             translate('CustomPlugin.EditCustomForm', 'Move slide down one '

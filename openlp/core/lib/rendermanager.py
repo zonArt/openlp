@@ -77,6 +77,7 @@ class RenderManager(object):
         self.display = MainDisplay(self, self.screens, False)
         self.display.setup()
         self.renderer.bg_frame = None
+        self.themedata = None
 
     def set_global_theme(self, global_theme, theme_level=ThemeLevel.Global):
         """
@@ -191,8 +192,6 @@ class RenderManager(object):
         footer.append(u'Amazing Grace (John Newton)' )
         footer.append(u'Public Domain')
         footer.append(u'CCLI 123456')
-        # Previews do not need the transition switched on!
-        themedata.display_slideTransition = False
         # build a service item to generate preview
         serviceItem = ServiceItem()
         serviceItem.theme = themedata

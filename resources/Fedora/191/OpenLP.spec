@@ -26,7 +26,7 @@ Requires:       hicolor-icon-theme
 
 %description
 OpenLP is a church presentation software, for lyrics projection software,
-used to display slides of Songs,  Bible verses, videos, images, and 
+used to display slides of Songs, Bible verses, videos, images, and 
 presentations (if OpenOffice.org is installed) using a computer and projector.
 
 %prep
