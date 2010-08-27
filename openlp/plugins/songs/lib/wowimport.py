@@ -170,3 +170,4 @@ class WowImport(SongImport):
                 self.import_wizard.incrementProgressBar(
                     "Importing %s" % (self.file_name))
             return True
+            
