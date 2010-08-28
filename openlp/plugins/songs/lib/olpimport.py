@@ -86,7 +86,6 @@ class OpenLPSongImport(SongImport):
             The database providing the data to import.
         """
         SongImport.__init__(self, manager)
-        #self.master_manager = master_manager
         self.import_source = u'sqlite:///%s' % kwargs[u'filename']
         log.debug(self.import_source)
         self.source_session = None
@@ -145,7 +144,12 @@ class OpenLPSongImport(SongImport):
             mapper(OldTopic, source_topics_table)
 
         source_songs = self.source_session.query(OldSong).all()
+        song_total = len(source_songs)
+        self.import_wizard.importProgressBar.setMaximum(song_total)
+        song_count = 1
         for song in source_songs:
+            self.import_wizard.incrementProgressBar(
+                u'Importing song %s of %s' % (song_count, song_total))
             new_song = Song()
             new_song.title = song.title
             if has_media_files:
@@ -212,4 +216,8 @@ class OpenLPSongImport(SongImport):
 #                            new_song.media_files.append(MediaFile.populate(
 #                                file_name=media_file.file_name))
             self.manager.save_object(new_song)
+            song_count += 1
+            if self.stop_import_flag:
+                return False
         engine.dispose()
+        return True

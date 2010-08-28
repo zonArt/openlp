@@ -504,16 +504,16 @@ class BibleMediaItem(MediaManagerItem):
                 dual_text = self._decodeQtObject(reference, 'dual_text')
             if self.parent.settings_tab.display_style == 1:
                 verse_text = self.formatVerse(old_chapter, chapter, verse,
-                    u'(', u')')
+                    u'{su}(', u'){/su}')
             elif self.parent.settings_tab.display_style == 2:
                 verse_text = self.formatVerse(old_chapter, chapter, verse,
-                    u'{', u'}')
+                    u'{su}{', u'}{/su}')
             elif self.parent.settings_tab.display_style == 3:
                 verse_text = self.formatVerse(old_chapter, chapter, verse,
-                    u'[', u']')
+                    u'{su}[', u']{/su}')
             else:
                 verse_text = self.formatVerse(old_chapter, chapter, verse,
-                    u'', u'')
+                    u'{su}', u'{/su}')
             old_chapter = chapter
             footer = u'%s (%s %s)' % (book, version, copyright)
             # If not found add to footer
@@ -532,7 +532,11 @@ class BibleMediaItem(MediaManagerItem):
             else:
                 # If we are 'Verse Per Line' then force a new line.
                 if self.parent.settings_tab.layout_style == 1:
-                    text = text + u'\n\n'
+                    text = text + u'\n'
+                else:
+                    # split the line but do not replace line breaks in renderer
+                    service_item.add_capability(ItemCapabilities.NoLineBreaks)
+                    text = text + u'\n'
                 bible_text = u'%s %s %s' % (bible_text, verse_text, text)
                 # If we are 'Verse Per Slide' then create a new slide.
                 if self.parent.settings_tab.layout_style == 0:

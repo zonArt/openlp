@@ -261,7 +261,7 @@ class AlertsTab(SettingsTab):
         self.font_face = unicode(settings.value(
             u'font face', QtCore.QVariant(QtGui.QFont().family())).toString())
         self.location = settings.value(
-            u'location', QtCore.QVariant(0)).toInt()[0]
+            u'location', QtCore.QVariant(1)).toInt()[0]
         settings.endGroup()
         self.FontSizeSpinBox.setValue(self.font_size)
         self.TimeoutSpinBox.setValue(self.timeout)
@@ -296,3 +296,4 @@ class AlertsTab(SettingsTab):
         self.FontPreview.setFont(font)
         self.FontPreview.setStyleSheet(u'background-color: %s; color: %s' %
             (self.bg_color, self.font_color))
+
