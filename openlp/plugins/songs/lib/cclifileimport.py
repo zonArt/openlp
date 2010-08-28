@@ -38,50 +38,20 @@ class CCLIFileImportError(Exception):
 
 class CCLIFileImport(SongImport):
     """
-    Import songs from CCLI SongSelect files in both .txt and .usr formats
-    http://www.ccli.com
-
-    The format of the .txt format is:
-    ==========
-    Song Title
-    <>
-    Description of following text (Verse/Chorus) and number
-    <verse/chorus lyrics>
-    <>
-    <>
-    Next text block description (etc)
-    <verse/chorus lyrics>
-    <>
-    <>
-    CCLI Number (e.g.CCLI-Liednummer: 2672885)
-    Copyright "|" delimited (e.g. © 1999 Integrity's Hosanna! Music | LenSongs Publishing)
-    Authors "|" delimited (e.g. Lenny LeBlanc | Paul Baloche)
-    Licencing info (e.g. For use solely with the SongSelect Terms of Use.  All rights Reserved.  www.ccli.com)
-    CCLI Licence number (e.g. CCL-Liedlizenznummer: 14 / CCLI License No. 14)
-    ==========
-
-    The format of the .usr format is:
-    ==========
-    [File]
-    Type=SongSelect Import File
-    Version=3.0
-    [S A2672885]
-    Title=Above All
-    Author=LeBlanc, Lenny | Baloche, Paul
-    Copyright=1999 Integrity's Hosanna! Music | LenSongs Publishing (Verwaltet von Gerth Medien Musikverlag) | (Verwaltet von Gerth Medien Musikverlag)
-    Admin=Gerth Medien Musikverlag
-    Themes=Cross/tKingship/tMajesty/tRedeemer
-    Keys=A
-    Fields=Vers 1/tVers 2/tChorus 1/tAndere 1
-    Words=Above all powers.... [/n = CR, /n/t = CRLF]
-    ==========
-
+    The :class:`CCLIFileImport` class provides OpenLP with the ability to
+    import CCLI SongSelect song files in both .txt and .usr formats
+    see http://www.ccli.com
     """
 
     def __init__(self, master_manager, **kwargs):
         """
-        Initialise the class. Requires a songmanager class which
-        is passed to SongImport for writing song to disk
+        Initialise the import.
+
+        ``manager``
+            The song manager for the running OpenLP installation.
+``filenames``
+            The files to be imported.
+        
         """
         SongImport.__init__(self, master_manager)
         self.master_manager = master_manager
@@ -130,7 +100,26 @@ class CCLIFileImport(SongImport):
 
     def do_import_usr_file(self, textList):
         """
-        Process the USR file - pass in a list of lines
+        Process the USR file 
+        
+        ``textList``
+            An array of strings containing the usr file content.
+            
+        The format of the .usr format is:
+        ==========
+        [File]
+        Type=SongSelect Import File
+        Version=3.0
+        [S A2672885]
+        Title=Above All
+        Author=LeBlanc, Lenny | Baloche, Paul
+        Copyright=1999 Integrity's Hosanna! Music | LenSongs Publishing (Verwaltet von Gerth Medien Musikverlag) | (Verwaltet von Gerth Medien Musikverlag)
+        Admin=Gerth Medien Musikverlag
+        Themes=Cross/tKingship/tMajesty/tRedeemer
+        Keys=A
+        Fields=Vers 1/tVers 2/tChorus 1/tAndere 1
+        Words=Above all powers.... [/n = CR, /n/t = CRLF]
+        ==========            
         """
 
         log.debug('USR file text: %s', textList)
@@ -193,6 +182,28 @@ class CCLIFileImport(SongImport):
     def do_import_txt_file(self, textList):
         """
         Process the TXT file - pass in a list of lines
+                
+        ``textList``
+            An array of strings containing the txt file content. 
+     
+        The format of the .txt format is:
+        ==========
+        Song Title
+        <>
+        Description of following text (Verse/Chorus) and number
+        <verse/chorus lyrics>
+        <>
+        <>
+        Next text block description (etc)
+        <verse/chorus lyrics>
+        <>
+        <>
+        CCLI Number (e.g.CCLI-Liednummer: 2672885)
+        Copyright "|" delimited (e.g. © 1999 Integrity's Hosanna! Music | LenSongs Publishing)
+        Authors "|" delimited (e.g. Lenny LeBlanc | Paul Baloche)
+        Licencing info (e.g. For use solely with the SongSelect Terms of Use.  All rights Reserved.  www.ccli.com)
+        CCLI Licence number (e.g. CCL-Liedlizenznummer: 14 / CCLI License No. 14)
+        ==========     
         """
 
         log.debug('TXT file text: %s', textList)
