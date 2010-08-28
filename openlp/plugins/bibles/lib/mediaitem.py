@@ -511,7 +511,6 @@ class BibleMediaItem(MediaManagerItem):
             if footer not in raw_footer:
                 raw_footer.append(footer)
             if dual_bible:
-                service_item.add_capability(ItemCapabilities.NoLineBreaks)
                 footer = u'%s (%s %s)' % (book, dual_version, dual_copyright)
                 if footer not in raw_footer:
                     raw_footer.append(footer)
@@ -520,7 +519,7 @@ class BibleMediaItem(MediaManagerItem):
                 if bible_text:
                     raw_slides.append(bible_text)
                     bible_text = u''
-                bible_text = u'%s %s \n %s %s' % (verse_text, text,
+                bible_text = u'%s %s\n\n%s %s' % (verse_text, text,
                     verse_text, dual_text)
                 raw_slides.append(bible_text)
                 bible_text = u''
@@ -531,16 +530,16 @@ class BibleMediaItem(MediaManagerItem):
                 bible_text = u''
             # If we are 'Verse Per Line' then force a new line.
             elif self.parent.settings_tab.layout_style == 1:
-                service_item.add_capability(ItemCapabilities.NoLineBreaks)
-                bible_text = u'%s %s %s\n' % (bible_text, verse_text, text)
+                bible_text = u'%s %s %s\n\n' % (bible_text, verse_text, text)
             # We have to be 'Continuous'.
             else:
                 # We add a line break if the previously verse has a different
                 # book or bible version.
                 if first:
                     bible_text = u'%s %s %s' % (bible_text, verse_text, text)
-                elif bible != old_bible or book != old_book:
+                    # split the line but do not replace line breaks in renderer
                     service_item.add_capability(ItemCapabilities.NoLineBreaks)
+                elif bible != old_bible or book != old_book:
                     bible_text = u'%s\n%s %s' % (bible_text, verse_text,
                         text)
                 else:
