@@ -263,8 +263,8 @@ class Ui_EditSongDialog(object):
         self.SongbookLayout.setSpacing(8)
         self.SongbookLayout.setObjectName(u'SongbookLayout')
         self.SongbookCombo = QtGui.QComboBox(self.SongBookGroup)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Fixed)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding,
+            QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
@@ -273,6 +273,12 @@ class Ui_EditSongDialog(object):
         self.SongbookCombo.setSizePolicy(sizePolicy)
         self.SongbookCombo.setObjectName(u'SongbookCombo')
         self.SongbookLayout.addWidget(self.SongbookCombo, 0, 0, 1, 1)
+        self.songBookNumberLabel = QtGui.QLabel(self.SongBookGroup)
+        self.SongbookLayout.addWidget(self.songBookNumberLabel, 0, 1, 1, 1)
+        self.songBookNumberEdit = QtGui.QLineEdit(self.SongBookGroup)
+        self.songBookNumberLabel.setBuddy(self.songBookNumberEdit)
+        self.songBookNumberEdit.setMaximumWidth(35)
+        self.SongbookLayout.addWidget(self.songBookNumberEdit, 0, 2, 1, 1)
         self.TopicBookLayout.addWidget(self.SongBookGroup)
         self.AuthorsTabLayout.addWidget(self.TopicBookWidget)
         self.SongTabWidget.addTab(self.AuthorsTab, u'')
@@ -440,6 +446,8 @@ class Ui_EditSongDialog(object):
             translate('SongsPlugin.EditSongForm', 'R&emove'))
         self.SongBookGroup.setTitle(
             translate('SongsPlugin.EditSongForm', 'Song Book'))
+        self.songBookNumberLabel.setText(translate('SongsPlugin.EditSongForm',
+            'Song No.:'))
         self.SongTabWidget.setTabText(
             self.SongTabWidget.indexOf(self.AuthorsTab),
             translate('SongsPlugin.EditSongForm',
