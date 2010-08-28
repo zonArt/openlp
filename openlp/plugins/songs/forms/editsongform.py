@@ -314,7 +314,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             author = self.songmanager.get_object(Author, item_id)
             if author in self.song.authors:
                 QtGui.QMessageBox.warning(self,
-                    translate('SongsPlugin.EditSongForm', 'Error'), 
+                    translate('SongsPlugin.EditSongForm', 'Error'),
                     translate('SongsPlugin.EditSongForm', 'This author is '
                     'already in the list.'))
             else:
@@ -422,7 +422,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.VerseDeleteButton.setEnabled(True)
 
     def onVerseAddButtonClicked(self):
-        self.verse_form.setVerse(u'', True)
+        # Allow insert button as you do not know if multiple verses will
+        # be entered.
+        self.verse_form.setVerse(u'')
         if self.verse_form.exec_():
             afterText, verse, subVerse = self.verse_form.getVerse()
             data = u'%s:%s' % (verse, subVerse)

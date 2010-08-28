@@ -24,13 +24,18 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import logging
 import re
+from PyQt4 import QtCore
 
-from openlp.core.lib import translate
-from openlp.plugins.songs.lib import SongXMLBuilder, VerseType
+from openlp.core.lib import Receiver, translate
+from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.db import Song, Author, Topic, Book
+from openlp.plugins.songs.lib.xml import SongXMLBuilder
 
-class SongImport(object):
+log = logging.getLogger(__name__)
+
+class SongImport(QtCore.QObject):
     """
     Helper class for import a song from a third party source into OpenLP
 
@@ -38,15 +43,15 @@ class SongImport(object):
     whether the authors etc already exist and add them or refer to them
     as necessary
     """
-
-    def __init__(self, song_manager):
+    def __init__(self, manager):
         """
         Initialise and create defaults for properties
 
         song_manager is an instance of a SongManager, through which all
         database access is performed
         """
-        self.manager = song_manager
+        self.manager = manager
+        self.stop_import_flag = False
         self.title = u''
         self.song_number = u''
         self.alternate_title = u''
@@ -66,6 +71,18 @@ class SongImport(object):
             'SongsPlugin.SongImport', 'copyright'))
         self.copyright_symbol = unicode(translate(
             'SongsPlugin.SongImport', '\xa9'))
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'songs_stop_import'), self.stop_import)
+
+    def stop_import(self):
+        """
+        Sets the flag for importers to stop their import
+        """
+        log.debug(u'Stopping songs import')
+        self.stop_import_flag = True
+
+    def register(self, import_wizard):
+        self.import_wizard = import_wizard
 
     @staticmethod
     def process_songs_text(manager, text):

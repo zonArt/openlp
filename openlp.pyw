@@ -34,7 +34,8 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver
 from openlp.core.resources import qInitResources
-from openlp.core.ui import MainWindow, SplashScreen, ScreenList
+from openlp.core.ui.mainwindow import MainWindow
+from openlp.core.ui import SplashScreen, ScreenList
 from openlp.core.utils import AppLocation, LanguageManager, VersionThread
 
 log = logging.getLogger()
@@ -47,7 +48,6 @@ QMainWindow::separator
 
 QDockWidget::title
 {
-  /*background: palette(dark);*/
   border: 1px solid palette(dark);
   padding-left: 5px;
   padding-top: 2px;

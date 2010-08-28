@@ -401,9 +401,10 @@ class BibleMediaItem(MediaManagerItem):
             self.AdvancedBookComboBox.itemData(item).toInt()[0])
 
     def onImportClick(self):
-        self.bibleimportform = ImportWizardForm(self,
-            self.parent.manager, self.parent)
-        self.bibleimportform.exec_()
+        if not hasattr(self, u'import_wizard'):
+            self.import_wizard = ImportWizardForm(self, self.parent.manager,
+                self.parent)
+        self.import_wizard.exec_()
         self.reloadBibles()
 
     def onAdvancedFromVerse(self):
@@ -464,10 +465,10 @@ class BibleMediaItem(MediaManagerItem):
             self.displayResults(bible, dual_bible)
 
     def generateSlideData(self, service_item, item=None):
-        '''
+        """
         Generates and formats the slides for the service item as well as the
         service item's title.
-        '''
+        """
         log.debug(u'generating slide data')
         items = self.listView.selectedIndexes()
         if len(items) == 0:
@@ -505,20 +506,20 @@ class BibleMediaItem(MediaManagerItem):
                 dual_text = self._decodeQtObject(reference, 'dual_text')
             verse_text = self.formatVerse(old_chapter, chapter, verse)
             # footer
+            old_chapter = chapter
             footer = u'%s (%s %s)' % (book, version, copyright)
             if footer not in raw_footer:
                 raw_footer.append(footer)
             if dual_bible:
+                service_item.add_capability(ItemCapabilities.NoLineBreaks)
                 footer = u'%s (%s %s)' % (book, dual_version, dual_copyright)
                 if footer not in raw_footer:
                     raw_footer.append(footer)
                 # If we were previously 'Verse Per Line' we have to add the old
                 # bible_text, because it was not added until now.
                 if bible_text:
-                    raw_slides.append(bible_text)
-                    bible_text = u''
-                bible_text = u'%s %s\n\n%s %s' % (verse_text, text,
-                    verse_text, dual_text)
+                    bible_text = u'%s %s \n %s %s' % (verse_text, text,
+                        verse_text, dual_text)
                 raw_slides.append(bible_text)
                 bible_text = u''
             # If we are 'Verse Per Slide' then create a new slide.
@@ -528,7 +529,8 @@ class BibleMediaItem(MediaManagerItem):
                 bible_text = u''
             # If we are 'Verse Per Line' then force a new line.
             elif self.parent.settings_tab.layout_style == 1:
-                bible_text = u'%s %s %s\n\n' % (bible_text, verse_text, text)
+                service_item.add_capability(ItemCapabilities.NoLineBreaks)
+                bible_text = u'%s %s %s\n' % (bible_text, verse_text, text)
             # We have to be 'Continuous'.
             else:
                 # We add a line break if the previously verse has a different
@@ -536,7 +538,8 @@ class BibleMediaItem(MediaManagerItem):
                 if first:
                     bible_text = u'%s %s %s' % (bible_text, verse_text, text)
                 elif bible != old_bible or book != old_book:
-                    bible_text = u'%s\n\n%s %s' % (bible_text, verse_text,
+                    service_item.add_capability(ItemCapabilities.NoLineBreaks)
+                    bible_text = u'%s\n%s %s' % (bible_text, verse_text,
                         text)
                 else:
                     bible_text = u'%s %s %s' % (bible_text, verse_text, text)
@@ -580,11 +583,13 @@ class BibleMediaItem(MediaManagerItem):
             verse_text = chapter + u':'
         verse_text += verse
         if self.parent.settings_tab.display_style == 1:
-            verse_text = u'(' + verse_text + u')'
+            verse_text = u'{su}(' + verse_text + u'){/su}'
         elif self.parent.settings_tab.display_style == 2:
-            verse_text = u'{' + verse_text + u'}'
+            verse_text = u'{su}{' + verse_text + u'}{/su}'
         elif self.parent.settings_tab.display_style == 3:
-            verse_text = u'[' + verse_text + u']'
+            verse_text = u'{su}[' + verse_text + u']{/su}'
+        else:
+            verse_text = u'{su}' + verse_text + u'{/su}'
         return verse_text
 
     def reloadBibles(self):
@@ -630,24 +635,24 @@ class BibleMediaItem(MediaManagerItem):
             combo.addItem(unicode(i))
 
     def displayResults(self, bible, dual_bible=u''):
-        '''
+        """
         Displays the search results in the media manager. All data needed for
         further action is saved for/in each row.
-        '''
+        """
         version = self.parent.manager.get_meta_data(bible, u'Version')
         copyright = self.parent.manager.get_meta_data(bible, u'Copyright')
-        permission = self.parent.manager.get_meta_data(bible, u'Permissions')
+        #permission = self.parent.manager.get_meta_data(bible, u'Permissions')
         if dual_bible:
             dual_version = self.parent.manager.get_meta_data(dual_bible,
                 u'Version')
             dual_copyright = self.parent.manager.get_meta_data(dual_bible,
                 u'Copyright')
-            dual_permission = self.parent.manager.get_meta_data(dual_bible,
-                u'Permissions')
-            if dual_permission:
-                dual_permission = dual_permission.value
-            else:
-                dual_permission = u''
+            #dual_permission = self.parent.manager.get_meta_data(dual_bible,
+            #    u'Permissions')
+            #if dual_permission:
+            #    dual_permission = dual_permission.value
+            #else:
+            #    dual_permission = u''
         # We count the number of rows which are maybe already present.
         start_count = self.listView.count()
         for count, verse in enumerate(self.search_results):

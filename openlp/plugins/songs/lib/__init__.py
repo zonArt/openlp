@@ -26,52 +26,6 @@
 
 from openlp.core.lib import translate
 
-#from openlp.plugins.songs.lib import OpenLyricsSong, OpenSongSong, CCLISong, \
-#    CSVSong
-
-class SongFormat(object):
-    """
-    This is a special enumeration class that holds the various types of songs,
-    plus a few helper functions to facilitate generic handling of song types
-    for importing.
-    """
-    Unknown = -1
-    OpenLyrics = 0
-    OpenSong = 1
-    CCLI = 2
-    CSV = 3
-
-    @staticmethod
-    def get_class(format):
-        """
-        Return the appropriate imeplementation class.
-
-        ``format``
-            The song format.
-        """
-#        if format == SongFormat.OpenLyrics:
-#            return OpenLyricsSong
-#        elif format == SongFormat.OpenSong:
-#            return OpenSongSong
-#        elif format == SongFormat.CCLI:
-#            return CCLISong
-#        elif format == SongFormat.CSV:
-#            return CSVSong
-#        else:
-        return None
-
-    @staticmethod
-    def list():
-        """
-        Return a list of the supported song formats.
-        """
-        return [
-            SongFormat.OpenLyrics,
-            SongFormat.OpenSong,
-            SongFormat.CCLI,
-            SongFormat.CSV
-        ]
-
 class VerseType(object):
     """
     VerseType provides an enumeration for the tags that may be associated
@@ -138,14 +92,7 @@ class VerseType(object):
             unicode(VerseType.to_string(VerseType.Other)).lower():
             return VerseType.Other
 
+
 from xml import LyricsXML, SongXMLBuilder, SongXMLParser
 from songstab import SongsTab
 from mediaitem import SongMediaItem
-from songimport import SongImport
-from opensongimport import OpenSongImport
-from olpimport import OpenLPSongImport
-try:
-    from sofimport import SofImport
-    from oooimport import OooImport
-except ImportError:
-    pass
