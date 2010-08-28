@@ -33,10 +33,10 @@ from songimport import SongImport
 
 log = logging.getLogger(__name__)
 
-class SongSelectFileImportError(Exception):
+class CCLIFileImportError(Exception):
     pass
 
-class SongSelectFileImport(object):
+class CCLIFileImport(SongImport):
     """
     Import songs from CCLI SongSelect files in both .txt and .usr formats
     http://www.ccli.com
@@ -77,47 +77,55 @@ class SongSelectFileImport(object):
     ==========
 
     """
-    
-    def __init__(self, songmanager):
+
+    def __init__(self, master_manager, **kwargs):
         """
         Initialise the class. Requires a songmanager class which
         is passed to SongImport for writing song to disk
         """
-        self.songmanager = songmanager
-        self.song = None
+        SongImport.__init__(self, master_manager)
+        self.master_manager = master_manager
+        if u'filenames' in kwargs:
+            self.filenames = kwargs[u'filenames']
+            log.debug(self.filenames)
 
-    def do_import(self, filename, commit=True):
+    def do_import(self):
         """
         Import either a .usr or a .txt SongSelect file
-        If the commit parameter is set False,
-        the import will not be committed to the database
-        (useful for test scripts)
         """
-        self.song_import = SongImport(self.songmanager)
+        
+        log.debug('Starting CCLI File Import')
+        song_total = len(self.filenames)
+        self.import_wizard.importProgressBar.setMaximum(song_total)
+        song_count = 1        
+        for filename in self.filenames:
+            self.import_wizard.incrementProgressBar(
+                u'Importing song %s of %s' % (song_count, song_total))            
+            filename = unicode(filename) 
+            log.debug('Importing CCLI File: %s', filename)
+            lines = []
+            if os.path.isfile(filename):
+                detect_file = open(filename, u'r')
+                details = chardet.detect(detect_file.read(2048))
+                detect_file.close()
+                infile = codecs.open(filename, u'r', details['encoding'])
+                lines = infile.readlines()
 
-        lines = []
-        filename = unicode(filename)
-        if os.path.isfile(filename):
-            detect_file = open(filename, u'r')
-            details = chardet.detect(detect_file.read(2048))
-            detect_file.close()
-            infile = codecs.open(filename, u'r', details['encoding'])
-            lines = infile.readlines()
-
-            ext = os.path.splitext(filename)[1]
-            if ext.lower() == ".usr":
-                log.info('SongSelect .usr format file found %s', filename)
-                self.do_import_usr_file(lines)
-                if commit:
-                    self.finish()
-            elif ext.lower() == ".txt":
-                log.info('SongSelect .txt format file found %s', filename)
-                self.do_import_txt_file(lines)
-                if commit:
-                    self.finish()
-            else:
-                log.info(u'Extension %s is not valid', filename)
-                pass
+                ext = os.path.splitext(filename)[1]
+                if ext.lower() == ".usr":
+                    log.info('SongSelect .usr format file found %s: ' ,  filename)
+                    self.do_import_usr_file(lines)
+                elif ext.lower() == ".txt":
+                    log.info('SongSelect .txt format file found %s: ', filename)
+                    self.do_import_txt_file(lines)
+                else:
+                    log.info(u'Extension %s is not valid', filename)
+                    pass
+                song_count += 1
+            if self.stop_import_flag:
+                return False  
+                
+        return True
 
 
     def do_import_usr_file(self, textList):
@@ -125,8 +133,12 @@ class SongSelectFileImport(object):
         Process the USR file - pass in a list of lines
         """
 
+        log.debug('USR file text: %s', textList)
+        
         n = 0 # line number
         lyrics = []
+
+        new_song = SongImport(self.master_manager)
 
         for line in textList:
             n += 1
@@ -161,7 +173,8 @@ class SongSelectFileImport(object):
                 vtype = u'O'
             vcontent = unicode(wordslst[i])
             vcontent = vcontent.replace("/n",  "\n")
-            self.song_import.add_verse(vcontent, vtype);
+            if (len(vcontent) > 0):                
+                new_song.add_verse(vcontent, vtype);
 
         #Handle multiple authors
         lst = sauthor.split(u'/')
@@ -169,11 +182,12 @@ class SongSelectFileImport(object):
             lst = sauthor.split(u'|')
         for author in lst:
             seperated = author.split(u',')
-            self.song_import.add_author(seperated[1].strip() + " " + seperated[0].strip())
+            new_song.add_author(seperated[1].strip() + " " + seperated[0].strip())
 
-        self.song_import.title = sname
-        self.song_import.copyright = scopyright
-        self.song_import.ccli_number = sccli
+        new_song.title = sname
+        new_song.copyright = scopyright
+        new_song.ccli_number = sccli
+        new_song.finish()
 
 
     def do_import_txt_file(self, textList):
@@ -181,6 +195,9 @@ class SongSelectFileImport(object):
         Process the TXT file - pass in a list of lines
         """
 
+        log.debug('TXT file text: %s', textList)
+        
+        new_song = SongImport(self.master_manager)
         n = 0
         vcontent = u''
         scomments = u''
@@ -193,9 +210,10 @@ class SongSelectFileImport(object):
                 if (n==0):
                     continue
                 elif (verse_start == True):
-                    self.song_import.add_verse(vcontent, vtype)
-                    vcontent = ''
-                    verse_start = False
+                      if (len(vcontent) > 0):
+                        new_song.add_verse(vcontent, vtype)
+                        vcontent = ''
+                        verse_start = False
             else:
                 if (n==0): #n=0, song title
                     sname = ln
@@ -239,13 +257,9 @@ class SongSelectFileImport(object):
         alist = sauthor.split(u'/')
         if len(alist) < 2:
             alist = sauthor.split(u'|')
-        self.song_import.authors = alist
-        self.song_import.title = sname
-        self.song_import.copyright = scopyright
-        self.song_import.ccli_number = sccli
-        self.song_import.comments = scomments
-
-
-    def finish(self):
-        """ Separate function, allows test suite to not pollute database"""
-        self.song_import.finish()
+        new_song.authors = alist
+        new_song.title = sname
+        new_song.copyright = scopyright
+        new_song.ccli_number = sccli
+        new_song.comments = scomments
+        new_song.finish()
