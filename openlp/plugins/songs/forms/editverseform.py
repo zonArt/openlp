@@ -45,12 +45,19 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
+        QtCore.QObject.connect(self.VerseTextEdit,
+            QtCore.SIGNAL('customContextMenuRequested(QPoint)'),
+            self.contextMenu)
         QtCore.QObject.connect(self.insertButton, QtCore.SIGNAL(u'clicked()'),
             self.onInsertButtonClicked)
         QtCore.QObject.connect(self.verseTextEdit,
             QtCore.SIGNAL(u'cursorPositionChanged()'),
             self.onCursorPositionChanged)
         self.verse_regex = re.compile(r'---\[([-\w]+):([\d]+)\]---')
+
+    def contextMenu(self, point):
+        item = self.serviceManagerList.itemAt(point)
+        print item
 
     def insertVerse(self, title, num=1):
         if self.verseTextEdit.textCursor().columnNumber() != 0:

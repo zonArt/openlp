@@ -27,6 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate
+from openlp.core.ui import SpellTextEdit
 from openlp.plugins.songs.lib import VerseType
 
 class Ui_EditVerseDialog(object):
@@ -38,7 +39,7 @@ class Ui_EditVerseDialog(object):
         self.editVerseLayout.setSpacing(8)
         self.editVerseLayout.setMargin(8)
         self.editVerseLayout.setObjectName(u'editVerseLayout')
-        self.verseTextEdit = QtGui.QPlainTextEdit(editVerseDialog)
+        self.verseTextEdit = SpellTextEdit(editVerseDialog)
         self.verseTextEdit.setObjectName(u'verseTextEdit')
         self.editVerseLayout.addWidget(self.verseTextEdit)
         self.verseTypeLayout = QtGui.QHBoxLayout()
