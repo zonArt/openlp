@@ -45,7 +45,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-        QtCore.QObject.connect(self.VerseTextEdit,
+        QtCore.QObject.connect(self.verseTextEdit,
             QtCore.SIGNAL('customContextMenuRequested(QPoint)'),
             self.contextMenu)
         QtCore.QObject.connect(self.insertButton, QtCore.SIGNAL(u'clicked()'),
