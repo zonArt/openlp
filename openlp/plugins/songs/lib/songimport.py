@@ -236,7 +236,7 @@ class SongImport(QtCore.QObject):
         """
         All fields have been set to this song. Write it away
         """
-        if len(self.authors) == 0:
+        if not self.authors:
             self.authors.append(u'Author unknown')
         self.commit_song()
 

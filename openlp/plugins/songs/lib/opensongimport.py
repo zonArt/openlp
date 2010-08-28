@@ -36,119 +36,148 @@ log = logging.getLogger(__name__)
 class OpenSongImportError(Exception):
     pass
 
-class OpenSongImport(object):
+class OpenSongImport(SongImport):
     """
-    Import songs exported from OpenSong - the format is described loosly here:
-    http://www.opensong.org/d/manual/song_file_format_specification
+    Import songs exported from OpenSong
 
-    However, it doesn't describe the <lyrics> section, so here's an attempt:
+    The format is described loosly on the `OpenSong File Format Specification
+    <http://www.opensong.org/d/manual/song_file_format_specification>`_ page on
+    the OpenSong web site. However, it doesn't describe the <lyrics> section,
+    so here's an attempt:
 
-    Verses can be expressed in one of 2 ways:
-    <lyrics>
-    [v1]List of words
-    Another Line
+    Verses can be expressed in one of 2 ways, either in complete verses, or by
+    line grouping, i.e. grouping all line 1's of a verse together, all line 2's
+    of a verse together, and so on.
 
-    [v2]Some words for the 2nd verse
-    etc...
-    </lyrics>
+    An example of complete verses::
 
-    The 'v' can be left out - it is implied
-    or:
-    <lyrics>
-    [V]
-    1List of words
-    2Some words for the 2nd Verse
+        <lyrics>
+        [v1]
+         List of words
+         Another Line
 
-    1Another Line
-    2etc...
-    </lyrics>
+        [v2]
+         Some words for the 2nd verse
+         etc...
+        </lyrics>
 
-    Either or both forms can be used in one song.  The Number does not
-    necessarily appear at the start of the line
+    The 'v' in the verse specifiers above can be left out, it is implied.
 
-    The [v1] labels can have either upper or lower case Vs
+    An example of line grouping::
+
+        <lyrics>
+        [V]
+        1List of words
+        2Some words for the 2nd Verse
+
+        1Another Line
+        2etc...
+        </lyrics>
+
+    Either or both forms can be used in one song. The number does not
+    necessarily appear at the start of the line. Additionally, the [v1] labels
+    can have either upper or lower case Vs.
+
     Other labels can be used also:
-      C - Chorus
-      B - Bridge
 
-    Guitar chords can be provided 'above' the lyrics (the line is
-    preceeded by a'.') and _s can be used to signify long-drawn-out
-    words:
+    C
+        Chorus
 
-    . A7        Bm
-    1 Some____ Words
+    B
+        Bridge
 
-    Chords and _s are removed by this importer.
+    All verses are imported and tagged appropriately.
 
-    The verses etc. are imported and tagged appropriately.
+    Guitar chords can be provided "above" the lyrics (the line is preceeded by
+    a period "."), and one or more "_" can be used to signify long-drawn-out
+    words. Chords and "_" are removed by this importer. For example::
 
-    The <presentation> tag is used to populate the OpenLP verse
-    display order field.  The Author and Copyright tags are also
-    imported to the appropriate places.
+        . A7        Bm
+        1 Some____ Words
+
+    The <presentation> tag is used to populate the OpenLP verse display order
+    field. The Author and Copyright tags are also imported to the appropriate
+    places.
 
     """
-    def __init__(self, songmanager):
+    def __init__(self, manager, **kwargs):
         """
-        Initialise the class. Requires a songmanager class which 
-        is passed to SongImport for writing song to disk
+        Initialise the class.
         """
-        self.songmanager = songmanager
+        SongImport.__init__(self, manager)
+        self.filenames = kwargs[u'filenames']
         self.song = None
+        self.commit = True
 
-    def do_import(self, filename, commit=True):
+    def do_import(self):
         """
-        Import either a single opensong file, or a zipfile
-        containing multiple opensong files If the commit parameter is
-        set False, the import will not be committed to the database
-        (useful for test scripts)
+        Import either a single opensong file, or a zipfile containing multiple
+        opensong files. If `self.commit` is set False, the import will not be
+        committed to the database (useful for test scripts).
         """
-        ext = os.path.splitext(filename)[1]
-        if ext.lower() == ".zip":
-            log.info('Zipfile found %s', filename)
-            z = ZipFile(filename, u'r')
-            for song in z.infolist():
-                parts = os.path.split(song.filename)
-                if parts[-1] == u'':
-                    #No final part => directory
-                    continue
-                songfile = z.open(song)
-                self.do_import_file(songfile)
-                if commit:
+        success = False
+        self.import_wizard.importProgressBar.setMaximum(len(self.filenames))
+        for filename in self.filenames:
+            if self.stop_import_flag:
+                break
+            ext = os.path.splitext(filename)[1]
+            if ext.lower() == u'.zip':
+                log.debug(u'Zipfile found %s', filename)
+                z = ZipFile(filename, u'r')
+                for song in z.infolist():
+                    if self.stop_import_flag:
+                        break
+                    parts = os.path.split(song.filename)
+                    if parts[-1] == u'':
+                        #No final part => directory
+                        continue
+                    self.import_wizard.incrementProgressBar(u'Importing %s...' \
+                        % parts[-1])
+                    songfile = z.open(song)
+                    self.do_import_file(songfile)
+                    if self.commit:
+                        self.finish()
+                if self.stop_import_flag:
+                    break
+            else:
+                log.info('Direct import %s', filename)
+                self.import_wizard.incrementProgressBar(u'Importing %s...' \
+                    % os.path.split(filename)[-1])
+                file = open(filename)
+                self.do_import_file(file)
+                if self.commit:
                     self.finish()
-        else:
-            log.info('Direct import %s', filename)
-            file = open(filename)
-            self.do_import_file(file)
-            if commit:
-                self.finish()
+        if not self.commit:
+            self.finish()
 
-   
+
     def do_import_file(self, file):
         """
         Process the OpenSong file - pass in a file-like object,
         not a filename
-        """            
-        self.song_import = SongImport(self.songmanager)
+        """
         tree = objectify.parse(file)
         root = tree.getroot()
         fields = dir(root)
-        decode = {u'copyright':self.song_import.add_copyright,
-                u'ccli':u'ccli_number',
-                u'author':self.song_import.parse_author,
-                u'title':u'title',
-                u'aka':u'alternate_title',
-                u'hymn_number':u'song_number'}
+        decode = {
+            u'copyright': self.add_copyright,
+            u'ccli': u'ccli_number',
+            u'author': self.parse_author,
+            u'title': u'title',
+            u'aka': u'alternate_title',
+            u'hymn_number': u'song_number'
+        }
         for (attr, fn_or_string) in decode.items():
             if attr in fields:
                 ustring = unicode(root.__getattr__(attr))
                 if type(fn_or_string) == type(u''):
-                    self.song_import.__setattr__(fn_or_string, ustring)
+                    self.__setattr__(fn_or_string, ustring)
                 else:
                     fn_or_string(ustring)
-        if u'theme' in fields:
-            self.song_import.topics.append(unicode(root.theme))
-        if u'alttheme' in fields:
-            self.song_import.topics.append(unicode(root.alttheme))
+        if u'theme' in fields and unicode(root.theme) not in self.topics:
+            self.topics.append(unicode(root.theme))
+        if u'alttheme' in fields and unicode(root.alttheme) not in self.topics:
+            self.topics.append(unicode(root.alttheme))
         # data storage while importing
         verses = {}
         lyrics = unicode(root.lyrics)
@@ -158,6 +187,7 @@ class OpenSongImport(object):
         # in the absence of any other indication, verses are the default,
         # erm, versetype!
         versetype = u'V'
+        versenum = None
         for thisline in lyrics.split(u'\n'):
             # remove comments
             semicolon = thisline.find(u';')
@@ -170,7 +200,6 @@ class OpenSongImport(object):
             if thisline[0] == u'.' or thisline.startswith(u'---') \
                 or thisline.startswith(u'-!!'):
                 continue
-            
             # verse/chorus/etc. marker
             if thisline[0] == u'[':
                 versetype = thisline[1].upper()
@@ -186,7 +215,6 @@ class OpenSongImport(object):
                     versenum = u'1'
                 continue
             words = None
-
             # number at start of line.. it's verse number
             if thisline[0].isdigit():
                 versenum = thisline[0]
@@ -207,7 +235,7 @@ class OpenSongImport(object):
                     our_verse_order.append(versetag)
             if words:
                 # Tidy text and remove the ____s from extended words
-                words = self.song_import.tidy_text(words)
+                words = self.tidy_text(words)
                 words = words.replace('_', '')
                 verses[versetype][versenum].append(words)
         # done parsing
@@ -220,7 +248,7 @@ class OpenSongImport(object):
             for num in versenums:
                 versetag = u'%s%s' % (versetype, num)
                 lines = u'\n'.join(verses[versetype][num])
-                self.song_import.verses.append([versetag, lines])
+                self.verses.append([versetag, lines])
                 # Keep track of what we have for error checking later
                 versetags[versetag] = 1
         # now figure out the presentation order
@@ -236,8 +264,4 @@ class OpenSongImport(object):
             if not versetags.has_key(tag):
                 log.warn(u'Got order %s but not in versetags, skipping', tag)
             else:
-                self.song_import.verse_order_list.append(tag)
-
-    def finish(self):
-        """ Separate function, allows test suite to not pollute database"""
-        self.song_import.finish()
+                self.verse_order_list.append(tag)
