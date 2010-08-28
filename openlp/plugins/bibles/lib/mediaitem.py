@@ -518,8 +518,10 @@ class BibleMediaItem(MediaManagerItem):
                 # If we were previously 'Verse Per Line' we have to add the old
                 # bible_text, because it was not added until now.
                 if bible_text:
-                    bible_text = u'%s %s \n %s %s' % (verse_text, text,
-                        verse_text, dual_text)
+                    raw_slides.append(bible_text)
+                    bible_text = u''
+                bible_text = u'%s %s \n %s %s' % (verse_text, text,
+                    verse_text, dual_text)
                 raw_slides.append(bible_text)
                 bible_text = u''
             # If we are 'Verse Per Slide' then create a new slide.
