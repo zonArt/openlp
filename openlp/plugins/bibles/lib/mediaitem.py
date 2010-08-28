@@ -533,12 +533,13 @@ class BibleMediaItem(MediaManagerItem):
                 bible_text = u'%s %s %s\n\n' % (bible_text, verse_text, text)
             # We have to be 'Continuous'.
             else:
-                # We add a line break if the previously verse has a different
-                # book or bible version.
+                # split the line but do not replace line breaks in renderer
+                service_item.add_capability(ItemCapabilities.NoLineBreaks)
+                #text = text + u'\n'
                 if first:
                     bible_text = u'%s %s %s' % (bible_text, verse_text, text)
-                    # split the line but do not replace line breaks in renderer
-                    service_item.add_capability(ItemCapabilities.NoLineBreaks)
+                # We add a line break if the previously verse has a different
+                # book or bible version.
                 elif bible != old_bible or book != old_book:
                     bible_text = u'%s\n%s %s' % (bible_text, verse_text,
                         text)
