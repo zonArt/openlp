@@ -139,13 +139,13 @@ class ThemeManager(QtGui.QWidget):
         """
         log.debug(u'changeGlobalFromTab %s', themeName)
         for count in range (0, self.themeListWidget.count()):
-            #reset the old name
+            # reset the old name
             item = self.themeListWidget.item(count)
             oldName = item.text()
             newName = unicode(item.data(QtCore.Qt.UserRole).toString())
             if oldName != newName:
                 self.themeListWidget.item(count).setText(newName)
-            #Set the new name
+            # Set the new name
             if themeName == newName:
                 name = unicode(translate('OpenLP.ThemeManager',
                     '%s (default)')) % newName
@@ -161,11 +161,11 @@ class ThemeManager(QtGui.QWidget):
         for count in range (0, self.themeListWidget.count()):
             item = self.themeListWidget.item(count)
             oldName = item.text()
-            #reset the old name
+            # reset the old name
             if oldName != unicode(item.data(QtCore.Qt.UserRole).toString()):
                 self.themeListWidget.item(count).setText(
                     unicode(item.data(QtCore.Qt.UserRole).toString()))
-            #Set the new name
+            # Set the new name
             if count == selected_row:
                 self.global_theme = unicode(
                     self.themeListWidget.item(count).text())
@@ -346,11 +346,10 @@ class ThemeManager(QtGui.QWidget):
         log.debug(u'Load themes from dir')
         self.themelist = []
         self.themeListWidget.clear()
-        #root, dirs, files = os.walk(self.path)
         dirList = os.listdir(self.path)
         for name in dirList:
             if name.endswith(u'.png'):
-                #check to see file is in theme root directory
+                # check to see file is in theme root directory
                 theme = os.path.join(self.path, name)
                 if os.path.exists(theme):
                     textName = os.path.splitext(name)[0]
@@ -731,8 +730,6 @@ class ThemeManager(QtGui.QWidget):
         theme.display_slideTransition = theme.display_slideTransition
         theme.font_footer_color = theme.font_footer_color.strip()
         theme.font_footer_height = int(theme.font_footer_height.strip())
-#        theme.font_footer_indentation = \
-#            int(theme.font_footer_indentation.strip())
         theme.font_footer_italics = str_to_bool(theme.font_footer_italics)
         theme.font_footer_name = theme.font_footer_name.strip()
         #theme.font_footer_override
@@ -745,7 +742,6 @@ class ThemeManager(QtGui.QWidget):
         theme.font_main_color = theme.font_main_color.strip()
         theme.font_main_height = int(theme.font_main_height.strip())
         theme.font_main_italics = str_to_bool(theme.font_main_italics)
-#        theme.font_main_indentation = int(theme.font_main_indentation)
         theme.font_main_name = theme.font_main_name.strip()
         #theme.font_main_override
         theme.font_main_proportion = int(theme.font_main_proportion.strip())

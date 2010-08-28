@@ -317,7 +317,7 @@ class SlideController(QtGui.QWidget):
         self.SlidePreview.setSizePolicy(sizePolicy)
         self.SlidePreview.setFixedSize(
             QtCore.QSize(self.settingsmanager.slidecontroller_image,
-            self.settingsmanager.slidecontroller_image / self.ratio ))
+            self.settingsmanager.slidecontroller_image / self.ratio))
         self.SlidePreview.setFrameShape(QtGui.QFrame.Box)
         self.SlidePreview.setFrameShadow(QtGui.QFrame.Plain)
         self.SlidePreview.setLineWidth(1)
@@ -404,7 +404,7 @@ class SlideController(QtGui.QWidget):
         self.display.setup()
         self.SlidePreview.setFixedSize(
             QtCore.QSize(self.settingsmanager.slidecontroller_image,
-            self.settingsmanager.slidecontroller_image / self.ratio ))
+            self.settingsmanager.slidecontroller_image / self.ratio))
 
     def widthChanged(self):
         """

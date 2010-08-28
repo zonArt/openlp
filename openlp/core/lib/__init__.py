@@ -229,7 +229,7 @@ def context_menu_separator(base):
 
 def image_to_byte(image):
     """
-    Resize an image to fit on the current screen for the web and retuns
+    Resize an image to fit on the current screen for the web and returns
     it as a byte stream.
 
     ``image``
@@ -253,12 +253,16 @@ def resize_image(image, width, height, background=QtCore.Qt.black):
 
     ``image``
         The image to resize.
+
     ``width``
         The new image width.
+
     ``height``
         The new image height.
-     ``background ``
+
+     ``background``
         The background colour defaults to black.
+
     """
     preview = QtGui.QImage(image)
     if not preview.isNull():
