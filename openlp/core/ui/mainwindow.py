@@ -29,7 +29,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
-    ThemeManager, SlideController, PluginForm, MediaDockManager, DisplayManager
+    ThemeManager, SlideController, PluginForm, MediaDockManager
 from openlp.core.lib import RenderManager, build_icon, OpenLPDockWidget, \
     SettingsManager, PluginManager, Receiver, translate
 from openlp.core.utils import AppLocation, add_actions, LanguageManager
@@ -94,8 +94,8 @@ class Ui_MainWindow(object):
         self.ControlSplitter.setObjectName(u'ControlSplitter')
         self.MainContentLayout.addWidget(self.ControlSplitter)
         # Create slide controllers
-        self.PreviewController = SlideController(self, self.settingsmanager)
-        self.LiveController = SlideController(self, self.settingsmanager, True)
+        self.PreviewController = SlideController(self, self.settingsmanager, self.screens)
+        self.LiveController = SlideController(self, self.settingsmanager, self.screens, True)
         # Create menu
         self.MenuBar = QtGui.QMenuBar(MainWindow)
         self.MenuBar.setGeometry(QtCore.QRect(0, 0, 1087, 27))
@@ -509,7 +509,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.songsSettingsSection = u'songs'
         self.serviceNotSaved = False
         self.settingsmanager = SettingsManager(screens)
-        self.displayManager = DisplayManager(screens)
         self.aboutForm = AboutForm(self, applicationVersion)
         self.settingsForm = SettingsForm(self.screens, self, self)
         self.recentFiles = QtCore.QStringList()
@@ -594,7 +593,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         #ThemeManager needs to call RenderManager
         self.RenderManager = RenderManager(
             self.ThemeManagerContents, self.screens)
-        self.displayManager.renderManager = self.RenderManager
         #Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.MediaToolBox)
         log.info(u'Load Plugins')
@@ -605,7 +603,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.plugin_helpers[u'service'] = self.ServiceManagerContents
         self.plugin_helpers[u'settings form'] = self.settingsForm
         self.plugin_helpers[u'toolbox'] = self.mediaDockManager
-        self.plugin_helpers[u'displaymanager'] = self.displayManager
         self.plugin_helpers[u'pluginmanager'] = self.plugin_manager
         self.plugin_helpers[u'formparent'] = self
         self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers)
@@ -662,9 +659,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Show the main form, as well as the display form
         """
         QtGui.QWidget.show(self)
-        self.displayManager.setup()
-        if self.displayManager.mainDisplay.isVisible():
-            self.displayManager.mainDisplay.setFocus()
+        self.LiveController.display.setup()
+        self.PreviewController.display.setup()
+        if self.LiveController.display.isVisible():
+            self.LiveController.display.setFocus()
         self.activateWindow()
         if QtCore.QSettings().value(
             self.generalSettingsSection + u'/auto open',
@@ -744,8 +742,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         The screen has changed to so tell the displays to update_display
         their locations
         """
+        log.debug(u'screenChanged')
         self.RenderManager.update_display()
-        self.displayManager.setup()
         self.setFocus()
         self.activateWindow()
 
@@ -791,8 +789,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.plugin_manager.finalise_plugins()
         # Save settings
         self.saveSettings()
-        #Close down the displays
-        self.displayManager.close()
+        #Close down the display
+        self.LiveController.display.close()
 
     def serviceChanged(self, reset=False, serviceName=None):
         """

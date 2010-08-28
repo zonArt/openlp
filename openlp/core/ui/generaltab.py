@@ -390,26 +390,16 @@ class GeneralTab(SettingsTab):
             unicode(self.screens.current[u'size'].width()))
         self.overrideCheckBox.setChecked(settings.value(u'override position',
             QtCore.QVariant(False)).toBool())
-        if self.overrideCheckBox.isChecked():
-            self.customXValueEdit.setText(settings.value(u'x position',
-                QtCore.QVariant(self.screens.current[u'size'].x())).toString())
-            self.customYValueEdit.setText(settings.value(u'y position',
-                QtCore.QVariant(self.screens.current[u'size'].y())).toString())
-            self.customHeightValueEdit.setText(
-                settings.value(u'height', QtCore.QVariant(
-                self.screens.current[u'size'].height())).toString())
-            self.customWidthValueEdit.setText(
-                settings.value(u'width', QtCore.QVariant(
-                self.screens.current[u'size'].width())).toString())
-        else:
-            self.customXValueEdit.setText(
-                unicode(self.screens.current[u'size'].x()))
-            self.customYValueEdit.setText(
-                unicode(self.screens.current[u'size'].y()))
-            self.customHeightValueEdit.setText(
-                unicode(self.screens.current[u'size'].height()))
-            self.customWidthValueEdit.setText(
-                unicode(self.screens.current[u'size'].width()))
+        self.customXValueEdit.setText(settings.value(u'x position',
+            QtCore.QVariant(self.screens.current[u'size'].x())).toString())
+        self.customYValueEdit.setText(settings.value(u'y position',
+            QtCore.QVariant(self.screens.current[u'size'].y())).toString())
+        self.customHeightValueEdit.setText(
+            settings.value(u'height', QtCore.QVariant(
+            self.screens.current[u'size'].height())).toString())
+        self.customWidthValueEdit.setText(
+            settings.value(u'width', QtCore.QVariant(
+            self.screens.current[u'size'].width())).toString())
         settings.endGroup()
         self.customXValueEdit.setEnabled(self.overrideCheckBox.isChecked())
         self.customYValueEdit.setEnabled(self.overrideCheckBox.isChecked())
@@ -436,10 +426,8 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(self.saveCheckServiceCheckBox.isChecked()))
         settings.setValue(u'auto preview',
             QtCore.QVariant(self.autoPreviewCheckBox.isChecked()))
-        settings.setValue(u'loop delay', 
+        settings.setValue(u'loop delay',
             QtCore.QVariant(self.timeoutSpinBox.value()))
-        Receiver.send_message(u'slidecontroller_live_spin_delay',
-            self.timeoutSpinBox.value())            
         settings.setValue(u'ccli number',
             QtCore.QVariant(self.numberEdit.displayText()))
         settings.setValue(u'songselect username',
@@ -459,17 +447,18 @@ class GeneralTab(SettingsTab):
         settings.endGroup()
         self.screens.display = self.displayOnMonitorCheck.isChecked()
         # Monitor Number has changed.
+        postUpdate = False
         if self.screens.monitor_number != self.monitorNumber:
             self.screens.monitor_number = self.monitorNumber
             self.screens.set_current_display(self.monitorNumber)
-            Receiver.send_message(u'config_screen_changed')
-        Receiver.send_message(u'config_updated')
+            postUpdate = True
         # On save update the screens as well
-        self.postSetUp()
+        self.postSetUp(postUpdate)
 
-    def postSetUp(self):
+    def postSetUp(self, postUpdate=False):
         """
-        Apply settings after settings tab has loaded
+        Apply settings after settings tab has loaded and most of the
+        system so must be delayed
         """
         Receiver.send_message(u'slidecontroller_live_spin_delay',
             self.timeoutSpinBox.value())
@@ -480,12 +469,15 @@ class GeneralTab(SettingsTab):
                 int(self.customYValueEdit.text()),
                 int(self.customWidthValueEdit.text()),
                 int(self.customHeightValueEdit.text()))
-            if self.overrideCheckBox.isChecked():
-                self.screens.set_override_display()
-                Receiver.send_message(u'config_screen_changed')
-            else:
-                self.screens.reset_current_display()
-                Receiver.send_message(u'config_screen_changed')
+        if self.overrideCheckBox.isChecked():
+            self.screens.set_override_display()
+        else:
+            self.screens.reset_current_display()
+        # Order is important so be careful if you change
+        if self.overrideChanged or postUpdate:
+            Receiver.send_message(u'config_screen_changed')
+        Receiver.send_message(u'config_updated')
+        self.overrideChanged = False
 
     def onOverrideCheckBoxToggled(self, checked):
         """
