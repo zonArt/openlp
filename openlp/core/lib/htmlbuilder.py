@@ -290,7 +290,7 @@ Therefore one table for text, one for outline and one for shadow.
 </html>
     """
 
-def build_html(item, screen, alert):
+def build_html(item, screen, alert, islive):
     """
     Build the full web paged structure for display
 
@@ -312,7 +312,7 @@ def build_html(item, screen, alert):
         build_alert(alert, width),
         build_footer(item),
         build_lyrics(item),
-        u'true' if theme and theme.display_slideTransition \
+        u'true' if theme and theme.display_slideTransition and islive\
             else u'false',
         image)
     return html
@@ -343,7 +343,7 @@ def build_lyrics(item):
     shadow = u'display: none;'
     if theme:
         lyricscommon =  u'width: %spx; height: %spx; word-wrap: break-word;  ' \
-            u'font-family: %s; font-size: %spx; color: %s; line-height: %d%%;' % \
+            u'font-family: %s; font-size: %spt; color: %s; line-height: %d%%;' % \
             (item.main.width(), item.main.height(),
             theme.font_main_name, theme.font_main_proportion,
             theme.font_main_color, 100 + int(theme.font_main_line_adjustment))
@@ -398,7 +398,7 @@ def build_footer(item):
     width: %spx;
     height: %spx;
     font-family: %s;
-    font-size: %spx;
+    font-size: %spt;
     color: %s;
     text-align: %s;
     """
@@ -427,7 +427,7 @@ def build_alert(alertTab, width):
     width: %s;
     vertical-align: %s;
     font-family: %s;
-    font-size: %spx;
+    font-size: %spt;
     color: %s;
     background-color: %s;
     """
