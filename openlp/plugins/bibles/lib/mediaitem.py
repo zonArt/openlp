@@ -473,7 +473,7 @@ class BibleMediaItem(MediaManagerItem):
         items = self.listView.selectedIndexes()
         if len(items) == 0:
             return False
-        first = True
+        #first = True
         bible_text = u''
         old_chapter = u''
         raw_footer = []
@@ -530,26 +530,27 @@ class BibleMediaItem(MediaManagerItem):
                 bible_text = u''
             # If we are 'Verse Per Line' then force a new line.
             elif self.parent.settings_tab.layout_style == 1:
-                bible_text = u'%s %s %s\n\n' % (bible_text, verse_text, text)
+                text = text + u'\n'
+                bible_text = u'%s %s %s' % (bible_text, verse_text, text)
             # We have to be 'Continuous'.
             else:
                 # split the line but do not replace line breaks in renderer
                 service_item.add_capability(ItemCapabilities.NoLineBreaks)
-                #text = text + u'\n'
-                if first:
-                    bible_text = u'%s %s %s' % (bible_text, verse_text, text)
+                bible_text = u'%s %s %s\n' % (bible_text, verse_text, text)
+                #if first:
+                #    bible_text = u'%s %s %s' % (bible_text, verse_text, text)
                 # We add a line break if the previously verse has a different
                 # book or bible version.
-                elif bible != old_bible or book != old_book:
-                    bible_text = u'%s\n%s %s' % (bible_text, verse_text,
-                        text)
-                else:
-                    bible_text = u'%s %s %s' % (bible_text, verse_text, text)
-            if first:
-                first = False
+                #elif bible != old_bible or book != old_book:
+                #    bible_text = u'%s\n%s %s' % (bible_text, verse_text,
+                #        text)
+                #else:
+                #    bible_text = u'%s %s %s' % (bible_text, verse_text, text)
+            #if first:
+            #    first = False
             old_chapter = chapter
-            old_book = book
-            old_bible = bible
+            #old_book = book
+            #old_bible = bible
         # If there are no more items we check whether we have to add bible_text.
         if bible_text:
             raw_slides.append(bible_text)
