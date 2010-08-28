@@ -530,8 +530,7 @@ class BibleMediaItem(MediaManagerItem):
                 bible_text = u''
             # If we are 'Verse Per Line' then force a new line.
             elif self.parent.settings_tab.layout_style == 1:
-                text = text + u'\n'
-                bible_text = u'%s %s %s' % (bible_text, verse_text, text)
+                bible_text = u'%s %s %s\n' % (bible_text, verse_text, text)
             # We have to be 'Continuous'.
             else:
                 # split the line but do not replace line breaks in renderer
