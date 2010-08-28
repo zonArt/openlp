@@ -200,7 +200,7 @@ class RenderManager(object):
         serviceItem.raw_footer = footer
         serviceItem.render(True)
         self.display.buildHtml(serviceItem)
-        frame, raw_html = serviceItem.get_rendered_frame(0)
+        raw_html = serviceItem.get_rendered_frame(0)[1]
         preview = self.display.text(raw_html)
         # Reset the real screen size for subsequent render requests
         self.calculate_default(self.screens.current[u'size'])

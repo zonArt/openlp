@@ -343,10 +343,10 @@ def build_lyrics(item):
     shadow = u'display: none;'
     if theme:
         lyricscommon =  u'width: %spx; height: %spx; word-wrap: break-word;  ' \
-            u'font-family: %s; font-size: %spx; color: %s; line-height: %d%%;' % \
-            (item.main.width(), item.main.height(),
-            theme.font_main_name, theme.font_main_proportion,
-            theme.font_main_color, 100 + int(theme.font_main_line_adjustment))
+            u'font-family: %s; font-size: %spx; color: %s; line-height: %d%%;' \
+            % (item.main.width(), item.main.height(), theme.font_main_name,
+            theme.font_main_proportion, theme.font_main_color,
+            100 + int(theme.font_main_line_adjustment))
         lyricstable = u'left: %spx; top: %spx;' % \
             (item.main.x(), item.main.y())
         outlinetable = u'left: %spx; top: %spx;' % \
@@ -375,7 +375,7 @@ def build_lyrics(item):
                 theme.display_outline_color)
             if theme.display_shadow:
                 shadow = u'-webkit-text-stroke: %sem %s; ' \
-                    u'-webkit-text-fill-color: %s; '% \
+                    u'-webkit-text-fill-color: %s; ' % \
                     (float(theme.display_outline_size) / 16,
                     theme.display_shadow_color, theme.display_shadow_color)
         else:
