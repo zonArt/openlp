@@ -47,7 +47,6 @@ class BibleListView(BaseListWithDnD):
         self.parent().onListViewResize(event.size().width(),
             event.size().width())
 
-
 class BibleMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for Bibles.
@@ -61,8 +60,7 @@ class BibleMediaItem(MediaManagerItem):
         self.ListViewWithDnD_class = BibleListView
         MediaManagerItem.__init__(self, parent, icon, title)
         # place to store the search results for both bibles
-        self.search_results = {}
-        self.dual_search_results = {}
+        self.search_results, self.dual_search_results = {}, {}
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'bibles_load_list'), self.reloadBibles)
 
@@ -408,13 +406,13 @@ class BibleMediaItem(MediaManagerItem):
         self.reloadBibles()
 
     def onAdvancedFromVerse(self):
-        frm = self.AdvancedFromVerse.currentText()
-        self.adjustComboBox(frm, self.verses, self.AdvancedToVerse)
+        from_ = self.AdvancedFromVerse.currentText()
+        self.adjustComboBox(from_, self.verses, self.AdvancedToVerse)
 
     def onAdvancedToChapter(self):
-        frm = unicode(self.AdvancedFromChapter.currentText())
+        from_ = unicode(self.AdvancedFromChapter.currentText())
         to = unicode(self.AdvancedToChapter.currentText())
-        if frm != to:
+        if from_ != to:
             bible = unicode(self.AdvancedVersionComboBox.currentText())
             book = unicode(self.AdvancedBookComboBox.currentText())
             # get the verse count for new chapter
@@ -473,13 +471,18 @@ class BibleMediaItem(MediaManagerItem):
         items = self.listView.selectedIndexes()
         if len(items) == 0:
             return False
-        bible_text = u''
-        old_chapter = u''
-        raw_footer = []
-        raw_slides = []
-        service_item.add_capability(ItemCapabilities.AllowsPreview)
-        service_item.add_capability(ItemCapabilities.AllowsLoop)
-        service_item.add_capability(ItemCapabilities.AllowsAdditions)
+        has_dual_bible = False
+        bible_text, old_chapter = u'', u''
+        raw_footer, raw_slides = [], []
+        for item in items:
+            bitem = self.listView.item(item.row())
+            reference = bitem.data(QtCore.Qt.UserRole)
+            if isinstance(reference, QtCore.QVariant):
+                reference = reference.toPyObject()
+            dual_bible = self._decodeQtObject(reference, 'dual_bible')
+            if dual_bible:
+                has_dual_bible = True
+                break
         # Let's loop through the main lot, and assemble our verses.
         for item in items:
             bitem = self.listView.item(item.row())
@@ -496,6 +499,7 @@ class BibleMediaItem(MediaManagerItem):
             text = self._decodeQtObject(reference, 'text')
             dual_bible = self._decodeQtObject(reference, 'dual_bible')
             if dual_bible:
+                has_dual_bible = True
                 dual_version = self._decodeQtObject(reference,
                     'dual_version')
                 dual_copyright = self._decodeQtObject(reference,
@@ -504,8 +508,6 @@ class BibleMediaItem(MediaManagerItem):
                 #    'dual_permission')
                 dual_text = self._decodeQtObject(reference, 'dual_text')
             verse_text = self.formatVerse(old_chapter, chapter, verse)
-            # footer
-            old_chapter = chapter
             footer = u'%s (%s %s)' % (book, version, copyright)
             if footer not in raw_footer:
                 raw_footer.append(footer)
@@ -513,8 +515,7 @@ class BibleMediaItem(MediaManagerItem):
                 footer = u'%s (%s %s)' % (book, dual_version, dual_copyright)
                 if footer not in raw_footer:
                     raw_footer.append(footer)
-                # If we were previously 'Verse Per Line' we have to add the old
-                # bible_text, because it was not added until now.
+                # If there is an old bible_text we have to add it.
                 if bible_text:
                     raw_slides.append(bible_text)
                     bible_text = u''
@@ -522,6 +523,13 @@ class BibleMediaItem(MediaManagerItem):
                     verse_text, dual_text)
                 raw_slides.append(bible_text)
                 bible_text = u''
+            elif has_dual_bible:
+                if self.parent.settings_tab.layout_style == 0:
+                    bible_text = u'%s %s' % (verse_text, text)
+                    raw_slides.append(bible_text)
+                    bible_text = u''
+                else:
+                    bible_text = u'%s %s %s\n' % (bible_text, verse_text, text)
             # If we are 'Verse Per Slide' then create a new slide.
             elif self.parent.settings_tab.layout_style == 0:
                 bible_text = u'%s %s' % (verse_text, text)
@@ -532,15 +540,20 @@ class BibleMediaItem(MediaManagerItem):
                 bible_text = u'%s %s %s\n' % (bible_text, verse_text, text)
             # We have to be 'Continuous'.
             else:
-                # split the line but do not replace line breaks in renderer
-                service_item.add_capability(ItemCapabilities.NoLineBreaks)
                 bible_text = u'%s %s %s\n' % (bible_text, verse_text, text)
             old_chapter = chapter
         # If there are no more items we check whether we have to add bible_text.
         if bible_text:
             raw_slides.append(bible_text)
             bible_text = u''
-        # service item title
+        # Service Item: Capabilities
+        if self.parent.settings_tab.layout_style == 2 and not has_dual_bible:
+            # split the line but do not replace line breaks in renderer
+            service_item.add_capability(ItemCapabilities.NoLineBreaks)
+        service_item.add_capability(ItemCapabilities.AllowsPreview)
+        service_item.add_capability(ItemCapabilities.AllowsLoop)
+        service_item.add_capability(ItemCapabilities.AllowsAdditions)
+        # Service Item: Title
         if not service_item.title:
             if dual_bible:
                 service_item.title = u'%s (%s, %s) %s' % (book, version,
@@ -551,7 +564,7 @@ class BibleMediaItem(MediaManagerItem):
             translate('BiblesPlugin.MediaItem', 'etc')) == -1:
             service_item.title = u'%s, %s' % (service_item.title,
                 translate('BiblesPlugin.MediaItem', 'etc'))
-        # item theme
+        # Service Item: Theme
         if len(self.parent.settings_tab.bible_theme) == 0:
             service_item.theme = None
         else:
@@ -568,8 +581,9 @@ class BibleMediaItem(MediaManagerItem):
     def formatVerse(self, old_chapter, chapter, verse):
         if not self.parent.settings_tab.show_new_chapters or \
             old_chapter != chapter:
-            verse_text = chapter + u':'
-        verse_text += verse
+            verse_text = chapter + u':' + verse
+        else:
+            verse_text = verse
         if self.parent.settings_tab.display_style == 1:
             verse_text = u'{su}(' + verse_text + u'){/su}'
         elif self.parent.settings_tab.display_style == 2:
@@ -686,5 +700,4 @@ class BibleMediaItem(MediaManagerItem):
             row = self.listView.setCurrentRow(count + start_count)
             if row:
                 row.setSelected(True)
-        self.search_results = {}
-        self.dual_search_results = {}
+        self.search_results, self.dual_search_results = {}, {}
