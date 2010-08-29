@@ -49,7 +49,7 @@ class CCLIFileImport(SongImport):
 
         ``manager``
             The song manager for the running OpenLP installation.
-``filenames``
+        ``filenames``
             The files to be imported.
         
         """
@@ -100,26 +100,46 @@ class CCLIFileImport(SongImport):
 
     def do_import_usr_file(self, textList):
         """
-        Process the USR file 
+        The :method:`do_import_usr_file` method provides OpenLP with the ability to
+        import CCLI SongSelect songs in *USR* file format   
         
         ``textList``
             An array of strings containing the usr file content.
             
-        The format of the .usr format is:
-        ==========
-        [File]
-        Type=SongSelect Import File
-        Version=3.0
-        [S A2672885]
-        Title=Above All
-        Author=LeBlanc, Lenny | Baloche, Paul
-        Copyright=1999 Integrity's Hosanna! Music | LenSongs Publishing (Verwaltet von Gerth Medien Musikverlag) | (Verwaltet von Gerth Medien Musikverlag)
-        Admin=Gerth Medien Musikverlag
-        Themes=Cross/tKingship/tMajesty/tRedeemer
-        Keys=A
-        Fields=Vers 1/tVers 2/tChorus 1/tAndere 1
-        Words=Above all powers.... [/n = CR, /n/t = CRLF]
-        ==========            
+        **SongSelect .usr file format**
+        ``[File]``
+            USR file format first line
+        ``Type=``
+            Indicates the file type 
+            e.g. *Type=SongSelect Import File*
+        ``Version=3.0``
+            File format version
+        ``[S A2672885]``
+            Contains the CCLI Song number e.g. *2672885*
+        ``Title=``
+            Contains the song title (e.g. *Title=Above All*)
+        ``Author=``
+            Contains a | delimited list of the  song authors 
+            e.g. *Author=LeBlanc, Lenny | Baloche, Paul*
+        ``Copyright=``
+            Contains a | delimited list of the song copyrights
+            e.g. Copyright=1999 Integrity's Hosanna! Music | LenSongs Publishing (Verwaltet von Gerth Medien Musikverlag) | (Verwaltet von Gerth Medien Musikverlag)
+        ``Admin=``
+            Contains the song administrator
+            e.g. *Admin=Gerth Medien Musikverlag*
+        ``Themes=``
+            Contains a /t delimited list of the song themes
+            e.g. *Themes=Cross/tKingship/tMajesty/tRedeemer*
+        ``Keys=``
+            Contains the keys in which the music is played??
+            e.g. *Keys=A*
+        ``Fields=``
+            Contains a list of the songs fields in order /t delimited
+            e.g. *Fields=Vers 1/tVers 2/tChorus 1/tAndere 1*
+        ``Words=``
+            Contains the songs various lyrics in order as shown by the 
+            *Fields* description
+            e.g. *Words=Above all powers....* [/n = CR, /n/t = CRLF]
         """
 
         log.debug('USR file text: %s', textList)
@@ -181,29 +201,46 @@ class CCLIFileImport(SongImport):
 
     def do_import_txt_file(self, textList):
         """
-        Process the TXT file - pass in a list of lines
+        The :method:`do_import_txt_file` method provides OpenLP with the ability to
+        import CCLI SongSelect songs in *TXT* file format   
                 
         ``textList``
             An array of strings containing the txt file content. 
-     
-        The format of the .txt format is:
-        ==========
-        Song Title
-        <>
-        Description of following text (Verse/Chorus) and number
-        <verse/chorus lyrics>
-        <>
-        <>
-        Next text block description (etc)
-        <verse/chorus lyrics>
-        <>
-        <>
-        CCLI Number (e.g.CCLI-Liednummer: 2672885)
-        Copyright "|" delimited (e.g. © 1999 Integrity's Hosanna! Music | LenSongs Publishing)
-        Authors "|" delimited (e.g. Lenny LeBlanc | Paul Baloche)
-        Licencing info (e.g. For use solely with the SongSelect Terms of Use.  All rights Reserved.  www.ccli.com)
-        CCLI Licence number (e.g. CCL-Liedlizenznummer: 14 / CCLI License No. 14)
-        ==========     
+
+        **SongSelect .txt file format**
+
+        ``Song Title``
+            Contains the song title
+
+        <Empty line>
+
+        ``Title of following verse/chorus and number``
+            e.g. Verse 1, Chorus 1
+
+        ``Verse/Chorus lyrics``
+
+        <Empty line>
+
+        <Empty line>
+
+        ``Title of next verse/chorus (repeats)``
+
+        ``Verse/Chorus lyrics``
+
+        <Empty line>
+
+        <Empty line>
+
+        ``Song CCLI Number``
+            e.g. CCLI Number (e.g.CCLI-Liednummer: 2672885)
+        ``Song Copyright``
+            e.g. © 1999 Integrity's Hosanna! Music | LenSongs Publishing
+        ``Song Authors``    
+            e.g. Lenny LeBlanc | Paul Baloche
+        ``Licencing info``
+            e.g. For use solely with the SongSelect Terms of Use.  All rights Reserved.  www.ccli.com
+        ``CCLI Licence number of user``    
+            e.g. CCL-Liedlizenznummer: 14 / CCLI License No. 14   
         """
 
         log.debug('TXT file text: %s', textList)
