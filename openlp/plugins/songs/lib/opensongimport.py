@@ -28,6 +28,7 @@ import logging
 import os
 from zipfile import ZipFile
 from lxml import objectify
+from lxml.etree import Error, LxmlError
 
 from openlp.plugins.songs.lib.songimport import SongImport
 
@@ -156,7 +157,12 @@ class OpenSongImport(SongImport):
         Process the OpenSong file - pass in a file-like object,
         not a filename
         """
-        tree = objectify.parse(file)
+        self.authors = []
+        try:
+            tree = objectify.parse(file)
+        except Error, LxmlError:
+            log.exception(u'Error parsing XML')
+            return
         root = tree.getroot()
         fields = dir(root)
         decode = {
@@ -167,11 +173,11 @@ class OpenSongImport(SongImport):
             u'aka': u'alternate_title',
             u'hymn_number': u'song_number'
         }
-        for (attr, fn_or_string) in decode.items():
+        for attr, fn_or_string in decode.items():
             if attr in fields:
                 ustring = unicode(root.__getattr__(attr))
-                if type(fn_or_string) == type(u''):
-                    self.__setattr__(fn_or_string, ustring)
+                if isinstance(fn_or_string, basestring):
+                    setattr(self, fn_or_string, ustring)
                 else:
                     fn_or_string(ustring)
         if u'theme' in fields and unicode(root.theme) not in self.topics:
@@ -252,12 +258,15 @@ class OpenSongImport(SongImport):
                 # Keep track of what we have for error checking later
                 versetags[versetag] = 1
         # now figure out the presentation order
+        order = []
         if u'presentation' in fields and root.presentation != u'':
             order = unicode(root.presentation)
             order = order.split()
         else:
-            assert len(our_verse_order)>0
-            order = our_verse_order
+            if len(our_verse_order) > 0:
+                order = our_verse_order
+            else:
+                log.warn(u'No verse order available for %s, skipping.', self.title)
         for tag in order:
             if len(tag) == 1:
                 tag = tag + u'1' # Assume it's no.1 if it's not there
