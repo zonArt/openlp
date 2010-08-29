@@ -155,9 +155,10 @@ class MainDisplay(DisplayWidget):
             self.webView.setHtml(build_html(serviceItem, self.screen, \
                 self.parent.alertTab))
             self.initialFrame = True
-            self.show()
+            #self.show()
             # To display or not to display?
             if not self.screen[u'primary']:
+                self.show()
                 self.primary = False
             else:
                 self.primary = True
