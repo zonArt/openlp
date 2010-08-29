@@ -499,7 +499,6 @@ class BibleMediaItem(MediaManagerItem):
             text = self._decodeQtObject(reference, 'text')
             dual_bible = self._decodeQtObject(reference, 'dual_bible')
             if dual_bible:
-                has_dual_bible = True
                 dual_version = self._decodeQtObject(reference,
                     'dual_version')
                 dual_copyright = self._decodeQtObject(reference,
