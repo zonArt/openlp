@@ -158,8 +158,7 @@ class SongImport(QtCore.QObject):
     def parse_author(self, text):
         """
         Add the author. OpenLP stores them individually so split by 'and', '&'
-        and comma.
-        However need to check for 'Mr and Mrs Smith' and turn it to
+        and comma. However need to check for 'Mr and Mrs Smith' and turn it to
         'Mr Smith' and 'Mrs Smith'.
         """
         for author in text.split(u','):
@@ -236,7 +235,7 @@ class SongImport(QtCore.QObject):
         """
         All fields have been set to this song. Write it away
         """
-        if len(self.authors) == 0:
+        if not self.authors:
             self.authors.append(u'Author unknown')
         self.commit_song()
 
