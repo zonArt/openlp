@@ -465,9 +465,9 @@ class BibleMediaItem(MediaManagerItem):
             self.displayResults(bible, dual_bible)
 
     def generateSlideData(self, service_item, item=None):
-        '''
+        """
         Generates and formats the slides for the service item.
-        '''
+        """
         log.debug(u'generating slide data')
         items = self.listView.selectedIndexes()
         if len(items) == 0:
@@ -504,16 +504,16 @@ class BibleMediaItem(MediaManagerItem):
                 dual_text = self._decodeQtObject(reference, 'dual_text')
             if self.parent.settings_tab.display_style == 1:
                 verse_text = self.formatVerse(old_chapter, chapter, verse,
-                    u'(', u')')
+                    u'{su}(', u'){/su}')
             elif self.parent.settings_tab.display_style == 2:
                 verse_text = self.formatVerse(old_chapter, chapter, verse,
-                    u'{', u'}')
+                    u'{su}{', u'}{/su}')
             elif self.parent.settings_tab.display_style == 3:
                 verse_text = self.formatVerse(old_chapter, chapter, verse,
-                    u'[', u']')
+                    u'{su}[', u']{/su}')
             else:
                 verse_text = self.formatVerse(old_chapter, chapter, verse,
-                    u'', u'')
+                    u'{su}', u'{/su}')
             old_chapter = chapter
             footer = u'%s (%s %s)' % (book, version, copyright)
             # If not found add to footer
@@ -532,7 +532,11 @@ class BibleMediaItem(MediaManagerItem):
             else:
                 # If we are 'Verse Per Line' then force a new line.
                 if self.parent.settings_tab.layout_style == 1:
-                    text = text + u'\n\n'
+                    text = text + u'\n'
+                else:
+                    # split the line but do not replace line breaks in renderer
+                    service_item.add_capability(ItemCapabilities.NoLineBreaks)
+                    text = text + u'\n'
                 bible_text = u'%s %s %s' % (bible_text, verse_text, text)
                 # If we are 'Verse Per Slide' then create a new slide.
                 if self.parent.settings_tab.layout_style == 0:
@@ -547,7 +551,8 @@ class BibleMediaItem(MediaManagerItem):
                         if isinstance(reference, QtCore.QVariant):
                             reference = reference.toPyObject()
                         bible_new = self._decodeQtObject(reference, 'bible')
-                        dual_bible_new = self._decodeQtObject(reference, 'dual_bible')
+                        dual_bible_new = self._decodeQtObject(reference,
+                            'dual_bible')
                         if dual_bible_new:
                             raw_slides.append(bible_text)
                             bible_text = u''
@@ -635,13 +640,13 @@ class BibleMediaItem(MediaManagerItem):
             combo.addItem(unicode(i))
 
     def displayResults(self, bible, dual_bible=None):
-        '''
-        Displays the search results in the media manager. All data needed for further
-        action is saved for/in each row.
-        '''
+        """
+        Displays the search results in the media manager. All data needed for
+        further action is saved for/in each row.
+        """
         version = self.parent.manager.get_meta_data(bible, u'Version')
         copyright = self.parent.manager.get_meta_data(bible, u'Copyright')
-        permission = self.parent.manager.get_meta_data(bible, u'Permissions')
+        #permission = self.parent.manager.get_meta_data(bible, u'Permissions')
         if dual_bible:
             dual_version = self.parent.manager.get_meta_data(dual_bible,
                 u'Version')

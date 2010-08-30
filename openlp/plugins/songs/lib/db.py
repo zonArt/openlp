@@ -72,7 +72,7 @@ def init_schema(url):
     ``url``
         The database to setup
     """
-    session, metadata = init_db(url, auto_flush=False)
+    session, metadata = init_db(url)
 
     # Definition of the "authors" table
     authors_table = Table(u'authors', metadata,

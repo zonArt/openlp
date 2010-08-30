@@ -80,9 +80,10 @@ class AlertsPlugin(Plugin):
         log.info(u'Alerts Initialising')
         Plugin.initialise(self)
         self.toolsAlertItem.setVisible(True)
+        self.liveController.alertTab = self.alertsTab
 
     def finalise(self):
-        log.info(u'Plugin Finalise')
+        log.info(u'Alerts Finalising')
         Plugin.finalise(self)
         self.toolsAlertItem.setVisible(False)
 
