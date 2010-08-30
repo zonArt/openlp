@@ -58,20 +58,18 @@ body {
     position: absolute;
     left: 0px;
     top: 0px;
-    z-index:10;
-    %s
+    z-index:10;%s
 }
 #footer {
     position: absolute;
-    z-index:5;
-    %s
+    z-index:5;%s
 }
 /* lyric css */
 %s
-
 </style>
 <script language="javascript">
     var timer = null;
+    var cur_lyrics = '1';
 
     function show_video(state, path, volume, loop){
         var vid = document.getElementById('video');
@@ -183,14 +181,9 @@ body {
     }
 
     function show_text(newtext){
-        var textitem = document.getElementById('lyricsmain1');
-        if(window.getComputedStyle(textitem, '').opacity==1){
-            var item = '1';
-        } else {
-            var item = '2';
-        }
-        text_fade_all(item, true);
-        text_fade_all((item=='')?'2':'1', false, newtext);
+        text_fade_all(cur_lyrics, true);
+        cur_lyrics = (cur_lyrics=='1')?'2':'1';
+        text_fade_all(cur_lyrics, false, newtext);
     }
     function text_fade_all(item, fadeout, newtext){
         text_fade('lyricsmain' + item, fadeout, newtext);
@@ -207,9 +200,10 @@ body {
                 textitem.className = textitem.className.replace(' fadeout', '');
             }, 0);
         }
-    }
+    }    
+
     function show_text_complete(){
-       var item = document.getElementById('lyricsmain1');
+       var item = document.getElementById('lyricsmain' + cur_lyrics);
        return (window.getComputedStyle(item, '').opacity == 1);
     }
     
@@ -320,7 +314,7 @@ td.fadeout { opacity: 0; }
             item.main.y() + float(theme.display_shadow_size))
         align = u''
         if theme.display_slideTransition and islive:
-            transition = u'-webkit-transition: opacity 5s ease-in-out;'
+            transition = u'-webkit-transition: opacity 1s linear;'
         if theme.display_horizontalAlign == 2:
             align = u'text-align:center;'
         elif theme.display_horizontalAlign == 1:
@@ -359,14 +353,14 @@ def build_footer(item):
         Service Item to be processed.
     """
     style = """
-left: %spx;
-top: %spx;
-width: %spx;
-height: %spx;
-font-family: %s;
-font-size: %spt;
-color: %s;
-text-align: %s;
+    left: %spx;
+    top: %spx;
+    width: %spx;
+    height: %spx;
+    font-family: %s;
+    font-size: %spt;
+    color: %s;
+    text-align: %s;
     """
     theme = item.themedata
     if not theme:
@@ -390,12 +384,12 @@ def build_alert(alertTab, width):
         Details from the Alert tab for fonts etc
     """
     style = """
-width: %s;
-vertical-align: %s;
-font-family: %s;
-font-size: %spt;
-color: %s;
-background-color: %s;
+    width: %s;
+    vertical-align: %s;
+    font-family: %s;
+    font-size: %spt;
+    color: %s;
+    background-color: %s;
     """
     if not alertTab:
         return u''
