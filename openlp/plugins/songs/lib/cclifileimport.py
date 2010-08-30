@@ -100,8 +100,8 @@ class CCLIFileImport(SongImport):
 
     def do_import_usr_file(self, textList):
         """
-        The :method:`do_import_usr_file` method provides OpenLP with the ability to
-        import CCLI SongSelect songs in *USR* file format   
+        The :method:`do_import_usr_file` method provides OpenLP with 
+        the ability to import CCLI SongSelect songs in *USR* file format   
         
         ``textList``
             An array of strings containing the usr file content.
@@ -123,7 +123,8 @@ class CCLIFileImport(SongImport):
             e.g. *Author=LeBlanc, Lenny | Baloche, Paul*
         ``Copyright=``
             Contains a | delimited list of the song copyrights
-            e.g. Copyright=1999 Integrity's Hosanna! Music | LenSongs Publishing (Verwaltet von Gerth Medien Musikverlag) | (Verwaltet von Gerth Medien Musikverlag)
+            e.g. Copyright=1999 Integrity's Hosanna! Music | LenSongs 
+            Publishing (Verwaltet von Gerth Medien Musikverlag)
         ``Admin=``
             Contains the song administrator
             e.g. *Admin=Gerth Medien Musikverlag*
@@ -201,8 +202,8 @@ class CCLIFileImport(SongImport):
 
     def do_import_txt_file(self, textList):
         """
-        The :method:`do_import_txt_file` method provides OpenLP with the ability to
-        import CCLI SongSelect songs in *TXT* file format   
+        The :method:`do_import_txt_file` method provides OpenLP with 
+        the ability to import CCLI SongSelect songs in *TXT* file format   
                 
         ``textList``
             An array of strings containing the txt file content. 
@@ -238,7 +239,8 @@ class CCLIFileImport(SongImport):
         ``Song Authors``    
             e.g. Lenny LeBlanc | Paul Baloche
         ``Licencing info``
-            e.g. For use solely with the SongSelect Terms of Use.  All rights Reserved.  www.ccli.com
+            e.g. For use solely with the SongSelect Terms of Use.  
+            All rights Reserved.  www.ccli.com
         ``CCLI Licence number of user``    
             e.g. CCL-Liedlizenznummer: 14 / CCLI License No. 14   
         """
