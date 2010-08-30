@@ -253,7 +253,7 @@ Therefore one table for text, one for outline and one for shadow.
 </html>
     """
 
-def build_html(item, screen, alert):
+def build_html(item, screen, alert, islive):
     """
     Build the full web paged structure for display
 
@@ -274,11 +274,11 @@ def build_html(item, screen, alert):
     html = HTMLSRC % (width, height,
         build_alert(alert, width),
         build_footer(item),
-        build_lyrics(item),
+        build_lyrics(item, islive),
         image)
     return html
 
-def build_lyrics(item):
+def build_lyrics(item, islive):
     """
     Build the video display div
 
@@ -307,10 +307,10 @@ td.fadeout { opacity: 0; }
     transition = u''
     if theme:
         lyricscommon =  u'width: %spx; height: %spx; word-wrap: break-word;  ' \
-            u'font-family: %s; font-size: %spx; color: %s; line-height: %d%%;' % \
-            (item.main.width(), item.main.height(),
-            theme.font_main_name, theme.font_main_proportion,
-            theme.font_main_color, 100 + int(theme.font_main_line_adjustment))
+            u'font-family: %s; font-size: %spt; color: %s; line-height: %d%%;' \
+            % (item.main.width(), item.main.height(), theme.font_main_name,
+            theme.font_main_proportion, theme.font_main_color,
+            100 + int(theme.font_main_line_adjustment))
         lyricstable = u'left: %spx; top: %spx;' % \
             (item.main.x(), item.main.y())
         outlinetable = u'left: %spx; top: %spx;' % \
@@ -319,7 +319,7 @@ td.fadeout { opacity: 0; }
             (item.main.x() + float(theme.display_shadow_size),
             item.main.y() + float(theme.display_shadow_size))
         align = u''
-        if theme.display_slideTransition:
+        if theme.display_slideTransition and islive:
             transition = u'-webkit-transition: opacity 5s ease-in-out;'
         if theme.display_horizontalAlign == 2:
             align = u'text-align:center;'
@@ -341,7 +341,7 @@ td.fadeout { opacity: 0; }
                 theme.display_outline_color)
             if theme.display_shadow:
                 shadow = u'-webkit-text-stroke: %sem %s; ' \
-                    u'-webkit-text-fill-color: %s; '% \
+                    u'-webkit-text-fill-color: %s; ' % \
                     (float(theme.display_outline_size) / 16,
                     theme.display_shadow_color, theme.display_shadow_color)
         else:
@@ -364,7 +364,7 @@ top: %spx;
 width: %spx;
 height: %spx;
 font-family: %s;
-font-size: %spx;
+font-size: %spt;
 color: %s;
 text-align: %s;
     """
@@ -393,7 +393,7 @@ def build_alert(alertTab, width):
 width: %s;
 vertical-align: %s;
 font-family: %s;
-font-size: %spx;
+font-size: %spt;
 color: %s;
 background-color: %s;
     """

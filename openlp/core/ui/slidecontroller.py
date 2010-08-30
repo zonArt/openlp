@@ -117,7 +117,8 @@ class SlideController(QtGui.QWidget):
             self.split = 1
             self.typePrefix = u'live'
         else:
-            self.TypeLabel.setText(translate('OpenLP.SlideController', 'Preview'))
+            self.TypeLabel.setText(translate('OpenLP.SlideController',
+                'Preview'))
             self.split = 0
             self.typePrefix = u'preview'
         self.TypeLabel.setStyleSheet(u'font-weight: bold; font-size: 12pt;')
@@ -199,7 +200,8 @@ class SlideController(QtGui.QWidget):
                 QtCore.SIGNAL("triggered(bool)"), self.onThemeDisplay)
             if self.screens.display_count > 1:
                 self.DesktopScreen = QtGui.QAction(QtGui.QIcon(
-                    u':/slides/slide_desktop.png'), u'Show Desktop', self.HideMenu)
+                    u':/slides/slide_desktop.png'), u'Show Desktop',
+                    self.HideMenu)
                 self.DesktopScreen.setCheckable(True)
                 QtCore.QObject.connect(self.DesktopScreen,
                     QtCore.SIGNAL("triggered(bool)"), self.onHideDisplay)
@@ -212,7 +214,8 @@ class SlideController(QtGui.QWidget):
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.Toolbar.addToolbarButton(
                 u'Go Live', u':/general/general_live.png',
-                translate('OpenLP.SlideController', 'Move to live'), self.onGoLive)
+                translate('OpenLP.SlideController', 'Move to live'),
+                self.onGoLive)
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.Toolbar.addToolbarButton(
                 u'Edit Song', u':/general/general_edit.png',
@@ -233,7 +236,8 @@ class SlideController(QtGui.QWidget):
             self.DelaySpinBox.setMaximum(180)
             self.Toolbar.addToolbarWidget(
                 u'Image SpinBox', self.DelaySpinBox)
-            self.DelaySpinBox.setSuffix(translate('OpenLP.SlideController', 's'))
+            self.DelaySpinBox.setSuffix(translate('OpenLP.SlideController',
+                's'))
             self.DelaySpinBox.setToolTip(translate('OpenLP.SlideController',
                 'Delay between slides in seconds'))
         self.ControllerLayout.addWidget(self.Toolbar)
@@ -274,11 +278,13 @@ class SlideController(QtGui.QWidget):
         # Build the Song Toolbar
         if isLive:
             self.SongMenu = QtGui.QToolButton(self.Toolbar)
-            self.SongMenu.setText(translate('OpenLP.SlideController', 'Go to Verse'))
+            self.SongMenu.setText(translate('OpenLP.SlideController',
+                'Go to Verse'))
             self.SongMenu.setPopupMode(QtGui.QToolButton.InstantPopup)
             self.Toolbar.addToolbarWidget(u'Song Menu', self.SongMenu)
             self.SongMenu.setMenu(QtGui.QMenu(
-                translate('OpenLP.SlideController', 'Go to Verse'), self.Toolbar))
+                translate('OpenLP.SlideController', 'Go to Verse'),
+                self.Toolbar))
             self.Toolbar.makeWidgetsInvisible([u'Song Menu'])
         # Screen preview area
         self.PreviewFrame = QtGui.QFrame(self.Splitter)
@@ -317,7 +323,7 @@ class SlideController(QtGui.QWidget):
         self.SlidePreview.setSizePolicy(sizePolicy)
         self.SlidePreview.setFixedSize(
             QtCore.QSize(self.settingsmanager.slidecontroller_image,
-            self.settingsmanager.slidecontroller_image / self.ratio ))
+            self.settingsmanager.slidecontroller_image / self.ratio))
         self.SlidePreview.setFrameShape(QtGui.QFrame.Box)
         self.SlidePreview.setFrameShadow(QtGui.QFrame.Plain)
         self.SlidePreview.setLineWidth(1)
@@ -404,7 +410,7 @@ class SlideController(QtGui.QWidget):
         self.display.setup()
         self.SlidePreview.setFixedSize(
             QtCore.QSize(self.settingsmanager.slidecontroller_image,
-            self.settingsmanager.slidecontroller_image / self.ratio ))
+            self.settingsmanager.slidecontroller_image / self.ratio))
 
     def widthChanged(self):
         """

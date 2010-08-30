@@ -41,7 +41,6 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import html_expands, translate, context_menu_action
 
 class SpellTextEdit(QtGui.QPlainTextEdit):
-
     def __init__(self, *args):
         QtGui.QPlainTextEdit.__init__(self, *args)
         # Default dictionary based on the current locale.
@@ -54,18 +53,17 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         if event.button() == QtCore.Qt.RightButton:
             # Rewrite the mouse event to a left button event so the cursor is
             # moved to the location of the pointer.
-            event = QtGui.QMouseEvent(QtCore.QEvent.MouseButtonPress, event.pos(),
-                QtCore.Qt.LeftButton, QtCore.Qt.LeftButton, QtCore.Qt.NoModifier)
+            event = QtGui.QMouseEvent(QtCore.QEvent.MouseButtonPress,
+                event.pos(), QtCore.Qt.LeftButton, QtCore.Qt.LeftButton,
+                QtCore.Qt.NoModifier)
         QtGui.QPlainTextEdit.mousePressEvent(self, event)
 
     def contextMenuEvent(self, event):
         popup_menu = self.createStandardContextMenu()
-
         # Select the word under the cursor.
         cursor = self.textCursor()
         cursor.select(QtGui.QTextCursor.WordUnderCursor)
         self.setTextCursor(cursor)
-
         # Check if the selected word is misspelled and offer spelling
         # suggestions if it is.
         if enchant_available and self.textCursor().hasSelection():
@@ -94,9 +92,9 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         popup_menu.exec_(event.globalPos())
 
     def correctWord(self, word):
-        '''
+        """
         Replaces the selected text with word.
-        '''
+        """
         cursor = self.textCursor()
         cursor.beginEditBlock()
 
@@ -106,9 +104,9 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         cursor.endEditBlock()
 
     def htmlTag(self, tag):
-        '''
+        """
         Replaces the selected text with word.
-        '''
+        """
         for html in html_expands:
             if tag == html[u'desc']:
                 cursor = self.textCursor()
@@ -153,9 +151,9 @@ class Highlighter(QtGui.QSyntaxHighlighter):
                     word_object.end() - word_object.start(), format)
 
 class SpellAction(QtGui.QAction):
-    '''
+    """
     A special QAction that returns the text in a signal.
-    '''
+    """
     correct = QtCore.pyqtSignal(unicode)
 
     def __init__(self, *args):

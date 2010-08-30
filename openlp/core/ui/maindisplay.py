@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui, QtWebKit
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver, resize_image, build_html, ServiceItem, \
-image_to_byte
+    image_to_byte
 from openlp.core.ui import HideMode
 
 log = logging.getLogger(__name__)
@@ -58,6 +58,9 @@ class DisplayWidget(QtGui.QGraphicsView):
         self.setStyleSheet(u'border: none;')
 
     def keyPressEvent(self, event):
+        """
+        Handle key events from display screen
+        """
         # Key events only needed for live
         if not self.live:
             return
@@ -104,6 +107,9 @@ class MainDisplay(DisplayWidget):
                 QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
 
     def setup(self):
+        """
+        Set up and build the output screen
+        """
         log.debug(u'Setup live = %s for %s ' % (self.isLive,
             self.screens.monitor_number))
         self.screen = self.screens.current
@@ -146,12 +152,12 @@ class MainDisplay(DisplayWidget):
                 splash_image)
             serviceItem = ServiceItem()
             serviceItem.bg_frame = initialFrame
-            self.webView.setHtml(build_html(serviceItem, self.screen, \
-                self.parent.alertTab))
+            self.webView.setHtml(build_html(serviceItem, self.screen,
+                self.parent.alertTab, self.isLive))
             self.initialFrame = True
-            self.show()
             # To display or not to display?
             if not self.screen[u'primary']:
+                self.show()
                 self.primary = False
             else:
                 self.primary = True
@@ -291,13 +297,14 @@ class MainDisplay(DisplayWidget):
         Generates a preview of the image displayed.
         """
         log.debug(u'preview for %s', self.isLive)
-        # Wait for the fade to finish before geting the preview.
-        # Important otherwise preview will have incorrect text if at all !
-        if self.serviceItem.themedata and \
-            self.serviceItem.themedata.display_slideTransition:
-            while self.frame.evaluateJavaScript(u'show_text_complete()') \
-                .toString() == u'false':
-                Receiver.send_message(u'openlp_process_events')
+        if self.isLive:
+            # Wait for the fade to finish before geting the preview.
+            # Important otherwise preview will have incorrect text if at all !
+            if self.serviceItem.themedata and \
+                self.serviceItem.themedata.display_slideTransition:
+                while self.frame.evaluateJavaScript(u'show_text_complete()') \
+                    .toString() == u'false':
+                    Receiver.send_message(u'openlp_process_events')
         # Wait for the webview to update before geting the preview.
         # Important otherwise first preview will miss the background !
         while not self.loaded:
@@ -326,12 +333,16 @@ class MainDisplay(DisplayWidget):
         self.loaded = False
         self.initialFrame = False
         self.serviceItem = serviceItem
-        html = build_html(self.serviceItem, self.screen, self.parent.alertTab)
+        html = build_html(self.serviceItem, self.screen, self.parent.alertTab,\
+            self.isLive)
         self.webView.setHtml(html)
         if serviceItem.foot_text and serviceItem.foot_text:
             self.footer(serviceItem.foot_text)
 
     def footer(self, text):
+        """
+        Display the Footer
+        """
         log.debug(u'footer')
         js =  "show_footer('" + \
             text.replace("\\", "\\\\").replace("\'", "\\\'") + "')"
