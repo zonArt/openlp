@@ -72,7 +72,6 @@ body {
 </style>
 <script language="javascript">
     var timer = null;
-    var transition = %s;
 
     function show_video(state, path, volume, loop){
         var vid = document.getElementById('video');
@@ -135,9 +134,12 @@ body {
                 break;
         }
         document.getElementById('black').style.display = black;
-        document.getElementById('lyricsmain').style.visibility = lyrics;
-        document.getElementById('lyricsoutline').style.visibility = lyrics;
-        document.getElementById('lyricsshadow').style.visibility = lyrics;
+        document.getElementById('lyricsmain1').style.visibility = lyrics;
+        document.getElementById('lyricsoutline1').style.visibility = lyrics;
+        document.getElementById('lyricsshadow1').style.visibility = lyrics;
+        document.getElementById('lyricsmain2').style.visibility = lyrics;
+        document.getElementById('lyricsoutline2').style.visibility = lyrics;
+        document.getElementById('lyricsshadow2').style.visibility = lyrics;
         document.getElementById('footer').style.visibility = lyrics;
         var vid = document.getElementById('video');
         if(vid.src != ''){
@@ -181,75 +183,36 @@ body {
     }
 
     function show_text(newtext){
-        var text1 = document.getElementById('lyricsmain');
-        var texto1 = document.getElementById('lyricsoutline');
-        var texts1 = document.getElementById('lyricsshadow');
-        if(!transition){
-            text1.innerHTML = newtext;
-            texto1.innerHTML = newtext;
-            texts1.innerHTML = newtext;
-            return;
-        }
-        var text2 = document.getElementById('lyricsmain2');
-        var texto2 = document.getElementById('lyricsoutline2');
-        var texts2 = document.getElementById('lyricsshadow2');
-        if((text2.style.opacity == '')||(parseFloat(text2.style.opacity) < 0.5))
-        {
-            text2.innerHTML = text1.innerHTML;
-            text2.style.opacity = text1.style.opacity;
-            texto2.innerHTML = text1.innerHTML;
-            texto2.style.opacity = text1.style.opacity;
-            texts2.innerHTML = text1.innerHTML;
-            texts2.style.opacity = text1.style.opacity;
-        }
-        text1.style.opacity = 0;
-        text1.innerHTML = newtext;
-        texto1.style.opacity = 0;
-        texto1.innerHTML = newtext;
-        texts1.style.opacity = 0;
-        texts1.innerHTML = newtext;
-        // For performance reasons, we'll not animate the shadow for now
-        texts2.style.opacity = 0;
-        if(timer != null)
-            clearTimeout(timer);
-        timer = setTimeout('text_fade()', 50);
-    }
-
-    function text_fade(){
-        var text1 = document.getElementById('lyricsmain');
-        var texto1 = document.getElementById('lyricsoutline');
-        var texts1 = document.getElementById('lyricsshadow');
-        var text2 = document.getElementById('lyricsmain2');
-        var texto2 = document.getElementById('lyricsoutline2');
-        var texts2 = document.getElementById('lyricsshadow2');
-        if(parseFloat(text1.style.opacity) < 1){
-            text1.style.opacity = parseFloat(text1.style.opacity) + 0.1;
-            texto1.style.opacity = parseFloat(texto1.style.opacity) + 0.1;
-            // Don't animate shadow (performance)
-            //texts1.style.opacity = parseFloat(texts1.style.opacity) + 0.1;
-        }
-        if(parseFloat(text2.style.opacity) > 0){
-            text2.style.opacity = parseFloat(text2.style.opacity) - 0.1;
-            texto2.style.opacity = parseFloat(texto2.style.opacity) - 0.1;
-            // Don't animate shadow (performance)
-            //texts2.style.opacity = parseFloat(texts2.style.opacity) - 0.1;
-        }
-        if((parseFloat(text1.style.opacity) < 1) ||
-            (parseFloat(text2.style.opacity) > 0)){
-            t = setTimeout('text_fade()', 50);
+        var textitem = document.getElementById('lyricsmain1');
+        if(window.getComputedStyle(textitem, '').opacity==1){
+            var item = '1';
         } else {
-            text1.style.opacity = 1;
-            texto1.style.opacity = 1;
-            texts1.style.opacity = 1;
-            text2.style.opacity = 0;
-            texto2.style.opacity = 0;
-            texts2.style.opacity = 0;
+            var item = '2';
+        }
+        text_fade_all(item, true);
+        text_fade_all((item=='')?'2':'1', false, newtext);
+    }
+    function text_fade_all(item, fadeout, newtext){
+        text_fade('lyricsmain' + item, fadeout, newtext);
+        text_fade('lyricsoutline' + item, fadeout, newtext);
+        text_fade('lyricsshadow' + item, fadeout, newtext);
+    }
+    function text_fade(id, fadeout, newtext){
+        var textitem = document.getElementById(id);
+        if(fadeout) {
+            textitem.className += ' fadeout';
+        } else {
+            textitem.innerHTML = newtext;
+            window.setTimeout(function() {
+                textitem.className = textitem.className.replace(' fadeout', '');
+            }, 0);
         }
     }
-
     function show_text_complete(){
-       return (document.getElementById('lyricsmain').style.opacity == 1);
+       var item = document.getElementById('lyricsmain1');
+       return (window.getComputedStyle(item, '').opacity == 1);
     }
+    
 </script>
 </head>
 <body>
@@ -264,13 +227,13 @@ co-operating in qwebkit. https://bugs.webkit.org/show_bug.cgi?id=43187
 Therefore one table for text, one for outline and one for shadow.
 -->
 <table class="lyricstable lyricscommon">
-    <tr><td id="lyricsmain" class="lyrics"></td></tr>
+    <tr><td id="lyricsmain1" class="lyrics"></td></tr>
 </table>
 <table class="lyricsoutlinetable lyricscommon">
-    <tr><td id="lyricsoutline" class="lyricsoutline lyrics"></td></tr>
+    <tr><td id="lyricsoutline1" class="lyricsoutline lyrics"></td></tr>
 </table>
 <table class="lyricsshadowtable lyricscommon">
-    <tr><td id="lyricsshadow" class="lyricsshadow lyrics"></td></tr>
+    <tr><td id="lyricsshadow1" class="lyricsshadow lyrics"></td></tr>
 </table>
 <table class="lyricstable lyricscommon">
     <tr><td id="lyricsmain2" class="lyrics"></td></tr>
@@ -312,8 +275,6 @@ def build_html(item, screen, alert):
         build_alert(alert, width),
         build_footer(item),
         build_lyrics(item),
-        u'true' if theme and theme.display_slideTransition \
-            else u'false',
         image)
     return html
 
@@ -325,13 +286,15 @@ def build_lyrics(item):
         Service Item containing theme and location information
     """
     style = """
-    .lyricscommon { position: absolute;  %s }
-    .lyricstable { z-index:4;  %s }
-    .lyricsoutlinetable { z-index:3; %s }
-    .lyricsshadowtable { z-index:2; %s }
-    .lyrics { %s }
-    .lyricsoutline { %s }
-    .lyricsshadow { %s }
+.lyricscommon { position: absolute;  %s }
+.lyricstable { z-index:4;  %s }
+.lyricsoutlinetable { z-index:3; %s }
+.lyricsshadowtable { z-index:2; %s }
+.lyrics { %s }
+.lyricsoutline { %s }
+.lyricsshadow { %s }
+td { opacity: 1; %s }
+td.fadeout { opacity: 0; }
      """
     theme = item.themedata
     lyricscommon = u''
@@ -341,6 +304,7 @@ def build_lyrics(item):
     lyrics = u''
     outline = u'display: none;'
     shadow = u'display: none;'
+    transition = u''
     if theme:
         lyricscommon =  u'width: %spx; height: %spx; word-wrap: break-word;  ' \
             u'font-family: %s; font-size: %spx; color: %s; line-height: %d%%;' % \
@@ -355,6 +319,8 @@ def build_lyrics(item):
             (item.main.x() + float(theme.display_shadow_size),
             item.main.y() + float(theme.display_shadow_size))
         align = u''
+        if theme.display_slideTransition:
+            transition = u'-webkit-transition: opacity 5s ease-in-out;'
         if theme.display_horizontalAlign == 2:
             align = u'text-align:center;'
         elif theme.display_horizontalAlign == 1:
@@ -382,7 +348,7 @@ def build_lyrics(item):
             if theme.display_shadow:
                 shadow = u'color: %s;' % (theme.display_shadow_color)
     lyrics_html = style % (lyricscommon, lyricstable, outlinetable,
-        shadowtable, lyrics, outline, shadow)
+        shadowtable, lyrics, outline, shadow, transition)
     return lyrics_html
 
 def build_footer(item):
@@ -393,14 +359,14 @@ def build_footer(item):
         Service Item to be processed.
     """
     style = """
-    left: %spx;
-    top: %spx;
-    width: %spx;
-    height: %spx;
-    font-family: %s;
-    font-size: %spx;
-    color: %s;
-    text-align: %s;
+left: %spx;
+top: %spx;
+width: %spx;
+height: %spx;
+font-family: %s;
+font-size: %spx;
+color: %s;
+text-align: %s;
     """
     theme = item.themedata
     if not theme:
@@ -424,12 +390,12 @@ def build_alert(alertTab, width):
         Details from the Alert tab for fonts etc
     """
     style = """
-    width: %s;
-    vertical-align: %s;
-    font-family: %s;
-    font-size: %spx;
-    color: %s;
-    background-color: %s;
+width: %s;
+vertical-align: %s;
+font-family: %s;
+font-size: %spx;
+color: %s;
+background-color: %s;
     """
     if not alertTab:
         return u''
