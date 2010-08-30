@@ -333,7 +333,7 @@ class MainDisplay(DisplayWidget):
         self.loaded = False
         self.initialFrame = False
         self.serviceItem = serviceItem
-        html = build_html(self.serviceItem, self.screen, self.parent.alertTab,\
+        html = build_html(self.serviceItem, self.screen, self.parent.alertTab,
             self.isLive)
         self.webView.setHtml(html)
         if serviceItem.foot_text and serviceItem.foot_text:
