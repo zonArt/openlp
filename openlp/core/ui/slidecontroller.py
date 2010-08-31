@@ -219,7 +219,7 @@ class SlideController(QtGui.QWidget):
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.Toolbar.addToolbarButton(
                 u'Edit Song', u':/general/general_edit.png',
-                translate('OpenLP.SlideController', 'Edit and re-preview Song'),
+                translate('OpenLP.SlideController', 'Edit and re-preview song'),
                 self.onEditSong)
         if isLive:
             self.Toolbar.addToolbarSeparator(u'Loop Separator')
@@ -279,11 +279,11 @@ class SlideController(QtGui.QWidget):
         if isLive:
             self.SongMenu = QtGui.QToolButton(self.Toolbar)
             self.SongMenu.setText(translate('OpenLP.SlideController',
-                'Go to Verse'))
+                'Go To'))
             self.SongMenu.setPopupMode(QtGui.QToolButton.InstantPopup)
             self.Toolbar.addToolbarWidget(u'Song Menu', self.SongMenu)
             self.SongMenu.setMenu(QtGui.QMenu(
-                translate('OpenLP.SlideController', 'Go to Verse'),
+                translate('OpenLP.SlideController', 'Go To'),
                 self.Toolbar))
             self.Toolbar.makeWidgetsInvisible([u'Song Menu'])
         # Screen preview area
