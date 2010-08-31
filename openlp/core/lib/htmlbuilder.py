@@ -58,18 +58,21 @@ body {
     position: absolute;
     left: 0px;
     top: 0px;
-    z-index:10;%s
+    z-index:10;
+    %s
 }
 #footer {
     position: absolute;
-    z-index:5;%s
+    z-index:5;
+    %s
 }
 /* lyric css */
 %s
+
 </style>
 <script language="javascript">
     var timer = null;
-    var cur_lyrics = '1';
+    var transition = %s;
 
     function show_video(state, path, volume, loop){
         var vid = document.getElementById('video');
@@ -132,12 +135,9 @@ body {
                 break;
         }
         document.getElementById('black').style.display = black;
-        document.getElementById('lyricsmain1').style.visibility = lyrics;
-        document.getElementById('lyricsoutline1').style.visibility = lyrics;
-        document.getElementById('lyricsshadow1').style.visibility = lyrics;
-        document.getElementById('lyricsmain2').style.visibility = lyrics;
-        document.getElementById('lyricsoutline2').style.visibility = lyrics;
-        document.getElementById('lyricsshadow2').style.visibility = lyrics;
+        document.getElementById('lyricsmain').style.visibility = lyrics;
+        document.getElementById('lyricsoutline').style.visibility = lyrics;
+        document.getElementById('lyricsshadow').style.visibility = lyrics;
         document.getElementById('footer').style.visibility = lyrics;
         var vid = document.getElementById('video');
         if(vid.src != ''){
@@ -156,7 +156,7 @@ body {
             return 0;
         }
         if(position == ''){
-            position = window.getComputedStyle(text, '').verticalAlign;
+            position = getComputedStyle(text, '').verticalAlign;
         }
         switch(position)
         {
@@ -181,32 +181,40 @@ body {
     }
 
     function show_text(newtext){
-        text_fade_all(cur_lyrics, true);
-        cur_lyrics = (cur_lyrics=='1')?'2':'1';
-        text_fade_all(cur_lyrics, false, newtext);
+        if(timer != null)
+            clearTimeout(timer);
+        text_fade('lyricsmain', newtext);        
+        text_fade('lyricsoutline', newtext);
+        text_fade('lyricsshadow', newtext);
+        if(text_opacity()==1) return;
+        timer = setTimeout(function(){
+            show_text(newtext);
+        }, 100);
     }
-    function text_fade_all(item, fadeout, newtext){
-        text_fade('lyricsmain' + item, fadeout, newtext);
-        text_fade('lyricsoutline' + item, fadeout, newtext);
-        text_fade('lyricsshadow' + item, fadeout, newtext);
-    }
-    function text_fade(id, fadeout, newtext){
-        var textitem = document.getElementById(id);
-        if(fadeout) {
-            textitem.className += ' fadeout';
-        } else {
-            textitem.innerHTML = newtext;
-            window.setTimeout(function() {
-                textitem.className = textitem.className.replace(' fadeout', '');
-            }, 0);
-        }
-    }    
 
-    function show_text_complete(){
-       var item = document.getElementById('lyricsmain' + cur_lyrics);
-       return (window.getComputedStyle(item, '').opacity == 1);
+    function text_fade(id, newtext){
+        var text = document.getElementById(id);
+        if(!transition){
+             text.innerHTML = newtext;
+             return;
+        }
+        if(text.style.opacity=='') text.style.opacity = 1;
+        if(newtext==text.innerHTML){
+            text.style.opacity = parseFloat(text.style.opacity) + 0.3;
+        } else {
+            text.style.opacity -= 0.3;
+            if(text.style.opacity<=0.1)
+                text.innerHTML = newtext;
+        }
     }
-    
+
+    function text_opacity(){
+        var text = document.getElementById('lyricsmain');
+        return window.getComputedStyle(text, '').opacity;
+    }
+    function show_text_complete(){
+        return (text_opacity()==1);
+    }
 </script>
 </head>
 <body>
@@ -221,22 +229,13 @@ co-operating in qwebkit. https://bugs.webkit.org/show_bug.cgi?id=43187
 Therefore one table for text, one for outline and one for shadow.
 -->
 <table class="lyricstable lyricscommon">
-    <tr><td id="lyricsmain1" class="lyrics"></td></tr>
+    <tr><td id="lyricsmain" class="lyrics"></td></tr>
 </table>
 <table class="lyricsoutlinetable lyricscommon">
-    <tr><td id="lyricsoutline1" class="lyricsoutline lyrics"></td></tr>
+    <tr><td id="lyricsoutline" class="lyricsoutline lyrics"></td></tr>
 </table>
 <table class="lyricsshadowtable lyricscommon">
-    <tr><td id="lyricsshadow1" class="lyricsshadow lyrics"></td></tr>
-</table>
-<table class="lyricstable lyricscommon">
-    <tr><td id="lyricsmain2" class="lyrics"></td></tr>
-</table>
-<table class="lyricsoutlinetable lyricscommon">
-    <tr><td id="lyricsoutline2" class="lyricsoutline lyrics"></td></tr>
-</table>
-<table class="lyricsshadowtable lyricscommon">
-    <tr><td id="lyricsshadow2" class="lyricsshadow lyrics"></td></tr>
+    <tr><td id="lyricsshadow" class="lyricsshadow lyrics"></td></tr>
 </table>
 <div id="alert" style="visibility:hidden;"></div>
 <div id="footer" class="footer"></div>
@@ -268,11 +267,13 @@ def build_html(item, screen, alert, islive):
     html = HTMLSRC % (width, height,
         build_alert(alert, width),
         build_footer(item),
-        build_lyrics(item, islive),
+        build_lyrics(item),
+        u'true' if theme and theme.display_slideTransition and islive \
+            else u'false',
         image)
     return html
 
-def build_lyrics(item, islive):
+def build_lyrics(item):
     """
     Build the video display div
 
@@ -280,15 +281,13 @@ def build_lyrics(item, islive):
         Service Item containing theme and location information
     """
     style = """
-.lyricscommon { position: absolute;  %s }
-.lyricstable { z-index:4;  %s }
-.lyricsoutlinetable { z-index:3; %s }
-.lyricsshadowtable { z-index:2; %s }
-.lyrics { %s }
-.lyricsoutline { %s }
-.lyricsshadow { %s }
-td { opacity: 1; %s }
-td.fadeout { opacity: 0; }
+    .lyricscommon { position: absolute;  %s }
+    .lyricstable { z-index:4;  %s }
+    .lyricsoutlinetable { z-index:3; %s }
+    .lyricsshadowtable { z-index:2; %s }
+    .lyrics { %s }
+    .lyricsoutline { %s }
+    .lyricsshadow { %s }
      """
     theme = item.themedata
     lyricscommon = u''
@@ -298,7 +297,6 @@ td.fadeout { opacity: 0; }
     lyrics = u''
     outline = u'display: none;'
     shadow = u'display: none;'
-    transition = u''
     if theme:
         lyricscommon =  u'width: %spx; height: %spx; word-wrap: break-word;  ' \
             u'font-family: %s; font-size: %spt; color: %s; line-height: %d%%;' \
@@ -313,8 +311,6 @@ td.fadeout { opacity: 0; }
             (item.main.x() + float(theme.display_shadow_size),
             item.main.y() + float(theme.display_shadow_size))
         align = u''
-        if theme.display_slideTransition and islive:
-            transition = u'-webkit-transition: opacity 1s linear;'
         if theme.display_horizontalAlign == 2:
             align = u'text-align:center;'
         elif theme.display_horizontalAlign == 1:
@@ -342,7 +338,7 @@ td.fadeout { opacity: 0; }
             if theme.display_shadow:
                 shadow = u'color: %s;' % (theme.display_shadow_color)
     lyrics_html = style % (lyricscommon, lyricstable, outlinetable,
-        shadowtable, lyrics, outline, shadow, transition)
+        shadowtable, lyrics, outline, shadow)
     return lyrics_html
 
 def build_footer(item):
