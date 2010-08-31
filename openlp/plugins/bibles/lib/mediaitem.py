@@ -507,20 +507,21 @@ class BibleMediaItem(MediaManagerItem):
             footer = u'%s (%s %s)' % (book, version, copyright)
             if footer not in raw_footer:
                 raw_footer.append(footer)
-            if dual_bible:
-                footer = u'%s (%s %s)' % (book, dual_version, dual_copyright)
-                if footer not in raw_footer:
-                    raw_footer.append(footer)
-                # If there is an old bible_text we have to add it.
-                if bible_text:
+            if has_dual_bible:
+                if dual_bible:
+                    footer = u'%s (%s %s)' % (book, dual_version,
+                        dual_copyright)
+                    if footer not in raw_footer:
+                        raw_footer.append(footer)
+                    # If there is an old bible_text we have to add it.
+                    if bible_text:
+                        raw_slides.append(bible_text)
+                        bible_text = u''
+                    bible_text = u'%s %s\n\n%s %s' % (verse_text, text,
+                        verse_text, dual_text)
                     raw_slides.append(bible_text)
                     bible_text = u''
-                bible_text = u'%s %s\n\n%s %s' % (verse_text, text,
-                    verse_text, dual_text)
-                raw_slides.append(bible_text)
-                bible_text = u''
-            elif has_dual_bible:
-                if self.parent.settings_tab.layout_style == 0:
+                elif self.parent.settings_tab.layout_style == 0:
                     bible_text = u'%s %s' % (verse_text, text)
                     raw_slides.append(bible_text)
                     bible_text = u''
