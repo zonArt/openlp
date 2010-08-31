@@ -159,7 +159,7 @@ class Renderer(object):
         doc = QtGui.QTextDocument()
         doc.setPageSize(QtCore.QSizeF(self._rect.width(), self._rect.height()))
         df = doc.defaultFont()
-        df.setPixelSize(self._theme.font_main_proportion)
+        df.setPointSize(self._theme.font_main_proportion)
         df.setFamily(self._theme.font_main_name)
         main_weight = 50
         if self._theme.font_main_weight == u'Bold':
