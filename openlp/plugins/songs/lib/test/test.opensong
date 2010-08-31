@@ -4,7 +4,7 @@
   <author>MartiÑ Thómpson</author>
   <copyright>2010 Martin Thompson</copyright>
   <hymn_number>1</hymn_number>
-  <presentation>V1 C V2 C2 V3 B1 V1</presentation>
+  <presentation>V1 C V2 C2 3 B1 V1 T U</presentation>
   <ccli>Blah</ccli>
   <capo print="false"></capo>
   <key></key>
@@ -17,7 +17,12 @@
   <alttheme>TestAltTheme</alttheme>
   <tempo></tempo>
   <time_sig></time_sig>
-  <lyrics>;Comment
+  <lyrics>[3]
+. G A B
+ V3 Line 1
+. G A B
+ V3 Line 2
+
 . A   B C
 1 v1 Line 1___
 2 v2 Line 1___
@@ -25,10 +30,6 @@
 1 V1 Line 2
 2 V2 Line 2
  
-[3]
- V3 Line 1
- V3 Line 2
-
 [b1]
  Bridge 1
 ---
@@ -36,12 +37,18 @@
  Bridge 1 line 2
 
 [C]
-. A     B
+    . A     B
  Chorus 1
  
 [C2]
 .  A    B
  Chorus 2
+
+[T]
+  T Line 1
+
+[X]
+  Unreferenced verse line 1
  </lyrics>
   <style index="default_style">
   <title enabled="true" valign="bottom" align="center" include_verse="false" margin-left="0" margin-right="0" margin-top="0" margin-bottom="0" font="Helvetica" size="26" bold="true" italic="true" underline="false" color="#FFFFFF" border="true" border_color="#000000" shadow="true" shadow_color="#000000" fill="false" fill_color="#000000"/>

@@ -52,6 +52,12 @@ class SongImport(QtCore.QObject):
         """
         self.manager = manager
         self.stop_import_flag = False
+        self.set_defaults()
+    def set_defaults(self):
+        """
+        Create defaults for properties - call this before each song
+        if importing many songs at once to ensure a clean beginning
+        """
         self.title = u''
         self.song_number = u''
         self.alternate_title = u''

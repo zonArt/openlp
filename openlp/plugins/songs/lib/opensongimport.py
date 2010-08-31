@@ -159,8 +159,11 @@ class OpenSongImport(SongImport):
         Process the OpenSong file - pass in a file-like object,
         not a filename
         """
-        self.authors = []
-        self.verse_order_list = []
+        self.set_defaults()
+        # Setup blank storage to append to
+        verse_order_list = []
+        topics = []
+        verselist = []
         try:
             tree = objectify.parse(file)
         except Error, LxmlError:
@@ -183,10 +186,10 @@ class OpenSongImport(SongImport):
                     setattr(self, fn_or_string, ustring)
                 else:
                     fn_or_string(ustring)
-        if u'theme' in fields and unicode(root.theme) not in self.topics:
-            self.topics.append(unicode(root.theme))
-        if u'alttheme' in fields and unicode(root.alttheme) not in self.topics:
-            self.topics.append(unicode(root.alttheme))
+        if u'theme' in fields and unicode(root.theme) not in topics:
+            topics.append(unicode(root.theme))
+        if u'alttheme' in fields and unicode(root.alttheme) not in topics:
+            topics.append(unicode(root.alttheme))
         # data storage while importing
         verses = {}
         lyrics = unicode(root.lyrics)
@@ -214,7 +217,7 @@ class OpenSongImport(SongImport):
                 versetype = thisline[1].upper()
                 if versetype.isdigit():
                     versenum = versetype
-                    versetype = u'V'
+                    versetype = u''
                 elif thisline[2] != u']':
                     # there's a number to go with it - extract that as well
                     right_bracket = thisline.find(u']')
@@ -228,10 +231,13 @@ class OpenSongImport(SongImport):
             if thisline[0].isdigit():
                 versenum = thisline[0]
                 words = thisline[1:].strip()
-            if words is None and \
-                   versenum is not None and \
-                   versetype is not None:
+                
+            if words is None:# and \
+                   #versenum is not None and \
+                   #versetype is not None:
                 words = thisline
+                if not versenum: 
+                    versenum = u'1'
             if versenum is not None:
                 versetag = u'%s%s' % (versetype, versenum)
                 if not verses.has_key(versetype):
@@ -252,12 +258,15 @@ class OpenSongImport(SongImport):
         versetypes.sort()
         versetags = {}
         for versetype in versetypes:
+            our_verse_type = versetype
+            if our_verse_type == u'':
+                our_verse_type = u'V'
             versenums = verses[versetype].keys()
             versenums.sort()
             for num in versenums:
-                versetag = u'%s%s' % (versetype, num)
+                versetag = u'%s%s' % (our_verse_type, num)
                 lines = u'\n'.join(verses[versetype][num])
-                self.verses.append([versetag, lines])
+                verselist.append([versetag, lines])
                 # Keep track of what we have for error checking later
                 versetags[versetag] = 1
         # now figure out the presentation order
@@ -269,11 +278,18 @@ class OpenSongImport(SongImport):
             if len(our_verse_order) > 0:
                 order = our_verse_order
             else:
-                log.warn(u'No verse order available for %s, skipping.', self.title)
+                log.warn(u'No verse order available (either explicit or inferred) for %s, skipping.', self.title)
         for tag in order:
             if len(tag) == 1:
-                tag = tag + u'1' # Assume it's no.1 if it's not there
+                if not tag.isdigit():
+                    tag = tag + u'1' # Assume it's no.1 if it's not there
+                else:
+                    tag = u'V' + tag # Assume it's a verse if it has no prefix
             if not versetags.has_key(tag):
-                log.warn(u'Got order %s but not in versetags, skipping', tag)
+                log.warn(u'Got order %s but not in versetags, dropping this item from presentation order', tag)
             else:
-                self.verse_order_list.append(tag)
+                verse_order_list.append(tag)
+        # now copy the data
+        self.topics = topics
+        self.verse_order_list = verse_order_list
+        self.verses = verselist
