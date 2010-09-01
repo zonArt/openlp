@@ -510,13 +510,13 @@ class BibleMediaItem(MediaManagerItem):
                     'dual_permission')
                 dual_text = self._decodeQtObject(reference, 'dual_text')
             verse_text = self.formatVerse(old_chapter, chapter, verse)
-            footer = u'%s (%s %s)' % (book, version, copyright)
+            footer = u'%s (%s %s)' % (book, version, copyright, permission)
             if footer not in raw_footer:
                 raw_footer.append(footer)
             if has_dual_bible:
                 if dual_bible:
                     footer = u'%s (%s %s)' % (book, dual_version,
-                        dual_copyright)
+                        dual_copyright, dual_permission)
                     if footer not in raw_footer:
                         raw_footer.append(footer)
                     # If there is an old bible_text we have to add it.
