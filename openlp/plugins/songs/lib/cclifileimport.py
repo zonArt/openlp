@@ -142,7 +142,6 @@ class CCLIFileImport(SongImport):
         """
         log.debug(u'USR file text: %s', textList)
         lyrics = []
-#        new_song = SongImport(self.manager)
         self.set_defaults()
         for line in textList:
             if line.startswith(u'Title='):
@@ -235,7 +234,6 @@ class CCLIFileImport(SongImport):
             e.g. CCL-Liedlizenznummer: 14 / CCLI License No. 14   
         """
         log.debug(u'TXT file text: %s', textList)
-#        new_song = SongImport(self.manager)
         self.set_defaults()
         line_number = 0
         verse_text = u''
