@@ -2519,11 +2519,6 @@ The content encoding is not UTF-8.</source>
         <translation>Verschieben zur Live Ansicht</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="220"/>
-        <source>Edit and re-preview Song</source>
-        <translation>Lied bearbeiten und wieder anzeigen</translation>
-    </message>
-    <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="226"/>
         <source>Start continuous loop</source>
         <translation>Endlosschleife starten</translation>
@@ -2549,9 +2544,14 @@ The content encoding is not UTF-8.</source>
         <translation>Abspielen</translation>
     </message>
     <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="220"/>
+        <source>Edit and re-preview song</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="285"/>
-        <source>Go to Verse</source>
-        <translation>Springe zu</translation>
+        <source>Go To</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2742,8 +2742,8 @@ The content encoding is not UTF-8.</source>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="575"/>
-        <source>A theme with this name already exists.  Would you like to overwrite it?</source>
-        <translation></translation>
+        <source>A theme with this name already exists. Would you like to overwrite it?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3343,7 +3343,7 @@ The content encoding is not UTF-8.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="343"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="344"/>
         <source>Starting import...</source>
         <translation>Starte import ...</translation>
     </message>
@@ -3657,12 +3657,12 @@ The content encoding is not UTF-8.</source>
 <context>
     <name>SongsPlugin.SongImport</name>
     <message>
-        <location filename="openlp/plugins/songs/lib/songimport.py" line="70"/>
+        <location filename="openlp/plugins/songs/lib/songimport.py" line="47"/>
         <source>copyright</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/songimport.py" line="72"/>
+        <location filename="openlp/plugins/songs/lib/songimport.py" line="49"/>
         <source>&#xa9;</source>
         <translation></translation>
     </message>
@@ -3670,12 +3670,12 @@ The content encoding is not UTF-8.</source>
 <context>
     <name>SongsPlugin.SongImportForm</name>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="400"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="401"/>
         <source>Finished import.</source>
         <translation type="unfinished">Importvorgang abgeschlossen.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="403"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="404"/>
         <source>Your song import failed.</source>
         <translation type="unfinished"></translation>
     </message>

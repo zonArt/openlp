@@ -119,7 +119,7 @@
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="201"/>
         <source>pt</source>
-        <translation type="unfinished">pt</translation>
+        <translation>pt</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="203"/>
@@ -134,7 +134,7 @@
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="207"/>
         <source>Location:</source>
-        <translation type="unfinished">Location:</translation>
+        <translation>Location:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="209"/>
@@ -154,7 +154,7 @@
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="215"/>
         <source>Middle</source>
-        <translation type="unfinished">Middle</translation>
+        <translation>Middle</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="217"/>
@@ -222,17 +222,17 @@ Book Chapter:Verse-Chapter:Verse
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="49"/>
         <source>Bibles</source>
-        <translation type="unfinished">Bibles</translation>
+        <translation>Bibles</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="153"/>
         <source>Verse Display</source>
-        <translation type="unfinished">Verse Display</translation>
+        <translation>Verse Display</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="155"/>
         <source>Only show new chapter numbers</source>
-        <translation type="unfinished">Only show new chapter numbers</translation>
+        <translation>Only show new chapter numbers</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="158"/>
@@ -911,7 +911,7 @@ Changes do not affect verses already in the service.</translation>
     <message>
         <location filename="openlp/plugins/media/lib/mediaitem.py" line="100"/>
         <source>Reset Live Background</source>
-        <translation type="unfinished"></translation>
+        <translation>Reset Live Background</translation>
     </message>
 </context>
 <context>
@@ -2236,7 +2236,9 @@ Built With
         <source>Version %s of OpenLP is now available for download (you are currently running version %s). 
 
 You can download the latest version from http://openlp.org/.</source>
-        <translation type="unfinished"></translation>
+        <translation>Version %s of OpenLP is now available for download (you are currently running version %s). 
+
+You can download the latest version from http://openlp.org/.</translation>
     </message>
 </context>
 <context>
@@ -2563,93 +2565,94 @@ You can download the latest version from http://openlp.org/.</source>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="196"/>
         <source>Delete the selected item from the service.</source>
-        <translation type="unfinished"></translation>
+        <translation>Delete the selected item from the service.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="233"/>
         <source>&amp;Add New Item</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Add New Item</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="236"/>
         <source>&amp;Add to Selected Item</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Add to Selected Item</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="241"/>
         <source>&amp;Edit Item</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Edit Item</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="244"/>
         <source>&amp;Reorder Item</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Reorder Item</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="247"/>
         <source>&amp;Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Notes</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="255"/>
         <source>&amp;Preview Verse</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Preview Verse</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="258"/>
         <source>&amp;Live Verse</source>
-        <translation type="unfinished">&amp;Live Verse</translation>
+        <translation>&amp;Live Verse</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="263"/>
         <source>&amp;Change Item Theme</source>
-        <translation type="unfinished">&amp;Change Item Theme</translation>
+        <translation>&amp;Change Item Theme</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="651"/>
         <source>Save Changes to Service?</source>
-        <translation type="unfinished">Save Changes to Service?</translation>
+        <translation>Save Changes to Service?</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="494"/>
         <source>Your service is unsaved, do you want to save those changes before creating a new one?</source>
-        <translation type="unfinished"></translation>
+        <translation>Your service is unsaved, do you want to save those changes before creating a new one?</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="579"/>
         <source>OpenLP Service Files (*.osz)</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenLP Service Files (*.osz)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="651"/>
         <source>Your current service is unsaved, do you want to save the changes before opening a new one?</source>
-        <translation type="unfinished"></translation>
+        <translation>Your current service is unsaved, do you want to save the changes before opening a new one?</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="715"/>
         <source>Error</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="680"/>
         <source>File is not a valid service.
 The content encoding is not UTF-8.</source>
-        <translation type="unfinished"></translation>
+        <translation>File is not a valid service.
+The content encoding is not UTF-8.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="715"/>
         <source>File is not a valid service.</source>
-        <translation type="unfinished"></translation>
+        <translation>File is not a valid service.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="877"/>
         <source>Missing Display Handler</source>
-        <translation type="unfinished"></translation>
+        <translation>Missing Display Handler</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="877"/>
         <source>Your item cannot be displayed as there is no handler to display it</source>
-        <translation type="unfinished"></translation>
+        <translation>Your item cannot be displayed as there is no handler to display it</translation>
     </message>
 </context>
 <context>
@@ -2657,7 +2660,7 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/core/ui/servicenotedialog.py" line="52"/>
         <source>Service Item Notes</source>
-        <translation type="unfinished">Service Item Notes</translation>
+        <translation>Service Item Notes</translation>
     </message>
 </context>
 <context>
@@ -2665,7 +2668,7 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/core/ui/settingsdialog.py" line="67"/>
         <source>Configure OpenLP</source>
-        <translation type="unfinished"></translation>
+        <translation>Configure OpenLP</translation>
     </message>
 </context>
 <context>
@@ -2673,67 +2676,67 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="116"/>
         <source>Live</source>
-        <translation type="unfinished">Live</translation>
+        <translation>Live</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="120"/>
         <source>Preview</source>
-        <translation type="unfinished">Preview</translation>
+        <translation>Preview</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="170"/>
         <source>Move to previous</source>
-        <translation type="unfinished">Move to previous</translation>
+        <translation>Move to previous</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="174"/>
         <source>Move to next</source>
-        <translation type="unfinished">Move to next slide.</translation>
+        <translation>Move to next</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="189"/>
         <source>Hide</source>
-        <translation type="unfinished"></translation>
+        <translation>Hide</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="215"/>
         <source>Move to live</source>
-        <translation type="unfinished">Move to live</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="220"/>
-        <source>Edit and re-preview Song</source>
-        <translation type="unfinished">Edit and re-preview Song.</translation>
+        <translation>Move to live</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="226"/>
         <source>Start continuous loop</source>
-        <translation type="unfinished">Start continuous loop</translation>
+        <translation>Start continuous loop</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="230"/>
         <source>Stop continuous loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Stop continuous loop</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="239"/>
         <source>s</source>
-        <translation type="unfinished">s</translation>
+        <translation>s</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="241"/>
         <source>Delay between slides in seconds</source>
-        <translation type="unfinished">Delay between slides in seconds.</translation>
+        <translation>Delay between slides in seconds</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="254"/>
         <source>Start playing media</source>
-        <translation type="unfinished">Start playing media</translation>
+        <translation>Start playing media</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="220"/>
+        <source>Edit and re-preview song</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="285"/>
-        <source>Go to Verse</source>
-        <translation type="unfinished">Go to Verse</translation>
+        <source>Go To</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2741,12 +2744,12 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/core/ui/__init__.py" line="72"/>
         <source>Spelling Suggestions</source>
-        <translation type="unfinished"></translation>
+        <translation>Spelling Suggestions</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/__init__.py" line="83"/>
         <source>Formatting Tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Formatting Tags</translation>
     </message>
 </context>
 <context>
@@ -2754,177 +2757,178 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="682"/>
         <source>New Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>New Theme</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="58"/>
         <source>Create a new theme.</source>
-        <translation type="unfinished"></translation>
+        <translation>Create a new theme.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="63"/>
         <source>Edit Theme</source>
-        <translation type="unfinished">Edit Theme</translation>
+        <translation>Edit Theme</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="63"/>
         <source>Edit a theme.</source>
-        <translation type="unfinished"></translation>
+        <translation>Edit a theme.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="68"/>
         <source>Delete Theme</source>
-        <translation type="unfinished">Delete Theme</translation>
+        <translation>Delete Theme</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="68"/>
         <source>Delete a theme.</source>
-        <translation type="unfinished"></translation>
+        <translation>Delete a theme.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="74"/>
         <source>Import Theme</source>
-        <translation type="unfinished">Import Theme</translation>
+        <translation>Import Theme</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="74"/>
         <source>Import a theme.</source>
-        <translation type="unfinished"></translation>
+        <translation>Import a theme.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="79"/>
         <source>Export Theme</source>
-        <translation type="unfinished">Export Theme</translation>
+        <translation>Export Theme</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="79"/>
         <source>Export a theme.</source>
-        <translation type="unfinished"></translation>
+        <translation>Export a theme.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="91"/>
         <source>&amp;Edit Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Edit Theme</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="98"/>
         <source>&amp;Delete Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Delete Theme</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="103"/>
         <source>Set As &amp;Global Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Set As &amp;Global Default</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="108"/>
         <source>E&amp;xport Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>E&amp;xport Theme</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="629"/>
         <source>%s (default)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s (default)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="197"/>
         <source>You must select a theme to edit.</source>
-        <translation type="unfinished"></translation>
+        <translation>You must select a theme to edit.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="220"/>
         <source>You must select a theme to delete.</source>
-        <translation type="unfinished"></translation>
+        <translation>You must select a theme to delete.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="226"/>
         <source>Delete Confirmation</source>
-        <translation type="unfinished"></translation>
+        <translation>Delete Confirmation</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="226"/>
         <source>Delete theme?</source>
-        <translation type="unfinished"></translation>
+        <translation>Delete theme?</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="485"/>
         <source>Error</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="235"/>
         <source>You are unable to delete the default theme.</source>
-        <translation type="unfinished"></translation>
+        <translation>You are unable to delete the default theme.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="242"/>
         <source>Theme %s is use in %s plugin.</source>
-        <translation type="unfinished"></translation>
+        <translation>Theme %s is use in %s plugin.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="249"/>
         <source>Theme %s is use by the service manager.</source>
-        <translation type="unfinished"></translation>
+        <translation>Theme %s is use by the service manager.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="285"/>
         <source>You have not selected a theme.</source>
-        <translation type="unfinished"></translation>
+        <translation>You have not selected a theme.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="291"/>
         <source>Save Theme - (%s)</source>
-        <translation type="unfinished">Save Theme - (%s)</translation>
+        <translation>Save Theme - (%s)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="308"/>
         <source>Theme Exported</source>
-        <translation type="unfinished"></translation>
+        <translation>Theme Exported</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="308"/>
         <source>Your theme has been successfully exported.</source>
-        <translation type="unfinished"></translation>
+        <translation>Your theme has been successfully exported.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="314"/>
         <source>Theme Export Failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Theme Export Failed</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="314"/>
         <source>Your theme could not be exported due to an error.</source>
-        <translation type="unfinished"></translation>
+        <translation>Your theme could not be exported due to an error.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="328"/>
         <source>Select Theme Import File</source>
-        <translation type="unfinished"></translation>
+        <translation>Select Theme Import File</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="328"/>
         <source>Theme (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Theme (*.*)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="432"/>
         <source>File is not a valid theme.
 The content encoding is not UTF-8.</source>
-        <translation type="unfinished"></translation>
+        <translation>File is not a valid theme.
+The content encoding is not UTF-8.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="485"/>
         <source>File is not a valid theme.</source>
-        <translation type="unfinished"></translation>
+        <translation>File is not a valid theme.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="575"/>
         <source>Theme Exists</source>
-        <translation type="unfinished">Theme Exists</translation>
+        <translation>Theme Exists</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="575"/>
-        <source>A theme with this name already exists.  Would you like to overwrite it?</source>
+        <source>A theme with this name already exists. Would you like to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2933,47 +2937,47 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/core/ui/themestab.py" line="41"/>
         <source>Themes</source>
-        <translation type="unfinished">Themes</translation>
+        <translation>Themes</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themestab.py" line="110"/>
         <source>Global Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Global Theme</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themestab.py" line="112"/>
         <source>Theme Level</source>
-        <translation type="unfinished"></translation>
+        <translation>Theme Level</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themestab.py" line="114"/>
         <source>S&amp;ong Level</source>
-        <translation type="unfinished"></translation>
+        <translation>S&amp;ong Level</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themestab.py" line="116"/>
         <source>Use the theme from each song in the database. If a song doesn&apos;t have a theme associated with it, then use the service&apos;s theme. If the service doesn&apos;t have a theme, then use the global theme.</source>
-        <translation type="unfinished">Use the theme from each song in the database. If a song doesn&apos;t have a theme associated with it, then use the service&apos;s theme. If the service doesn&apos;t have a theme, then use the global theme.</translation>
+        <translation>Use the theme from each song in the database. If a song doesn&apos;t have a theme associated with it, then use the service&apos;s theme. If the service doesn&apos;t have a theme, then use the global theme.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themestab.py" line="121"/>
         <source>&amp;Service Level</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Service Level</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themestab.py" line="123"/>
         <source>Use the theme from the service, overriding any of the individual songs&apos; themes. If the service doesn&apos;t have a theme, then use the global theme.</source>
-        <translation type="unfinished">Use the theme from the service, overriding any of the individual songs&apos; themes. If the service doesn&apos;t have a theme, then use the global theme.</translation>
+        <translation>Use the theme from the service, overriding any of the individual songs&apos; themes. If the service doesn&apos;t have a theme, then use the global theme.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themestab.py" line="127"/>
         <source>&amp;Global Level</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Global Level</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themestab.py" line="129"/>
         <source>Use the global theme, overriding any themes associated with either the service or the songs.</source>
-        <translation type="unfinished">Use the global theme, overriding any themes associated with either the service or the songs.</translation>
+        <translation>Use the global theme, overriding any themes associated with either the service or the songs.</translation>
     </message>
 </context>
 <context>
@@ -2981,7 +2985,7 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/plugins/presentations/presentationplugin.py" line="140"/>
         <source>&lt;strong&gt;Presentation Plugin&lt;/strong&gt;&lt;br /&gt;The presentation plugin provides the ability to show presentations using a number of different programs. The choice of available presentation programs is available to the user in a drop down box.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt;Presentation Plugin&lt;/strong&gt;&lt;br /&gt;The presentation plugin provides the ability to show presentations using a number of different programs. The choice of available presentation programs is available to the user in a drop down box.</translation>
     </message>
 </context>
 <context>
@@ -3525,7 +3529,7 @@ The content encoding is not UTF-8.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="343"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="344"/>
         <source>Starting import...</source>
         <translation type="unfinished">Starting import...</translation>
     </message>
@@ -3839,12 +3843,12 @@ The content encoding is not UTF-8.</source>
 <context>
     <name>SongsPlugin.SongImport</name>
     <message>
-        <location filename="openlp/plugins/songs/lib/songimport.py" line="70"/>
+        <location filename="openlp/plugins/songs/lib/songimport.py" line="47"/>
         <source>copyright</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/songimport.py" line="72"/>
+        <location filename="openlp/plugins/songs/lib/songimport.py" line="49"/>
         <source>&#xa9;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3852,12 +3856,12 @@ The content encoding is not UTF-8.</source>
 <context>
     <name>SongsPlugin.SongImportForm</name>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="400"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="401"/>
         <source>Finished import.</source>
         <translation type="unfinished">Finished import.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="403"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="404"/>
         <source>Your song import failed.</source>
         <translation type="unfinished"></translation>
     </message>

@@ -2557,8 +2557,8 @@ The content encoding is not UTF-8.</source>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="220"/>
-        <source>Edit and re-preview Song</source>
-        <translation type="unfinished">Editar e pré-visualizar Música novamente</translation>
+        <source>Edit and re-preview song</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="226"/>
@@ -2587,8 +2587,8 @@ The content encoding is not UTF-8.</source>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="285"/>
-        <source>Go to Verse</source>
-        <translation type="unfinished">Ir ao Versículo</translation>
+        <source>Go To</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2780,8 +2780,8 @@ A codificação do conteúdo não é UTF-8.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="575"/>
-        <source>A theme with this name already exists.  Would you like to overwrite it?</source>
-        <translation type="unfinished">Já existe um tema com este nome. Deseja sobreescrevê-lo?</translation>
+        <source>A theme with this name already exists. Would you like to overwrite it?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3466,7 +3466,7 @@ A codificação do conteúdo não é UTF-8.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="343"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="344"/>
         <source>Starting import...</source>
         <translation type="unfinished">Iniciando importação...</translation>
     </message>
@@ -3695,12 +3695,12 @@ A codificação do conteúdo não é UTF-8.</translation>
 <context>
     <name>SongsPlugin.SongImport</name>
     <message>
-        <location filename="openlp/plugins/songs/lib/songimport.py" line="70"/>
+        <location filename="openlp/plugins/songs/lib/songimport.py" line="47"/>
         <source>copyright</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/songimport.py" line="72"/>
+        <location filename="openlp/plugins/songs/lib/songimport.py" line="49"/>
         <source>&#xa9;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3708,12 +3708,12 @@ A codificação do conteúdo não é UTF-8.</translation>
 <context>
     <name>SongsPlugin.SongImportForm</name>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="400"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="401"/>
         <source>Finished import.</source>
         <translation type="unfinished">Importação Finalizada.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="403"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="404"/>
         <source>Your song import failed.</source>
         <translation type="unfinished"></translation>
     </message>
