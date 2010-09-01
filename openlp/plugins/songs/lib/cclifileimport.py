@@ -142,51 +142,52 @@ class CCLIFileImport(SongImport):
         """
         log.debug(u'USR file text: %s', textList)
         lyrics = []
-        new_song = SongImport(self.manager)
+#        new_song = SongImport(self.manager)
+        self.set_defaults()
         for line in textList:
             if line.startswith(u'Title='):
-                sname = line[6:].strip()
+                song_name = line[6:].strip()
             elif line.startswith(u'Author='):
-                sauthor = line[7:].strip()
+                song_author = line[7:].strip()
             elif line.startswith(u'Copyright='):
-                scopyright = line[10:].strip()
+                song_copyright = line[10:].strip()
             elif line.startswith(u'[S A'):
-                sccli = line[4:-3].strip()
+                song_ccli = line[4:-3].strip()
             elif line.startswith(u'Fields='):
             #Fields contain single line indicating verse, chorus, etc,
             #/t delimited, same as with words field. store seperately
             #and process at end.
-                sfields = line[7:].strip()
+                song_fields = line[7:].strip()
             elif line.startswith(u'Words='):
-                swords = line[6:].strip()
+                song_words = line[6:].strip()
             #Unhandled usr keywords:Type,Version,Admin,Themes,Keys
         #Process Fields and words sections
-        fieldlst = sfields.split(u'/t')
-        wordslst = swords.split(u'/t')
-        for counter in range(0, len(fieldlst)):
-            if fieldlst[counter].startswith(u'Ver'):
-                vtype = u'V'
-            elif fieldlst[counter].startswith(u'Ch'):
-                vtype = u'C'
-            elif fieldlst[counter].startswith(u'Br'):
-                vtype = u'B'
+        field_list = song_fields.split(u'/t')
+        words_list = song_words.split(u'/t')
+        for counter in range(0, len(field_list)):
+            if field_list[counter].startswith(u'Ver'):
+                verse_type = u'V'
+            elif field_list[counter].startswith(u'Ch'):
+                verse_type = u'C'
+            elif field_list[counter].startswith(u'Br'):
+                verse_type = u'B'
             else: #Other
-                vtype = u'O'
-            vcontent = unicode(wordslst[counter])
-            vcontent = vcontent.replace("/n",  "\n")
-            if (len(vcontent) > 0):                
-                new_song.add_verse(vcontent, vtype);
+                verse_type = u'O'
+            verse_text = unicode(words_list[counter])
+            verse_text = verse_text.replace("/n",  "\n")
+            if len(verse_text) > 0:                
+                self.add_verse(verse_text, verse_type);
         #Handle multiple authors
-        lst = sauthor.split(u'/')
-        if len(lst) < 2:
-            lst = sauthor.split(u'|')
-        for author in lst:
+        author_list = song_author.split(u'/')
+        if len(author_list) < 2:
+            author_list = song_author.split(u'|')
+        for author in author_list:
             seperated = author.split(u',')
-            new_song.add_author(seperated[1].strip() + " " + seperated[0].strip())
-        new_song.title = sname
-        new_song.copyright = scopyright
-        new_song.ccli_number = sccli
-        new_song.finish()
+            self.add_author(seperated[1].strip() + " " + seperated[0].strip())
+        self.title = song_name
+        self.copyright = song_copyright
+        self.ccli_number = song_ccli
+        self.finish()
 
     def do_import_txt_file(self, textList):
         """
@@ -234,75 +235,78 @@ class CCLIFileImport(SongImport):
             e.g. CCL-Liedlizenznummer: 14 / CCLI License No. 14   
         """
         log.debug(u'TXT file text: %s', textList)
-        new_song = SongImport(self.manager)
-        lnum = 0
-        vcontent = u''
-        scomments = u''
-        scopyright = u'';
+#        new_song = SongImport(self.manager)
+        self.set_defaults()
+        line_number = 0
+        verse_text = u''
+        song_comments = u''
+        song_copyright = u'';
         verse_start = False
         for line in textList:
-            line = line.strip()
-            if not line:
-                if (lnum==0):
+            clean_line = line.strip()
+            if not clean_line:
+                if line_number==0:
                     continue
                 elif verse_start:
-                      if vcontent:
-                        new_song.add_verse(vcontent, vtype)
-                        vcontent = ''
+                      if verse_text:
+                        self.add_verse(verse_text, verse_type)
+                        verse_text = ''
                         verse_start = False
             else:
-                #lnum=0, song title
-                if (lnum==0):
-                    sname = line
-                    lnum += 1
-                #lnum=1, verses    
-                elif (lnum==1):
-                    #lnum=1, ccli number, first line after verses
-                    if line.startswith(u'CCLI'):
-                        lnum += 1
-                        cparts = line.split(' ')
-                        sccli = cparts[len(cparts)-1]
-                    elif (verse_start == False):
+                #line_number=0, song title
+                if line_number==0:
+                    song_name = clean_line
+                    line_number += 1
+                #line_number=1, verses    
+                elif line_number==1:
+                    #line_number=1, ccli number, first line after verses
+                    if clean_line.startswith(u'CCLI'):
+                        line_number += 1
+                        ccli_parts = clean_line.split(' ')
+                        song_ccli = ccli_parts[len(ccli_parts)-1]
+                    elif not verse_start:
                         # We have the verse descriptor
-                        parts = line.split(' ')
-                        if (len(parts) == 2):
-                            if parts[0].startswith(u'Ver'):
-                                vtype = u'V'
-                            elif parts[0].startswith(u'Ch'):
-                                vtype = u'C'
-                            elif parts[0].startswith(u'Br'):
-                                vtype = u'B'
+                        verse_desc_parts = clean_line.split(' ')
+                        if len(verse_desc_parts) == 2:
+                            if verse_desc_parts[0].startswith(u'Ver'):
+                                verse_type = u'V'
+                            elif verse_desc_parts[0].startswith(u'Ch'):
+                                verse_type = u'C'
+                            elif verse_desc_parts[0].startswith(u'Br'):
+                                verse_type = u'B'
                             else:
-                                vtype = u'O'
-                            vnumber = parts[1]
+                                verse_type = u'O'
+                            verse_number = verse_desc_parts[1]
                         else:
-                            vtype = u'O'
-                            vnumber = 1
+                            verse_type = u'O'
+                            verse_number = 1
                         verse_start = True
                     else:
                         # We have verse content or the start of the
                         # last part. Add l so as to keep the CRLF
-                        vcontent = vcontent + line
+                        verse_text = verse_text + line
                 else:
-                    #lnum=2, copyright
-                    if (lnum==2):
-                        lnum += 1
-                        scopyright = line
+                    #line_number=2, copyright
+                    if line_number==2:
+                        line_number += 1
+                        song_copyright = clean_line
                     #n=3, authors    
-                    elif (lnum==3):
-                        lnum += 1
-                        sauthor = line
-                     #lnum=4, comments lines before last line    
-                    elif (lnum==4) and (not line.startswith(u'CCL')):
-                        scomments = scomments + line
+                    elif line_number==3:
+                        line_number += 1
+                        song_author = clean_line
+                     #line_number=4, comments lines before last line    
+                    elif (line_number==4) and (not clean_line.startswith(u'CCL')):
+                        song_comments = song_comments + clean_line
         # split on known separators
-        alist = sauthor.split(u'/')
-        if len(alist) < 2:
-            alist = sauthor.split(u'|')
-        new_song.authors = alist
-        new_song.title = sname
-        new_song.copyright = scopyright
-        new_song.ccli_number = sccli
-        new_song.comments = scomments
-        new_song.finish()
+        author_list = song_author.split(u'/')
+        if len(author_list) < 2:
+            author_list = song_author.split(u'|')
+        #Clean spaces before and after author names
+        for author_name in author_list:
+            self.add_author(author_name.strip())
+        self.title = song_name
+        self.copyright = song_copyright
+        self.ccli_number = song_ccli
+        self.comments = song_comments
+        self.finish()
         
