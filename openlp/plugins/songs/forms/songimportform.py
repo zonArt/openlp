@@ -166,7 +166,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
                     self.openSongAddButton.setFocus()
                     return False
             elif source_format == SongFormat.WordsOfWorship:
-                if self.wordsOfWorshipListWidget.count() == 0:
+                if self.wordsOfWorshipFileListWidget.count() == 0:
                     QtGui.QMessageBox.critical(self,
                         translate('SongsPlugin.ImportWizardForm',
                             'No Words of Worship Files Selected'),
@@ -331,6 +331,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         pass
 
     def setDefaults(self):
+        self.restart()
         self.formatComboBox.setCurrentIndex(0)
         self.openLP2FilenameEdit.setText(u'')
         self.openLP1FilenameEdit.setText(u'')

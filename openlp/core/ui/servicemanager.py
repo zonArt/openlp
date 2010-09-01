@@ -317,9 +317,8 @@ class ServiceManager(QtGui.QWidget):
         self.serviceItemEditForm.setServiceItem(
             self.serviceItems[item][u'service_item'])
         if self.serviceItemEditForm.exec_():
-            self.serviceItems[item][u'service_item'] = \
-                self.serviceItemEditForm.getServiceItem()
-            self.repaintServiceList(item, 0)
+            self.addServiceItem(self.serviceItemEditForm.getServiceItem(),
+                replace=True)
 
     def nextItem(self):
         """
@@ -780,7 +779,7 @@ class ServiceManager(QtGui.QWidget):
         Rebuild the service list as things have changed and a
         repaint is the easiest way to do this.
         """
-        #force reset of renderer as theme data has changed
+        # force reset of renderer as theme data has changed
         self.parent.RenderManager.themedata = None
         if self.serviceItems:
             tempServiceItems = self.serviceItems
@@ -790,8 +789,8 @@ class ServiceManager(QtGui.QWidget):
             for item in tempServiceItems:
                 self.addServiceItem(
                     item[u'service_item'], False, item[u'expanded'])
-            #Set to False as items may have changed rendering
-            #does not impact the saved song so True may also be valid
+            # Set to False as items may have changed rendering
+            # does not impact the saved song so True may also be valid
             self.parent.serviceChanged(False, self.serviceName)
 
     def addServiceItem(self, item, rebuild=False, expand=True, replace=False):
@@ -873,6 +872,7 @@ class ServiceManager(QtGui.QWidget):
                     ItemCapabilities.AllowsPreview):
                     self.parent.PreviewController.addServiceManagerItem(
                         self.serviceItems[item][u'service_item'], 0)
+                    self.parent.LiveController.PreviewListWidget.setFocus()
         else:
             QtGui.QMessageBox.critical(self,
                 translate('OpenLP.ServiceManager', 'Missing Display Handler'),
