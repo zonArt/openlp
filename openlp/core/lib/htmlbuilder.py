@@ -195,22 +195,23 @@ body {
     function text_fade(id, newtext){
         var text = document.getElementById(id);
         if(!transition){
-             text.innerHTML = newtext;
-             return;
+            text.innerHTML = newtext;
+            return;
         }
         if(text.style.opacity=='') text.style.opacity = 1;
         if(newtext==text.innerHTML){
             text.style.opacity = parseFloat(text.style.opacity) + 0.3;
         } else {
             text.style.opacity -= 0.3;
-            if(text.style.opacity<=0.1)
+            if(text.style.opacity<=0.1){
                 text.innerHTML = newtext;
+            }
         }
     }
 
     function text_opacity(){
         var text = document.getElementById('lyricsmain');
-        return window.getComputedStyle(text, '').opacity;
+        return getComputedStyle(text, '').opacity;
     }
     function show_text_complete(){
         return (text_opacity()==1);
@@ -219,24 +220,25 @@ body {
 </head>
 <body>
 <!--
-Using tables, rather than div's to make use of the vertical-align style that
-doesn't work on div's. This avoids the need to do positioning manually which
-could get messy when changing verses esp. with transitions
-
-Would prefer to use a single table and make use of -webkit-text-fill-color
+Would prefer to use a single div and make use of -webkit-text-fill-color
 -webkit-text-stroke and text-shadow styles, but they have problems working/
 co-operating in qwebkit. https://bugs.webkit.org/show_bug.cgi?id=43187
-Therefore one table for text, one for outline and one for shadow.
+Therefore one for text, one for outline and one for shadow.
+
+Note, the webkit fill problem is fixed in 433.3 and the shadow problem looks
+as though it'll be fixed in QtWebkit 2.1 (434.3)
+There is an alignment problem with fills in 433.3 however requiring a hack
+by setting letter spacing. This is also fixed in v434.3
 -->
-<table class="lyricstable lyricscommon">
-    <tr><td id="lyricsmain" class="lyrics"></td></tr>
-</table>
-<table class="lyricsoutlinetable lyricscommon">
-    <tr><td id="lyricsoutline" class="lyricsoutline lyrics"></td></tr>
-</table>
-<table class="lyricsshadowtable lyricscommon">
-    <tr><td id="lyricsshadow" class="lyricsshadow lyrics"></td></tr>
-</table>
+<div class="lyricstable lyricscommon">
+    <div id="lyricsmain" class="lyrics"></div>
+</div>
+<div class="lyricsoutlinetable lyricscommon">
+    <div id="lyricsoutline" class="lyricsoutline lyrics"></div>
+</div>
+<div class="lyricsshadowtable lyricscommon">
+    <div id="lyricsshadow" class="lyricsshadow lyrics"></div>
+</div>
 <div id="alert" style="visibility:hidden;"></div>
 <div id="footer" class="footer"></div>
 <video class="dim" id="video"></video>
@@ -298,7 +300,7 @@ def build_lyrics(item):
     outline = u'display: none;'
     shadow = u'display: none;'
     if theme:
-        lyricscommon =  u'width: %spx; height: %spx; word-wrap: break-word;  ' \
+        lyricscommon =  u'display: table; width: %spx; height: %spx; word-wrap: break-word;  ' \
             u'font-family: %s; font-size: %spt; color: %s; line-height: %d%%;' \
             % (item.main.width(), item.main.height(), theme.font_main_name,
             theme.font_main_proportion, theme.font_main_color,
@@ -323,7 +325,7 @@ def build_lyrics(item):
             valign = u'vertical-align:middle;'
         else:
             valign = u'vertical-align:top;'
-        lyrics = u'%s %s' % (align, valign)
+        lyrics = u'display:table-cell; %s %s' % (align, valign)
         if theme.display_outline:
             lyricscommon += u' letter-spacing: 1px;'
             outline = u'-webkit-text-stroke: %sem %s; ' % \
