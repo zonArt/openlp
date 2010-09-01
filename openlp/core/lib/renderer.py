@@ -47,25 +47,12 @@ class Renderer(object):
         Initialise the renderer.
         """
         self._rect = None
-        self._debug = False
-        self._display_shadow_size_footer = 0
-        self._display_outline_size_footer = 0
         self.theme_name = None
         self._theme = None
         self._bg_image_filename = None
         self.frame = None
-        self.frame_opaque = None
         self.bg_frame = None
         self.bg_image = None
-
-    def set_debug(self, debug):
-        """
-        Set the debug mode of the renderer.
-
-        ``debug``
-            The debug mode.
-        """
-        self._debug = debug
 
     def set_theme(self, theme):
         """
