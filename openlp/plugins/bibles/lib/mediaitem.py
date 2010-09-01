@@ -60,7 +60,8 @@ class BibleMediaItem(MediaManagerItem):
         self.ListViewWithDnD_class = BibleListView
         MediaManagerItem.__init__(self, parent, icon, title)
         # place to store the search results for both bibles
-        self.search_results, self.dual_search_results = {}, {}
+        self.search_results = {}
+        self.dual_search_results = {}
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'bibles_load_list'), self.reloadBibles)
 
@@ -472,8 +473,10 @@ class BibleMediaItem(MediaManagerItem):
         if len(items) == 0:
             return False
         has_dual_bible = False
-        bible_text, old_chapter = u'', u''
-        raw_footer, raw_slides = [], []
+        bible_text = u''
+        old_chapter = u''
+        raw_footer = []
+        raw_slides = []
         for item in items:
             bitem = self.listView.item(item.row())
             reference = bitem.data(QtCore.Qt.UserRole)
@@ -495,6 +498,7 @@ class BibleMediaItem(MediaManagerItem):
             bible = self._decodeQtObject(reference, 'bible')
             version = self._decodeQtObject(reference, 'version')
             copyright = self._decodeQtObject(reference, 'copyright')
+            permission = self._decodeQtObject(reference, 'permission')
             text = self._decodeQtObject(reference, 'text')
             dual_bible = self._decodeQtObject(reference, 'dual_bible')
             if dual_bible:
@@ -502,6 +506,8 @@ class BibleMediaItem(MediaManagerItem):
                     'dual_version')
                 dual_copyright = self._decodeQtObject(reference,
                     'dual_copyright')
+                dual_permission = self._decodeQtObject(reference,
+                    'dual_permission')
                 dual_text = self._decodeQtObject(reference, 'dual_text')
             verse_text = self.formatVerse(old_chapter, chapter, verse)
             footer = u'%s (%s %s)' % (book, version, copyright)
@@ -640,11 +646,16 @@ class BibleMediaItem(MediaManagerItem):
         """
         version = self.parent.manager.get_meta_data(bible, u'Version')
         copyright = self.parent.manager.get_meta_data(bible, u'Copyright')
+        permission = self.parent.manager.get_meta_data(bible, u'Permissions')
         if dual_bible:
             dual_version = self.parent.manager.get_meta_data(dual_bible,
                 u'Version')
             dual_copyright = self.parent.manager.get_meta_data(dual_bible,
                 u'Copyright')
+            dual_permission = self.parent.manager.get_meta_data(dual_bible,
+                u'Permissions')
+            if not dual_permission:
+                dual_permission = u''
         # We count the number of rows which are maybe already present.
         start_count = self.listView.count()
         for count, verse in enumerate(self.search_results):
@@ -656,10 +667,12 @@ class BibleMediaItem(MediaManagerItem):
                     'bible': QtCore.QVariant(bible),
                     'version': QtCore.QVariant(version.value),
                     'copyright': QtCore.QVariant(copyright.value),
+                    'permission': QtCore.QVariant(permission.value),
                     'text': QtCore.QVariant(verse.text),
                     'dual_bible': QtCore.QVariant(dual_bible),
                     'dual_version': QtCore.QVariant(dual_version.value),
                     'dual_copyright': QtCore.QVariant(dual_copyright.value),
+                    'dual_permission': QtCore.QVariant(dual_permission.value),
                     'dual_text': QtCore.QVariant(
                         self.dual_search_results[count].text)
                 }
@@ -673,6 +686,7 @@ class BibleMediaItem(MediaManagerItem):
                     'bible': QtCore.QVariant(bible),
                     'version': QtCore.QVariant(version.value),
                     'copyright': QtCore.QVariant(copyright.value),
+                    'permission': QtCore.QVariant(permission.value),
                     'text': QtCore.QVariant(verse.text),
                     'dual_bible': QtCore.QVariant(dual_bible)
                 }
@@ -687,4 +701,5 @@ class BibleMediaItem(MediaManagerItem):
             row = self.listView.setCurrentRow(count + start_count)
             if row:
                 row.setSelected(True)
-        self.search_results, self.dual_search_results = {}, {}
+        self.search_results = {}
+        self.dual_search_results = {}
