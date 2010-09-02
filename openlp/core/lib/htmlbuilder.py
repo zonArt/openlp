@@ -142,10 +142,10 @@ body {
         document.getElementById('black').style.display = black;
         document.getElementById('lyricsmain').style.visibility = lyrics;
         outline = document.getElementById('lyricsoutline')
-        if(outline)
+        if(outline!=null)
             outline.style.visibility = lyrics;
         shadow = document.getElementById('lyricsshadow')
-        if(shadow)
+        if(shadow!=null)
             shadow.style.visibility = lyrics;
         document.getElementById('footer').style.visibility = lyrics;
         var vid = document.getElementById('video');
