@@ -2993,7 +2993,7 @@ The content encoding is not UTF-8.</translation>
     <message>
         <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="62"/>
         <source>Presentation</source>
-        <translation type="unfinished">Presentation</translation>
+        <translation>Presentation</translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="78"/>
