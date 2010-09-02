@@ -63,9 +63,9 @@ def test():
     assert [u'B1', u'Bridge 1\nBridge 1 line 2'] in o.verses 
     assert [u'V1', u'v1 Line 1\nV1 Line 2'] in o.verses 
     assert [u'V2', u'v2 Line 1\nV2 Line 2'] in o.verses
-    assert [u'V3', u'V3 Line 1\nV3 Line 2'] in o.verses
+    assert [u'V3A', u'V3 Line 1\nV3 Line 2'] in o.verses
     assert [u'X1', u'Unreferenced verse line 1'] in o.verses
-    assert o.verse_order_list == [u'V1', u'C1', u'V2', u'C2', u'V3', u'B1', u'V1', u'T1']
+    assert o.verse_order_list == [u'V1', u'C1', u'V2', u'C2', u'V3A', u'B1', u'V1', u'T1']
     assert o.ccli_number == u'Blah'
     assert o.topics == [u'TestTheme', u'TestAltTheme']
 

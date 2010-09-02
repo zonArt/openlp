@@ -29,6 +29,7 @@ import os
 from zipfile import ZipFile
 from lxml import objectify
 from lxml.etree import Error, LxmlError
+import re
 
 from openlp.plugins.songs.lib.songimport import SongImport
 
@@ -190,9 +191,9 @@ class OpenSongImport(SongImport):
             topics.append(unicode(root.theme))
         if u'alttheme' in fields and unicode(root.alttheme) not in topics:
             topics.append(unicode(root.alttheme))
+        lyrics = unicode(root.lyrics)
         # data storage while importing
         verses = {}
-        lyrics = unicode(root.lyrics)
         # keep track of a "default" verse order, in case none is specified
         our_verse_order = []
         verses_seen = {}
@@ -214,24 +215,28 @@ class OpenSongImport(SongImport):
                 continue
             # verse/chorus/etc. marker
             if thisline[0] == u'[':
-                versetype = thisline[1].upper()
-                if versetype.isdigit():
-                    versenum = versetype
-                    versetype = u''
-                elif thisline[2] != u']':
-                    # there's a number to go with it - extract that as well
-                    right_bracket = thisline.find(u']')
-                    versenum = thisline[2:right_bracket]
+                # drop the square brackets
+                right_bracket = thisline.find(u']')
+                content = thisline[1:right_bracket].upper()
+                print '"', content, '"'
+                # have we got any digits? If so, versenumber is everything from the digits
+                # to the end (even if there are some alpha chars on the end)
+                match = re.match(u'(.*)(\d+.*)', content)
+                if match is not None:
+                    print "Got digits"
+                    versetype = match.group(1)
+                    versenum = match.group(2)
+                # otherwise we assume number 1 and take the whole prefix as versetype
                 else:
-                    # if there's no number, assume it's no.1
+                    versetype = content
                     versenum = u'1'
+                print versetype, versenum
                 continue
             words = None
             # number at start of line.. it's verse number
             if thisline[0].isdigit():
                 versenum = thisline[0]
                 words = thisline[1:].strip()
-                
             if words is None:# and \
                    #versenum is not None and \
                    #versetype is not None:
@@ -248,6 +253,7 @@ class OpenSongImport(SongImport):
                 if not verses_seen.has_key(versetag):
                     verses_seen[versetag] = 1
                     our_verse_order.append(versetag)
+            print ">>", (versetype,), (versenum,), versetag, words
             if words:
                 # Tidy text and remove the ____s from extended words
                 words = self.tidy_text(words)
@@ -273,18 +279,21 @@ class OpenSongImport(SongImport):
         order = []
         if u'presentation' in fields and root.presentation != u'':
             order = unicode(root.presentation)
-            order = order.split()
+            # We make all the tags in the lyrics upper case, so match that here
+            # and then split into a list on the whitespace
+            order = order.upper().split()
         else:
             if len(our_verse_order) > 0:
                 order = our_verse_order
             else:
                 log.warn(u'No verse order available (either explicit or inferred) for %s, skipping.', self.title)
         for tag in order:
-            if len(tag) == 1:
-                if not tag.isdigit():
-                    tag = tag + u'1' # Assume it's no.1 if it's not there
-                else:
-                    tag = u'V' + tag # Assume it's a verse if it has no prefix
+            print tag
+            if tag[0].isdigit():
+                tag = u'V' + tag # Assume it's a verse if it has no prefix
+            elif not re.search('\d+', tag):
+                tag = tag + u'1' # Assume it's no.1 if there's no digits
+            print tag
             if not versetags.has_key(tag):
                 log.info(u'Got order %s but not in versetags, dropping this item from presentation order', tag)
             else:

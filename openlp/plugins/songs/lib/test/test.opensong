@@ -4,7 +4,7 @@
   <author>MartiÑ &amp; Martin2 Thómpson</author>
   <copyright>2010 Martin Thompson</copyright>
   <hymn_number>1</hymn_number>
-  <presentation>V1 C V2 C2 3 B1 V1 T U</presentation>
+  <presentation>V1 C V2 C2 3a B1 V1 T U</presentation>
   <ccli>Blah</ccli>
   <capo print="false"></capo>
   <key></key>
@@ -17,7 +17,7 @@
   <alttheme>TestAltTheme</alttheme>
   <tempo></tempo>
   <time_sig></time_sig>
-  <lyrics>[3]
+  <lyrics>[3a]
 . G A B
  V3 Line 1
 . G A B
