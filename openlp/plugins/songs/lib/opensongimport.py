@@ -286,7 +286,7 @@ class OpenSongImport(SongImport):
                 else:
                     tag = u'V' + tag # Assume it's a verse if it has no prefix
             if not versetags.has_key(tag):
-                log.warn(u'Got order %s but not in versetags, dropping this item from presentation order', tag)
+                log.info(u'Got order %s but not in versetags, dropping this item from presentation order', tag)
             else:
                 verse_order_list.append(tag)
         # now copy the data

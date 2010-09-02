@@ -53,7 +53,7 @@ def test():
     o.do_import()
     o.print_song()
     assert o.copyright == u'2010 Martin Thompson'
-    assert o.authors == [u'MartiÑ Thómpson']
+    assert o.authors == [u'MartiÑ Thómpson', u'Martin2 Thómpson']
     assert o.title == u'Martins Test'
     assert o.alternate_title == u''
     assert o.song_number == u'1'
