@@ -218,19 +218,16 @@ class OpenSongImport(SongImport):
                 # drop the square brackets
                 right_bracket = thisline.find(u']')
                 content = thisline[1:right_bracket].upper()
-                print '"', content, '"'
                 # have we got any digits? If so, versenumber is everything from the digits
                 # to the end (even if there are some alpha chars on the end)
                 match = re.match(u'(.*)(\d+.*)', content)
                 if match is not None:
-                    print "Got digits"
                     versetype = match.group(1)
                     versenum = match.group(2)
                 # otherwise we assume number 1 and take the whole prefix as versetype
                 else:
                     versetype = content
                     versenum = u'1'
-                print versetype, versenum
                 continue
             words = None
             # number at start of line.. it's verse number
@@ -253,7 +250,6 @@ class OpenSongImport(SongImport):
                 if not verses_seen.has_key(versetag):
                     verses_seen[versetag] = 1
                     our_verse_order.append(versetag)
-            print ">>", (versetype,), (versenum,), versetag, words
             if words:
                 # Tidy text and remove the ____s from extended words
                 words = self.tidy_text(words)
@@ -288,12 +284,10 @@ class OpenSongImport(SongImport):
             else:
                 log.warn(u'No verse order available (either explicit or inferred) for %s, skipping.', self.title)
         for tag in order:
-            print tag
             if tag[0].isdigit():
                 tag = u'V' + tag # Assume it's a verse if it has no prefix
             elif not re.search('\d+', tag):
                 tag = tag + u'1' # Assume it's no.1 if there's no digits
-            print tag
             if not versetags.has_key(tag):
                 log.info(u'Got order %s but not in versetags, dropping this item from presentation order', tag)
             else:
