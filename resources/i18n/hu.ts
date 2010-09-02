@@ -184,7 +184,7 @@
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/db.py" line="353"/>
-        <source>The book you requested could not be found in this bible.  Please check your spelling and that this is a complete bible not just one testament.</source>
+        <source>The book you requested could not be found in this bible. Please check your spelling and that this is a complete bible not just one testament.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -197,7 +197,7 @@
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/manager.py" line="245"/>
-        <source>Your scripture reference is either not supported by OpenLP or invalid.  Please make sure your reference conforms to one of the following patterns:
+        <source>Your scripture reference is either not supported by OpenLP or invalid. Please make sure your reference conforms to one of the following patterns:
 
 Book Chapter
 Book Chapter-Chapter
@@ -1042,28 +1042,28 @@ Copyright (C) 1989, 1991 Free Software Foundation, Inc., 51 Franklin Street, Fif
 
 Preamble
 
-The licenses for most software are designed to take away your freedom to share and change it.  By contrast, the GNU General Public License is intended to guarantee your freedom to share and change free software--to make sure the software is free for all its users.  This General Public License applies to most of the Free Software Foundation&apos;s software and to any other program whose authors commit to using it.  (Some other Free Software Foundation software is covered by the GNU Lesser General Public License instead.)  You can apply it to your programs, too.
+The licenses for most software are designed to take away your freedom to share and change it. By contrast, the GNU General Public License is intended to guarantee your freedom to share and change free software--to make sure the software is free for all its users. This General Public License applies to most of the Free Software Foundation&apos;s software and to any other program whose authors commit to using it. (Some other Free Software Foundation software is covered by the GNU Lesser General Public License instead.) You can apply it to your programs, too.
 
-When we speak of free software, we are referring to freedom, not price.  Our General Public Licenses are designed to make sure that you have the freedom to distribute copies of free software (and charge for this service if you wish), that you receive source code or can get it if you want it, that you can change the software or use pieces of it in new free programs; and that you know you can do these things.
+When we speak of free software, we are referring to freedom, not price. Our General Public Licenses are designed to make sure that you have the freedom to distribute copies of free software (and charge for this service if you wish), that you receive source code or can get it if you want it, that you can change the software or use pieces of it in new free programs; and that you know you can do these things.
 
 To protect your rights, we need to make restrictions that forbid anyone to deny you these rights or to ask you to surrender the rights. These restrictions translate to certain responsibilities for you if you distribute copies of the software, or if you modify it.
 
-For example, if you distribute copies of such a program, whether gratis or for a fee, you must give the recipients all the rights that you have.  You must make sure that they, too, receive or can get the source code.  And you must show them these terms so they know their rights.
+For example, if you distribute copies of such a program, whether gratis or for a fee, you must give the recipients all the rights that you have. You must make sure that they, too, receive or can get the source code. And you must show them these terms so they know their rights.
 
 We protect your rights with two steps: (1) copyright the software, and (2) offer you this license which gives you legal permission to copy, distribute and/or modify the software.
 
-Also, for each author&apos;s protection and ours, we want to make certain that everyone understands that there is no warranty for this free software.  If the software is modified by someone else and passed on, we want its recipients to know that what they have is not the original, so that any problems introduced by others will not reflect on the original authors&apos; reputations.
+Also, for each author&apos;s protection and ours, we want to make certain that everyone understands that there is no warranty for this free software. If the software is modified by someone else and passed on, we want its recipients to know that what they have is not the original, so that any problems introduced by others will not reflect on the original authors&apos; reputations.
 
-Finally, any free program is threatened constantly by software patents.  We wish to avoid the danger that redistributors of a free program will individually obtain patent licenses, in effect making the program proprietary.  To prevent this, we have made it clear that any patent must be licensed for everyone&apos;s free use or not licensed at all.
+Finally, any free program is threatened constantly by software patents. We wish to avoid the danger that redistributors of a free program will individually obtain patent licenses, in effect making the program proprietary. To prevent this, we have made it clear that any patent must be licensed for everyone&apos;s free use or not licensed at all.
 
 The precise terms and conditions for copying, distribution and modification follow.
 
 GNU GENERAL PUBLIC LICENSE
 TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
 
-0. This License applies to any program or other work which contains a notice placed by the copyright holder saying it may be distributed under the terms of this General Public License.  The &quot;Program&quot;, below, refers to any such program or work, and a &quot;work based on the Program&quot; means either the Program or any derivative work under copyright law: that is to say, a work containing the Program or a portion of it, either verbatim or with modifications and/or translated into another language.  (Hereinafter, translation is included without limitation in the term &quot;modification&quot;.)  Each licensee is addressed as &quot;you&quot;.
+0. This License applies to any program or other work which contains a notice placed by the copyright holder saying it may be distributed under the terms of this General Public License.  The &quot;Program&quot;, below, refers to any such program or work, and a &quot;work based on the Program&quot; means either the Program or any derivative work under copyright law: that is to say, a work containing the Program or a portion of it, either verbatim or with modifications and/or translated into another language.  (Hereinafter, translation is included without limitation in the term &quot;modification&quot;.) Each licensee is addressed as &quot;you&quot;.
 
-Activities other than copying, distribution and modification are not covered by this License; they are outside its scope.  The act of running the Program is not restricted, and the output from the Program is covered only if its contents constitute a work based on the Program (independent of having been made by running the Program). Whether that is true depends on what the Program does.
+Activities other than copying, distribution and modification are not covered by this License; they are outside its scope. The act of running the Program is not restricted, and the output from the Program is covered only if its contents constitute a work based on the Program (independent of having been made by running the Program). Whether that is true depends on what the Program does.
 
 1. You may copy and distribute verbatim copies of the Program&apos;s source code as you receive it, in any medium, provided that you conspicuously and appropriately publish on each copy an appropriate copyright notice and disclaimer of warranty; keep intact all the notices that refer to this License and to the absence of any warranty; and give any other recipients of the Program a copy of this License along with the Program.
 
@@ -1075,9 +1075,9 @@ a) You must cause the modified files to carry prominent notices stating that you
 
 b) You must cause any work that you distribute or publish, that in whole or in part contains or is derived from the Program or any part thereof, to be licensed as a whole at no charge to all third parties under the terms of this License.
 
-c) If the modified program normally reads commands interactively when run, you must cause it, when started running for such interactive use in the most ordinary way, to print or display an announcement including an appropriate copyright notice and a notice that there is no warranty (or else, saying that you provide a warranty) and that users may redistribute the program under these conditions, and telling the user how to view a copy of this License.  (Exception: if the Program itself is interactive but does not normally print such an announcement, your work based on the Program is not required to print an announcement.)
+c) If the modified program normally reads commands interactively when run, you must cause it, when started running for such interactive use in the most ordinary way, to print or display an announcement including an appropriate copyright notice and a notice that there is no warranty (or else, saying that you provide a warranty) and that users may redistribute the program under these conditions, and telling the user how to view a copy of this License. (Exception: if the Program itself is interactive but does not normally print such an announcement, your work based on the Program is not required to print an announcement.)
 
-These requirements apply to the modified work as a whole.  If identifiable sections of that work are not derived from the Program, and can be reasonably considered independent and separate works in themselves, then this License, and its terms, do not apply to those sections when you distribute them as separate works.  But when you distribute the same sections as part of a whole which is a work based on the Program, the distribution of the whole must be on the terms of this License, whose permissions for other licensees extend to the entire whole, and thus to each and every part regardless of who wrote it.
+These requirements apply to the modified work as a whole.  If identifiable sections of that work are not derived from the Program, and can be reasonably considered independent and separate works in themselves, then this License, and its terms, do not apply to those sections when you distribute them as separate works. But when you distribute the same sections as part of a whole which is a work based on the Program, the distribution of the whole must be on the terms of this License, whose permissions for other licensees extend to the entire whole, and thus to each and every part regardless of who wrote it.
 
 Thus, it is not the intent of this section to claim rights or contest your rights to work written entirely by you; rather, the intent is to exercise the right to control the distribution of derivative or collective works based on the Program.
 
@@ -1089,37 +1089,37 @@ a) Accompany it with the complete corresponding machine-readable source code, wh
 
 b) Accompany it with a written offer, valid for at least three years, to give any third party, for a charge no more than your cost of physically performing source distribution, a complete machine-readable copy of the corresponding source code, to be distributed under the terms of Sections 1 and 2 above on a medium customarily used for software interchange; or,
 
-c) Accompany it with the information you received as to the offer to distribute corresponding source code.  (This alternative is allowed only for noncommercial distribution and only if you received the program in object code or executable form with such an offer, in accord with Subsection b above.)
+c) Accompany it with the information you received as to the offer to distribute corresponding source code. (This alternative is allowed only for noncommercial distribution and only if you received the program in object code or executable form with such an offer, in accord with Subsection b above.)
 
-The source code for a work means the preferred form of the work for making modifications to it.  For an executable work, complete source code means all the source code for all modules it contains, plus any associated interface definition files, plus the scripts used to control compilation and installation of the executable.  However, as a special exception, the source code distributed need not include anything that is normally distributed (in either source or binary form) with the major components (compiler, kernel, and so on) of the operating system on which the executable runs, unless that component itself accompanies the executable.
+The source code for a work means the preferred form of the work for making modifications to it. For an executable work, complete source code means all the source code for all modules it contains, plus any associated interface definition files, plus the scripts used to control compilation and installation of the executable. However, as a special exception, the source code distributed need not include anything that is normally distributed (in either source or binary form) with the major components (compiler, kernel, and so on) of the operating system on which the executable runs, unless that component itself accompanies the executable.
 
 If distribution of executable or object code is made by offering access to copy from a designated place, then offering equivalent access to copy the source code from the same place counts as distribution of the source code, even though third parties are not compelled to copy the source along with the object code.
 
-4. You may not copy, modify, sublicense, or distribute the Program except as expressly provided under this License.  Any attempt otherwise to copy, modify, sublicense or distribute the Program is void, and will automatically terminate your rights under this License. However, parties who have received copies, or rights, from you under this License will not have their licenses terminated so long as such parties remain in full compliance.
+4. You may not copy, modify, sublicense, or distribute the Program except as expressly provided under this License. Any attempt otherwise to copy, modify, sublicense or distribute the Program is void, and will automatically terminate your rights under this License. However, parties who have received copies, or rights, from you under this License will not have their licenses terminated so long as such parties remain in full compliance.
 
-5. You are not required to accept this License, since you have not signed it.  However, nothing else grants you permission to modify or distribute the Program or its derivative works.  These actions are prohibited by law if you do not accept this License.  Therefore, by modifying or distributing the Program (or any work based on the Program), you indicate your acceptance of this License to do so, and all its terms and conditions for copying, distributing or modifying the Program or works based on it.
+5. You are not required to accept this License, since you have not signed it. However, nothing else grants you permission to modify or distribute the Program or its derivative works. These actions are prohibited by law if you do not accept this License. Therefore, by modifying or distributing the Program (or any work based on the Program), you indicate your acceptance of this License to do so, and all its terms and conditions for copying, distributing or modifying the Program or works based on it.
 
-6. Each time you redistribute the Program (or any work based on the Program), the recipient automatically receives a license from the original licensor to copy, distribute or modify the Program subject to these terms and conditions.  You may not impose any further restrictions on the recipients&apos; exercise of the rights granted herein. You are not responsible for enforcing compliance by third parties to this License.
+6. Each time you redistribute the Program (or any work based on the Program), the recipient automatically receives a license from the original licensor to copy, distribute or modify the Program subject to these terms and conditions. You may not impose any further restrictions on the recipients&apos; exercise of the rights granted herein. You are not responsible for enforcing compliance by third parties to this License.
 
-7. If, as a consequence of a court judgment or allegation of patent infringement or for any other reason (not limited to patent issues), conditions are imposed on you (whether by court order, agreement or otherwise) that contradict the conditions of this License, they do not excuse you from the conditions of this License.  If you cannot distribute so as to satisfy simultaneously your obligations under this License and any other pertinent obligations, then as a consequence you may not distribute the Program at all.  For example, if a patent license would not permit royalty-free redistribution of the Program by all those who receive copies directly or indirectly through you, then the only way you could satisfy both it and this License would be to refrain entirely from distribution of the Program.
+7. If, as a consequence of a court judgment or allegation of patent infringement or for any other reason (not limited to patent issues), conditions are imposed on you (whether by court order, agreement or otherwise) that contradict the conditions of this License, they do not excuse you from the conditions of this License. If you cannot distribute so as to satisfy simultaneously your obligations under this License and any other pertinent obligations, then as a consequence you may not distribute the Program at all. For example, if a patent license would not permit royalty-free redistribution of the Program by all those who receive copies directly or indirectly through you, then the only way you could satisfy both it and this License would be to refrain entirely from distribution of the Program.
 
 If any portion of this section is held invalid or unenforceable under any particular circumstance, the balance of the section is intended to apply and the section as a whole is intended to apply in other circumstances.
 
-It is not the purpose of this section to induce you to infringe any patents or other property right claims or to contest validity of any such claims; this section has the sole purpose of protecting the integrity of the free software distribution system, which is implemented by public license practices.  Many people have made generous contributions to the wide range of software distributed through that system in reliance on consistent application of that system; it is up to the author/donor to decide if he or she is willing to distribute software through any other system and a licensee cannot impose that choice.
+It is not the purpose of this section to induce you to infringe any patents or other property right claims or to contest validity of any such claims; this section has the sole purpose of protecting the integrity of the free software distribution system, which is implemented by public license practices. Many people have made generous contributions to the wide range of software distributed through that system in reliance on consistent application of that system; it is up to the author/donor to decide if he or she is willing to distribute software through any other system and a licensee cannot impose that choice.
 
 This section is intended to make thoroughly clear what is believed to be a consequence of the rest of this License.
 
-8. If the distribution and/or use of the Program is restricted in certain countries either by patents or by copyrighted interfaces, the original copyright holder who places the Program under this License may add an explicit geographical distribution limitation excluding those countries, so that distribution is permitted only in or among countries not thus excluded.  In such case, this License incorporates the limitation as if written in the body of this License.
+8. If the distribution and/or use of the Program is restricted in certain countries either by patents or by copyrighted interfaces, the original copyright holder who places the Program under this License may add an explicit geographical distribution limitation excluding those countries, so that distribution is permitted only in or among countries not thus excluded. In such case, this License incorporates the limitation as if written in the body of this License.
 
-9. The Free Software Foundation may publish revised and/or new versions of the General Public License from time to time.  Such new versions will be similar in spirit to the present version, but may differ in detail to address new problems or concerns.
+9. The Free Software Foundation may publish revised and/or new versions of the General Public License from time to time. Such new versions will be similar in spirit to the present version, but may differ in detail to address new problems or concerns.
 
-Each version is given a distinguishing version number.  If the Program specifies a version number of this License which applies to it and &quot;any later version&apos;, you have the option of following the terms and conditions either of that version or of any later version published by the Free Software Foundation.  If the Program does not specify a version number of this License, you may choose any version ever published by the Free Software Foundation.
+Each version is given a distinguishing version number. If the Program specifies a version number of this License which applies to it and &quot;any later version&quot;, you have the option of following the terms and conditions either of that version or of any later version published by the Free Software Foundation. If the Program does not specify a version number of this License, you may choose any version ever published by the Free Software Foundation.
 
-10. If you wish to incorporate parts of the Program into other free programs whose distribution conditions are different, write to the author to ask for permission.  For software which is copyrighted by the Free Software Foundation, write to the Free Software Foundation; we sometimes make exceptions for this.  Our decision will be guided by the two goals of preserving the free status of all derivatives of our free software and of promoting the sharing and reuse of software generally.
+10. If you wish to incorporate parts of the Program into other free programs whose distribution conditions are different, write to the author to ask for permission. For software which is copyrighted by the Free Software Foundation, write to the Free Software Foundation; we sometimes make exceptions for this. Our decision will be guided by the two goals of preserving the free status of all derivatives of our free software and of promoting the sharing and reuse of software generally.
 
 NO WARRANTY
 
-11. BECAUSE THE PROGRAM IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW.  EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM &quot;AS IS&quot; WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.  THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU.  SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
+11. BECAUSE THE PROGRAM IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM &quot;AS IS&quot; WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
 
 12. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR REDISTRIBUTE THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 
@@ -1129,14 +1129,14 @@ How to Apply These Terms to Your New Programs
 
 If you develop a new program, and you want it to be of the greatest possible use to the public, the best way to achieve this is to make it free software which everyone can redistribute and change under these terms.
 
-To do so, attach the following notices to the program.  It is safest to attach them to the start of each source file to most effectively convey the exclusion of warranty; and each file should have at least the &quot;copyright&quot; line and a pointer to where the full notice is found.
+To do so, attach the following notices to the program. It is safest to attach them to the start of each source file to most effectively convey the exclusion of warranty; and each file should have at least the &quot;copyright&quot; line and a pointer to where the full notice is found.
 
 &lt;one line to give the program&apos;s name and a brief idea of what it does.&gt;
 Copyright (C) &lt;year&gt;  &lt;name of author&gt;
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
@@ -1148,144 +1148,17 @@ Gnomovision version 69, Copyright (C) year name of author
 Gnomovision comes with ABSOLUTELY NO WARRANTY; for details type &quot;show w&quot;.
 This is free software, and you are welcome to redistribute it under certain conditions; type &quot;show c&quot; for details.
 
-The hypothetical commands &quot;show w&quot; and &quot;show c&quot; should show the appropriate parts of the General Public License.  Of course, the commands you use may be called something other than &quot;show w&quot; and &quot;show c&quot;; they could even be mouse-clicks or menu items--whatever suits your program.
+The hypothetical commands &quot;show w&quot; and &quot;show c&quot; should show the appropriate parts of the General Public License. Of course, the commands you use may be called something other than &quot;show w&quot; and &quot;show c&quot;; they could even be mouse-clicks or menu items--whatever suits your program.
 
-You should also get your employer (if you work as a programmer) or your school, if any, to sign a &quot;copyright disclaimer&quot; for the program, if necessary.  Here is a sample; alter the names:
+You should also get your employer (if you work as a programmer) or your school, if any, to sign a &quot;copyright disclaimer&quot; for the program, if necessary. Here is a sample; alter the names:
 
 Yoyodyne, Inc., hereby disclaims all copyright interest in the program &quot;Gnomovision&quot; (which makes passes at compilers) written by James Hacker.
 
 &lt;signature of Ty Coon&gt;, 1 April 1989
 Ty Coon, President of Vice
 
-This General Public License does not permit incorporating your program into proprietary programs.  If your program is a subroutine library, you may consider it more useful to permit linking proprietary applications with the library.  If this is what you want to do, use the GNU Lesser General Public License instead of this License.</source>
-        <translation type="unfinished">Copyright © 2004-2010 Raoul Snyman
-Részleges copyright © 2004-2010 Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Carsten Tinggaard
-
-Ez a program szabad szoftver; terjeszthető illetve módosítható a Free Software Foundation által kiadott GNU General Public License dokumentumában leírtak; akár a licenc 2-es, akár (tetszőleges) későbbi változata szerint.
-
-Ez a program abban a reményben kerül közreadásra, hogy hasznos lesz, de minden egyéb GARANCIA NÉLKÜL, az ELADHATÓSÁGRA vagy VALAMELY CÉLRA VALÓ ALKALMAZHATÓSÁGRA való származtatott garanciát is beleértve. További részleteket a GNU General Public License tartalmaz.
-
-
-GNU GENERAL PUBLIC LICENSE
-Version 2, June 1991
-
-Copyright (C) 1989, 1991 Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. Bárki terjesztheti, másolhatja a dokumentumot, de a módosítása nem megengedett. (A fordítás csak tájékoztató jellegű és jogi szempontból csakis az angol eredeti a mérvadó.)
-
-Előszó
-
-A legtöbb szoftver licencei azzal a szándékkal készültek, hogy minél kevesebb lehetőséget adjanak a szoftver megváltoztatására és terjesztésére. Ezzel szemben a GNU GPL célja, hogy garantálja a szabad szoftver másolásának és terjesztésének szabadságát, ezáltal biztosítva a szoftver szabad felhasználhatóságát minden felhasználó számára. A GPL szabályai vonatkoznak a Free Software Foundation legtöbb szoftverére, illetve minden olyan programra, melynek szerzője úgy dönt, hogy ezt használja a szerzői jog megjelölésekor. (A Free Software Foundation egyes szoftvereire a GNU LGPL érvényes.) Bárki használhatja a programjaiban a GPL-t a szerzői jogi megjegyzésnél.
-
-A szabad szoftver megjelölés nem jelenti azt, hogy a szoftvernek nem lehet ára. A GPL licencek célja, hogy garantálja a szabad szoftver másolatainak szabad terjesztését (és e szolgáltatásért akár díj felszámítását), a forráskód elérhetőségét, hogy bárki szabadon módosíthassa a szoftvert, vagy felhasználhassa a részeit új szabad programokban; és hogy mások megismerhessék ezt a lehetőséget.
-
-A szerző jogainak védelmében korlátozásokat kell hozni, amelyek megtiltják, hogy bárki megtagadhassa ezeket a jogokat másoktól, vagy ezekről való lemondásra kényszerítsen bárki mást. Ezek a megszorítások bizonyos felelősségeket jelentenek azok számára, akik a szoftver másolatait terjesztik vagy módosítják.
-
-Ha valaki például ilyen program másolatait terjeszti, akár ingyen vagy bizonyos összeg fejében, a szoftverre vonatkozó minden jogot tovább kell adnia a fogadó feleknek. Biztosítani kell továbbá, hogy megkapják vagy legalábbis megkaphassák a forráskódot is. És persze ezeket a licencfeltételeket is el kell juttatni, hogy tisztában legyenek a jogaikkal.
-
-A jogok védelme két lépésből áll:
-
-(1) a szoftver szerzői jogainak védelméből és
-
-(2) a jelen licenc biztosításából, amely jogalapot biztosít a szoftver másolására, terjesztésére és/vagy módosítására.
-
-Az egyes szerzők és a magunk védelmében biztosítani akarjuk, hogy mindenki megértse: a jelen szabad szoftverre nincs jótállás. Ha a szoftvert módosították és továbbadták, akkor mindenkinek, aki a módosított változatot kapja, tudnia kell, hogy az nem az eredeti, így a mások által okozott hibáknak nem lehet hatása az eredeti szerző hírnevére.
-
-Végül, a szabad szoftver létét állandóan fenyegetik a szoftverszabadalmak. El szeretnénk kerülni annak veszélyét, hogy a szabad program terjesztői szabadalmat jegyezhessenek be rá, ezáltal saját szellemi tulajdont képezővé tegyék a programot. Ennek megelőzéséhez tisztázni kívánjuk: szabadalom szabad szoftverrel kapcsolatban csak mindenki általi szabad használatra jegyezhető be, vagy egyáltalán nem jegyezhető be.
-
-A másolásra, terjesztésre, módosításra vonatkozó pontos szabályok és feltételek:
-A MÁSOLÁSRA, TERJESZTÉSRE ÉS MÓDOSÍTÁSRA VONATKOZÓ FELTÉTELEK ÉS KIKÖTÉSEK
-
-0. Ez a licenc minden olyan programra vagy munkára vonatkozik, amelynek a szerzői jogi megjegyzésében a jog tulajdonosa a következő szöveget helyezte el: a GPL-ben foglaltak alapján terjeszthető. Az alábbiakban a Program kifejezés bármely ilyen programra vagy munkára vonatkozik, a Programon alapuló munka pedig magát a programot vagy egy szerzői joggal védett munkát jelenti: vagyis olyan munkát, amely tartalmazza a programot vagy annak egy részletét, módosítottan vagy módosítatlanul és/vagy más nyelvre fordítva. (Az alábbiakban a fordítás minden egyéb megkötés nélkül beletartozik a módosítás fogalmába.) Minden engedélyezés címzettje Ön.
-
-A jelen licenc a másoláson, terjesztésen és módosításon kívül más tevékenységre nem vonatkozik, azok a hatályán kívül esnek. A Program futtatása nincs korlátozva, illetve a Program kimenetére is csak abban az esetben vonatkozik ez a szabályozás, ha az tartalmazza a Programon alapuló munka egy részletét (függetlenül attól, hogy ez a Program futtatásával jött-e létre). Ez tehát a Program működésétől függ.
-
-1. A Program forráskódja módosítás nélkül másolható és bármely adathordozón terjeszthető, feltéve, hogy minden egyes példányon pontosan szerepel a megfelelő szerzői jogi megjegyzés, illetve a garanciavállalás elutasítása; érintetlenül kell hagyni minden erre a szabályozásra és a garancia teljes hiányára utaló szöveget és a jelen licencdokumentumot is el kell juttatni mindazokhoz, akik a Programot kapják.
-
-Felszámítható díj a másolat fizikai továbbítása fejében, illetve ellenszolgáltatás fejében a Programhoz garanciális támogatás is biztosítható.
-
-2. A Program vagy annak egy része módosítható, így a Programon alapuló munka jön létre. A módosítás ezután az 1. szakaszban adott feltételek szerint tovább terjeszthető, ha az alábbi feltételek is teljesülnek:
-
-a) A módosított fájlokat el kell látni olyan megjegyzéssel, amely feltünteti a módosítást végző nevét és a módosítások dátumát. 
-
-b) Minden olyan munkát, amely részben vagy egészben tartalmazza a Programot vagy a Programon alapul, olyan szabályokkal kell kiadni vagy terjeszteni, hogy annak használati joga harmadik személy részére licencdíjmentesen hozzáférhető legyen, a jelen dokumentumban található feltételeknek megfelelően. 
-
-c) Ha a módosított Program interaktívan olvassa a parancsokat futás közben, akkor úgy kell elkészíteni, hogy a megszokott módon történő indításkor megjelenítsen egy üzenetet a megfelelő szerzői jogi megjegyzéssel és a garancia hiányára utaló közléssel (vagy éppen azzal az információval, hogy miként juthat valaki garanciához), illetve azzal az információval, hogy bárki terjesztheti a Programot a jelen feltételeknek megfelelően, és arra is utalást kell tenni, hogy a felhasználó miként tekintheti meg a licenc egy példányát. (Kivétel: ha a Program interaktív ugyan, de nem jelenít meg hasonló üzenetet, akkor a Programon alapuló munkának sem kell ezt tennie.) 
-
-Ezek a feltételek a módosított munkára, mint egészre vonatkoznak. Ha a munka azonosítható részei nem a Programon alapulnak és független munkákként elkülönülten azonosíthatók, akkor ez a szabályozás nem vonatkozik ezekre a részekre, ha azok külön munkaként kerülnek terjesztésre. Viszont, ha ugyanez a rész az egész részeként kerül terjesztésre, amely a Programon alapuló munka, akkor az egész terjesztése csak a jelen dokumentum alapján lehetséges, amely ebben az esetben a jogokat minden egyes felhasználó számára kiterjeszti az egészre tekintet nélkül arra, hogy melyik részt ki írta.
-
-E szövegrésznek tehát nem az a célja, hogy mások jogait elvegye vagy korlátozza a kizárólag saját maga által írt munkákra; a cél az, hogy a jogok gyakorlása szabályozva legyen a Programon alapuló illetve a gyűjteményes munkák terjesztése esetében.
-
-Ezenkívül más munkáknak, amelyek nem a Programon alapulnak, a Programmal (vagy a Programon alapuló munkával) közös adathordozón vagy adattárolón szerepeltetése nem jelenti a jelen szabályok érvényességét azokra is.
-
-3. A Program (vagy a Programon alapuló munka a 2. szakasznak megfelelően) másolható és terjeszthető tárgykódú vagy végrehajtható kódú formájában az 1. és 2. szakaszban foglaltak szerint, amennyiben az alábbi feltételek is teljesülnek:
-
-a) a teljes, gép által értelmezhető forráskód kíséri az anyagot, amelynek terjesztése az 1. és 2. szakaszban foglaltak szerint történik, jellemzően szoftverterjesztésre használt adathordozón; vagy, 
-
-b) legalább három évre szólóan írásban vállalja, hogy bármely külső személynek rendelkezésre áll a teljes gép által értelmezhető forráskód, a fizikai továbbítást fedező összegnél nem nagyobb díjért az 1. és 2. szakaszban foglaltak szerint szoftverterjesztésre használt adathordozón; vagy,
-
-c) a megfelelő forráskód terjesztésére vonatkozóan megkapott tájékoztatás kíséri az anyagot. (Ez az alternatíva csak nem kereskedelmi terjesztés esetén alkalmazható abban az esetben, ha a terjesztő a Programhoz a tárgykódú vagy forráskódú formájában jutott hozzá az ajánlattal együtt a fenti b. cikkelynek megfelelően.) 
-
-Egy munka forráskódja a munkának azt a formáját jelenti, amelyben a módosításokat elsődlegesen végezni szokás. Egy végrehajtható program esetében a teljes forráskód a tartalmazott összes modul forráskódját jelenti, továbbá a kapcsolódó felületdefiníciós fájlokat és a fordítást vezérlő parancsfájlokat. Egy speciális kivételként a forráskódnak nem kell tartalmaznia normál esetben a végrehajtható kód futtatására szolgáló operációs rendszer főbb részeiként (kernel, fordítóprogram stb.) terjesztett részeit (forrás vagy bináris formában), kivéve, ha a komponens maga a végrehajtható állományt kíséri.
-
-Ha a végrehajtható program vagy tárgykód terjesztése a forráskód hozzáférését egy megadott helyen biztosító írásban vállalja, akkor ez egyenértékű a forráskód terjesztésével, bár másoknak nem kell a forrást lemásolniuk a tárgykóddal együtt.
-
-4. A Programot csak a jelen Licencben leírtaknak megfelelően szabad lemásolni, terjeszteni, módosítani és allicencbe adni. Az egyéb módon történő másolás, módosítás, terjesztés és allicencbe adás érvénytelen, és azonnal érvényteleníti a dokumentumban megadott jogosultságokat. Mindazonáltal azok, akik a Licencet megszegőtől kaptak példányokat vagy jogokat, tovább gyakorolhatják a Licenc által meghatározott jogaikat mindaddig, amíg teljesen megfelelnek a Licenc feltételeinek.
-
-5. Önnek nem kötelező elfogadnia ezt a szabályozást, hiszen nem írta alá. Ezen kívül viszont semmi más nem ad jogokat a Program terjesztésére és módosítására. Ezeket a cselekedeteket a törvény bünteti, ha nem a jelen szerzői jogi szabályozás keretei között történnek. Mindezek miatt a Program (vagy a Programon alapuló munka) terjesztése vagy módosítása a jelen dokumentum szabályainak, és azon belül a Program vagy a munka módosítására, másolására vagy terjesztésére vonatkozó összes feltételének elfogadását jelenti.
-
-6. Minden alkalommal, amikor a Program (vagy az azon alapuló munka) továbbadása történik, a Programot megkapó személy automatikusan hozzájut az eredeti licenctulajdonostól származó licenchez, amely a jelen szabályok szerint biztosítja a jogot a Program másolására, terjesztésére és módosítására. Nem lehet semmilyen módon tovább korlátozni a fogadó félnek az itt megadott jogait. A Program továbbadója nem felelős harmadik személyekkel betartatni a jelen szabályokat.
-
-7. Ha bírósági határozat, szabadalomsértés vélelme, vagy egyéb (nem kizárólag szabadalmakkal kapcsolatos) okból olyan feltételeknek kell megfelelnie (akár bírósági határozat, akár megállapodás, akár bármi más eredményeképp), amelyek ellentétesek a jelen feltételekkel, az nem menti fel a terjesztőt a jelen feltételek figyelembevétele alól. Ha a terjesztés nem lehetséges a jelen Licenc és az egyéb feltételek kötelezettségeinek együttes betartásával, akkor tilos a Program terjesztése. Ha például egy szabadalmi szerződés nem engedi meg egy program jogdíj nélküli továbbterjesztését azok számára, akik közvetve vagy közvetlenül megkapják, akkor az egyetlen módja, hogy eleget tegyen valaki mindkét feltételnek az, hogy eláll a Program terjesztésétől.
-
-Ha ennek a szakasznak bármely része érvénytelen, vagy nem érvényesíthető valamely körülmény folytán, akkor a szakasz maradék részét kell alkalmazni, egyéb esetekben pedig a szakasz egésze alkalmazandó.
-
-Ennek a szakasznak nem az a célja, hogy a szabadalmak vagy egyéb hasonló jogok megsértésére ösztönözzön bárkit is; mindössze meg szeretné védeni a szabad szoftver terjesztési rendszerének egységét, amelyet a szabad közreadást szabályozó feltételrendszerek teremtenek meg. Sok ember nagymértékben járult hozzá az e rendszer keretében terjesztett, különféle szoftverekhez, és számít a rendszer következetes alkalmazására; azt a szerző/adományozó dönti el, hogy a szoftverét más rendszer szerint is közzé kívánja-e tenni, és a licencet kapók ezt nem befolyásolhatják.
-
-E szakasz célja, hogy pontosan tisztázza azt, ami elgondolásunk szerint a jelen licenc többi részének a következménye.
-
-8. Ha a Program terjesztése és/vagy használata egyes országokban nem lehetséges akár szabadalmak, akár szerzői jogokkal védett felületek miatt, akkor a Program szerzői jogainak eredeti tulajdonosa, aki a Programot ezen szabályozás alapján adja közre, egy explicit földrajzi megkötést adhat a terjesztésre, és egyes országokat kizárhat. Ebben az esetben úgy tekintendő, hogy a jelen licenc ezt a megkötést is tartalmazza, ugyanúgy mintha csak a fő szövegében lenne leírva.
-
-9. A Free Software Foundation időről időre kiadja a General Public License dokumentum felülvizsgált és/vagy újabb változatait. Ezek az újabb dokumentumok az előzőek szellemében készülnek, de részletekben különbözhetnek, hogy új problémákat vagy aggályokat is kezeljenek.
-
-A dokumentum minden változata egy megkülönböztető verziószámmal ellátva jelenik meg. Ha a Program szerzői jogi megjegyzésében egy bizonyos vagy annál újabb verzió van megjelölve, akkor lehetőség van akár a megjelölt, vagy a Free Software Foundation által kiadott későbbi verzióban leírt feltételek követésére. Ha nincs ilyen megjelölt verzió, akkor lehetőség van a Free Software Foundation által valaha kibocsátott bármelyik dokumentum alkalmazására.
-
-10. A Programot más szabad szoftverbe, amelynek szerzői jogi szabályozása különbözik, csak akkor építheti be, ha a szerzőtől erre engedélyt szerzett. Abban az esetben, ha a program szerzői jogainak tulajdonosa a Free Software Foundation, akkor a Free Software Foundation címére kell írni; néha kivételt teszünk. A döntés a következő két cél szem előtt tartásával fog történni: megmaradjon a szabad szoftveren alapuló munkák szabad állapota, valamint segítse elő a szoftver újrafelhasználását és megosztását.
-GARANCIAVÁLLALÁS HIÁNYA
-
-11. MIVEL A JELEN PROGRAM HASZNÁLATI JOGA DÍJMENTES, AZ ALKALMAZHATÓ JOGSZABÁLYOK ÁLTAL BIZTOSÍTOTT MAXIMÁLIS MÉRTÉKBEN VISSZAUTASÍTJUK A PROGRAMHOZ A GARANCIA BIZTOSÍTÁSÁT. AMENNYIBEN A SZERZŐI JOGOK TULAJDONOSAI ÍRÁSBAN MÁSKÉNT NEM NYILATKOZNAK, A PROGRAM A &quot;JELEN ÁLLAPOTÁBAN&quot; KERÜL KIADÁSRA, MINDENFÉLE GARANCIAVÁLLALÁS NÉLKÜL, LEGYEN AZ KIFEJEZETT VAGY BELEÉRTETT, BELEÉRTVE, DE NEM KIZÁRÓLAGOSAN A FORGALOMBA HOZHATÓSÁGRA VAGY ALKALMAZHATÓSÁGRA VONATKOZÓ GARANCIÁKAT. A PROGRAM MINŐSÉGÉBŐL ÉS MŰKÖDÉSÉBŐL FAKADÓ ÖSSZES KOCKÁZAT A FELHASZNÁLÓT TERHELI. HA A PROGRAM HIBÁSAN MŰKÖDIK, A FELHASZNÁLÓNAK MAGÁNAK KELL VÁLLALNIA A JAVÍTÁSHOZ SZÜKSÉGES MINDEN KÖLTSÉGET.
-
-12. AMENNYIBEN A HATÁLYOS JOGSZABÁLYOK VAGY A SZERZŐI JOGOK TULAJDONOSAI ÍRÁSOS MEGÁLLAPODÁSBAN MÁSKÉNT NEM RENDELKEZNEK, SEM A PROGRAM SZERZŐJE, SEM MÁSOK, AKIK MÓDOSÍTOTTÁK ÉS/VAGY TERJESZTETTÉK A PROGRAMOT A FENTIEKNEK MEGFELELŐEN, NEM TEHETŐK FELELŐSSÉ A KÁROKÉRT, BELEÉRTVE MINDEN VÉLETLEN, VAGY KÖVETKEZMÉNYES KÁRT, AMELY A PROGRAM HASZNÁLATÁBÓL VAGY A HASZNÁLAT MEGAKADÁLYOZÁSÁBÓL SZÁRMAZIK (BELEÉRTVE, DE NEM KIZÁRÓLAGOSAN AZ ADATVESZTÉST ÉS A HELYTELEN ADATFELDOLGOZÁST, VALAMINT A MÁS PROGRAMOKKAL VALÓ HIBÁS EGYÜTTMŰKÖDÉST), MÉG AKKOR SEM, HA EZEN FELEK TUDATÁBAN VOLTAK, HOGY ILYEN KÁROK KELETKEZHETNEK.
-
-FELTÉTELEK ÉS SZABÁLYOK VÉGE
-Hogyan alkalmazhatók ezek a szabályok egy új programra?
-Ha valaki egy új programot készít és szeretné, hogy az bárki számára a lehető leginkább hasznos legyen, akkor a legjobb módszer, hogy azt szabad szoftverré teszi, megengedve mindenkinek a szabad másolást és módosítást a jelen feltételeknek megfelelően.
-
-Ehhez a következő megjegyzést kell csatolni a programhoz. A legbiztosabb ezt minden egyes forrásfájl elejére beírni, így közölve leghatásosabban a garancia visszautasítását; ezenkívül minden fájl kell, hogy tartalmazzon egy copyright sort és egy mutatót arra a helyre, ahol a teljes szöveg található.
-
-Egy sor, amely megadja a program nevét és funkcióját
-Copyright (C) év; szerző neve;
-
-Ez a program szabad szoftver; terjeszthető illetve módosítható a Free Software Foundation által kiadott GNU General Public License dokumentumában leírtak; akár a licenc 2-es, akár (tetszőleges) későbbi változata szerint.
-
-Ez a program abban a reményben kerül közreadásra, hogy hasznos lesz, de minden egyéb GARANCIA NÉLKÜL, az ELADHATÓSÁGRA vagy VALAMELY CÉLRA VALÓ ALKALMAZHATÓSÁGRA való származtatott garanciát is beleértve. További részleteket a GNU General Public License tartalmaz.
-
-A felhasználónak a programmal együtt meg kell kapnia a GNU General Public License egy példányát; ha mégsem kapta meg, akkor ezt a Free Software Foundationnak küldött levélben jelezze (cím: Free Software Foundation Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.)
-
-A programhoz csatolni kell azt is, hogy miként lehet kapcsolatba lépni a szerzővel, elektronikus vagy hagyományos levél küldésével.
-
-Ha a program interaktív, a következőhöz hasonló üzenettel lehet ezt megtenni a program indulásakor:
-
-Gnomovision version 69, Copyright (C) év, a szerző neve.
-A Gnomovision programhoz SEMMILYEN GARANCIA NEM JÁR; részletekért írja be a &apos;show w&apos; parancsot. Ez egy szabad szoftver, bizonyos feltételek mellett terjeszthető, illetve módosítható; részletekért írja be a &apos;show c&apos; parancsot.
-
-A show w és show c képzeletbeli parancsok, és a GPL megfelelő részeit kell megjeleníteniük. Természetesen a valódi parancsok a show w és show c parancstól különbözhetnek; lehetnek akár egérkattintások vagy menüpontok is, ami a programnak megfelel.
-
-Ha szükséges, meg kell szerezni a munkáltatótól (ha a szerző programozóként dolgozik) vagy az iskolától a program szerzői jogairól való lemondás igazolását. Erre itt egy példa; változtassa meg a neveket:
-
-A Fiktív Bt. ezennel lemond minden szerzői jogi érdekeltségéről a „Gnomovision” programmal (amelyet több fázisban fordítanak le a fordítóprogramok) kapcsolatban, amelyet H. Ekker János írt.
-
-Aláírás: Tira Mihály, 1989. április 1. Tira Mihály ügyvezető
-
-A GNU General Public License nem engedi meg, hogy a program része legyen szellemi tulajdont képező programoknak. Ha a program egy szubrutinkönyvtár, akkor megfontolhatja, hogy nem célszerűbb-e megengedni, hogy szellemi tulajdont képező alkalmazásokkal is összefűzhető legyen a programkönyvtár. Ha ezt szeretné, akkor a GPL helyett a GNU LGPL-t kell használni.</translation>
+This General Public License does not permit incorporating your program into proprietary programs. If your program is a subroutine library, you may consider it more useful to permit linking proprietary applications with the library. If this is what you want to do, use the GNU Lesser General Public License instead of this License.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="562"/>
