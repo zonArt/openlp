@@ -38,6 +38,7 @@ class RemotesPlugin(Plugin):
         """
         remotes constructor
         """
+        self.set_plugin_translations()
         Plugin.__init__(self, u'Remotes', u'1.9.2', plugin_helpers)
         self.icon = build_icon(u':/plugins/plugin_remote.png')
         self.weight = -1
@@ -76,3 +77,32 @@ class RemotesPlugin(Plugin):
             'a running version of OpenLP on a different computer via a web '
             'browser or through the remote API.')
         return about_text
+    # rimach
+    def set_plugin_translations(self):
+        """
+        Called to define all translatable texts of the plugin
+        """
+        self.name = u'Remotes'
+        self.name_lower = u'remotes'
+        self.text = {}
+        #for context menu
+#        self.text['context_edit'] = translate('RemotePlugin', '&Edit Remotes')
+#        self.text['context_delete'] = translate('RemotePlugin', '&Delete Remotes')
+#        self.text['context_preview'] = translate('RemotePlugin', '&Preview Remotes')
+#        self.text['context_live'] = translate('RemotePlugin', '&Show Live')
+#        # forHeaders in mediamanagerdock
+#        self.text['import'] = translate('RemotePlugin', 'Import a Remotes')
+#        self.text['file'] = translate('RemotePlugin', 'Load a new Remotes')
+#        self.text['new'] = translate('RemotePlugin', 'Add a new Remotes')
+#        self.text['edit'] = translate('RemotePlugin', 'Edit the selected Remotes')
+#        self.text['delete'] = translate('RemotePlugin', 'Delete the selected Remotes')
+#        self.text['delete_more'] = translate('RemotePlugin', 'Delete the selected Remotes')
+#        self.text['preview'] = translate('RemotePlugin', 'Preview the selected Remotes')
+#        self.text['preview_more'] = translate('RemotePlugin', 'Preview the selected Remotes')
+#        self.text['live'] = translate('RemotePlugin', 'Send the selected Remotes live')
+#        self.text['live_more'] = translate('RemotePlugin', 'Send the selected Remotes live')
+#        self.text['service'] = translate('RemotePlugin', 'Add the selected Remotes to the service')
+#        self.text['service_more'] = translate('RemotePlugin', 'Add the selected Remotes to the service')
+#        # for names in mediamanagerdock and pluginlist
+        self.text['name'] = translate('RemotePlugin', 'Remote')
+        self.text['name_more'] = translate('RemotePlugin', 'Remotes')

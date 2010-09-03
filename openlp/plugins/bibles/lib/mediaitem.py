@@ -54,8 +54,6 @@ class BibleMediaItem(MediaManagerItem):
     log.info(u'Bible Media Item loaded')
 
     def __init__(self, parent, icon, title):
-        self.PluginNameShort = u'Bible'
-        self.pluginNameVisible = translate('BiblesPlugin.MediaItem', 'Bible')
         self.IconPath = u'songs/song'
         self.ListViewWithDnD_class = BibleListView
         MediaManagerItem.__init__(self, parent, icon, title)

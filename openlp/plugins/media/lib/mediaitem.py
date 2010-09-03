@@ -47,8 +47,6 @@ class MediaMediaItem(MediaManagerItem):
     log.info(u'%s MediaMediaItem loaded', __name__)
 
     def __init__(self, parent, icon, title):
-        self.PluginNameShort = u'Media'
-        self.pluginNameVisible = translate('MediaPlugin.MediaItem', 'Media')
         self.IconPath = u'images/image'
         self.background = False
         # this next is a class, not an instance of a class - it will

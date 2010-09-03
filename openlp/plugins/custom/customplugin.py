@@ -47,6 +47,7 @@ class CustomPlugin(Plugin):
     log.info(u'Custom Plugin loaded')
 
     def __init__(self, plugin_helpers):
+        self.set_plugin_translations()
         Plugin.__init__(self, u'Custom', u'1.9.2', plugin_helpers)
         self.weight = -5
         self.custommanager = Manager(u'custom', init_schema)
@@ -96,3 +97,31 @@ class CustomPlugin(Plugin):
         for custom in customsUsingTheme:
             custom.theme_name = newTheme
             self.custommanager.save_object(custom)
+    def set_plugin_translations(self):
+        """
+        Called to define all translatable texts of the plugin
+        """
+        self.name = u'Custom'
+        self.name_lower = u'custom'
+        self.text = {}
+        #for context menu
+        self.text['context_edit'] = translate('CustomsPlugin', '&Edit Custom')
+        self.text['context_delete'] = translate('CustomsPlugin', '&Delete Custom')
+        self.text['context_preview'] = translate('CustomsPlugin', '&Preview Custom')
+        self.text['context_live'] = translate('CustomsPlugin', '&Show Live')
+        # forHeaders in mediamanagerdock
+        self.text['import'] = translate('CustomsPlugin', 'Import a Custom')
+        self.text['load'] = translate('CustomsPlugin', 'Load a new Custom')
+        self.text['new'] = translate('CustomsPlugin', 'Add a new Custom')
+        self.text['edit'] = translate('CustomsPlugin', 'Edit the selected Custom')
+        self.text['delete'] = translate('CustomsPlugin', 'Delete the selected Custom')
+        self.text['delete_more'] = translate('CustomsPlugin', 'Delete the selected Custom')
+        self.text['preview'] = translate('CustomsPlugin', 'Preview the selected Custom')
+        self.text['preview_more'] = translate('CustomsPlugin', 'Preview the selected Custom')
+        self.text['live'] = translate('CustomsPlugin', 'Send the selected Custom live')
+        self.text['live_more'] = translate('CustomsPlugin', 'Send the selected Custom live')
+        self.text['service'] = translate('CustomsPlugin', 'Add the selected Custom to the service')
+        self.text['service_more'] = translate('CustomsPlugin', 'Add the selected Custom to the service')
+        # for names in mediamanagerdock and pluginlist
+        self.text['name'] = translate('CustomsPlugin', 'Custom')
+        self.text['name_more'] = translate('CustomsPlugin', 'Custom')

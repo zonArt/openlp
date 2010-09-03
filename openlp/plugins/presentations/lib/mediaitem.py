@@ -58,9 +58,6 @@ class PresentationMediaItem(MediaManagerItem):
         Constructor. Setup defaults
         """
         self.controllers = controllers
-        self.PluginNameShort = u'Presentation'
-        self.pluginNameVisible = translate('PresentationPlugin.MediaItem',
-            'Presentation')
         self.IconPath = u'presentations/presentation'
         self.Automatic = u''
         # this next is a class, not an instance of a class - it will

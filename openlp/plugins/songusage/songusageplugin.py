@@ -41,6 +41,7 @@ class SongUsagePlugin(Plugin):
     log.info(u'SongUsage Plugin loaded')
 
     def __init__(self, plugin_helpers):
+        self.set_plugin_translations()
         Plugin.__init__(self, u'SongUsage', u'1.9.2', plugin_helpers)
         self.weight = -4
         self.icon = build_icon(u':/plugins/plugin_songusage.png')
@@ -162,3 +163,32 @@ class SongUsagePlugin(Plugin):
             '</strong><br />This plugin tracks the usage of songs in '
             'services.')
         return about_text
+
+    def set_plugin_translations(self):
+        """
+        Called to define all translatable texts of the plugin
+        """
+        self.name = u'SongUsage'
+        self.name_lower = u'songusage'
+        self.text = {}
+#        #for context menu
+#        self.text['context_edit'] = translate('SongUsagePlugin', '&Edit SongUsage')
+#        self.text['context_delete'] = translate('SongUsagePlugin', '&Delete SongUsage')
+#        self.text['context_preview'] = translate('SongUsagePlugin', '&Preview SongUsage')
+#        self.text['context_live'] = translate('SongUsagePlugin', '&Show Live')
+#        # forHeaders in mediamanagerdock
+#        self.text['import'] = translate('SongUsagePlugin', 'Import a SongUsage')
+#        self.text['file'] = translate('SongUsagePlugin', 'Load a new SongUsage')
+#        self.text['new'] = translate('SongUsagePlugin', 'Add a new SongUsage')
+#        self.text['edit'] = translate('SongUsagePlugin', 'Edit the selected SongUsage')
+#        self.text['delete'] = translate('SongUsagePlugin', 'Delete the selected SongUsage')
+#        self.text['delete_more'] = translate('SongUsagePlugin', 'Delete the selected Songs')
+#        self.text['preview'] = translate('SongUsagePlugin', 'Preview the selected SongUsage')
+#        self.text['preview_more'] = translate('SongUsagePlugin', 'Preview the selected Songs')
+#        self.text['live'] = translate('SongUsagePlugin', 'Send the selected SongUsage live')
+#        self.text['live_more'] = translate('SongUsagePlugin', 'Send the selected Songs live')
+#        self.text['service'] = translate('SongUsagePlugin', 'Add the selected SongUsage to the service')
+#        self.text['service_more'] = translate('SongUsagePlugin', 'Add the selected Songs to the service')
+        # for names in mediamanagerdock and pluginlist
+        self.text['name'] = translate('SongUsagePlugin', 'SongUsage')
+        self.text['name_more'] = translate('SongUsagePlugin', 'Songs')

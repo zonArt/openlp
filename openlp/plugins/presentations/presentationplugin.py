@@ -51,6 +51,7 @@ class PresentationPlugin(Plugin):
         """
         log.debug(u'Initialised')
         self.controllers = {}
+        self.set_plugin_translations()
         Plugin.__init__(self, u'Presentations', u'1.9.2', plugin_helpers)
         self.weight = -8
         self.icon_path = u':/plugins/plugin_presentations.png'
@@ -143,3 +144,31 @@ class PresentationPlugin(Plugin):
             'programs. The choice of available presentation programs is '
             'available to the user in a drop down box.')
         return about_text
+    def set_plugin_translations(self):
+        """
+        Called to define all translatable texts of the plugin
+        """
+        self.name = u'Presentations'
+        self.name_lower = u'presentations'
+        self.text = {}
+        #for context menu
+        self.text['context_edit'] = translate('PresentationPlugin', '&Edit Presentation')
+        self.text['context_delete'] = translate('PresentationPlugin', '&Delete Presentation')
+        self.text['context_preview'] = translate('PresentationPlugin', '&Preview Presentation')
+        self.text['context_live'] = translate('PresentationPlugin', '&Show Live')
+        # forHeaders in mediamanagerdock
+        self.text['import'] = translate('PresentationPlugin', 'Import a Presentation')
+        self.text['load'] = translate('PresentationPlugin', 'Load a new Presentation')
+        self.text['new'] = translate('PresentationPlugin', 'Add a new Presentation')
+        self.text['edit'] = translate('PresentationPlugin', 'Edit the selected Presentation')
+        self.text['delete'] = translate('PresentationPlugin', 'Delete the selected Presentation')
+        self.text['delete_more'] = translate('PresentationPlugin', 'Delete the selected Presentations')
+        self.text['preview'] = translate('PresentationPlugin', 'Preview the selected Presentation')
+        self.text['preview_more'] = translate('PresentationPlugin', 'Preview the selected Presentations')
+        self.text['live'] = translate('PresentationPlugin', 'Send the selected Presentation live')
+        self.text['live_more'] = translate('PresentationPlugin', 'Send the selected Presentations live')
+        self.text['service'] = translate('PresentationPlugin', 'Add the selected Presentation to the service')
+        self.text['service_more'] = translate('PresentationPlugin', 'Add the selected Presentations to the service')
+        # for names in mediamanagerdock and pluginlist
+        self.text['name'] = translate('PresentationPlugin', 'Presentation')
+        self.text['name_more'] = translate('PresentationPlugin', 'Presentations')

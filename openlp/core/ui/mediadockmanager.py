@@ -61,7 +61,7 @@ class MediaDockManager(object):
         match = False
         for dock_index in range(0, self.media_dock.count()):
             if self.media_dock.widget(dock_index).settingsSection == \
-                media_item.title.lower():
+                media_item.parent.get_text('name_lower'):
                 match = True
                 break
         if not match:
@@ -77,7 +77,8 @@ class MediaDockManager(object):
         log.debug(u'remove %s dock' % name)
         for dock_index in range(0, self.media_dock.count()):
             if self.media_dock.widget(dock_index):
+                log.debug(u'%s %s' % (name,  self.media_dock.widget(dock_index).settingsSection))
                 if self.media_dock.widget(dock_index).settingsSection == \
-                    name.lower():
+                    name:
                     self.media_dock.widget(dock_index).hide()
                     self.media_dock.removeItem(dock_index)

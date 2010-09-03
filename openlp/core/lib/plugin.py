@@ -289,3 +289,18 @@ class Plugin(QtCore.QObject):
             The new name the plugin should now use.
         """
         pass
+    def set_plugin_translations(self):
+        """
+        Called to define all translatable texts of the plugin
+        """
+        pass
+        self.text = {}
+     
+    def get_text(self,  content):
+        """
+        Called to retrieve a translated piece of text for menues, context menues, ...
+        """
+        if self.text.has_key(content):
+            return self.text[content]
+        else:
+            return self.name
