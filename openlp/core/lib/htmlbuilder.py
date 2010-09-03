@@ -263,13 +263,10 @@ def build_html(item, screen, alert, islive):
     `islive`
         Item is going live, rather than preview/theme building
     """
-    try:
-        webkitvers = float(QtWebKit.qWebKitVersion())
-    except AttributeError:
-        webkitvers = 0
     width = screen[u'size'].width()
     height = screen[u'size'].height()
     theme = item.themedata
+    webkitvers = webkit_version()
     if item.bg_frame:
         image = u'data:image/png;base64,%s' % image_to_byte(item.bg_frame)
     else:
@@ -284,9 +281,16 @@ def build_html(item, screen, alert, islive):
         build_lyrics_html(item, webkitvers))
     return html
 
+def webkit_version():
+    try:
+        webkitvers = float(QtWebKit.qWebKitVersion())
+    except AttributeError:
+        webkitvers = 0
+    return webkitvers
+
 def build_lyrics_css(item, webkitvers):
     """
-    Build the video display css
+    Build the lyrics display css
 
     `item`
         Service Item containing theme and location information
@@ -304,7 +308,6 @@ def build_lyrics_css(item, webkitvers):
 }
 .lyricscell { 
     display:table-cell; 
-    word-wrap: break-word; 
     %s
 }
 .lyricsmain { 
@@ -326,24 +329,9 @@ def build_lyrics_css(item, webkitvers):
     if theme:
         lyricstable = u'left: %spx; top: %spx;' % \
             (item.main.x(), item.main.y())
-        if theme.display_horizontalAlign == 2:
-            align = u'center'
-        elif theme.display_horizontalAlign == 1:
-            align = u'right'
-        else:
-            align = u'left'
-        if theme.display_verticalAlign == 2:
-            valign = u'bottom'
-        elif theme.display_verticalAlign == 1:
-            valign = u'middle'
-        else:
-            valign = u'top'
-        lyrics = u'width: %spx; height: %spx; text-align: %s; ' \
-            'vertical-align: %s; font-family: %s; font-size: %spt; ' \
-            'color: %s; line-height: %d%%;' % \
-            (item.main.width(), item.main.height(), align, valign, 
-            theme.font_main_name, theme.font_main_proportion, 
-            theme.font_main_color, 100 + int(theme.font_main_line_adjustment))
+        lyrics = build_lyrics_format_css(theme)
+        lyrics += u'width: %spx; height: %spx; ' % \
+            (item.main.width(), item.main.height())
         # For performance reasons we want to show as few DIV's as possible,
         # especially when animating/transitions. 
         # However some bugs in older versions of qtwebkit mean we need to 
@@ -360,8 +348,6 @@ def build_lyrics_css(item, webkitvers):
         # webkit-text-stroke was used. So use an offset text layer underneath. 
         # https://bugs.webkit.org/show_bug.cgi?id=19728
         if theme.display_outline:
-            if webkitvers < 534.3:
-                lyrics += u' letter-spacing: 1px;'
             outline = u' -webkit-text-stroke: %sem %s; ' \
                 '-webkit-text-fill-color: %s; ' % \
                 (float(theme.display_outline_size) / 16,
@@ -382,6 +368,44 @@ def build_lyrics_css(item, webkitvers):
                 theme.display_shadow_size)
     lyrics_css = style % (lyricstable, lyrics, lyricsmain, outline, shadow)
     return lyrics_css
+    
+def build_lyrics_format_css(theme):
+    """
+    Build the css which controls the theme format
+    Also used by renderer for splitting verses
+
+    `item`
+        Service Item containing theme and location information
+    
+    `webkitvers`
+        The version of qtwebkit we're using
+
+    """
+    if theme.display_horizontalAlign == 2:
+        align = u'center'
+    elif theme.display_horizontalAlign == 1:
+        align = u'right'
+    else:
+        align = u'left'
+    if theme.display_verticalAlign == 2:
+        valign = u'bottom'
+    elif theme.display_verticalAlign == 1:
+        valign = u'middle'
+    else:
+        valign = u'top'
+    lyrics = u'word-wrap: break-word; ' \
+        'text-align: %s; vertical-align: %s; font-family: %s; ' \
+        'font-size: %spt; color: %s; line-height: %d%%;' % \
+        (align, valign, theme.font_main_name, theme.font_main_proportion, 
+        theme.font_main_color, 100 + int(theme.font_main_line_adjustment))
+    if theme.display_outline:
+        if webkit_version() < 534.3:
+            lyrics += u' letter-spacing: 1px;'
+    if theme.font_main_italics:
+        lyrics += ' font-style:italic; '
+    if theme.font_main_weight == u'Bold':
+        lyrics += ' font-weight:bold; '
+    return lyrics
     
 def build_lyrics_html(item, webkitvers):
     """

@@ -31,7 +31,7 @@ import logging
 
 from PyQt4 import QtGui, QtCore
 
-from openlp.core.lib import resize_image, expand_tags
+from openlp.core.lib import resize_image, expand_tags, build_lyrics_format_css
 
 log = logging.getLogger(__name__)
 
@@ -145,39 +145,20 @@ class Renderer(object):
                 text.append(line)
         doc = QtGui.QTextDocument()
         doc.setPageSize(QtCore.QSizeF(self._rect.width(), self._rect.height()))
-        df = doc.defaultFont()
-        df.setPointSize(self._theme.font_main_proportion)
-        df.setFamily(self._theme.font_main_name)
-        main_weight = 50
-        if self._theme.font_main_weight == u'Bold':
-            main_weight = 75
-        df.setWeight(main_weight)
-        doc.setDefaultFont(df)
         layout = doc.documentLayout()
         formatted = []
-        if self._theme.font_main_weight == u'Bold' and \
-            self._theme.font_main_italics:
-            shell = u'{p}{st}{it}%s{/it}{/st}{/p}'
-        elif self._theme.font_main_weight == u'Bold' and \
-            not self._theme.font_main_italics:
-            shell = u'{p}{st}%s{/st}{/p}'
-        elif self._theme.font_main_italics:
-            shell = u'{p}{it}%s{/it}{/p}'
-        else:
-            shell = u'{p}%s{/p}'
-        temp_text = u''
-        old_html_text = u''
+        shell = u'<div style="%s">' % build_lyrics_format_css(self._theme)
+        html_text = u''
+        styled_text = shell
         for line in text:
-            # mark line ends
-            temp_text = temp_text + line + line_end
-            html_text = shell % expand_tags(temp_text)
-            doc.setHtml(html_text)
-            # Text too long so gone to next mage
+            styled_text += expand_tags(line) + line_end
+            doc.setHtml(styled_text + u'</div>')
+            # Text too long so go to next page
             if layout.pageCount() != 1:
-                formatted.append(shell % old_html_text)
-                temp_text = line + line_end
-            old_html_text = temp_text
-        formatted.append(shell % old_html_text)
+                formatted.append(html_text)
+                styled_text = shell
+            html_text += line + line_end
+        formatted.append(html_text)
         log.debug(u'format_slide - End')
         return formatted
 
