@@ -47,25 +47,12 @@ class Renderer(object):
         Initialise the renderer.
         """
         self._rect = None
-        self._debug = False
-        self._display_shadow_size_footer = 0
-        self._display_outline_size_footer = 0
         self.theme_name = None
         self._theme = None
         self._bg_image_filename = None
         self.frame = None
-        self.frame_opaque = None
         self.bg_frame = None
         self.bg_image = None
-
-    def set_debug(self, debug):
-        """
-        Set the debug mode of the renderer.
-
-        ``debug``
-            The debug mode.
-        """
-        self._debug = debug
 
     def set_theme(self, theme):
         """
@@ -159,7 +146,7 @@ class Renderer(object):
         doc = QtGui.QTextDocument()
         doc.setPageSize(QtCore.QSizeF(self._rect.width(), self._rect.height()))
         df = doc.defaultFont()
-        df.setPixelSize(self._theme.font_main_proportion)
+        df.setPointSize(self._theme.font_main_proportion)
         df.setFamily(self._theme.font_main_name)
         main_weight = 50
         if self._theme.font_main_weight == u'Bold':
@@ -188,7 +175,7 @@ class Renderer(object):
             # Text too long so gone to next mage
             if layout.pageCount() != 1:
                 formatted.append(shell % old_html_text)
-                temp_text = line
+                temp_text = line + line_end
             old_html_text = temp_text
         formatted.append(shell % old_html_text)
         log.debug(u'format_slide - End')

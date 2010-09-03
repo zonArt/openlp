@@ -115,8 +115,11 @@ class MainDisplay(DisplayWidget):
         self.screen = self.screens.current
         self.setVisible(False)
         self.setGeometry(self.screen[u'size'])
-        self.webView = QtWebKit.QWebView(self)
-        self.webView.setGeometry(0, 0, self.screen[u'size'].width(), \
+        self.scene = QtGui.QGraphicsScene()
+        self.setScene(self.scene)
+        self.webView = QtWebKit.QGraphicsWebView()
+        self.scene.addItem(self.webView)
+        self.webView.resize(self.screen[u'size'].width(), \
             self.screen[u'size'].height())
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
@@ -319,9 +322,6 @@ class MainDisplay(DisplayWidget):
         # Make display show up if in single screen mode
         if self.isLive:
             self.setVisible(True)
-        # save preview for debugging
-        if log.isEnabledFor(logging.DEBUG):
-            preview.save(u'temp.png', u'png')
         return preview
 
     def buildHtml(self, serviceItem):
