@@ -217,11 +217,12 @@ body {
             text.innerHTML = newtext;
             return;
         }
-        if(text.style.opacity=='') text.style.opacity = 1;
         if(newtext==text.innerHTML){
             text.style.opacity = parseFloat(text.style.opacity) + 0.3;
+            if(text.style.opacity>0.7)
+                text.style.opacity = 1;
         } else {
-            text.style.opacity -= 0.3;
+            text.style.opacity = parseFloat(text.style.opacity) - 0.3;
             if(text.style.opacity<=0.1){
                 text.innerHTML = newtext;
             }
@@ -400,14 +401,15 @@ def build_lyrics_html(item, webkitvers):
     theme = item.themedata
     if webkitvers < 534.4 and theme and theme.display_outline:
         lyrics += u'<div class="lyricstable">' \
-            u'<div id="lyricsshadow" class="lyricscell lyricsshadow">' \
-            u'</div></div>'
+            u'<div id="lyricsshadow" style="opacity:1" ' \
+            u'class="lyricscell lyricsshadow"></div></div>'
         if webkitvers < 533.3:
             lyrics += u'<div class="lyricstable">' \
-                u'<div id="lyricsoutline" class="lyricscell lyricsoutline">' \
-                u'</div></div>'
+                u'<div id="lyricsoutline" style="opacity:1" ' \
+                u'class="lyricscell lyricsoutline"></div></div>'
     lyrics += u'<div class="lyricstable">' \
-        u'<div id="lyricsmain" class="lyricscell lyricsmain"></div></div>'
+        u'<div id="lyricsmain" style="opacity:1" ' \
+        u'class="lyricscell lyricsmain"></div></div>'
     return lyrics
     
 def build_footer_css(item):
