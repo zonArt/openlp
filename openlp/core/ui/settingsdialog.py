@@ -29,19 +29,19 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import translate, build_icon
 
 class Ui_SettingsDialog(object):
-    def setupUi(self, SettingsDialog):
-        SettingsDialog.setObjectName(u'SettingsDialog')
-        SettingsDialog.resize(724, 502)
-        SettingsDialog.setWindowIcon(
+    def setupUi(self, settingsDialog):
+        settingsDialog.setObjectName(u'settingsDialog')
+        settingsDialog.resize(724, 502)
+        settingsDialog.setWindowIcon(
             build_icon(u':/system/system_settings.png'))
-        self.settingsLayout = QtGui.QVBoxLayout(SettingsDialog)
+        self.settingsLayout = QtGui.QVBoxLayout(settingsDialog)
         self.settingsLayout.setSpacing(8)
         self.settingsLayout.setMargin(8)
         self.settingsLayout.setObjectName(u'settingsLayout')
-        self.settingsTabWidget = QtGui.QTabWidget(SettingsDialog)
+        self.settingsTabWidget = QtGui.QTabWidget(settingsDialog)
         self.settingsTabWidget.setObjectName(u'settingsTabWidget')
         self.settingsLayout.addWidget(self.settingsTabWidget)
-        self.buttonBox = QtGui.QDialogButtonBox(SettingsDialog)
+        self.buttonBox = QtGui.QDialogButtonBox(settingsDialog)
         sizePolicy = QtGui.QSizePolicy(
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
@@ -55,14 +55,14 @@ class Ui_SettingsDialog(object):
             QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(u'buttonBox')
         self.settingsLayout.addWidget(self.buttonBox)
-        self.retranslateUi(SettingsDialog)
+        self.retranslateUi(settingsDialog)
         self.settingsTabWidget.setCurrentIndex(0)
         QtCore.QObject.connect(self.buttonBox,
-            QtCore.SIGNAL(u'accepted()'), SettingsDialog.accept)
+            QtCore.SIGNAL(u'accepted()'), settingsDialog.accept)
         QtCore.QObject.connect(self.buttonBox,
-            QtCore.SIGNAL(u'rejected()'), SettingsDialog.reject)
-        QtCore.QMetaObject.connectSlotsByName(SettingsDialog)
+            QtCore.SIGNAL(u'rejected()'), settingsDialog.reject)
+        QtCore.QMetaObject.connectSlotsByName(settingsDialog)
 
-    def retranslateUi(self, SettingsDialog):
-        SettingsDialog.setWindowTitle(translate('OpenLP.SettingsForm',
+    def retranslateUi(self, settingsDialog):
+        settingsDialog.setWindowTitle(translate('OpenLP.SettingsForm',
             'Configure OpenLP'))

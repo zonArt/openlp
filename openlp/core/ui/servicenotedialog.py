@@ -28,10 +28,10 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import translate
 
 class Ui_ServiceNoteEdit(object):
-    def setupUi(self, ServiceNoteEdit):
-        ServiceNoteEdit.setObjectName(u'ServiceNoteEdit')
-        ServiceNoteEdit.resize(400, 243)
-        self.widget = QtGui.QWidget(ServiceNoteEdit)
+    def setupUi(self, serviceNoteEdit):
+        serviceNoteEdit.setObjectName(u'serviceNoteEdit')
+        serviceNoteEdit.resize(400, 243)
+        self.widget = QtGui.QWidget(serviceNoteEdit)
         self.widget.setGeometry(QtCore.QRect(20, 10, 361, 223))
         self.widget.setObjectName(u'widget')
         self.verticalLayout = QtGui.QVBoxLayout(self.widget)
@@ -45,9 +45,9 @@ class Ui_ServiceNoteEdit(object):
         self.buttonBox.setObjectName(u'buttonBox')
         self.verticalLayout.addWidget(self.buttonBox)
 
-        self.retranslateUi(ServiceNoteEdit)
-        QtCore.QMetaObject.connectSlotsByName(ServiceNoteEdit)
+        self.retranslateUi(serviceNoteEdit)
+        QtCore.QMetaObject.connectSlotsByName(serviceNoteEdit)
 
-    def retranslateUi(self, ServiceNoteEdit):
-        ServiceNoteEdit.setWindowTitle(
+    def retranslateUi(self, serviceNoteEdit):
+        serviceNoteEdit.setWindowTitle(
             translate('OpenLP.ServiceNoteForm', 'Service Item Notes'))

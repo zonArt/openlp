@@ -199,7 +199,7 @@ class Manager(object):
             Any parameters to order the returned objects by.  Defaults to None.
         """
         query = self.session.query(object_class)
-        if filter_clause:
+        if filter_clause is not None:
             query = query.filter(filter_clause)
         if order_by_ref is not None:
             return query.order_by(order_by_ref).all()
@@ -237,7 +237,7 @@ class Manager(object):
         """
         try:
             query = self.session.query(object_class)
-            if filter_clause:
+            if filter_clause is not None:
                 query = query.filter(filter_clause)
             query.delete(synchronize_session=False)
             self.session.commit()

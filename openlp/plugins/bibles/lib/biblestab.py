@@ -241,10 +241,10 @@ class BiblesTab(SettingsTab):
         self.BibleThemeComboBox.addItem(u'')
         for theme in theme_list:
             self.BibleThemeComboBox.addItem(theme)
-        id = self.BibleThemeComboBox.findText(
+        index = self.BibleThemeComboBox.findText(
             unicode(self.bible_theme), QtCore.Qt.MatchExactly)
-        if id == -1:
+        if index == -1:
             # Not Found
-            id = 0
+            index = 0
             self.bible_theme = u''
-        self.BibleThemeComboBox.setCurrentIndex(id)
+        self.BibleThemeComboBox.setCurrentIndex(index)

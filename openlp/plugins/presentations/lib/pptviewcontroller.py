@@ -50,7 +50,7 @@ class PptviewController(PresentationController):
         log.debug(u'Initialising')
         self.process = None
         PresentationController.__init__(self, plugin, u'Powerpoint Viewer')
-        self.supports = [u'.ppt', u'.pps', u'.pptx', u'.ppsx']
+        self.supports = [u'ppt', u'pps', u'pptx', u'ppsx']
 
     def check_available(self):
         """
@@ -150,7 +150,8 @@ class PptviewDocument(PresentationDocument):
         if self.check_thumbnails():
             return
         for idx in range(self.get_slide_count()):
-            path = u'%s\\slide%s.bmp' % (self.get_temp_folder(), unicode(idx + 1))            
+            path = u'%s\\slide%s.bmp' % (self.get_temp_folder(),
+                unicode(idx + 1))
             self.convert_thumbnail(path, idx + 1)
 
     def close_presentation(self):

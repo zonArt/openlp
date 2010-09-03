@@ -25,17 +25,14 @@
 ###############################################################################
 
 import logging
-import time
-import re
 
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
-    ThemeManager, SlideController, PluginForm, MediaDockManager, DisplayManager
+    ThemeManager, SlideController, PluginForm, MediaDockManager
 from openlp.core.lib import RenderManager, build_icon, OpenLPDockWidget, \
     SettingsManager, PluginManager, Receiver, translate
-from openlp.core.utils import check_latest_version, AppLocation, add_actions, \
-    LanguageManager
+from openlp.core.utils import AppLocation, add_actions, LanguageManager
 
 log = logging.getLogger(__name__)
 
@@ -58,49 +55,6 @@ MEDIA_MANAGER_STYLE = """
     font-weight: bold;
   }
 """
-class VersionThread(QtCore.QThread):
-    """
-    A special Qt thread class to fetch the version of OpenLP from the website.
-    This is threaded so that it doesn't affect the loading time of OpenLP.
-    """
-    def __init__(self, parent, app_version):
-        QtCore.QThread.__init__(self, parent)
-        self.parent = parent
-        self.app_version = app_version
-        self.version_splitter = re.compile(
-            r'([0-9]+).([0-9]+).([0-9]+)(?:-bzr([0-9]+))?')
-
-    def run(self):
-        """
-        Run the thread.
-        """
-        time.sleep(1)
-        Receiver.send_message(u'maindisplay_blank_check')
-        version = check_latest_version(self.app_version)
-        remote_version = {}
-        local_version = {}
-        match = self.version_splitter.match(version)
-        if match:
-            remote_version[u'major'] = int(match.group(1))
-            remote_version[u'minor'] = int(match.group(2))
-            remote_version[u'release'] = int(match.group(3))
-            if len(match.groups()) > 3 and match.group(4):
-                remote_version[u'revision'] = int(match.group(4))
-        match = self.version_splitter.match(self.app_version[u'full'])
-        if match:
-            local_version[u'major'] = int(match.group(1))
-            local_version[u'minor'] = int(match.group(2))
-            local_version[u'release'] = int(match.group(3))
-            if len(match.groups()) > 3 and match.group(4):
-                local_version[u'revision'] = int(match.group(4))
-        if remote_version[u'major'] > local_version[u'major'] or \
-            remote_version[u'minor'] > local_version[u'minor'] or \
-            remote_version[u'release'] > local_version[u'release']:
-            Receiver.send_message(u'openlp_version_check', u'%s' % version)
-        elif remote_version.get(u'revision') and \
-            local_version.get(u'revision') and \
-            remote_version[u'revision'] > local_version[u'revision']:
-            Receiver.send_message(u'openlp_version_check', u'%s' % version)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -140,8 +94,10 @@ class Ui_MainWindow(object):
         self.ControlSplitter.setObjectName(u'ControlSplitter')
         self.MainContentLayout.addWidget(self.ControlSplitter)
         # Create slide controllers
-        self.PreviewController = SlideController(self, self.settingsmanager)
-        self.LiveController = SlideController(self, self.settingsmanager, True)
+        self.PreviewController = SlideController(self, self.settingsmanager,
+            self.screens)
+        self.LiveController = SlideController(self, self.settingsmanager,
+            self.screens, True)
         # Create menu
         self.MenuBar = QtGui.QMenuBar(MainWindow)
         self.MenuBar.setGeometry(QtCore.QRect(0, 0, 1087, 27))
@@ -220,17 +176,17 @@ class Ui_MainWindow(object):
         # Create the menu items
         self.FileNewItem = QtGui.QAction(MainWindow)
         self.FileNewItem.setIcon(
-            self.ServiceManagerContents.Toolbar.getIconFromTitle(
+            self.ServiceManagerContents.toolbar.getIconFromTitle(
             u'New Service'))
         self.FileNewItem.setObjectName(u'FileNewItem')
         self.FileOpenItem = QtGui.QAction(MainWindow)
         self.FileOpenItem.setIcon(
-            self.ServiceManagerContents.Toolbar.getIconFromTitle(
+            self.ServiceManagerContents.toolbar.getIconFromTitle(
             u'Open Service'))
         self.FileOpenItem.setObjectName(u'FileOpenItem')
         self.FileSaveItem = QtGui.QAction(MainWindow)
         self.FileSaveItem.setIcon(
-            self.ServiceManagerContents.Toolbar.getIconFromTitle(
+            self.ServiceManagerContents.toolbar.getIconFromTitle(
             u'Save Service'))
         self.FileSaveItem.setObjectName(u'FileSaveItem')
         self.FileSaveAsItem = QtGui.QAction(MainWindow)
@@ -308,18 +264,18 @@ class Ui_MainWindow(object):
         self.ToolsAddToolItem.setObjectName(u'ToolsAddToolItem')
         self.ViewPreviewPanel = QtGui.QAction(MainWindow)
         self.ViewPreviewPanel.setCheckable(True)
-        self.ViewPreviewPanel.setChecked(
-            self.settingsmanager.get_preview_visibility())
+        previewVisible = QtCore.QSettings().value(
+            u'user interface/preview panel', QtCore.QVariant(True)).toBool()
+        self.ViewPreviewPanel.setChecked(previewVisible)
         self.ViewPreviewPanel.setObjectName(u'ViewPreviewPanel')
-        self.PreviewController.Panel.setVisible(
-            self.settingsmanager.get_preview_visibility())
+        self.PreviewController.Panel.setVisible(previewVisible)
         self.ViewLivePanel = QtGui.QAction(MainWindow)
         self.ViewLivePanel.setCheckable(True)
-        self.ViewLivePanel.setChecked(
-            self.settingsmanager.get_live_visibility())
+        liveVisible = QtCore.QSettings().value(u'user interface/live panel',
+            QtCore.QVariant(True)).toBool()
+        self.ViewLivePanel.setChecked(liveVisible)
         self.ViewLivePanel.setObjectName(u'ViewLivePanel')
-        self.LiveController.Panel.setVisible(
-            self.settingsmanager.get_live_visibility())
+        self.LiveController.Panel.setVisible(liveVisible)
         self.ModeDefaultItem = QtGui.QAction(MainWindow)
         self.ModeDefaultItem.setCheckable(True)
         self.ModeDefaultItem.setObjectName(u'ModeDefaultItem')
@@ -498,7 +454,8 @@ class Ui_MainWindow(object):
         self.HelpAboutItem.setText(translate('OpenLP.MainWindow', '&About'))
         self.HelpAboutItem.setStatusTip(
             translate('OpenLP.MainWindow', 'More information about OpenLP'))
-        self.HelpAboutItem.setShortcut(translate('OpenLP.MainWindow', 'Ctrl+F1'))
+        self.HelpAboutItem.setShortcut(translate('OpenLP.MainWindow',
+            'Ctrl+F1'))
         self.HelpOnlineHelpItem.setText(
             translate('OpenLP.MainWindow', '&Online Help'))
         self.HelpWebSiteItem.setText(
@@ -554,7 +511,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.songsSettingsSection = u'songs'
         self.serviceNotSaved = False
         self.settingsmanager = SettingsManager(screens)
-        self.displayManager = DisplayManager(screens)
         self.aboutForm = AboutForm(self, applicationVersion)
         self.settingsForm = SettingsForm(self.screens, self, self)
         self.recentFiles = QtCore.QStringList()
@@ -577,20 +533,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'triggered()'),
             self.ThemeManagerContents.onExportTheme)
         QtCore.QObject.connect(self.ViewMediaManagerItem,
-            QtCore.SIGNAL(u'triggered(bool)'),
-            self.toggleMediaManager)
+            QtCore.SIGNAL(u'triggered(bool)'), self.toggleMediaManager)
         QtCore.QObject.connect(self.ViewServiceManagerItem,
-            QtCore.SIGNAL(u'triggered(bool)'),
-            self.toggleServiceManager)
+            QtCore.SIGNAL(u'triggered(bool)'), self.toggleServiceManager)
         QtCore.QObject.connect(self.ViewThemeManagerItem,
-            QtCore.SIGNAL(u'triggered(bool)'),
-            self.toggleThemeManager)
+            QtCore.SIGNAL(u'triggered(bool)'), self.toggleThemeManager)
         QtCore.QObject.connect(self.ViewPreviewPanel,
-            QtCore.SIGNAL(u'toggled(bool)'),
-            self.setPreviewPanelVisibility)
+            QtCore.SIGNAL(u'toggled(bool)'), self.setPreviewPanelVisibility)
         QtCore.QObject.connect(self.ViewLivePanel,
-            QtCore.SIGNAL(u'toggled(bool)'),
-            self.setLivePanelVisibility)
+            QtCore.SIGNAL(u'toggled(bool)'), self.setLivePanelVisibility)
         QtCore.QObject.connect(self.MediaManagerDock,
             QtCore.SIGNAL(u'visibilityChanged(bool)'),
             self.ViewMediaManagerItem.setChecked)
@@ -608,8 +559,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'triggered()'), self.onPluginItemClicked)
         QtCore.QObject.connect(self.SettingsConfigureItem,
             QtCore.SIGNAL(u'triggered()'), self.onOptionsSettingsItemClicked)
-        QtCore.QObject.connect(self.FileNewItem,
-            QtCore.SIGNAL(u'triggered()'),
+        QtCore.QObject.connect(self.FileNewItem, QtCore.SIGNAL(u'triggered()'),
             self.ServiceManagerContents.onNewService)
         QtCore.QObject.connect(self.FileOpenItem,
             QtCore.SIGNAL(u'triggered()'),
@@ -622,22 +572,18 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.ServiceManagerContents.onSaveService)
         #i18n set signals for languages
         QtCore.QObject.connect(self.AutoLanguageItem,
-                QtCore.SIGNAL(u'toggled(bool)'),
-                self.setAutoLanguage)
+            QtCore.SIGNAL(u'toggled(bool)'), self.setAutoLanguage)
         self.LanguageGroup.triggered.connect(LanguageManager.set_language)
         QtCore.QObject.connect(self.ModeDefaultItem,
-            QtCore.SIGNAL(u'triggered()'),
-            self.onModeDefaultItemClicked)
+            QtCore.SIGNAL(u'triggered()'), self.setViewMode)
         QtCore.QObject.connect(self.ModeSetupItem,
-            QtCore.SIGNAL(u'triggered()'),
-            self.onModeSetupItemClicked)
+            QtCore.SIGNAL(u'triggered()'), self.onModeSetupItemClicked)
         QtCore.QObject.connect(self.ModeLiveItem,
-            QtCore.SIGNAL(u'triggered()'),
-            self.onModeLiveItemClicked)
+            QtCore.SIGNAL(u'triggered()'), self.onModeLiveItemClicked)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'theme_update_global'), self.defaultThemeChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'openlp_version_check'), self.versionCheck)
+            QtCore.SIGNAL(u'openlp_version_check'), self.versionNotice)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'maindisplay_blank_check'), self.blankCheck)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -649,7 +595,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         #ThemeManager needs to call RenderManager
         self.RenderManager = RenderManager(
             self.ThemeManagerContents, self.screens)
-        self.displayManager.renderManager = self.RenderManager
         #Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.MediaToolBox)
         log.info(u'Load Plugins')
@@ -660,8 +605,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.plugin_helpers[u'service'] = self.ServiceManagerContents
         self.plugin_helpers[u'settings form'] = self.settingsForm
         self.plugin_helpers[u'toolbox'] = self.mediaDockManager
-        self.plugin_helpers[u'displaymanager'] = self.displayManager
         self.plugin_helpers[u'pluginmanager'] = self.plugin_manager
+        self.plugin_helpers[u'formparent'] = self
         self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers)
         # hook methods have to happen after find_plugins. Find plugins needs
         # the controllers hence the hooks have moved from setupUI() to here
@@ -698,31 +643,28 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         LanguageManager.AutoLanguage = value
         LanguageManager.set_language(self.LanguageGroup.checkedAction())
 
-    def versionCheck(self, version):
+    def versionNotice(self, version):
         """
-        Checks the version of the Application called from openlp.pyw
+        Notifies the user that a newer version of OpenLP is available.
         Triggered by delay thread.
         """
-        app_version = self.applicationVersion[u'full']
         version_text = unicode(translate('OpenLP.MainWindow',
             'Version %s of OpenLP is now available for download (you are '
             'currently running version %s). \n\nYou can download the latest '
-            'version from <a href="http://openlp.org/">http://openlp.org/</a>.'))
+            'version from http://openlp.org/.'))
         QtGui.QMessageBox.question(self,
             translate('OpenLP.MainWindow', 'OpenLP Version Updated'),
-            version_text % (version, app_version),
-            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
-            QtGui.QMessageBox.Ok)
+            version_text % (version, self.applicationVersion[u'full']))
 
     def show(self):
         """
         Show the main form, as well as the display form
         """
         QtGui.QWidget.show(self)
-        #screen_number = self.getMonitorNumber()
-        self.displayManager.setup()
-        if self.displayManager.mainDisplay.isVisible():
-            self.displayManager.mainDisplay.setFocus()
+        self.LiveController.display.setup()
+        self.PreviewController.display.setup()
+        if self.LiveController.display.isVisible():
+            self.LiveController.display.setFocus()
         self.activateWindow()
         if QtCore.QSettings().value(
             self.generalSettingsSection + u'/auto open',
@@ -746,13 +688,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     translate('OpenLP.MainWindow',
                          'The Main Display has been blanked out'))
         settings.endGroup()
-
-    def versionThread(self):
-        """
-        Start an initial setup thread to delay notifications
-        """
-        vT = VersionThread(self, self.applicationVersion)
-        vT.start()
 
     def onHelpWebSiteClicked(self):
         """
@@ -781,43 +716,36 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         self.settingsForm.exec_()
 
-    def onModeDefaultItemClicked(self):
-        """
-        Put OpenLP into "Default" view mode.
-        """
-        self.MediaManagerDock.setVisible(True)
-        self.ServiceManagerDock.setVisible(True)
-        self.ThemeManagerDock.setVisible(True)
-        self.setPreviewPanelVisibility(True)
-        self.setLivePanelVisibility(True)
-
     def onModeSetupItemClicked(self):
         """
         Put OpenLP into "Setup" view mode.
         """
-        self.MediaManagerDock.setVisible(True)
-        self.ServiceManagerDock.setVisible(True)
-        self.ThemeManagerDock.setVisible(False)
-        self.setPreviewPanelVisibility(True)
-        self.setLivePanelVisibility(False)
+        self.setViewMode(True, True, False, True, False)
 
     def onModeLiveItemClicked(self):
         """
         Put OpenLP into "Live" view mode.
         """
-        self.MediaManagerDock.setVisible(False)
-        self.ServiceManagerDock.setVisible(True)
-        self.ThemeManagerDock.setVisible(False)
-        self.setPreviewPanelVisibility(False)
-        self.setLivePanelVisibility(True)
+        self.setViewMode(False, True, False, False, True)
+
+    def setViewMode(self, media=True, service=True, theme=True, preview=True,
+        live=True):
+        """
+        Set OpenLP to a different view mode.
+        """
+        self.MediaManagerDock.setVisible(media)
+        self.ServiceManagerDock.setVisible(service)
+        self.ThemeManagerDock.setVisible(theme)
+        self.setPreviewPanelVisibility(preview)
+        self.setLivePanelVisibility(live)
 
     def screenChanged(self):
         """
         The screen has changed to so tell the displays to update_display
         their locations
         """
+        log.debug(u'screenChanged')
         self.RenderManager.update_display()
-        self.displayManager.setup()
         self.setFocus()
         self.activateWindow()
 
@@ -863,8 +791,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.plugin_manager.finalise_plugins()
         # Save settings
         self.saveSettings()
-        #Close down the displays
-        self.displayManager.close()
+        #Close down the display
+        self.LiveController.display.close()
 
     def serviceChanged(self, reset=False, serviceName=None):
         """
@@ -893,7 +821,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def defaultThemeChanged(self, theme):
         self.DefaultThemeLabel.setText(
-            unicode(translate('OpenLP.MainWindow', 'Default Theme: %s')) % theme)
+            unicode(translate('OpenLP.MainWindow', 'Default Theme: %s')) %
+                theme)
 
     def toggleMediaManager(self, visible):
         if self.MediaManagerDock.isVisible() != visible:
@@ -918,7 +847,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 False - Hidden
         """
         self.PreviewController.Panel.setVisible(visible)
-        self.settingsmanager.set_preview_visibility(visible)
+        QtCore.QSettings().setValue(u'user interface/preview panel',
+            QtCore.QVariant(visible))
         self.ViewPreviewPanel.setChecked(visible)
 
     def setLivePanelVisibility(self, visible):
@@ -932,7 +862,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 False - Hidden
         """
         self.LiveController.Panel.setVisible(visible)
-        self.settingsmanager.set_live_visibility(visible)
+        QtCore.QSettings().setValue(u'user interface/live panel',
+            QtCore.QVariant(visible))
         self.ViewLivePanel.setChecked(visible)
 
     def loadSettings(self):

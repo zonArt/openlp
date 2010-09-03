@@ -42,12 +42,12 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
     """
     log.info(u'SongUsage Detail Form Loaded')
 
-    def __init__(self, parent=None):
+    def __init__(self, plugin, parent):
         """
         Initialise the form
         """
-        QtGui.QDialog.__init__(self, None)
-        self.parent = parent
+        QtGui.QDialog.__init__(self, parent)
+        self.plugin = plugin
         self.setupUi(self)
 
     def initialise(self):
@@ -56,32 +56,32 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
             year -= 1
         toDate = QtCore.QDate(year, 8, 31)
         fromDate = QtCore.QDate(year - 1, 9, 1)
-        self.FromDate.setSelectedDate(fromDate)
-        self.ToDate.setSelectedDate(toDate)
-        self.FileLineEdit.setText(
-            SettingsManager.get_last_dir(self.parent.settingsSection, 1))
+        self.fromDate.setSelectedDate(fromDate)
+        self.toDate.setSelectedDate(toDate)
+        self.fileLineEdit.setText(
+            SettingsManager.get_last_dir(self.plugin.settingsSection, 1))
 
     def defineOutputLocation(self):
         path = QtGui.QFileDialog.getExistingDirectory(self,
             translate('SongUsagePlugin.SongUsageDetailForm',
                 'Output File Location'),
-            SettingsManager.get_last_dir(self.parent.settingsSection, 1))
+            SettingsManager.get_last_dir(self.plugin.settingsSection, 1))
         path = unicode(path)
         if path != u'':
-            SettingsManager.set_last_dir(self.parent.settingsSection, path, 1)
-            self.FileLineEdit.setText(path)
+            SettingsManager.set_last_dir(self.plugin.settingsSection, path, 1)
+            self.fileLineEdit.setText(path)
 
     def accept(self):
         log.debug(u'Detailed report generated')
         filename = u'usage_detail_%s_%s.txt' % (
-            self.FromDate.selectedDate().toString(u'ddMMyyyy'),
-            self.ToDate.selectedDate().toString(u'ddMMyyyy'))
-        usage = self.parent.songusagemanager.get_all_objects(
+            self.fromDate.selectedDate().toString(u'ddMMyyyy'),
+            self.toDate.selectedDate().toString(u'ddMMyyyy'))
+        usage = self.plugin.songusagemanager.get_all_objects(
             SongUsageItem, and_(
-            SongUsageItem.usagedate >= self.FromDate.selectedDate().toPyDate(),
-            SongUsageItem.usagedate < self.ToDate.selectedDate().toPyDate()),
+            SongUsageItem.usagedate >= self.fromDate.selectedDate().toPyDate(),
+            SongUsageItem.usagedate < self.toDate.selectedDate().toPyDate()),
             [SongUsageItem.usagedate, SongUsageItem.usagetime])
-        outname = os.path.join(unicode(self.FileLineEdit.text()), filename)
+        outname = os.path.join(unicode(self.fileLineEdit.text()), filename)
         file = None
         try:
             file = open(outname, u'w')
@@ -95,3 +95,4 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         finally:
             if file:
                 file.close()
+        self.close()

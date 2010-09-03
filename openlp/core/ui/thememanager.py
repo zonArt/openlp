@@ -49,71 +49,71 @@ class ThemeManager(QtGui.QWidget):
         QtGui.QWidget.__init__(self, parent)
         self.parent = parent
         self.settingsSection = u'themes'
-        self.serviceComboBox = self.parent.ServiceManagerContents.ThemeComboBox
-        self.Layout = QtGui.QVBoxLayout(self)
-        self.Layout.setSpacing(0)
-        self.Layout.setMargin(0)
+        self.serviceComboBox = self.parent.ServiceManagerContents.themeComboBox
+        self.layout = QtGui.QVBoxLayout(self)
+        self.layout.setSpacing(0)
+        self.layout.setMargin(0)
         self.amendThemeForm = AmendThemeForm(self)
-        self.Toolbar = OpenLPToolbar(self)
-        self.Toolbar.addToolbarButton(
+        self.toolbar = OpenLPToolbar(self)
+        self.toolbar.addToolbarButton(
             translate('OpenLP.ThemeManager', 'New Theme'),
             u':/themes/theme_new.png',
             translate('OpenLP.ThemeManager', 'Create a new theme.'),
             self.onAddTheme)
-        self.Toolbar.addToolbarButton(
+        self.toolbar.addToolbarButton(
             translate('OpenLP.ThemeManager', 'Edit Theme'),
             u':/themes/theme_edit.png',
             translate('OpenLP.ThemeManager', 'Edit a theme.'),
             self.onEditTheme)
-        self.Toolbar.addToolbarButton(
+        self.toolbar.addToolbarButton(
             translate('OpenLP.ThemeManager', 'Delete Theme'),
             u':/general/general_delete.png',
             translate('OpenLP.ThemeManager', 'Delete a theme.'),
             self.onDeleteTheme)
-        self.Toolbar.addSeparator()
-        self.Toolbar.addToolbarButton(
+        self.toolbar.addSeparator()
+        self.toolbar.addToolbarButton(
             translate('OpenLP.ThemeManager', 'Import Theme'),
             u':/general/general_import.png',
             translate('OpenLP.ThemeManager', 'Import a theme.'),
             self.onImportTheme)
-        self.Toolbar.addToolbarButton(
+        self.toolbar.addToolbarButton(
             translate('OpenLP.ThemeManager', 'Export Theme'),
             u':/general/general_export.png',
             translate('OpenLP.ThemeManager', 'Export a theme.'),
             self.onExportTheme)
-        self.ThemeWidget = QtGui.QWidgetAction(self.Toolbar)
-        self.Layout.addWidget(self.Toolbar)
-        self.ThemeListWidget = QtGui.QListWidget(self)
-        self.ThemeListWidget.setAlternatingRowColors(True)
-        self.ThemeListWidget.setIconSize(QtCore.QSize(88, 50))
-        self.Layout.addWidget(self.ThemeListWidget)
-        self.ThemeListWidget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-        self.ThemeListWidget.addAction(
-            context_menu_action(self.ThemeListWidget,
+        self.themeWidget = QtGui.QWidgetAction(self.toolbar)
+        self.layout.addWidget(self.toolbar)
+        self.themeListWidget = QtGui.QListWidget(self)
+        self.themeListWidget.setAlternatingRowColors(True)
+        self.themeListWidget.setIconSize(QtCore.QSize(88, 50))
+        self.layout.addWidget(self.themeListWidget)
+        self.themeListWidget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.themeListWidget.addAction(
+            context_menu_action(self.themeListWidget,
             u':/themes/theme_edit.png',
             translate('OpenLP.ThemeManager', '&Edit Theme'),
             self.onEditTheme))
-        self.ThemeListWidget.addAction(
-            context_menu_separator(self.ThemeListWidget))
-        self.ThemeListWidget.addAction(
-            context_menu_action(self.ThemeListWidget,
+        self.themeListWidget.addAction(
+            context_menu_separator(self.themeListWidget))
+        self.themeListWidget.addAction(
+            context_menu_action(self.themeListWidget,
                 u':/general/general_delete.png',
                 translate('OpenLP.ThemeManager', '&Delete Theme'),
             self.onDeleteTheme))
-        self.ThemeListWidget.addAction(
-            context_menu_action(self.ThemeListWidget,
+        self.themeListWidget.addAction(
+            context_menu_action(self.themeListWidget,
                 u':/general/general_export.png',
                 translate('OpenLP.ThemeManager', 'Set As &Global Default'),
             self.changeGlobalFromScreen))
-        self.ThemeListWidget.addAction(
-            context_menu_action(self.ThemeListWidget,
+        self.themeListWidget.addAction(
+            context_menu_action(self.themeListWidget,
                 u':/general/general_export.png',
                 translate('OpenLP.ThemeManager', 'E&xport Theme'),
                 self.onExportTheme))
-        self.ThemeListWidget.addAction(
-            context_menu_separator(self.ThemeListWidget))
+        self.themeListWidget.addAction(
+            context_menu_separator(self.themeListWidget))
         #Signals
-        QtCore.QObject.connect(self.ThemeListWidget,
+        QtCore.QObject.connect(self.themeListWidget,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
             self.changeGlobalFromScreen)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -138,18 +138,18 @@ class ThemeManager(QtGui.QWidget):
         tab
         """
         log.debug(u'changeGlobalFromTab %s', themeName)
-        for count in range (0, self.ThemeListWidget.count()):
-            #reset the old name
-            item = self.ThemeListWidget.item(count)
+        for count in range (0, self.themeListWidget.count()):
+            # reset the old name
+            item = self.themeListWidget.item(count)
             oldName = item.text()
             newName = unicode(item.data(QtCore.Qt.UserRole).toString())
             if oldName != newName:
-                self.ThemeListWidget.item(count).setText(newName)
-            #Set the new name
+                self.themeListWidget.item(count).setText(newName)
+            # Set the new name
             if themeName == newName:
                 name = unicode(translate('OpenLP.ThemeManager',
                     '%s (default)')) % newName
-                self.ThemeListWidget.item(count).setText(name)
+                self.themeListWidget.item(count).setText(name)
 
     def changeGlobalFromScreen(self, index = -1):
         """
@@ -157,21 +157,21 @@ class ThemeManager(QtGui.QWidget):
         Theme Manager list
         """
         log.debug(u'changeGlobalFromScreen %s', index)
-        selected_row = self.ThemeListWidget.currentRow()
-        for count in range (0, self.ThemeListWidget.count()):
-            item = self.ThemeListWidget.item(count)
+        selected_row = self.themeListWidget.currentRow()
+        for count in range (0, self.themeListWidget.count()):
+            item = self.themeListWidget.item(count)
             oldName = item.text()
-            #reset the old name
+            # reset the old name
             if oldName != unicode(item.data(QtCore.Qt.UserRole).toString()):
-                self.ThemeListWidget.item(count).setText(
+                self.themeListWidget.item(count).setText(
                     unicode(item.data(QtCore.Qt.UserRole).toString()))
-            #Set the new name
+            # Set the new name
             if count == selected_row:
                 self.global_theme = unicode(
-                    self.ThemeListWidget.item(count).text())
+                    self.themeListWidget.item(count).text())
                 name = unicode(translate('OpenLP.ThemeManager',
                     '%s (default)')) % self.global_theme
-                self.ThemeListWidget.item(count).setText(name)
+                self.themeListWidget.item(count).setText(name)
                 QtCore.QSettings().setValue(
                     self.settingsSection + u'/global theme',
                     QtCore.QVariant(self.global_theme))
@@ -194,10 +194,10 @@ class ThemeManager(QtGui.QWidget):
         Loads the settings for the theme that is to be edited and launches the
         theme editing form so the user can make their changes.
         """
-        if check_item_selected(self.ThemeListWidget,
+        if check_item_selected(self.themeListWidget,
             translate('OpenLP.ThemeManager',
             'You must select a theme to edit.')):
-            item = self.ThemeListWidget.currentItem()
+            item = self.themeListWidget.currentItem()
             themeName = unicode(item.text())
             if themeName != unicode(item.data(QtCore.Qt.UserRole).toString()):
                 self.editingDefault = True
@@ -217,10 +217,10 @@ class ThemeManager(QtGui.QWidget):
         self.global_theme = unicode(QtCore.QSettings().value(
             self.settingsSection + u'/global theme',
             QtCore.QVariant(u'')).toString())
-        if check_item_selected(self.ThemeListWidget,
+        if check_item_selected(self.themeListWidget,
             translate('OpenLP.ThemeManager',
             'You must select a theme to delete.')):
-            item = self.ThemeListWidget.currentItem()
+            item = self.themeListWidget.currentItem()
             theme = unicode(item.text())
             # confirm deletion
             answer = QtGui.QMessageBox.question(self,
@@ -235,8 +235,7 @@ class ThemeManager(QtGui.QWidget):
                 QtGui.QMessageBox.critical(self,
                     translate('OpenLP.ThemeManager', 'Error'),
                     translate('OpenLP.ThemeManager',
-                        'You are unable to delete the default theme.'),
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                        'You are unable to delete the default theme.'))
             else:
                 for plugin in self.parent.plugin_manager.plugins:
                     if plugin.usesTheme(theme):
@@ -252,8 +251,8 @@ class ThemeManager(QtGui.QWidget):
                         unicode(translate('OpenLP.ThemeManager',
                         'Theme %s is use by the service manager.')) % theme)
                     return
-                row = self.ThemeListWidget.row(item)
-                self.ThemeListWidget.takeItem(row)
+                row = self.themeListWidget.row(item)
+                self.themeListWidget.takeItem(row)
                 self.deleteTheme(theme)
 
     def deleteTheme(self, theme):
@@ -281,7 +280,7 @@ class ThemeManager(QtGui.QWidget):
         """
         Save the theme in a zip file
         """
-        item = self.ThemeListWidget.currentItem()
+        item = self.themeListWidget.currentItem()
         if item is None:
             QtGui.QMessageBox.critical(self,
                 translate('OpenLP.ThemeManager', 'Error'),
@@ -296,7 +295,7 @@ class ThemeManager(QtGui.QWidget):
         path = unicode(path)
         if path:
             SettingsManager.set_last_dir(self.settingsSection, path, 1)
-            themePath = os.path.join(path, theme + u'.theme')
+            themePath = os.path.join(path, theme + u'.otz')
             zip = None
             try:
                 zip = zipfile.ZipFile(themePath, u'w')
@@ -346,12 +345,11 @@ class ThemeManager(QtGui.QWidget):
         """
         log.debug(u'Load themes from dir')
         self.themelist = []
-        self.ThemeListWidget.clear()
-        #root, dirs, files = os.walk(self.path)
+        self.themeListWidget.clear()
         dirList = os.listdir(self.path)
         for name in dirList:
             if name.endswith(u'.png'):
-                #check to see file is in theme root directory
+                # check to see file is in theme root directory
                 theme = os.path.join(self.path, name)
                 if os.path.exists(theme):
                     textName = os.path.splitext(name)[0]
@@ -371,7 +369,7 @@ class ThemeManager(QtGui.QWidget):
                     item_name.setIcon(icon)
                     item_name.setData(QtCore.Qt.UserRole,
                         QtCore.QVariant(textName))
-                    self.ThemeListWidget.addItem(item_name)
+                    self.themeListWidget.addItem(item_name)
                     self.themelist.append(textName)
         self.pushThemes()
 
@@ -622,15 +620,15 @@ class ThemeManager(QtGui.QWidget):
                     self.serviceComboBox.setCurrentIndex(newThemeIndex)
             if self.editingDefault:
                 if self.saveThemeName != name:
-                    newThemeItem = self.ThemeListWidget.findItems(name,
+                    newThemeItem = self.themeListWidget.findItems(name,
                         QtCore.Qt.MatchExactly)[0]
-                    newThemeIndex = self.ThemeListWidget.indexFromItem(
+                    newThemeIndex = self.themeListWidget.indexFromItem(
                         newThemeItem).row()
                     self.global_theme = unicode(
-                        self.ThemeListWidget.item(newThemeIndex).text())
+                        self.themeListWidget.item(newThemeIndex).text())
                     newName = unicode(translate('OpenLP.ThemeManager',
                         '%s (default)')) % self.global_theme
-                    self.ThemeListWidget.item(newThemeIndex).setText(newName)
+                    self.themeListWidget.item(newThemeIndex).setText(newName)
                     QtCore.QSettings().setValue(
                         self.settingsSection + u'/global theme',
                         QtCore.QVariant(self.global_theme))
@@ -661,9 +659,8 @@ class ThemeManager(QtGui.QWidget):
         """
         Call the RenderManager to build a Sample Image
         """
-        log.debug(u'generateImage %s ', themedata)
-        frame = self.parent.RenderManager.generate_preview(themedata)
-        return frame
+        log.debug(u'generateImage \n%s ', themedata)
+        return self.parent.RenderManager.generate_preview(themedata)
 
     def getPreviewImage(self, theme):
         """
@@ -733,8 +730,6 @@ class ThemeManager(QtGui.QWidget):
         theme.display_slideTransition = theme.display_slideTransition
         theme.font_footer_color = theme.font_footer_color.strip()
         theme.font_footer_height = int(theme.font_footer_height.strip())
-        theme.font_footer_indentation = \
-            int(theme.font_footer_indentation.strip())
         theme.font_footer_italics = str_to_bool(theme.font_footer_italics)
         theme.font_footer_name = theme.font_footer_name.strip()
         #theme.font_footer_override
@@ -747,7 +742,6 @@ class ThemeManager(QtGui.QWidget):
         theme.font_main_color = theme.font_main_color.strip()
         theme.font_main_height = int(theme.font_main_height.strip())
         theme.font_main_italics = str_to_bool(theme.font_main_italics)
-        theme.font_main_indentation = int(theme.font_main_indentation)
         theme.font_main_name = theme.font_main_name.strip()
         #theme.font_main_override
         theme.font_main_proportion = int(theme.font_main_proportion.strip())
@@ -758,3 +752,8 @@ class ThemeManager(QtGui.QWidget):
         #theme.theme_mode
         theme.theme_name = theme.theme_name.strip()
         #theme.theme_version
+        # Remove the Transparent settings as they are not relevent
+        if theme.background_mode == u'transparent':
+            theme.background_mode = u'opaque'
+            theme.background_type = u'solid'
+            theme.background_startColor = u'#000000'

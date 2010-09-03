@@ -236,9 +236,10 @@ class SongMediaItem(MediaManagerItem):
                 self.onSearchTextButtonClick()
 
     def onImportClick(self):
-        songimportform = ImportWizardForm(self, self.parent.manager,
-            self.parent)
-        songimportform.exec_()
+        if not hasattr(self, u'import_wizard'):
+            self.import_wizard = ImportWizardForm(self, self.parent)
+        self.import_wizard.exec_()
+        Receiver.send_message(u'songs_load_list')
 
     def onNewClick(self):
         self.edit_song_form.newSong()
@@ -370,6 +371,6 @@ class SongMediaItem(MediaManagerItem):
             translate('SongsPlugin.MediaItem', 'CCLI Licence: ') + ccli))
         service_item.raw_footer = raw_footer
         service_item.audit = [
-            song.title, author_audit, song.copyright, song.ccli_number
+            song.title, author_audit, song.copyright, unicode(song.ccli_number)
         ]
         return True

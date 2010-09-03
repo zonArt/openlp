@@ -88,9 +88,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             item = self.songmanager.get_object(item_class, item_id)
             if item and len(item.songs) == 0:
                 if QtGui.QMessageBox.warning(self, dlg_title, del_text,
-                        QtGui.QMessageBox.StandardButtons(
-                            QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)
-                        ) == QtGui.QMessageBox.Yes:
+                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
+                    QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.Yes:
                     self.songmanager.delete_object(item_class, item.id)
                     reset_func()
             else:
@@ -113,6 +112,12 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     u'%s %s' % (author.first_name, author.last_name))
             author_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(author.id))
             self.AuthorsListWidget.addItem(author_name)
+        if self.AuthorsListWidget.count() == 0:
+            self.AuthorDeleteButton.setEnabled(False)
+            self.AuthorEditButton.setEnabled(False)
+        else:
+            self.AuthorDeleteButton.setEnabled(True)
+            self.AuthorEditButton.setEnabled(True)
 
     def resetTopics(self):
         """
@@ -125,6 +130,12 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             topic_name = QtGui.QListWidgetItem(topic.name)
             topic_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(topic.id))
             self.TopicsListWidget.addItem(topic_name)
+        if self.TopicsListWidget.count() == 0:
+            self.TopicDeleteButton.setEnabled(False)
+            self.TopicEditButton.setEnabled(False)
+        else:
+            self.TopicDeleteButton.setEnabled(True)
+            self.TopicEditButton.setEnabled(True)
 
     def resetBooks(self):
         """
@@ -137,6 +148,12 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 book.publisher))
             book_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(book.id))
             self.BooksListWidget.addItem(book_name)
+        if self.BooksListWidget.count() == 0:
+            self.BookDeleteButton.setEnabled(False)
+            self.BookEditButton.setEnabled(False)
+        else:
+            self.BookDeleteButton.setEnabled(True)
+            self.BookEditButton.setEnabled(True)
 
     def checkAuthor(self, new_author, edit=False):
         """
@@ -387,12 +404,12 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     book.publisher = temp_publisher
 
     def mergeAuthors(self, old_author):
-        '''
+        """
         Merges two authors into one author.
         
         ``old_author``
             The author which will be deleted afterwards.
-        '''
+        """
         existing_author = self.songmanager.get_object_filtered(Author,
             and_(Author.first_name == old_author.first_name,
                 Author.last_name == old_author.last_name, 
@@ -409,12 +426,12 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         self.songmanager.delete_object(Author, old_author.id)
 
     def mergeTopics(self, old_topic):
-        '''
+        """
         Merges two topics into one topic.
         
         ``old_topic``
             The topic which will be deleted afterwards.
-        '''
+        """
         existing_topic = self.songmanager.get_object_filtered(Topic,
             Topic.name == old_topic.name)
         songs = self.songmanager.get_all_objects(Song,
@@ -429,12 +446,12 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         self.songmanager.delete_object(Topic, old_topic.id)
 
     def mergeBooks(self, old_book):
-        '''
+        """
         Merges two books into one book.
         
         ``old_book``
             The book which will be deleted afterwards.
-        '''
+        """
         existing_book = self.songmanager.get_object_filtered(Book,
             and_(Book.name == old_book.name,
                 Book.publisher == old_book.publisher))

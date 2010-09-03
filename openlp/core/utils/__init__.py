@@ -27,19 +27,69 @@
 The :mod:`utils` module provides the utility libraries for OpenLP
 """
 
-import os
-import sys
 import logging
+import os
+import re
+import sys
+import time
 import urllib2
 from datetime import datetime
 
 from PyQt4 import QtGui, QtCore
 
 import openlp
-from openlp.core.lib import translate
+from openlp.core.lib import Receiver, translate
 
 log = logging.getLogger(__name__)
 images_filter = None
+
+class VersionThread(QtCore.QThread):
+    """
+    A special Qt thread class to fetch the version of OpenLP from the website.
+    This is threaded so that it doesn't affect the loading time of OpenLP.
+    """
+    def __init__(self, parent, app_version):
+        QtCore.QThread.__init__(self, parent)
+        self.app_version = app_version
+        self.version_splitter = re.compile(
+            r'([0-9]+).([0-9]+).([0-9]+)(?:-bzr([0-9]+))?')
+
+    def run(self):
+        """
+        Run the thread.
+        """
+        time.sleep(1)
+        Receiver.send_message(u'maindisplay_blank_check')
+        version = check_latest_version(self.app_version)
+        remote_version = {}
+        local_version = {}
+        match = self.version_splitter.match(version)
+        if match:
+            remote_version[u'major'] = int(match.group(1))
+            remote_version[u'minor'] = int(match.group(2))
+            remote_version[u'release'] = int(match.group(3))
+            if len(match.groups()) > 3 and match.group(4):
+                remote_version[u'revision'] = int(match.group(4))
+        else:
+            return
+        match = self.version_splitter.match(self.app_version[u'full'])
+        if match:
+            local_version[u'major'] = int(match.group(1))
+            local_version[u'minor'] = int(match.group(2))
+            local_version[u'release'] = int(match.group(3))
+            if len(match.groups()) > 3 and match.group(4):
+                local_version[u'revision'] = int(match.group(4))
+        else:
+            return
+        if remote_version[u'major'] > local_version[u'major'] or \
+            remote_version[u'minor'] > local_version[u'minor'] or \
+            remote_version[u'release'] > local_version[u'release']:
+            Receiver.send_message(u'openlp_version_check', u'%s' % version)
+        elif remote_version.get(u'revision') and \
+            local_version.get(u'revision') and \
+            remote_version[u'revision'] > local_version[u'revision']:
+            Receiver.send_message(u'openlp_version_check', u'%s' % version)
+
 
 class AppLocation(object):
     """
@@ -101,10 +151,10 @@ class AppLocation(object):
             return plugin_path
         elif dir_type == AppLocation.VersionDir:
             if hasattr(sys, u'frozen') and sys.frozen == 1:
-                plugin_path = os.path.abspath(os.path.split(sys.argv[0])[0])
+                version_path = os.path.abspath(os.path.split(sys.argv[0])[0])
             else:
-                plugin_path = os.path.split(openlp.__file__)[0]
-            return plugin_path
+                version_path = os.path.split(openlp.__file__)[0]
+            return version_path
         elif dir_type == AppLocation.CacheDir:
             if sys.platform == u'win32':
                 path = os.path.join(os.getenv(u'APPDATA'), u'openlp')
@@ -160,11 +210,14 @@ def check_latest_version(current_version):
         else:
             req = urllib2.Request(u'http://www.openlp.org/files/version.txt')
         req.add_header(u'User-Agent', u'OpenLP/%s' % current_version[u'full'])
+        remote_version = None
         try:
-            version_string = unicode(urllib2.urlopen(req, None).read()).strip()
+            remote_version = unicode(urllib2.urlopen(req, None).read()).strip()
         except IOError, e:
             if hasattr(e, u'reason'):
                 log.exception(u'Reason for failure: %s', e.reason)
+        if remote_version:
+            version_string = remote_version
     return version_string
 
 def add_actions(target, actions):
