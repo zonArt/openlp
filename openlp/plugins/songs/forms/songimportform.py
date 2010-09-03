@@ -83,6 +83,12 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         QtCore.QObject.connect(self.wordsOfWorshipRemoveButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onWordsOfWorshipRemoveButtonClicked)
+        QtCore.QObject.connect(self.ccliAddButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onCCLIAddButtonClicked)
+        QtCore.QObject.connect(self.ccliRemoveButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onCCLIRemoveButtonClicked)
         QtCore.QObject.connect(self.songsOfFellowshipAddButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onSongsOfFellowshipAddButtonClicked)
@@ -277,6 +283,16 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
     def onWordsOfWorshipRemoveButtonClicked(self):
         self.removeSelectedItems(self.wordsOfWorshipFileListWidget)
 
+    def onCCLIAddButtonClicked(self):
+        self.getFiles(
+            translate('SongsPlugin.ImportWizardForm',
+            'Select CCLI Files'),
+            self.ccliFileListWidget
+        )
+
+    def onCCLIRemoveButtonClicked(self):
+        self.removeSelectedItems(self.ccliFileListWidget)
+        
     def onSongsOfFellowshipAddButtonClicked(self):
         self.getFiles(
             translate('SongsPlugin.ImportWizardForm',

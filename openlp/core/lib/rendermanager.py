@@ -93,6 +93,7 @@ class RenderManager(object):
         """
         self.global_theme = global_theme
         self.theme_level = theme_level
+        self.themedata = None
 
     def set_service_theme(self, service_theme):
         """
@@ -102,6 +103,7 @@ class RenderManager(object):
             The service-level theme to be set.
         """
         self.service_theme = service_theme
+        self.themedata = None
 
     def set_override_theme(self, theme, overrideLevels=False):
         """
@@ -111,6 +113,10 @@ class RenderManager(object):
         ``theme``
             The name of the song-level theme. None means the service
             item wants to use the given value.
+
+        ``overrideLevels``
+            Used to force the theme data passed in to be used.
+
         """
         log.debug(u'set override theme to %s', theme)
         theme_level = self.theme_level
@@ -137,6 +143,7 @@ class RenderManager(object):
         if self.theme != self.renderer.theme_name or self.themedata is None \
             or overrideLevels:
             log.debug(u'theme is now %s', self.theme)
+            # Force the theme to be the one passed in.
             if overrideLevels:
                 self.themedata = theme
             else:
