@@ -136,7 +136,6 @@ class Renderer(object):
         line_end = u''
         if line_break:
             line_end = u'<br>'
-        print words
         words = words.replace(u'\r\n', u'\n')
         verses_text = words.split(u'\n')
         text = []
@@ -180,7 +179,6 @@ class Renderer(object):
             old_html_text = temp_text
         formatted.append(shell % old_html_text)
         log.debug(u'format_slide - End')
-        print formatted
         return formatted
 
     def _generate_background_frame(self):

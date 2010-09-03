@@ -319,9 +319,6 @@ class MainDisplay(DisplayWidget):
         # Make display show up if in single screen mode
         if self.isLive:
             self.setVisible(True)
-        # save preview for debugging
-        if log.isEnabledFor(logging.DEBUG):
-            preview.save(u'temp.png', u'png')
         return preview
 
     def buildHtml(self, serviceItem):
