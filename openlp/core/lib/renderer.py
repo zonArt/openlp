@@ -70,7 +70,7 @@ class Renderer(object):
         self.theme_name = theme.theme_name
         if theme.background_type == u'image':
             if theme.background_filename:
-                self._bg_image_filename = unicode(filename)
+                self._bg_image_filename = unicode(theme.background_filename)
                 if self.frame:
                     self.bg_image = resize_image(self._bg_image_filename,
                         self.frame.width(),
@@ -138,14 +138,14 @@ class Renderer(object):
         for verse in verses_text:
             lines = verse.split(u'\n')
             for line in lines:
-                text.append(line)               
+                text.append(line)
         web = QtWebKit.QWebView()
         web.resize(self._rect.width(), self._rect.height())
         web.setVisible(False)
         frame = web.page().mainFrame()
         # Adjust width and height to account for shadow. outline done in css
-        width = self._rect.width() - int(self._theme.display_shadow_size) 
-        height = self._rect.height() - int(self._theme.display_shadow_size) 
+        width = self._rect.width() - int(self._theme.display_shadow_size)
+        height = self._rect.height() - int(self._theme.display_shadow_size)
         shell = u'<html><head><style>#main {%s %s}</style><body>' \
             u'<div id="main">' % \
             (build_lyrics_format_css(self._theme, width, height),
