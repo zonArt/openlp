@@ -129,11 +129,11 @@ class OpenLP(QtGui.QApplication):
         screens = ScreenList()
         # Decide how many screens we have and their size
         for screen in xrange(0, self.desktop().numScreens()):
+            size = self.desktop().screenGeometry(screen);
             screens.add_screen({u'number': screen,
-                u'size': self.desktop().availableGeometry(screen),
+                u'size': size,
                 u'primary': (self.desktop().primaryScreen() == screen)})
-            log.info(u'Screen %d found with resolution %s',
-                screen, self.desktop().availableGeometry(screen))
+            log.info(u'Screen %d found with resolution %s', screen, size)
         # start the main app window
         self.mainWindow = MainWindow(screens, app_version)
         self.mainWindow.show()
