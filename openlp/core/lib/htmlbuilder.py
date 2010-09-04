@@ -329,9 +329,10 @@ def build_lyrics_css(item, webkitvers):
     if theme:
         lyricstable = u'left: %spx; top: %spx;' % \
             (item.main.x(), item.main.y())
-        lyrics = build_lyrics_format_css(theme)
-        lyrics += u'width: %spx; height: %spx; ' % \
-            (item.main.width(), item.main.height())
+        lyrics = build_lyrics_format_css(theme, item.main.width(), 
+            item.main.height())
+        #lyrics += u'width: %spx; height: %spx; ' % \
+        #    (item.main.width(), item.main.height())
         # For performance reasons we want to show as few DIV's as possible,
         # especially when animating/transitions. 
         # However some bugs in older versions of qtwebkit mean we need to 
@@ -347,29 +348,37 @@ def build_lyrics_css(item, webkitvers):
         # Before 534.4 the text-shadow didn't get displayed when 
         # webkit-text-stroke was used. So use an offset text layer underneath. 
         # https://bugs.webkit.org/show_bug.cgi?id=19728
-        if theme.display_outline:
-            outline = u' -webkit-text-stroke: %sem %s; ' \
-                '-webkit-text-fill-color: %s; ' % \
-                (float(theme.display_outline_size) / 16,
-                theme.display_outline_color, theme.font_main_color)
-            if webkitvers >= 533.3:
-                lyricsmain += outline
-            if theme.display_shadow and webkitvers < 534.3:
-                shadow = u'-webkit-text-stroke: %sem %s; ' \
-                    u'-webkit-text-fill-color: %s; ' \
-                    u' padding-left: %spx; padding-top: %spx' % \
-                    (float(theme.display_outline_size) / 16,
-                    theme.display_shadow_color, theme.display_shadow_color, 
-                    theme.display_shadow_size, theme.display_shadow_size)
-        if theme.display_shadow and \
-            (not theme.display_outline or webkitvers >= 534.3):
-            lyricsmain += u' text-shadow: %s %spx %spx;' % \
-                (theme.display_shadow_color, theme.display_shadow_size,
-                theme.display_shadow_size)
+        if webkitvers >= 533.3:
+            lyricsmain += build_lyrics_outline_css(theme)
+        else:
+            outline = build_lyrics_outline_css(theme) 
+        if theme.display_shadow:
+            if theme.display_outline and webkitvers < 534.3:
+                shadow = u'padding-left: %spx; padding-top: %spx ' % \
+                    (theme.display_shadow_size, theme.display_shadow_size)
+                shadow += build_lyrics_outline_css(theme, True)
+            else:
+                lyricsmain += u' text-shadow: %s %spx %spx;' % \
+                    (theme.display_shadow_color, theme.display_shadow_size,
+                    theme.display_shadow_size)
     lyrics_css = style % (lyricstable, lyrics, lyricsmain, outline, shadow)
     return lyrics_css
     
-def build_lyrics_format_css(theme):
+def build_lyrics_outline_css(theme, is_shadow=False):
+    if theme.display_outline:
+        size = float(theme.display_outline_size) / 16
+        if is_shadow:
+            fill_color = theme.display_shadow_color
+            outline_color = theme.display_shadow_color
+        else:
+            fill_color = theme.font_main_color
+            outline_color = theme.display_outline_color
+        return u' -webkit-text-stroke: %sem %s; ' \
+            u'-webkit-text-fill-color: %s; ' % (size, outline_color, fill_color)
+    else:
+        return u''
+
+def build_lyrics_format_css(theme, width, height):
     """
     Build the css which controls the theme format
     Also used by renderer for splitting verses
@@ -393,18 +402,20 @@ def build_lyrics_format_css(theme):
         valign = u'middle'
     else:
         valign = u'top'
-    lyrics = u'word-wrap: break-word; ' \
+    lyrics = u'white-space:pre-wrap; word-wrap: break-word; ' \
         'text-align: %s; vertical-align: %s; font-family: %s; ' \
-        'font-size: %spt; color: %s; line-height: %d%%;' % \
+        'font-size: %spt; color: %s; line-height: %d%%; ' \
+        'margin:0; padding:0; width: %spx; height: %spx; ' % \
         (align, valign, theme.font_main_name, theme.font_main_proportion, 
-        theme.font_main_color, 100 + int(theme.font_main_line_adjustment))
+        theme.font_main_color, 100 + int(theme.font_main_line_adjustment), 
+        width, height)
     if theme.display_outline:
         if webkit_version() < 534.3:
             lyrics += u' letter-spacing: 1px;'
     if theme.font_main_italics:
-        lyrics += ' font-style:italic; '
+        lyrics += u' font-style:italic; '
     if theme.font_main_weight == u'Bold':
-        lyrics += ' font-weight:bold; '
+        lyrics += u' font-weight:bold; '
     return lyrics
     
 def build_lyrics_html(item, webkitvers):

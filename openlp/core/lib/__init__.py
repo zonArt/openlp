@@ -324,7 +324,8 @@ from settingstab import SettingsTab
 from serviceitem import ServiceItem
 from serviceitem import ServiceItemType
 from serviceitem import ItemCapabilities
-from htmlbuilder import build_html, build_lyrics_format_css
+from htmlbuilder import build_html, build_lyrics_format_css, \
+    build_lyrics_outline_css
 from toolbar import OpenLPToolbar
 from dockwidget import OpenLPDockWidget
 from theme import ThemeLevel, ThemeXML

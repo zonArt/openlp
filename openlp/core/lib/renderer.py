@@ -29,9 +29,10 @@ format it for the output display.
 """
 import logging
 
-from PyQt4 import QtGui, QtCore
+from PyQt4 import QtGui, QtCore, QtWebKit
 
-from openlp.core.lib import resize_image, expand_tags, build_lyrics_format_css
+from openlp.core.lib import resize_image, expand_tags, \
+    build_lyrics_format_css, build_lyrics_outline_css
 
 log = logging.getLogger(__name__)
 
@@ -143,20 +144,41 @@ class Renderer(object):
             lines = verse.split(u'\n')
             for line in lines:
                 text.append(line)
-        doc = QtGui.QTextDocument()
-        doc.setPageSize(QtCore.QSizeF(self._rect.width(), self._rect.height()))
-        layout = doc.documentLayout()
+                
+        web = QtWebKit.QWebView()
+        web.resize(self._rect.width(), self._rect.height())
+        web.setVisible(False)
+        frame = web.page().mainFrame()
+        # Adjust width and height to account for shadow. outline done in css
+        width = self._rect.width() + int(self._theme.display_shadow_size) 
+        height = self._rect.height() + int(self._theme.display_shadow_size) 
+        css = u'<html><head><style>#main {%s %s}</style><body>' \
+            u'<div id="main">' % \
+            (build_lyrics_format_css(self._theme, width, height),
+            build_lyrics_outline_css(self._theme))
+#        doc = QtGui.QTextDocument()
+#        doc.setPageSize(QtCore.QSizeF(self._rect.width(), self._rect.height()))
+#        doc.setDocumentMargin(0)
+#        css = u'* {%s}' % build_lyrics_format_css(self._theme)
+#        doc.setDefaultStyleSheet(css)
+        #layout = doc.documentLayout()
         formatted = []
-        shell = u'<div style="%s">' % build_lyrics_format_css(self._theme)
         html_text = u''
-        styled_text = shell
+        styled_text = u''
+        divheight = 'document.getElementById("main").scrollHeight'
         for line in text:
-            styled_text += expand_tags(line) + line_end
-            doc.setHtml(styled_text + u'</div>')
+            styled_line = expand_tags(line) + line_end
+            styled_text += styled_line
+            html = css + styled_text + u'</div></body></html>'
+            web.setHtml(html)
+#            doc.setHtml(styled_text)
             # Text too long so go to next page
-            if layout.pageCount() != 1:
+#            if doc.pageCount() != 1:
+            text_height = int(frame.evaluateJavaScript(divheight).toString())
+            if text_height > height:
                 formatted.append(html_text)
-                styled_text = shell
+                html_text = u''
+                styled_text = styled_line
             html_text += line + line_end
         formatted.append(html_text)
         log.debug(u'format_slide - End')
