@@ -138,7 +138,7 @@ class MainDisplay(DisplayWidget):
             painter_image = QtGui.QPainter()
             painter_image.begin(self.black)
             painter_image.fillRect(self.black.rect(), QtCore.Qt.black)
-            #Build the initial frame.
+            # Build the initial frame.
             initialFrame = QtGui.QImage(
                 self.screens.current[u'size'].width(),
                 self.screens.current[u'size'].height(),
