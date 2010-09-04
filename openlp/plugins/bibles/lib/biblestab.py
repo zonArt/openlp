@@ -196,10 +196,10 @@ class BiblesTab(SettingsTab):
             self.show_new_chapters = True
 
     def onBibleDualCheckBox(self, check_state):
-        self.duel_bibles = False
+        self.dual_bibles = False
         # we have a set value convert to True/False
         if check_state == QtCore.Qt.Checked:
-            self.duel_bibles = True
+            self.dual_bibles = True
 
     def load(self):
         settings = QtCore.QSettings()
@@ -212,12 +212,12 @@ class BiblesTab(SettingsTab):
             u'verse layout style', QtCore.QVariant(0)).toInt()[0]
         self.bible_theme = unicode(
             settings.value(u'bible theme', QtCore.QVariant(u'')).toString())
-        self.duel_bibles = settings.value(
+        self.dual_bibles = settings.value(
             u'dual bibles', QtCore.QVariant(True)).toBool()
         self.NewChaptersCheckBox.setChecked(self.show_new_chapters)
         self.DisplayStyleComboBox.setCurrentIndex(self.display_style)
         self.LayoutStyleComboBox.setCurrentIndex(self.layout_style)
-        self.BibleDualCheckBox.setChecked(self.duel_bibles)
+        self.BibleDualCheckBox.setChecked(self.dual_bibles)
         settings.endGroup()
 
     def save(self):
@@ -229,7 +229,7 @@ class BiblesTab(SettingsTab):
             QtCore.QVariant(self.display_style))
         settings.setValue(u'verse layout style',
             QtCore.QVariant(self.layout_style))
-        settings.setValue(u'dual bibles', QtCore.QVariant(self.duel_bibles))
+        settings.setValue(u'dual bibles', QtCore.QVariant(self.dual_bibles))
         settings.setValue(u'bible theme', QtCore.QVariant(self.bible_theme))
         settings.endGroup()
 
