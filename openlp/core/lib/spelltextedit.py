@@ -60,7 +60,9 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         popup_menu = self.createStandardContextMenu()
         # Select the word under the cursor.
         cursor = self.textCursor()
-        cursor.select(QtGui.QTextCursor.WordUnderCursor)
+        # only select text if not already selected
+        if not cursor.hasSelection():
+            cursor.select(QtGui.QTextCursor.WordUnderCursor)
         self.setTextCursor(cursor)
         # Check if the selected word is misspelled and offer spelling
         # suggestions if it is.
@@ -86,7 +88,6 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
             tag_menu.addAction(action)
         popup_menu.insertSeparator(popup_menu.actions()[0])
         popup_menu.insertMenu(popup_menu.actions()[0], tag_menu)
-
         popup_menu.exec_(event.globalPos())
 
     def correctWord(self, word):
