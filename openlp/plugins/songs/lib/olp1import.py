@@ -52,7 +52,6 @@ class OpenLP1SongImport(SongImport):
             The database providing the data to import.
         """
         SongImport.__init__(self, manager)
-        self.manager = manager
         self.import_source = kwargs[u'filename']
 
     def do_import(self):
@@ -61,71 +60,38 @@ class OpenLP1SongImport(SongImport):
         """
         connection = sqlite.connect(self.import_source)
         cursor = connection.cursor()
+        cursor.execute(u'SELECT COUNT(authorid) FROM authors')
+        count = int(cursor.fetchone()[0])
+        cursor.execute(u'SELECT COUNT(songid) FROM songs')
+        count = int(cursor.fetchone()[0])
+        self.import_wizard.importProgressBar.setMaximum(count)
 
-#        for song in source_songs:
-#            new_song = Song()
-#            new_song.title = song.title
-#            if has_media_files:
-#                new_song.alternate_title = song.alternate_title
-#            else:
-#                old_titles = song.search_title.split(u'@')
-#                if len(old_titles) > 1:
-#                    new_song.alternate_title = old_titles[1]
-#                else:
-#                    new_song.alternate_title = u''
-#            new_song.search_title = song.search_title
-#            new_song.song_number = song.song_number
-#            new_song.lyrics = song.lyrics
-#            new_song.search_lyrics = song.search_lyrics
-#            new_song.verse_order = song.verse_order
-#            new_song.copyright = song.copyright
-#            new_song.comments = song.comments
-#            new_song.theme_name = song.theme_name
-#            new_song.ccli_number = song.ccli_number
-#            if song.authors:
-#                for author in song.authors:
-#                    existing_author = self.master_manager.get_object_filtered(
-#                        Author, Author.display_name == author.display_name)
-#                    if existing_author:
-#                        new_song.authors.append(existing_author)
-#                    else:
-#                        new_song.authors.append(Author.populate(
-#                            first_name=author.first_name,
-#                            last_name=author.last_name,
-#                            display_name=author.display_name))
-#            else:
-#                au = self.master_manager.get_object_filtered(Author,
-#                    Author.display_name == u'Author Unknown')
-#                if au:
-#                    new_song.authors.append(au)
-#                else:
-#                    new_song.authors.append(Author.populate(
-#                        display_name=u'Author Unknown'))
-#            if song.book:
-#                existing_song_book = self.master_manager.get_object_filtered(
-#                    Book, Book.name == song.book.name)
-#                if existing_song_book:
-#                    new_song.book = existing_song_book
-#                else:
-#                    new_song.book = Book.populate(name=song.book.name,
-#                        publisher=song.book.publisher)
-#            if song.topics:
-#                for topic in song.topics:
-#                    existing_topic = self.master_manager.get_object_filtered(
-#                        Topic, Topic.name == topic.name)
-#                    if existing_topic:
-#                        new_song.topics.append(existing_topic)
-#                    else:
-#                        new_song.topics.append(Topic.populate(name=topic.name))
-##            if has_media_files:
-##                if song.media_files:
-##                    for media_file in song.media_files:
-##                        existing_media_file = \
-##                            self.master_manager.get_object_filtered(MediaFile,
-##                                MediaFile.file_name == media_file.file_name)
-##                        if existing_media_file:
-##                            new_song.media_files.append(existing_media_file)
-##                        else:
-##                            new_song.media_files.append(MediaFile.populate(
-##                                file_name=media_file.file_name))
-#            self.master_manager.save_object(new_song)
+    old_cursor.execute(u'SELECT authorid AS id, authorname AS displayname FROM authors')
+    rows = old_cursor.fetchall()
+    if not debug and verbose:
+        print 'done.'
+    author_map = {}
+    for row in rows:
+        display_name = unicode(row[1], u'cp1252')
+        names = display_name.split(u' ')
+        first_name = names[0]
+        last_name = u' '.join(names[1:])
+        if last_name is None:
+            last_name = u''
+        sql_insert = u'INSERT INTO authors '\
+            '(id, first_name, last_name, display_name) '\
+            'VALUES (NULL, ?, ?, ?)'
+        sql_params = (first_name, last_name, display_name)
+        if debug:
+            print '...', display_sql(sql_insert, sql_params)
+        elif verbose:
+            print '... importing "%s"' % display_name
+        new_cursor.execute(sql_insert, sql_params)
+        author_map[row[0]] = new_cursor.lastrowid
+        if debug:
+            print '    >>> authors.authorid =', row[0], 'authors.id =', author_map[row[0]]
+
+
+        cursor.execute(u'SELECT songid AS id, songtitle AS title, '
+            u'lyrics || \'\' AS lyrics, copyrightinfo AS copyright FROM songs')
+        rows = cursor.fetchall()

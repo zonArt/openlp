@@ -52,6 +52,11 @@ class SongImport(QtCore.QObject):
         """
         self.manager = manager
         self.stop_import_flag = False
+        self.set_defaults()
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'songs_stop_import'), self.stop_import)
+
+    def set_defaults(self):
         self.title = u''
         self.song_number = u''
         self.alternate_title = u''
@@ -71,8 +76,6 @@ class SongImport(QtCore.QObject):
             'SongsPlugin.SongImport', 'copyright'))
         self.copyright_symbol = unicode(translate(
             'SongsPlugin.SongImport', '\xa9'))
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'songs_stop_import'), self.stop_import)
 
     def stop_import(self):
         """

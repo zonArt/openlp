@@ -125,6 +125,9 @@ class OpenSongImport(SongImport):
             if ext.lower() == u'.zip':
                 log.debug(u'Zipfile found %s', filename)
                 z = ZipFile(filename, u'r')
+                self.import_wizard.importProgressBar.setMaximum(
+                    self.import_wizard.importProgressBar.maximum() +
+                    len(z.infolist()))
                 for song in z.infolist():
                     if self.stop_import_flag:
                         break
@@ -138,6 +141,7 @@ class OpenSongImport(SongImport):
                     self.do_import_file(songfile)
                     if self.commit:
                         self.finish()
+                    self.set_defaults()
                 if self.stop_import_flag:
                     break
             else:
@@ -148,6 +152,7 @@ class OpenSongImport(SongImport):
                 self.do_import_file(file)
                 if self.commit:
                     self.finish()
+                self.set_defaults()
         if not self.commit:
             self.finish()
 
