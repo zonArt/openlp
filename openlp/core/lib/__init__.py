@@ -316,6 +316,7 @@ def expand_tags(text):
         text = text.replace(tag[u'end tag'], tag[u'end html'])
     return text
 
+from spelltextedit import SpellTextEdit
 from eventreceiver import Receiver
 from settingsmanager import SettingsManager
 from plugin import PluginStatus, Plugin
