@@ -160,9 +160,9 @@ class ServiceItem(object):
             self.themedata = self.render_manager.renderer._theme
             for slide in self._raw_frames:
                 before = time.time()
-                formated = self.render_manager \
+                formatted = self.render_manager \
                     .format_slide(slide[u'raw_slide'], line_break)
-                for page in formated:
+                for page in formatted:
                     self._display_frames.append(
                         {u'title': clean_tags(page),
                         u'text': clean_tags(page.rstrip()),
