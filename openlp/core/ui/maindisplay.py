@@ -115,8 +115,11 @@ class MainDisplay(DisplayWidget):
         self.screen = self.screens.current
         self.setVisible(False)
         self.setGeometry(self.screen[u'size'])
-        self.webView = QtWebKit.QWebView(self)
-        self.webView.setGeometry(0, 0, self.screen[u'size'].width(), \
+        self.scene = QtGui.QGraphicsScene()
+        self.setScene(self.scene)
+        self.webView = QtWebKit.QGraphicsWebView()
+        self.scene.addItem(self.webView)
+        self.webView.resize(self.screen[u'size'].width(), \
             self.screen[u'size'].height())
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
@@ -135,7 +138,7 @@ class MainDisplay(DisplayWidget):
             painter_image = QtGui.QPainter()
             painter_image.begin(self.black)
             painter_image.fillRect(self.black.rect(), QtCore.Qt.black)
-            #Build the initial frame.
+            # Build the initial frame.
             initialFrame = QtGui.QImage(
                 self.screens.current[u'size'].width(),
                 self.screens.current[u'size'].height(),
@@ -152,12 +155,12 @@ class MainDisplay(DisplayWidget):
                 splash_image)
             serviceItem = ServiceItem()
             serviceItem.bg_frame = initialFrame
-            self.webView.setHtml(build_html(serviceItem, self.screen, \
-                self.parent.alertTab))
+            self.webView.setHtml(build_html(serviceItem, self.screen,
+                self.parent.alertTab, self.isLive))
             self.initialFrame = True
-            self.show()
             # To display or not to display?
             if not self.screen[u'primary']:
+                self.show()
                 self.primary = False
             else:
                 self.primary = True
@@ -297,13 +300,14 @@ class MainDisplay(DisplayWidget):
         Generates a preview of the image displayed.
         """
         log.debug(u'preview for %s', self.isLive)
-        # Wait for the fade to finish before geting the preview.
-        # Important otherwise preview will have incorrect text if at all !
-        if self.serviceItem.themedata and \
-            self.serviceItem.themedata.display_slideTransition:
-            while self.frame.evaluateJavaScript(u'show_text_complete()') \
-                .toString() == u'false':
-                Receiver.send_message(u'openlp_process_events')
+        if self.isLive:
+            # Wait for the fade to finish before geting the preview.
+            # Important otherwise preview will have incorrect text if at all !
+            if self.serviceItem.themedata and \
+                self.serviceItem.themedata.display_slideTransition:
+                while self.frame.evaluateJavaScript(u'show_text_complete()') \
+                    .toString() == u'false':
+                    Receiver.send_message(u'openlp_process_events')
         # Wait for the webview to update before geting the preview.
         # Important otherwise first preview will miss the background !
         while not self.loaded:
@@ -318,9 +322,6 @@ class MainDisplay(DisplayWidget):
         # Make display show up if in single screen mode
         if self.isLive:
             self.setVisible(True)
-        # save preview for debugging
-        if log.isEnabledFor(logging.DEBUG):
-            preview.save(u'temp.png', u'png')
         return preview
 
     def buildHtml(self, serviceItem):
@@ -332,7 +333,8 @@ class MainDisplay(DisplayWidget):
         self.loaded = False
         self.initialFrame = False
         self.serviceItem = serviceItem
-        html = build_html(self.serviceItem, self.screen, self.parent.alertTab)
+        html = build_html(self.serviceItem, self.screen, self.parent.alertTab,\
+            self.isLive)
         self.webView.setHtml(html)
         if serviceItem.foot_text and serviceItem.foot_text:
             self.footer(serviceItem.foot_text)
