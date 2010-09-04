@@ -286,6 +286,10 @@ def build_html(item, screen, alert, islive):
     return html
 
 def webkit_version():
+    """
+    Return the Webkit version in use.
+    Note method added relatively recently, so return 0 if prior to this
+    """
     try:
         webkitvers = float(QtWebKit.qWebKitVersion())
         log.debug(u'Webkit version = %s' % webkitvers)
@@ -402,6 +406,16 @@ def build_lyrics_css(item, webkitvers):
     return lyrics_css
     
 def build_lyrics_outline_css(theme, is_shadow=False):
+    """
+    Build the css which controls the theme outline
+    Also used by renderer for splitting verses
+
+    `theme`
+        Object containing theme information
+    
+    `is_shadow`
+        If true, use the shadow colors instead
+    """
     if theme.display_outline:
         size = float(theme.display_outline_size) / 16
         if is_shadow:
@@ -420,11 +434,14 @@ def build_lyrics_format_css(theme, width, height):
     Build the css which controls the theme format
     Also used by renderer for splitting verses
 
-    `item`
-        Service Item containing theme and location information
+    `theme`
+        Object containing theme information
     
-    `webkitvers`
-        The version of qtwebkit we're using
+    `width`
+        Width of the lyrics block
+
+    `height`
+        Height of the lyrics block
 
     """
     if theme.display_horizontalAlign == 2:
