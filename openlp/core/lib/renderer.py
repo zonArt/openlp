@@ -69,21 +69,11 @@ class Renderer(object):
         self.theme_name = theme.theme_name
         if theme.background_type == u'image':
             if theme.background_filename:
-                self.set_bg_image(theme.background_filename)
-
-    def set_bg_image(self, filename):
-        """
-        Set a background image.
-
-        ``filename``
-            The name of the image file.
-        """
-        log.debug(u'set bg image %s', filename)
-        self._bg_image_filename = unicode(filename)
-        if self.frame:
-            self.bg_image = resize_image(self._bg_image_filename,
-                                         self.frame.width(),
-                                         self.frame.height())
+                self._bg_image_filename = unicode(filename)
+                if self.frame:
+                    self.bg_image = resize_image(self._bg_image_filename,
+                        self.frame.width(),
+                        self.frame.height())
 
     def set_text_rectangle(self, rect_main, rect_footer):
         """
@@ -99,7 +89,7 @@ class Renderer(object):
         self._rect = rect_main
         self._rect_footer = rect_footer
 
-    def set_frame_dest(self, frame_width, frame_height, preview=False):
+    def set_frame_dest(self, frame_width, frame_height):
         """
         Set the size of the slide.
 
@@ -109,11 +99,7 @@ class Renderer(object):
         ``frame_height``
             The height of the slide.
 
-        ``preview``
-            Defaults to *False*. Whether or not to generate a preview.
         """
-        if preview:
-            self.bg_frame = None
         log.debug(u'set frame dest (frame) w %d h %d', frame_width,
             frame_height)
         self.frame = QtGui.QImage(frame_width, frame_height,
@@ -121,8 +107,17 @@ class Renderer(object):
         if self._bg_image_filename and not self.bg_image:
             self.bg_image = resize_image(self._bg_image_filename,
                 self.frame.width(), self.frame.height())
-        if self.bg_frame is None:
-            self._generate_background_frame()
+        if self._theme.background_type == u'image':
+            self.bg_frame = QtGui.QImage(self.frame.width(),
+                self.frame.height(), QtGui.QImage.Format_ARGB32_Premultiplied)
+            painter = QtGui.QPainter()
+            painter.begin(self.bg_frame)
+            painter.fillRect(self.frame.rect(), QtCore.Qt.black)
+            if self.bg_image:
+                painter.drawImage(0, 0, self.bg_image)
+            painter.end()
+        else:
+            self.bg_frame = None
 
     def format_slide(self, words, line_break):
         """
@@ -180,57 +175,3 @@ class Renderer(object):
         formatted.append(shell % old_html_text)
         log.debug(u'format_slide - End')
         return formatted
-
-    def _generate_background_frame(self):
-        """
-        Generate a background frame to the same size as the frame to be used.
-        Results are cached for performance reasons.
-        """
-        assert(self._theme)
-        self.bg_frame = QtGui.QImage(self.frame.width(),
-            self.frame.height(), QtGui.QImage.Format_ARGB32_Premultiplied)
-        log.debug(u'render background %s start', self._theme.background_type)
-        if self._theme.background_type == u'solid':
-            self.bg_frame = None
-#            painter.fillRect(self.frame.rect(),
-#                QtGui.QColor(self._theme.background_color))
-        elif self._theme.background_type == u'gradient':
-            self.bg_frame = None
-            # gradient
-#            gradient = None
-#            if self._theme.background_direction == u'horizontal':
-#                w = int(self.frame.width()) / 2
-#                # vertical
-#                gradient = QtGui.QLinearGradient(w, 0, w, self.frame.height())
-#            elif self._theme.background_direction == u'vertical':
-#                h = int(self.frame.height()) / 2
-#                # Horizontal
-#                gradient = QtGui.QLinearGradient(0, h, self.frame.width(), h)
-#            else:
-#                w = int(self.frame.width()) / 2
-#                h = int(self.frame.height()) / 2
-#                # Circular
-#                gradient = QtGui.QRadialGradient(w, h, w)
-#            gradient.setColorAt(0,
-#                QtGui.QColor(self._theme.background_startColor))
-#            gradient.setColorAt(1,
-#                QtGui.QColor(self._theme.background_endColor))
-#            painter.setBrush(QtGui.QBrush(gradient))
-#            rect_path = QtGui.QPainterPath()
-#            max_x = self.frame.width()
-#            max_y = self.frame.height()
-#            rect_path.moveTo(0, 0)
-#            rect_path.lineTo(0, max_y)
-#            rect_path.lineTo(max_x, max_y)
-#            rect_path.lineTo(max_x, 0)
-#            rect_path.closeSubpath()
-#            painter.drawPath(rect_path)
-#            painter.end()
-        elif self._theme.background_type == u'image':
-            # image
-            painter = QtGui.QPainter()
-            painter.begin(self.bg_frame)
-            painter.fillRect(self.frame.rect(), QtCore.Qt.black)
-            if self.bg_image:
-                painter.drawImage(0, 0, self.bg_image)
-            painter.end()
