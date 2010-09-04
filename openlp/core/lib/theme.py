@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -54,7 +55,6 @@ BLANK_THEME_XML = \
       <proportion>30</proportion>
       <weight>Normal</weight>
       <italics>False</italics>
-      <indentation>0</indentation>
       <line_adjustment>0</line_adjustment>
       <location override="False" x="10" y="10" width="1004" height="730"/>
    </font>
@@ -64,7 +64,6 @@ BLANK_THEME_XML = \
       <proportion>12</proportion>
       <weight>Normal</weight>
       <italics>False</italics>
-      <indentation>0</indentation>
       <line_adjustment>0</line_adjustment>
       <location override="False" x="10" y="730" width="1004" height="38"/>
    </font>
@@ -78,6 +77,14 @@ BLANK_THEME_XML = \
    </display>
  </theme>
 '''
+
+class ThemeLevel(object):
+    """
+    Provides an enumeration for the level a theme applies to
+    """
+    Global = 1
+    Service = 2
+    Song = 3
 
 class ThemeXML(object):
     """
@@ -175,7 +182,7 @@ class ThemeXML(object):
         self.child_element(background, u'filename', filename)
 
     def add_font(self, name, color, proportion, override, fonttype=u'main',
-        weight=u'Normal', italics=u'False', indentation=0, line_adjustment=0,
+        weight=u'Normal', italics=u'False', line_adjustment=0,
         xpos=0, ypos=0, width=0, height=0):
         """
         Add a Font.
@@ -200,9 +207,6 @@ class ThemeXML(object):
 
         ``italics``
             Does the font render to italics Defaults to 0 Normal
-
-        ``indentation``
-            Number of characters the wrap line is indented
 
         ``xpos``
             The X position of the text block.
@@ -229,8 +233,6 @@ class ThemeXML(object):
         self.child_element(background, u'weight', weight)
         #Create italics name element
         self.child_element(background, u'italics', italics)
-        #Create indentation name element
-        self.child_element(background, u'indentation', unicode(indentation))
         #Create indentation name element
         self.child_element(
             background, u'line_adjustment', unicode(line_adjustment))
@@ -313,7 +315,6 @@ class ThemeXML(object):
         element.appendChild(value)
         background.appendChild(element)
 
-
     def child_element(self, element, tag, value):
         """
         Generic child element creator.
@@ -351,14 +352,8 @@ class ThemeXML(object):
         ``xml``
             The XML string to parse.
         """
-        self.base_parse_xml()
-        self.parse_xml(xml)
-
-    def base_parse_xml(self):
-        """
-        Pull in the blank theme XML as a starting point.
-        """
         self.parse_xml(BLANK_THEME_XML)
+        self.parse_xml(xml)
 
     def parse_xml(self, xml):
         """
@@ -414,4 +409,3 @@ class ThemeXML(object):
             if key[0:1] != u'_':
                 theme_strings.append(u'%30s: %s' % (key, getattr(self, key)))
         return u'\n'.join(theme_strings)
-

@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,18 +23,42 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The :mod:`db` module provides the database and schema that is the backend for
+the SongUsage plugin
+"""
 
 from sqlalchemy import Column, Table, types
+from sqlalchemy.orm import mapper
 
-from openlp.plugins.songusage.lib.meta import metadata
+from openlp.core.lib.db import BaseModel, init_db
 
-# Definition of the "songusage" table
-songusage_table = Table(u'songusage_data', metadata,
-    Column(u'id', types.Integer(), primary_key=True),
-    Column(u'usagedate', types.Date, index=True, nullable=False),
-    Column(u'usagetime', types.Time, index=True, nullable=False),
-    Column(u'title', types.Unicode(255), nullable=False),
-    Column(u'authors', types.Unicode(255), nullable=False),
-    Column(u'copyright', types.Unicode(255)),
-    Column(u'ccl_number', types.Unicode(65))
-)
+class SongUsageItem(BaseModel):
+    """
+    SongUsageItem model
+    """
+    pass
+
+def init_schema(url):
+    """
+    Setup the songusage database connection and initialise the database schema
+
+    ``url``
+        The database to setup
+    """
+    session, metadata = init_db(url)
+
+    songusage_table = Table(u'songusage_data', metadata,
+        Column(u'id', types.Integer(), primary_key=True),
+        Column(u'usagedate', types.Date, index=True, nullable=False),
+        Column(u'usagetime', types.Time, index=True, nullable=False),
+        Column(u'title', types.Unicode(255), nullable=False),
+        Column(u'authors', types.Unicode(255), nullable=False),
+        Column(u'copyright', types.Unicode(255)),
+        Column(u'ccl_number', types.Unicode(65))
+    )
+
+    mapper(SongUsageItem, songusage_table)
+
+    metadata.create_all(checkfirst=True)
+    return session

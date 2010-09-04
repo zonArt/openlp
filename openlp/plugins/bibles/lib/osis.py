@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -140,7 +141,7 @@ class OSISBible(BibleDB):
                             self.wizard.ImportProgressBar.setMaximum(260)
                     if last_chapter != chapter:
                         if last_chapter != 0:
-                            self.commit()
+                            self.session.commit()
                         self.wizard.incrementProgressBar(
                             u'Importing %s %s...' % \
                             (self.books[match.group(1)][0], chapter))
@@ -169,7 +170,7 @@ class OSISBible(BibleDB):
                     verse_text = self.spaces_regex.sub(u' ', verse_text)
                     self.create_verse(db_book.id, chapter, verse, verse_text)
                     Receiver.send_message(u'openlp_process_events')
-            self.commit()
+            self.session.commit()
             self.wizard.incrementProgressBar(u'Finishing import...')
             if match_count == 0:
                 success = False
@@ -184,4 +185,3 @@ class OSISBible(BibleDB):
             return False
         else:
             return success
-

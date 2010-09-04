@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,8 +28,8 @@ import logging
 
 from PyQt4 import QtCore
 
-from renderer import Renderer
-from openlp.core.lib import ThemeLevel
+from openlp.core.lib import Renderer, ThemeLevel, ServiceItem
+from openlp.core.ui import MainDisplay
 
 log = logging.getLogger(__name__)
 
@@ -55,6 +56,8 @@ class RenderManager(object):
         """
         log.debug(u'Initilisation started')
         self.screens = screens
+        self.display = MainDisplay(self, screens, False)
+        self.display.setup()
         self.theme_manager = theme_manager
         self.renderer = Renderer()
         self.calculate_default(self.screens.current[u'size'])
@@ -63,6 +66,7 @@ class RenderManager(object):
         self.theme_level = u''
         self.override_background = None
         self.themedata = None
+        self.alertTab = None
 
     def update_display(self):
         """
@@ -70,7 +74,10 @@ class RenderManager(object):
         """
         log.debug(u'Update Display')
         self.calculate_default(self.screens.current[u'size'])
+        self.display = MainDisplay(self, self.screens, False)
+        self.display.setup()
         self.renderer.bg_frame = None
+        self.themedata = None
 
     def set_global_theme(self, global_theme, theme_level=ThemeLevel.Global):
         """
@@ -86,6 +93,7 @@ class RenderManager(object):
         """
         self.global_theme = global_theme
         self.theme_level = theme_level
+        self.themedata = None
 
     def set_service_theme(self, service_theme):
         """
@@ -95,18 +103,28 @@ class RenderManager(object):
             The service-level theme to be set.
         """
         self.service_theme = service_theme
+        self.themedata = None
 
-    def set_override_theme(self, theme):
+    def set_override_theme(self, theme, overrideLevels=False):
         """
         Set the appropriate theme depending on the theme level.
+        Called by the service item when building a display frame
 
         ``theme``
-            The name of the song-level theme.
+            The name of the song-level theme. None means the service
+            item wants to use the given value.
+
+        ``overrideLevels``
+            Used to force the theme data passed in to be used.
+
         """
         log.debug(u'set override theme to %s', theme)
-        if self.theme_level == ThemeLevel.Global:
+        theme_level = self.theme_level
+        if overrideLevels:
+            theme_level = ThemeLevel.Song
+        if theme_level == ThemeLevel.Global:
             self.theme = self.global_theme
-        elif self.theme_level == ThemeLevel.Service:
+        elif theme_level == ThemeLevel.Service:
             if self.service_theme == u'':
                 self.theme = self.global_theme
             else:
@@ -114,20 +132,27 @@ class RenderManager(object):
         else:
             if theme:
                 self.theme = theme
-            elif self.theme_level == ThemeLevel.Song or \
-                self.theme_level == ThemeLevel.Service:
+            elif theme_level == ThemeLevel.Song or \
+                theme_level == ThemeLevel.Service:
                 if self.service_theme == u'':
                     self.theme = self.global_theme
                 else:
                     self.theme = self.service_theme
             else:
                 self.theme = self.global_theme
-        if self.theme != self.renderer.theme_name or self.themedata is None:
+        if self.theme != self.renderer.theme_name or self.themedata is None \
+            or overrideLevels:
             log.debug(u'theme is now %s', self.theme)
-            self.themedata = self.theme_manager.getThemeData(self.theme)
+            # Force the theme to be the one passed in.
+            if overrideLevels:
+                self.themedata = theme
+            else:
+                self.themedata = self.theme_manager.getThemeData(self.theme)
             self.calculate_default(self.screens.current[u'size'])
             self.renderer.set_theme(self.themedata)
             self.build_text_rectangle(self.themedata)
+            self.renderer.set_frame_dest(self.width, self.height)
+        return self.renderer._rect, self.renderer._rect_footer
 
     def build_text_rectangle(self, theme):
         """
@@ -163,13 +188,8 @@ class RenderManager(object):
             The theme to generated a preview for.
         """
         log.debug(u'generate preview')
-        #set the default image size for previews
+        # set the default image size for previews
         self.calculate_default(self.screens.preview[u'size'])
-        self.renderer.set_theme(themedata)
-        self.build_text_rectangle(themedata)
-        self.renderer.set_frame_dest(self.width, self.height, True)
-        #Reset the real screen size for subsequent render requests
-        self.calculate_default(self.screens.current[u'size'])
         verse = u'Amazing Grace!\n'\
         'How sweet the sound\n'\
         'To save a wretch like me;\n'\
@@ -179,12 +199,21 @@ class RenderManager(object):
         footer.append(u'Amazing Grace (John Newton)' )
         footer.append(u'Public Domain')
         footer.append(u'CCLI 123456')
-        formatted = self.renderer.format_slide(verse, False)
-        #Only Render the first slide page returned
-        return self.renderer.generate_frame_from_lines(formatted[0],
-            footer)[u'main']
+        # build a service item to generate preview
+        serviceItem = ServiceItem()
+        serviceItem.theme = themedata
+        serviceItem.add_from_text(u'', verse, footer)
+        serviceItem.render_manager = self
+        serviceItem.raw_footer = footer
+        serviceItem.render(True)
+        self.display.buildHtml(serviceItem)
+        raw_html = serviceItem.get_rendered_frame(0)[1]
+        preview = self.display.text(raw_html)
+        # Reset the real screen size for subsequent render requests
+        self.calculate_default(self.screens.current[u'size'])
+        return preview
 
-    def format_slide(self, words):
+    def format_slide(self, words, line_break):
         """
         Calculate how much text can fit on a slide.
 
@@ -193,22 +222,7 @@ class RenderManager(object):
         """
         log.debug(u'format slide')
         self.build_text_rectangle(self.themedata)
-        return self.renderer.format_slide(words, False)
-
-    def generate_slide(self, main_text, footer_text):
-        """
-        Generate the actual slide image.
-
-        ``main_text``
-            The text for the main area of the slide.
-
-        ``footer_text``
-            The text for the slide footer.
-        """
-        log.debug(u'generate slide')
-        self.build_text_rectangle(self.themedata)
-        self.renderer.set_frame_dest(self.width, self.height)
-        return self.renderer.generate_frame_from_lines(main_text, footer_text)
+        return self.renderer.format_slide(words, line_break)
 
     def calculate_default(self, screen):
         """

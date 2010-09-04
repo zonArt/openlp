@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,7 +26,7 @@
 
 import logging
 
-from openlp.core.lib import Plugin, translate
+from openlp.core.lib import Plugin, translate, build_icon
 from openlp.plugins.remotes.lib import RemoteTab, HttpServer
 
 log = logging.getLogger(__name__)
@@ -38,6 +39,7 @@ class RemotesPlugin(Plugin):
         remotes constructor
         """
         Plugin.__init__(self, u'Remotes', u'1.9.2', plugin_helpers)
+        self.icon = build_icon(u':/plugins/plugin_remote.png')
         self.weight = -1
         self.server = None
 
@@ -47,7 +49,7 @@ class RemotesPlugin(Plugin):
         """
         log.debug(u'initialise')
         Plugin.initialise(self)
-        self.insert_toolbox_item()
+        self.insertToolboxItem()
         self.server = HttpServer(self)
 
     def finalise(self):
@@ -55,11 +57,11 @@ class RemotesPlugin(Plugin):
         Tidy up and close down the http server
         """
         log.debug(u'finalise')
-        self.remove_toolbox_item()
+        Plugin.finalise(self)
         if self.server:
             self.server.close()
 
-    def get_settings_tab(self):
+    def getSettingsTab(self):
         """
         Create the settings Tab
         """
@@ -69,9 +71,8 @@ class RemotesPlugin(Plugin):
         """
         Information about this plugin
         """
-        about_text = translate('RemotePlugin',
-            '<b>Remote Plugin</b><br>This plugin '
-            'provides the ability to send messages to a running version of '
-            'openlp on a different computer via a web browser or other app<br>'
-            'The Primary use for this would be to send alerts from a creche')
+        about_text = translate('RemotePlugin', '<strong>Remote Plugin</strong>'
+            '<br />The remote plugin provides the ability to send messages to '
+            'a running version of OpenLP on a different computer via a web '
+            'browser or through the remote API.')
         return about_text

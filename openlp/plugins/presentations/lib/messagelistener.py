@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -41,17 +42,28 @@ class Controller(object):
     log.info(u'Controller loaded')
 
     def __init__(self, live):
+        """
+        Constructor
+        """
         self.is_live = live
         self.doc = None
         log.info(u'%s controller loaded' % live)
 
     def add_handler(self, controller, file, is_blank):
+        """
+        Add a handler, which is an instance of a presentation and 
+        slidecontroller combination. If the slidecontroller has a display
+        then load the presentation.
+        """
         log.debug(u'Live = %s, add_handler %s' % (self.is_live, file))
         self.controller = controller
         if self.doc is not None:
             self.shutdown()
         self.doc = self.controller.add_doc(file)
-        self.doc.load_presentation()
+        if not self.doc.load_presentation():
+            # Display error message to user
+            # Inform slidecontroller that the action failed?
+            return
         if self.is_live:
             self.doc.start_presentation()
             if is_blank:
@@ -60,6 +72,10 @@ class Controller(object):
         self.doc.slidenumber = 0
 
     def activate(self):
+        """
+        Active the presentation, and show it on the screen.
+        Use the last slide number.
+        """
         log.debug(u'Live = %s, activate' % self.is_live)
         if self.doc.is_active():
             return
@@ -71,6 +87,9 @@ class Controller(object):
                 self.doc.goto_slide(self.doc.slidenumber)
 
     def slide(self, slide):
+        """
+        Go to a specific slide
+        """
         log.debug(u'Live = %s, slide' %  self.is_live)
         if not self.is_live:
             return
@@ -152,6 +171,9 @@ class Controller(object):
         #self.timer.stop()
 
     def blank(self):
+        """
+        Instruct the controller to blank the presentation
+        """
         log.debug(u'Live = %s, blank' % self.is_live)
         if not self.is_live:
             return
@@ -162,6 +184,9 @@ class Controller(object):
         self.doc.blank_screen()
 
     def stop(self):
+        """
+        Instruct the controller to stop and hide the presentation
+        """
         log.debug(u'Live = %s, stop' % self.is_live)
         if not self.is_live:
             return
@@ -172,6 +197,9 @@ class Controller(object):
         self.doc.stop_presentation()
 
     def unblank(self):
+        """
+        Instruct the controller to unblank the presentation
+        """
         log.debug(u'Live = %s, unblank' % self.is_live)
         if not self.is_live:
             return
@@ -246,6 +274,9 @@ class MessageListener(object):
         controller.add_handler(self.controllers[self.handler], file, is_blank)
 
     def slide(self, message):
+        """
+        React to the message to move to a specific slide
+        """
         is_live = message[1]
         slide = message[2]
         if is_live:
@@ -254,6 +285,9 @@ class MessageListener(object):
             self.preview_handler.slide(slide)
 
     def first(self, message):
+        """
+        React to the message to move to the first slide
+        """
         is_live = message[1]
         if is_live:
             self.live_handler.first()
@@ -261,6 +295,9 @@ class MessageListener(object):
             self.preview_handler.first()
 
     def last(self, message):
+        """
+        React to the message to move to the last slide
+        """
         is_live = message[1]
         if is_live:
             self.live_handler.last()
@@ -268,6 +305,9 @@ class MessageListener(object):
             self.preview_handler.last()
 
     def next(self, message):
+        """
+        React to the message to move to the next animation/slide
+        """
         is_live = message[1]
         if is_live:
             self.live_handler.next()
@@ -275,6 +315,9 @@ class MessageListener(object):
             self.preview_handler.next()
 
     def previous(self, message):
+        """
+        React to the message to move to the previous animation/slide
+        """
         is_live = message[1]
         if is_live:
             self.live_handler.previous()
@@ -282,6 +325,10 @@ class MessageListener(object):
             self.preview_handler.previous()
 
     def shutdown(self, message):
+        """
+        React to message to shutdown the presentation. I.e. end the show
+        and close the file
+        """
         is_live = message[1]
         if is_live:
             Receiver.send_message(u'maindisplay_show')
@@ -290,19 +337,34 @@ class MessageListener(object):
             self.preview_handler.shutdown()
 
     def hide(self, message):
+        """
+        React to the message to show the desktop
+        """
         is_live = message[1]
         if is_live:
             self.live_handler.stop()
 
     def blank(self, message):
+        """
+        React to the message to blank the display
+        """
         is_live = message[1]
         if is_live:
             self.live_handler.blank()
 
     def unblank(self, message):
+        """
+        React to the message to unblank the display
+        """
         is_live = message[1]
         if is_live:
             self.live_handler.unblank()
 
     def timeout(self):
+        """
+        The presentation may be timed or might be controlled by the 
+        application directly, rather than through OpenLP. Poll occassionally
+        to check which slide is currently displayed so the slidecontroller
+        view can be updated
+        """
         self.live_handler.poll()

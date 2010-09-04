@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -76,7 +77,6 @@ class PluginManager(object):
         startdepth = len(os.path.abspath(plugin_dir).split(os.sep))
         log.debug(u'finding plugins in %s at depth %d',
             unicode(plugin_dir), startdepth)
-
         for root, dirs, files in os.walk(plugin_dir):
             for name in files:
                 if name.endswith(u'.py') and not name.startswith(u'__'):
@@ -109,9 +109,9 @@ class PluginManager(object):
                 log.exception(u'loaded plugin %s has no helpers', unicode(p))
         plugins_list = sorted(plugin_objects, self.order_by_weight)
         for plugin in plugins_list:
-            if plugin.check_pre_conditions():
+            if plugin.checkPreConditions():
                 log.debug(u'Plugin %s active', unicode(plugin.name))
-                plugin.set_status()
+                plugin.setStatus()
             else:
                 plugin.status = PluginStatus.Disabled
             self.plugins.append(plugin)
@@ -138,7 +138,7 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.media_item = plugin.get_media_manager_item()
+                plugin.mediaItem = plugin.getMediaManagerItem()
 
     def hook_settings_tabs(self, settingsform=None):
         """
@@ -151,7 +151,7 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.settings_tab = plugin.get_settings_tab()
+                plugin.settings_tab = plugin.getSettingsTab()
                 if plugin.settings_tab:
                     log.debug(u'Inserting settings tab item from %s' %
                         plugin.name)
@@ -169,7 +169,7 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.add_import_menu_item(import_menu)
+                plugin.addImportMenuItem(import_menu)
 
     def hook_export_menu(self, export_menu):
         """
@@ -181,7 +181,7 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.add_export_menu_item(export_menu)
+                plugin.addExportMenuItem(export_menu)
 
     def hook_tools_menu(self, tools_menu):
         """
@@ -193,7 +193,7 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.add_tools_menu_item(tools_menu)
+                plugin.addToolsMenuItem(tools_menu)
 
     def initialise_plugins(self):
         """
@@ -202,12 +202,12 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             log.info(u'initialising plugins %s in a %s state'
-                % (plugin.name, plugin.is_active()))
-            if plugin.is_active():
+                % (plugin.name, plugin.isActive()))
+            if plugin.isActive():
                 plugin.initialise()
                 log.info(u'Initialisation Complete for %s ' % plugin.name)
-            if not plugin.is_active():
-                plugin.remove_toolbox_item()
+            if not plugin.isActive():
+                plugin.removeToolboxItem()
 
     def finalise_plugins(self):
         """
@@ -216,7 +216,6 @@ class PluginManager(object):
         """
         log.info(u'finalising plugins')
         for plugin in self.plugins:
-            if plugin.is_active():
+            if plugin.isActive():
                 plugin.finalise()
                 log.info(u'Finalisation Complete for %s ' % plugin.name)
-

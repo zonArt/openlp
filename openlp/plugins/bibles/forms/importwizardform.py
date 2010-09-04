@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -32,6 +33,7 @@ from PyQt4 import QtCore, QtGui
 
 from bibleimportwizard import Ui_BibleImportWizard
 from openlp.core.lib import Receiver, SettingsManager, translate
+from openlp.core.lib.db import delete_database
 from openlp.core.utils import AppLocation
 from openlp.plugins.bibles.lib.manager import BibleFormat
 
@@ -48,8 +50,8 @@ class WebDownload(object):
     }
 
     @classmethod
-    def get_name(cls, id):
-        return cls.Names[id]
+    def get_name(cls, name):
+        return cls.Names[name]
 
 
 class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
@@ -127,8 +129,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                             'Invalid Bible Location'),
                         translate('BiblesPlugin.ImportWizardForm',
                             'You need to specify a file to import your '
-                            'Bible from.'),
-                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                            'Bible from.'))
                     self.OSISLocationEdit.setFocus()
                     return False
             elif self.field(u'source_format').toInt()[0] == BibleFormat.CSV:
@@ -138,8 +139,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                             'Invalid Books File'),
                         translate('BiblesPlugin.ImportWizardForm',
                             'You need to specify a file with books of '
-                            'the Bible to use in the import.'),
-                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                            'the Bible to use in the import.'))
                     self.BooksLocationEdit.setFocus()
                     return False
                 elif self.field(u'csv_versefile').toString() == u'':
@@ -148,8 +148,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                             'Invalid Verse File'),
                         translate('BiblesPlugin.ImportWizardForm',
                             'You need to specify a file of Bible '
-                            'verses to import.'),
-                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                            'verses to import.'))
                     self.CsvVerseLocationEdit.setFocus()
                     return False
             elif self.field(u'source_format').toInt()[0] == \
@@ -160,8 +159,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                             'Invalid OpenSong Bible'),
                         translate('BiblesPlugin.ImportWizardForm',
                             'You need to specify an OpenSong Bible '
-                            'file to import.'),
-                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                            'file to import.'))
                     self.OpenSongFileEdit.setFocus()
                     return False
             return True
@@ -176,8 +174,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                         'Empty Version Name'),
                     translate('BiblesPlugin.ImportWizardForm',
                         'You need to specify a version name for your '
-                        'Bible.'),
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                        'Bible.'))
                 self.VersionNameEdit.setFocus()
                 return False
             elif license_copyright == u'':
@@ -187,8 +184,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                     translate('BiblesPlugin.ImportWizardForm',
                         'You need to set a copyright for your Bible! '
                         'Bibles in the Public Domain need to be marked as '
-                        'such.'),
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                        'such.'))
                 self.CopyrightEdit.setFocus()
                 return False
             elif self.manager.exists(license_version):
@@ -197,8 +193,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                         'Bible Exists'),
                     translate('BiblesPlugin.ImportWizardForm',
                         'This Bible already exists! Please import '
-                        'a different Bible or first delete the existing one.'),
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                        'a different Bible or first delete the existing one.'))
                 self.VersionNameEdit.setFocus()
                 return False
             return True
@@ -224,7 +219,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         Show the file open dialog for the OSIS file.
         """
         self.getFileName(
-                translate('BiblesPlugin.ImportWizardForm', 'Open OSIS File'),
+            translate('BiblesPlugin.ImportWizardForm', 'Open OSIS File'),
             self.OSISLocationEdit)
 
     def onBooksFileButtonClicked(self):
@@ -239,10 +234,8 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         """
         Show the file open dialog for the verses CSV file.
         """
-        self.getFileName(
-            translate('BiblesPlugin.ImportWizardForm',
-                'Open Verses CSV File'),
-            self.CsvVerseLocationEdit)
+        self.getFileName(translate('BiblesPlugin.ImportWizardForm',
+            'Open Verses CSV File'), self.CsvVerseLocationEdit)
 
     def onOpenSongBrowseButtonClicked(self):
         """
@@ -260,8 +253,8 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         if self.currentId() == 3:
             Receiver.send_message(u'bibles_stop_import')
 
-    def onCurrentIdChanged(self, id):
-        if id == 3:
+    def onCurrentIdChanged(self, pageId):
+        if pageId == 3:
             self.preImport()
             self.performImport()
             self.postImport()
@@ -327,6 +320,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         #Load and store Crosswalk Bibles
         filepath = AppLocation.get_directory(AppLocation.PluginsDir)
         filepath = os.path.join(filepath, u'bibles', u'resources')
+        books_file = None
         try:
             self.web_bible_list[WebDownload.Crosswalk] = {}
             books_file = open(
@@ -348,6 +342,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
             if books_file:
                 books_file.close()
         #Load and store BibleGateway Bibles
+        books_file = None
         try:
             self.web_bible_list[WebDownload.BibleGateway] = {}
             books_file = open(os.path.join(filepath, u'biblegateway.csv'), 'r')
@@ -451,7 +446,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
             self.ImportProgressLabel.setText(
                 translate('BiblesPlugin.ImportWizardForm',
                     'Your Bible import failed.'))
-            importer.delete()
+            delete_database(self.bibleplugin.settingsSection, importer.file)
 
     def postImport(self):
         self.ImportProgressBar.setValue(self.ImportProgressBar.maximum())

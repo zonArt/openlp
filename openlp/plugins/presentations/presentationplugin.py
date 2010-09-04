@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,51 +23,72 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The :mod:`presentationplugin` module provides the ability for OpenLP to display
+presentations from a variety of document formats.
+"""
 import os
 import logging
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus, translate
+from openlp.core.lib import Plugin, build_icon, translate
 from openlp.core.utils import AppLocation
-from openlp.plugins.presentations.lib import *
+from openlp.plugins.presentations.lib import PresentationController, \
+    PresentationMediaItem, PresentationTab
 
 log = logging.getLogger(__name__)
 
 class PresentationPlugin(Plugin):
+    """
+    This plugin allowed a Presentation to be opened, controlled and displayed
+    on the output display. The plugin controls third party applications such
+    as OpenOffice.org Impress, Microsoft PowerPoint and the PowerPoint viewer
+    """
     log = logging.getLogger(u'PresentationPlugin')
 
     def __init__(self, plugin_helpers):
+        """
+        PluginPresentation constructor.
+        """
         log.debug(u'Initialised')
         self.controllers = {}
         Plugin.__init__(self, u'Presentations', u'1.9.2', plugin_helpers)
         self.weight = -8
-        self.icon = build_icon(u':/media/media_presentation.png')
-        self.status = PluginStatus.Active
+        self.icon_path = u':/plugins/plugin_presentations.png'
+        self.icon = build_icon(self.icon_path)
 
-    def get_settings_tab(self):
+    def getSettingsTab(self):
         """
         Create the settings Tab
         """
         return PresentationTab(self.name, self.controllers)
 
     def initialise(self):
+        """
+        Initialise the plugin. Determine which controllers are enabled
+        are start their processes.
+        """
         log.info(u'Presentations Initialising')
         Plugin.initialise(self)
-        self.insert_toolbox_item()
+        self.insertToolboxItem()
         for controller in self.controllers:
-            if self.controllers[controller].enabled:
+            if self.controllers[controller].enabled():
                 self.controllers[controller].start_process()
+        self.mediaItem.buildFileMaskString()
 
     def finalise(self):
+        """
+        Finalise the plugin. Ask all the enabled presentation applications
+        to close down their applications and release resources.
+        """
         log.info(u'Plugin Finalise')
         #Ask each controller to tidy up
         for key in self.controllers:
             controller = self.controllers[key]
-            if controller.enabled:
+            if controller.enabled():
                 controller.kill()
-        self.remove_toolbox_item()
+        Plugin.finalise(self)
 
-    def get_media_manager_item(self):
+    def getMediaManagerItem(self):
         """
         Create the Media Manager List
         """
@@ -74,14 +96,18 @@ class PresentationPlugin(Plugin):
             self, self.icon, self.name, self.controllers)
 
     def registerControllers(self, controller):
+        """
+        Register each presentation controller (Impress, PPT etc) and
+        store for later use
+        """
         self.controllers[controller.name] = controller
 
-    def check_pre_conditions(self):
+    def checkPreConditions(self):
         """
         Check to see if we have any presentation software available
         If Not do not install the plugin.
         """
-        log.debug(u'check_pre_conditions')
+        log.debug(u'checkPreConditions')
         controller_dir = os.path.join(
             AppLocation.get_directory(AppLocation.PluginsDir),
             u'presentations', u'lib')
@@ -108,9 +134,12 @@ class PresentationPlugin(Plugin):
             return False
 
     def about(self):
-        about_text = translate('PresentationPlugin',
-            '<b>Presentation Plugin</b> <br> Delivers '
-            'the ability to show presentations using a number of different '
+        """
+        Return information about this plugin
+        """
+        about_text = translate('PresentationPlugin', '<strong>Presentation '
+            'Plugin</strong><br />The presentation plugin provides the '
+            'ability to show presentations using a number of different '
             'programs. The choice of available presentation programs is '
             'available to the user in a drop down box.')
         return about_text

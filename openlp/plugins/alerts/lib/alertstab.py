@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -128,6 +129,7 @@ class AlertsTab(SettingsTab):
         self.LocationComboBox = QtGui.QComboBox(self.LocationWidget)
         self.LocationComboBox.addItem(QtCore.QString())
         self.LocationComboBox.addItem(QtCore.QString())
+        self.LocationComboBox.addItem(QtCore.QString())
         self.LocationComboBox.setObjectName(u'LocationComboBox')
         self.LocationLayout.addWidget(self.LocationComboBox)
         self.LocationSpacer = QtGui.QSpacerItem(147, 20,
@@ -189,13 +191,13 @@ class AlertsTab(SettingsTab):
         self.FontGroupBox.setTitle(
             translate('AlertsPlugin.AlertsTab', 'Font'))
         self.FontLabel.setText(
-            translate('AlertsPlugin.AlertsTab', 'Font Name:'))
+            translate('AlertsPlugin.AlertsTab', 'Font name:'))
         self.FontColorLabel.setText(
-            translate('AlertsPlugin.AlertsTab', 'Font Color:'))
+            translate('AlertsPlugin.AlertsTab', 'Font color:'))
         self.BackgroundColorLabel.setText(
-            translate('AlertsPlugin.AlertsTab', 'Background Color:'))
+            translate('AlertsPlugin.AlertsTab', 'Background color:'))
         self.FontSizeLabel.setText(
-            translate('AlertsPlugin.AlertsTab', 'Font Size:'))
+            translate('AlertsPlugin.AlertsTab', 'Font size:'))
         self.FontSizeSpinBox.setSuffix(
             translate('AlertsPlugin.AlertsTab', 'pt'))
         self.TimeoutLabel.setText(
@@ -207,10 +209,12 @@ class AlertsTab(SettingsTab):
         self.PreviewGroupBox.setTitle(
             translate('AlertsPlugin.AlertsTab', 'Preview'))
         self.FontPreview.setText(
-            translate('AlertsPlugin.AlertsTab', 'openlp.org'))
-        self.LocationComboBox.setItemText(0, 
+            translate('AlertsPlugin.AlertsTab', 'OpenLP 2.0'))
+        self.LocationComboBox.setItemText(0,
             translate('AlertsPlugin.AlertsTab', 'Top'))
-        self.LocationComboBox.setItemText(1, 
+        self.LocationComboBox.setItemText(1,
+            translate('AlertsPlugin.AlertsTab', 'Middle'))
+        self.LocationComboBox.setItemText(2,
             translate('AlertsPlugin.AlertsTab', 'Bottom'))
 
     def onBackgroundColorButtonClicked(self):
@@ -257,7 +261,7 @@ class AlertsTab(SettingsTab):
         self.font_face = unicode(settings.value(
             u'font face', QtCore.QVariant(QtGui.QFont().family())).toString())
         self.location = settings.value(
-            u'location', QtCore.QVariant(0)).toInt()[0]
+            u'location', QtCore.QVariant(1)).toInt()[0]
         settings.endGroup()
         self.FontSizeSpinBox.setValue(self.font_size)
         self.TimeoutSpinBox.setValue(self.timeout)
@@ -270,10 +274,6 @@ class AlertsTab(SettingsTab):
         font.setFamily(self.font_face)
         self.FontComboBox.setCurrentFont(font)
         self.updateDisplay()
-
-    def onItemSelected(self):
-        self.EditButton.setEnabled(True)
-        self.DeleteButton.setEnabled(True)
 
     def save(self):
         settings = QtCore.QSettings()
@@ -296,3 +296,4 @@ class AlertsTab(SettingsTab):
         self.FontPreview.setFont(font)
         self.FontPreview.setStyleSheet(u'background-color: %s; color: %s' %
             (self.bg_color, self.font_color))
+

@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,17 +26,23 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate
+from openlp.core.lib import Receiver, SettingsTab, translate
 
 class PresentationTab(SettingsTab):
     """
     PresentationsTab is the Presentations settings tab in the settings dialog.
     """
     def __init__(self, title, controllers):
+        """
+        Constructor
+        """
         self.controllers = controllers
         SettingsTab.__init__(self, title)
 
     def setupUi(self):
+        """
+        Create the controls for the settings tab
+        """
         self.setObjectName(u'PresentationTab')
         self.tabTitleVisible = translate('PresentationPlugin.PresentationTab',
             'Presentations')
@@ -71,7 +78,17 @@ class PresentationTab(SettingsTab):
         self.PresentationThemeLayout.setSpacing(8)
         self.PresentationThemeLayout.setMargin(0)
         self.PresentationThemeLayout.setObjectName(u'PresentationThemeLayout')
+        self.AdvancedGroupBox = QtGui.QGroupBox(self)
+        self.AdvancedGroupBox.setObjectName(u'AdvancedGroupBox')
+        self.AdvancedLayout = QtGui.QVBoxLayout(self.AdvancedGroupBox)
+        self.AdvancedLayout.setSpacing(8)
+        self.AdvancedLayout.setMargin(8)
+        self.AdvancedLayout.setObjectName(u'AdvancedLayout')
+        self.OverrideAppCheckBox = QtGui.QCheckBox(self.AdvancedGroupBox)
+        self.OverrideAppCheckBox.setObjectName(u'OverrideAppCheckBox')
+        self.AdvancedLayout.addWidget(self.OverrideAppCheckBox)
         self.PresentationLeftLayout.addWidget(self.VerseDisplayGroupBox)
+        self.PresentationLeftLayout.addWidget(self.AdvancedGroupBox)
         self.PresentationLeftSpacer = QtGui.QSpacerItem(40, 20,
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.PresentationLeftLayout.addItem(self.PresentationLeftSpacer)
@@ -89,29 +106,60 @@ class PresentationTab(SettingsTab):
         self.PresentationLayout.addWidget(self.PresentationRightWidget)
 
     def retranslateUi(self):
+        """
+        Make any translation changes
+        """
         self.VerseDisplayGroupBox.setTitle(
             translate('PresentationPlugin.PresentationTab',
             'Available Controllers'))
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = self.PresenterCheckboxes[controller.name]
-            checkbox.setText(
-                u'%s %s' % (controller.name,
-                translate('PresentationPlugin.PresentationTab', 'available')))
+            checkbox.setText(controller.name)
+        self.AdvancedGroupBox.setTitle(
+            translate('PresentationPlugin.PresentationTab',
+            'Advanced'))
+        self.OverrideAppCheckBox.setText(
+            translate('PresentationPlugin.PresentationTab',
+            'Allow presentation application to be overriden'))
 
     def load(self):
+        """
+        Load the settings.
+        """
         for key in self.controllers:
             controller = self.controllers[key]
             if controller.available:
                 checkbox = self.PresenterCheckboxes[controller.name]
                 checkbox.setChecked(QtCore.QSettings().value(
                     self.settingsSection + u'/' + controller.name,
-                    QtCore.QVariant(0)).toInt()[0])
+                    QtCore.QVariant(QtCore.Qt.Checked)).toInt()[0])
+        self.OverrideAppCheckBox.setChecked(QtCore.QSettings().value(
+            self.settingsSection + u'/override app', 
+            QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0])
 
     def save(self):
+        """
+        Save the settings.
+        """
+        changed = False
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = self.PresenterCheckboxes[controller.name]
-            QtCore.QSettings().setValue(
-                self.settingsSection + u'/' + controller.name,
-                QtCore.QVariant(checkbox.checkState()))
+            setting_key = self.settingsSection + u'/' + controller.name
+            if QtCore.QSettings().value(setting_key) != checkbox.checkState():
+                changed = True
+                QtCore.QSettings().setValue(setting_key,
+                    QtCore.QVariant(checkbox.checkState()))
+                if checkbox.checkState() == QtCore.Qt.Checked:
+                    controller.start_process()
+                else:
+                    controller.kill()
+        setting_key = self.settingsSection + u'/override app'
+        if QtCore.QSettings().value(setting_key) != \
+            self.OverrideAppCheckBox.checkState():
+            QtCore.QSettings().setValue(setting_key,
+                QtCore.QVariant(self.OverrideAppCheckBox.checkState()))
+            changed = True
+        if changed:
+            Receiver.send_message(u'mediaitem_presentation_rebuild')

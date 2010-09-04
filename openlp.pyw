@@ -7,8 +7,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,17 +28,17 @@
 import os
 import sys
 import logging
-
-from logging import FileHandler
 from optparse import OptionParser
-from PyQt4 import QtCore, QtGui
 
-log = logging.getLogger()
+from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver
 from openlp.core.resources import qInitResources
-from openlp.core.ui import MainWindow, SplashScreen, ScreenList
-from openlp.core.utils import AppLocation, LanguageManager
+from openlp.core.ui.mainwindow import MainWindow
+from openlp.core.ui import SplashScreen, ScreenList
+from openlp.core.utils import AppLocation, LanguageManager, VersionThread
+
+log = logging.getLogger()
 
 application_stylesheet = u"""
 QMainWindow::separator
@@ -47,7 +48,6 @@ QMainWindow::separator
 
 QDockWidget::title
 {
-  /*background: palette(dark);*/
   border: 1px solid palette(dark);
   padding-left: 5px;
   padding-top: 2px;
@@ -122,7 +122,7 @@ class OpenLP(QtGui.QApplication):
         show_splash = QtCore.QSettings().value(
             u'general/show splash', QtCore.QVariant(True)).toBool()
         if show_splash:
-            self.splash = SplashScreen(self.applicationVersion())
+            self.splash = SplashScreen()
             self.splash.show()
         # make sure Qt really display the splash screen
         self.processEvents()
@@ -141,7 +141,7 @@ class OpenLP(QtGui.QApplication):
             # now kill the splashscreen
             self.splash.finish(self.mainWindow)
         self.mainWindow.repaint()
-        self.mainWindow.versionThread()
+        VersionThread(self.mainWindow, app_version).start()
         return self.exec_()
 
 def main():
@@ -167,7 +167,7 @@ def main():
     if not os.path.exists(log_path):
         os.makedirs(log_path)
     filename = os.path.join(log_path, u'openlp.log')
-    logfile = FileHandler(filename, u'w')
+    logfile = logging.FileHandler(filename, u'w')
     logfile.setFormatter(logging.Formatter(
         u'%(asctime)s %(name)-55s %(levelname)-8s %(message)s'))
     log.addHandler(logfile)

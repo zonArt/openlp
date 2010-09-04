@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -142,7 +143,7 @@ class SofImport(OooImport):
             self.blanklines += 1
             if self.blanklines > 1:
                 return
-            if self.song.get_title() != u'':
+            if self.song.title != u'':
                 self.finish_verse()
             return
         self.blanklines = 0
@@ -166,8 +167,8 @@ class SofImport(OooImport):
             self.finish_verse()
             self.song.repeat_verse()
             return
-        if self.song.get_title() == u'':
-            if self.song.get_copyright() == u'':
+        if self.song.title == u'':
+            if self.song.copyright == u'':
                 self.add_author(text)
             else:
                 self.song.add_copyright(text)
@@ -187,10 +188,10 @@ class SofImport(OooImport):
             return text
         if textportion.CharWeight == BOLD:
             boldtext = text.strip()
-            if boldtext.isdigit() and self.song.get_song_number() == '':
+            if boldtext.isdigit() and self.song.song_number == '':
                 self.add_songnumber(boldtext)
                 return u''
-            if self.song.get_title() == u'':
+            if self.song.title == u'':
                 text = self.uncap_text(text)
                 self.add_title(text)
             return text
@@ -220,20 +221,17 @@ class SofImport(OooImport):
         Add a song number, store as alternate title. Also use the song
         number to work out which songbook we're in
         """
-        self.song.set_song_number(song_no)
-        self.song.set_alternate_title(song_no + u'.')
+        self.song.song_number = song_no
+        self.song.alternate_title = song_no + u'.'
+        self.song.song_book_pub = u'Kingsway Publications'
         if int(song_no) <= 640:
-            self.song.set_song_book(u'Songs of Fellowship 1', 
-                u'Kingsway Publications')
+            self.song.song_book = u'Songs of Fellowship 1'
         elif int(song_no) <= 1150:
-            self.song.set_song_book(u'Songs of Fellowship 2', 
-                u'Kingsway Publications')
+            self.song.song_book = u'Songs of Fellowship 2'
         elif int(song_no) <= 1690:
-            self.song.set_song_book(u'Songs of Fellowship 3', 
-                u'Kingsway Publications')
+            self.song.song_book = u'Songs of Fellowship 3'
         else:
-            self.song.set_song_book(u'Songs of Fellowship 4', 
-                u'Kingsway Publications')
+            self.song.song_book = u'Songs of Fellowship 4'
 
     def add_title(self, text):
         """
@@ -245,7 +243,7 @@ class SofImport(OooImport):
             title = title[1:]
         if title.endswith(u','):
             title = title[:-1]
-        self.song.set_title(title)
+        self.song.title = title
 
     def add_author(self, text):
         """
@@ -283,7 +281,7 @@ class SofImport(OooImport):
             splitat = None
         else:
             versetag = u'V'
-            splitat = self.verse_splits(self.song.get_song_number())
+            splitat = self.verse_splits(self.song.song_number)
         if splitat:
             ln = 0
             verse = u''
@@ -538,4 +536,3 @@ class SofImport(OooImport):
         if song_number == 1119:
             return 7
         return None
-

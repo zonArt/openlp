@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -53,7 +54,7 @@ class PowerpointController(PresentationController):
         """
         log.debug(u'Initialising')
         PresentationController.__init__(self, plugin, u'Powerpoint')
-        self.supports = [u'.ppt', u'.pps', u'.pptx', u'.ppsx']
+        self.supports = [u'ppt', u'pps', u'pptx', u'ppsx']
         self.process = None
 
     def check_available(self):
@@ -97,13 +98,23 @@ class PowerpointController(PresentationController):
             self.process = None
 
         def add_doc(self, name):
+            """
+            Called when a new powerpoint document is opened
+            """
             log.debug(u'Add Doc PowerPoint')
             doc = PowerpointDocument(self, name)
             self.docs.append(doc)
             return doc
 
 class PowerpointDocument(PresentationDocument):
+    """
+    Class which holds information and controls a single presentation
+    """
+    
     def __init__(self, controller, presentation):
+        """
+        Constructor, store information about the file and initialise 
+        """
         log.debug(u'Init Presentation Powerpoint')
         PresentationDocument.__init__(self, controller, presentation)
         self.presentation = None
@@ -111,22 +122,23 @@ class PowerpointDocument(PresentationDocument):
     def load_presentation(self):
         """
         Called when a presentation is added to the SlideController.
-        It builds the environment, starts communcations with the background
-        OpenOffice task started earlier.  If OpenOffice is not present is is
-        started.  Once the environment is available the presentation is loaded
-        and started.
+        Opens the PowerPoint file using the process created earlier
 
         ``presentation``
         The file name of the presentations to run.
         """
         log.debug(u'LoadPresentation')
-        if not self.controller.process.Visible:
+        if not self.controller.process or not self.controller.process.Visible:
             self.controller.start_process()
-        self.controller.process.Presentations.Open(self.filepath, False, False,
-            True)
+        try:
+            self.controller.process.Presentations.Open(self.filepath, False, 
+                False, True)
+        except pywintypes.com_error:
+            return False
         self.presentation = self.controller.process.Presentations(
             self.controller.process.Presentations.Count)
         self.create_thumbnails()
+        return True
 
     def create_thumbnails(self):
         """
@@ -139,8 +151,8 @@ class PowerpointDocument(PresentationDocument):
         """
         if self.check_thumbnails():
             return
-        self.presentation.Export(os.path.join(self.thumbnailpath, ''), 'png',
-            320, 240)
+        self.presentation.Export(os.path.join(self.get_thumbnail_folder(), ''), 
+            'png', 320, 240)
 
     def close_presentation(self):
         """
@@ -233,7 +245,7 @@ class PowerpointDocument(PresentationDocument):
                     dpi = 96
             self.presentation.SlideShowSettings.Run()
             self.presentation.SlideShowWindow.View.GotoSlide(1)
-            rendermanager = self.controller.plugin.render_manager
+            rendermanager = self.controller.plugin.renderManager
             rect = rendermanager.screens.current[u'size']
             self.presentation.SlideShowWindow.Top = rect.y() * 72 / dpi
             self.presentation.SlideShowWindow.Height = rect.height() * 72 / dpi
