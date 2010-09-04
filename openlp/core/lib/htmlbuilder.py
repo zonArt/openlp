@@ -331,8 +331,6 @@ def build_lyrics_css(item, webkitvers):
             (item.main.x(), item.main.y())
         lyrics = build_lyrics_format_css(theme, item.main.width(), 
             item.main.height())
-        #lyrics += u'width: %spx; height: %spx; ' % \
-        #    (item.main.width(), item.main.height())
         # For performance reasons we want to show as few DIV's as possible,
         # especially when animating/transitions. 
         # However some bugs in older versions of qtwebkit mean we need to 

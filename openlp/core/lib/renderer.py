@@ -152,29 +152,21 @@ class Renderer(object):
         # Adjust width and height to account for shadow. outline done in css
         width = self._rect.width() + int(self._theme.display_shadow_size) 
         height = self._rect.height() + int(self._theme.display_shadow_size) 
-        css = u'<html><head><style>#main {%s %s}</style><body>' \
+        shell = u'<html><head><style>#main {%s %s}</style><body>' \
             u'<div id="main">' % \
             (build_lyrics_format_css(self._theme, width, height),
             build_lyrics_outline_css(self._theme))
-#        doc = QtGui.QTextDocument()
-#        doc.setPageSize(QtCore.QSizeF(self._rect.width(), self._rect.height()))
-#        doc.setDocumentMargin(0)
-#        css = u'* {%s}' % build_lyrics_format_css(self._theme)
-#        doc.setDefaultStyleSheet(css)
-        #layout = doc.documentLayout()
         formatted = []
         html_text = u''
         styled_text = u''
-        divheight = 'document.getElementById("main").scrollHeight'
+        js_height = 'document.getElementById("main").scrollHeight'
         for line in text:
             styled_line = expand_tags(line) + line_end
             styled_text += styled_line
-            html = css + styled_text + u'</div></body></html>'
+            html = shell + styled_text + u'</div></body></html>'
             web.setHtml(html)
-#            doc.setHtml(styled_text)
             # Text too long so go to next page
-#            if doc.pageCount() != 1:
-            text_height = int(frame.evaluateJavaScript(divheight).toString())
+            text_height = int(frame.evaluateJavaScript(js_height).toString())
             if text_height > height:
                 formatted.append(html_text)
                 html_text = u''
