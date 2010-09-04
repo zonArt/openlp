@@ -125,6 +125,8 @@ class MainDisplay(DisplayWidget):
         self.frame = self.page.mainFrame()
         QtCore.QObject.connect(self.webView,
             QtCore.SIGNAL(u'loadFinished(bool)'), self.isLoaded)
+        self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.frame.setScrollBarPolicy(QtCore.Qt.Vertical,
             QtCore.Qt.ScrollBarAlwaysOff)
         self.frame.setScrollBarPolicy(QtCore.Qt.Horizontal,
