@@ -43,12 +43,6 @@ class SongImport(QtCore.QObject):
     whether the authors etc already exist and add them or refer to them
     as necessary
     """
-    
-    COPYRIGHT_STRING = unicode(translate(
-        'SongsPlugin.SongImport', 'copyright'))
-    COPYRIGHT_SYMBOL = unicode(translate(
-        'SongsPlugin.SongImport', '\xa9'))
-            
     def __init__(self, manager):
         """
         Initialise and create defaults for properties
@@ -58,11 +52,11 @@ class SongImport(QtCore.QObject):
         """
         self.manager = manager
         self.stop_import_flag = False
+        self.set_defaults()
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'songs_stop_import'), self.stop_import)
-        self.setDefaults()
-    
-    def setDefaults(self):
+
+    def set_defaults(self):
         self.title = u''
         self.song_number = u''
         self.alternate_title = u''
@@ -78,6 +72,10 @@ class SongImport(QtCore.QObject):
         self.verses = []
         self.versecount = 0
         self.choruscount = 0
+        self.copyright_string = unicode(translate(
+            'SongsPlugin.SongImport', 'copyright'))
+        self.copyright_symbol = unicode(translate(
+            'SongsPlugin.SongImport', '\xa9'))
  
     def stop_import(self):
         """
@@ -163,8 +161,7 @@ class SongImport(QtCore.QObject):
     def parse_author(self, text):
         """
         Add the author. OpenLP stores them individually so split by 'and', '&'
-        and comma.
-        However need to check for 'Mr and Mrs Smith' and turn it to
+        and comma. However need to check for 'Mr and Mrs Smith' and turn it to
         'Mr Smith' and 'Mrs Smith'.
         """
         for author in text.split(u','):
@@ -241,7 +238,7 @@ class SongImport(QtCore.QObject):
         """
         All fields have been set to this song. Write it away
         """
-        if len(self.authors) == 0:
+        if not self.authors:
             self.authors.append(u'Author unknown')
         self.commit_song()
 
