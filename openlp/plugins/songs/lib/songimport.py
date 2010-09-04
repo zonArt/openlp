@@ -300,7 +300,7 @@ class SongImport(QtCore.QObject):
                 topic = Topic.populate(name=topictext)
             song.topics.append(topic)
         self.manager.save_object(song)
-        self.setDefaults()
+        self.set_defaults()
 
     def print_song(self):
         """
