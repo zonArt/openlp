@@ -82,6 +82,9 @@ class OooImport(SongImport):
                         self.process_doc()
                     self.close_ooo_file()
         self.close_ooo()
+        self.import_wizard.importProgressBar.setMaximum(1)
+        self.import_wizard.incrementProgressBar(u'', 1)
+        return True
 
     def stop_import(self):
         self.abort = True
