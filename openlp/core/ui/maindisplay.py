@@ -125,6 +125,8 @@ class MainDisplay(DisplayWidget):
         self.frame = self.page.mainFrame()
         QtCore.QObject.connect(self.webView,
             QtCore.SIGNAL(u'loadFinished(bool)'), self.isLoaded)
+        self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.frame.setScrollBarPolicy(QtCore.Qt.Vertical,
             QtCore.Qt.ScrollBarAlwaysOff)
         self.frame.setScrollBarPolicy(QtCore.Qt.Horizontal,
@@ -138,7 +140,7 @@ class MainDisplay(DisplayWidget):
             painter_image = QtGui.QPainter()
             painter_image.begin(self.black)
             painter_image.fillRect(self.black.rect(), QtCore.Qt.black)
-            #Build the initial frame.
+            # Build the initial frame.
             initialFrame = QtGui.QImage(
                 self.screens.current[u'size'].width(),
                 self.screens.current[u'size'].height(),

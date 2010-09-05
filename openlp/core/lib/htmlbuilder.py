@@ -24,9 +24,12 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import logging
 from PyQt4 import QtWebKit
 
 from openlp.core.lib import image_to_byte
+
+log = logging.getLogger(__name__)
 
 HTMLSRC = u"""
 <html>
@@ -37,9 +40,10 @@ HTMLSRC = u"""
     margin: 0;
     padding: 0;
     border: 0;
+    overflow: hidden;
 }
 body {
-    background-color: black;
+    %s;
 }
 .size {
     position: absolute;
@@ -192,7 +196,7 @@ body {
     function show_text(newtext){
         if(timer != null)
             clearTimeout(timer);
-        text_fade('lyricsmain', newtext);        
+        text_fade('lyricsmain', newtext);
         text_fade('lyricsoutline', newtext);
         text_fade('lyricsshadow', newtext);
         if(text_opacity()==1) return;
@@ -233,7 +237,7 @@ body {
         var text = document.getElementById('lyricsmain');
         return getComputedStyle(text, '').opacity;
     }
-    
+
     function show_text_complete(){
         return (text_opacity()==1);
     }
@@ -263,58 +267,101 @@ def build_html(item, screen, alert, islive):
     `islive`
         Item is going live, rather than preview/theme building
     """
-    try:
-        webkitvers = float(QtWebKit.qWebKitVersion())
-    except AttributeError:
-        webkitvers = 0
     width = screen[u'size'].width()
     height = screen[u'size'].height()
     theme = item.themedata
+    webkitvers = webkit_version()
     if item.bg_frame:
         image = u'data:image/png;base64,%s' % image_to_byte(item.bg_frame)
     else:
         image = u''
-    html = HTMLSRC % (width, height,
+    html = HTMLSRC % (build_background_css(item, width, height),
+        width, height,
         build_alert_css(alert, width),
         build_footer_css(item),
         build_lyrics_css(item, webkitvers),
         u'true' if theme and theme.display_slideTransition and islive \
             else u'false',
-        image, 
+        image,
         build_lyrics_html(item, webkitvers))
     return html
 
-def build_lyrics_css(item, webkitvers):
+def webkit_version():
     """
-    Build the video display css
+    Return the Webkit version in use.
+    Note method added relatively recently, so return 0 if prior to this
+    """
+    try:
+        webkitvers = float(QtWebKit.qWebKitVersion())
+        log.debug(u'Webkit version = %s' % webkitvers)
+    except AttributeError:
+        webkitvers = 0
+    return webkitvers
+
+def build_background_css(item, width, height):
+    """
+    Build the background css
 
     `item`
         Service Item containing theme and location information
-    
+
+    """
+    width = int(width) / 2
+    theme = item.themedata
+    background = u'background-color: black'
+    if theme:
+        if theme.background_type == u'solid':
+            background = u'background-color: %s' % theme.background_color
+        else:
+            if theme.background_direction == u'horizontal':
+                background = \
+                    u'background: ' \
+                    u'-webkit-gradient(linear, left top, left bottom, ' \
+                    'from(%s), to(%s))' % (theme.background_startColor,
+                    theme.background_endColor)
+            elif theme.background_direction == u'vertical':
+                background = \
+                    u'background: -webkit-gradient(linear, left top, ' \
+                    u'right top, from(%s), to(%s))' % \
+                    (theme.background_startColor, theme.background_endColor)
+            else:
+                background = \
+                    u'background: -webkit-gradient(radial, %s 50%%, 100, %s ' \
+                    u'50%%, %s, from(%s), to(%s))' % (width, width, width, 
+                    theme.background_startColor, theme.background_endColor)
+    return background
+
+def build_lyrics_css(item, webkitvers):
+    """
+    Build the lyrics display css
+
+    `item`
+        Service Item containing theme and location information
+
     `webkitvers`
         The version of qtwebkit we're using
 
     """
     style = """
-.lyricstable { 
-    z-index:4; 
-    position: absolute; 
-    display: table; 
-    %s 
-}
-.lyricscell { 
-    display:table-cell; 
-    word-wrap: break-word; 
+.lyricstable {
+    z-index:4;
+    position: absolute;
+    display: table;
     %s
 }
-.lyricsmain { 
-%s 
+.lyricscell {
+    display:table-cell;
+    word-wrap: break-word;
+    %s
 }
-.lyricsoutline { 
-%s 
+.lyricsmain {
+%s
 }
-.lyricsshadow { 
-%s 
+.lyricsoutline {
+%s
+}
+.lyricsshadow {
+%s
 }
      """
     theme = item.themedata
@@ -326,62 +373,105 @@ def build_lyrics_css(item, webkitvers):
     if theme:
         lyricstable = u'left: %spx; top: %spx;' % \
             (item.main.x(), item.main.y())
-        if theme.display_horizontalAlign == 2:
-            align = u'center'
-        elif theme.display_horizontalAlign == 1:
-            align = u'right'
-        else:
-            align = u'left'
-        if theme.display_verticalAlign == 2:
-            valign = u'bottom'
-        elif theme.display_verticalAlign == 1:
-            valign = u'middle'
-        else:
-            valign = u'top'
-        lyrics = u'width: %spx; height: %spx; text-align: %s; ' \
-            'vertical-align: %s; font-family: %s; font-size: %spt; ' \
-            'color: %s; line-height: %d%%;' % \
-            (item.main.width(), item.main.height(), align, valign, 
-            theme.font_main_name, theme.font_main_proportion, 
-            theme.font_main_color, 100 + int(theme.font_main_line_adjustment))
+        lyrics = build_lyrics_format_css(theme, item.main.width(), 
+            item.main.height())
         # For performance reasons we want to show as few DIV's as possible,
-        # especially when animating/transitions. 
-        # However some bugs in older versions of qtwebkit mean we need to 
+        # especially when animating/transitions.
+        # However some bugs in older versions of qtwebkit mean we need to
         # perform workarounds and add extra divs. Only do these when needed.
         #
-        # Before 533.3 the webkit-text-fill colour wasn't displayed, only the 
+        # Before 533.3 the webkit-text-fill colour wasn't displayed, only the
         # stroke (outline) color. So put stroke layer underneath the main text.
         #
-        # Before 534.4 the webkit-text-stroke was sometimes out of alignment 
+        # Before 534.4 the webkit-text-stroke was sometimes out of alignment
         # with the fill, or normal text. letter-spacing=1 is workaround
         # https://bugs.webkit.org/show_bug.cgi?id=44403
         #
-        # Before 534.4 the text-shadow didn't get displayed when 
-        # webkit-text-stroke was used. So use an offset text layer underneath. 
+        # Before 534.4 the text-shadow didn't get displayed when
+        # webkit-text-stroke was used. So use an offset text layer underneath.
         # https://bugs.webkit.org/show_bug.cgi?id=19728
-        if theme.display_outline:
-            if webkitvers < 534.3:
-                lyrics += u' letter-spacing: 1px;'
-            outline = u' -webkit-text-stroke: %sem %s; ' \
-                '-webkit-text-fill-color: %s; ' % \
-                (float(theme.display_outline_size) / 16,
-                theme.display_outline_color, theme.font_main_color)
-            if webkitvers >= 533.3:
-                lyricsmain += outline
-            if theme.display_shadow and webkitvers < 534.3:
-                shadow = u'-webkit-text-stroke: %sem %s; ' \
-                    u'-webkit-text-fill-color: %s; ' \
-                    u' padding-left: %spx; padding-top: %spx' % \
-                    (float(theme.display_outline_size) / 16,
-                    theme.display_shadow_color, theme.display_shadow_color, 
-                    theme.display_shadow_size, theme.display_shadow_size)
-        if theme.display_shadow and \
-            (not theme.display_outline or webkitvers >= 534.3):
-            lyricsmain += u' text-shadow: %s %spx %spx;' % \
-                (theme.display_shadow_color, theme.display_shadow_size,
-                theme.display_shadow_size)
+        if webkitvers >= 533.3:
+            lyricsmain += build_lyrics_outline_css(theme)
+        else:
+            outline = build_lyrics_outline_css(theme) 
+        if theme.display_shadow:
+            if theme.display_outline and webkitvers < 534.3:
+                shadow = u'padding-left: %spx; padding-top: %spx ' % \
+                    (theme.display_shadow_size, theme.display_shadow_size)
+                shadow += build_lyrics_outline_css(theme, True)
+            else:
+                lyricsmain += u' text-shadow: %s %spx %spx;' % \
+                    (theme.display_shadow_color, theme.display_shadow_size,
+                    theme.display_shadow_size)
     lyrics_css = style % (lyricstable, lyrics, lyricsmain, outline, shadow)
     return lyrics_css
+    
+def build_lyrics_outline_css(theme, is_shadow=False):
+    """
+    Build the css which controls the theme outline
+    Also used by renderer for splitting verses
+
+    `theme`
+        Object containing theme information
+    
+    `is_shadow`
+        If true, use the shadow colors instead
+    """
+    if theme.display_outline:
+        size = float(theme.display_outline_size) / 16
+        if is_shadow:
+            fill_color = theme.display_shadow_color
+            outline_color = theme.display_shadow_color
+        else:
+            fill_color = theme.font_main_color
+            outline_color = theme.display_outline_color
+        return u' -webkit-text-stroke: %sem %s; ' \
+            u'-webkit-text-fill-color: %s; ' % (size, outline_color, fill_color)
+    else:
+        return u''
+
+def build_lyrics_format_css(theme, width, height):
+    """
+    Build the css which controls the theme format
+    Also used by renderer for splitting verses
+
+    `theme`
+        Object containing theme information
+    
+    `width`
+        Width of the lyrics block
+
+    `height`
+        Height of the lyrics block
+
+    """
+    if theme.display_horizontalAlign == 2:
+        align = u'center'
+    elif theme.display_horizontalAlign == 1:
+        align = u'right'
+    else:
+        align = u'left'
+    if theme.display_verticalAlign == 2:
+        valign = u'bottom'
+    elif theme.display_verticalAlign == 1:
+        valign = u'middle'
+    else:
+        valign = u'top'
+    lyrics = u'white-space:pre-wrap; word-wrap: break-word; ' \
+        'text-align: %s; vertical-align: %s; font-family: %s; ' \
+        'font-size: %spt; color: %s; line-height: %d%%; ' \
+        'margin:0; padding:0; width: %spx; height: %spx; ' % \
+        (align, valign, theme.font_main_name, theme.font_main_proportion, 
+        theme.font_main_color, 100 + int(theme.font_main_line_adjustment), 
+        width, height)
+    if theme.display_outline:
+        if webkit_version() < 534.3:
+            lyrics += u' letter-spacing: 1px;'
+    if theme.font_main_italics:
+        lyrics += u' font-style:italic; '
+    if theme.font_main_weight == u'Bold':
+        lyrics += u' font-weight:bold; '
+    return lyrics
     
 def build_lyrics_html(item, webkitvers):
     """
@@ -389,11 +479,11 @@ def build_lyrics_html(item, webkitvers):
 
     `item`
         Service Item containing theme and location information
-    
+
     `webkitvers`
         The version of qtwebkit we're using
     """
-    # Bugs in some versions of QtWebKit mean we sometimes need additional 
+    # Bugs in some versions of QtWebKit mean we sometimes need additional
     # divs for outline and shadow, since the CSS doesn't work.
     # To support vertical alignment middle and bottom, nested div's using
     # display:table/display:table-cell are required for each lyric block.
@@ -411,7 +501,7 @@ def build_lyrics_html(item, webkitvers):
         u'<div id="lyricsmain" style="opacity:1" ' \
         u'class="lyricscell lyricsmain"></div></div>'
     return lyrics
-    
+
 def build_footer_css(item):
     """
     Build the display of the item footer
