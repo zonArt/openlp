@@ -476,7 +476,6 @@ class GeneralTab(SettingsTab):
         # Order is important so be careful if you change
         if self.overrideChanged or postUpdate:
             Receiver.send_message(u'config_screen_changed')
-        Receiver.send_message(u'config_updated')
         self.overrideChanged = False
 
     def onOverrideCheckBoxToggled(self, checked):
