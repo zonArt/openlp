@@ -145,6 +145,7 @@ body {
         }
         document.getElementById('black').style.display = black;
         document.getElementById('lyricsmain').style.visibility = lyrics;
+        document.getElementById('image').style.visibility = lyrics;
         outline = document.getElementById('lyricsoutline')
         if(outline!=null)
             outline.style.visibility = lyrics;
@@ -327,7 +328,7 @@ def build_background_css(item, width, height):
             else:
                 background = \
                     u'background: -webkit-gradient(radial, %s 50%%, 100, %s ' \
-                    u'50%%, %s, from(%s), to(%s))' % (width, width, width, 
+                    u'50%%, %s, from(%s), to(%s))' % (width, width, width,
                     theme.background_startColor, theme.background_endColor)
     return background
 
@@ -370,10 +371,10 @@ def build_lyrics_css(item, webkitvers):
     lyricsmain = u''
     outline = u''
     shadow = u''
-    if theme:
+    if theme and item.main:
         lyricstable = u'left: %spx; top: %spx;' % \
             (item.main.x(), item.main.y())
-        lyrics = build_lyrics_format_css(theme, item.main.width(), 
+        lyrics = build_lyrics_format_css(theme, item.main.width(),
             item.main.height())
         # For performance reasons we want to show as few DIV's as possible,
         # especially when animating/transitions.
@@ -393,7 +394,7 @@ def build_lyrics_css(item, webkitvers):
         if webkitvers >= 533.3:
             lyricsmain += build_lyrics_outline_css(theme)
         else:
-            outline = build_lyrics_outline_css(theme) 
+            outline = build_lyrics_outline_css(theme)
         if theme.display_shadow:
             if theme.display_outline and webkitvers < 534.3:
                 shadow = u'padding-left: %spx; padding-top: %spx ' % \
@@ -405,7 +406,7 @@ def build_lyrics_css(item, webkitvers):
                     theme.display_shadow_size)
     lyrics_css = style % (lyricstable, lyrics, lyricsmain, outline, shadow)
     return lyrics_css
-    
+
 def build_lyrics_outline_css(theme, is_shadow=False):
     """
     Build the css which controls the theme outline
@@ -413,7 +414,7 @@ def build_lyrics_outline_css(theme, is_shadow=False):
 
     `theme`
         Object containing theme information
-    
+
     `is_shadow`
         If true, use the shadow colors instead
     """
@@ -437,7 +438,7 @@ def build_lyrics_format_css(theme, width, height):
 
     `theme`
         Object containing theme information
-    
+
     `width`
         Width of the lyrics block
 
@@ -461,8 +462,8 @@ def build_lyrics_format_css(theme, width, height):
         'text-align: %s; vertical-align: %s; font-family: %s; ' \
         'font-size: %spt; color: %s; line-height: %d%%; ' \
         'margin:0; padding:0; width: %spx; height: %spx; ' % \
-        (align, valign, theme.font_main_name, theme.font_main_proportion, 
-        theme.font_main_color, 100 + int(theme.font_main_line_adjustment), 
+        (align, valign, theme.font_main_name, theme.font_main_proportion,
+        theme.font_main_color, 100 + int(theme.font_main_line_adjustment),
         width, height)
     if theme.display_outline:
         if webkit_version() < 534.3:
@@ -472,7 +473,7 @@ def build_lyrics_format_css(theme, width, height):
     if theme.font_main_weight == u'Bold':
         lyrics += u' font-weight:bold; '
     return lyrics
-    
+
 def build_lyrics_html(item, webkitvers):
     """
     Build the HTML required to show the lyrics
@@ -520,7 +521,7 @@ def build_footer_css(item):
     text-align: %s;
     """
     theme = item.themedata
-    if not theme:
+    if not theme or not item.footer:
         return u''
     if theme.display_horizontalAlign == 2:
         align = u'center'
