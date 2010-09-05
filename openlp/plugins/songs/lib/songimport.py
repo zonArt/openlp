@@ -24,14 +24,18 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import logging
 import re
+from PyQt4 import QtCore
 
-from openlp.core.lib import translate
+from openlp.core.lib import Receiver, translate
 from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.db import Song, Author, Topic, Book
 from openlp.plugins.songs.lib.xml import SongXMLBuilder
 
-class SongImport(object):
+log = logging.getLogger(__name__)
+
+class SongImport(QtCore.QObject):
     """
     Helper class for import a song from a third party source into OpenLP
 
@@ -39,7 +43,6 @@ class SongImport(object):
     whether the authors etc already exist and add them or refer to them
     as necessary
     """
-
     def __init__(self, manager):
         """
         Initialise and create defaults for properties
@@ -48,6 +51,12 @@ class SongImport(object):
         database access is performed
         """
         self.manager = manager
+        self.stop_import_flag = False
+        self.set_defaults()
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'songs_stop_import'), self.stop_import)
+
+    def set_defaults(self):
         self.title = u''
         self.song_number = u''
         self.alternate_title = u''
@@ -67,6 +76,13 @@ class SongImport(object):
             'SongsPlugin.SongImport', 'copyright'))
         self.copyright_symbol = unicode(translate(
             'SongsPlugin.SongImport', '\xa9'))
+ 
+    def stop_import(self):
+        """
+        Sets the flag for importers to stop their import
+        """
+        log.debug(u'Stopping songs import')
+        self.stop_import_flag = True
 
     def register(self, import_wizard):
         self.import_wizard = import_wizard
@@ -113,13 +129,13 @@ class SongImport(object):
 
     def process_verse_text(self, text):
         lines = text.split(u'\n')
-        if text.lower().find(self.copyright_string) >= 0 \
-            or text.lower().find(self.copyright_symbol) >= 0:
+        if text.lower().find(COPYRIGHT_STRING) >= 0 \
+            or text.lower().find(COPYRIGHT_SYMBOL) >= 0:
             copyright_found = False
             for line in lines:
                 if (copyright_found or
-                    line.lower().find(self.copyright_string) >= 0 or
-                    line.lower().find(self.copyright_symbol) >= 0):
+                    line.lower().find(COPYRIGHT_STRING) >= 0 or
+                    line.lower().find(COPYRIGHT_SYMBOL) >= 0):
                     copyright_found = True
                     self.add_copyright(line)
                 else:
@@ -145,8 +161,7 @@ class SongImport(object):
     def parse_author(self, text):
         """
         Add the author. OpenLP stores them individually so split by 'and', '&'
-        and comma.
-        However need to check for 'Mr and Mrs Smith' and turn it to
+        and comma. However need to check for 'Mr and Mrs Smith' and turn it to
         'Mr Smith' and 'Mrs Smith'.
         """
         for author in text.split(u','):
@@ -223,7 +238,7 @@ class SongImport(object):
         """
         All fields have been set to this song. Write it away
         """
-        if len(self.authors) == 0:
+        if not self.authors:
             self.authors.append(u'Author unknown')
         self.commit_song()
 
@@ -285,6 +300,7 @@ class SongImport(object):
                 topic = Topic.populate(name=topictext)
             song.topics.append(topic)
         self.manager.save_object(song)
+        self.set_defaults()
 
     def print_song(self):
         """

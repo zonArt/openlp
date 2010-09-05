@@ -317,9 +317,8 @@ class ServiceManager(QtGui.QWidget):
         self.serviceItemEditForm.setServiceItem(
             self.serviceItems[item][u'service_item'])
         if self.serviceItemEditForm.exec_():
-            self.serviceItems[item][u'service_item'] = \
-                self.serviceItemEditForm.getServiceItem()
-            self.repaintServiceList(item, 0)
+            self.addServiceItem(self.serviceItemEditForm.getServiceItem(),
+                replace=True)
 
     def nextItem(self):
         """
@@ -575,7 +574,7 @@ class ServiceManager(QtGui.QWidget):
         * An osd which is a pickle of the service items
         * All image, presentation and video files needed to run the service.
         """
-        log.debug(u'onSaveService')
+        log.debug(u'onSaveService %s' % quick)
         if not quick or self.isNew:
             filename = QtGui.QFileDialog.getSaveFileName(self,
             translate('OpenLP.ServiceManager', 'Save Service'),
@@ -756,6 +755,7 @@ class ServiceManager(QtGui.QWidget):
         """
         Set the theme for the current service
         """
+        log.debug(u'onThemeComboBoxSelected')
         self.service_theme = unicode(self.themeComboBox.currentText())
         self.parent.RenderManager.set_service_theme(self.service_theme)
         QtCore.QSettings().setValue(
@@ -768,6 +768,7 @@ class ServiceManager(QtGui.QWidget):
         The theme may have changed in the settings dialog so make
         sure the theme combo box is in the correct state.
         """
+        log.debug(u'themeChange')
         if self.parent.RenderManager.theme_level == ThemeLevel.Global:
             self.toolbar.actions[u'ThemeLabel'].setVisible(False)
             self.toolbar.actions[u'ThemeWidget'].setVisible(False)
@@ -780,7 +781,8 @@ class ServiceManager(QtGui.QWidget):
         Rebuild the service list as things have changed and a
         repaint is the easiest way to do this.
         """
-        #force reset of renderer as theme data has changed
+        log.debug(u'regenerateServiceItems')
+        # force reset of renderer as theme data has changed
         self.parent.RenderManager.themedata = None
         if self.serviceItems:
             tempServiceItems = self.serviceItems
@@ -790,8 +792,8 @@ class ServiceManager(QtGui.QWidget):
             for item in tempServiceItems:
                 self.addServiceItem(
                     item[u'service_item'], False, item[u'expanded'])
-            #Set to False as items may have changed rendering
-            #does not impact the saved song so True may also be valid
+            # Set to False as items may have changed rendering
+            # does not impact the saved song so True may also be valid
             self.parent.serviceChanged(False, self.serviceName)
 
     def addServiceItem(self, item, rebuild=False, expand=True, replace=False):
@@ -801,6 +803,7 @@ class ServiceManager(QtGui.QWidget):
         ``item``
             Service Item to be added
         """
+        log.debug(u'addServiceItem')
         sitem = self.findServiceItem()[0]
         item.render()
         if replace:
@@ -873,6 +876,7 @@ class ServiceManager(QtGui.QWidget):
                     ItemCapabilities.AllowsPreview):
                     self.parent.PreviewController.addServiceManagerItem(
                         self.serviceItems[item][u'service_item'], 0)
+                    self.parent.LiveController.PreviewListWidget.setFocus()
         else:
             QtGui.QMessageBox.critical(self,
                 translate('OpenLP.ServiceManager', 'Missing Display Handler'),

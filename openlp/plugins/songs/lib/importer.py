@@ -29,6 +29,8 @@ from olpimport import OpenLPSongImport
 try:
     from sofimport import SofImport
     from oooimport import OooImport
+    from cclifileimport import CCLIFileImport
+    from wowimport import WowImport
 except ImportError:
     pass
 
@@ -63,8 +65,12 @@ class SongFormat(object):
             return OpenSongImport
         elif format == SongFormat.SongsOfFellowship:
             return SofImport
+        elif format == SongFormat.WordsOfWorship:
+            return WowImport
         elif format == SongFormat.Generic:
             return OooImport
+        elif format == SongFormat.CCLI:
+            return CCLIFileImport            
 #        else:
         return None
 

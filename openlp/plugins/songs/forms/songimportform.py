@@ -83,6 +83,12 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         QtCore.QObject.connect(self.wordsOfWorshipRemoveButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onWordsOfWorshipRemoveButtonClicked)
+        QtCore.QObject.connect(self.ccliAddButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onCCLIAddButtonClicked)
+        QtCore.QObject.connect(self.ccliRemoveButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onCCLIRemoveButtonClicked)
         QtCore.QObject.connect(self.songsOfFellowshipAddButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onSongsOfFellowshipAddButtonClicked)
@@ -160,7 +166,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
                     self.openSongAddButton.setFocus()
                     return False
             elif source_format == SongFormat.WordsOfWorship:
-                if self.wordsOfWorshipListWidget.count() == 0:
+                if self.wordsOfWorshipFileListWidget.count() == 0:
                     QtGui.QMessageBox.critical(self,
                         translate('SongsPlugin.ImportWizardForm',
                             'No Words of Worship Files Selected'),
@@ -277,6 +283,16 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
     def onWordsOfWorshipRemoveButtonClicked(self):
         self.removeSelectedItems(self.wordsOfWorshipFileListWidget)
 
+    def onCCLIAddButtonClicked(self):
+        self.getFiles(
+            translate('SongsPlugin.ImportWizardForm',
+            'Select CCLI Files'),
+            self.ccliFileListWidget
+        )
+
+    def onCCLIRemoveButtonClicked(self):
+        self.removeSelectedItems(self.ccliFileListWidget)
+        
     def onSongsOfFellowshipAddButtonClicked(self):
         self.getFiles(
             translate('SongsPlugin.ImportWizardForm',
@@ -302,8 +318,8 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         Stop the import on pressing the cancel button.
         """
         log.debug('Cancel button pressed!')
-        if self.currentId() == 3:
-            Receiver.send_message(u'song_stop_import')
+        if self.currentId() == 2:
+            Receiver.send_message(u'songs_stop_import')
 
     def onCurrentIdChanged(self, id):
         if id == 2:
@@ -315,6 +331,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         pass
 
     def setDefaults(self):
+        self.restart()
         self.formatComboBox.setCurrentIndex(0)
         self.openLP2FilenameEdit.setText(u'')
         self.openLP1FilenameEdit.setText(u'')
