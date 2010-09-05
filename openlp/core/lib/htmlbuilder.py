@@ -40,6 +40,7 @@ HTMLSRC = u"""
     margin: 0;
     padding: 0;
     border: 0;
+    overflow: hidden;
 }
 body {
     %s;
