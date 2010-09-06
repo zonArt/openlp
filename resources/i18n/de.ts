@@ -10,7 +10,7 @@
     <message>
         <location filename="openlp/plugins/alerts/alertsplugin.py" line="71"/>
         <source>Show an alert message.</source>
-        <translation></translation>
+        <translation>Hinweis anzeigen</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/alertsplugin.py" line="100"/>
@@ -2846,8 +2846,8 @@ The content encoding is not UTF-8.</source>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="211"/>
-        <source>This type of presentation is not supported</source>
-        <translation></translation>
+        <source>This type of presentation is not supported.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -2841,11 +2841,6 @@ The content encoding is not UTF-8.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="211"/>
-        <source>This type of presentation is not supported</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="187"/>
         <source>File Exists</source>
         <translation type="unfinished"></translation>
@@ -2853,6 +2848,11 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="211"/>
         <source>Unsupported File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="211"/>
+        <source>This type of presentation is not supported.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -2879,7 +2879,7 @@ A codificação do conteúdo não é UTF-8.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/lib/mediaitem.py" line="211"/>
-        <source>This type of presentation is not supported</source>
+        <source>This type of presentation is not supported.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
