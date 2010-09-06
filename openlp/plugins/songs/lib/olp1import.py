@@ -97,15 +97,19 @@ class OpenLP1SongImport(SongImport):
             if self.stop_import_flag:
                 success = False
                 break
-            cursor.execute(u'SELECT fulltrackname FROM tracks t '
-                u'JOIN songtracks st ON t.trackid = st.trackid '
-                u'WHERE st.songid = %s ORDER BY st.listindex' % song_id)
-            tracks = cursor.fetchall()
-            for track in tracks:
-                if self.stop_import_flag:
-                    success = False
-                    break
-                self.add_media_file(unicode(track[0], u'cp1252'))
+            cursor.execute(u'SELECT name FROM sqlite_master '
+                u'WHERE type = \'table\' NAME name = \'tracks\'')
+            table_list = cursor.fetchall()
+            if len(table_list) > 0:
+                cursor.execute(u'SELECT fulltrackname FROM tracks t '
+                    u'JOIN songtracks st ON t.trackid = st.trackid '
+                    u'WHERE st.songid = %s ORDER BY st.listindex' % song_id)
+                tracks = cursor.fetchall()
+                for track in tracks:
+                    if self.stop_import_flag:
+                        success = False
+                        break
+                    self.add_media_file(unicode(track[0], u'cp1252'))
             if self.stop_import_flag:
                 success = False
                 break
