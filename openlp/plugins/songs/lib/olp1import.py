@@ -30,8 +30,7 @@ openlp.org 1.x song databases into the current installation database.
 import logging
 import sqlite
 
-#from openlp.core.lib.db import BaseModel
-from openlp.plugins.songs.lib.db import Author, Book, Song, Topic #, MediaFile
+from openlp.core.lib import translate
 from songimport import SongImport
 
 log = logging.getLogger(__name__)
@@ -66,6 +65,12 @@ class OpenLP1SongImport(SongImport):
         count = int(cursor.fetchone()[0])
         success = True
         self.import_wizard.importProgressBar.setMaximum(count)
+        # "cache" our list of authors
+        cursor.execute(u'SELECT authorid, authorname FROM authors')
+        authors = cursor.fetchall()
+        # "cache" our list of tracks
+        cursor.execute(u'SELECT trackid, fulltrackname FROM tracks')
+        tracks = cursor.fetchall()
         # Import the songs
         cursor.execute(u'SELECT songid, songtitle, lyrics || \'\' AS lyrics, '
             u'copyrightinfo FROM songs')
@@ -77,39 +82,43 @@ class OpenLP1SongImport(SongImport):
                 break
             song_id = song[0]
             title = unicode(song[1], u'cp1252')
-            lyrics = unicode(song[2], u'cp1252')
+            lyrics = unicode(song[2], u'cp1252').replace(u'\r', u'')
             copyright = unicode(song[3], u'cp1252')
             self.import_wizard.incrementProgressBar(
                 unicode(translate('SongsPlugin.ImportWizardForm',
-                    'Importing %s...')) % title)
+                    'Importing "%s"...')) % title)
             self.title = title
             self.process_song_text(lyrics)
             self.add_copyright(copyright)
-            cursor.execute(u'SELECT displayname FROM authors a '
-                u'JOIN songauthors sa ON a.authorid = sa.authorid '
-                u'WHERE sa.songid = %s' % song_id)
-            authors = cursor.fetchall()
-            for author in authors:
+            cursor.execute(u'SELECT authorid FROM songauthors '
+                u'WHERE songid = %s' % song_id)
+            author_ids = cursor.fetchall()
+            for author_id in author_ids:
                 if self.stop_import_flag:
                     success = False
                     break
-                self.parse_author(unicode(author[0], u'cp1252'))
+                for author in authors:
+                    if author[0] == author_id[0]:
+                        self.parse_author(unicode(author[1], u'cp1252'))
+                        break
             if self.stop_import_flag:
                 success = False
                 break
             cursor.execute(u'SELECT name FROM sqlite_master '
-                u'WHERE type = \'table\' NAME name = \'tracks\'')
+                u'WHERE type = \'table\' AND name = \'tracks\'')
             table_list = cursor.fetchall()
             if len(table_list) > 0:
-                cursor.execute(u'SELECT fulltrackname FROM tracks t '
-                    u'JOIN songtracks st ON t.trackid = st.trackid '
-                    u'WHERE st.songid = %s ORDER BY st.listindex' % song_id)
-                tracks = cursor.fetchall()
-                for track in tracks:
+                cursor.execute(u'SELECT trackid FROM songtracks '
+                    u'WHERE songid = %s ORDER BY listindex' % song_id)
+                track_ids = cursor.fetchall()
+                for track_id in track_ids:
                     if self.stop_import_flag:
                         success = False
                         break
-                    self.add_media_file(unicode(track[0], u'cp1252'))
+                    for track in tracks:
+                        if track[0] == track_id[0]:
+                            self.add_media_file(unicode(track[1], u'cp1252'))
+                            break
             if self.stop_import_flag:
                 success = False
                 break
