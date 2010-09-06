@@ -43,12 +43,6 @@ class SongImport(QtCore.QObject):
     whether the authors etc already exist and add them or refer to them
     as necessary
     """
-    
-    COPYRIGHT_STRING = unicode(translate(
-        'SongsPlugin.SongImport', 'copyright'))
-    COPYRIGHT_SYMBOL = unicode(translate(
-        'SongsPlugin.SongImport', '\xa9'))
-            
     def __init__(self, manager):
         """
         Initialise and create defaults for properties
@@ -58,6 +52,7 @@ class SongImport(QtCore.QObject):
         """
         self.manager = manager
         self.stop_import_flag = False
+        self.set_defaults()
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'songs_stop_import'), self.stop_import)
         self.setDefaults()
@@ -82,6 +77,10 @@ class SongImport(QtCore.QObject):
         self.verses = []
         self.versecount = 0
         self.choruscount = 0
+        self.copyright_string = unicode(translate(
+            'SongsPlugin.SongImport', 'copyright'))
+        self.copyright_symbol = unicode(translate(
+            'SongsPlugin.SongImport', '\xa9'))
  
     def stop_import(self):
         """
@@ -135,13 +134,13 @@ class SongImport(QtCore.QObject):
 
     def process_verse_text(self, text):
         lines = text.split(u'\n')
-        if text.lower().find(COPYRIGHT_STRING) >= 0 \
-            or text.lower().find(COPYRIGHT_SYMBOL) >= 0:
+        if text.lower().find(self.copyright_string) >= 0 \
+            or text.lower().find(self.copyright_symbol) >= 0:
             copyright_found = False
             for line in lines:
                 if (copyright_found or
-                    line.lower().find(COPYRIGHT_STRING) >= 0 or
-                    line.lower().find(COPYRIGHT_SYMBOL) >= 0):
+                    line.lower().find(self.copyright_string) >= 0 or
+                    line.lower().find(self.copyright_symbol) >= 0):
                     copyright_found = True
                     self.add_copyright(line)
                 else:
@@ -306,7 +305,7 @@ class SongImport(QtCore.QObject):
                 topic = Topic.populate(name=topictext)
             song.topics.append(topic)
         self.manager.save_object(song)
-        self.setDefaults()
+        self.set_defaults()
 
     def print_song(self):
         """
