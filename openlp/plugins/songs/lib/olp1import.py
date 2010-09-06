@@ -58,40 +58,56 @@ class OpenLP1SongImport(SongImport):
         """
         Run the import for an openlp.org 1.x song database.
         """
+        # Connect to the database
         connection = sqlite.connect(self.import_source)
         cursor = connection.cursor()
-        cursor.execute(u'SELECT COUNT(authorid) FROM authors')
-        count = int(cursor.fetchone()[0])
+        # Count the number of records we need to import, for the progress bar
         cursor.execute(u'SELECT COUNT(songid) FROM songs')
         count = int(cursor.fetchone()[0])
+        success = True
         self.import_wizard.importProgressBar.setMaximum(count)
-
-    old_cursor.execute(u'SELECT authorid AS id, authorname AS displayname FROM authors')
-    rows = old_cursor.fetchall()
-    if not debug and verbose:
-        print 'done.'
-    author_map = {}
-    for row in rows:
-        display_name = unicode(row[1], u'cp1252')
-        names = display_name.split(u' ')
-        first_name = names[0]
-        last_name = u' '.join(names[1:])
-        if last_name is None:
-            last_name = u''
-        sql_insert = u'INSERT INTO authors '\
-            '(id, first_name, last_name, display_name) '\
-            'VALUES (NULL, ?, ?, ?)'
-        sql_params = (first_name, last_name, display_name)
-        if debug:
-            print '...', display_sql(sql_insert, sql_params)
-        elif verbose:
-            print '... importing "%s"' % display_name
-        new_cursor.execute(sql_insert, sql_params)
-        author_map[row[0]] = new_cursor.lastrowid
-        if debug:
-            print '    >>> authors.authorid =', row[0], 'authors.id =', author_map[row[0]]
-
-
-        cursor.execute(u'SELECT songid AS id, songtitle AS title, '
-            u'lyrics || \'\' AS lyrics, copyrightinfo AS copyright FROM songs')
-        rows = cursor.fetchall()
+        # Import the songs
+        cursor.execute(u'SELECT songid, songtitle, lyrics || \'\' AS lyrics, '
+            u'copyrightinfo FROM songs')
+        songs = cursor.fetchall()
+        for song in songs:
+            self.set_defaults()
+            if self.stop_import_flag:
+                success = False
+                break
+            song_id = song[0]
+            title = unicode(song[1], u'cp1252')
+            lyrics = unicode(song[2], u'cp1252')
+            copyright = unicode(song[3], u'cp1252')
+            self.import_wizard.incrementProgressBar(
+                unicode(translate('SongsPlugin.ImportWizardForm',
+                    'Importing %s...')) % title)
+            self.title = title
+            self.process_song_text(lyrics)
+            self.add_copyright(copyright)
+            cursor.execute(u'SELECT displayname FROM authors a '
+                u'JOIN songauthors sa ON a.authorid = sa.authorid '
+                u'WHERE sa.songid = %s' % song_id)
+            authors = cursor.fetchall()
+            for author in authors:
+                if self.stop_import_flag:
+                    success = False
+                    break
+                self.parse_author(unicode(author[0], u'cp1252'))
+            if self.stop_import_flag:
+                success = False
+                break
+            cursor.execute(u'SELECT fulltrackname FROM tracks t '
+                u'JOIN songtracks st ON t.trackid = st.trackid '
+                u'WHERE st.songid = %s ORDER BY st.listindex' % song_id)
+            tracks = cursor.fetchall()
+            for track in tracks:
+                if self.stop_import_flag:
+                    success = False
+                    break
+                self.add_media_file(unicode(track[0], u'cp1252'))
+            if self.stop_import_flag:
+                success = False
+                break
+            self.finish()
+        return success

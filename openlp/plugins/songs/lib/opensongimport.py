@@ -116,10 +116,11 @@ class OpenSongImport(SongImport):
         opensong files. If `self.commit` is set False, the import will not be
         committed to the database (useful for test scripts).
         """
-        success = False
+        success = True
         self.import_wizard.importProgressBar.setMaximum(len(self.filenames))
         for filename in self.filenames:
             if self.stop_import_flag:
+                success = False
                 break
             ext = os.path.splitext(filename)[1]
             if ext.lower() == u'.zip':
@@ -130,24 +131,28 @@ class OpenSongImport(SongImport):
                     len(z.infolist()))
                 for song in z.infolist():
                     if self.stop_import_flag:
+                        success = False
                         break
                     parts = os.path.split(song.filename)
                     if parts[-1] == u'':
                         #No final part => directory
                         continue
-                    self.import_wizard.incrementProgressBar(u'Importing %s...' \
-                        % parts[-1])
+                    self.import_wizard.incrementProgressBar(
+                        unicode(translate('SongsPlugin.ImportWizardForm',
+                            'Importing %s...')) % parts[-1])
                     songfile = z.open(song)
                     self.do_import_file(songfile)
                     if self.commit:
                         self.finish()
                     self.set_defaults()
                 if self.stop_import_flag:
+                    success = False
                     break
             else:
                 log.info('Direct import %s', filename)
-                self.import_wizard.incrementProgressBar(u'Importing %s...' \
-                    % os.path.split(filename)[-1])
+                self.import_wizard.incrementProgressBar(
+                    unicode(translate('SongsPlugin.ImportWizardForm',
+                        'Importing %s...')) % os.path.split(filename)[-1])
                 file = open(filename)
                 self.do_import_file(file)
                 if self.commit:
@@ -155,7 +160,7 @@ class OpenSongImport(SongImport):
                 self.set_defaults()
         if not self.commit:
             self.finish()
-
+        return success
 
     def do_import_file(self, file):
         """
