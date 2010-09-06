@@ -97,6 +97,7 @@ class MainDisplay(DisplayWidget):
         self.screens = screens
         self.isLive = live
         self.alertTab = None
+        self.hide_mode = None
         self.setWindowTitle(u'OpenLP Display')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint |
             QtCore.Qt.WindowStaysOnTopHint)
@@ -125,6 +126,8 @@ class MainDisplay(DisplayWidget):
         self.frame = self.page.mainFrame()
         QtCore.QObject.connect(self.webView,
             QtCore.SIGNAL(u'loadFinished(bool)'), self.isLoaded)
+        self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.frame.setScrollBarPolicy(QtCore.Qt.Vertical,
             QtCore.Qt.ScrollBarAlwaysOff)
         self.frame.setScrollBarPolicy(QtCore.Qt.Horizontal,
@@ -338,6 +341,9 @@ class MainDisplay(DisplayWidget):
         self.webView.setHtml(html)
         if serviceItem.foot_text and serviceItem.foot_text:
             self.footer(serviceItem.foot_text)
+        # if was hidden keep it hidden
+        if self.hide_mode and self.isLive:
+            self.hideDisplay(self.hide_mode)
 
     def footer(self, text):
         """
@@ -363,6 +369,7 @@ class MainDisplay(DisplayWidget):
             self.frame.evaluateJavaScript(u'show_blank("theme");')
         if mode != HideMode.Screen and self.isHidden():
             self.setVisible(True)
+        self.hide_mode = mode
 
     def showDisplay(self):
         """
@@ -376,6 +383,7 @@ class MainDisplay(DisplayWidget):
             self.setVisible(True)
         # Trigger actions when display is active again
         Receiver.send_message(u'maindisplay_active')
+        self.hide_mode = None
 
 class AudioPlayer(QtCore.QObject):
     """
