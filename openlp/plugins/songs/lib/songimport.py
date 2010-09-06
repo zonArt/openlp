@@ -52,16 +52,16 @@ class SongImport(QtCore.QObject):
         """
         self.manager = manager
         self.stop_import_flag = False
-        self.set_defaults()
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'songs_stop_import'), self.stop_import)
-        self.setDefaults()
+        self.set_defaults()
     
-    def setDefaults(self):
+    def set_defaults(self):
         """
         Create defaults for properties - call this before each song
         if importing many songs at once to ensure a clean beginning
         """
+        self.authors = []
         self.title = u''
         self.song_number = u''
         self.alternate_title = u''
@@ -251,6 +251,7 @@ class SongImport(QtCore.QObject):
         """
         Write the song and its fields to disk
         """
+        log.info(u'commiting song %s to database', self.title)
         song = Song()
         song.title = self.title
         song.search_title = self.remove_punctuation(self.title) \

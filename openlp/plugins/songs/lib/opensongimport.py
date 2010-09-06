@@ -151,7 +151,7 @@ class OpenSongImport(SongImport):
                 self.do_import_file(file)
                 if self.commit:
                     self.finish()
-        if not self.commit:
+        if self.commit:
             self.finish()
 
 
@@ -296,5 +296,6 @@ class OpenSongImport(SongImport):
         self.topics = topics
         self.verse_order_list = verse_order_list
         self.verses = verselist
-        xxx sort out where to call setdefaults
-        xxx need to make calls to insert to database here
+
+        # xxx sort out where to call setdefaults
+        # xxx need to make calls to insert to database here

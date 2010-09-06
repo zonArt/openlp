@@ -69,9 +69,9 @@ def test():
     assert o.topics == [u'TestTheme', u'TestAltTheme']
 
     o.filenames = [u'test.opensong.zip']
+    o.set_defaults()
     o.do_import()
     o.print_song()
-    o.finish()
     assert o.copyright == u'2010 Martin Thompson'
     assert o.authors == [u'MartiÑ Thómpson']
     assert o.title == u'Martins Test'
@@ -87,8 +87,8 @@ def test():
     assert o.verse_order_list == [u'V1', u'C1', u'V2', u'C2', u'V3', u'B1', u'V1']
 
     o.filenames = [u'test2.opensong']
+    o.set_defaults()
     o.do_import()
-    # o.finish()
     o.print_song()
     assert o.copyright == u'2010 Martin Thompson'
     assert o.authors == [u'Martin Thompson']
@@ -106,8 +106,8 @@ def test():
     assert o.verse_order_list == [u'V1', u'V2', u'B1', u'C1', u'C2']
 
     o.filenames = [u'test3.opensong']
+    o.set_defaults()
     o.do_import()
-    # o.finish()
     o.print_song()
     assert o.copyright == u'2010'
     assert o.authors == [u'Martin Thompson']
