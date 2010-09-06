@@ -4,7 +4,7 @@
   <author>MartiÑ &amp; Martin2 Thómpson</author>
   <copyright>2010 Martin Thompson</copyright>
   <hymn_number>1</hymn_number>
-  <presentation>V1 C V2 C2 3a B1 V1 T U</presentation>
+  <presentation>V1 C V2 C2 3a B1 V1 T U Rap1 Rap2 Rap3</presentation>
   <ccli>Blah</ccli>
   <capo print="false"></capo>
   <key></key>
@@ -46,6 +46,17 @@
 
 [T]
   T Line 1
+
+[Rap]
+1 Rap 1 Line 1
+2 Rap 2 Line 1
+1 Rap 1 Line 2
+2 Rap 2 Line 2
+
+[rap3]
+ Rap 3 Line 1
+ Rap 3 Line 2
+
 
 [X]
   Unreferenced verse line 1

@@ -63,8 +63,11 @@ def test():
     assert [u'V1', u'v1 Line 1\nV1 Line 2'] in o.verses 
     assert [u'V2', u'v2 Line 1\nV2 Line 2'] in o.verses
     assert [u'V3A', u'V3 Line 1\nV3 Line 2'] in o.verses
+    assert [u'RAP1', u'Rap 1 Line 1\nRap 1 Line 2'] in o.verses
+    assert [u'RAP2', u'Rap 2 Line 1\nRap 2 Line 2'] in o.verses
+    assert [u'RAP3', u'Rap 3 Line 1\nRap 3 Line 2'] in o.verses
     assert [u'X1', u'Unreferenced verse line 1'] in o.verses
-    assert o.verse_order_list == [u'V1', u'C1', u'V2', u'C2', u'V3A', u'B1', u'V1', u'T1']
+    assert o.verse_order_list == [u'V1', u'C1', u'V2', u'C2', u'V3A', u'B1', u'V1', u'T1', u'RAP1', u'RAP2', u'RAP3']
     assert o.ccli_number == u'Blah'
     assert o.topics == [u'TestTheme', u'TestAltTheme']
 
@@ -120,7 +123,6 @@ def test():
     assert [u'V1', u'Line 1\nLine 2'] in o.verses 
 
     print "Tests passed"
-    pass
 
 if __name__ == "__main__":
     test()
