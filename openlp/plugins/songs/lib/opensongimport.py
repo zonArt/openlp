@@ -160,7 +160,7 @@ class OpenSongImport(SongImport):
         Process the OpenSong file - pass in a file-like object,
         not a filename
         """
-        self.set_defaults()
+        # self.setDefaults()
         # Setup blank storage to append to
         verse_order_list = []
         topics = []
@@ -296,3 +296,5 @@ class OpenSongImport(SongImport):
         self.topics = topics
         self.verse_order_list = verse_order_list
         self.verses = verselist
+        xxx sort out where to call setdefaults
+        xxx need to make calls to insert to database here

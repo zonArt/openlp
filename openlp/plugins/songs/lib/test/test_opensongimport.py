@@ -43,7 +43,6 @@ class progbar_stub:
         pass
     def setMaximum(self, arg):
         pass
-    
 
 def test():
     manager = Manager(u'songs', init_schema)
