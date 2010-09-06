@@ -93,6 +93,8 @@ class RenderManager(object):
         """
         self.global_theme = global_theme
         self.theme_level = theme_level
+        self.global_theme_data = \
+            self.theme_manager.getThemeData(self.global_theme)
         self.themedata = None
 
     def set_service_theme(self, service_theme):
