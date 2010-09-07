@@ -76,7 +76,7 @@ class SongImport(QtCore.QObject):
             'SongsPlugin.SongImport', 'copyright'))
         self.copyright_symbol = unicode(translate(
             'SongsPlugin.SongImport', '\xa9'))
- 
+
     def stop_import(self):
         """
         Sets the flag for importers to stop their import
@@ -249,7 +249,7 @@ class SongImport(QtCore.QObject):
         song = Song()
         song.title = self.title
         song.search_title = self.remove_punctuation(self.title) \
-            + '@' + self.alternate_title
+            + '@' + self.remove_punctuation(self.alternate_title)
         song.song_number = self.song_number
         song.search_lyrics = u''
         sxml = SongXMLBuilder()
@@ -270,7 +270,7 @@ class SongImport(QtCore.QObject):
                 versetype = VerseType.to_string(VerseType.Other)
             sxml.add_verse_to_lyrics(versetype, versetag[1:], versetext)
             song.search_lyrics += u' ' + self.remove_punctuation(versetext)
-        song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
+        song.lyrics = unicode(sxml.extract_xml(), u'utf-8').lower()
         song.verse_order = u' '.join(self.verse_order_list)
         song.copyright = self.copyright
         song.comments = self.comments

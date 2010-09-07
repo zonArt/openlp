@@ -627,7 +627,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.song.alternate_title = unicode(self.AlternativeEdit.text())
         self.song.copyright = unicode(self.CopyrightEditItem.text())
         self.song.search_title = self.song.title + u'@' + \
-            unicode(self.AlternativeEdit.text())
+            self.song.alternate_title
         self.song.comments = unicode(self.CommentsEdit.toPlainText())
         self.song.verse_order = unicode(self.VerseOrderEdit.text())
         self.song.ccli_number = unicode(self.CCLNumberEdit.text())
@@ -667,7 +667,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 if (bits[1] > u'1') and (bits[0][0] not in multiple):
                     multiple.append(bits[0][0])
             self.song.search_lyrics = text
-            self.song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
+            self.song.lyrics = unicode(sxml.extract_xml(), u'utf-8').lower()
             for verse in multiple:
                 self.song.verse_order = re.sub(u'([' + verse.upper() +
                     verse.lower() + u'])(\W|$)', r'\g<1>1\2',
@@ -679,4 +679,4 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def processTitle(self):
         log.debug(u'processTitle')
         self.song.search_title = re.sub(r'[\'"`,;:(){}?]+', u'',
-            unicode(self.song.search_title))
+            unicode(self.song.search_title)).lower()
