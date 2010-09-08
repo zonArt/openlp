@@ -30,7 +30,7 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, translate
 from openlp.plugins.songs.lib import VerseType
-from openlp.plugins.songs.lib.db import Song, Author, Topic, Book
+from openlp.plugins.songs.lib.db import Song, Author, Topic, Book, MediaFile
 from openlp.plugins.songs.lib.xml import SongXMLBuilder
 
 log = logging.getLogger(__name__)
@@ -66,6 +66,7 @@ class SongImport(QtCore.QObject):
         self.ccli_number = u''
         self.authors = []
         self.topics = []
+        self.media_files = []
         self.song_book_name = u''
         self.song_book_pub = u''
         self.verse_order_list = []
@@ -76,7 +77,7 @@ class SongImport(QtCore.QObject):
             'SongsPlugin.SongImport', 'copyright'))
         self.copyright_symbol = unicode(translate(
             'SongsPlugin.SongImport', '\xa9'))
- 
+
     def stop_import(self):
         """
         Sets the flag for importers to stop their import
@@ -184,6 +185,14 @@ class SongImport(QtCore.QObject):
             return
         self.authors.append(author)
 
+    def add_media_file(self, filename):
+        """
+        Add a media file to the list
+        """
+        if filename in self.media_files:
+            return
+        self.media_files.append(filename)
+
     def add_verse(self, verse, versetag=None):
         """
         Add a verse. This is the whole verse, lines split by \n
@@ -279,11 +288,16 @@ class SongImport(QtCore.QObject):
         for authortext in self.authors:
             author = self.manager.get_object_filtered(Author,
                 Author.display_name == authortext)
-            if author is None:
+            if not author:
                 author = Author.populate(display_name = authortext,
                     last_name=authortext.split(u' ')[-1],
                     first_name=u' '.join(authortext.split(u' ')[:-1]))
             song.authors.append(author)
+        for filename in self.media_files:
+            media_file = self.manager.get_object_filtered(MediaFile,
+                MediaFile.file_name == filename)
+            if not media_file:
+                song.media_files.append(MediaFile.populate(file_name=filename))
         if self.song_book_name:
             song_book = self.manager.get_object_filtered(Book,
                 Book.name == self.song_book_name)

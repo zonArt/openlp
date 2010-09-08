@@ -26,6 +26,7 @@
 
 from opensongimport import OpenSongImport
 from olpimport import OpenLPSongImport
+from olp1import import OpenLP1SongImport
 try:
     from sofimport import SofImport
     from oooimport import OooImport
@@ -61,6 +62,8 @@ class SongFormat(object):
         """
         if format == SongFormat.OpenLP2:
             return OpenLPSongImport
+        if format == SongFormat.OpenLP1:
+            return OpenLP1SongImport
         elif format == SongFormat.OpenSong:
             return OpenSongImport
         elif format == SongFormat.SongsOfFellowship:
@@ -70,7 +73,7 @@ class SongFormat(object):
         elif format == SongFormat.Generic:
             return OooImport
         elif format == SongFormat.CCLI:
-            return CCLIFileImport            
+            return CCLIFileImport
 #        else:
         return None
 
