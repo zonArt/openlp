@@ -7,8 +7,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,17 +28,19 @@
 import os
 import sys
 import logging
-
-from logging import FileHandler
 from optparse import OptionParser
-from PyQt4 import QtCore, QtGui
+from traceback import format_exception
 
-log = logging.getLogger()
+from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver
 from openlp.core.resources import qInitResources
-from openlp.core.ui import MainWindow, SplashScreen, ScreenList
-from openlp.core.utils import AppLocation, LanguageManager
+from openlp.core.ui.mainwindow import MainWindow
+from openlp.core.ui.exceptionform import ExceptionForm
+from openlp.core.ui import SplashScreen, ScreenList
+from openlp.core.utils import AppLocation, LanguageManager, VersionThread
+
+log = logging.getLogger()
 
 application_stylesheet = u"""
 QMainWindow::separator
@@ -47,7 +50,6 @@ QMainWindow::separator
 
 QDockWidget::title
 {
-  /*background: palette(dark);*/
   border: 1px solid palette(dark);
   padding-left: 5px;
   padding-top: 2px;
@@ -100,7 +102,7 @@ class OpenLP(QtGui.QApplication):
                 )
             else:
                 log.info(u'Openlp version %s' % app_version[u'version'])
-        except:
+        except IOError:
             log.exception('Error in version file.')
             app_version = {
                 u'full': u'1.9.0-bzr000',
@@ -122,18 +124,18 @@ class OpenLP(QtGui.QApplication):
         show_splash = QtCore.QSettings().value(
             u'general/show splash', QtCore.QVariant(True)).toBool()
         if show_splash:
-            self.splash = SplashScreen(self.applicationVersion())
+            self.splash = SplashScreen()
             self.splash.show()
         # make sure Qt really display the splash screen
         self.processEvents()
         screens = ScreenList()
         # Decide how many screens we have and their size
         for screen in xrange(0, self.desktop().numScreens()):
+            size = self.desktop().screenGeometry(screen);
             screens.add_screen({u'number': screen,
-                u'size': self.desktop().availableGeometry(screen),
+                u'size': size,
                 u'primary': (self.desktop().primaryScreen() == screen)})
-            log.info(u'Screen %d found with resolution %s',
-                screen, self.desktop().availableGeometry(screen))
+            log.info(u'Screen %d found with resolution %s', screen, size)
         # start the main app window
         self.mainWindow = MainWindow(screens, app_version)
         self.mainWindow.show()
@@ -141,8 +143,15 @@ class OpenLP(QtGui.QApplication):
             # now kill the splashscreen
             self.splash.finish(self.mainWindow)
         self.mainWindow.repaint()
-        self.mainWindow.versionThread()
+        VersionThread(self.mainWindow, app_version).start()
         return self.exec_()
+
+    def hookException(self, exctype, value, traceback):
+        if not hasattr(self, u'exceptionForm'):
+            self.exceptionForm = ExceptionForm(self.mainWindow)
+        self.exceptionForm.exceptionTextEdit.setPlainText(
+            ''.join(format_exception(exctype, value, traceback)))
+        self.exceptionForm.exec_()
 
 def main():
     """
@@ -163,11 +172,11 @@ def main():
     parser.add_option("-s", "--style", dest="style",
                       help="Set the Qt4 style (passed directly to Qt4).")
     # Set up logging
-    log_path = AppLocation.get_directory(AppLocation.ConfigDir)
+    log_path = AppLocation.get_directory(AppLocation.CacheDir)
     if not os.path.exists(log_path):
         os.makedirs(log_path)
     filename = os.path.join(log_path, u'openlp.log')
-    logfile = FileHandler(filename, u'w')
+    logfile = logging.FileHandler(filename, u'w')
     logfile.setFormatter(logging.Formatter(
         u'%(asctime)s %(name)-55s %(levelname)-8s %(message)s'))
     log.addHandler(logfile)
@@ -194,7 +203,7 @@ def main():
     language = LanguageManager.get_language()
     appTranslator = LanguageManager.get_translator(language)
     app.installTranslator(appTranslator)
-
+    sys.excepthook = app.hookException
     sys.exit(app.run())
 
 if __name__ == u'__main__':

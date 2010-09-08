@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -195,7 +196,7 @@ class HttpConnection(object):
         path = os.path.normpath(os.path.join(self.parent.html_dir, filename))
         if not path.startswith(self.parent.html_dir):
             return None
-        (fileroot, ext) = os.path.splitext(filename)
+        ext = os.path.splitext(filename)[1]
         if ext == u'.html':
             mimetype = u'text/html'
         elif ext == u'.css':

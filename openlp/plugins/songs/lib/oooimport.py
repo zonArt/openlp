@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,7 +25,10 @@
 ###############################################################################
 
 import os
+
 from PyQt4 import QtCore
+
+from openlp.core.lib import Receiver
 from songimport import SongImport
 
 if os.name == u'nt':
@@ -35,26 +39,37 @@ if os.name == u'nt':
 else:
     try:
         import uno
-        from com.sun.star.style.BreakType import PAGE_BEFORE, PAGE_AFTER, PAGE_BOTH
-    except:
+        from com.sun.star.style.BreakType import PAGE_BEFORE, PAGE_AFTER, \
+            PAGE_BOTH
+    except ImportError:
         pass
-class OooImport(object):
+
+class OooImport(SongImport):
     """
     Import songs from Impress/Powerpoint docs using Impress 
     """
-    def __init__(self, songmanager):
+    def __init__(self, master_manager, **kwargs):
         """
         Initialise the class. Requires a songmanager class which is passed
         to SongImport for writing song to disk
         """
+        SongImport.__init__(self, master_manager)
         self.song = None
-        self.manager = songmanager
+        self.master_manager = master_manager
         self.document = None
         self.process_started = False
+        self.filenames = kwargs[u'filenames']
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'song_stop_import'), self.stop_import)
 
-    def import_docs(self, filenames):
+    def do_import(self):
+        self.abort = False
+        self.import_wizard.importProgressBar.setMaximum(0)
         self.start_ooo()
-        for filename in filenames:
+        for filename in self.filenames:
+            if self.abort:
+                self.import_wizard.incrementProgressBar(u'Import cancelled', 0)
+                return
             filename = unicode(filename)
             if os.path.isfile(filename):
                 self.open_ooo_file(filename)
@@ -67,6 +82,12 @@ class OooImport(object):
                         self.process_doc()
                     self.close_ooo_file()
         self.close_ooo()
+        self.import_wizard.importProgressBar.setMaximum(1)
+        self.import_wizard.incrementProgressBar(u'', 1)
+        return True
+
+    def stop_import(self):
+        self.abort = True
 
     def start_ooo(self):
         """
@@ -75,7 +96,8 @@ class OooImport(object):
         """
         if os.name == u'nt':
             self.start_ooo_process()
-            self.desktop = self.manager.createInstance(u'com.sun.star.frame.Desktop')
+            self.desktop = self.manager.createInstance(
+                u'com.sun.star.frame.Desktop')
         else:
             context = uno.getComponentContext()
             resolver = context.ServiceManager.createInstanceWithContext(
@@ -92,7 +114,7 @@ class OooImport(object):
                 loop += 1
             manager = ctx.ServiceManager
             self.desktop = manager.createInstanceWithContext(
-                "com.sun.star.frame.Desktop", ctx )
+                "com.sun.star.frame.Desktop", ctx)
             
     def start_ooo_process(self):
         try:
@@ -101,8 +123,8 @@ class OooImport(object):
                 self.manager._FlagAsMethod(u'Bridge_GetStruct')
                 self.manager._FlagAsMethod(u'Bridge_GetValueObject')
             else:
-                cmd = u'openoffice.org -nologo -norestore -minimized -invisible ' \
-                    + u'-nofirststartwizard ' \
+                cmd = u'openoffice.org -nologo -norestore -minimized ' \
+                    + u'-invisible -nofirststartwizard ' \
                     + '-accept="socket,host=localhost,port=2002;urp;"'
                 process = QtCore.QProcess()
                 process.startDetached(cmd)
@@ -125,11 +147,13 @@ class OooImport(object):
         try:
             self.document = self.desktop.loadComponentFromURL(url, u'_blank',
                 0, properties)
-            if not self.document.supportsService(                   
-                "com.sun.star.presentation.PresentationDocument")   \
-                and not self.document.supportsService(              
-                "com.sun.star.text.TextDocument"):
+            if not self.document.supportsService(
+                "com.sun.star.presentation.PresentationDocument") and not \
+                self.document.supportsService("com.sun.star.text.TextDocument"):
                 self.close_ooo_file()
+            else:
+                self.import_wizard.incrementProgressBar(
+                    u'Processing file ' + filepath, 0)
         except:
             pass
         return   
@@ -156,6 +180,9 @@ class OooImport(object):
         slides = doc.getDrawPages()
         text = u''
         for slide_no in range(slides.getCount()):
+            if self.abort:
+                self.import_wizard.incrementProgressBar(u'Import cancelled', 0)
+                return
             slide = slides.getByIndex(slide_no)   
             slidetext = u''
             for idx in range(slide.getCount()):
@@ -194,4 +221,3 @@ class OooImport(object):
         songs = SongImport.process_songs_text(self.manager, text)
         for song in songs:
             song.finish()
-

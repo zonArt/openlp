@@ -192,7 +192,7 @@ OpenLP.Namespace.create("OpenLP.Remote", {
                         trow.addClass("selected");
                     }
                     trow.append($("<td>").text(item["tag"]));
-                    trow.append($("<td>").text(item["text"] ? item["text"].replace(/\\n/g, '<br />') : ""));
+                    trow.append($("<td>").html(item["text"] ? item["text"].replace(/\\n/g, "<br />") : ""));
                     table.append(trow);
                 });
                 $("#current-item").html(table);

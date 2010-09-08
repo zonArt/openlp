@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,15 +26,15 @@
 
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import Receiver, translate
 
 log = logging.getLogger(__name__)
 
 class AlertsManager(QtCore.QObject):
     """
-    AlertsTab is the Alerts settings tab in the settings dialog.
+    AlertsManager manages the settings of Alerts.
     """
     log.info(u'Alert Manager loaded')
 
@@ -47,28 +48,6 @@ class AlertsManager(QtCore.QObject):
             QtCore.SIGNAL(u'maindisplay_active'), self.generateAlert)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'alerts_text'), self.onAlertText)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'config_screen_changed'), self.screenChanged)
-
-    def screenChanged(self):
-        log.debug(u'screen changed')
-        self.alertTab = self.parent.alertsTab
-        self.screen = self.parent.maindisplay.screens.current
-        self.font = QtGui.QFont()
-        self.font.setFamily(self.alertTab.font_face)
-        self.font.setBold(True)
-        self.font.setPointSize(self.alertTab.font_size)
-        self.metrics = QtGui.QFontMetrics(self.font)
-        self.alertHeight = self.metrics.height() + 4
-        if self.alertTab.location == 0:
-            self.alertScreenPosition = 0
-        else:
-            self.alertScreenPosition = self.screen[u'size'].height() \
-                - self.alertHeight
-            self.alertHeight = self.screen[u'size'].height() \
-                - self.alertScreenPosition
-        self.parent.maindisplay.setAlertSize(self.alertScreenPosition,
-            self.alertHeight)
 
     def onAlertText(self, message):
         """
@@ -79,7 +58,7 @@ class AlertsManager(QtCore.QObject):
             self.displayAlert(message[0])
         else:
             self.displayAlert(u'')
-            
+
     def displayAlert(self, text=u''):
         """
         Called from the Alert Tab to display an alert
@@ -88,48 +67,40 @@ class AlertsManager(QtCore.QObject):
             display text
         """
         log.debug(u'display alert called %s' % text)
-        if not self.screen:
-            self.screenChanged()
         self.alertList.append(text)
         if self.timer_id != 0:
             Receiver.send_message(u'maindisplay_status_text',
-                self.trUtf8(u'Alert message created and delayed'))
+                translate('AlertsPlugin.AlertsManager',
+                'Alert message created and displayed.'))
             return
         Receiver.send_message(u'maindisplay_status_text', u'')
         self.generateAlert()
 
     def generateAlert(self):
+        """
+        Format and request the Alert and start the timer
+        """
         log.debug(u'Generate Alert called')
         if len(self.alertList) == 0:
             return
         text = self.alertList.pop(0)
         alertTab = self.parent.alertsTab
-        alertframe = \
-            QtGui.QPixmap(self.screen[u'size'].width(), self.alertHeight)
-        alertframe.fill(QtCore.Qt.transparent)
-        painter = QtGui.QPainter(alertframe)
-        painter.fillRect(alertframe.rect(), QtCore.Qt.transparent)
-        painter.setRenderHint(QtGui.QPainter.Antialiasing)
-        painter.fillRect(
-            QtCore.QRect(
-                0, 0, alertframe.rect().width(),
-                alertframe.rect().height()),
-            QtGui.QColor(self.alertTab.bg_color))
-        painter.setFont(self.font)
-        painter.setPen(QtGui.QColor(self.alertTab.font_color))
-        x, y = (0, 2)
-        painter.drawText(
-            x, y + self.metrics.height() - self.metrics.descent() - 1, text)
-        painter.end()
-        self.parent.maindisplay.addAlertImage(alertframe)
+        self.parent.liveController.display.alert(text)
         # check to see if we have a timer running
         if self.timer_id == 0:
             self.timer_id = self.startTimer(int(alertTab.timeout) * 1000)
 
     def timerEvent(self, event):
+        """
+        Time has finished so if our time then request the next Alert
+        if there is one and reset the timer.
+        ``event``
+            the QT event that has been triggered.
+
+        """
         log.debug(u'timer event')
         if event.timerId() == self.timer_id:
-            self.parent.maindisplay.addAlertImage(None, True)
+            self.parent.liveController.display.alert(u'')
         self.killTimer(self.timer_id)
         self.timer_id = 0
         self.generateAlert()

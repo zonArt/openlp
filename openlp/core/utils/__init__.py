@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,28 +23,85 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The :mod:`utils` module provides the utility libraries for OpenLP
+"""
 
-import os
-import sys
 import logging
+import os
+import re
+import sys
+import time
 import urllib2
 from datetime import datetime
 
-from PyQt4 import QtCore
+from PyQt4 import QtGui, QtCore
 
 import openlp
+from openlp.core.lib import Receiver, translate
 
 log = logging.getLogger(__name__)
+images_filter = None
+
+class VersionThread(QtCore.QThread):
+    """
+    A special Qt thread class to fetch the version of OpenLP from the website.
+    This is threaded so that it doesn't affect the loading time of OpenLP.
+    """
+    def __init__(self, parent, app_version):
+        QtCore.QThread.__init__(self, parent)
+        self.app_version = app_version
+        self.version_splitter = re.compile(
+            r'([0-9]+).([0-9]+).([0-9]+)(?:-bzr([0-9]+))?')
+
+    def run(self):
+        """
+        Run the thread.
+        """
+        time.sleep(1)
+        Receiver.send_message(u'maindisplay_blank_check')
+        version = check_latest_version(self.app_version)
+        remote_version = {}
+        local_version = {}
+        match = self.version_splitter.match(version)
+        if match:
+            remote_version[u'major'] = int(match.group(1))
+            remote_version[u'minor'] = int(match.group(2))
+            remote_version[u'release'] = int(match.group(3))
+            if len(match.groups()) > 3 and match.group(4):
+                remote_version[u'revision'] = int(match.group(4))
+        else:
+            return
+        match = self.version_splitter.match(self.app_version[u'full'])
+        if match:
+            local_version[u'major'] = int(match.group(1))
+            local_version[u'minor'] = int(match.group(2))
+            local_version[u'release'] = int(match.group(3))
+            if len(match.groups()) > 3 and match.group(4):
+                local_version[u'revision'] = int(match.group(4))
+        else:
+            return
+        if remote_version[u'major'] > local_version[u'major'] or \
+            remote_version[u'minor'] > local_version[u'minor'] or \
+            remote_version[u'release'] > local_version[u'release']:
+            Receiver.send_message(u'openlp_version_check', u'%s' % version)
+        elif remote_version.get(u'revision') and \
+            local_version.get(u'revision') and \
+            remote_version[u'revision'] > local_version[u'revision']:
+            Receiver.send_message(u'openlp_version_check', u'%s' % version)
+
 
 class AppLocation(object):
     """
-    Retrieve a directory based on the directory type.
+    The :class:`AppLocation` class is a static class which retrieves a
+    directory based on the directory type.
     """
     AppDir = 1
     ConfigDir = 2
     DataDir = 3
     PluginsDir = 4
     VersionDir = 5
+    CacheDir = 6
 
     @staticmethod
     def get_directory(dir_type=1):
@@ -93,10 +151,24 @@ class AppLocation(object):
             return plugin_path
         elif dir_type == AppLocation.VersionDir:
             if hasattr(sys, u'frozen') and sys.frozen == 1:
-                plugin_path = os.path.abspath(os.path.split(sys.argv[0])[0])
+                version_path = os.path.abspath(os.path.split(sys.argv[0])[0])
             else:
-                plugin_path = os.path.split(openlp.__file__)[0]
-            return plugin_path
+                version_path = os.path.split(openlp.__file__)[0]
+            return version_path
+        elif dir_type == AppLocation.CacheDir:
+            if sys.platform == u'win32':
+                path = os.path.join(os.getenv(u'APPDATA'), u'openlp')
+            elif sys.platform == u'darwin':
+                path = os.path.join(os.getenv(u'HOME'), u'Library',
+                    u'Application Support', u'openlp')
+            else:
+                try:
+                    from xdg import BaseDirectory
+                    path = os.path.join(
+                        BaseDirectory.xdg_cache_home, u'openlp')
+                except ImportError:
+                    path = os.path.join(os.getenv(u'HOME'), u'.openlp')
+            return path
 
     @staticmethod
     def get_data_path():
@@ -132,40 +204,21 @@ def check_latest_version(current_version):
     settings.setValue(u'last version test', QtCore.QVariant(this_test))
     settings.endGroup()
     if last_test != this_test:
-        version_string = u''
         if current_version[u'build']:
             req = urllib2.Request(
                 u'http://www.openlp.org/files/dev_version.txt')
         else:
             req = urllib2.Request(u'http://www.openlp.org/files/version.txt')
         req.add_header(u'User-Agent', u'OpenLP/%s' % current_version[u'full'])
+        remote_version = None
         try:
-            version_string = unicode(urllib2.urlopen(req, None).read()).strip()
+            remote_version = unicode(urllib2.urlopen(req, None).read()).strip()
         except IOError, e:
             if hasattr(e, u'reason'):
                 log.exception(u'Reason for failure: %s', e.reason)
+        if remote_version:
+            version_string = remote_version
     return version_string
-
-def string_to_unicode(string):
-    """
-    Converts a QString to a Python unicode object.
-    """
-    if isinstance(string, QtCore.QString):
-        string = unicode(string.toUtf8(), u'utf8')
-    return string
-
-def variant_to_unicode(variant):
-    """
-    Converts a QVariant to a Python unicode object.
-
-    ``variant``
-        The QVariant instance to convert to unicode.
-    """
-    if isinstance(variant, QtCore.QVariant):
-        string = variant.toString()
-    if not isinstance(string, unicode):
-        string = string_to_unicode(string)
-    return string
 
 def add_actions(target, actions):
     """
@@ -184,7 +237,33 @@ def add_actions(target, actions):
         else:
             target.addAction(action)
 
+def get_filesystem_encoding():
+    """
+    Returns the name of the encoding used to convert Unicode filenames into
+    system file names.
+    """
+    encoding = sys.getfilesystemencoding()
+    if encoding is None:
+        encoding = sys.getdefaultencoding()
+    return encoding
+
+def get_images_filter():
+    """
+    Returns a filter string for a file dialog containing all the supported
+    image formats.
+    """
+    global images_filter
+    if not images_filter:
+        log.debug(u'Generating images filter.')
+        formats = [unicode(fmt)
+            for fmt in QtGui.QImageReader.supportedImageFormats()]
+        visible_formats = u'(*.%s)' % u'; *.'.join(formats)
+        actual_formats = u'(*.%s)' % u' *.'.join(formats)
+        images_filter = u'%s %s %s' % (translate('OpenLP', 'Image Files'),
+            visible_formats, actual_formats)
+    return images_filter
+
 from languagemanager import LanguageManager
 
 __all__ = [u'AppLocation', u'check_latest_version', u'add_actions',
-    u'LanguageManager']
+    u'get_filesystem_encoding', u'LanguageManager']

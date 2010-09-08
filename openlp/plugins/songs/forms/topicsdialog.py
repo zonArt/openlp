@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,6 +25,7 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+
 from openlp.core.lib import translate
 
 class Ui_TopicsDialog(object):
@@ -60,5 +62,7 @@ class Ui_TopicsDialog(object):
         QtCore.QMetaObject.connectSlotsByName(TopicsDialog)
 
     def retranslateUi(self, TopicsDialog):
-        TopicsDialog.setWindowTitle(translate('TopicsForm', 'Topic Maintenance'))
-        self.NameLabel.setText(translate('TopicsForm', 'Topic name:'))
+        TopicsDialog.setWindowTitle(
+            translate('SongsPlugin.TopicsForm', 'Topic Maintenance'))
+        self.NameLabel.setText(
+            translate('SongsPlugin.TopicsForm', 'Topic name:'))

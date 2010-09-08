@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,9 +26,10 @@
 
 import logging
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus
-from openlp.plugins.media.lib import MediaMediaItem
 from PyQt4.phonon import Phonon
+
+from openlp.core.lib import Plugin, build_icon, translate
+from openlp.plugins.media.lib import MediaMediaItem
 
 log = logging.getLogger(__name__)
 
@@ -35,47 +37,42 @@ class MediaPlugin(Plugin):
     log.info(u'%s MediaPlugin loaded', __name__)
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Media', u'1.9.1', plugin_helpers)
+        Plugin.__init__(self, u'Media', u'1.9.2', plugin_helpers)
         self.weight = -6
-        self.icon = build_icon(u':/media/media_video.png')
+        self.icon_path = u':/plugins/plugin_media.png'
+        self.icon = build_icon(self.icon_path)
         # passed with drag and drop messages
         self.dnd_id = u'Media'
-        self.status = PluginStatus.Active
         self.audio_list = u''
         self.video_list = u''
         for mimetype in Phonon.BackendCapabilities.availableMimeTypes():
             mimetype = unicode(mimetype)
             type = mimetype.split(u'audio/x-')
-            self.audio_list, mimetype = self._add_to_list(self.audio_list, type, mimetype)
+            self.audio_list, mimetype = self._addToList(self.audio_list,
+                type, mimetype)
             type = mimetype.split(u'audio/')
-            self.audio_list, mimetype = self._add_to_list(self.audio_list, type, mimetype)
+            self.audio_list, mimetype = self._addToList(self.audio_list,
+                type, mimetype)
             type = mimetype.split(u'video/x-')
-            self.video_list, mimetype = self._add_to_list(self.video_list, type, mimetype)
+            self.video_list, mimetype = self._addToList(self.video_list,
+                type, mimetype)
             type = mimetype.split(u'video/')
-            self.video_list, mimetype = self._add_to_list(self.video_list, type, mimetype)
+            self.video_list, mimetype = self._addToList(self.video_list,
+                type, mimetype)
 
-    def _add_to_list(self, list, value, type):
+    def _addToList(self, list, value, type):
         if len(value) == 2:
             if list.find(value[1]) == -1:
                 list += u'*.%s ' % value[1]
-                self.service_manager.supportedSuffixes(value[1])
+                self.serviceManager.supportedSuffixes(value[1])
             type = u''
         return list, type
 
-    def initialise(self):
-        log.info(u'Plugin Initialising')
-        Plugin.initialise(self)
-        self.insert_toolbox_item()
-
-    def finalise(self):
-        log.info(u'Plugin Finalise')
-        self.remove_toolbox_item()
-
-    def get_media_manager_item(self):
+    def getMediaManagerItem(self):
         # Create the MediaManagerItem object
         return MediaMediaItem(self, self.icon, self.name)
 
     def about(self):
-        about_text = self.trUtf8('<b>Media Plugin</b><br>This plugin '
-            'allows the playing of audio and video media')
+        about_text = translate('MediaPlugin', '<strong>Media Plugin</strong>'
+            '<br />The media plugin provides playback of audio and video.')
         return about_text

@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,7 +23,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+Provide the generic plugin functionality for OpenLP plugins.
+"""
 import logging
 
 from PyQt4 import QtCore
@@ -65,23 +68,23 @@ class Plugin(QtCore.QObject):
 
     **Hook Functions**
 
-    ``check_pre_conditions()``
+    ``checkPreConditions()``
         Provides the Plugin with a handle to check if it can be loaded.
 
-    ``get_media_manager_item()``
+    ``getMediaManagerItem()``
         Returns an instance of MediaManagerItem to be used in the Media Manager.
 
-    ``add_import_menu_item(import_menu)``
+    ``addImportMenuItem(import_menu)``
         Add an item to the Import menu.
 
-    ``add_export_menu_item(export_menu)``
+    ``addExportMenuItem(export_menu)``
         Add an item to the Export menu.
 
-    ``get_settings_tab()``
+    ``getSettingsTab()``
         Returns an instance of SettingsTabItem to be used in the Settings
         dialog.
 
-    ``add_to_menu(menubar)``
+    ``addToMenu(menubar)``
         A method to add a menu item to anywhere in the menu, given the menu bar.
 
     ``handle_event(event)``
@@ -122,18 +125,19 @@ class Plugin(QtCore.QObject):
         self.status = PluginStatus.Inactive
         # Set up logging
         self.log = logging.getLogger(self.name)
-        self.preview_controller = plugin_helpers[u'preview']
-        self.live_controller = plugin_helpers[u'live']
-        self.render_manager = plugin_helpers[u'render']
-        self.service_manager = plugin_helpers[u'service']
-        self.settings_form = plugin_helpers[u'settings form']
+        self.previewController = plugin_helpers[u'preview']
+        self.liveController = plugin_helpers[u'live']
+        self.renderManager = plugin_helpers[u'render']
+        self.serviceManager = plugin_helpers[u'service']
+        self.settingsForm = plugin_helpers[u'settings form']
         self.mediadock = plugin_helpers[u'toolbox']
-        self.maindisplay = plugin_helpers[u'maindisplay']
+        self.pluginManager = plugin_helpers[u'pluginmanager']
+        self.formparent = plugin_helpers[u'formparent']
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_add_service_item' % self.name),
-            self.process_add_service_event)
+            self.processAddServiceEvent)
 
-    def check_pre_conditions(self):
+    def checkPreConditions(self):
         """
         Provides the Plugin with a handle to check if it can be loaded.
         Failing Preconditions does not stop a settings Tab being created
@@ -142,7 +146,7 @@ class Plugin(QtCore.QObject):
         """
         return True
 
-    def set_status(self):
+    def setStatus(self):
         """
         Sets the status of the plugin
         """
@@ -150,7 +154,7 @@ class Plugin(QtCore.QObject):
             self.settingsSection + u'/status',
             QtCore.QVariant(PluginStatus.Inactive)).toInt()[0]
 
-    def toggle_status(self, new_status):
+    def toggleStatus(self, new_status):
         """
         Changes the status of the plugin and remembers it
         """
@@ -158,7 +162,7 @@ class Plugin(QtCore.QObject):
         QtCore.QSettings().setValue(
             self.settingsSection + u'/status', QtCore.QVariant(self.status))
 
-    def is_active(self):
+    def isActive(self):
         """
         Indicates if the plugin is active
 
@@ -166,47 +170,47 @@ class Plugin(QtCore.QObject):
         """
         return self.status == PluginStatus.Active
 
-    def get_media_manager_item(self):
+    def getMediaManagerItem(self):
         """
         Construct a MediaManagerItem object with all the buttons and things
         you need, and return it for integration into openlp.org.
         """
         pass
 
-    def add_import_menu_item(self, import_menu):
+    def addImportMenuItem(self, importMenu):
         """
         Create a menu item and add it to the "Import" menu.
 
-        ``import_menu``
+        ``importMenu``
             The Import menu.
         """
         pass
 
-    def add_export_menu_item(self, export_menu):
+    def addExportMenuItem(self, exportMenu):
         """
         Create a menu item and add it to the "Export" menu.
 
-        ``export_menu``
+        ``exportMenu``
             The Export menu
         """
         pass
 
-    def add_tools_menu_item(self, tools_menu):
+    def addToolsMenuItem(self, toolsMenu):
         """
         Create a menu item and add it to the "Tools" menu.
 
-        ``tools_menu``
+        ``toolsMenu``
             The Tools menu
         """
         pass
 
-    def get_settings_tab(self):
+    def getSettingsTab(self):
         """
         Create a tab for the settings window.
         """
         pass
 
-    def add_to_menu(self, menubar):
+    def addToMenu(self, menubar):
         """
         Add menu items to the menu, given the menubar.
 
@@ -215,55 +219,73 @@ class Plugin(QtCore.QObject):
         """
         pass
 
-    def process_add_service_event(self, replace=False):
+    def processAddServiceEvent(self, replace=False):
         """
         Generic Drag and drop handler triggered from service_manager.
         """
-        log.debug(u'process_add_service_event event called for plugin %s' %
+        log.debug(u'processAddServiceEvent event called for plugin %s' %
             self.name)
         if replace:
-            self.media_item.onAddEditClick()
+            self.mediaItem.onAddEditClick()
         else:
-            self.media_item.onAddClick()
+            self.mediaItem.onAddClick()
 
     def about(self):
         """
         Show a dialog when the user clicks on the 'About' button in the plugin
         manager.
         """
-        pass
+        raise NotImplementedError(
+            u'Plugin.about needs to be defined by the plugin')
 
     def initialise(self):
         """
         Called by the plugin Manager to initialise anything it needs.
         """
-        if self.media_item:
-            self.media_item.initialise()
+        if self.mediaItem:
+            self.mediaItem.initialise()
+        self.insertToolboxItem()
 
     def finalise(self):
         """
         Called by the plugin Manager to cleanup things.
         """
-        pass
+        self.removeToolboxItem()
 
-    def remove_toolbox_item(self):
+    def removeToolboxItem(self):
         """
         Called by the plugin to remove toolbar
         """
-        self.mediadock.remove_dock(self.name)
-        self.settings_form.removeTab(self.name)
+        if self.mediaItem:
+            self.mediadock.remove_dock(self.name)
+        if self.settings_tab:
+            self.settingsForm.removeTab(self.name)
 
-    def insert_toolbox_item(self):
+    def insertToolboxItem(self):
         """
         Called by plugin to replace toolbar
         """
-        if self.media_item:
-            self.mediadock.insert_dock(self.media_item, self.icon, self.weight)
+        if self.mediaItem:
+            self.mediadock.insert_dock(self.mediaItem, self.icon, self.weight)
         if self.settings_tab:
-            self.settings_form.insertTab(self.settings_tab, self.weight)
+            self.settingsForm.insertTab(self.settings_tab, self.weight)
 
-    def can_delete_theme(self, theme):
+    def usesTheme(self, theme):
         """
-        Called to ask the plugin if a theme can be deleted
+        Called to find out if a plugin is currently using a theme.
+
+        Returns True if the theme is being used, otherwise returns False.
         """
-        return True
+        return False
+
+    def renameTheme(self, oldTheme, newTheme):
+        """
+        Renames a theme a plugin is using making the plugin use the new name.
+
+        ``oldTheme``
+            The name of the theme the plugin should stop using.
+
+        ``newTheme``
+            The new name the plugin should now use.
+        """
+        pass

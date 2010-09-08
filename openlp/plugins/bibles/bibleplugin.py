@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,7 +28,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus
+from openlp.core.lib import Plugin, build_icon, translate
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
 
 log = logging.getLogger(__name__)
@@ -36,11 +37,10 @@ class BiblePlugin(Plugin):
     log.info(u'Bible Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Bibles', u'1.9.1', plugin_helpers)
+        Plugin.__init__(self, u'Bibles', u'1.9.2', plugin_helpers)
         self.weight = -9
-        self.icon = build_icon(u':/media/media_bible.png')
-        #Register the bible Manager
-        self.status = PluginStatus.Active
+        self.icon_path = u':/plugins/plugin_bibles.png'
+        self.icon = build_icon(self.icon_path)
         self.manager = None
 
     def initialise(self):
@@ -48,52 +48,71 @@ class BiblePlugin(Plugin):
         if self.manager is None:
             self.manager = BibleManager(self)
         Plugin.initialise(self)
-        self.insert_toolbox_item()
-        self.ImportBibleItem.setVisible(True)
-        self.ExportBibleItem.setVisible(True)
+        self.importBibleItem.setVisible(True)
+        self.exportBibleItem.setVisible(True)
 
     def finalise(self):
         log.info(u'Plugin Finalise')
         Plugin.finalise(self)
-        self.remove_toolbox_item()
-        self.ImportBibleItem.setVisible(False)
-        self.ExportBibleItem.setVisible(False)
+        self.importBibleItem.setVisible(False)
+        self.exportBibleItem.setVisible(False)
 
-    def get_settings_tab(self):
+    def getSettingsTab(self):
         return BiblesTab(self.name)
 
-    def get_media_manager_item(self):
-        # Create the BibleManagerItem object
+    def getMediaManagerItem(self):
+        # Create the BibleManagerItem object.
         return BibleMediaItem(self, self.icon, self.name)
 
-    def add_import_menu_item(self, import_menu):
-        self.ImportBibleItem = QtGui.QAction(import_menu)
-        self.ImportBibleItem.setObjectName(u'ImportBibleItem')
-        import_menu.addAction(self.ImportBibleItem)
-        self.ImportBibleItem.setText(import_menu.trUtf8('&Bible'))
-        # Signals and slots
-        QtCore.QObject.connect(self.ImportBibleItem,
+    def addImportMenuItem(self, import_menu):
+        self.importBibleItem = QtGui.QAction(import_menu)
+        self.importBibleItem.setObjectName(u'importBibleItem')
+        import_menu.addAction(self.importBibleItem)
+        self.importBibleItem.setText(
+            translate('BiblesPlugin', '&Bible'))
+        # signals and slots
+        QtCore.QObject.connect(self.importBibleItem,
             QtCore.SIGNAL(u'triggered()'), self.onBibleImportClick)
-        self.ImportBibleItem.setVisible(False)
+        self.importBibleItem.setVisible(False)
 
-    def add_export_menu_item(self, export_menu):
-        self.ExportBibleItem = QtGui.QAction(export_menu)
-        self.ExportBibleItem.setObjectName(u'ExportBibleItem')
-        export_menu.addAction(self.ExportBibleItem)
-        self.ExportBibleItem.setText(export_menu.trUtf8('&Bible'))
-        self.ExportBibleItem.setVisible(False)
+    def addExportMenuItem(self, export_menu):
+        self.exportBibleItem = QtGui.QAction(export_menu)
+        self.exportBibleItem.setObjectName(u'exportBibleItem')
+        export_menu.addAction(self.exportBibleItem)
+        self.exportBibleItem.setText(translate(
+            'BiblesPlugin', '&Bible'))
+        self.exportBibleItem.setVisible(False)
 
     def onBibleImportClick(self):
-        if self.media_item:
-            self.media_item.onImportClick()
+        if self.mediaItem:
+            self.mediaItem.onImportClick()
 
     def about(self):
-        about_text = self.trUtf8('<strong>Bible Plugin</strong><br />This '
-            'plugin allows bible verses from different sources to be '
-            'displayed on the screen during the service.')
+        about_text = translate('BiblesPlugin', '<strong>Bible Plugin</strong>'
+            '<br />The Bible plugin provides the ability to display bible '
+            'verses from different sources during the service.')
         return about_text
 
-    def can_delete_theme(self, theme):
+    def usesTheme(self, theme):
+        """
+        Called to find out if the bible plugin is currently using a theme.
+
+        Returns True if the theme is being used, otherwise returns False.
+        """
         if self.settings_tab.bible_theme == theme:
-            return False
-        return True
+            return True
+        return False
+
+    def renameTheme(self, oldTheme, newTheme):
+        """
+        Rename the theme the bible plugin is using making the plugin use the
+        new name.
+
+        ``oldTheme``
+            The name of the theme the plugin should stop using. Unused for
+            this particular plugin.
+
+        ``newTheme``
+            The new name the plugin should now use.
+        """
+        self.settings_tab.bible_theme = newTheme

@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,6 +25,7 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+
 from servicenotedialog import Ui_ServiceNoteEdit
 
 class ServiceNoteForm(QtGui.QDialog, Ui_ServiceNoteEdit):
@@ -36,9 +38,7 @@ class ServiceNoteForm(QtGui.QDialog, Ui_ServiceNoteEdit):
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-        QtCore.QObject.connect(self.buttonBox,
-                               QtCore.SIGNAL(u'accepted()'),
-                               self.accept)
-        QtCore.QObject.connect(self.buttonBox,
-                               QtCore.SIGNAL(u'rejected()'),
-                               self.reject)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'),
+            self.accept)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
+            self.reject)

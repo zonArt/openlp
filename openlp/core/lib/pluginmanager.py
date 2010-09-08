@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,7 +23,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+Provide plugin management
+"""
 import os
 import sys
 import logging
@@ -38,30 +41,32 @@ class PluginManager(object):
     """
     log.info(u'Plugin manager loaded')
 
-    def __init__(self, dir):
+    def __init__(self, plugin_dir):
         """
         The constructor for the plugin manager. Passes the controllers on to
         the plugins for them to interact with via their ServiceItems.
 
-        ``dir``
+        ``plugin_dir``
             The directory to search for plugins.
         """
         log.info(u'Plugin manager initing')
-        if not dir in sys.path:
-            log.debug(u'Inserting %s into sys.path', dir)
-            sys.path.insert(0, dir)
-        self.basepath = os.path.abspath(dir)
+        if not plugin_dir in sys.path:
+            log.debug(u'Inserting %s into sys.path', plugin_dir)
+            sys.path.insert(0, plugin_dir)
+        self.basepath = os.path.abspath(plugin_dir)
         log.debug(u'Base path %s ', self.basepath)
+        self.plugin_helpers = []
         self.plugins = []
-        # this has to happen after the UI is sorted self.find_plugins(dir)
+        # this has to happen after the UI is sorted
+        # self.find_plugins(plugin_dir)
         log.info(u'Plugin manager Initialised')
 
-    def find_plugins(self, dir, plugin_helpers):
+    def find_plugins(self, plugin_dir, plugin_helpers):
         """
-        Scan the directory ``dir`` for objects inheriting from the ``Plugin``
-        class.
+        Scan the directory ``plugin_dir`` for objects inheriting from the
+        ``Plugin`` class.
 
-        ``dir``
+        ``plugin_dir``
             The directory to scan.
 
         ``plugin_helpers``
@@ -69,10 +74,10 @@ class PluginManager(object):
 
         """
         self.plugin_helpers = plugin_helpers
-        startdepth = len(os.path.abspath(dir).split(os.sep))
-        log.debug(u'find plugins %s at depth %d', unicode(dir), startdepth)
-
-        for root, dirs, files in os.walk(dir):
+        startdepth = len(os.path.abspath(plugin_dir).split(os.sep))
+        log.debug(u'finding plugins in %s at depth %d',
+            unicode(plugin_dir), startdepth)
+        for root, dirs, files in os.walk(plugin_dir):
             for name in files:
                 if name.endswith(u'.py') and not name.startswith(u'__'):
                     path = os.path.abspath(os.path.join(root, name))
@@ -80,7 +85,7 @@ class PluginManager(object):
                     if thisdepth - startdepth > 2:
                         # skip anything lower down
                         continue
-                    modulename, pyext = os.path.splitext(path)
+                    modulename = os.path.splitext(path)[0]
                     prefix = os.path.commonprefix([self.basepath, path])
                     # hack off the plugin base path
                     modulename = modulename[len(prefix) + 1:]
@@ -91,8 +96,8 @@ class PluginManager(object):
                     try:
                         __import__(modulename, globals(), locals(), [])
                     except ImportError, e:
-                        log.exception(u'Failed to import module %s on path %s for reason %s',
-                                   modulename, path, e.args[0])
+                        log.exception(u'Failed to import module %s on path %s '
+                            'for reason %s', modulename, path, e.args[0])
         plugin_classes = Plugin.__subclasses__()
         plugin_objects = []
         for p in plugin_classes:
@@ -104,9 +109,9 @@ class PluginManager(object):
                 log.exception(u'loaded plugin %s has no helpers', unicode(p))
         plugins_list = sorted(plugin_objects, self.order_by_weight)
         for plugin in plugins_list:
-            if plugin.check_pre_conditions():
+            if plugin.checkPreConditions():
                 log.debug(u'Plugin %s active', unicode(plugin.name))
-                plugin.set_status()
+                plugin.setStatus()
             else:
                 plugin.status = PluginStatus.Disabled
             self.plugins.append(plugin)
@@ -133,7 +138,7 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.media_item = plugin.get_media_manager_item()
+                plugin.mediaItem = plugin.getMediaManagerItem()
 
     def hook_settings_tabs(self, settingsform=None):
         """
@@ -146,7 +151,7 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.settings_tab = plugin.get_settings_tab()
+                plugin.settings_tab = plugin.getSettingsTab()
                 if plugin.settings_tab:
                     log.debug(u'Inserting settings tab item from %s' %
                         plugin.name)
@@ -164,7 +169,7 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.add_import_menu_item(import_menu)
+                plugin.addImportMenuItem(import_menu)
 
     def hook_export_menu(self, export_menu):
         """
@@ -176,7 +181,7 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.add_export_menu_item(export_menu)
+                plugin.addExportMenuItem(export_menu)
 
     def hook_tools_menu(self, tools_menu):
         """
@@ -188,7 +193,7 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.add_tools_menu_item(tools_menu)
+                plugin.addToolsMenuItem(tools_menu)
 
     def initialise_plugins(self):
         """
@@ -197,12 +202,12 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             log.info(u'initialising plugins %s in a %s state'
-                % (plugin.name, plugin.is_active()))
-            if plugin.is_active():
+                % (plugin.name, plugin.isActive()))
+            if plugin.isActive():
                 plugin.initialise()
                 log.info(u'Initialisation Complete for %s ' % plugin.name)
-            if not plugin.is_active():
-                plugin.remove_toolbox_item()
+            if not plugin.isActive():
+                plugin.removeToolboxItem()
 
     def finalise_plugins(self):
         """
@@ -211,6 +216,6 @@ class PluginManager(object):
         """
         log.info(u'finalising plugins')
         for plugin in self.plugins:
-            if plugin.is_active():
+            if plugin.isActive():
                 plugin.finalise()
                 log.info(u'Finalisation Complete for %s ' % plugin.name)

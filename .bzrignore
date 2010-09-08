@@ -16,3 +16,6 @@ build
 resources/innosetup/Output
 _eric4project
 .pylint.d
+*.qm
+openlp/core/resources.py.old
+*.qm

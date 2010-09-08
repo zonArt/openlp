@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -42,9 +43,14 @@ if os.name == u'nt':
     PAGE_AFTER = 5
     PAGE_BOTH = 6
 else:
-    from com.sun.star.awt.FontWeight import BOLD
-    from com.sun.star.awt.FontSlant import ITALIC
-    from com.sun.star.style.BreakType import PAGE_BEFORE, PAGE_AFTER, PAGE_BOTH
+    try:
+        from com.sun.star.awt.FontWeight import BOLD
+        from com.sun.star.awt.FontSlant import ITALIC
+        from com.sun.star.style.BreakType import PAGE_BEFORE, PAGE_AFTER, \
+            PAGE_BOTH
+    except ImportError:
+        pass
+
 
 class SofImport(OooImport):
     """
@@ -62,19 +68,30 @@ class SofImport(OooImport):
     It attempts to detect italiced verses, and treats these as choruses in
     the verse ordering. Again not perfect, but a start.
     """
-    def __init__(self, songmanager):
+    def __init__(self, master_manager, **kwargs):
         """
         Initialise the class. Requires a songmanager class which is passed
         to SongImport for writing song to disk
         """
-        OooImport.__init__(self, songmanager)
+        OooImport.__init__(self, master_manager, **kwargs)
 
-    def import_sof(self, filename):
+    def do_import(self):
+        self.abort = False
         self.start_ooo()
-        self.open_ooo_file(filename)
-        self.process_sof_file()
-        self.close_ooo_file()
+        for filename in self.filenames:
+            if self.abort:
+                self.import_wizard.incrementProgressBar(u'Import cancelled', 0)
+                return
+            filename = unicode(filename)
+            if os.path.isfile(filename):
+                self.open_ooo_file(filename)
+                if self.document:
+                    self.process_sof_file()
+                    self.close_ooo_file()
         self.close_ooo()
+        self.import_wizard.importProgressBar.setMaximum(1)
+        self.import_wizard.incrementProgressBar(u'', 1)
+        return True
 
     def process_sof_file(self):
         """
@@ -84,6 +101,9 @@ class SofImport(OooImport):
         self.new_song()
         paragraphs = self.document.getText().createEnumeration()
         while paragraphs.hasMoreElements():
+            if self.abort:
+                self.import_wizard.incrementProgressBar(u'Import cancelled', 0)
+                return
             paragraph = paragraphs.nextElement()
             if paragraph.supportsService("com.sun.star.text.Paragraph"):
                 self.process_paragraph(paragraph)
@@ -137,7 +157,7 @@ class SofImport(OooImport):
             self.blanklines += 1
             if self.blanklines > 1:
                 return
-            if self.song.get_title() != u'':
+            if self.song.title != u'':
                 self.finish_verse()
             return
         self.blanklines = 0
@@ -161,8 +181,8 @@ class SofImport(OooImport):
             self.finish_verse()
             self.song.repeat_verse()
             return
-        if self.song.get_title() == u'':
-            if self.song.get_copyright() == u'':
+        if self.song.title == u'':
+            if self.song.copyright == u'':
                 self.add_author(text)
             else:
                 self.song.add_copyright(text)
@@ -182,10 +202,10 @@ class SofImport(OooImport):
             return text
         if textportion.CharWeight == BOLD:
             boldtext = text.strip()
-            if boldtext.isdigit() and self.song.get_song_number() == '':
+            if boldtext.isdigit() and self.song.song_number == '':
                 self.add_songnumber(boldtext)
                 return u''
-            if self.song.get_title() == u'':
+            if self.song.title == u'':
                 text = self.uncap_text(text)
                 self.add_title(text)
             return text
@@ -215,20 +235,17 @@ class SofImport(OooImport):
         Add a song number, store as alternate title. Also use the song
         number to work out which songbook we're in
         """
-        self.song.set_song_number(song_no)
-        self.song.set_alternate_title(song_no + u'.')
+        self.song.song_number = song_no
+        self.song.alternate_title = song_no + u'.'
+        self.song.song_book_pub = u'Kingsway Publications'
         if int(song_no) <= 640:
-            self.song.set_song_book(u'Songs of Fellowship 1', 
-                u'Kingsway Publications')
+            self.song.song_book = u'Songs of Fellowship 1'
         elif int(song_no) <= 1150:
-            self.song.set_song_book(u'Songs of Fellowship 2', 
-                u'Kingsway Publications')
+            self.song.song_book = u'Songs of Fellowship 2'
         elif int(song_no) <= 1690:
-            self.song.set_song_book(u'Songs of Fellowship 3', 
-                u'Kingsway Publications')
+            self.song.song_book = u'Songs of Fellowship 3'
         else:
-            self.song.set_song_book(u'Songs of Fellowship 4', 
-                u'Kingsway Publications')
+            self.song.song_book = u'Songs of Fellowship 4'
 
     def add_title(self, text):
         """
@@ -240,7 +257,8 @@ class SofImport(OooImport):
             title = title[1:]
         if title.endswith(u','):
             title = title[:-1]
-        self.song.set_title(title)
+        self.song.title = title
+        self.import_wizard.incrementProgressBar(u'Processing song ' + title, 0)
 
     def add_author(self, text):
         """
@@ -278,7 +296,7 @@ class SofImport(OooImport):
             splitat = None
         else:
             versetag = u'V'
-            splitat = self.verse_splits(self.song.get_song_number())
+            splitat = self.verse_splits(self.song.song_number)
         if splitat:
             ln = 0
             verse = u''
@@ -533,4 +551,3 @@ class SofImport(OooImport):
         if song_number == 1119:
             return 7
         return None
-
