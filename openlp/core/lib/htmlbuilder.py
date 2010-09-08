@@ -519,6 +519,7 @@ def build_footer_css(item):
     font-size: %spt;
     color: %s;
     text-align: %s;
+    vertical-align: bottom;
     """
     theme = item.themedata
     if not theme or not item.footer:
