@@ -31,7 +31,6 @@ from PyQt4 import QtCore, QtGui
 
 from songimportwizard import Ui_SongImportWizard
 from openlp.core.lib import Receiver, SettingsManager, translate
-#from openlp.core.utils import AppLocation
 from openlp.plugins.songs.lib.importer import SongFormat
 
 log = logging.getLogger(__name__)
@@ -136,7 +135,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
                     self.openLP2BrowseButton.setFocus()
                     return False
             elif source_format == SongFormat.OpenLP1:
-                if self.openSongFilenameEdit.text().isEmpty():
+                if self.openLP1FilenameEdit.text().isEmpty():
                     QtGui.QMessageBox.critical(self,
                         translate('SongsPlugin.ImportWizardForm',
                             'No openlp.org 1.x Song Database Selected'),
@@ -292,7 +291,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
 
     def onCCLIRemoveButtonClicked(self):
         self.removeSelectedItems(self.ccliFileListWidget)
-        
+
     def onSongsOfFellowshipAddButtonClicked(self):
         self.getFiles(
             translate('SongsPlugin.ImportWizardForm',
@@ -374,11 +373,11 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
             importer = self.plugin.importSongs(SongFormat.OpenLP2,
                 filename=unicode(self.openLP2FilenameEdit.text())
             )
-        #elif source_format == SongFormat.OpenLP1:
-        #    # Import an openlp.org database
-        #    importer = self.plugin.importSongs(SongFormat.OpenLP1,
-        #        filename=unicode(self.field(u'openlp1_filename').toString())
-        #    )
+        elif source_format == SongFormat.OpenLP1:
+            # Import an openlp.org database
+            importer = self.plugin.importSongs(SongFormat.OpenLP1,
+                filename=unicode(self.openLP1FilenameEdit.text())
+            )
         elif source_format == SongFormat.OpenLyrics:
             # Import OpenLyrics songs
             importer = self.plugin.importSongs(SongFormat.OpenLyrics,
