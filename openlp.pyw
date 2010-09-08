@@ -29,12 +29,14 @@ import os
 import sys
 import logging
 from optparse import OptionParser
+from traceback import format_exception
 
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
+from openlp.core.ui.exceptionform import ExceptionForm
 from openlp.core.ui import SplashScreen, ScreenList
 from openlp.core.utils import AppLocation, LanguageManager, VersionThread
 
@@ -144,6 +146,13 @@ class OpenLP(QtGui.QApplication):
         VersionThread(self.mainWindow, app_version).start()
         return self.exec_()
 
+    def hookException(self, exctype, value, traceback):
+        if not hasattr(self, u'exceptionForm'):
+            self.exceptionForm = ExceptionForm(self.mainWindow)
+        self.exceptionForm.exceptionTextEdit.setPlainText(
+            ''.join(format_exception(exctype, value, traceback)))
+        self.exceptionForm.exec_()
+
 def main():
     """
     The main function which parses command line options and then runs
@@ -194,7 +203,7 @@ def main():
     language = LanguageManager.get_language()
     appTranslator = LanguageManager.get_translator(language)
     app.installTranslator(appTranslator)
-
+    sys.excepthook = app.hookException
     sys.exit(app.run())
 
 if __name__ == u'__main__':
