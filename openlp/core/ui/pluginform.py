@@ -134,5 +134,6 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         elif self.activePlugin.status == PluginStatus.Disabled:
             status_text = unicode(
                 translate('OpenLP.PluginForm', '%s (Disabled)'))
-        self.pluginListWidget.currentItem().setText(
-            status_text % self.activePlugin.name)
+        if self.pluginListWidget.currentItem():
+            self.pluginListWidget.currentItem().setText(
+                status_text % self.activePlugin.name)
