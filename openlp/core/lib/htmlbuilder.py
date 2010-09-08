@@ -279,7 +279,7 @@ def build_html(item, screen, alert, islive):
     html = HTMLSRC % (build_background_css(item, width, height),
         width, height,
         build_alert_css(alert, width),
-        build_footer_css(item),
+        build_footer_css(item, height),
         build_lyrics_css(item, webkitvers),
         u'true' if theme and theme.display_slideTransition and islive \
             else u'false',
@@ -503,7 +503,7 @@ def build_lyrics_html(item, webkitvers):
         u'class="lyricscell lyricsmain"></div></div>'
     return lyrics
 
-def build_footer_css(item):
+def build_footer_css(item, height):
     """
     Build the display of the item footer
 
@@ -512,26 +512,22 @@ def build_footer_css(item):
     """
     style = """
     left: %spx;
-    top: %spx;
+    bottom: %spx;
     width: %spx;
     height: %spx;
     font-family: %s;
     font-size: %spt;
     color: %s;
-    text-align: %s;
+    text-align: left;
+    white-space:nowrap;    
     """
     theme = item.themedata
     if not theme or not item.footer:
         return u''
-    if theme.display_horizontalAlign == 2:
-        align = u'center'
-    elif theme.display_horizontalAlign == 1:
-        align = u'right'
-    else:
-        align = u'left'
-    lyrics_html = style % (item.footer.x(), item.footer.y(),
+    bottom = height - int(item.footer.y()) - int(item.footer.height())
+    lyrics_html = style % (item.footer.x(), bottom,
         item.footer.width(), item.footer.height(), theme.font_footer_name,
-        theme.font_footer_proportion, theme.font_footer_color, align)
+        theme.font_footer_proportion, theme.font_footer_color)
     return lyrics_html
 
 def build_alert_css(alertTab, width):
