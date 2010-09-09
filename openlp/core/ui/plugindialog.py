@@ -93,7 +93,6 @@ class Ui_PluginViewDialog(object):
         self.pluginListButtonBox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
         self.pluginListButtonBox.setObjectName(u'pluginListButtonBox')
         self.pluginLayout.addWidget(self.pluginListButtonBox)
-
         self.retranslateUi(pluginViewDialog)
         QtCore.QObject.connect(self.pluginListButtonBox,
             QtCore.SIGNAL(u'accepted()'), pluginViewDialog.close)

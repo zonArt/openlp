@@ -170,6 +170,7 @@ class ServiceItem(object):
                         u'verseTag': slide[u'verseTag'] })
                 log.log(15, u'Formatting took %4s' % (time.time() - before))
         elif self.service_item_type == ServiceItemType.Image:
+            self.themedata = self.render_manager.global_theme_data
             for slide in self._raw_frames:
                 slide[u'image'] = resize_image(slide[u'image'],
                     self.render_manager.width, self.render_manager.height)
