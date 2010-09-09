@@ -514,7 +514,6 @@ def build_footer_css(item, height):
     left: %spx;
     bottom: %spx;
     width: %spx;
-    height: %spx;
     font-family: %s;
     font-size: %spt;
     color: %s;
@@ -526,7 +525,7 @@ def build_footer_css(item, height):
         return u''
     bottom = height - int(item.footer.y()) - int(item.footer.height())
     lyrics_html = style % (item.footer.x(), bottom,
-        item.footer.width(), item.footer.height(), theme.font_footer_name,
+        item.footer.width(), theme.font_footer_name,
         theme.font_footer_proportion, theme.font_footer_color)
     return lyrics_html
 
