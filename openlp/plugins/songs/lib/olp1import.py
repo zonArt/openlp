@@ -28,7 +28,10 @@ The :mod:`olp1import` module provides the functionality for importing
 openlp.org 1.x song databases into the current installation database.
 """
 import logging
-import sqlite
+try:
+    import sqlite
+except:
+    pass
 
 from openlp.core.lib import translate
 from songimport import SongImport
