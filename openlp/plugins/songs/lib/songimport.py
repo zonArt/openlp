@@ -73,6 +73,11 @@ class SongImport(QtCore.QObject):
         self.verses = []
         self.versecount = 0
         self.choruscount = 0
+        self.bridgecount = 0
+        self.introcount = 0
+        self.prechoruscount = 0
+        self.endingcount = 0
+        self.othercount = 0
         self.copyright_string = unicode(translate(
             'SongsPlugin.SongImport', 'copyright'))
         self.copyright_symbol = unicode(translate(
@@ -212,6 +217,26 @@ class SongImport(QtCore.QObject):
             self.choruscount += 1
         if versetag == u'C':
             versetag += unicode(self.choruscount)
+        if versetag.startswith(u'B'):
+            self.bridgecount += 1
+        if versetag == u'B':
+            versetag += unicode(self.bridgecount)            
+        if versetag.startswith(u'I'):
+            self.introcount += 1
+        if versetag == u'I':
+            versetag += unicode(self.introcount)
+        if versetag.startswith(u'P'):
+            self.prechoruscount += 1
+        if versetag == u'P':
+            versetag += unicode(self.prechoruscount)
+        if versetag.startswith(u'E'):
+            self.endingcount += 1
+        if versetag == u'E':
+            versetag += unicode(self.endingcount)
+        if versetag.startswith(u'O'):
+            self.othercount += 1
+        if versetag == u'O':
+            versetag += unicode(self.othercount)                                    
         self.verses.append([versetag, verse.rstrip()])
         self.verse_order_list.append(versetag)
         if versetag.startswith(u'V') and self.contains_verse(u'C1'):
