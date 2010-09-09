@@ -71,13 +71,7 @@ class SongImport(QtCore.QObject):
         self.song_book_pub = u''
         self.verse_order_list = []
         self.verses = []
-        self.versecount = 0
-        self.choruscount = 0
-        self.bridgecount = 0
-        self.introcount = 0
-        self.prechoruscount = 0
-        self.endingcount = 0
-        self.othercount = 0
+        self.versecounts = {}
         self.copyright_string = unicode(translate(
             'SongsPlugin.SongImport', 'copyright'))
         self.copyright_symbol = unicode(translate(
@@ -198,7 +192,7 @@ class SongImport(QtCore.QObject):
             return
         self.media_files.append(filename)
 
-    def add_verse(self, verse, versetag=None):
+    def add_verse(self, verse, versetag=u'V'):
         """
         Add a verse. This is the whole verse, lines split by \n
         Verse tag can be V1/C1/B etc, or 'V' and 'C' (will count the verses/
@@ -210,33 +204,14 @@ class SongImport(QtCore.QObject):
             if oldverse.strip() == verse.strip():
                 self.verse_order_list.append(oldversetag)
                 return
-        if versetag == u'V' or not versetag:
-            self.versecount += 1
-            versetag = u'V' + unicode(self.versecount)
-        if versetag.startswith(u'C'):
-            self.choruscount += 1
-        if versetag == u'C':
-            versetag += unicode(self.choruscount)
-        if versetag.startswith(u'B'):
-            self.bridgecount += 1
-        if versetag == u'B':
-            versetag += unicode(self.bridgecount)            
-        if versetag.startswith(u'I'):
-            self.introcount += 1
-        if versetag == u'I':
-            versetag += unicode(self.introcount)
-        if versetag.startswith(u'P'):
-            self.prechoruscount += 1
-        if versetag == u'P':
-            versetag += unicode(self.prechoruscount)
-        if versetag.startswith(u'E'):
-            self.endingcount += 1
-        if versetag == u'E':
-            versetag += unicode(self.endingcount)
-        if versetag.startswith(u'O'):
-            self.othercount += 1
-        if versetag == u'O':
-            versetag += unicode(self.othercount)                                    
+        if versetag[0] in self.versecounts:
+            self.versecounts[versetag[0]] += 1
+        else:
+            self.versecounts[versetag[0]] = 1
+        if len(versetag) == 1:
+            versetag += unicode(self.versecounts[versetag[0]])
+        elif int(versetag[1:]) > self.versecounts[versetag[0]]:
+            self.versecounts[versetag[0]] = int(versetag[1:])
         self.verses.append([versetag, verse.rstrip()])
         self.verse_order_list.append(versetag)
         if versetag.startswith(u'V') and self.contains_verse(u'C1'):
