@@ -28,7 +28,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, build_icon, translate
+from openlp.core.lib import Plugin, StringType, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.plugins.songs.lib import SongMediaItem, SongsTab
 from openlp.plugins.songs.lib.db import init_schema, Song
@@ -50,7 +50,7 @@ class SongsPlugin(Plugin):
         """
         Create and set up the Songs plugin.
         """
-        self.set_plugin_translations()
+        self.set_plugin_strings()
         Plugin.__init__(self, u'Songs', u'1.9.2', plugin_helpers)
         self.weight = -10
         self.manager = Manager(u'songs', init_schema)
@@ -148,31 +148,49 @@ class SongsPlugin(Plugin):
         importer = class_(self.manager, **kwargs)
         importer.register(self.mediaItem.import_wizard)
         return importer
-    def set_plugin_translations(self):
+
+    def set_plugin_strings(self):
         """
         Called to define all translatable texts of the plugin
         """
         self.name = u'Songs'
         self.name_lower = u'songs'
-        self.text = {}
-        #for context menu
-        self.text['context_edit'] = translate('SongsPlugin', '&Edit Song')
-        self.text['context_delete'] = translate('SongsPlugin', '&Delete Song')
-        self.text['context_preview'] = translate('SongsPlugin', '&Preview Song')
-        self.text['context_live'] = translate('SongsPlugin', '&Show Live')
-        # forHeaders in mediamanagerdock
-        self.text['import'] = translate('SongsPlugin', 'Import a Song')
-        self.text['load'] = translate('SongsPlugin', 'Load a new Song')
-        self.text['new'] = translate('SongsPlugin', 'Add a new Song')
-        self.text['edit'] = translate('SongsPlugin', 'Edit the selected Song')
-        self.text['delete'] = translate('SongsPlugin', 'Delete the selected Song')
-        self.text['delete_more'] = translate('SongsPlugin', 'Delete the selected Songs')
-        self.text['preview'] = translate('SongsPlugin', 'Preview the selected Song')
-        self.text['preview_more'] = translate('SongsPlugin', 'Preview the selected Songs')
-        self.text['live'] = translate('SongsPlugin', 'Send the selected Song live')
-        self.text['live_more'] = translate('SongsPlugin', 'Send the selected Songs live')
-        self.text['service'] = translate('SongsPlugin', 'Add the selected Song to the service')
-        self.text['service_more'] = translate('SongsPlugin', 'Add the selected Songs to the service')
+
+        self.strings = {}
         # for names in mediamanagerdock and pluginlist
-        self.text['name'] = translate('SongsPlugin', 'Song')
-        self.text['name_more'] = translate('SongsPlugin', 'Songs')
+        self.strings[StringType.Name] = {
+            u'singular': translate('SongsPlugin', 'Song'),
+            u'plural': translate('SongsPlugin', 'Songs')
+        }
+
+        # Middle Header Bar
+        ## New Button ##
+        self.strings[StringType.New] = {
+            u'title': translate('SongsPlugin', 'Add'),
+            u'tooltip': translate('SongsPlugin', 'Add a new Song')
+        }
+        ## Edit Button ##
+        self.strings[StringType.Edit] = {
+            u'title': translate('SongsPlugin', 'Edit'),
+            u'tooltip': translate('SongsPlugin', 'Edit the selected Song')
+        }
+        ## Delete Button ##
+        self.strings[StringType.Delete] = {
+            u'title': translate('SongsPlugin', 'Delete'),
+            u'tooltip': translate('SongsPlugin', 'Delete the selected Song')
+        }
+        ## Preview ##
+        self.strings[StringType.Preview] = {
+            u'title': translate('SongsPlugin', 'Preview'),
+            u'tooltip': translate('SongsPlugin', 'Preview the selected Song')
+        }
+        ## Live  Button ##
+        self.strings[StringType.Live] = {
+            u'title': translate('SongsPlugin', 'Live'),
+            u'tooltip': translate('SongsPlugin', 'Send the selected Song live')
+        }
+        ## Add to service Button ##
+        self.strings[StringType.Service] = {
+            u'title': translate('SongsPlugin', 'Service'),
+            u'tooltip': translate('SongsPlugin', 'Add the selected Song to the service')
+        }

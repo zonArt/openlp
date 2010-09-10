@@ -28,7 +28,7 @@ import logging
 
 from forms import EditCustomForm
 
-from openlp.core.lib import Plugin, build_icon, translate
+from openlp.core.lib import Plugin, StringType, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.plugins.custom.lib import CustomMediaItem, CustomTab
 from openlp.plugins.custom.lib.db import CustomSlide, init_schema
@@ -40,14 +40,14 @@ class CustomPlugin(Plugin):
     This plugin enables the user to create, edit and display
     custom slide shows. Custom shows are divided into slides.
     Each show is able to have it's own theme.
-    Custom shows are designed to replace the use of songs where
-    the songs plugin has become restrictive. Examples could be
+    Custom shows are designed to replace the use of Customs where
+    the Customs plugin has become restrictive. Examples could be
     Welcome slides, Bible Reading information, Orders of service.
     """
     log.info(u'Custom Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        self.set_plugin_translations()
+        self.set_plugin_strings()
         Plugin.__init__(self, u'Custom', u'1.9.2', plugin_helpers)
         self.weight = -5
         self.custommanager = Manager(u'custom', init_schema)
@@ -66,7 +66,7 @@ class CustomPlugin(Plugin):
         about_text = translate('CustomPlugin', '<strong>Custom Plugin</strong>'
             '<br />The custom plugin provides the ability to set up custom '
             'text slides that can be displayed on the screen the same way '
-            'songs are. This plugin provides greater freedom over the songs '
+            'Customs are. This plugin provides greater freedom over the Customs '
             'plugin.')
         return about_text
 
@@ -97,31 +97,58 @@ class CustomPlugin(Plugin):
         for custom in customsUsingTheme:
             custom.theme_name = newTheme
             self.custommanager.save_object(custom)
-    def set_plugin_translations(self):
+    def set_plugin_strings(self):
         """
         Called to define all translatable texts of the plugin
         """
         self.name = u'Custom'
         self.name_lower = u'custom'
-        self.text = {}
-        #for context menu
-        self.text['context_edit'] = translate('CustomsPlugin', '&Edit Custom')
-        self.text['context_delete'] = translate('CustomsPlugin', '&Delete Custom')
-        self.text['context_preview'] = translate('CustomsPlugin', '&Preview Custom')
-        self.text['context_live'] = translate('CustomsPlugin', '&Show Live')
-        # forHeaders in mediamanagerdock
-        self.text['import'] = translate('CustomsPlugin', 'Import a Custom')
-        self.text['load'] = translate('CustomsPlugin', 'Load a new Custom')
-        self.text['new'] = translate('CustomsPlugin', 'Add a new Custom')
-        self.text['edit'] = translate('CustomsPlugin', 'Edit the selected Custom')
-        self.text['delete'] = translate('CustomsPlugin', 'Delete the selected Custom')
-        self.text['delete_more'] = translate('CustomsPlugin', 'Delete the selected Custom')
-        self.text['preview'] = translate('CustomsPlugin', 'Preview the selected Custom')
-        self.text['preview_more'] = translate('CustomsPlugin', 'Preview the selected Custom')
-        self.text['live'] = translate('CustomsPlugin', 'Send the selected Custom live')
-        self.text['live_more'] = translate('CustomsPlugin', 'Send the selected Custom live')
-        self.text['service'] = translate('CustomsPlugin', 'Add the selected Custom to the service')
-        self.text['service_more'] = translate('CustomsPlugin', 'Add the selected Custom to the service')
+
+        self.strings = {}
         # for names in mediamanagerdock and pluginlist
-        self.text['name'] = translate('CustomsPlugin', 'Custom')
-        self.text['name_more'] = translate('CustomsPlugin', 'Custom')
+        self.strings[StringType.Name] = {
+            u'singular': translate('CustomsPlugin', 'Custom'),
+            u'plural': translate('CustomsPlugin', 'Customs')
+        }
+
+        # Middle Header Bar
+        ## Import Button ##
+        self.strings[StringType.Import] = {
+            u'title': translate('CustomsPlugin', 'Import'),
+            u'tooltip': translate('CustomsPlugin', 'Import a Custom')
+        }
+        ## Load Button ##
+        self.strings[StringType.Load] = {
+            u'title': translate('CustomsPlugin', 'Load'),
+            u'tooltip': translate('CustomsPlugin', 'Load a new Custom')
+        }
+        ## New Button ##
+        self.strings[StringType.New] = {
+            u'title': translate('CustomsPlugin', 'Add'),
+            u'tooltip': translate('CustomsPlugin', 'Add a new Custom')
+        }
+        ## Edit Button ##
+        self.strings[StringType.Edit] = {
+            u'title': translate('CustomsPlugin', 'Edit'),
+            u'tooltip': translate('CustomsPlugin', 'Edit the selected Custom')
+        }
+        ## Delete Button ##
+        self.strings[StringType.Delete] = {
+            u'title': translate('CustomsPlugin', 'Delete'),
+            u'tooltip': translate('CustomsPlugin', 'Delete the selected Custom')
+        }
+        ## Preview ##
+        self.strings[StringType.Preview] = {
+            u'title': translate('CustomsPlugin', 'Preview'),
+            u'tooltip': translate('CustomsPlugin', 'Preview the selected Custom')
+        }
+        ## Live  Button ##
+        self.strings[StringType.Live] = {
+            u'title': translate('CustomsPlugin', 'Live'),
+            u'tooltip': translate('CustomsPlugin', 'Send the selected Custom live')
+        }
+        ## Add to service Button ##
+        self.strings[StringType.Service] = {
+            u'title': translate('CustomsPlugin', 'Service'),
+            u'tooltip': translate('CustomsPlugin', 'Add the selected Custom to the service')
+        }

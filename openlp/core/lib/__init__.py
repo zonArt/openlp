@@ -319,7 +319,7 @@ def expand_tags(text):
 from spelltextedit import SpellTextEdit
 from eventreceiver import Receiver
 from settingsmanager import SettingsManager
-from plugin import PluginStatus, Plugin
+from plugin import PluginStatus, StringType, Plugin
 from pluginmanager import PluginManager
 from settingstab import SettingsTab
 from serviceitem import ServiceItem

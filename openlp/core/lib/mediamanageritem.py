@@ -32,7 +32,8 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import context_menu_action, context_menu_separator, \
-    SettingsManager, OpenLPToolbar, ServiceItem, build_icon, translate
+    SettingsManager, OpenLPToolbar, ServiceItem, StringType, build_icon, \
+    translate
 
 log = logging.getLogger(__name__)
 
@@ -85,13 +86,14 @@ class MediaManagerItem(QtGui.QWidget):
     """
     log.info(u'Media Item loaded')
 
-    def __init__(self, parent=None, icon=None, title=None):
+    def __init__(self, parent=None, icon=None, title=None, plugin=None):
         """
         Constructor to create the media manager item.
         """
         QtGui.QWidget.__init__(self)
         self.parent = parent
-        self.settingsSection = parent.get_text('name_lower')
+        self.plugin = parent # rimach may changed
+        self.settingsSection = self.plugin.name_lower
         if isinstance(icon, QtGui.QIcon):
             self.icon = icon
         elif isinstance(icon, basestring):
@@ -100,7 +102,8 @@ class MediaManagerItem(QtGui.QWidget):
         else:
             self.icon = None
         if title:
-            self.title = parent.get_text('name_more')
+            nameString = self.plugin.getString(StringType.Name)
+            self.title = nameString[u'plural']
         self.toolbar = None
         self.remoteTriggered = None
         self.serviceItemIconName = None
@@ -200,57 +203,58 @@ class MediaManagerItem(QtGui.QWidget):
         """
         ## Import Button ##
         if self.hasImportIcon:
+            importString = self.plugin.getString(StringType.Import)
             self.addToolbarButton(
-                unicode(translate('OpenLP.MediaManagerItem', 'Import %s')) %
-                self.parent.name,
-                unicode(self.parent.get_text('import')),
+                importString[u'title'],
+                importString[u'tooltip'],
                 u':/general/general_import.png', self.onImportClick)
-        ## File Button ##
+        ## Load Button ##
         if self.hasFileIcon:
+            loadString = self.plugin.getString(StringType.Load)
             self.addToolbarButton(
-                unicode(translate('OpenLP.MediaManagerItem', 'Load %s')) %
-                self.parent.name,
-                unicode(self.parent.get_text('load')),
+                loadString[u'title'],
+                loadString[u'tooltip'],
                 u':/general/general_open.png', self.onFileClick)
-        ## New Button ##
+        ## New Button ## rimach
         if self.hasNewIcon:
+            newString = self.plugin.getString(StringType.New)
             self.addToolbarButton(
-                unicode(translate('OpenLP.MediaManagerItem', 'New %s')) %
-                self.parent.name,
-                unicode(self.parent.get_text('new')),
+                newString[u'title'],
+                newString[u'tooltip'],
                 u':/general/general_new.png', self.onNewClick)
         ## Edit Button ##
         if self.hasEditIcon:
+            editString = self.plugin.getString(StringType.Edit)
             self.addToolbarButton(
-                unicode(translate('OpenLP.MediaManagerItem', 'Edit %s')) %
-                self.parent.name,
-                unicode(self.parent.get_text('edit')),
+                editString[u'title'],
+                editString[u'tooltip'],
                 u':/general/general_edit.png', self.onEditClick)
         ## Delete Button ##
         if self.hasDeleteIcon:
+            deleteString = self.plugin.getString(StringType.Delete)
             self.addToolbarButton(
-                unicode(translate('OpenLP.MediaManagerItem', 'Delete %s')) %
-                self.parent.name,
-                unicode(self.parent.get_text('delete')),
+                deleteString[u'title'],
+                deleteString[u'tooltip'],
                 u':/general/general_delete.png', self.onDeleteClick)
         ## Separator Line ##
         self.addToolbarSeparator()
         ## Preview ##
+        previewString = self.plugin.getString(StringType.Preview)
         self.addToolbarButton(
-            unicode(translate('OpenLP.MediaManagerItem', 'Preview %s')) %
-            self.parent.name,
-            unicode(self.parent.get_text('preview')),
+            previewString[u'title'],
+            previewString[u'tooltip'],
             u':/general/general_preview.png', self.onPreviewClick)
         ## Live  Button ##
+        liveString = self.plugin.getString(StringType.Live)
         self.addToolbarButton(
-            unicode(translate('OpenLP.MediaManagerItem', u'Go Live')),
-            unicode(self.parent.get_text('live')),
+            liveString[u'title'],
+            liveString[u'tooltip'],
             u':/general/general_live.png', self.onLiveClick)
         ## Add to service Button ##
+        serviceString = self.plugin.getString(StringType.Service)
         self.addToolbarButton(
-            unicode(translate('OpenLP.MediaManagerItem', 'Add %s to Service')) %
-            self.parent.name,
-            unicode(self.parent.get_text('service')),
+            serviceString[u'title'],
+            serviceString[u'tooltip'],
             u':/general/general_add.png', self.onAddClick)
 
     def addListViewToToolBar(self):

@@ -28,7 +28,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, build_icon, translate
+from openlp.core.lib import Plugin, StringType, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.plugins.alerts.lib import AlertsManager, AlertsTab
 from openlp.plugins.alerts.lib.db import init_schema
@@ -40,7 +40,7 @@ class AlertsPlugin(Plugin):
     log.info(u'Alerts Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        self.set_plugin_translations()
+        self.set_plugin_strings()
         Plugin.__init__(self, u'Alerts', u'1.9.2', plugin_helpers)
         self.weight = -3
         self.icon = build_icon(u':/plugins/plugin_alerts.png')
@@ -102,31 +102,16 @@ class AlertsPlugin(Plugin):
             '<br />The alert plugin controls the displaying of nursery alerts '
             'on the display screen')
         return about_text
-    def set_plugin_translations(self):
+    def set_plugin_strings(self):
         """
         Called to define all translatable texts of the plugin
         """
         self.name = u'Alerts'
         self.name_lower = u'alerts'
-        self.text = {}
-        # for context menu
-#        elf.text['context_edit'] = translate('AlertsPlugin', '&Edit Song')
-#        elf.text['context_delete'] = translate('AlertsPlugin', '&Delete Song')
-#        elf.text['context_preview'] = translate('AlertsPlugin', '&Preview Song')
-#        elf.text['context_live'] = translate('AlertsPlugin', '&Show Live')
-#        # forHeaders in mediamanagerdock
-#        elf.text['import'] = translate('AlertsPlugin', 'Import a Song')
-#        elf.text['file'] = translate('AlertsPlugin', 'Load a new Song')
-#        elf.text['new'] = translate('AlertsPlugin', 'Add a new Song')
-#        elf.text['edit'] = translate('AlertsPlugin', 'Edit the selected Song')
-#        elf.text['delete'] = translate('AlertsPlugin', 'Delete the selected Song')
-#        elf.text['delete_more'] = translate('AlertsPlugin', 'Delete the selected Songs')
-#        elf.text['preview'] = translate('AlertsPlugin', 'Preview the selected Song')
-#        elf.text['preview_more'] = translate('AlertsPlugin', 'Preview the selected Songs')
-#        elf.text['live'] = translate('AlertsPlugin', 'Send the selected Song live')
-#        elf.text['live_more'] = translate('AlertsPlugin', 'Send the selected Songs live')
-#        elf.text['service'] = translate('AlertsPlugin', 'Add the selected Song to the service')
-#        elf.text['service_more'] = translate('AlertsPlugin', 'Add the selected Songs to the service')
-#        # for names in mediamanagerdock and pluginlist
-        self.text['name'] = translate('AlertsPlugin', 'Alert')
-        self.text['name_more'] = translate('AlertsPlugin', 'Alerts')
+
+        self.strings = {}
+        # for names in mediamanagerdock and pluginlist
+        self.strings[StringType.Name] = {
+            u'singular': translate('AlertsPlugin', 'Alert'),
+            u'plural': translate('AlertsPlugin', 'Alerts')
+        }

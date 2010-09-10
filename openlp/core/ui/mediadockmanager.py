@@ -61,7 +61,7 @@ class MediaDockManager(object):
         match = False
         for dock_index in range(0, self.media_dock.count()):
             if self.media_dock.widget(dock_index).settingsSection == \
-                media_item.parent.get_text('name_lower'):
+                media_item.parent.name_lower:
                 match = True
                 break
         if not match:

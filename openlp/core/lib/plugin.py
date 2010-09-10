@@ -42,6 +42,17 @@ class PluginStatus(object):
     Inactive = 0
     Disabled = -1
 
+class StringType(object):
+    Name = u'name'
+    Import = u'import'
+    Load = u'load'
+    New = u'new'
+    Edit = u'edit'
+    Delete = u'delete'
+    Preview = u'preview'
+    Live = u'live'
+    Service = u'service'
+
 class Plugin(QtCore.QObject):
     """
     Base class for openlp plugins to inherit from.
@@ -117,6 +128,7 @@ class Plugin(QtCore.QObject):
         """
         QtCore.QObject.__init__(self)
         self.name = name
+        self.set_plugin_strings()
         if version:
             self.version = version
         self.settingsSection = self.name.lower()
@@ -289,18 +301,19 @@ class Plugin(QtCore.QObject):
             The new name the plugin should now use.
         """
         pass
-    def set_plugin_translations(self):
+     
+    def getString(self, name):
+        if name in self.strings:
+            return self.strings[name]
+        else:
+            # do something here?
+            return None
+
+    def set_plugin_strings(self):
         """
         Called to define all translatable texts of the plugin
         """
-        pass
-        self.text = {}
-     
-    def get_text(self,  content):
-        """
-        Called to retrieve a translated piece of text for menues, context menues, ...
-        """
-        if self.text.has_key(content):
-            return self.text[content]
-        else:
-            return self.name
+        self.name = u'Plugin'
+        self.name_lower = u'plugin'
+
+        self.strings = {}

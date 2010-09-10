@@ -28,7 +28,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, build_icon, translate
+from openlp.core.lib import Plugin, StringType, build_icon, translate
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
 
 log = logging.getLogger(__name__)
@@ -37,7 +37,7 @@ class BiblePlugin(Plugin):
     log.info(u'Bible Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        self.set_plugin_translations()
+        self.set_plugin_strings()
         Plugin.__init__(self, u'Bibles', u'1.9.2', plugin_helpers)
         self.weight = -9
         self.icon_path = u':/plugins/plugin_bibles.png'
@@ -117,31 +117,54 @@ class BiblePlugin(Plugin):
             The new name the plugin should now use.
         """
         self.settings_tab.bible_theme = newTheme
-    def set_plugin_translations(self):
+
+    def set_plugin_strings(self):
         """
         Called to define all translatable texts of the plugin
         """
         self.name = u'Bibles'
-        self.name_lower = u'bibles'
-        self.text = {}
-        #for context menu
-        self.text['context_edit'] = translate('BiblesPlugin', '&Edit Bible')
-        self.text['context_delete'] = translate('BiblesPlugin', '&Delete Bible')
-        self.text['context_preview'] = translate('BiblesPlugin', '&Preview Bible')
-        self.text['context_live'] = translate('BiblesPlugin', '&Show Live') 
-        # forHeaders in mediamanagerdock
-        self.text['import'] = translate('BiblesPlugin', 'Import a Bible')
-        self.text['load'] = translate('BiblesPlugin', 'Load a new Bible')
-        self.text['new'] = translate('BiblesPlugin', 'Add a new Bible')
-        self.text['edit'] = translate('BiblesPlugin', 'Edit the selected Bible')
-        self.text['delete'] = translate('BiblesPlugin', 'Delete the selected Bible')
-        self.text['delete_more'] = translate('BiblesPlugin', 'Delete the selected Bibles')
-        self.text['preview'] = translate('BiblesPlugin', 'Preview the selected Bible')
-        self.text['preview_more'] = translate('BiblesPlugin', 'Preview the selected Bibles')
-        self.text['live'] = translate('BiblesPlugin', 'Send the selected Bible live')
-        self.text['live_more'] = translate('BiblesPlugin', 'Send the selected Bibles live')
-        self.text['service'] = translate('BiblesPlugin', 'Add the selected Verse to the service')
-        self.text['service_more'] = translate('BiblesPlugin', 'Add the selected Verses to the service')
+        self.name_lower = u'Bibles'
+
+        self.strings = {}
         # for names in mediamanagerdock and pluginlist
-        self.text['name'] = translate('BiblesPlugin', 'Bible')
-        self.text['name_more'] = translate('BiblesPlugin', 'Bibles')
+        self.strings[StringType.Name] = {
+            u'singular': translate('BiblesPlugin', 'Bible'),
+            u'plural': translate('BiblesPlugin', 'Bibles')
+        }
+
+        # Middle Header Bar
+        ## Import Button ##
+        self.strings[StringType.Import] = {
+            u'title': translate('BiblesPlugin', 'Import'),
+            u'tooltip': translate('BiblesPlugin', 'Import a Bible')
+        }
+        ## New Button ##
+        self.strings[StringType.New] = {
+            u'title': translate('BiblesPlugin', 'Add'),
+            u'tooltip': translate('BiblesPlugin', 'Add a new Bible')
+        }
+        ## Edit Button ##
+        self.strings[StringType.Edit] = {
+            u'title': translate('BiblesPlugin', 'Edit'),
+            u'tooltip': translate('BiblesPlugin', 'Edit the selected Bible')
+        }
+        ## Delete Button ##
+        self.strings[StringType.Delete] = {
+            u'title': translate('BiblesPlugin', 'Delete'),
+            u'tooltip': translate('BiblesPlugin', 'Delete the selected Bible')
+        }
+        ## Preview ##
+        self.strings[StringType.Preview] = {
+            u'title': translate('BiblesPlugin', 'Preview'),
+            u'tooltip': translate('BiblesPlugin', 'Preview the selected Bible')
+        }
+        ## Live  Button ##
+        self.strings[StringType.Live] = {
+            u'title': translate('BiblesPlugin', 'Live'),
+            u'tooltip': translate('BiblesPlugin', 'Send the selected Bible live')
+        }
+        ## Add to service Button ##
+        self.strings[StringType.Service] = {
+            u'title': translate('BiblesPlugin', 'Service'),
+            u'tooltip': translate('BiblesPlugin', 'Add the selected Bible to the service')
+        }
