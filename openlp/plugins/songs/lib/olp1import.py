@@ -28,6 +28,7 @@ The :mod:`olp1import` module provides the functionality for importing
 openlp.org 1.x song databases into the current installation database.
 """
 import logging
+import chardet
 try:
     import sqlite
 except:
@@ -63,6 +64,11 @@ class OpenLP1SongImport(SongImport):
         # Connect to the database
         connection = sqlite.connect(self.import_source)
         cursor = connection.cursor()
+        # Determine if we're using a new or an old DB
+        cursor.execute(u'SELECT name FROM sqlite_master '
+            u'WHERE type = \'table\' AND name = \'tracks\'')
+        table_list = cursor.fetchall()
+        new_db = len(table_list) > 0
         # Count the number of records we need to import, for the progress bar
         cursor.execute(u'SELECT COUNT(songid) FROM songs')
         count = int(cursor.fetchone()[0])
@@ -71,9 +77,10 @@ class OpenLP1SongImport(SongImport):
         # "cache" our list of authors
         cursor.execute(u'SELECT authorid, authorname FROM authors')
         authors = cursor.fetchall()
-        # "cache" our list of tracks
-        cursor.execute(u'SELECT trackid, fulltrackname FROM tracks')
-        tracks = cursor.fetchall()
+        if new_db:
+          # "cache" our list of tracks
+          cursor.execute(u'SELECT trackid, fulltrackname FROM tracks')
+          tracks = cursor.fetchall()
         # Import the songs
         cursor.execute(u'SELECT songid, songtitle, lyrics || \'\' AS lyrics, '
             u'copyrightinfo FROM songs')
@@ -84,9 +91,22 @@ class OpenLP1SongImport(SongImport):
                 success = False
                 break
             song_id = song[0]
-            title = unicode(song[1], u'cp1252')
-            lyrics = unicode(song[2], u'cp1252').replace(u'\r', u'')
-            copyright = unicode(song[3], u'cp1252')
+            encoding = chardet.detect(song[1])
+            if encoding[u'confidence'] < 0.9:
+                title = unicode(song[1], u'windows-1251')
+            else:
+                title = unicode(song[1], encoding[u'encoding'])
+            encoding = chardet.detect(song[2])
+            if encoding[u'confidence'] < 0.9:
+                lyrics = unicode(song[2], u'windows-1251')
+            else:
+                lyrics = unicode(song[2], encoding[u'encoding'])
+            lyrics = lyrics.replace(u'\r', u'')
+            encoding = chardet.detect(song[3])
+            if encoding[u'confidence'] < 0.9:
+                copyright = unicode(song[3], u'windows-1251')
+            else:
+                copyright = unicode(song[3], encoding[u'encoding'])
             self.import_wizard.incrementProgressBar(
                 unicode(translate('SongsPlugin.ImportWizardForm',
                     'Importing "%s"...')) % title)
@@ -102,15 +122,16 @@ class OpenLP1SongImport(SongImport):
                     break
                 for author in authors:
                     if author[0] == author_id[0]:
-                        self.parse_author(unicode(author[1], u'cp1252'))
+                        encoding = chardet.detect(author[1])
+                        if encoding[u'confidence'] < 0.9:
+                            self.parse_author(unicode(author[1], u'windows-1251'))
+                        else:
+                            self.parse_author(unicode(author[1], encoding[u'encoding']))
                         break
             if self.stop_import_flag:
                 success = False
                 break
-            cursor.execute(u'SELECT name FROM sqlite_master '
-                u'WHERE type = \'table\' AND name = \'tracks\'')
-            table_list = cursor.fetchall()
-            if len(table_list) > 0:
+            if new_db:
                 cursor.execute(u'SELECT trackid FROM songtracks '
                     u'WHERE songid = %s ORDER BY listindex' % song_id)
                 track_ids = cursor.fetchall()
@@ -120,7 +141,11 @@ class OpenLP1SongImport(SongImport):
                         break
                     for track in tracks:
                         if track[0] == track_id[0]:
-                            self.add_media_file(unicode(track[1], u'cp1252'))
+                            encoding = chardet.detect(author[1])
+                            if encoding[u'confidence'] < 0.9:
+                                self.add_media_file(unicode(track[1], u'windows-1251'))
+                            else:
+                                self.add_media_file(unicode(track[1], encoding[u'encoding']))
                             break
             if self.stop_import_flag:
                 success = False
