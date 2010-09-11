@@ -55,9 +55,8 @@ BLANK_THEME_XML = \
       <proportion>30</proportion>
       <weight>Normal</weight>
       <italics>False</italics>
-      <indentation>0</indentation>
       <line_adjustment>0</line_adjustment>
-      <location override="False" x="10" y="10" width="1004" height="730"/>
+      <location override="False" x="10" y="10" width="1004" height="690"/>
    </font>
    <font type="footer">
       <name>Arial</name>
@@ -65,9 +64,8 @@ BLANK_THEME_XML = \
       <proportion>12</proportion>
       <weight>Normal</weight>
       <italics>False</italics>
-      <indentation>0</indentation>
       <line_adjustment>0</line_adjustment>
-      <location override="False" x="10" y="730" width="1004" height="38"/>
+      <location override="False" x="10" y="690" width="1004" height="78"/>
    </font>
    <display>
       <shadow color="#000000" size="5">True</shadow>
@@ -184,7 +182,7 @@ class ThemeXML(object):
         self.child_element(background, u'filename', filename)
 
     def add_font(self, name, color, proportion, override, fonttype=u'main',
-        weight=u'Normal', italics=u'False', indentation=0, line_adjustment=0,
+        weight=u'Normal', italics=u'False', line_adjustment=0,
         xpos=0, ypos=0, width=0, height=0):
         """
         Add a Font.
@@ -209,9 +207,6 @@ class ThemeXML(object):
 
         ``italics``
             Does the font render to italics Defaults to 0 Normal
-
-        ``indentation``
-            Number of characters the wrap line is indented
 
         ``xpos``
             The X position of the text block.
@@ -238,8 +233,6 @@ class ThemeXML(object):
         self.child_element(background, u'weight', weight)
         #Create italics name element
         self.child_element(background, u'italics', italics)
-        #Create indentation name element
-        self.child_element(background, u'indentation', unicode(indentation))
         #Create indentation name element
         self.child_element(
             background, u'line_adjustment', unicode(line_adjustment))

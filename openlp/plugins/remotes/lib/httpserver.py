@@ -26,8 +26,12 @@
 
 import logging
 import os
-import json
 import urlparse
+
+try:
+    import json
+except ImportError:
+    import simplejson as json
 
 from PyQt4 import QtCore, QtNetwork
 
@@ -37,7 +41,7 @@ from openlp.core.utils import AppLocation
 log = logging.getLogger(__name__)
 
 class HttpServer(object):
-    """ 
+    """
     Ability to control OpenLP via a webbrowser
     e.g.  http://localhost:4316/send/slidecontroller_live_next
           http://localhost:4316/send/alerts_text?q=your%20alert%20text
@@ -59,7 +63,7 @@ class HttpServer(object):
     def start_tcp(self):
         """
         Start the http server, use the port in the settings default to 4316
-        Listen out for slide and song changes so they can be broadcast to 
+        Listen out for slide and song changes so they can be broadcast to
         clients. Listen out for socket connections
         """
         log.debug(u'Start TCP server')
@@ -67,13 +71,13 @@ class HttpServer(object):
             self.parent.settingsSection + u'/remote port',
             QtCore.QVariant(4316)).toInt()[0]
         self.server = QtNetwork.QTcpServer()
-        self.server.listen(QtNetwork.QHostAddress(QtNetwork.QHostAddress.Any), 
+        self.server.listen(QtNetwork.QHostAddress(QtNetwork.QHostAddress.Any),
             port)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_live_changed'), 
+            QtCore.SIGNAL(u'slidecontroller_live_changed'),
             self.slide_change)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_live_started'), 
+            QtCore.SIGNAL(u'slidecontroller_live_started'),
             self.item_change)
         QtCore.QObject.connect(self.server,
             QtCore.SIGNAL(u'newConnection()'), self.new_connection)
@@ -92,7 +96,7 @@ class HttpServer(object):
         """
         self.current_item = items[0].title
         self.send_poll()
-                        
+
     def send_poll(self):
         """
         Tell the clients something has changed
@@ -100,7 +104,7 @@ class HttpServer(object):
         Receiver.send_message(u'remotes_poll_response',
             {'slide': self.current_slide,
              'item': self.current_item})
-        
+
     def new_connection(self):
         """
         A new http connection has been made. Create a client object to handle
@@ -110,7 +114,7 @@ class HttpServer(object):
         socket = self.server.nextPendingConnection()
         if socket:
             self.connections.append(HttpConnection(self, socket))
-    
+
     def close_connection(self, connection):
         """
         The connection has been closed. Clean up
@@ -124,9 +128,9 @@ class HttpServer(object):
         """
         log.debug(u'close http server')
         self.server.close()
-        
+
 class HttpConnection(object):
-    """ 
+    """
     A single connection, this handles communication between the server
     and the client
     """
@@ -134,7 +138,7 @@ class HttpConnection(object):
         """
         Initialise the http connection. Listen out for socket signals
         """
-        log.debug(u'Initialise HttpConnection: %s' % 
+        log.debug(u'Initialise HttpConnection: %s' %
             socket.peerAddress().toString())
         self.socket = socket
         self.parent = parent
@@ -180,13 +184,13 @@ class HttpConnection(object):
     def serve_file(self, filename):
         """
         Send a file to the socket. For now, just a subset of file types
-        and must be top level inside the html folder. 
+        and must be top level inside the html folder.
         If subfolders requested return 404, easier for security for the present.
 
         Ultimately for i18n, this could first look for xx/file.html before
         falling back to file.html... where xx is the language, e.g. 'en'
         """
-        log.debug(u'serve file request %s' % filename)        
+        log.debug(u'serve file request %s' % filename)
         if not filename:
             filename = u'index.html'
         path = os.path.normpath(os.path.join(self.parent.html_dir, filename))
@@ -229,8 +233,8 @@ class HttpConnection(object):
         if not params:
             return None
         else:
-            return params['q']        
-        
+            return params['q']
+
     def process_event(self, event, params):
         """
         Send a signal to openlp to perform an action.
@@ -239,21 +243,27 @@ class HttpConnection(object):
         """
         log.debug(u'Processing event %s' % event)
         if params:
-            Receiver.send_message(event, params)    
-        else:                  
-            Receiver.send_message(event)    
-        return u'OK'
+            Receiver.send_message(event, params)
+        else:
+            Receiver.send_message(event)
+        return json.dumps([u'OK'])
 
     def process_request(self, event, params):
         """
         Client has requested data. Send the signal and parameters for openlp
-        to handle, then listen out for a corresponding _request signal
+        to handle, then listen out for a corresponding ``_request`` signal
         which will have the data to return.
-        For most event timeout after 10 seconds (i.e. incase the signal 
-        recipient isn't listening) 
-        remotes_poll_request is a special case, this is a ajax long poll which
-        is just waiting for slide change/song change activity. This can wait
-        longer (one minute)
+
+        For most events, timeout after 10 seconds (i.e. in case the signal
+        recipient isn't listening). ``remotes_poll_request`` is a special case
+        however, this is a ajax long poll which is just waiting for slide
+        change/song change activity. This can wait longer (one minute).
+
+        ``event``
+            The event from the web page.
+
+        ``params``
+            Parameters sent with the event.
         """
         log.debug(u'Processing request %s' % event)
         if not event.endswith(u'_request'):
@@ -271,14 +281,14 @@ class HttpConnection(object):
         else:
             self.timer.start(10000)
         if params:
-            Receiver.send_message(event, params)    
-        else:                  
-            Receiver.send_message(event)    
+            Receiver.send_message(event, params)
+        else:
+            Receiver.send_message(event)
         return True
 
     def process_response(self, data):
         """
-        The recipient of a _request signal has sent data. Convert this to 
+        The recipient of a _request signal has sent data. Convert this to
         json and return it to client
         """
         log.debug(u'Processing response for %s' % self.event)
@@ -292,7 +302,7 @@ class HttpConnection(object):
 
     def send_200_ok(self, mimetype='text/html; charset="utf-8"'):
         """
-        Successful request. Send OK headers. Assume html for now. 
+        Successful request. Send OK headers. Assume html for now.
         """
         self.socket.write(u'HTTP/1.1 200 OK\r\n' + \
             u'Content-Type: %s\r\n\r\n' % mimetype)
@@ -307,11 +317,11 @@ class HttpConnection(object):
 
     def send_408_timeout(self):
         """
-        A _request hasn't returned anything in the timeout period. 
+        A _request hasn't returned anything in the timeout period.
         Return timeout
         """
         self.socket.write(u'HTTP/1.1 408 Request Timeout\r\n')
-            
+
     def timeout(self):
         """
         Listener for timeout signal
@@ -320,14 +330,14 @@ class HttpConnection(object):
             return
         self.send_408_timeout()
         self.close()
-                
+
     def disconnected(self):
         """
         The client has disconnected. Tidy up
         """
         log.debug(u'socket disconnected')
         self.close()
-                    
+
     def close(self):
         """
         The server has closed the connection. Tidy up

@@ -31,7 +31,6 @@ from PyQt4 import QtCore, QtGui
 
 from songimportwizard import Ui_SongImportWizard
 from openlp.core.lib import Receiver, SettingsManager, translate
-#from openlp.core.utils import AppLocation
 from openlp.plugins.songs.lib.importer import SongFormat
 
 log = logging.getLogger(__name__)
@@ -83,6 +82,12 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         QtCore.QObject.connect(self.wordsOfWorshipRemoveButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onWordsOfWorshipRemoveButtonClicked)
+        QtCore.QObject.connect(self.ccliAddButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onCCLIAddButtonClicked)
+        QtCore.QObject.connect(self.ccliRemoveButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onCCLIRemoveButtonClicked)
         QtCore.QObject.connect(self.songsOfFellowshipAddButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onSongsOfFellowshipAddButtonClicked)
@@ -130,7 +135,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
                     self.openLP2BrowseButton.setFocus()
                     return False
             elif source_format == SongFormat.OpenLP1:
-                if self.openSongFilenameEdit.text().isEmpty():
+                if self.openLP1FilenameEdit.text().isEmpty():
                     QtGui.QMessageBox.critical(self,
                         translate('SongsPlugin.ImportWizardForm',
                             'No openlp.org 1.x Song Database Selected'),
@@ -160,7 +165,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
                     self.openSongAddButton.setFocus()
                     return False
             elif source_format == SongFormat.WordsOfWorship:
-                if self.wordsOfWorshipListWidget.count() == 0:
+                if self.wordsOfWorshipFileListWidget.count() == 0:
                     QtGui.QMessageBox.critical(self,
                         translate('SongsPlugin.ImportWizardForm',
                             'No Words of Worship Files Selected'),
@@ -277,6 +282,16 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
     def onWordsOfWorshipRemoveButtonClicked(self):
         self.removeSelectedItems(self.wordsOfWorshipFileListWidget)
 
+    def onCCLIAddButtonClicked(self):
+        self.getFiles(
+            translate('SongsPlugin.ImportWizardForm',
+            'Select CCLI Files'),
+            self.ccliFileListWidget
+        )
+
+    def onCCLIRemoveButtonClicked(self):
+        self.removeSelectedItems(self.ccliFileListWidget)
+
     def onSongsOfFellowshipAddButtonClicked(self):
         self.getFiles(
             translate('SongsPlugin.ImportWizardForm',
@@ -302,8 +317,8 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         Stop the import on pressing the cancel button.
         """
         log.debug('Cancel button pressed!')
-        if self.currentId() == 3:
-            Receiver.send_message(u'song_stop_import')
+        if self.currentId() == 2:
+            Receiver.send_message(u'songs_stop_import')
 
     def onCurrentIdChanged(self, id):
         if id == 2:
@@ -315,6 +330,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         pass
 
     def setDefaults(self):
+        self.restart()
         self.formatComboBox.setCurrentIndex(0)
         self.openLP2FilenameEdit.setText(u'')
         self.openLP1FilenameEdit.setText(u'')
@@ -357,11 +373,11 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
             importer = self.plugin.importSongs(SongFormat.OpenLP2,
                 filename=unicode(self.openLP2FilenameEdit.text())
             )
-        #elif source_format == SongFormat.OpenLP1:
-        #    # Import an openlp.org database
-        #    importer = self.plugin.importSongs(SongFormat.OpenLP1,
-        #        filename=unicode(self.field(u'openlp1_filename').toString())
-        #    )
+        elif source_format == SongFormat.OpenLP1:
+            # Import an openlp.org database
+            importer = self.plugin.importSongs(SongFormat.OpenLP1,
+                filename=unicode(self.openLP1FilenameEdit.text())
+            )
         elif source_format == SongFormat.OpenLyrics:
             # Import OpenLyrics songs
             importer = self.plugin.importSongs(SongFormat.OpenLyrics,

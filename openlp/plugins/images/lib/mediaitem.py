@@ -110,8 +110,14 @@ class ImageMediaItem(MediaManagerItem):
             u':/slides/slide_blank.png',
             translate('ImagePlugin.MediaItem', 'Replace Live Background'),
             self.onReplaceClick, False)
+        self.resetButton = self.toolbar.addToolbarButton(
+            translate('ImagePlugin.MediaItem', u'Reset Background'),
+            u':/system/system_close.png',
+            translate('ImagePlugin.MediaItem', 'Reset Live Background'),
+            self.onResetClick, False)
         # Add the song widget to the page layout
         self.pageLayout.addWidget(self.ImageWidget)
+        self.resetButton.setVisible(False)
 
     def onDeleteClick(self):
         """
@@ -169,6 +175,10 @@ class ImageMediaItem(MediaManagerItem):
         else:
             return False
 
+    def onResetClick(self):
+        self.resetButton.setVisible(False)
+        self.parent.liveController.display.resetImage()
+
     def onReplaceClick(self):
         if check_item_selected(self.listView,
             translate('ImagePlugin.MediaItem',
@@ -178,7 +188,8 @@ class ImageMediaItem(MediaManagerItem):
                 bitem = self.listView.item(item.row())
                 filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
                 frame = QtGui.QImage(unicode(filename))
-                self.parent.displayManager.displayImageWithText(frame)
+                self.parent.liveController.display.image(frame)
+        self.resetButton.setVisible(True)
 
     def onPreviewClick(self):
         MediaManagerItem.onPreviewClick(self)

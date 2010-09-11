@@ -44,9 +44,9 @@ class ScreenList(object):
         self.override = None
         self.screen_list = []
         self.display_count = 0
-        #actual display number
+        # actual display number
         self.current_display = 0
-        #save config display number
+        # save config display number
         self.monitor_number = 0
 
     def add_screen(self, screen):

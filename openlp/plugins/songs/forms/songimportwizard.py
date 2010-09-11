@@ -215,25 +215,32 @@ class Ui_SongImportWizard(object):
         self.wordsOfWorshipLayout.setSpacing(8)
         self.wordsOfWorshipLayout.setMargin(0)
         self.wordsOfWorshipLayout.setObjectName(u'wordsOfWorshipLayout')
-        self.wordsOfWorshipFileListWidget = QtGui.QListWidget(self.wordsOfWorshipPage)
+        self.wordsOfWorshipFileListWidget = QtGui.QListWidget(
+            self.wordsOfWorshipPage)
         self.wordsOfWorshipFileListWidget.setSelectionMode(
             QtGui.QAbstractItemView.ExtendedSelection)
-        self.wordsOfWorshipFileListWidget.setObjectName(u'wordsOfWorshipFileListWidget')
+        self.wordsOfWorshipFileListWidget.setObjectName(
+            u'wordsOfWorshipFileListWidget')
         self.wordsOfWorshipLayout.addWidget(self.wordsOfWorshipFileListWidget)
         self.wordsOfWorshipButtonLayout = QtGui.QHBoxLayout()
         self.wordsOfWorshipButtonLayout.setSpacing(8)
-        self.wordsOfWorshipButtonLayout.setObjectName(u'wordsOfWorshipButtonLayout')
-        self.wordsOfWorshipAddButton = QtGui.QPushButton(self.wordsOfWorshipPage)
+        self.wordsOfWorshipButtonLayout.setObjectName(
+            u'wordsOfWorshipButtonLayout')
+        self.wordsOfWorshipAddButton = QtGui.QPushButton(
+            self.wordsOfWorshipPage)
         self.wordsOfWorshipAddButton.setIcon(openIcon)
         self.wordsOfWorshipAddButton.setObjectName(u'wordsOfWorshipAddButton')
         self.wordsOfWorshipButtonLayout.addWidget(self.wordsOfWorshipAddButton)
         self.wordsOfWorshipButtonSpacer = QtGui.QSpacerItem(40, 20,
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.wordsOfWorshipButtonLayout.addItem(self.wordsOfWorshipButtonSpacer)
-        self.wordsOfWorshipRemoveButton = QtGui.QPushButton(self.wordsOfWorshipPage)
+        self.wordsOfWorshipRemoveButton = QtGui.QPushButton(
+            self.wordsOfWorshipPage)
         self.wordsOfWorshipRemoveButton.setIcon(deleteIcon)
-        self.wordsOfWorshipRemoveButton.setObjectName(u'wordsOfWorshipRemoveButton')
-        self.wordsOfWorshipButtonLayout.addWidget(self.wordsOfWorshipRemoveButton)
+        self.wordsOfWorshipRemoveButton.setObjectName(
+            u'wordsOfWorshipRemoveButton')
+        self.wordsOfWorshipButtonLayout.addWidget(
+            self.wordsOfWorshipRemoveButton)
         self.wordsOfWorshipLayout.addLayout(self.wordsOfWorshipButtonLayout)
         self.formatStackedWidget.addWidget(self.wordsOfWorshipPage)
         # CCLI File import
@@ -267,30 +274,43 @@ class Ui_SongImportWizard(object):
         # Songs of Fellowship
         self.songsOfFellowshipPage = QtGui.QWidget()
         self.songsOfFellowshipPage.setObjectName(u'songsOfFellowshipPage')
-        self.songsOfFellowshipLayout = QtGui.QVBoxLayout(self.songsOfFellowshipPage)
+        self.songsOfFellowshipLayout = QtGui.QVBoxLayout(
+            self.songsOfFellowshipPage)
         self.songsOfFellowshipLayout.setMargin(0)
         self.songsOfFellowshipLayout.setSpacing(8)
         self.songsOfFellowshipLayout.setObjectName(u'songsOfFellowshipLayout')
-        self.songsOfFellowshipFileListWidget = QtGui.QListWidget(self.songsOfFellowshipPage)
+        self.songsOfFellowshipFileListWidget = QtGui.QListWidget(
+            self.songsOfFellowshipPage)
         self.songsOfFellowshipFileListWidget.setSelectionMode(
             QtGui.QAbstractItemView.ExtendedSelection)
-        self.songsOfFellowshipFileListWidget.setObjectName(u'songsOfFellowshipFileListWidget')
-        self.songsOfFellowshipLayout.addWidget(self.songsOfFellowshipFileListWidget)
+        self.songsOfFellowshipFileListWidget.setObjectName(
+            u'songsOfFellowshipFileListWidget')
+        self.songsOfFellowshipLayout.addWidget(
+            self.songsOfFellowshipFileListWidget)
         self.songsOfFellowshipButtonLayout = QtGui.QHBoxLayout()
         self.songsOfFellowshipButtonLayout.setSpacing(8)
-        self.songsOfFellowshipButtonLayout.setObjectName(u'songsOfFellowshipButtonLayout')
-        self.songsOfFellowshipAddButton = QtGui.QPushButton(self.songsOfFellowshipPage)
+        self.songsOfFellowshipButtonLayout.setObjectName(
+            u'songsOfFellowshipButtonLayout')
+        self.songsOfFellowshipAddButton = QtGui.QPushButton(
+            self.songsOfFellowshipPage)
         self.songsOfFellowshipAddButton.setIcon(openIcon)
-        self.songsOfFellowshipAddButton.setObjectName(u'songsOfFellowshipAddButton')
-        self.songsOfFellowshipButtonLayout.addWidget(self.songsOfFellowshipAddButton)
+        self.songsOfFellowshipAddButton.setObjectName(
+            u'songsOfFellowshipAddButton')
+        self.songsOfFellowshipButtonLayout.addWidget(
+            self.songsOfFellowshipAddButton)
         self.songsOfFellowshipButtonSpacer = QtGui.QSpacerItem(40, 20,
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.songsOfFellowshipButtonLayout.addItem(self.songsOfFellowshipButtonSpacer)
-        self.songsOfFellowshipRemoveButton = QtGui.QPushButton(self.songsOfFellowshipPage)
+        self.songsOfFellowshipButtonLayout.addItem(
+            self.songsOfFellowshipButtonSpacer)
+        self.songsOfFellowshipRemoveButton = QtGui.QPushButton(
+            self.songsOfFellowshipPage)
         self.songsOfFellowshipRemoveButton.setIcon(deleteIcon)
-        self.songsOfFellowshipRemoveButton.setObjectName(u'songsOfFellowshipRemoveButton')
-        self.songsOfFellowshipButtonLayout.addWidget(self.songsOfFellowshipRemoveButton)
-        self.songsOfFellowshipLayout.addLayout(self.songsOfFellowshipButtonLayout)
+        self.songsOfFellowshipRemoveButton.setObjectName(
+            u'songsOfFellowshipRemoveButton')
+        self.songsOfFellowshipButtonLayout.addWidget(
+            self.songsOfFellowshipRemoveButton)
+        self.songsOfFellowshipLayout.addLayout(
+            self.songsOfFellowshipButtonLayout)
         self.formatStackedWidget.addWidget(self.songsOfFellowshipPage)
         # Generic Document/Presentation import
         self.genericPage = QtGui.QWidget()
