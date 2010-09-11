@@ -150,8 +150,8 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                 unicode(self.theme.background_color))
         elif self.theme.background_type == u'gradient':
             new_theme.add_background_gradient(
-                unicode(self.theme.background_startColor),
-                unicode(self.theme.background_endColor),
+                unicode(self.theme.background_start_color),
+                unicode(self.theme.background_end_color),
                 self.theme.background_direction)
         else:
             filename = \
@@ -185,10 +185,10 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                 unicode(self.theme.display_shadow_color),
                 unicode(self.theme.display_outline),
                 unicode(self.theme.display_outline_color),
-                unicode(self.theme.display_horizontalAlign),
-                unicode(self.theme.display_verticalAlign),
-                unicode(self.theme.display_wrapStyle),
-                unicode(self.theme.display_slideTransition),
+                unicode(self.theme.display_horizontal_align),
+                unicode(self.theme.display_vertical_align),
+                unicode(self.theme.display_wrap_style),
+                unicode(self.theme.display_slide_transition),
                 unicode(self.theme.display_shadow_size),
                 unicode(self.theme.display_outline_size))
         theme = new_theme.extract_xml()
@@ -407,10 +407,10 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                 self.theme.background_direction = u'vertical'
             else:
                 self.theme.background_direction = u'circular'
-            if self.theme.background_startColor is None:
-                self.theme.background_startColor = u'#000000'
-            if self.theme.background_endColor is None:
-                self.theme.background_endColor = u'#ff0000'
+            if self.theme.background_start_color is None:
+                self.theme.background_start_color = u'#000000'
+            if self.theme.background_end_color is None:
+                self.theme.background_end_color = u'#ff0000'
             self.imageLineEdit.setText(u'')
         else:
             self.theme.background_type = u'image'
@@ -427,20 +427,20 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                     unicode(self.theme.background_color))
         else:
             new_color = QtGui.QColorDialog.getColor(
-                QtGui.QColor(self.theme.background_startColor), self)
+                QtGui.QColor(self.theme.background_start_color), self)
             if new_color.isValid():
-                self.theme.background_startColor = new_color.name()
+                self.theme.background_start_color = new_color.name()
                 self.color1PushButton.setStyleSheet(u'background-color: %s' %
-                    unicode(self.theme.background_startColor))
+                    unicode(self.theme.background_start_color))
         self.previewTheme()
 
     def onColor2PushButtonClicked(self):
         new_color = QtGui.QColorDialog.getColor(
-            QtGui.QColor(self.theme.background_endColor), self)
+            QtGui.QColor(self.theme.background_end_color), self)
         if new_color.isValid():
-            self.theme.background_endColor = new_color.name()
+            self.theme.background_end_color = new_color.name()
             self.color2PushButton.setStyleSheet(u'background-color: %s' %
-                unicode(self.theme.background_endColor))
+                unicode(self.theme.background_end_color))
             self.previewTheme()
 
     #
@@ -483,9 +483,9 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
 
     def onSlideTransitionCheckBoxChanged(self, value):
         if value == 2:  # checked
-            self.theme.display_slideTransition = True
+            self.theme.display_slide_transition = True
         else:
-            self.theme.display_slideTransition = False
+            self.theme.display_slide_transition = False
         self.stateChanging(self.theme)
         self.previewTheme()
 
@@ -499,12 +499,12 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.previewTheme()
 
     def onHorizontalComboBoxSelected(self, currentIndex):
-        self.theme.display_horizontalAlign = currentIndex
+        self.theme.display_horizontal_align = currentIndex
         self.stateChanging(self.theme)
         self.previewTheme()
 
     def onVerticalComboBoxSelected(self, currentIndex):
-        self.theme.display_verticalAlign = currentIndex
+        self.theme.display_vertical_align = currentIndex
         self.stateChanging(self.theme)
         self.previewTheme()
 
@@ -598,13 +598,13 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.shadowCheckBox.setChecked(False)
             self.shadowColorPushButton.setEnabled(False)
         self.shadowSpinBox.setValue(int(self.theme.display_shadow_size))
-        if self.theme.display_slideTransition:
+        if self.theme.display_slide_transition:
             self.slideTransitionCheckBox.setCheckState(QtCore.Qt.Checked)
         else:
             self.slideTransitionCheckBox.setCheckState(QtCore.Qt.Unchecked)
         self.horizontalComboBox.setCurrentIndex(
-            self.theme.display_horizontalAlign)
-        self.verticalComboBox.setCurrentIndex(self.theme.display_verticalAlign)
+            self.theme.display_horizontal_align)
+        self.verticalComboBox.setCurrentIndex(self.theme.display_vertical_align)
 
     def stateChanging(self, theme):
         self.backgroundTypeComboBox.setVisible(True)
@@ -625,9 +625,9 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.gradientComboBox.setVisible(False)
         elif theme.background_type == u'gradient':
             self.color1PushButton.setStyleSheet(u'background-color: %s' \
-                % unicode(theme.background_startColor))
+                % unicode(theme.background_start_color))
             self.color2PushButton.setStyleSheet(u'background-color: %s' \
-                % unicode(theme.background_endColor))
+                % unicode(theme.background_end_color))
             self.color1Label.setText(
                 translate('OpenLP.AmendThemeForm', 'First color:'))
             self.color2Label.setText(

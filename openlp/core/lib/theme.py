@@ -27,6 +27,7 @@
 Provide the theme XML and handling functions for OpenLP v2 themes.
 """
 import os
+import re
 
 from xml.dom.minidom import Document
 from xml.etree.ElementTree import ElementTree, XML
@@ -85,6 +86,17 @@ class ThemeLevel(object):
     Global = 1
     Service = 2
     Song = 3
+
+boolean_list = [u'font_main_italics', u'font_main_override', \
+u'font_footer_italics', u'font_footer_override',  u'display_outline', \
+u'display_shadow', u'display_slide_transition']
+
+integer_list =[u'font_main_proportion', u'font_main_line_adjustment', \
+u'font_main_x', u'font_main_height', u'font_main_y', u'font_main_width', \
+u'font_footer_proportion', u'font_footer_line_adjustment', u'font_footer_x', \
+u'font_footer_height', u'font_footer_y', u'font_footer_width', \
+u'display_shadow_size', u'display_outline_size', u'display_horizontal_align',\
+u'display_vertical_align', u'display_wrap_style' ]
 
 class ThemeXML(object):
     """
@@ -372,10 +384,10 @@ class ThemeXML(object):
             if element.getchildren():
                 master = element.tag + u'_'
             else:
-                #background transparent tags have no children so special case
+                # background transparent tags have no children so special case
                 if element.tag == u'background':
                     for e in element.attrib.iteritems():
-                        setattr(self, element.tag + u'_' + e[0], e[1])
+                        self._create_attr(element.tag + u'_' + e[0], e[1])
             if element.attrib:
                 for e in element.attrib.iteritems():
                     if master == u'font_' and e[0] == u'type':
@@ -383,22 +395,25 @@ class ThemeXML(object):
                     elif master == u'display_' and (element.tag == u'shadow' \
                         or element.tag == u'outline' ):
                         et = str_to_bool(element.text)
-                        setattr(self, master + element.tag, et)
-                        setattr(self, master + element.tag + u'_'+ e[0], e[1])
+                        self._create_attr(master + element.tag, et)
+                        self._create_attr(master + element.tag + u'_'+ e[0], e[1])
                     else:
                         field = master + e[0]
-                        if e[1] == u'True' or e[1] == u'False':
-                            setattr(self, field, str_to_bool(e[1]))
-                        else:
-                            setattr(self, field, e[1])
+                        self._create_attr(field, e[1])
             else:
                 if element.tag:
                     field = master + element.tag
                     element.text = element.text.strip().lstrip()
-                    if element.text == u'True' or element.text == u'False':
-                        setattr(self, field, str_to_bool(element.text))
-                    else:
-                        setattr(self, field, element.text)
+                    self._create_attr(field, element.text)
+
+    def _create_attr(self, element, value):
+        field = self._de_hump(element)
+        if field in boolean_list:
+            setattr(self, field, str_to_bool(value))
+        elif field in integer_list:
+            setattr(self, field, int(value))
+        else:
+            setattr(self, field, unicode(value))
 
     def __str__(self):
         """
@@ -409,3 +424,9 @@ class ThemeXML(object):
             if key[0:1] != u'_':
                 theme_strings.append(u'%30s: %s' % (key, getattr(self, key)))
         return u'\n'.join(theme_strings)
+
+    def _de_hump(self, name):
+
+        s1 = re.sub(u'(.)([A-Z][a-z]+)', r'\1_\2', name)
+        return re.sub(u'([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
+
