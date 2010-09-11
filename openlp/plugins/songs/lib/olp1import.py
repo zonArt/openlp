@@ -57,6 +57,21 @@ class OpenLP1SongImport(SongImport):
         SongImport.__init__(self, manager)
         self.import_source = kwargs[u'filename']
 
+    def decode_string(self, raw):
+        """
+        Use chardet to detect the encoding of the raw string, and convert it
+        to unicode.
+
+        ``raw``
+            The raw bytestring to decode.
+        """
+        detection = chardet.detect(raw)
+        if detection[u'confidence'] < 0.8:
+            codec = u'windows-1252'
+        else:
+            codec = detection[u'encoding']
+        return unicode(raw, codec)
+
     def do_import(self):
         """
         Run the import for an openlp.org 1.x song database.
@@ -91,22 +106,9 @@ class OpenLP1SongImport(SongImport):
                 success = False
                 break
             song_id = song[0]
-            encoding = chardet.detect(song[1])
-            if encoding[u'confidence'] < 0.9:
-                title = unicode(song[1], u'windows-1251')
-            else:
-                title = unicode(song[1], encoding[u'encoding'])
-            encoding = chardet.detect(song[2])
-            if encoding[u'confidence'] < 0.9:
-                lyrics = unicode(song[2], u'windows-1251')
-            else:
-                lyrics = unicode(song[2], encoding[u'encoding'])
-            lyrics = lyrics.replace(u'\r', u'')
-            encoding = chardet.detect(song[3])
-            if encoding[u'confidence'] < 0.9:
-                copyright = unicode(song[3], u'windows-1251')
-            else:
-                copyright = unicode(song[3], encoding[u'encoding'])
+            title = self.decode_string(song[1])
+            lyrics = self.decode_string(song[2]).replace(u'\r', u'')
+            copyright = self.decode_string(song[3])
             self.import_wizard.incrementProgressBar(
                 unicode(translate('SongsPlugin.ImportWizardForm',
                     'Importing "%s"...')) % title)
@@ -122,11 +124,7 @@ class OpenLP1SongImport(SongImport):
                     break
                 for author in authors:
                     if author[0] == author_id[0]:
-                        encoding = chardet.detect(author[1])
-                        if encoding[u'confidence'] < 0.9:
-                            self.parse_author(unicode(author[1], u'windows-1251'))
-                        else:
-                            self.parse_author(unicode(author[1], encoding[u'encoding']))
+                        self.parse_author(self.decode_string(author[1]))
                         break
             if self.stop_import_flag:
                 success = False
@@ -141,14 +139,11 @@ class OpenLP1SongImport(SongImport):
                         break
                     for track in tracks:
                         if track[0] == track_id[0]:
-                            encoding = chardet.detect(author[1])
-                            if encoding[u'confidence'] < 0.9:
-                                self.add_media_file(unicode(track[1], u'windows-1251'))
-                            else:
-                                self.add_media_file(unicode(track[1], encoding[u'encoding']))
+                            self.add_media_file(self.decode_string(track[1]))
                             break
             if self.stop_import_flag:
                 success = False
                 break
             self.finish()
         return success
+
