@@ -462,11 +462,7 @@ class ThemeManager(QtGui.QWidget):
                                 log.exception(u'Theme XML is not UTF-8 '
                                     u'encoded.')
                                 break
-                            if self.checkVersion1(xml_data):
-                                # upgrade theme xml
-                                filexml = self.migrateVersion122(xml_data)
-                            else:
-                                filexml = xml_data
+                            filexml = self.checkVersionAndConvert(xml_data)
                             outfile = open(fullpath, u'w')
                             outfile.write(filexml.encode(u'utf-8'))
                         else:
@@ -492,20 +488,21 @@ class ThemeManager(QtGui.QWidget):
             if outfile:
                 outfile.close()
 
-    def checkVersion1(self, xmlfile):
+    def checkVersionAndConvert(self, xml_data):
         """
         Check if a theme is from OpenLP version 1
 
-        ``xmlfile``
+        ``xml_data``
             Theme XML to check the version of
         """
         log.debug(u'checkVersion1 ')
-        theme = xmlfile.encode(u'ascii', u'xmlcharrefreplace')
+        theme = xml_data.encode(u'ascii', u'xmlcharrefreplace')
         tree = ElementTree(element=XML(theme)).getroot()
+        # look for old version 1 tags
         if tree.find(u'BackgroundType') is None:
-            return False
+            return xml_data
         else:
-            return True
+            return self.migrateVersion122(xml_data)
 
     def migrateVersion122(self, xml_data):
         """

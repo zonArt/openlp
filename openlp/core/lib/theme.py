@@ -338,16 +338,14 @@ class ThemeXML(object):
 
     def dump_xml(self):
         """
-        Dump the XML to file.
+        Dump the XML to file used for debugging
         """
-        # Debugging aid to see what we have
         return self.theme_xml.toprettyxml(indent=u'  ')
 
     def extract_xml(self):
         """
-        Pull out the XML string.
+        Print out the XML string.
         """
-        # Print our newly created XML
         return self.theme_xml.toxml(u'utf-8').decode(u'utf-8')
 
     def extract_formatted_xml(self):
@@ -407,6 +405,9 @@ class ThemeXML(object):
                     self._create_attr(field, element.text)
 
     def _create_attr(self, element, value):
+        """
+        Create the attributes with the correct data types and name format
+        """
         field = self._de_hump(element)
         if field in boolean_list:
             setattr(self, field, str_to_bool(value))
@@ -426,7 +427,9 @@ class ThemeXML(object):
         return u'\n'.join(theme_strings)
 
     def _de_hump(self, name):
-
+        """
+        Change Camel Case string to python string
+        """
         s1 = re.sub(u'(.)([A-Z][a-z]+)', r'\1_\2', name)
         return re.sub(u'([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
 
