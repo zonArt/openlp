@@ -66,7 +66,7 @@ class LanguageManager(object):
         Find all available language files in this OpenLP install
         """
         trans_dir = AppLocation.get_directory(AppLocation.AppDir)
-        trans_dir = QtCore.QDir(os.path.join(trans_dir,u'openlp', u'i18n'))
+        trans_dir = QtCore.QDir(os.path.join(trans_dir, u'openlp', u'i18n'))
         file_names = trans_dir.entryList(QtCore.QStringList("*.qm"),
                 QtCore.QDir.Files, QtCore.QDir.Name)
         for name in file_names:
