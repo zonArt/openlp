@@ -35,7 +35,6 @@ class ImagePlugin(Plugin):
     log.info(u'Image Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        self.set_plugin_strings()
         Plugin.__init__(self, u'Images', u'1.9.2', plugin_helpers)
         self.weight = -7
         self.icon_path = u':/plugins/plugin_images.png'
@@ -58,7 +57,7 @@ class ImagePlugin(Plugin):
             'selected image as a background instead of the background '
             'provided by the theme.')
         return about_text
-    # rimach
+
     def set_plugin_strings(self):
         """
         Called to define all translatable texts of the plugin

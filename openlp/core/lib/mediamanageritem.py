@@ -215,7 +215,7 @@ class MediaManagerItem(QtGui.QWidget):
                 loadString[u'title'],
                 loadString[u'tooltip'],
                 u':/general/general_open.png', self.onFileClick)
-        ## New Button ## rimach
+        ## New Button ##
         if self.hasNewIcon:
             newString = self.plugin.getString(StringType.New)
             self.addToolbarButton(

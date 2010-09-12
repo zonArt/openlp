@@ -50,7 +50,6 @@ class SongsPlugin(Plugin):
         """
         Create and set up the Songs plugin.
         """
-        self.set_plugin_strings()
         Plugin.__init__(self, u'Songs', u'1.9.2', plugin_helpers)
         self.weight = -10
         self.manager = Manager(u'songs', init_schema)

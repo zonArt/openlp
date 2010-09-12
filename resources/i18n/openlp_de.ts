@@ -2822,22 +2822,22 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="183"/>
         <source>Blank Screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Livebild schwarz</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="190"/>
         <source>Blank to Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Livebild Hintergrund</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="199"/>
         <source>Show Desktop</source>
-        <translation type="unfinished"></translation>
+        <translation>Livebild Transparent</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="281"/>
         <source>Go to</source>
-        <translation type="unfinished"></translation>
+        <translation>Gehe zu</translation>
     </message>
 </context>
 <context>
