@@ -48,7 +48,7 @@ def test():
     manager = Manager(u'songs', init_schema)
     o = OpenSongImport(manager, filenames=[u'test.opensong'])
     o.import_wizard = wizard_stub()
-    o.commit = False
+    o.commit = True
     o.do_import()
     o.print_song()
     assert o.copyright == u'2010 Martin Thompson'

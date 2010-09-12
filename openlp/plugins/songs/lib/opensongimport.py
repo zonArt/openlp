@@ -119,7 +119,16 @@ class OpenSongImport(SongImport):
         import will not be committed to the database (useful for test scripts).
         """
         success = False
-        self.import_wizard.importProgressBar.setMaximum(len(self.filenames))
+        numfiles = 0
+        for filename in self.filenames:
+            ext = os.path.splitext(filename)[1]
+            if ext.lower() == u'.zip':
+                z = ZipFile(filename, u'r')
+                numfiles += len(z.infolist())
+            else:
+                numfiles += 1
+        log.debug("Total number of files: %d", numfiles)
+        self.import_wizard.importProgressBar.setMaximum(numfiles)
         for filename in self.filenames:
             if self.stop_import_flag:
                 break

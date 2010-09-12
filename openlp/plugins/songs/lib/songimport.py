@@ -258,6 +258,7 @@ class SongImport(QtCore.QObject):
             + '@' + self.alternate_title
         song.song_number = self.song_number
         song.search_lyrics = u''
+        verses_changed_to_other = []
         sxml = SongXMLBuilder()
         for (versetag, versetext) in self.verses:
             if versetag[0] == u'C':
@@ -273,10 +274,16 @@ class SongImport(QtCore.QObject):
             elif versetag[0] == u'E':
                 versetype = VerseType.to_string(VerseType.Ending)
             else:
+                verses_changed_to_other.append(versetag)
                 versetype = VerseType.to_string(VerseType.Other)
+                print "Versetype", versetype
             sxml.add_verse_to_lyrics(versetype, versetag[1:], versetext)
             song.search_lyrics += u' ' + self.remove_punctuation(versetext)
+        print verses_changed_to_other
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
+        for tag in verses_changed_to_other:
+            pass
+            # xxx sort out the "other" verses
         song.verse_order = u' '.join(self.verse_order_list)
         song.copyright = self.copyright
         song.comments = self.comments
