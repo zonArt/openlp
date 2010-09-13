@@ -29,9 +29,10 @@ format it for the output display.
 """
 import logging
 
-from PyQt4 import QtGui, QtCore
+from PyQt4 import QtGui, QtCore, QtWebKit
 
-from openlp.core.lib import resize_image, expand_tags
+from openlp.core.lib import resize_image, expand_tags, \
+    build_lyrics_format_css, build_lyrics_outline_css
 
 log = logging.getLogger(__name__)
 
@@ -47,25 +48,12 @@ class Renderer(object):
         Initialise the renderer.
         """
         self._rect = None
-        self._debug = False
-        self._display_shadow_size_footer = 0
-        self._display_outline_size_footer = 0
         self.theme_name = None
         self._theme = None
         self._bg_image_filename = None
         self.frame = None
-        self.frame_opaque = None
         self.bg_frame = None
         self.bg_image = None
-
-    def set_debug(self, debug):
-        """
-        Set the debug mode of the renderer.
-
-        ``debug``
-            The debug mode.
-        """
-        self._debug = debug
 
     def set_theme(self, theme):
         """
@@ -82,21 +70,11 @@ class Renderer(object):
         self.theme_name = theme.theme_name
         if theme.background_type == u'image':
             if theme.background_filename:
-                self.set_bg_image(theme.background_filename)
-
-    def set_bg_image(self, filename):
-        """
-        Set a background image.
-
-        ``filename``
-            The name of the image file.
-        """
-        log.debug(u'set bg image %s', filename)
-        self._bg_image_filename = unicode(filename)
-        if self.frame:
-            self.bg_image = resize_image(self._bg_image_filename,
-                                         self.frame.width(),
-                                         self.frame.height())
+                self._bg_image_filename = unicode(theme.background_filename)
+                if self.frame:
+                    self.bg_image = resize_image(self._bg_image_filename,
+                        self.frame.width(),
+                        self.frame.height())
 
     def set_text_rectangle(self, rect_main, rect_footer):
         """
@@ -112,7 +90,7 @@ class Renderer(object):
         self._rect = rect_main
         self._rect_footer = rect_footer
 
-    def set_frame_dest(self, frame_width, frame_height, preview=False):
+    def set_frame_dest(self, frame_width, frame_height):
         """
         Set the size of the slide.
 
@@ -122,11 +100,7 @@ class Renderer(object):
         ``frame_height``
             The height of the slide.
 
-        ``preview``
-            Defaults to *False*. Whether or not to generate a preview.
         """
-        if preview:
-            self.bg_frame = None
         log.debug(u'set frame dest (frame) w %d h %d', frame_width,
             frame_height)
         self.frame = QtGui.QImage(frame_width, frame_height,
@@ -134,8 +108,17 @@ class Renderer(object):
         if self._bg_image_filename and not self.bg_image:
             self.bg_image = resize_image(self._bg_image_filename,
                 self.frame.width(), self.frame.height())
-        if self.bg_frame is None:
-            self._generate_background_frame()
+        if self._theme.background_type == u'image':
+            self.bg_frame = QtGui.QImage(self.frame.width(),
+                self.frame.height(), QtGui.QImage.Format_ARGB32_Premultiplied)
+            painter = QtGui.QPainter()
+            painter.begin(self.bg_frame)
+            painter.fillRect(self.frame.rect(), QtCore.Qt.black)
+            if self.bg_image:
+                painter.drawImage(0, 0, self.bg_image)
+            painter.end()
+        else:
+            self.bg_frame = None
 
     def format_slide(self, words, line_break):
         """
@@ -156,91 +139,33 @@ class Renderer(object):
             lines = verse.split(u'\n')
             for line in lines:
                 text.append(line)
-        doc = QtGui.QTextDocument()
-        doc.setPageSize(QtCore.QSizeF(self._rect.width(), self._rect.height()))
-        df = doc.defaultFont()
-        df.setPixelSize(self._theme.font_main_proportion)
-        df.setFamily(self._theme.font_main_name)
-        main_weight = 50
-        if self._theme.font_main_weight == u'Bold':
-            main_weight = 75
-        df.setWeight(main_weight)
-        doc.setDefaultFont(df)
-        layout = doc.documentLayout()
+        web = QtWebKit.QWebView()
+        web.resize(self._rect.width(), self._rect.height())
+        web.setVisible(False)
+        frame = web.page().mainFrame()
+        # Adjust width and height to account for shadow. outline done in css
+        width = self._rect.width() - int(self._theme.display_shadow_size)
+        height = self._rect.height() - int(self._theme.display_shadow_size)
+        shell = u'<html><head><style>#main {%s %s}</style><body>' \
+            u'<div id="main">' % \
+            (build_lyrics_format_css(self._theme, width, height),
+            build_lyrics_outline_css(self._theme))
         formatted = []
-        if self._theme.font_main_weight == u'Bold' and \
-            self._theme.font_main_italics:
-            shell = u'{p}{st}{it}%s{/it}{/st}{/p}'
-        elif self._theme.font_main_weight == u'Bold' and \
-            not self._theme.font_main_italics:
-            shell = u'{p}{st}%s{/st}{/p}'
-        elif self._theme.font_main_italics:
-            shell = u'{p}{it}%s{/it}{/p}'
-        else:
-            shell = u'{p}%s{/p}'
-        temp_text = u''
-        old_html_text = u''
+        html_text = u''
+        styled_text = u''
+        js_height = 'document.getElementById("main").scrollHeight'
         for line in text:
-            # mark line ends
-            temp_text = temp_text + line + line_end
-            html_text = shell % expand_tags(temp_text)
-            doc.setHtml(html_text)
-            # Text too long so gone to next mage
-            if layout.pageCount() != 1:
-                formatted.append(shell % old_html_text)
-                temp_text = line
-            old_html_text = temp_text
-        formatted.append(shell % old_html_text)
+            styled_line = expand_tags(line) + line_end
+            styled_text += styled_line
+            html = shell + styled_text + u'</div></body></html>'
+            web.setHtml(html)
+            # Text too long so go to next page
+            text_height = int(frame.evaluateJavaScript(js_height).toString())
+            if text_height > height:
+                formatted.append(html_text)
+                html_text = u''
+                styled_text = styled_line
+            html_text += line + line_end
+        formatted.append(html_text)
         log.debug(u'format_slide - End')
         return formatted
-
-    def _generate_background_frame(self):
-        """
-        Generate a background frame to the same size as the frame to be used.
-        Results are cached for performance reasons.
-        """
-        assert(self._theme)
-        self.bg_frame = QtGui.QImage(self.frame.width(),
-            self.frame.height(), QtGui.QImage.Format_ARGB32_Premultiplied)
-        log.debug(u'render background %s start', self._theme.background_type)
-        painter = QtGui.QPainter()
-        painter.begin(self.bg_frame)
-        if self._theme.background_type == u'solid':
-            painter.fillRect(self.frame.rect(),
-                QtGui.QColor(self._theme.background_color))
-        elif self._theme.background_type == u'gradient':
-            # gradient
-            gradient = None
-            if self._theme.background_direction == u'horizontal':
-                w = int(self.frame.width()) / 2
-                # vertical
-                gradient = QtGui.QLinearGradient(w, 0, w, self.frame.height())
-            elif self._theme.background_direction == u'vertical':
-                h = int(self.frame.height()) / 2
-                # Horizontal
-                gradient = QtGui.QLinearGradient(0, h, self.frame.width(), h)
-            else:
-                w = int(self.frame.width()) / 2
-                h = int(self.frame.height()) / 2
-                # Circular
-                gradient = QtGui.QRadialGradient(w, h, w)
-            gradient.setColorAt(0,
-                QtGui.QColor(self._theme.background_startColor))
-            gradient.setColorAt(1,
-                QtGui.QColor(self._theme.background_endColor))
-            painter.setBrush(QtGui.QBrush(gradient))
-            rect_path = QtGui.QPainterPath()
-            max_x = self.frame.width()
-            max_y = self.frame.height()
-            rect_path.moveTo(0, 0)
-            rect_path.lineTo(0, max_y)
-            rect_path.lineTo(max_x, max_y)
-            rect_path.lineTo(max_x, 0)
-            rect_path.closeSubpath()
-            painter.drawPath(rect_path)
-        elif self._theme.background_type == u'image':
-            # image
-            painter.fillRect(self.frame.rect(), QtCore.Qt.black)
-            if self.bg_image:
-                painter.drawImage(0, 0, self.bg_image)
-        painter.end()

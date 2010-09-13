@@ -51,9 +51,9 @@ class CSVBible(BibleDB):
         if u'booksfile' not in kwargs:
             raise KeyError(u'You have to supply a file to import books from.')
         self.booksfile = kwargs[u'booksfile']
-        if u'versesfile' not in kwargs:
+        if u'versefile' not in kwargs:
             raise KeyError(u'You have to supply a file to import verses from.')
-        self.versesfile = kwargs[u'versesfile']
+        self.versesfile = kwargs[u'versefile']
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'bibles_stop_import'), self.stop_import)
 

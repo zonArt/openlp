@@ -574,7 +574,7 @@ class ServiceManager(QtGui.QWidget):
         * An osd which is a pickle of the service items
         * All image, presentation and video files needed to run the service.
         """
-        log.debug(u'onSaveService')
+        log.debug(u'onSaveService %s' % quick)
         if not quick or self.isNew:
             filename = QtGui.QFileDialog.getSaveFileName(self,
             translate('OpenLP.ServiceManager', 'Save Service'),
@@ -632,6 +632,8 @@ class ServiceManager(QtGui.QWidget):
 
     def onLoadService(self, lastService=False):
         if lastService:
+            if not self.parent.recentFiles:
+                return
             filename = self.parent.recentFiles[0]
         else:
             filename = QtGui.QFileDialog.getOpenFileName(
@@ -755,6 +757,7 @@ class ServiceManager(QtGui.QWidget):
         """
         Set the theme for the current service
         """
+        log.debug(u'onThemeComboBoxSelected')
         self.service_theme = unicode(self.themeComboBox.currentText())
         self.parent.RenderManager.set_service_theme(self.service_theme)
         QtCore.QSettings().setValue(
@@ -767,6 +770,7 @@ class ServiceManager(QtGui.QWidget):
         The theme may have changed in the settings dialog so make
         sure the theme combo box is in the correct state.
         """
+        log.debug(u'themeChange')
         if self.parent.RenderManager.theme_level == ThemeLevel.Global:
             self.toolbar.actions[u'ThemeLabel'].setVisible(False)
             self.toolbar.actions[u'ThemeWidget'].setVisible(False)
@@ -779,6 +783,7 @@ class ServiceManager(QtGui.QWidget):
         Rebuild the service list as things have changed and a
         repaint is the easiest way to do this.
         """
+        log.debug(u'regenerateServiceItems')
         # force reset of renderer as theme data has changed
         self.parent.RenderManager.themedata = None
         if self.serviceItems:
@@ -800,6 +805,7 @@ class ServiceManager(QtGui.QWidget):
         ``item``
             Service Item to be added
         """
+        log.debug(u'addServiceItem')
         sitem = self.findServiceItem()[0]
         item.render()
         if replace:

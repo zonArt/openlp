@@ -56,7 +56,7 @@ BLANK_THEME_XML = \
       <weight>Normal</weight>
       <italics>False</italics>
       <line_adjustment>0</line_adjustment>
-      <location override="False" x="10" y="10" width="1004" height="730"/>
+      <location override="False" x="10" y="10" width="1004" height="690"/>
    </font>
    <font type="footer">
       <name>Arial</name>
@@ -65,7 +65,7 @@ BLANK_THEME_XML = \
       <weight>Normal</weight>
       <italics>False</italics>
       <line_adjustment>0</line_adjustment>
-      <location override="False" x="10" y="730" width="1004" height="38"/>
+      <location override="False" x="10" y="690" width="1004" height="78"/>
    </font>
    <display>
       <shadow color="#000000" size="5">True</shadow>
