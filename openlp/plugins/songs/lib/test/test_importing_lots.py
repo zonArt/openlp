@@ -13,15 +13,19 @@ LOG_FILENAME = 'import.log'
 logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO)
 
 from test_opensongimport import wizard_stub, progbar_stub
+
+# Useful test function for importing a variety of different files
+# Uncomment below depending on what problem trying to make occur!
+
 def opensong_import_lots():
     ziploc = u'/home/mjt/openlp/OpenSong_Data/'
     files = []
-    #files = [u'test.opensong.zip', ziploc+u'ADond.zip']
+    files = [os.path.join(ziploc, u'RaoulSongs', u'Songs', u'Jesus Freak')]
     # files.extend(glob(ziploc+u'Songs.zip'))
-    files.extend(glob(ziploc+u'RaoulSongs.zip'))
-    #files.extend(glob(ziploc+u'SOF.zip'))
-    #files.extend(glob(ziploc+u'spanish_songs_for_opensong.zip'))
-#    files.extend(glob(ziploc+u'opensong_*.zip'))
+    # files.extend(glob(ziploc+u'RaoulSongs.zip'))
+    # files.extend(glob(ziploc+u'SOF.zip'))
+    # files.extend(glob(ziploc+u'spanish_songs_for_opensong.zip'))
+    # files.extend(glob(ziploc+u'opensong_*.zip'))
     errfile = codecs.open(u'import_lots_errors.txt', u'w', u'utf8')
     manager = Manager(u'songs', init_schema)
     o = OpenSongImport(manager, filenames=files)

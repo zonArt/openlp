@@ -31,6 +31,7 @@ from lxml import objectify
 from lxml.etree import Error, LxmlError
 import re
 
+from openlp.core.lib import translate
 from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
@@ -131,49 +132,49 @@ class OpenSongImport(SongImport):
         self.import_wizard.importProgressBar.setMaximum(numfiles)
         for filename in self.filenames:
             if self.stop_import_flag:
+                success = False
                 break
             ext = os.path.splitext(filename)[1]
             if ext.lower() == u'.zip':
-                log.info(u'Zipfile found %s', filename)
+                log.debug(u'Zipfile found %s', filename)
                 z = ZipFile(filename, u'r')
                 for song in z.infolist():
                     if self.stop_import_flag:
+                        success = False
                         break
                     parts = os.path.split(song.filename)
                     if parts[-1] == u'':
                         #No final part => directory
                         continue
                     log.info(u'Zip importing %s', parts[-1])
-                    self.import_wizard.incrementProgressBar(u'Importing %s...' \
-                        % parts[-1])
+                    self.import_wizard.incrementProgressBar(
+                        unicode(translate('SongsPlugin.ImportWizardForm',
+                            'Importing %s...')) % parts[-1])
                     songfile = z.open(song)
                     self.do_import_file(songfile)
                     if self.commit:
                         self.finish()
                 if self.stop_import_flag:
+                    success = False
                     break
-            else:
+            else: # not a zipfile
                 log.info('Direct import %s', filename)
-                self.import_wizard.incrementProgressBar(u'Importing %s...' \
-                    % os.path.split(filename)[-1])
+                self.import_wizard.incrementProgressBar(
+                    unicode(translate('SongsPlugin.ImportWizardForm',
+                        'Importing %s...')) % os.path.split(filename)[-1])
                 file = open(filename)
                 self.do_import_file(file)
                 if self.commit:
                     self.finish()
-        if self.commit:
-            self.finish()
 
+        return success
 
     def do_import_file(self, file):
         """
         Process the OpenSong file - pass in a file-like object,
         not a filename
         """
-        # self.setDefaults()
-        # Setup blank storage to append to
-        verse_order_list = []
-        topics = []
-        verselist = []
+        self.set_defaults()
         try:
             tree = objectify.parse(file)
         except Error, LxmlError:
@@ -196,11 +197,10 @@ class OpenSongImport(SongImport):
                     setattr(self, fn_or_string, ustring)
                 else:
                     fn_or_string(ustring)
-        if u'theme' in fields and unicode(root.theme) not in topics:
-            topics.append(unicode(root.theme))
-        if u'alttheme' in fields and unicode(root.alttheme) not in topics:
-            topics.append(unicode(root.alttheme))
-        lyrics = unicode(root.lyrics)
+        if u'theme' in fields and unicode(root.theme) not in self.topics:
+            self.topics.append(unicode(root.theme))
+        if u'alttheme' in fields and unicode(root.alttheme) not in self.topics:
+            self.topics.append(unicode(root.alttheme))
         # data storage while importing
         verses = {}
         # keep track of a "default" verse order, in case none is specified
@@ -210,6 +210,7 @@ class OpenSongImport(SongImport):
         # erm, versetype!
         versetype = u'V'
         versenum = None
+        lyrics = unicode(root.lyrics)
         for thisline in lyrics.split(u'\n'):
             # remove comments
             semicolon = thisline.find(u';')
@@ -277,7 +278,7 @@ class OpenSongImport(SongImport):
             for num in versenums:
                 versetag = u'%s%s' % (our_verse_type, num)
                 lines = u'\n'.join(verses[versetype][num])
-                verselist.append([versetag, lines])
+                self.verses.append([versetag, lines])
                 # Keep track of what we have for error checking later
                 versetags[versetag] = 1
         # now figure out the presentation order
@@ -300,11 +301,4 @@ class OpenSongImport(SongImport):
             if not versetags.has_key(tag):
                 log.info(u'Got order %s but not in versetags, dropping this item from presentation order', tag)
             else:
-                verse_order_list.append(tag)
-        # now copy the data
-        self.topics = topics
-        self.verse_order_list = verse_order_list
-        self.verses = verselist
-
-        # xxx sort out where to call setdefaults
-        # xxx need to make calls to insert to database here
+                self.verse_order_list.append(tag)

@@ -24,73 +24,15 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from opensongimport import OpenSongImport
-from olpimport import OpenLPSongImport
-from olp1import import OpenLP1SongImport
-try:
-    from sofimport import SofImport
-    from oooimport import OooImport
-    from cclifileimport import CCLIFileImport
-    from wowimport import WowImport
-except ImportError:
-    pass
+from PyQt4 import QtCore, QtGui
 
-class SongFormat(object):
+from exceptiondialog import Ui_ExceptionDialog
+from openlp.core.lib import translate
+
+class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
     """
-    This is a special enumeration class that holds the various types of songs,
-    plus a few helper functions to facilitate generic handling of song types
-    for importing.
+    The exception dialog
     """
-    Unknown = -1
-    OpenLP2 = 0
-    OpenLP1 = 1
-    OpenLyrics = 2
-    OpenSong = 3
-    WordsOfWorship = 4
-    CCLI = 5
-    SongsOfFellowship = 6
-    Generic = 7
-    CSV = 8
-
-    @staticmethod
-    def get_class(format):
-        """
-        Return the appropriate imeplementation class.
-
-        ``format``
-            The song format.
-        """
-        if format == SongFormat.OpenLP2:
-            return OpenLPSongImport
-        if format == SongFormat.OpenLP1:
-            return OpenLP1SongImport
-        elif format == SongFormat.OpenSong:
-            return OpenSongImport
-        elif format == SongFormat.SongsOfFellowship:
-            return SofImport
-        elif format == SongFormat.WordsOfWorship:
-            return WowImport
-        elif format == SongFormat.Generic:
-            return OooImport
-        elif format == SongFormat.CCLI:
-            return CCLIFileImport
-#        else:
-        return None
-
-    @staticmethod
-    def list():
-        """
-        Return a list of the supported song formats.
-        """
-        return [
-            SongFormat.OpenLP2,
-            SongFormat.OpenLP1,
-            SongFormat.OpenLyrics,
-            SongFormat.OpenSong,
-            SongFormat.WordsOfWorship,
-            SongFormat.CCLI,
-            SongFormat.SongsOfFellowship,
-            SongFormat.Generic
-        ]
-
-__all__ = [u'SongFormat']
+    def __init__(self, parent):
+        QtGui.QDialog.__init__(self, parent)
+        self.setupUi(self)

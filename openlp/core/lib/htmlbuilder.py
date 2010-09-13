@@ -81,17 +81,14 @@ body {
 </style>
 <script language="javascript">
     var timer = null;
+    var video_timer = null;
     var transition = %s;
 
     function show_video(state, path, volume, loop){
         var vid = document.getElementById('video');
-        if(path != null)
+        if(path != null){
             vid.src = path;
-        if(loop != null){
-            if(loop)
-                vid.loop = 'loop';
-            else
-                vid.loop = '';
+            vid.load();
         }
         if(volume != null){
             vid.volume = volume;
@@ -100,23 +97,55 @@ body {
             case 'play':
                 vid.play();
                 vid.style.display = 'block';
+                if(loop)
+                    video_timer = setInterval('video_loop()', 200);
                 break;
             case 'pause':
+                if(video_timer!=null){
+                    clearInterval(video_timer);
+                    video_timer = null;
+                }
                 vid.pause();
                 vid.style.display = 'block';
                 break;
             case 'stop':
+                if(video_timer!=null){
+                    clearInterval(video_timer);
+                    video_timer = null;
+                }
                 vid.pause();
                 vid.style.display = 'none';
+                vid.load();
                 break;
             case 'close':
+                if(video_timer!=null){
+                    clearInterval(video_timer);
+                    video_timer = null;
+                }
                 vid.pause();
                 vid.style.display = 'none';
                 vid.src = '';
                 break;
         }
     }
-
+    function video_loop(){
+        // The preferred method would be to use the video tag loop attribute
+        // But QtWebKit doesn't support this. Neither does it support the
+        // onended event, hence the setInterval()
+        // In addition, setting the currentTime attribute to zero to restart
+        // the video raises an INDEX_SIZE_ERROR: DOM Exception 1
+        // To complicate it further, sometimes vid.currentTime stops 
+        // slightly short of vid.duration and vid.ended is intermittent!
+        //
+        // Note, currently the background may go black between loops. Not 
+        // desirable. Need to investigate using two <video>'s, and hiding/
+        // preloading one, and toggle between the two when looping.
+        var vid = document.getElementById('video');
+        if(vid.ended||vid.currentTime+0.2>=vid.duration){
+            vid.load();
+            vid.play();
+        } 
+    }
     function show_image(src){
         var img = document.getElementById('image');
         img.src = src;
@@ -279,7 +308,7 @@ def build_html(item, screen, alert, islive):
     html = HTMLSRC % (build_background_css(item, width, height),
         width, height,
         build_alert_css(alert, width),
-        build_footer_css(item),
+        build_footer_css(item, height),
         build_lyrics_css(item, webkitvers),
         u'true' if theme and theme.display_slideTransition and islive \
             else u'false',
@@ -503,7 +532,7 @@ def build_lyrics_html(item, webkitvers):
         u'class="lyricscell lyricsmain"></div></div>'
     return lyrics
 
-def build_footer_css(item):
+def build_footer_css(item, height):
     """
     Build the display of the item footer
 
@@ -512,26 +541,21 @@ def build_footer_css(item):
     """
     style = """
     left: %spx;
-    top: %spx;
+    bottom: %spx;
     width: %spx;
-    height: %spx;
     font-family: %s;
     font-size: %spt;
     color: %s;
-    text-align: %s;
+    text-align: left;
+    white-space:nowrap;    
     """
     theme = item.themedata
     if not theme or not item.footer:
         return u''
-    if theme.display_horizontalAlign == 2:
-        align = u'center'
-    elif theme.display_horizontalAlign == 1:
-        align = u'right'
-    else:
-        align = u'left'
-    lyrics_html = style % (item.footer.x(), item.footer.y(),
-        item.footer.width(), item.footer.height(), theme.font_footer_name,
-        theme.font_footer_proportion, theme.font_footer_color, align)
+    bottom = height - int(item.footer.y()) - int(item.footer.height())
+    lyrics_html = style % (item.footer.x(), bottom,
+        item.footer.width(), theme.font_footer_name,
+        theme.font_footer_proportion, theme.font_footer_color)
     return lyrics_html
 
 def build_alert_css(alertTab, width):
