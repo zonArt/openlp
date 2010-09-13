@@ -77,7 +77,7 @@ class RemotesPlugin(Plugin):
             'browser or through the remote API.')
         return about_text
     
-    def set_plugin_strings(self):
+    def setPluginStrings(self):
         """
         Called to define all translatable texts of the plugin
         """

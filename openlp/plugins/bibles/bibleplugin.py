@@ -117,7 +117,7 @@ class BiblePlugin(Plugin):
         """
         self.settings_tab.bible_theme = newTheme
 
-    def set_plugin_strings(self):
+    def setPluginStrings(self):
         """
         Called to define all translatable texts of the plugin
         """

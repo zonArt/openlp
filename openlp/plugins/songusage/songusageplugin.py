@@ -163,7 +163,7 @@ class SongUsagePlugin(Plugin):
             'services.')
         return about_text
 
-    def set_plugin_strings(self):
+    def setPluginStrings(self):
         """
         Called to define all translatable texts of the plugin
         """

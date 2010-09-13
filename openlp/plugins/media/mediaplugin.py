@@ -76,7 +76,7 @@ class MediaPlugin(Plugin):
         about_text = translate('MediaPlugin', '<strong>Media Plugin</strong>'
             '<br />The media plugin provides playback of audio and video.')
         return about_text
-    def set_plugin_strings(self):
+    def setPluginStrings(self):
         """
         Called to define all translatable texts of the plugin
         """

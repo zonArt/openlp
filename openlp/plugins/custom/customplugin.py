@@ -96,7 +96,7 @@ class CustomPlugin(Plugin):
         for custom in customsUsingTheme:
             custom.theme_name = newTheme
             self.custommanager.save_object(custom)
-    def set_plugin_strings(self):
+    def setPluginStrings(self):
         """
         Called to define all translatable texts of the plugin
         """

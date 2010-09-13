@@ -148,7 +148,7 @@ class SongsPlugin(Plugin):
         importer.register(self.mediaItem.import_wizard)
         return importer
 
-    def set_plugin_strings(self):
+    def setPluginStrings(self):
         """
         Called to define all translatable texts of the plugin
         """

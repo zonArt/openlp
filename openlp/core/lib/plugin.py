@@ -127,11 +127,11 @@ class Plugin(QtCore.QObject):
             Defaults to *None*. A list of helper objects.
         """
         QtCore.QObject.__init__(self)
-        self.set_plugin_strings()
+        self.setPluginStrings()
         self.name = name
         if version:
             self.version = version
-        self.settingsSection = self.name.lower()
+        self.settingsSection = self.name_lower
         self.icon = None
         self.weight = 0
         self.status = PluginStatus.Inactive
@@ -269,7 +269,7 @@ class Plugin(QtCore.QObject):
         Called by the plugin to remove toolbar
         """
         if self.mediaItem:
-            self.mediadock.remove_dock(self.name_lower)
+            self.mediadock.remove_dock(self.name)
         if self.settings_tab:
             self.settingsForm.removeTab(self.name)
 
@@ -309,7 +309,7 @@ class Plugin(QtCore.QObject):
             # do something here?
             return None
 
-    def set_plugin_strings(self):
+    def setPluginStrings(self):
         """
         Called to define all translatable texts of the plugin
         """

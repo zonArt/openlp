@@ -58,7 +58,7 @@ class ImagePlugin(Plugin):
             'provided by the theme.')
         return about_text
 
-    def set_plugin_strings(self):
+    def setPluginStrings(self):
         """
         Called to define all translatable texts of the plugin
         """

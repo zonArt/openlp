@@ -177,17 +177,17 @@ class Ui_MainWindow(object):
         self.FileNewItem = QtGui.QAction(MainWindow)
         self.FileNewItem.setIcon(
             self.ServiceManagerContents.toolbar.getIconFromTitle(
-            u'New Service'))
+            translate('OpenLP.MainWindow', 'New Service')))
         self.FileNewItem.setObjectName(u'FileNewItem')
         self.FileOpenItem = QtGui.QAction(MainWindow)
         self.FileOpenItem.setIcon(
             self.ServiceManagerContents.toolbar.getIconFromTitle(
-            u'Open Service'))
+            translate('OpenLP.MainWindow', 'Open Service')))
         self.FileOpenItem.setObjectName(u'FileOpenItem')
         self.FileSaveItem = QtGui.QAction(MainWindow)
         self.FileSaveItem.setIcon(
             self.ServiceManagerContents.toolbar.getIconFromTitle(
-            u'Save Service'))
+            translate('OpenLP.MainWindow', 'Save Service')))
         self.FileSaveItem.setObjectName(u'FileSaveItem')
         self.FileSaveAsItem = QtGui.QAction(MainWindow)
         self.FileSaveAsItem.setObjectName(u'FileSaveAsItem')
@@ -343,7 +343,7 @@ class Ui_MainWindow(object):
         Set up the translation system
         """
         MainWindow.mainTitle = translate('OpenLP.MainWindow', 'OpenLP 2.0')
-        MainWindow.language = translate('OpenLP.MainWindow', 'English')
+        MainWindow.language = translate('OpenLP.MainWindow', 'AddHereYourLanguageName')
         MainWindow.setWindowTitle(MainWindow.mainTitle)
         self.FileMenu.setTitle(translate('OpenLP.MainWindow', '&File'))
         self.FileImportMenu.setTitle(translate('OpenLP.MainWindow', '&Import'))

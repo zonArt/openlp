@@ -101,7 +101,7 @@ class AlertsPlugin(Plugin):
             '<br />The alert plugin controls the displaying of nursery alerts '
             'on the display screen')
         return about_text
-    def set_plugin_strings(self):
+    def setPluginStrings(self):
         """
         Called to define all translatable texts of the plugin
         """

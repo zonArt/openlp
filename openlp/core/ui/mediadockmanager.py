@@ -48,8 +48,8 @@ class MediaDockManager(object):
         ``icon``
             An icon for this dock item
         """
-        log.info(u'Adding %s dock' % media_item.title)
-        self.media_dock.addItem(media_item, icon, media_item.title)
+        log.info(u'Adding %s dock' % media_item.plugin.name)
+        self.media_dock.addItem(media_item, icon, media_item.plugin.name)
 
     def insert_dock(self, media_item, icon, weight):
         """
@@ -57,15 +57,15 @@ class MediaDockManager(object):
         This does not work as it gives a Segmentation error.
         For now add at end of stack if not present
         """
-        log.debug(u'Inserting %s dock' % media_item.title)
+        log.debug(u'Inserting %s dock' % media_item.plugin.name)
         match = False
         for dock_index in range(0, self.media_dock.count()):
             if self.media_dock.widget(dock_index).settingsSection == \
-                media_item.parent.name_lower:
+                media_item.plugin.name:
                 match = True
                 break
         if not match:
-            self.media_dock.addItem(media_item, icon, media_item.title)
+            self.media_dock.addItem(media_item, icon, media_item.plugin.name)
 
     def remove_dock(self, name):
         """

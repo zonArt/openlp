@@ -92,7 +92,8 @@ class MediaManagerItem(QtGui.QWidget):
         """
         QtGui.QWidget.__init__(self)
         self.parent = parent
-        self.plugin = parent # rimach may changed
+        # TODO: may the plugin is not the parent?
+        self.plugin = parent
         self.settingsSection = self.plugin.name_lower
         if isinstance(icon, QtGui.QIcon):
             self.icon = icon
@@ -203,58 +204,58 @@ class MediaManagerItem(QtGui.QWidget):
         """
         ## Import Button ##
         if self.hasImportIcon:
-            importString = self.plugin.getString(StringType.Import)
+            import_string = self.plugin.getString(StringType.Import)
             self.addToolbarButton(
-                importString[u'title'],
-                importString[u'tooltip'],
+                import_string[u'title'],
+                import_string[u'tooltip'],
                 u':/general/general_import.png', self.onImportClick)
         ## Load Button ##
         if self.hasFileIcon:
-            loadString = self.plugin.getString(StringType.Load)
+            load_string = self.plugin.getString(StringType.Load)
             self.addToolbarButton(
-                loadString[u'title'],
-                loadString[u'tooltip'],
+                load_string[u'title'],
+                load_string[u'tooltip'],
                 u':/general/general_open.png', self.onFileClick)
         ## New Button ##
         if self.hasNewIcon:
-            newString = self.plugin.getString(StringType.New)
+            new_string = self.plugin.getString(StringType.New)
             self.addToolbarButton(
-                newString[u'title'],
-                newString[u'tooltip'],
+                new_string[u'title'],
+                new_string[u'tooltip'],
                 u':/general/general_new.png', self.onNewClick)
         ## Edit Button ##
         if self.hasEditIcon:
-            editString = self.plugin.getString(StringType.Edit)
+            edit_string = self.plugin.getString(StringType.Edit)
             self.addToolbarButton(
-                editString[u'title'],
-                editString[u'tooltip'],
+                edit_string[u'title'],
+                edit_string[u'tooltip'],
                 u':/general/general_edit.png', self.onEditClick)
         ## Delete Button ##
         if self.hasDeleteIcon:
-            deleteString = self.plugin.getString(StringType.Delete)
+            delete_string = self.plugin.getString(StringType.Delete)
             self.addToolbarButton(
-                deleteString[u'title'],
-                deleteString[u'tooltip'],
+                delete_string[u'title'],
+                delete_string[u'tooltip'],
                 u':/general/general_delete.png', self.onDeleteClick)
         ## Separator Line ##
         self.addToolbarSeparator()
         ## Preview ##
-        previewString = self.plugin.getString(StringType.Preview)
+        preview_string = self.plugin.getString(StringType.Preview)
         self.addToolbarButton(
-            previewString[u'title'],
-            previewString[u'tooltip'],
+            preview_string[u'title'],
+            preview_string[u'tooltip'],
             u':/general/general_preview.png', self.onPreviewClick)
         ## Live  Button ##
-        liveString = self.plugin.getString(StringType.Live)
+        live_string = self.plugin.getString(StringType.Live)
         self.addToolbarButton(
-            liveString[u'title'],
-            liveString[u'tooltip'],
+            live_string[u'title'],
+            live_string[u'tooltip'],
             u':/general/general_live.png', self.onLiveClick)
         ## Add to service Button ##
-        serviceString = self.plugin.getString(StringType.Service)
+        service_string = self.plugin.getString(StringType.Service)
         self.addToolbarButton(
-            serviceString[u'title'],
-            serviceString[u'tooltip'],
+            service_string[u'title'],
+            service_string[u'tooltip'],
             u':/general/general_add.png', self.onAddClick)
 
     def addListViewToToolBar(self):
@@ -270,7 +271,7 @@ class MediaManagerItem(QtGui.QWidget):
             QtGui.QAbstractItemView.ExtendedSelection)
         self.listView.setAlternatingRowColors(True)
         self.listView.setDragEnabled(True)
-        self.listView.setObjectName(u'%sListView' % self.parent.name)
+        self.listView.setObjectName(u'%sListView' % self.plugin.name)
         #Add to pageLayout
         self.pageLayout.addWidget(self.listView)
         #define and add the context menu
@@ -280,7 +281,7 @@ class MediaManagerItem(QtGui.QWidget):
                 context_menu_action(
                     self.listView, u':/general/general_edit.png',
                     unicode(translate('OpenLP.MediaManagerItem', '&Edit %s')) %
-                    self.parent.name,
+                    self.plugin.name,
                     self.onEditClick))
             self.listView.addAction(context_menu_separator(self.listView))
         if self.hasDeleteIcon:
@@ -289,14 +290,14 @@ class MediaManagerItem(QtGui.QWidget):
                     self.listView, u':/general/general_delete.png',
                     unicode(translate('OpenLP.MediaManagerItem',
                         '&Delete %s')) %
-                    self.parent.name,
+                    self.plugin.name,
                     self.onDeleteClick))
             self.listView.addAction(context_menu_separator(self.listView))
         self.listView.addAction(
             context_menu_action(
                 self.listView, u':/general/general_preview.png',
                 unicode(translate('OpenLP.MediaManagerItem', '&Preview %s')) %
-                self.parent.name,
+                self.plugin.name,
                 self.onPreviewClick))
         self.listView.addAction(
             context_menu_action(
@@ -436,7 +437,7 @@ class MediaManagerItem(QtGui.QWidget):
                 translate('OpenLP.MediaManagerItem',
                     'You must select one or more items to preview.'))
         else:
-            log.debug(self.parent.name + u' Preview requested')
+            log.debug(self.plugin.name + u' Preview requested')
             service_item = self.buildServiceItem()
             if service_item:
                 service_item.from_plugin = True
@@ -453,7 +454,7 @@ class MediaManagerItem(QtGui.QWidget):
                 translate('OpenLP.MediaManagerItem',
                     'You must select one or more items to send live.'))
         else:
-            log.debug(self.parent.name + u' Live requested')
+            log.debug(self.plugin.name + u' Live requested')
             service_item = self.buildServiceItem()
             if service_item:
                 service_item.from_plugin = True
@@ -472,7 +473,7 @@ class MediaManagerItem(QtGui.QWidget):
             #Is it posssible to process multiple list items to generate multiple
             #service items?
             if self.singleServiceItem or self.remoteTriggered:
-                log.debug(self.parent.name + u' Add requested')
+                log.debug(self.plugin.name + u' Add requested')
                 service_item = self.buildServiceItem()
                 if service_item:
                     service_item.from_plugin = False
@@ -496,7 +497,7 @@ class MediaManagerItem(QtGui.QWidget):
                 translate('OpenLP.MediaManagerItem',
                     'You must select one or more items'))
         else:
-            log.debug(self.parent.name + u' Add requested')
+            log.debug(self.plugin.name + u' Add requested')
             service_item = self.parent.serviceManager.getServiceItem()
             if not service_item:
                 QtGui.QMessageBox.information(self,

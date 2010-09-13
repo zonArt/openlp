@@ -258,10 +258,11 @@ class Ui_EditSongDialog(object):
         self.TopicBookLayout.addWidget(self.TopicGroupBox)
         self.SongBookGroup = QtGui.QGroupBox(self.TopicBookWidget)
         self.SongBookGroup.setObjectName(u'SongBookGroup')
-        self.SongbookLayout = QtGui.QGridLayout(self.SongBookGroup)
+        self.SongbookLayout = QtGui.QFormLayout(self.SongBookGroup)
         self.SongbookLayout.setMargin(8)
         self.SongbookLayout.setSpacing(8)
         self.SongbookLayout.setObjectName(u'SongbookLayout')
+        self.SongbookNameLabel = QtGui.QLabel(self.SongBookGroup)
         self.SongbookCombo = QtGui.QComboBox(self.SongBookGroup)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding,
             QtGui.QSizePolicy.Fixed)
@@ -272,13 +273,11 @@ class Ui_EditSongDialog(object):
         self.SongbookCombo.setEditable(True)
         self.SongbookCombo.setSizePolicy(sizePolicy)
         self.SongbookCombo.setObjectName(u'SongbookCombo')
-        self.SongbookLayout.addWidget(self.SongbookCombo, 0, 0, 1, 1)
+        self.SongbookLayout.addRow(self.SongbookNameLabel, self.SongbookCombo)
         self.songBookNumberLabel = QtGui.QLabel(self.SongBookGroup)
-        self.SongbookLayout.addWidget(self.songBookNumberLabel, 0, 1, 1, 1)
         self.songBookNumberEdit = QtGui.QLineEdit(self.SongBookGroup)
-        self.songBookNumberLabel.setBuddy(self.songBookNumberEdit)
-        self.songBookNumberEdit.setMaximumWidth(35)
-        self.SongbookLayout.addWidget(self.songBookNumberEdit, 0, 2, 1, 1)
+        self.SongbookLayout.addRow(self.songBookNumberLabel,
+            self.songBookNumberEdit)
         self.TopicBookLayout.addWidget(self.SongBookGroup)
         self.AuthorsTabLayout.addWidget(self.TopicBookWidget)
         self.SongTabWidget.addTab(self.AuthorsTab, u'')
@@ -446,8 +445,10 @@ class Ui_EditSongDialog(object):
             translate('SongsPlugin.EditSongForm', 'R&emove'))
         self.SongBookGroup.setTitle(
             translate('SongsPlugin.EditSongForm', 'Song Book'))
+        self.SongbookNameLabel.setText(translate('SongsPlugin.EditSongForm',
+            'Book:'))
         self.songBookNumberLabel.setText(translate('SongsPlugin.EditSongForm',
-            'Song No.:'))
+            'Number:'))
         self.SongTabWidget.setTabText(
             self.SongTabWidget.indexOf(self.AuthorsTab),
             translate('SongsPlugin.EditSongForm',
