@@ -93,6 +93,7 @@ class Ui_PluginViewDialog(object):
         self.pluginListButtonBox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
         self.pluginListButtonBox.setObjectName(u'pluginListButtonBox')
         self.pluginLayout.addWidget(self.pluginListButtonBox)
+        self.versionNumberLabel.setText(u'')
         self.retranslateUi(pluginViewDialog)
         QtCore.QObject.connect(self.pluginListButtonBox,
             QtCore.SIGNAL(u'accepted()'), pluginViewDialog.close)
@@ -105,8 +106,6 @@ class Ui_PluginViewDialog(object):
             translate('OpenLP.PluginForm', 'Plugin Details'))
         self.versionLabel.setText(
             translate('OpenLP.PluginForm', 'Version:'))
-        self.versionNumberLabel.setText(
-            translate('OpenLP.PluginForm', 'TextLabel'))
         self.aboutLabel.setText(
             translate('OpenLP.PluginForm', 'About:'))
         self.statusLabel.setText(
@@ -115,3 +114,4 @@ class Ui_PluginViewDialog(object):
             translate('OpenLP.PluginForm', 'Active'))
         self.statusComboBox.setItemText(1,
             translate('OpenLP.PluginForm', 'Inactive'))
+
