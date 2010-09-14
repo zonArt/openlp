@@ -678,7 +678,8 @@ class BibleMediaItem(MediaManagerItem):
                         self.dual_search_results[count].text)
                 }
                 bible_text = u' %s %d:%d (%s, %s)' % (verse.book.name,
-                    verse.chapter, verse.verse, version.value, dual_version.value)
+                    verse.chapter, verse.verse, version.value,
+                    dual_version.value)
             else:
                 vdict = {
                     'book': QtCore.QVariant(verse.book.name),

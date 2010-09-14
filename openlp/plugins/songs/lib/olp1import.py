@@ -31,7 +31,7 @@ import logging
 import chardet
 try:
     import sqlite
-except:
+except ImportError:
     pass
 
 from openlp.core.lib import translate
@@ -93,9 +93,9 @@ class OpenLP1SongImport(SongImport):
         cursor.execute(u'SELECT authorid, authorname FROM authors')
         authors = cursor.fetchall()
         if new_db:
-          # "cache" our list of tracks
-          cursor.execute(u'SELECT trackid, fulltrackname FROM tracks')
-          tracks = cursor.fetchall()
+            # "cache" our list of tracks
+            cursor.execute(u'SELECT trackid, fulltrackname FROM tracks')
+            tracks = cursor.fetchall()
         # Import the songs
         cursor.execute(u'SELECT songid, songtitle, lyrics || \'\' AS lyrics, '
             u'copyrightinfo FROM songs')

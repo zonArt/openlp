@@ -57,7 +57,7 @@ class CCLIFileImport(SongImport):
             self.filenames = kwargs[u'filenames']
             log.debug(self.filenames)
         else:
-            raise KeyError(u'Keyword argument "filenames" not supplied.')            
+            raise KeyError(u'Keyword argument "filenames" not supplied.')
 
     def do_import(self):
         """
@@ -66,11 +66,11 @@ class CCLIFileImport(SongImport):
         log.debug(u'Starting CCLI File Import')
         song_total = len(self.filenames)
         self.import_wizard.importProgressBar.setMaximum(song_total)
-        song_count = 1        
+        song_count = 1
         for filename in self.filenames:
             self.import_wizard.incrementProgressBar(
-                u'Importing song %s of %s' % (song_count, song_total))            
-            filename = unicode(filename) 
+                u'Importing song %s of %s' % (song_count, song_total))
+            filename = unicode(filename)
             log.debug(u'Importing CCLI File: %s', filename)
             lines = []
             if os.path.isfile(filename):
@@ -81,33 +81,34 @@ class CCLIFileImport(SongImport):
                 lines = infile.readlines()
                 ext = os.path.splitext(filename)[1]
                 if ext.lower() == ".usr":
-                    log.info(u'SongSelect .usr format file found %s: ' ,  filename)
+                    log.info(u'SongSelect .usr format file found %s: ',
+                        filename)
                     self.do_import_usr_file(lines)
                 elif ext.lower() == ".txt":
-                    log.info(u'SongSelect .txt format file found %s: ', filename)
+                    log.info(u'SongSelect .txt format file found %s: ',
+                        filename)
                     self.do_import_txt_file(lines)
                 else:
                     log.info(u'Extension %s is not valid', filename)
-                    pass
                 song_count += 1
             if self.stop_import_flag:
-                return False  
+                return False
         return True
 
     def do_import_usr_file(self, textList):
         """
         The :method:`do_import_usr_file` method provides OpenLP
         with the ability to import CCLI SongSelect songs in
-        *USR* file format   
-        
+        *USR* file format
+
         ``textList``
             An array of strings containing the usr file content.
-            
+
         **SongSelect .usr file format**
         ``[File]``
             USR file format first line
         ``Type=``
-            Indicates the file type 
+            Indicates the file type
             e.g. *Type=SongSelect Import File*
         ``Version=3.0``
             File format version
@@ -116,7 +117,7 @@ class CCLIFileImport(SongImport):
         ``Title=``
             Contains the song title (e.g. *Title=Above All*)
         ``Author=``
-            Contains a | delimited list of the  song authors 
+            Contains a | delimited list of the  song authors
             e.g. *Author=LeBlanc, Lenny | Baloche, Paul*
         ``Copyright=``
             Contains a | delimited list of the song copyrights
@@ -136,7 +137,7 @@ class CCLIFileImport(SongImport):
             Contains a list of the songs fields in order /t delimited
             e.g. *Fields=Vers 1/tVers 2/tChorus 1/tAndere 1*
         ``Words=``
-            Contains the songs various lyrics in order as shown by the 
+            Contains the songs various lyrics in order as shown by the
             *Fields* description
             e.g. *Words=Above all powers....* [/n = CR, /n/t = CRLF]
         """
@@ -174,8 +175,8 @@ class CCLIFileImport(SongImport):
                 verse_type = u'O'
             verse_text = unicode(words_list[counter])
             verse_text = verse_text.replace("/n",  "\n")
-            if len(verse_text) > 0:                
-                self.add_verse(verse_text, verse_type);
+            if len(verse_text) > 0:
+                self.add_verse(verse_text, verse_type)
         #Handle multiple authors
         author_list = song_author.split(u'/')
         if len(author_list) < 2:
@@ -192,10 +193,10 @@ class CCLIFileImport(SongImport):
         """
         The :method:`do_import_txt_file` method provides OpenLP
         with the ability to import CCLI SongSelect songs in
-        *TXT* file format   
-                
+        *TXT* file format
+
         ``textList``
-            An array of strings containing the txt file content. 
+            An array of strings containing the txt file content.
 
         **SongSelect .txt file format**
 
@@ -225,38 +226,38 @@ class CCLIFileImport(SongImport):
             e.g. CCLI Number (e.g.CCLI-Liednummer: 2672885)
         ``Song Copyright``
             e.g. © 1999 Integrity's Hosanna! Music | LenSongs Publishing
-        ``Song Authors``    
+        ``Song Authors``
             e.g. Lenny LeBlanc | Paul Baloche
         ``Licencing info``
-            e.g. For use solely with the SongSelect Terms of Use.  
+            e.g. For use solely with the SongSelect Terms of Use.
             All rights Reserved.  www.ccli.com
-        ``CCLI Licence number of user``    
-            e.g. CCL-Liedlizenznummer: 14 / CCLI License No. 14   
+        ``CCLI Licence number of user``
+            e.g. CCL-Liedlizenznummer: 14 / CCLI License No. 14
         """
         log.debug(u'TXT file text: %s', textList)
         self.set_defaults()
         line_number = 0
         verse_text = u''
         song_comments = u''
-        song_copyright = u'';
+        song_copyright = u''
         verse_start = False
         for line in textList:
             clean_line = line.strip()
             if not clean_line:
-                if line_number==0:
+                if line_number == 0:
                     continue
                 elif verse_start:
-                      if verse_text:
+                    if verse_text:
                         self.add_verse(verse_text, verse_type)
                         verse_text = ''
                         verse_start = False
             else:
                 #line_number=0, song title
-                if line_number==0:
+                if line_number == 0:
                     song_name = clean_line
                     line_number += 1
-                #line_number=1, verses    
-                elif line_number==1:
+                #line_number=1, verses
+                elif line_number == 1:
                     #line_number=1, ccli number, first line after verses
                     if clean_line.startswith(u'CCLI'):
                         line_number += 1
@@ -285,15 +286,16 @@ class CCLIFileImport(SongImport):
                         verse_text = verse_text + line
                 else:
                     #line_number=2, copyright
-                    if line_number==2:
+                    if line_number == 2:
                         line_number += 1
                         song_copyright = clean_line
-                    #n=3, authors    
-                    elif line_number==3:
+                    #n=3, authors
+                    elif line_number == 3:
                         line_number += 1
                         song_author = clean_line
-                     #line_number=4, comments lines before last line    
-                    elif (line_number==4) and (not clean_line.startswith(u'CCL')):
+                    #line_number=4, comments lines before last line
+                    elif (line_number == 4) and \
+                        (not clean_line.startswith(u'CCL')):
                         song_comments = song_comments + clean_line
         # split on known separators
         author_list = song_author.split(u'/')
@@ -307,4 +309,3 @@ class CCLIFileImport(SongImport):
         self.ccli_number = song_ccli
         self.comments = song_comments
         self.finish()
-        
