@@ -57,7 +57,7 @@ class CCLIFileImport(SongImport):
             self.filenames = kwargs[u'filenames']
             log.debug(self.filenames)
         else:
-            raise KeyError(u'Keyword argument "filenames" not supplied.')            
+            raise KeyError(u'Keyword argument "filenames" not supplied.')
 
     def do_import(self):
         """

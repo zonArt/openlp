@@ -120,7 +120,7 @@ class MainDisplay(DisplayWidget):
         self.setScene(self.scene)
         self.webView = QtWebKit.QGraphicsWebView()
         self.scene.addItem(self.webView)
-        self.webView.resize(self.screen[u'size'].width(), \
+        self.webView.resize(self.screen[u'size'].width(),
             self.screen[u'size'].height())
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()

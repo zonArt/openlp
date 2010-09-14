@@ -113,7 +113,7 @@ class AppLocation(object):
         """
         if dir_type == AppLocation.AppDir:
             if hasattr(sys, u'frozen') and sys.frozen == 1:
-               app_path = os.path.abspath(os.path.split(sys.argv[0])[0])
+                app_path = os.path.abspath(os.path.split(sys.argv[0])[0])
             else:
                 app_path = os.path.split(openlp.__file__)[0]
             return app_path
