@@ -303,6 +303,9 @@ class MainDisplay(DisplayWidget):
         Generates a preview of the image displayed.
         """
         log.debug(u'preview for %s', self.isLive)
+        # We must have a service item to preview
+        if not hasattr(self, u'serviceItem'):
+            return
         if self.isLive:
             # Wait for the fade to finish before geting the preview.
             # Important otherwise preview will have incorrect text if at all !
