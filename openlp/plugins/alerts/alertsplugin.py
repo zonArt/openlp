@@ -101,13 +101,13 @@ class AlertsPlugin(Plugin):
             '<br />The alert plugin controls the displaying of nursery alerts '
             'on the display screen')
         return about_text
+
     def setPluginStrings(self):
         """
         Called to define all translatable texts of the plugin
         """
         self.name = u'Alerts'
         self.name_lower = u'alerts'
-
         self.strings = {}
         # for names in mediamanagerdock and pluginlist
         self.strings[StringType.Name] = {

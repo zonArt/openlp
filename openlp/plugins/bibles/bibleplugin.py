@@ -123,14 +123,12 @@ class BiblePlugin(Plugin):
         """
         self.name = u'Bibles'
         self.name_lower = u'Bibles'
-
         self.strings = {}
         # for names in mediamanagerdock and pluginlist
         self.strings[StringType.Name] = {
             u'singular': translate('BiblesPlugin', 'Bible'),
             u'plural': translate('BiblesPlugin', 'Bibles')
         }
-
         # Middle Header Bar
         ## Import Button ##
         self.strings[StringType.Import] = {

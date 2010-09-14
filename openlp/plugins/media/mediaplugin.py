@@ -82,14 +82,12 @@ class MediaPlugin(Plugin):
         """
         self.name = u'Media'
         self.name_lower = u'media'
-
         self.strings = {}
         # for names in mediamanagerdock and pluginlist
         self.strings[StringType.Name] = {
             u'singular': translate('MediaPlugin', 'Media'),
             u'plural': translate('MediaPlugin', 'Medias')
         }
-
         # Middle Header Bar
         ## Load Button ##
         self.strings[StringType.Load] = {

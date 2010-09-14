@@ -269,7 +269,7 @@ class Plugin(QtCore.QObject):
         Called by the plugin to remove toolbar
         """
         if self.mediaItem:
-            self.mediadock.remove_dock(self.name)
+            self.mediadock.remove_dock(self.mediaItem)
         if self.settings_tab:
             self.settingsForm.removeTab(self.name)
 
@@ -315,5 +315,4 @@ class Plugin(QtCore.QObject):
         """
         self.name = u'Plugin'
         self.name_lower = u'plugin'
-        
         self.strings = {}

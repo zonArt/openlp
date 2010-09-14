@@ -57,7 +57,7 @@ class LanguageManager(object):
         lang_path = AppLocation.get_directory(AppLocation.AppDir)
         lang_path = os.path.join(lang_path, u'i18n')
         app_translator = QtCore.QTranslator()
-        if app_translator.load("openlp_" + language, lang_path):
+        if app_translator.load(language, lang_path):
             return app_translator
 
     @staticmethod
@@ -130,7 +130,7 @@ class LanguageManager(object):
         LanguageManager.__qmList__ = {}
         qm_files = LanguageManager.find_qm_files()
         for i, qmf in enumerate(qm_files):
-            reg_ex = QtCore.QRegExp("^.*openlp_(.*).qm")
+            reg_ex = QtCore.QRegExp("^(.*).qm")
             if reg_ex.exactMatch(qmf):
                 lang_name = reg_ex.cap(1)
                 LanguageManager.__qmList__[u'%#2i %s' % (i+1,

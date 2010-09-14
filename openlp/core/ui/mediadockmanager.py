@@ -61,24 +61,23 @@ class MediaDockManager(object):
         match = False
         for dock_index in range(0, self.media_dock.count()):
             if self.media_dock.widget(dock_index).settingsSection == \
-                media_item.plugin.name:
+                media_item.plugin.name_lower:
                 match = True
                 break
         if not match:
             self.media_dock.addItem(media_item, icon, media_item.plugin.name)
 
-    def remove_dock(self, name):
+    def remove_dock(self, media_item):
         """
         Removes a MediaManagerItem from the dock
 
-        ``name``
-            The item to remove
+        ``media_item``
+            The item to add to the dock
         """
-        log.debug(u'remove %s dock' % name)
+        log.debug(u'remove %s dock' % media_item.plugin.name)
         for dock_index in range(0, self.media_dock.count()):
             if self.media_dock.widget(dock_index):
-                log.debug(u'%s %s' % (name,  self.media_dock.widget(dock_index).settingsSection))
                 if self.media_dock.widget(dock_index).settingsSection == \
-                    name:
+                    media_item.plugin.name_lower:
                     self.media_dock.widget(dock_index).hide()
                     self.media_dock.removeItem(dock_index)

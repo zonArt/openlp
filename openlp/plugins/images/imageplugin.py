@@ -64,14 +64,12 @@ class ImagePlugin(Plugin):
         """
         self.name = u'Images'
         self.name_lower = u'images'
-
         self.strings = {}
         # for names in mediamanagerdock and pluginlist
         self.strings[StringType.Name] = {
             u'singular': translate('ImagePlugin', 'Image'),
             u'plural': translate('ImagePlugin', 'Images')
         }
-
         # Middle Header Bar
         ## Load Button ##
         self.strings[StringType.Load] = {

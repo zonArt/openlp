@@ -83,7 +83,6 @@ class RemotesPlugin(Plugin):
         """
         self.name = u'Remotes'
         self.name_lower = u'remotes'
-
         self.strings = {}
         # for names in mediamanagerdock and pluginlist
         self.strings[StringType.Name] = {

@@ -102,14 +102,12 @@ class CustomPlugin(Plugin):
         """
         self.name = u'Custom'
         self.name_lower = u'custom'
-
         self.strings = {}
         # for names in mediamanagerdock and pluginlist
         self.strings[StringType.Name] = {
             u'singular': translate('CustomsPlugin', 'Custom'),
             u'plural': translate('CustomsPlugin', 'Customs')
         }
-
         # Middle Header Bar
         ## Import Button ##
         self.strings[StringType.Import] = {

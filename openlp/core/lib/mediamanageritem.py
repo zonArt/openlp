@@ -92,7 +92,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         QtGui.QWidget.__init__(self)
         self.parent = parent
-        # TODO: may the plugin is not the parent?
+        # TODO: plugin is not the parent, so add this to the calling plugins
         self.plugin = parent
         self.settingsSection = self.plugin.name_lower
         if isinstance(icon, QtGui.QIcon):
@@ -103,8 +103,8 @@ class MediaManagerItem(QtGui.QWidget):
         else:
             self.icon = None
         if title:
-            nameString = self.plugin.getString(StringType.Name)
-            self.title = nameString[u'plural']
+            name_string = self.plugin.getString(StringType.Name)
+            self.title = name_string[u'plural']
         self.toolbar = None
         self.remoteTriggered = None
         self.serviceItemIconName = None

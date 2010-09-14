@@ -154,14 +154,12 @@ class SongsPlugin(Plugin):
         """
         self.name = u'Songs'
         self.name_lower = u'songs'
-
         self.strings = {}
         # for names in mediamanagerdock and pluginlist
         self.strings[StringType.Name] = {
             u'singular': translate('SongsPlugin', 'Song'),
             u'plural': translate('SongsPlugin', 'Songs')
         }
-
         # Middle Header Bar
         ## New Button ##
         self.strings[StringType.New] = {
