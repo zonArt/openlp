@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,7 +23,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+Provides the generic functions for interfacing plugins with the Media Manager.
+"""
 import logging
 import os
 
@@ -64,7 +67,7 @@ class MediaManagerItem(QtGui.QWidget):
         The shortened (usually singular) name for the plugin e.g. *'Song'*
         for the Songs plugin.
 
-    ``self.PluginNameVisible``
+    ``self.pluginNameVisible``
         The user visible name for a plugin which should use a suitable
         translation function.
 
@@ -106,20 +109,16 @@ class MediaManagerItem(QtGui.QWidget):
             self.icon = None
         if title:
             self.title = title
-        self.Toolbar = None
+        self.toolbar = None
         self.remoteTriggered = None
-        self.ServiceItemIconName = None
+        self.serviceItemIconName = None
         self.singleServiceItem = True
-        self.PageLayout = QtGui.QVBoxLayout(self)
-        self.PageLayout.setSpacing(0)
-        self.PageLayout.setContentsMargins(4, 0, 4, 0)
+        self.pageLayout = QtGui.QVBoxLayout(self)
+        self.pageLayout.setSpacing(0)
+        self.pageLayout.setContentsMargins(4, 0, 4, 0)
         self.requiredIcons()
-        self.initPluginNameVisible()
         self.setupUi()
         self.retranslateUi()
-
-    def initPluginNameVisible(self):
-        pass
 
     def requiredIcons(self):
         """
@@ -147,9 +146,9 @@ class MediaManagerItem(QtGui.QWidget):
         A method to help developers easily add a toolbar to the media
         manager item.
         """
-        if self.Toolbar is None:
-            self.Toolbar = OpenLPToolbar(self)
-            self.PageLayout.addWidget(self.Toolbar)
+        if self.toolbar is None:
+            self.toolbar = OpenLPToolbar(self)
+            self.pageLayout.addWidget(self.toolbar)
 
     def addToolbarButton(
         self, title, tooltip, icon, slot=None, checkable=False):
@@ -178,13 +177,13 @@ class MediaManagerItem(QtGui.QWidget):
         # break compatability), but it makes sense for the icon to
         # come before the tooltip (as you have to have an icon, but
         # not neccesarily a tooltip)
-        self.Toolbar.addToolbarButton(title, icon, tooltip, slot, checkable)
+        self.toolbar.addToolbarButton(title, icon, tooltip, slot, checkable)
 
     def addToolbarSeparator(self):
         """
         A very simple method to add a separator to the toolbar.
         """
-        self.Toolbar.addSeparator()
+        self.toolbar.addSeparator()
 
     def setupUi(self):
         """
@@ -204,125 +203,138 @@ class MediaManagerItem(QtGui.QWidget):
         self.addListViewToToolBar()
 
     def addMiddleHeaderBar(self):
-        # Create buttons for the toolbar
+        """
+        Create buttons for the media item toolbar
+        """
         ## Import Button ##
         if self.hasImportIcon:
             self.addToolbarButton(
-                unicode(translate('MediaManagerItem', 'Import %s')) %
+                unicode(translate('OpenLP.MediaManagerItem', 'Import %s')) %
                 self.PluginNameShort,
-                unicode(translate('MediaManagerItem', 'Import a %s')) %
-                self.PluginNameVisible,
+                unicode(translate('OpenLP.MediaManagerItem', 'Import a %s')) %
+                self.pluginNameVisible,
                 u':/general/general_import.png', self.onImportClick)
         ## File Button ##
         if self.hasFileIcon:
             self.addToolbarButton(
-                unicode(translate('MediaManagerItem', 'Load %s')) %
+                unicode(translate('OpenLP.MediaManagerItem', 'Load %s')) %
                 self.PluginNameShort,
-                unicode(translate('MediaManagerItem', 'Load a new %s')) %
-                self.PluginNameVisible,
+                unicode(translate('OpenLP.MediaManagerItem', 'Load a new %s')) %
+                self.pluginNameVisible,
                 u':/general/general_open.png', self.onFileClick)
         ## New Button ##
         if self.hasNewIcon:
             self.addToolbarButton(
-                unicode(translate('MediaManagerItem', 'New %s')) %
+                unicode(translate('OpenLP.MediaManagerItem', 'New %s')) %
                 self.PluginNameShort,
-                unicode(translate('MediaManagerItem', 'Add a new %s')) %
-                self.PluginNameVisible,
+                unicode(translate('OpenLP.MediaManagerItem', 'Add a new %s')) %
+                self.pluginNameVisible,
                 u':/general/general_new.png', self.onNewClick)
         ## Edit Button ##
         if self.hasEditIcon:
             self.addToolbarButton(
-                unicode(translate('MediaManagerItem', 'Edit %s')) %
+                unicode(translate('OpenLP.MediaManagerItem', 'Edit %s')) %
                 self.PluginNameShort,
                 unicode(translate(
-                    'MediaManagerItem', 'Edit the selected %s')) %
-                self.PluginNameVisible,
+                    'OpenLP.MediaManagerItem', 'Edit the selected %s')) %
+                self.pluginNameVisible,
                 u':/general/general_edit.png', self.onEditClick)
         ## Delete Button ##
         if self.hasDeleteIcon:
             self.addToolbarButton(
-                unicode(translate('MediaManagerItem', 'Delete %s')) %
+                unicode(translate('OpenLP.MediaManagerItem', 'Delete %s')) %
                 self.PluginNameShort,
-                translate('MediaManagerItem', 'Delete the selected item'),
+                translate('OpenLP.MediaManagerItem',
+                    'Delete the selected item'),
                 u':/general/general_delete.png', self.onDeleteClick)
         ## Separator Line ##
         self.addToolbarSeparator()
         ## Preview ##
         self.addToolbarButton(
-            unicode(translate('MediaManagerItem', 'Preview %s')) %
+            unicode(translate('OpenLP.MediaManagerItem', 'Preview %s')) %
             self.PluginNameShort,
-            translate('MediaManagerItem', 'Preview the selected item'),
+            translate('OpenLP.MediaManagerItem', 'Preview the selected item'),
             u':/general/general_preview.png', self.onPreviewClick)
         ## Live  Button ##
         self.addToolbarButton(
             u'Go Live',
-            translate('MediaManagerItem', 'Send the selected item live'),
+            translate('OpenLP.MediaManagerItem', 'Send the selected item live'),
             u':/general/general_live.png', self.onLiveClick)
         ## Add to service Button ##
         self.addToolbarButton(
-            unicode(translate('MediaManagerItem', 'Add %s to Service')) %
+            unicode(translate('OpenLP.MediaManagerItem', 'Add %s to Service')) %
             self.PluginNameShort,
-            translate('MediaManagerItem',
+            translate('OpenLP.MediaManagerItem',
                 'Add the selected item(s) to the service'),
             u':/general/general_add.png', self.onAddClick)
 
     def addListViewToToolBar(self):
+        """
+        Creates the main widget for listing items the media item is tracking
+        """
         #Add the List widget
-        self.ListView = self.ListViewWithDnD_class(self)
-        self.ListView.uniformItemSizes = True
-        self.ListView.setGeometry(QtCore.QRect(10, 100, 256, 591))
-        self.ListView.setSpacing(1)
-        self.ListView.setSelectionMode(
+        self.listView = self.ListViewWithDnD_class(self)
+        self.listView.uniformItemSizes = True
+        self.listView.setGeometry(QtCore.QRect(10, 100, 256, 591))
+        self.listView.setSpacing(1)
+        self.listView.setSelectionMode(
             QtGui.QAbstractItemView.ExtendedSelection)
-        self.ListView.setAlternatingRowColors(True)
-        self.ListView.setDragEnabled(True)
-        self.ListView.setObjectName(u'%sListView' % self.PluginNameShort)
-        #Add tp PageLayout
-        self.PageLayout.addWidget(self.ListView)
+        self.listView.setAlternatingRowColors(True)
+        self.listView.setDragEnabled(True)
+        self.listView.setObjectName(u'%sListView' % self.PluginNameShort)
+        #Add to pageLayout
+        self.pageLayout.addWidget(self.listView)
         #define and add the context menu
-        self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.listView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         if self.hasEditIcon:
-            self.ListView.addAction(
+            self.listView.addAction(
                 context_menu_action(
-                    self.ListView, u':/general/general_edit.png',
-                    unicode(translate('MediaManagerItem', '&Edit %s')) %
-                    self.PluginNameVisible,
+                    self.listView, u':/general/general_edit.png',
+                    unicode(translate('OpenLP.MediaManagerItem', '&Edit %s')) %
+                    self.pluginNameVisible,
                     self.onEditClick))
-            self.ListView.addAction(context_menu_separator(self.ListView))
+            self.listView.addAction(context_menu_separator(self.listView))
         if self.hasDeleteIcon:
-            self.ListView.addAction(
+            self.listView.addAction(
                 context_menu_action(
-                    self.ListView, u':/general/general_delete.png',
-                    unicode(translate('MediaManagerItem', '&Delete %s')) %
-                    self.PluginNameVisible,
+                    self.listView, u':/general/general_delete.png',
+                    unicode(translate('OpenLP.MediaManagerItem',
+                        '&Delete %s')) %
+                    self.pluginNameVisible,
                     self.onDeleteClick))
-            self.ListView.addAction(context_menu_separator(self.ListView))
-        self.ListView.addAction(
+            self.listView.addAction(context_menu_separator(self.listView))
+        self.listView.addAction(
             context_menu_action(
-                self.ListView, u':/general/general_preview.png',
-                unicode(translate('MediaManagerItem', '&Preview %s')) %
-                self.PluginNameVisible,
+                self.listView, u':/general/general_preview.png',
+                unicode(translate('OpenLP.MediaManagerItem', '&Preview %s')) %
+                self.pluginNameVisible,
                 self.onPreviewClick))
-        self.ListView.addAction(
+        self.listView.addAction(
             context_menu_action(
-                self.ListView, u':/general/general_live.png',
-                translate('MediaManagerItem', '&Show Live'),
+                self.listView, u':/general/general_live.png',
+                translate('OpenLP.MediaManagerItem', '&Show Live'),
                 self.onLiveClick))
-        self.ListView.addAction(
+        self.listView.addAction(
             context_menu_action(
-                self.ListView, u':/general/general_add.png',
-                translate('MediaManagerItem', '&Add to Service'),
+                self.listView, u':/general/general_add.png',
+                translate('OpenLP.MediaManagerItem', '&Add to Service'),
                 self.onAddClick))
         if self.addToServiceItem:
-            self.ListView.addAction(
+            self.listView.addAction(
                 context_menu_action(
-                    self.ListView, u':/general/general_add.png',
-                    translate('MediaManagerItem',
+                    self.listView, u':/general/general_add.png',
+                    translate('OpenLP.MediaManagerItem',
                         '&Add to selected Service Item'),
                     self.onAddEditClick))
-        QtCore.QObject.connect(
-            self.ListView, QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
-            self.onPreviewClick)
+        if QtCore.QSettings().value(u'advanced/double click live',
+            QtCore.QVariant(False)).toBool():
+            QtCore.QObject.connect(self.listView,
+                QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
+                self.onLiveClick)
+        else:
+            QtCore.QObject.connect(self.listView,
+                QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
+                self.onPreviewClick)
 
     def initialise(self):
         """
@@ -343,20 +355,10 @@ class MediaManagerItem(QtGui.QWidget):
         """
         pass
 
-    def checkItemSelected(self, message):
-        """
-        Check if a list item is selected so an action may be performed on it
-
-        ``message``
-            The message to give the user if no item is selected
-        """
-        if not self.ListView.selectedIndexes():
-            QtGui.QMessageBox.information(self,
-                translate('MediaManagerItem', 'No Items Selected'), message)
-            return False
-        return True
-
     def onFileClick(self):
+        """
+        Add a file to the list widget to make it available for showing
+        """
         files = QtGui.QFileDialog.getOpenFileNames(
             self, self.OnNewPrompt,
             SettingsManager.get_last_dir(self.settingsSection),
@@ -370,10 +372,13 @@ class MediaManagerItem(QtGui.QWidget):
                 self.settingsSection, self.getFileList())
 
     def getFileList(self):
+        """
+        Return the current list of files
+        """
         count = 0
         filelist = []
-        while count < self.ListView.count():
-            bitem = self.ListView.item(count)
+        while count < self.listView.count():
+            bitem = self.listView.item(count)
             filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
             filelist.append(filename)
             count += 1
@@ -383,16 +388,28 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Validates to see if the file still exists or thumbnail is up to date
         """
-        if os.path.exists(file):
+        if not os.path.exists(file):
+            return False
+        if os.path.exists(thumb):
             filedate = os.stat(file).st_mtime
             thumbdate = os.stat(thumb).st_mtime
             #if file updated rebuild icon
             if filedate > thumbdate:
-                self.IconFromFile(file, thumb)
-            return True
-        return False
+                self.iconFromFile(file, thumb)
+        else:
+            self.iconFromFile(file, thumb)
+        return True
 
-    def IconFromFile(self, file, thumb):
+    def iconFromFile(self, file, thumb):
+        """
+        Create a thumbnail icon from a given file
+
+        ``file``
+            The file to create the icon from
+
+        ``thumb``
+            The filename to save the thumbnail to
+        """
         icon = build_icon(unicode(file))
         pixmap = icon.pixmap(QtCore.QSize(88, 50))
         ext = os.path.splitext(thumb)[1].lower()
@@ -415,41 +432,52 @@ class MediaManagerItem(QtGui.QWidget):
         raise NotImplementedError(u'MediaManagerItem.onDeleteClick needs to '
             u'be defined by the plugin')
 
-    def generateSlideData(self, service_item, item):
+    def generateSlideData(self, service_item, item=None):
         raise NotImplementedError(u'MediaManagerItem.generateSlideData needs '
             u'to be defined by the plugin')
 
     def onPreviewClick(self):
-        if not self.ListView.selectedIndexes() and not self.remoteTriggered:
+        """
+        Preview an item by building a service item then adding that service
+        item to the preview slide controller.
+        """
+        if not self.listView.selectedIndexes() and not self.remoteTriggered:
             QtGui.QMessageBox.information(self,
-                translate('MediaManagerItem', 'No Items Selected'),
-                translate('MediaManagerItem',
+                translate('OpenLP.MediaManagerItem', 'No Items Selected'),
+                translate('OpenLP.MediaManagerItem',
                     'You must select one or more items to preview.'))
         else:
             log.debug(self.PluginNameShort + u' Preview requested')
             service_item = self.buildServiceItem()
             if service_item:
                 service_item.from_plugin = True
-                self.parent.preview_controller.addServiceItem(service_item)
+                self.parent.previewController.addServiceItem(service_item)
 
     def onLiveClick(self):
-        if not self.ListView.selectedIndexes():
+        """
+        Send an item live by building a service item then adding that service
+        item to the live slide controller.
+        """
+        if not self.listView.selectedIndexes():
             QtGui.QMessageBox.information(self,
-                translate('MediaManagerItem', 'No Items Selected'),
-                translate('MediaManagerItem',
+                translate('OpenLP.MediaManagerItem', 'No Items Selected'),
+                translate('OpenLP.MediaManagerItem',
                     'You must select one or more items to send live.'))
         else:
             log.debug(self.PluginNameShort + u' Live requested')
             service_item = self.buildServiceItem()
             if service_item:
                 service_item.from_plugin = True
-                self.parent.live_controller.addServiceItem(service_item)
+                self.parent.liveController.addServiceItem(service_item)
 
     def onAddClick(self):
-        if not self.ListView.selectedIndexes() and not self.remoteTriggered:
+        """
+        Add a selected item to the current service
+        """
+        if not self.listView.selectedIndexes() and not self.remoteTriggered:
             QtGui.QMessageBox.information(self,
-                translate('MediaManagerItem', 'No Items Selected'),
-                translate('MediaManagerItem',
+                translate('OpenLP.MediaManagerItem', 'No Items Selected'),
+                translate('OpenLP.MediaManagerItem',
                     'You must select one or more items.'))
         else:
             #Is it posssible to process multiple list items to generate multiple
@@ -459,39 +487,44 @@ class MediaManagerItem(QtGui.QWidget):
                 service_item = self.buildServiceItem()
                 if service_item:
                     service_item.from_plugin = False
-                    self.parent.service_manager.addServiceItem(service_item,
+                    self.parent.serviceManager.addServiceItem(service_item,
                         replace=self.remoteTriggered)
             else:
-                items = self.ListView.selectedIndexes()
+                items = self.listView.selectedIndexes()
                 for item in items:
                     service_item = self.buildServiceItem(item)
                     if service_item:
                         service_item.from_plugin = False
-                        self.parent.service_manager.addServiceItem(service_item)
+                        self.parent.serviceManager.addServiceItem(service_item)
 
     def onAddEditClick(self):
-        if not self.ListView.selectedIndexes() and not self.remoteTriggered:
+        """
+        Add a selected item to an existing item in the current service.
+        """
+        if not self.listView.selectedIndexes() and not self.remoteTriggered:
             QtGui.QMessageBox.information(self,
-                translate('MediaManagerItem', 'No items selected'),
-                translate('MediaManagerItem',
+                translate('OpenLP.MediaManagerItem', 'No items selected'),
+                translate('OpenLP.MediaManagerItem',
                     'You must select one or more items'))
         else:
             log.debug(self.PluginNameShort + u' Add requested')
-            service_item = self.parent.service_manager.getServiceItem()
+            service_item = self.parent.serviceManager.getServiceItem()
             if not service_item:
                 QtGui.QMessageBox.information(self,
-                    translate('MediaManagerItem', 'No Service Item Selected'),
-                    translate('MediaManagerItem',
+                    translate('OpenLP.MediaManagerItem',
+                        'No Service Item Selected'),
+                    translate('OpenLP.MediaManagerItem',
                         'You must select an existing service item to add to.'))
             elif self.title.lower() == service_item.name.lower():
                 self.generateSlideData(service_item)
-                self.parent.service_manager.addServiceItem(service_item,
+                self.parent.serviceManager.addServiceItem(service_item,
                     replace=True)
             else:
                 #Turn off the remote edit update message indicator
                 QtGui.QMessageBox.information(self,
-                    translate('MediaManagerItem', 'Invalid Service Item'),
-                    unicode(translate('MediaManagerItem',
+                    translate('OpenLP.MediaManagerItem',
+                        'Invalid Service Item'),
+                    unicode(translate('OpenLP.MediaManagerItem',
                         'You must select a %s service item.')) % self.title)
 
     def buildServiceItem(self, item=None):
@@ -499,11 +532,10 @@ class MediaManagerItem(QtGui.QWidget):
         Common method for generating a service item
         """
         service_item = ServiceItem(self.parent)
-        if self.ServiceItemIconName:
-            service_item.add_icon(self.ServiceItemIconName)
+        if self.serviceItemIconName:
+            service_item.add_icon(self.serviceItemIconName)
         else:
-            service_item.add_icon(
-                u':/media/media_' + self.PluginNameShort.lower() + u'.png')
+            service_item.add_icon(self.parent.icon_path)
         if self.generateSlideData(service_item, item):
             return service_item
         else:

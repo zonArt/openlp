@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -88,9 +89,9 @@ class OpenSongBible(BibleDB):
                         Receiver.send_message(u'openlp_process_events')
                     self.wizard.incrementProgressBar(
                         QtCore.QString('%s %s %s' % (
-                            translate('BiblesPlugin.Opensong', 'Importing'), \
+                            translate('BiblesPlugin.Opensong', 'Importing'),
                             db_book.name, chapter.attrib[u'n'])))
-                    self.commit()
+                    self.session.commit()
         except IOError:
             log.exception(u'Loading bible from OpenSong file failed')
             success = False
@@ -102,4 +103,3 @@ class OpenSongBible(BibleDB):
             return False
         else:
             return success
-

@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,7 +30,7 @@ import shutil
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import Receiver, resize_image
 from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
@@ -63,6 +64,13 @@ class PresentationController(object):
     ``plugin``
         The presentationplugin object
 
+    ``supports``
+        The primary native file types this application supports
+
+    ``alsosupports``
+        Other file types the application can import, although not necessarily
+        the first choice due to potential incompatibilities
+        
     **Hook Functions**
 
     ``kill()``
@@ -102,19 +110,28 @@ class PresentationController(object):
         self.name = name
         self.settings_section = self.plugin.settingsSection
         self.available = self.check_available()
+        self.temp_folder = os.path.join(
+            AppLocation.get_section_data_path(self.settings_section), name)
+        self.thumbnail_folder = os.path.join(
+            AppLocation.get_section_data_path(self.settings_section),
+            u'thumbnails')
+        self.thumbnail_prefix = u'slide'
+        if not os.path.isdir(self.thumbnail_folder):
+            os.makedirs(self.thumbnail_folder)
+        if not os.path.isdir(self.temp_folder):
+            os.makedirs(self.temp_folder)
+
+    def enabled(self):
+        """
+        Return whether the controller is currently enabled
+        """
         if self.available:
-            self.enabled = QtCore.QSettings().value(
-                self.settings_section + u'/' + name,
-                QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0] == \
+            return QtCore.QSettings().value(
+                self.settings_section + u'/' + self.name,
+                QtCore.QVariant(QtCore.Qt.Checked)).toInt()[0] == \
                     QtCore.Qt.Checked
         else:
-            self.enabled = False
-        self.thumbnailroot = os.path.join(
-            AppLocation.get_section_data_path(self.settings_section),
-            name, u'thumbnails')
-        self.thumbnailprefix = u'slide'
-        if not os.path.isdir(self.thumbnailroot):
-            os.makedirs(self.thumbnailroot)
+            return False
 
     def check_available(self):
         """
@@ -208,14 +225,19 @@ class PresentationDocument(object):
     ``previous_step()``
         Triggers the previous slide on the running presentation
 
-    ``get_slide_preview_file(slide_no)``
+    ``get_thumbnail_path(slide_no, check_exists)``
         Returns a path to an image containing a preview for the requested slide
 
     """
     def __init__(self, controller, name):
+        """
+        Constructor for the PresentationController class
+        """
         self.slidenumber = 0
         self.controller = controller
-        self.store_filename(name)
+        self.filepath = name
+        if not os.path.isdir(self.get_thumbnail_folder()):
+            os.mkdir(self.get_thumbnail_folder())
 
     def load_presentation(self):
         """
@@ -224,9 +246,10 @@ class PresentationDocument(object):
 
         ``presentation``
         The file name of the presentations to the run.
-
+        
+        Returns False if the file could not be opened
         """
-        pass
+        return False
 
     def presentation_deleted(self):
         """
@@ -234,33 +257,37 @@ class PresentationDocument(object):
         a file, e.g. thumbnails
         """
         try:
-            shutil.rmtree(self.thumbnailpath)
+            shutil.rmtree(self.get_thumbnail_folder())
+            shutil.rmtree(self.get_temp_folder())
         except OSError:
             log.exception(u'Failed to delete presentation controller files')
 
-    def store_filename(self, presentation):
+    def get_file_name(self):
         """
-        Set properties for the filename and thumbnail paths
+        Return just the filename of the presention, without the directory
         """
-        self.filepath = presentation
-        self.filename = self.get_file_name(presentation)
-        self.thumbnailpath = self.get_thumbnail_path(presentation)
-        if not os.path.isdir(self.thumbnailpath):
-            os.mkdir(self.thumbnailpath)
+        return os.path.split(self.filepath)[1]
 
-    def get_file_name(self, presentation):
-        return os.path.split(presentation)[1]
-
-    def get_thumbnail_path(self, presentation):
+    def get_thumbnail_folder(self):
+        """
+        The location where thumbnail images will be stored
+        """
         return os.path.join(
-            self.controller.thumbnailroot, self.get_file_name(presentation))
+            self.controller.thumbnail_folder, self.get_file_name())
+
+    def get_temp_folder(self):
+        """
+        The location where thumbnail images will be stored
+        """
+        return os.path.join(
+            self.controller.temp_folder, self.get_file_name())
 
     def check_thumbnails(self):
         """
         Returns true if the thumbnail images look to exist and are more
         recent than the powerpoint
         """
-        lastimage = self.get_slide_preview_file(self.get_slide_count())
+        lastimage = self.get_thumbnail_path(self.get_slide_count(), True)
         if not (lastimage and os.path.isfile(lastimage)):
             return False
         imgdate = os.stat(lastimage).st_mtime
@@ -350,16 +377,27 @@ class PresentationDocument(object):
         """
         pass
 
-    def get_slide_preview_file(self, slide_no):
+    def convert_thumbnail(self, file, idx):
+        """
+        Convert the slide image the application made to a standard 320x240
+        .png image.
+        """
+        if self.check_thumbnails():
+            return
+        if os.path.isfile(file):
+            img = resize_image(file, 320, 240)
+            img.save(self.get_thumbnail_path(idx, False))
+            
+    def get_thumbnail_path(self, slide_no, check_exists):
         """
         Returns an image path containing a preview for the requested slide
 
         ``slide_no``
             The slide an image is required for, starting at 1
         """
-        path = os.path.join(self.thumbnailpath,
-            self.controller.thumbnailprefix + unicode(slide_no) + u'.png')
-        if os.path.isfile(path):
+        path = os.path.join(self.get_thumbnail_folder(),
+            self.controller.thumbnail_prefix + unicode(slide_no) + u'.png')
+        if os.path.isfile(path) or not check_exists:
             return path
         else:
             return None
@@ -398,4 +436,3 @@ class PresentationDocument(object):
         The slide the notes are required for, starting at 1
         """
         return ''
-

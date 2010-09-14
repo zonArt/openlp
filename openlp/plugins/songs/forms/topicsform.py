@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,7 +28,6 @@ from PyQt4 import QtGui
 
 from openlp.core.lib import translate
 from openlp.plugins.songs.forms.topicsdialog import Ui_TopicsDialog
-
 
 class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
     """
@@ -51,8 +51,7 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
             QtGui.QMessageBox.critical(
                 self, translate('SongsPlugin.TopicsForm', 'Error'),
                 translate('SongsPlugin.TopicsForm',
-                    'You need to type in a topic name!'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                    'You need to type in a topic name!'))
             self.NameEdit.setFocus()
             return False
         else:

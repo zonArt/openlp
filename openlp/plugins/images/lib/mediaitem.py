@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,7 +30,8 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    context_menu_action, ItemCapabilities, SettingsManager, translate
+    context_menu_action, ItemCapabilities, SettingsManager, translate, \
+    check_item_selected
 from openlp.core.utils import AppLocation, get_images_filter
 
 log = logging.getLogger(__name__)
@@ -49,14 +51,12 @@ class ImageMediaItem(MediaManagerItem):
 
     def __init__(self, parent, icon, title):
         self.PluginNameShort = u'Image'
+        self.pluginNameVisible = translate('ImagePlugin.MediaItem', 'Image')
         self.IconPath = u'images/image'
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = ImageListView
         MediaManagerItem.__init__(self, parent, icon, title)
-
-    def initPluginNameVisible(self):
-        self.PluginNameVisible = translate('ImagePlugin.MediaItem', 'Image')
 
     def retranslateUi(self):
         self.OnNewPrompt = translate('ImagePlugin.MediaItem',
@@ -74,10 +74,10 @@ class ImageMediaItem(MediaManagerItem):
 
     def initialise(self):
         log.debug(u'initialise')
-        self.ListView.clear()
-        self.ListView.setSelectionMode(
+        self.listView.clear()
+        self.listView.setSelectionMode(
             QtGui.QAbstractItemView.ExtendedSelection)
-        self.ListView.setIconSize(QtCore.QSize(88, 50))
+        self.listView.setIconSize(QtCore.QSize(88, 50))
         self.servicePath = os.path.join(
             AppLocation.get_section_data_path(self.settingsSection),
             u'thumbnails')
@@ -88,10 +88,10 @@ class ImageMediaItem(MediaManagerItem):
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
-        self.ListView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-        self.ListView.addAction(
+        self.listView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        self.listView.addAction(
             context_menu_action(
-                self.ListView, u':/slides/slide_blank.png',
+                self.listView, u':/slides/slide_blank.png',
                 translate('ImagePlugin.MediaItem', 'Replace Live Background'),
                 self.onReplaceClick))
 
@@ -105,22 +105,30 @@ class ImageMediaItem(MediaManagerItem):
             self.ImageWidget.sizePolicy().hasHeightForWidth())
         self.ImageWidget.setSizePolicy(sizePolicy)
         self.ImageWidget.setObjectName(u'ImageWidget')
-        self.blankButton = self.Toolbar.addToolbarButton(
-            u'Replace Background', u':/slides/slide_blank.png',
+        self.blankButton = self.toolbar.addToolbarButton(
+            translate('ImagePlugin.MediaItem', 'Replace Background'),
+            u':/slides/slide_blank.png',
             translate('ImagePlugin.MediaItem', 'Replace Live Background'),
-                self.onReplaceClick, False)
+            self.onReplaceClick, False)
+        self.resetButton = self.toolbar.addToolbarButton(
+            translate('ImagePlugin.MediaItem', u'Reset Background'),
+            u':/system/system_close.png',
+            translate('ImagePlugin.MediaItem', 'Reset Live Background'),
+            self.onResetClick, False)
         # Add the song widget to the page layout
-        self.PageLayout.addWidget(self.ImageWidget)
+        self.pageLayout.addWidget(self.ImageWidget)
+        self.resetButton.setVisible(False)
 
     def onDeleteClick(self):
         """
         Remove an image item from the list
         """
-        if self.checkItemSelected(translate('ImagePlugin.MediaItem',
-            'You must select an item to delete.')):
-            items = self.ListView.selectedIndexes()
-            for item in items:
-                text = self.ListView.item(item.row())
+        if check_item_selected(self.listView, translate('ImagePlugin.MediaItem',
+            'You must select an image to delete.')):
+            row_list = [item.row() for item in self.listView.selectedIndexes()]
+            row_list.sort(reverse=True)
+            for row in row_list:
+                text = self.listView.item(row)
                 if text:
                     try:
                         os.remove(os.path.join(self.servicePath,
@@ -128,9 +136,9 @@ class ImageMediaItem(MediaManagerItem):
                     except OSError:
                         #if not present do not worry
                         pass
-                self.ListView.takeItem(item.row())
-                SettingsManager.set_list(self.settingsSection,
-                    self.settingsSection, self.getFileList())
+                self.listView.takeItem(row)
+            SettingsManager.set_list(self.settingsSection,
+                self.settingsSection, self.getFileList())
 
     def loadList(self, list):
         for file in list:
@@ -142,14 +150,14 @@ class ImageMediaItem(MediaManagerItem):
                 else:
                     icon = build_icon(u':/general/general_delete.png')
             else:
-                icon = self.IconFromFile(file, thumb)
+                icon = self.iconFromFile(file, thumb)
             item_name = QtGui.QListWidgetItem(filename)
             item_name.setIcon(icon)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
-            self.ListView.addItem(item_name)
+            self.listView.addItem(item_name)
 
     def generateSlideData(self, service_item, item=None):
-        items = self.ListView.selectedIndexes()
+        items = self.listView.selectedIndexes()
         if items:
             service_item.title = unicode(
                 translate('ImagePlugin.MediaItem', 'Image(s)'))
@@ -158,7 +166,7 @@ class ImageMediaItem(MediaManagerItem):
             service_item.add_capability(ItemCapabilities.AllowsLoop)
             service_item.add_capability(ItemCapabilities.AllowsAdditions)
             for item in items:
-                bitem = self.ListView.item(item.row())
+                bitem = self.listView.item(item.row())
                 filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
                 frame = QtGui.QImage(unicode(filename))
                 (path, name) = os.path.split(filename)
@@ -167,18 +175,21 @@ class ImageMediaItem(MediaManagerItem):
         else:
             return False
 
+    def onResetClick(self):
+        self.resetButton.setVisible(False)
+        self.parent.liveController.display.resetImage()
+
     def onReplaceClick(self):
-        if not self.ListView.selectedIndexes():
-            QtGui.QMessageBox.information(self,
-                translate('ImagePlugin.MediaItem', 'No item selected'),
-                translate('ImagePlugin.MediaItem',
-                    'You must select one item'))
-        items = self.ListView.selectedIndexes()
-        for item in items:
-            bitem = self.ListView.item(item.row())
-            filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
-            frame = QtGui.QImage(unicode(filename))
-            self.parent.maindisplay.addImageWithText(frame)
+        if check_item_selected(self.listView,
+            translate('ImagePlugin.MediaItem',
+            'You must select an image to replace the background with.')):
+            items = self.listView.selectedIndexes()
+            for item in items:
+                bitem = self.listView.item(item.row())
+                filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
+                frame = QtGui.QImage(unicode(filename))
+                self.parent.liveController.display.image(frame)
+        self.resetButton.setVisible(True)
 
     def onPreviewClick(self):
         MediaManagerItem.onPreviewClick(self)

@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -73,6 +74,14 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         for frame in self.itemList:
             item_name = QtGui.QListWidgetItem(frame[u'title'])
             self.listWidget.addItem(item_name)
+        if self.listWidget.count() == 1:
+            self.downButton.setEnabled(False)
+            self.upButton.setEnabled(False)
+            self.deleteButton.setEnabled(False)
+        else:
+            self.downButton.setEnabled(True)
+            self.upButton.setEnabled(True)
+            self.deleteButton.setEnabled(True)
 
     def onItemDelete(self):
         """
@@ -80,9 +89,13 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         """
         items = self.listWidget.selectedItems()
         for item in items:
-            row =  self.listWidget.row(item)
+            row = self.listWidget.row(item)
             self.itemList.remove(self.itemList[row])
             self.loadData()
+            if row == self.listWidget.count():
+                self.listWidget.setCurrentRow(row - 1)
+            else:
+                self.listWidget.setCurrentRow(row)
 
     def onItemUp(self):
         """
@@ -90,7 +103,7 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         """
         items = self.listWidget.selectedItems()
         for item in items:
-            row =  self.listWidget.row(item)
+            row = self.listWidget.row(item)
             if row > 0:
                 temp = self.itemList[row]
                 self.itemList.remove(self.itemList[row])
@@ -104,7 +117,7 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         """
         items = self.listWidget.selectedItems()
         for item in items:
-            row =  self.listWidget.row(item)
+            row = self.listWidget.row(item)
             if row < len(self.itemList) and row is not -1:
                 temp = self.itemList[row]
                 self.itemList.remove(self.itemList[row])
