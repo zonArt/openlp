@@ -507,6 +507,9 @@ class BibleMediaItem(MediaManagerItem):
         old_chapter = u''
         raw_footer = []
         raw_slides = []
+        raw_title = []
+        first_verse = True
+        append_now = False
         # Let's loop through the main lot, and assemble our verses.
         for item in items:
             bitem = self.listView.item(item.row())
@@ -514,8 +517,8 @@ class BibleMediaItem(MediaManagerItem):
             if isinstance(reference, QtCore.QVariant):
                 reference = reference.toPyObject()
             book = self._decodeQtObject(reference, 'book')
-            chapter = self._decodeQtObject(reference, 'chapter')
-            verse = self._decodeQtObject(reference, 'verse')
+            chapter = int(self._decodeQtObject(reference, 'chapter'))
+            verse = int(self._decodeQtObject(reference, 'verse'))
             bible = self._decodeQtObject(reference, 'bible')
             version = self._decodeQtObject(reference, 'version')
             copyright = self._decodeQtObject(reference, 'copyright')
@@ -523,8 +526,7 @@ class BibleMediaItem(MediaManagerItem):
             text = self._decodeQtObject(reference, 'text')
             dual_bible = self._decodeQtObject(reference, 'dual_bible')
             if dual_bible:
-                dual_version = self._decodeQtObject(reference,
-                    'dual_version')
+                dual_version = self._decodeQtObject(reference, 'dual_version')
                 dual_copyright = self._decodeQtObject(reference,
                     'dual_copyright')
                 dual_permission = self._decodeQtObject(reference,
@@ -535,12 +537,12 @@ class BibleMediaItem(MediaManagerItem):
             if footer not in raw_footer:
                 raw_footer.append(footer)
             if dual_bible:
-                footer = u'%s (%s %s %s)' % (book, dual_version,
-                    dual_copyright, dual_permission)
+                footer = u'%s (%s %s %s)' % (book, dual_version, dual_copyright,
+                    dual_permission)
                 if footer not in raw_footer:
                     raw_footer.append(footer)
-                bible_text = u'%s %s\n\n%s %s' % (verse_text, text,
-                    verse_text, dual_text)
+                bible_text = u'%s %s\n\n%s %s' % (verse_text, text, verse_text,
+                    dual_text)
                 raw_slides.append(bible_text)
                 bible_text = u''
             # If we are 'Verse Per Slide' then create a new slide.
@@ -554,29 +556,107 @@ class BibleMediaItem(MediaManagerItem):
             # We have to be 'Continuous'.
             else:
                 bible_text = u'%s %s %s\n' % (bible_text, verse_text, text)
+            if first_verse:
+                start_bible = bible
+                start_dual_bible = dual_bible
+                start_book = book
+                start_verse = verse
+                start_chapter = chapter
+                start_version = version
+                first_verse = False
+                append_now = False
+            elif old_bible != bible or old_dual_bible != dual_bible or \
+                old_book != book:
+                append_now = True
+            elif old_verse + 1 != verse and old_chapter == chapter:
+                append_now = True
+            elif old_chapter + 1 == chapter and (verse != 1 or
+                old_verse != self.parent.manager.get_verse_count(
+                old_bible, old_book, old_chapter)):
+                append_now = True
+            if append_now:
+                append_now = False
+                if dual_bible:
+                    if start_verse == old_verse and \
+                        start_chapter == old_chapter:
+                        raw_title.append(u'%s %s:%s (%s, %s)' % (start_book,
+                            start_chapter, start_verse, start_version,
+                            start_dual_bible))
+                    elif start_chapter == old_chapter:
+                        raw_title.append(u'%s %s:%s-s (%s, %s)' % (start_book,
+                            start_chapter, start_verse, old_verse,
+                            start_version, start_dual_bible))
+                    else:
+                        raw_title.append(u'%s %s:%s-%s:%s (%s, %s)' %
+                            (start_book, start_chapter, start_verse,
+                            old_chapter, old_verse, start_version,
+                            start_dual_bible))
+                else:
+                    if start_verse == old_verse and \
+                        start_chapter == old_chapter:
+                        raw_title.append(u'%s %s:%s (%s)' % (start_book,
+                            start_chapter, start_verse, start_version))
+                    elif start_chapter == old_chapter:
+                        raw_title.append(u'%s %s:%s-%s (%s)' % (start_book,
+                            start_chapter, start_verse, old_verse,
+                            start_version))
+                    else:
+                        raw_title.append(u'%s %s:%s-%s:%s (%s)' % (start_book,
+                            start_chapter, start_verse, old_chapter, old_verse,
+                            start_version))
+                start_bible = bible
+                start_dual_bible = dual_bible
+                start_book = book
+                start_verse = verse
+                start_chapter = chapter
+                start_version = version
+            old_verse = verse
             old_chapter = chapter
+            old_bible = bible
+            old_dual_bible = dual_bible
+            old_book = book
+        if dual_bible:
+            if start_verse == verse and start_chapter == chapter:
+                raw_title.append(u'%s %s:%s (%s, %s)' % (start_book,
+                    start_chapter, start_verse, start_version,
+                    start_dual_bible))
+            elif start_chapter == chapter:
+                raw_title.append(u'%s %s:%s-%s (%s, %s)' % (start_book,
+                    start_chapter, start_verse, verse, start_version,
+                    start_dual_bible))
+            else:
+                raw_title.append(u'%s %s:%s-%s:%s (%s, %s)' % (start_book,
+                    start_chapter, start_verse, chapter, verse, start_version,
+                    start_dual_bible))
+        else:
+            if start_verse == verse and start_chapter == chapter:
+                raw_title.append(u'%s %s:%s (%s)' % (start_book,
+                    start_chapter, start_verse, start_version))
+            elif start_chapter == chapter:
+                raw_title.append(u'%s %s:%s-%s (%s)' % (start_book,
+                    start_chapter, start_verse, verse, start_version))
+            else:
+                raw_title.append(u'%s %s:%s-%s:%s (%s)' % (start_book,
+                    start_chapter, start_verse, chapter, verse, start_version))
         # If there are no more items we check whether we have to add bible_text.
         if bible_text:
             raw_slides.append(bible_text)
             bible_text = u''
+        print raw_title
         # Service Item: Capabilities
         if self.parent.settings_tab.layout_style == 2 and not dual_bible:
             # split the line but do not replace line breaks in renderer
             service_item.add_capability(ItemCapabilities.NoLineBreaks)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
-        #service_item.add_capability(ItemCapabilities.AllowsAdditions)
         # Service Item: Title
-        if not service_item.title:
-            if dual_bible:
-                service_item.title = u'%s %s (%s, %s)' % (book, version,
-                    verse_text, dual_version)
+        first_verse = True
+        for title in raw_title:
+            if first_verse:
+                first_verse = False
+                service_item.title = title
             else:
-                service_item.title = u'%s %s (%s)' % (book, verse_text, version)
-        elif service_item.title.find(
-            translate('BiblesPlugin.MediaItem', 'etc')) == -1:
-            service_item.title = u'%s, %s' % (service_item.title,
-                translate('BiblesPlugin.MediaItem', 'etc'))
+                service_item.title += u', ' + title
         # Service Item: Theme
         if len(self.parent.settings_tab.bible_theme) == 0:
             service_item.theme = None
@@ -594,9 +674,9 @@ class BibleMediaItem(MediaManagerItem):
     def formatVerse(self, old_chapter, chapter, verse):
         if not self.parent.settings_tab.show_new_chapters or \
             old_chapter != chapter:
-            verse_text = chapter + u':' + verse
+            verse_text = u'%s:%s' % (chapter, verse)
         else:
-            verse_text = verse
+            verse_text = u'%s' % verse
         if self.parent.settings_tab.display_style == 1:
             verse_text = u'{su}(' + verse_text + u'){/su}'
         elif self.parent.settings_tab.display_style == 2:
