@@ -66,10 +66,10 @@ class CCLIFileImport(SongImport):
         log.debug(u'Starting CCLI File Import')
         song_total = len(self.filenames)
         self.import_wizard.importProgressBar.setMaximum(song_total)
-        song_count = 1        
+        song_count = 1
         for filename in self.filenames:
             self.import_wizard.incrementProgressBar(
-                u'Importing song %s of %s' % (song_count, song_total))            
+                u'Importing song %s of %s' % (song_count, song_total))
             filename = unicode(filename) 
             log.debug(u'Importing CCLI File: %s', filename)
             lines = []
@@ -81,14 +81,15 @@ class CCLIFileImport(SongImport):
                 lines = infile.readlines()
                 ext = os.path.splitext(filename)[1]
                 if ext.lower() == ".usr":
-                    log.info(u'SongSelect .usr format file found %s: ' ,  filename)
+                    log.info(u'SongSelect .usr format file found %s: ',
+                        filename)
                     self.do_import_usr_file(lines)
                 elif ext.lower() == ".txt":
-                    log.info(u'SongSelect .txt format file found %s: ', filename)
+                    log.info(u'SongSelect .txt format file found %s: ',
+                        filename)
                     self.do_import_txt_file(lines)
                 else:
                     log.info(u'Extension %s is not valid', filename)
-                    pass
                 song_count += 1
             if self.stop_import_flag:
                 return False  
@@ -175,7 +176,7 @@ class CCLIFileImport(SongImport):
             verse_text = unicode(words_list[counter])
             verse_text = verse_text.replace("/n",  "\n")
             if len(verse_text) > 0:                
-                self.add_verse(verse_text, verse_type);
+                self.add_verse(verse_text, verse_type)
         #Handle multiple authors
         author_list = song_author.split(u'/')
         if len(author_list) < 2:
@@ -238,25 +239,25 @@ class CCLIFileImport(SongImport):
         line_number = 0
         verse_text = u''
         song_comments = u''
-        song_copyright = u'';
+        song_copyright = u''
         verse_start = False
         for line in textList:
             clean_line = line.strip()
             if not clean_line:
-                if line_number==0:
+                if line_number == 0:
                     continue
                 elif verse_start:
-                      if verse_text:
+                    if verse_text:
                         self.add_verse(verse_text, verse_type)
                         verse_text = ''
                         verse_start = False
             else:
                 #line_number=0, song title
-                if line_number==0:
+                if line_number == 0:
                     song_name = clean_line
                     line_number += 1
                 #line_number=1, verses    
-                elif line_number==1:
+                elif line_number == 1:
                     #line_number=1, ccli number, first line after verses
                     if clean_line.startswith(u'CCLI'):
                         line_number += 1
@@ -285,15 +286,16 @@ class CCLIFileImport(SongImport):
                         verse_text = verse_text + line
                 else:
                     #line_number=2, copyright
-                    if line_number==2:
+                    if line_number == 2:
                         line_number += 1
                         song_copyright = clean_line
                     #n=3, authors    
-                    elif line_number==3:
+                    elif line_number == 3:
                         line_number += 1
                         song_author = clean_line
-                     #line_number=4, comments lines before last line    
-                    elif (line_number==4) and (not clean_line.startswith(u'CCL')):
+                    #line_number=4, comments lines before last line    
+                    elif (line_number == 4) and \
+                        (not clean_line.startswith(u'CCL')):
                         song_comments = song_comments + clean_line
         # split on known separators
         author_list = song_author.split(u'/')
@@ -307,4 +309,3 @@ class CCLIFileImport(SongImport):
         self.ccli_number = song_ccli
         self.comments = song_comments
         self.finish()
-        
