@@ -29,12 +29,14 @@ import os
 import sys
 import logging
 from optparse import OptionParser
+from traceback import format_exception
 
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
+from openlp.core.ui.exceptionform import ExceptionForm
 from openlp.core.ui import SplashScreen, ScreenList
 from openlp.core.utils import AppLocation, LanguageManager, VersionThread
 
@@ -129,11 +131,11 @@ class OpenLP(QtGui.QApplication):
         screens = ScreenList()
         # Decide how many screens we have and their size
         for screen in xrange(0, self.desktop().numScreens()):
+            size = self.desktop().screenGeometry(screen);
             screens.add_screen({u'number': screen,
-                u'size': self.desktop().availableGeometry(screen),
+                u'size': size,
                 u'primary': (self.desktop().primaryScreen() == screen)})
-            log.info(u'Screen %d found with resolution %s',
-                screen, self.desktop().availableGeometry(screen))
+            log.info(u'Screen %d found with resolution %s', screen, size)
         # start the main app window
         self.mainWindow = MainWindow(screens, app_version)
         self.mainWindow.show()
@@ -143,6 +145,13 @@ class OpenLP(QtGui.QApplication):
         self.mainWindow.repaint()
         VersionThread(self.mainWindow, app_version).start()
         return self.exec_()
+
+    def hookException(self, exctype, value, traceback):
+        if not hasattr(self, u'exceptionForm'):
+            self.exceptionForm = ExceptionForm(self.mainWindow)
+        self.exceptionForm.exceptionTextEdit.setPlainText(
+            ''.join(format_exception(exctype, value, traceback)))
+        self.exceptionForm.exec_()
 
 def main():
     """
@@ -194,7 +203,7 @@ def main():
     language = LanguageManager.get_language()
     appTranslator = LanguageManager.get_translator(language)
     app.installTranslator(appTranslator)
-
+    sys.excepthook = app.hookException
     sys.exit(app.run())
 
 if __name__ == u'__main__':

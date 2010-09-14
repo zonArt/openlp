@@ -62,6 +62,7 @@
     <file>openlp-logo-256x256.png</file>
   </qresource>
   <qresource prefix="graphics">
+    <file>exception.png</file>
     <file>openlp-about-logo.png</file>
     <file>openlp-splash-screen.png</file>
   </qresource>
