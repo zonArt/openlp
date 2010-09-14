@@ -30,6 +30,7 @@ from zipfile import ZipFile
 from lxml import objectify
 from lxml.etree import Error, LxmlError
 
+from openlp.core.lib import translate
 from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
@@ -170,7 +171,7 @@ class OpenSongImport(SongImport):
         self.authors = []
         try:
             tree = objectify.parse(file)
-        except Error, LxmlError:
+        except (Error, LxmlError):
             log.exception(u'Error parsing XML')
             return
         root = tree.getroot()
@@ -276,7 +277,8 @@ class OpenSongImport(SongImport):
             if len(our_verse_order) > 0:
                 order = our_verse_order
             else:
-                log.warn(u'No verse order available for %s, skipping.', self.title)
+                log.warn(u'No verse order available for %s, skipping.',
+                    self.title)
         for tag in order:
             if len(tag) == 1:
                 tag = tag + u'1' # Assume it's no.1 if it's not there
