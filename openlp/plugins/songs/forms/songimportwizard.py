@@ -306,39 +306,45 @@ class Ui_SongImportWizard(object):
         self.songsOfFellowshipDisabledWidget.setVisible(False)
         self.songsOfFellowshipDisabledWidget.setObjectName(
             u'songsOfFellowshipDisabledWidget')
-        self.songsOfFellowshipDisabledLabel = QtGui.QLabel(
-            self.songsOfFellowshipDisabledWidget)
-        self.songsOfFellowshipDisabledLabel.setWordWrap(True)
-        self.songsOfFellowshipDisabledLabel.setObjectName(
-            u'songsOfFellowshipDisabledLabel')
         self.songsOfFellowshipDisabledLayout = QtGui.QVBoxLayout(
             self.songsOfFellowshipDisabledWidget)
         self.songsOfFellowshipDisabledLayout.setMargin(0)
         self.songsOfFellowshipDisabledLayout.setSpacing(8)
         self.songsOfFellowshipDisabledLayout.setObjectName(
             u'songsOfFellowshipDisabledLayout')
+        self.songsOfFellowshipDisabledLabel = QtGui.QLabel(
+            self.songsOfFellowshipDisabledWidget)
+        self.songsOfFellowshipDisabledLabel.setWordWrap(True)
+        self.songsOfFellowshipDisabledLabel.setObjectName(
+            u'songsOfFellowshipDisabledLabel')
+        self.songsOfFellowshipDisabledLayout.addWidget(
+            self.songsOfFellowshipDisabledLabel)
         self.songsOfFellowshipLayout.addWidget(
             self.songsOfFellowshipDisabledWidget)
-        self.songsOfFellowshipImporterWidget = QtGui.QWidget(
+        self.songsOfFellowshipImportWidget = QtGui.QWidget(
             self.songsOfFellowshipPage)
-        self.songsOfFellowshipImporterLayout = QtGui.QVBoxLayout(
-            self.songsOfFellowshipImporterWidget)
-        self.songsOfFellowshipImporterLayout.setObjectName(
-            u'songsOfFellowshipImporterLayout')
+        self.songsOfFellowshipImportWidget.setObjectName(
+            u'songsOfFellowshipImportWidget')
+        self.songsOfFellowshipImportLayout = QtGui.QVBoxLayout(
+            self.songsOfFellowshipImportWidget)
+        self.songsOfFellowshipImportLayout.setMargin(0)
+        self.songsOfFellowshipImportLayout.setSpacing(8)
+        self.songsOfFellowshipImportLayout.setObjectName(
+            u'songsOfFellowshipImportLayout')
         self.songsOfFellowshipFileListWidget = QtGui.QListWidget(
-            self.songsOfFellowshipImporterWidget)
+            self.songsOfFellowshipImportWidget)
         self.songsOfFellowshipFileListWidget.setSelectionMode(
             QtGui.QAbstractItemView.ExtendedSelection)
         self.songsOfFellowshipFileListWidget.setObjectName(
             u'songsOfFellowshipFileListWidget')
-        self.songsOfFellowshipImporterLayout.addWidget(
+        self.songsOfFellowshipImportLayout.addWidget(
             self.songsOfFellowshipFileListWidget)
         self.songsOfFellowshipButtonLayout = QtGui.QHBoxLayout()
         self.songsOfFellowshipButtonLayout.setSpacing(8)
         self.songsOfFellowshipButtonLayout.setObjectName(
             u'songsOfFellowshipButtonLayout')
         self.songsOfFellowshipAddButton = QtGui.QPushButton(
-            self.songsOfFellowshipImporterWidget)
+            self.songsOfFellowshipImportWidget)
         self.songsOfFellowshipAddButton.setIcon(openIcon)
         self.songsOfFellowshipAddButton.setObjectName(
             u'songsOfFellowshipAddButton')
@@ -349,42 +355,47 @@ class Ui_SongImportWizard(object):
         self.songsOfFellowshipButtonLayout.addItem(
             self.songsOfFellowshipButtonSpacer)
         self.songsOfFellowshipRemoveButton = QtGui.QPushButton(
-            self.songsOfFellowshipImporterWidget)
+            self.songsOfFellowshipImportWidget)
         self.songsOfFellowshipRemoveButton.setIcon(deleteIcon)
         self.songsOfFellowshipRemoveButton.setObjectName(
             u'songsOfFellowshipRemoveButton')
         self.songsOfFellowshipButtonLayout.addWidget(
             self.songsOfFellowshipRemoveButton)
-        self.songsOfFellowshipImporterLayout.addLayout(
+        self.songsOfFellowshipImportLayout.addLayout(
             self.songsOfFellowshipButtonLayout)
         self.songsOfFellowshipLayout.addWidget(
-            self.songsOfFellowshipImporterWidget)
+            self.songsOfFellowshipImportWidget)
         self.formatStackedWidget.addWidget(self.songsOfFellowshipPage)
         # Generic Document/Presentation import
         self.genericPage = QtGui.QWidget()
         self.genericPage.setObjectName(u'genericPage')
         self.genericLayout = QtGui.QVBoxLayout(self.genericPage)
         self.genericLayout.setMargin(0)
-        self.genericLayout.setSpacing(8)
+        self.genericLayout.setSpacing(0)
         self.genericLayout.setObjectName(u'genericLayout')
         self.genericDisabledWidget = QtGui.QWidget(self.genericPage)
         self.genericDisabledWidget.setObjectName(u'genericDisabledWidget')
         self.genericDisabledLayout = QtGui.QVBoxLayout(self.genericDisabledWidget)
+        self.genericDisabledLayout.setMargin(0)
+        self.genericDisabledLayout.setSpacing(8)
         self.genericDisabledLayout.setObjectName(u'genericDisabledLayout')
         self.genericDisabledLabel = QtGui.QLabel(self.genericDisabledWidget)
         self.genericDisabledLabel.setWordWrap(True)
         self.genericDisabledLabel.setObjectName(u'genericDisabledLabel')
         self.genericDisabledWidget.setVisible(False)
-        self.genericDisabledLabel.setObjectName(u'genericDisabledWidget')
         self.genericDisabledLayout.addWidget(self.genericDisabledLabel)
         self.genericLayout.addWidget(self.genericDisabledWidget)
         self.genericImportWidget = QtGui.QWidget(self.genericPage)
+        self.genericImportWidget.setObjectName(u'genericImportWidget')
         self.genericImportLayout = QtGui.QVBoxLayout(self.genericImportWidget)
+        self.genericImportLayout.setMargin(0)
+        self.genericImportLayout.setSpacing(8)
+        self.genericImportLayout.setObjectName(u'genericImportLayout')
         self.genericFileListWidget = QtGui.QListWidget(self.genericImportWidget)
         self.genericFileListWidget.setSelectionMode(
             QtGui.QAbstractItemView.ExtendedSelection)
         self.genericFileListWidget.setObjectName(u'genericFileListWidget')
-        self.genericLayout.addWidget(self.genericFileListWidget)
+        self.genericImportLayout.addWidget(self.genericFileListWidget)
         self.genericButtonLayout = QtGui.QHBoxLayout()
         self.genericButtonLayout.setSpacing(8)
         self.genericButtonLayout.setObjectName(u'genericButtonLayout')

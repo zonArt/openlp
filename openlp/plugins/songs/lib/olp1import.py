@@ -29,10 +29,7 @@ openlp.org 1.x song databases into the current installation database.
 """
 import logging
 import chardet
-try:
-    import sqlite
-except:
-    pass
+import sqlite
 
 from openlp.core.lib import translate
 from songimport import SongImport

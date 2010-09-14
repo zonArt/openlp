@@ -31,10 +31,19 @@ from cclifileimport import CCLIFileImport
 # Imports that might fail
 try:
     from olp1import import OpenLP1SongImport
-    from sofimport import SofImport
-    from oooimport import OooImport
+    has_openlp1 = True
 except ImportError:
-    pass
+    has_openlp1 = False
+try:
+    from sofimport import SofImport
+    has_sof = True
+except ImportError:
+    has_sof = False
+try:
+    from oooimport import OooImport
+    has_ooo = True
+except ImportError:
+    has_ooo = False
 
 class SongFormat(object):
     """
@@ -103,11 +112,8 @@ class SongFormat(object):
     def get_availability(format):
         return SongFormat._format_availability.get(format, True)
 
-if u'OpenLP1SongImport' not in locals():
-    SongFormat.set_availability(SongFormat.OpenLP1, False)
-if u'SofImport' not in locals():
-    SongFormat.set_availability(SongFormat.SongsOfFellowship, False)
-if u'OooImport' not in locals():
-    SongFormat.set_availability(SongFormat.Generic, False)
+SongFormat.set_availability(SongFormat.OpenLP1, has_openlp1)
+SongFormat.set_availability(SongFormat.SongsOfFellowship, has_sof)
+SongFormat.set_availability(SongFormat.Generic, has_ooo)
 
 __all__ = [u'SongFormat']
