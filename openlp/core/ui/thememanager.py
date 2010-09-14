@@ -576,7 +576,7 @@ class ThemeManager(QtGui.QWidget):
                     translate('OpenLP.ThemeManager', 'Theme Exists'),
                     translate('OpenLP.ThemeManager',
                         'A theme with this name already '
-                        'exists.  Would you like to overwrite it?'),
+                        'exists. Would you like to overwrite it?'),
                     (QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
                     QtGui.QMessageBox.No)
             if self.saveThemeName != u'':

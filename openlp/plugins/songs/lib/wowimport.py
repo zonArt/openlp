@@ -119,7 +119,7 @@ class WowImport(SongImport):
                 # TODO: check that it is a valid words of worship file (could 
                 # check header for WoW File Song Word)
                 self.author = u''
-                self.copyright= u''
+                self.copyright = u''
                 # Get the song title
                 self.file_name = os.path.split(file)[1]
                 self.import_wizard.incrementProgressBar(

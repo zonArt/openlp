@@ -279,7 +279,8 @@ class ServiceManager(QtGui.QWidget):
         self.editAction.setVisible(False)
         self.maintainAction.setVisible(False)
         self.notesAction.setVisible(False)
-        if serviceItem[u'service_item'].is_capable(ItemCapabilities.AllowsEdit):
+        if serviceItem[u'service_item'].is_capable(ItemCapabilities.AllowsEdit) \
+            and hasattr(serviceItem[u'service_item'], u'editId'):
             self.editAction.setVisible(True)
         if serviceItem[u'service_item']\
             .is_capable(ItemCapabilities.AllowsMaintain):
@@ -632,6 +633,8 @@ class ServiceManager(QtGui.QWidget):
 
     def onLoadService(self, lastService=False):
         if lastService:
+            if not self.parent.recentFiles:
+                return
             filename = self.parent.recentFiles[0]
         else:
             filename = QtGui.QFileDialog.getOpenFileName(

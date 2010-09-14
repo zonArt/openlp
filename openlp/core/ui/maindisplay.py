@@ -120,7 +120,7 @@ class MainDisplay(DisplayWidget):
         self.setScene(self.scene)
         self.webView = QtWebKit.QGraphicsWebView()
         self.scene.addItem(self.webView)
-        self.webView.resize(self.screen[u'size'].width(), \
+        self.webView.resize(self.screen[u'size'].width(),
             self.screen[u'size'].height())
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
@@ -303,6 +303,9 @@ class MainDisplay(DisplayWidget):
         Generates a preview of the image displayed.
         """
         log.debug(u'preview for %s', self.isLive)
+        # We must have a service item to preview
+        if not hasattr(self, u'serviceItem'):
+            return
         if self.isLive:
             # Wait for the fade to finish before geting the preview.
             # Important otherwise preview will have incorrect text if at all !
@@ -336,7 +339,7 @@ class MainDisplay(DisplayWidget):
         self.loaded = False
         self.initialFrame = False
         self.serviceItem = serviceItem
-        html = build_html(self.serviceItem, self.screen, self.parent.alertTab,\
+        html = build_html(self.serviceItem, self.screen, self.parent.alertTab,
             self.isLive)
         self.webView.setHtml(html)
         if serviceItem.foot_text and serviceItem.foot_text:

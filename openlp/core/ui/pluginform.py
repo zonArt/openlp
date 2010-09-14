@@ -58,6 +58,9 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         Load the plugin details into the screen
         """
         self.pluginListWidget.clear()
+        self.programaticChange = True
+        self._clearDetails()
+        self.programaticChange = True
         for plugin in self.parent.plugin_manager.plugins:
             item = QtGui.QListWidgetItem(self.pluginListWidget)
             # We do this just to make 100% sure the status is an integer as
