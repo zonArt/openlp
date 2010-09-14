@@ -86,13 +86,13 @@ class MediaManagerItem(QtGui.QWidget):
     """
     log.info(u'Media Item loaded')
 
-    def __init__(self, parent=None, icon=None, title=None, plugin=None):
+    def __init__(self, parent=None, plugin=None, icon=None, title=None):
         """
         Constructor to create the media manager item.
         """
         QtGui.QWidget.__init__(self)
         self.parent = parent
-        # TODO: plugin is not the parent, so add this to the calling plugins
+        #TODO: change parent to plugin
         self.plugin = parent
         self.settingsSection = self.plugin.name_lower
         if isinstance(icon, QtGui.QIcon):

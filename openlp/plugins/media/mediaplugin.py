@@ -70,7 +70,7 @@ class MediaPlugin(Plugin):
 
     def getMediaManagerItem(self):
         # Create the MediaManagerItem object
-        return MediaMediaItem(self, self.icon, self.name)
+        return MediaMediaItem(self, self, self.icon, self.name)
 
     def about(self):
         about_text = translate('MediaPlugin', '<strong>Media Plugin</strong>'

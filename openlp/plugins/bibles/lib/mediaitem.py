@@ -53,10 +53,10 @@ class BibleMediaItem(MediaManagerItem):
     """
     log.info(u'Bible Media Item loaded')
 
-    def __init__(self, parent, icon, title):
+    def __init__(self, parent, plugin, icon, title):
         self.IconPath = u'songs/song'
         self.ListViewWithDnD_class = BibleListView
-        MediaManagerItem.__init__(self, parent, icon, title)
+        MediaManagerItem.__init__(self, parent, self, icon, title)
         # place to store the search results for both bibles
         self.search_results = {}
         self.dual_search_results = {}

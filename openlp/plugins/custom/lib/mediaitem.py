@@ -46,12 +46,12 @@ class CustomMediaItem(MediaManagerItem):
     """
     log.info(u'Custom Media Item loaded')
 
-    def __init__(self, parent, icon, title):
+    def __init__(self, parent, plugin, icon, title):
         self.IconPath = u'custom/custom'
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = CustomListView
-        MediaManagerItem.__init__(self, parent, icon, title)
+        MediaManagerItem.__init__(self, parent, self, icon, title)
         self.singleServiceItem = False
         # Holds information about whether the edit is remotly triggered and
         # which Custom is required.

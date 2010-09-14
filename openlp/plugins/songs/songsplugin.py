@@ -70,7 +70,7 @@ class SongsPlugin(Plugin):
         Create the MediaManagerItem object, which is displaed in the
         Media Manager.
         """
-        return SongMediaItem(self, self.icon, self.name)
+        return SongMediaItem(self, self, self.icon, self.name)
 
     def addImportMenuItem(self, import_menu):
         """

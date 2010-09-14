@@ -42,7 +42,7 @@ class ImagePlugin(Plugin):
 
     def getMediaManagerItem(self):
         # Create the MediaManagerItem object
-        return ImageMediaItem(self, self.icon, self.name)
+        return ImageMediaItem(self, self, self.icon, self.name)
 
     def about(self):
         about_text = translate('ImagePlugin', '<strong>Image Plugin</strong>'

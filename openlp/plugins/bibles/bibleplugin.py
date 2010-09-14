@@ -62,7 +62,7 @@ class BiblePlugin(Plugin):
 
     def getMediaManagerItem(self):
         # Create the BibleManagerItem object.
-        return BibleMediaItem(self, self.icon, self.name)
+        return BibleMediaItem(self, self, self.icon, self.name)
 
     def addImportMenuItem(self, import_menu):
         self.importBibleItem = QtGui.QAction(import_menu)

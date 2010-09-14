@@ -59,7 +59,7 @@ class CustomPlugin(Plugin):
 
     def getMediaManagerItem(self):
         # Create the CustomManagerItem object
-        return CustomMediaItem(self, self.icon, self.name)
+        return CustomMediaItem(self, self, self.icon, self.name)
 
     def about(self):
         about_text = translate('CustomPlugin', '<strong>Custom Plugin</strong>'
