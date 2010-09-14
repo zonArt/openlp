@@ -81,17 +81,14 @@ body {
 </style>
 <script language="javascript">
     var timer = null;
+    var video_timer = null;
     var transition = %s;
 
     function show_video(state, path, volume, loop){
         var vid = document.getElementById('video');
-        if(path != null)
+        if(path != null){
             vid.src = path;
-        if(loop != null){
-            if(loop)
-                vid.loop = 'loop';
-            else
-                vid.loop = '';
+            vid.load();
         }
         if(volume != null){
             vid.volume = volume;
@@ -100,23 +97,55 @@ body {
             case 'play':
                 vid.play();
                 vid.style.display = 'block';
+                if(loop)
+                    video_timer = setInterval('video_loop()', 200);
                 break;
             case 'pause':
+                if(video_timer!=null){
+                    clearInterval(video_timer);
+                    video_timer = null;
+                }
                 vid.pause();
                 vid.style.display = 'block';
                 break;
             case 'stop':
+                if(video_timer!=null){
+                    clearInterval(video_timer);
+                    video_timer = null;
+                }
                 vid.pause();
                 vid.style.display = 'none';
+                vid.load();
                 break;
             case 'close':
+                if(video_timer!=null){
+                    clearInterval(video_timer);
+                    video_timer = null;
+                }
                 vid.pause();
                 vid.style.display = 'none';
                 vid.src = '';
                 break;
         }
     }
-
+    function video_loop(){
+        // The preferred method would be to use the video tag loop attribute
+        // But QtWebKit doesn't support this. Neither does it support the
+        // onended event, hence the setInterval()
+        // In addition, setting the currentTime attribute to zero to restart
+        // the video raises an INDEX_SIZE_ERROR: DOM Exception 1
+        // To complicate it further, sometimes vid.currentTime stops 
+        // slightly short of vid.duration and vid.ended is intermittent!
+        //
+        // Note, currently the background may go black between loops. Not 
+        // desirable. Need to investigate using two <video>'s, and hiding/
+        // preloading one, and toggle between the two when looping.
+        var vid = document.getElementById('video');
+        if(vid.ended||vid.currentTime+0.2>=vid.duration){
+            vid.load();
+            vid.play();
+        } 
+    }
     function show_image(src){
         var img = document.getElementById('image');
         img.src = src;
