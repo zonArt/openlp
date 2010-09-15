@@ -291,7 +291,6 @@ class SongImport(QtCore.QObject):
                 versetag = newversetag
             sxml.add_verse_to_lyrics(versetype, versetag[1:], versetext)
             song.search_lyrics += u' ' + self.remove_punctuation(versetext)
-        # print verses_changed_to_other
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
         for i, current_verse_tag in enumerate(self.verse_order_list):
             if verses_changed_to_other.has_key(current_verse_tag):

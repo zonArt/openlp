@@ -119,7 +119,7 @@ class OpenSongImport(SongImport):
         multiple opensong files. If `self.commit` is set False, the
         import will not be committed to the database (useful for test scripts).
         """
-        success = False
+        success = True
         numfiles = 0
         for filename in self.filenames:
             ext = os.path.splitext(filename)[1]
@@ -157,7 +157,8 @@ class OpenSongImport(SongImport):
                 if self.stop_import_flag:
                     success = False
                     break
-            else: # not a zipfile
+            else:
+                # not a zipfile
                 log.info('Direct import %s', filename)
                 self.import_wizard.incrementProgressBar(
                     unicode(translate('SongsPlugin.ImportWizardForm',
@@ -244,9 +245,7 @@ class OpenSongImport(SongImport):
             if thisline[0].isdigit():
                 versenum = thisline[0]
                 words = thisline[1:].strip()
-            if words is None:# and \
-                   #versenum is not None and \
-                   #versetype is not None:
+            if words is None:
                 words = thisline
                 if not versenum: 
                     versenum = u'1'
@@ -295,9 +294,11 @@ class OpenSongImport(SongImport):
                 log.warn(u'No verse order available (either explicit or inferred) for %s, skipping.', self.title)
         for tag in order:
             if tag[0].isdigit():
-                tag = u'V' + tag # Assume it's a verse if it has no prefix
+                # Assume it's a verse if it has no prefix
+                tag = u'V' + tag 
             elif not re.search('\d+', tag):
-                tag = tag + u'1' # Assume it's no.1 if there's no digits
+                # Assume it's no.1 if there's no digits
+                tag = tag + u'1'
             if not versetags.has_key(tag):
                 log.info(u'Got order %s but not in versetags, dropping this item from presentation order', tag)
             else:
