@@ -147,6 +147,9 @@ class OpenLP(QtGui.QApplication):
         return self.exec_()
 
     def hookException(self, exctype, value, traceback):
+        if not hasattr(self, u'mainWindow')
+            log.exception(''.join(format_exception(exctype, value, traceback)))
+            return
         if not hasattr(self, u'exceptionForm'):
             self.exceptionForm = ExceptionForm(self.mainWindow)
         self.exceptionForm.exceptionTextEdit.setPlainText(
@@ -161,6 +164,9 @@ def main():
     # Set up command line options.
     usage = u'Usage: %prog [options] [qt-options]'
     parser = OptionParser(usage=usage)
+    parser.add_option("-e", "--no-error-form", dest="no_error_form",
+                      action="store_true",
+                      help="Disable the error notification form.")
     parser.add_option("-l", "--log-level", dest="loglevel",
                       default="warning", metavar="LEVEL",
                       help="Set logging to LEVEL level. Valid values are "
@@ -203,7 +209,8 @@ def main():
     language = LanguageManager.get_language()
     appTranslator = LanguageManager.get_translator(language)
     app.installTranslator(appTranslator)
-    sys.excepthook = app.hookException
+    if not options.no_error_form:
+        sys.excepthook = app.hookException
     sys.exit(app.run())
 
 if __name__ == u'__main__':

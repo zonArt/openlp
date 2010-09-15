@@ -71,8 +71,7 @@ class SongImport(QtCore.QObject):
         self.song_book_pub = u''
         self.verse_order_list = []
         self.verses = []
-        self.versecount = 0
-        self.choruscount = 0
+        self.versecounts = {}
         self.copyright_string = unicode(translate(
             'SongsPlugin.SongImport', 'copyright'))
         self.copyright_symbol = unicode(translate(
@@ -193,7 +192,7 @@ class SongImport(QtCore.QObject):
             return
         self.media_files.append(filename)
 
-    def add_verse(self, verse, versetag=None):
+    def add_verse(self, verse, versetag=u'V'):
         """
         Add a verse. This is the whole verse, lines split by \n
         Verse tag can be V1/C1/B etc, or 'V' and 'C' (will count the verses/
@@ -205,13 +204,14 @@ class SongImport(QtCore.QObject):
             if oldverse.strip() == verse.strip():
                 self.verse_order_list.append(oldversetag)
                 return
-        if versetag == u'V' or not versetag:
-            self.versecount += 1
-            versetag = u'V' + unicode(self.versecount)
-        if versetag.startswith(u'C'):
-            self.choruscount += 1
-        if versetag == u'C':
-            versetag += unicode(self.choruscount)
+        if versetag[0] in self.versecounts:
+            self.versecounts[versetag[0]] += 1
+        else:
+            self.versecounts[versetag[0]] = 1
+        if len(versetag) == 1:
+            versetag += unicode(self.versecounts[versetag[0]])
+        elif int(versetag[1:]) > self.versecounts[versetag[0]]:
+            self.versecounts[versetag[0]] = int(versetag[1:])
         self.verses.append([versetag, verse.rstrip()])
         self.verse_order_list.append(versetag)
         if versetag.startswith(u'V') and self.contains_verse(u'C1'):

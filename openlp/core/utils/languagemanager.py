@@ -55,7 +55,7 @@ class LanguageManager(object):
         if LanguageManager.AutoLanguage:
             language = QtCore.QLocale.system().name()
         lang_path = AppLocation.get_directory(AppLocation.AppDir)
-        lang_path = os.path.join(lang_path, u'resources', u'i18n')
+        lang_path = os.path.join(lang_path, u'i18n')
         app_translator = QtCore.QTranslator()
         if app_translator.load("openlp_" + language, lang_path):
             return app_translator
@@ -66,7 +66,7 @@ class LanguageManager(object):
         Find all available language files in this OpenLP install
         """
         trans_dir = AppLocation.get_directory(AppLocation.AppDir)
-        trans_dir = QtCore.QDir(os.path.join(trans_dir, u'resources', u'i18n'))
+        trans_dir = QtCore.QDir(os.path.join(trans_dir, u'i18n'))
         file_names = trans_dir.entryList(QtCore.QStringList("*.qm"),
                 QtCore.QDir.Files, QtCore.QDir.Name)
         for name in file_names:
