@@ -235,8 +235,8 @@ class OpenSongImport(SongImport):
                 if match is not None:
                     versetype = match.group(1)
                     versenum = match.group(2)
-                # otherwise we assume number 1 and take the whole prefix as versetype
                 else:
+                    # otherwise we assume number 1 and take the whole prefix as versetype
                     versetype = content
                     versenum = u'1'
                 continue
