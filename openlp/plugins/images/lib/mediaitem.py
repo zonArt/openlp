@@ -49,12 +49,12 @@ class ImageMediaItem(MediaManagerItem):
     """
     log.info(u'Image Media Item loaded')
 
-    def __init__(self, parent, plugin, icon, title):
+    def __init__(self, parent, plugin, icon):
         self.IconPath = u'images/image'
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = ImageListView
-        MediaManagerItem.__init__(self, parent, self, icon, title)
+        MediaManagerItem.__init__(self, parent, self, icon)
 
     def retranslateUi(self):
         self.OnNewPrompt = translate('ImagePlugin.MediaItem',

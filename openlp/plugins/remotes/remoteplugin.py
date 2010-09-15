@@ -65,7 +65,8 @@ class RemotesPlugin(Plugin):
         """
         Create the settings Tab
         """
-        return RemoteTab(self.name)
+        media_item_string = self.getString(StringType.MediaItem)
+        return RemoteTab(media_item_string[u'title'])
 
     def about(self):
         """
@@ -84,8 +85,12 @@ class RemotesPlugin(Plugin):
         self.name = u'Remotes'
         self.name_lower = u'remotes'
         self.strings = {}
-        # for names in mediamanagerdock and pluginlist
+        ## Name PluginList ##
         self.strings[StringType.Name] = {
             u'singular': translate('RemotePlugin', 'Remote'),
             u'plural': translate('RemotePlugin', 'Remotes')
+        }
+        ## Name for MediaDockManager, SettingsManager ##
+        self.strings[StringType.MediaItem] = {
+            u'title': translate('RemotePlugin', 'Remotes')
         }

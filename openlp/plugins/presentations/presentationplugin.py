@@ -60,7 +60,8 @@ class PresentationPlugin(Plugin):
         """
         Create the settings Tab
         """
-        return PresentationTab(self.name, self.controllers)
+        media_item_string = self.getString(StringType.MediaItem)
+        return PresentationTab(media_item_string[u'title'], self.controllers)
 
     def initialise(self):
         """
@@ -151,10 +152,14 @@ class PresentationPlugin(Plugin):
         self.name = u'Presentations'
         self.name_lower = u'presentations'
         self.strings = {}
-        # for names in mediamanagerdock and pluginlist
+        ## Name PluginList ##
         self.strings[StringType.Name] = {
             u'singular': translate('PresentationPlugin', 'Presentation'),
             u'plural': translate('PresentationPlugin', 'Presentations')
+        }
+        ## Name for MediaDockManager, SettingsManager ##
+        self.strings[StringType.MediaItem] = {
+            u'title': translate('PresentationPlugin', 'Presentations')
         }
         # Middle Header Bar
         ## Load Button ##

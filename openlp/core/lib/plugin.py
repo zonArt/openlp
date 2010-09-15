@@ -52,6 +52,7 @@ class StringType(object):
     Preview = u'preview'
     Live = u'live'
     Service = u'service'
+    MediaItem = u'media_item'
 
 class Plugin(QtCore.QObject):
     """
@@ -271,7 +272,7 @@ class Plugin(QtCore.QObject):
         if self.mediaItem:
             self.mediadock.remove_dock(self.mediaItem)
         if self.settings_tab:
-            self.settingsForm.removeTab(self.name)
+            self.settingsForm.removeTab(self.settings_tab)
 
     def insertToolboxItem(self):
         """

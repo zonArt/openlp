@@ -107,11 +107,11 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         if self.pluginListWidget.currentItem() is None:
             self._clearDetails()
             return
-        plugin_name_more = self.pluginListWidget.currentItem().text().split(u' ')[0]
+        plugin_name_plural = self.pluginListWidget.currentItem().text().split(u' ')[0]
         self.activePlugin = None
         for plugin in self.parent.plugin_manager.plugins:
             name_string = plugin.getString(StringType.Name)
-            if name_string[u'plural'] == plugin_name_more:
+            if name_string[u'plural'] == plugin_name_plural:
                 self.activePlugin = plugin
                 break
         if self.activePlugin:

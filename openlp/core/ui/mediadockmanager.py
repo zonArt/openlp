@@ -26,6 +26,8 @@
 
 import logging
 
+from openlp.core.lib import StringType
+
 log = logging.getLogger(__name__)
 
 class MediaDockManager(object):
@@ -48,8 +50,9 @@ class MediaDockManager(object):
         ``icon``
             An icon for this dock item
         """
-        log.info(u'Adding %s dock' % media_item.plugin.name)
-        self.media_dock.addItem(media_item, icon, media_item.plugin.name)
+        media_item_string = media_item.plugin.getString(StringType.MediaItem)
+        log.info(u'Adding %s dock' % media_item_string)
+        self.media_dock.addItem(media_item, icon, media_item_string[u'title'])
 
     def insert_dock(self, media_item, icon, weight):
         """
@@ -57,7 +60,8 @@ class MediaDockManager(object):
         This does not work as it gives a Segmentation error.
         For now add at end of stack if not present
         """
-        log.debug(u'Inserting %s dock' % media_item.plugin.name)
+        media_item_string = media_item.plugin.getString(StringType.MediaItem)
+        log.debug(u'Inserting %s dock' % media_item_string[u'title'])
         match = False
         for dock_index in range(0, self.media_dock.count()):
             if self.media_dock.widget(dock_index).settingsSection == \
@@ -65,7 +69,7 @@ class MediaDockManager(object):
                 match = True
                 break
         if not match:
-            self.media_dock.addItem(media_item, icon, media_item.plugin.name)
+            self.media_dock.addItem(media_item, icon, media_item_string[u'title'])
 
     def remove_dock(self, media_item):
         """
@@ -74,7 +78,8 @@ class MediaDockManager(object):
         ``media_item``
             The item to add to the dock
         """
-        log.debug(u'remove %s dock' % media_item.plugin.name)
+        media_item_string = media_item.plugin.getString(StringType.MediaItem)
+        log.debug(u'remove %s dock' % media_item_string[u'title'])
         for dock_index in range(0, self.media_dock.count()):
             if self.media_dock.widget(dock_index):
                 if self.media_dock.widget(dock_index).settingsSection == \

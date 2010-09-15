@@ -52,12 +52,13 @@ class MediaManagerItem(QtGui.QWidget):
         The parent widget. Usually this will be the *Media Manager*
         itself. This needs to be a class descended from ``QWidget``.
 
+    ``plugin``
+        The plugin widget. Usually this will be the *Plugin*
+        itself. This needs to be a class descended from ``Plugin``.
+
     ``icon``
         Either a ``QIcon``, a resource path, or a file name. This is
         the icon which is displayed in the *Media Manager*.
-
-    ``title``
-        The title visible on the item in the *Media Manager*.
 
     **Member Variables**
 
@@ -86,14 +87,16 @@ class MediaManagerItem(QtGui.QWidget):
     """
     log.info(u'Media Item loaded')
 
-    def __init__(self, parent=None, plugin=None, icon=None, title=None):
+    def __init__(self, parent=None, plugin=None, icon=None):
         """
         Constructor to create the media manager item.
         """
         QtGui.QWidget.__init__(self)
         self.parent = parent
-        #TODO: change parent to plugin
-        self.plugin = parent
+        #TODO: plugin should not be the parent in future
+        self.plugin = parent#plugin
+        media_title_string = self.plugin.getString(StringType.MediaItem)
+        self.title = media_title_string[u'title']
         self.settingsSection = self.plugin.name_lower
         if isinstance(icon, QtGui.QIcon):
             self.icon = icon
@@ -102,9 +105,6 @@ class MediaManagerItem(QtGui.QWidget):
                 QtGui.QIcon.Normal, QtGui.QIcon.Off)
         else:
             self.icon = None
-        if title:
-            name_string = self.plugin.getString(StringType.Name)
-            self.title = name_string[u'plural']
         self.toolbar = None
         self.remoteTriggered = None
         self.serviceItemIconName = None
@@ -276,12 +276,13 @@ class MediaManagerItem(QtGui.QWidget):
         self.pageLayout.addWidget(self.listView)
         #define and add the context menu
         self.listView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+        name_string = self.plugin.getString(StringType.Name)
         if self.hasEditIcon:
             self.listView.addAction(
                 context_menu_action(
                     self.listView, u':/general/general_edit.png',
                     unicode(translate('OpenLP.MediaManagerItem', '&Edit %s')) %
-                    self.plugin.name,
+                    name_string[u'singular'],
                     self.onEditClick))
             self.listView.addAction(context_menu_separator(self.listView))
         if self.hasDeleteIcon:
@@ -290,14 +291,14 @@ class MediaManagerItem(QtGui.QWidget):
                     self.listView, u':/general/general_delete.png',
                     unicode(translate('OpenLP.MediaManagerItem',
                         '&Delete %s')) %
-                    self.plugin.name,
+                    name_string[u'singular'],
                     self.onDeleteClick))
             self.listView.addAction(context_menu_separator(self.listView))
         self.listView.addAction(
             context_menu_action(
                 self.listView, u':/general/general_preview.png',
                 unicode(translate('OpenLP.MediaManagerItem', '&Preview %s')) %
-                self.plugin.name,
+                name_string[u'singular'],
                 self.onPreviewClick))
         self.listView.addAction(
             context_menu_action(

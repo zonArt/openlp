@@ -55,11 +55,12 @@ class CustomPlugin(Plugin):
         self.icon = build_icon(self.icon_path)
 
     def getSettingsTab(self):
-        return CustomTab(self.name)
+        media_item_string = self.getString(StringType.MediaItem)
+        return CustomTab(media_item_string[u'title'])
 
     def getMediaManagerItem(self):
         # Create the CustomManagerItem object
-        return CustomMediaItem(self, self, self.icon, self.name)
+        return CustomMediaItem(self, self, self.icon)
 
     def about(self):
         about_text = translate('CustomPlugin', '<strong>Custom Plugin</strong>'
@@ -103,10 +104,14 @@ class CustomPlugin(Plugin):
         self.name = u'Custom'
         self.name_lower = u'custom'
         self.strings = {}
-        # for names in mediamanagerdock and pluginlist
+        ## Name PluginList ##
         self.strings[StringType.Name] = {
             u'singular': translate('CustomsPlugin', 'Custom'),
             u'plural': translate('CustomsPlugin', 'Customs')
+        }
+        ## Name for MediaDockManager, SettingsManager ##
+        self.strings[StringType.MediaItem] = {
+            u'title': translate('CustomsPlugin', 'Customs')
         }
         # Middle Header Bar
         ## Import Button ##

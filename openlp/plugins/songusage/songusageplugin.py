@@ -170,8 +170,12 @@ class SongUsagePlugin(Plugin):
         self.name = u'SongUsage'
         self.name_lower = u'songusage'
         self.strings = {}
-        # for names in mediamanagerdock and pluginlist
+        ## Name PluginList ##
         self.strings[StringType.Name] = {
             u'singular': translate('SongUsagePlugin', 'SongUsage'),
             u'plural': translate('SongUsagePlugin', 'SongUsage')
+        }
+        ## Name for MediaDockManager, SettingsManager ##
+        self.strings[StringType.MediaItem] = {
+            u'title': translate('SongUsagePlugin', 'SongUsage')
         }

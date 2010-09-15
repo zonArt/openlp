@@ -934,7 +934,7 @@ Changes do not affect verses already in the service.</source>
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="109"/>
         <source>Customs</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sonderfolien</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="114"/>
@@ -1168,7 +1168,7 @@ Changes do not affect verses already in the service.</source>
     <message>
         <location filename="openlp/plugins/media/mediaplugin.py" line="89"/>
         <source>Medias</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Medien</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/mediaplugin.py" line="94"/>
@@ -2526,17 +2526,17 @@ You can download the latest version from http://openlp.org/.</source>
     <message>
         <location filename="openlp/core/ui/pluginform.py" line="137"/>
         <source>%s (Inactive)</source>
-        <translation></translation>
+        <translation>%s (Inaktiv)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/pluginform.py" line="134"/>
         <source>%s (Active)</source>
-        <translation></translation>
+        <translation>%s (Aktiv)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/pluginform.py" line="140"/>
         <source>%s (Disabled)</source>
-        <translation></translation>
+        <translation>%s (Deaktiviert)</translation>
     </message>
 </context>
 <context>

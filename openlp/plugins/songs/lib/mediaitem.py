@@ -48,10 +48,10 @@ class SongMediaItem(MediaManagerItem):
     """
     log.info(u'Song Media Item loaded')
 
-    def __init__(self, parent, plugin, icon, title):
+    def __init__(self, parent, plugin, icon):
         self.IconPath = u'songs/song'
         self.ListViewWithDnD_class = SongListView
-        MediaManagerItem.__init__(self, parent, self, icon, title)
+        MediaManagerItem.__init__(self, parent, self, icon)
         self.edit_song_form = EditSongForm(self, self.parent.manager)
         self.singleServiceItem = False
         #self.edit_song_form = EditSongForm(self.parent.manager, self)

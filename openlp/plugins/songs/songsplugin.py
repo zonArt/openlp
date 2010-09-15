@@ -57,7 +57,8 @@ class SongsPlugin(Plugin):
         self.icon = build_icon(self.icon_path)
 
     def getSettingsTab(self):
-        return SongsTab(self.name)
+        media_item_string = self.getString(StringType.MediaItem)
+        return SongsTab(media_item_string[u'title'])
 
     def initialise(self):
         log.info(u'Songs Initialising')
@@ -70,7 +71,7 @@ class SongsPlugin(Plugin):
         Create the MediaManagerItem object, which is displaed in the
         Media Manager.
         """
-        return SongMediaItem(self, self, self.icon, self.name)
+        return SongMediaItem(self, self, self.icon)
 
     def addImportMenuItem(self, import_menu):
         """
@@ -155,10 +156,14 @@ class SongsPlugin(Plugin):
         self.name = u'Songs'
         self.name_lower = u'songs'
         self.strings = {}
-        # for names in mediamanagerdock and pluginlist
+        ## Name PluginList ##
         self.strings[StringType.Name] = {
             u'singular': translate('SongsPlugin', 'Song'),
             u'plural': translate('SongsPlugin', 'Songs')
+        }
+        ## Name for MediaDockManager, SettingsManager ##
+        self.strings[StringType.MediaItem] = {
+            u'title': translate('SongsPlugin', 'Songs')
         }
         # Middle Header Bar
         ## New Button ##

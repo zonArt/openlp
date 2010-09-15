@@ -42,7 +42,7 @@ class ImagePlugin(Plugin):
 
     def getMediaManagerItem(self):
         # Create the MediaManagerItem object
-        return ImageMediaItem(self, self, self.icon, self.name)
+        return ImageMediaItem(self, self, self.icon)
 
     def about(self):
         about_text = translate('ImagePlugin', '<strong>Image Plugin</strong>'
@@ -65,10 +65,14 @@ class ImagePlugin(Plugin):
         self.name = u'Images'
         self.name_lower = u'images'
         self.strings = {}
-        # for names in mediamanagerdock and pluginlist
+        ## Name PluginList ##
         self.strings[StringType.Name] = {
             u'singular': translate('ImagePlugin', 'Image'),
             u'plural': translate('ImagePlugin', 'Images')
+        }
+        ## Name for MediaDockManager, SettingsManager ##
+        self.strings[StringType.MediaItem] = {
+            u'title': translate('ImagePlugin', 'Images')
         }
         # Middle Header Bar
         ## Load Button ##

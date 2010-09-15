@@ -109,8 +109,12 @@ class AlertsPlugin(Plugin):
         self.name = u'Alerts'
         self.name_lower = u'alerts'
         self.strings = {}
-        # for names in mediamanagerdock and pluginlist
+        ## Name PluginList ##
         self.strings[StringType.Name] = {
             u'singular': translate('AlertsPlugin', 'Alert'),
             u'plural': translate('AlertsPlugin', 'Alerts')
+        }
+        ## Name for MediaDockManager, SettingsManager ##
+        self.strings[StringType.MediaItem] = {
+            u'title': translate('AlertsPlugin', 'Alerts')
         }

@@ -58,11 +58,12 @@ class BiblePlugin(Plugin):
         self.exportBibleItem.setVisible(False)
 
     def getSettingsTab(self):
-        return BiblesTab(self.name)
+        media_item_string = self.getString(StringType.MediaItem)
+        return BiblesTab(media_item_string[u'title'])
 
     def getMediaManagerItem(self):
         # Create the BibleManagerItem object.
-        return BibleMediaItem(self, self, self.icon, self.name)
+        return BibleMediaItem(self, self, self.icon)
 
     def addImportMenuItem(self, import_menu):
         self.importBibleItem = QtGui.QAction(import_menu)
@@ -124,10 +125,14 @@ class BiblePlugin(Plugin):
         self.name = u'Bibles'
         self.name_lower = u'Bibles'
         self.strings = {}
-        # for names in mediamanagerdock and pluginlist
+        ## Name PluginList ##
         self.strings[StringType.Name] = {
             u'singular': translate('BiblesPlugin', 'Bible'),
             u'plural': translate('BiblesPlugin', 'Bibles')
+        }
+        ## Name for MediaDockManager, SettingsManager ##
+        self.strings[StringType.MediaItem] = {
+            u'title': translate('BiblesPlugin', 'Bibles')
         }
         # Middle Header Bar
         ## Import Button ##
