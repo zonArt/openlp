@@ -65,12 +65,6 @@ class BibleMediaItem(MediaManagerItem):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'bibles_load_list'), self.reloadBibles)
 
-    def _decodeQtObject(self, listobj, key):
-        obj = listobj[QtCore.QString(key)]
-        if isinstance(obj, QtCore.QVariant):
-            obj = obj.toPyObject()
-        return unicode(obj)
-
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
         self.hasImportIcon = True
@@ -494,6 +488,14 @@ class BibleMediaItem(MediaManagerItem):
             if self.QuickSecondBibleComboBox.findText(u'') == -1:
                 self.QuickSecondBibleComboBox.insertItem(0, u'')
 
+    def _decodeQtObject(self, listobj, key):
+        if isinstance(listobj, QtCore.QVariant):
+            listobj = listobj.toPyObject()
+        obj = listobj[QtCore.QString(key)]
+        if isinstance(obj, QtCore.QVariant):
+            obj = obj.toPyObject()
+        return unicode(obj)
+
     def generateSlideData(self, service_item, item=None):
         """
         Generates and formats the slides for the service item as well as the
@@ -514,8 +516,6 @@ class BibleMediaItem(MediaManagerItem):
         for item in items:
             bitem = self.listView.item(item.row())
             reference = bitem.data(QtCore.Qt.UserRole)
-            if isinstance(reference, QtCore.QVariant):
-                reference = reference.toPyObject()
             book = self._decodeQtObject(reference, 'book')
             chapter = int(self._decodeQtObject(reference, 'chapter'))
             verse = int(self._decodeQtObject(reference, 'verse'))
@@ -525,13 +525,10 @@ class BibleMediaItem(MediaManagerItem):
             permission = self._decodeQtObject(reference, 'permission')
             text = self._decodeQtObject(reference, 'text')
             dual_bible = self._decodeQtObject(reference, 'dual_bible')
-            if dual_bible:
-                dual_version = self._decodeQtObject(reference, 'dual_version')
-                dual_copyright = self._decodeQtObject(reference,
-                    'dual_copyright')
-                dual_permission = self._decodeQtObject(reference,
-                    'dual_permission')
-                dual_text = self._decodeQtObject(reference, 'dual_text')
+            dual_version = self._decodeQtObject(reference, 'dual_version')
+            dual_copyright = self._decodeQtObject(reference, 'dual_copyright')
+            dual_permission = self._decodeQtObject(reference, 'dual_permission')
+            dual_text = self._decodeQtObject(reference, 'dual_text')
             verse_text = self.formatVerse(old_chapter, chapter, verse)
             footer = u'%s (%s %s %s)' % (book, version, copyright, permission)
             if footer not in raw_footer:
@@ -564,7 +561,6 @@ class BibleMediaItem(MediaManagerItem):
                 start_chapter = chapter
                 start_version = version
                 first_verse = False
-                append_now = False
             elif old_bible != bible or old_dual_bible != dual_bible or \
                 old_book != book:
                 append_now = True
@@ -642,7 +638,6 @@ class BibleMediaItem(MediaManagerItem):
         if bible_text:
             raw_slides.append(bible_text)
             bible_text = u''
-        print raw_title
         # Service Item: Capabilities
         if self.parent.settings_tab.layout_style == 2 and not dual_bible:
             # split the line but do not replace line breaks in renderer
@@ -778,14 +773,15 @@ class BibleMediaItem(MediaManagerItem):
                     'copyright': QtCore.QVariant(copyright.value),
                     'permission': QtCore.QVariant(permission.value),
                     'text': QtCore.QVariant(verse.text),
-                    'dual_bible': QtCore.QVariant(dual_bible)
+                    'dual_bible': QtCore.QVariant(u''),
+                    'dual_version': QtCore.QVariant(u''),
+                    'dual_copyright': QtCore.QVariant(u''),
+                    'dual_permission': QtCore.QVariant(u''),
+                    'dual_text': QtCore.QVariant(u'')
                 }
                 bible_text = u' %s %d:%d (%s)' % (verse.book.name,
                     verse.chapter, verse.verse, version.value)
-            # set the row title
             bible_verse = QtGui.QListWidgetItem(bible_text)
-            #bible_verse.setData(QtCore.Qt.UserRole,
-            #    QtCore.QVariant(bible_text))
             bible_verse.setData(QtCore.Qt.UserRole, QtCore.QVariant(vdict))
             self.listView.addItem(bible_verse)
             row = self.listView.setCurrentRow(count + start_count)
