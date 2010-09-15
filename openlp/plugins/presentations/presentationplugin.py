@@ -159,7 +159,7 @@ class PresentationPlugin(Plugin):
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.strings[StringType.MediaItem] = {
-            u'title': translate('PresentationPlugin', 'kwPresentations')
+            u'title': translate('PresentationPlugin', 'Presentations')
         }
         # Middle Header Bar
         ## Load Button ##
