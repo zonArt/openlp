@@ -90,6 +90,18 @@ class Renderer(object):
         self._rect = rect_main
         self._rect_footer = rect_footer
 
+        self.web = QtWebKit.QWebView()
+        self.web.resize(self._rect.width(), self._rect.height())
+        self.web.setVisible(False)
+        self.web_frame = self.web.page().mainFrame()
+        # Adjust width and height to account for shadow. outline done in css
+        self.page_width = self._rect.width() - int(self._theme.display_shadow_size)
+        self.page_height = self._rect.height() - int(self._theme.display_shadow_size)
+        self.page_shell = u'<html><head><style>#main {%s %s}</style><body>' \
+            u'<div id="main">' % \
+            (build_lyrics_format_css(self._theme, self.page_width, self.page_height),
+            build_lyrics_outline_css(self._theme))
+
     def set_frame_dest(self, frame_width, frame_height):
         """
         Set the size of the slide.
@@ -139,17 +151,6 @@ class Renderer(object):
             lines = verse.split(u'\n')
             for line in lines:
                 text.append(line)
-        web = QtWebKit.QWebView()
-        web.resize(self._rect.width(), self._rect.height())
-        web.setVisible(False)
-        frame = web.page().mainFrame()
-        # Adjust width and height to account for shadow. outline done in css
-        width = self._rect.width() - int(self._theme.display_shadow_size)
-        height = self._rect.height() - int(self._theme.display_shadow_size)
-        shell = u'<html><head><style>#main {%s %s}</style><body>' \
-            u'<div id="main">' % \
-            (build_lyrics_format_css(self._theme, width, height),
-            build_lyrics_outline_css(self._theme))
         formatted = []
         html_text = u''
         styled_text = u''
@@ -157,11 +158,11 @@ class Renderer(object):
         for line in text:
             styled_line = expand_tags(line) + line_end
             styled_text += styled_line
-            html = shell + styled_text + u'</div></body></html>'
-            web.setHtml(html)
+            html = self.page_shell + styled_text + u'</div></body></html>'
+            self.web.setHtml(html)
             # Text too long so go to next page
-            text_height = int(frame.evaluateJavaScript(js_height).toString())
-            if text_height > height:
+            text_height = int(self.web_frame.evaluateJavaScript(js_height).toString())
+            if text_height > self.page_height:
                 formatted.append(html_text)
                 html_text = u''
                 styled_text = styled_line
