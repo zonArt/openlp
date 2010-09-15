@@ -178,7 +178,7 @@ class OpenSongImport(SongImport):
         self.set_defaults()
         try:
             tree = objectify.parse(file)
-        except Error, LxmlError:
+        except (Error, LxmlError):
             log.exception(u'Error parsing XML')
             return
         root = tree.getroot()
@@ -291,7 +291,8 @@ class OpenSongImport(SongImport):
             if len(our_verse_order) > 0:
                 order = our_verse_order
             else:
-                log.warn(u'No verse order available (either explicit or inferred) for %s, skipping.', self.title)
+                log.warn(u'No verse order available for %s, skipping.',
+                    self.title)
         for tag in order:
             if tag[0].isdigit():
                 # Assume it's a verse if it has no prefix

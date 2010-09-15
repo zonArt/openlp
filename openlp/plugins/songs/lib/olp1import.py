@@ -29,10 +29,7 @@ openlp.org 1.x song databases into the current installation database.
 """
 import logging
 import chardet
-try:
-    import sqlite
-except:
-    pass
+import sqlite
 
 from openlp.core.lib import translate
 from songimport import SongImport
@@ -93,9 +90,9 @@ class OpenLP1SongImport(SongImport):
         cursor.execute(u'SELECT authorid, authorname FROM authors')
         authors = cursor.fetchall()
         if new_db:
-          # "cache" our list of tracks
-          cursor.execute(u'SELECT trackid, fulltrackname FROM tracks')
-          tracks = cursor.fetchall()
+            # "cache" our list of tracks
+            cursor.execute(u'SELECT trackid, fulltrackname FROM tracks')
+            tracks = cursor.fetchall()
         # Import the songs
         cursor.execute(u'SELECT songid, songtitle, lyrics || \'\' AS lyrics, '
             u'copyrightinfo FROM songs')

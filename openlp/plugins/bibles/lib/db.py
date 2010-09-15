@@ -353,7 +353,7 @@ class BibleDB(QtCore.QObject, Manager):
                 QtGui.QMessageBox.information(self.bible_plugin.mediaItem,
                     translate('BiblesPlugin.BibleDB', 'Book not found'),
                     translate('BiblesPlugin.BibleDB', 'The book you requested '
-                        'could not be found in this bible.  Please check your '
+                        'could not be found in this bible. Please check your '
                         'spelling and that this is a complete bible not just '
                         'one testament.'))
         return verse_list
