@@ -147,6 +147,9 @@ class OpenLP(QtGui.QApplication):
         return self.exec_()
 
     def hookException(self, exctype, value, traceback):
+        if not hasattr(self, u'mainWindow'):
+            log.exception(''.join(format_exception(exctype, value, traceback)))
+            return
         if not hasattr(self, u'exceptionForm'):
             self.exceptionForm = ExceptionForm(self.mainWindow)
         self.exceptionForm.exceptionTextEdit.setPlainText(
@@ -161,16 +164,16 @@ def main():
     # Set up command line options.
     usage = u'Usage: %prog [options] [qt-options]'
     parser = OptionParser(usage=usage)
-    parser.add_option("-l", "--log-level", dest="loglevel",
-                      default="warning", metavar="LEVEL",
-                      help="Set logging to LEVEL level. Valid values are "
-                           "\"debug\", \"info\", \"warning\".")
-    parser.add_option("-p", "--portable", dest="portable",
-                      action="store_true",
-                      help="Specify if this should be run as a portable app, "
-                           "off a USB flash drive.")
-    parser.add_option("-s", "--style", dest="style",
-                      help="Set the Qt4 style (passed directly to Qt4).")
+    parser.add_option(u'-e', u'--no-error-form', dest=u'no_error_form',
+        action=u'store_true', help=u'Disable the error notification form.')
+    parser.add_option(u'-l', u'--log-level', dest=u'loglevel',
+        default=u'warning', metavar=u'LEVEL', help=u'Set logging to LEVEL '
+        u'level. Valid values are "debug", "info", "warning".')
+    parser.add_option(u'-p', u'--portable', dest=u'portable',
+        action=u'store_true', help=u'Specify if this should be run as a '
+        u'portable app, off a USB flash drive (not implemented).')
+    parser.add_option(u'-s', u'--style', dest=u'style',
+        help=u'Set the Qt4 style (passed directly to Qt4).')
     # Set up logging
     log_path = AppLocation.get_directory(AppLocation.CacheDir)
     if not os.path.exists(log_path):
@@ -203,7 +206,8 @@ def main():
     language = LanguageManager.get_language()
     appTranslator = LanguageManager.get_translator(language)
     app.installTranslator(appTranslator)
-    sys.excepthook = app.hookException
+    if not options.no_error_form:
+        sys.excepthook = app.hookException
     sys.exit(app.run())
 
 if __name__ == u'__main__':
