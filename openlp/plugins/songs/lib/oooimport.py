@@ -94,6 +94,8 @@ class OooImport(SongImport):
         Start OpenOffice.org process
         TODO: The presentation/Impress plugin may already have it running
         """
+        #connection_type = u'socket'
+        connection_type = u'pipe,name=openlp_pipe:'
         if os.name == u'nt':
             self.start_ooo_process()
             self.desktop = self.manager.createInstance(
@@ -106,8 +108,9 @@ class OooImport(SongImport):
             loop = 0
             while ctx is None and loop < 5:
                 try:
-                    ctx = resolver.resolve(u'uno:socket,host=localhost,' \
-                        + 'port=2002;urp;StarOffice.ComponentContext')
+                    ctx = resolver.resolve(u'uno:' + connection_type \
+                        + u',host=localhost,' \
+                        + u'port=2002;urp;StarOffice.ComponentContext')
                 except:
                     pass
                 self.start_ooo_process()
@@ -117,6 +120,8 @@ class OooImport(SongImport):
                 "com.sun.star.frame.Desktop", ctx)
             
     def start_ooo_process(self):
+        #connection_type = u'socket'
+        connection_type = u'pipe,name=openlp_pipe:'
         try:
             if os.name == u'nt':
                 self.manager = Dispatch(u'com.sun.star.ServiceManager')
@@ -125,7 +130,8 @@ class OooImport(SongImport):
             else:
                 cmd = u'openoffice.org -nologo -norestore -minimized ' \
                     + u'-invisible -nofirststartwizard ' \
-                    + '-accept="socket,host=localhost,port=2002;urp;"'
+                    + '-accept="' + connection_type \
+                    + u'socket,host=localhost,port=2002;urp;"'
                 process = QtCore.QProcess()
                 process.startDetached(cmd)
                 process.waitForStarted()
