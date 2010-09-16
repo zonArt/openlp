@@ -102,6 +102,7 @@ class AppLocation(object):
     PluginsDir = 4
     VersionDir = 5
     CacheDir = 6
+    LanguageDir = 7
 
     @staticmethod
     def get_directory(dir_type=1):
@@ -173,6 +174,13 @@ class AppLocation(object):
                 except ImportError:
                     path = os.path.join(os.getenv(u'HOME'), u'.openlp')
             return path
+        if dir_type == AppLocation.LanguageDir:
+            if hasattr(sys, u'frozen') and sys.frozen == 1:
+                app_path = os.path.abspath(os.path.split(sys.argv[0])[0])
+            else:
+                app_path = os.path.split(openlp.__file__)[0]
+            return os.path.join(app_path, u'i18n')
+
 
     @staticmethod
     def get_data_path():
