@@ -26,14 +26,24 @@
 
 from opensongimport import OpenSongImport
 from olpimport import OpenLPSongImport
-from olp1import import OpenLP1SongImport
+from wowimport import WowImport
+from cclifileimport import CCLIFileImport
+# Imports that might fail
+try:
+    from olp1import import OpenLP1SongImport
+    has_openlp1 = True
+except ImportError:
+    has_openlp1 = False
 try:
     from sofimport import SofImport
-    from oooimport import OooImport
-    from cclifileimport import CCLIFileImport
-    from wowimport import WowImport
+    has_sof = True
 except ImportError:
-    pass
+    has_sof = False
+try:
+    from oooimport import OooImport
+    has_ooo = True
+except ImportError:
+    has_ooo = False
 
 class SongFormat(object):
     """
@@ -41,6 +51,7 @@ class SongFormat(object):
     plus a few helper functions to facilitate generic handling of song types
     for importing.
     """
+    _format_availability = {}
     Unknown = -1
     OpenLP2 = 0
     OpenLP1 = 1
@@ -92,5 +103,17 @@ class SongFormat(object):
             SongFormat.SongsOfFellowship,
             SongFormat.Generic
         ]
+
+    @staticmethod
+    def set_availability(format, available):
+        SongFormat._format_availability[format] = available
+
+    @staticmethod
+    def get_availability(format):
+        return SongFormat._format_availability.get(format, True)
+
+SongFormat.set_availability(SongFormat.OpenLP1, has_openlp1)
+SongFormat.set_availability(SongFormat.SongsOfFellowship, has_sof)
+SongFormat.set_availability(SongFormat.Generic, has_ooo)
 
 __all__ = [u'SongFormat']
