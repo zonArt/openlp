@@ -641,7 +641,7 @@ class BibleMediaItem(MediaManagerItem):
                 title = u'%s %s:%s-%s:%s (%s)' % (start_book, start_chapter,
                     start_verse, old_chapter, old_verse, start_version)
         return title
-        
+
     def checkTitle(self, item, old_item):
         """
         This methode checks if we are at the end of an verse range. If that is
