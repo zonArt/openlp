@@ -1,21 +1,11 @@
+#!/usr/bin/env xdg-open
 [Desktop Entry]
-Categories=AudioVideo;
-Comment[de]=
-Comment=
 Encoding=UTF-8
-Exec=openlp
-GenericName[de]=Church lyrics projection
-GenericName=Church lyrics projection
-Icon=openlp
-MimeType=
-Name[de]=OpenLP
 Name=OpenLP
-Path=
+GenericName=Church lyrics projection
+Exec=openlp
+Icon=openlp
 StartupNotify=true
 Terminal=false
-TerminalOptions=
 Type=Application
-X-DBUS-ServiceName=
-X-DBUS-StartupType=
-X-KDE-SubstituteUID=false
-X-KDE-Username=
+Categories=AudioVideo;
