@@ -488,10 +488,12 @@ class BibleMediaItem(MediaManagerItem):
             if self.QuickSecondBibleComboBox.findText(u'') == -1:
                 self.QuickSecondBibleComboBox.insertItem(0, u'')
 
-    def _decodeQtObject(self, listobj, key):
-        if isinstance(listobj, QtCore.QVariant):
-            listobj = listobj.toPyObject()
-        obj = listobj[QtCore.QString(key)]
+    def _decodeQtObject(self, item, key):
+        bitem = self.listView.item(item.row())
+        reference = bitem.data(QtCore.Qt.UserRole)
+        if isinstance(reference, QtCore.QVariant):
+            reference = reference.toPyObject()
+        obj = reference[QtCore.QString(key)]
         if isinstance(obj, QtCore.QVariant):
             obj = obj.toPyObject()
         return unicode(obj)
@@ -510,25 +512,22 @@ class BibleMediaItem(MediaManagerItem):
         raw_footer = []
         raw_slides = []
         raw_title = []
-        first_verse = True
-        append_now = False
+        first_item = True
         # Let's loop through the main lot, and assemble our verses.
         for item in items:
-            bitem = self.listView.item(item.row())
-            reference = bitem.data(QtCore.Qt.UserRole)
-            book = self._decodeQtObject(reference, 'book')
-            chapter = int(self._decodeQtObject(reference, 'chapter'))
-            verse = int(self._decodeQtObject(reference, 'verse'))
-            bible = self._decodeQtObject(reference, 'bible')
-            version = self._decodeQtObject(reference, 'version')
-            copyright = self._decodeQtObject(reference, 'copyright')
-            permission = self._decodeQtObject(reference, 'permission')
-            text = self._decodeQtObject(reference, 'text')
-            dual_bible = self._decodeQtObject(reference, 'dual_bible')
-            dual_version = self._decodeQtObject(reference, 'dual_version')
-            dual_copyright = self._decodeQtObject(reference, 'dual_copyright')
-            dual_permission = self._decodeQtObject(reference, 'dual_permission')
-            dual_text = self._decodeQtObject(reference, 'dual_text')
+            book = self._decodeQtObject(item, 'book')
+            chapter = int(self._decodeQtObject(item, 'chapter'))
+            verse = int(self._decodeQtObject(item, 'verse'))
+            bible = self._decodeQtObject(item, 'bible')
+            version = self._decodeQtObject(item, 'version')
+            copyright = self._decodeQtObject(item, 'copyright')
+            permission = self._decodeQtObject(item, 'permission')
+            text = self._decodeQtObject(item, 'text')
+            dual_bible = self._decodeQtObject(item, 'dual_bible')
+            dual_version = self._decodeQtObject(item, 'dual_version')
+            dual_copyright = self._decodeQtObject(item, 'dual_copyright')
+            dual_permission = self._decodeQtObject(item, 'dual_permission')
+            dual_text = self._decodeQtObject(item, 'dual_text')
             verse_text = self.formatVerse(old_chapter, chapter, verse)
             footer = u'%s (%s %s %s)' % (book, version, copyright, permission)
             if footer not in raw_footer:
@@ -553,87 +552,17 @@ class BibleMediaItem(MediaManagerItem):
             # We have to be 'Continuous'.
             else:
                 bible_text = u'%s %s %s\n' % (bible_text, verse_text, text)
-            if first_verse:
-                start_bible = bible
-                start_dual_bible = dual_bible
-                start_book = book
-                start_verse = verse
-                start_chapter = chapter
-                start_version = version
-                first_verse = False
-            elif old_bible != bible or old_dual_bible != dual_bible or \
-                old_book != book:
-                append_now = True
-            elif old_verse + 1 != verse and old_chapter == chapter:
-                append_now = True
-            elif old_chapter + 1 == chapter and (verse != 1 or
-                old_verse != self.parent.manager.get_verse_count(
-                old_bible, old_book, old_chapter)):
-                append_now = True
-            if append_now:
-                append_now = False
-                if dual_bible:
-                    if start_verse == old_verse and \
-                        start_chapter == old_chapter:
-                        raw_title.append(u'%s %s:%s (%s, %s)' % (start_book,
-                            start_chapter, start_verse, start_version,
-                            start_dual_bible))
-                    elif start_chapter == old_chapter:
-                        raw_title.append(u'%s %s:%s-s (%s, %s)' % (start_book,
-                            start_chapter, start_verse, old_verse,
-                            start_version, start_dual_bible))
-                    else:
-                        raw_title.append(u'%s %s:%s-%s:%s (%s, %s)' %
-                            (start_book, start_chapter, start_verse,
-                            old_chapter, old_verse, start_version,
-                            start_dual_bible))
-                else:
-                    if start_verse == old_verse and \
-                        start_chapter == old_chapter:
-                        raw_title.append(u'%s %s:%s (%s)' % (start_book,
-                            start_chapter, start_verse, start_version))
-                    elif start_chapter == old_chapter:
-                        raw_title.append(u'%s %s:%s-%s (%s)' % (start_book,
-                            start_chapter, start_verse, old_verse,
-                            start_version))
-                    else:
-                        raw_title.append(u'%s %s:%s-%s:%s (%s)' % (start_book,
-                            start_chapter, start_verse, old_chapter, old_verse,
-                            start_version))
-                start_bible = bible
-                start_dual_bible = dual_bible
-                start_book = book
-                start_verse = verse
-                start_chapter = chapter
-                start_version = version
-            old_verse = verse
+            if first_item:
+                start_item = item
+                first_item = False
+            elif self.checkTitle(item, old_item):
+                title = self.formatTitle(item, start_item, old_item)
+                raw_title.append(title)
+                start_item = item
+            old_item = item
             old_chapter = chapter
-            old_bible = bible
-            old_dual_bible = dual_bible
-            old_book = book
-        if dual_bible:
-            if start_verse == verse and start_chapter == chapter:
-                raw_title.append(u'%s %s:%s (%s, %s)' % (start_book,
-                    start_chapter, start_verse, start_version,
-                    start_dual_bible))
-            elif start_chapter == chapter:
-                raw_title.append(u'%s %s:%s-%s (%s, %s)' % (start_book,
-                    start_chapter, start_verse, verse, start_version,
-                    start_dual_bible))
-            else:
-                raw_title.append(u'%s %s:%s-%s:%s (%s, %s)' % (start_book,
-                    start_chapter, start_verse, chapter, verse, start_version,
-                    start_dual_bible))
-        else:
-            if start_verse == verse and start_chapter == chapter:
-                raw_title.append(u'%s %s:%s (%s)' % (start_book,
-                    start_chapter, start_verse, start_version))
-            elif start_chapter == chapter:
-                raw_title.append(u'%s %s:%s-%s (%s)' % (start_book,
-                    start_chapter, start_verse, verse, start_version))
-            else:
-                raw_title.append(u'%s %s:%s-%s:%s (%s)' % (start_book,
-                    start_chapter, start_verse, chapter, verse, start_version))
+        title = self.formatTitle(item, start_item, old_item)
+        raw_title.append(title)
         # If there are no more items we check whether we have to add bible_text.
         if bible_text:
             raw_slides.append(bible_text)
@@ -665,6 +594,81 @@ class BibleMediaItem(MediaManagerItem):
         else:
             service_item.raw_footer = raw_footer
         return True
+
+    def formatTitle(self, item, start_item, old_item):
+        """
+        This methode is called, when we have to change the title, because
+        we are at the end of a verse range. E. g. if we want to add
+        Genisis 1:1-6 as well as Daniel 2:14.
+        """
+        book = self._decodeQtObject(item, 'book')
+        chapter = int(self._decodeQtObject(item, 'chapter'))
+        verse = int(self._decodeQtObject(item, 'verse'))
+        version = self._decodeQtObject(item, 'version')
+        bible = self._decodeQtObject(item, 'bible')
+        dual_bible = self._decodeQtObject(item, 'dual_bible')
+        old_book = self._decodeQtObject(old_item, 'book')
+        old_chapter = int(self._decodeQtObject(old_item, 'chapter'))
+        old_verse = int(self._decodeQtObject(old_item, 'verse'))
+        old_version = self._decodeQtObject(old_item, 'version')
+        old_bible = self._decodeQtObject(old_item, 'bible')
+        old_dual_bible = self._decodeQtObject(old_item, 'dual_bible')
+        start_book = self._decodeQtObject(start_item, 'book')
+        start_chapter = int(self._decodeQtObject(start_item, 'chapter'))
+        start_verse = int(self._decodeQtObject(start_item, 'verse'))
+        start_version = self._decodeQtObject(start_item, 'version')
+        start_bible = self._decodeQtObject(start_item, 'bible')
+        start_dual_bible = self._decodeQtObject(start_item, 'dual_bible')
+        if dual_bible:
+            if start_verse == old_verse and start_chapter == old_chapter:
+                title = u'%s %s:%s (%s, %s)' % (start_book, start_chapter,
+                    start_verse, start_version, start_dual_bible)
+            elif start_chapter == old_chapter:
+                title = u'%s %s:%s-s (%s, %s)' % (start_book, start_chapter,
+                    start_verse, old_verse, start_version, start_dual_bible)
+            else:
+                title = u'%s %s:%s-%s:%s (%s, %s)' % (start_book, start_chapter,
+                    start_verse, old_chapter, old_verse, start_version,
+                    start_dual_bible)
+        else:
+            if start_verse == old_verse and start_chapter == old_chapter:
+                title = u'%s %s:%s (%s)' % (start_book, start_chapter,
+                    start_verse, start_version)
+            elif start_chapter == old_chapter:
+                title = u'%s %s:%s-%s (%s)' % (start_book, start_chapter,
+                    start_verse, old_verse, start_version)
+            else:
+                title = u'%s %s:%s-%s:%s (%s)' % (start_book, start_chapter,
+                    start_verse, old_chapter, old_verse, start_version)
+        return title
+        
+    def checkTitle(self, item, old_item):
+        """
+        This methode checks if we are at the end of an verse range. If that is
+        the case, we return True, else False. E. g. if we added Genisis 1:1-6,
+        but the next verse is Daniel 2:14.
+        """
+        book = self._decodeQtObject(item, 'book')
+        chapter = int(self._decodeQtObject(item, 'chapter'))
+        verse = int(self._decodeQtObject(item, 'verse'))
+        bible = self._decodeQtObject(item, 'bible')
+        dual_bible = self._decodeQtObject(item, 'dual_bible')
+        old_book = self._decodeQtObject(old_item, 'book')
+        old_chapter = int(self._decodeQtObject(old_item, 'chapter'))
+        old_verse = int(self._decodeQtObject(old_item, 'verse'))
+        old_bible = self._decodeQtObject(old_item, 'bible')
+        old_dual_bible = self._decodeQtObject(old_item, 'dual_bible')
+        if old_bible != bible or old_dual_bible != dual_bible or \
+            old_book != book:
+            return True
+        elif old_verse + 1 != verse and old_chapter == chapter:
+            return True
+        elif old_chapter + 1 == chapter and (verse != 1 or
+            old_verse != self.parent.manager.get_verse_count(
+            old_bible, old_book, old_chapter)):
+            return True
+        else:
+            return False
 
     def formatVerse(self, old_chapter, chapter, verse):
         if not self.parent.settings_tab.show_new_chapters or \
