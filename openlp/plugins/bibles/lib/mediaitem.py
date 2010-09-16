@@ -556,12 +556,12 @@ class BibleMediaItem(MediaManagerItem):
                 start_item = item
                 first_item = False
             elif self.checkTitle(item, old_item):
-                title = self.formatTitle(item, start_item, old_item)
+                title = self.formatTitle(start_item, old_item)
                 raw_title.append(title)
                 start_item = item
             old_item = item
             old_chapter = chapter
-        title = self.formatTitle(item, start_item, old_item)
+        title = self.formatTitle(start_item, old_item)
         raw_title.append(title)
         # If there are no more items we check whether we have to add bible_text.
         if bible_text:
@@ -595,18 +595,12 @@ class BibleMediaItem(MediaManagerItem):
             service_item.raw_footer = raw_footer
         return True
 
-    def formatTitle(self, item, start_item, old_item):
+    def formatTitle(self, start_item, old_item):
         """
         This methode is called, when we have to change the title, because
         we are at the end of a verse range. E. g. if we want to add
         Genisis 1:1-6 as well as Daniel 2:14.
         """
-        book = self._decodeQtObject(item, 'book')
-        chapter = int(self._decodeQtObject(item, 'chapter'))
-        verse = int(self._decodeQtObject(item, 'verse'))
-        version = self._decodeQtObject(item, 'version')
-        bible = self._decodeQtObject(item, 'bible')
-        dual_bible = self._decodeQtObject(item, 'dual_bible')
         old_book = self._decodeQtObject(old_item, 'book')
         old_chapter = int(self._decodeQtObject(old_item, 'chapter'))
         old_verse = int(self._decodeQtObject(old_item, 'verse'))
@@ -619,7 +613,7 @@ class BibleMediaItem(MediaManagerItem):
         start_version = self._decodeQtObject(start_item, 'version')
         start_bible = self._decodeQtObject(start_item, 'bible')
         start_dual_bible = self._decodeQtObject(start_item, 'dual_bible')
-        if dual_bible:
+        if start_dual_bible:
             if start_verse == old_verse and start_chapter == old_chapter:
                 title = u'%s %s:%s (%s, %s)' % (start_book, start_chapter,
                     start_verse, start_version, start_dual_bible)
