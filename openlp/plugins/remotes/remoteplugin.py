@@ -26,7 +26,7 @@
 
 import logging
 
-from openlp.core.lib import Plugin, StringType, translate, build_icon
+from openlp.core.lib import Plugin, StringContent, translate, build_icon
 from openlp.plugins.remotes.lib import RemoteTab, HttpServer
 
 log = logging.getLogger(__name__)
@@ -65,8 +65,8 @@ class RemotesPlugin(Plugin):
         """
         Create the settings Tab
         """
-        media_item_string = self.getString(StringType.MediaItem)
-        return RemoteTab(media_item_string[u'title'])
+        visible_name = self.getString(StringContent.VisibleName)
+        return RemoteTab(self.name, visible_name[u'title'])
 
     def about(self):
         """
@@ -82,15 +82,12 @@ class RemotesPlugin(Plugin):
         """
         Called to define all translatable texts of the plugin
         """
-        self.name = u'Remotes'
-        self.name_lower = u'remotes'
-        self.strings = {}
         ## Name PluginList ##
-        self.strings[StringType.Name] = {
+        self.strings[StringContent.Name] = {
             u'singular': translate('RemotePlugin', 'Remote'),
             u'plural': translate('RemotePlugin', 'Remotes')
         }
         ## Name for MediaDockManager, SettingsManager ##
-        self.strings[StringType.MediaItem] = {
+        self.strings[StringContent.VisibleName] = {
             u'title': translate('RemotePlugin', 'Remotes')
         }

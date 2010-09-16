@@ -29,7 +29,7 @@ from datetime import datetime
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, StringType, Receiver, build_icon, translate
+from openlp.core.lib import Plugin, StringContent, Receiver, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.plugins.songusage.forms import SongUsageDetailForm, \
     SongUsageDeleteForm
@@ -167,15 +167,12 @@ class SongUsagePlugin(Plugin):
         """
         Called to define all translatable texts of the plugin
         """
-        self.name = u'SongUsage'
-        self.name_lower = u'songusage'
-        self.strings = {}
         ## Name PluginList ##
-        self.strings[StringType.Name] = {
+        self.strings[StringContent.Name] = {
             u'singular': translate('SongUsagePlugin', 'SongUsage'),
             u'plural': translate('SongUsagePlugin', 'SongUsage')
         }
         ## Name for MediaDockManager, SettingsManager ##
-        self.strings[StringType.MediaItem] = {
+        self.strings[StringContent.VisibleName] = {
             u'title': translate('SongUsagePlugin', 'SongUsage')
         }

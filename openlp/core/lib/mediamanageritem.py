@@ -32,7 +32,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import context_menu_action, context_menu_separator, \
-    SettingsManager, OpenLPToolbar, ServiceItem, StringType, build_icon, \
+    SettingsManager, OpenLPToolbar, ServiceItem, StringContent, build_icon, \
     translate
 
 log = logging.getLogger(__name__)
@@ -95,9 +95,9 @@ class MediaManagerItem(QtGui.QWidget):
         self.parent = parent
         #TODO: plugin should not be the parent in future
         self.plugin = parent#plugin
-        media_title_string = self.plugin.getString(StringType.MediaItem)
-        self.title = media_title_string[u'title']
-        self.settingsSection = self.plugin.name_lower
+        visible_title = self.plugin.getString(StringContent.VisibleName)
+        self.title = visible_title[u'title']
+        self.settingsSection = self.plugin.name.lower()
         if isinstance(icon, QtGui.QIcon):
             self.icon = icon
         elif isinstance(icon, basestring):
@@ -204,35 +204,35 @@ class MediaManagerItem(QtGui.QWidget):
         """
         ## Import Button ##
         if self.hasImportIcon:
-            import_string = self.plugin.getString(StringType.Import)
+            import_string = self.plugin.getString(StringContent.Import)
             self.addToolbarButton(
                 import_string[u'title'],
                 import_string[u'tooltip'],
                 u':/general/general_import.png', self.onImportClick)
         ## Load Button ##
         if self.hasFileIcon:
-            load_string = self.plugin.getString(StringType.Load)
+            load_string = self.plugin.getString(StringContent.Load)
             self.addToolbarButton(
                 load_string[u'title'],
                 load_string[u'tooltip'],
                 u':/general/general_open.png', self.onFileClick)
         ## New Button ##
         if self.hasNewIcon:
-            new_string = self.plugin.getString(StringType.New)
+            new_string = self.plugin.getString(StringContent.New)
             self.addToolbarButton(
                 new_string[u'title'],
                 new_string[u'tooltip'],
                 u':/general/general_new.png', self.onNewClick)
         ## Edit Button ##
         if self.hasEditIcon:
-            edit_string = self.plugin.getString(StringType.Edit)
+            edit_string = self.plugin.getString(StringContent.Edit)
             self.addToolbarButton(
                 edit_string[u'title'],
                 edit_string[u'tooltip'],
                 u':/general/general_edit.png', self.onEditClick)
         ## Delete Button ##
         if self.hasDeleteIcon:
-            delete_string = self.plugin.getString(StringType.Delete)
+            delete_string = self.plugin.getString(StringContent.Delete)
             self.addToolbarButton(
                 delete_string[u'title'],
                 delete_string[u'tooltip'],
@@ -240,19 +240,19 @@ class MediaManagerItem(QtGui.QWidget):
         ## Separator Line ##
         self.addToolbarSeparator()
         ## Preview ##
-        preview_string = self.plugin.getString(StringType.Preview)
+        preview_string = self.plugin.getString(StringContent.Preview)
         self.addToolbarButton(
             preview_string[u'title'],
             preview_string[u'tooltip'],
             u':/general/general_preview.png', self.onPreviewClick)
         ## Live  Button ##
-        live_string = self.plugin.getString(StringType.Live)
+        live_string = self.plugin.getString(StringContent.Live)
         self.addToolbarButton(
             live_string[u'title'],
             live_string[u'tooltip'],
             u':/general/general_live.png', self.onLiveClick)
         ## Add to service Button ##
-        service_string = self.plugin.getString(StringType.Service)
+        service_string = self.plugin.getString(StringContent.Service)
         self.addToolbarButton(
             service_string[u'title'],
             service_string[u'tooltip'],
@@ -276,7 +276,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.pageLayout.addWidget(self.listView)
         #define and add the context menu
         self.listView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-        name_string = self.plugin.getString(StringType.Name)
+        name_string = self.plugin.getString(StringContent.Name)
         if self.hasEditIcon:
             self.listView.addAction(
                 context_menu_action(

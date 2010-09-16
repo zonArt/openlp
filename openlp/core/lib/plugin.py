@@ -42,7 +42,7 @@ class PluginStatus(object):
     Inactive = 0
     Disabled = -1
 
-class StringType(object):
+class StringContent(object):
     Name = u'name'
     Import = u'import'
     Load = u'load'
@@ -52,7 +52,7 @@ class StringType(object):
     Preview = u'preview'
     Live = u'live'
     Service = u'service'
-    MediaItem = u'media_item'
+    VisibleName = u'visible_name'
 
 class Plugin(QtCore.QObject):
     """
@@ -128,11 +128,12 @@ class Plugin(QtCore.QObject):
             Defaults to *None*. A list of helper objects.
         """
         QtCore.QObject.__init__(self)
-        self.setPluginStrings()
         self.name = name
+        self.strings = {}
+        self.setPluginStrings()
         if version:
             self.version = version
-        self.settingsSection = self.name_lower
+        self.settingsSection = self.name.lower()
         self.icon = None
         self.weight = 0
         self.status = PluginStatus.Inactive
@@ -314,6 +315,3 @@ class Plugin(QtCore.QObject):
         """
         Called to define all translatable texts of the plugin
         """
-        self.name = u'Plugin'
-        self.name_lower = u'plugin'
-        self.strings = {}

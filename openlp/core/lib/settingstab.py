@@ -31,17 +31,17 @@ class SettingsTab(QtGui.QWidget):
     SettingsTab is a helper widget for plugins to define Tabs for the settings
     dialog.
     """
-    def __init__(self, title):
+    def __init__(self, title,  visible_title=None):
         """
         Constructor to create the Settings tab item.
 
-        ``title``
-            The title of the tab, which is usually displayed on the tab.
+        ``plugin``
+            The related plugin of the tab, which holds the content of the plugin.
         """
         QtGui.QWidget.__init__(self)
         self.tabTitle = title
-        self.tabTitleVisible = None
-        self.settingsSection = self.tabTitle
+        self.tabTitleVisible = visible_title
+        self.settingsSection = self.tabTitle.lower()
         self.setupUi()
         self.retranslateUi()
         self.initialise()

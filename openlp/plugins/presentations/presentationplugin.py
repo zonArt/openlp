@@ -30,7 +30,7 @@ presentations from a variety of document formats.
 import os
 import logging
 
-from openlp.core.lib import Plugin, StringType, build_icon, translate
+from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.utils import AppLocation
 from openlp.plugins.presentations.lib import PresentationController, \
     PresentationMediaItem, PresentationTab
@@ -60,8 +60,8 @@ class PresentationPlugin(Plugin):
         """
         Create the settings Tab
         """
-        media_item_string = self.getString(StringType.MediaItem)
-        return PresentationTab(media_item_string[u'title'], self.controllers)
+        visible_name = self.getString(StringContent.VisibleName)
+        return PresentationTab(self.name, visible_name[u'title'], self.controllers)
 
     def initialise(self):
         """
@@ -149,41 +149,38 @@ class PresentationPlugin(Plugin):
         """
         Called to define all translatable texts of the plugin
         """
-        self.name = u'Presentations'
-        self.name_lower = u'presentations'
-        self.strings = {}
         ## Name PluginList ##
-        self.strings[StringType.Name] = {
+        self.strings[StringContent.Name] = {
             u'singular': translate('PresentationPlugin', 'Presentation'),
             u'plural': translate('PresentationPlugin', 'Presentations')
         }
         ## Name for MediaDockManager, SettingsManager ##
-        self.strings[StringType.MediaItem] = {
+        self.strings[StringContent.VisibleName] = {
             u'title': translate('PresentationPlugin', 'Presentations')
         }
         # Middle Header Bar
         ## Load Button ##
-        self.strings[StringType.Load] = {
+        self.strings[StringContent.Load] = {
             u'title': translate('PresentationPlugin', 'Load'),
             u'tooltip': translate('PresentationPlugin', 'Load a new Presentation')
         }
         ## Delete Button ##
-        self.strings[StringType.Delete] = {
+        self.strings[StringContent.Delete] = {
             u'title': translate('PresentationPlugin', 'Delete'),
             u'tooltip': translate('PresentationPlugin', 'Delete the selected Presentation')
         }
         ## Preview ##
-        self.strings[StringType.Preview] = {
+        self.strings[StringContent.Preview] = {
             u'title': translate('PresentationPlugin', 'Preview'),
             u'tooltip': translate('PresentationPlugin', 'Preview the selected Presentation')
         }
         ## Live  Button ##
-        self.strings[StringType.Live] = {
+        self.strings[StringContent.Live] = {
             u'title': translate('PresentationPlugin', 'Live'),
             u'tooltip': translate('PresentationPlugin', 'Send the selected Presentation live')
         }
         ## Add to service Button ##
-        self.strings[StringType.Service] = {
+        self.strings[StringContent.Service] = {
             u'title': translate('PresentationPlugin', 'Service'),
             u'tooltip': translate('PresentationPlugin', 'Add the selected Presentation to the service')
         }

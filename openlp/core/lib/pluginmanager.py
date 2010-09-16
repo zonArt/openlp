@@ -30,7 +30,7 @@ import os
 import sys
 import logging
 
-from openlp.core.lib import Plugin, StringType, PluginStatus
+from openlp.core.lib import Plugin, StringContent, PluginStatus
 
 log = logging.getLogger(__name__)
 
@@ -152,13 +152,13 @@ class PluginManager(object):
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
                 plugin.settings_tab = plugin.getSettingsTab()
-                media_item_string = plugin.getString(StringType.MediaItem)
+                visible_title = plugin.getString(StringContent.VisibleName)
                 if plugin.settings_tab:
                     log.debug(u'Inserting settings tab item from %s' %
-                        media_item_string[u'title'])
-                    settingsform.addTab(media_item_string[u'title'], plugin.settings_tab)
+                        visible_title[u'title'])
+                    settingsform.addTab(visible_title[u'title'], plugin.settings_tab)
                 else:
-                    log.debug(u'No tab settings in %s' % media_item_string[u'title'])
+                    log.debug(u'No tab settings in %s' % visible_title[u'title'])
 
     def hook_import_menu(self, import_menu):
         """
