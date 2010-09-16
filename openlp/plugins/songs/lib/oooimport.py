@@ -59,6 +59,7 @@ class OooImport(SongImport):
         self.document = None
         self.process_started = False
         self.filenames = kwargs[u'filenames']
+        self.uno_connection_type = u'pipe' #u'socket'
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'song_stop_import'), self.stop_import)
 
@@ -94,8 +95,6 @@ class OooImport(SongImport):
         Start OpenOffice.org process
         TODO: The presentation/Impress plugin may already have it running
         """
-        #connection_type = u'socket'
-        connection_type = u'pipe,name=openlp_pipe:'
         if os.name == u'nt':
             self.start_ooo_process()
             self.desktop = self.manager.createInstance(
@@ -108,9 +107,14 @@ class OooImport(SongImport):
             loop = 0
             while ctx is None and loop < 5:
                 try:
-                    ctx = resolver.resolve(u'uno:' + connection_type \
-                        + u',host=localhost,' \
-                        + u'port=2002;urp;StarOffice.ComponentContext')
+                    if self.uno_connection_type == u'pipe':
+                        ctx = resolver.resolve(u'uno:' \
+                            + u'pipe,name=openlp_pipe;' \
+                            + u'urp;StarOffice.ComponentContext')
+                    else:
+                        ctx = resolver.resolve(u'uno:' \
+                            + u'socket,host=localhost,port=2002;' \
+                            + u'urp;StarOffice.ComponentContext')
                 except:
                     pass
                 self.start_ooo_process()
@@ -120,18 +124,20 @@ class OooImport(SongImport):
                 "com.sun.star.frame.Desktop", ctx)
             
     def start_ooo_process(self):
-        #connection_type = u'socket'
-        connection_type = u'pipe,name=openlp_pipe:'
         try:
             if os.name == u'nt':
                 self.manager = Dispatch(u'com.sun.star.ServiceManager')
                 self.manager._FlagAsMethod(u'Bridge_GetStruct')
                 self.manager._FlagAsMethod(u'Bridge_GetValueObject')
             else:
-                cmd = u'openoffice.org -nologo -norestore -minimized ' \
-                    + u'-invisible -nofirststartwizard ' \
-                    + '-accept="' + connection_type \
-                    + u'socket,host=localhost,port=2002;urp;"'
+                if self.uno_connection_type == u'pipe':
+                    cmd = u'openoffice.org -nologo -norestore -minimized ' \
+                        + u'-invisible -nofirststartwizard ' \
+                        + u'-accept=pipe,name=openlp_pipe;urp;'
+                else:
+                    cmd = u'openoffice.org -nologo -norestore -minimized ' \
+                        + u'-invisible -nofirststartwizard ' \
+                        + u'-accept=socket,host=localhost,port=2002;urp;'
                 process = QtCore.QProcess()
                 process.startDetached(cmd)
                 process.waitForStarted()
