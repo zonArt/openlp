@@ -27,8 +27,6 @@
 import logging
 from PyQt4 import QtWebKit
 
-from openlp.core.lib import image_to_byte
-
 log = logging.getLogger(__name__)
 
 HTMLSRC = u"""
@@ -301,8 +299,8 @@ def build_html(item, screen, alert, islive):
     height = screen[u'size'].height()
     theme = item.themedata
     webkitvers = webkit_version()
-    if item.bg_frame:
-        image = u'data:image/png;base64,%s' % image_to_byte(item.bg_frame)
+    if item.bg_image_bytes:
+        image = u'data:image/png;base64,%s' % item.bg_image_bytes
     else:
         image = u''
     html = HTMLSRC % (build_background_css(item, width, height),

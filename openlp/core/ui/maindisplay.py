@@ -341,7 +341,9 @@ class MainDisplay(DisplayWidget):
         self.serviceItem = serviceItem
         html = build_html(self.serviceItem, self.screen, self.parent.alertTab,
             self.isLive)
+        log.debug(u'buildHtml - pre setHtml')
         self.webView.setHtml(html)
+        log.debug(u'buildHtml - post setHtml')
         if serviceItem.foot_text and serviceItem.foot_text:
             self.footer(serviceItem.foot_text)
         # if was hidden keep it hidden
