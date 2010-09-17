@@ -56,8 +56,6 @@ class Renderer(object):
         self.bg_frame = None
         self.bg_image = None
         self.bg_image_bytes = None
-        self.web = QtWebKit.QWebView()
-        self.web.setVisible(False)
 
     def set_theme(self, theme):
         """
@@ -95,6 +93,8 @@ class Renderer(object):
         if self._theme.display_shadow:
             self.page_width -= int(self._theme.display_shadow_size)
             self.page_height -= int(self._theme.display_shadow_size)
+        self.web = QtWebKit.QWebView()
+        self.web.setVisible(False)
         self.web.resize(self.page_width, self.page_height)
         self.web_frame = self.web.page().mainFrame()
         # Adjust width and height to account for shadow. outline done in css

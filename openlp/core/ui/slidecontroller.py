@@ -636,9 +636,9 @@ class SlideController(QtGui.QWidget):
         """
         if not self.serviceItem:
             return
-        Receiver.send_message(u'%s_first' % self.serviceItem.name.lower(),
-            [self.serviceItem, self.isLive])
         if self.serviceItem.is_command():
+            Receiver.send_message(u'%s_first' % self.serviceItem.name.lower(),
+                [self.serviceItem, self.isLive])
             self.updatePreview()
         else:
             self.PreviewListWidget.selectRow(0)
@@ -651,9 +651,9 @@ class SlideController(QtGui.QWidget):
         index = int(message[0])
         if not self.serviceItem:
             return
-        Receiver.send_message(u'%s_slide' % self.serviceItem.name.lower(),
-            [self.serviceItem, self.isLive, index])
         if self.serviceItem.is_command():
+            Receiver.send_message(u'%s_slide' % self.serviceItem.name.lower(),
+                [self.serviceItem, self.isLive, index])
             self.updatePreview()
         else:
             self.PreviewListWidget.selectRow(index)
@@ -768,9 +768,9 @@ class SlideController(QtGui.QWidget):
         row = self.PreviewListWidget.currentRow()
         self.selectedRow = 0
         if row > -1 and row < self.PreviewListWidget.rowCount():
-            Receiver.send_message(u'%s_slide' % self.serviceItem.name.lower(),
-                [self.serviceItem, self.isLive, row])
             if self.serviceItem.is_command() and self.isLive:
+                Receiver.send_message(u'%s_slide' % self.serviceItem.name.lower(),
+                    [self.serviceItem, self.isLive, row])
                 self.updatePreview()
             else:
                 frame, raw_html = self.serviceItem.get_rendered_frame(row)

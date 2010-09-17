@@ -306,6 +306,7 @@ class MainDisplay(DisplayWidget):
         # We must have a service item to preview
         if not hasattr(self, u'serviceItem'):
             return
+        Receiver.send_message(u'openlp_process_events')
         if self.isLive:
             # Wait for the fade to finish before geting the preview.
             # Important otherwise preview will have incorrect text if at all !
@@ -318,6 +319,8 @@ class MainDisplay(DisplayWidget):
         # Important otherwise first preview will miss the background !
         while not self.loaded:
             Receiver.send_message(u'openlp_process_events')
+        if self.isLive:
+            self.setVisible(True)
         preview = QtGui.QImage(self.screen[u'size'].width(),
             self.screen[u'size'].height(),
             QtGui.QImage.Format_ARGB32_Premultiplied)
@@ -326,8 +329,6 @@ class MainDisplay(DisplayWidget):
         self.frame.render(painter)
         painter.end()
         # Make display show up if in single screen mode
-        if self.isLive:
-            self.setVisible(True)
         return preview
 
     def buildHtml(self, serviceItem):
