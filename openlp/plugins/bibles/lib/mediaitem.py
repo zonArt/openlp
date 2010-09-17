@@ -599,7 +599,7 @@ class BibleMediaItem(MediaManagerItem):
         """
         This methode is called, when we have to change the title, because
         we are at the end of a verse range. E. g. if we want to add
-        Genisis 1:1-6 as well as Daniel 2:14.
+        Genesis 1:1-6 as well as Daniel 2:14.
         """
         old_book = self._decodeQtObject(old_item, 'book')
         old_chapter = int(self._decodeQtObject(old_item, 'chapter'))
@@ -639,7 +639,7 @@ class BibleMediaItem(MediaManagerItem):
     def checkTitle(self, item, old_item):
         """
         This methode checks if we are at the end of an verse range. If that is
-        the case, we return True, else False. E. g. if we added Genisis 1:1-6,
+        the case, we return True, else False. E. g. if we added Genesis 1:1-6,
         but the next verse is Daniel 2:14.
         """
         book = self._decodeQtObject(item, 'book')
