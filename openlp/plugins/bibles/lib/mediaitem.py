@@ -512,7 +512,7 @@ class BibleMediaItem(MediaManagerItem):
         raw_footer = []
         raw_slides = []
         raw_title = []
-        first_item = True
+        first = True
         # Let's loop through the main lot, and assemble our verses.
         for item in items:
             book = self._decodeQtObject(item, 'book')
@@ -552,17 +552,15 @@ class BibleMediaItem(MediaManagerItem):
             # We have to be 'Continuous'.
             else:
                 bible_text = u'%s %s %s\n' % (bible_text, verse_text, text)
-            if first_item:
+            if first:
                 start_item = item
-                first_item = False
+                first = False
             elif self.checkTitle(item, old_item):
-                title = self.formatTitle(start_item, old_item)
-                raw_title.append(title)
+                raw_title.append(self.formatTitle(start_item, old_item))
                 start_item = item
             old_item = item
             old_chapter = chapter
-        title = self.formatTitle(start_item, item)
-        raw_title.append(title)
+        raw_title.append(self.formatTitle(start_item, item))
         # If there are no more items we check whether we have to add bible_text.
         if bible_text:
             raw_slides.append(bible_text)
@@ -574,10 +572,10 @@ class BibleMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
         # Service Item: Title
-        first_verse = True
+        first = True
         for title in raw_title:
-            if first_verse:
-                first_verse = False
+            if first:
+                first = False
                 service_item.title = title
             else:
                 service_item.title += u', ' + title
