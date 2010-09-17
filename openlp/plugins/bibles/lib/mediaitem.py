@@ -561,7 +561,7 @@ class BibleMediaItem(MediaManagerItem):
                 start_item = item
             old_item = item
             old_chapter = chapter
-        title = self.formatTitle(start_item, old_item)
+        title = self.formatTitle(start_item, item)
         raw_title.append(title)
         # If there are no more items we check whether we have to add bible_text.
         if bible_text:
@@ -601,39 +601,34 @@ class BibleMediaItem(MediaManagerItem):
         we are at the end of a verse range. E. g. if we want to add
         Genesis 1:1-6 as well as Daniel 2:14.
         """
-        old_book = self._decodeQtObject(old_item, 'book')
         old_chapter = int(self._decodeQtObject(old_item, 'chapter'))
         old_verse = int(self._decodeQtObject(old_item, 'verse'))
-        old_version = self._decodeQtObject(old_item, 'version')
-        old_bible = self._decodeQtObject(old_item, 'bible')
-        old_dual_bible = self._decodeQtObject(old_item, 'dual_bible')
         start_book = self._decodeQtObject(start_item, 'book')
         start_chapter = int(self._decodeQtObject(start_item, 'chapter'))
         start_verse = int(self._decodeQtObject(start_item, 'verse'))
-        start_version = self._decodeQtObject(start_item, 'version')
         start_bible = self._decodeQtObject(start_item, 'bible')
         start_dual_bible = self._decodeQtObject(start_item, 'dual_bible')
         if start_dual_bible:
             if start_verse == old_verse and start_chapter == old_chapter:
                 title = u'%s %s:%s (%s, %s)' % (start_book, start_chapter,
-                    start_verse, start_version, start_dual_bible)
+                    start_verse, start_bible, start_dual_bible)
             elif start_chapter == old_chapter:
-                title = u'%s %s:%s-s (%s, %s)' % (start_book, start_chapter,
-                    start_verse, old_verse, start_version, start_dual_bible)
+                title = u'%s %s:%s-%s (%s, %s)' % (start_book, start_chapter,
+                    start_verse, old_verse, start_bible, start_dual_bible)
             else:
                 title = u'%s %s:%s-%s:%s (%s, %s)' % (start_book, start_chapter,
-                    start_verse, old_chapter, old_verse, start_version,
+                    start_verse, old_chapter, old_verse, start_bible,
                     start_dual_bible)
         else:
             if start_verse == old_verse and start_chapter == old_chapter:
                 title = u'%s %s:%s (%s)' % (start_book, start_chapter,
-                    start_verse, start_version)
+                    start_verse, start_bible)
             elif start_chapter == old_chapter:
                 title = u'%s %s:%s-%s (%s)' % (start_book, start_chapter,
-                    start_verse, old_verse, start_version)
+                    start_verse, old_verse, start_bible)
             else:
                 title = u'%s %s:%s-%s:%s (%s)' % (start_book, start_chapter,
-                    start_verse, old_chapter, old_verse, start_version)
+                    start_verse, old_chapter, old_verse, start_bible)
         return title
 
     def checkTitle(self, item, old_item):
