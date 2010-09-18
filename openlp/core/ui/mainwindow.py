@@ -575,7 +575,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'toggled(bool)'), self.setAutoLanguage)
         self.LanguageGroup.triggered.connect(LanguageManager.set_language)
         QtCore.QObject.connect(self.ModeDefaultItem,
-            QtCore.SIGNAL(u'triggered()'), self.onModeDetaultItemClicked)
+            QtCore.SIGNAL(u'triggered()'), self.onModeDefaultItemClicked)
         QtCore.QObject.connect(self.ModeSetupItem,
             QtCore.SIGNAL(u'triggered()'), self.onModeSetupItemClicked)
         QtCore.QObject.connect(self.ModeLiveItem,
@@ -725,7 +725,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         self.settingsForm.exec_()
 
-    def onModeDetaultItemClicked(self):
+    def onModeDefaultItemClicked(self):
         """
         Put OpenLP into "Default" view mode.
         """
