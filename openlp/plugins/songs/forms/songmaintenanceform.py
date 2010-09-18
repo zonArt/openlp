@@ -324,8 +324,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     QtGui.QMessageBox.critical(self,
                         translate('SongsPlugin.SongMaintenanceForm', 'Error'),
                         translate('SongsPlugin.SongMaintenanceForm',
-                        'Could not save your modified author, because he '
-                        'already exists.'))
+                        'Could not save your modified author, because the '
+                        'author already exists.'))
 
     def onTopicEditButtonClick(self):
         topic_id = self._getCurrentItemId(self.TopicsListWidget)
