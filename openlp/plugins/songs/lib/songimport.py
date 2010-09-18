@@ -30,7 +30,7 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, translate
 from openlp.plugins.songs.lib import VerseType
-from openlp.plugins.songs.lib.db import Song, Author, Topic, Book
+from openlp.plugins.songs.lib.db import Song, Author, Topic, Book, MediaFile
 from openlp.plugins.songs.lib.xml import SongXMLBuilder
 
 log = logging.getLogger(__name__)
@@ -52,6 +52,15 @@ class SongImport(QtCore.QObject):
         """
         self.manager = manager
         self.stop_import_flag = False
+        self.set_defaults()
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'songs_stop_import'), self.stop_import)
+    def set_defaults(self):
+        """
+        Create defaults for properties - call this before each song
+        if importing many songs at once to ensure a clean beginning
+        """
+        self.authors = []
         self.title = u''
         self.song_number = u''
         self.alternate_title = u''
@@ -61,18 +70,16 @@ class SongImport(QtCore.QObject):
         self.ccli_number = u''
         self.authors = []
         self.topics = []
+        self.media_files = []
         self.song_book_name = u''
         self.song_book_pub = u''
         self.verse_order_list = []
         self.verses = []
-        self.versecount = 0
-        self.choruscount = 0
+        self.versecounts = {}
         self.copyright_string = unicode(translate(
             'SongsPlugin.SongImport', 'copyright'))
         self.copyright_symbol = unicode(translate(
             'SongsPlugin.SongImport', '\xa9'))
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'songs_stop_import'), self.stop_import)
 
     def stop_import(self):
         """
@@ -158,8 +165,7 @@ class SongImport(QtCore.QObject):
     def parse_author(self, text):
         """
         Add the author. OpenLP stores them individually so split by 'and', '&'
-        and comma.
-        However need to check for 'Mr and Mrs Smith' and turn it to
+        and comma. However need to check for 'Mr and Mrs Smith' and turn it to
         'Mr Smith' and 'Mrs Smith'.
         """
         for author in text.split(u','):
@@ -182,7 +188,15 @@ class SongImport(QtCore.QObject):
             return
         self.authors.append(author)
 
-    def add_verse(self, verse, versetag=None):
+    def add_media_file(self, filename):
+        """
+        Add a media file to the list
+        """
+        if filename in self.media_files:
+            return
+        self.media_files.append(filename)
+
+    def add_verse(self, verse, versetag=u'V'):
         """
         Add a verse. This is the whole verse, lines split by \n
         Verse tag can be V1/C1/B etc, or 'V' and 'C' (will count the verses/
@@ -194,13 +208,14 @@ class SongImport(QtCore.QObject):
             if oldverse.strip() == verse.strip():
                 self.verse_order_list.append(oldversetag)
                 return
-        if versetag == u'V' or not versetag:
-            self.versecount += 1
-            versetag = u'V' + unicode(self.versecount)
-        if versetag.startswith(u'C'):
-            self.choruscount += 1
-        if versetag == u'C':
-            versetag += unicode(self.choruscount)
+        if versetag[0] in self.versecounts:
+            self.versecounts[versetag[0]] += 1
+        else:
+            self.versecounts[versetag[0]] = 1
+        if len(versetag) == 1:
+            versetag += unicode(self.versecounts[versetag[0]])
+        elif int(versetag[1:]) > self.versecounts[versetag[0]]:
+            self.versecounts[versetag[0]] = int(versetag[1:])
         self.verses.append([versetag, verse.rstrip()])
         self.verse_order_list.append(versetag)
         if versetag.startswith(u'V') and self.contains_verse(u'C1'):
@@ -236,7 +251,7 @@ class SongImport(QtCore.QObject):
         """
         All fields have been set to this song. Write it away
         """
-        if len(self.authors) == 0:
+        if not self.authors:
             self.authors.append(u'Author unknown')
         self.commit_song()
 
@@ -244,13 +259,16 @@ class SongImport(QtCore.QObject):
         """
         Write the song and its fields to disk
         """
+        log.info(u'commiting song %s to database', self.title)
         song = Song()
         song.title = self.title
         song.search_title = self.remove_punctuation(self.title) \
             + '@' + self.alternate_title
         song.song_number = self.song_number
         song.search_lyrics = u''
+        verses_changed_to_other = {}
         sxml = SongXMLBuilder()
+        other_count = 1
         for (versetag, versetext) in self.verses:
             if versetag[0] == u'C':
                 versetype = VerseType.to_string(VerseType.Chorus)
@@ -265,10 +283,18 @@ class SongImport(QtCore.QObject):
             elif versetag[0] == u'E':
                 versetype = VerseType.to_string(VerseType.Ending)
             else:
+                newversetag = u'O%d' % other_count
+                verses_changed_to_other[versetag] = newversetag
+                other_count += 1
                 versetype = VerseType.to_string(VerseType.Other)
+                log.info(u'Versetype %s changing to %s' , versetag, newversetag)
+                versetag = newversetag
             sxml.add_verse_to_lyrics(versetype, versetag[1:], versetext)
             song.search_lyrics += u' ' + self.remove_punctuation(versetext)
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
+        for i, current_verse_tag in enumerate(self.verse_order_list):
+            if verses_changed_to_other.has_key(current_verse_tag):
+                self.verse_order_list[i] = verses_changed_to_other[current_verse_tag]
         song.verse_order = u' '.join(self.verse_order_list)
         song.copyright = self.copyright
         song.comments = self.comments
@@ -277,11 +303,16 @@ class SongImport(QtCore.QObject):
         for authortext in self.authors:
             author = self.manager.get_object_filtered(Author,
                 Author.display_name == authortext)
-            if author is None:
+            if not author:
                 author = Author.populate(display_name = authortext,
                     last_name=authortext.split(u' ')[-1],
                     first_name=u' '.join(authortext.split(u' ')[:-1]))
             song.authors.append(author)
+        for filename in self.media_files:
+            media_file = self.manager.get_object_filtered(MediaFile,
+                MediaFile.file_name == filename)
+            if not media_file:
+                song.media_files.append(MediaFile.populate(file_name=filename))
         if self.song_book_name:
             song_book = self.manager.get_object_filtered(Book,
                 Book.name == self.song_book_name)
@@ -298,6 +329,7 @@ class SongImport(QtCore.QObject):
                 topic = Topic.populate(name=topictext)
             song.topics.append(topic)
         self.manager.save_object(song)
+        self.set_defaults()
 
     def print_song(self):
         """

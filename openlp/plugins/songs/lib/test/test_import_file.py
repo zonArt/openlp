@@ -23,38 +23,25 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-"""
-The :mod:`ui` module provides the core user interface for OpenLP
-"""
+import sys
 
-class HideMode(object):
-    """
-    This is basically an enumeration class which specifies the mode of a Bible.
-    Mode refers to whether or not a Bible in OpenLP is a full Bible or needs to
-    be downloaded from the Internet on an as-needed basis.
-    """
-    Blank = 1
-    Theme = 2
-    Screen = 3
+from openlp.plugins.songs.lib.opensongimport import OpenSongImport
+from openlp.core.lib.db import Manager
+from openlp.plugins.songs.lib.db import init_schema
 
-from maindisplay import MainDisplay
-from slidecontroller import HideMode
-from servicenoteform import ServiceNoteForm
-from serviceitemeditform import ServiceItemEditForm
-from screen import ScreenList
-from amendthemeform import AmendThemeForm
-from slidecontroller import SlideController
-from splashscreen import SplashScreen
-from generaltab import GeneralTab
-from themestab import ThemesTab
-from advancedtab import AdvancedTab
-from aboutform import AboutForm
-from pluginform import PluginForm
-from settingsform import SettingsForm
-from mediadockmanager import MediaDockManager
-from servicemanager import ServiceManager
-from thememanager import ThemeManager
+import logging
+LOG_FILENAME = 'test_import_file.log'
+logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO)
 
-__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm',
-    'MainDisplay', 'SlideController', 'ServiceManager', 'ThemeManager',
-    'AmendThemeForm', 'MediaDockManager', 'ServiceItemEditForm']
+from test_opensongimport import wizard_stub, progbar_stub
+
+def test(filenames):
+    manager = Manager(u'songs', init_schema)
+    o = OpenSongImport(manager, filenames=filenames)
+    o.import_wizard = wizard_stub()
+    o.commit = False
+    o.do_import()
+    o.print_song()
+
+if __name__ == "__main__":
+    test(sys.argv[1:])

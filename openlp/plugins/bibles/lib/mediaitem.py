@@ -275,8 +275,9 @@ class BibleMediaItem(MediaManagerItem):
         self.SearchProgress.setObjectName(u'SearchProgress')
 
     def configUpdated(self):
+        log.debug(u'configUpdated')
         if QtCore.QSettings().value(self.settingsSection + u'/dual bibles',
-            QtCore.QVariant(False)).toBool():
+            QtCore.QVariant(True)).toBool():
             self.AdvancedSecondBibleLabel.setVisible(True)
             self.AdvancedSecondBibleComboBox.setVisible(True)
             self.QuickSecondVersionLabel.setVisible(True)
@@ -677,7 +678,8 @@ class BibleMediaItem(MediaManagerItem):
                         self.dual_search_results[count].text)
                 }
                 bible_text = u' %s %d:%d (%s, %s)' % (verse.book.name,
-                    verse.chapter, verse.verse, version.value, dual_version.value)
+                    verse.chapter, verse.verse, version.value,
+                    dual_version.value)
             else:
                 vdict = {
                     'book': QtCore.QVariant(verse.book.name),

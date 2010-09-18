@@ -250,7 +250,7 @@ class Ui_MainWindow(object):
         self.LanguageGroup = QtGui.QActionGroup(MainWindow)
         qmList = LanguageManager.get_qm_list()
         savedLanguage = LanguageManager.get_language()
-        self.AutoLanguageItem.setChecked(LanguageManager.AutoLanguage)
+        self.AutoLanguageItem.setChecked(LanguageManager.auto_language)
         for key in sorted(qmList.keys()):
             languageItem = QtGui.QAction(MainWindow)
             languageItem.setObjectName(key)
@@ -258,7 +258,7 @@ class Ui_MainWindow(object):
             if qmList[key] == savedLanguage:
                 languageItem.setChecked(True)
             add_actions(self.LanguageGroup, [languageItem])
-        self.LanguageGroup.setDisabled(LanguageManager.AutoLanguage)
+        self.LanguageGroup.setDisabled(LanguageManager.auto_language)
         self.ToolsAddToolItem = QtGui.QAction(MainWindow)
         self.ToolsAddToolItem.setIcon(build_icon(u':/tools/tools_add.png'))
         self.ToolsAddToolItem.setObjectName(u'ToolsAddToolItem')
@@ -640,7 +640,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def setAutoLanguage(self, value):
         self.LanguageGroup.setDisabled(value)
-        LanguageManager.AutoLanguage = value
+        LanguageManager.auto_language = value
         LanguageManager.set_language(self.LanguageGroup.checkedAction())
 
     def versionNotice(self, version):

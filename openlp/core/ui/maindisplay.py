@@ -97,6 +97,7 @@ class MainDisplay(DisplayWidget):
         self.screens = screens
         self.isLive = live
         self.alertTab = None
+        self.hide_mode = None
         self.setWindowTitle(u'OpenLP Display')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint |
             QtCore.Qt.WindowStaysOnTopHint)
@@ -115,13 +116,18 @@ class MainDisplay(DisplayWidget):
         self.screen = self.screens.current
         self.setVisible(False)
         self.setGeometry(self.screen[u'size'])
-        self.webView = QtWebKit.QWebView(self)
-        self.webView.setGeometry(0, 0, self.screen[u'size'].width(), \
+        self.scene = QtGui.QGraphicsScene()
+        self.setScene(self.scene)
+        self.webView = QtWebKit.QGraphicsWebView()
+        self.scene.addItem(self.webView)
+        self.webView.resize(self.screen[u'size'].width(),
             self.screen[u'size'].height())
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
         QtCore.QObject.connect(self.webView,
             QtCore.SIGNAL(u'loadFinished(bool)'), self.isLoaded)
+        self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.frame.setScrollBarPolicy(QtCore.Qt.Vertical,
             QtCore.Qt.ScrollBarAlwaysOff)
         self.frame.setScrollBarPolicy(QtCore.Qt.Horizontal,
@@ -135,7 +141,7 @@ class MainDisplay(DisplayWidget):
             painter_image = QtGui.QPainter()
             painter_image.begin(self.black)
             painter_image.fillRect(self.black.rect(), QtCore.Qt.black)
-            #Build the initial frame.
+            # Build the initial frame.
             initialFrame = QtGui.QImage(
                 self.screens.current[u'size'].width(),
                 self.screens.current[u'size'].height(),
@@ -152,12 +158,12 @@ class MainDisplay(DisplayWidget):
                 splash_image)
             serviceItem = ServiceItem()
             serviceItem.bg_frame = initialFrame
-            self.webView.setHtml(build_html(serviceItem, self.screen, \
-                self.parent.alertTab))
+            self.webView.setHtml(build_html(serviceItem, self.screen,
+                self.parent.alertTab, self.isLive))
             self.initialFrame = True
-            self.show()
             # To display or not to display?
             if not self.screen[u'primary']:
+                self.show()
                 self.primary = False
             else:
                 self.primary = True
@@ -297,13 +303,17 @@ class MainDisplay(DisplayWidget):
         Generates a preview of the image displayed.
         """
         log.debug(u'preview for %s', self.isLive)
-        # Wait for the fade to finish before geting the preview.
-        # Important otherwise preview will have incorrect text if at all !
-        if self.serviceItem.themedata and \
-            self.serviceItem.themedata.display_slideTransition:
-            while self.frame.evaluateJavaScript(u'show_text_complete()') \
-                .toString() == u'false':
-                Receiver.send_message(u'openlp_process_events')
+        # We must have a service item to preview
+        if not hasattr(self, u'serviceItem'):
+            return
+        if self.isLive:
+            # Wait for the fade to finish before geting the preview.
+            # Important otherwise preview will have incorrect text if at all !
+            if self.serviceItem.themedata and \
+                self.serviceItem.themedata.display_slideTransition:
+                while self.frame.evaluateJavaScript(u'show_text_complete()') \
+                    .toString() == u'false':
+                    Receiver.send_message(u'openlp_process_events')
         # Wait for the webview to update before geting the preview.
         # Important otherwise first preview will miss the background !
         while not self.loaded:
@@ -318,9 +328,6 @@ class MainDisplay(DisplayWidget):
         # Make display show up if in single screen mode
         if self.isLive:
             self.setVisible(True)
-        # save preview for debugging
-        if log.isEnabledFor(logging.DEBUG):
-            preview.save(u'temp.png', u'png')
         return preview
 
     def buildHtml(self, serviceItem):
@@ -332,10 +339,14 @@ class MainDisplay(DisplayWidget):
         self.loaded = False
         self.initialFrame = False
         self.serviceItem = serviceItem
-        html = build_html(self.serviceItem, self.screen, self.parent.alertTab)
+        html = build_html(self.serviceItem, self.screen, self.parent.alertTab,
+            self.isLive)
         self.webView.setHtml(html)
         if serviceItem.foot_text and serviceItem.foot_text:
             self.footer(serviceItem.foot_text)
+        # if was hidden keep it hidden
+        if self.hide_mode and self.isLive:
+            self.hideDisplay(self.hide_mode)
 
     def footer(self, text):
         """
@@ -361,6 +372,7 @@ class MainDisplay(DisplayWidget):
             self.frame.evaluateJavaScript(u'show_blank("theme");')
         if mode != HideMode.Screen and self.isHidden():
             self.setVisible(True)
+        self.hide_mode = mode
 
     def showDisplay(self):
         """
@@ -374,6 +386,7 @@ class MainDisplay(DisplayWidget):
             self.setVisible(True)
         # Trigger actions when display is active again
         Receiver.send_message(u'maindisplay_active')
+        self.hide_mode = None
 
 class AudioPlayer(QtCore.QObject):
     """

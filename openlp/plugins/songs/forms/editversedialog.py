@@ -26,8 +26,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, translate
-from openlp.core.ui import SpellTextEdit
+from openlp.core.lib import build_icon, translate, SpellTextEdit
 from openlp.plugins.songs.lib import VerseType
 
 class Ui_EditVerseDialog(object):

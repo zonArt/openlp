@@ -274,7 +274,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             item = self.VerseListWidget.item(row, 0)
             data = unicode(item.data(QtCore.Qt.UserRole).toString())
             bit = data.split(u':')
-            rowTag = u'%s\n%s' % (bit[0][0:1], bit[1])
+            rowTag = u'%s%s' % (bit[0][0:1], bit[1])
             rowLabel.append(rowTag)
         self.VerseListWidget.setVerticalHeaderLabels(rowLabel)
 
@@ -395,9 +395,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.VerseDeleteButton.setEnabled(True)
 
     def onVerseAddButtonClicked(self):
-        # Allow insert button as you do not know if multiple verses will
-        # be entered.
-        self.verse_form.setVerse(u'')
+        self.verse_form.setVerse(u'', True)
         if self.verse_form.exec_():
             afterText, verse, subVerse = self.verse_form.getVerse()
             data = u'%s:%s' % (verse, subVerse)
@@ -623,6 +621,10 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.close()
 
     def saveSong(self):
+        """
+        Get all the data from the widgets on the form, and then save it to the
+        database.
+        """
         self.song.title = unicode(self.TitleEditItem.text())
         self.song.alternate_title = unicode(self.AlternativeEdit.text())
         self.song.copyright = unicode(self.CopyrightEditItem.text())
@@ -648,6 +650,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 self.song.topics.append(self.songmanager.get_object(Topic,
                     topicId))
             self.songmanager.save_object(self.song)
+            self.song = None
             return True
         return False
 
