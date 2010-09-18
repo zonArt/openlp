@@ -125,8 +125,6 @@ class ImpressController(PresentationController):
             u'UnoUrlResolver')
         resolver = context.ServiceManager.createInstanceWithContext(
             u'com.sun.star.bridge.UnoUrlResolver', context)
-        #connection_type = u'socket'
-        connection_type = u'pipe,name=openlp_pipe'
         while ctx is None and loop < 3:
             try:
                 log.debug(u'get UNO Desktop Openoffice - resolve')
