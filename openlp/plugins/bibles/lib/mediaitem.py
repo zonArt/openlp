@@ -445,11 +445,21 @@ class BibleMediaItem(MediaManagerItem):
         self.displayResults(bible, dual_bible)
 
     def onClearAdvancedSearchComboBox(self):
-        self.listView.clear()
         if self.ClearAdvancedSearchComboBox.currentIndex() == 0:
             self.AdvancedSecondBibleComboBox.setEnabled(True)
             if self.AdvancedSecondBibleComboBox.findText(u'') == -1:
                 self.AdvancedSecondBibleComboBox.insertItem(0, u'')
+            self.listView.clear()
+        else:
+            if self.listView.count() != 0:
+                bitem = self.listView.item(0)
+                dual_bible = self._decodeQtObject(bitem, 'dual_bible')
+                if self.AdvancedSecondBibleComboBox.findText(u'') != -1 and \
+                    dual_bible:
+                    self.AdvancedSecondBibleComboBox.removeItem(0)
+                else:
+                    self.AdvancedSecondBibleComboBox.setCurrentIndex(0)
+                    self.AdvancedSecondBibleComboBox.setEnabled(False)
 
     def onAdvancedFromChapter(self):
         bible = unicode(self.AdvancedVersionComboBox.currentText())
@@ -482,14 +492,23 @@ class BibleMediaItem(MediaManagerItem):
             self.displayResults(bible, dual_bible)
 
     def onClearQuickSearchComboBox(self):
-        self.listView.clear()
         if self.ClearQuickSearchComboBox.currentIndex() == 0:
             self.QuickSecondBibleComboBox.setEnabled(True)
             if self.QuickSecondBibleComboBox.findText(u'') == -1:
                 self.QuickSecondBibleComboBox.insertItem(0, u'')
+            self.listView.clear()
+        else:
+            if self.listView.count() != 0:
+                bitem = self.listView.item(0)
+                dual_bible = self._decodeQtObject(bitem, 'dual_bible')
+                if self.QuickSecondBibleComboBox.findText(u'') != -1 and \
+                    dual_bible:
+                    self.QuickSecondBibleComboBox.removeItem(0)
+                else:
+                    self.QuickSecondBibleComboBox.setCurrentIndex(0)
+                    self.QuickSecondBibleComboBox.setEnabled(False)
 
-    def _decodeQtObject(self, item, key):
-        bitem = self.listView.item(item.row())
+    def _decodeQtObject(self, bitem, key):
         reference = bitem.data(QtCore.Qt.UserRole)
         if isinstance(reference, QtCore.QVariant):
             reference = reference.toPyObject()
@@ -515,19 +534,20 @@ class BibleMediaItem(MediaManagerItem):
         first = True
         # Let's loop through the main lot, and assemble our verses.
         for item in items:
-            book = self._decodeQtObject(item, 'book')
-            chapter = int(self._decodeQtObject(item, 'chapter'))
-            verse = int(self._decodeQtObject(item, 'verse'))
-            bible = self._decodeQtObject(item, 'bible')
-            version = self._decodeQtObject(item, 'version')
-            copyright = self._decodeQtObject(item, 'copyright')
-            permission = self._decodeQtObject(item, 'permission')
-            text = self._decodeQtObject(item, 'text')
-            dual_bible = self._decodeQtObject(item, 'dual_bible')
-            dual_version = self._decodeQtObject(item, 'dual_version')
-            dual_copyright = self._decodeQtObject(item, 'dual_copyright')
-            dual_permission = self._decodeQtObject(item, 'dual_permission')
-            dual_text = self._decodeQtObject(item, 'dual_text')
+            bitem = self.listView.item(item.row())
+            book = self._decodeQtObject(bitem, 'book')
+            chapter = int(self._decodeQtObject(bitem, 'chapter'))
+            verse = int(self._decodeQtObject(bitem, 'verse'))
+            bible = self._decodeQtObject(bitem, 'bible')
+            version = self._decodeQtObject(bitem, 'version')
+            copyright = self._decodeQtObject(bitem, 'copyright')
+            permission = self._decodeQtObject(bitem, 'permission')
+            text = self._decodeQtObject(bitem, 'text')
+            dual_bible = self._decodeQtObject(bitem, 'dual_bible')
+            dual_version = self._decodeQtObject(bitem, 'dual_version')
+            dual_copyright = self._decodeQtObject(bitem, 'dual_copyright')
+            dual_permission = self._decodeQtObject(bitem, 'dual_permission')
+            dual_text = self._decodeQtObject(bitem, 'dual_text')
             verse_text = self.formatVerse(old_chapter, chapter, verse)
             footer = u'%s (%s %s %s)' % (book, version, copyright, permission)
             if footer not in raw_footer:
@@ -599,13 +619,15 @@ class BibleMediaItem(MediaManagerItem):
         we are at the end of a verse range. E. g. if we want to add
         Genesis 1:1-6 as well as Daniel 2:14.
         """
-        old_chapter = int(self._decodeQtObject(old_item, 'chapter'))
-        old_verse = int(self._decodeQtObject(old_item, 'verse'))
-        start_book = self._decodeQtObject(start_item, 'book')
-        start_chapter = int(self._decodeQtObject(start_item, 'chapter'))
-        start_verse = int(self._decodeQtObject(start_item, 'verse'))
-        start_bible = self._decodeQtObject(start_item, 'bible')
-        start_dual_bible = self._decodeQtObject(start_item, 'dual_bible')
+        old_bitem = self.listView.item(old_item.row())
+        old_chapter = int(self._decodeQtObject(old_bitem, 'chapter'))
+        old_verse = int(self._decodeQtObject(old_bitem, 'verse'))
+        start_bitem = self.listView.item(start_item.row())
+        start_book = self._decodeQtObject(start_bitem, 'book')
+        start_chapter = int(self._decodeQtObject(start_bitem, 'chapter'))
+        start_verse = int(self._decodeQtObject(start_bitem, 'verse'))
+        start_bible = self._decodeQtObject(start_bitem, 'bible')
+        start_dual_bible = self._decodeQtObject(start_bitem, 'dual_bible')
         if start_dual_bible:
             if start_verse == old_verse and start_chapter == old_chapter:
                 title = u'%s %s:%s (%s, %s)' % (start_book, start_chapter,
@@ -635,16 +657,18 @@ class BibleMediaItem(MediaManagerItem):
         the case, we return True, else False. E. g. if we added Genesis 1:1-6,
         but the next verse is Daniel 2:14.
         """
-        book = self._decodeQtObject(item, 'book')
-        chapter = int(self._decodeQtObject(item, 'chapter'))
-        verse = int(self._decodeQtObject(item, 'verse'))
-        bible = self._decodeQtObject(item, 'bible')
-        dual_bible = self._decodeQtObject(item, 'dual_bible')
-        old_book = self._decodeQtObject(old_item, 'book')
-        old_chapter = int(self._decodeQtObject(old_item, 'chapter'))
-        old_verse = int(self._decodeQtObject(old_item, 'verse'))
-        old_bible = self._decodeQtObject(old_item, 'bible')
-        old_dual_bible = self._decodeQtObject(old_item, 'dual_bible')
+        bitem = self.listView.item(item.row())
+        book = self._decodeQtObject(bitem, 'book')
+        chapter = int(self._decodeQtObject(bitem, 'chapter'))
+        verse = int(self._decodeQtObject(bitem, 'verse'))
+        bible = self._decodeQtObject(bitem, 'bible')
+        dual_bible = self._decodeQtObject(bitem, 'dual_bible')
+        old_bitem = self.listView.item(old_item.row())
+        old_book = self._decodeQtObject(old_bitem, 'book')
+        old_chapter = int(self._decodeQtObject(old_bitem, 'chapter'))
+        old_verse = int(self._decodeQtObject(old_bitem, 'verse'))
+        old_bible = self._decodeQtObject(old_bitem, 'bible')
+        old_dual_bible = self._decodeQtObject(old_bitem, 'dual_bible')
         if old_bible != bible or old_dual_bible != dual_bible or \
             old_book != book:
             return True
