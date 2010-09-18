@@ -74,6 +74,7 @@ class ImpressController(PresentationController):
         self.process = None
         self.desktop = None
         self.manager = None
+        self.uno_connection_type = u'pipe' #u'socket'
 
     def check_available(self):
         """
@@ -98,7 +99,14 @@ class ImpressController(PresentationController):
             self.manager._FlagAsMethod(u'Bridge_GetValueObject')
         else:
             # -headless
-            cmd = u'openoffice.org -nologo -norestore -minimized -invisible -nofirststartwizard -accept="socket,host=localhost,port=2002;urp;"'
+            if self.uno_connection_type == u'pipe':
+                cmd = u'openoffice.org -nologo -norestore -minimized ' \
+                    + u'-invisible -nofirststartwizard ' \
+                    + u'-accept=pipe,name=openlp_pipe;urp;'
+            else:
+                cmd = u'openoffice.org -nologo -norestore -minimized ' \
+                    + u'-invisible -nofirststartwizard ' \
+                    + u'-accept=socket,host=localhost,port=2002;urp;'
             self.process = QtCore.QProcess()
             self.process.startDetached(cmd)
             self.process.waitForStarted()
@@ -120,8 +128,14 @@ class ImpressController(PresentationController):
         while ctx is None and loop < 3:
             try:
                 log.debug(u'get UNO Desktop Openoffice - resolve')
-                ctx = resolver.resolve(u'uno:socket,host=localhost,port=2002;'
-                    u'urp;StarOffice.ComponentContext')
+                if self.uno_connection_type == u'pipe':
+                    ctx = resolver.resolve(u'uno:' \
+                        + u'pipe,name=openlp_pipe;' \
+                        + u'urp;StarOffice.ComponentContext')
+                else:
+                    ctx = resolver.resolve(u'uno:' \
+                        + u'socket,host=localhost,port=2002;' \
+                        + u'urp;StarOffice.ComponentContext')
             except:
                 log.exception(u'Unable to find running instance ')
                 self.start_process()
