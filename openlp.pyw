@@ -162,18 +162,18 @@ def main():
     the PyQt4 Application.
     """
     # Set up command line options.
-    usage = u'Usage: %prog [options] [qt-options]'
+    usage = 'Usage: %prog [options] [qt-options]'
     parser = OptionParser(usage=usage)
-    parser.add_option(u'-e', u'--no-error-form', dest=u'no_error_form',
-        action=u'store_true', help=u'Disable the error notification form.')
-    parser.add_option(u'-l', u'--log-level', dest=u'loglevel',
-        default=u'warning', metavar=u'LEVEL', help=u'Set logging to LEVEL '
-        u'level. Valid values are "debug", "info", "warning".')
-    parser.add_option(u'-p', u'--portable', dest=u'portable',
-        action=u'store_true', help=u'Specify if this should be run as a '
-        u'portable app, off a USB flash drive (not implemented).')
-    parser.add_option(u'-s', u'--style', dest=u'style',
-        help=u'Set the Qt4 style (passed directly to Qt4).')
+    parser.add_option('-e', '--no-error-form', dest='no_error_form',
+        action='store_true', help='Disable the error notification form.')
+    parser.add_option('-l', '--log-level', dest='loglevel',
+        default='warning', metavar='LEVEL', help='Set logging to LEVEL '
+        'level. Valid values are "debug", "info", "warning".')
+    parser.add_option('-p', '--portable', dest='portable',
+        action='store_true', help='Specify if this should be run as a '
+        'portable app, off a USB flash drive (not implemented).')
+    parser.add_option('-s', '--style', dest='style',
+        help='Set the Qt4 style (passed directly to Qt4).')
     # Set up logging
     log_path = AppLocation.get_directory(AppLocation.CacheDir)
     if not os.path.exists(log_path):

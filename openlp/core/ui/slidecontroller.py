@@ -214,7 +214,8 @@ class SlideController(QtGui.QWidget):
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.Toolbar.addToolbarButton(
                 u'Edit Song', u':/general/general_edit.png',
-                translate('OpenLP.SlideController', 'Edit and re-preview song'),
+                translate('OpenLP.SlideController', 
+                'Edit and reload song preview'),
                 self.onEditSong)
         if isLive:
             self.Toolbar.addToolbarSeparator(u'Loop Separator')
