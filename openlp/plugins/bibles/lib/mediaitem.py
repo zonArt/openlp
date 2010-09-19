@@ -449,7 +449,6 @@ class BibleMediaItem(MediaManagerItem):
             self.AdvancedSecondBibleComboBox.setEnabled(True)
             if self.AdvancedSecondBibleComboBox.findText(u'') == -1:
                 self.AdvancedSecondBibleComboBox.insertItem(0, u'')
-            self.listView.clear()
         else:
             if self.listView.count() != 0:
                 bitem = self.listView.item(0)
@@ -496,7 +495,6 @@ class BibleMediaItem(MediaManagerItem):
             self.QuickSecondBibleComboBox.setEnabled(True)
             if self.QuickSecondBibleComboBox.findText(u'') == -1:
                 self.QuickSecondBibleComboBox.insertItem(0, u'')
-            self.listView.clear()
         else:
             if self.listView.count() != 0:
                 bitem = self.listView.item(0)
