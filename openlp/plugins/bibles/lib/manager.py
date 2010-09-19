@@ -246,7 +246,7 @@ class BibleManager(object):
                 translate('BiblesPlugin.BibleManager',
                 'Scripture Reference Error'),
                 translate('BiblesPlugin.BibleManager', 'Your scripture '
-                'reference is either not supported by OpenLP or invalid. '
+                'reference is either not supported by OpenLP or is invalid. '
                 'Please make sure your reference conforms to one of the '
                 'following patterns:\n\n'
                 'Book Chapter\n'
