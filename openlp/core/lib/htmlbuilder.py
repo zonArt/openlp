@@ -272,7 +272,7 @@ body {
 </script>
 </head>
 <body>
-<img id="image" class="size" src="%s" />
+<img id="image" class="size" %s />
 <video id="video" class="size"></video>
 %s
 <div id="footer" class="footer"></div>
@@ -300,9 +300,9 @@ def build_html(item, screen, alert, islive):
     theme = item.themedata
     webkitvers = webkit_version()
     if item.bg_image_bytes:
-        image = u'data:image/png;base64,%s' % item.bg_image_bytes
+        image = u'src="data:image/png;base64,%s"' % item.bg_image_bytes
     else:
-        image = u''
+        image = u'style="display:none;"'
     html = HTMLSRC % (build_background_css(item, width, height),
         width, height,
         build_alert_css(alert, width),

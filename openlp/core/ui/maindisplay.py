@@ -99,6 +99,7 @@ class MainDisplay(DisplayWidget):
         self.alertTab = None
         self.hide_mode = None
         self.setWindowTitle(u'OpenLP Display')
+        self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint |
             QtCore.Qt.WindowStaysOnTopHint)
         if self.isLive:
@@ -116,12 +117,18 @@ class MainDisplay(DisplayWidget):
         self.screen = self.screens.current
         self.setVisible(False)
         self.setGeometry(self.screen[u'size'])
-        self.scene = QtGui.QGraphicsScene()
-        self.setScene(self.scene)
-        self.webView = QtWebKit.QGraphicsWebView()
-        self.scene.addItem(self.webView)
-        self.webView.resize(self.screen[u'size'].width(),
-            self.screen[u'size'].height())
+        try:
+            self.webView = QtWebKit.QGraphicsWebView()
+            self.scene = QtGui.QGraphicsScene(self)
+            self.setScene(self.scene)
+            self.scene.addItem(self.webView)
+            self.webView.setGeometry(QtCore.QRectF(0, 0, 
+                self.screen[u'size'].width(), self.screen[u'size'].height()))
+        except AttributeError:
+            #  QGraphicsWebView a recent addition, so fall back to QWebView
+            self.webView = QtWebKit.QWebView(self)
+            self.webView.setGeometry(0, 0, 
+                self.screen[u'size'].width(), self.screen[u'size'].height())
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
         QtCore.QObject.connect(self.webView,
