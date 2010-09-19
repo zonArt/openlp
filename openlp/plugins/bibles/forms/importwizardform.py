@@ -181,7 +181,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                     translate('BiblesPlugin.ImportWizardForm',
                     'Empty Copyright'),
                     translate('BiblesPlugin.ImportWizardForm',
-                    'You need to set a copyright for your Bible! '
+                    'You need to set a copyright for your Bible. '
                     'Bibles in the Public Domain need to be marked as such.'))
                 self.CopyrightEdit.setFocus()
                 return False
@@ -189,7 +189,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
                 QtGui.QMessageBox.critical(self,
                     translate('BiblesPlugin.ImportWizardForm', 'Bible Exists'),
                     translate('BiblesPlugin.ImportWizardForm',
-                    'This Bible already exists! Please import '
+                    'This Bible already exists. Please import '
                     'a different Bible or first delete the existing one.'))
                 self.VersionNameEdit.setFocus()
                 return False

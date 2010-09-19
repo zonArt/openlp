@@ -28,10 +28,8 @@ The :mod:`olp1import` module provides the functionality for importing
 openlp.org 1.x song databases into the current installation database.
 """
 import logging
-try:
-    import sqlite
-except:
-    pass
+import chardet
+import sqlite
 
 from openlp.core.lib import translate
 from songimport import SongImport
@@ -43,6 +41,8 @@ class OpenLP1SongImport(SongImport):
     The :class:`OpenLP1SongImport` class provides OpenLP with the ability to
     import song databases from installations of openlp.org 1.x.
     """
+    last_encoding = u'windows-1252'
+
     def __init__(self, manager, **kwargs):
         """
         Initialise the import.
@@ -56,6 +56,34 @@ class OpenLP1SongImport(SongImport):
         SongImport.__init__(self, manager)
         self.import_source = kwargs[u'filename']
 
+    def decode_string(self, raw, guess):
+        """
+        Use chardet to detect the encoding of the raw string, and convert it
+        to unicode.
+
+        ``raw``
+            The raw bytestring to decode.
+        ``guess``
+            What chardet guessed the encoding to be.
+        """
+        if guess[u'confidence'] < 0.8:
+            codec = u'windows-1252'
+        else:
+            codec = guess[u'encoding']
+        try:
+            decoded = unicode(raw, codec)
+            self.last_encoding = codec
+        except UnicodeDecodeError:
+            log.exception(u'Error in detecting openlp.org 1.x database encoding.')
+            try:
+                decoded = unicode(raw, self.last_encoding)
+            except UnicodeDecodeError:
+                # possibly show an error form
+                #self.import_wizard.showError(u'There was a problem '
+                #    u'detecting the encoding of a string')
+                decoded = raw
+        return decoded
+
     def do_import(self):
         """
         Run the import for an openlp.org 1.x song database.
@@ -63,6 +91,11 @@ class OpenLP1SongImport(SongImport):
         # Connect to the database
         connection = sqlite.connect(self.import_source)
         cursor = connection.cursor()
+        # Determine if we're using a new or an old DB
+        cursor.execute(u'SELECT name FROM sqlite_master '
+            u'WHERE type = \'table\' AND name = \'tracks\'')
+        table_list = cursor.fetchall()
+        new_db = len(table_list) > 0
         # Count the number of records we need to import, for the progress bar
         cursor.execute(u'SELECT COUNT(songid) FROM songs')
         count = int(cursor.fetchone()[0])
@@ -71,9 +104,10 @@ class OpenLP1SongImport(SongImport):
         # "cache" our list of authors
         cursor.execute(u'SELECT authorid, authorname FROM authors')
         authors = cursor.fetchall()
-        # "cache" our list of tracks
-        cursor.execute(u'SELECT trackid, fulltrackname FROM tracks')
-        tracks = cursor.fetchall()
+        if new_db:
+            # "cache" our list of tracks
+            cursor.execute(u'SELECT trackid, fulltrackname FROM tracks')
+            tracks = cursor.fetchall()
         # Import the songs
         cursor.execute(u'SELECT songid, songtitle, lyrics || \'\' AS lyrics, '
             u'copyrightinfo FROM songs')
@@ -84,9 +118,10 @@ class OpenLP1SongImport(SongImport):
                 success = False
                 break
             song_id = song[0]
-            title = unicode(song[1], u'cp1252')
-            lyrics = unicode(song[2], u'cp1252').replace(u'\r', u'')
-            copyright = unicode(song[3], u'cp1252')
+            guess = chardet.detect(song[2])
+            title = self.decode_string(song[1], guess)
+            lyrics = self.decode_string(song[2], guess).replace(u'\r', u'')
+            copyright = self.decode_string(song[3], guess)
             self.import_wizard.incrementProgressBar(
                 unicode(translate('SongsPlugin.ImportWizardForm',
                     'Importing "%s"...')) % title)
@@ -102,15 +137,12 @@ class OpenLP1SongImport(SongImport):
                     break
                 for author in authors:
                     if author[0] == author_id[0]:
-                        self.parse_author(unicode(author[1], u'cp1252'))
+                        self.parse_author(self.decode_string(author[1], guess))
                         break
             if self.stop_import_flag:
                 success = False
                 break
-            cursor.execute(u'SELECT name FROM sqlite_master '
-                u'WHERE type = \'table\' AND name = \'tracks\'')
-            table_list = cursor.fetchall()
-            if len(table_list) > 0:
+            if new_db:
                 cursor.execute(u'SELECT trackid FROM songtracks '
                     u'WHERE songid = %s ORDER BY listindex' % song_id)
                 track_ids = cursor.fetchall()
@@ -120,10 +152,11 @@ class OpenLP1SongImport(SongImport):
                         break
                     for track in tracks:
                         if track[0] == track_id[0]:
-                            self.add_media_file(unicode(track[1], u'cp1252'))
+                            self.add_media_file(self.decode_string(track[1], guess))
                             break
             if self.stop_import_flag:
                 success = False
                 break
             self.finish()
         return success
+

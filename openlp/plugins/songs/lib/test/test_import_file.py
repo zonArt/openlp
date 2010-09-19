@@ -23,36 +23,25 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+import sys
 
-from PyQt4 import QtGui
+from openlp.plugins.songs.lib.opensongimport import OpenSongImport
+from openlp.core.lib.db import Manager
+from openlp.plugins.songs.lib.db import init_schema
 
-from openlp.core.lib import translate
-from openlp.plugins.songs.forms.topicsdialog import Ui_TopicsDialog
+import logging
+LOG_FILENAME = 'test_import_file.log'
+logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO)
 
-class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
-    """
-    Class documentation goes here.
-    """
-    def __init__(self, parent=None):
-        """
-        Constructor
-        """
-        QtGui.QDialog.__init__(self, parent)
-        self.setupUi(self)
+from test_opensongimport import wizard_stub, progbar_stub
 
-    def exec_(self, clear=True):
-        if clear:
-            self.NameEdit.clear()
-        self.NameEdit.setFocus()
-        return QtGui.QDialog.exec_(self)
+def test(filenames):
+    manager = Manager(u'songs', init_schema)
+    o = OpenSongImport(manager, filenames=filenames)
+    o.import_wizard = wizard_stub()
+    o.commit = False
+    o.do_import()
+    o.print_song()
 
-    def accept(self):
-        if not self.NameEdit.text():
-            QtGui.QMessageBox.critical(
-                self, translate('SongsPlugin.TopicsForm', 'Error'),
-                translate('SongsPlugin.TopicsForm',
-                    'You need to type in a topic name.'))
-            self.NameEdit.setFocus()
-            return False
-        else:
-            return QtGui.QDialog.accept(self)
+if __name__ == "__main__":
+    test(sys.argv[1:])
