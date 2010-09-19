@@ -55,8 +55,12 @@ class SongImport(QtCore.QObject):
         self.set_defaults()
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'songs_stop_import'), self.stop_import)
-
     def set_defaults(self):
+        """
+        Create defaults for properties - call this before each song
+        if importing many songs at once to ensure a clean beginning
+        """
+        self.authors = []
         self.title = u''
         self.song_number = u''
         self.alternate_title = u''
@@ -255,13 +259,16 @@ class SongImport(QtCore.QObject):
         """
         Write the song and its fields to disk
         """
+        log.info(u'commiting song %s to database', self.title)
         song = Song()
         song.title = self.title
         song.search_title = self.remove_punctuation(self.title) \
             + '@' + self.alternate_title
         song.song_number = self.song_number
         song.search_lyrics = u''
+        verses_changed_to_other = {}
         sxml = SongXMLBuilder()
+        other_count = 1
         for (versetag, versetext) in self.verses:
             if versetag[0] == u'C':
                 versetype = VerseType.to_string(VerseType.Chorus)
@@ -276,10 +283,18 @@ class SongImport(QtCore.QObject):
             elif versetag[0] == u'E':
                 versetype = VerseType.to_string(VerseType.Ending)
             else:
+                newversetag = u'O%d' % other_count
+                verses_changed_to_other[versetag] = newversetag
+                other_count += 1
                 versetype = VerseType.to_string(VerseType.Other)
+                log.info(u'Versetype %s changing to %s' , versetag, newversetag)
+                versetag = newversetag
             sxml.add_verse_to_lyrics(versetype, versetag[1:], versetext)
             song.search_lyrics += u' ' + self.remove_punctuation(versetext)
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
+        for i, current_verse_tag in enumerate(self.verse_order_list):
+            if verses_changed_to_other.has_key(current_verse_tag):
+                self.verse_order_list[i] = verses_changed_to_other[current_verse_tag]
         song.verse_order = u' '.join(self.verse_order_list)
         song.copyright = self.copyright
         song.comments = self.comments
