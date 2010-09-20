@@ -43,9 +43,12 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         QtGui.QPlainTextEdit.__init__(self, *args)
         # Default dictionary based on the current locale.
         if enchant_available:
-            self.dict = enchant.Dict()
-            self.highlighter = Highlighter(self.document())
-            self.highlighter.setDict(self.dict)
+            try:
+                self.dict = enchant.Dict()
+                self.highlighter = Highlighter(self.document())
+                self.highlighter.setDict(self.dict)
+            except:
+                enchant_available = False
 
     def mousePressEvent(self, event):
         if event.button() == QtCore.Qt.RightButton:
