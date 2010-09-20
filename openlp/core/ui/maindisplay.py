@@ -99,6 +99,7 @@ class MainDisplay(DisplayWidget):
         self.alertTab = None
         self.hide_mode = None
         self.setWindowTitle(u'OpenLP Display')
+        self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint |
             QtCore.Qt.WindowStaysOnTopHint)
         if self.isLive:
@@ -116,12 +117,18 @@ class MainDisplay(DisplayWidget):
         self.screen = self.screens.current
         self.setVisible(False)
         self.setGeometry(self.screen[u'size'])
-        self.scene = QtGui.QGraphicsScene()
-        self.setScene(self.scene)
-        self.webView = QtWebKit.QGraphicsWebView()
-        self.scene.addItem(self.webView)
-        self.webView.resize(self.screen[u'size'].width(),
-            self.screen[u'size'].height())
+        try:
+            self.webView = QtWebKit.QGraphicsWebView()
+            self.scene = QtGui.QGraphicsScene(self)
+            self.setScene(self.scene)
+            self.scene.addItem(self.webView)
+            self.webView.setGeometry(QtCore.QRectF(0, 0,
+                self.screen[u'size'].width(), self.screen[u'size'].height()))
+        except AttributeError:
+            #  QGraphicsWebView a recent addition, so fall back to QWebView
+            self.webView = QtWebKit.QWebView(self)
+            self.webView.setGeometry(0, 0,
+                self.screen[u'size'].width(), self.screen[u'size'].height())
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
         QtCore.QObject.connect(self.webView,
@@ -306,6 +313,7 @@ class MainDisplay(DisplayWidget):
         # We must have a service item to preview
         if not hasattr(self, u'serviceItem'):
             return
+        Receiver.send_message(u'openlp_process_events')
         if self.isLive:
             # Wait for the fade to finish before geting the preview.
             # Important otherwise preview will have incorrect text if at all !
@@ -318,6 +326,8 @@ class MainDisplay(DisplayWidget):
         # Important otherwise first preview will miss the background !
         while not self.loaded:
             Receiver.send_message(u'openlp_process_events')
+        if self.isLive:
+            self.setVisible(True)
         preview = QtGui.QImage(self.screen[u'size'].width(),
             self.screen[u'size'].height(),
             QtGui.QImage.Format_ARGB32_Premultiplied)
@@ -325,7 +335,6 @@ class MainDisplay(DisplayWidget):
         painter.setRenderHint(QtGui.QPainter.Antialiasing)
         self.frame.render(painter)
         painter.end()
-        # Make display show up if in single screen mode
         # if was hidden keep it hidden
         if self.hide_mode and self.isLive:
             self.hideDisplay(self.hide_mode)
@@ -342,7 +351,9 @@ class MainDisplay(DisplayWidget):
         self.serviceItem = serviceItem
         html = build_html(self.serviceItem, self.screen, self.parent.alertTab,
             self.isLive)
+        log.debug(u'buildHtml - pre setHtml')
         self.webView.setHtml(html)
+        log.debug(u'buildHtml - post setHtml')
         if serviceItem.foot_text and serviceItem.foot_text:
             self.footer(serviceItem.foot_text)
         # if was hidden keep it hidden
