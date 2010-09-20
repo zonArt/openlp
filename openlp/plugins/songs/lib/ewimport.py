@@ -21,12 +21,15 @@ def strip_rtf(blob):
         if control:
             # for delimiters, set control to False 
             if c == '{':
-                depth += 1
+                if len(control_word) > 0:
+                    depth += 1
                 control = False
             elif c == '}':
-                depth -= 1
+                if len(control_word) > 0:
+                    depth -= 1
                 control = False
             elif c == '\\':
+                new_control = (len(control_word) > 0)
                 control = False
             elif c.isspace():
                 control = False
@@ -34,31 +37,32 @@ def strip_rtf(blob):
                 control_word.append(c)
                 if len(control_word) == 3 and control_word[0] == '\'':
                     control = False
-
             if not control:
-                control_word_str = ''.join(control_word)
-                if control_word_str == 'par':
-                    clear_text.append(u'\n')
-                # Really should take RTF character set into account
-                # but for now assume ANSI (Windows-1252) and call it good
-                if control_word_str[0] == '\'':
-                    s = chr(int(control_word_str[1:3], 16))
-                    clear_text.append(s.decode(u'windows-1252'))
-                del control_word[:]
-
-            if c == '\\':
+                if len(control_word) == 0:
+                    if c == '{' or c == '}' or c == '\\':
+                        clear_text.append(c)
+                else:
+                    control_str = ''.join(control_word)
+                    if control_str == 'par' or control_str == 'line':
+                        clear_text.append(u'\n')
+                    elif control_str == 'tab':
+                        clear_text.append(u'\n')
+                    elif control_str[0] == '\'':
+                        # Really should take RTF character set into account but
+                        # for now assume ANSI (Windows-1252) and call it good
+                        s = chr(int(control_str[1:3], 16))
+                        clear_text.append(s.decode(u'windows-1252'))
+                    del control_word[:]
+            if c == '\\' and new_control:
                 control = True
-
         elif c == '{':
             depth += 1
         elif c == '}':
             depth -= 1
         elif depth > 2:
             continue
-
         elif c == '\n' or c == '\r':
             continue
-
         elif c == '\\':
             control = True
         else:
@@ -92,20 +96,17 @@ class EasyWorshipSongImport(SongImport):
             return False
         db_file = open(self.import_source, 'rb')
         self.memo_file = open(import_source_mb, 'rb')
-
         # Don't accept files that are clearly not paradox files
-        record_size, header_size, block_size, next_block, num_fields \
-            = struct.unpack('<hhxb4xh21xh', db_file.read(35))
+        record_size, header_size, block_size, first_block, num_fields \
+            = struct.unpack('<hhxb8xh17xh', db_file.read(35))
         if header_size != 0x800 or block_size < 1 or block_size > 4:
             db_file.close()
             self.memo_file.close()
             return False
-
         # There does not appear to be a _reliable_ way of getting the number
         # of songs/records, so let's use file blocks for measuring progress.
         total_blocks = (db_size - header_size) / (block_size * 1024)
         self.import_wizard.importProgressBar.setMaximum(total_blocks)
-
         # Read the field description information
         db_file.seek(120)
         field_info = db_file.read(num_fields * 2)
@@ -119,7 +120,6 @@ class EasyWorshipSongImport(SongImport):
             field_descs.append(FieldDescEntry(field_name, field_type,
                 field_size))
         self.set_record_struct(field_descs)
-
         # Pick out the field description indexes we will need
         success = True
         try:
@@ -132,18 +132,19 @@ class EasyWorshipSongImport(SongImport):
         except IndexError:
             # This is the wrong table
             success = False
-
-        while next_block != 0 and success:
-            db_file.seek(header_size + ((next_block - 1) * 1024 * block_size))
-            next_block, rec_count = struct.unpack('<h2xh', db_file.read(6))
+        # Loop through each block of the file
+        cur_block = first_block
+        while cur_block != 0 and success:
+            db_file.seek(header_size + ((cur_block - 1) * 1024 * block_size))
+            cur_block, rec_count = struct.unpack('<h2xh', db_file.read(6))
             rec_count = (rec_count + record_size) / record_size
+            # Loop through each record within the current block
             for i in range(rec_count):
                 if self.stop_import_flag:
                     success = False
                     break
                 raw_record = db_file.read(record_size)
                 self.fields = self.record_struct.unpack(raw_record)
-
                 self.set_defaults()
                 self.title = self.get_field(fi_title)
                 self.import_wizard.incrementProgressBar(
@@ -151,7 +152,6 @@ class EasyWorshipSongImport(SongImport):
                 self.copyright = self.get_field(fi_copy) + \
                     u', Administered by ' + self.get_field(fi_admin)
                 self.ccli_number = self.get_field(fi_ccli)
-
                 # Format the lyrics
                 if self.stop_import_flag:
                     success = False
@@ -160,7 +160,6 @@ class EasyWorshipSongImport(SongImport):
                 words = strip_rtf(words)
                 for verse in words.split(u'\n\n'):
                     self.add_verse(verse.strip(), u'V')
-
                 # Split up the authors
                 authors = self.get_field(fi_author)
                 author_list = authors.split(u'/')
@@ -168,17 +167,14 @@ class EasyWorshipSongImport(SongImport):
                     author_list = authors.split(u',')
                 for author_name in author_list:
                     self.add_author(author_name.strip())
-
                 if self.stop_import_flag:
                     success = False
                     break
                 self.finish()
             if not self.stop_import_flag:
                 self.import_wizard.incrementProgressBar(u'')
-
         db_file.close()
         self.memo_file.close()
-
         return success
 
     def find_field(self, field_name):
@@ -189,19 +185,26 @@ class EasyWorshipSongImport(SongImport):
         # Begin with empty field struct list
         fsl = ['>']
         for field_desc in field_descs:
-            if field_desc.type == 1: # string
+            if field_desc.type == 1:
+                # string
                 fsl.append('%ds' % field_desc.size)
-            elif field_desc.type == 3: # 16-bit int
+            elif field_desc.type == 3:
+                # 16-bit int
                 fsl.append('H')
-            elif field_desc.type == 4: # 32-bit int
+            elif field_desc.type == 4:
+                # 32-bit int
                 fsl.append('I')
-            elif field_desc.type == 9: # Logical
+            elif field_desc.type == 9:
+                # Logical
                 fsl.append('B')
-            elif field_desc.type == 0x0c: # Memo
+            elif field_desc.type == 0x0c:
+                # Memo
                 fsl.append('%ds' % field_desc.size)
-            elif field_desc.type == 0x0d: # Blob
+            elif field_desc.type == 0x0d:
+                # Blob
                 fsl.append('%ds' % field_desc.size)
-            elif field_desc.type == 0x15: # Timestamp
+            elif field_desc.type == 0x15:
+                # Timestamp
                 fsl.append('Q')
             else:
                 fsl.append('%ds' % field_desc.size)
@@ -211,23 +214,27 @@ class EasyWorshipSongImport(SongImport):
     def get_field(self, field_desc_index):
         field = self.fields[field_desc_index]
         field_desc = self.field_descs[field_desc_index]
-
         # Check for 'blank' entries
         if isinstance(field, str):
             if len(field.rstrip('\0')) == 0:
                 return u''
         elif field == 0:
             return 0
-
-        if field_desc.type == 1: # string
+        # Format the field depending on the field type
+        if field_desc.type == 1:
+            # string
             return field.rstrip('\0').decode(u'windows-1252')
-        elif field_desc.type == 3: # 16-bit int
+        elif field_desc.type == 3:
+            # 16-bit int
             return field ^ 0x8000
-        elif field_desc.type == 4: # 32-bit int
+        elif field_desc.type == 4:
+            # 32-bit int
             return field ^ 0x80000000
-        elif field_desc.type == 9: # Logical
+        elif field_desc.type == 9:
+            # Logical
             return (field ^ 0x80 == 1)
         elif field_desc.type == 0x0c or field_desc.type == 0x0d:
+            # Memo or Blob
             sub_block, block_start, blob_size = \
                 struct.unpack_from('<bhxi', field, len(field)-10)
             self.memo_file.seek(block_start * 256)
@@ -243,7 +250,6 @@ class EasyWorshipSongImport(SongImport):
                     (sub_block_start * 16))
             else:
                 return u'';
-
             return self.memo_file.read(blob_size)
         else:
             return 0
