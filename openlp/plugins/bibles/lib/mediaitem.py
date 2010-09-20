@@ -239,10 +239,6 @@ class BibleMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'activated(int)'), self.onAdvancedFromVerse)
         QtCore.QObject.connect(self.AdvancedToChapter,
             QtCore.SIGNAL(u'activated(int)'), self.onAdvancedToChapter)
-        QtCore.QObject.connect(self.ClearAdvancedSearchComboBox,
-            QtCore.SIGNAL(u'activated(int)'), self.onClearAdvancedSearchComboBox)
-        QtCore.QObject.connect(self.ClearQuickSearchComboBox,
-            QtCore.SIGNAL(u'activated(int)'), self.onClearQuickSearchComboBox)
         # Buttons
         QtCore.QObject.connect(self.AdvancedSearchButton,
             QtCore.SIGNAL(u'pressed()'), self.onAdvancedSearchButton)
@@ -436,29 +432,23 @@ class BibleMediaItem(MediaManagerItem):
                 dual_bible, versetext)
         if self.ClearAdvancedSearchComboBox.currentIndex() == 0:
             self.listView.clear()
-        elif not dual_bible:
-            self.AdvancedSecondBibleComboBox.setEnabled(False)
+        if self.listView.count() != 0:
+            bitem = self.listView.item(0)
+            item_dual_bible = self._decodeQtObject(bitem, 'dual_bible')
+            if item_dual_bible and dual_bible or not item_dual_bible and \
+                not dual_bible:
+                self.displayResults(bible, dual_bible)
+            elif QtGui.QMessageBox.critical(self,
+                translate('BiblePlugin.MediaItem', 'Error'),
+                translate('BiblePlugin.MediaItem', 'You cannot combine single '
+                'and dual bible verses. Do you want to delete your search '
+                'results and start a new search?'),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
+                QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.Yes:
+                self.listView.clear()
+                self.displayResults(bible, dual_bible)
         else:
-            self.AdvancedSecondBibleComboBox.setEnabled(True)
-            if self.AdvancedSecondBibleComboBox.findText(u'') != -1:
-                self.AdvancedSecondBibleComboBox.removeItem(0)
-        self.displayResults(bible, dual_bible)
-
-    def onClearAdvancedSearchComboBox(self):
-        if self.ClearAdvancedSearchComboBox.currentIndex() == 0:
-            self.AdvancedSecondBibleComboBox.setEnabled(True)
-            if self.AdvancedSecondBibleComboBox.findText(u'') == -1:
-                self.AdvancedSecondBibleComboBox.insertItem(0, u'')
-        else:
-            if self.listView.count() != 0:
-                bitem = self.listView.item(0)
-                dual_bible = self._decodeQtObject(bitem, 'dual_bible')
-                if self.AdvancedSecondBibleComboBox.findText(u'') != -1 and \
-                    dual_bible:
-                    self.AdvancedSecondBibleComboBox.removeItem(0)
-                else:
-                    self.AdvancedSecondBibleComboBox.setCurrentIndex(0)
-                    self.AdvancedSecondBibleComboBox.setEnabled(False)
+            self.displayResults(bible, dual_bible)
 
     def onAdvancedFromChapter(self):
         bible = unicode(self.AdvancedVersionComboBox.currentText())
@@ -481,30 +471,23 @@ class BibleMediaItem(MediaManagerItem):
                 dual_bible, text)
         if self.ClearQuickSearchComboBox.currentIndex() == 0:
             self.listView.clear()
-        elif not dual_bible:
-            self.QuickSecondBibleComboBox.setEnabled(False)
+        if self.listView.count() != 0:
+            bitem = self.listView.item(0)
+            item_dual_bible = self._decodeQtObject(bitem, 'dual_bible')
+            if item_dual_bible and dual_bible or not item_dual_bible and \
+                not dual_bible:
+                self.displayResults(bible, dual_bible)
+            elif QtGui.QMessageBox.critical(self,
+                translate('BiblePlugin.MediaItem', 'Error'),
+                translate('BiblePlugin.MediaItem', 'You cannot combine single '
+                'and dual bible verses. Do you want to delete your search '
+                'resutls and start a new search?'),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
+                QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.Yes:
+                self.listView.clear()
+                self.displayResults(bible, dual_bible)
         else:
-            self.QuickSecondBibleComboBox.setEnabled(True)
-            if self.QuickSecondBibleComboBox.findText(u'') != -1:
-                self.QuickSecondBibleComboBox.removeItem(0)
-        if self.search_results:
             self.displayResults(bible, dual_bible)
-
-    def onClearQuickSearchComboBox(self):
-        if self.ClearQuickSearchComboBox.currentIndex() == 0:
-            self.QuickSecondBibleComboBox.setEnabled(True)
-            if self.QuickSecondBibleComboBox.findText(u'') == -1:
-                self.QuickSecondBibleComboBox.insertItem(0, u'')
-        else:
-            if self.listView.count() != 0:
-                bitem = self.listView.item(0)
-                dual_bible = self._decodeQtObject(bitem, 'dual_bible')
-                if self.QuickSecondBibleComboBox.findText(u'') != -1 and \
-                    dual_bible:
-                    self.QuickSecondBibleComboBox.removeItem(0)
-                else:
-                    self.QuickSecondBibleComboBox.setCurrentIndex(0)
-                    self.QuickSecondBibleComboBox.setEnabled(False)
 
     def _decodeQtObject(self, bitem, key):
         reference = bitem.data(QtCore.Qt.UserRole)
@@ -529,7 +512,7 @@ class BibleMediaItem(MediaManagerItem):
         raw_footer = []
         raw_slides = []
         raw_title = []
-        first = True
+        first_item = True
         # Let's loop through the main lot, and assemble our verses.
         for item in items:
             bitem = self.listView.item(item.row())
@@ -570,9 +553,9 @@ class BibleMediaItem(MediaManagerItem):
             # We have to be 'Continuous'.
             else:
                 bible_text = u'%s %s %s\n' % (bible_text, verse_text, text)
-            if first:
+            if first_item:
                 start_item = item
-                first = False
+                first_item = False
             elif self.checkTitle(item, old_item):
                 raw_title.append(self.formatTitle(start_item, old_item))
                 start_item = item
@@ -590,10 +573,8 @@ class BibleMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
         # Service Item: Title
-        first = True
         for title in raw_title:
-            if first:
-                first = False
+            if not service_item.title:
                 service_item.title = title
             else:
                 service_item.title += u', ' + title
@@ -756,50 +737,52 @@ class BibleMediaItem(MediaManagerItem):
                 dual_permission = u''
         # We count the number of rows which are maybe already present.
         start_count = self.listView.count()
-        for count, verse in enumerate(self.search_results):
-            if dual_bible:
-                vdict = {
-                    'book': QtCore.QVariant(verse.book.name),
-                    'chapter': QtCore.QVariant(verse.chapter),
-                    'verse': QtCore.QVariant(verse.verse),
-                    'bible': QtCore.QVariant(bible),
-                    'version': QtCore.QVariant(version.value),
-                    'copyright': QtCore.QVariant(copyright.value),
-                    'permission': QtCore.QVariant(permission.value),
-                    'text': QtCore.QVariant(verse.text),
-                    'dual_bible': QtCore.QVariant(dual_bible),
-                    'dual_version': QtCore.QVariant(dual_version.value),
-                    'dual_copyright': QtCore.QVariant(dual_copyright.value),
-                    'dual_permission': QtCore.QVariant(dual_permission.value),
-                    'dual_text': QtCore.QVariant(
-                        self.dual_search_results[count].text)
-                }
-                bible_text = u' %s %d:%d (%s, %s)' % (verse.book.name,
-                    verse.chapter, verse.verse, version.value,
-                    dual_version.value)
-            else:
-                vdict = {
-                    'book': QtCore.QVariant(verse.book.name),
-                    'chapter': QtCore.QVariant(verse.chapter),
-                    'verse': QtCore.QVariant(verse.verse),
-                    'bible': QtCore.QVariant(bible),
-                    'version': QtCore.QVariant(version.value),
-                    'copyright': QtCore.QVariant(copyright.value),
-                    'permission': QtCore.QVariant(permission.value),
-                    'text': QtCore.QVariant(verse.text),
-                    'dual_bible': QtCore.QVariant(u''),
-                    'dual_version': QtCore.QVariant(u''),
-                    'dual_copyright': QtCore.QVariant(u''),
-                    'dual_permission': QtCore.QVariant(u''),
-                    'dual_text': QtCore.QVariant(u'')
-                }
-                bible_text = u' %s %d:%d (%s)' % (verse.book.name,
-                    verse.chapter, verse.verse, version.value)
-            bible_verse = QtGui.QListWidgetItem(bible_text)
-            bible_verse.setData(QtCore.Qt.UserRole, QtCore.QVariant(vdict))
-            self.listView.addItem(bible_verse)
-            row = self.listView.setCurrentRow(count + start_count)
-            if row:
-                row.setSelected(True)
-        self.search_results = {}
-        self.dual_search_results = {}
+        if self.search_results:
+            for count, verse in enumerate(self.search_results):
+                if dual_bible:
+                    vdict = {
+                        'book': QtCore.QVariant(verse.book.name),
+                        'chapter': QtCore.QVariant(verse.chapter),
+                        'verse': QtCore.QVariant(verse.verse),
+                        'bible': QtCore.QVariant(bible),
+                        'version': QtCore.QVariant(version.value),
+                        'copyright': QtCore.QVariant(copyright.value),
+                        'permission': QtCore.QVariant(permission.value),
+                        'text': QtCore.QVariant(verse.text),
+                        'dual_bible': QtCore.QVariant(dual_bible),
+                        'dual_version': QtCore.QVariant(dual_version.value),
+                        'dual_copyright': QtCore.QVariant(dual_copyright.value),
+                        'dual_permission': QtCore.QVariant(
+                            dual_permission.value),
+                        'dual_text': QtCore.QVariant(
+                            self.dual_search_results[count].text)
+                    }
+                    bible_text = u' %s %d:%d (%s, %s)' % (verse.book.name,
+                        verse.chapter, verse.verse, version.value,
+                        dual_version.value)
+                else:
+                    vdict = {
+                        'book': QtCore.QVariant(verse.book.name),
+                        'chapter': QtCore.QVariant(verse.chapter),
+                        'verse': QtCore.QVariant(verse.verse),
+                        'bible': QtCore.QVariant(bible),
+                        'version': QtCore.QVariant(version.value),
+                        'copyright': QtCore.QVariant(copyright.value),
+                        'permission': QtCore.QVariant(permission.value),
+                        'text': QtCore.QVariant(verse.text),
+                        'dual_bible': QtCore.QVariant(u''),
+                        'dual_version': QtCore.QVariant(u''),
+                        'dual_copyright': QtCore.QVariant(u''),
+                        'dual_permission': QtCore.QVariant(u''),
+                        'dual_text': QtCore.QVariant(u'')
+                    }
+                    bible_text = u' %s %d:%d (%s)' % (verse.book.name,
+                        verse.chapter, verse.verse, version.value)
+                bible_verse = QtGui.QListWidgetItem(bible_text)
+                bible_verse.setData(QtCore.Qt.UserRole, QtCore.QVariant(vdict))
+                self.listView.addItem(bible_verse)
+                row = self.listView.setCurrentRow(count + start_count)
+                if row:
+                    row.setSelected(True)
+            self.search_results = {}
+            self.dual_search_results = {}
