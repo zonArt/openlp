@@ -326,8 +326,9 @@ class MainDisplay(DisplayWidget):
         self.frame.render(painter)
         painter.end()
         # Make display show up if in single screen mode
-        if self.isLive:
-            self.setVisible(True)
+        # if was hidden keep it hidden
+        if self.hide_mode and self.isLive:
+            self.hideDisplay(self.hide_mode)
         return preview
 
     def buildHtml(self, serviceItem):
