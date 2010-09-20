@@ -28,6 +28,7 @@ import re
 import sys
 try:
     import enchant
+    from enchant import DictNotFoundError
     enchant_available = True
 except ImportError:
     enchant_available = False
@@ -47,7 +48,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
                 self.dict = enchant.Dict()
                 self.highlighter = Highlighter(self.document())
                 self.highlighter.setDict(self.dict)
-            except:
+            except DictNotFoundError:
                 enchant_available = False
 
     def mousePressEvent(self, event):
