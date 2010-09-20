@@ -73,7 +73,7 @@ class Ui_ExceptionDialog(object):
 
     def retranslateUi(self, exceptionDialog):
         exceptionDialog.setWindowTitle(
-            translate('OpenLP.ExceptionDialog', 'Error Occured'))
+            translate('OpenLP.ExceptionDialog', 'Error Occurred'))
         self.messageLabel.setText(translate('OpenLP.ExceptionDialog', 'Oops! '
             'OpenLP hit a problem, and couldn\'t recover. The text in the box '
             'below contains information that might be helpful to the OpenLP '

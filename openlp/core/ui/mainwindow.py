@@ -250,7 +250,7 @@ class Ui_MainWindow(object):
         self.LanguageGroup = QtGui.QActionGroup(MainWindow)
         qmList = LanguageManager.get_qm_list()
         savedLanguage = LanguageManager.get_language()
-        self.AutoLanguageItem.setChecked(LanguageManager.AutoLanguage)
+        self.AutoLanguageItem.setChecked(LanguageManager.auto_language)
         for key in sorted(qmList.keys()):
             languageItem = QtGui.QAction(MainWindow)
             languageItem.setObjectName(key)
@@ -258,7 +258,7 @@ class Ui_MainWindow(object):
             if qmList[key] == savedLanguage:
                 languageItem.setChecked(True)
             add_actions(self.LanguageGroup, [languageItem])
-        self.LanguageGroup.setDisabled(LanguageManager.AutoLanguage)
+        self.LanguageGroup.setDisabled(LanguageManager.auto_language)
         self.ToolsAddToolItem = QtGui.QAction(MainWindow)
         self.ToolsAddToolItem.setIcon(build_icon(u':/tools/tools_add.png'))
         self.ToolsAddToolItem.setObjectName(u'ToolsAddToolItem')
@@ -575,7 +575,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'toggled(bool)'), self.setAutoLanguage)
         self.LanguageGroup.triggered.connect(LanguageManager.set_language)
         QtCore.QObject.connect(self.ModeDefaultItem,
-            QtCore.SIGNAL(u'triggered()'), self.setViewMode)
+            QtCore.SIGNAL(u'triggered()'), self.onModeDefaultItemClicked)
         QtCore.QObject.connect(self.ModeSetupItem,
             QtCore.SIGNAL(u'triggered()'), self.onModeSetupItemClicked)
         QtCore.QObject.connect(self.ModeLiveItem,
@@ -640,7 +640,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def setAutoLanguage(self, value):
         self.LanguageGroup.setDisabled(value)
-        LanguageManager.AutoLanguage = value
+        LanguageManager.auto_language = value
         LanguageManager.set_language(self.LanguageGroup.checkedAction())
 
     def versionNotice(self, version):
@@ -670,6 +670,16 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.generalSettingsSection + u'/auto open',
             QtCore.QVariant(False)).toBool():
             self.ServiceManagerContents.onLoadService(True)
+        view_mode = QtCore.QSettings().value(u'%s/view mode' % \
+            self.generalSettingsSection, u'default')
+        if view_mode == u'default':
+            self.ModeDefaultItem.setChecked(True)
+        elif view_mode == u'setup':
+            self.setViewMode(True, True, False, True, False)
+            self.ModeSetupItem.setChecked(True)
+        elif view_mode == u'live':
+            self.setViewMode(False, True, False, False, True)
+            self.ModeLiveItem.setChecked(True)
 
     def blankCheck(self):
         """
@@ -677,8 +687,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Triggered by delay thread.
         """
         settings = QtCore.QSettings()
-        settings.beginGroup(self.generalSettingsSection)
-        if settings.value(u'screen blank', QtCore.QVariant(False)).toBool():
+        if settings.value(u'%s/screen blank' % self.generalSettingsSection,
+            QtCore.QVariant(False)).toBool():
             self.LiveController.mainDisplaySetBackground()
             if settings.value(u'blank warning',
                 QtCore.QVariant(False)).toBool():
@@ -687,7 +697,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                         'OpenLP Main Display Blanked'),
                     translate('OpenLP.MainWindow',
                          'The Main Display has been blanked out'))
-        settings.endGroup()
 
     def onHelpWebSiteClicked(self):
         """
@@ -716,16 +725,31 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         self.settingsForm.exec_()
 
+    def onModeDefaultItemClicked(self):
+        """
+        Put OpenLP into "Default" view mode.
+        """
+        settings = QtCore.QSettings()
+        settings.setValue(u'%s/view mode' % self.generalSettingsSection,
+            u'default')
+        self.setViewMode(True, True, True, True, True)
+
     def onModeSetupItemClicked(self):
         """
         Put OpenLP into "Setup" view mode.
         """
+        settings = QtCore.QSettings()
+        settings.setValue(u'%s/view mode' % self.generalSettingsSection,
+            u'setup')
         self.setViewMode(True, True, False, True, False)
 
     def onModeLiveItemClicked(self):
         """
         Put OpenLP into "Live" view mode.
         """
+        settings = QtCore.QSettings()
+        settings.setValue(u'%s/view mode' % self.generalSettingsSection,
+            u'live')
         self.setViewMode(False, True, False, False, True)
 
     def setViewMode(self, media=True, service=True, theme=True, preview=True,

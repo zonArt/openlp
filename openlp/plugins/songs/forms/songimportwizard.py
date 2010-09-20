@@ -519,7 +519,7 @@ class Ui_SongImportWizard(object):
         self.openLyricsDisabledLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'The OpenLyrics '
             'importer has not yet been developed, but as you can see, we are '
-            'still intendeding to do so. Hopefully it will be in the next '
+            'still intending to do so. Hopefully it will be in the next '
             'release.'))
         self.openSongAddButton.setText(
             translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
