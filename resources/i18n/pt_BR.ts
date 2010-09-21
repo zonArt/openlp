@@ -526,17 +526,17 @@ Changes do not affect verses already in the service.</source>
         <translation type="unfinished">Abrir Biblia do OpenSong</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="386"/>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="389"/>
         <source>Starting import...</source>
         <translation type="unfinished">Iniciando importação...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="442"/>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="445"/>
         <source>Finished import.</source>
         <translation type="unfinished">Importação Finalizada.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="446"/>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="449"/>
         <source>Your Bible import failed.</source>
         <translation type="unfinished">A sua Importação da Bíblia falhou.</translation>
     </message>
@@ -3374,237 +3374,237 @@ A codificação do conteúdo não é UTF-8.</translation>
 <context>
     <name>SongsPlugin.ImportWizardForm</name>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="138"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="141"/>
         <source>No OpenLP 2.0 Song Database Selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="138"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="141"/>
         <source>You need to select an OpenLP 2.0 song database file to import from.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="148"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="151"/>
         <source>No openlp.org 1.x Song Database Selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="148"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="151"/>
         <source>You need to select an openlp.org 1.x song database file to import from.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="169"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="172"/>
         <source>No OpenSong Files Selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="169"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="172"/>
         <source>You need to add at least one OpenSong song file to import from.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="179"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="182"/>
         <source>No Words of Worship Files Selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="179"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="182"/>
         <source>You need to add at least one Words of Worship file to import from.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="189"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="192"/>
         <source>No CCLI Files Selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="189"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="192"/>
         <source>You need to add at least one CCLI file to import from.</source>
         <translation type="unfinished">Você precisa adicionar ao menos um arquivo CCLI para importação.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="199"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="202"/>
         <source>No Songs of Fellowship File Selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="199"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="202"/>
         <source>You need to add at least one Songs of Fellowship file to import from.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="209"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="212"/>
         <source>No Document/Presentation Selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="209"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="212"/>
         <source>You need to add at least one document or presentation file to import from.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="252"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="265"/>
         <source>Select OpenLP 2.0 Database File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="259"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="272"/>
         <source>Select openlp.org 1.x Database File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="276"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="289"/>
         <source>Select Open Song Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="286"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="299"/>
         <source>Select Words of Worship Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="296"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="309"/>
         <source>Select CCLI Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="306"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="319"/>
         <source>Select Songs of Fellowship Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="316"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="329"/>
         <source>Select Document/Presentation Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="369"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="392"/>
         <source>Starting import...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="465"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="490"/>
         <source>Song Import Wizard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="467"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="492"/>
         <source>Welcome to the Song Import Wizard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="471"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="496"/>
         <source>This wizard will help you to import songs from a variety of formats. Click the next button below to start the process by selecting a format to import from.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="476"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="501"/>
         <source>Select Import Source</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="478"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="503"/>
         <source>Select the import format, and where to import from.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="481"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="506"/>
         <source>Format:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="483"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="508"/>
         <source>OpenLP 2.0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="485"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="510"/>
         <source>openlp.org 1.x</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="487"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="512"/>
         <source>OpenLyrics</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="489"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="514"/>
         <source>OpenSong</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="491"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="516"/>
         <source>Words of Worship</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="493"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="518"/>
         <source>CCLI/SongSelect</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="495"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="520"/>
         <source>Songs of Fellowship</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="497"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="522"/>
         <source>Generic Document/Presentation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="506"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="579"/>
         <source>Filename:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="508"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="581"/>
         <source>Browse...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="510"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="537"/>
         <source>The openlp.org 1.x importer has been disabled due to a missing Python module. If you want to use this importer, you will need to install the &quot;python-sqlite&quot; module.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="544"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="571"/>
         <source>Add Files...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="546"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="573"/>
         <source>Remove File(s)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="540"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="567"/>
         <source>The Songs of Fellowship importer has been disabled because OpenLP cannot find OpenOffice.org on your computer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="548"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="575"/>
         <source>The generic document/presentation importer has been disabled because OpenLP cannot find OpenOffice.org on your computer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="556"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="587"/>
         <source>Importing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="558"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="589"/>
         <source>Please wait while your songs are imported.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="561"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="592"/>
         <source>Ready.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="563"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="594"/>
         <source>%p%</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3619,8 +3619,28 @@ A codificação do conteúdo não é UTF-8.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="519"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="546"/>
         <source>The OpenLyrics importer has not yet been developed, but as you can see, we are still intending to do so. Hopefully it will be in the next release.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="222"/>
+        <source>No EasyWorship Song Database Selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="222"/>
+        <source>You need to select an EasyWorship song database file to import from.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="339"/>
+        <source>Select EasyWorship Database File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="525"/>
+        <source>EasyWorship</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3751,12 +3771,12 @@ A codificação do conteúdo não é UTF-8.</translation>
 <context>
     <name>SongsPlugin.SongImportForm</name>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="426"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="454"/>
         <source>Finished import.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="429"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="457"/>
         <source>Your song import failed.</source>
         <translation type="unfinished"></translation>
     </message>

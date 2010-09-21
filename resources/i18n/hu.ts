@@ -527,17 +527,17 @@ A módosítások nem érintik a már a szolgálatban lévő verseket.</translati
         <translation>OpenSong Biblia megnyitása</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="386"/>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="389"/>
         <source>Starting import...</source>
         <translation>Importálás indítása...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="442"/>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="445"/>
         <source>Finished import.</source>
         <translation>Az importálás befejeződött.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="446"/>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="449"/>
         <source>Your Bible import failed.</source>
         <translation>A Biblia importálása nem sikerült.</translation>
     </message>
@@ -3511,237 +3511,237 @@ A tartalom kódolása nem UTF-8.</translation>
 <context>
     <name>SongsPlugin.ImportWizardForm</name>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="138"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="141"/>
         <source>No OpenLP 2.0 Song Database Selected</source>
         <translation>Nincs kiválasztott OpenLP 2.0 adatbázis</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="138"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="141"/>
         <source>You need to select an OpenLP 2.0 song database file to import from.</source>
         <translation>Ki kell választani egy OpenLP 2.0 adatbázis fájlt az importáláshoz.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="148"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="151"/>
         <source>No openlp.org 1.x Song Database Selected</source>
         <translation>Nincs kiválasztott openlp.org 1.x adatbázis</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="148"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="151"/>
         <source>You need to select an openlp.org 1.x song database file to import from.</source>
         <translation>Ki kell választani egy openlp.org 1.x adatbázis fájlt az importáláshoz.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="169"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="172"/>
         <source>No OpenSong Files Selected</source>
         <translation>Nincsenek kiválasztott OpenSong fájlok</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="169"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="172"/>
         <source>You need to add at least one OpenSong song file to import from.</source>
         <translation>Ki kell választani legalább egy OpenSong dal fájlt az importáláshoz.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="179"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="182"/>
         <source>No Words of Worship Files Selected</source>
         <translation>Nincsenek kiválasztott Words of Worship fájlok</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="179"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="182"/>
         <source>You need to add at least one Words of Worship file to import from.</source>
         <translation>Ki kell választani legalább egy Words of Worship dal fájlt az importáláshoz.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="189"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="192"/>
         <source>No CCLI Files Selected</source>
         <translation>Nincsenek kiválasztott CCLI fájlok</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="189"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="192"/>
         <source>You need to add at least one CCLI file to import from.</source>
         <translation>Ki kell választani legalább egy CCLI fájlt az importáláshoz.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="199"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="202"/>
         <source>No Songs of Fellowship File Selected</source>
         <translation>Nincs kiválasztott Songs of Fellowship fájl</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="199"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="202"/>
         <source>You need to add at least one Songs of Fellowship file to import from.</source>
         <translation>Ki kell választani legalább egy Songs of Fellowship fájlt az importáláshoz.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="209"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="212"/>
         <source>No Document/Presentation Selected</source>
         <translation>Nincs kiválasztott dokumentum vagy bemutató</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="209"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="212"/>
         <source>You need to add at least one document or presentation file to import from.</source>
         <translation>Ki kell választani legalább egy dokumentumot vagy bemutatót az importáláshoz.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="252"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="265"/>
         <source>Select OpenLP 2.0 Database File</source>
         <translation>Válassz egy OpenLP 2.0 adatbázis fájlt</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="259"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="272"/>
         <source>Select openlp.org 1.x Database File</source>
         <translation>Válassz egy openlp.org 1.x adatbázis fájlt</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="276"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="289"/>
         <source>Select Open Song Files</source>
         <translation>Válassz OpenSong fájlokat</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="286"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="299"/>
         <source>Select Words of Worship Files</source>
         <translation>Válassz Words of Worship fájlokat</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="296"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="309"/>
         <source>Select CCLI Files</source>
         <translation>Válassz CCLI fájlokat</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="306"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="319"/>
         <source>Select Songs of Fellowship Files</source>
         <translation>Válassz Songs of Fellowship fájlokat</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="316"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="329"/>
         <source>Select Document/Presentation Files</source>
         <translation>Válassz dokumentum vagy bemutató fájlokat</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="369"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="392"/>
         <source>Starting import...</source>
         <translation>Importálás indítása...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="465"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="490"/>
         <source>Song Import Wizard</source>
         <translation>Dalimportáló tündér</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="467"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="492"/>
         <source>Welcome to the Song Import Wizard</source>
         <translation>Üdvözlet a dalimportáló tündérben</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="471"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="496"/>
         <source>This wizard will help you to import songs from a variety of formats. Click the next button below to start the process by selecting a format to import from.</source>
         <translation>A tündérrel különféle formátumú dalokat lehet importálni. Az alább található Tovább gombra való kattintással indítható a folyamat első lépése a formátum kiválasztásával.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="476"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="501"/>
         <source>Select Import Source</source>
         <translation>Válaszd ki az importálandó forrást</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="478"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="503"/>
         <source>Select the import format, and where to import from.</source>
         <translation>Válaszd ki a importálandó forrást és a helyet.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="481"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="506"/>
         <source>Format:</source>
         <translation>Formátum:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="483"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="508"/>
         <source>OpenLP 2.0</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="485"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="510"/>
         <source>openlp.org 1.x</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="487"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="512"/>
         <source>OpenLyrics</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="489"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="514"/>
         <source>OpenSong</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="491"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="516"/>
         <source>Words of Worship</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="493"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="518"/>
         <source>CCLI/SongSelect</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="495"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="520"/>
         <source>Songs of Fellowship</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="497"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="522"/>
         <source>Generic Document/Presentation</source>
         <translation>Általános dokumentum vagy bemutató</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="506"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="579"/>
         <source>Filename:</source>
         <translation>Fájlnév:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="508"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="581"/>
         <source>Browse...</source>
         <translation>Tallózás...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="510"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="537"/>
         <source>The openlp.org 1.x importer has been disabled due to a missing Python module. If you want to use this importer, you will need to install the &quot;python-sqlite&quot; module.</source>
         <translation>Az openlp.org 1.x importáló le lett tiltva egy hiányzó Python modul miatt. Ha szeretnéd használni ezt az importálót, telepíteni kell a „python-sqlite” modult.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="544"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="571"/>
         <source>Add Files...</source>
         <translation>Fájlok hozzáadása...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="546"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="573"/>
         <source>Remove File(s)</source>
         <translation>Fájlok törlése</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="540"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="567"/>
         <source>The Songs of Fellowship importer has been disabled because OpenLP cannot find OpenOffice.org on your computer.</source>
         <translation>A Songs of Fellowship importáló le lett tiltva, mivel az OpenLP nem találja az OpenOffice.org-ot a számítógépen.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="548"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="575"/>
         <source>The generic document/presentation importer has been disabled because OpenLP cannot find OpenOffice.org on your computer.</source>
         <translation>Az általános dokumentum, ill. bemutató importáló le lett tiltva, mivel az OpenLP nem találja az OpenOffice.org-ot a számítógépen.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="556"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="587"/>
         <source>Importing</source>
         <translation>Importálás</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="558"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="589"/>
         <source>Please wait while your songs are imported.</source>
         <translation>Kérlek, várj, míg a dalok importálás alatt állnak.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="561"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="592"/>
         <source>Ready.</source>
         <translation>Kész.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="563"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="594"/>
         <source>%p%</source>
         <translation></translation>
     </message>
@@ -3756,8 +3756,28 @@ A tartalom kódolása nem UTF-8.</translation>
         <translation>Importálás %s...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="519"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="546"/>
         <source>The OpenLyrics importer has not yet been developed, but as you can see, we are still intending to do so. Hopefully it will be in the next release.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="222"/>
+        <source>No EasyWorship Song Database Selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="222"/>
+        <source>You need to select an EasyWorship song database file to import from.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="339"/>
+        <source>Select EasyWorship Database File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="525"/>
+        <source>EasyWorship</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3888,12 +3908,12 @@ A tartalom kódolása nem UTF-8.</translation>
 <context>
     <name>SongsPlugin.SongImportForm</name>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="426"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="454"/>
         <source>Finished import.</source>
         <translation>Az importálás befejeződött.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="429"/>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="457"/>
         <source>Your song import failed.</source>
         <translation>Az importálás meghiúsult.</translation>
     </message>
