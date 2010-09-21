@@ -328,9 +328,9 @@ class MainDisplay(DisplayWidget):
             Receiver.send_message(u'openlp_process_events')
         # if was hidden keep it hidden
         if self.isLive:
-#            self.setVisible(True)
-#        # if was hidden keep it hidden
-#        if self.hide_mode and self.isLive:
+            self.setVisible(True)
+        # if was hidden keep it hidden
+        if self.hide_mode and self.isLive:
             self.hideDisplay(self.hide_mode)
         preview = QtGui.QImage(self.screen[u'size'].width(),
             self.screen[u'size'].height(),
