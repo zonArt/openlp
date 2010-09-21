@@ -107,7 +107,10 @@ class LanguageManager(object):
         ``action``
             The language menu option
         """
-        action_name = u'%s' % action.objectName()
+        if action is None:
+            action_name = u'en'
+        else:
+            action_name = u'%s' % action.objectName()
         qm_list = LanguageManager.get_qm_list()
         if LanguageManager.auto_language:
             language = u'[%s]' % qm_list[action_name]
