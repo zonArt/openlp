@@ -96,6 +96,7 @@ class Ui_SongImportWizard(object):
         self.formatComboBox.addItem(u'')
         self.formatComboBox.addItem(u'')
         self.formatComboBox.addItem(u'')
+        self.formatComboBox.addItem(u'')
 #        self.formatComboBox.addItem(u'')
         self.formatLayout.addWidget(self.formatComboBox)
         self.formatSpacer = QtGui.QSpacerItem(40, 20,
@@ -413,6 +414,30 @@ class Ui_SongImportWizard(object):
         self.genericImportLayout.addLayout(self.genericButtonLayout)
         self.genericLayout.addWidget(self.genericImportWidget)
         self.formatStackedWidget.addWidget(self.genericPage)
+        # EasyWorship
+        self.ewPage = QtGui.QWidget()
+        self.ewPage.setObjectName(u'ewPage')
+        self.ewLayout = QtGui.QFormLayout(self.ewPage)
+        self.ewLayout.setMargin(0)
+        self.ewLayout.setSpacing(8)
+        self.ewLayout.setObjectName(u'ewLayout')
+        self.ewFilenameLabel = QtGui.QLabel(self.ewPage)
+        self.ewFilenameLabel.setObjectName(u'ewFilenameLabel')
+        self.ewLayout.setWidget(0, QtGui.QFormLayout.LabelRole,
+            self.ewFilenameLabel)
+        self.ewFileLayout = QtGui.QHBoxLayout()
+        self.ewFileLayout.setSpacing(8)
+        self.ewFileLayout.setObjectName(u'ewFileLayout')
+        self.ewFilenameEdit = QtGui.QLineEdit(self.ewPage)
+        self.ewFilenameEdit.setObjectName(u'ewFilenameEdit')
+        self.ewFileLayout.addWidget(self.ewFilenameEdit)
+        self.ewBrowseButton = QtGui.QToolButton(self.ewPage)
+        self.ewBrowseButton.setIcon(openIcon)
+        self.ewBrowseButton.setObjectName(u'ewBrowseButton')
+        self.ewFileLayout.addWidget(self.ewBrowseButton)
+        self.ewLayout.setLayout(0, QtGui.QFormLayout.FieldRole,
+            self.ewFileLayout)
+        self.formatStackedWidget.addWidget(self.ewPage)
 #        Commented out for future use.
 #        self.csvPage = QtGui.QWidget()
 #        self.csvPage.setObjectName(u'CSVPage')
@@ -497,7 +522,9 @@ class Ui_SongImportWizard(object):
         self.formatComboBox.setItemText(7,
             translate('SongsPlugin.ImportWizardForm',
             'Generic Document/Presentation'))
-#        self.formatComboBox.setItemText(8,
+        self.formatComboBox.setItemText(8,
+            translate('SongsPlugin.ImportWizardForm', 'EasyWorship'))
+#        self.formatComboBox.setItemText(9,
 #            translate('SongsPlugin.ImportWizardForm', 'CSV'))
         self.openLP2FilenameLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Filename:'))
@@ -549,6 +576,10 @@ class Ui_SongImportWizard(object):
             translate('SongsPlugin.ImportWizardForm', 'The generic document/'
             'presentation importer has been disabled because OpenLP cannot '
             'find OpenOffice.org on your computer.'))
+        self.ewFilenameLabel.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Filename:'))
+        self.ewBrowseButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Browse...'))
 #        self.csvFilenameLabel.setText(
 #            translate('SongsPlugin.ImportWizardForm', 'Filename:'))
 #        self.csvBrowseButton.setText(
