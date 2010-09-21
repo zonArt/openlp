@@ -481,7 +481,7 @@ class BibleMediaItem(MediaManagerItem):
                 translate('BiblePlugin.MediaItem', 'Error'),
                 translate('BiblePlugin.MediaItem', 'You cannot combine single '
                 'and dual bible verses. Do you want to delete your search '
-                'resutls and start a new search?'),
+                'results and start a new search?'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
                 QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.Yes:
                 self.listView.clear()
