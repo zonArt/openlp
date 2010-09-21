@@ -52,6 +52,7 @@ This is done easily via the ``-d``, ``-p`` and ``-u`` options::
 import os
 import urllib
 import re
+from shutil import copy
 
 from optparse import OptionParser
 from PyQt4 import QtCore
@@ -227,6 +228,7 @@ def update_translations():
     else:
         os.chdir(os.path.abspath(u'..'))
         run(u'pylupdate4 -verbose -noobsolete openlp.pro')
+        os.chdir(os.path.abspath(u'scripts'))
 
 def generate_binaries():
     print u'Generate the related *.qm files'
@@ -239,6 +241,17 @@ def generate_binaries():
     else:
         os.chdir(os.path.abspath(u'..'))
         run(u'lrelease openlp.pro')
+        os.chdir(os.path.abspath(u'scripts'))
+        src_path = os.path.join(os.path.abspath(u'..'), u'resources', u'i18n')
+        dest_path = os.path.join(os.path.abspath(u'..'), u'openlp', u'i18n')
+        if not os.path.exists(dest_path):
+            os.makedirs(dest_path)
+        src_list = os.listdir(src_path)
+        for file in src_list:
+            if re.search('.qm$', file):
+                copy(os.path.join(src_path, u'%s' % file), 
+                    os.path.join(dest_path, u'%s' % file))
+
 
 def create_translation(language):
     """
@@ -330,4 +343,3 @@ if __name__ == u'__main__':
         print u'You need to run this script from the scripts directory.'
     else:
         main()
-
