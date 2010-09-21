@@ -290,6 +290,9 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
     def setDefaults(self):
         settings = QtCore.QSettings()
         settings.beginGroup(self.bibleplugin.settingsSection)
+        self.restart()
+        self.finishButton.setVisible(False)
+        self.cancelButton.setVisible(True)
         self.setField(u'source_format', QtCore.QVariant(0))
         self.setField(u'osis_location', QtCore.QVariant(''))
         self.setField(u'csv_booksfile', QtCore.QVariant(''))
