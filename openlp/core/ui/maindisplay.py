@@ -164,7 +164,7 @@ class MainDisplay(DisplayWidget):
                     - splash_image.height()) / 2,
                 splash_image)
             serviceItem = ServiceItem()
-            serviceItem.bg_frame = initialFrame
+            serviceItem.bg_image_bytes = image_to_byte(initialFrame)
             self.webView.setHtml(build_html(serviceItem, self.screen,
                 self.parent.alertTab, self.isLive))
             self.initialFrame = True
