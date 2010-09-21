@@ -403,7 +403,10 @@ class BibleMediaItem(MediaManagerItem):
 
     def onAdvancedFromVerse(self):
         frm = self.AdvancedFromVerse.currentText()
-        self.adjustComboBox(frm, self.verses, self.AdvancedToVerse)
+        chapter_frm = unicode(self.AdvancedFromChapter.currentText())
+        chapter_to = unicode(self.AdvancedToChapter.currentText())
+        if chapter_frm == chapter_to:
+            self.adjustComboBox(frm, self.verses, self.AdvancedToVerse)
 
     def onAdvancedToChapter(self):
         frm = unicode(self.AdvancedFromChapter.currentText())
