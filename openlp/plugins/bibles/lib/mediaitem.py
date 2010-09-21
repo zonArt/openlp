@@ -376,9 +376,6 @@ class BibleMediaItem(MediaManagerItem):
     def onSearchProgressShow(self):
         self.SearchProgress.setVisible(True)
         Receiver.send_message(u'openlp_process_events')
-        #self.SearchProgress.setMinimum(0)
-        #self.SearchProgress.setMaximum(2)
-        #self.SearchProgress.setValue(1)
 
     def onSearchProgressHide(self):
         self.SearchProgress.setVisible(False)
@@ -414,6 +411,7 @@ class BibleMediaItem(MediaManagerItem):
     def onAdvancedToChapter(self):
         frm = unicode(self.AdvancedFromChapter.currentText())
         to = unicode(self.AdvancedToChapter.currentText())
+        print frm ,  to
         if frm != to:
             bible = unicode(self.AdvancedVersionComboBox.currentText())
             book = unicode(self.AdvancedBookComboBox.currentText())
