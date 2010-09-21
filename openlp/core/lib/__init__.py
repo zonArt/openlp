@@ -220,6 +220,7 @@ def image_to_byte(image):
     ``image``
         The image to converted.
     """
+    log.debug(u'image_to_byte')    
     byte_array = QtCore.QByteArray()
     # use buffer to store pixmap into byteArray
     buffie = QtCore.QBuffer(byte_array)
@@ -249,6 +250,7 @@ def resize_image(image, width, height, background=QtCore.Qt.black):
         The background colour defaults to black.
 
     """
+    log.debug(u'resize_image')    
     preview = QtGui.QImage(image)
     if not preview.isNull():
         # Only resize if different size
