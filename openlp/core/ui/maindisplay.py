@@ -326,8 +326,9 @@ class MainDisplay(DisplayWidget):
         # Important otherwise first preview will miss the background !
         while not self.loaded:
             Receiver.send_message(u'openlp_process_events')
-        if self.isLive:
-            self.setVisible(True)
+        # if was hidden keep it hidden
+        if self.hide_mode and self.isLive:
+            self.hideDisplay(self.hide_mode)
         preview = QtGui.QImage(self.screen[u'size'].width(),
             self.screen[u'size'].height(),
             QtGui.QImage.Format_ARGB32_Premultiplied)
@@ -335,9 +336,6 @@ class MainDisplay(DisplayWidget):
         painter.setRenderHint(QtGui.QPainter.Antialiasing)
         self.frame.render(painter)
         painter.end()
-        # if was hidden keep it hidden
-        if self.hide_mode and self.isLive:
-            self.hideDisplay(self.hide_mode)
         return preview
 
     def buildHtml(self, serviceItem):

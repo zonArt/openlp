@@ -105,18 +105,6 @@ class Renderer(object):
             (build_lyrics_format_css(self._theme, self.page_width,
             self.page_height), build_lyrics_outline_css(self._theme))
 
-        self.web = QtWebKit.QWebView()
-        self.web.resize(self._rect.width(), self._rect.height())
-        self.web.setVisible(False)
-        self.web_frame = self.web.page().mainFrame()
-        # Adjust width and height to account for shadow. outline done in css
-        self.page_width = self._rect.width() - int(self._theme.display_shadow_size)
-        self.page_height = self._rect.height() - int(self._theme.display_shadow_size)
-        self.page_shell = u'<html><head><style>#main {%s %s}</style><body>' \
-            u'<div id="main">' % \
-            (build_lyrics_format_css(self._theme, self.page_width, self.page_height),
-            build_lyrics_outline_css(self._theme))
-
     def set_frame_dest(self, frame_width, frame_height):
         """
         Set the size of the slide.
