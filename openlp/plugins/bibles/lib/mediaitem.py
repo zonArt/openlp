@@ -411,7 +411,6 @@ class BibleMediaItem(MediaManagerItem):
     def onAdvancedToChapter(self):
         frm = unicode(self.AdvancedFromChapter.currentText())
         to = unicode(self.AdvancedToChapter.currentText())
-        print frm ,  to
         if frm != to:
             bible = unicode(self.AdvancedVersionComboBox.currentText())
             book = unicode(self.AdvancedBookComboBox.currentText())
