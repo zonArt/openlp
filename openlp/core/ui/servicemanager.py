@@ -884,7 +884,8 @@ class ServiceManager(QtGui.QWidget):
             QtGui.QMessageBox.critical(self,
                 translate('OpenLP.ServiceManager', 'Missing Display Handler'),
                 translate('OpenLP.ServiceManager', 'Your item cannot be '
-                    'displayed as there is no handler to display it'))
+                    'displayed as the plugin required to display it is missing '
+                    'or inactive'))
 
     def remoteEdit(self):
         """

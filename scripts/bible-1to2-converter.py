@@ -127,6 +127,8 @@ def import_bible():
     for row in rows:
         key = unicode(row[0], u'cp1252')
         value = unicode(row[1], u'cp1252')
+        if key == u'Permission':
+            key = u'Permissions'
         sql_insert = u'INSERT INTO metadata '\
             '("key", "value") '\
             'VALUES (?, ?)'
