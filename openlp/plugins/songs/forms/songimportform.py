@@ -361,6 +361,8 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
 
     def setDefaults(self):
         self.restart()
+        self.finishButton.setVisible(False)
+        self.cancelButton.setVisible(True)
         self.formatComboBox.setCurrentIndex(0)
         self.openLP2FilenameEdit.setText(u'')
         self.openLP1FilenameEdit.setText(u'')
