@@ -97,7 +97,7 @@ class ServiceItem(object):
         self.themedata = None
         self.main = None
         self.footer = None
-        self.bg_frame = None
+        self.bg_image_bytes = None
 
     def _new_item(self):
         """
@@ -145,7 +145,7 @@ class ServiceItem(object):
         """
         log.debug(u'Render called')
         self._display_frames = []
-        self.bg_frame = None
+        self.bg_image_bytes = None
         line_break = True
         if self.is_capable(ItemCapabilities.NoLineBreaks):
             line_break = False
@@ -156,7 +156,7 @@ class ServiceItem(object):
                 theme = self.theme
             self.main, self.footer = \
                 self.render_manager.set_override_theme(theme, useOverride)
-            self.bg_frame = self.render_manager.renderer.bg_frame
+            self.bg_image_bytes = self.render_manager.renderer.bg_image_bytes
             self.themedata = self.render_manager.renderer._theme
             for slide in self._raw_frames:
                 before = time.time()

@@ -109,6 +109,9 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         QtCore.QObject.connect(self.genericRemoveButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onGenericRemoveButtonClicked)
+        QtCore.QObject.connect(self.ewBrowseButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onEWBrowseButtonClicked)
         QtCore.QObject.connect(self.cancelButton,
             QtCore.SIGNAL(u'clicked(bool)'),
             self.onCancelButtonClicked)
@@ -213,6 +216,16 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
                             'You need to add at least one document or '
                             'presentation file to import from.'))
                     self.genericAddButton.setFocus()
+                    return False
+            elif source_format == SongFormat.EasyWorship:
+                if self.ewFilenameEdit.text().isEmpty():
+                    QtGui.QMessageBox.critical(self,
+                        translate('SongsPlugin.ImportWizardForm',
+                            'No EasyWorship Song Database Selected'),
+                        translate('SongsPlugin.ImportWizardForm',
+                            'You need to select an EasyWorship song database '
+                            'file to import from.'))
+                    self.ewBrowseButton.setFocus()
                     return False
             return True
         elif self.currentId() == 2:
@@ -322,6 +335,13 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
     def onGenericRemoveButtonClicked(self):
         self.removeSelectedItems(self.genericFileListWidget)
 
+    def onEWBrowseButtonClicked(self):
+        self.getFileName(
+            translate('SongsPlugin.ImportWizardForm',
+            'Select EasyWorship Database File'),
+            self.ewFilenameEdit
+        )
+
     def onCancelButtonClicked(self, checked):
         """
         Stop the import on pressing the cancel button.
@@ -341,6 +361,8 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
 
     def setDefaults(self):
         self.restart()
+        self.finishButton.setVisible(False)
+        self.cancelButton.setVisible(True)
         self.formatComboBox.setCurrentIndex(0)
         self.openLP2FilenameEdit.setText(u'')
         self.openLP1FilenameEdit.setText(u'')
@@ -350,6 +372,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         self.ccliFileListWidget.clear()
         self.songsOfFellowshipFileListWidget.clear()
         self.genericFileListWidget.clear()
+        self.ewFilenameEdit.setText(u'')
         #self.csvFilenameEdit.setText(u'')
 
     def incrementProgressBar(self, status_text, increment=1):
@@ -419,6 +442,11 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
             # Import a generic document or presentatoin
             importer = self.plugin.importSongs(SongFormat.Generic,
                 filenames=self.getListOfFiles(self.genericFileListWidget)
+            )
+        elif source_format == SongFormat.EasyWorship:
+            # Import an OpenLP 2.0 database
+            importer = self.plugin.importSongs(SongFormat.EasyWorship,
+                filename=unicode(self.ewFilenameEdit.text())
             )
         success = importer.do_import()
         if success:
