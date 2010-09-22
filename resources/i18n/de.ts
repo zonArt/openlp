@@ -1646,12 +1646,12 @@ This General Public License does not permit incorporating your program into prop
 <context>
     <name>OpenLP.LanguageManager</name>
     <message>
-        <location filename="openlp/core/utils/languagemanager.py" line="121"/>
+        <location filename="openlp/core/utils/languagemanager.py" line="119"/>
         <source>Language</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="openlp/core/utils/languagemanager.py" line="121"/>
+        <location filename="openlp/core/utils/languagemanager.py" line="119"/>
         <source>Please restart OpenLP to use your new language setting.</source>
         <translation></translation>
     </message>
@@ -1662,6 +1662,11 @@ This General Public License does not permit incorporating your program into prop
         <location filename="openlp/core/ui/mainwindow.py" line="345"/>
         <source>OpenLP 2.0</source>
         <translation>OpenLP 2.0</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/utils/languagemanager.py" line="85"/>
+        <source>English</source>
+        <translation>Deutsch</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="348"/>
@@ -2064,12 +2069,6 @@ This General Public License does not permit incorporating your program into prop
 
 You can download the latest version from http://openlp.org/.</source>
         <translation></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/utils/languagemanager.py" line="85"/>
-        <source>English</source>
-        <comment>Please add here the name of your Language</comment>
-        <translation type="unfinished">Deutsch</translation>
     </message>
 </context>
 <context>
