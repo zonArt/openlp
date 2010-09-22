@@ -501,9 +501,19 @@ Changes do not affect verses already in the service.</source>
         <translation type="unfinished">Derechos de autor en blanco</translation>
     </message>
     <message>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="181"/>
+        <source>You need to set a copyright for your Bible. Bibles in the Public Domain need to be marked as such.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="191"/>
         <source>Bible Exists</source>
         <translation type="unfinished">Ya existe la Biblia</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="191"/>
+        <source>This Bible already exists. Please import a different Bible or first delete the existing one.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="221"/>
@@ -539,16 +549,6 @@ Changes do not affect verses already in the service.</source>
         <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="449"/>
         <source>Your Bible import failed.</source>
         <translation type="unfinished">La importación de su Biblia falló.</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="181"/>
-        <source>You need to set a copyright for your Bible. Bibles in the Public Domain need to be marked as such.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="191"/>
-        <source>This Bible already exists. Please import a different Bible or first delete the existing one.</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1504,13 +1504,13 @@ This General Public License does not permit incorporating your program into prop
 <context>
     <name>OpenLP.ExceptionDialog</name>
     <message>
-        <location filename="openlp/core/ui/exceptiondialog.py" line="77"/>
-        <source>Oops! OpenLP hit a problem, and couldn&apos;t recover. The text in the box below contains information that might be helpful to the OpenLP developers, so please e-mail it to bugs@openlp.org, along with a detailed description of what you were doing when the problem occurred.</source>
+        <location filename="openlp/core/ui/exceptiondialog.py" line="75"/>
+        <source>Error Occurred</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/exceptiondialog.py" line="75"/>
-        <source>Error Occurred</source>
+        <location filename="openlp/core/ui/exceptiondialog.py" line="77"/>
+        <source>Oops! OpenLP hit a problem, and couldn&apos;t recover. The text in the box below contains information that might be helpful to the OpenLP developers, so please e-mail it to bugs@openlp.org, along with a detailed description of what you were doing when the problem occurred.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1645,12 +1645,12 @@ This General Public License does not permit incorporating your program into prop
 <context>
     <name>OpenLP.LanguageManager</name>
     <message>
-        <location filename="openlp/core/utils/languagemanager.py" line="119"/>
+        <location filename="openlp/core/utils/languagemanager.py" line="121"/>
         <source>Language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/utils/languagemanager.py" line="119"/>
+        <location filename="openlp/core/utils/languagemanager.py" line="121"/>
         <source>Please restart OpenLP to use your new language setting.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1661,11 +1661,6 @@ This General Public License does not permit incorporating your program into prop
         <location filename="openlp/core/ui/mainwindow.py" line="345"/>
         <source>OpenLP 2.0</source>
         <translation type="unfinished">OpenLP 2.0</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/utils/languagemanager.py" line="85"/>
-        <source>English</source>
-        <translation type="unfinished">Ingles</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="348"/>
@@ -2068,6 +2063,12 @@ You can download the latest version from http://openlp.org/.</source>
         <location filename="openlp/core/ui/mainwindow.py" line="847"/>
         <source>Default Theme: %s</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/utils/languagemanager.py" line="85"/>
+        <source>English</source>
+        <comment>Please add here the name of your Language</comment>
+        <translation type="unfinished">Ingles</translation>
     </message>
 </context>
 <context>
@@ -2537,6 +2538,11 @@ The content encoding is not UTF-8.</source>
         <translation type="unfinished">Proyectar en vivo</translation>
     </message>
     <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="210"/>
+        <source>Edit and reload song preview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="217"/>
         <source>Start continuous loop</source>
         <translation type="unfinished">Iniciar bucle continuo</translation>
@@ -2564,11 +2570,6 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="276"/>
         <source>Go To</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="210"/>
-        <source>Edit and reload song preview</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2693,6 +2694,16 @@ The content encoding is not UTF-8.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="openlp/core/ui/thememanager.py" line="242"/>
+        <source>Theme %s is used in the %s plugin.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="249"/>
+        <source>Theme %s is used by the service manager.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/core/ui/thememanager.py" line="285"/>
         <source>You have not selected a theme.</source>
         <translation type="unfinished"></translation>
@@ -2751,16 +2762,6 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="575"/>
         <source>A theme with this name already exists. Would you like to overwrite it?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="242"/>
-        <source>Theme %s is used in the %s plugin.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="249"/>
-        <source>Theme %s is used by the service manager.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3406,6 +3407,16 @@ The content encoding is not UTF-8.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="222"/>
+        <source>No EasyWorship Song Database Selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="222"/>
+        <source>You need to select an EasyWorship song database file to import from.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/plugins/songs/forms/songimportform.py" line="265"/>
         <source>Select OpenLP 2.0 Database File</source>
         <translation type="unfinished"></translation>
@@ -3438,6 +3449,11 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songimportform.py" line="329"/>
         <source>Select Document/Presentation Files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="339"/>
+        <source>Select EasyWorship Database File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3516,6 +3532,11 @@ The content encoding is not UTF-8.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="525"/>
+        <source>EasyWorship</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="579"/>
         <source>Filename:</source>
         <translation type="unfinished"></translation>
@@ -3528,6 +3549,11 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="537"/>
         <source>The openlp.org 1.x importer has been disabled due to a missing Python module. If you want to use this importer, you will need to install the &quot;python-sqlite&quot; module.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="546"/>
+        <source>The OpenLyrics importer has not yet been developed, but as you can see, we are still intending to do so. Hopefully it will be in the next release.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3578,31 +3604,6 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/plugins/songs/lib/opensongimport.py" line="163"/>
         <source>Importing %s...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="546"/>
-        <source>The OpenLyrics importer has not yet been developed, but as you can see, we are still intending to do so. Hopefully it will be in the next release.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="222"/>
-        <source>No EasyWorship Song Database Selected</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="222"/>
-        <source>You need to select an EasyWorship song database file to import from.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="339"/>
-        <source>Select EasyWorship Database File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="525"/>
-        <source>EasyWorship</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3821,6 +3822,11 @@ The content encoding is not UTF-8.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="324"/>
+        <source>Could not save your modified author, because the author already exists.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="361"/>
         <source>Could not save your modified topic, because it already exists.</source>
         <translation type="unfinished"></translation>
@@ -3884,11 +3890,6 @@ The content encoding is not UTF-8.</source>
         <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="495"/>
         <source>No book selected!</source>
         <translation type="unfinished">¡Ningún libro seleccionado!</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="324"/>
-        <source>Could not save your modified author, because the author already exists.</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

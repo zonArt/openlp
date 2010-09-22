@@ -1816,12 +1816,12 @@ A GNU General Public License nem engedi meg, hogy a program része legyen szelle
 <context>
     <name>OpenLP.LanguageManager</name>
     <message>
-        <location filename="openlp/core/utils/languagemanager.py" line="119"/>
+        <location filename="openlp/core/utils/languagemanager.py" line="121"/>
         <source>Language</source>
         <translation>Nyelv</translation>
     </message>
     <message>
-        <location filename="openlp/core/utils/languagemanager.py" line="119"/>
+        <location filename="openlp/core/utils/languagemanager.py" line="121"/>
         <source>Please restart OpenLP to use your new language setting.</source>
         <translation>A nyelvi beállítások az OpenLP újraindítása után lépnek érvénybe.</translation>
     </message>
@@ -1832,11 +1832,6 @@ A GNU General Public License nem engedi meg, hogy a program része legyen szelle
         <location filename="openlp/core/ui/mainwindow.py" line="345"/>
         <source>OpenLP 2.0</source>
         <translation></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/utils/languagemanager.py" line="85"/>
-        <source>English</source>
-        <translation>Magyar</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="348"/>
@@ -2241,6 +2236,12 @@ A legfrissebb verzió a http://openlp.org oldalról szerezhető be.</translation
         <location filename="openlp/core/ui/mainwindow.py" line="847"/>
         <source>Default Theme: %s</source>
         <translation>Alapértelmezett téma: %s</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/utils/languagemanager.py" line="85"/>
+        <source>English</source>
+        <comment>Please add here the name of your Language</comment>
+        <translation type="unfinished">Magyar</translation>
     </message>
 </context>
 <context>
@@ -3756,11 +3757,6 @@ A tartalom kódolása nem UTF-8.</translation>
         <translation>Importálás %s...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="546"/>
-        <source>The OpenLyrics importer has not yet been developed, but as you can see, we are still intending to do so. Hopefully it will be in the next release.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="openlp/plugins/songs/forms/songimportform.py" line="222"/>
         <source>No EasyWorship Song Database Selected</source>
         <translation type="unfinished"></translation>
@@ -3778,6 +3774,11 @@ A tartalom kódolása nem UTF-8.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="525"/>
         <source>EasyWorship</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="546"/>
+        <source>The OpenLyrics importer has not yet been developed, but as you can see, we are still intending to do so. Hopefully it will be in the next release.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

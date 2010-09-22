@@ -140,6 +140,21 @@ def run(command):
     print_verbose(u'Output:\n%s' % process.readAllStandardOutput())
     print u'   Done.'
 
+def update_export_at_pootle(source_filename):
+    """
+    This is needed because of database and exported *.ts file can be out of sync
+
+    ``source_filename``
+        The file to sync.
+
+    """
+    language = source_filename[:-3]
+    REVIEW_URL = u'http://pootle.projecthq.biz/%s/openlp/review.html' % language
+    print_verbose(u'Accessing: %s' % (REVIEW_URL))
+    page = urllib.urlopen(REVIEW_URL)
+    page.close()
+    
+
 def download_file(source_filename, dest_filename):
     """
     Download a file and save it to disk.
@@ -166,11 +181,13 @@ def download_translations():
     page = urllib.urlopen(SERVER_URL)
     soup = BeautifulSoup(page)
     languages = soup.findAll(text=re.compile(r'.*\.ts'))
-    for language in languages:
+    for language_file in languages:
+        update_export_at_pootle(language_file)
+    for language_file in languages:
         filename = os.path.join(os.path.abspath(u'..'), u'resources', u'i18n',
-            language)
+            language_file)
         print_verbose(u'Get Translation File: %s' % filename)
-        download_file(language, filename)
+        download_file(language_file, filename)
     print u'   Done.'
 
 def prepare_project():

@@ -1645,12 +1645,12 @@ This General Public License does not permit incorporating your program into prop
 <context>
     <name>OpenLP.LanguageManager</name>
     <message>
-        <location filename="openlp/core/utils/languagemanager.py" line="119"/>
+        <location filename="openlp/core/utils/languagemanager.py" line="121"/>
         <source>Language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/utils/languagemanager.py" line="119"/>
+        <location filename="openlp/core/utils/languagemanager.py" line="121"/>
         <source>Please restart OpenLP to use your new language setting.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1660,11 +1660,6 @@ This General Public License does not permit incorporating your program into prop
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="345"/>
         <source>OpenLP 2.0</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/utils/languagemanager.py" line="85"/>
-        <source>English</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2067,6 +2062,12 @@ You can download the latest version from http://openlp.org/.</source>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="847"/>
         <source>Default Theme: %s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/utils/languagemanager.py" line="85"/>
+        <source>English</source>
+        <comment>Please add here the name of your Language</comment>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3406,6 +3407,16 @@ The content encoding is not UTF-8.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="222"/>
+        <source>No EasyWorship Song Database Selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="222"/>
+        <source>You need to select an EasyWorship song database file to import from.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/plugins/songs/forms/songimportform.py" line="265"/>
         <source>Select OpenLP 2.0 Database File</source>
         <translation type="unfinished"></translation>
@@ -3438,6 +3449,11 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songimportform.py" line="329"/>
         <source>Select Document/Presentation Files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="339"/>
+        <source>Select EasyWorship Database File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3516,6 +3532,11 @@ The content encoding is not UTF-8.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="525"/>
+        <source>EasyWorship</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="579"/>
         <source>Filename:</source>
         <translation type="unfinished"></translation>
@@ -3583,26 +3604,6 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/plugins/songs/lib/opensongimport.py" line="163"/>
         <source>Importing %s...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="222"/>
-        <source>No EasyWorship Song Database Selected</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="222"/>
-        <source>You need to select an EasyWorship song database file to import from.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="339"/>
-        <source>Select EasyWorship Database File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="525"/>
-        <source>EasyWorship</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

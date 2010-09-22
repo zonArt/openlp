@@ -5,12 +5,12 @@
     <message>
         <location filename="openlp/plugins/alerts/alertsplugin.py" line="70"/>
         <source>&amp;Alert</source>
-        <translation>&amp;Varsel</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/alertsplugin.py" line="71"/>
         <source>Show an alert message.</source>
-        <translation>Vis en varselmelding.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/alertsplugin.py" line="100"/>
@@ -28,27 +28,27 @@
     <message>
         <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="128"/>
         <source>Alert &amp;text:</source>
-        <translation>Varsel &amp;tekst:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="130"/>
         <source>&amp;Parameter(s):</source>
-        <translation>%Parameter(e):</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="132"/>
         <source>&amp;New</source>
-        <translation>&amp;Ny</translation>
+        <translation type="unfinished">&amp;Ny</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="134"/>
         <source>&amp;Save</source>
-        <translation>&amp;Lagre</translation>
+        <translation type="unfinished">&amp;Lagre</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="136"/>
         <source>&amp;Delete</source>
-        <translation>&amp;Slett</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="138"/>
@@ -63,12 +63,12 @@
     <message>
         <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="142"/>
         <source>&amp;Close</source>
-        <translation>%Lukk</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="96"/>
         <source>New Alert</source>
-        <translation>Nytt Varsel</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="96"/>
@@ -89,12 +89,12 @@
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="42"/>
         <source>Alerts</source>
-        <translation>Varsel</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="191"/>
         <source>Font</source>
-        <translation>Skrifttype </translation>
+        <translation type="unfinished">Skrifttype </translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="193"/>
@@ -104,7 +104,7 @@
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="195"/>
         <source>Font color:</source>
-        <translation>Skrift farge</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="197"/>
@@ -114,7 +114,7 @@
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="199"/>
         <source>Font size:</source>
-        <translation>Skrift størrelse</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="201"/>
@@ -134,22 +134,22 @@
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="207"/>
         <source>Location:</source>
-        <translation type="unfinished">Plassering:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="209"/>
         <source>Preview</source>
-        <translation>Forhåndsvisning</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="211"/>
         <source>OpenLP 2.0</source>
-        <translation>OpenLP 2.0</translation>
+        <translation type="unfinished">OpenLP 2.0</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="213"/>
         <source>Top</source>
-        <translation>Topp</translation>
+        <translation type="unfinished">Topp</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="215"/>
@@ -159,7 +159,7 @@
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="217"/>
         <source>Bottom</source>
-        <translation>Bunn</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -167,7 +167,7 @@
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="82"/>
         <source>&amp;Bible</source>
-        <translation>&amp;Bibel</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="91"/>
@@ -180,7 +180,7 @@
     <message>
         <location filename="openlp/plugins/bibles/lib/db.py" line="353"/>
         <source>Book not found</source>
-        <translation>Fant ikke boken</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/db.py" line="353"/>
@@ -214,7 +214,7 @@ Book Chapter:Verse-Chapter:Verse
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="49"/>
         <source>Bibles</source>
-        <translation>Bibler</translation>
+        <translation type="unfinished">Bibler</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="153"/>
@@ -249,7 +249,7 @@ Book Chapter:Verse-Chapter:Verse
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="166"/>
         <source>Verse Per Line</source>
-        <translation>Vers pr linje</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="168"/>
@@ -264,17 +264,17 @@ Book Chapter:Verse-Chapter:Verse
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="172"/>
         <source>( And )</source>
-        <translation>( og )</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="174"/>
         <source>{ And }</source>
-        <translation>{ og }</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="176"/>
         <source>[ And ]</source>
-        <translation>[ og ]</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="178"/>
@@ -293,47 +293,47 @@ Changes do not affect verses already in the service.</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="311"/>
         <source>Bible Import Wizard</source>
-        <translation>Bibelimporteringsverktøy </translation>
+        <translation type="unfinished">Bibelimporteringsverktøy </translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="313"/>
         <source>Welcome to the Bible Import Wizard</source>
-        <translation>Velkommen til bibelimporterings-veilederen</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="317"/>
         <source>This wizard will help you to import Bibles from a variety of formats. Click the next button below to start the process by selecting a format to import from.</source>
-        <translation>Denne veiviseren vil hjelpe deg å importere Bibler fra en rekke ulike formater. Klikk på neste-knappen under for å starte prosessen ved å velge et format å importere fra.</translation>
+        <translation type="unfinished">Denne veiviseren vil hjelpe deg å importere Bibler fra en rekke ulike formater. Klikk på neste-knappen under for å starte prosessen ved å velge et format å importere fra.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="322"/>
         <source>Select Import Source</source>
-        <translation>Velg importeringskilde </translation>
+        <translation type="unfinished">Velg importeringskilde </translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="324"/>
         <source>Select the import format, and where to import from.</source>
-        <translation>Velg importeringsformat og hvor du vil importere dem</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="327"/>
         <source>Format:</source>
-        <translation>Format:</translation>
+        <translation type="unfinished">Format: </translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="329"/>
         <source>OSIS</source>
-        <translation>OSIS</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="331"/>
         <source>CSV</source>
-        <translation>CSV</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="333"/>
         <source>OpenSong</source>
-        <translation>OpenSong</translation>
+        <translation type="unfinished">OpenSong</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="335"/>
@@ -343,27 +343,27 @@ Changes do not affect verses already in the service.</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="337"/>
         <source>File location:</source>
-        <translation>Fil plassering:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="339"/>
         <source>Books location:</source>
-        <translation>Bok plassering:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="341"/>
         <source>Verse location:</source>
-        <translation>Vers plassering:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="343"/>
         <source>Bible filename:</source>
-        <translation>Bibel filnavn:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="345"/>
         <source>Location:</source>
-        <translation>Plassering:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="347"/>
@@ -378,12 +378,12 @@ Changes do not affect verses already in the service.</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="351"/>
         <source>Bible:</source>
-        <translation>Bibel:</translation>
+        <translation type="unfinished">Bibel:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="353"/>
         <source>Download Options</source>
-        <translation>Nedlastingsalternativer </translation>
+        <translation type="unfinished">Nedlastingsalternativer </translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="356"/>
@@ -393,12 +393,12 @@ Changes do not affect verses already in the service.</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="358"/>
         <source>Username:</source>
-        <translation>Brukernavn:</translation>
+        <translation type="unfinished">Brukernavn:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="360"/>
         <source>Password:</source>
-        <translation>Passord:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="362"/>
@@ -408,17 +408,17 @@ Changes do not affect verses already in the service.</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="366"/>
         <source>License Details</source>
-        <translation>Lisensdetaljer</translation>
+        <translation type="unfinished">Lisensdetaljer</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="368"/>
         <source>Set up the Bible&apos;s license details.</source>
-        <translation>Skriv inn Bibelens lisensdetaljer.</translation>
+        <translation type="unfinished">Skriv inn Bibelens lisensdetaljer.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="371"/>
         <source>Version name:</source>
-        <translation>Versons navn:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="373"/>
@@ -428,7 +428,7 @@ Changes do not affect verses already in the service.</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="375"/>
         <source>Permission:</source>
-        <translation>Tillatelse:</translation>
+        <translation type="unfinished">Tillatelse:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="377"/>
@@ -438,17 +438,17 @@ Changes do not affect verses already in the service.</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="379"/>
         <source>Please wait while your Bible is imported.</source>
-        <translation>Vennligst vent mens bibelen blir importert</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="382"/>
         <source>Ready.</source>
-        <translation>Klar.</translation>
+        <translation type="unfinished">Klar.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="127"/>
         <source>Invalid Bible Location</source>
-        <translation>Ugyldig Bibelplassering</translation>
+        <translation type="unfinished">Ugyldig Bibelplassering</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="127"/>
@@ -463,7 +463,7 @@ Changes do not affect verses already in the service.</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="137"/>
         <source>You need to specify a file with books of the Bible to use in the import.</source>
-        <translation>Du må angi en fil som inneholder bøkene i Bibelen du vil importere.</translation>
+        <translation type="unfinished">Du må angi en fil som inneholder bøkene i Bibelen.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="146"/>
@@ -473,12 +473,12 @@ Changes do not affect verses already in the service.</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="146"/>
         <source>You need to specify a file of Bible verses to import.</source>
-        <translation>Du må angi en fil med bibelvers som skal importeres.</translation>
+        <translation type="unfinished">Du må angi en fil med bibelvers som skal importeres.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="157"/>
         <source>Invalid OpenSong Bible</source>
-        <translation>Ugyldig OpenSong Bibel</translation>
+        <translation type="unfinished">Ugyldig OpenSong Bibel</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="157"/>
@@ -501,9 +501,19 @@ Changes do not affect verses already in the service.</source>
         <translation type="unfinished">Tom copyright</translation>
     </message>
     <message>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="181"/>
+        <source>You need to set a copyright for your Bible. Bibles in the Public Domain need to be marked as such.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="191"/>
         <source>Bible Exists</source>
         <translation type="unfinished">Bibelen eksisterer</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="191"/>
+        <source>This Bible already exists. Please import a different Bible or first delete the existing one.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="221"/>
@@ -539,16 +549,6 @@ Changes do not affect verses already in the service.</source>
         <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="449"/>
         <source>Your Bible import failed.</source>
         <translation type="unfinished">Bibelimporteringen mislyktes.</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="181"/>
-        <source>You need to set a copyright for your Bible. Bibles in the Public Domain need to be marked as such.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="191"/>
-        <source>This Bible already exists. Please import a different Bible or first delete the existing one.</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1453,7 +1453,7 @@ This General Public License does not permit incorporating your program into prop
     <message>
         <location filename="openlp/core/ui/amendthemedialog.py" line="789"/>
         <source>Bottom</source>
-        <translation type="unfinished">Bunn</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/amendthemedialog.py" line="791"/>
@@ -1473,7 +1473,7 @@ This General Public License does not permit incorporating your program into prop
     <message>
         <location filename="openlp/core/ui/amendthemedialog.py" line="798"/>
         <source>Preview</source>
-        <translation type="unfinished">Forhåndsvisning</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/amendthemeform.py" line="211"/>
@@ -1504,13 +1504,13 @@ This General Public License does not permit incorporating your program into prop
 <context>
     <name>OpenLP.ExceptionDialog</name>
     <message>
-        <location filename="openlp/core/ui/exceptiondialog.py" line="77"/>
-        <source>Oops! OpenLP hit a problem, and couldn&apos;t recover. The text in the box below contains information that might be helpful to the OpenLP developers, so please e-mail it to bugs@openlp.org, along with a detailed description of what you were doing when the problem occurred.</source>
+        <location filename="openlp/core/ui/exceptiondialog.py" line="75"/>
+        <source>Error Occurred</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/exceptiondialog.py" line="75"/>
-        <source>Error Occurred</source>
+        <location filename="openlp/core/ui/exceptiondialog.py" line="77"/>
+        <source>Oops! OpenLP hit a problem, and couldn&apos;t recover. The text in the box below contains information that might be helpful to the OpenLP developers, so please e-mail it to bugs@openlp.org, along with a detailed description of what you were doing when the problem occurred.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1645,12 +1645,12 @@ This General Public License does not permit incorporating your program into prop
 <context>
     <name>OpenLP.LanguageManager</name>
     <message>
-        <location filename="openlp/core/utils/languagemanager.py" line="119"/>
+        <location filename="openlp/core/utils/languagemanager.py" line="121"/>
         <source>Language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/utils/languagemanager.py" line="119"/>
+        <location filename="openlp/core/utils/languagemanager.py" line="121"/>
         <source>Please restart OpenLP to use your new language setting.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1661,11 +1661,6 @@ This General Public License does not permit incorporating your program into prop
         <location filename="openlp/core/ui/mainwindow.py" line="345"/>
         <source>OpenLP 2.0</source>
         <translation type="unfinished">OpenLP 2.0</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/utils/languagemanager.py" line="85"/>
-        <source>English</source>
-        <translation type="unfinished">Norsk</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="348"/>
@@ -2068,6 +2063,12 @@ You can download the latest version from http://openlp.org/.</source>
         <location filename="openlp/core/ui/mainwindow.py" line="847"/>
         <source>Default Theme: %s</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/utils/languagemanager.py" line="85"/>
+        <source>English</source>
+        <comment>Please add here the name of your Language</comment>
+        <translation type="unfinished">Norsk</translation>
     </message>
 </context>
 <context>
@@ -2514,7 +2515,7 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="120"/>
         <source>Preview</source>
-        <translation type="unfinished">Forhåndsvisning</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="165"/>
@@ -2534,6 +2535,11 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="205"/>
         <source>Move to live</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="210"/>
+        <source>Edit and reload song preview</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2564,11 +2570,6 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="276"/>
         <source>Go To</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="210"/>
-        <source>Edit and reload song preview</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2693,6 +2694,16 @@ The content encoding is not UTF-8.</source>
         <translation type="unfinished">Du kan ikke slette det globale temaet </translation>
     </message>
     <message>
+        <location filename="openlp/core/ui/thememanager.py" line="242"/>
+        <source>Theme %s is used in the %s plugin.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="249"/>
+        <source>Theme %s is used by the service manager.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/core/ui/thememanager.py" line="285"/>
         <source>You have not selected a theme.</source>
         <translation type="unfinished"></translation>
@@ -2751,16 +2762,6 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="575"/>
         <source>A theme with this name already exists. Would you like to overwrite it?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="242"/>
-        <source>Theme %s is used in the %s plugin.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="249"/>
-        <source>Theme %s is used by the service manager.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3117,7 +3118,7 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="427"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished">&amp;Slett</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="429"/>
@@ -3406,6 +3407,16 @@ The content encoding is not UTF-8.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="222"/>
+        <source>No EasyWorship Song Database Selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="222"/>
+        <source>You need to select an EasyWorship song database file to import from.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/plugins/songs/forms/songimportform.py" line="265"/>
         <source>Select OpenLP 2.0 Database File</source>
         <translation type="unfinished"></translation>
@@ -3441,6 +3452,11 @@ The content encoding is not UTF-8.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="openlp/plugins/songs/forms/songimportform.py" line="339"/>
+        <source>Select EasyWorship Database File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/plugins/songs/forms/songimportform.py" line="392"/>
         <source>Starting import...</source>
         <translation type="unfinished"></translation>
@@ -3468,7 +3484,7 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="503"/>
         <source>Select the import format, and where to import from.</source>
-        <translation type="unfinished">Velg importeringsformat og hvor du vil importere dem</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="506"/>
@@ -3516,6 +3532,11 @@ The content encoding is not UTF-8.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="525"/>
+        <source>EasyWorship</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="579"/>
         <source>Filename:</source>
         <translation type="unfinished"></translation>
@@ -3528,6 +3549,11 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="537"/>
         <source>The openlp.org 1.x importer has been disabled due to a missing Python module. If you want to use this importer, you will need to install the &quot;python-sqlite&quot; module.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="546"/>
+        <source>The OpenLyrics importer has not yet been developed, but as you can see, we are still intending to do so. Hopefully it will be in the next release.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3578,31 +3604,6 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/plugins/songs/lib/opensongimport.py" line="163"/>
         <source>Importing %s...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="546"/>
-        <source>The OpenLyrics importer has not yet been developed, but as you can see, we are still intending to do so. Hopefully it will be in the next release.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="222"/>
-        <source>No EasyWorship Song Database Selected</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="222"/>
-        <source>You need to select an EasyWorship song database file to import from.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportform.py" line="339"/>
-        <source>Select EasyWorship Database File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="525"/>
-        <source>EasyWorship</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3778,7 +3779,7 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songmaintenancedialog.py" line="238"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished">&amp;Slett</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="391"/>
@@ -3818,6 +3819,11 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="386"/>
         <source>Could not save your changes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="324"/>
+        <source>Could not save your modified author, because the author already exists.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3884,11 +3890,6 @@ The content encoding is not UTF-8.</source>
         <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="495"/>
         <source>No book selected!</source>
         <translation type="unfinished">Ingen bok er valgt!</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="324"/>
-        <source>Could not save your modified author, because the author already exists.</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
