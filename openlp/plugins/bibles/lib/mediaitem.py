@@ -402,21 +402,29 @@ class BibleMediaItem(MediaManagerItem):
         self.reloadBibles()
 
     def onAdvancedFromVerse(self):
-        frm = self.AdvancedFromVerse.currentText()
-        chapter_frm = unicode(self.AdvancedFromChapter.currentText())
-        chapter_to = unicode(self.AdvancedToChapter.currentText())
+        frm = int(self.AdvancedFromVerse.currentText())
+        chapter_frm = int(self.AdvancedFromChapter.currentText())
+        chapter_to = int(self.AdvancedToChapter.currentText())
         if chapter_frm == chapter_to:
-            self.adjustComboBox(frm, self.verses, self.AdvancedToVerse)
-
-    def onAdvancedToChapter(self):
-        frm = unicode(self.AdvancedFromChapter.currentText())
-        to = unicode(self.AdvancedToChapter.currentText())
-        if frm != to:
             bible = unicode(self.AdvancedVersionComboBox.currentText())
             book = unicode(self.AdvancedBookComboBox.currentText())
             # get the verse count for new chapter
-            verses = self.parent.manager.get_verse_count(bible, book, int(to))
+            verses = self.parent.manager.get_verse_count(bible, book, chapter_to)
+            self.adjustComboBox(frm, verses, self.AdvancedToVerse)
+
+    def onAdvancedToChapter(self):
+        chapter_frm = int(self.AdvancedFromChapter.currentText())
+        chapter_to = int(self.AdvancedToChapter.currentText())
+        bible = unicode(self.AdvancedVersionComboBox.currentText())
+        book = unicode(self.AdvancedBookComboBox.currentText())
+        verses = self.parent.manager.get_verse_count(bible, book, chapter_to)
+        if chapter_frm != chapter_to:
             self.adjustComboBox(1, verses, self.AdvancedToVerse)
+        else:
+            frm = int(self.AdvancedFromVerse.currentText())
+            to = int(self.AdvancedToVerse.currentText())
+            if to < frm:
+                self.adjustComboBox(frm, verses, self.AdvancedToVerse)
 
     def onAdvancedSearchButton(self):
         log.debug(u'Advanced Search Button pressed')
@@ -456,12 +464,14 @@ class BibleMediaItem(MediaManagerItem):
     def onAdvancedFromChapter(self):
         bible = unicode(self.AdvancedVersionComboBox.currentText())
         book = unicode(self.AdvancedBookComboBox.currentText())
-        cf = int(self.AdvancedFromChapter.currentText())
-        self.adjustComboBox(cf, self.chapters_from, self.AdvancedToChapter)
+        chapter_frm = int(self.AdvancedFromChapter.currentText())
+        chapter_to = int(self.AdvancedToChapter.currentText())
         # get the verse count for new chapter
-        vse = self.parent.manager.get_verse_count(bible, book, cf)
-        self.adjustComboBox(1, vse, self.AdvancedFromVerse)
-        self.adjustComboBox(1, vse, self.AdvancedToVerse)
+        verse = self.parent.manager.get_verse_count(bible, book, chapter_frm)
+        self.adjustComboBox(chapter_frm, self.chapters_from,
+            self.AdvancedToChapter)
+        self.adjustComboBox(1, verse, self.AdvancedToVerse)
+        self.adjustComboBox(1, verse, self.AdvancedFromVerse)
 
     def onQuickSearchButton(self):
         log.debug(u'Quick Search Button pressed')
@@ -516,7 +526,6 @@ class BibleMediaItem(MediaManagerItem):
         raw_slides = []
         raw_title = []
         first_item = True
-        # Let's loop through the main lot, and assemble our verses.
         for item in items:
             bitem = self.listView.item(item.row())
             book = self._decodeQtObject(bitem, 'book')
@@ -571,7 +580,7 @@ class BibleMediaItem(MediaManagerItem):
             bible_text = u''
         # Service Item: Capabilities
         if self.parent.settings_tab.layout_style == 2 and not dual_bible:
-            # split the line but do not replace line breaks in renderer
+            # Split the line but do not replace line breaks in renderer.
             service_item.add_capability(ItemCapabilities.NoLineBreaks)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
