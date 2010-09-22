@@ -408,7 +408,6 @@ class BibleMediaItem(MediaManagerItem):
         if chapter_frm == chapter_to:
             bible = unicode(self.AdvancedVersionComboBox.currentText())
             book = unicode(self.AdvancedBookComboBox.currentText())
-            # get the verse count for new chapter
             verses = self.parent.manager.get_verse_count(bible, book, chapter_to)
             self.adjustComboBox(frm, verses, self.AdvancedToVerse)
 
@@ -465,11 +464,9 @@ class BibleMediaItem(MediaManagerItem):
         bible = unicode(self.AdvancedVersionComboBox.currentText())
         book = unicode(self.AdvancedBookComboBox.currentText())
         chapter_frm = int(self.AdvancedFromChapter.currentText())
-        chapter_to = int(self.AdvancedToChapter.currentText())
-        # get the verse count for new chapter
-        verse = self.parent.manager.get_verse_count(bible, book, chapter_frm)
         self.adjustComboBox(chapter_frm, self.chapters_from,
             self.AdvancedToChapter)
+        verse = self.parent.manager.get_verse_count(bible, book, chapter_frm)
         self.adjustComboBox(1, verse, self.AdvancedToVerse)
         self.adjustComboBox(1, verse, self.AdvancedFromVerse)
 
