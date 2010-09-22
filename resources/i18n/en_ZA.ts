@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="en_ZA">
+<!DOCTYPE TS>
+<TS version="2.0" language="en_ZA">
 <context>
     <name>AlertsPlugin</name>
     <message>
@@ -206,7 +207,14 @@ Book Chapter:Verse-Verse,Verse-Verse
 Book Chapter:Verse-Verse,Chapter:Verse-Verse
 Book Chapter:Verse-Chapter:Verse
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Your scripture reference is either not supported by OpenLP or is invalid. Please make sure your reference conforms to one of the following patterns:
+
+Book Chapter
+Book Chapter-Chapter
+Book Chapter:Verse-Verse
+Book Chapter:Verse-Verse,Verse-Verse
+Book Chapter:Verse-Verse,Chapter:Verse-Verse
+Book Chapter:Verse-Chapter:Verse</translation>
     </message>
 </context>
 <context>
@@ -544,12 +552,12 @@ Changes do not affect verses already in the service.</translation>
     <message>
         <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="181"/>
         <source>You need to set a copyright for your Bible. Bibles in the Public Domain need to be marked as such.</source>
-        <translation type="unfinished"></translation>
+        <translation>You need to set a copyright for your Bible. Bibles in the Public Domain need to be marked as such.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="191"/>
         <source>This Bible already exists. Please import a different Bible or first delete the existing one.</source>
-        <translation type="unfinished"></translation>
+        <translation>This Bible already exists. Please import a different Bible or first delete the existing one.</translation>
     </message>
 </context>
 <context>
@@ -1085,8 +1093,8 @@ Built With
     </message>
     <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="173"/>
-        <source>Copyright &#xa9; 2004-2010 Raoul Snyman
-Portions copyright &#xa9; 2004-2010 Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Carsten Tinggaard
+        <source>Copyright © 2004-2010 Raoul Snyman
+Portions copyright © 2004-2010 Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Carsten Tinggaard
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; version 2 of the License.
 
@@ -2662,7 +2670,7 @@ The content encoding is not UTF-8.</translation>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="884"/>
         <source>Your item cannot be displayed as the plugin required to display it is missing or inactive</source>
-        <translation type="unfinished"></translation>
+        <translation>Your item cannot be displayed as the plugin required to display it is missing or inactive</translation>
     </message>
 </context>
 <context>
@@ -2746,7 +2754,7 @@ The content encoding is not UTF-8.</translation>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="210"/>
         <source>Edit and reload song preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Edit and reload song preview</translation>
     </message>
 </context>
 <context>
@@ -2934,12 +2942,12 @@ The content encoding is not UTF-8.</translation>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="242"/>
         <source>Theme %s is used in the %s plugin.</source>
-        <translation type="unfinished"></translation>
+        <translation>Theme %s is used in the %s plugin.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="249"/>
         <source>Theme %s is used by the service manager.</source>
-        <translation type="unfinished"></translation>
+        <translation>Theme %s is used by the service manager.</translation>
     </message>
 </context>
 <context>
@@ -3247,7 +3255,7 @@ The content encoding is not UTF-8.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/authorsform.py" line="96"/>
         <source>You have not set a display name for the author, combine the first and last names?</source>
-        <translation type="unfinished"></translation>
+        <translation>You have not set a display name for the author, combine the first and last names?</translation>
     </message>
 </context>
 <context>
@@ -3354,7 +3362,7 @@ The content encoding is not UTF-8.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="462"/>
-        <source>&#xa9;</source>
+        <source>©</source>
         <translation>©</translation>
     </message>
     <message>
@@ -3766,22 +3774,22 @@ The content encoding is not UTF-8.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/songimportform.py" line="222"/>
         <source>No EasyWorship Song Database Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>No EasyWorship Song Database Selected</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songimportform.py" line="222"/>
         <source>You need to select an EasyWorship song database file to import from.</source>
-        <translation type="unfinished"></translation>
+        <translation>You need to select an EasyWorship song database file to import from.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songimportform.py" line="339"/>
         <source>Select EasyWorship Database File</source>
-        <translation type="unfinished"></translation>
+        <translation>Select EasyWorship Database File</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="525"/>
         <source>EasyWorship</source>
-        <translation type="unfinished"></translation>
+        <translation>EasyWorship</translation>
     </message>
 </context>
 <context>
@@ -3904,7 +3912,7 @@ The content encoding is not UTF-8.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/songimport.py" line="81"/>
-        <source>&#xa9;</source>
+        <source>©</source>
         <translation>©</translation>
     </message>
 </context>
@@ -4112,7 +4120,7 @@ The content encoding is not UTF-8.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/topicsform.py" line="51"/>
         <source>You need to type in a topic name.</source>
-        <translation type="unfinished"></translation>
+        <translation>You need to type in a topic name.</translation>
     </message>
 </context>
 <context>
