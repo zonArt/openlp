@@ -383,20 +383,20 @@ class ServiceManager(QtGui.QWidget):
         serviceIterator = QtGui.QTreeWidgetItemIterator(self.serviceManagerList)
         tempItem = None
         setLastItem = False
-        while serviceIterator:
-            if serviceIterator.isSelected() and tempItem is None:
+        while serviceIterator.value():
+            if serviceIterator.value().isSelected() and tempItem is None:
                 setLastItem = True
-                serviceIterator.setSelected(False)
-            if serviceIterator.isSelected():
-                #We are on the first record
+                serviceIterator.value().setSelected(False)
+            if serviceIterator.value().isSelected():
+                # We are on the first record
                 if tempItem:
                     tempItem.setSelected(True)
-                    serviceIterator.setSelected(False)
+                    serviceIterator.value().setSelected(False)
             else:
-                tempItem = serviceIterator
-            lastItem = serviceIterator
-            ++serviceIterator
-        #Top Item was selected so set the last one
+                tempItem = serviceIterator.value()
+            lastItem = serviceIterator.value()
+            serviceIterator += 1
+        # Top Item was selected so set the last one
         if setLastItem:
             lastItem.setSelected(True)
 
@@ -406,16 +406,18 @@ class ServiceManager(QtGui.QWidget):
         Called by the down arrow
         """
         serviceIterator = QtGui.QTreeWidgetItemIterator(self.serviceManagerList)
-        firstItem = serviceIterator
+        firstItem = None
         setSelected = False
-        while serviceIterator:
+        while serviceIterator.value():
+            if not firstItem:
+                firstItem = serviceIterator.value()
             if setSelected:
                 setSelected = False
-                serviceIterator.setSelected(True)
-            elif serviceIterator.isSelected():
-                serviceIterator.setSelected(False)
+                serviceIterator.value().setSelected(True)
+            elif serviceIterator.value() and serviceIterator.value().isSelected():
+                serviceIterator.value().setSelected(False)
                 setSelected = True
-            ++serviceIterator
+            serviceIterator += 1
         if setSelected:
             firstItem.setSelected(True)
 
