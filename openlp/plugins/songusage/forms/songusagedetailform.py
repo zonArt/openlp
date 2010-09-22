@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,9 +28,10 @@ import logging
 import os
 
 from PyQt4 import QtCore, QtGui
+from sqlalchemy.sql import and_
 
-from openlp.core.lib import SettingsManager
-
+from openlp.core.lib import SettingsManager, translate
+from openlp.plugins.songusage.lib.db import SongUsageItem
 from songusagedetaildialog import Ui_SongUsageDetailDialog
 
 log = logging.getLogger(__name__)
@@ -40,12 +42,12 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
     """
     log.info(u'SongUsage Detail Form Loaded')
 
-    def __init__(self, parent=None):
+    def __init__(self, plugin, parent):
         """
-        Constructor
+        Initialise the form
         """
-        QtGui.QDialog.__init__(self, None)
-        self.parent = parent
+        QtGui.QDialog.__init__(self, parent)
+        self.plugin = plugin
         self.setupUi(self)
 
     def initialise(self):
@@ -54,39 +56,43 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
             year -= 1
         toDate = QtCore.QDate(year, 8, 31)
         fromDate = QtCore.QDate(year - 1, 9, 1)
-        self.FromDate.setSelectedDate(fromDate)
-        self.ToDate.setSelectedDate(toDate)
-        self.FileLineEdit.setText(
-            SettingsManager.get_last_dir(self.parent.settingsSection, 1))
+        self.fromDate.setSelectedDate(fromDate)
+        self.toDate.setSelectedDate(toDate)
+        self.fileLineEdit.setText(
+            SettingsManager.get_last_dir(self.plugin.settingsSection, 1))
 
     def defineOutputLocation(self):
         path = QtGui.QFileDialog.getExistingDirectory(self,
-            self.trUtf8('Output File Location'),
-            SettingsManager.get_last_dir(self.parent.settingsSection, 1))
+            translate('SongUsagePlugin.SongUsageDetailForm',
+                'Output File Location'),
+            SettingsManager.get_last_dir(self.plugin.settingsSection, 1))
         path = unicode(path)
         if path != u'':
-            SettingsManager.set_last_dir(self.parent.settingsSection, path, 1)
-            self.FileLineEdit.setText(path)
+            SettingsManager.set_last_dir(self.plugin.settingsSection, path, 1)
+            self.fileLineEdit.setText(path)
 
     def accept(self):
         log.debug(u'Detailed report generated')
-        filename = u'usage_detail_%s_%s.txt' % \
-            (self.FromDate.selectedDate().toString(u'ddMMyyyy'),
-             self.ToDate.selectedDate().toString(u'ddMMyyyy'))
-        usage = self.parent.songusagemanager.get_all_songusage(\
-                                    self.FromDate.selectedDate(), \
-                                    self.ToDate.selectedDate())
-        outname = os.path.join(unicode(self.FileLineEdit.text()), filename)
+        filename = u'usage_detail_%s_%s.txt' % (
+            self.fromDate.selectedDate().toString(u'ddMMyyyy'),
+            self.toDate.selectedDate().toString(u'ddMMyyyy'))
+        usage = self.plugin.songusagemanager.get_all_objects(
+            SongUsageItem, and_(
+            SongUsageItem.usagedate >= self.fromDate.selectedDate().toPyDate(),
+            SongUsageItem.usagedate < self.toDate.selectedDate().toPyDate()),
+            [SongUsageItem.usagedate, SongUsageItem.usagetime])
+        outname = os.path.join(unicode(self.fileLineEdit.text()), filename)
         file = None
         try:
             file = open(outname, u'w')
             for instance in usage:
-                record = u'\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"\n' % \
-                    (instance.usagedate,instance.usagetime, instance.title,
-                    instance.copyright, instance.ccl_number , instance.authors)
+                record = u'\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"\n' % (
+                    instance.usagedate, instance.usagetime, instance.title,
+                    instance.copyright, instance.ccl_number, instance.authors)
                 file.write(record)
-        except:
+        except IOError:
             log.exception(u'Failed to write out song usage records')
         finally:
             if file:
                 file.close()
+        self.close()

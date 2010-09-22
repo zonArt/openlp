@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,81 +25,83 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import translate
+
+from openlp.core.lib import build_icon, translate, SpellTextEdit
+from openlp.plugins.songs.lib import VerseType
 
 class Ui_EditVerseDialog(object):
-    def setupUi(self, EditVerseDialog):
-        EditVerseDialog.setObjectName(u'EditVerseDialog')
-        EditVerseDialog.resize(474, 442)
-        EditVerseDialog.setModal(True)
-        self.EditVerseLayout = QtGui.QVBoxLayout(EditVerseDialog)
-        self.EditVerseLayout.setSpacing(8)
-        self.EditVerseLayout.setMargin(8)
-        self.EditVerseLayout.setObjectName(u'EditVerseLayout')
-        self.VerseTextEdit = QtGui.QPlainTextEdit(EditVerseDialog)
-        self.VerseTextEdit.setObjectName(u'VerseTextEdit')
-        self.EditVerseLayout.addWidget(self.VerseTextEdit)
-        self.VerseTypeLayout = QtGui.QHBoxLayout()
-        self.VerseTypeLayout.setSpacing(8)
-        self.VerseTypeLayout.setObjectName(u'VerseTypeLayout')
-        self.VerseTypeLabel = QtGui.QLabel(EditVerseDialog)
-        self.VerseTypeLabel.setObjectName(u'VerseTypeLabel')
-        self.VerseTypeLayout.addWidget(self.VerseTypeLabel)
-        self.VerseTypeComboBox = QtGui.QComboBox(EditVerseDialog)
-        self.VerseTypeComboBox.setObjectName(u'VerseTypeComboBox')
-        self.VerseTypeComboBox.addItem(u'')
-        self.VerseTypeComboBox.addItem(u'')
-        self.VerseTypeComboBox.addItem(u'')
-        self.VerseTypeComboBox.addItem(u'')
-        self.VerseTypeComboBox.addItem(u'')
-        self.VerseTypeComboBox.addItem(u'')
-        self.VerseTypeComboBox.addItem(u'')
-        self.VerseTypeLayout.addWidget(self.VerseTypeComboBox)
-        self.VerseNumberBox = QtGui.QSpinBox(EditVerseDialog)
-        self.VerseNumberBox.setMinimum(1)
-        self.VerseNumberBox.setObjectName(u'VerseNumberBox')
-        self.VerseTypeLayout.addWidget(self.VerseNumberBox)
-        self.InsertButton = QtGui.QPushButton(EditVerseDialog)
-        self.AddIcon = QtGui.QIcon()
-        self.AddIcon.addPixmap(QtGui.QPixmap(u':/general/general_add.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.InsertButton.setIcon(self.AddIcon)
-        self.InsertButton.setObjectName(u'InsertButton')
-        self.VerseTypeLayout.addWidget(self.InsertButton)
-        self.VerseTypeSpacer = QtGui.QSpacerItem(40, 20,
+    def setupUi(self, editVerseDialog):
+        editVerseDialog.setObjectName(u'editVerseDialog')
+        editVerseDialog.resize(474, 442)
+        editVerseDialog.setModal(True)
+        self.editVerseLayout = QtGui.QVBoxLayout(editVerseDialog)
+        self.editVerseLayout.setSpacing(8)
+        self.editVerseLayout.setMargin(8)
+        self.editVerseLayout.setObjectName(u'editVerseLayout')
+        self.verseTextEdit = SpellTextEdit(editVerseDialog)
+        self.verseTextEdit.setObjectName(u'verseTextEdit')
+        self.editVerseLayout.addWidget(self.verseTextEdit)
+        self.verseTypeLayout = QtGui.QHBoxLayout()
+        self.verseTypeLayout.setSpacing(8)
+        self.verseTypeLayout.setObjectName(u'verseTypeLayout')
+        self.verseTypeLabel = QtGui.QLabel(editVerseDialog)
+        self.verseTypeLabel.setObjectName(u'verseTypeLabel')
+        self.verseTypeLayout.addWidget(self.verseTypeLabel)
+        self.verseTypeComboBox = QtGui.QComboBox(editVerseDialog)
+        self.verseTypeComboBox.setObjectName(u'verseTypeComboBox')
+        self.verseTypeLabel.setBuddy(self.verseTypeComboBox)
+        self.verseTypeComboBox.addItem(u'')
+        self.verseTypeComboBox.addItem(u'')
+        self.verseTypeComboBox.addItem(u'')
+        self.verseTypeComboBox.addItem(u'')
+        self.verseTypeComboBox.addItem(u'')
+        self.verseTypeComboBox.addItem(u'')
+        self.verseTypeComboBox.addItem(u'')
+        self.verseTypeLayout.addWidget(self.verseTypeComboBox)
+        self.verseNumberBox = QtGui.QSpinBox(editVerseDialog)
+        self.verseNumberBox.setMinimum(1)
+        self.verseNumberBox.setObjectName(u'verseNumberBox')
+        self.verseTypeLayout.addWidget(self.verseNumberBox)
+        self.insertButton = QtGui.QPushButton(editVerseDialog)
+        self.insertButton.setIcon(build_icon(u':/general/general_add.png'))
+        self.insertButton.setObjectName(u'insertButton')
+        self.verseTypeLayout.addWidget(self.insertButton)
+        self.verseTypeSpacer = QtGui.QSpacerItem(40, 20,
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.VerseTypeLayout.addItem(self.VerseTypeSpacer)
-        self.EditVerseLayout.addLayout(self.VerseTypeLayout)
-        self.EditButtonBox = QtGui.QDialogButtonBox(EditVerseDialog)
-        self.EditButtonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.EditButtonBox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Save)
-        self.EditButtonBox.setObjectName(u'EditButtonBox')
-        self.EditVerseLayout.addWidget(self.EditButtonBox)
+        self.verseTypeLayout.addItem(self.verseTypeSpacer)
+        self.editVerseLayout.addLayout(self.verseTypeLayout)
+        self.editButtonBox = QtGui.QDialogButtonBox(editVerseDialog)
+        self.editButtonBox.setOrientation(QtCore.Qt.Horizontal)
+        self.editButtonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
+            QtGui.QDialogButtonBox.Save)
+        self.editButtonBox.setObjectName(u'editButtonBox')
+        self.editVerseLayout.addWidget(self.editButtonBox)
 
-        self.retranslateUi(EditVerseDialog)
-        QtCore.QObject.connect(
-            self.EditButtonBox,
-            QtCore.SIGNAL(u'accepted()'),
-            EditVerseDialog.accept
-        )
-        QtCore.QObject.connect(
-            self.EditButtonBox,
-            QtCore.SIGNAL(u'rejected()'),
-            EditVerseDialog.reject
-        )
-        QtCore.QMetaObject.connectSlotsByName(EditVerseDialog)
+        self.retranslateUi(editVerseDialog)
+        QtCore.QObject.connect(self.editButtonBox, QtCore.SIGNAL(u'accepted()'),
+            editVerseDialog.accept)
+        QtCore.QObject.connect(self.editButtonBox, QtCore.SIGNAL(u'rejected()'),
+            editVerseDialog.reject)
+        QtCore.QMetaObject.connectSlotsByName(editVerseDialog)
 
-    def retranslateUi(self, EditVerseDialog):
-        EditVerseDialog.setWindowTitle(translate('EditVerseForm', 'Edit Verse'))
-        self.VerseTypeLabel.setText(translate('EditVerseForm', 'Verse Type:'))
-        self.VerseTypeComboBox.setItemText(0, translate('EditVerseForm', 'Verse'))
-        self.VerseTypeComboBox.setItemText(1, translate('EditVerseForm', 'Chorus'))
-        self.VerseTypeComboBox.setItemText(2, translate('EditVerseForm', 'Bridge'))
-        self.VerseTypeComboBox.setItemText(3, translate('EditVerseForm', 'Pre-Chorus'))
-        self.VerseTypeComboBox.setItemText(4, translate('EditVerseForm', 'Intro'))
-        self.VerseTypeComboBox.setItemText(5, translate('EditVerseForm', 'Ending'))
-        self.VerseTypeComboBox.setItemText(6, translate('EditVerseForm', 'Other'))
-        self.InsertButton.setText(translate('EditVerseForm', 'Insert'))
-
-
+    def retranslateUi(self, editVerseDialog):
+        editVerseDialog.setWindowTitle(
+            translate('SongsPlugin.EditVerseForm', 'Edit Verse'))
+        self.verseTypeLabel.setText(
+            translate('SongsPlugin.EditVerseForm', '&Verse type:'))
+        self.verseTypeComboBox.setItemText(0,
+            VerseType.to_string(VerseType.Verse))
+        self.verseTypeComboBox.setItemText(1,
+            VerseType.to_string(VerseType.Chorus))
+        self.verseTypeComboBox.setItemText(2,
+            VerseType.to_string(VerseType.Bridge))
+        self.verseTypeComboBox.setItemText(3,
+            VerseType.to_string(VerseType.PreChorus))
+        self.verseTypeComboBox.setItemText(4,
+            VerseType.to_string(VerseType.Intro))
+        self.verseTypeComboBox.setItemText(5,
+            VerseType.to_string(VerseType.Ending))
+        self.verseTypeComboBox.setItemText(6,
+            VerseType.to_string(VerseType.Other))
+        self.insertButton.setText(
+            translate('SongsPlugin.EditVerseForm', '&Insert'))

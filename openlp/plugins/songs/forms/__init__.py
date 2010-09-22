@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,10 +30,4 @@ from songbookform import SongBookForm
 from editverseform import EditVerseForm
 from editsongform import EditSongForm
 from songmaintenanceform import SongMaintenanceForm
-
-#from openlpexportform import OpenLPExportForm
-#from openlpimportform import OpenLPImportForm
-#from opensongexportform import OpenSongExportForm
-#from opensongimportform import OpenSongImportForm
-
 from songimportform import ImportWizardForm

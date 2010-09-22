@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,7 +26,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab
+from openlp.core.lib import SettingsTab, translate
 
 class CustomTab(SettingsTab):
     """
@@ -36,28 +37,31 @@ class CustomTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'CustomTab')
-        self.tabTitleVisible = self.trUtf8('Custom')
-        self.CustomLayout = QtGui.QFormLayout(self)
-        self.CustomLayout.setObjectName(u'CustomLayout')
-        self.CustomModeGroupBox = QtGui.QGroupBox(self)
-        self.CustomModeGroupBox.setObjectName(u'CustomModeGroupBox')
-        self.CustomModeLayout = QtGui.QVBoxLayout(self.CustomModeGroupBox)
-        self.CustomModeLayout.setSpacing(8)
-        self.CustomModeLayout.setMargin(8)
-        self.CustomModeLayout.setObjectName(u'CustomModeLayout')
-        self.DisplayFooterCheckBox = QtGui.QCheckBox(self.CustomModeGroupBox)
-        self.DisplayFooterCheckBox.setObjectName(u'DisplayFooterCheckBox')
-        self.CustomModeLayout.addWidget(self.DisplayFooterCheckBox)
-        self.CustomLayout.setWidget(
-            0, QtGui.QFormLayout.LabelRole, self.CustomModeGroupBox)
-        QtCore.QObject.connect(self.DisplayFooterCheckBox,
+        self.tabTitleVisible = translate('CustomPlugin.CustomTab', 'Custom')
+        self.customLayout = QtGui.QFormLayout(self)
+        self.customLayout.setSpacing(8)
+        self.customLayout.setMargin(8)
+        self.customLayout.setObjectName(u'customLayout')
+        self.customModeGroupBox = QtGui.QGroupBox(self)
+        self.customModeGroupBox.setObjectName(u'customModeGroupBox')
+        self.customModeLayout = QtGui.QVBoxLayout(self.customModeGroupBox)
+        self.customModeLayout.setSpacing(8)
+        self.customModeLayout.setMargin(8)
+        self.customModeLayout.setObjectName(u'customModeLayout')
+        self.displayFooterCheckBox = QtGui.QCheckBox(self.customModeGroupBox)
+        self.displayFooterCheckBox.setObjectName(u'displayFooterCheckBox')
+        self.customModeLayout.addWidget(self.displayFooterCheckBox)
+        self.customLayout.setWidget(
+            0, QtGui.QFormLayout.LabelRole, self.customModeGroupBox)
+        QtCore.QObject.connect(self.displayFooterCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onDisplayFooterCheckBoxChanged)
 
     def retranslateUi(self):
-        self.CustomModeGroupBox.setTitle(self.trUtf8('Custom Display'))
-        self.DisplayFooterCheckBox.setText(
-            self.trUtf8('Display Footer'))
+        self.customModeGroupBox.setTitle(translate('CustomPlugin.CustomTab',
+            'Custom Display'))
+        self.displayFooterCheckBox.setText(
+            translate('CustomPlugin.CustomTab', 'Display footer'))
 
     def onDisplayFooterCheckBoxChanged(self, check_state):
         self.displayFooter = False
@@ -69,7 +73,7 @@ class CustomTab(SettingsTab):
         self.displayFooter = QtCore.QSettings().value(
             self.settingsSection + u'/display footer',
             QtCore.QVariant(True)).toBool()
-        self.DisplayFooterCheckBox.setChecked(self.displayFooter)
+        self.displayFooterCheckBox.setChecked(self.displayFooter)
 
     def save(self):
         QtCore.QSettings().setValue(self.settingsSection + u'/display footer',

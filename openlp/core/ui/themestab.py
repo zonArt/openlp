@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,7 +26,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, Receiver, ThemeLevel
+from openlp.core.lib import SettingsTab, Receiver, ThemeLevel, translate
 
 class ThemesTab(SettingsTab):
     """
@@ -37,7 +38,7 @@ class ThemesTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'ThemesTab')
-        self.tabTitleVisible = self.trUtf8('Themes')
+        self.tabTitleVisible = translate('OpenLP.ThemesTab', 'Themes')
         self.ThemesTabLayout = QtGui.QHBoxLayout(self)
         self.ThemesTabLayout.setSpacing(8)
         self.ThemesTabLayout.setMargin(8)
@@ -106,21 +107,28 @@ class ThemesTab(SettingsTab):
             QtCore.SIGNAL(u'theme_update_list'), self.updateThemeList)
 
     def retranslateUi(self):
-        self.GlobalGroupBox.setTitle(self.trUtf8('Global theme'))
-        self.LevelGroupBox.setTitle(self.trUtf8('Theme level'))
-        self.SongLevelRadioButton.setText(self.trUtf8('Song level'))
-        self.SongLevelLabel.setText(self.trUtf8('Use the theme from each song '
+        self.GlobalGroupBox.setTitle(
+            translate('OpenLP.ThemesTab', 'Global Theme'))
+        self.LevelGroupBox.setTitle(
+            translate('OpenLP.ThemesTab', 'Theme Level'))
+        self.SongLevelRadioButton.setText(
+            translate('OpenLP.ThemesTab', 'S&ong Level'))
+        self.SongLevelLabel.setText(
+            translate('OpenLP.ThemesTab', 'Use the theme from each song '
             'in the database. If a song doesn\'t have a theme associated with '
             'it, then use the service\'s theme. If the service doesn\'t have '
             'a theme, then use the global theme.'))
-        self.ServiceLevelRadioButton.setText(self.trUtf8('Service level'))
-        self.ServiceLevelLabel.setText(self.trUtf8('Use the theme from the '
-            'service, overriding any of the individual songs\' themes. If the '
+        self.ServiceLevelRadioButton.setText(
+            translate('OpenLP.ThemesTab', '&Service Level'))
+        self.ServiceLevelLabel.setText(
+            translate('OpenLP.ThemesTab', 'Use the theme from the service, '
+            'overriding any of the individual songs\' themes. If the '
             'service doesn\'t have a theme, then use the global theme.'))
-        self.GlobalLevelRadioButton.setText(self.trUtf8('Global level'))
-        self.GlobalLevelLabel.setText(self.trUtf8('Use the global theme, '
-            'overriding any themes associated with either the service or the '
-            'songs.'))
+        self.GlobalLevelRadioButton.setText(
+            translate('OpenLP.ThemesTab', '&Global Level'))
+        self.GlobalLevelLabel.setText(
+            translate('OpenLP.ThemesTab', 'Use the global theme, overriding '
+            'any themes associated with either the service or the songs.'))
 
     def load(self):
         settings = QtCore.QSettings()
@@ -145,9 +153,9 @@ class ThemesTab(SettingsTab):
         settings.setValue(u'global theme',
             QtCore.QVariant(self.global_theme))
         settings.endGroup()
-        Receiver.send_message(u'theme_update_global', self.global_theme)
         self.parent.RenderManager.set_global_theme(
             self.global_theme, self.theme_level)
+        Receiver.send_message(u'theme_update_global', self.global_theme)
 
     def postSetUp(self):
         Receiver.send_message(u'theme_update_global', self.global_theme)

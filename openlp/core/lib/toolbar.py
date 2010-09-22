@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,7 +23,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+Provide common toolbar handling for OpenLP
+"""
 import logging
 
 from PyQt4 import QtCore, QtGui
@@ -40,7 +43,7 @@ class OpenLPToolbar(QtGui.QToolBar):
         """
         Initialise the toolbar.
         """
-        QtGui.QToolBar.__init__(self, None)
+        QtGui.QToolBar.__init__(self, parent)
         # useful to be able to reuse button icons...
         self.icons = {}
         self.setIconSize(QtCore.QSize(20, 20))
@@ -69,30 +72,27 @@ class OpenLPToolbar(QtGui.QToolBar):
         ``objectname``
             The name of the object, as used in `<button>.setObjectName()`.
         """
-        ToolbarButton = None
+        toolbarButton = None
         if icon:
-            ButtonIcon = build_icon(icon)
-        else:
-            ButtonIcon = None
-        if ButtonIcon:
+            buttonIcon = build_icon(icon)
             if slot and not checkable:
-                ToolbarButton = self.addAction(ButtonIcon, title, slot)
+                toolbarButton = self.addAction(buttonIcon, title, slot)
             else:
-                ToolbarButton = self.addAction(ButtonIcon, title)
-            self.icons[title] = ButtonIcon
+                toolbarButton = self.addAction(buttonIcon, title)
+            self.icons[title] = buttonIcon
         else:
-            ToolbarButton = QtGui.QAction(title, ToolbarButton)
-            self.addAction(ToolbarButton)
-            QtCore.QObject.connect(ToolbarButton,
+            toolbarButton = QtGui.QAction(title, toolbarButton)
+            self.addAction(toolbarButton)
+            QtCore.QObject.connect(toolbarButton,
                 QtCore.SIGNAL(u'triggered()'), slot)
         if tooltip:
-            ToolbarButton.setToolTip(tooltip)
+            toolbarButton.setToolTip(tooltip)
         if checkable:
-            ToolbarButton.setCheckable(True)
-            QtCore.QObject.connect(ToolbarButton,
+            toolbarButton.setCheckable(True)
+            QtCore.QObject.connect(toolbarButton,
                 QtCore.SIGNAL(u'toggled(bool)'), slot)
-        self.actions[title] = ToolbarButton
-        return ToolbarButton
+        self.actions[title] = toolbarButton
+        return toolbarButton
 
     def addToolbarSeparator(self, handle):
         """
@@ -120,7 +120,7 @@ class OpenLPToolbar(QtGui.QToolBar):
         try:
             if self.icons[title]:
                 return self.icons[title]
-        except:
+        except KeyError:
             log.exception(u'getIconFromTitle - no icon for %s' % title)
             return QtGui.QIcon()
 

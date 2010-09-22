@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,7 +26,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab
+from openlp.core.lib import SettingsTab, translate
 
 class SongsTab(SettingsTab):
     """
@@ -36,8 +37,10 @@ class SongsTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'SongsTab')
-        self.tabTitleVisible = self.trUtf8('Songs')
+        self.tabTitleVisible = translate('SongsPlugin.SongsTab', 'Songs')
         self.SongsLayout = QtGui.QFormLayout(self)
+        self.SongsLayout.setSpacing(8)
+        self.SongsLayout.setMargin(8)
         self.SongsLayout.setObjectName(u'SongsLayout')
         self.SongsModeGroupBox = QtGui.QGroupBox(self)
         self.SongsModeGroupBox.setObjectName(u'SongsModeGroupBox')
@@ -61,11 +64,12 @@ class SongsTab(SettingsTab):
             self.SongBarActiveCheckBoxChanged)
 
     def retranslateUi(self):
-        self.SongsModeGroupBox.setTitle(self.trUtf8('Songs Mode'))
+        self.SongsModeGroupBox.setTitle(
+            translate('SongsPlugin.SongsTab', 'Songs Mode'))
         self.SearchAsTypeCheckBox.setText(
-            self.trUtf8('Enable search as you type'))
-        self.SongBarActiveCheckBox.setText(
-            self.trUtf8('Display Verses on Live Tool bar'))
+            translate('SongsPlugin.SongsTab', 'Enable search as you type'))
+        self.SongBarActiveCheckBox.setText(translate('SongsPlugin.SongsTab',
+            'Display verses on live tool bar'))
 
     def onSearchAsTypeCheckBoxChanged(self, check_state):
         self.song_search = False

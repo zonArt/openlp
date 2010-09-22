@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -50,18 +51,11 @@ class CSVBible(BibleDB):
         if u'booksfile' not in kwargs:
             raise KeyError(u'You have to supply a file to import books from.')
         self.booksfile = kwargs[u'booksfile']
-        if u'versesfile' not in kwargs:
+        if u'versefile' not in kwargs:
             raise KeyError(u'You have to supply a file to import verses from.')
-        self.versesfile = kwargs[u'versesfile']
+        self.versesfile = kwargs[u'versefile']
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'bibles_stop_import'), self.stop_import)
-
-    def stop_import(self):
-        """
-        Stops the import of the Bible.
-        """
-        log.debug('Stopping import!')
-        self.stop_import_flag = True
 
     def do_import(self):
         #Populate the Tables
@@ -80,7 +74,7 @@ class CSVBible(BibleDB):
                 self.create_book(unicode(line[1], details['encoding']),
                     line[2], int(line[0]))
                 Receiver.send_message(u'openlp_process_events')
-        except:
+        except IOError:
             log.exception(u'Loading books from file failed')
             success = False
         finally:
@@ -104,12 +98,12 @@ class CSVBible(BibleDB):
                     book_ptr = book.name
                     self.wizard.incrementProgressBar(
                         u'Importing %s %s' % (book.name, line[1]))
-                    self.commit()
+                    self.session.commit()
                 self.create_verse(book.id, line[1], line[2],
                                   unicode(line[3], details['encoding']))
                 Receiver.send_message(u'openlp_process_events')
-            self.commit()
-        except:
+            self.session.commit()
+        except IOError:
             log.exception(u'Loading verses from file failed')
             success = False
         finally:
@@ -120,5 +114,3 @@ class CSVBible(BibleDB):
             return False
         else:
             return success
-
-

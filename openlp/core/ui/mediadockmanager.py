@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,11 +29,25 @@ import logging
 log = logging.getLogger(__name__)
 
 class MediaDockManager(object):
-
+    """
+    Provide a repository for MediaManagerItems
+    """
     def __init__(self, media_dock):
+        """
+        Initialise the media dock
+        """
         self.media_dock = media_dock
 
     def add_dock(self, media_item, icon, weight):
+        """
+        Add a MediaManagerItem to the dock
+
+        ``media_item``
+            The item to add to the dock
+
+        ``icon``
+            An icon for this dock item
+        """
         log.info(u'Adding %s dock' % media_item.title)
         self.media_dock.addItem(media_item, icon, media_item.title)
 
@@ -53,9 +68,16 @@ class MediaDockManager(object):
             self.media_dock.addItem(media_item, icon, media_item.title)
 
     def remove_dock(self, name):
+        """
+        Removes a MediaManagerItem from the dock
+
+        ``name``
+            The item to remove
+        """
         log.debug(u'remove %s dock' % name)
         for dock_index in range(0, self.media_dock.count()):
             if self.media_dock.widget(dock_index):
-                if self.media_dock.widget(dock_index).settingsSection == name:
+                if self.media_dock.widget(dock_index).settingsSection == \
+                    name.lower():
                     self.media_dock.widget(dock_index).hide()
                     self.media_dock.removeItem(dock_index)

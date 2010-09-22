@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -30,6 +31,18 @@ Windows Build Script
 This script is used to build the Windows binary and the accompanying installer.
 For this script to work out of the box, it depends on a number of things:
 
+Python 2.6
+    This build script only works with Python 2.6.
+
+PyQt4
+    You should already have this installed, OpenLP doesn't work without it. The
+    version the script expects is the packaged one available from River Bank
+    Computing.
+
+PyEnchant
+    This script expects the precompiled, installable version of PyEnchant to be
+    installed. You can find this on the PyEnchant site.
+
 Inno Setup 5
     Inno Setup should be installed into "C:\%PROGRAMFILES%\Inno Setup 5"
 
@@ -40,9 +53,10 @@ UPX
     add that directory to your PATH environment variable.
 
 PyInstaller
-    PyInstaller should be a checkout of trunk, and in a directory called,
-    "pyinstaller" on the same level as OpenLP's Bazaar shared repository
-    directory.
+    PyInstaller should be a checkout of revision 844 of trunk, and in a
+    directory called, "pyinstaller" on the same level as OpenLP's Bazaar shared
+    repository directory. The revision is very important as there is currently
+    a major regression in HEAD.
 
     To install PyInstaller, first checkout trunk from Subversion. The easiest
     way is to install TortoiseSVN and then checkout the following URL to a
@@ -79,17 +93,32 @@ from subprocess import Popen, PIPE
 script_path = os.path.split(os.path.abspath(__file__))[0]
 branch_path = os.path.abspath(os.path.join(script_path, u'..'))
 source_path = os.path.join(branch_path, u'openlp')
+i18n_path = os.path.join(branch_path, u'resources', u'i18n')
+build_path = os.path.join(branch_path, u'build', u'pyi.win32', u'OpenLP')
 dist_path = os.path.join(branch_path, u'dist', u'OpenLP')
 pyinstaller_path = os.path.abspath(os.path.join(branch_path, u'..', u'..', u'pyinstaller'))
 innosetup_path = os.path.join(os.getenv(u'PROGRAMFILES'), 'Inno Setup 5')
 iss_path = os.path.join(branch_path, u'resources', u'innosetup')
+lrelease_path = u'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\lrelease.exe'
+enchant_path = u'C:\\Python26\\Lib\\site-packages\\enchant'
 
+def clean_build_directories():
+    #if not os.path.exists(build_path)
+    for root, dirs, files in os.walk(build_path, topdown=False):
+        print root
+        for file in files:
+            os.remove(os.path.join(root, file))
+    #os.removedirs(build_path)
+    for root, dirs, files in os.walk(dist_path, topdown=False):
+        for file in files:
+            os.remove(os.path.join(root, file))
+    #os.removedirs(dist_path)
 
 def run_pyinstaller():
     print u'Running PyInstaller...'
     os.chdir(branch_path)
     pyinstaller = Popen((u'python', os.path.join(pyinstaller_path, u'Build.py'),
-        u'OpenLP.spec'))
+        u'-y', u'OpenLP.spec'))
     code = pyinstaller.wait()
     if code != 0:
         raise Exception(u'Error running PyInstaller Build.py')
@@ -119,6 +148,19 @@ def write_version_file():
     f.write(versionstring)
     f.close()
 
+def copy_enchant():
+    print u'Copying enchant/pyenchant...'
+    source = enchant_path
+    dest = os.path.join(dist_path, u'enchant')
+    for root, dirs, files in os.walk(source):
+        for filename in files:
+            if not filename.endswith(u'.pyc') and not filename.endswith(u'.pyo'):
+                dest_path = os.path.join(dest, root[len(source)+1:])
+                if not os.path.exists(dest_path):
+                    os.makedirs(dest_path)
+                copy(os.path.join(root, filename),
+                    os.path.join(dest_path, filename))
+
 def copy_plugins():
     print u'Copying plugins...'
     source = os.path.join(source_path, u'plugins')
@@ -137,6 +179,30 @@ def copy_windows_files():
     copy(os.path.join(iss_path, u'OpenLP.ico'), os.path.join(dist_path, u'OpenLP.ico'))
     copy(os.path.join(iss_path, u'LICENSE.txt'), os.path.join(dist_path, u'LICENSE.txt'))
 
+def update_translations():
+    print u'Updating translations...'
+    os.chdir(script_path)
+    translation_utils = Popen(u'python translation_utils.py -dpu')
+    code = translation_utils.wait()
+    if code != 0:
+        print u'Error running translation_utils.py'
+
+def compile_translations():
+    print u'Compiling translations...'
+    files = os.listdir(i18n_path)
+    if not os.path.exists(os.path.join(dist_path, u'i18n')):
+        os.makedirs(os.path.join(dist_path, u'i18n'))
+    for file in files:
+        if file.endswith(u'.ts'):
+            source_path = os.path.join(i18n_path, file)
+            dest_path = os.path.join(dist_path, u'i18n',
+                file.replace(u'.ts', u'.qm'))
+            lconvert = Popen(u'"%s" "%s" -qm "%s"' % (lrelease_path, \
+                source_path, dest_path))
+            code = lconvert.wait()
+            if code != 0:
+                print 'Error running lconvert on %s' % source_path
+
 def run_innosetup():
     print u'Running Inno Setup...'
     os.chdir(iss_path)
@@ -149,17 +215,23 @@ def run_innosetup():
         raise Exception(u'Error running Inno Setup')
 
 def main():
-    print "Script path:", script_path
-    print "Branch path:", branch_path
-    print "Source path:", source_path
-    print "\"dist\" path:", dist_path
-    print "PyInstaller path:", pyinstaller_path
-    print "Inno Setup path:", innosetup_path
-    print "ISS file path:", iss_path
+    import sys
+    if len(sys.argv) > 1 and (sys.argv[1] == u'-v' or sys.argv[1] == u'--verbose'):
+       print "Script path:", script_path
+       print "Branch path:", branch_path
+       print "Source path:", source_path
+       print "\"dist\" path:", dist_path
+       print "PyInstaller path:", pyinstaller_path
+       print "Inno Setup path:", innosetup_path
+       print "ISS file path:", iss_path
+    #clean_build_directories()
     run_pyinstaller()
     write_version_file()
+    copy_enchant()
     copy_plugins()
     copy_windows_files()
+    update_translations()
+    compile_translations()
     run_innosetup()
     print "Done."
 

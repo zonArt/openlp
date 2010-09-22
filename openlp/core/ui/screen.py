@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,7 +23,10 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The :mod:`screen` module provides management functionality for a machines'
+displays
+"""
 import logging
 import copy
 
@@ -40,18 +44,24 @@ class ScreenList(object):
         self.override = None
         self.screen_list = []
         self.display_count = 0
-        #actual display number
+        # actual display number
         self.current_display = 0
-        #save config display number
+        # save config display number
         self.monitor_number = 0
 
     def add_screen(self, screen):
+        """
+        Add a screen to the list of known screens
+        """
         if screen[u'primary']:
             self.current = screen
         self.screen_list.append(screen)
         self.display_count += 1
 
     def screen_exists(self, number):
+        """
+        Confirms a screen is known
+        """
         for screen in self.screen_list:
             if screen[u'number'] == number:
                 return True

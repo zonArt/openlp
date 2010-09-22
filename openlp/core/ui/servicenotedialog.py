@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,10 +28,10 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import translate
 
 class Ui_ServiceNoteEdit(object):
-    def setupUi(self, ServiceNoteEdit):
-        ServiceNoteEdit.setObjectName(u'ServiceNoteEdit')
-        ServiceNoteEdit.resize(400, 243)
-        self.widget = QtGui.QWidget(ServiceNoteEdit)
+    def setupUi(self, serviceNoteEdit):
+        serviceNoteEdit.setObjectName(u'serviceNoteEdit')
+        serviceNoteEdit.resize(400, 243)
+        self.widget = QtGui.QWidget(serviceNoteEdit)
         self.widget.setGeometry(QtCore.QRect(20, 10, 361, 223))
         self.widget.setObjectName(u'widget')
         self.verticalLayout = QtGui.QVBoxLayout(self.widget)
@@ -39,12 +40,14 @@ class Ui_ServiceNoteEdit(object):
         self.textEdit.setObjectName(u'textEdit')
         self.verticalLayout.addWidget(self.textEdit)
         self.buttonBox = QtGui.QDialogButtonBox(self.widget)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Save)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
+            QtGui.QDialogButtonBox.Save)
         self.buttonBox.setObjectName(u'buttonBox')
         self.verticalLayout.addWidget(self.buttonBox)
 
-        self.retranslateUi(ServiceNoteEdit)
-        QtCore.QMetaObject.connectSlotsByName(ServiceNoteEdit)
+        self.retranslateUi(serviceNoteEdit)
+        QtCore.QMetaObject.connectSlotsByName(serviceNoteEdit)
 
-    def retranslateUi(self, ServiceNoteEdit):
-        ServiceNoteEdit.setWindowTitle(translate('ServiceNoteForm', 'Service Item Notes'))
+    def retranslateUi(self, serviceNoteEdit):
+        serviceNoteEdit.setWindowTitle(
+            translate('OpenLP.ServiceNoteForm', 'Service Item Notes'))
