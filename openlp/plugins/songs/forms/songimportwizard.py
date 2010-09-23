@@ -98,7 +98,7 @@ class Ui_SongImportWizard(object):
         # OpenLP 2.0
         self.addSingleFileSelectItem(u'openLP2')
         # openlp.org 1.x
-        self.addSingleFileSelectItem(u'openLP1', u'', True)
+        self.addSingleFileSelectItem(u'openLP1', None, True)
         # OpenLyrics
         self.addMultiFileSelectItem(u'openLyrics', u'OpenLyrics', True)
         # set OpenLyrics to disabled by default
@@ -111,9 +111,9 @@ class Ui_SongImportWizard(object):
         # CCLI File import
         self.addMultiFileSelectItem(u'ccli')
         # Songs of Fellowship
-        self.addMultiFileSelectItem(u'songsOfFellowship', u'', True)
+        self.addMultiFileSelectItem(u'songsOfFellowship', None, True)
         # Generic Document/Presentation import
-        self.addMultiFileSelectItem(u'generic', u'', True)
+        self.addMultiFileSelectItem(u'generic', None, True)
         # EasyWorship
         self.addSingleFileSelectItem(u'ew')
 #        Commented out for future use.
@@ -250,19 +250,20 @@ class Ui_SongImportWizard(object):
         self.importProgressBar.setFormat(
             translate('SongsPlugin.ImportWizardForm', '%p%'))
 
-    def addSingleFileSelectItem(self, prefix, obj_prefix=u'', disablable=False):
-        if obj_prefix == u'':
+    def addSingleFileSelectItem(self, prefix, obj_prefix=None,
+        can_disable=False):
+        if not obj_prefix:
             obj_prefix = prefix
         page = QtGui.QWidget()
         page.setObjectName(obj_prefix + u'Page')
-        if disablable:
+        if can_disable:
             importWidget = self.disablableWidget(page, prefix, obj_prefix)
         else:
             importWidget = page
         importLayout = QtGui.QFormLayout(importWidget)
         importLayout.setMargin(0)
         importLayout.setSpacing(8)
-        if disablable:
+        if can_disable:
             importLayout.setObjectName(obj_prefix + u'ImportLayout')
         else:
             importLayout.setObjectName(obj_prefix + u'Layout')
@@ -286,25 +287,26 @@ class Ui_SongImportWizard(object):
         setattr(self, prefix + u'FileLayout', fileLayout)
         setattr(self, prefix + u'FilenameEdit', filenameEdit)
         setattr(self, prefix + u'BrowseButton', browseButton)
-        if disablable:
+        if can_disable:
             setattr(self, prefix + u'ImportLayout', importLayout)
         else:
             setattr(self, prefix + u'Layout', importLayout)
         self.formatComboBox.addItem(u'')
 
-    def addMultiFileSelectItem(self, prefix, obj_prefix=u'', disablable=False):
-        if obj_prefix == u'':
+    def addMultiFileSelectItem(self, prefix, obj_prefix=None,
+        can_disable=False):
+        if not obj_prefix:
             obj_prefix = prefix
         page = QtGui.QWidget()
         page.setObjectName(obj_prefix + u'Page')
-        if disablable:
+        if can_disable:
             importWidget = self.disablableWidget(page, prefix, obj_prefix)
         else:
             importWidget = page
         importLayout = QtGui.QVBoxLayout(importWidget)
         importLayout.setMargin(0)
         importLayout.setSpacing(8)
-        if disablable:
+        if can_disable:
             importLayout.setObjectName(obj_prefix + u'ImportLayout')
         else:
             importLayout.setObjectName(obj_prefix + u'Layout')
@@ -335,7 +337,7 @@ class Ui_SongImportWizard(object):
         setattr(self, prefix + u'ButtonSpacer', buttonSpacer)
         setattr(self, prefix + u'AddButton', addButton)
         setattr(self, prefix + u'RemoveButton', removeButton)
-        if disablable:
+        if can_disable:
             setattr(self, prefix + u'ImportLayout', importLayout)
         else:
             setattr(self, prefix + u'Layout', importLayout)
