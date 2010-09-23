@@ -97,6 +97,7 @@ class Ui_SongImportWizard(object):
         self.formatComboBox.addItem(u'')
         self.formatComboBox.addItem(u'')
         self.formatComboBox.addItem(u'')
+        self.formatComboBox.addItem(u'')
 #        self.formatComboBox.addItem(u'')
         self.formatLayout.addWidget(self.formatComboBox)
         self.formatSpacer = QtGui.QSpacerItem(40, 20,
@@ -438,6 +439,42 @@ class Ui_SongImportWizard(object):
         self.ewLayout.setLayout(0, QtGui.QFormLayout.FieldRole,
             self.ewFileLayout)
         self.formatStackedWidget.addWidget(self.ewPage)
+        # SongBeamer
+        # Words of Worship
+        self.songBeamerPage = QtGui.QWidget()
+        self.songBeamerPage.setObjectName(u'songBeamerPage')
+        self.songBeamerLayout = QtGui.QVBoxLayout(self.songBeamerPage)
+        self.songBeamerLayout.setSpacing(8)
+        self.songBeamerLayout.setMargin(0)
+        self.songBeamerLayout.setObjectName(u'songBeamerLayout')
+        self.songBeamerFileListWidget = QtGui.QListWidget(
+            self.songBeamerPage)
+        self.songBeamerFileListWidget.setSelectionMode(
+            QtGui.QAbstractItemView.ExtendedSelection)
+        self.songBeamerFileListWidget.setObjectName(
+            u'songBeamerFileListWidget')
+        self.songBeamerLayout.addWidget(self.songBeamerFileListWidget)
+        self.songBeamerButtonLayout = QtGui.QHBoxLayout()
+        self.songBeamerButtonLayout.setSpacing(8)
+        self.songBeamerButtonLayout.setObjectName(
+            u'songBeamerButtonLayout')
+        self.songBeamerAddButton = QtGui.QPushButton(
+            self.songBeamerPage)
+        self.songBeamerAddButton.setIcon(openIcon)
+        self.songBeamerAddButton.setObjectName(u'songBeamerAddButton')
+        self.songBeamerButtonLayout.addWidget(self.songBeamerAddButton)
+        self.songBeamerButtonSpacer = QtGui.QSpacerItem(40, 20,
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.songBeamerButtonLayout.addItem(self.songBeamerButtonSpacer)
+        self.songBeamerRemoveButton = QtGui.QPushButton(
+            self.songBeamerPage)
+        self.songBeamerRemoveButton.setIcon(deleteIcon)
+        self.songBeamerRemoveButton.setObjectName(
+            u'songBeamerRemoveButton')
+        self.songBeamerButtonLayout.addWidget(
+            self.songBeamerRemoveButton)
+        self.songBeamerLayout.addLayout(self.songBeamerButtonLayout)
+        self.formatStackedWidget.addWidget(self.songBeamerPage)
 #        Commented out for future use.
 #        self.csvPage = QtGui.QWidget()
 #        self.csvPage.setObjectName(u'CSVPage')
@@ -524,6 +561,8 @@ class Ui_SongImportWizard(object):
             'Generic Document/Presentation'))
         self.formatComboBox.setItemText(8,
             translate('SongsPlugin.ImportWizardForm', 'EasyWorship'))
+        self.formatComboBox.setItemText(9,
+            translate('SongsPlugin.ImportWizardForm', 'SongBeamer'))
 #        self.formatComboBox.setItemText(9,
 #            translate('SongsPlugin.ImportWizardForm', 'CSV'))
         self.openLP2FilenameLabel.setText(
@@ -576,10 +615,10 @@ class Ui_SongImportWizard(object):
             translate('SongsPlugin.ImportWizardForm', 'The generic document/'
             'presentation importer has been disabled because OpenLP cannot '
             'find OpenOffice.org on your computer.'))
-        self.ewFilenameLabel.setText(
-            translate('SongsPlugin.ImportWizardForm', 'Filename:'))
-        self.ewBrowseButton.setText(
-            translate('SongsPlugin.ImportWizardForm', 'Browse...'))
+        self.songBeamerAddButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
+        self.songBeamerRemoveButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
 #        self.csvFilenameLabel.setText(
 #            translate('SongsPlugin.ImportWizardForm', 'Filename:'))
 #        self.csvBrowseButton.setText(
