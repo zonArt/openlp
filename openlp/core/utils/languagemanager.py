@@ -83,7 +83,7 @@ class LanguageManager(object):
         translator = QtCore.QTranslator()
         translator.load(qm_file)
         return translator.translate('OpenLP.MainWindow', 'English',
-            'Please add here the name of your Language')
+            'Please add the name of your language here')
 
     @staticmethod
     def get_language():
