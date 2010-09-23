@@ -122,12 +122,12 @@ class MainDisplay(DisplayWidget):
             self.scene = QtGui.QGraphicsScene(self)
             self.setScene(self.scene)
             self.scene.addItem(self.webView)
-            self.webView.setGeometry(QtCore.QRectF(0, 0, 
+            self.webView.setGeometry(QtCore.QRectF(0, 0,
                 self.screen[u'size'].width(), self.screen[u'size'].height()))
         except AttributeError:
             #  QGraphicsWebView a recent addition, so fall back to QWebView
             self.webView = QtWebKit.QWebView(self)
-            self.webView.setGeometry(0, 0, 
+            self.webView.setGeometry(0, 0,
                 self.screen[u'size'].width(), self.screen[u'size'].height())
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
@@ -164,7 +164,7 @@ class MainDisplay(DisplayWidget):
                     - splash_image.height()) / 2,
                 splash_image)
             serviceItem = ServiceItem()
-            serviceItem.bg_frame = initialFrame
+            serviceItem.bg_image_bytes = image_to_byte(initialFrame)
             self.webView.setHtml(build_html(serviceItem, self.screen,
                 self.parent.alertTab, self.isLive))
             self.initialFrame = True
@@ -293,7 +293,7 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'video')
         self.loaded = True
-        js = u'show_video("play", "%s", %s, true);' % \
+        js = u'show_video("init", "%s", %s, true); show_video("play");' % \
             (videoPath.replace(u'\\', u'\\\\'), str(float(volume)/float(10)))
         self.frame.evaluateJavaScript(js)
         return self.preview()
@@ -326,8 +326,12 @@ class MainDisplay(DisplayWidget):
         # Important otherwise first preview will miss the background !
         while not self.loaded:
             Receiver.send_message(u'openlp_process_events')
+        # if was hidden keep it hidden
         if self.isLive:
             self.setVisible(True)
+        # if was hidden keep it hidden
+        if self.hide_mode and self.isLive:
+            self.hideDisplay(self.hide_mode)
         preview = QtGui.QImage(self.screen[u'size'].width(),
             self.screen[u'size'].height(),
             QtGui.QImage.Format_ARGB32_Premultiplied)
@@ -335,7 +339,6 @@ class MainDisplay(DisplayWidget):
         painter.setRenderHint(QtGui.QPainter.Antialiasing)
         self.frame.render(painter)
         painter.end()
-        # Make display show up if in single screen mode
         return preview
 
     def buildHtml(self, serviceItem):
