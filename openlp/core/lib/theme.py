@@ -87,16 +87,12 @@ class ThemeLevel(object):
     Service = 2
     Song = 3
 
-boolean_list = [u'font_main_italics', u'font_main_override', \
-u'font_footer_italics', u'font_footer_override',  u'display_outline', \
-u'display_shadow', u'display_slide_transition']
+boolean_list = [u'italics', u'override', u'outline', u'shadow', \
+u'slide_transition']
 
-integer_list =[u'font_main_proportion', u'font_main_line_adjustment', \
-u'font_main_x', u'font_main_height', u'font_main_y', u'font_main_width', \
-u'font_footer_proportion', u'font_footer_line_adjustment', u'font_footer_x', \
-u'font_footer_height', u'font_footer_y', u'font_footer_width', \
-u'display_shadow_size', u'display_outline_size', u'display_horizontal_align',\
-u'display_vertical_align', u'display_wrap_style' ]
+integer_list =[u'proportion', u'line_adjustment', u'x', u'height', u'y', \
+u'width', u'shadow_size', u'outline_size', u'horizontal_align',\
+u'vertical_align', u'wrap_style' ]
 
 class ThemeXML(object):
     """
@@ -385,36 +381,34 @@ class ThemeXML(object):
                 # background transparent tags have no children so special case
                 if element.tag == u'background':
                     for e in element.attrib.iteritems():
-                        self._create_attr(element.tag + u'_' + e[0], e[1])
+                        self._create_attr(element.tag , e[0], e[1])
             if element.attrib:
                 for e in element.attrib.iteritems():
                     if master == u'font_' and e[0] == u'type':
                         master += e[1] + u'_'
                     elif master == u'display_' and (element.tag == u'shadow' \
                         or element.tag == u'outline' ):
-                        et = str_to_bool(element.text)
-                        self._create_attr(master + element.tag, et)
-                        self._create_attr(master + element.tag + u'_'+ e[0], e[1])
+                        self._create_attr(master, element.tag, element.text)
+                        self._create_attr(master, element.tag + u'_'+ e[0], e[1])
                     else:
                         field = master + e[0]
-                        self._create_attr(field, e[1])
+                        self._create_attr(master, e[0], e[1])
             else:
                 if element.tag:
-                    field = master + element.tag
                     element.text = element.text.strip().lstrip()
-                    self._create_attr(field, element.text)
+                    self._create_attr(master , element.tag, element.text)
 
-    def _create_attr(self, element, value):
+    def _create_attr(self, master , element, value):
         """
         Create the attributes with the correct data types and name format
         """
         field = self._de_hump(element)
         if field in boolean_list:
-            setattr(self, field, str_to_bool(value))
+            setattr(self, master + field, str_to_bool(value))
         elif field in integer_list:
-            setattr(self, field, int(value))
+            setattr(self, master + field, int(value))
         else:
-            setattr(self, field, unicode(value))
+            setattr(self, master + field, unicode(value))
 
     def __str__(self):
         """
