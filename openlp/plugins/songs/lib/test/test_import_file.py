@@ -23,37 +23,25 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+import sys
+
+from openlp.plugins.songs.lib.opensongimport import OpenSongImport
+from openlp.core.lib.db import Manager
+from openlp.plugins.songs.lib.db import init_schema
 
 import logging
+LOG_FILENAME = 'test_import_file.log'
+logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO)
 
-from openlp.core.lib import Plugin, build_icon, translate
-from openlp.plugins.images.lib import ImageMediaItem
+from test_opensongimport import wizard_stub, progbar_stub
 
-log = logging.getLogger(__name__)
+def test(filenames):
+    manager = Manager(u'songs', init_schema)
+    o = OpenSongImport(manager, filenames=filenames)
+    o.import_wizard = wizard_stub()
+    o.commit = False
+    o.do_import()
+    o.print_song()
 
-class ImagePlugin(Plugin):
-    log.info(u'Image Plugin loaded')
-
-    def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Images', u'1.9.3', plugin_helpers)
-        self.weight = -7
-        self.icon_path = u':/plugins/plugin_images.png'
-        self.icon = build_icon(self.icon_path)
-
-    def getMediaManagerItem(self):
-        # Create the MediaManagerItem object
-        return ImageMediaItem(self, self.icon, self.name)
-
-    def about(self):
-        about_text = translate('ImagePlugin', '<strong>Image Plugin</strong>'
-            '<br />The image plugin provides displaying of images.<br />One '
-            'of the distinguishing features of this plugin is the ability to '
-            'group a number of images together in the service manager, making '
-            'the displaying of multiple images easier. This plugin can also '
-            'make use of OpenLP\'s "timed looping" feature to create a slide '
-            'show that runs automatically. In addition to this, images from '
-            'the plugin can be used to override the current theme\'s '
-            'background, which renders text-based items like songs with the '
-            'selected image as a background instead of the background '
-            'provided by the theme.')
-        return about_text
+if __name__ == "__main__":
+    test(sys.argv[1:])

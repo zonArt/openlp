@@ -223,7 +223,6 @@ class RenderManager(object):
             The words to go on the slides.
         """
         log.debug(u'format slide')
-        self.build_text_rectangle(self.themedata)
         return self.renderer.format_slide(words, line_break)
 
     def calculate_default(self, screen):

@@ -242,14 +242,14 @@ class ThemeManager(QtGui.QWidget):
                         QtGui.QMessageBox.critical(self,
                             translate('OpenLP.ThemeManager', 'Error'),
                             unicode(translate('OpenLP.ThemeManager',
-                                'Theme %s is use in %s plugin.')) % \
+                                'Theme %s is used in the %s plugin.')) % \
                                 (theme, plugin.name))
                         return
                 if unicode(self.serviceComboBox.currentText()) == theme:
                     QtGui.QMessageBox.critical(self,
                         translate('OpenLP.ThemeManager', 'Error'),
                         unicode(translate('OpenLP.ThemeManager',
-                        'Theme %s is use by the service manager.')) % theme)
+                        'Theme %s is used by the service manager.')) % theme)
                     return
                 row = self.themeListWidget.row(item)
                 self.themeListWidget.takeItem(row)
@@ -573,7 +573,7 @@ class ThemeManager(QtGui.QWidget):
                     translate('OpenLP.ThemeManager', 'Theme Exists'),
                     translate('OpenLP.ThemeManager',
                         'A theme with this name already '
-                        'exists.  Would you like to overwrite it?'),
+                        'exists. Would you like to overwrite it?'),
                     (QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
                     QtGui.QMessageBox.No)
             if self.saveThemeName != u'':

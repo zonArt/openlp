@@ -212,7 +212,7 @@ class PresentationMediaItem(MediaManagerItem):
                         self, translate('PresentationPlugin.MediaItem',
                         'Unsupported File'),
                         translate('PresentationPlugin.MediaItem',
-                        'This type of presentation is not supported'))
+                        'This type of presentation is not supported.'))
                     continue
             item_name = QtGui.QListWidgetItem(filename)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))

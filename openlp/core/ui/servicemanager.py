@@ -279,7 +279,8 @@ class ServiceManager(QtGui.QWidget):
         self.editAction.setVisible(False)
         self.maintainAction.setVisible(False)
         self.notesAction.setVisible(False)
-        if serviceItem[u'service_item'].is_capable(ItemCapabilities.AllowsEdit):
+        if serviceItem[u'service_item'].is_capable(ItemCapabilities.AllowsEdit) \
+            and hasattr(serviceItem[u'service_item'], u'editId'):
             self.editAction.setVisible(True)
         if serviceItem[u'service_item']\
             .is_capable(ItemCapabilities.AllowsMaintain):
@@ -382,20 +383,20 @@ class ServiceManager(QtGui.QWidget):
         serviceIterator = QtGui.QTreeWidgetItemIterator(self.serviceManagerList)
         tempItem = None
         setLastItem = False
-        while serviceIterator:
-            if serviceIterator.isSelected() and tempItem is None:
+        while serviceIterator.value():
+            if serviceIterator.value().isSelected() and tempItem is None:
                 setLastItem = True
-                serviceIterator.setSelected(False)
-            if serviceIterator.isSelected():
-                #We are on the first record
+                serviceIterator.value().setSelected(False)
+            if serviceIterator.value().isSelected():
+                # We are on the first record
                 if tempItem:
                     tempItem.setSelected(True)
-                    serviceIterator.setSelected(False)
+                    serviceIterator.value().setSelected(False)
             else:
-                tempItem = serviceIterator
-            lastItem = serviceIterator
-            ++serviceIterator
-        #Top Item was selected so set the last one
+                tempItem = serviceIterator.value()
+            lastItem = serviceIterator.value()
+            serviceIterator += 1
+        # Top Item was selected so set the last one
         if setLastItem:
             lastItem.setSelected(True)
 
@@ -405,16 +406,18 @@ class ServiceManager(QtGui.QWidget):
         Called by the down arrow
         """
         serviceIterator = QtGui.QTreeWidgetItemIterator(self.serviceManagerList)
-        firstItem = serviceIterator
+        firstItem = None
         setSelected = False
-        while serviceIterator:
+        while serviceIterator.value():
+            if not firstItem:
+                firstItem = serviceIterator.value()
             if setSelected:
                 setSelected = False
-                serviceIterator.setSelected(True)
-            elif serviceIterator.isSelected():
-                serviceIterator.setSelected(False)
+                serviceIterator.value().setSelected(True)
+            elif serviceIterator.value() and serviceIterator.value().isSelected():
+                serviceIterator.value().setSelected(False)
                 setSelected = True
-            ++serviceIterator
+            serviceIterator += 1
         if setSelected:
             firstItem.setSelected(True)
 
@@ -556,7 +559,7 @@ class ServiceManager(QtGui.QWidget):
                 QtCore.QVariant(item[u'order']))
             for count, frame in enumerate(serviceitem.get_frames()):
                 treewidgetitem1 = QtGui.QTreeWidgetItem(treewidgetitem)
-                text = frame[u'title']
+                text = frame[u'title'].replace(u'\n', u' ')
                 treewidgetitem1.setText(0, text[:40])
                 treewidgetitem1.setData(0, QtCore.Qt.UserRole,
                     QtCore.QVariant(count))
@@ -632,6 +635,8 @@ class ServiceManager(QtGui.QWidget):
 
     def onLoadService(self, lastService=False):
         if lastService:
+            if not self.parent.recentFiles:
+                return
             filename = self.parent.recentFiles[0]
         else:
             filename = QtGui.QFileDialog.getOpenFileName(
@@ -881,7 +886,8 @@ class ServiceManager(QtGui.QWidget):
             QtGui.QMessageBox.critical(self,
                 translate('OpenLP.ServiceManager', 'Missing Display Handler'),
                 translate('OpenLP.ServiceManager', 'Your item cannot be '
-                    'displayed as there is no handler to display it'))
+                    'displayed as the plugin required to display it is missing '
+                    'or inactive'))
 
     def remoteEdit(self):
         """
