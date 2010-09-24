@@ -100,7 +100,8 @@ class SongBeamerImport(SongImport):
             
     def parse_tags(self, line):
         tag_val = line.split('=')
-        if len(tag_val[0]) == 0:
+        if len(tag_val[0]) == 0 or \
+            len(tag_val[1]) == 0:
             return True
         if tag_val[0] == '#(c)':
             self.add_copyright(tag_val[1])
@@ -194,4 +195,34 @@ class SongBeamerImport(SongImport):
                 
         
     def check_verse_marks(self, line):
-        pass
+            if line.startswith('Refrain') or \
+                line.startswith('Chorus'):
+                self.current_verse_type = u'V'
+            elif line.startswith('Vers') or  \
+                line.startswith('Verse') or \
+                line.startswith('Strophe'): 
+                self.current_verse_type = u'V'
+            elif line.startswith('Intro'):
+                pass
+            elif line.startswith('Coda'):
+                pass
+            elif line.startswith('Ending'):
+                pass
+            elif line.startswith('Bridge'):
+                pass
+            elif line.startswith('Interlude'): 
+                pass
+            elif line.startswith('Zwischenspiel'):
+                pass
+            elif line.startswith('Pre-Chorus'):
+                pass
+            elif line.startswith('Pre-Refrain'): 
+                pass
+            elif line.startswith('Pre-Bridge'):
+                pass
+            elif line.startswith('Pre-Coda'):
+                pass
+            elif line.startswith('Unbekannt'): 
+                pass
+            elif line.startswith('Unknown'):
+                pass
