@@ -32,6 +32,7 @@ import sys
 import os
 import struct
 
+from openlp.core.lib import translate
 from songimport import SongImport
 
 def strip_rtf(blob):
