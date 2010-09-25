@@ -192,13 +192,15 @@ class RenderManager(object):
         log.debug(u'generate preview')
         # set the default image size for previews
         self.calculate_default(self.screens.preview[u'size'])
-        verse = u'Amazing Grace!\n'\
-        'How sweet the sound\n'\
-        'To save a wretch like me;\n'\
-        'I once was lost but now am found,\n'\
-        'Was blind, but now I see.'
+        verse = u'The Lord said to {r}Noah{/r}: \n' \
+        'There\'s gonna be a {su}floody{/su}, {sb}floody{/sb}\n' \
+        'The Lord said to {g}Noah{/g}:\n' \
+        'There\'s gonna be a {st}floody{/st}, {it}floody{/it}\n' \
+        'Get those children out of the muddy, muddy \n'\
+        '{r}C{/r}{b}h{/b}{bl}i{/bl}{y}l{/y}{g}d{/g}{pk}'\
+        'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
         footer = []
-        footer.append(u'Amazing Grace (John Newton)' )
+        footer.append(u'Arky Arky (Unknown)' )
         footer.append(u'Public Domain')
         footer.append(u'CCLI 123456')
         # build a service item to generate preview
