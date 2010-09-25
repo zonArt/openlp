@@ -166,13 +166,13 @@ class SongMediaItem(MediaManagerItem):
         if search_type == 0:
             log.debug(u'Titles Search')
             search_results = self.parent.manager.get_all_objects(Song,
-                Song.search_title.like(u'%' + search_keywords + u'%'),
+                Song.search_title.like(u'%' + search_keywords.lower() + u'%'),
                 Song.search_title.asc())
             self.displayResultsSong(search_results)
         elif search_type == 1:
             log.debug(u'Lyrics Search')
             search_results = self.parent.manager.get_all_objects(Song,
-                Song.search_lyrics.like(u'%' + search_keywords + u'%'),
+                Song.search_lyrics.like(u'%' + search_keywords.lower() + u'%'),
                 Song.search_lyrics.asc())
             self.displayResultsSong(search_results)
         elif search_type == 2:
