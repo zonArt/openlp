@@ -55,6 +55,7 @@ class SongImport(QtCore.QObject):
         self.set_defaults()
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'songs_stop_import'), self.stop_import)
+
     def set_defaults(self):
         """
         Create defaults for properties - call this before each song
@@ -262,8 +263,8 @@ class SongImport(QtCore.QObject):
         log.info(u'commiting song %s to database', self.title)
         song = Song()
         song.title = self.title
-        song.search_title = self.remove_punctuation(self.title) \
-            + '@' + self.alternate_title
+        song.search_title = self.remove_punctuation(self.title).lower() \
+            + '@' + self.remove_punctuation(self.alternate_title).lower()
         song.song_number = self.song_number
         song.search_lyrics = u''
         verses_changed_to_other = {}
@@ -291,6 +292,7 @@ class SongImport(QtCore.QObject):
                 versetag = newversetag
             sxml.add_verse_to_lyrics(versetype, versetag[1:], versetext)
             song.search_lyrics += u' ' + self.remove_punctuation(versetext)
+        song.search_lyrics = song.search_lyrics.lower()
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
         for i, current_verse_tag in enumerate(self.verse_order_list):
             if verses_changed_to_other.has_key(current_verse_tag):
