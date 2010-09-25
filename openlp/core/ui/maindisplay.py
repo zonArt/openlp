@@ -293,7 +293,7 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'video')
         self.loaded = True
-        js = u'show_video("play", "%s", %s, true);' % \
+        js = u'show_video("init", "%s", %s, true); show_video("play");' % \
             (videoPath.replace(u'\\', u'\\\\'), str(float(volume)/float(10)))
         self.frame.evaluateJavaScript(js)
         return self.preview()
