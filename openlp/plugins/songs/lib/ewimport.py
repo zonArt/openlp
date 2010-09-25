@@ -146,27 +146,41 @@ class EasyWorshipSongImport(SongImport):
                 raw_record = db_file.read(record_size)
                 self.fields = self.record_struct.unpack(raw_record)
                 self.set_defaults()
-                self.title = self.get_field(fi_title)
-                self.import_wizard.incrementProgressBar(
-                    u'Importing "%s"...' % self.title, 0)
-                self.copyright = self.get_field(fi_copy) + \
-                    u', Administered by ' + self.get_field(fi_admin)
-                self.ccli_number = self.get_field(fi_ccli)
-                # Format the lyrics
-                if self.stop_import_flag:
-                    success = False
-                    break
-                words = self.get_field(fi_words)
-                words = strip_rtf(words)
-                for verse in words.split(u'\n\n'):
-                    self.add_verse(verse.strip(), u'V')
-                # Split up the authors
+                # Get title and update progress bar message
+                title = self.get_field(fi_title)
+                if title:
+                    self.import_wizard.incrementProgressBar(
+                        u'Importing "%s"...' % title, 0)
+                    self.title = title
+                # Get remaining fields
+                copy = self.get_field(fi_copy)
+                admin = self.get_field(fi_admin)
+                ccli = self.get_field(fi_ccli)
                 authors = self.get_field(fi_author)
-                author_list = authors.split(u'/')
-                if len(author_list) < 2:
-                    author_list = authors.split(u',')
-                for author_name in author_list:
-                    self.add_author(author_name.strip())
+                words = self.get_field(fi_words)
+                # Set the SongImport object members
+                if copy:
+                    self.copyright = copy
+                if admin:
+                    if copy:
+                        self.copyright += u', '
+                    self.copyright += u'Administered by ' + admin
+                if ccli:
+                    self.ccli_number = ccli
+                if authors:
+                    # Split up the authors
+                    author_list = authors.split(u'/')
+                    if len(author_list) < 2:
+                        author_list = authors.split(u';')
+                    if len(author_list) < 2:
+                        author_list = authors.split(u',')
+                    for author_name in author_list:
+                        self.add_author(author_name.strip())
+                if words:
+                    # Format the lyrics
+                    words = strip_rtf(words)
+                    for verse in words.split(u'\n\n'):
+                        self.add_verse(verse.strip(), u'V')
                 if self.stop_import_flag:
                     success = False
                     break
@@ -214,12 +228,12 @@ class EasyWorshipSongImport(SongImport):
     def get_field(self, field_desc_index):
         field = self.fields[field_desc_index]
         field_desc = self.field_descs[field_desc_index]
-        # Check for 'blank' entries
+        # Return None in case of 'blank' entries
         if isinstance(field, str):
             if len(field.rstrip('\0')) == 0:
-                return u''
+                return None
         elif field == 0:
-            return 0
+            return None
         # Format the field depending on the field type
         if field_desc.type == 1:
             # string
