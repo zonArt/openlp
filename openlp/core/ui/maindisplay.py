@@ -234,8 +234,11 @@ class MainDisplay(DisplayWidget):
         Display an image, as is.
         """
         if image:
-            js = u'show_image("data:image/png;base64,%s");' % \
-                image_to_byte(image)
+            if isinstance(image, QtGui.QImage):
+                js = u'show_image("data:image/png;base64,%s");' % \
+                    image_to_byte(image)
+            else:
+                js = u'show_image("data:image/png;base64,%s");' % image
         else:
             js = u'show_image("");'
         self.frame.evaluateJavaScript(js)
@@ -246,7 +249,7 @@ class MainDisplay(DisplayWidget):
         Used after Image plugin has changed the background
         """
         log.debug(u'resetImage')
-        self.displayImage(self.serviceItem.bg_frame)
+        self.displayImage(self.serviceItem.bg_image_bytes)
 
     def resetVideo(self):
         """
