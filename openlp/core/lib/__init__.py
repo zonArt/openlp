@@ -81,8 +81,8 @@ html_expands.append({u'desc':u'Italics', u'start tag':u'{it}',
     u'start html':u'<em>', u'end tag':u'{/it}', u'end html':u'</em>',
     u'protected':True})
 
-# Image cache to stop regualar image resizing
-cache = {}
+# Image image_cache to stop regualar image resizing
+image_cache = {}
 
 def translate(context, text, comment=None):
     """
@@ -261,9 +261,9 @@ def resize_image(image, width, height, background=QtCore.Qt.black):
             return preview
         preview = preview.scaled(width, height, QtCore.Qt.KeepAspectRatio,
             QtCore.Qt.SmoothTransformation)
-    cache_key = u'%s%s%s' % (image, unicode(width), unicode(height))
-    if cache_key in cache:
-        return cache[cache_key]
+    image_cache_key = u'%s%s%s' % (image, unicode(width), unicode(height))
+    if image_cache_key in image_cache:
+        return image_cache[image_cache_key]
     realw = preview.width()
     realh = preview.height()
     # and move it to the centre of the preview space
@@ -272,8 +272,8 @@ def resize_image(image, width, height, background=QtCore.Qt.black):
     new_image.fill(background)
     painter = QtGui.QPainter(new_image)
     painter.drawImage((width - realw) / 2, (height - realh) / 2, preview)
-    cache[cache_key] = new_image
-    print cache
+    image_cache[image_cache_key] = new_image
+    print image_cache
     return new_image
 
 def check_item_selected(list_widget, message):
