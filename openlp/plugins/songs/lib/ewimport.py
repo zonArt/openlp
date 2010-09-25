@@ -150,7 +150,8 @@ class EasyWorshipSongImport(SongImport):
                 title = self.get_field(fi_title)
                 if title:
                     self.import_wizard.incrementProgressBar(
-                        u'Importing "%s"...' % title, 0)
+                        unicode(translate('SongsPlugin.ImportWizardForm',
+                            'Importing "%s"...')) % title, 0)
                     self.title = title
                 # Get remaining fields
                 copy = self.get_field(fi_copy)
@@ -164,7 +165,9 @@ class EasyWorshipSongImport(SongImport):
                 if admin:
                     if copy:
                         self.copyright += u', '
-                    self.copyright += u'Administered by ' + admin
+                    self.copyright += \
+                        unicode(translate('SongsPlugin.ImportWizardForm',
+                            'Administered by %s')) % admin
                 if ccli:
                     self.ccli_number = ccli
                 if authors:
