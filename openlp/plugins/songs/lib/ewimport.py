@@ -249,19 +249,20 @@ class EasyWorshipSongImport(SongImport):
             return (field ^ 0x80 == 1)
         elif field_desc.type == 0x0c or field_desc.type == 0x0d:
             # Memo or Blob
-            sub_block, block_start, blob_size = \
-                struct.unpack_from('<bhxi', field, len(field)-10)
-            self.memo_file.seek(block_start * 256)
+            block_start, blob_size = \
+                struct.unpack_from('<II', field, len(field)-10)
+            sub_block = block_start & 0xff;
+            block_start &= ~0xff
+            self.memo_file.seek(block_start)
             memo_block_type, = struct.unpack('b', self.memo_file.read(1))
             if memo_block_type == 2:
                 self.memo_file.seek(8, os.SEEK_CUR)
             elif memo_block_type == 3:
-                if sub_block < 0 or sub_block > 63:
+                if sub_block > 63:
                     return u'';
                 self.memo_file.seek(11 + (5 * sub_block), os.SEEK_CUR)
                 sub_block_start, = struct.unpack('B', self.memo_file.read(1))
-                self.memo_file.seek((block_start * 256) +
-                    (sub_block_start * 16))
+                self.memo_file.seek(block_start + (sub_block_start * 16))
             else:
                 return u'';
             return self.memo_file.read(blob_size)
