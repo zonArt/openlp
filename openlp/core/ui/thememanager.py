@@ -142,9 +142,12 @@ class ThemeManager(QtGui.QWidget):
         themeName = unicode(item.text())
         self.deleteAction.setVisible(False)
         self.renameAction.setVisible(False)
+        self.globalAction.setVisible(False)
+        # If default theme restrict actions
         if realThemeName == themeName:
             self.deleteAction.setVisible(True)
             self.renameAction.setVisible(True)
+            self.globalAction.setVisible(True)
         action = self.menu.exec_(self.themeListWidget.mapToGlobal(point))
         if action == self.editAction:
             self.onEditTheme()
@@ -155,9 +158,9 @@ class ThemeManager(QtGui.QWidget):
         if action == self.deleteAction:
             self.onDeleteTheme()
         if action == self.globalAction:
-            self. self.changeGlobalFromScreen()
+            self.changeGlobalFromScreen()
         if action == self.exportAction:
-            self. self.onExportTheme()
+            self.onExportTheme()
 
     def changeGlobalFromTab(self, themeName):
         """
@@ -323,7 +326,7 @@ class ThemeManager(QtGui.QWidget):
                 item.data(QtCore.Qt.UserRole).toString())
             self.amendThemeForm.exec_()
 
-    def onDeleteTheme(self, onlyDelete=True):
+    def onDeleteTheme(self):
         """
         Delete a theme
         """

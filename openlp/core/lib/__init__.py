@@ -273,7 +273,6 @@ def resize_image(image, width, height, background=QtCore.Qt.black):
     painter = QtGui.QPainter(new_image)
     painter.drawImage((width - realw) / 2, (height - realh) / 2, preview)
     image_cache[image_cache_key] = new_image
-    print image_cache
     return new_image
 
 def check_item_selected(list_widget, message):
