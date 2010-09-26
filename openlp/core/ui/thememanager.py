@@ -88,41 +88,32 @@ class ThemeManager(QtGui.QWidget):
         self.themeListWidget.setAlternatingRowColors(True)
         self.themeListWidget.setIconSize(QtCore.QSize(88, 50))
         self.layout.addWidget(self.themeListWidget)
-        self.themeListWidget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-        self.themeListWidget.addAction(
-            context_menu_action(self.themeListWidget,
-            u':/themes/theme_edit.png',
-            translate('OpenLP.ThemeManager', '&Edit Theme'),
-            self.onEditTheme))
-        self.themeListWidget.addAction(
-            context_menu_action(self.themeListWidget,
-            u':/themes/theme_edit.png',
-            translate('OpenLP.ThemeManager', '&Rename Theme'),
-            self.onRenameTheme))
-        self.themeListWidget.addAction(
-            context_menu_action(self.themeListWidget,
-            u':/themes/theme_edit.png',
-            translate('OpenLP.ThemeManager', '&Copy Theme'),
-            self.onCopyTheme))
-        self.themeListWidget.addAction(
-            context_menu_separator(self.themeListWidget))
-        self.themeListWidget.addAction(
-            context_menu_action(self.themeListWidget,
-                u':/general/general_delete.png',
-                translate('OpenLP.ThemeManager', '&Delete Theme'),
-            self.onDeleteTheme))
-        self.themeListWidget.addAction(
-            context_menu_action(self.themeListWidget,
-                u':/general/general_export.png',
-                translate('OpenLP.ThemeManager', 'Set As &Global Default'),
-            self.changeGlobalFromScreen))
-        self.themeListWidget.addAction(
-            context_menu_action(self.themeListWidget,
-                u':/general/general_export.png',
-                translate('OpenLP.ThemeManager', 'E&xport Theme'),
-                self.onExportTheme))
-        self.themeListWidget.addAction(
-            context_menu_separator(self.themeListWidget))
+        self.themeListWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        QtCore.QObject.connect(self.themeListWidget,
+            QtCore.SIGNAL('customContextMenuRequested(QPoint)'),
+            self.contextMenu)
+        # build the context menu
+        self.menu = QtGui.QMenu()
+        self.editAction = self.menu.addAction(
+            translate('OpenLP.ThemeManager', '&Edit Theme'))
+        self.editAction.setIcon(build_icon(u':/themes/theme_edit.png'))
+        self.copyAction = self.menu.addAction(
+            translate('OpenLP.ThemeManager', '&Copy Theme'))
+        self.copyAction.setIcon(build_icon(u':/themes/theme_edit.png'))
+        self.renameAction = self.menu.addAction(
+            translate('OpenLP.ThemeManager', '&Rename Theme'))
+        self.renameAction.setIcon(build_icon(u':/themes/theme_edit.png'))
+        self.deleteAction = self.menu.addAction(
+            translate('OpenLP.ThemeManager', '&Delete Theme'))
+        self.deleteAction.setIcon(build_icon(u':/general/general_delete.png'))
+        self.sep1 = self.menu.addAction(u'')
+        self.sep1.setSeparator(True)
+        self.globalAction = self.menu.addAction(
+            translate('OpenLP.ThemeManager', 'Set As &Global Default'))
+        self.globalAction.setIcon(build_icon(u':/general/general_export.png'))
+        self.exportAction = self.menu.addAction(
+            translate('OpenLP.ThemeManager', '&Export Theme'))
+        self.exportAction.setIcon(build_icon(u':/general/general_export.png'))
         #Signals
         QtCore.QObject.connect(self.themeListWidget,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
@@ -142,6 +133,31 @@ class ThemeManager(QtGui.QWidget):
         self.global_theme = unicode(QtCore.QSettings().value(
             self.settingsSection + u'/global theme',
             QtCore.QVariant(u'')).toString())
+
+    def contextMenu(self, point):
+        item = self.themeListWidget.itemAt(point)
+        if item is None:
+            return
+        realThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
+        themeName = unicode(item.text())
+        self.deleteAction.setVisible(False)
+        self.renameAction.setVisible(False)
+        if realThemeName == themeName:
+            self.deleteAction.setVisible(True)
+            self.renameAction.setVisible(True)
+        action = self.menu.exec_(self.themeListWidget.mapToGlobal(point))
+        if action == self.editAction:
+            self.onEditTheme()
+        if action == self.copyAction:
+            self.onCopyTheme()
+        if action == self.renameAction:
+            self.onRenameTheme()
+        if action == self.deleteAction:
+            self.onDeleteTheme()
+        if action == self.globalAction:
+            self. self.changeGlobalFromScreen()
+        if action == self.exportAction:
+            self. self.onExportTheme()
 
     def changeGlobalFromTab(self, themeName):
         """

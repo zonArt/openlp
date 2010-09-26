@@ -236,7 +236,7 @@ class ServiceManager(QtGui.QWidget):
         self.addToAction = self.dndMenu.addAction(
             translate('OpenLP.ServiceManager', '&Add to Selected Item'))
         self.addToAction.setIcon(build_icon(u':/general/general_edit.png'))
-        #build the context menu
+        # build the context menu
         self.menu = QtGui.QMenu()
         self.editAction = self.menu.addAction(
             translate('OpenLP.ServiceManager', '&Edit Item'))
