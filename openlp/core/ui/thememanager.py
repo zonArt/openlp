@@ -32,7 +32,7 @@ import logging
 from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.ui import AmendThemeForm
+from openlp.core.ui import AmendThemeForm, FileRenameForm
 from openlp.core.theme import Theme
 from openlp.core.lib import OpenLPToolbar, context_menu_action, \
     ThemeXML, str_to_bool, get_text_file_string, build_icon, Receiver, \
@@ -54,6 +54,7 @@ class ThemeManager(QtGui.QWidget):
         self.layout.setSpacing(0)
         self.layout.setMargin(0)
         self.amendThemeForm = AmendThemeForm(self)
+        self.fileRenameForm = FileRenameForm(self)
         self.toolbar = OpenLPToolbar(self)
         self.toolbar.addToolbarButton(
             translate('OpenLP.ThemeManager', 'New Theme'),
@@ -93,6 +94,16 @@ class ThemeManager(QtGui.QWidget):
             u':/themes/theme_edit.png',
             translate('OpenLP.ThemeManager', '&Edit Theme'),
             self.onEditTheme))
+        self.themeListWidget.addAction(
+            context_menu_action(self.themeListWidget,
+            u':/themes/theme_edit.png',
+            translate('OpenLP.ThemeManager', '&Rename Theme'),
+            self.onRenameTheme))
+        self.themeListWidget.addAction(
+            context_menu_action(self.themeListWidget,
+            u':/themes/theme_edit.png',
+            translate('OpenLP.ThemeManager', '&Copy Theme'),
+            self.onCopyTheme))
         self.themeListWidget.addAction(
             context_menu_separator(self.themeListWidget))
         self.themeListWidget.addAction(
@@ -188,6 +199,33 @@ class ThemeManager(QtGui.QWidget):
         self.amendThemeForm.loadTheme(theme)
         self.saveThemeName = u''
         self.amendThemeForm.exec_()
+
+    def onRenameTheme(self):
+        """
+        Renames an existing theme to a new name
+        """
+        item = self.themeListWidget.currentItem()
+        oldThemeName = unicode(item.text())
+        self.fileRenameForm.FileNameEdit.setText(oldThemeName)
+        if self.fileRenameForm.exec_():
+            newThemeName =  self.fileRenameForm.FileNameEdit.text()
+            print oldThemeName, newThemeName
+
+    def onCopyTheme(self):
+        """
+        Copies an existing theme to a new name
+        """
+        item = self.themeListWidget.currentItem()
+        oldThemeName = unicode(item.text())
+        self.fileRenameForm.FileNameEdit.setText(oldThemeName)
+        if self.fileRenameForm.exec_():
+            newThemeName =  self.fileRenameForm.FileNameEdit.text()
+            print oldThemeName, newThemeName
+            print self.path
+            source = os.path.join(self.path, oldThemeName)
+            for files in os.walk(source):
+                for name in files[2]:
+                    print name
 
     def onEditTheme(self):
         """
