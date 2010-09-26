@@ -217,7 +217,6 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.imageLineEdit.setText(filename)
             self.theme.background_filename = filename
             self.previewTheme()
-
     #
     # Main Font Tab
     #
@@ -301,7 +300,6 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         if self.theme.font_main_height != self.fontMainHeightSpinBox.value():
             self.theme.font_main_height = self.fontMainHeightSpinBox.value()
             self.previewTheme()
-
     #
     # Footer Font Tab
     #
@@ -382,7 +380,6 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.theme.font_footer_height = \
                 self.fontFooterHeightSpinBox.value()
             self.previewTheme()
-
     #
     # Background Tab
     #
@@ -442,7 +439,6 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.color2PushButton.setStyleSheet(u'background-color: %s' %
                 unicode(self.theme.background_end_color))
             self.previewTheme()
-
     #
     # Other Tab
     #
@@ -507,7 +503,6 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         self.theme.display_vertical_align = currentIndex
         self.stateChanging(self.theme)
         self.previewTheme()
-
     #
     # Local Methods
     #

@@ -205,27 +205,86 @@ class ThemeManager(QtGui.QWidget):
         Renames an existing theme to a new name
         """
         item = self.themeListWidget.currentItem()
-        oldThemeName = unicode(item.text())
+        oldThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
         self.fileRenameForm.FileNameEdit.setText(oldThemeName)
+        self.saveThemeName = u''
         if self.fileRenameForm.exec_():
-            newThemeName =  self.fileRenameForm.FileNameEdit.text()
-            print oldThemeName, newThemeName
+            newThemeName =  unicode(self.fileRenameForm.FileNameEdit.text())
+            oldThemeData = self.getThemeData(oldThemeName)
+            self.deleteTheme(oldThemeName)
+            self.cloneThemeData(oldThemeData, newThemeName)
 
     def onCopyTheme(self):
         """
         Copies an existing theme to a new name
         """
         item = self.themeListWidget.currentItem()
-        oldThemeName = unicode(item.text())
+        oldThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
         self.fileRenameForm.FileNameEdit.setText(oldThemeName)
+        self.saveThemeName = u''
         if self.fileRenameForm.exec_():
-            newThemeName =  self.fileRenameForm.FileNameEdit.text()
-            print oldThemeName, newThemeName
-            print self.path
-            source = os.path.join(self.path, oldThemeName)
-            for files in os.walk(source):
-                for name in files[2]:
-                    print name
+            newThemeName =  unicode(self.fileRenameForm.FileNameEdit.text())
+            oldThemeData = self.getThemeData(oldThemeName)
+            self.cloneThemeData(oldThemeData, newThemeName)
+            self.loadThemes()
+
+    def cloneThemeData(self, oldThemeData, newThemeName):
+        """
+        """
+        log.debug(u'cloneThemeData')
+        new_theme = ThemeXML()
+        new_theme.new_document(newThemeName)
+        save_from = None
+        save_to = None
+        if oldThemeData.background_type == u'solid':
+            new_theme.add_background_solid(
+                unicode(oldThemeData.background_color))
+        elif oldThemeData.background_type == u'gradient':
+            new_theme.add_background_gradient(
+                unicode(oldThemeData.background_start_color),
+                unicode(oldThemeData.background_end_color),
+                oldThemeData.background_direction)
+        else:
+            filename = \
+                os.path.split(unicode(oldThemeData.background_filename))[1]
+            new_theme.add_background_image(filename)
+            save_to = os.path.join(self.path, theme_name, filename)
+            save_from = oldThemeData.background_filename
+        new_theme.add_font(unicode(oldThemeData.font_main_name),
+                unicode(oldThemeData.font_main_color),
+                unicode(oldThemeData.font_main_proportion),
+                unicode(oldThemeData.font_main_override), u'main',
+                unicode(oldThemeData.font_main_weight),
+                unicode(oldThemeData.font_main_italics),
+                unicode(oldThemeData.font_main_line_adjustment),
+                unicode(oldThemeData.font_main_x),
+                unicode(oldThemeData.font_main_y),
+                unicode(oldThemeData.font_main_width),
+                unicode(oldThemeData.font_main_height))
+        new_theme.add_font(unicode(oldThemeData.font_footer_name),
+                unicode(oldThemeData.font_footer_color),
+                unicode(oldThemeData.font_footer_proportion),
+                unicode(oldThemeData.font_footer_override), u'footer',
+                unicode(oldThemeData.font_footer_weight),
+                unicode(oldThemeData.font_footer_italics),
+                0, # line adjustment
+                unicode(oldThemeData.font_footer_x),
+                unicode(oldThemeData.font_footer_y),
+                unicode(oldThemeData.font_footer_width),
+                unicode(oldThemeData.font_footer_height))
+        new_theme.add_display(unicode(oldThemeData.display_shadow),
+                unicode(oldThemeData.display_shadow_color),
+                unicode(oldThemeData.display_outline),
+                unicode(oldThemeData.display_outline_color),
+                unicode(oldThemeData.display_horizontal_align),
+                unicode(oldThemeData.display_vertical_align),
+                unicode(oldThemeData.display_wrap_style),
+                unicode(oldThemeData.display_slide_transition),
+                unicode(oldThemeData.display_shadow_size),
+                unicode(oldThemeData.display_outline_size))
+        theme = new_theme.extract_xml()
+        pretty_theme = new_theme.extract_formatted_xml()
+        self.saveTheme(newThemeName, theme, pretty_theme, save_from, save_to)
 
     def onEditTheme(self):
         """
@@ -248,7 +307,7 @@ class ThemeManager(QtGui.QWidget):
                 item.data(QtCore.Qt.UserRole).toString())
             self.amendThemeForm.exec_()
 
-    def onDeleteTheme(self):
+    def onDeleteTheme(self, onlyDelete=True):
         """
         Delete a theme
         """
