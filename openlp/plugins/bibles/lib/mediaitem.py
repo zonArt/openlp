@@ -488,12 +488,12 @@ class BibleMediaItem(MediaManagerItem):
         """
         log.debug(u'adjustComboBox %s, %s, %s', combo, range_from, range_to)
         if restore:
-            oldText = unicode(combo.currentText())
+            old_text = unicode(combo.currentText())
         combo.clear()
         for i in range(int(range_from), int(range_to) + 1):
             combo.addItem(unicode(i))
-        if restore and combo.findText(oldText) != -1:
-            combo.setCurrentIndex(combo.findText(oldText))
+        if restore and combo.findText(old_text) != -1:
+            combo.setCurrentIndex(combo.findText(old_text))
 
     def onAdvancedSearchButton(self):
         log.debug(u'Advanced Search Button pressed')
