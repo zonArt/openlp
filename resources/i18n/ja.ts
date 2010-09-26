@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1">
+<!DOCTYPE TS><TS version="1.1" language="ja_JP">
 <context>
     <name>AlertsPlugin</name>
     <message>
         <location filename="openlp/plugins/alerts/alertsplugin.py" line="70"/>
         <source>&amp;Alert</source>
-        <translation type="unfinished"></translation>
+        <translation>警告(&amp;A)</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/alertsplugin.py" line="71"/>
         <source>Show an alert message.</source>
-        <translation type="unfinished"></translation>
+        <translation>警告メッセージを表示する。</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/alertsplugin.py" line="100"/>
@@ -23,12 +23,12 @@
     <message>
         <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="126"/>
         <source>Alert Message</source>
-        <translation type="unfinished"></translation>
+        <translation>警告メッセージ</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="128"/>
         <source>Alert &amp;text:</source>
-        <translation type="unfinished"></translation>
+        <translation>警告文(&amp;T)</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="130"/>
@@ -38,42 +38,42 @@
     <message>
         <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="132"/>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation>新規作成(&amp;N)</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="134"/>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
+        <translation>保存(&amp;S)</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="136"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>削除(&amp;D)</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="138"/>
         <source>Displ&amp;ay</source>
-        <translation type="unfinished"></translation>
+        <translation>表示(&amp;A)</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="140"/>
         <source>Display &amp;&amp; Cl&amp;ose</source>
-        <translation type="unfinished"></translation>
+        <translation>表示して閉じる(&amp;O)</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="142"/>
         <source>&amp;Close</source>
-        <translation type="unfinished"></translation>
+        <translation>閉じる(&amp;C)</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="96"/>
         <source>New Alert</source>
-        <translation type="unfinished"></translation>
+        <translation>新しい警告</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="96"/>
         <source>You haven&apos;t specified any text for your alert. Please type in some text before clicking New.</source>
-        <translation type="unfinished"></translation>
+        <translation>警告文が何も設定されていません。新規作成をクリックする前にメッセージを入力してください。</translation>
     </message>
 </context>
 <context>
@@ -81,7 +81,7 @@
     <message>
         <location filename="openlp/plugins/alerts/lib/alertsmanager.py" line="72"/>
         <source>Alert message created and displayed.</source>
-        <translation type="unfinished"></translation>
+        <translation>警告文を作成し表示しました。</translation>
     </message>
 </context>
 <context>
@@ -89,32 +89,32 @@
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="42"/>
         <source>Alerts</source>
-        <translation type="unfinished"></translation>
+        <translation>警告</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="191"/>
         <source>Font</source>
-        <translation type="unfinished"></translation>
+        <translation>フォント</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="193"/>
         <source>Font name:</source>
-        <translation type="unfinished"></translation>
+        <translation>フォント名:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="195"/>
         <source>Font color:</source>
-        <translation type="unfinished"></translation>
+        <translation>文字色:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="197"/>
         <source>Background color:</source>
-        <translation type="unfinished"></translation>
+        <translation>背景色:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="199"/>
         <source>Font size:</source>
-        <translation type="unfinished"></translation>
+        <translation>大きさ:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="201"/>
@@ -124,17 +124,17 @@
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="203"/>
         <source>Alert timeout:</source>
-        <translation type="unfinished"></translation>
+        <translation>警告タイムアウト:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="205"/>
         <source>s</source>
-        <translation type="unfinished"></translation>
+        <translation>秒</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="207"/>
         <source>Location:</source>
-        <translation type="unfinished"></translation>
+        <translation>表示位置:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="209"/>
@@ -144,7 +144,7 @@
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="211"/>
         <source>OpenLP 2.0</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenLP 2.0</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="213"/>
@@ -376,7 +376,7 @@ Changes do not affect verses already in the service.</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="345"/>
         <source>Location:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">表示位置:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportwizard.py" line="347"/>
@@ -514,8 +514,18 @@ Changes do not affect verses already in the service.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="180"/>
+        <source>You need to set a copyright for your Bible. Bibles in the Public Domain need to be marked as such.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="189"/>
         <source>Bible Exists</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="189"/>
+        <source>This Bible already exists. Please import a different Bible or first delete the existing one.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -553,28 +563,18 @@ Changes do not affect verses already in the service.</source>
         <source>Your Bible import failed.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="180"/>
-        <source>You need to set a copyright for your Bible. Bibles in the Public Domain need to be marked as such.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="189"/>
-        <source>This Bible already exists. Please import a different Bible or first delete the existing one.</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>BiblesPlugin.MediaItem</name>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="58"/>
         <source>Bible</source>
-        <translation type="unfinished">성경</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="142"/>
         <source>Quick</source>
-        <translation type="unfinished">즉시</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="227"/>
@@ -761,7 +761,7 @@ Changes do not affect verses already in the service.</source>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="167"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">保存</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="169"/>
@@ -781,7 +781,7 @@ Changes do not affect verses already in the service.</source>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="177"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">消去</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="179"/>
@@ -1512,13 +1512,13 @@ This General Public License does not permit incorporating your program into prop
 <context>
     <name>OpenLP.ExceptionDialog</name>
     <message>
-        <location filename="openlp/core/ui/exceptiondialog.py" line="77"/>
-        <source>Oops! OpenLP hit a problem, and couldn&apos;t recover. The text in the box below contains information that might be helpful to the OpenLP developers, so please e-mail it to bugs@openlp.org, along with a detailed description of what you were doing when the problem occurred.</source>
+        <location filename="openlp/core/ui/exceptiondialog.py" line="75"/>
+        <source>Error Occurred</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/exceptiondialog.py" line="75"/>
-        <source>Error Occurred</source>
+        <location filename="openlp/core/ui/exceptiondialog.py" line="77"/>
+        <source>Oops! OpenLP hit a problem, and couldn&apos;t recover. The text in the box below contains information that might be helpful to the OpenLP developers, so please e-mail it to bugs@openlp.org, along with a detailed description of what you were doing when the problem occurred.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1655,7 +1655,7 @@ This General Public License does not permit incorporating your program into prop
     <message>
         <location filename="openlp/core/utils/languagemanager.py" line="121"/>
         <source>Language</source>
-        <translation type="unfinished"></translation>
+        <translation>言語</translation>
     </message>
     <message>
         <location filename="openlp/core/utils/languagemanager.py" line="121"/>
@@ -1668,52 +1668,52 @@ This General Public License does not permit incorporating your program into prop
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="345"/>
         <source>OpenLP 2.0</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">OpenLP 2.0</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="348"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ファイル(&amp;F)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="349"/>
         <source>&amp;Import</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">インポート(&amp;I)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="350"/>
         <source>&amp;Export</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">エクスポート(&amp;E)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="351"/>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">表示(&amp;V)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="352"/>
         <source>M&amp;ode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">モード(&amp;O)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="353"/>
         <source>&amp;Tools</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ツール(&amp;T)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="354"/>
         <source>&amp;Settings</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">設定(&amp;S)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="402"/>
         <source>&amp;Language</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">言語(&amp;L)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="357"/>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ヘルプ(&amp;H)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="358"/>
@@ -1733,7 +1733,7 @@ This General Public License does not permit incorporating your program into prop
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="364"/>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新規作成(&amp;N)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="365"/>
@@ -1753,7 +1753,7 @@ This General Public License does not permit incorporating your program into prop
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="370"/>
         <source>&amp;Open</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">開く(&amp;O)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="371"/>
@@ -1773,7 +1773,7 @@ This General Public License does not permit incorporating your program into prop
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="376"/>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">保存(&amp;S)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="377"/>
@@ -1793,7 +1793,7 @@ This General Public License does not permit incorporating your program into prop
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="382"/>
         <source>Save &amp;As...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">名前を付けて保存(&amp;A)...</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="384"/>
@@ -1813,7 +1813,7 @@ This General Public License does not permit incorporating your program into prop
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="390"/>
         <source>E&amp;xit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">終了(&amp;X)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="392"/>
@@ -1828,12 +1828,12 @@ This General Public License does not permit incorporating your program into prop
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="400"/>
         <source>&amp;Theme</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">テーマ(&amp;T)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="404"/>
         <source>&amp;Configure OpenLP...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">OpenLPの設定(&amp;C)...</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="406"/>
@@ -1938,7 +1938,7 @@ This General Public License does not permit incorporating your program into prop
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="446"/>
         <source>&amp;Plugin List</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">プラグイン一覧(&amp;P)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="448"/>
@@ -1953,7 +1953,7 @@ This General Public License does not permit incorporating your program into prop
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="452"/>
         <source>&amp;User Guide</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ユーザガイド(&amp;U)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="454"/>
@@ -1973,17 +1973,17 @@ This General Public License does not permit incorporating your program into prop
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="459"/>
         <source>&amp;Online Help</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">オンラインヘルプ(&amp;O)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="461"/>
         <source>&amp;Web Site</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ウェブサイト(&amp;W)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="463"/>
         <source>&amp;Auto Detect</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">自動検出(&amp;A)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="465"/>
@@ -1998,7 +1998,7 @@ This General Public License does not permit incorporating your program into prop
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="472"/>
         <source>Add &amp;Tool...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ツールの追加(&amp;T)...</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="474"/>
@@ -2008,7 +2008,7 @@ This General Public License does not permit incorporating your program into prop
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="477"/>
         <source>&amp;Default</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">デフォルト(&amp;D)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="479"/>
@@ -2018,7 +2018,7 @@ This General Public License does not permit incorporating your program into prop
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="482"/>
         <source>&amp;Setup</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">設定(&amp;S)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="483"/>
@@ -2076,7 +2076,7 @@ You can download the latest version from http://openlp.org/.</source>
         <location filename="openlp/core/utils/languagemanager.py" line="85"/>
         <source>English</source>
         <comment>Please add the name of your language here</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">日本語</translation>
     </message>
 </context>
 <context>
@@ -2242,17 +2242,17 @@ You can download the latest version from http://openlp.org/.</source>
     <message>
         <location filename="openlp/core/ui/plugindialog.py" line="103"/>
         <source>Plugin List</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">プラグイン一覧</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/plugindialog.py" line="105"/>
         <source>Plugin Details</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">プラグイン詳細</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/plugindialog.py" line="107"/>
         <source>Version:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">バージョン:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/plugindialog.py" line="109"/>
@@ -2262,27 +2262,27 @@ You can download the latest version from http://openlp.org/.</source>
     <message>
         <location filename="openlp/core/ui/plugindialog.py" line="111"/>
         <source>Status:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">状況:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/plugindialog.py" line="113"/>
         <source>Active</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">有効</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/plugindialog.py" line="115"/>
         <source>Inactive</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">無効</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/pluginform.py" line="135"/>
         <source>%s (Inactive)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%s (無効)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/pluginform.py" line="132"/>
         <source>%s (Active)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%s (有効)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/pluginform.py" line="138"/>
@@ -2510,7 +2510,7 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/core/ui/settingsdialog.py" line="67"/>
         <source>Configure OpenLP</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">OpenLPの設定</translation>
     </message>
 </context>
 <context>
@@ -2546,6 +2546,11 @@ The content encoding is not UTF-8.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="openlp/core/ui/slidecontroller.py" line="210"/>
+        <source>Edit and reload song preview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="217"/>
         <source>Start continuous loop</source>
         <translation type="unfinished"></translation>
@@ -2558,7 +2563,7 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="230"/>
         <source>s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">秒</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="232"/>
@@ -2573,11 +2578,6 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/core/ui/slidecontroller.py" line="276"/>
         <source>Go To</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="210"/>
-        <source>Edit and reload song preview</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2702,6 +2702,16 @@ The content encoding is not UTF-8.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="openlp/core/ui/thememanager.py" line="242"/>
+        <source>Theme %s is used in the %s plugin.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="249"/>
+        <source>Theme %s is used by the service manager.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="openlp/core/ui/thememanager.py" line="285"/>
         <source>You have not selected a theme.</source>
         <translation type="unfinished"></translation>
@@ -2760,16 +2770,6 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="575"/>
         <source>A theme with this name already exists. Would you like to overwrite it?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="242"/>
-        <source>Theme %s is used in the %s plugin.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/thememanager.py" line="249"/>
-        <source>Theme %s is used by the service manager.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3126,7 +3126,7 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="427"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">削除(&amp;D)</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="429"/>
@@ -3487,7 +3487,7 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="164"/>
         <source>OpenLP 2.0</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">OpenLP 2.0</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="166"/>
@@ -3537,6 +3537,11 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="193"/>
         <source>The openlp.org 1.x importer has been disabled due to a missing Python module. If you want to use this importer, you will need to install the &quot;python-sqlite&quot; module.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="202"/>
+        <source>The OpenLyrics importer has not yet been developed, but as you can see, we are still intending to do so. Hopefully it will be in the next release.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3607,11 +3612,6 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="181"/>
         <source>EasyWorship</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="202"/>
-        <source>The OpenLyrics importer has not yet been developed, but as you can see, we are still intending to do so. Hopefully it will be in the next release.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3792,7 +3792,7 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songmaintenancedialog.py" line="238"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">削除(&amp;D)</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="391"/>
@@ -3832,6 +3832,11 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="386"/>
         <source>Could not save your changes.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="324"/>
+        <source>Could not save your modified author, because the author already exists.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3897,11 +3902,6 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="495"/>
         <source>No book selected!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/songmaintenanceform.py" line="324"/>
-        <source>Could not save your modified author, because the author already exists.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3986,7 +3986,7 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/plugins/songs/lib/__init__.py" line="63"/>
         <source>Other</source>
-        <translation type="unfinished"></translation>
+        <translation>その他</translation>
     </message>
 </context>
 </TS>

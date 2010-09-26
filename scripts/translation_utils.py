@@ -52,6 +52,7 @@ This is done easily via the ``-d``, ``-p`` and ``-u`` options::
 import os
 import urllib
 import re
+from shutil import copy
 
 from optparse import OptionParser
 from PyQt4 import QtCore
@@ -85,7 +86,9 @@ class CommandStack(object):
         return len(self.data)
 
     def __getitem__(self, index):
-        if self.data[index].get(u'arguments'):
+        if not index in self.data:
+            return None
+        elif self.data[index].get(u'arguments'):
             return self.data[index][u'command'], self.data[index][u'arguments']
         else:
             return self.data[index][u'command']
@@ -109,6 +112,21 @@ class CommandStack(object):
 
     def reset(self):
         self.current_index = 0
+
+    def arguments(self):
+        if self.data[self.current_index - 1].get(u'arguments'):
+            return self.data[self.current_index - 1][u'arguments']
+        else:
+            return []
+
+    def __repr__(self):
+        results = []
+        for item in self.data:
+            if item.get(u'arguments'):
+                results.append(str((item[u'command'], item[u'arguments'])))
+            else:
+                results.append(str((item[u'command'], )))
+        return u'[%s]' % u', '.join(results)
 
 
 def print_verbose(text):
@@ -139,6 +157,21 @@ def run(command):
     print_verbose(u'Output:\n%s' % process.readAllStandardOutput())
     print u'   Done.'
 
+def update_export_at_pootle(source_filename):
+    """
+    This is needed because of database and exported *.ts file can be out of sync
+
+    ``source_filename``
+        The file to sync.
+
+    """
+    language = source_filename[:-3]
+    REVIEW_URL = u'http://pootle.projecthq.biz/%s/openlp/review.html' % language
+    print_verbose(u'Accessing: %s' % (REVIEW_URL))
+    page = urllib.urlopen(REVIEW_URL)
+    page.close()
+    
+
 def download_file(source_filename, dest_filename):
     """
     Download a file and save it to disk.
@@ -165,11 +198,13 @@ def download_translations():
     page = urllib.urlopen(SERVER_URL)
     soup = BeautifulSoup(page)
     languages = soup.findAll(text=re.compile(r'.*\.ts'))
-    for language in languages:
+    for language_file in languages:
+        update_export_at_pootle(language_file)
+    for language_file in languages:
         filename = os.path.join(os.path.abspath(u'..'), u'resources', u'i18n',
-            language)
+            language_file)
         print_verbose(u'Get Translation File: %s' % filename)
-        download_file(language, filename)
+        download_file(language_file, filename)
     print u'   Done.'
 
 def prepare_project():
@@ -227,11 +262,12 @@ def update_translations():
     else:
         os.chdir(os.path.abspath(u'..'))
         run(u'pylupdate4 -verbose -noobsolete openlp.pro')
+        os.chdir(os.path.abspath(u'scripts'))
 
 def generate_binaries():
     print u'Generate the related *.qm files'
     if not os.path.exists(os.path.join(os.path.abspath(u'..'), u'openlp.pro')):
-        print u'You have no generated a project file yet, please run this ' + \
+        print u'You have not generated a project file yet, please run this ' + \
             u'script with the -p option. It is also recommended that you ' + \
             u'this script with the -u option to update the translation ' + \
             u'files as well.'
@@ -239,6 +275,17 @@ def generate_binaries():
     else:
         os.chdir(os.path.abspath(u'..'))
         run(u'lrelease openlp.pro')
+        os.chdir(os.path.abspath(u'scripts'))
+        src_path = os.path.join(os.path.abspath(u'..'), u'resources', u'i18n')
+        dest_path = os.path.join(os.path.abspath(u'..'), u'openlp', u'i18n')
+        if not os.path.exists(dest_path):
+            os.makedirs(dest_path)
+        src_list = os.listdir(src_path)
+        for file in src_list:
+            if re.search('.qm$', file):
+                copy(os.path.join(src_path, u'%s' % file), 
+                    os.path.join(dest_path, u'%s' % file))
+
 
 def create_translation(language):
     """
@@ -248,13 +295,15 @@ def create_translation(language):
         The language file to create.
     """
     print "Create new Translation File"
+    if not language.endswith(u'.ts'):
+        language += u'.ts'
     filename = os.path.join(os.path.abspath(u'..'), u'resources', u'i18n', language)
     download_file(u'en.ts', filename)
-    print u'\n** Please Note **\n'
-    print u'In order to get this file into OpenLP and onto the Pootle ' + \
+    print u'   ** Please Note **'
+    print u'   In order to get this file into OpenLP and onto the Pootle ' + \
         u'translation server you will need to subscribe to the OpenLP' + \
         u'Translators mailing list, and request that your language file ' + \
-        u'be added to the project.\n'
+        u'be added to the project.'
     print u'   Done'
 
 def process_stack(command_stack):
@@ -278,7 +327,7 @@ def process_stack(command_stack):
             elif command == Command.Generate:
                 generate_binaries()
             elif command == Command.Create:
-                command, arguments = command_stack[command_stack.current_index]
+                arguments = command_stack.arguments()
                 create_translation(*arguments)
         print u'Finished processing commands.'
     else:
@@ -293,7 +342,7 @@ def main():
     parser = OptionParser(usage=usage)
     parser.add_option('-d', '--download-ts', dest='download',
         action='store_true', help='download language files from Pootle')
-    parser.add_option('-c', '--create', dest=u'create', metavar='LANG',
+    parser.add_option('-c', '--create', dest='create', metavar='LANG',
         help='create a new translation file for language LANG, e.g. "en_GB"')
     parser.add_option('-p', '--prepare', dest='prepare', action='store_true',
         help='generate a project file, used to update the translations')
@@ -330,4 +379,3 @@ if __name__ == u'__main__':
         print u'You need to run this script from the scripts directory.'
     else:
         main()
-

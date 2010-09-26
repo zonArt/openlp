@@ -27,6 +27,7 @@
 Provide the theme XML and handling functions for OpenLP v2 themes.
 """
 import os
+import re
 
 from xml.dom.minidom import Document
 from xml.etree.ElementTree import ElementTree, XML
@@ -85,6 +86,13 @@ class ThemeLevel(object):
     Global = 1
     Service = 2
     Song = 3
+
+boolean_list = [u'italics', u'override', u'outline', u'shadow', \
+u'slide_transition']
+
+integer_list =[u'proportion', u'line_adjustment', u'x', u'height', u'y', \
+u'width', u'shadow_size', u'outline_size', u'horizontal_align', \
+u'vertical_align', u'wrap_style' ]
 
 class ThemeXML(object):
     """
@@ -326,16 +334,14 @@ class ThemeXML(object):
 
     def dump_xml(self):
         """
-        Dump the XML to file.
+        Dump the XML to file used for debugging
         """
-        # Debugging aid to see what we have
         return self.theme_xml.toprettyxml(indent=u'  ')
 
     def extract_xml(self):
         """
-        Pull out the XML string.
+        Print out the XML string.
         """
-        # Print our newly created XML
         return self.theme_xml.toxml(u'utf-8').decode(u'utf-8')
 
     def extract_formatted_xml(self):
@@ -372,33 +378,37 @@ class ThemeXML(object):
             if element.getchildren():
                 master = element.tag + u'_'
             else:
-                #background transparent tags have no children so special case
+                # background transparent tags have no children so special case
                 if element.tag == u'background':
                     for e in element.attrib.iteritems():
-                        setattr(self, element.tag + u'_' + e[0], e[1])
+                        self._create_attr(element.tag , e[0], e[1])
             if element.attrib:
                 for e in element.attrib.iteritems():
                     if master == u'font_' and e[0] == u'type':
                         master += e[1] + u'_'
                     elif master == u'display_' and (element.tag == u'shadow' \
                         or element.tag == u'outline' ):
-                        et = str_to_bool(element.text)
-                        setattr(self, master + element.tag, et)
-                        setattr(self, master + element.tag + u'_'+ e[0], e[1])
+                        self._create_attr(master, element.tag, element.text)
+                        self._create_attr(master, element.tag + u'_'+ e[0], e[1])
                     else:
                         field = master + e[0]
-                        if e[1] == u'True' or e[1] == u'False':
-                            setattr(self, field, str_to_bool(e[1]))
-                        else:
-                            setattr(self, field, e[1])
+                        self._create_attr(master, e[0], e[1])
             else:
                 if element.tag:
-                    field = master + element.tag
                     element.text = element.text.strip().lstrip()
-                    if element.text == u'True' or element.text == u'False':
-                        setattr(self, field, str_to_bool(element.text))
-                    else:
-                        setattr(self, field, element.text)
+                    self._create_attr(master , element.tag, element.text)
+
+    def _create_attr(self, master , element, value):
+        """
+        Create the attributes with the correct data types and name format
+        """
+        field = self._de_hump(element)
+        if field in boolean_list:
+            setattr(self, master + field, str_to_bool(value))
+        elif field in integer_list:
+            setattr(self, master + field, int(value))
+        else:
+            setattr(self, master + field, unicode(value))
 
     def __str__(self):
         """
@@ -409,3 +419,11 @@ class ThemeXML(object):
             if key[0:1] != u'_':
                 theme_strings.append(u'%30s: %s' % (key, getattr(self, key)))
         return u'\n'.join(theme_strings)
+
+    def _de_hump(self, name):
+        """
+        Change Camel Case string to python string
+        """
+        s1 = re.sub(u'(.)([A-Z][a-z]+)', r'\1_\2', name)
+        return re.sub(u'([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
+

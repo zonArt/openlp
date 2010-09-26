@@ -122,12 +122,12 @@ class MainDisplay(DisplayWidget):
             self.scene = QtGui.QGraphicsScene(self)
             self.setScene(self.scene)
             self.scene.addItem(self.webView)
-            self.webView.setGeometry(QtCore.QRectF(0, 0, 
+            self.webView.setGeometry(QtCore.QRectF(0, 0,
                 self.screen[u'size'].width(), self.screen[u'size'].height()))
         except AttributeError:
             #  QGraphicsWebView a recent addition, so fall back to QWebView
             self.webView = QtWebKit.QWebView(self)
-            self.webView.setGeometry(0, 0, 
+            self.webView.setGeometry(0, 0,
                 self.screen[u'size'].width(), self.screen[u'size'].height())
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
@@ -164,7 +164,7 @@ class MainDisplay(DisplayWidget):
                     - splash_image.height()) / 2,
                 splash_image)
             serviceItem = ServiceItem()
-            serviceItem.bg_frame = initialFrame
+            serviceItem.bg_image_bytes = image_to_byte(initialFrame)
             self.webView.setHtml(build_html(serviceItem, self.screen,
                 self.parent.alertTab, self.isLive))
             self.initialFrame = True
@@ -183,6 +183,9 @@ class MainDisplay(DisplayWidget):
             The slide text to be displayed
         """
         log.debug(u'text')
+        # Wait for the webview to update before displayiong text.
+        while not self.loaded:
+            Receiver.send_message(u'openlp_process_events')
         self.frame.evaluateJavaScript(u'show_text("%s")' % \
             slide.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
         return self.preview()
@@ -234,8 +237,11 @@ class MainDisplay(DisplayWidget):
         Display an image, as is.
         """
         if image:
-            js = u'show_image("data:image/png;base64,%s");' % \
-                image_to_byte(image)
+            if isinstance(image, QtGui.QImage):
+                js = u'show_image("data:image/png;base64,%s");' % \
+                    image_to_byte(image)
+            else:
+                js = u'show_image("data:image/png;base64,%s");' % image
         else:
             js = u'show_image("");'
         self.frame.evaluateJavaScript(js)
@@ -246,7 +252,7 @@ class MainDisplay(DisplayWidget):
         Used after Image plugin has changed the background
         """
         log.debug(u'resetImage')
-        self.displayImage(self.serviceItem.bg_frame)
+        self.displayImage(self.serviceItem.bg_image_bytes)
 
     def resetVideo(self):
         """
@@ -318,7 +324,7 @@ class MainDisplay(DisplayWidget):
             # Wait for the fade to finish before geting the preview.
             # Important otherwise preview will have incorrect text if at all !
             if self.serviceItem.themedata and \
-                self.serviceItem.themedata.display_slideTransition:
+                self.serviceItem.themedata.display_slide_transition:
                 while self.frame.evaluateJavaScript(u'show_text_complete()') \
                     .toString() == u'false':
                     Receiver.send_message(u'openlp_process_events')
@@ -326,8 +332,12 @@ class MainDisplay(DisplayWidget):
         # Important otherwise first preview will miss the background !
         while not self.loaded:
             Receiver.send_message(u'openlp_process_events')
+        # if was hidden keep it hidden
         if self.isLive:
             self.setVisible(True)
+        # if was hidden keep it hidden
+        if self.hide_mode and self.isLive:
+            self.hideDisplay(self.hide_mode)
         preview = QtGui.QImage(self.screen[u'size'].width(),
             self.screen[u'size'].height(),
             QtGui.QImage.Format_ARGB32_Premultiplied)
@@ -335,7 +345,6 @@ class MainDisplay(DisplayWidget):
         painter.setRenderHint(QtGui.QPainter.Antialiasing)
         self.frame.render(painter)
         painter.end()
-        # Make display show up if in single screen mode
         return preview
 
     def buildHtml(self, serviceItem):
