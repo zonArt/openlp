@@ -183,6 +183,9 @@ class MainDisplay(DisplayWidget):
             The slide text to be displayed
         """
         log.debug(u'text')
+        # Wait for the webview to update before displayiong text.
+        while not self.loaded:
+            Receiver.send_message(u'openlp_process_events')
         self.frame.evaluateJavaScript(u'show_text("%s")' % \
             slide.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
         return self.preview()
@@ -234,8 +237,11 @@ class MainDisplay(DisplayWidget):
         Display an image, as is.
         """
         if image:
-            js = u'show_image("data:image/png;base64,%s");' % \
-                image_to_byte(image)
+            if isinstance(image, QtGui.QImage):
+                js = u'show_image("data:image/png;base64,%s");' % \
+                    image_to_byte(image)
+            else:
+                js = u'show_image("data:image/png;base64,%s");' % image
         else:
             js = u'show_image("");'
         self.frame.evaluateJavaScript(js)
@@ -246,7 +252,7 @@ class MainDisplay(DisplayWidget):
         Used after Image plugin has changed the background
         """
         log.debug(u'resetImage')
-        self.displayImage(self.serviceItem.bg_frame)
+        self.displayImage(self.serviceItem.bg_image_bytes)
 
     def resetVideo(self):
         """
@@ -318,7 +324,7 @@ class MainDisplay(DisplayWidget):
             # Wait for the fade to finish before geting the preview.
             # Important otherwise preview will have incorrect text if at all !
             if self.serviceItem.themedata and \
-                self.serviceItem.themedata.display_slideTransition:
+                self.serviceItem.themedata.display_slide_transition:
                 while self.frame.evaluateJavaScript(u'show_text_complete()') \
                     .toString() == u'false':
                     Receiver.send_message(u'openlp_process_events')

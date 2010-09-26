@@ -236,7 +236,7 @@ class ServiceManager(QtGui.QWidget):
         self.addToAction = self.dndMenu.addAction(
             translate('OpenLP.ServiceManager', '&Add to Selected Item'))
         self.addToAction.setIcon(build_icon(u':/general/general_edit.png'))
-        #build the context menu
+        # build the context menu
         self.menu = QtGui.QMenu()
         self.editAction = self.menu.addAction(
             translate('OpenLP.ServiceManager', '&Edit Item'))
@@ -559,7 +559,7 @@ class ServiceManager(QtGui.QWidget):
                 QtCore.QVariant(item[u'order']))
             for count, frame in enumerate(serviceitem.get_frames()):
                 treewidgetitem1 = QtGui.QTreeWidgetItem(treewidgetitem)
-                text = frame[u'title']
+                text = frame[u'title'].replace(u'\n', u' ')
                 treewidgetitem1.setText(0, text[:40])
                 treewidgetitem1.setData(0, QtCore.Qt.UserRole,
                     QtCore.QVariant(count))

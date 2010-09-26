@@ -63,7 +63,7 @@ class SongsPlugin(Plugin):
         log.info(u'Songs Initialising')
         Plugin.initialise(self)
         self.mediaItem.displayResultsSong(
-            self.manager.get_all_objects(Song, order_by_ref=Song.title))
+            self.manager.get_all_objects(Song, order_by_ref=Song.search_title))
 
     def getMediaManagerItem(self):
         """
@@ -140,7 +140,7 @@ class SongsPlugin(Plugin):
             Song.theme_name == oldTheme)
         for song in songsUsingTheme:
             song.theme_name = newTheme
-            self.custommanager.save_object(song)
+            self.manager.save_object(song)
 
     def importSongs(self, format, **kwargs):
         class_ = SongFormat.get_class(format)

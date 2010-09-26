@@ -343,7 +343,7 @@ class Ui_MainWindow(object):
         Set up the translation system
         """
         MainWindow.mainTitle = translate('OpenLP.MainWindow', 'OpenLP 2.0')
-        MainWindow.language = translate('OpenLP.MainWindow', 'English')
+#        MainWindow.language = translate('OpenLP.MainWindow', 'English')
         MainWindow.setWindowTitle(MainWindow.mainTitle)
         self.FileMenu.setTitle(translate('OpenLP.MainWindow', '&File'))
         self.FileImportMenu.setTitle(translate('OpenLP.MainWindow', '&Import'))
