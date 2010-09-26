@@ -52,8 +52,8 @@ class Ui_FileRenameDialog(object):
         QtCore.QMetaObject.connectSlotsByName(FileRenameDialog)
 
     def retranslateUi(self, FileRenameDialog):
-        FileRenameDialog.setWindowTitle(self.transitionGroupBox.setTitle(
-            translate('OpenLP.FileRenameForm', 'File Rename')))
+        FileRenameDialog.setWindowTitle(translate('OpenLP.FileRenameForm',
+            'File Rename'))
         self.FileRenameLabel.setText(translate('OpenLP.FileRenameForm',
             'New File Name:'))
 
