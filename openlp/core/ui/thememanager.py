@@ -270,37 +270,37 @@ class ThemeManager(QtGui.QWidget):
             save_to = os.path.join(self.path, theme_name, filename)
             save_from = oldThemeData.background_filename
         new_theme.add_font(unicode(oldThemeData.font_main_name),
-                unicode(oldThemeData.font_main_color),
-                unicode(oldThemeData.font_main_proportion),
-                unicode(oldThemeData.font_main_override), u'main',
-                unicode(oldThemeData.font_main_weight),
-                unicode(oldThemeData.font_main_italics),
-                unicode(oldThemeData.font_main_line_adjustment),
-                unicode(oldThemeData.font_main_x),
-                unicode(oldThemeData.font_main_y),
-                unicode(oldThemeData.font_main_width),
-                unicode(oldThemeData.font_main_height))
+            unicode(oldThemeData.font_main_color),
+            unicode(oldThemeData.font_main_proportion),
+            unicode(oldThemeData.font_main_override), u'main',
+            unicode(oldThemeData.font_main_weight),
+            unicode(oldThemeData.font_main_italics),
+            unicode(oldThemeData.font_main_line_adjustment),
+            unicode(oldThemeData.font_main_x),
+            unicode(oldThemeData.font_main_y),
+            unicode(oldThemeData.font_main_width),
+            unicode(oldThemeData.font_main_height))
         new_theme.add_font(unicode(oldThemeData.font_footer_name),
-                unicode(oldThemeData.font_footer_color),
-                unicode(oldThemeData.font_footer_proportion),
-                unicode(oldThemeData.font_footer_override), u'footer',
-                unicode(oldThemeData.font_footer_weight),
-                unicode(oldThemeData.font_footer_italics),
-                0, # line adjustment
-                unicode(oldThemeData.font_footer_x),
-                unicode(oldThemeData.font_footer_y),
-                unicode(oldThemeData.font_footer_width),
-                unicode(oldThemeData.font_footer_height))
+            unicode(oldThemeData.font_footer_color),
+            unicode(oldThemeData.font_footer_proportion),
+            unicode(oldThemeData.font_footer_override), u'footer',
+            unicode(oldThemeData.font_footer_weight),
+            unicode(oldThemeData.font_footer_italics),
+            0, # line adjustment
+            unicode(oldThemeData.font_footer_x),
+            unicode(oldThemeData.font_footer_y),
+            unicode(oldThemeData.font_footer_width),
+            unicode(oldThemeData.font_footer_height))
         new_theme.add_display(unicode(oldThemeData.display_shadow),
-                unicode(oldThemeData.display_shadow_color),
-                unicode(oldThemeData.display_outline),
-                unicode(oldThemeData.display_outline_color),
-                unicode(oldThemeData.display_horizontal_align),
-                unicode(oldThemeData.display_vertical_align),
-                unicode(oldThemeData.display_wrap_style),
-                unicode(oldThemeData.display_slide_transition),
-                unicode(oldThemeData.display_shadow_size),
-                unicode(oldThemeData.display_outline_size))
+            unicode(oldThemeData.display_shadow_color),
+            unicode(oldThemeData.display_outline),
+            unicode(oldThemeData.display_outline_color),
+            unicode(oldThemeData.display_horizontal_align),
+            unicode(oldThemeData.display_vertical_align),
+            unicode(oldThemeData.display_wrap_style),
+            unicode(oldThemeData.display_slide_transition),
+            unicode(oldThemeData.display_shadow_size),
+            unicode(oldThemeData.display_outline_size))
         theme = new_theme.extract_xml()
         pretty_theme = new_theme.extract_formatted_xml()
         self.saveTheme(newThemeName, theme, pretty_theme, save_from, save_to)
