@@ -24,36 +24,19 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import logging
+from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, build_icon, translate
-from openlp.plugins.images.lib import ImageMediaItem
+from filerenamedialog import Ui_FileRenameDialog
+from openlp.core.lib import translate
 
-log = logging.getLogger(__name__)
-
-class ImagePlugin(Plugin):
-    log.info(u'Image Plugin loaded')
-
-    def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Images', u'1.9.4', plugin_helpers)
-        self.weight = -7
-        self.icon_path = u':/plugins/plugin_images.png'
-        self.icon = build_icon(self.icon_path)
-
-    def getMediaManagerItem(self):
-        # Create the MediaManagerItem object
-        return ImageMediaItem(self, self.icon, self.name)
-
-    def about(self):
-        about_text = translate('ImagePlugin', '<strong>Image Plugin</strong>'
-            '<br />The image plugin provides displaying of images.<br />One '
-            'of the distinguishing features of this plugin is the ability to '
-            'group a number of images together in the service manager, making '
-            'the displaying of multiple images easier. This plugin can also '
-            'make use of OpenLP\'s "timed looping" feature to create a slide '
-            'show that runs automatically. In addition to this, images from '
-            'the plugin can be used to override the current theme\'s '
-            'background, which renders text-based items like songs with the '
-            'selected image as a background instead of the background '
-            'provided by the theme.')
-        return about_text
+class FileRenameForm(QtGui.QDialog, Ui_FileRenameDialog):
+    """
+    The exception dialog
+    """
+    def __init__(self, parent):
+        QtGui.QDialog.__init__(self, parent)
+        self.setupUi(self)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'),
+            self.accept)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
+            self.reject)
