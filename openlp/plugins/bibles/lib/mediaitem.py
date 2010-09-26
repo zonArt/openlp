@@ -407,21 +407,21 @@ class BibleMediaItem(MediaManagerItem):
                 self.initialiseChapterVerse(bible, book[u'name'],
                     book[u'chapters'])
 
-    def initialiseChapterVerse(self, bible, book, chapters):
+    def initialiseChapterVerse(self, bible, book, chapter_count):
         log.debug(u'initialiseChapterVerse %s, %s', bible, book)
-        self.chapters_from = chapters
-        self.verses = self.parent.manager.get_verse_count(bible, book, 1)
-        if self.verses == 0:
+        self.chapter_count = chapter_count
+        verse_count = self.parent.manager.get_verse_count(bible, book, 1)
+        if verse_count == 0:
             self.AdvancedSearchButton.setEnabled(False)
             self.AdvancedMessage.setText(
                 translate('BiblesPlugin.MediaItem', 'Bible not fully loaded.'))
         else:
             self.AdvancedSearchButton.setEnabled(True)
             self.AdvancedMessage.setText(u'')
-            self.adjustComboBox(1, self.chapters_from, self.AdvancedFromChapter)
-            self.adjustComboBox(1, self.chapters_from, self.AdvancedToChapter)
-            self.adjustComboBox(1, self.verses, self.AdvancedFromVerse)
-            self.adjustComboBox(1, self.verses, self.AdvancedToVerse)
+            self.adjustComboBox(1, self.chapter_count, self.AdvancedFromChapter)
+            self.adjustComboBox(1, self.chapter_count, self.AdvancedToChapter)
+            self.adjustComboBox(1, verse_count, self.AdvancedFromVerse)
+            self.adjustComboBox(1, verse_count, self.AdvancedToVerse)
 
     def onAdvancedVersionComboBox(self):
         self.initialiseBible(
@@ -435,44 +435,65 @@ class BibleMediaItem(MediaManagerItem):
             self.AdvancedBookComboBox.itemData(item).toInt()[0])
 
     def onAdvancedFromVerse(self):
-        frm = int(self.AdvancedFromVerse.currentText())
-        chapter_frm = int(self.AdvancedFromChapter.currentText())
+        chapter_from = int(self.AdvancedFromChapter.currentText())
         chapter_to = int(self.AdvancedToChapter.currentText())
-        if chapter_frm == chapter_to:
+        if chapter_from == chapter_to:
             bible = unicode(self.AdvancedVersionComboBox.currentText())
             book = unicode(self.AdvancedBookComboBox.currentText())
-            verses = self.parent.manager.get_verse_count(bible, book, chapter_to)
-            self.adjustComboBox(frm, verses, self.AdvancedToVerse)
+            verse_from = int(self.AdvancedFromVerse.currentText())
+            verse_count = self.parent.manager.get_verse_count(bible, book,
+                chapter_to)
+            self.adjustComboBox(verse_from, verse_count,
+                self.AdvancedToVerse, True)
 
     def onAdvancedToChapter(self):
-        chapter_frm = int(self.AdvancedFromChapter.currentText())
-        chapter_to = int(self.AdvancedToChapter.currentText())
         bible = unicode(self.AdvancedVersionComboBox.currentText())
         book = unicode(self.AdvancedBookComboBox.currentText())
-        verses = self.parent.manager.get_verse_count(bible, book, chapter_to)
-        if chapter_frm != chapter_to:
-            self.adjustComboBox(1, verses, self.AdvancedToVerse)
+        chapter_from = int(self.AdvancedFromChapter.currentText())
+        chapter_to = int(self.AdvancedToChapter.currentText())
+        verse_from = int(self.AdvancedFromVerse.currentText())
+        verse_to = int(self.AdvancedToVerse.currentText())
+        verse_count = self.parent.manager.get_verse_count(bible, book,
+            chapter_to)
+        if chapter_from == chapter_to and verse_from > verse_to:
+            self.adjustComboBox(verse_from, verse_count, self.AdvancedToVerse)
         else:
-            frm = int(self.AdvancedFromVerse.currentText())
-            to = int(self.AdvancedToVerse.currentText())
-            if to < frm:
-                self.adjustComboBox(frm, verses, self.AdvancedToVerse)
+            self.adjustComboBox(1, verse_count, self.AdvancedToVerse)
 
     def onAdvancedFromChapter(self):
         bible = unicode(self.AdvancedVersionComboBox.currentText())
         book = unicode(self.AdvancedBookComboBox.currentText())
-        chapter_frm = int(self.AdvancedFromChapter.currentText())
-        self.adjustComboBox(chapter_frm, self.chapters_from,
-            self.AdvancedToChapter)
-        verse = self.parent.manager.get_verse_count(bible, book, chapter_frm)
-        self.adjustComboBox(1, verse, self.AdvancedToVerse)
-        self.adjustComboBox(1, verse, self.AdvancedFromVerse)
+        chapter_from = int(self.AdvancedFromChapter.currentText())
+        chapter_to = int(self.AdvancedToChapter.currentText())
+        verse_count = self.parent.manager.get_verse_count(bible, book,
+            chapter_from)
+        self.adjustComboBox(1, verse_count, self.AdvancedFromVerse)
+        if chapter_from > chapter_to:
+            self.adjustComboBox(1, verse_count, self.AdvancedToVerse)
+            self.adjustComboBox(chapter_from, self.chapter_count,
+                self.AdvancedToChapter)
+        elif chapter_from == chapter_to:
+            self.adjustComboBox(chapter_from, self.chapter_count,
+                self.AdvancedToChapter)
+            self.adjustComboBox(1, verse_count, self.AdvancedToVerse, True)
+        else:
+            self.adjustComboBox(chapter_from, self.chapter_count,
+                self.AdvancedToChapter, True)
 
-    def adjustComboBox(self, range_from, range_to, combo):
+    def adjustComboBox(self, range_from, range_to, combo, restore=False):
+        """
+        ``restore``
+            If True, then the combo's currentText will be restored after
+            adjusting (if possible).
+        """
         log.debug(u'adjustComboBox %s, %s, %s', combo, range_from, range_to)
+        if restore:
+            oldText = unicode(combo.currentText())
         combo.clear()
         for i in range(int(range_from), int(range_to) + 1):
             combo.addItem(unicode(i))
+        if restore and combo.findText(oldText) != -1:
+            combo.setCurrentIndex(combo.findText(oldText))
 
     def onAdvancedSearchButton(self):
         log.debug(u'Advanced Search Button pressed')
