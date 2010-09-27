@@ -559,7 +559,7 @@ class ServiceManager(QtGui.QWidget):
                 QtCore.QVariant(item[u'order']))
             for count, frame in enumerate(serviceitem.get_frames()):
                 treewidgetitem1 = QtGui.QTreeWidgetItem(treewidgetitem)
-                text = frame[u'title']
+                text = frame[u'title'].replace(u'\n', u' ')
                 treewidgetitem1.setText(0, text[:40])
                 treewidgetitem1.setData(0, QtCore.Qt.UserRole,
                     QtCore.QVariant(count))
