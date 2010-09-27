@@ -28,6 +28,7 @@ import re
 import sys
 try:
     import enchant
+    from enchant import DictNotFoundError
     enchant_available = True
 except ImportError:
     enchant_available = False
@@ -43,7 +44,10 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         QtGui.QPlainTextEdit.__init__(self, *args)
         # Default dictionary based on the current locale.
         if enchant_available:
-            self.dict = enchant.Dict()
+            try:
+                self.dict = enchant.Dict()
+            except DictNotFoundError:
+                self.dict = enchant.Dict(u'en_US')
             self.highlighter = Highlighter(self.document())
             self.highlighter.setDict(self.dict)
 

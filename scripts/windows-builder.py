@@ -179,7 +179,16 @@ def copy_windows_files():
     copy(os.path.join(iss_path, u'OpenLP.ico'), os.path.join(dist_path, u'OpenLP.ico'))
     copy(os.path.join(iss_path, u'LICENSE.txt'), os.path.join(dist_path, u'LICENSE.txt'))
 
+def update_translations():
+    print u'Updating translations...'
+    os.chdir(script_path)
+    translation_utils = Popen(u'python translation_utils.py -dpu')
+    code = translation_utils.wait()
+    if code != 0:
+        print u'Error running translation_utils.py'
+
 def compile_translations():
+    print u'Compiling translations...'
     files = os.listdir(i18n_path)
     if not os.path.exists(os.path.join(dist_path, u'i18n')):
         os.makedirs(os.path.join(dist_path, u'i18n'))
@@ -221,6 +230,7 @@ def main():
     copy_enchant()
     copy_plugins()
     copy_windows_files()
+    update_translations()
     compile_translations()
     run_innosetup()
     print "Done."

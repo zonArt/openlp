@@ -23,39 +23,37 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-"""
-The :mod:`ui` module provides the core user interface for OpenLP
-"""
 
-class HideMode(object):
-    """
-    This is basically an enumeration class which specifies the mode of a Bible.
-    Mode refers to whether or not a Bible in OpenLP is a full Bible or needs to
-    be downloaded from the Internet on an as-needed basis.
-    """
-    Blank = 1
-    Theme = 2
-    Screen = 3
+from PyQt4 import QtCore, QtGui
 
-from filerenameform import FileRenameForm
-from maindisplay import MainDisplay
-from slidecontroller import HideMode
-from servicenoteform import ServiceNoteForm
-from serviceitemeditform import ServiceItemEditForm
-from screen import ScreenList
-from amendthemeform import AmendThemeForm
-from slidecontroller import SlideController
-from splashscreen import SplashScreen
-from generaltab import GeneralTab
-from themestab import ThemesTab
-from advancedtab import AdvancedTab
-from aboutform import AboutForm
-from pluginform import PluginForm
-from settingsform import SettingsForm
-from mediadockmanager import MediaDockManager
-from servicemanager import ServiceManager
-from thememanager import ThemeManager
+from openlp.core.lib import translate
 
-__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm',
-    'MainDisplay', 'SlideController', 'ServiceManager', 'ThemeManager',
-    'AmendThemeForm', 'MediaDockManager', 'ServiceItemEditForm']
+class Ui_FileRenameDialog(object):
+    def setupUi(self, FileRenameDialog):
+        FileRenameDialog.setObjectName("FileRenameDialog")
+        FileRenameDialog.resize(400, 87)
+        self.buttonBox = QtGui.QDialogButtonBox(FileRenameDialog)
+        self.buttonBox.setGeometry(QtCore.QRect(210, 50, 171, 25))
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+        self.buttonBox.setObjectName("buttonBox")
+        self.widget = QtGui.QWidget(FileRenameDialog)
+        self.widget.setGeometry(QtCore.QRect(10, 10, 381, 35))
+        self.widget.setObjectName("widget")
+        self.horizontalLayout = QtGui.QHBoxLayout(self.widget)
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.FileRenameLabel = QtGui.QLabel(self.widget)
+        self.FileRenameLabel.setObjectName("FileRenameLabel")
+        self.horizontalLayout.addWidget(self.FileRenameLabel)
+        self.FileNameEdit = QtGui.QLineEdit(self.widget)
+        self.FileNameEdit.setObjectName("FileNameEdit")
+        self.horizontalLayout.addWidget(self.FileNameEdit)
+
+        self.retranslateUi(FileRenameDialog)
+        QtCore.QMetaObject.connectSlotsByName(FileRenameDialog)
+
+    def retranslateUi(self, FileRenameDialog):
+        FileRenameDialog.setWindowTitle(translate('OpenLP.FileRenameForm',
+            'File Rename'))
+        self.FileRenameLabel.setText(translate('OpenLP.FileRenameForm',
+            'New File Name:'))
+

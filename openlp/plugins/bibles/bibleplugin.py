@@ -37,7 +37,7 @@ class BiblePlugin(Plugin):
     log.info(u'Bible Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Bibles', u'1.9.2', plugin_helpers)
+        Plugin.__init__(self, u'Bibles', u'1.9.3', plugin_helpers)
         self.weight = -9
         self.icon_path = u':/plugins/plugin_bibles.png'
         self.icon = build_icon(self.icon_path)

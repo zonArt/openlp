@@ -27,8 +27,6 @@
 import logging
 from PyQt4 import QtWebKit
 
-from openlp.core.lib import image_to_byte
-
 log = logging.getLogger(__name__)
 
 HTMLSRC = u"""
@@ -60,7 +58,10 @@ body {
 #image {
     z-index:1;
 }
-#video {
+#video1 {
+    z-index:2;
+}
+#video2 {
     z-index:2;
 }
 #alert {
@@ -82,54 +83,12 @@ body {
 <script language="javascript">
     var timer = null;
     var video_timer = null;
+    var current_video = '1';
     var transition = %s;
 
     function show_video(state, path, volume, loop){
-        var vid = document.getElementById('video');
-        if(path != null){
-            vid.src = path;
-            vid.load();
-        }
-        if(volume != null){
-            vid.volume = volume;
-        }
-        switch(state){
-            case 'play':
-                vid.play();
-                vid.style.display = 'block';
-                if(loop)
-                    video_timer = setInterval('video_loop()', 200);
-                break;
-            case 'pause':
-                if(video_timer!=null){
-                    clearInterval(video_timer);
-                    video_timer = null;
-                }
-                vid.pause();
-                vid.style.display = 'block';
-                break;
-            case 'stop':
-                if(video_timer!=null){
-                    clearInterval(video_timer);
-                    video_timer = null;
-                }
-                vid.pause();
-                vid.style.display = 'none';
-                vid.load();
-                break;
-            case 'close':
-                if(video_timer!=null){
-                    clearInterval(video_timer);
-                    video_timer = null;
-                }
-                vid.pause();
-                vid.style.display = 'none';
-                vid.src = '';
-                break;
-        }
-    }
-    function video_loop(){
-        // The preferred method would be to use the video tag loop attribute
+        // Note, the preferred method for looping would be to use the 
+        // video tag loop attribute.
         // But QtWebKit doesn't support this. Neither does it support the
         // onended event, hence the setInterval()
         // In addition, setting the currentTime attribute to zero to restart
@@ -140,12 +99,73 @@ body {
         // Note, currently the background may go black between loops. Not 
         // desirable. Need to investigate using two <video>'s, and hiding/
         // preloading one, and toggle between the two when looping.
-        var vid = document.getElementById('video');
-        if(vid.ended||vid.currentTime+0.2>=vid.duration){
-            vid.load();
-            vid.play();
-        } 
+
+        if(current_video=='1'){
+            var vid = document.getElementById('video1');
+            var vid2 = document.getElementById('video2');
+        } else {
+            var vid = document.getElementById('video2');
+            var vid2 = document.getElementById('video1');
+        }
+        if(volume != null){
+            vid.volume = volume;
+            vid2.volume = volume;
+        }
+        switch(state){
+            case 'init':            
+                vid.src = path;
+                vid2.src = path;
+                if(loop == null) loop = false;
+                vid.looping = loop;
+                vid2.looping = loop;
+                vid.load();
+                break;
+            case 'load':
+                vid2.style.visibility = 'hidden';
+                vid2.load();
+                break;
+            case 'play':
+                vid.play();
+                vid.style.visibility = 'visible';
+                if(vid.looping){
+                    video_timer = setInterval(
+                        function() { 
+                            show_video('poll'); 
+                        }, 200);
+                }
+                break;
+            case 'pause':
+                if(video_timer!=null){
+                    clearInterval(video_timer);
+                    video_timer = null;
+                }
+                vid.pause();
+                break;
+            case 'stop':
+                show_video('pause');
+                vid.style.visibility = 'hidden';
+                break;
+            case 'poll':
+                if(vid.ended||vid.currentTime+0.2>vid.duration)
+                    show_video('swap');
+                break;
+            case 'swap':
+                show_video('pause');
+                if(current_video=='1')
+                    current_video = '2';
+                else
+                    current_video = '1';
+                show_video('play');
+                show_video('load');
+                break;
+            case 'close':
+                show_video('stop');
+                vid.src = '';
+                vid2.src = '';
+                break;
+        }
     }
+
     function show_image(src){
         var img = document.getElementById('image');
         img.src = src;
@@ -274,8 +294,11 @@ body {
 </script>
 </head>
 <body>
-<img id="image" class="size" src="%s" />
-<video id="video" class="size"></video>
+<img id="image" class="size" %s />
+<video id="video1" class="size" style="visibility:hidden" autobuffer preload>
+</video>
+<video id="video2" class="size" style="visibility:hidden" autobuffer preload>
+</video>
 %s
 <div id="footer" class="footer"></div>
 <div id="black" class="size"></div>
@@ -301,16 +324,16 @@ def build_html(item, screen, alert, islive):
     height = screen[u'size'].height()
     theme = item.themedata
     webkitvers = webkit_version()
-    if item.bg_frame:
-        image = u'data:image/png;base64,%s' % image_to_byte(item.bg_frame)
+    if item.bg_image_bytes:
+        image = u'src="data:image/png;base64,%s"' % item.bg_image_bytes
     else:
-        image = u''
+        image = u'style="display:none;"'
     html = HTMLSRC % (build_background_css(item, width, height),
         width, height,
         build_alert_css(alert, width),
         build_footer_css(item, height),
         build_lyrics_css(item, webkitvers),
-        u'true' if theme and theme.display_slideTransition and islive \
+        u'true' if theme and theme.display_slide_transition and islive \
             else u'false',
         image,
         build_lyrics_html(item, webkitvers))
@@ -347,18 +370,18 @@ def build_background_css(item, width, height):
                 background = \
                     u'background: ' \
                     u'-webkit-gradient(linear, left top, left bottom, ' \
-                    'from(%s), to(%s))' % (theme.background_startColor,
-                    theme.background_endColor)
+                    'from(%s), to(%s))' % (theme.background_start_color,
+                    theme.background_end_color)
             elif theme.background_direction == u'vertical':
                 background = \
                     u'background: -webkit-gradient(linear, left top, ' \
                     u'right top, from(%s), to(%s))' % \
-                    (theme.background_startColor, theme.background_endColor)
+                    (theme.background_start_color, theme.background_end_color)
             else:
                 background = \
                     u'background: -webkit-gradient(radial, %s 50%%, 100, %s ' \
                     u'50%%, %s, from(%s), to(%s))' % (width, width, width,
-                    theme.background_startColor, theme.background_endColor)
+                    theme.background_start_color, theme.background_end_color)
     return background
 
 def build_lyrics_css(item, webkitvers):
@@ -426,8 +449,10 @@ def build_lyrics_css(item, webkitvers):
             outline = build_lyrics_outline_css(theme)
         if theme.display_shadow:
             if theme.display_outline and webkitvers < 534.3:
-                shadow = u'padding-left: %spx; padding-top: %spx ' % \
-                    (theme.display_shadow_size, theme.display_shadow_size)
+                shadow = u'padding-left: %spx; padding-top: %spx;' % \
+                    (int(theme.display_shadow_size) +
+                    (int(theme.display_outline_size) * 2), 
+                    theme.display_shadow_size)
                 shadow += build_lyrics_outline_css(theme, True)
             else:
                 lyricsmain += u' text-shadow: %s %spx %spx;' % \
@@ -475,25 +500,29 @@ def build_lyrics_format_css(theme, width, height):
         Height of the lyrics block
 
     """
-    if theme.display_horizontalAlign == 2:
+    if theme.display_horizontal_align == 2:
         align = u'center'
-    elif theme.display_horizontalAlign == 1:
+    elif theme.display_horizontal_align == 1:
         align = u'right'
     else:
         align = u'left'
-    if theme.display_verticalAlign == 2:
+    if theme.display_vertical_align == 2:
         valign = u'bottom'
-    elif theme.display_verticalAlign == 1:
+    elif theme.display_vertical_align == 1:
         valign = u'middle'
     else:
         valign = u'top'
+    if theme.display_outline:
+        left_margin = int(theme.display_outline_size) * 2
+    else:
+        left_margin = 0
     lyrics = u'white-space:pre-wrap; word-wrap: break-word; ' \
         'text-align: %s; vertical-align: %s; font-family: %s; ' \
-        'font-size: %spt; color: %s; line-height: %d%%; ' \
-        'margin:0; padding:0; width: %spx; height: %spx; ' % \
+        'font-size: %spt; color: %s; line-height: %d%%; margin:0;' \
+        'padding:0; padding-left:%spx; width: %spx; height: %spx; ' % \
         (align, valign, theme.font_main_name, theme.font_main_proportion,
         theme.font_main_color, 100 + int(theme.font_main_line_adjustment),
-        width, height)
+        left_margin, width, height)
     if theme.display_outline:
         if webkit_version() < 534.3:
             lyrics += u' letter-spacing: 1px;'
@@ -547,7 +576,7 @@ def build_footer_css(item, height):
     font-size: %spt;
     color: %s;
     text-align: left;
-    white-space:nowrap;    
+    white-space:nowrap;
     """
     theme = item.themedata
     if not theme or not item.footer:

@@ -99,6 +99,7 @@ class MainDisplay(DisplayWidget):
         self.alertTab = None
         self.hide_mode = None
         self.setWindowTitle(u'OpenLP Display')
+        self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint |
             QtCore.Qt.WindowStaysOnTopHint)
         if self.isLive:
@@ -116,12 +117,18 @@ class MainDisplay(DisplayWidget):
         self.screen = self.screens.current
         self.setVisible(False)
         self.setGeometry(self.screen[u'size'])
-        self.scene = QtGui.QGraphicsScene()
-        self.setScene(self.scene)
-        self.webView = QtWebKit.QGraphicsWebView()
-        self.scene.addItem(self.webView)
-        self.webView.resize(self.screen[u'size'].width(),
-            self.screen[u'size'].height())
+        try:
+            self.webView = QtWebKit.QGraphicsWebView()
+            self.scene = QtGui.QGraphicsScene(self)
+            self.setScene(self.scene)
+            self.scene.addItem(self.webView)
+            self.webView.setGeometry(QtCore.QRectF(0, 0,
+                self.screen[u'size'].width(), self.screen[u'size'].height()))
+        except AttributeError:
+            #  QGraphicsWebView a recent addition, so fall back to QWebView
+            self.webView = QtWebKit.QWebView(self)
+            self.webView.setGeometry(0, 0,
+                self.screen[u'size'].width(), self.screen[u'size'].height())
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
         QtCore.QObject.connect(self.webView,
@@ -157,7 +164,7 @@ class MainDisplay(DisplayWidget):
                     - splash_image.height()) / 2,
                 splash_image)
             serviceItem = ServiceItem()
-            serviceItem.bg_frame = initialFrame
+            serviceItem.bg_image_bytes = image_to_byte(initialFrame)
             self.webView.setHtml(build_html(serviceItem, self.screen,
                 self.parent.alertTab, self.isLive))
             self.initialFrame = True
@@ -176,6 +183,9 @@ class MainDisplay(DisplayWidget):
             The slide text to be displayed
         """
         log.debug(u'text')
+        # Wait for the webview to update before displayiong text.
+        while not self.loaded:
+            Receiver.send_message(u'openlp_process_events')
         self.frame.evaluateJavaScript(u'show_text("%s")' % \
             slide.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
         return self.preview()
@@ -227,8 +237,11 @@ class MainDisplay(DisplayWidget):
         Display an image, as is.
         """
         if image:
-            js = u'show_image("data:image/png;base64,%s");' % \
-                image_to_byte(image)
+            if isinstance(image, QtGui.QImage):
+                js = u'show_image("data:image/png;base64,%s");' % \
+                    image_to_byte(image)
+            else:
+                js = u'show_image("data:image/png;base64,%s");' % image
         else:
             js = u'show_image("");'
         self.frame.evaluateJavaScript(js)
@@ -239,7 +252,7 @@ class MainDisplay(DisplayWidget):
         Used after Image plugin has changed the background
         """
         log.debug(u'resetImage')
-        self.displayImage(self.serviceItem.bg_frame)
+        self.displayImage(self.serviceItem.bg_image_bytes)
 
     def resetVideo(self):
         """
@@ -286,7 +299,7 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'video')
         self.loaded = True
-        js = u'show_video("play", "%s", %s, true);' % \
+        js = u'show_video("init", "%s", %s, true); show_video("play");' % \
             (videoPath.replace(u'\\', u'\\\\'), str(float(volume)/float(10)))
         self.frame.evaluateJavaScript(js)
         return self.preview()
@@ -306,11 +319,12 @@ class MainDisplay(DisplayWidget):
         # We must have a service item to preview
         if not hasattr(self, u'serviceItem'):
             return
+        Receiver.send_message(u'openlp_process_events')
         if self.isLive:
             # Wait for the fade to finish before geting the preview.
             # Important otherwise preview will have incorrect text if at all !
             if self.serviceItem.themedata and \
-                self.serviceItem.themedata.display_slideTransition:
+                self.serviceItem.themedata.display_slide_transition:
                 while self.frame.evaluateJavaScript(u'show_text_complete()') \
                     .toString() == u'false':
                     Receiver.send_message(u'openlp_process_events')
@@ -318,6 +332,12 @@ class MainDisplay(DisplayWidget):
         # Important otherwise first preview will miss the background !
         while not self.loaded:
             Receiver.send_message(u'openlp_process_events')
+        # if was hidden keep it hidden
+        if self.isLive:
+            self.setVisible(True)
+        # if was hidden keep it hidden
+        if self.hide_mode and self.isLive:
+            self.hideDisplay(self.hide_mode)
         preview = QtGui.QImage(self.screen[u'size'].width(),
             self.screen[u'size'].height(),
             QtGui.QImage.Format_ARGB32_Premultiplied)
@@ -325,9 +345,6 @@ class MainDisplay(DisplayWidget):
         painter.setRenderHint(QtGui.QPainter.Antialiasing)
         self.frame.render(painter)
         painter.end()
-        # Make display show up if in single screen mode
-        if self.isLive:
-            self.setVisible(True)
         return preview
 
     def buildHtml(self, serviceItem):
@@ -341,7 +358,9 @@ class MainDisplay(DisplayWidget):
         self.serviceItem = serviceItem
         html = build_html(self.serviceItem, self.screen, self.parent.alertTab,
             self.isLive)
+        log.debug(u'buildHtml - pre setHtml')
         self.webView.setHtml(html)
+        log.debug(u'buildHtml - post setHtml')
         if serviceItem.foot_text and serviceItem.foot_text:
             self.footer(serviceItem.foot_text)
         # if was hidden keep it hidden
