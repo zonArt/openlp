@@ -24,36 +24,36 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import logging
+from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, build_icon, translate
-from openlp.plugins.images.lib import ImageMediaItem
+from openlp.core.lib import translate
 
-log = logging.getLogger(__name__)
+class Ui_FileRenameDialog(object):
+    def setupUi(self, FileRenameDialog):
+        FileRenameDialog.setObjectName("FileRenameDialog")
+        FileRenameDialog.resize(400, 87)
+        self.buttonBox = QtGui.QDialogButtonBox(FileRenameDialog)
+        self.buttonBox.setGeometry(QtCore.QRect(210, 50, 171, 25))
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+        self.buttonBox.setObjectName("buttonBox")
+        self.widget = QtGui.QWidget(FileRenameDialog)
+        self.widget.setGeometry(QtCore.QRect(10, 10, 381, 35))
+        self.widget.setObjectName("widget")
+        self.horizontalLayout = QtGui.QHBoxLayout(self.widget)
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.FileRenameLabel = QtGui.QLabel(self.widget)
+        self.FileRenameLabel.setObjectName("FileRenameLabel")
+        self.horizontalLayout.addWidget(self.FileRenameLabel)
+        self.FileNameEdit = QtGui.QLineEdit(self.widget)
+        self.FileNameEdit.setObjectName("FileNameEdit")
+        self.horizontalLayout.addWidget(self.FileNameEdit)
 
-class ImagePlugin(Plugin):
-    log.info(u'Image Plugin loaded')
+        self.retranslateUi(FileRenameDialog)
+        QtCore.QMetaObject.connectSlotsByName(FileRenameDialog)
 
-    def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Images', u'1.9.4', plugin_helpers)
-        self.weight = -7
-        self.icon_path = u':/plugins/plugin_images.png'
-        self.icon = build_icon(self.icon_path)
+    def retranslateUi(self, FileRenameDialog):
+        FileRenameDialog.setWindowTitle(translate('OpenLP.FileRenameForm',
+            'File Rename'))
+        self.FileRenameLabel.setText(translate('OpenLP.FileRenameForm',
+            'New File Name:'))
 
-    def getMediaManagerItem(self):
-        # Create the MediaManagerItem object
-        return ImageMediaItem(self, self.icon, self.name)
-
-    def about(self):
-        about_text = translate('ImagePlugin', '<strong>Image Plugin</strong>'
-            '<br />The image plugin provides displaying of images.<br />One '
-            'of the distinguishing features of this plugin is the ability to '
-            'group a number of images together in the service manager, making '
-            'the displaying of multiple images easier. This plugin can also '
-            'make use of OpenLP\'s "timed looping" feature to create a slide '
-            'show that runs automatically. In addition to this, images from '
-            'the plugin can be used to override the current theme\'s '
-            'background, which renders text-based items like songs with the '
-            'selected image as a background instead of the background '
-            'provided by the theme.')
-        return about_text
