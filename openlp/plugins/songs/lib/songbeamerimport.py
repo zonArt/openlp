@@ -28,11 +28,33 @@ The :mod:`songbeamerimport` module provides the functionality for importing
  SongBeamer songs into the OpenLP database.
 """
 import os
+import re
 import logging
 
 from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
+
+class SongBeamerTypes(object):
+    MarkTypes = {
+        u'Refrain': u'C',
+        u'Chorus': u'C',
+        u'Vers': u'V',
+        u'Verse': u'V',
+        u'Strophe': u'V', 
+        u'Intro': u'I',
+        u'Coda': u'E',
+        u'Ending': u'E',
+        u'Bridge': u'B',
+        u'Interlude': u'B', 
+        u'Zwischenspiel': u'B',
+        u'Pre-Chorus': u'P',
+        u'Pre-Refrain': u'P', 
+        u'Pre-Bridge': u'O',
+        u'Pre-Coda': u'O',
+        u'Unbekannt': u'O', 
+        u'Unknown': u'O'
+        }
 
 class SongBeamerImport(SongImport):
     """
@@ -117,7 +139,7 @@ class SongBeamerImport(SongImport):
         elif tag_val[0] == '#Categories':
             pass
         elif tag_val[0] == '#CCLI':
-            pass
+            self.ccli_number = tag_val[1]
         elif tag_val[0] == '#Chords':
             pass
         elif tag_val[0] == '#ChurchSongID':
@@ -125,7 +147,7 @@ class SongBeamerImport(SongImport):
         elif tag_val[0] == '#ColorChords':
             pass
         elif tag_val[0] == '#Comments':
-            pass
+            self.comments = tag_val[1]
         elif tag_val[0] == '#Editor':
             pass
         elif tag_val[0] == '#Font':
@@ -162,9 +184,12 @@ class SongBeamerImport(SongImport):
         elif tag_val[0] == '#QuickFind':
             pass
         elif tag_val[0] == '#Rights':
-            pass
+            song_book_pub = tag_val[1]
         elif tag_val[0] == '#Songbook':
-            pass
+            book_num = tag_val[1].split(' / ')
+            self.song_book_name = book_num[0]
+            if len(book_num) == book_num[1]:
+                self.song_number = u''
         elif tag_val[0] == '#Speed':
             pass
         elif tag_val[0] == '#TextAlign':
@@ -195,34 +220,10 @@ class SongBeamerImport(SongImport):
                 
         
     def check_verse_marks(self, line):
-            if line.startswith('Refrain') or \
-                line.startswith('Chorus'):
-                self.current_verse_type = u'V'
-            elif line.startswith('Vers') or  \
-                line.startswith('Verse') or \
-                line.startswith('Strophe'): 
-                self.current_verse_type = u'V'
-            elif line.startswith('Intro'):
-                pass
-            elif line.startswith('Coda'):
-                pass
-            elif line.startswith('Ending'):
-                pass
-            elif line.startswith('Bridge'):
-                pass
-            elif line.startswith('Interlude'): 
-                pass
-            elif line.startswith('Zwischenspiel'):
-                pass
-            elif line.startswith('Pre-Chorus'):
-                pass
-            elif line.startswith('Pre-Refrain'): 
-                pass
-            elif line.startswith('Pre-Bridge'):
-                pass
-            elif line.startswith('Pre-Coda'):
-                pass
-            elif line.startswith('Unbekannt'): 
-                pass
-            elif line.startswith('Unknown'):
-                pass
+        marks = line.split(' ')
+        if len(marks) <= 2 and \
+            marks[0] in SongBeamerTypes.MarkTypes:
+            self.current_verse_type = SongBeamerTypes.MarkTypes[marks[0]]
+            if len(marks) == 2:
+                #TODO: may check, because of only digits are allowed
+                self.current_verse_type += marks[1]
