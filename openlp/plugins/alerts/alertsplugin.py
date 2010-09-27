@@ -102,16 +102,16 @@ class AlertsPlugin(Plugin):
             'on the display screen')
         return about_text
 
-    def setPluginStrings(self):
+    def setPluginTextStrings(self):
         """
         Called to define all translatable texts of the plugin
         """
         ## Name PluginList ##
-        self.strings[StringContent.Name] = {
+        self.text_strings[StringContent.Name] = {
             u'singular': translate('AlertsPlugin', 'Alert'),
             u'plural': translate('AlertsPlugin', 'Alerts')
         }
         ## Name for MediaDockManager, SettingsManager ##
-        self.strings[StringContent.VisibleName] = {
+        self.text_strings[StringContent.VisibleName] = {
             u'title': translate('AlertsPlugin', 'Alerts')
         }

@@ -129,8 +129,8 @@ class Plugin(QtCore.QObject):
         """
         QtCore.QObject.__init__(self)
         self.name = name
-        self.strings = {}
-        self.setPluginStrings()
+        self.text_strings = {}
+        self.setPluginTextStrings()
         if version:
             self.version = version
         self.settingsSection = self.name.lower()
@@ -305,13 +305,13 @@ class Plugin(QtCore.QObject):
         pass
      
     def getString(self, name):
-        if name in self.strings:
-            return self.strings[name]
+        if name in self.text_strings:
+            return self.text_strings[name]
         else:
             # do something here?
             return None
 
-    def setPluginStrings(self):
+    def setPluginTextStrings(self):
         """
         Called to define all translatable texts of the plugin
         """

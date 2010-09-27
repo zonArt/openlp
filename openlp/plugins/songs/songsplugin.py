@@ -149,47 +149,47 @@ class SongsPlugin(Plugin):
         importer.register(self.mediaItem.import_wizard)
         return importer
 
-    def setPluginStrings(self):
+    def setPluginTextStrings(self):
         """
         Called to define all translatable texts of the plugin
         """
         ## Name PluginList ##
-        self.strings[StringContent.Name] = {
+        self.text_strings[StringContent.Name] = {
             u'singular': translate('SongsPlugin', 'Song'),
             u'plural': translate('SongsPlugin', 'Songs')
         }
         ## Name for MediaDockManager, SettingsManager ##
-        self.strings[StringContent.VisibleName] = {
+        self.text_strings[StringContent.VisibleName] = {
             u'title': translate('SongsPlugin', 'Songs')
         }
         # Middle Header Bar
         ## New Button ##
-        self.strings[StringContent.New] = {
+        self.text_strings[StringContent.New] = {
             u'title': translate('SongsPlugin', 'Add'),
             u'tooltip': translate('SongsPlugin', 'Add a new Song')
         }
         ## Edit Button ##
-        self.strings[StringContent.Edit] = {
+        self.text_strings[StringContent.Edit] = {
             u'title': translate('SongsPlugin', 'Edit'),
             u'tooltip': translate('SongsPlugin', 'Edit the selected Song')
         }
         ## Delete Button ##
-        self.strings[StringContent.Delete] = {
+        self.text_strings[StringContent.Delete] = {
             u'title': translate('SongsPlugin', 'Delete'),
             u'tooltip': translate('SongsPlugin', 'Delete the selected Song')
         }
         ## Preview ##
-        self.strings[StringContent.Preview] = {
+        self.text_strings[StringContent.Preview] = {
             u'title': translate('SongsPlugin', 'Preview'),
             u'tooltip': translate('SongsPlugin', 'Preview the selected Song')
         }
         ## Live  Button ##
-        self.strings[StringContent.Live] = {
+        self.text_strings[StringContent.Live] = {
             u'title': translate('SongsPlugin', 'Live'),
             u'tooltip': translate('SongsPlugin', 'Send the selected Song live')
         }
         ## Add to service Button ##
-        self.strings[StringContent.Service] = {
+        self.text_strings[StringContent.Service] = {
             u'title': translate('SongsPlugin', 'Service'),
             u'tooltip': translate('SongsPlugin', 'Add the selected Song to the service')
         }

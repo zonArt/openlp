@@ -82,7 +82,8 @@ class LanguageManager(object):
         """
         translator = QtCore.QTranslator()
         translator.load(qm_file)
-        return translator.translate('OpenLP.MainWindow', 'English')
+        return translator.translate('OpenLP.MainWindow', 'English',
+            'Please add the name of your language here')
 
     @staticmethod
     def get_language():
@@ -107,12 +108,13 @@ class LanguageManager(object):
         ``action``
             The language menu option
         """
-        action_name = u'%s' % action.objectName()
-        qm_list = LanguageManager.get_qm_list()
-        if LanguageManager.auto_language:
-            language = u'[%s]' % qm_list[action_name]
-        else:
+        language = u'en'
+        if action:
+            action_name = u'%s' % action.objectName()
+            qm_list = LanguageManager.get_qm_list()
             language = u'%s' % qm_list[action_name]
+        if LanguageManager.auto_language:
+            language = u'[%s]' % language
         QtCore.QSettings().setValue(
             u'general/language', QtCore.QVariant(language))
         log.info(u'Language file: \'%s\' written to conf file' % language)
@@ -129,9 +131,11 @@ class LanguageManager(object):
         LanguageManager.__qm_list__ = {}
         qm_files = LanguageManager.find_qm_files()
         for counter, qmf in enumerate(qm_files):
-            name = unicode(qmf).split(u'.')[0]
-            LanguageManager.__qm_list__[u'%#2i %s' % (counter + 1,
-                LanguageManager.language_name(qmf))] = name
+            reg_ex = QtCore.QRegExp("^.*i18n/(.*).qm")
+            if reg_ex.exactMatch(qmf):
+                name = u'%s' % reg_ex.cap(1)
+                LanguageManager.__qm_list__[u'%#2i %s' % (counter + 1,
+                    LanguageManager.language_name(qmf))] = name
 
     @staticmethod
     def get_qm_list():

@@ -77,52 +77,52 @@ class MediaPlugin(Plugin):
             '<br />The media plugin provides playback of audio and video.')
         return about_text
 
-    def setPluginStrings(self):
+    def setPluginTextStrings(self):
         """
         Called to define all translatable texts of the plugin
         """
         ## Name PluginList ##
-        self.strings[StringContent.Name] = {
+        self.text_strings[StringContent.Name] = {
             u'singular': translate('MediaPlugin', 'Media'),
             u'plural': translate('MediaPlugin', 'Media')
         }
         ## Name for MediaDockManager, SettingsManager ##
-        self.strings[StringContent.VisibleName] = {
+        self.text_strings[StringContent.VisibleName] = {
             u'title': translate('MediaPlugin', 'Media')
         }
         # Middle Header Bar
         ## Load Button ##
-        self.strings[StringContent.Load] = {
+        self.text_strings[StringContent.Load] = {
             u'title': translate('MediaPlugin', 'Load'),
             u'tooltip': translate('MediaPlugin', 'Load a new Media')
         }
         ## New Button ##
-        self.strings[StringContent.New] = {
+        self.text_strings[StringContent.New] = {
             u'title': translate('MediaPlugin', 'Add'),
             u'tooltip': translate('MediaPlugin', 'Add a new Media')
         }
         ## Edit Button ##
-        self.strings[StringContent.Edit] = {
+        self.text_strings[StringContent.Edit] = {
             u'title': translate('MediaPlugin', 'Edit'),
             u'tooltip': translate('MediaPlugin', 'Edit the selected Media')
         }
         ## Delete Button ##
-        self.strings[StringContent.Delete] = {
+        self.text_strings[StringContent.Delete] = {
             u'title': translate('MediaPlugin', 'Delete'),
             u'tooltip': translate('MediaPlugin', 'Delete the selected Media')
         }
         ## Preview ##
-        self.strings[StringContent.Preview] = {
+        self.text_strings[StringContent.Preview] = {
             u'title': translate('MediaPlugin', 'Preview'),
             u'tooltip': translate('MediaPlugin', 'Preview the selected Media')
         }
         ## Live  Button ##
-        self.strings[StringContent.Live] = {
+        self.text_strings[StringContent.Live] = {
             u'title': translate('MediaPlugin', 'Live'),
             u'tooltip': translate('MediaPlugin', 'Send the selected Media live')
         }
         ## Add to service Button ##
-        self.strings[StringContent.Service] = {
+        self.text_strings[StringContent.Service] = {
             u'title': translate('MediaPlugin', 'Service'),
             u'tooltip': translate('MediaPlugin', 'Add the selected Media to the service')
         }

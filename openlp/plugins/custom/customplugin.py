@@ -98,57 +98,57 @@ class CustomPlugin(Plugin):
             custom.theme_name = newTheme
             self.custommanager.save_object(custom)
 
-    def setPluginStrings(self):
+    def setPluginTextStrings(self):
         """
         Called to define all translatable texts of the plugin
         """
         ## Name PluginList ##
-        self.strings[StringContent.Name] = {
+        self.text_strings[StringContent.Name] = {
             u'singular': translate('CustomsPlugin', 'Custom'),
             u'plural': translate('CustomsPlugin', 'Customs')
         }
         ## Name for MediaDockManager, SettingsManager ##
-        self.strings[StringContent.VisibleName] = {
+        self.text_strings[StringContent.VisibleName] = {
             u'title': translate('CustomsPlugin', 'Customs')
         }
         # Middle Header Bar
         ## Import Button ##
-        self.strings[StringContent.Import] = {
+        self.text_strings[StringContent.Import] = {
             u'title': translate('CustomsPlugin', 'Import'),
             u'tooltip': translate('CustomsPlugin', 'Import a Custom')
         }
         ## Load Button ##
-        self.strings[StringContent.Load] = {
+        self.text_strings[StringContent.Load] = {
             u'title': translate('CustomsPlugin', 'Load'),
             u'tooltip': translate('CustomsPlugin', 'Load a new Custom')
         }
         ## New Button ##
-        self.strings[StringContent.New] = {
+        self.text_strings[StringContent.New] = {
             u'title': translate('CustomsPlugin', 'Add'),
             u'tooltip': translate('CustomsPlugin', 'Add a new Custom')
         }
         ## Edit Button ##
-        self.strings[StringContent.Edit] = {
+        self.text_strings[StringContent.Edit] = {
             u'title': translate('CustomsPlugin', 'Edit'),
             u'tooltip': translate('CustomsPlugin', 'Edit the selected Custom')
         }
         ## Delete Button ##
-        self.strings[StringContent.Delete] = {
+        self.text_strings[StringContent.Delete] = {
             u'title': translate('CustomsPlugin', 'Delete'),
             u'tooltip': translate('CustomsPlugin', 'Delete the selected Custom')
         }
         ## Preview ##
-        self.strings[StringContent.Preview] = {
+        self.text_strings[StringContent.Preview] = {
             u'title': translate('CustomsPlugin', 'Preview'),
             u'tooltip': translate('CustomsPlugin', 'Preview the selected Custom')
         }
         ## Live  Button ##
-        self.strings[StringContent.Live] = {
+        self.text_strings[StringContent.Live] = {
             u'title': translate('CustomsPlugin', 'Live'),
             u'tooltip': translate('CustomsPlugin', 'Send the selected Custom live')
         }
         ## Add to service Button ##
-        self.strings[StringContent.Service] = {
+        self.text_strings[StringContent.Service] = {
             u'title': translate('CustomsPlugin', 'Service'),
             u'tooltip': translate('CustomsPlugin', 'Add the selected Custom to the service')
         }

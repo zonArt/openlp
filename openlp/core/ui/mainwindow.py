@@ -175,19 +175,13 @@ class Ui_MainWindow(object):
             QtCore.Qt.DockWidgetArea(2), self.ThemeManagerDock)
         # Create the menu items
         self.FileNewItem = QtGui.QAction(MainWindow)
-        self.FileNewItem.setIcon(
-            self.ServiceManagerContents.toolbar.getIconFromTitle(
-            translate('OpenLP.MainWindow', 'New Service')))
+        self.FileNewItem.setIcon(build_icon(u':/general/general_new.png'))
         self.FileNewItem.setObjectName(u'FileNewItem')
         self.FileOpenItem = QtGui.QAction(MainWindow)
-        self.FileOpenItem.setIcon(
-            self.ServiceManagerContents.toolbar.getIconFromTitle(
-            translate('OpenLP.MainWindow', 'Open Service')))
+        self.FileOpenItem.setIcon(build_icon(u':/general/general_open.png'))
         self.FileOpenItem.setObjectName(u'FileOpenItem')
         self.FileSaveItem = QtGui.QAction(MainWindow)
-        self.FileSaveItem.setIcon(
-            self.ServiceManagerContents.toolbar.getIconFromTitle(
-            translate('OpenLP.MainWindow', 'Save Service')))
+        self.FileSaveItem.setIcon(build_icon(u':/general/general_save.png'))
         self.FileSaveItem.setObjectName(u'FileSaveItem')
         self.FileSaveAsItem = QtGui.QAction(MainWindow)
         self.FileSaveAsItem.setObjectName(u'FileSaveAsItem')

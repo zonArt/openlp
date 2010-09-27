@@ -58,52 +58,52 @@ class ImagePlugin(Plugin):
             'provided by the theme.')
         return about_text
 
-    def setPluginStrings(self):
+    def setPluginTextStrings(self):
         """
         Called to define all translatable texts of the plugin
         """
         ## Name PluginList ##
-        self.strings[StringContent.Name] = {
+        self.text_strings[StringContent.Name] = {
             u'singular': translate('ImagePlugin', 'Image'),
             u'plural': translate('ImagePlugin', 'Images')
         }
         ## Name for MediaDockManager, SettingsManager ##
-        self.strings[StringContent.VisibleName] = {
+        self.text_strings[StringContent.VisibleName] = {
             u'title': translate('ImagePlugin', 'Images')
         }
         # Middle Header Bar
         ## Load Button ##
-        self.strings[StringContent.Load] = {
+        self.text_strings[StringContent.Load] = {
             u'title': translate('ImagePlugin', 'Load'),
             u'tooltip': translate('ImagePlugin', 'Load a new Image')
         }
         ## New Button ##
-        self.strings[StringContent.New] = {
+        self.text_strings[StringContent.New] = {
             u'title': translate('ImagePlugin', 'Add'),
             u'tooltip': translate('ImagePlugin', 'Add a new Image')
         }
         ## Edit Button ##
-        self.strings[StringContent.Edit] = {
+        self.text_strings[StringContent.Edit] = {
             u'title': translate('ImagePlugin', 'Edit'),
             u'tooltip': translate('ImagePlugin', 'Edit the selected Image')
         }
         ## Delete Button ##
-        self.strings[StringContent.Delete] = {
+        self.text_strings[StringContent.Delete] = {
             u'title': translate('ImagePlugin', 'Delete'),
             u'tooltip': translate('ImagePlugin', 'Delete the selected Image')
         }
         ## Preview ##
-        self.strings[StringContent.Preview] = {
+        self.text_strings[StringContent.Preview] = {
             u'title': translate('ImagePlugin', 'Preview'),
             u'tooltip': translate('ImagePlugin', 'Preview the selected Image')
         }
         ## Live  Button ##
-        self.strings[StringContent.Live] = {
+        self.text_strings[StringContent.Live] = {
             u'title': translate('ImagePlugin', 'Live'),
             u'tooltip': translate('ImagePlugin', 'Send the selected Image live')
         }
         ## Add to service Button ##
-        self.strings[StringContent.Service] = {
+        self.text_strings[StringContent.Service] = {
             u'title': translate('ImagePlugin', 'Service'),
             u'tooltip': translate('ImagePlugin', 'Add the selected Image to the service')
         }

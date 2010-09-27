@@ -145,42 +145,42 @@ class PresentationPlugin(Plugin):
             'available to the user in a drop down box.')
         return about_text
 
-    def setPluginStrings(self):
+    def setPluginTextStrings(self):
         """
         Called to define all translatable texts of the plugin
         """
         ## Name PluginList ##
-        self.strings[StringContent.Name] = {
+        self.text_strings[StringContent.Name] = {
             u'singular': translate('PresentationPlugin', 'Presentation'),
             u'plural': translate('PresentationPlugin', 'Presentations')
         }
         ## Name for MediaDockManager, SettingsManager ##
-        self.strings[StringContent.VisibleName] = {
+        self.text_strings[StringContent.VisibleName] = {
             u'title': translate('PresentationPlugin', 'Presentations')
         }
         # Middle Header Bar
         ## Load Button ##
-        self.strings[StringContent.Load] = {
+        self.text_strings[StringContent.Load] = {
             u'title': translate('PresentationPlugin', 'Load'),
             u'tooltip': translate('PresentationPlugin', 'Load a new Presentation')
         }
         ## Delete Button ##
-        self.strings[StringContent.Delete] = {
+        self.text_strings[StringContent.Delete] = {
             u'title': translate('PresentationPlugin', 'Delete'),
             u'tooltip': translate('PresentationPlugin', 'Delete the selected Presentation')
         }
         ## Preview ##
-        self.strings[StringContent.Preview] = {
+        self.text_strings[StringContent.Preview] = {
             u'title': translate('PresentationPlugin', 'Preview'),
             u'tooltip': translate('PresentationPlugin', 'Preview the selected Presentation')
         }
         ## Live  Button ##
-        self.strings[StringContent.Live] = {
+        self.text_strings[StringContent.Live] = {
             u'title': translate('PresentationPlugin', 'Live'),
             u'tooltip': translate('PresentationPlugin', 'Send the selected Presentation live')
         }
         ## Add to service Button ##
-        self.strings[StringContent.Service] = {
+        self.text_strings[StringContent.Service] = {
             u'title': translate('PresentationPlugin', 'Service'),
             u'tooltip': translate('PresentationPlugin', 'Add the selected Presentation to the service')
         }
