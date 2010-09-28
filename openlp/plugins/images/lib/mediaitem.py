@@ -187,8 +187,7 @@ class ImageMediaItem(MediaManagerItem):
             for item in items:
                 bitem = self.listView.item(item.row())
                 filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
-                frame = QtGui.QImage(unicode(filename))
-                self.parent.liveController.display.image(frame)
+                self.parent.liveController.display.image(filename)
         self.resetButton.setVisible(True)
 
     def onPreviewClick(self):

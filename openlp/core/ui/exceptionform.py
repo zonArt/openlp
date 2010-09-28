@@ -27,7 +27,6 @@
 from PyQt4 import QtCore, QtGui
 
 from exceptiondialog import Ui_ExceptionDialog
-from openlp.core.lib import translate
 
 class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
     """
