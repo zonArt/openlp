@@ -27,9 +27,11 @@
 The :mod:`songbeamerimport` module provides the functionality for importing 
  SongBeamer songs into the OpenLP database.
 """
+import logging
 import os
 import re
-import logging
+import chardet
+import codecs
 
 from openlp.plugins.songs.lib.songimport import SongImport
 
@@ -58,12 +60,13 @@ class SongBeamerTypes(object):
 
 class SongBeamerImport(SongImport):
     """
+        Import Song Beamer files(s)
+        Song Beamer file format is text based
+        in the beginning are one or more control tags written
     """
-
     def __init__(self, master_manager, **kwargs):
         """
         Initialise the import.
-
         ``master_manager``
             The song manager for the running OpenLP installation.
         """
@@ -79,7 +82,6 @@ class SongBeamerImport(SongImport):
         """
         Recieve a single file, or a list of files to import.
         """
-        
         if isinstance(self.import_source,  list):
             self.import_wizard.importProgressBar.setMaximum(
                 len(self.import_source))
@@ -90,11 +92,16 @@ class SongBeamerImport(SongImport):
                 self.file_name = os.path.split(file)[1]
                 self.import_wizard.incrementProgressBar(
                     "Importing %s" % (self.file_name),  0)
-                self.songFile = open(file, 'r')
-                self.songData = self.songFile.read().decode('utf8')
-                self.songData = self.songData.splitlines()
-                self.songFile.close()
+                if os.path.isfile(file):
+                    detect_file = open(file, u'r')
+                    details = chardet.detect(detect_file.read(2048))
+                    detect_file.close()
+                    infile = codecs.open(file, u'r', details['encoding'])
+                    self.songData = infile.readlines()
+                else:
+                    return False
                 for line in self.songData:
+                    line = line.strip()
                     if line.startswith('#'):
                         log.debug(u'find tag: %s' % line)
                         if not self.parse_tags(line):
@@ -102,7 +109,8 @@ class SongBeamerImport(SongImport):
                     elif line.startswith('---'):
                         log.debug(u'find ---')
                         if len(self.current_verse) > 0:
-                            self.add_verse(self.current_verse, self.current_verse_type)
+                            self.add_verse(self.current_verse, 
+                                self.current_verse_type)
                             self.current_verse = u'' 
                             self.current_verse_type = u'V'
                         self.read_verse = True
@@ -137,7 +145,7 @@ class SongBeamerImport(SongImport):
         elif tag_val[0] == '#Bible':
             pass
         elif tag_val[0] == '#Categories':
-            pass
+            self.topics = line.split(',')
         elif tag_val[0] == '#CCLI':
             self.ccli_number = tag_val[1]
         elif tag_val[0] == '#Chords':
@@ -217,7 +225,6 @@ class SongBeamerImport(SongImport):
         else:
             pass
         return True
-                
         
     def check_verse_marks(self, line):
         marks = line.split(' ')
