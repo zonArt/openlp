@@ -140,7 +140,7 @@ class SongsPlugin(Plugin):
             Song.theme_name == oldTheme)
         for song in songsUsingTheme:
             song.theme_name = newTheme
-            self.custommanager.save_object(song)
+            self.manager.save_object(song)
 
     def importSongs(self, format, **kwargs):
         class_ = SongFormat.get_class(format)

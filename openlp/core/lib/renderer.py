@@ -161,8 +161,9 @@ class Renderer(object):
         html_text = u''
         styled_text = u''
         for line in text:
-            styled_line = expand_tags(line) + line_end
-            styled_text += styled_line
+            styled_line = expand_tags(line)
+            if styled_text:
+                styled_text += line_end + styled_line
             html = self.page_shell + styled_text + u'</div></body></html>'
             self.web.setHtml(html)
             # Text too long so go to next page
@@ -171,6 +172,8 @@ class Renderer(object):
                 html_text = u''
                 styled_text = styled_line
             html_text += line + line_end
+        if line_break:
+            html_text = html_text[:len(html_text)-4]
         formatted.append(html_text)
         log.debug(u'format_slide - End')
         return formatted

@@ -324,7 +324,7 @@ class MainDisplay(DisplayWidget):
             # Wait for the fade to finish before geting the preview.
             # Important otherwise preview will have incorrect text if at all !
             if self.serviceItem.themedata and \
-                self.serviceItem.themedata.display_slideTransition:
+                self.serviceItem.themedata.display_slide_transition:
                 while self.frame.evaluateJavaScript(u'show_text_complete()') \
                     .toString() == u'false':
                     Receiver.send_message(u'openlp_process_events')

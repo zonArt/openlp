@@ -333,7 +333,7 @@ def build_html(item, screen, alert, islive):
         build_alert_css(alert, width),
         build_footer_css(item, height),
         build_lyrics_css(item, webkitvers),
-        u'true' if theme and theme.display_slideTransition and islive \
+        u'true' if theme and theme.display_slide_transition and islive \
             else u'false',
         image,
         build_lyrics_html(item, webkitvers))
@@ -370,18 +370,18 @@ def build_background_css(item, width, height):
                 background = \
                     u'background: ' \
                     u'-webkit-gradient(linear, left top, left bottom, ' \
-                    'from(%s), to(%s))' % (theme.background_startColor,
-                    theme.background_endColor)
+                    'from(%s), to(%s))' % (theme.background_start_color,
+                    theme.background_end_color)
             elif theme.background_direction == u'vertical':
                 background = \
                     u'background: -webkit-gradient(linear, left top, ' \
                     u'right top, from(%s), to(%s))' % \
-                    (theme.background_startColor, theme.background_endColor)
+                    (theme.background_start_color, theme.background_end_color)
             else:
                 background = \
                     u'background: -webkit-gradient(radial, %s 50%%, 100, %s ' \
                     u'50%%, %s, from(%s), to(%s))' % (width, width, width,
-                    theme.background_startColor, theme.background_endColor)
+                    theme.background_start_color, theme.background_end_color)
     return background
 
 def build_lyrics_css(item, webkitvers):
@@ -500,15 +500,15 @@ def build_lyrics_format_css(theme, width, height):
         Height of the lyrics block
 
     """
-    if theme.display_horizontalAlign == 2:
+    if theme.display_horizontal_align == 2:
         align = u'center'
-    elif theme.display_horizontalAlign == 1:
+    elif theme.display_horizontal_align == 1:
         align = u'right'
     else:
         align = u'left'
-    if theme.display_verticalAlign == 2:
+    if theme.display_vertical_align == 2:
         valign = u'bottom'
-    elif theme.display_verticalAlign == 1:
+    elif theme.display_vertical_align == 1:
         valign = u'middle'
     else:
         valign = u'top'
@@ -576,7 +576,7 @@ def build_footer_css(item, height):
     font-size: %spt;
     color: %s;
     text-align: left;
-    white-space:nowrap;    
+    white-space:nowrap;
     """
     theme = item.themedata
     if not theme or not item.footer:
