@@ -75,35 +75,42 @@ class ImagePlugin(Plugin):
         ## Load Button ##
         self.text_strings[StringContent.Load] = {
             u'title': translate('ImagePlugin', 'Load'),
-            u'tooltip': translate('ImagePlugin', 'Load a new Image')
+            u'tooltip': translate('ImagePlugin', 
+                'Load a new Image')
         }
         ## New Button ##
         self.text_strings[StringContent.New] = {
             u'title': translate('ImagePlugin', 'Add'),
-            u'tooltip': translate('ImagePlugin', 'Add a new Image')
+            u'tooltip': translate('ImagePlugin', 
+                'Add a new Image')
         }
         ## Edit Button ##
         self.text_strings[StringContent.Edit] = {
             u'title': translate('ImagePlugin', 'Edit'),
-            u'tooltip': translate('ImagePlugin', 'Edit the selected Image')
+            u'tooltip': translate('ImagePlugin', 
+                'Edit the selected Image')
         }
         ## Delete Button ##
         self.text_strings[StringContent.Delete] = {
             u'title': translate('ImagePlugin', 'Delete'),
-            u'tooltip': translate('ImagePlugin', 'Delete the selected Image')
+            u'tooltip': translate('ImagePlugin', 
+                'Delete the selected Image')
         }
         ## Preview ##
         self.text_strings[StringContent.Preview] = {
             u'title': translate('ImagePlugin', 'Preview'),
-            u'tooltip': translate('ImagePlugin', 'Preview the selected Image')
+            u'tooltip': translate('ImagePlugin', 
+                'Preview the selected Image')
         }
         ## Live  Button ##
         self.text_strings[StringContent.Live] = {
             u'title': translate('ImagePlugin', 'Live'),
-            u'tooltip': translate('ImagePlugin', 'Send the selected Image live')
+            u'tooltip': translate('ImagePlugin', 
+                'Send the selected Image live')
         }
         ## Add to service Button ##
         self.text_strings[StringContent.Service] = {
             u'title': translate('ImagePlugin', 'Service'),
-            u'tooltip': translate('ImagePlugin', 'Add the selected Image to the service')
+            u'tooltip': translate('ImagePlugin', 
+                'Add the selected Image to the service')
         }

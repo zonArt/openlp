@@ -166,30 +166,36 @@ class SongsPlugin(Plugin):
         ## New Button ##
         self.text_strings[StringContent.New] = {
             u'title': translate('SongsPlugin', 'Add'),
-            u'tooltip': translate('SongsPlugin', 'Add a new Song')
+            u'tooltip': translate('SongsPlugin', 
+                'Add a new Song')
         }
         ## Edit Button ##
         self.text_strings[StringContent.Edit] = {
             u'title': translate('SongsPlugin', 'Edit'),
-            u'tooltip': translate('SongsPlugin', 'Edit the selected Song')
+            u'tooltip': translate('SongsPlugin', 
+                'Edit the selected Song')
         }
         ## Delete Button ##
         self.text_strings[StringContent.Delete] = {
             u'title': translate('SongsPlugin', 'Delete'),
-            u'tooltip': translate('SongsPlugin', 'Delete the selected Song')
+            u'tooltip': translate('SongsPlugin', 
+                'Delete the selected Song')
         }
         ## Preview ##
         self.text_strings[StringContent.Preview] = {
             u'title': translate('SongsPlugin', 'Preview'),
-            u'tooltip': translate('SongsPlugin', 'Preview the selected Song')
+            u'tooltip': translate('SongsPlugin', 
+                'Preview the selected Song')
         }
         ## Live  Button ##
         self.text_strings[StringContent.Live] = {
             u'title': translate('SongsPlugin', 'Live'),
-            u'tooltip': translate('SongsPlugin', 'Send the selected Song live')
+            u'tooltip': translate('SongsPlugin', 
+                'Send the selected Song live')
         }
         ## Add to service Button ##
         self.text_strings[StringContent.Service] = {
             u'title': translate('SongsPlugin', 'Service'),
-            u'tooltip': translate('SongsPlugin', 'Add the selected Song to the service')
+            u'tooltip': translate('SongsPlugin', 
+                'Add the selected Song to the service')
         }

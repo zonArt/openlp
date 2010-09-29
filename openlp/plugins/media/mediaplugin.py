@@ -94,35 +94,42 @@ class MediaPlugin(Plugin):
         ## Load Button ##
         self.text_strings[StringContent.Load] = {
             u'title': translate('MediaPlugin', 'Load'),
-            u'tooltip': translate('MediaPlugin', 'Load a new Media')
+            u'tooltip': translate('MediaPlugin', 
+                'Load a new Media')
         }
         ## New Button ##
         self.text_strings[StringContent.New] = {
             u'title': translate('MediaPlugin', 'Add'),
-            u'tooltip': translate('MediaPlugin', 'Add a new Media')
+            u'tooltip': translate('MediaPlugin', 
+                'Add a new Media')
         }
         ## Edit Button ##
         self.text_strings[StringContent.Edit] = {
             u'title': translate('MediaPlugin', 'Edit'),
-            u'tooltip': translate('MediaPlugin', 'Edit the selected Media')
+            u'tooltip': translate('MediaPlugin', 
+                'Edit the selected Media')
         }
         ## Delete Button ##
         self.text_strings[StringContent.Delete] = {
             u'title': translate('MediaPlugin', 'Delete'),
-            u'tooltip': translate('MediaPlugin', 'Delete the selected Media')
+            u'tooltip': translate('MediaPlugin', 
+                'Delete the selected Media')
         }
         ## Preview ##
         self.text_strings[StringContent.Preview] = {
             u'title': translate('MediaPlugin', 'Preview'),
-            u'tooltip': translate('MediaPlugin', 'Preview the selected Media')
+            u'tooltip': translate('MediaPlugin', 
+                'Preview the selected Media')
         }
         ## Live  Button ##
         self.text_strings[StringContent.Live] = {
             u'title': translate('MediaPlugin', 'Live'),
-            u'tooltip': translate('MediaPlugin', 'Send the selected Media live')
+            u'tooltip': translate('MediaPlugin', 
+                'Send the selected Media live')
         }
         ## Add to service Button ##
         self.text_strings[StringContent.Service] = {
             u'title': translate('MediaPlugin', 'Service'),
-            u'tooltip': translate('MediaPlugin', 'Add the selected Media to the service')
+            u'tooltip': translate('MediaPlugin', 
+                'Add the selected Media to the service')
         }

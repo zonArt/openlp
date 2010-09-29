@@ -305,13 +305,13 @@ class Plugin(QtCore.QObject):
         pass
      
     def getString(self, name):
-        if name in self.text_strings:
-            return self.text_strings[name]
-        else:
-            # do something here?
-            return None
+        """
+        encapsulate access of plugins translated text strings
+        """
+        return self.text_strings[name]
 
     def setPluginTextStrings(self):
         """
         Called to define all translatable texts of the plugin
         """
+        

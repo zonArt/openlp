@@ -79,7 +79,8 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         log.debug(u'remove %s tab' % tab.tabTitleVisible)
         for tabIndex in range(0, self.settingsTabWidget.count()):
             if self.settingsTabWidget.widget(tabIndex):
-                if self.settingsTabWidget.widget(tabIndex).tabTitleVisible == tab.tabTitleVisible:
+                if self.settingsTabWidget.widget(tabIndex).tabTitleVisible == \
+                    tab.tabTitleVisible:
                     self.settingsTabWidget.removeTab(tabIndex)
 
     def accept(self):

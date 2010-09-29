@@ -135,35 +135,42 @@ class BiblePlugin(Plugin):
         ## Import Button ##
         self.text_strings[StringContent.Import] = {
             u'title': translate('BiblesPlugin', 'Import'),
-            u'tooltip': translate('BiblesPlugin', 'Import a Bible')
+            u'tooltip': translate('BiblesPlugin', 
+                'Import a Bible')
         }
         ## New Button ##
         self.text_strings[StringContent.New] = {
             u'title': translate('BiblesPlugin', 'Add'),
-            u'tooltip': translate('BiblesPlugin', 'Add a new Bible')
+            u'tooltip': translate('BiblesPlugin', 
+                'Add a new Bible')
         }
         ## Edit Button ##
         self.text_strings[StringContent.Edit] = {
             u'title': translate('BiblesPlugin', 'Edit'),
-            u'tooltip': translate('BiblesPlugin', 'Edit the selected Bible')
+            u'tooltip': translate('BiblesPlugin', 
+                'Edit the selected Bible')
         }
         ## Delete Button ##
         self.text_strings[StringContent.Delete] = {
             u'title': translate('BiblesPlugin', 'Delete'),
-            u'tooltip': translate('BiblesPlugin', 'Delete the selected Bible')
+            u'tooltip': translate('BiblesPlugin', 
+                'Delete the selected Bible')
         }
         ## Preview ##
         self.text_strings[StringContent.Preview] = {
             u'title': translate('BiblesPlugin', 'Preview'),
-            u'tooltip': translate('BiblesPlugin', 'Preview the selected Bible')
+            u'tooltip': translate('BiblesPlugin', 
+                'Preview the selected Bible')
         }
         ## Live  Button ##
         self.text_strings[StringContent.Live] = {
             u'title': translate('BiblesPlugin', 'Live'),
-            u'tooltip': translate('BiblesPlugin', 'Send the selected Bible live')
+            u'tooltip': translate('BiblesPlugin', 
+                'Send the selected Bible live')
         }
         ## Add to service Button ##
         self.text_strings[StringContent.Service] = {
             u'title': translate('BiblesPlugin', 'Service'),
-            u'tooltip': translate('BiblesPlugin', 'Add the selected Bible to the service')
+            u'tooltip': translate('BiblesPlugin', 
+                'Add the selected Bible to the service')
         }
