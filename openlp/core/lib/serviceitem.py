@@ -306,6 +306,7 @@ class ServiceItem(object):
                 filename = os.path.join(path, text_image[u'title'])
                 self.add_from_command(
                     path, text_image[u'title'], text_image[u'image'] )
+        self._new_item()
 
     def merge(self, other):
         """
