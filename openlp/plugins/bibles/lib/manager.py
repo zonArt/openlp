@@ -254,9 +254,29 @@ class BibleManager(object):
                 'Book Chapter:Verse-Verse\n'
                 'Book Chapter:Verse-Verse,Verse-Verse\n'
                 'Book Chapter:Verse-Verse,Chapter:Verse-Verse\n'
-                'Book Chapter:Verse-Chapter:Verse\n'))
+                'Book Chapter:Verse-Chapter:Verse'))
             return None
 
+    def verse_search(self, bible, text):
+        """
+        ``bible``
+            The bible to seach in.
+
+        ``text``
+            The text to search for.
+        """
+        log.debug(u'BibleManager.verse_search("%s", "%s")', bible,  text)
+        if text:
+            return self.db_cache[bible].verse_search(text)
+        else:
+            QtGui.QMessageBox.information(self.parent.mediaItem,
+                translate('BiblesPlugin.BibleManager',
+                'Scripture Reference Error'),
+                translate('BiblesPlugin.BibleManager', 'Your scripture '
+                'reference is not valid. Make sure to state a keyword to search'
+                ' for. Keywords separated by a comma will be treated as OR.'))
+            return None
+    
     def save_meta_data(self, bible, version, copyright, permissions):
         """
         Saves the bibles meta data

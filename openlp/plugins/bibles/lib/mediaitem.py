@@ -535,10 +535,19 @@ class BibleMediaItem(MediaManagerItem):
         bible = unicode(self.QuickVersionComboBox.currentText())
         dual_bible = unicode(self.QuickSecondBibleComboBox.currentText())
         text = unicode(self.QuickSearchEdit.text())
-        self.search_results = self.parent.manager.get_verses(bible, text)
-        if dual_bible:
-            self.dual_search_results = self.parent.manager.get_verses(
-                dual_bible, text)
+        if self.QuickSearchComboBox.currentIndex() == 0: # Verse Search
+            self.search_results = self.parent.manager.get_verses(bible, text)
+            if dual_bible:
+                self.dual_search_results = self.parent.manager.get_verses(
+                    dual_bible, text)
+        else: # Text Search
+            self.search_results = self.parent.manager.verse_search(bible, text)
+            if dual_bible:
+                for count, verse in enumerate(self.search_results):
+                    text = u'%s %s:%s' % (verse.book.name, verse.chapter,
+                        verse.verse)
+                    self.dual_search_results[count] = self.parent.manager.\
+                        get_verses(dual_bible, text)[0]
         if self.ClearQuickSearchComboBox.currentIndex() == 0:
             self.listView.clear()
         if self.listView.count() != 0 and self.search_results:
@@ -702,19 +711,16 @@ class BibleMediaItem(MediaManagerItem):
         if bible_text:
             raw_slides.append(bible_text)
             bible_text = u''
-        # Service Item: Capabilities
         if self.parent.settings_tab.layout_style == 2 and not dual_bible:
             # Split the line but do not replace line breaks in renderer.
             service_item.add_capability(ItemCapabilities.NoLineBreaks)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
-        # Service Item: Title
         for title in raw_title:
             if not service_item.title:
                 service_item.title = title
             else:
                 service_item.title += u', ' + title
-        # Service Item: Theme
         if len(self.parent.settings_tab.bible_theme) == 0:
             service_item.theme = None
         else:

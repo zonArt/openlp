@@ -240,7 +240,7 @@ class BibleDB(QtCore.QObject, Manager):
             and the value is the verse text.
         """
         log.debug(u'create_chapter %s,%s', book_id, chapter)
-        #text list has book and chapter as first two elements of the array
+        # text list has book and chapter as first two elements of the array
         for verse_number, verse_text in textlist.iteritems():
             verse = Verse.populate(
                 book_id = book_id,
@@ -353,9 +353,9 @@ class BibleDB(QtCore.QObject, Manager):
                 QtGui.QMessageBox.information(self.bible_plugin.mediaItem,
                     translate('BiblesPlugin.BibleDB', 'Book not found'),
                     translate('BiblesPlugin.BibleDB', 'The book you requested '
-                        'could not be found in this bible. Please check your '
-                        'spelling and that this is a complete bible not just '
-                        'one testament.'))
+                    'could not be found in this bible. Please check your '
+                    'spelling and that this is a complete bible not just '
+                    'one testament.'))
         return verse_list
 
     def verse_search(self, text):
