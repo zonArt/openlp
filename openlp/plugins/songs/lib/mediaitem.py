@@ -372,11 +372,31 @@ class SongMediaItem(MediaManagerItem):
         service_item.audit = [
             song.title, author_audit, song.copyright, unicode(song.ccli_number)
         ]
+        service_item.data_string = {u'title':song.search_title,  u'authors':author_list}
         return True
 
     def serviceLoad(self, item):
         """
         Triggered by a song being loaded by the service item
         """
-        Receiver.send_message(u'service_item_update', u'0:0')
+        print item.data_string[u'title'].split(u'@')[0]
+        search_results = self.parent.manager.get_all_objects(Song,
+            Song.search_title.like(u'%' + item.data_string[u'title'].split(u'@')[0] + u'%'),
+            Song.search_title.asc())
+        print item.data_string[u'authors'].split(u',')
+        author_list = item.data_string[u'authors'].split(u',')
+        editId = 0
+        uuid = 0
+        if search_results:
+            for song in search_results:
+                count = 0
+                for author in song.authors:
+                    if author.display_name in author_list:
+                       count += 1
+                if count == len(author_list):
+                    editId = song.id
+                    uuid = item._uuid
+        if editId != 0:
+            Receiver.send_message(u'service_item_update',
+                u'%s:%s' %(editId, uuid))
 
