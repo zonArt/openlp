@@ -314,4 +314,4 @@ class Plugin(QtCore.QObject):
         """
         Called to define all translatable texts of the plugin
         """
-        
+        pass
