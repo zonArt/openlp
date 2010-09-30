@@ -58,6 +58,9 @@ class ItemCapabilities(object):
     AllowsLoop = 5
     AllowsAdditions = 6
     NoLineBreaks = 7
+    OnLoadUpdate = 8
+    AddIfNewItem = 9
+
 
 class ServiceItem(object):
     """
@@ -98,6 +101,7 @@ class ServiceItem(object):
         self.main = None
         self.footer = None
         self.bg_image_bytes = None
+        self._new_item()
 
     def _new_item(self):
         """

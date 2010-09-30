@@ -324,6 +324,8 @@ class SongMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.AllowsEdit)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
+        service_item.add_capability(ItemCapabilities.OnLoadUpdate)
+        service_item.add_capability(ItemCapabilities.AddIfNewItem)
         song = self.parent.manager.get_object(Song, item_id)
         service_item.theme = song.theme_name
         service_item.editId = item_id
@@ -371,3 +373,10 @@ class SongMediaItem(MediaManagerItem):
             song.title, author_audit, song.copyright, unicode(song.ccli_number)
         ]
         return True
+
+    def serviceLoad(self, item):
+        """
+        Triggered by a song being loaded by the service item
+        """
+        Receiver.send_message(u'service_item_update', u'0:0')
+

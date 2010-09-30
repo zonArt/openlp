@@ -32,7 +32,8 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import context_menu_action, context_menu_separator, \
-    SettingsManager, OpenLPToolbar, ServiceItem, build_icon, translate
+    SettingsManager, OpenLPToolbar, ServiceItem, build_icon, translate, \
+    Receiver
 
 log = logging.getLogger(__name__)
 
@@ -119,6 +120,9 @@ class MediaManagerItem(QtGui.QWidget):
         self.requiredIcons()
         self.setupUi()
         self.retranslateUi()
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%s_service_load' % self.parent.name.lower()),
+            self.serviceLoad)
 
     def requiredIcons(self):
         """
@@ -540,3 +544,11 @@ class MediaManagerItem(QtGui.QWidget):
             return service_item
         else:
             return None
+
+    def serviceLoad(self, message):
+        """
+        Method to add processing when a service has been loaded and
+        individual service items need to be processed by the plugins
+        """
+        pass
+

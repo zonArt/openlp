@@ -223,6 +223,8 @@ class ServiceManager(QtGui.QWidget):
             QtCore.SIGNAL(u'config_updated'), self.regenerateServiceItems)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'theme_update_global'), self.themeChange)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'service_item_update'), self.serviceItemUpdate)
         # Last little bits of setting up
         self.service_theme = unicode(QtCore.QSettings().value(
             self.parent.serviceSettingsSection + u'/service theme',
@@ -711,6 +713,9 @@ class ServiceManager(QtGui.QWidget):
                         serviceitem.set_from_service(item, self.servicePath)
                         self.validateItem(serviceitem)
                         self.addServiceItem(serviceitem)
+                        if serviceitem.is_capable(ItemCapabilities.OnLoadUpdate):
+                            Receiver.send_message(u'%s_service_load' %
+                                serviceitem.name.lower(), serviceitem)
                     try:
                         if os.path.isfile(p_file):
                             os.remove(p_file)
@@ -801,6 +806,14 @@ class ServiceManager(QtGui.QWidget):
             # does not impact the saved song so True may also be valid
             self.parent.serviceChanged(False, self.serviceName)
 
+    def serviceItemUpdate(self, message):
+        """
+        Triggered from plugins to update service items.
+        """
+        print message
+        for item in self.serviceItems:
+            print item[u'service_item'].title, item[u'service_item']._uuid
+
     def addServiceItem(self, item, rebuild=False, expand=True, replace=False):
         """
         Add a Service item to the list
@@ -817,7 +830,7 @@ class ServiceManager(QtGui.QWidget):
             self.repaintServiceList(sitem + 1, 0)
             self.parent.LiveController.replaceServiceManagerItem(item)
         else:
-            #nothing selected for dnd
+            # nothing selected for dnd
             if self.droppos == 0:
                 if isinstance(item, list):
                     for inditem in item:
@@ -834,7 +847,7 @@ class ServiceManager(QtGui.QWidget):
                     u'order': self.droppos,
                     u'expanded':expand})
                 self.repaintServiceList(self.droppos, 0)
-            #if rebuilding list make sure live is fixed.
+            # if rebuilding list make sure live is fixed.
             if rebuild:
                 self.parent.LiveController.replaceServiceManagerItem(item)
         self.droppos = 0
@@ -914,7 +927,7 @@ class ServiceManager(QtGui.QWidget):
             else:
                 pos = parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
                 count = item.data(0, QtCore.Qt.UserRole).toInt()[0]
-        #adjust for zero based arrays
+        # adjust for zero based arrays
         pos = pos - 1
         return pos, count
 
@@ -940,7 +953,7 @@ class ServiceManager(QtGui.QWidget):
         if link.hasText():
             plugin = event.mimeData().text()
             item = self.serviceManagerList.itemAt(event.pos())
-            #ServiceManager started the drag and drop
+            # ServiceManager started the drag and drop
             if plugin == u'ServiceManager':
                 startpos, startCount = self.findServiceItem()
                 if item is None:
@@ -952,22 +965,22 @@ class ServiceManager(QtGui.QWidget):
                 self.serviceItems.insert(endpos, serviceItem)
                 self.repaintServiceList(endpos, startCount)
             else:
-                #we are not over anything so drop
+                # we are not over anything so drop
                 replace = False
                 if item is None:
                     self.droppos = len(self.serviceItems)
                 else:
-                    #we are over somthing so lets investigate
+                    # we are over somthing so lets investigate
                     pos = self._getParentItemData(item) - 1
                     serviceItem = self.serviceItems[pos]
                     if (plugin == serviceItem[u'service_item'].name and
                         serviceItem[u'service_item'].is_capable(
                         ItemCapabilities.AllowsAdditions)):
                         action = self.dndMenu.exec_(QtGui.QCursor.pos())
-                        #New action required
+                        # New action required
                         if action == self.newAction:
                             self.droppos = self._getParentItemData(item)
-                        #Append to existing action
+                        # Append to existing action
                         if action == self.addToAction:
                             self.droppos = self._getParentItemData(item)
                             item.setSelected(True)
