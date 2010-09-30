@@ -811,11 +811,8 @@ class ServiceManager(QtGui.QWidget):
         Triggered from plugins to update service items.
         """
         editId, uuid = message.split(u':')
-        print message
         for item in self.serviceItems:
-            print item[u'service_item'].title, item[u'service_item']._uuid
             if item[u'service_item']._uuid == uuid:
-                print u'match'
                 item[u'service_item'].editId = editId
 
     def addServiceItem(self, item, rebuild=False, expand=True, replace=False):
