@@ -112,6 +112,12 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         QtCore.QObject.connect(self.ewBrowseButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onEWBrowseButtonClicked)
+        QtCore.QObject.connect(self.songBeamerAddButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onSongBeamerAddButtonClicked)
+        QtCore.QObject.connect(self.songBeamerRemoveButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onSongBeamerRemoveButtonClicked)
         QtCore.QObject.connect(self.cancelButton,
             QtCore.SIGNAL(u'clicked(bool)'),
             self.onCancelButtonClicked)
@@ -226,6 +232,16 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
                             'You need to select an EasyWorship song database '
                             'file to import from.'))
                     self.ewBrowseButton.setFocus()
+                    return False
+            elif source_format == SongFormat.SongBeamer:
+                if self.songBeamerFileListWidget.count() == 0:
+                    QtGui.QMessageBox.critical(self,
+                        translate('SongsPlugin.ImportWizardForm',
+                            'No SongBeamer File Selected'),
+                        translate('SongsPlugin.ImportWizardForm',
+                            'You need to add at least one SongBeamer '
+                            'file to import from.'))
+                    self.songBeamerAddButton.setFocus()
                     return False
             return True
         elif self.currentId() == 2:
@@ -342,6 +358,16 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
             self.ewFilenameEdit
         )
 
+    def onSongBeamerAddButtonClicked(self):
+        self.getFiles(
+            translate('SongsPlugin.ImportWizardForm',
+            'Select SongBeamer Files'),
+            self.songBeamerFileListWidget
+        )
+
+    def onSongBeamerRemoveButtonClicked(self):
+        self.removeSelectedItems(self.songBeamerFileListWidget)
+
     def onCancelButtonClicked(self, checked):
         """
         Stop the import on pressing the cancel button.
@@ -373,6 +399,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         self.songsOfFellowshipFileListWidget.clear()
         self.genericFileListWidget.clear()
         self.ewFilenameEdit.setText(u'')
+        self.songBeamerFileListWidget.clear()
         #self.csvFilenameEdit.setText(u'')
 
     def incrementProgressBar(self, status_text, increment=1):
@@ -447,6 +474,12 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
             # Import an OpenLP 2.0 database
             importer = self.plugin.importSongs(SongFormat.EasyWorship,
                 filename=unicode(self.ewFilenameEdit.text())
+            )
+        elif source_format == SongFormat.SongBeamer:
+            # Import SongBeamer songs
+            importer = self.plugin.importSongs(SongFormat.SongBeamer,
+                filenames=self.getListOfFiles(
+                    self.songBeamerFileListWidget)
             )
         success = importer.do_import()
         if success:
