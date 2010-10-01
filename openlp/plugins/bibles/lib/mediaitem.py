@@ -497,6 +497,7 @@ class BibleMediaItem(MediaManagerItem):
 
     def onAdvancedSearchButton(self):
         log.debug(u'Advanced Search Button pressed')
+        self.AdvancedSearchButton.setEnabled(False)
         bible = unicode(self.AdvancedVersionComboBox.currentText())
         dual_bible = unicode(self.AdvancedSecondBibleComboBox.currentText())
         book = unicode(self.AdvancedBookComboBox.currentText())
@@ -529,9 +530,11 @@ class BibleMediaItem(MediaManagerItem):
                 self.displayResults(bible, dual_bible)
         else:
             self.displayResults(bible, dual_bible)
+        self.AdvancedSearchButton.setEnabled(True)
 
     def onQuickSearchButton(self):
         log.debug(u'Quick Search Button pressed')
+        self.QuickSearchButton.setEnabled(False)
         bible = unicode(self.QuickVersionComboBox.currentText())
         dual_bible = unicode(self.QuickSecondBibleComboBox.currentText())
         text = unicode(self.QuickSearchEdit.text())
@@ -543,11 +546,17 @@ class BibleMediaItem(MediaManagerItem):
         else: # Text Search
             self.search_results = self.parent.manager.verse_search(bible, text)
             if dual_bible:
-                for count, verse in enumerate(self.search_results):
-                    text = u'%s %s:%s' % (verse.book.name, verse.chapter,
-                        verse.verse)
-                    self.dual_search_results[count] = self.parent.manager.\
-                        get_verses(dual_bible, text)[0]
+                text = []
+                for verse in self.search_results:
+                    text.append((verse.book.name, verse.chapter, verse.verse,
+                        verse.verse))
+                self.dual_search_results = self.parent.manager.get_verses(
+                    dual_bible, text)
+#                for count, verse in enumerate(self.search_results):
+#                    text = u'%s %s:%s' % (verse.book.name, verse.chapter,
+#                        verse.verse)
+#                    self.dual_search_results[count] = self.parent.manager.\
+#                        get_verses(dual_bible, text)[0]
         if self.ClearQuickSearchComboBox.currentIndex() == 0:
             self.listView.clear()
         if self.listView.count() != 0 and self.search_results:
@@ -567,6 +576,7 @@ class BibleMediaItem(MediaManagerItem):
                 self.displayResults(bible, dual_bible)
         elif self.search_results:
             self.displayResults(bible, dual_bible)
+        self.QuickSearchButton.setEnabled(True)
 
     def displayResults(self, bible, dual_bible=u''):
         """

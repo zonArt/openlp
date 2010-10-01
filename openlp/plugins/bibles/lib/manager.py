@@ -137,7 +137,7 @@ class BibleManager(object):
             name = bible.get_name()
             log.debug(u'Bible Name: "%s"', name)
             self.db_cache[name] = bible
-            # look to see if lazy load bible exists and get create getter.
+            # Look to see if lazy load bible exists and get create getter.
             source = self.db_cache[name].get_object(BibleMeta,
                 u'download source')
             if source:
@@ -204,7 +204,7 @@ class BibleManager(object):
 
     def get_chapter_count(self, bible, book):
         """
-        Returns the number of Chapters for a given book
+        Returns the number of Chapters for a given book.
         """
         log.debug(u'get_book_chapter_count %s', book)
         return self.db_cache[bible].get_chapter_count(book)
@@ -212,7 +212,7 @@ class BibleManager(object):
     def get_verse_count(self, bible, book, chapter):
         """
         Returns all the number of verses for a given
-        book and chapterMaxBibleBookVerses
+        book and chapterMaxBibleBookVerses.
         """
         log.debug(u'BibleManager.get_verse_count("%s", "%s", %s)',
             bible, book, chapter)
@@ -279,7 +279,7 @@ class BibleManager(object):
     
     def save_meta_data(self, bible, version, copyright, permissions):
         """
-        Saves the bibles meta data
+        Saves the bibles meta data.
         """
         log.debug(u'save_meta data %s,%s, %s,%s',
             bible, version, copyright, permissions)
@@ -289,14 +289,14 @@ class BibleManager(object):
 
     def get_meta_data(self, bible, key):
         """
-        Returns the meta data for a given key
+        Returns the meta data for a given key.
         """
         log.debug(u'get_meta %s,%s', bible, key)
         return self.db_cache[bible].get_object(BibleMeta, key)
 
     def exists(self, name):
         """
-        Check cache to see if new bible
+        Check cache to see if new bible.
         """
         if not isinstance(name, unicode):
             name = unicode(name)

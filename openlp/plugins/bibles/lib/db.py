@@ -281,23 +281,23 @@ class BibleDB(QtCore.QObject, Manager):
 
     def create_meta(self, key, value):
         """
-        Utility method to save BibleMeta objects in a Bible database
+        Utility method to save BibleMeta objects in a Bible database.
 
         ``key``
-            The key for this instance
+            The key for this instance.
 
         ``value``
-            The value for this instance
+            The value for this instance.
         """
         log.debug(u'save_meta %s/%s', key, value)
         self.save_object(BibleMeta.populate(key=key, value=value))
 
     def get_book(self, book):
         """
-        Return a book object from the database
+        Return a book object from the database.
 
         ``book``
-            The name of the book to return
+            The name of the book to return.
         """
         log.debug(u'BibleDb.get_book("%s")', book)
         db_book = self.get_object_filtered(Book, Book.name.like(book + u'%'))
@@ -320,14 +320,14 @@ class BibleDB(QtCore.QObject, Manager):
 
         ``reference_list``
             This is the list of references the media manager item wants. It is
-            a list of tuples, with the following format::
+            a list of tuples, with the following format:
 
                 (book, chapter, start_verse, end_verse)
 
             Therefore, when you are looking for multiple items, simply break
             them up into references like this, bundle them into a list. This
             function then runs through the list, and returns an amalgamated
-            list of ``Verse`` objects. For example::
+            list of ``Verse`` objects. For example:
 
                 [(u'Genesis', 1, 1, 1), (u'Genesis', 2, 2, 3)]
         """
@@ -387,10 +387,10 @@ class BibleDB(QtCore.QObject, Manager):
 
     def get_chapter_count(self, book):
         """
-        Return the number of chapters in a book
+        Return the number of chapters in a book.
 
         ``book``
-            The book to get the chapter count for
+            The book to get the chapter count for.
         """
         log.debug(u'BibleDB.get_chapter_count("%s")', book)
         count = self.session.query(Verse.chapter).join(Book)\
@@ -403,13 +403,13 @@ class BibleDB(QtCore.QObject, Manager):
 
     def get_verse_count(self, book, chapter):
         """
-        Return the number of verses in a chapter
+        Return the number of verses in a chapter.
 
         ``book``
-            The book containing the chapter
+            The book containing the chapter.
 
         ``chapter``
-            The chapter to get the verse count for
+            The chapter to get the verse count for.
         """
         log.debug(u'BibleDB.get_verse_count("%s", %s)', book, chapter)
         count = self.session.query(Verse).join(Book)\
@@ -423,7 +423,7 @@ class BibleDB(QtCore.QObject, Manager):
 
     def dump_bible(self):
         """
-        Utility debugging method to dump the contents of a bible
+        Utility debugging method to dump the contents of a bible.
         """
         log.debug(u'.........Dumping Bible Database')
         log.debug('...............................Books ')
