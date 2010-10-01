@@ -926,14 +926,13 @@ class SlideController(QtGui.QWidget):
         Respond to the arrival of a media service item
         """
         log.debug(u'SlideController onMediaStart')
+        file = os.path.join(item.get_frame_path(), item.get_frame_title())
         if self.isLive:
-            file = os.path.join(item.get_frame_path(), item.get_frame_title())
             self.display.video(file, self.volume)
             self.volumeSlider.setValue(self.volume)
         else:
             self.mediaObject.stop()
             self.mediaObject.clearQueue()
-            file = os.path.join(item.get_frame_path(), item.get_frame_title())
             self.mediaObject.setCurrentSource(Phonon.MediaSource(file))
             self.seekSlider.setMediaObject(self.mediaObject)
             self.seekSlider.show()
