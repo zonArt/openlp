@@ -540,23 +540,23 @@ class BibleMediaItem(MediaManagerItem):
         text = unicode(self.QuickSearchEdit.text())
         if self.QuickSearchComboBox.currentIndex() == 0: # Verse Search
             self.search_results = self.parent.manager.get_verses(bible, text)
-            if dual_bible:
+            if dual_bible and self.search_results:
                 self.dual_search_results = self.parent.manager.get_verses(
                     dual_bible, text)
         else: # Text Search
             self.search_results = self.parent.manager.verse_search(bible, text)
-            if dual_bible:
-                text = []
-                for verse in self.search_results:
-                    text.append((verse.book.name, verse.chapter, verse.verse,
-                        verse.verse))
-                self.dual_search_results = self.parent.manager.get_verses(
-                    dual_bible, text)
-#                for count, verse in enumerate(self.search_results):
-#                    text = u'%s %s:%s' % (verse.book.name, verse.chapter,
-#                        verse.verse)
-#                    self.dual_search_results[count] = self.parent.manager.\
-#                        get_verses(dual_bible, text)[0]
+            if dual_bible and self.search_results:
+#                text = []
+#                for verse in self.search_results:
+#                    text.append((verse.book.name, verse.chapter, verse.verse,
+#                        verse.verse))
+#                self.dual_search_results = self.parent.manager.get_verses(
+#                    dual_bible, text)
+                for count, verse in enumerate(self.search_results):
+                    text = u'%s %s:%s' % (verse.book.name, verse.chapter,
+                        verse.verse)
+                    self.dual_search_results[count] = self.parent.manager.\
+                        get_verses(dual_bible, text)[0]
         if self.ClearQuickSearchComboBox.currentIndex() == 0:
             self.listView.clear()
         if self.listView.count() != 0 and self.search_results:
