@@ -4,7 +4,7 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Copyright (c) 2008-2010 Raoul Snyman               +                         #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
@@ -64,10 +64,10 @@ class Verse(BaseModel):
 
 def init_schema(url):
     """
-    Setup a bible database connection and initialise the database schema
+    Setup a bible database connection and initialise the database schema.
 
     ``url``
-        The database to setup
+        The database to setup.
     """
     session, metadata = init_db(url)
 
