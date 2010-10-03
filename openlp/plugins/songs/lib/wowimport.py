@@ -118,6 +118,10 @@ class WowImport(SongImport):
             for file in self.import_source:
                 # TODO: check that it is a valid words of worship file (could 
                 # check header for WoW File Song Word)
+                os.path.splitext( file )
+                self.ext = os.path.splitext(file)[1]
+                if self.ext != u'.wsg' and self.ext != u'.wow-song':
+                    continue
                 self.author = u''
                 self.copyright = u''
                 # Get the song title

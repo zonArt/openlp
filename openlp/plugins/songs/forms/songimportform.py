@@ -248,18 +248,24 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
             # Progress page
             return True
 
-    def getFileName(self, title, editbox):
+    def getFileName(self, title, editbox,  
+        filters = '%s (*)' % translate('SongsPlugin.ImportWizardForm',
+            'All Files')):
         filename = QtGui.QFileDialog.getOpenFileName(self, title,
-            SettingsManager.get_last_dir(self.plugin.settingsSection, 1))
+            SettingsManager.get_last_dir(self.plugin.settingsSection, 1),
+            filters)
         if filename:
             editbox.setText(filename)
             SettingsManager.set_last_dir(
                 self.plugin.settingsSection,
                 os.path.split(unicode(filename))[0], 1)
 
-    def getFiles(self, title, listbox):
+    def getFiles(self, title, listbox,  
+        filters = '%s (*)' % translate('SongsPlugin.ImportWizardForm',
+            'All Files')):
         filenames = QtGui.QFileDialog.getOpenFileNames(self, title,
-            SettingsManager.get_last_dir(self.plugin.settingsSection, 1))
+            SettingsManager.get_last_dir(self.plugin.settingsSection, 1),
+            filters)
         if filenames:
             listbox.addItems(filenames)
             SettingsManager.set_last_dir(
@@ -281,14 +287,24 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         self.getFileName(
             translate('SongsPlugin.ImportWizardForm',
             'Select OpenLP 2.0 Database File'),
-            self.openLP2FilenameEdit
+            self.openLP2FilenameEdit,
+            '%s (*.sqlite);;%s (*)'
+            % (translate('SongsPlugin.ImportWizardForm',
+            'OpenLP 2.0 Databases'), 
+            translate('SongsPlugin.ImportWizardForm',
+            'All Files'))
         )
 
     def onOpenLP1BrowseButtonClicked(self):
         self.getFileName(
             translate('SongsPlugin.ImportWizardForm',
             'Select openlp.org 1.x Database File'),
-            self.openLP1FilenameEdit
+            self.openLP1FilenameEdit, 
+            '%s (*.olp);;%s (*)'
+            % (translate('SongsPlugin.ImportWizardForm',
+            'openlp.org v1.x Databases'), 
+            translate('SongsPlugin.ImportWizardForm',
+            'All Files'))
         )
 
     #def onOpenLyricsAddButtonClicked(self):
@@ -305,7 +321,12 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         self.getFiles(
             translate('SongsPlugin.ImportWizardForm',
             'Select Open Song Files'),
-            self.openSongFileListWidget
+            self.openSongFileListWidget, 
+            '%s (*.html);;%s (*)'
+            % (translate('SongsPlugin.ImportWizardForm',
+            'OpenSong html Files'), 
+            translate('SongsPlugin.ImportWizardForm',
+            'All Files'))
         )
 
     def onOpenSongRemoveButtonClicked(self):
@@ -315,7 +336,12 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         self.getFiles(
             translate('SongsPlugin.ImportWizardForm',
             'Select Words of Worship Files'),
-            self.wordsOfWorshipFileListWidget
+            self.wordsOfWorshipFileListWidget, 
+            '%s (*.wsg *.wow-song);;%s (*)'
+            % (translate('SongsPlugin.ImportWizardForm',
+            'Words Of Worship Song Files'), 
+            translate('SongsPlugin.ImportWizardForm',
+            'All Files'))
         )
 
     def onWordsOfWorshipRemoveButtonClicked(self):
@@ -335,7 +361,12 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         self.getFiles(
             translate('SongsPlugin.ImportWizardForm',
             'Select Songs of Fellowship Files'),
-            self.songsOfFellowshipFileListWidget
+            self.songsOfFellowshipFileListWidget, 
+            '%s (*.rtf);;%s (*)'
+            % (translate('SongsPlugin.ImportWizardForm',
+            'Songs Of Felloship Song Files'), 
+            translate('SongsPlugin.ImportWizardForm',
+            'All Files'))
         )
 
     def onSongsOfFellowshipRemoveButtonClicked(self):
