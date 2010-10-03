@@ -37,6 +37,7 @@ class HideMode(object):
     Theme = 2
     Screen = 3
 
+from themewizardform import ThemeWizardForm
 from filerenameform import FileRenameForm
 from maindisplay import MainDisplay
 from slidecontroller import HideMode

@@ -427,3 +427,52 @@ class ThemeXML(object):
         s1 = re.sub(u'(.)([A-Z][a-z]+)', r'\1_\2', name)
         return re.sub(u'([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
 
+    def build_xml_from_attrs(self, ):
+        """
+        Build the XML from the varables in the object
+        """
+        if self.background_type == u'solid':
+            self.add_background_solid(
+                unicode(self.background_color))
+        elif self.background_type == u'gradient':
+            self.add_background_gradient(
+                unicode(self.background_start_color),
+                unicode(self.background_end_color),
+                self.background_direction)
+        else:
+            filename = \
+                os.path.split(unicode(self.background_filename))[1]
+            self.add_background_image(filename)
+        self.add_font(unicode(self.font_main_name),
+            unicode(self.font_main_color),
+            unicode(self.font_main_proportion),
+            unicode(self.font_main_override), u'main',
+            unicode(self.font_main_weight),
+            unicode(self.font_main_italics),
+            unicode(self.font_main_line_adjustment),
+            unicode(self.font_main_x),
+            unicode(self.font_main_y),
+            unicode(self.font_main_width),
+            unicode(self.font_main_height))
+        self.add_font(unicode(self.font_footer_name),
+            unicode(self.font_footer_color),
+            unicode(self.font_footer_proportion),
+            unicode(self.font_footer_override), u'footer',
+            unicode(self.font_footer_weight),
+            unicode(self.font_footer_italics),
+            0, # line adjustment
+            unicode(self.font_footer_x),
+            unicode(self.font_footer_y),
+            unicode(self.font_footer_width),
+            unicode(self.font_footer_height))
+        self.add_display(unicode(self.display_shadow),
+            unicode(self.display_shadow_color),
+            unicode(self.display_outline),
+            unicode(self.display_outline_color),
+            unicode(self.display_horizontal_align),
+            unicode(self.display_vertical_align),
+            unicode(self.display_wrap_style),
+            unicode(self.display_slide_transition),
+            unicode(self.display_shadow_size),
+            unicode(self.display_outline_size))
+
