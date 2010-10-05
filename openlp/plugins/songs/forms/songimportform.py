@@ -322,7 +322,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
             translate('SongsPlugin.ImportWizardForm',
             'Select Open Song Files'),
             self.openSongFileListWidget, 
-            '%s (*.html);;%s (*)'
+            '%s (*.xml);;%s (*)'
             % (translate('SongsPlugin.ImportWizardForm',
             'OpenSong html Files'), 
             translate('SongsPlugin.ImportWizardForm',

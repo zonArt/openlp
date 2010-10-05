@@ -116,20 +116,16 @@ class WowImport(SongImport):
             self.import_wizard.importProgressBar.setMaximum(
                 len(self.import_source))
             for file in self.import_source:
-                # TODO: check that it is a valid words of worship file (could 
-                # check header for WoW File Song Word)
-                os.path.splitext( file )
-                self.ext = os.path.splitext(file)[1]
-                if self.ext != u'.wsg' and self.ext != u'.wow-song':
-                    continue
                 self.author = u''
                 self.copyright = u''
-                # Get the song title
                 self.file_name = os.path.split(file)[1]
                 self.import_wizard.incrementProgressBar(
                     "Importing %s" % (self.file_name),  0)
+                # Get the song title
                 self.title = self.file_name.rpartition(u'.')[0]
                 self.songData = open(file, 'rb')
+                if self.songData.read(19) != u'WoW File\nSong Words':
+                    continue
                 # Seek to byte which stores number of blocks in the song
                 self.songData.seek(56) 
                 self.no_of_blocks = ord(self.songData.read(1))
