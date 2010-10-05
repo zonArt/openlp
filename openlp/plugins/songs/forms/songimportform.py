@@ -261,7 +261,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
                 os.path.split(unicode(filename))[0], 1)
 
     def getFiles(self, title, listbox,  
-        filters = '%s (*)' % translate('SongsPlugin.ImportWizardForm',
+        filters = u'%s (*)' % translate('SongsPlugin.ImportWizardForm',
             'All Files')):
         filenames = QtGui.QFileDialog.getOpenFileNames(self, title,
             SettingsManager.get_last_dir(self.plugin.settingsSection, 1),
@@ -288,7 +288,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
             translate('SongsPlugin.ImportWizardForm',
             'Select OpenLP 2.0 Database File'),
             self.openLP2FilenameEdit,
-            '%s (*.sqlite);;%s (*)'
+            u'%s (*.sqlite);;%s (*)'
             % (translate('SongsPlugin.ImportWizardForm',
             'OpenLP 2.0 Databases'), 
             translate('SongsPlugin.ImportWizardForm',
@@ -300,7 +300,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
             translate('SongsPlugin.ImportWizardForm',
             'Select openlp.org 1.x Database File'),
             self.openLP1FilenameEdit, 
-            '%s (*.olp);;%s (*)'
+            u'%s (*.olp);;%s (*)'
             % (translate('SongsPlugin.ImportWizardForm',
             'openlp.org v1.x Databases'), 
             translate('SongsPlugin.ImportWizardForm',
@@ -322,7 +322,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
             translate('SongsPlugin.ImportWizardForm',
             'Select Open Song Files'),
             self.openSongFileListWidget, 
-            '%s (*.xml);;%s (*)'
+            u'%s (*.xml);;%s (*)'
             % (translate('SongsPlugin.ImportWizardForm',
             'OpenSong html Files'), 
             translate('SongsPlugin.ImportWizardForm',
@@ -337,7 +337,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
             translate('SongsPlugin.ImportWizardForm',
             'Select Words of Worship Files'),
             self.wordsOfWorshipFileListWidget, 
-            '%s (*.wsg *.wow-song);;%s (*)'
+            u'%s (*.wsg *.wow-song);;%s (*)'
             % (translate('SongsPlugin.ImportWizardForm',
             'Words Of Worship Song Files'), 
             translate('SongsPlugin.ImportWizardForm',
@@ -362,7 +362,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
             translate('SongsPlugin.ImportWizardForm',
             'Select Songs of Fellowship Files'),
             self.songsOfFellowshipFileListWidget, 
-            '%s (*.rtf);;%s (*)'
+            u'%s (*.rtf);;%s (*)'
             % (translate('SongsPlugin.ImportWizardForm',
             'Songs Of Felloship Song Files'), 
             translate('SongsPlugin.ImportWizardForm',
