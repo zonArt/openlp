@@ -33,6 +33,52 @@ from themewizard import Ui_ThemeWizard
 
 log = logging.getLogger(__name__)
 
+class BackgroundType(object):
+    Solid = 0
+    Gradient = 1
+    Image = 3
+
+    @staticmethod
+    def to_string(type):
+        if type == BackgroundType.Solid:
+            return u'solid'
+        elif type == BackgroundType.Gradient:
+            return u'gradient'
+        elif type == BackgroundType.Image:
+            return u'image'
+
+    @staticmethod
+    def from_string(type_string):
+        if type_string == u'solid':
+            return BackgroundType.Solid
+        elif type_string == u'gradient':
+            return BackgroundType.Gradient
+        elif type_string == u'image':
+            return BackgroundType.Image
+
+class BackgroundGradientType(object):
+    Horizontal = 0
+    Vertical = 1
+    Circular = 3
+
+    @staticmethod
+    def to_string(type):
+        if type == BackgroundType.Solid:
+            return u'horizontal'
+        elif type == BackgroundType.Gradient:
+            return u'vertical'
+        elif type == BackgroundType.Image:
+            return u'circular'
+
+    @staticmethod
+    def from_string(type_string):
+        if type_string == u'horizontal':
+            return BackgroundType.Solid
+        elif type_string == u'vertical':
+            return BackgroundType.Gradient
+        elif type_string == u'circular':
+            return BackgroundType.Image
+
 class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
     """
     This is the Bible Import Wizard, which allows easy importing of Bibles
@@ -54,8 +100,6 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
             The Bible plugin.
         """
         # Do not translate as internal
-        self.backgrounds = [u'solid', u'gradient', u'image']
-        self.gradients = [u'horizontal', u'vertical', u'circular']
         QtGui.QWizard.__init__(self, parent)
         self.setupUi(self)
         self.registerFields()
@@ -75,7 +119,7 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
         self.onColor2PushButtonClicked)
         QtCore.QObject.connect(self.imageBrowseButton,
             QtCore.SIGNAL(u'pressed()'),
-        self.onimageBrowseButtonClicked)
+        self.onImageBrowseButtonClicked)
 
     def exec_(self):
         """
@@ -92,10 +136,10 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
         # Background Screen
         if self.currentId() == 0:
             print self.field(u'background_type').toString()
-            self.paintBackgroundScreen()
+            self.setBackgroundTabValues()
         return True
 
-    def paintBackgroundScreen(self):
+    def setBackgroundTabValues(self):
         if self.theme.background_type == u'solid':
             self.setField(u'background_type', QtCore.QVariant(0))
             self.color1PushButton.setVisible(True)
@@ -153,7 +197,7 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
 
     def setDefaults(self):
         self.restart()
-        self.paintBackgroundScreen()
+        self.setBackgroundTabValues()
 
     def registerFields(self):
         self.welcomePage.registerField(
@@ -169,27 +213,27 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
 
     def onBackgroundComboBox(self, index):
         self.theme.background_type = self.backgrounds[index]
-        self.paintBackgroundScreen()
+        self.setBackgroundTabValues()
 
     def onGradientComboBox(self, index):
         self.theme.background_direction = self.gradients[index]
-        self.paintBackgroundScreen()
+        self.setBackgroundTabValues()
 
     def onColor1PushButtonClicked(self):
         if self.theme.background_type == u'solid':
             self.theme.background_color = \
-                self._colorButtonPushed(self.theme.background_color)
+                self._colorButton(self.theme.background_color)
         else:
             self.theme.background_start_color = \
-                self._colorButtonPushed(self.theme.background_start_color)
-        self.paintBackgroundScreen()
+                self._colorButton(self.theme.background_start_color)
+        self.setBackgroundTabValues()
 
     def onColor2PushButtonClicked(self):
         self.theme.background_end_color = \
-            self._colorButtonPushed(self.theme.background_end_color)
-        self.paintBackgroundScreen()
+            self._colorButton(self.theme.background_end_color)
+        self.setBackgroundTabValues()
 
-    def onimageBrowseButtonClicked(self):
+    def onImageBrowseButtonClicked(self):
         images_filter = get_images_filter()
         images_filter = '%s;;%s (*.*) (*)' % (images_filter,
             translate('OpenLP.AmendThemeForm', 'All Files'))
@@ -198,13 +242,11 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
             images_filter)
         if filename:
             self.theme.background_filename = filename
-        self.paintBackgroundScreen()
+        self.setBackgroundTabValues()
 
-    def _colorButtonPushed(self, field):
+    def _colorButton(self, field):
         new_color = QtGui.QColorDialog.getColor(
             QtGui.QColor(field), self)
         if new_color.isValid():
            field = new_color.name()
         return field
-
-

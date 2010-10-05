@@ -29,7 +29,7 @@
    <property name="subTitle">
     <string/>
    </property>
-   <layout class="QHBoxLayout" name="WelcomeLayout">
+   <layout class="QHBoxLayout" name="welcomeLayout">
     <property name="spacing">
      <number>8</number>
     </property>
@@ -57,7 +57,7 @@
        <string/>
       </property>
       <property name="pixmap">
-       <pixmap resource="Projects/OpenLP/trunk/resources/images/openlp-2.qrc">:/wizards/wizard_importbible.bmp</pixmap>
+       <pixmap resource="../images/openlp-2.qrc">:/wizards/wizard_importbible.bmp</pixmap>
       </property>
       <property name="indent">
        <number>0</number>
@@ -224,7 +224,7 @@ p, li { white-space: pre-wrap; }
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="Projects/OpenLP/trunk/resources/images/openlp-2.qrc">
+         <iconset resource="../images/openlp-2.qrc">
           <normaloff>:/general/general_open.png</normaloff>:/general/general_open.png</iconset>
         </property>
        </widget>
@@ -266,18 +266,15 @@ p, li { white-space: pre-wrap; }
    <property name="subTitle">
     <string>Define the font and display characteristics for the Display text</string>
    </property>
-   <layout class="QFormLayout" name="mainAreaLayout">
-    <property name="fieldGrowthPolicy">
-     <enum>QFormLayout::ExpandingFieldsGrow</enum>
+   <layout class="QFormLayout" name="formLayout">
+    <property name="formAlignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
     </property>
     <property name="horizontalSpacing">
      <number>8</number>
     </property>
     <property name="verticalSpacing">
      <number>8</number>
-    </property>
-    <property name="leftMargin">
-     <number>50</number>
     </property>
     <property name="topMargin">
      <number>20</number>
@@ -355,45 +352,101 @@ p, li { white-space: pre-wrap; }
       <item>
        <widget class="QLabel" name="mainLineCountLabel">
         <property name="text">
-         <string>(%d lines per silde)</string>
+         <string>(%d lines per slide)</string>
         </property>
        </widget>
       </item>
      </layout>
     </item>
     <item row="3" column="0">
+     <widget class="QLabel" name="lineSpacingLabel">
+      <property name="text">
+       <string>Line Spacing:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <widget class="QSpinBox" name="lineSpacingSpinBox">
+      <property name="suffix">
+       <string>pt</string>
+      </property>
+      <property name="minimum">
+       <number>-50</number>
+      </property>
+      <property name="maximum">
+       <number>50</number>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0">
      <widget class="QCheckBox" name="mainOutlineCheckBox">
       <property name="text">
        <string>&amp;Outline:</string>
       </property>
      </widget>
     </item>
-    <item row="3" column="1">
-     <widget class="QPushButton" name="mainOutlineColorPushButton">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
+    <item row="4" column="1">
+     <layout class="QHBoxLayout" name="outlineLayout">
+      <item>
+       <widget class="QPushButton" name="mainOutlineColorPushButton">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="outlineSizeLabel">
+        <property name="text">
+         <string>Size:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="outlineSizeSpinBox">
+        <property name="suffix">
+         <string>pt</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
-    <item row="4" column="0">
+    <item row="5" column="0">
      <widget class="QCheckBox" name="mainShadowCheckBox">
       <property name="text">
        <string>&amp;Shadow:</string>
       </property>
      </widget>
     </item>
-    <item row="4" column="1">
-     <widget class="QPushButton" name="mainShadowColorPushButton">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
+    <item row="5" column="1">
+     <layout class="QHBoxLayout" name="shadowLayout">
+      <item>
+       <widget class="QPushButton" name="mainShadowColorPushButton">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="shadowSizeLabel">
+        <property name="text">
+         <string>Size:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="shadowSizeSpinBox">
+        <property name="suffix">
+         <string>pt</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>
@@ -972,7 +1025,8 @@ p, li { white-space: pre-wrap; }
   </widget>
  </widget>
  <resources>
-  <include location="Projects/OpenLP/trunk/resources/images/openlp-2.qrc"/>
+  <include location="../images/openlp-2.qrc"/>
+  <include location="../images/openlp-2.qrc"/>
   <include location="Projects/OpenLP/trunk/resources/images/openlp-2.qrc"/>
  </resources>
  <connections/>

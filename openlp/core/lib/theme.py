@@ -31,6 +31,7 @@ import re
 
 from xml.dom.minidom import Document
 from xml.etree.ElementTree import ElementTree, XML
+from lxml import etree, objectify
 
 from openlp.core.lib import str_to_bool
 
@@ -54,26 +55,27 @@ BLANK_THEME_XML = \
       <name>Arial</name>
       <color>#000000</color>
       <proportion>30</proportion>
-      <weight>Normal</weight>
+      <bold>False</bold>
       <italics>False</italics>
       <line_adjustment>0</line_adjustment>
+      <shadow color="#ffffff" size="5">True</shadow>
+      <outline color="#ffffff" size="2">False</outline>
       <location override="False" x="10" y="10" width="1004" height="690"/>
    </font>
    <font type="footer">
       <name>Arial</name>
       <color>#000000</color>
       <proportion>12</proportion>
-      <weight>Normal</weight>
+      <bold>False</bold>
       <italics>False</italics>
+      <shadow color="#000000" size="5">True</shadow>
+      <outline color="#000000" size="2">False</outline>
       <line_adjustment>0</line_adjustment>
       <location override="False" x="10" y="690" width="1004" height="78"/>
    </font>
    <display>
-      <shadow color="#000000" size="5">True</shadow>
-      <outline color="#000000" size="2">False</outline>
       <horizontalAlign>0</horizontalAlign>
       <verticalAlign>0</verticalAlign>
-      <wrapStyle>0</wrapStyle>
       <slideTransition>False</slideTransition>
    </display>
  </theme>
@@ -87,7 +89,7 @@ class ThemeLevel(object):
     Service = 2
     Song = 3
 
-boolean_list = [u'italics', u'override', u'outline', u'shadow', \
+boolean_list = [u'bold', u'italics', u'override', u'outline', u'shadow', \
 u'slide_transition']
 
 integer_list =[u'proportion', u'line_adjustment', u'x', u'height', u'y', \
@@ -186,12 +188,13 @@ class ThemeXML(object):
         background.setAttribute(u'mode', u'opaque')
         background.setAttribute(u'type', u'image')
         self.theme.appendChild(background)
-        #Create Filename element
+        # Create Filename element
         self.child_element(background, u'filename', filename)
 
     def add_font(self, name, color, proportion, override, fonttype=u'main',
-        weight=u'Normal', italics=u'False', line_adjustment=0,
-        xpos=0, ypos=0, width=0, height=0):
+        bold=u'False', italics=u'False', line_adjustment=0,
+        xpos=0, ypos=0, width=0, height=0 , outline=u'False', outline_color=u'#ffffff',
+        outline_pixel=2,  shadow=u'False', shadow_color=u'#ffffff', shadow_pixel=5):
         """
         Add a Font.
 
@@ -227,25 +230,44 @@ class ThemeXML(object):
 
         ``height``
             The height of the text block.
+
+        ``outline``
+            Whether or not to show an outline.
+
+        ``outline_color``
+            The colour of the outline.
+
+        ``outline_size``
+            How big the Shadow is
+
+        ``shadow``
+            Whether or not to show a shadow.
+
+        ``shadow_color``
+            The colour of the shadow.
+
+        ``shadow_size``
+            How big the Shadow is
+
+
         """
         background = self.theme_xml.createElement(u'font')
         background.setAttribute(u'type', fonttype)
         self.theme.appendChild(background)
-        #Create Font name element
+        # Create Font name element
         self.child_element(background, u'name', name)
-        #Create Font color element
+        # Create Font color element
         self.child_element(background, u'color', color)
-        #Create Proportion name element
+        # Create Proportion name element
         self.child_element(background, u'proportion', proportion)
-        #Create weight name element
-        self.child_element(background, u'weight', weight)
-        #Create italics name element
+        # Create weight name element
+        self.child_element(background, u'bold', bold)
+        # Create italics name element
         self.child_element(background, u'italics', italics)
-        #Create indentation name element
+        # Create indentation name element
         self.child_element(
             background, u'line_adjustment', unicode(line_adjustment))
-
-        #Create Location element
+        # Create Location element
         element = self.theme_xml.createElement(u'location')
         element.setAttribute(u'override', override)
         if override == u'True':
@@ -254,24 +276,24 @@ class ThemeXML(object):
             element.setAttribute(u'width', width)
             element.setAttribute(u'height', height)
         background.appendChild(element)
+        # Shadow
+        element = self.theme_xml.createElement(u'shadow')
+        element.setAttribute(u'shadowColor', unicode(shadow_color))
+        element.setAttribute(u'shadowSize', unicode(shadow_pixel))
+        value = self.theme_xml.createTextNode(unicode(shadow))
+        element.appendChild(value)
+        background.appendChild(element)
+        # Outline
+        element = self.theme_xml.createElement(u'outline')
+        element.setAttribute(u'outlineColor', unicode(outline_color))
+        element.setAttribute(u'outlineSize', unicode(outline_pixel))
+        value = self.theme_xml.createTextNode(unicode(outline))
+        element.appendChild(value)
+        background.appendChild(element)
 
-    def add_display(self, shadow, shadow_color, outline, outline_color,
-        horizontal, vertical, wrap, transition, shadow_pixel=5,
-        outline_pixel=2):
+    def add_display(self, horizontal, vertical, transition):
         """
         Add a Display options.
-
-        ``shadow``
-            Whether or not to show a shadow.
-
-        ``shadow_color``
-            The colour of the shadow.
-
-        ``outline``
-            Whether or not to show an outline.
-
-        ``outline_color``
-            The colour of the outline.
 
         ``horizontal``
             The horizontal alignment of the text.
@@ -279,47 +301,25 @@ class ThemeXML(object):
         ``vertical``
             The vertical alignment of the text.
 
-        ``wrap``
-            Wrap style.
-
         ``transition``
             Whether the slide transition is active.
 
         """
         background = self.theme_xml.createElement(u'display')
         self.theme.appendChild(background)
-        # Shadow
-        element = self.theme_xml.createElement(u'shadow')
-        element.setAttribute(u'color', shadow_color)
-        element.setAttribute(u'size', unicode(shadow_pixel))
-        value = self.theme_xml.createTextNode(shadow)
-        element.appendChild(value)
-        background.appendChild(element)
-        # Outline
-        element = self.theme_xml.createElement(u'outline')
-        element.setAttribute(u'color', outline_color)
-        element.setAttribute(u'size', unicode(outline_pixel))
-        value = self.theme_xml.createTextNode(outline)
-        element.appendChild(value)
-        background.appendChild(element)
         # Horizontal alignment
         element = self.theme_xml.createElement(u'horizontalAlign')
-        value = self.theme_xml.createTextNode(horizontal)
+        value = self.theme_xml.createTextNode(unicode(horizontal))
         element.appendChild(value)
         background.appendChild(element)
         # Vertical alignment
         element = self.theme_xml.createElement(u'verticalAlign')
-        value = self.theme_xml.createTextNode(vertical)
-        element.appendChild(value)
-        background.appendChild(element)
-        # Wrap style
-        element = self.theme_xml.createElement(u'wrapStyle')
-        value = self.theme_xml.createTextNode(wrap)
+        value = self.theme_xml.createTextNode(unicode(vertical))
         element.appendChild(value)
         background.appendChild(element)
         # Slide Transition
         element = self.theme_xml.createElement(u'slideTransition')
-        value = self.theme_xml.createTextNode(transition)
+        value = self.theme_xml.createTextNode(unicode(transition))
         element.appendChild(value)
         background.appendChild(element)
 
@@ -359,7 +359,7 @@ class ThemeXML(object):
             The XML string to parse.
         """
         self.parse_xml(BLANK_THEME_XML)
-        self.parse_xml(xml)
+        self.parse_xml(unicode(xml))
 
     def parse_xml(self, xml):
         """
@@ -368,47 +368,69 @@ class ThemeXML(object):
         ``xml``
             The XML string to parse.
         """
-        theme_xml = ElementTree(element=XML(xml.encode(u'ascii',
-            u'xmlcharrefreplace')))
+        # remove encoding string
+        if xml[:5] == u'<?xml':
+            xml = xml[38:]
+        try:
+           theme_xml = objectify.fromstring(xml)
+        except etree.XMLSyntaxError:
+            log.exception(u'Invalid xml %s', xml)
+        # print objectify.dump(theme_xml)
         xml_iter = theme_xml.getiterator()
-        master = u''
         for element in xml_iter:
-            if not isinstance(element.text, unicode):
-                element.text = unicode(str(element.text), u'utf-8')
-            if element.getchildren():
-                master = element.tag + u'_'
-            else:
-                # background transparent tags have no children so special case
-                if element.tag == u'background':
-                    for e in element.attrib.iteritems():
-                        self._create_attr(element.tag , e[0], e[1])
-            if element.attrib:
-                for e in element.attrib.iteritems():
-                    if master == u'font_' and e[0] == u'type':
-                        master += e[1] + u'_'
-                    elif master == u'display_' and (element.tag == u'shadow' \
-                        or element.tag == u'outline' ):
-                        self._create_attr(master, element.tag, element.text)
-                        self._create_attr(master, element.tag + u'_'+ e[0], e[1])
+            parent = element.getparent()
+            master = u''
+            if parent is not None:
+                if element.getparent().tag == u'font':
+                    master = element.getparent().tag + u'_' + element.getparent().attrib[u'type']
+                if element.getparent().tag == u'display':
+                    master = element.getparent().tag
+                if element.getparent().tag == u'background':
+                    master = element.getparent().tag
+                    if element.getparent().attrib:
+                        for attr in element.getparent().attrib:
+                            self._create_attr(master, attr, element.getparent().attrib[attr])
+            if master:
+                # the next few lines fix up errors in the XML to the current standard.
+                # move the fields from display to font_main
+                if master == u'display' and (element.tag == u'shadow' or element.tag == u'outline'):
+                    master = u'font_main'
+                # fix bold font
+                if element.tag == u'weight':
+                    if element.text.strip().lstrip() == u'Normal':
+                        self._create_attr(master,  u'bold',  False)
                     else:
-                        field = master + e[0]
-                        self._create_attr(master, e[0], e[1])
+                        self._create_attr(master,  u'bold',  True)
+                else:
+                    # normal service happens here!
+                    self._create_attr(master,  element.tag,  element.text)
+                if element.attrib:
+                    # correction for the shadow and outline tags
+                    if element.tag == u'shadow' or element.tag == u'outline':
+                        master = master + '_' + element.tag
+                    for attr in element.attrib:
+                        self._create_attr(master, attr, element.attrib[attr])
+                else:
+                   self._create_attr(master,  element.tag, element.text)
             else:
-                if element.tag:
-                    element.text = element.text.strip().lstrip()
-                    self._create_attr(master , element.tag, element.text)
+                if element.tag == u'name':
+                    self._create_attr(u'theme',  element.tag, element.text)
 
     def _create_attr(self, master , element, value):
         """
         Create the attributes with the correct data types and name format
         """
         field = self._de_hump(element)
-        if field in boolean_list:
-            setattr(self, master + field, str_to_bool(value))
-        elif field in integer_list:
-            setattr(self, master + field, int(value))
+        tag = master + u'_' + field
+        if element in boolean_list:
+            setattr(self, tag, str_to_bool(value))
+        elif element in integer_list:
+            setattr(self, tag, int(value))
         else:
-            setattr(self, master + field, unicode(value))
+            # make string value unicode
+            if not isinstance(value, unicode):
+                value = unicode(str(value), u'utf-8')
+            setattr(self, tag, unicode(value).strip().lstrip())
 
     def __str__(self):
         """
@@ -453,7 +475,13 @@ class ThemeXML(object):
             unicode(self.font_main_x),
             unicode(self.font_main_y),
             unicode(self.font_main_width),
-            unicode(self.font_main_height))
+            unicode(self.font_main_height),
+            self.font_main_outline,
+            self.font_main_outline_color,
+            self.font_main_outline_size,
+            self.font_main_shadow,
+            self.font_main_shadow_color,
+            self.font_main_shadow_size)
         self.add_font(unicode(self.font_footer_name),
             unicode(self.font_footer_color),
             unicode(self.font_footer_proportion),
@@ -464,15 +492,13 @@ class ThemeXML(object):
             unicode(self.font_footer_x),
             unicode(self.font_footer_y),
             unicode(self.font_footer_width),
-            unicode(self.font_footer_height))
-        self.add_display(unicode(self.display_shadow),
-            unicode(self.display_shadow_color),
-            unicode(self.display_outline),
-            unicode(self.display_outline_color),
-            unicode(self.display_horizontal_align),
-            unicode(self.display_vertical_align),
-            unicode(self.display_wrap_style),
-            unicode(self.display_slide_transition),
-            unicode(self.display_shadow_size),
-            unicode(self.display_outline_size))
-
+            unicode(self.font_footer_height),
+            self.font_footer_outline,
+            self.font_footer_outline_color,
+            self.font_footer_outline_size,
+            self.font_footer_shadow,
+            self.font_footer_shadow_color,
+            self.font_footer_shadow_size)
+        self.add_display(self.display_horizontal_align,
+            self.display_vertical_align,
+            self.display_slide_transition)

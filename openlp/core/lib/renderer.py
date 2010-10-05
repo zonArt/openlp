@@ -90,9 +90,9 @@ class Renderer(object):
         self._rect_footer = rect_footer
         self.page_width = self._rect.width()
         self.page_height = self._rect.height()
-        if self._theme.display_shadow:
-            self.page_width -= int(self._theme.display_shadow_size)
-            self.page_height -= int(self._theme.display_shadow_size)
+        if self._theme.font_main_shadow:
+            self.page_width -= int(self._theme.font_main_shadow_size)
+            self.page_height -= int(self._theme.font_main_shadow_size)
         self.web = QtWebKit.QWebView()
         self.web.setVisible(False)
         self.web.resize(self.page_width, self.page_height)
