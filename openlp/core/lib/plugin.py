@@ -42,6 +42,18 @@ class PluginStatus(object):
     Inactive = 0
     Disabled = -1
 
+class StringContent(object):
+    Name = u'name'
+    Import = u'import'
+    Load = u'load'
+    New = u'new'
+    Edit = u'edit'
+    Delete = u'delete'
+    Preview = u'preview'
+    Live = u'live'
+    Service = u'service'
+    VisibleName = u'visible_name'
+
 class Plugin(QtCore.QObject):
     """
     Base class for openlp plugins to inherit from.
@@ -117,6 +129,8 @@ class Plugin(QtCore.QObject):
         """
         QtCore.QObject.__init__(self)
         self.name = name
+        self.textStrings = {}
+        self.setPluginTextStrings()
         if version:
             self.version = version
         self.settingsSection = self.name.lower()
@@ -257,9 +271,9 @@ class Plugin(QtCore.QObject):
         Called by the plugin to remove toolbar
         """
         if self.mediaItem:
-            self.mediadock.remove_dock(self.name)
+            self.mediadock.remove_dock(self.mediaItem)
         if self.settings_tab:
-            self.settingsForm.removeTab(self.name)
+            self.settingsForm.removeTab(self.settings_tab)
 
     def insertToolboxItem(self):
         """
@@ -287,5 +301,17 @@ class Plugin(QtCore.QObject):
 
         ``newTheme``
             The new name the plugin should now use.
+        """
+        pass
+     
+    def getString(self, name):
+        """
+        encapsulate access of plugins translated text strings
+        """
+        return self.textStrings[name]
+
+    def setPluginTextStrings(self):
+        """
+        Called to define all translatable texts of the plugin
         """
         pass
