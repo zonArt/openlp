@@ -321,12 +321,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         self.getFiles(
             translate('SongsPlugin.ImportWizardForm',
             'Select Open Song Files'),
-            self.openSongFileListWidget, 
-            u'%s (*.xml);;%s (*)'
-            % (translate('SongsPlugin.ImportWizardForm',
-            'OpenSong html Files'), 
-            translate('SongsPlugin.ImportWizardForm',
-            'All Files'))
+            self.openSongFileListWidget
         )
 
     def onOpenSongRemoveButtonClicked(self):
