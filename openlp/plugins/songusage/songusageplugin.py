@@ -168,11 +168,11 @@ class SongUsagePlugin(Plugin):
         Called to define all translatable texts of the plugin
         """
         ## Name PluginList ##
-        self.text_strings[StringContent.Name] = {
+        self.textStrings[StringContent.Name] = {
             u'singular': translate('SongUsagePlugin', 'SongUsage'),
             u'plural': translate('SongUsagePlugin', 'SongUsage')
         }
         ## Name for MediaDockManager, SettingsManager ##
-        self.text_strings[StringContent.VisibleName] = {
+        self.textStrings[StringContent.VisibleName] = {
             u'title': translate('SongUsagePlugin', 'SongUsage')
         }

@@ -121,53 +121,53 @@ class BiblePlugin(Plugin):
         Called to define all translatable texts of the plugin
         """
         ## Name PluginList ##
-        self.text_strings[StringContent.Name] = {
+        self.textStrings[StringContent.Name] = {
             u'singular': translate('BiblesPlugin', 'Bible'),
             u'plural': translate('BiblesPlugin', 'Bibles')
         }
         ## Name for MediaDockManager, SettingsManager ##
-        self.text_strings[StringContent.VisibleName] = {
+        self.textStrings[StringContent.VisibleName] = {
             u'title': translate('BiblesPlugin', 'Bibles')
         }
         # Middle Header Bar
         ## Import Button ##
-        self.text_strings[StringContent.Import] = {
+        self.textStrings[StringContent.Import] = {
             u'title': translate('BiblesPlugin', 'Import'),
             u'tooltip': translate('BiblesPlugin', 
                 'Import a Bible')
         }
         ## New Button ##
-        self.text_strings[StringContent.New] = {
+        self.textStrings[StringContent.New] = {
             u'title': translate('BiblesPlugin', 'Add'),
             u'tooltip': translate('BiblesPlugin', 
                 'Add a new Bible')
         }
         ## Edit Button ##
-        self.text_strings[StringContent.Edit] = {
+        self.textStrings[StringContent.Edit] = {
             u'title': translate('BiblesPlugin', 'Edit'),
             u'tooltip': translate('BiblesPlugin', 
                 'Edit the selected Bible')
         }
         ## Delete Button ##
-        self.text_strings[StringContent.Delete] = {
+        self.textStrings[StringContent.Delete] = {
             u'title': translate('BiblesPlugin', 'Delete'),
             u'tooltip': translate('BiblesPlugin', 
                 'Delete the selected Bible')
         }
         ## Preview ##
-        self.text_strings[StringContent.Preview] = {
+        self.textStrings[StringContent.Preview] = {
             u'title': translate('BiblesPlugin', 'Preview'),
             u'tooltip': translate('BiblesPlugin', 
                 'Preview the selected Bible')
         }
         ## Live  Button ##
-        self.text_strings[StringContent.Live] = {
+        self.textStrings[StringContent.Live] = {
             u'title': translate('BiblesPlugin', 'Live'),
             u'tooltip': translate('BiblesPlugin', 
                 'Send the selected Bible live')
         }
         ## Add to service Button ##
-        self.text_strings[StringContent.Service] = {
+        self.textStrings[StringContent.Service] = {
             u'title': translate('BiblesPlugin', 'Service'),
             u'tooltip': translate('BiblesPlugin', 
                 'Add the selected Bible to the service')

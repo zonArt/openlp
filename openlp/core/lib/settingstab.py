@@ -35,8 +35,11 @@ class SettingsTab(QtGui.QWidget):
         """
         Constructor to create the Settings tab item.
 
-        ``plugin``
-            The related plugin of the tab, which holds the content of the plugin.
+        ``title``
+            The title of the tab, which is used internally for the tab handling.
+
+        ``visible_title``
+            The title of the tab, which is usually displayed on the tab.
         """
         QtGui.QWidget.__init__(self)
         self.tabTitle = title

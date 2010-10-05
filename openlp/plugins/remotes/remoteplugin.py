@@ -83,11 +83,11 @@ class RemotesPlugin(Plugin):
         Called to define all translatable texts of the plugin
         """
         ## Name PluginList ##
-        self.text_strings[StringContent.Name] = {
+        self.textStrings[StringContent.Name] = {
             u'singular': translate('RemotePlugin', 'Remote'),
             u'plural': translate('RemotePlugin', 'Remotes')
         }
         ## Name for MediaDockManager, SettingsManager ##
-        self.text_strings[StringContent.VisibleName] = {
+        self.textStrings[StringContent.VisibleName] = {
             u'title': translate('RemotePlugin', 'Remotes')
         }

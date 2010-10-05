@@ -107,12 +107,12 @@ class AlertsPlugin(Plugin):
         Called to define all translatable texts of the plugin
         """
         ## Name PluginList ##
-        self.text_strings[StringContent.Name] = {
+        self.textStrings[StringContent.Name] = {
             u'singular': translate('AlertsPlugin', 'Alert'),
             u'plural': translate('AlertsPlugin', 'Alerts')
         }
         ## Name for MediaDockManager, SettingsManager ##
-        self.text_strings[StringContent.VisibleName] = {
+        self.textStrings[StringContent.VisibleName] = {
             u'title': translate('AlertsPlugin', 'Alerts')
         }
         

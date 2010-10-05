@@ -129,7 +129,7 @@ class Plugin(QtCore.QObject):
         """
         QtCore.QObject.__init__(self)
         self.name = name
-        self.text_strings = {}
+        self.textStrings = {}
         self.setPluginTextStrings()
         if version:
             self.version = version
@@ -308,7 +308,7 @@ class Plugin(QtCore.QObject):
         """
         encapsulate access of plugins translated text strings
         """
-        return self.text_strings[name]
+        return self.textStrings[name]
 
     def setPluginTextStrings(self):
         """
