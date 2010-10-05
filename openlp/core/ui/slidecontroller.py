@@ -538,7 +538,7 @@ class SlideController(QtGui.QWidget):
                 Receiver.send_message(u'%s_stop' %
                     self.serviceItem.name.lower(), [serviceItem, self.isLive])
             if self.serviceItem.is_media():
-                self.onMediaStop()
+                self.onMediaClose()
         if self.isLive:
             blanked = self.BlankScreen.isChecked()
         else:
@@ -980,3 +980,18 @@ class SlideController(QtGui.QWidget):
             self.video.hide()
         self.SlidePreview.clear()
         self.SlidePreview.show()
+        
+    def onMediaClose(self):
+        """
+        Respond to a request to close the Video
+        """
+        log.debug(u'SlideController onMediaStop')
+        if self.isLive:
+            self.display.resetVideo()
+        else:
+            self.mediaObject.stop()
+            self.mediaObject.clearQueue()
+            self.video.hide()
+        self.SlidePreview.clear()
+        self.SlidePreview.show()
+

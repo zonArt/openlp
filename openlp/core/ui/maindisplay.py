@@ -115,22 +115,22 @@ class MainDisplay(DisplayWidget):
         log.debug(u'Setup live = %s for %s ' % (self.isLive,
             self.screens.monitor_number))
         self.usePhonon = QtCore.QSettings().value(
-            u'media/use phonon', QtCore.QVariant(False)).toBool()
+            u'media/use phonon', QtCore.QVariant(True)).toBool()
+        self.phononActive = False
         self.screen = self.screens.current
         self.setVisible(False)
         self.setGeometry(self.screen[u'size'])
-        try:
-            self.webView = QtWebKit.QGraphicsWebView()
-            self.scene = QtGui.QGraphicsScene(self)
-            self.setScene(self.scene)
-            self.scene.addItem(self.webView)
-            self.webView.setGeometry(QtCore.QRectF(0, 0,
-                self.screen[u'size'].width(), self.screen[u'size'].height()))
-        except AttributeError:
-            #  QGraphicsWebView a recent addition, so fall back to QWebView
-            self.webView = QtWebKit.QWebView(self)
-            self.webView.setGeometry(0, 0,
-                self.screen[u'size'].width(), self.screen[u'size'].height())
+        self.videoWidget = Phonon.VideoWidget(self)
+        self.videoWidget.setVisible(False)
+        self.videoWidget.setGeometry(QtCore.QRect(0, 0,
+            self.screen[u'size'].width(), self.screen[u'size'].height()))
+        self.mediaObject = Phonon.MediaObject(self)
+        self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
+        Phonon.createPath(self.mediaObject, self.videoWidget)
+        Phonon.createPath(self.mediaObject, self.audio)
+        self.webView = QtWebKit.QWebView(self)
+        self.webView.setGeometry(0, 0,
+            self.screen[u'size'].width(), self.screen[u'size'].height())
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
         QtCore.QObject.connect(self.webView,
@@ -141,14 +141,6 @@ class MainDisplay(DisplayWidget):
             QtCore.Qt.ScrollBarAlwaysOff)
         self.frame.setScrollBarPolicy(QtCore.Qt.Horizontal,
             QtCore.Qt.ScrollBarAlwaysOff)
-        self.videowidget = Phonon.VideoWidget(self)
-        self.videowidget.setVisible(False)
-        self.videowidget.setGeometry(QtCore.QRect(0, 0,
-            self.screen[u'size'].width(), self.screen[u'size'].height()))
-        self.mediaObject = Phonon.MediaObject(self)
-        self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
-        Phonon.createPath(self.mediaObject, self.videowidget)
-        Phonon.createPath(self.mediaObject, self.audio)
         if self.isLive:
             # Build the initial frame.
             self.black = QtGui.QImage(
@@ -209,7 +201,7 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'alert')
         if self.height() != self.screen[u'size'].height() \
-            or not self.isVisible():
+            or not self.isVisible() or self.videoWidget.isVisible():
             shrink = True
         else:
             shrink = False
@@ -218,12 +210,17 @@ class MainDisplay(DisplayWidget):
             u'top' if shrink else u'')
         height = self.frame.evaluateJavaScript(js)
         if shrink:
-            if text:
-                self.resize(self.width(), int(height.toString()))
-                self.setVisible(True)
+            if self.phononActive:
+                shrinkItem = self.webView
             else:
-                self.setGeometry(self.screen[u'size'])
-                self.setVisible(False)
+                shrinkItem = self
+            if text:
+                shrinkItem.resize(self.width(), int(height.toString()))
+                shrinkItem.setVisible(True)
+            else:
+                shrinkItem.setVisible(False)
+                shrinkItem.resize(self.screen[u'size'].width(), 
+                    self.screen[u'size'].height())
 
     def image(self, image):
         """
@@ -269,18 +266,21 @@ class MainDisplay(DisplayWidget):
         Used after Video plugin has changed the background
         """
         log.debug(u'resetVideo')
-        if isBackground or not self.usePhonon:
-            self.frame.evaluateJavaScript(u'show_video("close");')
-        else:
+        if self.phononActive:
             self.mediaObject.stop()
             self.mediaObject.clearQueue()
+            self.webView.setVisible(True)
+            self.videoWidget.setVisible(False)
+            self.phononActive = False
+        else:
+            self.frame.evaluateJavaScript(u'show_video("close");')
 
     def videoPlay(self):
         """
         Responds to the request to play a loaded video
         """
         log.debug(u'videoPlay')
-        if self.usePhonon:
+        if self.phononActive:
             self.mediaObject.play()
         else:
             self.frame.evaluateJavaScript(u'show_video("play");')
@@ -293,7 +293,7 @@ class MainDisplay(DisplayWidget):
         Responds to the request to pause a loaded video
         """
         log.debug(u'videoPause')
-        if self.usePhonon:
+        if self.phononActive:
             self.mediaObject.pause()
         else:
             self.frame.evaluateJavaScript(u'show_video("pause");')
@@ -303,10 +303,8 @@ class MainDisplay(DisplayWidget):
         Responds to the request to stop a loaded video
         """
         log.debug(u'videoStop')
-        if self.usePhonon:
+        if self.phononActive:
             self.mediaObject.stop()
-            self.webView.setVisible(True)
-            self.videowidget.setVisible(False)
         else:
             self.frame.evaluateJavaScript(u'show_video("stop");')
 
@@ -315,12 +313,12 @@ class MainDisplay(DisplayWidget):
         Changes the volume of a running video
         """
         log.debug(u'videoVolume %d' % volume)
-        if self.usePhonon:
+        if self.phononActive:
             self.audio.setVolume(volume)
         else:
             self.frame.evaluateJavaScript(u'show_video(null, null, %s);' %
                 str(float(volume)/float(10)))
-            
+
     def video(self, videoPath, volume, isBackground=False):
         """
         Loads and starts a video to run with the option of sound
@@ -333,12 +331,13 @@ class MainDisplay(DisplayWidget):
                 str(float(volume)/float(10)))
             self.frame.evaluateJavaScript(js)
         else:
+            self.phononActive = True
             self.mediaObject.stop()
             self.mediaObject.clearQueue()
             self.mediaObject.setCurrentSource(Phonon.MediaSource(videoPath))
             self.mediaObject.play()
             self.webView.setVisible(False)
-            self.videowidget.setVisible(True)
+            self.videoWidget.setVisible(True)
         return self.preview()
 
     def isLoaded(self):
@@ -419,6 +418,8 @@ class MainDisplay(DisplayWidget):
         Store the images so they can be replaced when required
         """
         log.debug(u'hideDisplay mode = %d', mode)
+        if self.phononActive:
+            self.videoPause()
         if mode == HideMode.Screen:
             self.frame.evaluateJavaScript(u'show_blank("desktop");')
             self.setVisible(False)
@@ -426,8 +427,11 @@ class MainDisplay(DisplayWidget):
             self.frame.evaluateJavaScript(u'show_blank("black");')
         else:
             self.frame.evaluateJavaScript(u'show_blank("theme");')
-        if mode != HideMode.Screen and self.isHidden():
-            self.setVisible(True)
+        if mode != HideMode.Screen:
+            if self.isHidden():
+                self.setVisible(True)
+            if self.phononActive:
+                self.webView.setVisible(True)
         self.hide_mode = mode
 
     def showDisplay(self):
@@ -440,6 +444,9 @@ class MainDisplay(DisplayWidget):
         self.frame.evaluateJavaScript('show_blank("show");')
         if self.isHidden():
             self.setVisible(True)
+        if self.phononActive:
+            self.webView.setVisible(False)
+            self.videoPlay()
         # Trigger actions when display is active again
         Receiver.send_message(u'maindisplay_active')
         self.hide_mode = None
@@ -521,3 +528,4 @@ class AudioPlayer(QtCore.QObject):
         """
         log.debug(u'AudioPlayer Reached end of media playlist')
         self.mediaObject.clearQueue()
+

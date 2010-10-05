@@ -149,15 +149,15 @@ class ServiceItem(object):
         line_break = True
         if self.is_capable(ItemCapabilities.NoLineBreaks):
             line_break = False
+        theme = None
+        if self.theme:
+            theme = self.theme
+        self.main, self.footer = \
+            self.render_manager.set_override_theme(theme, useOverride)
+        self.bg_image_bytes = self.render_manager.renderer.bg_image_bytes
+        self.themedata = self.render_manager.renderer._theme
         if self.service_item_type == ServiceItemType.Text:
             log.debug(u'Formatting slides')
-            theme = None
-            if self.theme:
-                theme = self.theme
-            self.main, self.footer = \
-                self.render_manager.set_override_theme(theme, useOverride)
-            self.bg_image_bytes = self.render_manager.renderer.bg_image_bytes
-            self.themedata = self.render_manager.renderer._theme
             for slide in self._raw_frames:
                 before = time.time()
                 formatted = self.render_manager \
@@ -170,7 +170,7 @@ class ServiceItem(object):
                         u'verseTag': slide[u'verseTag'] })
                 log.log(15, u'Formatting took %4s' % (time.time() - before))
         elif self.service_item_type == ServiceItemType.Image:
-            self.themedata = self.render_manager.global_theme_data
+            #self.themedata = self.render_manager.global_theme_data
             for slide in self._raw_frames:
                 slide[u'image'] = resize_image(slide[u'image'],
                     self.render_manager.width, self.render_manager.height)
