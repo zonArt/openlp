@@ -80,8 +80,7 @@ class BiblePlugin(Plugin):
         self.exportBibleItem = QtGui.QAction(export_menu)
         self.exportBibleItem.setObjectName(u'exportBibleItem')
         export_menu.addAction(self.exportBibleItem)
-        self.exportBibleItem.setText(translate(
-            'BiblesPlugin', '&Bible'))
+        self.exportBibleItem.setText(translate('BiblesPlugin', '&Bible'))
         self.exportBibleItem.setVisible(False)
 
     def onBibleImportClick(self):
@@ -97,7 +96,6 @@ class BiblePlugin(Plugin):
     def usesTheme(self, theme):
         """
         Called to find out if the bible plugin is currently using a theme.
-
         Returns True if the theme is being used, otherwise returns False.
         """
         if self.settings_tab.bible_theme == theme:
