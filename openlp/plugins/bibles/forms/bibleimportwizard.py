@@ -275,14 +275,14 @@ class Ui_BibleImportWizard(object):
         self.CopyrightEdit.setObjectName(u'CopyrightEdit')
         self.LicenseDetailsLayout.setWidget(1, QtGui.QFormLayout.FieldRole,
             self.CopyrightEdit)
-        self.PermissionLabel = QtGui.QLabel(self.LicenseDetailsPage)
-        self.PermissionLabel.setObjectName(u'PermissionLabel')
+        self.PermissionsLabel = QtGui.QLabel(self.LicenseDetailsPage)
+        self.PermissionsLabel.setObjectName(u'PermissionsLabel')
         self.LicenseDetailsLayout.setWidget(2, QtGui.QFormLayout.LabelRole,
-            self.PermissionLabel)
-        self.PermissionEdit = QtGui.QLineEdit(self.LicenseDetailsPage)
-        self.PermissionEdit.setObjectName(u'PermissionEdit')
+            self.PermissionsLabel)
+        self.PermissionsEdit = QtGui.QLineEdit(self.LicenseDetailsPage)
+        self.PermissionsEdit.setObjectName(u'PermissionsEdit')
         self.LicenseDetailsLayout.setWidget(2, QtGui.QFormLayout.FieldRole,
-            self.PermissionEdit)
+            self.PermissionsEdit)
         BibleImportWizard.addPage(self.LicenseDetailsPage)
         self.ImportPage = QtGui.QWizardPage()
         self.ImportPage.setObjectName(u'ImportPage')
@@ -372,8 +372,8 @@ class Ui_BibleImportWizard(object):
             translate('BiblesPlugin.ImportWizardForm', 'Version name:'))
         self.CopyrightLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'Copyright:'))
-        self.PermissionLabel.setText(
-            translate('BiblesPlugin.ImportWizardForm', 'Permission:'))
+        self.PermissionsLabel.setText(
+            translate('BiblesPlugin.ImportWizardForm', 'Permissions:'))
         self.ImportPage.setTitle(
             translate('BiblesPlugin.ImportWizardForm', 'Importing'))
         self.ImportPage.setSubTitle(
