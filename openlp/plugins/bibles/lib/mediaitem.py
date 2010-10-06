@@ -32,6 +32,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import MediaManagerItem, Receiver, BaseListWithDnD, \
     ItemCapabilities, translate
 from openlp.plugins.bibles.forms import ImportWizardForm
+from openlp.plugins.bibles.lib.db import BibleDB
 
 log = logging.getLogger(__name__)
 
@@ -374,7 +375,7 @@ class BibleMediaItem(MediaManagerItem):
         self.AdvancedSecondBibleComboBox.clear()
         self.QuickSecondBibleComboBox.addItem(u'')
         self.AdvancedSecondBibleComboBox.addItem(u'')
-        bibles = self.parent.manager.get_bibles()
+        bibles = self.parent.manager.get_bibles().keys()
         # load bibles into the combo boxes
         first = True
         for bible in bibles:
@@ -544,19 +545,14 @@ class BibleMediaItem(MediaManagerItem):
                 self.dual_search_results = self.parent.manager.get_verses(
                     dual_bible, text)
         else: # Text Search
-            self.search_results = self.parent.manager.verse_search(bible, text)
+            bibles = self.parent.manager.get_bibles()
+            self.search_results = bibles[bible].verse_search(text)
             if dual_bible and self.search_results:
-#                text = []
-#                for verse in self.search_results:
-#                    text.append((verse.book.name, verse.chapter, verse.verse,
-#                        verse.verse))
-#                self.dual_search_results = self.parent.manager.get_verses(
-#                    dual_bible, text)
-                for count, verse in enumerate(self.search_results):
-                    text = u'%s %s:%s' % (verse.book.name, verse.chapter,
-                        verse.verse)
-                    self.dual_search_results[count] = self.parent.manager.\
-                        get_verses(dual_bible, text, text)[0]
+                text = []
+                for verse in self.search_results:
+                    text.append((verse.book.name, verse.chapter, verse.verse,
+                        verse.verse))
+                self.dual_search_results = bibles[dual_bible].get_verses(text)
         if self.ClearQuickSearchComboBox.currentIndex() == 0:
             self.listView.clear()
         if self.listView.count() != 0 and self.search_results:

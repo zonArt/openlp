@@ -181,10 +181,10 @@ class BibleManager(object):
 
     def get_bibles(self):
         """
-        Returns a list of the names of available Bibles.
+        Returns a dict with all available Bibles.
         """
         log.debug(u'get_bibles')
-        return self.db_cache.keys()
+        return self.db_cache
 
     def get_books(self, bible):
         """
@@ -238,10 +238,6 @@ class BibleManager(object):
                 - Genesis 1:1-10,2:1-10
         """
         log.debug(u'BibleManager.get_verses("%s", "%s")', bible, versetext)
-#        if type(versetext) is list:
-#            reflist = versetext
-#        else:
-#            reflist = parse_reference(versetext)
         reflist = parse_reference(versetext)
         if reflist:
             return self.db_cache[bible].get_verses(reflist)
@@ -261,26 +257,26 @@ class BibleManager(object):
                 'Book Chapter:Verse-Chapter:Verse'))
             return None
 
-    def verse_search(self, bible, text):
-        """
-        ``bible``
-            The bible to seach in.
-
-        ``text``
-            The text to search for.
-        """
-        log.debug(u'BibleManager.verse_search("%s", "%s")', bible,  text)
-        if text:
-            return self.db_cache[bible].verse_search(text)
-        else:
-            QtGui.QMessageBox.information(self.parent.mediaItem,
-                translate('BiblesPlugin.BibleManager',
-                'Scripture Reference Error'),
-                translate('BiblesPlugin.BibleManager', 'You did not enter a '
-                'search keyword.\nYou can seperate different keywords by a space'
-                ' to search for all of your keywords and can seperate them by a'
-                ' comma to search for one of them.'))
-            return None
+#    def verse_search(self, bible, text):
+#        """
+#        ``bible``
+#            The bible to seach in.
+#
+#        ``text``
+#            The text to search for.
+#        """
+#        log.debug(u'BibleManager.verse_search("%s", "%s")', bible,  text)
+#        if text:
+#            return self.db_cache[bible].verse_search(text)
+#        else:
+#            QtGui.QMessageBox.information(self.parent.mediaItem,
+#                translate('BiblesPlugin.BibleManager',
+#                'Scripture Reference Error'),
+#                translate('BiblesPlugin.BibleManager', 'You did not enter a '
+#                'search keyword.\nYou can seperate different keywords by a space'
+#                ' to search for all of your keywords and can seperate them by a'
+#                ' comma to search for one of them.'))
+#            return None
     
     def save_meta_data(self, bible, version, copyright, permissions):
         """
