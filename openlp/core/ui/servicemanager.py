@@ -830,7 +830,7 @@ class ServiceManager(QtGui.QWidget):
                 self.parent.LiveController.replaceServiceManagerItem(newItem)
         self.parent.serviceChanged(False, self.serviceName)
 
-    def addServiceItem(self, item, rebuild=False, expand=True, replace=False):
+    def addServiceItem(self, item, rebuild=False, expand=False, replace=False):
         """
         Add a Service item to the list
 

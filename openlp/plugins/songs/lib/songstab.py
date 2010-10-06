@@ -84,7 +84,7 @@ class SongsTab(SettingsTab):
         self.SongUpdateOnEditCheckBox.setText(
             translate('SongsPlugin.SongsTab', 'Update service from song edit'))
         self.SongAddFromServiceCheckBox.setText(translate('SongsPlugin.SongsTab',
-            'Add songs from service being Loaded'))
+            'Add missing songs when opening service'))
 
     def onSearchAsTypeCheckBoxChanged(self, check_state):
         self.song_search = False
