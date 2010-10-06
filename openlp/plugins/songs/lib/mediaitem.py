@@ -200,7 +200,8 @@ class SongMediaItem(MediaManagerItem):
         if self.remoteTriggered == u'P':
             self.onPreviewClick()
         # Push edits to the service manager to update items
-        if self.editItem and self.updateServiceOnEdit:
+        if self.editItem and self.updateServiceOnEdit and \
+            not self.remoteTriggered:
             item = self.buildServiceItem(self.editItem)
             self.parent.serviceManager.replaceServiceItem(item)
         self.onRemoteEditClear()
