@@ -51,8 +51,14 @@ class SongsTab(SettingsTab):
         self.SearchAsTypeCheckBox.setObjectName(u'SearchAsTypeCheckBox')
         self.SongsModeLayout.addWidget(self.SearchAsTypeCheckBox)
         self.SongBarActiveCheckBox = QtGui.QCheckBox(self.SongsModeGroupBox)
-        self.SongBarActiveCheckBox.setObjectName(u'SearchAsTypeCheckBox')
+        self.SongBarActiveCheckBox.setObjectName(u'SongBarActiveCheckBox')
         self.SongsModeLayout.addWidget(self.SongBarActiveCheckBox)
+        self.SongUpdateOnEditCheckBox = QtGui.QCheckBox(self.SongsModeGroupBox)
+        self.SongUpdateOnEditCheckBox.setObjectName(u'SongUpdateOnEditCheckBox')
+        self.SongsModeLayout.addWidget(self.SongUpdateOnEditCheckBox)
+        self.SongAddFromServiceCheckBox = QtGui.QCheckBox(self.SongsModeGroupBox)
+        self.SongAddFromServiceCheckBox.setObjectName(u'SongAddFromServiceCheckBox')
+        self.SongsModeLayout.addWidget(self.SongAddFromServiceCheckBox)
         self.SongsLayout.setWidget(
             0, QtGui.QFormLayout.LabelRole, self.SongsModeGroupBox)
         QtCore.QObject.connect(self.SearchAsTypeCheckBox,
@@ -60,7 +66,13 @@ class SongsTab(SettingsTab):
             self.onSearchAsTypeCheckBoxChanged)
         QtCore.QObject.connect(self.SongBarActiveCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
-            self.SongBarActiveCheckBoxChanged)
+            self.onSongBarActiveCheckBoxChanged)
+        QtCore.QObject.connect(self.SongUpdateOnEditCheckBox,
+            QtCore.SIGNAL(u'stateChanged(int)'),
+            self.onSongUpdateOnEditCheckBoxChanged)
+        QtCore.QObject.connect(self.SongBarActiveCheckBox,
+            QtCore.SIGNAL(u'stateChanged(int)'),
+            self.onSongAddFromServiceCheckBoxChanged)
 
     def retranslateUi(self):
         self.SongsModeGroupBox.setTitle(
@@ -69,6 +81,10 @@ class SongsTab(SettingsTab):
             translate('SongsPlugin.SongsTab', 'Enable search as you type'))
         self.SongBarActiveCheckBox.setText(translate('SongsPlugin.SongsTab',
             'Display verses on live tool bar'))
+        self.SongUpdateOnEditCheckBox.setText(
+            translate('SongsPlugin.SongsTab', 'Update service from song edit'))
+        self.SongAddFromServiceCheckBox.setText(translate('SongsPlugin.SongsTab',
+            'Add songs from service being Loaded'))
 
     def onSearchAsTypeCheckBoxChanged(self, check_state):
         self.song_search = False
@@ -76,11 +92,23 @@ class SongsTab(SettingsTab):
         if check_state == QtCore.Qt.Checked:
             self.song_search = True
 
-    def SongBarActiveCheckBoxChanged(self, check_state):
+    def onSongBarActiveCheckBoxChanged(self, check_state):
         self.song_bar = False
         # we have a set value convert to True/False
         if check_state == QtCore.Qt.Checked:
             self.song_bar = True
+
+    def onSongUpdateOnEditCheckBoxChanged(self, check_state):
+        self.update_edit = False
+        # we have a set value convert to True/False
+        if check_state == QtCore.Qt.Checked:
+            self.update_edit = True
+
+    def onSongAddFromServiceCheckBoxChanged(self, check_state):
+        self.update_load = False
+        # we have a set value convert to True/False
+        if check_state == QtCore.Qt.Checked:
+            self.update_load = True
 
     def load(self):
         settings = QtCore.QSettings()
@@ -89,8 +117,14 @@ class SongsTab(SettingsTab):
             u'search as type', QtCore.QVariant(False)).toBool()
         self.song_bar = settings.value(
             u'display songbar', QtCore.QVariant(True)).toBool()
+        self.update_edit = settings.value(
+            u'update service on edit', QtCore.QVariant(False)).toBool()
+        self.update_load = settings.value(
+            u'add song from service', QtCore.QVariant(True)).toBool()
         self.SearchAsTypeCheckBox.setChecked(self.song_search)
         self.SongBarActiveCheckBox.setChecked(self.song_bar)
+        self.SongUpdateOnEditCheckBox.setChecked(self.update_edit)
+        self.SongAddFromServiceCheckBox.setChecked(self.update_load)
         settings.endGroup()
 
     def save(self):
@@ -98,4 +132,6 @@ class SongsTab(SettingsTab):
         settings.beginGroup(self.settingsSection)
         settings.setValue(u'search as type', QtCore.QVariant(self.song_search))
         settings.setValue(u'display songbar', QtCore.QVariant(self.song_bar))
+        settings.setValue(u'update service on edit', QtCore.QVariant(self.update_edit))
+        settings.setValue(u'add song from service', QtCore.QVariant(self.update_load))
         settings.endGroup()

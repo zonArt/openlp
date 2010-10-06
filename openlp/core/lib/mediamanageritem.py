@@ -474,8 +474,8 @@ class MediaManagerItem(QtGui.QWidget):
                 translate('OpenLP.MediaManagerItem',
                     'You must select one or more items.'))
         else:
-            #Is it posssible to process multiple list items to generate multiple
-            #service items?
+            # Is it posssible to process multiple list items to generate multiple
+            # service items?
             if self.singleServiceItem or self.remoteTriggered:
                 log.debug(self.plugin.name + u' Add requested')
                 service_item = self.buildServiceItem()
@@ -504,7 +504,7 @@ class MediaManagerItem(QtGui.QWidget):
             log.debug(self.plugin.name + u' Add requested')
             service_item = self.parent.serviceManager.getServiceItem()
             if not service_item:
-                QtGui.QMessageBox.information(self,
+                 QtGui.QMessageBox.information(self,
                     translate('OpenLP.MediaManagerItem',
                         'No Service Item Selected'),
                     translate('OpenLP.MediaManagerItem',

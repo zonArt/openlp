@@ -815,6 +815,21 @@ class ServiceManager(QtGui.QWidget):
             if item[u'service_item']._uuid == uuid:
                 item[u'service_item'].editId = editId
 
+    def replaceServiceItem(self, newItem):
+        """
+        Using the service item passed replace the one with the same edit id
+        if found.
+        """
+        newItem.render()
+        for itemcount, item in enumerate(self.serviceItems):
+            if item[u'service_item'].editId == newItem.editId and \
+                item[u'service_item'].name == newItem.name:
+                newItem.merge(item[u'service_item'])
+                item[u'service_item'] = newItem
+                self.repaintServiceList(itemcount + 1, 0)
+                self.parent.LiveController.replaceServiceManagerItem(newItem)
+        self.parent.serviceChanged(False, self.serviceName)
+
     def addServiceItem(self, item, rebuild=False, expand=True, replace=False):
         """
         Add a Service item to the list
