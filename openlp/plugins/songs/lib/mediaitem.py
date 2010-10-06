@@ -397,7 +397,8 @@ class SongMediaItem(MediaManagerItem):
         """
         if item.data_string:
             search_results = self.parent.manager.get_all_objects(Song,
-                Song.search_title.like(u'%' + item.data_string[u'title'].split(u'@')[0] + u'%'),
+                Song.search_title.like(u'%' +
+                    item.data_string[u'title'].split(u'@')[0] + u'%'),
                 Song.search_title.asc())
             author_list = item.data_string[u'authors'].split(u',')
             editId = 0
