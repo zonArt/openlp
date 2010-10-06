@@ -32,12 +32,11 @@ class RemoteTab(SettingsTab):
     """
     RemoteTab is the Remotes settings tab in the settings dialog.
     """
-    def __init__(self, title):
-        SettingsTab.__init__(self, title)
+    def __init__(self, title, visible_title):
+        SettingsTab.__init__(self, title, visible_title)
 
     def setupUi(self):
         self.setObjectName(u'RemoteTab')
-        self.tabTitleVisible = translate('RemotePlugin.RemoteTab', 'Remotes')
         self.remoteLayout = QtGui.QFormLayout(self)
         self.remoteLayout.setSpacing(8)
         self.remoteLayout.setMargin(8)

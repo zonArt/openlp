@@ -29,7 +29,7 @@ from datetime import datetime
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, Receiver, build_icon, translate
+from openlp.core.lib import Plugin, StringContent, Receiver, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.plugins.songusage.forms import SongUsageDetailForm, \
     SongUsageDeleteForm
@@ -162,3 +162,17 @@ class SongUsagePlugin(Plugin):
             '</strong><br />This plugin tracks the usage of songs in '
             'services.')
         return about_text
+
+    def setPluginTextStrings(self):
+        """
+        Called to define all translatable texts of the plugin
+        """
+        ## Name PluginList ##
+        self.textStrings[StringContent.Name] = {
+            u'singular': translate('SongUsagePlugin', 'SongUsage'),
+            u'plural': translate('SongUsagePlugin', 'SongUsage')
+        }
+        ## Name for MediaDockManager, SettingsManager ##
+        self.textStrings[StringContent.VisibleName] = {
+            u'title': translate('SongUsagePlugin', 'SongUsage')
+        }
