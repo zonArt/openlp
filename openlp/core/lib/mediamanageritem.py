@@ -33,7 +33,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import context_menu_action, context_menu_separator, \
     SettingsManager, OpenLPToolbar, ServiceItem, StringContent, build_icon, \
-    translate
+    translate, Receiver
 
 log = logging.getLogger(__name__)
 
@@ -94,7 +94,7 @@ class MediaManagerItem(QtGui.QWidget):
         QtGui.QWidget.__init__(self)
         self.parent = parent
         #TODO: plugin should not be the parent in future
-        self.plugin = parent#plugin
+        self.plugin = parent # plugin
         visible_title = self.plugin.getString(StringContent.VisibleName)
         self.title = visible_title[u'title']
         self.settingsSection = self.plugin.name.lower()
@@ -115,6 +115,9 @@ class MediaManagerItem(QtGui.QWidget):
         self.requiredIcons()
         self.setupUi()
         self.retranslateUi()
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%s_service_load' % self.parent.name.lower()),
+            self.serviceLoad)
 
     def requiredIcons(self):
         """
@@ -471,8 +474,8 @@ class MediaManagerItem(QtGui.QWidget):
                 translate('OpenLP.MediaManagerItem',
                     'You must select one or more items.'))
         else:
-            #Is it posssible to process multiple list items to generate multiple
-            #service items?
+            # Is it posssible to process multiple list items to generate multiple
+            # service items?
             if self.singleServiceItem or self.remoteTriggered:
                 log.debug(self.plugin.name + u' Add requested')
                 service_item = self.buildServiceItem()
@@ -501,7 +504,7 @@ class MediaManagerItem(QtGui.QWidget):
             log.debug(self.plugin.name + u' Add requested')
             service_item = self.parent.serviceManager.getServiceItem()
             if not service_item:
-                QtGui.QMessageBox.information(self,
+                 QtGui.QMessageBox.information(self,
                     translate('OpenLP.MediaManagerItem',
                         'No Service Item Selected'),
                     translate('OpenLP.MediaManagerItem',
@@ -531,3 +534,11 @@ class MediaManagerItem(QtGui.QWidget):
             return service_item
         else:
             return None
+
+    def serviceLoad(self, message):
+        """
+        Method to add processing when a service has been loaded and
+        individual service items need to be processed by the plugins
+        """
+        pass
+
