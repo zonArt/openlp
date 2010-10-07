@@ -179,19 +179,24 @@ class SlideController(QtGui.QWidget):
             self.HideMenu.setMenu(QtGui.QMenu(
                 translate('OpenLP.SlideController', 'Hide'), self.Toolbar))
             self.BlankScreen = QtGui.QAction(QtGui.QIcon(
-                u':/slides/slide_blank.png'), u'Blank Screen', self.HideMenu)
+                u':/slides/slide_blank.png'), 
+                translate('OpenLP.SlideController', 
+                    'Blank Screen'), self.HideMenu)
             self.BlankScreen.setCheckable(True)
             QtCore.QObject.connect(self.BlankScreen,
                 QtCore.SIGNAL("triggered(bool)"), self.onBlankDisplay)
             self.ThemeScreen = QtGui.QAction(QtGui.QIcon(
-                u':/slides/slide_theme.png'), u'Blank to Theme', self.HideMenu)
+                u':/slides/slide_theme.png'), 
+                translate('OpenLP.SlideController', 
+                    'Blank to Theme'), self.HideMenu)
             self.ThemeScreen.setCheckable(True)
             QtCore.QObject.connect(self.ThemeScreen,
                 QtCore.SIGNAL("triggered(bool)"), self.onThemeDisplay)
             if self.screens.display_count > 1:
                 self.DesktopScreen = QtGui.QAction(QtGui.QIcon(
-                    u':/slides/slide_desktop.png'), u'Show Desktop',
-                    self.HideMenu)
+                    u':/slides/slide_desktop.png'), 
+                    translate('OpenLP.SlideController', 
+                        'Show Desktop'), self.HideMenu)
                 self.DesktopScreen.setCheckable(True)
                 QtCore.QObject.connect(self.DesktopScreen,
                     QtCore.SIGNAL("triggered(bool)"), self.onHideDisplay)

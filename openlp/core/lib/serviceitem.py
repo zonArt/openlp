@@ -58,6 +58,9 @@ class ItemCapabilities(object):
     AllowsLoop = 5
     AllowsAdditions = 6
     NoLineBreaks = 7
+    OnLoadUpdate = 8
+    AddIfNewItem = 9
+
 
 class ServiceItem(object):
     """
@@ -98,6 +101,9 @@ class ServiceItem(object):
         self.main = None
         self.footer = None
         self.bg_image_bytes = None
+        self._new_item()
+        self.search_string = u''
+        self.data_string = u''
 
     def _new_item(self):
         """
@@ -255,7 +261,9 @@ class ServiceItem(object):
             u'audit':self.audit,
             u'notes':self.notes,
             u'from_plugin':self.from_plugin,
-            u'capabilities':self.capabilities
+            u'capabilities':self.capabilities,
+            u'search':self.search_string,
+            u'data':self.data_string
         }
         service_data = []
         if self.service_item_type == ServiceItemType.Text:
@@ -293,6 +301,10 @@ class ServiceItem(object):
         self.notes = header[u'notes']
         self.from_plugin = header[u'from_plugin']
         self.capabilities = header[u'capabilities']
+        # Added later so may not be present in older services.
+        if u'search' in header:
+            self.search_string = header[u'search']
+            self.data_string = header[u'data']
         if self.service_item_type == ServiceItemType.Text:
             for slide in serviceitem[u'serviceitem'][u'data']:
                 self._raw_frames.append(slide)
@@ -306,6 +318,7 @@ class ServiceItem(object):
                 filename = os.path.join(path, text_image[u'title'])
                 self.add_from_command(
                     path, text_image[u'title'], text_image[u'image'] )
+        self._new_item()
 
     def merge(self, other):
         """
