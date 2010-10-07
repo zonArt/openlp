@@ -58,8 +58,8 @@ BLANK_THEME_XML = \
       <bold>False</bold>
       <italics>False</italics>
       <line_adjustment>0</line_adjustment>
-      <shadow color="#ffffff" size="5">True</shadow>
-      <outline color="#ffffff" size="2">False</outline>
+      <shadow shadowColor="#000000" shadowSize="5">True</shadow>
+      <outline outlineColor="#000000" outlineSize="2">False</outline>
       <location override="False" x="10" y="10" width="1004" height="690"/>
    </font>
    <font type="footer">
@@ -68,8 +68,8 @@ BLANK_THEME_XML = \
       <proportion>12</proportion>
       <bold>False</bold>
       <italics>False</italics>
-      <shadow color="#000000" size="5">True</shadow>
-      <outline color="#000000" size="2">False</outline>
+      <shadow shadowColor="#000000" shadowSize="5">True</shadow>
+      <outline outlineColor="#000000" outlineSize="2">False</outline>
       <line_adjustment>0</line_adjustment>
       <location override="False" x="10" y="690" width="1004" height="78"/>
    </font>
@@ -405,11 +405,14 @@ class ThemeXML(object):
                     # normal service happens here!
                     self._create_attr(master,  element.tag,  element.text)
                 if element.attrib:
-                    # correction for the shadow and outline tags
-                    if element.tag == u'shadow' or element.tag == u'outline':
-                        master = master + '_' + element.tag
                     for attr in element.attrib:
-                        self._create_attr(master, attr, element.attrib[attr])
+                        base_element = attr
+                        # correction for the shadow and outline tags
+                        if element.tag == u'shadow' or element.tag == u'outline':
+                            if not attr.startswith(element.tag):
+                                elembase_elementent = element.tag + u'_' + attr
+                        self._create_attr(master, base_element,
+                            element.attrib[attr])
                 else:
                    self._create_attr(master,  element.tag, element.text)
             else:
