@@ -96,7 +96,7 @@ class MediaManagerItem(QtGui.QWidget):
         #TODO: plugin should not be the parent in future
         self.plugin = parent # plugin
         visible_title = self.plugin.getString(StringContent.VisibleName)
-        self.title = visible_title[u'title']
+        self.title = unicode(visible_title[u'title'])
         self.settingsSection = self.plugin.name.lower()
         if isinstance(icon, QtGui.QIcon):
             self.icon = icon

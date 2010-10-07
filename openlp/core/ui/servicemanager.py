@@ -602,6 +602,7 @@ class ServiceManager(QtGui.QWidget):
             zip = None
             file = None
             try:
+                write_list = []
                 zip = zipfile.ZipFile(unicode(filename), 'w')
                 for item in self.serviceItems:
                     service.append({u'serviceitem':item[u'service_item']
@@ -611,7 +612,10 @@ class ServiceManager(QtGui.QWidget):
                             path_from = unicode(os.path.join(
                                 frame[u'path'],
                                 frame[u'title']))
-                            zip.write(path_from.encode(u'utf-8'))
+                            # On write a file once
+                            if not path_from in write_list:
+                                write_list.append(path_from)
+                                zip.write(path_from.encode(u'utf-8'))
                 file = open(servicefile, u'wb')
                 cPickle.dump(service, file)
                 file.close()
