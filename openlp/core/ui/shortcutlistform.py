@@ -23,40 +23,21 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-"""
-The :mod:`ui` module provides the core user interface for OpenLP
-"""
 
-class HideMode(object):
+from PyQt4 import QtCore, QtGui
+
+from shortcutlistdialog import Ui_ShortcutListDialog
+
+class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
     """
-    This is basically an enumeration class which specifies the mode of a Bible.
-    Mode refers to whether or not a Bible in OpenLP is a full Bible or needs to
-    be downloaded from the Internet on an as-needed basis.
+    The shortcut list dialog
     """
-    Blank = 1
-    Theme = 2
-    Screen = 3
 
-from filerenameform import FileRenameForm
-from maindisplay import MainDisplay
-from slidecontroller import HideMode
-from servicenoteform import ServiceNoteForm
-from serviceitemeditform import ServiceItemEditForm
-from screen import ScreenList
-from amendthemeform import AmendThemeForm
-from slidecontroller import SlideController
-from splashscreen import SplashScreen
-from generaltab import GeneralTab
-from themestab import ThemesTab
-from advancedtab import AdvancedTab
-from aboutform import AboutForm
-from pluginform import PluginForm
-from settingsform import SettingsForm
-from shortcutlistform import ShortcutListForm
-from mediadockmanager import MediaDockManager
-from servicemanager import ServiceManager
-from thememanager import ThemeManager
-
-__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm',
-    'MainDisplay', 'SlideController', 'ServiceManager', 'ThemeManager',
-    'AmendThemeForm', 'MediaDockManager', 'ServiceItemEditForm']
+    def __init__(self, parent):
+        """
+        Do some initialisation stuff
+        """
+        QtGui.QDialog.__init__(self, parent)
+        self.setupUi(self)
+        #QtCore.QObject.connect(self.contributeButton,
+        #    QtCore.SIGNAL(u'clicked()'), self.onContributeButtonClicked)
