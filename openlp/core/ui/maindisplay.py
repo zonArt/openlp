@@ -313,11 +313,12 @@ class MainDisplay(DisplayWidget):
         Changes the volume of a running video
         """
         log.debug(u'videoVolume %d' % volume)
+        vol = float(volume)/float(10)
         if self.phononActive:
-            self.audio.setVolume(volume)
+            self.audio.setVolume(vol)
         else:
             self.frame.evaluateJavaScript(u'show_video(null, null, %s);' %
-                str(float(volume)/float(10)))
+                str(vol))
 
     def video(self, videoPath, volume, isBackground=False):
         """
@@ -325,10 +326,11 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'video')
         self.loaded = True
+        vol = float(volume)/float(10)
         if isBackground or not self.usePhonon:
             js = u'show_video("init", "%s", %s, true); show_video("play");' % \
                 (videoPath.replace(u'\\', u'\\\\'), \
-                str(float(volume)/float(10)))
+                str(vol))
             self.frame.evaluateJavaScript(js)
         else:
             self.phononActive = True
@@ -338,6 +340,7 @@ class MainDisplay(DisplayWidget):
             self.mediaObject.play()
             self.webView.setVisible(False)
             self.videoWidget.setVisible(True)
+            self.audio.setVolume(vol)
         return self.preview()
 
     def isLoaded(self):
