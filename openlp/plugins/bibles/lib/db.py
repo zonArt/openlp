@@ -369,19 +369,19 @@ class BibleDB(QtCore.QObject, Manager):
             values.
         """
         log.debug(u'BibleDB.verse_search("%s")', text)
-        verses = self.session.query(Verse)
         if text.find(u',') > -1:
             or_clause = []
             keywords = [u'%%%s%%' % keyword.strip()
                 for keyword in text.split(u',')]
             for keyword in keywords:
                 or_clause.append(Verse.text.like(keyword))
-            verses = verses.filter(or_(*or_clause))
+            verses = self.session.query(Verse).filter(or_(*or_clause))
         else:
             keywords = [u'%%%s%%' % keyword.strip()
                 for keyword in text.split(u' ')]
             for keyword in keywords:
-                verses = verses.filter(Verse.text.like(keyword))
+                verses = self.session.query(Verse)\
+                    .filter(Verse.text.like(keyword))
         verses = verses.all()
         return verses
 

@@ -546,7 +546,8 @@ class BibleMediaItem(MediaManagerItem):
                     dual_bible, text)
         else: # Text Search
             bibles = self.parent.manager.get_bibles()
-            self.search_results = bibles[bible].verse_search(text)
+            #self.search_results = bibles[bible].verse_search(text)
+            self.search_results = self.parent.manager.verse_search(bible, text)
             if dual_bible and self.search_results:
                 text = []
                 for verse in self.search_results:
