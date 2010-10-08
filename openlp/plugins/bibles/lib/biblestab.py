@@ -38,15 +38,14 @@ class BiblesTab(SettingsTab):
     """
     log.info(u'Bible Tab loaded')
 
-    def __init__(self, title):
+    def __init__(self, title, visible_title):
         self.paragraph_style = True
         self.show_new_chapters = False
         self.display_style = 0
-        SettingsTab.__init__(self, title)
+        SettingsTab.__init__(self, title, visible_title)
 
     def setupUi(self):
         self.setObjectName(u'BiblesTab')
-        self.tabTitleVisible = translate('BiblesPlugin.BiblesTab', 'Bibles')
         self.BibleLayout = QtGui.QHBoxLayout(self)
         self.BibleLayout.setSpacing(8)
         self.BibleLayout.setMargin(8)
