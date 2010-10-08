@@ -26,6 +26,7 @@
 
 from PyQt4 import QtCore, QtGui
 
+from openlp.core.utils import translate
 from shortcutlistdialog import Ui_ShortcutListDialog
 
 class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
@@ -39,5 +40,43 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-        #QtCore.QObject.connect(self.contributeButton,
-        #    QtCore.SIGNAL(u'clicked()'), self.onContributeButtonClicked)
+        QtCore.QObject.connect(
+            self.shortcutPushButton,
+            QtCore.SIGNAL(u'toggled(bool)'),
+            self.onShortcutPushButtonClicked
+        )
+
+    def keyReleaseEvent(self, event):
+        Qt = QtCore.Qt
+        if not self.captureShortcut:
+            return
+        key = event.key()
+        if key == Qt.Key_Shift or key == Qt.Key_Control or \
+            key == Qt.Key_Meta or key == Qt.Key_Alt:
+            return
+        key_string = QtGui.QKeySequence(key).toString()
+        if event.modifiers() & Qt.ControlModifier == Qt.ControlModifier:
+            key_string = u'Ctrl+' + key_string
+        if event.modifiers() & Qt.AltModifier == Qt.AltModifier:
+            key_string = u'Alt+' + key_string
+        if event.modifiers() & Qt.ShiftModifier == Qt.ShiftModifier:
+            key_string = u'Shift+' + key_string;
+        key_sequence = QtGui.QKeySequence(key_string)
+        existing_key = QtGui.QKeySequence("Ctrl+Shift+F8")
+        if key_sequence == existing_key:
+            QtGui.QMessageBox.warning(
+                self,
+                translate('OpenLP.ShortcutListDialog', 'Duplicate Shortcut'),
+                unicode(translate('OpenLP.ShortcutListDialog', 'The shortcut '
+                    '"%s" is already assigned to another action, please '
+                    'use a different shortcut.')) % key_sequence.toString(),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
+                QtGui.QMessageBox.Ok
+            )
+        else:
+            self.shortcutPushButton.setText(key_sequence.toString())
+        self.shortcutPushButton.setChecked(False)
+        self.captureShortcut = False
+
+    def onShortcutPushButtonClicked(self, toggled):
+        self.captureShortcut = toggled

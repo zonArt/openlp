@@ -113,4 +113,5 @@ class Ui_ShortcutListDialog(object):
             translate('OpenLP.ShortcutListDialog', 'Default: %s'))
         self.customRadioButton.setText(
             translate('OpenLP.ShortcutListDialog', 'Custom:'))
-        self.shortcutPushButton.setText('')
+        self.shortcutPushButton.setText(
+            translate('OpenLP.ShortcutListDialog', 'None'))
