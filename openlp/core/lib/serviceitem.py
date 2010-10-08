@@ -101,9 +101,9 @@ class ServiceItem(object):
         self.main = None
         self.footer = None
         self.bg_image_bytes = None
-        self._new_item()
         self.search_string = u''
         self.data_string = u''
+        self._new_item()
 
     def _new_item(self):
         """

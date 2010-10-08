@@ -303,7 +303,7 @@ class Plugin(QtCore.QObject):
             The new name the plugin should now use.
         """
         pass
-     
+
     def getString(self, name):
         """
         encapsulate access of plugins translated text strings
