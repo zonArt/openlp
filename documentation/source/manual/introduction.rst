@@ -10,7 +10,7 @@ for churches. It is licensed under the GNU Generic Public License, which means
 that it is free to use and distribute, and it stays free.
 
 Lyrics Projection
------
+-----------------
 
 OpenLP's purpose is to project the lyrics of songs and Bible verses using a 
 computer and a data projector. OpenLP also has the ability to project videos, 
@@ -19,10 +19,10 @@ with the ability to set up a wide variety of themes, including themes with
 video backgrounds.
 
 Open Source
------
+-----------
 
 OpenLP is open source software. This means that the source code (the 
-programming instructions the developers write)is open to anyone who wants to 
+programming instructions the developers write) is open to anyone who wants to 
 look at it. This gives you, the end user, a few freedoms.
 
 From a developer's perspective, it gives you the freedom to inspect the code 
@@ -34,7 +34,7 @@ you wish. You are not required to pay for the software and you are free to
 make copies and distribute it to anyone you want.
 
 GNU General Public License
------
+--------------------------
 
 The GNU General Public License was specifically chosen because it ensures the 
 above mentioned freedoms. It specifically states that you are not allowed 
