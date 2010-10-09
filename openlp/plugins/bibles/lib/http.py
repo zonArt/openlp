@@ -382,7 +382,7 @@ class HTTPBible(BibleDB):
 
         ``reference_list``
             This is the list of references the media manager item wants. It is
-            a list of tuples, with the following format:
+            a list of tuples, with the following format::
 
                 (book, chapter, start_verse, end_verse)
 

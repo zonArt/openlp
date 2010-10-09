@@ -320,14 +320,14 @@ class BibleDB(QtCore.QObject, Manager):
 
         ``reference_list``
             This is the list of references the media manager item wants. It is
-            a list of tuples, with the following format:
+            a list of tuples, with the following format::
 
                 (book, chapter, start_verse, end_verse)
 
             Therefore, when you are looking for multiple items, simply break
             them up into references like this, bundle them into a list. This
             function then runs through the list, and returns an amalgamated
-            list of ``Verse`` objects. For example:
+            list of ``Verse`` objects. For example::
 
                 [(u'Genesis', 1, 1, 1), (u'Genesis', 2, 2, 3)]
         """

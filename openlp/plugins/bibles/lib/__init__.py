@@ -75,7 +75,7 @@ def parse_reference(reference):
     7     None|[0-9]+|end   None or the end of the second verse range.
 
     The reference list is a list of tuples, with each tuple structured like
-    this:
+    this::
         (book, chapter, start_verse, end_verse)
 
     ``reference``
