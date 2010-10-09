@@ -107,6 +107,7 @@ class ServiceManager(QtGui.QWidget):
         self.serviceName = u''
         self.suffixes = []
         self.droppos = 0
+        self.expandTabs = False
         #is a new service and has not been saved
         self.isNew = True
         self.serviceNoteForm = ServiceNoteForm(self.parent)
@@ -643,6 +644,7 @@ class ServiceManager(QtGui.QWidget):
             zip = None
             file = None
             try:
+                write_list = []
                 zip = zipfile.ZipFile(unicode(filename), 'w')
                 for item in self.serviceItems:
                     service.append({u'serviceitem':item[u'service_item']
@@ -652,7 +654,10 @@ class ServiceManager(QtGui.QWidget):
                             path_from = unicode(os.path.join(
                                 frame[u'path'],
                                 frame[u'title']))
-                            zip.write(path_from.encode(u'utf-8'))
+                            # On write a file once
+                            if not path_from in write_list:
+                                write_list.append(path_from)
+                                zip.write(path_from.encode(u'utf-8'))
                 file = open(servicefile, u'wb')
                 cPickle.dump(service, file)
                 file.close()
@@ -884,6 +889,8 @@ class ServiceManager(QtGui.QWidget):
         if expand == None:
             expand = self.expandTabs
         log.debug(u'addServiceItem')
+        if expand == None:
+            expand = self.expandTabs
         sitem = self.findServiceItem()[0]
         item.render()
         if replace:
