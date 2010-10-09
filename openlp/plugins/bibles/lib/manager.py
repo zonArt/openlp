@@ -259,11 +259,13 @@ class BibleManager(object):
 
     def verse_search(self, bible, text):
         """
+        Does a verse search for the given bible and text.
+
         ``bible``
-            The bible to seach in.
+            The bible to seach in (unicode).
 
         ``text``
-            The text to search for.
+            The text to search for (unicode).
         """
         log.debug(u'BibleManager.verse_search("%s", "%s")', bible,  text)
         if text:
@@ -273,7 +275,7 @@ class BibleManager(object):
                 translate('BiblesPlugin.BibleManager',
                 'Scripture Reference Error'),
                 translate('BiblesPlugin.BibleManager', 'You did not enter a '
-                'search keyword.\nYou can seperate different keywords by a '
+                'search keyword.\nYou can separate different keywords by a '
                 'space to search for all of your keywords and you can seperate '
                 'them by a comma to search for one of them.'))
             return None
