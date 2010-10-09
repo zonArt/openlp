@@ -28,12 +28,15 @@ Provide the theme XML and handling functions for OpenLP v2 themes.
 """
 import os
 import re
+import logging
 
 from xml.dom.minidom import Document
 from xml.etree.ElementTree import ElementTree, XML
 from lxml import etree, objectify
 
 from openlp.core.lib import str_to_bool
+
+log = logging.getLogger(__name__)
 
 BLANK_THEME_XML = \
 '''<?xml version="1.0" encoding="utf-8"?>
@@ -369,12 +372,14 @@ class ThemeXML(object):
             The XML string to parse.
         """
         # remove encoding string
-        if xml[:5] == u'<?xml':
-            xml = xml[38:]
+        line = xml.find(u'?>')
+        if line:
+            xml = xml[line + 2:]
         try:
            theme_xml = objectify.fromstring(xml)
         except etree.XMLSyntaxError:
             log.exception(u'Invalid xml %s', xml)
+            return
         # print objectify.dump(theme_xml)
         xml_iter = theme_xml.getiterator()
         for element in xml_iter:

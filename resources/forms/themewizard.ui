@@ -255,6 +255,16 @@ p, li { white-space: pre-wrap; }
         <string>Circular</string>
        </property>
       </item>
+      <item>
+       <property name="text">
+        <string>Top Left - Bottom Right</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Bottom Left - Top Right</string>
+       </property>
+      </item>
      </widget>
     </item>
    </layout>
@@ -379,7 +389,7 @@ p, li { white-space: pre-wrap; }
      </widget>
     </item>
     <item row="4" column="0">
-     <widget class="QCheckBox" name="mainOutlineCheckBox">
+     <widget class="QCheckBox" name="outlineCheckBox">
       <property name="text">
        <string>&amp;Outline:</string>
       </property>
@@ -388,9 +398,9 @@ p, li { white-space: pre-wrap; }
     <item row="4" column="1">
      <layout class="QHBoxLayout" name="outlineLayout">
       <item>
-       <widget class="QPushButton" name="mainOutlineColorPushButton">
+       <widget class="QPushButton" name="outlineColorPushButton">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="text">
          <string/>
@@ -414,7 +424,7 @@ p, li { white-space: pre-wrap; }
      </layout>
     </item>
     <item row="5" column="0">
-     <widget class="QCheckBox" name="mainShadowCheckBox">
+     <widget class="QCheckBox" name="shadowCheckBox">
       <property name="text">
        <string>&amp;Shadow:</string>
       </property>
@@ -423,9 +433,9 @@ p, li { white-space: pre-wrap; }
     <item row="5" column="1">
      <layout class="QHBoxLayout" name="shadowLayout">
       <item>
-       <widget class="QPushButton" name="mainShadowColorPushButton">
+       <widget class="QPushButton" name="shadowColorPushButton">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="text">
          <string/>
@@ -535,41 +545,15 @@ p, li { white-space: pre-wrap; }
       </property>
      </widget>
     </item>
-    <item row="3" column="0">
-     <widget class="QCheckBox" name="footerOutlineCheckBox">
-      <property name="text">
-       <string>&amp;Outline:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="1">
-     <widget class="QPushButton" name="footerOutlineColorPushButton">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="0">
-     <widget class="QCheckBox" name="footerShadowCheckBox">
-      <property name="text">
-       <string>&amp;Shadow:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="1">
-     <widget class="QPushButton" name="footerShadowColorPushButton">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
    </layout>
+  </widget>
+  <widget class="QWizardPage" name="alignmentPage">
+   <property name="title">
+    <string>Text Formatting Details</string>
+   </property>
+   <property name="subTitle">
+    <string>Allows additional display formatting information to be defined</string>
+   </property>
   </widget>
   <widget class="QWizardPage" name="areaPositionPage">
    <property name="title">

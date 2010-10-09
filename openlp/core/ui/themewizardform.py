@@ -130,6 +130,15 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
         QtCore.QObject.connect(self.imageBrowseButton,
             QtCore.SIGNAL(u'pressed()'),
         self.onImageBrowseButtonClicked)
+        QtCore.QObject.connect(self.mainColorPushButton,
+            QtCore.SIGNAL(u'pressed()'),
+        self.onMainColourPushButtonClicked)
+        QtCore.QObject.connect(self.outlineColorPushButton,
+            QtCore.SIGNAL(u'pressed()'),
+        self.onOutlineColourPushButtonClicked)
+        QtCore.QObject.connect(self.shadowColorPushButton,
+            QtCore.SIGNAL(u'pressed()'),
+        self.onShadowColourPushButtonClicked)
 
     def exec_(self):
         """
@@ -215,21 +224,68 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
         else:
            self.setField(u'gradient', QtCore.QVariant(4))
 
+    def setMainAreaTabValues(self):
+        #self.setField(u'mainFontComboBox', QtCore.QVariant(self.theme.font_main_name))
+        self.mainColorPushButton.setStyleSheet(u'background-color: %s' %
+                self.theme.font_main_color)
+        self.setField(u'mainSizeSpinBox', QtCore.QVariant(self.theme.font_main_proportion))
+        self.setField(u'lineSpacingSpinBox', QtCore.QVariant(self.theme.font_main_line_adjustment))
+        self.setField(u'outlineCheckBox', QtCore.QVariant(self.theme.font_main_outline))
+        self.outlineColorPushButton.setStyleSheet(u'background-color: %s' %
+                self.theme.font_main_outline_color)
+        self.setField(u'outlineSizeSpinBox', QtCore.QVariant(self.theme.font_main_outline_size))
+        self.setField(u'shadowCheckBox', QtCore.QVariant(self.theme.font_main_shadow))
+        self.shadowColorPushButton.setStyleSheet(u'background-color: %s' %
+                self.theme.font_main_shadow_color)
+        self.setField(u'shadowSizeSpinBox', QtCore.QVariant(self.theme.font_main_shadow_size))
+        pass
+
+    def setFooterAreaTabValues(self):
+        pass
+    def setAlignmentTabValues(self):
+        pass
+    def setPositionTabValues(self):
+        pass
+
     def setDefaults(self):
         self.restart()
         self.setBackgroundTabValues()
+        self.setMainAreaTabValues()
+        self.setFooterAreaTabValues()
+        self.setAlignmentTabValues()
+        self.setPositionTabValues()
 
     def registerFields(self):
-        self.welcomePage.registerField(
+        self.backgroundPage.registerField(
             u'background_type', self.backgroundTypeComboBox)
-        self.welcomePage.registerField(
+        self.backgroundPage.registerField(
             u'color_1', self.color1PushButton)
-        self.welcomePage.registerField(
+        self.backgroundPage.registerField(
             u'color_2', self.color2PushButton)
-        self.welcomePage.registerField(
+        self.backgroundPage.registerField(
             u'background_image', self.imageLineEdit)
-        self.welcomePage.registerField(
+        self.backgroundPage.registerField(
             u'gradient', self.gradientComboBox)
+        self.mainAreaPage.registerField(
+            u'mainFontComboBox', self.mainFontComboBox)
+        self.mainAreaPage.registerField(
+            u'mainColorPushButton', self.mainColorPushButton)
+        self.mainAreaPage.registerField(
+            u'mainSizeSpinBox', self.mainSizeSpinBox)
+        self.mainAreaPage.registerField(
+            u'lineSpacingSpinBox', self.lineSpacingSpinBox)
+        self.mainAreaPage.registerField(
+            u'outlineCheckBox', self.outlineCheckBox)
+        self.mainAreaPage.registerField(
+            u'outlineColorPushButton', self.outlineColorPushButton)
+        self.mainAreaPage.registerField(
+            u'outlineSizeSpinBox', self.outlineSizeSpinBox)
+        self.mainAreaPage.registerField(
+            u'shadowCheckBox', self.shadowCheckBox)
+        self.mainAreaPage.registerField(
+            u'shadowColorPushButton', self.shadowColorPushButton)
+        self.mainAreaPage.registerField(
+            u'shadowSizeSpinBox', self.shadowSizeSpinBox)
 
     def onBackgroundComboBox(self, index):
         self.theme.background_type = BackgroundType.to_string(index)
@@ -266,7 +322,27 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
             self.theme.background_filename = filename
         self.setBackgroundTabValues()
 
+    def onMainFontComboBox(self, index):
+        #self.theme.background_type = BackgroundType.to_string(index)
+        self.setBackgroundTabValues()
+
+    def onMainColourPushButtonClicked(self):
+        self.theme.font_main_color = \
+            self._colorButton(self.theme.font_main_color)
+        self.setBackgroundTabValues()
+
+    def onOutlineColourPushButtonClicked(self):
+        self.theme.font_main_outline_color = \
+            self._colorButton(self.theme.font_main_outline_color)
+        self.setBackgroundTabValues()
+
+    def onShadowColourPushButtonClicked(self):
+        self.theme.font_main_shadow_color = \
+            self._colorButton(self.theme.font_main_shadow_color)
+        self.setBackgroundTabValues()
+
     def _colorButton(self, field):
+        print field
         new_color = QtGui.QColorDialog.getColor(
             QtGui.QColor(field), self)
         if new_color.isValid():
