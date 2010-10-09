@@ -36,7 +36,7 @@ log = logging.getLogger(__name__)
 class BackgroundType(object):
     Solid = 0
     Gradient = 1
-    Image = 3
+    Image = 2
 
     @staticmethod
     def to_string(type):
@@ -59,25 +59,35 @@ class BackgroundType(object):
 class BackgroundGradientType(object):
     Horizontal = 0
     Vertical = 1
-    Circular = 3
+    Circular = 2
+    LeftTop = 3
+    LeftBottom = 4
 
     @staticmethod
     def to_string(type):
-        if type == BackgroundType.Solid:
+        if type == BackgroundGradientType.Horizontal:
             return u'horizontal'
-        elif type == BackgroundType.Gradient:
+        elif type == BackgroundGradientType.Vertical:
             return u'vertical'
-        elif type == BackgroundType.Image:
+        elif type == BackgroundGradientType.Circular:
             return u'circular'
+        elif type == BackgroundGradientType.LeftTop:
+            return u'leftTop'
+        elif type == BackgroundGradientType.LeftBottom:
+            return u'leftBottom'
 
     @staticmethod
     def from_string(type_string):
         if type_string == u'horizontal':
-            return BackgroundType.Solid
+            return BackgroundGradientType.Horizontal
         elif type_string == u'vertical':
-            return BackgroundType.Gradient
+            return BackgroundGradientType.Vertical
         elif type_string == u'circular':
-            return BackgroundType.Image
+            return BackgroundGradientType.Circular
+        elif type_string == u'leftTop':
+            return BackgroundGradientType.LeftTop
+        elif type_string == u'leftBottom':
+            return BackgroundGradientType.LeftBottom
 
 class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
     """
@@ -140,7 +150,8 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
         return True
 
     def setBackgroundTabValues(self):
-        if self.theme.background_type == u'solid':
+        if self.theme.background_type == \
+            BackgroundType.to_string(BackgroundType.Solid):
             self.setField(u'background_type', QtCore.QVariant(0))
             self.color1PushButton.setVisible(True)
             self.color1Label.setVisible(True)
@@ -156,7 +167,8 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
             self.imageLineEdit.setVisible(False)
             self.imageBrowseButton.setVisible(False)
             self.imageLineEdit.setText(u'')
-        elif self.theme.background_type == u'gradient':
+        elif self.theme.background_type == \
+            BackgroundType.to_string(BackgroundType.Gradient):
             self.setField(u'background_type', QtCore.QVariant(1))
             self.color1PushButton.setVisible(True)
             self.color1Label.setVisible(True)
@@ -188,12 +200,20 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
             self.imageLabel.setVisible(True)
             self.imageBrowseButton.setVisible(True)
             self.imageLineEdit.setText(self.theme.background_filename)
-        if self.theme.background_direction == u'horizontal':
+        if self.theme.background_direction == \
+            BackgroundGradientType.to_string(BackgroundGradientType.Horizontal):
            self.setField(u'gradient', QtCore.QVariant(0))
-        elif self.theme.background_direction == u'vertical':
+        elif self.theme.background_direction == \
+            BackgroundGradientType.to_string(BackgroundGradientType.Vertical):
            self.setField(u'gradient', QtCore.QVariant(1))
-        else:
+        elif self.theme.background_direction == \
+            BackgroundGradientType.to_string(BackgroundGradientType.Circular):
            self.setField(u'gradient', QtCore.QVariant(2))
+        elif self.theme.background_direction == \
+            BackgroundGradientType.to_string(BackgroundGradientType.LeftTop):
+           self.setField(u'gradient', QtCore.QVariant(3))
+        else:
+           self.setField(u'gradient', QtCore.QVariant(4))
 
     def setDefaults(self):
         self.restart()
@@ -212,15 +232,17 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
             u'gradient', self.gradientComboBox)
 
     def onBackgroundComboBox(self, index):
-        self.theme.background_type = self.backgrounds[index]
+        self.theme.background_type = BackgroundType.to_string(index)
         self.setBackgroundTabValues()
 
     def onGradientComboBox(self, index):
-        self.theme.background_direction = self.gradients[index]
+        self.theme.background_direction = \
+            BackgroundGradientType.to_string(index)
         self.setBackgroundTabValues()
 
     def onColor1PushButtonClicked(self):
-        if self.theme.background_type == u'solid':
+        if self.theme.background_type == \
+            BackgroundType.to_string(BackgroundType.Solid):
             self.theme.background_color = \
                 self._colorButton(self.theme.background_color)
         else:
