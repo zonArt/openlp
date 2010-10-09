@@ -16,7 +16,7 @@
 #                                                                             #
 # This program is distributed in the hope that it will be useful, but WITHOUT #
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
-# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# FITNESS F################################OR A PARTICULAR PURPOSE. See the GNU General Public License for    #
 # more details.                                                               #
 #                                                                             #
 # You should have received a copy of the GNU General Public License along     #
@@ -24,5 +24,51 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from editcustomform import EditCustomForm
-from editcustomslideform import EditCustomSlideForm
+import logging
+
+from PyQt4 import QtCore, QtGui
+
+from openlp.core.lib import Receiver, translate
+from editcustomslidedialog import Ui_CustomSlideEditDialog
+
+log = logging.getLogger(__name__)
+
+class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
+    """
+    Class documentation goes here.
+    """
+    log.info(u'Custom Verse Editor loaded')
+    def __init__(self, parent=None):
+        """
+        Constructor
+        """
+        QtGui.QDialog.__init__(self, parent)
+        self.setupUi(self)
+       # Connecting signals and slots
+        QtCore.QObject.connect(self.splitButton,
+            QtCore.SIGNAL(u'pressed()'), self.onSplitButtonPressed)
+
+
+    def setText(self, text):
+        """
+        Set the text for verseTextEdit.
+        
+        ``text``
+            The text (unicode).
+        """
+        self.verseTextEdit.clear()
+        if text:
+            self.verseTextEdit.setPlainText(text)
+        self.verseTextEdit.setFocus()
+
+    def getText(self):
+        """
+        Returns a list with all slides.
+        """
+        return self.verseTextEdit.toPlainText().split(u'\n[---]\n')
+
+    def onSplitButtonPressed(self):
+        if self.verseTextEdit.textCursor().columnNumber() != 0:
+            self.verseTextEdit.insertPlainText(u'\n')
+        self.verseTextEdit.insertPlainText(u'[---]\n' )
+        self.verseTextEdit.setFocus()

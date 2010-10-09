@@ -24,5 +24,35 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from editcustomform import EditCustomForm
-from editcustomslideform import EditCustomSlideForm
+from PyQt4 import QtCore, QtGui
+
+from openlp.core.lib import translate
+
+class Ui_CustomSlideEditDialog(object):
+    def setupUi(self, customSlideEditDialog):
+        customSlideEditDialog.setObjectName(u'customSlideEditDialog')
+        customSlideEditDialog.resize(474, 442)
+        self.buttonBox = QtGui.QDialogButtonBox(customSlideEditDialog)
+        self.buttonBox.setGeometry(QtCore.QRect(8, 407, 458, 32))
+        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Save)
+        self.buttonBox.setObjectName(u'buttonBox')
+        self.verseTextEdit = QtGui.QTextEdit(customSlideEditDialog)
+        self.verseTextEdit.setGeometry(QtCore.QRect(8, 8, 451, 341))
+        self.verseTextEdit.setObjectName(u'verseTextEdit')
+        self.splitButton = QtGui.QPushButton(customSlideEditDialog)
+        self.splitButton.setGeometry(QtCore.QRect(370, 360, 85, 27))
+        self.splitButton.setObjectName(u'splitButton')
+        self.retranslateUi(customSlideEditDialog)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'),
+            customSlideEditDialog.accept)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
+            customSlideEditDialog.reject)
+        QtCore.QMetaObject.connectSlotsByName(customSlideEditDialog)
+
+    def retranslateUi(self, customSlideEditDialog):
+        self.splitButton.setText(
+            translate('CustomPlugin.EditCustomForm', 'Split Slide'))
+        self.splitButton.setToolTip(
+            translate('CustomPlugin.EditCustomForm', 'Split a slide into two '
+            'by inserting a slide splitter.'))
