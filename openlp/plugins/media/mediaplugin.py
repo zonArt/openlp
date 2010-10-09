@@ -29,7 +29,7 @@ import logging
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
-from openlp.plugins.media.lib import MediaMediaItem
+from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 
 log = logging.getLogger(__name__)
 
@@ -67,6 +67,9 @@ class MediaPlugin(Plugin):
                 self.serviceManager.supportedSuffixes(value[1])
             type = u''
         return list, type
+
+    def getSettingsTab(self):
+        return MediaTab(self.name)
 
     def getMediaManagerItem(self):
         # Create the MediaManagerItem object

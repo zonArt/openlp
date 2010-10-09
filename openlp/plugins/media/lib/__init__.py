@@ -25,5 +25,6 @@
 ###############################################################################
 
 from mediaitem import MediaMediaItem
+from mediatab import MediaTab
 
 __all__ = ['MediaMediaItem']
