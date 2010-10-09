@@ -55,14 +55,17 @@ body {
     background-color: black;
     display: none;
 }
-#image {
+#bgimage {
     z-index:1;
 }
-#video1 {
+#image {
     z-index:2;
 }
+#video1 {
+    z-index:3;
+}
 #video2 {
-    z-index:2;
+    z-index:3;
 }
 #alert {
     position: absolute;
@@ -73,7 +76,7 @@ body {
 }
 #footer {
     position: absolute;
-    z-index:5;
+    z-index:6;
     %s
 }
 /* lyric css */
@@ -112,7 +115,7 @@ body {
             vid2.volume = volume;
         }
         switch(state){
-            case 'init':            
+            case 'init':
                 vid.src = path;
                 vid2.src = path;
                 if(loop == null) loop = false;
@@ -294,7 +297,8 @@ body {
 </script>
 </head>
 <body>
-<img id="image" class="size" %s />
+<img id="bgimage" class="size" %s />
+<img id="image" class="size" style="display:none" />
 <video id="video1" class="size" style="visibility:hidden" autobuffer preload>
 </video>
 <video id="video2" class="size" style="visibility:hidden" autobuffer preload>
@@ -397,7 +401,7 @@ def build_lyrics_css(item, webkitvers):
     """
     style = """
 .lyricstable {
-    z-index:4;
+    z-index:5;
     position: absolute;
     display: table;
     %s
