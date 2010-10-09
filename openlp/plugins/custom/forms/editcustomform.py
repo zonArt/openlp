@@ -162,7 +162,10 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         """
         Saves the custom.
         """
-        if not self._validate():
+        valid, message = self._validate()
+        if not valid:
+            QtGui.QMessageBox.critical(self,
+                translate('CustomPlugin.EditCustomForm', 'Error'), message)
             return False
         sxml = CustomXMLBuilder()
         sxml.new_document()
@@ -196,6 +199,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             self.verseListView.setCurrentRow(selectedRow + 1)
 
     def onClearButtonPressed(self):
+        #TODO: enable the "big" save button.
         self.verseTextEdit.clear()
         self.editAll = False
         self.addButton.setEnabled(True)
@@ -210,14 +214,18 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         self.editText(item.text())
 
     def onAddButtonPressed(self):
+        #TODO: enable the "big" save button.
         self.verseListView.addItem(self.verseTextEdit.toPlainText())
+        self.editAllButton.setEnabled(True)
         self.deleteButton.setEnabled(False)
         self.verseTextEdit.clear()
 
     def onEditButtonPressed(self):
+        #TODO: disable the "big" save button.
         self.editText(self.verseListView.currentItem().text())
 
     def onEditAllButtonPressed(self):
+        #TODO: disable the "big" save button.
         self.editAll = True
         self.addButton.setEnabled(False)
         self.splitButton.setEnabled(True)
@@ -240,6 +248,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         self.clearButton.setEnabled(True)
 
     def onSaveButtonPressed(self):
+        #TODO: enable the "big" save button.
         if self.editAll:
             self.verseListView.clear()
             for row in unicode(self.verseTextEdit.toPlainText()).split(
@@ -272,9 +281,13 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         self.verseTextEdit.setFocus()
 
     def onDeleteButtonPressed(self):
+        #TODO: make sure the "big" save button is disabled if no slides.
         self.verseListView.takeItem(self.verseListView.currentRow())
         self.editButton.setEnabled(False)
         self.editAllButton.setEnabled(True)
+        if self.verseListView.count() == 0:
+            self.deleteButton.setEnabled(False)
+            self.editAllButton.setEnabled(False)
 
     def _validate(self):
         """
@@ -283,29 +296,11 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         # We must have a title.
         if len(self.titleEdit.displayText()) == 0:
             self.titleEdit.setFocus()
-            QtGui.QMessageBox.critical(self,
-                translate('CustomPlugin.EditCustomForm', 'Error'),
-                translate('CustomPlugin.EditCustomForm',
-                'You need to type in a title.'))
-            return False
+            return False, translate('CustomPlugin.EditCustomForm',
+                'You need to type in a title.')
         # We must have one slide.
         if self.verseListView.count() == 0:
             self.verseTextEdit.setFocus()
-            QtGui.QMessageBox.critical(self,
-                translate('CustomPlugin.EditCustomForm', 'Error'),
-                translate('CustomPlugin.EditCustomForm',
-                'You need to add at least one slide.'))
-            return False
-        # We must not have unsaved data.
-        if self.verseTextEdit.toPlainText():
-            if QtGui.QMessageBox.critical(self,
-                translate('CustomPlugin.EditCustomForm', 'Error'),
-                translate('CustomPlugin.EditCustomForm', 'You have one or more '
-                'unsaved slides. Do you want to save them and continue?'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
-                QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.Yes:
-                self.onSaveButtonPressed()
-            else:
-                self.verseTextEdit.setFocus()
-                return False
-        return True
+            return False, translate('CustomPlugin.EditCustomForm',
+                'You need to add at least one slide')
+        return True, u''
