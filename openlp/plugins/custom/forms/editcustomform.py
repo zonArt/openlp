@@ -81,7 +81,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             self.onVerseListViewPressed)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
-        # Create other objects and forms
+        # Create other objects and forms.
         self.custommanager = custommanager
         self.initialise()
 
@@ -104,7 +104,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         self.creditEdit.setText(u'')
         self.verseTextEdit.clear()
         self.verseListView.clear()
-        #make sure we have a new item
+        # Make sure we have a new item.
         self.customSlide = CustomSlide()
         self.themeComboBox.addItem(u'')
 
@@ -115,6 +115,16 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             self.themeComboBox.addItem(themename)
 
     def loadCustom(self, id, preview=False):
+        """
+        Called when editing or creating a new custom.
+
+        ``id``
+            The cutom's id. If zero, then a new custom is created.
+
+        ``preview``
+            States whether the custom is edited while being previewed in the
+            preview panel.
+        """
         self.customSlide = CustomSlide()
         self.initialise()
         if id != 0:
@@ -132,7 +142,8 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             self.themeComboBox.setCurrentIndex(id)
         else:
             self.themeComboBox.setCurrentIndex(0)
-        #if not preview hide the preview button
+            self.editAllButton.setEnabled(False)
+        # If not preview hide the preview button.
         self.previewButton.setVisible(False)
         if preview:
             self.previewButton.setVisible(True)
@@ -148,10 +159,10 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             self.close()
 
     def saveCustom(self):
-        valid, message = self._validate()
-        if not valid:
-            QtGui.QMessageBox.critical(self,
-                translate('CustomPlugin.EditCustomForm', 'Error'), message)
+        """
+        Saves the custom.
+        """
+        if not self._validate():
             return False
         sxml = CustomXMLBuilder()
         sxml.new_document()
@@ -237,7 +248,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         else:
             self.verseListView.currentItem().setText(
                 self.verseTextEdit.toPlainText())
-            #number of lines has change
+            # The number of lines has changed.
             if len(self.beforeText.split(u'\n')) != \
                 len(self.verseTextEdit.toPlainText().split(u'\n')):
                 tempList = {}
@@ -266,18 +277,35 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         self.editAllButton.setEnabled(True)
 
     def _validate(self):
+        """
+        Checks whether a custom is valid or not.
+        """
+        # We must have a title.
         if len(self.titleEdit.displayText()) == 0:
             self.titleEdit.setFocus()
-            return False, translate('CustomPlugin.EditCustomForm',
-                'You need to type in a title.')
-        # must have 1 slide
+            QtGui.QMessageBox.critical(self,
+                translate('CustomPlugin.EditCustomForm', 'Error'),
+                translate('CustomPlugin.EditCustomForm',
+                'You need to type in a title.'))
+            return False
+        # We must have one slide.
         if self.verseListView.count() == 0:
             self.verseTextEdit.setFocus()
-            return False, translate('CustomPlugin.EditCustomForm',
-                'You need to add at least one slide')
+            QtGui.QMessageBox.critical(self,
+                translate('CustomPlugin.EditCustomForm', 'Error'),
+                translate('CustomPlugin.EditCustomForm',
+                'You need to add at least one slide.'))
+            return False
+        # We must not have unsaved data.
         if self.verseTextEdit.toPlainText():
-            self.verseTextEdit.setFocus()
-            return False, translate('CustomPlugin.EditCustomForm',
-                'You have one or more unsaved slides, please either save your '
-                'slide(s) or clear your changes.')
-        return True, u''
+            if QtGui.QMessageBox.critical(self,
+                translate('CustomPlugin.EditCustomForm', 'Error'),
+                translate('CustomPlugin.EditCustomForm', 'You have one or more '
+                'unsaved slides. Do you want to save them and continue?'),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
+                QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.Yes:
+                self.onSaveButtonPressed()
+            else:
+                self.verseTextEdit.setFocus()
+                return False
+        return True
