@@ -28,7 +28,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, build_icon, translate
+from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.plugins.alerts.lib import AlertsManager, AlertsTab
 from openlp.plugins.alerts.lib.db import init_schema
@@ -101,3 +101,18 @@ class AlertsPlugin(Plugin):
             '<br />The alert plugin controls the displaying of nursery alerts '
             'on the display screen')
         return about_text
+
+    def setPluginTextStrings(self):
+        """
+        Called to define all translatable texts of the plugin
+        """
+        ## Name PluginList ##
+        self.textStrings[StringContent.Name] = {
+            u'singular': translate('AlertsPlugin', 'Alert'),
+            u'plural': translate('AlertsPlugin', 'Alerts')
+        }
+        ## Name for MediaDockManager, SettingsManager ##
+        self.textStrings[StringContent.VisibleName] = {
+            u'title': translate('AlertsPlugin', 'Alerts')
+        }
+        

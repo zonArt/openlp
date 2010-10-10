@@ -58,15 +58,12 @@ class PresentationMediaItem(MediaManagerItem):
         Constructor. Setup defaults
         """
         self.controllers = controllers
-        self.PluginNameShort = u'Presentation'
-        self.pluginNameVisible = translate('PresentationPlugin.MediaItem',
-            'Presentation')
         self.IconPath = u'presentations/presentation'
         self.Automatic = u''
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = PresentationListView
-        MediaManagerItem.__init__(self, parent, icon, title)
+        MediaManagerItem.__init__(self, parent, self, icon)
         self.message_listener = MessageListener(self)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'mediaitem_presentation_rebuild'), self.rebuild)

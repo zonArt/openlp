@@ -116,6 +116,8 @@ class Ui_SongImportWizard(object):
         self.addMultiFileSelectItem(u'generic', None, True)
         # EasyWorship
         self.addSingleFileSelectItem(u'ew')
+        # Words of Worship
+        self.addMultiFileSelectItem(u'songBeamer')
 #        Commented out for future use.
 #        self.addSingleFileSelectItem(u'csv', u'CSV')
         self.sourceLayout.addWidget(self.formatStackedWidget)
@@ -180,6 +182,8 @@ class Ui_SongImportWizard(object):
             'Generic Document/Presentation'))
         self.formatComboBox.setItemText(8,
             translate('SongsPlugin.ImportWizardForm', 'EasyWorship'))
+        self.formatComboBox.setItemText(9,
+            translate('SongsPlugin.ImportWizardForm', 'SongBeamer'))
 #        self.formatComboBox.setItemText(9,
 #            translate('SongsPlugin.ImportWizardForm', 'CSV'))
         self.openLP2FilenameLabel.setText(
@@ -236,6 +240,10 @@ class Ui_SongImportWizard(object):
             translate('SongsPlugin.ImportWizardForm', 'Filename:'))
         self.ewBrowseButton.setText(
             translate('SongsPlugin.ImportWizardForm', 'Browse...'))
+        self.songBeamerAddButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
+        self.songBeamerRemoveButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
 #        self.csvFilenameLabel.setText(
 #            translate('SongsPlugin.ImportWizardForm', 'Filename:'))
 #        self.csvBrowseButton.setText(
