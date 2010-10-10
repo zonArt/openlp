@@ -48,30 +48,29 @@ class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
         QtCore.QObject.connect(self.splitButton,
             QtCore.SIGNAL(u'pressed()'), self.onSplitButtonPressed)
 
-
     def setText(self, text):
         """
-        Set the text for verseTextEdit.
+        Set the text for slideTextEdit.
         
         ``text``
             The text (unicode).
         """
-        self.verseTextEdit.clear()
+        self.slideTextEdit.clear()
         if text:
-            self.verseTextEdit.setPlainText(text)
-        self.verseTextEdit.setFocus()
+            self.slideTextEdit.setPlainText(text)
+        self.slideTextEdit.setFocus()
 
     def getText(self):
         """
         Returns a list with all slides.
         """
-        return self.verseTextEdit.toPlainText().split(u'\n[---]\n')
+        return self.slideTextEdit.toPlainText().split(u'\n[---]\n')
 
     def onSplitButtonPressed(self):
         """
         Splits a slide in two slides.
         """
-        if self.verseTextEdit.textCursor().columnNumber() != 0:
-            self.verseTextEdit.insertPlainText(u'\n')
-        self.verseTextEdit.insertPlainText(u'[---]\n' )
-        self.verseTextEdit.setFocus()
+        if self.slideTextEdit.textCursor().columnNumber() != 0:
+            self.slideTextEdit.insertPlainText(u'\n')
+        self.slideTextEdit.insertPlainText(u'[---]\n' )
+        self.slideTextEdit.setFocus()

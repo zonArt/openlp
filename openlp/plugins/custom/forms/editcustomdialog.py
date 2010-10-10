@@ -42,6 +42,7 @@ class Ui_CustomEditDialog(object):
         self.themeLabel.setObjectName(u'themeLabel')
         self.horizontalLayout3.addWidget(self.themeLabel)
         self.themeComboBox = QtGui.QComboBox(customEditDialog)
+        self.themeLabel.setBuddy(self.themeComboBox)
         self.themeComboBox.setObjectName(u'themeComboBox')
         self.horizontalLayout3.addWidget(self.themeComboBox)
         self.gridLayout.addLayout(self.horizontalLayout3, 2, 0, 1, 1)
@@ -51,6 +52,7 @@ class Ui_CustomEditDialog(object):
         self.creditLabel.setObjectName(u'creditLabel')
         self.horizontalLayout2.addWidget(self.creditLabel)
         self.creditEdit = QtGui.QLineEdit(customEditDialog)
+        self.creditLabel.setBuddy(self.creditEdit)
         self.creditEdit.setObjectName(u'creditEdit')
         self.horizontalLayout2.addWidget(self.creditEdit)
         self.gridLayout.addLayout(self.horizontalLayout2, 3, 0, 1, 1)
@@ -61,10 +63,10 @@ class Ui_CustomEditDialog(object):
         self.gridLayout.addWidget(self.buttonBox, 4, 0, 1, 1)
         self.horizontalLayout4 = QtGui.QHBoxLayout()
         self.horizontalLayout4.setObjectName(u'horizontalLayout4')
-        self.verseListView = QtGui.QListWidget(customEditDialog)
-        self.verseListView.setAlternatingRowColors(True)
-        self.verseListView.setObjectName(u'verseListView')
-        self.horizontalLayout4.addWidget(self.verseListView)
+        self.slideListView = QtGui.QListWidget(customEditDialog)
+        self.slideListView.setAlternatingRowColors(True)
+        self.slideListView.setObjectName(u'slideListView')
+        self.horizontalLayout4.addWidget(self.slideListView)
         self.verticalLayout = QtGui.QVBoxLayout()
         self.verticalLayout.setObjectName(u'verticalLayout')
         self.addButton = QtGui.QPushButton(customEditDialog)
@@ -104,6 +106,7 @@ class Ui_CustomEditDialog(object):
         self.titleLabel.setObjectName(u'titleLabel')
         self.horizontalLayout.addWidget(self.titleLabel)
         self.titleEdit = QtGui.QLineEdit(customEditDialog)
+        self.titleLabel.setBuddy(self.titleEdit)
         self.titleEdit.setObjectName(u'titleEdit')
         self.horizontalLayout.addWidget(self.titleEdit)
         self.gridLayout.addLayout(self.horizontalLayout, 0, 0, 1, 1)
@@ -126,22 +129,22 @@ class Ui_CustomEditDialog(object):
         self.titleLabel.setText(
             translate('CustomPlugin.EditCustomForm', '&Title:'))
         self.addButton.setText(
-            translate('CustomPlugin.EditCustomForm', 'Add New'))
+            translate('CustomPlugin.EditCustomForm', '&Add'))
         self.addButton.setToolTip(
             translate('CustomPlugin.EditCustomForm', 'Add a new slide at '
             'bottom.'))
         self.editButton.setText(
-            translate('CustomPlugin.EditCustomForm', 'Edit'))
+            translate('CustomPlugin.EditCustomForm', '&Edit'))
         self.editButton.setToolTip(
             translate('CustomPlugin.EditCustomForm', 'Edit the selected '
             'slide.'))
         self.editAllButton.setText(
-            translate('CustomPlugin.EditCustomForm', 'Edit All'))
+            translate('CustomPlugin.EditCustomForm', 'Ed&it All'))
         self.editAllButton.setToolTip(
             translate('CustomPlugin.EditCustomForm', 'Edit all the slides at '
             'once.'))
         self.deleteButton.setText(
-            translate('CustomPlugin.EditCustomForm', 'Delete'))
+            translate('CustomPlugin.EditCustomForm', '&Delete'))
         self.deleteButton.setToolTip(
             translate('CustomPlugin.EditCustomForm', 'Delete the selected '
             'slide.'))
