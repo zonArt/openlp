@@ -38,7 +38,6 @@ class Ui_CustomSlideEditDialog(object):
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
             QtGui.QDialogButtonBox.Save)
         self.buttonBox.setObjectName(u'buttonBox')
-        self.slideTextEdit = QtGui.QTextEdit(customSlideEditDialog)
         self.slideTextEdit = SpellTextEdit(self)
         self.slideTextEdit.setGeometry(QtCore.QRect(8, 8, 458, 349))
         self.slideTextEdit.setObjectName(u'slideTextEdit')
