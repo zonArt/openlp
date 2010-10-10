@@ -39,10 +39,10 @@ class Ui_CustomSlideEditDialog(object):
             QtGui.QDialogButtonBox.Save)
         self.buttonBox.setObjectName(u'buttonBox')
         self.verseTextEdit = QtGui.QTextEdit(customSlideEditDialog)
-        self.verseTextEdit.setGeometry(QtCore.QRect(8, 8, 451, 341))
+        self.verseTextEdit.setGeometry(QtCore.QRect(8, 8, 458, 349))
         self.verseTextEdit.setObjectName(u'verseTextEdit')
         self.splitButton = QtGui.QPushButton(customSlideEditDialog)
-        self.splitButton.setGeometry(QtCore.QRect(370, 360, 85, 27))
+        self.splitButton.setGeometry(QtCore.QRect(380, 370, 85, 27))
         self.splitButton.setObjectName(u'splitButton')
         self.retranslateUi(customSlideEditDialog)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'),

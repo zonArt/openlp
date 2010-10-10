@@ -34,16 +34,16 @@
     <rect>
      <x>8</x>
      <y>8</y>
-     <width>451</width>
-     <height>341</height>
+     <width>458</width>
+     <height>349</height>
     </rect>
    </property>
   </widget>
   <widget class="QPushButton" name="SplitButton">
    <property name="geometry">
     <rect>
-     <x>370</x>
-     <y>360</y>
+     <x>380</x>
+     <y>370</y>
      <width>85</width>
      <height>27</height>
     </rect>
