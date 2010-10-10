@@ -78,6 +78,12 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         self.slide_form = EditCustomSlideForm(self)
         self.initialise()
 
+    def onPreview(self, button):
+        log.debug(u'onPreview')
+        if button.text() == unicode(translate('CustomPlugin.EditCustomForm',
+            'Save && Preview')) and self.saveCustom():
+            Receiver.send_message(u'custom_preview')
+
     def initialise(self):
         self.addButton.setEnabled(True)
         self.deleteButton.setEnabled(False)
@@ -179,12 +185,6 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             self.verseListView.insertItem(selectedRow + 1, qw)
             self.verseListView.setCurrentRow(selectedRow + 1)
 
-    def onPreview(self, button):
-        log.debug(u'onPreview')
-        if button.text() == unicode(translate('CustomPlugin.EditCustomForm',
-            'Save && Preview')) and self.saveCustom():
-            Receiver.send_message(u'custom_preview')
-
     def onVerseListViewPressed(self, item):
         self.deleteButton.setEnabled(True)
         self.editButton.setEnabled(True)
@@ -245,7 +245,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             else:
                 old_slides = []
                 old_row = self.verseListView.currentRow()
-                # Create a list with all slide (unedited).
+                # Create a list with all (old/unedited) slides.
                 old_slides = [self.verseListView.item(row).text() for row in \
                     range(0, self.verseListView.count())]
                 self.verseListView.clear()

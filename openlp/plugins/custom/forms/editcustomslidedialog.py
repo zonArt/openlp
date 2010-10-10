@@ -35,7 +35,8 @@ class Ui_CustomSlideEditDialog(object):
         self.buttonBox = QtGui.QDialogButtonBox(customSlideEditDialog)
         self.buttonBox.setGeometry(QtCore.QRect(8, 407, 458, 32))
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Save)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
+            QtGui.QDialogButtonBox.Save)
         self.buttonBox.setObjectName(u'buttonBox')
         self.verseTextEdit = QtGui.QTextEdit(customSlideEditDialog)
         self.verseTextEdit.setGeometry(QtCore.QRect(8, 8, 451, 341))

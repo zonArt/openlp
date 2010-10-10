@@ -68,6 +68,9 @@ class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
         return self.verseTextEdit.toPlainText().split(u'\n[---]\n')
 
     def onSplitButtonPressed(self):
+        """
+        Splits a slide in two slides.
+        """
         if self.verseTextEdit.textCursor().columnNumber() != 0:
             self.verseTextEdit.insertPlainText(u'\n')
         self.verseTextEdit.insertPlainText(u'[---]\n' )
