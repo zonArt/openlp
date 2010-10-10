@@ -26,7 +26,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, translate
+from openlp.core.lib import build_icon, translate, SpellTextEdit
 
 class Ui_CustomEditDialog(object):
     def setupUi(self, customEditDialog):
@@ -73,7 +73,7 @@ class Ui_CustomEditDialog(object):
         self.editLayout3.setSpacing(8)
         self.editLayout3.setMargin(0)
         self.editLayout3.setObjectName(u'editLayout3')
-        self.verseTextEdit = QtGui.QTextEdit(self.editWidget)
+        self.verseTextEdit = SpellTextEdit(self)
         self.verseTextEdit.setObjectName(u'verseTextEdit')
         self.editLayout3.addWidget(self.verseTextEdit)
         self.buttonWidget = QtGui.QWidget(self.editWidget)
@@ -142,7 +142,7 @@ class Ui_CustomEditDialog(object):
         customEditDialog.setWindowTitle(
             translate('CustomPlugin.EditCustomForm', 'Edit Custom Slides'))
         self.upButton.setToolTip(
-            translate('CustomPlugin.EditCustomForm', 'Move slide up once '
+            translate('CustomPlugin.EditCustomForm', 'Move slide up one '
                 'position.'))
         self.downButton.setToolTip(
             translate('CustomPlugin.EditCustomForm', 'Move slide down one '

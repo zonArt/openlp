@@ -29,12 +29,15 @@ import os
 import sys
 import logging
 from optparse import OptionParser
+from traceback import format_exception
 
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver
 from openlp.core.resources import qInitResources
-from openlp.core.ui import MainWindow, SplashScreen, ScreenList
+from openlp.core.ui.mainwindow import MainWindow
+from openlp.core.ui.exceptionform import ExceptionForm
+from openlp.core.ui import SplashScreen, ScreenList
 from openlp.core.utils import AppLocation, LanguageManager, VersionThread
 
 log = logging.getLogger()
@@ -47,7 +50,6 @@ QMainWindow::separator
 
 QDockWidget::title
 {
-  /*background: palette(dark);*/
   border: 1px solid palette(dark);
   padding-left: 5px;
   padding-top: 2px;
@@ -129,11 +131,11 @@ class OpenLP(QtGui.QApplication):
         screens = ScreenList()
         # Decide how many screens we have and their size
         for screen in xrange(0, self.desktop().numScreens()):
+            size = self.desktop().screenGeometry(screen);
             screens.add_screen({u'number': screen,
-                u'size': self.desktop().availableGeometry(screen),
+                u'size': size,
                 u'primary': (self.desktop().primaryScreen() == screen)})
-            log.info(u'Screen %d found with resolution %s',
-                screen, self.desktop().availableGeometry(screen))
+            log.info(u'Screen %d found with resolution %s', screen, size)
         # start the main app window
         self.mainWindow = MainWindow(screens, app_version)
         self.mainWindow.show()
@@ -144,24 +146,34 @@ class OpenLP(QtGui.QApplication):
         VersionThread(self.mainWindow, app_version).start()
         return self.exec_()
 
+    def hookException(self, exctype, value, traceback):
+        if not hasattr(self, u'mainWindow'):
+            log.exception(''.join(format_exception(exctype, value, traceback)))
+            return
+        if not hasattr(self, u'exceptionForm'):
+            self.exceptionForm = ExceptionForm(self.mainWindow)
+        self.exceptionForm.exceptionTextEdit.setPlainText(
+            ''.join(format_exception(exctype, value, traceback)))
+        self.exceptionForm.exec_()
+
 def main():
     """
     The main function which parses command line options and then runs
     the PyQt4 Application.
     """
     # Set up command line options.
-    usage = u'Usage: %prog [options] [qt-options]'
+    usage = 'Usage: %prog [options] [qt-options]'
     parser = OptionParser(usage=usage)
-    parser.add_option("-l", "--log-level", dest="loglevel",
-                      default="warning", metavar="LEVEL",
-                      help="Set logging to LEVEL level. Valid values are "
-                           "\"debug\", \"info\", \"warning\".")
-    parser.add_option("-p", "--portable", dest="portable",
-                      action="store_true",
-                      help="Specify if this should be run as a portable app, "
-                           "off a USB flash drive.")
-    parser.add_option("-s", "--style", dest="style",
-                      help="Set the Qt4 style (passed directly to Qt4).")
+    parser.add_option('-e', '--no-error-form', dest='no_error_form',
+        action='store_true', help='Disable the error notification form.')
+    parser.add_option('-l', '--log-level', dest='loglevel',
+        default='warning', metavar='LEVEL', help='Set logging to LEVEL '
+        'level. Valid values are "debug", "info", "warning".')
+    parser.add_option('-p', '--portable', dest='portable',
+        action='store_true', help='Specify if this should be run as a '
+        'portable app, off a USB flash drive (not implemented).')
+    parser.add_option('-s', '--style', dest='style',
+        help='Set the Qt4 style (passed directly to Qt4).')
     # Set up logging
     log_path = AppLocation.get_directory(AppLocation.CacheDir)
     if not os.path.exists(log_path):
@@ -194,7 +206,8 @@ def main():
     language = LanguageManager.get_language()
     appTranslator = LanguageManager.get_translator(language)
     app.installTranslator(appTranslator)
-
+    if not options.no_error_form:
+        sys.excepthook = app.hookException
     sys.exit(app.run())
 
 if __name__ == u'__main__':

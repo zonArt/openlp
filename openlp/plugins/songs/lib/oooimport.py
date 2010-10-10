@@ -28,6 +28,7 @@ import os
 
 from PyQt4 import QtCore
 
+from openlp.core.lib import Receiver
 from songimport import SongImport
 
 if os.name == u'nt':
@@ -43,23 +44,33 @@ else:
     except ImportError:
         pass
 
-class OooImport(object):
+class OooImport(SongImport):
     """
     Import songs from Impress/Powerpoint docs using Impress 
     """
-    def __init__(self, songmanager):
+    def __init__(self, master_manager, **kwargs):
         """
         Initialise the class. Requires a songmanager class which is passed
         to SongImport for writing song to disk
         """
+        SongImport.__init__(self, master_manager)
         self.song = None
-        self.manager = songmanager
+        self.master_manager = master_manager
         self.document = None
         self.process_started = False
+        self.filenames = kwargs[u'filenames']
+        self.uno_connection_type = u'pipe' #u'socket'
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'song_stop_import'), self.stop_import)
 
-    def import_docs(self, filenames):
+    def do_import(self):
+        self.abort = False
+        self.import_wizard.importProgressBar.setMaximum(0)
         self.start_ooo()
-        for filename in filenames:
+        for filename in self.filenames:
+            if self.abort:
+                self.import_wizard.incrementProgressBar(u'Import cancelled', 0)
+                return
             filename = unicode(filename)
             if os.path.isfile(filename):
                 self.open_ooo_file(filename)
@@ -72,6 +83,12 @@ class OooImport(object):
                         self.process_doc()
                     self.close_ooo_file()
         self.close_ooo()
+        self.import_wizard.importProgressBar.setMaximum(1)
+        self.import_wizard.incrementProgressBar(u'', 1)
+        return True
+
+    def stop_import(self):
+        self.abort = True
 
     def start_ooo(self):
         """
@@ -90,8 +107,14 @@ class OooImport(object):
             loop = 0
             while ctx is None and loop < 5:
                 try:
-                    ctx = resolver.resolve(u'uno:socket,host=localhost,' \
-                        + 'port=2002;urp;StarOffice.ComponentContext')
+                    if self.uno_connection_type == u'pipe':
+                        ctx = resolver.resolve(u'uno:' \
+                            + u'pipe,name=openlp_pipe;' \
+                            + u'urp;StarOffice.ComponentContext')
+                    else:
+                        ctx = resolver.resolve(u'uno:' \
+                            + u'socket,host=localhost,port=2002;' \
+                            + u'urp;StarOffice.ComponentContext')
                 except:
                     pass
                 self.start_ooo_process()
@@ -107,9 +130,14 @@ class OooImport(object):
                 self.manager._FlagAsMethod(u'Bridge_GetStruct')
                 self.manager._FlagAsMethod(u'Bridge_GetValueObject')
             else:
-                cmd = u'openoffice.org -nologo -norestore -minimized ' \
-                    + u'-invisible -nofirststartwizard ' \
-                    + '-accept="socket,host=localhost,port=2002;urp;"'
+                if self.uno_connection_type == u'pipe':
+                    cmd = u'openoffice.org -nologo -norestore -minimized ' \
+                        + u'-invisible -nofirststartwizard ' \
+                        + u'-accept=pipe,name=openlp_pipe;urp;'
+                else:
+                    cmd = u'openoffice.org -nologo -norestore -minimized ' \
+                        + u'-invisible -nofirststartwizard ' \
+                        + u'-accept=socket,host=localhost,port=2002;urp;'
                 process = QtCore.QProcess()
                 process.startDetached(cmd)
                 process.waitForStarted()
@@ -135,6 +163,9 @@ class OooImport(object):
                 "com.sun.star.presentation.PresentationDocument") and not \
                 self.document.supportsService("com.sun.star.text.TextDocument"):
                 self.close_ooo_file()
+            else:
+                self.import_wizard.incrementProgressBar(
+                    u'Processing file ' + filepath, 0)
         except:
             pass
         return   
@@ -161,6 +192,9 @@ class OooImport(object):
         slides = doc.getDrawPages()
         text = u''
         for slide_no in range(slides.getCount()):
+            if self.abort:
+                self.import_wizard.incrementProgressBar(u'Import cancelled', 0)
+                return
             slide = slides.getByIndex(slide_no)   
             slidetext = u''
             for idx in range(slide.getCount()):

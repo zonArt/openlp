@@ -50,7 +50,6 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         self.path = None
         self.theme = ThemeXML()
         self.setupUi(self)
-        # define signals
         # Buttons
         QtCore.QObject.connect(self.color1PushButton,
             QtCore.SIGNAL(u'pressed()'), self.onColor1PushButtonClicked)
@@ -68,8 +67,6 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         QtCore.QObject.connect(self.imageToolButton,
             QtCore.SIGNAL(u'clicked()'), self.onImageToolButtonClicked)
         # Combo boxes
-        QtCore.QObject.connect(self.backgroundComboBox,
-            QtCore.SIGNAL(u'activated(int)'), self.onBackgroundComboBoxSelected)
         QtCore.QObject.connect(self.backgroundTypeComboBox,
             QtCore.SIGNAL(u'activated(int)'),
             self.onBackgroundTypeComboBoxSelected)
@@ -109,9 +106,6 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         QtCore.QObject.connect(self.fontMainLineAdjustmentSpinBox,
             QtCore.SIGNAL(u'editingFinished()'),
             self.onFontMainLineAdjustmentSpinBoxChanged)
-        QtCore.QObject.connect(self.fontMainLineSpacingSpinBox,
-            QtCore.SIGNAL(u'editingFinished()'),
-            self.onFontMainLineSpacingSpinBoxChanged)
         QtCore.QObject.connect(self.fontFooterXSpinBox,
             QtCore.SIGNAL(u'editingFinished()'),
             self.onFontFooterXSpinBoxChanged)
@@ -151,30 +145,26 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         new_theme.new_document(theme_name)
         save_from = None
         save_to = None
-        if self.theme.background_mode == u'transparent':
-            new_theme.add_background_transparent()
+        if self.theme.background_type == u'solid':
+            new_theme.add_background_solid(
+                unicode(self.theme.background_color))
+        elif self.theme.background_type == u'gradient':
+            new_theme.add_background_gradient(
+                unicode(self.theme.background_start_color),
+                unicode(self.theme.background_end_color),
+                self.theme.background_direction)
         else:
-            if self.theme.background_type == u'solid':
-                new_theme.add_background_solid(
-                    unicode(self.theme.background_color))
-            elif self.theme.background_type == u'gradient':
-                new_theme.add_background_gradient(
-                    unicode(self.theme.background_startColor),
-                    unicode(self.theme.background_endColor),
-                    self.theme.background_direction)
-            else:
-                filename = \
-                    os.path.split(unicode(self.theme.background_filename))[1]
-                new_theme.add_background_image(filename)
-                save_to = os.path.join(self.path, theme_name, filename)
-                save_from = self.theme.background_filename
+            filename = \
+                os.path.split(unicode(self.theme.background_filename))[1]
+            new_theme.add_background_image(filename)
+            save_to = os.path.join(self.path, theme_name, filename)
+            save_from = self.theme.background_filename
         new_theme.add_font(unicode(self.theme.font_main_name),
                 unicode(self.theme.font_main_color),
                 unicode(self.theme.font_main_proportion),
                 unicode(self.theme.font_main_override), u'main',
                 unicode(self.theme.font_main_weight),
                 unicode(self.theme.font_main_italics),
-                unicode(self.theme.font_main_indentation),
                 unicode(self.theme.font_main_line_adjustment),
                 unicode(self.theme.font_main_x),
                 unicode(self.theme.font_main_y),
@@ -186,7 +176,6 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                 unicode(self.theme.font_footer_override), u'footer',
                 unicode(self.theme.font_footer_weight),
                 unicode(self.theme.font_footer_italics),
-                0, # indentation
                 0, # line adjustment
                 unicode(self.theme.font_footer_x),
                 unicode(self.theme.font_footer_y),
@@ -196,10 +185,10 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                 unicode(self.theme.display_shadow_color),
                 unicode(self.theme.display_outline),
                 unicode(self.theme.display_outline_color),
-                unicode(self.theme.display_horizontalAlign),
-                unicode(self.theme.display_verticalAlign),
-                unicode(self.theme.display_wrapStyle),
-                unicode(self.theme.display_slideTransition),
+                unicode(self.theme.display_horizontal_align),
+                unicode(self.theme.display_vertical_align),
+                unicode(self.theme.display_wrap_style),
+                unicode(self.theme.display_slide_transition),
                 unicode(self.theme.display_shadow_size),
                 unicode(self.theme.display_outline_size))
         theme = new_theme.extract_xml()
@@ -228,9 +217,8 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.imageLineEdit.setText(filename)
             self.theme.background_filename = filename
             self.previewTheme()
-
     #
-    #Main Font Tab
+    # Main Font Tab
     #
     def onFontMainComboBoxSelected(self):
         self.theme.font_main_name = self.fontMainComboBox.currentFont().family()
@@ -283,8 +271,6 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.fontMainHeightSpinBox.setValue(self.theme.font_main_height)
             self.fontMainLineAdjustmentSpinBox.setValue(
                 self.theme.font_main_line_adjustment)
-            self.fontMainLineSpacingSpinBox.setValue(
-                self.theme.font_main_indentation)
         self.stateChanging(self.theme)
         self.previewTheme()
 
@@ -310,20 +296,12 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                 self.fontMainLineAdjustmentSpinBox.value()
             self.previewTheme()
 
-    def onFontMainLineSpacingSpinBoxChanged(self):
-        if self.theme.font_main_indentation != \
-            self.fontMainLineSpacingSpinBox.value():
-            self.theme.font_main_indentation = \
-                self.fontMainLineSpacingSpinBox.value()
-            self.previewTheme()
-
     def onFontMainHeightSpinBoxChanged(self):
         if self.theme.font_main_height != self.fontMainHeightSpinBox.value():
             self.theme.font_main_height = self.fontMainHeightSpinBox.value()
             self.previewTheme()
-
     #
-    #Footer Font Tab
+    # Footer Font Tab
     #
     def onFontFooterComboBoxSelected(self):
         self.theme.font_footer_name = \
@@ -402,21 +380,12 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.theme.font_footer_height = \
                 self.fontFooterHeightSpinBox.value()
             self.previewTheme()
-
     #
-    #Background Tab
+    # Background Tab
     #
     def onGradientComboBoxSelected(self, currentIndex):
         self.setBackground(self.backgroundTypeComboBox.currentIndex(),
             currentIndex)
-
-    def onBackgroundComboBoxSelected(self, currentIndex):
-        if currentIndex == 0: # Opaque
-            self.theme.background_mode = u'opaque'
-        else:
-            self.theme.background_mode = u'transparent'
-        self.stateChanging(self.theme)
-        self.previewTheme()
 
     def onBackgroundTypeComboBoxSelected(self, currentIndex):
         self.setBackground(currentIndex, self.gradientComboBox.currentIndex())
@@ -435,10 +404,10 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                 self.theme.background_direction = u'vertical'
             else:
                 self.theme.background_direction = u'circular'
-            if self.theme.background_startColor is None:
-                self.theme.background_startColor = u'#000000'
-            if self.theme.background_endColor is None:
-                self.theme.background_endColor = u'#ff0000'
+            if self.theme.background_start_color is None:
+                self.theme.background_start_color = u'#000000'
+            if self.theme.background_end_color is None:
+                self.theme.background_end_color = u'#ff0000'
             self.imageLineEdit.setText(u'')
         else:
             self.theme.background_type = u'image'
@@ -455,24 +424,23 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
                     unicode(self.theme.background_color))
         else:
             new_color = QtGui.QColorDialog.getColor(
-                QtGui.QColor(self.theme.background_startColor), self)
+                QtGui.QColor(self.theme.background_start_color), self)
             if new_color.isValid():
-                self.theme.background_startColor = new_color.name()
+                self.theme.background_start_color = new_color.name()
                 self.color1PushButton.setStyleSheet(u'background-color: %s' %
-                    unicode(self.theme.background_startColor))
+                    unicode(self.theme.background_start_color))
         self.previewTheme()
 
     def onColor2PushButtonClicked(self):
         new_color = QtGui.QColorDialog.getColor(
-            QtGui.QColor(self.theme.background_endColor), self)
+            QtGui.QColor(self.theme.background_end_color), self)
         if new_color.isValid():
-            self.theme.background_endColor = new_color.name()
+            self.theme.background_end_color = new_color.name()
             self.color2PushButton.setStyleSheet(u'background-color: %s' %
-                unicode(self.theme.background_endColor))
+                unicode(self.theme.background_end_color))
             self.previewTheme()
-
     #
-    #Other Tab
+    # Other Tab
     #
     def onOutlineCheckBoxChanged(self, value):
         if value == 2:  # checked
@@ -511,9 +479,9 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
 
     def onSlideTransitionCheckBoxChanged(self, value):
         if value == 2:  # checked
-            self.theme.display_slideTransition = True
+            self.theme.display_slide_transition = True
         else:
-            self.theme.display_slideTransition = False
+            self.theme.display_slide_transition = False
         self.stateChanging(self.theme)
         self.previewTheme()
 
@@ -527,26 +495,21 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.previewTheme()
 
     def onHorizontalComboBoxSelected(self, currentIndex):
-        self.theme.display_horizontalAlign = currentIndex
+        self.theme.display_horizontal_align = currentIndex
         self.stateChanging(self.theme)
         self.previewTheme()
 
     def onVerticalComboBoxSelected(self, currentIndex):
-        self.theme.display_verticalAlign = currentIndex
+        self.theme.display_vertical_align = currentIndex
         self.stateChanging(self.theme)
         self.previewTheme()
-
     #
-    #Local Methods
+    # Local Methods
     #
     def paintUi(self, theme):
         self.stateChanging(theme)
         self.themeNameEdit.setText(self.theme.theme_name)
         # Background Tab
-        if self.theme.background_mode == u'opaque':
-            self.backgroundComboBox.setCurrentIndex(0)
-        else:
-            self.backgroundComboBox.setCurrentIndex(1)
         self.imageLineEdit.setText(u'')
         if theme.background_type == u'solid':
             self.backgroundTypeComboBox.setCurrentIndex(0)
@@ -576,8 +539,6 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.fontMainWeightComboBox.setCurrentIndex(2)
         else:
             self.fontMainWeightComboBox.setCurrentIndex(3)
-        self.fontMainLineSpacingSpinBox.setValue(
-            self.theme.font_main_indentation)
         self.fontMainXSpinBox.setValue(self.theme.font_main_x)
         self.fontMainYSpinBox.setValue(self.theme.font_main_y)
         self.fontMainWidthSpinBox.setValue(self.theme.font_main_width)
@@ -632,18 +593,24 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.shadowCheckBox.setChecked(False)
             self.shadowColorPushButton.setEnabled(False)
         self.shadowSpinBox.setValue(int(self.theme.display_shadow_size))
-        if self.theme.display_slideTransition:
+        if self.theme.display_slide_transition:
             self.slideTransitionCheckBox.setCheckState(QtCore.Qt.Checked)
         else:
             self.slideTransitionCheckBox.setCheckState(QtCore.Qt.Unchecked)
         self.horizontalComboBox.setCurrentIndex(
-            self.theme.display_horizontalAlign)
-        self.verticalComboBox.setCurrentIndex(self.theme.display_verticalAlign)
+            self.theme.display_horizontal_align)
+        self.verticalComboBox.setCurrentIndex(self.theme.display_vertical_align)
 
     def stateChanging(self, theme):
-        if theme.background_mode == u'transparent':
-            self.color1Label.setVisible(False)
-            self.color1PushButton.setVisible(False)
+        self.backgroundTypeComboBox.setVisible(True)
+        self.backgroundTypeLabel.setVisible(True)
+        if theme.background_type == u'solid':
+            self.color1PushButton.setStyleSheet(
+                u'background-color: %s' % unicode(theme.background_color))
+            self.color1Label.setText(
+                translate('OpenLP.AmendThemeForm', 'Color:'))
+            self.color1Label.setVisible(True)
+            self.color1PushButton.setVisible(True)
             self.color2Label.setVisible(False)
             self.color2PushButton.setVisible(False)
             self.imageLabel.setVisible(False)
@@ -651,53 +618,34 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
             self.imageFilenameWidget.setVisible(False)
             self.gradientLabel.setVisible(False)
             self.gradientComboBox.setVisible(False)
-            self.backgroundTypeComboBox.setVisible(False)
-            self.backgroundTypeLabel.setVisible(False)
-        else:
-            self.backgroundTypeComboBox.setVisible(True)
-            self.backgroundTypeLabel.setVisible(True)
-            if theme.background_type == u'solid':
-                self.color1PushButton.setStyleSheet(
-                    u'background-color: %s' % unicode(theme.background_color))
-                self.color1Label.setText(
-                    translate('OpenLP.AmendThemeForm', 'Color:'))
-                self.color1Label.setVisible(True)
-                self.color1PushButton.setVisible(True)
-                self.color2Label.setVisible(False)
-                self.color2PushButton.setVisible(False)
-                self.imageLabel.setVisible(False)
-                self.imageLineEdit.setVisible(False)
-                self.imageFilenameWidget.setVisible(False)
-                self.gradientLabel.setVisible(False)
-                self.gradientComboBox.setVisible(False)
-            elif theme.background_type == u'gradient':
-                self.color1PushButton.setStyleSheet(u'background-color: %s' \
-                    % unicode(theme.background_startColor))
-                self.color2PushButton.setStyleSheet(u'background-color: %s' \
-                    % unicode(theme.background_endColor))
-                self.color1Label.setText(
-                    translate('OpenLP.AmendThemeForm', 'First color:'))
-                self.color2Label.setText(
-                    translate('OpenLP.AmendThemeForm', 'Second color:'))
-                self.color1Label.setVisible(True)
-                self.color1PushButton.setVisible(True)
-                self.color2Label.setVisible(True)
-                self.color2PushButton.setVisible(True)
-                self.imageLabel.setVisible(False)
-                self.imageLineEdit.setVisible(False)
-                self.imageFilenameWidget.setVisible(False)
-                self.gradientLabel.setVisible(True)
-                self.gradientComboBox.setVisible(True)
-            else: # must be image
-                self.color1Label.setVisible(False)
-                self.color1PushButton.setVisible(False)
-                self.color2Label.setVisible(False)
-                self.color2PushButton.setVisible(False)
-                self.imageLabel.setVisible(True)
-                self.imageLineEdit.setVisible(True)
-                self.imageFilenameWidget.setVisible(True)
-                self.gradientLabel.setVisible(False)
-                self.gradientComboBox.setVisible(False)
+        elif theme.background_type == u'gradient':
+            self.color1PushButton.setStyleSheet(u'background-color: %s' \
+                % unicode(theme.background_start_color))
+            self.color2PushButton.setStyleSheet(u'background-color: %s' \
+                % unicode(theme.background_end_color))
+            self.color1Label.setText(
+                translate('OpenLP.AmendThemeForm', 'First color:'))
+            self.color2Label.setText(
+                translate('OpenLP.AmendThemeForm', 'Second color:'))
+            self.color1Label.setVisible(True)
+            self.color1PushButton.setVisible(True)
+            self.color2Label.setVisible(True)
+            self.color2PushButton.setVisible(True)
+            self.imageLabel.setVisible(False)
+            self.imageLineEdit.setVisible(False)
+            self.imageFilenameWidget.setVisible(False)
+            self.gradientLabel.setVisible(True)
+            self.gradientComboBox.setVisible(True)
+        else: # must be image
+            self.color1Label.setVisible(False)
+            self.color1PushButton.setVisible(False)
+            self.color2Label.setVisible(False)
+            self.color2PushButton.setVisible(False)
+            self.imageLabel.setVisible(True)
+            self.imageLineEdit.setVisible(True)
+            self.imageFilenameWidget.setVisible(True)
+            self.gradientLabel.setVisible(False)
+            self.gradientComboBox.setVisible(False)
         if not theme.font_main_override:
             self.fontMainXSpinBox.setEnabled(False)
             self.fontMainYSpinBox.setEnabled(False)

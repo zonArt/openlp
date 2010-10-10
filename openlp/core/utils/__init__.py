@@ -70,6 +70,8 @@ class VersionThread(QtCore.QThread):
             remote_version[u'release'] = int(match.group(3))
             if len(match.groups()) > 3 and match.group(4):
                 remote_version[u'revision'] = int(match.group(4))
+        else:
+            return
         match = self.version_splitter.match(self.app_version[u'full'])
         if match:
             local_version[u'major'] = int(match.group(1))
@@ -77,6 +79,8 @@ class VersionThread(QtCore.QThread):
             local_version[u'release'] = int(match.group(3))
             if len(match.groups()) > 3 and match.group(4):
                 local_version[u'revision'] = int(match.group(4))
+        else:
+            return
         if remote_version[u'major'] > local_version[u'major'] or \
             remote_version[u'minor'] > local_version[u'minor'] or \
             remote_version[u'release'] > local_version[u'release']:
@@ -98,6 +102,7 @@ class AppLocation(object):
     PluginsDir = 4
     VersionDir = 5
     CacheDir = 6
+    LanguageDir = 7
 
     @staticmethod
     def get_directory(dir_type=1):
@@ -108,7 +113,11 @@ class AppLocation(object):
             The directory type you want, for instance the data directory.
         """
         if dir_type == AppLocation.AppDir:
-            return os.path.abspath(os.path.split(sys.argv[0])[0])
+            if hasattr(sys, u'frozen') and sys.frozen == 1:
+                app_path = os.path.abspath(os.path.split(sys.argv[0])[0])
+            else:
+                app_path = os.path.split(openlp.__file__)[0]
+            return app_path
         elif dir_type == AppLocation.ConfigDir:
             if sys.platform == u'win32':
                 path = os.path.join(os.getenv(u'APPDATA'), u'openlp')
@@ -147,10 +156,10 @@ class AppLocation(object):
             return plugin_path
         elif dir_type == AppLocation.VersionDir:
             if hasattr(sys, u'frozen') and sys.frozen == 1:
-                plugin_path = os.path.abspath(os.path.split(sys.argv[0])[0])
+                version_path = os.path.abspath(os.path.split(sys.argv[0])[0])
             else:
-                plugin_path = os.path.split(openlp.__file__)[0]
-            return plugin_path
+                version_path = os.path.split(openlp.__file__)[0]
+            return version_path
         elif dir_type == AppLocation.CacheDir:
             if sys.platform == u'win32':
                 path = os.path.join(os.getenv(u'APPDATA'), u'openlp')
@@ -165,6 +174,13 @@ class AppLocation(object):
                 except ImportError:
                     path = os.path.join(os.getenv(u'HOME'), u'.openlp')
             return path
+        if dir_type == AppLocation.LanguageDir:
+            if hasattr(sys, u'frozen') and sys.frozen == 1:
+                app_path = os.path.abspath(os.path.split(sys.argv[0])[0])
+            else:
+                app_path = os.path.split(openlp.__file__)[0]
+            return os.path.join(app_path, u'i18n')
+
 
     @staticmethod
     def get_data_path():
@@ -206,11 +222,14 @@ def check_latest_version(current_version):
         else:
             req = urllib2.Request(u'http://www.openlp.org/files/version.txt')
         req.add_header(u'User-Agent', u'OpenLP/%s' % current_version[u'full'])
+        remote_version = None
         try:
-            version_string = unicode(urllib2.urlopen(req, None).read()).strip()
+            remote_version = unicode(urllib2.urlopen(req, None).read()).strip()
         except IOError, e:
             if hasattr(e, u'reason'):
                 log.exception(u'Reason for failure: %s', e.reason)
+        if remote_version:
+            version_string = remote_version
     return version_string
 
 def add_actions(target, actions):

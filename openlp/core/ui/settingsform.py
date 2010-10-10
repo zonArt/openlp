@@ -30,6 +30,7 @@ import logging
 
 from PyQt4 import QtGui
 
+from openlp.core.lib import Receiver
 from openlp.core.ui import AdvancedTab, GeneralTab, ThemesTab
 from settingsdialog import Ui_SettingsDialog
 
@@ -71,14 +72,15 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         self.settingsTabWidget.insertTab(
             location + 14, tab, tab.tabTitleVisible)
 
-    def removeTab(self, name):
+    def removeTab(self, tab):
         """
         Remove a tab from the form
         """
-        log.debug(u'remove %s tab' % name)
+        log.debug(u'remove %s tab' % tab.tabTitleVisible)
         for tabIndex in range(0, self.settingsTabWidget.count()):
             if self.settingsTabWidget.widget(tabIndex):
-                if self.settingsTabWidget.widget(tabIndex).tabTitle == name:
+                if self.settingsTabWidget.widget(tabIndex).tabTitleVisible == \
+                    tab.tabTitleVisible:
                     self.settingsTabWidget.removeTab(tabIndex)
 
     def accept(self):
@@ -87,6 +89,8 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         for tabIndex in range(0, self.settingsTabWidget.count()):
             self.settingsTabWidget.widget(tabIndex).save()
+        # Must go after all settings are save
+        Receiver.send_message(u'config_updated')
         return QtGui.QDialog.accept(self)
 
     def postSetUp(self):

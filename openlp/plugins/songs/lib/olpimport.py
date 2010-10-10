@@ -36,6 +36,7 @@ from sqlalchemy.orm.exc import UnmappedClassError
 
 from openlp.core.lib.db import BaseModel
 from openlp.plugins.songs.lib.db import Author, Book, Song, Topic #, MediaFile
+from songimport import SongImport
 
 log = logging.getLogger(__name__)
 
@@ -69,26 +70,27 @@ class OldTopic(BaseModel):
     """
     pass
 
-class OpenLPSongImport(object):
+class OpenLPSongImport(SongImport):
     """
     The :class:`OpenLPSongImport` class provides OpenLP with the ability to
     import song databases from other installations of OpenLP.
     """
-    def __init__(self, master_manager, source_db):
+    def __init__(self, manager, **kwargs):
         """
         Initialise the import.
 
-        ``master_manager``
+        ``manager``
             The song manager for the running OpenLP installation.
 
         ``source_db``
             The database providing the data to import.
         """
-        self.master_manager = master_manager
-        self.import_source = source_db
+        SongImport.__init__(self, manager)
+        self.import_source = u'sqlite:///%s' % kwargs[u'filename']
+        log.debug(self.import_source)
         self.source_session = None
 
-    def import_source_v2_db(self):
+    def do_import(self):
         """
         Run the import for an OpenLP version 2 song database.
         """
@@ -142,7 +144,12 @@ class OpenLPSongImport(object):
             mapper(OldTopic, source_topics_table)
 
         source_songs = self.source_session.query(OldSong).all()
+        song_total = len(source_songs)
+        self.import_wizard.importProgressBar.setMaximum(song_total)
+        song_count = 1
         for song in source_songs:
+            self.import_wizard.incrementProgressBar(
+                u'Importing song %s of %s' % (song_count, song_total))
             new_song = Song()
             new_song.title = song.title
             if has_media_files:
@@ -164,7 +171,7 @@ class OpenLPSongImport(object):
             new_song.ccli_number = song.ccli_number
             if song.authors:
                 for author in song.authors:
-                    existing_author = self.master_manager.get_object_filtered(
+                    existing_author = self.manager.get_object_filtered(
                         Author, Author.display_name == author.display_name)
                     if existing_author:
                         new_song.authors.append(existing_author)
@@ -174,7 +181,7 @@ class OpenLPSongImport(object):
                             last_name=author.last_name,
                             display_name=author.display_name))
             else:
-                au = self.master_manager.get_object_filtered(Author,
+                au = self.manager.get_object_filtered(Author,
                     Author.display_name == u'Author Unknown')
                 if au:
                     new_song.authors.append(au)
@@ -182,7 +189,7 @@ class OpenLPSongImport(object):
                     new_song.authors.append(Author.populate(
                         display_name=u'Author Unknown'))
             if song.book:
-                existing_song_book = self.master_manager.get_object_filtered(
+                existing_song_book = self.manager.get_object_filtered(
                     Book, Book.name == song.book.name)
                 if existing_song_book:
                     new_song.book = existing_song_book
@@ -191,7 +198,7 @@ class OpenLPSongImport(object):
                         publisher=song.book.publisher)
             if song.topics:
                 for topic in song.topics:
-                    existing_topic = self.master_manager.get_object_filtered(
+                    existing_topic = self.manager.get_object_filtered(
                         Topic, Topic.name == topic.name)
                     if existing_topic:
                         new_song.topics.append(existing_topic)
@@ -201,12 +208,16 @@ class OpenLPSongImport(object):
 #                if song.media_files:
 #                    for media_file in song.media_files:
 #                        existing_media_file = \
-#                            self.master_manager.get_object_filtered(MediaFile,
+#                            self.manager.get_object_filtered(MediaFile,
 #                                MediaFile.file_name == media_file.file_name)
 #                        if existing_media_file:
 #                            new_song.media_files.append(existing_media_file)
 #                        else:
 #                            new_song.media_files.append(MediaFile.populate(
 #                                file_name=media_file.file_name))
-            self.master_manager.save_object(new_song)
+            self.manager.save_object(new_song)
+            song_count += 1
+            if self.stop_import_flag:
+                return False
         engine.dispose()
+        return True

@@ -32,7 +32,7 @@ import logging
 from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.ui import AmendThemeForm
+from openlp.core.ui import AmendThemeForm, FileRenameForm
 from openlp.core.theme import Theme
 from openlp.core.lib import OpenLPToolbar, context_menu_action, \
     ThemeXML, str_to_bool, get_text_file_string, build_icon, Receiver, \
@@ -54,6 +54,7 @@ class ThemeManager(QtGui.QWidget):
         self.layout.setSpacing(0)
         self.layout.setMargin(0)
         self.amendThemeForm = AmendThemeForm(self)
+        self.fileRenameForm = FileRenameForm(self)
         self.toolbar = OpenLPToolbar(self)
         self.toolbar.addToolbarButton(
             translate('OpenLP.ThemeManager', 'New Theme'),
@@ -87,31 +88,32 @@ class ThemeManager(QtGui.QWidget):
         self.themeListWidget.setAlternatingRowColors(True)
         self.themeListWidget.setIconSize(QtCore.QSize(88, 50))
         self.layout.addWidget(self.themeListWidget)
-        self.themeListWidget.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-        self.themeListWidget.addAction(
-            context_menu_action(self.themeListWidget,
-            u':/themes/theme_edit.png',
-            translate('OpenLP.ThemeManager', '&Edit Theme'),
-            self.onEditTheme))
-        self.themeListWidget.addAction(
-            context_menu_separator(self.themeListWidget))
-        self.themeListWidget.addAction(
-            context_menu_action(self.themeListWidget,
-                u':/general/general_delete.png',
-                translate('OpenLP.ThemeManager', '&Delete Theme'),
-            self.onDeleteTheme))
-        self.themeListWidget.addAction(
-            context_menu_action(self.themeListWidget,
-                u':/general/general_export.png',
-                translate('OpenLP.ThemeManager', 'Set As &Global Default'),
-            self.changeGlobalFromScreen))
-        self.themeListWidget.addAction(
-            context_menu_action(self.themeListWidget,
-                u':/general/general_export.png',
-                translate('OpenLP.ThemeManager', 'E&xport Theme'),
-                self.onExportTheme))
-        self.themeListWidget.addAction(
-            context_menu_separator(self.themeListWidget))
+        self.themeListWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        QtCore.QObject.connect(self.themeListWidget,
+            QtCore.SIGNAL('customContextMenuRequested(QPoint)'),
+            self.contextMenu)
+        # build the context menu
+        self.menu = QtGui.QMenu()
+        self.editAction = self.menu.addAction(
+            translate('OpenLP.ThemeManager', '&Edit Theme'))
+        self.editAction.setIcon(build_icon(u':/themes/theme_edit.png'))
+        self.copyAction = self.menu.addAction(
+            translate('OpenLP.ThemeManager', '&Copy Theme'))
+        self.copyAction.setIcon(build_icon(u':/themes/theme_edit.png'))
+        self.renameAction = self.menu.addAction(
+            translate('OpenLP.ThemeManager', '&Rename Theme'))
+        self.renameAction.setIcon(build_icon(u':/themes/theme_edit.png'))
+        self.deleteAction = self.menu.addAction(
+            translate('OpenLP.ThemeManager', '&Delete Theme'))
+        self.deleteAction.setIcon(build_icon(u':/general/general_delete.png'))
+        self.sep1 = self.menu.addAction(u'')
+        self.sep1.setSeparator(True)
+        self.globalAction = self.menu.addAction(
+            translate('OpenLP.ThemeManager', 'Set As &Global Default'))
+        self.globalAction.setIcon(build_icon(u':/general/general_export.png'))
+        self.exportAction = self.menu.addAction(
+            translate('OpenLP.ThemeManager', '&Export Theme'))
+        self.exportAction.setIcon(build_icon(u':/general/general_export.png'))
         #Signals
         QtCore.QObject.connect(self.themeListWidget,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
@@ -132,6 +134,34 @@ class ThemeManager(QtGui.QWidget):
             self.settingsSection + u'/global theme',
             QtCore.QVariant(u'')).toString())
 
+    def contextMenu(self, point):
+        item = self.themeListWidget.itemAt(point)
+        if item is None:
+            return
+        realThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
+        themeName = unicode(item.text())
+        self.deleteAction.setVisible(False)
+        self.renameAction.setVisible(False)
+        self.globalAction.setVisible(False)
+        # If default theme restrict actions
+        if realThemeName == themeName:
+            self.deleteAction.setVisible(True)
+            self.renameAction.setVisible(True)
+            self.globalAction.setVisible(True)
+        action = self.menu.exec_(self.themeListWidget.mapToGlobal(point))
+        if action == self.editAction:
+            self.onEditTheme()
+        if action == self.copyAction:
+            self.onCopyTheme()
+        if action == self.renameAction:
+            self.onRenameTheme()
+        if action == self.deleteAction:
+            self.onDeleteTheme()
+        if action == self.globalAction:
+            self.changeGlobalFromScreen()
+        if action == self.exportAction:
+            self.onExportTheme()
+
     def changeGlobalFromTab(self, themeName):
         """
         Change the global theme when it is changed through the Themes settings
@@ -139,13 +169,13 @@ class ThemeManager(QtGui.QWidget):
         """
         log.debug(u'changeGlobalFromTab %s', themeName)
         for count in range (0, self.themeListWidget.count()):
-            #reset the old name
+            # reset the old name
             item = self.themeListWidget.item(count)
             oldName = item.text()
             newName = unicode(item.data(QtCore.Qt.UserRole).toString())
             if oldName != newName:
                 self.themeListWidget.item(count).setText(newName)
-            #Set the new name
+            # Set the new name
             if themeName == newName:
                 name = unicode(translate('OpenLP.ThemeManager',
                     '%s (default)')) % newName
@@ -161,11 +191,11 @@ class ThemeManager(QtGui.QWidget):
         for count in range (0, self.themeListWidget.count()):
             item = self.themeListWidget.item(count)
             oldName = item.text()
-            #reset the old name
+            # reset the old name
             if oldName != unicode(item.data(QtCore.Qt.UserRole).toString()):
                 self.themeListWidget.item(count).setText(
                     unicode(item.data(QtCore.Qt.UserRole).toString()))
-            #Set the new name
+            # Set the new name
             if count == selected_row:
                 self.global_theme = unicode(
                     self.themeListWidget.item(count).text())
@@ -188,6 +218,92 @@ class ThemeManager(QtGui.QWidget):
         self.amendThemeForm.loadTheme(theme)
         self.saveThemeName = u''
         self.amendThemeForm.exec_()
+
+    def onRenameTheme(self):
+        """
+        Renames an existing theme to a new name
+        """
+        item = self.themeListWidget.currentItem()
+        oldThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
+        self.fileRenameForm.FileNameEdit.setText(oldThemeName)
+        self.saveThemeName = u''
+        if self.fileRenameForm.exec_():
+            newThemeName =  unicode(self.fileRenameForm.FileNameEdit.text())
+            oldThemeData = self.getThemeData(oldThemeName)
+            self.deleteTheme(oldThemeName)
+            self.cloneThemeData(oldThemeData, newThemeName)
+
+    def onCopyTheme(self):
+        """
+        Copies an existing theme to a new name
+        """
+        item = self.themeListWidget.currentItem()
+        oldThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
+        self.fileRenameForm.FileNameEdit.setText(oldThemeName)
+        self.saveThemeName = u''
+        if self.fileRenameForm.exec_():
+            newThemeName =  unicode(self.fileRenameForm.FileNameEdit.text())
+            oldThemeData = self.getThemeData(oldThemeName)
+            self.cloneThemeData(oldThemeData, newThemeName)
+            self.loadThemes()
+
+    def cloneThemeData(self, oldThemeData, newThemeName):
+        """
+        """
+        log.debug(u'cloneThemeData')
+        new_theme = ThemeXML()
+        new_theme.new_document(newThemeName)
+        save_from = None
+        save_to = None
+        if oldThemeData.background_type == u'solid':
+            new_theme.add_background_solid(
+                unicode(oldThemeData.background_color))
+        elif oldThemeData.background_type == u'gradient':
+            new_theme.add_background_gradient(
+                unicode(oldThemeData.background_start_color),
+                unicode(oldThemeData.background_end_color),
+                oldThemeData.background_direction)
+        else:
+            filename = \
+                os.path.split(unicode(oldThemeData.background_filename))[1]
+            new_theme.add_background_image(filename)
+            save_to = os.path.join(self.path, theme_name, filename)
+            save_from = oldThemeData.background_filename
+        new_theme.add_font(unicode(oldThemeData.font_main_name),
+            unicode(oldThemeData.font_main_color),
+            unicode(oldThemeData.font_main_proportion),
+            unicode(oldThemeData.font_main_override), u'main',
+            unicode(oldThemeData.font_main_weight),
+            unicode(oldThemeData.font_main_italics),
+            unicode(oldThemeData.font_main_line_adjustment),
+            unicode(oldThemeData.font_main_x),
+            unicode(oldThemeData.font_main_y),
+            unicode(oldThemeData.font_main_width),
+            unicode(oldThemeData.font_main_height))
+        new_theme.add_font(unicode(oldThemeData.font_footer_name),
+            unicode(oldThemeData.font_footer_color),
+            unicode(oldThemeData.font_footer_proportion),
+            unicode(oldThemeData.font_footer_override), u'footer',
+            unicode(oldThemeData.font_footer_weight),
+            unicode(oldThemeData.font_footer_italics),
+            0, # line adjustment
+            unicode(oldThemeData.font_footer_x),
+            unicode(oldThemeData.font_footer_y),
+            unicode(oldThemeData.font_footer_width),
+            unicode(oldThemeData.font_footer_height))
+        new_theme.add_display(unicode(oldThemeData.display_shadow),
+            unicode(oldThemeData.display_shadow_color),
+            unicode(oldThemeData.display_outline),
+            unicode(oldThemeData.display_outline_color),
+            unicode(oldThemeData.display_horizontal_align),
+            unicode(oldThemeData.display_vertical_align),
+            unicode(oldThemeData.display_wrap_style),
+            unicode(oldThemeData.display_slide_transition),
+            unicode(oldThemeData.display_shadow_size),
+            unicode(oldThemeData.display_outline_size))
+        theme = new_theme.extract_xml()
+        pretty_theme = new_theme.extract_formatted_xml()
+        self.saveTheme(newThemeName, theme, pretty_theme, save_from, save_to)
 
     def onEditTheme(self):
         """
@@ -242,14 +358,14 @@ class ThemeManager(QtGui.QWidget):
                         QtGui.QMessageBox.critical(self,
                             translate('OpenLP.ThemeManager', 'Error'),
                             unicode(translate('OpenLP.ThemeManager',
-                                'Theme %s is use in %s plugin.')) % \
+                                'Theme %s is used in the %s plugin.')) % \
                                 (theme, plugin.name))
                         return
                 if unicode(self.serviceComboBox.currentText()) == theme:
                     QtGui.QMessageBox.critical(self,
                         translate('OpenLP.ThemeManager', 'Error'),
                         unicode(translate('OpenLP.ThemeManager',
-                        'Theme %s is use by the service manager.')) % theme)
+                        'Theme %s is used by the service manager.')) % theme)
                     return
                 row = self.themeListWidget.row(item)
                 self.themeListWidget.takeItem(row)
@@ -295,7 +411,7 @@ class ThemeManager(QtGui.QWidget):
         path = unicode(path)
         if path:
             SettingsManager.set_last_dir(self.settingsSection, path, 1)
-            themePath = os.path.join(path, theme + u'.theme')
+            themePath = os.path.join(path, theme + u'.otz')
             zip = None
             try:
                 zip = zipfile.ZipFile(themePath, u'w')
@@ -346,11 +462,10 @@ class ThemeManager(QtGui.QWidget):
         log.debug(u'Load themes from dir')
         self.themelist = []
         self.themeListWidget.clear()
-        #root, dirs, files = os.walk(self.path)
         dirList = os.listdir(self.path)
         for name in dirList:
             if name.endswith(u'.png'):
-                #check to see file is in theme root directory
+                # check to see file is in theme root directory
                 theme = os.path.join(self.path, name)
                 if os.path.exists(theme):
                     textName = os.path.splitext(name)[0]
@@ -463,11 +578,7 @@ class ThemeManager(QtGui.QWidget):
                                 log.exception(u'Theme XML is not UTF-8 '
                                     u'encoded.')
                                 break
-                            if self.checkVersion1(xml_data):
-                                # upgrade theme xml
-                                filexml = self.migrateVersion122(xml_data)
-                            else:
-                                filexml = xml_data
+                            filexml = self.checkVersionAndConvert(xml_data)
                             outfile = open(fullpath, u'w')
                             outfile.write(filexml.encode(u'utf-8'))
                         else:
@@ -493,20 +604,21 @@ class ThemeManager(QtGui.QWidget):
             if outfile:
                 outfile.close()
 
-    def checkVersion1(self, xmlfile):
+    def checkVersionAndConvert(self, xml_data):
         """
         Check if a theme is from OpenLP version 1
 
-        ``xmlfile``
+        ``xml_data``
             Theme XML to check the version of
         """
         log.debug(u'checkVersion1 ')
-        theme = xmlfile.encode(u'ascii', u'xmlcharrefreplace')
+        theme = xml_data.encode(u'ascii', u'xmlcharrefreplace')
         tree = ElementTree(element=XML(theme)).getroot()
+        # look for old version 1 tags
         if tree.find(u'BackgroundType') is None:
-            return False
+            return xml_data
         else:
-            return True
+            return self.migrateVersion122(xml_data)
 
     def migrateVersion122(self, xml_data):
         """
@@ -577,7 +689,7 @@ class ThemeManager(QtGui.QWidget):
                     translate('OpenLP.ThemeManager', 'Theme Exists'),
                     translate('OpenLP.ThemeManager',
                         'A theme with this name already '
-                        'exists.  Would you like to overwrite it?'),
+                        'exists. Would you like to overwrite it?'),
                     (QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
                     QtGui.QMessageBox.No)
             if self.saveThemeName != u'':
@@ -660,9 +772,8 @@ class ThemeManager(QtGui.QWidget):
         """
         Call the RenderManager to build a Sample Image
         """
-        log.debug(u'generateImage %s ', themedata)
-        frame = self.parent.RenderManager.generate_preview(themedata)
-        return frame
+        log.debug(u'generateImage \n%s ', themedata)
+        return self.parent.RenderManager.generate_preview(themedata)
 
     def getPreviewImage(self, theme):
         """
@@ -701,59 +812,5 @@ class ThemeManager(QtGui.QWidget):
         """
         theme = ThemeXML()
         theme.parse(theme_xml)
-        self.cleanTheme(theme)
         theme.extend_image_filename(path)
         return theme
-
-    def cleanTheme(self, theme):
-        """
-        Clean a theme loaded from an XML file by removing stray whitespace and
-        making sure parameters are the correct type for the theme object
-        attributes
-        """
-        theme.background_color = theme.background_color.strip()
-        theme.background_direction = theme.background_direction.strip()
-        theme.background_endColor = theme.background_endColor.strip()
-        if theme.background_filename:
-            theme.background_filename = theme.background_filename.strip()
-        #theme.background_mode
-        theme.background_startColor = theme.background_startColor.strip()
-        #theme.background_type
-        if theme.display_display:
-            theme.display_display = theme.display_display.strip()
-        theme.display_horizontalAlign = \
-            int(theme.display_horizontalAlign.strip())
-        theme.display_outline = str_to_bool(theme.display_outline)
-        #theme.display_outline_color
-        theme.display_shadow = str_to_bool(theme.display_shadow)
-        #theme.display_shadow_color
-        theme.display_verticalAlign = int(theme.display_verticalAlign.strip())
-        theme.display_wrapStyle = theme.display_wrapStyle.strip()
-        theme.display_slideTransition = theme.display_slideTransition
-        theme.font_footer_color = theme.font_footer_color.strip()
-        theme.font_footer_height = int(theme.font_footer_height.strip())
-        theme.font_footer_indentation = \
-            int(theme.font_footer_indentation.strip())
-        theme.font_footer_italics = str_to_bool(theme.font_footer_italics)
-        theme.font_footer_name = theme.font_footer_name.strip()
-        #theme.font_footer_override
-        theme.font_footer_proportion = \
-            int(theme.font_footer_proportion.strip())
-        theme.font_footer_weight = theme.font_footer_weight.strip()
-        theme.font_footer_width = int(theme.font_footer_width.strip())
-        theme.font_footer_x = int(theme.font_footer_x.strip())
-        theme.font_footer_y = int(theme.font_footer_y.strip())
-        theme.font_main_color = theme.font_main_color.strip()
-        theme.font_main_height = int(theme.font_main_height.strip())
-        theme.font_main_italics = str_to_bool(theme.font_main_italics)
-        theme.font_main_indentation = int(theme.font_main_indentation)
-        theme.font_main_name = theme.font_main_name.strip()
-        #theme.font_main_override
-        theme.font_main_proportion = int(theme.font_main_proportion.strip())
-        theme.font_main_weight = theme.font_main_weight.strip()
-        theme.font_main_width = int(theme.font_main_width.strip())
-        theme.font_main_x = int(theme.font_main_x.strip())
-        theme.font_main_y = int(theme.font_main_y.strip())
-        #theme.theme_mode
-        theme.theme_name = theme.theme_name.strip()
-        #theme.theme_version

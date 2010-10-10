@@ -35,14 +35,14 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.utils import AppLocation
 from openlp.core.lib import translate
 
-log = logging.getLogger()
+log = logging.getLogger(__name__)
 
 class LanguageManager(object):
     """
     Helper for Language selection
     """
-    __qmList__ = None
-    AutoLanguage = False
+    __qm_list__ = {}
+    auto_language = False
 
     @staticmethod
     def get_translator(language):
@@ -52,12 +52,11 @@ class LanguageManager(object):
         ``language``
             The language to load into the translator
         """
-        if LanguageManager.AutoLanguage:
+        if LanguageManager.auto_language:
             language = QtCore.QLocale.system().name()
-        lang_path = AppLocation.get_directory(AppLocation.AppDir)
-        lang_path = os.path.join(lang_path, u'resources', u'i18n')
+        lang_path = AppLocation.get_directory(AppLocation.LanguageDir)
         app_translator = QtCore.QTranslator()
-        if app_translator.load("openlp_" + language, lang_path):
+        if app_translator.load(language, lang_path):
             return app_translator
 
     @staticmethod
@@ -65,8 +64,8 @@ class LanguageManager(object):
         """
         Find all available language files in this OpenLP install
         """
-        trans_dir = AppLocation.get_directory(AppLocation.AppDir)
-        trans_dir = QtCore.QDir(os.path.join(trans_dir, u'resources', u'i18n'))
+        trans_dir = QtCore.QDir(AppLocation.get_directory(
+            AppLocation.LanguageDir))
         file_names = trans_dir.entryList(QtCore.QStringList("*.qm"),
                 QtCore.QDir.Files, QtCore.QDir.Name)
         for name in file_names:
@@ -83,7 +82,8 @@ class LanguageManager(object):
         """
         translator = QtCore.QTranslator()
         translator.load(qm_file)
-        return translator.translate('OpenLP.MainWindow', 'English')
+        return translator.translate('OpenLP.MainWindow', 'English',
+            'Please add the name of your language here')
 
     @staticmethod
     def get_language():
@@ -96,7 +96,7 @@ class LanguageManager(object):
         log.info(u'Language file: \'%s\' Loaded from conf file' % language)
         reg_ex = QtCore.QRegExp("^\[(.*)\]")
         if reg_ex.exactMatch(language):
-            LanguageManager.AutoLanguage = True
+            LanguageManager.auto_language = True
             language = reg_ex.cap(1)
         return language
 
@@ -108,12 +108,13 @@ class LanguageManager(object):
         ``action``
             The language menu option
         """
-        action_name = u'%s' % action.objectName()
-        qm_list = LanguageManager.get_qm_list()
-        if LanguageManager.AutoLanguage:
-            language = u'[%s]' % qm_list[action_name]
-        else:
+        language = u'en'
+        if action:
+            action_name = u'%s' % action.objectName()
+            qm_list = LanguageManager.get_qm_list()
             language = u'%s' % qm_list[action_name]
+        if LanguageManager.auto_language:
+            language = u'[%s]' % language
         QtCore.QSettings().setValue(
             u'general/language', QtCore.QVariant(language))
         log.info(u'Language file: \'%s\' written to conf file' % language)
@@ -127,20 +128,20 @@ class LanguageManager(object):
         """
         Initialise the list of available translations
         """
-        LanguageManager.__qmList__ = {}
+        LanguageManager.__qm_list__ = {}
         qm_files = LanguageManager.find_qm_files()
-        for i, qmf in enumerate(qm_files):
-            reg_ex = QtCore.QRegExp("^.*openlp_(.*).qm")
+        for counter, qmf in enumerate(qm_files):
+            reg_ex = QtCore.QRegExp("^.*i18n/(.*).qm")
             if reg_ex.exactMatch(qmf):
-                lang_name = reg_ex.cap(1)
-                LanguageManager.__qmList__[u'%#2i %s' % (i+1,
-                    LanguageManager.language_name(qmf))] = lang_name
+                name = u'%s' % reg_ex.cap(1)
+                LanguageManager.__qm_list__[u'%#2i %s' % (counter + 1,
+                    LanguageManager.language_name(qmf))] = name
 
     @staticmethod
     def get_qm_list():
         """
         Return the list of available translations
         """
-        if LanguageManager.__qmList__ is None:
+        if not LanguageManager.__qm_list__:
             LanguageManager.init_qm_list()
-        return LanguageManager.__qmList__
+        return LanguageManager.__qm_list__

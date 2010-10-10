@@ -28,7 +28,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, build_icon, translate
+from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.plugins.alerts.lib import AlertsManager, AlertsTab
 from openlp.plugins.alerts.lib.db import init_schema
@@ -40,7 +40,7 @@ class AlertsPlugin(Plugin):
     log.info(u'Alerts Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Alerts', u'1.9.2', plugin_helpers)
+        Plugin.__init__(self, u'Alerts', u'1.9.3', plugin_helpers)
         self.weight = -3
         self.icon = build_icon(u':/plugins/plugin_alerts.png')
         self.alertsmanager = AlertsManager(self)
@@ -80,16 +80,16 @@ class AlertsPlugin(Plugin):
         log.info(u'Alerts Initialising')
         Plugin.initialise(self)
         self.toolsAlertItem.setVisible(True)
+        self.liveController.alertTab = self.alertsTab
 
     def finalise(self):
-        log.info(u'Plugin Finalise')
+        log.info(u'Alerts Finalising')
         Plugin.finalise(self)
         self.toolsAlertItem.setVisible(False)
 
     def toggleAlertsState(self):
         self.alertsActive = not self.alertsActive
-        QtCore.QSettings().setValue(
-            self.settingsSection + u'/active',
+        QtCore.QSettings().setValue(self.settingsSection + u'/active',
             QtCore.QVariant(self.alertsActive))
 
     def onAlertsTrigger(self):
@@ -101,3 +101,18 @@ class AlertsPlugin(Plugin):
             '<br />The alert plugin controls the displaying of nursery alerts '
             'on the display screen')
         return about_text
+
+    def setPluginTextStrings(self):
+        """
+        Called to define all translatable texts of the plugin
+        """
+        ## Name PluginList ##
+        self.textStrings[StringContent.Name] = {
+            u'singular': translate('AlertsPlugin', 'Alert'),
+            u'plural': translate('AlertsPlugin', 'Alerts')
+        }
+        ## Name for MediaDockManager, SettingsManager ##
+        self.textStrings[StringContent.VisibleName] = {
+            u'title': translate('AlertsPlugin', 'Alerts')
+        }
+        

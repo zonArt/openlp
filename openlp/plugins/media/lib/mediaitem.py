@@ -46,9 +46,7 @@ class MediaMediaItem(MediaManagerItem):
     """
     log.info(u'%s MediaMediaItem loaded', __name__)
 
-    def __init__(self, parent, icon, title):
-        self.PluginNameShort = u'Media'
-        self.pluginNameVisible = translate('MediaPlugin.MediaItem', 'Media')
+    def __init__(self, parent, plugin, icon):
         self.IconPath = u'images/image'
         self.background = False
         # this next is a class, not an instance of a class - it will
@@ -56,7 +54,7 @@ class MediaMediaItem(MediaManagerItem):
         self.ListViewWithDnD_class = MediaListView
         self.PreviewFunction = QtGui.QPixmap(
             u':/media/media_video.png').toImage()
-        MediaManagerItem.__init__(self, parent, icon, title)
+        MediaManagerItem.__init__(self, parent, self, icon)
         self.singleServiceItem = False
         self.serviceItemIconName = u':/media/media_video.png'
 
@@ -97,8 +95,17 @@ class MediaMediaItem(MediaManagerItem):
             u':/slides/slide_blank.png',
             translate('MediaPlugin.MediaItem', 'Replace Live Background'),
                 self.onReplaceClick, False)
+        self.resetButton = self.toolbar.addToolbarButton(
+            u'Reset Background', u':/system/system_close.png',
+            translate('ImagePlugin.MediaItem', 'Reset Live Background'),
+                self.onResetClick, False)
         # Add the song widget to the page layout
         self.pageLayout.addWidget(self.ImageWidget)
+        self.resetButton.setVisible(False)
+
+    def onResetClick(self):
+        self.resetButton.setVisible(False)
+        self.parent.liveController.display.resetVideo()
 
     def onReplaceClick(self):
         if check_item_selected(self.listView,
@@ -106,7 +113,8 @@ class MediaMediaItem(MediaManagerItem):
             'You must select a media file to replace the background with.')):
             item = self.listView.currentItem()
             filename = unicode(item.data(QtCore.Qt.UserRole).toString())
-            self.parent.displayManager.displayVideo(filename)
+            self.parent.liveController.display.video(filename, 0, True)
+        self.resetButton.setVisible(True)
 
     def generateSlideData(self, service_item, item=None):
         if item is None:

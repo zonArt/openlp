@@ -49,14 +49,12 @@ class ImageMediaItem(MediaManagerItem):
     """
     log.info(u'Image Media Item loaded')
 
-    def __init__(self, parent, icon, title):
-        self.PluginNameShort = u'Image'
-        self.pluginNameVisible = translate('ImagePlugin.MediaItem', 'Image')
+    def __init__(self, parent, plugin, icon):
         self.IconPath = u'images/image'
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = ImageListView
-        MediaManagerItem.__init__(self, parent, icon, title)
+        MediaManagerItem.__init__(self, parent, self, icon)
 
     def retranslateUi(self):
         self.OnNewPrompt = translate('ImagePlugin.MediaItem',
@@ -110,8 +108,14 @@ class ImageMediaItem(MediaManagerItem):
             u':/slides/slide_blank.png',
             translate('ImagePlugin.MediaItem', 'Replace Live Background'),
             self.onReplaceClick, False)
+        self.resetButton = self.toolbar.addToolbarButton(
+            translate('ImagePlugin.MediaItem', u'Reset Background'),
+            u':/system/system_close.png',
+            translate('ImagePlugin.MediaItem', 'Reset Live Background'),
+            self.onResetClick, False)
         # Add the song widget to the page layout
         self.pageLayout.addWidget(self.ImageWidget)
+        self.resetButton.setVisible(False)
 
     def onDeleteClick(self):
         """
@@ -169,6 +173,10 @@ class ImageMediaItem(MediaManagerItem):
         else:
             return False
 
+    def onResetClick(self):
+        self.resetButton.setVisible(False)
+        self.parent.liveController.display.resetImage()
+
     def onReplaceClick(self):
         if check_item_selected(self.listView,
             translate('ImagePlugin.MediaItem',
@@ -177,8 +185,8 @@ class ImageMediaItem(MediaManagerItem):
             for item in items:
                 bitem = self.listView.item(item.row())
                 filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
-                frame = QtGui.QImage(unicode(filename))
-                self.parent.displayManager.displayImageWithText(frame)
+                self.parent.liveController.display.image(filename)
+        self.resetButton.setVisible(True)
 
     def onPreviewClick(self):
         MediaManagerItem.onPreviewClick(self)
