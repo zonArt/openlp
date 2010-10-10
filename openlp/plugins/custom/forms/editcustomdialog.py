@@ -26,7 +26,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, translate, SpellTextEdit
+from openlp.core.lib import build_icon, translate
 
 class Ui_CustomEditDialog(object):
     def setupUi(self, customEditDialog):

@@ -75,7 +75,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
         # Create other objects and forms.
         self.custommanager = custommanager
-        self.slide_form = EditCustomSlideForm(self)
+        self.editSlideForm = EditCustomSlideForm(self)
         self.initialise()
 
     def onPreview(self, button):
@@ -190,16 +190,16 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         self.editButton.setEnabled(True)
 
     def onAddButtonPressed(self):
-        self.slide_form.setText(u'')
-        if self.slide_form.exec_():
-            for slide in self.slide_form.getText():
+        self.editSlideForm.setText(u'')
+        if self.editSlideForm.exec_():
+            for slide in self.editSlideForm.getText():
                 self.slideListView.addItem(slide)
             self.editAllButton.setEnabled(True)
 
     def onEditButtonPressed(self):
-        self.slide_form.setText(self.slideListView.currentItem().text())
-        if self.slide_form.exec_():
-            self.updateSlideList(self.slide_form.getText())
+        self.editSlideForm.setText(self.slideListView.currentItem().text())
+        if self.editSlideForm.exec_():
+            self.updateSlideList(self.editSlideForm.getText())
 
     def onEditAllButtonPressed(self):
         """
@@ -212,9 +212,9 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
                 slide_list += item.text()
                 if row != self.slideListView.count() - 1:
                     slide_list += u'\n[---]\n'
-            self.slide_form.setText(slide_list)
-            if self.slide_form.exec_():
-                self.updateSlideList(self.slide_form.getText(), True)
+            self.editSlideForm.setText(slide_list)
+            if self.editSlideForm.exec_():
+                self.updateSlideList(self.editSlideForm.getText(), True)
 
     def updateSlideList(self, slides, edit_all=False):
         """
@@ -241,7 +241,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
                     range(0, self.slideListView.count())]
                 self.slideListView.clear()
                 old_slides.pop(old_row)
-                # Insert all slides in the old_slides list, to make the list complete.
+                # Insert all slides to make the old_slides list complete.
                 for slide in slides:
                     old_slides.insert(old_row, slide)
                 for slide in old_slides:

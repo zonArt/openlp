@@ -26,7 +26,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate
+from openlp.core.lib import translate, SpellTextEdit
 
 class Ui_CustomSlideEditDialog(object):
     def setupUi(self, customSlideEditDialog):
@@ -39,6 +39,7 @@ class Ui_CustomSlideEditDialog(object):
             QtGui.QDialogButtonBox.Save)
         self.buttonBox.setObjectName(u'buttonBox')
         self.slideTextEdit = QtGui.QTextEdit(customSlideEditDialog)
+        self.slideTextEdit = SpellTextEdit(self)
         self.slideTextEdit.setGeometry(QtCore.QRect(8, 8, 458, 349))
         self.slideTextEdit.setObjectName(u'slideTextEdit')
         self.splitButton = QtGui.QPushButton(customSlideEditDialog)
