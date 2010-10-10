@@ -189,15 +189,6 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         self.deleteButton.setEnabled(True)
         self.editButton.setEnabled(True)
 
-    def onDeleteButtonPressed(self):
-        self.verseListView.takeItem(self.verseListView.currentRow())
-        self.editButton.setEnabled(True)
-        self.editAllButton.setEnabled(True)
-        if self.verseListView.count() == 0:
-            self.deleteButton.setEnabled(False)
-            self.editButton.setEnabled(False)
-            self.editAllButton.setEnabled(False)
-
     def onAddButtonPressed(self):
         self.slide_form.setText(u'')
         if self.slide_form.exec_():
@@ -256,6 +247,15 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
                 for slide in old_slides:
                     self.verseListView.addItem(slide)
             self.verseListView.repaint()
+
+    def onDeleteButtonPressed(self):
+        self.verseListView.takeItem(self.verseListView.currentRow())
+        self.editButton.setEnabled(True)
+        self.editAllButton.setEnabled(True)
+        if self.verseListView.count() == 0:
+            self.deleteButton.setEnabled(False)
+            self.editButton.setEnabled(False)
+            self.editAllButton.setEnabled(False)
 
     def _validate(self):
         """
