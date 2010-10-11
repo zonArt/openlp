@@ -24,7 +24,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`wowimport` module provides the functionality for importing Words of 
+The :mod:`wowimport` module provides the functionality for importing Words of
 Worship songs into the OpenLP database.
 """
 import os
@@ -38,19 +38,18 @@ log = logging.getLogger(__name__)
 
 class WowImport(SongImport):
     """
-    The :class:`WowImport` class provides the ability to import song files from 
+    The :class:`WowImport` class provides the ability to import song files from
     Words of Worship.
 
-    Words Of Worship Song File Format
-    `````````````````````````````````
-    
+    **Words Of Worship Song File Format:**
+
     The Words Of Worship song file format is as follows:
 
     * The song title is the file name minus the extension.
-    * The song has a header, a number of blocks, followed by footer containing 
-    the author and the copyright.
+    * The song has a header, a number of blocks, followed by footer containing
+      the author and the copyright.
     * A block can be a verse, chorus or bridge.
-    
+
     File Header:
         Bytes are counted from one, i.e. the first byte is byte 1. These bytes,
         up to the 56 byte, can change but no real meaning has been found. The
@@ -65,29 +64,29 @@ class WowImport(SongImport):
         Each block ends with 4 bytes, the first of which defines what type of
         block it is, and the rest which are null bytes:
 
-        * ``NUL`` (\x00) - Verse
-        * ``SOH`` (\x01) - Chorus
-        * ``STX`` (\x02) - Bridge
+        * ``NUL`` (0x00) - Verse
+        * ``SOH`` (0x01) - Chorus
+        * ``STX`` (0x02) - Bridge
 
-        Blocks are seperated by two bytes. The first byte is ``SOH`` (\x01),
-        and the second byte is ``€`` (\x80).
+        Blocks are seperated by two bytes. The first byte is 0x01, and the
+        second byte is 0x80.
 
     Lines:
         Each line starts with a byte which specifies how long that line is,
         the line text, and ends with a null byte.
 
-  
+
     Footer:
-        The footer follows on after the last block, the first byte specifies 
-        the length of the author text, followed by the author text, if 
-        this byte is null, then there is no author text. The byte after the 
-        author text specifies the length of the copyright text, followed 
-        by the copyright text. 
-        
+        The footer follows on after the last block, the first byte specifies
+        the length of the author text, followed by the author text, if
+        this byte is null, then there is no author text. The byte after the
+        author text specifies the length of the copyright text, followed
+        by the copyright text.
+
         The file is ended with four null bytes.
-    
+
     Valid extensions for a Words of Worship song file are:
-    
+
     * .wsg
     * .wow-song
     """
@@ -111,7 +110,7 @@ class WowImport(SongImport):
         """
         Recieve a single file, or a list of files to import.
         """
-        
+
         if isinstance(self.import_source,  list):
             self.import_wizard.importProgressBar.setMaximum(
                 len(self.import_source))
@@ -127,14 +126,14 @@ class WowImport(SongImport):
                 if self.songData.read(19) != u'WoW File\nSong Words':
                     continue
                 # Seek to byte which stores number of blocks in the song
-                self.songData.seek(56) 
+                self.songData.seek(56)
                 self.no_of_blocks = ord(self.songData.read(1))
                 # Seek to the beging of the first block
-                self.songData.seek(82) 
+                self.songData.seek(82)
                 for block in range(self.no_of_blocks):
                     self.lines_to_read = ord(self.songData.read(1))
                     # Skip 3 nulls to the beginnig of the 1st line
-                    self.songData.seek(3, os.SEEK_CUR) 
+                    self.songData.seek(3, os.SEEK_CUR)
                     self.block_text = u''
                     while self.lines_to_read:
                         self.length_of_line = ord(self.songData.read(1))
@@ -148,7 +147,7 @@ class WowImport(SongImport):
                     self.block_type = BLOCK_TYPES[ord(self.songData.read(1))]
                     # Skip 3 nulls at the end of the block
                     self.songData.seek(3, os.SEEK_CUR)
-                    # Blocks are seperated by 2 bytes, skip them, but not if 
+                    # Blocks are seperated by 2 bytes, skip them, but not if
                     # this is the last block!
                     if (block + 1) < self.no_of_blocks:
                         self.songData.seek(2, os.SEEK_CUR)
@@ -170,4 +169,4 @@ class WowImport(SongImport):
                 self.import_wizard.incrementProgressBar(
                     "Importing %s" % (self.file_name))
             return True
-            
+
