@@ -476,8 +476,9 @@ class ThemeManager(QtGui.QWidget):
             unicode(themename) + u'.xml')
         xml = get_text_file_string(xml_file)
         if not xml:
-            xml = self.baseTheme()
-        return self.createThemeFromXml(xml, self.path)
+            return self.baseTheme()
+        else:
+            return self.createThemeFromXml(xml, self.path)
 
     def checkThemesExists(self, dir):
         """
@@ -755,15 +756,14 @@ class ThemeManager(QtGui.QWidget):
         """
         log.debug(u'base theme created')
         newtheme = ThemeXML()
-        newtheme.new_document(
-            unicode(translate('OpenLP.ThemeManager', 'New Theme')))
-        newtheme.add_background_solid(u'#000000')
-        newtheme.add_font(unicode(QtGui.QFont().family()), u'#FFFFFF',
-            u'30', u'False')
-        newtheme.add_font(unicode(QtGui.QFont().family()), u'#FFFFFF',
-            u'12', u'False', u'footer')
-        newtheme.add_display(u'0', u'0', u'0')
-        print newtheme.extract_xml()
+#        newtheme.new_document(
+#            unicode(translate('OpenLP.ThemeManager', 'New Theme')))
+#        newtheme.add_background_solid(u'#000000')
+#        newtheme.add_font(unicode(QtGui.QFont().family()), u'#FFFFFF',
+#            u'30', u'False')
+#        newtheme.add_font(unicode(QtGui.QFont().family()), u'#FFFFFF',
+#            u'12', u'False', u'footer')
+#        newtheme.add_display(u'0', u'0', u'0')
         return newtheme.extract_xml()
 
     def createThemeFromXml(self, theme_xml, path):

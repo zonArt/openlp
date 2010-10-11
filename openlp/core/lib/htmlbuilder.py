@@ -460,7 +460,7 @@ def build_lyrics_css(item, webkitvers):
                 shadow += build_lyrics_outline_css(theme, True)
             else:
                 lyricsmain += u' text-shadow: %s %spx %spx;' % \
-                    (theme.font_mainy_shadow_color, theme.font_main_shadow_size,
+                    (theme.font_main_shadow_color, theme.font_main_shadow_size,
                     theme.font_main_shadow_size)
     lyrics_css = style % (lyricstable, lyrics, lyricsmain, outline, shadow)
     return lyrics_css
@@ -524,7 +524,7 @@ def build_lyrics_format_css(theme, width, height):
         'text-align: %s; vertical-align: %s; font-family: %s; ' \
         'font-size: %spt; color: %s; line-height: %d%%; margin:0;' \
         'padding:0; padding-left:%spx; width: %spx; height: %spx; ' % \
-        (align, valign, theme.font_main_name, theme.font_main_proportion,
+        (align, valign, theme.font_main_name, theme.font_main_size,
         theme.font_main_color, 100 + int(theme.font_main_line_adjustment),
         left_margin, width, height)
     if theme.font_main_outline:
@@ -588,7 +588,7 @@ def build_footer_css(item, height):
     bottom = height - int(item.footer.y()) - int(item.footer.height())
     lyrics_html = style % (item.footer.x(), bottom,
         item.footer.width(), theme.font_footer_name,
-        theme.font_footer_proportion, theme.font_footer_color)
+        theme.font_footer_size, theme.font_footer_color)
     return lyrics_html
 
 def build_alert_css(alertTab, width):

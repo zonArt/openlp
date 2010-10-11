@@ -42,7 +42,6 @@ BLANK_THEME_XML = \
 '''<?xml version="1.0" encoding="utf-8"?>
  <theme version="1.0">
    <name>BlankStyle</name>
-   <background mode="transparent"/>
    <background type="solid" mode="opaque">
       <color>#000000</color>
    </background>
@@ -56,8 +55,8 @@ BLANK_THEME_XML = \
    </background>
    <font type="main">
       <name>Arial</name>
-      <color>#000000</color>
-      <proportion>30</proportion>
+      <color>#FFFFFF</color>
+      <size>30</size>
       <bold>False</bold>
       <italics>False</italics>
       <line_adjustment>0</line_adjustment>
@@ -67,8 +66,8 @@ BLANK_THEME_XML = \
    </font>
    <font type="footer">
       <name>Arial</name>
-      <color>#000000</color>
-      <proportion>12</proportion>
+      <color>#FFFFFF</color>
+      <size>12</size>
       <bold>False</bold>
       <italics>False</italics>
       <shadow shadowColor="#000000" shadowSize="5">True</shadow>
@@ -95,9 +94,9 @@ class ThemeLevel(object):
 boolean_list = [u'bold', u'italics', u'override', u'outline', u'shadow', \
 u'slide_transition']
 
-integer_list =[u'proportion', u'line_adjustment', u'x', u'height', u'y', \
+integer_list =[u'size', u'line_adjustment', u'x', u'height', u'y', \
 u'width', u'shadow_size', u'outline_size', u'horizontal_align', \
-u'vertical_align', u'wrap_style' ]
+u'vertical_align']
 
 class ThemeXML(object):
     """
@@ -109,6 +108,7 @@ class ThemeXML(object):
         """
         # Create the minidom document
         self.theme_xml = Document()
+        self.parse_xml(BLANK_THEME_XML)
 
     def extend_image_filename(self, path):
         """
@@ -129,7 +129,7 @@ class ThemeXML(object):
         """
         self.theme = self.theme_xml.createElement(u'theme')
         self.theme_xml.appendChild(self.theme)
-        self.theme.setAttribute(u'version', u'1.0')
+        self.theme.setAttribute(u'version', u'2.0')
         self.name = self.theme_xml.createElement(u'name')
         text_node = self.theme_xml.createTextNode(name)
         self.name.appendChild(text_node)
@@ -262,7 +262,7 @@ class ThemeXML(object):
         # Create Font color element
         self.child_element(background, u'color', color)
         # Create Proportion name element
-        self.child_element(background, u'proportion', proportion)
+        self.child_element(background, u'size', proportion)
         # Create weight name element
         self.child_element(background, u'bold', bold)
         # Create italics name element
@@ -361,8 +361,8 @@ class ThemeXML(object):
         ``xml``
             The XML string to parse.
         """
-        self.parse_xml(BLANK_THEME_XML)
         self.parse_xml(unicode(xml))
+        print self
 
     def parse_xml(self, xml):
         """
@@ -388,7 +388,9 @@ class ThemeXML(object):
             if parent is not None:
                 if element.getparent().tag == u'font':
                     master = element.getparent().tag + u'_' + element.getparent().attrib[u'type']
+                # set up Outline and Shadow Tags and move to font_main
                 if element.getparent().tag == u'display':
+                    self._create_attr(u'font_main', element.tag, element.text)
                     master = element.getparent().tag
                 if element.getparent().tag == u'background':
                     master = element.getparent().tag
@@ -396,26 +398,13 @@ class ThemeXML(object):
                         for attr in element.getparent().attrib:
                             self._create_attr(master, attr, element.getparent().attrib[attr])
             if master:
-                # the next few lines fix up errors in the XML to the current standard.
-                # move the fields from display to font_main
-                if master == u'display' and (element.tag == u'shadow' or element.tag == u'outline'):
-                    master = u'font_main'
-                # fix bold font
-                if element.tag == u'weight':
-                    if element.text.strip().lstrip() == u'Normal':
-                        self._create_attr(master,  u'bold',  False)
-                    else:
-                        self._create_attr(master,  u'bold',  True)
-                else:
-                    # normal service happens here!
-                    self._create_attr(master,  element.tag,  element.text)
                 if element.attrib:
                     for attr in element.attrib:
                         base_element = attr
                         # correction for the shadow and outline tags
                         if element.tag == u'shadow' or element.tag == u'outline':
                             if not attr.startswith(element.tag):
-                                elembase_elementent = element.tag + u'_' + attr
+                                base_element = element.tag + u'_' + attr
                         self._create_attr(master, base_element,
                             element.attrib[attr])
                 else:
@@ -424,10 +413,39 @@ class ThemeXML(object):
                 if element.tag == u'name':
                     self._create_attr(u'theme',  element.tag, element.text)
 
+    def _translate_tags(self, master, element, value):
+        """
+        Clean up XML removing and redefining tags
+        """
+        master = master.strip().lstrip()
+        element = element.strip().lstrip()
+        value = unicode(value).strip().lstrip()
+        print "start", master, element, value
+        if master == u'display':
+            if element == u'wrapStyle':
+                return True, None, None, None
+            if element == u'shadow' or element == u'outline':
+                master = u'font_main'
+        # fix bold font
+        if element == u'weight':
+            element = u'bold'
+            if value == u'Normal':
+                value = False
+            else:
+                value = True
+        if element == u'proportion':
+            element = u'size'
+        print "end", master, element, value
+        return False, master, element, value
+
     def _create_attr(self, master , element, value):
         """
         Create the attributes with the correct data types and name format
         """
+        reject, master, element, value = \
+            self._translate_tags(master, element, value)
+        if reject:
+            return
         field = self._de_hump(element)
         tag = master + u'_' + field
         if element in boolean_list:

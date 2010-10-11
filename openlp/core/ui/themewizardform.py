@@ -139,18 +139,23 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
         QtCore.QObject.connect(self.shadowColorPushButton,
             QtCore.SIGNAL(u'pressed()'),
         self.onShadowColourPushButtonClicked)
-        QtCore.QObject.connect(self.mainSizeSpinBox,
-            QtCore.SIGNAL(u'editingFinished()'),
-            self.onMainSizeSpinBoxFinished)
-        QtCore.QObject.connect(self.lineSpacingSpinBox,
-            QtCore.SIGNAL(u'editingFinished()'),
-            self.onLineSpacingSpinBoxFinished)
-        QtCore.QObject.connect(self.outlineSizeSpinBox,
-            QtCore.SIGNAL(u'editingFinished()'),
-            self.onOutlineSizeSpinBoxFinished)
-        QtCore.QObject.connect(self.shadowSizeSpinBox,
-            QtCore.SIGNAL(u'editingFinished()'),
-            self.onShadowSizeSpinBoxFinished)
+        QtCore.QObject.connect(self.outlineCheckBox,
+            QtCore.SIGNAL(u'stateChanged(int)'),
+            self.onOutlineCheckCheckBoxChanged)
+        QtCore.QObject.connect(self.shadowCheckBox,
+            QtCore.SIGNAL(u'stateChanged(int)'),
+            self.onShadowCheckCheckBoxChanged)
+        QtCore.QObject.connect(self.footerColorPushButton,
+            QtCore.SIGNAL(u'pressed()'),
+        self.onFooterColourPushButtonClicked)
+
+    def onOutlineCheckCheckBoxChanged(self, state):
+        self.outlineColorPushButton.setEnabled(state)
+        self.outlineSizeSpinBox.setEnabled(state)
+
+    def onShadowCheckCheckBoxChanged(self, state):
+        self.shadowColorPushButton.setEnabled(state)
+        self.shadowSizeSpinBox.setEnabled(state)
 
     def exec_(self):
         """
@@ -237,11 +242,10 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
            self.setField(u'gradient', QtCore.QVariant(4))
 
     def setMainAreaTabValues(self):
-        #self.setField(u'mainFontComboBox', QtCore.QVariant(self.theme.font_main_name))
         self.mainColorPushButton.setStyleSheet(u'background-color: %s' %
             self.theme.font_main_color)
         self.setField(u'mainSizeSpinBox', \
-            QtCore.QVariant(self.theme.font_main_proportion))
+            QtCore.QVariant(self.theme.font_main_size))
         self.setField(u'lineSpacingSpinBox', \
             QtCore.QVariant(self.theme.font_main_line_adjustment))
         self.setField(u'outlineCheckBox', \
@@ -256,9 +260,17 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
             self.theme.font_main_shadow_color)
         self.setField(u'shadowSizeSpinBox', \
             QtCore.QVariant(self.theme.font_main_shadow_size))
+        self.setField(u'boldCheckBox', \
+            QtCore.QVariant(self.theme.font_main_bold))
+        self.setField(u'italicsCheckBox', \
+            QtCore.QVariant(self.theme.font_main_italics))
 
     def setFooterAreaTabValues(self):
-        pass
+        self.footerColorPushButton.setStyleSheet(u'background-color: %s' %
+            self.theme.font_footer_color)
+        self.setField(u'footerSizeSpinBox', \
+            QtCore.QVariant(self.theme.font_footer_size))
+
     def setAlignmentTabValues(self):
         pass
     def setPositionTabValues(self):
@@ -303,6 +315,8 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
             u'shadowColorPushButton', self.shadowColorPushButton)
         self.mainAreaPage.registerField(
             u'shadowSizeSpinBox', self.shadowSizeSpinBox)
+        self.mainAreaPage.registerField(
+            u'footerSizeSpinBox', self.footerSizeSpinBox)
 
     def onBackgroundComboBox(self, index):
         self.theme.background_type = BackgroundType.to_string(index)
@@ -341,39 +355,37 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
 
     def onMainFontComboBox(self, index):
         #self.theme.background_type = BackgroundType.to_string(index)
-        self.setBackgroundTabValues()
+        self.setMainAreaTabValues()
 
     def onMainColourPushButtonClicked(self):
         self.theme.font_main_color = \
             self._colorButton(self.theme.font_main_color)
-        self.setBackgroundTabValues()
+        self.setMainAreaTabValues()
 
     def onOutlineColourPushButtonClicked(self):
         self.theme.font_main_outline_color = \
             self._colorButton(self.theme.font_main_outline_color)
-        self.setBackgroundTabValues()
+        self.setMainAreaTabValues()
 
     def onShadowColourPushButtonClicked(self):
         self.theme.font_main_shadow_color = \
             self._colorButton(self.theme.font_main_shadow_color)
-        self.setBackgroundTabValues()
+        self.setMainAreaTabValues()
 
-    def onMainSizeSpinBoxFinished(self):
+    def onFooterColourPushButtonClicked(self):
+        self.theme.font_footer_color = \
+            self._colorButton(self.theme.font_footer_color)
+        self.setFooterAreaTabValues()
+
+    def updateTheme(self):
         self.theme.font_main_proportion = \
             self.field(u'mainSizeSpinBox').toInt()[0]
-
-    def onLineSpacingSpinBoxFinished(self):
         self.theme.font_main_line_adjustment = \
             self.field(u'lineSpacingSpinBox').toInt()[0]
-
-    def onOutlineSizeSpinBoxFinished(self):
         self.theme.font_main_outline = \
             self.field(u'outlineSizeSpinBox').toInt()[0]
-
-    def onShadowSizeSpinBoxFinished(self):
         self.theme.font_main_shadow_size = \
             self.field(u'shadowSizeSpinBox').toInt()[0]
-
 
     def _colorButton(self, field):
         print field
