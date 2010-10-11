@@ -48,12 +48,10 @@ class SongMediaItem(MediaManagerItem):
     """
     log.info(u'Song Media Item loaded')
 
-    def __init__(self, parent, icon, title):
-        self.PluginNameShort = u'Song'
-        self.pluginNameVisible = translate('SongsPlugin.MediaItem', 'Song')
+    def __init__(self, parent, plugin, icon):
         self.IconPath = u'songs/song'
         self.ListViewWithDnD_class = SongListView
-        MediaManagerItem.__init__(self, parent, icon, title)
+        MediaManagerItem.__init__(self, parent, self, icon)
         self.edit_song_form = EditSongForm(self, self.parent.manager)
         self.singleServiceItem = False
         #self.edit_song_form = EditSongForm(self.parent.manager, self)
@@ -62,6 +60,7 @@ class SongMediaItem(MediaManagerItem):
         # Holds information about whether the edit is remotly triggered and
         # which Song is required.
         self.remoteSong = -1
+        self.editItem = None
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -125,7 +124,7 @@ class SongMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'textChanged(const QString&)'),
             self.onSearchTextEditChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'songs_load_list'), self.onSearchTextButtonClick)
+            QtCore.SIGNAL(u'songs_load_list'), self.onSongListLoad)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.configUpdated)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -139,6 +138,12 @@ class SongMediaItem(MediaManagerItem):
         self.searchAsYouType = QtCore.QSettings().value(
             self.settingsSection + u'/search as type',
             QtCore.QVariant(u'False')).toBool()
+        self.updateServiceOnEdit = QtCore.QSettings().value(
+            self.settingsSection + u'/update service on edit',
+            QtCore.QVariant(u'False')).toBool()
+        self.AddSongFromServide = QtCore.QSettings().value(
+            self.settingsSection + u'/add song from service',
+            QtCore.QVariant(u'True')).toBool()
 
     def retranslateUi(self):
         self.SearchTextLabel.setText(
@@ -166,13 +171,13 @@ class SongMediaItem(MediaManagerItem):
         if search_type == 0:
             log.debug(u'Titles Search')
             search_results = self.parent.manager.get_all_objects(Song,
-                Song.search_title.like(u'%' + search_keywords + u'%'),
+                Song.search_title.like(u'%' + search_keywords.lower() + u'%'),
                 Song.search_title.asc())
             self.displayResultsSong(search_results)
         elif search_type == 1:
             log.debug(u'Lyrics Search')
             search_results = self.parent.manager.get_all_objects(Song,
-                Song.search_lyrics.like(u'%' + search_keywords + u'%'),
+                Song.search_lyrics.like(u'%' + search_keywords.lower() + u'%'),
                 Song.search_lyrics.asc())
             self.displayResultsSong(search_results)
         elif search_type == 2:
@@ -181,14 +186,26 @@ class SongMediaItem(MediaManagerItem):
                 Author.display_name.like(u'%' + search_keywords + u'%'),
                 Author.display_name.asc())
             self.displayResultsAuthor(search_results)
-        #Called to redisplay the song list screen edith from a search
-        #or from the exit of the Song edit dialog.  If remote editing is active
-        #Trigger it and clean up so it will not update again.
+
+    def onSongListLoad(self):
+        """
+        Handle the exit from the edit dialog and trigger remote updates
+        of songs
+        """
+        # Called to redisplay the song list screen edit from a search
+        # or from the exit of the Song edit dialog.  If remote editing is active
+        # Trigger it and clean up so it will not update again.
         if self.remoteTriggered == u'L':
             self.onAddClick()
         if self.remoteTriggered == u'P':
             self.onPreviewClick()
+        # Push edits to the service manager to update items
+        if self.editItem and self.updateServiceOnEdit and \
+            not self.remoteTriggered:
+            item = self.buildServiceItem(self.editItem)
+            self.parent.serviceManager.replaceServiceItem(item)
         self.onRemoteEditClear()
+        self.onSearchTextButtonClick()
 
     def displayResultsSong(self, searchresults):
         log.debug(u'display results Song')
@@ -273,8 +290,8 @@ class SongMediaItem(MediaManagerItem):
         if check_item_selected(self.listView,
             translate('SongsPlugin.MediaItem',
             'You must select an item to edit.')):
-            item = self.listView.currentItem()
-            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            self.editItem = self.listView.currentItem()
+            item_id = (self.editItem.data(QtCore.Qt.UserRole)).toInt()[0]
             self.edit_song_form.loadSong(item_id, False)
             self.edit_song_form.exec_()
 
@@ -324,6 +341,8 @@ class SongMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.AllowsEdit)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
+        service_item.add_capability(ItemCapabilities.OnLoadUpdate)
+        service_item.add_capability(ItemCapabilities.AddIfNewItem)
         song = self.parent.manager.get_object(Song, item_id)
         service_item.theme = song.theme_name
         service_item.editId = item_id
@@ -370,4 +389,31 @@ class SongMediaItem(MediaManagerItem):
         service_item.audit = [
             song.title, author_audit, song.copyright, unicode(song.ccli_number)
         ]
+        service_item.data_string = {u'title':song.search_title,  u'authors':author_list}
         return True
+
+    def serviceLoad(self, item):
+        """
+        Triggered by a song being loaded by the service item
+        """
+        if item.data_string:
+            search_results = self.parent.manager.get_all_objects(Song,
+                Song.search_title.like(u'%' +
+                    item.data_string[u'title'].split(u'@')[0] + u'%'),
+                Song.search_title.asc())
+            author_list = item.data_string[u'authors'].split(u',')
+            editId = 0
+            uuid = 0
+            if search_results:
+                for song in search_results:
+                    count = 0
+                    for author in song.authors:
+                        if author.display_name in author_list:
+                           count += 1
+                    if count == len(author_list):
+                        editId = song.id
+                        uuid = item._uuid
+            if editId != 0:
+                Receiver.send_message(u'service_item_update',
+                    u'%s:%s' %(editId, uuid))
+

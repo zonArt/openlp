@@ -218,6 +218,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.CCLNumberEdit.setText(self.song.ccli_number)
         else:
             self.CCLNumberEdit.setText(u'')
+        if self.song.song_number:
+            self.songBookNumberEdit.setText(self.song.song_number)
+        else:
+            self.songBookNumberEdit.setText(u'')
+
         # lazy xml migration for now
         self.VerseListWidget.clear()
         self.VerseListWidget.setRowCount(0)
@@ -478,6 +483,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.VerseListWidget.resizeRowsToContents()
             self.VerseListWidget.repaint()
             self.tagRows()
+            self.VerseEditButton.setEnabled(False)
+            self.VerseDeleteButton.setEnabled(False)
 
     def onVerseDeleteButtonClicked(self):
         self.VerseListWidget.removeRow(self.VerseListWidget.currentRow())
@@ -604,7 +611,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.song = Song()
         item = int(self.SongbookCombo.currentIndex())
         text = unicode(self.SongbookCombo.currentText())
-        if item == 0 and text:
+        if self.SongbookCombo.findText(text, QtCore.Qt.MatchExactly) < 0:
             if QtGui.QMessageBox.question(self,
                 translate('SongsPlugin.EditSongForm', 'Add Book'),
                 translate('SongsPlugin.EditSongForm', 'This song book does '
@@ -613,7 +620,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 QtGui.QMessageBox.Yes) == QtGui.QMessageBox.Yes:
                 book = Book.populate(name=text, publisher=u'')
                 self.songmanager.save_object(book)
-                self.song.book = book
             else:
                 return
         if self.saveSong():
@@ -629,11 +635,17 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.song.alternate_title = unicode(self.AlternativeEdit.text())
         self.song.copyright = unicode(self.CopyrightEditItem.text())
         self.song.search_title = self.song.title + u'@' + \
-            unicode(self.AlternativeEdit.text())
+            self.song.alternate_title
         self.song.comments = unicode(self.CommentsEdit.toPlainText())
         self.song.verse_order = unicode(self.VerseOrderEdit.text())
         self.song.ccli_number = unicode(self.CCLNumberEdit.text())
         self.song.song_number = unicode(self.songBookNumberEdit.text())
+        book_name = unicode(self.SongbookCombo.currentText())
+        if book_name:
+            self.song.book = self.songmanager.get_object_filtered(Book,
+                Book.name == book_name)
+        else:
+            self.song.book = None
         if self._validate_song():
             self.processLyrics()
             self.processTitle()
@@ -669,7 +681,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     unicode(self.VerseListWidget.item(i, 0).text())) + u' '
                 if (bits[1] > u'1') and (bits[0][0] not in multiple):
                     multiple.append(bits[0][0])
-            self.song.search_lyrics = text
+            self.song.search_lyrics = text.lower()
             self.song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
             for verse in multiple:
                 self.song.verse_order = re.sub(u'([' + verse.upper() +
@@ -682,4 +694,4 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def processTitle(self):
         log.debug(u'processTitle')
         self.song.search_title = re.sub(r'[\'"`,;:(){}?]+', u'',
-            unicode(self.song.search_title))
+            unicode(self.song.search_title)).lower()

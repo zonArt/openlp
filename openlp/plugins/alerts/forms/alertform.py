@@ -35,7 +35,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
     """
     Provide UI for the alert system
     """
-    def __init__(self, plugin):
+    def __init__(self, title, visible_title):
         """
         Initialise the alert form
         """

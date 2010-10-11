@@ -49,14 +49,12 @@ class ImageMediaItem(MediaManagerItem):
     """
     log.info(u'Image Media Item loaded')
 
-    def __init__(self, parent, icon, title):
-        self.PluginNameShort = u'Image'
-        self.pluginNameVisible = translate('ImagePlugin.MediaItem', 'Image')
+    def __init__(self, parent, plugin, icon):
         self.IconPath = u'images/image'
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = ImageListView
-        MediaManagerItem.__init__(self, parent, icon, title)
+        MediaManagerItem.__init__(self, parent, self, icon)
 
     def retranslateUi(self):
         self.OnNewPrompt = translate('ImagePlugin.MediaItem',
@@ -187,8 +185,7 @@ class ImageMediaItem(MediaManagerItem):
             for item in items:
                 bitem = self.listView.item(item.row())
                 filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
-                frame = QtGui.QImage(unicode(filename))
-                self.parent.liveController.display.image(frame)
+                self.parent.liveController.display.image(filename)
         self.resetButton.setVisible(True)
 
     def onPreviewClick(self):

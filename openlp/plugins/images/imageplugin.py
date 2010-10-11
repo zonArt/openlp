@@ -26,7 +26,7 @@
 
 import logging
 
-from openlp.core.lib import Plugin, build_icon, translate
+from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.plugins.images.lib import ImageMediaItem
 
 log = logging.getLogger(__name__)
@@ -35,14 +35,14 @@ class ImagePlugin(Plugin):
     log.info(u'Image Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Images', u'1.9.2', plugin_helpers)
+        Plugin.__init__(self, u'Images', u'1.9.4', plugin_helpers)
         self.weight = -7
         self.icon_path = u':/plugins/plugin_images.png'
         self.icon = build_icon(self.icon_path)
 
     def getMediaManagerItem(self):
         # Create the MediaManagerItem object
-        return ImageMediaItem(self, self.icon, self.name)
+        return ImageMediaItem(self, self, self.icon)
 
     def about(self):
         about_text = translate('ImagePlugin', '<strong>Image Plugin</strong>'
@@ -57,3 +57,60 @@ class ImagePlugin(Plugin):
             'selected image as a background instead of the background '
             'provided by the theme.')
         return about_text
+
+    def setPluginTextStrings(self):
+        """
+        Called to define all translatable texts of the plugin
+        """
+        ## Name PluginList ##
+        self.textStrings[StringContent.Name] = {
+            u'singular': translate('ImagePlugin', 'Image'),
+            u'plural': translate('ImagePlugin', 'Images')
+        }
+        ## Name for MediaDockManager, SettingsManager ##
+        self.textStrings[StringContent.VisibleName] = {
+            u'title': translate('ImagePlugin', 'Images')
+        }
+        # Middle Header Bar
+        ## Load Button ##
+        self.textStrings[StringContent.Load] = {
+            u'title': translate('ImagePlugin', 'Load'),
+            u'tooltip': translate('ImagePlugin', 
+                'Load a new Image')
+        }
+        ## New Button ##
+        self.textStrings[StringContent.New] = {
+            u'title': translate('ImagePlugin', 'Add'),
+            u'tooltip': translate('ImagePlugin', 
+                'Add a new Image')
+        }
+        ## Edit Button ##
+        self.textStrings[StringContent.Edit] = {
+            u'title': translate('ImagePlugin', 'Edit'),
+            u'tooltip': translate('ImagePlugin', 
+                'Edit the selected Image')
+        }
+        ## Delete Button ##
+        self.textStrings[StringContent.Delete] = {
+            u'title': translate('ImagePlugin', 'Delete'),
+            u'tooltip': translate('ImagePlugin', 
+                'Delete the selected Image')
+        }
+        ## Preview ##
+        self.textStrings[StringContent.Preview] = {
+            u'title': translate('ImagePlugin', 'Preview'),
+            u'tooltip': translate('ImagePlugin', 
+                'Preview the selected Image')
+        }
+        ## Live  Button ##
+        self.textStrings[StringContent.Live] = {
+            u'title': translate('ImagePlugin', 'Live'),
+            u'tooltip': translate('ImagePlugin', 
+                'Send the selected Image live')
+        }
+        ## Add to service Button ##
+        self.textStrings[StringContent.Service] = {
+            u'title': translate('ImagePlugin', 'Service'),
+            u'tooltip': translate('ImagePlugin', 
+                'Add the selected Image to the service')
+        }

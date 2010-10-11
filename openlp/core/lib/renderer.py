@@ -87,7 +87,7 @@ class Renderer(object):
         """
         log.debug(u'set_text_rectangle %s , %s' % (rect_main, rect_footer))
         self._rect = rect_main
-        self._rect_footer = rect_footer 
+        self._rect_footer = rect_footer
         self.page_width = self._rect.width()
         self.page_height = self._rect.height()
         if self._theme.display_shadow:
@@ -102,7 +102,7 @@ class Renderer(object):
             u'*{margin: 0; padding: 0; border: 0;} '\
             u'#main {position:absolute; top:0px; %s %s}</style><body>' \
             u'<div id="main">' % \
-            (build_lyrics_format_css(self._theme, self.page_width, 
+            (build_lyrics_format_css(self._theme, self.page_width,
             self.page_height), build_lyrics_outline_css(self._theme))
 
     def set_frame_dest(self, frame_width, frame_height):
@@ -125,7 +125,7 @@ class Renderer(object):
                 self.frame.width(), self.frame.height())
         if self._theme.background_type == u'image':
             self.bg_frame = QtGui.QImage(self.frame.width(),
-                self.frame.height(), 
+                self.frame.height(),
                 QtGui.QImage.Format_ARGB32_Premultiplied)
             painter = QtGui.QPainter()
             painter.begin(self.bg_frame)
@@ -161,8 +161,9 @@ class Renderer(object):
         html_text = u''
         styled_text = u''
         for line in text:
-            styled_line = expand_tags(line) + line_end
-            styled_text += styled_line
+            styled_line = expand_tags(line)
+            if styled_text:
+                styled_text += line_end + styled_line
             html = self.page_shell + styled_text + u'</div></body></html>'
             self.web.setHtml(html)
             # Text too long so go to next page
@@ -171,6 +172,8 @@ class Renderer(object):
                 html_text = u''
                 styled_text = styled_line
             html_text += line + line_end
+        if line_break:
+            html_text = html_text[:len(html_text)-4]
         formatted.append(html_text)
         log.debug(u'format_slide - End')
         return formatted
