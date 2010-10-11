@@ -11,24 +11,9 @@
 
    songs
    bibles
-
-:mod:`presentations` Plugin
----------------------------
-
-.. automodule:: openlp.plugins.presentations
-   :members:
-
-:mod:`media` Plugin
--------------------
-
-.. automodule:: openlp.plugins.media
-   :members:
-
-:mod:`images` Plugin
---------------------
-
-.. automodule:: openlp.plugins.images
-   :members:
+   presentations
+   media
+   images
 
 :mod:`custom` Plugin
 --------------------
