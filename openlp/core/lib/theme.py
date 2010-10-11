@@ -108,7 +108,7 @@ class ThemeXML(object):
         """
         # Create the minidom document
         self.theme_xml = Document()
-        self.parse_xml(BLANK_THEME_XML)
+        #self.parse_xml(BLANK_THEME_XML)
 
     def extend_image_filename(self, path):
         """
@@ -117,11 +117,12 @@ class ThemeXML(object):
         ``path``
             The path name to be added.
         """
-        if self.background_filename and path:
-            self.theme_name = self.theme_name.strip()
-            self.background_filename = self.background_filename.strip()
-            self.background_filename = os.path.join(path, self.theme_name,
-                self.background_filename)
+        if self.background_type == u'image':
+            if self.background_filename and path:
+                self.theme_name = self.theme_name.strip()
+                self.background_filename = self.background_filename.strip()
+                self.background_filename = os.path.join(path, self.theme_name,
+                    self.background_filename)
 
     def new_document(self, name):
         """
@@ -362,7 +363,6 @@ class ThemeXML(object):
             The XML string to parse.
         """
         self.parse_xml(unicode(xml))
-        print self
 
     def parse_xml(self, xml):
         """
@@ -383,20 +383,25 @@ class ThemeXML(object):
         # print objectify.dump(theme_xml)
         xml_iter = theme_xml.getiterator()
         for element in xml_iter:
+            #print "base",element.getparent(),  element.tag, element.text, element.attrib
             parent = element.getparent()
             master = u''
             if parent is not None:
                 if element.getparent().tag == u'font':
-                    master = element.getparent().tag + u'_' + element.getparent().attrib[u'type']
+                    master = element.getparent().tag + u'_' + \
+                    element.getparent().attrib[u'type']
                 # set up Outline and Shadow Tags and move to font_main
                 if element.getparent().tag == u'display':
-                    self._create_attr(u'font_main', element.tag, element.text)
+                    if element.tag.startswith(u'shadow') or \
+                        element.tag.startswith(u'outline'):
+                        self._create_attr(u'font_main', element.tag, element.text)
                     master = element.getparent().tag
                 if element.getparent().tag == u'background':
                     master = element.getparent().tag
                     if element.getparent().attrib:
                         for attr in element.getparent().attrib:
-                            self._create_attr(master, attr, element.getparent().attrib[attr])
+                            self._create_attr(master, attr, \
+                            element.getparent().attrib[attr])
             if master:
                 if element.attrib:
                     for attr in element.attrib:
@@ -420,11 +425,11 @@ class ThemeXML(object):
         master = master.strip().lstrip()
         element = element.strip().lstrip()
         value = unicode(value).strip().lstrip()
-        print "start", master, element, value
+        #print "start", master, element, value
         if master == u'display':
             if element == u'wrapStyle':
                 return True, None, None, None
-            if element == u'shadow' or element == u'outline':
+            if element.startswith(u'shadow') or element.startswith(u'outline'):
                 master = u'font_main'
         # fix bold font
         if element == u'weight':
@@ -435,7 +440,7 @@ class ThemeXML(object):
                 value = True
         if element == u'proportion':
             element = u'size'
-        print "end", master, element, value
+        #print "end", master, element, value
         return False, master, element, value
 
     def _create_attr(self, master , element, value):
@@ -448,9 +453,9 @@ class ThemeXML(object):
             return
         field = self._de_hump(element)
         tag = master + u'_' + field
-        if element in boolean_list:
+        if field in boolean_list:
             setattr(self, tag, str_to_bool(value))
-        elif element in integer_list:
+        elif field in integer_list:
             setattr(self, tag, int(value))
         else:
             # make string value unicode
