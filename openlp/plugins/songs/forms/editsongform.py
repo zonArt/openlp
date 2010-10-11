@@ -483,6 +483,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.VerseListWidget.resizeRowsToContents()
             self.VerseListWidget.repaint()
             self.tagRows()
+            self.VerseEditButton.setEnabled(False)
+            self.VerseDeleteButton.setEnabled(False)
 
     def onVerseDeleteButtonClicked(self):
         self.VerseListWidget.removeRow(self.VerseListWidget.currentRow())

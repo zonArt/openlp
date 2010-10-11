@@ -18,19 +18,47 @@
     <normaloff>:/icon/openlp.org-icon-32.bmp</normaloff>:/icon/openlp.org-icon-32.bmp</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
+   <item row="2" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <widget class="QLabel" name="TitleLabel">
+      <widget class="QLabel" name="ThemeLabel">
        <property name="text">
-        <string>Title:</string>
+        <string>Theme:</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="TitleEdit"/>
+      <widget class="QComboBox" name="ThemeComboBox">
+       <property name="toolTip">
+        <string extracomment="Select custom theme for slide"/>
+       </property>
+      </widget>
      </item>
     </layout>
+   </item>
+   <item row="3" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="CreditLabel">
+       <property name="text">
+        <string>Credits:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="CreditEdit"/>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="toolTip">
+      <string extracomment="Edit dialog"/>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
+     </property>
+    </widget>
    </item>
    <item row="1" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -44,16 +72,42 @@
      <item>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QPushButton" name="UpButton">
+        <widget class="QPushButton" name="AddButton">
          <property name="toolTip">
-          <string extracomment="Move slide up 1"/>
+          <string extracomment="Adds a new slide at bottom"/>
          </property>
          <property name="text">
-          <string/>
+          <string>Add New</string>
          </property>
-         <property name="icon">
-          <iconset resource="../images/openlp-2.qrc">
-           <normaloff>:/services/service_up.png</normaloff>:/services/service_up.png</iconset>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="EditButton">
+         <property name="toolTip">
+          <string extracomment="Edit selected slide"/>
+         </property>
+         <property name="text">
+          <string>Edit</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="EditAllButton">
+         <property name="toolTip">
+          <string extracomment="Edit all slides"/>
+         </property>
+         <property name="text">
+          <string>Edit All</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="DeleteButton">
+         <property name="toolTip">
+          <string extracomment="Delete selected slide"/>
+         </property>
+         <property name="text">
+          <string>Delete</string>
          </property>
         </widget>
        </item>
@@ -69,6 +123,20 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="UpButton">
+         <property name="toolTip">
+          <string extracomment="Move slide up 1"/>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../images/openlp-2.qrc">
+           <normaloff>:/services/service_up.png</normaloff>:/services/service_up.png</iconset>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QPushButton" name="DownButton">
@@ -88,166 +156,26 @@
      </item>
     </layout>
    </item>
-   <item row="2" column="0">
-    <widget class="QWidget" name="EditWidget" native="true">
-     <layout class="QHBoxLayout" name="EditLayout_3">
-      <property name="spacing">
-       <number>8</number>
-      </property>
-      <property name="margin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QTextEdit" name="VerseTextEdit"/>
-      </item>
-      <item>
-       <widget class="QWidget" name="ButtonWidge" native="true">
-        <layout class="QVBoxLayout" name="verticalLayout_2">
-         <item>
-          <widget class="QPushButton" name="AddButton">
-           <property name="toolTip">
-            <string extracomment="Adds a new slide at bottom"/>
-           </property>
-           <property name="text">
-            <string>Add New</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="EditButton">
-           <property name="toolTip">
-            <string extracomment="Edit selected slide"/>
-           </property>
-           <property name="text">
-            <string>Edit</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="EditAllButton">
-           <property name="toolTip">
-            <string extracomment="Edit all slides"/>
-           </property>
-           <property name="text">
-            <string>Edit All</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="SaveButton">
-           <property name="toolTip">
-            <string extracomment="Replace edited slide"/>
-           </property>
-           <property name="text">
-            <string>Save</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="DeleteButton">
-           <property name="toolTip">
-            <string extracomment="Delete selected slide"/>
-           </property>
-           <property name="text">
-            <string>Delete</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="ClearButton">
-           <property name="toolTip">
-            <string extracomment="Clear selection"/>
-           </property>
-           <property name="text">
-            <string>Clear</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="SplitButton">
-           <property name="toolTip">
-            <string extracomment="Add new slide split"/>
-           </property>
-           <property name="text">
-            <string>Split Slide</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="ButtonSpacer">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
+   <item row="0" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QLabel" name="ThemeLabel">
+      <widget class="QLabel" name="TitleLabel">
        <property name="text">
-        <string>Theme:</string>
+        <string>Title:</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="ThemeComboBox">
-       <property name="toolTip">
-        <string extracomment="Select custom theme for slide"/>
-       </property>
-      </widget>
+      <widget class="QLineEdit" name="TitleEdit"/>
      </item>
     </layout>
-   </item>
-   <item row="4" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QLabel" name="CreditLabel">
-       <property name="text">
-        <string>Credits:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="CreditEdit"/>
-     </item>
-    </layout>
-   </item>
-   <item row="5" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="toolTip">
-      <string extracomment="Edit dialog"/>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>
  <tabstops>
   <tabstop>TitleEdit</tabstop>
-  <tabstop>VerseTextEdit</tabstop>
-  <tabstop>AddButton</tabstop>
   <tabstop>VerseListView</tabstop>
-  <tabstop>EditButton</tabstop>
-  <tabstop>EditAllButton</tabstop>
-  <tabstop>SaveButton</tabstop>
-  <tabstop>DeleteButton</tabstop>
   <tabstop>CreditEdit</tabstop>
-  <tabstop>UpButton</tabstop>
-  <tabstop>DownButton</tabstop>
   <tabstop>ThemeComboBox</tabstop>
  </tabstops>
  <resources>
