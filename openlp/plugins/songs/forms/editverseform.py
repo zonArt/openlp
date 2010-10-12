@@ -76,7 +76,8 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
 
     def onVerseTypeComboBoxChanged(self):
         """
-        Adjusts the verse number SpinBox in regard to the selected verse type.
+        Adjusts the verse number SpinBox in regard to the selected verse type
+        and the cursor's position.
         """
         position = self.verseTextEdit.textCursor().position()
         text = unicode(self.verseTextEdit.toPlainText())
