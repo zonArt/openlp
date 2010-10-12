@@ -53,6 +53,9 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         QtCore.QObject.connect(self.verseTextEdit,
             QtCore.SIGNAL(u'cursorPositionChanged()'),
             self.onCursorPositionChanged)
+        QtCore.QObject.connect(self.verseTypeComboBox,
+            QtCore.SIGNAL(u'currentIndexChanged(int)'),
+            self.onVerseTypeComboBoxChanged)
         self.verse_regex = re.compile(r'---\[([-\w]+):([\d]+)\]---')
 
     def contextMenu(self, point):
@@ -70,6 +73,32 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         if VerseType.to_string(verse_type) is not None:
             self.insertVerse(VerseType.to_string(verse_type),
                 self.verseNumberBox.value())
+
+    def onVerseTypeComboBoxChanged(self):
+        """
+        Adjusts the verse number SpinBox in regard to the selected verse type.
+        """
+        position = self.verseTextEdit.textCursor().position()
+        text = unicode(self.verseTextEdit.toPlainText())
+        verse_type = VerseType.to_string(self.verseTypeComboBox.currentIndex())
+        if not text:
+            return
+        position = text.rfind(u'---[%s' % verse_type, 0, position)
+        if position == -1:
+            self.verseNumberBox.setValue(1)
+            return
+        text = text[position:]
+        position = text.find(u']---')
+        if position == -1:
+            return
+        text = text[:position + 4]
+        match = self.verse_regex.match(text)
+        if match:
+            verse_type = match.group(1)
+            verse_number = int(match.group(2))
+            verse_type_index = VerseType.from_string(verse_type)
+            if verse_type_index is not None:
+                self.verseNumberBox.setValue(verse_number)
 
     def onCursorPositionChanged(self):
         """
