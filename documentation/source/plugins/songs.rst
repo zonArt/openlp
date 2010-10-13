@@ -1,7 +1,7 @@
 .. _plugins-songs:
 
-:mod:`songs` Plugin
-===================
+Songs Plugin
+============
 
 .. automodule:: openlp.plugins.songs
    :members:
