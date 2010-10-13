@@ -108,7 +108,7 @@ class ThemeXML(object):
         """
         # Create the minidom document
         self.theme_xml = Document()
-        #self.parse_xml(BLANK_THEME_XML)
+        self.parse_xml(BLANK_THEME_XML)
 
     def extend_image_filename(self, path):
         """

@@ -530,7 +530,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         else:
             self.gradientComboBox.setCurrentIndex(2)
         # Font Main Tab
-        self.fontMainComboBox.setCurrentFont(
+        self.mainFontComboBox.setCurrentFont(
             QtGui.QFont(self.theme.font_main_name))
         self.fontMainSizeSpinBox.setValue(self.theme.font_main_proportion)
         if not self.theme.font_main_italics and \
