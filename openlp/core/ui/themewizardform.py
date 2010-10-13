@@ -165,16 +165,20 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
         self.shadowSizeSpinBox.setEnabled(state)
 
     def onMainDefaultPositionCheckBox(self, state):
-        self.mainXSpinBox.setEnabled(state)
-        self.mainYSpinBox.setEnabled(state)
-        self.mainHeightSpinBox.setEnabled(state)
-        self.mainWidthSpinBox.setEnabled(state)
+        print "main", state
+        print self.field(u'mainDefaultPosition')
+        self.theme.font_main_override = self.field(u'mainDefaultPosition')
+        print self.theme.font_main_override, type(self.theme.font_main_override)
+        self.mainXSpinBox.setEnabled(not state)
+        self.mainYSpinBox.setEnabled(not state)
+        self.mainHeightSpinBox.setEnabled(not state)
+        self.mainWidthSpinBox.setEnabled(not state)
 
     def onFooterDefaultPositionCheckBox(self, state):
-        self.footerXSpinBox.setEnabled(state)
-        self.footerYSpinBox.setEnabled(state)
-        self.footerHeightSpinBox.setEnabled(state)
-        self.footerWidthSpinBox.setEnabled(state)
+        self.footerXSpinBox.setEnabled(not state)
+        self.footerYSpinBox.setEnabled(not state)
+        self.footerHeightSpinBox.setEnabled(not state)
+        self.footerWidthSpinBox.setEnabled(not state)
 
     def exec_(self):
         """
@@ -296,7 +300,26 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
             QtCore.QVariant(self.theme.font_footer_size))
 
     def setPositionTabValues(self):
-        pass
+        self.setField(u'mainDefaultPosition', \
+            QtCore.QVariant(self.theme.font_main_override))
+        self.setField(u'mainPositionX', \
+            QtCore.QVariant(self.theme.font_main_x))
+        self.setField(u'mainPositionY', \
+            QtCore.QVariant(self.theme.font_main_y))
+        self.setField(u'mainPositionHeight', \
+            QtCore.QVariant(self.theme.font_main_height))
+        self.setField(u'mainPositionWidth', \
+            QtCore.QVariant(self.theme.font_main_width))
+        self.setField(u'mainDefaultPosition', \
+            QtCore.QVariant(self.theme.font_main_override))
+        self.setField(u'footerPositionX', \
+            QtCore.QVariant(self.theme.font_footer_x))
+        self.setField(u'footerPositionY', \
+            QtCore.QVariant(self.theme.font_footer_y))
+        self.setField(u'footerPositionHeight', \
+            QtCore.QVariant(self.theme.font_footer_height))
+        self.setField(u'footerPositionWidth', \
+            QtCore.QVariant(self.theme.font_footer_width))
 
     def setAlignmentTabValues(self):
         pass
@@ -311,6 +334,8 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
         # Set up field states
         self.onOutlineCheckCheckBoxChanged(self.theme.font_main_outline)
         self.onShadowCheckCheckBoxChanged(self.theme.font_main_shadow)
+        self.onMainDefaultPositionCheckBox(self.theme.font_main_override)
+        self.onFooterDefaultPositionCheckBox(self.theme.font_footer_override)
 
     def registerFields(self):
         self.backgroundPage.registerField(
@@ -350,25 +375,25 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
         self.mainAreaPage.registerField(
             u'footerSizeSpinBox', self.footerSizeSpinBox)
         self.areaPositionPage.registerField(
-            u'mainDefaultPosiion', self.mainDefaultPositionCheckBox)
+            u'mainDefaultPosition', self.mainDefaultPositionCheckBox)
         self.areaPositionPage.registerField(
-            u'mainPosiionX', self.mainXSpinBox)
+            u'mainPositionX', self.mainXSpinBox)
         self.areaPositionPage.registerField(
-            u'mainPosiionY', self.mainYSpinBox)
+            u'mainPositionY', self.mainYSpinBox)
         self.areaPositionPage.registerField(
-            u'mainPosiionWidth', self.mainWidthSpinBox)
+            u'mainPositionWidth', self.mainWidthSpinBox)
         self.areaPositionPage.registerField(
-            u'mainPosiionHeight', self.mainHeightSpinBox)
+            u'mainPositionHeight', self.mainHeightSpinBox)
         self.areaPositionPage.registerField(
-            u'footerDefaultPosiion', self.footerDefaultPositionCheckBox)
+            u'footerDefaultPosition', self.footerDefaultPositionCheckBox)
         self.areaPositionPage.registerField(
-            u'footerPosiionX', self.footerXSpinBox)
+            u'footerPositionX', self.footerXSpinBox)
         self.areaPositionPage.registerField(
-            u'footerPosiionY', self.footerYSpinBox)
+            u'footerPositionY', self.footerYSpinBox)
         self.areaPositionPage.registerField(
-            u'footerPosiionWidth', self.footerWidthSpinBox)
+            u'footerPositionWidth', self.footerWidthSpinBox)
         self.areaPositionPage.registerField(
-            u'footerPosiionHeight', self.footerHeightSpinBox)
+            u'footerPositionHeight', self.footerHeightSpinBox)
 
     def onBackgroundComboBox(self, index):
         self.theme.background_type = BackgroundType.to_string(index)
