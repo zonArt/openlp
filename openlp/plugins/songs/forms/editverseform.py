@@ -66,27 +66,16 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         self.verseTextEdit.setFocus()
 
     def onInsertButtonClicked(self):
-        if self.verseTextEdit.textCursor().columnNumber() != 0:
-            self.verseTextEdit.insertPlainText(u'\n')
         verse_type = self.verseTypeComboBox.currentIndex()
-        if verse_type == VerseType.Verse:
-            self.insertVerse(VerseType.to_string(VerseType.Verse),
+        if VerseType.to_string(verse_type) is not None:
+            self.insertVerse(VerseType.to_string(verse_type),
                 self.verseNumberBox.value())
-        elif verse_type == VerseType.Chorus:
-            self.insertVerse(VerseType.to_string(VerseType.Chorus),
-                self.verseNumberBox.value())
-        elif verse_type == VerseType.Bridge:
-            self.insertVerse(VerseType.to_string(VerseType.Bridge))
-        elif verse_type == VerseType.PreChorus:
-            self.insertVerse(VerseType.to_string(VerseType.PreChorus))
-        elif verse_type == VerseType.Intro:
-            self.insertVerse(VerseType.to_string(VerseType.Intro))
-        elif verse_type == VerseType.Ending:
-            self.insertVerse(VerseType.to_string(VerseType.Ending))
-        elif verse_type == VerseType.Other:
-            self.insertVerse(VerseType.to_string(VerseType.Other))
 
     def onCursorPositionChanged(self):
+        """
+        Determines the previous verse type and number in regard to the cursor's
+        position and adjusts the ComboBox and SpinBox to these values.
+        """
         position = self.verseTextEdit.textCursor().position()
         text = unicode(self.verseTextEdit.toPlainText())
         if not text:
