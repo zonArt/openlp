@@ -282,11 +282,9 @@ class Song(object):
     def get_author_list(self, asOneString = True):
         """Return the list of authors as a string
 
-        asOneString
-        True -- string:
-          'John Newton, A Parker'
-        False -- list of strings
-          ['John Newton', u'A Parker']
+        ``asOneString``
+            If ``True``, returns 'John Newton, A Parker'. If ``False``, returns
+            [u'John Newton', u'A Parker']
         """
         if asOneString:
             res = self._assure_string(self.author_list)
@@ -297,7 +295,8 @@ class Song(object):
     def set_author_list(self, author_list):
         """Set the author_list
 
-        author_list -- a string or list of strings
+        ``author_list``
+            a string or list of strings
         """
         if author_list is None:
             self.author_list = None
@@ -307,11 +306,9 @@ class Song(object):
     def get_category_array(self, asOneString = True):
         """Return the list of categories as a string
 
-        asOneString
-        True -- string:
-          'Hymn, Gospel'
-        False -- list of strings
-          ['Hymn', u'Gospel']
+        ``asOneString``
+            If ``True``, returns 'Hymn, Gospel'. If ``False``, returns
+            [u'Hymn', u'Gospel']
         """
         if asOneString:
             res = self._assure_string(self.category_array)
@@ -381,6 +378,7 @@ class Song(object):
         properties
 
         slideNumber -- 1 .. numberOfSlides
+
         Returns a list as:
         [theme_name (string),
          title (string),
