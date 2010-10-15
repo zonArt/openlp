@@ -45,13 +45,15 @@ class AlertsPlugin(Plugin):
         self.icon = build_icon(u':/plugins/plugin_alerts.png')
         self.alertsmanager = AlertsManager(self)
         self.manager = Manager(u'alerts', init_schema)
-        self.alertForm = AlertForm(self)
+        visible_name = self.getString(StringContent.VisibleName)
+        self.alertForm = AlertForm(self, visible_name[u'title'])
 
     def getSettingsTab(self):
         """
         Return the settings tab for the Alerts plugin
         """
-        self.alertsTab = AlertsTab(self)
+        visible_name = self.getString(StringContent.VisibleName)
+        self.alertsTab = AlertsTab(self, visible_name[u'title'])
         return self.alertsTab
 
     def addToolsMenuItem(self, tools_menu):
@@ -115,4 +117,3 @@ class AlertsPlugin(Plugin):
         self.textStrings[StringContent.VisibleName] = {
             u'title': translate('AlertsPlugin', 'Alerts')
         }
-        
