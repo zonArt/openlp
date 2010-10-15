@@ -13,6 +13,7 @@ Contents:
 
    introduction
    glossary
+   dualmonitors
 
 Indices and tables
 ==================

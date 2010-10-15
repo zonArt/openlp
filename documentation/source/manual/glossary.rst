@@ -11,7 +11,7 @@ Main Window
 
 The Main Window is what you will see when you first open OpenLP
 
-.. image:: mainwindow.png
+.. image:: /pics/mainwindow.png
 
 The Main Window contains all the tools and plugins that make OpenLP function
 
@@ -21,7 +21,7 @@ Media Manager
 The Media Manager contains a number of tabs that plugins supply to OpenLP.
 Each tab in the Media Manager is called a **Media Item**
 
-.. image:: mediamanager.png
+.. image:: /pics/mediamanager.png
 
 From the Media Manager you can send Media Items to the Preview or Live screens.
 
@@ -31,7 +31,7 @@ Preview
 The preview pane is a section to preview your media items before you go live 
 with them.
 
-.. image:: preview.png
+.. image:: /pics/preview.png
 
 Service File
 ------------
@@ -47,11 +47,11 @@ A service item are the **media items** that are in the **service manager**
 Service Manger
 --------------
 
-The service manager contains the media items in your service file.This is the 
+The service manager contains the media items in your service file. This is the 
 area from wich your media items go live, and you can also save, open, and edit 
 services files.
 
-.. image:: servicemanager.png
+.. image:: /pics/servicemanager.png
 
 Slide Controller
 ----------------
@@ -59,7 +59,7 @@ Slide Controller
 The Slide Controller controls which slide from a **Service Item** is currently
 being displayed, and moving between the various slides.
 
-.. image:: slidecontroller.png
+.. image:: /pics/slidecontroller.png
 
 Theme Manager
 -------------
@@ -67,4 +67,4 @@ Theme Manager
 The theme manager is where themes are created and edited. Themes are the text
 styles backgrounds that you use to personalize your services.
 
-.. image:: thememanager.png
+.. image:: /pics/thememanager.png
