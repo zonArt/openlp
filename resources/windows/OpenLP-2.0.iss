@@ -27,6 +27,7 @@ DefaultDirName={pf}\{#AppName}
 DefaultGroupName={#AppVerName}
 AllowNoIcons=true
 LicenseFile=LICENSE.txt
+OutputDir=..\..\dist
 OutputBaseFilename=OpenLP-{#RealVersion}-setup
 Compression=lzma
 SolidCompression=true
