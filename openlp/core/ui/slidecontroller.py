@@ -543,7 +543,7 @@ class SlideController(QtGui.QWidget):
                 Receiver.send_message(u'%s_stop' %
                     self.serviceItem.name.lower(), [serviceItem, self.isLive])
             if self.serviceItem.is_media():
-                self.onMediaStop()
+                self.onMediaClose()
         if self.isLive:
             blanked = self.BlankScreen.isChecked()
         else:
@@ -931,14 +931,13 @@ class SlideController(QtGui.QWidget):
         Respond to the arrival of a media service item
         """
         log.debug(u'SlideController onMediaStart')
+        file = os.path.join(item.get_frame_path(), item.get_frame_title())
         if self.isLive:
-            file = os.path.join(item.get_frame_path(), item.get_frame_title())
             self.display.video(file, self.volume)
             self.volumeSlider.setValue(self.volume)
         else:
             self.mediaObject.stop()
             self.mediaObject.clearQueue()
-            file = os.path.join(item.get_frame_path(), item.get_frame_title())
             self.mediaObject.setCurrentSource(Phonon.MediaSource(file))
             self.seekSlider.setMediaObject(self.mediaObject)
             self.seekSlider.show()
@@ -986,3 +985,18 @@ class SlideController(QtGui.QWidget):
             self.video.hide()
         self.SlidePreview.clear()
         self.SlidePreview.show()
+        
+    def onMediaClose(self):
+        """
+        Respond to a request to close the Video
+        """
+        log.debug(u'SlideController onMediaStop')
+        if self.isLive:
+            self.display.resetVideo()
+        else:
+            self.mediaObject.stop()
+            self.mediaObject.clearQueue()
+            self.video.hide()
+        self.SlidePreview.clear()
+        self.SlidePreview.show()
+
