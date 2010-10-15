@@ -223,16 +223,20 @@ def image_to_byte(image):
     ``image``
         The image to converted.
     """
-    log.debug(u'image_to_byte')
+    log.debug(u'image_to_byte - start')
     byte_array = QtCore.QByteArray()
     # use buffer to store pixmap into byteArray
     buffie = QtCore.QBuffer(byte_array)
     buffie.open(QtCore.QIODevice.WriteOnly)
-    if isinstance(image, QtGui.QImage):
-        pixmap = QtGui.QPixmap.fromImage(image)
-    else:
-        pixmap = QtGui.QPixmap(image)
-    pixmap.save(buffie, "PNG")
+#    if isinstance(image, QtGui.QImage):
+#        log.debug(u'image_to_byte - image')
+#        #pixmap = QtGui.QPixmap.fromImage(image)
+#        pixmap = image
+#    else:
+#        log.debug(u'image_to_byte - pixmap')
+#        pixmap = QtGui.QPixmap(image)
+    image.save(buffie, "PNG")
+    log.debug(u'image_to_byte - end')
     # convert to base64 encoding so does not get missed!
     return byte_array.toBase64()
 
@@ -253,8 +257,11 @@ def resize_image(image, width, height, background=QtCore.Qt.black):
         The background colour defaults to black.
 
     """
-    log.debug(u'resize_image')
-    preview = QtGui.QImage(image)
+    log.debug(u'resize_image - start')
+    if isinstance(image, QtGui.QImage):
+        preview = image
+    else:
+        preview = QtGui.QImage(image)
     if not preview.isNull():
         # Only resize if different size
         if preview.width() == width and preview.height == height:
@@ -263,6 +270,7 @@ def resize_image(image, width, height, background=QtCore.Qt.black):
             QtCore.Qt.SmoothTransformation)
     image_cache_key = u'%s%s%s' % (image, unicode(width), unicode(height))
     if image_cache_key in image_cache:
+        log.debug(u'resize_image - end cache')
         return image_cache[image_cache_key]
     realw = preview.width()
     realh = preview.height()
@@ -273,6 +281,7 @@ def resize_image(image, width, height, background=QtCore.Qt.black):
     painter = QtGui.QPainter(new_image)
     painter.drawImage((width - realw) / 2, (height - realh) / 2, preview)
     image_cache[image_cache_key] = new_image
+    log.debug(u'resize_image - end')
     return new_image
 
 def check_item_selected(list_widget, message):

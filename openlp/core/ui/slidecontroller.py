@@ -179,23 +179,23 @@ class SlideController(QtGui.QWidget):
             self.HideMenu.setMenu(QtGui.QMenu(
                 translate('OpenLP.SlideController', 'Hide'), self.Toolbar))
             self.BlankScreen = QtGui.QAction(QtGui.QIcon(
-                u':/slides/slide_blank.png'), 
-                translate('OpenLP.SlideController', 
+                u':/slides/slide_blank.png'),
+                translate('OpenLP.SlideController',
                     'Blank Screen'), self.HideMenu)
             self.BlankScreen.setCheckable(True)
             QtCore.QObject.connect(self.BlankScreen,
                 QtCore.SIGNAL("triggered(bool)"), self.onBlankDisplay)
             self.ThemeScreen = QtGui.QAction(QtGui.QIcon(
-                u':/slides/slide_theme.png'), 
-                translate('OpenLP.SlideController', 
+                u':/slides/slide_theme.png'),
+                translate('OpenLP.SlideController',
                     'Blank to Theme'), self.HideMenu)
             self.ThemeScreen.setCheckable(True)
             QtCore.QObject.connect(self.ThemeScreen,
                 QtCore.SIGNAL("triggered(bool)"), self.onThemeDisplay)
             if self.screens.display_count > 1:
                 self.DesktopScreen = QtGui.QAction(QtGui.QIcon(
-                    u':/slides/slide_desktop.png'), 
-                    translate('OpenLP.SlideController', 
+                    u':/slides/slide_desktop.png'),
+                    translate('OpenLP.SlideController',
                         'Show Desktop'), self.HideMenu)
                 self.DesktopScreen.setCheckable(True)
                 QtCore.QObject.connect(self.DesktopScreen,
@@ -214,7 +214,7 @@ class SlideController(QtGui.QWidget):
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.Toolbar.addToolbarButton(
                 u'Edit Song', u':/general/general_edit.png',
-                translate('OpenLP.SlideController', 
+                translate('OpenLP.SlideController',
                 'Edit and reload song preview'),
                 self.onEditSong)
         if isLive:
@@ -584,11 +584,11 @@ class SlideController(QtGui.QWidget):
             else:
                 label = QtGui.QLabel()
                 label.setMargin(4)
-                pixmap = resize_image(frame[u'image'],
-                                      self.parent.RenderManager.width,
-                                      self.parent.RenderManager.height)
+#                pixmap = resize_image(frame[u'image'],
+#                                      self.parent.RenderManager.width,
+#                                      self.parent.RenderManager.height)
                 label.setScaledContents(True)
-                label.setPixmap(QtGui.QPixmap.fromImage(pixmap))
+                label.setPixmap(QtGui.QPixmap.fromImage(frame[u'image']))
                 self.PreviewListWidget.setCellWidget(framenumber, 0, label)
                 slideHeight = width * self.parent.RenderManager.screen_ratio
                 row += 1
@@ -985,7 +985,7 @@ class SlideController(QtGui.QWidget):
             self.video.hide()
         self.SlidePreview.clear()
         self.SlidePreview.show()
-        
+
     def onMediaClose(self):
         """
         Respond to a request to close the Video
