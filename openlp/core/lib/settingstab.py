@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -30,16 +31,19 @@ class SettingsTab(QtGui.QWidget):
     SettingsTab is a helper widget for plugins to define Tabs for the settings
     dialog.
     """
-    def __init__(self, title):
+    def __init__(self, title,  visible_title=None):
         """
         Constructor to create the Settings tab item.
 
         ``title``
+            The title of the tab, which is used internally for the tab handling.
+
+        ``visible_title``
             The title of the tab, which is usually displayed on the tab.
         """
         QtGui.QWidget.__init__(self)
         self.tabTitle = title
-        self.tabTitleVisible = None
+        self.tabTitleVisible = visible_title
         self.settingsSection = self.tabTitle.lower()
         self.setupUi()
         self.retranslateUi()

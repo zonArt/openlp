@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -74,7 +75,7 @@ class EventReceiver(QtCore.QObject):
         Broadcasts that an item has been made live/previewed
 
     ``slidecontroller_{live|preview}_change``
-        Informs the slidecontroller that a slide change has occurred and to 
+        Informs the slidecontroller that a slide change has occurred and to
         update itself
 
     ``slidecontroller_{live|preview}_changed``
@@ -82,7 +83,7 @@ class EventReceiver(QtCore.QObject):
 
     ``slidecontroller_{live|preview}_text_request``
         Request the text for the current item in the controller
-        Returns a slidecontroller_{live|preview}_text_response with an 
+        Returns a slidecontroller_{live|preview}_text_response with an
         array of dictionaries with the tag and verse text
 
     ``slidecontroller_{live|preview}_blank``
@@ -105,23 +106,23 @@ class EventReceiver(QtCore.QObject):
 
     ``servicemanager_set_item``
         Go live on a specific item, by index
-        
+
     ``servicemanager_list_request``
         Request the service list. Responds with servicemanager_list_response
         containing a array of dictionaries
 
     ``maindisplay_blank``
-        Blank the maindisplay window 
+        Blank the maindisplay window
 
     ``maindisplay_hide``
-        Hide the maindisplay window 
+        Hide the maindisplay window
 
     ``maindisplay_show``
-        Return the maindisplay window 
+        Return the maindisplay window
 
     ``maindisplay_active``
         The maindisplay has been made active
-    
+
     ``maindisplay_status_text``
         Changes the bottom status bar text on the maindisplay window
 
@@ -192,9 +193,17 @@ class EventReceiver(QtCore.QObject):
     ``{plugin}_add_service_item``
         Ask the plugin to push the selected items to the service item
 
+    ``{plugin}_service_load``
+        Ask the plugin to process an individual service item after it has been
+        loaded
+
+    ``service_item_update``
+        Passes back to the service manager the service item after it has been
+        processed by the plugin
+
     ``alerts_text``
         Displays an alert message
-    
+
     ``bibles_nobook``
         Attempt to find book resulted in no match
 

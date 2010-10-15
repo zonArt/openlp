@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -22,13 +23,17 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The :mod:`presentationplugin` module provides the ability for OpenLP to display
+presentations from a variety of document formats.
+"""
 import os
 import logging
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus, translate
+from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.utils import AppLocation
-from openlp.plugins.presentations.lib import *
+from openlp.plugins.presentations.lib import PresentationController, \
+    PresentationMediaItem, PresentationTab
 
 log = logging.getLogger(__name__)
 
@@ -42,21 +47,21 @@ class PresentationPlugin(Plugin):
 
     def __init__(self, plugin_helpers):
         """
-        PluginPresentation constructor. 
+        PluginPresentation constructor.
         """
         log.debug(u'Initialised')
         self.controllers = {}
-        Plugin.__init__(self, u'Presentations', u'1.9.2', plugin_helpers)
+        Plugin.__init__(self, u'Presentations', u'1.9.3', plugin_helpers)
         self.weight = -8
         self.icon_path = u':/plugins/plugin_presentations.png'
         self.icon = build_icon(self.icon_path)
-        self.status = PluginStatus.Active
 
     def getSettingsTab(self):
         """
         Create the settings Tab
         """
-        return PresentationTab(self.name, self.controllers)
+        visible_name = self.getString(StringContent.VisibleName)
+        return PresentationTab(self.name, visible_name[u'title'], self.controllers)
 
     def initialise(self):
         """
@@ -69,6 +74,7 @@ class PresentationPlugin(Plugin):
         for controller in self.controllers:
             if self.controllers[controller].enabled():
                 self.controllers[controller].start_process()
+        self.mediaItem.buildFileMaskString()
 
     def finalise(self):
         """
@@ -132,10 +138,54 @@ class PresentationPlugin(Plugin):
         """
         Return information about this plugin
         """
-        about_text = translate('PresentationPlugin',
-            '<b>Presentation Plugin</b> <br> Delivers '
-            'the ability to show presentations using a number of different '
+        about_text = translate('PresentationPlugin', '<strong>Presentation '
+            'Plugin</strong><br />The presentation plugin provides the '
+            'ability to show presentations using a number of different '
             'programs. The choice of available presentation programs is '
             'available to the user in a drop down box.')
         return about_text
 
+    def setPluginTextStrings(self):
+        """
+        Called to define all translatable texts of the plugin
+        """
+        ## Name PluginList ##
+        self.textStrings[StringContent.Name] = {
+            u'singular': translate('PresentationPlugin', 'Presentation'),
+            u'plural': translate('PresentationPlugin', 'Presentations')
+        }
+        ## Name for MediaDockManager, SettingsManager ##
+        self.textStrings[StringContent.VisibleName] = {
+            u'title': translate('PresentationPlugin', 'Presentations')
+        }
+        # Middle Header Bar
+        ## Load Button ##
+        self.textStrings[StringContent.Load] = {
+            u'title': translate('PresentationPlugin', 'Load'),
+            u'tooltip': translate('PresentationPlugin', 
+                'Load a new Presentation')
+        }
+        ## Delete Button ##
+        self.textStrings[StringContent.Delete] = {
+            u'title': translate('PresentationPlugin', 'Delete'),
+            u'tooltip': translate('PresentationPlugin', 
+                'Delete the selected Presentation')
+        }
+        ## Preview ##
+        self.textStrings[StringContent.Preview] = {
+            u'title': translate('PresentationPlugin', 'Preview'),
+            u'tooltip': translate('PresentationPlugin', 
+                'Preview the selected Presentation')
+        }
+        ## Live  Button ##
+        self.textStrings[StringContent.Live] = {
+            u'title': translate('PresentationPlugin', 'Live'),
+            u'tooltip': translate('PresentationPlugin', 
+                'Send the selected Presentation live')
+        }
+        ## Add to service Button ##
+        self.textStrings[StringContent.Service] = {
+            u'title': translate('PresentationPlugin', 'Service'),
+            u'tooltip': translate('PresentationPlugin', 
+                'Add the selected Presentation to the service')
+        }

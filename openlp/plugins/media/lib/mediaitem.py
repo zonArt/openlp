@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -45,9 +46,7 @@ class MediaMediaItem(MediaManagerItem):
     """
     log.info(u'%s MediaMediaItem loaded', __name__)
 
-    def __init__(self, parent, icon, title):
-        self.PluginNameShort = u'Media'
-        self.pluginNameVisible = translate('MediaPlugin.MediaItem', 'Media')
+    def __init__(self, parent, plugin, icon):
         self.IconPath = u'images/image'
         self.background = False
         # this next is a class, not an instance of a class - it will
@@ -55,7 +54,7 @@ class MediaMediaItem(MediaManagerItem):
         self.ListViewWithDnD_class = MediaListView
         self.PreviewFunction = QtGui.QPixmap(
             u':/media/media_video.png').toImage()
-        MediaManagerItem.__init__(self, parent, icon, title)
+        MediaManagerItem.__init__(self, parent, self, icon)
         self.singleServiceItem = False
         self.serviceItemIconName = u':/media/media_video.png'
 
@@ -92,20 +91,30 @@ class MediaMediaItem(MediaManagerItem):
         self.ImageWidget.setObjectName(u'ImageWidget')
         #Replace backgrounds do not work at present so remove functionality.
         self.blankButton = self.toolbar.addToolbarButton(
-            u'Replace Background', u':/slides/slide_blank.png',
+            translate('MediaPlugin.MediaItem', 'Replace Background'),
+            u':/slides/slide_blank.png',
             translate('MediaPlugin.MediaItem', 'Replace Live Background'),
                 self.onReplaceClick, False)
+        self.resetButton = self.toolbar.addToolbarButton(
+            u'Reset Background', u':/system/system_close.png',
+            translate('ImagePlugin.MediaItem', 'Reset Live Background'),
+                self.onResetClick, False)
         # Add the song widget to the page layout
         self.pageLayout.addWidget(self.ImageWidget)
+        self.resetButton.setVisible(False)
+
+    def onResetClick(self):
+        self.resetButton.setVisible(False)
+        self.parent.liveController.display.resetVideo()
 
     def onReplaceClick(self):
-
         if check_item_selected(self.listView,
             translate('ImagePlugin.MediaItem',
-            'You must select an item to process.')):
+            'You must select a media file to replace the background with.')):
             item = self.listView.currentItem()
             filename = unicode(item.data(QtCore.Qt.UserRole).toString())
-            self.parent.displayManager.displayVideo(filename)
+            self.parent.liveController.display.video(filename, 0, True)
+        self.resetButton.setVisible(True)
 
     def generateSlideData(self, service_item, item=None):
         if item is None:
@@ -133,7 +142,7 @@ class MediaMediaItem(MediaManagerItem):
         Remove a media item from the list
         """
         if check_item_selected(self.listView, translate('MediaPlugin.MediaItem',
-            'You must select an item to delete.')):
+            'You must select a media file to delete.')):
             row_list = [item.row() for item in self.listView.selectedIndexes()]
             row_list.sort(reverse=True)
             for row in row_list:

@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,7 +28,7 @@ import logging
 
 from forms import EditCustomForm
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus, translate
+from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.plugins.custom.lib import CustomMediaItem, CustomTab
 from openlp.plugins.custom.lib.db import CustomSlide, init_schema
@@ -46,27 +47,27 @@ class CustomPlugin(Plugin):
     log.info(u'Custom Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Custom', u'1.9.2', plugin_helpers)
+        Plugin.__init__(self, u'Custom', u'1.9.3', plugin_helpers)
         self.weight = -5
         self.custommanager = Manager(u'custom', init_schema)
         self.edit_custom_form = EditCustomForm(self.custommanager)
         self.icon_path = u':/plugins/plugin_custom.png'
         self.icon = build_icon(self.icon_path)
-        self.status = PluginStatus.Active
 
     def getSettingsTab(self):
-        return CustomTab(self.name)
+        visible_name = self.getString(StringContent.VisibleName)
+        return CustomTab(self.name, visible_name[u'title'])
 
     def getMediaManagerItem(self):
         # Create the CustomManagerItem object
-        return CustomMediaItem(self, self.icon, self.name)
+        return CustomMediaItem(self, self, self.icon)
 
     def about(self):
-        about_text = translate('CustomPlugin',
-            '<b>Custom Plugin</b><br>This plugin '
-            'allows slides to be displayed on the screen in the same way '
-            'songs are. This plugin provides greater freedom over the '
-            'songs plugin.<br>')
+        about_text = translate('CustomPlugin', '<strong>Custom Plugin</strong>'
+            '<br />The custom plugin provides the ability to set up custom '
+            'text slides that can be displayed on the screen the same way '
+            'songs are. This plugin provides greater freedom over the songs '
+            'plugin.')
         return about_text
 
     def usesTheme(self, theme):
@@ -96,3 +97,66 @@ class CustomPlugin(Plugin):
         for custom in customsUsingTheme:
             custom.theme_name = newTheme
             self.custommanager.save_object(custom)
+
+    def setPluginTextStrings(self):
+        """
+        Called to define all translatable texts of the plugin
+        """
+        ## Name PluginList ##
+        self.textStrings[StringContent.Name] = {
+            u'singular': translate('CustomsPlugin', 'Custom'),
+            u'plural': translate('CustomsPlugin', 'Customs')
+        }
+        ## Name for MediaDockManager, SettingsManager ##
+        self.textStrings[StringContent.VisibleName] = {
+            u'title': translate('CustomsPlugin', 'Customs')
+        }
+        # Middle Header Bar
+        ## Import Button ##
+        self.textStrings[StringContent.Import] = {
+            u'title': translate('CustomsPlugin', 'Import'),
+            u'tooltip': translate('CustomsPlugin', 
+                'Import a Custom')
+        }
+        ## Load Button ##
+        self.textStrings[StringContent.Load] = {
+            u'title': translate('CustomsPlugin', 'Load'),
+            u'tooltip': translate('CustomsPlugin', 
+                'Load a new Custom')
+        }
+        ## New Button ##
+        self.textStrings[StringContent.New] = {
+            u'title': translate('CustomsPlugin', 'Add'),
+            u'tooltip': translate('CustomsPlugin', 
+                'Add a new Custom')
+        }
+        ## Edit Button ##
+        self.textStrings[StringContent.Edit] = {
+            u'title': translate('CustomsPlugin', 'Edit'),
+            u'tooltip': translate('CustomsPlugin', 
+                'Edit the selected Custom')
+        }
+        ## Delete Button ##
+        self.textStrings[StringContent.Delete] = {
+            u'title': translate('CustomsPlugin', 'Delete'),
+            u'tooltip': translate('CustomsPlugin', 
+                'Delete the selected Custom')
+        }
+        ## Preview ##
+        self.textStrings[StringContent.Preview] = {
+            u'title': translate('CustomsPlugin', 'Preview'),
+            u'tooltip': translate('CustomsPlugin', 
+                'Preview the selected Custom')
+        }
+        ## Live  Button ##
+        self.textStrings[StringContent.Live] = {
+            u'title': translate('CustomsPlugin', 'Live'),
+            u'tooltip': translate('CustomsPlugin', 
+                'Send the selected Custom live')
+        }
+        ## Add to service Button ##
+        self.textStrings[StringContent.Service] = {
+            u'title': translate('CustomsPlugin', 'Service'),
+            u'tooltip': translate('CustomsPlugin', 
+                'Add the selected Custom to the service')
+        }

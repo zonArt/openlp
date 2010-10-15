@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -31,20 +32,18 @@ class PresentationTab(SettingsTab):
     """
     PresentationsTab is the Presentations settings tab in the settings dialog.
     """
-    def __init__(self, title, controllers):
+    def __init__(self, title, visible_title, controllers):
         """
         Constructor
         """
         self.controllers = controllers
-        SettingsTab.__init__(self, title)
+        SettingsTab.__init__(self, title, visible_title)
 
     def setupUi(self):
         """
         Create the controls for the settings tab
         """
         self.setObjectName(u'PresentationTab')
-        self.tabTitleVisible = translate('PresentationPlugin.PresentationTab',
-            'Presentations')
         self.PresentationLayout = QtGui.QHBoxLayout(self)
         self.PresentationLayout.setSpacing(8)
         self.PresentationLayout.setMargin(8)
@@ -114,9 +113,7 @@ class PresentationTab(SettingsTab):
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = self.PresenterCheckboxes[controller.name]
-            checkbox.setText(
-                u'%s %s' % (controller.name,
-                translate('PresentationPlugin.PresentationTab', 'available')))
+            checkbox.setText(controller.name)
         self.AdvancedGroupBox.setTitle(
             translate('PresentationPlugin.PresentationTab',
             'Advanced'))

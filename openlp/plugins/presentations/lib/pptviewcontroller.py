@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -49,7 +50,7 @@ class PptviewController(PresentationController):
         log.debug(u'Initialising')
         self.process = None
         PresentationController.__init__(self, plugin, u'Powerpoint Viewer')
-        self.supports = [u'.ppt', u'.pps', u'.pptx', u'.ppsx']
+        self.supports = [u'ppt', u'pps', u'pptx', u'ppsx']
 
     def check_available(self):
         """
@@ -149,7 +150,8 @@ class PptviewDocument(PresentationDocument):
         if self.check_thumbnails():
             return
         for idx in range(self.get_slide_count()):
-            path = u'%s\\slide%s.bmp' % (self.get_temp_folder(), unicode(idx + 1))            
+            path = u'%s\\slide%s.bmp' % (self.get_temp_folder(),
+                unicode(idx + 1))
             self.convert_thumbnail(path, idx + 1)
 
     def close_presentation(self):
@@ -246,4 +248,3 @@ class PptviewDocument(PresentationDocument):
         Triggers the previous slide on the running presentation
         """
         self.controller.process.PrevStep(self.pptid)
-

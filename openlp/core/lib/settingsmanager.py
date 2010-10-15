@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -56,34 +57,6 @@ class SettingsManager(object):
         self.slidecontroller = (self.width - (
             self.mainwindow_left + self.mainwindow_right) - 100 ) / 2
         self.slidecontroller_image = self.slidecontroller - 50
-
-    def get_preview_visibility(self):
-        """
-        Return the preview panel's visibility.
-        """
-        return QtCore.QSettings().value(u'user interface/preview panel',
-            QtCore.QVariant(True)).toBool()
-
-    def set_preview_visibility(self, visible):
-        """
-        Set the preview panel's visibility.
-        """
-        QtCore.QSettings().setValue(u'user interface/preview panel',
-            QtCore.QVariant(visible))
-
-    def get_live_visibility(self):
-        """
-        Return the live panel's visibility.
-        """
-        return QtCore.QSettings().value(u'user interface/live panel',
-            QtCore.QVariant(True)).toBool()
-
-    def set_live_visibility(self, visible):
-        """
-        Set the live panel's visibility.
-        """
-        QtCore.QSettings().setValue(u'user interface/live panel',
-            QtCore.QVariant(visible))
 
     @staticmethod
     def get_last_dir(section, num=None):
@@ -206,4 +179,3 @@ class SettingsManager(object):
         else:
             # no filtering required
             return files
-

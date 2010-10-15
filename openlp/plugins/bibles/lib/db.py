@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -63,10 +64,10 @@ class Verse(BaseModel):
 
 def init_schema(url):
     """
-    Setup a bible database connection and initialise the database schema
+    Setup a bible database connection and initialise the database schema.
 
     ``url``
-        The database to setup
+        The database to setup.
     """
     session, metadata = init_db(url)
 
@@ -239,7 +240,7 @@ class BibleDB(QtCore.QObject, Manager):
             and the value is the verse text.
         """
         log.debug(u'create_chapter %s,%s', book_id, chapter)
-        #text list has book and chapter as first two elements of the array
+        # text list has book and chapter as first two elements of the array
         for verse_number, verse_text in textlist.iteritems():
             verse = Verse.populate(
                 book_id = book_id,
@@ -280,23 +281,23 @@ class BibleDB(QtCore.QObject, Manager):
 
     def create_meta(self, key, value):
         """
-        Utility method to save BibleMeta objects in a Bible database
+        Utility method to save BibleMeta objects in a Bible database.
 
         ``key``
-            The key for this instance
+            The key for this instance.
 
         ``value``
-            The value for this instance
+            The value for this instance.
         """
         log.debug(u'save_meta %s/%s', key, value)
         self.save_object(BibleMeta.populate(key=key, value=value))
 
     def get_book(self, book):
         """
-        Return a book object from the database
+        Return a book object from the database.
 
         ``book``
-            The name of the book to return
+            The name of the book to return.
         """
         log.debug(u'BibleDb.get_book("%s")', book)
         db_book = self.get_object_filtered(Book, Book.name.like(book + u'%'))
@@ -304,6 +305,13 @@ class BibleDB(QtCore.QObject, Manager):
             db_book = self.get_object_filtered(Book,
                 Book.abbreviation.like(book + u'%'))
         return db_book
+
+    def get_books(self):
+        """
+        A wrapper so both local and web bibles have a get_books() method that
+        manager can call.  Used in the media manager advanced search tab.
+        """
+        return self.get_all_objects(Book, order_by_ref=Book.id)
 
     def get_verses(self, reference_list):
         """
@@ -343,11 +351,11 @@ class BibleDB(QtCore.QObject, Manager):
             else:
                 log.debug(u'OpenLP failed to find book %s', book)
                 QtGui.QMessageBox.information(self.bible_plugin.mediaItem,
-                    translate('BibleDB', 'Book not found'),
-                    translate('BibleDB', u'The book you requested could not '
-                        'be found in this bible.  Please check your spelling '
-                        'and that this is a complete bible not just one '
-                        'testament.'))
+                    translate('BiblesPlugin.BibleDB', 'Book not found'),
+                    translate('BiblesPlugin.BibleDB', 'The book you requested '
+                    'could not be found in this Bible. Please check your '
+                    'spelling and that this is a complete Bible not just '
+                    'one testament.'))
         return verse_list
 
     def verse_search(self, text):
@@ -379,10 +387,10 @@ class BibleDB(QtCore.QObject, Manager):
 
     def get_chapter_count(self, book):
         """
-        Return the number of chapters in a book
+        Return the number of chapters in a book.
 
         ``book``
-            The book to get the chapter count for
+            The book to get the chapter count for.
         """
         log.debug(u'BibleDB.get_chapter_count("%s")', book)
         count = self.session.query(Verse.chapter).join(Book)\
@@ -395,13 +403,13 @@ class BibleDB(QtCore.QObject, Manager):
 
     def get_verse_count(self, book, chapter):
         """
-        Return the number of verses in a chapter
+        Return the number of verses in a chapter.
 
         ``book``
-            The book containing the chapter
+            The book containing the chapter.
 
         ``chapter``
-            The chapter to get the verse count for
+            The chapter to get the verse count for.
         """
         log.debug(u'BibleDB.get_verse_count("%s", %s)', book, chapter)
         count = self.session.query(Verse).join(Book)\
@@ -415,7 +423,7 @@ class BibleDB(QtCore.QObject, Manager):
 
     def dump_bible(self):
         """
-        Utility debugging method to dump the contents of a bible
+        Utility debugging method to dump the contents of a bible.
         """
         log.debug(u'.........Dumping Bible Database')
         log.debug('...............................Books ')

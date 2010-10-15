@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -45,14 +46,12 @@ class CustomMediaItem(MediaManagerItem):
     """
     log.info(u'Custom Media Item loaded')
 
-    def __init__(self, parent, icon, title):
-        self.PluginNameShort = u'Custom'
-        self.pluginNameVisible = translate('CustomPlugin.MediaItem', 'Custom')
+    def __init__(self, parent, plugin, icon):
         self.IconPath = u'custom/custom'
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = CustomListView
-        MediaManagerItem.__init__(self, parent, icon, title)
+        MediaManagerItem.__init__(self, parent, self, icon)
         self.singleServiceItem = False
         # Holds information about whether the edit is remotly triggered and
         # which Custom is required.
@@ -121,7 +120,7 @@ class CustomMediaItem(MediaManagerItem):
         """
         if check_item_selected(self.listView,
             translate('CustomPlugin.MediaItem',
-            'You must select an item to edit.')):
+            'You haven\'t selected an item to edit.')):
             item = self.listView.currentItem()
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.parent.edit_custom_form.loadCustom(item_id, False)
@@ -134,7 +133,7 @@ class CustomMediaItem(MediaManagerItem):
         """
         if check_item_selected(self.listView,
             translate('CustomPlugin.MediaItem',
-            'You must select an item to delete.')):
+            'You haven\'t selected an item to delete.')):
             row_list = [item.row() for item in self.listView.selectedIndexes()]
             row_list.sort(reverse=True)
             id_list = [(item.data(QtCore.Qt.UserRole)).toInt()[0]

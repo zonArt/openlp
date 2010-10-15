@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -36,16 +37,21 @@ log = logging.getLogger(__name__)
 
 class PresentationController(object):
     """
-    Base class for presentation controllers to inherit from
-    Class to control interactions with presentations.
-    It creates the runtime environment
-    To create a new controller, take a copy of this file and name it
-    so it ends in controller.py, i.e. foobarcontroller.py
-    Make sure it inherits PresentationController
-    Then fill in the blanks. If possible try and make sure it loads
-    on all platforms, using for example os.name checks, although
-    __init__, check_available and presentation_deleted should always work.
-    See impresscontroller, powerpointcontroller or pptviewcontroller
+    This class is used to control interactions with presentation applications
+    by creating a runtime environment. This is a base class for presentation
+    controllers to inherit from.
+
+    To create a new controller, take a copy of this file and name it so it ends
+    with ``controller.py``, i.e. ``foobarcontroller.py``. Make sure it inherits
+    :class:`~openlp.plugins.presentations.lib.presentationcontroller.PresentationController`,
+    and then fill in the blanks. If possible try to make sure it loads on all
+    platforms, usually by using :mod:``os.name`` checks, although
+    ``__init__``, ``check_available`` and ``presentation_deleted`` should
+    always be implemented.
+
+    See :class:`~openlp.plugins.presentations.lib.impresscontroller.ImpressController`,
+    :class:`~openlp.plugins.presentations.lib.powerpointcontroller.PowerpointController` or
+    :class:`~openlp.plugins.presentations.lib.pptviewcontroller.PptviewController`
     for examples.
 
     **Basic Attributes**
@@ -69,7 +75,7 @@ class PresentationController(object):
     ``alsosupports``
         Other file types the application can import, although not necessarily
         the first choice due to potential incompatibilities
-        
+
     **Hook Functions**
 
     ``kill()``
@@ -245,7 +251,7 @@ class PresentationDocument(object):
 
         ``presentation``
         The file name of the presentations to the run.
-        
+
         Returns False if the file could not be opened
         """
         return False
@@ -386,7 +392,7 @@ class PresentationDocument(object):
         if os.path.isfile(file):
             img = resize_image(file, 320, 240)
             img.save(self.get_thumbnail_path(idx, False))
-            
+
     def get_thumbnail_path(self, slide_no, check_exists):
         """
         Returns an image path containing a preview for the requested slide
@@ -435,4 +441,3 @@ class PresentationDocument(object):
         The slide the notes are required for, starting at 1
         """
         return ''
-

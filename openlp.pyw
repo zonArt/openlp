@@ -7,8 +7,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,15 +29,19 @@ import os
 import sys
 import logging
 from optparse import OptionParser
+from traceback import format_exception
+from subprocess import Popen, PIPE
 
 from PyQt4 import QtCore, QtGui
 
-log = logging.getLogger()
-
 from openlp.core.lib import Receiver
 from openlp.core.resources import qInitResources
-from openlp.core.ui import MainWindow, SplashScreen, ScreenList
-from openlp.core.utils import AppLocation, LanguageManager
+from openlp.core.ui.mainwindow import MainWindow
+from openlp.core.ui.exceptionform import ExceptionForm
+from openlp.core.ui import SplashScreen, ScreenList
+from openlp.core.utils import AppLocation, LanguageManager, VersionThread
+
+log = logging.getLogger()
 
 application_stylesheet = u"""
 QMainWindow::separator
@@ -46,7 +51,6 @@ QMainWindow::separator
 
 QDockWidget::title
 {
-  /*background: palette(dark);*/
   border: 1px solid palette(dark);
   padding-left: 5px;
   padding-top: 2px;
@@ -68,6 +72,84 @@ class OpenLP(QtGui.QApplication):
     """
     log.info(u'OpenLP Application Loaded')
 
+    def _get_version(self):
+        """
+        Load and store current Application Version
+        """
+        if u'--dev-version' in sys.argv:
+            # If we're running the dev version, let's use bzr to get the version
+            try:
+                # If bzrlib is availble, use it
+                from bzrlib.branch import Branch
+                b = Branch.open_containing('.')[0]
+                b.lock_read()
+                try:
+                    # Get the branch's latest revision number.
+                    revno = b.revno()
+                    # Convert said revision number into a bzr revision id.
+                    revision_id = b.dotted_revno_to_revision_id((revno,))
+                    # Get a dict of tags, with the revision id as the key.
+                    tags = b.tags.get_reverse_tag_dict()
+                    # Check if the latest
+                    if revision_id in tags:
+                        full_version = u'%s' % tags[revision_id][0]
+                    else:
+                        full_version = '%s-bzr%s' % \
+                            (sorted(b.tags.get_tag_dict().keys())[-1], revno)
+                finally:
+                    b.unlock()
+            except:
+                # Otherwise run the command line bzr client
+                bzr = Popen((u'bzr', u'tags', u'--sort', u'time'), stdout=PIPE)
+                output, error = bzr.communicate()
+                code = bzr.wait()
+                if code != 0:
+                    raise Exception(u'Error running bzr tags')
+                lines = output.splitlines()
+                if len(lines) == 0:
+                    tag = u'0.0.0'
+                    revision = u'0'
+                else:
+                    tag, revision = lines[-1].split()
+                bzr = Popen((u'bzr', u'log', u'--line', u'-r', u'-1'),
+                    stdout=PIPE)
+                output, error = bzr.communicate()
+                code = bzr.wait()
+                if code != 0:
+                    raise Exception(u'Error running bzr log')
+                latest = output.split(u':')[0]
+                full_version = latest == revision and tag or \
+                    u'%s-bzr%s' % (tag, latest)
+        else:
+            # We're not running the development version, let's use the file
+            filepath = AppLocation.get_directory(AppLocation.VersionDir)
+            filepath = os.path.join(filepath, u'.version')
+            fversion = None
+            try:
+                fversion = open(filepath, u'r')
+                full_version = unicode(fversion.read()).rstrip()
+            except IOError:
+                log.exception('Error in version file.')
+                full_version = u'0.0.0-bzr000'
+            finally:
+                if fversion:
+                    fversion.close()
+        bits = full_version.split(u'-')
+        app_version = {
+            u'full': full_version,
+            u'version': bits[0],
+            u'build': bits[1] if len(bits) > 1 else None
+        }
+        if app_version[u'build']:
+            log.info(
+                u'Openlp version %s build %s',
+                app_version[u'version'],
+                app_version[u'build']
+            )
+        else:
+            log.info(u'Openlp version %s' % app_version[u'version'])
+        return app_version
+
     def notify(self, obj, evt):
         #TODO needed for presentation exceptions
         return QtGui.QApplication.notify(self, obj, evt)
@@ -76,39 +158,7 @@ class OpenLP(QtGui.QApplication):
         """
         Run the OpenLP application.
         """
-        #Load and store current Application Version
-        filepath = AppLocation.get_directory(AppLocation.VersionDir)
-        filepath = os.path.join(filepath, u'.version')
-        fversion = None
-        try:
-            fversion = open(filepath, u'r')
-            for line in fversion:
-                full_version = unicode(line).rstrip() #\
-                    #.replace(u'\r', u'').replace(u'\n', u'')
-                bits = full_version.split(u'-')
-                app_version = {
-                    u'full': full_version,
-                    u'version': bits[0],
-                    u'build': bits[1] if len(bits) > 1 else None
-                }
-            if app_version[u'build']:
-                log.info(
-                    u'Openlp version %s build %s',
-                    app_version[u'version'],
-                    app_version[u'build']
-                )
-            else:
-                log.info(u'Openlp version %s' % app_version[u'version'])
-        except IOError:
-            log.exception('Error in version file.')
-            app_version = {
-                u'full': u'1.9.0-bzr000',
-                u'version': u'1.9.0',
-                u'build': u'bzr000'
-            }
-        finally:
-            if fversion:
-                fversion.close()
+        app_version = self._get_version()
         #provide a listener for widgets to reqest a screen update.
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlp_process_events'), self.processEvents)
@@ -121,18 +171,18 @@ class OpenLP(QtGui.QApplication):
         show_splash = QtCore.QSettings().value(
             u'general/show splash', QtCore.QVariant(True)).toBool()
         if show_splash:
-            self.splash = SplashScreen(self.applicationVersion())
+            self.splash = SplashScreen()
             self.splash.show()
         # make sure Qt really display the splash screen
         self.processEvents()
         screens = ScreenList()
         # Decide how many screens we have and their size
         for screen in xrange(0, self.desktop().numScreens()):
+            size = self.desktop().screenGeometry(screen);
             screens.add_screen({u'number': screen,
-                u'size': self.desktop().availableGeometry(screen),
+                u'size': size,
                 u'primary': (self.desktop().primaryScreen() == screen)})
-            log.info(u'Screen %d found with resolution %s',
-                screen, self.desktop().availableGeometry(screen))
+            log.info(u'Screen %d found with resolution %s', screen, size)
         # start the main app window
         self.mainWindow = MainWindow(screens, app_version)
         self.mainWindow.show()
@@ -140,8 +190,18 @@ class OpenLP(QtGui.QApplication):
             # now kill the splashscreen
             self.splash.finish(self.mainWindow)
         self.mainWindow.repaint()
-        self.mainWindow.versionThread()
+        VersionThread(self.mainWindow, app_version).start()
         return self.exec_()
+
+    def hookException(self, exctype, value, traceback):
+        if not hasattr(self, u'mainWindow'):
+            log.exception(''.join(format_exception(exctype, value, traceback)))
+            return
+        if not hasattr(self, u'exceptionForm'):
+            self.exceptionForm = ExceptionForm(self.mainWindow)
+        self.exceptionForm.exceptionTextEdit.setPlainText(
+            ''.join(format_exception(exctype, value, traceback)))
+        self.exceptionForm.exec_()
 
 def main():
     """
@@ -149,18 +209,21 @@ def main():
     the PyQt4 Application.
     """
     # Set up command line options.
-    usage = u'Usage: %prog [options] [qt-options]'
+    usage = 'Usage: %prog [options] [qt-options]'
     parser = OptionParser(usage=usage)
-    parser.add_option("-l", "--log-level", dest="loglevel",
-                      default="warning", metavar="LEVEL",
-                      help="Set logging to LEVEL level. Valid values are "
-                           "\"debug\", \"info\", \"warning\".")
-    parser.add_option("-p", "--portable", dest="portable",
-                      action="store_true",
-                      help="Specify if this should be run as a portable app, "
-                           "off a USB flash drive.")
-    parser.add_option("-s", "--style", dest="style",
-                      help="Set the Qt4 style (passed directly to Qt4).")
+    parser.add_option('-e', '--no-error-form', dest='no_error_form',
+        action='store_true', help='Disable the error notification form.')
+    parser.add_option('-l', '--log-level', dest='loglevel',
+        default='warning', metavar='LEVEL', help='Set logging to LEVEL '
+        'level. Valid values are "debug", "info", "warning".')
+    parser.add_option('-p', '--portable', dest='portable',
+        action='store_true', help='Specify if this should be run as a '
+        'portable app, off a USB flash drive (not implemented).')
+    parser.add_option('-d', '--dev-version', dest='dev_version',
+        action='store_true', help='Ignore the version file and pull the '
+        'version directly from Bazaar')
+    parser.add_option('-s', '--style', dest='style',
+        help='Set the Qt4 style (passed directly to Qt4).')
     # Set up logging
     log_path = AppLocation.get_directory(AppLocation.CacheDir)
     if not os.path.exists(log_path):
@@ -193,7 +256,8 @@ def main():
     language = LanguageManager.get_language()
     appTranslator = LanguageManager.get_translator(language)
     app.installTranslator(appTranslator)
-
+    if not options.no_error_form:
+        sys.excepthook = app.hookException
     sys.exit(app.run())
 
 if __name__ == u'__main__':

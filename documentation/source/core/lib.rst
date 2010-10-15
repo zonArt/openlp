@@ -60,12 +60,6 @@
 .. autoclass:: openlp.core.lib.settingstab.SettingsTab
    :members:
 
-:mod:`ThemeXML`
----------------
-
-.. autoclass:: openlp.core.lib.themexmlhandler.ThemeXML
-   :members:
-
 :mod:`OpenLPToolbar`
 --------------------
 

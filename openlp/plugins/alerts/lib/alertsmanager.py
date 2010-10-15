@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -31,18 +32,9 @@ from openlp.core.lib import Receiver, translate
 
 log = logging.getLogger(__name__)
 
-HTMLCODE = u"""
-   <p style=\"color:%s;
-   background-color:%s;
-   font-family:%s;
-   font-size: %spt; \">
-    %s
-    </p>
-"""
-
 class AlertsManager(QtCore.QObject):
     """
-    AlertsTab is the Alerts settings tab in the settings dialog.
+    AlertsManager manages the settings of Alerts.
     """
     log.info(u'Alert Manager loaded')
 
@@ -79,7 +71,7 @@ class AlertsManager(QtCore.QObject):
         if self.timer_id != 0:
             Receiver.send_message(u'maindisplay_status_text',
                 translate('AlertsPlugin.AlertsManager',
-                'Alert message created and delayed'))
+                'Alert message created and displayed.'))
             return
         Receiver.send_message(u'maindisplay_status_text', u'')
         self.generateAlert()
@@ -93,10 +85,7 @@ class AlertsManager(QtCore.QObject):
             return
         text = self.alertList.pop(0)
         alertTab = self.parent.alertsTab
-        text = HTMLCODE % (alertTab.font_color, alertTab.bg_color,
-                           alertTab.font_face, alertTab.font_size, text)
-        self.parent.previewController.parent.displayManager.addAlert(text,
-            alertTab.location)
+        self.parent.liveController.display.alert(text)
         # check to see if we have a timer running
         if self.timer_id == 0:
             self.timer_id = self.startTimer(int(alertTab.timeout) * 1000)
@@ -110,11 +99,8 @@ class AlertsManager(QtCore.QObject):
 
         """
         log.debug(u'timer event')
-        alertTab = self.parent.alertsTab
         if event.timerId() == self.timer_id:
-            self.parent.previewController.parent.displayManager.addAlert(u'',
-                alertTab.location)
+            self.parent.liveController.display.alert(u'')
         self.killTimer(self.timer_id)
         self.timer_id = 0
         self.generateAlert()
-

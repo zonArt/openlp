@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -57,15 +58,12 @@ class PresentationMediaItem(MediaManagerItem):
         Constructor. Setup defaults
         """
         self.controllers = controllers
-        self.PluginNameShort = u'Presentation'
-        self.pluginNameVisible = translate('PresentationPlugin.MediaItem',
-            'Presentation')
         self.IconPath = u'presentations/presentation'
         self.Automatic = u''
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = PresentationListView
-        MediaManagerItem.__init__(self, parent, icon, title)
+        MediaManagerItem.__init__(self, parent, self, icon)
         self.message_listener = MessageListener(self)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'mediaitem_presentation_rebuild'), self.rebuild)
@@ -78,7 +76,6 @@ class PresentationMediaItem(MediaManagerItem):
             'Select Presentation(s)')
         self.Automatic = translate('PresentationPlugin.MediaItem',
             'Automatic')
-        self.buildFileMaskString()
 
     def buildFileMaskString(self):
         """
@@ -91,7 +88,7 @@ class PresentationMediaItem(MediaManagerItem):
                     self.controllers[controller].alsosupports
                 for type in types:
                     if fileType.find(type) == -1:
-                        fileType += u'*%s ' % type
+                        fileType += u'*.%s ' % type
                         self.parent.serviceManager.supportedSuffixes(type)
         self.OnNewFileMasks = translate('PresentationPlugin.MediaItem',
             'Presentations (%s)' % fileType)
@@ -163,7 +160,7 @@ class PresentationMediaItem(MediaManagerItem):
             self.DisplayTypeComboBox.insertItem(0, self.Automatic)
             self.DisplayTypeComboBox.setCurrentIndex(0)
         if QtCore.QSettings().value(self.settingsSection + u'/override app', 
-            QtCore.QVariant(QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:          
+            QtCore.QVariant(QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
             self.PresentationWidget.show()
         else:
             self.PresentationWidget.hide()
@@ -184,12 +181,11 @@ class PresentationMediaItem(MediaManagerItem):
             filename = os.path.split(unicode(file))[1]
             if titles.count(filename) > 0:
                 if not initialLoad:
-                    QtGui.QMessageBox.critical(
-                        self, translate('PresentationPlugin.MediaItem',
-                        'File exists'),
+                    QtGui.QMessageBox.critical(self,
                         translate('PresentationPlugin.MediaItem',
-                        'A presentation with that filename already exists.'),
-                        QtGui.QMessageBox.Ok)
+                        'File Exists'),
+                        translate('PresentationPlugin.MediaItem',
+                        'A presentation with that filename already exists.'))
                 continue
             controller_name = self.findControllerByType(filename)
             if controller_name:
@@ -211,10 +207,9 @@ class PresentationMediaItem(MediaManagerItem):
                 else:
                     QtGui.QMessageBox.critical(
                         self, translate('PresentationPlugin.MediaItem',
-                        'Unsupported file'),
+                        'Unsupported File'),
                         translate('PresentationPlugin.MediaItem',
-                        'This type of presentation is not supported'),
-                        QtGui.QMessageBox.Ok)
+                        'This type of presentation is not supported.'))
                     continue
             item_name = QtGui.QListWidgetItem(filename)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
@@ -287,7 +282,7 @@ class PresentationMediaItem(MediaManagerItem):
         "supports" the extension. If none found, then look for a controller
         which "alsosupports" it instead.
         """
-        filetype = os.path.splitext(filename)[1]
+        filetype = filename.split(u'.')[1]
         if not filetype:
             return None
         for controller in self.controllers:

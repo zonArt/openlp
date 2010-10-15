@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,8 +28,8 @@ import logging
 
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus, translate
-from openlp.plugins.media.lib import MediaMediaItem
+from openlp.core.lib import Plugin, StringContent, build_icon, translate
+from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 
 log = logging.getLogger(__name__)
 
@@ -36,13 +37,12 @@ class MediaPlugin(Plugin):
     log.info(u'%s MediaPlugin loaded', __name__)
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Media', u'1.9.2', plugin_helpers)
+        Plugin.__init__(self, u'Media', u'1.9.3', plugin_helpers)
         self.weight = -6
         self.icon_path = u':/plugins/plugin_media.png'
         self.icon = build_icon(self.icon_path)
         # passed with drag and drop messages
         self.dnd_id = u'Media'
-        self.status = PluginStatus.Active
         self.audio_list = u''
         self.video_list = u''
         for mimetype in Phonon.BackendCapabilities.availableMimeTypes():
@@ -68,12 +68,71 @@ class MediaPlugin(Plugin):
             type = u''
         return list, type
 
+    def getSettingsTab(self):
+        return MediaTab(self.name)
+
     def getMediaManagerItem(self):
         # Create the MediaManagerItem object
-        return MediaMediaItem(self, self.icon, self.name)
+        return MediaMediaItem(self, self, self.icon)
 
     def about(self):
-        about_text = translate('MediaPlugin',
-            '<b>Media Plugin</b><br>This plugin '
-            'allows the playing of audio and video media')
+        about_text = translate('MediaPlugin', '<strong>Media Plugin</strong>'
+            '<br />The media plugin provides playback of audio and video.')
         return about_text
+
+    def setPluginTextStrings(self):
+        """
+        Called to define all translatable texts of the plugin
+        """
+        ## Name PluginList ##
+        self.textStrings[StringContent.Name] = {
+            u'singular': translate('MediaPlugin', 'Media'),
+            u'plural': translate('MediaPlugin', 'Media')
+        }
+        ## Name for MediaDockManager, SettingsManager ##
+        self.textStrings[StringContent.VisibleName] = {
+            u'title': translate('MediaPlugin', 'Media')
+        }
+        # Middle Header Bar
+        ## Load Button ##
+        self.textStrings[StringContent.Load] = {
+            u'title': translate('MediaPlugin', 'Load'),
+            u'tooltip': translate('MediaPlugin', 
+                'Load a new Media')
+        }
+        ## New Button ##
+        self.textStrings[StringContent.New] = {
+            u'title': translate('MediaPlugin', 'Add'),
+            u'tooltip': translate('MediaPlugin', 
+                'Add a new Media')
+        }
+        ## Edit Button ##
+        self.textStrings[StringContent.Edit] = {
+            u'title': translate('MediaPlugin', 'Edit'),
+            u'tooltip': translate('MediaPlugin', 
+                'Edit the selected Media')
+        }
+        ## Delete Button ##
+        self.textStrings[StringContent.Delete] = {
+            u'title': translate('MediaPlugin', 'Delete'),
+            u'tooltip': translate('MediaPlugin', 
+                'Delete the selected Media')
+        }
+        ## Preview ##
+        self.textStrings[StringContent.Preview] = {
+            u'title': translate('MediaPlugin', 'Preview'),
+            u'tooltip': translate('MediaPlugin', 
+                'Preview the selected Media')
+        }
+        ## Live  Button ##
+        self.textStrings[StringContent.Live] = {
+            u'title': translate('MediaPlugin', 'Live'),
+            u'tooltip': translate('MediaPlugin', 
+                'Send the selected Media live')
+        }
+        ## Add to service Button ##
+        self.textStrings[StringContent.Service] = {
+            u'title': translate('MediaPlugin', 'Service'),
+            u'tooltip': translate('MediaPlugin', 
+                'Add the selected Media to the service')
+        }

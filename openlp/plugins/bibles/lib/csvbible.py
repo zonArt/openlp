@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -50,9 +51,9 @@ class CSVBible(BibleDB):
         if u'booksfile' not in kwargs:
             raise KeyError(u'You have to supply a file to import books from.')
         self.booksfile = kwargs[u'booksfile']
-        if u'versesfile' not in kwargs:
+        if u'versefile' not in kwargs:
             raise KeyError(u'You have to supply a file to import verses from.')
-        self.versesfile = kwargs[u'versesfile']
+        self.versesfile = kwargs[u'versefile']
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'bibles_stop_import'), self.stop_import)
 

@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -48,14 +49,12 @@ class ImageMediaItem(MediaManagerItem):
     """
     log.info(u'Image Media Item loaded')
 
-    def __init__(self, parent, icon, title):
-        self.PluginNameShort = u'Image'
-        self.pluginNameVisible = translate('ImagePlugin.MediaItem', 'Image')
+    def __init__(self, parent, plugin, icon):
         self.IconPath = u'images/image'
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = ImageListView
-        MediaManagerItem.__init__(self, parent, icon, title)
+        MediaManagerItem.__init__(self, parent, self, icon)
 
     def retranslateUi(self):
         self.OnNewPrompt = translate('ImagePlugin.MediaItem',
@@ -105,18 +104,25 @@ class ImageMediaItem(MediaManagerItem):
         self.ImageWidget.setSizePolicy(sizePolicy)
         self.ImageWidget.setObjectName(u'ImageWidget')
         self.blankButton = self.toolbar.addToolbarButton(
-            u'Replace Background', u':/slides/slide_blank.png',
+            translate('ImagePlugin.MediaItem', 'Replace Background'),
+            u':/slides/slide_blank.png',
             translate('ImagePlugin.MediaItem', 'Replace Live Background'),
-                self.onReplaceClick, False)
+            self.onReplaceClick, False)
+        self.resetButton = self.toolbar.addToolbarButton(
+            translate('ImagePlugin.MediaItem', u'Reset Background'),
+            u':/system/system_close.png',
+            translate('ImagePlugin.MediaItem', 'Reset Live Background'),
+            self.onResetClick, False)
         # Add the song widget to the page layout
         self.pageLayout.addWidget(self.ImageWidget)
+        self.resetButton.setVisible(False)
 
     def onDeleteClick(self):
         """
         Remove an image item from the list
         """
         if check_item_selected(self.listView, translate('ImagePlugin.MediaItem',
-            'You must select an item to delete.')):
+            'You must select an image to delete.')):
             row_list = [item.row() for item in self.listView.selectedIndexes()]
             row_list.sort(reverse=True)
             for row in row_list:
@@ -167,16 +173,20 @@ class ImageMediaItem(MediaManagerItem):
         else:
             return False
 
+    def onResetClick(self):
+        self.resetButton.setVisible(False)
+        self.parent.liveController.display.resetImage()
+
     def onReplaceClick(self):
         if check_item_selected(self.listView,
             translate('ImagePlugin.MediaItem',
-            'You must select an item to process.')):
+            'You must select an image to replace the background with.')):
             items = self.listView.selectedIndexes()
             for item in items:
                 bitem = self.listView.item(item.row())
                 filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
-                frame = QtGui.QImage(unicode(filename))
-                self.parent.displayManager.displayImageWithText(frame)
+                self.parent.liveController.display.image(filename)
+        self.resetButton.setVisible(True)
 
     def onPreviewClick(self):
         MediaManagerItem.onPreviewClick(self)

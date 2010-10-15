@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,52 +25,6 @@
 ###############################################################################
 
 from openlp.core.lib import translate
-
-#from openlp.plugins.songs.lib import OpenLyricsSong, OpenSongSong, CCLISong, \
-#    CSVSong
-
-class SongFormat(object):
-    """
-    This is a special enumeration class that holds the various types of songs,
-    plus a few helper functions to facilitate generic handling of song types
-    for importing.
-    """
-    Unknown = -1
-    OpenLyrics = 0
-    OpenSong = 1
-    CCLI = 2
-    CSV = 3
-
-    @staticmethod
-    def get_class(id):
-        """
-        Return the appropriate imeplementation class.
-
-        ``id``
-            The song format.
-        """
-#        if id == SongFormat.OpenLyrics:
-#            return OpenLyricsSong
-#        elif id == SongFormat.OpenSong:
-#            return OpenSongSong
-#        elif id == SongFormat.CCLI:
-#            return CCLISong
-#        elif id == SongFormat.CSV:
-#            return CSVSong
-#        else:
-        return None
-
-    @staticmethod
-    def list():
-        """
-        Return a list of the supported song formats.
-        """
-        return [
-            SongFormat.OpenLyrics,
-            SongFormat.OpenSong,
-            SongFormat.CCLI,
-            SongFormat.CSV
-        ]
 
 class VerseType(object):
     """
@@ -93,19 +48,19 @@ class VerseType(object):
             The type to return a string for
         """
         if verse_type == VerseType.Verse:
-            return translate('VerseType', 'Verse')
+            return translate('SongsPlugin.VerseType', 'Verse')
         elif verse_type == VerseType.Chorus:
-            return translate('VerseType', 'Chorus')
+            return translate('SongsPlugin.VerseType', 'Chorus')
         elif verse_type == VerseType.Bridge:
-            return translate('VerseType', 'Bridge')
+            return translate('SongsPlugin.VerseType', 'Bridge')
         elif verse_type == VerseType.PreChorus:
-            return translate('VerseType', 'Pre-Chorus')
+            return translate('SongsPlugin.VerseType', 'Pre-Chorus')
         elif verse_type == VerseType.Intro:
-            return translate('VerseType', 'Intro')
+            return translate('SongsPlugin.VerseType', 'Intro')
         elif verse_type == VerseType.Ending:
-            return translate('VerseType', 'Ending')
+            return translate('SongsPlugin.VerseType', 'Ending')
         elif verse_type == VerseType.Other:
-            return translate('VerseType', 'Other')
+            return translate('SongsPlugin.VerseType', 'Other')
 
     @staticmethod
     def from_string(verse_type):
@@ -137,14 +92,7 @@ class VerseType(object):
             unicode(VerseType.to_string(VerseType.Other)).lower():
             return VerseType.Other
 
+
 from xml import LyricsXML, SongXMLBuilder, SongXMLParser
 from songstab import SongsTab
 from mediaitem import SongMediaItem
-from songimport import SongImport
-from opensongimport import OpenSongImport
-from olpimport import OpenLPSongImport
-try:
-    from sofimport import SofImport
-    from oooimport import OooImport
-except ImportError:
-    pass

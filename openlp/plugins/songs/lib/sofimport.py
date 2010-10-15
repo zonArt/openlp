@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -67,19 +68,30 @@ class SofImport(OooImport):
     It attempts to detect italiced verses, and treats these as choruses in
     the verse ordering. Again not perfect, but a start.
     """
-    def __init__(self, songmanager):
+    def __init__(self, master_manager, **kwargs):
         """
         Initialise the class. Requires a songmanager class which is passed
         to SongImport for writing song to disk
         """
-        OooImport.__init__(self, songmanager)
+        OooImport.__init__(self, master_manager, **kwargs)
 
-    def import_sof(self, filename):
+    def do_import(self):
+        self.abort = False
         self.start_ooo()
-        self.open_ooo_file(filename)
-        self.process_sof_file()
-        self.close_ooo_file()
+        for filename in self.filenames:
+            if self.abort:
+                self.import_wizard.incrementProgressBar(u'Import cancelled', 0)
+                return
+            filename = unicode(filename)
+            if os.path.isfile(filename):
+                self.open_ooo_file(filename)
+                if self.document:
+                    self.process_sof_file()
+                    self.close_ooo_file()
         self.close_ooo()
+        self.import_wizard.importProgressBar.setMaximum(1)
+        self.import_wizard.incrementProgressBar(u'', 1)
+        return True
 
     def process_sof_file(self):
         """
@@ -89,6 +101,9 @@ class SofImport(OooImport):
         self.new_song()
         paragraphs = self.document.getText().createEnumeration()
         while paragraphs.hasMoreElements():
+            if self.abort:
+                self.import_wizard.incrementProgressBar(u'Import cancelled', 0)
+                return
             paragraph = paragraphs.nextElement()
             if paragraph.supportsService("com.sun.star.text.Paragraph"):
                 self.process_paragraph(paragraph)
@@ -243,6 +258,7 @@ class SofImport(OooImport):
         if title.endswith(u','):
             title = title[:-1]
         self.song.title = title
+        self.import_wizard.incrementProgressBar(u'Processing song ' + title, 0)
 
     def add_author(self, text):
         """

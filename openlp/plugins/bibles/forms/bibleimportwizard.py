@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -274,14 +275,14 @@ class Ui_BibleImportWizard(object):
         self.CopyrightEdit.setObjectName(u'CopyrightEdit')
         self.LicenseDetailsLayout.setWidget(1, QtGui.QFormLayout.FieldRole,
             self.CopyrightEdit)
-        self.PermissionLabel = QtGui.QLabel(self.LicenseDetailsPage)
-        self.PermissionLabel.setObjectName(u'PermissionLabel')
+        self.PermissionsLabel = QtGui.QLabel(self.LicenseDetailsPage)
+        self.PermissionsLabel.setObjectName(u'PermissionsLabel')
         self.LicenseDetailsLayout.setWidget(2, QtGui.QFormLayout.LabelRole,
-            self.PermissionLabel)
-        self.PermissionEdit = QtGui.QLineEdit(self.LicenseDetailsPage)
-        self.PermissionEdit.setObjectName(u'PermissionEdit')
+            self.PermissionsLabel)
+        self.PermissionsEdit = QtGui.QLineEdit(self.LicenseDetailsPage)
+        self.PermissionsEdit.setObjectName(u'PermissionsEdit')
         self.LicenseDetailsLayout.setWidget(2, QtGui.QFormLayout.FieldRole,
-            self.PermissionEdit)
+            self.PermissionsEdit)
         BibleImportWizard.addPage(self.LicenseDetailsPage)
         self.ImportPage = QtGui.QWizardPage()
         self.ImportPage.setObjectName(u'ImportPage')
@@ -334,13 +335,13 @@ class Ui_BibleImportWizard(object):
         self.FormatComboBox.setItemText(3,
             translate('BiblesPlugin.ImportWizardForm', 'Web Download'))
         self.OsisLocationLabel.setText(
-            translate('BiblesPlugin.ImportWizardForm', 'File Location:'))
+            translate('BiblesPlugin.ImportWizardForm', 'File location:'))
         self.BooksLocationLabel.setText(
-            translate('BiblesPlugin.ImportWizardForm', 'Books Location:'))
+            translate('BiblesPlugin.ImportWizardForm', 'Books location:'))
         self.VerseLocationLabel.setText(
-            translate('BiblesPlugin.ImportWizardForm', 'Verse Location:'))
+            translate('BiblesPlugin.ImportWizardForm', 'Verse location:'))
         self.OpenSongFileLabel.setText(
-            translate('BiblesPlugin.ImportWizardForm', 'Bible Filename:'))
+            translate('BiblesPlugin.ImportWizardForm', 'Bible filename:'))
         self.LocationLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'Location:'))
         self.LocationComboBox.setItemText(0,
@@ -368,11 +369,11 @@ class Ui_BibleImportWizard(object):
             translate('BiblesPlugin.ImportWizardForm',
                 'Set up the Bible\'s license details.'))
         self.VersionNameLabel.setText(
-            translate('BiblesPlugin.ImportWizardForm', 'Version Name:'))
+            translate('BiblesPlugin.ImportWizardForm', 'Version name:'))
         self.CopyrightLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'Copyright:'))
-        self.PermissionLabel.setText(
-            translate('BiblesPlugin.ImportWizardForm', 'Permission:'))
+        self.PermissionsLabel.setText(
+            translate('BiblesPlugin.ImportWizardForm', 'Permissions:'))
         self.ImportPage.setTitle(
             translate('BiblesPlugin.ImportWizardForm', 'Importing'))
         self.ImportPage.setSubTitle(

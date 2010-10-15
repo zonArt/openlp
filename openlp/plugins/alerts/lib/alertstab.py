@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -31,14 +32,13 @@ class AlertsTab(SettingsTab):
     """
     AlertsTab is the alerts settings tab in the settings dialog.
     """
-    def __init__(self, parent):
+    def __init__(self, parent, visible_title):
         self.parent = parent
         self.manager = parent.manager
-        SettingsTab.__init__(self, parent.name)
+        SettingsTab.__init__(self, parent.name, visible_title)
 
     def setupUi(self):
         self.setObjectName(u'AlertsTab')
-        self.tabTitleVisible = translate('AlertsPlugin.AlertsTab', 'Alerts')
         self.AlertsLayout = QtGui.QHBoxLayout(self)
         self.AlertsLayout.setSpacing(8)
         self.AlertsLayout.setMargin(8)
@@ -190,13 +190,13 @@ class AlertsTab(SettingsTab):
         self.FontGroupBox.setTitle(
             translate('AlertsPlugin.AlertsTab', 'Font'))
         self.FontLabel.setText(
-            translate('AlertsPlugin.AlertsTab', 'Font Name:'))
+            translate('AlertsPlugin.AlertsTab', 'Font name:'))
         self.FontColorLabel.setText(
-            translate('AlertsPlugin.AlertsTab', 'Font Color:'))
+            translate('AlertsPlugin.AlertsTab', 'Font color:'))
         self.BackgroundColorLabel.setText(
-            translate('AlertsPlugin.AlertsTab', 'Background Color:'))
+            translate('AlertsPlugin.AlertsTab', 'Background color:'))
         self.FontSizeLabel.setText(
-            translate('AlertsPlugin.AlertsTab', 'Font Size:'))
+            translate('AlertsPlugin.AlertsTab', 'Font size:'))
         self.FontSizeSpinBox.setSuffix(
             translate('AlertsPlugin.AlertsTab', 'pt'))
         self.TimeoutLabel.setText(
@@ -208,7 +208,7 @@ class AlertsTab(SettingsTab):
         self.PreviewGroupBox.setTitle(
             translate('AlertsPlugin.AlertsTab', 'Preview'))
         self.FontPreview.setText(
-            translate('AlertsPlugin.AlertsTab', 'openlp.org'))
+            translate('AlertsPlugin.AlertsTab', 'OpenLP 2.0'))
         self.LocationComboBox.setItemText(0,
             translate('AlertsPlugin.AlertsTab', 'Top'))
         self.LocationComboBox.setItemText(1,
@@ -260,7 +260,7 @@ class AlertsTab(SettingsTab):
         self.font_face = unicode(settings.value(
             u'font face', QtCore.QVariant(QtGui.QFont().family())).toString())
         self.location = settings.value(
-            u'location', QtCore.QVariant(0)).toInt()[0]
+            u'location', QtCore.QVariant(1)).toInt()[0]
         settings.endGroup()
         self.FontSizeSpinBox.setValue(self.font_size)
         self.TimeoutSpinBox.setValue(self.timeout)
