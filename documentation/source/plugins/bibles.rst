@@ -1,7 +1,7 @@
 .. _plugins-bibles:
 
-:mod:`bibles` Plugin
-====================
+Bibles Plugin
+=============
 
 .. automodule:: openlp.plugins.bibles
    :members:
@@ -60,8 +60,8 @@
 .. autoclass:: openlp.plugins.bibles.lib.http.HTTPBible
    :members:
 
-:mod:`bibleOSISimpl`
-^^^^^^^^^^^^^^^^^^^^
+:mod:`osis`
+^^^^^^^^^^^
 
 .. automodule:: openlp.plugins.bibles.lib.osis
    :members:
@@ -69,16 +69,19 @@
 .. autoclass:: openlp.plugins.bibles.lib.osis.OSISBible
    :members:
 
+:mod:`opensong`
+^^^^^^^^^^^^^^^
+
+.. automodule:: openlp.plugins.bibles.lib.opensong
+   :members:
+
+.. autoclass:: openlp.plugins.bibles.lib.opensong.OpenSongBible
+   :members:
+
 :mod:`biblestab`
 ^^^^^^^^^^^^^^^^
 
 .. automodule:: openlp.plugins.bibles.lib.biblestab
-   :members:
-
-:mod:`common`
-^^^^^^^^^^^^^
-
-.. automodule:: openlp.plugins.bibles.lib.common
    :members:
 
 :mod:`manager`
