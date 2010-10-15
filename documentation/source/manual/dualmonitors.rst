@@ -12,11 +12,11 @@ monitors will have two of, or a combination of the two connectors below.
 
 **VGA**
 
-.. image:: /pics/vga.png
+.. image:: pics/vga.png
 
 **DVI**
 
-.. image:: /pics/dvi.png
+.. image:: pics/dvi.png
 
 A laptop computer setup only varies slightly, generally you will need only one
 of outputs pictured above since your laptops screen serves as one of the 
@@ -47,11 +47,11 @@ panel and click on display. This will open up the Display options. You can
 also bypass this step by right click on a blank area on your desktop and 
 selecting **resolution**.
 
-.. image:: /pics/winsevendisplay.png
+.. image:: pics/winsevendisplay.png
 
 Then click on the Screen Resolution from the left pane.
 
-.. image:: /pics/winsevenresolution.png
+.. image:: pics/winsevenresolution.png
 
 Then enable your projector and ensure your desktop is extended.
 
@@ -61,11 +61,11 @@ Windows Vista
 From the control panel click on personalize, or right click a blank place on
 the desktop and click personalization. 
 
-.. image:: /pics/vistapersonalize.png
+.. image:: pics/vistapersonalize.png
 
 From the **Personalization** window click on Display Settings.
 
-.. image:: /pics/vistadisplaysettings.png
+.. image:: pics/vistadisplaysettings.png
 
 Then enable the montior that represents your projector an make sure your
 you have checked Extend the desktop.
@@ -77,7 +77,7 @@ From the control panel select Display, or right click on a blank area of the
 desktop and select properties. From the properties window click on the settings
 tab.
 
-.. image:: /pics/xpdisplaysettings.png
+.. image:: pics/xpdisplaysettings.png
 
 Then enable the monitor that represents your projector an make sure your
 you have checked Extend the desktop.
@@ -97,7 +97,7 @@ GNOME
 This guide is for users of the GNOME desktop who do not use proprietary drivers.
 From most distros go to System --> Preferences --> Display Settings (Monitors)
 
-.. image:: /pics/gnome.png
+.. image:: pics/gnome.png
 
 Setup your projector with the correct resolution and make sure you do **not**
 have mirrored desktop enabled (same image on all monitors).
@@ -108,11 +108,11 @@ KDE
 This guide is for users of the KDE desktop who do not use proprietary drivers.
 From most distros click the Kick Off menu and navigate to **system settings**
 
-.. image:: /pics/kdesystemsettings.png
+.. image:: pics/kdesystemsettings.png
 
 Click on the display and monitor icon.
 
-.. image:: /pics/kdedisplay.png
+.. image:: pics/kdedisplay.png
 
 From here you will need to set up your projector with the appropriate
 resolution, and position. OpenLP works best projecting to the monitor on the
