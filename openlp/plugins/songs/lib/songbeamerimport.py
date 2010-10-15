@@ -127,11 +127,10 @@ class SongBeamerImport(SongImport):
                 self.import_wizard.incrementProgressBar(
                     "Importing %s" % (self.file_name))
             return True
-            
+
     def parse_tags(self, line):
         tag_val = line.split('=')
-        if len(tag_val[0]) == 0 or \
-            len(tag_val[1]) == 0:
+        if len(tag_val[0]) == 0 or len(tag_val[1]) == 0:
             return True
         if tag_val[0] == '#(c)':
             self.add_copyright(tag_val[1])
@@ -225,11 +224,10 @@ class SongBeamerImport(SongImport):
         else:
             pass
         return True
-        
+
     def check_verse_marks(self, line):
         marks = line.split(' ')
-        if len(marks) <= 2 and \
-            marks[0] in SongBeamerTypes.MarkTypes:
+        if len(marks) <= 2 and marks[0] in SongBeamerTypes.MarkTypes:
             self.current_verse_type = SongBeamerTypes.MarkTypes[marks[0]]
             if len(marks) == 2:
                 #TODO: may check, because of only digits are allowed
