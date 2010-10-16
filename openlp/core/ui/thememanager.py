@@ -215,7 +215,7 @@ class ThemeManager(QtGui.QWidget):
         Loads a new theme with the default settings and then launches the theme
         editing form for the user to make their customisations.
         """
-        theme = self.createThemeFromXml(self.baseTheme(), self.path)
+        theme = ThemeXML() #self.createThemeFromXml(self.baseTheme(), self.path)
         #self.amendThemeForm.loadTheme(theme)
         self.saveThemeName = u''
         self.themeWizardForm.theme = theme

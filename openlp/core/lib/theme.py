@@ -42,16 +42,16 @@ BLANK_THEME_XML = \
 '''<?xml version="1.0" encoding="utf-8"?>
  <theme version="1.0">
    <name>BlankStyle</name>
-   <background type="solid" mode="opaque">
-      <color>#000000</color>
+   <background type="image">
+      <filename></filename>
    </background>
-   <background type="gradient" mode="opaque">
+   <background type="gradient">
       <startColor>#000000</startColor>
       <endColor>#000000</endColor>
       <direction>vertical</direction>
    </background>
-   <background type="image" mode="opaque">
-      <filename></filename>
+   <background type="solid">
+      <color>#000000</color>
    </background>
    <font type="main">
       <name>Arial</name>
@@ -70,9 +70,9 @@ BLANK_THEME_XML = \
       <size>12</size>
       <bold>False</bold>
       <italics>False</italics>
+      <line_adjustment>0</line_adjustment>
       <shadow shadowColor="#000000" shadowSize="5">True</shadow>
       <outline outlineColor="#000000" outlineSize="2">False</outline>
-      <line_adjustment>0</line_adjustment>
       <location override="False" x="10" y="690" width="1004" height="78"/>
    </font>
    <display>
@@ -383,7 +383,7 @@ class ThemeXML(object):
         # print objectify.dump(theme_xml)
         xml_iter = theme_xml.getiterator()
         for element in xml_iter:
-            #print "base",element.getparent(),  element.tag, element.text, element.attrib
+            #print "base", element.getparent(), element.tag, element.text, element.attrib
             parent = element.getparent()
             master = u''
             if parent is not None:
@@ -403,6 +403,8 @@ class ThemeXML(object):
                             self._create_attr(master, attr, \
                             element.getparent().attrib[attr])
             if master:
+                #print "A", element.tag
+                self._create_attr(master, element.tag, element.text)
                 if element.attrib:
                     for attr in element.attrib:
                         base_element = attr
@@ -412,11 +414,10 @@ class ThemeXML(object):
                                 base_element = element.tag + u'_' + attr
                         self._create_attr(master, base_element,
                             element.attrib[attr])
-                else:
-                   self._create_attr(master,  element.tag, element.text)
             else:
+                #print "C", element.tag
                 if element.tag == u'name':
-                    self._create_attr(u'theme',  element.tag, element.text)
+                    self._create_attr(u'theme', element.tag, element.text)
 
     def _translate_tags(self, master, element, value):
         """

@@ -157,28 +157,44 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
             self.onFooterDefaultPositionCheckBox)
 
     def onOutlineCheckCheckBoxChanged(self, state):
+        """
+        Change statd as Outline check box changed
+        """
         self.outlineColorPushButton.setEnabled(state)
         self.outlineSizeSpinBox.setEnabled(state)
 
     def onShadowCheckCheckBoxChanged(self, state):
+        """
+        Change state as Shadow check box changed
+        """
         self.shadowColorPushButton.setEnabled(state)
         self.shadowSizeSpinBox.setEnabled(state)
 
-    def onMainDefaultPositionCheckBox(self, state):
-        print "main", state
-        print self.field(u'mainDefaultPosition')
-        self.theme.font_main_override = self.field(u'mainDefaultPosition')
-        print self.theme.font_main_override, type(self.theme.font_main_override)
-        self.mainXSpinBox.setEnabled(not state)
-        self.mainYSpinBox.setEnabled(not state)
-        self.mainHeightSpinBox.setEnabled(not state)
-        self.mainWidthSpinBox.setEnabled(not state)
+    def onMainDefaultPositionCheckBox(self, value):
+        """
+        Change state as Main Area Position check box changed
+        """
+        if value == QtCore.Qt.Checked:
+            self.theme.font_main_override = False
+        else:
+            self.theme.font_main_override = True
+        self.mainXSpinBox.setEnabled(self.theme.font_main_override)
+        self.mainYSpinBox.setEnabled(self.theme.font_main_override)
+        self.mainHeightSpinBox.setEnabled(self.theme.font_main_override)
+        self.mainWidthSpinBox.setEnabled(self.theme.font_main_override)
 
-    def onFooterDefaultPositionCheckBox(self, state):
-        self.footerXSpinBox.setEnabled(not state)
-        self.footerYSpinBox.setEnabled(not state)
-        self.footerHeightSpinBox.setEnabled(not state)
-        self.footerWidthSpinBox.setEnabled(not state)
+    def onFooterDefaultPositionCheckBox(self, value):
+        """
+        Change state as Footer Area Position check box changed
+        """
+        if value == QtCore.Qt.Checked:
+            self.theme.font_footer_override = False
+        else:
+            self.theme.font_footer_override = True
+        self.footerXSpinBox.setEnabled(self.theme.font_footer_override)
+        self.footerYSpinBox.setEnabled(self.theme.font_footer_override)
+        self.footerHeightSpinBox.setEnabled(self.theme.font_footer_override)
+        self.footerWidthSpinBox.setEnabled(self.theme.font_footer_override)
 
     def exec_(self):
         """
@@ -189,7 +205,7 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
 
     def validateCurrentPage(self):
         """
-        Validate the current page before moving on to the next page.
+        Handle Tab specific code when moving between Tabs.
         """
         print "CURRENT id", self.currentId()
         # Preview Screen
@@ -200,6 +216,9 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
         return True
 
     def setBackgroundTabValues(self):
+        """
+        Handle the display and State of the background display tab.
+        """
         if self.theme.background_type == \
             BackgroundType.to_string(BackgroundType.Solid):
             self.setField(u'background_type', QtCore.QVariant(0))
@@ -265,7 +284,10 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
         else:
            self.setField(u'gradient', QtCore.QVariant(4))
 
-    def setMainAreaTabValues(self):#
+    def setMainAreaTabValues(self):
+        """
+        Handle the display and State of the Main Area tab.
+        """
         self.mainFontComboBox.setCurrentFont(
             QtGui.QFont(self.theme.font_main_name))
         self.mainColorPushButton.setStyleSheet(u'background-color: %s' %
@@ -292,6 +314,9 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
             QtCore.QVariant(self.theme.font_main_italics))
 
     def setFooterAreaTabValues(self):
+        """
+        Handle the display and State of the Footer Area tab.
+        """
         self.footerFontComboBox.setCurrentFont(
             QtGui.QFont(self.theme.font_main_name))
         self.footerColorPushButton.setStyleSheet(u'background-color: %s' %
@@ -300,8 +325,11 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
             QtCore.QVariant(self.theme.font_footer_size))
 
     def setPositionTabValues(self):
-        self.setField(u'mainDefaultPosition', \
-            QtCore.QVariant(self.theme.font_main_override))
+        print self.theme.font_main_override
+        if self.theme.font_main_override:
+            self.setField(u'mainDefaultPosition', QtCore.QVariant(False))
+        else:
+            self.setField(u'mainDefaultPosition', QtCore.QVariant(True))
         self.setField(u'mainPositionX', \
             QtCore.QVariant(self.theme.font_main_x))
         self.setField(u'mainPositionY', \
@@ -310,8 +338,10 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
             QtCore.QVariant(self.theme.font_main_height))
         self.setField(u'mainPositionWidth', \
             QtCore.QVariant(self.theme.font_main_width))
-        self.setField(u'mainDefaultPosition', \
-            QtCore.QVariant(self.theme.font_main_override))
+        if self.theme.font_footer_override:
+            self.setField(u'footerDefaultPosition', QtCore.QVariant(False))
+        else:
+            self.setField(u'footerDefaultPosition', QtCore.QVariant(True))
         self.setField(u'footerPositionX', \
             QtCore.QVariant(self.theme.font_footer_x))
         self.setField(u'footerPositionY', \
@@ -325,6 +355,9 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
         pass
 
     def setDefaults(self):
+        """
+        Set up display at start of theme edit.
+        """
         self.restart()
         self.setBackgroundTabValues()
         self.setMainAreaTabValues()
@@ -334,10 +367,11 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
         # Set up field states
         self.onOutlineCheckCheckBoxChanged(self.theme.font_main_outline)
         self.onShadowCheckCheckBoxChanged(self.theme.font_main_shadow)
-        self.onMainDefaultPositionCheckBox(self.theme.font_main_override)
-        self.onFooterDefaultPositionCheckBox(self.theme.font_footer_override)
 
     def registerFields(self):
+        """
+        Map field names to screen names,
+        """
         self.backgroundPage.registerField(
             u'background_type', self.backgroundTypeComboBox)
         self.backgroundPage.registerField(
@@ -396,10 +430,16 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
             u'footerPositionHeight', self.footerHeightSpinBox)
 
     def onBackgroundComboBox(self, index):
+        """
+        Background style Combo box has changed.
+        """
         self.theme.background_type = BackgroundType.to_string(index)
         self.setBackgroundTabValues()
 
     def onGradientComboBox(self, index):
+        """
+        Background gradient Combo box has changed.
+        """
         self.theme.background_direction = \
             BackgroundGradientType.to_string(index)
         self.setBackgroundTabValues()
@@ -454,6 +494,10 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
         self.setFooterAreaTabValues()
 
     def updateTheme(self):
+        """
+        Update the theme object from the UI for fields not already updated
+        when the are changed.
+        """
         # main page
         self.theme.font_main_name = \
             self.mainFontComboBox.currentFont().family()
@@ -472,9 +516,23 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
             self.footerFontComboBox.currentFont().family()
         self.theme.font_footer_size = \
             self.field(u'footerSizeSpinBox').toInt()[0]
+        # position page
+        self.theme.font_main_x = self.field(u'mainPositionX').toInt()[0]
+        self.theme.font_main_y = self.field(u'mainPositionY').toInt()[0]
+        self.theme.font_main_height = \
+            self.field(u'mainPositionHeight').toInt()[0]
+        self.theme.font_main_width = self.field(u'mainPositionWidth').toInt()[0]
+        self.theme.font_footer_x = self.field(u'footerPositionX').toInt()[0]
+        self.theme.font_footer_y = self.field(u'footerPositionY').toInt()[0]
+        self.theme.font_footer_height = \
+            self.field(u'footerPositionHeight').toInt()[0]
+        self.theme.font_footer_width = \
+            self.field(u'footerPositionWidth').toInt()[0]
 
     def _colorButton(self, field):
-        print field
+        """
+        Handle Color buttons
+        """
         new_color = QtGui.QColorDialog.getColor(
             QtGui.QColor(field), self)
         if new_color.isValid():
