@@ -28,66 +28,11 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate
+from openlp.core.lib import translate, theme, BackgroundType, BackgroundGradientType
+
 from themewizard import Ui_ThemeWizard
 
 log = logging.getLogger(__name__)
-
-class BackgroundType(object):
-    Solid = 0
-    Gradient = 1
-    Image = 2
-
-    @staticmethod
-    def to_string(type):
-        if type == BackgroundType.Solid:
-            return u'solid'
-        elif type == BackgroundType.Gradient:
-            return u'gradient'
-        elif type == BackgroundType.Image:
-            return u'image'
-
-    @staticmethod
-    def from_string(type_string):
-        if type_string == u'solid':
-            return BackgroundType.Solid
-        elif type_string == u'gradient':
-            return BackgroundType.Gradient
-        elif type_string == u'image':
-            return BackgroundType.Image
-
-class BackgroundGradientType(object):
-    Horizontal = 0
-    Vertical = 1
-    Circular = 2
-    LeftTop = 3
-    LeftBottom = 4
-
-    @staticmethod
-    def to_string(type):
-        if type == BackgroundGradientType.Horizontal:
-            return u'horizontal'
-        elif type == BackgroundGradientType.Vertical:
-            return u'vertical'
-        elif type == BackgroundGradientType.Circular:
-            return u'circular'
-        elif type == BackgroundGradientType.LeftTop:
-            return u'leftTop'
-        elif type == BackgroundGradientType.LeftBottom:
-            return u'leftBottom'
-
-    @staticmethod
-    def from_string(type_string):
-        if type_string == u'horizontal':
-            return BackgroundGradientType.Horizontal
-        elif type_string == u'vertical':
-            return BackgroundGradientType.Vertical
-        elif type_string == u'circular':
-            return BackgroundGradientType.Circular
-        elif type_string == u'leftTop':
-            return BackgroundGradientType.LeftTop
-        elif type_string == u'leftBottom':
-            return BackgroundGradientType.LeftBottom
 
 class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
     """
@@ -158,7 +103,7 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
 
     def onOutlineCheckCheckBoxChanged(self, state):
         """
-        Change statd as Outline check box changed
+        Change state as Outline check box changed
         """
         self.outlineColorPushButton.setEnabled(state)
         self.outlineSizeSpinBox.setEnabled(state)
@@ -325,7 +270,9 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
             QtCore.QVariant(self.theme.font_footer_size))
 
     def setPositionTabValues(self):
-        print self.theme.font_main_override
+        """
+        Handle the display and State of the Position tab.
+        """
         if self.theme.font_main_override:
             self.setField(u'mainDefaultPosition', QtCore.QVariant(False))
         else:

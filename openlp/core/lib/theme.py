@@ -91,6 +91,62 @@ class ThemeLevel(object):
     Service = 2
     Song = 3
 
+class BackgroundType(object):
+    Solid = 0
+    Gradient = 1
+    Image = 2
+
+    @staticmethod
+    def to_string(type):
+        if type == BackgroundType.Solid:
+            return u'solid'
+        elif type == BackgroundType.Gradient:
+            return u'gradient'
+        elif type == BackgroundType.Image:
+            return u'image'
+
+    @staticmethod
+    def from_string(type_string):
+        if type_string == u'solid':
+            return BackgroundType.Solid
+        elif type_string == u'gradient':
+            return BackgroundType.Gradient
+        elif type_string == u'image':
+            return BackgroundType.Image
+
+class BackgroundGradientType(object):
+    Horizontal = 0
+    Vertical = 1
+    Circular = 2
+    LeftTop = 3
+    LeftBottom = 4
+
+    @staticmethod
+    def to_string(type):
+        if type == BackgroundGradientType.Horizontal:
+            return u'horizontal'
+        elif type == BackgroundGradientType.Vertical:
+            return u'vertical'
+        elif type == BackgroundGradientType.Circular:
+            return u'circular'
+        elif type == BackgroundGradientType.LeftTop:
+            return u'leftTop'
+        elif type == BackgroundGradientType.LeftBottom:
+            return u'leftBottom'
+
+    @staticmethod
+    def from_string(type_string):
+        if type_string == u'horizontal':
+            return BackgroundGradientType.Horizontal
+        elif type_string == u'vertical':
+            return BackgroundGradientType.Vertical
+        elif type_string == u'circular':
+            return BackgroundGradientType.Circular
+        elif type_string == u'leftTop':
+            return BackgroundGradientType.LeftTop
+        elif type_string == u'leftBottom':
+            return BackgroundGradientType.LeftBottom
+
 boolean_list = [u'bold', u'italics', u'override', u'outline', u'shadow', \
 u'slide_transition']
 
@@ -485,10 +541,10 @@ class ThemeXML(object):
         """
         Build the XML from the varables in the object
         """
-        if self.background_type == u'solid':
+        if self.background_type == BackgroundType.Solid:
             self.add_background_solid(
                 unicode(self.background_color))
-        elif self.background_type == u'gradient':
+        elif self.background_type ==  BackgroundType.Gradient:
             self.add_background_gradient(
                 unicode(self.background_start_color),
                 unicode(self.background_end_color),

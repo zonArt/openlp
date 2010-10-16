@@ -25,7 +25,10 @@
 ###############################################################################
 
 import logging
+
 from PyQt4 import QtWebKit
+
+from openlp.core.lib import BackgroundType, BackgroundGradientType
 
 log = logging.getLogger(__name__)
 
@@ -367,16 +370,29 @@ def build_background_css(item, width, height):
     theme = item.themedata
     background = u'background-color: black'
     if theme:
-        if theme.background_type == u'solid':
+        if theme.background_type == BackgroundType.Solid:
             background = u'background-color: %s' % theme.background_color
         else:
-            if theme.background_direction == u'horizontal':
+            if theme.background_direction == BackgroundGradientType.Horizontal:
                 background = \
                     u'background: ' \
                     u'-webkit-gradient(linear, left top, left bottom, ' \
                     'from(%s), to(%s))' % (theme.background_start_color,
                     theme.background_end_color)
-            elif theme.background_direction == u'vertical':
+            elif theme.background_direction == BackgroundGradientType.LeftTop:
+                background = \
+                    u'background: ' \
+                    u'-webkit-gradient(linear, left top, right bottom, ' \
+                    'from(%s), to(%s))' % (theme.background_start_color,
+                    theme.background_end_color)
+            elif theme.background_direction == \
+                BackgroundGradientType.LeftBottom:
+                background = \
+                    u'background: ' \
+                    u'-webkit-gradient(linear, left bottom, right top, ' \
+                    'from(%s), to(%s))' % (theme.background_start_color,
+                    theme.background_end_color)
+            elif theme.background_direction == BackgroundGradientType.Vertical:
                 background = \
                     u'background: -webkit-gradient(linear, left top, ' \
                     u'right top, from(%s), to(%s))' % \

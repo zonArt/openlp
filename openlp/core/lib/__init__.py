@@ -312,6 +312,7 @@ def expand_tags(text):
         text = text.replace(tag[u'end tag'], tag[u'end html'])
     return text
 
+from theme import ThemeLevel, ThemeXML, BackgroundGradientType, BackgroundType
 from spelltextedit import SpellTextEdit
 from eventreceiver import Receiver
 from settingsmanager import SettingsManager
@@ -325,7 +326,6 @@ from htmlbuilder import build_html, build_lyrics_format_css, \
     build_lyrics_outline_css
 from toolbar import OpenLPToolbar
 from dockwidget import OpenLPDockWidget
-from theme import ThemeLevel, ThemeXML
 from renderer import Renderer
 from rendermanager import RenderManager
 from mediamanageritem import MediaManagerItem
