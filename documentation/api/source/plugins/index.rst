@@ -1,7 +1,7 @@
 .. _plugins-index:
 
-:mod:`plugins` Module
-=====================
+Plugins
+=======
 
 .. automodule:: openlp.plugins
    :members:
@@ -14,15 +14,6 @@
    presentations
    media
    images
-
-:mod:`custom` Plugin
---------------------
-
-.. automodule:: openlp.plugins.custom
-   :members:
-
-:mod:`songusage` Plugin
------------------------
-
-.. automodule:: openlp.plugins.songusage
-   :members:
+   custom
+   remotes
+   songusage
