@@ -54,7 +54,7 @@ class WebDownload(object):
         return cls.Names[name]
 
 
-class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
+class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
     """
     This is the Bible Import Wizard, which allows easy importing of Bibles
     into OpenLP from other formats like OSIS, CSV and OpenSong.
