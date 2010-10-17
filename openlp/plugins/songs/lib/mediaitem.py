@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, Receiver, \
     ItemCapabilities, translate, check_item_selected
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
-    ImportWizardForm
+    SongImportForm
 from openlp.plugins.songs.lib import SongXMLParser
 from openlp.plugins.songs.lib.db import Author, Song
 
@@ -254,7 +254,7 @@ class SongMediaItem(MediaManagerItem):
 
     def onImportClick(self):
         if not hasattr(self, u'import_wizard'):
-            self.import_wizard = ImportWizardForm(self, self.parent)
+            self.import_wizard = SongImportForm(self, self.parent)
         self.import_wizard.exec_()
         Receiver.send_message(u'songs_load_list')
 
