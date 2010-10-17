@@ -585,7 +585,13 @@ class SlideController(QtGui.QWidget):
                 label = QtGui.QLabel()
                 label.setMargin(4)
                 label.setScaledContents(True)
-                label.setPixmap(QtGui.QPixmap.fromImage(frame[u'image']))
+                if isinstance(frame[u'image'], QtGui.QImage):
+                    label.setPixmap(QtGui.QPixmap.fromImage(frame[u'image']))
+                else:
+                    pixmap = resize_image(frame[u'image'],
+                        self.parent.RenderManager.width,
+                        self.parent.RenderManager.height)
+                    label.setPixmap(QtGui.QPixmap.fromImage(pixmap))
                 self.PreviewListWidget.setCellWidget(framenumber, 0, label)
                 slideHeight = width * self.parent.RenderManager.screen_ratio
                 row += 1
