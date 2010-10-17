@@ -200,3 +200,9 @@ latex_documents = [
 
 # If false, no module index is generated.
 #latex_use_modindex = True
+
+# A dictionary that contains LaTeX snippets that override those Sphinx usually
+# puts into the generated .tex files.
+latex_elements = {
+    'fontpkg': '\\usepackage{helvet}'
+}
