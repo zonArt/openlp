@@ -30,11 +30,11 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, theme, BackgroundType, BackgroundGradientType
 
-from themewizard import Ui_ThemeWizard
+from themedialog import Ui_ThemeDialog
 
 log = logging.getLogger(__name__)
 
-class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
+class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
     """
     This is the Bible Import Wizard, which allows easy importing of Bibles
     into OpenLP from other formats like OSIS, CSV and OpenSong.
@@ -299,7 +299,19 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
             QtCore.QVariant(self.theme.font_footer_width))
 
     def setAlignmentTabValues(self):
-        pass
+        self.setField(u'horizontal', \
+            QtCore.QVariant(self.theme.display_horizontal_align))
+        self.setField(u'vertical', \
+            QtCore.QVariant(self.theme.display_vertical_align))
+        if self.theme.display_slide_transition:
+            self.setField(u'mainDefaultPosition', QtCore.QVariant(False))
+        else:
+            self.setField(u'mainDefaultPosition', QtCore.QVariant(True))
+
+    def setPreviewTabValues(self):
+        self.setField(u'name', QtCore.QVariant(self.theme.theme_name))
+        if len(self.theme.theme_name) > 1:
+            self.themeNameEdit.setEnabled(False)
 
     def setDefaults(self):
         """
@@ -311,6 +323,7 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
         self.setFooterAreaTabValues()
         self.setAlignmentTabValues()
         self.setPositionTabValues()
+        self.setPreviewTabValues()
         # Set up field states
         self.onOutlineCheckCheckBoxChanged(self.theme.font_main_outline)
         self.onShadowCheckCheckBoxChanged(self.theme.font_main_shadow)
@@ -375,6 +388,14 @@ class ThemeWizardForm(QtGui.QWizard, Ui_ThemeWizard):
             u'footerPositionWidth', self.footerWidthSpinBox)
         self.areaPositionPage.registerField(
             u'footerPositionHeight', self.footerHeightSpinBox)
+        self.backgroundPage.registerField(
+            u'horizontal', self.horizontalComboBox)
+        self.backgroundPage.registerField(
+            u'vertical', self.verticalComboBox)
+        self.backgroundPage.registerField(
+            u'slideTransition', self.transitionsCheckBox)
+        self.backgroundPage.registerField(
+            u'name', self.themeNameEdit)
 
     def onBackgroundComboBox(self, index):
         """

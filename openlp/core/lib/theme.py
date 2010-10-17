@@ -41,7 +41,7 @@ log = logging.getLogger(__name__)
 BLANK_THEME_XML = \
 '''<?xml version="1.0" encoding="utf-8"?>
  <theme version="1.0">
-   <name>BlankStyle</name>
+   <name> </name>
    <background type="image">
       <filename></filename>
    </background>
@@ -146,6 +146,16 @@ class BackgroundGradientType(object):
             return BackgroundGradientType.LeftTop
         elif type_string == u'leftBottom':
             return BackgroundGradientType.LeftBottom
+
+class HorizontalType(object):
+    Left = 0
+    Center = 1
+    Right = 2
+
+class VerticalType(object):
+    Top = 0
+    Middle = 1
+    Bottom = 2
 
 boolean_list = [u'bold', u'italics', u'override', u'outline', u'shadow', \
 u'slide_transition']

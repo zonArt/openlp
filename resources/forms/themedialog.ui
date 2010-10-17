@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ThemeWizard</class>
- <widget class="QWizard" name="ThemeWizard">
+ <class>ThemeDialog</class>
+ <widget class="QWizard" name="ThemeDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -573,7 +573,7 @@ p, li { white-space: pre-wrap; }
      <number>20</number>
     </property>
     <item row="0" column="0">
-     <widget class="QLabel" name="HorizontalLabel">
+     <widget class="QLabel" name="horizontalLabel">
       <property name="text">
        <string>Horizontal Align:</string>
       </property>
@@ -602,7 +602,7 @@ p, li { white-space: pre-wrap; }
      </widget>
     </item>
     <item row="1" column="0">
-     <widget class="QLabel" name="Verticallabe">
+     <widget class="QLabel" name="verticalLabel">
       <property name="text">
        <string>Vertcal Align:</string>
       </property>
@@ -628,7 +628,7 @@ p, li { white-space: pre-wrap; }
      </widget>
     </item>
     <item row="2" column="1">
-     <widget class="QCheckBox" name="TransitionsCheckBox">
+     <widget class="QCheckBox" name="transitionsCheckBox">
       <property name="text">
        <string>Transitions</string>
       </property>
@@ -1042,12 +1042,6 @@ p, li { white-space: pre-wrap; }
       </item>
       <item>
        <widget class="QLabel" name="previewBoxLabel">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
         <property name="minimumSize">
          <size>
           <width>300</width>

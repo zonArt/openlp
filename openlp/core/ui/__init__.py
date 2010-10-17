@@ -37,14 +37,13 @@ class HideMode(object):
     Theme = 2
     Screen = 3
 
-from themewizardform import ThemeWizardForm
+from themeform import ThemeForm
 from filerenameform import FileRenameForm
 from maindisplay import MainDisplay
 from slidecontroller import HideMode
 from servicenoteform import ServiceNoteForm
 from serviceitemeditform import ServiceItemEditForm
 from screen import ScreenList
-from amendthemeform import AmendThemeForm
 from slidecontroller import SlideController
 from splashscreen import SplashScreen
 from generaltab import GeneralTab

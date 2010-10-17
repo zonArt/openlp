@@ -32,7 +32,7 @@ import logging
 from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.ui import AmendThemeForm, FileRenameForm, ThemeWizardForm
+from openlp.core.ui import FileRenameForm, ThemeForm
 from openlp.core.theme import Theme
 from openlp.core.lib import OpenLPToolbar, context_menu_action, \
     ThemeXML, str_to_bool, get_text_file_string, build_icon, Receiver, \
@@ -53,8 +53,7 @@ class ThemeManager(QtGui.QWidget):
         self.layout = QtGui.QVBoxLayout(self)
         self.layout.setSpacing(0)
         self.layout.setMargin(0)
-        self.amendThemeForm = AmendThemeForm(self)
-        self.themeWizardForm = ThemeWizardForm(self)
+        self.themeForm = ThemeForm(self)
         self.fileRenameForm = FileRenameForm(self)
         self.toolbar = OpenLPToolbar(self)
         self.toolbar.addToolbarButton(
@@ -127,7 +126,7 @@ class ThemeManager(QtGui.QWidget):
         self.checkThemesExists(self.path)
         self.thumbPath = os.path.join(self.path, u'thumbnails')
         self.checkThemesExists(self.thumbPath)
-        self.amendThemeForm.path = self.path
+        self.themeForm.path = self.path
         self.oldBackgroundImage = None
         self.editingDefault = False
         # Last little bits of setting up
@@ -215,11 +214,10 @@ class ThemeManager(QtGui.QWidget):
         Loads a new theme with the default settings and then launches the theme
         editing form for the user to make their customisations.
         """
-        theme = ThemeXML() #self.createThemeFromXml(self.baseTheme(), self.path)
-        #self.amendThemeForm.loadTheme(theme)
+        theme = ThemeXML()
         self.saveThemeName = u''
-        self.themeWizardForm.theme = theme
-        self.themeWizardForm.exec_()
+        self.themeForm.theme = theme
+        self.themeForm.exec_()
 
     def onRenameTheme(self):
         """
@@ -282,12 +280,10 @@ class ThemeManager(QtGui.QWidget):
                 unicode(item.data(QtCore.Qt.UserRole).toString()))
             if theme.background_type == u'image':
                 self.oldBackgroundImage = theme.background_filename
-            #self.amendThemeForm.loadTheme(theme)
             self.saveThemeName = unicode(
                 item.data(QtCore.Qt.UserRole).toString())
-            #self.amendThemeForm.exec_()
-            self.themeWizardForm.theme = theme
-            self.themeWizardForm.exec_()
+            self.themeForm.theme = theme
+            self.themeForm.exec_()
 
     def onDeleteTheme(self):
         """
@@ -756,14 +752,6 @@ class ThemeManager(QtGui.QWidget):
         """
         log.debug(u'base theme created')
         newtheme = ThemeXML()
-#        newtheme.new_document(
-#            unicode(translate('OpenLP.ThemeManager', 'New Theme')))
-#        newtheme.add_background_solid(u'#000000')
-#        newtheme.add_font(unicode(QtGui.QFont().family()), u'#FFFFFF',
-#            u'30', u'False')
-#        newtheme.add_font(unicode(QtGui.QFont().family()), u'#FFFFFF',
-#            u'12', u'False', u'footer')
-#        newtheme.add_display(u'0', u'0', u'0')
         return newtheme.extract_xml()
 
     def createThemeFromXml(self, theme_xml, path):
