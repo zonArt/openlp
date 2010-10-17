@@ -26,6 +26,7 @@
 
 import logging
 import os
+import time
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
@@ -35,6 +36,24 @@ from openlp.core.lib import OpenLPToolbar, Receiver, resize_image, \
     ItemCapabilities, translate
 
 log = logging.getLogger(__name__)
+
+class SlideThread(QtCore.QThread):
+    """
+    A special Qt thread class to speed up the display of text based frames.
+    This is threaded so it loads the frames in background
+    """
+    def __init__(self, parent, prefix, count):
+        QtCore.QThread.__init__(self, parent)
+        self.prefix = prefix
+        self.count = count
+
+    def run(self):
+        """
+        Run the thread.
+        """
+        time.sleep(1)
+        for i in range(0, self.count):
+            Receiver.send_message(u'%s_slide_cache' % self.prefix, i)
 
 class SlideList(QtGui.QTableWidget):
     """
@@ -391,6 +410,8 @@ class SlideController(QtGui.QWidget):
         if self.isLive:
             QtCore.QObject.connect(self.volumeSlider,
                 QtCore.SIGNAL(u'sliderReleased()'), self.mediaVolume)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'%s_slide_cache' % self.typePrefix), self.slideCache)
 
     def screenSizeChanged(self):
         """
@@ -617,6 +638,10 @@ class SlideController(QtGui.QWidget):
         self.PreviewListWidget.setFocus()
         Receiver.send_message(u'slidecontroller_%s_started' % self.typePrefix,
             [serviceItem])
+        if self.serviceItem.is_image():
+            st = SlideThread(
+                self, self.typePrefix, len(self.serviceItem.get_frames()))
+            st.start()
 
     def onTextRequest(self):
         """
@@ -768,6 +793,13 @@ class SlideController(QtGui.QWidget):
                 Receiver.send_message(u'%s_unblank'
                     % self.serviceItem.name.lower(),
                     [self.serviceItem, self.isLive])
+
+    def slideCache(self, slide):
+        """
+        Generate a slide cache item rendered and ready for use
+        in the background.
+        """
+        self.serviceItem.get_rendered_frame(int(slide))
 
     def onSlideSelected(self):
         """
