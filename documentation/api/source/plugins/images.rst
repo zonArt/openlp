@@ -3,6 +3,9 @@
 Images Plugin
 =============
 
+.. automodule:: openlp.plugins.images
+   :members:
+
 Plugin Class
 ------------
 

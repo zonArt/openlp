@@ -6,93 +6,50 @@ Bibles Plugin
 .. automodule:: openlp.plugins.bibles
    :members:
 
-:mod:`BiblePlugin` Class
--------------------------
+Plugin Class
+------------
 
 .. autoclass:: openlp.plugins.bibles.bibleplugin.BiblePlugin
    :members:
 
-:mod:`forms` Submodule
-----------------------
+Forms
+-----
 
 .. automodule:: openlp.plugins.bibles.forms
-   :members:
-
-:mod:`BibleImportWizard`
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. autoclass:: openlp.plugins.bibles.forms.bibleimportwizard.Ui_BibleImportWizard
    :members:
 
 .. autoclass:: openlp.plugins.bibles.forms.importwizardform.ImportWizardForm
    :members:
 
-:mod:`lib` Submodule
---------------------
+Helper Classes & Functions
+--------------------------
 
 .. automodule:: openlp.plugins.bibles.lib
    :members:
 
-:mod:`db`
-^^^^^^^^^
-
 .. automodule:: openlp.plugins.bibles.lib.db
    :members:
-
-.. autoclass:: openlp.plugins.bibles.lib.db.BibleDB
-   :members:
-
-:mod:`csv`
-^^^^^^^^^^
-
-.. automodule:: openlp.plugins.bibles.lib.csvbible
-   :members:
-
-.. autoclass:: openlp.plugins.bibles.lib.csvbible.CSVBible
-   :members:
-
-:mod:`http`
-^^^^^^^^^^^
-
-.. automodule:: openlp.plugins.bibles.lib.http
-   :members:
-
-.. autoclass:: openlp.plugins.bibles.lib.http.HTTPBible
-   :members:
-
-:mod:`osis`
-^^^^^^^^^^^
-
-.. automodule:: openlp.plugins.bibles.lib.osis
-   :members:
-
-.. autoclass:: openlp.plugins.bibles.lib.osis.OSISBible
-   :members:
-
-:mod:`opensong`
-^^^^^^^^^^^^^^^
-
-.. automodule:: openlp.plugins.bibles.lib.opensong
-   :members:
-
-.. autoclass:: openlp.plugins.bibles.lib.opensong.OpenSongBible
-   :members:
-
-:mod:`biblestab`
-^^^^^^^^^^^^^^^^
 
 .. automodule:: openlp.plugins.bibles.lib.biblestab
    :members:
 
-:mod:`manager`
-^^^^^^^^^^^^^^
-
 .. automodule:: openlp.plugins.bibles.lib.manager
    :members:
-
-:mod:`mediaitem`
-^^^^^^^^^^^^^^^^
 
 .. automodule:: openlp.plugins.bibles.lib.mediaitem
    :members:
 
+Bible Importers
+---------------
+
+.. automodule:: openlp.plugins.bibles.lib.csvbible
+   :members:
+
+.. automodule:: openlp.plugins.bibles.lib.http
+   :members:
+
+.. automodule:: openlp.plugins.bibles.lib.osis
+   :members:
+
+.. automodule:: openlp.plugins.bibles.lib.opensong
+   :members:
