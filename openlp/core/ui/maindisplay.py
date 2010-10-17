@@ -231,8 +231,9 @@ class MainDisplay(DisplayWidget):
             The Image to be displayed can be QImage or QPixmap
         """
         log.debug(u'image to display')
-        image = resize_image(image, self.screen[u'size'].width(),
-            self.screen[u'size'].height())
+        if not isinstance(image, QtGui.QImage):
+            image = resize_image(image, self.screen[u'size'].width(),
+                self.screen[u'size'].height())
         self.resetVideo()
         self.displayImage(image)
         # show screen
