@@ -18,6 +18,12 @@ Forms
 .. automodule:: openlp.plugins.songusage.forms
    :members:
 
+.. autoclass:: openlp.plugins.songusage.forms.songusagedeleteform.SongUsageDeleteForm
+   :members:
+
+.. autoclass:: openlp.plugins.songusage.forms.songusagedetailform.SongUsageDetailForm
+   :members:
+
 Helper Classes & Functions
 --------------------------
 
