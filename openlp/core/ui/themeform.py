@@ -468,9 +468,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
         """
         # main page
         self.theme.font_main_name = \
-            self.mainFontComboBox.currentFont().family()
-        self.theme.font_footer_name = \
-            self.footerFontComboBox.currentFont().family()
+            unicode(self.mainFontComboBox.currentFont().family())
         self.theme.font_main_size = \
             self.field(u'mainSizeSpinBox').toInt()[0]
         self.theme.font_main_line_adjustment = \
@@ -481,7 +479,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
             self.field(u'shadowSizeSpinBox').toInt()[0]
         # footer page
         self.theme.font_footer_name = \
-            self.footerFontComboBox.currentFont().family()
+            unicode(self.footerFontComboBox.currentFont().family())
         self.theme.font_footer_size = \
             self.field(u'footerSizeSpinBox').toInt()[0]
         # position page
@@ -496,6 +494,16 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
             self.field(u'footerPositionHeight').toInt()[0]
         self.theme.font_footer_width = \
             self.field(u'footerPositionWidth').toInt()[0]
+        # position page
+        self.theme.display_horizontal_align = \
+            self.horizontalComboBox.currentIndex()
+        self.theme.display_vertical_align = \
+            self.verticalComboBox.currentIndex()
+        self.theme.display_slide_transition = \
+            self.field(u'slideTransition').toBool()
+        # preview page
+        self.theme.theme_name = \
+            unicode(self.field(u'name').toString())
 
     def _colorButton(self, field):
         """

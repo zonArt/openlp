@@ -552,45 +552,44 @@ class ThemeXML(object):
         Build the XML from the varables in the object
         """
         if self.background_type == BackgroundType.Solid:
-            self.add_background_solid(
-                unicode(self.background_color))
+            self.add_background_solid(self.background_color)
         elif self.background_type ==  BackgroundType.Gradient:
             self.add_background_gradient(
-                unicode(self.background_start_color),
-                unicode(self.background_end_color),
+                self.background_start_color,
+                self.background_end_color,
                 self.background_direction)
         else:
             filename = \
-                os.path.split(unicode(self.background_filename))[1]
+                os.path.split(self.background_filename)[1]
             self.add_background_image(filename)
-        self.add_font(unicode(self.font_main_name),
-            unicode(self.font_main_color),
-            unicode(self.font_main_proportion),
-            unicode(self.font_main_override), u'main',
-            unicode(self.font_main_weight),
-            unicode(self.font_main_italics),
-            unicode(self.font_main_line_adjustment),
-            unicode(self.font_main_x),
-            unicode(self.font_main_y),
-            unicode(self.font_main_width),
-            unicode(self.font_main_height),
+        self.add_font(self.font_main_name,
+            self.font_main_color,
+            self.font_main_proportion,
+            self.font_main_override, u'main',
+            self.font_main_weight,
+            self.font_main_italics,
+            self.font_main_line_adjustment,
+            self.font_main_x,
+            self.font_main_y,
+            self.font_main_width,
+            self.font_main_height,
             self.font_main_outline,
             self.font_main_outline_color,
             self.font_main_outline_size,
             self.font_main_shadow,
             self.font_main_shadow_color,
             self.font_main_shadow_size)
-        self.add_font(unicode(self.font_footer_name),
-            unicode(self.font_footer_color),
-            unicode(self.font_footer_proportion),
-            unicode(self.font_footer_override), u'footer',
-            unicode(self.font_footer_weight),
-            unicode(self.font_footer_italics),
+        self.add_font(self.font_footer_name,
+            self.font_footer_color,
+            self.font_footer_proportion,
+            self.font_footer_override, u'footer',
+            self.font_footer_weight,
+            self.font_footer_italics,
             0, # line adjustment
-            unicode(self.font_footer_x),
-            unicode(self.font_footer_y),
-            unicode(self.font_footer_width),
-            unicode(self.font_footer_height),
+            self.font_footer_x,
+            self.font_footer_y,
+            self.font_footer_width,
+            self.font_footer_height,
             self.font_footer_outline,
             self.font_footer_outline_color,
             self.font_footer_outline_size,
