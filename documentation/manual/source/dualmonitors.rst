@@ -118,7 +118,7 @@ From here you will need to set up your projector with the appropriate
 resolution, and position. OpenLP works best projecting to the monitor on the
 right.
 
-Linux Systems Using Nvida Drivers
+Linux Systems Using nVida Drivers
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This guide is for users of the proprietary Nvidia driver on Linux Distributions.
@@ -139,7 +139,7 @@ root and enter::
 The exact location of the xorg.conf file can vary so check your distribution's 
 documentation.
 
-If you want to make your changes permanent run Nvidia settings from the terminal::
+If you want to make your changes permanent run nVidia settings from the terminal::
 
   user@linux:~ $ sudo nvidia-settings 
 
@@ -148,12 +148,12 @@ or::
   root@linux: # nividia-settings 
 
 If you do not want to write the changes to your xorg.conf file simply run the
-Nvidia Settings program from your desktops menu, usually in an administration
+nVidia Settings program from your desktops menu, usually in an administration
 or system menu, or from the terminal as a normal user run::
 
  user@linux:~ $ nvidia-settings 
 
-Once you have opened Nvidia Settings, click on **X Server Display Confiuration**
+Once you have opened nVidia Settings, click on **X Server Display Confiuration**
 Then select the monitor you are wanting to use as your second monitor and click
 configure.
 
@@ -165,7 +165,7 @@ After clicking configure, select twinview. Then click ok.
 
 Then click **apply** and if you are happy with the way things look click to keep
 your new settings. Don't worry if all goes wrong the settings will return back
-to the previous settings in 15 seconds without any action. Nvidia Settings
+to the previous settings in 15 seconds without any action. nVidia Settings
 should take care of selecting your optimum resolution etc, but that can be 
 changed as needed. When you are happy with everything click on **Save to X Configuration File**
 
