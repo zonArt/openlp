@@ -43,7 +43,7 @@ Service Item
 
 A service item are the **media items** that are in the **service manager**
 
-Service Manger
+Service Manager
 --------------
 
 The service manager contains the media items in your service file. This is the 
