@@ -127,29 +127,29 @@ distribution's documentation, and you have a working xorg.conf file in place.
 
 If you wish to make the changes permanent in setting up your system for dual
 monitors it will be necessary to modify your xorg.conf file. It is always a good
-idea to make a backup of any cirtical file before making changes. ::
+idea to make a backup of any critical file before making changes::
 
   user@linux:~ $ sudo cp /etc/X11/xorg.conf /etc/X11/xorg.conf.old 
 
 or for those using systems that use the root user instead of sudo, change to 
-root and enter ::
+root and enter::
   
   root@linux: # cp /etc/X11/xorg.conf /etc/X11/xorg.conf.old 
 
 The exact location of the xorg.conf file can vary so check your distribution's 
 documentation.
 
-If you want to make your changes permanent run Nvidia settings from the terminal ::
+If you want to make your changes permanent run Nvidia settings from the terminal::
 
   user@linux:~ $ sudo nvidia-settings 
 
-or ::
+or::
 
   root@linux: # nividia-settings 
 
 If you do not want to write the changes to your xorg.conf file simply run the
 Nvidia Settings program from your desktops menu, usually in an administration
-or system menu, or from the terminal as a normal user run ::
+or system menu, or from the terminal as a normal user run::
 
  user@linux:~ $ nvidia-settings 
 
