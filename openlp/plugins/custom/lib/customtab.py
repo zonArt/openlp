@@ -32,12 +32,11 @@ class CustomTab(SettingsTab):
     """
     CustomTab is the Custom settings tab in the settings dialog.
     """
-    def __init__(self, title):
-        SettingsTab.__init__(self, title)
+    def __init__(self, title, visible_title):
+        SettingsTab.__init__(self, title, visible_title)
 
     def setupUi(self):
         self.setObjectName(u'CustomTab')
-        self.tabTitleVisible = translate('CustomPlugin.CustomTab', 'Custom')
         self.customLayout = QtGui.QFormLayout(self)
         self.customLayout.setSpacing(8)
         self.customLayout.setMargin(8)

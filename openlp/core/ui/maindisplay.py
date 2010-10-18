@@ -114,21 +114,23 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'Setup live = %s for %s ' % (self.isLive,
             self.screens.monitor_number))
+        self.usePhonon = QtCore.QSettings().value(
+            u'media/use phonon', QtCore.QVariant(True)).toBool()
+        self.phononActive = False
         self.screen = self.screens.current
         self.setVisible(False)
         self.setGeometry(self.screen[u'size'])
-        try:
-            self.webView = QtWebKit.QGraphicsWebView()
-            self.scene = QtGui.QGraphicsScene(self)
-            self.setScene(self.scene)
-            self.scene.addItem(self.webView)
-            self.webView.setGeometry(QtCore.QRectF(0, 0,
-                self.screen[u'size'].width(), self.screen[u'size'].height()))
-        except AttributeError:
-            #  QGraphicsWebView a recent addition, so fall back to QWebView
-            self.webView = QtWebKit.QWebView(self)
-            self.webView.setGeometry(0, 0,
-                self.screen[u'size'].width(), self.screen[u'size'].height())
+        self.videoWidget = Phonon.VideoWidget(self)
+        self.videoWidget.setVisible(False)
+        self.videoWidget.setGeometry(QtCore.QRect(0, 0,
+            self.screen[u'size'].width(), self.screen[u'size'].height()))
+        self.mediaObject = Phonon.MediaObject(self)
+        self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
+        Phonon.createPath(self.mediaObject, self.videoWidget)
+        Phonon.createPath(self.mediaObject, self.audio)
+        self.webView = QtWebKit.QWebView(self)
+        self.webView.setGeometry(0, 0,
+            self.screen[u'size'].width(), self.screen[u'size'].height())
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
         QtCore.QObject.connect(self.webView,
@@ -182,7 +184,7 @@ class MainDisplay(DisplayWidget):
         `slide`
             The slide text to be displayed
         """
-        log.debug(u'text')
+        log.debug(u'text to display')
         # Wait for the webview to update before displayiong text.
         while not self.loaded:
             Receiver.send_message(u'openlp_process_events')
@@ -197,9 +199,9 @@ class MainDisplay(DisplayWidget):
         `slide`
             The slide text to be displayed
         """
-        log.debug(u'alert')
+        log.debug(u'alert to display')
         if self.height() != self.screen[u'size'].height() \
-            or not self.isVisible():
+            or not self.isVisible() or self.videoWidget.isVisible():
             shrink = True
         else:
             shrink = False
@@ -208,12 +210,17 @@ class MainDisplay(DisplayWidget):
             u'top' if shrink else u'')
         height = self.frame.evaluateJavaScript(js)
         if shrink:
-            if text:
-                self.resize(self.width(), int(height.toString()))
-                self.setVisible(True)
+            if self.phononActive:
+                shrinkItem = self.webView
             else:
-                self.setGeometry(self.screen[u'size'])
-                self.setVisible(False)
+                shrinkItem = self
+            if text:
+                shrinkItem.resize(self.width(), int(height.toString()))
+                shrinkItem.setVisible(True)
+            else:
+                shrinkItem.setVisible(False)
+                shrinkItem.resize(self.screen[u'size'].width(),
+                    self.screen[u'size'].height())
 
     def image(self, image):
         """
@@ -223,9 +230,10 @@ class MainDisplay(DisplayWidget):
         `Image`
             The Image to be displayed can be QImage or QPixmap
         """
-        log.debug(u'image')
-        image = resize_image(image, self.screen[u'size'].width(),
-            self.screen[u'size'].height())
+        log.debug(u'image to display')
+        if not isinstance(image, QtGui.QImage):
+            image = resize_image(image, self.screen[u'size'].width(),
+                self.screen[u'size'].height())
         self.resetVideo()
         self.displayImage(image)
         # show screen
@@ -259,14 +267,24 @@ class MainDisplay(DisplayWidget):
         Used after Video plugin has changed the background
         """
         log.debug(u'resetVideo')
-        self.frame.evaluateJavaScript(u'show_video("close");')
+        if self.phononActive:
+            self.mediaObject.stop()
+            self.mediaObject.clearQueue()
+            self.webView.setVisible(True)
+            self.videoWidget.setVisible(False)
+            self.phononActive = False
+        else:
+            self.frame.evaluateJavaScript(u'show_video("close");')
 
     def videoPlay(self):
         """
         Responds to the request to play a loaded video
         """
         log.debug(u'videoPlay')
-        self.frame.evaluateJavaScript(u'show_video("play");')
+        if self.phononActive:
+            self.mediaObject.play()
+        else:
+            self.frame.evaluateJavaScript(u'show_video("play");')
         # show screen
         if self.isLive:
             self.setVisible(True)
@@ -276,32 +294,54 @@ class MainDisplay(DisplayWidget):
         Responds to the request to pause a loaded video
         """
         log.debug(u'videoPause')
-        self.frame.evaluateJavaScript(u'show_video("pause");')
+        if self.phononActive:
+            self.mediaObject.pause()
+        else:
+            self.frame.evaluateJavaScript(u'show_video("pause");')
 
     def videoStop(self):
         """
         Responds to the request to stop a loaded video
         """
         log.debug(u'videoStop')
-        self.frame.evaluateJavaScript(u'show_video("stop");')
+        if self.phononActive:
+            self.mediaObject.stop()
+        else:
+            self.frame.evaluateJavaScript(u'show_video("stop");')
 
     def videoVolume(self, volume):
         """
         Changes the volume of a running video
         """
         log.debug(u'videoVolume %d' % volume)
-        self.frame.evaluateJavaScript(u'show_video(null, null, %s);' %
-            str(float(volume)/float(10)))
+        vol = float(volume)/float(10)
+        if self.phononActive:
+            self.audio.setVolume(vol)
+        else:
+            self.frame.evaluateJavaScript(u'show_video(null, null, %s);' %
+                str(vol))
 
-    def video(self, videoPath, volume):
+    def video(self, videoPath, volume, isBackground=False):
         """
         Loads and starts a video to run with the option of sound
         """
         log.debug(u'video')
         self.loaded = True
-        js = u'show_video("init", "%s", %s, true); show_video("play");' % \
-            (videoPath.replace(u'\\', u'\\\\'), str(float(volume)/float(10)))
-        self.frame.evaluateJavaScript(js)
+        vol = float(volume)/float(10)
+        if isBackground or not self.usePhonon:
+            js = u'show_video("init", "%s", %s, true); show_video("play");' % \
+                (videoPath.replace(u'\\', u'\\\\'), \
+                str(vol))
+            self.frame.evaluateJavaScript(js)
+        else:
+            self.phononActive = True
+            self.mediaObject.stop()
+            self.mediaObject.clearQueue()
+            self.mediaObject.setCurrentSource(Phonon.MediaSource(videoPath))
+            self.mediaObject.play()
+            self.webView.setVisible(False)
+            self.videoWidget.setVisible(True)
+            self.audio.setVolume(vol)
         return self.preview()
 
     def isLoaded(self):
@@ -382,6 +422,8 @@ class MainDisplay(DisplayWidget):
         Store the images so they can be replaced when required
         """
         log.debug(u'hideDisplay mode = %d', mode)
+        if self.phononActive:
+            self.videoPause()
         if mode == HideMode.Screen:
             self.frame.evaluateJavaScript(u'show_blank("desktop");')
             self.setVisible(False)
@@ -389,8 +431,11 @@ class MainDisplay(DisplayWidget):
             self.frame.evaluateJavaScript(u'show_blank("black");')
         else:
             self.frame.evaluateJavaScript(u'show_blank("theme");')
-        if mode != HideMode.Screen and self.isHidden():
-            self.setVisible(True)
+        if mode != HideMode.Screen:
+            if self.isHidden():
+                self.setVisible(True)
+            if self.phononActive:
+                self.webView.setVisible(True)
         self.hide_mode = mode
 
     def showDisplay(self):
@@ -403,6 +448,9 @@ class MainDisplay(DisplayWidget):
         self.frame.evaluateJavaScript('show_blank("show");')
         if self.isHidden():
             self.setVisible(True)
+        if self.phononActive:
+            self.webView.setVisible(False)
+            self.videoPlay()
         # Trigger actions when display is active again
         Receiver.send_message(u'maindisplay_active')
         self.hide_mode = None
@@ -484,3 +532,4 @@ class AudioPlayer(QtCore.QObject):
         """
         log.debug(u'AudioPlayer Reached end of media playlist')
         self.mediaObject.clearQueue()
+

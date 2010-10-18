@@ -25,3 +25,4 @@
 ###############################################################################
 
 from editcustomform import EditCustomForm
+from editcustomslideform import EditCustomSlideForm

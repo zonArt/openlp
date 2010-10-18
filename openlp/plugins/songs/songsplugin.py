@@ -28,7 +28,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, build_icon, translate
+from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.plugins.songs.lib import SongMediaItem, SongsTab
 from openlp.plugins.songs.lib.db import init_schema, Song
@@ -57,7 +57,8 @@ class SongsPlugin(Plugin):
         self.icon = build_icon(self.icon_path)
 
     def getSettingsTab(self):
-        return SongsTab(self.name)
+        visible_name = self.getString(StringContent.VisibleName)
+        return SongsTab(self.name, visible_name[u'title'])
 
     def initialise(self):
         log.info(u'Songs Initialising')
@@ -70,7 +71,7 @@ class SongsPlugin(Plugin):
         Create the MediaManagerItem object, which is displaed in the
         Media Manager.
         """
-        return SongMediaItem(self, self.icon, self.name)
+        return SongMediaItem(self, self, self.icon)
 
     def addImportMenuItem(self, import_menu):
         """
@@ -147,3 +148,54 @@ class SongsPlugin(Plugin):
         importer = class_(self.manager, **kwargs)
         importer.register(self.mediaItem.import_wizard)
         return importer
+
+    def setPluginTextStrings(self):
+        """
+        Called to define all translatable texts of the plugin
+        """
+        ## Name PluginList ##
+        self.textStrings[StringContent.Name] = {
+            u'singular': translate('SongsPlugin', 'Song'),
+            u'plural': translate('SongsPlugin', 'Songs')
+        }
+        ## Name for MediaDockManager, SettingsManager ##
+        self.textStrings[StringContent.VisibleName] = {
+            u'title': translate('SongsPlugin', 'Songs')
+        }
+        # Middle Header Bar
+        ## New Button ##
+        self.textStrings[StringContent.New] = {
+            u'title': translate('SongsPlugin', 'Add'),
+            u'tooltip': translate('SongsPlugin', 
+                'Add a new Song')
+        }
+        ## Edit Button ##
+        self.textStrings[StringContent.Edit] = {
+            u'title': translate('SongsPlugin', 'Edit'),
+            u'tooltip': translate('SongsPlugin', 
+                'Edit the selected Song')
+        }
+        ## Delete Button ##
+        self.textStrings[StringContent.Delete] = {
+            u'title': translate('SongsPlugin', 'Delete'),
+            u'tooltip': translate('SongsPlugin', 
+                'Delete the selected Song')
+        }
+        ## Preview ##
+        self.textStrings[StringContent.Preview] = {
+            u'title': translate('SongsPlugin', 'Preview'),
+            u'tooltip': translate('SongsPlugin', 
+                'Preview the selected Song')
+        }
+        ## Live  Button ##
+        self.textStrings[StringContent.Live] = {
+            u'title': translate('SongsPlugin', 'Live'),
+            u'tooltip': translate('SongsPlugin', 
+                'Send the selected Song live')
+        }
+        ## Add to service Button ##
+        self.textStrings[StringContent.Service] = {
+            u'title': translate('SongsPlugin', 'Service'),
+            u'tooltip': translate('SongsPlugin', 
+                'Add the selected Song to the service')
+        }

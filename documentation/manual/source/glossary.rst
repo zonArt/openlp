@@ -9,10 +9,11 @@ be used throughout this documentation, and when seeking support.
 Main Window
 -----------
 
-The Main Window is what you will see when you first open OpenLP.
-The Main Window contains all the tools and plugins that make OpenLP function.
+The Main Window is what you will see when you first open OpenLP
 
 .. image:: pics/mainwindow.png
+
+The Main Window contains all the tools and plugins that make OpenLP function
 
 Media Manager
 -------------
@@ -20,9 +21,9 @@ Media Manager
 The Media Manager contains a number of tabs that plugins supply to OpenLP.
 Each tab in the Media Manager is called a **Media Item**
 
-From the Media Manager you can send Media Items to the Preview or Live screens.
-
 .. image:: pics/mediamanager.png
+
+From the Media Manager you can send Media Items to the Preview or Live screens.
 
 Preview 
 -------
@@ -43,7 +44,7 @@ Service Item
 
 A service item are the **media items** that are in the **service manager**
 
-Service Manager
+Service Manger
 --------------
 
 The service manager contains the media items in your service file. This is the 

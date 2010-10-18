@@ -58,6 +58,9 @@ class ItemCapabilities(object):
     AllowsLoop = 5
     AllowsAdditions = 6
     NoLineBreaks = 7
+    OnLoadUpdate = 8
+    AddIfNewItem = 9
+
 
 class ServiceItem(object):
     """
@@ -98,6 +101,9 @@ class ServiceItem(object):
         self.main = None
         self.footer = None
         self.bg_image_bytes = None
+        self.search_string = u''
+        self.data_string = u''
+        self._new_item()
 
     def _new_item(self):
         """
@@ -149,15 +155,15 @@ class ServiceItem(object):
         line_break = True
         if self.is_capable(ItemCapabilities.NoLineBreaks):
             line_break = False
+        theme = None
+        if self.theme:
+            theme = self.theme
+        self.main, self.footer = \
+            self.render_manager.set_override_theme(theme, useOverride)
+        self.bg_image_bytes = self.render_manager.renderer.bg_image_bytes
+        self.themedata = self.render_manager.renderer._theme
         if self.service_item_type == ServiceItemType.Text:
             log.debug(u'Formatting slides')
-            theme = None
-            if self.theme:
-                theme = self.theme
-            self.main, self.footer = \
-                self.render_manager.set_override_theme(theme, useOverride)
-            self.bg_image_bytes = self.render_manager.renderer.bg_image_bytes
-            self.themedata = self.render_manager.renderer._theme
             for slide in self._raw_frames:
                 before = time.time()
                 formatted = self.render_manager \
@@ -170,7 +176,6 @@ class ServiceItem(object):
                         u'verseTag': slide[u'verseTag'] })
                 log.log(15, u'Formatting took %4s' % (time.time() - before))
         elif self.service_item_type == ServiceItemType.Image:
-            self.themedata = self.render_manager.global_theme_data
             for slide in self._raw_frames:
                 slide[u'image'] = resize_image(slide[u'image'],
                     self.render_manager.width, self.render_manager.height)
@@ -255,7 +260,9 @@ class ServiceItem(object):
             u'audit':self.audit,
             u'notes':self.notes,
             u'from_plugin':self.from_plugin,
-            u'capabilities':self.capabilities
+            u'capabilities':self.capabilities,
+            u'search':self.search_string,
+            u'data':self.data_string
         }
         service_data = []
         if self.service_item_type == ServiceItemType.Text:
@@ -293,6 +300,10 @@ class ServiceItem(object):
         self.notes = header[u'notes']
         self.from_plugin = header[u'from_plugin']
         self.capabilities = header[u'capabilities']
+        # Added later so may not be present in older services.
+        if u'search' in header:
+            self.search_string = header[u'search']
+            self.data_string = header[u'data']
         if self.service_item_type == ServiceItemType.Text:
             for slide in serviceitem[u'serviceitem'][u'data']:
                 self._raw_frames.append(slide)
@@ -388,6 +399,6 @@ class ServiceItem(object):
 
     def get_frame_path(self, row=0):
         """
-        Returns the title of the raw frame
+        Returns the path of the raw frame
         """
         return self._raw_frames[row][u'path']
