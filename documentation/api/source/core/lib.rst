@@ -1,7 +1,7 @@
 .. _core-lib:
 
-:mod:`lib` Module
-=================
+Object Library
+==============
 
 .. automodule:: openlp.core.lib
    :members:
