@@ -29,3 +29,6 @@ Helper Classes & Functions
 
 .. automodule:: openlp.plugins.songusage.lib
    :members:
+
+.. automodule:: openlp.plugins.songusage.lib.db
+   :members:

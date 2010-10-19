@@ -17,3 +17,4 @@ Plugins
    custom
    remotes
    songusage
+   alerts
