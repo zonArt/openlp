@@ -32,7 +32,6 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import MediaManagerItem, Receiver, BaseListWithDnD, \
     ItemCapabilities, translate
 from openlp.plugins.bibles.forms import BibleImportForm
-from openlp.plugins.bibles.lib.db import BibleDB
 
 log = logging.getLogger(__name__)
 

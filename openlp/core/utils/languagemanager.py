@@ -28,7 +28,6 @@ The :mod:`languagemanager` module provides all the translation settings and
 language file loading for OpenLP.
 """
 import logging
-import os
 
 from PyQt4 import QtCore, QtGui
 
