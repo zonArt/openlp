@@ -41,6 +41,8 @@ class Ui_ShortcutListDialog(object):
         self.shortcutListTableWidget.setObjectName(u'shortcutListTableWidget')
         self.shortcutListTableWidget.setColumnCount(2)
         self.shortcutListTableWidget.setRowCount(0)
+        self.shortcutListTableWidget.setSelectionBehavior(
+            QtGui.QAbstractItemView.SelectRows)
         self.shortcutListTableWidget.setHorizontalHeaderItem(0,
             QtGui.QTableWidgetItem())
         self.shortcutListTableWidget.setHorizontalHeaderItem(1,
@@ -64,7 +66,7 @@ class Ui_ShortcutListDialog(object):
         self.shortcutPushButton = QtGui.QPushButton(shortcutListDialog)
         self.shortcutPushButton.setMinimumSize(QtCore.QSize(84, 0))
         self.shortcutPushButton.setIcon(
-            build_icon(u':/system/system_settings.png'))
+            build_icon(u':/system/system_configure_shortcuts.png'))
         self.shortcutPushButton.setCheckable(True)
         self.shortcutPushButton.setChecked(False)
         self.shortcutPushButton.setObjectName(u'shortcutPushButton')

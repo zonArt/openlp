@@ -24,10 +24,17 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import logging
+import re
+
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.utils import translate
 from shortcutlistdialog import Ui_ShortcutListDialog
+
+REMOVE_AMPERSAND = re.compile(r'&{1}')
+
+log = logging.getLogger(__name__)
 
 class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
     """
@@ -40,6 +47,8 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
+        self.actionList = []
+        self.captureShortcut = False
         QtCore.QObject.connect(
             self.shortcutPushButton,
             QtCore.SIGNAL(u'toggled(bool)'),
@@ -78,5 +87,22 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         self.shortcutPushButton.setChecked(False)
         self.captureShortcut = False
 
+    def exec_(self, actionList):
+        self.actionList = actionList
+        self.refreshActions()
+        return QtGui.QDialog.exec_(self)
+
+    def refreshActions(self):
+        self.shortcutListTableWidget.setRowCount(len(self.actionList))
+        for index, action in enumerate(self.actionList):
+            if action.menu().parentWidget():
+                log.debug(action.menu().parentWidget().objectName())
+            actionText = unicode(action.text())
+            actionText = REMOVE_AMPERSAND.sub('', actionText)
+            self.shortcutListTableWidget.setItem(index, 0, QtGui.QTableWidgetItem(action.icon(), actionText))
+            self.shortcutListTableWidget.setItem(index, 1, QtGui.QTableWidgetItem(action.shortcut().toString()))
+        self.shortcutListTableWidget.resizeRowsToContents()
+
     def onShortcutPushButtonClicked(self, toggled):
         self.captureShortcut = toggled
+
