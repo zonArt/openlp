@@ -29,7 +29,6 @@ The :mod:`songbeamerimport` module provides the functionality for importing
 """
 import logging
 import os
-import re
 import chardet
 import codecs
 
