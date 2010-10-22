@@ -208,6 +208,7 @@ class ServiceItem(object):
         self.service_item_type = ServiceItemType.Image
         self._raw_frames.append(
             {u'title': title, u'image': image, u'path': path})
+        self.render_manager.image_manager.add_image(title, path)
         self._new_item()
 
     def add_from_text(self, title, raw_slide, verse_tag=None):
@@ -389,7 +390,7 @@ class ServiceItem(object):
         if self.service_item_type == ServiceItemType.Text:
             return None, self._display_frames[row][u'html'].split(u'\n')[0]
         else:
-            return self._raw_frames[row][u'image'], u''
+            return self._raw_frames[row][u'title'], u''
 
     def get_frame_title(self, row=0):
         """

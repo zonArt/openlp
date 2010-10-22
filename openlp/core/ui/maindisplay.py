@@ -222,7 +222,7 @@ class MainDisplay(DisplayWidget):
                 shrinkItem.resize(self.screen[u'size'].width(),
                     self.screen[u'size'].height())
 
-    def image(self, image):
+    def image(self, name):
         """
         Add an image as the background.  The image is converted to a
         bytestream on route.
@@ -231,9 +231,8 @@ class MainDisplay(DisplayWidget):
             The Image to be displayed can be QImage or QPixmap
         """
         log.debug(u'image to display')
-        if not isinstance(image, QtGui.QImage):
-            image = resize_image(image, self.screen[u'size'].width(),
-                self.screen[u'size'].height())
+        image = self.parent.parent.RenderManager.image_manager. \
+                get_image(name)
         self.resetVideo()
         self.displayImage(image)
         # show screen

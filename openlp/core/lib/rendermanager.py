@@ -28,7 +28,7 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Renderer, ThemeLevel, ServiceItem
+from openlp.core.lib import Renderer, ThemeLevel, ServiceItem, ImageManager
 from openlp.core.ui import MainDisplay
 
 log = logging.getLogger(__name__)
@@ -56,6 +56,7 @@ class RenderManager(object):
         """
         log.debug(u'Initilisation started')
         self.screens = screens
+        self.image_manager = ImageManager()
         self.display = MainDisplay(self, screens, False)
         self.display.setup()
         self.theme_manager = theme_manager
@@ -78,6 +79,7 @@ class RenderManager(object):
         self.display.setup()
         self.renderer.bg_frame = None
         self.themedata = None
+        self.image_manager.update_display(self.width, self.height)
 
     def set_global_theme(self, global_theme, theme_level=ThemeLevel.Global):
         """
@@ -153,6 +155,8 @@ class RenderManager(object):
             self.calculate_default(self.screens.current[u'size'])
             self.renderer.set_theme(self.themedata)
             self.build_text_rectangle(self.themedata)
+            self.image_manager.add_image(self.themedata.theme_name,
+                self.themedata.background_filename)
             self.renderer.set_frame_dest(self.width, self.height)
         return self.renderer._rect, self.renderer._rect_footer
 
