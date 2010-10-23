@@ -87,12 +87,12 @@ class ThemeLevel(object):
     Service = 2
     Song = 3
 
-boolean_list = [u'italics', u'override', u'outline', u'shadow', \
-u'slide_transition']
+boolean_list = [u'italics', u'override', u'outline', u'shadow',
+    u'slide_transition']
 
-integer_list =[u'proportion', u'line_adjustment', u'x', u'height', u'y', \
-u'width', u'shadow_size', u'outline_size', u'horizontal_align', \
-u'vertical_align', u'wrap_style' ]
+integer_list = [u'proportion', u'line_adjustment', u'x', u'height', u'y',
+    u'width', u'shadow_size', u'outline_size', u'horizontal_align',
+    u'vertical_align', u'wrap_style']
 
 class ThemeXML(object):
     """
