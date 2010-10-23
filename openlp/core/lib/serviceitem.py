@@ -30,7 +30,6 @@ type and capability of an item.
 
 import logging
 import os
-import time
 import uuid
 
 from PyQt4 import QtGui
@@ -164,7 +163,6 @@ class ServiceItem(object):
         if self.service_item_type == ServiceItemType.Text:
             log.debug(u'Formatting slides')
             for slide in self._raw_frames:
-                before = time.time()
                 formatted = self.render_manager \
                     .format_slide(slide[u'raw_slide'], line_break)
                 for page in formatted:
@@ -173,12 +171,8 @@ class ServiceItem(object):
                         u'text': clean_tags(page.rstrip()),
                         u'html': expand_tags(page.rstrip()),
                         u'verseTag': slide[u'verseTag'] })
-                log.log(15, u'Formatting took %4s' % (time.time() - before))
-        elif self.service_item_type == ServiceItemType.Image:
-            for slide in self._raw_frames:
-                slide[u'image'] = resize_image(slide[u'image'],
-                    self.render_manager.width, self.render_manager.height)
-        elif self.service_item_type == ServiceItemType.Command:
+        elif self.service_item_type == ServiceItemType.Image or \
+            self.service_item_type == ServiceItemType.Command:
             pass
         else:
             log.error(u'Invalid value renderer :%s' % self.service_item_type)
@@ -191,7 +185,7 @@ class ServiceItem(object):
                 else:
                     self.foot_text = u'%s<br>%s' % (self.foot_text, foot)
 
-    def add_from_image(self, path, title, image):
+    def add_from_image(self, path, title):
         """
         Add an image slide to the service item.
 
@@ -200,13 +194,10 @@ class ServiceItem(object):
 
         ``title``
             A title for the slide in the service item.
-
-        ``image``
-            The actual image file name.
         """
         self.service_item_type = ServiceItemType.Image
         self._raw_frames.append(
-            {u'title': title, u'image': image, u'path': path})
+            {u'title': title, u'path': path})
         self.render_manager.image_manager.add_image(title, path)
         self._new_item()
 
@@ -310,8 +301,7 @@ class ServiceItem(object):
         elif self.service_item_type == ServiceItemType.Image:
             for text_image in serviceitem[u'serviceitem'][u'data']:
                 filename = os.path.join(path, text_image)
-                real_image = QtGui.QImage(unicode(filename))
-                self.add_from_image(path, text_image, real_image)
+                self.add_from_image(filename, text_image)
         elif self.service_item_type == ServiceItemType.Command:
             for text_image in serviceitem[u'serviceitem'][u'data']:
                 filename = os.path.join(path, text_image[u'title'])
@@ -387,9 +377,9 @@ class ServiceItem(object):
         renders it if required.
         """
         if self.service_item_type == ServiceItemType.Text:
-            return None, self._display_frames[row][u'html'].split(u'\n')[0]
+            return self._display_frames[row][u'html'].split(u'\n')[0]
         else:
-            return self._raw_frames[row][u'title'], u''
+            return self._raw_frames[row][u'title']
 
     def get_frame_title(self, row=0):
         """

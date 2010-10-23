@@ -33,7 +33,7 @@ import logging
 import os
 import time
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
 
 from openlp.core.lib import resize_image, image_to_byte
 

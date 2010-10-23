@@ -401,6 +401,7 @@ class SlideController(QtGui.QWidget):
         log.debug(u'screenSizeChanged live = %s' % self.isLive)
         # rebuild display as screen size changed
         self.display = MainDisplay(self, self.screens, self.isLive)
+        self.display.imageManager = self.parent.RenderManager.image_manager
         self.display.alertTab = self.alertTab
         self.ratio = float(self.screens.current[u'size'].width()) / \
             float(self.screens.current[u'size'].height())
@@ -779,15 +780,12 @@ class SlideController(QtGui.QWidget):
                     [self.serviceItem, self.isLive, row])
                 self.updatePreview()
             else:
-                frame, raw_html = self.serviceItem.get_rendered_frame(row)
+                toDisplay = self.serviceItem.get_rendered_frame(row)
                 if self.serviceItem.is_text():
-                    frame = self.display.text(raw_html)
+                    frame = self.display.text(toDisplay)
                 else:
-                    self.display.image(frame)
-                if isinstance(frame, QtGui.QImage):
-                    self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
-                else:
-                    self.SlidePreview.setPixmap(QtGui.QPixmap(frame))
+                    frame = self.display.image(toDisplay)
+                self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
             self.selectedRow = row
         Receiver.send_message(u'slidecontroller_%s_changed' % self.typePrefix,
             row)

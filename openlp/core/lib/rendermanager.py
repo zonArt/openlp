@@ -58,6 +58,7 @@ class RenderManager(object):
         self.screens = screens
         self.image_manager = ImageManager()
         self.display = MainDisplay(self, screens, False)
+        self.display.imageManager = self.image_manager
         self.display.setup()
         self.theme_manager = theme_manager
         self.renderer = Renderer()
@@ -76,6 +77,7 @@ class RenderManager(object):
         log.debug(u'Update Display')
         self.calculate_default(self.screens.current[u'size'])
         self.display = MainDisplay(self, self.screens, False)
+        self.display.imageManager = self.image_manager
         self.display.setup()
         self.renderer.bg_frame = None
         self.themedata = None
@@ -214,7 +216,7 @@ class RenderManager(object):
         serviceItem.raw_footer = footer
         serviceItem.render(True)
         self.display.buildHtml(serviceItem)
-        raw_html = serviceItem.get_rendered_frame(0)[1]
+        raw_html = serviceItem.get_rendered_frame(0)
         preview = self.display.text(raw_html)
         # Reset the real screen size for subsequent render requests
         self.calculate_default(self.screens.current[u'size'])

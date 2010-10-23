@@ -229,8 +229,7 @@ class MainDisplay(DisplayWidget):
         """
         API for replacement backgounds so Images are added directly to cache
         """
-        image = self.parent.parent.RenderManager.image_manager. \
-                add_image(name, path)
+        image = self.imageManager.add_image(name, path)
         self.image(name)
 
     def image(self, name):
@@ -242,13 +241,13 @@ class MainDisplay(DisplayWidget):
             The Image to be displayed can be QImage or QPixmap
         """
         log.debug(u'image to display')
-        image = self.parent.parent.RenderManager.image_manager. \
-                get_image_bytes(name)
+        image = self.imageManager.get_image_bytes(name)
         self.resetVideo()
         self.displayImage(image)
         # show screen
         if self.isLive:
             self.setVisible(True)
+        return self.preview()
 
     def displayImage(self, image):
         """
@@ -403,7 +402,7 @@ class MainDisplay(DisplayWidget):
         self.initialFrame = False
         self.serviceItem = serviceItem
         if self.serviceItem.themedata.background_filename:
-            self.serviceItem.bg_image_bytes = self.parent.parent.RenderManager.image_manager. \
+            self.serviceItem.bg_image_bytes = self.imageManager. \
                 get_image_bytes(self.serviceItem.themedata.theme_name)
         html = build_html(self.serviceItem, self.screen, self.parent.alertTab,
             self.isLive)

@@ -167,7 +167,7 @@ class ImageMediaItem(MediaManagerItem):
                 bitem = self.listView.item(item.row())
                 filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
                 (path, name) = os.path.split(filename)
-                service_item.add_from_image(filename, name, None)
+                service_item.add_from_image(filename, name)
             return True
         else:
             return False
