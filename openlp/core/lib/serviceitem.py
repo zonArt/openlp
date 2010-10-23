@@ -160,7 +160,6 @@ class ServiceItem(object):
             theme = self.theme
         self.main, self.footer = \
             self.render_manager.set_override_theme(theme, useOverride)
-        self.bg_image_bytes = self.render_manager.renderer.bg_image_bytes
         self.themedata = self.render_manager.renderer._theme
         if self.service_item_type == ServiceItemType.Text:
             log.debug(u'Formatting slides')

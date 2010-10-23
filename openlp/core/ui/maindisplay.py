@@ -222,6 +222,14 @@ class MainDisplay(DisplayWidget):
                 shrinkItem.resize(self.screen[u'size'].width(),
                     self.screen[u'size'].height())
 
+    def directImage(self, name, path):
+        """
+        API for replacement backgounds so Images are added directly to cache
+        """
+        image = self.parent.parent.RenderManager.image_manager. \
+                add_image(name, path)
+        self.image(name)
+
     def image(self, name):
         """
         Add an image as the background.  The image is converted to a
@@ -232,7 +240,7 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'image to display')
         image = self.parent.parent.RenderManager.image_manager. \
-                get_image(name)
+                get_image_bytes(name)
         self.resetVideo()
         self.displayImage(image)
         # show screen
@@ -244,11 +252,7 @@ class MainDisplay(DisplayWidget):
         Display an image, as is.
         """
         if image:
-            if isinstance(image, QtGui.QImage):
-                js = u'show_image("data:image/png;base64,%s");' % \
-                    image_to_byte(image)
-            else:
-                js = u'show_image("data:image/png;base64,%s");' % image
+            js = u'show_image("data:image/png;base64,%s");' % image
         else:
             js = u'show_image("");'
         self.frame.evaluateJavaScript(js)
@@ -395,6 +399,9 @@ class MainDisplay(DisplayWidget):
         self.loaded = False
         self.initialFrame = False
         self.serviceItem = serviceItem
+        if self.serviceItem.themedata.background_filename:
+            self.serviceItem.bg_image_bytes = self.parent.parent.RenderManager.image_manager. \
+                get_image_bytes(self.serviceItem.themedata.theme_name)
         html = build_html(self.serviceItem, self.screen, self.parent.alertTab,
             self.isLive)
         log.debug(u'buildHtml - pre setHtml')

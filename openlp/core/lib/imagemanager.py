@@ -31,6 +31,7 @@ to wait for the conversion to happen.
 """
 import logging
 import os
+import time
 
 from PyQt4 import QtCore, QtGui
 
@@ -94,22 +95,34 @@ class ImageManager(QtCore.QObject):
             self.image_thread.start()
 
     def get_image(self, name):
+        """
+        Return the Qimage from the cache
+        """
+        log.debug(u'get_image %s' % name)
         return self._cache[name].image
 
     def get_image_bytes(self, name):
+        """
+        Returns the byte string for an image
+        If not present wait for the background thread to process it.
+        """
+        log.debug(u'get_image_bytes %s' % name)
+        if not self._cache[name].image_bytes:
+            while self._cache[name].dirty:
+                log.debug(u'get_image_bytes - waiting')
+                time.sleep(0.1)
         return self._cache[name].image_bytes
 
     def add_image(self, name, path):
         """
         Add image to cache if it is not already there
         """
-        log.debug(u'add_image')
+        log.debug(u'add_image %s:%s' % (name, path))
         if not name in self._cache:
             image = Image()
             image.name = name
             image.path = path
-            fullpath = os.path.join(image.path, image.name)
-            image.image = resize_image(fullpath,
+            image.image = resize_image(path,
                 self.width, self.height)
             self._cache[name] = image
         self._cache_dirty = True

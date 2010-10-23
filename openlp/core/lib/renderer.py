@@ -51,11 +51,6 @@ class Renderer(object):
         self._rect = None
         self.theme_name = None
         self._theme = None
-        self._bg_image_filename = None
-        self.frame = None
-        self.bg_frame = None
-        self.bg_image = None
-        self.bg_image_bytes = None
 
     def set_theme(self, theme):
         """
@@ -66,14 +61,7 @@ class Renderer(object):
         """
         log.debug(u'set theme')
         self._theme = theme
-        self.bg_frame = None
-        self.bg_image = None
-        self.bg_image_bytes = None
-        self._bg_image_filename = None
         self.theme_name = theme.theme_name
-        if theme.background_type == u'image':
-            if theme.background_filename:
-                self._bg_image_filename =theme.background_filename
 
     def set_text_rectangle(self, rect_main, rect_footer):
         """
@@ -104,30 +92,6 @@ class Renderer(object):
             u'<div id="main">' % \
             (build_lyrics_format_css(self._theme, self.page_width,
             self.page_height), build_lyrics_outline_css(self._theme))
-
-    def set_frame_dest(self, frame_width, frame_height):
-        """
-        Set the size of the slide.
-
-        ``frame_width``
-            The width of the slide.
-
-        ``frame_height``
-            The height of the slide.
-
-        """
-        log.debug(u'set frame dest (frame) w %d h %d', frame_width,
-            frame_height)
-        if self._theme.background_type == u'image':
-            frame = QtGui.QImage(frame_width, frame_height,
-                QtGui.QImage.Format_ARGB32_Premultiplied)
-            self.bg_image = resize_image(self._bg_image_filename,
-                frame.width(), frame.height())
-            self.bg_image_bytes = image_to_byte(self.bg_image)
-        else:
-            self.bg_frame = None
-            self.bg_image_bytes = None
-        log.debug(u'end frame dest (frame)')
 
     def format_slide(self, words, line_break):
         """

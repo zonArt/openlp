@@ -157,7 +157,6 @@ class RenderManager(object):
             self.build_text_rectangle(self.themedata)
             self.image_manager.add_image(self.themedata.theme_name,
                 self.themedata.background_filename)
-            self.renderer.set_frame_dest(self.width, self.height)
         return self.renderer._rect, self.renderer._rect_footer
 
     def build_text_rectangle(self, theme):
