@@ -25,7 +25,6 @@
 ###############################################################################
 
 import re
-import sys
 try:
     import enchant
     from enchant import DictNotFoundError
@@ -37,7 +36,7 @@ except ImportError:
 # http://john.nachtimwald.com/2009/08/22/qplaintextedit-with-in-line-spell-check/
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import html_expands, translate, context_menu_action
+from openlp.core.lib import html_expands, translate
 
 class SpellTextEdit(QtGui.QPlainTextEdit):
     def __init__(self, *args):

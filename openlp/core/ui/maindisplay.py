@@ -90,6 +90,9 @@ class DisplayWidget(QtGui.QGraphicsView):
             event.ignore()
 
 class MainDisplay(DisplayWidget):
+    """
+    This is the display screen.
+    """
 
     def __init__(self, parent, screens, live):
         DisplayWidget.__init__(self, live, parent=None)
@@ -184,7 +187,7 @@ class MainDisplay(DisplayWidget):
         `slide`
             The slide text to be displayed
         """
-        log.debug(u'text')
+        log.debug(u'text to display')
         # Wait for the webview to update before displayiong text.
         while not self.loaded:
             Receiver.send_message(u'openlp_process_events')
@@ -199,7 +202,7 @@ class MainDisplay(DisplayWidget):
         `slide`
             The slide text to be displayed
         """
-        log.debug(u'alert')
+        log.debug(u'alert to display')
         if self.height() != self.screen[u'size'].height() \
             or not self.isVisible() or self.videoWidget.isVisible():
             shrink = True
@@ -219,7 +222,7 @@ class MainDisplay(DisplayWidget):
                 shrinkItem.setVisible(True)
             else:
                 shrinkItem.setVisible(False)
-                shrinkItem.resize(self.screen[u'size'].width(), 
+                shrinkItem.resize(self.screen[u'size'].width(),
                     self.screen[u'size'].height())
 
     def image(self, image):
@@ -230,9 +233,10 @@ class MainDisplay(DisplayWidget):
         `Image`
             The Image to be displayed can be QImage or QPixmap
         """
-        log.debug(u'image')
-        image = resize_image(image, self.screen[u'size'].width(),
-            self.screen[u'size'].height())
+        log.debug(u'image to display')
+        if not isinstance(image, QtGui.QImage):
+            image = resize_image(image, self.screen[u'size'].width(),
+                self.screen[u'size'].height())
         self.resetVideo()
         self.displayImage(image)
         # show screen
