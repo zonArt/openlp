@@ -74,6 +74,7 @@ class Ui_ServiceItemEditDialog(object):
             QtGui.QDialogButtonBox.Save)
         self.buttonBox.setObjectName(u'buttonBox')
         self.outerLayout.addWidget(self.buttonBox)
+
         self.retranslateUi(serviceItemEditDialog)
         QtCore.QMetaObject.connectSlotsByName(serviceItemEditDialog)
 
