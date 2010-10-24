@@ -90,6 +90,9 @@ class DisplayWidget(QtGui.QGraphicsView):
             event.ignore()
 
 class MainDisplay(DisplayWidget):
+    """
+    This is the display screen.
+    """
 
     def __init__(self, parent, screens, live):
         DisplayWidget.__init__(self, live, parent=None)
