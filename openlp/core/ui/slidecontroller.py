@@ -587,8 +587,13 @@ class SlideController(QtGui.QWidget):
                 label = QtGui.QLabel()
                 label.setMargin(4)
                 label.setScaledContents(True)
-                image = self.parent.RenderManager.image_manager. \
-                        get_image(frame[u'title'])
+                if self.serviceItem.is_command():
+                    image = resize_image(frame[u'image'],
+                        self.parent.RenderManager.width,
+                        self.parent.RenderManager.height)
+                else:
+                    image = self.parent.RenderManager.image_manager. \
+                            get_image(frame[u'title'])
                 label.setPixmap(QtGui.QPixmap.fromImage(image))
                 self.PreviewListWidget.setCellWidget(framenumber, 0, label)
                 slideHeight = width * self.parent.RenderManager.screen_ratio

@@ -227,7 +227,7 @@ class MainDisplay(DisplayWidget):
 
     def directImage(self, name, path):
         """
-        API for replacement backgounds so Images are added directly to cache
+        API for replacement backgrounds so Images are added directly to cache
         """
         image = self.imageManager.add_image(name, path)
         self.image(name)

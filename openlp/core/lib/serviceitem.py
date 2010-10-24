@@ -232,7 +232,7 @@ class ServiceItem(object):
         """
         self.service_item_type = ServiceItemType.Command
         self._raw_frames.append(
-            {u'title': file_name, u'image': image, u'path': path})
+            {u'title': file_name, u'image':image, u'path': path})
         self._new_item()
 
     def get_service_repr(self):
@@ -378,8 +378,10 @@ class ServiceItem(object):
         """
         if self.service_item_type == ServiceItemType.Text:
             return self._display_frames[row][u'html'].split(u'\n')[0]
-        else:
+        elif self.service_item_type == ServiceItemType.Image:
             return self._raw_frames[row][u'title']
+        else:
+            return self._raw_frames[row][u'image']
 
     def get_frame_title(self, row=0):
         """
