@@ -346,7 +346,7 @@ class ServiceManager(QtGui.QWidget):
             self.serviceItems[item][u'service_item'])
         if self.serviceItemEditForm.exec_():
             self.addServiceItem(self.serviceItemEditForm.getServiceItem(),
-                replace=True, expand=self.serviceItems[item][u'expand'])
+                replace=True, expand=self.serviceItems[item][u'expanded'])
 
     def nextItem(self):
         """
