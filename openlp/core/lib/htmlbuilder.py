@@ -331,6 +331,7 @@ def build_html(item, screen, alert, islive):
     height = screen[u'size'].height()
     theme = item.themedata
     webkitvers = webkit_version()
+    # Image generated and poked in
     if item.bg_image_bytes:
         image = u'src="data:image/png;base64,%s"' % item.bg_image_bytes
     else:

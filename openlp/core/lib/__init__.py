@@ -316,6 +316,7 @@ from theme import ThemeLevel, ThemeXML, BackgroundGradientType, BackgroundType, 
     HorizontalType, VerticalType
 from spelltextedit import SpellTextEdit
 from eventreceiver import Receiver
+from imagemanager import ImageManager
 from settingsmanager import SettingsManager
 from plugin import PluginStatus, StringContent, Plugin
 from pluginmanager import PluginManager

@@ -90,6 +90,9 @@ class DisplayWidget(QtGui.QGraphicsView):
             event.ignore()
 
 class MainDisplay(DisplayWidget):
+    """
+    This is the display screen.
+    """
 
     def __init__(self, parent, screens, live):
         DisplayWidget.__init__(self, live, parent=None)
@@ -222,7 +225,14 @@ class MainDisplay(DisplayWidget):
                 shrinkItem.resize(self.screen[u'size'].width(),
                     self.screen[u'size'].height())
 
-    def image(self, image):
+    def directImage(self, name, path):
+        """
+        API for replacement backgrounds so Images are added directly to cache
+        """
+        image = self.imageManager.add_image(name, path)
+        self.image(name)
+
+    def image(self, name):
         """
         Add an image as the background.  The image is converted to a
         bytestream on route.
@@ -231,25 +241,20 @@ class MainDisplay(DisplayWidget):
             The Image to be displayed can be QImage or QPixmap
         """
         log.debug(u'image to display')
-        if not isinstance(image, QtGui.QImage):
-            image = resize_image(image, self.screen[u'size'].width(),
-                self.screen[u'size'].height())
+        image = self.imageManager.get_image_bytes(name)
         self.resetVideo()
         self.displayImage(image)
         # show screen
         if self.isLive:
             self.setVisible(True)
+        return self.preview()
 
     def displayImage(self, image):
         """
         Display an image, as is.
         """
         if image:
-            if isinstance(image, QtGui.QImage):
-                js = u'show_image("data:image/png;base64,%s");' % \
-                    image_to_byte(image)
-            else:
-                js = u'show_image("data:image/png;base64,%s");' % image
+            js = u'show_image("data:image/png;base64,%s");' % image
         else:
             js = u'show_image("");'
         self.frame.evaluateJavaScript(js)
@@ -396,6 +401,9 @@ class MainDisplay(DisplayWidget):
         self.loaded = False
         self.initialFrame = False
         self.serviceItem = serviceItem
+        if self.serviceItem.themedata.background_filename:
+            self.serviceItem.bg_image_bytes = self.imageManager. \
+                get_image_bytes(self.serviceItem.themedata.theme_name)
         html = build_html(self.serviceItem, self.screen, self.parent.alertTab,
             self.isLive)
         log.debug(u'buildHtml - pre setHtml')

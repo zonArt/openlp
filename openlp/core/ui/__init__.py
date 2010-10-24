@@ -40,7 +40,6 @@ class HideMode(object):
 from themeform import ThemeForm
 from filerenameform import FileRenameForm
 from maindisplay import MainDisplay
-from slidecontroller import HideMode
 from servicenoteform import ServiceNoteForm
 from serviceitemeditform import ServiceItemEditForm
 from screen import ScreenList

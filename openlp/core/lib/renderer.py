@@ -51,11 +51,6 @@ class Renderer(object):
         self._rect = None
         self.theme_name = None
         self._theme = None
-        self._bg_image_filename = None
-        self.frame = None
-        self.bg_frame = None
-        self.bg_image = None
-        self.bg_image_bytes = None
 
     def set_theme(self, theme):
         """
@@ -66,14 +61,7 @@ class Renderer(object):
         """
         log.debug(u'set theme')
         self._theme = theme
-        self.bg_frame = None
-        self.bg_image = None
-        self.bg_image_bytes = None
-        self._bg_image_filename = None
         self.theme_name = theme.theme_name
-        if theme.background_type == u'image':
-            if theme.background_filename:
-                self._bg_image_filename = unicode(theme.background_filename)
 
     def set_text_rectangle(self, rect_main, rect_footer):
         """
@@ -104,39 +92,6 @@ class Renderer(object):
             u'<div id="main">' % \
             (build_lyrics_format_css(self._theme, self.page_width,
             self.page_height), build_lyrics_outline_css(self._theme))
-
-    def set_frame_dest(self, frame_width, frame_height):
-        """
-        Set the size of the slide.
-
-        ``frame_width``
-            The width of the slide.
-
-        ``frame_height``
-            The height of the slide.
-
-        """
-        log.debug(u'set frame dest (frame) w %d h %d', frame_width,
-            frame_height)
-        self.frame = QtGui.QImage(frame_width, frame_height,
-            QtGui.QImage.Format_ARGB32_Premultiplied)
-        if self._bg_image_filename and not self.bg_image:
-            self.bg_image = resize_image(self._bg_image_filename,
-                self.frame.width(), self.frame.height())
-        if self._theme.background_type == u'image':
-            self.bg_frame = QtGui.QImage(self.frame.width(),
-                self.frame.height(),
-                QtGui.QImage.Format_ARGB32_Premultiplied)
-            painter = QtGui.QPainter()
-            painter.begin(self.bg_frame)
-            painter.fillRect(self.frame.rect(), QtCore.Qt.black)
-            if self.bg_image:
-                painter.drawImage(0, 0, self.bg_image)
-            painter.end()
-            self.bg_image_bytes = image_to_byte(self.bg_frame)
-        else:
-            self.bg_frame = None
-            self.bg_image_bytes = None
 
     def format_slide(self, words, line_break):
         """
