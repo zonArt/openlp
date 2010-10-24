@@ -273,6 +273,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
         """
         Handle the display and State of the Position tab.
         """
+        print "setPosTabValues"
         if self.theme.font_main_override:
             self.setField(u'mainDefaultPosition', QtCore.QVariant(False))
         else:
@@ -504,6 +505,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
         # preview page
         self.theme.theme_name = \
             unicode(self.field(u'name').toString())
+        print self.theme
 
     def _colorButton(self, field):
         """
