@@ -148,16 +148,29 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
         self.setDefaults()
         return QtGui.QWizard.exec_(self)
 
+    def initializePage(self, id):
+        print id
+        if id == 0:
+            self.setBackgroundTabValues()
+        elif id == 1:
+            self.setMainAreaTabValues()
+        elif id == 2:
+            self.setFooterAreaTabValues()
+        elif id == 3:
+            self.setAlignmentTabValues()
+        elif id == 4:
+            self.setPositionTabValues()
+        elif id == 5:
+            frame = self.thememanager.generateImage(self.theme)
+            self.previewBoxLabel.setPixmap(QtGui.QPixmap.fromImage(frame))
+
     def validateCurrentPage(self):
         """
         Handle Tab specific code when moving between Tabs.
         """
         print "CURRENT id", self.currentId()
         # Preview Screen
-        if self.currentId() == 5:
-            self.updateTheme()
-            frame = self.thememanager.generateImage(self.theme)
-            self.previewBoxLabel.setPixmap(QtGui.QPixmap.fromImage(frame))
+        self.updateTheme()
         return True
 
     def setBackgroundTabValues(self):
@@ -273,7 +286,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
         """
         Handle the display and State of the Position tab.
         """
-        print "setPosTabValues"
         if self.theme.font_main_override:
             self.setField(u'mainDefaultPosition', QtCore.QVariant(False))
         else:
@@ -505,7 +517,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
         # preview page
         self.theme.theme_name = \
             unicode(self.field(u'name').toString())
-        print self.theme
 
     def _colorButton(self, field):
         """
