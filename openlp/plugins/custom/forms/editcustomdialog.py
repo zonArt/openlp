@@ -110,6 +110,7 @@ class Ui_CustomEditDialog(object):
         self.titleEdit.setObjectName(u'titleEdit')
         self.horizontalLayout.addWidget(self.titleEdit)
         self.gridLayout.addLayout(self.horizontalLayout, 0, 0, 1, 1)
+
         self.retranslateUi(customEditDialog)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'),
             customEditDialog.accept)
