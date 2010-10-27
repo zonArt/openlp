@@ -781,7 +781,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     QtGui.QMessageBox.Save),
                 QtGui.QMessageBox.Save)
             if ret == QtGui.QMessageBox.Save:
-                self.ServiceManagerContents.onSaveService()
+                self.ServiceManagerContents.onSaveService(TRUE)
                 self.cleanUp()
                 event.accept()
             elif ret == QtGui.QMessageBox.Discard:
