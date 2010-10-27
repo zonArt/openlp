@@ -36,7 +36,7 @@ from BeautifulSoup import BeautifulSoup, NavigableString
 
 from openlp.core.lib import Receiver
 from openlp.core.utils import AppLocation
-from openlp.plugins.bibles.lib import SearchResults    
+from openlp.plugins.bibles.lib import SearchResults
 from openlp.plugins.bibles.lib.db import BibleDB, Book
 
 log = logging.getLogger(__name__)
