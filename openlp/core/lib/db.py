@@ -246,3 +246,10 @@ class Manager(object):
             self.session.rollback()
             log.exception(u'Failed to delete %s records', object_class.__name__)
             return False
+
+    def finalise(self):
+        """
+        VACUUM the database on exit.
+        """
+        engine = create_engine(self.db_url)
+        engine.execute("vacuum")

@@ -41,7 +41,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
     Class documentation goes here.
     """
     log.info(u'Custom Editor loaded')
-    def __init__(self, custommanager, parent=None):
+    def __init__(self, manager, parent=None):
         """
         Constructor
         """
@@ -74,7 +74,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
         # Create other objects and forms.
-        self.custommanager = custommanager
+        self.manager = manager
         self.editSlideForm = EditCustomSlideForm(self)
         self.initialise()
 
@@ -115,7 +115,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         self.customSlide = CustomSlide()
         self.initialise()
         if id != 0:
-            self.customSlide = self.custommanager.get_object(CustomSlide, id)
+            self.customSlide = self.manager.get_object(CustomSlide, id)
             self.titleEdit.setText(self.customSlide.title)
             self.creditEdit.setText(self.customSlide.credits)
             customXML = CustomXMLParser(self.customSlide.text)
@@ -168,7 +168,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             u'utf-8')
         self.customSlide.theme_name = unicode(self.themeComboBox.currentText(),
             u'utf-8')
-        return self.custommanager.save_object(self.customSlide)
+        return self.manager.save_object(self.customSlide)
 
     def onUpButtonPressed(self):
         selectedRow = self.slideListView.currentRow()

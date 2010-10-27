@@ -166,36 +166,44 @@ class SongsPlugin(Plugin):
         ## New Button ##
         self.textStrings[StringContent.New] = {
             u'title': translate('SongsPlugin', 'Add'),
-            u'tooltip': translate('SongsPlugin', 
+            u'tooltip': translate('SongsPlugin',
                 'Add a new Song')
         }
         ## Edit Button ##
         self.textStrings[StringContent.Edit] = {
             u'title': translate('SongsPlugin', 'Edit'),
-            u'tooltip': translate('SongsPlugin', 
+            u'tooltip': translate('SongsPlugin',
                 'Edit the selected Song')
         }
         ## Delete Button ##
         self.textStrings[StringContent.Delete] = {
             u'title': translate('SongsPlugin', 'Delete'),
-            u'tooltip': translate('SongsPlugin', 
+            u'tooltip': translate('SongsPlugin',
                 'Delete the selected Song')
         }
         ## Preview ##
         self.textStrings[StringContent.Preview] = {
             u'title': translate('SongsPlugin', 'Preview'),
-            u'tooltip': translate('SongsPlugin', 
+            u'tooltip': translate('SongsPlugin',
                 'Preview the selected Song')
         }
         ## Live  Button ##
         self.textStrings[StringContent.Live] = {
             u'title': translate('SongsPlugin', 'Live'),
-            u'tooltip': translate('SongsPlugin', 
+            u'tooltip': translate('SongsPlugin',
                 'Send the selected Song live')
         }
         ## Add to service Button ##
         self.textStrings[StringContent.Service] = {
             u'title': translate('SongsPlugin', 'Service'),
-            u'tooltip': translate('SongsPlugin', 
+            u'tooltip': translate('SongsPlugin',
                 'Add the selected Song to the service')
         }
+
+    def finalise(self):
+        """
+        Time to tidy up on exit
+        """
+        log.info(u'Songs Finalising')
+        self.manager.finalise()
+        Plugin.finalise(self)
