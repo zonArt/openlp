@@ -316,5 +316,5 @@ class BibleManager(object):
         Loop through the databases to VACUUM them.
         """
         for bible in self.db_cache:
-            self.db_cache[bible].finalise
+            self.db_cache[bible].finalise()
 
