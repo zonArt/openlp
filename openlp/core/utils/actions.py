@@ -28,6 +28,8 @@ The :mod:`~openlp.core.utils.actions` module provides action list classes used
 by the shortcuts system.
 """
 
+from PyQt4.QtGui import QAction
+
 class ActionCategory(object):
     """
     The :class:`~openlp.core.utils.ActionCategory` class encapsulates a
@@ -48,6 +50,18 @@ class CategoryActionList(object):
         self.index = 0
         self.actions = []
 
+    def __getitem__(self, key):
+        for weight, action in self.actions:
+            if action.text() == key:
+                return action
+        raise KeyError(u'Action "%s" does not exist.' % key)
+
+    def __contains__(self, item):
+        return self.has_key(item)
+
+    def __len__(self):
+        return len(self.actions)
+
     def __iter__(self):
         return self
 
@@ -67,6 +81,18 @@ class CategoryActionList(object):
         """
         return self.__next__()
 
+    def has_key(key):
+        for weight, action in self.actions:
+            if action.text() == key:
+                return True
+        return False
+
+    def append(self, name):
+        weight = 0
+        if len(self.actions) > 0:
+            weight = self.actions[-1][0] + 1
+        self.add(name, weight)
+
     def add(self, action, weight=0):
         self.actions.append((weight, action))
         self.actions.sort(key=lambda act: act[0])
@@ -74,15 +100,26 @@ class CategoryActionList(object):
 
 class CategoryList(object):
     """
-    The :class:`~openlp.core.utils.ActionListCategory` class encapsulates a
-    category list for the :class:`~openlp.core.utils.ActionList` class and
-    provides an iterator interface for walking through the list of actions in
-    this category.
+    The :class:`~openlp.core.utils.CategoryList` class encapsulates a category
+    list for the :class:`~openlp.core.utils.ActionList` class and provides an
+    iterator interface for walking through the list of actions in this category.
     """
 
     def __init__(self):
         self.index = 0
-        self.categories = CategoryActionList()
+        self.categories = []
+
+    def __getitem__(self, key):
+        for category in self.categories:
+            if category.name == key:
+                return category
+        raise KeyError(u'Category "%s" does not exist.' % key)
+
+    def __contains__(self, item):
+        return self.has_key(item)
+
+    def __len__(self):
+        return len(self.categories)
 
     def __iter__(self):
         return self
@@ -103,8 +140,30 @@ class CategoryList(object):
         """
         return self.__next__()
 
-    def add(self, name, weight=0):
-        self.categories.append(ActionCategory(name, weight))
+    def has_key(name):
+        for category in self.categories:
+            if category.name == key:
+                return True
+        return False
+
+    def append(self, name, actions=[]):
+        weight = 0
+        if len(self.categories) > 0:
+            weight = self.categories[-1].weight + 1
+        if actions:
+            self.add(name, weight, actions)
+        else:
+            self.add(name, weight)
+
+    def add(self, name, weight=0, actions=[]):
+        category = ActionCategory(name, weight)
+        if actions:
+            for action in actions:
+                if isinstance(action, tuple):
+                    category.actions.add(action[0], action[1])
+                else:
+                    category.actions.append(action)
+        self.categories.append(category)
         self.categories.sort(key=lambda cat: cat.weight)
 
 
@@ -118,31 +177,7 @@ class ActionList(object):
     def __init__(self):
         self.categories = CategoryList()
 
-    def add_category(self, category, weight=0):
-        """
-        Add a category to the action list, ordered by ``weight``.
-
-        ``category``
-            The name of the category.
-
-        ``weight``
-            **Defaults to 0.** The weight of the category. The weight
-            determines the sort order, with negative items appearing
-            higher than positive items.
-        """
-        self.categories.add(category, weight)
-
-    def has_category(self, category):
-        for cat in self.categories:
-            if cat[u'name'] == category:
-                return True
-        return False
-
     def add_action(self, action, category=u'Default', weight=0):
-        if not self.has_category:
-            self.add_category(category)
-        for index, cat in enumerate(self.categories):
-            if cat[u'name'] == category:
-                self.categories[index][u'actions'].append((weight, action))
-                return
-
+        if category not in self.categories:
+            self.categories.add(category)
+        self.categories[category].actions.add(action, weight)
