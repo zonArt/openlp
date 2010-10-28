@@ -140,7 +140,7 @@ class CustomMediaItem(MediaManagerItem):
             id_list = [(item.data(QtCore.Qt.UserRole)).toInt()[0]
                 for item in self.listView.selectedIndexes()]
             for id in id_list:
-                self.parent.custommanager.delete_object(CustomSlide, id)
+                self.parent.manager.delete_object(CustomSlide, id)
             for row in row_list:
                 self.listView.takeItem(row)
 
@@ -162,7 +162,7 @@ class CustomMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.AllowsEdit)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
-        customSlide = self.parent.custommanager.get_object(CustomSlide, item_id)
+        customSlide = self.parent.manager.get_object(CustomSlide, item_id)
         title = customSlide.title
         credit = customSlide.credits
         service_item.editId = item_id
