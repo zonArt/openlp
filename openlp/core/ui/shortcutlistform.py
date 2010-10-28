@@ -47,7 +47,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-        self.actionList = []
+        self.actionList = None
         self.captureShortcut = False
         QtCore.QObject.connect(
             self.shortcutPushButton,
@@ -93,15 +93,17 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         return QtGui.QDialog.exec_(self)
 
     def refreshActions(self):
-        self.shortcutListTableWidget.setRowCount(len(self.actionList))
-        for index, action in enumerate(self.actionList):
-            if action.menu().parentWidget():
-                log.debug(action.menu().parentWidget().objectName())
-            actionText = unicode(action.text())
-            actionText = REMOVE_AMPERSAND.sub('', actionText)
-            self.shortcutListTableWidget.setItem(index, 0, QtGui.QTableWidgetItem(action.icon(), actionText))
-            self.shortcutListTableWidget.setItem(index, 1, QtGui.QTableWidgetItem(action.shortcut().toString()))
-        self.shortcutListTableWidget.resizeRowsToContents()
+        self.shortcutListTreeWidget.clear()
+        for category in self.actionList.categories:
+            item = QtGui.QTreeWidgetItem([category.name])
+            for action in category.actions:
+                actionText = REMOVE_AMPERSAND.sub('', unicode(action.text()))
+                shortcutText = action.shortcut().toString()
+                actionItem = QtGui.QTreeWidgetItem([actionText, shortcutText])
+                actionItem.setIcon(0, action.icon())
+                item.addChild(actionItem)
+            item.setExpanded(True)
+            self.shortcutListTreeWidget.addTopLevelItem(item)
 
     def onShortcutPushButtonClicked(self, toggled):
         self.captureShortcut = toggled

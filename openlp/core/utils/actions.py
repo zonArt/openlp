@@ -28,8 +28,6 @@ The :mod:`~openlp.core.utils.actions` module provides action list classes used
 by the shortcuts system.
 """
 
-from PyQt4.QtGui import QAction
-
 class ActionCategory(object):
     """
     The :class:`~openlp.core.utils.ActionCategory` class encapsulates a
@@ -140,7 +138,7 @@ class CategoryList(object):
         """
         return self.__next__()
 
-    def has_key(name):
+    def has_key(self, key):
         for category in self.categories:
             if category.name == key:
                 return True
@@ -177,7 +175,10 @@ class ActionList(object):
     def __init__(self):
         self.categories = CategoryList()
 
-    def add_action(self, action, category=u'Default', weight=0):
+    def add_action(self, action, category=u'Default', weight=None):
         if category not in self.categories:
-            self.categories.add(category)
-        self.categories[category].actions.add(action, weight)
+            self.categories.append(category)
+        if weight is None:
+            self.categories[category].actions.append(action)
+        else:
+            self.categories[category].actions.add(action, weight)

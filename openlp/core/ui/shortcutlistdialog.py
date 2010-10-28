@@ -36,19 +36,16 @@ class Ui_ShortcutListDialog(object):
         self.shortcutListLayout.setSpacing(8)
         self.shortcutListLayout.setMargin(8)
         self.shortcutListLayout.setObjectName(u'shortcutListLayout')
-        self.shortcutListTableWidget = QtGui.QTableWidget(shortcutListDialog)
-        self.shortcutListTableWidget.setAlternatingRowColors(True)
-        self.shortcutListTableWidget.setObjectName(u'shortcutListTableWidget')
-        self.shortcutListTableWidget.setColumnCount(2)
-        self.shortcutListTableWidget.setRowCount(0)
-        self.shortcutListTableWidget.setSelectionBehavior(
+        self.shortcutListTreeWidget = QtGui.QTreeWidget(shortcutListDialog)
+        self.shortcutListTreeWidget.setAlternatingRowColors(True)
+        self.shortcutListTreeWidget.setObjectName(u'shortcutListTreeWidget')
+        self.shortcutListTreeWidget.setColumnCount(2)
+        self.shortcutListTreeWidget.setSelectionBehavior(
             QtGui.QAbstractItemView.SelectRows)
-        self.shortcutListTableWidget.setHorizontalHeaderItem(0,
-            QtGui.QTableWidgetItem())
-        self.shortcutListTableWidget.setHorizontalHeaderItem(1,
-            QtGui.QTableWidgetItem())
-        self.shortcutListTableWidget.verticalHeader().setVisible(False)
-        self.shortcutListLayout.addWidget(self.shortcutListTableWidget)
+        #self.shortcutListTreeWidget.setHeaderItem(0, QtGui.QTreeWidgetItem())
+        #self.shortcutListTreeWidget.setHeaderItem(1, QtGui.QTreeWidgetItem())
+        #self.shortcutListTreeWidget.verticalHeader().setVisible(False)
+        self.shortcutListLayout.addWidget(self.shortcutListTreeWidget)
         self.shortcutLayout = QtGui.QVBoxLayout()
         self.shortcutLayout.setSpacing(8)
         self.shortcutLayout.setContentsMargins(0, -1, -1, -1)
@@ -107,10 +104,10 @@ class Ui_ShortcutListDialog(object):
     def retranslateUi(self, shortcutListDialog):
         shortcutListDialog.setWindowTitle(
             translate('OpenLP.ShortcutListDialog', 'Customize Shortcuts'))
-        self.shortcutListTableWidget.horizontalHeaderItem(0).setText(
-            translate(u'OpenLP.ShortcutListDialog', 'Action'))
-        self.shortcutListTableWidget.horizontalHeaderItem(1).setText(
-            translate(u'OpenLP.ShortcutListDialog', 'Shortcut'))
+        self.shortcutListTreeWidget.setHeaderLabels([
+            translate(u'OpenLP.ShortcutListDialog', 'Action'),
+            translate(u'OpenLP.ShortcutListDialog', 'Shortcut')
+        ])
         self.defaultRadioButton.setText(
             translate('OpenLP.ShortcutListDialog', 'Default: %s'))
         self.customRadioButton.setText(
