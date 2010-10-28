@@ -1,7 +1,7 @@
 .. _core-lib:
 
-:mod:`lib` Module
-=================
+Object Library
+==============
 
 .. automodule:: openlp.core.lib
    :members:
@@ -58,12 +58,6 @@
 ------------------
 
 .. autoclass:: openlp.core.lib.settingstab.SettingsTab
-   :members:
-
-:mod:`ThemeXML`
----------------
-
-.. autoclass:: openlp.core.lib.themexmlhandler.ThemeXML
    :members:
 
 :mod:`OpenLPToolbar`

@@ -55,14 +55,17 @@ body {
     background-color: black;
     display: none;
 }
-#image {
+#bgimage {
     z-index:1;
 }
-#video1 {
+#image {
     z-index:2;
 }
+#video1 {
+    z-index:3;
+}
 #video2 {
-    z-index:2;
+    z-index:3;
 }
 #alert {
     position: absolute;
@@ -73,7 +76,7 @@ body {
 }
 #footer {
     position: absolute;
-    z-index:5;
+    z-index:6;
     %s
 }
 /* lyric css */
@@ -87,16 +90,16 @@ body {
     var transition = %s;
 
     function show_video(state, path, volume, loop){
-        // Note, the preferred method for looping would be to use the 
+        // Note, the preferred method for looping would be to use the
         // video tag loop attribute.
         // But QtWebKit doesn't support this. Neither does it support the
         // onended event, hence the setInterval()
         // In addition, setting the currentTime attribute to zero to restart
         // the video raises an INDEX_SIZE_ERROR: DOM Exception 1
-        // To complicate it further, sometimes vid.currentTime stops 
+        // To complicate it further, sometimes vid.currentTime stops
         // slightly short of vid.duration and vid.ended is intermittent!
         //
-        // Note, currently the background may go black between loops. Not 
+        // Note, currently the background may go black between loops. Not
         // desirable. Need to investigate using two <video>'s, and hiding/
         // preloading one, and toggle between the two when looping.
 
@@ -112,7 +115,7 @@ body {
             vid2.volume = volume;
         }
         switch(state){
-            case 'init':            
+            case 'init':
                 vid.src = path;
                 vid2.src = path;
                 if(loop == null) loop = false;
@@ -129,8 +132,8 @@ body {
                 vid.style.visibility = 'visible';
                 if(vid.looping){
                     video_timer = setInterval(
-                        function() { 
-                            show_video('poll'); 
+                        function() {
+                            show_video('poll');
                         }, 200);
                 }
                 break;
@@ -294,7 +297,8 @@ body {
 </script>
 </head>
 <body>
-<img id="image" class="size" %s />
+<img id="bgimage" class="size" %s />
+<img id="image" class="size" style="display:none" />
 <video id="video1" class="size" style="visibility:hidden" autobuffer preload>
 </video>
 <video id="video2" class="size" style="visibility:hidden" autobuffer preload>
@@ -324,6 +328,7 @@ def build_html(item, screen, alert, islive):
     height = screen[u'size'].height()
     theme = item.themedata
     webkitvers = webkit_version()
+    # Image generated and poked in
     if item.bg_image_bytes:
         image = u'src="data:image/png;base64,%s"' % item.bg_image_bytes
     else:
@@ -397,7 +402,7 @@ def build_lyrics_css(item, webkitvers):
     """
     style = """
 .lyricstable {
-    z-index:4;
+    z-index:5;
     position: absolute;
     display: table;
     %s
@@ -451,7 +456,7 @@ def build_lyrics_css(item, webkitvers):
             if theme.display_outline and webkitvers < 534.3:
                 shadow = u'padding-left: %spx; padding-top: %spx;' % \
                     (int(theme.display_shadow_size) +
-                    (int(theme.display_outline_size) * 2), 
+                    (int(theme.display_outline_size) * 2),
                     theme.display_shadow_size)
                 shadow += build_lyrics_outline_css(theme, True)
             else:

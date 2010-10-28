@@ -35,7 +35,7 @@ from openlp.plugins.songs.lib.importer import SongFormat
 
 log = logging.getLogger(__name__)
 
-class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
+class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
     """
     This is the Song Import Wizard, which allows easy importing of Songs
     into OpenLP from other formats like OpenLyrics, OpenSong and CCLI.
@@ -248,7 +248,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
             # Progress page
             return True
 
-    def getFileName(self, title, editbox,  
+    def getFileName(self, title, editbox,
         filters = '%s (*)' % translate('SongsPlugin.ImportWizardForm',
             'All Files')):
         filename = QtGui.QFileDialog.getOpenFileName(self, title,
@@ -260,7 +260,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
                 self.plugin.settingsSection,
                 os.path.split(unicode(filename))[0], 1)
 
-    def getFiles(self, title, listbox,  
+    def getFiles(self, title, listbox,
         filters = u'%s (*)' % translate('SongsPlugin.ImportWizardForm',
             'All Files')):
         filenames = QtGui.QFileDialog.getOpenFileNames(self, title,
@@ -290,7 +290,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
             self.openLP2FilenameEdit,
             u'%s (*.sqlite);;%s (*)'
             % (translate('SongsPlugin.ImportWizardForm',
-            'OpenLP 2.0 Databases'), 
+            'OpenLP 2.0 Databases'),
             translate('SongsPlugin.ImportWizardForm',
             'All Files'))
         )
@@ -299,10 +299,10 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         self.getFileName(
             translate('SongsPlugin.ImportWizardForm',
             'Select openlp.org 1.x Database File'),
-            self.openLP1FilenameEdit, 
+            self.openLP1FilenameEdit,
             u'%s (*.olp);;%s (*)'
             % (translate('SongsPlugin.ImportWizardForm',
-            'openlp.org v1.x Databases'), 
+            'openlp.org v1.x Databases'),
             translate('SongsPlugin.ImportWizardForm',
             'All Files'))
         )
@@ -331,10 +331,10 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         self.getFiles(
             translate('SongsPlugin.ImportWizardForm',
             'Select Words of Worship Files'),
-            self.wordsOfWorshipFileListWidget, 
+            self.wordsOfWorshipFileListWidget,
             u'%s (*.wsg *.wow-song);;%s (*)'
             % (translate('SongsPlugin.ImportWizardForm',
-            'Words Of Worship Song Files'), 
+            'Words Of Worship Song Files'),
             translate('SongsPlugin.ImportWizardForm',
             'All Files'))
         )
@@ -356,10 +356,10 @@ class ImportWizardForm(QtGui.QWizard, Ui_SongImportWizard):
         self.getFiles(
             translate('SongsPlugin.ImportWizardForm',
             'Select Songs of Fellowship Files'),
-            self.songsOfFellowshipFileListWidget, 
+            self.songsOfFellowshipFileListWidget,
             u'%s (*.rtf);;%s (*)'
             % (translate('SongsPlugin.ImportWizardForm',
-            'Songs Of Felloship Song Files'), 
+            'Songs Of Felloship Song Files'),
             translate('SongsPlugin.ImportWizardForm',
             'All Files'))
         )

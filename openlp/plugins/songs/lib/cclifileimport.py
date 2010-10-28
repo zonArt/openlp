@@ -38,9 +38,9 @@ class CCLIFileImportError(Exception):
 
 class CCLIFileImport(SongImport):
     """
-    The :class:`CCLIFileImport` class provides OpenLP with the
-    ability to import CCLI SongSelect song files in both .txt and
-    .usr formats. See http://www.ccli.com
+    The :class:`CCLIFileImport` class provides OpenLP with the ability to
+    import CCLI SongSelect song files in both .txt and .usr formats.
+    See http://www.ccli.com/ for more details.
     """
 
     def __init__(self, manager, **kwargs):
@@ -49,6 +49,7 @@ class CCLIFileImport(SongImport):
 
         ``manager``
             The song manager for the running OpenLP installation.
+
         ``filenames``
             The files to be imported.
         """
@@ -97,7 +98,7 @@ class CCLIFileImport(SongImport):
 
     def do_import_usr_file(self, textList):
         """
-        The :method:`do_import_usr_file` method provides OpenLP
+        The :func:`do_import_usr_file` method provides OpenLP
         with the ability to import CCLI SongSelect songs in
         *USR* file format
 
@@ -105,6 +106,7 @@ class CCLIFileImport(SongImport):
             An array of strings containing the usr file content.
 
         **SongSelect .usr file format**
+
         ``[File]``
             USR file format first line
         ``Type=``
@@ -140,6 +142,7 @@ class CCLIFileImport(SongImport):
             Contains the songs various lyrics in order as shown by the
             *Fields* description
             e.g. *Words=Above all powers....* [/n = CR, /n/t = CRLF]
+
         """
         log.debug(u'USR file text: %s', textList)
         lyrics = []
@@ -191,48 +194,32 @@ class CCLIFileImport(SongImport):
 
     def do_import_txt_file(self, textList):
         """
-        The :method:`do_import_txt_file` method provides OpenLP
+        The :func:`do_import_txt_file` method provides OpenLP
         with the ability to import CCLI SongSelect songs in
         *TXT* file format
 
         ``textList``
             An array of strings containing the txt file content.
 
-        **SongSelect .txt file format**
+        SongSelect .txt file format::
 
-        ``Song Title``
-            Contains the song title
-
-        <Empty line>
-
-        ``Title of following verse/chorus and number``
-            e.g. Verse 1, Chorus 1
-
-        ``Verse/Chorus lyrics``
-
-        <Empty line>
-
-        <Empty line>
-
-        ``Title of next verse/chorus (repeats)``
-
-        ``Verse/Chorus lyrics``
-
-        <Empty line>
-
-        <Empty line>
-
-        ``Song CCLI Number``
-            e.g. CCLI Number (e.g.CCLI-Liednummer: 2672885)
-        ``Song Copyright``
-            e.g. © 1999 Integrity's Hosanna! Music | LenSongs Publishing
-        ``Song Authors``
-            e.g. Lenny LeBlanc | Paul Baloche
-        ``Licencing info``
-            e.g. For use solely with the SongSelect Terms of Use.
+            Song Title                          # Contains the song title
+            <Empty line>
+            Verse type and number               # e.g. Verse 1, Chorus 1
+            Verse lyrics
+            <Empty line>
+            <Empty line>
+            Verse type and number (repeats)
+            Verse lyrics
+            <Empty line>
+            <Empty line>
+            Song CCLI number                    # e.g. CCLI Number (e.g.CCLI-Liednummer: 2672885)
+            Song copyright                      # e.g. © 1999 Integrity's Hosanna! Music | LenSongs Publishing
+            Song authors                        # e.g. Lenny LeBlanc | Paul Baloche
+            Licencing info                      # e.g. For use solely with the SongSelect Terms of Use.
             All rights Reserved.  www.ccli.com
-        ``CCLI Licence number of user``
-            e.g. CCL-Liedlizenznummer: 14 / CCLI License No. 14
+            CCLI Licence number of user         # e.g. CCL-Liedlizenznummer: 14 / CCLI License No. 14
+
         """
         log.debug(u'TXT file text: %s', textList)
         self.set_defaults()

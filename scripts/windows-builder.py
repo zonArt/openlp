@@ -87,20 +87,33 @@ windows-builder.py
 """
 
 import os
+import sys
 from shutil import copy
 from subprocess import Popen, PIPE
 
+python_exe = sys.executable
+innosetup_exe = os.path.join(os.getenv(u'PROGRAMFILES'), 'Inno Setup 5',
+    u'ISCC.exe')
+
+# Base paths
 script_path = os.path.split(os.path.abspath(__file__))[0]
 branch_path = os.path.abspath(os.path.join(script_path, u'..'))
+site_packages = os.path.join(os.path.split(python_exe)[0], u'Lib',
+    u'site-packages')
+
+# Files and executables
+pyi_build = os.path.abspath(os.path.join(branch_path, u'..', u'..',
+    u'pyinstaller', u'Build.py'))
+lrelease_exe = os.path.join(site_packages, u'PyQt4', u'bin', u'lrelease.exe')
+i18n_utils = os.path.join(script_path, u'translation_utils.py')
+
+# Paths
 source_path = os.path.join(branch_path, u'openlp')
 i18n_path = os.path.join(branch_path, u'resources', u'i18n')
+winres_path = os.path.join(branch_path, u'resources', u'windows')
 build_path = os.path.join(branch_path, u'build', u'pyi.win32', u'OpenLP')
 dist_path = os.path.join(branch_path, u'dist', u'OpenLP')
-pyinstaller_path = os.path.abspath(os.path.join(branch_path, u'..', u'..', u'pyinstaller'))
-innosetup_path = os.path.join(os.getenv(u'PROGRAMFILES'), 'Inno Setup 5')
-iss_path = os.path.join(branch_path, u'resources', u'innosetup')
-lrelease_path = u'C:\\Python26\\Lib\\site-packages\\PyQt4\\bin\\lrelease.exe'
-enchant_path = u'C:\\Python26\\Lib\\site-packages\\enchant'
+enchant_path = os.path.join(site_packages, u'enchant')
 
 def clean_build_directories():
     #if not os.path.exists(build_path)
@@ -117,11 +130,13 @@ def clean_build_directories():
 def run_pyinstaller():
     print u'Running PyInstaller...'
     os.chdir(branch_path)
-    pyinstaller = Popen((u'python', os.path.join(pyinstaller_path, u'Build.py'),
-        u'-y', u'OpenLP.spec'))
+    pyinstaller = Popen((python_exe, pyi_build, u'-y', u'-o', build_path,
+        os.path.join(winres_path, u'OpenLP.spec')), stdout=PIPE)
+    output, error = pyinstaller.communicate()
     code = pyinstaller.wait()
     if code != 0:
-        raise Exception(u'Error running PyInstaller Build.py')
+        print output
+        raise Exception(u'Error running PyInstaller')
 
 def write_version_file():
     print u'Writing version file...'
@@ -155,7 +170,7 @@ def copy_enchant():
     for root, dirs, files in os.walk(source):
         for filename in files:
             if not filename.endswith(u'.pyc') and not filename.endswith(u'.pyo'):
-                dest_path = os.path.join(dest, root[len(source)+1:])
+                dest_path = os.path.join(dest, root[len(source) + 1:])
                 if not os.path.exists(dest_path):
                     os.makedirs(dest_path)
                 copy(os.path.join(root, filename),
@@ -176,16 +191,18 @@ def copy_plugins():
 
 def copy_windows_files():
     print u'Copying extra files for Windows...'
-    copy(os.path.join(iss_path, u'OpenLP.ico'), os.path.join(dist_path, u'OpenLP.ico'))
-    copy(os.path.join(iss_path, u'LICENSE.txt'), os.path.join(dist_path, u'LICENSE.txt'))
+    copy(os.path.join(winres_path, u'OpenLP.ico'),
+        os.path.join(dist_path, u'OpenLP.ico'))
+    copy(os.path.join(winres_path, u'LICENSE.txt'),
+        os.path.join(dist_path, u'LICENSE.txt'))
 
 def update_translations():
     print u'Updating translations...'
     os.chdir(script_path)
-    translation_utils = Popen(u'python translation_utils.py -dpu')
+    translation_utils = Popen((python_exe, i18n_utils, u'-qdpu'))
     code = translation_utils.wait()
     if code != 0:
-        print u'Error running translation_utils.py'
+        raise Exception(u'Error running translation_utils.py')
 
 def compile_translations():
     print u'Compiling translations...'
@@ -197,19 +214,17 @@ def compile_translations():
             source_path = os.path.join(i18n_path, file)
             dest_path = os.path.join(dist_path, u'i18n',
                 file.replace(u'.ts', u'.qm'))
-            lconvert = Popen(u'"%s" "%s" -qm "%s"' % (lrelease_path, \
-                source_path, dest_path))
+            lconvert = Popen((lrelease_exe, u'-compress', u'-silent',
+                source_path, u'-qm', dest_path))
             code = lconvert.wait()
             if code != 0:
-                print 'Error running lconvert on %s' % source_path
+                raise Exception('Error running lconvert on %s' % source_path)
 
 def run_innosetup():
     print u'Running Inno Setup...'
-    os.chdir(iss_path)
-    run_command = u'"%s" "%s"' % (os.path.join(innosetup_path, u'ISCC.exe'),
-        os.path.join(iss_path, u'OpenLP-2.0.iss'))
-    print run_command
-    innosetup = Popen(run_command)
+    os.chdir(winres_path)
+    innosetup = Popen((innosetup_exe,
+        os.path.join(winres_path, u'OpenLP-2.0.iss'), u'/q'))
     code = innosetup.wait()
     if code != 0:
         raise Exception(u'Error running Inno Setup')
@@ -221,9 +236,9 @@ def main():
        print "Branch path:", branch_path
        print "Source path:", source_path
        print "\"dist\" path:", dist_path
-       print "PyInstaller path:", pyinstaller_path
+       print "PyInstaller:", pyi_build
        print "Inno Setup path:", innosetup_path
-       print "ISS file path:", iss_path
+       print "Windows resources:", winres_path
     #clean_build_directories()
     run_pyinstaller()
     write_version_file()
