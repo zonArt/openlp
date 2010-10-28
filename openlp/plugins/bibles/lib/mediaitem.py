@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, Receiver, BaseListWithDnD, \
     ItemCapabilities, translate
-from openlp.plugins.bibles.forms import ImportWizardForm
+from openlp.plugins.bibles.forms import BibleImportForm
 
 log = logging.getLogger(__name__)
 
@@ -361,7 +361,7 @@ class BibleMediaItem(MediaManagerItem):
 
     def onImportClick(self):
         if not hasattr(self, u'import_wizard'):
-            self.import_wizard = ImportWizardForm(self, self.parent.manager,
+            self.import_wizard = BibleImportForm(self, self.parent.manager,
                 self.parent)
         self.import_wizard.exec_()
         self.reloadBibles()
@@ -374,7 +374,7 @@ class BibleMediaItem(MediaManagerItem):
         self.AdvancedSecondBibleComboBox.clear()
         self.QuickSecondBibleComboBox.addItem(u'')
         self.AdvancedSecondBibleComboBox.addItem(u'')
-        bibles = self.parent.manager.get_bibles()
+        bibles = self.parent.manager.get_bibles().keys()
         # load bibles into the combo boxes
         first = True
         for bible in bibles:
@@ -497,6 +497,7 @@ class BibleMediaItem(MediaManagerItem):
 
     def onAdvancedSearchButton(self):
         log.debug(u'Advanced Search Button pressed')
+        self.AdvancedSearchButton.setEnabled(False)
         bible = unicode(self.AdvancedVersionComboBox.currentText())
         dual_bible = unicode(self.AdvancedSecondBibleComboBox.currentText())
         book = unicode(self.AdvancedBookComboBox.currentText())
@@ -529,16 +530,30 @@ class BibleMediaItem(MediaManagerItem):
                 self.displayResults(bible, dual_bible)
         else:
             self.displayResults(bible, dual_bible)
+        self.AdvancedSearchButton.setEnabled(True)
 
     def onQuickSearchButton(self):
         log.debug(u'Quick Search Button pressed')
+        self.QuickSearchButton.setEnabled(False)
         bible = unicode(self.QuickVersionComboBox.currentText())
         dual_bible = unicode(self.QuickSecondBibleComboBox.currentText())
         text = unicode(self.QuickSearchEdit.text())
-        self.search_results = self.parent.manager.get_verses(bible, text)
-        if dual_bible:
-            self.dual_search_results = self.parent.manager.get_verses(
-                dual_bible, text)
+        if self.QuickSearchComboBox.currentIndex() == 0:
+            # We are doing a 'Verse Search'.
+            self.search_results = self.parent.manager.get_verses(bible, text)
+            if dual_bible and self.search_results:
+                self.dual_search_results = self.parent.manager.get_verses(
+                    dual_bible, text)
+        else:
+            # We are doing a ' Text Search'.
+            bibles = self.parent.manager.get_bibles()
+            self.search_results = self.parent.manager.verse_search(bible, text)
+            if dual_bible and self.search_results:
+                text = []
+                for verse in self.search_results:
+                    text.append((verse.book.name, verse.chapter, verse.verse,
+                        verse.verse))
+                self.dual_search_results = bibles[dual_bible].get_verses(text)
         if self.ClearQuickSearchComboBox.currentIndex() == 0:
             self.listView.clear()
         if self.listView.count() != 0 and self.search_results:
@@ -558,6 +573,7 @@ class BibleMediaItem(MediaManagerItem):
                 self.displayResults(bible, dual_bible)
         elif self.search_results:
             self.displayResults(bible, dual_bible)
+        self.QuickSearchButton.setEnabled(True)
 
     def displayResults(self, bible, dual_bible=u''):
         """
@@ -566,16 +582,16 @@ class BibleMediaItem(MediaManagerItem):
         """
         version = self.parent.manager.get_meta_data(bible, u'Version')
         copyright = self.parent.manager.get_meta_data(bible, u'Copyright')
-        permission = self.parent.manager.get_meta_data(bible, u'Permissions')
+        permissions = self.parent.manager.get_meta_data(bible, u'Permissions')
         if dual_bible:
             dual_version = self.parent.manager.get_meta_data(dual_bible,
                 u'Version')
             dual_copyright = self.parent.manager.get_meta_data(dual_bible,
                 u'Copyright')
-            dual_permission = self.parent.manager.get_meta_data(dual_bible,
+            dual_permissions = self.parent.manager.get_meta_data(dual_bible,
                 u'Permissions')
-            if not dual_permission:
-                dual_permission = u''
+            if not dual_permissions:
+                dual_permissions = u''
         # We count the number of rows which are maybe already present.
         start_count = self.listView.count()
         for count, verse in enumerate(self.search_results):
@@ -587,12 +603,12 @@ class BibleMediaItem(MediaManagerItem):
                     'bible': QtCore.QVariant(bible),
                     'version': QtCore.QVariant(version.value),
                     'copyright': QtCore.QVariant(copyright.value),
-                    'permission': QtCore.QVariant(permission.value),
+                    'permissions': QtCore.QVariant(permissions.value),
                     'text': QtCore.QVariant(verse.text),
                     'dual_bible': QtCore.QVariant(dual_bible),
                     'dual_version': QtCore.QVariant(dual_version.value),
                     'dual_copyright': QtCore.QVariant(dual_copyright.value),
-                    'dual_permission': QtCore.QVariant(dual_permission.value),
+                    'dual_permissions': QtCore.QVariant(dual_permissions.value),
                     'dual_text': QtCore.QVariant(
                         self.dual_search_results[count].text)
                 }
@@ -607,12 +623,12 @@ class BibleMediaItem(MediaManagerItem):
                     'bible': QtCore.QVariant(bible),
                     'version': QtCore.QVariant(version.value),
                     'copyright': QtCore.QVariant(copyright.value),
-                    'permission': QtCore.QVariant(permission.value),
+                    'permissions': QtCore.QVariant(permissions.value),
                     'text': QtCore.QVariant(verse.text),
                     'dual_bible': QtCore.QVariant(u''),
                     'dual_version': QtCore.QVariant(u''),
                     'dual_copyright': QtCore.QVariant(u''),
-                    'dual_permission': QtCore.QVariant(u''),
+                    'dual_permissions': QtCore.QVariant(u''),
                     'dual_text': QtCore.QVariant(u'')
                 }
                 bible_text = u' %s %d:%d (%s)' % (verse.book.name,
@@ -658,20 +674,20 @@ class BibleMediaItem(MediaManagerItem):
             bible = self._decodeQtObject(bitem, 'bible')
             version = self._decodeQtObject(bitem, 'version')
             copyright = self._decodeQtObject(bitem, 'copyright')
-            permission = self._decodeQtObject(bitem, 'permission')
+            permissions = self._decodeQtObject(bitem, 'permissions')
             text = self._decodeQtObject(bitem, 'text')
             dual_bible = self._decodeQtObject(bitem, 'dual_bible')
             dual_version = self._decodeQtObject(bitem, 'dual_version')
             dual_copyright = self._decodeQtObject(bitem, 'dual_copyright')
-            dual_permission = self._decodeQtObject(bitem, 'dual_permission')
+            dual_permissions = self._decodeQtObject(bitem, 'dual_permissions')
             dual_text = self._decodeQtObject(bitem, 'dual_text')
             verse_text = self.formatVerse(old_chapter, chapter, verse)
-            footer = u'%s (%s %s %s)' % (book, version, copyright, permission)
+            footer = u'%s (%s %s %s)' % (book, version, copyright, permissions)
             if footer not in raw_footer:
                 raw_footer.append(footer)
             if dual_bible:
                 footer = u'%s (%s %s %s)' % (book, dual_version, dual_copyright,
-                    dual_permission)
+                    dual_permissions)
                 if footer not in raw_footer:
                     raw_footer.append(footer)
                 bible_text = u'%s %s\n\n%s %s' % (verse_text, text, verse_text,

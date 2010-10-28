@@ -26,6 +26,7 @@
 
 import logging
 import os
+import time
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
@@ -179,23 +180,23 @@ class SlideController(QtGui.QWidget):
             self.HideMenu.setMenu(QtGui.QMenu(
                 translate('OpenLP.SlideController', 'Hide'), self.Toolbar))
             self.BlankScreen = QtGui.QAction(QtGui.QIcon(
-                u':/slides/slide_blank.png'), 
-                translate('OpenLP.SlideController', 
+                u':/slides/slide_blank.png'),
+                translate('OpenLP.SlideController',
                     'Blank Screen'), self.HideMenu)
             self.BlankScreen.setCheckable(True)
             QtCore.QObject.connect(self.BlankScreen,
                 QtCore.SIGNAL("triggered(bool)"), self.onBlankDisplay)
             self.ThemeScreen = QtGui.QAction(QtGui.QIcon(
-                u':/slides/slide_theme.png'), 
-                translate('OpenLP.SlideController', 
+                u':/slides/slide_theme.png'),
+                translate('OpenLP.SlideController',
                     'Blank to Theme'), self.HideMenu)
             self.ThemeScreen.setCheckable(True)
             QtCore.QObject.connect(self.ThemeScreen,
                 QtCore.SIGNAL("triggered(bool)"), self.onThemeDisplay)
             if self.screens.display_count > 1:
                 self.DesktopScreen = QtGui.QAction(QtGui.QIcon(
-                    u':/slides/slide_desktop.png'), 
-                    translate('OpenLP.SlideController', 
+                    u':/slides/slide_desktop.png'),
+                    translate('OpenLP.SlideController',
                         'Show Desktop'), self.HideMenu)
                 self.DesktopScreen.setCheckable(True)
                 QtCore.QObject.connect(self.DesktopScreen,
@@ -214,7 +215,7 @@ class SlideController(QtGui.QWidget):
             self.Toolbar.addToolbarSeparator(u'Close Separator')
             self.Toolbar.addToolbarButton(
                 u'Edit Song', u':/general/general_edit.png',
-                translate('OpenLP.SlideController', 
+                translate('OpenLP.SlideController',
                 'Edit and reload song preview'),
                 self.onEditSong)
         if isLive:
@@ -400,6 +401,7 @@ class SlideController(QtGui.QWidget):
         log.debug(u'screenSizeChanged live = %s' % self.isLive)
         # rebuild display as screen size changed
         self.display = MainDisplay(self, self.screens, self.isLive)
+        self.display.imageManager = self.parent.RenderManager.image_manager
         self.display.alertTab = self.alertTab
         self.ratio = float(self.screens.current[u'size'].width()) / \
             float(self.screens.current[u'size'].height())
@@ -584,11 +586,15 @@ class SlideController(QtGui.QWidget):
             else:
                 label = QtGui.QLabel()
                 label.setMargin(4)
-                pixmap = resize_image(frame[u'image'],
-                                      self.parent.RenderManager.width,
-                                      self.parent.RenderManager.height)
                 label.setScaledContents(True)
-                label.setPixmap(QtGui.QPixmap.fromImage(pixmap))
+                if self.serviceItem.is_command():
+                    image = resize_image(frame[u'image'],
+                        self.parent.RenderManager.width,
+                        self.parent.RenderManager.height)
+                else:
+                    image = self.parent.RenderManager.image_manager. \
+                            get_image(frame[u'title'])
+                label.setPixmap(QtGui.QPixmap.fromImage(image))
                 self.PreviewListWidget.setCellWidget(framenumber, 0, label)
                 slideHeight = width * self.parent.RenderManager.screen_ratio
                 row += 1
@@ -779,15 +785,12 @@ class SlideController(QtGui.QWidget):
                     [self.serviceItem, self.isLive, row])
                 self.updatePreview()
             else:
-                frame, raw_html = self.serviceItem.get_rendered_frame(row)
+                toDisplay = self.serviceItem.get_rendered_frame(row)
                 if self.serviceItem.is_text():
-                    frame = self.display.text(raw_html)
+                    frame = self.display.text(toDisplay)
                 else:
-                    self.display.image(frame)
-                if isinstance(frame, QtGui.QImage):
-                    self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
-                else:
-                    self.SlidePreview.setPixmap(QtGui.QPixmap(frame))
+                    frame = self.display.image(toDisplay)
+                self.SlidePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
             self.selectedRow = row
         Receiver.send_message(u'slidecontroller_%s_changed' % self.typePrefix,
             row)
@@ -985,7 +988,7 @@ class SlideController(QtGui.QWidget):
             self.video.hide()
         self.SlidePreview.clear()
         self.SlidePreview.show()
-        
+
     def onMediaClose(self):
         """
         Respond to a request to close the Video
@@ -999,4 +1002,3 @@ class SlideController(QtGui.QWidget):
             self.video.hide()
         self.SlidePreview.clear()
         self.SlidePreview.show()
-

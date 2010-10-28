@@ -54,7 +54,7 @@ class WebDownload(object):
         return cls.Names[name]
 
 
-class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
+class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
     """
     This is the Bible Import Wizard, which allows easy importing of Bibles
     into OpenLP from other formats like OSIS, CSV and OpenSong.
@@ -282,7 +282,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         self.LicenseDetailsPage.registerField(
             u'license_copyright', self.CopyrightEdit)
         self.LicenseDetailsPage.registerField(
-            u'license_permission', self.PermissionEdit)
+            u'license_permissions', self.PermissionsEdit)
 
     def setDefaults(self):
         settings = QtCore.QSettings()
@@ -308,8 +308,8 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
             QtCore.QVariant(self.VersionNameEdit.text()))
         self.setField(u'license_copyright',
             QtCore.QVariant(self.CopyrightEdit.text()))
-        self.setField(u'license_permission',
-            QtCore.QVariant(self.PermissionEdit.text()))
+        self.setField(u'license_permissions',
+            QtCore.QVariant(self.PermissionsEdit.text()))
         self.onLocationComboBoxChanged(WebDownload.Crosswalk)
         settings.endGroup()
 
@@ -391,8 +391,8 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
         bible_type = self.field(u'source_format').toInt()[0]
         license_version = unicode(self.field(u'license_version').toString())
         license_copyright = unicode(self.field(u'license_copyright').toString())
-        license_permission = \
-            unicode(self.field(u'license_permission').toString())
+        license_permissions = \
+            unicode(self.field(u'license_permissions').toString())
         importer = None
         if bible_type == BibleFormat.OSIS:
             # Import an OSIS bible
@@ -436,7 +436,7 @@ class ImportWizardForm(QtGui.QWizard, Ui_BibleImportWizard):
             )
         if importer.do_import():
             self.manager.save_meta_data(license_version, license_version,
-                license_copyright, license_permission)
+                license_copyright, license_permissions)
             self.manager.reload_bibles()
             self.ImportProgressLabel.setText(
                 translate('BiblesPlugin.ImportWizardForm', 'Finished import.'))

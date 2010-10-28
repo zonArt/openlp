@@ -15,7 +15,6 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   openlp
    core/index
    plugins/index
 

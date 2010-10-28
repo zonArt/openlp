@@ -346,7 +346,7 @@ class ServiceManager(QtGui.QWidget):
             self.serviceItems[item][u'service_item'])
         if self.serviceItemEditForm.exec_():
             self.addServiceItem(self.serviceItemEditForm.getServiceItem(),
-                replace=True, expand=self.serviceItems[item][u'expand'])
+                replace=True, expand=self.serviceItems[item][u'expanded'])
 
     def nextItem(self):
         """
@@ -650,9 +650,12 @@ class ServiceManager(QtGui.QWidget):
                         .get_service_repr()})
                     if item[u'service_item'].uses_file():
                         for frame in item[u'service_item'].get_frames():
-                            path_from = unicode(os.path.join(
-                                frame[u'path'],
-                                frame[u'title']))
+                            if item[u'service_item'].is_image():
+                                path_from = frame[u'path']
+                            else:
+                                path_from = unicode(os.path.join(
+                                    frame[u'path'],
+                                    frame[u'title']))
                             # On write a file once
                             if not path_from in write_list:
                                 write_list.append(path_from)

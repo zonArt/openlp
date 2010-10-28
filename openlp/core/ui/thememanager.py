@@ -34,9 +34,8 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.ui import AmendThemeForm, FileRenameForm
 from openlp.core.theme import Theme
-from openlp.core.lib import OpenLPToolbar, context_menu_action, \
-    ThemeXML, str_to_bool, get_text_file_string, build_icon, Receiver, \
-    context_menu_separator, SettingsManager, translate, check_item_selected
+from openlp.core.lib import OpenLPToolbar, ThemeXML, get_text_file_string, \
+    build_icon, Receiver, SettingsManager, translate, check_item_selected
 from openlp.core.utils import AppLocation, get_filesystem_encoding
 
 log = logging.getLogger(__name__)
@@ -267,7 +266,7 @@ class ThemeManager(QtGui.QWidget):
             filename = \
                 os.path.split(unicode(oldThemeData.background_filename))[1]
             new_theme.add_background_image(filename)
-            save_to = os.path.join(self.path, theme_name, filename)
+            save_to = os.path.join(self.path, newThemeName, filename)
             save_from = oldThemeData.background_filename
         new_theme.add_font(unicode(oldThemeData.font_main_name),
             unicode(oldThemeData.font_main_color),

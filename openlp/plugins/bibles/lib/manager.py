@@ -137,7 +137,7 @@ class BibleManager(object):
             name = bible.get_name()
             log.debug(u'Bible Name: "%s"', name)
             self.db_cache[name] = bible
-            # look to see if lazy load bible exists and get create getter.
+            # Look to see if lazy load bible exists and get create getter.
             source = self.db_cache[name].get_object(BibleMeta,
                 u'download source')
             if source:
@@ -181,10 +181,10 @@ class BibleManager(object):
 
     def get_bibles(self):
         """
-        Returns a list of the names of available Bibles.
+        Returns a dict with all available Bibles.
         """
         log.debug(u'get_bibles')
-        return self.db_cache.keys()
+        return self.db_cache
 
     def get_books(self, bible):
         """
@@ -204,7 +204,7 @@ class BibleManager(object):
 
     def get_chapter_count(self, bible, book):
         """
-        Returns the number of Chapters for a given book
+        Returns the number of Chapters for a given book.
         """
         log.debug(u'get_book_chapter_count %s', book)
         return self.db_cache[bible].get_chapter_count(book)
@@ -212,7 +212,7 @@ class BibleManager(object):
     def get_verse_count(self, bible, book, chapter):
         """
         Returns all the number of verses for a given
-        book and chapterMaxBibleBookVerses
+        book and chapterMaxBibleBookVerses.
         """
         log.debug(u'BibleManager.get_verse_count("%s", "%s", %s)',
             bible, book, chapter)
@@ -254,12 +254,35 @@ class BibleManager(object):
                 'Book Chapter:Verse-Verse\n'
                 'Book Chapter:Verse-Verse,Verse-Verse\n'
                 'Book Chapter:Verse-Verse,Chapter:Verse-Verse\n'
-                'Book Chapter:Verse-Chapter:Verse\n'))
+                'Book Chapter:Verse-Chapter:Verse'))
+            return None
+
+    def verse_search(self, bible, text):
+        """
+        Does a verse search for the given bible and text.
+
+        ``bible``
+            The bible to seach in (unicode).
+
+        ``text``
+            The text to search for (unicode).
+        """
+        log.debug(u'BibleManager.verse_search("%s", "%s")', bible,  text)
+        if text:
+            return self.db_cache[bible].verse_search(text)
+        else:
+            QtGui.QMessageBox.information(self.parent.mediaItem,
+                translate('BiblesPlugin.BibleManager',
+                'Scripture Reference Error'),
+                translate('BiblesPlugin.BibleManager', 'You did not enter a '
+                'search keyword.\nYou can separate different keywords by a '
+                'space to search for all of your keywords and you can seperate '
+                'them by a comma to search for one of them.'))
             return None
 
     def save_meta_data(self, bible, version, copyright, permissions):
         """
-        Saves the bibles meta data
+        Saves the bibles meta data.
         """
         log.debug(u'save_meta data %s,%s, %s,%s',
             bible, version, copyright, permissions)
@@ -269,14 +292,14 @@ class BibleManager(object):
 
     def get_meta_data(self, bible, key):
         """
-        Returns the meta data for a given key
+        Returns the meta data for a given key.
         """
         log.debug(u'get_meta %s,%s', bible, key)
         return self.db_cache[bible].get_object(BibleMeta, key)
 
     def exists(self, name):
         """
-        Check cache to see if new bible
+        Check cache to see if new bible.
         """
         if not isinstance(name, unicode):
             name = unicode(name)
@@ -287,3 +310,11 @@ class BibleManager(object):
             if bible == name:
                 return True
         return False
+
+    def finalise(self):
+        """
+        Loop through the databases to VACUUM them.
+        """
+        for bible in self.db_cache:
+            self.db_cache[bible].finalise()
+
