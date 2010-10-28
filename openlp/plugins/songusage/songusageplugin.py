@@ -176,3 +176,11 @@ class SongUsagePlugin(Plugin):
         self.textStrings[StringContent.VisibleName] = {
             u'title': translate('SongUsagePlugin', 'SongUsage')
         }
+
+    def finalise(self):
+        """
+        Time to tidy up on exit
+        """
+        log.info(u'SongUsage Finalising')
+        self.manager.finalise()
+        Plugin.finalise(self)
