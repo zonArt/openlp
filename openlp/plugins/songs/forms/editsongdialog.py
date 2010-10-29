@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -257,13 +258,14 @@ class Ui_EditSongDialog(object):
         self.TopicBookLayout.addWidget(self.TopicGroupBox)
         self.SongBookGroup = QtGui.QGroupBox(self.TopicBookWidget)
         self.SongBookGroup.setObjectName(u'SongBookGroup')
-        self.SongbookLayout = QtGui.QGridLayout(self.SongBookGroup)
+        self.SongbookLayout = QtGui.QFormLayout(self.SongBookGroup)
         self.SongbookLayout.setMargin(8)
         self.SongbookLayout.setSpacing(8)
         self.SongbookLayout.setObjectName(u'SongbookLayout')
+        self.SongbookNameLabel = QtGui.QLabel(self.SongBookGroup)
         self.SongbookCombo = QtGui.QComboBox(self.SongBookGroup)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Fixed)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding,
+            QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
@@ -271,7 +273,11 @@ class Ui_EditSongDialog(object):
         self.SongbookCombo.setEditable(True)
         self.SongbookCombo.setSizePolicy(sizePolicy)
         self.SongbookCombo.setObjectName(u'SongbookCombo')
-        self.SongbookLayout.addWidget(self.SongbookCombo, 0, 0, 1, 1)
+        self.SongbookLayout.addRow(self.SongbookNameLabel, self.SongbookCombo)
+        self.songBookNumberLabel = QtGui.QLabel(self.SongBookGroup)
+        self.songBookNumberEdit = QtGui.QLineEdit(self.SongBookGroup)
+        self.SongbookLayout.addRow(self.songBookNumberLabel,
+            self.songBookNumberEdit)
         self.TopicBookLayout.addWidget(self.SongBookGroup)
         self.AuthorsTabLayout.addWidget(self.TopicBookWidget)
         self.SongTabWidget.addTab(self.AuthorsTab, u'')
@@ -394,48 +400,12 @@ class Ui_EditSongDialog(object):
             QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Save)
         self.ButtonBox.setObjectName(u'ButtonBox')
         self.verticalLayout.addWidget(self.ButtonBox)
-
         self.retranslateUi(EditSongDialog)
         QtCore.QObject.connect(self.ButtonBox,
             QtCore.SIGNAL(u'rejected()'), EditSongDialog.closePressed)
         QtCore.QObject.connect(self.ButtonBox,
             QtCore.SIGNAL(u'accepted()'), EditSongDialog.accept)
         QtCore.QMetaObject.connectSlotsByName(EditSongDialog)
-        EditSongDialog.setTabOrder(self.SongTabWidget, self.TitleEditItem)
-        EditSongDialog.setTabOrder(self.TitleEditItem, self.AlternativeEdit)
-        EditSongDialog.setTabOrder(self.AlternativeEdit, self.VerseListWidget)
-        EditSongDialog.setTabOrder(self.VerseListWidget, self.VerseAddButton)
-        EditSongDialog.setTabOrder(self.VerseAddButton, self.VerseEditButton)
-        EditSongDialog.setTabOrder(self.VerseEditButton,
-            self.VerseEditAllButton)
-        EditSongDialog.setTabOrder(self.VerseEditAllButton,
-            self.VerseDeleteButton)
-        EditSongDialog.setTabOrder(self.VerseDeleteButton, self.VerseOrderEdit)
-        EditSongDialog.setTabOrder(self.VerseOrderEdit,
-            self.AuthorsSelectionComboItem)
-        EditSongDialog.setTabOrder(self.AuthorsSelectionComboItem,
-            self.AuthorAddButton)
-        EditSongDialog.setTabOrder(self.AuthorAddButton, self.AuthorsListView)
-        EditSongDialog.setTabOrder(self.AuthorsListView,
-            self.AuthorRemoveButton)
-        EditSongDialog.setTabOrder(self.AuthorRemoveButton,
-            self.MaintenanceButton)
-        EditSongDialog.setTabOrder(self.MaintenanceButton, self.SongTopicCombo)
-        EditSongDialog.setTabOrder(self.SongTopicCombo, self.TopicAddButton)
-        EditSongDialog.setTabOrder(self.TopicAddButton, self.TopicsListView)
-        EditSongDialog.setTabOrder(self.TopicsListView, self.TopicRemoveButton)
-        EditSongDialog.setTabOrder(self.TopicRemoveButton, self.SongbookCombo)
-        EditSongDialog.setTabOrder(self.SongbookCombo,
-            self.ThemeSelectionComboItem)
-        EditSongDialog.setTabOrder(self.ThemeSelectionComboItem,
-            self.ThemeAddButton)
-        EditSongDialog.setTabOrder(self.ThemeAddButton, self.CopyrightEditItem)
-        EditSongDialog.setTabOrder(self.CopyrightEditItem,
-            self.CopyrightInsertButton)
-        EditSongDialog.setTabOrder(self.CopyrightInsertButton,
-            self.CCLNumberEdit)
-        EditSongDialog.setTabOrder(self.CCLNumberEdit, self.CommentsEdit)
-        EditSongDialog.setTabOrder(self.CommentsEdit, self.ButtonBox)
 
     def retranslateUi(self, EditSongDialog):
         EditSongDialog.setWindowTitle(
@@ -443,11 +413,11 @@ class Ui_EditSongDialog(object):
         self.TitleLabel.setText(
             translate('SongsPlugin.EditSongForm', '&Title:'))
         self.AlternativeTitleLabel.setText(
-            translate('SongsPlugin.EditSongForm', 'Alt&ernate Title:'))
+            translate('SongsPlugin.EditSongForm', 'Alt&ernate title:'))
         self.LyricsLabel.setText(
             translate('SongsPlugin.EditSongForm', '&Lyrics:'))
         self.VerseOrderLabel.setText(
-            translate('SongsPlugin.EditSongForm', '&Verse Order:'))
+            translate('SongsPlugin.EditSongForm', '&Verse order:'))
         self.VerseAddButton.setText(
             translate('SongsPlugin.EditSongForm', '&Add'))
         self.VerseEditButton.setText(
@@ -466,7 +436,7 @@ class Ui_EditSongDialog(object):
         self.AuthorRemoveButton.setText(
             translate('SongsPlugin.EditSongForm', '&Remove'))
         self.MaintenanceButton.setText(translate('SongsPlugin.EditSongForm',
-            '&Manage Authors, Topics, Books'))
+            '&Manage Authors, Topics, Song Books'))
         self.TopicGroupBox.setTitle(
             translate('SongsPlugin.EditSongForm', 'Topic'))
         self.TopicAddButton.setText(
@@ -475,9 +445,14 @@ class Ui_EditSongDialog(object):
             translate('SongsPlugin.EditSongForm', 'R&emove'))
         self.SongBookGroup.setTitle(
             translate('SongsPlugin.EditSongForm', 'Song Book'))
+        self.SongbookNameLabel.setText(translate('SongsPlugin.EditSongForm',
+            'Book:'))
+        self.songBookNumberLabel.setText(translate('SongsPlugin.EditSongForm',
+            'Number:'))
         self.SongTabWidget.setTabText(
             self.SongTabWidget.indexOf(self.AuthorsTab),
-            translate('SongsPlugin.EditSongForm', 'Authors, Topics && Book'))
+            translate('SongsPlugin.EditSongForm',
+                'Authors, Topics && Song Book'))
         self.ThemeGroupBox.setTitle(
             translate('SongsPlugin.EditSongForm', 'Theme'))
         self.ThemeAddButton.setText(
@@ -487,7 +462,7 @@ class Ui_EditSongDialog(object):
         self.CopyrightInsertButton.setText(
             translate('SongsPlugin.EditSongForm', '\xa9'))
         self.CCLILabel.setText(
-            translate('SongsPlugin.EditSongForm', 'CCLI Number:'))
+            translate('SongsPlugin.EditSongForm', 'CCLI number:'))
         self.CommentsGroupBox.setTitle(
             translate('SongsPlugin.EditSongForm', 'Comments'))
         self.SongTabWidget.setTabText(

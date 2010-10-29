@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,8 +26,8 @@
 
 import logging
 
-from openlp.core.lib import Plugin, build_icon, PluginStatus, translate
-from openlp.plugins.images.lib import ImageMediaItem, ImageTab
+from openlp.core.lib import Plugin, StringContent, build_icon, translate
+from openlp.plugins.images.lib import ImageMediaItem
 
 log = logging.getLogger(__name__)
 
@@ -34,34 +35,82 @@ class ImagePlugin(Plugin):
     log.info(u'Image Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Images', u'1.9.2', plugin_helpers)
+        Plugin.__init__(self, u'Images', u'1.9.4', plugin_helpers)
         self.weight = -7
-        self.icon = build_icon(u':/media/media_image.png')
-        self.status = PluginStatus.Active
+        self.icon_path = u':/plugins/plugin_images.png'
+        self.icon = build_icon(self.icon_path)
 
-    def initialise(self):
-        log.info(u'Plugin Initialising')
-        Plugin.initialise(self)
-        self.insert_toolbox_item()
-
-    def finalise(self):
-        log.info(u'Plugin Finalise')
-        self.remove_toolbox_item()
-
-    def get_settings_tab(self):
-        return ImageTab(self.name)
-
-    def get_media_manager_item(self):
+    def getMediaManagerItem(self):
         # Create the MediaManagerItem object
-        return ImageMediaItem(self, self.icon, self.name)
+        return ImageMediaItem(self, self, self.icon)
 
     def about(self):
-        about_text = translate('ImagePlugin', '<b>Image Plugin'
-            '</b><br>Allows images of all types to be displayed. If a number '
-            'of images are selected together and presented on the live '
-            'controller it is possible to turn them into a timed loop.<br<br>'
-            'From the plugin if the <i>Override background</i> is chosen and '
-            'an image is selected any songs which are rendered will use the '
-            'selected image from the background instead of the one provied by '
-            'the theme.<br>')
+        about_text = translate('ImagePlugin', '<strong>Image Plugin</strong>'
+            '<br />The image plugin provides displaying of images.<br />One '
+            'of the distinguishing features of this plugin is the ability to '
+            'group a number of images together in the service manager, making '
+            'the displaying of multiple images easier. This plugin can also '
+            'make use of OpenLP\'s "timed looping" feature to create a slide '
+            'show that runs automatically. In addition to this, images from '
+            'the plugin can be used to override the current theme\'s '
+            'background, which renders text-based items like songs with the '
+            'selected image as a background instead of the background '
+            'provided by the theme.')
         return about_text
+
+    def setPluginTextStrings(self):
+        """
+        Called to define all translatable texts of the plugin
+        """
+        ## Name PluginList ##
+        self.textStrings[StringContent.Name] = {
+            u'singular': translate('ImagePlugin', 'Image'),
+            u'plural': translate('ImagePlugin', 'Images')
+        }
+        ## Name for MediaDockManager, SettingsManager ##
+        self.textStrings[StringContent.VisibleName] = {
+            u'title': translate('ImagePlugin', 'Images')
+        }
+        # Middle Header Bar
+        ## Load Button ##
+        self.textStrings[StringContent.Load] = {
+            u'title': translate('ImagePlugin', 'Load'),
+            u'tooltip': translate('ImagePlugin', 
+                'Load a new Image')
+        }
+        ## New Button ##
+        self.textStrings[StringContent.New] = {
+            u'title': translate('ImagePlugin', 'Add'),
+            u'tooltip': translate('ImagePlugin', 
+                'Add a new Image')
+        }
+        ## Edit Button ##
+        self.textStrings[StringContent.Edit] = {
+            u'title': translate('ImagePlugin', 'Edit'),
+            u'tooltip': translate('ImagePlugin', 
+                'Edit the selected Image')
+        }
+        ## Delete Button ##
+        self.textStrings[StringContent.Delete] = {
+            u'title': translate('ImagePlugin', 'Delete'),
+            u'tooltip': translate('ImagePlugin', 
+                'Delete the selected Image')
+        }
+        ## Preview ##
+        self.textStrings[StringContent.Preview] = {
+            u'title': translate('ImagePlugin', 'Preview'),
+            u'tooltip': translate('ImagePlugin', 
+                'Preview the selected Image')
+        }
+        ## Live  Button ##
+        self.textStrings[StringContent.Live] = {
+            u'title': translate('ImagePlugin', 'Live'),
+            u'tooltip': translate('ImagePlugin', 
+                'Send the selected Image live')
+        }
+        ## Add to service Button ##
+        self.textStrings[StringContent.Service] = {
+            u'title': translate('ImagePlugin', 'Service'),
+            u'tooltip': translate('ImagePlugin', 
+                'Add the selected Image to the service')
+        }

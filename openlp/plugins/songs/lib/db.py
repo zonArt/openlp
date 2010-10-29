@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -46,6 +47,12 @@ class Book(BaseModel):
         return u'<Book id="%s" name="%s" publisher="%s" />' % (
             str(self.id), self.name, self.publisher)
 
+class MediaFile(BaseModel):
+    """
+    MediaFile model
+    """
+    pass
+
 class Song(BaseModel):
     """
     Song model
@@ -65,7 +72,7 @@ def init_schema(url):
     ``url``
         The database to setup
     """
-    session, metadata = init_db(url, auto_flush=False)
+    session, metadata = init_db(url)
 
     # Definition of the "authors" table
     authors_table = Table(u'authors', metadata,
@@ -73,6 +80,13 @@ def init_schema(url):
         Column(u'first_name', types.Unicode(128)),
         Column(u'last_name', types.Unicode(128)),
         Column(u'display_name', types.Unicode(255), nullable=False)
+    )
+
+    # Definition of the "media_files" table
+    media_files_table = Table(u'media_files', metadata,
+        Column(u'id', types.Integer, primary_key=True),
+        Column(u'file_name', types.Unicode(255), nullable=False),
+        Column(u'type', types.Unicode(64), nullable=False, default=u'audio')
     )
 
     # Definition of the "song_books" table
@@ -88,6 +102,7 @@ def init_schema(url):
         Column(u'song_book_id', types.Integer,
             ForeignKey(u'song_books.id'), default=0),
         Column(u'title', types.Unicode(255), nullable=False),
+        Column(u'alternate_title', types.Unicode(255)),
         Column(u'lyrics', types.UnicodeText, nullable=False),
         Column(u'verse_order', types.Unicode(128)),
         Column(u'copyright', types.Unicode(255)),
@@ -113,6 +128,14 @@ def init_schema(url):
             ForeignKey(u'songs.id'), primary_key=True)
     )
 
+    # Definition of the "media_files_songs" table
+    media_files_songs_table = Table(u'media_files_songs', metadata,
+        Column(u'media_file_id', types.Integer,
+            ForeignKey(u'media_files.id'), primary_key=True),
+        Column(u'song_id', types.Integer,
+            ForeignKey(u'songs.id'), primary_key=True)
+    )
+
     # Definition of the "songs_topics" table
     songs_topics_table = Table(u'songs_topics', metadata,
         Column(u'song_id', types.Integer,
@@ -125,6 +148,7 @@ def init_schema(url):
     Index(u'authors_id', authors_table.c.id)
     Index(u'authors_display_name_id', authors_table.c.display_name,
         authors_table.c.id)
+    Index(u'media_files_id', media_files_table.c.id)
     Index(u'song_books_id', song_books_table.c.id)
     Index(u'songs_id', songs_table.c.id)
     Index(u'topics_id', topics_table.c.id)
@@ -132,6 +156,10 @@ def init_schema(url):
         authors_songs_table.c.song_id)
     Index(u'authors_songs_song', authors_songs_table.c.song_id,
         authors_songs_table.c.author_id)
+    Index(u'media_files_songs_file', media_files_songs_table.c.media_file_id,
+        media_files_songs_table.c.song_id)
+    Index(u'media_files_songs_song', media_files_songs_table.c.song_id,
+        media_files_songs_table.c.media_file_id)
     Index(u'topics_song_topic', songs_topics_table.c.topic_id,
         songs_topics_table.c.song_id)
     Index(u'topics_song_song', songs_topics_table.c.song_id,
@@ -139,12 +167,17 @@ def init_schema(url):
 
     mapper(Author, authors_table)
     mapper(Book, song_books_table)
+    mapper(MediaFile, media_files_table)
     mapper(Song, songs_table,
-        properties={'authors': relation(Author, backref='songs',
-            secondary=authors_songs_table),
+        properties={
+            'authors': relation(Author, backref='songs',
+                secondary=authors_songs_table),
             'book': relation(Book, backref='songs'),
+            'media_files': relation(MediaFile, backref='songs',
+                secondary=media_files_songs_table),
             'topics': relation(Topic, backref='songs',
-            secondary=songs_topics_table)})
+                secondary=songs_topics_table)
+        })
     mapper(Topic, topics_table)
 
     metadata.create_all(checkfirst=True)

@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -36,27 +37,24 @@ class HideMode(object):
     Theme = 2
     Screen = 3
 
-from slidecontroller import HideMode
+from filerenameform import FileRenameForm
+from maindisplay import MainDisplay
 from servicenoteform import ServiceNoteForm
 from serviceitemeditform import ServiceItemEditForm
 from screen import ScreenList
-from maindisplay import MainDisplay
-from maindisplay import VideoDisplay
-from maindisplay import DisplayManager
 from amendthemeform import AmendThemeForm
 from slidecontroller import SlideController
 from splashscreen import SplashScreen
-from displaytab import DisplayTab
 from generaltab import GeneralTab
 from themestab import ThemesTab
+from advancedtab import AdvancedTab
 from aboutform import AboutForm
 from pluginform import PluginForm
 from settingsform import SettingsForm
 from mediadockmanager import MediaDockManager
 from servicemanager import ServiceManager
 from thememanager import ThemeManager
-from mainwindow import MainWindow
 
-__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainWindow',
+__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm',
     'MainDisplay', 'SlideController', 'ServiceManager', 'ThemeManager',
     'AmendThemeForm', 'MediaDockManager', 'ServiceItemEditForm']

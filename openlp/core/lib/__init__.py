@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -34,7 +35,53 @@ from PyQt4 import QtCore, QtGui
 
 log = logging.getLogger(__name__)
 
-def translate(context, text, comment=None, count=-1):
+# TODO make external and configurable in alpha 4 via a settings dialog
+html_expands = []
+
+html_expands.append({u'desc':u'Red', u'start tag':u'{r}',
+    u'start html':u'<span style="-webkit-text-fill-color:red">',
+    u'end tag':u'{/r}', u'end html':u'</span>', u'protected':False})
+html_expands.append({u'desc':u'Black', u'start tag':u'{b}',
+    u'start html':u'<span style="-webkit-text-fill-color:black">',
+    u'end tag':u'{/b}', u'end html':u'</span>', u'protected':False})
+html_expands.append({u'desc':u'Blue', u'start tag':u'{bl}',
+    u'start html':u'<span style="-webkit-text-fill-color:blue">',
+    u'end tag':u'{/bl}', u'end html':u'</span>', u'protected':False})
+html_expands.append({u'desc':u'Yellow', u'start tag':u'{y}',
+    u'start html':u'<span style="-webkit-text-fill-color:yellow">',
+    u'end tag':u'{/y}', u'end html':u'</span>', u'protected':False})
+html_expands.append({u'desc':u'Green', u'start tag':u'{g}',
+    u'start html':u'<span style="-webkit-text-fill-color:green">',
+    u'end tag':u'{/g}', u'end html':u'</span>', u'protected':False})
+html_expands.append({u'desc':u'Pink', u'start tag':u'{pk}',
+    u'start html':u'<span style="-webkit-text-fill-color:#CC33CC">',
+    u'end tag':u'{/pk}', u'end html':u'</span>', u'protected':False})
+html_expands.append({u'desc':u'Orange', u'start tag':u'{o}',
+    u'start html':u'<span style="-webkit-text-fill-color:#CC0033">',
+    u'end tag':u'{/o}', u'end html':u'</span>', u'protected':False})
+html_expands.append({u'desc':u'Purple', u'start tag':u'{pp}',
+    u'start html':u'<span style="-webkit-text-fill-color:#9900FF">',
+    u'end tag':u'{/pp}', u'end html':u'</span>', u'protected':False})
+html_expands.append({u'desc':u'White', u'start tag':u'{w}',
+    u'start html':u'<span style="-webkit-text-fill-color:white">',
+    u'end tag':u'{/w}', u'end html':u'</span>', u'protected':False})
+html_expands.append({u'desc':u'Superscript', u'start tag':u'{su}',
+    u'start html':u'<sup>', u'end tag':u'{/su}', u'end html':u'</sup>',
+    u'protected':True})
+html_expands.append({u'desc':u'Subscript', u'start tag':u'{sb}',
+    u'start html':u'<sub>', u'end tag':u'{/sb}', u'end html':u'</sub>',
+    u'protected':True})
+html_expands.append({u'desc':u'Paragraph', u'start tag':u'{p}',
+    u'start html':u'<p>', u'end tag':u'{/p}', u'end html':u'</p>',
+    u'protected':True})
+html_expands.append({u'desc':u'Bold', u'start tag':u'{st}',
+    u'start html':u'<strong>', u'end tag':u'{/st}', u'end html':u'</strong>',
+    u'protected':True})
+html_expands.append({u'desc':u'Italics', u'start tag':u'{it}',
+    u'start html':u'<em>', u'end tag':u'{/it}', u'end html':u'</em>',
+    u'protected':True})
+
+def translate(context, text, comment=None):
     """
     A special shortcut method to wrap around the Qt4 translation functions.
     This abstracts the translation procedure so that we can change it if at a
@@ -50,10 +97,6 @@ def translate(context, text, comment=None, count=-1):
     ``comment``
         An identifying string for when the same text is used in different roles
         within the same context.
-
-    ``count``
-        If count is given it replaces %n in the text. A propper plural form is
-        chosen.
     """
     return QtCore.QCoreApplication.translate(context, text, comment)
 
@@ -169,15 +212,50 @@ def context_menu_separator(base):
     action.setSeparator(True)
     return action
 
-def resize_image(image, width, height):
+def image_to_byte(image):
+    """
+    Resize an image to fit on the current screen for the web and returns
+    it as a byte stream.
+
+    ``image``
+        The image to converted.
+    """
+    log.debug(u'image_to_byte - start')
+    byte_array = QtCore.QByteArray()
+    # use buffer to store pixmap into byteArray
+    buffie = QtCore.QBuffer(byte_array)
+    buffie.open(QtCore.QIODevice.WriteOnly)
+    image.save(buffie, "PNG")
+    log.debug(u'image_to_byte - end')
+    # convert to base64 encoding so does not get missed!
+    return byte_array.toBase64()
+
+def resize_image(image, width, height, background=QtCore.Qt.black):
     """
     Resize an image to fit on the current screen.
 
     ``image``
         The image to resize.
+
+    ``width``
+        The new image width.
+
+    ``height``
+        The new image height.
+
+     ``background``
+        The background colour defaults to black.
+
     """
-    preview = QtGui.QImage(image)
+    log.debug(u'resize_image - start')
+    if isinstance(image, QtGui.QImage):
+        preview = image
+    else:
+        preview = QtGui.QImage(image)
     if not preview.isNull():
+        # Only resize if different size
+        if preview.width() == width and preview.height == height:
+            return preview
         preview = preview.scaled(width, height, QtCore.Qt.KeepAspectRatio,
             QtCore.Qt.SmoothTransformation)
     realw = preview.width()
@@ -185,8 +263,8 @@ def resize_image(image, width, height):
     # and move it to the centre of the preview space
     new_image = QtGui.QImage(width, height,
         QtGui.QImage.Format_ARGB32_Premultiplied)
-    new_image.fill(QtCore.Qt.black)
     painter = QtGui.QPainter(new_image)
+    painter.fillRect(new_image.rect(), background)
     painter.drawImage((width - realw) / 2, (height - realh) / 2, preview)
     return new_image
 
@@ -202,32 +280,44 @@ def check_item_selected(list_widget, message):
     """
     if not list_widget.selectedIndexes():
         QtGui.QMessageBox.information(list_widget.parent(),
-            translate('MediaManagerItem', 'No Items Selected'), message)
+            translate('OpenLP.MediaManagerItem', 'No Items Selected'), message)
         return False
     return True
 
-
-class ThemeLevel(object):
+def clean_tags(text):
     """
-    Provides an enumeration for the level a theme applies to
+    Remove Tags from text for display
     """
-    Global = 1
-    Service = 2
-    Song = 3
+    text = text.replace(u'<br>', u'\n')
+    for tag in html_expands:
+        text = text.replace(tag[u'start tag'], u'')
+        text = text.replace(tag[u'end tag'], u'')
+    return text
 
+def expand_tags(text):
+    """
+    Expand tags HTML for display
+    """
+    for tag in html_expands:
+        text = text.replace(tag[u'start tag'], tag[u'start html'])
+        text = text.replace(tag[u'end tag'], tag[u'end html'])
+    return text
+
+from spelltextedit import SpellTextEdit
 from eventreceiver import Receiver
+from imagemanager import ImageManager
 from settingsmanager import SettingsManager
-from plugin import PluginStatus, Plugin
+from plugin import PluginStatus, StringContent, Plugin
 from pluginmanager import PluginManager
 from settingstab import SettingsTab
-from xmlrootclass import XmlRootClass
 from serviceitem import ServiceItem
 from serviceitem import ServiceItemType
 from serviceitem import ItemCapabilities
+from htmlbuilder import build_html, build_lyrics_format_css, \
+    build_lyrics_outline_css
 from toolbar import OpenLPToolbar
 from dockwidget import OpenLPDockWidget
-from songxmlhandler import SongXMLBuilder, SongXMLParser
-from themexmlhandler import ThemeXML
+from theme import ThemeLevel, ThemeXML
 from renderer import Renderer
 from rendermanager import RenderManager
 from mediamanageritem import MediaManagerItem

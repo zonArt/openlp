@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,12 +30,11 @@ type and capability of an item.
 
 import logging
 import os
-import time
 import uuid
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import build_icon, resize_image
+from openlp.core.lib import build_icon, resize_image, clean_tags, expand_tags
 
 log = logging.getLogger(__name__)
 
@@ -56,6 +56,10 @@ class ItemCapabilities(object):
     RequiresMedia = 4
     AllowsLoop = 5
     AllowsAdditions = 6
+    NoLineBreaks = 7
+    OnLoadUpdate = 8
+    AddIfNewItem = 9
+
 
 class ServiceItem(object):
     """
@@ -73,7 +77,7 @@ class ServiceItem(object):
             The plugin that this service item belongs to.
         """
         if plugin:
-            self.render_manager = plugin.render_manager
+            self.render_manager = plugin.renderManager
             self.name = plugin.name
         self.title = u''
         self.shortname = u''
@@ -81,17 +85,32 @@ class ServiceItem(object):
         self.items = []
         self.iconic_representation = None
         self.raw_footer = None
+        self.foot_text = None
         self.theme = None
         self.service_item_type = None
         self._raw_frames = []
         self._display_frames = []
-        self._uuid = unicode(uuid.uuid1())
+        self._uuid = 0
         self.notes = u''
         self.from_plugin = False
         self.capabilities = []
         self.is_valid = True
-        self.cache = {}
         self.icon = None
+        self.themedata = None
+        self.main = None
+        self.footer = None
+        self.bg_image_bytes = None
+        self.search_string = u''
+        self.data_string = u''
+        self._new_item()
+
+    def _new_item(self):
+        """
+        Method to set the internal id of the item
+        This is used to compare service items to see if they are
+        the same
+        """
+        self._uuid = unicode(uuid.uuid1())
 
     def add_capability(self, capability):
         """
@@ -117,74 +136,56 @@ class ServiceItem(object):
         service item in the service manager.
 
         ``icon``
-            An instance of QIcon or a string to an icon in the resource or on
-            disk.
+            A string to an icon in the resources or on disk.
         """
         self.icon = icon
         self.iconic_representation = build_icon(icon)
 
-    def render(self):
+    def render(self, useOverride=False):
         """
-        The render method is what generates the frames for the screen.
+        The render method is what generates the frames for the screen and
+        obtains the display information from the renderemanager.
+        At this point all the slides are build for the given
+        display size.
         """
         log.debug(u'Render called')
         self._display_frames = []
-        self.clear_cache()
+        self.bg_image_bytes = None
+        line_break = True
+        if self.is_capable(ItemCapabilities.NoLineBreaks):
+            line_break = False
+        theme = None
+        if self.theme:
+            theme = self.theme
+        self.main, self.footer = \
+            self.render_manager.set_override_theme(theme, useOverride)
+        self.themedata = self.render_manager.renderer._theme
         if self.service_item_type == ServiceItemType.Text:
             log.debug(u'Formatting slides')
-            if self.theme is None:
-                self.render_manager.set_override_theme(None)
-            else:
-                self.render_manager.set_override_theme(self.theme)
             for slide in self._raw_frames:
-                before = time.time()
-                formated = self.render_manager.format_slide(slide[u'raw_slide'])
-                for format in formated:
-                    lines = u''
-                    title = u''
-                    for line in format:
-                        if title == u'':
-                            title = line
-                        lines += line + u'\n'
-                    self._display_frames.append({u'title': title,
-                        u'text': lines.rstrip(),
+                formatted = self.render_manager \
+                    .format_slide(slide[u'raw_slide'], line_break)
+                for page in formatted:
+                    self._display_frames.append(
+                        {u'title': clean_tags(page),
+                        u'text': clean_tags(page.rstrip()),
+                        u'html': expand_tags(page.rstrip()),
                         u'verseTag': slide[u'verseTag'] })
-                    if len(self._display_frames) in self.cache.keys():
-                        del self.cache[len(self._display_frames)]
-                log.log(15, u'Formatting took %4s' % (time.time() - before))
-        elif self.service_item_type == ServiceItemType.Image:
-            for slide in self._raw_frames:
-                slide[u'image'] = resize_image(slide[u'image'],
-                    self.render_manager.width, self.render_manager.height)
-        elif self.service_item_type == ServiceItemType.Command:
+        elif self.service_item_type == ServiceItemType.Image or \
+            self.service_item_type == ServiceItemType.Command:
             pass
         else:
             log.error(u'Invalid value renderer :%s' % self.service_item_type)
+        self.title = clean_tags(self.title)
+        self.foot_text = None
+        if self.raw_footer:
+            for foot in self.raw_footer:
+                if not self.foot_text:
+                    self.foot_text = foot
+                else:
+                    self.foot_text = u'%s<br>%s' % (self.foot_text, foot)
 
-    def render_individual(self, row):
-        """
-        Takes an array of text and generates an Image from the
-        theme.  It assumes the text will fit on the screen as it
-        has generated by the render method above.
-        """
-        log.debug(u'render individual')
-        if self.theme is None:
-            self.render_manager.set_override_theme(None)
-        else:
-            self.render_manager.set_override_theme(self.theme)
-        format = self._display_frames[row][u'text'].split(u'\n')
-        if self.cache.get(row):
-            frame = self.cache[row]
-        else:
-            if format[0]:
-                frame = self.render_manager.generate_slide(format,
-                    self.raw_footer)
-            else:
-                frame = self.render_manager.generate_slide(format, u'')
-            self.cache[row] = frame
-        return frame
-
-    def add_from_image(self, path, title, image):
+    def add_from_image(self, path, title):
         """
         Add an image slide to the service item.
 
@@ -193,13 +194,12 @@ class ServiceItem(object):
 
         ``title``
             A title for the slide in the service item.
-
-        ``image``
-            The actual image file name.
         """
         self.service_item_type = ServiceItemType.Image
         self._raw_frames.append(
-            {u'title': title, u'image': image, u'path': path})
+            {u'title': title, u'path': path})
+        self.render_manager.image_manager.add_image(title, path)
+        self._new_item()
 
     def add_from_text(self, title, raw_slide, verse_tag=None):
         """
@@ -215,6 +215,7 @@ class ServiceItem(object):
         title = title.split(u'\n')[0]
         self._raw_frames.append(
             {u'title': title, u'raw_slide': raw_slide, u'verseTag':verse_tag})
+        self._new_item()
 
     def add_from_command(self, path, file_name, image):
         """
@@ -231,7 +232,8 @@ class ServiceItem(object):
         """
         self.service_item_type = ServiceItemType.Command
         self._raw_frames.append(
-            {u'title': file_name, u'image': image, u'path': path})
+            {u'title': file_name, u'image':image, u'path': path})
+        self._new_item()
 
     def get_service_repr(self):
         """
@@ -249,7 +251,9 @@ class ServiceItem(object):
             u'audit':self.audit,
             u'notes':self.notes,
             u'from_plugin':self.from_plugin,
-            u'capabilities':self.capabilities
+            u'capabilities':self.capabilities,
+            u'search':self.search_string,
+            u'data':self.data_string
         }
         service_data = []
         if self.service_item_type == ServiceItemType.Text:
@@ -287,19 +291,23 @@ class ServiceItem(object):
         self.notes = header[u'notes']
         self.from_plugin = header[u'from_plugin']
         self.capabilities = header[u'capabilities']
+        # Added later so may not be present in older services.
+        if u'search' in header:
+            self.search_string = header[u'search']
+            self.data_string = header[u'data']
         if self.service_item_type == ServiceItemType.Text:
             for slide in serviceitem[u'serviceitem'][u'data']:
                 self._raw_frames.append(slide)
         elif self.service_item_type == ServiceItemType.Image:
             for text_image in serviceitem[u'serviceitem'][u'data']:
                 filename = os.path.join(path, text_image)
-                real_image = QtGui.QImage(unicode(filename))
-                self.add_from_image(path, text_image, real_image)
+                self.add_from_image(filename, text_image)
         elif self.service_item_type == ServiceItemType.Command:
             for text_image in serviceitem[u'serviceitem'][u'data']:
                 filename = os.path.join(path, text_image[u'title'])
                 self.add_from_command(
                     path, text_image[u'title'], text_image[u'image'] )
+        self._new_item()
 
     def merge(self, other):
         """
@@ -369,9 +377,11 @@ class ServiceItem(object):
         renders it if required.
         """
         if self.service_item_type == ServiceItemType.Text:
-            return self.render_individual(row)
+            return self._display_frames[row][u'html'].split(u'\n')[0]
+        elif self.service_item_type == ServiceItemType.Image:
+            return self._raw_frames[row][u'title']
         else:
-            return {u'main':self._raw_frames[row][u'image'], u'trans':None}
+            return self._raw_frames[row][u'image']
 
     def get_frame_title(self, row=0):
         """
@@ -381,12 +391,6 @@ class ServiceItem(object):
 
     def get_frame_path(self, row=0):
         """
-        Returns the title of the raw frame
+        Returns the path of the raw frame
         """
         return self._raw_frames[row][u'path']
-
-    def clear_cache(self):
-        """
-        Clear's the service item's cache.
-        """
-        self.cache = {}

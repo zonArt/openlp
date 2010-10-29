@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,259 +26,354 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate
+from openlp.core.lib import build_icon, translate
 
 class Ui_SongImportWizard(object):
-    def setupUi(self, SongImportWizard):
-        SongImportWizard.setObjectName(u'SongImportWizard')
-        SongImportWizard.resize(550, 386)
-        SongImportWizard.setModal(True)
-        SongImportWizard.setWizardStyle(QtGui.QWizard.ModernStyle)
-        SongImportWizard.setOptions(
+    def setupUi(self, songImportWizard):
+        self.openIcon = build_icon(u':/general/general_open.png')
+        self.deleteIcon = build_icon(u':/general/general_delete.png')
+        songImportWizard.setObjectName(u'songImportWizard')
+        songImportWizard.resize(550, 386)
+        songImportWizard.setModal(True)
+        songImportWizard.setWizardStyle(QtGui.QWizard.ModernStyle)
+        songImportWizard.setOptions(
             QtGui.QWizard.IndependentPages |
             QtGui.QWizard.NoBackButtonOnStartPage |
             QtGui.QWizard.NoBackButtonOnLastPage)
-        self.WelcomePage = QtGui.QWizardPage()
-        self.WelcomePage.setObjectName(u'WelcomePage')
-        self.WelcomePage.setPixmap(QtGui.QWizard.WatermarkPixmap,
+        self.welcomePage = QtGui.QWizardPage()
+        self.welcomePage.setObjectName(u'welcomePage')
+        self.welcomePage.setPixmap(QtGui.QWizard.WatermarkPixmap,
             QtGui.QPixmap(u':/wizards/wizard_importsong.bmp'))
-        self.WelcomeLayout = QtGui.QHBoxLayout(self.WelcomePage)
-        self.WelcomeLayout.setSpacing(8)
-        self.WelcomeLayout.setMargin(0)
-        self.WelcomeLayout.setObjectName(u'WelcomeLayout')
-        self.WelcomeTextLayout = QtGui.QVBoxLayout()
-        self.WelcomeTextLayout.setSpacing(8)
-        self.WelcomeTextLayout.setObjectName(u'WelcomeTextLayout')
-        self.TitleLabel = QtGui.QLabel(self.WelcomePage)
-        self.TitleLabel.setObjectName(u'TitleLabel')
-        self.WelcomeTextLayout.addWidget(self.TitleLabel)
-        self.WelcomeTopSpacer = QtGui.QSpacerItem(20, 40,
+        self.welcomeLayout = QtGui.QHBoxLayout(self.welcomePage)
+        self.welcomeLayout.setSpacing(8)
+        self.welcomeLayout.setMargin(0)
+        self.welcomeLayout.setObjectName(u'welcomeLayout')
+        self.welcomeTextLayout = QtGui.QVBoxLayout()
+        self.welcomeTextLayout.setSpacing(8)
+        self.welcomeTextLayout.setObjectName(u'welcomeTextLayout')
+        self.titleLabel = QtGui.QLabel(self.welcomePage)
+        self.titleLabel.setObjectName(u'TitleLabel')
+        self.welcomeTextLayout.addWidget(self.titleLabel)
+        self.welcomeTopSpacer = QtGui.QSpacerItem(20, 40,
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
-        self.WelcomeTextLayout.addItem(self.WelcomeTopSpacer)
-        self.InformationLabel = QtGui.QLabel(self.WelcomePage)
-        self.InformationLabel.setWordWrap(True)
-        self.InformationLabel.setMargin(10)
-        self.InformationLabel.setObjectName(u'InformationLabel')
-        self.WelcomeTextLayout.addWidget(self.InformationLabel)
-        self.WelcomeBottomSpacer = QtGui.QSpacerItem(20, 40,
+        self.welcomeTextLayout.addItem(self.welcomeTopSpacer)
+        self.informationLabel = QtGui.QLabel(self.welcomePage)
+        self.informationLabel.setWordWrap(True)
+        self.informationLabel.setMargin(10)
+        self.informationLabel.setObjectName(u'InformationLabel')
+        self.welcomeTextLayout.addWidget(self.informationLabel)
+        self.welcomeBottomSpacer = QtGui.QSpacerItem(20, 40,
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.WelcomeTextLayout.addItem(self.WelcomeBottomSpacer)
-        self.WelcomeLayout.addLayout(self.WelcomeTextLayout)
-        SongImportWizard.addPage(self.WelcomePage)
-        self.SourcePage = QtGui.QWizardPage()
-        self.SourcePage.setObjectName(u'SourcePage')
-        self.SourceLayout = QtGui.QVBoxLayout(self.SourcePage)
-        self.SourceLayout.setSpacing(8)
-        self.SourceLayout.setMargin(20)
-        self.SourceLayout.setObjectName(u'SourceLayout')
-        self.FormatLayout = QtGui.QHBoxLayout()
-        self.FormatLayout.setSpacing(8)
-        self.FormatLayout.setObjectName(u'FormatLayout')
-        self.FormatLabel = QtGui.QLabel(self.SourcePage)
-        self.FormatLabel.setObjectName(u'FormatLabel')
-        self.FormatLayout.addWidget(self.FormatLabel)
-        self.FormatComboBox = QtGui.QComboBox(self.SourcePage)
+        self.welcomeTextLayout.addItem(self.welcomeBottomSpacer)
+        self.welcomeLayout.addLayout(self.welcomeTextLayout)
+        songImportWizard.addPage(self.welcomePage)
+        self.sourcePage = QtGui.QWizardPage()
+        self.sourcePage.setObjectName(u'SourcePage')
+        self.sourceLayout = QtGui.QVBoxLayout(self.sourcePage)
+        self.sourceLayout.setSpacing(8)
+        self.sourceLayout.setMargin(20)
+        self.sourceLayout.setObjectName(u'SourceLayout')
+        self.formatLayout = QtGui.QHBoxLayout()
+        self.formatLayout.setSpacing(8)
+        self.formatLayout.setObjectName(u'FormatLayout')
+        self.formatLabel = QtGui.QLabel(self.sourcePage)
+        self.formatLabel.setObjectName(u'FormatLabel')
+        self.formatLayout.addWidget(self.formatLabel)
+        self.formatComboBox = QtGui.QComboBox(self.sourcePage)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding,
             QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(
-            self.FormatComboBox.sizePolicy().hasHeightForWidth())
-        self.FormatComboBox.setSizePolicy(sizePolicy)
-        self.FormatComboBox.setObjectName(u'FormatComboBox')
-        self.FormatComboBox.addItem(u'')
-        self.FormatComboBox.addItem(u'')
-        self.FormatComboBox.addItem(u'')
-        self.FormatComboBox.addItem(u'')
-        self.FormatLayout.addWidget(self.FormatComboBox)
-        self.FormatSpacer = QtGui.QSpacerItem(40, 20,
+            self.formatComboBox.sizePolicy().hasHeightForWidth())
+        self.formatComboBox.setSizePolicy(sizePolicy)
+        self.formatComboBox.setObjectName(u'formatComboBox')
+        self.formatLayout.addWidget(self.formatComboBox)
+        self.formatSpacer = QtGui.QSpacerItem(40, 20,
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.FormatLayout.addItem(self.FormatSpacer)
-        self.SourceLayout.addLayout(self.FormatLayout)
-        self.FormatStackedWidget = QtGui.QStackedWidget(self.SourcePage)
-        self.FormatStackedWidget.setObjectName(u'FormatStackedWidget')
-        self.OpenLyricsPage = QtGui.QWidget()
-        self.OpenLyricsPage.setObjectName(u'OpenLyricsPage')
-        self.OpenLyricsLayout = QtGui.QVBoxLayout(self.OpenLyricsPage)
-        self.OpenLyricsLayout.setSpacing(8)
-        self.OpenLyricsLayout.setMargin(0)
-        self.OpenLyricsLayout.setObjectName(u'OpenLyricsLayout')
-        self.OpenLyricsFileListWidget = QtGui.QListWidget(self.OpenLyricsPage)
-        self.OpenLyricsFileListWidget.setObjectName(u'OpenLyricsFileListWidget')
-        self.OpenLyricsLayout.addWidget(self.OpenLyricsFileListWidget)
-        self.OpenLyricsButtonLayout = QtGui.QHBoxLayout()
-        self.OpenLyricsButtonLayout.setSpacing(8)
-        self.OpenLyricsButtonLayout.setObjectName(u'OpenLyricsButtonLayout')
-        self.OpenLyricsAddButton = QtGui.QPushButton(self.OpenLyricsPage)
-        self.OpenIcon = QtGui.QIcon()
-        self.OpenIcon.addPixmap(QtGui.QPixmap(u':/general/general_open.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.DeleteIcon = QtGui.QIcon()
-        self.DeleteIcon.addPixmap(
-            QtGui.QPixmap(u':/general/general_delete.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.OpenLyricsAddButton.setIcon(self.OpenIcon)
-        self.OpenLyricsAddButton.setObjectName(u'OpenLyricsAddButton')
-        self.OpenLyricsButtonLayout.addWidget(self.OpenLyricsAddButton)
-        self.OpenLyricsButtonSpacer = QtGui.QSpacerItem(40, 20,
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.OpenLyricsButtonLayout.addItem(self.OpenLyricsButtonSpacer)
-        self.OpenLyricsRemoveButton = QtGui.QPushButton(self.OpenLyricsPage)
-        self.OpenLyricsRemoveButton.setIcon(self.DeleteIcon)
-        self.OpenLyricsRemoveButton.setObjectName(u'OpenLyricsRemoveButton')
-        self.OpenLyricsButtonLayout.addWidget(self.OpenLyricsRemoveButton)
-        self.OpenLyricsLayout.addLayout(self.OpenLyricsButtonLayout)
-        self.FormatStackedWidget.addWidget(self.OpenLyricsPage)
-        self.OpenSongPage = QtGui.QWidget()
-        self.OpenSongPage.setObjectName(u'OpenSongPage')
-        self.OpenSongLayout = QtGui.QVBoxLayout(self.OpenSongPage)
-        self.OpenSongLayout.setSpacing(8)
-        self.OpenSongLayout.setMargin(0)
-        self.OpenSongLayout.setObjectName(u'OpenSongLayout')
-        self.OpenSongFileListWidget = QtGui.QListWidget(self.OpenSongPage)
-        self.OpenSongFileListWidget.setObjectName(u'OpenSongFileListWidget')
-        self.OpenSongLayout.addWidget(self.OpenSongFileListWidget)
-        self.OpenSongButtonLayout = QtGui.QHBoxLayout()
-        self.OpenSongButtonLayout.setSpacing(8)
-        self.OpenSongButtonLayout.setObjectName(u'OpenSongButtonLayout')
-        self.OpenSongAddButton = QtGui.QPushButton(self.OpenSongPage)
-        self.OpenSongAddButton.setIcon(self.OpenIcon)
-        self.OpenSongAddButton.setObjectName(u'OpenSongAddButton')
-        self.OpenSongButtonLayout.addWidget(self.OpenSongAddButton)
-        self.OpenSongButtonSpacer = QtGui.QSpacerItem(40, 20,
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.OpenSongButtonLayout.addItem(self.OpenSongButtonSpacer)
-        self.OpenSongRemoveButton = QtGui.QPushButton(self.OpenSongPage)
-        self.OpenSongRemoveButton.setIcon(self.DeleteIcon)
-        self.OpenSongRemoveButton.setObjectName(u'OpenSongRemoveButton')
-        self.OpenSongButtonLayout.addWidget(self.OpenSongRemoveButton)
-        self.OpenSongLayout.addLayout(self.OpenSongButtonLayout)
-        self.FormatStackedWidget.addWidget(self.OpenSongPage)
-        self.CCLIPage = QtGui.QWidget()
-        self.CCLIPage.setObjectName(u'CCLIPage')
-        self.CCLILayout = QtGui.QVBoxLayout(self.CCLIPage)
-        self.CCLILayout.setSpacing(8)
-        self.CCLILayout.setMargin(0)
-        self.CCLILayout.setObjectName(u'CCLILayout')
-        self.CCLIFileListWidget = QtGui.QListWidget(self.CCLIPage)
-        self.CCLIFileListWidget.setObjectName(u'CCLIFileListWidget')
-        self.CCLILayout.addWidget(self.CCLIFileListWidget)
-        self.CCLIButtonLayout = QtGui.QHBoxLayout()
-        self.CCLIButtonLayout.setSpacing(8)
-        self.CCLIButtonLayout.setObjectName(u'CCLIButtonLayout')
-        self.CCLIAddButton = QtGui.QPushButton(self.CCLIPage)
-        self.CCLIAddButton.setIcon(self.OpenIcon)
-        self.CCLIAddButton.setObjectName(u'CCLIAddButton')
-        self.CCLIButtonLayout.addWidget(self.CCLIAddButton)
-        self.CCLIButtonSpacer = QtGui.QSpacerItem(40, 20,
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.CCLIButtonLayout.addItem(self.CCLIButtonSpacer)
-        self.CCLIRemoveButton = QtGui.QPushButton(self.CCLIPage)
-        self.CCLIRemoveButton.setIcon(self.DeleteIcon)
-        self.CCLIRemoveButton.setObjectName(u'CCLIRemoveButton')
-        self.CCLIButtonLayout.addWidget(self.CCLIRemoveButton)
-        self.CCLILayout.addLayout(self.CCLIButtonLayout)
-        self.FormatStackedWidget.addWidget(self.CCLIPage)
-        self.CSVPage = QtGui.QWidget()
-        self.CSVPage.setObjectName(u'CSVPage')
-        self.CSVLayout = QtGui.QFormLayout(self.CSVPage)
-        self.CSVLayout.setMargin(0)
-        self.CSVLayout.setSpacing(8)
-        self.CSVLayout.setObjectName(u'CSVLayout')
-        self.CSVFilenameLabel = QtGui.QLabel(self.CSVPage)
-        self.CSVFilenameLabel.setObjectName(u'CSVFilenameLabel')
-        self.CSVLayout.setWidget(0, QtGui.QFormLayout.LabelRole,
-            self.CSVFilenameLabel)
-        self.CSVFileLayout = QtGui.QHBoxLayout()
-        self.CSVFileLayout.setSpacing(8)
-        self.CSVFileLayout.setObjectName(u'CSVFileLayout')
-        self.CSVFilenameEdit = QtGui.QLineEdit(self.CSVPage)
-        self.CSVFilenameEdit.setObjectName(u'CSVFilenameEdit')
-        self.CSVFileLayout.addWidget(self.CSVFilenameEdit)
-        self.CSVBrowseButton = QtGui.QToolButton(self.CSVPage)
-        self.CSVBrowseButton.setIcon(self.OpenIcon)
-        self.CSVBrowseButton.setObjectName(u'CSVBrowseButton')
-        self.CSVFileLayout.addWidget(self.CSVBrowseButton)
-        self.CSVLayout.setLayout(0, QtGui.QFormLayout.FieldRole,
-            self.CSVFileLayout)
-        self.FormatStackedWidget.addWidget(self.CSVPage)
-        self.SourceLayout.addWidget(self.FormatStackedWidget)
-        SongImportWizard.addPage(self.SourcePage)
-        self.ImportPage = QtGui.QWizardPage()
-        self.ImportPage.setObjectName(u'ImportPage')
-        self.ImportLayout = QtGui.QVBoxLayout(self.ImportPage)
-        self.ImportLayout.setSpacing(8)
-        self.ImportLayout.setMargin(50)
-        self.ImportLayout.setObjectName(u'ImportLayout')
-        self.ImportProgressLabel = QtGui.QLabel(self.ImportPage)
-        self.ImportProgressLabel.setObjectName(u'ImportProgressLabel')
-        self.ImportLayout.addWidget(self.ImportProgressLabel)
-        self.ImportProgressBar = QtGui.QProgressBar(self.ImportPage)
-        self.ImportProgressBar.setProperty(u'value', 0)
-        self.ImportProgressBar.setInvertedAppearance(False)
-        self.ImportProgressBar.setObjectName(u'ImportProgressBar')
-        self.ImportLayout.addWidget(self.ImportProgressBar)
-        SongImportWizard.addPage(self.ImportPage)
-
-        self.retranslateUi(SongImportWizard)
-        self.FormatStackedWidget.setCurrentIndex(0)
-        QtCore.QObject.connect(
-            self.FormatComboBox,
+        self.formatLayout.addItem(self.formatSpacer)
+        self.sourceLayout.addLayout(self.formatLayout)
+        self.formatStackedWidget = QtGui.QStackedWidget(self.sourcePage)
+        self.formatStackedWidget.setObjectName(u'FormatStackedWidget')
+        # OpenLP 2.0
+        self.addSingleFileSelectItem(u'openLP2')
+        # openlp.org 1.x
+        self.addSingleFileSelectItem(u'openLP1', None, True)
+        # OpenLyrics
+        self.addMultiFileSelectItem(u'openLyrics', u'OpenLyrics', True)
+        # set OpenLyrics to disabled by default
+        self.openLyricsDisabledWidget.setVisible(True)
+        self.openLyricsImportWidget.setVisible(False)
+        # Open Song
+        self.addMultiFileSelectItem(u'openSong', u'OpenSong')
+        # Words of Worship
+        self.addMultiFileSelectItem(u'wordsOfWorship')
+        # CCLI File import
+        self.addMultiFileSelectItem(u'ccli')
+        # Songs of Fellowship
+        self.addMultiFileSelectItem(u'songsOfFellowship', None, True)
+        # Generic Document/Presentation import
+        self.addMultiFileSelectItem(u'generic', None, True)
+        # EasyWorship
+        self.addSingleFileSelectItem(u'ew')
+        # Words of Worship
+        self.addMultiFileSelectItem(u'songBeamer')
+#        Commented out for future use.
+#        self.addSingleFileSelectItem(u'csv', u'CSV')
+        self.sourceLayout.addWidget(self.formatStackedWidget)
+        songImportWizard.addPage(self.sourcePage)
+        self.importPage = QtGui.QWizardPage()
+        self.importPage.setObjectName(u'importPage')
+        self.importLayout = QtGui.QVBoxLayout(self.importPage)
+        self.importLayout.setSpacing(8)
+        self.importLayout.setMargin(50)
+        self.importLayout.setObjectName(u'importLayout')
+        self.importProgressLabel = QtGui.QLabel(self.importPage)
+        self.importProgressLabel.setObjectName(u'importProgressLabel')
+        self.importLayout.addWidget(self.importProgressLabel)
+        self.importProgressBar = QtGui.QProgressBar(self.importPage)
+        self.importProgressBar.setProperty(u'value', 0)
+        self.importProgressBar.setInvertedAppearance(False)
+        self.importProgressBar.setObjectName(u'importProgressBar')
+        self.importLayout.addWidget(self.importProgressBar)
+        songImportWizard.addPage(self.importPage)
+        self.retranslateUi(songImportWizard)
+        self.formatStackedWidget.setCurrentIndex(0)
+        QtCore.QObject.connect(self.formatComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
-            self.FormatStackedWidget.setCurrentIndex
-        )
-        QtCore.QMetaObject.connectSlotsByName(SongImportWizard)
+            self.formatStackedWidget.setCurrentIndex)
+        QtCore.QMetaObject.connectSlotsByName(songImportWizard)
 
-    def retranslateUi(self, SongImportWizard):
-        SongImportWizard.setWindowTitle(
+    def retranslateUi(self, songImportWizard):
+        songImportWizard.setWindowTitle(
             translate('SongsPlugin.ImportWizardForm', 'Song Import Wizard'))
-        self.TitleLabel.setText(
+        self.titleLabel.setText(
             u'<span style="font-size:14pt; font-weight:600;">%s</span>' % \
             translate('SongsPlugin.ImportWizardForm',
                 'Welcome to the Song Import Wizard'))
-        self.InformationLabel.setText(
+        self.informationLabel.setText(
             translate('SongsPlugin.ImportWizardForm',
                 'This wizard will help you to import songs from a variety of '
                 'formats. Click the next button below to start the process by '
                 'selecting a format to import from.'))
-        self.SourcePage.setTitle(
+        self.sourcePage.setTitle(
             translate('SongsPlugin.ImportWizardForm', 'Select Import Source'))
-        self.SourcePage.setSubTitle(
+        self.sourcePage.setSubTitle(
             translate('SongsPlugin.ImportWizardForm',
             'Select the import format, and where to import from.'))
-        self.FormatLabel.setText(
+        self.formatLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Format:'))
-        self.FormatComboBox.setItemText(0,
+        self.formatComboBox.setItemText(0,
+            translate('SongsPlugin.ImportWizardForm', 'OpenLP 2.0'))
+        self.formatComboBox.setItemText(1,
+            translate('SongsPlugin.ImportWizardForm', 'openlp.org 1.x'))
+        self.formatComboBox.setItemText(2,
             translate('SongsPlugin.ImportWizardForm', 'OpenLyrics'))
-        self.FormatComboBox.setItemText(1,
+        self.formatComboBox.setItemText(3,
             translate('SongsPlugin.ImportWizardForm', 'OpenSong'))
-        self.FormatComboBox.setItemText(2,
-            translate('SongsPlugin.ImportWizardForm', 'CCLI'))
-        self.FormatComboBox.setItemText(3,
-            translate('SongsPlugin.ImportWizardForm', 'CSV'))
-        self.OpenLyricsAddButton.setText(
-            translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
-        self.OpenLyricsRemoveButton.setText(
-            translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
-        self.OpenSongAddButton.setText(
-            translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
-        self.OpenSongRemoveButton.setText(
-            translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
-        self.CCLIAddButton.setText(
-            translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
-        self.CCLIRemoveButton.setText(
-            translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
-        self.CSVFilenameLabel.setText(
+        self.formatComboBox.setItemText(4,
+            translate('SongsPlugin.ImportWizardForm', 'Words of Worship'))
+        self.formatComboBox.setItemText(5,
+            translate('SongsPlugin.ImportWizardForm', 'CCLI/SongSelect'))
+        self.formatComboBox.setItemText(6,
+            translate('SongsPlugin.ImportWizardForm', 'Songs of Fellowship'))
+        self.formatComboBox.setItemText(7,
+            translate('SongsPlugin.ImportWizardForm',
+            'Generic Document/Presentation'))
+        self.formatComboBox.setItemText(8,
+            translate('SongsPlugin.ImportWizardForm', 'EasyWorship'))
+        self.formatComboBox.setItemText(9,
+            translate('SongsPlugin.ImportWizardForm', 'SongBeamer'))
+#        self.formatComboBox.setItemText(9,
+#            translate('SongsPlugin.ImportWizardForm', 'CSV'))
+        self.openLP2FilenameLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Filename:'))
-        self.CSVBrowseButton.setText(
+        self.openLP2BrowseButton.setText(
             translate('SongsPlugin.ImportWizardForm', 'Browse...'))
-        self.ImportPage.setTitle(
+        self.openLP1FilenameLabel.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Filename:'))
+        self.openLP1BrowseButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Browse...'))
+        self.openLP1DisabledLabel.setText(
+            translate('SongsPlugin.ImportWizardForm', 'The openlp.org 1.x '
+            'importer has been disabled due to a missing Python module. If '
+            'you want to use this importer, you will need to install the '
+            '"python-sqlite" module.'))
+        #self.openLyricsAddButton.setText(
+        #    translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
+        #self.openLyricsRemoveButton.setText(
+        #    translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
+        self.openLyricsDisabledLabel.setText(
+            translate('SongsPlugin.ImportWizardForm', 'The OpenLyrics '
+            'importer has not yet been developed, but as you can see, we are '
+            'still intending to do so. Hopefully it will be in the next '
+            'release.'))
+        self.openSongAddButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
+        self.openSongRemoveButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
+        self.wordsOfWorshipAddButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
+        self.wordsOfWorshipRemoveButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
+        self.ccliAddButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
+        self.ccliRemoveButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
+        self.songsOfFellowshipAddButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
+        self.songsOfFellowshipRemoveButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
+        self.songsOfFellowshipDisabledLabel.setText(
+            translate('SongsPlugin.ImportWizardForm', 'The Songs of '
+            'Fellowship importer has been disabled because OpenLP cannot '
+            'find OpenOffice.org on your computer.'))
+        self.genericAddButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
+        self.genericRemoveButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
+        self.genericDisabledLabel.setText(
+            translate('SongsPlugin.ImportWizardForm', 'The generic document/'
+            'presentation importer has been disabled because OpenLP cannot '
+            'find OpenOffice.org on your computer.'))
+        self.ewFilenameLabel.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Filename:'))
+        self.ewBrowseButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Browse...'))
+        self.songBeamerAddButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
+        self.songBeamerRemoveButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
+#        self.csvFilenameLabel.setText(
+#            translate('SongsPlugin.ImportWizardForm', 'Filename:'))
+#        self.csvBrowseButton.setText(
+#            translate('SongsPlugin.ImportWizardForm', 'Browse...'))
+        self.importPage.setTitle(
             translate('SongsPlugin.ImportWizardForm', 'Importing'))
-        self.ImportPage.setSubTitle(
+        self.importPage.setSubTitle(
             translate('SongsPlugin.ImportWizardForm',
                 'Please wait while your songs are imported.'))
-        self.ImportProgressLabel.setText(
+        self.importProgressLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Ready.'))
-        self.ImportProgressBar.setFormat(
+        self.importProgressBar.setFormat(
             translate('SongsPlugin.ImportWizardForm', '%p%'))
 
+    def addSingleFileSelectItem(self, prefix, obj_prefix=None,
+        can_disable=False):
+        if not obj_prefix:
+            obj_prefix = prefix
+        page = QtGui.QWidget()
+        page.setObjectName(obj_prefix + u'Page')
+        if can_disable:
+            importWidget = self.disablableWidget(page, prefix, obj_prefix)
+        else:
+            importWidget = page
+        importLayout = QtGui.QFormLayout(importWidget)
+        importLayout.setMargin(0)
+        importLayout.setSpacing(8)
+        if can_disable:
+            importLayout.setObjectName(obj_prefix + u'ImportLayout')
+        else:
+            importLayout.setObjectName(obj_prefix + u'Layout')
+        filenameLabel = QtGui.QLabel(importWidget)
+        filenameLabel.setObjectName(obj_prefix + u'FilenameLabel')
+        importLayout.setWidget(0, QtGui.QFormLayout.LabelRole, filenameLabel)
+        fileLayout = QtGui.QHBoxLayout()
+        fileLayout.setSpacing(8)
+        fileLayout.setObjectName(obj_prefix + u'FileLayout')
+        filenameEdit = QtGui.QLineEdit(importWidget)
+        filenameEdit.setObjectName(obj_prefix + u'FilenameEdit')
+        fileLayout.addWidget(filenameEdit)
+        browseButton = QtGui.QToolButton(importWidget)
+        browseButton.setIcon(self.openIcon)
+        browseButton.setObjectName(obj_prefix + u'BrowseButton')
+        fileLayout.addWidget(browseButton)
+        importLayout.setLayout(0, QtGui.QFormLayout.FieldRole, fileLayout)
+        self.formatStackedWidget.addWidget(page)
+        setattr(self, prefix + u'Page', page)
+        setattr(self, prefix + u'FilenameLabel', filenameLabel)
+        setattr(self, prefix + u'FileLayout', fileLayout)
+        setattr(self, prefix + u'FilenameEdit', filenameEdit)
+        setattr(self, prefix + u'BrowseButton', browseButton)
+        if can_disable:
+            setattr(self, prefix + u'ImportLayout', importLayout)
+        else:
+            setattr(self, prefix + u'Layout', importLayout)
+        self.formatComboBox.addItem(u'')
+
+    def addMultiFileSelectItem(self, prefix, obj_prefix=None,
+        can_disable=False):
+        if not obj_prefix:
+            obj_prefix = prefix
+        page = QtGui.QWidget()
+        page.setObjectName(obj_prefix + u'Page')
+        if can_disable:
+            importWidget = self.disablableWidget(page, prefix, obj_prefix)
+        else:
+            importWidget = page
+        importLayout = QtGui.QVBoxLayout(importWidget)
+        importLayout.setMargin(0)
+        importLayout.setSpacing(8)
+        if can_disable:
+            importLayout.setObjectName(obj_prefix + u'ImportLayout')
+        else:
+            importLayout.setObjectName(obj_prefix + u'Layout')
+        fileListWidget = QtGui.QListWidget(importWidget)
+        fileListWidget.setSelectionMode(
+            QtGui.QAbstractItemView.ExtendedSelection)
+        fileListWidget.setObjectName(obj_prefix + u'FileListWidget')
+        importLayout.addWidget(fileListWidget)
+        buttonLayout = QtGui.QHBoxLayout()
+        buttonLayout.setSpacing(8)
+        buttonLayout.setObjectName(obj_prefix + u'ButtonLayout')
+        addButton = QtGui.QPushButton(importWidget)
+        addButton.setIcon(self.openIcon)
+        addButton.setObjectName(obj_prefix + u'AddButton')
+        buttonLayout.addWidget(addButton)
+        buttonSpacer = QtGui.QSpacerItem(40, 20,
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        buttonLayout.addItem(buttonSpacer)
+        removeButton = QtGui.QPushButton(importWidget)
+        removeButton.setIcon(self.deleteIcon)
+        removeButton.setObjectName(obj_prefix + u'RemoveButton')
+        buttonLayout.addWidget(removeButton)
+        importLayout.addLayout(buttonLayout)
+        self.formatStackedWidget.addWidget(page)
+        setattr(self, prefix + u'Page', page)
+        setattr(self, prefix + u'FileListWidget', fileListWidget)
+        setattr(self, prefix + u'ButtonLayout', buttonLayout)
+        setattr(self, prefix + u'ButtonSpacer', buttonSpacer)
+        setattr(self, prefix + u'AddButton', addButton)
+        setattr(self, prefix + u'RemoveButton', removeButton)
+        if can_disable:
+            setattr(self, prefix + u'ImportLayout', importLayout)
+        else:
+            setattr(self, prefix + u'Layout', importLayout)
+        self.formatComboBox.addItem(u'')
+        
+    def disablableWidget(self, page, prefix, obj_prefix):
+        layout = QtGui.QVBoxLayout(page)
+        layout.setMargin(0)
+        layout.setSpacing(0)
+        layout.setObjectName(obj_prefix + u'Layout')
+        disabledWidget = QtGui.QWidget(page)
+        disabledWidget.setVisible(False)
+        disabledWidget.setObjectName(obj_prefix + u'DisabledWidget')
+        disabledLayout = QtGui.QVBoxLayout(disabledWidget)
+        disabledLayout.setMargin(0)
+        disabledLayout.setSpacing(8)
+        disabledLayout.setObjectName(obj_prefix + u'DisabledLayout')
+        disabledLabel = QtGui.QLabel(disabledWidget)
+        disabledLabel.setWordWrap(True)
+        disabledLabel.setObjectName(obj_prefix + u'DisabledLabel')
+        disabledLayout.addWidget(disabledLabel)
+        layout.addWidget(disabledWidget)
+        importWidget = QtGui.QWidget(page)
+        importWidget.setObjectName(obj_prefix + u'ImportWidget')
+        layout.addWidget(importWidget)
+        setattr(self, prefix + u'Layout', layout)
+        setattr(self, prefix + u'DisabledWidget', disabledWidget)
+        setattr(self, prefix + u'DisabledLayout', disabledLayout)
+        setattr(self, prefix + u'DisabledLabel', disabledLabel)
+        setattr(self, prefix + u'ImportWidget', importWidget)
+        return importWidget

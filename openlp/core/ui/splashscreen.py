@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,15 +26,10 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, translate
-
 class SplashScreen(object):
-    def __init__(self, version):
+    def __init__(self):
         self.splash_screen = QtGui.QSplashScreen()
         self.setupUi()
-        self.message = translate(
-            'Splashscreen',  'Starting')\
-            + '..... ' + version
 
     def setupUi(self):
         self.splash_screen.setObjectName(u'splash_screen')
@@ -48,25 +44,15 @@ class SplashScreen(object):
             self.splash_screen.sizePolicy().hasHeightForWidth())
         self.splash_screen.setSizePolicy(sizePolicy)
         self.splash_screen.setContextMenuPolicy(QtCore.Qt.PreventContextMenu)
-        icon = build_icon(u':/icon/openlp-logo-16x16.png')
-        self.splash_screen.setWindowIcon(icon)
         splash_image = QtGui.QPixmap(u':/graphics/openlp-splash-screen.png')
         self.splash_screen.setPixmap(splash_image)
         self.splash_screen.setMask(splash_image.mask())
         self.splash_screen.setWindowFlags(
             QtCore.Qt.SplashScreen | QtCore.Qt.WindowStaysOnTopHint)
-        self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self.splash_screen)
-
-    def retranslateUi(self):
-        self.splash_screen.setWindowTitle(
-            translate('Splashscreen', 'Splash Screen'))
 
     def show(self):
         self.splash_screen.show()
-        self.splash_screen.showMessage(self.message,
-            QtCore.Qt.AlignLeft | QtCore.Qt.AlignBottom, QtCore.Qt.black)
-        self.splash_screen.repaint()
 
     def finish(self, widget):
         self.splash_screen.finish(widget)

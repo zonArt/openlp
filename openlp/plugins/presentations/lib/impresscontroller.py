@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -36,8 +37,6 @@
 import logging
 import os
 import time
-
-from openlp.core.lib import resize_image
 
 if os.name == u'nt':
     from win32com.client import Dispatch
@@ -70,10 +69,12 @@ class ImpressController(PresentationController):
         """
         log.debug(u'Initialising')
         PresentationController.__init__(self, plugin, u'Impress')
-        self.supports = [u'.odp']
-        self.alsosupports = [u'.ppt', u'.pps', u'.pptx', u'.ppsx']
+        self.supports = [u'odp']
+        self.alsosupports = [u'ppt', u'pps', u'pptx', u'ppsx']
         self.process = None
         self.desktop = None
+        self.manager = None
+        self.uno_connection_type = u'pipe' #u'socket'
 
     def check_available(self):
         """
@@ -98,12 +99,23 @@ class ImpressController(PresentationController):
             self.manager._FlagAsMethod(u'Bridge_GetValueObject')
         else:
             # -headless
-            cmd = u'openoffice.org -nologo -norestore -minimized -invisible -nofirststartwizard -accept="socket,host=localhost,port=2002;urp;"'
+            if self.uno_connection_type == u'pipe':
+                cmd = u'openoffice.org -nologo -norestore -minimized ' \
+                    + u'-invisible -nofirststartwizard ' \
+                    + u'-accept=pipe,name=openlp_pipe;urp;'
+            else:
+                cmd = u'openoffice.org -nologo -norestore -minimized ' \
+                    + u'-invisible -nofirststartwizard ' \
+                    + u'-accept=socket,host=localhost,port=2002;urp;'
             self.process = QtCore.QProcess()
             self.process.startDetached(cmd)
             self.process.waitForStarted()
 
     def get_uno_desktop(self):
+        """
+        On non-Windows platforms, use Uno. Get the OpenOffice desktop
+        which will be used to manage impress
+        """
         log.debug(u'get UNO Desktop Openoffice')
         ctx = None
         loop = 0
@@ -116,8 +128,14 @@ class ImpressController(PresentationController):
         while ctx is None and loop < 3:
             try:
                 log.debug(u'get UNO Desktop Openoffice - resolve')
-                ctx = resolver.resolve(u'uno:socket,host=localhost,port=2002;'
-                    u'urp;StarOffice.ComponentContext')
+                if self.uno_connection_type == u'pipe':
+                    ctx = resolver.resolve(u'uno:' \
+                        + u'pipe,name=openlp_pipe;' \
+                        + u'urp;StarOffice.ComponentContext')
+                else:
+                    ctx = resolver.resolve(u'uno:' \
+                        + u'socket,host=localhost,port=2002;' \
+                        + u'urp;StarOffice.ComponentContext')
             except:
                 log.exception(u'Unable to find running instance ')
                 self.start_process()
@@ -134,15 +152,25 @@ class ImpressController(PresentationController):
             return None
 
     def get_com_desktop(self):
+        """
+        On Windows platforms, use COM. Return the desktop object which
+        will be used to manage Impress
+        """
         log.debug(u'get COM Desktop OpenOffice')
+        if not self.manager:
+            return None
         return self.manager.createInstance(u'com.sun.star.frame.Desktop')
 
     def get_com_servicemanager(self):
+        """
+        Return the OOo service manager for windows
+        """
         log.debug(u'get_com_servicemanager openoffice')
         try:
             return Dispatch(u'com.sun.star.ServiceManager')
         except pywintypes.com_error:
-            log.exception(u'Failed to get COM service manager')
+            log.warn(u'Failed to get COM service manager. '
+                u'Impress Controller has been disabled')
             return None
 
     def kill(self):
@@ -171,13 +199,23 @@ class ImpressController(PresentationController):
                 log.exception(u'Failed to terminate OpenOffice')
 
     def add_doc(self, name):
+        """
+        Called when a new Impress document is opened
+        """
         log.debug(u'Add Doc OpenOffice')
         doc = ImpressDocument(self, name)
         self.docs.append(doc)
         return doc
 
 class ImpressDocument(PresentationDocument):
+    """
+    Class which holds information and controls a single presentation
+    """    
+    
     def __init__(self, controller, presentation):
+        """
+        Constructor, store information about the file and initialise 
+        """        
         log.debug(u'Init Presentation OpenOffice')
         PresentationDocument.__init__(self, controller, presentation)
         self.document = None
@@ -208,9 +246,8 @@ class ImpressDocument(PresentationDocument):
             desktop = self.controller.get_uno_desktop()
             url = uno.systemPathToFileUrl(self.filepath)
         if desktop is None:
-            return
+            return False
         self.desktop = desktop
-        #print "s.dsk2 ", self.desktop
         properties = []
         properties.append(self.create_property(u'Minimized', True))
         properties = tuple(properties)
@@ -219,12 +256,13 @@ class ImpressDocument(PresentationDocument):
                 0, properties)
         except:
             log.exception(u'Failed to load presentation')
-            return
+            return False
         self.presentation = self.document.getPresentation()
         self.presentation.Display = \
-            self.controller.plugin.render_manager.screens.current_display + 1
+            self.controller.plugin.renderManager.screens.current_display + 1
         self.control = None
         self.create_thumbnails()
+        return True
 
     def create_thumbnails(self):
         """
@@ -234,30 +272,36 @@ class ImpressDocument(PresentationDocument):
         if self.check_thumbnails():
             return
         if os.name == u'nt':
-            thumbdir = u'file:///' + self.thumbnailpath.replace(
+            thumbdirurl = u'file:///' + self.get_temp_folder().replace(
                 u'\\', u'/').replace(u':', u'|').replace(u' ', u'%20')
         else:
-            thumbdir = uno.systemPathToFileUrl(self.thumbnailpath)
+            thumbdirurl = uno.systemPathToFileUrl(self.get_temp_folder())
         props = []
         props.append(self.create_property(u'FilterName', u'impress_png_Export'))
         props = tuple(props)
         doc = self.document
         pages = doc.getDrawPages()
+        if not os.path.isdir(self.get_temp_folder()):
+            os.makedirs(self.get_temp_folder())
         for idx in range(pages.getCount()):
             page = pages.getByIndex(idx)
             doc.getCurrentController().setCurrentPage(page)
-            path = u'%s/%s%s.png' % (thumbdir, self.controller.thumbnailprefix,
-                    unicode(idx + 1))
+            urlpath = u'%s/%s.png' % (thumbdirurl, unicode(idx + 1))
+            path = os.path.join(self.get_temp_folder(), 
+                unicode(idx + 1) + u'.png')
             try:
-                doc.storeToURL(path , props)
-                preview = resize_image(path, 640, 480)
+                doc.storeToURL(urlpath, props)
+                self.convert_thumbnail(path, idx + 1)
                 if os.path.exists(path):
                     os.remove(path)
-                preview.save(path, u'png')
             except:
                 log.exception(u'%s - Unable to store openoffice preview' % path)
 
     def create_property(self, name, value):
+        """
+        Create an OOo style property object which are passed into some
+        Uno methods
+        """
         log.debug(u'create property OpenOffice')
         if os.name == u'nt':
             prop = self.controller.manager.\
@@ -288,6 +332,9 @@ class ImpressDocument(PresentationDocument):
         self.controller.remove_doc(self)
 
     def is_loaded(self):
+        """
+        Returns true if a presentation is loaded
+        """
         log.debug(u'is loaded OpenOffice')
         #print "is_loaded "
         if self.presentation is None or self.document is None:
@@ -302,6 +349,9 @@ class ImpressDocument(PresentationDocument):
         return True
 
     def is_active(self):
+        """
+        Returns true if a presentation is active and running
+        """
         log.debug(u'is active OpenOffice')
         #print "is_active "
         if not self.is_loaded():
@@ -313,10 +363,16 @@ class ImpressDocument(PresentationDocument):
         return True
 
     def unblank_screen(self):
+        """
+        Unblanks the screen
+        """
         log.debug(u'unblank screen OpenOffice')
         return self.control.resume()
 
     def blank_screen(self):
+        """
+        Blanks the screen
+        """
         log.debug(u'blank screen OpenOffice')
         self.control.blankScreen(0)
 
@@ -331,6 +387,9 @@ class ImpressDocument(PresentationDocument):
             return False
 
     def stop_presentation(self):
+        """
+        Stop the presentation, remove from screen
+        """
         log.debug(u'stop presentation OpenOffice')
         # deactivate should hide the screen according to docs, but doesn't
         #self.control.deactivate()
@@ -338,6 +397,9 @@ class ImpressDocument(PresentationDocument):
         self.control = None
 
     def start_presentation(self):
+        """
+        Start the presentation from the beginning
+        """
         log.debug(u'start presentation OpenOffice')
         if self.control is None or not self.control.isRunning():
             self.presentation.start()
@@ -354,12 +416,21 @@ class ImpressDocument(PresentationDocument):
             self.goto_slide(1)
 
     def get_slide_number(self):
+        """
+        Return the current slide number on the screen, from 1
+        """
         return self.control.getCurrentSlideIndex() + 1
 
     def get_slide_count(self):
+        """
+        Return the total number of slides
+        """
         return self.document.getDrawPages().getCount()
 
     def goto_slide(self, slideno):
+        """
+        Go to a specific slide (from 1)
+        """
         self.control.gotoSlideIndex(slideno-1)
 
     def next_step(self):
@@ -408,4 +479,3 @@ class ImpressDocument(PresentationDocument):
             if shape.supportsService("com.sun.star.drawing.Text"):
                 text += shape.getString() + '\n'
         return text
-

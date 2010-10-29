@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -40,17 +41,17 @@ class AboutForm(QtGui.QDialog, Ui_AboutDialog):
         QtGui.QDialog.__init__(self, parent)
         self.applicationVersion = applicationVersion
         self.setupUi(self)
-        about_text = self.AboutTextEdit.toPlainText()
+        about_text = self.aboutTextEdit.toPlainText()
         about_text = about_text.replace(u'<version>',
             self.applicationVersion[u'version'])
         if self.applicationVersion[u'build']:
-            build_text = unicode(translate('AboutForm', ' build %s')) % \
+            build_text = unicode(translate('OpenLP.AboutForm', ' build %s')) % \
                 self.applicationVersion[u'build']
         else:
             build_text = u''
         about_text = about_text.replace(u'<revision>', build_text)
-        self.AboutTextEdit.setPlainText(about_text)
-        QtCore.QObject.connect(self.ContributeButton,
+        self.aboutTextEdit.setPlainText(about_text)
+        QtCore.QObject.connect(self.contributeButton,
             QtCore.SIGNAL(u'clicked()'), self.onContributeButtonClicked)
 
     def onContributeButtonClicked(self):

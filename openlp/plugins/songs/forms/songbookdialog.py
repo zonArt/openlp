@@ -6,8 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2010 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Christian Richter, Maikel Stuivenberg, Martin      #
-# Thompson, Jon Tibble, Carsten Tinggaard                                     #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund                                           #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -41,6 +42,7 @@ class Ui_SongBookDialog(object):
             QtGui.QFormLayout.LabelRole, self.NameLabel)
         self.NameEdit = QtGui.QLineEdit(SongBookDialog)
         self.NameEdit.setObjectName(u'NameEdit')
+        self.NameLabel.setBuddy(self.NameEdit)
         self.SongBookLayout.setWidget(0,
             QtGui.QFormLayout.FieldRole, self.NameEdit)
         self.PublisherLabel = QtGui.QLabel(SongBookDialog)
@@ -49,6 +51,7 @@ class Ui_SongBookDialog(object):
             QtGui.QFormLayout.LabelRole, self.PublisherLabel)
         self.PublisherEdit = QtGui.QLineEdit(SongBookDialog)
         self.PublisherEdit.setObjectName(u'PublisherEdit')
+        self.PublisherLabel.setBuddy(self.PublisherEdit)
         self.SongBookLayout.setWidget(1,
             QtGui.QFormLayout.FieldRole, self.PublisherEdit)
         self.ButtonBox = QtGui.QDialogButtonBox(SongBookDialog)
@@ -68,7 +71,7 @@ class Ui_SongBookDialog(object):
 
     def retranslateUi(self, SongBookDialog):
         SongBookDialog.setWindowTitle(
-            translate('SongsPlugin.SongBookForm', 'Edit Book'))
+            translate('SongsPlugin.SongBookForm', 'Song Book Maintenance'))
         self.NameLabel.setText(translate('SongsPlugin.SongBookForm', '&Name:'))
         self.PublisherLabel.setText(
             translate('SongsPlugin.SongBookForm', '&Publisher:'))
