@@ -528,6 +528,9 @@ class ThemeXML(object):
             # make string value unicode
             if not isinstance(value, unicode):
                 value = unicode(str(value), u'utf-8')
+            # None means an empty string so lets have one.
+            if value == u'None':
+                value = u''
             setattr(self, tag, unicode(value).strip().lstrip())
 
     def __str__(self):

@@ -76,7 +76,7 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         filename = u'usage_detail_%s_%s.txt' % (
             self.fromDate.selectedDate().toString(u'ddMMyyyy'),
             self.toDate.selectedDate().toString(u'ddMMyyyy'))
-        usage = self.plugin.songusagemanager.get_all_objects(
+        usage = self.plugin.manager.get_all_objects(
             SongUsageItem, and_(
             SongUsageItem.usagedate >= self.fromDate.selectedDate().toPyDate(),
             SongUsageItem.usagedate < self.toDate.selectedDate().toPyDate()),
