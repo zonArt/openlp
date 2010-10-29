@@ -408,7 +408,7 @@ class ThemeXML(object):
         elif field in integer_list:
             setattr(self, master + field, int(value))
         else:
-            # None means an empty sting so lets have one.
+            # None means an empty string so lets have one.
             if value == u'None':
                 value = u''
             setattr(self, master + field, unicode(value))
