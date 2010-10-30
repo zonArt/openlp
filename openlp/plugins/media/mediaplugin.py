@@ -97,42 +97,42 @@ class MediaPlugin(Plugin):
         ## Load Button ##
         self.textStrings[StringContent.Load] = {
             u'title': translate('MediaPlugin', 'Load'),
-            u'tooltip': translate('MediaPlugin', 
+            u'tooltip': translate('MediaPlugin',
                 'Load a new Media')
         }
         ## New Button ##
         self.textStrings[StringContent.New] = {
             u'title': translate('MediaPlugin', 'Add'),
-            u'tooltip': translate('MediaPlugin', 
+            u'tooltip': translate('MediaPlugin',
                 'Add a new Media')
         }
         ## Edit Button ##
         self.textStrings[StringContent.Edit] = {
             u'title': translate('MediaPlugin', 'Edit'),
-            u'tooltip': translate('MediaPlugin', 
+            u'tooltip': translate('MediaPlugin',
                 'Edit the selected Media')
         }
         ## Delete Button ##
         self.textStrings[StringContent.Delete] = {
             u'title': translate('MediaPlugin', 'Delete'),
-            u'tooltip': translate('MediaPlugin', 
+            u'tooltip': translate('MediaPlugin',
                 'Delete the selected Media')
         }
         ## Preview ##
         self.textStrings[StringContent.Preview] = {
             u'title': translate('MediaPlugin', 'Preview'),
-            u'tooltip': translate('MediaPlugin', 
+            u'tooltip': translate('MediaPlugin',
                 'Preview the selected Media')
         }
         ## Live  Button ##
         self.textStrings[StringContent.Live] = {
             u'title': translate('MediaPlugin', 'Live'),
-            u'tooltip': translate('MediaPlugin', 
+            u'tooltip': translate('MediaPlugin',
                 'Send the selected Media live')
         }
         ## Add to service Button ##
         self.textStrings[StringContent.Service] = {
             u'title': translate('MediaPlugin', 'Service'),
-            u'tooltip': translate('MediaPlugin', 
+            u'tooltip': translate('MediaPlugin',
                 'Add the selected Media to the service')
         }

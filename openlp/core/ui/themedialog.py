@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'themedialog.ui'
 #
-# Created: Sun Oct 17 19:46:30 2010
+# Created: Sat Oct 30 12:07:46 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -15,7 +15,7 @@ class Ui_ThemeDialog(object):
         ThemeDialog.resize(550, 386)
         ThemeDialog.setModal(True)
         ThemeDialog.setWizardStyle(QtGui.QWizard.ModernStyle)
-        ThemeDialog.setOptions(QtGui.QWizard.NoBackButtonOnStartPage)
+        ThemeDialog.setOptions(QtGui.QWizard.IndependentPages|QtGui.QWizard.NoBackButtonOnStartPage)
         self.welcomePage = QtGui.QWizardPage()
         self.welcomePage.setTitle("")
         self.welcomePage.setSubTitle("")

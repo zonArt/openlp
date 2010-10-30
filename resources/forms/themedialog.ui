@@ -20,7 +20,7 @@
    <enum>QWizard::ModernStyle</enum>
   </property>
   <property name="options">
-   <set>QWizard::NoBackButtonOnStartPage</set>
+   <set>QWizard::IndependentPages|QWizard::NoBackButtonOnStartPage</set>
   </property>
   <widget class="QWizardPage" name="welcomePage">
    <property name="title">
