@@ -602,7 +602,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(self.FileSaveAsItem,
             QtCore.SIGNAL(u'triggered()'),
             self.ServiceManagerContents.onSaveService)
-        #i18n set signals for languages
+        # i18n set signals for languages
         QtCore.QObject.connect(self.AutoLanguageItem,
             QtCore.SIGNAL(u'toggled(bool)'), self.setAutoLanguage)
         self.LanguageGroup.triggered.connect(LanguageManager.set_language)
@@ -622,15 +622,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'config_screen_changed'), self.screenChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'maindisplay_status_text'), self.showStatusMessage)
-        #warning cyclic dependency
-        #RenderManager needs to call ThemeManager and
-        #ThemeManager needs to call RenderManager
+        # warning cyclic dependency
+        # RenderManager needs to call ThemeManager and
+        # ThemeManager needs to call RenderManager
         self.RenderManager = RenderManager(
             self.ThemeManagerContents, self.screens)
-        #Define the media Dock Manager
+        # Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.MediaToolBox)
         log.info(u'Load Plugins')
-        #make the controllers available to the plugins
+        # make the controllers available to the plugins
         self.plugin_helpers[u'preview'] = self.PreviewController
         self.plugin_helpers[u'live'] = self.LiveController
         self.plugin_helpers[u'render'] = self.RenderManager
