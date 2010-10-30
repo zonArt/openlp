@@ -44,7 +44,7 @@ class SongUsagePlugin(Plugin):
         Plugin.__init__(self, u'SongUsage', u'1.9.3', plugin_helpers)
         self.weight = -4
         self.icon = build_icon(u':/plugins/plugin_songusage.png')
-        self.songusagemanager = None
+        self.manager = None
         self.songusageActive = False
 
     def addToolsMenuItem(self, tools_menu):
@@ -115,9 +115,9 @@ class SongUsagePlugin(Plugin):
             self.settingsSection + u'/active',
             QtCore.QVariant(False)).toBool()
         self.SongUsageStatus.setChecked(self.SongUsageActive)
-        if self.songusagemanager is None:
-            self.songusagemanager = Manager(u'songusage', init_schema)
-        self.SongUsagedeleteform = SongUsageDeleteForm(self.songusagemanager,
+        if self.manager is None:
+            self.manager = Manager(u'songusage', init_schema)
+        self.SongUsagedeleteform = SongUsageDeleteForm(self.manager,
             self.formparent)
         self.SongUsagedetailform = SongUsageDetailForm(self, self.formparent)
         self.SongUsageMenu.menuAction().setVisible(True)
@@ -148,7 +148,7 @@ class SongUsagePlugin(Plugin):
             song_usage_item.authors = u''
             for author in audit[1]:
                 song_usage_item.authors += author + u' '
-            self.songusagemanager.save_object(song_usage_item)
+            self.manager.save_object(song_usage_item)
 
     def onSongUsageDelete(self):
         self.SongUsagedeleteform.exec_()
@@ -176,3 +176,11 @@ class SongUsagePlugin(Plugin):
         self.textStrings[StringContent.VisibleName] = {
             u'title': translate('SongUsagePlugin', 'SongUsage')
         }
+
+    def finalise(self):
+        """
+        Time to tidy up on exit
+        """
+        log.info(u'SongUsage Finalising')
+        self.manager.finalise()
+        Plugin.finalise(self)

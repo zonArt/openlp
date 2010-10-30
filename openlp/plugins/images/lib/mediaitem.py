@@ -166,9 +166,8 @@ class ImageMediaItem(MediaManagerItem):
             for item in items:
                 bitem = self.listView.item(item.row())
                 filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
-                frame = QtGui.QImage(unicode(filename))
                 (path, name) = os.path.split(filename)
-                service_item.add_from_image(path, name, frame)
+                service_item.add_from_image(filename, name)
             return True
         else:
             return False
@@ -185,7 +184,8 @@ class ImageMediaItem(MediaManagerItem):
             for item in items:
                 bitem = self.listView.item(item.row())
                 filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
-                self.parent.liveController.display.image(filename)
+                (path, name) = os.path.split(filename)
+                self.parent.liveController.display.directImage(name, filename)
         self.resetButton.setVisible(True)
 
     def onPreviewClick(self):

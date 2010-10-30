@@ -73,6 +73,7 @@ class Ui_MainWindow(object):
         MainWindow.setSizePolicy(sizePolicy)
         MainIcon = build_icon(u':/icon/openlp-logo-16x16.png')
         MainWindow.setWindowIcon(MainIcon)
+        self.setDockNestingEnabled(True)
         # Set up the main container, which contains all the other form widgets
         self.MainContent = QtGui.QWidget(MainWindow)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,
@@ -781,7 +782,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     QtGui.QMessageBox.Save),
                 QtGui.QMessageBox.Save)
             if ret == QtGui.QMessageBox.Save:
-                self.ServiceManagerContents.onSaveService()
+                self.ServiceManagerContents.onSaveService(True)
                 self.cleanUp()
                 event.accept()
             elif ret == QtGui.QMessageBox.Discard:
