@@ -42,9 +42,6 @@ class Ui_ShortcutListDialog(object):
         self.shortcutListTreeWidget.setColumnCount(2)
         self.shortcutListTreeWidget.setSelectionBehavior(
             QtGui.QAbstractItemView.SelectRows)
-        #self.shortcutListTreeWidget.setHeaderItem(0, QtGui.QTreeWidgetItem())
-        #self.shortcutListTreeWidget.setHeaderItem(1, QtGui.QTreeWidgetItem())
-        #self.shortcutListTreeWidget.verticalHeader().setVisible(False)
         self.shortcutListLayout.addWidget(self.shortcutListTreeWidget)
         self.shortcutLayout = QtGui.QVBoxLayout()
         self.shortcutLayout.setSpacing(8)
@@ -105,8 +102,8 @@ class Ui_ShortcutListDialog(object):
         shortcutListDialog.setWindowTitle(
             translate('OpenLP.ShortcutListDialog', 'Customize Shortcuts'))
         self.shortcutListTreeWidget.setHeaderLabels([
-            translate(u'OpenLP.ShortcutListDialog', 'Action'),
-            translate(u'OpenLP.ShortcutListDialog', 'Shortcut')
+            translate('OpenLP.ShortcutListDialog', 'Action'),
+            translate('OpenLP.ShortcutListDialog', 'Shortcut')
         ])
         self.defaultRadioButton.setText(
             translate('OpenLP.ShortcutListDialog', 'Default: %s'))
@@ -114,3 +111,4 @@ class Ui_ShortcutListDialog(object):
             translate('OpenLP.ShortcutListDialog', 'Custom:'))
         self.shortcutPushButton.setText(
             translate('OpenLP.ShortcutListDialog', 'None'))
+
