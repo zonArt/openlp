@@ -76,7 +76,12 @@ class CCLIFileImport(SongImport):
             lines = []
             if os.path.isfile(filename):
                 detect_file = open(filename, u'r')
-                details = chardet.detect(detect_file.read(2048))
+                detect_content = detect_file.read(2048)
+                try:
+                    unicode(detect_content, u'utf-8')
+                    details = {'confidence': 1, 'encoding': 'utf-8'}
+                except UnicodeDecodeError:
+                    details = chardet.detect(detect_content)
                 detect_file.close()
                 infile = codecs.open(filename, u'r', details['encoding'])
                 lines = infile.readlines()

@@ -118,7 +118,7 @@ class OpenLP1SongImport(SongImport):
                 success = False
                 break
             song_id = song[0]
-            guess = chardet.detect(song[2])
+            guess = chardet.detect(song[1] + song[2] + song[3])
             title = self.decode_string(song[1], guess)
             lyrics = self.decode_string(song[2], guess).replace(u'\r', u'')
             copyright = self.decode_string(song[3], guess)
