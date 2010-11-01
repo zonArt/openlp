@@ -51,6 +51,7 @@ from advancedtab import AdvancedTab
 from aboutform import AboutForm
 from pluginform import PluginForm
 from settingsform import SettingsForm
+from shortcutlistform import ShortcutListForm
 from mediadockmanager import MediaDockManager
 from servicemanager import ServiceManager
 from thememanager import ThemeManager
