@@ -29,11 +29,10 @@ format it for the output display.
 """
 import logging
 
-from PyQt4 import QtGui, QtCore, QtWebKit
+from PyQt4 import QtWebKit
 
-from openlp.core.lib import resize_image, expand_tags, \
-    build_lyrics_format_css, build_lyrics_outline_css, image_to_byte
-
+from openlp.core.lib import expand_tags, build_lyrics_format_css, \
+    build_lyrics_outline_css
 
 log = logging.getLogger(__name__)
 
