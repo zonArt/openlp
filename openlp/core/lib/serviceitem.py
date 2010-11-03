@@ -32,9 +32,7 @@ import logging
 import os
 import uuid
 
-from PyQt4 import QtGui
-
-from openlp.core.lib import build_icon, resize_image, clean_tags, expand_tags
+from openlp.core.lib import build_icon, clean_tags, expand_tags
 
 log = logging.getLogger(__name__)
 
