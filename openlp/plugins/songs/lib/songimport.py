@@ -47,8 +47,9 @@ class SongImport(QtCore.QObject):
         """
         Initialise and create defaults for properties
 
-        song_manager is an instance of a SongManager, through which all
-        database access is performed
+        ``manager``
+            An instance of a SongManager, through which all database access is
+            performed.
         """
         self.manager = manager
         self.stop_import_flag = False
