@@ -794,7 +794,8 @@ class SlideController(QtGui.QWidget):
         self.selectedRow = 0
         if row > -1 and row < self.PreviewListWidget.rowCount():
             if self.serviceItem.is_command() and self.isLive:
-                Receiver.send_message(u'%s_slide' % self.serviceItem.name.lower(),
+                Receiver.send_message(
+                    u'%s_slide' % self.serviceItem.name.lower(),
                     [self.serviceItem, self.isLive, row])
                 self.updatePreview()
             else:

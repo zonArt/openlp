@@ -229,14 +229,16 @@ class OpenSongImport(SongImport):
                 # drop the square brackets
                 right_bracket = thisline.find(u']')
                 content = thisline[1:right_bracket].upper()
-                # have we got any digits? If so, versenumber is everything from the digits
+                # have we got any digits?
+                # If so, versenumber is everything from the digits
                 # to the end (even if there are some alpha chars on the end)
                 match = re.match(u'(.*)(\d+.*)', content)
                 if match is not None:
                     versetype = match.group(1)
                     versenum = match.group(2)
                 else:
-                    # otherwise we assume number 1 and take the whole prefix as versetype
+                    # otherwise we assume number 1 and take the whole prefix as
+                    # the versetype
                     versetype = content
                     versenum = u'1'
                 continue
@@ -301,6 +303,7 @@ class OpenSongImport(SongImport):
                 # Assume it's no.1 if there's no digits
                 tag = tag + u'1'
             if not versetags.has_key(tag):
-                log.info(u'Got order %s but not in versetags, dropping this item from presentation order', tag)
+                log.info(u'Got order %s but not in versetags, dropping this'
+                    u'item from presentation order', tag)
             else:
                 self.verse_order_list.append(tag)
