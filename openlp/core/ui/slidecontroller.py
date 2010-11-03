@@ -798,7 +798,7 @@ class SlideController(QtGui.QWidget):
                 if self.isLive:
                     Receiver.send_message(u'%s_slide' % self.serviceItem.name.lower(),
                         [self.serviceItem, self.isLive, row])
-                    self.updatePreview()
+                self.updatePreview()
             else:
                 toDisplay = self.serviceItem.get_rendered_frame(row)
                 if self.serviceItem.is_text():
