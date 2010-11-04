@@ -126,7 +126,10 @@ class OpenLP1SongImport(SongImport):
                 unicode(translate('SongsPlugin.ImportWizardForm',
                     'Importing "%s"...')) % title)
             self.title = title
-            self.process_song_text(lyrics)
+            verses = lyrics.split(u'\n\n')
+            for verse in verses:
+                if verse.strip() != u'':
+                    self.add_verse(verse.strip())
             self.add_copyright(copyright)
             cursor.execute(u'SELECT authorid FROM songauthors '
                 u'WHERE songid = %s' % song_id)
