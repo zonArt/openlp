@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'themedialog.ui'
 #
-# Created: Sat Oct 30 12:07:46 2010
+# Created: Sat Oct 30 12:33:34 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -422,9 +422,14 @@ class Ui_ThemeDialog(object):
         self.previewBoxLayout.setSpacing(0)
         self.previewBoxLayout.setContentsMargins(0, 0, -1, -1)
         self.previewBoxLayout.setObjectName("previewBoxLayout")
-        spacerItem2 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem2 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         self.previewBoxLayout.addItem(spacerItem2)
         self.previewBoxLabel = QtGui.QLabel(self.previewPage)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.previewBoxLabel.sizePolicy().hasHeightForWidth())
+        self.previewBoxLabel.setSizePolicy(sizePolicy)
         self.previewBoxLabel.setMinimumSize(QtCore.QSize(300, 200))
         self.previewBoxLabel.setFrameShape(QtGui.QFrame.WinPanel)
         self.previewBoxLabel.setFrameShadow(QtGui.QFrame.Sunken)
@@ -433,7 +438,7 @@ class Ui_ThemeDialog(object):
         self.previewBoxLabel.setScaledContents(True)
         self.previewBoxLabel.setObjectName("previewBoxLabel")
         self.previewBoxLayout.addWidget(self.previewBoxLabel)
-        spacerItem3 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem3 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         self.previewBoxLayout.addItem(spacerItem3)
         self.previewLayout.addLayout(self.previewBoxLayout, 3, 0, 1, 2)
         ThemeDialog.addPage(self.previewPage)
@@ -525,3 +530,4 @@ class Ui_ThemeDialog(object):
         self.previewPage.setSubTitle(QtGui.QApplication.translate("ThemeDialog", "View the theme and save it replacing the current one or change the name to create a new theme", None, QtGui.QApplication.UnicodeUTF8))
         self.themeNameLabel.setText(QtGui.QApplication.translate("ThemeDialog", "Theme name:", None, QtGui.QApplication.UnicodeUTF8))
         self.previewLabel.setText(QtGui.QApplication.translate("ThemeDialog", "Preview", None, QtGui.QApplication.UnicodeUTF8))
+
