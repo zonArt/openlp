@@ -28,7 +28,7 @@ The :mod:`olp1import` module provides the functionality for importing
 openlp.org 1.x song databases into the current installation database.
 """
 import logging
-import chardet
+from chardet.universaldetector import UniversalDetector
 import sqlite
 
 from openlp.core.lib import translate
@@ -66,22 +66,11 @@ class OpenLP1SongImport(SongImport):
         ``guess``
             What chardet guessed the encoding to be.
         """
-        if guess[u'confidence'] < 0.8:
-            codec = u'windows-1252'
-        else:
-            codec = guess[u'encoding']
         try:
-            decoded = unicode(raw, codec)
-            self.last_encoding = codec
+            decoded = unicode(raw, guess[u'encoding'])
         except UnicodeDecodeError:
             log.exception(u'Error in detecting openlp.org 1.x database encoding.')
-            try:
-                decoded = unicode(raw, self.last_encoding)
-            except UnicodeDecodeError:
-                # possibly show an error form
-                #self.import_wizard.showError(u'There was a problem '
-                #    u'detecting the encoding of a string')
-                decoded = raw
+            decoded = raw
         return decoded
 
     def do_import(self):
@@ -112,13 +101,29 @@ class OpenLP1SongImport(SongImport):
         cursor.execute(u'SELECT songid, songtitle, lyrics || \'\' AS lyrics, '
             u'copyrightinfo FROM songs')
         songs = cursor.fetchall()
+        detector = UniversalDetector()
+        for author in authors:
+            detector.feed(author[1])
+            if detector.done:
+                break
+        for index in [1, 3, 2]:
+            for song in songs:
+                detector.feed(song[index])
+                if detector.done:
+                    break
+        if new_db:
+            for track in tracks:
+                detector.feed(track[1])
+                if detector.done:
+                    break
+        detector.close()
+        guess = detector.result
         for song in songs:
             self.set_defaults()
             if self.stop_import_flag:
                 success = False
                 break
             song_id = song[0]
-            guess = chardet.detect(song[1] + song[2] + song[3])
             title = self.decode_string(song[1], guess)
             lyrics = self.decode_string(song[2], guess).replace(u'\r', u'')
             copyright = self.decode_string(song[3], guess)
