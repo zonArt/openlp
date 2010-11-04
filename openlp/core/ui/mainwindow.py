@@ -270,7 +270,8 @@ class Ui_MainWindow(object):
         self.SettingsPluginListItem.setIcon(
             build_icon(u':/system/settings_plugin_list.png'))
         self.SettingsPluginListItem.setObjectName(u'SettingsPluginListItem')
-        MainWindow.actionList.add_action(self.SettingsPluginListItem, u'Settings')
+        MainWindow.actionList.add_action(self.SettingsPluginListItem,
+            u'Settings')
         #i18n Language Items
         self.AutoLanguageItem = QtGui.QAction(MainWindow)
         self.AutoLanguageItem.setObjectName(u'AutoLanguageItem')
@@ -296,7 +297,8 @@ class Ui_MainWindow(object):
         self.SettingsConfigureItem.setIcon(
             build_icon(u':/system/system_settings.png'))
         self.SettingsConfigureItem.setObjectName(u'SettingsConfigureItem')
-        MainWindow.actionList.add_action(self.SettingsShortcutsItem, u'Settings')
+        MainWindow.actionList.add_action(self.SettingsShortcutsItem,
+            u'Settings')
         self.HelpDocumentationItem = QtGui.QAction(MainWindow)
         self.HelpDocumentationItem.setIcon(
             build_icon(u':/system/system_help_contents.png'))

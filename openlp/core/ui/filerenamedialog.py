@@ -34,7 +34,8 @@ class Ui_FileRenameDialog(object):
         FileRenameDialog.resize(400, 87)
         self.buttonBox = QtGui.QDialogButtonBox(FileRenameDialog)
         self.buttonBox.setGeometry(QtCore.QRect(210, 50, 171, 25))
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
+            QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName("buttonBox")
         self.widget = QtGui.QWidget(FileRenameDialog)
         self.widget.setGeometry(QtCore.QRect(10, 10, 381, 35))

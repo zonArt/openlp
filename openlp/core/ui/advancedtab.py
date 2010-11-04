@@ -86,7 +86,8 @@ class AdvancedTab(SettingsTab):
         self.uiLayout.addWidget(self.expandServiceItemCheckBox)
         self.leftLayout.addWidget(self.uiGroupBox)
         self.expandServiceItemCheckBox = QtGui.QCheckBox(self.uiGroupBox)
-        self.expandServiceItemCheckBox.setObjectName(u'expandServiceItemCheckBox')
+        self.expandServiceItemCheckBox.setObjectName(
+            u'expandServiceItemCheckBox')
         self.uiLayout.addWidget(self.expandServiceItemCheckBox)
 #        self.sharedDirGroupBox = QtGui.QGroupBox(self.leftWidget)
 #        self.sharedDirGroupBox.setObjectName(u'sharedDirGroupBox')
