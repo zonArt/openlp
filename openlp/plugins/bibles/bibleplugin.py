@@ -52,7 +52,11 @@ class BiblePlugin(Plugin):
         self.exportBibleItem.setVisible(True)
 
     def finalise(self):
+        """
+        Tidy up on exit
+        """
         log.info(u'Plugin Finalise')
+        self.manager.finalise()
         Plugin.finalise(self)
         self.importBibleItem.setVisible(False)
         self.exportBibleItem.setVisible(False)
@@ -172,11 +176,3 @@ class BiblePlugin(Plugin):
             u'tooltip': translate('BiblesPlugin',
                 'Add the selected Bible to the service')
         }
-
-    def finalise(self):
-        """
-        Time to tidy up on exit
-        """
-        log.info(u'Bible Finalising')
-        self.manager.finalise()
-        Plugin.finalise(self)

@@ -79,7 +79,7 @@ class CategoryActionList(object):
         """
         return self.__next__()
 
-    def has_key(key):
+    def has_key(self, key):
         for weight, action in self.actions:
             if action.text() == key:
                 return True
@@ -144,7 +144,7 @@ class CategoryList(object):
                 return True
         return False
 
-    def append(self, name, actions=[]):
+    def append(self, name, actions=None):
         weight = 0
         if len(self.categories) > 0:
             weight = self.categories[-1].weight + 1
@@ -153,7 +153,7 @@ class CategoryList(object):
         else:
             self.add(name, weight)
 
-    def add(self, name, weight=0, actions=[]):
+    def add(self, name, weight=0, actions=None):
         category = ActionCategory(name, weight)
         if actions:
             for action in actions:

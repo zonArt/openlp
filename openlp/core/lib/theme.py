@@ -386,10 +386,11 @@ class ThemeXML(object):
                 for e in element.attrib.iteritems():
                     if master == u'font_' and e[0] == u'type':
                         master += e[1] + u'_'
-                    elif master == u'display_' and (element.tag == u'shadow' \
-                        or element.tag == u'outline' ):
+                    elif master == u'display_' and (element.tag == u'shadow'
+                        or element.tag == u'outline'):
                         self._create_attr(master, element.tag, element.text)
-                        self._create_attr(master, element.tag + u'_'+ e[0], e[1])
+                        self._create_attr(master, element.tag + u'_'+ e[0],
+                            e[1])
                     else:
                         field = master + e[0]
                         self._create_attr(master, e[0], e[1])
