@@ -185,7 +185,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
             self.color1PushButton.setStyleSheet(u'background-color: %s' %
                     self.theme.background_color)
             self.color1Label.setText(
-                translate('OpenLP.AmendThemeForm', 'Color:'))
+                translate('OpenLP.ThemeForm', 'Color:'))
             self.color2PushButton.setVisible(False)
             self.color2Label.setVisible(False)
             self.gradientLabel.setVisible(False)
@@ -202,13 +202,13 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
             self.color1PushButton.setStyleSheet(u'background-color: %s' %
                     self.theme.background_start_color)
             self.color1Label.setText(
-                translate('OpenLP.AmendThemeForm', 'First color:'))
+                translate('OpenLP.ThemeForm', 'First color:'))
             self.color2PushButton.setVisible(True)
             self.color2Label.setVisible(True)
             self.color2PushButton.setStyleSheet(u'background-color: %s' %
                     self.theme.background_end_color)
             self.color2Label.setText(
-                translate('OpenLP.AmendThemeForm', 'Second color:'))
+                translate('OpenLP.ThemeForm', 'Second color:'))
             self.gradientLabel.setVisible(True)
             self.gradientComboBox.setVisible(True)
             self.imageLabel.setVisible(False)
@@ -443,9 +443,9 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
     def onImageBrowseButtonClicked(self):
         images_filter = get_images_filter()
         images_filter = '%s;;%s (*.*) (*)' % (images_filter,
-            translate('OpenLP.AmendThemeForm', 'All Files'))
+            translate('OpenLP.ThemeForm', 'All Files'))
         filename = QtGui.QFileDialog.getOpenFileName(self,
-            translate('OpenLP.AmendThemeForm', 'Select Image'), u'',
+            translate('OpenLP.ThemeForm', 'Select Image'), u'',
             images_filter)
         if filename:
             self.theme.background_filename = filename
