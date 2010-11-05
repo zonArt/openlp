@@ -190,10 +190,11 @@ class ThemeXML(object):
                 self.background_filename = os.path.join(path, self.theme_name,
                     self.background_filename)
 
-    def new_document(self, name):
+    def _new_document(self, name):
         """
         Create a new theme XML document.
         """
+        self.theme_xml = Document()
         self.theme = self.theme_xml.createElement(u'theme')
         self.theme_xml.appendChild(self.theme)
         self.theme.setAttribute(u'version', u'2.0')
@@ -218,10 +219,9 @@ class ThemeXML(object):
             The color of the background.
         """
         background = self.theme_xml.createElement(u'background')
-        background.setAttribute(u'mode', u'opaque')
         background.setAttribute(u'type', u'solid')
         self.theme.appendChild(background)
-        self.child_element(background, u'color', bkcolor)
+        self.child_element(background, u'color', unicode(bkcolor))
 
     def add_background_gradient(self, startcolor, endcolor, direction):
         """
@@ -237,15 +237,14 @@ class ThemeXML(object):
             The direction of the gradient.
         """
         background = self.theme_xml.createElement(u'background')
-        background.setAttribute(u'mode', u'opaque')
         background.setAttribute(u'type', u'gradient')
         self.theme.appendChild(background)
         # Create startColor element
-        self.child_element(background, u'startColor', startcolor)
+        self.child_element(background, u'startColor', unicode(startcolor))
         # Create endColor element
-        self.child_element(background, u'endColor', endcolor)
+        self.child_element(background, u'endColor', unicode(endcolor))
         # Create direction element
-        self.child_element(background, u'direction', direction)
+        self.child_element(background, u'direction', unicode(direction))
 
     def add_background_image(self, filename):
         """
@@ -255,7 +254,6 @@ class ThemeXML(object):
             The file name of the image.
         """
         background = self.theme_xml.createElement(u'background')
-        background.setAttribute(u'mode', u'opaque')
         background.setAttribute(u'type', u'image')
         self.theme.appendChild(background)
         # Create Filename element
@@ -329,22 +327,22 @@ class ThemeXML(object):
         # Create Font color element
         self.child_element(background, u'color', color)
         # Create Proportion name element
-        self.child_element(background, u'size', proportion)
+        self.child_element(background, u'size', unicode(proportion))
         # Create weight name element
-        self.child_element(background, u'bold', bold)
+        self.child_element(background, u'bold', unicode(bold))
         # Create italics name element
-        self.child_element(background, u'italics', italics)
+        self.child_element(background, u'italics', unicode(italics))
         # Create indentation name element
         self.child_element(
             background, u'line_adjustment', unicode(line_adjustment))
         # Create Location element
         element = self.theme_xml.createElement(u'location')
-        element.setAttribute(u'override', override)
+        element.setAttribute(u'override', unicode(override))
         if override == u'True':
-            element.setAttribute(u'x', xpos)
-            element.setAttribute(u'y', ypos)
-            element.setAttribute(u'width', width)
-            element.setAttribute(u'height', height)
+            element.setAttribute(u'x', unicode(xpos))
+            element.setAttribute(u'y', unicode(ypos))
+            element.setAttribute(u'width', unicode(width))
+            element.setAttribute(u'height', unicode(height))
         background.appendChild(element)
         # Shadow
         element = self.theme_xml.createElement(u'shadow')
@@ -412,12 +410,14 @@ class ThemeXML(object):
         """
         Print out the XML string.
         """
+        self._build_xml_from_attrs()
         return self.theme_xml.toxml(u'utf-8').decode(u'utf-8')
 
     def extract_formatted_xml(self):
         """
         Pull out the XML string formatted for human consumption
         """
+        self._build_xml_from_attrs()
         return self.theme_xml.toprettyxml(indent=u'    ', newl=u'\n',
             encoding=u'utf-8')
 
@@ -550,13 +550,16 @@ class ThemeXML(object):
         s1 = re.sub(u'(.)([A-Z][a-z]+)', r'\1_\2', name)
         return re.sub(u'([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
 
-    def build_xml_from_attrs(self, ):
+    def _build_xml_from_attrs(self):
         """
         Build the XML from the varables in the object
         """
-        if self.background_type == BackgroundType.Solid:
+        self._new_document(self.theme_name)
+        if self.background_type == \
+            BackgroundType.to_string(BackgroundType.Solid):
             self.add_background_solid(self.background_color)
-        elif self.background_type ==  BackgroundType.Gradient:
+        elif self.background_type == \
+            BackgroundType.to_string(BackgroundType.Gradient):
             self.add_background_gradient(
                 self.background_start_color,
                 self.background_end_color,
@@ -567,9 +570,9 @@ class ThemeXML(object):
             self.add_background_image(filename)
         self.add_font(self.font_main_name,
             self.font_main_color,
-            self.font_main_proportion,
+            self.font_main_size,
             self.font_main_override, u'main',
-            self.font_main_weight,
+            self.font_main_bold,
             self.font_main_italics,
             self.font_main_line_adjustment,
             self.font_main_x,
@@ -584,9 +587,9 @@ class ThemeXML(object):
             self.font_main_shadow_size)
         self.add_font(self.font_footer_name,
             self.font_footer_color,
-            self.font_footer_proportion,
+            self.font_footer_size,
             self.font_footer_override, u'footer',
-            self.font_footer_weight,
+            self.font_footer_bold,
             self.font_footer_italics,
             0, # line adjustment
             self.font_footer_x,

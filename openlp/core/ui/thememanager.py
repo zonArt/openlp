@@ -299,7 +299,8 @@ class ThemeManager(QtGui.QWidget):
             # confirm deletion
             answer = QtGui.QMessageBox.question(self,
                 translate('OpenLP.ThemeManager', 'Delete Confirmation'),
-                translate('OpenLP.ThemeManager', 'Delete theme?'),
+                unicode(translate('OpenLP.ThemeManager', 'Delete %s theme?'))
+                % theme,
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
                 QtGui.QMessageBox.No), QtGui.QMessageBox.No)
             if answer == QtGui.QMessageBox.No:
@@ -628,13 +629,14 @@ class ThemeManager(QtGui.QWidget):
             unicode(theme.WrapStyle), unicode(0))
         return newtheme.extract_xml()
 
-    def saveTheme(self, name, theme_xml, theme_pretty_xml, image_from,
-        image_to):
+    def saveTheme(self, theme, image_from, image_to):
         """
         Called by thememaintenance Dialog to save the theme
         and to trigger the reload of the theme list
         """
-        log.debug(u'saveTheme %s %s', name, theme_xml)
+        name = theme.theme_name
+        theme_pretty_xml = theme.extract_formatted_xml()
+        log.debug(u'saveTheme %s %s', name, theme_pretty_xml)
         theme_dir = os.path.join(self.path, name)
         if not os.path.exists(theme_dir):
             os.mkdir(os.path.join(self.path, name))
@@ -683,7 +685,7 @@ class ThemeManager(QtGui.QWidget):
                         unicode(image_to).encode(encoding))
                 except IOError:
                     log.exception(u'Failed to save theme image')
-            self.generateAndSaveImage(self.path, name, theme_xml)
+            self.generateAndSaveImage(self.path, name, theme)
             self.loadThemes()
             # Check if we need to set a new service theme
             if editedServiceTheme:
@@ -713,9 +715,10 @@ class ThemeManager(QtGui.QWidget):
             # the theme or to cancel the theme dialog completely.
             return False
 
-    def generateAndSaveImage(self, dir, name, theme_xml):
-        log.debug(u'generateAndSaveImage %s %s %s', dir, name, theme_xml)
-        theme = self.createThemeFromXml(theme_xml, dir)
+    def generateAndSaveImage(self, dir, name, theme):
+        log.debug(u'generateAndSaveImage %s %s', dir, name)
+        #theme = self.createThemeFromXml(theme_xml, dir)
+        theme_xml = theme.extract_xml()
         frame = self.generateImage(theme)
         samplepathname = os.path.join(self.path, name + u'.png')
         if os.path.exists(samplepathname):

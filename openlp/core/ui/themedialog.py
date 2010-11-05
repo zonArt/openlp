@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'themedialog.ui'
 #
-# Created: Sat Oct 30 12:33:34 2010
+# Created: Thu Nov  4 18:12:37 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -403,28 +403,26 @@ class Ui_ThemeDialog(object):
         ThemeDialog.addPage(self.areaPositionPage)
         self.previewPage = QtGui.QWizardPage()
         self.previewPage.setObjectName("previewPage")
-        self.previewLayout = QtGui.QGridLayout(self.previewPage)
-        self.previewLayout.setMargin(20)
-        self.previewLayout.setSpacing(8)
-        self.previewLayout.setObjectName("previewLayout")
         self.themeNameLabel = QtGui.QLabel(self.previewPage)
+        self.themeNameLabel.setGeometry(QtCore.QRect(20, 10, 82, 16))
         self.themeNameLabel.setTextFormat(QtCore.Qt.PlainText)
         self.themeNameLabel.setObjectName("themeNameLabel")
-        self.previewLayout.addWidget(self.themeNameLabel, 0, 0, 1, 1)
         self.previewLabel = QtGui.QLabel(self.previewPage)
+        self.previewLabel.setGeometry(QtCore.QRect(250, 60, 48, 16))
         self.previewLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.previewLabel.setObjectName("previewLabel")
-        self.previewLayout.addWidget(self.previewLabel, 2, 0, 1, 2)
         self.themeNameEdit = QtGui.QLineEdit(self.previewPage)
+        self.themeNameEdit.setGeometry(QtCore.QRect(117, 4, 351, 23))
         self.themeNameEdit.setObjectName("themeNameEdit")
-        self.previewLayout.addWidget(self.themeNameEdit, 0, 1, 1, 1)
-        self.previewBoxLayout = QtGui.QHBoxLayout()
-        self.previewBoxLayout.setSpacing(0)
-        self.previewBoxLayout.setContentsMargins(0, 0, -1, -1)
-        self.previewBoxLayout.setObjectName("previewBoxLayout")
-        spacerItem2 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
-        self.previewBoxLayout.addItem(spacerItem2)
-        self.previewBoxLabel = QtGui.QLabel(self.previewPage)
+        self.groupBox = QtGui.QGroupBox(self.previewPage)
+        self.groupBox.setGeometry(QtCore.QRect(40, 80, 464, 214))
+        self.groupBox.setTitle("")
+        self.groupBox.setObjectName("groupBox")
+        self.horizontalLayout = QtGui.QHBoxLayout(self.groupBox)
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        spacerItem2 = QtGui.QSpacerItem(58, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem2)
+        self.previewBoxLabel = QtGui.QLabel(self.groupBox)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -437,14 +435,14 @@ class Ui_ThemeDialog(object):
         self.previewBoxLabel.setText("")
         self.previewBoxLabel.setScaledContents(True)
         self.previewBoxLabel.setObjectName("previewBoxLabel")
-        self.previewBoxLayout.addWidget(self.previewBoxLabel)
-        spacerItem3 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
-        self.previewBoxLayout.addItem(spacerItem3)
-        self.previewLayout.addLayout(self.previewBoxLayout, 3, 0, 1, 2)
+        self.horizontalLayout.addWidget(self.previewBoxLabel)
+        spacerItem3 = QtGui.QSpacerItem(78, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem3)
         ThemeDialog.addPage(self.previewPage)
         self.themeNameLabel.setBuddy(self.themeNameEdit)
 
         self.retranslateUi(ThemeDialog)
+        QtCore.QObject.connect(ThemeDialog, QtCore.SIGNAL("accepted()"), ThemeDialog.accept)
         QtCore.QMetaObject.connectSlotsByName(ThemeDialog)
 
     def retranslateUi(self, ThemeDialog):
@@ -530,4 +528,3 @@ class Ui_ThemeDialog(object):
         self.previewPage.setSubTitle(QtGui.QApplication.translate("ThemeDialog", "View the theme and save it replacing the current one or change the name to create a new theme", None, QtGui.QApplication.UnicodeUTF8))
         self.themeNameLabel.setText(QtGui.QApplication.translate("ThemeDialog", "Theme name:", None, QtGui.QApplication.UnicodeUTF8))
         self.previewLabel.setText(QtGui.QApplication.translate("ThemeDialog", "Preview", None, QtGui.QApplication.UnicodeUTF8))
-

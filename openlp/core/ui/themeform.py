@@ -25,11 +25,12 @@
 ###############################################################################
 
 import logging
+import os
 
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, theme, BackgroundType, BackgroundGradientType
-
+from openlp.core.utils import get_images_filter
 from themedialog import Ui_ThemeDialog
 
 log = logging.getLogger(__name__)
@@ -101,6 +102,90 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onFooterDefaultPositionCheckBox)
 
+    def setDefaults(self):
+        """
+        Set up display at start of theme edit.
+        """
+        self.restart()
+        self.setBackgroundTabValues()
+        self.setMainAreaTabValues()
+        self.setFooterAreaTabValues()
+        self.setAlignmentTabValues()
+        self.setPositionTabValues()
+        self.setPreviewTabValues()
+        # Set up field states
+        self.onOutlineCheckCheckBoxChanged(self.theme.font_main_outline)
+        self.onShadowCheckCheckBoxChanged(self.theme.font_main_shadow)
+
+    def registerFields(self):
+        """
+        Map field names to screen names,
+        """
+        self.backgroundPage.registerField(
+            u'background_type', self.backgroundTypeComboBox)
+        self.backgroundPage.registerField(
+            u'color_1', self.color1PushButton)
+        self.backgroundPage.registerField(
+            u'color_2', self.color2PushButton)
+        self.backgroundPage.registerField(
+            u'background_image', self.imageLineEdit)
+        self.backgroundPage.registerField(
+            u'gradient', self.gradientComboBox)
+        self.mainAreaPage.registerField(
+            u'mainFontComboBox', self.mainFontComboBox)
+        self.mainAreaPage.registerField(
+            u'mainColorPushButton', self.mainColorPushButton)
+        self.mainAreaPage.registerField(
+            u'mainSizeSpinBox', self.mainSizeSpinBox)
+        self.mainAreaPage.registerField(
+            u'lineSpacingSpinBox', self.lineSpacingSpinBox)
+        self.mainAreaPage.registerField(
+            u'outlineCheckBox', self.outlineCheckBox)
+        self.mainAreaPage.registerField(
+            u'outlineColorPushButton', self.outlineColorPushButton)
+        self.mainAreaPage.registerField(
+            u'outlineSizeSpinBox', self.outlineSizeSpinBox)
+        self.mainAreaPage.registerField(
+            u'shadowCheckBox', self.shadowCheckBox)
+        self.mainAreaPage.registerField(
+            u'boldCheckBox', self.boldCheckBox)
+        self.mainAreaPage.registerField(
+            u'italicsCheckBox', self.italicsCheckBox)
+        self.mainAreaPage.registerField(
+            u'shadowColorPushButton', self.shadowColorPushButton)
+        self.mainAreaPage.registerField(
+            u'shadowSizeSpinBox', self.shadowSizeSpinBox)
+        self.mainAreaPage.registerField(
+            u'footerSizeSpinBox', self.footerSizeSpinBox)
+        self.areaPositionPage.registerField(
+            u'mainDefaultPosition', self.mainDefaultPositionCheckBox)
+        self.areaPositionPage.registerField(
+            u'mainPositionX', self.mainXSpinBox)
+        self.areaPositionPage.registerField(
+            u'mainPositionY', self.mainYSpinBox)
+        self.areaPositionPage.registerField(
+            u'mainPositionWidth', self.mainWidthSpinBox)
+        self.areaPositionPage.registerField(
+            u'mainPositionHeight', self.mainHeightSpinBox)
+        self.areaPositionPage.registerField(
+            u'footerDefaultPosition', self.footerDefaultPositionCheckBox)
+        self.areaPositionPage.registerField(
+            u'footerPositionX', self.footerXSpinBox)
+        self.areaPositionPage.registerField(
+            u'footerPositionY', self.footerYSpinBox)
+        self.areaPositionPage.registerField(
+            u'footerPositionWidth', self.footerWidthSpinBox)
+        self.areaPositionPage.registerField(
+            u'footerPositionHeight', self.footerHeightSpinBox)
+        self.backgroundPage.registerField(
+            u'horizontal', self.horizontalComboBox)
+        self.backgroundPage.registerField(
+            u'vertical', self.verticalComboBox)
+        self.backgroundPage.registerField(
+            u'slideTransition', self.transitionsCheckBox)
+        self.backgroundPage.registerField(
+            u'name', self.themeNameEdit)
+
     def onOutlineCheckCheckBoxChanged(self, state):
         """
         Change state as Outline check box changed
@@ -149,7 +234,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
         return QtGui.QWizard.exec_(self)
 
     def initializePage(self, id):
-        print id
         if id == 0:
             self.setBackgroundTabValues()
         elif id == 1:
@@ -164,14 +248,13 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
             frame = self.thememanager.generateImage(self.theme)
             self.previewBoxLabel.setPixmap(QtGui.QPixmap.fromImage(frame))
 
-    def validateCurrentPage(self):
-        """
-        Handle Tab specific code when moving between Tabs.
-        """
-        print "CURRENT id", self.currentId()
-        # Preview Screen
-        self.updateTheme()
-        return True
+#    def validateCurrentPage(self):
+#        """
+#        Handle Tab specific code when moving between Tabs.
+#        """
+#        # Preview Screen
+#        self.updateTheme()
+#        return True
 
     def setBackgroundTabValues(self):
         """
@@ -326,90 +409,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
         if len(self.theme.theme_name) > 1:
             self.themeNameEdit.setEnabled(False)
 
-    def setDefaults(self):
-        """
-        Set up display at start of theme edit.
-        """
-        self.restart()
-        self.setBackgroundTabValues()
-        self.setMainAreaTabValues()
-        self.setFooterAreaTabValues()
-        self.setAlignmentTabValues()
-        self.setPositionTabValues()
-        self.setPreviewTabValues()
-        # Set up field states
-        self.onOutlineCheckCheckBoxChanged(self.theme.font_main_outline)
-        self.onShadowCheckCheckBoxChanged(self.theme.font_main_shadow)
-
-    def registerFields(self):
-        """
-        Map field names to screen names,
-        """
-        self.backgroundPage.registerField(
-            u'background_type', self.backgroundTypeComboBox)
-        self.backgroundPage.registerField(
-            u'color_1', self.color1PushButton)
-        self.backgroundPage.registerField(
-            u'color_2', self.color2PushButton)
-        self.backgroundPage.registerField(
-            u'background_image', self.imageLineEdit)
-        self.backgroundPage.registerField(
-            u'gradient', self.gradientComboBox)
-        self.mainAreaPage.registerField(
-            u'mainFontComboBox', self.mainFontComboBox)
-        self.mainAreaPage.registerField(
-            u'mainColorPushButton', self.mainColorPushButton)
-        self.mainAreaPage.registerField(
-            u'mainSizeSpinBox', self.mainSizeSpinBox)
-        self.mainAreaPage.registerField(
-            u'lineSpacingSpinBox', self.lineSpacingSpinBox)
-        self.mainAreaPage.registerField(
-            u'outlineCheckBox', self.outlineCheckBox)
-        self.mainAreaPage.registerField(
-            u'outlineColorPushButton', self.outlineColorPushButton)
-        self.mainAreaPage.registerField(
-            u'outlineSizeSpinBox', self.outlineSizeSpinBox)
-        self.mainAreaPage.registerField(
-            u'shadowCheckBox', self.shadowCheckBox)
-        self.mainAreaPage.registerField(
-            u'boldCheckBox', self.boldCheckBox)
-        self.mainAreaPage.registerField(
-            u'italicsCheckBox', self.italicsCheckBox)
-        self.mainAreaPage.registerField(
-            u'shadowColorPushButton', self.shadowColorPushButton)
-        self.mainAreaPage.registerField(
-            u'shadowSizeSpinBox', self.shadowSizeSpinBox)
-        self.mainAreaPage.registerField(
-            u'footerSizeSpinBox', self.footerSizeSpinBox)
-        self.areaPositionPage.registerField(
-            u'mainDefaultPosition', self.mainDefaultPositionCheckBox)
-        self.areaPositionPage.registerField(
-            u'mainPositionX', self.mainXSpinBox)
-        self.areaPositionPage.registerField(
-            u'mainPositionY', self.mainYSpinBox)
-        self.areaPositionPage.registerField(
-            u'mainPositionWidth', self.mainWidthSpinBox)
-        self.areaPositionPage.registerField(
-            u'mainPositionHeight', self.mainHeightSpinBox)
-        self.areaPositionPage.registerField(
-            u'footerDefaultPosition', self.footerDefaultPositionCheckBox)
-        self.areaPositionPage.registerField(
-            u'footerPositionX', self.footerXSpinBox)
-        self.areaPositionPage.registerField(
-            u'footerPositionY', self.footerYSpinBox)
-        self.areaPositionPage.registerField(
-            u'footerPositionWidth', self.footerWidthSpinBox)
-        self.areaPositionPage.registerField(
-            u'footerPositionHeight', self.footerHeightSpinBox)
-        self.backgroundPage.registerField(
-            u'horizontal', self.horizontalComboBox)
-        self.backgroundPage.registerField(
-            u'vertical', self.verticalComboBox)
-        self.backgroundPage.registerField(
-            u'slideTransition', self.transitionsCheckBox)
-        self.backgroundPage.registerField(
-            u'name', self.themeNameEdit)
-
     def onBackgroundComboBox(self, index):
         """
         Background style Combo box has changed.
@@ -448,7 +447,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
             translate('OpenLP.ThemeForm', 'Select Image'), u'',
             images_filter)
         if filename:
-            self.theme.background_filename = filename
+            self.theme.background_filename = unicode(filename)
         self.setBackgroundTabValues()
 
     def onMainFontComboBox(self):
@@ -486,10 +485,14 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
             self.field(u'mainSizeSpinBox').toInt()[0]
         self.theme.font_main_line_adjustment = \
             self.field(u'lineSpacingSpinBox').toInt()[0]
-        self.theme.font_main_outline = \
+        self.theme.font_main_outline_size = \
             self.field(u'outlineSizeSpinBox').toInt()[0]
         self.theme.font_main_shadow_size = \
             self.field(u'shadowSizeSpinBox').toInt()[0]
+        self.theme.font_main_bold = \
+            self.field(u'boldCheckBox').toInt()[0]
+        self.theme.font_main_italics = \
+            self.field(u'italicsCheckBox').toInt()[0]
         # footer page
         self.theme.font_footer_name = \
             unicode(self.footerFontComboBox.currentFont().family())
@@ -517,6 +520,26 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
         # preview page
         self.theme.theme_name = \
             unicode(self.field(u'name').toString())
+
+    def accept(self):
+        """
+        Lets save the them as Finish has been pressed
+        """
+        if not unicode(self.field(u'name').toString()):
+            return
+        self.updateTheme()
+        save_from = None
+        save_to = None
+        if self.theme.background_type == \
+            BackgroundType.to_string(BackgroundType.Image):
+            filename = \
+                os.path.split(unicode(self.theme.background_filename))[1]
+            save_to = os.path.join(self.path, self.theme.theme_name, filename)
+            save_from = self.theme.background_filename
+        #theme_xml = self.theme.extract_xml()
+        #pretty_theme = self.theme.extract_formatted_xml()
+        if self.thememanager.saveTheme(self.theme, save_from, save_to):
+            return QtGui.QDialog.accept(self)
 
     def _colorButton(self, field):
         """
