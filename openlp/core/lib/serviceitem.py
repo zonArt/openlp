@@ -212,7 +212,7 @@ class ServiceItem(object):
         self.service_item_type = ServiceItemType.Text
         title = title.split(u'\n')[0]
         self._raw_frames.append(
-            {u'title': title, u'raw_slide': raw_slide, u'verseTag':verse_tag})
+            {u'title': title, u'raw_slide': raw_slide, u'verseTag': verse_tag})
         self._new_item()
 
     def add_from_command(self, path, file_name, image):
@@ -230,7 +230,7 @@ class ServiceItem(object):
         """
         self.service_item_type = ServiceItemType.Command
         self._raw_frames.append(
-            {u'title': file_name, u'image':image, u'path': path})
+            {u'title': file_name, u'image': image, u'path': path})
         self._new_item()
 
     def get_service_repr(self):
@@ -241,17 +241,17 @@ class ServiceItem(object):
         service_header = {
             u'name': self.name.lower(),
             u'plugin': self.name,
-            u'theme':self.theme,
-            u'title':self.title,
-            u'icon':self.icon,
-            u'footer':self.raw_footer,
-            u'type':self.service_item_type,
-            u'audit':self.audit,
-            u'notes':self.notes,
-            u'from_plugin':self.from_plugin,
-            u'capabilities':self.capabilities,
-            u'search':self.search_string,
-            u'data':self.data_string
+            u'theme': self.theme,
+            u'title': self.title,
+            u'icon': self.icon,
+            u'footer': self.raw_footer,
+            u'type': self.service_item_type,
+            u'audit': self.audit,
+            u'notes': self.notes,
+            u'from_plugin': self.from_plugin,
+            u'capabilities': self.capabilities,
+            u'search': self.search_string,
+            u'data': self.data_string
         }
         service_data = []
         if self.service_item_type == ServiceItemType.Text:
@@ -263,7 +263,7 @@ class ServiceItem(object):
         elif self.service_item_type == ServiceItemType.Command:
             for slide in self._raw_frames:
                 service_data.append(
-                    {u'title':slide[u'title'], u'image':slide[u'image']})
+                    {u'title': slide[u'title'], u'image': slide[u'image']})
         return {u'header': service_header, u'data': service_data}
 
     def set_from_service(self, serviceitem, path=None):
