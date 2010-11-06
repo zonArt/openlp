@@ -160,7 +160,7 @@ class VerticalType(object):
 boolean_list = [u'italics', u'override', u'outline', u'shadow',
     u'slide_transition']
 
-integer_list = [u'proportion', u'line_adjustment', u'x', u'height', u'y',
+integer_list = [u'size', u'line_adjustment', u'x', u'height', u'y',
     u'width', u'shadow_size', u'outline_size', u'horizontal_align',
     u'vertical_align', u'wrap_style']
 
@@ -259,7 +259,7 @@ class ThemeXML(object):
         # Create Filename element
         self.child_element(background, u'filename', filename)
 
-    def add_font(self, name, color, proportion, override, fonttype=u'main',
+    def add_font(self, name, color, size, override, fonttype=u'main',
         bold=u'False', italics=u'False', line_adjustment=0,
         xpos=0, ypos=0, width=0, height=0 , outline=u'False', outline_color=u'#ffffff',
         outline_pixel=2,  shadow=u'False', shadow_color=u'#ffffff', shadow_pixel=5):
@@ -272,7 +272,7 @@ class ThemeXML(object):
         ``color``
             The colour of the font.
 
-        ``proportion``
+        ``size``
             The size of the font.
 
         ``override``
@@ -327,7 +327,7 @@ class ThemeXML(object):
         # Create Font color element
         self.child_element(background, u'color', color)
         # Create Proportion name element
-        self.child_element(background, u'size', unicode(proportion))
+        self.child_element(background, u'size', unicode(size))
         # Create weight name element
         self.child_element(background, u'bold', unicode(bold))
         # Create italics name element

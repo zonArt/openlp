@@ -536,8 +536,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
                 os.path.split(unicode(self.theme.background_filename))[1]
             save_to = os.path.join(self.path, self.theme.theme_name, filename)
             save_from = self.theme.background_filename
-        #theme_xml = self.theme.extract_xml()
-        #pretty_theme = self.theme.extract_formatted_xml()
         if self.thememanager.saveTheme(self.theme, save_from, save_to):
             return QtGui.QDialog.accept(self)
 

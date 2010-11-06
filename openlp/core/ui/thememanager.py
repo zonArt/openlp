@@ -710,6 +710,7 @@ class ThemeManager(QtGui.QWidget):
                         self.global_theme)
                 self.editingDefault = False
                 self.pushThemes()
+            return True
         else:
             # Don't close the dialog - allow the user to change the name of
             # the theme or to cancel the theme dialog completely.
