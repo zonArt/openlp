@@ -27,6 +27,9 @@
 The :mod:`olp1import` module provides the functionality for importing
 openlp.org 1.x song databases into the current installation database.
 """
+
+from PyQt4 import QtGui, QtCore
+
 import logging
 from chardet.universaldetector import UniversalDetector
 import sqlite
@@ -56,20 +59,21 @@ class OpenLP1SongImport(SongImport):
         SongImport.__init__(self, manager)
         self.import_source = kwargs[u'filename']
 
-    def decode_string(self, raw, guess):
+    def decode_string(self, raw, encoding):
         """
         Use chardet to detect the encoding of the raw string, and convert it
         to unicode.
 
         ``raw``
             The raw bytestring to decode.
-        ``guess``
-            What chardet guessed the encoding to be.
+        ``encoding``
+            The bytestring character encoding.
         """
         try:
-            decoded = unicode(raw, guess[u'encoding'])
+            decoded = unicode(raw, encoding)
         except UnicodeDecodeError:
-            log.exception(u'Error in detecting openlp.org 1.x database encoding.')
+            log.exception(u'The openlp.org 1.x database is not %s encoded.' % \
+                encoding)
             decoded = raw
         return decoded
 
@@ -101,32 +105,19 @@ class OpenLP1SongImport(SongImport):
         cursor.execute(u'SELECT songid, songtitle, lyrics || \'\' AS lyrics, '
             u'copyrightinfo FROM songs')
         songs = cursor.fetchall()
-        detector = UniversalDetector()
-        for author in authors:
-            detector.feed(author[1])
-            if detector.done:
-                break
-        for index in [1, 3, 2]:
-            for song in songs:
-                detector.feed(song[index])
-                if detector.done:
-                    break
-        if new_db:
-            for track in tracks:
-                detector.feed(track[1])
-                if detector.done:
-                    break
-        detector.close()
-        guess = detector.result
+        encoding = self.get_encoding()
+        if not encoding:
+            self.stop_import_flag = True
+            return False
         for song in songs:
             self.set_defaults()
             if self.stop_import_flag:
                 success = False
                 break
             song_id = song[0]
-            title = self.decode_string(song[1], guess)
-            lyrics = self.decode_string(song[2], guess).replace(u'\r', u'')
-            copyright = self.decode_string(song[3], guess)
+            title = self.decode_string(song[1], encoding)
+            lyrics = self.decode_string(song[2], encoding).replace(u'\r', u'')
+            copyright = self.decode_string(song[3], encoding)
             self.import_wizard.incrementProgressBar(
                 unicode(translate('SongsPlugin.ImportWizardForm',
                     'Importing "%s"...')) % title)
@@ -145,7 +136,7 @@ class OpenLP1SongImport(SongImport):
                     break
                 for author in authors:
                     if author[0] == author_id[0]:
-                        self.parse_author(self.decode_string(author[1], guess))
+                        self.parse_author(self.decode_string(author[1], encoding))
                         break
             if self.stop_import_flag:
                 success = False
@@ -160,7 +151,7 @@ class OpenLP1SongImport(SongImport):
                         break
                     for track in tracks:
                         if track[0] == track_id[0]:
-                            self.add_media_file(self.decode_string(track[1], guess))
+                            self.add_media_file(self.decode_string(track[1], encoding))
                             break
             if self.stop_import_flag:
                 success = False
@@ -168,3 +159,106 @@ class OpenLP1SongImport(SongImport):
             self.finish()
         return success
 
+    def get_encoding(self):
+        """
+        Detect character encoding of an openlp.org 1.x song database.
+        """
+        # Connect to the database
+        connection = sqlite.connect(self.import_source)
+        cursor = connection.cursor()
+
+        detector = UniversalDetector()
+        # detect charset by authors
+        cursor.execute(u'SELECT authorname FROM authors')
+        authors = cursor.fetchall()
+        for author in authors:
+            detector.feed(author[0])
+            if detector.done:
+                detector.close()
+                return detector.result[u'encoding']
+        # detect charset by songs
+        cursor.execute(u'SELECT songtitle, copyrightinfo, '
+            u'lyrics || \'\' AS lyrics FROM songs')
+        songs = cursor.fetchall()
+        for index in [0, 1, 2]:
+            for song in songs:
+                detector.feed(song[index])
+                if detector.done:
+                    detector.close()
+                    return detector.result[u'encoding']
+        # detect charset by songs
+        cursor.execute(u'SELECT name FROM sqlite_master '
+            u'WHERE type = \'table\' AND name = \'tracks\'')
+        if len(cursor.fetchall()) > 0:
+            cursor.execute(u'SELECT fulltrackname FROM tracks')
+            tracks = cursor.fetchall()
+            for track in tracks:
+                detector.feed(track[0])
+                if detector.done:
+                    detector.close()
+                    return detector.result[u'encoding']
+        detector.close()
+        guess = detector.result[u'encoding']
+
+        # map chardet result to compatible windows standard code page
+        codepage_mapping = {'IBM866': u'cp866', 'TIS-620': u'cp874',
+            'SHIFT_JIS': u'cp932', 'GB2312': u'cp936', 'HZ-GB-2312': u'cp936',
+            'EUC-KR': u'cp949', 'Big5': u'cp950', 'ISO-8859-2': u'cp1250',
+            'windows-1250': u'cp1250', 'windows-1251': u'cp1251',
+            'windows-1252': u'cp1252', 'ISO-8859-7': u'cp1253',
+            'windows-1253': u'cp1253', 'ISO-8859-8': u'cp1255',
+            'windows-1255': u'cp1255'}
+        if guess in codepage_mapping:
+            guess = codepage_mapping[guess]
+        else:
+            guess = u'cp1252'
+
+        encodings = {u'cp874': translate('SongsPlugin.OpenLP1SongImport',
+                'CP-874 (Thai)'),
+            u'cp932': translate('SongsPlugin.OpenLP1SongImport',
+                'CP-932 (Japanese)'),
+            u'cp936': translate('SongsPlugin.OpenLP1SongImport',
+                'CP-936 (Simplified Chinese)'),
+            u'cp949': translate('SongsPlugin.OpenLP1SongImport',
+                'CP-949 (Korean)'),
+            u'cp950': translate('SongsPlugin.OpenLP1SongImport',
+                'CP-950 (Traditional Chinese)'),
+            u'cp1250': translate('SongsPlugin.OpenLP1SongImport',
+                'CP-1250 (Central European)'),
+            u'cp1251': translate('SongsPlugin.OpenLP1SongImport',
+                'CP-1251 (Cyrillic)'),
+            u'cp1252': translate('SongsPlugin.OpenLP1SongImport',
+                'CP-1252 (Western European)'),
+            u'cp1253': translate('SongsPlugin.OpenLP1SongImport',
+                'CP-1253 (Greek)'),
+            u'cp1254': translate('SongsPlugin.OpenLP1SongImport',
+                'CP-1254 (Turkish)'),
+            u'cp1255': translate('SongsPlugin.OpenLP1SongImport',
+                'CP-1255 (Hebrew)'),
+            u'cp1256': translate('SongsPlugin.OpenLP1SongImport',
+                'CP-1256 (Arabic)'),
+            u'cp1257': translate('SongsPlugin.OpenLP1SongImport',
+                'CP-1257 (Baltic)'),
+            u'cp1258': translate('SongsPlugin.OpenLP1SongImport',
+                'CP-1258 (Vietnam)')}
+        encoding_list = encodings.keys()
+        encoding_index = 0
+        for encoding in encoding_list:
+            if encoding == guess:
+                break
+            else:
+                encoding_index = encoding_index + 1
+        ok_applied = False
+        chosen_encoding = QtGui.QInputDialog.getItem(None,
+            translate('SongsPlugin.OpenLP1SongImport',
+                'Database Character Encoding'),
+            translate('SongsPlugin.OpenLP1SongImport',
+                'The codepage setting is responsible\n'
+                'for the correct character representation.\n'
+                'Usually you are fine with the preselected choise.'),
+            encodings.values(), encoding_index, False)
+        if not chosen_encoding[1]:
+            return None
+        for encoding in encodings.items():
+             if encoding[1] == unicode(chosen_encoding[0]):
+                 return encoding[0]
