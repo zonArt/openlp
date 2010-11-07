@@ -117,6 +117,7 @@ class Manager(object):
         settings = QtCore.QSettings()
         settings.beginGroup(plugin_name)
         self.db_url = u''
+        self.is_dirty = False
         db_type = unicode(
             settings.value(u'db type', QtCore.QVariant(u'sqlite')).toString())
         if db_type == u'sqlite':
@@ -150,6 +151,7 @@ class Manager(object):
             self.session.add(object_instance)
             if commit:
                 self.session.commit()
+            self.is_dirty = True
             return True
         except InvalidRequestError:
             self.session.rollback()
@@ -220,6 +222,7 @@ class Manager(object):
             try:
                 self.session.delete(object_instance)
                 self.session.commit()
+                self.is_dirty = True
                 return True
             except InvalidRequestError:
                 self.session.rollback()
@@ -241,8 +244,17 @@ class Manager(object):
                 query = query.filter(filter_clause)
             query.delete(synchronize_session=False)
             self.session.commit()
+            self.is_dirty = True
             return True
         except InvalidRequestError:
             self.session.rollback()
             log.exception(u'Failed to delete %s records', object_class.__name__)
             return False
+
+    def finalise(self):
+        """
+        VACUUM the database on exit.
+        """
+        if self.is_dirty:
+            engine = create_engine(self.db_url)
+            engine.execute("vacuum")

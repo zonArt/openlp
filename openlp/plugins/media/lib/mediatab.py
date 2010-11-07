@@ -80,5 +80,3 @@ class MediaTab(SettingsTab):
             QtCore.QSettings().setValue(self.settingsSection + u'/use phonon',
                 QtCore.QVariant(self.usePhonon))
             Receiver.send_message(u'config_screen_changed')
-
-

@@ -306,7 +306,7 @@ class ServiceManager(QtGui.QWidget):
         self.editAction.setVisible(False)
         self.maintainAction.setVisible(False)
         self.notesAction.setVisible(False)
-        if serviceItem[u'service_item'].is_capable(ItemCapabilities.AllowsEdit) \
+        if serviceItem[u'service_item'].is_capable(ItemCapabilities.AllowsEdit)\
             and hasattr(serviceItem[u'service_item'], u'editId'):
             self.editAction.setVisible(True)
         if serviceItem[u'service_item']\
@@ -346,7 +346,7 @@ class ServiceManager(QtGui.QWidget):
             self.serviceItems[item][u'service_item'])
         if self.serviceItemEditForm.exec_():
             self.addServiceItem(self.serviceItemEditForm.getServiceItem(),
-                replace=True, expand=self.serviceItems[item][u'expand'])
+                replace=True, expand=self.serviceItems[item][u'expanded'])
 
     def nextItem(self):
         """
@@ -441,7 +441,8 @@ class ServiceManager(QtGui.QWidget):
             if setSelected:
                 setSelected = False
                 serviceIterator.value().setSelected(True)
-            elif serviceIterator.value() and serviceIterator.value().isSelected():
+            elif serviceIterator.value() and \
+                serviceIterator.value().isSelected():
                 serviceIterator.value().setSelected(False)
                 setSelected = True
             serviceIterator += 1
@@ -650,9 +651,12 @@ class ServiceManager(QtGui.QWidget):
                         .get_service_repr()})
                     if item[u'service_item'].uses_file():
                         for frame in item[u'service_item'].get_frames():
-                            path_from = unicode(os.path.join(
-                                frame[u'path'],
-                                frame[u'title']))
+                            if item[u'service_item'].is_image():
+                                path_from = frame[u'path']
+                            else:
+                                path_from = unicode(os.path.join(
+                                    frame[u'path'],
+                                    frame[u'title']))
                             # On write a file once
                             if not path_from in write_list:
                                 write_list.append(path_from)
@@ -758,7 +762,8 @@ class ServiceManager(QtGui.QWidget):
                         serviceitem.set_from_service(item, self.servicePath)
                         self.validateItem(serviceitem)
                         self.addServiceItem(serviceitem)
-                        if serviceitem.is_capable(ItemCapabilities.OnLoadUpdate):
+                        if serviceitem.is_capable(
+                            ItemCapabilities.OnLoadUpdate):
                             Receiver.send_message(u'%s_service_load' %
                                 serviceitem.name.lower(), serviceitem)
                     try:

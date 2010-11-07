@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, Receiver, \
     ItemCapabilities, translate, check_item_selected
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
-    ImportWizardForm
+    SongImportForm
 from openlp.plugins.songs.lib import SongXMLParser
 from openlp.plugins.songs.lib.db import Author, Song
 
@@ -254,7 +254,7 @@ class SongMediaItem(MediaManagerItem):
 
     def onImportClick(self):
         if not hasattr(self, u'import_wizard'):
-            self.import_wizard = ImportWizardForm(self, self.parent)
+            self.import_wizard = SongImportForm(self, self.parent)
         self.import_wizard.exec_()
         Receiver.send_message(u'songs_load_list')
 
@@ -389,7 +389,8 @@ class SongMediaItem(MediaManagerItem):
         service_item.audit = [
             song.title, author_audit, song.copyright, unicode(song.ccli_number)
         ]
-        service_item.data_string = {u'title':song.search_title,  u'authors':author_list}
+        service_item.data_string = {u'title':song.search_title,
+            u'authors':author_list}
         return True
 
     def serviceLoad(self, item):
@@ -409,7 +410,7 @@ class SongMediaItem(MediaManagerItem):
                     count = 0
                     for author in song.authors:
                         if author.display_name in author_list:
-                           count += 1
+                            count += 1
                     if count == len(author_list):
                         editId = song.id
                         uuid = item._uuid

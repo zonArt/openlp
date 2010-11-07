@@ -31,8 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, Receiver, BaseListWithDnD, \
     ItemCapabilities, translate
-from openlp.plugins.bibles.forms import ImportWizardForm
-from openlp.plugins.bibles.lib.db import BibleDB
+from openlp.plugins.bibles.forms import BibleImportForm
 
 log = logging.getLogger(__name__)
 
@@ -362,7 +361,7 @@ class BibleMediaItem(MediaManagerItem):
 
     def onImportClick(self):
         if not hasattr(self, u'import_wizard'):
-            self.import_wizard = ImportWizardForm(self, self.parent.manager,
+            self.import_wizard = BibleImportForm(self, self.parent.manager,
                 self.parent)
         self.import_wizard.exec_()
         self.reloadBibles()

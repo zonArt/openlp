@@ -28,7 +28,6 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, translate
 from editcustomslidedialog import Ui_CustomSlideEditDialog
 
 log = logging.getLogger(__name__)

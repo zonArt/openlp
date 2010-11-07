@@ -310,3 +310,11 @@ class BibleManager(object):
             if bible == name:
                 return True
         return False
+
+    def finalise(self):
+        """
+        Loop through the databases to VACUUM them.
+        """
+        for bible in self.db_cache:
+            self.db_cache[bible].finalise()
+

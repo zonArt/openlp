@@ -87,12 +87,12 @@ class ThemeLevel(object):
     Service = 2
     Song = 3
 
-boolean_list = [u'italics', u'override', u'outline', u'shadow', \
-u'slide_transition']
+boolean_list = [u'italics', u'override', u'outline', u'shadow',
+    u'slide_transition']
 
-integer_list =[u'proportion', u'line_adjustment', u'x', u'height', u'y', \
-u'width', u'shadow_size', u'outline_size', u'horizontal_align', \
-u'vertical_align', u'wrap_style' ]
+integer_list = [u'proportion', u'line_adjustment', u'x', u'height', u'y',
+    u'width', u'shadow_size', u'outline_size', u'horizontal_align',
+    u'vertical_align', u'wrap_style']
 
 class ThemeXML(object):
     """
@@ -386,10 +386,11 @@ class ThemeXML(object):
                 for e in element.attrib.iteritems():
                     if master == u'font_' and e[0] == u'type':
                         master += e[1] + u'_'
-                    elif master == u'display_' and (element.tag == u'shadow' \
-                        or element.tag == u'outline' ):
+                    elif master == u'display_' and (element.tag == u'shadow'
+                        or element.tag == u'outline'):
                         self._create_attr(master, element.tag, element.text)
-                        self._create_attr(master, element.tag + u'_'+ e[0], e[1])
+                        self._create_attr(master, element.tag + u'_'+ e[0],
+                            e[1])
                     else:
                         field = master + e[0]
                         self._create_attr(master, e[0], e[1])
@@ -408,6 +409,9 @@ class ThemeXML(object):
         elif field in integer_list:
             setattr(self, master + field, int(value))
         else:
+            # None means an empty string so lets have one.
+            if value == u'None':
+                value = u''
             setattr(self, master + field, unicode(value))
 
     def __str__(self):
