@@ -591,12 +591,12 @@ p, li { white-space: pre-wrap; }
       </item>
       <item>
        <property name="text">
-        <string>Center</string>
+        <string>Right</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>Right</string>
+        <string>Center</string>
        </property>
       </item>
      </widget>

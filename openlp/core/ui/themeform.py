@@ -48,20 +48,12 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
 
         ``parent``
             The QWidget-derived parent of the wizard.
-
-        ``manager``
-            The Bible manager.
-
-        ``bibleplugin``
-            The Bible plugin.
         """
-        # Do not translate as internal
         QtGui.QWizard.__init__(self, parent)
         self.thememanager = parent
         self.setupUi(self)
         self.registerFields()
-        self.finishButton = self.button(QtGui.QWizard.FinishButton)
-        self.cancelButton = self.button(QtGui.QWizard.CancelButton)
+        self.accepted = False
         QtCore.QObject.connect(self.backgroundTypeComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
             self.onBackgroundComboBox)
@@ -101,12 +93,25 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
         QtCore.QObject.connect(self.footerDefaultPositionCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onFooterDefaultPositionCheckBox)
+        QtCore.QObject.connect(self,
+            QtCore.SIGNAL(u'currentIdChanged(int)'),
+            self.pageChanged)
+
+    def pageChanged(self, pageId):
+        """
+        Detects Page changes and updates.
+        """
+        if pageId == 6:
+            self.updateTheme()
+            frame = self.thememanager.generateImage(self.theme)
+            self.previewBoxLabel.setPixmap(QtGui.QPixmap.fromImage(frame))
 
     def setDefaults(self):
         """
         Set up display at start of theme edit.
         """
         self.restart()
+        self.accepted = False
         self.setBackgroundTabValues()
         self.setMainAreaTabValues()
         self.setFooterAreaTabValues()
@@ -234,27 +239,20 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
         return QtGui.QWizard.exec_(self)
 
     def initializePage(self, id):
-        if id == 0:
+        """
+        Set up the pages for Initial run through dialog
+        """
+        log.debug(u'initializePage %s' % id)
+        if id == 1:
             self.setBackgroundTabValues()
-        elif id == 1:
-            self.setMainAreaTabValues()
         elif id == 2:
-            self.setFooterAreaTabValues()
+            self.setMainAreaTabValues()
         elif id == 3:
-            self.setAlignmentTabValues()
+            self.setFooterAreaTabValues()
         elif id == 4:
-            self.setPositionTabValues()
+            self.setAlignmentTabValues()
         elif id == 5:
-            frame = self.thememanager.generateImage(self.theme)
-            self.previewBoxLabel.setPixmap(QtGui.QPixmap.fromImage(frame))
-
-#    def validateCurrentPage(self):
-#        """
-#        Handle Tab specific code when moving between Tabs.
-#        """
-#        # Preview Screen
-#        self.updateTheme()
-#        return True
+            self.setPositionTabValues()
 
     def setBackgroundTabValues(self):
         """
@@ -395,6 +393,9 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
             QtCore.QVariant(self.theme.font_footer_width))
 
     def setAlignmentTabValues(self):
+        """
+        Define the Tab Alignments Page
+        """
         self.setField(u'horizontal', \
             QtCore.QVariant(self.theme.display_horizontal_align))
         self.setField(u'vertical', \
@@ -425,6 +426,9 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
         self.setBackgroundTabValues()
 
     def onColor1PushButtonClicked(self):
+        """
+        Background / Gradient 1 Color button pushed.
+        """
         if self.theme.background_type == \
             BackgroundType.to_string(BackgroundType.Solid):
             self.theme.background_color = \
@@ -435,11 +439,17 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
         self.setBackgroundTabValues()
 
     def onColor2PushButtonClicked(self):
+        """
+        Gradient 2 Color button pushed.
+        """
         self.theme.background_end_color = \
             self._colorButton(self.theme.background_end_color)
         self.setBackgroundTabValues()
 
     def onImageBrowseButtonClicked(self):
+        """
+        Background Image button pushed.
+        """
         images_filter = get_images_filter()
         images_filter = '%s;;%s (*.*) (*)' % (images_filter,
             translate('OpenLP.ThemeForm', 'All Files'))
@@ -451,6 +461,9 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
         self.setBackgroundTabValues()
 
     def onMainFontComboBox(self):
+        """
+        Main Font Combo box changed
+        """
         self.theme.font_main_name = self.mainFontComboBox.currentFont().family()
 
     def onMainColourPushButtonClicked(self):
@@ -478,6 +491,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
         Update the theme object from the UI for fields not already updated
         when the are changed.
         """
+        log.debug(u'updateTheme')
         # main page
         self.theme.font_main_name = \
             unicode(self.mainFontComboBox.currentFont().family())
@@ -517,17 +531,21 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
             self.verticalComboBox.currentIndex()
         self.theme.display_slide_transition = \
             self.field(u'slideTransition').toBool()
-        # preview page
-        self.theme.theme_name = \
-            unicode(self.field(u'name').toString())
 
     def accept(self):
         """
         Lets save the them as Finish has been pressed
         """
+        # Some reason getting double submission.
+        # Hack to stop it for now.
+        if self.accepted:
+            return
+        self.accepted = True
+        # Save the theme name
+        self.theme.theme_name = \
+            unicode(self.field(u'name').toString())
         if not unicode(self.field(u'name').toString()):
             return
-        self.updateTheme()
         save_from = None
         save_to = None
         if self.theme.background_type == \

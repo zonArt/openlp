@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'themedialog.ui'
 #
-# Created: Thu Nov  4 18:12:37 2010
+# Created: Mon Nov  8 06:09:19 2010
 #      by: PyQt4 UI code generator 4.7.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -495,8 +495,8 @@ class Ui_ThemeDialog(object):
         self.alignmentPage.setSubTitle(QtGui.QApplication.translate("ThemeDialog", "Allows additional display formatting information to be defined", None, QtGui.QApplication.UnicodeUTF8))
         self.horizontalLabel.setText(QtGui.QApplication.translate("ThemeDialog", "Horizontal Align:", None, QtGui.QApplication.UnicodeUTF8))
         self.horizontalComboBox.setItemText(0, QtGui.QApplication.translate("ThemeDialog", "Left", None, QtGui.QApplication.UnicodeUTF8))
-        self.horizontalComboBox.setItemText(1, QtGui.QApplication.translate("ThemeDialog", "Center", None, QtGui.QApplication.UnicodeUTF8))
-        self.horizontalComboBox.setItemText(2, QtGui.QApplication.translate("ThemeDialog", "Right", None, QtGui.QApplication.UnicodeUTF8))
+        self.horizontalComboBox.setItemText(1, QtGui.QApplication.translate("ThemeDialog", "Right", None, QtGui.QApplication.UnicodeUTF8))
+        self.horizontalComboBox.setItemText(2, QtGui.QApplication.translate("ThemeDialog", "Center", None, QtGui.QApplication.UnicodeUTF8))
         self.verticalLabel.setText(QtGui.QApplication.translate("ThemeDialog", "Vertcal Align:", None, QtGui.QApplication.UnicodeUTF8))
         self.verticalComboBox.setItemText(0, QtGui.QApplication.translate("ThemeDialog", "Top", None, QtGui.QApplication.UnicodeUTF8))
         self.verticalComboBox.setItemText(1, QtGui.QApplication.translate("ThemeDialog", "Middle", None, QtGui.QApplication.UnicodeUTF8))
