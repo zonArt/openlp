@@ -83,6 +83,8 @@
     <file>wizard_importbible.bmp</file>
   </qresource>
   <qresource prefix="services">
+    <file>service_collapse_all.png</file>
+    <file>service_expand_all.png</file>
     <file>service_notes.png</file>
     <file>service_item_notes.png</file>
     <file>service_bottom.png</file>

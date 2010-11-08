@@ -541,4 +541,3 @@ class MediaManagerItem(QtGui.QWidget):
         individual service items need to be processed by the plugins
         """
         pass
-

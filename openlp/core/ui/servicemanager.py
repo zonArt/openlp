@@ -204,13 +204,13 @@ class ServiceManager(QtGui.QWidget):
         self.orderToolbar.addSeparator()
         self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', '&Expand all'),
-            u':/services/service_top.png',
+            u':/services/service_expand_all.png',
             translate('OpenLP.ServiceManager',
             'Expand all the service items.'),
             self.onExpandAll)
         self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', '&Collapse all'),
-            u':/services/service_bottom.png',
+            u':/services/service_collapse_all.png',
             translate('OpenLP.ServiceManager',
             'Collapse all the service items.'),
             self.onCollapseAll)
