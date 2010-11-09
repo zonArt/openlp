@@ -267,7 +267,7 @@ class BibleManager(object):
         ``text``
             The text to search for (unicode).
         """
-        log.debug(u'BibleManager.verse_search("%s", "%s")', bible,  text)
+        log.debug(u'BibleManager.verse_search("%s", "%s")', bible, text)
         if text:
             return self.db_cache[bible].verse_search(text)
         else:
