@@ -168,7 +168,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
             license_version = unicode(self.field(u'license_version').toString())
             license_copyright = \
                 unicode(self.field(u'license_copyright').toString())
-            if license_version == u'':
+            if not license_version:
                 QtGui.QMessageBox.critical(self,
                     translate('BiblesPlugin.ImportWizardForm',
                     'Empty Version Name'),
@@ -176,7 +176,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
                     'You need to specify a version name for your Bible.'))
                 self.VersionNameEdit.setFocus()
                 return False
-            elif license_copyright == u'':
+            elif not license_copyright:
                 QtGui.QMessageBox.critical(self,
                     translate('BiblesPlugin.ImportWizardForm',
                     'Empty Copyright'),
@@ -317,7 +317,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         """
         Load the list of Crosswalk and BibleGateway bibles.
         """
-        #Load and store Crosswalk Bibles
+        # Load and store Crosswalk Bibles.
         filepath = AppLocation.get_directory(AppLocation.PluginsDir)
         filepath = os.path.join(filepath, u'bibles', u'resources')
         books_file = None
@@ -341,7 +341,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         finally:
             if books_file:
                 books_file.close()
-        #Load and store BibleGateway Bibles
+        # Load and store BibleGateway Bibles.
         books_file = None
         try:
             self.web_bible_list[WebDownload.BibleGateway] = {}
@@ -379,12 +379,17 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         Receiver.send_message(u'openlp_process_events')
 
     def preImport(self):
+        bible_type = self.field(u'source_format').toInt()[0]
         self.finishButton.setVisible(False)
         self.ImportProgressBar.setMinimum(0)
         self.ImportProgressBar.setMaximum(1188)
         self.ImportProgressBar.setValue(0)
-        self.ImportProgressLabel.setText(
-            translate('BiblesPlugin.ImportWizardForm', 'Starting import...'))
+        if bible_type == BibleFormat.WebDownload:
+            self.ImportProgressLabel.setText(translate(
+                'BiblesPlugin.ImportWizardForm', 'Starting Registering bible...'))
+        else:
+            self.ImportProgressLabel.setText(translate(
+                'BiblesPlugin.ImportWizardForm', 'Starting import...'))
         Receiver.send_message(u'openlp_process_events')
 
     def performImport(self):
@@ -438,8 +443,13 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
             self.manager.save_meta_data(license_version, license_version,
                 license_copyright, license_permissions)
             self.manager.reload_bibles()
-            self.ImportProgressLabel.setText(
-                translate('BiblesPlugin.ImportWizardForm', 'Finished import.'))
+            if bible_type == BibleFormat.WebDownload:
+                self.ImportProgressLabel.setText(
+                    translate('BiblesPlugin.ImportWizardForm', 'Registered '
+                    'bible. Verses will be downloaded as required.'))
+            else:
+                self.ImportProgressLabel.setText(translate(
+                    'BiblesPlugin.ImportWizardForm', 'Finished import.'))
         else:
             self.ImportProgressLabel.setText(
                 translate('BiblesPlugin.ImportWizardForm',
