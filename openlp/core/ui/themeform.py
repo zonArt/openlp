@@ -118,9 +118,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
         self.setAlignmentTabValues()
         self.setPositionTabValues()
         self.setPreviewTabValues()
-        # Set up field states
-        self.onOutlineCheckCheckBoxChanged(self.theme.font_main_outline)
-        self.onShadowCheckCheckBoxChanged(self.theme.font_main_shadow)
 
     def registerFields(self):
         """
@@ -195,15 +192,23 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
         """
         Change state as Outline check box changed
         """
-        self.outlineColorPushButton.setEnabled(state)
-        self.outlineSizeSpinBox.setEnabled(state)
+        if state == QtCore.Qt.Checked:
+            self.theme.font_main_outline = True
+        else:
+            self.theme.font_main_outline = False
+        self.outlineColorPushButton.setEnabled(self.theme.font_main_outline)
+        self.outlineSizeSpinBox.setEnabled(self.theme.font_main_outline)
 
     def onShadowCheckCheckBoxChanged(self, state):
         """
         Change state as Shadow check box changed
         """
-        self.shadowColorPushButton.setEnabled(state)
-        self.shadowSizeSpinBox.setEnabled(state)
+        if state == QtCore.Qt.Checked:
+            self.theme.font_main_shadow = True
+        else:
+            self.theme.font_main_shadow = False
+        self.shadowColorPushButton.setEnabled(self.theme.font_main_shadow)
+        self.shadowSizeSpinBox.setEnabled(self.theme.font_main_shadow)
 
     def onMainDefaultPositionCheckBox(self, value):
         """
@@ -351,6 +356,19 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
             QtCore.QVariant(self.theme.font_main_bold))
         self.setField(u'italicsCheckBox', \
             QtCore.QVariant(self.theme.font_main_italics))
+        # Set up field states
+        if self.theme.font_main_outline:
+            self.setField(u'outlineCheckBox', QtCore.QVariant(False))
+        else:
+            self.setField(u'outlineCheckBox', QtCore.QVariant(True))
+        self.outlineColorPushButton.setEnabled(self.theme.font_main_outline)
+        self.outlineSizeSpinBox.setEnabled(self.theme.font_main_outline)
+        if self.theme.font_main_shadow:
+            self.setField(u'shadowCheckBox', QtCore.QVariant(False))
+        else:
+            self.setField(u'shadowCheckBox', QtCore.QVariant(True))
+        self.shadowColorPushButton.setEnabled(self.theme.font_main_shadow)
+        self.shadowSizeSpinBox.setEnabled(self.theme.font_main_shadow)
 
     def setFooterAreaTabValues(self):
         """
@@ -409,6 +427,8 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
         self.setField(u'name', QtCore.QVariant(self.theme.theme_name))
         if len(self.theme.theme_name) > 1:
             self.themeNameEdit.setEnabled(False)
+        else:
+            self.themeNameEdit.setEnabled(True)
 
     def onBackgroundComboBox(self, index):
         """
