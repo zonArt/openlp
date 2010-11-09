@@ -47,6 +47,7 @@ class BibleListView(BaseListWithDnD):
         self.parent().onListViewResize(event.size().width(),
             event.size().width())
 
+
 class BibleMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for Bibles.
