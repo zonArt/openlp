@@ -190,13 +190,13 @@ class BiblesTab(SettingsTab):
 
     def onNewChaptersCheckBoxChanged(self, check_state):
         self.show_new_chapters = False
-        # we have a set value convert to True/False
+        # We have a set value convert to True/False.
         if check_state == QtCore.Qt.Checked:
             self.show_new_chapters = True
 
     def onBibleDualCheckBox(self, check_state):
         self.dual_bibles = False
-        # we have a set value convert to True/False
+        # We have a set value convert to True/False.
         if check_state == QtCore.Qt.Checked:
             self.dual_bibles = True
 
@@ -234,16 +234,22 @@ class BiblesTab(SettingsTab):
 
     def updateThemeList(self, theme_list):
         """
-        Called from ThemeManager when the Themes have changed
+        Called from ThemeManager when the Themes have changed.
+
+        ``theme_list``
+            The list of available themes::
+
+                [u'Song Theme', u'Bible Theme']
         """
         self.BibleThemeComboBox.clear()
         self.BibleThemeComboBox.addItem(u'')
+        theme_list.sort()
         for theme in theme_list:
             self.BibleThemeComboBox.addItem(theme)
         index = self.BibleThemeComboBox.findText(
             unicode(self.bible_theme), QtCore.Qt.MatchExactly)
         if index == -1:
-            # Not Found
+            # Not Found.
             index = 0
             self.bible_theme = u''
         self.BibleThemeComboBox.setCurrentIndex(index)

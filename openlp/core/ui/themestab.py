@@ -183,13 +183,19 @@ class ThemesTab(SettingsTab):
 
     def updateThemeList(self, theme_list):
         """
-        Called from ThemeManager when the Themes have changed
+        Called from ThemeManager when the Themes have changed.
+
+        ``theme_list``
+            The list of available themes::
+
+                [u'Song Theme', u'Bible Theme']
         """
-        #reload as may have been triggered by the ThemeManager
+        # Reload as may have been triggered by the ThemeManager.
         self.global_theme = unicode(QtCore.QSettings().value(
             self.settingsSection + u'/global theme',
             QtCore.QVariant(u'')).toString())
         self.DefaultComboBox.clear()
+        theme_list.sort()
         for theme in theme_list:
             self.DefaultComboBox.addItem(theme)
         id = self.DefaultComboBox.findText(
