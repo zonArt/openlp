@@ -84,7 +84,7 @@ class BibleMediaItem(MediaManagerItem):
             self.SearchTabWidget.sizePolicy().hasHeightForWidth())
         self.SearchTabWidget.setSizePolicy(sizePolicy)
         self.SearchTabWidget.setObjectName(u'SearchTabWidget')
-        # Add the Quick Search tab
+        # Add the Quick Search tab.
         self.QuickTab = QtGui.QWidget()
         self.QuickTab.setObjectName(u'QuickTab')
         self.QuickLayout = QtGui.QGridLayout(self.QuickTab)
@@ -145,7 +145,7 @@ class BibleMediaItem(MediaManagerItem):
         QuickSpacerItem = QtGui.QSpacerItem(20, 35, QtGui.QSizePolicy.Minimum,
             QtGui.QSizePolicy.Expanding)
         self.QuickLayout.addItem(QuickSpacerItem, 6, 2, 1, 1)
-        # Add the Advanced Search tab
+        # Add the Advanced Search tab.
         self.AdvancedTab = QtGui.QWidget()
         self.AdvancedTab.setObjectName(u'AdvancedTab')
         self.AdvancedLayout = QtGui.QGridLayout(self.AdvancedTab)

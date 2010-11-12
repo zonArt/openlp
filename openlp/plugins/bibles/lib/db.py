@@ -44,11 +44,13 @@ class BibleMeta(BaseModel):
     """
     pass
 
+
 class Testament(BaseModel):
     """
     Bible Testaments
     """
     pass
+
 
 class Book(BaseModel):
     """
@@ -56,11 +58,13 @@ class Book(BaseModel):
     """
     pass
 
+
 class Verse(BaseModel):
     """
     Topic model
     """
     pass
+
 
 def init_schema(url):
     """
