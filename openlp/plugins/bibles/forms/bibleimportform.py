@@ -133,7 +133,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
                     self.OSISLocationEdit.setFocus()
                     return False
             elif self.field(u'source_format').toInt()[0] == BibleFormat.CSV:
-                if self.field(u'csv_booksfile').toString() == u'':
+                if not self.field(u'csv_booksfile').toString():
                     QtGui.QMessageBox.critical(self,
                         translate('BiblesPlugin.ImportWizardForm',
                         'Invalid Books File'),
@@ -142,7 +142,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
                         'the Bible to use in the import.'))
                     self.BooksLocationEdit.setFocus()
                     return False
-                elif self.field(u'csv_versefile').toString() == u'':
+                elif not self.field(u'csv_versefile').toString():
                     QtGui.QMessageBox.critical(self,
                         translate('BiblesPlugin.ImportWizardForm',
                         'Invalid Verse File'),
@@ -153,7 +153,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
                     return False
             elif self.field(u'source_format').toInt()[0] == \
                 BibleFormat.OpenSong:
-                if self.field(u'opensong_file').toString() == u'':
+                if not self.field(u'opensong_file').toString():
                     QtGui.QMessageBox.critical(self,
                         translate('BiblesPlugin.ImportWizardForm',
                         'Invalid OpenSong Bible'),
@@ -449,7 +449,8 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
             if bible_type == BibleFormat.WebDownload:
                 self.ImportProgressLabel.setText(
                     translate('BiblesPlugin.ImportWizardForm', 'Registered '
-                    'bible. Verses will be downloaded as required.'))
+                    'bible. Please note, that verses will be downloaded on\n'
+                    'demand and thus an internet connection is required.'))
             else:
                 self.ImportProgressLabel.setText(translate(
                     'BiblesPlugin.ImportWizardForm', 'Finished import.'))

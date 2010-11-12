@@ -282,8 +282,8 @@ class BibleManager(object):
             QtGui.QMessageBox.information(self.parent.mediaItem,
                 translate('BiblesPlugin.BibleManager',
                 'Web Bible cannot be used'),
-                translate('BiblesPlugin.BibleManager', 'You cannot use text '
-                'search with web bible.'))
+                translate('BiblesPlugin.BibleManager', 'Text Search is not '
+                'available with Web Bibles.'))
             return None
         if text:
             return self.db_cache[bible].verse_search(text)
