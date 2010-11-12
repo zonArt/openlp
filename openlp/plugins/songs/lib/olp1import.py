@@ -67,7 +67,7 @@ class OpenLP1SongImport(SongImport):
         encoding = self.get_encoding()
         if not encoding:
             return False
-        connection = sqlite.connect(self.import_source, mode=0555,
+        connection = sqlite.connect(self.import_source, mode=0444,
             encoding=(encoding, 'replace'))
         cursor = connection.cursor()
         # Determine if we're using a new or an old DB
@@ -151,7 +151,7 @@ class OpenLP1SongImport(SongImport):
         Detect character encoding of an openlp.org 1.x song database.
         """
         # Connect to the database
-        connection = sqlite.connect(self.import_source)
+        connection = sqlite.connect(self.import_source, mode=0444)
         cursor = connection.cursor()
 
         detector = UniversalDetector()
@@ -200,42 +200,43 @@ class OpenLP1SongImport(SongImport):
         else:
             guess = u'cp1252'
 
-        encodings = {u'cp874': translate('SongsPlugin.OpenLP1SongImport',
-                'CP-874 (Thai)'),
-            u'cp932': translate('SongsPlugin.OpenLP1SongImport',
-                'CP-932 (Japanese)'),
-            u'cp936': translate('SongsPlugin.OpenLP1SongImport',
-                'CP-936 (Simplified Chinese)'),
-            u'cp949': translate('SongsPlugin.OpenLP1SongImport',
-                'CP-949 (Korean)'),
-            u'cp950': translate('SongsPlugin.OpenLP1SongImport',
-                'CP-950 (Traditional Chinese)'),
-            u'cp1250': translate('SongsPlugin.OpenLP1SongImport',
-                'CP-1250 (Central European)'),
-            u'cp1251': translate('SongsPlugin.OpenLP1SongImport',
-                'CP-1251 (Cyrillic)'),
-            u'cp1252': translate('SongsPlugin.OpenLP1SongImport',
-                'CP-1252 (Western European)'),
-            u'cp1253': translate('SongsPlugin.OpenLP1SongImport',
-                'CP-1253 (Greek)'),
-            u'cp1254': translate('SongsPlugin.OpenLP1SongImport',
-                'CP-1254 (Turkish)'),
-            u'cp1255': translate('SongsPlugin.OpenLP1SongImport',
-                'CP-1255 (Hebrew)'),
-            u'cp1256': translate('SongsPlugin.OpenLP1SongImport',
-                'CP-1256 (Arabic)'),
-            u'cp1257': translate('SongsPlugin.OpenLP1SongImport',
-                'CP-1257 (Baltic)'),
-            u'cp1258': translate('SongsPlugin.OpenLP1SongImport',
-                'CP-1258 (Vietnam)')}
-        encoding_list = encodings.keys()
+        # Show dialog for encoding selection
+        encodings = [[u'cp874', u'cp932', u'cp936', u'cp949', u'cp950',
+                u'cp1250', u'cp1251', u'cp1252', u'cp1253', u'cp1254',
+                u'cp1255', u'cp1256', u'cp1257', u'cp1258'],
+            [translate('SongsPlugin.OpenLP1SongImport',
+                    'CP-874 (Thai)'),
+                translate('SongsPlugin.OpenLP1SongImport',
+                    'CP-932 (Japanese)'),
+                translate('SongsPlugin.OpenLP1SongImport',
+                    'CP-936 (Simplified Chinese)'),
+                translate('SongsPlugin.OpenLP1SongImport',
+                    'CP-949 (Korean)'),
+                translate('SongsPlugin.OpenLP1SongImport',
+                    'CP-950 (Traditional Chinese)'),
+                translate('SongsPlugin.OpenLP1SongImport',
+                    'CP-1250 (Central European)'),
+                translate('SongsPlugin.OpenLP1SongImport',
+                    'CP-1251 (Cyrillic)'),
+                translate('SongsPlugin.OpenLP1SongImport',
+                    'CP-1252 (Western European)'),
+                translate('SongsPlugin.OpenLP1SongImport',
+                    'CP-1253 (Greek)'),
+                translate('SongsPlugin.OpenLP1SongImport',
+                    'CP-1254 (Turkish)'),
+                translate('SongsPlugin.OpenLP1SongImport',
+                    'CP-1255 (Hebrew)'),
+                translate('SongsPlugin.OpenLP1SongImport',
+                    'CP-1256 (Arabic)'),
+                translate('SongsPlugin.OpenLP1SongImport',
+                    'CP-1257 (Baltic)'),
+                translate('SongsPlugin.OpenLP1SongImport',
+                    'CP-1258 (Vietnam)')]]
         encoding_index = 0
-        for encoding in encoding_list:
-            if encoding == guess:
+        for index in range(len(encodings[0])):
+            if guess == encodings[0][index]:
+                encoding_index = index
                 break
-            else:
-                encoding_index = encoding_index + 1
-        ok_applied = False
         chosen_encoding = QtGui.QInputDialog.getItem(None,
             translate('SongsPlugin.OpenLP1SongImport',
                 'Database Character Encoding'),
@@ -243,9 +244,9 @@ class OpenLP1SongImport(SongImport):
                 'The codepage setting is responsible\n'
                 'for the correct character representation.\n'
                 'Usually you are fine with the preselected choise.'),
-            encodings.values(), encoding_index, False)
+            encodings[1], encoding_index, False)
         if not chosen_encoding[1]:
             return None
-        for encoding in encodings.items():
-             if encoding[1] == unicode(chosen_encoding[0]):
-                 return encoding[0]
+        for index in range(len(encodings[1])):
+            if unicode(chosen_encoding[0]) == encodings[1][index]:
+                return encodings[0][index]
