@@ -364,7 +364,7 @@ class BibleMediaItem(MediaManagerItem):
         if not hasattr(self, u'import_wizard'):
             self.import_wizard = BibleImportForm(self, self.parent.manager,
                 self.parent)
-        # Do not reload if the import was canceled.
+        # If the import was not canceled then reload.
         if self.import_wizard.exec_() == 1:
             self.reloadBibles()
 
@@ -486,7 +486,7 @@ class BibleMediaItem(MediaManagerItem):
 
     def adjustComboBox(self, range_from, range_to, combo, restore=False):
         """
-        Adjusts the give como boxe to the given values.
+        Adjusts the given como box to the given values.
 
         ``range_from``
             The first number of the range (int).
@@ -512,7 +512,7 @@ class BibleMediaItem(MediaManagerItem):
 
     def onAdvancedSearchButton(self):
         """
-        Does an advanced search and saves the search reasults
+        Does an advanced search and saves the search results.
         """
         log.debug(u'Advanced Search Button pressed')
         self.AdvancedSearchButton.setEnabled(False)
@@ -843,8 +843,8 @@ class BibleMediaItem(MediaManagerItem):
             old_verse != self.parent.manager.get_verse_count(
             old_bible, old_book, old_chapter)):
             # We are in the following chapter, but the last verse was not the
-            # last verse of the previous chapter or the current verse is not the
-            # first one of a chapter.
+            # last verse of the chapter or the current verse is not the
+            # first one of the chapter.
             return True
         else:
             return False
