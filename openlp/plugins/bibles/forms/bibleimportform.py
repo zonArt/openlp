@@ -207,9 +207,11 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
             The index of the combo box.
         """
         self.BibleComboBox.clear()
-        for bible in self.web_bible_list[index].keys():
-            self.BibleComboBox.addItem(unicode(
-                translate('BiblesPlugin.ImportWizardForm', bible)))
+        bibles = [unicode(translate('BiblesPlugin.ImportWizardForm', bible)) for
+            bible in self.web_bible_list[index].keys()]
+        bibles.sort()
+        for bible in bibles:
+            self.BibleComboBox.addItem(bible)
 
     def onOsisFileButtonClicked(self):
         """
@@ -386,7 +388,8 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         self.ImportProgressBar.setValue(0)
         if bible_type == BibleFormat.WebDownload:
             self.ImportProgressLabel.setText(translate(
-                'BiblesPlugin.ImportWizardForm', 'Starting Registering bible...'))
+                'BiblesPlugin.ImportWizardForm',
+                'Starting Registering bible...'))
         else:
             self.ImportProgressLabel.setText(translate(
                 'BiblesPlugin.ImportWizardForm', 'Starting import...'))
@@ -400,26 +403,26 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
             unicode(self.field(u'license_permissions').toString())
         importer = None
         if bible_type == BibleFormat.OSIS:
-            # Import an OSIS bible
+            # Import an OSIS bible.
             importer = self.manager.import_bible(BibleFormat.OSIS,
                 name=license_version,
                 filename=unicode(self.field(u'osis_location').toString())
             )
         elif bible_type == BibleFormat.CSV:
-            # Import a CSV bible
+            # Import a CSV bible.
             importer = self.manager.import_bible(BibleFormat.CSV,
                 name=license_version,
                 booksfile=unicode(self.field(u'csv_booksfile').toString()),
                 versefile=unicode(self.field(u'csv_versefile').toString())
             )
         elif bible_type == BibleFormat.OpenSong:
-            # Import an OpenSong bible
+            # Import an OpenSong bible.
             importer = self.manager.import_bible(BibleFormat.OpenSong,
                 name=license_version,
                 filename=unicode(self.field(u'opensong_file').toString())
             )
         elif bible_type == BibleFormat.WebDownload:
-            # Import a bible from the web
+            # Import a bible from the web.
             self.ImportProgressBar.setMaximum(1)
             download_location = self.field(u'web_location').toInt()[0]
             bible_version = unicode(self.BibleComboBox.currentText())
