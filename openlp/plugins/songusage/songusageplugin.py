@@ -29,7 +29,8 @@ from datetime import datetime
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, StringContent, Receiver, build_icon, translate
+from openlp.core.lib import Plugin, StringContent, Receiver, build_icon, \
+    translate
 from openlp.core.lib.db import Manager
 from openlp.plugins.songusage.forms import SongUsageDetailForm, \
     SongUsageDeleteForm
@@ -123,7 +124,12 @@ class SongUsagePlugin(Plugin):
         self.SongUsageMenu.menuAction().setVisible(True)
 
     def finalise(self):
+        """
+        Tidy up on exit
+        """
         log.info(u'Plugin Finalise')
+        self.manager.finalise()
+        Plugin.finalise(self)
         self.SongUsageMenu.menuAction().setVisible(False)
         #stop any events being processed
         self.SongUsageActive = False
@@ -176,11 +182,3 @@ class SongUsagePlugin(Plugin):
         self.textStrings[StringContent.VisibleName] = {
             u'title': translate('SongUsagePlugin', 'SongUsage')
         }
-
-    def finalise(self):
-        """
-        Time to tidy up on exit
-        """
-        log.info(u'SongUsage Finalising')
-        self.manager.finalise()
-        Plugin.finalise(self)

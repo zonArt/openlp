@@ -389,7 +389,8 @@ class SongMediaItem(MediaManagerItem):
         service_item.audit = [
             song.title, author_audit, song.copyright, unicode(song.ccli_number)
         ]
-        service_item.data_string = {u'title':song.search_title,  u'authors':author_list}
+        service_item.data_string = {u'title':song.search_title,
+            u'authors':author_list}
         return True
 
     def serviceLoad(self, item):
@@ -409,7 +410,7 @@ class SongMediaItem(MediaManagerItem):
                     count = 0
                     for author in song.authors:
                         if author.display_name in author_list:
-                           count += 1
+                            count += 1
                     if count == len(author_list):
                         editId = song.id
                         uuid = item._uuid

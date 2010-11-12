@@ -29,11 +29,10 @@ format it for the output display.
 """
 import logging
 
-from PyQt4 import QtGui, QtCore, QtWebKit
+from PyQt4 import QtWebKit
 
-from openlp.core.lib import resize_image, expand_tags, \
-    build_lyrics_format_css, build_lyrics_outline_css, image_to_byte
-
+from openlp.core.lib import expand_tags, build_lyrics_format_css, \
+    build_lyrics_outline_css
 
 log = logging.getLogger(__name__)
 
@@ -116,18 +115,19 @@ class Renderer(object):
         html_text = u''
         styled_text = u''
         for line in text:
-            styled_line = expand_tags(line)
-            if styled_text:
-                styled_text += line_end + styled_line
+            styled_line = expand_tags(line) + line_end
+            styled_text += styled_line
             html = self.page_shell + styled_text + u'</div></body></html>'
             self.web.setHtml(html)
             # Text too long so go to next page
             if self.web_frame.contentsSize().height() > self.page_height:
+                if html_text.endswith(u'<br>'):
+                    html_text = html_text[:len(html_text)-4]
                 formatted.append(html_text)
                 html_text = u''
                 styled_text = styled_line
             html_text += line + line_end
-        if line_break:
+        if html_text.endswith(u'<br>'):
             html_text = html_text[:len(html_text)-4]
         formatted.append(html_text)
         log.debug(u'format_slide - End')

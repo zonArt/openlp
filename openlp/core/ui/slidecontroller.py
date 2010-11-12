@@ -26,7 +26,6 @@
 
 import logging
 import os
-import time
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
@@ -794,9 +793,11 @@ class SlideController(QtGui.QWidget):
         row = self.PreviewListWidget.currentRow()
         self.selectedRow = 0
         if row > -1 and row < self.PreviewListWidget.rowCount():
-            if self.serviceItem.is_command() and self.isLive:
-                Receiver.send_message(u'%s_slide' % self.serviceItem.name.lower(),
-                    [self.serviceItem, self.isLive, row])
+            if self.serviceItem.is_command():
+                if self.isLive:
+                    Receiver.send_message(
+                        u'%s_slide' % self.serviceItem.name.lower(),
+                        [self.serviceItem, self.isLive, row])
                 self.updatePreview()
             else:
                 toDisplay = self.serviceItem.get_rendered_frame(row)
