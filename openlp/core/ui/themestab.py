@@ -188,7 +188,7 @@ class ThemesTab(SettingsTab):
         ``theme_list``
             The list of available themes::
 
-                [u'Song Theme', u'Bible Theme']
+                [u'Bible Theme', u'Song Theme']
         """
         # Reload as may have been triggered by the ThemeManager.
         self.global_theme = unicode(QtCore.QSettings().value(

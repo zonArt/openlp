@@ -244,7 +244,7 @@ class BibleDB(QtCore.QObject, Manager):
             and the value is the verse text.
         """
         log.debug(u'create_chapter %s,%s', book_id, chapter)
-        # text list has book and chapter as first two elements of the array
+        # Text list has book and chapter as first two elements of the array.
         for verse_number, verse_text in textlist.iteritems():
             verse = Verse.populate(
                 book_id = book_id,

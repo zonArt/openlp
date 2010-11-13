@@ -532,6 +532,7 @@ class BibleMediaItem(MediaManagerItem):
         if self.ClearAdvancedSearchComboBox.currentIndex() == 0:
             self.listView.clear()
         if self.listView.count() != 0:
+            # Check if the first item is a dual bible item or not.
             bitem = self.listView.item(0)
             item_dual_bible = self._decodeQtObject(bitem, 'dual_bible')
             if item_dual_bible and dual_bible or not item_dual_bible and \
@@ -611,8 +612,6 @@ class BibleMediaItem(MediaManagerItem):
                 u'Permissions')
             if not dual_permissions:
                 dual_permissions = u''
-        # We count the number of rows which are maybe already present.
-        start_count = self.listView.count()
         for count, verse in enumerate(self.search_results):
             if dual_bible:
                 vdict = {
@@ -655,9 +654,7 @@ class BibleMediaItem(MediaManagerItem):
             bible_verse = QtGui.QListWidgetItem(bible_text)
             bible_verse.setData(QtCore.Qt.UserRole, QtCore.QVariant(vdict))
             self.listView.addItem(bible_verse)
-            row = self.listView.setCurrentRow(count + start_count)
-            if row:
-                row.setSelected(True)
+        self.listView.selectAll()
         self.search_results = {}
         self.dual_search_results = {}
 

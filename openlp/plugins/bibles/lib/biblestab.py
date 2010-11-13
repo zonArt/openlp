@@ -239,7 +239,7 @@ class BiblesTab(SettingsTab):
         ``theme_list``
             The list of available themes::
 
-                [u'Song Theme', u'Bible Theme']
+                [u'Bible Theme', u'Song Theme']
         """
         self.BibleThemeComboBox.clear()
         self.BibleThemeComboBox.addItem(u'')
