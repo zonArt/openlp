@@ -28,7 +28,7 @@ The :mod:`olp1import` module provides the functionality for importing
 openlp.org 1.x song databases into the current installation database.
 """
 
-from PyQt4 import QtGui, QtCore
+from PyQt4 import QtGui
 
 import logging
 from chardet.universaldetector import UniversalDetector
@@ -77,7 +77,7 @@ class OpenLP1SongImport(SongImport):
         # Count the number of records we need to import, for the progress bar
         cursor.execute(u'-- types int')
         cursor.execute(u'SELECT COUNT(songid) FROM songs')
-        count = int(cursor.fetchone()[0])
+        count = cursor.fetchone()[0]
         success = True
         self.import_wizard.importProgressBar.setMaximum(count)
         # "cache" our list of authors
@@ -248,5 +248,5 @@ class OpenLP1SongImport(SongImport):
         if not chosen_encoding[1]:
             return None
         for index in range(len(encodings[1])):
-            if unicode(chosen_encoding[0]) == encodings[1][index]:
+            if chosen_encoding[0] == encodings[1][index]:
                 return encodings[0][index]
