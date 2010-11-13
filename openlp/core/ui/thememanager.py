@@ -422,6 +422,7 @@ class ThemeManager(QtGui.QWidget):
         self.themelist = []
         self.themeListWidget.clear()
         dirList = os.listdir(self.path)
+        dirList.sort()
         for name in dirList:
             if name.endswith(u'.png'):
                 # check to see file is in theme root directory

@@ -214,6 +214,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
         """
         Change state as Main Area Position check box changed
         """
+        print "onMain"
         if value == QtCore.Qt.Checked:
             self.theme.font_main_override = False
         else:

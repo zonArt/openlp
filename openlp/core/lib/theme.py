@@ -338,11 +338,10 @@ class ThemeXML(object):
         # Create Location element
         element = self.theme_xml.createElement(u'location')
         element.setAttribute(u'override', unicode(override))
-        if override == u'True':
-            element.setAttribute(u'x', unicode(xpos))
-            element.setAttribute(u'y', unicode(ypos))
-            element.setAttribute(u'width', unicode(width))
-            element.setAttribute(u'height', unicode(height))
+        element.setAttribute(u'x', unicode(xpos))
+        element.setAttribute(u'y', unicode(ypos))
+        element.setAttribute(u'width', unicode(width))
+        element.setAttribute(u'height', unicode(height))
         background.appendChild(element)
         # Shadow
         element = self.theme_xml.createElement(u'shadow')
