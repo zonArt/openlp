@@ -201,40 +201,37 @@ class OpenLP1SongImport(SongImport):
             guess = u'cp1252'
 
         # Show dialog for encoding selection
-        encodings = [[u'cp874', u'cp932', u'cp936', u'cp949', u'cp950',
-                u'cp1250', u'cp1251', u'cp1252', u'cp1253', u'cp1254',
-                u'cp1255', u'cp1256', u'cp1257', u'cp1258'],
-            [translate('SongsPlugin.OpenLP1SongImport',
-                    'CP-874 (Thai)'),
-                translate('SongsPlugin.OpenLP1SongImport',
-                    'CP-932 (Japanese)'),
-                translate('SongsPlugin.OpenLP1SongImport',
-                    'CP-936 (Simplified Chinese)'),
-                translate('SongsPlugin.OpenLP1SongImport',
-                    'CP-949 (Korean)'),
-                translate('SongsPlugin.OpenLP1SongImport',
-                    'CP-950 (Traditional Chinese)'),
-                translate('SongsPlugin.OpenLP1SongImport',
-                    'CP-1250 (Central European)'),
-                translate('SongsPlugin.OpenLP1SongImport',
-                    'CP-1251 (Cyrillic)'),
-                translate('SongsPlugin.OpenLP1SongImport',
-                    'CP-1252 (Western European)'),
-                translate('SongsPlugin.OpenLP1SongImport',
-                    'CP-1253 (Greek)'),
-                translate('SongsPlugin.OpenLP1SongImport',
-                    'CP-1254 (Turkish)'),
-                translate('SongsPlugin.OpenLP1SongImport',
-                    'CP-1255 (Hebrew)'),
-                translate('SongsPlugin.OpenLP1SongImport',
-                    'CP-1256 (Arabic)'),
-                translate('SongsPlugin.OpenLP1SongImport',
-                    'CP-1257 (Baltic)'),
-                translate('SongsPlugin.OpenLP1SongImport',
-                    'CP-1258 (Vietnam)')]]
+        encodings = [(u'cp874', translate('SongsPlugin.OpenLP1SongImport',
+                'CP-874 (Thai)')),
+            (u'cp932', translate('SongsPlugin.OpenLP1SongImport',
+                'CP-932 (Japanese)')),
+            (u'cp936', translate('SongsPlugin.OpenLP1SongImport',
+                'CP-936 (Simplified Chinese)')),
+            (u'cp949', translate('SongsPlugin.OpenLP1SongImport',
+                'CP-949 (Korean)')),
+            (u'cp950', translate('SongsPlugin.OpenLP1SongImport',
+                'CP-950 (Traditional Chinese)')),
+            (u'cp1250', translate('SongsPlugin.OpenLP1SongImport',
+                'CP-1250 (Central European)')),
+            (u'cp1251', translate('SongsPlugin.OpenLP1SongImport',
+                'CP-1251 (Cyrillic)')),
+            (u'cp1252', translate('SongsPlugin.OpenLP1SongImport',
+                'CP-1252 (Western European)')),
+            (u'cp1253', translate('SongsPlugin.OpenLP1SongImport',
+                'CP-1253 (Greek)')),
+            (u'cp1254', translate('SongsPlugin.OpenLP1SongImport',
+                'CP-1254 (Turkish)')),
+            (u'cp1255', translate('SongsPlugin.OpenLP1SongImport',
+                'CP-1255 (Hebrew)')),
+            (u'cp1256', translate('SongsPlugin.OpenLP1SongImport',
+                'CP-1256 (Arabic)')),
+            (u'cp1257', translate('SongsPlugin.OpenLP1SongImport',
+                'CP-1257 (Baltic)')),
+            (u'cp1258', translate('SongsPlugin.OpenLP1SongImport',
+                'CP-1258 (Vietnam)'))]
         encoding_index = 0
-        for index in range(len(encodings[0])):
-            if guess == encodings[0][index]:
+        for index in range(len(encodings)):
+            if guess == encodings[index][0]:
                 encoding_index = index
                 break
         chosen_encoding = QtGui.QInputDialog.getItem(None,
@@ -244,9 +241,8 @@ class OpenLP1SongImport(SongImport):
                 'The codepage setting is responsible\n'
                 'for the correct character representation.\n'
                 'Usually you are fine with the preselected choise.'),
-            encodings[1], encoding_index, False)
+            [pair[1] for pair in encodings], encoding_index, False)
         if not chosen_encoding[1]:
             return None
-        for index in range(len(encodings[1])):
-            if chosen_encoding[0] == encodings[1][index]:
-                return encodings[0][index]
+        return filter(lambda item: item[1] == chosen_encoding[0],
+            encodings)[0][0]
