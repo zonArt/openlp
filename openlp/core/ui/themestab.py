@@ -195,7 +195,6 @@ class ThemesTab(SettingsTab):
             self.settingsSection + u'/global theme',
             QtCore.QVariant(u'')).toString())
         self.DefaultComboBox.clear()
-        theme_list.sort()
         for theme in theme_list:
             self.DefaultComboBox.addItem(theme)
         id = self.DefaultComboBox.findText(

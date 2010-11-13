@@ -243,7 +243,6 @@ class BiblesTab(SettingsTab):
         """
         self.BibleThemeComboBox.clear()
         self.BibleThemeComboBox.addItem(u'')
-        theme_list.sort()
         for theme in theme_list:
             self.BibleThemeComboBox.addItem(theme)
         index = self.BibleThemeComboBox.findText(
