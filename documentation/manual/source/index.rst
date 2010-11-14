@@ -14,6 +14,9 @@ Contents:
    introduction
    glossary
    dualmonitors
+   mediamanager
+   songsplugin
+   songs
 
 Indices and tables
 ==================

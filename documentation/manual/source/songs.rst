@@ -1,6 +1,6 @@
-============
-Songs Plugin
-============
+=====
+Songs 
+=====
 
 The `Songs Plugin` is where you access your database of songs. From here you 
 can also edit songs, add new songs, and even convert songs from other formats.
@@ -37,11 +37,4 @@ Windows XP::
 Windows Vista/7::
 
  C:\ProgramData\openlp.org\Data\songs.olp
-
-
-
-
-
- 
-
 
