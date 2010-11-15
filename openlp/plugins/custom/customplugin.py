@@ -59,7 +59,7 @@ class CustomPlugin(Plugin):
         return CustomTab(self.name, visible_name[u'title'])
 
     def getMediaManagerItem(self):
-        # Create the CustomManagerItem object
+        # Create the ManagerItem object
         return CustomMediaItem(self, self, self.icon)
 
     def about(self):
@@ -76,7 +76,7 @@ class CustomPlugin(Plugin):
 
         Returns True if the theme is being used, otherwise returns False.
         """
-        if self.custommanager.get_all_objects(CustomSlide,
+        if self.manager.get_all_objects(CustomSlide,
             CustomSlide.theme_name == theme):
             return True
         return False
@@ -92,11 +92,11 @@ class CustomPlugin(Plugin):
         ``newTheme``
             The new name the plugin should now use.
         """
-        customsUsingTheme = self.custommanager.get_all_objects(CustomSlide,
+        customsUsingTheme = self.manager.get_all_objects(CustomSlide,
             CustomSlide.theme_name == oldTheme)
         for custom in customsUsingTheme:
             custom.theme_name = newTheme
-            self.custommanager.save_object(custom)
+            self.manager.save_object(custom)
 
     def setPluginTextStrings(self):
         """

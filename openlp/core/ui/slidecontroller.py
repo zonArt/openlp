@@ -26,7 +26,6 @@
 
 import logging
 import os
-import time
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
@@ -434,8 +433,12 @@ class SlideController(QtGui.QWidget):
         request = unicode(self.sender().text())
         slideno = self.slideList[request]
         if slideno > self.PreviewListWidget.rowCount():
-            self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount())
+            self.PreviewListWidget.selectRow(
+                self.PreviewListWidget.rowCount() - 1)
         else:
+            if slideno + 1 < self.PreviewListWidget.rowCount():
+                self.PreviewListWidget.scrollToItem(
+                    self.PreviewListWidget.item(slideno + 1, 0))
             self.PreviewListWidget.selectRow(slideno)
         self.onSlideSelected()
 
@@ -527,6 +530,9 @@ class SlideController(QtGui.QWidget):
         log.debug(u'addServiceManagerItem live = %s' % self.isLive)
         # If service item is the same as the current on only change slide
         if item.__eq__(self.serviceItem):
+            if slideno + 1 < self.PreviewListWidget.rowCount():
+                self.PreviewListWidget.scrollToItem(
+                    self.PreviewListWidget.item(slideno + 1, 0))
             self.PreviewListWidget.selectRow(slideno)
             self.onSlideSelected()
             return
@@ -608,8 +614,12 @@ class SlideController(QtGui.QWidget):
         self.PreviewListWidget.setColumnWidth(0,
             self.PreviewListWidget.viewport().size().width())
         if slideno > self.PreviewListWidget.rowCount():
-            self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount())
+            self.PreviewListWidget.selectRow(
+                self.PreviewListWidget.rowCount() - 1)
         else:
+            if slideno + 1 < self.PreviewListWidget.rowCount():
+                self.PreviewListWidget.scrollToItem(
+                    self.PreviewListWidget.item(slideno + 1, 0))
             self.PreviewListWidget.selectRow(slideno)
         self.enableToolBar(serviceItem)
         # Pass to display for viewing
@@ -668,6 +678,9 @@ class SlideController(QtGui.QWidget):
                 [self.serviceItem, self.isLive, index])
             self.updatePreview()
         else:
+            if index + 1 < self.PreviewListWidget.rowCount():
+                self.PreviewListWidget.scrollToItem(
+                    self.PreviewListWidget.item(index + 1, 0))
             self.PreviewListWidget.selectRow(index)
             self.onSlideSelected()
 
@@ -780,9 +793,11 @@ class SlideController(QtGui.QWidget):
         row = self.PreviewListWidget.currentRow()
         self.selectedRow = 0
         if row > -1 and row < self.PreviewListWidget.rowCount():
-            if self.serviceItem.is_command() and self.isLive:
-                Receiver.send_message(u'%s_slide' % self.serviceItem.name.lower(),
-                    [self.serviceItem, self.isLive, row])
+            if self.serviceItem.is_command():
+                if self.isLive:
+                    Receiver.send_message(
+                        u'%s_slide' % self.serviceItem.name.lower(),
+                        [self.serviceItem, self.isLive, row])
                 self.updatePreview()
             else:
                 toDisplay = self.serviceItem.get_rendered_frame(row)
@@ -799,6 +814,9 @@ class SlideController(QtGui.QWidget):
         """
         The slide has been changed. Update the slidecontroller accordingly
         """
+        if row + 1 < self.PreviewListWidget.rowCount():
+            self.PreviewListWidget.scrollToItem(
+                self.PreviewListWidget.item(row + 1, 0))
         self.PreviewListWidget.selectRow(row)
         self.updatePreview()
         Receiver.send_message(u'slidecontroller_%s_changed' % self.typePrefix,
@@ -844,6 +862,9 @@ class SlideController(QtGui.QWidget):
                 else:
                     Receiver.send_message('servicemanager_next_item')
                     return
+            if row + 1 < self.PreviewListWidget.rowCount():
+                self.PreviewListWidget.scrollToItem(
+                    self.PreviewListWidget.item(row + 1, 0))
             self.PreviewListWidget.selectRow(row)
             self.onSlideSelected()
 
@@ -867,6 +888,9 @@ class SlideController(QtGui.QWidget):
                     row = self.PreviewListWidget.rowCount() - 1
                 else:
                     row = 0
+            if row + 1 < self.PreviewListWidget.rowCount():
+                self.PreviewListWidget.scrollToItem(
+                    self.PreviewListWidget.item(row + 1, 0))
             self.PreviewListWidget.selectRow(row)
             self.onSlideSelected()
 

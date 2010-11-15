@@ -75,6 +75,7 @@ class Ui_MainWindow(object):
         MainWindow.setSizePolicy(sizePolicy)
         MainIcon = build_icon(u':/icon/openlp-logo-16x16.png')
         MainWindow.setWindowIcon(MainIcon)
+        self.setDockNestingEnabled(True)
         # Set up the main container, which contains all the other form widgets
         self.MainContent = QtGui.QWidget(MainWindow)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,
@@ -269,7 +270,8 @@ class Ui_MainWindow(object):
         self.SettingsPluginListItem.setIcon(
             build_icon(u':/system/settings_plugin_list.png'))
         self.SettingsPluginListItem.setObjectName(u'SettingsPluginListItem')
-        MainWindow.actionList.add_action(self.SettingsPluginListItem, u'Settings')
+        MainWindow.actionList.add_action(self.SettingsPluginListItem,
+            u'Settings')
         #i18n Language Items
         self.AutoLanguageItem = QtGui.QAction(MainWindow)
         self.AutoLanguageItem.setObjectName(u'AutoLanguageItem')
@@ -295,7 +297,8 @@ class Ui_MainWindow(object):
         self.SettingsConfigureItem.setIcon(
             build_icon(u':/system/system_settings.png'))
         self.SettingsConfigureItem.setObjectName(u'SettingsConfigureItem')
-        MainWindow.actionList.add_action(self.SettingsShortcutsItem, u'Settings')
+        MainWindow.actionList.add_action(self.SettingsShortcutsItem,
+            u'Settings')
         self.HelpDocumentationItem = QtGui.QAction(MainWindow)
         self.HelpDocumentationItem.setIcon(
             build_icon(u':/system/system_help_contents.png'))
@@ -601,7 +604,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(self.FileSaveAsItem,
             QtCore.SIGNAL(u'triggered()'),
             self.ServiceManagerContents.onSaveService)
-        #i18n set signals for languages
+        # i18n set signals for languages
         QtCore.QObject.connect(self.AutoLanguageItem,
             QtCore.SIGNAL(u'toggled(bool)'), self.setAutoLanguage)
         self.LanguageGroup.triggered.connect(LanguageManager.set_language)
@@ -621,15 +624,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'config_screen_changed'), self.screenChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'maindisplay_status_text'), self.showStatusMessage)
-        #warning cyclic dependency
-        #RenderManager needs to call ThemeManager and
-        #ThemeManager needs to call RenderManager
+        # warning cyclic dependency
+        # RenderManager needs to call ThemeManager and
+        # ThemeManager needs to call RenderManager
         self.RenderManager = RenderManager(
             self.ThemeManagerContents, self.screens)
-        #Define the media Dock Manager
+        # Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.MediaToolBox)
         log.info(u'Load Plugins')
-        #make the controllers available to the plugins
+        # make the controllers available to the plugins
         self.plugin_helpers[u'preview'] = self.PreviewController
         self.plugin_helpers[u'live'] = self.LiveController
         self.plugin_helpers[u'render'] = self.RenderManager
@@ -760,7 +763,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Show the shortcuts dialog
         """
-        self.shortcutForm.exec_(self.actionList)
+        self.shortcutForm.exec_(self)
 
     def onModeDefaultItemClicked(self):
         """

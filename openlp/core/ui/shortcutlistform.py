@@ -49,11 +49,14 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         self.setupUi(self)
         self.actionList = None
         self.captureShortcut = False
+        self.currentItem = None
+        self.newShortcut = None
         QtCore.QObject.connect(
             self.shortcutPushButton,
             QtCore.SIGNAL(u'toggled(bool)'),
             self.onShortcutPushButtonClicked
         )
+        self.shortcutListTreeWidget.itemDoubleClicked.connect(self.shortcutEdit)
 
     def keyReleaseEvent(self, event):
         Qt = QtCore.Qt
@@ -69,7 +72,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         if event.modifiers() & Qt.AltModifier == Qt.AltModifier:
             key_string = u'Alt+' + key_string
         if event.modifiers() & Qt.ShiftModifier == Qt.ShiftModifier:
-            key_string = u'Shift+' + key_string;
+            key_string = u'Shift+' + key_string
         key_sequence = QtGui.QKeySequence(key_string)
         existing_key = QtGui.QKeySequence("Ctrl+Shift+F8")
         if key_sequence == existing_key:
@@ -83,28 +86,71 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                 QtGui.QMessageBox.Ok
             )
         else:
+            self.newShortcut = key_sequence.toString()
             self.shortcutPushButton.setText(key_sequence.toString())
+            if self.currentItem:
+                self.actionList[self.currentItem].setShortcut(QtGui.QKeySequence(self.newShortcut))
+                self.shortcutListTreeWidget.currentItem().setText(1, self.newShortcut)
+
         self.shortcutPushButton.setChecked(False)
         self.captureShortcut = False
 
-    def exec_(self, actionList):
-        self.actionList = actionList
+    def exec_(self, parent):
+        self.actionList = parent.findChildren(QtGui.QAction)
         self.refreshActions()
         return QtGui.QDialog.exec_(self)
 
     def refreshActions(self):
         self.shortcutListTreeWidget.clear()
-        for category in self.actionList.categories:
-            item = QtGui.QTreeWidgetItem([category.name])
-            for action in category.actions:
-                actionText = REMOVE_AMPERSAND.sub('', unicode(action.text()))
-                shortcutText = action.shortcut().toString()
-                actionItem = QtGui.QTreeWidgetItem([actionText, shortcutText])
-                actionItem.setIcon(0, action.icon())
-                item.addChild(actionItem)
-            item.setExpanded(True)
-            self.shortcutListTreeWidget.addTopLevelItem(item)
+        catItemDict = dict()
+        for num in range(len(self.actionList)):
+            action = self.actionList[num]
+            actionText = action.objectName() or action.parentWidget().objectName()
+            shortcutText = action.shortcut().toString()
+            #if not shortcutText:
+            #    continue
+            categorie = action.data().toString() or 'Sonstige'
+            if not catItemDict.has_key(categorie):
+                catItemDict[categorie] = QtGui.QTreeWidgetItem([categorie])
+            actionItem = QtGui.QTreeWidgetItem([actionText, shortcutText], num)
+            actionItem.setIcon(0, action.icon())
+            catItemDict[categorie].addChild(actionItem)
+            catItemDict[categorie].setExpanded(True)
+        for item in catItemDict:
+            self.shortcutListTreeWidget.addTopLevelItem(catItemDict[item])
+            self.shortcutListTreeWidget.expandItem(catItemDict[item])
+
+    def load_action_list(self, file):
+        """
+        Load an actionList from a xml file
+        """
+        pass
+
+    def write_action_list(self, file):
+        """
+        Write the current actionList into a xml file
+        """
+        pass
+
+    def read_action_list(self):
+        """
+        disply current actionList
+        """
+        pass
+
+    def update_action_list(self):
+        """
+        apply shortcut changes to the related actions
+        """
+        pass
 
     def onShortcutPushButtonClicked(self, toggled):
         self.captureShortcut = toggled
 
+    def shortcutEdit(self, item, column):
+        #print "ändern", item.parent().text(0), item.text(0), column,  item.type(), item
+        self.currentItem = item.type()
+        self.newShortcut = item.text(1)
+        self.shortcutListTreeWidget.currentItem().setText(column, u'Press new Shortcut')
+        self.captureShortcut = True
+   
