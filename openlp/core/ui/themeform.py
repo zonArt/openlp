@@ -159,8 +159,8 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
             u'shadowSizeSpinBox', self.shadowSizeSpinBox)
         self.mainAreaPage.registerField(
             u'footerSizeSpinBox', self.footerSizeSpinBox)
-        self.areaPositionPage.registerField(
-            u'mainDefaultPosition', self.mainDefaultPositionCheckBox)
+#        self.areaPositionPage.registerField(
+#            u'mainDefaultPosition', self.mainDefaultPositionCheckBox)
         self.areaPositionPage.registerField(
             u'mainPositionX', self.mainXSpinBox)
         self.areaPositionPage.registerField(
@@ -169,8 +169,8 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
             u'mainPositionWidth', self.mainWidthSpinBox)
         self.areaPositionPage.registerField(
             u'mainPositionHeight', self.mainHeightSpinBox)
-        self.areaPositionPage.registerField(
-            u'footerDefaultPosition', self.footerDefaultPositionCheckBox)
+#        self.areaPositionPage.registerField(
+#            u'footerDefaultPosition', self.footerDefaultPositionCheckBox)
         self.areaPositionPage.registerField(
             u'footerPositionX', self.footerXSpinBox)
         self.areaPositionPage.registerField(
@@ -214,7 +214,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
         """
         Change state as Main Area Position check box changed
         """
-        print "onMain"
         if value == QtCore.Qt.Checked:
             self.theme.font_main_override = False
         else:
@@ -386,10 +385,11 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
         """
         Handle the display and State of the Position tab.
         """
+        # Main Area
         if self.theme.font_main_override:
-            self.setField(u'mainDefaultPosition', QtCore.QVariant(False))
+            self.mainDefaultPositionCheckBox.setChecked(False)
         else:
-            self.setField(u'mainDefaultPosition', QtCore.QVariant(True))
+            self.mainDefaultPositionCheckBox.setChecked(True)
         self.setField(u'mainPositionX', \
             QtCore.QVariant(self.theme.font_main_x))
         self.setField(u'mainPositionY', \
@@ -398,10 +398,11 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
             QtCore.QVariant(self.theme.font_main_height))
         self.setField(u'mainPositionWidth', \
             QtCore.QVariant(self.theme.font_main_width))
+        # Footer
         if self.theme.font_footer_override:
-            self.setField(u'footerDefaultPosition', QtCore.QVariant(False))
+            self.footerDefaultPositionCheckBox.setChecked(False)
         else:
-            self.setField(u'footerDefaultPosition', QtCore.QVariant(True))
+            self.footerDefaultPositionCheckBox.setChecked(True)
         self.setField(u'footerPositionX', \
             QtCore.QVariant(self.theme.font_footer_x))
         self.setField(u'footerPositionY', \
@@ -419,10 +420,8 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
             QtCore.QVariant(self.theme.display_horizontal_align))
         self.setField(u'vertical', \
             QtCore.QVariant(self.theme.display_vertical_align))
-        if self.theme.display_slide_transition:
-            self.setField(u'mainDefaultPosition', QtCore.QVariant(False))
-        else:
-            self.setField(u'mainDefaultPosition', QtCore.QVariant(True))
+        self.setField(u'slideTransition', \
+            QtCore.QVariant(self.theme.display_slide_transition))
 
     def setPreviewTabValues(self):
         self.setField(u'name', QtCore.QVariant(self.theme.theme_name))
@@ -525,9 +524,9 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
         self.theme.font_main_shadow_size = \
             self.field(u'shadowSizeSpinBox').toInt()[0]
         self.theme.font_main_bold = \
-            self.field(u'boldCheckBox').toInt()[0]
+            self.field(u'boldCheckBox').toBool()
         self.theme.font_main_italics = \
-            self.field(u'italicsCheckBox').toInt()[0]
+            self.field(u'italicsCheckBox').toBool()
         # footer page
         self.theme.font_footer_name = \
             unicode(self.footerFontComboBox.currentFont().family())
