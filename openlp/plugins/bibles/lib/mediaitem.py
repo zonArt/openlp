@@ -573,7 +573,8 @@ class BibleMediaItem(MediaManagerItem):
                 for verse in self.search_results:
                     text.append((verse.book.name, verse.chapter, verse.verse,
                         verse.verse))
-                self.second_search_results = bibles[second_bible].get_verses(text)
+                self.second_search_results = \
+                    bibles[second_bible].get_verses(text)
         if self.ClearQuickSearchComboBox.currentIndex() == 0:
             self.listView.clear()
         if self.listView.count() != 0 and self.search_results:
@@ -626,7 +627,8 @@ class BibleMediaItem(MediaManagerItem):
                     'second_bible': QtCore.QVariant(second_bible),
                     'second_version': QtCore.QVariant(second_version.value),
                     'second_copyright': QtCore.QVariant(second_copyright.value),
-                    'second_permissions': QtCore.QVariant(second_permissions.value),
+                    'second_permissions': QtCore.QVariant(
+                        second_permissions.value),
                     'second_text': QtCore.QVariant(
                         self.second_search_results[count].text)
                 }
@@ -702,8 +704,8 @@ class BibleMediaItem(MediaManagerItem):
             if footer not in raw_footer:
                 raw_footer.append(footer)
             if second_bible:
-                footer = u'%s (%s %s %s)' % (book, second_version, second_copyright,
-                    second_permissions)
+                footer = u'%s (%s %s %s)' % (book, second_version,
+                    second_copyright, second_permissions)
                 if footer not in raw_footer:
                     raw_footer.append(footer)
                 bible_text = u'%s %s\n\n%s %s' % (verse_text, text, verse_text,
@@ -807,8 +809,8 @@ class BibleMediaItem(MediaManagerItem):
     def checkTitle(self, item, old_item):
         """
         This methode checks if we are at the end of an verse range. If that is
-        the case, we return True, otherwise False. E. g. if we added Genesis 1:1-6,
-        but the next verse is Daniel 2:14, we return True.
+        the case, we return True, otherwise False. E. g. if we added
+        Genesis 1:1-6, but the next verse is Daniel 2:14, we return True.
 
         ``item``
             The item we are dealing with at the moment.
