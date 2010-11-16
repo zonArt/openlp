@@ -54,12 +54,12 @@ class BibleMediaItem(MediaManagerItem):
     """
     log.info(u'Bible Media Item loaded')
 
-    def __init__(self, parent, icon, title):
+    def __init__(self, parent, plugin, icon):
         self.PluginNameShort = u'Bible'
         self.pluginNameVisible = translate('BiblesPlugin.MediaItem', 'Bible')
         self.IconPath = u'songs/song'
         self.ListViewWithDnD_class = BibleListView
-        MediaManagerItem.__init__(self, parent, icon, title)
+        MediaManagerItem.__init__(self, parent, plugin, icon)
         # Place to store the search results for both bibles.
         self.search_results = {}
         self.second_search_results = {}
@@ -552,6 +552,10 @@ class BibleMediaItem(MediaManagerItem):
         self.AdvancedSearchButton.setEnabled(True)
 
     def onQuickSearchButton(self):
+        """
+        Does a quick search and saves the search results. Quick search can
+        either be "Verse Search" or "Text Search".
+        """
         log.debug(u'Quick Search Button pressed')
         self.QuickSearchButton.setEnabled(False)
         bible = unicode(self.QuickVersionComboBox.currentText())
