@@ -546,7 +546,8 @@ class ThemeManager(QtGui.QWidget):
                             outfile = open(fullpath, u'wb')
                             outfile.write(zip.read(file))
             if filexml:
-                self.generateAndSaveImage(dir, themename, filexml)
+                theme = self.createThemeFromXml(filexml, self.path)
+                self.generateAndSaveImage(dir, themename, theme)
             else:
                 QtGui.QMessageBox.critical(self,
                     translate('OpenLP.ThemeManager', 'Error'),
@@ -593,41 +594,38 @@ class ThemeManager(QtGui.QWidget):
         """
         theme = Theme(xml_data)
         newtheme = ThemeXML()
-        newtheme.new_document(theme.Name)
+        newtheme.theme_name = theme.Name
         if theme.BackgroundType == 0:
-            newtheme.add_background_solid(unicode(
-                theme.BackgroundParameter1.name()))
+            newtheme.background_type = u'solid'
+            newtheme.background_startColor = unicode(theme.BackgroundParameter1)
         elif theme.BackgroundType == 1:
-            direction = u'vertical'
+            newtheme.background_type = u'gradient'
+            newtheme.background_direction = u'vertical'
             if theme.BackgroundParameter3.name() == 1:
-                direction = u'horizontal'
-            newtheme.add_background_gradient(
-                unicode(theme.BackgroundParameter1.name()),
-                unicode(theme.BackgroundParameter2.name()), direction)
+                 newtheme.background_direction = u'horizontal'
+            newtheme.background_startColor = unicode(theme.BackgroundParameter1)
+            newtheme.background_endColor = unicode(theme.BackgroundParameter2)
         else:
-            newtheme.add_background_image(unicode(theme.BackgroundParameter1))
-        newtheme.add_font(unicode(theme.FontName),
-            unicode(theme.FontColor.name()),
-            unicode(theme.FontProportion * 3), u'False')
-        newtheme.add_font(unicode(theme.FontName),
-            unicode(theme.FontColor.name()),
-            unicode(12), u'False', u'footer')
-        outline = False
-        shadow = False
+            newtheme.background_type = u'image'
+            newtheme.background_filename = unicode(theme.BackgroundParameter1)
+        self.font_main_name = theme.FontName
+        self.font_main_color = theme.FontColor.name()
+        self.font_main_size =theme.FontProportion * 3
+        self.font_footer_name = theme.FontName
+        self.font_footer_color = theme.FontColor.name()
         if theme.Shadow == 1:
-            shadow = True
+            self.font_main_shadow = True
+            self.font_main_shadow_color = theme.ShadowColor.name()
         if theme.Outline == 1:
-            outline = True
+            self.font_main_outline = True
+            self.font_main_outline_color = theme.OutlineColor.name()
         vAlignCorrection = 0
         if theme.VerticalAlign == 2:
             vAlignCorrection = 1
         elif theme.VerticalAlign == 1:
             vAlignCorrection = 2
-        newtheme.add_display(unicode(shadow),
-            unicode(theme.ShadowColor.name()),
-            unicode(outline), unicode(theme.OutlineColor.name()),
-            unicode(theme.HorizontalAlign), unicode(vAlignCorrection),
-            unicode(theme.WrapStyle), unicode(0))
+        newtheme.display_horizontal_align = theme.HorizontalAlign
+        newtheme.display_vertical_align = vAlignCorrection
         return newtheme.extract_xml()
 
     def saveTheme(self, theme, image_from, image_to):
