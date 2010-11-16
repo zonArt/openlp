@@ -145,6 +145,10 @@ class SongsPlugin(Plugin):
         counter = 0
         for song in songs:
             counter += 1
+            if song.title is None:
+                song.title = u''
+            if song.alternate_title is None:
+                song.alternate_title = u''
             song.search_title = self.whitespace.sub(u' ', song.title.lower()) +\
                 u' ' + self.whitespace.sub(u' ', song.alternate_title.lower())
             progressDialog.setValue(counter)
