@@ -213,7 +213,7 @@ class BGExtract(object):
         finally:
             if not page:
                 return None
-        cleaner = [(re.compile('&nbsp;|<br />'), lambda match: '')]
+        cleaner = [(re.compile('&nbsp;|<br />|\'\+\''), lambda match: '')]
         soup = None
         try:
             soup = BeautifulSoup(page, markupMassage=cleaner)
