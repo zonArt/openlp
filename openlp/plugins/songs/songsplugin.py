@@ -126,7 +126,6 @@ class SongsPlugin(Plugin):
         self.toolsReindexItem.setStatusTip(
             translate('SongsPlugin', 'Re-index the songs database to improve '
             'searching and ordering.'))
-        #self.toolsReindexItem.setShortcut(u'F7')
         tools_menu.addAction(self.toolsReindexItem)
         QtCore.QObject.connect(self.toolsReindexItem,
             QtCore.SIGNAL(u'triggered()'), self.onToolsReindexItemTriggered)
