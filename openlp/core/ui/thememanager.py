@@ -35,7 +35,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.ui import FileRenameForm, ThemeForm
 from openlp.core.theme import Theme
 from openlp.core.lib import OpenLPToolbar, ThemeXML, get_text_file_string, \
-    build_icon, Receiver, SettingsManager, translate, check_item_selected
+    build_icon, Receiver, SettingsManager, translate, check_item_selected,  \
+    BackgroundType, BackgroundGradientType
 from openlp.core.utils import AppLocation, get_filesystem_encoding
 
 log = logging.getLogger(__name__)
@@ -596,29 +597,40 @@ class ThemeManager(QtGui.QWidget):
         newtheme = ThemeXML()
         newtheme.theme_name = theme.Name
         if theme.BackgroundType == 0:
-            newtheme.background_type = u'solid'
-            newtheme.background_startColor = unicode(theme.BackgroundParameter1)
+            newtheme.background_type = \
+                BackgroundType.to_string(BackgroundType.Solid)
+            newtheme.background_color = \
+                unicode(theme.BackgroundParameter1.name())
         elif theme.BackgroundType == 1:
-            newtheme.background_type = u'gradient'
-            newtheme.background_direction = u'vertical'
+            newtheme.background_type = \
+                BackgroundType.to_string(BackgroundType.Gradient)
+            newtheme.background_direction = \
+                BackgroundGradientType. \
+                to_string(BackgroundGradientType.Horizontal)
             if theme.BackgroundParameter3.name() == 1:
-                 newtheme.background_direction = u'horizontal'
-            newtheme.background_startColor = unicode(theme.BackgroundParameter1)
-            newtheme.background_endColor = unicode(theme.BackgroundParameter2)
+                 newtheme.background_direction = \
+                    BackgroundGradientType. \
+                    to_string(BackgroundGradientType.Horizontal)
+            newtheme.background_start_color = \
+                unicode(theme.BackgroundParameter1.name())
+            newtheme.background_end_color = \
+                unicode(theme.BackgroundParameter2.name())
         else:
-            newtheme.background_type = u'image'
+            newtheme.background_type = \
+                BackgroundType.to_string(BackgroundType.Image)
             newtheme.background_filename = unicode(theme.BackgroundParameter1)
-        self.font_main_name = theme.FontName
-        self.font_main_color = theme.FontColor.name()
-        self.font_main_size =theme.FontProportion * 3
-        self.font_footer_name = theme.FontName
-        self.font_footer_color = theme.FontColor.name()
+        newtheme.font_main_name = theme.FontName
+        newtheme.font_main_color = unicode(theme.FontColor.name())
+        newtheme.font_main_size = theme.FontProportion * 3
+        newtheme.font_footer_name = theme.FontName
+        newtheme.font_footer_color = unicode(theme.FontColor.name())
+        newtheme.font_main_shadow = False
         if theme.Shadow == 1:
-            self.font_main_shadow = True
-            self.font_main_shadow_color = theme.ShadowColor.name()
+            newtheme.font_main_shadow = True
+            newtheme.font_main_shadow_color = unicode(theme.ShadowColor.name())
         if theme.Outline == 1:
-            self.font_main_outline = True
-            self.font_main_outline_color = theme.OutlineColor.name()
+            newtheme.font_main_outline = True
+            newtheme.font_main_outline_color = unicode(theme.OutlineColor.name())
         vAlignCorrection = 0
         if theme.VerticalAlign == 2:
             vAlignCorrection = 1
