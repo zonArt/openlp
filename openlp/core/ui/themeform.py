@@ -564,7 +564,14 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
         # Save the theme name
         self.theme.theme_name = \
             unicode(self.field(u'name').toString())
-        if not unicode(self.field(u'name').toString()):
+        if not self.theme.theme_name:
+            QtGui.QMessageBox.critical(self,
+                translate('OpenLP.ThemeForm', 'Theme Name Missing'),
+                translate('OpenLP.ThemeForm',
+                    'There is no name for this theme. '
+                    'Please enter one.'),
+                (QtGui.QMessageBox.Ok),
+                QtGui.QMessageBox.Ok)
             return
         save_from = None
         save_to = None
