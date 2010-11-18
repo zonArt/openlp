@@ -608,7 +608,7 @@ class ThemeManager(QtGui.QWidget):
                 BackgroundGradientType. \
                 to_string(BackgroundGradientType.Horizontal)
             if theme.BackgroundParameter3.name() == 1:
-                 newtheme.background_direction = \
+                newtheme.background_direction = \
                     BackgroundGradientType. \
                     to_string(BackgroundGradientType.Horizontal)
             newtheme.background_start_color = \

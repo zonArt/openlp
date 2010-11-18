@@ -29,7 +29,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, theme, BackgroundType, BackgroundGradientType
+from openlp.core.lib import translate, BackgroundType, BackgroundGradientType
 from openlp.core.utils import get_images_filter
 from themedialog import Ui_ThemeDialog
 
@@ -315,18 +315,18 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
             self.imageLineEdit.setText(self.theme.background_filename)
         if self.theme.background_direction == \
             BackgroundGradientType.to_string(BackgroundGradientType.Horizontal):
-           self.setField(u'gradient', QtCore.QVariant(0))
+            self.setField(u'gradient', QtCore.QVariant(0))
         elif self.theme.background_direction == \
             BackgroundGradientType.to_string(BackgroundGradientType.Vertical):
-           self.setField(u'gradient', QtCore.QVariant(1))
+            self.setField(u'gradient', QtCore.QVariant(1))
         elif self.theme.background_direction == \
             BackgroundGradientType.to_string(BackgroundGradientType.Circular):
-           self.setField(u'gradient', QtCore.QVariant(2))
+            self.setField(u'gradient', QtCore.QVariant(2))
         elif self.theme.background_direction == \
             BackgroundGradientType.to_string(BackgroundGradientType.LeftTop):
-           self.setField(u'gradient', QtCore.QVariant(3))
+            self.setField(u'gradient', QtCore.QVariant(3))
         else:
-           self.setField(u'gradient', QtCore.QVariant(4))
+            self.setField(u'gradient', QtCore.QVariant(4))
 
     def setMainAreaTabValues(self):
         """
