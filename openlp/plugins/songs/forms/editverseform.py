@@ -60,7 +60,6 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
 
     def contextMenu(self, point):
         item = self.serviceManagerList.itemAt(point)
-        print item
 
     def insertVerse(self, title, num=1):
         if self.verseTextEdit.textCursor().columnNumber() != 0:

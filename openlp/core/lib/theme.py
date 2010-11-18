@@ -445,10 +445,8 @@ class ThemeXML(object):
         except etree.XMLSyntaxError:
             log.exception(u'Invalid xml %s', xml)
             return
-        # print objectify.dump(theme_xml)
         xml_iter = theme_xml.getiterator()
         for element in xml_iter:
-            #print "base", element.getparent(), element.tag, element.text, element.attrib
             parent = element.getparent()
             master = u''
             if parent is not None:
@@ -468,7 +466,6 @@ class ThemeXML(object):
                             self._create_attr(master, attr, \
                             element.getparent().attrib[attr])
             if master:
-                #print "A", element.tag
                 self._create_attr(master, element.tag, element.text)
                 if element.attrib:
                     for attr in element.attrib:
@@ -480,7 +477,6 @@ class ThemeXML(object):
                         self._create_attr(master, base_element,
                             element.attrib[attr])
             else:
-                #print "C", element.tag
                 if element.tag == u'name':
                     self._create_attr(u'theme', element.tag, element.text)
 
@@ -491,7 +487,6 @@ class ThemeXML(object):
         master = master.strip().lstrip()
         element = element.strip().lstrip()
         value = unicode(value).strip().lstrip()
-        #print "start", master, element, value
         if master == u'display':
             if element == u'wrapStyle':
                 return True, None, None, None
@@ -506,7 +501,6 @@ class ThemeXML(object):
                 value = True
         if element == u'proportion':
             element = u'size'
-        #print "end", master, element, value
         return False, master, element, value
 
     def _create_attr(self, master , element, value):

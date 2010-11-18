@@ -951,7 +951,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Save the main window settings.
         """
-        print self.saveState()
         log.debug(u'Saving QSettings')
         settings = QtCore.QSettings()
         settings.beginGroup(self.generalSettingsSection)
