@@ -122,7 +122,8 @@ class SongsPlugin(Plugin):
         self.toolsReindexItem = QtGui.QAction(tools_menu)
         self.toolsReindexItem.setIcon(build_icon(u':/plugins/plugin_songs.png'))
         self.toolsReindexItem.setObjectName(u'toolsReindexItem')
-        self.toolsReindexItem.setText(translate('SongsPlugin', '&Re-index Songs'))
+        self.toolsReindexItem.setText(
+            translate('SongsPlugin', '&Re-index Songs'))
         self.toolsReindexItem.setStatusTip(
             translate('SongsPlugin', 'Re-index the songs database to improve '
             'searching and ordering.'))
@@ -149,8 +150,9 @@ class SongsPlugin(Plugin):
                 song.title = u''
             if song.alternate_title is None:
                 song.alternate_title = u''
-            song.search_title = self.whitespace.sub(u' ', song.title.lower()) +\
-                u' ' + self.whitespace.sub(u' ', song.alternate_title.lower())
+            song.search_title = self.whitespace.sub(u' ', \
+                song.title.lower()) + u' ' + \
+                self.whitespace.sub(u' ', song.alternate_title.lower())
             progressDialog.setValue(counter)
         self.manager.save_objects(songs)
         counter += 1

@@ -116,6 +116,7 @@ class ServiceManager(QtGui.QWidget):
         self.layout = QtGui.QVBoxLayout(self)
         self.layout.setSpacing(0)
         self.layout.setMargin(0)
+        self.expandTabs = False
         # Create the top toolbar
         self.toolbar = OpenLPToolbar(self)
         self.toolbar.addToolbarButton(
@@ -890,8 +891,8 @@ class ServiceManager(QtGui.QWidget):
         ``expand``
             Override the default expand settings. (Tristate)
         """
-        log.debug(u'addServiceItem')
-        if expand == None:
+        # if not passed set to config value
+        if expand is None:
             expand = self.expandTabs
         sitem = self.findServiceItem()[0]
         item.render()

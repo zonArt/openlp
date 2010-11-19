@@ -81,6 +81,9 @@ class AdvancedTab(SettingsTab):
         self.doubleClickLiveCheckBox = QtGui.QCheckBox(self.uiGroupBox)
         self.doubleClickLiveCheckBox.setObjectName(u'doubleClickLiveCheckBox')
         self.uiLayout.addWidget(self.doubleClickLiveCheckBox)
+        self.expandServiceItemCheckBox = QtGui.QCheckBox(self.uiGroupBox)
+        self.expandServiceItemCheckBox.setObjectName(u'expandServiceItemCheckBox')
+        self.uiLayout.addWidget(self.expandServiceItemCheckBox)
         self.leftLayout.addWidget(self.uiGroupBox)
         self.expandServiceItemCheckBox = QtGui.QCheckBox(self.uiGroupBox)
         self.expandServiceItemCheckBox.setObjectName(
