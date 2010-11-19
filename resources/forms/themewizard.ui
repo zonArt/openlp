@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ThemeDialog</class>
- <widget class="QWizard" name="ThemeDialog">
+ <class>ThemeWizard</class>
+ <widget class="QWizard" name="ThemeWizard">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -1109,9 +1109,9 @@ p, li { white-space: pre-wrap; }
  </resources>
  <connections>
   <connection>
-   <sender>ThemeDialog</sender>
+   <sender>ThemeWizard</sender>
    <signal>accepted()</signal>
-   <receiver>ThemeDialog</receiver>
+   <receiver>ThemeWizard</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">

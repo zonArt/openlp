@@ -891,10 +891,8 @@ class ServiceManager(QtGui.QWidget):
         ``expand``
             Override the default expand settings. (Tristate)
         """
-        if expand == None:
-            expand = self.expandTabs
-        log.debug(u'addServiceItem')
-        if expand == None:
+        # if not passed set to config value
+        if expand is None:
             expand = self.expandTabs
         sitem = self.findServiceItem()[0]
         item.render()

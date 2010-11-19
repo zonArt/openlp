@@ -31,11 +31,11 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, BackgroundType, BackgroundGradientType
 from openlp.core.utils import get_images_filter
-from themedialog import Ui_ThemeDialog
+from themewizard import Ui_ThemeWizard
 
 log = logging.getLogger(__name__)
 
-class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
+class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
     """
     This is the Bible Import Wizard, which allows easy importing of Bibles
     into OpenLP from other formats like OSIS, CSV and OpenSong.
@@ -159,8 +159,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
             u'shadowSizeSpinBox', self.shadowSizeSpinBox)
         self.mainAreaPage.registerField(
             u'footerSizeSpinBox', self.footerSizeSpinBox)
-#        self.areaPositionPage.registerField(
-#            u'mainDefaultPosition', self.mainDefaultPositionCheckBox)
         self.areaPositionPage.registerField(
             u'mainPositionX', self.mainXSpinBox)
         self.areaPositionPage.registerField(
@@ -169,8 +167,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeDialog):
             u'mainPositionWidth', self.mainWidthSpinBox)
         self.areaPositionPage.registerField(
             u'mainPositionHeight', self.mainHeightSpinBox)
-#        self.areaPositionPage.registerField(
-#            u'footerDefaultPosition', self.footerDefaultPositionCheckBox)
         self.areaPositionPage.registerField(
             u'footerPositionX', self.footerXSpinBox)
         self.areaPositionPage.registerField(
