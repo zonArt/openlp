@@ -365,7 +365,7 @@ class BibleMediaItem(MediaManagerItem):
             self.import_wizard = BibleImportForm(self, self.parent.manager,
                 self.parent)
         # If the import was not canceled then reload.
-        if self.import_wizard.exec_() == 1:
+        if self.import_wizard.exec_():
             self.reloadBibles()
 
     def loadBibles(self):
