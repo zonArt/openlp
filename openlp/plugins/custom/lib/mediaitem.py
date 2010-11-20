@@ -165,7 +165,7 @@ class CustomMediaItem(MediaManagerItem):
         customSlide = self.parent.manager.get_object(CustomSlide, item_id)
         title = customSlide.title
         credit = customSlide.credits
-        service_item.editId = item_id
+        service_item.edit_id = item_id
         theme = customSlide.theme_name
         if theme:
             service_item.theme = theme

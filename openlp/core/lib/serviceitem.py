@@ -100,6 +100,7 @@ class ServiceItem(object):
         self.bg_image_bytes = None
         self.search_string = u''
         self.data_string = u''
+        self.edit_id = None
         self._new_item()
 
     def _new_item(self):
