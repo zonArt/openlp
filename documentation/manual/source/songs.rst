@@ -2,8 +2,8 @@
 Songs 
 =====
 
-The `Songs Plugin` is where you access your database of songs. From here you 
-can also edit songs, add new songs, and even convert songs from other formats.
+Managing your songs in OpenLP is a relatively simple process. There are also 
+converters provided to get data from other formats into OpenLP.
 
 Song Importer
 =============
@@ -37,4 +37,7 @@ Windows XP::
 Windows Vista/7::
 
  C:\ProgramData\openlp.org\Data\songs.olp
+
+After clicking :guilabel"`Next` your conversion should be complete and your
+OpenLP Version 1 songs should be imported and ready to use.
 

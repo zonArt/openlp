@@ -15,7 +15,6 @@ Contents:
    glossary
    dualmonitors
    mediamanager
-   songsplugin
    songs
 
 Indices and tables
