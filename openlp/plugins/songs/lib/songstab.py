@@ -56,8 +56,10 @@ class SongsTab(SettingsTab):
         self.SongUpdateOnEditCheckBox = QtGui.QCheckBox(self.SongsModeGroupBox)
         self.SongUpdateOnEditCheckBox.setObjectName(u'SongUpdateOnEditCheckBox')
         self.SongsModeLayout.addWidget(self.SongUpdateOnEditCheckBox)
-        self.SongAddFromServiceCheckBox = QtGui.QCheckBox(self.SongsModeGroupBox)
-        self.SongAddFromServiceCheckBox.setObjectName(u'SongAddFromServiceCheckBox')
+        self.SongAddFromServiceCheckBox = QtGui.QCheckBox(
+            self.SongsModeGroupBox)
+        self.SongAddFromServiceCheckBox.setObjectName(
+            u'SongAddFromServiceCheckBox')
         self.SongsModeLayout.addWidget(self.SongAddFromServiceCheckBox)
         self.SongsLayout.setWidget(
             0, QtGui.QFormLayout.LabelRole, self.SongsModeGroupBox)
@@ -83,7 +85,8 @@ class SongsTab(SettingsTab):
             'Display verses on live tool bar'))
         self.SongUpdateOnEditCheckBox.setText(
             translate('SongsPlugin.SongsTab', 'Update service from song edit'))
-        self.SongAddFromServiceCheckBox.setText(translate('SongsPlugin.SongsTab',
+        self.SongAddFromServiceCheckBox.setText(
+            translate('SongsPlugin.SongsTab',
             'Add missing songs when opening service'))
 
     def onSearchAsTypeCheckBoxChanged(self, check_state):
@@ -132,6 +135,8 @@ class SongsTab(SettingsTab):
         settings.beginGroup(self.settingsSection)
         settings.setValue(u'search as type', QtCore.QVariant(self.song_search))
         settings.setValue(u'display songbar', QtCore.QVariant(self.song_bar))
-        settings.setValue(u'update service on edit', QtCore.QVariant(self.update_edit))
-        settings.setValue(u'add song from service', QtCore.QVariant(self.update_load))
+        settings.setValue(u'update service on edit',
+            QtCore.QVariant(self.update_edit))
+        settings.setValue(u'add song from service',
+            QtCore.QVariant(self.update_load))
         settings.endGroup()

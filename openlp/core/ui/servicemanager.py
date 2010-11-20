@@ -116,6 +116,7 @@ class ServiceManager(QtGui.QWidget):
         self.layout = QtGui.QVBoxLayout(self)
         self.layout.setSpacing(0)
         self.layout.setMargin(0)
+        self.expandTabs = False
         # Create the top toolbar
         self.toolbar = OpenLPToolbar(self)
         self.toolbar.addToolbarButton(
@@ -203,13 +204,13 @@ class ServiceManager(QtGui.QWidget):
         self.orderToolbar.addSeparator()
         self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', '&Expand all'),
-            u':/services/service_top.png',
+            u':/services/service_expand_all.png',
             translate('OpenLP.ServiceManager',
             'Expand all the service items.'),
             self.onExpandAll)
         self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', '&Collapse all'),
-            u':/services/service_bottom.png',
+            u':/services/service_collapse_all.png',
             translate('OpenLP.ServiceManager',
             'Collapse all the service items.'),
             self.onCollapseAll)
@@ -306,7 +307,7 @@ class ServiceManager(QtGui.QWidget):
         self.editAction.setVisible(False)
         self.maintainAction.setVisible(False)
         self.notesAction.setVisible(False)
-        if serviceItem[u'service_item'].is_capable(ItemCapabilities.AllowsEdit) \
+        if serviceItem[u'service_item'].is_capable(ItemCapabilities.AllowsEdit)\
             and hasattr(serviceItem[u'service_item'], u'editId'):
             self.editAction.setVisible(True)
         if serviceItem[u'service_item']\
@@ -441,7 +442,8 @@ class ServiceManager(QtGui.QWidget):
             if setSelected:
                 setSelected = False
                 serviceIterator.value().setSelected(True)
-            elif serviceIterator.value() and serviceIterator.value().isSelected():
+            elif serviceIterator.value() and \
+                serviceIterator.value().isSelected():
                 serviceIterator.value().setSelected(False)
                 setSelected = True
             serviceIterator += 1
@@ -761,7 +763,8 @@ class ServiceManager(QtGui.QWidget):
                         serviceitem.set_from_service(item, self.servicePath)
                         self.validateItem(serviceitem)
                         self.addServiceItem(serviceitem)
-                        if serviceitem.is_capable(ItemCapabilities.OnLoadUpdate):
+                        if serviceitem.is_capable(
+                            ItemCapabilities.OnLoadUpdate):
                             Receiver.send_message(u'%s_service_load' %
                                 serviceitem.name.lower(), serviceitem)
                     try:
@@ -888,8 +891,8 @@ class ServiceManager(QtGui.QWidget):
         ``expand``
             Override the default expand settings. (Tristate)
         """
-        log.debug(u'addServiceItem')
-        if expand == None:
+        # if not passed set to config value
+        if expand is None:
             expand = self.expandTabs
         sitem = self.findServiceItem()[0]
         item.render()

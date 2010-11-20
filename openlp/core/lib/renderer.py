@@ -29,11 +29,10 @@ format it for the output display.
 """
 import logging
 
-from PyQt4 import QtGui, QtCore, QtWebKit
+from PyQt4 import QtWebKit
 
-from openlp.core.lib import resize_image, expand_tags, \
-    build_lyrics_format_css, build_lyrics_outline_css, image_to_byte
-
+from openlp.core.lib import expand_tags, build_lyrics_format_css, \
+    build_lyrics_outline_css
 
 log = logging.getLogger(__name__)
 
@@ -78,9 +77,9 @@ class Renderer(object):
         self._rect_footer = rect_footer
         self.page_width = self._rect.width()
         self.page_height = self._rect.height()
-        if self._theme.display_shadow:
-            self.page_width -= int(self._theme.display_shadow_size)
-            self.page_height -= int(self._theme.display_shadow_size)
+        if self._theme.font_main_shadow:
+            self.page_width -= int(self._theme.font_main_shadow_size)
+            self.page_height -= int(self._theme.font_main_shadow_size)
         self.web = QtWebKit.QWebView()
         self.web.setVisible(False)
         self.web.resize(self.page_width, self.page_height)
