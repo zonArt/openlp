@@ -514,7 +514,7 @@ class MediaManagerItem(QtGui.QWidget):
                 self.parent.serviceManager.addServiceItem(service_item,
                     replace=True)
             else:
-                #Turn off the remote edit update message indicator
+                # Turn off the remote edit update message indicator
                 QtGui.QMessageBox.information(self,
                     translate('OpenLP.MediaManagerItem',
                         'Invalid Service Item'),

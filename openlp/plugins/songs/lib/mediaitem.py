@@ -192,6 +192,7 @@ class SongMediaItem(MediaManagerItem):
         Handle the exit from the edit dialog and trigger remote updates
         of songs
         """
+        log.debug(u'onSongListLoad')
         # Called to redisplay the song list screen edit from a search
         # or from the exit of the Song edit dialog.  If remote editing is active
         # Trigger it and clean up so it will not update again.
@@ -259,6 +260,7 @@ class SongMediaItem(MediaManagerItem):
         Receiver.send_message(u'songs_load_list')
 
     def onNewClick(self):
+        log.debug(u'onNewClick')
         self.edit_song_form.newSong()
         self.edit_song_form.exec_()
 
@@ -266,6 +268,7 @@ class SongMediaItem(MediaManagerItem):
         self.song_maintenance_form.exec_()
 
     def onRemoteEditClear(self):
+        log.debug(u'onRemoteEditClear')
         self.remoteTriggered = None
         self.remoteSong = -1
 
@@ -275,6 +278,7 @@ class SongMediaItem(MediaManagerItem):
         the Song Id in the payload along with an indicator to say which
         type of display is required.
         """
+        log.debug(u'onRemoteEdit %s' % songid)
         fields = songid.split(u':')
         valid = self.parent.manager.get_object(Song, fields[1])
         if valid:
@@ -287,6 +291,7 @@ class SongMediaItem(MediaManagerItem):
         """
         Edit a song
         """
+        log.debug(u'onEditClick')
         if check_item_selected(self.listView,
             translate('SongsPlugin.MediaItem',
             'You must select an item to edit.')):
@@ -324,6 +329,7 @@ class SongMediaItem(MediaManagerItem):
             self.onSearchTextButtonClick()
 
     def generateSlideData(self, service_item, item=None):
+        log.debug(u'generateSlideData (%s:%s)' % (service_item, item))
         raw_footer = []
         author_list = u''
         author_audit = []
@@ -345,7 +351,7 @@ class SongMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.AddIfNewItem)
         song = self.parent.manager.get_object(Song, item_id)
         service_item.theme = song.theme_name
-        service_item.editId = item_id
+        service_item.edit_id = item_id
         if song.lyrics.startswith(u'<?xml version='):
             songXML = SongXMLParser(song.lyrics)
             verseList = songXML.get_verses()
@@ -357,7 +363,7 @@ class SongMediaItem(MediaManagerItem):
                     service_item.add_from_text(
                         verse[1][:30], unicode(verse[1]), verseTag)
             else:
-                #Loop through the verse list and expand the song accordingly.
+                # Loop through the verse list and expand the song accordingly.
                 for order in song.verse_order.upper().split(u' '):
                     if len(order) == 0:
                         break
@@ -397,6 +403,7 @@ class SongMediaItem(MediaManagerItem):
         """
         Triggered by a song being loaded by the service item
         """
+        log.debug(u'serviceLoad')
         if item.data_string:
             search_results = self.parent.manager.get_all_objects(Song,
                 Song.search_title.like(u'%' +
@@ -408,9 +415,13 @@ class SongMediaItem(MediaManagerItem):
             if search_results:
                 for song in search_results:
                     count = 0
+                    # temp debug to find why service items do not edit
+                    log.debug(u'author list %s' % author_list)
                     for author in song.authors:
+                        log.debug(u'author %s' % author.display_name)
                         if author.display_name in author_list:
                             count += 1
+                    log.debug(u'found %s : %s' % (count, len(author_list)))
                     if count == len(author_list):
                         editId = song.id
                         uuid = item._uuid

@@ -308,7 +308,7 @@ class ServiceManager(QtGui.QWidget):
         self.maintainAction.setVisible(False)
         self.notesAction.setVisible(False)
         if serviceItem[u'service_item'].is_capable(ItemCapabilities.AllowsEdit)\
-            and hasattr(serviceItem[u'service_item'], u'editId'):
+            and serviceItem[u'service_item'].edit_id:
             self.editAction.setVisible(True)
         if serviceItem[u'service_item']\
             .is_capable(ItemCapabilities.AllowsMaintain):
@@ -864,7 +864,7 @@ class ServiceManager(QtGui.QWidget):
         editId, uuid = message.split(u':')
         for item in self.serviceItems:
             if item[u'service_item']._uuid == uuid:
-                item[u'service_item'].editId = editId
+                item[u'service_item'].edit_id = editId
 
     def replaceServiceItem(self, newItem):
         """
@@ -873,7 +873,7 @@ class ServiceManager(QtGui.QWidget):
         """
         newItem.render()
         for itemcount, item in enumerate(self.serviceItems):
-            if item[u'service_item'].editId == newItem.editId and \
+            if item[u'service_item'].edit_id == newItem.edit_id and \
                 item[u'service_item'].name == newItem.name:
                 newItem.merge(item[u'service_item'])
                 item[u'service_item'] = newItem
@@ -983,7 +983,7 @@ class ServiceManager(QtGui.QWidget):
             .is_capable(ItemCapabilities.AllowsEdit):
             Receiver.send_message(u'%s_edit' %
                 self.serviceItems[item][u'service_item'].name.lower(), u'L:%s' %
-                self.serviceItems[item][u'service_item'].editId )
+                self.serviceItems[item][u'service_item'].edit_id )
 
     def findServiceItem(self):
         """
