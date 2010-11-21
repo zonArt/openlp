@@ -766,7 +766,7 @@ class ThemeManager(QtGui.QWidget):
         """
         log.debug(u'base theme created')
         newtheme = ThemeXML()
-        return newtheme.extract_xml()
+        return newtheme
 
     def createThemeFromXml(self, theme_xml, path):
         """
