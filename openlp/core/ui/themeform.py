@@ -569,9 +569,9 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
                 (QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
             return
-        if self.theme.theme_name == u'-1':
+        if self.theme.theme_name == u'-1' or self.theme.theme_name == u'None':
             QtGui.QMessageBox.critical(self,
-                translate('OpenLP.ThemeForm', 'Theme Name Missing'),
+                translate('OpenLP.ThemeForm', 'Theme Name Invalid'),
                 translate('OpenLP.ThemeForm',
                     'Invalid theme name. '
                     'Please enter one.'),
