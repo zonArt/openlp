@@ -409,7 +409,7 @@ class SongMediaItem(MediaManagerItem):
                 Song.search_title.like(u'%' +
                     item.data_string[u'title'].split(u'@')[0] + u'%'),
                 Song.search_title.asc())
-            author_list = item.data_string[u'authors'].split(u',')
+            author_list = item.data_string[u'authors'].split(u', ')
             editId = 0
             uuid = 0
             if search_results:
