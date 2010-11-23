@@ -69,6 +69,7 @@ class RenderManager(object):
         self.override_background = None
         self.themedata = None
         self.alertTab = None
+        self.force_page = False
 
     def update_display(self):
         """
@@ -187,7 +188,7 @@ class RenderManager(object):
                 theme.font_footer_height - 1)
         self.renderer.set_text_rectangle(main_rect, footer_rect)
 
-    def generate_preview(self, themedata):
+    def generate_preview(self, themedata, forcePage=False):
         """
         Generate a preview of a theme.
 
@@ -195,6 +196,7 @@ class RenderManager(object):
             The theme to generated a preview for.
         """
         log.debug(u'generate preview')
+        self.force_page = forcePage
         # set the default image size for previews
         self.calculate_default(self.screens.preview[u'size'])
         verse = u'The Lord said to {r}Noah{/r}: \n' \
@@ -204,6 +206,9 @@ class RenderManager(object):
         'Get those children out of the muddy, muddy \n' \
         '{r}C{/r}{b}h{/b}{bl}i{/bl}{y}l{/y}{g}d{/g}{pk}' \
         'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
+        # make big page for theme edit dialog to get line count
+        if self.force_page:
+            verse = verse + verse + verse
         footer = []
         footer.append(u'Arky Arky (Unknown)' )
         footer.append(u'Public Domain')
@@ -228,9 +233,12 @@ class RenderManager(object):
 
         ``words``
             The words to go on the slides.
+
+        ``line_break``
+            Add line endings after each line of text used for bibles.
         """
         log.debug(u'format slide')
-        return self.renderer.format_slide(words, line_break)
+        return self.renderer.format_slide(words, line_break, self.force_page)
 
     def calculate_default(self, screen):
         """

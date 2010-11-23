@@ -428,4 +428,3 @@ class SongMediaItem(MediaManagerItem):
             if editId != 0:
                 Receiver.send_message(u'service_item_update',
                     u'%s:%s' %(editId, uuid))
-

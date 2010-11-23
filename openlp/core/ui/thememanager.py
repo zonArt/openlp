@@ -729,7 +729,6 @@ class ThemeManager(QtGui.QWidget):
 
     def generateAndSaveImage(self, dir, name, theme):
         log.debug(u'generateAndSaveImage %s %s', dir, name)
-        #theme = self.createThemeFromXml(theme_xml, dir)
         theme_xml = theme.extract_xml()
         frame = self.generateImage(theme)
         samplepathname = os.path.join(self.path, name + u'.png')
@@ -742,12 +741,12 @@ class ThemeManager(QtGui.QWidget):
         pixmap.save(thumb, u'png')
         log.debug(u'Theme image written to %s', samplepathname)
 
-    def generateImage(self, themedata):
+    def generateImage(self, themedata, forcePage=False):
         """
         Call the RenderManager to build a Sample Image
         """
         log.debug(u'generateImage \n%s ', themedata)
-        return self.parent.RenderManager.generate_preview(themedata)
+        return self.parent.RenderManager.generate_preview(themedata, forcePage)
 
     def getPreviewImage(self, theme):
         """

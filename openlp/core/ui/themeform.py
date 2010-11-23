@@ -29,7 +29,8 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, BackgroundType, BackgroundGradientType
+from openlp.core.lib import translate, BackgroundType, BackgroundGradientType, \
+    Receiver
 from openlp.core.utils import get_images_filter
 from themewizard import Ui_ThemeWizard
 
@@ -96,10 +97,13 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         QtCore.QObject.connect(self,
             QtCore.SIGNAL(u'currentIdChanged(int)'),
             self.pageChanged)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'theme_line_count'),
+            self.updateLinesText)
 
     def pageChanged(self, pageId):
         """
-        Detects Page changes and updates.
+        Detects Page changes and updates as approprate.
         """
         if pageId == 6:
             self.updateTheme()
@@ -184,6 +188,23 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.backgroundPage.registerField(
             u'name', self.themeNameEdit)
 
+    def calculateLines(self):
+        """
+        Calculate the number of lines on a page by rendering text
+        """
+        print "calculateLines ",self.page
+        # Do not trigger on start up
+        if self.page != 0:
+            self.updateTheme()
+            frame = self.thememanager.generateImage(self.theme, True)
+
+    def updateLinesText(self, lines):
+        """
+        Updates the lines on a page on the wizard
+        """
+        self.mainLineCountLabel.setText(unicode(translate('OpenLP.ThemeForm', \
+            '(%d lines per slide)' % int(lines))))
+
     def onOutlineCheckCheckBoxChanged(self, state):
         """
         Change state as Outline check box changed
@@ -194,6 +215,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             self.theme.font_main_outline = False
         self.outlineColorPushButton.setEnabled(self.theme.font_main_outline)
         self.outlineSizeSpinBox.setEnabled(self.theme.font_main_outline)
+        self.calculateLines()
 
     def onShadowCheckCheckBoxChanged(self, state):
         """
@@ -205,6 +227,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             self.theme.font_main_shadow = False
         self.shadowColorPushButton.setEnabled(self.theme.font_main_shadow)
         self.shadowSizeSpinBox.setEnabled(self.theme.font_main_shadow)
+        self.calculateLines()
 
     def onMainDefaultPositionCheckBox(self, value):
         """
@@ -244,6 +267,8 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         Set up the pages for Initial run through dialog
         """
         log.debug(u'initializePage %s' % id)
+        print u'initializePage %s' % id
+        self.page = id
         if id == 1:
             self.setBackgroundTabValues()
         elif id == 2:
