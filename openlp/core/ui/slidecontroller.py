@@ -942,7 +942,7 @@ class SlideController(QtGui.QWidget):
         """
         self.songEdit = True
         Receiver.send_message(u'%s_edit' % self.serviceItem.name.lower(),
-            u'P:%s' % self.serviceItem.editId)
+            u'P:%s' % self.serviceItem.edit_id)
 
     def onGoLive(self):
         """

@@ -855,7 +855,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.plugin_manager.finalise_plugins()
         # Save settings
         self.saveSettings()
-        #Close down the display
+        # Close down the display
         self.LiveController.display.close()
 
     def serviceChanged(self, reset=False, serviceName=None):

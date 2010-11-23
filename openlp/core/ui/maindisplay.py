@@ -36,6 +36,7 @@ from openlp.core.ui import HideMode
 log = logging.getLogger(__name__)
 
 #http://www.steveheffernan.com/html5-video-player/demo-video-player.html
+#http://html5demos.com/two-videos
 
 class DisplayWidget(QtGui.QGraphicsView):
     """
