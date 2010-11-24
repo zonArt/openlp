@@ -33,7 +33,7 @@ except ImportError:
     enchant_available = False
 
 # based on code from
-# http://john.nachtimwald.com/2009/08/22/qplaintextedit-with-in-line-spell-check/
+#http://john.nachtimwald.com/2009/08/22/qplaintextedit-with-in-line-spell-check/
 
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import html_expands, translate

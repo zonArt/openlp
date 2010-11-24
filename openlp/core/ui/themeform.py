@@ -596,5 +596,5 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         new_color = QtGui.QColorDialog.getColor(
             QtGui.QColor(field), self)
         if new_color.isValid():
-           field = new_color.name()
+            field = new_color.name()
         return field
