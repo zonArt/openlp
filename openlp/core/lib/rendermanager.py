@@ -220,12 +220,13 @@ class RenderManager(object):
         serviceItem.render_manager = self
         serviceItem.raw_footer = footer
         serviceItem.render(True)
-        self.display.buildHtml(serviceItem)
-        raw_html = serviceItem.get_rendered_frame(0)
-        preview = self.display.text(raw_html)
-        # Reset the real screen size for subsequent render requests
-        self.calculate_default(self.screens.current[u'size'])
-        return preview
+        if not self.force_page:
+            self.display.buildHtml(serviceItem)
+            raw_html = serviceItem.get_rendered_frame(0)
+            preview = self.display.text(raw_html)
+            # Reset the real screen size for subsequent render requests
+            self.calculate_default(self.screens.current[u'size'])
+            return preview
 
     def format_slide(self, words, line_break):
         """

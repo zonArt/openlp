@@ -100,6 +100,33 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'theme_line_count'),
             self.updateLinesText)
+        QtCore.QObject.connect(self.mainSizeSpinBox,
+            QtCore.SIGNAL(u'valueChanged(int)'),
+            self.calculateLines)
+        QtCore.QObject.connect(self.mainSizeSpinBox,
+            QtCore.SIGNAL(u'editingFinished()'),
+            self.calculateLines)
+        QtCore.QObject.connect(self.lineSpacingSpinBox,
+            QtCore.SIGNAL(u'valueChanged(int)'),
+            self.calculateLines)
+        QtCore.QObject.connect(self.lineSpacingSpinBox,
+            QtCore.SIGNAL(u'editingFinished()'),
+            self.calculateLines)
+        QtCore.QObject.connect(self.outlineSizeSpinBox,
+            QtCore.SIGNAL(u'valueChanged(int)'),
+            self.calculateLines)
+        QtCore.QObject.connect(self.outlineSizeSpinBox,
+            QtCore.SIGNAL(u'editingFinished()'),
+            self.calculateLines)
+        QtCore.QObject.connect(self.shadowSizeSpinBox,
+            QtCore.SIGNAL(u'valueChanged(int)'),
+            self.calculateLines)
+        QtCore.QObject.connect(self.shadowSizeSpinBox,
+            QtCore.SIGNAL(u'editingFinished()'),
+            self.calculateLines)
+        QtCore.QObject.connect(self.mainFontComboBox,
+            QtCore.SIGNAL(u'activated(int)'),
+            self.calculateLines)
 
     def pageChanged(self, pageId):
         """
@@ -266,7 +293,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         Set up the pages for Initial run through dialog
         """
         log.debug(u'initializePage %s' % id)
-        print u'initializePage %s' % id
         self.page = id
         if id == 1:
             self.setBackgroundTabValues()
