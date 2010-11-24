@@ -628,15 +628,15 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
                 (QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
             return
-        save_from = None
-        save_to = None
+        saveFrom = None
+        saveTo = None
         if self.theme.background_type == \
             BackgroundType.to_string(BackgroundType.Image):
             filename = \
                 os.path.split(unicode(self.theme.background_filename))[1]
-            save_to = os.path.join(self.path, self.theme.theme_name, filename)
-            save_from = self.theme.background_filename
-        if self.thememanager.saveTheme(self.theme, save_from, save_to):
+            saveTo = os.path.join(self.path, self.theme.theme_name, filename)
+            saveFrom = self.theme.background_filename
+        if self.thememanager.saveTheme(self.theme, saveFrom, saveTo):
             return QtGui.QDialog.accept(self)
 
     def _colorButton(self, field):

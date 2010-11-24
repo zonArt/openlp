@@ -67,7 +67,7 @@ class RenderManager(object):
         self.service_theme = u''
         self.theme_level = u''
         self.override_background = None
-        self.themedata = None
+        self.theme_data = None
         self.alertTab = None
         self.force_page = False
 
@@ -81,7 +81,7 @@ class RenderManager(object):
         self.display.imageManager = self.image_manager
         self.display.setup()
         self.renderer.bg_frame = None
-        self.themedata = None
+        self.theme_data = None
         self.image_manager.update_display(self.width, self.height)
 
     def set_global_theme(self, global_theme, theme_level=ThemeLevel.Global):
@@ -100,7 +100,7 @@ class RenderManager(object):
         self.theme_level = theme_level
         self.global_theme_data = \
             self.theme_manager.getThemeData(self.global_theme)
-        self.themedata = None
+        self.theme_data = None
 
     def set_service_theme(self, service_theme):
         """
@@ -110,7 +110,7 @@ class RenderManager(object):
             The service-level theme to be set.
         """
         self.service_theme = service_theme
-        self.themedata = None
+        self.theme_data = None
 
     def set_override_theme(self, theme, overrideLevels=False):
         """
@@ -147,19 +147,19 @@ class RenderManager(object):
                     self.theme = self.service_theme
             else:
                 self.theme = self.global_theme
-        if self.theme != self.renderer.theme_name or self.themedata is None \
+        if self.theme != self.renderer.theme_name or self.theme_data is None \
             or overrideLevels:
             log.debug(u'theme is now %s', self.theme)
             # Force the theme to be the one passed in.
             if overrideLevels:
-                self.themedata = theme
+                self.theme_data = theme
             else:
-                self.themedata = self.theme_manager.getThemeData(self.theme)
+                self.theme_data = self.theme_manager.getThemeData(self.theme)
             self.calculate_default(self.screens.current[u'size'])
-            self.renderer.set_theme(self.themedata)
-            self.build_text_rectangle(self.themedata)
-            self.image_manager.add_image(self.themedata.theme_name,
-                self.themedata.background_filename)
+            self.renderer.set_theme(self.theme_data)
+            self.build_text_rectangle(self.theme_data)
+            self.image_manager.add_image(self.theme_data.theme_name,
+                self.theme_data.background_filename)
         return self.renderer._rect, self.renderer._rect_footer
 
     def build_text_rectangle(self, theme):
@@ -188,15 +188,19 @@ class RenderManager(object):
                 theme.font_footer_height - 1)
         self.renderer.set_text_rectangle(main_rect, footer_rect)
 
-    def generate_preview(self, themedata, forcePage=False):
+    def generate_preview(self, theme_data, force_page=False):
         """
         Generate a preview of a theme.
 
-        ``themedata``
+        ``theme_data``
             The theme to generated a preview for.
+
+        ``force_page``
+            Flag to tell message lines per page need to be generated.
         """
         log.debug(u'generate preview')
-        self.force_page = forcePage
+        # save value for use in format_slide
+        self.force_page = force_page
         # set the default image size for previews
         self.calculate_default(self.screens.preview[u'size'])
         verse = u'The Lord said to {r}Noah{/r}: \n' \
@@ -215,7 +219,7 @@ class RenderManager(object):
         footer.append(u'CCLI 123456')
         # build a service item to generate preview
         serviceItem = ServiceItem()
-        serviceItem.theme = themedata
+        serviceItem.theme = theme_data
         serviceItem.add_from_text(u'', verse, footer)
         serviceItem.render_manager = self
         serviceItem.raw_footer = footer
