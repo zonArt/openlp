@@ -81,9 +81,6 @@ html_expands.append({u'desc':u'Italics', u'start tag':u'{it}',
     u'start html':u'<em>', u'end tag':u'{/it}', u'end html':u'</em>',
     u'protected':True})
 
-# Image image_cache to stop regualar image resizing
-image_cache = {}
-
 def translate(context, text, comment=None):
     """
     A special shortcut method to wrap around the Qt4 translation functions.
@@ -223,16 +220,13 @@ def image_to_byte(image):
     ``image``
         The image to converted.
     """
-    log.debug(u'image_to_byte')
+    log.debug(u'image_to_byte - start')
     byte_array = QtCore.QByteArray()
     # use buffer to store pixmap into byteArray
     buffie = QtCore.QBuffer(byte_array)
     buffie.open(QtCore.QIODevice.WriteOnly)
-    if isinstance(image, QtGui.QImage):
-        pixmap = QtGui.QPixmap.fromImage(image)
-    else:
-        pixmap = QtGui.QPixmap(image)
-    pixmap.save(buffie, "PNG")
+    image.save(buffie, "PNG")
+    log.debug(u'image_to_byte - end')
     # convert to base64 encoding so does not get missed!
     return byte_array.toBase64()
 
@@ -253,26 +247,25 @@ def resize_image(image, width, height, background=QtCore.Qt.black):
         The background colour defaults to black.
 
     """
-    log.debug(u'resize_image')
-    preview = QtGui.QImage(image)
+    log.debug(u'resize_image - start')
+    if isinstance(image, QtGui.QImage):
+        preview = image
+    else:
+        preview = QtGui.QImage(image)
     if not preview.isNull():
         # Only resize if different size
         if preview.width() == width and preview.height == height:
             return preview
         preview = preview.scaled(width, height, QtCore.Qt.KeepAspectRatio,
             QtCore.Qt.SmoothTransformation)
-    image_cache_key = u'%s%s%s' % (image, unicode(width), unicode(height))
-    if image_cache_key in image_cache:
-        return image_cache[image_cache_key]
     realw = preview.width()
     realh = preview.height()
     # and move it to the centre of the preview space
     new_image = QtGui.QImage(width, height,
         QtGui.QImage.Format_ARGB32_Premultiplied)
-    new_image.fill(background)
     painter = QtGui.QPainter(new_image)
+    painter.fillRect(new_image.rect(), background)
     painter.drawImage((width - realw) / 2, (height - realh) / 2, preview)
-    image_cache[image_cache_key] = new_image
     return new_image
 
 def check_item_selected(list_widget, message):
@@ -310,8 +303,11 @@ def expand_tags(text):
         text = text.replace(tag[u'end tag'], tag[u'end html'])
     return text
 
+from theme import ThemeLevel, ThemeXML, BackgroundGradientType, BackgroundType, \
+    HorizontalType, VerticalType
 from spelltextedit import SpellTextEdit
 from eventreceiver import Receiver
+from imagemanager import ImageManager
 from settingsmanager import SettingsManager
 from plugin import PluginStatus, StringContent, Plugin
 from pluginmanager import PluginManager
@@ -323,7 +319,6 @@ from htmlbuilder import build_html, build_lyrics_format_css, \
     build_lyrics_outline_css
 from toolbar import OpenLPToolbar
 from dockwidget import OpenLPDockWidget
-from theme import ThemeLevel, ThemeXML
 from renderer import Renderer
 from rendermanager import RenderManager
 from mediamanageritem import MediaManagerItem

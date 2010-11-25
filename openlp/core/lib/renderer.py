@@ -29,11 +29,10 @@ format it for the output display.
 """
 import logging
 
-from PyQt4 import QtGui, QtCore, QtWebKit
+from PyQt4 import QtWebKit
 
-from openlp.core.lib import resize_image, expand_tags, \
-    build_lyrics_format_css, build_lyrics_outline_css, image_to_byte
-
+from openlp.core.lib import expand_tags, build_lyrics_format_css, \
+    build_lyrics_outline_css
 
 log = logging.getLogger(__name__)
 
@@ -51,11 +50,6 @@ class Renderer(object):
         self._rect = None
         self.theme_name = None
         self._theme = None
-        self._bg_image_filename = None
-        self.frame = None
-        self.bg_frame = None
-        self.bg_image = None
-        self.bg_image_bytes = None
 
     def set_theme(self, theme):
         """
@@ -66,14 +60,7 @@ class Renderer(object):
         """
         log.debug(u'set theme')
         self._theme = theme
-        self.bg_frame = None
-        self.bg_image = None
-        self.bg_image_bytes = None
-        self._bg_image_filename = None
         self.theme_name = theme.theme_name
-        if theme.background_type == u'image':
-            if theme.background_filename:
-                self._bg_image_filename = unicode(theme.background_filename)
 
     def set_text_rectangle(self, rect_main, rect_footer):
         """
@@ -90,9 +77,9 @@ class Renderer(object):
         self._rect_footer = rect_footer
         self.page_width = self._rect.width()
         self.page_height = self._rect.height()
-        if self._theme.display_shadow:
-            self.page_width -= int(self._theme.display_shadow_size)
-            self.page_height -= int(self._theme.display_shadow_size)
+        if self._theme.font_main_shadow:
+            self.page_width -= int(self._theme.font_main_shadow_size)
+            self.page_height -= int(self._theme.font_main_shadow_size)
         self.web = QtWebKit.QWebView()
         self.web.setVisible(False)
         self.web.resize(self.page_width, self.page_height)
@@ -104,39 +91,6 @@ class Renderer(object):
             u'<div id="main">' % \
             (build_lyrics_format_css(self._theme, self.page_width,
             self.page_height), build_lyrics_outline_css(self._theme))
-
-    def set_frame_dest(self, frame_width, frame_height):
-        """
-        Set the size of the slide.
-
-        ``frame_width``
-            The width of the slide.
-
-        ``frame_height``
-            The height of the slide.
-
-        """
-        log.debug(u'set frame dest (frame) w %d h %d', frame_width,
-            frame_height)
-        self.frame = QtGui.QImage(frame_width, frame_height,
-            QtGui.QImage.Format_ARGB32_Premultiplied)
-        if self._bg_image_filename and not self.bg_image:
-            self.bg_image = resize_image(self._bg_image_filename,
-                self.frame.width(), self.frame.height())
-        if self._theme.background_type == u'image':
-            self.bg_frame = QtGui.QImage(self.frame.width(),
-                self.frame.height(),
-                QtGui.QImage.Format_ARGB32_Premultiplied)
-            painter = QtGui.QPainter()
-            painter.begin(self.bg_frame)
-            painter.fillRect(self.frame.rect(), QtCore.Qt.black)
-            if self.bg_image:
-                painter.drawImage(0, 0, self.bg_image)
-            painter.end()
-            self.bg_image_bytes = image_to_byte(self.bg_frame)
-        else:
-            self.bg_frame = None
-            self.bg_image_bytes = None
 
     def format_slide(self, words, line_break):
         """
@@ -161,18 +115,19 @@ class Renderer(object):
         html_text = u''
         styled_text = u''
         for line in text:
-            styled_line = expand_tags(line)
-            if styled_text:
-                styled_text += line_end + styled_line
+            styled_line = expand_tags(line) + line_end
+            styled_text += styled_line
             html = self.page_shell + styled_text + u'</div></body></html>'
             self.web.setHtml(html)
             # Text too long so go to next page
             if self.web_frame.contentsSize().height() > self.page_height:
+                if html_text.endswith(u'<br>'):
+                    html_text = html_text[:len(html_text)-4]
                 formatted.append(html_text)
                 html_text = u''
                 styled_text = styled_line
             html_text += line + line_end
-        if line_break:
+        if html_text.endswith(u'<br>'):
             html_text = html_text[:len(html_text)-4]
         formatted.append(html_text)
         log.debug(u'format_slide - End')

@@ -116,6 +116,7 @@ class ServiceManager(QtGui.QWidget):
         self.layout = QtGui.QVBoxLayout(self)
         self.layout.setSpacing(0)
         self.layout.setMargin(0)
+        self.expandTabs = False
         # Create the top toolbar
         self.toolbar = OpenLPToolbar(self)
         self.toolbar.addToolbarButton(
@@ -203,13 +204,13 @@ class ServiceManager(QtGui.QWidget):
         self.orderToolbar.addSeparator()
         self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', '&Expand all'),
-            u':/services/service_top.png',
+            u':/services/service_expand_all.png',
             translate('OpenLP.ServiceManager',
             'Expand all the service items.'),
             self.onExpandAll)
         self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', '&Collapse all'),
-            u':/services/service_bottom.png',
+            u':/services/service_collapse_all.png',
             translate('OpenLP.ServiceManager',
             'Collapse all the service items.'),
             self.onCollapseAll)
@@ -306,8 +307,8 @@ class ServiceManager(QtGui.QWidget):
         self.editAction.setVisible(False)
         self.maintainAction.setVisible(False)
         self.notesAction.setVisible(False)
-        if serviceItem[u'service_item'].is_capable(ItemCapabilities.AllowsEdit) \
-            and hasattr(serviceItem[u'service_item'], u'editId'):
+        if serviceItem[u'service_item'].is_capable(ItemCapabilities.AllowsEdit)\
+            and serviceItem[u'service_item'].edit_id:
             self.editAction.setVisible(True)
         if serviceItem[u'service_item']\
             .is_capable(ItemCapabilities.AllowsMaintain):
@@ -346,7 +347,7 @@ class ServiceManager(QtGui.QWidget):
             self.serviceItems[item][u'service_item'])
         if self.serviceItemEditForm.exec_():
             self.addServiceItem(self.serviceItemEditForm.getServiceItem(),
-                replace=True, expand=self.serviceItems[item][u'expand'])
+                replace=True, expand=self.serviceItems[item][u'expanded'])
 
     def nextItem(self):
         """
@@ -441,7 +442,8 @@ class ServiceManager(QtGui.QWidget):
             if setSelected:
                 setSelected = False
                 serviceIterator.value().setSelected(True)
-            elif serviceIterator.value() and serviceIterator.value().isSelected():
+            elif serviceIterator.value() and \
+                serviceIterator.value().isSelected():
                 serviceIterator.value().setSelected(False)
                 setSelected = True
             serviceIterator += 1
@@ -650,9 +652,12 @@ class ServiceManager(QtGui.QWidget):
                         .get_service_repr()})
                     if item[u'service_item'].uses_file():
                         for frame in item[u'service_item'].get_frames():
-                            path_from = unicode(os.path.join(
-                                frame[u'path'],
-                                frame[u'title']))
+                            if item[u'service_item'].is_image():
+                                path_from = frame[u'path']
+                            else:
+                                path_from = unicode(os.path.join(
+                                    frame[u'path'],
+                                    frame[u'title']))
                             # On write a file once
                             if not path_from in write_list:
                                 write_list.append(path_from)
@@ -758,7 +763,8 @@ class ServiceManager(QtGui.QWidget):
                         serviceitem.set_from_service(item, self.servicePath)
                         self.validateItem(serviceitem)
                         self.addServiceItem(serviceitem)
-                        if serviceitem.is_capable(ItemCapabilities.OnLoadUpdate):
+                        if serviceitem.is_capable(
+                            ItemCapabilities.OnLoadUpdate):
                             Receiver.send_message(u'%s_service_load' %
                                 serviceitem.name.lower(), serviceitem)
                     try:
@@ -858,7 +864,7 @@ class ServiceManager(QtGui.QWidget):
         editId, uuid = message.split(u':')
         for item in self.serviceItems:
             if item[u'service_item']._uuid == uuid:
-                item[u'service_item'].editId = editId
+                item[u'service_item'].edit_id = editId
 
     def replaceServiceItem(self, newItem):
         """
@@ -867,7 +873,7 @@ class ServiceManager(QtGui.QWidget):
         """
         newItem.render()
         for itemcount, item in enumerate(self.serviceItems):
-            if item[u'service_item'].editId == newItem.editId and \
+            if item[u'service_item'].edit_id == newItem.edit_id and \
                 item[u'service_item'].name == newItem.name:
                 newItem.merge(item[u'service_item'])
                 item[u'service_item'] = newItem
@@ -885,8 +891,8 @@ class ServiceManager(QtGui.QWidget):
         ``expand``
             Override the default expand settings. (Tristate)
         """
-        log.debug(u'addServiceItem')
-        if expand == None:
+        # if not passed set to config value
+        if expand is None:
             expand = self.expandTabs
         sitem = self.findServiceItem()[0]
         item.render()
@@ -977,7 +983,7 @@ class ServiceManager(QtGui.QWidget):
             .is_capable(ItemCapabilities.AllowsEdit):
             Receiver.send_message(u'%s_edit' %
                 self.serviceItems[item][u'service_item'].name.lower(), u'L:%s' %
-                self.serviceItems[item][u'service_item'].editId )
+                self.serviceItems[item][u'service_item'].edit_id )
 
     def findServiceItem(self):
         """

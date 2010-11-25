@@ -90,6 +90,16 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         QtCore.QObject.connect(self.fontMainSizeSpinBox,
             QtCore.SIGNAL(u'editingFinished()'),
             self.onFontMainSizeSpinBoxChanged)
+        QtCore.QObject.connect(self.fontMainLineAdjustmentSpinBox,
+            QtCore.SIGNAL(u'editingFinished()'),
+            self.onFontMainLineAdjustmentSpinBoxChanged)
+        QtCore.QObject.connect(self.shadowSpinBox,
+            QtCore.SIGNAL(u'editingFinished()'),
+            self.onShadowSpinBoxChanged)
+        QtCore.QObject.connect(self.outlineSpinBox,
+            QtCore.SIGNAL(u'editingFinished()'),
+            self.onOutlineSpinBoxChanged)
+
         QtCore.QObject.connect(self.fontFooterSizeSpinBox,
             QtCore.SIGNAL(u'editingFinished()'),
             self.onFontFooterSizeSpinBoxChanged)
@@ -118,12 +128,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         QtCore.QObject.connect(self.fontFooterHeightSpinBox,
             QtCore.SIGNAL(u'editingFinished()'),
             self.onFontFooterHeightSpinBoxChanged)
-        QtCore.QObject.connect(self.shadowSpinBox,
-            QtCore.SIGNAL(u'editingFinished()'),
-            self.onShadowSpinBoxChanged)
-        QtCore.QObject.connect(self.outlineSpinBox,
-            QtCore.SIGNAL(u'editingFinished()'),
-            self.onOutlineSpinBoxChanged)
+
         # CheckBoxes
         QtCore.QObject.connect(self.fontMainDefaultCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
@@ -525,7 +530,7 @@ class AmendThemeForm(QtGui.QDialog, Ui_AmendThemeDialog):
         else:
             self.gradientComboBox.setCurrentIndex(2)
         # Font Main Tab
-        self.fontMainComboBox.setCurrentFont(
+        self.mainFontComboBox.setCurrentFont(
             QtGui.QFont(self.theme.font_main_name))
         self.fontMainSizeSpinBox.setValue(self.theme.font_main_proportion)
         if not self.theme.font_main_italics and \

@@ -47,8 +47,9 @@ class SongImport(QtCore.QObject):
         """
         Initialise and create defaults for properties
 
-        song_manager is an instance of a SongManager, through which all
-        database access is performed
+        ``manager``
+            An instance of a SongManager, through which all database access is
+            performed.
         """
         self.manager = manager
         self.stop_import_flag = False
@@ -296,7 +297,8 @@ class SongImport(QtCore.QObject):
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
         for i, current_verse_tag in enumerate(self.verse_order_list):
             if verses_changed_to_other.has_key(current_verse_tag):
-                self.verse_order_list[i] = verses_changed_to_other[current_verse_tag]
+                self.verse_order_list[i] = \
+                    verses_changed_to_other[current_verse_tag]
         song.verse_order = u' '.join(self.verse_order_list)
         song.copyright = self.copyright
         song.comments = self.comments

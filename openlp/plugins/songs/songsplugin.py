@@ -25,6 +25,7 @@
 ###############################################################################
 
 import logging
+import re
 
 from PyQt4 import QtCore, QtGui
 
@@ -55,6 +56,7 @@ class SongsPlugin(Plugin):
         self.manager = Manager(u'songs', init_schema)
         self.icon_path = u':/plugins/plugin_songs.png'
         self.icon = build_icon(self.icon_path)
+        self.whitespace = re.compile(r'\W+')
 
     def getSettingsTab(self):
         visible_name = self.getString(StringContent.VisibleName)
@@ -63,6 +65,7 @@ class SongsPlugin(Plugin):
     def initialise(self):
         log.info(u'Songs Initialising')
         Plugin.initialise(self)
+        self.toolsReindexItem.setVisible(True)
         self.mediaItem.displayResultsSong(
             self.manager.get_all_objects(Song, order_by_ref=Song.search_title))
 
@@ -105,6 +108,57 @@ class SongsPlugin(Plugin):
         """
         # No menu items for now.
         pass
+
+    def addToolsMenuItem(self, tools_menu):
+        """
+        Give the alerts plugin the opportunity to add items to the
+        **Tools** menu.
+
+        ``tools_menu``
+            The actual **Tools** menu item, so that your actions can
+            use it as their parent.
+        """
+        log.info(u'add tools menu')
+        self.toolsReindexItem = QtGui.QAction(tools_menu)
+        self.toolsReindexItem.setIcon(build_icon(u':/plugins/plugin_songs.png'))
+        self.toolsReindexItem.setObjectName(u'toolsReindexItem')
+        self.toolsReindexItem.setText(
+            translate('SongsPlugin', '&Re-index Songs'))
+        self.toolsReindexItem.setStatusTip(
+            translate('SongsPlugin', 'Re-index the songs database to improve '
+            'searching and ordering.'))
+        tools_menu.addAction(self.toolsReindexItem)
+        QtCore.QObject.connect(self.toolsReindexItem,
+            QtCore.SIGNAL(u'triggered()'), self.onToolsReindexItemTriggered)
+        self.toolsReindexItem.setVisible(False)
+
+    def onToolsReindexItemTriggered(self):
+        """
+        Rebuild the search title of each song.
+        """
+        maxSongs = self.manager.get_object_count(Song)
+        progressDialog = QtGui.QProgressDialog(
+            translate('SongsPlugin', 'Reindexing songs...'),
+            translate('SongsPlugin', 'Cancel'),
+            0, maxSongs + 1, self.formparent)
+        progressDialog.setWindowModality(QtCore.Qt.WindowModal)
+        songs = self.manager.get_all_objects(Song)
+        counter = 0
+        for song in songs:
+            counter += 1
+            if song.title is None:
+                song.title = u''
+            if song.alternate_title is None:
+                song.alternate_title = u''
+            song.search_title = self.whitespace.sub(u' ', \
+                song.title.lower()) + u' ' + \
+                self.whitespace.sub(u' ', song.alternate_title.lower())
+            progressDialog.setValue(counter)
+        self.manager.save_objects(songs)
+        counter += 1
+        progressDialog.setValue(counter)
+        self.mediaItem.displayResultsSong(
+            self.manager.get_all_objects(Song, order_by_ref=Song.search_title))
 
     def onSongImportItemClicked(self):
         if self.mediaItem:
@@ -166,36 +220,46 @@ class SongsPlugin(Plugin):
         ## New Button ##
         self.textStrings[StringContent.New] = {
             u'title': translate('SongsPlugin', 'Add'),
-            u'tooltip': translate('SongsPlugin', 
+            u'tooltip': translate('SongsPlugin',
                 'Add a new Song')
         }
         ## Edit Button ##
         self.textStrings[StringContent.Edit] = {
             u'title': translate('SongsPlugin', 'Edit'),
-            u'tooltip': translate('SongsPlugin', 
+            u'tooltip': translate('SongsPlugin',
                 'Edit the selected Song')
         }
         ## Delete Button ##
         self.textStrings[StringContent.Delete] = {
             u'title': translate('SongsPlugin', 'Delete'),
-            u'tooltip': translate('SongsPlugin', 
+            u'tooltip': translate('SongsPlugin',
                 'Delete the selected Song')
         }
         ## Preview ##
         self.textStrings[StringContent.Preview] = {
             u'title': translate('SongsPlugin', 'Preview'),
-            u'tooltip': translate('SongsPlugin', 
+            u'tooltip': translate('SongsPlugin',
                 'Preview the selected Song')
         }
         ## Live  Button ##
         self.textStrings[StringContent.Live] = {
             u'title': translate('SongsPlugin', 'Live'),
-            u'tooltip': translate('SongsPlugin', 
+            u'tooltip': translate('SongsPlugin',
                 'Send the selected Song live')
         }
         ## Add to service Button ##
         self.textStrings[StringContent.Service] = {
             u'title': translate('SongsPlugin', 'Service'),
-            u'tooltip': translate('SongsPlugin', 
+            u'tooltip': translate('SongsPlugin',
                 'Add the selected Song to the service')
         }
+
+    def finalise(self):
+        """
+        Time to tidy up on exit
+        """
+        log.info(u'Songs Finalising')
+        self.manager.finalise()
+        self.toolsReindexItem.setVisible(False)
+        Plugin.finalise(self)
+
