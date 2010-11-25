@@ -415,17 +415,12 @@ class SongMediaItem(MediaManagerItem):
             if search_results:
                 for song in search_results:
                     count = 0
-                    # temp debug to find why service items do not edit
-                    log.debug(u'author list %s' % author_list)
                     for author in song.authors:
-                        log.debug(u'author %s' % author.display_name)
                         if author.display_name in author_list:
                             count += 1
-                    log.debug(u'found %s : %s' % (count, len(author_list)))
                     if count == len(author_list):
                         editId = song.id
                         uuid = item._uuid
             if editId != 0:
                 Receiver.send_message(u'service_item_update',
                     u'%s:%s' %(editId, uuid))
-

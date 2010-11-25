@@ -32,7 +32,7 @@ import logging
 from PyQt4 import QtWebKit
 
 from openlp.core.lib import expand_tags, build_lyrics_format_css, \
-    build_lyrics_outline_css
+    build_lyrics_outline_css, Receiver
 
 log = logging.getLogger(__name__)
 
@@ -92,13 +92,20 @@ class Renderer(object):
             (build_lyrics_format_css(self._theme, self.page_width,
             self.page_height), build_lyrics_outline_css(self._theme))
 
-    def format_slide(self, words, line_break):
+    def format_slide(self, words, line_break, force_page=False):
         """
         Figure out how much text can appear on a slide, using the current
         theme settings.
 
         ``words``
             The words to be fitted on the slide.
+
+        ``line_break``
+            Add line endings after each line of text used for bibles.
+
+        ``force_page``
+            Flag to tell message lines in page.
+
         """
         log.debug(u'format_slide - Start')
         line_end = u''
@@ -114,13 +121,19 @@ class Renderer(object):
         formatted = []
         html_text = u''
         styled_text = u''
+        line_count = 0
         for line in text:
+            if line_count != -1:
+                line_count += 1
             styled_line = expand_tags(line) + line_end
             styled_text += styled_line
             html = self.page_shell + styled_text + u'</div></body></html>'
             self.web.setHtml(html)
             # Text too long so go to next page
             if self.web_frame.contentsSize().height() > self.page_height:
+                if force_page and line_count > 0:
+                    Receiver.send_message(u'theme_line_count', line_count)
+                line_count = -1
                 if html_text.endswith(u'<br>'):
                     html_text = html_text[:len(html_text)-4]
                 formatted.append(html_text)
