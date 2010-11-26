@@ -165,7 +165,7 @@ class SongBeamerImport(SongImport):
 
         ``line``
             The line in the file. It should consist of a tag and a value
-            for this tag. (unicode)
+            for this tag (unicode)::
 
                 u'#Title=Nearer my God to Thee'
         """
