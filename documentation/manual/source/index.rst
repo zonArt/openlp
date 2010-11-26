@@ -14,6 +14,7 @@ Contents:
    introduction
    glossary
    dualmonitors
+   songusage
 
 Indices and tables
 ==================
