@@ -109,6 +109,7 @@ class SongBeamerImport(SongImport):
                         self.parse_tags(line)
                     elif line.startswith(u'---'):
                         if self.current_verse:
+                            self.replace_html_tags()
                             self.add_verse(self.current_verse,
                                 self.current_verse_type)
                             self.current_verse = u'' 
@@ -123,11 +124,40 @@ class SongBeamerImport(SongImport):
                         else:
                             self.current_verse += u'%s\n' % line
                 if self.current_verse:
+                    self.replace_html_tags()
                     self.add_verse(self.current_verse, self.current_verse_type)
                 self.finish()
                 self.import_wizard.incrementProgressBar(
                     "Importing %s" % (self.file_name))
             return True
+
+    def replace_html_tags(self):
+        """
+        This can be called to replace SongBeamer's specific (html) tags with
+        OpenLP's specific (html) tags.
+        """
+        tag_pairs = [
+            (u'<b>', u'{st}'),
+            (u'</b>', u'{/st}'),
+            (u'<i>', u'{it}'),
+            (u'</i>', u'{/it}'),
+            (u'<u>', u''),
+            (u'</u>', u''),
+            (u'<br>', u'{st}'),
+            (u'</br>', u'{st}'),
+            (u'</ br>', u'{st}'),
+            (u'<p>', u'{/p}'),
+            (u'</p>', u'{/p}'),
+            (u'<super>', u'{su}'),
+            (u'</super>', u'{/su}'),
+            (u'<sub>', u'{sb}'),
+            (u'</sub>', u'{/sb}'),
+            (u'<wordwrap>', u''),
+            (u'</wordwrap>', u'')
+            ]
+        for pair in tag_pairs:
+            self.current_verse.replace(pair[0], pair[1])
+        # TODO: check for unsupported tags (see wiki) and remove them as well.
 
     def parse_tags(self, line):
         """
