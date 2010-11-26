@@ -320,15 +320,9 @@ class MediaManagerItem(QtGui.QWidget):
                     translate('OpenLP.MediaManagerItem',
                         '&Add to selected Service Item'),
                     self.onAddEditClick))
-        if QtCore.QSettings().value(u'advanced/double click live',
-            QtCore.QVariant(False)).toBool():
-            QtCore.QObject.connect(self.listView,
-                QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
-                self.onLiveClick)
-        else:
-            QtCore.QObject.connect(self.listView,
-                QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
-                self.onPreviewClick)
+        QtCore.QObject.connect(self.listView,
+            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
+            self.onClickPressed)
 
     def initialise(self):
         """
@@ -429,6 +423,16 @@ class MediaManagerItem(QtGui.QWidget):
     def generateSlideData(self, service_item, item=None):
         raise NotImplementedError(u'MediaManagerItem.generateSlideData needs '
             u'to be defined by the plugin')
+
+    def onClickPressed(self):
+        """
+        Allows the list click action to be determined dynamically
+        """
+        if QtCore.QSettings().value(u'advanced/double click live',
+            QtCore.QVariant(False)).toBool():
+            self.onLiveClick()
+        else:
+            self.onPreviewClick()
 
     def onPreviewClick(self):
         """

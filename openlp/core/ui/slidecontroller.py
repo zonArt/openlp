@@ -331,10 +331,8 @@ class SlideController(QtGui.QWidget):
         QtCore.QObject.connect(self.PreviewListWidget,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
         if not self.isLive:
-            if QtCore.QSettings().value(u'advanced/double click live',
-                QtCore.QVariant(False)).toBool():
-                QtCore.QObject.connect(self.PreviewListWidget,
-                    QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onGoLive)
+            QtCore.QObject.connect(self.PreviewListWidget,
+                QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onGoLiveClick)
         if isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'slidecontroller_live_spin_delay'),
@@ -944,6 +942,14 @@ class SlideController(QtGui.QWidget):
         self.songEdit = True
         Receiver.send_message(u'%s_edit' % self.serviceItem.name.lower(),
             u'P:%s' % self.serviceItem.edit_id)
+
+    def onGoLiveClick(self):
+        """
+        triggered by clicking the Preview slide items
+        """
+        if QtCore.QSettings().value(u'advanced/double click live',
+            QtCore.QVariant(False)).toBool():
+            self.onGoLive()
 
     def onGoLive(self):
         """
