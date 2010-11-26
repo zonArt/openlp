@@ -459,9 +459,9 @@ class MainDisplay(DisplayWidget):
         if self.phononActive:
             self.webView.setVisible(False)
             self.videoPlay()
+        self.hide_mode = None
         # Trigger actions when display is active again
         Receiver.send_message(u'maindisplay_active')
-        self.hide_mode = None
 
 class AudioPlayer(QtCore.QObject):
     """
