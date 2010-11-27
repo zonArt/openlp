@@ -630,7 +630,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         Get all the data from the widgets on the form, and then save it to the
         database.
 
-        ``preview`` 
+        ``preview``
             Should be True if song is also previewed.
         """
         self.song.title = unicode(self.TitleEditItem.text())
@@ -648,6 +648,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 Book.name == book_name)
         else:
             self.song.book = None
+        theme_name = unicode(self.ThemeSelectionComboItem.currentText())
+        if theme_name:
+            self.song.theme_name = theme_name
+        else:
+            self.song.theme_name = None
         if self._validate_song():
             self.processLyrics()
             self.processTitle()

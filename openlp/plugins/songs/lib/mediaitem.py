@@ -396,7 +396,7 @@ class SongMediaItem(MediaManagerItem):
         ]
         service_item.data_string = {u'title':song.search_title,
             u'authors':author_list}
-        service_item.xml_version = OpenLyricsParser().songToXml(song)
+        service_item.xml_version = OpenLyricsParser().song_to_xml(song)
         return True
 
     def serviceLoad(self, item):

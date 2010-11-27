@@ -41,6 +41,7 @@ The basic XML is of the format::
 import logging
 
 from lxml import etree, objectify
+from openlp.plugins.songs.lib.db import Author, Song
 
 log = logging.getLogger(__name__)
 
@@ -96,6 +97,7 @@ class SongXMLBuilder(object):
         """
         return etree.tostring(self.song_xml, encoding=u'UTF-8',
             xml_declaration=True)
+
 
 class SongXMLParser(object):
     """
@@ -239,11 +241,12 @@ class LyricsXML(object):
             u'<song version="1.0">%s</song>' % lyrics_output
         return song_output
 
+
 class OpenLyricsParser(object):
     """
     This class represents the converter for Song to/from OpenLyrics XML.
     """
-    def songToXml(self, song):
+    def song_to_xml(self, song):
         """
         Convert the song to OpenLyrics Format
         """
@@ -274,8 +277,8 @@ class OpenLyricsParser(object):
             element = self.add_text_to_element(u'lines', element)
             for line in unicode(verse[1]).split(u'\n'):
                 self.add_text_to_element(u'line', element, line)
-        #print self.dump_xml(song_xml)
-        return u'' #self.extract_xml(song_xml)
+        self.xml_to_song(self.extract_xml(song_xml))
+        return u'' #self.xml_to_song(self.extract_xml(song_xml))
 
     def add_text_to_element(self, tag, parent, text=None, label=None):
         if label:
@@ -287,10 +290,39 @@ class OpenLyricsParser(object):
         parent.append(element)
         return element
 
-    def xmlToSong(self, xml):
+    def xml_to_song(self, xml):
         """
         Create a Song from OpenLyrics format xml
         """
+        return 0
+        song = Song()
+        if xml[:5] == u'<?xml':
+            xml = xml[38:]
+        song = objectify.fromstring(xml)
+        print objectify.dump(song)
+        for properties in song.properties:
+            song.copyright = properties.copyright.text
+            song.verse_order = verseOrder.text
+            try:
+                song.ccli_number = properties.ccliNo.text
+            except:
+                pass
+            try:
+                song.theme_name = properties.themes.theme
+            except:
+                pass
+            for title in properties.titles.title:
+                if not song.title:
+                    song.title = "aa" + title.text
+                else:
+                    song.alternate_title = title.text
+            for author in properties.authors.author:
+                print author.text
+        for lyrics in song.lyrics:
+            for verse in song.lyrics.verse:
+                print "verse", verse.attrib
+                for line in lyrics.verse.lines.line:
+                    print line
         return 0
 
     def dump_xml(self, xml):
