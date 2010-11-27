@@ -81,8 +81,8 @@ html_expands.append({u'desc': u'Italics', u'start tag': u'{it}',
     u'start html': u'<em>', u'end tag': u'{/it}', u'end html': u'</em>',
     u'protected': True})
 html_expands.append({u'desc': u'Underline', u'start tag': u'{u}',
-    u'start html': u'<u>', u'end tag': u'{/u}', u'end html': u'</u>',
-    u'protected': True})
+    u'start html': u'<span style="text-decoration: underline;">',
+    u'end tag': u'{/u}', u'end html': u'</span>', u'protected': True})
 
 def translate(context, text, comment=None):
     """

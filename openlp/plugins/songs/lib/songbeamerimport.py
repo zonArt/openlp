@@ -146,7 +146,7 @@ class SongBeamerImport(SongImport):
             (u'<br>', u'{st}'),
             (u'</br>', u'{st}'),
             (u'</ br>', u'{st}'),
-            (u'<p>', u'{/p}'),
+            (u'<p>', u'{p}'),
             (u'</p>', u'{/p}'),
             (u'<super>', u'{su}'),
             (u'</super>', u'{/su}'),
@@ -156,7 +156,7 @@ class SongBeamerImport(SongImport):
             (u'</wordwrap>', u'')
             ]
         for pair in tag_pairs:
-            self.current_verse.replace(pair[0], pair[1])
+            self.current_verse = self.current_verse.replace(pair[0], pair[1])
         # TODO: check for unsupported tags (see wiki) and remove them as well.
 
     def parse_tags(self, line):
