@@ -163,6 +163,8 @@ class ImageMediaItem(MediaManagerItem):
             service_item.add_capability(ItemCapabilities.AllowsPreview)
             service_item.add_capability(ItemCapabilities.AllowsLoop)
             service_item.add_capability(ItemCapabilities.AllowsAdditions)
+            # force a nonexistent theme
+            service_item.theme = -1
             for item in items:
                 bitem = self.listView.item(item.row())
                 filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
