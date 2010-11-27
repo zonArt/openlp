@@ -144,7 +144,7 @@ class CustomMediaItem(MediaManagerItem):
             for row in row_list:
                 self.listView.takeItem(row)
 
-    def generateSlideData(self, service_item, item=None):
+    def generateSlideData(self, service_item, item=None, xmlVersion=False):
         raw_slides = []
         raw_footer = []
         slide = None

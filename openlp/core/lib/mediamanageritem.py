@@ -420,7 +420,7 @@ class MediaManagerItem(QtGui.QWidget):
         raise NotImplementedError(u'MediaManagerItem.onDeleteClick needs to '
             u'be defined by the plugin')
 
-    def generateSlideData(self, service_item, item=None):
+    def generateSlideData(self, service_item, item=None, xmlVersion=False):
         raise NotImplementedError(u'MediaManagerItem.generateSlideData needs '
             u'to be defined by the plugin')
 
@@ -482,7 +482,7 @@ class MediaManagerItem(QtGui.QWidget):
             # service items?
             if self.singleServiceItem or self.remoteTriggered:
                 log.debug(self.plugin.name + u' Add requested')
-                service_item = self.buildServiceItem()
+                service_item = self.buildServiceItem(None, True)
                 if service_item:
                     service_item.from_plugin = False
                     self.parent.serviceManager.addServiceItem(service_item,
@@ -490,7 +490,7 @@ class MediaManagerItem(QtGui.QWidget):
             else:
                 items = self.listView.selectedIndexes()
                 for item in items:
-                    service_item = self.buildServiceItem(item)
+                    service_item = self.buildServiceItem(item, True)
                     if service_item:
                         service_item.from_plugin = False
                         self.parent.serviceManager.addServiceItem(service_item)
@@ -525,7 +525,7 @@ class MediaManagerItem(QtGui.QWidget):
                     unicode(translate('OpenLP.MediaManagerItem',
                         'You must select a %s service item.')) % self.title)
 
-    def buildServiceItem(self, item=None):
+    def buildServiceItem(self, item=None, xmlVersion=False):
         """
         Common method for generating a service item
         """
@@ -534,7 +534,7 @@ class MediaManagerItem(QtGui.QWidget):
             service_item.add_icon(self.serviceItemIconName)
         else:
             service_item.add_icon(self.parent.icon_path)
-        if self.generateSlideData(service_item, item):
+        if self.generateSlideData(service_item, item, xmlVersion):
             return service_item
         else:
             return None

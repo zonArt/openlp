@@ -97,7 +97,6 @@ class SongXMLBuilder(object):
         return etree.tostring(self.song_xml, encoding=u'UTF-8',
             xml_declaration=True)
 
-
 class SongXMLParser(object):
     """
     A class to read in and parse a song's XML.
@@ -239,3 +238,71 @@ class LyricsXML(object):
         song_output = u'<?xml version="1.0" encoding="UTF-8"?>' + \
             u'<song version="1.0">%s</song>' % lyrics_output
         return song_output
+
+class OpenLyricsParser(object):
+    """
+    This class represents the converter for Song to/from OpenLyrics XML.
+    """
+    def songToXml(self, song):
+        """
+        Convert the song to OpenLyrics Format
+        """
+        songXML = SongXMLParser(song.lyrics)
+        verseList = songXML.get_verses()
+        song_xml = objectify.fromstring(
+            u'<song version="0.7" createdIn="OpenLP 2.0"/>')
+        properties = etree.SubElement(song_xml, u'properties')
+        titles = etree.SubElement(properties, u'titles')
+        self.add_text_to_element(u'title', titles, song.title)
+        if song.alternate_title:
+            self.add_text_to_element(u'title', titles, song.alternate_title)
+        if song.theme_name:
+            themes = etree.SubElement(properties, u'themes')
+            self.add_text_to_element(u'theme', themes, song.theme_name)
+        self.add_text_to_element(u'copyright', properties, song.copyright)
+        self.add_text_to_element(u'verseOrder', properties, song.verse_order)
+        if song.ccli_number:
+            self.add_text_to_element(u'ccliNo', properties, song.ccli_number)
+        authors = etree.SubElement(properties, u'authors')
+        for author in song.authors:
+            self.add_text_to_element(u'author', authors, author.display_name)
+        lyrics = etree.SubElement(song_xml, u'lyrics')
+        for verse in verseList:
+            verseTag = u'%s%s' % (
+                verse[0][u'type'][0].lower(), verse[0][u'label'])
+            element = self.add_text_to_element(u'verse', lyrics, None, verseTag)
+            element = self.add_text_to_element(u'lines', element)
+            for line in unicode(verse[1]).split(u'\n'):
+                self.add_text_to_element(u'line', element, line)
+        #print self.dump_xml(song_xml)
+        return u'' #self.extract_xml(song_xml)
+
+    def add_text_to_element(self, tag, parent, text=None, label=None):
+        if label:
+            element = etree.Element(tag, name = unicode(label))
+        else:
+            element = etree.Element(tag)
+        if text:
+            element.text = unicode(text)
+        parent.append(element)
+        return element
+
+    def xmlToSong(self, xml):
+        """
+        Create a Song from OpenLyrics format xml
+        """
+        return 0
+
+    def dump_xml(self, xml):
+        """
+        Debugging aid to dump XML so that we can see what we have.
+        """
+        return etree.tostring(xml, encoding=u'UTF-8',
+            xml_declaration=True, pretty_print=True)
+
+    def extract_xml(self, xml):
+        """
+        Extract our newly created XML song.
+        """
+        return etree.tostring(xml, encoding=u'UTF-8',
+            xml_declaration=True)
