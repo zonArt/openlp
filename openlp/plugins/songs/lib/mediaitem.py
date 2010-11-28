@@ -53,6 +53,7 @@ class SongMediaItem(MediaManagerItem):
         self.ListViewWithDnD_class = SongListView
         MediaManagerItem.__init__(self, parent, self, icon)
         self.edit_song_form = EditSongForm(self, self.parent.manager)
+        self.openLyrics = OpenLyricsParser(self.parent.manager)
         self.singleServiceItem = False
         self.song_maintenance_form = SongMaintenanceForm(
             self.parent.manager, self)
@@ -396,7 +397,7 @@ class SongMediaItem(MediaManagerItem):
         ]
         service_item.data_string = {u'title':song.search_title,
             u'authors':author_list}
-        service_item.xml_version = OpenLyricsParser().song_to_xml(song)
+        service_item.xml_version = self.openLyrics.song_to_xml(song)
         return True
 
     def serviceLoad(self, item):
@@ -424,12 +425,12 @@ class SongMediaItem(MediaManagerItem):
                     else:
                         # Authors different
                         if self.addSongFromService:
-                            editId = OpenLyricsParser(). \
+                            editId = self.openLyrics. \
                                 xmlToSong(item.xml_version)
             else:
                 # Title does not match
                 if self.addSongFromService:
-                    editId = OpenLyricsParser().xmlToSong(item.xml_version)
+                    editId = self.openLyrics.xmlToSong(item.xml_version)
             # Update service with correct song id
             if editId != 0:
                 Receiver.send_message(u'service_item_update',

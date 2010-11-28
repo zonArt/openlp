@@ -39,6 +39,7 @@ The basic XML is of the format::
 """
 
 import logging
+import re
 
 from lxml import etree, objectify
 from openlp.plugins.songs.lib.db import Author, Song
@@ -246,6 +247,9 @@ class OpenLyricsParser(object):
     """
     This class represents the converter for Song to/from OpenLyrics XML.
     """
+    def __init__(self, manager):
+        self.manager = manager
+
     def song_to_xml(self, song):
         """
         Convert the song to OpenLyrics Format
@@ -256,31 +260,87 @@ class OpenLyricsParser(object):
             u'<song version="0.7" createdIn="OpenLP 2.0"/>')
         properties = etree.SubElement(song_xml, u'properties')
         titles = etree.SubElement(properties, u'titles')
-        self.add_text_to_element(u'title', titles, song.title)
+        self._add_text_to_element(u'title', titles, song.title)
         if song.alternate_title:
-            self.add_text_to_element(u'title', titles, song.alternate_title)
+            self._add_text_to_element(u'title', titles, song.alternate_title)
         if song.theme_name:
             themes = etree.SubElement(properties, u'themes')
-            self.add_text_to_element(u'theme', themes, song.theme_name)
-        self.add_text_to_element(u'copyright', properties, song.copyright)
-        self.add_text_to_element(u'verseOrder', properties, song.verse_order)
+            self._add_text_to_element(u'theme', themes, song.theme_name)
+        self._add_text_to_element(u'copyright', properties, song.copyright)
+        self._add_text_to_element(u'verseOrder', properties, song.verse_order)
         if song.ccli_number:
-            self.add_text_to_element(u'ccliNo', properties, song.ccli_number)
+            self._add_text_to_element(u'ccliNo', properties, song.ccli_number)
         authors = etree.SubElement(properties, u'authors')
         for author in song.authors:
-            self.add_text_to_element(u'author', authors, author.display_name)
+            self._add_text_to_element(u'author', authors, author.display_name)
         lyrics = etree.SubElement(song_xml, u'lyrics')
         for verse in verseList:
             verseTag = u'%s%s' % (
                 verse[0][u'type'][0].lower(), verse[0][u'label'])
-            element = self.add_text_to_element(u'verse', lyrics, None, verseTag)
-            element = self.add_text_to_element(u'lines', element)
+            element = self._add_text_to_element(u'verse', lyrics, None, verseTag)
+            element = self._add_text_to_element(u'lines', element)
             for line in unicode(verse[1]).split(u'\n'):
-                self.add_text_to_element(u'line', element, line)
-        self.xml_to_song(self.extract_xml(song_xml))
-        return u'' #self.xml_to_song(self.extract_xml(song_xml))
+                self._add_text_to_element(u'line', element, line)
+        print self._dump_xml(song_xml)
+        self.xml_to_song(self._extract_xml(song_xml))
+        return u'' #self.xml_to_song(self._extract_xml(song_xml))
 
-    def add_text_to_element(self, tag, parent, text=None, label=None):
+    def xml_to_song(self, xml):
+        """
+        Create a Song from OpenLyrics format xml
+        """
+        song = Song()
+        if xml[:5] == u'<?xml':
+            xml = xml[38:]
+        song_xml = objectify.fromstring(xml)
+        print objectify.dump(song_xml)
+        for properties in song_xml.properties:
+            song.copyright = unicode(properties.copyright.text)
+            song.verse_order = unicode(properties.verseOrder.text)
+            try:
+                song.ccli_number = unicode(properties.ccliNo.text)
+            except:
+                pass
+            try:
+                song.theme_name = unicode(properties.themes.theme)
+            except:
+                pass
+            # Process Titles
+            for title in properties.titles.title:
+                if not song.title:
+                    song.title = "aa" + title.text
+                    song.search_title = unicode(song.title)
+                else:
+                    song.alternate_title = unicode(title.text)
+                    song.search_title += u'@' + song.alternate_title
+            song.search_title = re.sub(r'[\'"`,;:(){}?]+', u'',
+                unicode(song.search_title)).lower()
+            # Process Authors
+            for author in properties.authors.author:
+                print author, author.text
+                #song.authors.append(self._process_author(author.text))
+        print "here"
+        # Process Lyrics
+        sxml = SongXMLBuilder()
+        search_text = u''
+        for lyrics in song_xml.lyrics:
+            for verse in song_xml.lyrics.verse:
+                print "verse", verse.attrib
+                text = u''
+                for line in lyrics.verse.lines.line:
+                    line = unicode(line)
+                    if not text:
+                        text = line
+                    else:
+                        text += u'\n' + line
+                sxml.add_verse_to_lyrics(u'V', verse.attrib, text)
+                search_text = search_text + text
+        song.search_lyrics = search_text.lower()
+        song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
+        self.manager.save_object(song)
+        return 0
+
+    def _add_text_to_element(self, tag, parent, text=None, label=None):
         if label:
             element = etree.Element(tag, name = unicode(label))
         else:
@@ -290,51 +350,34 @@ class OpenLyricsParser(object):
         parent.append(element)
         return element
 
-    def xml_to_song(self, xml):
-        """
-        Create a Song from OpenLyrics format xml
-        """
-        return 0
-        song = Song()
-        if xml[:5] == u'<?xml':
-            xml = xml[38:]
-        song = objectify.fromstring(xml)
-        print objectify.dump(song)
-        for properties in song.properties:
-            song.copyright = properties.copyright.text
-            song.verse_order = verseOrder.text
-            try:
-                song.ccli_number = properties.ccliNo.text
-            except:
-                pass
-            try:
-                song.theme_name = properties.themes.theme
-            except:
-                pass
-            for title in properties.titles.title:
-                if not song.title:
-                    song.title = "aa" + title.text
-                else:
-                    song.alternate_title = title.text
-            for author in properties.authors.author:
-                print author.text
-        for lyrics in song.lyrics:
-            for verse in song.lyrics.verse:
-                print "verse", verse.attrib
-                for line in lyrics.verse.lines.line:
-                    print line
-        return 0
-
-    def dump_xml(self, xml):
+    def _dump_xml(self, xml):
         """
         Debugging aid to dump XML so that we can see what we have.
         """
         return etree.tostring(xml, encoding=u'UTF-8',
             xml_declaration=True, pretty_print=True)
 
-    def extract_xml(self, xml):
+    def _extract_xml(self, xml):
         """
         Extract our newly created XML song.
         """
         return etree.tostring(xml, encoding=u'UTF-8',
             xml_declaration=True)
+
+    def _process_author(self, name):
+        """
+        Find or create an Author from display_name.
+        """
+        print "name = ", name
+        name = unicode(name)
+        search_results = self.manager.get_all_objects(Author,
+            Author.display_name == name)
+        if search_results:
+            # should only be one! so take the first
+            return search_results[0]
+        else:
+            # Need a new author
+            new_author = Author.populate(first_name=name.rsplit(u' ', 1)[0],
+                        last_name=name.rsplit(u' ', 1)[1], display_name=name)
+            self.manager.save_object(new_author)
+            return author
