@@ -153,7 +153,9 @@ class SongBeamerImport(SongImport):
             (u'<sub>', u'{sb}'),
             (u'</sub>', u'{/sb}'),
             (u'<wordwrap>', u''),
-            (u'</wordwrap>', u'')
+            (u'</wordwrap>', u''),
+            (u'<strike>', u''),
+            (u'</strike>', u'')
             ]
         for pair in tag_pairs:
             self.current_verse = self.current_verse.replace(pair[0], pair[1])
@@ -264,8 +266,8 @@ class SongBeamerImport(SongImport):
 
     def check_verse_marks(self, line):
         """
-        Check and add the verse's MarkType. Returns ``True`` if the given mark
-        is correct otherwise ``False``.
+        Check and add the verse's MarkType. Returns ``True`` if the given line
+        contains a correct verse mark otherwise ``False``.
 
         ``line``
             The line to check for marks (unicode).
@@ -275,10 +277,8 @@ class SongBeamerImport(SongImport):
             self.current_verse_type = SongBeamerTypes.MarkTypes[marks[0]]
             if len(marks) == 2:
                 # If we have a digit, we append it to current_verse_type.
-                try:
-                    self.current_verse_type += u'%s' % int(marks[1])
-                except ValueError:
-                    pass
+                if marks[1].isdigit():
+                    self.current_verse_type += marks[1]
             return True
         else:
             return False
