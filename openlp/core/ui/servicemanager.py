@@ -1028,6 +1028,9 @@ class ServiceManager(QtGui.QWidget):
             # ServiceManager started the drag and drop
             if plugin == u'ServiceManager':
                 startpos, startCount = self.findServiceItem()
+                # If no items selected
+                if startpos == -1:
+                    return
                 if item is None:
                     endpos = len(self.serviceItems)
                 else:
