@@ -317,9 +317,7 @@ class OpenLyricsParser(object):
                 unicode(song.search_title)).lower()
             # Process Authors
             for author in properties.authors.author:
-                print author, author.text
-                #song.authors.append(self._process_author(author.text))
-        print "here"
+                self._process_author(author.text, song)
         # Process Lyrics
         sxml = SongXMLBuilder()
         search_text = u''
@@ -327,16 +325,18 @@ class OpenLyricsParser(object):
             for verse in song_xml.lyrics.verse:
                 print "verse", verse.attrib
                 text = u''
-                for line in lyrics.verse.lines.line:
+                for line in verse.lines.line:
                     line = unicode(line)
                     if not text:
                         text = line
                     else:
                         text += u'\n' + line
-                sxml.add_verse_to_lyrics(u'V', verse.attrib, text)
+                sxml.add_verse_to_lyrics(u'V', verse.attrib[u'name'], text)
                 search_text = search_text + text
         song.search_lyrics = search_text.lower()
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
+        song.comments = u''
+        song.song_number = u''
         self.manager.save_object(song)
         return 0
 
@@ -364,7 +364,7 @@ class OpenLyricsParser(object):
         return etree.tostring(xml, encoding=u'UTF-8',
             xml_declaration=True)
 
-    def _process_author(self, name):
+    def _process_author(self, name, song):
         """
         Find or create an Author from display_name.
         """
@@ -374,10 +374,10 @@ class OpenLyricsParser(object):
             Author.display_name == name)
         if search_results:
             # should only be one! so take the first
-            return search_results[0]
+            song.authors.append(search_results[0])
         else:
             # Need a new author
             new_author = Author.populate(first_name=name.rsplit(u' ', 1)[0],
                         last_name=name.rsplit(u' ', 1)[1], display_name=name)
             self.manager.save_object(new_author)
-            return author
+            song.authors.append(new_author)
