@@ -79,7 +79,6 @@ class SongXMLBuilder(object):
         ``content``
             The actual text of the verse to be stored.
         """
-        # log.debug(u'add_verse_to_lyrics %s, %s\n%s' % (type, number, content))
         verse = etree.Element(u'verse', type = unicode(type),
             label = unicode(number))
         verse.text = etree.CDATA(content)
@@ -368,13 +367,12 @@ class OpenLyricsParser(object):
         """
         Find or create an Author from display_name.
         """
-        print "name = ", name
         name = unicode(name)
-        search_results = self.manager.get_all_objects(Author,
+        author = self.manager.get_object_filtered(Author,
             Author.display_name == name)
-        if search_results:
+        if author:
             # should only be one! so take the first
-            song.authors.append(search_results[0])
+            song.authors.append(author)
         else:
             # Need a new author
             new_author = Author.populate(first_name=name.rsplit(u' ', 1)[0],
