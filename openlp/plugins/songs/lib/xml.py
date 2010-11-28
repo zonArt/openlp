@@ -42,6 +42,7 @@ import logging
 import re
 
 from lxml import etree, objectify
+from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.db import Author, Song
 
 log = logging.getLogger(__name__)
@@ -330,7 +331,8 @@ class OpenLyricsParser(object):
                         text = line
                     else:
                         text += u'\n' + line
-                sxml.add_verse_to_lyrics(u'V', verse.attrib[u'name'], text)
+                type = VerseType.expand_string(verse.attrib[u'name'][0])
+                sxml.add_verse_to_lyrics(type, verse.attrib[u'name'][1], text)
                 search_text = search_text + text
         song.search_lyrics = search_text.lower()
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')

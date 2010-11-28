@@ -397,6 +397,7 @@ class SongMediaItem(MediaManagerItem):
         ]
         service_item.data_string = {u'title':song.search_title,
             u'authors':author_list}
+        # if xmlVersion:
         service_item.xml_version = self.openLyrics.song_to_xml(song)
         return True
 
