@@ -25,7 +25,10 @@
 ###############################################################################
 
 import logging
+
 from PyQt4 import QtWebKit
+
+from openlp.core.lib import BackgroundType, BackgroundGradientType
 
 log = logging.getLogger(__name__)
 
@@ -55,14 +58,17 @@ body {
     background-color: black;
     display: none;
 }
-#image {
+#bgimage {
     z-index:1;
 }
-#video1 {
+#image {
     z-index:2;
 }
+#video1 {
+    z-index:3;
+}
 #video2 {
-    z-index:2;
+    z-index:3;
 }
 #alert {
     position: absolute;
@@ -73,7 +79,7 @@ body {
 }
 #footer {
     position: absolute;
-    z-index:5;
+    z-index:6;
     %s
 }
 /* lyric css */
@@ -87,16 +93,16 @@ body {
     var transition = %s;
 
     function show_video(state, path, volume, loop){
-        // Note, the preferred method for looping would be to use the 
+        // Note, the preferred method for looping would be to use the
         // video tag loop attribute.
         // But QtWebKit doesn't support this. Neither does it support the
         // onended event, hence the setInterval()
         // In addition, setting the currentTime attribute to zero to restart
         // the video raises an INDEX_SIZE_ERROR: DOM Exception 1
-        // To complicate it further, sometimes vid.currentTime stops 
+        // To complicate it further, sometimes vid.currentTime stops
         // slightly short of vid.duration and vid.ended is intermittent!
         //
-        // Note, currently the background may go black between loops. Not 
+        // Note, currently the background may go black between loops. Not
         // desirable. Need to investigate using two <video>'s, and hiding/
         // preloading one, and toggle between the two when looping.
 
@@ -112,7 +118,7 @@ body {
             vid2.volume = volume;
         }
         switch(state){
-            case 'init':            
+            case 'init':
                 vid.src = path;
                 vid2.src = path;
                 if(loop == null) loop = false;
@@ -129,8 +135,8 @@ body {
                 vid.style.visibility = 'visible';
                 if(vid.looping){
                     video_timer = setInterval(
-                        function() { 
-                            show_video('poll'); 
+                        function() {
+                            show_video('poll');
                         }, 200);
                 }
                 break;
@@ -294,7 +300,8 @@ body {
 </script>
 </head>
 <body>
-<img id="image" class="size" %s />
+<img id="bgimage" class="size" %s />
+<img id="image" class="size" style="display:none" />
 <video id="video1" class="size" style="visibility:hidden" autobuffer preload>
 </video>
 <video id="video2" class="size" style="visibility:hidden" autobuffer preload>
@@ -324,6 +331,7 @@ def build_html(item, screen, alert, islive):
     height = screen[u'size'].height()
     theme = item.themedata
     webkitvers = webkit_version()
+    # Image generated and poked in
     if item.bg_image_bytes:
         image = u'src="data:image/png;base64,%s"' % item.bg_image_bytes
     else:
@@ -333,7 +341,7 @@ def build_html(item, screen, alert, islive):
         build_alert_css(alert, width),
         build_footer_css(item, height),
         build_lyrics_css(item, webkitvers),
-        u'true' if theme and theme.display_slideTransition and islive \
+        u'true' if theme and theme.display_slide_transition and islive \
             else u'false',
         image,
         build_lyrics_html(item, webkitvers))
@@ -363,25 +371,41 @@ def build_background_css(item, width, height):
     theme = item.themedata
     background = u'background-color: black'
     if theme:
-        if theme.background_type == u'solid':
+        if theme.background_type == BackgroundType.to_string(BackgroundType.Solid):
             background = u'background-color: %s' % theme.background_color
         else:
-            if theme.background_direction == u'horizontal':
+            if theme.background_direction == BackgroundGradientType.to_string \
+                (BackgroundGradientType.Horizontal):
                 background = \
                     u'background: ' \
                     u'-webkit-gradient(linear, left top, left bottom, ' \
-                    'from(%s), to(%s))' % (theme.background_startColor,
-                    theme.background_endColor)
-            elif theme.background_direction == u'vertical':
+                    'from(%s), to(%s))' % (theme.background_start_color,
+                    theme.background_end_color)
+            elif theme.background_direction == BackgroundGradientType.to_string \
+                (BackgroundGradientType.LeftTop):
+                background = \
+                    u'background: ' \
+                    u'-webkit-gradient(linear, left top, right bottom, ' \
+                    'from(%s), to(%s))' % (theme.background_start_color,
+                    theme.background_end_color)
+            elif theme.background_direction == BackgroundGradientType.to_string \
+                (BackgroundGradientType.LeftBottom):
+                background = \
+                    u'background: ' \
+                    u'-webkit-gradient(linear, left bottom, right top, ' \
+                    'from(%s), to(%s))' % (theme.background_start_color,
+                    theme.background_end_color)
+            elif theme.background_direction == BackgroundGradientType.to_string \
+                (BackgroundGradientType.Vertical):
                 background = \
                     u'background: -webkit-gradient(linear, left top, ' \
                     u'right top, from(%s), to(%s))' % \
-                    (theme.background_startColor, theme.background_endColor)
+                    (theme.background_start_color, theme.background_end_color)
             else:
                 background = \
                     u'background: -webkit-gradient(radial, %s 50%%, 100, %s ' \
                     u'50%%, %s, from(%s), to(%s))' % (width, width, width,
-                    theme.background_startColor, theme.background_endColor)
+                    theme.background_start_color, theme.background_end_color)
     return background
 
 def build_lyrics_css(item, webkitvers):
@@ -397,7 +421,7 @@ def build_lyrics_css(item, webkitvers):
     """
     style = """
 .lyricstable {
-    z-index:4;
+    z-index:5;
     position: absolute;
     display: table;
     %s
@@ -447,17 +471,17 @@ def build_lyrics_css(item, webkitvers):
             lyricsmain += build_lyrics_outline_css(theme)
         else:
             outline = build_lyrics_outline_css(theme)
-        if theme.display_shadow:
-            if theme.display_outline and webkitvers < 534.3:
+        if theme.font_main_shadow:
+            if theme.font_main_outline and webkitvers < 534.3:
                 shadow = u'padding-left: %spx; padding-top: %spx;' % \
-                    (int(theme.display_shadow_size) +
-                    (int(theme.display_outline_size) * 2), 
-                    theme.display_shadow_size)
+                    (int(theme.font_main_shadow_size) +
+                    (int(theme.font_main_outline_size) * 2),
+                    theme.font_main_shadow_size)
                 shadow += build_lyrics_outline_css(theme, True)
             else:
                 lyricsmain += u' text-shadow: %s %spx %spx;' % \
-                    (theme.display_shadow_color, theme.display_shadow_size,
-                    theme.display_shadow_size)
+                    (theme.font_main_shadow_color, theme.font_main_shadow_size,
+                    theme.font_main_shadow_size)
     lyrics_css = style % (lyricstable, lyrics, lyricsmain, outline, shadow)
     return lyrics_css
 
@@ -472,14 +496,14 @@ def build_lyrics_outline_css(theme, is_shadow=False):
     `is_shadow`
         If true, use the shadow colors instead
     """
-    if theme.display_outline:
-        size = float(theme.display_outline_size) / 16
+    if theme.font_main_outline:
+        size = float(theme.font_main_outline_size) / 16
         if is_shadow:
-            fill_color = theme.display_shadow_color
-            outline_color = theme.display_shadow_color
+            fill_color = theme.font_main_shadow_color
+            outline_color = theme.font_main_shadow_color
         else:
             fill_color = theme.font_main_color
-            outline_color = theme.display_outline_color
+            outline_color = theme.font_main_outline_color
         return u' -webkit-text-stroke: %sem %s; ' \
             u'-webkit-text-fill-color: %s; ' % (size, outline_color, fill_color)
     else:
@@ -500,35 +524,35 @@ def build_lyrics_format_css(theme, width, height):
         Height of the lyrics block
 
     """
-    if theme.display_horizontalAlign == 2:
+    if theme.display_horizontal_align == 2:
         align = u'center'
-    elif theme.display_horizontalAlign == 1:
+    elif theme.display_horizontal_align == 1:
         align = u'right'
     else:
         align = u'left'
-    if theme.display_verticalAlign == 2:
+    if theme.display_vertical_align == 2:
         valign = u'bottom'
-    elif theme.display_verticalAlign == 1:
+    elif theme.display_vertical_align == 1:
         valign = u'middle'
     else:
         valign = u'top'
-    if theme.display_outline:
-        left_margin = int(theme.display_outline_size) * 2
+    if theme.font_main_outline:
+        left_margin = int(theme.font_main_outline_size) * 2
     else:
         left_margin = 0
     lyrics = u'white-space:pre-wrap; word-wrap: break-word; ' \
         'text-align: %s; vertical-align: %s; font-family: %s; ' \
         'font-size: %spt; color: %s; line-height: %d%%; margin:0;' \
         'padding:0; padding-left:%spx; width: %spx; height: %spx; ' % \
-        (align, valign, theme.font_main_name, theme.font_main_proportion,
+        (align, valign, theme.font_main_name, theme.font_main_size,
         theme.font_main_color, 100 + int(theme.font_main_line_adjustment),
         left_margin, width, height)
-    if theme.display_outline:
+    if theme.font_main_outline:
         if webkit_version() < 534.3:
             lyrics += u' letter-spacing: 1px;'
     if theme.font_main_italics:
         lyrics += u' font-style:italic; '
-    if theme.font_main_weight == u'Bold':
+    if theme.font_main_bold:
         lyrics += u' font-weight:bold; '
     return lyrics
 
@@ -548,7 +572,7 @@ def build_lyrics_html(item, webkitvers):
     # display:table/display:table-cell are required for each lyric block.
     lyrics = u''
     theme = item.themedata
-    if webkitvers < 534.4 and theme and theme.display_outline:
+    if webkitvers < 534.4 and theme and theme.font_main_outline:
         lyrics += u'<div class="lyricstable">' \
             u'<div id="lyricsshadow" style="opacity:1" ' \
             u'class="lyricscell lyricsshadow"></div></div>'
@@ -576,7 +600,7 @@ def build_footer_css(item, height):
     font-size: %spt;
     color: %s;
     text-align: left;
-    white-space:nowrap;    
+    white-space:nowrap;
     """
     theme = item.themedata
     if not theme or not item.footer:
@@ -584,7 +608,7 @@ def build_footer_css(item, height):
     bottom = height - int(item.footer.y()) - int(item.footer.height())
     lyrics_html = style % (item.footer.x(), bottom,
         item.footer.width(), theme.font_footer_name,
-        theme.font_footer_proportion, theme.font_footer_color)
+        theme.font_footer_size, theme.font_footer_color)
     return lyrics_html
 
 def build_alert_css(alertTab, width):

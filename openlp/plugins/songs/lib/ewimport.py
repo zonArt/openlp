@@ -1,18 +1,40 @@
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2010 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
+# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
+# Carsten Tinggaard, Frode Woldsund, Jeffrey Smith                            #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
 """
 The :mod:`ewimport` module provides the functionality for importing
 EasyWorship song databases into the current installation database.
 """
 
-import sys
 import os
 import struct
 
+from openlp.core.lib import translate
 from songimport import SongImport
 
-def strip_rtf(blob):
+def strip_rtf(blob, encoding):
     depth = 0
     control = False
     clear_text = []
@@ -46,12 +68,42 @@ def strip_rtf(blob):
                     if control_str == 'par' or control_str == 'line':
                         clear_text.append(u'\n')
                     elif control_str == 'tab':
-                        clear_text.append(u'\n')
+                        clear_text.append(u'\t')
+                    # Prefer the encoding specified by the RTF data to that
+                    #  specified by the Paradox table header
+                    # West European encoding
+                    elif control_str == 'fcharset0':
+                        encoding = u'cp1252'
+                    # Greek encoding
+                    elif control_str == 'fcharset161':
+                        encoding = u'cp1253'
+                    # Turkish encoding
+                    elif control_str == 'fcharset162':
+                        encoding = u'cp1254'
+                    # Vietnamese encoding
+                    elif control_str == 'fcharset163':
+                        encoding = u'cp1258'
+                    # Hebrew encoding
+                    elif control_str == 'fcharset177':
+                        encoding = u'cp1255'
+                    # Arabic encoding
+                    elif control_str == 'fcharset178':
+                        encoding = u'cp1256'
+                    # Baltic encoding
+                    elif control_str == 'fcharset186':
+                        encoding = u'cp1257'
+                    # Cyrillic encoding
+                    elif control_str == 'fcharset204':
+                        encoding = u'cp1251'
+                    # Thai encoding
+                    elif control_str == 'fcharset222':
+                        encoding = u'cp874'
+                    # Central+East European encoding
+                    elif control_str == 'fcharset238':
+                        encoding = u'cp1250'
                     elif control_str[0] == '\'':
-                        # Really should take RTF character set into account but
-                        # for now assume ANSI (Windows-1252) and call it good
                         s = chr(int(control_str[1:3], 16))
-                        clear_text.append(s.decode(u'windows-1252'))
+                        clear_text.append(s.decode(encoding))
                     del control_word[:]
             if c == '\\' and new_control:
                 control = True
@@ -103,6 +155,30 @@ class EasyWorshipSongImport(SongImport):
             db_file.close()
             self.memo_file.close()
             return False
+        # Take a stab at how text is encoded
+        self.encoding = u'cp1252'
+        db_file.seek(106)
+        code_page, = struct.unpack('<h', db_file.read(2))
+        if code_page == 852:
+            self.encoding = u'cp1250'
+        # The following codepage to actual encoding mappings have not been
+        #  observed, but merely guessed.  Actual example files are needed.
+        #if code_page == 737:
+        #    self.encoding = u'cp1253'
+        #if code_page == 775:
+        #    self.encoding = u'cp1257'
+        #if code_page == 855:
+        #    self.encoding = u'cp1251'
+        #if code_page == 857:
+        #    self.encoding = u'cp1254'
+        #if code_page == 866:
+        #    self.encoding = u'cp1251'
+        #if code_page == 869:
+        #    self.encoding = u'cp1253'
+        #if code_page == 862:
+        #    self.encoding = u'cp1255'
+        #if code_page == 874:
+        #    self.encoding = u'cp874'
         # There does not appear to be a _reliable_ way of getting the number
         # of songs/records, so let's use file blocks for measuring progress.
         total_blocks = (db_size - header_size) / (block_size * 1024)
@@ -115,8 +191,9 @@ class EasyWorshipSongImport(SongImport):
             num_fields)
         field_names.pop()
         field_descs = []
-        for i,field_name in enumerate(field_names):
-            field_type, field_size = struct.unpack_from('BB', field_info, i * 2)
+        for i, field_name in enumerate(field_names):
+            field_type, field_size = struct.unpack_from('BB',
+                field_info, i * 2)
             field_descs.append(FieldDescEntry(field_name, field_type,
                 field_size))
         self.set_record_struct(field_descs)
@@ -146,27 +223,44 @@ class EasyWorshipSongImport(SongImport):
                 raw_record = db_file.read(record_size)
                 self.fields = self.record_struct.unpack(raw_record)
                 self.set_defaults()
-                self.title = self.get_field(fi_title)
-                self.import_wizard.incrementProgressBar(
-                    u'Importing "%s"...' % self.title, 0)
-                self.copyright = self.get_field(fi_copy) + \
-                    u', Administered by ' + self.get_field(fi_admin)
-                self.ccli_number = self.get_field(fi_ccli)
-                # Format the lyrics
-                if self.stop_import_flag:
-                    success = False
-                    break
-                words = self.get_field(fi_words)
-                words = strip_rtf(words)
-                for verse in words.split(u'\n\n'):
-                    self.add_verse(verse.strip(), u'V')
-                # Split up the authors
+                # Get title and update progress bar message
+                title = self.get_field(fi_title)
+                if title:
+                    self.import_wizard.incrementProgressBar(
+                        unicode(translate('SongsPlugin.ImportWizardForm',
+                            'Importing "%s"...')) % title, 0)
+                    self.title = title
+                # Get remaining fields
+                copy = self.get_field(fi_copy)
+                admin = self.get_field(fi_admin)
+                ccli = self.get_field(fi_ccli)
                 authors = self.get_field(fi_author)
-                author_list = authors.split(u'/')
-                if len(author_list) < 2:
-                    author_list = authors.split(u',')
-                for author_name in author_list:
-                    self.add_author(author_name.strip())
+                words = self.get_field(fi_words)
+                # Set the SongImport object members
+                if copy:
+                    self.copyright = copy
+                if admin:
+                    if copy:
+                        self.copyright += u', '
+                    self.copyright += \
+                        unicode(translate('SongsPlugin.ImportWizardForm',
+                            'Administered by %s')) % admin
+                if ccli:
+                    self.ccli_number = ccli
+                if authors:
+                    # Split up the authors
+                    author_list = authors.split(u'/')
+                    if len(author_list) < 2:
+                        author_list = authors.split(u';')
+                    if len(author_list) < 2:
+                        author_list = authors.split(u',')
+                    for author_name in author_list:
+                        self.add_author(author_name.strip())
+                if words:
+                    # Format the lyrics
+                    words = strip_rtf(words, self.encoding)
+                    for verse in words.split(u'\n\n'):
+                        self.add_verse(verse.strip(), u'V')
                 if self.stop_import_flag:
                     success = False
                     break
@@ -178,7 +272,7 @@ class EasyWorshipSongImport(SongImport):
         return success
 
     def find_field(self, field_name):
-        return [i for i,x in enumerate(self.field_descs) \
+        return [i for i, x in enumerate(self.field_descs) \
             if x.name == field_name][0]
 
     def set_record_struct(self, field_descs):
@@ -214,16 +308,16 @@ class EasyWorshipSongImport(SongImport):
     def get_field(self, field_desc_index):
         field = self.fields[field_desc_index]
         field_desc = self.field_descs[field_desc_index]
-        # Check for 'blank' entries
+        # Return None in case of 'blank' entries
         if isinstance(field, str):
             if len(field.rstrip('\0')) == 0:
-                return u''
+                return None
         elif field == 0:
-            return 0
+            return None
         # Format the field depending on the field type
         if field_desc.type == 1:
             # string
-            return field.rstrip('\0').decode(u'windows-1252')
+            return field.rstrip('\0').decode(self.encoding)
         elif field_desc.type == 3:
             # 16-bit int
             return field ^ 0x8000
@@ -235,21 +329,22 @@ class EasyWorshipSongImport(SongImport):
             return (field ^ 0x80 == 1)
         elif field_desc.type == 0x0c or field_desc.type == 0x0d:
             # Memo or Blob
-            sub_block, block_start, blob_size = \
-                struct.unpack_from('<bhxi', field, len(field)-10)
-            self.memo_file.seek(block_start * 256)
+            block_start, blob_size = \
+                struct.unpack_from('<II', field, len(field)-10)
+            sub_block = block_start & 0xff
+            block_start &= ~0xff
+            self.memo_file.seek(block_start)
             memo_block_type, = struct.unpack('b', self.memo_file.read(1))
             if memo_block_type == 2:
                 self.memo_file.seek(8, os.SEEK_CUR)
             elif memo_block_type == 3:
-                if sub_block < 0 or sub_block > 63:
-                    return u'';
+                if sub_block > 63:
+                    return u''
                 self.memo_file.seek(11 + (5 * sub_block), os.SEEK_CUR)
                 sub_block_start, = struct.unpack('B', self.memo_file.read(1))
-                self.memo_file.seek((block_start * 256) +
-                    (sub_block_start * 16))
+                self.memo_file.seek(block_start + (sub_block_start * 16))
             else:
-                return u'';
+                return u''
             return self.memo_file.read(blob_size)
         else:
             return 0

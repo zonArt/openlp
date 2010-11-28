@@ -53,11 +53,13 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         QtCore.QObject.connect(self.verseTextEdit,
             QtCore.SIGNAL(u'cursorPositionChanged()'),
             self.onCursorPositionChanged)
+        QtCore.QObject.connect(self.verseTypeComboBox,
+            QtCore.SIGNAL(u'currentIndexChanged(int)'),
+            self.onVerseTypeComboBoxChanged)
         self.verse_regex = re.compile(r'---\[([-\w]+):([\d]+)\]---')
 
     def contextMenu(self, point):
         item = self.serviceManagerList.itemAt(point)
-        print item
 
     def insertVerse(self, title, num=1):
         if self.verseTextEdit.textCursor().columnNumber() != 0:
@@ -66,27 +68,43 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         self.verseTextEdit.setFocus()
 
     def onInsertButtonClicked(self):
-        if self.verseTextEdit.textCursor().columnNumber() != 0:
-            self.verseTextEdit.insertPlainText(u'\n')
         verse_type = self.verseTypeComboBox.currentIndex()
-        if verse_type == VerseType.Verse:
-            self.insertVerse(VerseType.to_string(VerseType.Verse),
+        if VerseType.to_string(verse_type) is not None:
+            self.insertVerse(VerseType.to_string(verse_type),
                 self.verseNumberBox.value())
-        elif verse_type == VerseType.Chorus:
-            self.insertVerse(VerseType.to_string(VerseType.Chorus),
-                self.verseNumberBox.value())
-        elif verse_type == VerseType.Bridge:
-            self.insertVerse(VerseType.to_string(VerseType.Bridge))
-        elif verse_type == VerseType.PreChorus:
-            self.insertVerse(VerseType.to_string(VerseType.PreChorus))
-        elif verse_type == VerseType.Intro:
-            self.insertVerse(VerseType.to_string(VerseType.Intro))
-        elif verse_type == VerseType.Ending:
-            self.insertVerse(VerseType.to_string(VerseType.Ending))
-        elif verse_type == VerseType.Other:
-            self.insertVerse(VerseType.to_string(VerseType.Other))
+
+    def onVerseTypeComboBoxChanged(self):
+        """
+        Adjusts the verse number SpinBox in regard to the selected verse type
+        and the cursor's position.
+        """
+        position = self.verseTextEdit.textCursor().position()
+        text = unicode(self.verseTextEdit.toPlainText())
+        verse_type = VerseType.to_string(self.verseTypeComboBox.currentIndex())
+        if not text:
+            return
+        position = text.rfind(u'---[%s' % verse_type, 0, position)
+        if position == -1:
+            self.verseNumberBox.setValue(1)
+            return
+        text = text[position:]
+        position = text.find(u']---')
+        if position == -1:
+            return
+        text = text[:position + 4]
+        match = self.verse_regex.match(text)
+        if match:
+            verse_type = match.group(1)
+            verse_number = int(match.group(2))
+            verse_type_index = VerseType.from_string(verse_type)
+            if verse_type_index is not None:
+                self.verseNumberBox.setValue(verse_number)
 
     def onCursorPositionChanged(self):
+        """
+        Determines the previous verse type and number in regard to the cursor's
+        position and adjusts the ComboBox and SpinBox to these values.
+        """
         position = self.verseTextEdit.textCursor().position()
         text = unicode(self.verseTextEdit.toPlainText())
         if not text:

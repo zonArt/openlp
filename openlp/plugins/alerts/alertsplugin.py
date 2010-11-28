@@ -28,7 +28,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, build_icon, translate
+from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.plugins.alerts.lib import AlertsManager, AlertsTab
 from openlp.plugins.alerts.lib.db import init_schema
@@ -45,13 +45,15 @@ class AlertsPlugin(Plugin):
         self.icon = build_icon(u':/plugins/plugin_alerts.png')
         self.alertsmanager = AlertsManager(self)
         self.manager = Manager(u'alerts', init_schema)
-        self.alertForm = AlertForm(self)
+        visible_name = self.getString(StringContent.VisibleName)
+        self.alertForm = AlertForm(self, visible_name[u'title'])
 
     def getSettingsTab(self):
         """
         Return the settings tab for the Alerts plugin
         """
-        self.alertsTab = AlertsTab(self)
+        visible_name = self.getString(StringContent.VisibleName)
+        self.alertsTab = AlertsTab(self, visible_name[u'title'])
         return self.alertsTab
 
     def addToolsMenuItem(self, tools_menu):
@@ -83,7 +85,11 @@ class AlertsPlugin(Plugin):
         self.liveController.alertTab = self.alertsTab
 
     def finalise(self):
+        """
+        Tidy up on exit
+        """
         log.info(u'Alerts Finalising')
+        self.manager.finalise()
         Plugin.finalise(self)
         self.toolsAlertItem.setVisible(False)
 
@@ -101,3 +107,17 @@ class AlertsPlugin(Plugin):
             '<br />The alert plugin controls the displaying of nursery alerts '
             'on the display screen')
         return about_text
+
+    def setPluginTextStrings(self):
+        """
+        Called to define all translatable texts of the plugin
+        """
+        ## Name PluginList ##
+        self.textStrings[StringContent.Name] = {
+            u'singular': translate('AlertsPlugin', 'Alert'),
+            u'plural': translate('AlertsPlugin', 'Alerts')
+        }
+        ## Name for MediaDockManager, SettingsManager ##
+        self.textStrings[StringContent.VisibleName] = {
+            u'title': translate('AlertsPlugin', 'Alerts')
+        }

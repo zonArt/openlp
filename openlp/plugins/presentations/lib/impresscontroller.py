@@ -169,7 +169,8 @@ class ImpressController(PresentationController):
         try:
             return Dispatch(u'com.sun.star.ServiceManager')
         except pywintypes.com_error:
-            log.exception(u'Failed to get COM service manager')
+            log.warn(u'Failed to get COM service manager. '
+                u'Impress Controller has been disabled')
             return None
 
     def kill(self):

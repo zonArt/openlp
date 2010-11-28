@@ -32,20 +32,18 @@ class PresentationTab(SettingsTab):
     """
     PresentationsTab is the Presentations settings tab in the settings dialog.
     """
-    def __init__(self, title, controllers):
+    def __init__(self, title, visible_title, controllers):
         """
         Constructor
         """
         self.controllers = controllers
-        SettingsTab.__init__(self, title)
+        SettingsTab.__init__(self, title, visible_title)
 
     def setupUi(self):
         """
         Create the controls for the settings tab
         """
         self.setObjectName(u'PresentationTab')
-        self.tabTitleVisible = translate('PresentationPlugin.PresentationTab',
-            'Presentations')
         self.PresentationLayout = QtGui.QHBoxLayout(self)
         self.PresentationLayout.setSpacing(8)
         self.PresentationLayout.setMargin(8)

@@ -163,6 +163,19 @@
     </message>
 </context>
 <context>
+    <name>BiblePlugin.MediaItem</name>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="487"/>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="487"/>
+        <source>You cannot combine single and dual bible verses. Do you want to delete your search results and start a new search?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>BiblesPlugin</name>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="82"/>
@@ -496,57 +509,57 @@ Changes do not affect verses already in the service.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="181"/>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="180"/>
         <source>Empty Copyright</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="191"/>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="189"/>
         <source>Bible Exists</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="221"/>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="218"/>
         <source>Open OSIS File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="229"/>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="226"/>
         <source>Open Books CSV File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="237"/>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="234"/>
         <source>Open Verses CSV File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="244"/>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="241"/>
         <source>Open OpenSong Bible</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="389"/>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="386"/>
         <source>Starting import...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="445"/>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="441"/>
         <source>Finished import.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="449"/>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="444"/>
         <source>Your Bible import failed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="181"/>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="180"/>
         <source>You need to set a copyright for your Bible. Bibles in the Public Domain need to be marked as such.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="191"/>
+        <location filename="openlp/plugins/bibles/forms/importwizardform.py" line="189"/>
         <source>This Bible already exists. Please import a different Bible or first delete the existing one.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -559,107 +572,102 @@ Changes do not affect verses already in the service.</source>
         <translation type="unfinished">성경</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="148"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="142"/>
         <source>Quick</source>
         <translation type="unfinished">즉시</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="233"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="227"/>
         <source>Advanced</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="305"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="299"/>
         <source>Version:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="307"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="301"/>
         <source>Dual:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="297"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="291"/>
         <source>Search type:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="299"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="293"/>
         <source>Find:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="321"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="315"/>
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="319"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="313"/>
         <source>Results:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="309"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="303"/>
         <source>Book:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="311"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="305"/>
         <source>Chapter:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="313"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="307"/>
         <source>Verse:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="315"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="309"/>
         <source>From:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="317"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="311"/>
         <source>To:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="323"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="317"/>
         <source>Verse Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="325"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="319"/>
         <source>Text Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="331"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="325"/>
         <source>Clear</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="333"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="327"/>
         <source>Keep</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="387"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="378"/>
         <source>No Book Found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="387"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="378"/>
         <source>No matching book could be found in this Bible.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="569"/>
-        <source>etc</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="627"/>
+        <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="711"/>
         <source>Bible not fully loaded.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1645,12 +1653,12 @@ This General Public License does not permit incorporating your program into prop
 <context>
     <name>OpenLP.LanguageManager</name>
     <message>
-        <location filename="openlp/core/utils/languagemanager.py" line="119"/>
+        <location filename="openlp/core/utils/languagemanager.py" line="121"/>
         <source>Language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/utils/languagemanager.py" line="119"/>
+        <location filename="openlp/core/utils/languagemanager.py" line="121"/>
         <source>Please restart OpenLP to use your new language setting.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1660,11 +1668,6 @@ This General Public License does not permit incorporating your program into prop
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="345"/>
         <source>OpenLP 2.0</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/core/utils/languagemanager.py" line="85"/>
-        <source>English</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2069,6 +2072,12 @@ You can download the latest version from http://openlp.org/.</source>
         <source>Default Theme: %s</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="openlp/core/utils/languagemanager.py" line="85"/>
+        <source>English</source>
+        <comment>Please add the name of your language here</comment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>OpenLP.MediaManagerItem</name>
@@ -2317,7 +2326,7 @@ You can download the latest version from http://openlp.org/.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="640"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="642"/>
         <source>Open Service</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2327,7 +2336,7 @@ You can download the latest version from http://openlp.org/.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="580"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="582"/>
         <source>Save Service</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2437,53 +2446,53 @@ You can download the latest version from http://openlp.org/.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="654"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="656"/>
         <source>Save Changes to Service?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="495"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="497"/>
         <source>Your service is unsaved, do you want to save those changes before creating a new one?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="580"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="582"/>
         <source>OpenLP Service Files (*.osz)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="654"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="656"/>
         <source>Your current service is unsaved, do you want to save the changes before opening a new one?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="718"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="720"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="683"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="685"/>
         <source>File is not a valid service.
 The content encoding is not UTF-8.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="718"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="720"/>
         <source>File is not a valid service.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="884"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="886"/>
         <source>Missing Display Handler</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="850"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="852"/>
         <source>Your item cannot be displayed as there is no handler to display it</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="884"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="886"/>
         <source>Your item cannot be displayed as the plugin required to display it is missing or inactive</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2575,12 +2584,12 @@ The content encoding is not UTF-8.</source>
 <context>
     <name>OpenLP.SpellTextEdit</name>
     <message>
-        <location filename="openlp/core/lib/spelltextedit.py" line="72"/>
+        <location filename="openlp/core/lib/spelltextedit.py" line="76"/>
         <source>Spelling Suggestions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/spelltextedit.py" line="83"/>
+        <location filename="openlp/core/lib/spelltextedit.py" line="87"/>
         <source>Formatting Tags</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3446,127 +3455,127 @@ The content encoding is not UTF-8.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="490"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="146"/>
         <source>Song Import Wizard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="492"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="148"/>
         <source>Welcome to the Song Import Wizard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="496"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="152"/>
         <source>This wizard will help you to import songs from a variety of formats. Click the next button below to start the process by selecting a format to import from.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="501"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="157"/>
         <source>Select Import Source</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="503"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="159"/>
         <source>Select the import format, and where to import from.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="506"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="162"/>
         <source>Format:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="508"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="164"/>
         <source>OpenLP 2.0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="510"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="166"/>
         <source>openlp.org 1.x</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="512"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="168"/>
         <source>OpenLyrics</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="514"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="170"/>
         <source>OpenSong</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="516"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="172"/>
         <source>Words of Worship</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="518"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="174"/>
         <source>CCLI/SongSelect</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="520"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="176"/>
         <source>Songs of Fellowship</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="522"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="178"/>
         <source>Generic Document/Presentation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="579"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="235"/>
         <source>Filename:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="581"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="237"/>
         <source>Browse...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="537"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="193"/>
         <source>The openlp.org 1.x importer has been disabled due to a missing Python module. If you want to use this importer, you will need to install the &quot;python-sqlite&quot; module.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="571"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="227"/>
         <source>Add Files...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="573"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="229"/>
         <source>Remove File(s)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="567"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="223"/>
         <source>The Songs of Fellowship importer has been disabled because OpenLP cannot find OpenOffice.org on your computer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="575"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="231"/>
         <source>The generic document/presentation importer has been disabled because OpenLP cannot find OpenOffice.org on your computer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="587"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="243"/>
         <source>Importing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="589"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="245"/>
         <source>Please wait while your songs are imported.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="592"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="248"/>
         <source>Ready.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="594"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="250"/>
         <source>%p%</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3596,13 +3605,18 @@ The content encoding is not UTF-8.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="525"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="181"/>
         <source>EasyWorship</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="546"/>
+        <location filename="openlp/plugins/songs/forms/songimportwizard.py" line="202"/>
         <source>The OpenLyrics importer has not yet been developed, but as you can see, we are still intending to do so. Hopefully it will be in the next release.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/ewimport.py" line="192"/>
+        <source>Administered by %s</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3720,12 +3734,12 @@ The content encoding is not UTF-8.</source>
 <context>
     <name>SongsPlugin.SongImport</name>
     <message>
-        <location filename="openlp/plugins/songs/lib/songimport.py" line="79"/>
+        <location filename="openlp/plugins/songs/lib/songimport.py" line="80"/>
         <source>copyright</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/songimport.py" line="81"/>
+        <location filename="openlp/plugins/songs/lib/songimport.py" line="82"/>
         <source>&#xa9;</source>
         <translation type="unfinished"></translation>
     </message>

@@ -24,10 +24,9 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 from exceptiondialog import Ui_ExceptionDialog
-from openlp.core.lib import translate
 
 class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
     """

@@ -36,7 +36,7 @@ from BeautifulSoup import BeautifulSoup, NavigableString
 
 from openlp.core.lib import Receiver
 from openlp.core.utils import AppLocation
-from openlp.plugins.bibles.lib import SearchResults    
+from openlp.plugins.bibles.lib import SearchResults
 from openlp.plugins.bibles.lib.db import BibleDB, Book
 
 log = logging.getLogger(__name__)
@@ -187,16 +187,16 @@ class BGExtract(object):
 
     def get_bible_chapter(self, version, bookname, chapter):
         """
-        Access and decode bibles via the BibleGateway website
+        Access and decode bibles via the BibleGateway website.
 
         ``version``
-            The version of the bible like 31 for New International version
+            The version of the bible like 31 for New International version.
 
         ``bookname``
-            Name of the Book
+            Name of the Book.
 
         ``chapter``
-            Chapter number
+            Chapter number.
         """
         log.debug(u'get_bible_chapter %s, %s, %s', version, bookname, chapter)
         url_params = urllib.urlencode(
@@ -213,7 +213,7 @@ class BGExtract(object):
         finally:
             if not page:
                 return None
-        cleaner = [(re.compile('&nbsp;|<br />'), lambda match: '')]
+        cleaner = [(re.compile('&nbsp;|<br />|\'\+\''), lambda match: '')]
         soup = None
         try:
             soup = BeautifulSoup(page, markupMassage=cleaner)
@@ -298,13 +298,13 @@ class CWExtract(object):
                     versetext = versetext + part
                 elif part and part.attrMap and \
                     (part.attrMap[u'class'] == u'WordsOfChrist' or \
-                     part.attrMap[u'class'] == u'strongs'):
+                    part.attrMap[u'class'] == u'strongs'):
                     for subpart in part.contents:
                         Receiver.send_message(u'openlp_process_events')
                         if isinstance(subpart, NavigableString):
                             versetext = versetext + subpart
                         elif subpart and subpart.attrMap and \
-                             subpart.attrMap[u'class'] == u'strongs':
+                            subpart.attrMap[u'class'] == u'strongs':
                             for subsub in subpart.contents:
                                 Receiver.send_message(u'openlp_process_events')
                                 if isinstance(subsub, NavigableString):
@@ -428,7 +428,7 @@ class HTTPBible(BibleDB):
 
     def get_chapter(self, book, chapter):
         """
-        Receive the request and call the relevant handler methods
+        Receive the request and call the relevant handler methods.
         """
         log.debug(u'get_chapter %s, %s', book, chapter)
         log.debug(u'source = %s', self.download_source)

@@ -37,12 +37,12 @@ class HideMode(object):
     Theme = 2
     Screen = 3
 
+from themeform import ThemeForm
+from filerenameform import FileRenameForm
 from maindisplay import MainDisplay
-from slidecontroller import HideMode
 from servicenoteform import ServiceNoteForm
 from serviceitemeditform import ServiceItemEditForm
 from screen import ScreenList
-from amendthemeform import AmendThemeForm
 from slidecontroller import SlideController
 from splashscreen import SplashScreen
 from generaltab import GeneralTab
@@ -51,10 +51,11 @@ from advancedtab import AdvancedTab
 from aboutform import AboutForm
 from pluginform import PluginForm
 from settingsform import SettingsForm
+from shortcutlistform import ShortcutListForm
 from mediadockmanager import MediaDockManager
 from servicemanager import ServiceManager
 from thememanager import ThemeManager
 
 __all__ = ['SplashScreen', 'AboutForm', 'SettingsForm',
     'MainDisplay', 'SlideController', 'ServiceManager', 'ThemeManager',
-    'AmendThemeForm', 'MediaDockManager', 'ServiceItemEditForm']
+    'MediaDockManager', 'ServiceItemEditForm']

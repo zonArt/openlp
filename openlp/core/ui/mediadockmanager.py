@@ -26,6 +26,8 @@
 
 import logging
 
+from openlp.core.lib import StringContent
+
 log = logging.getLogger(__name__)
 
 class MediaDockManager(object):
@@ -48,8 +50,9 @@ class MediaDockManager(object):
         ``icon``
             An icon for this dock item
         """
-        log.info(u'Adding %s dock' % media_item.title)
-        self.media_dock.addItem(media_item, icon, media_item.title)
+        visible_title = media_item.plugin.getString(StringContent.VisibleName)
+        log.info(u'Adding %s dock' % visible_title)
+        self.media_dock.addItem(media_item, icon, visible_title[u'title'])
 
     def insert_dock(self, media_item, icon, weight):
         """
@@ -57,27 +60,29 @@ class MediaDockManager(object):
         This does not work as it gives a Segmentation error.
         For now add at end of stack if not present
         """
-        log.debug(u'Inserting %s dock' % media_item.title)
+        visible_title = media_item.plugin.getString(StringContent.VisibleName)
+        log.debug(u'Inserting %s dock' % visible_title[u'title'])
         match = False
         for dock_index in range(0, self.media_dock.count()):
             if self.media_dock.widget(dock_index).settingsSection == \
-                media_item.title.lower():
+                media_item.plugin.name.lower():
                 match = True
                 break
         if not match:
-            self.media_dock.addItem(media_item, icon, media_item.title)
+            self.media_dock.addItem(media_item, icon, visible_title[u'title'])
 
-    def remove_dock(self, name):
+    def remove_dock(self, media_item):
         """
         Removes a MediaManagerItem from the dock
 
-        ``name``
-            The item to remove
+        ``media_item``
+            The item to add to the dock
         """
-        log.debug(u'remove %s dock' % name)
+        visible_title = media_item.plugin.getString(StringContent.VisibleName)
+        log.debug(u'remove %s dock' % visible_title[u'title'])
         for dock_index in range(0, self.media_dock.count()):
             if self.media_dock.widget(dock_index):
                 if self.media_dock.widget(dock_index).settingsSection == \
-                    name.lower():
+                    media_item.plugin.name.lower():
                     self.media_dock.widget(dock_index).hide()
                     self.media_dock.removeItem(dock_index)
