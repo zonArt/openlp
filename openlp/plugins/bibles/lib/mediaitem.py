@@ -359,6 +359,7 @@ class BibleMediaItem(MediaManagerItem):
             translate('BiblesPlugin.MediaItem', 'No Book Found'),
             translate('BiblesPlugin.MediaItem',
             'No matching book could be found in this Bible.'))
+        self.AdvancedSearchButton.setEnabled(True)
 
     def onImportClick(self):
         if not hasattr(self, u'import_wizard'):
@@ -619,23 +620,27 @@ class BibleMediaItem(MediaManagerItem):
                 second_permissions = u''
         for count, verse in enumerate(self.search_results):
             if second_bible:
-                vdict = {
-                    'book': QtCore.QVariant(verse.book.name),
-                    'chapter': QtCore.QVariant(verse.chapter),
-                    'verse': QtCore.QVariant(verse.verse),
-                    'bible': QtCore.QVariant(bible),
-                    'version': QtCore.QVariant(version.value),
-                    'copyright': QtCore.QVariant(copyright.value),
-                    'permissions': QtCore.QVariant(permissions.value),
-                    'text': QtCore.QVariant(verse.text),
-                    'second_bible': QtCore.QVariant(second_bible),
-                    'second_version': QtCore.QVariant(second_version.value),
-                    'second_copyright': QtCore.QVariant(second_copyright.value),
-                    'second_permissions': QtCore.QVariant(
-                        second_permissions.value),
-                    'second_text': QtCore.QVariant(
-                        self.second_search_results[count].text)
-                }
+                try:
+                    vdict = {
+                        'book': QtCore.QVariant(verse.book.name),
+                        'chapter': QtCore.QVariant(verse.chapter),
+                        'verse': QtCore.QVariant(verse.verse),
+                        'bible': QtCore.QVariant(bible),
+                        'version': QtCore.QVariant(version.value),
+                        'copyright': QtCore.QVariant(copyright.value),
+                        'permissions': QtCore.QVariant(permissions.value),
+                        'text': QtCore.QVariant(verse.text),
+                        'second_bible': QtCore.QVariant(second_bible),
+                        'second_version': QtCore.QVariant(second_version.value),
+                        'second_copyright': QtCore.QVariant(
+                            second_copyright.value),
+                        'second_permissions': QtCore.QVariant(
+                            second_permissions.value),
+                        'second_text': QtCore.QVariant(
+                            self.second_search_results[count].text)
+                    }
+                except IndexError:
+                    break
                 bible_text = u' %s %d:%d (%s, %s)' % (verse.book.name,
                     verse.chapter, verse.verse, version.value,
                     second_version.value)
