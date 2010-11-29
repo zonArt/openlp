@@ -114,6 +114,8 @@ class SongMediaItem(MediaManagerItem):
         self.SearchButtonLayout.addWidget(self.ClearTextButton)
         self.pageLayout.addLayout(self.SearchButtonLayout)
         # Signals and slots
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'plugin_list_refresh'), self.onSearchTextButtonClick)
         QtCore.QObject.connect(self.SearchTextEdit,
             QtCore.SIGNAL(u'returnPressed()'), self.onSearchTextButtonClick)
         QtCore.QObject.connect(self.SearchTextButton,
@@ -397,7 +399,6 @@ class SongMediaItem(MediaManagerItem):
         ]
         service_item.data_string = {u'title':song.search_title,
             u'authors':author_list}
-        # if xmlVersion:
         service_item.xml_version = self.openLyrics.song_to_xml(song)
         return True
 
@@ -408,8 +409,8 @@ class SongMediaItem(MediaManagerItem):
         log.debug(u'serviceLoad')
         if item.data_string:
             search_results = self.parent.manager.get_all_objects(Song,
-                Song.search_title.like(u'%' +
-                    item.data_string[u'title'].split(u'@')[0] + u'%'),
+                Song.search_title ==
+                    item.data_string[u'title'].split(u'@')[0].lower() ,
                 Song.search_title.asc())
             author_list = item.data_string[u'authors'].split(u', ')
             editId = 0
@@ -427,11 +428,11 @@ class SongMediaItem(MediaManagerItem):
                         # Authors different
                         if self.addSongFromService:
                             editId = self.openLyrics. \
-                                xmlToSong(item.xml_version)
+                                xml_to_song(item.xml_version)
             else:
                 # Title does not match
                 if self.addSongFromService:
-                    editId = self.openLyrics.xmlToSong(item.xml_version)
+                    editId = self.openLyrics.xml_to_song(item.xml_version)
             # Update service with correct song id
             if editId != 0:
                 Receiver.send_message(u'service_item_update',

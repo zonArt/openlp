@@ -636,8 +636,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.song.title = unicode(self.TitleEditItem.text())
         self.song.alternate_title = unicode(self.AlternativeEdit.text())
         self.song.copyright = unicode(self.CopyrightEditItem.text())
-        self.song.search_title = self.song.title + u'@' + \
-            self.song.alternate_title
+        if self.song.alternate_title:
+            self.song.search_title = self.song.title + u'@' + \
+                self.song.alternate_title
+        else:
+            self.song.search_title = self.song.title
         self.song.comments = unicode(self.CommentsEdit.toPlainText())
         self.song.verse_order = unicode(self.VerseOrderEdit.text())
         self.song.ccli_number = unicode(self.CCLNumberEdit.text())

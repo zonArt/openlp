@@ -789,6 +789,8 @@ class ServiceManager(QtGui.QWidget):
         self.serviceName = name[len(name) - 1]
         self.parent.addRecentFile(filename)
         self.parent.serviceChanged(True, self.serviceName)
+        # Refresh Plugin lists
+        Receiver.send_message(u'plugin_list_refresh')
 
     def validateItem(self, serviceItem):
         """

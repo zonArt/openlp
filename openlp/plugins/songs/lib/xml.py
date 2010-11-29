@@ -281,14 +281,15 @@ class OpenLyricsParser(object):
             element = self._add_text_to_element(u'lines', element)
             for line in unicode(verse[1]).split(u'\n'):
                 self._add_text_to_element(u'line', element, line)
-        print self._dump_xml(song_xml)
-        self.xml_to_song(self._extract_xml(song_xml))
-        return u'' #self.xml_to_song(self._extract_xml(song_xml))
+        return self._extract_xml(song_xml)
 
     def xml_to_song(self, xml):
         """
         Create a Song from OpenLyrics format xml
         """
+        # No xml get out of here
+        if not xml:
+            return 0
         song = Song()
         if xml[:5] == u'<?xml':
             xml = xml[38:]
@@ -296,19 +297,27 @@ class OpenLyricsParser(object):
         properties = song_xml.properties
         song.copyright = unicode(properties.copyright.text)
         song.verse_order = unicode(properties.verseOrder.text)
+        song.topics = []
+        song.book = None
+        theme_name = None
         try:
             song.ccli_number = unicode(properties.ccliNo.text)
         except:
-            pass
+            song.ccli_number = u''
         try:
-            song.theme_name = unicode(properties.themes.theme)
+            theme_name = unicode(properties.themes.theme)
         except:
             pass
+        if theme_name:
+            song.theme_name = theme_name
+        else:
+            song.theme_name = u''
         # Process Titles
         for title in properties.titles.title:
             if not song.title:
-                song.title = title.text
+                song.title = unicode(title.text)
                 song.search_title = unicode(song.title)
+                song.alternate_title = u''
             else:
                 song.alternate_title = unicode(title.text)
                 song.search_title += u'@' + song.alternate_title
@@ -337,7 +346,7 @@ class OpenLyricsParser(object):
         for author in properties.authors.author:
             self._process_author(author.text, song)
         self.manager.save_object(song)
-        return 0
+        return song.id
 
     def _add_text_to_element(self, tag, parent, text=None, label=None):
         if label:
