@@ -56,14 +56,14 @@ class CustomXMLBuilder(object):
 
     def __init__(self):
         """
-        Set up the song builder.
+        Set up the custom builder.
         """
         # Create the minidom document
         self.custom_xml = Document()
 
     def new_document(self):
         """
-        Create a new song XML document.
+        Create a new custom XML document.
         """
         # Create the <song> base element
         self.song = self.custom_xml.createElement(u'song')
@@ -73,7 +73,7 @@ class CustomXMLBuilder(object):
     def add_lyrics_to_song(self):
         """
         Set up and add a ``<lyrics>`` tag which contains the lyrics of the
-        song.
+        custom item.
         """
         # Create the main <lyrics> element
         self.lyrics = self.custom_xml.createElement(u'lyrics')
@@ -94,7 +94,6 @@ class CustomXMLBuilder(object):
         ``content``
             The actual text of the verse to be stored.
         """
-        #log.debug(u'add_verse_to_lyrics %s, %s\n%s' % (type, number, content))
         verse = self.custom_xml.createElement(u'verse')
         verse.setAttribute(u'type', type)
         verse.setAttribute(u'label', number)
@@ -103,7 +102,7 @@ class CustomXMLBuilder(object):
         cds = self.custom_xml.createCDATASection(content)
         verse.appendChild(cds)
 
-    def dump_xml(self):
+    def _dump_xml(self):
         """
         Debugging aid to dump XML so that we can see what we have.
         """
@@ -111,23 +110,23 @@ class CustomXMLBuilder(object):
 
     def extract_xml(self):
         """
-        Extract our newly created XML song.
+        Extract our newly created XML custom.
         """
         return self.custom_xml.toxml(u'utf-8')
 
 
 class CustomXMLParser(object):
     """
-    A class to read in and parse a song's XML.
+    A class to read in and parse a custom's XML.
     """
     log.info(u'CustomXMLParser Loaded')
 
     def __init__(self, xml):
         """
-        Set up our song XML parser.
+        Set up our custom XML parser.
 
         ``xml``
-            The XML of the song to be parsed.
+            The XML of the custom to be parsed.
         """
         self.custom_xml = None
         if xml[:5] == u'<?xml':
@@ -151,7 +150,7 @@ class CustomXMLParser(object):
                 verse_list.append([element.attrib, unicode(element.text)])
         return verse_list
 
-    def dump_xml(self):
+    def _dump_xml(self):
         """
         Debugging aid to dump XML so that we can see what we have.
         """

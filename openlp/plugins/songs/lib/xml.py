@@ -293,37 +293,32 @@ class OpenLyricsParser(object):
         if xml[:5] == u'<?xml':
             xml = xml[38:]
         song_xml = objectify.fromstring(xml)
-        print objectify.dump(song_xml)
-        for properties in song_xml.properties:
-            song.copyright = unicode(properties.copyright.text)
-            song.verse_order = unicode(properties.verseOrder.text)
-            try:
-                song.ccli_number = unicode(properties.ccliNo.text)
-            except:
-                pass
-            try:
-                song.theme_name = unicode(properties.themes.theme)
-            except:
-                pass
-            # Process Titles
-            for title in properties.titles.title:
-                if not song.title:
-                    song.title = "aa" + title.text
-                    song.search_title = unicode(song.title)
-                else:
-                    song.alternate_title = unicode(title.text)
-                    song.search_title += u'@' + song.alternate_title
-            song.search_title = re.sub(r'[\'"`,;:(){}?]+', u'',
-                unicode(song.search_title)).lower()
-            # Process Authors
-            for author in properties.authors.author:
-                self._process_author(author.text, song)
+        properties = song_xml.properties
+        song.copyright = unicode(properties.copyright.text)
+        song.verse_order = unicode(properties.verseOrder.text)
+        try:
+            song.ccli_number = unicode(properties.ccliNo.text)
+        except:
+            pass
+        try:
+            song.theme_name = unicode(properties.themes.theme)
+        except:
+            pass
+        # Process Titles
+        for title in properties.titles.title:
+            if not song.title:
+                song.title = title.text
+                song.search_title = unicode(song.title)
+            else:
+                song.alternate_title = unicode(title.text)
+                song.search_title += u'@' + song.alternate_title
+        song.search_title = re.sub(r'[\'"`,;:(){}?]+', u'',
+            unicode(song.search_title)).lower()
         # Process Lyrics
         sxml = SongXMLBuilder()
         search_text = u''
         for lyrics in song_xml.lyrics:
             for verse in song_xml.lyrics.verse:
-                print "verse", verse.attrib
                 text = u''
                 for line in verse.lines.line:
                     line = unicode(line)
@@ -338,6 +333,9 @@ class OpenLyricsParser(object):
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
         song.comments = u''
         song.song_number = u''
+        # Process Authors
+        for author in properties.authors.author:
+            self._process_author(author.text, song)
         self.manager.save_object(song)
         return 0
 
