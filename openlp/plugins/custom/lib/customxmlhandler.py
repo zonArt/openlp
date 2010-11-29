@@ -43,6 +43,7 @@ import logging
 
 from xml.dom.minidom import Document
 from xml.etree.ElementTree import ElementTree, XML, dump
+from lxml import etree, objectify
 from xml.parsers.expat import ExpatError
 
 log = logging.getLogger(__name__)
@@ -129,10 +130,11 @@ class CustomXMLParser(object):
             The XML of the song to be parsed.
         """
         self.custom_xml = None
+        if xml[:5] == u'<?xml':
+            xml = xml[38:]
         try:
-            self.custom_xml = ElementTree(
-                element=XML(unicode(xml).encode('unicode-escape')))
-        except ExpatError:
+            self.custom_xml = objectify.fromstring(xml)
+        except etree.XMLSyntaxError:
             log.exception(u'Invalid xml %s', xml)
 
     def get_verses(self):
@@ -146,8 +148,7 @@ class CustomXMLParser(object):
             if element.tag == u'verse':
                 if element.text is None:
                     element.text = u''
-                verse_list.append([element.attrib,
-                    unicode(element.text).decode('unicode-escape')])
+                verse_list.append([element.attrib, unicode(element.text)])
         return verse_list
 
     def dump_xml(self):
