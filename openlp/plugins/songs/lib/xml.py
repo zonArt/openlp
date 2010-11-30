@@ -254,8 +254,8 @@ class OpenLyricsParser(object):
         """
         Convert the song to OpenLyrics Format
         """
-        songXML = SongXMLParser(song.lyrics)
-        verseList = songXML.get_verses()
+        song_xml_parser = SongXMLParser(song.lyrics)
+        verse_list = song_xml_parser.get_verses()
         song_xml = objectify.fromstring(
             u'<song version="0.7" createdIn="OpenLP 2.0"/>')
         properties = etree.SubElement(song_xml, u'properties')
@@ -274,10 +274,11 @@ class OpenLyricsParser(object):
         for author in song.authors:
             self._add_text_to_element(u'author', authors, author.display_name)
         lyrics = etree.SubElement(song_xml, u'lyrics')
-        for verse in verseList:
-            verseTag = u'%s%s' % (
+        for verse in verse_list:
+            verse_tag = u'%s%s' % (
                 verse[0][u'type'][0].lower(), verse[0][u'label'])
-            element = self._add_text_to_element(u'verse', lyrics, None, verseTag)
+            element = \
+                self._add_text_to_element(u'verse', lyrics, None, verse_tag)
             element = self._add_text_to_element(u'lines', element)
             for line in unicode(verse[1]).split(u'\n'):
                 self._add_text_to_element(u'line', element, line)
@@ -297,6 +298,8 @@ class OpenLyricsParser(object):
         properties = song_xml.properties
         song.copyright = unicode(properties.copyright.text)
         song.verse_order = unicode(properties.verseOrder.text)
+        if song.verse_order == u'None':
+            song.verse_order = u''
         song.topics = []
         song.book = None
         theme_name = None
