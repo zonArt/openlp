@@ -545,7 +545,7 @@ class BibleMediaItem(MediaManagerItem):
                 self.dual_search_results = self.parent.manager.get_verses(
                     dual_bible, text)
         else:
-            # We are doing a ' Text Search'.
+            # We are doing a 'Text Search'.
             bibles = self.parent.manager.get_bibles()
             self.search_results = self.parent.manager.verse_search(bible, text)
             if dual_bible and self.search_results:
@@ -651,7 +651,7 @@ class BibleMediaItem(MediaManagerItem):
             obj = obj.toPyObject()
         return unicode(obj)
 
-    def generateSlideData(self, service_item, item=None):
+    def generateSlideData(self, service_item, item=None, xmlVersion=False):
         """
         Generates and formats the slides for the service item as well as the
         service item's title.
