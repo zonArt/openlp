@@ -240,6 +240,10 @@ class BibleMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'activated(int)'), self.onAdvancedFromVerse)
         QtCore.QObject.connect(self.AdvancedToChapter,
             QtCore.SIGNAL(u'activated(int)'), self.onAdvancedToChapter)
+        QtCore.QObject.connect(self.QuickSearchComboBox,
+            QtCore.SIGNAL(u'activated(int)'), self.autoCompletion)
+        QtCore.QObject.connect(self.QuickVersionComboBox,
+            QtCore.SIGNAL(u'activated(int)'), self.autoCompletion)
         # Buttons
         QtCore.QObject.connect(self.AdvancedSearchButton,
             QtCore.SIGNAL(u'pressed()'), self.onAdvancedSearchButton)
@@ -427,6 +431,21 @@ class BibleMediaItem(MediaManagerItem):
             self.adjustComboBox(1, self.chapter_count, self.AdvancedToChapter)
             self.adjustComboBox(1, verse_count, self.AdvancedFromVerse)
             self.adjustComboBox(1, verse_count, self.AdvancedToVerse)
+
+    def autoCompletion(self):
+        """
+        This add or updates a bible book completion list for the search field.
+        The completion depends on the bible. It is only added when we are doing
+        a verse search on the quick tab, otherwise it is removed.
+        """
+        books = []
+        # We have to do a 'Verse Search'.
+        if self.QuickSearchComboBox.currentIndex() == 0:
+            bible = unicode(self.QuickVersionComboBox.currentText())
+            if bible:
+                book_data = self.parent.manager.get_books(bible)
+                books = [book[u'name'] for book in book_data]
+        self.QuickSearchEdit.setCompleter(QtGui.QCompleter(books))
 
     def onAdvancedVersionComboBox(self):
         self.initialiseBible(
