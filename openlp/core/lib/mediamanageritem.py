@@ -508,7 +508,7 @@ class MediaManagerItem(QtGui.QWidget):
             log.debug(self.plugin.name + u' Add requested')
             serviceItem = self.parent.serviceManager.getServiceItem()
             if not serviceItem:
-                 QtGui.QMessageBox.information(self,
+                QtGui.QMessageBox.information(self,
                     translate('OpenLP.MediaManagerItem',
                         'No Service Item Selected'),
                     translate('OpenLP.MediaManagerItem',

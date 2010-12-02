@@ -261,8 +261,9 @@ class ThemeXML(object):
 
     def add_font(self, name, color, size, override, fonttype=u'main',
         bold=u'False', italics=u'False', line_adjustment=0,
-        xpos=0, ypos=0, width=0, height=0 , outline=u'False', outline_color=u'#ffffff',
-        outline_pixel=2,  shadow=u'False', shadow_color=u'#ffffff', shadow_pixel=5):
+        xpos=0, ypos=0, width=0, height=0 , outline=u'False',
+        outline_color=u'#ffffff', outline_pixel=2,  shadow=u'False',
+        shadow_color=u'#ffffff', shadow_pixel=5):
         """
         Add a Font.
 
@@ -441,7 +442,7 @@ class ThemeXML(object):
         if line:
             xml = xml[line + 2:]
         try:
-           theme_xml = objectify.fromstring(xml)
+            theme_xml = objectify.fromstring(xml)
         except etree.XMLSyntaxError:
             log.exception(u'Invalid xml %s', xml)
             return
@@ -457,7 +458,8 @@ class ThemeXML(object):
                 if element.getparent().tag == u'display':
                     if element.tag.startswith(u'shadow') or \
                         element.tag.startswith(u'outline'):
-                        self._create_attr(u'font_main', element.tag, element.text)
+                        self._create_attr(u'font_main', element.tag,
+                            element.text)
                     master = element.getparent().tag
                 if element.getparent().tag == u'background':
                     master = element.getparent().tag
@@ -471,7 +473,8 @@ class ThemeXML(object):
                     for attr in element.attrib:
                         base_element = attr
                         # correction for the shadow and outline tags
-                        if element.tag == u'shadow' or element.tag == u'outline':
+                        if element.tag == u'shadow' or \
+                            element.tag == u'outline':
                             if not attr.startswith(element.tag):
                                 base_element = element.tag + u'_' + attr
                         self._create_attr(master, base_element,
@@ -540,8 +543,8 @@ class ThemeXML(object):
         """
         Change Camel Case string to python string
         """
-        s1 = re.sub(u'(.)([A-Z][a-z]+)', r'\1_\2', name)
-        return re.sub(u'([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
+        sub_name = re.sub(u'(.)([A-Z][a-z]+)', r'\1_\2', name)
+        return re.sub(u'([a-z0-9])([A-Z])', r'\1_\2', sub_name).lower()
 
     def _build_xml_from_attrs(self):
         """
