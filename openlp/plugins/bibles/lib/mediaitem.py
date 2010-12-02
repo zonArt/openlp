@@ -697,7 +697,7 @@ class BibleMediaItem(MediaManagerItem):
             obj = obj.toPyObject()
         return unicode(obj)
 
-    def generateSlideData(self, service_item, item=None):
+    def generateSlideData(self, service_item, item=None, xmlVersion=False):
         """
         Generates and formats the slides for the service item as well as the
         service item's title.

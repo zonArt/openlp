@@ -29,7 +29,8 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, BackgroundType, BackgroundGradientType
+from openlp.core.lib import translate, BackgroundType, BackgroundGradientType, \
+    Receiver
 from openlp.core.utils import get_images_filter
 from themewizard import Ui_ThemeWizard
 
@@ -96,10 +97,40 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         QtCore.QObject.connect(self,
             QtCore.SIGNAL(u'currentIdChanged(int)'),
             self.pageChanged)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'theme_line_count'),
+            self.updateLinesText)
+        QtCore.QObject.connect(self.mainSizeSpinBox,
+            QtCore.SIGNAL(u'valueChanged(int)'),
+            self.calculateLines)
+        QtCore.QObject.connect(self.mainSizeSpinBox,
+            QtCore.SIGNAL(u'editingFinished()'),
+            self.calculateLines)
+        QtCore.QObject.connect(self.lineSpacingSpinBox,
+            QtCore.SIGNAL(u'valueChanged(int)'),
+            self.calculateLines)
+        QtCore.QObject.connect(self.lineSpacingSpinBox,
+            QtCore.SIGNAL(u'editingFinished()'),
+            self.calculateLines)
+        QtCore.QObject.connect(self.outlineSizeSpinBox,
+            QtCore.SIGNAL(u'valueChanged(int)'),
+            self.calculateLines)
+        QtCore.QObject.connect(self.outlineSizeSpinBox,
+            QtCore.SIGNAL(u'editingFinished()'),
+            self.calculateLines)
+        QtCore.QObject.connect(self.shadowSizeSpinBox,
+            QtCore.SIGNAL(u'valueChanged(int)'),
+            self.calculateLines)
+        QtCore.QObject.connect(self.shadowSizeSpinBox,
+            QtCore.SIGNAL(u'editingFinished()'),
+            self.calculateLines)
+        QtCore.QObject.connect(self.mainFontComboBox,
+            QtCore.SIGNAL(u'activated(int)'),
+            self.calculateLines)
 
     def pageChanged(self, pageId):
         """
-        Detects Page changes and updates.
+        Detects Page changes and updates as approprate.
         """
         if pageId == 6:
             self.updateTheme()
@@ -184,6 +215,22 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.backgroundPage.registerField(
             u'name', self.themeNameEdit)
 
+    def calculateLines(self):
+        """
+        Calculate the number of lines on a page by rendering text
+        """
+        # Do not trigger on start up
+        if self.page != 0:
+            self.updateTheme()
+            frame = self.thememanager.generateImage(self.theme, True)
+
+    def updateLinesText(self, lines):
+        """
+        Updates the lines on a page on the wizard
+        """
+        self.mainLineCountLabel.setText(unicode(translate('OpenLP.ThemeForm', \
+            '(%d lines per slide)' % int(lines))))
+
     def onOutlineCheckCheckBoxChanged(self, state):
         """
         Change state as Outline check box changed
@@ -194,6 +241,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             self.theme.font_main_outline = False
         self.outlineColorPushButton.setEnabled(self.theme.font_main_outline)
         self.outlineSizeSpinBox.setEnabled(self.theme.font_main_outline)
+        self.calculateLines()
 
     def onShadowCheckCheckBoxChanged(self, state):
         """
@@ -205,6 +253,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             self.theme.font_main_shadow = False
         self.shadowColorPushButton.setEnabled(self.theme.font_main_shadow)
         self.shadowSizeSpinBox.setEnabled(self.theme.font_main_shadow)
+        self.calculateLines()
 
     def onMainDefaultPositionCheckBox(self, value):
         """
@@ -244,6 +293,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         Set up the pages for Initial run through dialog
         """
         log.debug(u'initializePage %s' % id)
+        self.page = id
         if id == 1:
             self.setBackgroundTabValues()
         elif id == 2:
@@ -569,15 +619,24 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
                 (QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
             return
-        save_from = None
-        save_to = None
+        if self.theme.theme_name == u'-1' or self.theme.theme_name == u'None':
+            QtGui.QMessageBox.critical(self,
+                translate('OpenLP.ThemeForm', 'Theme Name Invalid'),
+                translate('OpenLP.ThemeForm',
+                    'Invalid theme name. '
+                    'Please enter one.'),
+                (QtGui.QMessageBox.Ok),
+                QtGui.QMessageBox.Ok)
+            return
+        saveFrom = None
+        saveTo = None
         if self.theme.background_type == \
             BackgroundType.to_string(BackgroundType.Image):
             filename = \
                 os.path.split(unicode(self.theme.background_filename))[1]
-            save_to = os.path.join(self.path, self.theme.theme_name, filename)
-            save_from = self.theme.background_filename
-        if self.thememanager.saveTheme(self.theme, save_from, save_to):
+            saveTo = os.path.join(self.path, self.theme.theme_name, filename)
+            saveFrom = self.theme.background_filename
+        if self.thememanager.saveTheme(self.theme, saveFrom, saveTo):
             return QtGui.QDialog.accept(self)
 
     def _colorButton(self, field):

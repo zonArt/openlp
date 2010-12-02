@@ -116,7 +116,7 @@ class MediaMediaItem(MediaManagerItem):
             self.parent.liveController.display.video(filename, 0, True)
         self.resetButton.setVisible(True)
 
-    def generateSlideData(self, service_item, item=None):
+    def generateSlideData(self, service_item, item=None, xmlVersion=False):
         if item is None:
             item = self.listView.currentItem()
             if item is None:
@@ -125,6 +125,8 @@ class MediaMediaItem(MediaManagerItem):
         service_item.title = unicode(
             translate('MediaPlugin.MediaItem', 'Media'))
         service_item.add_capability(ItemCapabilities.RequiresMedia)
+        # force a nonexistent theme
+        service_item.theme = -1
         frame = u':/media/image_clapperboard.png'
         (path, name) = os.path.split(filename)
         service_item.add_from_command(path, name, frame)
