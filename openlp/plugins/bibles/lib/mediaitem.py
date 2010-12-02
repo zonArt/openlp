@@ -241,9 +241,9 @@ class BibleMediaItem(MediaManagerItem):
         QtCore.QObject.connect(self.AdvancedToChapter,
             QtCore.SIGNAL(u'activated(int)'), self.onAdvancedToChapter)
         QtCore.QObject.connect(self.QuickSearchComboBox,
-            QtCore.SIGNAL(u'activated(int)'), self.autoCompletion)
+            QtCore.SIGNAL(u'activated(int)'), self.updateAutoCompleter)
         QtCore.QObject.connect(self.QuickVersionComboBox,
-            QtCore.SIGNAL(u'activated(int)'), self.autoCompletion)
+            QtCore.SIGNAL(u'activated(int)'), self.updateAutoCompleter)
         # Buttons
         QtCore.QObject.connect(self.AdvancedSearchButton,
             QtCore.SIGNAL(u'pressed()'), self.onAdvancedSearchButton)
@@ -336,6 +336,7 @@ class BibleMediaItem(MediaManagerItem):
         log.debug(u'bible manager initialise')
         self.parent.manager.media = self
         self.loadBibles()
+        self.updateAutoCompleter()
         self.configUpdated()
         log.debug(u'bible manager initialise complete')
 
@@ -402,6 +403,15 @@ class BibleMediaItem(MediaManagerItem):
         self.loadBibles()
 
     def initialiseBible(self, bible):
+        """
+        This initialises the given bible, which means that its book names and
+        their chapter numbers is added to the combo boxes on the
+        'Advanced Search' Tab. This is not of any importance of the
+        'Quick Search' Tab.
+
+        ``bible``
+            The bible to initialise (unicode).
+        """
         log.debug(u'initialiseBible %s', bible)
         book_data = self.parent.manager.get_books(bible)
         self.AdvancedBookComboBox.clear()
@@ -432,11 +442,11 @@ class BibleMediaItem(MediaManagerItem):
             self.adjustComboBox(1, verse_count, self.AdvancedFromVerse)
             self.adjustComboBox(1, verse_count, self.AdvancedToVerse)
 
-    def autoCompletion(self):
+    def updateAutoCompleter(self):
         """
-        This add or updates a bible book completion list for the search field.
-        The completion depends on the bible. It is only added when we are doing
-        a verse search on the quick tab, otherwise it is removed.
+        This updates the bible book completion list for the search field. The
+        completion depends on the bible. It is only updated when we are doing a
+        verse search, otherwise the auto completion list is removed.
         """
         books = []
         # We have to do a 'Verse Search'.
@@ -445,7 +455,9 @@ class BibleMediaItem(MediaManagerItem):
             if bible:
                 book_data = self.parent.manager.get_books(bible)
                 books = [book[u'name'] for book in book_data]
-        self.QuickSearchEdit.setCompleter(QtGui.QCompleter(books))
+        completer = QtGui.QCompleter(books)
+        completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
+        self.QuickSearchEdit.setCompleter(completer)
 
     def onAdvancedVersionComboBox(self):
         self.initialiseBible(
