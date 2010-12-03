@@ -405,7 +405,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
     def mergeAuthors(self, old_author):
         """
         Merges two authors into one author.
-        
+
         ``old_author``
             The author which will be deleted afterwards.
         """
@@ -427,7 +427,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
     def mergeTopics(self, old_topic):
         """
         Merges two topics into one topic.
-        
+
         ``old_topic``
             The topic which will be deleted afterwards.
         """
@@ -447,7 +447,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
     def mergeBooks(self, old_book):
         """
         Merges two books into one book.
-        
+
         ``old_book``
             The book which will be deleted afterwards.
         """
