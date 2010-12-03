@@ -74,7 +74,8 @@ class OpenLP1SongImport(SongImport):
             decoded = unicode(raw, codec)
             self.last_encoding = codec
         except UnicodeDecodeError:
-            log.exception(u'Error in detecting openlp.org 1.x database encoding.')
+            log.exception(
+                u'Error in detecting openlp.org 1.x database encoding.')
             try:
                 decoded = unicode(raw, self.last_encoding)
             except UnicodeDecodeError:
@@ -152,7 +153,8 @@ class OpenLP1SongImport(SongImport):
                         break
                     for track in tracks:
                         if track[0] == track_id[0]:
-                            self.add_media_file(self.decode_string(track[1], guess))
+                            self.add_media_file(self.decode_string(track[1],
+                                guess))
                             break
             if self.stop_import_flag:
                 success = False

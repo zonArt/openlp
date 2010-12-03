@@ -81,7 +81,14 @@ class AdvancedTab(SettingsTab):
         self.doubleClickLiveCheckBox = QtGui.QCheckBox(self.uiGroupBox)
         self.doubleClickLiveCheckBox.setObjectName(u'doubleClickLiveCheckBox')
         self.uiLayout.addWidget(self.doubleClickLiveCheckBox)
+#        self.expandServiceItemCheckBox = QtGui.QCheckBox(self.uiGroupBox)
+#        self.expandServiceItemCheckBox.setObjectName(u'expandServiceItemCheckBox')
+#        self.uiLayout.addWidget(self.expandServiceItemCheckBox)
         self.leftLayout.addWidget(self.uiGroupBox)
+        self.expandServiceItemCheckBox = QtGui.QCheckBox(self.uiGroupBox)
+        self.expandServiceItemCheckBox.setObjectName(
+            u'expandServiceItemCheckBox')
+        self.uiLayout.addWidget(self.expandServiceItemCheckBox)
 #        self.sharedDirGroupBox = QtGui.QGroupBox(self.leftWidget)
 #        self.sharedDirGroupBox.setObjectName(u'sharedDirGroupBox')
 #        self.sharedDirGroupBox.setGeometry(QtCore.QRect(0, 65, 500, 85))
@@ -139,7 +146,9 @@ class AdvancedTab(SettingsTab):
         self.mediaPluginCheckBox.setText(translate('OpenLP.AdvancedTab',
             'Remember active media manager tab on startup'))
         self.doubleClickLiveCheckBox.setText(translate('OpenLP.AdvancedTab',
-            'Double-click to send items straight to live (requires restart)'))
+            'Double-click to send items straight to live'))
+        self.expandServiceItemCheckBox.setText(translate('OpenLP.AdvancedTab',
+            'Expand new service items on creation'))
 #        self.sharedDirGroupBox.setTitle(
 #            translate('AdvancedTab', 'Central Data Store'))
 #        self.sharedCheckBox.setText(
@@ -167,6 +176,9 @@ class AdvancedTab(SettingsTab):
         self.doubleClickLiveCheckBox.setChecked(
             settings.value(u'double click live',
             QtCore.QVariant(False)).toBool())
+        self.expandServiceItemCheckBox.setChecked(
+            settings.value(u'expand service item',
+            QtCore.QVariant(False)).toBool())
         settings.endGroup()
 
     def save(self):
@@ -181,6 +193,8 @@ class AdvancedTab(SettingsTab):
             QtCore.QVariant(self.mediaPluginCheckBox.isChecked()))
         settings.setValue(u'double click live',
             QtCore.QVariant(self.doubleClickLiveCheckBox.isChecked()))
+        settings.setValue(u'expand service item',
+            QtCore.QVariant(self.expandServiceItemCheckBox.isChecked()))
         settings.endGroup()
 
     def onSharedCheckBoxChanged(self, checked):

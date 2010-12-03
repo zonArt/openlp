@@ -25,11 +25,12 @@
 ###############################################################################
 
 import logging
+import mimetypes
 
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
-from openlp.plugins.media.lib import MediaMediaItem
+from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 
 log = logging.getLogger(__name__)
 
@@ -45,6 +46,7 @@ class MediaPlugin(Plugin):
         self.dnd_id = u'Media'
         self.audio_list = u''
         self.video_list = u''
+        mimetypes.init()
         for mimetype in Phonon.BackendCapabilities.availableMimeTypes():
             mimetype = unicode(mimetype)
             type = mimetype.split(u'audio/x-')
@@ -60,13 +62,21 @@ class MediaPlugin(Plugin):
             self.video_list, mimetype = self._addToList(self.video_list,
                 type, mimetype)
 
-    def _addToList(self, list, value, type):
+    def _addToList(self, list, value, mimetype):
+        # Is it a media type
         if len(value) == 2:
-            if list.find(value[1]) == -1:
-                list += u'*.%s ' % value[1]
-                self.serviceManager.supportedSuffixes(value[1])
-            type = u''
-        return list, type
+            extensions =  mimetypes.guess_all_extensions(unicode(mimetype))
+            # we have an extension
+            if extensions:
+                for extension in extensions:
+                    if list.find(extension) == -1:
+                        list += u'*%s ' % extension
+                        self.serviceManager.supportedSuffixes(extension[1:])
+                mimetype = u''
+        return list, mimetype
+
+    def getSettingsTab(self):
+        return MediaTab(self.name)
 
     def getMediaManagerItem(self):
         # Create the MediaManagerItem object
@@ -94,42 +104,42 @@ class MediaPlugin(Plugin):
         ## Load Button ##
         self.textStrings[StringContent.Load] = {
             u'title': translate('MediaPlugin', 'Load'),
-            u'tooltip': translate('MediaPlugin', 
+            u'tooltip': translate('MediaPlugin',
                 'Load a new Media')
         }
         ## New Button ##
         self.textStrings[StringContent.New] = {
             u'title': translate('MediaPlugin', 'Add'),
-            u'tooltip': translate('MediaPlugin', 
+            u'tooltip': translate('MediaPlugin',
                 'Add a new Media')
         }
         ## Edit Button ##
         self.textStrings[StringContent.Edit] = {
             u'title': translate('MediaPlugin', 'Edit'),
-            u'tooltip': translate('MediaPlugin', 
+            u'tooltip': translate('MediaPlugin',
                 'Edit the selected Media')
         }
         ## Delete Button ##
         self.textStrings[StringContent.Delete] = {
             u'title': translate('MediaPlugin', 'Delete'),
-            u'tooltip': translate('MediaPlugin', 
+            u'tooltip': translate('MediaPlugin',
                 'Delete the selected Media')
         }
         ## Preview ##
         self.textStrings[StringContent.Preview] = {
             u'title': translate('MediaPlugin', 'Preview'),
-            u'tooltip': translate('MediaPlugin', 
+            u'tooltip': translate('MediaPlugin',
                 'Preview the selected Media')
         }
         ## Live  Button ##
         self.textStrings[StringContent.Live] = {
             u'title': translate('MediaPlugin', 'Live'),
-            u'tooltip': translate('MediaPlugin', 
+            u'tooltip': translate('MediaPlugin',
                 'Send the selected Media live')
         }
         ## Add to service Button ##
         self.textStrings[StringContent.Service] = {
             u'title': translate('MediaPlugin', 'Service'),
-            u'tooltip': translate('MediaPlugin', 
+            u'tooltip': translate('MediaPlugin',
                 'Add the selected Media to the service')
         }

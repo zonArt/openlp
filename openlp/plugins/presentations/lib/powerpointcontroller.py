@@ -110,10 +110,10 @@ class PowerpointDocument(PresentationDocument):
     """
     Class which holds information and controls a single presentation
     """
-    
+
     def __init__(self, controller, presentation):
         """
-        Constructor, store information about the file and initialise 
+        Constructor, store information about the file and initialise
         """
         log.debug(u'Init Presentation Powerpoint')
         PresentationDocument.__init__(self, controller, presentation)
@@ -125,13 +125,13 @@ class PowerpointDocument(PresentationDocument):
         Opens the PowerPoint file using the process created earlier
 
         ``presentation``
-        The file name of the presentations to run.
+            The file name of the presentations to run.
         """
         log.debug(u'LoadPresentation')
         if not self.controller.process or not self.controller.process.Visible:
             self.controller.start_process()
         try:
-            self.controller.process.Presentations.Open(self.filepath, False, 
+            self.controller.process.Presentations.Open(self.filepath, False,
                 False, True)
         except pywintypes.com_error:
             return False
@@ -143,22 +143,24 @@ class PowerpointDocument(PresentationDocument):
     def create_thumbnails(self):
         """
         Create the thumbnail images for the current presentation.
-        Note an alternative and quicker method would be do
+
+        Note an alternative and quicker method would be do::
+
             self.presentation.Slides[n].Copy()
             thumbnail = QApplication.clipboard.image()
-        But for now we want a physical file since it makes
-        life easier elsewhere
+
+        However, for the moment, we want a physical file since it makes life
+        easier elsewhere.
         """
         if self.check_thumbnails():
             return
-        self.presentation.Export(os.path.join(self.get_thumbnail_folder(), ''), 
+        self.presentation.Export(os.path.join(self.get_thumbnail_folder(), ''),
             'png', 320, 240)
 
     def close_presentation(self):
         """
-        Close presentation and clean up objects
-        Triggerent by new object being added to SlideController orOpenLP
-        being shut down
+        Close presentation and clean up objects. This is triggered by a new
+        object being added to SlideController or OpenLP being shut down.
         """
         log.debug(u'ClosePresentation')
         if self.presentation:
@@ -171,7 +173,7 @@ class PowerpointDocument(PresentationDocument):
 
     def is_loaded(self):
         """
-        Returns true if a presentation is loaded
+        Returns ``True`` if a presentation is loaded.
         """
         try:
             if not self.controller.process.Visible:
@@ -187,7 +189,7 @@ class PowerpointDocument(PresentationDocument):
 
     def is_active(self):
         """
-        Returns true if a presentation is currently active
+        Returns ``True`` if a presentation is currently active.
         """
         if not self.is_loaded():
             return False
@@ -202,7 +204,7 @@ class PowerpointDocument(PresentationDocument):
 
     def unblank_screen(self):
         """
-        Unblanks (restores) the presentationn
+        Unblanks (restores) the presentation.
         """
         self.presentation.SlideShowSettings.Run()
         self.presentation.SlideShowWindow.View.State = 1
@@ -210,13 +212,13 @@ class PowerpointDocument(PresentationDocument):
 
     def blank_screen(self):
         """
-        Blanks the screen
+        Blanks the screen.
         """
         self.presentation.SlideShowWindow.View.State = 3
 
     def is_blank(self):
         """
-        Returns true if screen is blank
+        Returns ``True`` if screen is blank.
         """
         if self.is_active():
             return self.presentation.SlideShowWindow.View.State == 3
@@ -225,14 +227,14 @@ class PowerpointDocument(PresentationDocument):
 
     def stop_presentation(self):
         """
-        Stops the current presentation and hides the output
+        Stops the current presentation and hides the output.
         """
         self.presentation.SlideShowWindow.View.Exit()
 
     if os.name == u'nt':
         def start_presentation(self):
             """
-            Starts a presentation from the beginning
+            Starts a presentation from the beginning.
             """
             #SlideShowWindow measures its size/position by points, not pixels
             try:
@@ -254,40 +256,40 @@ class PowerpointDocument(PresentationDocument):
 
     def get_slide_number(self):
         """
-        Returns the current slide number
+        Returns the current slide number.
         """
         return self.presentation.SlideShowWindow.View.CurrentShowPosition
 
     def get_slide_count(self):
         """
-        Returns total number of slides
+        Returns total number of slides.
         """
         return self.presentation.Slides.Count
 
     def goto_slide(self, slideno):
         """
-        Moves to a specific slide in the presentation
+        Moves to a specific slide in the presentation.
         """
         self.presentation.SlideShowWindow.View.GotoSlide(slideno)
 
     def next_step(self):
         """
-        Triggers the next effect of slide on the running presentation
+        Triggers the next effect of slide on the running presentation.
         """
         self.presentation.SlideShowWindow.View.Next()
 
     def previous_step(self):
         """
-        Triggers the previous slide on the running presentation
+        Triggers the previous slide on the running presentation.
         """
         self.presentation.SlideShowWindow.View.Previous()
 
     def get_slide_text(self, slide_no):
         """
-        Returns the text on the slide
+        Returns the text on the slide.
 
         ``slide_no``
-        The slide the text is required for, starting at 1
+            The slide the text is required for, starting at 1.
         """
         text = ''
         shapes = self.presentation.Slides(slide_no).Shapes
@@ -299,10 +301,10 @@ class PowerpointDocument(PresentationDocument):
 
     def get_slide_notes(self, slide_no):
         """
-        Returns the text on the slide
+        Returns the text on the slide.
 
         ``slide_no``
-        The slide the notes are required for, starting at 1
+            The slide the notes are required for, starting at 1.
         """
         text = ''
         shapes = self.presentation.Slides(slide_no).NotesPage.Shapes

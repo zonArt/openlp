@@ -52,7 +52,11 @@ class BiblePlugin(Plugin):
         self.exportBibleItem.setVisible(True)
 
     def finalise(self):
+        """
+        Tidy up on exit
+        """
         log.info(u'Plugin Finalise')
+        self.manager.finalise()
         Plugin.finalise(self)
         self.importBibleItem.setVisible(False)
         self.exportBibleItem.setVisible(False)
@@ -133,42 +137,42 @@ class BiblePlugin(Plugin):
         ## Import Button ##
         self.textStrings[StringContent.Import] = {
             u'title': translate('BiblesPlugin', 'Import'),
-            u'tooltip': translate('BiblesPlugin', 
+            u'tooltip': translate('BiblesPlugin',
                 'Import a Bible')
         }
         ## New Button ##
         self.textStrings[StringContent.New] = {
             u'title': translate('BiblesPlugin', 'Add'),
-            u'tooltip': translate('BiblesPlugin', 
+            u'tooltip': translate('BiblesPlugin',
                 'Add a new Bible')
         }
         ## Edit Button ##
         self.textStrings[StringContent.Edit] = {
             u'title': translate('BiblesPlugin', 'Edit'),
-            u'tooltip': translate('BiblesPlugin', 
+            u'tooltip': translate('BiblesPlugin',
                 'Edit the selected Bible')
         }
         ## Delete Button ##
         self.textStrings[StringContent.Delete] = {
             u'title': translate('BiblesPlugin', 'Delete'),
-            u'tooltip': translate('BiblesPlugin', 
+            u'tooltip': translate('BiblesPlugin',
                 'Delete the selected Bible')
         }
         ## Preview ##
         self.textStrings[StringContent.Preview] = {
             u'title': translate('BiblesPlugin', 'Preview'),
-            u'tooltip': translate('BiblesPlugin', 
+            u'tooltip': translate('BiblesPlugin',
                 'Preview the selected Bible')
         }
         ## Live  Button ##
         self.textStrings[StringContent.Live] = {
             u'title': translate('BiblesPlugin', 'Live'),
-            u'tooltip': translate('BiblesPlugin', 
+            u'tooltip': translate('BiblesPlugin',
                 'Send the selected Bible live')
         }
         ## Add to service Button ##
         self.textStrings[StringContent.Service] = {
             u'title': translate('BiblesPlugin', 'Service'),
-            u'tooltip': translate('BiblesPlugin', 
+            u'tooltip': translate('BiblesPlugin',
                 'Add the selected Bible to the service')
         }
