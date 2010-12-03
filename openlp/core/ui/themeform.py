@@ -606,7 +606,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         # Hack to stop it for now.
         if self.accepted:
             return
-        self.accepted = True
         # Save the theme name
         self.theme.theme_name = \
             unicode(self.field(u'name').toString())
@@ -628,6 +627,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
                 (QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
             return
+        self.accepted = True
         saveFrom = None
         saveTo = None
         if self.theme.background_type == \
