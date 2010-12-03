@@ -56,7 +56,7 @@ BLANK_THEME_XML = \
    <font type="main">
       <name>Arial</name>
       <color>#FFFFFF</color>
-      <size>30</size>
+      <size>40</size>
       <bold>False</bold>
       <italics>False</italics>
       <line_adjustment>0</line_adjustment>
