@@ -451,10 +451,12 @@ class BibleMediaItem(MediaManagerItem):
         books = []
         # We have to do a 'Verse Search'.
         if self.QuickSearchComboBox.currentIndex() == 0:
+            bibles = self.parent.manager.get_bibles()
             bible = unicode(self.QuickVersionComboBox.currentText())
             if bible:
-                book_data = self.parent.manager.get_books(bible)
-                books = [book[u'name'] for book in book_data]
+                book_data = bibles[bible].get_books()
+                books = [book.name for book in book_data]
+                books.sort()
         completer = QtGui.QCompleter(books)
         completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
         self.QuickSearchEdit.setCompleter(completer)
