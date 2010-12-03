@@ -318,7 +318,6 @@ class ThemeXML(object):
         ``shadow_size``
             How big the Shadow is
 
-
         """
         background = self.theme_xml.createElement(u'font')
         background.setAttribute(u'type', fonttype)
