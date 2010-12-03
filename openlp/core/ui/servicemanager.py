@@ -789,6 +789,8 @@ class ServiceManager(QtGui.QWidget):
         self.serviceName = name[len(name) - 1]
         self.parent.addRecentFile(filename)
         self.parent.serviceChanged(True, self.serviceName)
+        # Refresh Plugin lists
+        Receiver.send_message(u'plugin_list_refresh')
 
     def validateItem(self, serviceItem):
         """
@@ -1028,6 +1030,9 @@ class ServiceManager(QtGui.QWidget):
             # ServiceManager started the drag and drop
             if plugin == u'ServiceManager':
                 startpos, startCount = self.findServiceItem()
+                # If no items selected
+                if startpos == -1:
+                    return
                 if item is None:
                     endpos = len(self.serviceItems)
                 else:

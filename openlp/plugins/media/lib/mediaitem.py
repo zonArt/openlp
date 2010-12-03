@@ -116,7 +116,7 @@ class MediaMediaItem(MediaManagerItem):
             self.parent.liveController.display.video(filename, 0, True)
         self.resetButton.setVisible(True)
 
-    def generateSlideData(self, service_item, item=None):
+    def generateSlideData(self, service_item, item=None, xmlVersion=False):
         if item is None:
             item = self.listView.currentItem()
             if item is None:
