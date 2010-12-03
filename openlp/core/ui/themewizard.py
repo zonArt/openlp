@@ -551,36 +551,52 @@ class Ui_ThemeWizard(object):
         QtCore.QMetaObject.connectSlotsByName(ThemeWizard)
 
     def retranslateUi(self, ThemeWizard):
-        ThemeWizard.setWindowTitle(translate('OpenLP.ThemeForm', 'Theme Wizard'))
-        self.titleLabel.setText(translate('OpenLP.ThemeForm', '<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n'
+        ThemeWizard.setWindowTitle(translate('OpenLP.ThemeForm',
+            'Theme Wizard'))
+        self.titleLabel.setText(translate('OpenLP.ThemeForm',
+            '<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n'
 '<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n'
 'p, li { white-space: pre-wrap; }\n'
 '</style></head><body style=\" font-family:\'Sans Serif\'; font-size:9pt; font-weight:400; font-style:normal;\">\n'
 '<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:14pt; font-weight:600;\">Welcome to the Theme Wizard</span></p></body></html>'))
         self.informationLabel.setText(translate('OpenLP.ThemeForm', 'This wizard will help you to maintain Themes . Click the next button below to start the process by setting up your background.'))
         self.backgroundPage.setTitle(translate('OpenLP.ThemeForm', 'Set Up Background'))
-        self.backgroundPage.setSubTitle(translate('OpenLP.ThemeForm', 'Set up your theme\'s background according to the parameters below.'))
-        self.backgroundTypeLabel.setText(translate('OpenLP.ThemeForm', 'Background type:'))
-        self.backgroundTypeComboBox.setItemText(0, translate('OpenLP.ThemeForm', 'Solid Color'))
-        self.backgroundTypeComboBox.setItemText(1, translate('OpenLP.ThemeForm', 'Gradient'))
-        self.backgroundTypeComboBox.setItemText(2, translate('OpenLP.ThemeForm', 'Image'))
+        self.backgroundPage.setSubTitle(translate('OpenLP.ThemeForm',
+            'Set up your theme\'s background according to the parameters below.'))
+        self.backgroundTypeLabel.setText(translate('OpenLP.ThemeForm',
+            'Background type:'))
+        self.backgroundTypeComboBox.setItemText(0, translate('OpenLP.ThemeForm',
+            'Solid Color'))
+        self.backgroundTypeComboBox.setItemText(1, translate('OpenLP.ThemeForm',
+            'Gradient'))
+        self.backgroundTypeComboBox.setItemText(2, translate('OpenLP.ThemeForm',
+            'Image'))
         self.color1Label.setText(translate('OpenLP.ThemeForm', '<Color1>'))
         self.color2Label.setText(translate('OpenLP.ThemeForm', '<Color2>'))
         self.imageLabel.setText(translate('OpenLP.ThemeForm', 'Image:'))
         self.gradientLabel.setText(translate('OpenLP.ThemeForm', 'Gradient:'))
-        self.gradientComboBox.setItemText(0, translate('OpenLP.ThemeForm', 'Horizontal'))
-        self.gradientComboBox.setItemText(1, translate('OpenLP.ThemeForm', 'Vertical'))
-        self.gradientComboBox.setItemText(2, translate('OpenLP.ThemeForm', 'Circular'))
-        self.gradientComboBox.setItemText(3, translate('OpenLP.ThemeForm', 'Top Left - Bottom Right'))
-        self.gradientComboBox.setItemText(4, translate('OpenLP.ThemeForm', 'Bottom Left - Top Right'))
-        self.mainAreaPage.setTitle(translate('OpenLP.ThemeForm', 'Main Area Font Details'))
-        self.mainAreaPage.setSubTitle(translate('OpenLP.ThemeForm', 'Define the font and display characteristics for the Display text'))
+        self.gradientComboBox.setItemText(0, translate('OpenLP.ThemeForm',
+            'Horizontal'))
+        self.gradientComboBox.setItemText(1, translate('OpenLP.ThemeForm',
+            'Vertical'))
+        self.gradientComboBox.setItemText(2, translate('OpenLP.ThemeForm',
+            'Circular'))
+        self.gradientComboBox.setItemText(3, translate('OpenLP.ThemeForm',
+            'Top Left - Bottom Right'))
+        self.gradientComboBox.setItemText(4, translate('OpenLP.ThemeForm',
+            'Bottom Left - Top Right'))
+        self.mainAreaPage.setTitle(translate('OpenLP.ThemeForm',
+            'Main Area Font Details'))
+        self.mainAreaPage.setSubTitle(translate('OpenLP.ThemeForm',
+            'Define the font and display characteristics for the Display text'))
         self.mainFontLabel.setText(translate('OpenLP.ThemeForm', 'Font:'))
         self.mainColorLabel.setText(translate('OpenLP.ThemeForm', 'Color:'))
         self.mainSizeLabel.setText(translate('OpenLP.ThemeForm', 'Size:'))
         self.mainSizeSpinBox.setSuffix(translate('OpenLP.ThemeForm', 'pt'))
-        self.mainLineCountLabel.setText(translate('OpenLP.ThemeForm', '(%d lines per slide)'))
-        self.lineSpacingLabel.setText(translate('OpenLP.ThemeForm', 'Line Spacing:'))
+        self.mainLineCountLabel.setText(translate('OpenLP.ThemeForm',
+            '(%d lines per slide)'))
+        self.lineSpacingLabel.setText(translate('OpenLP.ThemeForm',
+            'Line Spacing:'))
         self.lineSpacingSpinBox.setSuffix(translate('OpenLP.ThemeForm', 'pt'))
         self.outlineCheckBox.setText(translate('OpenLP.ThemeForm', '&Outline:'))
         self.outlineSizeLabel.setText(translate('OpenLP.ThemeForm', 'Size:'))
@@ -589,28 +605,46 @@ class Ui_ThemeWizard(object):
         self.shadowSizeLabel.setText(translate('OpenLP.ThemeForm', 'Size:'))
         self.shadowSizeSpinBox.setSuffix(translate('OpenLP.ThemeForm', 'pt'))
         self.boldCheckBox.setText(translate('OpenLP.ThemeForm', 'Bold Display'))
-        self.italicsCheckBox.setText(translate('OpenLP.ThemeForm', 'Italic Display'))
-        self.footerAreaPage.setTitle(translate('OpenLP.ThemeForm', 'Footer Area Font Details'))
-        self.footerAreaPage.setSubTitle(translate('OpenLP.ThemeForm', 'Define the font and display characteristics for the Footer text'))
+        self.italicsCheckBox.setText(translate('OpenLP.ThemeForm',
+            'Italic Display'))
+        self.footerAreaPage.setTitle(translate('OpenLP.ThemeForm',
+            'Footer Area Font Details'))
+        self.footerAreaPage.setSubTitle(translate('OpenLP.ThemeForm',
+            'Define the font and display characteristics for the Footer text'))
         self.footerFontLabel.setText(translate('OpenLP.ThemeForm', 'Font:'))
         self.footerColorLabel.setText(translate('OpenLP.ThemeForm', 'Color:'))
         self.footerSizeLabel.setText(translate('OpenLP.ThemeForm', 'Size:'))
         self.footerSizeSpinBox.setSuffix(translate('OpenLP.ThemeForm', 'pt'))
-        self.alignmentPage.setTitle(translate('OpenLP.ThemeForm', 'Text Formatting Details'))
-        self.alignmentPage.setSubTitle(translate('OpenLP.ThemeForm', 'Allows additional display formatting information to be defined'))
-        self.horizontalLabel.setText(translate('OpenLP.ThemeForm', 'Horizontal Align:'))
-        self.horizontalComboBox.setItemText(0, translate('OpenLP.ThemeForm', 'Left'))
-        self.horizontalComboBox.setItemText(1, translate('OpenLP.ThemeForm', 'Right'))
-        self.horizontalComboBox.setItemText(2, translate('OpenLP.ThemeForm', 'Center'))
-        self.verticalLabel.setText(translate('OpenLP.ThemeForm', 'Vertcal Align:'))
-        self.verticalComboBox.setItemText(0, translate('OpenLP.ThemeForm', 'Top'))
-        self.verticalComboBox.setItemText(1, translate('OpenLP.ThemeForm', 'Middle'))
-        self.verticalComboBox.setItemText(2, translate('OpenLP.ThemeForm', 'Bottom'))
-        self.transitionsCheckBox.setText(translate('OpenLP.ThemeForm', 'Transitions'))
-        self.areaPositionPage.setTitle(translate('OpenLP.ThemeForm', 'Output Area Locations'))
-        self.areaPositionPage.setSubTitle(translate('OpenLP.ThemeForm', 'Allows you to change and move the Main and Footer areas.'))
-        self.mainPositionGroupBox.setTitle(translate('OpenLP.ThemeForm', '&Main Area'))
-        self.mainDefaultPositionCheckBox.setText(translate('OpenLP.ThemeForm', '&Use default location'))
+        self.alignmentPage.setTitle(translate('OpenLP.ThemeForm',
+            'Text Formatting Details'))
+        self.alignmentPage.setSubTitle(translate('OpenLP.ThemeForm',
+            'Allows additional display formatting information to be defined'))
+        self.horizontalLabel.setText(translate('OpenLP.ThemeForm',
+            'Horizontal Align:'))
+        self.horizontalComboBox.setItemText(0, translate('OpenLP.ThemeForm',
+            'Left'))
+        self.horizontalComboBox.setItemText(1, translate('OpenLP.ThemeForm',
+            'Right'))
+        self.horizontalComboBox.setItemText(2, translate('OpenLP.ThemeForm',
+            'Center'))
+        self.verticalLabel.setText(translate('OpenLP.ThemeForm',
+            'Vertcal Align:'))
+        self.verticalComboBox.setItemText(0, translate('OpenLP.ThemeForm',
+            'Top'))
+        self.verticalComboBox.setItemText(1, translate('OpenLP.ThemeForm',
+            'Middle'))
+        self.verticalComboBox.setItemText(2, translate('OpenLP.ThemeForm',
+            'Bottom'))
+        self.transitionsCheckBox.setText(translate('OpenLP.ThemeForm',
+            'Transitions'))
+        self.areaPositionPage.setTitle(translate('OpenLP.ThemeForm',
+            'Output Area Locations'))
+        self.areaPositionPage.setSubTitle(translate('OpenLP.ThemeForm',
+            'Allows you to change and move the Main and Footer areas.'))
+        self.mainPositionGroupBox.setTitle(translate('OpenLP.ThemeForm',
+            '&Main Area'))
+        self.mainDefaultPositionCheckBox.setText(translate('OpenLP.ThemeForm',
+            '&Use default location'))
         self.nainXLabel.setText(translate('OpenLP.ThemeForm', 'X position:'))
         self.mainXSpinBox.setSuffix(translate('OpenLP.ThemeForm', 'px'))
         self.mainYSpinBox.setSuffix(translate('OpenLP.ThemeForm', 'px'))
@@ -619,7 +653,8 @@ class Ui_ThemeWizard(object):
         self.mainWidthLabel.setText(translate('OpenLP.ThemeForm', 'Width:'))
         self.mainHeightSpinBox.setSuffix(translate('OpenLP.ThemeForm', 'px'))
         self.mainHeightLabel.setText(translate('OpenLP.ThemeForm', 'Height:'))
-        self.footerPositionGroupBox.setTitle(translate('OpenLP.ThemeForm', 'Footer Area'))
+        self.footerPositionGroupBox.setTitle(translate('OpenLP.ThemeForm',
+            'Footer Area'))
         self.footerXLabel.setText(translate('OpenLP.ThemeForm', 'X position:'))
         self.footerXSpinBox.setSuffix(translate('OpenLP.ThemeForm', 'px'))
         self.footerYLabel.setText(translate('OpenLP.ThemeForm', 'Y position:'))
@@ -628,8 +663,12 @@ class Ui_ThemeWizard(object):
         self.footerWidthSpinBox.setSuffix(translate('OpenLP.ThemeForm', 'px'))
         self.footerHeightLabel.setText(translate('OpenLP.ThemeForm', 'Height:'))
         self.footerHeightSpinBox.setSuffix(translate('OpenLP.ThemeForm', 'px'))
-        self.footerDefaultPositionCheckBox.setText(translate('OpenLP.ThemeForm', 'Use default location'))
-        self.previewPage.setTitle(translate('OpenLP.ThemeForm', 'Save and Preview'))
-        self.previewPage.setSubTitle(translate('OpenLP.ThemeForm', 'View the theme and save it replacing the current one or change the name to create a new theme'))
-        self.themeNameLabel.setText(translate('OpenLP.ThemeForm', 'Theme name:'))
+        self.footerDefaultPositionCheckBox.setText(translate('OpenLP.ThemeForm',
+            'Use default location'))
+        self.previewPage.setTitle(translate('OpenLP.ThemeForm',
+            'Save and Preview'))
+        self.previewPage.setSubTitle(translate('OpenLP.ThemeForm',
+            'View the theme and save it replacing the current one or change the name to create a new theme'))
+        self.themeNameLabel.setText(translate('OpenLP.ThemeForm',
+            'Theme name:'))
         self.previewLabel.setText(translate('OpenLP.ThemeForm', 'Preview'))
