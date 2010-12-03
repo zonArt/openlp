@@ -400,7 +400,7 @@ class SlideController(QtGui.QWidget):
         log.debug(u'screenSizeChanged live = %s' % self.isLive)
         # rebuild display as screen size changed
         self.display = MainDisplay(self, self.screens, self.isLive)
-        self.display.imageManager = self.parent.RenderManager.image_manager
+        self.display.imageManager = self.parent.renderManager.image_manager
         self.display.alertTab = self.alertTab
         self.ratio = float(self.screens.current[u'size'].width()) / \
             float(self.screens.current[u'size'].height())
@@ -416,7 +416,7 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'widthChanged live = %s' % self.isLive)
         width = self.parent.ControlSplitter.sizes()[self.split]
-        height = width * self.parent.RenderManager.screen_ratio
+        height = width * self.parent.renderManager.screen_ratio
         self.PreviewListWidget.setColumnWidth(0, width)
         # Sort out image heights (Songs, bibles excluded)
         if self.serviceItem and not self.serviceItem.is_text():
@@ -595,14 +595,14 @@ class SlideController(QtGui.QWidget):
                 label.setScaledContents(True)
                 if self.serviceItem.is_command():
                     image = resize_image(frame[u'image'],
-                        self.parent.RenderManager.width,
-                        self.parent.RenderManager.height)
+                        self.parent.renderManager.width,
+                        self.parent.renderManager.height)
                 else:
-                    image = self.parent.RenderManager.image_manager. \
+                    image = self.parent.renderManager.image_manager. \
                             get_image(frame[u'title'])
                 label.setPixmap(QtGui.QPixmap.fromImage(image))
                 self.PreviewListWidget.setCellWidget(framenumber, 0, label)
-                slideHeight = width * self.parent.RenderManager.screen_ratio
+                slideHeight = width * self.parent.renderManager.screen_ratio
                 row += 1
             text.append(unicode(row))
             self.PreviewListWidget.setItem(framenumber, 0, item)

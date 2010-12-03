@@ -750,7 +750,7 @@ class ThemeManager(QtGui.QWidget):
             Flag to tell message lines per page need to be generated.
         """
         log.debug(u'generateImage \n%s ', themeData)
-        return self.parent.RenderManager.generate_preview(themeData, forcePage)
+        return self.parent.renderManager.generate_preview(themeData, forcePage)
 
     def getPreviewImage(self, theme):
         """
