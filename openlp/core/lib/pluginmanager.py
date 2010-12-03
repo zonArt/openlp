@@ -156,9 +156,11 @@ class PluginManager(object):
                 if plugin.settings_tab:
                     log.debug(u'Inserting settings tab item from %s' %
                         visible_title[u'title'])
-                    settingsform.addTab(visible_title[u'title'], plugin.settings_tab)
+                    settingsform.addTab(visible_title[u'title'],
+                        plugin.settings_tab)
                 else:
-                    log.debug(u'No tab settings in %s' % visible_title[u'title'])
+                    log.debug(
+                        u'No tab settings in %s' % visible_title[u'title'])
 
     def hook_import_menu(self, import_menu):
         """

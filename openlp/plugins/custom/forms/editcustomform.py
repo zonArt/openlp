@@ -46,7 +46,6 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         Constructor
         """
         QtGui.QDialog.__init__(self, parent)
-        #self.parent = parent
         self.setupUi(self)
         # Connecting signals and slots
         self.previewButton = QtGui.QPushButton()
@@ -124,8 +123,9 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
                 self.slideListView.addItem(slide[1])
             theme = self.customSlide.theme_name
             id = self.themeComboBox.findText(theme, QtCore.Qt.MatchExactly)
+            # No theme match
             if id == -1:
-                id = 0 # Not Found
+                id = 0
             self.themeComboBox.setCurrentIndex(id)
         else:
             self.themeComboBox.setCurrentIndex(0)
@@ -162,12 +162,10 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             sxml.add_verse_to_lyrics(u'custom', unicode(count),
                 unicode(self.slideListView.item(i).text()))
             count += 1
-        self.customSlide.title = unicode(self.titleEdit.displayText(), u'utf-8')
+        self.customSlide.title = unicode(self.titleEdit.text())
         self.customSlide.text = unicode(sxml.extract_xml(), u'utf-8')
-        self.customSlide.credits = unicode(self.creditEdit.displayText(),
-            u'utf-8')
-        self.customSlide.theme_name = unicode(self.themeComboBox.currentText(),
-            u'utf-8')
+        self.customSlide.credits = unicode(self.creditEdit.text())
+        self.customSlide.theme_name = unicode(self.themeComboBox.currentText())
         return self.manager.save_object(self.customSlide)
 
     def onUpButtonPressed(self):
@@ -266,7 +264,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             self.titleEdit.setFocus()
             return False, translate('CustomPlugin.EditCustomForm',
                 'You need to type in a title.')
-        # We must have one slide.
+        # We must have at least one slide.
         if self.slideListView.count() == 0:
             return False, translate('CustomPlugin.EditCustomForm',
                 'You need to add at least one slide')

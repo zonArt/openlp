@@ -32,7 +32,7 @@ from openlp.core.lib import MediaManagerItem, BaseListWithDnD, Receiver, \
     ItemCapabilities, translate, check_item_selected
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     SongImportForm
-from openlp.plugins.songs.lib import SongXMLParser
+from openlp.plugins.songs.lib import SongXMLParser, OpenLyricsParser
 from openlp.plugins.songs.lib.db import Author, Song
 
 log = logging.getLogger(__name__)
@@ -53,8 +53,8 @@ class SongMediaItem(MediaManagerItem):
         self.ListViewWithDnD_class = SongListView
         MediaManagerItem.__init__(self, parent, self, icon)
         self.edit_song_form = EditSongForm(self, self.parent.manager)
+        self.openLyrics = OpenLyricsParser(self.parent.manager)
         self.singleServiceItem = False
-        #self.edit_song_form = EditSongForm(self.parent.manager, self)
         self.song_maintenance_form = SongMaintenanceForm(
             self.parent.manager, self)
         # Holds information about whether the edit is remotly triggered and
@@ -114,6 +114,8 @@ class SongMediaItem(MediaManagerItem):
         self.SearchButtonLayout.addWidget(self.ClearTextButton)
         self.pageLayout.addLayout(self.SearchButtonLayout)
         # Signals and slots
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'plugin_list_refresh'), self.onSearchTextButtonClick)
         QtCore.QObject.connect(self.SearchTextEdit,
             QtCore.SIGNAL(u'returnPressed()'), self.onSearchTextButtonClick)
         QtCore.QObject.connect(self.SearchTextButton,
@@ -141,7 +143,7 @@ class SongMediaItem(MediaManagerItem):
         self.updateServiceOnEdit = QtCore.QSettings().value(
             self.settingsSection + u'/update service on edit',
             QtCore.QVariant(u'False')).toBool()
-        self.AddSongFromServide = QtCore.QSettings().value(
+        self.addSongFromService = QtCore.QSettings().value(
             self.settingsSection + u'/add song from service',
             QtCore.QVariant(u'True')).toBool()
 
@@ -192,6 +194,7 @@ class SongMediaItem(MediaManagerItem):
         Handle the exit from the edit dialog and trigger remote updates
         of songs
         """
+        log.debug(u'onSongListLoad')
         # Called to redisplay the song list screen edit from a search
         # or from the exit of the Song edit dialog.  If remote editing is active
         # Trigger it and clean up so it will not update again.
@@ -259,6 +262,7 @@ class SongMediaItem(MediaManagerItem):
         Receiver.send_message(u'songs_load_list')
 
     def onNewClick(self):
+        log.debug(u'onNewClick')
         self.edit_song_form.newSong()
         self.edit_song_form.exec_()
 
@@ -266,6 +270,7 @@ class SongMediaItem(MediaManagerItem):
         self.song_maintenance_form.exec_()
 
     def onRemoteEditClear(self):
+        log.debug(u'onRemoteEditClear')
         self.remoteTriggered = None
         self.remoteSong = -1
 
@@ -275,6 +280,7 @@ class SongMediaItem(MediaManagerItem):
         the Song Id in the payload along with an indicator to say which
         type of display is required.
         """
+        log.debug(u'onRemoteEdit %s' % songid)
         fields = songid.split(u':')
         valid = self.parent.manager.get_object(Song, fields[1])
         if valid:
@@ -287,6 +293,7 @@ class SongMediaItem(MediaManagerItem):
         """
         Edit a song
         """
+        log.debug(u'onEditClick')
         if check_item_selected(self.listView,
             translate('SongsPlugin.MediaItem',
             'You must select an item to edit.')):
@@ -323,7 +330,8 @@ class SongMediaItem(MediaManagerItem):
                 self.parent.manager.delete_object(Song, item_id)
             self.onSearchTextButtonClick()
 
-    def generateSlideData(self, service_item, item=None):
+    def generateSlideData(self, service_item, item=None, xmlVersion=False):
+        log.debug(u'generateSlideData (%s:%s)' % (service_item, item))
         raw_footer = []
         author_list = u''
         author_audit = []
@@ -345,11 +353,11 @@ class SongMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.AddIfNewItem)
         song = self.parent.manager.get_object(Song, item_id)
         service_item.theme = song.theme_name
-        service_item.editId = item_id
+        service_item.edit_id = item_id
         if song.lyrics.startswith(u'<?xml version='):
             songXML = SongXMLParser(song.lyrics)
             verseList = songXML.get_verses()
-            #no verse list or only 1 space (in error)
+            # no verse list or only 1 space (in error)
             if not song.verse_order or not song.verse_order.strip():
                 for verse in verseList:
                     verseTag = u'%s:%s' % (
@@ -357,7 +365,7 @@ class SongMediaItem(MediaManagerItem):
                     service_item.add_from_text(
                         verse[1][:30], unicode(verse[1]), verseTag)
             else:
-                #Loop through the verse list and expand the song accordingly.
+                # Loop through the verse list and expand the song accordingly.
                 for order in song.verse_order.upper().split(u' '):
                     if len(order) == 0:
                         break
@@ -389,31 +397,43 @@ class SongMediaItem(MediaManagerItem):
         service_item.audit = [
             song.title, author_audit, song.copyright, unicode(song.ccli_number)
         ]
-        service_item.data_string = {u'title':song.search_title,  u'authors':author_list}
+        service_item.data_string = {u'title':song.search_title,
+            u'authors':author_list}
+        service_item.xml_version = self.openLyrics.song_to_xml(song)
         return True
 
     def serviceLoad(self, item):
         """
         Triggered by a song being loaded by the service item
         """
+        log.debug(u'serviceLoad')
         if item.data_string:
             search_results = self.parent.manager.get_all_objects(Song,
-                Song.search_title.like(u'%' +
-                    item.data_string[u'title'].split(u'@')[0] + u'%'),
+                Song.search_title ==
+                    item.data_string[u'title'].split(u'@')[0].lower() ,
                 Song.search_title.asc())
-            author_list = item.data_string[u'authors'].split(u',')
+            author_list = item.data_string[u'authors'].split(u', ')
             editId = 0
-            uuid = 0
+            uuid = item._uuid
             if search_results:
                 for song in search_results:
                     count = 0
                     for author in song.authors:
                         if author.display_name in author_list:
-                           count += 1
+                            count += 1
+                    # All Authors the same
                     if count == len(author_list):
                         editId = song.id
-                        uuid = item._uuid
+                    else:
+                        # Authors different
+                        if self.addSongFromService:
+                            editId = self.openLyrics. \
+                                xml_to_song(item.xml_version)
+            else:
+                # Title does not match
+                if self.addSongFromService:
+                    editId = self.openLyrics.xml_to_song(item.xml_version)
+            # Update service with correct song id
             if editId != 0:
                 Receiver.send_message(u'service_item_update',
                     u'%s:%s' %(editId, uuid))
-

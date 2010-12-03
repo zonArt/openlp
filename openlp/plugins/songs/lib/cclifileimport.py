@@ -203,9 +203,9 @@ class CCLIFileImport(SongImport):
 
         SongSelect .txt file format::
 
-            Song Title                          # Contains the song title
+            Song Title                  # Contains the song title
             <Empty line>
-            Verse type and number               # e.g. Verse 1, Chorus 1
+            Verse type and number       # e.g. Verse 1, Chorus 1
             Verse lyrics
             <Empty line>
             <Empty line>
@@ -213,12 +213,16 @@ class CCLIFileImport(SongImport):
             Verse lyrics
             <Empty line>
             <Empty line>
-            Song CCLI number                    # e.g. CCLI Number (e.g.CCLI-Liednummer: 2672885)
-            Song copyright                      # e.g. © 1999 Integrity's Hosanna! Music | LenSongs Publishing
-            Song authors                        # e.g. Lenny LeBlanc | Paul Baloche
-            Licencing info                      # e.g. For use solely with the SongSelect Terms of Use.
+            Song CCLI number
+                # e.g. CCLI Number (e.g.CCLI-Liednummer: 2672885)
+            Song copyright
+                # e.g. © 1999 Integrity's Hosanna! Music | LenSongs Publishing
+            Song authors                # e.g. Lenny LeBlanc | Paul Baloche
+            Licencing info
+                # e.g. For use solely with the SongSelect Terms of Use.
             All rights Reserved.  www.ccli.com
-            CCLI Licence number of user         # e.g. CCL-Liedlizenznummer: 14 / CCLI License No. 14
+            CCLI Licence number of user
+                # e.g. CCL-Liedlizenznummer: 14 / CCLI License No. 14
 
         """
         log.debug(u'TXT file text: %s', textList)

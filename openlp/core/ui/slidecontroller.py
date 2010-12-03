@@ -26,7 +26,6 @@
 
 import logging
 import os
-import time
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
@@ -332,10 +331,8 @@ class SlideController(QtGui.QWidget):
         QtCore.QObject.connect(self.PreviewListWidget,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
         if not self.isLive:
-            if QtCore.QSettings().value(u'advanced/double click live',
-                QtCore.QVariant(False)).toBool():
-                QtCore.QObject.connect(self.PreviewListWidget,
-                    QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onGoLive)
+            QtCore.QObject.connect(self.PreviewListWidget,
+                QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onGoLiveClick)
         if isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'slidecontroller_live_spin_delay'),
@@ -392,6 +389,8 @@ class SlideController(QtGui.QWidget):
         if self.isLive:
             QtCore.QObject.connect(self.volumeSlider,
                 QtCore.SIGNAL(u'sliderReleased()'), self.mediaVolume)
+            QtCore.QObject.connect(Receiver.get_receiver(),
+                QtCore.SIGNAL(u'maindisplay_active'), self.updatePreview)
 
     def screenSizeChanged(self):
         """
@@ -434,8 +433,12 @@ class SlideController(QtGui.QWidget):
         request = unicode(self.sender().text())
         slideno = self.slideList[request]
         if slideno > self.PreviewListWidget.rowCount():
-            self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount())
+            self.PreviewListWidget.selectRow(
+                self.PreviewListWidget.rowCount() - 1)
         else:
+            if slideno + 1 < self.PreviewListWidget.rowCount():
+                self.PreviewListWidget.scrollToItem(
+                    self.PreviewListWidget.item(slideno + 1, 0))
             self.PreviewListWidget.selectRow(slideno)
         self.onSlideSelected()
 
@@ -527,6 +530,9 @@ class SlideController(QtGui.QWidget):
         log.debug(u'addServiceManagerItem live = %s' % self.isLive)
         # If service item is the same as the current on only change slide
         if item.__eq__(self.serviceItem):
+            if slideno + 1 < self.PreviewListWidget.rowCount():
+                self.PreviewListWidget.scrollToItem(
+                    self.PreviewListWidget.item(slideno + 1, 0))
             self.PreviewListWidget.selectRow(slideno)
             self.onSlideSelected()
             return
@@ -608,8 +614,12 @@ class SlideController(QtGui.QWidget):
         self.PreviewListWidget.setColumnWidth(0,
             self.PreviewListWidget.viewport().size().width())
         if slideno > self.PreviewListWidget.rowCount():
-            self.PreviewListWidget.selectRow(self.PreviewListWidget.rowCount())
+            self.PreviewListWidget.selectRow(
+                self.PreviewListWidget.rowCount() - 1)
         else:
+            if slideno + 1 < self.PreviewListWidget.rowCount():
+                self.PreviewListWidget.scrollToItem(
+                    self.PreviewListWidget.item(slideno + 1, 0))
             self.PreviewListWidget.selectRow(slideno)
         self.enableToolBar(serviceItem)
         # Pass to display for viewing
@@ -668,6 +678,9 @@ class SlideController(QtGui.QWidget):
                 [self.serviceItem, self.isLive, index])
             self.updatePreview()
         else:
+            if index + 1 < self.PreviewListWidget.rowCount():
+                self.PreviewListWidget.scrollToItem(
+                    self.PreviewListWidget.item(index + 1, 0))
             self.PreviewListWidget.selectRow(index)
             self.onSlideSelected()
 
@@ -780,9 +793,11 @@ class SlideController(QtGui.QWidget):
         row = self.PreviewListWidget.currentRow()
         self.selectedRow = 0
         if row > -1 and row < self.PreviewListWidget.rowCount():
-            if self.serviceItem.is_command() and self.isLive:
-                Receiver.send_message(u'%s_slide' % self.serviceItem.name.lower(),
-                    [self.serviceItem, self.isLive, row])
+            if self.serviceItem.is_command():
+                if self.isLive:
+                    Receiver.send_message(
+                        u'%s_slide' % self.serviceItem.name.lower(),
+                        [self.serviceItem, self.isLive, row])
                 self.updatePreview()
             else:
                 toDisplay = self.serviceItem.get_rendered_frame(row)
@@ -799,22 +814,24 @@ class SlideController(QtGui.QWidget):
         """
         The slide has been changed. Update the slidecontroller accordingly
         """
+        if row + 1 < self.PreviewListWidget.rowCount():
+            self.PreviewListWidget.scrollToItem(
+                self.PreviewListWidget.item(row + 1, 0))
         self.PreviewListWidget.selectRow(row)
         self.updatePreview()
         Receiver.send_message(u'slidecontroller_%s_changed' % self.typePrefix,
             row)
 
     def updatePreview(self):
+        log.debug(u'updatePreview %s ' %self.screens.current[u'primary'])
         if not self.screens.current[u'primary']:
             # Grab now, but try again in a couple of seconds if slide change
             # is slow
             QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
             QtCore.QTimer.singleShot(2.5, self.grabMainDisplay)
         else:
-            label = self.PreviewListWidget.cellWidget(
-                self.PreviewListWidget.currentRow(), 1)
-            if label:
-                self.SlidePreview.setPixmap(label.pixmap())
+            self.SlidePreview.setPixmap(
+                QtGui.QPixmap.fromImage(self.display.preview()))
 
     def grabMainDisplay(self):
         winid = QtGui.QApplication.desktop().winId()
@@ -844,6 +861,9 @@ class SlideController(QtGui.QWidget):
                 else:
                     Receiver.send_message('servicemanager_next_item')
                     return
+            if row + 1 < self.PreviewListWidget.rowCount():
+                self.PreviewListWidget.scrollToItem(
+                    self.PreviewListWidget.item(row + 1, 0))
             self.PreviewListWidget.selectRow(row)
             self.onSlideSelected()
 
@@ -867,6 +887,9 @@ class SlideController(QtGui.QWidget):
                     row = self.PreviewListWidget.rowCount() - 1
                 else:
                     row = 0
+            if row + 1 < self.PreviewListWidget.rowCount():
+                self.PreviewListWidget.scrollToItem(
+                    self.PreviewListWidget.item(row + 1, 0))
             self.PreviewListWidget.selectRow(row)
             self.onSlideSelected()
 
@@ -918,7 +941,15 @@ class SlideController(QtGui.QWidget):
         """
         self.songEdit = True
         Receiver.send_message(u'%s_edit' % self.serviceItem.name.lower(),
-            u'P:%s' % self.serviceItem.editId)
+            u'P:%s' % self.serviceItem.edit_id)
+
+    def onGoLiveClick(self):
+        """
+        triggered by clicking the Preview slide items
+        """
+        if QtCore.QSettings().value(u'advanced/double click live',
+            QtCore.QVariant(False)).toBool():
+            self.onGoLive()
 
     def onGoLive(self):
         """
