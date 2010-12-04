@@ -627,7 +627,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # warning cyclic dependency
         # RenderManager needs to call ThemeManager and
         # ThemeManager needs to call RenderManager
-        self.RenderManager = RenderManager(
+        self.renderManager = RenderManager(
             self.ThemeManagerContents, self.screens)
         # Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.MediaToolBox)
@@ -635,7 +635,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # make the controllers available to the plugins
         self.plugin_helpers[u'preview'] = self.PreviewController
         self.plugin_helpers[u'live'] = self.LiveController
-        self.plugin_helpers[u'render'] = self.RenderManager
+        self.plugin_helpers[u'render'] = self.renderManager
         self.plugin_helpers[u'service'] = self.ServiceManagerContents
         self.plugin_helpers[u'settings form'] = self.settingsForm
         self.plugin_helpers[u'toolbox'] = self.mediaDockManager
@@ -809,7 +809,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         their locations
         """
         log.debug(u'screenChanged')
-        self.RenderManager.update_display()
+        self.renderManager.update_display()
         self.setFocus()
         self.activateWindow()
 

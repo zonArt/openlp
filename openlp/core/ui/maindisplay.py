@@ -229,7 +229,7 @@ class MainDisplay(DisplayWidget):
         """
         API for replacement backgrounds so Images are added directly to cache
         """
-        image = self.imageManager.add_image(name, path)
+        self.imageManager.add_image(name, path)
         self.image(name)
 
     def image(self, name):
