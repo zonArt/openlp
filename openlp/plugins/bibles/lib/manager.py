@@ -61,6 +61,7 @@ class BibleFormat(object):
     CSV = 1
     OpenSong = 2
     WebDownload = 3
+    OpenLPv1 = 4
 
     @staticmethod
     def get_class(format):
