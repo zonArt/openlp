@@ -554,15 +554,25 @@ class Ui_ThemeWizard(object):
         ThemeWizard.setWindowTitle(translate('OpenLP.ThemeForm',
             'Theme Wizard'))
         self.titleLabel.setText(translate('OpenLP.ThemeForm',
-            '<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n'
-'<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n'
-'p, li { white-space: pre-wrap; }\n'
-'</style></head><body style=\" font-family:\'Sans Serif\'; font-size:9pt; font-weight:400; font-style:normal;\">\n'
-'<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:14pt; font-weight:600;\">Welcome to the Theme Wizard</span></p></body></html>'))
-        self.informationLabel.setText(translate('OpenLP.ThemeForm', 'This wizard will help you to maintain Themes . Click the next button below to start the process by setting up your background.'))
-        self.backgroundPage.setTitle(translate('OpenLP.ThemeForm', 'Set Up Background'))
+            '<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" '
+            '\"http://www.w3.org/TR/REC-html40/strict.dtd\">\n'
+            '<html><head><meta name=\"qrichtext\" content=\"1\" '
+            '/><style type=\"text/css\">\n'
+            'p, li { white-space: pre-wrap; }\n'
+            '</style></head><body style=\" font-family:\'Sans Serif\'; '
+            'font-size:9pt; font-weight:400; font-style:normal;\">\n'
+            '<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; '
+            'margin-right:0px; -qt-block-indent:0; text-indent:0px;'
+            '\"><span style=\" font-size:14pt; font-weight:600;\">'
+            'Welcome to the Theme Wizard</span></p></body></html>'))
+        self.informationLabel.setText(translate('OpenLP.ThemeForm',
+            'This wizard will help you to maintain Themes . Click the next '
+            'button below to start the process by setting up your background.'))
+        self.backgroundPage.setTitle(translate('OpenLP.ThemeForm',
+            'Set Up Background'))
         self.backgroundPage.setSubTitle(translate('OpenLP.ThemeForm',
-            'Set up your theme\'s background according to the parameters below.'))
+            'Set up your theme\'s background according to the parameters '
+            'below.'))
         self.backgroundTypeLabel.setText(translate('OpenLP.ThemeForm',
             'Background type:'))
         self.backgroundTypeComboBox.setItemText(0, translate('OpenLP.ThemeForm',
@@ -668,7 +678,8 @@ class Ui_ThemeWizard(object):
         self.previewPage.setTitle(translate('OpenLP.ThemeForm',
             'Save and Preview'))
         self.previewPage.setSubTitle(translate('OpenLP.ThemeForm',
-            'View the theme and save it replacing the current one or change the name to create a new theme'))
+            'View the theme and save it replacing the current one or change '
+            'the name to create a new theme'))
         self.themeNameLabel.setText(translate('OpenLP.ThemeForm',
             'Theme name:'))
         self.previewLabel.setText(translate('OpenLP.ThemeForm', 'Preview'))
