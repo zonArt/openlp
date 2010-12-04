@@ -627,7 +627,8 @@ class ThemeManager(QtGui.QWidget):
             newtheme.font_main_shadow_color = unicode(theme.ShadowColor.name())
         if theme.Outline == 1:
             newtheme.font_main_outline = True
-            newtheme.font_main_outline_color = unicode(theme.OutlineColor.name())
+            newtheme.font_main_outline_color = \
+                unicode(theme.OutlineColor.name())
         vAlignCorrection = 0
         if theme.VerticalAlign == 2:
             vAlignCorrection = 1
@@ -749,7 +750,7 @@ class ThemeManager(QtGui.QWidget):
             Flag to tell message lines per page need to be generated.
         """
         log.debug(u'generateImage \n%s ', themeData)
-        return self.parent.RenderManager.generate_preview(themeData, forcePage)
+        return self.parent.renderManager.generate_preview(themeData, forcePage)
 
     def getPreviewImage(self, theme):
         """
