@@ -285,13 +285,15 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.footerHeightSpinBox.setEnabled(self.theme.font_footer_override)
         self.footerWidthSpinBox.setEnabled(self.theme.font_footer_override)
 
-    def exec_(self):
+    def exec_(self, edit=False):
         """
         Run the wizard.
         """
         self.updateThemeAllowed = False
         self.setDefaults()
         self.updateThemeAllowed = True
+        if edit:
+            self.next()
         return QtGui.QWizard.exec_(self)
 
     def initializePage(self, id):

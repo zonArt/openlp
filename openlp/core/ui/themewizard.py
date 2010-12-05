@@ -36,8 +36,7 @@ class Ui_ThemeWizard(object):
         ThemeWizard.setWizardStyle(QtGui.QWizard.ModernStyle)
         ThemeWizard.setOptions(
             QtGui.QWizard.IndependentPages |
-            QtGui.QWizard.NoBackButtonOnStartPage |
-            QtGui.QWizard.NoBackButtonOnLastPage)
+            QtGui.QWizard.NoBackButtonOnStartPage)
         self.welcomePage = QtGui.QWizardPage()
         self.welcomePage.setTitle(u'')
         self.welcomePage.setSubTitle(u'')
@@ -556,7 +555,7 @@ class Ui_ThemeWizard(object):
             u'footerDefaultPositionCheckBox')
         self.footerPositionLayout.setWidget(0, QtGui.QFormLayout.FieldRole,
             self.footerDefaultPositionCheckBox)
-            self.footerPositionGroupBox, 1, 1, 1, 1)
+        self.areaPositionLayout.addWidget(self.footerPositionGroupBox, 1, 1, 1, 1)
         ThemeWizard.addPage(self.areaPositionPage)
         self.previewPage = QtGui.QWizardPage()
         self.previewPage.setObjectName(u'previewPage')
