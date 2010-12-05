@@ -33,9 +33,10 @@ from openlp.core.utils import AppLocation
 from openlp.plugins.bibles.lib import parse_reference
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
 
+from csvbible import CSVBible
+from olp1 import OpenLP1Bible
 from opensong import OpenSongBible
 from osis import OSISBible
-from csvbible import CSVBible
 from http import HTTPBible
 
 log = logging.getLogger(__name__)
@@ -61,6 +62,7 @@ class BibleFormat(object):
     CSV = 1
     OpenSong = 2
     WebDownload = 3
+    OLP1 = 4
 
     @staticmethod
     def get_class(format):
@@ -78,6 +80,8 @@ class BibleFormat(object):
             return OpenSongBible
         elif format == BibleFormat.WebDownload:
             return HTTPBible
+        elif format == BibleFormat.OLP1:
+            return OpenLP1Bible
         else:
             return None
 
@@ -90,7 +94,8 @@ class BibleFormat(object):
             BibleFormat.OSIS,
             BibleFormat.CSV,
             BibleFormat.OpenSong,
-            BibleFormat.WebDownload
+            BibleFormat.WebDownload,
+            BibleFormat.OLP1
         ]
 
 
