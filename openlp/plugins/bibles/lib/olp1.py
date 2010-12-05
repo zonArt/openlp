@@ -63,27 +63,25 @@ class OpenLP1Bible(BibleDB):
             cursor = connection.cursor()
         except:
             return False
-        # Import books.
+        # Create all books.
         cursor.execute(u'SELECT id, testament_id, name, abbreviation FROM book')
         books = cursor.fetchall()
         for book in books:
+            book_id = int(book[0])
             testament_id = int(book[1])
             name = unicode(book[2], u'cp1252')
             abbreviation = unicode(book[3], u'cp1252')
+            self.wizard.incrementProgressBar(unicode('%s %s' % (translate(
+                'BiblesPlugin.olp1', 'Importing'), name)))
             self.create_book(name, abbreviation, testament_id)
-        self.session.commit()
-        # Import chapters/verses.
-        for book in books:
-            print u'Importiere %s' % book
-            cursor.execute(u'SELECT id, book_id, chapter, verse, text || \'\' '
-                'AS text FROM verse WHERE book_id=%s' % book)
+            # Import the verses for this book.
+            cursor.execute(u'SELECT chapter, verse, text || \'\' AS text FROM '
+                'verse WHERE book_id=%s' % book_id)
             verses = cursor.fetchall()
             for verse in verses:
-                book_id = int(verse[1])
-                chapter = int(verse[2])
-                verse_number = int(verse[3])
-                text = unicode(verse[4], u'cp1252')
+                chapter = int(verse[0])
+                verse_number = int(verse[1])
+                text = unicode(verse[2], u'cp1252')
                 self.create_verse(book_id, chapter, verse_number, text)
-            self.session.commit()
+        self.session.commit()
         return True
-
