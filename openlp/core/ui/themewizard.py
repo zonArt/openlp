@@ -402,9 +402,10 @@ class Ui_ThemeWizard(object):
             self.mainPositionGroupBox)
         self.mainDefaultPositionCheckBox.setChecked(True)
         self.mainDefaultPositionCheckBox.setTristate(False)
-        self.mainDefaultPositionCheckBox.setObjectName(u'mainDefaultPositionCheckBox')
-        self.mainPositionLayout.setWidget(0,
-            QtGui.QFormLayout.FieldRole, self.mainDefaultPositionCheckBox)
+        self.mainDefaultPositionCheckBox.setObjectName(
+            u'mainDefaultPositionCheckBox')
+        self.mainPositionLayout.setWidget(0, QtGui.QFormLayout.FieldRole,
+            self.mainDefaultPositionCheckBox)
         self.nainXLabel = QtGui.QLabel(self.mainPositionGroupBox)
         self.nainXLabel.setObjectName(u'nainXLabel')
         self.mainPositionLayout.setWidget(1,
@@ -551,10 +552,10 @@ class Ui_ThemeWizard(object):
         self.footerDefaultPositionCheckBox = QtGui.QCheckBox(
             self.footerPositionGroupBox)
         self.footerDefaultPositionCheckBox.setChecked(True)
-        self.footerDefaultPositionCheckBox.setObjectName(u'footerDefaultPositionCheckBox')
-        self.footerPositionLayout.setWidget(0,
-            QtGui.QFormLayout.FieldRole, self.footerDefaultPositionCheckBox)
-        self.areaPositionLayout.addWidget(
+        self.footerDefaultPositionCheckBox.setObjectName(
+            u'footerDefaultPositionCheckBox')
+        self.footerPositionLayout.setWidget(0, QtGui.QFormLayout.FieldRole,
+            self.footerDefaultPositionCheckBox)
             self.footerPositionGroupBox, 1, 1, 1, 1)
         ThemeWizard.addPage(self.areaPositionPage)
         self.previewPage = QtGui.QWizardPage()

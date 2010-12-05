@@ -55,6 +55,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.setupUi(self)
         self.registerFields()
         self.accepted = False
+        self.updateThemeAllowed = True
         QtCore.QObject.connect(self.backgroundTypeComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
             self.onBackgroundComboBox)
@@ -169,8 +170,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             u'background_image', self.imageLineEdit)
         self.backgroundPage.registerField(
             u'gradient', self.gradientComboBox)
-        self.mainAreaPage.registerField(
-            u'mainFontComboBox', self.mainFontComboBox)
         self.mainAreaPage.registerField(
             u'mainColorPushButton', self.mainColorPushButton)
         self.mainAreaPage.registerField(
@@ -290,7 +289,9 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Run the wizard.
         """
+        self.updateThemeAllowed = False
         self.setDefaults()
+        self.updateThemeAllowed = True
         return QtGui.QWizard.exec_(self)
 
     def initializePage(self, id):
@@ -499,11 +500,11 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             self.theme.background_filename = unicode(filename)
         self.setBackgroundTabValues()
 
-    def onMainFontComboBox(self):
-        """
-        Main Font Combo box changed
-        """
-        self.theme.font_main_name = self.mainFontComboBox.currentFont().family()
+#    def onMainFontComboBox(self):
+#        """
+#        Main Font Combo box changed
+#        """
+#        self.theme.font_main_name = self.mainFontComboBox.currentFont().family()
 
     def onMainColourPushButtonClicked(self):
         self.theme.font_main_color = \
@@ -530,6 +531,8 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         Update the theme object from the UI for fields not already updated
         when the are changed.
         """
+        if not self.updateThemeAllowed:
+            return
         log.debug(u'updateTheme')
         # main page
         self.theme.font_main_name = \
@@ -579,7 +582,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         # Hack to stop it for now.
         if self.accepted:
             return
-        self.accepted = True
         # Save the theme name
         self.theme.theme_name = \
             unicode(self.field(u'name').toString())
@@ -601,6 +603,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
                 (QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
             return
+        self.accepted = True
         saveFrom = None
         saveTo = None
         if self.theme.background_type == \
