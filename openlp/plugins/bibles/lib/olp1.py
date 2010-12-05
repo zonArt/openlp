@@ -73,15 +73,17 @@ class OpenLP1Bible(BibleDB):
             self.create_book(name, abbreviation, testament_id)
         self.session.commit()
         # Import chapters/verses.
-        cursor.execute(u'SELECT id, book_id, chapter, verse, text || \'\' AS '
-            'text FROM verse')
-        verses = cursor.fetchall()
-        for verse in verses:
-            book_id = int(verse[1])
-            chapter = int(verse[2])
-            verse_number = int(verse[3])
-            text = unicode(verse[4], u'cp1252')
-            self.create_verse(book_id, chapter, verse_number, text)
-        self.session.commit()
+        for book in books:
+            print u'Importiere %s' % book
+            cursor.execute(u'SELECT id, book_id, chapter, verse, text || \'\' '
+                'AS text FROM verse WHERE book_id=%s' % book)
+            verses = cursor.fetchall()
+            for verse in verses:
+                book_id = int(verse[1])
+                chapter = int(verse[2])
+                verse_number = int(verse[3])
+                text = unicode(verse[4], u'cp1252')
+                self.create_verse(book_id, chapter, verse_number, text)
+            self.session.commit()
         return True
 
