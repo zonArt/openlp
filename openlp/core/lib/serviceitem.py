@@ -100,6 +100,8 @@ class ServiceItem(object):
         self.bg_image_bytes = None
         self.search_string = u''
         self.data_string = u''
+        self.edit_id = None
+        self.xml_version = None
         self._new_item()
 
     def _new_item(self):
@@ -251,7 +253,8 @@ class ServiceItem(object):
             u'from_plugin': self.from_plugin,
             u'capabilities': self.capabilities,
             u'search': self.search_string,
-            u'data': self.data_string
+            u'data': self.data_string,
+            u'xml_version': self.xml_version
         }
         service_data = []
         if self.service_item_type == ServiceItemType.Text:
@@ -293,6 +296,8 @@ class ServiceItem(object):
         if u'search' in header:
             self.search_string = header[u'search']
             self.data_string = header[u'data']
+        if u'xml_version' in header:
+            self.xml_version = header[u'xml_version']
         if self.service_item_type == ServiceItemType.Text:
             for slide in serviceitem[u'serviceitem'][u'data']:
                 self._raw_frames.append(slide)

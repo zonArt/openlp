@@ -331,10 +331,8 @@ class SlideController(QtGui.QWidget):
         QtCore.QObject.connect(self.PreviewListWidget,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
         if not self.isLive:
-            if QtCore.QSettings().value(u'advanced/double click live',
-                QtCore.QVariant(False)).toBool():
-                QtCore.QObject.connect(self.PreviewListWidget,
-                    QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onGoLive)
+            QtCore.QObject.connect(self.PreviewListWidget,
+                QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onGoLiveClick)
         if isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'slidecontroller_live_spin_delay'),
@@ -391,6 +389,8 @@ class SlideController(QtGui.QWidget):
         if self.isLive:
             QtCore.QObject.connect(self.volumeSlider,
                 QtCore.SIGNAL(u'sliderReleased()'), self.mediaVolume)
+            QtCore.QObject.connect(Receiver.get_receiver(),
+                QtCore.SIGNAL(u'maindisplay_active'), self.updatePreview)
 
     def screenSizeChanged(self):
         """
@@ -823,16 +823,15 @@ class SlideController(QtGui.QWidget):
             row)
 
     def updatePreview(self):
+        log.debug(u'updatePreview %s ' %self.screens.current[u'primary'])
         if not self.screens.current[u'primary']:
             # Grab now, but try again in a couple of seconds if slide change
             # is slow
             QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
             QtCore.QTimer.singleShot(2.5, self.grabMainDisplay)
         else:
-            label = self.PreviewListWidget.cellWidget(
-                self.PreviewListWidget.currentRow(), 1)
-            if label:
-                self.SlidePreview.setPixmap(label.pixmap())
+            self.SlidePreview.setPixmap(
+                QtGui.QPixmap.fromImage(self.display.preview()))
 
     def grabMainDisplay(self):
         winid = QtGui.QApplication.desktop().winId()
@@ -942,7 +941,15 @@ class SlideController(QtGui.QWidget):
         """
         self.songEdit = True
         Receiver.send_message(u'%s_edit' % self.serviceItem.name.lower(),
-            u'P:%s' % self.serviceItem.editId)
+            u'P:%s' % self.serviceItem.edit_id)
+
+    def onGoLiveClick(self):
+        """
+        triggered by clicking the Preview slide items
+        """
+        if QtCore.QSettings().value(u'advanced/double click live',
+            QtCore.QVariant(False)).toBool():
+            self.onGoLive()
 
     def onGoLive(self):
         """

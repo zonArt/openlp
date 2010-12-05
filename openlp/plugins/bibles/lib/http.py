@@ -213,7 +213,7 @@ class BGExtract(object):
         finally:
             if not page:
                 return None
-        cleaner = [(re.compile('&nbsp;|<br />'), lambda match: '')]
+        cleaner = [(re.compile('&nbsp;|<br />|\'\+\''), lambda match: '')]
         soup = None
         try:
             soup = BeautifulSoup(page, markupMassage=cleaner)
@@ -364,12 +364,11 @@ class HTTPBible(BibleDB):
         if self.proxy_server:
             self.create_meta(u'proxy server', self.proxy_server)
         if self.proxy_username:
-            # store the proxy userid
+            # Store the proxy userid.
             self.create_meta(u'proxy username', self.proxy_username)
         if self.proxy_password:
-            # store the proxy password
+            # Store the proxy password.
             self.create_meta(u'proxy password', self.proxy_password)
-        self.wizard.incrementProgressBar('Registered.')
         return True
 
     def get_verses(self, reference_list):
@@ -417,7 +416,7 @@ class HTTPBible(BibleDB):
                     ## to request ac and get Acts back.
                     bookname = search_results.book
                     Receiver.send_message(u'openlp_process_events')
-                    # check to see if book/chapter exists
+                    # Check to see if book/chapter exists.
                     db_book = self.get_book(bookname)
                     self.create_chapter(db_book.id, search_results.chapter,
                         search_results.verselist)
