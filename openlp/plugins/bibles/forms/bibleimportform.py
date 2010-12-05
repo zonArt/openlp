@@ -99,6 +99,9 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         QtCore.QObject.connect(self.OpenSongBrowseButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onOpenSongBrowseButtonClicked)
+        QtCore.QObject.connect(self.OLP1FileButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onOLP1FileButtonClicked)
         QtCore.QObject.connect(self.cancelButton,
             QtCore.SIGNAL(u'clicked(bool)'),
             self.onCancelButtonClicked)
@@ -123,7 +126,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         elif self.currentId() == 1:
             # Select page
             if self.field(u'source_format').toInt()[0] == BibleFormat.OSIS:
-                if self.field(u'osis_location').toString() == u'':
+                if not self.field(u'osis_location').toString():
                     QtGui.QMessageBox.critical(self,
                         translate('BiblesPlugin.ImportWizardForm',
                         'Invalid Bible Location'),
@@ -162,9 +165,21 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
                         'file to import.'))
                     self.OpenSongFileEdit.setFocus()
                     return False
+            elif self.field(u'source_format').toInt()[0] == BibleFormat.OLP1:
+                if not self.field(u'OLP1_location').toString():
+                    QtGui.QMessageBox.critical(self,
+                        translate('BiblesPlugin.ImportWizardForm',
+                        'Invalid Bible Location'),
+                        translate('BiblesPlugin.ImportWizardForm',
+                        'You need to specify a file to import your '
+                        'Bible from.'))
+                    self.OLP1LocationEdit.setFocus()
+                    return False
             return True
         elif self.currentId() == 2:
             # License details
+            if self.field(u'source_format').toInt()[0] == BibleFormat.OLP1:
+                return True
             license_version = unicode(self.field(u'license_version').toString())
             license_copyright = \
                 unicode(self.field(u'license_copyright').toString())
@@ -244,6 +259,14 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
             translate('BiblesPlugin.ImportWizardForm', 'Open OpenSong Bible'),
             self.OpenSongFileEdit)
 
+    def onOLP1FileButtonClicked(self):
+        """
+        Show the file open dialog for the openlp.org 1.x file.
+        """
+        self.getFileName(
+            translate('BiblesPlugin.ImportWizardForm',
+            'Open openlp.org 1.x Bible'), self.OLP1LocationEdit)
+
     def onCancelButtonClicked(self, checked):
         """
         Stop the import on pressing the cancel button.
@@ -279,6 +302,8 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
             u'proxy_username', self.UsernameEdit)
         self.SelectPage.registerField(
             u'proxy_password', self.PasswordEdit)
+        self.SelectPage.registerField(
+            u'OLP1_location', self.OLP1LocationEdit)
         self.LicenseDetailsPage.registerField(
             u'license_version', self.VersionNameEdit)
         self.LicenseDetailsPage.registerField(
@@ -306,6 +331,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
             settings.value(u'proxy username', QtCore.QVariant(u'')))
         self.setField(u'proxy_password',
             settings.value(u'proxy password', QtCore.QVariant(u'')))
+        self.setField(u'OLP1_location', QtCore.QVariant(''))
         self.setField(u'license_version',
             QtCore.QVariant(self.VersionNameEdit.text()))
         self.setField(u'license_copyright',
@@ -441,6 +467,12 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
                 proxy_username=\
                     unicode(self.field(u'proxy_username').toString()),
                 proxy_password=unicode(self.field(u'proxy_password').toString())
+            )
+        elif bible_type == BibleFormat.OLP1:
+            # Import an openlp.org 1.x bible.
+            importer = self.manager.import_bible(BibleFormat.OLP1,
+                name=license_version, 
+                filename=unicode(self.field(u'OLP1_location').toString())
             )
         if importer.do_import():
             self.manager.save_meta_data(license_version, license_version,

@@ -38,6 +38,7 @@ class Ui_BibleImportWizard(object):
             QtGui.QWizard.IndependentPages |
             QtGui.QWizard.NoBackButtonOnStartPage |
             QtGui.QWizard.NoBackButtonOnLastPage)
+        # Welcome page
         self.WelcomePage = QtGui.QWizardPage()
         self.WelcomePage.setPixmap(QtGui.QWizard.WatermarkPixmap,
             QtGui.QPixmap(u':/wizards/wizard_importbible.bmp'))
@@ -61,6 +62,7 @@ class Ui_BibleImportWizard(object):
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.WelcomeLayout.addItem(spacerItem1)
         BibleImportWizard.addPage(self.WelcomePage)
+        # Select page
         self.SelectPage = QtGui.QWizardPage()
         self.SelectPage.setObjectName(u'SelectPage')
         self.selectPageLayout = QtGui.QVBoxLayout(self.SelectPage)
@@ -79,6 +81,7 @@ class Ui_BibleImportWizard(object):
         self.FormatComboBox.addItem(u'')
         self.FormatComboBox.addItem(u'')
         self.FormatComboBox.addItem(u'')
+        self.FormatComboBox.addItem(u'')
         self.FormatSelectLayout.addWidget(self.FormatComboBox)
         spacerItem2 = QtGui.QSpacerItem(40, 20,
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
@@ -86,6 +89,7 @@ class Ui_BibleImportWizard(object):
         self.selectPageLayout.addLayout(self.FormatSelectLayout)
         self.FormatWidget = QtGui.QStackedWidget(self.SelectPage)
         self.FormatWidget.setObjectName(u'FormatWidget')
+        generalIcon = build_icon(u':/general/general_open.png')
         self.OsisPage = QtGui.QWidget()
         self.OsisPage.setObjectName(u'OsisPage')
         self.OsisLayout = QtGui.QFormLayout(self.OsisPage)
@@ -106,7 +110,6 @@ class Ui_BibleImportWizard(object):
         self.OsisLocationLayout.addWidget(self.OSISLocationEdit)
         self.OsisFileButton = QtGui.QToolButton(self.OsisPage)
         self.OsisFileButton.setMaximumSize(QtCore.QSize(32, 16777215))
-        generalIcon = build_icon(u':/general/general_open.png')
         self.OsisFileButton.setIcon(generalIcon)
         self.OsisFileButton.setObjectName(u'OsisFileButton')
         self.OsisLocationLayout.addWidget(self.OsisFileButton)
@@ -251,8 +254,35 @@ class Ui_BibleImportWizard(object):
         self.WebDownloadTabWidget.addTab(self.ProxyServerTab, u'')
         self.WebDownloadLayout.addWidget(self.WebDownloadTabWidget)
         self.FormatWidget.addWidget(self.WebDownloadPage)
+        self.OLP1Page = QtGui.QWidget()
+        self.OLP1Page.setObjectName(u'OLP1Page')
+        self.OLP1Layout = QtGui.QFormLayout(self.OLP1Page)
+        self.OLP1Layout.setFieldGrowthPolicy(
+            QtGui.QFormLayout.ExpandingFieldsGrow)
+        self.OLP1Layout.setMargin(0)
+        self.OLP1Layout.setSpacing(8)
+        self.OLP1Layout.setObjectName(u'OLP1Layout')
+        self.OLP1LocationLabel = QtGui.QLabel(self.OLP1Page)
+        self.OLP1LocationLabel.setObjectName(u'OLP1LocationLabel')
+        self.OLP1Layout.setWidget(1, QtGui.QFormLayout.LabelRole,
+            self.OLP1LocationLabel)
+        self.OLP1LocationLayout = QtGui.QHBoxLayout()
+        self.OLP1LocationLayout.setSpacing(8)
+        self.OLP1LocationLayout.setObjectName(u'OLP1LocationLayout')
+        self.OLP1LocationEdit = QtGui.QLineEdit(self.OLP1Page)
+        self.OLP1LocationEdit.setObjectName(u'OLP1LocationEdit')
+        self.OLP1LocationLayout.addWidget(self.OLP1LocationEdit)
+        self.OLP1FileButton = QtGui.QToolButton(self.OLP1Page)
+        self.OLP1FileButton.setMaximumSize(QtCore.QSize(32, 16777215))
+        self.OLP1FileButton.setIcon(generalIcon)
+        self.OLP1FileButton.setObjectName(u'OLP1FileButton')
+        self.OLP1LocationLayout.addWidget(self.OLP1FileButton)
+        self.OLP1Layout.setLayout(1, QtGui.QFormLayout.FieldRole,
+            self.OLP1LocationLayout)
+        self.FormatWidget.addWidget(self.OLP1Page)
         self.selectPageLayout.addWidget(self.FormatWidget)
         BibleImportWizard.addPage(self.SelectPage)
+        # License page
         self.LicenseDetailsPage = QtGui.QWizardPage()
         self.LicenseDetailsPage.setObjectName(u'LicenseDetailsPage')
         self.LicenseDetailsLayout = QtGui.QFormLayout(self.LicenseDetailsPage)
@@ -284,6 +314,7 @@ class Ui_BibleImportWizard(object):
         self.LicenseDetailsLayout.setWidget(2, QtGui.QFormLayout.FieldRole,
             self.PermissionsEdit)
         BibleImportWizard.addPage(self.LicenseDetailsPage)
+        # Progress page
         self.ImportPage = QtGui.QWizardPage()
         self.ImportPage.setObjectName(u'ImportPage')
         self.ImportLayout = QtGui.QVBoxLayout(self.ImportPage)
@@ -311,19 +342,19 @@ class Ui_BibleImportWizard(object):
         BibleImportWizard.setWindowTitle(
             translate('BiblesPlugin.ImportWizardForm', 'Bible Import Wizard'))
         self.TitleLabel.setText(
-            u'<span style="font-size:14pt; font-weight:600;">%s</span>' % \
+            u'<span style="font-size:14pt; font-weight:600;">%s</span>' %
             translate('BiblesPlugin.ImportWizardForm',
-                'Welcome to the Bible Import Wizard'))
+            'Welcome to the Bible Import Wizard'))
         self.InformationLabel.setText(
             translate('BiblesPlugin.ImportWizardForm',
-                'This wizard will help you to import Bibles from a '
-                'variety of formats. Click the next button below to start the '
-                'process by selecting a format to import from.'))
+            'This wizard will help you to import Bibles from a '
+            'variety of formats. Click the next button below to start the '
+            'process by selecting a format to import from.'))
         self.SelectPage.setTitle(translate('BiblesPlugin.ImportWizardForm',
             'Select Import Source'))
         self.SelectPage.setSubTitle(
             translate('BiblesPlugin.ImportWizardForm',
-                'Select the import format, and where to import from.'))
+            'Select the import format, and where to import from.'))
         self.FormatLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'Format:'))
         self.FormatComboBox.setItemText(0,
@@ -334,6 +365,10 @@ class Ui_BibleImportWizard(object):
             translate('BiblesPlugin.ImportWizardForm', 'OpenSong'))
         self.FormatComboBox.setItemText(3,
             translate('BiblesPlugin.ImportWizardForm', 'Web Download'))
+        self.FormatComboBox.setItemText(4,
+            translate('BiblesPlugin.ImportWizardForm', 'openlp.org 1.x'))
+        self.OLP1LocationLabel.setText(
+            translate('BiblesPlugin.ImportWizardForm', 'File location:'))
         self.OsisLocationLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'File location:'))
         self.BooksLocationLabel.setText(
@@ -362,12 +397,12 @@ class Ui_BibleImportWizard(object):
         self.WebDownloadTabWidget.setTabText(
             self.WebDownloadTabWidget.indexOf(self.ProxyServerTab),
             translate('BiblesPlugin.ImportWizardForm',
-                'Proxy Server (Optional)'))
+            'Proxy Server (Optional)'))
         self.LicenseDetailsPage.setTitle(
             translate('BiblesPlugin.ImportWizardForm', 'License Details'))
         self.LicenseDetailsPage.setSubTitle(
             translate('BiblesPlugin.ImportWizardForm',
-                'Set up the Bible\'s license details.'))
+            'Set up the Bible\'s license details.'))
         self.VersionNameLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'Version name:'))
         self.CopyrightLabel.setText(
@@ -378,7 +413,7 @@ class Ui_BibleImportWizard(object):
             translate('BiblesPlugin.ImportWizardForm', 'Importing'))
         self.ImportPage.setSubTitle(
             translate('BiblesPlugin.ImportWizardForm',
-                'Please wait while your Bible is imported.'))
+            'Please wait while your Bible is imported.'))
         self.ImportProgressLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'Ready.'))
         self.ImportProgressBar.setFormat(u'%p%')
