@@ -333,24 +333,17 @@ class HTTPBible(BibleDB):
         Init confirms the bible exists and stores the database path.
         """
         BibleDB.__init__(self, parent, **kwargs)
-        if u'download_source' not in kwargs:
-            raise KeyError(u'Missing keyword argument "download_source"')
-        if u'download_name' not in kwargs:
-            raise KeyError(u'Missing keyword argument "download_name"')
         self.download_source = kwargs[u'download_source']
         self.download_name = kwargs[u'download_name']
+        self.proxy_server = None
+        self.proxy_username = None
+        self.proxy_password = None
         if u'proxy_server' in kwargs:
             self.proxy_server = kwargs[u'proxy_server']
-        else:
-            self.proxy_server = None
         if u'proxy_username' in kwargs:
             self.proxy_username = kwargs[u'proxy_username']
-        else:
-            self.proxy_username = None
         if u'proxy_password' in kwargs:
             self.proxy_password = kwargs[u'proxy_password']
-        else:
-            self.proxy_password = None
 
     def do_import(self):
         """

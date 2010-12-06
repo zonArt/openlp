@@ -34,10 +34,10 @@ from openlp.plugins.bibles.lib import parse_reference
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
 
 from csvbible import CSVBible
+from http import HTTPBible
 from olp1 import OpenLP1Bible
 from opensong import OpenSongBible
 from osis import OSISBible
-from http import HTTPBible
 
 log = logging.getLogger(__name__)
 

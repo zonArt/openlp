@@ -405,6 +405,9 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         Receiver.send_message(u'openlp_process_events')
 
     def preImport(self):
+        """
+        Prepare the UI for the import.
+        """
         bible_type = self.field(u'source_format').toInt()[0]
         self.finishButton.setVisible(False)
         self.ImportProgressBar.setMinimum(0)
@@ -420,6 +423,9 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         Receiver.send_message(u'openlp_process_events')
 
     def performImport(self):
+        """
+        Perform the actual import.
+        """
         bible_type = self.field(u'source_format').toInt()[0]
         license_version = unicode(self.field(u'license_version').toString())
         license_copyright = unicode(self.field(u'license_copyright').toString())
@@ -469,7 +475,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         elif bible_type == BibleFormat.OLP1:
             # Import an openlp.org 1.x bible.
             importer = self.manager.import_bible(BibleFormat.OLP1,
-                name=license_version, 
+                name=license_version,
                 filename=unicode(self.field(u'OLP1_location').toString())
             )
         if importer.do_import():
@@ -485,9 +491,8 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
                 self.ImportProgressLabel.setText(translate(
                     'BiblesPlugin.ImportWizardForm', 'Finished import.'))
         else:
-            self.ImportProgressLabel.setText(
-                translate('BiblesPlugin.ImportWizardForm',
-                'Your Bible import failed.'))
+            self.ImportProgressLabel.setText(translate(
+                'BiblesPlugin.ImportWizardForm', 'Your Bible import failed.'))
             delete_database(self.bibleplugin.settingsSection, importer.file)
 
     def postImport(self):

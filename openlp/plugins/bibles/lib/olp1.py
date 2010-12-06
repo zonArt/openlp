@@ -27,8 +27,9 @@
 import logging
 import sqlite
 
-#from openlp.core.lib import Receiver, translate
-from openlp.core.lib import translate
+from PyQt4 import QtCore
+
+from openlp.core.lib import Receiver, translate
 from db import BibleDB
 
 log = logging.getLogger(__name__)
@@ -41,22 +42,19 @@ class OpenLP1Bible(BibleDB):
         """
         Constructor.
         """
-        log.debug(__name__)
+        log.debug(self.__class__.__name__)
         BibleDB.__init__(self, parent, **kwargs)
-        if 'filename' not in kwargs:
-            raise KeyError(u'You have to supply a file name to import from.')
-        self.filename = kwargs['filename']
-#        QtCore.QObject.connect(Receiver.get_receiver(),
-#            QtCore.SIGNAL(u'bibles_stop_import'), self.stop_import)
+        self.filename = kwargs[u'filename']
+        self.name = kwargs[u'name']
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'bibles_stop_import'), self.stop_import)
 
     def do_import(self):
         """
         Imports an openlp.org v1 bible.
         """
-        # TODO: stop_import_flag
         connection = None
         cursor = None
-        self.wizard.incrementProgressBar(u'Preparing for import...')
         try:
             connection = sqlite.connect(self.filename)
             cursor = connection.cursor()
@@ -66,18 +64,23 @@ class OpenLP1Bible(BibleDB):
         cursor.execute(u'SELECT id, testament_id, name, abbreviation FROM book')
         books = cursor.fetchall()
         for book in books:
+            if self.stop_import_flag:
+                return False
             book_id = int(book[0])
             testament_id = int(book[1])
             name = unicode(book[2], u'cp1252')
             abbreviation = unicode(book[3], u'cp1252')
-            self.wizard.incrementProgressBar(unicode('%s %s' % (translate(
-                'BiblesPlugin.olp1', 'Importing'), name)))
             self.create_book(name, abbreviation, testament_id)
+            # Update the progess bar.
+            self.wizard.incrementProgressBar(u'%s %s...' % (translate(
+                'BiblesPlugin.OpenLP1Import', 'Importing'), name))
             # Import the verses for this book.
             cursor.execute(u'SELECT chapter, verse, text || \'\' AS text FROM '
                 'verse WHERE book_id=%s' % book_id)
             verses = cursor.fetchall()
             for verse in verses:
+                if self.stop_import_flag:
+                    return False
                 chapter = int(verse[0])
                 verse_number = int(verse[1])
                 text = unicode(verse[2], u'cp1252')
