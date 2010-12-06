@@ -325,7 +325,7 @@ class ThemeXML(object):
         # Create Font name element
         self.child_element(background, u'name', name)
         # Create Font color element
-        self.child_element(background, u'color', color)
+        self.child_element(background, u'color', unicode(color))
         # Create Proportion name element
         self.child_element(background, u'size', unicode(size))
         # Create weight name element
