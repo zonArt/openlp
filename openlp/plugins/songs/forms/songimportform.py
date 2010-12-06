@@ -507,8 +507,7 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
                 filenames=self.getListOfFiles(
                     self.songBeamerFileListWidget)
             )
-        success = importer.do_import()
-        if success:
+        if importer.do_import():
             # reload songs
             self.importProgressLabel.setText(
                 translate('SongsPlugin.SongImportForm', 'Finished import.'))

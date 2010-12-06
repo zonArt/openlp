@@ -294,4 +294,5 @@ class Manager(object):
         """
         if self.is_dirty:
             engine = create_engine(self.db_url)
-            engine.execute("vacuum")
+            if self.db_url.startswith(u'sqlite'):
+                engine.execute("vacuum")

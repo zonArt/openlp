@@ -81,6 +81,7 @@
   <qresource prefix="wizards">
     <file>wizard_importsong.bmp</file>
     <file>wizard_importbible.bmp</file>
+    <file>wizard_createtheme.bmp</file>
   </qresource>
   <qresource prefix="services">
     <file>service_collapse_all.png</file>

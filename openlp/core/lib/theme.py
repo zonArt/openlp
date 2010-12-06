@@ -55,7 +55,7 @@ BLANK_THEME_XML = \
    <font type="main">
       <name>Arial</name>
       <color>#FFFFFF</color>
-      <size>30</size>
+      <size>40</size>
       <bold>False</bold>
       <italics>False</italics>
       <line_adjustment>0</line_adjustment>
@@ -317,7 +317,6 @@ class ThemeXML(object):
         ``shadow_size``
             How big the Shadow is
 
-
         """
         background = self.theme_xml.createElement(u'font')
         background.setAttribute(u'type', fonttype)
@@ -542,8 +541,8 @@ class ThemeXML(object):
         """
         Change Camel Case string to python string
         """
-        s1 = re.sub(u'(.)([A-Z][a-z]+)', r'\1_\2', name)
-        return re.sub(u'([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
+        sub_name = re.sub(u'(.)([A-Z][a-z]+)', r'\1_\2', name)
+        return re.sub(u'([a-z0-9])([A-Z])', r'\1_\2', sub_name).lower()
 
     def _build_xml_from_attrs(self):
         """

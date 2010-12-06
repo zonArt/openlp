@@ -371,8 +371,8 @@ def build_background_css(item, width, height):
     theme = item.themedata
     background = u'background-color: black'
     if theme:
-        if theme.background_type == BackgroundType.to_string(
-            BackgroundType.Solid):
+        if theme.background_type == \
+            BackgroundType.to_string(BackgroundType.Solid):
             background = u'background-color: %s' % theme.background_color
         else:
             if theme.background_direction == BackgroundGradientType.to_string \
@@ -382,22 +382,25 @@ def build_background_css(item, width, height):
                     u'-webkit-gradient(linear, left top, left bottom, ' \
                     'from(%s), to(%s))' % (theme.background_start_color,
                     theme.background_end_color)
-            elif theme.background_direction == BackgroundGradientType.to_string(
+            elif theme.background_direction == \
+                BackgroundGradientType.to_string( \
                 BackgroundGradientType.LeftTop):
                 background = \
                     u'background: ' \
                     u'-webkit-gradient(linear, left top, right bottom, ' \
                     'from(%s), to(%s))' % (theme.background_start_color,
                     theme.background_end_color)
-            elif theme.background_direction == BackgroundGradientType.to_string(
-                BackgroundGradientType.LeftBottom):
+            elif theme.background_direction == \
+                BackgroundGradientType.to_string \
+                (BackgroundGradientType.LeftBottom):
                 background = \
                     u'background: ' \
                     u'-webkit-gradient(linear, left bottom, right top, ' \
                     'from(%s), to(%s))' % (theme.background_start_color,
                     theme.background_end_color)
-            elif theme.background_direction == BackgroundGradientType.to_string(
-                BackgroundGradientType.Vertical):
+            elif theme.background_direction == \
+                BackgroundGradientType.to_string \
+                (BackgroundGradientType.Vertical):
                 background = \
                     u'background: -webkit-gradient(linear, left top, ' \
                     u'right top, from(%s), to(%s))' % \

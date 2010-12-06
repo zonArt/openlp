@@ -181,7 +181,7 @@ class ThemeManager(QtGui.QWidget):
                     '%s (default)')) % newName
                 self.themeListWidget.item(count).setText(name)
 
-    def changeGlobalFromScreen(self, index = -1):
+    def changeGlobalFromScreen(self, index=-1):
         """
         Change the global theme when a theme is double clicked upon in the
         Theme Manager list
@@ -252,17 +252,14 @@ class ThemeManager(QtGui.QWidget):
         Takes a theme and makes a new copy of it as well as saving it.
         """
         log.debug(u'cloneThemeData')
-        themeData.new_document(newThemeName)
-        themeData.build_xml_from_attrs()
-        save_to = None
-        save_from = None
+        saveTo = None
+        saveFrom = None
         if themeData.background_type == u'image':
-            save_to = os.path.join(self.path, newThemeName,
+            saveTo = os.path.join(self.path, newThemeName,
                 os.path.split(unicode(themeData.background_filename))[1])
-            save_from = themeData.background_filename
-        theme = themeData.extract_xml()
-        pretty_theme = themeData.extract_formatted_xml()
-        self.saveTheme(newThemeName, theme, pretty_theme, save_from, save_to)
+            saveFrom = themeData.background_filename
+        themeData.theme_name = newThemeName
+        self.saveTheme(themeData, saveFrom, saveTo)
 
     def onEditTheme(self):
         """
@@ -283,7 +280,7 @@ class ThemeManager(QtGui.QWidget):
             self.saveThemeName = unicode(
                 item.data(QtCore.Qt.UserRole).toString())
             self.themeForm.theme = theme
-            self.themeForm.exec_()
+            self.themeForm.exec_(True)
 
     def onDeleteTheme(self):
         """
@@ -462,17 +459,17 @@ class ThemeManager(QtGui.QWidget):
         """
         return self.themelist
 
-    def getThemeData(self, themename):
+    def getThemeData(self, themeName):
         """
         Returns a theme object from an XML file
 
-        ``themename``
+        ``themeName``
             Name of the theme to load from file
         """
-        log.debug(u'getthemedata for theme %s', themename)
-        xml_file = os.path.join(self.path, unicode(themename),
-            unicode(themename) + u'.xml')
-        xml = get_text_file_string(xml_file)
+        log.debug(u'getthemedata for theme %s', themeName)
+        xmlFile = os.path.join(self.path, unicode(themeName),
+            unicode(themeName) + u'.xml')
+        xml = get_text_file_string(xmlFile)
         if not xml:
             return self.baseTheme()
         else:
@@ -630,8 +627,8 @@ class ThemeManager(QtGui.QWidget):
             newtheme.font_main_shadow_color = unicode(theme.ShadowColor.name())
         if theme.Outline == 1:
             newtheme.font_main_outline = True
-            newtheme.font_main_outline_color = unicode(
-                theme.OutlineColor.name())
+            newtheme.font_main_outline_color = \
+                unicode(theme.OutlineColor.name())
         vAlignCorrection = 0
         if theme.VerticalAlign == 2:
             vAlignCorrection = 1
@@ -641,7 +638,7 @@ class ThemeManager(QtGui.QWidget):
         newtheme.display_vertical_align = vAlignCorrection
         return newtheme.extract_xml()
 
-    def saveTheme(self, theme, image_from, image_to):
+    def saveTheme(self, theme, imageFrom, imageTo):
         """
         Called by thememaintenance Dialog to save the theme
         and to trigger the reload of the theme list
@@ -674,8 +671,8 @@ class ThemeManager(QtGui.QWidget):
                 self.deleteTheme(self.saveThemeName)
         if result == QtGui.QMessageBox.Yes:
             # Save the theme, overwriting the existing theme if necessary.
-            if image_to and self.oldBackgroundImage and \
-                image_to != self.oldBackgroundImage:
+            if imageTo and self.oldBackgroundImage and \
+                imageTo != self.oldBackgroundImage:
                 try:
                     os.remove(self.oldBackgroundImage)
                 except OSError:
@@ -689,12 +686,12 @@ class ThemeManager(QtGui.QWidget):
             finally:
                 if outfile:
                     outfile.close()
-            if image_from and image_from != image_to:
+            if imageFrom and imageFrom != imageTo:
                 try:
                     encoding = get_filesystem_encoding()
                     shutil.copyfile(
-                        unicode(image_from).encode(encoding),
-                        unicode(image_to).encode(encoding))
+                        unicode(imageFrom).encode(encoding),
+                        unicode(imageTo).encode(encoding))
                 except IOError:
                     log.exception(u'Failed to save theme image')
             self.generateAndSaveImage(self.path, name, theme)
@@ -730,7 +727,6 @@ class ThemeManager(QtGui.QWidget):
 
     def generateAndSaveImage(self, dir, name, theme):
         log.debug(u'generateAndSaveImage %s %s', dir, name)
-        #theme = self.createThemeFromXml(theme_xml, dir)
         theme_xml = theme.extract_xml()
         frame = self.generateImage(theme)
         samplepathname = os.path.join(self.path, name + u'.png')
@@ -743,12 +739,18 @@ class ThemeManager(QtGui.QWidget):
         pixmap.save(thumb, u'png')
         log.debug(u'Theme image written to %s', samplepathname)
 
-    def generateImage(self, themedata):
+    def generateImage(self, themeData, forcePage=False):
         """
         Call the RenderManager to build a Sample Image
+
+        ``themeData``
+            The theme to generated a preview for.
+
+        ``forcePage``
+            Flag to tell message lines per page need to be generated.
         """
-        log.debug(u'generateImage \n%s ', themedata)
-        return self.parent.RenderManager.generate_preview(themedata)
+        log.debug(u'generateImage \n%s ', themeData)
+        return self.parent.renderManager.generate_preview(themeData, forcePage)
 
     def getPreviewImage(self, theme):
         """
@@ -769,14 +771,14 @@ class ThemeManager(QtGui.QWidget):
         newtheme = ThemeXML()
         return newtheme
 
-    def createThemeFromXml(self, theme_xml, path):
+    def createThemeFromXml(self, themeXml, path):
         """
         Return a theme object using information parsed from XML
 
-        ``theme_xml``
+        ``themeXml``
             The XML data to load into the theme
         """
         theme = ThemeXML()
-        theme.parse(theme_xml)
+        theme.parse(themeXml)
         theme.extend_image_filename(path)
         return theme
