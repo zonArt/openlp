@@ -708,7 +708,7 @@ class Ui_ThemeWizard(object):
         self.horizontalComboBox.setItemText(2,
             translate('OpenLP.ThemeWizard', 'Center'))
         self.verticalLabel.setText(
-            translate('OpenLP.ThemeWizard', 'Vertcal Align:'))
+            translate('OpenLP.ThemeWizard', 'Vertical Align:'))
         self.verticalComboBox.setItemText(0,
             translate('OpenLP.ThemeWizard', 'Top'))
         self.verticalComboBox.setItemText(1,
