@@ -23,7 +23,8 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+"""
 import logging
 import os
 
@@ -236,7 +237,7 @@ class MainDisplay(DisplayWidget):
         """
         API for replacement backgrounds so Images are added directly to cache
         """
-        image = self.imageManager.add_image(name, path)
+        self.imageManager.add_image(name, path)
         self.image(name)
 
     def image(self, name):
