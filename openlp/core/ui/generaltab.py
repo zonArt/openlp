@@ -23,6 +23,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+import re
 
 from PyQt4 import QtCore, QtGui
 
@@ -465,10 +466,10 @@ class GeneralTab(SettingsTab):
         # Reset screens after initial definition
         if self.overrideChanged:
             self.screens.override[u'size'] = QtCore.QRect(
-                int(self.customXValueEdit.text()),
-                int(self.customYValueEdit.text()),
-                int(self.customWidthValueEdit.text()),
-                int(self.customHeightValueEdit.text()))
+                self._toInt(self.customXValueEdit.text()),
+                self._toInt(self.customYValueEdit.text()),
+                self._toInt(self.customWidthValueEdit.text()),
+                self._toInt(self.customHeightValueEdit.text()))
         if self.overrideCheckBox.isChecked():
             self.screens.set_override_display()
         else:
@@ -487,3 +488,12 @@ class GeneralTab(SettingsTab):
         self.customHeightValueEdit.setEnabled(checked)
         self.customWidthValueEdit.setEnabled(checked)
         self.overrideChanged = True
+
+    def _toInt(self, value):
+        """
+        Convert text string to a numeric string
+        """
+        try:
+            return int(value)
+        except:
+            return 0
