@@ -99,13 +99,16 @@ class SongBeamerImport(SongImport):
                     self.songData = infile.readlines()
                 else:
                     return False
+                self.title = self.file_name.split('.sng')[0]
+                self.read_verse = False
                 for line in self.songData:
                     line = line.strip()
                     if line.startswith('#'):
                         log.debug(u'find tag: %s' % line)
                         if not self.parse_tags(line):
                             return False
-                    elif line.startswith('---'):
+                    elif line.startswith('---') or \
+                        line.startswith('--'):
                         log.debug(u'find ---')
                         if len(self.current_verse) > 0:
                             self.add_verse(self.current_verse, 
