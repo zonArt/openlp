@@ -243,6 +243,7 @@ class GeneralTab(SettingsTab):
         self.customXLayout.addWidget(self.customXLabel)
         self.customXValueEdit = QtGui.QLineEdit(self.displayGroupBox)
         self.customXValueEdit.setObjectName(u'customXValueEdit')
+        self.customXValueEdit.setInputMask(u'99999')
         self.customXLayout.addWidget(self.customXValueEdit)
         self.customLayout.addLayout(self.customXLayout)
         self.customYLayout = QtGui.QVBoxLayout()
@@ -255,6 +256,7 @@ class GeneralTab(SettingsTab):
         self.customYLayout.addWidget(self.customYLabel)
         self.customYValueEdit = QtGui.QLineEdit(self.displayGroupBox)
         self.customYValueEdit.setObjectName(u'customYValueEdit')
+        self.customYValueEdit.setInputMask(u'99999')
         self.customYLayout.addWidget(self.customYValueEdit)
         self.customLayout.addLayout(self.customYLayout)
         self.customWidthLayout = QtGui.QVBoxLayout()
@@ -268,6 +270,7 @@ class GeneralTab(SettingsTab):
         self.customWidthLayout.addWidget(self.customWidthLabel)
         self.customWidthValueEdit = QtGui.QLineEdit(self.displayGroupBox)
         self.customWidthValueEdit.setObjectName(u'customWidthValueEdit')
+        self.customWidthValueEdit.setInputMask(u'99999')
         self.customWidthLayout.addWidget(self.customWidthValueEdit)
         self.customLayout.addLayout(self.customWidthLayout)
         self.customHeightLayout = QtGui.QVBoxLayout()
@@ -280,6 +283,7 @@ class GeneralTab(SettingsTab):
         self.customHeightLayout.addWidget(self.customHeightLabel)
         self.customHeightValueEdit = QtGui.QLineEdit(self.displayGroupBox)
         self.customHeightValueEdit.setObjectName(u'customHeightValueEdit')
+        self.customHeightValueEdit.setInputMask(u'99999')
         self.customHeightLayout.addWidget(self.customHeightValueEdit)
         self.customLayout.addLayout(self.customHeightLayout)
         self.displayLayout.addLayout(self.customLayout)
@@ -491,7 +495,7 @@ class GeneralTab(SettingsTab):
 
     def _toInt(self, value):
         """
-        Convert text string to a numeric string
+        Make sure a Int returns a value.
         """
         try:
             return int(value)
