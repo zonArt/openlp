@@ -31,7 +31,6 @@ import re
 import logging
 
 from xml.dom.minidom import Document
-from xml.etree.ElementTree import ElementTree, XML
 from lxml import etree, objectify
 
 from openlp.core.lib import str_to_bool
