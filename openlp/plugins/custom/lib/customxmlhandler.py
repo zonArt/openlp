@@ -42,9 +42,8 @@ The basic XML is of the format::
 import logging
 
 from xml.dom.minidom import Document
-from xml.etree.ElementTree import ElementTree, XML, dump
+from xml.etree.ElementTree import dump
 from lxml import etree, objectify
-from xml.parsers.expat import ExpatError
 
 log = logging.getLogger(__name__)
 
