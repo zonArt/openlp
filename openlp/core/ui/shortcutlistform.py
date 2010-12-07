@@ -106,13 +106,20 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         for num in range(len(self.actionList)):
             action = self.actionList[num]
             actionText = action.objectName() or action.parentWidget().objectName()
-            shortcutText = action.shortcut().toString()
-            #if not shortcutText:
-            #    continue
-            categorie = action.data().toString() or 'Sonstige'
+            shortcutText = u''
+            shortcutAlternate = u''
+            if len(action.shortcuts()) > 0:
+                shortcutText = action.shortcuts()[0].toString()
+                if len(action.shortcuts()) > 1:
+                    shortcutAlternate = action.shortcuts()[1].toString()
+            if action.isSeparator():
+                continue
+            if not shortcutText:
+                continue
+            categorie = action.data().toString() or 'Unknown'
             if not catItemDict.has_key(categorie):
                 catItemDict[categorie] = QtGui.QTreeWidgetItem([categorie])
-            actionItem = QtGui.QTreeWidgetItem([actionText, shortcutText], num)
+            actionItem = QtGui.QTreeWidgetItem([actionText, shortcutText, shortcutAlternative], num)
             actionItem.setIcon(0, action.icon())
             catItemDict[categorie].addChild(actionItem)
             catItemDict[categorie].setExpanded(True)

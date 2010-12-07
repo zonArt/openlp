@@ -49,45 +49,46 @@ class DisplayWidget(QtGui.QGraphicsView):
         QtGui.QGraphicsView.__init__(self)
         self.parent = parent
         self.live = live
-        self.hotkey_map = {
-            QtCore.Qt.Key_Return: 'servicemanager_next_item',
-            QtCore.Qt.Key_Space: 'slidecontroller_live_next_noloop',
-            QtCore.Qt.Key_Enter: 'slidecontroller_live_next_noloop',
-            QtCore.Qt.Key_0: 'servicemanager_next_item',
-            QtCore.Qt.Key_Backspace: 'slidecontroller_live_previous_noloop'}
-        self.setStyleSheet(u'border: none;')
 
-    def keyPressEvent(self, event):
-        """
-        Handle key events from display screen
-        """
-        # Key events only needed for live
-        if not self.live:
-            return
-        if isinstance(event, QtGui.QKeyEvent):
-            # Here accept the event and do something
-            if event.key() == QtCore.Qt.Key_Up:
-                Receiver.send_message(u'slidecontroller_live_previous')
-                event.accept()
-            elif event.key() == QtCore.Qt.Key_Down:
-                Receiver.send_message(u'slidecontroller_live_next')
-                event.accept()
-            elif event.key() == QtCore.Qt.Key_PageUp:
-                Receiver.send_message(u'slidecontroller_live_first')
-                event.accept()
-            elif event.key() == QtCore.Qt.Key_PageDown:
-                Receiver.send_message(u'slidecontroller_live_last')
-                event.accept()
-            elif event.key() in self.hotkey_map:
-                Receiver.send_message(self.hotkey_map[event.key()])
-                event.accept()
-            elif event.key() == QtCore.Qt.Key_Escape:
-                self.setVisible(False)
-                self.videoStop()
-                event.accept()
-            event.ignore()
-        else:
-            event.ignore()
+#        self.hotkey_map = {
+#            QtCore.Qt.Key_Return: 'servicemanager_next_item',
+#            QtCore.Qt.Key_Space: 'slidecontroller_live_next_noloop',
+#            QtCore.Qt.Key_Enter: 'slidecontroller_live_next_noloop',
+#            QtCore.Qt.Key_0: 'servicemanager_next_item',
+#            QtCore.Qt.Key_Backspace: 'slidecontroller_live_previous_noloop'}
+#        self.setStyleSheet(u'border: none;')
+#
+#    def keyPressEvent(self, event):
+#        """
+#        Handle key events from display screen
+#        """
+#        # Key events only needed for live
+#        if not self.live:
+#            return
+#        if isinstance(event, QtGui.QKeyEvent):
+#            # Here accept the event and do something
+#            if event.key() == QtCore.Qt.Key_Up:
+#                Receiver.send_message(u'slidecontroller_live_previous')
+#                event.accept()
+#            elif event.key() == QtCore.Qt.Key_Down:
+#                Receiver.send_message(u'slidecontroller_live_next')
+#                event.accept()
+#            elif event.key() == QtCore.Qt.Key_PageUp:
+#                Receiver.send_message(u'slidecontroller_live_first')
+#                event.accept()
+#            elif event.key() == QtCore.Qt.Key_PageDown:
+#                Receiver.send_message(u'slidecontroller_live_last')
+#                event.accept()
+#            elif event.key() in self.hotkey_map:
+#                Receiver.send_message(self.hotkey_map[event.key()])
+#                event.accept()
+#            elif event.key() == QtCore.Qt.Key_Escape:
+#                self.setVisible(False)
+#                self.videoStop()
+#                event.accept()
+#            event.ignore()
+#        else:
+#            event.ignore()
 
 class MainDisplay(DisplayWidget):
     """
@@ -110,6 +111,12 @@ class MainDisplay(DisplayWidget):
                 QtCore.SIGNAL(u'maindisplay_hide'), self.hideDisplay)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
+#        if  self.live:
+#            self.addAction(self.parent.next_item)
+#            self.addAction(self.parent.previous_item)
+#            self.addAction(self.parent.previous_service)
+#            self.addAction(self.parent.next_service)
+#            self.addAction(self.parent.escape_item)
 
     def setup(self):
         """

@@ -39,7 +39,7 @@ class Ui_ShortcutListDialog(object):
         self.shortcutListTreeWidget = QtGui.QTreeWidget(shortcutListDialog)
         self.shortcutListTreeWidget.setAlternatingRowColors(True)
         self.shortcutListTreeWidget.setObjectName(u'shortcutListTreeWidget')
-        self.shortcutListTreeWidget.setColumnCount(2)
+        self.shortcutListTreeWidget.setColumnCount(3)
         self.shortcutListTreeWidget.setSelectionBehavior(
             QtGui.QAbstractItemView.SelectRows)
         self.shortcutListLayout.addWidget(self.shortcutListTreeWidget)
@@ -103,7 +103,8 @@ class Ui_ShortcutListDialog(object):
             translate('OpenLP.ShortcutListDialog', 'Customize Shortcuts'))
         self.shortcutListTreeWidget.setHeaderLabels([
             translate('OpenLP.ShortcutListDialog', 'Action'),
-            translate('OpenLP.ShortcutListDialog', 'Shortcut')
+            translate('OpenLP.ShortcutListDialog', 'Shortcut'), 
+            translate('OpenLP.ShortcutListDialog', 'Alternative')
         ])
         self.defaultRadioButton.setText(
             translate('OpenLP.ShortcutListDialog', 'Default: %s'))

@@ -671,7 +671,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             if savedPlugin != -1:
                 self.MediaToolBox.setCurrentIndex(savedPlugin)
         self.settingsForm.postSetUp()
-
+        
     def setAutoLanguage(self, value):
         self.LanguageGroup.setDisabled(value)
         LanguageManager.auto_language = value
