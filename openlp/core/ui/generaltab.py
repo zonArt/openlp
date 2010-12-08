@@ -46,7 +46,7 @@ class ValidEdit(QtGui.QLineEdit):
         """
         Only return Integers.  Space is 0
         """
-        if len(self.text()) == 0:
+        if self.text().isEmpty():
             return QtCore.QString(u'0')
         else:
             return self.text()
