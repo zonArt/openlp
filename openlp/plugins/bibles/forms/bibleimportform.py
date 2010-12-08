@@ -31,7 +31,7 @@ import os.path
 
 from PyQt4 import QtCore, QtGui
 
-from bibleimportwizard import Ui_bibleImportWizard
+from bibleimportwizard import uiBibleImportWizard
 from openlp.core.lib import Receiver, SettingsManager, translate
 from openlp.core.lib.db import delete_database
 from openlp.core.utils import AppLocation
@@ -54,7 +54,7 @@ class WebDownload(object):
         return cls.Names[name]
 
 
-class BibleImportForm(QtGui.QWizard, Ui_bibleImportWizard):
+class BibleImportForm(QtGui.QWizard, uiBibleImportWizard):
     """
     This is the Bible Import Wizard, which allows easy importing of Bibles
     into OpenLP from other formats like OSIS, CSV and OpenSong.

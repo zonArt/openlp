@@ -28,7 +28,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate
 
-class Ui_bibleImportWizard(object):
+class uiBibleImportWizard(object):
     def setupUi(self, bibleImportWizard):
         bibleImportWizard.setObjectName(u'bibleImportWizard')
         bibleImportWizard.resize(550, 386)
