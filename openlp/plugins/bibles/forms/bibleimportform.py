@@ -99,9 +99,6 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         QtCore.QObject.connect(self.OpenSongBrowseButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onOpenSongBrowseButtonClicked)
-        QtCore.QObject.connect(self.cancelButton,
-            QtCore.SIGNAL(u'clicked(bool)'),
-            self.onCancelButtonClicked)
         QtCore.QObject.connect(self,
             QtCore.SIGNAL(u'currentIdChanged(int)'),
             self.onCurrentIdChanged)
@@ -112,6 +109,16 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         """
         self.setDefaults()
         return QtGui.QWizard.exec_(self)
+
+    def reject(self):
+        """
+        Stop the import on cancel button, close button or ESC key.
+        """
+        log.debug('Import canceled by user.')
+        if self.currentId() == 3:
+            Receiver.send_message(u'bibles_stop_import')
+        else:
+            self.done(QtGui.QDialog.Rejected)
 
     def validateCurrentPage(self):
         """
@@ -243,14 +250,6 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         self.getFileName(
             translate('BiblesPlugin.ImportWizardForm', 'Open OpenSong Bible'),
             self.OpenSongFileEdit)
-
-    def onCancelButtonClicked(self, checked):
-        """
-        Stop the import on pressing the cancel button.
-        """
-        log.debug('Cancel button pressed!')
-        if self.currentId() == 3:
-            Receiver.send_message(u'bibles_stop_import')
 
     def onCurrentIdChanged(self, pageId):
         if pageId == 3:
