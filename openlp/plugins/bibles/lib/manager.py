@@ -62,7 +62,7 @@ class BibleFormat(object):
     CSV = 1
     OpenSong = 2
     WebDownload = 3
-    OLP1 = 4
+    OpenLP1 = 4
 
     @staticmethod
     def get_class(format):
@@ -80,7 +80,7 @@ class BibleFormat(object):
             return OpenSongBible
         elif format == BibleFormat.WebDownload:
             return HTTPBible
-        elif format == BibleFormat.OLP1:
+        elif format == BibleFormat.OpenLP1:
             return OpenLP1Bible
         else:
             return None
@@ -95,7 +95,7 @@ class BibleFormat(object):
             BibleFormat.CSV,
             BibleFormat.OpenSong,
             BibleFormat.WebDownload,
-            BibleFormat.OLP1
+            BibleFormat.OpenLP1
         ]
 
 

@@ -165,7 +165,7 @@ class BibleImportForm(QtGui.QWizard, uiBibleImportWizard):
                         'file to import.'))
                     self.openSongFileEdit.setFocus()
                     return False
-            elif self.field(u'source_format').toInt()[0] == BibleFormat.OLP1:
+            elif self.field(u'source_format').toInt()[0] == BibleFormat.OpenLP1:
                 if not self.field(u'OLP1_location').toString():
                     QtGui.QMessageBox.critical(self,
                         translate('BiblesPlugin.ImportWizardForm',
@@ -472,9 +472,9 @@ class BibleImportForm(QtGui.QWizard, uiBibleImportWizard):
                     unicode(self.field(u'proxy_username').toString()),
                 proxy_password=unicode(self.field(u'proxy_password').toString())
             )
-        elif bible_type == BibleFormat.OLP1:
+        elif bible_type == BibleFormat.OpenLP1:
             # Import an openlp.org 1.x bible.
-            importer = self.manager.import_bible(BibleFormat.OLP1,
+            importer = self.manager.import_bible(BibleFormat.OpenLP1,
                 name=license_version,
                 filename=unicode(self.field(u'OLP1_location').toString())
             )
