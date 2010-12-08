@@ -366,7 +366,7 @@ class SongMediaItem(MediaManagerItem):
                         verse[1][:30], unicode(verse[1]), verseTag)
             else:
                 # Loop through the verse list and expand the song accordingly.
-                for order in song.verse_order.upper().split(u' '):
+                for order in song.verse_order.upper().split():
                     if len(order) == 0:
                         break
                     for verse in verseList:
