@@ -131,14 +131,13 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
 
     def reject(self):
         """
-        Stop the import on pressing the cancel or close button.
+        Stop the import on cancel button, close button or ESC key.
         """
         log.debug('Import canceled by user.')
         if self.currentId() == 2:
             Receiver.send_message(u'songs_stop_import')
         else:
-            self.hide()
-        self.setResult(-1)
+            self.done(QtGui.QDialog.Rejected)
 
     def validateCurrentPage(self):
         """
