@@ -536,7 +536,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 return False
         if self.song.verse_order:
             order = []
-            order_names = self.song.verse_order.split(u' ')
+            order_names = self.song.verse_order.split()
             for item in order_names:
                 if len(item) == 1:
                     order.append(item.lower() + u'1')

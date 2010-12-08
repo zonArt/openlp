@@ -366,7 +366,7 @@ class SongMediaItem(MediaManagerItem):
                         verse[1][:30], unicode(verse[1]), verseTag)
             else:
                 # Loop through the verse list and expand the song accordingly.
-                for order in song.verse_order.upper().split(u' '):
+                for order in song.verse_order.upper().split():
                     if len(order) == 0:
                         break
                     for verse in verseList:
@@ -390,7 +390,7 @@ class SongMediaItem(MediaManagerItem):
         raw_footer.append(author_list)
         raw_footer.append(song.copyright )
         raw_footer.append(unicode(
-            translate('SongsPlugin.MediaItem', 'CCLI Licence: ') +
+            translate('SongsPlugin.MediaItem', 'CCLI License: ') +
             QtCore.QSettings().value(u'general/ccli number',
             QtCore.QVariant(u'')).toString()))
         service_item.raw_footer = raw_footer
