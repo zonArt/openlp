@@ -37,7 +37,7 @@ from openlp.core.lib import OpenLPToolbar, ServiceItem, context_menu_action, \
     Receiver, build_icon, ItemCapabilities, SettingsManager, translate, \
     ThemeLevel
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm
-from openlp.core.utils import AppLocation
+from openlp.core.utils import AppLocation, ActionConfig
 
 class ServiceManagerList(QtGui.QTreeWidget):
     """
@@ -46,34 +46,6 @@ class ServiceManagerList(QtGui.QTreeWidget):
     def __init__(self, parent=None, name=None):
         QtGui.QTreeWidget.__init__(self, parent)
         self.parent = parent
-
-#    def keyPressEvent(self, event):
-#        if isinstance(event, QtGui.QKeyEvent):
-#            #here accept the event and do something
-#            if event.key() == QtCore.Qt.Key_Enter:
-#                self.parent.makeLive()
-#                event.accept()
-#            elif event.key() == QtCore.Qt.Key_Home:
-#                self.parent.onServiceTop()
-#                event.accept()
-#            elif event.key() == QtCore.Qt.Key_End:
-#                self.parent.onServiceEnd()
-#                event.accept()
-#            elif event.key() == QtCore.Qt.Key_PageUp:
-#                self.parent.onServiceUp()
-#                event.accept()
-#            elif event.key() == QtCore.Qt.Key_PageDown:
-#                self.parent.onServiceDown()
-#                event.accept()
-#            elif event.key() == QtCore.Qt.Key_Up:
-#                self.parent.onMoveSelectionUp()
-#                event.accept()
-#            elif event.key() == QtCore.Qt.Key_Down:
-#                self.parent.onMoveSelectionDown()
-#                event.accept()
-#            event.ignore()
-#        else:
-#            event.ignore()
 
     def mouseMoveEvent(self, event):
         """
@@ -282,28 +254,65 @@ class ServiceManager(QtGui.QWidget):
         self.menu.addMenu(self.themeMenu)
         self.configUpdated(True)
         self.setServiceHotkeys(self.serviceManagerList)
-        self.serviceManagerList.addAction(self.serviceManagerList.move_down)
+        self.serviceManagerList.addActions([self.serviceManagerList.move_down, 
+                                            self.serviceManagerList.move_up, 
+                                            self.serviceManagerList.enter, 
+                                            self.serviceManagerList.home, 
+                                            self.serviceManagerList.end, 
+                                            self.serviceManagerList.up, 
+                                            self.serviceManagerList.down])
 
-    def configureAction(self, action, widget, text, category, slot, shortcut, alternate=0):
-        action.setObjectName(text)
-        if alternate > 0:
-            action.setShortcuts([shortcut, alternate])
-        else:
-            action.setShortcut(QtGui.QKeySequence(shortcut))
-        action.setShortcutContext(QtCore.Qt.WidgetShortcut)
-        action.setData(QtCore.QVariant(category))
-        QtCore.QObject.connect(action,
-            QtCore.SIGNAL(u'triggered()'), slot)
-       
     def setServiceHotkeys(self, parent=None):
         widget = self
         self.serviceManagerList.move_down = \
                 QtGui.QAction(QtGui.QIcon(u':/services/service_down.png'),
-                                    u'move_down', parent)
-        self.configureAction(self.serviceManagerList.move_down, 
+                                    u'Move_down', parent)
+        ActionConfig.set(self.serviceManagerList.move_down, 
                                     widget, u'Move_down', 
                                     u'Service Settings', self.onServiceDown,  
                                     QtCore.Qt.Key_PageDown)
+        self.serviceManagerList.move_up = \
+                QtGui.QAction(QtGui.QIcon(u':/services/service_up.png'),
+                                    u'Move_up', parent)
+        ActionConfig.set(self.serviceManagerList.move_up, 
+                                    widget, u'Move_up', 
+                                    u'Service Settings', self.onServiceUp,  
+                                    QtCore.Qt.Key_PageUp)
+        self.serviceManagerList.enter = \
+                QtGui.QAction(QtGui.QIcon(u':/services/service_up.png'),
+                                    u'Make Live', parent)
+        ActionConfig.set(self.serviceManagerList.enter, 
+                                    widget, u'Make Live', 
+                                    u'Service Settings', self.makeLive,  
+                                    QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return)
+        self.serviceManagerList.home = \
+                QtGui.QAction(QtGui.QIcon(u':/services/service_up.png'),
+                                    u'Home', parent)
+        ActionConfig.set(self.serviceManagerList.home, 
+                                    widget, u'Home', 
+                                    u'Service Settings', self.onServiceTop,  
+                                    QtCore.Qt.Key_Home)
+        self.serviceManagerList.end = \
+                QtGui.QAction(QtGui.QIcon(u':/services/service_up.png'),
+                                    u'End', parent)
+        ActionConfig.set(self.serviceManagerList.end, 
+                                    widget, u'End', 
+                                    u'Service Settings', self.onServiceEnd,  
+                                    QtCore.Qt.Key_End)
+        self.serviceManagerList.up = \
+                QtGui.QAction(QtGui.QIcon(u':/services/service_up.png'),
+                                    u'Move Selection up', parent)
+        ActionConfig.set(self.serviceManagerList.up, 
+                                    widget, u'Move Selection up', 
+                                    u'Service Settings', self.onMoveSelectionUp,  
+                                    QtCore.Qt.Key_Up)
+        self.serviceManagerList.down = \
+                QtGui.QAction(QtGui.QIcon(u':/services/service_up.png'),
+                                    u'Move Selection down', parent)
+        ActionConfig.set(self.serviceManagerList.down, 
+                                    widget, u'Move Selection down', 
+                                    u'Service Settings', self.onMoveSelectionDown,  
+                                    QtCore.Qt.Key_Down)
 
     def configUpdated(self, firstTime=False):
         """

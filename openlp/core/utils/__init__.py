@@ -276,7 +276,7 @@ def get_images_filter():
     return images_filter
 
 from languagemanager import LanguageManager
-from actions import ActionList
+from actions import ActionList, ActionConfig
 
 __all__ = [u'AppLocation', u'check_latest_version', u'add_actions',
     u'get_filesystem_encoding', u'LanguageManager', u'ActionList']

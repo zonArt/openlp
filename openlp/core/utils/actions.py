@@ -27,6 +27,7 @@
 The :mod:`~openlp.core.utils.actions` module provides action list classes used
 by the shortcuts system.
 """
+from PyQt4 import QtCore
 
 class ActionCategory(object):
     """
@@ -182,3 +183,18 @@ class ActionList(object):
             self.categories[category].actions.append(action)
         else:
             self.categories[category].actions.add(action, weight)
+
+class ActionConfig(object):
+    """
+    Helper for configuration of OpenLP Shortcut actions
+    """
+    
+    @staticmethod
+    def set(action, widget, text, category, slot, shortcut, 
+                alternate=0, context=QtCore.Qt.WidgetShortcut):
+        action.setObjectName(text)
+        action.setShortcuts([shortcut, alternate])
+        action.setShortcutContext(context)
+        action.setData(QtCore.QVariant(category))
+        QtCore.QObject.connect(action,
+            QtCore.SIGNAL(u'triggered()'), slot)
