@@ -30,7 +30,6 @@ import chardet
 import codecs
 
 from songimport import SongImport
-from openlp.plugins.songs.lib import VerseType
 
 log = logging.getLogger(__name__)
 
@@ -171,26 +170,28 @@ class CCLIFileImport(SongImport):
         words_list = song_words.split(u'/t')
         for counter in range(0, len(field_list)):
             if field_list[counter].startswith(u'Ver'):
-                verse_type = VerseType.to_string(VerseType.Verse)
+                verse_type = u'V'
             elif field_list[counter].startswith(u'Ch'):
-                verse_type = VerseType.to_string(VerseType.Chorus)
+                verse_type = u'C'
             elif field_list[counter].startswith(u'Br'):
-                verse_type = VerseType.to_string(VerseType.Bridge)
+                verse_type = u'B'
             else: #Other
-                verse_type = VerseType.to_string(VerseType.Other)
+                verse_type = u'O'
                 check_first_verse_line = True
             verse_text = unicode(words_list[counter])
             verse_text = verse_text.replace("/n",  "\n")
             verse_lines = verse_text.split(u'\n',  1)
             if check_first_verse_line:
                 if verse_lines[0].startswith(u'(PRE-CHORUS'):
-                    verse_type = VerseType.to_string(VerseType.PreChorus)
+                    verse_type = u'P'
+                    log.debug(u'USR verse PRE-CHORUS: %s', verse_lines[0] )
                     verse_text = verse_lines[1]
                 elif verse_lines[0].startswith(u'(BRIDGE'):
-                    verse_type = VerseType.to_string(VerseType.Bridge)
+                    verse_type = u'B'
+                    log.debug(u'USR verse BRIDGE')
                     verse_text = verse_lines[1]
                 elif verse_lines[0].startswith(u'('):
-                    verse_type = VerseType.to_string(VerseType.Other)
+                    verse_type = u'O'
                     verse_text = verse_lines[1]            
             if len(verse_text) > 0:
                 self.add_verse(verse_text, verse_type)
@@ -275,31 +276,31 @@ class CCLIFileImport(SongImport):
                         verse_desc_parts = clean_line.split(' ')
                         if len(verse_desc_parts) == 2:
                             if verse_desc_parts[0].startswith(u'Ver'):
-                                verse_type = VerseType.to_string(VerseType.Verse)
+                                verse_type = u'V'
                             elif verse_desc_parts[0].startswith(u'Ch'):
-                                verse_type = VerseType.to_string(VerseType.Chorus)
+                                verse_type = u'C'
                             elif verse_desc_parts[0].startswith(u'Br'):
-                                verse_type = VerseType.to_string(VerseType.Bridge)
+                                verse_type = u'B'
                             else:
                                 #we need to analyse the next line for
                                 #verse type, so set flag
-                                verse_type = VerseType.to_string(VerseType.Other)
+                                verse_type = u'O'
                                 check_first_verse_line = True
                             verse_number = verse_desc_parts[1]
                         else:
-                            verse_type = VerseType.to_string(VerseType.Other)
+                            verse_type = u'O'
                             verse_number = 1
                         verse_start = True
                     else:
                         #check first line for verse type
                         if check_first_verse_line:
                             if line.startswith(u'(PRE-CHORUS'):
-                                verse_type = VerseType.to_string(VerseType.PreChorus)
+                                verse_type = u'P'
                             elif line.startswith(u'(BRIDGE'):
-                                verse_type = VerseType.to_string(VerseType.Bridge)
+                                verse_type = u'B'
                             # Handle all other misc types	
                             elif line.startswith(u'('):
-                                verse_type = VerseType.to_string(VerseType.Other)
+                                verse_type = u'O'
                             else:
                                 verse_text = verse_text + line	
                             check_first_verse_line = False
