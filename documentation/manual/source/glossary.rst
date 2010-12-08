@@ -48,7 +48,7 @@ Service Manger
 --------------
 
 The service manager contains the media items in your service file. This is the 
-area from wich your media items go live, and you can also save, open, and edit 
+area from which your media items go live, and you can also save, open, and edit 
 services files.
 
 .. image:: pics/servicemanager.png

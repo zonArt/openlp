@@ -38,48 +38,51 @@ log = logging.getLogger(__name__)
 # TODO make external and configurable in alpha 4 via a settings dialog
 html_expands = []
 
-html_expands.append({u'desc':u'Red', u'start tag':u'{r}',
-    u'start html':u'<span style="-webkit-text-fill-color:red">',
-    u'end tag':u'{/r}', u'end html':u'</span>', u'protected':False})
-html_expands.append({u'desc':u'Black', u'start tag':u'{b}',
-    u'start html':u'<span style="-webkit-text-fill-color:black">',
-    u'end tag':u'{/b}', u'end html':u'</span>', u'protected':False})
-html_expands.append({u'desc':u'Blue', u'start tag':u'{bl}',
-    u'start html':u'<span style="-webkit-text-fill-color:blue">',
-    u'end tag':u'{/bl}', u'end html':u'</span>', u'protected':False})
-html_expands.append({u'desc':u'Yellow', u'start tag':u'{y}',
-    u'start html':u'<span style="-webkit-text-fill-color:yellow">',
-    u'end tag':u'{/y}', u'end html':u'</span>', u'protected':False})
-html_expands.append({u'desc':u'Green', u'start tag':u'{g}',
-    u'start html':u'<span style="-webkit-text-fill-color:green">',
-    u'end tag':u'{/g}', u'end html':u'</span>', u'protected':False})
-html_expands.append({u'desc':u'Pink', u'start tag':u'{pk}',
-    u'start html':u'<span style="-webkit-text-fill-color:#CC33CC">',
-    u'end tag':u'{/pk}', u'end html':u'</span>', u'protected':False})
-html_expands.append({u'desc':u'Orange', u'start tag':u'{o}',
-    u'start html':u'<span style="-webkit-text-fill-color:#CC0033">',
-    u'end tag':u'{/o}', u'end html':u'</span>', u'protected':False})
-html_expands.append({u'desc':u'Purple', u'start tag':u'{pp}',
-    u'start html':u'<span style="-webkit-text-fill-color:#9900FF">',
-    u'end tag':u'{/pp}', u'end html':u'</span>', u'protected':False})
-html_expands.append({u'desc':u'White', u'start tag':u'{w}',
-    u'start html':u'<span style="-webkit-text-fill-color:white">',
-    u'end tag':u'{/w}', u'end html':u'</span>', u'protected':False})
-html_expands.append({u'desc':u'Superscript', u'start tag':u'{su}',
-    u'start html':u'<sup>', u'end tag':u'{/su}', u'end html':u'</sup>',
-    u'protected':True})
-html_expands.append({u'desc':u'Subscript', u'start tag':u'{sb}',
-    u'start html':u'<sub>', u'end tag':u'{/sb}', u'end html':u'</sub>',
-    u'protected':True})
-html_expands.append({u'desc':u'Paragraph', u'start tag':u'{p}',
-    u'start html':u'<p>', u'end tag':u'{/p}', u'end html':u'</p>',
-    u'protected':True})
-html_expands.append({u'desc':u'Bold', u'start tag':u'{st}',
-    u'start html':u'<strong>', u'end tag':u'{/st}', u'end html':u'</strong>',
-    u'protected':True})
-html_expands.append({u'desc':u'Italics', u'start tag':u'{it}',
-    u'start html':u'<em>', u'end tag':u'{/it}', u'end html':u'</em>',
-    u'protected':True})
+html_expands.append({u'desc': u'Red', u'start tag': u'{r}',
+    u'start html': u'<span style="-webkit-text-fill-color:red">',
+    u'end tag': u'{/r}', u'end html': u'</span>', u'protected': False})
+html_expands.append({u'desc': u'Black', u'start tag': u'{b}',
+    u'start html': u'<span style="-webkit-text-fill-color:black">',
+    u'end tag': u'{/b}', u'end html': u'</span>', u'protected': False})
+html_expands.append({u'desc': u'Blue', u'start tag': u'{bl}',
+    u'start html': u'<span style="-webkit-text-fill-color:blue">',
+    u'end tag': u'{/bl}', u'end html': u'</span>', u'protected': False})
+html_expands.append({u'desc': u'Yellow', u'start tag': u'{y}',
+    u'start html': u'<span style="-webkit-text-fill-color:yellow">',
+    u'end tag': u'{/y}', u'end html': u'</span>', u'protected': False})
+html_expands.append({u'desc': u'Green', u'start tag': u'{g}',
+    u'start html': u'<span style="-webkit-text-fill-color:green">',
+    u'end tag': u'{/g}', u'end html': u'</span>', u'protected': False})
+html_expands.append({u'desc': u'Pink', u'start tag': u'{pk}',
+    u'start html': u'<span style="-webkit-text-fill-color:#CC33CC">',
+    u'end tag': u'{/pk}', u'end html': u'</span>', u'protected': False})
+html_expands.append({u'desc': u'Orange', u'start tag': u'{o}',
+    u'start html': u'<span style="-webkit-text-fill-color:#CC0033">',
+    u'end tag': u'{/o}', u'end html': u'</span>', u'protected': False})
+html_expands.append({u'desc': u'Purple', u'start tag': u'{pp}',
+    u'start html': u'<span style="-webkit-text-fill-color:#9900FF">',
+    u'end tag': u'{/pp}', u'end html': u'</span>', u'protected': False})
+html_expands.append({u'desc': u'White', u'start tag': u'{w}',
+    u'start html': u'<span style="-webkit-text-fill-color:white">',
+    u'end tag': u'{/w}', u'end html': u'</span>', u'protected': False})
+html_expands.append({u'desc': u'Superscript', u'start tag': u'{su}',
+    u'start html': u'<sup>', u'end tag': u'{/su}', u'end html': u'</sup>',
+    u'protected': True})
+html_expands.append({u'desc': u'Subscript', u'start tag': u'{sb}',
+    u'start html': u'<sub>', u'end tag': u'{/sb}', u'end html': u'</sub>',
+    u'protected': True})
+html_expands.append({u'desc': u'Paragraph', u'start tag': u'{p}',
+    u'start html': u'<p>', u'end tag': u'{/p}', u'end html': u'</p>',
+    u'protected': True})
+html_expands.append({u'desc': u'Bold', u'start tag': u'{st}',
+    u'start html': u'<strong>', u'end tag': u'{/st}', u'end html': u'</strong>',
+    u'protected': True})
+html_expands.append({u'desc': u'Italics', u'start tag': u'{it}',
+    u'start html': u'<em>', u'end tag': u'{/it}', u'end html': u'</em>',
+    u'protected': True})
+html_expands.append({u'desc': u'Underline', u'start tag': u'{u}',
+    u'start html': u'<span style="text-decoration: underline;">',
+    u'end tag': u'{/u}', u'end html': u'</span>', u'protected': True})
 
 def translate(context, text, comment=None):
     """
@@ -303,6 +306,8 @@ def expand_tags(text):
         text = text.replace(tag[u'end tag'], tag[u'end html'])
     return text
 
+from theme import ThemeLevel, ThemeXML, BackgroundGradientType, \
+    BackgroundType, HorizontalType, VerticalType
 from spelltextedit import SpellTextEdit
 from eventreceiver import Receiver
 from imagemanager import ImageManager
@@ -317,7 +322,6 @@ from htmlbuilder import build_html, build_lyrics_format_css, \
     build_lyrics_outline_css
 from toolbar import OpenLPToolbar
 from dockwidget import OpenLPDockWidget
-from theme import ThemeLevel, ThemeXML
 from renderer import Renderer
 from rendermanager import RenderManager
 from mediamanageritem import MediaManagerItem

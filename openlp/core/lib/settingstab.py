@@ -87,8 +87,12 @@ class SettingsTab(QtGui.QWidget):
         """
         pass
 
-    def postSetUp(self):
+    def postSetUp(self, postUpdate=False):
         """
         Changes which need to be made after setup of application
+
+        ``postUpdate``
+            Indicates if called before or after updates.
+
         """
         pass

@@ -152,6 +152,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def newSong(self):
         log.debug(u'New Song')
+        self.initialise()
         self.SongTabWidget.setCurrentIndex(0)
         self.TitleEditItem.setText(u'')
         self.AlternativeEdit.setText(u'')
@@ -170,8 +171,18 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         # it's a new song to preview is not possible
         self.previewButton.setVisible(False)
 
-    def loadSong(self, id, preview):
+    def loadSong(self, id, preview=False):
+        """
+        Loads a song.
+
+        ``id``
+            The song id (int).
+
+        ``preview``
+            Should be ``True`` if the song is also previewed (boolean).
+        """
         log.debug(u'Load Song')
+        self.initialise()
         self.SongTabWidget.setCurrentIndex(0)
         self.loadAuthors()
         self.loadTopics()
@@ -594,6 +605,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         """
         Save and Preview button pressed.
         The Song is valid so as the plugin to add it to preview to see.
+
+        ``button``
+            A button (QPushButton).
         """
         log.debug(u'onPreview')
         if unicode(button.objectName()) == u'previewButton' and \
@@ -631,13 +645,16 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         database.
 
         ``preview`` 
-            Should be True if song is also previewed.
+            Should be ``True`` if the song is also previewed (boolean).
         """
         self.song.title = unicode(self.TitleEditItem.text())
         self.song.alternate_title = unicode(self.AlternativeEdit.text())
         self.song.copyright = unicode(self.CopyrightEditItem.text())
-        self.song.search_title = self.song.title + u'@' + \
-            self.song.alternate_title
+        if self.song.alternate_title:
+            self.song.search_title = self.song.title + u'@' + \
+                self.song.alternate_title
+        else:
+            self.song.search_title = self.song.title
         self.song.comments = unicode(self.CommentsEdit.toPlainText())
         self.song.verse_order = unicode(self.VerseOrderEdit.text())
         self.song.ccli_number = unicode(self.CCLNumberEdit.text())
@@ -648,6 +665,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 Book.name == book_name)
         else:
             self.song.book = None
+        theme_name = unicode(self.ThemeSelectionComboItem.currentText())
+        if theme_name:
+            self.song.theme_name = theme_name
+        else:
+            self.song.theme_name = None
         if self._validate_song():
             self.processLyrics()
             self.processTitle()

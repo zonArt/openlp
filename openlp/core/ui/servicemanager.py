@@ -116,6 +116,7 @@ class ServiceManager(QtGui.QWidget):
         self.layout = QtGui.QVBoxLayout(self)
         self.layout.setSpacing(0)
         self.layout.setMargin(0)
+        self.expandTabs = False
         # Create the top toolbar
         self.toolbar = OpenLPToolbar(self)
         self.toolbar.addToolbarButton(
@@ -307,7 +308,7 @@ class ServiceManager(QtGui.QWidget):
         self.maintainAction.setVisible(False)
         self.notesAction.setVisible(False)
         if serviceItem[u'service_item'].is_capable(ItemCapabilities.AllowsEdit)\
-            and hasattr(serviceItem[u'service_item'], u'editId'):
+            and serviceItem[u'service_item'].edit_id:
             self.editAction.setVisible(True)
         if serviceItem[u'service_item']\
             .is_capable(ItemCapabilities.AllowsMaintain):
@@ -758,7 +759,7 @@ class ServiceManager(QtGui.QWidget):
                     self.onNewService()
                     for item in items:
                         serviceitem = ServiceItem()
-                        serviceitem.render_manager = self.parent.RenderManager
+                        serviceitem.render_manager = self.parent.renderManager
                         serviceitem.set_from_service(item, self.servicePath)
                         self.validateItem(serviceitem)
                         self.addServiceItem(serviceitem)
@@ -788,6 +789,8 @@ class ServiceManager(QtGui.QWidget):
         self.serviceName = name[len(name) - 1]
         self.parent.addRecentFile(filename)
         self.parent.serviceChanged(True, self.serviceName)
+        # Refresh Plugin lists
+        Receiver.send_message(u'plugin_list_refresh')
 
     def validateItem(self, serviceItem):
         """
@@ -817,7 +820,7 @@ class ServiceManager(QtGui.QWidget):
         """
         log.debug(u'onThemeComboBoxSelected')
         self.service_theme = unicode(self.themeComboBox.currentText())
-        self.parent.RenderManager.set_service_theme(self.service_theme)
+        self.parent.renderManager.set_service_theme(self.service_theme)
         QtCore.QSettings().setValue(
             self.parent.serviceSettingsSection + u'/service theme',
             QtCore.QVariant(self.service_theme))
@@ -829,7 +832,7 @@ class ServiceManager(QtGui.QWidget):
         sure the theme combo box is in the correct state.
         """
         log.debug(u'themeChange')
-        if self.parent.RenderManager.theme_level == ThemeLevel.Global:
+        if self.parent.renderManager.theme_level == ThemeLevel.Global:
             self.toolbar.actions[u'ThemeLabel'].setVisible(False)
             self.toolbar.actions[u'ThemeWidget'].setVisible(False)
         else:
@@ -843,7 +846,7 @@ class ServiceManager(QtGui.QWidget):
         """
         log.debug(u'regenerateServiceItems')
         # force reset of renderer as theme data has changed
-        self.parent.RenderManager.themedata = None
+        self.parent.renderManager.themedata = None
         if self.serviceItems:
             tempServiceItems = self.serviceItems
             self.serviceManagerList.clear()
@@ -863,7 +866,7 @@ class ServiceManager(QtGui.QWidget):
         editId, uuid = message.split(u':')
         for item in self.serviceItems:
             if item[u'service_item']._uuid == uuid:
-                item[u'service_item'].editId = editId
+                item[u'service_item'].edit_id = editId
 
     def replaceServiceItem(self, newItem):
         """
@@ -872,7 +875,7 @@ class ServiceManager(QtGui.QWidget):
         """
         newItem.render()
         for itemcount, item in enumerate(self.serviceItems):
-            if item[u'service_item'].editId == newItem.editId and \
+            if item[u'service_item'].edit_id == newItem.edit_id and \
                 item[u'service_item'].name == newItem.name:
                 newItem.merge(item[u'service_item'])
                 item[u'service_item'] = newItem
@@ -890,8 +893,8 @@ class ServiceManager(QtGui.QWidget):
         ``expand``
             Override the default expand settings. (Tristate)
         """
-        log.debug(u'addServiceItem')
-        if expand == None:
+        # if not passed set to config value
+        if expand is None:
             expand = self.expandTabs
         sitem = self.findServiceItem()[0]
         item.render()
@@ -982,7 +985,7 @@ class ServiceManager(QtGui.QWidget):
             .is_capable(ItemCapabilities.AllowsEdit):
             Receiver.send_message(u'%s_edit' %
                 self.serviceItems[item][u'service_item'].name.lower(), u'L:%s' %
-                self.serviceItems[item][u'service_item'].editId )
+                self.serviceItems[item][u'service_item'].edit_id )
 
     def findServiceItem(self):
         """
@@ -1027,6 +1030,9 @@ class ServiceManager(QtGui.QWidget):
             # ServiceManager started the drag and drop
             if plugin == u'ServiceManager':
                 startpos, startCount = self.findServiceItem()
+                # If no items selected
+                if startpos == -1:
+                    return
                 if item is None:
                     endpos = len(self.serviceItems)
                 else:
@@ -1082,7 +1088,7 @@ class ServiceManager(QtGui.QWidget):
             index = 0
             self.service_theme = u''
         self.themeComboBox.setCurrentIndex(index)
-        self.parent.RenderManager.set_service_theme(self.service_theme)
+        self.parent.renderManager.set_service_theme(self.service_theme)
         self.regenerateServiceItems()
 
     def onThemeChangeAction(self):

@@ -158,6 +158,27 @@ class Manager(object):
             log.exception(u'Object save failed')
             return False
 
+    def save_objects(self, object_list, commit=True):
+        """
+        Save a list of objects to the database
+
+        ``object_list``
+            The list of objects to save
+
+        ``commit``
+            Commit the session with this object
+        """
+        try:
+            self.session.add_all(object_list)
+            if commit:
+                self.session.commit()
+            self.is_dirty = True
+            return True
+        except InvalidRequestError:
+            self.session.rollback()
+            log.exception(u'Object list save failed')
+            return False
+
     def get_object(self, object_class, key=None):
         """
         Return the details of an object
@@ -206,6 +227,22 @@ class Manager(object):
         if order_by_ref is not None:
             return query.order_by(order_by_ref).all()
         return query.all()
+
+    def get_object_count(self, object_class, filter_clause=None):
+        """
+        Returns a count of the number of objects in the database.
+
+        ``object_class``
+            The type of objects to return.
+
+        ``filter_clause``
+            The filter governing selection of objects to return.  Defaults to
+            None.
+        """
+        query = self.session.query(object_class)
+        if filter_clause is not None:
+            query = query.filter(filter_clause)
+        return query.count()
 
     def delete_object(self, object_class, key):
         """
@@ -257,4 +294,5 @@ class Manager(object):
         """
         if self.is_dirty:
             engine = create_engine(self.db_url)
-            engine.execute("vacuum")
+            if self.db_url.startswith(u'sqlite'):
+                engine.execute("vacuum")

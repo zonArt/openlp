@@ -23,7 +23,8 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+"""
 import logging
 import os
 
@@ -36,6 +37,7 @@ from openlp.core.ui import HideMode
 log = logging.getLogger(__name__)
 
 #http://www.steveheffernan.com/html5-video-player/demo-video-player.html
+#http://html5demos.com/two-videos
 
 class DisplayWidget(QtGui.QGraphicsView):
     """
@@ -99,7 +101,7 @@ class MainDisplay(DisplayWidget):
         self.screens = screens
         self.isLive = live
         self.alertTab = None
-        self.hide_mode = None
+        self.hideMode = None
         self.setWindowTitle(u'OpenLP Display')
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint |
@@ -228,7 +230,7 @@ class MainDisplay(DisplayWidget):
         """
         API for replacement backgrounds so Images are added directly to cache
         """
-        image = self.imageManager.add_image(name, path)
+        self.imageManager.add_image(name, path)
         self.image(name)
 
     def image(self, name):
@@ -380,8 +382,8 @@ class MainDisplay(DisplayWidget):
         if self.isLive:
             self.setVisible(True)
         # if was hidden keep it hidden
-        if self.hide_mode and self.isLive:
-            self.hideDisplay(self.hide_mode)
+        if self.hideMode and self.isLive:
+            self.hideDisplay(self.hideMode)
         preview = QtGui.QImage(self.screen[u'size'].width(),
             self.screen[u'size'].height(),
             QtGui.QImage.Format_ARGB32_Premultiplied)
@@ -411,8 +413,8 @@ class MainDisplay(DisplayWidget):
         if serviceItem.foot_text and serviceItem.foot_text:
             self.footer(serviceItem.foot_text)
         # if was hidden keep it hidden
-        if self.hide_mode and self.isLive:
-            self.hideDisplay(self.hide_mode)
+        if self.hideMode and self.isLive:
+            self.hideDisplay(self.hideMode)
 
     def footer(self, text):
         """
@@ -443,7 +445,7 @@ class MainDisplay(DisplayWidget):
                 self.setVisible(True)
             if self.phononActive:
                 self.webView.setVisible(True)
-        self.hide_mode = mode
+        self.hideMode = mode
 
     def showDisplay(self):
         """
@@ -458,9 +460,9 @@ class MainDisplay(DisplayWidget):
         if self.phononActive:
             self.webView.setVisible(False)
             self.videoPlay()
+        self.hideMode = None
         # Trigger actions when display is active again
         Receiver.send_message(u'maindisplay_active')
-        self.hide_mode = None
 
 class AudioPlayer(QtCore.QObject):
     """

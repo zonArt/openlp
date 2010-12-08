@@ -46,13 +46,13 @@ class ImageThread(QtCore.QThread):
     """
     def __init__(self, manager):
         QtCore.QThread.__init__(self, None)
-        self.image_mamager = manager
+        self.imageManager = manager
 
     def run(self):
         """
         Run the thread.
         """
-        self.image_mamager.process()
+        self.imageManager.process()
 
 
 class Image(object):
