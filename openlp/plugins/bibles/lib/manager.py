@@ -35,7 +35,7 @@ from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
 
 from csvbible import CSVBible
 from http import HTTPBible
-from olp1 import OpenLP1Bible
+from openlp1 import OpenLP1Bible
 from opensong import OpenSongBible
 from osis import OSISBible
 
