@@ -502,12 +502,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             self.theme.background_filename = unicode(filename)
         self.setBackgroundTabValues()
 
-#    def onMainFontComboBox(self):
-#        """
-#        Main Font Combo box changed
-#        """
-#        self.theme.font_main_name = self.mainFontComboBox.currentFont().family()
-
     def onMainColourPushButtonClicked(self):
         self.theme.font_main_color = \
             self._colorButton(self.theme.font_main_color)
