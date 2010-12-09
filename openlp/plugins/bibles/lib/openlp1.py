@@ -45,7 +45,6 @@ class OpenLP1Bible(BibleDB):
         log.debug(self.__class__.__name__)
         BibleDB.__init__(self, parent, **kwargs)
         self.filename = kwargs[u'filename']
-        self.name = kwargs[u'name']
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'bibles_stop_import'), self.stop_import)
 
@@ -65,6 +64,7 @@ class OpenLP1Bible(BibleDB):
         books = cursor.fetchall()
         for book in books:
             if self.stop_import_flag:
+                connection.close()
                 return False
             book_id = int(book[0])
             testament_id = int(book[1])
@@ -80,6 +80,7 @@ class OpenLP1Bible(BibleDB):
             verses = cursor.fetchall()
             for verse in verses:
                 if self.stop_import_flag:
+                    connection.close()
                     return False
                 chapter = int(verse[0])
                 verse_number = int(verse[1])
@@ -87,4 +88,5 @@ class OpenLP1Bible(BibleDB):
                 self.create_verse(book_id, chapter, verse_number, text)
                 Receiver.send_message(u'openlp_process_events')
             self.session.commit()
+        connection.close()
         return True
