@@ -31,7 +31,7 @@ import os.path
 
 from PyQt4 import QtCore, QtGui
 
-from bibleimportwizard import uiBibleImportWizard
+from bibleimportwizard import Ui_BibleImportWizard
 from openlp.core.lib import Receiver, SettingsManager, translate
 from openlp.core.lib.db import delete_database
 from openlp.core.utils import AppLocation
@@ -54,7 +54,7 @@ class WebDownload(object):
         return cls.Names[name]
 
 
-class BibleImportForm(QtGui.QWizard, uiBibleImportWizard):
+class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
     """
     This is the Bible Import Wizard, which allows easy importing of Bibles
     into OpenLP from other formats like OSIS, CSV and OpenSong.
@@ -166,7 +166,7 @@ class BibleImportForm(QtGui.QWizard, uiBibleImportWizard):
                     self.openSongFileEdit.setFocus()
                     return False
             elif self.field(u'source_format').toInt()[0] == BibleFormat.OpenLP1:
-                if not self.field(u'OLP1_location').toString():
+                if not self.field(u'openlp1_location').toString():
                     QtGui.QMessageBox.critical(self,
                         translate('BiblesPlugin.ImportWizardForm',
                         'Invalid Bible Location'),
@@ -280,28 +280,19 @@ class BibleImportForm(QtGui.QWizard, uiBibleImportWizard):
             self.postImport()
 
     def registerFields(self):
-        self.selectPage.registerField(
-            u'source_format', self.formatComboBox)
-        self.selectPage.registerField(
-            u'osis_location', self.OSISLocationEdit)
-        self.selectPage.registerField(
-            u'csv_booksfile', self.booksLocationEdit)
+        self.selectPage.registerField(u'source_format', self.formatComboBox)
+        self.selectPage.registerField(u'osis_location', self.OSISLocationEdit)
+        self.selectPage.registerField(u'csv_booksfile', self.booksLocationEdit)
         self.selectPage.registerField(
             u'csv_versefile', self.csvVerseLocationEdit)
+        self.selectPage.registerField(u'opensong_file', self.openSongFileEdit)
+        self.selectPage.registerField(u'web_location', self.locationComboBox)
+        self.selectPage.registerField(u'web_biblename', self.bibleComboBox)
+        self.selectPage.registerField(u'proxy_server', self.addressEdit)
+        self.selectPage.registerField(u'proxy_username', self.usernameEdit)
+        self.selectPage.registerField(u'proxy_password', self.passwordEdit)
         self.selectPage.registerField(
-            u'opensong_file', self.openSongFileEdit)
-        self.selectPage.registerField(
-            u'web_location', self.locationComboBox)
-        self.selectPage.registerField(
-            u'web_biblename', self.bibleComboBox)
-        self.selectPage.registerField(
-            u'proxy_server', self.addressEdit)
-        self.selectPage.registerField(
-            u'proxy_username', self.usernameEdit)
-        self.selectPage.registerField(
-            u'proxy_password', self.passwordEdit)
-        self.selectPage.registerField(
-            u'OLP1_location', self.openlp1LocationEdit)
+            u'openlp1_location', self.openlp1LocationEdit)
         self.licenseDetailsPage.registerField(
             u'license_version', self.versionNameEdit)
         self.licenseDetailsPage.registerField(
@@ -329,7 +320,7 @@ class BibleImportForm(QtGui.QWizard, uiBibleImportWizard):
             settings.value(u'proxy username', QtCore.QVariant(u'')))
         self.setField(u'proxy_password',
             settings.value(u'proxy password', QtCore.QVariant(u'')))
-        self.setField(u'OLP1_location', QtCore.QVariant(''))
+        self.setField(u'openlp1_location', QtCore.QVariant(''))
         self.setField(u'license_version',
             QtCore.QVariant(self.versionNameEdit.text()))
         self.setField(u'license_copyright',
@@ -476,7 +467,7 @@ class BibleImportForm(QtGui.QWizard, uiBibleImportWizard):
             # Import an openlp.org 1.x bible.
             importer = self.manager.import_bible(BibleFormat.OpenLP1,
                 name=license_version,
-                filename=unicode(self.field(u'OLP1_location').toString())
+                filename=unicode(self.field(u'openlp1_location').toString())
             )
         if importer.do_import():
             self.manager.save_meta_data(license_version, license_version,
