@@ -23,10 +23,33 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+import logging
 
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, Receiver, translate
+
+log = logging.getLogger(__name__)
+
+class ValidEdit(QtGui.QLineEdit):
+    """
+    Only allow numeric characters to be edited
+    """
+    def __init__(self, parent):
+        """
+        Set up Override and Validator
+        """
+        QtGui.QLineEdit.__init__(self, parent)
+        self.setValidator(QtGui.QIntValidator(0, 9999, self))
+
+    def validText(self):
+        """
+        Only return Integers.  Space is 0
+        """
+        if self.text().isEmpty():
+            return QtCore.QString(u'0')
+        else:
+            return self.text()
 
 class GeneralTab(SettingsTab):
     """
@@ -240,7 +263,7 @@ class GeneralTab(SettingsTab):
         self.customXLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.customXLabel.setObjectName(u'customXLabel')
         self.customXLayout.addWidget(self.customXLabel)
-        self.customXValueEdit = QtGui.QLineEdit(self.displayGroupBox)
+        self.customXValueEdit = ValidEdit(self.displayGroupBox)
         self.customXValueEdit.setObjectName(u'customXValueEdit')
         self.customXLayout.addWidget(self.customXValueEdit)
         self.customLayout.addLayout(self.customXLayout)
@@ -252,7 +275,7 @@ class GeneralTab(SettingsTab):
         self.customYLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.customYLabel.setObjectName(u'customYLabel')
         self.customYLayout.addWidget(self.customYLabel)
-        self.customYValueEdit = QtGui.QLineEdit(self.displayGroupBox)
+        self.customYValueEdit = ValidEdit(self.displayGroupBox)
         self.customYValueEdit.setObjectName(u'customYValueEdit')
         self.customYLayout.addWidget(self.customYValueEdit)
         self.customLayout.addLayout(self.customYLayout)
@@ -265,7 +288,7 @@ class GeneralTab(SettingsTab):
         self.customWidthLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.customWidthLabel.setObjectName(u'customWidthLabel')
         self.customWidthLayout.addWidget(self.customWidthLabel)
-        self.customWidthValueEdit = QtGui.QLineEdit(self.displayGroupBox)
+        self.customWidthValueEdit = ValidEdit(self.displayGroupBox)
         self.customWidthValueEdit.setObjectName(u'customWidthValueEdit')
         self.customWidthLayout.addWidget(self.customWidthValueEdit)
         self.customLayout.addLayout(self.customWidthLayout)
@@ -277,7 +300,7 @@ class GeneralTab(SettingsTab):
         self.customHeightLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.customHeightLabel.setObjectName(u'customHeightLabel')
         self.customHeightLayout.addWidget(self.customHeightLabel)
-        self.customHeightValueEdit = QtGui.QLineEdit(self.displayGroupBox)
+        self.customHeightValueEdit = ValidEdit(self.displayGroupBox)
         self.customHeightValueEdit.setObjectName(u'customHeightValueEdit')
         self.customHeightLayout.addWidget(self.customHeightValueEdit)
         self.customLayout.addLayout(self.customHeightLayout)
@@ -465,10 +488,10 @@ class GeneralTab(SettingsTab):
         # Reset screens after initial definition
         if self.overrideChanged:
             self.screens.override[u'size'] = QtCore.QRect(
-                int(self.customXValueEdit.text()),
-                int(self.customYValueEdit.text()),
-                int(self.customWidthValueEdit.text()),
-                int(self.customHeightValueEdit.text()))
+                int(self.customXValueEdit.validText()),
+                int(self.customYValueEdit.validText()),
+                int(self.customWidthValueEdit.validText()),
+                int(self.customHeightValueEdit.validText()))
         if self.overrideCheckBox.isChecked():
             self.screens.set_override_display()
         else:

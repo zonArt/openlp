@@ -31,7 +31,6 @@ import re
 import logging
 
 from xml.dom.minidom import Document
-from xml.etree.ElementTree import ElementTree, XML
 from lxml import etree, objectify
 
 from openlp.core.lib import str_to_bool
@@ -325,7 +324,7 @@ class ThemeXML(object):
         # Create Font name element
         self.child_element(background, u'name', name)
         # Create Font color element
-        self.child_element(background, u'color', color)
+        self.child_element(background, u'color', unicode(color))
         # Create Proportion name element
         self.child_element(background, u'size', unicode(size))
         # Create weight name element

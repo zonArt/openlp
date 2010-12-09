@@ -280,7 +280,7 @@ class ThemeManager(QtGui.QWidget):
             self.saveThemeName = unicode(
                 item.data(QtCore.Qt.UserRole).toString())
             self.themeForm.theme = theme
-            self.themeForm.exec_()
+            self.themeForm.exec_(True)
 
     def onDeleteTheme(self):
         """

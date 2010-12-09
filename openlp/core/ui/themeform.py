@@ -62,24 +62,27 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         QtCore.QObject.connect(self.gradientComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
             self.onGradientComboBox)
-        QtCore.QObject.connect(self.color1PushButton,
+        QtCore.QObject.connect(self.colorButton,
             QtCore.SIGNAL(u'pressed()'),
-        self.onColor1PushButtonClicked)
-        QtCore.QObject.connect(self.color2PushButton,
+            self.onColorButtonClicked)
+        QtCore.QObject.connect(self.gradientStartButton,
             QtCore.SIGNAL(u'pressed()'),
-        self.onColor2PushButtonClicked)
+            self.onGradientStartButtonClicked)
+        QtCore.QObject.connect(self.gradientEndButton,
+            QtCore.SIGNAL(u'pressed()'),
+            self.onGradientEndButtonClicked)
         QtCore.QObject.connect(self.imageBrowseButton,
             QtCore.SIGNAL(u'pressed()'),
-        self.onImageBrowseButtonClicked)
+            self.onImageBrowseButtonClicked)
         QtCore.QObject.connect(self.mainColorPushButton,
             QtCore.SIGNAL(u'pressed()'),
-        self.onMainColourPushButtonClicked)
+            self.onMainColourPushButtonClicked)
         QtCore.QObject.connect(self.outlineColorPushButton,
             QtCore.SIGNAL(u'pressed()'),
-        self.onOutlineColourPushButtonClicked)
+            self.onOutlineColourPushButtonClicked)
         QtCore.QObject.connect(self.shadowColorPushButton,
             QtCore.SIGNAL(u'pressed()'),
-        self.onShadowColourPushButtonClicked)
+            self.onShadowColourPushButtonClicked)
         QtCore.QObject.connect(self.outlineCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onOutlineCheckCheckBoxChanged)
@@ -158,9 +161,11 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.backgroundPage.registerField(
             u'background_type', self.backgroundTypeComboBox)
         self.backgroundPage.registerField(
-            u'color_1', self.color1PushButton)
+            u'color', self.colorButton)
         self.backgroundPage.registerField(
-            u'color_2', self.color2PushButton)
+            u'grandient_start', self.gradientStartButton)
+        self.backgroundPage.registerField(
+            u'grandient_end', self.gradientEndButton)
         self.backgroundPage.registerField(
             u'background_image', self.imageLineEdit)
         self.backgroundPage.registerField(
@@ -280,13 +285,15 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.footerHeightSpinBox.setEnabled(self.theme.font_footer_override)
         self.footerWidthSpinBox.setEnabled(self.theme.font_footer_override)
 
-    def exec_(self):
+    def exec_(self, edit=False):
         """
         Run the wizard.
         """
         self.updateThemeAllowed = False
         self.setDefaults()
         self.updateThemeAllowed = True
+        if edit:
+            self.next()
         return QtGui.QWizard.exec_(self)
 
     def initializePage(self, id):
@@ -312,54 +319,19 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         if self.theme.background_type == \
             BackgroundType.to_string(BackgroundType.Solid):
-            self.setField(u'background_type', QtCore.QVariant(0))
-            self.color1PushButton.setVisible(True)
-            self.color1Label.setVisible(True)
-            self.color1PushButton.setStyleSheet(u'background-color: %s' %
+            self.colorButton.setStyleSheet(u'background-color: %s' %
                     self.theme.background_color)
-            self.color1Label.setText(
-                translate('OpenLP.ThemeForm', 'Color:'))
-            self.color2PushButton.setVisible(False)
-            self.color2Label.setVisible(False)
-            self.gradientLabel.setVisible(False)
-            self.gradientComboBox.setVisible(False)
-            self.imageLabel.setVisible(False)
-            self.imageLineEdit.setVisible(False)
-            self.imageBrowseButton.setVisible(False)
-            self.imageLineEdit.setText(u'')
+            self.setField(u'background_type', QtCore.QVariant(0))
         elif self.theme.background_type == \
             BackgroundType.to_string(BackgroundType.Gradient):
-            self.setField(u'background_type', QtCore.QVariant(1))
-            self.color1PushButton.setVisible(True)
-            self.color1Label.setVisible(True)
-            self.color1PushButton.setStyleSheet(u'background-color: %s' %
+            self.gradientStartButton.setStyleSheet(u'background-color: %s' %
                     self.theme.background_start_color)
-            self.color1Label.setText(
-                translate('OpenLP.ThemeForm', 'First color:'))
-            self.color2PushButton.setVisible(True)
-            self.color2Label.setVisible(True)
-            self.color2PushButton.setStyleSheet(u'background-color: %s' %
+            self.gradientEndButton.setStyleSheet(u'background-color: %s' %
                     self.theme.background_end_color)
-            self.color2Label.setText(
-                translate('OpenLP.ThemeForm', 'Second color:'))
-            self.gradientLabel.setVisible(True)
-            self.gradientComboBox.setVisible(True)
-            self.imageLabel.setVisible(False)
-            self.imageLineEdit.setVisible(False)
-            self.imageBrowseButton.setVisible(False)
-            self.imageLineEdit.setText(u'')
+            self.setField(u'background_type', QtCore.QVariant(1))
         else:
-            self.setField(u'background_type', QtCore.QVariant(2))
-            self.color1PushButton.setVisible(False)
-            self.color1Label.setVisible(False)
-            self.color2PushButton.setVisible(False)
-            self.color2Label.setVisible(False)
-            self.gradientLabel.setVisible(False)
-            self.gradientComboBox.setVisible(False)
-            self.imageLineEdit.setVisible(True)
-            self.imageLabel.setVisible(True)
-            self.imageBrowseButton.setVisible(True)
             self.imageLineEdit.setText(self.theme.background_filename)
+            self.setField(u'background_type', QtCore.QVariant(2))
         if self.theme.background_direction == \
             BackgroundGradientType.to_string(BackgroundGradientType.Horizontal):
             self.setField(u'gradient', QtCore.QVariant(0))
@@ -492,20 +464,23 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             BackgroundGradientType.to_string(index)
         self.setBackgroundTabValues()
 
-    def onColor1PushButtonClicked(self):
+    def onColorButtonClicked(self):
         """
         Background / Gradient 1 Color button pushed.
         """
-        if self.theme.background_type == \
-            BackgroundType.to_string(BackgroundType.Solid):
-            self.theme.background_color = \
-                self._colorButton(self.theme.background_color)
-        else:
-            self.theme.background_start_color = \
-                self._colorButton(self.theme.background_start_color)
+        self.theme.background_color = \
+            self._colorButton(self.theme.background_color)
         self.setBackgroundTabValues()
 
-    def onColor2PushButtonClicked(self):
+    def onGradientStartButtonClicked(self):
+        """
+        Gradient 2 Color button pushed.
+        """
+        self.theme.background_start_color = \
+            self._colorButton(self.theme.background_start_color)
+        self.setBackgroundTabValues()
+
+    def onGradientEndButtonClicked(self):
         """
         Gradient 2 Color button pushed.
         """
@@ -526,12 +501,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         if filename:
             self.theme.background_filename = unicode(filename)
         self.setBackgroundTabValues()
-
-#    def onMainFontComboBox(self):
-#        """
-#        Main Font Combo box changed
-#        """
-#        self.theme.font_main_name = self.mainFontComboBox.currentFont().family()
 
     def onMainColourPushButtonClicked(self):
         self.theme.font_main_color = \
@@ -649,5 +618,5 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         new_color = QtGui.QColorDialog.getColor(
             QtGui.QColor(field), self)
         if new_color.isValid():
-           field = new_color.name()
+            field = new_color.name()
         return field
