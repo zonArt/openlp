@@ -101,7 +101,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
             self.onOpenSongBrowseButtonClicked)
         QtCore.QObject.connect(self.openlp1FileButton,
             QtCore.SIGNAL(u'clicked()'),
-            self.onOLP1FileButtonClicked)
+            self.onOpenlp1FileButtonClicked)
         QtCore.QObject.connect(self.cancelButton,
             QtCore.SIGNAL(u'clicked(bool)'),
             self.onCancelButtonClicked)
@@ -257,7 +257,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
             translate('BiblesPlugin.ImportWizardForm', 'Open OpenSong Bible'),
             self.openSongFileEdit)
 
-    def onOLP1FileButtonClicked(self):
+    def onOpenlp1FileButtonClicked(self):
         """
         Show the file open dialog for the openlp.org 1.x file.
         """
