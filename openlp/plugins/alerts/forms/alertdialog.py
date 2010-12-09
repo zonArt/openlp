@@ -128,7 +128,7 @@ class Ui_AlertDialog(object):
         self.AlertEntryLabel.setText(
             translate('AlertsPlugin.AlertForm', 'Alert &text:'))
         self.AlertParameter.setText(
-            translate('AlertsPlugin.AlertForm', '&Parameter(s):'))
+            translate('AlertsPlugin.AlertForm', '&Parameter:'))
         self.NewButton.setText(
             translate('AlertsPlugin.AlertForm', '&New'))
         self.SaveButton.setText(
