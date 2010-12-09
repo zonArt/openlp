@@ -25,6 +25,7 @@
 ###############################################################################
 
 import logging
+import re
 
 from PyQt4 import QtCore, QtGui
 
@@ -61,6 +62,7 @@ class SongMediaItem(MediaManagerItem):
         # which Song is required.
         self.remoteSong = -1
         self.editItem = None
+        self.whitespace = re.compile(r'\W+', re.UNICODE)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -173,8 +175,8 @@ class SongMediaItem(MediaManagerItem):
         if search_type == 0:
             log.debug(u'Titles Search')
             search_results = self.parent.manager.get_all_objects(Song,
-                Song.search_title.like(u'%' + search_keywords.lower() + u'%'),
-                Song.search_title.asc())
+                Song.search_title.like(u'%' + self.whitespace.sub(u' ',
+                search_keywords.lower()) + u'%'), Song.search_title.asc())
             self.displayResultsSong(search_results)
         elif search_type == 1:
             log.debug(u'Lyrics Search')
