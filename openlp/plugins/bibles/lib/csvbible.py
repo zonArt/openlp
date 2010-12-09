@@ -65,6 +65,7 @@ class CSVBible(BibleDB):
             books_file.seek(0)
             books_reader = csv.reader(books_file, dialect)
             for line in books_reader:
+                # cancel pressed
                 if self.stop_import_flag:
                     break
                 details = chardet.detect(line[1])
@@ -85,7 +86,7 @@ class CSVBible(BibleDB):
             verse_file.seek(0)
             verse_reader = csv.reader(verse_file, dialect)
             for line in verse_reader:
-                if self.stop_import_flag:
+                if self.stop_import_flag:  # cancel pressed
                     break
                 details = chardet.detect(line[3])
                 if book_ptr != line[0]:
