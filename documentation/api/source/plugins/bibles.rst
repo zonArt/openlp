@@ -18,7 +18,7 @@ Forms
 .. automodule:: openlp.plugins.bibles.forms
    :members:
 
-.. autoclass:: openlp.plugins.bibles.forms.importwizardform.ImportWizardForm
+.. autoclass:: openlp.plugins.bibles.forms.bibleimportform.BibleImportForm
    :members:
 
 Helper Classes & Functions

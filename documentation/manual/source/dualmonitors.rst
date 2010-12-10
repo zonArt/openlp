@@ -149,15 +149,15 @@ Or, as root::
   root@linux: # nividia-settings
 
 If you do not want to write the changes to your ``xorg.conf`` file simply run
-the nVidia Settings program (``nvidia-settings``) from your desktop's menu,
-usually in an administration or system menu, or from the terminal as a normal
-user run::
+the nVidia Settings program (:command:`nvidia-settings`) from your desktop's
+menu, usually in an administration or system menu, or from the terminal as a
+normal user run::
 
  user@linux:~ $ nvidia-settings
 
-Once you have opened nVidia Settings, click on
-:guilabel:`X Server Display Configuration`. Then select the monitor you are
-wanting to use as your second monitor and click :guilabel:`Configure`.
+Once you have opened nVidia Settings, click on :guilabel:`X Server Display
+Configuration`. Then select the monitor you are wanting to use as your second
+monitor and click :guilabel:`Configure`.
 
 .. image:: pics/nvlinux1.png
 
