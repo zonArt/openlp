@@ -88,7 +88,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         filename = QtGui.QFileDialog.getSaveFileName(self,
             translate('OpenLP.ExceptionForm', 'Save Crash Report'),
             SettingsManager.get_last_dir(self.settingsSection),
-            translate('OpenLP.ExceptionForm', 'Text files (*.log *.text *.txt)'))
+            translate('OpenLP.ExceptionForm', 'Text files (*.txt *.log *.text)'))
         if filename:
             filename = unicode(QtCore.QDir.toNativeSeparators(filename))
             SettingsManager.set_last_dir(self.settingsSection, os.path.dirname(
