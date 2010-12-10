@@ -118,9 +118,6 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
         QtCore.QObject.connect(self.songBeamerRemoveButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onSongBeamerRemoveButtonClicked)
-        QtCore.QObject.connect(self.cancelButton,
-            QtCore.SIGNAL(u'clicked(bool)'),
-            self.onCancelButtonClicked)
         QtCore.QObject.connect(self,
             QtCore.SIGNAL(u'currentIdChanged(int)'),
             self.onCurrentIdChanged)
@@ -131,6 +128,16 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
         """
         self.setDefaults()
         return QtGui.QWizard.exec_(self)
+
+    def reject(self):
+        """
+        Stop the import on cancel button, close button or ESC key.
+        """
+        log.debug('Import canceled by user.')
+        if self.currentId() == 2:
+            Receiver.send_message(u'songs_stop_import')
+        else:
+            self.done(QtGui.QDialog.Rejected)
 
     def validateCurrentPage(self):
         """
@@ -393,14 +400,6 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
 
     def onSongBeamerRemoveButtonClicked(self):
         self.removeSelectedItems(self.songBeamerFileListWidget)
-
-    def onCancelButtonClicked(self, checked):
-        """
-        Stop the import on pressing the cancel button.
-        """
-        log.debug('Cancel button pressed!')
-        if self.currentId() == 2:
-            Receiver.send_message(u'songs_stop_import')
 
     def onCurrentIdChanged(self, id):
         if id == 2:
