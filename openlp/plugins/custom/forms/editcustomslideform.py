@@ -28,7 +28,6 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, translate
 from editcustomslidedialog import Ui_CustomSlideEditDialog
 
 log = logging.getLogger(__name__)
@@ -51,7 +50,7 @@ class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
     def setText(self, text):
         """
         Set the text for slideTextEdit.
-        
+
         ``text``
             The text (unicode).
         """
@@ -68,7 +67,7 @@ class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
 
     def onSplitButtonPressed(self):
         """
-        Splits a slide in two slides.
+        Adds a slide split at the cursor.
         """
         if self.slideTextEdit.textCursor().columnNumber() != 0:
             self.slideTextEdit.insertPlainText(u'\n')

@@ -154,7 +154,7 @@ class ImageMediaItem(MediaManagerItem):
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.listView.addItem(item_name)
 
-    def generateSlideData(self, service_item, item=None):
+    def generateSlideData(self, service_item, item=None, xmlVersion=False):
         items = self.listView.selectedIndexes()
         if items:
             service_item.title = unicode(
@@ -163,12 +163,13 @@ class ImageMediaItem(MediaManagerItem):
             service_item.add_capability(ItemCapabilities.AllowsPreview)
             service_item.add_capability(ItemCapabilities.AllowsLoop)
             service_item.add_capability(ItemCapabilities.AllowsAdditions)
+            # force a nonexistent theme
+            service_item.theme = -1
             for item in items:
                 bitem = self.listView.item(item.row())
                 filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
-                frame = QtGui.QImage(unicode(filename))
                 (path, name) = os.path.split(filename)
-                service_item.add_from_image(path, name, frame)
+                service_item.add_from_image(filename, name)
             return True
         else:
             return False
@@ -185,7 +186,8 @@ class ImageMediaItem(MediaManagerItem):
             for item in items:
                 bitem = self.listView.item(item.row())
                 filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
-                self.parent.liveController.display.image(filename)
+                (path, name) = os.path.split(filename)
+                self.parent.liveController.display.directImage(name, filename)
         self.resetButton.setVisible(True)
 
     def onPreviewClick(self):

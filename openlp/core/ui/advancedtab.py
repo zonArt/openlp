@@ -81,9 +81,14 @@ class AdvancedTab(SettingsTab):
         self.doubleClickLiveCheckBox = QtGui.QCheckBox(self.uiGroupBox)
         self.doubleClickLiveCheckBox.setObjectName(u'doubleClickLiveCheckBox')
         self.uiLayout.addWidget(self.doubleClickLiveCheckBox)
+#        self.expandServiceItemCheckBox = QtGui.QCheckBox(self.uiGroupBox)
+#        self.expandServiceItemCheckBox.setObjectName(
+#            u'expandServiceItemCheckBox')
+#        self.uiLayout.addWidget(self.expandServiceItemCheckBox)
         self.leftLayout.addWidget(self.uiGroupBox)
         self.expandServiceItemCheckBox = QtGui.QCheckBox(self.uiGroupBox)
-        self.expandServiceItemCheckBox.setObjectName(u'expandServiceItemCheckBox')
+        self.expandServiceItemCheckBox.setObjectName(
+            u'expandServiceItemCheckBox')
         self.uiLayout.addWidget(self.expandServiceItemCheckBox)
 #        self.sharedDirGroupBox = QtGui.QGroupBox(self.leftWidget)
 #        self.sharedDirGroupBox.setObjectName(u'sharedDirGroupBox')
@@ -142,7 +147,7 @@ class AdvancedTab(SettingsTab):
         self.mediaPluginCheckBox.setText(translate('OpenLP.AdvancedTab',
             'Remember active media manager tab on startup'))
         self.doubleClickLiveCheckBox.setText(translate('OpenLP.AdvancedTab',
-            'Double-click to send items straight to live (requires restart)'))
+            'Double-click to send items straight to live'))
         self.expandServiceItemCheckBox.setText(translate('OpenLP.AdvancedTab',
             'Expand new service items on creation'))
 #        self.sharedDirGroupBox.setTitle(

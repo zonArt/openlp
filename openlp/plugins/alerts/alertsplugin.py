@@ -85,7 +85,11 @@ class AlertsPlugin(Plugin):
         self.liveController.alertTab = self.alertsTab
 
     def finalise(self):
+        """
+        Tidy up on exit
+        """
         log.info(u'Alerts Finalising')
+        self.manager.finalise()
         Plugin.finalise(self)
         self.toolsAlertItem.setVisible(False)
 

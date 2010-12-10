@@ -61,7 +61,8 @@ class PresentationPlugin(Plugin):
         Create the settings Tab
         """
         visible_name = self.getString(StringContent.VisibleName)
-        return PresentationTab(self.name, visible_name[u'title'], self.controllers)
+        return PresentationTab(self.name, visible_name[u'title'],
+            self.controllers)
 
     def initialise(self):
         """
