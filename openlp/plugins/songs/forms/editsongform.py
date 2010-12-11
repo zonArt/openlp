@@ -64,7 +64,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         QtCore.QObject.connect(self.AuthorsSelectionComboItem,
             QtCore.SIGNAL(u'activated(int)'), self.updateAuthorAutoCompleter)
         QtCore.QObject.connect(self.AuthorsSelectionComboItem,
-            QtCore.SIGNAL(u'activated(int)'), self.updateAuthorAutoCompleter)#
+            QtCore.SIGNAL(u'activated(int)'), self.updateAuthorAutoCompleter)
         QtCore.QObject.connect(self.ThemeSelectionComboItem,
             QtCore.SIGNAL(u'activated(int)'), self.updateAuthorAutoCompleter)
         QtCore.QObject.connect(self.ThemeSelectionComboItem,
@@ -127,7 +127,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         authors = self.manager.get_all_objects(Author,
             order_by_ref=Author.display_name)
         self.AuthorsSelectionComboItem.clear()
-        self.AuthorsSelectionComboItem.addItem(u'')#
+        self.AuthorsSelectionComboItem.addItem(u'')
         self.authors = []
         for author in authors:
             row = self.AuthorsSelectionComboItem.count()
