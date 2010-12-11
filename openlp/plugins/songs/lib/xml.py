@@ -350,7 +350,8 @@ class OpenLyricsParser(object):
             for author in properties.authors.author:
                 self._process_author(author.text, song)
         except:
-            self._process_author(u'Author Unknown', song)
+            # No Author in XML so ignore
+            pass
         self.manager.save_object(song)
         return song.id
 
