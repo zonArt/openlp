@@ -240,6 +240,87 @@ class BGExtract(object):
         return SearchResults(bookname, chapter, verse_list)
 
 
+class BSExtract(object):
+    """
+    Extract verses from Bibleserver.com
+    """
+    def __init__(self,proxyurl=None):
+        log.debug(u'init %s', proxyurl)
+        self.proxyurl = proxyurl
+
+    def get_bible_chapter(self, version, bookname, chapter):
+        """
+        Access and decode bibles via http://m.Bibleserver.com
+
+        ``version``
+            The version of the bible like NIV for New International Version
+
+        ``bookname``
+            Text name of in english e.g. 'gen' for Genesis
+
+        ``chapter``
+            Chapter number
+        """
+        print(bookname)
+        log.debug(u'get_bible_chapter %s,%s,%s', version, bookname, chapter)
+        bookindex = self._get_book_index(bookname)
+        if chapter < 10:
+           chapter_string = u'00' + unicode(chapter)
+        elif chapter < 100:
+           chapter_string = u'0' + unicode(chapter)
+        else:
+           chapter_string = unicode(chapter)
+        chapter_url = u'http://m.bibleserver.com/text/%s/%s%s000' % \
+            (version, bookindex, chapter_string)
+        log.debug(u'URL: %s', chapter_url)
+        page = None
+        try:
+            page = urllib2.urlopen(chapter_url)
+            Receiver.send_message(u'openlp_process_events')
+        except urllib2.URLError:
+            log.exception(u'The web bible page could not be downloaded.')
+        finally:
+            if not page:
+                return None
+        soup = None
+        try:
+            soup = BeautifulSoup(page)
+        except HTMLParseError:
+            log.exception(u'BeautifulSoup could not parse the bible page.')
+        finally:
+            if not soup:
+                return None
+        Receiver.send_message(u'openlp_process_events')
+        content = soup.find(u'div', u'content').find(u'div').findAll(u'div')
+        verse_number = re.compile(r'v\d{5}(\d{3}) verse')
+        verses = {}
+        for verse in content:
+            Receiver.send_message(u'openlp_process_events')
+            versenumber = int(verse_number.sub(r'\1', verse[u'class']))
+            verses[versenumber] = verse.contents[1].rstrip(u'\n')
+        return SearchResults(bookname, chapter, verses)
+    def _get_book_index(self, bookname):
+        print bookname
+        bookmap = {u'Gen': u'01', u'Exod': u'02', u'Lev': u'03',
+            u'Num':   u'04', u'Deut':  u'05', u'Josh':  u'06', u'Judg': u'07',
+            u'Ruth':  u'08', u'1Sam':  u'09', u'2Sam':  u'10', u'1Kgs': u'11',
+            u'2Kgs':  u'12', u'1Chr':  u'13', u'2Chr':  u'14', u'Ezra': u'15',
+            u'Neh':   u'16', u'Esth':  u'17', u'Job':   u'18', u'Ps':   u'19',
+            u'Prov':  u'20', u'Eccl':  u'21', u'Song':  u'22', u'Isa':  u'23',
+            u'Jer':   u'24', u'Lam':   u'25',  u'Ezek': u'26', u'Dan':  u'27',
+            u'Hos':   u'28', u'Joel':  u'29', u'Amos':  u'30', u'Obad': u'31',
+            u'Jonah': u'32', u'Mic':   u'33',  u'Nah':  u'34', u'Hab':  u'35',
+            u'Zeph':  u'36', u'Hag':   u'37',  u'Zech': u'38', u'Mal':  u'39',
+            u'Matt':  u'40', u'Mark':  u'41', u'Luke':  u'42', u'John': u'43',
+            u'Acts':  u'44', u'Rom':   u'45',  u'1Cor': u'46', u'2Cor': u'47',
+            u'Gal':   u'48', u'Eph':   u'49',  u'Phil': u'50', u'Col':  u'51',
+            u'1Thess':u'52', u'2Thess':u'53', u'1Tim':  u'54', u'2Tim': u'55',
+            u'Titus': u'56', u'Phlm':  u'57', u'Heb':   u'58', u'Jas':  u'59',
+            u'1Pet':  u'60', u'2Pet':  u'61', u'1John': u'62', u'2John':u'63',
+            u'3John': u'64', u'Jude':  u'65', u'Rev':   u'66'}
+        return bookmap[bookname]
+
+
 class CWExtract(object):
     """
     Extract verses from CrossWalk/BibleStudyTools
@@ -426,8 +507,10 @@ class HTTPBible(BibleDB):
         log.debug(u'source = %s', self.download_source)
         if self.download_source.lower() == u'crosswalk':
             ev = CWExtract(self.proxy_server)
-        else:
+        elif self.download_source.lower() == u'biblegateway':
             ev = BGExtract(self.proxy_server)
+        elif self.download_source.lower() == u'bibleserver':
+            ev = BSExtract(self.proxy_server)
         return ev.get_bible_chapter(self.download_name, book, chapter)
 
     def get_books(self):

@@ -43,10 +43,12 @@ class WebDownload(object):
     Unknown = -1
     Crosswalk = 0
     BibleGateway = 1
+    Bibleserver = 2
 
     Names = {
         0: u'Crosswalk',
-        1: u'BibleGateway'
+        1: u'BibleGateway',
+        2: u'Bibleserver'
     }
 
     @classmethod
@@ -230,8 +232,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
             The index of the combo box.
         """
         self.bibleComboBox.clear()
-        bibles = [unicode(translate('BiblesPlugin.ImportWizardForm', bible)) for
-            bible in self.web_bible_list[index].keys()]
+        bibles = self.web_bible_list[index].keys()
         bibles.sort()
         for bible in bibles:
             self.bibleComboBox.addItem(bible)
@@ -383,6 +384,27 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
             if books_file:
                 books_file.close()
 
+        # Load and store Bibleserver Bibles.
+        filepath = AppLocation.get_directory(AppLocation.PluginsDir)
+        filepath = os.path.join(filepath, u'bibles', u'resources')
+        books_file = None
+        try:
+            self.web_bible_list[WebDownload.Bibleserver] = {}
+            books_file = open(
+                os.path.join(filepath, u'bibleserver.csv'), 'rb')
+            dialect = csv.Sniffer().sniff(books_file.read(1024))
+            books_file.seek(0)
+            books_reader = csv.reader(books_file, dialect)
+            for line in books_reader:
+                ver = unicode(line[0], u'utf-8')
+                name = unicode(line[1], u'utf-8')
+                self.web_bible_list[WebDownload.Bibleserver][ver] = name.strip()
+        except IOError, UnicodeError:
+            log.exception(u'Bibelserver resources could not be imported')
+        finally:
+            if books_file:
+                books_file.close()
+
     def getFileName(self, title, editbox):
         filename = QtGui.QFileDialog.getOpenFileName(self, title,
             SettingsManager.get_last_dir(self.bibleplugin.settingsSection, 1))
@@ -455,6 +477,9 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
             elif download_location == WebDownload.BibleGateway:
                 bible = \
                     self.web_bible_list[WebDownload.BibleGateway][bible_version]
+            elif download_location == WebDownload.Bibleserver:
+                bible = \
+                    self.web_bible_list[WebDownload.Bibleserver][bible_version]
             importer = self.manager.import_bible(
                 BibleFormat.WebDownload,
                 name=license_version,
