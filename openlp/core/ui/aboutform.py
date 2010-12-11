@@ -54,13 +54,6 @@ class AboutForm(QtGui.QDialog, Ui_AboutDialog):
         QtCore.QObject.connect(self.contributeButton,
             QtCore.SIGNAL(u'clicked()'), self.onContributeButtonClicked)
 
-    def reject(self):
-        """
-        Raise a exception to test the exception handler.
-        """
-        self.done(QtGui.QDialog.Rejected)
-        str(u'unvern\u00FCnftig')
-
     def onContributeButtonClicked(self):
         """
         Launch a web browser and go to the contribute page on the site.
