@@ -14,7 +14,7 @@
 # The license text can be found at http://docs.python.org/license.html        #
 #                                                                             #
 # This code is taken from: http://code.activestate.com/recipes/511443         #
-# It is modified to be used in OpenLP (http://openlp.org)                     #
+# Modified for use in OpenLP                                                  #
 ###############################################################################
 
 __version__ = u'1.1'
