@@ -61,6 +61,14 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         QtCore.QObject.connect(self.AuthorsListView,
             QtCore.SIGNAL(u'itemClicked(QListWidgetItem*)'),
             self.onAuthorsListViewPressed)
+        QtCore.QObject.connect(self.AuthorsSelectionComboItem,
+            QtCore.SIGNAL(u'activated(int)'), self.updateAuthorAutoCompleter)
+        QtCore.QObject.connect(self.AuthorsSelectionComboItem,
+            QtCore.SIGNAL(u'activated(int)'), self.updateAuthorAutoCompleter)#
+        QtCore.QObject.connect(self.ThemeSelectionComboItem,
+            QtCore.SIGNAL(u'activated(int)'), self.updateAuthorAutoCompleter)
+        QtCore.QObject.connect(self.ThemeSelectionComboItem,
+            QtCore.SIGNAL(u'activated(int)'), self.updateThemeAutoCompleter)
         QtCore.QObject.connect(self.TopicAddButton,
             QtCore.SIGNAL(u'clicked()'), self.onTopicAddButtonClicked)
         QtCore.QObject.connect(self.TopicRemoveButton,
@@ -119,12 +127,23 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         authors = self.manager.get_all_objects(Author,
             order_by_ref=Author.display_name)
         self.AuthorsSelectionComboItem.clear()
-        self.AuthorsSelectionComboItem.addItem(u'')
+        self.AuthorsSelectionComboItem.addItem(u'')#
+        self.authors = []
         for author in authors:
             row = self.AuthorsSelectionComboItem.count()
             self.AuthorsSelectionComboItem.addItem(author.display_name)
             self.AuthorsSelectionComboItem.setItemData(
                 row, QtCore.QVariant(author.id))
+            self.authors.append(author.display_name)
+        self.updateAuthorAutoCompleter()
+
+    def updateAuthorAutoCompleter(self):
+        """
+        This updates the author completion list for the search field.
+        """
+        completer = QtGui.QCompleter(self.authors)
+        completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
+        self.AuthorsSelectionComboItem.setCompleter(completer)
 
     def loadTopics(self):
         topics = self.manager.get_all_objects(Topic, order_by_ref=Topic.name)
@@ -147,8 +166,19 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def loadThemes(self, theme_list):
         self.ThemeSelectionComboItem.clear()
         self.ThemeSelectionComboItem.addItem(u'')
+        self.themes = []
         for theme in theme_list:
             self.ThemeSelectionComboItem.addItem(theme)
+            self.themes.append(theme)
+        self.updateThemeAutoCompleter()
+
+    def updateThemeAutoCompleter(self):
+        """
+        This updates the theme completion list for the search field.
+        """
+        completer = QtGui.QCompleter(self.themes)
+        completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
+        self.ThemeSelectionComboItem.setCompleter(completer)
 
     def newSong(self):
         log.debug(u'New Song')
@@ -644,7 +674,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         Get all the data from the widgets on the form, and then save it to the
         database.
 
-        ``preview`` 
+        ``preview``
             Should be ``True`` if the song is also previewed (boolean).
         """
         self.song.title = unicode(self.TitleEditItem.text())
