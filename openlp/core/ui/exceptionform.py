@@ -25,11 +25,22 @@
 ###############################################################################
 
 import os
+import platform
 
-from PyQt4 import QtCore, QtGui
+import sqlalchemy
+import BeautifulSoup
+import enchant
+import chardet
+try:
+    import sqlite
+    sqlite_version = sqlite.version
+except ImportError:
+    sqlite_version = u'-'
 
-from openlp.core.lib import translate, build_icon, SettingsManager
-from openlp.core.ui.mailto import mailto
+from lxml import etree
+from PyQt4 import Qt, QtCore, QtGui
+
+from openlp.core.lib import translate, SettingsManager, mailto
 
 from exceptiondialog import Ui_ExceptionDialog
 
@@ -42,48 +53,36 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         self.setupUi(self)
         self.settingsSection = u'crashreport'
         #TODO: Icons
-        self.saveReportButton = QtGui.QPushButton(self)
-        self.saveReportButton.setIcon(build_icon(u':/icon/openlp-logo-16x16.png'))
-        self.saveReportButton.setText(translate('OpenLP.ExceptionForm', 'Save Report to File'))
-        self.saveReportButton.setObjectName(u'saveReportButton')
-        self.sendReportButton = QtGui.QPushButton(self)
-        self.sendReportButton.setIcon(build_icon(u':/icon/openlp-logo-16x16.png'))
-        self.sendReportButton.setText(translate('OpenLP.ExceptionForm', 'Send Report Mail'))
-        self.sendReportButton.setObjectName(u'sendReportButton')
-        self.exceptionButtonBox.addButton(self.saveReportButton,
-            QtGui.QDialogButtonBox.ActionRole)
-        self.exceptionButtonBox.addButton(self.sendReportButton,
-            QtGui.QDialogButtonBox.ActionRole)
-        QtCore.QObject.connect(self.saveReportButton,
-            QtCore.SIGNAL(u'pressed()'), self.onSaveReportButtonPressed)
-        QtCore.QObject.connect(self.sendReportButton,
-            QtCore.SIGNAL(u'pressed()'), self.onSendReportButtonPressed)
 
     def _createReport(self):
+        openlp_version = self.parent().applicationVersion[u'full']
+        traceback = unicode(self.exceptionTextEdit.toPlainText()) 
         system = unicode(translate('OpenLP.ExceptionForm',
-            'Operating System: %s\n'
-            'Desktop Envoirnment: %s'))
+            'Platform: %s\n')) % (platform.platform())
         libraries = unicode(translate('OpenLP.ExceptionForm',
             'Python: %s\n'
-            'PyQt: %s\n'
+            'PyQt4: %s\n'
+            'Qt4: %s\n'
             'SQLAlchemy: %s\n'
             'lxml: %s\n'
             'BeautifulSoup: %s\n'
             'PyEnchant: %s\n'
             'Chardet: %s\n'
-            'pysqlite: %s'))
-        #TODO: collect the informations
-        version = self.parent().applicationVersion[u'full']
-        return (version, system, libraries)
+            'PySQLite: %s\n')) % (platform.python_version(),
+             Qt.PYQT_VERSION_STR, Qt.qVersion(), sqlalchemy.__version__,
+             etree.__version__, BeautifulSoup.__version__ , enchant.__version__,
+             chardet.__version__, sqlite_version)
+        return (openlp_version, traceback, system, libraries)
  
     def onSaveReportButtonPressed(self):
         """
         Saving exception log and system informations to a file.
         """
         report = unicode(translate('OpenLP.ExceptionForm',
-            '*OpenLP Bug Report*\n'
-            'Version: %s\n'
-            '--- System information. ---\n%s\n'
+            '**OpenLP Bug Report**\n'
+            'Version: %s\n\n'
+            '--- Exception Traceback ---\n%s\n'
+            '--- System information ---\n%s\n'
             '--- Library Versions ---\n%s\n'))
         filename = QtGui.QFileDialog.getSaveFileName(self,
             translate('OpenLP.ExceptionForm', 'Save Crash Report'),
@@ -113,9 +112,10 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         """
         email_body = unicode(translate('OpenLP.ExceptionForm',
             '*OpenLP Bug Report*\n'
-            'Version: %s\n'
+            'Version: %s\n\n'
             '--- Please enter the report below this line. ---\n\n\n'
-            '--- System information. ---\n%s\n'
+            '--- Exception Traceback ---\n%s\n'
+            '--- System information ---\n%s\n'
             '--- Library Versions ---\n%s\n'))
-        mailto(address=u'bugs@openlp.org', subject=u'OpenLP Bug Report',
+        mailto.mailto(address=u'bugs@openlp.org', subject=u'OpenLP Bug Report',
             body=email_body % self._createReport())

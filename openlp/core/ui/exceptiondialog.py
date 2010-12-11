@@ -26,7 +26,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate
+from openlp.core.lib import translate, build_icon
 
 class Ui_ExceptionDialog(object):
     def setupUi(self, exceptionDialog):
@@ -63,12 +63,26 @@ class Ui_ExceptionDialog(object):
         self.exceptionButtonBox.setStandardButtons(QtGui.QDialogButtonBox.Close)
         self.exceptionButtonBox.setObjectName(u'exceptionButtonBox')
         self.exceptionLayout.addWidget(self.exceptionButtonBox)
-
+        self.saveReportButton = QtGui.QPushButton(exceptionDialog)
+        self.saveReportButton.setIcon(build_icon(u':/general/general_save.png'))
+        self.saveReportButton.setObjectName(u'saveReportButton')
+        self.exceptionButtonBox.addButton(self.saveReportButton,
+            QtGui.QDialogButtonBox.ActionRole)
+        self.sendReportButton = QtGui.QPushButton(exceptionDialog)
+        self.sendReportButton.setIcon(build_icon(
+            u':/general/general_email.png'))
+        self.sendReportButton.setObjectName(u'sendReportButton')
+        self.exceptionButtonBox.addButton(self.sendReportButton,
+            QtGui.QDialogButtonBox.ActionRole)
         self.retranslateUi(exceptionDialog)
         QtCore.QObject.connect(self.exceptionButtonBox,
             QtCore.SIGNAL(u'accepted()'), exceptionDialog.accept)
         QtCore.QObject.connect(self.exceptionButtonBox,
             QtCore.SIGNAL(u'rejected()'), exceptionDialog.reject)
+        QtCore.QObject.connect(self.saveReportButton,
+            QtCore.SIGNAL(u'pressed()'), self.onSaveReportButtonPressed)
+        QtCore.QObject.connect(self.sendReportButton,
+            QtCore.SIGNAL(u'pressed()'), self.onSendReportButtonPressed)
         QtCore.QMetaObject.connectSlotsByName(exceptionDialog)
 
     def retranslateUi(self, exceptionDialog):
@@ -80,3 +94,7 @@ class Ui_ExceptionDialog(object):
             'developers, so please e-mail it to bugs@openlp.org, along with a '
             'detailed description of what you were doing when the problem '
             'occurred.'))
+        self.saveReportButton.setText(translate('OpenLP.ExceptionDialog',
+            'Save Report to File'))
+        self.sendReportButton.setText(translate('OpenLP.ExceptionDialog',
+            'Send Report Mail'))
