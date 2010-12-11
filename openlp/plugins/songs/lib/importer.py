@@ -53,7 +53,7 @@ class SongFormat(object):
     plus a few helper functions to facilitate generic handling of song types
     for importing.
     """
-    _format_availability = {}
+    format_availability = {}
     Unknown = -1
     OpenLP2 = 0
     OpenLP1 = 1

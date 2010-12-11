@@ -35,9 +35,14 @@ from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
 
 from csvbible import CSVBible
 from http import HTTPBible
-from openlp1 import OpenLP1Bible
 from opensong import OpenSongBible
 from osis import OSISBible
+# Imports that might fail.
+try:
+    from openlp1 import OpenLP1Bible
+    has_openlp1 = True
+except ImportError:
+    has_openlp1 = False
 
 log = logging.getLogger(__name__)
 
@@ -57,6 +62,7 @@ class BibleFormat(object):
     plus a few helper functions to facilitate generic handling of Bible types
     for importing.
     """
+    _format_availability = {}
     Unknown = -1
     OSIS = 0
     CSV = 1
@@ -97,6 +103,18 @@ class BibleFormat(object):
             BibleFormat.WebDownload,
             BibleFormat.OpenLP1
         ]
+
+    @staticmethod
+    def set_availability(format, available):
+        BibleFormat._format_availability[format] = available
+
+    @staticmethod
+    def get_availability(format):
+        return BibleFormat._format_availability.get(format, True)
+
+BibleFormat.set_availability(BibleFormat.OpenLP1, has_openlp1)
+
+__all__ = [u'BibleFormat']
 
 
 class BibleManager(object):

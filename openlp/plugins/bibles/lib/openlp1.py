@@ -25,7 +25,7 @@
 ###############################################################################
 
 import logging
-import sqlite
+import sqlitse
 
 from PyQt4 import QtCore
 
