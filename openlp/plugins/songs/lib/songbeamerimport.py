@@ -42,18 +42,18 @@ class SongBeamerTypes(object):
         u'Chorus': u'C',
         u'Vers': u'V',
         u'Verse': u'V',
-        u'Strophe': u'V', 
+        u'Strophe': u'V',
         u'Intro': u'I',
         u'Coda': u'E',
         u'Ending': u'E',
         u'Bridge': u'B',
-        u'Interlude': u'B', 
+        u'Interlude': u'B',
         u'Zwischenspiel': u'B',
         u'Pre-Chorus': u'P',
-        u'Pre-Refrain': u'P', 
+        u'Pre-Refrain': u'P',
         u'Pre-Bridge': u'O',
         u'Pre-Coda': u'O',
-        u'Unbekannt': u'O', 
+        u'Unbekannt': u'O',
         u'Unknown': u'O'
         }
 
