@@ -24,23 +24,38 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import re
 import os
 import platform
 
 import sqlalchemy
 import BeautifulSoup
-import enchant
-import chardet
+from lxml import etree
+from PyQt4 import Qt, QtCore, QtGui
+
+try:
+    from PyQt4.phonon import Phonon
+    phonon_version = Phonon.phononVersion()
+except ImportError:
+    phonon_version = u'-'
+try:
+    import chardet
+    chardet_version = chardet.__version__
+except ImportError:
+    chardet_version = u'-'
+try:
+    import enchant
+    enchant_version = enchant.__version__
+except ImportError:
+    enchant_version = u'-'
 try:
     import sqlite
     sqlite_version = sqlite.version
 except ImportError:
     sqlite_version = u'-'
 
-from lxml import etree
-from PyQt4 import Qt, QtCore, QtGui
-
-from openlp.core.lib import translate, SettingsManager, mailto
+from openlp.core.lib import translate, SettingsManager
+from openlp.core.lib.mailto import mailto
 
 from exceptiondialog import Ui_ExceptionDialog
 
@@ -52,26 +67,27 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         self.settingsSection = u'crashreport'
-        #TODO: Icons
 
     def _createReport(self):
         openlp_version = self.parent().applicationVersion[u'full']
         traceback = unicode(self.exceptionTextEdit.toPlainText()) 
         system = unicode(translate('OpenLP.ExceptionForm',
-            'Platform: %s\n')) % (platform.platform())
-        libraries = unicode(translate('OpenLP.ExceptionForm',
-            'Python: %s\n'
-            'PyQt4: %s\n'
-            'Qt4: %s\n'
-            'SQLAlchemy: %s\n'
-            'lxml: %s\n'
-            'BeautifulSoup: %s\n'
-            'PyEnchant: %s\n'
-            'Chardet: %s\n'
-            'PySQLite: %s\n')) % (platform.python_version(),
-             Qt.PYQT_VERSION_STR, Qt.qVersion(), sqlalchemy.__version__,
-             etree.__version__, BeautifulSoup.__version__ , enchant.__version__,
-             chardet.__version__, sqlite_version)
+            'Platform: %s\n')) % platform.platform()
+        libraries = u'Python: %s\n' % platform.python_version() + \
+            u'Qt4: %s\n' % Qt.qVersion() + \
+            u'Phonon: %s\n' % phonon_version + \
+            u'PyQt4: %s\n' % Qt.PYQT_VERSION_STR + \
+            u'SQLAlchemy: %s\n' % sqlalchemy.__version__ + \
+            u'BeautifulSoup: %s\n' % BeautifulSoup.__version__ + \
+            u'lxml: %s\n' % etree.__version__ + \
+            u'Chardet: %s\n' % chardet_version + \
+            u'PyEnchant: %s\n' % enchant_version + \
+            u'PySQLite: %s\n' %  sqlite_version
+        if platform.system() == u'Linux':
+            if os.environ.get(u'KDE_FULL_SESSION') == u'true':
+                system = system + u'Desktop: KDE SC\n'
+            elif os.environ.get(u'GNOME_DESKTOP_SESSION_ID'):
+                system = system + u'Desktop: GNOME\n'
         return (openlp_version, traceback, system, libraries)
  
     def onSaveReportButtonPressed(self):
@@ -110,12 +126,18 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         Opening systems default email client and inserting exception log and
         system informations.
         """
-        email_body = unicode(translate('OpenLP.ExceptionForm',
+        body = unicode(translate('OpenLP.ExceptionForm',
             '*OpenLP Bug Report*\n'
             'Version: %s\n\n'
             '--- Please enter the report below this line. ---\n\n\n'
             '--- Exception Traceback ---\n%s\n'
             '--- System information ---\n%s\n'
             '--- Library Versions ---\n%s\n'))
-        mailto.mailto(address=u'bugs@openlp.org', subject=u'OpenLP Bug Report',
-            body=email_body % self._createReport())
+        content = self._createReport()
+        for line in content[1].split(u'\n'):
+            if re.search(r'[/\\]openlp[/\\]', line):
+                source = re.sub(r'.*[/\\]openlp[/\\](.*)".*', r'\1', line)
+            if u':' in line:
+            	exception = line.split(u'\n')[-1].split(u':')[0]
+        subject = u'Bug report: %s in %s' % (exception, source)
+        mailto(address=u'bugs@openlp.org', subject=subject, body=body % content)

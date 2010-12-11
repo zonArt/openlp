@@ -74,6 +74,7 @@ class Ui_ExceptionDialog(object):
         self.sendReportButton.setObjectName(u'sendReportButton')
         self.exceptionButtonBox.addButton(self.sendReportButton,
             QtGui.QDialogButtonBox.ActionRole)
+
         self.retranslateUi(exceptionDialog)
         QtCore.QObject.connect(self.exceptionButtonBox,
             QtCore.SIGNAL(u'accepted()'), exceptionDialog.accept)

@@ -1,12 +1,24 @@
-#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
-'''Utilities for opening files or URLs in the registered default application
-and for sending e-mail using the user's preferred composer.
+###############################################################################
+# Utilities for opening files or URLs in the registered default application   #
+# and for sending e-mail using the user's preferred composer.                 #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2007 Antonio Valentino                                        #
+# All rights reserved.                                                        #
+# --------------------------------------------------------------------------- #
+# This program offered under the PSF License as published by the Python       #
+# Software Foundation.                                                        #
+#                                                                             #
+# The license text can be found at http://docs.python.org/license.html        #
+#                                                                             #
+# This code is taken from: http://code.activestate.com/recipes/511443         #
+# It is modified to be used in OpenLP (http://openlp.org)                     #
+###############################################################################
 
-'''
-
-__version__ = '1.1'
-__all__ = ['open', 'mailto']
+__version__ = u'1.1'
+__all__ = [u'open', u'mailto']
 
 import os
 import sys
@@ -20,7 +32,9 @@ _open = None
 
 
 class BaseController(object):
-    '''Base class for open program controllers.'''
+    """
+    Base class for open program controllers.
+    """
 
     def __init__(self, name):
         self.name = name
@@ -30,14 +44,16 @@ class BaseController(object):
 
 
 class Controller(BaseController):
-    '''Controller for a generic open program.'''
+    """
+    Controller for a generic open program.
+    """
 
     def __init__(self, *args):
         super(Controller, self).__init__(os.path.basename(args[0]))
         self.args = list(args)
 
     def _invoke(self, cmdline):
-        if sys.platform[:3] == 'win':
+        if sys.platform[:3] == u'win':
             closefds = False
             startupinfo = subprocess.STARTUPINFO()
             startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
@@ -45,9 +61,9 @@ class Controller(BaseController):
             closefds = True
             startupinfo = None
 
-        if (os.environ.get('DISPLAY') or sys.platform[:3] == 'win' or
-                                                    sys.platform == 'darwin'):
-            inout = file(os.devnull, 'r+')
+        if (os.environ.get(u'DISPLAY') or sys.platform[:3] == u'win' or \
+                sys.platform == u'darwin'):
+            inout = file(os.devnull, u'r+')
         else:
             # for TTY programs, we need stdin/out
             inout = None
@@ -55,19 +71,19 @@ class Controller(BaseController):
         # if possible, put the child precess in separate process group,
         # so keyboard interrupts don't affect child precess as well as
         # Python
-        setsid = getattr(os, 'setsid', None)
+        setsid = getattr(os, u'setsid', None)
         if not setsid:
-            setsid = getattr(os, 'setpgrp', None)
+            setsid = getattr(os, u'setpgrp', None)
 
         pipe = subprocess.Popen(cmdline, stdin=inout, stdout=inout,
-                                stderr=inout, close_fds=closefds,
-                                preexec_fn=setsid, startupinfo=startupinfo)
+            stderr=inout, close_fds=closefds, preexec_fn=setsid,
+            startupinfo=startupinfo)
 
         # It is assumed that this kind of tools (gnome-open, kfmclient,
         # exo-open, xdg-open and open for OSX) immediately exit after lauching
         # the specific application
         returncode = pipe.wait()
-        if hasattr(self, 'fixreturncode'):
+        if hasattr(self, u'fixreturncode'):
             returncode = self.fixreturncode(returncode)
         return not returncode
 
@@ -84,10 +100,12 @@ class Controller(BaseController):
 
 
 # Platform support for Windows
-if sys.platform[:3] == 'win':
+if sys.platform[:3] == u'win':
 
     class Start(BaseController):
-        '''Controller for the win32 start progam through os.startfile.'''
+        """
+        Controller for the win32 start progam through os.startfile.
+        """
 
         def open(self, filename):
             try:
@@ -99,14 +117,14 @@ if sys.platform[:3] == 'win':
             else:
                 return True
 
-    _controllers['windows-default'] = Start('start')
-    _open = _controllers['windows-default'].open
+    _controllers[u'windows-default'] = Start(u'start')
+    _open = _controllers[u'windows-default'].open
 
 
 # Platform support for MacOS
-elif sys.platform == 'darwin':
-    _controllers['open']= Controller('open')
-    _open = _controllers['open'].open
+elif sys.platform == u'darwin':
+    _controllers[u'open']= Controller(u'open')
+    _open = _controllers[u'open'].open
 
 
 # Platform support for Unix
@@ -118,20 +136,22 @@ else:
     from webbrowser import _iscommand
 
     class KfmClient(Controller):
-        '''Controller for the KDE kfmclient program.'''
+        """
+        Controller for the KDE kfmclient program.
+        """
 
-        def __init__(self, kfmclient='kfmclient'):
-            super(KfmClient, self).__init__(kfmclient, 'exec')
+        def __init__(self, kfmclient=u'kfmclient'):
+            super(KfmClient, self).__init__(kfmclient, u'exec')
             self.kde_version = self.detect_kde_version()
 
         def detect_kde_version(self):
             kde_version = None
             try:
-                info = commands.getoutput('kde-config --version')
+                info = commands.getoutput(u'kfmclient --version')
 
                 for line in info.splitlines():
-                    if line.startswith('KDE'):
-                        kde_version = line.split(':')[-1].strip()
+                    if line.startswith(u'KDE'):
+                        kde_version = line.split(u':')[-1].strip()
                         break
             except (OSError, RuntimeError):
                 pass
@@ -139,30 +159,30 @@ else:
             return kde_version
 
         def fixreturncode(self, returncode):
-            if returncode is not None and self.kde_version > '3.5.4':
+            if returncode is not None and self.kde_version > u'3.5.4':
                 return returncode
             else:
                 return os.EX_OK
 
     def detect_desktop_environment():
-        '''Checks for known desktop environments
+        """
+        Checks for known desktop environments
 
         Return the desktop environments name, lowercase (kde, gnome, xfce)
         or "generic"
+        """
 
-        '''
+        desktop_environment = u'generic'
 
-        desktop_environment = 'generic'
-
-        if os.environ.get('KDE_FULL_SESSION') == 'true':
-            desktop_environment = 'kde'
-        elif os.environ.get('GNOME_DESKTOP_SESSION_ID'):
-            desktop_environment = 'gnome'
+        if os.environ.get(u'KDE_FULL_SESSION') == u'true':
+            desktop_environment = u'kde'
+        elif os.environ.get(u'GNOME_DESKTOP_SESSION_ID'):
+            desktop_environment = u'gnome'
         else:
             try:
-                info = commands.getoutput('xprop -root _DT_SAVE_MODE')
-                if ' = "xfce4"' in info:
-                    desktop_environment = 'xfce'
+                info = commands.getoutput(u'xprop -root _DT_SAVE_MODE')
+                if u' = "xfce4"' in info:
+                    desktop_environment = u'xfce'
             except (OSError, RuntimeError):
                 pass
 
@@ -170,18 +190,19 @@ else:
 
 
     def register_X_controllers():
-        if _iscommand('kfmclient'):
-            _controllers['kde-open'] = KfmClient()
+        if _iscommand(u'kfmclient'):
+            _controllers[u'kde-open'] = KfmClient()
 
-        for command in ('gnome-open', 'exo-open', 'xdg-open'):
+        for command in (u'gnome-open', u'exo-open', u'xdg-open'):
             if _iscommand(command):
                 _controllers[command] = Controller(command)
 
+
     def get():
         controllers_map = {
-            'gnome': 'gnome-open',
-            'kde': 'kde-open',
-            'xfce': 'exo-open',
+            u'gnome': u'gnome-open',
+            u'kde': u'kde-open',
+            u'xfce': u'exo-open',
         }
 
         desktop_environment = detect_desktop_environment()
@@ -191,25 +212,26 @@ else:
             return _controllers[controller_name].open
 
         except KeyError:
-            if _controllers.has_key('xdg-open'):
-                return _controllers['xdg-open'].open
+            if _controllers.has_key(u'xdg-open'):
+                return _controllers[u'xdg-open'].open
             else:
                 return webbrowser.open
 
-
-    if os.environ.get("DISPLAY"):
+    if os.environ.get(u'DISPLAY'):
         register_X_controllers()
     _open = get()
 
 
 def open(filename):
-    '''Open a file or an URL in the registered default application.'''
+    """
+    Open a file or an URL in the registered default application.
+    """
 
     return _open(filename)
 
 
 def _fix_addersses(**kwargs):
-    for headername in ('address', 'to', 'cc', 'bcc'):
+    for headername in (u'address', u'to', u'cc', u'bcc'):
         try:
             headervalue = kwargs[headername]
             if not headervalue:
@@ -217,16 +239,14 @@ def _fix_addersses(**kwargs):
                 continue
             elif not isinstance(headervalue, basestring):
                 # assume it is a sequence
-                headervalue = ','.join(headervalue)
-
+                headervalue = u','.join(headervalue)
         except KeyError:
             pass
         except TypeError:
-            raise TypeError('string or sequence expected for "%s", '
-                            '%s found' % (headername,
-                                          type(headervalue).__name__))
+            raise TypeError(u'string or sequence expected for "%s", %s '
+                u'found' % (headername, type(headervalue).__name__))
         else:
-            translation_map = {'%': '%25', '&': '%26', '?': '%3F'}
+            translation_map = {u'%': u'%25', u'&': u'%26', u'?': u'%3F'}
             for char, replacement in translation_map.items():
                 headervalue = headervalue.replace(char, replacement)
             kwargs[headername] = headervalue
@@ -235,31 +255,35 @@ def _fix_addersses(**kwargs):
 
 
 def mailto_format(**kwargs):
+    """
+    Compile mailto string from call parameters
+    """
     # @TODO: implement utf8 option
 
     kwargs = _fix_addersses(**kwargs)
     parts = []
-    for headername in ('to', 'cc', 'bcc', 'subject', 'body', 'attach'):
+    for headername in (u'to', u'cc', u'bcc', u'subject', u'body', u'attach'):
         if kwargs.has_key(headername):
             headervalue = kwargs[headername]
             if not headervalue:
                 continue
-            if headername in ('address', 'to', 'cc', 'bcc'):
-                parts.append('%s=%s' % (headername, headervalue))
+            if headername in (u'address', u'to', u'cc', u'bcc'):
+                parts.append(u'%s=%s' % (headername, headervalue))
             else:
                 headervalue = encode_rfc2231(headervalue) # @TODO: check
-                parts.append('%s=%s' % (headername, headervalue))
+                parts.append(u'%s=%s' % (headername, headervalue))
 
-    mailto_string = 'mailto:%s' % kwargs.get('address', '')
+    mailto_string = u'mailto:%s' % kwargs.get(u'address', '')
     if parts:
-        mailto_string = '%s?%s' % (mailto_string, '&'.join(parts))
+        mailto_string = u'%s?%s' % (mailto_string, u'&'.join(parts))
 
     return mailto_string
 
 
 def mailto(address, to=None, cc=None, bcc=None, subject=None, body=None,
            attach=None):
-    '''Send an e-mail using the user's preferred composer.
+    """
+    Send an e-mail using the user's preferred composer.
 
     Open the user's preferred e-mail composer in order to send a mail to
     address(es) that must follow the syntax of RFC822. Multiple addresses
@@ -270,49 +294,61 @@ def mailto(address, to=None, cc=None, bcc=None, subject=None, body=None,
     the user's e-mail composer. The user will have the opportunity to
     change any of this information before actually sending the e-mail.
 
-    address - specify the destination recipient
-    cc      - specify a recipient to be copied on the e-mail
-    bcc     - specify a recipient to be blindly copied on the e-mail
-    subject - specify a subject for the e-mail
-    body    - specify a body for the e-mail. Since the user will be able
-              to make changes before actually sending the e-mail, this
-              can be used to provide the user with a template for the
-              e-mail text may contain linebreaks
-    attach  - specify an attachment for the e-mail. file must point to
-              an existing file
+    ``address``
+        specify the destination recipient
 
-    '''
+    ``cc``
+        specify a recipient to be copied on the e-mail
+
+    ``bcc``      
+        specify a recipient to be blindly copied on the e-mail
+
+    ``subject``  
+        specify a subject for the e-mail
+
+    ``body``     
+        specify a body for the e-mail. Since the user will be able to make
+        changes before actually sending the e-mail, this can be used to provide
+        the user with a template for the e-mail text may contain linebreaks
+
+    ``attach``
+        specify an attachment for the e-mail. file must point to an existing
+        file
+    """
 
     mailto_string = mailto_format(**locals())
     return open(mailto_string)
 
 
-if __name__ == '__main__':
+if __name__ == u'__main__':
+    """
+    Option handler for CLI usage
+    """
+
     from optparse import OptionParser
 
-    version = '%%prog %s' % __version__
+    version = u'%%prog %s' % __version__
     usage = (
-        '\n\n%prog FILENAME [FILENAME(s)] -- for opening files'
-        '\n\n%prog -m [OPTIONS] ADDRESS [ADDRESS(es)] -- for sending e-mails'
+        u'\n\n%prog FILENAME [FILENAME(s)] -- for opening files'
+        u'\n\n%prog -m [OPTIONS] ADDRESS [ADDRESS(es)] -- for sending e-mails'
     )
 
     parser = OptionParser(usage=usage, version=version, description=__doc__)
-    parser.add_option('-m', '--mailto', dest='mailto_mode', default=False,
-                      action='store_true', help='set mailto mode. '
-                      'If not set any other option is ignored')
-    parser.add_option('--cc', dest='cc', help='specify a recipient to be '
-                      'copied on the e-mail')
-    parser.add_option('--bcc', dest='bcc', help='specify a recipient to be '
-                      'blindly copied on the e-mail')
-    parser.add_option('--subject', dest='subject',
-                      help='specify a subject for the e-mail')
-    parser.add_option('--body', dest='body', help='specify a body for the '
-                      'e-mail. Since the user will be able to make changes '
-                      'before actually sending the e-mail, this can be used '
-                      'to provide the user with a template for the e-mail '
-                      'text may contain linebreaks')
-    parser.add_option('--attach', dest='attach', help='specify an attachment '
-                      'for the e-mail. file must point to an existing file')
+    parser.add_option(u'-m', u'--mailto', dest=u'mailto_mode', default=False,
+        action=u'store_true', help=u'set mailto mode. If not set any other '
+        u'option is ignored')
+    parser.add_option(u'--cc', dest=u'cc', help=u'specify a recipient to be '
+        u'copied on the e-mail')
+    parser.add_option(u'--bcc', dest=u'bcc', help=u'specify a recipient to be '
+        u'blindly copied on the e-mail')
+    parser.add_option(u'--subject', dest=u'subject', help=u'specify a subject '
+        u'for the e-mail')
+    parser.add_option(u'--body', dest=u'body', help=u'specify a body for the '
+        u'e-mail. Since the user will be able to make changes before actually '
+        u'sending the e-mail, this can be used to provide the user with a '
+        u'template for the e-mail text may contain linebreaks')
+    parser.add_option(u'--attach', dest=u'attach', help=u'specify an '
+        u'attachment for the e-mail. file must point to an existing file')
 
     (options, args) = parser.parse_args()
 
@@ -322,17 +358,18 @@ if __name__ == '__main__':
 
     if options.mailto_mode:
         if not mailto(args, None, options.cc, options.bcc, options.subject,
-                      options.body, options.attach):
-            sys.exit('Unable to open the e-mail client')
+                options.body, options.attach):
+            sys.exit(u'Unable to open the e-mail client')
     else:
-        for name in ('cc', 'bcc', 'subject', 'body', 'attach'):
+        for name in (u'cc', u'bcc', u'subject', u'body', u'attach'):
             if getattr(options, name):
-                parser.error('The "cc", "bcc", "subject", "body" and "attach" '
-                             'options are only accepten in mailto mode')
+                parser.error(u'The "cc", "bcc", "subject", "body" and "attach" '
+                    u'options are only accepten in mailto mode')
         success = False
         for arg in args:
             if not open(arg):
-                print 'Unable to open "%s"' % arg
+                print u'Unable to open "%s"' % arg
             else:
                 success = True
         sys.exit(success)
+
