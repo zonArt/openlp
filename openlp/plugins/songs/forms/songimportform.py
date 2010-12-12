@@ -136,8 +136,7 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
         log.debug('Import canceled by user.')
         if self.currentId() == 2:
             Receiver.send_message(u'songs_stop_import')
-        else:
-            self.done(QtGui.QDialog.Rejected)
+        self.done(QtGui.QDialog.Rejected)
 
     def validateCurrentPage(self):
         """
