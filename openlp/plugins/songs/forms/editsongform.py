@@ -61,14 +61,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         QtCore.QObject.connect(self.AuthorsListView,
             QtCore.SIGNAL(u'itemClicked(QListWidgetItem*)'),
             self.onAuthorsListViewPressed)
-        QtCore.QObject.connect(self.AuthorsSelectionComboItem,
-            QtCore.SIGNAL(u'activated(int)'), self.updateAuthorAutoCompleter)
-        QtCore.QObject.connect(self.AuthorsSelectionComboItem,
-            QtCore.SIGNAL(u'activated(int)'), self.updateAuthorAutoCompleter)
-        QtCore.QObject.connect(self.ThemeSelectionComboItem,
-            QtCore.SIGNAL(u'activated(int)'), self.updateAuthorAutoCompleter)
-        QtCore.QObject.connect(self.ThemeSelectionComboItem,
-            QtCore.SIGNAL(u'activated(int)'), self.updateThemeAutoCompleter)
         QtCore.QObject.connect(self.TopicAddButton,
             QtCore.SIGNAL(u'clicked()'), self.onTopicAddButtonClicked)
         QtCore.QObject.connect(self.TopicRemoveButton,
@@ -135,12 +127,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.AuthorsSelectionComboItem.setItemData(
                 row, QtCore.QVariant(author.id))
             self.authors.append(author.display_name)
-        self.updateAuthorAutoCompleter()
-
-    def updateAuthorAutoCompleter(self):
-        """
-        This updates the author completion list for the search field.
-        """
         completer = QtGui.QCompleter(self.authors)
         completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
         self.AuthorsSelectionComboItem.setCompleter(completer)
@@ -149,19 +135,29 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         topics = self.manager.get_all_objects(Topic, order_by_ref=Topic.name)
         self.SongTopicCombo.clear()
         self.SongTopicCombo.addItem(u'')
+        self.topics = []
         for topic in topics:
             row = self.SongTopicCombo.count()
             self.SongTopicCombo.addItem(topic.name)
+            self.topics.append(topic.name)
             self.SongTopicCombo.setItemData(row, QtCore.QVariant(topic.id))
+        completer = QtGui.QCompleter(self.topics)
+        completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
+        self.SongTopicCombo.setCompleter(completer)
 
     def loadBooks(self):
         books = self.manager.get_all_objects(Book, order_by_ref=Book.name)
         self.SongbookCombo.clear()
         self.SongbookCombo.addItem(u'')
+        self.books = []
         for book in books:
             row = self.SongbookCombo.count()
             self.SongbookCombo.addItem(book.name)
+            self.books.append(book.name)
             self.SongbookCombo.setItemData(row, QtCore.QVariant(book.id))
+        completer = QtGui.QCompleter(self.books)
+        completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
+        self.SongbookCombo.setCompleter(completer)
 
     def loadThemes(self, theme_list):
         self.ThemeSelectionComboItem.clear()
@@ -170,12 +166,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         for theme in theme_list:
             self.ThemeSelectionComboItem.addItem(theme)
             self.themes.append(theme)
-        self.updateThemeAutoCompleter()
-
-    def updateThemeAutoCompleter(self):
-        """
-        This updates the theme completion list for the search field.
-        """
         completer = QtGui.QCompleter(self.themes)
         completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
         self.ThemeSelectionComboItem.setCompleter(completer)
@@ -644,12 +634,29 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.saveSong(True):
             Receiver.send_message(u'songs_preview')
 
+    def clearCaches(self):
+        """
+        Free up autocompletion memory on dialog exit
+        """
+        self.authors = []
+        self.themes = []
+        self.books = []
+        self.topics = []
+
     def closePressed(self):
+        """
+        Exit Dialog and do not save
+        """
         Receiver.send_message(u'songs_edit_clear')
+        self.clearCaches()
         self.close()
 
     def accept(self):
+        """
+        Exit Dialog and save soong if valid
+        """
         log.debug(u'accept')
+        self.clearCaches()
         if not self.song:
             self.song = Song()
         item = int(self.SongbookCombo.currentIndex())
