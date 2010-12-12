@@ -56,7 +56,7 @@ class SongsPlugin(Plugin):
         self.manager = Manager(u'songs', init_schema)
         self.icon_path = u':/plugins/plugin_songs.png'
         self.icon = build_icon(self.icon_path)
-        self.whitespace = re.compile(r'\W+')
+        self.whitespace = re.compile(r'\W+', re.UNICODE)
 
     def getSettingsTab(self):
         visible_name = self.getString(StringContent.VisibleName)

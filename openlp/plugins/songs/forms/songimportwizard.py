@@ -350,7 +350,7 @@ class Ui_SongImportWizard(object):
         else:
             setattr(self, prefix + u'Layout', importLayout)
         self.formatComboBox.addItem(u'')
-        
+
     def disablableWidget(self, page, prefix, obj_prefix):
         layout = QtGui.QVBoxLayout(page)
         layout.setMargin(0)

@@ -152,7 +152,7 @@ class OpenLPSongImport(SongImport):
                 u'Importing song %s of %s' % (song_count, song_total))
             new_song = Song()
             new_song.title = song.title
-            if has_media_files:
+            if has_media_files and hasattr(song, 'alternate_title'):
                 new_song.alternate_title = song.alternate_title
             else:
                 old_titles = song.search_title.split(u'@')

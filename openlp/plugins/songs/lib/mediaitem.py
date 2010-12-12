@@ -25,6 +25,8 @@
 ###############################################################################
 
 import logging
+import locale
+import re
 
 from PyQt4 import QtCore, QtGui
 
@@ -61,6 +63,7 @@ class SongMediaItem(MediaManagerItem):
         # which Song is required.
         self.remoteSong = -1
         self.editItem = None
+        self.whitespace = re.compile(r'\W+', re.UNICODE)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -173,8 +176,8 @@ class SongMediaItem(MediaManagerItem):
         if search_type == 0:
             log.debug(u'Titles Search')
             search_results = self.parent.manager.get_all_objects(Song,
-                Song.search_title.like(u'%' + search_keywords.lower() + u'%'),
-                Song.search_title.asc())
+                Song.search_title.like(u'%' + self.whitespace.sub(u' ',
+                search_keywords.lower()) + u'%'), Song.search_title.asc())
             self.displayResultsSong(search_results)
         elif search_type == 1:
             log.debug(u'Lyrics Search')
@@ -213,6 +216,7 @@ class SongMediaItem(MediaManagerItem):
     def displayResultsSong(self, searchresults):
         log.debug(u'display results Song')
         self.listView.clear()
+        searchresults.sort(cmp=self.collateSongTitles)
         for song in searchresults:
             author_list = u''
             for author in song.authors:
@@ -366,7 +370,7 @@ class SongMediaItem(MediaManagerItem):
                         verse[1][:30], unicode(verse[1]), verseTag)
             else:
                 # Loop through the verse list and expand the song accordingly.
-                for order in song.verse_order.upper().split(u' '):
+                for order in song.verse_order.upper().split():
                     if len(order) == 0:
                         break
                     for verse in verseList:
@@ -390,7 +394,7 @@ class SongMediaItem(MediaManagerItem):
         raw_footer.append(author_list)
         raw_footer.append(song.copyright )
         raw_footer.append(unicode(
-            translate('SongsPlugin.MediaItem', 'CCLI Licence: ') +
+            translate('SongsPlugin.MediaItem', 'CCLI License: ') +
             QtCore.QSettings().value(u'general/ccli number',
             QtCore.QVariant(u'')).toString()))
         service_item.raw_footer = raw_footer
@@ -437,3 +441,9 @@ class SongMediaItem(MediaManagerItem):
             if editId != 0:
                 Receiver.send_message(u'service_item_update',
                     u'%s:%s' %(editId, uuid))
+
+    def collateSongTitles(self, song_1, song_2):
+        """
+        Locale aware collation of song titles
+        """
+        return locale.strcoll(unicode(song_1.title), unicode(song_2.title))
