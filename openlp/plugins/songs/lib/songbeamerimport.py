@@ -32,6 +32,7 @@ import os
 import chardet
 import codecs
 
+from openlp.core.lib import translate
 from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
@@ -54,7 +55,8 @@ class SongBeamerTypes(object):
         u'Pre-Bridge': u'O',
         u'Pre-Coda': u'O',
         u'Unbekannt': u'O',
-        u'Unknown': u'O'
+        u'Unknown': u'O',
+        u'Unbenannt': u'O'
         }
 
 
@@ -100,6 +102,7 @@ class SongBeamerImport(SongImport):
                     detect_file.close()
                     infile = codecs.open(file, u'r', details['encoding'])
                     self.songData = infile.readlines()
+                    infile.close()
                 else:
                     return False
                 for line in self.songData:
@@ -127,8 +130,9 @@ class SongBeamerImport(SongImport):
                     self.replace_html_tags()
                     self.add_verse(self.current_verse, self.current_verse_type)
                 self.finish()
-                self.import_wizard.incrementProgressBar(
-                    "Importing %s" % (self.file_name))
+                self.import_wizard.incrementProgressBar(u'%s %s...' %
+                    (translate('SongsPlugin.SongBeamerImport', 'Importing'),
+                    self.file_name))
             return True
 
     def replace_html_tags(self):
@@ -262,6 +266,9 @@ class SongBeamerImport(SongImport):
         elif tag_val[0] == u'#TransposeAccidental':
             pass
         elif tag_val[0] == u'#Version':
+            pass
+        elif tag_val[0] == u'#VerseOrder':
+            # TODO: add the verse order.
             pass
 
     def check_verse_marks(self, line):
