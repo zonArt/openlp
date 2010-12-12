@@ -168,8 +168,8 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             The alert text (unicode).
         """
         if text:
-            # The ParameterEdit field is not empty, but we have not found  '<>'
-            # in the alert text.
+            # We found '<>' in the alert text, but the ParameterEdit field is
+            # empty.
             if text.find(u'<>') != -1 and not self.ParameterEdit.text() and \
                 QtGui.QMessageBox.question(self, translate(
                     'AlertPlugin.AlertForm', 'No Parameter found'),
@@ -180,8 +180,8 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
                     QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
                     self.ParameterEdit.setFocus()
                     return False
-            # We found '<>' in the alert text, but the ParameterEdit field it
-            # empty.
+            # The ParameterEdit field is not empty, but we have not found '<>'
+            # in the alert text.
             elif text.find(u'<>') == -1 and self.ParameterEdit.text() and \
                 QtGui.QMessageBox.question(self, translate(
                     'AlertPlugin.AlertForm', 'No Placeholder found'),
