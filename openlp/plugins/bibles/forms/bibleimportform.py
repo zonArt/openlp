@@ -77,6 +77,12 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         QtGui.QWizard.__init__(self, parent)
         self.setupUi(self)
         self.registerFields()
+        if not BibleFormat.get_availability(BibleFormat.OpenLP1):
+            self.openlp1Page.setVisible(False)
+            self.openlp1LocationLabel.setVisible(False)
+            self.openlp1LocationEdit.setVisible(False)
+            self.openlp1FileButton.setVisible(False)
+            self.openlp1DisabledLabel.setVisible(True)
         self.finishButton = self.button(QtGui.QWizard.FinishButton)
         self.cancelButton = self.button(QtGui.QWizard.CancelButton)
         self.manager = manager
@@ -102,9 +108,6 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         QtCore.QObject.connect(self.openlp1FileButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onOpenlp1FileButtonClicked)
-        QtCore.QObject.connect(self.cancelButton,
-            QtCore.SIGNAL(u'clicked(bool)'),
-            self.onCancelButtonClicked)
         QtCore.QObject.connect(self,
             QtCore.SIGNAL(u'currentIdChanged(int)'),
             self.onCurrentIdChanged)
@@ -123,8 +126,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         log.debug('Import canceled by user.')
         if self.currentId() == 3:
             Receiver.send_message(u'bibles_stop_import')
-        else:
-            self.done(QtGui.QDialog.Rejected)
+        self.done(QtGui.QDialog.Rejected)
 
     def validateCurrentPage(self):
         """
