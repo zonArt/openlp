@@ -86,7 +86,7 @@ class AlertsManager(QtCore.QObject):
         text = self.alertList.pop(0)
         alertTab = self.parent.alertsTab
         self.parent.liveController.display.alert(text)
-        # check to see if we have a timer running
+        # Check to see if we have a timer running.
         if self.timer_id == 0:
             self.timer_id = self.startTimer(int(alertTab.timeout) * 1000)
 
@@ -94,9 +94,9 @@ class AlertsManager(QtCore.QObject):
         """
         Time has finished so if our time then request the next Alert
         if there is one and reset the timer.
+
         ``event``
             the QT event that has been triggered.
-
         """
         log.debug(u'timer event')
         if event.timerId() == self.timer_id:

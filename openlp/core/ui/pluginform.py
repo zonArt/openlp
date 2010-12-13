@@ -61,7 +61,7 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         self.programaticChange = True
         self._clearDetails()
         self.programaticChange = True
-        for plugin in self.parent.plugin_manager.plugins:
+        for plugin in self.parent.pluginManager.plugins:
             item = QtGui.QListWidgetItem(self.pluginListWidget)
             # We do this just to make 100% sure the status is an integer as
             # sometimes when it's loaded from the config, it isn't cast to int.
@@ -110,7 +110,7 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         plugin_name_plural = \
             self.pluginListWidget.currentItem().text().split(u' ')[0]
         self.activePlugin = None
-        for plugin in self.parent.plugin_manager.plugins:
+        for plugin in self.parent.pluginManager.plugins:
             name_string = plugin.getString(StringContent.Name)
             if name_string[u'plural'] == plugin_name_plural:
                 self.activePlugin = plugin

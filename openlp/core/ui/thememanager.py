@@ -310,7 +310,7 @@ class ThemeManager(QtGui.QWidget):
                     translate('OpenLP.ThemeManager',
                         'You are unable to delete the default theme.'))
             else:
-                for plugin in self.parent.plugin_manager.plugins:
+                for plugin in self.parent.pluginManager.plugins:
                     if plugin.usesTheme(theme):
                         QtGui.QMessageBox.critical(self,
                             translate('OpenLP.ThemeManager', 'Error'),
@@ -663,7 +663,7 @@ class ThemeManager(QtGui.QWidget):
                     (QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
                     QtGui.QMessageBox.No)
             if self.saveThemeName != u'':
-                for plugin in self.parent.plugin_manager.plugins:
+                for plugin in self.parent.pluginManager.plugins:
                     if plugin.usesTheme(self.saveThemeName):
                         plugin.renameTheme(self.saveThemeName, name)
                 if unicode(self.serviceComboBox.currentText()) == name:
