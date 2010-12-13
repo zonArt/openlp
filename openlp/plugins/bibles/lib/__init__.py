@@ -32,6 +32,114 @@ import re
 
 log = logging.getLogger(__name__)
 
+BIBLE_SEPARATORS = {u'sep_v': r'\s*,\s*', u'sep_r': r'\s*-\s*', u'sep_l': r'\.'}
+
+BIBLE_RANGE_REGEX = str(r'(?:(?P<from_chapter>[0-9]+)%(sep_v)s)?'
+    r'(?P<from_verse>[0-9]+)(?:%(sep_r)s(?:(?:(?P<to_chapter>[0-9]+)%(sep_v)s)?'
+    r'(?P<to_verse>[0-9]+))?)?' % BIBLE_SEPARATORS)
+
+BIBLE_RANGE = re.compile(r'^\s*' + BIBLE_RANGE_REGEX + r'\s*$', re.UNICODE)
+
+BIBLE_REFERENCE_NG = re.compile(str(r'^\s*?(?P<book>[\d]*[^\d]+)\s*?'
+    r'(?P<ranges>(?:' + BIBLE_RANGE_REGEX + r'(?:%(sep_l)s|(?=\s*\n)))+)\s*$') %
+    BIBLE_SEPARATORS, re.UNICODE)
+
+def parse_reference_ng(reference):
+    """
+    This is the next generation über-awesome function that takes a person's
+    typed in string and converts it to a reference list, a list of references to
+    be queried from the Bible database files.
+
+    The ``BIBLE_RANGE`` regular expression produces match groups for verse range
+    declarations:
+
+    1. ``(?:(?P<from_chapter>[0-9]+)%(sep_v)s)?'
+        It starts with a optional chapter reference ``from_chapter`` followed by
+        a verse separator.
+    2. ``(?P<from_verse>[0-9]+)``
+        The verse reference ``from_verse`` is manditory
+       ``(?:%(sep_r)s(?:`` ...  ``)?)?``
+        A range declaration is optional. It starts with a range seperator and
+        contains a optional chapter and verse declaration
+    3.  ``(?:(?P<to_chapter>[0-9]+)%(sep_v)s)?``
+        The ``to_chapter`` reference with seperator is equivalent to group 1.
+    4. ``(?P<to_verse>[0-9]+)?)?``
+        The ``to_verse`` reference is equivalent to group 2.
+
+    The ``BIBLE_REFERENCE`` regular expression produces matched groups for the
+    whole reference string:
+
+    1. ``\s*?(?P<book>[\d]*[^\d]+)\s*?``
+        The ``book`` group starts with the first non-whitespace character. There
+        are optional leading digits followed by non-digits. The group ends
+        before the whitspace in front of the next digit.
+    2. ``(?P<ranges>(?:`` + BIBLE_RANGE_REGEX +
+        ``(?:%(sep_l)s|(?=\s*\\n)))+)\s*$``
+        The sechon group contains all ``ranges``. This can be multiple
+        declarations of a BIBLE_RANGE separated by a list separator.
+
+    ``BIBLE_SEPARATORS`` is a dict which defines the separator formats. It might
+    be used to localize the bible references.
+
+    The reference list is a list of tuples, with each tuple structured like
+    this::
+
+        (book, chapter, from_verse, to_verse)
+
+    ``reference``
+        The bible reference to parse.
+
+    Returns None or a reference list.
+    """
+ 
+    log.debug('parse_reference("%s")', reference)
+    if u'<split>' in reference:
+        return
+    ref_list = []
+    match = BIBLE_REFERENCE_NG.match(reference)
+    if match:
+        log.debug(u'Matched reference %s' % reference)
+        book = match.group(u'book')
+        ranges = match.group(u'ranges').split(r'\s*\.\s*')
+        chapter = 0
+        for this_range in ranges:
+            range_match = BIBLE_RANGE.match(this_range)
+            from_chapter = int(u'0' + range_match.group('from_chapter'))
+            from_verse = int(u'0' + range_match.group('from_verse'))
+            to_chapter = int(u'0' + range_match.group('to_chapter'))
+            to_verse = int(u'0' + range_match.group('to_verse'))
+            # First reference has to be a chapter
+            if not unified_ref_list:
+                if not from_chapter:
+                    from_chapter = from_verse
+                    from_verse = 1
+            # Fill missing chapter references with the last chapter
+            if from_chapter:
+                chapter = from_chapter
+            else:
+                from_chapter = chapter
+            if not from_verse:
+                from_verse = 1
+            if to_chapter:
+                if to_chapter > from_chapter:
+                    ref_list.append((book, from_chapter, from_verse, -1))
+                    for i in range(from_chapter + 1, to_chapter -1):
+                        ref_list.append((book, i, 1, -1))
+                    ref_list.append((book, to_chapter, 1, to_verse))
+                else:
+                    if to_verse < from_verse:
+                        to_verse = from_verse
+                    ref_list.append((book, from_chapter, from_verse, to_verse))
+            else:
+                if to_verse < from_verse:
+                    to_verse = from_verse
+                ref_list.append((book, from_chapter, from_verse, to_verse))
+    else:
+        log.debug(u'Invalid reference: %s' % reference)
+        return None
+    return ref_list
+
+
 BIBLE_REFERENCE = re.compile(
     r'^([\w ]+?) *([0-9]+)'          # Initial book and chapter
     r'(?: *[:|v|V] *([0-9]+))?'      # Verse for first chapter
