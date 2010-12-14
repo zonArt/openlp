@@ -51,7 +51,7 @@ class Controller(object):
 
     def add_handler(self, controller, file, is_blank):
         """
-        Add a handler, which is an instance of a presentation and 
+        Add a handler, which is an instance of a presentation and
         slidecontroller combination. If the slidecontroller has a display
         then load the presentation.
         """
@@ -362,7 +362,7 @@ class MessageListener(object):
 
     def timeout(self):
         """
-        The presentation may be timed or might be controlled by the 
+        The presentation may be timed or might be controlled by the
         application directly, rather than through OpenLP. Poll occassionally
         to check which slide is currently displayed so the slidecontroller
         view can be updated

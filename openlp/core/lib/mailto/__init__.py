@@ -300,13 +300,13 @@ def mailto(address, to=None, cc=None, bcc=None, subject=None, body=None,
     ``cc``
         specify a recipient to be copied on the e-mail
 
-    ``bcc``      
+    ``bcc``
         specify a recipient to be blindly copied on the e-mail
 
-    ``subject``  
+    ``subject``
         specify a subject for the e-mail
 
-    ``body``     
+    ``body``
         specify a body for the e-mail. Since the user will be able to make
         changes before actually sending the e-mail, this can be used to provide
         the user with a template for the e-mail text may contain linebreaks

@@ -108,7 +108,7 @@ class PptviewDocument(PresentationDocument):
     """
     def __init__(self, controller, presentation):
         """
-        Constructor, store information about the file and initialise 
+        Constructor, store information about the file and initialise
         """
         log.debug(u'Init Presentation PowerPoint')
         PresentationDocument.__init__(self, controller, presentation)

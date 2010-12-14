@@ -163,30 +163,30 @@ class PresentationPlugin(Plugin):
         ## Load Button ##
         self.textStrings[StringContent.Load] = {
             u'title': translate('PresentationPlugin', 'Load'),
-            u'tooltip': translate('PresentationPlugin', 
+            u'tooltip': translate('PresentationPlugin',
                 'Load a new Presentation')
         }
         ## Delete Button ##
         self.textStrings[StringContent.Delete] = {
             u'title': translate('PresentationPlugin', 'Delete'),
-            u'tooltip': translate('PresentationPlugin', 
+            u'tooltip': translate('PresentationPlugin',
                 'Delete the selected Presentation')
         }
         ## Preview ##
         self.textStrings[StringContent.Preview] = {
             u'title': translate('PresentationPlugin', 'Preview'),
-            u'tooltip': translate('PresentationPlugin', 
+            u'tooltip': translate('PresentationPlugin',
                 'Preview the selected Presentation')
         }
         ## Live  Button ##
         self.textStrings[StringContent.Live] = {
             u'title': translate('PresentationPlugin', 'Live'),
-            u'tooltip': translate('PresentationPlugin', 
+            u'tooltip': translate('PresentationPlugin',
                 'Send the selected Presentation live')
         }
         ## Add to service Button ##
         self.textStrings[StringContent.Service] = {
             u'title': translate('PresentationPlugin', 'Service'),
-            u'tooltip': translate('PresentationPlugin', 
+            u'tooltip': translate('PresentationPlugin',
                 'Add the selected Presentation to the service')
         }
