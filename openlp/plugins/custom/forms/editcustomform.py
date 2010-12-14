@@ -224,9 +224,6 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         ``edit_all``
             Indicates if all slides or only one slide has been edited.
         """
-#        if len(slides) == 1:
-#            self.slideListView.currentItem().setText(unicode(slides[0]))
-#        else:
         if edit_all:
             self.slideListView.clear()
             for slide in slides:
