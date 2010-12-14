@@ -70,7 +70,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
 
     def _createReport(self):
         openlp_version = self.parent().applicationVersion[u'full']
-        traceback = unicode(self.exceptionTextEdit.toPlainText()) 
+        traceback = unicode(self.exceptionTextEdit.toPlainText())
         system = unicode(translate('OpenLP.ExceptionForm',
             'Platform: %s\n')) % platform.platform()
         libraries = u'Python: %s\n' % platform.python_version() + \
@@ -89,7 +89,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             elif os.environ.get(u'GNOME_DESKTOP_SESSION_ID'):
                 system = system + u'Desktop: GNOME\n'
         return (openlp_version, traceback, system, libraries)
- 
+
     def onSaveReportButtonPressed(self):
         """
         Saving exception log and system informations to a file.

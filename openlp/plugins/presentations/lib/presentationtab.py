@@ -133,7 +133,7 @@ class PresentationTab(SettingsTab):
                     self.settingsSection + u'/' + controller.name,
                     QtCore.QVariant(QtCore.Qt.Checked)).toInt()[0])
         self.OverrideAppCheckBox.setChecked(QtCore.QSettings().value(
-            self.settingsSection + u'/override app', 
+            self.settingsSection + u'/override app',
             QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0])
 
     def save(self):

@@ -77,7 +77,7 @@ class RemotesPlugin(Plugin):
             'a running version of OpenLP on a different computer via a web '
             'browser or through the remote API.')
         return about_text
-    
+
     def setPluginTextStrings(self):
         """
         Called to define all translatable texts of the plugin
