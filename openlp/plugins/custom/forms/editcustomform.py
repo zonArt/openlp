@@ -224,27 +224,27 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         ``edit_all``
             Indicates if all slides or only one slide has been edited.
         """
-        if len(slides) == 1:
-            self.slideListView.currentItem().setText(slides[0])
+#        if len(slides) == 1:
+#            self.slideListView.currentItem().setText(unicode(slides[0]))
+#        else:
+        if edit_all:
+            self.slideListView.clear()
+            for slide in slides:
+                self.slideListView.addItem(slide)
         else:
-            if edit_all:
-                self.slideListView.clear()
-                for slide in slides:
-                    self.slideListView.addItem(slide)
-            else:
-                old_slides = []
-                old_row = self.slideListView.currentRow()
-                # Create a list with all (old/unedited) slides.
-                old_slides = [self.slideListView.item(row).text() for row in \
-                    range(0, self.slideListView.count())]
-                self.slideListView.clear()
-                old_slides.pop(old_row)
-                # Insert all slides to make the old_slides list complete.
-                for slide in slides:
-                    old_slides.insert(old_row, slide)
-                for slide in old_slides:
-                    self.slideListView.addItem(slide)
-            self.slideListView.repaint()
+            old_slides = []
+            old_row = self.slideListView.currentRow()
+            # Create a list with all (old/unedited) slides.
+            old_slides = [self.slideListView.item(row).text() for row in \
+                range(0, self.slideListView.count())]
+            self.slideListView.clear()
+            old_slides.pop(old_row)
+            # Insert all slides to make the old_slides list complete.
+            for slide in slides:
+                old_slides.insert(old_row, slide)
+            for slide in old_slides:
+                self.slideListView.addItem(slide)
+        self.slideListView.repaint()
 
     def onDeleteButtonPressed(self):
         self.slideListView.takeItem(self.slideListView.currentRow())
