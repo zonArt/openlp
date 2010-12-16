@@ -42,12 +42,12 @@ class Ui_FileRenameDialog(object):
         self.widget.setObjectName(u'widget')
         self.horizontalLayout = QtGui.QHBoxLayout(self.widget)
         self.horizontalLayout.setObjectName(u'horizontalLayout')
-        self.FileRenameLabel = QtGui.QLabel(self.widget)
-        self.FileRenameLabel.setObjectName(u'FileRenameLabel')
-        self.horizontalLayout.addWidget(self.FileRenameLabel)
-        self.FileNameEdit = QtGui.QLineEdit(self.widget)
-        self.FileNameEdit.setObjectName(u'FileNameEdit')
-        self.horizontalLayout.addWidget(self.FileNameEdit)
+        self.fileRenameLabel = QtGui.QLabel(self.widget)
+        self.fileRenameLabel.setObjectName(u'fileRenameLabel')
+        self.horizontalLayout.addWidget(self.fileRenameLabel)
+        self.fileNameEdit = QtGui.QLineEdit(self.widget)
+        self.fileNameEdit.setObjectName(u'fileNameEdit')
+        self.horizontalLayout.addWidget(self.fileNameEdit)
 
         self.retranslateUi(FileRenameDialog)
         QtCore.QMetaObject.connectSlotsByName(FileRenameDialog)
@@ -55,5 +55,5 @@ class Ui_FileRenameDialog(object):
     def retranslateUi(self, FileRenameDialog):
         FileRenameDialog.setWindowTitle(translate('OpenLP.FileRenameForm',
             'File Rename'))
-        self.FileRenameLabel.setText(translate('OpenLP.FileRenameForm',
+        self.fileRenameLabel.setText(translate('OpenLP.FileRenameForm',
             'New File Name:'))
