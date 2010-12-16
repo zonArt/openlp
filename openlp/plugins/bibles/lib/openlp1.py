@@ -25,8 +25,8 @@
 ###############################################################################
 
 import logging
+import sqlite
 
-from lxml import objectify
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, translate
@@ -34,67 +34,60 @@ from db import BibleDB
 
 log = logging.getLogger(__name__)
 
-class OpenSongBible(BibleDB):
+class OpenLP1Bible(BibleDB):
     """
-    OpenSong Bible format importer class.
+    This class provides the OpenLPv1 bible importer.
     """
-
     def __init__(self, parent, **kwargs):
         """
-        Constructor to create and set up an instance of the OpenSongBible
-        class. This class is used to import Bibles from OpenSong's XML format.
+        Constructor.
         """
         log.debug(self.__class__.__name__)
         BibleDB.__init__(self, parent, **kwargs)
-        self.filename = kwargs['filename']
+        self.filename = kwargs[u'filename']
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'bibles_stop_import'), self.stop_import)
 
     def do_import(self):
         """
-        Loads a Bible from file.
+        Imports an openlp.org v1 bible.
         """
-        log.debug(u'Starting OpenSong import from "%s"' % self.filename)
-        if not isinstance(self.filename, unicode):
-            self.filename = unicode(self.filename, u'utf8')
-        file = None
-        success = True
+        connection = None
+        cursor = None
         try:
-            # NOTE: We don't need to do any of the normal encoding detection
-            # here, because lxml does it's own encoding detection, and the two
-            # mechanisms together interfere with each other.
-            file = open(self.filename, u'r')
-            opensong = objectify.parse(file)
-            bible = opensong.getroot()
-            for book in bible.b:
-                if self.stop_import_flag:
-                    break
-                db_book = self.create_book(unicode(book.attrib[u'n']),
-                    unicode(book.attrib[u'n'][:4]))
-                for chapter in book.c:
-                    if self.stop_import_flag:
-                        break
-                    for verse in chapter.v:
-                        if self.stop_import_flag:
-                            break
-                        self.create_verse(
-                            db_book.id,
-                            int(chapter.attrib[u'n']),
-                            int(verse.attrib[u'n']),
-                            unicode(verse.text)
-                        )
-                        Receiver.send_message(u'openlp_process_events')
-                    self.wizard.incrementProgressBar(u'%s %s %s...' % (
-                        translate('BiblesPlugin.Opensong', 'Importing'),
-                        db_book.name, chapter.attrib[u'n']))
-                    self.session.commit()
-        except IOError:
-            log.exception(u'Loading bible from OpenSong file failed')
-            success = False
-        finally:
-            if file:
-                file.close()
-        if self.stop_import_flag:
+            connection = sqlite.connect(self.filename)
+            cursor = connection.cursor()
+        except:
             return False
-        else:
-            return success
+        # Create all books.
+        cursor.execute(u'SELECT id, testament_id, name, abbreviation FROM book')
+        books = cursor.fetchall()
+        self.wizard.importProgressBar.setMaximum(len(books) + 1)
+        for book in books:
+            if self.stop_import_flag:
+                connection.close()
+                return False
+            book_id = int(book[0])
+            testament_id = int(book[1])
+            name = unicode(book[2], u'cp1252')
+            abbreviation = unicode(book[3], u'cp1252')
+            self.create_book(name, abbreviation, testament_id)
+            # Update the progess bar.
+            self.wizard.incrementProgressBar(u'%s %s...' % (translate(
+                'BiblesPlugin.OpenLP1Import', 'Importing'), name))
+            # Import the verses for this book.
+            cursor.execute(u'SELECT chapter, verse, text || \'\' AS text FROM '
+                'verse WHERE book_id=%s' % book_id)
+            verses = cursor.fetchall()
+            for verse in verses:
+                if self.stop_import_flag:
+                    connection.close()
+                    return False
+                chapter = int(verse[0])
+                verse_number = int(verse[1])
+                text = unicode(verse[2], u'cp1252')
+                self.create_verse(book_id, chapter, verse_number, text)
+                Receiver.send_message(u'openlp_process_events')
+            self.session.commit()
+        connection.close()
+        return True

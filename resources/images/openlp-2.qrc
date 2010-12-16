@@ -39,6 +39,7 @@
     <file>general_new.png</file>
     <file>general_open.png</file>
     <file>general_save.png</file>
+    <file>general_email.png</file>
   </qresource>
   <qresource prefix="slides">
     <file>slide_close.png</file>
