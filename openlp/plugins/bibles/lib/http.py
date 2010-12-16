@@ -261,8 +261,8 @@ class BSExtract(object):
         ``chapter``
             Chapter number
         """
-        print(bookname)
         log.debug(u'get_bible_chapter %s,%s,%s', version, bookname, chapter)
+        '''
         bookindex = self._get_book_index(bookname)
         if chapter < 10:
            chapter_string = u'00' + unicode(chapter)
@@ -272,6 +272,10 @@ class BSExtract(object):
            chapter_string = unicode(chapter)
         chapter_url = u'http://m.bibleserver.com/text/%s/%s%s000' % \
             (version, bookindex, chapter_string)
+        '''
+        chapter_url = u'http://m.bibleserver.com/#/%s/%s%s' % \
+            (version, bookname, chapter)
+        
         log.debug(u'URL: %s', chapter_url)
         page = None
         try:
@@ -299,6 +303,7 @@ class BSExtract(object):
             versenumber = int(verse_number.sub(r'\1', verse[u'class']))
             verses[versenumber] = verse.contents[1].rstrip(u'\n')
         return SearchResults(bookname, chapter, verses)
+    '''
     def _get_book_index(self, bookname):
         print bookname
         bookmap = {u'Gen': u'01', u'Exod': u'02', u'Lev': u'03',
@@ -319,6 +324,7 @@ class BSExtract(object):
             u'1Pet':  u'60', u'2Pet':  u'61', u'1John': u'62', u'2John':u'63',
             u'3John': u'64', u'Jude':  u'65', u'Rev':   u'66'}
         return bookmap[bookname]
+    '''
 
 
 class CWExtract(object):
@@ -431,7 +437,7 @@ class HTTPBible(BibleDB):
         Run the import. This method overrides the parent class method. Returns
         ``True`` on success, ``False`` on failure.
         """
-        self.wizard.ImportProgressBar.setMaximum(2)
+        self.wizard.importProgressBar.setMaximum(2)
         self.wizard.incrementProgressBar('Registering bible...')
         self.create_meta(u'download source', self.download_source)
         self.create_meta(u'download name', self.download_name)
