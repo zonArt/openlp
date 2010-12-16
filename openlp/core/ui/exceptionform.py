@@ -138,6 +138,6 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             if re.search(r'[/\\]openlp[/\\]', line):
                 source = re.sub(r'.*[/\\]openlp[/\\](.*)".*', r'\1', line)
             if u':' in line:
-            	exception = line.split(u'\n')[-1].split(u':')[0]
+                exception = line.split(u'\n')[-1].split(u':')[0]
         subject = u'Bug report: %s in %s' % (exception, source)
         mailto(address=u'bugs@openlp.org', subject=subject, body=body % content)
