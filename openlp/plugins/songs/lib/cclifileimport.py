@@ -197,7 +197,7 @@ class CCLIFileImport(SongImport):
                     verse_text = verse_lines[1]
                 elif verse_lines[0].startswith(u'('):
                     verse_type = u'O'
-                    verse_text = verse_lines[1]            
+                    verse_text = verse_lines[1]
             if len(verse_text) > 0:
                 self.add_verse(verse_text, verse_type)
             check_first_verse_line = False
@@ -303,13 +303,13 @@ class CCLIFileImport(SongImport):
                                 verse_type = u'P'
                             elif line.startswith(u'(BRIDGE'):
                                 verse_type = u'B'
-                            # Handle all other misc types	
+                            # Handle all other misc types
                             elif line.startswith(u'('):
                                 verse_type = u'O'
                             else:
-                                verse_text = verse_text + line	
+                                verse_text = verse_text + line
                             check_first_verse_line = False
-                        else:																		
+                        else:
                             # We have verse content or the start of the
                             # last part. Add l so as to keep the CRLF
                             verse_text = verse_text + line

@@ -369,7 +369,7 @@ class SofImport(OooImport):
         if song_number == 50:
             return 8
         if song_number == 70:
-            return 4	
+            return 4
         if song_number == 75:
             return 8
         if song_number == 79:
@@ -529,7 +529,7 @@ class SofImport(OooImport):
         if song_number == 955:
             return 9
         if song_number == 968:
-            return 8		
+            return 8
         if song_number == 972:
             return 7
         if song_number == 974:
