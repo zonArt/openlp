@@ -44,6 +44,7 @@ class SongListView(BaseListWithDnD):
         self.PluginName = u'Songs'
         BaseListWithDnD.__init__(self, parent)
 
+
 class SongMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for Songs.
@@ -392,7 +393,7 @@ class SongMediaItem(MediaManagerItem):
             author_audit.append(unicode(author.display_name))
         raw_footer.append(song.title)
         raw_footer.append(author_list)
-        raw_footer.append(song.copyright )
+        raw_footer.append(song.copyright)
         raw_footer.append(unicode(
             translate('SongsPlugin.MediaItem', 'CCLI License: ') +
             QtCore.QSettings().value(u'general/ccli number',
@@ -417,26 +418,30 @@ class SongMediaItem(MediaManagerItem):
                     item.data_string[u'title'].split(u'@')[0].lower() ,
                 Song.search_title.asc())
             author_list = item.data_string[u'authors'].split(u', ')
+            # The service item always has an author (at least it has u''
+            # as author). However, songs saved in the database do not
+            # have to have an author.
+            if u'' in author_list:
+                author_list.remove(u'')
             editId = 0
             uuid = item._uuid
+            add_song = True
             if search_results:
                 for song in search_results:
-                    count = 0
+                    same_author = True
                     for author in song.authors:
-                        if author.display_name in author_list:
-                            count += 1
-                    # All Authors the same
-                    if count == len(author_list):
+                        if author.display_name not in author_list:
+                            same_author = False
+                    # All Authors the same, so we can stop here and the song
+                    # does not have to be saved.
+                    if same_author:
                         editId = song.id
-                    else:
-                        # Authors different
-                        if self.addSongFromService:
-                            editId = self.openLyrics. \
-                                xml_to_song(item.xml_version)
-            else:
-                # Title does not match
+                        add_song = False
+                        break
+            if add_song:
+                # Authors different
                 if self.addSongFromService:
-                    editId = self.openLyrics.xml_to_song(item.xml_version)
+                    editId = self.openLyrics. xml_to_song(item.xml_version)
             # Update service with correct song id
             if editId != 0:
                 Receiver.send_message(u'service_item_update',
