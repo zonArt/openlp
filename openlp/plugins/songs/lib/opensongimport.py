@@ -249,7 +249,7 @@ class OpenSongImport(SongImport):
                 words = thisline[1:].strip()
             if words is None:
                 words = thisline
-                if not versenum: 
+                if not versenum:
                     versenum = u'1'
             if versenum is not None:
                 versetag = u'%s%s' % (versetype, versenum)
@@ -298,7 +298,7 @@ class OpenSongImport(SongImport):
         for tag in order:
             if tag[0].isdigit():
                 # Assume it's a verse if it has no prefix
-                tag = u'V' + tag 
+                tag = u'V' + tag
             elif not re.search('\d+', tag):
                 # Assume it's no.1 if there's no digits
                 tag = tag + u'1'

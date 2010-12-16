@@ -880,7 +880,7 @@ class ServiceManager(QtGui.QWidget):
                 newItem.merge(item[u'service_item'])
                 item[u'service_item'] = newItem
                 self.repaintServiceList(itemcount + 1, 0)
-                self.parent.LiveController.replaceServiceManagerItem(newItem)
+                self.parent.liveController.replaceServiceManagerItem(newItem)
         self.parent.serviceChanged(False, self.serviceName)
 
     def addServiceItem(self, item, rebuild=False, expand=None, replace=False):
@@ -902,7 +902,7 @@ class ServiceManager(QtGui.QWidget):
             item.merge(self.serviceItems[sitem][u'service_item'])
             self.serviceItems[sitem][u'service_item'] = item
             self.repaintServiceList(sitem + 1, 0)
-            self.parent.LiveController.replaceServiceManagerItem(item)
+            self.parent.liveController.replaceServiceManagerItem(item)
         else:
             # nothing selected for dnd
             if self.droppos == 0:
@@ -923,7 +923,7 @@ class ServiceManager(QtGui.QWidget):
                 self.repaintServiceList(self.droppos, 0)
             # if rebuilding list make sure live is fixed.
             if rebuild:
-                self.parent.LiveController.replaceServiceManagerItem(item)
+                self.parent.liveController.replaceServiceManagerItem(item)
         self.droppos = 0
         self.parent.serviceChanged(False, self.serviceName)
 
@@ -933,7 +933,7 @@ class ServiceManager(QtGui.QWidget):
         """
         item, count = self.findServiceItem()
         if self.serviceItems[item][u'service_item'].is_valid:
-            self.parent.PreviewController.addServiceManagerItem(
+            self.parent.previewController.addServiceManagerItem(
                 self.serviceItems[item][u'service_item'], count)
         else:
             QtGui.QMessageBox.critical(self,
@@ -957,7 +957,7 @@ class ServiceManager(QtGui.QWidget):
         """
         item, count = self.findServiceItem()
         if self.serviceItems[item][u'service_item'].is_valid:
-            self.parent.LiveController.addServiceManagerItem(
+            self.parent.liveController.addServiceManagerItem(
                 self.serviceItems[item][u'service_item'], count)
             if QtCore.QSettings().value(
                 self.parent.generalSettingsSection + u'/auto preview',
@@ -966,9 +966,9 @@ class ServiceManager(QtGui.QWidget):
                 if self.serviceItems and item < len(self.serviceItems) and \
                     self.serviceItems[item][u'service_item'].is_capable(
                     ItemCapabilities.AllowsPreview):
-                    self.parent.PreviewController.addServiceManagerItem(
+                    self.parent.previewController.addServiceManagerItem(
                         self.serviceItems[item][u'service_item'], 0)
-                    self.parent.LiveController.PreviewListWidget.setFocus()
+                    self.parent.liveController.PreviewListWidget.setFocus()
         else:
             QtGui.QMessageBox.critical(self,
                 translate('OpenLP.ServiceManager', 'Missing Display Handler'),

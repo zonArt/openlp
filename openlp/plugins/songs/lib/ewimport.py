@@ -41,7 +41,7 @@ def strip_rtf(blob, encoding):
     control_word = []
     for c in blob:
         if control:
-            # for delimiters, set control to False 
+            # for delimiters, set control to False
             if c == '{':
                 if len(control_word) > 0:
                     depth += 1

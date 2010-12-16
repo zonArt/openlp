@@ -128,8 +128,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         log.debug('Import canceled by user.')
         if self.currentId() == 3:
             Receiver.send_message(u'bibles_stop_import')
-        else:
-            self.done(QtGui.QDialog.Rejected)
+        self.done(QtGui.QDialog.Rejected)
 
     def validateCurrentPage(self):
         """

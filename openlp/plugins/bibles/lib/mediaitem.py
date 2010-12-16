@@ -875,7 +875,7 @@ class BibleMediaItem(MediaManagerItem):
         old_second_bible = self._decodeQtObject(old_bitem, 'second_bible')
         if old_bible != bible or old_second_bible != second_bible or \
             old_book != book:
-            # The bible, second bible or book has changed. 
+            # The bible, second bible or book has changed.
             return True
         elif old_verse + 1 != verse and old_chapter == chapter:
             # We are still in the same chapter, but a verse has been skipped.
