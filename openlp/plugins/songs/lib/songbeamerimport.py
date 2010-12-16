@@ -24,7 +24,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`songbeamerimport` module provides the functionality for importing 
+The :mod:`songbeamerimport` module provides the functionality for importing
  SongBeamer songs into the OpenLP database.
 """
 import logging
@@ -90,7 +90,7 @@ class SongBeamerImport(SongImport):
                 len(self.import_source))
             for file in self.import_source:
                 # TODO: check that it is a valid SongBeamer file
-                self.current_verse = u'' 
+                self.current_verse = u''
                 self.current_verse_type = u'V'
                 read_verses = False
                 self.file_name = os.path.split(file)[1]
@@ -115,7 +115,7 @@ class SongBeamerImport(SongImport):
                             self.replace_html_tags()
                             self.add_verse(self.current_verse,
                                 self.current_verse_type)
-                            self.current_verse = u'' 
+                            self.current_verse = u''
                             self.current_verse_type = u'V'
                         read_verses = True
                         verse_start = True
