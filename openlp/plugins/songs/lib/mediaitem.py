@@ -429,20 +429,26 @@ class SongMediaItem(MediaManagerItem):
             if search_results:
                 for song in search_results:
                     same_authors = True
-                    for author in song.authors:
-                        if author.display_name not in author_list:
-                            same_authors = False
-                    # All Authors the same, so we can stop here and the song
+                    # If the author counts are different, we do not have to do
+                    # any further checking. This is also important when a song
+                    # does not have any author (because we can not loop over an
+                    # empty list).
+                    if len(song.authors) == len(author_list):
+                        for author in song.authors:
+                            if author.display_name not in author_list:
+                                same_authors = False
+                    else:
+                        same_authors = False
+                    # All authors are the same, so we can stop here and the song
                     # does not have to be saved.
                     if same_authors:
-                        editId = song.id
                         add_song = False
+                        editId = song.id
                         break
             if add_song:
-                # Authors different
                 if self.addSongFromService:
                     editId = self.openLyrics.xml_to_song(item.xml_version)
-            # Update service with correct song id
+            # Update service with correct song id.
             if editId != 0:
                 Receiver.send_message(u'service_item_update',
                     u'%s:%s' %(editId, uuid))
