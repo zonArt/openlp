@@ -134,9 +134,9 @@ class OSISBible(BibleDB):
                             testament)
                     if last_chapter == 0:
                         if book == u'Gen':
-                            self.wizard.ImportProgressBar.setMaximum(1188)
+                            self.wizard.importProgressBar.setMaximum(1188)
                         else:
-                            self.wizard.ImportProgressBar.setMaximum(260)
+                            self.wizard.importProgressBar.setMaximum(260)
                     if last_chapter != chapter:
                         if last_chapter != 0:
                             self.session.commit()
