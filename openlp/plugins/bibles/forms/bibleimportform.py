@@ -339,31 +339,27 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         """
         Load the list of Crosswalk and BibleGateway bibles.
         """
-        # Load and store Crosswalk Bibles.
+        # Load Crosswalk Bibles.
         filepath = AppLocation.get_directory(AppLocation.PluginsDir)
         filepath = os.path.join(filepath, u'bibles', u'resources')
         books_file = None
         try:
             self.web_bible_list[WebDownload.Crosswalk] = {}
             books_file = open(
-                os.path.join(filepath, u'crosswalkbooks.csv'), 'r')
+                os.path.join(filepath, u'crosswalkbooks.csv'), 'rb')
             dialect = csv.Sniffer().sniff(books_file.read(1024))
             books_file.seek(0)
             books_reader = csv.reader(books_file, dialect)
             for line in books_reader:
-                ver = line[0]
-                name = line[1]
-                if not isinstance(ver, unicode):
-                    ver = unicode(ver, u'utf8')
-                if not isinstance(name, unicode):
-                    name = unicode(name, u'utf8')
+                ver = unicode(line[0], u'utf-8')
+                name = unicode(line[1], u'utf-8')
                 self.web_bible_list[WebDownload.Crosswalk][ver] = name.strip()
         except IOError:
             log.exception(u'Crosswalk resources missing')
         finally:
             if books_file:
                 books_file.close()
-        # Load and store BibleGateway Bibles.
+        # Load BibleGateway Bibles.
         books_file = None
         try:
             self.web_bible_list[WebDownload.BibleGateway] = {}
@@ -385,8 +381,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         finally:
             if books_file:
                 books_file.close()
-
-        # Load and store Bibleserver Bibles.
+        # Load and Bibleserver Bibles.
         filepath = AppLocation.get_directory(AppLocation.PluginsDir)
         filepath = os.path.join(filepath, u'bibles', u'resources')
         books_file = None
@@ -402,7 +397,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
                 name = unicode(line[1], u'utf-8')
                 self.web_bible_list[WebDownload.Bibleserver][ver] = name.strip()
         except IOError, UnicodeError:
-            log.exception(u'Bibelserver resources could not be imported')
+            log.exception(u'Bibelserver resources missing')
         finally:
             if books_file:
                 books_file.close()

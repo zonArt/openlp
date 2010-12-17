@@ -906,7 +906,6 @@ class BibleMediaItem(MediaManagerItem):
         ``verse``
             The verse number (int).
         """
-
         verse_separator = get_reference_match(u'sep_v_display')
         if not self.parent.settings_tab.show_new_chapters or \
             old_chapter != chapter:

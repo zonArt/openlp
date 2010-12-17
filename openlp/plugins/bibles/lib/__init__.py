@@ -46,18 +46,18 @@ def get_reference_match(match_type):
     # verse range match: (<chapter>:)?<verse>(-(<chapter>:)?<verse>?)?
     range_string = str(r'(?:(?P<from_chapter>[0-9]+)%(sep_v)s)?(?P<from_verse>'
         r'[0-9]+)(?P<range_to>%(sep_r)s(?:(?:(?P<to_chapter>[0-9]+)%(sep_v)s)?'
-        r'(?P<to_verse>[0-9]+)|%(sep_e)s)?)?' % separators)
+        r'(?P<to_verse>[0-9]+)|%(sep_e)s)?)?') % separators
     if match_type == u'range':
         return re.compile(r'^\s*' + range_string + r'\s*$', re.UNICODE)
     elif match_type == u'range_separator':
         return re.compile(separators[u'sep_l'])
     elif match_type == u'full':
-       # full reference match: <book>(<range>(,|(?=$)))+
-       return re.compile(str(r'^\s*(?!\s)(?P<book>[\d]*[^\d]+)(?<!\s)\s*'
+        # full reference match: <book>(<range>(,|(?=$)))+
+        return re.compile(str(r'^\s*(?!\s)(?P<book>[\d]*[^\d]+)(?<!\s)\s*'
            r'(?P<ranges>(?:' + range_string + r'(?:%(sep_l)s|(?=\s*$)))+)\s*$')
                % separators, re.UNICODE)
     else:
-       return separators[match_type]
+        return separators[match_type]
 
 def parse_reference(reference):
     """
@@ -69,9 +69,9 @@ def parse_reference(reference):
 
     - Each reference starts with the book name. A chapter name is manditory.
         ``John 3`` refers to Gospel of John chapter 3
-    - A reference range can be given after a range seperator.
+    - A reference range can be given after a range separator.
         ``John 3-5`` refers to John chapters 3 to 5
-    - Single verses can be addressed after a verse seperator
+    - Single verses can be addressed after a verse separator
         ``John 3:16`` refers to John chapter 3 verse 16
         ``John 3:16-4:3`` refers to John chapter 3 verse 16 to chapter 4 verse 3
     - After a verse reference all further single values are treat as verse in
@@ -82,7 +82,7 @@ def parse_reference(reference):
       number of verse references. It is not possible to refer to verses in
       additional books.
         ``John 3:16,18`` refers to John chapter 3 verses 16 and 18
-        ``John 3:16-18,20`` refers to John chapter 3 verses 16 to 18 to 20
+        ``John 3:16-18,20`` refers to John chapter 3 verses 16 to 18 and 20
         ``John 3:16-18,4:1`` refers to John chapter 3 verses 16 to 18 and
         chapter 3 verse 1
     - If there is a range separator without further verse declaration the last
@@ -97,11 +97,11 @@ def parse_reference(reference):
     2. ``(?P<from_verse>[0-9]+)``
         The verse reference ``from_verse`` is manditory
     3.  ``(?P<range_to>%(sep_r)s(?:`` ...  ``|%(sep_e)s)?)?``
-        A ``range_to`` declaration is optional. It starts with a range seperator
+        A ``range_to`` declaration is optional. It starts with a range separator
         and contains optional a chapter and verse declaration or a end
         separator.
     4.  ``(?:(?P<to_chapter>[0-9]+)%(sep_v)s)?``
-        The ``to_chapter`` reference with seperator is equivalent to group 1.
+        The ``to_chapter`` reference with separator is equivalent to group 1.
     5. ``(?P<to_verse>[0-9]+)``
         The ``to_verse`` reference is equivalent to group 2.
 
@@ -126,7 +126,6 @@ def parse_reference(reference):
 
     Returns None or a reference list.
     """
- 
     log.debug('parse_reference("%s")', reference)
     match = get_reference_match(u'full').match(reference)
     if match:
@@ -135,7 +134,7 @@ def parse_reference(reference):
         ranges = match.group(u'ranges')
         range_list = get_reference_match(u'range_separator').split(ranges)
         ref_list = []
-        chapter = 0
+        chapter = None
         for this_range in range_list:
             range_match = get_reference_match(u'range').match(this_range)
             from_chapter = range_match.group(u'from_chapter')
@@ -169,6 +168,7 @@ def parse_reference(reference):
                     to_chapter = chapter
                 else:
                     to_chapter = to_verse
+                    to_verse = None
             # Append references to the list
             if has_range:
                 if not from_verse:

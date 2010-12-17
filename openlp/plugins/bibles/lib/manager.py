@@ -312,7 +312,7 @@ class BibleManager(object):
                 'Scripture Reference Error'),
                 translate('BiblesPlugin.BibleManager', 'You did not enter a '
                 'search keyword.\nYou can separate different keywords by a '
-                'space to search for all of your keywords and you can seperate '
+                'space to search for all of your keywords and you can separate '
                 'them by a comma to search for one of them.'))
             return None
 

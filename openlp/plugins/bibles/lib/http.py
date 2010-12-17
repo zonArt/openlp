@@ -250,13 +250,13 @@ class BSExtract(object):
 
     def get_bible_chapter(self, version, bookname, chapter):
         """
-        Access and decode bibles via http://m.Bibleserver.com
+        Access and decode bibles via Bibleserver mobile website
 
         ``version``
             The version of the bible like NIV for New International Version
 
         ``bookname``
-            Text name of in english e.g. 'gen' for Genesis
+            Text name of bible book e.g. Genesis, 1. John, 1John or Offenbarung
 
         ``chapter``
             Chapter number
@@ -291,11 +291,11 @@ class BSExtract(object):
         finally:
             if not content:
                 return None
-        verse_number = re.compile(r'v\d{5}(\d{3}) verse')
+        verse_number = re.compile(r'v(\d{2})(\d{3})(\d{3}) verse')
         verses = {}
         for verse in content:
             Receiver.send_message(u'openlp_process_events')
-            versenumber = int(verse_number.sub(r'\1', verse[u'class']))
+            versenumber = int(verse_number.sub(r'\3', verse[u'class']))
             verses[versenumber] = verse.contents[1].rstrip(u'\n')
         return SearchResults(bookname, chapter, verses)
 
