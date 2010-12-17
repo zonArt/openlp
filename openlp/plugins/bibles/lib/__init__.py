@@ -32,24 +32,32 @@ import re
 
 log = logging.getLogger(__name__)
 
-# English:
-BIBLE_SEPARATORS = {u'sep_v': r'\s*:\s*', u'sep_r': r'\s*-\s*', u'sep_l': r','}
-# German:
-#BIBLE_SEPARATORS = {u'sep_v': r'\s*,\s*', u'sep_r': r'\s*-\s*', u'sep_l': r'\.'}
+def get_reference_match(match_type):
+    local_separator = unicode(u':;;\s*[:vV]\s*;;-;;\s*-\s*;;,;;\s*,\s*;;end'
+        ).split(u';;') # English
+    # local_separator = unicode(u',;;\s*,\s*;;-;;\s*-\s*;;.;;\.;;[Ee]nde'
+    #   ).split(u';;') # German
+    separators = {
+        u'sep_v_display': local_separator[0], u'sep_v': local_separator[1],
+        u'sep_r_display': local_separator[2], u'sep_r': local_separator[3],
+        u'sep_l_display': local_separator[4], u'sep_l': local_separator[5],
+        u'sep_e': local_separator[6]}
 
-# RegEx for a verse span: (<chapter>:)?<verse>(-(<chapter>:)?<verse>?)?
-BIBLE_RANGE_REGEX = str(r'(?:(?P<from_chapter>[0-9]+)%(sep_v)s)?'
-    r'(?P<from_verse>[0-9]+)(?P<range_to>%(sep_r)s(?:(?:(?P<to_chapter>[0-9]+)'
-    r'%(sep_v)s)?(?P<to_verse>[0-9]+))?)?' % BIBLE_SEPARATORS)
-
-BIBLE_RANGE = re.compile(r'^\s*' + BIBLE_RANGE_REGEX + r'\s*$', re.UNICODE)
-
-BIBLE_RANGE_SPLIT = re.compile(BIBLE_SEPARATORS[u'sep_l'])
-
-# RegEx for a reference <book>(<range>(,|(?=$)))+
-BIBLE_REFERENCE = re.compile(str(r'^\s*(?!\s)(?P<book>[\d]*[^\d]+)(?<!\s)\s*'
-    r'(?P<ranges>(?:' + BIBLE_RANGE_REGEX + r'(?:%(sep_l)s|(?=\s*$)))+)\s*$') %
-    BIBLE_SEPARATORS, re.UNICODE)
+    # verse range match: (<chapter>:)?<verse>(-(<chapter>:)?<verse>?)?
+    range_string = str(r'(?:(?P<from_chapter>[0-9]+)%(sep_v)s)?(?P<from_verse>'
+        r'[0-9]+)(?P<range_to>%(sep_r)s(?:(?:(?P<to_chapter>[0-9]+)%(sep_v)s)?'
+        r'(?P<to_verse>[0-9]+)|%(sep_e)s)?)?' % separators)
+    if match_type == u'range':
+        return re.compile(r'^\s*' + range_string + r'\s*$', re.UNICODE)
+    elif match_type == u'range_separator':
+        return re.compile(separators[u'sep_l'])
+    elif match_type == u'full':
+       # full reference match: <book>(<range>(,|(?=$)))+
+       return re.compile(str(r'^\s*(?!\s)(?P<book>[\d]*[^\d]+)(?<!\s)\s*'
+           r'(?P<ranges>(?:' + range_string + r'(?:%(sep_l)s|(?=\s*$)))+)\s*$')
+               % separators, re.UNICODE)
+    else:
+       return separators[match_type]
 
 def parse_reference(reference):
     """
@@ -57,7 +65,6 @@ def parse_reference(reference):
     typed in string and converts it to a reference list, a list of references to
     be queried from the Bible database files.
 
-#####
     This is a user manual like description, how the references are working.
 
     - Each reference starts with the book name. A chapter name is manditory.
@@ -80,9 +87,8 @@ def parse_reference(reference):
         chapter 3 verse 1
     - If there is a range separator without further verse declaration the last
       refered chapter is addressed until the end.
-#####
 
-    The ``BIBLE_RANGE`` regular expression produces match groups for verse range
+    ``range_string`` is a regular expression which matches for verse range
     declarations:
 
     1. ``(?:(?P<from_chapter>[0-9]+)%(sep_v)s)?'
@@ -90,28 +96,25 @@ def parse_reference(reference):
         a verse separator.
     2. ``(?P<from_verse>[0-9]+)``
         The verse reference ``from_verse`` is manditory
-    3.  ``(?P<range_to>%(sep_r)s(?:`` ...  ``)?)?``
+    3.  ``(?P<range_to>%(sep_r)s(?:`` ...  ``|%(sep_e)s)?)?``
         A ``range_to`` declaration is optional. It starts with a range seperator
-        and contains a optional chapter and verse declaration
+        and contains optional a chapter and verse declaration or a end
+        separator.
     4.  ``(?:(?P<to_chapter>[0-9]+)%(sep_v)s)?``
         The ``to_chapter`` reference with seperator is equivalent to group 1.
-    5. ``(?P<to_verse>[0-9]+)?)?``
+    5. ``(?P<to_verse>[0-9]+)``
         The ``to_verse`` reference is equivalent to group 2.
 
-    The ``BIBLE_REFERENCE`` regular expression produces matched groups for the
-    whole reference string:
+    The full reference is matched against get_reference_match(u'full'). This
+    regular expression looks like this:
 
     1. ``^\s*(?!\s)(?P<book>[\d]*[^\d]+)(?<!\s)\s*``
         The ``book`` group starts with the first non-whitespace character. There
         are optional leading digits followed by non-digits. The group ends
         before the whitspace in front of the next digit.
-    2. ``(?P<ranges>(?:`` + BIBLE_RANGE_REGEX +
-        ``(?:%(sep_l)s|(?=\s*$)))+)\s*$``
-        The sechon group contains all ``ranges``. This can be multiple
-        declarations of a BIBLE_RANGE separated by a list separator.
-
-    ``BIBLE_SEPARATORS`` is a dict which defines the separator formats. It might
-    be used to localize the bible references.
+    2. ``(?P<ranges>(?:`` + range_string + ``(?:%(sep_l)s|(?=\s*$)))+)\s*$``
+        The second group contains all ``ranges``. This can be multiple
+        declarations of a range_string separated by a list separator.
 
     The reference list is a list of tuples, with each tuple structured like
     this::
@@ -125,20 +128,21 @@ def parse_reference(reference):
     """
  
     log.debug('parse_reference("%s")', reference)
-    match = BIBLE_REFERENCE.match(reference)
+    match = get_reference_match(u'full').match(reference)
     if match:
         log.debug(u'Matched reference %s' % reference)
         book = match.group(u'book')
-        ranges = BIBLE_RANGE_SPLIT.split(match.group(u'ranges'))
+        ranges = match.group(u'ranges')
+        range_list = get_reference_match(u'range_separator').split(ranges)
         ref_list = []
         chapter = 0
-        for this_range in ranges:
-            range_match = BIBLE_RANGE.match(this_range)
-            from_chapter = range_match.group('from_chapter')
-            from_verse = range_match.group('from_verse')
-            has_range = range_match.group('range_to')
-            to_chapter = range_match.group('to_chapter')
-            to_verse = range_match.group('to_verse')
+        for this_range in range_list:
+            range_match = get_reference_match(u'range').match(this_range)
+            from_chapter = range_match.group(u'from_chapter')
+            from_verse = range_match.group(u'from_verse')
+            has_range = range_match.group(u'range_to')
+            to_chapter = range_match.group(u'to_chapter')
+            to_verse = range_match.group(u'to_verse')
             if from_chapter:
                 from_chapter = int(from_chapter)
             if from_verse:
@@ -147,7 +151,7 @@ def parse_reference(reference):
                 to_chapter = int(to_chapter)
             if to_verse:
                 to_verse = int(to_verse)
-            # Fill chapters with reasonable values.
+            # Fill chapter fields with reasonable values.
             if from_chapter:
                 chapter = from_chapter
             elif chapter:
@@ -173,10 +177,10 @@ def parse_reference(reference):
                     to_verse = -1
                 if to_chapter > from_chapter:
                     ref_list.append((book, from_chapter, from_verse, -1))
-                    for i in range(int(from_chapter) + 1, int(to_chapter) - 1):
+                    for i in range(from_chapter + 1, to_chapter - 1):
                         ref_list.append((book, i, 1, -1))
                     ref_list.append((book, to_chapter, 1, to_verse))
-                elif to_verse >= from_verse:
+                elif to_verse >= from_verse or to_verse == -1:
                     ref_list.append((book, from_chapter, from_verse, to_verse))
             elif from_verse:
                 ref_list.append((book, from_chapter, from_verse, from_verse))

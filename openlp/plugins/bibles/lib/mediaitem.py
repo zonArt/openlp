@@ -32,6 +32,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import MediaManagerItem, Receiver, BaseListWithDnD, \
     ItemCapabilities, translate
 from openlp.plugins.bibles.forms import BibleImportForm
+from openlp.plugins.bibles.lib import get_reference_match
 
 log = logging.getLogger(__name__)
 
@@ -553,12 +554,15 @@ class BibleMediaItem(MediaManagerItem):
         bible = unicode(self.AdvancedVersionComboBox.currentText())
         second_bible = unicode(self.AdvancedSecondBibleComboBox.currentText())
         book = unicode(self.AdvancedBookComboBox.currentText())
-        chapter_from = int(self.AdvancedFromChapter.currentText())
-        chapter_to = int(self.AdvancedToChapter.currentText())
-        verse_from = int(self.AdvancedFromVerse.currentText())
-        verse_to = int(self.AdvancedToVerse.currentText())
-        versetext = u'%s %s:%s-%s:%s' % (book, chapter_from, verse_from,
-            chapter_to, verse_to)
+        chapter_from = self.AdvancedFromChapter.currentText()
+        chapter_to = self.AdvancedToChapter.currentText()
+        verse_from = self.AdvancedFromVerse.currentText()
+        verse_to = self.AdvancedToVerse.currentText()
+        verse_separator = get_reference_match(u'sep_v_display')
+        range_separator = get_reference_match(u'sep_r_display')
+        verse_range = chapter_from + verse_separator + verse_from + \
+            range_separator + chapter_to + verse_separator + verse_to
+        versetext = u'%s %s' % (book, verse_range)
         self.search_results = self.parent.manager.get_verses(bible, versetext)
         if second_bible:
             self.second_search_results = self.parent.manager.get_verses(
@@ -709,7 +713,7 @@ class BibleMediaItem(MediaManagerItem):
         obj = reference[QtCore.QString(key)]
         if isinstance(obj, QtCore.QVariant):
             obj = obj.toPyObject()
-        return unicode(obj)
+        return unicode(obj).strip()
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
         """
@@ -816,36 +820,31 @@ class BibleMediaItem(MediaManagerItem):
         ``old_item``
             The last item of a range.
         """
+        verse_separator = get_reference_match(u'sep_v_display')
+        range_separator = get_reference_match(u'sep_r_display')
         old_bitem = self.listView.item(old_item.row())
-        old_chapter = int(self._decodeQtObject(old_bitem, 'chapter'))
-        old_verse = int(self._decodeQtObject(old_bitem, 'verse'))
+        old_chapter = self._decodeQtObject(old_bitem, 'chapter')
+        old_verse = self._decodeQtObject(old_bitem, 'verse')
         start_bitem = self.listView.item(start_item.row())
         start_book = self._decodeQtObject(start_bitem, 'book')
-        start_chapter = int(self._decodeQtObject(start_bitem, 'chapter'))
-        start_verse = int(self._decodeQtObject(start_bitem, 'verse'))
+        start_chapter = self._decodeQtObject(start_bitem, 'chapter')
+        start_verse = self._decodeQtObject(start_bitem, 'verse')
         start_bible = self._decodeQtObject(start_bitem, 'bible')
         start_second_bible = self._decodeQtObject(start_bitem, 'second_bible')
         if start_second_bible:
-            if start_verse == old_verse and start_chapter == old_chapter:
-                title = u'%s %s:%s (%s, %s)' % (start_book, start_chapter,
-                    start_verse, start_bible, start_second_bible)
-            elif start_chapter == old_chapter:
-                title = u'%s %s:%s-%s (%s, %s)' % (start_book, start_chapter,
-                    start_verse, old_verse, start_bible, start_second_bible)
-            else:
-                title = u'%s %s:%s-%s:%s (%s, %s)' % (start_book, start_chapter,
-                    start_verse, old_chapter, old_verse, start_bible,
-                    start_second_bible)
+            bibles = u'%s, %s' % (start_bible, start_second_bible)
         else:
-            if start_verse == old_verse and start_chapter == old_chapter:
-                title = u'%s %s:%s (%s)' % (start_book, start_chapter,
-                    start_verse, start_bible)
-            elif start_chapter == old_chapter:
-                title = u'%s %s:%s-%s (%s)' % (start_book, start_chapter,
-                    start_verse, old_verse, start_bible)
+            bibles = start_bible
+        if start_chapter == old_chapter:
+            if start_verse == old_verse:
+                verse_range = start_chapter + verse_separator + start_verse
             else:
-                title = u'%s %s:%s-%s:%s (%s)' % (start_book, start_chapter,
-                    start_verse, old_chapter, old_verse, start_bible)
+                verse_range = start_chapter + verse_separator + start_verse + \
+                range_separator + old_verse
+        else:
+            verse_range = start_chapter + verse_separator + start_verse + \
+                range_separator + old_chapter + verse_separator + old_verse
+        title = u'%s %s (%s)' % (start_book, verse_range, bibles)
         return title
 
     def checkTitle(self, item, old_item):
@@ -907,9 +906,11 @@ class BibleMediaItem(MediaManagerItem):
         ``verse``
             The verse number (int).
         """
+
+        verse_separator = get_reference_match(u'sep_v_display')
         if not self.parent.settings_tab.show_new_chapters or \
             old_chapter != chapter:
-            verse_text = u'%s:%s' % (chapter, verse)
+            verse_text = unicode(chapter) + verse_separator + unicode(verse)
         else:
             verse_text = u'%s' % verse
         if self.parent.settings_tab.display_style == 1:

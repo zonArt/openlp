@@ -273,7 +273,7 @@ class BSExtract(object):
         chapter_url = u'http://m.bibleserver.com/text/%s/%s%s000' % \
             (version, bookindex, chapter_string)
         '''
-        chapter_url = u'http://m.bibleserver.com/#/%s/%s%s' % \
+        chapter_url = u'http://m.bibleserver.com/text/%s/%s%s' % \
             (version, bookname, chapter)
         
         log.debug(u'URL: %s', chapter_url)
