@@ -295,7 +295,13 @@ class BSExtract(object):
             if not soup:
                 return None
         Receiver.send_message(u'openlp_process_events')
-        content = soup.find(u'div', u'content').find(u'div').findAll(u'div')
+        try:
+            content = soup.find(u'div', u'content').find(u'div').findAll(u'div')
+        except:
+            log.exception(u'No verses found.')
+        finally:
+            if not content:
+                return None
         verse_number = re.compile(r'v\d{5}(\d{3}) verse')
         verses = {}
         for verse in content:
