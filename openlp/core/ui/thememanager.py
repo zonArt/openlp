@@ -225,10 +225,10 @@ class ThemeManager(QtGui.QWidget):
         """
         item = self.themeListWidget.currentItem()
         oldThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
-        self.fileRenameForm.FileNameEdit.setText(oldThemeName)
+        self.fileRenameForm.fileNameEdit.setText(oldThemeName)
         self.saveThemeName = u''
         if self.fileRenameForm.exec_():
-            newThemeName =  unicode(self.fileRenameForm.FileNameEdit.text())
+            newThemeName =  unicode(self.fileRenameForm.fileNameEdit.text())
             oldThemeData = self.getThemeData(oldThemeName)
             self.deleteTheme(oldThemeName)
             self.cloneThemeData(oldThemeData, newThemeName)
@@ -239,10 +239,10 @@ class ThemeManager(QtGui.QWidget):
         """
         item = self.themeListWidget.currentItem()
         oldThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
-        self.fileRenameForm.FileNameEdit.setText(oldThemeName)
+        self.fileRenameForm.fileNameEdit.setText(oldThemeName)
         self.saveThemeName = u''
         if self.fileRenameForm.exec_():
-            newThemeName =  unicode(self.fileRenameForm.FileNameEdit.text())
+            newThemeName =  unicode(self.fileRenameForm.fileNameEdit.text())
             themeData = self.getThemeData(oldThemeName)
             self.cloneThemeData(themeData, newThemeName)
             self.loadThemes()

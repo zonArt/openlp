@@ -297,6 +297,8 @@ class OpenLyricsParser(object):
         song_xml = objectify.fromstring(xml)
         properties = song_xml.properties
         song.copyright = unicode(properties.copyright.text)
+        if song.copyright == u'None':
+            song.copyright = u''
         song.verse_order = unicode(properties.verseOrder.text)
         if song.verse_order == u'None':
             song.verse_order = u''
@@ -357,7 +359,7 @@ class OpenLyricsParser(object):
 
     def _add_text_to_element(self, tag, parent, text=None, label=None):
         if label:
-            element = etree.Element(tag, name = unicode(label))
+            element = etree.Element(tag, name=unicode(label))
         else:
             element = etree.Element(tag)
         if text:

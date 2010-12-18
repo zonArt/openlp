@@ -43,10 +43,12 @@ class WebDownload(object):
     Unknown = -1
     Crosswalk = 0
     BibleGateway = 1
+    Bibleserver = 2
 
     Names = {
         0: u'Crosswalk',
-        1: u'BibleGateway'
+        1: u'BibleGateway',
+        2: u'Bibleserver'
     }
 
     @classmethod
@@ -232,8 +234,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
             The index of the combo box.
         """
         self.bibleComboBox.clear()
-        bibles = [unicode(translate('BiblesPlugin.ImportWizardForm', bible)) for
-            bible in self.web_bible_list[index].keys()]
+        bibles = self.web_bible_list[index].keys()
         bibles.sort()
         for bible in bibles:
             self.bibleComboBox.addItem(bible)
@@ -338,31 +339,27 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         """
         Load the list of Crosswalk and BibleGateway bibles.
         """
-        # Load and store Crosswalk Bibles.
+        # Load Crosswalk Bibles.
         filepath = AppLocation.get_directory(AppLocation.PluginsDir)
         filepath = os.path.join(filepath, u'bibles', u'resources')
         books_file = None
         try:
             self.web_bible_list[WebDownload.Crosswalk] = {}
             books_file = open(
-                os.path.join(filepath, u'crosswalkbooks.csv'), 'r')
+                os.path.join(filepath, u'crosswalkbooks.csv'), 'rb')
             dialect = csv.Sniffer().sniff(books_file.read(1024))
             books_file.seek(0)
             books_reader = csv.reader(books_file, dialect)
             for line in books_reader:
-                ver = line[0]
-                name = line[1]
-                if not isinstance(ver, unicode):
-                    ver = unicode(ver, u'utf8')
-                if not isinstance(name, unicode):
-                    name = unicode(name, u'utf8')
+                ver = unicode(line[0], u'utf-8')
+                name = unicode(line[1], u'utf-8')
                 self.web_bible_list[WebDownload.Crosswalk][ver] = name.strip()
         except IOError:
             log.exception(u'Crosswalk resources missing')
         finally:
             if books_file:
                 books_file.close()
-        # Load and store BibleGateway Bibles.
+        # Load BibleGateway Bibles.
         books_file = None
         try:
             self.web_bible_list[WebDownload.BibleGateway] = {}
@@ -381,6 +378,26 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
                     name.strip()
         except IOError:
             log.exception(u'Biblegateway resources missing')
+        finally:
+            if books_file:
+                books_file.close()
+        # Load and Bibleserver Bibles.
+        filepath = AppLocation.get_directory(AppLocation.PluginsDir)
+        filepath = os.path.join(filepath, u'bibles', u'resources')
+        books_file = None
+        try:
+            self.web_bible_list[WebDownload.Bibleserver] = {}
+            books_file = open(
+                os.path.join(filepath, u'bibleserver.csv'), 'rb')
+            dialect = csv.Sniffer().sniff(books_file.read(1024))
+            books_file.seek(0)
+            books_reader = csv.reader(books_file, dialect)
+            for line in books_reader:
+                ver = unicode(line[0], u'utf-8')
+                name = unicode(line[1], u'utf-8')
+                self.web_bible_list[WebDownload.Bibleserver][ver] = name.strip()
+        except IOError, UnicodeError:
+            log.exception(u'Bibleserver resources missing')
         finally:
             if books_file:
                 books_file.close()
@@ -457,6 +474,9 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
             elif download_location == WebDownload.BibleGateway:
                 bible = \
                     self.web_bible_list[WebDownload.BibleGateway][bible_version]
+            elif download_location == WebDownload.Bibleserver:
+                bible = \
+                    self.web_bible_list[WebDownload.Bibleserver][bible_version]
             importer = self.manager.import_bible(
                 BibleFormat.WebDownload,
                 name=license_version,
