@@ -547,14 +547,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if self.AuthorsListView.count() == 0:
             self.SongTabWidget.setCurrentIndex(1)
             self.AuthorsListView.setFocus()
-            answer = QtGui.QMessageBox.warning(self,
+            QtGui.QMessageBox.critical(self,
                 translate('SongsPlugin.EditSongForm', 'Warning'),
                 translate('SongsPlugin.EditSongForm',
-                'You have not added any authors for this song. Do you '
-                'want to add an author now?'),
-                QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
-            if answer == QtGui.QMessageBox.Yes:
-                return False
+                'You need to have an author for this song.'))
+            return False
         if self.song.verse_order:
             order = []
             order_names = self.song.verse_order.split()
