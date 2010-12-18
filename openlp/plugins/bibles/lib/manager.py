@@ -112,6 +112,7 @@ class BibleFormat(object):
     def get_availability(format):
         return BibleFormat._format_availability.get(format, True)
 
+
 class BibleManager(object):
     """
     The Bible manager which holds and manages all the Bibles.
@@ -311,7 +312,7 @@ class BibleManager(object):
                 'Scripture Reference Error'),
                 translate('BiblesPlugin.BibleManager', 'You did not enter a '
                 'search keyword.\nYou can separate different keywords by a '
-                'space to search for all of your keywords and you can seperate '
+                'space to search for all of your keywords and you can separate '
                 'them by a comma to search for one of them.'))
             return None
 
@@ -356,3 +357,4 @@ class BibleManager(object):
 BibleFormat.set_availability(BibleFormat.OpenLP1, has_openlp1)
 
 __all__ = [u'BibleFormat']
+
