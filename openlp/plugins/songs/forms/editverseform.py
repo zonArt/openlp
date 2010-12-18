@@ -131,6 +131,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
 
     def setVerse(self, text, single=False,
         tag = u'%s:1' % VerseType.to_string(VerseType.Verse)):
+        self.verseType = single
         if single:
             verse_type, verse_number = tag.split(u':')
             verse_type_index = VerseType.from_string(verse_type)
@@ -161,7 +162,11 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         return text
 
     def accept(self):
-        if len(unicode(self.getVerse()[0])) == 0:
+        if self.verseType:
+            value = unicode(self.getVerse()[0])
+        else:
+            value = self.getVerse()[0].split(u'\n')[1]
+        if len(value) == 0:
             QtGui.QMessageBox.critical(self,
                 translate('SongsPlugin.EditSongForm', 'Error'),
                 translate('SongsPlugin.EditSongForm',
