@@ -743,7 +743,8 @@ class BibleMediaItem(MediaManagerItem):
             second_bible = self._decodeQtObject(bitem, 'second_bible')
             second_version = self._decodeQtObject(bitem, 'second_version')
             second_copyright = self._decodeQtObject(bitem, 'second_copyright')
-            second_permissions = self._decodeQtObject(bitem, 'second_permissions')
+            second_permissions = \
+                self._decodeQtObject(bitem, 'second_permissions')
             second_text = self._decodeQtObject(bitem, 'second_text')
             verse_text = self.formatVerse(old_chapter, chapter, verse)
             footer = u'%s (%s %s %s)' % (book, version, copyright, permissions)
@@ -754,8 +755,8 @@ class BibleMediaItem(MediaManagerItem):
                     second_copyright, second_permissions)
                 if footer not in raw_footer:
                     raw_footer.append(footer)
-                bible_text = u'%s\u00a0%s\n\n%s\u00a0%s' % (verse_text, text, verse_text,
-                    second_text)
+                bible_text = u'%s\u00a0%s\n\n%s\u00a0%s' % (verse_text, text,
+                    verse_text, second_text)
                 raw_slides.append(bible_text)
                 bible_text = u''
             # If we are 'Verse Per Slide' then create a new slide.

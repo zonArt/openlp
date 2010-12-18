@@ -397,7 +397,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
                 name = unicode(line[1], u'utf-8')
                 self.web_bible_list[WebDownload.Bibleserver][ver] = name.strip()
         except IOError, UnicodeError:
-            log.exception(u'Bibelserver resources missing')
+            log.exception(u'Bibleserver resources missing')
         finally:
             if books_file:
                 books_file.close()

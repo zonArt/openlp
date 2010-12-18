@@ -43,7 +43,7 @@ def get_reference_match(match_type):
         u'sep_l_display': local_separator[4], u'sep_l': local_separator[5],
         u'sep_e': local_separator[6]}
 
-    # verse range match: (<chapter>:)?<verse>(-(<chapter>:)?<verse>?)?
+    # verse range match: (<chapter>:)?<verse>(-((<chapter>:)?<verse>|end)?)?
     range_string = str(r'(?:(?P<from_chapter>[0-9]+)%(sep_v)s)?(?P<from_verse>'
         r'[0-9]+)(?P<range_to>%(sep_r)s(?:(?:(?P<to_chapter>[0-9]+)%(sep_v)s)?'
         r'(?P<to_verse>[0-9]+)|%(sep_e)s)?)?') % separators
@@ -54,8 +54,8 @@ def get_reference_match(match_type):
     elif match_type == u'full':
         # full reference match: <book>(<range>(,|(?=$)))+
         return re.compile(str(r'^\s*(?!\s)(?P<book>[\d]*[^\d]+)(?<!\s)\s*'
-           r'(?P<ranges>(?:' + range_string + r'(?:%(sep_l)s|(?=\s*$)))+)\s*$')
-               % separators, re.UNICODE)
+            r'(?P<ranges>(?:' + range_string + r'(?:%(sep_l)s|(?=\s*$)))+)\s*$')
+                % separators, re.UNICODE)
     else:
         return separators[match_type]
 
