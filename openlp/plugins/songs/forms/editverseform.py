@@ -29,7 +29,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.plugins.songs.lib import VerseType
+from openlp.plugins.songs.lib import VerseType, translate
 
 from editversedialog import Ui_EditVerseDialog
 
@@ -130,7 +130,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
                 self.verseNumberBox.setValue(verse_number)
 
     def setVerse(self, text, single=False,
-        tag=u'%s:1' % VerseType.to_string(VerseType.Verse)):
+        tag = u'%s:1' % VerseType.to_string(VerseType.Verse)):
         if single:
             verse_type, verse_number = tag.split(u':')
             verse_type_index = VerseType.from_string(verse_type)
@@ -159,3 +159,12 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
             text = u'---[%s:1]---\n%s' % (VerseType.to_string(VerseType.Verse),
                 text)
         return text
+
+    def accept(self):
+        if len(unicode(self.getVerse()[0])) == 0:
+            QtGui.QMessageBox.critical(self,
+                translate('SongsPlugin.EditSongForm', 'Error'),
+                translate('SongsPlugin.EditSongForm',
+                'You need to type some text in to the verse.'))
+            return False
+        QtGui.QDialog.accept(self)
