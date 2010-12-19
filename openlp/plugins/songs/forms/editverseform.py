@@ -130,7 +130,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
                 self.verseNumberBox.setValue(verse_number)
 
     def setVerse(self, text, single=False,
-        tag = u'%s:1' % VerseType.to_string(VerseType.Verse)):
+        tag=u'%s:1' % VerseType.to_string(VerseType.Verse)):
         self.verseType = single
         if single:
             verse_type, verse_number = tag.split(u':')
