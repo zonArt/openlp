@@ -72,7 +72,7 @@ class SongsTab(SettingsTab):
         QtCore.QObject.connect(self.SongUpdateOnEditCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onSongUpdateOnEditCheckBoxChanged)
-        QtCore.QObject.connect(self.SongBarActiveCheckBox,
+        QtCore.QObject.connect(self.SongAddFromServiceCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onSongAddFromServiceCheckBoxChanged)
 
