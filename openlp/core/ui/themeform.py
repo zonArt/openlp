@@ -444,7 +444,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
 
     def setPreviewTabValues(self):
         self.setField(u'name', QtCore.QVariant(self.theme.theme_name))
-        if len(self.theme.theme_name) > 1:
+        if len(self.theme.theme_name) > 0:
             self.themeNameEdit.setEnabled(False)
         else:
             self.themeNameEdit.setEnabled(True)
