@@ -257,17 +257,34 @@ class BibleManager(object):
                 'Book Chapter:Verse-Chapter:Verse'))
             return None
 
-    def verse_search(self, bible, text):
+    def verse_search(self, bible, second_bible, text):
         """
         Does a verse search for the given bible and text.
 
         ``bible``
             The bible to seach in (unicode).
 
+        ``second_bible``
+            The second bible (unicode). We do not search in this bible.
+
         ``text``
             The text to search for (unicode).
         """
-        log.debug(u'BibleManager.verse_search("%s", "%s")', bible,  text)
+        log.debug(u'BibleManager.verse_search("%s", "%s")', bible, text)
+        # Check if the bible or second_bible is a web bible.
+        webbible = self.db_cache[bible].get_object(BibleMeta,
+            u'download source')
+        second_webbible = u''
+        if second_bible:
+            second_webbible = self.db_cache[second_bible].get_object(BibleMeta,
+                u'download source')
+        if webbible or second_webbible:
+            QtGui.QMessageBox.information(self.parent.mediaItem,
+                translate('BiblesPlugin.BibleManager',
+                'Web Bible cannot be used'),
+                translate('BiblesPlugin.BibleManager', 'Text Search is not '
+                'available with Web Bibles.'))
+            return None
         if text:
             return self.db_cache[bible].verse_search(text)
         else:
@@ -317,4 +334,3 @@ class BibleManager(object):
         """
         for bible in self.db_cache:
             self.db_cache[bible].finalise()
-

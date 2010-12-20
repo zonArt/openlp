@@ -759,7 +759,7 @@ class ServiceManager(QtGui.QWidget):
                     self.onNewService()
                     for item in items:
                         serviceitem = ServiceItem()
-                        serviceitem.render_manager = self.parent.RenderManager
+                        serviceitem.render_manager = self.parent.renderManager
                         serviceitem.set_from_service(item, self.servicePath)
                         self.validateItem(serviceitem)
                         self.addServiceItem(serviceitem)
@@ -789,6 +789,8 @@ class ServiceManager(QtGui.QWidget):
         self.serviceName = name[len(name) - 1]
         self.parent.addRecentFile(filename)
         self.parent.serviceChanged(True, self.serviceName)
+        # Refresh Plugin lists
+        Receiver.send_message(u'plugin_list_refresh')
 
     def validateItem(self, serviceItem):
         """
@@ -818,7 +820,7 @@ class ServiceManager(QtGui.QWidget):
         """
         log.debug(u'onThemeComboBoxSelected')
         self.service_theme = unicode(self.themeComboBox.currentText())
-        self.parent.RenderManager.set_service_theme(self.service_theme)
+        self.parent.renderManager.set_service_theme(self.service_theme)
         QtCore.QSettings().setValue(
             self.parent.serviceSettingsSection + u'/service theme',
             QtCore.QVariant(self.service_theme))
@@ -830,7 +832,7 @@ class ServiceManager(QtGui.QWidget):
         sure the theme combo box is in the correct state.
         """
         log.debug(u'themeChange')
-        if self.parent.RenderManager.theme_level == ThemeLevel.Global:
+        if self.parent.renderManager.theme_level == ThemeLevel.Global:
             self.toolbar.actions[u'ThemeLabel'].setVisible(False)
             self.toolbar.actions[u'ThemeWidget'].setVisible(False)
         else:
@@ -844,7 +846,7 @@ class ServiceManager(QtGui.QWidget):
         """
         log.debug(u'regenerateServiceItems')
         # force reset of renderer as theme data has changed
-        self.parent.RenderManager.themedata = None
+        self.parent.renderManager.themedata = None
         if self.serviceItems:
             tempServiceItems = self.serviceItems
             self.serviceManagerList.clear()
@@ -1028,6 +1030,9 @@ class ServiceManager(QtGui.QWidget):
             # ServiceManager started the drag and drop
             if plugin == u'ServiceManager':
                 startpos, startCount = self.findServiceItem()
+                # If no items selected
+                if startpos == -1:
+                    return
                 if item is None:
                     endpos = len(self.serviceItems)
                 else:
@@ -1083,7 +1088,7 @@ class ServiceManager(QtGui.QWidget):
             index = 0
             self.service_theme = u''
         self.themeComboBox.setCurrentIndex(index)
-        self.parent.RenderManager.set_service_theme(self.service_theme)
+        self.parent.renderManager.set_service_theme(self.service_theme)
         self.regenerateServiceItems()
 
     def onThemeChangeAction(self):
