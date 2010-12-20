@@ -231,7 +231,7 @@ class BibleDB(QtCore.QObject, Manager):
 
     def create_chapter(self, book_id, chapter, textlist):
         """
-        Add a chapter and it's verses to a book.
+        Add a chapter and its verses to a book.
 
         ``book_id``
             The id of the book being appended.

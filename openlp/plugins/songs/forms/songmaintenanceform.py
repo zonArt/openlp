@@ -411,7 +411,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         """
         existing_author = self.manager.get_object_filtered(Author,
             and_(Author.first_name == old_author.first_name,
-                Author.last_name == old_author.last_name, 
+                Author.last_name == old_author.last_name,
                 Author.display_name == old_author.display_name))
         songs = self.manager.get_all_objects(Song,
             Song.authors.contains(old_author))

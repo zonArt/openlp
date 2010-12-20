@@ -62,6 +62,9 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSingleClick)
 
     def loadList(self):
+        """
+        Loads the list with alerts.
+        """
         self.AlertListWidget.clear()
         alerts = self.manager.get_all_objects(AlertItem,
             order_by_ref=AlertItem.text)
@@ -81,12 +84,16 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             self.close()
 
     def onDeleteClick(self):
+        """
+        Deletes the selected item.
+        """
         item = self.AlertListWidget.currentItem()
         if item:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.manager.delete_object(AlertItem, item_id)
             row = self.AlertListWidget.row(item)
             self.AlertListWidget.takeItem(row)
+        self.item_id = None
         self.AlertTextEdit.setText(u'')
         self.SaveButton.setEnabled(False)
         self.DeleteButton.setEnabled(False)
@@ -96,8 +103,8 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             QtGui.QMessageBox.information(self,
                 translate('AlertsPlugin.AlertForm', 'New Alert'),
                 translate('AlertsPlugin.AlertForm', 'You haven\'t specified '
-                    'any text for your alert. Please type in some text before '
-                    'clicking New.'))
+                'any text for your alert. Please type in some text before '
+                'clicking New.'))
         else:
             alert = AlertItem()
             alert.text = unicode(self.AlertTextEdit.text())
@@ -107,7 +114,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
 
     def onSaveClick(self):
         """
-        Save an alert
+        Save the alert, we are editing.
         """
         if self.item_id:
             alert = self.manager.get_object(AlertItem, self.item_id)
@@ -115,14 +122,14 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             self.manager.save_object(alert)
             self.item_id = None
             self.loadList()
-        else:
-            self.onNewClick()
 
     def onTextChanged(self):
         """
         Enable save button when data has been changed by editing the form
         """
-        self.SaveButton.setEnabled(True)
+        # Only enable the button, if we are editing an item.
+        if self.item_id:
+            self.SaveButton.setEnabled(True)
 
     def onDoubleClick(self):
         """
@@ -131,8 +138,8 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         items = self.AlertListWidget.selectedIndexes()
         for item in items:
             bitem = self.AlertListWidget.item(item.row())
-            self.triggerAlert(bitem.text())
-            self.AlertTextEdit.setText(bitem.text())
+            self.triggerAlert(unicode(bitem.text()))
+            self.AlertTextEdit.setText(unicode(bitem.text()))
             self.item_id = (bitem.data(QtCore.Qt.UserRole)).toInt()[0]
         self.SaveButton.setEnabled(False)
         self.DeleteButton.setEnabled(True)
@@ -145,13 +152,45 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         items = self.AlertListWidget.selectedIndexes()
         for item in items:
             bitem = self.AlertListWidget.item(item.row())
-            self.AlertTextEdit.setText(bitem.text())
+            self.AlertTextEdit.setText(unicode(bitem.text()))
             self.item_id = (bitem.data(QtCore.Qt.UserRole)).toInt()[0]
+        # If the alert does not contain '<>' we clear the ParameterEdit field.
+        if unicode(self.AlertTextEdit.text()).find(u'<>') == -1:
+            self.ParameterEdit.setText(u'')
         self.SaveButton.setEnabled(False)
         self.DeleteButton.setEnabled(True)
 
     def triggerAlert(self, text):
+        """
+        Prepares the alert text for displaying.
+
+        ``text``
+            The alert text (unicode).
+        """
         if text:
+            # We found '<>' in the alert text, but the ParameterEdit field is
+            # empty.
+            if text.find(u'<>') != -1 and not self.ParameterEdit.text() and \
+                QtGui.QMessageBox.question(self, translate(
+                    'AlertPlugin.AlertForm', 'No Parameter found'),
+                    translate('AlertPlugin.AlertForm', 'You have not entered a '
+                    'parameter to be replaced.\nDo you want to continue '
+                    'anyway?'),
+                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
+                    QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
+                    self.ParameterEdit.setFocus()
+                    return False
+            # The ParameterEdit field is not empty, but we have not found '<>'
+            # in the alert text.
+            elif text.find(u'<>') == -1 and self.ParameterEdit.text() and \
+                QtGui.QMessageBox.question(self, translate(
+                    'AlertPlugin.AlertForm', 'No Placeholder found'),
+                    translate('AlertPlugin.AlertForm', 'The alert text does not'
+                    ' contain \'<>\'.\nDo want to continue anyway?'),
+                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
+                    QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
+                    self.ParameterEdit.setFocus()
+                    return False
             text = text.replace(u'<>', unicode(self.ParameterEdit.text()))
             self.parent.alertsmanager.displayAlert(text)
             return True

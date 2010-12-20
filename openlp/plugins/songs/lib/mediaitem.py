@@ -25,6 +25,8 @@
 ###############################################################################
 
 import logging
+import locale
+import re
 
 from PyQt4 import QtCore, QtGui
 
@@ -41,6 +43,7 @@ class SongListView(BaseListWithDnD):
     def __init__(self, parent=None):
         self.PluginName = u'Songs'
         BaseListWithDnD.__init__(self, parent)
+
 
 class SongMediaItem(MediaManagerItem):
     """
@@ -61,6 +64,7 @@ class SongMediaItem(MediaManagerItem):
         # which Song is required.
         self.remoteSong = -1
         self.editItem = None
+        self.whitespace = re.compile(r'\W+', re.UNICODE)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -173,8 +177,8 @@ class SongMediaItem(MediaManagerItem):
         if search_type == 0:
             log.debug(u'Titles Search')
             search_results = self.parent.manager.get_all_objects(Song,
-                Song.search_title.like(u'%' + search_keywords.lower() + u'%'),
-                Song.search_title.asc())
+                Song.search_title.like(u'%' + self.whitespace.sub(u' ',
+                search_keywords.lower()) + u'%'), Song.search_title.asc())
             self.displayResultsSong(search_results)
         elif search_type == 1:
             log.debug(u'Lyrics Search')
@@ -213,6 +217,7 @@ class SongMediaItem(MediaManagerItem):
     def displayResultsSong(self, searchresults):
         log.debug(u'display results Song')
         self.listView.clear()
+        searchresults.sort(cmp=self.collateSongTitles)
         for song in searchresults:
             author_list = u''
             for author in song.authors:
@@ -366,7 +371,7 @@ class SongMediaItem(MediaManagerItem):
                         verse[1][:30], unicode(verse[1]), verseTag)
             else:
                 # Loop through the verse list and expand the song accordingly.
-                for order in song.verse_order.upper().split(u' '):
+                for order in song.verse_order.upper().split():
                     if len(order) == 0:
                         break
                     for verse in verseList:
@@ -388,9 +393,9 @@ class SongMediaItem(MediaManagerItem):
             author_audit.append(unicode(author.display_name))
         raw_footer.append(song.title)
         raw_footer.append(author_list)
-        raw_footer.append(song.copyright )
+        raw_footer.append(song.copyright)
         raw_footer.append(unicode(
-            translate('SongsPlugin.MediaItem', 'CCLI Licence: ') +
+            translate('SongsPlugin.MediaItem', 'CCLI License: ') +
             QtCore.QSettings().value(u'general/ccli number',
             QtCore.QVariant(u'')).toString()))
         service_item.raw_footer = raw_footer
@@ -413,27 +418,43 @@ class SongMediaItem(MediaManagerItem):
                     item.data_string[u'title'].split(u'@')[0].lower() ,
                 Song.search_title.asc())
             author_list = item.data_string[u'authors'].split(u', ')
+            # The service item always has an author (at least it has u'' as
+            # author). However, songs saved in the database do not have to have
+            # an author.
+            if u'' in author_list:
+                author_list.remove(u'')
             editId = 0
             uuid = item._uuid
+            add_song = True
             if search_results:
                 for song in search_results:
-                    count = 0
-                    for author in song.authors:
-                        if author.display_name in author_list:
-                            count += 1
-                    # All Authors the same
-                    if count == len(author_list):
-                        editId = song.id
+                    same_authors = True
+                    # If the author counts are different, we do not have to do
+                    # any further checking. This is also important when a song
+                    # does not have any author (because we can not loop over an
+                    # empty list).
+                    if len(song.authors) == len(author_list):
+                        for author in song.authors:
+                            if author.display_name not in author_list:
+                                same_authors = False
                     else:
-                        # Authors different
-                        if self.addSongFromService:
-                            editId = self.openLyrics. \
-                                xml_to_song(item.xml_version)
-            else:
-                # Title does not match
+                        same_authors = False
+                    # All authors are the same, so we can stop here and the song
+                    # does not have to be saved.
+                    if same_authors:
+                        add_song = False
+                        editId = song.id
+                        break
+            if add_song:
                 if self.addSongFromService:
                     editId = self.openLyrics.xml_to_song(item.xml_version)
-            # Update service with correct song id
+            # Update service with correct song id.
             if editId != 0:
                 Receiver.send_message(u'service_item_update',
                     u'%s:%s' %(editId, uuid))
+
+    def collateSongTitles(self, song_1, song_2):
+        """
+        Locale aware collation of song titles
+        """
+        return locale.strcoll(unicode(song_1.title), unicode(song_2.title))
