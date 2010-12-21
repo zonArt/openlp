@@ -33,10 +33,16 @@ from openlp.core.utils import AppLocation
 from openlp.plugins.bibles.lib import parse_reference
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
 
-from opensong import OpenSongBible
-from osis import OSISBible
 from csvbible import CSVBible
 from http import HTTPBible
+from opensong import OpenSongBible
+from osis import OSISBible
+# Imports that might fail.
+try:
+    from openlp1 import OpenLP1Bible
+    has_openlp1 = True
+except ImportError:
+    has_openlp1 = False
 
 log = logging.getLogger(__name__)
 
@@ -56,11 +62,13 @@ class BibleFormat(object):
     plus a few helper functions to facilitate generic handling of Bible types
     for importing.
     """
+    _format_availability = {}
     Unknown = -1
     OSIS = 0
     CSV = 1
     OpenSong = 2
     WebDownload = 3
+    OpenLP1 = 4
 
     @staticmethod
     def get_class(format):
@@ -78,6 +86,8 @@ class BibleFormat(object):
             return OpenSongBible
         elif format == BibleFormat.WebDownload:
             return HTTPBible
+        elif format == BibleFormat.OpenLP1:
+            return OpenLP1Bible
         else:
             return None
 
@@ -90,8 +100,17 @@ class BibleFormat(object):
             BibleFormat.OSIS,
             BibleFormat.CSV,
             BibleFormat.OpenSong,
-            BibleFormat.WebDownload
+            BibleFormat.WebDownload,
+            BibleFormat.OpenLP1
         ]
+
+    @staticmethod
+    def set_availability(format, available):
+        BibleFormat._format_availability[format] = available
+
+    @staticmethod
+    def get_availability(format):
+        return BibleFormat._format_availability.get(format, True)
 
 
 class BibleManager(object):
@@ -257,17 +276,34 @@ class BibleManager(object):
                 'Book Chapter:Verse-Chapter:Verse'))
             return None
 
-    def verse_search(self, bible, text):
+    def verse_search(self, bible, second_bible, text):
         """
         Does a verse search for the given bible and text.
 
         ``bible``
             The bible to seach in (unicode).
 
+        ``second_bible``
+            The second bible (unicode). We do not search in this bible.
+
         ``text``
             The text to search for (unicode).
         """
-        log.debug(u'BibleManager.verse_search("%s", "%s")', bible,  text)
+        log.debug(u'BibleManager.verse_search("%s", "%s")', bible, text)
+        # Check if the bible or second_bible is a web bible.
+        webbible = self.db_cache[bible].get_object(BibleMeta,
+            u'download source')
+        second_webbible = u''
+        if second_bible:
+            second_webbible = self.db_cache[second_bible].get_object(BibleMeta,
+                u'download source')
+        if webbible or second_webbible:
+            QtGui.QMessageBox.information(self.parent.mediaItem,
+                translate('BiblesPlugin.BibleManager',
+                'Web Bible cannot be used'),
+                translate('BiblesPlugin.BibleManager', 'Text Search is not '
+                'available with Web Bibles.'))
+            return None
         if text:
             return self.db_cache[bible].verse_search(text)
         else:
@@ -276,7 +312,7 @@ class BibleManager(object):
                 'Scripture Reference Error'),
                 translate('BiblesPlugin.BibleManager', 'You did not enter a '
                 'search keyword.\nYou can separate different keywords by a '
-                'space to search for all of your keywords and you can seperate '
+                'space to search for all of your keywords and you can separate '
                 'them by a comma to search for one of them.'))
             return None
 
@@ -317,4 +353,8 @@ class BibleManager(object):
         """
         for bible in self.db_cache:
             self.db_cache[bible].finalise()
+
+BibleFormat.set_availability(BibleFormat.OpenLP1, has_openlp1)
+
+__all__ = [u'BibleFormat']
 

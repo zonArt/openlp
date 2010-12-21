@@ -331,10 +331,8 @@ class SlideController(QtGui.QWidget):
         QtCore.QObject.connect(self.PreviewListWidget,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
         if not self.isLive:
-            if QtCore.QSettings().value(u'advanced/double click live',
-                QtCore.QVariant(False)).toBool():
-                QtCore.QObject.connect(self.PreviewListWidget,
-                    QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onGoLive)
+            QtCore.QObject.connect(self.PreviewListWidget,
+                QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onGoLiveClick)
         if isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'slidecontroller_live_spin_delay'),
@@ -391,6 +389,8 @@ class SlideController(QtGui.QWidget):
         if self.isLive:
             QtCore.QObject.connect(self.volumeSlider,
                 QtCore.SIGNAL(u'sliderReleased()'), self.mediaVolume)
+            QtCore.QObject.connect(Receiver.get_receiver(),
+                QtCore.SIGNAL(u'maindisplay_active'), self.updatePreview)
 
     def screenSizeChanged(self):
         """
@@ -400,7 +400,7 @@ class SlideController(QtGui.QWidget):
         log.debug(u'screenSizeChanged live = %s' % self.isLive)
         # rebuild display as screen size changed
         self.display = MainDisplay(self, self.screens, self.isLive)
-        self.display.imageManager = self.parent.RenderManager.image_manager
+        self.display.imageManager = self.parent.renderManager.image_manager
         self.display.alertTab = self.alertTab
         self.ratio = float(self.screens.current[u'size'].width()) / \
             float(self.screens.current[u'size'].height())
@@ -416,7 +416,7 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'widthChanged live = %s' % self.isLive)
         width = self.parent.ControlSplitter.sizes()[self.split]
-        height = width * self.parent.RenderManager.screen_ratio
+        height = width * self.parent.renderManager.screen_ratio
         self.PreviewListWidget.setColumnWidth(0, width)
         # Sort out image heights (Songs, bibles excluded)
         if self.serviceItem and not self.serviceItem.is_text():
@@ -466,7 +466,7 @@ class SlideController(QtGui.QWidget):
         self.Toolbar.actions[u'Stop Loop'].setVisible(False)
         if item.is_text():
             if QtCore.QSettings().value(
-                self.parent.songsSettingsSection + u'/show songbar',
+                self.parent.songsSettingsSection + u'/display songbar',
                 QtCore.QVariant(True)).toBool() and len(self.slideList) > 0:
                 self.Toolbar.makeWidgetsVisible([u'Song Menu'])
         if item.is_capable(ItemCapabilities.AllowsLoop) and \
@@ -560,7 +560,7 @@ class SlideController(QtGui.QWidget):
             [serviceItem, self.isLive, blanked, slideno])
         self.slideList = {}
         width = self.parent.ControlSplitter.sizes()[self.split]
-        # Set pointing cursor when we have somthing to point at
+        # Set pointing cursor when we have something to point at
         self.PreviewListWidget.setCursor(QtCore.Qt.PointingHandCursor)
         self.serviceItem = serviceItem
         self.PreviewListWidget.clear()
@@ -595,14 +595,14 @@ class SlideController(QtGui.QWidget):
                 label.setScaledContents(True)
                 if self.serviceItem.is_command():
                     image = resize_image(frame[u'image'],
-                        self.parent.RenderManager.width,
-                        self.parent.RenderManager.height)
+                        self.parent.renderManager.width,
+                        self.parent.renderManager.height)
                 else:
-                    image = self.parent.RenderManager.image_manager. \
+                    image = self.parent.renderManager.image_manager. \
                             get_image(frame[u'title'])
                 label.setPixmap(QtGui.QPixmap.fromImage(image))
                 self.PreviewListWidget.setCellWidget(framenumber, 0, label)
-                slideHeight = width * self.parent.RenderManager.screen_ratio
+                slideHeight = width * self.parent.renderManager.screen_ratio
                 row += 1
             text.append(unicode(row))
             self.PreviewListWidget.setItem(framenumber, 0, item)
@@ -823,16 +823,15 @@ class SlideController(QtGui.QWidget):
             row)
 
     def updatePreview(self):
+        log.debug(u'updatePreview %s ' %self.screens.current[u'primary'])
         if not self.screens.current[u'primary']:
             # Grab now, but try again in a couple of seconds if slide change
             # is slow
             QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
             QtCore.QTimer.singleShot(2.5, self.grabMainDisplay)
         else:
-            label = self.PreviewListWidget.cellWidget(
-                self.PreviewListWidget.currentRow(), 1)
-            if label:
-                self.SlidePreview.setPixmap(label.pixmap())
+            self.SlidePreview.setPixmap(
+                QtGui.QPixmap.fromImage(self.display.preview()))
 
     def grabMainDisplay(self):
         winid = QtGui.QApplication.desktop().winId()
@@ -944,13 +943,21 @@ class SlideController(QtGui.QWidget):
         Receiver.send_message(u'%s_edit' % self.serviceItem.name.lower(),
             u'P:%s' % self.serviceItem.edit_id)
 
+    def onGoLiveClick(self):
+        """
+        triggered by clicking the Preview slide items
+        """
+        if QtCore.QSettings().value(u'advanced/double click live',
+            QtCore.QVariant(False)).toBool():
+            self.onGoLive()
+
     def onGoLive(self):
         """
         If preview copy slide item to live
         """
         row = self.PreviewListWidget.currentRow()
         if row > -1 and row < self.PreviewListWidget.rowCount():
-            self.parent.LiveController.addServiceManagerItem(
+            self.parent.liveController.addServiceManagerItem(
                 self.serviceItem, row)
 
     def onMediaStart(self, item):

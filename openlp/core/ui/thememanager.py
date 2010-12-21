@@ -225,10 +225,10 @@ class ThemeManager(QtGui.QWidget):
         """
         item = self.themeListWidget.currentItem()
         oldThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
-        self.fileRenameForm.FileNameEdit.setText(oldThemeName)
+        self.fileRenameForm.fileNameEdit.setText(oldThemeName)
         self.saveThemeName = u''
         if self.fileRenameForm.exec_():
-            newThemeName =  unicode(self.fileRenameForm.FileNameEdit.text())
+            newThemeName =  unicode(self.fileRenameForm.fileNameEdit.text())
             oldThemeData = self.getThemeData(oldThemeName)
             self.deleteTheme(oldThemeName)
             self.cloneThemeData(oldThemeData, newThemeName)
@@ -239,10 +239,10 @@ class ThemeManager(QtGui.QWidget):
         """
         item = self.themeListWidget.currentItem()
         oldThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
-        self.fileRenameForm.FileNameEdit.setText(oldThemeName)
+        self.fileRenameForm.fileNameEdit.setText(oldThemeName)
         self.saveThemeName = u''
         if self.fileRenameForm.exec_():
-            newThemeName =  unicode(self.fileRenameForm.FileNameEdit.text())
+            newThemeName =  unicode(self.fileRenameForm.fileNameEdit.text())
             themeData = self.getThemeData(oldThemeName)
             self.cloneThemeData(themeData, newThemeName)
             self.loadThemes()
@@ -280,7 +280,7 @@ class ThemeManager(QtGui.QWidget):
             self.saveThemeName = unicode(
                 item.data(QtCore.Qt.UserRole).toString())
             self.themeForm.theme = theme
-            self.themeForm.exec_()
+            self.themeForm.exec_(True)
 
     def onDeleteTheme(self):
         """
@@ -310,7 +310,7 @@ class ThemeManager(QtGui.QWidget):
                     translate('OpenLP.ThemeManager',
                         'You are unable to delete the default theme.'))
             else:
-                for plugin in self.parent.plugin_manager.plugins:
+                for plugin in self.parent.pluginManager.plugins:
                     if plugin.usesTheme(theme):
                         QtGui.QMessageBox.critical(self,
                             translate('OpenLP.ThemeManager', 'Error'),
@@ -627,7 +627,8 @@ class ThemeManager(QtGui.QWidget):
             newtheme.font_main_shadow_color = unicode(theme.ShadowColor.name())
         if theme.Outline == 1:
             newtheme.font_main_outline = True
-            newtheme.font_main_outline_color = unicode(theme.OutlineColor.name())
+            newtheme.font_main_outline_color = \
+                unicode(theme.OutlineColor.name())
         vAlignCorrection = 0
         if theme.VerticalAlign == 2:
             vAlignCorrection = 1
@@ -662,7 +663,7 @@ class ThemeManager(QtGui.QWidget):
                     (QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
                     QtGui.QMessageBox.No)
             if self.saveThemeName != u'':
-                for plugin in self.parent.plugin_manager.plugins:
+                for plugin in self.parent.pluginManager.plugins:
                     if plugin.usesTheme(self.saveThemeName):
                         plugin.renameTheme(self.saveThemeName, name)
                 if unicode(self.serviceComboBox.currentText()) == name:
@@ -749,7 +750,7 @@ class ThemeManager(QtGui.QWidget):
             Flag to tell message lines per page need to be generated.
         """
         log.debug(u'generateImage \n%s ', themeData)
-        return self.parent.RenderManager.generate_preview(themeData, forcePage)
+        return self.parent.renderManager.generate_preview(themeData, forcePage)
 
     def getPreviewImage(self, theme):
         """

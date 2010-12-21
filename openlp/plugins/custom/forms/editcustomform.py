@@ -46,7 +46,6 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         Constructor
         """
         QtGui.QDialog.__init__(self, parent)
-        #self.parent = parent
         self.setupUi(self)
         # Connecting signals and slots
         self.previewButton = QtGui.QPushButton()
@@ -124,8 +123,9 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
                 self.slideListView.addItem(slide[1])
             theme = self.customSlide.theme_name
             id = self.themeComboBox.findText(theme, QtCore.Qt.MatchExactly)
+            # No theme match
             if id == -1:
-                id = 0 # Not Found
+                id = 0
             self.themeComboBox.setCurrentIndex(id)
         else:
             self.themeComboBox.setCurrentIndex(0)
@@ -224,27 +224,24 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         ``edit_all``
             Indicates if all slides or only one slide has been edited.
         """
-        if len(slides) == 1:
-            self.slideListView.currentItem().setText(slides[0])
+        if edit_all:
+            self.slideListView.clear()
+            for slide in slides:
+                self.slideListView.addItem(slide)
         else:
-            if edit_all:
-                self.slideListView.clear()
-                for slide in slides:
-                    self.slideListView.addItem(slide)
-            else:
-                old_slides = []
-                old_row = self.slideListView.currentRow()
-                # Create a list with all (old/unedited) slides.
-                old_slides = [self.slideListView.item(row).text() for row in \
-                    range(0, self.slideListView.count())]
-                self.slideListView.clear()
-                old_slides.pop(old_row)
-                # Insert all slides to make the old_slides list complete.
-                for slide in slides:
-                    old_slides.insert(old_row, slide)
-                for slide in old_slides:
-                    self.slideListView.addItem(slide)
-            self.slideListView.repaint()
+            old_slides = []
+            old_row = self.slideListView.currentRow()
+            # Create a list with all (old/unedited) slides.
+            old_slides = [self.slideListView.item(row).text() for row in \
+                range(0, self.slideListView.count())]
+            self.slideListView.clear()
+            old_slides.pop(old_row)
+            # Insert all slides to make the old_slides list complete.
+            for slide in slides:
+                old_slides.insert(old_row, slide)
+            for slide in old_slides:
+                self.slideListView.addItem(slide)
+        self.slideListView.repaint()
 
     def onDeleteButtonPressed(self):
         self.slideListView.takeItem(self.slideListView.currentRow())
@@ -264,7 +261,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             self.titleEdit.setFocus()
             return False, translate('CustomPlugin.EditCustomForm',
                 'You need to type in a title.')
-        # We must have one slide.
+        # We must have at least one slide.
         if self.slideListView.count() == 0:
             return False, translate('CustomPlugin.EditCustomForm',
                 'You need to add at least one slide')

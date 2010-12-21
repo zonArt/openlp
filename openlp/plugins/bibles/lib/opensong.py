@@ -44,10 +44,8 @@ class OpenSongBible(BibleDB):
         Constructor to create and set up an instance of the OpenSongBible
         class. This class is used to import Bibles from OpenSong's XML format.
         """
-        log.debug(__name__)
+        log.debug(self.__class__.__name__)
         BibleDB.__init__(self, parent, **kwargs)
-        if 'filename' not in kwargs:
-            raise KeyError(u'You have to supply a file name to import from.')
         self.filename = kwargs['filename']
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'bibles_stop_import'), self.stop_import)
@@ -59,7 +57,6 @@ class OpenSongBible(BibleDB):
         log.debug(u'Starting OpenSong import from "%s"' % self.filename)
         if not isinstance(self.filename, unicode):
             self.filename = unicode(self.filename, u'utf8')
-        self.wizard.incrementProgressBar(u'Preparing for import...')
         file = None
         success = True
         try:
@@ -87,10 +84,9 @@ class OpenSongBible(BibleDB):
                             unicode(verse.text)
                         )
                         Receiver.send_message(u'openlp_process_events')
-                    self.wizard.incrementProgressBar(
-                        QtCore.QString('%s %s %s' % (
-                            translate('BiblesPlugin.Opensong', 'Importing'),
-                            db_book.name, chapter.attrib[u'n'])))
+                    self.wizard.incrementProgressBar(u'%s %s %s...' % (
+                        translate('BiblesPlugin.Opensong', 'Importing'),
+                        db_book.name, chapter.attrib[u'n']))
                     self.session.commit()
         except IOError:
             log.exception(u'Loading bible from OpenSong file failed')
@@ -99,7 +95,6 @@ class OpenSongBible(BibleDB):
             if file:
                 file.close()
         if self.stop_import_flag:
-            self.wizard.incrementProgressBar(u'Import canceled!')
             return False
         else:
             return success
