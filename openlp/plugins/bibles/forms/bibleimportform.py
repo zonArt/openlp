@@ -253,14 +253,15 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         """
         self.getFileName(
             translate('BiblesPlugin.ImportWizardForm', 'Open Books CSV File'),
-            self.booksLocationEdit)
+            self.booksLocationEdit, u'CSV File (*.csv)')
 
     def onCsvVersesFileButtonClicked(self):
         """
         Show the file open dialog for the verses CSV file.
         """
         self.getFileName(translate('BiblesPlugin.ImportWizardForm',
-            'Open Verses CSV File'), self.csvVerseLocationEdit)
+            'Open Verses CSV File'), self.csvVerseLocationEdit,
+            u'CSV File (*.csv)')
 
     def onOpenSongBrowseButtonClicked(self):
         """
@@ -276,7 +277,8 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         """
         self.getFileName(
             translate('BiblesPlugin.ImportWizardForm',
-            'Open openlp.org 1.x Bible'), self.openlp1LocationEdit)
+            'Open openlp.org 1.x Bible'), self.openlp1LocationEdit,
+            u'openlp.org (*.bible)')
 
     def onCurrentIdChanged(self, pageId):
         if pageId == 3:
@@ -402,9 +404,29 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
             if books_file:
                 books_file.close()
 
-    def getFileName(self, title, editbox):
+    def getFileName(self, title, editbox, filters=u''):
+        """
+        Opens a QFileDialog and saves the filename to the given editbox.
+
+        ``title``
+            The title of the dialog (unicode).
+
+        ``editbox``
+            A editbox (QLineEdit).
+
+        ``filters``
+            The file extension filters. It should contain the file description as
+            well as the file extension. For example::
+
+                u'openlp.org (*.bible)'
+        """
+        if filters:
+            filters += u';;'
+        filters += u'%s (*)' % translate('BiblesPlugin.ImportWizardForm',
+            'All Files')
         filename = QtGui.QFileDialog.getOpenFileName(self, title,
-            SettingsManager.get_last_dir(self.bibleplugin.settingsSection, 1))
+            os.path.dirname(SettingsManager.get_last_dir(
+            self.bibleplugin.settingsSection, 1)), filters)
         if filename:
             editbox.setText(filename)
             SettingsManager.set_last_dir(
