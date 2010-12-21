@@ -166,6 +166,17 @@ class Ui_AboutDialog(object):
             '    PyQt4: http://www.riverbankcomputing.co.uk/software/pyqt/'
             'intro\n'
             '    Oxygen Icons: http://oxygen-icons.org/\n'
+            '\n'
+            'Final Credit\n'
+            '    "For God so loved the world that He gave\n'
+            '    His one and only Son, so that whoever\n'
+            '    believes in Him will not perish but inherit\n'
+            '    eternal life."  -- John 3:16\n\n'
+            '    And last but not least, final credit goes to\n'
+            '    God our Father, for sending His Son to die\n'
+            '    on the cross, setting us free from sin. We\n'
+            '    bring this software to you for free because\n'
+            '    He has set us free.'
         ))
         self.aboutNotebook.setTabText(
             self.aboutNotebook.indexOf(self.creditsTab),
