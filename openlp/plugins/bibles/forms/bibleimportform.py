@@ -420,7 +420,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
             The file extension filters. It should contain the file description as
             well as the file extension. For example::
 
-                u'openlp.org (*.bible)'
+                u'openlp.org 1.x bible (*.bible)'
         """
         if filters:
             filters += u';;'
