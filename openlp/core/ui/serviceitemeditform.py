@@ -64,8 +64,7 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
             self.item._raw_frames = []
             if self.item.is_image():
                 for item in self.itemList:
-                    self.item.add_from_image(item[u'path'], item[u'title'],
-                        item[u'image'])
+                    self.item.add_from_image(item[u'path'], item[u'title'])
             self.item.render()
         return self.item
 
