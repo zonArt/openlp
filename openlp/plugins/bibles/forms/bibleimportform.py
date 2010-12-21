@@ -253,15 +253,16 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         """
         self.getFileName(
             translate('BiblesPlugin.ImportWizardForm', 'Open Books CSV File'),
-            self.booksLocationEdit, u'CSV File (*.csv)')
+            self.booksLocationEdit, u'%s (*.csv)'
+            % translate('BiblesPlugin.ImportWizardForm', 'CSV File'))
 
     def onCsvVersesFileButtonClicked(self):
         """
         Show the file open dialog for the verses CSV file.
         """
         self.getFileName(translate('BiblesPlugin.ImportWizardForm',
-            'Open Verses CSV File'), self.csvVerseLocationEdit,
-            u'CSV File (*.csv)')
+            'Open Verses CSV File'), self.csvVerseLocationEdit, u'%s (*.csv)'
+            % translate('BiblesPlugin.ImportWizardForm', 'CSV File'))
 
     def onOpenSongBrowseButtonClicked(self):
         """
@@ -278,7 +279,8 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         self.getFileName(
             translate('BiblesPlugin.ImportWizardForm',
             'Open openlp.org 1.x Bible'), self.openlp1LocationEdit,
-            u'openlp.org (*.bible)')
+            u'%s (*.bible)' % translate('BiblesPlugin.ImportWizardForm',
+            'openlp.org 1.x bible'))
 
     def onCurrentIdChanged(self, pageId):
         if pageId == 3:
