@@ -555,7 +555,8 @@ class Ui_ThemeWizard(object):
             u'footerDefaultPositionCheckBox')
         self.footerPositionLayout.setWidget(0, QtGui.QFormLayout.FieldRole,
             self.footerDefaultPositionCheckBox)
-        self.areaPositionLayout.addWidget(self.footerPositionGroupBox, 1, 1, 1, 1)
+        self.areaPositionLayout.addWidget(
+            self.footerPositionGroupBox, 1, 1, 1, 1)
         ThemeWizard.addPage(self.areaPositionPage)
         self.previewPage = QtGui.QWizardPage()
         self.previewPage.setObjectName(u'previewPage')
@@ -720,8 +721,8 @@ class Ui_ThemeWizard(object):
         self.areaPositionPage.setTitle(
             translate('OpenLP.ThemeWizard', 'Output Area Locations'))
         self.areaPositionPage.setSubTitle(
-            translate('OpenLP.ThemeWizard', 'Allows you to change and move the '
-                'main and footer areas.'))
+            translate('OpenLP.ThemeWizard', 'Allows you to change and move the'
+                ' main and footer areas.'))
         self.mainPositionGroupBox.setTitle(
             translate('OpenLP.ThemeWizard', '&Main Area'))
         self.mainDefaultPositionCheckBox.setText(
@@ -733,18 +734,24 @@ class Ui_ThemeWizard(object):
         self.mainWidthSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'px'))
         self.mainWidthLabel.setText(translate('OpenLP.ThemeWizard', 'Width:'))
         self.mainHeightSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'px'))
-        self.mainHeightLabel.setText(translate('OpenLP.ThemeWizard', 'Height:'))
+        self.mainHeightLabel.setText(
+            translate('OpenLP.ThemeWizard', 'Height:'))
         self.footerPositionGroupBox.setTitle(
             translate('OpenLP.ThemeWizard', 'Footer Area'))
-        self.footerXLabel.setText(translate('OpenLP.ThemeWizard', 'X position:'))
+        self.footerXLabel.setText(
+            translate('OpenLP.ThemeWizard', 'X position:'))
         self.footerXSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'px'))
-        self.footerYLabel.setText(translate('OpenLP.ThemeWizard', 'Y position:'))
+        self.footerYLabel.setText(
+            translate('OpenLP.ThemeWizard', 'Y position:'))
         self.footerYSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'px'))
-        self.footerWidthLabel.setText(translate('OpenLP.ThemeWizard', 'Width:'))
-        self.footerWidthSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'px'))
+        self.footerWidthLabel.setText(
+            translate('OpenLP.ThemeWizard', 'Width:'))
+        self.footerWidthSpinBox.setSuffix(
+            translate('OpenLP.ThemeWizard', 'px'))
         self.footerHeightLabel.setText(
             translate('OpenLP.ThemeWizard', 'Height:'))
-        self.footerHeightSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'px'))
+        self.footerHeightSpinBox.setSuffix(
+            translate('OpenLP.ThemeWizard', 'px'))
         self.footerDefaultPositionCheckBox.setText(
             translate('OpenLP.ThemeWizard', 'Use default location'))
         self.previewPage.setTitle(

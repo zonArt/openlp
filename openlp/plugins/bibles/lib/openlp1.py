@@ -62,6 +62,7 @@ class OpenLP1Bible(BibleDB):
         # Create all books.
         cursor.execute(u'SELECT id, testament_id, name, abbreviation FROM book')
         books = cursor.fetchall()
+        self.wizard.importProgressBar.setMaximum(len(books) + 1)
         for book in books:
             if self.stop_import_flag:
                 connection.close()

@@ -97,16 +97,16 @@ class Ui_MainWindow(object):
         self.ControlSplitter.setObjectName(u'ControlSplitter')
         self.MainContentLayout.addWidget(self.ControlSplitter)
         # Create slide controllers
-        self.PreviewController = SlideController(self, self.settingsmanager,
+        self.previewController = SlideController(self, self.settingsmanager,
             self.screens)
-        self.LiveController = SlideController(self, self.settingsmanager,
+        self.liveController = SlideController(self, self.settingsmanager,
             self.screens, True)
         previewVisible = QtCore.QSettings().value(
             u'user interface/preview panel', QtCore.QVariant(True)).toBool()
-        self.PreviewController.Panel.setVisible(previewVisible)
+        self.previewController.Panel.setVisible(previewVisible)
         liveVisible = QtCore.QSettings().value(u'user interface/live panel',
             QtCore.QVariant(True)).toBool()
-        self.LiveController.Panel.setVisible(liveVisible)
+        self.liveController.Panel.setVisible(liveVisible)
         # Create menu
         self.MenuBar = QtGui.QMenuBar(MainWindow)
         self.MenuBar.setGeometry(QtCore.QRect(0, 0, 1087, 27))
@@ -362,8 +362,8 @@ class Ui_MainWindow(object):
         """
         Splitter between the Preview and Live Controllers.
         """
-        self.LiveController.widthChanged()
-        self.PreviewController.widthChanged()
+        self.liveController.widthChanged()
+        self.previewController.widthChanged()
 
     def retranslateUi(self, MainWindow):
         """
@@ -548,8 +548,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.recentFiles = QtCore.QStringList()
         # Set up the path with plugins
         pluginpath = AppLocation.get_directory(AppLocation.PluginsDir)
-        self.plugin_manager = PluginManager(pluginpath)
-        self.plugin_helpers = {}
+        self.pluginManager = PluginManager(pluginpath)
+        self.pluginHelpers = {}
         # Set up the interface
         self.setupUi(self)
         # Load settings after setupUi so default UI sizes are overwritten
@@ -633,33 +633,33 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.mediaDockManager = MediaDockManager(self.MediaToolBox)
         log.info(u'Load Plugins')
         # make the controllers available to the plugins
-        self.plugin_helpers[u'preview'] = self.PreviewController
-        self.plugin_helpers[u'live'] = self.LiveController
-        self.plugin_helpers[u'render'] = self.renderManager
-        self.plugin_helpers[u'service'] = self.ServiceManagerContents
-        self.plugin_helpers[u'settings form'] = self.settingsForm
-        self.plugin_helpers[u'toolbox'] = self.mediaDockManager
-        self.plugin_helpers[u'pluginmanager'] = self.plugin_manager
-        self.plugin_helpers[u'formparent'] = self
-        self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers)
+        self.pluginHelpers[u'preview'] = self.previewController
+        self.pluginHelpers[u'live'] = self.liveController
+        self.pluginHelpers[u'render'] = self.renderManager
+        self.pluginHelpers[u'service'] = self.ServiceManagerContents
+        self.pluginHelpers[u'settings form'] = self.settingsForm
+        self.pluginHelpers[u'toolbox'] = self.mediaDockManager
+        self.pluginHelpers[u'pluginmanager'] = self.pluginManager
+        self.pluginHelpers[u'formparent'] = self
+        self.pluginManager.find_plugins(pluginpath, self.pluginHelpers)
         # hook methods have to happen after find_plugins. Find plugins needs
         # the controllers hence the hooks have moved from setupUI() to here
         # Find and insert settings tabs
         log.info(u'hook settings')
-        self.plugin_manager.hook_settings_tabs(self.settingsForm)
+        self.pluginManager.hook_settings_tabs(self.settingsForm)
         # Find and insert media manager items
         log.info(u'hook media')
-        self.plugin_manager.hook_media_manager(self.mediaDockManager)
+        self.pluginManager.hook_media_manager(self.mediaDockManager)
         # Call the hook method to pull in import menus.
         log.info(u'hook menus')
-        self.plugin_manager.hook_import_menu(self.FileImportMenu)
+        self.pluginManager.hook_import_menu(self.FileImportMenu)
         # Call the hook method to pull in export menus.
-        self.plugin_manager.hook_export_menu(self.FileExportMenu)
+        self.pluginManager.hook_export_menu(self.FileExportMenu)
         # Call the hook method to pull in tools menus.
-        self.plugin_manager.hook_tools_menu(self.ToolsMenu)
+        self.pluginManager.hook_tools_menu(self.ToolsMenu)
         # Call the initialise method to setup plugins.
         log.info(u'initialise plugins')
-        self.plugin_manager.initialise_plugins()
+        self.pluginManager.initialise_plugins()
         # Once all components are initialised load the Themes
         log.info(u'Load Themes')
         self.ThemeManagerContents.loadThemes()
@@ -695,10 +695,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Show the main form, as well as the display form
         """
         QtGui.QWidget.show(self)
-        self.LiveController.display.setup()
-        self.PreviewController.display.setup()
-        if self.LiveController.display.isVisible():
-            self.LiveController.display.setFocus()
+        self.liveController.display.setup()
+        self.previewController.display.setup()
+        if self.liveController.display.isVisible():
+            self.liveController.display.setFocus()
         self.activateWindow()
         if QtCore.QSettings().value(
             self.generalSettingsSection + u'/auto open',
@@ -723,7 +723,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         settings = QtCore.QSettings()
         if settings.value(u'%s/screen blank' % self.generalSettingsSection,
             QtCore.QVariant(False)).toBool():
-            self.LiveController.mainDisplaySetBackground()
+            self.liveController.mainDisplaySetBackground()
             if settings.value(u'blank warning',
                 QtCore.QVariant(False)).toBool():
                 QtGui.QMessageBox.question(self,
@@ -852,11 +852,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 QtCore.QVariant(self.MediaToolBox.currentIndex()))
         # Call the cleanup method to shutdown plugins.
         log.info(u'cleanup plugins')
-        self.plugin_manager.finalise_plugins()
+        self.pluginManager.finalise_plugins()
         # Save settings
         self.saveSettings()
         # Close down the display
-        self.LiveController.display.close()
+        self.liveController.display.close()
 
     def serviceChanged(self, reset=False, serviceName=None):
         """
@@ -910,7 +910,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 True - Visible
                 False - Hidden
         """
-        self.PreviewController.Panel.setVisible(visible)
+        self.previewController.Panel.setVisible(visible)
         QtCore.QSettings().setValue(u'user interface/preview panel',
             QtCore.QVariant(visible))
         self.ViewPreviewPanel.setChecked(visible)
@@ -925,7 +925,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 True - Visible
                 False - Hidden
         """
-        self.LiveController.Panel.setVisible(visible)
+        self.liveController.Panel.setVisible(visible)
         QtCore.QSettings().setValue(u'user interface/live panel',
             QtCore.QVariant(visible))
         self.ViewLivePanel.setChecked(visible)

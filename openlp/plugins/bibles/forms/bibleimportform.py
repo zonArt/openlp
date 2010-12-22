@@ -43,10 +43,12 @@ class WebDownload(object):
     Unknown = -1
     Crosswalk = 0
     BibleGateway = 1
+    Bibleserver = 2
 
     Names = {
         0: u'Crosswalk',
-        1: u'BibleGateway'
+        1: u'BibleGateway',
+        2: u'Bibleserver'
     }
 
     @classmethod
@@ -77,6 +79,12 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         QtGui.QWizard.__init__(self, parent)
         self.setupUi(self)
         self.registerFields()
+        if not BibleFormat.get_availability(BibleFormat.OpenLP1):
+            self.openlp1Page.setVisible(False)
+            self.openlp1LocationLabel.setVisible(False)
+            self.openlp1LocationEdit.setVisible(False)
+            self.openlp1FileButton.setVisible(False)
+            self.openlp1DisabledLabel.setVisible(True)
         self.finishButton = self.button(QtGui.QWizard.FinishButton)
         self.cancelButton = self.button(QtGui.QWizard.CancelButton)
         self.manager = manager
@@ -102,9 +110,6 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         QtCore.QObject.connect(self.openlp1FileButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onOpenlp1FileButtonClicked)
-        QtCore.QObject.connect(self.cancelButton,
-            QtCore.SIGNAL(u'clicked(bool)'),
-            self.onCancelButtonClicked)
         QtCore.QObject.connect(self,
             QtCore.SIGNAL(u'currentIdChanged(int)'),
             self.onCurrentIdChanged)
@@ -123,8 +128,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         log.debug('Import canceled by user.')
         if self.currentId() == 3:
             Receiver.send_message(u'bibles_stop_import')
-        else:
-            self.done(QtGui.QDialog.Rejected)
+        self.done(QtGui.QDialog.Rejected)
 
     def validateCurrentPage(self):
         """
@@ -230,8 +234,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
             The index of the combo box.
         """
         self.bibleComboBox.clear()
-        bibles = [unicode(translate('BiblesPlugin.ImportWizardForm', bible)) for
-            bible in self.web_bible_list[index].keys()]
+        bibles = self.web_bible_list[index].keys()
         bibles.sort()
         for bible in bibles:
             self.bibleComboBox.addItem(bible)
@@ -250,14 +253,16 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         """
         self.getFileName(
             translate('BiblesPlugin.ImportWizardForm', 'Open Books CSV File'),
-            self.booksLocationEdit)
+            self.booksLocationEdit, u'%s (*.csv)'
+            % translate('BiblesPlugin.ImportWizardForm', 'CSV File'))
 
     def onCsvVersesFileButtonClicked(self):
         """
         Show the file open dialog for the verses CSV file.
         """
         self.getFileName(translate('BiblesPlugin.ImportWizardForm',
-            'Open Verses CSV File'), self.csvVerseLocationEdit)
+            'Open Verses CSV File'), self.csvVerseLocationEdit, u'%s (*.csv)'
+            % translate('BiblesPlugin.ImportWizardForm', 'CSV File'))
 
     def onOpenSongBrowseButtonClicked(self):
         """
@@ -273,7 +278,9 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         """
         self.getFileName(
             translate('BiblesPlugin.ImportWizardForm',
-            'Open openlp.org 1.x Bible'), self.openlp1LocationEdit)
+            'Open openlp.org 1.x Bible'), self.openlp1LocationEdit,
+            u'%s (*.bible)' % translate('BiblesPlugin.ImportWizardForm',
+            'openlp.org 1.x bible'))
 
     def onCurrentIdChanged(self, pageId):
         if pageId == 3:
@@ -336,31 +343,27 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         """
         Load the list of Crosswalk and BibleGateway bibles.
         """
-        # Load and store Crosswalk Bibles.
+        # Load Crosswalk Bibles.
         filepath = AppLocation.get_directory(AppLocation.PluginsDir)
         filepath = os.path.join(filepath, u'bibles', u'resources')
         books_file = None
         try:
             self.web_bible_list[WebDownload.Crosswalk] = {}
             books_file = open(
-                os.path.join(filepath, u'crosswalkbooks.csv'), 'r')
+                os.path.join(filepath, u'crosswalkbooks.csv'), 'rb')
             dialect = csv.Sniffer().sniff(books_file.read(1024))
             books_file.seek(0)
             books_reader = csv.reader(books_file, dialect)
             for line in books_reader:
-                ver = line[0]
-                name = line[1]
-                if not isinstance(ver, unicode):
-                    ver = unicode(ver, u'utf8')
-                if not isinstance(name, unicode):
-                    name = unicode(name, u'utf8')
+                ver = unicode(line[0], u'utf-8')
+                name = unicode(line[1], u'utf-8')
                 self.web_bible_list[WebDownload.Crosswalk][ver] = name.strip()
         except IOError:
             log.exception(u'Crosswalk resources missing')
         finally:
             if books_file:
                 books_file.close()
-        # Load and store BibleGateway Bibles.
+        # Load BibleGateway Bibles.
         books_file = None
         try:
             self.web_bible_list[WebDownload.BibleGateway] = {}
@@ -382,10 +385,50 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         finally:
             if books_file:
                 books_file.close()
+        # Load and Bibleserver Bibles.
+        filepath = AppLocation.get_directory(AppLocation.PluginsDir)
+        filepath = os.path.join(filepath, u'bibles', u'resources')
+        books_file = None
+        try:
+            self.web_bible_list[WebDownload.Bibleserver] = {}
+            books_file = open(
+                os.path.join(filepath, u'bibleserver.csv'), 'rb')
+            dialect = csv.Sniffer().sniff(books_file.read(1024))
+            books_file.seek(0)
+            books_reader = csv.reader(books_file, dialect)
+            for line in books_reader:
+                ver = unicode(line[0], u'utf-8')
+                name = unicode(line[1], u'utf-8')
+                self.web_bible_list[WebDownload.Bibleserver][ver] = name.strip()
+        except IOError, UnicodeError:
+            log.exception(u'Bibleserver resources missing')
+        finally:
+            if books_file:
+                books_file.close()
 
-    def getFileName(self, title, editbox):
+    def getFileName(self, title, editbox, filters=u''):
+        """
+        Opens a QFileDialog and saves the filename to the given editbox.
+
+        ``title``
+            The title of the dialog (unicode).
+
+        ``editbox``
+            A editbox (QLineEdit).
+
+        ``filters``
+            The file extension filters. It should contain the file description as
+            well as the file extension. For example::
+
+                u'openlp.org 1.x bible (*.bible)'
+        """
+        if filters:
+            filters += u';;'
+        filters += u'%s (*)' % translate('BiblesPlugin.ImportWizardForm',
+            'All Files')
         filename = QtGui.QFileDialog.getOpenFileName(self, title,
-            SettingsManager.get_last_dir(self.bibleplugin.settingsSection, 1))
+            os.path.dirname(SettingsManager.get_last_dir(
+            self.bibleplugin.settingsSection, 1)), filters)
         if filename:
             editbox.setText(filename)
             SettingsManager.set_last_dir(
@@ -455,6 +498,9 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
             elif download_location == WebDownload.BibleGateway:
                 bible = \
                     self.web_bible_list[WebDownload.BibleGateway][bible_version]
+            elif download_location == WebDownload.Bibleserver:
+                bible = \
+                    self.web_bible_list[WebDownload.Bibleserver][bible_version]
             importer = self.manager.import_bible(
                 BibleFormat.WebDownload,
                 name=license_version,

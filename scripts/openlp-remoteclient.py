@@ -47,7 +47,7 @@ def main():
                       help="Recipient address ",
                       default="localhost")
     parser.add_option("-e", "--event",
-                      help="Action to be performed", 
+                      help="Action to be performed",
                       default="alerts_text")
     parser.add_option("-m", "--message",
                       help="Message to be passed for the action",
