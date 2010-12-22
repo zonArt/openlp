@@ -332,11 +332,12 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
         if not self.isLive:
             QtCore.QObject.connect(self.PreviewListWidget,
-                QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onGoLiveClick)
+                QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
+                self.onGoLiveClick)
         if isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'slidecontroller_live_spin_delay'),
-                    self.receiveSpinDelay)
+                self.receiveSpinDelay)
         if isLive:
             self.Toolbar.makeWidgetsInvisible(self.loopList)
             self.Toolbar.actions[u'Stop Loop'].setVisible(False)

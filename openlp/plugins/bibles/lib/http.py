@@ -244,7 +244,7 @@ class BSExtract(object):
     """
     Extract verses from Bibleserver.com
     """
-    def __init__(self,proxyurl=None):
+    def __init__(self, proxyurl=None):
         log.debug(u'init %s', proxyurl)
         self.proxyurl = proxyurl
 
