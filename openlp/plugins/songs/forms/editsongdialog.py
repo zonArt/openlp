@@ -271,7 +271,7 @@ class Ui_EditSongDialog(object):
         sizePolicy.setHeightForWidth(
             self.SongbookCombo.sizePolicy().hasHeightForWidth())
         self.SongbookCombo.setEditable(True)
-        self.SongbookCombe.setInsertPolicy(QtGui.QComboBox.NoInsert)
+        self.SongbookCombo.setInsertPolicy(QtGui.QComboBox.NoInsert)
         self.SongbookCombo.setSizePolicy(sizePolicy)
         self.SongbookCombo.setObjectName(u'SongbookCombo')
         self.SongbookLayout.addRow(self.SongbookNameLabel, self.SongbookCombo)
