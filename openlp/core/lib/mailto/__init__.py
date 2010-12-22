@@ -123,7 +123,7 @@ if sys.platform[:3] == u'win':
 
 # Platform support for MacOS
 elif sys.platform == u'darwin':
-    _controllers[u'open']= Controller(u'open')
+    _controllers[u'open'] = Controller(u'open')
     _open = _controllers[u'open'].open
 
 
