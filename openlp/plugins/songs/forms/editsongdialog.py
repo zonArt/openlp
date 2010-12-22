@@ -146,8 +146,7 @@ class Ui_EditSongDialog(object):
             self.AuthorsSelectionComboItem.sizePolicy().hasHeightForWidth())
         self.AuthorsSelectionComboItem.setSizePolicy(sizePolicy)
         self.AuthorsSelectionComboItem.setEditable(True)
-        self.AuthorsSelectionComboItem.setInsertPolicy(
-            QtGui.QComboBox.InsertAlphabetically)
+        self.AuthorsSelectionComboItem.setInsertPolicy(QtGui.QComboBox.NoInsert)
         self.AuthorsSelectionComboItem.setSizeAdjustPolicy(
             QtGui.QComboBox.AdjustToMinimumContentsLength)
         self.AuthorsSelectionComboItem.setMinimumContentsLength(8)
@@ -224,6 +223,7 @@ class Ui_EditSongDialog(object):
         sizePolicy.setHeightForWidth(
             self.SongTopicCombo.sizePolicy().hasHeightForWidth())
         self.SongTopicCombo.setEditable(True)
+        self.SongTopicCombo.setInsertPolicy(QtGui.QComboBox.NoInsert)
         self.SongTopicCombo.setSizePolicy(sizePolicy)
         self.SongTopicCombo.setObjectName(u'SongTopicCombo')
         self.TopicAddLayout.addWidget(self.SongTopicCombo)
@@ -271,6 +271,7 @@ class Ui_EditSongDialog(object):
         sizePolicy.setHeightForWidth(
             self.SongbookCombo.sizePolicy().hasHeightForWidth())
         self.SongbookCombo.setEditable(True)
+        self.SongbookCombe.setInsertPolicy(QtGui.QComboBox.NoInsert)
         self.SongbookCombo.setSizePolicy(sizePolicy)
         self.SongbookCombo.setObjectName(u'SongbookCombo')
         self.SongbookLayout.addRow(self.SongbookNameLabel, self.SongbookCombo)
@@ -315,6 +316,7 @@ class Ui_EditSongDialog(object):
         self.ThemeLayout.setObjectName(u'ThemeLayout')
         self.ThemeSelectionComboItem = QtGui.QComboBox(self.ThemeGroupBox)
         self.ThemeSelectionComboItem.setEditable(True)
+        self.ThemeSelectionComboItem.setInsertPolicy(QtGui.QComboBox.NoInsert)
         self.ThemeSelectionComboItem.setObjectName(u'ThemeSelectionComboItem')
         self.ThemeLayout.addWidget(self.ThemeSelectionComboItem)
         self.ThemeAddButton = QtGui.QPushButton(self.ThemeGroupBox)
