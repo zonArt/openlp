@@ -38,7 +38,7 @@ log = logging.getLogger(__name__)
 class PresentationListView(BaseListWithDnD):
     """
     Class for the list of Presentations
-    
+
     We have to explicitly create separate classes for each plugin
     in order for DnD to the Service manager to work correctly.
     """
@@ -58,19 +58,16 @@ class PresentationMediaItem(MediaManagerItem):
         Constructor. Setup defaults
         """
         self.controllers = controllers
-        self.PluginNameShort = u'Presentation'
-        self.pluginNameVisible = translate('PresentationPlugin.MediaItem',
-            'Presentation')
         self.IconPath = u'presentations/presentation'
         self.Automatic = u''
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = PresentationListView
-        MediaManagerItem.__init__(self, parent, icon, title)
+        MediaManagerItem.__init__(self, parent, self, icon)
         self.message_listener = MessageListener(self)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'mediaitem_presentation_rebuild'), self.rebuild)
-        
+
     def retranslateUi(self):
         """
         The name of the plugin media displayed in UI
@@ -162,7 +159,7 @@ class PresentationMediaItem(MediaManagerItem):
         if self.DisplayTypeComboBox.count() > 1:
             self.DisplayTypeComboBox.insertItem(0, self.Automatic)
             self.DisplayTypeComboBox.setCurrentIndex(0)
-        if QtCore.QSettings().value(self.settingsSection + u'/override app', 
+        if QtCore.QSettings().value(self.settingsSection + u'/override app',
             QtCore.QVariant(QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
             self.PresentationWidget.show()
         else:
@@ -241,7 +238,7 @@ class PresentationMediaItem(MediaManagerItem):
             SettingsManager.set_list(self.settingsSection,
                 self.settingsSection, self.getFileList())
 
-    def generateSlideData(self, service_item, item=None):
+    def generateSlideData(self, service_item, item=None, xmlVersion=False):
         """
         Load the relevant information for displaying the presentation
         in the slidecontroller. In the case of powerpoints, an image
@@ -280,7 +277,7 @@ class PresentationMediaItem(MediaManagerItem):
     def findControllerByType(self, filename):
         """
         Determine the default application controller to use for the selected
-        file type. This is used if "Automatic" is set as the preferred 
+        file type. This is used if "Automatic" is set as the preferred
         controller. Find the first (alphabetic) enabled controller which
         "supports" the extension. If none found, then look for a controller
         which "alsosupports" it instead.

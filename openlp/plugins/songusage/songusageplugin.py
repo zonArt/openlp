@@ -29,7 +29,8 @@ from datetime import datetime
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, Receiver, build_icon, translate
+from openlp.core.lib import Plugin, StringContent, Receiver, build_icon, \
+    translate
 from openlp.core.lib.db import Manager
 from openlp.plugins.songusage.forms import SongUsageDetailForm, \
     SongUsageDeleteForm
@@ -44,7 +45,7 @@ class SongUsagePlugin(Plugin):
         Plugin.__init__(self, u'SongUsage', u'1.9.3', plugin_helpers)
         self.weight = -4
         self.icon = build_icon(u':/plugins/plugin_songusage.png')
-        self.songusagemanager = None
+        self.manager = None
         self.songusageActive = False
 
     def addToolsMenuItem(self, tools_menu):
@@ -115,15 +116,20 @@ class SongUsagePlugin(Plugin):
             self.settingsSection + u'/active',
             QtCore.QVariant(False)).toBool()
         self.SongUsageStatus.setChecked(self.SongUsageActive)
-        if self.songusagemanager is None:
-            self.songusagemanager = Manager(u'songusage', init_schema)
-        self.SongUsagedeleteform = SongUsageDeleteForm(self.songusagemanager,
+        if self.manager is None:
+            self.manager = Manager(u'songusage', init_schema)
+        self.SongUsagedeleteform = SongUsageDeleteForm(self.manager,
             self.formparent)
         self.SongUsagedetailform = SongUsageDetailForm(self, self.formparent)
         self.SongUsageMenu.menuAction().setVisible(True)
 
     def finalise(self):
+        """
+        Tidy up on exit
+        """
         log.info(u'Plugin Finalise')
+        self.manager.finalise()
+        Plugin.finalise(self)
         self.SongUsageMenu.menuAction().setVisible(False)
         #stop any events being processed
         self.SongUsageActive = False
@@ -148,7 +154,7 @@ class SongUsagePlugin(Plugin):
             song_usage_item.authors = u''
             for author in audit[1]:
                 song_usage_item.authors += author + u' '
-            self.songusagemanager.save_object(song_usage_item)
+            self.manager.save_object(song_usage_item)
 
     def onSongUsageDelete(self):
         self.SongUsagedeleteform.exec_()
@@ -162,3 +168,17 @@ class SongUsagePlugin(Plugin):
             '</strong><br />This plugin tracks the usage of songs in '
             'services.')
         return about_text
+
+    def setPluginTextStrings(self):
+        """
+        Called to define all translatable texts of the plugin
+        """
+        ## Name PluginList ##
+        self.textStrings[StringContent.Name] = {
+            u'singular': translate('SongUsagePlugin', 'SongUsage'),
+            u'plural': translate('SongUsagePlugin', 'SongUsage')
+        }
+        ## Name for MediaDockManager, SettingsManager ##
+        self.textStrings[StringContent.VisibleName] = {
+            u'title': translate('SongUsagePlugin', 'SongUsage')
+        }

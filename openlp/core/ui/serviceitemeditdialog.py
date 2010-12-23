@@ -25,6 +25,7 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+
 from openlp.core.lib import translate
 
 class Ui_ServiceItemEditDialog(object):
@@ -44,16 +45,26 @@ class Ui_ServiceItemEditDialog(object):
         self.topLayout.addWidget(self.listWidget)
         self.buttonLayout = QtGui.QVBoxLayout()
         self.buttonLayout.setObjectName(u'buttonLayout')
-        self.upButton = QtGui.QPushButton(self.layoutWidget)
-        self.upButton.setObjectName(u'upButton')
-        self.buttonLayout.addWidget(self.upButton)
-        spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum,
-            QtGui.QSizePolicy.Expanding)
-        self.buttonLayout.addItem(spacerItem)
         self.deleteButton = QtGui.QPushButton(self.layoutWidget)
         self.deleteButton.setObjectName(u'deleteButton')
         self.buttonLayout.addWidget(self.deleteButton)
+        spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum,
+            QtGui.QSizePolicy.Expanding)
+        self.buttonLayout.addItem(spacerItem)
+        self.upButton = QtGui.QPushButton(self.layoutWidget)
+        self.upButton.setText(u'')
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(u':/services/service_up.png'),
+            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.upButton.setIcon(icon)
+        self.upButton.setObjectName(u'upButton')
+        self.buttonLayout.addWidget(self.upButton)
         self.downButton = QtGui.QPushButton(self.layoutWidget)
+        self.downButton.setText(u'')
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(u':/services/service_down.png'),
+            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.downButton.setIcon(icon)
         self.downButton.setObjectName(u'downButton')
         self.buttonLayout.addWidget(self.downButton)
         self.topLayout.addLayout(self.buttonLayout)
@@ -70,7 +81,5 @@ class Ui_ServiceItemEditDialog(object):
     def retranslateUi(self, serviceItemEditDialog):
         serviceItemEditDialog.setWindowTitle(
             translate('OpenLP.ServiceItemEditForm', 'Reorder Service Item'))
-        self.upButton.setText(translate('OpenLP.ServiceItemEditForm', 'Up'))
         self.deleteButton.setText(translate('OpenLP.ServiceItemEditForm',
             'Delete'))
-        self.downButton.setText(translate('OpenLP.ServiceItemEditForm', 'Down'))

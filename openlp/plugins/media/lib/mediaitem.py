@@ -46,9 +46,7 @@ class MediaMediaItem(MediaManagerItem):
     """
     log.info(u'%s MediaMediaItem loaded', __name__)
 
-    def __init__(self, parent, icon, title):
-        self.PluginNameShort = u'Media'
-        self.pluginNameVisible = translate('MediaPlugin.MediaItem', 'Media')
+    def __init__(self, parent, plugin, icon):
         self.IconPath = u'images/image'
         self.background = False
         # this next is a class, not an instance of a class - it will
@@ -56,9 +54,9 @@ class MediaMediaItem(MediaManagerItem):
         self.ListViewWithDnD_class = MediaListView
         self.PreviewFunction = QtGui.QPixmap(
             u':/media/media_video.png').toImage()
-        MediaManagerItem.__init__(self, parent, icon, title)
+        MediaManagerItem.__init__(self, parent, self, icon)
         self.singleServiceItem = False
-        self.serviceItemIconName = u':/media/media_video.png'
+        self.serviceItemIconName = u':/media/image_clapperboard.png'
 
     def retranslateUi(self):
         self.OnNewPrompt = translate('MediaPlugin.MediaItem', 'Select Media')
@@ -115,10 +113,10 @@ class MediaMediaItem(MediaManagerItem):
             'You must select a media file to replace the background with.')):
             item = self.listView.currentItem()
             filename = unicode(item.data(QtCore.Qt.UserRole).toString())
-            self.parent.liveController.display.video(filename, 0)
+            self.parent.liveController.display.video(filename, 0, True)
         self.resetButton.setVisible(True)
 
-    def generateSlideData(self, service_item, item=None):
+    def generateSlideData(self, service_item, item=None, xmlVersion=False):
         if item is None:
             item = self.listView.currentItem()
             if item is None:
@@ -127,6 +125,8 @@ class MediaMediaItem(MediaManagerItem):
         service_item.title = unicode(
             translate('MediaPlugin.MediaItem', 'Media'))
         service_item.add_capability(ItemCapabilities.RequiresMedia)
+        # force a nonexistent theme
+        service_item.theme = -1
         frame = u':/media/image_clapperboard.png'
         (path, name) = os.path.split(filename)
         service_item.add_from_command(path, name, frame)

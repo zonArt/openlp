@@ -42,6 +42,18 @@ class PluginStatus(object):
     Inactive = 0
     Disabled = -1
 
+class StringContent(object):
+    Name = u'name'
+    Import = u'import'
+    Load = u'load'
+    New = u'new'
+    Edit = u'edit'
+    Delete = u'delete'
+    Preview = u'preview'
+    Live = u'live'
+    Service = u'service'
+    VisibleName = u'visible_name'
+
 class Plugin(QtCore.QObject):
     """
     Base class for openlp plugins to inherit from.
@@ -96,7 +108,7 @@ class Plugin(QtCore.QObject):
     """
     log.info(u'loaded')
 
-    def __init__(self, name, version=None, plugin_helpers=None):
+    def __init__(self, name, version=None, pluginHelpers=None):
         """
         This is the constructor for the plugin object. This provides an easy
         way for descendent plugins to populate common data. This method *must*
@@ -112,11 +124,13 @@ class Plugin(QtCore.QObject):
         ``version``
             Defaults to *None*. The version of the plugin.
 
-        ``plugin_helpers``
+        ``pluginHelpers``
             Defaults to *None*. A list of helper objects.
         """
         QtCore.QObject.__init__(self)
         self.name = name
+        self.textStrings = {}
+        self.setPluginTextStrings()
         if version:
             self.version = version
         self.settingsSection = self.name.lower()
@@ -125,14 +139,14 @@ class Plugin(QtCore.QObject):
         self.status = PluginStatus.Inactive
         # Set up logging
         self.log = logging.getLogger(self.name)
-        self.previewController = plugin_helpers[u'preview']
-        self.liveController = plugin_helpers[u'live']
-        self.renderManager = plugin_helpers[u'render']
-        self.serviceManager = plugin_helpers[u'service']
-        self.settingsForm = plugin_helpers[u'settings form']
-        self.mediadock = plugin_helpers[u'toolbox']
-        self.pluginManager = plugin_helpers[u'pluginmanager']
-        self.formparent = plugin_helpers[u'formparent']
+        self.previewController = pluginHelpers[u'preview']
+        self.liveController = pluginHelpers[u'live']
+        self.renderManager = pluginHelpers[u'render']
+        self.serviceManager = pluginHelpers[u'service']
+        self.settingsForm = pluginHelpers[u'settings form']
+        self.mediadock = pluginHelpers[u'toolbox']
+        self.pluginManager = pluginHelpers[u'pluginmanager']
+        self.formparent = pluginHelpers[u'formparent']
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_add_service_item' % self.name),
             self.processAddServiceEvent)
@@ -257,9 +271,9 @@ class Plugin(QtCore.QObject):
         Called by the plugin to remove toolbar
         """
         if self.mediaItem:
-            self.mediadock.remove_dock(self.name)
+            self.mediadock.remove_dock(self.mediaItem)
         if self.settings_tab:
-            self.settingsForm.removeTab(self.name)
+            self.settingsForm.removeTab(self.settings_tab)
 
     def insertToolboxItem(self):
         """
@@ -287,5 +301,17 @@ class Plugin(QtCore.QObject):
 
         ``newTheme``
             The new name the plugin should now use.
+        """
+        pass
+
+    def getString(self, name):
+        """
+        encapsulate access of plugins translated text strings
+        """
+        return self.textStrings[name]
+
+    def setPluginTextStrings(self):
+        """
+        Called to define all translatable texts of the plugin
         """
         pass

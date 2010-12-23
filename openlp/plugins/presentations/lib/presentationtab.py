@@ -32,20 +32,18 @@ class PresentationTab(SettingsTab):
     """
     PresentationsTab is the Presentations settings tab in the settings dialog.
     """
-    def __init__(self, title, controllers):
+    def __init__(self, title, visible_title, controllers):
         """
         Constructor
         """
         self.controllers = controllers
-        SettingsTab.__init__(self, title)
+        SettingsTab.__init__(self, title, visible_title)
 
     def setupUi(self):
         """
         Create the controls for the settings tab
         """
         self.setObjectName(u'PresentationTab')
-        self.tabTitleVisible = translate('PresentationPlugin.PresentationTab',
-            'Presentations')
         self.PresentationLayout = QtGui.QHBoxLayout(self)
         self.PresentationLayout.setSpacing(8)
         self.PresentationLayout.setMargin(8)
@@ -135,7 +133,7 @@ class PresentationTab(SettingsTab):
                     self.settingsSection + u'/' + controller.name,
                     QtCore.QVariant(QtCore.Qt.Checked)).toInt()[0])
         self.OverrideAppCheckBox.setChecked(QtCore.QSettings().value(
-            self.settingsSection + u'/override app', 
+            self.settingsSection + u'/override app',
             QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0])
 
     def save(self):

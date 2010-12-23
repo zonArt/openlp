@@ -25,7 +25,6 @@
 ###############################################################################
 
 import re
-import sys
 try:
     import enchant
     from enchant import DictNotFoundError
@@ -34,12 +33,15 @@ except ImportError:
     enchant_available = False
 
 # based on code from
-# http://john.nachtimwald.com/2009/08/22/qplaintextedit-with-in-line-spell-check/
+# http://john.nachtimwald.com/2009/08/22/qplaintextedit-with-in-line-spell-check
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import html_expands, translate, context_menu_action
+from openlp.core.lib import html_expands, translate
 
 class SpellTextEdit(QtGui.QPlainTextEdit):
+    """
+    Spell checking widget based on QPlanTextEdit.
+    """
     def __init__(self, *args):
         QtGui.QPlainTextEdit.__init__(self, *args)
         # Default dictionary based on the current locale.
@@ -61,7 +63,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         QtGui.QPlainTextEdit.mousePressEvent(self, event)
 
     def contextMenuEvent(self, event):
-        popup_menu = self.createStandardContextMenu()
+        popupMenu = self.createStandardContextMenu()
         # Select the word under the cursor.
         cursor = self.textCursor()
         # only select text if not already selected
@@ -82,17 +84,17 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
                 # Only add the spelling suggests to the menu if there are
                 # suggestions.
                 if len(spell_menu.actions()) != 0:
-                    popup_menu.insertSeparator(popup_menu.actions()[0])
-                    popup_menu.insertMenu(popup_menu.actions()[0], spell_menu)
-        tag_menu = QtGui.QMenu(translate('OpenLP.SpellTextEdit',
+                    popupMenu.insertSeparator(popupMenu.actions()[0])
+                    popupMenu.insertMenu(popupMenu.actions()[0], spell_menu)
+        tagMenu = QtGui.QMenu(translate('OpenLP.SpellTextEdit',
             'Formatting Tags'))
         for html in html_expands:
-            action = SpellAction( html[u'desc'], tag_menu)
+            action = SpellAction( html[u'desc'], tagMenu)
             action.correct.connect(self.htmlTag)
-            tag_menu.addAction(action)
-        popup_menu.insertSeparator(popup_menu.actions()[0])
-        popup_menu.insertMenu(popup_menu.actions()[0], tag_menu)
-        popup_menu.exec_(event.globalPos())
+            tagMenu.addAction(action)
+        popupMenu.insertSeparator(popupMenu.actions()[0])
+        popupMenu.insertMenu(popupMenu.actions()[0], tagMenu)
+        popupMenu.exec_(event.globalPos())
 
     def correctWord(self, word):
         """

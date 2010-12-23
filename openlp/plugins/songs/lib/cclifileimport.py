@@ -38,9 +38,9 @@ class CCLIFileImportError(Exception):
 
 class CCLIFileImport(SongImport):
     """
-    The :class:`CCLIFileImport` class provides OpenLP with the
-    ability to import CCLI SongSelect song files in both .txt and
-    .usr formats. See http://www.ccli.com
+    The :class:`CCLIFileImport` class provides OpenLP with the ability to
+    import CCLI SongSelect song files in both .txt and .usr formats.
+    See http://www.ccli.com/ for more details.
     """
 
     def __init__(self, manager, **kwargs):
@@ -49,6 +49,7 @@ class CCLIFileImport(SongImport):
 
         ``manager``
             The song manager for the running OpenLP installation.
+
         ``filenames``
             The files to be imported.
         """
@@ -75,7 +76,12 @@ class CCLIFileImport(SongImport):
             lines = []
             if os.path.isfile(filename):
                 detect_file = open(filename, u'r')
-                details = chardet.detect(detect_file.read(2048))
+                detect_content = detect_file.read(2048)
+                try:
+                    unicode(detect_content, u'utf-8')
+                    details = {'confidence': 1, 'encoding': 'utf-8'}
+                except UnicodeDecodeError:
+                    details = chardet.detect(detect_content)
                 detect_file.close()
                 infile = codecs.open(filename, u'r', details['encoding'])
                 lines = infile.readlines()
@@ -97,7 +103,7 @@ class CCLIFileImport(SongImport):
 
     def do_import_usr_file(self, textList):
         """
-        The :method:`do_import_usr_file` method provides OpenLP
+        The :func:`do_import_usr_file` method provides OpenLP
         with the ability to import CCLI SongSelect songs in
         *USR* file format
 
@@ -105,6 +111,7 @@ class CCLIFileImport(SongImport):
             An array of strings containing the usr file content.
 
         **SongSelect .usr file format**
+
         ``[File]``
             USR file format first line
         ``Type=``
@@ -140,6 +147,7 @@ class CCLIFileImport(SongImport):
             Contains the songs various lyrics in order as shown by the
             *Fields* description
             e.g. *Words=Above all powers....* [/n = CR, /n/t = CRLF]
+
         """
         log.debug(u'USR file text: %s', textList)
         lyrics = []
@@ -162,6 +170,7 @@ class CCLIFileImport(SongImport):
                 song_words = line[6:].strip()
             #Unhandled usr keywords:Type,Version,Admin,Themes,Keys
         #Process Fields and words sections
+        check_first_verse_line = False
         field_list = song_fields.split(u'/t')
         words_list = song_words.split(u'/t')
         for counter in range(0, len(field_list)):
@@ -173,10 +182,25 @@ class CCLIFileImport(SongImport):
                 verse_type = u'B'
             else: #Other
                 verse_type = u'O'
+                check_first_verse_line = True
             verse_text = unicode(words_list[counter])
             verse_text = verse_text.replace("/n",  "\n")
+            verse_lines = verse_text.split(u'\n',  1)
+            if check_first_verse_line:
+                if verse_lines[0].startswith(u'(PRE-CHORUS'):
+                    verse_type = u'P'
+                    log.debug(u'USR verse PRE-CHORUS: %s', verse_lines[0] )
+                    verse_text = verse_lines[1]
+                elif verse_lines[0].startswith(u'(BRIDGE'):
+                    verse_type = u'B'
+                    log.debug(u'USR verse BRIDGE')
+                    verse_text = verse_lines[1]
+                elif verse_lines[0].startswith(u'('):
+                    verse_type = u'O'
+                    verse_text = verse_lines[1]
             if len(verse_text) > 0:
                 self.add_verse(verse_text, verse_type)
+            check_first_verse_line = False
         #Handle multiple authors
         author_list = song_author.split(u'/')
         if len(author_list) < 2:
@@ -191,52 +215,41 @@ class CCLIFileImport(SongImport):
 
     def do_import_txt_file(self, textList):
         """
-        The :method:`do_import_txt_file` method provides OpenLP
+        The :func:`do_import_txt_file` method provides OpenLP
         with the ability to import CCLI SongSelect songs in
         *TXT* file format
 
         ``textList``
             An array of strings containing the txt file content.
 
-        **SongSelect .txt file format**
+        SongSelect .txt file format::
 
-        ``Song Title``
-            Contains the song title
-
-        <Empty line>
-
-        ``Title of following verse/chorus and number``
-            e.g. Verse 1, Chorus 1
-
-        ``Verse/Chorus lyrics``
-
-        <Empty line>
-
-        <Empty line>
-
-        ``Title of next verse/chorus (repeats)``
-
-        ``Verse/Chorus lyrics``
-
-        <Empty line>
-
-        <Empty line>
-
-        ``Song CCLI Number``
-            e.g. CCLI Number (e.g.CCLI-Liednummer: 2672885)
-        ``Song Copyright``
-            e.g. © 1999 Integrity's Hosanna! Music | LenSongs Publishing
-        ``Song Authors``
-            e.g. Lenny LeBlanc | Paul Baloche
-        ``Licencing info``
-            e.g. For use solely with the SongSelect Terms of Use.
+            Song Title                  # Contains the song title
+            <Empty line>
+            Verse type and number       # e.g. Verse 1, Chorus 1
+            Verse lyrics
+            <Empty line>
+            <Empty line>
+            Verse type and number (repeats)
+            Verse lyrics
+            <Empty line>
+            <Empty line>
+            Song CCLI number
+                # e.g. CCLI Number (e.g.CCLI-Liednummer: 2672885)
+            Song copyright
+                # e.g. © 1999 Integrity's Hosanna! Music | LenSongs Publishing
+            Song authors                # e.g. Lenny LeBlanc | Paul Baloche
+            Licencing info
+                # e.g. For use solely with the SongSelect Terms of Use.
             All rights Reserved.  www.ccli.com
-        ``CCLI Licence number of user``
-            e.g. CCL-Liedlizenznummer: 14 / CCLI License No. 14
+            CCLI Licence number of user
+                # e.g. CCL-Liedlizenznummer: 14 / CCLI License No. 14
+
         """
         log.debug(u'TXT file text: %s', textList)
         self.set_defaults()
         line_number = 0
+        check_first_verse_line = False
         verse_text = u''
         song_comments = u''
         song_copyright = u''
@@ -274,16 +287,32 @@ class CCLIFileImport(SongImport):
                             elif verse_desc_parts[0].startswith(u'Br'):
                                 verse_type = u'B'
                             else:
+                                #we need to analyse the next line for
+                                #verse type, so set flag
                                 verse_type = u'O'
+                                check_first_verse_line = True
                             verse_number = verse_desc_parts[1]
                         else:
                             verse_type = u'O'
                             verse_number = 1
                         verse_start = True
                     else:
-                        # We have verse content or the start of the
-                        # last part. Add l so as to keep the CRLF
-                        verse_text = verse_text + line
+                        #check first line for verse type
+                        if check_first_verse_line:
+                            if line.startswith(u'(PRE-CHORUS'):
+                                verse_type = u'P'
+                            elif line.startswith(u'(BRIDGE'):
+                                verse_type = u'B'
+                            # Handle all other misc types
+                            elif line.startswith(u'('):
+                                verse_type = u'O'
+                            else:
+                                verse_text = verse_text + line
+                            check_first_verse_line = False
+                        else:
+                            # We have verse content or the start of the
+                            # last part. Add l so as to keep the CRLF
+                            verse_text = verse_text + line
                 else:
                     #line_number=2, copyright
                     if line_number == 2:

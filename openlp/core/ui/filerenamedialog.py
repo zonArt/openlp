@@ -30,23 +30,24 @@ from openlp.core.lib import translate
 
 class Ui_FileRenameDialog(object):
     def setupUi(self, FileRenameDialog):
-        FileRenameDialog.setObjectName("FileRenameDialog")
+        FileRenameDialog.setObjectName(u'FileRenameDialog')
         FileRenameDialog.resize(400, 87)
         self.buttonBox = QtGui.QDialogButtonBox(FileRenameDialog)
         self.buttonBox.setGeometry(QtCore.QRect(210, 50, 171, 25))
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName("buttonBox")
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
+            QtGui.QDialogButtonBox.Ok)
+        self.buttonBox.setObjectName(u'buttonBox')
         self.widget = QtGui.QWidget(FileRenameDialog)
         self.widget.setGeometry(QtCore.QRect(10, 10, 381, 35))
-        self.widget.setObjectName("widget")
+        self.widget.setObjectName(u'widget')
         self.horizontalLayout = QtGui.QHBoxLayout(self.widget)
-        self.horizontalLayout.setObjectName("horizontalLayout")
-        self.FileRenameLabel = QtGui.QLabel(self.widget)
-        self.FileRenameLabel.setObjectName("FileRenameLabel")
-        self.horizontalLayout.addWidget(self.FileRenameLabel)
-        self.FileNameEdit = QtGui.QLineEdit(self.widget)
-        self.FileNameEdit.setObjectName("FileNameEdit")
-        self.horizontalLayout.addWidget(self.FileNameEdit)
+        self.horizontalLayout.setObjectName(u'horizontalLayout')
+        self.fileRenameLabel = QtGui.QLabel(self.widget)
+        self.fileRenameLabel.setObjectName(u'fileRenameLabel')
+        self.horizontalLayout.addWidget(self.fileRenameLabel)
+        self.fileNameEdit = QtGui.QLineEdit(self.widget)
+        self.fileNameEdit.setObjectName(u'fileNameEdit')
+        self.horizontalLayout.addWidget(self.fileNameEdit)
 
         self.retranslateUi(FileRenameDialog)
         QtCore.QMetaObject.connectSlotsByName(FileRenameDialog)
@@ -54,6 +55,5 @@ class Ui_FileRenameDialog(object):
     def retranslateUi(self, FileRenameDialog):
         FileRenameDialog.setWindowTitle(translate('OpenLP.FileRenameForm',
             'File Rename'))
-        self.FileRenameLabel.setText(translate('OpenLP.FileRenameForm',
+        self.fileRenameLabel.setText(translate('OpenLP.FileRenameForm',
             'New File Name:'))
-

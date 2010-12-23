@@ -28,7 +28,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import PluginStatus, translate
+from openlp.core.lib import PluginStatus, StringContent, translate
 from plugindialog import Ui_PluginViewDialog
 
 log = logging.getLogger(__name__)
@@ -61,7 +61,7 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         self.programaticChange = True
         self._clearDetails()
         self.programaticChange = True
-        for plugin in self.parent.plugin_manager.plugins:
+        for plugin in self.parent.pluginManager.plugins:
             item = QtGui.QListWidgetItem(self.pluginListWidget)
             # We do this just to make 100% sure the status is an integer as
             # sometimes when it's loaded from the config, it isn't cast to int.
@@ -78,7 +78,8 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             elif plugin.status == PluginStatus.Disabled:
                 status_text = unicode(
                     translate('OpenLP.PluginForm', '%s (Disabled)'))
-            item.setText(status_text % plugin.name)
+            name_string = plugin.getString(StringContent.Name)
+            item.setText(status_text % name_string[u'plural'])
             # If the plugin has an icon, set it!
             if plugin.icon:
                 item.setIcon(plugin.icon)
@@ -106,10 +107,12 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         if self.pluginListWidget.currentItem() is None:
             self._clearDetails()
             return
-        plugin_name = self.pluginListWidget.currentItem().text().split(u' ')[0]
+        plugin_name_plural = \
+            self.pluginListWidget.currentItem().text().split(u' ')[0]
         self.activePlugin = None
-        for plugin in self.parent.plugin_manager.plugins:
-            if plugin.name == plugin_name:
+        for plugin in self.parent.pluginManager.plugins:
+            name_string = plugin.getString(StringContent.Name)
+            if name_string[u'plural'] == plugin_name_plural:
                 self.activePlugin = plugin
                 break
         if self.activePlugin:
@@ -137,5 +140,6 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         elif self.activePlugin.status == PluginStatus.Disabled:
             status_text = unicode(
                 translate('OpenLP.PluginForm', '%s (Disabled)'))
+        name_string = self.activePlugin.getString(StringContent.Name)
         self.pluginListWidget.currentItem().setText(
-            status_text % self.activePlugin.name)
+            status_text % name_string[u'plural'])

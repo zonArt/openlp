@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
     context_menu_action, ItemCapabilities, SettingsManager, translate, \
-    check_item_selected
+    check_item_selected, Receiver
 from openlp.core.utils import AppLocation, get_images_filter
 
 log = logging.getLogger(__name__)
@@ -49,14 +49,12 @@ class ImageMediaItem(MediaManagerItem):
     """
     log.info(u'Image Media Item loaded')
 
-    def __init__(self, parent, icon, title):
-        self.PluginNameShort = u'Image'
-        self.pluginNameVisible = translate('ImagePlugin.MediaItem', 'Image')
+    def __init__(self, parent, plugin, icon):
         self.IconPath = u'images/image'
         # this next is a class, not an instance of a class - it will
         # be instanced by the base MediaManagerItem
         self.ListViewWithDnD_class = ImageListView
-        MediaManagerItem.__init__(self, parent, icon, title)
+        MediaManagerItem.__init__(self, parent, self, icon)
 
     def retranslateUi(self):
         self.OnNewPrompt = translate('ImagePlugin.MediaItem',
@@ -141,6 +139,8 @@ class ImageMediaItem(MediaManagerItem):
                 self.settingsSection, self.getFileList())
 
     def loadList(self, list):
+        self.listView.setCursor(QtCore.Qt.BusyCursor)
+        Receiver.send_message(u'openlp_process_events')
         for file in list:
             filename = os.path.split(unicode(file))[1]
             thumb = os.path.join(self.servicePath, filename)
@@ -155,8 +155,10 @@ class ImageMediaItem(MediaManagerItem):
             item_name.setIcon(icon)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.listView.addItem(item_name)
+        self.listView.setCursor(QtCore.Qt.ArrowCursor)
+        Receiver.send_message(u'openlp_process_events')
 
-    def generateSlideData(self, service_item, item=None):
+    def generateSlideData(self, service_item, item=None, xmlVersion=False):
         items = self.listView.selectedIndexes()
         if items:
             service_item.title = unicode(
@@ -165,12 +167,13 @@ class ImageMediaItem(MediaManagerItem):
             service_item.add_capability(ItemCapabilities.AllowsPreview)
             service_item.add_capability(ItemCapabilities.AllowsLoop)
             service_item.add_capability(ItemCapabilities.AllowsAdditions)
+            # force a nonexistent theme
+            service_item.theme = -1
             for item in items:
                 bitem = self.listView.item(item.row())
                 filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
-                frame = QtGui.QImage(unicode(filename))
                 (path, name) = os.path.split(filename)
-                service_item.add_from_image(path, name, frame)
+                service_item.add_from_image(filename, name)
             return True
         else:
             return False
@@ -187,7 +190,8 @@ class ImageMediaItem(MediaManagerItem):
             for item in items:
                 bitem = self.listView.item(item.row())
                 filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
-                self.parent.liveController.display.image(filename)
+                (path, name) = os.path.split(filename)
+                self.parent.liveController.display.directImage(name, filename)
         self.resetButton.setVisible(True)
 
     def onPreviewClick(self):
