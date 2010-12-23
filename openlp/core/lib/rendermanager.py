@@ -213,6 +213,8 @@ class RenderManager(object):
         # make big page for theme edit dialog to get line count
         if self.force_page:
             verse = verse + verse + verse
+        else:
+            self.image_manager.del_image(self.theme_data.theme_name)
         footer = []
         footer.append(u'Arky Arky (Unknown)' )
         footer.append(u'Public Domain')

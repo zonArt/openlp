@@ -208,6 +208,7 @@ class Ui_BibleImportWizard(object):
         self.locationComboBox.setObjectName(u'LocationComboBox')
         self.locationComboBox.addItem(u'')
         self.locationComboBox.addItem(u'')
+        self.locationComboBox.addItem(u'')
         self.downloadOptionsLayout.setWidget(0, QtGui.QFormLayout.FieldRole,
             self.locationComboBox)
         self.bibleLabel = QtGui.QLabel(self.downloadOptionsTab)
@@ -388,6 +389,8 @@ class Ui_BibleImportWizard(object):
             translate('BiblesPlugin.ImportWizardForm', 'Crosswalk'))
         self.locationComboBox.setItemText(1,
             translate('BiblesPlugin.ImportWizardForm', 'BibleGateway'))
+        self.locationComboBox.setItemText(2,
+            translate('BiblesPlugin.ImportWizardForm', 'Bibleserver'))
         self.bibleLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'Bible:'))
         self.webDownloadTabWidget.setTabText(
