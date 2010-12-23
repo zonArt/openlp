@@ -71,7 +71,8 @@ class VerseType(object):
             The string to return a VerseType for
         """
         verse_type = verse_type.lower()
-        if verse_type == unicode(VerseType.to_string(VerseType.Verse)).lower()[0]:
+        if verse_type == \
+            unicode(VerseType.to_string(VerseType.Verse)).lower()[0]:
             return translate('SongsPlugin.VerseType', 'Verse')
         elif verse_type == \
             unicode(VerseType.to_string(VerseType.Chorus)).lower()[0]:

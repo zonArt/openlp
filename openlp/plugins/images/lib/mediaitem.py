@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
     context_menu_action, ItemCapabilities, SettingsManager, translate, \
-    check_item_selected
+    check_item_selected, Receiver
 from openlp.core.utils import AppLocation, get_images_filter
 
 log = logging.getLogger(__name__)
@@ -139,6 +139,8 @@ class ImageMediaItem(MediaManagerItem):
                 self.settingsSection, self.getFileList())
 
     def loadList(self, list):
+        self.listView.setCursor(QtCore.Qt.BusyCursor)
+        Receiver.send_message(u'openlp_process_events')
         for file in list:
             filename = os.path.split(unicode(file))[1]
             thumb = os.path.join(self.servicePath, filename)
@@ -153,6 +155,8 @@ class ImageMediaItem(MediaManagerItem):
             item_name.setIcon(icon)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.listView.addItem(item_name)
+        self.listView.setCursor(QtCore.Qt.ArrowCursor)
+        Receiver.send_message(u'openlp_process_events')
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
         items = self.listView.selectedIndexes()

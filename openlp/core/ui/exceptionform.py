@@ -23,7 +23,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+import logging
 import re
 import os
 import platform
@@ -58,6 +58,8 @@ from openlp.core.lib import translate, SettingsManager
 from openlp.core.lib.mailto import mailto
 
 from exceptiondialog import Ui_ExceptionDialog
+
+log = logging.getLogger(__name__)
 
 class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
     """
@@ -103,7 +105,8 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         filename = QtGui.QFileDialog.getSaveFileName(self,
             translate('OpenLP.ExceptionForm', 'Save Crash Report'),
             SettingsManager.get_last_dir(self.settingsSection),
-            translate('OpenLP.ExceptionForm', 'Text files (*.txt *.log *.text)'))
+            translate('OpenLP.ExceptionForm',
+            'Text files (*.txt *.log *.text)'))
         if filename:
             filename = unicode(QtCore.QDir.toNativeSeparators(filename))
             SettingsManager.set_last_dir(self.settingsSection, os.path.dirname(
@@ -138,6 +141,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             if re.search(r'[/\\]openlp[/\\]', line):
                 source = re.sub(r'.*[/\\]openlp[/\\](.*)".*', r'\1', line)
             if u':' in line:
-            	exception = line.split(u'\n')[-1].split(u':')[0]
+                exception = line.split(u'\n')[-1].split(u':')[0]
         subject = u'Bug report: %s in %s' % (exception, source)
-        mailto(address=u'bugs@openlp.org', subject=subject, body=body % content)
+        mailto(address=u'bugs@openlp.org', subject=subject,
+            body=body % content)

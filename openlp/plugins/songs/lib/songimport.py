@@ -247,7 +247,7 @@ class SongImport(QtCore.QObject):
         """
         Extracts alphanumeric words for searchable fields
         """
-        return re.sub(r'\W+', u' ', text)
+        return re.sub(r'\W+', u' ', text, re.UNICODE)
 
     def finish(self):
         """
