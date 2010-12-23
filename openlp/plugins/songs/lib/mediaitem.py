@@ -168,6 +168,8 @@ class SongMediaItem(MediaManagerItem):
             translate('SongsPlugin.MediaItem', 'Lyrics'))
         self.SearchTypeComboBox.addItem(
             translate('SongsPlugin.MediaItem', 'Authors'))
+        self.SearchTypeComboBox.addItem(
+            translate('SongsPlugin.MediaItem', 'Themes'))
         self.configUpdated()
 
     def onSearchTextButtonClick(self):
@@ -192,6 +194,12 @@ class SongMediaItem(MediaManagerItem):
                 Author.display_name.like(u'%' + search_keywords + u'%'),
                 Author.display_name.asc())
             self.displayResultsAuthor(search_results)
+        elif search_type == 3:
+            log.debug(u'Theme Search')
+            search_results = self.parent.manager.get_all_objects(Song,
+                Song.theme_name.like(u'%' + search_keywords + u'%'),
+                Song.search_lyrics.asc())
+            self.displayResultsSong(search_results)
 
     def onSongListLoad(self):
         """
