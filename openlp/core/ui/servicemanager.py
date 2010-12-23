@@ -759,7 +759,7 @@ class ServiceManager(QtGui.QWidget):
                     self.onNewService()
                     for item in items:
                         serviceitem = ServiceItem()
-                        serviceitem.render_manager = self.parent.RenderManager
+                        serviceitem.render_manager = self.parent.renderManager
                         serviceitem.set_from_service(item, self.servicePath)
                         self.validateItem(serviceitem)
                         self.addServiceItem(serviceitem)
@@ -820,7 +820,7 @@ class ServiceManager(QtGui.QWidget):
         """
         log.debug(u'onThemeComboBoxSelected')
         self.service_theme = unicode(self.themeComboBox.currentText())
-        self.parent.RenderManager.set_service_theme(self.service_theme)
+        self.parent.renderManager.set_service_theme(self.service_theme)
         QtCore.QSettings().setValue(
             self.parent.serviceSettingsSection + u'/service theme',
             QtCore.QVariant(self.service_theme))
@@ -832,7 +832,7 @@ class ServiceManager(QtGui.QWidget):
         sure the theme combo box is in the correct state.
         """
         log.debug(u'themeChange')
-        if self.parent.RenderManager.theme_level == ThemeLevel.Global:
+        if self.parent.renderManager.theme_level == ThemeLevel.Global:
             self.toolbar.actions[u'ThemeLabel'].setVisible(False)
             self.toolbar.actions[u'ThemeWidget'].setVisible(False)
         else:
@@ -846,7 +846,7 @@ class ServiceManager(QtGui.QWidget):
         """
         log.debug(u'regenerateServiceItems')
         # force reset of renderer as theme data has changed
-        self.parent.RenderManager.themedata = None
+        self.parent.renderManager.themedata = None
         if self.serviceItems:
             tempServiceItems = self.serviceItems
             self.serviceManagerList.clear()
@@ -880,7 +880,7 @@ class ServiceManager(QtGui.QWidget):
                 newItem.merge(item[u'service_item'])
                 item[u'service_item'] = newItem
                 self.repaintServiceList(itemcount + 1, 0)
-                self.parent.LiveController.replaceServiceManagerItem(newItem)
+                self.parent.liveController.replaceServiceManagerItem(newItem)
         self.parent.serviceChanged(False, self.serviceName)
 
     def addServiceItem(self, item, rebuild=False, expand=None, replace=False):
@@ -902,7 +902,7 @@ class ServiceManager(QtGui.QWidget):
             item.merge(self.serviceItems[sitem][u'service_item'])
             self.serviceItems[sitem][u'service_item'] = item
             self.repaintServiceList(sitem + 1, 0)
-            self.parent.LiveController.replaceServiceManagerItem(item)
+            self.parent.liveController.replaceServiceManagerItem(item)
         else:
             # nothing selected for dnd
             if self.droppos == 0:
@@ -923,7 +923,7 @@ class ServiceManager(QtGui.QWidget):
                 self.repaintServiceList(self.droppos, 0)
             # if rebuilding list make sure live is fixed.
             if rebuild:
-                self.parent.LiveController.replaceServiceManagerItem(item)
+                self.parent.liveController.replaceServiceManagerItem(item)
         self.droppos = 0
         self.parent.serviceChanged(False, self.serviceName)
 
@@ -933,7 +933,7 @@ class ServiceManager(QtGui.QWidget):
         """
         item, count = self.findServiceItem()
         if self.serviceItems[item][u'service_item'].is_valid:
-            self.parent.PreviewController.addServiceManagerItem(
+            self.parent.previewController.addServiceManagerItem(
                 self.serviceItems[item][u'service_item'], count)
         else:
             QtGui.QMessageBox.critical(self,
@@ -957,7 +957,7 @@ class ServiceManager(QtGui.QWidget):
         """
         item, count = self.findServiceItem()
         if self.serviceItems[item][u'service_item'].is_valid:
-            self.parent.LiveController.addServiceManagerItem(
+            self.parent.liveController.addServiceManagerItem(
                 self.serviceItems[item][u'service_item'], count)
             if QtCore.QSettings().value(
                 self.parent.generalSettingsSection + u'/auto preview',
@@ -966,9 +966,9 @@ class ServiceManager(QtGui.QWidget):
                 if self.serviceItems and item < len(self.serviceItems) and \
                     self.serviceItems[item][u'service_item'].is_capable(
                     ItemCapabilities.AllowsPreview):
-                    self.parent.PreviewController.addServiceManagerItem(
+                    self.parent.previewController.addServiceManagerItem(
                         self.serviceItems[item][u'service_item'], 0)
-                    self.parent.LiveController.PreviewListWidget.setFocus()
+                    self.parent.liveController.PreviewListWidget.setFocus()
         else:
             QtGui.QMessageBox.critical(self,
                 translate('OpenLP.ServiceManager', 'Missing Display Handler'),
@@ -1088,7 +1088,7 @@ class ServiceManager(QtGui.QWidget):
             index = 0
             self.service_theme = u''
         self.themeComboBox.setCurrentIndex(index)
-        self.parent.RenderManager.set_service_theme(self.service_theme)
+        self.parent.renderManager.set_service_theme(self.service_theme)
         self.regenerateServiceItems()
 
     def onThemeChangeAction(self):

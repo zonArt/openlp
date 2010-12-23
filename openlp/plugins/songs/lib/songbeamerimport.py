@@ -24,7 +24,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`songbeamerimport` module provides the functionality for importing 
+The :mod:`songbeamerimport` module provides the functionality for importing
  SongBeamer songs into the OpenLP database.
 """
 import logging
@@ -32,6 +32,7 @@ import os
 import chardet
 import codecs
 
+from openlp.core.lib import translate
 from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
@@ -42,19 +43,20 @@ class SongBeamerTypes(object):
         u'Chorus': u'C',
         u'Vers': u'V',
         u'Verse': u'V',
-        u'Strophe': u'V', 
+        u'Strophe': u'V',
         u'Intro': u'I',
         u'Coda': u'E',
         u'Ending': u'E',
         u'Bridge': u'B',
-        u'Interlude': u'B', 
+        u'Interlude': u'B',
         u'Zwischenspiel': u'B',
         u'Pre-Chorus': u'P',
-        u'Pre-Refrain': u'P', 
+        u'Pre-Refrain': u'P',
         u'Pre-Bridge': u'O',
         u'Pre-Coda': u'O',
-        u'Unbekannt': u'O', 
-        u'Unknown': u'O'
+        u'Unbekannt': u'O',
+        u'Unknown': u'O',
+        u'Unbenannt': u'O'
         }
 
 
@@ -88,7 +90,7 @@ class SongBeamerImport(SongImport):
                 len(self.import_source))
             for file in self.import_source:
                 # TODO: check that it is a valid SongBeamer file
-                self.current_verse = u'' 
+                self.current_verse = u''
                 self.current_verse_type = u'V'
                 read_verses = False
                 self.file_name = os.path.split(file)[1]
@@ -100,6 +102,7 @@ class SongBeamerImport(SongImport):
                     detect_file.close()
                     infile = codecs.open(file, u'r', details['encoding'])
                     self.songData = infile.readlines()
+                    infile.close()
                 else:
                     return False
                 for line in self.songData:
@@ -112,7 +115,7 @@ class SongBeamerImport(SongImport):
                             self.replace_html_tags()
                             self.add_verse(self.current_verse,
                                 self.current_verse_type)
-                            self.current_verse = u'' 
+                            self.current_verse = u''
                             self.current_verse_type = u'V'
                         read_verses = True
                         verse_start = True
@@ -127,8 +130,9 @@ class SongBeamerImport(SongImport):
                     self.replace_html_tags()
                     self.add_verse(self.current_verse, self.current_verse_type)
                 self.finish()
-                self.import_wizard.incrementProgressBar(
-                    "Importing %s" % (self.file_name))
+                self.import_wizard.incrementProgressBar(u'%s %s...' %
+                    (translate('SongsPlugin.SongBeamerImport', 'Importing'),
+                    self.file_name))
             return True
 
     def replace_html_tags(self):
@@ -262,6 +266,9 @@ class SongBeamerImport(SongImport):
         elif tag_val[0] == u'#TransposeAccidental':
             pass
         elif tag_val[0] == u'#Version':
+            pass
+        elif tag_val[0] == u'#VerseOrder':
+            # TODO: add the verse order.
             pass
 
     def check_verse_marks(self, line):

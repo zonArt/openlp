@@ -46,13 +46,13 @@ class ImageThread(QtCore.QThread):
     """
     def __init__(self, manager):
         QtCore.QThread.__init__(self, None)
-        self.image_mamager = manager
+        self.imageManager = manager
 
     def run(self):
         """
         Run the thread.
         """
-        self.image_mamager.process()
+        self.imageManager.process()
 
 
 class Image(object):
@@ -113,6 +113,14 @@ class ImageManager(QtCore.QObject):
                 time.sleep(0.1)
         return self._cache[name].image_bytes
 
+    def del_image(self, name):
+        """
+        Delete the Image from the Cache
+        """
+        log.debug(u'del_image %s' % name)
+        if name in self._cache:
+            del self._cache[name]
+
     def add_image(self, name, path):
         """
         Add image to cache if it is not already there
@@ -125,6 +133,8 @@ class ImageManager(QtCore.QObject):
             image.image = resize_image(path,
                 self.width, self.height)
             self._cache[name] = image
+        else:
+            log.debug(u'Image in cache %s:%s' % (name, path))
         self._cache_dirty = True
         # only one thread please
         if not self._thread_running:
