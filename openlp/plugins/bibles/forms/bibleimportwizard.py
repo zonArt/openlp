@@ -208,6 +208,7 @@ class Ui_BibleImportWizard(object):
         self.locationComboBox.setObjectName(u'LocationComboBox')
         self.locationComboBox.addItem(u'')
         self.locationComboBox.addItem(u'')
+        self.locationComboBox.addItem(u'')
         self.downloadOptionsLayout.setWidget(0, QtGui.QFormLayout.FieldRole,
             self.locationComboBox)
         self.bibleLabel = QtGui.QLabel(self.downloadOptionsTab)
@@ -279,6 +280,11 @@ class Ui_BibleImportWizard(object):
         self.openlp1LocationLayout.addWidget(self.openlp1FileButton)
         self.openlp1Layout.setLayout(1, QtGui.QFormLayout.FieldRole,
             self.openlp1LocationLayout)
+        self.openlp1DisabledLabel = QtGui.QLabel(self.openlp1Page)
+        self.openlp1DisabledLabel.setObjectName(u'openlp1DisabledLabel')
+        self.openlp1DisabledLabel.setVisible(False)
+        self.openlp1DisabledLabel.setWordWrap(True)
+        self.openlp1Layout.addWidget(self.openlp1DisabledLabel)
         self.formatWidget.addWidget(self.openlp1Page)
         self.selectPageLayout.addWidget(self.formatWidget)
         bibleImportWizard.addPage(self.selectPage)
@@ -383,6 +389,8 @@ class Ui_BibleImportWizard(object):
             translate('BiblesPlugin.ImportWizardForm', 'Crosswalk'))
         self.locationComboBox.setItemText(1,
             translate('BiblesPlugin.ImportWizardForm', 'BibleGateway'))
+        self.locationComboBox.setItemText(2,
+            translate('BiblesPlugin.ImportWizardForm', 'Bibleserver'))
         self.bibleLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'Bible:'))
         self.webDownloadTabWidget.setTabText(
@@ -417,3 +425,8 @@ class Ui_BibleImportWizard(object):
         self.importProgressLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'Ready.'))
         self.importProgressBar.setFormat(u'%p%')
+        self.openlp1DisabledLabel.setText(
+            translate('BiblesPlugin.ImportWizardForm', 'The openlp.org 1.x '
+            'importer has been disabled due to a missing Python module. If '
+            'you want to use this importer, you will need to install the '
+            '"python-sqlite" module.'))

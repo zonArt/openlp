@@ -48,7 +48,7 @@ else:
         uno_available = True
     except ImportError:
         uno_available = False
-        
+
 from PyQt4 import QtCore
 
 from presentationcontroller import PresentationController, PresentationDocument
@@ -210,12 +210,12 @@ class ImpressController(PresentationController):
 class ImpressDocument(PresentationDocument):
     """
     Class which holds information and controls a single presentation
-    """    
-    
+    """
+
     def __init__(self, controller, presentation):
         """
-        Constructor, store information about the file and initialise 
-        """        
+        Constructor, store information about the file and initialise
+        """
         log.debug(u'Init Presentation OpenOffice')
         PresentationDocument.__init__(self, controller, presentation)
         self.document = None
@@ -287,7 +287,7 @@ class ImpressDocument(PresentationDocument):
             page = pages.getByIndex(idx)
             doc.getCurrentController().setCurrentPage(page)
             urlpath = u'%s/%s.png' % (thumbdirurl, unicode(idx + 1))
-            path = os.path.join(self.get_temp_folder(), 
+            path = os.path.join(self.get_temp_folder(),
                 unicode(idx + 1) + u'.png')
             try:
                 doc.storeToURL(urlpath, props)

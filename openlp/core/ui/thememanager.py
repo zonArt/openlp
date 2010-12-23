@@ -225,10 +225,10 @@ class ThemeManager(QtGui.QWidget):
         """
         item = self.themeListWidget.currentItem()
         oldThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
-        self.fileRenameForm.FileNameEdit.setText(oldThemeName)
+        self.fileRenameForm.fileNameEdit.setText(oldThemeName)
         self.saveThemeName = u''
         if self.fileRenameForm.exec_():
-            newThemeName =  unicode(self.fileRenameForm.FileNameEdit.text())
+            newThemeName =  unicode(self.fileRenameForm.fileNameEdit.text())
             oldThemeData = self.getThemeData(oldThemeName)
             self.deleteTheme(oldThemeName)
             self.cloneThemeData(oldThemeData, newThemeName)
@@ -239,10 +239,10 @@ class ThemeManager(QtGui.QWidget):
         """
         item = self.themeListWidget.currentItem()
         oldThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
-        self.fileRenameForm.FileNameEdit.setText(oldThemeName)
+        self.fileRenameForm.fileNameEdit.setText(oldThemeName)
         self.saveThemeName = u''
         if self.fileRenameForm.exec_():
-            newThemeName =  unicode(self.fileRenameForm.FileNameEdit.text())
+            newThemeName =  unicode(self.fileRenameForm.fileNameEdit.text())
             themeData = self.getThemeData(oldThemeName)
             self.cloneThemeData(themeData, newThemeName)
             self.loadThemes()
@@ -310,7 +310,7 @@ class ThemeManager(QtGui.QWidget):
                     translate('OpenLP.ThemeManager',
                         'You are unable to delete the default theme.'))
             else:
-                for plugin in self.parent.plugin_manager.plugins:
+                for plugin in self.parent.pluginManager.plugins:
                     if plugin.usesTheme(theme):
                         QtGui.QMessageBox.critical(self,
                             translate('OpenLP.ThemeManager', 'Error'),
@@ -663,7 +663,7 @@ class ThemeManager(QtGui.QWidget):
                     (QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
                     QtGui.QMessageBox.No)
             if self.saveThemeName != u'':
-                for plugin in self.parent.plugin_manager.plugins:
+                for plugin in self.parent.pluginManager.plugins:
                     if plugin.usesTheme(self.saveThemeName):
                         plugin.renameTheme(self.saveThemeName, name)
                 if unicode(self.serviceComboBox.currentText()) == name:
