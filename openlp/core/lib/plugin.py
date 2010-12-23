@@ -175,6 +175,10 @@ class Plugin(QtCore.QObject):
         self.status = new_status
         QtCore.QSettings().setValue(
             self.settingsSection + u'/status', QtCore.QVariant(self.status))
+        if new_status == PluginStatus.Active:
+            self.initialise()
+        elif new_status == PluginStatus.InActive:
+            self.finalise()
 
     def isActive(self):
         """

@@ -24,39 +24,43 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`ui` module provides the core user interface for OpenLP
+Provide Html Tag management and Display Tag access class
 """
 
-class HideMode(object):
-    """
-    This is basically an enumeration class which specifies the mode of a Bible.
-    Mode refers to whether or not a Bible in OpenLP is a full Bible or needs to
-    be downloaded from the Internet on an as-needed basis.
-    """
-    Blank = 1
-    Theme = 2
-    Screen = 3
+from openlp.core.lib import base_html_expands
 
-from themeform import ThemeForm
-from filerenameform import FileRenameForm
-from maindisplay import MainDisplay
-from servicenoteform import ServiceNoteForm
-from serviceitemeditform import ServiceItemEditForm
-from screen import ScreenList
-from slidecontroller import SlideController
-from splashscreen import SplashScreen
-from generaltab import GeneralTab
-from themestab import ThemesTab
-from advancedtab import AdvancedTab
-from displaytagtab import DisplayTagTab
-from aboutform import AboutForm
-from pluginform import PluginForm
-from settingsform import SettingsForm
-from shortcutlistform import ShortcutListForm
-from mediadockmanager import MediaDockManager
-from servicemanager import ServiceManager
-from thememanager import ThemeManager
+class HtmlTags(object):
+    """
+    """
+    def __init__(self):
+        self.html_expands = []
+        self.eyeCatcher = "eyeCatcher"
+        self.reset_list()
 
-__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm',
-    'MainDisplay', 'SlideController', 'ServiceManager', 'ThemeManager',
-    'MediaDockManager', 'ServiceItemEditForm']
+    def reset_list(self):
+        """
+        """
+        self.html_expands = []
+        for html in base_html_expands:
+            self.html_expands.append(html)
+
+    def add_tag(self, html):
+        """
+        """
+        self.html_expands.append(html)
+
+
+class DisplayTags(object):
+    """
+    Static Class to HTML Tags to be access around the code the list is managed
+    by the Options Tab.
+    """
+    html_tags = HtmlTags()
+
+    @staticmethod
+    def get_html_tags():
+        """
+        Provide access to the HtmlTags object.
+        """
+        return DisplayTags.html_tags
+
