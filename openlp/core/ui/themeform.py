@@ -456,6 +456,17 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         self.theme.background_type = BackgroundType.to_string(index)
         self.setBackgroundTabValues()
+        self.colorLabel.setVisible(index == 0)
+        self.colorButton.setVisible(index == 0)
+        self.gradientStartLabel.setVisible(index == 1)
+        self.gradientStartButton.setVisible(index == 1)
+        self.gradientEndLabel.setVisible(index == 1)
+        self.gradientEndButton.setVisible(index == 1)
+        self.gradientTypeLabel.setVisible(index == 1)
+        self.gradientComboBox.setVisible(index == 1)
+        self.imageLabel.setVisible(index == 2)
+        self.imageLineEdit.setVisible(index == 2)
+        self.imageBrowseButton.setVisible(index == 2)
 
     def onGradientComboBox(self, index):
         """
