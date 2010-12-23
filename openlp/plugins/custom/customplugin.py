@@ -109,7 +109,7 @@ class CustomPlugin(Plugin):
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.textStrings[StringContent.VisibleName] = {
-            u'title': translate('CustomsPlugin', 'Customs')
+            u'title': translate('CustomsPlugin', 'Custom')
         }
         # Middle Header Bar
         ## Import Button ##
