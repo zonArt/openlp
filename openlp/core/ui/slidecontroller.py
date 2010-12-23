@@ -332,11 +332,12 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
         if not self.isLive:
             QtCore.QObject.connect(self.PreviewListWidget,
-                QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onGoLiveClick)
+                QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
+                self.onGoLiveClick)
         if isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'slidecontroller_live_spin_delay'),
-                    self.receiveSpinDelay)
+                self.receiveSpinDelay)
         if isLive:
             self.Toolbar.makeWidgetsInvisible(self.loopList)
             self.Toolbar.actions[u'Stop Loop'].setVisible(False)
@@ -466,7 +467,7 @@ class SlideController(QtGui.QWidget):
         self.Toolbar.actions[u'Stop Loop'].setVisible(False)
         if item.is_text():
             if QtCore.QSettings().value(
-                self.parent.songsSettingsSection + u'/show songbar',
+                self.parent.songsSettingsSection + u'/display songbar',
                 QtCore.QVariant(True)).toBool() and len(self.slideList) > 0:
                 self.Toolbar.makeWidgetsVisible([u'Song Menu'])
         if item.is_capable(ItemCapabilities.AllowsLoop) and \
@@ -560,7 +561,7 @@ class SlideController(QtGui.QWidget):
             [serviceItem, self.isLive, blanked, slideno])
         self.slideList = {}
         width = self.parent.ControlSplitter.sizes()[self.split]
-        # Set pointing cursor when we have somthing to point at
+        # Set pointing cursor when we have something to point at
         self.PreviewListWidget.setCursor(QtCore.Qt.PointingHandCursor)
         self.serviceItem = serviceItem
         self.PreviewListWidget.clear()

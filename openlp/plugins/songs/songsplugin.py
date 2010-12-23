@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
-from openlp.plugins.songs.lib import SongMediaItem, SongsTab
+from openlp.plugins.songs.lib import SongMediaItem, SongsTab, SongXMLParser
 from openlp.plugins.songs.lib.db import init_schema, Song
 from openlp.plugins.songs.lib.importer import SongFormat
 
@@ -150,9 +150,13 @@ class SongsPlugin(Plugin):
                 song.title = u''
             if song.alternate_title is None:
                 song.alternate_title = u''
-            song.search_title = self.whitespace.sub(u' ', \
-                song.title.lower()) + u' ' + \
-                self.whitespace.sub(u' ', song.alternate_title.lower())
+            song.search_title = self.whitespace.sub(u' ', song.title.lower() + \
+                u' ' + song.alternate_title.lower())
+            lyrics = u''
+            verses = SongXMLParser(song.lyrics).get_verses()
+            for verse in verses:
+                lyrics = lyrics + self.whitespace.sub(u' ', verse[1]) + u' '
+            song.search_lyrics = lyrics.lower()
             progressDialog.setValue(counter)
         self.manager.save_objects(songs)
         counter += 1

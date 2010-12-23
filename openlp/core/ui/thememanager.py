@@ -223,15 +223,17 @@ class ThemeManager(QtGui.QWidget):
         """
         Renames an existing theme to a new name
         """
-        item = self.themeListWidget.currentItem()
-        oldThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
-        self.fileRenameForm.FileNameEdit.setText(oldThemeName)
-        self.saveThemeName = u''
-        if self.fileRenameForm.exec_():
-            newThemeName =  unicode(self.fileRenameForm.FileNameEdit.text())
-            oldThemeData = self.getThemeData(oldThemeName)
-            self.deleteTheme(oldThemeName)
-            self.cloneThemeData(oldThemeData, newThemeName)
+        action = unicode(translate('OpenLP.ThemeManager', 'Rename'))
+        if self._validate_theme_action(action):
+            item = self.themeListWidget.currentItem()
+            oldThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
+            self.fileRenameForm.fileNameEdit.setText(oldThemeName)
+            self.saveThemeName = u''
+            if self.fileRenameForm.exec_():
+                newThemeName =  unicode(self.fileRenameForm.fileNameEdit.text())
+                oldThemeData = self.getThemeData(oldThemeName)
+                self.deleteTheme(oldThemeName)
+                self.cloneThemeData(oldThemeData, newThemeName)
 
     def onCopyTheme(self):
         """
@@ -239,10 +241,10 @@ class ThemeManager(QtGui.QWidget):
         """
         item = self.themeListWidget.currentItem()
         oldThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
-        self.fileRenameForm.FileNameEdit.setText(oldThemeName)
+        self.fileRenameForm.fileNameEdit.setText(oldThemeName)
         self.saveThemeName = u''
         if self.fileRenameForm.exec_():
-            newThemeName =  unicode(self.fileRenameForm.FileNameEdit.text())
+            newThemeName =  unicode(self.fileRenameForm.fileNameEdit.text())
             themeData = self.getThemeData(oldThemeName)
             self.cloneThemeData(themeData, newThemeName)
             self.loadThemes()
@@ -286,47 +288,13 @@ class ThemeManager(QtGui.QWidget):
         """
         Delete a theme
         """
-        self.global_theme = unicode(QtCore.QSettings().value(
-            self.settingsSection + u'/global theme',
-            QtCore.QVariant(u'')).toString())
-        if check_item_selected(self.themeListWidget,
-            translate('OpenLP.ThemeManager',
-            'You must select a theme to delete.')):
+        action = unicode(translate('OpenLP.ThemeManager', 'Delete'))
+        if self._validate_theme_action(action):
             item = self.themeListWidget.currentItem()
             theme = unicode(item.text())
-            # confirm deletion
-            answer = QtGui.QMessageBox.question(self,
-                translate('OpenLP.ThemeManager', 'Delete Confirmation'),
-                unicode(translate('OpenLP.ThemeManager', 'Delete %s theme?'))
-                % theme,
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
-                QtGui.QMessageBox.No), QtGui.QMessageBox.No)
-            if answer == QtGui.QMessageBox.No:
-                return
-            # should be the same unless default
-            if theme != unicode(item.data(QtCore.Qt.UserRole).toString()):
-                QtGui.QMessageBox.critical(self,
-                    translate('OpenLP.ThemeManager', 'Error'),
-                    translate('OpenLP.ThemeManager',
-                        'You are unable to delete the default theme.'))
-            else:
-                for plugin in self.parent.pluginManager.plugins:
-                    if plugin.usesTheme(theme):
-                        QtGui.QMessageBox.critical(self,
-                            translate('OpenLP.ThemeManager', 'Error'),
-                            unicode(translate('OpenLP.ThemeManager',
-                                'Theme %s is used in the %s plugin.')) % \
-                                (theme, plugin.name))
-                        return
-                if unicode(self.serviceComboBox.currentText()) == theme:
-                    QtGui.QMessageBox.critical(self,
-                        translate('OpenLP.ThemeManager', 'Error'),
-                        unicode(translate('OpenLP.ThemeManager',
-                        'Theme %s is used by the service manager.')) % theme)
-                    return
-                row = self.themeListWidget.row(item)
-                self.themeListWidget.takeItem(row)
-                self.deleteTheme(theme)
+            row = self.themeListWidget.row(item)
+            self.themeListWidget.takeItem(row)
+            self.deleteTheme(theme)
 
     def deleteTheme(self, theme):
         """
@@ -782,3 +750,49 @@ class ThemeManager(QtGui.QWidget):
         theme.parse(themeXml)
         theme.extend_image_filename(path)
         return theme
+
+    def _validate_theme_action(self, action):
+        """
+        Check to see if theme has been selected and the destructive action
+        is allowed.
+        """
+        self.global_theme = unicode(QtCore.QSettings().value(
+            self.settingsSection + u'/global theme',
+            QtCore.QVariant(u'')).toString())
+        if check_item_selected(self.themeListWidget,
+            unicode(translate('OpenLP.ThemeManager',
+            'You must select a theme to %s.')) % action):
+            item = self.themeListWidget.currentItem()
+            theme = unicode(item.text())
+            # confirm deletion
+            answer = QtGui.QMessageBox.question(self,
+                unicode(translate('OpenLP.ThemeManager', '%s Confirmation'))
+                % action,
+                unicode(translate('OpenLP.ThemeManager', '%s %s theme?'))
+                % (action, theme),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
+                QtGui.QMessageBox.No), QtGui.QMessageBox.No)
+            if answer == QtGui.QMessageBox.No:
+                return False
+            # should be the same unless default
+            if theme != unicode(item.data(QtCore.Qt.UserRole).toString()):
+                QtGui.QMessageBox.critical(self,
+                    translate('OpenLP.ThemeManager', 'Error'),
+                    translate('OpenLP.ThemeManager',
+                        'You are unable to delete the default theme.'))
+            else:
+                for plugin in self.parent.pluginManager.plugins:
+                    if plugin.usesTheme(theme):
+                        QtGui.QMessageBox.critical(self,
+                            translate('OpenLP.ThemeManager', 'Error'),
+                            unicode(translate('OpenLP.ThemeManager',
+                                'Theme %s is used in the %s plugin.')) % \
+                                (theme, plugin.name))
+                        return False
+                if unicode(self.serviceComboBox.currentText()) == theme:
+                    QtGui.QMessageBox.critical(self,
+                        translate('OpenLP.ThemeManager', 'Error'),
+                        unicode(translate('OpenLP.ThemeManager',
+                        'Theme %s is used by the service manager.')) % theme)
+                    return False
+        return True

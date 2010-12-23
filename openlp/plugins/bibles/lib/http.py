@@ -240,6 +240,67 @@ class BGExtract(object):
         return SearchResults(bookname, chapter, verse_list)
 
 
+class BSExtract(object):
+    """
+    Extract verses from Bibleserver.com
+    """
+    def __init__(self, proxyurl=None):
+        log.debug(u'init %s', proxyurl)
+        self.proxyurl = proxyurl
+
+    def get_bible_chapter(self, version, bookname, chapter):
+        """
+        Access and decode bibles via Bibleserver mobile website
+
+        ``version``
+            The version of the bible like NIV for New International Version
+
+        ``bookname``
+            Text name of bible book e.g. Genesis, 1. John, 1John or Offenbarung
+
+        ``chapter``
+            Chapter number
+        """
+        log.debug(u'get_bible_chapter %s,%s,%s', version, bookname, chapter)
+        chapter_url = u'http://m.bibleserver.com/text/%s/%s%s' % \
+            (version, bookname, chapter)
+        
+        log.debug(u'URL: %s', chapter_url)
+        page = None
+        try:
+            page = urllib2.urlopen(chapter_url)
+            Receiver.send_message(u'openlp_process_events')
+        except urllib2.URLError:
+            log.exception(u'The web bible page could not be downloaded.')
+        finally:
+            if not page:
+                return None
+        soup = None
+        try:
+            soup = BeautifulSoup(page)
+        except HTMLParseError:
+            log.exception(u'BeautifulSoup could not parse the bible page.')
+        finally:
+            if not soup:
+                return None
+        Receiver.send_message(u'openlp_process_events')
+        content = None
+        try:
+            content = soup.find(u'div', u'content').find(u'div').findAll(u'div')
+        except:
+            log.exception(u'No verses found.')
+        finally:
+            if not content:
+                return None
+        verse_number = re.compile(r'v(\d{2})(\d{3})(\d{3}) verse')
+        verses = {}
+        for verse in content:
+            Receiver.send_message(u'openlp_process_events')
+            versenumber = int(verse_number.sub(r'\3', verse[u'class']))
+            verses[versenumber] = verse.contents[1].rstrip(u'\n')
+        return SearchResults(bookname, chapter, verses)
+
+
 class CWExtract(object):
     """
     Extract verses from CrossWalk/BibleStudyTools
@@ -350,7 +411,7 @@ class HTTPBible(BibleDB):
         Run the import. This method overrides the parent class method. Returns
         ``True`` on success, ``False`` on failure.
         """
-        self.wizard.ImportProgressBar.setMaximum(2)
+        self.wizard.importProgressBar.setMaximum(2)
         self.wizard.incrementProgressBar('Registering bible...')
         self.create_meta(u'download source', self.download_source)
         self.create_meta(u'download name', self.download_name)
@@ -426,8 +487,10 @@ class HTTPBible(BibleDB):
         log.debug(u'source = %s', self.download_source)
         if self.download_source.lower() == u'crosswalk':
             ev = CWExtract(self.proxy_server)
-        else:
+        elif self.download_source.lower() == u'biblegateway':
             ev = BGExtract(self.proxy_server)
+        elif self.download_source.lower() == u'bibleserver':
+            ev = BSExtract(self.proxy_server)
         return ev.get_bible_chapter(self.download_name, book, chapter)
 
     def get_books(self):
