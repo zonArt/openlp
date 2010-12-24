@@ -284,6 +284,7 @@ class BSExtract(object):
             if not soup:
                 return None
         Receiver.send_message(u'openlp_process_events')
+        content = None
         try:
             content = soup.find(u'div', u'content').find(u'div').findAll(u'div')
         except:
