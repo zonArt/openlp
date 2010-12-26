@@ -79,7 +79,7 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
                 status_text = unicode(
                     translate('OpenLP.PluginForm', '%s (Disabled)'))
             name_string = plugin.getString(StringContent.Name)
-            item.setText(status_text % name_string[u'plural'])
+            item.setText(status_text % name_string[u'singular'])
             # If the plugin has an icon, set it!
             if plugin.icon:
                 item.setIcon(plugin.icon)
@@ -107,12 +107,12 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         if self.pluginListWidget.currentItem() is None:
             self._clearDetails()
             return
-        plugin_name_plural = \
+        plugin_name_singular = \
             self.pluginListWidget.currentItem().text().split(u' ')[0]
         self.activePlugin = None
         for plugin in self.parent.pluginManager.plugins:
             name_string = plugin.getString(StringContent.Name)
-            if name_string[u'plural'] == plugin_name_plural:
+            if name_string[u'singular'] == plugin_name_singular:
                 self.activePlugin = plugin
                 break
         if self.activePlugin:
@@ -140,4 +140,4 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
                 translate('OpenLP.PluginForm', '%s (Disabled)'))
         name_string = self.activePlugin.getString(StringContent.Name)
         self.pluginListWidget.currentItem().setText(
-            status_text % name_string[u'plural'])
+            status_text % name_string[u'singular'])
