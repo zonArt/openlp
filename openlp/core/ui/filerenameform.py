@@ -28,6 +28,8 @@ from PyQt4 import QtCore, QtGui
 
 from filerenamedialog import Ui_FileRenameDialog
 
+from openlp.core.lib import translate
+
 class FileRenameForm(QtGui.QDialog, Ui_FileRenameDialog):
     """
     The exception dialog
@@ -39,3 +41,15 @@ class FileRenameForm(QtGui.QDialog, Ui_FileRenameDialog):
             self.accept)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
             self.reject)
+
+    def exec_(self, copy=False):
+        """
+        Run the Dialog with correct heading.
+        """
+        if copy:
+            self.setWindowTitle(translate('OpenLP.FileRenameForm',
+                'File Copy'))
+        else:
+            self.setWindowTitle(translate('OpenLP.FileRenameForm',
+            'File Rename'))
+        return QtGui.QDialog.exec_(self)
