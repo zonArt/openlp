@@ -50,7 +50,6 @@ class DisplayTagTab(SettingsTab):
         Initialise values before the Load takes place
         """
         # Create initial copy from master
-        print DisplayTags.get_html_tags().eyeCatcher
         DisplayTags.get_html_tags().reset_list()
         user_expands = QtCore.QSettings().value(u'displayTags/html_tags',
             QtCore.QVariant(u'')).toString()
@@ -66,7 +65,8 @@ class DisplayTagTab(SettingsTab):
         Configure the UI elements for the tab.
         '''
         self.setObjectName(u'DisplayTagTab')
-        self.tabTitleVisible = translate(u'OpenLP.DisplayTagTab', 'Display Tags')
+        self.tabTitleVisible = \
+            translate(u'OpenLP.DisplayTagTab', 'Display Tags')
         self.displayTagEdit = QtGui.QWidget(self)
         self.editGroupBox = QtGui.QGroupBox(self.displayTagEdit)
         self.editGroupBox.setGeometry(QtCore.QRect(10, 220, 691, 181))

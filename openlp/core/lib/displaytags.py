@@ -34,7 +34,6 @@ class HtmlTags(object):
     """
     def __init__(self):
         self.html_expands = []
-        self.eyeCatcher = "eyeCatcher"
         self.reset_list()
 
     def reset_list(self):
