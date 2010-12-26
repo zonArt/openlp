@@ -148,7 +148,7 @@ class Ui_MainWindow(object):
         self.MediaManagerDock.setMinimumWidth(
             self.settingsmanager.mainwindow_left)
         self.MediaManagerDock.setObjectName(u'MediaManagerDock')
-        self.MediaManagerContents = QtGui.QWidget()
+        self.MediaManagerContents = QtGui.QWidget(MainWindow)
         self.MediaManagerContents.setObjectName(u'MediaManagerContents')
         self.MediaManagerLayout = QtGui.QHBoxLayout(self.MediaManagerContents)
         self.MediaManagerLayout.setContentsMargins(0, 2, 0, 0)

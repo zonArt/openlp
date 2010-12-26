@@ -214,7 +214,7 @@ class RenderManager(object):
         if self.force_page:
             verse = verse + verse + verse
         else:
-            self.image_manager.del_image(self.theme_data.theme_name)
+            self.image_manager.del_image(theme_data.theme_name)
         footer = []
         footer.append(u'Arky Arky (Unknown)' )
         footer.append(u'Public Domain')
