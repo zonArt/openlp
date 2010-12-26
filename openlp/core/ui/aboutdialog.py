@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -182,8 +182,8 @@ class Ui_AboutDialog(object):
             self.aboutNotebook.indexOf(self.creditsTab),
             translate('OpenLP.AboutForm', 'Credits'))
         self.licenseTextEdit.setPlainText(translate('OpenLP.AboutForm',
-            'Copyright \xa9 2004-2010 Raoul Snyman\n'
-            'Portions copyright \xa9 2004-2010 '
+            'Copyright \xa9 2004-2011 Raoul Snyman\n'
+            'Portions copyright \xa9 2004-2011 '
             'Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri, '
             'Christian Richter, Maikel Stuivenberg, Martin Thompson, Jon '
             'Tibble, Carsten Tinggaard\n'
@@ -576,4 +576,3 @@ class Ui_AboutDialog(object):
         self.contributeButton.setText(translate('OpenLP.AboutForm',
             'Contribute'))
         self.closeButton.setText(translate('OpenLP.AboutForm', 'Close'))
-
