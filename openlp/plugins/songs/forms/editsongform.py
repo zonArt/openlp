@@ -547,14 +547,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if self.AuthorsListView.count() == 0:
             self.SongTabWidget.setCurrentIndex(1)
             self.AuthorsListView.setFocus()
-            answer = QtGui.QMessageBox.warning(self,
+            QtGui.QMessageBox.critical(self,
                 translate('SongsPlugin.EditSongForm', 'Warning'),
                 translate('SongsPlugin.EditSongForm',
-                'You have not added any authors for this song. Do you '
-                'want to add an author now?'),
-                QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
-            if answer == QtGui.QMessageBox.Yes:
-                return False
+                'You need to have an author for this song.'))
+            return False
         if self.song.verse_order:
             order = []
             order_names = self.song.verse_order.split()
@@ -739,7 +736,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 verseId = unicode(item.data(QtCore.Qt.UserRole).toString())
                 bits = verseId.split(u':')
                 sxml.add_verse_to_lyrics(bits[0], bits[1], unicode(item.text()))
-                text = text + whitespace.sub(u' ',
+                text = text + self.whitespace.sub(u' ',
                     unicode(self.VerseListWidget.item(i, 0).text())) + u' '
                 if (bits[1] > u'1') and (bits[0][0] not in multiple):
                     multiple.append(bits[0][0])
