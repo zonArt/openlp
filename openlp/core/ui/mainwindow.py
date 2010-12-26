@@ -76,7 +76,7 @@ class Ui_MainWindow(object):
         MainIcon = build_icon(u':/icon/openlp-logo-16x16.png')
         MainWindow.setWindowIcon(MainIcon)
         self.setDockNestingEnabled(True)
-        # Set up the main container, which contains all the other form widgets
+        # Set up the main container, which contains all the other form widgets.
         self.MainContent = QtGui.QWidget(MainWindow)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,
             QtGui.QSizePolicy.Expanding)
@@ -272,7 +272,7 @@ class Ui_MainWindow(object):
         self.SettingsPluginListItem.setObjectName(u'SettingsPluginListItem')
         MainWindow.actionList.add_action(self.SettingsPluginListItem,
             u'Settings')
-        #i18n Language Items
+        # i18n Language Items
         self.AutoLanguageItem = QtGui.QAction(MainWindow)
         self.AutoLanguageItem.setObjectName(u'AutoLanguageItem')
         self.AutoLanguageItem.setCheckable(True)
@@ -331,7 +331,7 @@ class Ui_MainWindow(object):
             None, self.ViewMediaManagerItem, self.ViewServiceManagerItem,
             self.ViewThemeManagerItem, None, self.ViewPreviewPanel,
             self.ViewLivePanel))
-        #i18n add Language Actions
+        # i18n add Language Actions
         add_actions(self.SettingsLanguageMenu, (self.AutoLanguageItem, None))
         add_actions(self.SettingsLanguageMenu, self.LanguageGroup.actions())
         add_actions(self.SettingsMenu, (self.SettingsPluginListItem,
@@ -354,16 +354,7 @@ class Ui_MainWindow(object):
             QtCore.SIGNAL(u'aboutToShow()'), self.updateFileMenu)
         QtCore.QObject.connect(self.FileExitItem,
             QtCore.SIGNAL(u'triggered()'), MainWindow.close)
-        QtCore.QObject.connect(self.ControlSplitter,
-            QtCore.SIGNAL(u'splitterMoved(int, int)'), self.trackSplitter)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
-    def trackSplitter(self, tab, pos):
-        """
-        Splitter between the Preview and Live Controllers.
-        """
-        self.liveController.widthChanged()
-        self.previewController.widthChanged()
 
     def retranslateUi(self, MainWindow):
         """
@@ -998,8 +989,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             The service filename to add
         """
         # The maxRecentFiles value does not have an interface and so never gets
-        # actually stored in the settings therefore the default value of 20
-        # will always be used.
+        # actually stored in the settings therefore the default value of 20 will
+        # always be used.
         maxRecentFiles = QtCore.QSettings().value(u'advanced/max recent files',
             QtCore.QVariant(20)).toInt()[0]
         if filename:

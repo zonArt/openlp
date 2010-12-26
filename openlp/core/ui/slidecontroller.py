@@ -73,6 +73,7 @@ class SlideList(QtGui.QTableWidget):
         else:
             event.ignore()
 
+
 class SlideController(QtGui.QWidget):
     """
     SlideController is the slide controller widget. This widget is what the
@@ -217,7 +218,7 @@ class SlideController(QtGui.QWidget):
                 translate('OpenLP.SlideController',
                 'Edit and reload song preview'),
                 self.onEditSong)
-        if isLive:
+        if self.isLive:
             self.Toolbar.addToolbarSeparator(u'Loop Separator')
             self.Toolbar.addToolbarButton(
                 u'Start Loop', u':/media/media_time.png',
@@ -272,7 +273,7 @@ class SlideController(QtGui.QWidget):
             self.Mediabar.addToolbarWidget(u'Audio Volume', self.volumeSlider)
         self.ControllerLayout.addWidget(self.Mediabar)
         # Build the Song Toolbar
-        if isLive:
+        if self.isLive:
             self.SongMenu = QtGui.QToolButton(self.Toolbar)
             self.SongMenu.setText(translate('OpenLP.SlideController',
                 'Go To'))
@@ -284,9 +285,10 @@ class SlideController(QtGui.QWidget):
             self.Toolbar.makeWidgetsInvisible([u'Song Menu'])
         # Screen preview area
         self.PreviewFrame = QtGui.QFrame(self.Splitter)
-        self.PreviewFrame.setGeometry(QtCore.QRect(0, 0, 300, 225))
+        self.PreviewFrame.setGeometry(QtCore.QRect(0, 0, 300, 300 * self.ratio))
+        self.PreviewFrame.setMinimumHeight(100)
         self.PreviewFrame.setSizePolicy(QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Minimum,
+            QtGui.QSizePolicy.Ignored, QtGui.QSizePolicy.Ignored,
             QtGui.QSizePolicy.Label))
         self.PreviewFrame.setFrameShape(QtGui.QFrame.StyledPanel)
         self.PreviewFrame.setFrameShadow(QtGui.QFrame.Sunken)
@@ -334,11 +336,10 @@ class SlideController(QtGui.QWidget):
             QtCore.QObject.connect(self.PreviewListWidget,
                 QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
                 self.onGoLiveClick)
-        if isLive:
+        if self.isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'slidecontroller_live_spin_delay'),
                 self.receiveSpinDelay)
-        if isLive:
             self.Toolbar.makeWidgetsInvisible(self.loopList)
             self.Toolbar.actions[u'Stop Loop'].setVisible(False)
         else:
@@ -381,8 +382,10 @@ class SlideController(QtGui.QWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_%s_text_request' % self.typePrefix),
             self.onTextRequest)
+        QtCore.QObject.connect(self.parent.ControlSplitter,
+            QtCore.SIGNAL(u'splitterMoved(int, int)'), self.previewSizeChanged)
         QtCore.QObject.connect(self.Splitter,
-            QtCore.SIGNAL(u'splitterMoved(int, int)'), self.trackSplitter)
+            QtCore.SIGNAL(u'splitterMoved(int, int)'), self.previewSizeChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.refreshServiceItem)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -403,32 +406,35 @@ class SlideController(QtGui.QWidget):
         self.display = MainDisplay(self, self.screens, self.isLive)
         self.display.imageManager = self.parent.renderManager.image_manager
         self.display.alertTab = self.alertTab
+        self.display.setup()
+        self.previewSizeChanged()
+
+    def previewSizeChanged(self):
+        """
+        Takes care of the SlidePreview's size. Is called when one of the the
+        splitters is moved or when the screen size is changed.
+        """
+        log.debug(u'previewSizeChanged live = %s' % self.isLive)
+        # The SlidePreview's ratio.
         self.ratio = float(self.screens.current[u'size'].width()) / \
             float(self.screens.current[u'size'].height())
-        self.display.setup()
-        self.SlidePreview.setFixedSize(
-            QtCore.QSize(self.settingsmanager.slidecontroller_image,
-            self.settingsmanager.slidecontroller_image / self.ratio))
-
-    def widthChanged(self):
-        """
-        Handle changes of width from the splitter between the live and preview
-        controller.  Event only issues when changes have finished
-        """
-        log.debug(u'widthChanged live = %s' % self.isLive)
+        if self.ratio < float(self.PreviewFrame.width()) / float(
+            self.PreviewFrame.height()):
+            # We have to take the height as limit.
+            max_height = self.PreviewFrame.height() - self.grid.margin() * 2
+            self.SlidePreview.setFixedSize(QtCore.QSize(max_height * self.ratio,
+                max_height))
+        else:
+            # We have to take the width as limit.
+            max_width = self.PreviewFrame.width() - self.grid.margin() * 2
+            self.SlidePreview.setFixedSize(QtCore.QSize(max_width,
+                max_width / self.ratio))
         width = self.parent.ControlSplitter.sizes()[self.split]
-        height = width * self.parent.renderManager.screen_ratio
         self.PreviewListWidget.setColumnWidth(0, width)
         # Sort out image heights (Songs, bibles excluded)
         if self.serviceItem and not self.serviceItem.is_text():
             for framenumber in range(len(self.serviceItem.get_frames())):
-                self.PreviewListWidget.setRowHeight(framenumber, height)
-
-    def trackSplitter(self, tab, pos):
-        """
-        Splitter between the slide list and the preview panel
-        """
-        pass
+                self.PreviewListWidget.setRowHeight(framenumber, width / self.ratio)
 
     def onSongBarHandler(self):
         request = unicode(self.sender().text())
