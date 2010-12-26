@@ -89,5 +89,5 @@ class RemotesPlugin(Plugin):
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.textStrings[StringContent.VisibleName] = {
-            u'title': translate('RemotePlugin', 'Remotes')
+            u'title': translate('RemotePlugin', 'Remote')
         }
