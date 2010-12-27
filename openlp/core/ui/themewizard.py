@@ -36,7 +36,7 @@ class Ui_ThemeWizard(object):
         ThemeWizard.setOptions(
             QtGui.QWizard.IndependentPages |
             QtGui.QWizard.NoBackButtonOnStartPage)
-        # welcome page
+        # Welcome Page
         self.welcomePage = QtGui.QWizardPage()
         self.welcomePage.setPixmap(QtGui.QWizard.WatermarkPixmap,
             QtGui.QPixmap(u':/wizards/wizard_createtheme.bmp'))
@@ -53,7 +53,7 @@ class Ui_ThemeWizard(object):
         self.welcomeLayout.addWidget(self.informationLabel)
         self.welcomeLayout.addStretch()
         ThemeWizard.addPage(self.welcomePage)
-        # background page
+        # Background Page
         self.backgroundPage = QtGui.QWizardPage()
         self.backgroundPage.setObjectName(u'BackgroundPage')
         self.backgroundLayout = QtGui.QVBoxLayout(self.backgroundPage)
@@ -143,7 +143,7 @@ class Ui_ThemeWizard(object):
         self.backgroundStack.addWidget(self.imageWidget)
         self.backgroundLayout.addLayout(self.backgroundStack)
         ThemeWizard.addPage(self.backgroundPage)
-        # main area page
+        # Main Area Page
         self.mainAreaPage = QtGui.QWizardPage()
         self.mainAreaPage.setObjectName(u'MainAreaPage')
         self.mainAreaLayout = QtGui.QFormLayout(self.mainAreaPage)
@@ -226,7 +226,7 @@ class Ui_ThemeWizard(object):
         self.shadowLayout.addWidget(self.shadowSizeSpinBox)
         self.mainAreaLayout.addRow(self.shadowCheckBox, self.shadowLayout)
         ThemeWizard.addPage(self.mainAreaPage)
-        # footer area page
+        # Footer Area Page
         self.footerAreaPage = QtGui.QWizardPage()
         self.footerAreaPage.setObjectName(u'FooterAreaPage')
         self.footerAreaLayout = QtGui.QFormLayout(self.footerAreaPage)
@@ -251,7 +251,7 @@ class Ui_ThemeWizard(object):
         self.footerSizeSpinBox.setObjectName(u'FooterSizeSpinBox')
         self.footerAreaLayout.addRow(self.footerSizeLabel, self.footerSizeSpinBox)
         ThemeWizard.addPage(self.footerAreaPage)
-        # alignment page
+        # Alignment Page
         self.alignmentPage = QtGui.QWizardPage()
         self.alignmentPage.setObjectName(u'AlignmentPage')
         self.alignmentLayout = QtGui.QFormLayout(self.alignmentPage)
@@ -273,7 +273,7 @@ class Ui_ThemeWizard(object):
         self.transitionsCheckBox.setObjectName(u'TransitionsCheckBox')
         self.alignmentLayout.addRow(self.transitionsCheckBox)
         ThemeWizard.addPage(self.alignmentPage)
-        # area position page
+        # Area Position Page
         self.areaPositionPage = QtGui.QWizardPage()
         self.areaPositionPage.setObjectName(u'AreaPositionPage')
         self.areaPositionLayout = QtGui.QHBoxLayout(self.areaPositionPage)
@@ -347,7 +347,7 @@ class Ui_ThemeWizard(object):
             self.footerHeightSpinBox)
         self.areaPositionLayout.addWidget(self.footerPositionGroupBox)
         ThemeWizard.addPage(self.areaPositionPage)
-        # preview page
+        # Preview Page
         self.previewPage = QtGui.QWizardPage()
         self.previewPage.setObjectName(u'PreviewPage')
         self.previewLayout = QtGui.QVBoxLayout(self.previewPage)
@@ -564,7 +564,7 @@ class Ui_ThemeWizard(object):
                 'new theme'))
         self.themeNameLabel.setText(
             translate('OpenLP.ThemeWizard', 'Theme name:'))
-        # Align all QFormLayouts towards each other
+        # Align all QFormLayouts towards each other.
         width = max(self.backgroundLabel.minimumSizeHint().width(),
             self.colorLabel.minimumSizeHint().width())
         width = max(width, self.gradientStartLabel.minimumSizeHint().width())

@@ -134,7 +134,7 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
         Stop the import on cancel button, close button or ESC key.
         """
         log.debug('Import canceled by user.')
-        if self.currentId() == 2:
+        if self.currentPage() == self.importPage:
             Receiver.send_message(u'songs_stop_import')
         self.done(QtGui.QDialog.Rejected)
 
@@ -142,11 +142,9 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
         """
         Validate the current page before moving on to the next page.
         """
-        if self.currentId() == 0:
-            # Welcome page
+        if self.currentPage() == self.welcomePage:
             return True
-        elif self.currentId() == 1:
-            # Select page
+        elif self.currentId() == self.sourcePage:
             source_format = self.formatComboBox.currentIndex()
             if source_format == SongFormat.OpenLP2:
                 if self.openLP2FilenameEdit.text().isEmpty():
@@ -250,8 +248,7 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
                     self.songBeamerAddButton.setFocus()
                     return False
             return True
-        elif self.currentId() == 2:
-            # Progress page
+        elif self.currentPage() == self.importPage:
             return True
 
     def getFileName(self, title, editbox, filters=u''):
@@ -423,7 +420,7 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
         self.removeSelectedItems(self.songBeamerFileListWidget)
 
     def onCurrentIdChanged(self, id):
-        if id == 2:
+        if self.page(id) == self.importPage:
             self.preImport()
             self.performImport()
             self.postImport()

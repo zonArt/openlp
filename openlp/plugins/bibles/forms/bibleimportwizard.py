@@ -37,7 +37,7 @@ class Ui_BibleImportWizard(object):
             QtGui.QWizard.IndependentPages |
             QtGui.QWizard.NoBackButtonOnStartPage |
             QtGui.QWizard.NoBackButtonOnLastPage)
-        # Welcome page
+        # Welcome Page
         self.welcomePage = QtGui.QWizardPage()
         self.welcomePage.setPixmap(QtGui.QWizard.WatermarkPixmap,
             QtGui.QPixmap(u':/wizards/wizard_importbible.bmp'))
@@ -54,29 +54,26 @@ class Ui_BibleImportWizard(object):
         self.welcomeLayout.addWidget(self.informationLabel)
         self.welcomeLayout.addStretch()
         bibleImportWizard.addPage(self.welcomePage)
-        # Select page
+        # Select Page
         self.selectPage = QtGui.QWizardPage()
         self.selectPage.setObjectName(u'SelectPage')
         self.selectPageLayout = QtGui.QVBoxLayout(self.selectPage)
-        self.selectPageLayout.setObjectName(u'SelectFormLayout')
+        self.selectPageLayout.setObjectName(u'SelectPageLayout')
         self.formatLayout = QtGui.QFormLayout()
         self.formatLayout.setObjectName(u'FormatLayout')
         self.formatLabel = QtGui.QLabel(self.selectPage)
         self.formatLabel.setObjectName(u'FormatLabel')
         self.formatComboBox = QtGui.QComboBox(self.selectPage)
-        self.formatComboBox.addItem(u'')
-        self.formatComboBox.addItem(u'')
-        self.formatComboBox.addItem(u'')
-        self.formatComboBox.addItem(u'')
-        self.formatComboBox.addItem(u'')
+        self.formatComboBox.addItems([u'', u'', u'', u'', u''])
         self.formatComboBox.setObjectName(u'FormatComboBox')
         self.formatLayout.addRow(self.formatLabel, self.formatComboBox)
-        self.formatSpacer =  QtGui.QSpacerItem(10, 0,
-            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
+        self.formatSpacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
+            QtGui.QSizePolicy.Minimum)
         self.formatLayout.setItem(1, QtGui.QFormLayout.LabelRole,
             self.formatSpacer)
         self.selectPageLayout.addLayout(self.formatLayout)
         self.selectStack = QtGui.QStackedLayout()
+        self.selectStack.setObjectName(u'SelectStack')
         self.osisWidget = QtGui.QWidget(self.selectPage)
         self.osisWidget.setObjectName(u'OsisWidget')
         self.osisLayout = QtGui.QFormLayout(self.osisWidget)
@@ -167,9 +164,7 @@ class Ui_BibleImportWizard(object):
             self.webSourceLabel)
         self.webSourceComboBox = QtGui.QComboBox(self.webBibleTab)
         self.webSourceComboBox.setObjectName(u'WebSourceComboBox')
-        self.webSourceComboBox.addItem(u'')
-        self.webSourceComboBox.addItem(u'')
-        self.webSourceComboBox.addItem(u'')
+        self.webSourceComboBox.addItems([u'', u'', u''])
         self.webBibleLayout.setWidget(0, QtGui.QFormLayout.FieldRole,
             self.webSourceComboBox)
         self.webTranslationLabel = QtGui.QLabel(self.webBibleTab)
@@ -242,7 +237,7 @@ class Ui_BibleImportWizard(object):
         self.selectStack.addWidget(self.openlp1Widget) 
         self.selectPageLayout.addLayout(self.selectStack)
         bibleImportWizard.addPage(self.selectPage)
-        # License page
+        # License Page
         self.licenseDetailsPage = QtGui.QWizardPage()
         self.licenseDetailsPage.setObjectName(u'LicenseDetailsPage')
         self.licenseDetailsLayout = QtGui.QFormLayout(self.licenseDetailsPage)
@@ -272,7 +267,7 @@ class Ui_BibleImportWizard(object):
         self.licenseDetailsLayout.setWidget(2, QtGui.QFormLayout.FieldRole,
             self.permissionsEdit)
         bibleImportWizard.addPage(self.licenseDetailsPage)
-        # Progress page
+        # Progress Page
         self.importPage = QtGui.QWizardPage()
         self.importPage.setObjectName(u'ImportPage')
         self.importLayout = QtGui.QVBoxLayout(self.importPage)
@@ -377,7 +372,7 @@ class Ui_BibleImportWizard(object):
             'importer has been disabled due to a missing Python module. If '
             'you want to use this importer, you will need to install the '
             '"python-sqlite" module.'))
-        # Align all QFormLayouts towards each other
+        # Align all QFormLayouts towards each other.
         width = max(self.formatLabel.minimumSizeHint().width(),
             self.osisFileLabel.minimumSizeHint().width())
         width = max(width, self.csvBooksLabel.minimumSizeHint().width())
