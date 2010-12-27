@@ -29,7 +29,7 @@ QDockWidget.
 """
 import logging
 
-from PyQt4 import QtGui
+from PyQt4 import QtCore, QtGui
 
 log = logging.getLogger(__name__)
 
@@ -41,9 +41,10 @@ class OpenLPDockWidget(QtGui.QDockWidget):
         """
         Initialise the DockWidget
         """
+        log.debug(u'Initialise the DockWidget %s' % name)
         QtGui.QDockWidget.__init__(self, parent)
         self.parent = parent
         if name:
             self.setObjectName(name)
         self.setFloating(False)
-        log.debug(u'Init done')
+
