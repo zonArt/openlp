@@ -297,7 +297,6 @@ class SlideController(QtGui.QWidget):
         Phonon.createPath(self.mediaObject, self.audio)
         if not self.isLive:
             self.video.setGeometry(QtCore.QRect(0, 0, 300, 225))
-            self.video.setVisible(False)
         self.SlideLayout.insertWidget(0, self.video)
         # Actual preview screen
         self.SlidePreview = QtGui.QLabel(self)

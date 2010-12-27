@@ -29,7 +29,7 @@ QDockWidget.
 """
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 log = logging.getLogger(__name__)
 
@@ -48,3 +48,16 @@ class OpenLPDockWidget(QtGui.QDockWidget):
             self.setObjectName(name)
         self.setFloating(False)
 
+    def moveEvent(self, event):
+        """
+        Called, when the DockWidget is moved.
+        """
+        self.parent.liveController.previewSizeChanged()
+        self.parent.previewController.previewSizeChanged()
+
+    def resizeEvent(self, event):
+        """
+        Called, when the DockWidget is resized.
+        """
+        self.parent.liveController.previewSizeChanged()
+        self.parent.previewController.previewSizeChanged()
