@@ -88,7 +88,7 @@ class OpenSongBible(BibleDB):
                         translate('BiblesPlugin.Opensong', 'Importing'),
                         db_book.name, chapter.attrib[u'n']))
                     self.session.commit()
-        except IOError:
+        except IOError, AttributeError:
             log.exception(u'Loading bible from OpenSong file failed')
             success = False
         finally:
