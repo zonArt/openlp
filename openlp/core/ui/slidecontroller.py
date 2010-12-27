@@ -424,7 +424,8 @@ class SlideController(QtGui.QWidget):
         # Sort out image heights (Songs, bibles excluded)
         if self.serviceItem and not self.serviceItem.is_text():
             for framenumber in range(len(self.serviceItem.get_frames())):
-                self.PreviewListWidget.setRowHeight(framenumber, width / self.ratio)
+                self.PreviewListWidget.setRowHeight(
+                    framenumber, width / self.ratio)
 
     def onSongBarHandler(self):
         request = unicode(self.sender().text())
