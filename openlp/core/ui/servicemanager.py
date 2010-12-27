@@ -108,11 +108,11 @@ class ServiceManager(QtGui.QWidget):
         self.suffixes = []
         self.droppos = 0
         self.expandTabs = False
-        #is a new service and has not been saved
+        # is a new service and has not been saved
         self.isNew = True
         self.serviceNoteForm = ServiceNoteForm(self.parent)
         self.serviceItemEditForm = ServiceItemEditForm(self.parent)
-        #start with the layout
+        # start with the layout
         self.layout = QtGui.QVBoxLayout(self)
         self.layout.setSpacing(0)
         self.layout.setMargin(0)
@@ -245,7 +245,7 @@ class ServiceManager(QtGui.QWidget):
             self.parent.serviceSettingsSection + u'/service theme',
             QtCore.QVariant(u'')).toString())
         self.servicePath = AppLocation.get_section_data_path(u'servicemanager')
-        #build the drag and drop context menu
+        # build the drag and drop context menu
         self.dndMenu = QtGui.QMenu()
         self.newAction = self.dndMenu.addAction(
             translate('OpenLP.ServiceManager', '&Add New Item'))
