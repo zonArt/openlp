@@ -96,7 +96,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         self.selectStack.setCurrentIndex(0)
         QtCore.QObject.connect(self.webSourceComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
-            self.onWebSourceComboBoxChanged)
+            self.onWebSourceComboBoxCurrentIndexChanged)
         QtCore.QObject.connect(self.osisBrowseButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onOsisBrowseButtonClicked)
@@ -223,7 +223,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         if self.currentPage() == self.importPage:
             return True
 
-    def onWebSourceComboBoxChanged(self, index):
+    def onWebSourceComboBoxCurrentIndexChanged(self, index):
         """
         Setup the list of Bibles when you select a different source on the web
         download page.
@@ -332,7 +332,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
             QtCore.QVariant(self.copyrightEdit.text()))
         self.setField(u'license_permissions',
             QtCore.QVariant(self.permissionsEdit.text()))
-        self.onWebSourceComboBoxChanged(WebDownload.Crosswalk)
+        self.onWebSourceComboBoxCurrentIndexChanged(WebDownload.Crosswalk)
         settings.endGroup()
 
     def loadWebBibles(self):

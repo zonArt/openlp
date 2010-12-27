@@ -69,7 +69,7 @@ class Ui_ThemeWizard(object):
             self.backgroundComboBox)
         self.backgroundTypeSpacer =  QtGui.QSpacerItem(10, 0,
             QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
-        self.backgroundTypeLayout.setItem(1,QtGui.QFormLayout.LabelRole,
+        self.backgroundTypeLayout.setItem(1, QtGui.QFormLayout.LabelRole,
             self.backgroundTypeSpacer)
         self.backgroundLayout.addLayout(self.backgroundTypeLayout)
         self.backgroundStack = QtGui.QStackedLayout()
@@ -84,7 +84,7 @@ class Ui_ThemeWizard(object):
         self.colorButton = QtGui.QPushButton(self.colorWidget)
         self.colorButton.setObjectName(u'ColorButton')
         self.colorLayout.addRow(self.colorLabel, self.colorButton)
-        self.colorSpacer =  QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
+        self.colorSpacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
             QtGui.QSizePolicy.Minimum)
         self.colorLayout.setItem(1, QtGui.QFormLayout.LabelRole,
             self.colorSpacer)
@@ -379,7 +379,6 @@ class Ui_ThemeWizard(object):
         ThemeWizard.addPage(self.previewPage)
 
         self.retranslateUi(ThemeWizard)
-
         QtCore.QObject.connect(self.backgroundComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'), self.backgroundStack,
             QtCore.SLOT(u'setCurrentIndex(int)'))

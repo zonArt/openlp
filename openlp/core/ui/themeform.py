@@ -58,49 +58,49 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.updateThemeAllowed = True
         QtCore.QObject.connect(self.backgroundComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
-            self.onBackgroundComboBox)
+            self.onBackgroundComboBoxCurrentIndexChanged)
         QtCore.QObject.connect(self.gradientComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
-            self.onGradientComboBox)
+            self.onGradientComboBoxCurrentIndexChanged)
         QtCore.QObject.connect(self.colorButton,
-            QtCore.SIGNAL(u'pressed()'),
+            QtCore.SIGNAL(u'clicked()'),
             self.onColorButtonClicked)
         QtCore.QObject.connect(self.gradientStartButton,
-            QtCore.SIGNAL(u'pressed()'),
+            QtCore.SIGNAL(u'clicked()'),
             self.onGradientStartButtonClicked)
         QtCore.QObject.connect(self.gradientEndButton,
-            QtCore.SIGNAL(u'pressed()'),
+            QtCore.SIGNAL(u'clicked()'),
             self.onGradientEndButtonClicked)
         QtCore.QObject.connect(self.imageBrowseButton,
-            QtCore.SIGNAL(u'pressed()'),
+            QtCore.SIGNAL(u'clicked()'),
             self.onImageBrowseButtonClicked)
         QtCore.QObject.connect(self.mainColorButton,
-            QtCore.SIGNAL(u'pressed()'),
-            self.onMainColourButtonClicked)
+            QtCore.SIGNAL(u'clicked()'),
+            self.onMainColorButtonClicked)
         QtCore.QObject.connect(self.outlineColorButton,
-            QtCore.SIGNAL(u'pressed()'),
-            self.onOutlineColourButtonClicked)
+            QtCore.SIGNAL(u'clicked()'),
+            self.onOutlineColorButtonClicked)
         QtCore.QObject.connect(self.shadowColorButton,
-            QtCore.SIGNAL(u'pressed()'),
-            self.onShadowColourButtonClicked)
+            QtCore.SIGNAL(u'clicked()'),
+            self.onShadowColorButtonClicked)
         QtCore.QObject.connect(self.outlineCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onOutlineCheckCheckBoxChanged)
+            self.onOutlineCheckCheckBoxStateChanged)
         QtCore.QObject.connect(self.shadowCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onShadowCheckCheckBoxChanged)
+            self.onShadowCheckCheckBoxStateChanged)
         QtCore.QObject.connect(self.footerColorButton,
-            QtCore.SIGNAL(u'pressed()'),
-            self.onFooterColourButtonClicked)
+            QtCore.SIGNAL(u'clicked()'),
+            self.onFooterColorButtonClicked)
         QtCore.QObject.connect(self.mainPositionCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onMainPositionCheckBox)
+            self.onMainPositionCheckBoxStateChanged)
         QtCore.QObject.connect(self.footerPositionCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onFooterPositionCheckBox)
+            self.onFooterPositionCheckBoxStateChanged)
         QtCore.QObject.connect(self,
             QtCore.SIGNAL(u'currentIdChanged(int)'),
-            self.pageChanged)
+            self.onCurrentIdChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'theme_line_count'),
             self.updateLinesText)
@@ -120,15 +120,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             QtCore.SIGNAL(u'activated(int)'),
             self.calculateLines)
         QtCore.QObject.connect(self, QtCore.SIGNAL(u'accepted()'), self.accept)
-
-    def pageChanged(self, pageId):
-        """
-        Detects Page changes and updates as approprate.
-        """
-        if self.page(pageId) == self.previewPage:
-            self.updateTheme()
-            frame = self.thememanager.generateImage(self.theme)
-            self.previewBoxLabel.setPixmap(QtGui.QPixmap.fromImage(frame))
 
     def setDefaults(self):
         """
@@ -224,7 +215,16 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.mainLineCountLabel.setText(unicode(translate('OpenLP.ThemeForm', \
             '(%d lines per slide)' % int(lines))))
 
-    def onOutlineCheckCheckBoxChanged(self, state):
+    def onCurrentIdChanged(self, pageId):
+        """
+        Detects Page changes and updates as approprate.
+        """
+        if self.page(pageId) == self.previewPage:
+            self.updateTheme()
+            frame = self.thememanager.generateImage(self.theme)
+            self.previewBoxLabel.setPixmap(QtGui.QPixmap.fromImage(frame))
+
+    def onOutlineCheckCheckBoxStateChanged(self, state):
         """
         Change state as Outline check box changed
         """
@@ -236,7 +236,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.outlineSizeSpinBox.setEnabled(self.theme.font_main_outline)
         self.calculateLines()
 
-    def onShadowCheckCheckBoxChanged(self, state):
+    def onShadowCheckCheckBoxStateChanged(self, state):
         """
         Change state as Shadow check box changed
         """
@@ -248,13 +248,13 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.shadowSizeSpinBox.setEnabled(self.theme.font_main_shadow)
         self.calculateLines()
 
-    def onMainPositionCheckBox(self, value):
+    def onMainPositionCheckBoxStateChanged(self, value):
         """
         Change state as Main Area Position check box changed
         """
         self.theme.font_main_override = (value == QtCore.Qt.Checked)
 
-    def onFooterPositionCheckBox(self, value):
+    def onFooterPositionCheckBoxStateChanged(self, value):
         """
         Change state as Footer Area Position check box changed
         """
@@ -403,14 +403,14 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.themeNameEdit.setReadOnly(len(self.theme.theme_name) != 0)
         self.themeNameEdit.setFrame(len(self.theme.theme_name) == 0)
 
-    def onBackgroundComboBox(self, index):
+    def onBackgroundComboBoxCurrentIndexChanged(self, index):
         """
         Background style Combo box has changed.
         """
         self.theme.background_type = BackgroundType.to_string(index)
         self.setBackgroundTabValues()
 
-    def onGradientComboBox(self, index):
+    def onGradientComboBoxCurrentIndexChanged(self, index):
         """
         Background gradient Combo box has changed.
         """
@@ -456,22 +456,22 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             self.theme.background_filename = unicode(filename)
         self.setBackgroundTabValues()
 
-    def onMainColourButtonClicked(self):
+    def onMainColorButtonClicked(self):
         self.theme.font_main_color = \
             self._colorButton(self.theme.font_main_color)
         self.setMainAreaTabValues()
 
-    def onOutlineColourButtonClicked(self):
+    def onOutlineColorButtonClicked(self):
         self.theme.font_main_outline_color = \
             self._colorButton(self.theme.font_main_outline_color)
         self.setMainAreaTabValues()
 
-    def onShadowColourButtonClicked(self):
+    def onShadowColorButtonClicked(self):
         self.theme.font_main_shadow_color = \
             self._colorButton(self.theme.font_main_shadow_color)
         self.setMainAreaTabValues()
 
-    def onFooterColourButtonClicked(self):
+    def onFooterColorButtonClicked(self):
         self.theme.font_footer_color = \
             self._colorButton(self.theme.font_footer_color)
         self.setFooterAreaTabValues()
