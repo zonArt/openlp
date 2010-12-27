@@ -159,7 +159,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.mainAreaPage.registerField(
             u'outlineCheckBox', self.outlineCheckBox)
         self.mainAreaPage.registerField(
-            u'outlineColorPushButton', self.outlineColorButton)
+            u'outlineColorButton', self.outlineColorButton)
         self.mainAreaPage.registerField(
             u'outlineSizeSpinBox', self.outlineSizeSpinBox)
         self.mainAreaPage.registerField(

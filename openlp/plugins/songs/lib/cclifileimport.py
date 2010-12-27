@@ -124,7 +124,7 @@ class CCLIFileImport(SongImport):
         ``Title=``
             Contains the song title (e.g. *Title=Above All*)
         ``Author=``
-            Contains a | delimited list of the  song authors
+            Contains a | delimited list of the song authors
             e.g. *Author=LeBlanc, Lenny | Baloche, Paul*
         ``Copyright=``
             Contains a | delimited list of the song copyrights
@@ -184,8 +184,8 @@ class CCLIFileImport(SongImport):
                 verse_type = u'O'
                 check_first_verse_line = True
             verse_text = unicode(words_list[counter])
-            verse_text = verse_text.replace("/n",  "\n")
-            verse_lines = verse_text.split(u'\n',  1)
+            verse_text = verse_text.replace(u'/n', u'\n')
+            verse_lines = verse_text.split(u'\n', 1)
             if check_first_verse_line:
                 if verse_lines[0].startswith(u'(PRE-CHORUS'):
                     verse_type = u'P'

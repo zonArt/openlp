@@ -85,7 +85,7 @@ class SongBeamerImport(SongImport):
         """
         Recieve a single file, or a list of files to import.
         """
-        if isinstance(self.import_source,  list):
+        if isinstance(self.import_source, list):
             self.import_wizard.importProgressBar.setMaximum(
                 len(self.import_source))
             for file in self.import_source:
@@ -96,7 +96,7 @@ class SongBeamerImport(SongImport):
                 read_verses = False
                 self.file_name = os.path.split(file)[1]
                 self.import_wizard.incrementProgressBar(
-                    "Importing %s" % (self.file_name),  0)
+                    "Importing %s" % (self.file_name), 0)
                 if os.path.isfile(file):
                     detect_file = open(file, u'r')
                     details = chardet.detect(detect_file.read(2048))

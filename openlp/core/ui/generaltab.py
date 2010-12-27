@@ -141,10 +141,10 @@ class GeneralTab(SettingsTab):
         self.settingsLayout.addWidget(self.autoPreviewCheckBox, 1, 0, 1, 2)
         # Moved here from image tab
         self.timeoutLabel = QtGui.QLabel(self.settingsGroupBox)
-        self.timeoutLabel.setObjectName("timeoutLabel")
+        self.timeoutLabel.setObjectName(u'timeoutLabel')
         self.settingsLayout.addWidget(self.timeoutLabel, 2, 0, 1, 1)
         self.timeoutSpinBox = QtGui.QSpinBox(self.settingsGroupBox)
-        self.timeoutSpinBox.setObjectName("timeoutSpinBox")
+        self.timeoutSpinBox.setObjectName(u'timeoutSpinBox')
         self.settingsLayout.addWidget(self.timeoutSpinBox, 2, 1, 1, 1)
         self.generalLeftLayout.addWidget(self.settingsGroupBox)
         self.generalLeftSpacer = QtGui.QSpacerItem(20, 40,

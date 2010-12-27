@@ -91,7 +91,7 @@ class Ui_BibleImportWizard(object):
         self.osisBrowseButton.setObjectName(u'OsisBrowseButton')
         self.osisFileLayout.addWidget(self.osisBrowseButton)
         self.osisLayout.addRow(self.osisFileLabel, self.osisFileLayout)
-        self.osisSpacer =  QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
+        self.osisSpacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
             QtGui.QSizePolicy.Minimum)
         self.osisLayout.setItem(1, QtGui.QFormLayout.LabelRole, self.osisSpacer)
         self.selectStack.addWidget(self.osisWidget)
@@ -124,7 +124,7 @@ class Ui_BibleImportWizard(object):
         self.csvVersesButton.setObjectName(u'CsvVersesButton')
         self.csvVersesLayout.addWidget(self.csvVersesButton)
         self.csvLayout.addRow(self.csvVersesLabel, self.csvVersesLayout)
-        self.csvSpacer =  QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
+        self.csvSpacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
             QtGui.QSizePolicy.Minimum)
         self.csvLayout.setItem(2, QtGui.QFormLayout.LabelRole, self.csvSpacer)
         self.selectStack.addWidget(self.csvWidget)
@@ -147,7 +147,7 @@ class Ui_BibleImportWizard(object):
         self.openSongFileLayout.addWidget(self.openSongBrowseButton)
         self.openSongLayout.addRow(self.openSongFileLabel,
             self.openSongFileLayout)
-        self.openSongSpacer =  QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
+        self.openSongSpacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
             QtGui.QSizePolicy.Minimum)
         self.openSongLayout.setItem(1, QtGui.QFormLayout.LabelRole,
             self.openSongSpacer)
@@ -230,7 +230,7 @@ class Ui_BibleImportWizard(object):
         self.openlp1DisabledLabel.setWordWrap(True)
         self.openlp1DisabledLabel.setObjectName(u'Openlp1DisabledLabel')
         self.openlp1Layout.addRow(self.openlp1DisabledLabel)
-        self.openlp1Spacer =  QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
+        self.openlp1Spacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
             QtGui.QSizePolicy.Minimum)
         self.openlp1Layout.setItem(1, QtGui.QFormLayout.LabelRole,
             self.openlp1Spacer)

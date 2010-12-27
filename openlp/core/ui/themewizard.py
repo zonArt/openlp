@@ -67,7 +67,7 @@ class Ui_ThemeWizard(object):
         self.backgroundComboBox.setObjectName(u'BackgroundComboBox')
         self.backgroundTypeLayout.addRow(self.backgroundLabel,
             self.backgroundComboBox)
-        self.backgroundTypeSpacer =  QtGui.QSpacerItem(10, 0,
+        self.backgroundTypeSpacer = QtGui.QSpacerItem(10, 0,
             QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
         self.backgroundTypeLayout.setItem(1, QtGui.QFormLayout.LabelRole,
             self.backgroundTypeSpacer)
@@ -113,7 +113,7 @@ class Ui_ThemeWizard(object):
         self.gradientComboBox.addItems([u'', u'', u'', u'', u''])
         self.gradientLayout.addRow(self.gradientTypeLabel,
             self.gradientComboBox)
-        self.gradientSpacer =  QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
+        self.gradientSpacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
             QtGui.QSizePolicy.Minimum)
         self.gradientLayout.setItem(3, QtGui.QFormLayout.LabelRole,
             self.gradientSpacer)
@@ -136,7 +136,7 @@ class Ui_ThemeWizard(object):
             build_icon(u':/general/general_open.png'))
         self.imageFileLayout.addWidget(self.imageBrowseButton)
         self.imageLayout.addRow(self.imageLabel, self.imageFileLayout)
-        self.imageSpacer =  QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
+        self.imageSpacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
             QtGui.QSizePolicy.Minimum)
         self.imageLayout.setItem(1, QtGui.QFormLayout.LabelRole,
             self.imageSpacer)

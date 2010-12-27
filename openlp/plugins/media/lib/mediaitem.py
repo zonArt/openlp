@@ -30,7 +30,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    ItemCapabilities, SettingsManager, translate, check_item_selected,  \
+    ItemCapabilities, SettingsManager, translate, check_item_selected, \
     context_menu_action
 
 log = logging.getLogger(__name__)

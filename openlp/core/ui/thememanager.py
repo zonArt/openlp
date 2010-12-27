@@ -35,7 +35,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.ui import FileRenameForm, ThemeForm
 from openlp.core.theme import Theme
 from openlp.core.lib import OpenLPToolbar, ThemeXML, get_text_file_string, \
-    build_icon, Receiver, SettingsManager, translate, check_item_selected,  \
+    build_icon, Receiver, SettingsManager, translate, check_item_selected, \
     BackgroundType, BackgroundGradientType
 from openlp.core.utils import AppLocation, get_filesystem_encoding
 
@@ -230,7 +230,7 @@ class ThemeManager(QtGui.QWidget):
             self.fileRenameForm.fileNameEdit.setText(oldThemeName)
             self.saveThemeName = oldThemeName
             if self.fileRenameForm.exec_():
-                newThemeName =  unicode(self.fileRenameForm.fileNameEdit.text())
+                newThemeName = unicode(self.fileRenameForm.fileNameEdit.text())
                 oldThemeData = self.getThemeData(oldThemeName)
                 self.deleteTheme(oldThemeName)
                 self.cloneThemeData(oldThemeData, newThemeName)
@@ -244,7 +244,7 @@ class ThemeManager(QtGui.QWidget):
         self.fileRenameForm.fileNameEdit.setText(oldThemeName)
         self.saveThemeName = u''
         if self.fileRenameForm.exec_(True):
-            newThemeName =  unicode(self.fileRenameForm.fileNameEdit.text())
+            newThemeName = unicode(self.fileRenameForm.fileNameEdit.text())
             themeData = self.getThemeData(oldThemeName)
             self.cloneThemeData(themeData, newThemeName)
             self.loadThemes()
@@ -331,7 +331,7 @@ class ThemeManager(QtGui.QWidget):
         theme = unicode(item.data(QtCore.Qt.UserRole).toString())
         path = QtGui.QFileDialog.getExistingDirectory(self,
             unicode(translate('OpenLP.ThemeManager',
-            'Save Theme - (%s)')) %  theme,
+            'Save Theme - (%s)')) % theme,
             SettingsManager.get_last_dir(self.settingsSection, 1))
         path = unicode(path)
         if path:
