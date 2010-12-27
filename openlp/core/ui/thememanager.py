@@ -234,6 +234,9 @@ class ThemeManager(QtGui.QWidget):
                 oldThemeData = self.getThemeData(oldThemeName)
                 self.deleteTheme(oldThemeName)
                 self.cloneThemeData(oldThemeData, newThemeName)
+                for plugin in self.parent.pluginManager.plugins:
+                    if plugin.usesTheme(oldThemeName):
+                        plugin.renameTheme(oldThemeName, newThemeName)
 
     def onCopyTheme(self):
         """
