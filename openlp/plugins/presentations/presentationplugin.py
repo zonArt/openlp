@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -51,7 +51,7 @@ class PresentationPlugin(Plugin):
         """
         log.debug(u'Initialised')
         self.controllers = {}
-        Plugin.__init__(self, u'Presentations', u'1.9.3', plugin_helpers)
+        Plugin.__init__(self, u'Presentations', u'1.9.4', plugin_helpers)
         self.weight = -8
         self.icon_path = u':/plugins/plugin_presentations.png'
         self.icon = build_icon(self.icon_path)
