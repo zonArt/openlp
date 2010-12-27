@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -312,6 +312,18 @@ class GeneralTab(SettingsTab):
         # Signals and slots
         QtCore.QObject.connect(self.overrideCheckBox,
             QtCore.SIGNAL(u'toggled(bool)'), self.onOverrideCheckBoxToggled)
+        QtCore.QObject.connect(self.customHeightValueEdit,
+            QtCore.SIGNAL(u'textEdited(const QString&)'),
+            self.onDisplayPositionChanged)
+        QtCore.QObject.connect(self.customWidthValueEdit,
+            QtCore.SIGNAL(u'textEdited(const QString&)'),
+            self.onDisplayPositionChanged)
+        QtCore.QObject.connect(self.customYValueEdit,
+            QtCore.SIGNAL(u'textEdited(const QString&)'),
+            self.onDisplayPositionChanged)
+        QtCore.QObject.connect(self.customXValueEdit,
+            QtCore.SIGNAL(u'textEdited(const QString&)'),
+            self.onDisplayPositionChanged)
 
     def retranslateUi(self):
         """
@@ -503,10 +515,19 @@ class GeneralTab(SettingsTab):
 
     def onOverrideCheckBoxToggled(self, checked):
         """
-        Toggle screen state depending on check box state
+        Toggle screen state depending on check box state.
+
+        ``checked``
+            The state of the check box (boolean).
         """
         self.customXValueEdit.setEnabled(checked)
         self.customYValueEdit.setEnabled(checked)
         self.customHeightValueEdit.setEnabled(checked)
         self.customWidthValueEdit.setEnabled(checked)
+        self.overrideChanged = True
+
+    def onDisplayPositionChanged(self):
+        """
+        Called when the width, height, x position or y position has changed.
+        """
         self.overrideChanged = True
