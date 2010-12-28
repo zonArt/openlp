@@ -215,6 +215,25 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.mainLineCountLabel.setText(unicode(translate('OpenLP.ThemeForm', \
             '(%d lines per slide)' % int(lines))))
 
+    def resizeEvent(self, event=None):
+        """
+        Rescale the theme preview thumbnail on resize events.
+        """
+        if not event:
+            event = QtGui.QResizeEvent(self.size(), self.size())
+        QtGui.QWizard.resizeEvent(self, event)
+        if self.currentPage() == self.previewPage:
+            frameWidth = self.previewBoxLabel.lineWidth()
+            pixmapWidth = self.previewArea.width() - 2 * frameWidth
+            pixmapHeight = self.previewArea.height() - 2 * frameWidth
+            aspectRatio = float(pixmapWidth) / pixmapHeight
+            if aspectRatio < self.displayAspectRatio:
+                pixmapHeight = int(pixmapWidth / self.displayAspectRatio + 0.5)
+            else:
+                pixmapWidth = int(pixmapHeight * self.displayAspectRatio + 0.5)
+            self.previewBoxLabel.setFixedSize(pixmapWidth + 2 * frameWidth,
+                pixmapHeight + 2 * frameWidth)
+
     def onCurrentIdChanged(self, pageId):
         """
         Detects Page changes and updates as approprate.
@@ -223,6 +242,8 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             self.updateTheme()
             frame = self.thememanager.generateImage(self.theme)
             self.previewBoxLabel.setPixmap(QtGui.QPixmap.fromImage(frame))
+            self.displayAspectRatio = float(frame.width()) / frame.height()
+            self.resizeEvent()
 
     def onOutlineCheckCheckBoxStateChanged(self, state):
         """

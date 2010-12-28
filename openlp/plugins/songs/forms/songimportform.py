@@ -144,7 +144,7 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
         """
         if self.currentPage() == self.welcomePage:
             return True
-        elif self.currentId() == self.sourcePage:
+        elif self.currentPage() == self.sourcePage:
             source_format = self.formatComboBox.currentIndex()
             if source_format == SongFormat.OpenLP2:
                 if self.openLP2FilenameEdit.text().isEmpty():
