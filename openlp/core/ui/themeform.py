@@ -127,12 +127,12 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         self.restart()
         self.accepted = False
-        self.setBackgroundTabValues()
-        self.setMainAreaTabValues()
-        self.setFooterAreaTabValues()
-        self.setAlignmentTabValues()
-        self.setPositionTabValues()
-        self.setPreviewTabValues()
+        self.setBackgroundPageValues()
+        self.setMainAreaPageValues()
+        self.setFooterAreaPageValues()
+        self.setAlignmentPageValues()
+        self.setPositionPageValues()
+        self.setPreviewPageValues()
 
     def registerFields(self):
         """
@@ -268,8 +268,15 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.updateThemeAllowed = False
         self.setDefaults()
         self.updateThemeAllowed = True
+        self.themeNameLabel.setVisible(not edit)
+        self.themeNameEdit.setVisible(not edit)
         if edit:
+            self.setWindowTitle(unicode(translate('OpenLP.ThemeWizard',
+                'Edit Theme %s - OpenLP')) % self.theme.theme_name)
             self.next()
+        else:
+            self.setWindowTitle(translate('OpenLP.ThemeWizard',
+                'New Theme - OpenLP'))
         return QtGui.QWizard.exec_(self)
 
     def initializePage(self, id):
@@ -279,19 +286,19 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         log.debug(u'initializePage %s' % id)
         wizardPage = self.page(id)
         if wizardPage == self.backgroundPage:
-            self.setBackgroundTabValues()
+            self.setBackgroundPageValues()
         elif wizardPage == self.mainAreaPage:
-            self.setMainAreaTabValues()
+            self.setMainAreaPageValues()
         elif wizardPage == self.footerAreaPage:
-            self.setFooterAreaTabValues()
+            self.setFooterAreaPageValues()
         elif wizardPage == self.alignmentPage:
-            self.setAlignmentTabValues()
+            self.setAlignmentPageValues()
         elif wizardPage == self.areaPositionPage:
-            self.setPositionTabValues()
+            self.setPositionPageValues()
 
-    def setBackgroundTabValues(self):
+    def setBackgroundPageValues(self):
         """
-        Handle the display and State of the background display tab.
+        Handle the display and state of the Background page.
         """
         if self.theme.background_type == \
             BackgroundType.to_string(BackgroundType.Solid):
@@ -323,9 +330,9 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         else:
             self.setField(u'gradient', QtCore.QVariant(4))
 
-    def setMainAreaTabValues(self):
+    def setMainAreaPageValues(self):
         """
-        Handle the display and State of the Main Area tab.
+        Handle the display and state of the Main Area page.
         """
         self.mainFontComboBox.setCurrentFont(
             QtGui.QFont(self.theme.font_main_name))
@@ -352,9 +359,9 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.setField(u'mainItalicsCheckBox',
             QtCore.QVariant(self.theme.font_main_italics))
 
-    def setFooterAreaTabValues(self):
+    def setFooterAreaPageValues(self):
         """
-        Handle the display and State of the Footer Area tab.
+        Handle the display and state of the Footer Area page.
         """
         self.footerFontComboBox.setCurrentFont(
             QtGui.QFont(self.theme.font_main_name))
@@ -363,9 +370,9 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.setField(u'footerSizeSpinBox',
             QtCore.QVariant(self.theme.font_footer_size))
 
-    def setPositionTabValues(self):
+    def setPositionPageValues(self):
         """
-        Handle the display and State of the Position tab.
+        Handle the display and state of the Position page.
         """
         # Main Area
         self.mainPositionCheckBox.setChecked(not self.theme.font_main_override)
@@ -387,9 +394,9 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.setField(u'footerPositionWidth',
             QtCore.QVariant(self.theme.font_footer_width))
 
-    def setAlignmentTabValues(self):
+    def setAlignmentPageValues(self):
         """
-        Define the Tab Alignments Page
+        Handle the display and state of the Alignments page.
         """
         self.setField(u'horizontal',
             QtCore.QVariant(self.theme.display_horizontal_align))
@@ -398,17 +405,18 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.setField(u'slideTransition',
             QtCore.QVariant(self.theme.display_slide_transition))
 
-    def setPreviewTabValues(self):
+    def setPreviewPageValues(self):
+        """
+        Handle the display and state of the Preview page.
+        """
         self.setField(u'name', QtCore.QVariant(self.theme.theme_name))
-        self.themeNameEdit.setReadOnly(len(self.theme.theme_name) != 0)
-        self.themeNameEdit.setFrame(len(self.theme.theme_name) == 0)
 
     def onBackgroundComboBoxCurrentIndexChanged(self, index):
         """
         Background style Combo box has changed.
         """
         self.theme.background_type = BackgroundType.to_string(index)
-        self.setBackgroundTabValues()
+        self.setBackgroundPageValues()
 
     def onGradientComboBoxCurrentIndexChanged(self, index):
         """
@@ -416,7 +424,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         self.theme.background_direction = \
             BackgroundGradientType.to_string(index)
-        self.setBackgroundTabValues()
+        self.setBackgroundPageValues()
 
     def onColorButtonClicked(self):
         """
@@ -424,7 +432,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         self.theme.background_color = \
             self._colorButton(self.theme.background_color)
-        self.setBackgroundTabValues()
+        self.setBackgroundPageValues()
 
     def onGradientStartButtonClicked(self):
         """
@@ -432,7 +440,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         self.theme.background_start_color = \
             self._colorButton(self.theme.background_start_color)
-        self.setBackgroundTabValues()
+        self.setBackgroundPageValues()
 
     def onGradientEndButtonClicked(self):
         """
@@ -440,7 +448,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         self.theme.background_end_color = \
             self._colorButton(self.theme.background_end_color)
-        self.setBackgroundTabValues()
+        self.setBackgroundPageValues()
 
     def onImageBrowseButtonClicked(self):
         """
@@ -454,27 +462,27 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             images_filter)
         if filename:
             self.theme.background_filename = unicode(filename)
-        self.setBackgroundTabValues()
+        self.setBackgroundPageValues()
 
     def onMainColorButtonClicked(self):
         self.theme.font_main_color = \
             self._colorButton(self.theme.font_main_color)
-        self.setMainAreaTabValues()
+        self.setMainAreaPageValues()
 
     def onOutlineColorButtonClicked(self):
         self.theme.font_main_outline_color = \
             self._colorButton(self.theme.font_main_outline_color)
-        self.setMainAreaTabValues()
+        self.setMainAreaPageValues()
 
     def onShadowColorButtonClicked(self):
         self.theme.font_main_shadow_color = \
             self._colorButton(self.theme.font_main_shadow_color)
-        self.setMainAreaTabValues()
+        self.setMainAreaPageValues()
 
     def onFooterColorButtonClicked(self):
         self.theme.font_footer_color = \
             self._colorButton(self.theme.font_footer_color)
-        self.setFooterAreaTabValues()
+        self.setFooterAreaPageValues()
 
     def updateTheme(self):
         """

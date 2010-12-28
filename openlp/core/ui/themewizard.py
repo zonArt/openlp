@@ -269,9 +269,12 @@ class Ui_ThemeWizard(object):
         self.verticalComboBox.addItems([u'', u'', u''])
         self.verticalComboBox.setObjectName(u'VerticalComboBox')
         self.alignmentLayout.addRow(self.verticalLabel, self.verticalComboBox)
+        self.transitionsLabel = QtGui.QLabel(self.alignmentPage)
+        self.transitionsLabel.setObjectName(u'TransitionsLabel')
         self.transitionsCheckBox = QtGui.QCheckBox(self.alignmentPage)
         self.transitionsCheckBox.setObjectName(u'TransitionsCheckBox')
-        self.alignmentLayout.addRow(self.transitionsCheckBox)
+        self.alignmentLayout.addRow(self.transitionsLabel,
+            self.transitionsCheckBox)
         ThemeWizard.addPage(self.alignmentPage)
         # Area Position Page
         self.areaPositionPage = QtGui.QWizardPage()
@@ -517,8 +520,8 @@ class Ui_ThemeWizard(object):
             translate('OpenLP.ThemeWizard', 'Middle'))
         self.verticalComboBox.setItemText(2,
             translate('OpenLP.ThemeWizard', 'Bottom'))
-        self.transitionsCheckBox.setText(
-            translate('OpenLP.ThemeWizard', 'Transitions'))
+        self.transitionsLabel.setText(
+            translate('OpenLP.ThemeWizard', 'Transitions:'))
         self.areaPositionPage.setTitle(
             translate('OpenLP.ThemeWizard', 'Output Area Locations'))
         self.areaPositionPage.setSubTitle(

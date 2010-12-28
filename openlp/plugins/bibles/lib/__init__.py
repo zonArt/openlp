@@ -126,7 +126,7 @@ def parse_reference(reference):
 
     Returns None or a reference list.
     """
-    log.debug('parse_reference("%s")', reference)
+    log.debug(u'parse_reference("%s")', reference)
     match = get_reference_match(u'full').match(reference)
     if match:
         log.debug(u'Matched reference %s' % reference)

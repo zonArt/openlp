@@ -127,7 +127,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         """
         Stop the import on cancel button, close button or ESC key.
         """
-        log.debug('Import canceled by user.')
+        log.debug(u'Import canceled by user.')
         if self.currentPage() == self.importPage:
             Receiver.send_message(u'bibles_stop_import')
         self.done(QtGui.QDialog.Rejected)

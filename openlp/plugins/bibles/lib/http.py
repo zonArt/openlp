@@ -447,7 +447,7 @@ class HTTPBible(BibleDB):
                 [(u'Genesis', 1, 1, 1), (u'Genesis', 2, 2, 3)]
         """
         for reference in reference_list:
-            log.debug('Reference: %s', reference)
+            log.debug(u'Reference: %s', reference)
             book = reference[0]
             db_book = self.get_book(book)
             if not db_book:
