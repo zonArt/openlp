@@ -193,11 +193,11 @@ class SlideController(QtGui.QWidget):
             self.HideMenu.menu().addAction(self.BlankScreen)
             self.HideMenu.menu().addAction(self.ThemeScreen)
             if self.screens.display_count > 1:
-                self.HideMenu.menu().addAction(self.DesktopScreen)
                 self.DesktopScreen = QtGui.QAction(QtGui.QIcon(
                     u':/slides/slide_desktop.png'),
                     translate('OpenLP.SlideController',
-                        'Show Desktop'), self.HideMenu)
+                    'Show Desktop'), self.HideMenu)
+                self.HideMenu.menu().addAction(self.DesktopScreen)
                 self.DesktopScreen.setCheckable(True)
                 QtCore.QObject.connect(self.DesktopScreen,
                     QtCore.SIGNAL(u'triggered(bool)'), self.onHideDisplay)
