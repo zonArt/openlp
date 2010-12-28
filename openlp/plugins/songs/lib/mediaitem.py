@@ -29,6 +29,7 @@ import locale
 import re
 
 from PyQt4 import QtCore, QtGui
+from sqlalchemy.sql import or_
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, Receiver, \
     ItemCapabilities, translate, check_item_selected
@@ -36,6 +37,7 @@ from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     SongImportForm
 from openlp.plugins.songs.lib import SongXMLParser, OpenLyricsParser
 from openlp.plugins.songs.lib.db import Author, Song
+from openlp.core.lib.searchedit import SearchEdit
 
 log = logging.getLogger(__name__)
 
@@ -88,20 +90,10 @@ class SongMediaItem(MediaManagerItem):
         self.SearchTextLabel.setObjectName(u'SearchTextLabel')
         self.SearchLayout.setWidget(
             0, QtGui.QFormLayout.LabelRole, self.SearchTextLabel)
-        self.SearchTextEdit = QtGui.QLineEdit(self)
+        self.SearchTextEdit = SearchEdit(self)
         self.SearchTextEdit.setObjectName(u'SearchTextEdit')
         self.SearchLayout.setWidget(
             0, QtGui.QFormLayout.FieldRole, self.SearchTextEdit)
-        self.SearchTypeLabel = QtGui.QLabel(self)
-        self.SearchTypeLabel.setAlignment(
-            QtCore.Qt.AlignBottom|QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft)
-        self.SearchTypeLabel.setObjectName(u'SearchTypeLabel')
-        self.SearchLayout.setWidget(
-            1, QtGui.QFormLayout.LabelRole, self.SearchTypeLabel)
-        self.SearchTypeComboBox = QtGui.QComboBox(self)
-        self.SearchTypeComboBox.setObjectName(u'SearchTypeComboBox')
-        self.SearchLayout.setWidget(
-            1, QtGui.QFormLayout.FieldRole, self.SearchTypeComboBox)
         self.pageLayout.addLayout(self.SearchLayout)
         self.SearchButtonLayout = QtGui.QHBoxLayout()
         self.SearchButtonLayout.setMargin(0)
@@ -113,9 +105,6 @@ class SongMediaItem(MediaManagerItem):
         self.SearchTextButton = QtGui.QPushButton(self)
         self.SearchTextButton.setObjectName(u'SearchTextButton')
         self.SearchButtonLayout.addWidget(self.SearchTextButton)
-        self.ClearTextButton = QtGui.QPushButton(self)
-        self.ClearTextButton.setObjectName(u'ClearTextButton')
-        self.SearchButtonLayout.addWidget(self.ClearTextButton)
         self.pageLayout.addLayout(self.SearchButtonLayout)
         # Signals and slots
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -124,8 +113,6 @@ class SongMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'returnPressed()'), self.onSearchTextButtonClick)
         QtCore.QObject.connect(self.SearchTextButton,
             QtCore.SIGNAL(u'pressed()'), self.onSearchTextButtonClick)
-        QtCore.QObject.connect(self.ClearTextButton,
-            QtCore.SIGNAL(u'pressed()'), self.onClearTextButtonClick)
         QtCore.QObject.connect(self.SearchTextEdit,
             QtCore.SIGNAL(u'textChanged(const QString&)'),
             self.onSearchTextEditChanged)
@@ -139,6 +126,11 @@ class SongMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'songs_edit'), self.onRemoteEdit)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'songs_edit_clear'), self.onRemoteEditClear)
+        QtCore.QObject.connect(self.SearchTextEdit,
+            QtCore.SIGNAL(u'cleared()'), self.onClearTextButtonClick)
+        QtCore.QObject.connect(self.SearchTextEdit,
+            QtCore.SIGNAL(u'searchTypeChanged(int)'),
+            self.onSearchTextButtonClick)
 
     def configUpdated(self):
         self.searchAsYouType = QtCore.QSettings().value(
@@ -154,39 +146,44 @@ class SongMediaItem(MediaManagerItem):
     def retranslateUi(self):
         self.SearchTextLabel.setText(
             translate('SongsPlugin.MediaItem', 'Search:'))
-        self.SearchTypeLabel.setText(
-            translate('SongsPlugin.MediaItem', 'Type:'))
-        self.ClearTextButton.setText(
-            translate('SongsPlugin.MediaItem', 'Clear'))
         self.SearchTextButton.setText(
             translate('SongsPlugin.MediaItem', 'Search'))
 
     def initialise(self):
-        self.SearchTypeComboBox.addItem(
-            translate('SongsPlugin.MediaItem', 'Titles'))
-        self.SearchTypeComboBox.addItem(
-            translate('SongsPlugin.MediaItem', 'Lyrics'))
-        self.SearchTypeComboBox.addItem(
-            translate('SongsPlugin.MediaItem', 'Authors'))
+        self.SearchTextEdit.setSearchTypes([
+            (1, u':/songs/song_search_all.png', translate('SongsPlugin.MediaItem', 'Entire Song')),
+            (2, u':/songs/song_search_title.png', translate('SongsPlugin.MediaItem', 'Titles')),
+            (3, u':/songs/song_search_lyrics.png', translate('SongsPlugin.MediaItem', 'Lyrics')),
+            (4, u':/songs/song_search_author.png', translate('SongsPlugin.MediaItem', 'Authors'))
+        ])
         self.configUpdated()
 
     def onSearchTextButtonClick(self):
         search_keywords = unicode(self.SearchTextEdit.displayText())
         search_results = []
-        search_type = self.SearchTypeComboBox.currentIndex()
-        if search_type == 0:
+        # search_type = self.SearchTypeComboBox.currentIndex()
+        search_type = self.SearchTextEdit.currentSearchType()
+        if search_type == 1:
+            log.debug(u'Entire Song Search')
+            search_results = self.parent.manager.get_all_objects(Song,
+                or_(Song.search_title.like(u'%' + self.whitespace.sub(u' ',
+                search_keywords.lower()) + u'%'),
+                Song.search_lyrics.like(u'%' + search_keywords.lower() + \
+                u'%')), Song.search_title.asc())
+            self.displayResultsSong(search_results)
+        if search_type == 2:
             log.debug(u'Titles Search')
             search_results = self.parent.manager.get_all_objects(Song,
                 Song.search_title.like(u'%' + self.whitespace.sub(u' ',
                 search_keywords.lower()) + u'%'), Song.search_title.asc())
             self.displayResultsSong(search_results)
-        elif search_type == 1:
+        elif search_type == 3:
             log.debug(u'Lyrics Search')
             search_results = self.parent.manager.get_all_objects(Song,
                 Song.search_lyrics.like(u'%' + search_keywords.lower() + u'%'),
                 Song.search_lyrics.asc())
             self.displayResultsSong(search_results)
-        elif search_type == 2:
+        elif search_type == 4:
             log.debug(u'Authors Search')
             search_results = self.parent.manager.get_all_objects(Author,
                 Author.display_name.like(u'%' + search_keywords + u'%'),
