@@ -600,7 +600,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
                 (QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok)
             return
-        self.accepted = True
         saveFrom = None
         saveTo = None
         if self.theme.background_type == \
@@ -608,9 +607,12 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             filename = \
                 os.path.split(unicode(self.theme.background_filename))[1]
             saveTo = os.path.join(self.path, self.theme.theme_name, filename)
-            saveFrom = self.theme.background_filename
-        if self.thememanager.saveTheme(self.theme, saveFrom, saveTo):
+            saveFrom = self.theme.background_filename#
+        if self.thememanager.checkIfThemeExists(self.theme.theme_name):
+            self.thememanager.saveTheme(self.theme, saveFrom, saveTo)
+            self.accepted = True
             return QtGui.QDialog.accept(self)
+        return
 
     def _colorButton(self, field):
         """
