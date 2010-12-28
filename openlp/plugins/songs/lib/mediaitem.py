@@ -252,7 +252,9 @@ class SongMediaItem(MediaManagerItem):
         """
         if self.searchAsYouType:
             search_length = 1
-            if self.SearchTypeComboBox.currentIndex() == 1:
+            if self.SearchTextEdit.currentSearchType() == 1:
+                search_length = 3
+            elif self.SearchTextEdit.currentSearchType() == 3:
                 search_length = 7
             if len(text) > search_length:
                 self.onSearchTextButtonClick()
