@@ -73,6 +73,7 @@ class SlideList(QtGui.QTableWidget):
         else:
             event.ignore()
 
+
 class SlideController(QtGui.QWidget):
     """
     SlideController is the slide controller widget. This widget is what the
@@ -183,41 +184,23 @@ class SlideController(QtGui.QWidget):
                 translate('OpenLP.SlideController',
                     'Blank Screen'), self.HideMenu)
             self.BlankScreen.setCheckable(True)
-            QtCore.QObject.connect(self.BlankScreen,
-                QtCore.SIGNAL("triggered(bool)"), self.onBlankDisplay)
             self.ThemeScreen = QtGui.QAction(QtGui.QIcon(
                 u':/slides/slide_theme.png'),
                 translate('OpenLP.SlideController',
                     'Blank to Theme'), self.HideMenu)
             self.ThemeScreen.setCheckable(True)
-            QtCore.QObject.connect(self.ThemeScreen,
-                QtCore.SIGNAL("triggered(bool)"), self.onThemeDisplay)
-            if self.screens.display_count > 1:
-                self.DesktopScreen = QtGui.QAction(QtGui.QIcon(
-                    u':/slides/slide_desktop.png'),
-                    translate('OpenLP.SlideController',
-                        'Show Desktop'), self.HideMenu)
-                self.DesktopScreen.setCheckable(True)
-                QtCore.QObject.connect(self.DesktopScreen,
-                    QtCore.SIGNAL("triggered(bool)"), self.onHideDisplay)
             self.HideMenu.setDefaultAction(self.BlankScreen)
             self.HideMenu.menu().addAction(self.BlankScreen)
             self.HideMenu.menu().addAction(self.ThemeScreen)
             if self.screens.display_count > 1:
+                self.DesktopScreen = QtGui.QAction(QtGui.QIcon(
+                    u':/slides/slide_desktop.png'),
+                    translate('OpenLP.SlideController',
+                    'Show Desktop'), self.HideMenu)
                 self.HideMenu.menu().addAction(self.DesktopScreen)
-        if not self.isLive:
-            self.Toolbar.addToolbarSeparator(u'Close Separator')
-            self.Toolbar.addToolbarButton(
-                u'Go Live', u':/general/general_live.png',
-                translate('OpenLP.SlideController', 'Move to live'),
-                self.onGoLive)
-            self.Toolbar.addToolbarSeparator(u'Close Separator')
-            self.Toolbar.addToolbarButton(
-                u'Edit Song', u':/general/general_edit.png',
-                translate('OpenLP.SlideController',
-                'Edit and reload song preview'),
-                self.onEditSong)
-        if isLive:
+                self.DesktopScreen.setCheckable(True)
+                QtCore.QObject.connect(self.DesktopScreen,
+                    QtCore.SIGNAL(u'triggered(bool)'), self.onHideDisplay)
             self.Toolbar.addToolbarSeparator(u'Loop Separator')
             self.Toolbar.addToolbarButton(
                 u'Start Loop', u':/media/media_time.png',
@@ -230,12 +213,23 @@ class SlideController(QtGui.QWidget):
             self.DelaySpinBox = QtGui.QSpinBox()
             self.DelaySpinBox.setMinimum(1)
             self.DelaySpinBox.setMaximum(180)
-            self.Toolbar.addToolbarWidget(
-                u'Image SpinBox', self.DelaySpinBox)
+            self.Toolbar.addToolbarWidget(u'Image SpinBox', self.DelaySpinBox)
             self.DelaySpinBox.setSuffix(translate('OpenLP.SlideController',
                 's'))
             self.DelaySpinBox.setToolTip(translate('OpenLP.SlideController',
                 'Delay between slides in seconds'))
+        else:
+            self.Toolbar.addToolbarSeparator(u'Close Separator')
+            self.Toolbar.addToolbarButton(
+                u'Go Live', u':/general/general_live.png',
+                translate('OpenLP.SlideController', 'Move to live'),
+                self.onGoLive)
+            self.Toolbar.addToolbarSeparator(u'Close Separator')
+            self.Toolbar.addToolbarButton(
+                u'Edit Song', u':/general/general_edit.png',
+                translate('OpenLP.SlideController',
+                'Edit and reload song preview'),
+                self.onEditSong)
         self.ControllerLayout.addWidget(self.Toolbar)
         # Build a Media ToolBar
         self.Mediabar = OpenLPToolbar(self)
@@ -251,42 +245,39 @@ class SlideController(QtGui.QWidget):
             u'Media Stop', u':/slides/media_playback_stop.png',
             translate('OpenLP.SlideController', 'Start playing media'),
             self.onMediaStop)
-        if not self.isLive:
-            self.seekSlider = Phonon.SeekSlider()
-            self.seekSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
-            self.seekSlider.setObjectName(u'seekSlider')
-            self.Mediabar.addToolbarWidget(
-                u'Seek Slider', self.seekSlider)
-            self.volumeSlider = Phonon.VolumeSlider()
-            self.volumeSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
-            self.volumeSlider.setObjectName(u'volumeSlider')
-            self.Mediabar.addToolbarWidget(u'Audio Volume', self.volumeSlider)
-        else:
-            self.volumeSlider = QtGui.QSlider(QtCore.Qt.Horizontal)
-            self.volumeSlider.setTickInterval(1)
-            self.volumeSlider.setTickPosition(QtGui.QSlider.TicksAbove)
-            self.volumeSlider.setMinimum(0)
-            self.volumeSlider.setMaximum(10)
-            self.volumeSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
-            self.volumeSlider.setObjectName(u'volumeSlider')
-            self.Mediabar.addToolbarWidget(u'Audio Volume', self.volumeSlider)
-        self.ControllerLayout.addWidget(self.Mediabar)
-        # Build the Song Toolbar
-        if isLive:
+        if self.isLive:
+            # Build the Song Toolbar
             self.SongMenu = QtGui.QToolButton(self.Toolbar)
             self.SongMenu.setText(translate('OpenLP.SlideController',
                 'Go To'))
             self.SongMenu.setPopupMode(QtGui.QToolButton.InstantPopup)
             self.Toolbar.addToolbarWidget(u'Song Menu', self.SongMenu)
             self.SongMenu.setMenu(QtGui.QMenu(
-                translate('OpenLP.SlideController', 'Go To'),
-                self.Toolbar))
+                translate('OpenLP.SlideController', 'Go To'), self.Toolbar))
             self.Toolbar.makeWidgetsInvisible([u'Song Menu'])
+            # Build the volumeSlider.
+            self.volumeSlider = QtGui.QSlider(QtCore.Qt.Horizontal)
+            self.volumeSlider.setTickInterval(1)
+            self.volumeSlider.setTickPosition(QtGui.QSlider.TicksAbove)
+            self.volumeSlider.setMinimum(0)
+            self.volumeSlider.setMaximum(10)
+        else:
+            # Build the seekSlider.
+            self.seekSlider = Phonon.SeekSlider()
+            self.seekSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
+            self.seekSlider.setObjectName(u'seekSlider')
+            self.Mediabar.addToolbarWidget(u'Seek Slider', self.seekSlider)
+            self.volumeSlider = Phonon.VolumeSlider()
+        self.volumeSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
+        self.volumeSlider.setObjectName(u'volumeSlider')
+        self.Mediabar.addToolbarWidget(u'Audio Volume', self.volumeSlider)
+        self.ControllerLayout.addWidget(self.Mediabar)
         # Screen preview area
         self.PreviewFrame = QtGui.QFrame(self.Splitter)
-        self.PreviewFrame.setGeometry(QtCore.QRect(0, 0, 300, 225))
+        self.PreviewFrame.setGeometry(QtCore.QRect(0, 0, 300, 300 * self.ratio))
+        self.PreviewFrame.setMinimumHeight(100)
         self.PreviewFrame.setSizePolicy(QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Minimum,
+            QtGui.QSizePolicy.Ignored, QtGui.QSizePolicy.Ignored,
             QtGui.QSizePolicy.Label))
         self.PreviewFrame.setFrameShape(QtGui.QFrame.StyledPanel)
         self.PreviewFrame.setFrameShadow(QtGui.QFrame.Sunken)
@@ -306,7 +297,6 @@ class SlideController(QtGui.QWidget):
         Phonon.createPath(self.mediaObject, self.audio)
         if not self.isLive:
             self.video.setGeometry(QtCore.QRect(0, 0, 300, 225))
-            self.video.setVisible(False)
         self.SlideLayout.insertWidget(0, self.video)
         # Actual preview screen
         self.SlidePreview = QtGui.QLabel(self)
@@ -330,18 +320,24 @@ class SlideController(QtGui.QWidget):
         # Signals
         QtCore.QObject.connect(self.PreviewListWidget,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
-        if not self.isLive:
-            QtCore.QObject.connect(self.PreviewListWidget,
-                QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
-                self.onGoLiveClick)
-        if isLive:
+        if self.isLive:
+            QtCore.QObject.connect(self.BlankScreen,
+                QtCore.SIGNAL(u'triggered(bool)'), self.onBlankDisplay)
+            QtCore.QObject.connect(self.ThemeScreen,
+                QtCore.SIGNAL(u'triggered(bool)'), self.onThemeDisplay)
+            QtCore.QObject.connect(self.volumeSlider,
+                QtCore.SIGNAL(u'sliderReleased()'), self.mediaVolume)
+            QtCore.QObject.connect(Receiver.get_receiver(),
+                QtCore.SIGNAL(u'maindisplay_active'), self.updatePreview)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'slidecontroller_live_spin_delay'),
                 self.receiveSpinDelay)
-        if isLive:
             self.Toolbar.makeWidgetsInvisible(self.loopList)
             self.Toolbar.actions[u'Stop Loop'].setVisible(False)
         else:
+            QtCore.QObject.connect(self.PreviewListWidget,
+                QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
+                self.onGoLiveClick)
             self.Toolbar.makeWidgetsInvisible(self.songEditList)
         self.Mediabar.setVisible(False)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -381,54 +377,65 @@ class SlideController(QtGui.QWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_%s_text_request' % self.typePrefix),
             self.onTextRequest)
+        QtCore.QObject.connect(self.parent.ControlSplitter,
+            QtCore.SIGNAL(u'splitterMoved(int, int)'), self.previewSizeChanged)
         QtCore.QObject.connect(self.Splitter,
-            QtCore.SIGNAL(u'splitterMoved(int, int)'), self.trackSplitter)
+            QtCore.SIGNAL(u'splitterMoved(int, int)'), self.previewSizeChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.refreshServiceItem)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_screen_changed'), self.screenSizeChanged)
-        if self.isLive:
-            QtCore.QObject.connect(self.volumeSlider,
-                QtCore.SIGNAL(u'sliderReleased()'), self.mediaVolume)
-            QtCore.QObject.connect(Receiver.get_receiver(),
-                QtCore.SIGNAL(u'maindisplay_active'), self.updatePreview)
+
+    def paintEvent(self, event):
+        """
+        When the Slidecontroller is painted, we need to make sure, that the
+        SlidePreview's size is updated.
+        """
+        # We need to make this circuit, because we have to consider the other
+        # slidecontroller as well.
+        self.parent.previewController.previewSizeChanged()
+        self.parent.liveController.previewSizeChanged()
 
     def screenSizeChanged(self):
         """
         Settings dialog has changed the screen size of adjust output and
-        screen previews
+        screen previews.
         """
         log.debug(u'screenSizeChanged live = %s' % self.isLive)
         # rebuild display as screen size changed
         self.display = MainDisplay(self, self.screens, self.isLive)
         self.display.imageManager = self.parent.renderManager.image_manager
         self.display.alertTab = self.alertTab
+        self.display.setup()
+        # The SlidePreview's ratio.
         self.ratio = float(self.screens.current[u'size'].width()) / \
             float(self.screens.current[u'size'].height())
-        self.display.setup()
-        self.SlidePreview.setFixedSize(
-            QtCore.QSize(self.settingsmanager.slidecontroller_image,
-            self.settingsmanager.slidecontroller_image / self.ratio))
+        self.previewSizeChanged()
 
-    def widthChanged(self):
+    def previewSizeChanged(self):
         """
-        Handle changes of width from the splitter between the live and preview
-        controller.  Event only issues when changes have finished
+        Takes care of the SlidePreview's size. Is called when one of the the
+        splitters is moved or when the screen size is changed.
         """
-        log.debug(u'widthChanged live = %s' % self.isLive)
+        log.debug(u'previewSizeChanged live = %s' % self.isLive)
+        if self.ratio < float(self.PreviewFrame.width()) / float(
+            self.PreviewFrame.height()):
+            # We have to take the height as limit.
+            max_height = self.PreviewFrame.height() - self.grid.margin() * 2
+            self.SlidePreview.setFixedSize(QtCore.QSize(max_height * self.ratio,
+                max_height))
+        else:
+            # We have to take the width as limit.
+            max_width = self.PreviewFrame.width() - self.grid.margin() * 2
+            self.SlidePreview.setFixedSize(QtCore.QSize(max_width,
+                max_width / self.ratio))
         width = self.parent.ControlSplitter.sizes()[self.split]
-        height = width * self.parent.renderManager.screen_ratio
         self.PreviewListWidget.setColumnWidth(0, width)
         # Sort out image heights (Songs, bibles excluded)
         if self.serviceItem and not self.serviceItem.is_text():
             for framenumber in range(len(self.serviceItem.get_frames())):
-                self.PreviewListWidget.setRowHeight(framenumber, height)
-
-    def trackSplitter(self, tab, pos):
-        """
-        Splitter between the slide list and the preview panel
-        """
-        pass
+                self.PreviewListWidget.setRowHeight(
+                    framenumber, width / self.ratio)
 
     def onSongBarHandler(self):
         request = unicode(self.sender().text())
