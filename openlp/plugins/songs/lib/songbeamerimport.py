@@ -96,7 +96,7 @@ class SongBeamerImport(SongImport):
                 read_verses = False
                 self.file_name = os.path.split(file)[1]
                 self.import_wizard.incrementProgressBar(
-                    "Importing %s" % (self.file_name), 0)
+                    u'Importing %s' % (self.file_name), 0)
                 if os.path.isfile(file):
                     detect_file = open(file, u'r')
                     details = chardet.detect(detect_file.read(2048))

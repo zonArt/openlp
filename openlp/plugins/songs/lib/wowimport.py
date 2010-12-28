@@ -119,7 +119,7 @@ class WowImport(SongImport):
                 self.copyright = u''
                 self.file_name = os.path.split(file)[1]
                 self.import_wizard.incrementProgressBar(
-                    "Importing %s" % (self.file_name), 0)
+                    u'Importing %s' % (self.file_name), 0)
                 # Get the song title
                 self.title = self.file_name.rpartition(u'.')[0]
                 self.songData = open(file, 'rb')
@@ -167,5 +167,5 @@ class WowImport(SongImport):
                 self.songData.close()
                 self.finish()
                 self.import_wizard.incrementProgressBar(
-                    "Importing %s" % (self.file_name))
+                    u'Importing %s' % (self.file_name))
             return True

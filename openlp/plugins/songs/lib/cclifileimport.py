@@ -86,11 +86,11 @@ class CCLIFileImport(SongImport):
                 infile = codecs.open(filename, u'r', details['encoding'])
                 lines = infile.readlines()
                 ext = os.path.splitext(filename)[1]
-                if ext.lower() == ".usr":
+                if ext.lower() == u'.usr':
                     log.info(u'SongSelect .usr format file found %s: ',
                         filename)
                     self.do_import_usr_file(lines)
-                elif ext.lower() == ".txt":
+                elif ext.lower() == u'.txt':
                     log.info(u'SongSelect .txt format file found %s: ',
                         filename)
                     self.do_import_txt_file(lines)
@@ -207,7 +207,7 @@ class CCLIFileImport(SongImport):
             author_list = song_author.split(u'|')
         for author in author_list:
             seperated = author.split(u',')
-            self.add_author(seperated[1].strip() + " " + seperated[0].strip())
+            self.add_author(seperated[1].strip() + u' ' + seperated[0].strip())
         self.title = song_name
         self.copyright = song_copyright
         self.ccli_number = song_ccli
