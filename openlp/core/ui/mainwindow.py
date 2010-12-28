@@ -141,13 +141,12 @@ class Ui_MainWindow(object):
         self.DefaultThemeLabel.setObjectName(u'DefaultThemeLabel')
         self.StatusBar.addPermanentWidget(self.DefaultThemeLabel)
         # Create the MediaManager
-        self.MediaManagerDock = OpenLPDockWidget(MainWindow)
-        self.MediaManagerDock.setWindowIcon(
+        self.MediaManagerDock = OpenLPDockWidget(
+            MainWindow, u'MediaManagerDock',
             build_icon(u':/system/system_mediamanager.png'))
         self.MediaManagerDock.setStyleSheet(MEDIA_MANAGER_STYLE)
         self.MediaManagerDock.setMinimumWidth(
             self.settingsmanager.mainwindow_left)
-        self.MediaManagerDock.setObjectName(u'MediaManagerDock')
         self.MediaManagerContents = QtGui.QWidget(MainWindow)
         self.MediaManagerContents.setObjectName(u'MediaManagerContents')
         self.MediaManagerLayout = QtGui.QHBoxLayout(self.MediaManagerContents)
@@ -161,10 +160,9 @@ class Ui_MainWindow(object):
         MainWindow.addDockWidget(
             QtCore.Qt.DockWidgetArea(1), self.MediaManagerDock)
         # Create the service manager
-        self.ServiceManagerDock = OpenLPDockWidget(MainWindow)
-        self.ServiceManagerDock.setWindowIcon(
+        self.ServiceManagerDock = OpenLPDockWidget(
+            MainWindow, u'ServiceManagerDock',
             build_icon(u':/system/system_servicemanager.png'))
-        self.ServiceManagerDock.setObjectName(u'ServiceManagerDock')
         self.ServiceManagerDock.setMinimumWidth(
             self.settingsmanager.mainwindow_right)
         self.ServiceManagerContents = ServiceManager(self)
@@ -172,10 +170,9 @@ class Ui_MainWindow(object):
         MainWindow.addDockWidget(
             QtCore.Qt.DockWidgetArea(2), self.ServiceManagerDock)
         # Create the theme manager
-        self.ThemeManagerDock = OpenLPDockWidget(MainWindow)
-        self.ThemeManagerDock.setWindowIcon(
+        self.ThemeManagerDock = OpenLPDockWidget(
+            MainWindow, u'ThemeManagerDock',
             build_icon(u':/system/system_thememanager.png'))
-        self.ThemeManagerDock.setObjectName(u'ThemeManagerDock')
         self.ThemeManagerDock.setMinimumWidth(
             self.settingsmanager.mainwindow_right)
         self.ThemeManagerContents = ThemeManager(self)
