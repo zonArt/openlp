@@ -47,17 +47,3 @@ class OpenLPDockWidget(QtGui.QDockWidget):
         if name:
             self.setObjectName(name)
         self.setFloating(False)
-
-    def moveEvent(self, event):
-        """
-        Called, when the DockWidget is moved.
-        """
-        self.parent.liveController.previewSizeChanged()
-        self.parent.previewController.previewSizeChanged()
-
-    def resizeEvent(self, event):
-        """
-        Called, when the DockWidget is resized.
-        """
-        self.parent.liveController.previewSizeChanged()
-        self.parent.previewController.previewSizeChanged()

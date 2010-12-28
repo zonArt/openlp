@@ -386,10 +386,20 @@ class SlideController(QtGui.QWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_screen_changed'), self.screenSizeChanged)
 
+    def paintEvent(self, event):
+        """
+        When the Slidecontroller is painted, we need to make sure, that the
+        SlidePreview's size is updated.
+        """
+        # We need to make this circuit, because we have to consider the other
+        # slidecontroller as well.
+        self.parent.previewController.previewSizeChanged()
+        self.parent.liveController.previewSizeChanged()
+
     def screenSizeChanged(self):
         """
         Settings dialog has changed the screen size of adjust output and
-        screen previews
+        screen previews.
         """
         log.debug(u'screenSizeChanged live = %s' % self.isLive)
         # rebuild display as screen size changed
@@ -397,6 +407,9 @@ class SlideController(QtGui.QWidget):
         self.display.imageManager = self.parent.renderManager.image_manager
         self.display.alertTab = self.alertTab
         self.display.setup()
+        # The SlidePreview's ratio.
+        self.ratio = float(self.screens.current[u'size'].width()) / \
+            float(self.screens.current[u'size'].height())
         self.previewSizeChanged()
 
     def previewSizeChanged(self):
@@ -405,9 +418,6 @@ class SlideController(QtGui.QWidget):
         splitters is moved or when the screen size is changed.
         """
         log.debug(u'previewSizeChanged live = %s' % self.isLive)
-        # The SlidePreview's ratio.
-        self.ratio = float(self.screens.current[u'size'].width()) / \
-            float(self.screens.current[u'size'].height())
         if self.ratio < float(self.PreviewFrame.width()) / float(
             self.PreviewFrame.height()):
             # We have to take the height as limit.
