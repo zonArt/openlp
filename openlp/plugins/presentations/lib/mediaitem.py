@@ -272,10 +272,15 @@ class PresentationMediaItem(MediaManagerItem):
                         i = i + 1
                         img = doc.get_thumbnail_path(i, True)
                     doc.close_presentation()
+                    return True
                 else:
                     # File is no longer present
+                    QtGui.QMessageBox.critical(
+                        self, translate('PresentationPlugin.MediaItem',
+                        'Missing Presentation'),
+                        unicode(translate('PresentationPlugin.MediaItem',
+                        'The Presentation %s no longer exists.')) % filename)
                     return False
-            return True
         else:
             return False
 
