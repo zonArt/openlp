@@ -272,8 +272,8 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
         filters += u'%s (*)' % translate('SongsPlugin.ImportWizardForm',
             'All Files')
         filename = QtGui.QFileDialog.getOpenFileName(self, title,
-            os.path.dirname(SettingsManager.get_last_dir(
-            self.plugin.settingsSection, 1)), filters)
+            SettingsManager.get_last_dir(self.plugin.settingsSection, 1),
+            filters)
         if filename:
             editbox.setText(filename)
             SettingsManager.set_last_dir(self.plugin.settingsSection,
@@ -300,8 +300,8 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
         filters += u'%s (*)' % translate('SongsPlugin.ImportWizardForm',
             'All Files')
         filenames = QtGui.QFileDialog.getOpenFileNames(self, title,
-            os.path.dirname(SettingsManager.get_last_dir(
-            self.plugin.settingsSection, 1)), filters)
+            SettingsManager.get_last_dir(self.plugin.settingsSection, 1),
+            filters)
         if filenames:
             listbox.addItems(filenames)
             SettingsManager.set_last_dir(
