@@ -825,8 +825,18 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             else:
                 event.ignore()
         else:
-            self.cleanUp()
-            event.accept()
+            ret = QtGui.QMessageBox.question(self,
+                translate('OpenLP.MainWindow', 'Close OpenLP'),
+                translate('OpenLP.MainWindow', 'Are you sure you want to Exit.'),
+                QtGui.QMessageBox.StandardButtons(
+                    QtGui.QMessageBox.Cancel |
+                    QtGui.QMessageBox.Ok),
+                QtGui.QMessageBox.Ok)
+            if ret == QtGui.QMessageBox.Ok:
+                self.cleanUp()
+                event.accept()
+            else:
+                event.ignore()
 
     def cleanUp(self):
         """
