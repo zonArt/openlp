@@ -90,6 +90,7 @@ class SongBeamerImport(SongImport):
                 len(self.import_source))
             for file in self.import_source:
                 # TODO: check that it is a valid SongBeamer file
+                self.set_defaults()
                 self.current_verse = u''
                 self.current_verse_type = u'V'
                 read_verses = False
@@ -105,6 +106,8 @@ class SongBeamerImport(SongImport):
                     infile.close()
                 else:
                     return False
+                self.title = self.file_name.split('.sng')[0]
+                read_verses = False
                 for line in self.songData:
                     # Just make sure that the line is of the type 'Unicode'.
                     line = unicode(line).strip()
@@ -129,7 +132,8 @@ class SongBeamerImport(SongImport):
                 if self.current_verse:
                     self.replace_html_tags()
                     self.add_verse(self.current_verse, self.current_verse_type)
-                self.finish()
+                if self.check_complete():
+                    self.finish()
                 self.import_wizard.incrementProgressBar(u'%s %s...' %
                     (translate('SongsPlugin.SongBeamerImport', 'Importing'),
                     self.file_name))
