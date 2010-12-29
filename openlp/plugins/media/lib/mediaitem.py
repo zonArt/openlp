@@ -89,7 +89,7 @@ class MediaMediaItem(MediaManagerItem):
             self.ImageWidget.sizePolicy().hasHeightForWidth())
         self.ImageWidget.setSizePolicy(sizePolicy)
         self.ImageWidget.setObjectName(u'ImageWidget')
-        #Replace backgrounds do not work at present so remove functionality.
+        # Replace backgrounds do not work at present so remove functionality.
         self.blankButton = self.toolbar.addToolbarButton(
             translate('MediaPlugin.MediaItem', 'Replace Background'),
             u':/slides/slide_blank.png',

@@ -132,7 +132,7 @@ class ImageMediaItem(MediaManagerItem):
                         os.remove(os.path.join(self.servicePath,
                             unicode(text.text())))
                     except OSError:
-                        #if not present do not worry
+                        # if not present do not worry
                         pass
                 self.listView.takeItem(row)
             SettingsManager.set_list(self.settingsSection,

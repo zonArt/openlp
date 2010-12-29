@@ -153,7 +153,7 @@ class PresentationMediaItem(MediaManagerItem):
         """
         self.DisplayTypeComboBox.clear()
         for item in self.controllers:
-            #load the drop down selection
+            # load the drop down selection
             if self.controllers[item].enabled():
                 self.DisplayTypeComboBox.addItem(item)
         if self.DisplayTypeComboBox.count() > 1:
@@ -197,7 +197,7 @@ class PresentationMediaItem(MediaManagerItem):
                     doc.load_presentation()
                     preview = doc.get_thumbnail_path(1, True)
                 doc.close_presentation()
-                if preview and self.validate(preview, thumb):
+                if preview and self.validate(preview, file):
                     icon = build_icon(thumb)
                 else:
                     icon = build_icon(u':/general/general_delete.png')
@@ -254,22 +254,27 @@ class PresentationMediaItem(MediaManagerItem):
             for item in items:
                 bitem = self.listView.item(item.row())
                 filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
-                if shortname == self.Automatic:
-                    service_item.shortname = self.findControllerByType(filename)
-                    if not service_item.shortname:
-                        return False
-                controller = self.controllers[service_item.shortname]
-                (path, name) = os.path.split(filename)
-                doc = controller.add_doc(filename)
-                if doc.get_thumbnail_path(1, True) is None:
-                    doc.load_presentation()
-                i = 1
-                img = doc.get_thumbnail_path(i, True)
-                while img:
-                    service_item.add_from_command(path, name, img)
-                    i = i + 1
+                if os.path.exists(filename):
+                    if shortname == self.Automatic:
+                        service_item.shortname = \
+                            self.findControllerByType(filename)
+                        if not service_item.shortname:
+                            return False
+                    controller = self.controllers[service_item.shortname]
+                    (path, name) = os.path.split(filename)
+                    doc = controller.add_doc(filename)
+                    if doc.get_thumbnail_path(1, True) is None:
+                        doc.load_presentation()
+                    i = 1
                     img = doc.get_thumbnail_path(i, True)
-                doc.close_presentation()
+                    while img:
+                        service_item.add_from_command(path, name, img)
+                        i = i + 1
+                        img = doc.get_thumbnail_path(i, True)
+                    doc.close_presentation()
+                else:
+                    # File is no longer present
+                    return False
             return True
         else:
             return False
@@ -280,7 +285,7 @@ class PresentationMediaItem(MediaManagerItem):
         file type. This is used if "Automatic" is set as the preferred
         controller. Find the first (alphabetic) enabled controller which
         "supports" the extension. If none found, then look for a controller
-        which "alsosupports" it instead.
+        which "also supports" it instead.
         """
         filetype = filename.split(u'.')[1]
         if not filetype:
