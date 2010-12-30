@@ -30,7 +30,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    SettingsManager, translate, check_item_selected, Receiver
+    SettingsManager, translate, check_item_selected, Receiver, ItemCapabilities
 from openlp.plugins.presentations.lib import MessageListener
 
 log = logging.getLogger(__name__)
@@ -249,6 +249,7 @@ class PresentationMediaItem(MediaManagerItem):
             return False
         service_item.title = unicode(self.DisplayTypeComboBox.currentText())
         service_item.shortname = unicode(self.DisplayTypeComboBox.currentText())
+        service_item.add_capability(ItemCapabilities.ProvidesOwnDisplay)
         shortname = service_item.shortname
         if shortname:
             for item in items:
