@@ -393,6 +393,7 @@ class SlideController(QtGui.QWidget):
         """
         # We need to make this circuit, because we have to consider the other
         # slidecontroller as well.
+        log.debug(u'paintEvent live = %s' % self.isLive)
         self.parent.previewController.previewSizeChanged()
         self.parent.liveController.previewSizeChanged()
 
@@ -561,6 +562,8 @@ class SlideController(QtGui.QWidget):
             if self.serviceItem.is_media():
                 self.onMediaClose()
         if self.isLive:
+            if serviceItem.is_capable(ItemCapabilities.ProvidesOwnDisplay):
+                self._forceUnblank()
             blanked = self.BlankScreen.isChecked()
         else:
             blanked = False
@@ -568,8 +571,6 @@ class SlideController(QtGui.QWidget):
             [serviceItem, self.isLive, blanked, slideno])
         self.slideList = {}
         width = self.parent.ControlSplitter.sizes()[self.split]
-        # Set pointing cursor when we have something to point at
-        self.PreviewListWidget.setCursor(QtCore.Qt.PointingHandCursor)
         self.serviceItem = serviceItem
         self.PreviewListWidget.clear()
         self.PreviewListWidget.setRowCount(0)
@@ -698,7 +699,7 @@ class SlideController(QtGui.QWidget):
         """
         log.debug(u'mainDisplaySetBackground live = %s' % self.isLive)
         if not self.display.primary:
-            self.onHideDisplay(True)
+            self.onBlankDisplay(True)
 
     def onSlideBlank(self):
         """
@@ -1041,3 +1042,22 @@ class SlideController(QtGui.QWidget):
             self.video.hide()
         self.SlidePreview.clear()
         self.SlidePreview.show()
+
+    def _forceUnblank(self):
+        """
+        Used by command items which provide their own displays to reset the
+        screen hide attributes
+        """
+        if self.BlankScreen.isChecked:
+            self.BlankScreen.setChecked(False)
+            self.HideMenu.setDefaultAction(self.BlankScreen)
+            QtCore.QSettings().setValue(
+                self.parent.generalSettingsSection + u'/screen blank',
+                QtCore.QVariant(False))
+        if self.ThemeScreen.isChecked:
+            self.ThemeScreen.setChecked(False)
+            self.HideMenu.setDefaultAction(self.ThemeScreen)
+        if self.DesktopScreen.isChecked:
+            self.DesktopScreen.setChecked(False)
+            self.HideMenu.setDefaultAction(self.DesktopScreen)
+
