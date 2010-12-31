@@ -92,7 +92,7 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         self.statusComboBox.setEnabled(False)
 
     def _setDetails(self):
-        log.debug('PluginStatus: %s', str(self.activePlugin.status))
+        log.debug(u'PluginStatus: %s', str(self.activePlugin.status))
         self.versionNumberLabel.setText(self.activePlugin.version)
         self.aboutTextBrowser.setHtml(self.activePlugin.about())
         self.programaticChange = True

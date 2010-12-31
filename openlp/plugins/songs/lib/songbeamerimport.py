@@ -85,7 +85,7 @@ class SongBeamerImport(SongImport):
         """
         Recieve a single file, or a list of files to import.
         """
-        if isinstance(self.import_source,  list):
+        if isinstance(self.import_source, list):
             self.import_wizard.importProgressBar.setMaximum(
                 len(self.import_source))
             for file in self.import_source:
@@ -96,7 +96,7 @@ class SongBeamerImport(SongImport):
                 read_verses = False
                 self.file_name = os.path.split(file)[1]
                 self.import_wizard.incrementProgressBar(
-                    "Importing %s" % (self.file_name),  0)
+                    u'Importing %s' % (self.file_name), 0)
                 if os.path.isfile(file):
                     detect_file = open(file, u'r')
                     details = chardet.detect(detect_file.read(2048))
@@ -126,17 +126,17 @@ class SongBeamerImport(SongImport):
                         if verse_start:
                             verse_start = False
                             if not self.check_verse_marks(line):
-                                self.current_verse = u'%s\n' % line
+                                self.current_verse = line + u'\n'
                         else:
-                            self.current_verse += u'%s\n' % line
+                            self.current_verse += line + u'\n'
                 if self.current_verse:
                     self.replace_html_tags()
                     self.add_verse(self.current_verse, self.current_verse_type)
                 if self.check_complete():
                     self.finish()
-                self.import_wizard.incrementProgressBar(u'%s %s...' %
-                    (translate('SongsPlugin.SongBeamerImport', 'Importing'),
-                    self.file_name))
+                self.import_wizard.incrementProgressBar(unicode(translate(
+                    'SongsPlugin.SongBeamerImport', 'Importing %s...')) %
+                    self.file_name)
             return True
 
     def replace_html_tags(self):
@@ -252,7 +252,7 @@ class SongBeamerImport(SongImport):
         elif tag_val[0] == u'#TextAlign':
             pass
         elif tag_val[0] == u'#Title':
-            self.title = u'%s' % tag_val[1]
+            self.title = unicode(tag_val[1])
         elif tag_val[0] == u'#TitleAlign':
             pass
         elif tag_val[0] == u'#TitleFontSize':

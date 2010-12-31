@@ -73,8 +73,8 @@ class OpenLP1Bible(BibleDB):
             abbreviation = unicode(book[3], u'cp1252')
             self.create_book(name, abbreviation, testament_id)
             # Update the progess bar.
-            self.wizard.incrementProgressBar(u'%s %s...' % (translate(
-                'BiblesPlugin.OpenLP1Import', 'Importing'), name))
+            self.wizard.incrementProgressBar(unicode(translate(
+                'BiblesPlugin.OpenLP1Import', 'Importing %s...')) % name)
             # Import the verses for this book.
             cursor.execute(u'SELECT chapter, verse, text || \'\' AS text FROM '
                 'verse WHERE book_id=%s' % book_id)

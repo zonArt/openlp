@@ -141,10 +141,10 @@ class GeneralTab(SettingsTab):
         self.settingsLayout.addWidget(self.autoPreviewCheckBox, 1, 0, 1, 2)
         # Moved here from image tab
         self.timeoutLabel = QtGui.QLabel(self.settingsGroupBox)
-        self.timeoutLabel.setObjectName("timeoutLabel")
+        self.timeoutLabel.setObjectName(u'timeoutLabel')
         self.settingsLayout.addWidget(self.timeoutLabel, 2, 0, 1, 1)
         self.timeoutSpinBox = QtGui.QSpinBox(self.settingsGroupBox)
-        self.timeoutSpinBox.setObjectName("timeoutSpinBox")
+        self.timeoutSpinBox.setObjectName(u'timeoutSpinBox')
         self.settingsLayout.addWidget(self.timeoutSpinBox, 2, 1, 1, 1)
         self.generalLeftLayout.addWidget(self.settingsGroupBox)
         self.generalLeftSpacer = QtGui.QSpacerItem(20, 40,
@@ -389,11 +389,11 @@ class GeneralTab(SettingsTab):
         settings = QtCore.QSettings()
         settings.beginGroup(self.settingsSection)
         for screen in self.screens.screen_list:
-            screen_name = u'%s %d' % (translate('OpenLP.GeneralTab', 'Screen'),
-                screen[u'number'] + 1)
+            screen_name = unicode(translate('OpenLP.GeneralTab', 'Screen %d')) \
+                % (screen[u'number'] + 1)
             if screen[u'primary']:
-                screen_name = u'%s (%s)' % (screen_name,
-                    translate('OpenLP.GeneralTab', 'primary'))
+                screen_name = unicode(translate('OpenLP.GeneralTab',
+                    '%s (primary)')) % screen_name
             self.monitorComboBox.addItem(screen_name)
         self.numberEdit.setText(unicode(settings.value(
             u'ccli number', QtCore.QVariant(u'')).toString()))

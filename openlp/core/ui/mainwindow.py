@@ -748,6 +748,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         self.settingsForm.exec_()
 
+    def paintEvent(self, event):
+        """
+        We need to make sure, that the SlidePreview's size is correct.
+        """
+        self.previewController.previewSizeChanged()
+        self.liveController.previewSizeChanged()
+
     def onSettingsShortcutsItemClicked(self):
         """
         Show the shortcuts dialog

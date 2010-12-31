@@ -58,7 +58,7 @@ class ItemCapabilities(object):
     NoLineBreaks = 7
     OnLoadUpdate = 8
     AddIfNewItem = 9
-
+    ProvidesOwnDisplay = 10
 
 class ServiceItem(object):
     """
