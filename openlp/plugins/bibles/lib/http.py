@@ -28,6 +28,7 @@ import logging
 import os
 import re
 import sqlite3
+import socket
 import urllib
 import urllib2
 from HTMLParser import HTMLParseError
@@ -184,6 +185,7 @@ class BGExtract(object):
     def __init__(self, proxyurl=None):
         log.debug(u'init %s', proxyurl)
         self.proxyurl = proxyurl
+        socket.setdefaulttimeout(30)
 
     def get_bible_chapter(self, version, bookname, chapter):
         """
@@ -210,6 +212,7 @@ class BGExtract(object):
             Receiver.send_message(u'openlp_process_events')
         except urllib2.URLError:
             log.exception(u'The web bible page could not be downloaded.')
+            Receiver.send_message(u'bibles_download_error')
         finally:
             if not page:
                 return None
@@ -219,6 +222,7 @@ class BGExtract(object):
             soup = BeautifulSoup(page, markupMassage=cleaner)
         except HTMLParseError:
             log.exception(u'BeautifulSoup could not parse the bible page.')
+            Receiver.send_message(u'bibles_download_error')
         finally:
             if not soup:
                 return None
@@ -247,6 +251,7 @@ class BSExtract(object):
     def __init__(self, proxyurl=None):
         log.debug(u'init %s', proxyurl)
         self.proxyurl = proxyurl
+        socket.setdefaulttimeout(30)
 
     def get_bible_chapter(self, version, bookname, chapter):
         """
@@ -264,7 +269,7 @@ class BSExtract(object):
         log.debug(u'get_bible_chapter %s,%s,%s', version, bookname, chapter)
         chapter_url = u'http://m.bibleserver.com/text/%s/%s%s' % \
             (version, bookname, chapter)
-        
+
         log.debug(u'URL: %s', chapter_url)
         page = None
         try:
@@ -272,6 +277,7 @@ class BSExtract(object):
             Receiver.send_message(u'openlp_process_events')
         except urllib2.URLError:
             log.exception(u'The web bible page could not be downloaded.')
+            Receiver.send_message(u'bibles_download_error')
         finally:
             if not page:
                 return None
@@ -280,6 +286,7 @@ class BSExtract(object):
             soup = BeautifulSoup(page)
         except HTMLParseError:
             log.exception(u'BeautifulSoup could not parse the bible page.')
+            Receiver.send_message(u'bibles_download_error')
         finally:
             if not soup:
                 return None
@@ -308,6 +315,7 @@ class CWExtract(object):
     def __init__(self, proxyurl=None):
         log.debug(u'init %s', proxyurl)
         self.proxyurl = proxyurl
+        socket.setdefaulttimeout(30)
 
     def get_bible_chapter(self, version, bookname, chapter):
         """
@@ -333,6 +341,7 @@ class CWExtract(object):
             Receiver.send_message(u'openlp_process_events')
         except urllib2.URLError:
             log.exception(u'The web bible page could not be downloaded.')
+            Receiver.send_message(u'bibles_download_error')
         finally:
             if not page:
                 return None
@@ -341,6 +350,7 @@ class CWExtract(object):
             soup = BeautifulSoup(page)
         except HTMLParseError:
             log.exception(u'BeautifulSoup could not parse the bible page.')
+            Receiver.send_message(u'bibles_download_error')
         finally:
             if not soup:
                 return None
@@ -491,7 +501,12 @@ class HTTPBible(BibleDB):
             ev = BGExtract(self.proxy_server)
         elif self.download_source.lower() == u'bibleserver':
             ev = BSExtract(self.proxy_server)
-        return ev.get_bible_chapter(self.download_name, book, chapter)
+        try:
+            return ev.get_bible_chapter(self.download_name, book, chapter)
+        except:
+            log.exception(u'Error occurred while downloading verses')
+            Receiver.send_message(u'bibles_download_error')
+            return None
 
     def get_books(self):
         """
