@@ -582,16 +582,16 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(self.SettingsShortcutsItem,
             QtCore.SIGNAL(u'triggered()'), self.onSettingsShortcutsItemClicked)
         QtCore.QObject.connect(self.FileNewItem, QtCore.SIGNAL(u'triggered()'),
-            self.ServiceManagerContents.onNewService)
+            self.ServiceManagerContents.onNewServiceClicked)
         QtCore.QObject.connect(self.FileOpenItem,
             QtCore.SIGNAL(u'triggered()'),
-            self.ServiceManagerContents.onLoadService)
+            self.ServiceManagerContents.onLoadServiceClicked)
         QtCore.QObject.connect(self.FileSaveItem,
             QtCore.SIGNAL(u'triggered()'),
-            self.ServiceManagerContents.onQuickSaveService)
+            self.ServiceManagerContents.onSaveServiceClicked)
         QtCore.QObject.connect(self.FileSaveAsItem,
             QtCore.SIGNAL(u'triggered()'),
-            self.ServiceManagerContents.onSaveService)
+            self.ServiceManagerContents.onSaveServiceAsClicked)
         # i18n set signals for languages
         QtCore.QObject.connect(self.AutoLanguageItem,
             QtCore.SIGNAL(u'toggled(bool)'), self.setAutoLanguage)
@@ -691,7 +691,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if QtCore.QSettings().value(
             self.generalSettingsSection + u'/auto open',
             QtCore.QVariant(False)).toBool():
-            self.ServiceManagerContents.onLoadService(True)
+            #self.ServiceManagerContents.onLoadService(True)
+            self.ServiceManagerContents.loadLastFile()
         view_mode = QtCore.QSettings().value(u'%s/view mode' % \
             self.generalSettingsSection, u'default')
         if view_mode == u'default':
@@ -805,7 +806,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Hook to close the main window and display windows on exit
         """
-        if self.serviceNotSaved:
+        if self.ServiceManagerContents.isModified():
             ret = QtGui.QMessageBox.question(self,
                 translate('OpenLP.MainWindow', 'Save Changes to Service?'),
                 translate('OpenLP.MainWindow', 'Your service has changed. '
@@ -816,9 +817,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     QtGui.QMessageBox.Save),
                 QtGui.QMessageBox.Save)
             if ret == QtGui.QMessageBox.Save:
-                self.ServiceManagerContents.onSaveService(True)
-                self.cleanUp()
-                event.accept()
+                #self.ServiceManagerContents.onSaveService(True)
+                if self.ServiceManagerContents.saveFile():
+                    self.cleanUp()
+                    event.accept()
+                else:
+                    event.ignore()
             elif ret == QtGui.QMessageBox.Discard:
                 self.cleanUp()
                 event.accept()
@@ -876,6 +880,23 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         else:
             self.serviceNotSaved = True
             title = u'%s - %s*' % (self.mainTitle, service_name)
+        self.setWindowTitle(title)
+
+    def setServiceModified(self, modified, fileName):
+        """
+        This method is called from the ServiceManager to set the title of the
+        main window.
+
+        ``modified``
+            Whether or not this service has been modified.
+
+        ``fileName``
+            The file name of the service file.
+        """
+        if modified:
+            title = u'%s - %s*' % (self.mainTitle, fileName)
+        else:
+            title = u'%s - %s' % (self.mainTitle, fileName)
         self.setWindowTitle(title)
 
     def showStatusMessage(self, message):

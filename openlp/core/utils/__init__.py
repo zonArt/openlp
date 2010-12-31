@@ -275,6 +275,13 @@ def get_images_filter():
             visible_formats, actual_formats)
     return images_filter
 
+def split_filename(path):
+    path = os.path.abspath(path)
+    if not os.path.isfile(path):
+        return path, u''
+    else:
+        return os.path.split(path)
+
 from languagemanager import LanguageManager
 from actions import ActionList
 
