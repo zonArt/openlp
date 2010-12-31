@@ -31,269 +31,216 @@ from openlp.core.lib import build_icon, translate
 class Ui_BibleImportWizard(object):
     def setupUi(self, bibleImportWizard):
         bibleImportWizard.setObjectName(u'bibleImportWizard')
-        bibleImportWizard.resize(550, 386)
         bibleImportWizard.setModal(True)
         bibleImportWizard.setWizardStyle(QtGui.QWizard.ModernStyle)
         bibleImportWizard.setOptions(
             QtGui.QWizard.IndependentPages |
             QtGui.QWizard.NoBackButtonOnStartPage |
             QtGui.QWizard.NoBackButtonOnLastPage)
-        # Welcome page
+        # Welcome Page
         self.welcomePage = QtGui.QWizardPage()
         self.welcomePage.setPixmap(QtGui.QWizard.WatermarkPixmap,
             QtGui.QPixmap(u':/wizards/wizard_importbible.bmp'))
         self.welcomePage.setObjectName(u'WelcomePage')
         self.welcomeLayout = QtGui.QVBoxLayout(self.welcomePage)
-        self.welcomeLayout.setSpacing(8)
-        self.welcomeLayout.setMargin(0)
         self.welcomeLayout.setObjectName(u'WelcomeLayout')
         self.titleLabel = QtGui.QLabel(self.welcomePage)
         self.titleLabel.setObjectName(u'TitleLabel')
         self.welcomeLayout.addWidget(self.titleLabel)
-        spacerItem = QtGui.QSpacerItem(20, 40,
-            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
-        self.welcomeLayout.addItem(spacerItem)
+        self.welcomeLayout.addSpacing(40)
         self.informationLabel = QtGui.QLabel(self.welcomePage)
         self.informationLabel.setWordWrap(True)
-        self.informationLabel.setMargin(10)
         self.informationLabel.setObjectName(u'InformationLabel')
         self.welcomeLayout.addWidget(self.informationLabel)
-        spacerItem1 = QtGui.QSpacerItem(20, 40,
-            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.welcomeLayout.addItem(spacerItem1)
+        self.welcomeLayout.addStretch()
         bibleImportWizard.addPage(self.welcomePage)
-        # Select page
+        # Select Page
         self.selectPage = QtGui.QWizardPage()
         self.selectPage.setObjectName(u'SelectPage')
         self.selectPageLayout = QtGui.QVBoxLayout(self.selectPage)
-        self.selectPageLayout.setSpacing(8)
-        self.selectPageLayout.setMargin(20)
-        self.selectPageLayout.setObjectName(u'selectPageLayout')
-        self.formatSelectLayout = QtGui.QHBoxLayout()
-        self.formatSelectLayout.setSpacing(8)
-        self.formatSelectLayout.setObjectName(u'FormatSelectLayout')
+        self.selectPageLayout.setObjectName(u'SelectPageLayout')
+        self.formatLayout = QtGui.QFormLayout()
+        self.formatLayout.setObjectName(u'FormatLayout')
         self.formatLabel = QtGui.QLabel(self.selectPage)
         self.formatLabel.setObjectName(u'FormatLabel')
-        self.formatSelectLayout.addWidget(self.formatLabel)
         self.formatComboBox = QtGui.QComboBox(self.selectPage)
+        self.formatComboBox.addItems([u'', u'', u'', u'', u''])
         self.formatComboBox.setObjectName(u'FormatComboBox')
-        self.formatComboBox.addItem(u'')
-        self.formatComboBox.addItem(u'')
-        self.formatComboBox.addItem(u'')
-        self.formatComboBox.addItem(u'')
-        self.formatComboBox.addItem(u'')
-        self.formatSelectLayout.addWidget(self.formatComboBox)
-        spacerItem2 = QtGui.QSpacerItem(40, 20,
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.formatSelectLayout.addItem(spacerItem2)
-        self.selectPageLayout.addLayout(self.formatSelectLayout)
-        self.formatWidget = QtGui.QStackedWidget(self.selectPage)
-        self.formatWidget.setObjectName(u'FormatWidget')
-        generalIcon = build_icon(u':/general/general_open.png')
-        self.osisPage = QtGui.QWidget()
-        self.osisPage.setObjectName(u'OsisPage')
-        self.osisLayout = QtGui.QFormLayout(self.osisPage)
-        self.osisLayout.setFieldGrowthPolicy(
-            QtGui.QFormLayout.ExpandingFieldsGrow)
+        self.formatLayout.addRow(self.formatLabel, self.formatComboBox)
+        self.formatSpacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
+            QtGui.QSizePolicy.Minimum)
+        self.formatLayout.setItem(1, QtGui.QFormLayout.LabelRole,
+            self.formatSpacer)
+        self.selectPageLayout.addLayout(self.formatLayout)
+        self.selectStack = QtGui.QStackedLayout()
+        self.selectStack.setObjectName(u'SelectStack')
+        self.osisWidget = QtGui.QWidget(self.selectPage)
+        self.osisWidget.setObjectName(u'OsisWidget')
+        self.osisLayout = QtGui.QFormLayout(self.osisWidget)
         self.osisLayout.setMargin(0)
-        self.osisLayout.setSpacing(8)
         self.osisLayout.setObjectName(u'OsisLayout')
-        self.osisLocationLabel = QtGui.QLabel(self.osisPage)
-        self.osisLocationLabel.setObjectName(u'OsisLocationLabel')
-        self.osisLayout.setWidget(1, QtGui.QFormLayout.LabelRole,
-            self.osisLocationLabel)
-        self.osisLocationLayout = QtGui.QHBoxLayout()
-        self.osisLocationLayout.setSpacing(8)
-        self.osisLocationLayout.setObjectName(u'OsisLocationLayout')
-        self.OSISLocationEdit = QtGui.QLineEdit(self.osisPage)
-        self.OSISLocationEdit.setObjectName(u'OSISLocationEdit')
-        self.osisLocationLayout.addWidget(self.OSISLocationEdit)
-        self.osisFileButton = QtGui.QToolButton(self.osisPage)
-        self.osisFileButton.setMaximumSize(QtCore.QSize(32, 16777215))
-        self.osisFileButton.setIcon(generalIcon)
-        self.osisFileButton.setObjectName(u'OsisFileButton')
-        self.osisLocationLayout.addWidget(self.osisFileButton)
-        self.osisLayout.setLayout(1, QtGui.QFormLayout.FieldRole,
-            self.osisLocationLayout)
-        self.formatWidget.addWidget(self.osisPage)
-        self.csvPage = QtGui.QWidget()
-        self.csvPage.setObjectName(u'CsvPage')
-        self.csvSourceLayout = QtGui.QFormLayout(self.csvPage)
-        self.csvSourceLayout.setFieldGrowthPolicy(
-            QtGui.QFormLayout.ExpandingFieldsGrow)
-        self.csvSourceLayout.setLabelAlignment(QtCore.Qt.AlignBottom |
-            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing)
-        self.csvSourceLayout.setFormAlignment(QtCore.Qt.AlignLeading |
-            QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
-        self.csvSourceLayout.setMargin(0)
-        self.csvSourceLayout.setSpacing(8)
-        self.csvSourceLayout.setObjectName(u'CsvSourceLayout')
-        self.booksLocationLabel = QtGui.QLabel(self.csvPage)
-        self.booksLocationLabel.setObjectName(u'BooksLocationLabel')
-        self.csvSourceLayout.setWidget(0, QtGui.QFormLayout.LabelRole,
-            self.booksLocationLabel)
+        self.osisFileLabel = QtGui.QLabel(self.osisWidget)
+        self.osisFileLabel.setObjectName(u'OsisFileLabel')
+        self.osisFileLayout = QtGui.QHBoxLayout()
+        self.osisFileLayout.setObjectName(u'OsisFileLayout')
+        self.osisFileEdit = QtGui.QLineEdit(self.osisWidget)
+        self.osisFileEdit.setObjectName(u'OsisFileEdit')
+        self.osisFileLayout.addWidget(self.osisFileEdit)
+        self.osisBrowseButton = QtGui.QToolButton(self.osisWidget)
+        self.osisBrowseButton.setIcon(build_icon(u':/general/general_open.png'))
+        self.osisBrowseButton.setObjectName(u'OsisBrowseButton')
+        self.osisFileLayout.addWidget(self.osisBrowseButton)
+        self.osisLayout.addRow(self.osisFileLabel, self.osisFileLayout)
+        self.osisSpacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
+            QtGui.QSizePolicy.Minimum)
+        self.osisLayout.setItem(1, QtGui.QFormLayout.LabelRole, self.osisSpacer)
+        self.selectStack.addWidget(self.osisWidget)
+        self.csvWidget = QtGui.QWidget(self.selectPage)
+        self.csvWidget.setObjectName(u'CsvWidget')
+        self.csvLayout = QtGui.QFormLayout(self.csvWidget)
+        self.csvLayout.setMargin(0)
+        self.csvLayout.setObjectName(u'CsvLayout')
+        self.csvBooksLabel = QtGui.QLabel(self.csvWidget)
+        self.csvBooksLabel.setObjectName(u'CsvBooksLabel')
         self.csvBooksLayout = QtGui.QHBoxLayout()
-        self.csvBooksLayout.setSpacing(8)
         self.csvBooksLayout.setObjectName(u'CsvBooksLayout')
-        self.booksLocationEdit = QtGui.QLineEdit(self.csvPage)
-        self.booksLocationEdit.setObjectName(u'BooksLocationEdit')
-        self.csvBooksLayout.addWidget(self.booksLocationEdit)
-        self.booksFileButton = QtGui.QToolButton(self.csvPage)
-        self.booksFileButton.setMaximumSize(QtCore.QSize(32, 16777215))
-        self.booksFileButton.setIcon(generalIcon)
-        self.booksFileButton.setObjectName(u'BooksFileButton')
-        self.csvBooksLayout.addWidget(self.booksFileButton)
-        self.csvSourceLayout.setLayout(0, QtGui.QFormLayout.FieldRole,
-            self.csvBooksLayout)
-        self.verseLocationLabel = QtGui.QLabel(self.csvPage)
-        self.verseLocationLabel.setObjectName(u'VerseLocationLabel')
-        self.csvSourceLayout.setWidget(1, QtGui.QFormLayout.LabelRole,
-            self.verseLocationLabel)
-        self.csvVerseLayout = QtGui.QHBoxLayout()
-        self.csvVerseLayout.setSpacing(8)
-        self.csvVerseLayout.setObjectName(u'CsvVerseLayout')
-        self.csvVerseLocationEdit = QtGui.QLineEdit(self.csvPage)
-        self.csvVerseLocationEdit.setObjectName(u'CsvVerseLocationEdit')
-        self.csvVerseLayout.addWidget(self.csvVerseLocationEdit)
-        self.csvVersesFileButton = QtGui.QToolButton(self.csvPage)
-        self.csvVersesFileButton.setMaximumSize(QtCore.QSize(32, 16777215))
-        self.csvVersesFileButton.setIcon(generalIcon)
-        self.csvVersesFileButton.setObjectName(u'CsvVersesFileButton')
-        self.csvVerseLayout.addWidget(self.csvVersesFileButton)
-        self.csvSourceLayout.setLayout(1, QtGui.QFormLayout.FieldRole,
-            self.csvVerseLayout)
-        self.formatWidget.addWidget(self.csvPage)
-        self.openSongPage = QtGui.QWidget()
-        self.openSongPage.setObjectName(u'OpenSongPage')
-        self.openSongLayout = QtGui.QFormLayout(self.openSongPage)
+        self.csvBooksEdit = QtGui.QLineEdit(self.csvWidget)
+        self.csvBooksEdit.setObjectName(u'CsvBooksEdit')
+        self.csvBooksLayout.addWidget(self.csvBooksEdit)
+        self.csvBooksButton = QtGui.QToolButton(self.csvWidget)
+        self.csvBooksButton.setIcon(build_icon(u':/general/general_open.png'))
+        self.csvBooksButton.setObjectName(u'CsvBooksButton')
+        self.csvBooksLayout.addWidget(self.csvBooksButton)
+        self.csvLayout.addRow(self.csvBooksLabel, self.csvBooksLayout)
+        self.csvVersesLabel = QtGui.QLabel(self.csvWidget)
+        self.csvVersesLabel.setObjectName(u'CsvVersesLabel')
+        self.csvVersesLayout = QtGui.QHBoxLayout()
+        self.csvVersesLayout.setObjectName(u'CsvVersesLayout')
+        self.csvVersesEdit = QtGui.QLineEdit(self.csvWidget)
+        self.csvVersesEdit.setObjectName(u'CsvVersesEdit')
+        self.csvVersesLayout.addWidget(self.csvVersesEdit)
+        self.csvVersesButton = QtGui.QToolButton(self.csvWidget)
+        self.csvVersesButton.setIcon(build_icon(u':/general/general_open.png'))
+        self.csvVersesButton.setObjectName(u'CsvVersesButton')
+        self.csvVersesLayout.addWidget(self.csvVersesButton)
+        self.csvLayout.addRow(self.csvVersesLabel, self.csvVersesLayout)
+        self.csvSpacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
+            QtGui.QSizePolicy.Minimum)
+        self.csvLayout.setItem(2, QtGui.QFormLayout.LabelRole, self.csvSpacer)
+        self.selectStack.addWidget(self.csvWidget)
+        self.openSongWidget = QtGui.QWidget(self.selectPage)
+        self.openSongWidget.setObjectName(u'OpenSongWidget')
+        self.openSongLayout = QtGui.QFormLayout(self.openSongWidget)
         self.openSongLayout.setMargin(0)
-        self.openSongLayout.setSpacing(8)
         self.openSongLayout.setObjectName(u'OpenSongLayout')
-        self.openSongFileLabel = QtGui.QLabel(self.openSongPage)
+        self.openSongFileLabel = QtGui.QLabel(self.openSongWidget)
         self.openSongFileLabel.setObjectName(u'OpenSongFileLabel')
-        self.openSongLayout.setWidget(0, QtGui.QFormLayout.LabelRole,
-            self.openSongFileLabel)
         self.openSongFileLayout = QtGui.QHBoxLayout()
-        self.openSongFileLayout.setSpacing(8)
         self.openSongFileLayout.setObjectName(u'OpenSongFileLayout')
-        self.openSongFileEdit = QtGui.QLineEdit(self.openSongPage)
+        self.openSongFileEdit = QtGui.QLineEdit(self.openSongWidget)
         self.openSongFileEdit.setObjectName(u'OpenSongFileEdit')
         self.openSongFileLayout.addWidget(self.openSongFileEdit)
-        self.openSongBrowseButton = QtGui.QToolButton(self.openSongPage)
-        self.openSongBrowseButton.setIcon(generalIcon)
+        self.openSongBrowseButton = QtGui.QToolButton(self.openSongWidget)
+        self.openSongBrowseButton.setIcon(
+            build_icon(u':/general/general_open.png'))
         self.openSongBrowseButton.setObjectName(u'OpenSongBrowseButton')
         self.openSongFileLayout.addWidget(self.openSongBrowseButton)
-        self.openSongLayout.setLayout(0, QtGui.QFormLayout.FieldRole,
+        self.openSongLayout.addRow(self.openSongFileLabel,
             self.openSongFileLayout)
-        self.formatWidget.addWidget(self.openSongPage)
-        self.webDownloadPage = QtGui.QWidget()
-        self.webDownloadPage.setObjectName(u'WebDownloadPage')
-        self.webDownloadLayout = QtGui.QVBoxLayout(self.webDownloadPage)
-        self.webDownloadLayout.setSpacing(8)
-        self.webDownloadLayout.setMargin(0)
-        self.webDownloadLayout.setObjectName(u'WebDownloadLayout')
-        self.webDownloadTabWidget = QtGui.QTabWidget(self.webDownloadPage)
-        self.webDownloadTabWidget.setObjectName(u'WebDownloadTabWidget')
-        self.downloadOptionsTab = QtGui.QWidget()
-        self.downloadOptionsTab.setObjectName(u'DownloadOptionsTab')
-        self.downloadOptionsLayout = QtGui.QFormLayout(self.downloadOptionsTab)
-        self.downloadOptionsLayout.setMargin(8)
-        self.downloadOptionsLayout.setSpacing(8)
-        self.downloadOptionsLayout.setObjectName(u'DownloadOptionsLayout')
-        self.locationLabel = QtGui.QLabel(self.downloadOptionsTab)
-        self.locationLabel.setObjectName(u'LocationLabel')
-        self.downloadOptionsLayout.setWidget(0, QtGui.QFormLayout.LabelRole,
-            self.locationLabel)
-        self.locationComboBox = QtGui.QComboBox(self.downloadOptionsTab)
-        self.locationComboBox.setObjectName(u'LocationComboBox')
-        self.locationComboBox.addItem(u'')
-        self.locationComboBox.addItem(u'')
-        self.locationComboBox.addItem(u'')
-        self.downloadOptionsLayout.setWidget(0, QtGui.QFormLayout.FieldRole,
-            self.locationComboBox)
-        self.bibleLabel = QtGui.QLabel(self.downloadOptionsTab)
-        self.bibleLabel.setObjectName(u'BibleLabel')
-        self.downloadOptionsLayout.setWidget(1, QtGui.QFormLayout.LabelRole,
-            self.bibleLabel)
-        self.bibleComboBox = QtGui.QComboBox(self.downloadOptionsTab)
-        self.bibleComboBox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
-        self.bibleComboBox.setObjectName(u'BibleComboBox')
-        self.bibleComboBox.addItem(u'')
-        self.bibleComboBox.addItem(u'')
-        self.bibleComboBox.addItem(u'')
-        self.downloadOptionsLayout.setWidget(1, QtGui.QFormLayout.FieldRole,
-            self.bibleComboBox)
-        self.webDownloadTabWidget.addTab(self.downloadOptionsTab, u'')
-        self.proxyServerTab = QtGui.QWidget()
-        self.proxyServerTab.setObjectName(u'ProxyServerTab')
-        self.proxyServerLayout = QtGui.QFormLayout(self.proxyServerTab)
-        self.proxyServerLayout.setObjectName(u'ProxyServerLayout')
-        self.addressLabel = QtGui.QLabel(self.proxyServerTab)
-        self.addressLabel.setObjectName(u'AddressLabel')
-        self.proxyServerLayout.setWidget(0, QtGui.QFormLayout.LabelRole,
-            self.addressLabel)
-        self.addressEdit = QtGui.QLineEdit(self.proxyServerTab)
-        self.addressEdit.setObjectName(u'AddressEdit')
-        self.proxyServerLayout.setWidget(0, QtGui.QFormLayout.FieldRole,
-            self.addressEdit)
-        self.usernameLabel = QtGui.QLabel(self.proxyServerTab)
-        self.usernameLabel.setObjectName(u'UsernameLabel')
-        self.proxyServerLayout.setWidget(1, QtGui.QFormLayout.LabelRole,
-            self.usernameLabel)
-        self.usernameEdit = QtGui.QLineEdit(self.proxyServerTab)
-        self.usernameEdit.setObjectName(u'UsernameEdit')
-        self.proxyServerLayout.setWidget(1, QtGui.QFormLayout.FieldRole,
-            self.usernameEdit)
-        self.passwordLabel = QtGui.QLabel(self.proxyServerTab)
-        self.passwordLabel.setObjectName(u'PasswordLabel')
-        self.proxyServerLayout.setWidget(2, QtGui.QFormLayout.LabelRole,
-            self.passwordLabel)
-        self.passwordEdit = QtGui.QLineEdit(self.proxyServerTab)
-        self.passwordEdit.setObjectName(u'PasswordEdit')
-        self.proxyServerLayout.setWidget(2, QtGui.QFormLayout.FieldRole,
-            self.passwordEdit)
-        self.webDownloadTabWidget.addTab(self.proxyServerTab, u'')
-        self.webDownloadLayout.addWidget(self.webDownloadTabWidget)
-        self.formatWidget.addWidget(self.webDownloadPage)
-        self.openlp1Page = QtGui.QWidget()
-        self.openlp1Page.setObjectName(u'Openlp1Page')
-        self.openlp1Layout = QtGui.QFormLayout(self.openlp1Page)
-        self.openlp1Layout.setFieldGrowthPolicy(
-            QtGui.QFormLayout.ExpandingFieldsGrow)
+        self.openSongSpacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
+            QtGui.QSizePolicy.Minimum)
+        self.openSongLayout.setItem(1, QtGui.QFormLayout.LabelRole,
+            self.openSongSpacer)
+        self.selectStack.addWidget(self.openSongWidget)
+        self.webTabWidget = QtGui.QTabWidget(self.selectPage)
+        self.webTabWidget.setObjectName(u'WebTabWidget')
+        self.webBibleTab = QtGui.QWidget()
+        self.webBibleTab.setObjectName(u'WebBibleTab')
+        self.webBibleLayout = QtGui.QFormLayout(self.webBibleTab)
+        self.webBibleLayout.setObjectName(u'WebBibleLayout')
+        self.webSourceLabel = QtGui.QLabel(self.webBibleTab)
+        self.webSourceLabel.setObjectName(u'WebSourceLabel')
+        self.webBibleLayout.setWidget(0, QtGui.QFormLayout.LabelRole,
+            self.webSourceLabel)
+        self.webSourceComboBox = QtGui.QComboBox(self.webBibleTab)
+        self.webSourceComboBox.setObjectName(u'WebSourceComboBox')
+        self.webSourceComboBox.addItems([u'', u'', u''])
+        self.webBibleLayout.setWidget(0, QtGui.QFormLayout.FieldRole,
+            self.webSourceComboBox)
+        self.webTranslationLabel = QtGui.QLabel(self.webBibleTab)
+        self.webTranslationLabel.setObjectName(u'webTranslationLabel')
+        self.webBibleLayout.setWidget(1, QtGui.QFormLayout.LabelRole,
+            self.webTranslationLabel)
+        self.webTranslationComboBox = QtGui.QComboBox(self.webBibleTab)
+        self.webTranslationComboBox.setSizeAdjustPolicy(
+            QtGui.QComboBox.AdjustToContents)
+        self.webTranslationComboBox.setObjectName(u'WebTranslationComboBox')
+        self.webBibleLayout.setWidget(1, QtGui.QFormLayout.FieldRole,
+            self.webTranslationComboBox)
+        self.webTabWidget.addTab(self.webBibleTab, u'')
+        self.webProxyTab = QtGui.QWidget()
+        self.webProxyTab.setObjectName(u'WebProxyTab')
+        self.webProxyLayout = QtGui.QFormLayout(self.webProxyTab)
+        self.webProxyLayout.setObjectName(u'WebProxyLayout')
+        self.webServerLabel = QtGui.QLabel(self.webProxyTab)
+        self.webServerLabel.setObjectName(u'WebServerLabel')
+        self.webProxyLayout.setWidget(0, QtGui.QFormLayout.LabelRole,
+            self.webServerLabel)
+        self.webServerEdit = QtGui.QLineEdit(self.webProxyTab)
+        self.webServerEdit.setObjectName(u'WebServerEdit')
+        self.webProxyLayout.setWidget(0, QtGui.QFormLayout.FieldRole,
+            self.webServerEdit)
+        self.webUserLabel = QtGui.QLabel(self.webProxyTab)
+        self.webUserLabel.setObjectName(u'WebUserLabel')
+        self.webProxyLayout.setWidget(1, QtGui.QFormLayout.LabelRole,
+            self.webUserLabel)
+        self.webUserEdit = QtGui.QLineEdit(self.webProxyTab)
+        self.webUserEdit.setObjectName(u'WebUserEdit')
+        self.webProxyLayout.setWidget(1, QtGui.QFormLayout.FieldRole,
+            self.webUserEdit)
+        self.webPasswordLabel = QtGui.QLabel(self.webProxyTab)
+        self.webPasswordLabel.setObjectName(u'WebPasswordLabel')
+        self.webProxyLayout.setWidget(2, QtGui.QFormLayout.LabelRole,
+            self.webPasswordLabel)
+        self.webPasswordEdit = QtGui.QLineEdit(self.webProxyTab)
+        self.webPasswordEdit.setObjectName(u'WebPasswordEdit')
+        self.webProxyLayout.setWidget(2, QtGui.QFormLayout.FieldRole,
+            self.webPasswordEdit)
+        self.webTabWidget.addTab(self.webProxyTab, u'')
+        self.selectStack.addWidget(self.webTabWidget)
+        self.openlp1Widget = QtGui.QWidget(self.selectPage)
+        self.openlp1Widget.setObjectName(u'Openlp1Widget')
+        self.openlp1Layout = QtGui.QFormLayout(self.openlp1Widget)
         self.openlp1Layout.setMargin(0)
-        self.openlp1Layout.setSpacing(8)
         self.openlp1Layout.setObjectName(u'Openlp1Layout')
-        self.openlp1LocationLabel = QtGui.QLabel(self.openlp1Page)
-        self.openlp1LocationLabel.setObjectName(u'Openlp1LocationLabel')
-        self.openlp1Layout.setWidget(1, QtGui.QFormLayout.LabelRole,
-            self.openlp1LocationLabel)
-        self.openlp1LocationLayout = QtGui.QHBoxLayout()
-        self.openlp1LocationLayout.setSpacing(8)
-        self.openlp1LocationLayout.setObjectName(u'Openlp1LocationLayout')
-        self.openlp1LocationEdit = QtGui.QLineEdit(self.openlp1Page)
-        self.openlp1LocationEdit.setObjectName(u'Openlp1LocationEdit')
-        self.openlp1LocationLayout.addWidget(self.openlp1LocationEdit)
-        self.openlp1FileButton = QtGui.QToolButton(self.openlp1Page)
-        self.openlp1FileButton.setMaximumSize(QtCore.QSize(32, 16777215))
-        self.openlp1FileButton.setIcon(generalIcon)
-        self.openlp1FileButton.setObjectName(u'Openlp1FileButton')
-        self.openlp1LocationLayout.addWidget(self.openlp1FileButton)
-        self.openlp1Layout.setLayout(1, QtGui.QFormLayout.FieldRole,
-            self.openlp1LocationLayout)
-        self.openlp1DisabledLabel = QtGui.QLabel(self.openlp1Page)
-        self.openlp1DisabledLabel.setObjectName(u'openlp1DisabledLabel')
-        self.openlp1DisabledLabel.setVisible(False)
+        self.openlp1FileLabel = QtGui.QLabel(self.openlp1Widget)
+        self.openlp1FileLabel.setObjectName(u'Openlp1FileLabel')
+        self.openlp1FileLayout = QtGui.QHBoxLayout()
+        self.openlp1FileLayout.setObjectName(u'Openlp1FileLayout')
+        self.openlp1FileEdit = QtGui.QLineEdit(self.openlp1Widget)
+        self.openlp1FileEdit.setObjectName(u'Openlp1FileEdit')
+        self.openlp1FileLayout.addWidget(self.openlp1FileEdit)
+        self.openlp1BrowseButton = QtGui.QToolButton(self.openlp1Widget)
+        self.openlp1BrowseButton.setIcon(
+            build_icon(u':/general/general_open.png'))
+        self.openlp1BrowseButton.setObjectName(u'Openlp1BrowseButton')
+        self.openlp1FileLayout.addWidget(self.openlp1BrowseButton)
+        self.openlp1Layout.addRow(self.openlp1FileLabel, self.openlp1FileLayout)
+        self.openlp1DisabledLabel = QtGui.QLabel(self.openlp1Widget)
         self.openlp1DisabledLabel.setWordWrap(True)
-        self.openlp1Layout.addWidget(self.openlp1DisabledLabel)
-        self.formatWidget.addWidget(self.openlp1Page)
-        self.selectPageLayout.addWidget(self.formatWidget)
+        self.openlp1DisabledLabel.setObjectName(u'Openlp1DisabledLabel')
+        self.openlp1Layout.addRow(self.openlp1DisabledLabel)
+        self.openlp1Spacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
+            QtGui.QSizePolicy.Minimum)
+        self.openlp1Layout.setItem(1, QtGui.QFormLayout.LabelRole,
+            self.openlp1Spacer)
+        self.selectStack.addWidget(self.openlp1Widget) 
+        self.selectPageLayout.addLayout(self.selectStack)
         bibleImportWizard.addPage(self.selectPage)
-        # License page
+        # License Page
         self.licenseDetailsPage = QtGui.QWizardPage()
         self.licenseDetailsPage.setObjectName(u'LicenseDetailsPage')
         self.licenseDetailsLayout = QtGui.QFormLayout(self.licenseDetailsPage)
-        self.licenseDetailsLayout.setMargin(20)
-        self.licenseDetailsLayout.setSpacing(8)
         self.licenseDetailsLayout.setObjectName(u'LicenseDetailsLayout')
         self.versionNameLabel = QtGui.QLabel(self.licenseDetailsPage)
         self.versionNameLabel.setObjectName(u'VersionNameLabel')
@@ -320,29 +267,24 @@ class Ui_BibleImportWizard(object):
         self.licenseDetailsLayout.setWidget(2, QtGui.QFormLayout.FieldRole,
             self.permissionsEdit)
         bibleImportWizard.addPage(self.licenseDetailsPage)
-        # Progress page
+        # Progress Page
         self.importPage = QtGui.QWizardPage()
         self.importPage.setObjectName(u'ImportPage')
         self.importLayout = QtGui.QVBoxLayout(self.importPage)
-        self.importLayout.setSpacing(8)
-        self.importLayout.setMargin(50)
+        self.importLayout.setMargin(48)
         self.importLayout.setObjectName(u'ImportLayout')
         self.importProgressLabel = QtGui.QLabel(self.importPage)
         self.importProgressLabel.setObjectName(u'ImportProgressLabel')
         self.importLayout.addWidget(self.importProgressLabel)
         self.importProgressBar = QtGui.QProgressBar(self.importPage)
-        self.importProgressBar.setValue(0)
         self.importProgressBar.setObjectName(u'ImportProgressBar')
         self.importLayout.addWidget(self.importProgressBar)
         bibleImportWizard.addPage(self.importPage)
-
         self.retranslateUi(bibleImportWizard)
-        self.formatWidget.setCurrentIndex(0)
-        self.webDownloadTabWidget.setCurrentIndex(0)
-        QtCore.QObject.connect(self.formatComboBox,
-            QtCore.SIGNAL(u'currentIndexChanged(int)'),
-            self.formatWidget.setCurrentIndex)
         QtCore.QMetaObject.connectSlotsByName(bibleImportWizard)
+        QtCore.QObject.connect(self.formatComboBox,
+            QtCore.SIGNAL(u'currentIndexChanged(int)'), self.selectStack,
+            QtCore.SLOT(u'setCurrentIndex(int)'))
 
     def retranslateUi(self, bibleImportWizard):
         bibleImportWizard.setWindowTitle(
@@ -373,37 +315,37 @@ class Ui_BibleImportWizard(object):
             translate('BiblesPlugin.ImportWizardForm', 'Web Download'))
         self.formatComboBox.setItemText(4,
             translate('BiblesPlugin.ImportWizardForm', 'openlp.org 1.x'))
-        self.openlp1LocationLabel.setText(
+        self.openlp1FileLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'File location:'))
-        self.osisLocationLabel.setText(
+        self.osisFileLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'File location:'))
-        self.booksLocationLabel.setText(
+        self.csvBooksLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'Books location:'))
-        self.verseLocationLabel.setText(
+        self.csvVersesLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'Verse location:'))
         self.openSongFileLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'Bible filename:'))
-        self.locationLabel.setText(
+        self.webSourceLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'Location:'))
-        self.locationComboBox.setItemText(0,
+        self.webSourceComboBox.setItemText(0,
             translate('BiblesPlugin.ImportWizardForm', 'Crosswalk'))
-        self.locationComboBox.setItemText(1,
+        self.webSourceComboBox.setItemText(1,
             translate('BiblesPlugin.ImportWizardForm', 'BibleGateway'))
-        self.locationComboBox.setItemText(2,
+        self.webSourceComboBox.setItemText(2,
             translate('BiblesPlugin.ImportWizardForm', 'Bibleserver'))
-        self.bibleLabel.setText(
+        self.webTranslationLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'Bible:'))
-        self.webDownloadTabWidget.setTabText(
-            self.webDownloadTabWidget.indexOf(self.downloadOptionsTab),
+        self.webTabWidget.setTabText(
+            self.webTabWidget.indexOf(self.webBibleTab),
             translate('BiblesPlugin.ImportWizardForm', 'Download Options'))
-        self.addressLabel.setText(
+        self.webServerLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'Server:'))
-        self.usernameLabel.setText(
+        self.webUserLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'Username:'))
-        self.passwordLabel.setText(
+        self.webPasswordLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'Password:'))
-        self.webDownloadTabWidget.setTabText(
-            self.webDownloadTabWidget.indexOf(self.proxyServerTab),
+        self.webTabWidget.setTabText(
+            self.webTabWidget.indexOf(self.webProxyTab),
             translate('BiblesPlugin.ImportWizardForm',
             'Proxy Server (Optional)'))
         self.licenseDetailsPage.setTitle(
@@ -430,3 +372,20 @@ class Ui_BibleImportWizard(object):
             'importer has been disabled due to a missing Python module. If '
             'you want to use this importer, you will need to install the '
             '"python-sqlite" module.'))
+        # Align all QFormLayouts towards each other.
+        width = max(self.formatLabel.minimumSizeHint().width(),
+            self.osisFileLabel.minimumSizeHint().width())
+        width = max(width, self.csvBooksLabel.minimumSizeHint().width())
+        width = max(width, self.csvVersesLabel.minimumSizeHint().width())
+        width = max(width, self.openSongFileLabel.minimumSizeHint().width())
+        width = max(width, self.openlp1FileLabel.minimumSizeHint().width())
+        self.formatSpacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
+            QtGui.QSizePolicy.Fixed)
+        self.osisSpacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
+            QtGui.QSizePolicy.Fixed)
+        self.csvSpacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
+            QtGui.QSizePolicy.Fixed)
+        self.openSongSpacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
+            QtGui.QSizePolicy.Fixed)
+        self.openlp1Spacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
+            QtGui.QSizePolicy.Fixed)

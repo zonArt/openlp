@@ -84,11 +84,12 @@ class OpenSongBible(BibleDB):
                             unicode(verse.text)
                         )
                         Receiver.send_message(u'openlp_process_events')
-                    self.wizard.incrementProgressBar(u'%s %s %s...' % (
-                        translate('BiblesPlugin.Opensong', 'Importing'),
-                        db_book.name, chapter.attrib[u'n']))
+                    self.wizard.incrementProgressBar(unicode(translate(
+                        'BiblesPlugin.Opensong', 'Importing %s %s...',
+                        'Importing <book name> <chapter>...')) %
+                        (db_book.name, int(chapter.attrib[u'n'])))
                     self.session.commit()
-        except IOError:
+        except IOError, AttributeError:
             log.exception(u'Loading bible from OpenSong file failed')
             success = False
         finally:

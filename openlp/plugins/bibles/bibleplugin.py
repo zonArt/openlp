@@ -126,51 +126,46 @@ class BiblePlugin(Plugin):
         """
         ## Name PluginList ##
         self.textStrings[StringContent.Name] = {
-            u'singular': translate('BiblesPlugin', 'Bible'),
-            u'plural': translate('BiblesPlugin', 'Bibles')
+            u'singular': translate('BiblesPlugin', 'Bible', 'name singular'),
+            u'plural': translate('BiblesPlugin', 'Bibles', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.textStrings[StringContent.VisibleName] = {
-            u'title': translate('BiblesPlugin', 'Bibles')
+            u'title': translate('BiblesPlugin', 'Bibles', 'container title')
         }
         # Middle Header Bar
-        ## Import Button ##
+        ## Import Action ##
         self.textStrings[StringContent.Import] = {
-            u'title': translate('BiblesPlugin', 'Import'),
-            u'tooltip': translate('BiblesPlugin',
-                'Import a Bible')
+            u'title': translate('BiblesPlugin', '&Import'),
+            u'tooltip': translate('BiblesPlugin', 'Import a Bible')
         }
-        ## New Button ##
+        ## New Action ##
         self.textStrings[StringContent.New] = {
-            u'title': translate('BiblesPlugin', 'Add'),
-            u'tooltip': translate('BiblesPlugin',
-                'Add a new Bible')
+            u'title': translate('BiblesPlugin', '&Add'),
+            u'tooltip': translate('BiblesPlugin', 'Add a new Bible')
         }
-        ## Edit Button ##
+        ## Edit Action ##
         self.textStrings[StringContent.Edit] = {
-            u'title': translate('BiblesPlugin', 'Edit'),
-            u'tooltip': translate('BiblesPlugin',
-                'Edit the selected Bible')
+            u'title': translate('BiblesPlugin', '&Edit'),
+            u'tooltip': translate('BiblesPlugin', 'Edit the selected Bible')
         }
-        ## Delete Button ##
+        ## Delete Action ##
         self.textStrings[StringContent.Delete] = {
-            u'title': translate('BiblesPlugin', 'Delete'),
-            u'tooltip': translate('BiblesPlugin',
-                'Delete the selected Bible')
+            u'title': translate('BiblesPlugin', '&Delete'),
+            u'tooltip': translate('BiblesPlugin', 'Delete the selected Bible')
         }
-        ## Preview ##
+        ## Preview Action ##
         self.textStrings[StringContent.Preview] = {
             u'title': translate('BiblesPlugin', 'Preview'),
-            u'tooltip': translate('BiblesPlugin',
-                'Preview the selected Bible')
+            u'tooltip': translate('BiblesPlugin', 'Preview the selected Bible')
         }
-        ## Live  Button ##
+        ## Send Live Action ##
         self.textStrings[StringContent.Live] = {
             u'title': translate('BiblesPlugin', 'Live'),
             u'tooltip': translate('BiblesPlugin',
                 'Send the selected Bible live')
         }
-        ## Add to service Button ##
+        ## Add to Service Action ##
         self.textStrings[StringContent.Service] = {
             u'title': translate('BiblesPlugin', 'Service'),
             u'tooltip': translate('BiblesPlugin',

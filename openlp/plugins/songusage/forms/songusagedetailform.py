@@ -73,7 +73,8 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
 
     def accept(self):
         log.debug(u'Detailed report generated')
-        filename = u'usage_detail_%s_%s.txt' % (
+        filename = unicode(translate('SongUsagePlugin.SongUsageDetailForm',
+            'usage_detail_%s_%s.txt')) % (
             self.fromDate.selectedDate().toString(u'ddMMyyyy'),
             self.toDate.selectedDate().toString(u'ddMMyyyy'))
         usage = self.plugin.manager.get_all_objects(

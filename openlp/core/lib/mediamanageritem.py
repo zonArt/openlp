@@ -284,34 +284,30 @@ class MediaManagerItem(QtGui.QWidget):
             self.listView.addAction(
                 context_menu_action(
                     self.listView, u':/general/general_edit.png',
-                    unicode(translate('OpenLP.MediaManagerItem', '&Edit %s')) %
-                    name_string[u'singular'],
+                    self.plugin.getString(StringContent.Edit)[u'title'],
                     self.onEditClick))
             self.listView.addAction(context_menu_separator(self.listView))
         if self.hasDeleteIcon:
             self.listView.addAction(
                 context_menu_action(
                     self.listView, u':/general/general_delete.png',
-                    unicode(translate('OpenLP.MediaManagerItem',
-                        '&Delete %s')) %
-                    name_string[u'singular'],
+                    self.plugin.getString(StringContent.Delete)[u'title'],
                     self.onDeleteClick))
             self.listView.addAction(context_menu_separator(self.listView))
         self.listView.addAction(
             context_menu_action(
                 self.listView, u':/general/general_preview.png',
-                unicode(translate('OpenLP.MediaManagerItem', '&Preview %s')) %
-                name_string[u'singular'],
+                self.plugin.getString(StringContent.Preview)[u'title'],
                 self.onPreviewClick))
         self.listView.addAction(
             context_menu_action(
                 self.listView, u':/general/general_live.png',
-                translate('OpenLP.MediaManagerItem', '&Show Live'),
+                self.plugin.getString(StringContent.Live)[u'title'],
                 self.onLiveClick))
         self.listView.addAction(
             context_menu_action(
                 self.listView, u':/general/general_add.png',
-                translate('OpenLP.MediaManagerItem', '&Add to Service'),
+                self.plugin.getString(StringContent.Service)[u'title'],
                 self.onAddClick))
         if self.addToServiceItem:
             self.listView.addAction(
@@ -445,7 +441,7 @@ class MediaManagerItem(QtGui.QWidget):
                 translate('OpenLP.MediaManagerItem',
                     'You must select one or more items to preview.'))
         else:
-            log.debug(self.plugin.name + u' Preview requested')
+            log.debug(u'%s Preview requested', self.plugin.name)
             serviceItem = self.buildServiceItem()
             if serviceItem:
                 serviceItem.from_plugin = True
@@ -462,7 +458,7 @@ class MediaManagerItem(QtGui.QWidget):
                 translate('OpenLP.MediaManagerItem',
                     'You must select one or more items to send live.'))
         else:
-            log.debug(self.plugin.name + u' Live requested')
+            log.debug(u'%s Live requested', self.plugin.name)
             serviceItem = self.buildServiceItem()
             if serviceItem:
                 serviceItem.from_plugin = True
@@ -481,7 +477,7 @@ class MediaManagerItem(QtGui.QWidget):
             # Is it posssible to process multiple list items to generate
             # multiple service items?
             if self.singleServiceItem or self.remoteTriggered:
-                log.debug(self.plugin.name + u' Add requested')
+                log.debug(u'%s Add requested', self.plugin.name)
                 serviceItem = self.buildServiceItem(None, True)
                 if serviceItem:
                     serviceItem.from_plugin = False
@@ -505,7 +501,7 @@ class MediaManagerItem(QtGui.QWidget):
                 translate('OpenLP.MediaManagerItem',
                     'You must select one or more items'))
         else:
-            log.debug(self.plugin.name + u' Add requested')
+            log.debug(u'%s Add requested', self.plugin.name)
             serviceItem = self.parent.serviceManager.getServiceItem()
             if not serviceItem:
                 QtGui.QMessageBox.information(self,

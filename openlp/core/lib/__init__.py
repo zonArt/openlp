@@ -83,7 +83,8 @@ base_html_expands.append({u'desc': u'Underline', u'start tag': u'{u}',
     u'start html': u'<span style="text-decoration: underline;">',
     u'end tag': u'{/u}', u'end html': u'</span>', u'protected': True})
 
-def translate(context, text, comment=None):
+def translate(context, text, comment=None,
+    encoding=QtCore.QCoreApplication.CodecForTr, n=-1):
     """
     A special shortcut method to wrap around the Qt4 translation functions.
     This abstracts the translation procedure so that we can change it if at a
@@ -100,7 +101,7 @@ def translate(context, text, comment=None):
         An identifying string for when the same text is used in different roles
         within the same context.
     """
-    return QtCore.QCoreApplication.translate(context, text, comment)
+    return QtCore.QCoreApplication.translate(context, text, comment, encoding, n)
 
 def get_text_file_string(text_file):
     """

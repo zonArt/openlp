@@ -65,7 +65,7 @@ class MediaPlugin(Plugin):
     def _addToList(self, list, value, mimetype):
         # Is it a media type
         if len(value) == 2:
-            extensions =  mimetypes.guess_all_extensions(unicode(mimetype))
+            extensions = mimetypes.guess_all_extensions(unicode(mimetype))
             # we have an extension
             if extensions:
                 for extension in extensions:
@@ -93,51 +93,51 @@ class MediaPlugin(Plugin):
         """
         ## Name PluginList ##
         self.textStrings[StringContent.Name] = {
-            u'singular': translate('MediaPlugin', 'Media'),
-            u'plural': translate('MediaPlugin', 'Media')
+            u'singular': translate('MediaPlugin', 'Media', 'name singular'),
+            u'plural': translate('MediaPlugin', 'Media', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.textStrings[StringContent.VisibleName] = {
-            u'title': translate('MediaPlugin', 'Media')
+            u'title': translate('MediaPlugin', 'Media', 'container title')
         }
         # Middle Header Bar
-        ## Load Button ##
+        ## Load Action ##
         self.textStrings[StringContent.Load] = {
             u'title': translate('MediaPlugin', 'Load'),
             u'tooltip': translate('MediaPlugin',
                 'Load a new Media')
         }
-        ## New Button ##
+        ## New Action ##
         self.textStrings[StringContent.New] = {
             u'title': translate('MediaPlugin', 'Add'),
             u'tooltip': translate('MediaPlugin',
                 'Add a new Media')
         }
-        ## Edit Button ##
+        ## Edit Action ##
         self.textStrings[StringContent.Edit] = {
             u'title': translate('MediaPlugin', 'Edit'),
             u'tooltip': translate('MediaPlugin',
                 'Edit the selected Media')
         }
-        ## Delete Button ##
+        ## Delete Action ##
         self.textStrings[StringContent.Delete] = {
             u'title': translate('MediaPlugin', 'Delete'),
             u'tooltip': translate('MediaPlugin',
                 'Delete the selected Media')
         }
-        ## Preview ##
+        ## Preview Action ##
         self.textStrings[StringContent.Preview] = {
             u'title': translate('MediaPlugin', 'Preview'),
             u'tooltip': translate('MediaPlugin',
                 'Preview the selected Media')
         }
-        ## Live  Button ##
+        ## Send Live Action ##
         self.textStrings[StringContent.Live] = {
             u'title': translate('MediaPlugin', 'Live'),
             u'tooltip': translate('MediaPlugin',
                 'Send the selected Media live')
         }
-        ## Add to service Button ##
+        ## Add to Service Action ##
         self.textStrings[StringContent.Service] = {
             u'title': translate('MediaPlugin', 'Service'),
             u'tooltip': translate('MediaPlugin',
