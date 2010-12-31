@@ -132,7 +132,7 @@ class ImageMediaItem(MediaManagerItem):
                         os.remove(os.path.join(self.servicePath,
                             unicode(text.text())))
                     except OSError:
-                        #if not present do not worry
+                        # if not present do not worry
                         pass
                 self.listView.takeItem(row)
             SettingsManager.set_list(self.settingsSection,
@@ -172,9 +172,18 @@ class ImageMediaItem(MediaManagerItem):
             for item in items:
                 bitem = self.listView.item(item.row())
                 filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
-                (path, name) = os.path.split(filename)
-                service_item.add_from_image(filename, name)
-            return True
+                if os.path.exists(filename):
+                    (path, name) = os.path.split(filename)
+                    service_item.add_from_image(filename, name)
+                    return True
+                else:
+                    # File is no longer present
+                    QtGui.QMessageBox.critical(
+                        self, translate('ImagePlugin.MediaItem',
+                        'Missing Image'),
+                        unicode(translate('ImagePlugin.MediaItem',
+                        'The Image %s no longer exists.')) % filename)
+                    return False
         else:
             return False
 
