@@ -46,92 +46,64 @@ class AdvancedTab(SettingsTab):
         Configure the UI elements for the tab.
         """
         self.setObjectName(u'AdvancedTab')
-        self.tabTitleVisible = translate('OpenLP.AdvancedTab', 'Advanced')
         self.advancedTabLayout = QtGui.QHBoxLayout(self)
-        self.advancedTabLayout.setSpacing(8)
-        self.advancedTabLayout.setMargin(8)
+        self.advancedTabLayout.setSpacing(0)
+        self.advancedTabLayout.setObjectName(u'advancedTabLayout')
         self.leftWidget = QtGui.QWidget(self)
+        self.leftWidget.setObjectName(u'leftWidget')
         self.leftLayout = QtGui.QVBoxLayout(self.leftWidget)
-        self.leftLayout.setSpacing(8)
-        self.leftLayout.setMargin(0)
+        self.leftLayout.setObjectName(u'leftLayout')
         self.uiGroupBox = QtGui.QGroupBox(self.leftWidget)
         self.uiGroupBox.setObjectName(u'uiGroupBox')
-        self.uiLayout = QtGui.QVBoxLayout(self.uiGroupBox)
-        self.uiLayout.setSpacing(8)
-        self.uiLayout.setMargin(6)
+        self.uiLayout = QtGui.QFormLayout(self.uiGroupBox)
         self.uiLayout.setObjectName(u'uiLayout')
-        self.recentLayout = QtGui.QHBoxLayout()
-        self.recentLayout.setSpacing(8)
-        self.recentLayout.setMargin(0)
-        self.recentLayout.setObjectName(u'recentLayout')
         self.recentLabel = QtGui.QLabel(self.uiGroupBox)
         self.recentLabel.setObjectName(u'recentLabel')
-        self.recentLayout.addWidget(self.recentLabel)
         self.recentSpinBox = QtGui.QSpinBox(self.uiGroupBox)
         self.recentSpinBox.setObjectName(u'recentSpinBox')
         self.recentSpinBox.setMinimum(0)
-        self.recentLayout.addWidget(self.recentSpinBox)
-        self.recentSpacer = QtGui.QSpacerItem(50, 20,
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.recentLayout.addItem(self.recentSpacer)
-        self.uiLayout.addLayout(self.recentLayout)
+        self.uiLayout.addRow(self.recentLabel, self.recentSpinBox)
         self.mediaPluginCheckBox = QtGui.QCheckBox(self.uiGroupBox)
         self.mediaPluginCheckBox.setObjectName(u'mediaPluginCheckBox')
-        self.uiLayout.addWidget(self.mediaPluginCheckBox)
+        self.uiLayout.addRow(self.mediaPluginCheckBox)
         self.doubleClickLiveCheckBox = QtGui.QCheckBox(self.uiGroupBox)
         self.doubleClickLiveCheckBox.setObjectName(u'doubleClickLiveCheckBox')
-        self.uiLayout.addWidget(self.doubleClickLiveCheckBox)
-#        self.expandServiceItemCheckBox = QtGui.QCheckBox(self.uiGroupBox)
-#        self.expandServiceItemCheckBox.setObjectName(
-#            u'expandServiceItemCheckBox')
-#        self.uiLayout.addWidget(self.expandServiceItemCheckBox)
-        self.leftLayout.addWidget(self.uiGroupBox)
+        self.uiLayout.addRow(self.doubleClickLiveCheckBox)
         self.expandServiceItemCheckBox = QtGui.QCheckBox(self.uiGroupBox)
         self.expandServiceItemCheckBox.setObjectName(
             u'expandServiceItemCheckBox')
-        self.uiLayout.addWidget(self.expandServiceItemCheckBox)
+        self.uiLayout.addRow(self.expandServiceItemCheckBox)
+        self.leftLayout.addWidget(self.uiGroupBox)
 #        self.sharedDirGroupBox = QtGui.QGroupBox(self.leftWidget)
 #        self.sharedDirGroupBox.setObjectName(u'sharedDirGroupBox')
-#        self.sharedDirGroupBox.setGeometry(QtCore.QRect(0, 65, 500, 85))
-#        self.sharedDirGroupBox.setMaximumSize(QtCore.QSize(500, 85))
-#        self.sharedDirLayout = QtGui.QVBoxLayout(self.sharedDirGroupBox)
-#        self.sharedDirLayout.setSpacing(8)
-#        self.sharedDirLayout.setMargin(8)
+#        self.sharedDirLayout = QtGui.QFormLayout(self.sharedDirGroupBox)
 #        self.sharedCheckBox = QtGui.QCheckBox(self.sharedDirGroupBox)
 #        self.sharedCheckBox.setObjectName(u'sharedCheckBox')
-#        self.sharedDirLayout.addWidget(self.sharedCheckBox)
-#        self.sharedSubLayout = QtGui.QHBoxLayout()
-#        self.sharedSubLayout.setSpacing(8)
-#        self.sharedSubLayout.setMargin(0)
+#        self.sharedDirLayout.addRow(self.sharedCheckBox)
 #        self.sharedLabel = QtGui.QLabel(self.sharedDirGroupBox)
 #        self.sharedLabel.setObjectName(u'sharedLabel')
-#        self.sharedSubLayout.addWidget(self.sharedLabel)
+#        self.sharedSubLayout = QtGui.QHBoxLayout()
+#        self.sharedSubLayout.setObjectName(u'sharedSubLayout')
 #        self.sharedLineEdit = QtGui.QLineEdit(self.sharedDirGroupBox)
 #        self.sharedLineEdit.setObjectName(u'sharedLineEdit')
 #        self.sharedSubLayout.addWidget(self.sharedLineEdit)
 #        self.sharedPushButton = QtGui.QPushButton(self.sharedDirGroupBox)
 #        self.sharedPushButton.setObjectName(u'sharedPushButton')
 #        self.sharedSubLayout.addWidget(self.sharedPushButton)
-#        self.sharedDirLayout.addLayout(self.sharedSubLayout)
+#        self.sharedDirLayout.addRow(self.sharedLabel, self.sharedSubLayout)
 #        self.leftLayout.addWidget(self.sharedDirGroupBox)
-        self.leftSpacer = QtGui.QSpacerItem(20, 40,
-            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.leftLayout.addItem(self.leftSpacer)
+        self.leftLayout.addStretch()
         self.advancedTabLayout.addWidget(self.leftWidget)
         self.rightWidget = QtGui.QWidget(self)
+        self.rightWidget.setObjectName(u'rightWidget')
         self.rightLayout = QtGui.QVBoxLayout(self.rightWidget)
-        self.rightLayout.setSpacing(8)
-        self.rightLayout.setMargin(0)
+        self.rightLayout.setObjectName(u'rightLayout')
 #        self.databaseGroupBox = QtGui.QGroupBox(self.rightWidget)
 #        self.databaseGroupBox.setObjectName(u'databaseGroupBox')
 #        self.databaseGroupBox.setEnabled(False)
 #        self.databaseLayout = QtGui.QVBoxLayout(self.databaseGroupBox)
-#        self.databaseLayout.setSpacing(8)
-#        self.databaseLayout.setMargin(8)
 #        self.rightLayout.addWidget(self.databaseGroupBox)
-        self.rightSpacer = QtGui.QSpacerItem(20, 40,
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
-        self.rightLayout.addItem(self.rightSpacer)
+        self.rightLayout.addStretch()
         self.advancedTabLayout.addWidget(self.rightWidget)
 #        QtCore.QObject.connect(self.sharedCheckBox,
 #            QtCore.SIGNAL(u'stateChanged(int)'), self.onSharedCheckBoxChanged)
@@ -140,6 +112,7 @@ class AdvancedTab(SettingsTab):
         """
         Setup the interface translation strings.
         """
+        self.tabTitleVisible = translate('OpenLP.AdvancedTab', 'Advanced')
         self.uiGroupBox.setTitle(translate('OpenLP.AdvancedTab', 'UI Settings'))
         self.recentLabel.setText(
             translate('OpenLP.AdvancedTab',
@@ -157,6 +130,16 @@ class AdvancedTab(SettingsTab):
 #        self.sharedLabel.setText(translate('AdvancedTab', 'Store location:'))
 #        self.sharedPushButton.setText(translate('AdvancedTab', 'Browse...'))
 #        self.databaseGroupBox.setTitle(translate('AdvancedTab', 'Databases'))
+
+    def resizeEvent(self, event=None):
+        """
+        Rescale the theme preview thumbnail on resize events.
+        """
+        if event:
+            SettingsTab.resizeEvent(self, event)
+        self.leftWidget.setMinimumWidth(max(
+            self.width() / 2 - self.advancedTabLayout.contentsMargins().left(),
+            self.leftWidget.minimumSizeHint().width()))
 
     def load(self):
         """
