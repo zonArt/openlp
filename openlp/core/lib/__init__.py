@@ -291,7 +291,7 @@ def clean_tags(text):
     Remove Tags from text for display
     """
     text = text.replace(u'<br>', u'\n')
-    for tag in DisplayTags.get_html_tags().html_expands:
+    for tag in DisplayTags.get_html_tags():
         text = text.replace(tag[u'start tag'], u'')
         text = text.replace(tag[u'end tag'], u'')
     return text
@@ -300,7 +300,7 @@ def expand_tags(text):
     """
     Expand tags HTML for display
     """
-    for tag in DisplayTags.get_html_tags().html_expands:
+    for tag in DisplayTags.get_html_tags():
         text = text.replace(tag[u'start tag'], tag[u'start html'])
         text = text.replace(tag[u'end tag'], tag[u'end html'])
     return text

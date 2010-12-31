@@ -59,6 +59,27 @@ class DisplayTags(object):
     @staticmethod
     def get_html_tags():
         """
-        Provide access to the HtmlTags object.
+        Provide access to the html_expands list.
         """
-        return DisplayTags.html_tags
+        return DisplayTags.html_tags.html_expands
+
+    @staticmethod
+    def reset_html_tags():
+        """
+        Resets the html_expands list.
+        """
+        return DisplayTags.html_tags.reset_list()
+
+    @staticmethod
+    def add_html_tag(tag):
+        """
+        Add a new tag to the list
+        """
+        return DisplayTags.html_tags.add_tag(tag)
+
+    @staticmethod
+    def remove_html_tag(id):
+        """
+        Removes amd individual html_expands list.
+        """
+        return DisplayTags.html_tags.html_expands.pop(id)

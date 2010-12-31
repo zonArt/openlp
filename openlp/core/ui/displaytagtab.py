@@ -50,14 +50,14 @@ class DisplayTagTab(SettingsTab):
         Initialise values before the Load takes place
         """
         # Create initial copy from master
-        DisplayTags.get_html_tags().reset_list()
+        DisplayTags.reset_html_tags()
         user_expands = QtCore.QSettings().value(u'displayTags/html_tags',
             QtCore.QVariant(u'')).toString()
         # cPickle only accepts str not unicode strings
         user_tags = cPickle.loads(str(user_expands))
         # If we have some user ones added them as well
         for t in user_tags:
-            DisplayTags.get_html_tags().add_tag(t)
+            DisplayTags.add_html_tag(t)
         self.selected = -1
 
     def setupUi(self):
@@ -194,8 +194,7 @@ class DisplayTagTab(SettingsTab):
         self.newPushButton.setEnabled(True)
         self.updatePushButton.setEnabled(False)
         self.deletePushButton.setEnabled(False)
-        for linenumber, html in enumerate(
-            DisplayTags.get_html_tags().html_expands):
+        for linenumber, html in enumerate(DisplayTags.get_html_tags()):
             self.tagTableWidget.setRowCount(
                 self.tagTableWidget.rowCount() + 1)
             self.tagTableWidget.setItem(linenumber, 0,
@@ -221,7 +220,7 @@ class DisplayTagTab(SettingsTab):
         Save Custom tags in a pickle .
         """
         temp = []
-        for tag in DisplayTags.get_html_tags().html_expands:
+        for tag in DisplayTags.get_html_tags():
             if not tag[u'protected']:
                 temp.append(tag)
         if temp:
@@ -244,7 +243,7 @@ class DisplayTagTab(SettingsTab):
         Table Row selected so display items and set field state.
         """
         row = self.tagTableWidget.currentRow()
-        html = DisplayTags.get_html_tags().html_expands[row]
+        html = DisplayTags.get_html_tags()[row]
         self.selected = row
         self.descriptionLineEdit.setText(html[u'desc'])
         self.tagLineEdit.setText(self._strip(html[u'start tag']))
@@ -269,7 +268,7 @@ class DisplayTagTab(SettingsTab):
         """
         Add a new tag to list only if it is not a duplicate.
         """
-        for html in DisplayTags.get_html_tags().html_expands:
+        for html in DisplayTags.get_html_tags():
             if self._strip(html[u'start tag']) == u'n':
                 QtGui.QMessageBox.critical(self,
                     translate('OpenLP.DisplayTagTab', 'Update Error'),
@@ -279,17 +278,17 @@ class DisplayTagTab(SettingsTab):
                     QtGui.QMessageBox.Ok)
                 return
         # Add new tag to list
-        DisplayTags.get_html_tags().html_expands.append(
-            {u'desc': u'New Item', u'start tag': u'{n}',
+        tag = {u'desc': u'New Item', u'start tag': u'{n}',
             u'start html': u'<Html_here>', u'end tag': u'{/n}',
-            u'end html': u'</and here>', u'protected': False})
+            u'end html': u'</and here>', u'protected': False}
+        DisplayTags.add_html_tag(tag)
         self._resetTable()
 
     def onDefaultPushed(self):
         """
         Remove all Custom Tags and reset to base set only.
         """
-        DisplayTags.get_html_tags().reset_list()
+        DisplayTags.reset_html_tags()
         self._resetTable()
 
     def onDeletePushed(self):
@@ -297,7 +296,7 @@ class DisplayTagTab(SettingsTab):
         Delete selected custom tag.
         """
         if self.selected != -1:
-            DisplayTags.get_html_tags().html_expands.pop(self.selected)
+            DisplayTags.remove_html_tag(self.selected)
             self.selected = -1
         self._resetTable()
 
@@ -305,7 +304,7 @@ class DisplayTagTab(SettingsTab):
         """
         Update Custom Tag details if not duplicate.
         """
-        html_expands = DisplayTags.get_html_tags().html_expands
+        html_expands = DisplayTags.get_html_tags()
         if self.selected != -1:
             html = html_expands[self.selected]
             tag = unicode(self.tagLineEdit.text())
