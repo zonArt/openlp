@@ -90,8 +90,8 @@ class PresentationMediaItem(MediaManagerItem):
                     if fileType.find(type) == -1:
                         fileType += u'*.%s ' % type
                         self.parent.serviceManager.supportedSuffixes(type)
-        self.OnNewFileMasks = translate('PresentationPlugin.MediaItem',
-            'Presentations (%s)' % fileType)
+        self.OnNewFileMasks = unicode(translate('PresentationPlugin.MediaItem',
+            'Presentations (%s)')) % fileType
 
     def requiredIcons(self):
         """

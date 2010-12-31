@@ -109,7 +109,7 @@ class ImageMediaItem(MediaManagerItem):
             translate('ImagePlugin.MediaItem', 'Replace Live Background'),
             self.onReplaceClick, False)
         self.resetButton = self.toolbar.addToolbarButton(
-            translate('ImagePlugin.MediaItem', u'Reset Background'),
+            translate('ImagePlugin.MediaItem', 'Reset Background'),
             u':/system/system_close.png',
             translate('ImagePlugin.MediaItem', 'Reset Live Background'),
             self.onResetClick, False)

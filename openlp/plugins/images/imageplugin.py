@@ -64,12 +64,12 @@ class ImagePlugin(Plugin):
         """
         ## Name PluginList ##
         self.textStrings[StringContent.Name] = {
-            u'singular': translate('ImagePlugin', 'Image'),
-            u'plural': translate('ImagePlugin', 'Images')
+            u'singular': translate('ImagePlugin', 'Image', 'name singular'),
+            u'plural': translate('ImagePlugin', 'Images', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.textStrings[StringContent.VisibleName] = {
-            u'title': translate('ImagePlugin', 'Images')
+            u'title': translate('ImagePlugin', 'Images', 'container title')
         }
         # Middle Header Bar
         ## Load Button ##

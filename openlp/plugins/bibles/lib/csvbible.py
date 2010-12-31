@@ -92,9 +92,10 @@ class CSVBible(BibleDB):
                 if book_ptr != line[0]:
                     book = self.get_book(line[0])
                     book_ptr = book.name
-                    self.wizard.incrementProgressBar(u'%s %s %s...' % (
-                        translate('BiblesPlugin.CSVImport', 'Importing'),
-                        book.name, line[1]))
+                    self.wizard.incrementProgressBar(unicode(translate(
+                        'BiblesPlugin.CSVImport', 'Importing %s %s...',
+                        'Importing <book name> <chapter>...')) %
+                        (book.name, int(line[1])))
                     self.session.commit()
                 self.create_verse(book.id, line[1], line[2],
                     unicode(line[3], details['encoding']))
