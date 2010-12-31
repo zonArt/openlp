@@ -135,7 +135,9 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             '--- Please enter the report below this line. ---\n\n\n'
             '--- Exception Traceback ---\n%s\n'
             '--- System information ---\n%s\n'
-            '--- Library Versions ---\n%s\n'))
+            '--- Library Versions ---\n%s\n',
+            'Please add the information that bug reports are favoured written '
+            'in English.'))
         content = self._createReport()
         for line in content[1].split(u'\n'):
             if re.search(r'[/\\]openlp[/\\]', line):

@@ -29,6 +29,7 @@ import os
 import chardet
 import codecs
 
+from openlp.core.lib import translate
 from songimport import SongImport
 
 log = logging.getLogger(__name__)
@@ -69,8 +70,9 @@ class CCLIFileImport(SongImport):
         self.import_wizard.importProgressBar.setMaximum(song_total)
         song_count = 1
         for filename in self.filenames:
-            self.import_wizard.incrementProgressBar(
-                u'Importing song %s of %s' % (song_count, song_total))
+            self.import_wizard.incrementProgressBar(unicode(translate(
+                'SongsPlugin.CCLIFileImport', 'Importing song %d of %d')) %
+                (song_count, song_total))
             filename = unicode(filename)
             log.debug(u'Importing CCLI File: %s', filename)
             lines = []

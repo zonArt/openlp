@@ -232,7 +232,7 @@ class SongMediaItem(MediaManagerItem):
         self.listView.clear()
         for author in searchresults:
             for song in author.songs:
-                song_detail = '%s (%s)' % (author.display_name, song.title)
+                song_detail = u'%s (%s)' % (author.display_name, song.title)
                 song_name = QtGui.QListWidgetItem(song_detail)
                 song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
                 self.listView.addItem(song_name)
@@ -314,16 +314,11 @@ class SongMediaItem(MediaManagerItem):
             translate('SongsPlugin.MediaItem',
             'You must select an item to delete.')):
             items = self.listView.selectedIndexes()
-            if len(items) == 1:
-                del_message = translate('SongsPlugin.MediaItem',
-                    'Are you sure you want to delete the selected song?')
-            else:
-                del_message = unicode(translate('SongsPlugin.MediaItem',
-                    'Are you sure you want to delete the %d selected '
-                    'songs?')) % len(items)
             ans = QtGui.QMessageBox.question(self,
                 translate('SongsPlugin.MediaItem', 'Delete Song(s)?'),
-                del_message,
+                translate('SongsPlugin.MediaItem',
+                'Are you sure you want to delete the %n selected song(s)?', '',
+                QtCore.QCoreApplication.CodecForTr, len(items)),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok|
                      QtGui.QMessageBox.Cancel),
                 QtGui.QMessageBox.Ok)

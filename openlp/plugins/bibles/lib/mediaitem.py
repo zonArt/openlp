@@ -912,7 +912,7 @@ class BibleMediaItem(MediaManagerItem):
             old_chapter != chapter:
             verse_text = unicode(chapter) + verse_separator + unicode(verse)
         else:
-            verse_text = u'%s' % verse
+            verse_text = unicode(verse)
         if self.parent.settings_tab.display_style == 1:
             verse_text = u'{su}(' + verse_text + u'){/su}'
         elif self.parent.settings_tab.display_style == 2:

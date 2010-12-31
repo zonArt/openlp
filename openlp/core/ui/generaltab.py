@@ -389,11 +389,11 @@ class GeneralTab(SettingsTab):
         settings = QtCore.QSettings()
         settings.beginGroup(self.settingsSection)
         for screen in self.screens.screen_list:
-            screen_name = u'%s %d' % (translate('OpenLP.GeneralTab', 'Screen'),
-                screen[u'number'] + 1)
+            screen_name = unicode(translate('OpenLP.GeneralTab', 'Screen %d')) \
+                % (screen[u'number'] + 1)
             if screen[u'primary']:
-                screen_name = u'%s (%s)' % (screen_name,
-                    translate('OpenLP.GeneralTab', 'primary'))
+                screen_name = unicode(translate('OpenLP.GeneralTab',
+                    '%s (primary)')) % screen_name
             self.monitorComboBox.addItem(screen_name)
         self.numberEdit.setText(unicode(settings.value(
             u'ccli number', QtCore.QVariant(u'')).toString()))
