@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -56,8 +56,10 @@ class SongsTab(SettingsTab):
         self.SongUpdateOnEditCheckBox = QtGui.QCheckBox(self.SongsModeGroupBox)
         self.SongUpdateOnEditCheckBox.setObjectName(u'SongUpdateOnEditCheckBox')
         self.SongsModeLayout.addWidget(self.SongUpdateOnEditCheckBox)
-        self.SongAddFromServiceCheckBox = QtGui.QCheckBox(self.SongsModeGroupBox)
-        self.SongAddFromServiceCheckBox.setObjectName(u'SongAddFromServiceCheckBox')
+        self.SongAddFromServiceCheckBox = QtGui.QCheckBox(
+            self.SongsModeGroupBox)
+        self.SongAddFromServiceCheckBox.setObjectName(
+            u'SongAddFromServiceCheckBox')
         self.SongsModeLayout.addWidget(self.SongAddFromServiceCheckBox)
         self.SongsLayout.setWidget(
             0, QtGui.QFormLayout.LabelRole, self.SongsModeGroupBox)
@@ -70,7 +72,7 @@ class SongsTab(SettingsTab):
         QtCore.QObject.connect(self.SongUpdateOnEditCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onSongUpdateOnEditCheckBoxChanged)
-        QtCore.QObject.connect(self.SongBarActiveCheckBox,
+        QtCore.QObject.connect(self.SongAddFromServiceCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onSongAddFromServiceCheckBoxChanged)
 
@@ -83,7 +85,8 @@ class SongsTab(SettingsTab):
             'Display verses on live tool bar'))
         self.SongUpdateOnEditCheckBox.setText(
             translate('SongsPlugin.SongsTab', 'Update service from song edit'))
-        self.SongAddFromServiceCheckBox.setText(translate('SongsPlugin.SongsTab',
+        self.SongAddFromServiceCheckBox.setText(
+            translate('SongsPlugin.SongsTab',
             'Add missing songs when opening service'))
 
     def onSearchAsTypeCheckBoxChanged(self, check_state):
@@ -132,6 +135,8 @@ class SongsTab(SettingsTab):
         settings.beginGroup(self.settingsSection)
         settings.setValue(u'search as type', QtCore.QVariant(self.song_search))
         settings.setValue(u'display songbar', QtCore.QVariant(self.song_bar))
-        settings.setValue(u'update service on edit', QtCore.QVariant(self.update_edit))
-        settings.setValue(u'add song from service', QtCore.QVariant(self.update_load))
+        settings.setValue(u'update service on edit',
+            QtCore.QVariant(self.update_edit))
+        settings.setValue(u'add song from service',
+            QtCore.QVariant(self.update_load))
         settings.endGroup()

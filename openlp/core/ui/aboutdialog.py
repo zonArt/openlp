@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -166,13 +166,24 @@ class Ui_AboutDialog(object):
             '    PyQt4: http://www.riverbankcomputing.co.uk/software/pyqt/'
             'intro\n'
             '    Oxygen Icons: http://oxygen-icons.org/\n'
+            '\n'
+            'Final Credit\n'
+            '    "For God so loved the world that He gave\n'
+            '    His one and only Son, so that whoever\n'
+            '    believes in Him will not perish but inherit\n'
+            '    eternal life."  -- John 3:16\n\n'
+            '    And last but not least, final credit goes to\n'
+            '    God our Father, for sending His Son to die\n'
+            '    on the cross, setting us free from sin. We\n'
+            '    bring this software to you for free because\n'
+            '    He has set us free.'
         ))
         self.aboutNotebook.setTabText(
             self.aboutNotebook.indexOf(self.creditsTab),
             translate('OpenLP.AboutForm', 'Credits'))
         self.licenseTextEdit.setPlainText(translate('OpenLP.AboutForm',
-            'Copyright \xa9 2004-2010 Raoul Snyman\n'
-            'Portions copyright \xa9 2004-2010 '
+            'Copyright \xa9 2004-2011 Raoul Snyman\n'
+            'Portions copyright \xa9 2004-2011 '
             'Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri, '
             'Christian Richter, Maikel Stuivenberg, Martin Thompson, Jon '
             'Tibble, Carsten Tinggaard\n'
@@ -565,4 +576,3 @@ class Ui_AboutDialog(object):
         self.contributeButton.setText(translate('OpenLP.AboutForm',
             'Contribute'))
         self.closeButton.setText(translate('OpenLP.AboutForm', 'Close'))
-

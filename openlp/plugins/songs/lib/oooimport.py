@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -46,7 +46,7 @@ else:
 
 class OooImport(SongImport):
     """
-    Import songs from Impress/Powerpoint docs using Impress 
+    Import songs from Impress/Powerpoint docs using Impress
     """
     def __init__(self, master_manager, **kwargs):
         """
@@ -122,7 +122,7 @@ class OooImport(SongImport):
             manager = ctx.ServiceManager
             self.desktop = manager.createInstanceWithContext(
                 "com.sun.star.frame.Desktop", ctx)
-            
+
     def start_ooo_process(self):
         try:
             if os.name == u'nt':
@@ -168,11 +168,11 @@ class OooImport(SongImport):
                     u'Processing file ' + filepath, 0)
         except:
             pass
-        return   
+        return
 
     def close_ooo_file(self):
         """
-        Close file. 
+        Close file.
         """
         self.document.close(True)
         self.document = None
@@ -187,7 +187,7 @@ class OooImport(SongImport):
     def process_pres(self):
         """
         Process the file
-        """            
+        """
         doc = self.document
         slides = doc.getDrawPages()
         text = u''
@@ -195,7 +195,7 @@ class OooImport(SongImport):
             if self.abort:
                 self.import_wizard.incrementProgressBar(u'Import cancelled', 0)
                 return
-            slide = slides.getByIndex(slide_no)   
+            slide = slides.getByIndex(slide_no)
             slidetext = u''
             for idx in range(slide.getCount()):
                 shape = slide.getByIndex(idx)
@@ -209,12 +209,12 @@ class OooImport(SongImport):
         songs = SongImport.process_songs_text(self.manager, text)
         for song in songs:
             song.finish()
-        return 
+        return
 
     def process_doc(self):
         """
         Process the doc file, a paragraph at a time
-        """            
+        """
         text = u''
         paragraphs = self.document.getText().createEnumeration()
         while paragraphs.hasMoreElements():

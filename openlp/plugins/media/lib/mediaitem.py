@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -56,7 +56,7 @@ class MediaMediaItem(MediaManagerItem):
             u':/media/media_video.png').toImage()
         MediaManagerItem.__init__(self, parent, self, icon)
         self.singleServiceItem = False
-        self.serviceItemIconName = u':/media/media_video.png'
+        self.serviceItemIconName = u':/media/image_clapperboard.png'
 
     def retranslateUi(self):
         self.OnNewPrompt = translate('MediaPlugin.MediaItem', 'Select Media')
@@ -89,7 +89,7 @@ class MediaMediaItem(MediaManagerItem):
             self.ImageWidget.sizePolicy().hasHeightForWidth())
         self.ImageWidget.setSizePolicy(sizePolicy)
         self.ImageWidget.setObjectName(u'ImageWidget')
-        #Replace backgrounds do not work at present so remove functionality.
+        # Replace backgrounds do not work at present so remove functionality.
         self.blankButton = self.toolbar.addToolbarButton(
             translate('MediaPlugin.MediaItem', 'Replace Background'),
             u':/slides/slide_blank.png',
@@ -116,19 +116,30 @@ class MediaMediaItem(MediaManagerItem):
             self.parent.liveController.display.video(filename, 0, True)
         self.resetButton.setVisible(True)
 
-    def generateSlideData(self, service_item, item=None):
+    def generateSlideData(self, service_item, item=None, xmlVersion=False):
         if item is None:
             item = self.listView.currentItem()
             if item is None:
                 return False
         filename = unicode(item.data(QtCore.Qt.UserRole).toString())
-        service_item.title = unicode(
-            translate('MediaPlugin.MediaItem', 'Media'))
-        service_item.add_capability(ItemCapabilities.RequiresMedia)
-        frame = u':/media/image_clapperboard.png'
-        (path, name) = os.path.split(filename)
-        service_item.add_from_command(path, name, frame)
-        return True
+        if os.path.exists(filename):
+            service_item.title = unicode(
+                translate('MediaPlugin.MediaItem', 'Media'))
+            service_item.add_capability(ItemCapabilities.RequiresMedia)
+            # force a nonexistent theme
+            service_item.theme = -1
+            frame = u':/media/image_clapperboard.png'
+            (path, name) = os.path.split(filename)
+            service_item.add_from_command(path, name, frame)
+            return True
+        else:
+            # File is no longer present
+            QtGui.QMessageBox.critical(
+                self, translate('MediaPlugin.MediaItem',
+                'Missing Media File'),
+                unicode(translate('MediaPlugin.MediaItem',
+                'The file %s no longer exists.')) % filename)
+            return False
 
     def initialise(self):
         self.listView.setSelectionMode(

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -48,7 +48,7 @@ else:
         uno_available = True
     except ImportError:
         uno_available = False
-        
+
 from PyQt4 import QtCore
 
 from presentationcontroller import PresentationController, PresentationDocument
@@ -169,7 +169,8 @@ class ImpressController(PresentationController):
         try:
             return Dispatch(u'com.sun.star.ServiceManager')
         except pywintypes.com_error:
-            log.exception(u'Failed to get COM service manager')
+            log.warn(u'Failed to get COM service manager. '
+                u'Impress Controller has been disabled')
             return None
 
     def kill(self):
@@ -209,12 +210,12 @@ class ImpressController(PresentationController):
 class ImpressDocument(PresentationDocument):
     """
     Class which holds information and controls a single presentation
-    """    
-    
+    """
+
     def __init__(self, controller, presentation):
         """
-        Constructor, store information about the file and initialise 
-        """        
+        Constructor, store information about the file and initialise
+        """
         log.debug(u'Init Presentation OpenOffice')
         PresentationDocument.__init__(self, controller, presentation)
         self.document = None
@@ -254,8 +255,9 @@ class ImpressDocument(PresentationDocument):
             self.document = desktop.loadComponentFromURL(url, u'_blank',
                 0, properties)
         except:
-            log.exception(u'Failed to load presentation')
+            log.exception(u'Failed to load presentation %s' % url)
             return False
+
         self.presentation = self.document.getPresentation()
         self.presentation.Display = \
             self.controller.plugin.renderManager.screens.current_display + 1
@@ -286,7 +288,7 @@ class ImpressDocument(PresentationDocument):
             page = pages.getByIndex(idx)
             doc.getCurrentController().setCurrentPage(page)
             urlpath = u'%s/%s.png' % (thumbdirurl, unicode(idx + 1))
-            path = os.path.join(self.get_temp_folder(), 
+            path = os.path.join(self.get_temp_folder(),
                 unicode(idx + 1) + u'.png')
             try:
                 doc.storeToURL(urlpath, props)

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -63,6 +63,37 @@ class VerseType(object):
             return translate('SongsPlugin.VerseType', 'Other')
 
     @staticmethod
+    def expand_string(verse_type):
+        """
+        Return the VerseType for a given string
+
+        ``verse_type``
+            The string to return a VerseType for
+        """
+        verse_type = verse_type.lower()
+        if verse_type == \
+            unicode(VerseType.to_string(VerseType.Verse)).lower()[0]:
+            return translate('SongsPlugin.VerseType', 'Verse')
+        elif verse_type == \
+            unicode(VerseType.to_string(VerseType.Chorus)).lower()[0]:
+            return translate('SongsPlugin.VerseType', 'Chorus')
+        elif verse_type == \
+            unicode(VerseType.to_string(VerseType.Bridge)).lower()[0]:
+            return translate('SongsPlugin.VerseType', 'Bridge')
+        elif verse_type == \
+            unicode(VerseType.to_string(VerseType.PreChorus)).lower()[0]:
+            return translate('SongsPlugin.VerseType', 'PreChorus')
+        elif verse_type == \
+            unicode(VerseType.to_string(VerseType.Intro)).lower()[0]:
+            return translate('SongsPlugin.VerseType', 'Intro')
+        elif verse_type == \
+            unicode(VerseType.to_string(VerseType.Ending)).lower()[0]:
+            return translate('SongsPlugin.VerseType', 'Ending')
+        elif verse_type == \
+            unicode(VerseType.to_string(VerseType.Other)).lower()[0]:
+            return translate('SongsPlugin.VerseType', 'Other')
+
+    @staticmethod
     def from_string(verse_type):
         """
         Return the VerseType for a given string
@@ -92,7 +123,6 @@ class VerseType(object):
             unicode(VerseType.to_string(VerseType.Other)).lower():
             return VerseType.Other
 
-
-from xml import LyricsXML, SongXMLBuilder, SongXMLParser
+from xml import LyricsXML, SongXMLBuilder, SongXMLParser, OpenLyricsParser
 from songstab import SongsTab
 from mediaitem import SongMediaItem

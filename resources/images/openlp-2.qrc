@@ -1,5 +1,9 @@
 <RCC>
   <qresource prefix="songs">
+    <file>song_search_all.png</file>
+    <file>song_search_author.png</file>
+    <file>song_search_lyrics.png</file>
+    <file>song_search_title.png</file>
     <file>topic_edit.png</file>
     <file>author_add.png</file>
     <file>author_delete.png</file>
@@ -39,6 +43,7 @@
     <file>general_new.png</file>
     <file>general_open.png</file>
     <file>general_save.png</file>
+    <file>general_email.png</file>
   </qresource>
   <qresource prefix="slides">
     <file>slide_close.png</file>
@@ -81,8 +86,11 @@
   <qresource prefix="wizards">
     <file>wizard_importsong.bmp</file>
     <file>wizard_importbible.bmp</file>
+    <file>wizard_createtheme.bmp</file>
   </qresource>
   <qresource prefix="services">
+    <file>service_collapse_all.png</file>
+    <file>service_expand_all.png</file>
     <file>service_notes.png</file>
     <file>service_item_notes.png</file>
     <file>service_bottom.png</file>
@@ -92,6 +100,7 @@
   </qresource>
   <qresource prefix="system">
     <file>system_close.png</file>
+    <file>clear_shortcut.png</file>
     <file>system_about.png</file>
     <file>system_help_contents.png</file>
     <file>system_mediamanager.png</file>
@@ -101,6 +110,7 @@
     <file>system_exit.png</file>
     <file>settings_plugin_list.png</file>
     <file>system_settings.png</file>
+    <file>system_configure_shortcuts.png</file>
   </qresource>
   <qresource prefix="media">
     <file>media_time.png</file>

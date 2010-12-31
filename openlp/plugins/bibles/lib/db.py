@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -44,11 +44,13 @@ class BibleMeta(BaseModel):
     """
     pass
 
+
 class Testament(BaseModel):
     """
     Bible Testaments
     """
     pass
+
 
 class Book(BaseModel):
     """
@@ -56,11 +58,13 @@ class Book(BaseModel):
     """
     pass
 
+
 class Verse(BaseModel):
     """
     Topic model
     """
     pass
+
 
 def init_schema(url):
     """
@@ -227,7 +231,7 @@ class BibleDB(QtCore.QObject, Manager):
 
     def create_chapter(self, book_id, chapter, textlist):
         """
-        Add a chapter and it's verses to a book.
+        Add a chapter and its verses to a book.
 
         ``book_id``
             The id of the book being appended.
@@ -240,7 +244,7 @@ class BibleDB(QtCore.QObject, Manager):
             and the value is the verse text.
         """
         log.debug(u'create_chapter %s,%s', book_id, chapter)
-        # text list has book and chapter as first two elements of the array
+        # Text list has book and chapter as first two elements of the array.
         for verse_number, verse_text in textlist.iteritems():
             verse = Verse.populate(
                 book_id = book_id,

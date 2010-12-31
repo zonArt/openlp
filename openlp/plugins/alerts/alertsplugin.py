@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -40,18 +40,20 @@ class AlertsPlugin(Plugin):
     log.info(u'Alerts Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Alerts', u'1.9.3', plugin_helpers)
+        Plugin.__init__(self, u'Alerts', u'1.9.4', plugin_helpers)
         self.weight = -3
         self.icon = build_icon(u':/plugins/plugin_alerts.png')
         self.alertsmanager = AlertsManager(self)
         self.manager = Manager(u'alerts', init_schema)
-        self.alertForm = AlertForm(self)
+        visible_name = self.getString(StringContent.VisibleName)
+        self.alertForm = AlertForm(self, visible_name[u'title'])
 
     def getSettingsTab(self):
         """
         Return the settings tab for the Alerts plugin
         """
-        self.alertsTab = AlertsTab(self)
+        visible_name = self.getString(StringContent.VisibleName)
+        self.alertsTab = AlertsTab(self, visible_name[u'title'])
         return self.alertsTab
 
     def addToolsMenuItem(self, tools_menu):
@@ -83,7 +85,11 @@ class AlertsPlugin(Plugin):
         self.liveController.alertTab = self.alertsTab
 
     def finalise(self):
+        """
+        Tidy up on exit
+        """
         log.info(u'Alerts Finalising')
+        self.manager.finalise()
         Plugin.finalise(self)
         self.toolsAlertItem.setVisible(False)
 
@@ -115,4 +121,3 @@ class AlertsPlugin(Plugin):
         self.textStrings[StringContent.VisibleName] = {
             u'title': translate('AlertsPlugin', 'Alerts')
         }
-        

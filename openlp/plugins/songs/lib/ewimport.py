@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund, Jeffrey Smith                            #
@@ -28,7 +28,6 @@ The :mod:`ewimport` module provides the functionality for importing
 EasyWorship song databases into the current installation database.
 """
 
-import sys
 import os
 import struct
 
@@ -42,7 +41,7 @@ def strip_rtf(blob, encoding):
     control_word = []
     for c in blob:
         if control:
-            # for delimiters, set control to False 
+            # for delimiters, set control to False
             if c == '{':
                 if len(control_word) > 0:
                     depth += 1
@@ -192,8 +191,9 @@ class EasyWorshipSongImport(SongImport):
             num_fields)
         field_names.pop()
         field_descs = []
-        for i,field_name in enumerate(field_names):
-            field_type, field_size = struct.unpack_from('BB', field_info, i * 2)
+        for i, field_name in enumerate(field_names):
+            field_type, field_size = struct.unpack_from('BB',
+                field_info, i * 2)
             field_descs.append(FieldDescEntry(field_name, field_type,
                 field_size))
         self.set_record_struct(field_descs)
@@ -272,7 +272,7 @@ class EasyWorshipSongImport(SongImport):
         return success
 
     def find_field(self, field_name):
-        return [i for i,x in enumerate(self.field_descs) \
+        return [i for i, x in enumerate(self.field_descs) \
             if x.name == field_name][0]
 
     def set_record_struct(self, field_descs):
@@ -331,7 +331,7 @@ class EasyWorshipSongImport(SongImport):
             # Memo or Blob
             block_start, blob_size = \
                 struct.unpack_from('<II', field, len(field)-10)
-            sub_block = block_start & 0xff;
+            sub_block = block_start & 0xff
             block_start &= ~0xff
             self.memo_file.seek(block_start)
             memo_block_type, = struct.unpack('b', self.memo_file.read(1))
@@ -339,12 +339,12 @@ class EasyWorshipSongImport(SongImport):
                 self.memo_file.seek(8, os.SEEK_CUR)
             elif memo_block_type == 3:
                 if sub_block > 63:
-                    return u'';
+                    return u''
                 self.memo_file.seek(11 + (5 * sub_block), os.SEEK_CUR)
                 sub_block_start, = struct.unpack('B', self.memo_file.read(1))
                 self.memo_file.seek(block_start + (sub_block_start * 16))
             else:
-                return u'';
+                return u''
             return self.memo_file.read(blob_size)
         else:
             return 0

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -152,7 +152,7 @@ class OpenLPSongImport(SongImport):
                 u'Importing song %s of %s' % (song_count, song_total))
             new_song = Song()
             new_song.title = song.title
-            if has_media_files:
+            if has_media_files and hasattr(song, 'alternate_title'):
                 new_song.alternate_title = song.alternate_title
             else:
                 old_titles = song.search_title.split(u'@')

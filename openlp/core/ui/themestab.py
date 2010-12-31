@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -153,7 +153,7 @@ class ThemesTab(SettingsTab):
         settings.setValue(u'global theme',
             QtCore.QVariant(self.global_theme))
         settings.endGroup()
-        self.parent.RenderManager.set_global_theme(
+        self.parent.renderManager.set_global_theme(
             self.global_theme, self.theme_level)
         Receiver.send_message(u'theme_update_global', self.global_theme)
 
@@ -171,7 +171,7 @@ class ThemesTab(SettingsTab):
 
     def onDefaultComboBoxChanged(self, value):
         self.global_theme = unicode(self.DefaultComboBox.currentText())
-        self.parent.RenderManager.set_global_theme(
+        self.parent.renderManager.set_global_theme(
             self.global_theme, self.theme_level)
         image = self.parent.ThemeManagerContents.getPreviewImage(
             self.global_theme)
@@ -183,9 +183,14 @@ class ThemesTab(SettingsTab):
 
     def updateThemeList(self, theme_list):
         """
-        Called from ThemeManager when the Themes have changed
+        Called from ThemeManager when the Themes have changed.
+
+        ``theme_list``
+            The list of available themes::
+
+                [u'Bible Theme', u'Song Theme']
         """
-        #reload as may have been triggered by the ThemeManager
+        # Reload as may have been triggered by the ThemeManager.
         self.global_theme = unicode(QtCore.QSettings().value(
             self.settingsSection + u'/global theme',
             QtCore.QVariant(u'')).toString())
@@ -198,7 +203,7 @@ class ThemesTab(SettingsTab):
             id = 0 # Not Found
             self.global_theme = u''
         self.DefaultComboBox.setCurrentIndex(id)
-        self.parent.RenderManager.set_global_theme(
+        self.parent.renderManager.set_global_theme(
             self.global_theme, self.theme_level)
         if self.global_theme is not u'':
             image = self.parent.ThemeManagerContents.getPreviewImage(

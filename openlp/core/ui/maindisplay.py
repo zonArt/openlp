@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -23,20 +23,21 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+"""
 import logging
 import os
 
 from PyQt4 import QtCore, QtGui, QtWebKit
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import Receiver, resize_image, build_html, ServiceItem, \
-    image_to_byte
+from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte
 from openlp.core.ui import HideMode
 
 log = logging.getLogger(__name__)
 
 #http://www.steveheffernan.com/html5-video-player/demo-video-player.html
+#http://html5demos.com/two-videos
 
 class DisplayWidget(QtGui.QGraphicsView):
     """
@@ -90,6 +91,9 @@ class DisplayWidget(QtGui.QGraphicsView):
             event.ignore()
 
 class MainDisplay(DisplayWidget):
+    """
+    This is the display screen.
+    """
 
     def __init__(self, parent, screens, live):
         DisplayWidget.__init__(self, live, parent=None)
@@ -97,7 +101,7 @@ class MainDisplay(DisplayWidget):
         self.screens = screens
         self.isLive = live
         self.alertTab = None
-        self.hide_mode = None
+        self.hideMode = None
         self.setWindowTitle(u'OpenLP Display')
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint |
@@ -184,7 +188,7 @@ class MainDisplay(DisplayWidget):
         `slide`
             The slide text to be displayed
         """
-        log.debug(u'text')
+        log.debug(u'text to display')
         # Wait for the webview to update before displayiong text.
         while not self.loaded:
             Receiver.send_message(u'openlp_process_events')
@@ -199,7 +203,7 @@ class MainDisplay(DisplayWidget):
         `slide`
             The slide text to be displayed
         """
-        log.debug(u'alert')
+        log.debug(u'alert to display')
         if self.height() != self.screen[u'size'].height() \
             or not self.isVisible() or self.videoWidget.isVisible():
             shrink = True
@@ -219,10 +223,17 @@ class MainDisplay(DisplayWidget):
                 shrinkItem.setVisible(True)
             else:
                 shrinkItem.setVisible(False)
-                shrinkItem.resize(self.screen[u'size'].width(), 
+                shrinkItem.resize(self.screen[u'size'].width(),
                     self.screen[u'size'].height())
 
-    def image(self, image):
+    def directImage(self, name, path):
+        """
+        API for replacement backgrounds so Images are added directly to cache
+        """
+        self.imageManager.add_image(name, path)
+        self.image(name)
+
+    def image(self, name):
         """
         Add an image as the background.  The image is converted to a
         bytestream on route.
@@ -230,25 +241,21 @@ class MainDisplay(DisplayWidget):
         `Image`
             The Image to be displayed can be QImage or QPixmap
         """
-        log.debug(u'image')
-        image = resize_image(image, self.screen[u'size'].width(),
-            self.screen[u'size'].height())
+        log.debug(u'image to display')
+        image = self.imageManager.get_image_bytes(name)
         self.resetVideo()
         self.displayImage(image)
         # show screen
         if self.isLive:
             self.setVisible(True)
+        return self.preview()
 
     def displayImage(self, image):
         """
         Display an image, as is.
         """
         if image:
-            if isinstance(image, QtGui.QImage):
-                js = u'show_image("data:image/png;base64,%s");' % \
-                    image_to_byte(image)
-            else:
-                js = u'show_image("data:image/png;base64,%s");' % image
+            js = u'show_image("data:image/png;base64,%s");' % image
         else:
             js = u'show_image("");'
         self.frame.evaluateJavaScript(js)
@@ -375,8 +382,8 @@ class MainDisplay(DisplayWidget):
         if self.isLive:
             self.setVisible(True)
         # if was hidden keep it hidden
-        if self.hide_mode and self.isLive:
-            self.hideDisplay(self.hide_mode)
+        if self.hideMode and self.isLive:
+            self.hideDisplay(self.hideMode)
         preview = QtGui.QImage(self.screen[u'size'].width(),
             self.screen[u'size'].height(),
             QtGui.QImage.Format_ARGB32_Premultiplied)
@@ -395,6 +402,9 @@ class MainDisplay(DisplayWidget):
         self.loaded = False
         self.initialFrame = False
         self.serviceItem = serviceItem
+        if self.serviceItem.themedata.background_filename:
+            self.serviceItem.bg_image_bytes = self.imageManager. \
+                get_image_bytes(self.serviceItem.themedata.theme_name)
         html = build_html(self.serviceItem, self.screen, self.parent.alertTab,
             self.isLive)
         log.debug(u'buildHtml - pre setHtml')
@@ -403,8 +413,8 @@ class MainDisplay(DisplayWidget):
         if serviceItem.foot_text and serviceItem.foot_text:
             self.footer(serviceItem.foot_text)
         # if was hidden keep it hidden
-        if self.hide_mode and self.isLive:
-            self.hideDisplay(self.hide_mode)
+        if self.hideMode and self.isLive:
+            self.hideDisplay(self.hideMode)
 
     def footer(self, text):
         """
@@ -435,7 +445,7 @@ class MainDisplay(DisplayWidget):
                 self.setVisible(True)
             if self.phononActive:
                 self.webView.setVisible(True)
-        self.hide_mode = mode
+        self.hideMode = mode
 
     def showDisplay(self):
         """
@@ -450,9 +460,9 @@ class MainDisplay(DisplayWidget):
         if self.phononActive:
             self.webView.setVisible(False)
             self.videoPlay()
+        self.hideMode = None
         # Trigger actions when display is active again
         Receiver.send_message(u'maindisplay_active')
-        self.hide_mode = None
 
 class AudioPlayer(QtCore.QObject):
     """
@@ -531,4 +541,3 @@ class AudioPlayer(QtCore.QObject):
         """
         log.debug(u'AudioPlayer Reached end of media playlist')
         self.mediaObject.clearQueue()
-

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -47,10 +47,10 @@ class CustomPlugin(Plugin):
     log.info(u'Custom Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Custom', u'1.9.3', plugin_helpers)
+        Plugin.__init__(self, u'Custom', u'1.9.4', plugin_helpers)
         self.weight = -5
-        self.custommanager = Manager(u'custom', init_schema)
-        self.edit_custom_form = EditCustomForm(self.custommanager)
+        self.manager = Manager(u'custom', init_schema)
+        self.edit_custom_form = EditCustomForm(self.manager)
         self.icon_path = u':/plugins/plugin_custom.png'
         self.icon = build_icon(self.icon_path)
 
@@ -59,7 +59,7 @@ class CustomPlugin(Plugin):
         return CustomTab(self.name, visible_name[u'title'])
 
     def getMediaManagerItem(self):
-        # Create the CustomManagerItem object
+        # Create the ManagerItem object
         return CustomMediaItem(self, self, self.icon)
 
     def about(self):
@@ -76,7 +76,7 @@ class CustomPlugin(Plugin):
 
         Returns True if the theme is being used, otherwise returns False.
         """
-        if self.custommanager.get_all_objects(CustomSlide,
+        if self.manager.get_all_objects(CustomSlide,
             CustomSlide.theme_name == theme):
             return True
         return False
@@ -92,11 +92,11 @@ class CustomPlugin(Plugin):
         ``newTheme``
             The new name the plugin should now use.
         """
-        customsUsingTheme = self.custommanager.get_all_objects(CustomSlide,
+        customsUsingTheme = self.manager.get_all_objects(CustomSlide,
             CustomSlide.theme_name == oldTheme)
         for custom in customsUsingTheme:
             custom.theme_name = newTheme
-            self.custommanager.save_object(custom)
+            self.manager.save_object(custom)
 
     def setPluginTextStrings(self):
         """
@@ -109,54 +109,62 @@ class CustomPlugin(Plugin):
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.textStrings[StringContent.VisibleName] = {
-            u'title': translate('CustomsPlugin', 'Customs')
+            u'title': translate('CustomsPlugin', 'Custom')
         }
         # Middle Header Bar
         ## Import Button ##
         self.textStrings[StringContent.Import] = {
             u'title': translate('CustomsPlugin', 'Import'),
-            u'tooltip': translate('CustomsPlugin', 
+            u'tooltip': translate('CustomsPlugin',
                 'Import a Custom')
         }
         ## Load Button ##
         self.textStrings[StringContent.Load] = {
             u'title': translate('CustomsPlugin', 'Load'),
-            u'tooltip': translate('CustomsPlugin', 
+            u'tooltip': translate('CustomsPlugin',
                 'Load a new Custom')
         }
         ## New Button ##
         self.textStrings[StringContent.New] = {
             u'title': translate('CustomsPlugin', 'Add'),
-            u'tooltip': translate('CustomsPlugin', 
+            u'tooltip': translate('CustomsPlugin',
                 'Add a new Custom')
         }
         ## Edit Button ##
         self.textStrings[StringContent.Edit] = {
             u'title': translate('CustomsPlugin', 'Edit'),
-            u'tooltip': translate('CustomsPlugin', 
+            u'tooltip': translate('CustomsPlugin',
                 'Edit the selected Custom')
         }
         ## Delete Button ##
         self.textStrings[StringContent.Delete] = {
             u'title': translate('CustomsPlugin', 'Delete'),
-            u'tooltip': translate('CustomsPlugin', 
+            u'tooltip': translate('CustomsPlugin',
                 'Delete the selected Custom')
         }
         ## Preview ##
         self.textStrings[StringContent.Preview] = {
             u'title': translate('CustomsPlugin', 'Preview'),
-            u'tooltip': translate('CustomsPlugin', 
+            u'tooltip': translate('CustomsPlugin',
                 'Preview the selected Custom')
         }
         ## Live  Button ##
         self.textStrings[StringContent.Live] = {
             u'title': translate('CustomsPlugin', 'Live'),
-            u'tooltip': translate('CustomsPlugin', 
+            u'tooltip': translate('CustomsPlugin',
                 'Send the selected Custom live')
         }
         ## Add to service Button ##
         self.textStrings[StringContent.Service] = {
             u'title': translate('CustomsPlugin', 'Service'),
-            u'tooltip': translate('CustomsPlugin', 
+            u'tooltip': translate('CustomsPlugin',
                 'Add the selected Custom to the service')
         }
+
+    def finalise(self):
+        """
+        Time to tidy up on exit
+        """
+        log.info(u'Custom Finalising')
+        self.manager.finalise()
+        Plugin.finalise(self)

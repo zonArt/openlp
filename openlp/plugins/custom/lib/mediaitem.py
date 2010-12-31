@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -56,6 +56,7 @@ class CustomMediaItem(MediaManagerItem):
         # Holds information about whether the edit is remotly triggered and
         # which Custom is required.
         self.remoteCustom = -1
+        self.manager = parent.manager
 
     def addEndHeaderBar(self):
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -71,11 +72,11 @@ class CustomMediaItem(MediaManagerItem):
         MediaManagerItem.requiredIcons(self)
 
     def initialise(self):
-        self.loadCustomListView(self.parent.custommanager.get_all_objects(
+        self.loadCustomListView(self.manager.get_all_objects(
             CustomSlide, order_by_ref=CustomSlide.title))
-        #Called to redisplay the song list screen edith from a search
-        #or from the exit of the Song edit dialog.  If remote editing is active
-        #Trigger it and clean up so it will not update again.
+        # Called to redisplay the custom list screen edith from a search
+        # or from the exit of the Custom edit dialog. If remote editing is
+        # active trigger it and clean up so it will not update again.
         if self.remoteTriggered == u'L':
             self.onAddClick()
         if self.remoteTriggered == u'P':
@@ -106,7 +107,7 @@ class CustomMediaItem(MediaManagerItem):
         type of display is required.
         """
         fields = customid.split(u':')
-        valid = self.parent.custommanager.get_object(CustomSlide, fields[1])
+        valid = self.manager.get_object(CustomSlide, fields[1])
         if valid:
             self.remoteCustom = fields[1]
             self.remoteTriggered = fields[0]
@@ -139,11 +140,11 @@ class CustomMediaItem(MediaManagerItem):
             id_list = [(item.data(QtCore.Qt.UserRole)).toInt()[0]
                 for item in self.listView.selectedIndexes()]
             for id in id_list:
-                self.parent.custommanager.delete_object(CustomSlide, id)
+                self.parent.manager.delete_object(CustomSlide, id)
             for row in row_list:
                 self.listView.takeItem(row)
 
-    def generateSlideData(self, service_item, item=None):
+    def generateSlideData(self, service_item, item=None, xmlVersion=False):
         raw_slides = []
         raw_footer = []
         slide = None
@@ -161,10 +162,10 @@ class CustomMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.AllowsEdit)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
-        customSlide = self.parent.custommanager.get_object(CustomSlide, item_id)
+        customSlide = self.parent.manager.get_object(CustomSlide, item_id)
         title = customSlide.title
         credit = customSlide.credits
-        service_item.editId = item_id
+        service_item.edit_id = item_id
         theme = customSlide.theme_name
         if theme:
             service_item.theme = theme
