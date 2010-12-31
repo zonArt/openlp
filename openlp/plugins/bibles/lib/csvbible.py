@@ -72,7 +72,7 @@ class CSVBible(BibleDB):
                 self.create_book(unicode(line[1], details['encoding']),
                     line[2], int(line[0]))
                 Receiver.send_message(u'openlp_process_events')
-        except IOError:
+        except IOError, IndexError:
             log.exception(u'Loading books from file failed')
             success = False
         finally:
@@ -86,7 +86,8 @@ class CSVBible(BibleDB):
             verse_file.seek(0)
             verse_reader = csv.reader(verse_file, dialect)
             for line in verse_reader:
-                if self.stop_import_flag:  # cancel pressed
+                if self.stop_import_flag:
+                    # cancel pressed
                     break
                 details = chardet.detect(line[3])
                 if book_ptr != line[0]:

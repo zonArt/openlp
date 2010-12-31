@@ -86,11 +86,11 @@ class CCLIFileImport(SongImport):
                 infile = codecs.open(filename, u'r', details['encoding'])
                 lines = infile.readlines()
                 ext = os.path.splitext(filename)[1]
-                if ext.lower() == ".usr":
+                if ext.lower() == u'.usr':
                     log.info(u'SongSelect .usr format file found %s: ',
                         filename)
                     self.do_import_usr_file(lines)
-                elif ext.lower() == ".txt":
+                elif ext.lower() == u'.txt':
                     log.info(u'SongSelect .txt format file found %s: ',
                         filename)
                     self.do_import_txt_file(lines)
@@ -124,7 +124,7 @@ class CCLIFileImport(SongImport):
         ``Title=``
             Contains the song title (e.g. *Title=Above All*)
         ``Author=``
-            Contains a | delimited list of the  song authors
+            Contains a | delimited list of the song authors
             e.g. *Author=LeBlanc, Lenny | Baloche, Paul*
         ``Copyright=``
             Contains a | delimited list of the song copyrights
@@ -184,8 +184,8 @@ class CCLIFileImport(SongImport):
                 verse_type = u'O'
                 check_first_verse_line = True
             verse_text = unicode(words_list[counter])
-            verse_text = verse_text.replace("/n",  "\n")
-            verse_lines = verse_text.split(u'\n',  1)
+            verse_text = verse_text.replace(u'/n', u'\n')
+            verse_lines = verse_text.split(u'\n', 1)
             if check_first_verse_line:
                 if verse_lines[0].startswith(u'(PRE-CHORUS'):
                     verse_type = u'P'
@@ -207,7 +207,7 @@ class CCLIFileImport(SongImport):
             author_list = song_author.split(u'|')
         for author in author_list:
             seperated = author.split(u',')
-            self.add_author(seperated[1].strip() + " " + seperated[0].strip())
+            self.add_author(seperated[1].strip() + u' ' + seperated[0].strip())
         self.title = song_name
         self.copyright = song_copyright
         self.ccli_number = song_ccli

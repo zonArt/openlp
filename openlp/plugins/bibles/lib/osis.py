@@ -125,7 +125,7 @@ class OSISBible(BibleDB):
                     verse = int(match.group(3))
                     verse_text = match.group(4)
                     if not db_book or db_book.name != self.books[book][0]:
-                        log.debug('New book: "%s"', self.books[book][0])
+                        log.debug(u'New book: "%s"', self.books[book][0])
                         if book == u'Matt':
                             testament += 1
                         db_book = self.create_book(

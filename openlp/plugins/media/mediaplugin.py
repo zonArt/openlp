@@ -65,7 +65,7 @@ class MediaPlugin(Plugin):
     def _addToList(self, list, value, mimetype):
         # Is it a media type
         if len(value) == 2:
-            extensions =  mimetypes.guess_all_extensions(unicode(mimetype))
+            extensions = mimetypes.guess_all_extensions(unicode(mimetype))
             # we have an extension
             if extensions:
                 for extension in extensions:

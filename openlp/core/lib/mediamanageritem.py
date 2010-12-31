@@ -445,7 +445,7 @@ class MediaManagerItem(QtGui.QWidget):
                 translate('OpenLP.MediaManagerItem',
                     'You must select one or more items to preview.'))
         else:
-            log.debug(self.plugin.name + u' Preview requested')
+            log.debug(u'%s Preview requested', self.plugin.name)
             serviceItem = self.buildServiceItem()
             if serviceItem:
                 serviceItem.from_plugin = True
@@ -462,7 +462,7 @@ class MediaManagerItem(QtGui.QWidget):
                 translate('OpenLP.MediaManagerItem',
                     'You must select one or more items to send live.'))
         else:
-            log.debug(self.plugin.name + u' Live requested')
+            log.debug(u'%s Live requested', self.plugin.name)
             serviceItem = self.buildServiceItem()
             if serviceItem:
                 serviceItem.from_plugin = True
@@ -481,7 +481,7 @@ class MediaManagerItem(QtGui.QWidget):
             # Is it posssible to process multiple list items to generate
             # multiple service items?
             if self.singleServiceItem or self.remoteTriggered:
-                log.debug(self.plugin.name + u' Add requested')
+                log.debug(u'%s Add requested', self.plugin.name)
                 serviceItem = self.buildServiceItem(None, True)
                 if serviceItem:
                     serviceItem.from_plugin = False
@@ -505,7 +505,7 @@ class MediaManagerItem(QtGui.QWidget):
                 translate('OpenLP.MediaManagerItem',
                     'You must select one or more items'))
         else:
-            log.debug(self.plugin.name + u' Add requested')
+            log.debug(u'%s Add requested', self.plugin.name)
             serviceItem = self.parent.serviceManager.getServiceItem()
             if not serviceItem:
                 QtGui.QMessageBox.information(self,

@@ -84,7 +84,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             u'lxml: %s\n' % etree.__version__ + \
             u'Chardet: %s\n' % chardet_version + \
             u'PyEnchant: %s\n' % enchant_version + \
-            u'PySQLite: %s\n' %  sqlite_version
+            u'PySQLite: %s\n' % sqlite_version
         if platform.system() == u'Linux':
             if os.environ.get(u'KDE_FULL_SESSION') == u'true':
                 system = system + u'Desktop: KDE SC\n'

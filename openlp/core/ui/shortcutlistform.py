@@ -71,7 +71,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         if event.modifiers() & Qt.ShiftModifier == Qt.ShiftModifier:
             key_string = u'Shift+' + key_string
         key_sequence = QtGui.QKeySequence(key_string)
-        existing_key = QtGui.QKeySequence("Ctrl+Shift+F8")
+        existing_key = QtGui.QKeySequence(u'Ctrl+Shift+F8')
         if key_sequence == existing_key:
             QtGui.QMessageBox.warning(
                 self,
