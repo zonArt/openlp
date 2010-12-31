@@ -377,25 +377,10 @@ class SlideController(QtGui.QWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_%s_text_request' % self.typePrefix),
             self.onTextRequest)
-        QtCore.QObject.connect(self.parent.ControlSplitter,
-            QtCore.SIGNAL(u'splitterMoved(int, int)'), self.previewSizeChanged)
-        QtCore.QObject.connect(self.Splitter,
-            QtCore.SIGNAL(u'splitterMoved(int, int)'), self.previewSizeChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.refreshServiceItem)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_screen_changed'), self.screenSizeChanged)
-
-    def paintEvent(self, event):
-        """
-        When the Slidecontroller is painted, we need to make sure, that the
-        SlidePreview's size is updated.
-        """
-        # We need to make this circuit, because we have to consider the other
-        # slidecontroller as well.
-        log.debug(u'paintEvent live = %s' % self.isLive)
-        self.parent.previewController.previewSizeChanged()
-        self.parent.liveController.previewSizeChanged()
 
     def screenSizeChanged(self):
         """
