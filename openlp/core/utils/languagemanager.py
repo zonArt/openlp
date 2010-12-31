@@ -65,7 +65,7 @@ class LanguageManager(object):
         """
         trans_dir = QtCore.QDir(AppLocation.get_directory(
             AppLocation.LanguageDir))
-        file_names = trans_dir.entryList(QtCore.QStringList("*.qm"),
+        file_names = trans_dir.entryList(QtCore.QStringList(u'*.qm'),
                 QtCore.QDir.Files, QtCore.QDir.Name)
         for name in file_names:
             file_names.replaceInStrings(name, trans_dir.filePath(name))

@@ -166,7 +166,7 @@ class BibleDB(QtCore.QObject, Manager):
         """
         Stops the import of the Bible.
         """
-        log.debug('Stopping import')
+        log.debug(u'Stopping import')
         self.stop_import_flag = True
 
     def get_name(self):
@@ -430,7 +430,7 @@ class BibleDB(QtCore.QObject, Manager):
         Utility debugging method to dump the contents of a bible.
         """
         log.debug(u'.........Dumping Bible Database')
-        log.debug('...............................Books ')
+        log.debug(u'...............................Books ')
         books = self.session.query(Book).all()
         log.debug(books)
         log.debug(u'...............................Verses ')

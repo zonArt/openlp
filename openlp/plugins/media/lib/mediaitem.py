@@ -30,7 +30,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    ItemCapabilities, SettingsManager, translate, check_item_selected,  \
+    ItemCapabilities, SettingsManager, translate, check_item_selected, \
     context_menu_action
 
 log = logging.getLogger(__name__)
@@ -60,10 +60,9 @@ class MediaMediaItem(MediaManagerItem):
 
     def retranslateUi(self):
         self.OnNewPrompt = translate('MediaPlugin.MediaItem', 'Select Media')
-        self.OnNewFileMasks = translate('MediaPlugin.MediaItem',
-            u'Videos (%s);;'
-            u'Audio (%s);;'
-            u'All files (*)' % (self.parent.video_list, self.parent.audio_list))
+        self.OnNewFileMasks = unicode(translate('MediaPlugin.MediaItem',
+            'Videos (%s);;Audio (%s);;All files (*)')) % \
+            (self.parent.video_list, self.parent.audio_list)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)

@@ -114,10 +114,10 @@ class AlertsPlugin(Plugin):
         """
         ## Name PluginList ##
         self.textStrings[StringContent.Name] = {
-            u'singular': translate('AlertsPlugin', 'Alert'),
-            u'plural': translate('AlertsPlugin', 'Alerts')
+            u'singular': translate('AlertsPlugin', 'Alert', 'name singular'),
+            u'plural': translate('AlertsPlugin', 'Alerts', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.textStrings[StringContent.VisibleName] = {
-            u'title': translate('AlertsPlugin', 'Alerts')
+            u'title': translate('AlertsPlugin', 'Alerts', 'container title')
         }

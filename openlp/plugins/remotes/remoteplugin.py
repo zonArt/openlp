@@ -84,10 +84,10 @@ class RemotesPlugin(Plugin):
         """
         ## Name PluginList ##
         self.textStrings[StringContent.Name] = {
-            u'singular': translate('RemotePlugin', 'Remote'),
-            u'plural': translate('RemotePlugin', 'Remotes')
+            u'singular': translate('RemotePlugin', 'Remote', 'name singular'),
+            u'plural': translate('RemotePlugin', 'Remotes', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.textStrings[StringContent.VisibleName] = {
-            u'title': translate('RemotePlugin', 'Remote')
+            u'title': translate('RemotePlugin', 'Remote', 'container title')
         }

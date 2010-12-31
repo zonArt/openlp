@@ -1042,7 +1042,8 @@ class SlideController(QtGui.QWidget):
         if self.ThemeScreen.isChecked:
             self.ThemeScreen.setChecked(False)
             self.HideMenu.setDefaultAction(self.ThemeScreen)
-        if self.DesktopScreen.isChecked:
-            self.DesktopScreen.setChecked(False)
-            self.HideMenu.setDefaultAction(self.DesktopScreen)
+        if self.screens.display_count > 1:
+            if self.DesktopScreen.isChecked:
+                self.DesktopScreen.setChecked(False)
+                self.HideMenu.setDefaultAction(self.DesktopScreen)
 
