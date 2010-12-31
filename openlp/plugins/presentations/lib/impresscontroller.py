@@ -255,8 +255,9 @@ class ImpressDocument(PresentationDocument):
             self.document = desktop.loadComponentFromURL(url, u'_blank',
                 0, properties)
         except:
-            log.exception(u'Failed to load presentation')
+            log.exception(u'Failed to load presentation %s' % url)
             return False
+
         self.presentation = self.document.getPresentation()
         self.presentation.Display = \
             self.controller.plugin.renderManager.screens.current_display + 1
