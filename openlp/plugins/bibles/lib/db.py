@@ -33,7 +33,7 @@ from sqlalchemy import Column, ForeignKey, or_, Table, types
 from sqlalchemy.orm import class_mapper, mapper, relation
 from sqlalchemy.orm.exc import UnmappedClassError
 
-from openlp.core.lib import translate
+from openlp.core.lib import Receiver, translate
 from openlp.core.lib.db import BaseModel, init_db, Manager
 
 log = logging.getLogger(__name__)
@@ -354,12 +354,12 @@ class BibleDB(QtCore.QObject, Manager):
                 verse_list.extend(verses)
             else:
                 log.debug(u'OpenLP failed to find book %s', book)
-                QtGui.QMessageBox.information(self.bible_plugin.mediaItem,
-                    translate('BiblesPlugin.BibleDB', 'Book not found'),
-                    translate('BiblesPlugin.BibleDB', 'The book you requested '
-                    'could not be found in this Bible. Please check your '
-                    'spelling and that this is a complete Bible not just '
-                    'one testament.'))
+                Receiver.send_message(u'openlp_error_message', {
+                    u'title': translate('BiblesPlugin', 'No Book Found'),
+                    u'message': translate('BiblesPlugin', 'No matching book '
+                    'could be found in this Bible. Check that you have '
+                    'spelled the name of the book correctly.')
+                })
         return verse_list
 
     def verse_search(self, text):

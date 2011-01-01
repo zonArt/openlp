@@ -35,7 +35,7 @@ from HTMLParser import HTMLParseError
 
 from BeautifulSoup import BeautifulSoup, NavigableString
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import Receiver, translate
 from openlp.core.utils import AppLocation
 from openlp.plugins.bibles.lib import SearchResults
 from openlp.plugins.bibles.lib.db import BibleDB, Book
@@ -212,7 +212,13 @@ class BGExtract(object):
             Receiver.send_message(u'openlp_process_events')
         except urllib2.URLError:
             log.exception(u'The web bible page could not be downloaded.')
-            Receiver.send_message(u'bibles_download_error')
+            Receiver.send_message(u'openlp_error_message', {
+                u'title': translate('BiblePlugin.HTTPBible', 'Download Error'),
+                u'message': translate('BiblePlugin.HTTPBible', 'There was a '
+                'problem downloading your verse selection. Please check your '
+                'Internet connection, and if this error continues to occur '
+                'consider reporting a bug.')
+            })
         finally:
             if not page:
                 return None
@@ -277,7 +283,13 @@ class BSExtract(object):
             Receiver.send_message(u'openlp_process_events')
         except urllib2.URLError:
             log.exception(u'The web bible page could not be downloaded.')
-            Receiver.send_message(u'bibles_download_error')
+            Receiver.send_message(u'openlp_error_message', {
+                u'title': translate('BiblePlugin.HTTPBible', 'Download Error'),
+                u'message': translate('BiblePlugin.HTTPBible', 'There was a '
+                'problem downloading your verse selection. Please check your '
+                'Internet connection, and if this error continues to occur '
+                'consider reporting a bug.')
+            })
         finally:
             if not page:
                 return None
@@ -286,10 +298,13 @@ class BSExtract(object):
             soup = BeautifulSoup(page)
         except HTMLParseError:
             log.exception(u'BeautifulSoup could not parse the bible page.')
-            Receiver.send_message(u'bibles_download_error')
-        finally:
-            if not soup:
-                return None
+            Receiver.send_message(u'openlp_error_message', {
+                u'title': translate('BiblePlugin.HTTPBible', 'Parse Error'),
+                u'message': translate('BiblePlugin.HTTPBible', 'There was a '
+                'problem extracting your verse selection. If this error '
+                'continues to occur consider reporting a bug.')
+            })
+            return None
         Receiver.send_message(u'openlp_process_events')
         content = None
         try:
@@ -341,19 +356,26 @@ class CWExtract(object):
             Receiver.send_message(u'openlp_process_events')
         except urllib2.URLError:
             log.exception(u'The web bible page could not be downloaded.')
-            Receiver.send_message(u'bibles_download_error')
-        finally:
-            if not page:
-                return None
+            Receiver.send_message(u'openlp_error_message', {
+                u'title': translate('BiblePlugin.HTTPBible', 'Download Error'),
+                u'message': translate('BiblePlugin.HTTPBible', 'There was a '
+                'problem downloading your verse selection. Please check your '
+                'Internet connection, and if this error continues to occur '
+                'consider reporting a bug.')
+            })
+            return None
         soup = None
         try:
             soup = BeautifulSoup(page)
         except HTMLParseError:
             log.exception(u'BeautifulSoup could not parse the bible page.')
-            Receiver.send_message(u'bibles_download_error')
-        finally:
-            if not soup:
-                return None
+            Receiver.send_message(u'openlp_error_message', {
+                u'title': translate('BiblePlugin.HTTPBible', 'Parse Error'),
+                u'message': translate('BiblePlugin.HTTPBible', 'There was a '
+                'problem extracting your verse selection. If this error '
+                'continues to occur consider reporting a bug.')
+            })
+            return None
         Receiver.send_message(u'openlp_process_events')
         htmlverses = soup.findAll(u'span', u'versetext')
         verses = {}
@@ -463,7 +485,12 @@ class HTTPBible(BibleDB):
             if not db_book:
                 book_details = self.lookup_book(book)
                 if not book_details:
-                    Receiver.send_message(u'bibles_nobook')
+                    Receiver.send_message(u'openlp_error_message', {
+                        u'title': translate('BiblesPlugin', 'No Book Found'),
+                        u'message': translate('BiblesPlugin', 'No matching '
+                        'book could be found in this Bible. Check that you'
+                        'have spelled the name of the book correctly.')
+                    })
                     return []
                 db_book = self.create_book(book_details[u'name'],
                     book_details[u'abbreviation'],
@@ -501,12 +528,7 @@ class HTTPBible(BibleDB):
             ev = BGExtract(self.proxy_server)
         elif self.download_source.lower() == u'bibleserver':
             ev = BSExtract(self.proxy_server)
-        try:
-            return ev.get_bible_chapter(self.download_name, book, chapter)
-        except:
-            log.exception(u'Error occurred while downloading verses')
-            Receiver.send_message(u'bibles_download_error')
-            return None
+        return ev.get_bible_chapter(self.download_name, book, chapter)
 
     def get_books(self):
         """
