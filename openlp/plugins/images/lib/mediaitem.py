@@ -43,6 +43,7 @@ class ImageListView(BaseListWithDnD):
         self.PluginName = u'Images'
         BaseListWithDnD.__init__(self, parent)
 
+
 class ImageMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for images.
@@ -51,8 +52,8 @@ class ImageMediaItem(MediaManagerItem):
 
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'images/image'
-        # this next is a class, not an instance of a class - it will
-        # be instanced by the base MediaManagerItem
+        # This next is a class, not an instance of a class - it will
+        # be instanced by the base MediaManagerItem.
         self.ListViewWithDnD_class = ImageListView
         MediaManagerItem.__init__(self, parent, self, icon)
 
@@ -113,7 +114,7 @@ class ImageMediaItem(MediaManagerItem):
             u':/system/system_close.png',
             translate('ImagePlugin.MediaItem', 'Reset Live Background'),
             self.onResetClick, False)
-        # Add the song widget to the page layout
+        # Add the song widget to the page layout.
         self.pageLayout.addWidget(self.ImageWidget)
         self.resetButton.setVisible(False)
 
@@ -171,15 +172,24 @@ class ImageMediaItem(MediaManagerItem):
                 if os.path.exists(filename):
                     (path, name) = os.path.split(filename)
                     service_item.add_from_image(filename, name)
-                    return True
-                else:
-                    # File is no longer present
+                # We have only one image, which is no longer present.
+                elif len(items) == 1:
                     QtGui.QMessageBox.critical(
                         self, translate('ImagePlugin.MediaItem',
                         'Missing Image'),
                         unicode(translate('ImagePlugin.MediaItem',
-                        'The Image %s no longer exists.')) % filename)
+                        'The image %s no longer exists.')) % filename)
                     return False
+                # We have more than one item, but a file is missing.
+                elif QtGui.QMessageBox.question(self,
+                        translate('ImagePlugin.MediaItem', 'Missing Image'),
+                        unicode(translate('ImagePlugin.MediaItem', 'The image '
+                        '%s no longer exists. Do you want to add the other '
+                        'images anyway?')) % filename,
+                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
+                        QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
+                        return False
+            return True
         else:
             return False
 
