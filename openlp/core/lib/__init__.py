@@ -306,6 +306,17 @@ def expand_tags(text):
         text = text.replace(tag[u'end tag'], tag[u'end html'])
     return text
 
+def checkDirectoryExists(dir):
+    """
+    Check a theme directory exists and if not create it
+
+    ``dir``
+        Theme directory to make sure exists
+    """
+    log.debug(u'checkDirectoryExists')
+    if not os.path.exists(dir):
+        os.mkdir(dir)
+
 from theme import ThemeLevel, ThemeXML, BackgroundGradientType, \
     BackgroundType, HorizontalType, VerticalType
 from displaytags import DisplayTags

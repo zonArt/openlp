@@ -34,7 +34,7 @@ from subprocess import Popen, PIPE
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import Receiver, checkDirectoryExists
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
 from openlp.core.ui.exceptionform import ExceptionForm
@@ -216,7 +216,7 @@ class OpenLP(QtGui.QApplication):
 
     def setNormalCursor(self):
         """
-        Sets the Normal Cursor forthe Application
+        Sets the Normal Cursor for the Application
         """
         self.restoreOverrideCursor()
 
@@ -243,8 +243,7 @@ def main():
         help='Set the Qt4 style (passed directly to Qt4).')
     # Set up logging
     log_path = AppLocation.get_directory(AppLocation.CacheDir)
-    if not os.path.exists(log_path):
-        os.makedirs(log_path)
+    checkDirectoryExists(log_path)
     filename = os.path.join(log_path, u'openlp.log')
     logfile = logging.FileHandler(filename, u'w')
     logfile.setFormatter(logging.Formatter(

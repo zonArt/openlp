@@ -36,7 +36,7 @@ from openlp.core.ui import FileRenameForm, ThemeForm
 from openlp.core.theme import Theme
 from openlp.core.lib import OpenLPToolbar, ThemeXML, get_text_file_string, \
     build_icon, Receiver, SettingsManager, translate, check_item_selected, \
-    BackgroundType, BackgroundGradientType
+    BackgroundType, BackgroundGradientType, checkDirectoryExists
 from openlp.core.utils import AppLocation, get_filesystem_encoding
 
 log = logging.getLogger(__name__)
@@ -125,9 +125,9 @@ class ThemeManager(QtGui.QWidget):
         # Variables
         self.themelist = []
         self.path = AppLocation.get_section_data_path(self.settingsSection)
-        self.checkDirectoryExists(self.path)
+        checkDirectoryExists(self.path)
         self.thumbPath = os.path.join(self.path, u'thumbnails')
-        self.checkDirectoryExists(self.thumbPath)
+        checkDirectoryExists(self.thumbPath)
         self.themeForm.path = self.path
         self.oldBackgroundImage = None
         # Last little bits of setting up
@@ -457,17 +457,6 @@ class ThemeManager(QtGui.QWidget):
         else:
             return self._createThemeFromXml(xml, self.path)
 
-    def checkDirectoryExists(self, dir):
-        """
-        Check a theme directory exists and if not create it
-
-        ``dir``
-            Theme directory to make sure exists
-        """
-        log.debug(u'check themes')
-        if not os.path.exists(dir):
-            os.mkdir(dir)
-
     def unzipTheme(self, filename, dir):
         """
         Unzip the theme, remove the preview file if stored
@@ -498,8 +487,7 @@ class ThemeManager(QtGui.QWidget):
                 theme_dir = None
                 if osfile.endswith(os.path.sep):
                     theme_dir = os.path.join(dir, osfile)
-                    if not os.path.exists(theme_dir):
-                        os.mkdir(os.path.join(dir, osfile))
+                    checkDirectoryExists(theme_dir)
                 else:
                     fullpath = os.path.join(dir, osfile)
                     names = osfile.split(os.path.sep)
@@ -509,8 +497,7 @@ class ThemeManager(QtGui.QWidget):
                             themename = names[0]
                         if theme_dir is None:
                             theme_dir = os.path.join(dir, names[0])
-                            if not os.path.exists(theme_dir):
-                                os.mkdir(os.path.join(dir, names[0]))
+                            checkDirectoryExists(theme_dir)
                         if os.path.splitext(ucsfile)[1].lower() in [u'.xml']:
                             xml_data = zip.read(file)
                             try:
@@ -529,16 +516,19 @@ class ThemeManager(QtGui.QWidget):
                 theme = self._createThemeFromXml(filexml, self.path)
                 self.generateAndSaveImage(dir, themename, theme)
             else:
-                QtGui.QMessageBox.critical(self,
-                    translate('OpenLP.ThemeManager', 'Error'),
-                    translate('OpenLP.ThemeManager',
-                        'File is not a valid theme.'))
+                Receiver.send_message(u'openlp_error_message', {
+                    u'title': translate('OpenLP.ThemeManager', \
+                    'Validation Error'),
+                    u'message':translate('OpenLP.ThemeManager',
+                    'File is not a valid theme.')})
                 log.exception(u'Theme file does not contain XML data %s' %
                     filename)
         except (IOError, NameError):
-            QtGui.QMessageBox.critical(self,
-                translate('OpenLP.ThemeManager', 'Error'),
-                translate('OpenLP.ThemeManager', 'File is not a valid theme.'))
+            Receiver.send_message(u'openlp_error_message', {
+                u'title': translate('OpenLP.ThemeManager', \
+                'Validation Error'),
+                u'message':translate('OpenLP.ThemeManager',
+                'File is not a valid theme.')})
             log.exception(u'Importing theme from zip failed %s' % filename)
         finally:
             if zip:
@@ -571,11 +561,11 @@ class ThemeManager(QtGui.QWidget):
         """
         theme_dir = os.path.join(self.path, themeName)
         if os.path.exists(theme_dir):
-            QtGui.QMessageBox.critical(self,
-                translate('OpenLP.ThemeManager', 'Theme Exists'),
-                translate('OpenLP.ThemeManager',
-                'A theme with this name already exists.'),
-                (QtGui.QMessageBox.Ok), QtGui.QMessageBox.Ok)
+            Receiver.send_message(u'openlp_error_message', {
+                u'title': translate('OpenLP.ThemeManager', \
+                'Validation Error'),
+                u'message':translate('OpenLP.ThemeManager',
+                'A theme with this name already exists.')})
             return False
         return True
 
@@ -588,8 +578,7 @@ class ThemeManager(QtGui.QWidget):
         theme_pretty_xml = theme.extract_formatted_xml()
         log.debug(u'saveTheme %s %s', name, theme_pretty_xml)
         theme_dir = os.path.join(self.path, name)
-        if not os.path.exists(theme_dir):
-            os.mkdir(os.path.join(self.path, name))
+        checkDirectoryExists(theme_dir)
         theme_file = os.path.join(theme_dir, name + u'.xml')
         if imageTo and self.oldBackgroundImage and \
             imageTo != self.oldBackgroundImage:
@@ -699,34 +688,13 @@ class ThemeManager(QtGui.QWidget):
             if testPlugin:
                 for plugin in self.parent.pluginManager.plugins:
                     if plugin.usesTheme(theme):
-                        QtGui.QMessageBox.critical(self,
-                            translate('OpenLP.ThemeManager', 'Error'),
-                            unicode(translate('OpenLP.ThemeManager',
-                                'Theme %s is used in the %s plugin.')) % \
-                                (theme, plugin.name))
+                        Receiver.send_message(u'openlp_error_message', {
+                            u'title': translate('OpenLP.ThemeManager', \
+                            'Validation Error'),
+                            u'message': unicode(translate('OpenLP.ThemeManager',
+                            'Theme %s is used in the %s plugin.')) % \
+                            (theme, plugin.name)})
                         return False
-            if unicode(self.serviceComboBox.currentText()) == theme:
-                QtGui.QMessageBox.critical(self,
-                    translate('OpenLP.ThemeManager', 'Error'),
-                    translate('OpenLP.ThemeManager',
-                        'You are unable to delete the default theme.'))
-                return False
-            else:
-                if testPlugin:
-                    for plugin in self.parent.pluginManager.plugins:
-                        if plugin.usesTheme(theme):
-                            QtGui.QMessageBox.critical(self,
-                                translate('OpenLP.ThemeManager', 'Error'),
-                                unicode(translate('OpenLP.ThemeManager',
-                                    'Theme %s is used in the %s plugin.')) % \
-                                    (theme, plugin.name))
-                            return False
-                if unicode(self.serviceComboBox.currentText()) == theme:
-                    QtGui.QMessageBox.critical(self,
-                        translate('OpenLP.ThemeManager', 'Error'),
-                        unicode(translate('OpenLP.ThemeManager',
-                        'Theme %s is used by the service manager.')) % theme)
-                    return False
         return True
 
     def _migrateVersion122(self, xml_data):
