@@ -387,7 +387,6 @@ class SlideController(QtGui.QWidget):
         Settings dialog has changed the screen size of adjust output and
         screen previews.
         """
-        log.debug(u'screenSizeChanged live = %s' % self.isLive)
         # rebuild display as screen size changed
         self.display = MainDisplay(self, self.screens, self.isLive)
         self.display.imageManager = self.parent.renderManager.image_manager
@@ -403,7 +402,6 @@ class SlideController(QtGui.QWidget):
         Takes care of the SlidePreview's size. Is called when one of the the
         splitters is moved or when the screen size is changed.
         """
-        log.debug(u'previewSizeChanged live = %s' % self.isLive)
         if self.ratio < float(self.PreviewFrame.width()) / float(
             self.PreviewFrame.height()):
             # We have to take the height as limit.
