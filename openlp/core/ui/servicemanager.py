@@ -895,6 +895,7 @@ class ServiceManager(QtGui.QWidget):
         Rebuild the service list as things have changed and a
         repaint is the easiest way to do this.
         """
+        Receiver.send_message(u'cursor_busy')
         log.debug(u'regenerateServiceItems')
         # force reset of renderer as theme data has changed
         self.parent.renderManager.themedata = None
@@ -909,6 +910,7 @@ class ServiceManager(QtGui.QWidget):
             # Set to False as items may have changed rendering
             # does not impact the saved song so True may also be valid
             self.setModified(True)
+        Receiver.send_message(u'cursor_normal')
 
     def serviceItemUpdate(self, message):
         """
