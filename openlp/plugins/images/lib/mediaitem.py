@@ -182,13 +182,13 @@ class ImageMediaItem(MediaManagerItem):
                     return False
                 # We have more than one item, but a file is missing.
                 elif QtGui.QMessageBox.question(self,
-                        translate('ImagePlugin.MediaItem', 'Missing Image'),
-                        unicode(translate('ImagePlugin.MediaItem', 'The image '
-                        '%s no longer exists. Do you want to add the other '
-                        'images anyway?')) % filename,
-                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
-                        QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
-                        return False
+                    translate('ImagePlugin.MediaItem', 'Missing Image'),
+                    unicode(translate('ImagePlugin.MediaItem', 'The image %s '
+                    'no longer exists. Do you want to add the other images '
+                    'anyway?')) % filename,
+                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
+                    QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
+                    return False
             return True
         else:
             return False
