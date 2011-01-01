@@ -1007,11 +1007,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if recentFilesToDisplay:
             self.FileMenu.addSeparator()
             for fileId, filename in enumerate(recentFilesToDisplay):
-                action = QtGui.QAction(u'&%d %s' % (fileId +1,
+                log.debug('Recent file name: %s', filename)
+                action = QtGui.QAction(u'&%d %s' % (fileId + 1,
                     QtCore.QFileInfo(filename).fileName()), self)
                 action.setData(QtCore.QVariant(filename))
                 self.connect(action, QtCore.SIGNAL(u'triggered()'),
-                    self.ServiceManagerContents.loadService)
+                    self.ServiceManagerContents.onRecentServiceClicked)
                 self.FileMenu.addAction(action)
         self.FileMenu.addSeparator()
         self.FileMenu.addAction(self.FileMenuActions[-1])
