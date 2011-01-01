@@ -612,6 +612,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'config_screen_changed'), self.screenChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'maindisplay_status_text'), self.showStatusMessage)
+        # Simple message boxes
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'openlp_error_message'), self.onErrorMessage)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'openlp_warning_message'), self.onWarningMessage)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'openlp_information_message'),
+            self.onInformationMessage)
         # warning cyclic dependency
         # RenderManager needs to call ThemeManager and
         # ThemeManager needs to call RenderManager
@@ -720,6 +728,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                         'OpenLP Main Display Blanked'),
                     translate('OpenLP.MainWindow',
                          'The Main Display has been blanked out'))
+
+    def onErrorMessage(self, data):
+        QtGui.QMessageBox.critical(self, data[u'title'], data[u'message'])
+
+    def onWarningMessage(self, data):
+        QtGui.QMessageBox.warning(self, data[u'title'], data[u'message'])
+
+    def onInformationMessage(self, data):
+        QtGui.QMessageBox.information(self, data[u'title'], data[u'message'])
 
     def onHelpWebSiteClicked(self):
         """
@@ -838,7 +855,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         else:
             ret = QtGui.QMessageBox.question(self,
                 translate('OpenLP.MainWindow', 'Close OpenLP'),
-                translate('OpenLP.MainWindow', 'Are you sure you want to Exit?'),
+                translate('OpenLP.MainWindow', 'Are you sure you want to close OpenLP?'),
                 QtGui.QMessageBox.StandardButtons(
                     QtGui.QMessageBox.Yes |
                     QtGui.QMessageBox.No),
