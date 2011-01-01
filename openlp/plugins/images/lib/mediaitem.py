@@ -139,7 +139,6 @@ class ImageMediaItem(MediaManagerItem):
                 self.settingsSection, self.getFileList())
 
     def loadList(self, list):
-        Receiver.send_message(u'cursor_busy')
         for file in list:
             filename = os.path.split(unicode(file))[1]
             thumb = os.path.join(self.servicePath, filename)
@@ -154,7 +153,6 @@ class ImageMediaItem(MediaManagerItem):
             item_name.setIcon(icon)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.listView.addItem(item_name)
-        Receiver.send_message(u'cursor_normal')
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
         items = self.listView.selectedIndexes()

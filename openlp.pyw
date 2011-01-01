@@ -205,22 +205,20 @@ class OpenLP(QtGui.QApplication):
             self.exceptionForm = ExceptionForm(self.mainWindow)
         self.exceptionForm.exceptionTextEdit.setPlainText(
             ''.join(format_exception(exctype, value, traceback)))
+        self.setNormalCursor()
         self.exceptionForm.exec_()
 
     def setBusyCursor(self):
         """
-        Sets the Busy Cursor on the Main Window
+        Sets the Busy Cursor for the Application
         """
-        #a=c
         self.setOverrideCursor(QtCore.Qt.BusyCursor)
-        #self.processEvents()
 
     def setNormalCursor(self):
         """
-        Sets the Normal Cursor on the Main Window
+        Sets the Normal Cursor forthe Application
         """
         self.restoreOverrideCursor()
-        #self.processEvents()
 
 def main():
     """
