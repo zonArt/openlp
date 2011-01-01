@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -32,7 +32,7 @@ import logging
 
 from openlp.plugins.songs.lib.songimport import SongImport
 
-BLOCK_TYPES = (u'V',  u'C',  u'B')
+BLOCK_TYPES = (u'V', u'C', u'B')
 
 log = logging.getLogger(__name__)
 
@@ -111,7 +111,7 @@ class WowImport(SongImport):
         Recieve a single file, or a list of files to import.
         """
 
-        if isinstance(self.import_source,  list):
+        if isinstance(self.import_source, list):
             self.import_wizard.importProgressBar.setMaximum(
                 len(self.import_source))
             for file in self.import_source:
@@ -119,7 +119,7 @@ class WowImport(SongImport):
                 self.copyright = u''
                 self.file_name = os.path.split(file)[1]
                 self.import_wizard.incrementProgressBar(
-                    "Importing %s" % (self.file_name),  0)
+                    u'Importing %s' % (self.file_name), 0)
                 # Get the song title
                 self.title = self.file_name.rpartition(u'.')[0]
                 self.songData = open(file, 'rb')
@@ -167,6 +167,5 @@ class WowImport(SongImport):
                 self.songData.close()
                 self.finish()
                 self.import_wizard.incrementProgressBar(
-                    "Importing %s" % (self.file_name))
+                    u'Importing %s' % (self.file_name))
             return True
-

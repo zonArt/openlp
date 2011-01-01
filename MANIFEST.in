@@ -3,6 +3,7 @@ recursive-include openlp *.sqlite
 recursive-include openlp *.csv
 recursive-include openlp *.html
 recursive-include openlp *.js
+recursive-include openlp *.css
 recursive-include openlp *.qm
 recursive-include documentation *
 recursive-include resources/forms *

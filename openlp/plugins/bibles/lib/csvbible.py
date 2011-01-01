@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -72,7 +72,7 @@ class CSVBible(BibleDB):
                 self.create_book(unicode(line[1], details['encoding']),
                     line[2], int(line[0]))
                 Receiver.send_message(u'openlp_process_events')
-        except IOError:
+        except IOError, IndexError:
             log.exception(u'Loading books from file failed')
             success = False
         finally:
@@ -86,15 +86,17 @@ class CSVBible(BibleDB):
             verse_file.seek(0)
             verse_reader = csv.reader(verse_file, dialect)
             for line in verse_reader:
-                if self.stop_import_flag:  # cancel pressed
+                if self.stop_import_flag:
+                    # cancel pressed
                     break
                 details = chardet.detect(line[3])
                 if book_ptr != line[0]:
                     book = self.get_book(line[0])
                     book_ptr = book.name
-                    self.wizard.incrementProgressBar(u'%s %s %s...' % (
-                        translate('BiblesPlugin.CSVImport', 'Importing'),
-                        book.name, line[1]))
+                    self.wizard.incrementProgressBar(unicode(translate(
+                        'BiblesPlugin.CSVImport', 'Importing %s %s...',
+                        'Importing <book name> <chapter>...')) %
+                        (book.name, int(line[1])))
                     self.session.commit()
                 self.create_verse(book.id, line[1], line[2],
                     unicode(line[3], details['encoding']))

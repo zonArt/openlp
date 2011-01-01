@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -73,8 +73,8 @@ class OpenLP1Bible(BibleDB):
             abbreviation = unicode(book[3], u'cp1252')
             self.create_book(name, abbreviation, testament_id)
             # Update the progess bar.
-            self.wizard.incrementProgressBar(u'%s %s...' % (translate(
-                'BiblesPlugin.OpenLP1Import', 'Importing'), name))
+            self.wizard.incrementProgressBar(unicode(translate(
+                'BiblesPlugin.OpenLP1Import', 'Importing %s...')) % name)
             # Import the verses for this book.
             cursor.execute(u'SELECT chapter, verse, text || \'\' AS text FROM '
                 'verse WHERE book_id=%s' % book_id)
