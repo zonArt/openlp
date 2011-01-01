@@ -223,8 +223,11 @@ class ThemeManager(QtGui.QWidget):
         """
         Renames an existing theme to a new name
         """
-        action = unicode(translate('OpenLP.ThemeManager', 'Rename'))
-        if self._validate_theme_action(action, False):
+        if self._validate_theme_action(unicode(translate('OpenLP.ThemeManager',
+            'You must select a theme to rename.')),
+            unicode(translate('OpenLP.ThemeManager', 'Rename Confirmation')),
+            unicode(translate('OpenLP.ThemeManager', 'Rename %s theme?')),
+            False):
             item = self.themeListWidget.currentItem()
             oldThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
             self.fileRenameForm.fileNameEdit.setText(oldThemeName)
@@ -288,8 +291,10 @@ class ThemeManager(QtGui.QWidget):
         """
         Delete a theme
         """
-        action = unicode(translate('OpenLP.ThemeManager', 'Delete'))
-        if self._validate_theme_action(action):
+        if self._validate_theme_action(unicode(translate('OpenLP.ThemeManager',
+            'You must select a theme to delete.')),
+            unicode(translate('OpenLP.ThemeManager', 'Delete Confirmation')),
+            unicode(translate('OpenLP.ThemeManager', 'Delete %s theme?'))):
             item = self.themeListWidget.currentItem()
             theme = unicode(item.text())
             row = self.themeListWidget.row(item)
@@ -750,7 +755,8 @@ class ThemeManager(QtGui.QWidget):
         theme.extend_image_filename(path)
         return theme
 
-    def _validate_theme_action(self, action, testPlugin=True):
+    def _validate_theme_action(self, select_text, confirm_title, confirm_text,
+        testPlugin=True):
         """
         Check to see if theme has been selected and the destructive action
         is allowed.
@@ -758,19 +764,14 @@ class ThemeManager(QtGui.QWidget):
         self.global_theme = unicode(QtCore.QSettings().value(
             self.settingsSection + u'/global theme',
             QtCore.QVariant(u'')).toString())
-        if check_item_selected(self.themeListWidget,
-            unicode(translate('OpenLP.ThemeManager',
-            'You must select a theme to %s.')) % action):
+        if check_item_selected(self.themeListWidget, select_text):
             item = self.themeListWidget.currentItem()
             theme = unicode(item.text())
             # confirm deletion
-            answer = QtGui.QMessageBox.question(self,
-                unicode(translate('OpenLP.ThemeManager', '%s Confirmation'))
-                % action,
-                unicode(translate('OpenLP.ThemeManager', '%s %s theme?'))
-                % (action, theme),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
-                QtGui.QMessageBox.No), QtGui.QMessageBox.No)
+            answer = QtGui.QMessageBox.question(self, confirm_title,
+                confirm_text % theme, QtGui.QMessageBox.StandardButtons(
+                QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
+                QtGui.QMessageBox.No)
             if answer == QtGui.QMessageBox.No:
                 return False
             # should be the same unless default
@@ -779,6 +780,7 @@ class ThemeManager(QtGui.QWidget):
                     translate('OpenLP.ThemeManager', 'Error'),
                     translate('OpenLP.ThemeManager',
                         'You are unable to delete the default theme.'))
+                return False
             else:
                 if testPlugin:
                     for plugin in self.parent.pluginManager.plugins:

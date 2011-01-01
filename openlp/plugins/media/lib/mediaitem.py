@@ -60,10 +60,9 @@ class MediaMediaItem(MediaManagerItem):
 
     def retranslateUi(self):
         self.OnNewPrompt = translate('MediaPlugin.MediaItem', 'Select Media')
-        self.OnNewFileMasks = translate('MediaPlugin.MediaItem',
-            u'Videos (%s);;'
-            u'Audio (%s);;'
-            u'All files (*)' % (self.parent.video_list, self.parent.audio_list))
+        self.OnNewFileMasks = unicode(translate('MediaPlugin.MediaItem',
+            'Videos (%s);;Audio (%s);;All files (*)')) % \
+            (self.parent.video_list, self.parent.audio_list)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)

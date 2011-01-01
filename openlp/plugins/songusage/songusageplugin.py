@@ -175,10 +175,13 @@ class SongUsagePlugin(Plugin):
         """
         ## Name PluginList ##
         self.textStrings[StringContent.Name] = {
-            u'singular': translate('SongUsagePlugin', 'SongUsage'),
-            u'plural': translate('SongUsagePlugin', 'SongUsage')
+            u'singular': translate('SongUsagePlugin', 'SongUsage',
+                'name singular'),
+            u'plural': translate('SongUsagePlugin', 'SongUsage',
+                'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.textStrings[StringContent.VisibleName] = {
-            u'title': translate('SongUsagePlugin', 'SongUsage')
+            u'title': translate('SongUsagePlugin', 'SongUsage',
+                'container title')
         }
