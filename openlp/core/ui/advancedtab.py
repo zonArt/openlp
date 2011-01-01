@@ -133,13 +133,16 @@ class AdvancedTab(SettingsTab):
 
     def resizeEvent(self, event=None):
         """
-        Rescale the theme preview thumbnail on resize events.
+        Resize the sides in two equal halves if the layout allows this.
         """
         if event:
             SettingsTab.resizeEvent(self, event)
-        self.leftWidget.setMinimumWidth(max(
-            self.width() / 2 - self.advancedTabLayout.contentsMargins().left(),
-            self.leftWidget.minimumSizeHint().width()))
+        width = self.width() - self.advancedTabLayout.contentsMargins().left() \
+            - self.advancedTabLayout.contentsMargins().right()
+        left_width = min(width - self.rightWidget.minimumSizeHint().width(),
+            width / 2)
+        left_width = max(left_width, self.leftWidget.minimumSizeHint().width())
+        self.leftWidget.setMinimumWidth(left_width)
 
     def load(self):
         """

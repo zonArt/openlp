@@ -85,7 +85,6 @@ class GeneralTab(SettingsTab):
         Create the user interface for the general settings tab
         """
         self.setObjectName(u'GeneralTab')
-        self.tabTitleVisible = translate('OpenLP.GeneralTab', 'General')
         self.generalLayout = QtGui.QHBoxLayout(self)
         self.generalLayout.setSpacing(0)
         self.generalLayout.setObjectName(u'generalLayout')
@@ -246,6 +245,7 @@ class GeneralTab(SettingsTab):
         """
         Translate the general settings tab to the currently selected language
         """
+        self.tabTitleVisible = translate('OpenLP.GeneralTab', 'General')
         self.monitorGroupBox.setTitle(translate('OpenLP.GeneralTab',
             'Monitors'))
         self.monitorLabel.setText(translate('OpenLP.GeneralTab',
@@ -301,13 +301,16 @@ class GeneralTab(SettingsTab):
 
     def resizeEvent(self, event=None):
         """
-        Rescale the theme preview thumbnail on resize events.
+        Resize the sides in two equal halves if the layout allows this.
         """
         if event:
             SettingsTab.resizeEvent(self, event)
-        self.leftWidget.setMinimumWidth(max(
-            self.width() / 2 - self.generalLayout.contentsMargins().left(),
-            self.leftWidget.minimumSizeHint().width()))
+        width = self.width() - self.generalLayout.contentsMargins().left() - \
+            self.generalLayout.contentsMargins().right()
+        left_width = min(width - self.rightWidget.minimumSizeHint().width(),
+            width / 2)
+        left_width = max(left_width, self.leftWidget.minimumSizeHint().width())
+        self.leftWidget.setMinimumWidth(left_width)
 
     def load(self):
         """
