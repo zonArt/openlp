@@ -571,6 +571,7 @@ class ServiceManager(QtGui.QWidget):
         Used when moving items as the move takes place in supporting array,
         and when regenerating all the items due to theme changes
         """
+        Receiver.send_message(u'cursor_busy')
         # Correct order of items in array
         count = 1
         for item in self.serviceItems:
@@ -614,6 +615,7 @@ class ServiceManager(QtGui.QWidget):
                     self.serviceManagerList.setCurrentItem(treewidgetitem1)
                     item[u'expanded'] = temp
             treewidgetitem.setExpanded(item[u'expanded'])
+        Receiver.send_message(u'cursor_normal')
 
     def onSaveService(self, quick=False):
         """

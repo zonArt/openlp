@@ -171,6 +171,7 @@ class PresentationMediaItem(MediaManagerItem):
         This is called both on initial load of the plugin to populate with
         existing files, and when the user adds new files via the media manager
         """
+        Receiver.send_message(u'cursor_busy')
         currlist = self.getFileList()
         titles = []
         for file in currlist:
@@ -215,6 +216,7 @@ class PresentationMediaItem(MediaManagerItem):
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             item_name.setIcon(icon)
             self.listView.addItem(item_name)
+        Receiver.send_message(u'cursor_normal')
 
     def onDeleteClick(self):
         """

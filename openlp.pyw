@@ -162,6 +162,10 @@ class OpenLP(QtGui.QApplication):
         #provide a listener for widgets to reqest a screen update.
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlp_process_events'), self.processEvents)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'cursor_busy'), self.setBusyCursor)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'cursor_normal'), self.setNormalCursor)
         self.setOrganizationName(u'OpenLP')
         self.setOrganizationDomain(u'openlp.org')
         self.setApplicationName(u'OpenLP')
@@ -202,6 +206,21 @@ class OpenLP(QtGui.QApplication):
         self.exceptionForm.exceptionTextEdit.setPlainText(
             ''.join(format_exception(exctype, value, traceback)))
         self.exceptionForm.exec_()
+
+    def setBusyCursor(self):
+        """
+        Sets the Busy Cursor on the Main Window
+        """
+        #a=c
+        self.setOverrideCursor(QtCore.Qt.BusyCursor)
+        #self.processEvents()
+
+    def setNormalCursor(self):
+        """
+        Sets the Normal Cursor on the Main Window
+        """
+        self.restoreOverrideCursor()
+        #self.processEvents()
 
 def main():
     """
