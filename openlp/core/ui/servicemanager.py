@@ -347,10 +347,7 @@ class ServiceManager(QtGui.QWidget):
             elif result == QtGui.QMessageBox.Save:
                 if not self.saveFile():
                     return False
-        self.serviceManagerList.clear()
-        self.serviceItems = []
-        self.setFileName(u'')
-        self.setModified(False)
+        self.newFile()
 
     def onLoadServiceClicked(self):
         if self.isModified():
@@ -380,6 +377,19 @@ class ServiceManager(QtGui.QWidget):
 
     def onSaveServiceAsClicked(self):
         self.saveFileAs()
+
+    def onRecentServiceClicked(self):
+        sender = self.sender()
+        self.loadFile(sender.data().toString())
+
+    def newFile(self):
+        """
+        Create a blank new service file.
+        """
+        self.serviceManagerList.clear()
+        self.serviceItems = []
+        self.setFileName(u'')
+        self.setModified(False)
 
     def saveFile(self):
         """
@@ -457,6 +467,8 @@ class ServiceManager(QtGui.QWidget):
     def loadFile(self, fileName):
         if not fileName:
             return False
+        else:
+            fileName = unicode(fileName)
         zip = None
         fileTo = None
         try:
@@ -475,18 +487,18 @@ class ServiceManager(QtGui.QWidget):
                     continue
                 osfile = unicode(QtCore.QDir.toNativeSeparators(ucsfile))
                 filePath = os.path.join(self.servicePath,
-                    split_filename(osfile)[1])
+                    os.path.split(osfile)[1])
                 fileTo = open(filePath, u'wb')
                 fileTo.write(zip.read(file))
                 fileTo.flush()
                 fileTo.close()
-                if file_path.endswith(u'osd'):
-                    p_file = file_path
+                if filePath.endswith(u'osd'):
+                    p_file = filePath
             if 'p_file' in locals():
                 fileTo = open(p_file, u'r')
                 items = cPickle.load(fileTo)
                 fileTo.close()
-                self.onNewService()
+                self.newFile()
                 for item in items:
                     serviceItem = ServiceItem()
                     serviceItem.render_manager = self.parent.renderManager
