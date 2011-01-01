@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -84,11 +84,12 @@ class OpenSongBible(BibleDB):
                             unicode(verse.text)
                         )
                         Receiver.send_message(u'openlp_process_events')
-                    self.wizard.incrementProgressBar(u'%s %s %s...' % (
-                        translate('BiblesPlugin.Opensong', 'Importing'),
-                        db_book.name, chapter.attrib[u'n']))
+                    self.wizard.incrementProgressBar(unicode(translate(
+                        'BiblesPlugin.Opensong', 'Importing %s %s...',
+                        'Importing <book name> <chapter>...')) %
+                        (db_book.name, int(chapter.attrib[u'n'])))
                     self.session.commit()
-        except IOError:
+        except IOError, AttributeError:
             log.exception(u'Loading bible from OpenSong file failed')
             success = False
         finally:

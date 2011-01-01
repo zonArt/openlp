@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -30,7 +30,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    ItemCapabilities, SettingsManager, translate, check_item_selected,  \
+    ItemCapabilities, SettingsManager, translate, check_item_selected, \
     context_menu_action
 
 log = logging.getLogger(__name__)
@@ -60,10 +60,9 @@ class MediaMediaItem(MediaManagerItem):
 
     def retranslateUi(self):
         self.OnNewPrompt = translate('MediaPlugin.MediaItem', 'Select Media')
-        self.OnNewFileMasks = translate('MediaPlugin.MediaItem',
-            u'Videos (%s);;'
-            u'Audio (%s);;'
-            u'All files (*)' % (self.parent.video_list, self.parent.audio_list))
+        self.OnNewFileMasks = unicode(translate('MediaPlugin.MediaItem',
+            'Videos (%s);;Audio (%s);;All files (*)')) % \
+            (self.parent.video_list, self.parent.audio_list)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -89,7 +88,7 @@ class MediaMediaItem(MediaManagerItem):
             self.ImageWidget.sizePolicy().hasHeightForWidth())
         self.ImageWidget.setSizePolicy(sizePolicy)
         self.ImageWidget.setObjectName(u'ImageWidget')
-        #Replace backgrounds do not work at present so remove functionality.
+        # Replace backgrounds do not work at present so remove functionality.
         self.blankButton = self.toolbar.addToolbarButton(
             translate('MediaPlugin.MediaItem', 'Replace Background'),
             u':/slides/slide_blank.png',
@@ -122,15 +121,24 @@ class MediaMediaItem(MediaManagerItem):
             if item is None:
                 return False
         filename = unicode(item.data(QtCore.Qt.UserRole).toString())
-        service_item.title = unicode(
-            translate('MediaPlugin.MediaItem', 'Media'))
-        service_item.add_capability(ItemCapabilities.RequiresMedia)
-        # force a nonexistent theme
-        service_item.theme = -1
-        frame = u':/media/image_clapperboard.png'
-        (path, name) = os.path.split(filename)
-        service_item.add_from_command(path, name, frame)
-        return True
+        if os.path.exists(filename):
+            service_item.title = unicode(
+                translate('MediaPlugin.MediaItem', 'Media'))
+            service_item.add_capability(ItemCapabilities.RequiresMedia)
+            # force a nonexistent theme
+            service_item.theme = -1
+            frame = u':/media/image_clapperboard.png'
+            (path, name) = os.path.split(filename)
+            service_item.add_from_command(path, name, frame)
+            return True
+        else:
+            # File is no longer present
+            QtGui.QMessageBox.critical(
+                self, translate('MediaPlugin.MediaItem',
+                'Missing Media File'),
+                unicode(translate('MediaPlugin.MediaItem',
+                'The file %s no longer exists.')) % filename)
+            return False
 
     def initialise(self):
         self.listView.setSelectionMode(

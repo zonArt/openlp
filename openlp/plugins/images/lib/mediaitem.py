@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -109,7 +109,7 @@ class ImageMediaItem(MediaManagerItem):
             translate('ImagePlugin.MediaItem', 'Replace Live Background'),
             self.onReplaceClick, False)
         self.resetButton = self.toolbar.addToolbarButton(
-            translate('ImagePlugin.MediaItem', u'Reset Background'),
+            translate('ImagePlugin.MediaItem', 'Reset Background'),
             u':/system/system_close.png',
             translate('ImagePlugin.MediaItem', 'Reset Live Background'),
             self.onResetClick, False)
@@ -132,15 +132,13 @@ class ImageMediaItem(MediaManagerItem):
                         os.remove(os.path.join(self.servicePath,
                             unicode(text.text())))
                     except OSError:
-                        #if not present do not worry
+                        # if not present do not worry
                         pass
                 self.listView.takeItem(row)
             SettingsManager.set_list(self.settingsSection,
                 self.settingsSection, self.getFileList())
 
     def loadList(self, list):
-        self.listView.setCursor(QtCore.Qt.BusyCursor)
-        Receiver.send_message(u'openlp_process_events')
         for file in list:
             filename = os.path.split(unicode(file))[1]
             thumb = os.path.join(self.servicePath, filename)
@@ -155,8 +153,6 @@ class ImageMediaItem(MediaManagerItem):
             item_name.setIcon(icon)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.listView.addItem(item_name)
-        self.listView.setCursor(QtCore.Qt.ArrowCursor)
-        Receiver.send_message(u'openlp_process_events')
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
         items = self.listView.selectedIndexes()
@@ -172,9 +168,18 @@ class ImageMediaItem(MediaManagerItem):
             for item in items:
                 bitem = self.listView.item(item.row())
                 filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
-                (path, name) = os.path.split(filename)
-                service_item.add_from_image(filename, name)
-            return True
+                if os.path.exists(filename):
+                    (path, name) = os.path.split(filename)
+                    service_item.add_from_image(filename, name)
+                    return True
+                else:
+                    # File is no longer present
+                    QtGui.QMessageBox.critical(
+                        self, translate('ImagePlugin.MediaItem',
+                        'Missing Image'),
+                        unicode(translate('ImagePlugin.MediaItem',
+                        'The Image %s no longer exists.')) % filename)
+                    return False
         else:
             return False
 

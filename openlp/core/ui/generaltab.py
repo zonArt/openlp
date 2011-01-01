@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -141,10 +141,10 @@ class GeneralTab(SettingsTab):
         self.settingsLayout.addWidget(self.autoPreviewCheckBox, 1, 0, 1, 2)
         # Moved here from image tab
         self.timeoutLabel = QtGui.QLabel(self.settingsGroupBox)
-        self.timeoutLabel.setObjectName("timeoutLabel")
+        self.timeoutLabel.setObjectName(u'timeoutLabel')
         self.settingsLayout.addWidget(self.timeoutLabel, 2, 0, 1, 1)
         self.timeoutSpinBox = QtGui.QSpinBox(self.settingsGroupBox)
-        self.timeoutSpinBox.setObjectName("timeoutSpinBox")
+        self.timeoutSpinBox.setObjectName(u'timeoutSpinBox')
         self.settingsLayout.addWidget(self.timeoutSpinBox, 2, 1, 1, 1)
         self.generalLeftLayout.addWidget(self.settingsGroupBox)
         self.generalLeftSpacer = QtGui.QSpacerItem(20, 40,
@@ -312,6 +312,18 @@ class GeneralTab(SettingsTab):
         # Signals and slots
         QtCore.QObject.connect(self.overrideCheckBox,
             QtCore.SIGNAL(u'toggled(bool)'), self.onOverrideCheckBoxToggled)
+        QtCore.QObject.connect(self.customHeightValueEdit,
+            QtCore.SIGNAL(u'textEdited(const QString&)'),
+            self.onDisplayPositionChanged)
+        QtCore.QObject.connect(self.customWidthValueEdit,
+            QtCore.SIGNAL(u'textEdited(const QString&)'),
+            self.onDisplayPositionChanged)
+        QtCore.QObject.connect(self.customYValueEdit,
+            QtCore.SIGNAL(u'textEdited(const QString&)'),
+            self.onDisplayPositionChanged)
+        QtCore.QObject.connect(self.customXValueEdit,
+            QtCore.SIGNAL(u'textEdited(const QString&)'),
+            self.onDisplayPositionChanged)
 
     def retranslateUi(self):
         """
@@ -377,11 +389,11 @@ class GeneralTab(SettingsTab):
         settings = QtCore.QSettings()
         settings.beginGroup(self.settingsSection)
         for screen in self.screens.screen_list:
-            screen_name = u'%s %d' % (translate('OpenLP.GeneralTab', 'Screen'),
-                screen[u'number'] + 1)
+            screen_name = unicode(translate('OpenLP.GeneralTab', 'Screen %d')) \
+                % (screen[u'number'] + 1)
             if screen[u'primary']:
-                screen_name = u'%s (%s)' % (screen_name,
-                    translate('OpenLP.GeneralTab', 'primary'))
+                screen_name = unicode(translate('OpenLP.GeneralTab',
+                    '%s (primary)')) % screen_name
             self.monitorComboBox.addItem(screen_name)
         self.numberEdit.setText(unicode(settings.value(
             u'ccli number', QtCore.QVariant(u'')).toString()))
@@ -503,10 +515,19 @@ class GeneralTab(SettingsTab):
 
     def onOverrideCheckBoxToggled(self, checked):
         """
-        Toggle screen state depending on check box state
+        Toggle screen state depending on check box state.
+
+        ``checked``
+            The state of the check box (boolean).
         """
         self.customXValueEdit.setEnabled(checked)
         self.customYValueEdit.setEnabled(checked)
         self.customHeightValueEdit.setEnabled(checked)
         self.customWidthValueEdit.setEnabled(checked)
+        self.overrideChanged = True
+
+    def onDisplayPositionChanged(self):
+        """
+        Called when the width, height, x position or y position has changed.
+        """
         self.overrideChanged = True

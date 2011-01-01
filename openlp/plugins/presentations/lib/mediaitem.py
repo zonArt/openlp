@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -30,7 +30,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    SettingsManager, translate, check_item_selected, Receiver
+    SettingsManager, translate, check_item_selected, Receiver, ItemCapabilities
 from openlp.plugins.presentations.lib import MessageListener
 
 log = logging.getLogger(__name__)
@@ -90,8 +90,8 @@ class PresentationMediaItem(MediaManagerItem):
                     if fileType.find(type) == -1:
                         fileType += u'*.%s ' % type
                         self.parent.serviceManager.supportedSuffixes(type)
-        self.OnNewFileMasks = translate('PresentationPlugin.MediaItem',
-            'Presentations (%s)' % fileType)
+        self.OnNewFileMasks = unicode(translate('PresentationPlugin.MediaItem',
+            'Presentations (%s)')) % fileType
 
     def requiredIcons(self):
         """
@@ -153,7 +153,7 @@ class PresentationMediaItem(MediaManagerItem):
         """
         self.DisplayTypeComboBox.clear()
         for item in self.controllers:
-            #load the drop down selection
+            # load the drop down selection
             if self.controllers[item].enabled():
                 self.DisplayTypeComboBox.addItem(item)
         if self.DisplayTypeComboBox.count() > 1:
@@ -249,28 +249,39 @@ class PresentationMediaItem(MediaManagerItem):
             return False
         service_item.title = unicode(self.DisplayTypeComboBox.currentText())
         service_item.shortname = unicode(self.DisplayTypeComboBox.currentText())
+        service_item.add_capability(ItemCapabilities.ProvidesOwnDisplay)
         shortname = service_item.shortname
         if shortname:
             for item in items:
                 bitem = self.listView.item(item.row())
                 filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
-                if shortname == self.Automatic:
-                    service_item.shortname = self.findControllerByType(filename)
-                    if not service_item.shortname:
-                        return False
-                controller = self.controllers[service_item.shortname]
-                (path, name) = os.path.split(filename)
-                doc = controller.add_doc(filename)
-                if doc.get_thumbnail_path(1, True) is None:
-                    doc.load_presentation()
-                i = 1
-                img = doc.get_thumbnail_path(i, True)
-                while img:
-                    service_item.add_from_command(path, name, img)
-                    i = i + 1
+                if os.path.exists(filename):
+                    if shortname == self.Automatic:
+                        service_item.shortname = \
+                            self.findControllerByType(filename)
+                        if not service_item.shortname:
+                            return False
+                    controller = self.controllers[service_item.shortname]
+                    (path, name) = os.path.split(filename)
+                    doc = controller.add_doc(filename)
+                    if doc.get_thumbnail_path(1, True) is None:
+                        doc.load_presentation()
+                    i = 1
                     img = doc.get_thumbnail_path(i, True)
-                doc.close_presentation()
-            return True
+                    while img:
+                        service_item.add_from_command(path, name, img)
+                        i = i + 1
+                        img = doc.get_thumbnail_path(i, True)
+                    doc.close_presentation()
+                    return True
+                else:
+                    # File is no longer present
+                    QtGui.QMessageBox.critical(
+                        self, translate('PresentationPlugin.MediaItem',
+                        'Missing Presentation'),
+                        unicode(translate('PresentationPlugin.MediaItem',
+                        'The Presentation %s no longer exists.')) % filename)
+                    return False
         else:
             return False
 
@@ -280,7 +291,7 @@ class PresentationMediaItem(MediaManagerItem):
         file type. This is used if "Automatic" is set as the preferred
         controller. Find the first (alphabetic) enabled controller which
         "supports" the extension. If none found, then look for a controller
-        which "alsosupports" it instead.
+        which "also supports" it instead.
         """
         filetype = filename.split(u'.')[1]
         if not filetype:
