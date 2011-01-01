@@ -220,6 +220,21 @@ class EventReceiver(QtCore.QObject):
         Waits for openlp to do something "interesting" and sends a
         remotes_poll_response signal when it does
 
+    ``openlp_critical_message``
+        Displays a standalong Critical Message
+
+    ``openlp_error_message``
+        Displays a standalong Error Message
+
+    ``openlp_information_message``
+        Displays a standalong Information Message
+
+    ``cursor_busy``
+        Makes the cursor got to a busy form
+
+    ``cursor_normal``
+        Resets the cursor to default
+
     """
     def __init__(self):
         """

@@ -1013,7 +1013,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     QtCore.QFileInfo(filename).fileName()), self)
                 action.setData(QtCore.QVariant(filename))
                 self.connect(action, QtCore.SIGNAL(u'triggered()'),
-                    self.ServiceManagerContents.loadService)
+                    self.ServiceManagerContents.loadFile)
                 self.FileMenu.addAction(action)
         self.FileMenu.addSeparator()
         self.FileMenu.addAction(self.FileMenuActions[-1])
