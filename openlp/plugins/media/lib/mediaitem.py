@@ -89,7 +89,7 @@ class MediaMediaItem(MediaManagerItem):
             self.ImageWidget.sizePolicy().hasHeightForWidth())
         self.ImageWidget.setSizePolicy(sizePolicy)
         self.ImageWidget.setObjectName(u'ImageWidget')
-        #Replace backgrounds do not work at present so remove functionality.
+        # Replace backgrounds do not work at present so remove functionality.
         self.blankButton = self.toolbar.addToolbarButton(
             translate('MediaPlugin.MediaItem', 'Replace Background'),
             u':/slides/slide_blank.png',
@@ -122,15 +122,24 @@ class MediaMediaItem(MediaManagerItem):
             if item is None:
                 return False
         filename = unicode(item.data(QtCore.Qt.UserRole).toString())
-        service_item.title = unicode(
-            translate('MediaPlugin.MediaItem', 'Media'))
-        service_item.add_capability(ItemCapabilities.RequiresMedia)
-        # force a nonexistent theme
-        service_item.theme = -1
-        frame = u':/media/image_clapperboard.png'
-        (path, name) = os.path.split(filename)
-        service_item.add_from_command(path, name, frame)
-        return True
+        if os.path.exists(filename):
+            service_item.title = unicode(
+                translate('MediaPlugin.MediaItem', 'Media'))
+            service_item.add_capability(ItemCapabilities.RequiresMedia)
+            # force a nonexistent theme
+            service_item.theme = -1
+            frame = u':/media/image_clapperboard.png'
+            (path, name) = os.path.split(filename)
+            service_item.add_from_command(path, name, frame)
+            return True
+        else:
+            # File is no longer present
+            QtGui.QMessageBox.critical(
+                self, translate('MediaPlugin.MediaItem',
+                'Missing Media File'),
+                unicode(translate('MediaPlugin.MediaItem',
+                'The file %s no longer exists.')) % filename)
+            return False
 
     def initialise(self):
         self.listView.setSelectionMode(

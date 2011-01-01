@@ -29,9 +29,10 @@ The :mod:`ui` module provides the core user interface for OpenLP
 
 class HideMode(object):
     """
-    This is basically an enumeration class which specifies the mode of a Bible.
-    Mode refers to whether or not a Bible in OpenLP is a full Bible or needs to
-    be downloaded from the Internet on an as-needed basis.
+    This is basically an enumeration class which specifies differnt hiding modes
+    for the display. The option ``Blank`` to cover the display black. The option
+    ``Theme`` removes the content from the theme. ``Screen`` finally hides the
+    output, so that the users desktop is usually shown.
     """
     Blank = 1
     Theme = 2

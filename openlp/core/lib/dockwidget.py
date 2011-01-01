@@ -37,13 +37,14 @@ class OpenLPDockWidget(QtGui.QDockWidget):
     """
     Custom DockWidget class to handle events
     """
-    def __init__(self, parent=None, name=None):
+    def __init__(self, parent=None, name=None, icon=None):
         """
         Initialise the DockWidget
         """
+        log.debug(u'Initialise the %s widget' % name)
         QtGui.QDockWidget.__init__(self, parent)
         self.parent = parent
         if name:
             self.setObjectName(name)
-        self.setFloating(False)
-        log.debug(u'Init done')
+        if icon:
+            self.setWindowIcon(icon)
