@@ -208,16 +208,21 @@ class ImageMediaItem(MediaManagerItem):
         self.parent.liveController.display.resetImage()
 
     def onReplaceClick(self):
-        # TODO: Check if image exists.
         if check_item_selected(self.listView,
             translate('ImagePlugin.MediaItem',
             'You must select an image to replace the background with.')):
-            items = self.listView.selectedIndexes()
-            for item in items:
-                bitem = self.listView.item(item.row())
-                filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
+            item = self.listView.selectedIndexes()[0]
+            bitem = self.listView.item(item.row())
+            filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
+            if os.path.exists(filename):
                 (path, name) = os.path.split(filename)
                 self.parent.liveController.display.directImage(name, filename)
+            else:
+                QtGui.QMessageBox.critical(self,
+                    translate('ImagePlugin.MediaItem', 'Live Background Could '
+                    'Not Be Replaced'),
+                    unicode(translate('ImagePlugin.MediaItem',
+                    'The image %s no longer exists.')) % filename)
         self.resetButton.setVisible(True)
 
     def onPreviewClick(self):
