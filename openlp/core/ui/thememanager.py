@@ -684,6 +684,13 @@ class ThemeManager(QtGui.QWidget):
                 QtGui.QMessageBox.No)
             if answer == QtGui.QMessageBox.No:
                 return False
+            # should be the same unless default
+            if theme != unicode(item.data(QtCore.Qt.UserRole).toString()):
+                QtGui.QMessageBox.critical(self,
+                    translate('OpenLP.ThemeManager', 'Error'),
+                    translate('OpenLP.ThemeManager',
+                        'You are unable to delete the default theme.'))
+                return False
             # check for use in the system else where.
             if testPlugin:
                 for plugin in self.parent.pluginManager.plugins:
