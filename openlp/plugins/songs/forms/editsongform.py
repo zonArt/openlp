@@ -186,9 +186,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.AuthorsListView.clear()
         self.TopicsListView.clear()
         self.TitleEditItem.setFocus(QtCore.Qt.OtherFocusReason)
+        self.songBookNumberEdit.setText(u'')
         self.loadAuthors()
         self.loadTopics()
         self.loadBooks()
+        self.ThemeSelectionComboItem.setCurrentIndex(0)
         # it's a new song to preview is not possible
         self.previewButton.setVisible(False)
 
