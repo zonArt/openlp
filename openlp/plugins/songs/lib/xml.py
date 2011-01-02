@@ -80,8 +80,8 @@ class SongXMLBuilder(object):
         ``content``
             The actual text of the verse to be stored.
         """
-        verse = etree.Element(u'verse', type = unicode(type),
-            label = unicode(number))
+        verse = etree.Element(u'verse', type=unicode(type),
+            label=unicode(number))
         verse.text = etree.CDATA(content)
         self.lyrics.append(verse)
 
@@ -194,9 +194,7 @@ class LyricsXML(object):
         text = text.replace('\r\n', '\n')
         verses = text.split('\n\n')
         self.languages = [{u'language': u'en', u'verses': []}]
-        counter = 0
-        for verse in verses:
-            counter = counter + 1
+        for counter, verse in enumerate(verses):
             self.languages[0][u'verses'].append({
                 u'type': u'verse',
                 u'label': unicode(counter),
@@ -245,14 +243,16 @@ class LyricsXML(object):
 
 class OpenLyricsParser(object):
     """
-    This class represents the converter for Song to/from OpenLyrics XML.
+    This class represents the converter for Song to/from
+    `OpenLyrics <http://openlyrics.info/>`_ XML.
     """
+    # TODO: complete OpenLyrics standard implementation!
     def __init__(self, manager):
         self.manager = manager
 
     def song_to_xml(self, song):
         """
-        Convert the song to OpenLyrics Format
+        Convert the song to OpenLyrics Format.
         """
         song_xml_parser = SongXMLParser(song.lyrics)
         verse_list = song_xml_parser.get_verses()
@@ -286,7 +286,7 @@ class OpenLyricsParser(object):
 
     def xml_to_song(self, xml):
         """
-        Create a Song from OpenLyrics format xml
+        Create and save a Song from OpenLyrics format xml.
         """
         # No xml get out of here
         if not xml:
@@ -299,23 +299,15 @@ class OpenLyricsParser(object):
         song.copyright = unicode(properties.copyright.text)
         if song.copyright == u'None':
             song.copyright = u''
-        song.verse_order = unicode(properties.verseOrder.text)
-        if song.verse_order == u'None':
-            song.verse_order = u''
         song.topics = []
         song.book = None
-        theme_name = None
         try:
             song.ccli_number = unicode(properties.ccliNo.text)
-        except:
+        except AttributeError:
             song.ccli_number = u''
         try:
-            theme_name = unicode(properties.themes.theme)
-        except:
-            pass
-        if theme_name:
-            song.theme_name = theme_name
-        else:
+            song.theme_name = unicode(properties.themes.theme)
+        except AttributeError:
             song.theme_name = u''
         # Process Titles
         for title in properties.titles.title:
@@ -331,6 +323,7 @@ class OpenLyricsParser(object):
         # Process Lyrics
         sxml = SongXMLBuilder()
         search_text = u''
+        song.verse_order = u''
         for lyrics in song_xml.lyrics:
             for verse in song_xml.lyrics.verse:
                 text = u''
@@ -341,17 +334,36 @@ class OpenLyricsParser(object):
                     else:
                         text += u'\n' + line
                 type = VerseType.expand_string(verse.attrib[u'name'][0])
+                # Here we need to create the verse order for the case that the
+                # song does not have a verseOrder property.
                 sxml.add_verse_to_lyrics(type, verse.attrib[u'name'][1], text)
                 search_text = search_text + text
         song.search_lyrics = search_text.lower()
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
+        try:
+            song.verse_order = unicode(properties.verseOrder.text)
+        except AttributeError:
+            # TODO: Do not allow empty verse order.
+            # Do not worry!
+            pass
+        if song.verse_order == u'None':
+            song.verse_order = u''
+        # Process Comments
         song.comments = u''
+        try:
+            for comment in properties.comments.comment:
+                if not song.comments:
+                    song.comments = comment
+                else:
+                    song.comments += u'\n' + comment
+        except AttributeError:
+            pass
         song.song_number = u''
         # Process Authors
         try:
             for author in properties.authors.author:
                 self._process_author(author.text, song)
-        except:
+        except AttributeError:
             # No Author in XML so ignore
             pass
         self.manager.save_object(song)
