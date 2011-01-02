@@ -31,32 +31,28 @@ from openlp.core.lib import translate, build_icon
 class Ui_SettingsDialog(object):
     def setupUi(self, settingsDialog):
         settingsDialog.setObjectName(u'settingsDialog')
-        settingsDialog.resize(724, 502)
+        settingsDialog.resize(700, 300)
         settingsDialog.setWindowIcon(
             build_icon(u':/system/system_settings.png'))
         self.settingsLayout = QtGui.QVBoxLayout(settingsDialog)
-        self.settingsLayout.setSpacing(8)
-        self.settingsLayout.setMargin(8)
+        margins = self.settingsLayout.contentsMargins()
+        self.settingsLayout.setContentsMargins(0, margins.top(), 0, 0)
         self.settingsLayout.setObjectName(u'settingsLayout')
         self.settingsTabWidget = QtGui.QTabWidget(settingsDialog)
+        self.settingsTabWidget.setDocumentMode(True)
         self.settingsTabWidget.setObjectName(u'settingsTabWidget')
         self.settingsLayout.addWidget(self.settingsTabWidget)
+        self.buttonBoxLayout = QtGui.QGridLayout()
+        self.buttonBoxLayout.setContentsMargins(margins.left(), 0,
+            margins.right(), margins.bottom())
+        self.buttonBoxLayout.setObjectName(u'buttonBoxLayout')
         self.buttonBox = QtGui.QDialogButtonBox(settingsDialog)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.buttonBox.sizePolicy().hasHeightForWidth())
-        self.buttonBox.setSizePolicy(sizePolicy)
-        self.buttonBox.setMaximumSize(QtCore.QSize(16777215, 16777215))
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(
             QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(u'buttonBox')
-        self.settingsLayout.addWidget(self.buttonBox)
+        self.buttonBoxLayout.addWidget(self.buttonBox)
+        self.settingsLayout.addLayout(self.buttonBoxLayout)
         self.retranslateUi(settingsDialog)
-        self.settingsTabWidget.setCurrentIndex(0)
         QtCore.QObject.connect(self.buttonBox,
             QtCore.SIGNAL(u'accepted()'), settingsDialog.accept)
         QtCore.QObject.connect(self.buttonBox,

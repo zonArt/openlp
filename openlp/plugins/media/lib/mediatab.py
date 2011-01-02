@@ -37,31 +37,54 @@ class MediaTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'MediaTab')
-        self.tabTitleVisible = translate('MediaPlugin.MediaTab', 'Media')
-        self.mediaLayout = QtGui.QFormLayout(self)
-        self.mediaLayout.setSpacing(8)
-        self.mediaLayout.setMargin(8)
+        self.mediaLayout = QtGui.QHBoxLayout(self)
         self.mediaLayout.setObjectName(u'mediaLayout')
-        self.mediaModeGroupBox = QtGui.QGroupBox(self)
+        self.leftWidget = QtGui.QWidget(self)
+        self.leftWidget.setObjectName(u'leftWidget')
+        self.leftLayout = QtGui.QVBoxLayout(self.leftWidget)
+        self.leftLayout.setMargin(0)
+        self.leftLayout.setObjectName(u'leftLayout')
+        self.mediaModeGroupBox = QtGui.QGroupBox(self.leftWidget)
         self.mediaModeGroupBox.setObjectName(u'mediaModeGroupBox')
-        self.mediaModeLayout = QtGui.QVBoxLayout(self.mediaModeGroupBox)
-        self.mediaModeLayout.setSpacing(8)
-        self.mediaModeLayout.setMargin(8)
+        self.mediaModeLayout = QtGui.QFormLayout(self.mediaModeGroupBox)
         self.mediaModeLayout.setObjectName(u'mediaModeLayout')
         self.usePhononCheckBox = QtGui.QCheckBox(self.mediaModeGroupBox)
         self.usePhononCheckBox.setObjectName(u'usePhononCheckBox')
-        self.mediaModeLayout.addWidget(self.usePhononCheckBox)
-        self.mediaLayout.setWidget(
-            0, QtGui.QFormLayout.LabelRole, self.mediaModeGroupBox)
+        self.mediaModeLayout.addRow(self.usePhononCheckBox)
+        self.leftLayout.addWidget(self.mediaModeGroupBox)
+        self.leftLayout.addStretch()
+        self.mediaLayout.addWidget(self.leftWidget)
+        self.rightWidget = QtGui.QWidget(self)
+        self.rightWidget.setObjectName(u'rightWidget')
+        self.rightLayout = QtGui.QVBoxLayout(self.rightWidget)
+        self.rightLayout.setMargin(0)
+        self.rightLayout.setObjectName(u'rightLayout')
+        self.rightLayout.addStretch()
+        self.mediaLayout.addWidget(self.rightWidget)
         QtCore.QObject.connect(self.usePhononCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onUsePhononCheckBoxChanged)
 
     def retranslateUi(self):
+        self.tabTitleVisible = translate('MediaPlugin.MediaTab', 'Media')
         self.mediaModeGroupBox.setTitle(translate('MediaPlugin.MediaTab',
             'Media Display'))
         self.usePhononCheckBox.setText(
             translate('MediaPlugin.MediaTab', 'Use Phonon for video playback'))
+
+    def resizeEvent(self, event=None):
+        """
+        Resize the sides in two equal halves if the layout allows this.
+        """
+        if event:
+            SettingsTab.resizeEvent(self, event)
+        width = self.width() - self.mediaLayout.spacing() - \
+            self.mediaLayout.contentsMargins().left() - \
+            self.mediaLayout.contentsMargins().right()
+        left_width = min(width - self.rightWidget.minimumSizeHint().width(),
+            width / 2)
+        left_width = max(left_width, self.leftWidget.minimumSizeHint().width())
+        self.leftWidget.setMinimumWidth(left_width)
 
     def onUsePhononCheckBoxChanged(self, check_state):
         self.usePhonon = (check_state == QtCore.Qt.Checked)

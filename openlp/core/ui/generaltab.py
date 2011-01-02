@@ -86,11 +86,11 @@ class GeneralTab(SettingsTab):
         """
         self.setObjectName(u'GeneralTab')
         self.generalLayout = QtGui.QHBoxLayout(self)
-        self.generalLayout.setSpacing(0)
         self.generalLayout.setObjectName(u'generalLayout')
         self.leftWidget = QtGui.QWidget(self)
         self.leftWidget.setObjectName(u'leftWidget')
         self.leftLayout = QtGui.QVBoxLayout(self.leftWidget)
+        self.leftLayout.setMargin(0)
         self.leftLayout.setObjectName(u'leftLayout')
         self.monitorGroupBox = QtGui.QGroupBox(self.leftWidget)
         self.monitorGroupBox.setObjectName(u'monitorGroupBox')
@@ -142,6 +142,7 @@ class GeneralTab(SettingsTab):
         self.rightWidget = QtGui.QWidget(self)
         self.rightWidget.setObjectName(u'rightWidget')
         self.rightLayout = QtGui.QVBoxLayout(self.rightWidget)
+        self.rightLayout.setMargin(0)
         self.rightLayout.setObjectName(u'rightLayout')
         self.ccliGroupBox = QtGui.QGroupBox(self.rightWidget)
         self.ccliGroupBox.setObjectName(u'ccliGroupBox')
@@ -305,7 +306,8 @@ class GeneralTab(SettingsTab):
         """
         if event:
             SettingsTab.resizeEvent(self, event)
-        width = self.width() - self.generalLayout.contentsMargins().left() - \
+        width = self.width() - self.generalLayout.spacing() - \
+            self.generalLayout.contentsMargins().left() - \
             self.generalLayout.contentsMargins().right()
         left_width = min(width - self.rightWidget.minimumSizeHint().width(),
             width / 2)

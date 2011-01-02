@@ -40,14 +40,10 @@ class ThemesTab(SettingsTab):
         self.setObjectName(u'ThemesTab')
         self.tabTitleVisible = translate('OpenLP.ThemesTab', 'Themes')
         self.ThemesTabLayout = QtGui.QHBoxLayout(self)
-        self.ThemesTabLayout.setSpacing(8)
-        self.ThemesTabLayout.setMargin(8)
         self.ThemesTabLayout.setObjectName(u'ThemesTabLayout')
         self.GlobalGroupBox = QtGui.QGroupBox(self)
         self.GlobalGroupBox.setObjectName(u'GlobalGroupBox')
         self.GlobalGroupBoxLayout = QtGui.QVBoxLayout(self.GlobalGroupBox)
-        self.GlobalGroupBoxLayout.setSpacing(8)
-        self.GlobalGroupBoxLayout.setMargin(8)
         self.GlobalGroupBoxLayout.setObjectName(u'GlobalGroupBoxLayout')
         self.DefaultComboBox = QtGui.QComboBox(self.GlobalGroupBox)
         self.DefaultComboBox.setObjectName(u'DefaultComboBox')
@@ -60,39 +56,30 @@ class ThemesTab(SettingsTab):
         self.LevelGroupBox.setObjectName(u'LevelGroupBox')
         self.LevelLayout = QtGui.QFormLayout(self.LevelGroupBox)
         self.LevelLayout.setLabelAlignment(
-            QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+            QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.LevelLayout.setFormAlignment(
-            QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
-        self.LevelLayout.setMargin(8)
-        self.LevelLayout.setSpacing(8)
+            QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.LevelLayout.setObjectName(u'LevelLayout')
         self.SongLevelRadioButton = QtGui.QRadioButton(self.LevelGroupBox)
         self.SongLevelRadioButton.setObjectName(u'SongLevelRadioButton')
-        self.LevelLayout.setWidget(0, QtGui.QFormLayout.LabelRole,
-            self.SongLevelRadioButton)
         self.SongLevelLabel = QtGui.QLabel(self.LevelGroupBox)
         self.SongLevelLabel.setWordWrap(True)
         self.SongLevelLabel.setObjectName(u'SongLevelLabel')
-        self.LevelLayout.setWidget(0, QtGui.QFormLayout.FieldRole,
-            self.SongLevelLabel)
+        self.LevelLayout.addRow(self.SongLevelRadioButton, self.SongLevelLabel)
         self.ServiceLevelRadioButton = QtGui.QRadioButton(self.LevelGroupBox)
         self.ServiceLevelRadioButton.setObjectName(u'ServiceLevelRadioButton')
-        self.LevelLayout.setWidget(1, QtGui.QFormLayout.LabelRole,
-            self.ServiceLevelRadioButton)
         self.ServiceLevelLabel = QtGui.QLabel(self.LevelGroupBox)
         self.ServiceLevelLabel.setWordWrap(True)
         self.ServiceLevelLabel.setObjectName(u'ServiceLevelLabel')
-        self.LevelLayout.setWidget(1, QtGui.QFormLayout.FieldRole,
+        self.LevelLayout.addRow(self.ServiceLevelRadioButton,
             self.ServiceLevelLabel)
         self.GlobalLevelRadioButton = QtGui.QRadioButton(self.LevelGroupBox)
         self.GlobalLevelRadioButton.setChecked(True)
         self.GlobalLevelRadioButton.setObjectName(u'GlobalLevelRadioButton')
-        self.LevelLayout.setWidget(2, QtGui.QFormLayout.LabelRole,
-            self.GlobalLevelRadioButton)
         self.GlobalLevelLabel = QtGui.QLabel(self.LevelGroupBox)
         self.GlobalLevelLabel.setWordWrap(True)
         self.GlobalLevelLabel.setObjectName(u'GlobalLevelLabel')
-        self.LevelLayout.setWidget(2, QtGui.QFormLayout.FieldRole,
+        self.LevelLayout.addRow(self.GlobalLevelRadioButton,
             self.GlobalLevelLabel)
         self.ThemesTabLayout.addWidget(self.LevelGroupBox)
         QtCore.QObject.connect(self.SongLevelRadioButton,
@@ -129,6 +116,20 @@ class ThemesTab(SettingsTab):
         self.GlobalLevelLabel.setText(
             translate('OpenLP.ThemesTab', 'Use the global theme, overriding '
             'any themes associated with either the service or the songs.'))
+
+    def resizeEvent(self, event=None):
+        """
+        Resize the sides in two equal halves if the layout allows this.
+        """
+        if event:
+            SettingsTab.resizeEvent(self, event)
+        width = self.width() - self.ThemesTabLayout.spacing() - \
+            self.ThemesTabLayout.contentsMargins().left() - \
+            self.ThemesTabLayout.contentsMargins().right()
+        left_width = min(width - self.LevelGroupBox.minimumSizeHint().width(),
+            width / 2)
+        left_width = max(left_width, self.GlobalGroupBox.minimumSizeHint().width())
+        self.GlobalGroupBox.setMinimumWidth(left_width)
 
     def load(self):
         settings = QtCore.QSettings()

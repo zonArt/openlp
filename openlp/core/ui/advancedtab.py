@@ -47,11 +47,11 @@ class AdvancedTab(SettingsTab):
         """
         self.setObjectName(u'AdvancedTab')
         self.advancedTabLayout = QtGui.QHBoxLayout(self)
-        self.advancedTabLayout.setSpacing(0)
         self.advancedTabLayout.setObjectName(u'advancedTabLayout')
         self.leftWidget = QtGui.QWidget(self)
         self.leftWidget.setObjectName(u'leftWidget')
         self.leftLayout = QtGui.QVBoxLayout(self.leftWidget)
+        self.leftLayout.setMargin(0)
         self.leftLayout.setObjectName(u'leftLayout')
         self.uiGroupBox = QtGui.QGroupBox(self.leftWidget)
         self.uiGroupBox.setObjectName(u'uiGroupBox')
@@ -97,6 +97,7 @@ class AdvancedTab(SettingsTab):
         self.rightWidget = QtGui.QWidget(self)
         self.rightWidget.setObjectName(u'rightWidget')
         self.rightLayout = QtGui.QVBoxLayout(self.rightWidget)
+        self.rightLayout.setMargin(0)
         self.rightLayout.setObjectName(u'rightLayout')
 #        self.databaseGroupBox = QtGui.QGroupBox(self.rightWidget)
 #        self.databaseGroupBox.setObjectName(u'databaseGroupBox')
@@ -137,8 +138,9 @@ class AdvancedTab(SettingsTab):
         """
         if event:
             SettingsTab.resizeEvent(self, event)
-        width = self.width() - self.advancedTabLayout.contentsMargins().left() \
-            - self.advancedTabLayout.contentsMargins().right()
+        width = self.width() - self.advancedTabLayout.spacing() - \
+            self.advancedTabLayout.contentsMargins().left() - \
+            self.advancedTabLayout.contentsMargins().right()
         left_width = min(width - self.rightWidget.minimumSizeHint().width(),
             width / 2)
         left_width = max(left_width, self.leftWidget.minimumSizeHint().width())
