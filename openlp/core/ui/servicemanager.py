@@ -109,12 +109,12 @@ class ServiceManager(QtGui.QWidget):
         self.suffixes = []
         self.dropPosition = 0
         self.expandTabs = False
-        #is a new service and has not been saved
+        # is a new service and has not been saved
         self._modified = False
         self._fileName = u''
         self.serviceNoteForm = ServiceNoteForm(self.parent)
         self.serviceItemEditForm = ServiceItemEditForm(self.parent)
-        #start with the layout
+        # start with the layout
         self.layout = QtGui.QVBoxLayout(self)
         self.layout.setSpacing(0)
         self.layout.setMargin(0)
@@ -308,6 +308,8 @@ class ServiceManager(QtGui.QWidget):
         """
         self._fileName = unicode(fileName)
         self.parent.setServiceModified(self.isModified, self.shortFileName())
+        QtCore.QSettings(). \
+            setValue(u'service/last file',QtCore.QVariant(fileName))
 
     def fileName(self):
         """
@@ -393,6 +395,8 @@ class ServiceManager(QtGui.QWidget):
         self.serviceItems = []
         self.setFileName(u'')
         self.setModified(False)
+        QtCore.QSettings(). \
+            setValue(u'service/last file',QtCore.QVariant(u''))
 
     def saveFile(self):
         """
@@ -533,13 +537,21 @@ class ServiceManager(QtGui.QWidget):
         self.setFileName(fileName)
         self.parent.addRecentFile(fileName)
         self.setModified(False)
+        QtCore.QSettings(). \
+            setValue(u'service/last file',QtCore.QVariant(fileName))
         # Refresh Plugin lists
         Receiver.send_message(u'plugin_list_refresh')
 
     def loadLastFile(self):
-        if not self.parent.recentFiles:
-            return
-        self.loadFile(self.parent.recentFiles[0])
+        """
+        Load the last service item from the service manager when the
+        service was last closed. Can be blank if there was no service
+        present.
+        """
+        fileName = QtCore.QSettings(). \
+            value(u'service/last file',QtCore.QVariant(u'')).toString()
+        if fileName:
+            self.loadFile(fileName)
 
     def contextMenu(self, point):
         item = self.serviceManagerList.itemAt(point)
@@ -898,6 +910,7 @@ class ServiceManager(QtGui.QWidget):
         Rebuild the service list as things have changed and a
         repaint is the easiest way to do this.
         """
+        Receiver.send_message(u'cursor_busy')
         log.debug(u'regenerateServiceItems')
         # force reset of renderer as theme data has changed
         self.parent.renderManager.themedata = None
@@ -912,6 +925,7 @@ class ServiceManager(QtGui.QWidget):
             # Set to False as items may have changed rendering
             # does not impact the saved song so True may also be valid
             self.setModified(True)
+        Receiver.send_message(u'cursor_normal')
 
     def serviceItemUpdate(self, message):
         """

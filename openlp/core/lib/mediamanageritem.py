@@ -349,11 +349,13 @@ class MediaManagerItem(QtGui.QWidget):
             self.OnNewFileMasks)
         log.info(u'New files(s) %s', unicode(files))
         if files:
+            Receiver.send_message(u'cursor_busy')
             self.loadList(files)
             lastDir = os.path.split(unicode(files[0]))[0]
             SettingsManager.set_last_dir(self.settingsSection, lastDir)
             SettingsManager.set_list(self.settingsSection,
                 self.settingsSection, self.getFileList())
+        Receiver.send_message(u'cursor_normal')
 
     def getFileList(self):
         """
