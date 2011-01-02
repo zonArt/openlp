@@ -701,7 +701,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if QtCore.QSettings().value(
             self.generalSettingsSection + u'/auto open',
             QtCore.QVariant(False)).toBool():
-            #self.ServiceManagerContents.onLoadService(True)
             self.ServiceManagerContents.loadLastFile()
         view_mode = QtCore.QSettings().value(u'%s/view mode' % \
             self.generalSettingsSection, u'default')
