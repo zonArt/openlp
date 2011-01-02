@@ -314,15 +314,14 @@ class SongMediaItem(MediaManagerItem):
             translate('SongsPlugin.MediaItem',
             'You must select an item to delete.')):
             items = self.listView.selectedIndexes()
-            ans = QtGui.QMessageBox.question(self,
+            if QtGui.QMessageBox.question(self,
                 translate('SongsPlugin.MediaItem', 'Delete Song(s)?'),
                 translate('SongsPlugin.MediaItem',
                 'Are you sure you want to delete the %n selected song(s)?', '',
                 QtCore.QCoreApplication.CodecForTr, len(items)),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok|
-                     QtGui.QMessageBox.Cancel),
-                QtGui.QMessageBox.Ok)
-            if ans == QtGui.QMessageBox.Cancel:
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok |
+                QtGui.QMessageBox.Cancel),
+                QtGui.QMessageBox.Ok) == QtGui.QMessageBox.Cancel:
                 return
             for item in items:
                 item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
@@ -396,8 +395,8 @@ class SongMediaItem(MediaManagerItem):
         service_item.audit = [
             song.title, author_audit, song.copyright, unicode(song.ccli_number)
         ]
-        service_item.data_string = {u'title':song.search_title,
-            u'authors':author_list}
+        service_item.data_string = {u'title': song.search_title,
+            u'authors': author_list}
         service_item.xml_version = self.openLyrics.song_to_xml(song)
         return True
 

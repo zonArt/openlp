@@ -367,6 +367,7 @@ class OpenLyricsParser(object):
             # No Author in XML so ignore
             pass
         self.manager.save_object(song)
+        # TODO: better return song itself, instead of song.id
         return song.id
 
     def _add_text_to_element(self, tag, parent, text=None, label=None):
