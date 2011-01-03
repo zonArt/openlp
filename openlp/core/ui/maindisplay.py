@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -209,7 +209,7 @@ class MainDisplay(DisplayWidget):
             shrink = True
         else:
             shrink = False
-        js =  u'show_alert("%s", "%s")' % (
+        js = u'show_alert("%s", "%s")' % (
             text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'),
             u'top' if shrink else u'')
         height = self.frame.evaluateJavaScript(js)
@@ -235,8 +235,8 @@ class MainDisplay(DisplayWidget):
 
     def image(self, name):
         """
-        Add an image as the background.  The image is converted to a
-        bytestream on route.
+        Add an image as the background.  The image is converted to a bytestream
+        on route.
 
         `Image`
             The Image to be displayed can be QImage or QPixmap
@@ -421,8 +421,8 @@ class MainDisplay(DisplayWidget):
         Display the Footer
         """
         log.debug(u'footer')
-        js =  "show_footer('" + \
-            text.replace("\\", "\\\\").replace("\'", "\\\'") + "')"
+        js = u'show_footer(\'' + \
+            text.replace(u'\\', u'\\\\').replace(u'\'', u'\\\'') + u'\')'
         self.frame.evaluateJavaScript(js)
 
     def hideDisplay(self, mode=HideMode.Screen):
@@ -541,4 +541,3 @@ class AudioPlayer(QtCore.QObject):
         """
         log.debug(u'AudioPlayer Reached end of media playlist')
         self.mediaObject.clearQueue()
-
