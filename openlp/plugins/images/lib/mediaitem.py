@@ -219,8 +219,8 @@ class ImageMediaItem(MediaManagerItem):
                 self.parent.liveController.display.directImage(name, filename)
             else:
                 QtGui.QMessageBox.critical(self,
-                    translate('ImagePlugin.MediaItem', 'Live Background Could '
-                    'Not Be Replaced'),
+                    translate('ImagePlugin.MediaItem', 'Live background could '
+                    'not be replaced.'),
                     unicode(translate('ImagePlugin.MediaItem',
                     'The image %s no longer exists.')) % filename)
         self.resetButton.setVisible(True)

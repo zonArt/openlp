@@ -108,11 +108,19 @@ class MediaMediaItem(MediaManagerItem):
 
     def onReplaceClick(self):
         if check_item_selected(self.listView,
-            translate('ImagePlugin.MediaItem',
+            translate('MediaPlugin.MediaItem',
             'You must select a media file to replace the background with.')):
             item = self.listView.currentItem()
             filename = unicode(item.data(QtCore.Qt.UserRole).toString())
-            self.parent.liveController.display.video(filename, 0, True)
+            if os.path.exists(filename):
+                (path, name) = os.path.split(filename)
+                self.parent.liveController.display.video(filename, 0, True)
+            else:
+                QtGui.QMessageBox.critical(self,
+                    translate('MediaPlugin.MediaItem', 'Live background could '
+                    'not be replaced.'),
+                    unicode(translate('ImagePlugin.MediaItem',
+                    'The media file %s no longer exists.')) % filename)
         self.resetButton.setVisible(True)
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
