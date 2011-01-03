@@ -42,8 +42,10 @@ import logging
 import re
 
 from lxml import etree, objectify
+
+from openlp.core.lib import translate
 from openlp.plugins.songs.lib import VerseType
-from openlp.plugins.songs.lib.db import Author, Song
+from openlp.plugins.songs.lib.db import Author, Song, Topic
 
 log = logging.getLogger(__name__)
 
@@ -246,7 +248,7 @@ class OpenLyricsParser(object):
     This class represents the converter for Song to/from
     `OpenLyrics <http://openlyrics.info/>`_ XML.
     """
-    # TODO: complete OpenLyrics standard implementation!
+    # TODO: complete OpenLyrics standard implementation as fare as possible!
     def __init__(self, manager):
         self.manager = manager
 
@@ -288,7 +290,7 @@ class OpenLyricsParser(object):
         """
         Create and save a Song from OpenLyrics format xml.
         """
-        # No xml get out of here
+        # No xml get out of here.
         if not xml:
             return 0
         song = Song()
@@ -296,19 +298,18 @@ class OpenLyricsParser(object):
             xml = xml[38:]
         song_xml = objectify.fromstring(xml)
         properties = song_xml.properties
-        song.copyright = unicode(properties.copyright.text)
-        if song.copyright == u'None':
+        # Process Copyright
+        try:
+            song.copyright = unicode(properties.copyright.text)
+            if song.copyright == u'None':
+                song.copyright = u''
+        except AttributeError:
             song.copyright = u''
-        song.topics = []
-        song.book = None
+        # Process CCLI number
         try:
             song.ccli_number = unicode(properties.ccliNo.text)
         except AttributeError:
             song.ccli_number = u''
-        try:
-            song.theme_name = unicode(properties.themes.theme)
-        except AttributeError:
-            song.theme_name = u''
         # Process Titles
         for title in properties.titles.title:
             if not song.title:
@@ -325,26 +326,29 @@ class OpenLyricsParser(object):
         search_text = u''
         song.verse_order = u''
         for lyrics in song_xml.lyrics:
-            for verse in song_xml.lyrics.verse:
+            for verse in lyrics.verse:
                 text = u''
-                for line in verse.lines.line:
-                    line = unicode(line)
-                    if not text:
-                        text = line
-                    else:
-                        text += u'\n' + line
-                type = VerseType.expand_string(verse.attrib[u'name'][0])
-                # Here we need to create the verse order for the case that the
-                # song does not have a verseOrder property.
-                sxml.add_verse_to_lyrics(type, verse.attrib[u'name'][1], text)
+                # Note that the <verses> element will not be in OpenLyrics 0.8:
+                # http://code.google.com/p/openlyrics/issues/detail?id=8
+                for line in verse.lines:
+                    for line in line.line:
+                        line = unicode(line)
+                        if not text:
+                            text = line
+                        else:
+                            text += u'\n' + line
+                type_ = VerseType.expand_string(verse.attrib[u'name'][0])
+                # TODO: Here we need to create the verse order for the case that
+                # the song does not have a verseOrder property.
+                sxml.add_verse_to_lyrics(type_, verse.attrib[u'name'][1], text)
                 search_text = search_text + text
         song.search_lyrics = search_text.lower()
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
+        # Process verse order
         try:
             song.verse_order = unicode(properties.verseOrder.text)
         except AttributeError:
             # TODO: Do not allow empty verse order.
-            # Do not worry!
             pass
         if song.verse_order == u'None':
             song.verse_order = u''
@@ -358,16 +362,26 @@ class OpenLyricsParser(object):
                     song.comments += u'\n' + comment
         except AttributeError:
             pass
-        song.song_number = u''
         # Process Authors
         try:
             for author in properties.authors.author:
                 self._process_author(author.text, song)
         except AttributeError:
-            # No Author in XML so ignore
             pass
+        if not song.authors:
+            # Add "Author unknown" (can be translated)
+            self._process_author(translate('SongsPlugin.XML',
+                'Author unknown'), song)
+        # Process Topcis
+        try:
+            for topic in properties.themes.theme:
+                self._process_topic(topic.text, song)
+        except AttributeError:
+            pass
+        # Properties not yet supported.
+        song.book = None
+        song.song_number = u''
         self.manager.save_object(song)
-        # TODO: better return song itself, instead of song.id
         return song.id
 
     def _add_text_to_element(self, tag, parent, text=None, label=None):
@@ -396,17 +410,43 @@ class OpenLyricsParser(object):
 
     def _process_author(self, name, song):
         """
-        Find or create an Author from display_name.
+        Finds an existing Author or creates a new Author and adds it to the song
+        object.
+
+        ``name``
+            The display_name of the song (string).
+
+        ``song``
+            The song the Author will be added to.
         """
+        if not name:
+            return
         name = unicode(name)
         author = self.manager.get_object_filtered(Author,
             Author.display_name == name)
-        if author:
-            # should only be one! so take the first
-            song.authors.append(author)
-        else:
-            # Need a new author
-            new_author = Author.populate(first_name=name.rsplit(u' ', 1)[0],
-                        last_name=name.rsplit(u' ', 1)[1], display_name=name)
-            self.manager.save_object(new_author)
-            song.authors.append(new_author)
+        if author is None:
+            # We need to create a new author, as the author does not exist.
+            author = Author.populate(first_name=name.rsplit(u' ', 1)[0],
+                last_name=name.rsplit(u' ', 1)[1], display_name=name)
+            self.manager.save_object(author)
+        song.authors.append(author)
+
+    def _process_topic(self, topictext, song):
+        """
+        Finds an existing Topic or creates a new Topic and adds it to the song
+        object.
+
+        ``topictext``
+            The topictext we add to the song (string).
+
+        ``song``
+            The song the Topic will be added to.
+        """
+        topictext = unicode(topictext)
+        # Check if topic already exists in the database.
+        topic = self.manager.get_object_filtered(Topic, Topic.name == topictext)
+        if topic is None:
+            # We need to create a new topic, as the topic does not exist.
+            topic = Topic.populate(name=topictext)
+            self.manager.save_object(topic)
+        song.topics.append(topic)
