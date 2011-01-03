@@ -61,8 +61,7 @@ class OpenLyricsImport(SongImport):
         self.import_wizard.importProgressBar.setMaximum(len(self.import_source))
         for file_path in self.import_source:
             if self.stop_import_flag:
-                success = False
-                break
+                return False
             file = open(file_path)
             xml = file.read()
             file.close()
@@ -70,8 +69,6 @@ class OpenLyricsImport(SongImport):
                 'SongsPlugin.OpenLyricsImport', 'Importing %s...')) %
                 os.path.basename(file_path))
             if self.openLyricsParser.xml_to_song(xml) == 0:
-                success = false
-                break
-        if success:
-            return True
-        return False
+                # Importing this song failed! For now we stop import.
+                return False
+        return True

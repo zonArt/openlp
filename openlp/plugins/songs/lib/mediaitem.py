@@ -404,11 +404,13 @@ class SongMediaItem(MediaManagerItem):
         """
         Triggered by a song being loaded by the service item
         """
+        # TODO: fix db flooding
         log.debug(u'serviceLoad')
         if item.data_string:
+            print item.data_string
             search_results = self.parent.manager.get_all_objects(Song,
                 Song.search_title ==
-                    item.data_string[u'title'].split(u'@')[0].lower() ,
+                item.data_string[u'title'].split(u'@')[0].lower(),
                 Song.search_title.asc())
             author_list = item.data_string[u'authors'].split(u', ')
             # The service item always has an author (at least it has u'' as
@@ -417,7 +419,6 @@ class SongMediaItem(MediaManagerItem):
             if u'' in author_list:
                 author_list.remove(u'')
             editId = 0
-            uuid = item._uuid
             add_song = True
             if search_results:
                 for song in search_results:
@@ -444,7 +445,7 @@ class SongMediaItem(MediaManagerItem):
             # Update service with correct song id.
             if editId != 0:
                 Receiver.send_message(u'service_item_update',
-                    u'%s:%s' %(editId, uuid))
+                    u'%s:%s' % (editId, item._uuid))
 
     def collateSongTitles(self, song_1, song_2):
         """

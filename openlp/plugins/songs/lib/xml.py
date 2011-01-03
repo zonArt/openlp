@@ -45,7 +45,7 @@ from lxml import etree, objectify
 
 from openlp.core.lib import translate
 from openlp.plugins.songs.lib import VerseType
-from openlp.plugins.songs.lib.db import Author, Song, Topic
+from openlp.plugins.songs.lib.db import Author, Book, Song, Topic
 
 log = logging.getLogger(__name__)
 
@@ -265,22 +265,41 @@ class OpenLyricsParser(object):
         self._add_text_to_element(u'title', titles, song.title)
         if song.alternate_title:
             self._add_text_to_element(u'title', titles, song.alternate_title)
-        if song.theme_name:
-            themes = etree.SubElement(properties, u'themes')
-            self._add_text_to_element(u'theme', themes, song.theme_name)
-        self._add_text_to_element(u'copyright', properties, song.copyright)
-        self._add_text_to_element(u'verseOrder', properties, song.verse_order)
+        if song.comments:
+            comments = etree.SubElement(properties, u'comments')
+            self._add_text_to_element(u'comment', comments, song.comments)
+        if song.copyright:
+            self._add_text_to_element(u'copyright', properties, song.copyright)
+        if song.verse_order:
+            self._add_text_to_element(
+                u'verseOrder', properties, song.verse_order)
         if song.ccli_number:
             self._add_text_to_element(u'ccliNo', properties, song.ccli_number)
-        authors = etree.SubElement(properties, u'authors')
-        for author in song.authors:
-            self._add_text_to_element(u'author', authors, author.display_name)
+        if song.authors:
+            authors = etree.SubElement(properties, u'authors')
+            for author in song.authors:
+                self._add_text_to_element(
+                    u'author', authors, author.display_name)
+        book = self.manager.get_object_filtered(
+            Book, Book.id == song.song_book_id)
+        if book is not None:
+            book = book.name
+            songbooks = etree.SubElement(properties, u'songbooks')
+            element = self._add_text_to_element(
+                u'songbook', songbooks, None, book)
+            element.set(u'entry', song.song_number)
+        if song.topics:
+            themes = etree.SubElement(properties, u'themes')
+            for topic in song.topics:
+                self._add_text_to_element(u'theme', themes, topic.name)
         lyrics = etree.SubElement(song_xml, u'lyrics')
         for verse in verse_list:
             verse_tag = u'%s%s' % (
                 verse[0][u'type'][0].lower(), verse[0][u'label'])
             element = \
                 self._add_text_to_element(u'verse', lyrics, None, verse_tag)
+            # Note that the <verses> element will not be in OpenLyrics 0.8:
+            # http://code.google.com/p/openlyrics/issues/detail?id=8
             element = self._add_text_to_element(u'lines', element)
             for line in unicode(verse[1]).split(u'\n'):
                 self._add_text_to_element(u'line', element, line)
@@ -357,9 +376,9 @@ class OpenLyricsParser(object):
         try:
             for comment in properties.comments.comment:
                 if not song.comments:
-                    song.comments = comment
+                    song.comments = unicode(comment.text)
                 else:
-                    song.comments += u'\n' + comment
+                    song.comments += u'\n' + unicode(comment.text)
         except AttributeError:
             pass
         # Process Authors
@@ -372,6 +391,18 @@ class OpenLyricsParser(object):
             # Add "Author unknown" (can be translated)
             self._process_author(translate('SongsPlugin.XML',
                 'Author unknown'), song)
+        # Process Song Book and Song Number
+        song.song_book_id = 0
+        song.song_number = u''
+        try:
+            for songbook in properties.songbooks.songbook:
+                self._process_songbook(songbook.get(u'name'), song)
+                if songbook.get(u'entry'):
+                    song.song_number = unicode(songbook.get(u'entry'))
+                # OpenLp does only support one song book, so take the first one.
+                break
+        except AttributeError:
+            pass
         # Process Topcis
         try:
             for topic in properties.themes.theme:
@@ -379,8 +410,7 @@ class OpenLyricsParser(object):
         except AttributeError:
             pass
         # Properties not yet supported.
-        song.book = None
-        song.song_number = u''
+        song.theme_name = u''
         self.manager.save_object(song)
         return song.id
 
@@ -417,9 +447,10 @@ class OpenLyricsParser(object):
             The display_name of the song (string).
 
         ``song``
-            The song the Author will be added to.
+            The song the object.
         """
         if not name:
+            # Wrong use of XML here, as no text has been supplied.
             return
         name = unicode(name)
         author = self.manager.get_object_filtered(Author,
@@ -433,20 +464,44 @@ class OpenLyricsParser(object):
 
     def _process_topic(self, topictext, song):
         """
-        Finds an existing Topic or creates a new Topic and adds it to the song
+        Finds an existing topic or creates a new topic and adds it to the song
         object.
 
         ``topictext``
-            The topictext we add to the song (string).
+            The topictext of the topic (string).
 
         ``song``
-            The song the Topic will be added to.
+            The song object.
         """
+        if not topictext:
+            # Wrong use of XML here, as no text has been supplied.
+            return
         topictext = unicode(topictext)
-        # Check if topic already exists in the database.
         topic = self.manager.get_object_filtered(Topic, Topic.name == topictext)
         if topic is None:
             # We need to create a new topic, as the topic does not exist.
             topic = Topic.populate(name=topictext)
             self.manager.save_object(topic)
         song.topics.append(topic)
+
+    def _process_songbook(self, bookname, song):
+        """
+        Finds an existing book or creates a new book and adds it to the song
+        object.
+
+        ``bookname``
+            The name of the book (string).
+
+        ``song``
+            The song object.
+        """
+        if not bookname:
+            # Wrong use of XML here, as no text has been supplied.
+            return
+        bookname = unicode(bookname)
+        book = self.manager.get_object_filtered(Book, Book.name == bookname)
+        if book is None:
+            # We need to create a new book, as the book does not exist.
+            book = Book.populate(name=bookname, publisher=u'')
+            self.manager.save_object(book)
+        song.song_book_id = book.id
