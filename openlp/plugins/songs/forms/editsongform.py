@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -186,9 +186,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.AuthorsListView.clear()
         self.TopicsListView.clear()
         self.TitleEditItem.setFocus(QtCore.Qt.OtherFocusReason)
+        self.songBookNumberEdit.setText(u'')
         self.loadAuthors()
         self.loadTopics()
         self.loadBooks()
+        self.ThemeSelectionComboItem.setCurrentIndex(0)
         # it's a new song to preview is not possible
         self.previewButton.setVisible(False)
 

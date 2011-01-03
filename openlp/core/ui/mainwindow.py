@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -76,7 +76,7 @@ class Ui_MainWindow(object):
         MainIcon = build_icon(u':/icon/openlp-logo-16x16.png')
         MainWindow.setWindowIcon(MainIcon)
         self.setDockNestingEnabled(True)
-        # Set up the main container, which contains all the other form widgets
+        # Set up the main container, which contains all the other form widgets.
         self.MainContent = QtGui.QWidget(MainWindow)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,
             QtGui.QSizePolicy.Expanding)
@@ -141,13 +141,12 @@ class Ui_MainWindow(object):
         self.DefaultThemeLabel.setObjectName(u'DefaultThemeLabel')
         self.StatusBar.addPermanentWidget(self.DefaultThemeLabel)
         # Create the MediaManager
-        self.MediaManagerDock = OpenLPDockWidget(MainWindow)
-        self.MediaManagerDock.setWindowIcon(
+        self.MediaManagerDock = OpenLPDockWidget(
+            MainWindow, u'MediaManagerDock',
             build_icon(u':/system/system_mediamanager.png'))
         self.MediaManagerDock.setStyleSheet(MEDIA_MANAGER_STYLE)
         self.MediaManagerDock.setMinimumWidth(
             self.settingsmanager.mainwindow_left)
-        self.MediaManagerDock.setObjectName(u'MediaManagerDock')
         self.MediaManagerContents = QtGui.QWidget(MainWindow)
         self.MediaManagerContents.setObjectName(u'MediaManagerContents')
         self.MediaManagerLayout = QtGui.QHBoxLayout(self.MediaManagerContents)
@@ -161,10 +160,9 @@ class Ui_MainWindow(object):
         MainWindow.addDockWidget(
             QtCore.Qt.DockWidgetArea(1), self.MediaManagerDock)
         # Create the service manager
-        self.ServiceManagerDock = OpenLPDockWidget(MainWindow)
-        self.ServiceManagerDock.setWindowIcon(
+        self.ServiceManagerDock = OpenLPDockWidget(
+            MainWindow, u'ServiceManagerDock',
             build_icon(u':/system/system_servicemanager.png'))
-        self.ServiceManagerDock.setObjectName(u'ServiceManagerDock')
         self.ServiceManagerDock.setMinimumWidth(
             self.settingsmanager.mainwindow_right)
         self.ServiceManagerContents = ServiceManager(self)
@@ -172,10 +170,9 @@ class Ui_MainWindow(object):
         MainWindow.addDockWidget(
             QtCore.Qt.DockWidgetArea(2), self.ServiceManagerDock)
         # Create the theme manager
-        self.ThemeManagerDock = OpenLPDockWidget(MainWindow)
-        self.ThemeManagerDock.setWindowIcon(
+        self.ThemeManagerDock = OpenLPDockWidget(
+            MainWindow, u'ThemeManagerDock',
             build_icon(u':/system/system_thememanager.png'))
-        self.ThemeManagerDock.setObjectName(u'ThemeManagerDock')
         self.ThemeManagerDock.setMinimumWidth(
             self.settingsmanager.mainwindow_right)
         self.ThemeManagerContents = ThemeManager(self)
@@ -272,7 +269,7 @@ class Ui_MainWindow(object):
         self.SettingsPluginListItem.setObjectName(u'SettingsPluginListItem')
         MainWindow.actionList.add_action(self.SettingsPluginListItem,
             u'Settings')
-        #i18n Language Items
+        # i18n Language Items
         self.AutoLanguageItem = QtGui.QAction(MainWindow)
         self.AutoLanguageItem.setObjectName(u'AutoLanguageItem')
         self.AutoLanguageItem.setCheckable(True)
@@ -331,7 +328,7 @@ class Ui_MainWindow(object):
             None, self.ViewMediaManagerItem, self.ViewServiceManagerItem,
             self.ViewThemeManagerItem, None, self.ViewPreviewPanel,
             self.ViewLivePanel))
-        #i18n add Language Actions
+        # i18n add Language Actions
         add_actions(self.SettingsLanguageMenu, (self.AutoLanguageItem, None))
         add_actions(self.SettingsLanguageMenu, self.LanguageGroup.actions())
         add_actions(self.SettingsMenu, (self.SettingsPluginListItem,
@@ -354,16 +351,7 @@ class Ui_MainWindow(object):
             QtCore.SIGNAL(u'aboutToShow()'), self.updateFileMenu)
         QtCore.QObject.connect(self.FileExitItem,
             QtCore.SIGNAL(u'triggered()'), MainWindow.close)
-        QtCore.QObject.connect(self.ControlSplitter,
-            QtCore.SIGNAL(u'splitterMoved(int, int)'), self.trackSplitter)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
-    def trackSplitter(self, tab, pos):
-        """
-        Splitter between the Preview and Live Controllers.
-        """
-        self.liveController.widthChanged()
-        self.previewController.widthChanged()
 
     def retranslateUi(self, MainWindow):
         """
@@ -594,16 +582,16 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(self.SettingsShortcutsItem,
             QtCore.SIGNAL(u'triggered()'), self.onSettingsShortcutsItemClicked)
         QtCore.QObject.connect(self.FileNewItem, QtCore.SIGNAL(u'triggered()'),
-            self.ServiceManagerContents.onNewService)
+            self.ServiceManagerContents.onNewServiceClicked)
         QtCore.QObject.connect(self.FileOpenItem,
             QtCore.SIGNAL(u'triggered()'),
-            self.ServiceManagerContents.onLoadService)
+            self.ServiceManagerContents.onLoadServiceClicked)
         QtCore.QObject.connect(self.FileSaveItem,
             QtCore.SIGNAL(u'triggered()'),
-            self.ServiceManagerContents.onQuickSaveService)
+            self.ServiceManagerContents.onSaveServiceClicked)
         QtCore.QObject.connect(self.FileSaveAsItem,
             QtCore.SIGNAL(u'triggered()'),
-            self.ServiceManagerContents.onSaveService)
+            self.ServiceManagerContents.onSaveServiceAsClicked)
         # i18n set signals for languages
         QtCore.QObject.connect(self.AutoLanguageItem,
             QtCore.SIGNAL(u'toggled(bool)'), self.setAutoLanguage)
@@ -624,6 +612,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'config_screen_changed'), self.screenChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'maindisplay_status_text'), self.showStatusMessage)
+        Receiver.send_message(u'cursor_busy')
+        # Simple message boxes
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'openlp_error_message'), self.onErrorMessage)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'openlp_warning_message'), self.onWarningMessage)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'openlp_information_message'),
+            self.onInformationMessage)
         # warning cyclic dependency
         # RenderManager needs to call ThemeManager and
         # ThemeManager needs to call RenderManager
@@ -671,6 +668,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             if savedPlugin != -1:
                 self.MediaToolBox.setCurrentIndex(savedPlugin)
         self.settingsForm.postSetUp()
+        Receiver.send_message(u'cursor_normal')
 
     def setAutoLanguage(self, value):
         self.LanguageGroup.setDisabled(value)
@@ -703,7 +701,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if QtCore.QSettings().value(
             self.generalSettingsSection + u'/auto open',
             QtCore.QVariant(False)).toBool():
-            self.ServiceManagerContents.onLoadService(True)
+            self.ServiceManagerContents.loadLastFile()
         view_mode = QtCore.QSettings().value(u'%s/view mode' % \
             self.generalSettingsSection, u'default')
         if view_mode == u'default':
@@ -732,6 +730,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     translate('OpenLP.MainWindow',
                          'The Main Display has been blanked out'))
 
+    def onErrorMessage(self, data):
+        QtGui.QMessageBox.critical(self, data[u'title'], data[u'message'])
+
+    def onWarningMessage(self, data):
+        QtGui.QMessageBox.warning(self, data[u'title'], data[u'message'])
+
+    def onInformationMessage(self, data):
+        QtGui.QMessageBox.information(self, data[u'title'], data[u'message'])
+
     def onHelpWebSiteClicked(self):
         """
         Load the OpenLP website
@@ -758,6 +765,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Show the Settings dialog
         """
         self.settingsForm.exec_()
+
+    def paintEvent(self, event):
+        """
+        We need to make sure, that the SlidePreview's size is correct.
+        """
+        self.previewController.previewSizeChanged()
+        self.liveController.previewSizeChanged()
 
     def onSettingsShortcutsItemClicked(self):
         """
@@ -817,7 +831,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Hook to close the main window and display windows on exit
         """
-        if self.serviceNotSaved:
+        if self.ServiceManagerContents.isModified():
             ret = QtGui.QMessageBox.question(self,
                 translate('OpenLP.MainWindow', 'Save Changes to Service?'),
                 translate('OpenLP.MainWindow', 'Your service has changed. '
@@ -828,17 +842,35 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     QtGui.QMessageBox.Save),
                 QtGui.QMessageBox.Save)
             if ret == QtGui.QMessageBox.Save:
-                self.ServiceManagerContents.onSaveService(True)
-                self.cleanUp()
-                event.accept()
+                if self.ServiceManagerContents.saveFile():
+                    self.cleanUp()
+                    event.accept()
+                else:
+                    event.ignore()
             elif ret == QtGui.QMessageBox.Discard:
                 self.cleanUp()
                 event.accept()
             else:
                 event.ignore()
         else:
-            self.cleanUp()
-            event.accept()
+            if QtCore.QSettings().value(u'advanced/enable exit confirmation',
+                QtCore.QVariant(True)).toBool():
+                ret = QtGui.QMessageBox.question(self,
+                    translate('OpenLP.MainWindow', 'Close OpenLP'),
+                    translate('OpenLP.MainWindow', 'Are you sure you want to close OpenLP?'),
+                    QtGui.QMessageBox.StandardButtons(
+                        QtGui.QMessageBox.Yes |
+                        QtGui.QMessageBox.No),
+                    QtGui.QMessageBox.Yes)
+                if ret == QtGui.QMessageBox.Yes:
+                    self.cleanUp()
+                    event.accept()
+                else:
+                    event.ignore()
+            else:
+                self.cleanUp()
+                event.accept()
+
 
     def cleanUp(self):
         """
@@ -878,6 +910,23 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         else:
             self.serviceNotSaved = True
             title = u'%s - %s*' % (self.mainTitle, service_name)
+        self.setWindowTitle(title)
+
+    def setServiceModified(self, modified, fileName):
+        """
+        This method is called from the ServiceManager to set the title of the
+        main window.
+
+        ``modified``
+            Whether or not this service has been modified.
+
+        ``fileName``
+            The file name of the service file.
+        """
+        if modified:
+            title = u'%s - %s*' % (self.mainTitle, fileName)
+        else:
+            title = u'%s - %s' % (self.mainTitle, fileName)
         self.setWindowTitle(title)
 
     def showStatusMessage(self, message):
@@ -981,11 +1030,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if recentFilesToDisplay:
             self.FileMenu.addSeparator()
             for fileId, filename in enumerate(recentFilesToDisplay):
-                action = QtGui.QAction(u'&%d %s' % (fileId +1,
+                log.debug('Recent file name: %s', filename)
+                action = QtGui.QAction(u'&%d %s' % (fileId + 1,
                     QtCore.QFileInfo(filename).fileName()), self)
                 action.setData(QtCore.QVariant(filename))
                 self.connect(action, QtCore.SIGNAL(u'triggered()'),
-                    self.ServiceManagerContents.loadService)
+                    self.ServiceManagerContents.onRecentServiceClicked)
                 self.FileMenu.addAction(action)
         self.FileMenu.addSeparator()
         self.FileMenu.addAction(self.FileMenuActions[-1])
@@ -998,8 +1048,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             The service filename to add
         """
         # The maxRecentFiles value does not have an interface and so never gets
-        # actually stored in the settings therefore the default value of 20
-        # will always be used.
+        # actually stored in the settings therefore the default value of 20 will
+        # always be used.
         maxRecentFiles = QtCore.QSettings().value(u'advanced/max recent files',
             QtCore.QVariant(20)).toInt()[0]
         if filename:

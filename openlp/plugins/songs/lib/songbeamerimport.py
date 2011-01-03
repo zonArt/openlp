@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -85,17 +85,18 @@ class SongBeamerImport(SongImport):
         """
         Recieve a single file, or a list of files to import.
         """
-        if isinstance(self.import_source,  list):
+        if isinstance(self.import_source, list):
             self.import_wizard.importProgressBar.setMaximum(
                 len(self.import_source))
             for file in self.import_source:
                 # TODO: check that it is a valid SongBeamer file
+                self.set_defaults()
                 self.current_verse = u''
                 self.current_verse_type = u'V'
                 read_verses = False
                 self.file_name = os.path.split(file)[1]
                 self.import_wizard.incrementProgressBar(
-                    "Importing %s" % (self.file_name),  0)
+                    u'Importing %s' % (self.file_name), 0)
                 if os.path.isfile(file):
                     detect_file = open(file, u'r')
                     details = chardet.detect(detect_file.read(2048))
@@ -105,6 +106,8 @@ class SongBeamerImport(SongImport):
                     infile.close()
                 else:
                     return False
+                self.title = self.file_name.split('.sng')[0]
+                read_verses = False
                 for line in self.songData:
                     # Just make sure that the line is of the type 'Unicode'.
                     line = unicode(line).strip()
@@ -123,16 +126,17 @@ class SongBeamerImport(SongImport):
                         if verse_start:
                             verse_start = False
                             if not self.check_verse_marks(line):
-                                self.current_verse = u'%s\n' % line
+                                self.current_verse = line + u'\n'
                         else:
-                            self.current_verse += u'%s\n' % line
+                            self.current_verse += line + u'\n'
                 if self.current_verse:
                     self.replace_html_tags()
                     self.add_verse(self.current_verse, self.current_verse_type)
-                self.finish()
-                self.import_wizard.incrementProgressBar(u'%s %s...' %
-                    (translate('SongsPlugin.SongBeamerImport', 'Importing'),
-                    self.file_name))
+                if self.check_complete():
+                    self.finish()
+                self.import_wizard.incrementProgressBar(unicode(translate(
+                    'SongsPlugin.SongBeamerImport', 'Importing %s...')) %
+                    self.file_name)
             return True
 
     def replace_html_tags(self):
@@ -248,7 +252,7 @@ class SongBeamerImport(SongImport):
         elif tag_val[0] == u'#TextAlign':
             pass
         elif tag_val[0] == u'#Title':
-            self.title = u'%s' % tag_val[1]
+            self.title = unicode(tag_val[1])
         elif tag_val[0] == u'#TitleAlign':
             pass
         elif tag_val[0] == u'#TitleFontSize':
