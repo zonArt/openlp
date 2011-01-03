@@ -150,9 +150,9 @@ class OpenLP(QtGui.QApplication):
             log.info(u'Openlp version %s' % app_version[u'version'])
         return app_version
 
-    def notify(self, obj, evt):
-        #TODO needed for presentation exceptions
-        return QtGui.QApplication.notify(self, obj, evt)
+#    def notify(self, obj, evt):
+#        #TODO needed for presentation exceptions
+#        return QtGui.QApplication.notify(self, obj, evt)
 
     def run(self):
         """

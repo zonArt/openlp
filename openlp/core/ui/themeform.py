@@ -291,9 +291,10 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.updateThemeAllowed = True
         self.themeNameLabel.setVisible(not edit)
         self.themeNameEdit.setVisible(not edit)
+        self.edit = edit
         if edit:
             self.setWindowTitle(unicode(translate('OpenLP.ThemeWizard',
-                'Edit Theme %s')) % self.theme.theme_name)
+                'Edit Theme - %s')) % self.theme.theme_name)
             self.next()
         else:
             self.setWindowTitle(translate('OpenLP.ThemeWizard', 'New Theme'))
@@ -586,12 +587,13 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             filename = \
                 os.path.split(unicode(self.theme.background_filename))[1]
             saveTo = os.path.join(self.path, self.theme.theme_name, filename)
-            saveFrom = self.theme.background_filename#
-        if self.thememanager.checkIfThemeExists(self.theme.theme_name):
-            self.thememanager.saveTheme(self.theme, saveFrom, saveTo)
-            self.accepted = True
-            return QtGui.QDialog.accept(self)
-        return
+            saveFrom = self.theme.background_filename
+        if not self.edit:
+            if not self.thememanager.checkIfThemeExists(self.theme.theme_name):
+                return
+        self.accepted = True
+        self.thememanager.saveTheme(self.theme, saveFrom, saveTo)
+        return QtGui.QDialog.accept(self)
 
     def _colorButton(self, field):
         """
