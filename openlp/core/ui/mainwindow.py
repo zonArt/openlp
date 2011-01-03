@@ -853,7 +853,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             else:
                 event.ignore()
         else:
-            if QtCore.QSettings().value(u'advanced/enable auto close',
+            if QtCore.QSettings().value(u'advanced/enable exit confirmation',
                 QtCore.QVariant(True)).toBool():
                 ret = QtGui.QMessageBox.question(self,
                     translate('OpenLP.MainWindow', 'Close OpenLP'),

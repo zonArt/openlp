@@ -155,7 +155,7 @@ class AdvancedTab(SettingsTab):
         self.expandServiceItemCheckBox.setText(translate('OpenLP.AdvancedTab',
             'Expand new service items on creation'))
         self.enableAutoCloseCheckBox.setText(translate('OpenLP.AdvancedTab',
-            'Enable confirm on closure'))
+            'Enable application exit confirmation'))
 #        self.sharedDirGroupBox.setTitle(
 #            translate('AdvancedTab', 'Central Data Store'))
 #        self.sharedCheckBox.setText(
@@ -187,7 +187,7 @@ class AdvancedTab(SettingsTab):
             settings.value(u'expand service item',
             QtCore.QVariant(False)).toBool())
         self.enableAutoCloseCheckBox.setChecked(
-            settings.value(u'enable auto close',
+            settings.value(u'enable exit confirmation',
             QtCore.QVariant(True)).toBool())
         settings.endGroup()
 
@@ -205,7 +205,7 @@ class AdvancedTab(SettingsTab):
             QtCore.QVariant(self.doubleClickLiveCheckBox.isChecked()))
         settings.setValue(u'expand service item',
             QtCore.QVariant(self.expandServiceItemCheckBox.isChecked()))
-        settings.setValue(u'enable auto close',
+        settings.setValue(u'enable exit confirmation',
             QtCore.QVariant(self.enableAutoCloseCheckBox.isChecked()))
         settings.endGroup()
 
