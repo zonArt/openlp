@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -79,12 +79,12 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         QtGui.QWizard.__init__(self, parent)
         self.setupUi(self)
         self.registerFields()
-        if not BibleFormat.get_availability(BibleFormat.OpenLP1):
-            self.openlp1Page.setVisible(False)
-            self.openlp1LocationLabel.setVisible(False)
-            self.openlp1LocationEdit.setVisible(False)
-            self.openlp1FileButton.setVisible(False)
-            self.openlp1DisabledLabel.setVisible(True)
+        if BibleFormat.get_availability(BibleFormat.OpenLP1):
+            self.openlp1DisabledLabel.hide()
+        else:
+            self.openlp1FileLabel.hide()
+            self.openlp1FileEdit.hide()
+            self.openlp1BrowseButton.hide()
         self.finishButton = self.button(QtGui.QWizard.FinishButton)
         self.cancelButton = self.button(QtGui.QWizard.CancelButton)
         self.manager = manager
@@ -92,24 +92,26 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         self.manager.set_process_dialog(self)
         self.web_bible_list = {}
         self.loadWebBibles()
-        QtCore.QObject.connect(self.locationComboBox,
+        self.restart()
+        self.selectStack.setCurrentIndex(0)
+        QtCore.QObject.connect(self.webSourceComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
-            self.onLocationComboBoxChanged)
-        QtCore.QObject.connect(self.osisFileButton,
+            self.onWebSourceComboBoxCurrentIndexChanged)
+        QtCore.QObject.connect(self.osisBrowseButton,
             QtCore.SIGNAL(u'clicked()'),
-            self.onOsisFileButtonClicked)
-        QtCore.QObject.connect(self.booksFileButton,
+            self.onOsisBrowseButtonClicked)
+        QtCore.QObject.connect(self.csvBooksButton,
             QtCore.SIGNAL(u'clicked()'),
-            self.onBooksFileButtonClicked)
-        QtCore.QObject.connect(self.csvVersesFileButton,
+            self.onBooksBrowseButtonClicked)
+        QtCore.QObject.connect(self.csvVersesButton,
             QtCore.SIGNAL(u'clicked()'),
-            self.onCsvVersesFileButtonClicked)
+            self.onCsvVersesBrowseButtonClicked)
         QtCore.QObject.connect(self.openSongBrowseButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onOpenSongBrowseButtonClicked)
-        QtCore.QObject.connect(self.openlp1FileButton,
+        QtCore.QObject.connect(self.openlp1BrowseButton,
             QtCore.SIGNAL(u'clicked()'),
-            self.onOpenlp1FileButtonClicked)
+            self.onOpenlp1BrowseButtonClicked)
         QtCore.QObject.connect(self,
             QtCore.SIGNAL(u'currentIdChanged(int)'),
             self.onCurrentIdChanged)
@@ -125,8 +127,8 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         """
         Stop the import on cancel button, close button or ESC key.
         """
-        log.debug('Import canceled by user.')
-        if self.currentId() == 3:
+        log.debug(u'Import canceled by user.')
+        if self.currentPage() == self.importPage:
             Receiver.send_message(u'bibles_stop_import')
         self.done(QtGui.QDialog.Rejected)
 
@@ -134,11 +136,9 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         """
         Validate the current page before moving on to the next page.
         """
-        if self.currentId() == 0:
-            # Welcome page
+        if self.currentPage() == self.welcomePage:
             return True
-        elif self.currentId() == 1:
-            # Select page
+        elif self.currentPage() == self.selectPage:
             if self.field(u'source_format').toInt()[0] == BibleFormat.OSIS:
                 if not self.field(u'osis_location').toString():
                     QtGui.QMessageBox.critical(self,
@@ -147,7 +147,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
                         translate('BiblesPlugin.ImportWizardForm',
                         'You need to specify a file to import your '
                         'Bible from.'))
-                    self.OSISLocationEdit.setFocus()
+                    self.osisFileEdit.setFocus()
                     return False
             elif self.field(u'source_format').toInt()[0] == BibleFormat.CSV:
                 if not self.field(u'csv_booksfile').toString():
@@ -157,7 +157,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
                         translate('BiblesPlugin.ImportWizardForm',
                         'You need to specify a file with books of '
                         'the Bible to use in the import.'))
-                    self.booksLocationEdit.setFocus()
+                    self.csvBooksEdit.setFocus()
                     return False
                 elif not self.field(u'csv_versefile').toString():
                     QtGui.QMessageBox.critical(self,
@@ -166,7 +166,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
                         translate('BiblesPlugin.ImportWizardForm',
                         'You need to specify a file of Bible '
                         'verses to import.'))
-                    self.csvVerseLocationEdit.setFocus()
+                    self.csvVersesEdit.setFocus()
                     return False
             elif self.field(u'source_format').toInt()[0] == \
                 BibleFormat.OpenSong:
@@ -187,11 +187,10 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
                         translate('BiblesPlugin.ImportWizardForm',
                         'You need to specify a file to import your '
                         'Bible from.'))
-                    self.openlp1LocationEdit.setFocus()
+                    self.openlp1FileEdit.setFocus()
                     return False
             return True
-        elif self.currentId() == 2:
-            # License details
+        elif self.currentPage() == self.licenseDetailsPage:
             license_version = unicode(self.field(u'license_version').toString())
             license_copyright = \
                 unicode(self.field(u'license_copyright').toString())
@@ -221,11 +220,10 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
                 self.versionNameEdit.setFocus()
                 return False
             return True
-        if self.currentId() == 3:
-            # Progress page
+        if self.currentPage() == self.importPage:
             return True
 
-    def onLocationComboBoxChanged(self, index):
+    def onWebSourceComboBoxCurrentIndexChanged(self, index):
         """
         Setup the list of Bibles when you select a different source on the web
         download page.
@@ -233,34 +231,35 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         ``index``
             The index of the combo box.
         """
-        self.bibleComboBox.clear()
+        self.webTranslationComboBox.clear()
         bibles = self.web_bible_list[index].keys()
         bibles.sort()
-        for bible in bibles:
-            self.bibleComboBox.addItem(bible)
+        self.webTranslationComboBox.addItems(bibles)
 
-    def onOsisFileButtonClicked(self):
+    def onOsisBrowseButtonClicked(self):
         """
         Show the file open dialog for the OSIS file.
         """
         self.getFileName(
             translate('BiblesPlugin.ImportWizardForm', 'Open OSIS File'),
-            self.OSISLocationEdit)
+            self.osisFileEdit)
 
-    def onBooksFileButtonClicked(self):
+    def onBooksBrowseButtonClicked(self):
         """
         Show the file open dialog for the books CSV file.
         """
         self.getFileName(
             translate('BiblesPlugin.ImportWizardForm', 'Open Books CSV File'),
-            self.booksLocationEdit)
+            self.csvBooksEdit, u'%s (*.csv)'
+            % translate('BiblesPlugin.ImportWizardForm', 'CSV File'))
 
-    def onCsvVersesFileButtonClicked(self):
+    def onCsvVersesBrowseButtonClicked(self):
         """
         Show the file open dialog for the verses CSV file.
         """
         self.getFileName(translate('BiblesPlugin.ImportWizardForm',
-            'Open Verses CSV File'), self.csvVerseLocationEdit)
+            'Open Verses CSV File'), self.csvVersesEdit, u'%s (*.csv)'
+            % translate('BiblesPlugin.ImportWizardForm', 'CSV File'))
 
     def onOpenSongBrowseButtonClicked(self):
         """
@@ -270,34 +269,35 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
             translate('BiblesPlugin.ImportWizardForm', 'Open OpenSong Bible'),
             self.openSongFileEdit)
 
-    def onOpenlp1FileButtonClicked(self):
+    def onOpenlp1BrowseButtonClicked(self):
         """
         Show the file open dialog for the openlp.org 1.x file.
         """
         self.getFileName(
             translate('BiblesPlugin.ImportWizardForm',
-            'Open openlp.org 1.x Bible'), self.openlp1LocationEdit)
+            'Open openlp.org 1.x Bible'), self.openlp1FileEdit,
+            u'%s (*.bible)' % translate('BiblesPlugin.ImportWizardForm',
+            'openlp.org 1.x bible'))
 
     def onCurrentIdChanged(self, pageId):
-        if pageId == 3:
+        if self.page(pageId) == self.importPage:
             self.preImport()
             self.performImport()
             self.postImport()
 
     def registerFields(self):
         self.selectPage.registerField(u'source_format', self.formatComboBox)
-        self.selectPage.registerField(u'osis_location', self.OSISLocationEdit)
-        self.selectPage.registerField(u'csv_booksfile', self.booksLocationEdit)
-        self.selectPage.registerField(
-            u'csv_versefile', self.csvVerseLocationEdit)
+        self.selectPage.registerField(u'osis_location', self.osisFileEdit)
+        self.selectPage.registerField(u'csv_booksfile', self.csvBooksEdit)
+        self.selectPage.registerField(u'csv_versefile', self.csvVersesEdit)
         self.selectPage.registerField(u'opensong_file', self.openSongFileEdit)
-        self.selectPage.registerField(u'web_location', self.locationComboBox)
-        self.selectPage.registerField(u'web_biblename', self.bibleComboBox)
-        self.selectPage.registerField(u'proxy_server', self.addressEdit)
-        self.selectPage.registerField(u'proxy_username', self.usernameEdit)
-        self.selectPage.registerField(u'proxy_password', self.passwordEdit)
-        self.selectPage.registerField(
-            u'openlp1_location', self.openlp1LocationEdit)
+        self.selectPage.registerField(u'web_location', self.webSourceComboBox)
+        self.selectPage.registerField(u'web_biblename',
+            self.webTranslationComboBox)
+        self.selectPage.registerField(u'proxy_server', self.webServerEdit)
+        self.selectPage.registerField(u'proxy_username', self.webUserEdit)
+        self.selectPage.registerField(u'proxy_password', self.webPasswordEdit)
+        self.selectPage.registerField(u'openlp1_location', self.openlp1FileEdit)
         self.licenseDetailsPage.registerField(
             u'license_version', self.versionNameEdit)
         self.licenseDetailsPage.registerField(
@@ -318,7 +318,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
         self.setField(u'opensong_file', QtCore.QVariant(''))
         self.setField(u'web_location', QtCore.QVariant(WebDownload.Crosswalk))
         self.setField(u'web_biblename',
-            QtCore.QVariant(self.bibleComboBox.currentIndex()))
+            QtCore.QVariant(self.webTranslationComboBox.currentIndex()))
         self.setField(u'proxy_server',
             settings.value(u'proxy address', QtCore.QVariant(u'')))
         self.setField(u'proxy_username',
@@ -332,7 +332,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
             QtCore.QVariant(self.copyrightEdit.text()))
         self.setField(u'license_permissions',
             QtCore.QVariant(self.permissionsEdit.text()))
-        self.onLocationComboBoxChanged(WebDownload.Crosswalk)
+        self.onWebSourceComboBoxCurrentIndexChanged(WebDownload.Crosswalk)
         settings.endGroup()
 
     def loadWebBibles(self):
@@ -402,9 +402,29 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
             if books_file:
                 books_file.close()
 
-    def getFileName(self, title, editbox):
+    def getFileName(self, title, editbox, filters=u''):
+        """
+        Opens a QFileDialog and saves the filename to the given editbox.
+
+        ``title``
+            The title of the dialog (unicode).
+
+        ``editbox``
+            A editbox (QLineEdit).
+
+        ``filters``
+            The file extension filters. It should contain the file description as
+            well as the file extension. For example::
+
+                u'openlp.org 1.x bible (*.bible)'
+        """
+        if filters:
+            filters += u';;'
+        filters += u'%s (*)' % translate('BiblesPlugin.ImportWizardForm',
+            'All Files')
         filename = QtGui.QFileDialog.getOpenFileName(self, title,
-            SettingsManager.get_last_dir(self.bibleplugin.settingsSection, 1))
+            os.path.dirname(SettingsManager.get_last_dir(
+            self.bibleplugin.settingsSection, 1)), filters)
         if filename:
             editbox.setText(filename)
             SettingsManager.set_last_dir(
@@ -467,7 +487,7 @@ class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
             # Import a bible from the web.
             self.importProgressBar.setMaximum(1)
             download_location = self.field(u'web_location').toInt()[0]
-            bible_version = unicode(self.bibleComboBox.currentText())
+            bible_version = unicode(self.webTranslationComboBox.currentText())
             if download_location == WebDownload.Crosswalk:
                 bible = \
                     self.web_bible_list[WebDownload.Crosswalk][bible_version]

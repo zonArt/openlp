@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -297,6 +297,8 @@ class OpenLyricsParser(object):
         song_xml = objectify.fromstring(xml)
         properties = song_xml.properties
         song.copyright = unicode(properties.copyright.text)
+        if song.copyright == u'None':
+            song.copyright = u''
         song.verse_order = unicode(properties.verseOrder.text)
         if song.verse_order == u'None':
             song.verse_order = u''
@@ -357,7 +359,7 @@ class OpenLyricsParser(object):
 
     def _add_text_to_element(self, tag, parent, text=None, label=None):
         if label:
-            element = etree.Element(tag, name = unicode(label))
+            element = etree.Element(tag, name=unicode(label))
         else:
             element = etree.Element(tag)
         if text:

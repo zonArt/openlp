@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -71,7 +71,8 @@ class VerseType(object):
             The string to return a VerseType for
         """
         verse_type = verse_type.lower()
-        if verse_type == unicode(VerseType.to_string(VerseType.Verse)).lower()[0]:
+        if verse_type == \
+            unicode(VerseType.to_string(VerseType.Verse)).lower()[0]:
             return translate('SongsPlugin.VerseType', 'Verse')
         elif verse_type == \
             unicode(VerseType.to_string(VerseType.Chorus)).lower()[0]:

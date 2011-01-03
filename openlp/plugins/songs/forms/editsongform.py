@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -108,6 +108,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.TopicsListView.setSortingEnabled(False)
         self.TopicsListView.setAlternatingRowColors(True)
         self.findVerseSplit = re.compile(u'---\[\]---\n', re.UNICODE)
+        self.whitespace = re.compile(r'\W+', re.UNICODE)
 
     def initialise(self):
         self.VerseEditButton.setEnabled(False)
@@ -185,9 +186,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.AuthorsListView.clear()
         self.TopicsListView.clear()
         self.TitleEditItem.setFocus(QtCore.Qt.OtherFocusReason)
+        self.songBookNumberEdit.setText(u'')
         self.loadAuthors()
         self.loadTopics()
         self.loadBooks()
+        self.ThemeSelectionComboItem.setCurrentIndex(0)
         # it's a new song to preview is not possible
         self.previewButton.setVisible(False)
 
@@ -546,14 +549,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if self.AuthorsListView.count() == 0:
             self.SongTabWidget.setCurrentIndex(1)
             self.AuthorsListView.setFocus()
-            answer = QtGui.QMessageBox.warning(self,
+            QtGui.QMessageBox.critical(self,
                 translate('SongsPlugin.EditSongForm', 'Warning'),
                 translate('SongsPlugin.EditSongForm',
-                'You have not added any authors for this song. Do you '
-                'want to add an author now?'),
-                QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
-            if answer == QtGui.QMessageBox.Yes:
-                return False
+                'You need to have an author for this song.'))
+            return False
         if self.song.verse_order:
             order = []
             order_names = self.song.verse_order.split()
@@ -738,7 +738,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 verseId = unicode(item.data(QtCore.Qt.UserRole).toString())
                 bits = verseId.split(u':')
                 sxml.add_verse_to_lyrics(bits[0], bits[1], unicode(item.text()))
-                text = text + re.sub(r'\W+', u' ',
+                text = text + self.whitespace.sub(u' ',
                     unicode(self.VerseListWidget.item(i, 0).text())) + u' '
                 if (bits[1] > u'1') and (bits[0][0] not in multiple):
                     multiple.append(bits[0][0])

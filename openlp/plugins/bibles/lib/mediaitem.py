@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -73,7 +73,7 @@ class BibleMediaItem(MediaManagerItem):
         self.hasNewIcon = False
         self.hasEditIcon = False
         self.hasDeleteIcon = False
-        self.addToServiceItem = True
+        self.addToServiceItem = False
 
     def addEndHeaderBar(self):
         self.SearchTabWidget = QtGui.QTabWidget(self)
@@ -259,8 +259,6 @@ class BibleMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'bibles_showprogress'), self.onSearchProgressShow)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'bibles_hideprogress'), self.onSearchProgressHide)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'bibles_nobook'), self.onNoBookFound)
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
@@ -359,13 +357,6 @@ class BibleMediaItem(MediaManagerItem):
 
     def onSearchProgressHide(self):
         self.SearchProgress.setVisible(False)
-
-    def onNoBookFound(self):
-        QtGui.QMessageBox.critical(self,
-            translate('BiblesPlugin.MediaItem', 'No Book Found'),
-            translate('BiblesPlugin.MediaItem',
-            'No matching book could be found in this Bible.'))
-        self.AdvancedSearchButton.setEnabled(True)
 
     def onImportClick(self):
         if not hasattr(self, u'import_wizard'):
@@ -912,7 +903,7 @@ class BibleMediaItem(MediaManagerItem):
             old_chapter != chapter:
             verse_text = unicode(chapter) + verse_separator + unicode(verse)
         else:
-            verse_text = u'%s' % verse
+            verse_text = unicode(verse)
         if self.parent.settings_tab.display_style == 1:
             verse_text = u'{su}(' + verse_text + u'){/su}'
         elif self.parent.settings_tab.display_style == 2:

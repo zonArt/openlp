@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -171,24 +171,23 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             # We found '<>' in the alert text, but the ParameterEdit field is
             # empty.
             if text.find(u'<>') != -1 and not self.ParameterEdit.text() and \
-                QtGui.QMessageBox.question(self, translate(
-                    'AlertPlugin.AlertForm', 'No Parameter found'),
-                    translate('AlertPlugin.AlertForm', 'You have not entered a '
-                    'parameter to be replaced.\nDo you want to continue '
-                    'anyway?'),
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
-                    QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
+                QtGui.QMessageBox.question(self,
+                translate('AlertPlugin.AlertForm', 'No Parameter found'),
+                translate('AlertPlugin.AlertForm', 'You have not entered a '
+                'parameter to be replaced.\nDo you want to continue anyway?'),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
+                QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
                     self.ParameterEdit.setFocus()
                     return False
             # The ParameterEdit field is not empty, but we have not found '<>'
             # in the alert text.
             elif text.find(u'<>') == -1 and self.ParameterEdit.text() and \
-                QtGui.QMessageBox.question(self, translate(
-                    'AlertPlugin.AlertForm', 'No Placeholder found'),
-                    translate('AlertPlugin.AlertForm', 'The alert text does not'
-                    ' contain \'<>\'.\nDo want to continue anyway?'),
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
-                    QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
+                QtGui.QMessageBox.question(self,
+                translate('AlertPlugin.AlertForm', 'No Placeholder found'),
+                translate('AlertPlugin.AlertForm', 'The alert text does not'
+                ' contain \'<>\'.\nDo want to continue anyway?'),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
+                QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
                     self.ParameterEdit.setFocus()
                     return False
             text = text.replace(u'<>', unicode(self.ParameterEdit.text()))

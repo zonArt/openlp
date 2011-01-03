@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -109,7 +109,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 author_name = QtGui.QListWidgetItem(author.display_name)
             else:
                 author_name = QtGui.QListWidgetItem(
-                    u'%s %s' % (author.first_name, author.last_name))
+                    u' '.join(author.first_name, author.last_name))
             author_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(author.id))
             self.AuthorsListWidget.addItem(author_name)
         if self.AuthorsListWidget.count() == 0:
@@ -305,12 +305,13 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                             'Could not save your changes.'))
                 elif QtGui.QMessageBox.critical(self,
                     translate('SongsPlugin.SongMaintenanceForm', 'Error'),
-                    translate('SongsPlugin.SongMaintenanceForm', 'The author %s'
-                    ' already exists. Would you like to make songs with author '
-                    '%s use the existing author %s?' % (author.display_name,
-                    temp_display_name, author.display_name)),
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
-                    QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.Yes:
+                    unicode(translate('SongsPlugin.SongMaintenanceForm',
+                    'The author %s already exists. Would you like to make songs'
+                    ' with author %s use the existing author %s?')) %
+                    (author.display_name, temp_display_name,
+                    author.display_name), QtGui.QMessageBox.StandardButtons(
+                    QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)) == \
+                    QtGui.QMessageBox.Yes:
                     self.mergeAuthors(author)
                     self.resetAuthors()
                     Receiver.send_message(u'songs_load_list')
@@ -346,12 +347,12 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                             'Could not save your changes.'))
                 elif QtGui.QMessageBox.critical(self,
                     translate('SongsPlugin.SongMaintenanceForm', 'Error'),
-                    translate('SongsPlugin.SongMaintenanceForm', 'The topic %s '
-                    'already exists. Would you like to make songs with topic %s'
-                    ' use the existing topic %s?' % (topic.name, temp_name,
-                    topic.name)),
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
-                    QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.Yes:
+                    unicode(translate('SongsPlugin.SongMaintenanceForm',
+                    'The topic %s already exists. Would you like to make songs '
+                    'with topic %s use the existing topic %s?')) % (topic.name,
+                    temp_name, topic.name), QtGui.QMessageBox.StandardButtons(
+                    QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)) == \
+                    QtGui.QMessageBox.Yes:
                     self.mergeTopics(topic)
                     self.resetTopics()
                 else:
@@ -389,12 +390,12 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                             'Could not save your changes.'))
                 elif QtGui.QMessageBox.critical(self,
                     translate('SongsPlugin.SongMaintenanceForm', 'Error'),
-                    translate('SongsPlugin.SongMaintenanceForm', 'The book %s '
-                    'already exists. Would you like to make songs with book %s '
-                    'use the existing book %s?' % (book.name, temp_name,
-                    book.name)),
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
-                    QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.Yes:
+                    unicode(translate('SongsPlugin.SongMaintenanceForm',
+                    'The book %s already exists. Would you like to make songs '
+                    'with book %s use the existing book %s?')) % (book.name,
+                    temp_name, book.name), QtGui.QMessageBox.StandardButtons(
+                    QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)) == \
+                    QtGui.QMessageBox.Yes:
                     self.mergeBooks(book)
                     self.resetBooks()
                 else:

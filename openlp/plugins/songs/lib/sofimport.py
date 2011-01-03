@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -369,7 +369,7 @@ class SofImport(OooImport):
         if song_number == 50:
             return 8
         if song_number == 70:
-            return 4	
+            return 4
         if song_number == 75:
             return 8
         if song_number == 79:
@@ -529,7 +529,7 @@ class SofImport(OooImport):
         if song_number == 955:
             return 9
         if song_number == 968:
-            return 8		
+            return 8
         if song_number == 972:
             return 7
         if song_number == 974:
