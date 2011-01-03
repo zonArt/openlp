@@ -32,7 +32,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.plugins.songs.lib import SongMediaItem, SongsTab, SongXMLParser
-from openlp.plugins.songs.lib.db import init_schema, Song
+from openlp.plugins.songs.lib.db import Author, init_schema, Song
 from openlp.plugins.songs.lib.importer import SongFormat
 
 log = logging.getLogger(__name__)
@@ -146,6 +146,15 @@ class SongsPlugin(Plugin):
         counter = 0
         for song in songs:
             counter += 1
+            # The song does not have any author, add one.
+            if not song.authors:
+                name = unicode(translate('SongsPlugin', 'Author unknown'))
+                author = self.manager.get_object_filtered(Author,
+                    Author.display_name == name)
+                if author is None:
+                    author = Author.populate(first_name=name.rsplit(u' ', 1)[0],
+                        last_name=name.rsplit(u' ', 1)[1], display_name=name)
+                song.authors.append(author)
             if song.title is None:
                 song.title = u''
             if song.alternate_title is None:
