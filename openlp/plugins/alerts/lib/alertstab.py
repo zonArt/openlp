@@ -39,14 +39,8 @@ class AlertsTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'AlertsTab')
-        self.AlertsLayout = QtGui.QHBoxLayout(self)
-        self.AlertsLayout.setObjectName(u'AlertsLayout')
-        self.LeftColumn = QtGui.QWidget(self)
-        self.LeftColumn.setObjectName(u'LeftColumn')
-        self.LeftLayout = QtGui.QVBoxLayout(self.LeftColumn)
-        self.LeftLayout.setMargin(0)
-        self.LeftLayout.setObjectName(u'LeftLayout')
-        self.FontGroupBox = QtGui.QGroupBox(self.LeftColumn)
+        SettingsTab.setupUi(self)
+        self.FontGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.FontGroupBox.setObjectName(u'FontGroupBox')
         self.FontLayout = QtGui.QFormLayout(self.FontGroupBox)
         self.FontLayout.setObjectName(u'FontLayout')
@@ -87,24 +81,17 @@ class AlertsTab(SettingsTab):
         self.LocationComboBox.addItems([u'', u'', u''])
         self.LocationComboBox.setObjectName(u'LocationComboBox')
         self.FontLayout.addRow(self.LocationLabel, self.LocationComboBox)
-        self.LeftLayout.addWidget(self.FontGroupBox)
-        self.LeftLayout.addStretch()
-        self.AlertsLayout.addWidget(self.LeftColumn)
-        self.RightColumn = QtGui.QWidget(self)
-        self.RightColumn.setObjectName(u'RightColumn')
-        self.RightLayout = QtGui.QVBoxLayout(self.RightColumn)
-        self.RightLayout.setMargin(0)
-        self.RightLayout.setObjectName(u'RightLayout')
-        self.PreviewGroupBox = QtGui.QGroupBox(self.RightColumn)
+        self.leftLayout.addWidget(self.FontGroupBox)
+        self.leftLayout.addStretch()
+        self.PreviewGroupBox = QtGui.QGroupBox(self.rightColumn)
         self.PreviewGroupBox.setObjectName(u'PreviewGroupBox')
         self.PreviewLayout = QtGui.QVBoxLayout(self.PreviewGroupBox)
         self.PreviewLayout.setObjectName(u'PreviewLayout')
         self.FontPreview = QtGui.QLineEdit(self.PreviewGroupBox)
         self.FontPreview.setObjectName(u'FontPreview')
         self.PreviewLayout.addWidget(self.FontPreview)
-        self.RightLayout.addWidget(self.PreviewGroupBox)
-        self.RightLayout.addStretch()
-        self.AlertsLayout.addWidget(self.RightColumn)
+        self.rightLayout.addWidget(self.PreviewGroupBox)
+        self.rightLayout.addStretch()
         # Signals and slots
         QtCore.QObject.connect(self.BackgroundColorButton,
             QtCore.SIGNAL(u'pressed()'), self.onBackgroundColorButtonClicked)
@@ -148,20 +135,6 @@ class AlertsTab(SettingsTab):
             translate('AlertsPlugin.AlertsTab', 'Middle'))
         self.LocationComboBox.setItemText(2,
             translate('AlertsPlugin.AlertsTab', 'Bottom'))
-
-    def resizeEvent(self, event=None):
-        """
-        Resize the sides in two equal halves if the layout allows this.
-        """
-        if event:
-            SettingsTab.resizeEvent(self, event)
-        width = self.width() - self.AlertsLayout.spacing() - \
-            self.AlertsLayout.contentsMargins().left() - \
-            self.AlertsLayout.contentsMargins().right()
-        left_width = min(width - self.RightColumn.minimumSizeHint().width(),
-            width / 2)
-        left_width = max(left_width, self.LeftColumn.minimumSizeHint().width())
-        self.LeftColumn.setMinimumWidth(left_width)
 
     def onBackgroundColorButtonClicked(self):
         new_color = QtGui.QColorDialog.getColor(

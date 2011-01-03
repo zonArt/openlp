@@ -29,10 +29,14 @@ The :mod:`ui` module provides the core user interface for OpenLP
 
 class HideMode(object):
     """
-    This is basically an enumeration class which specifies differnt hiding modes
-    for the display. The option ``Blank`` to cover the display black. The option
-    ``Theme`` removes the content from the theme. ``Screen`` finally hides the
-    output, so that the users desktop is usually shown.
+    This is an enumeration class which specifies the different modes of hiding
+    the display.
+    The ``Blank`` option is used to hide all output, specifically by covering
+    the display with a black screen.
+    The ``Theme`` option is used to hide all output, but covers the display with
+    the current theme background, as opposed to black.
+    Lastly, the ``Desktop`` mode hides all output by minimising the display,
+    leaving the user's desktop showing.
     """
     Blank = 1
     Theme = 2

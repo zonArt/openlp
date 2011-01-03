@@ -38,10 +38,8 @@ class ThemesTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'ThemesTab')
-        self.tabTitleVisible = translate('OpenLP.ThemesTab', 'Themes')
-        self.ThemesTabLayout = QtGui.QHBoxLayout(self)
-        self.ThemesTabLayout.setObjectName(u'ThemesTabLayout')
-        self.GlobalGroupBox = QtGui.QGroupBox(self)
+        SettingsTab.setupUi(self)
+        self.GlobalGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.GlobalGroupBox.setObjectName(u'GlobalGroupBox')
         self.GlobalGroupBoxLayout = QtGui.QVBoxLayout(self.GlobalGroupBox)
         self.GlobalGroupBoxLayout.setObjectName(u'GlobalGroupBoxLayout')
@@ -51,8 +49,9 @@ class ThemesTab(SettingsTab):
         self.DefaultListView = QtGui.QLabel(self.GlobalGroupBox)
         self.DefaultListView.setObjectName(u'DefaultListView')
         self.GlobalGroupBoxLayout.addWidget(self.DefaultListView)
-        self.ThemesTabLayout.addWidget(self.GlobalGroupBox)
-        self.LevelGroupBox = QtGui.QGroupBox(self)
+        self.leftLayout.addWidget(self.GlobalGroupBox)
+        self.leftLayout.addStretch()
+        self.LevelGroupBox = QtGui.QGroupBox(self.rightColumn)
         self.LevelGroupBox.setObjectName(u'LevelGroupBox')
         self.LevelLayout = QtGui.QFormLayout(self.LevelGroupBox)
         self.LevelLayout.setLabelAlignment(
@@ -81,7 +80,8 @@ class ThemesTab(SettingsTab):
         self.GlobalLevelLabel.setObjectName(u'GlobalLevelLabel')
         self.LevelLayout.addRow(self.GlobalLevelRadioButton,
             self.GlobalLevelLabel)
-        self.ThemesTabLayout.addWidget(self.LevelGroupBox)
+        self.rightLayout.addWidget(self.LevelGroupBox)
+        self.rightLayout.addStretch()
         QtCore.QObject.connect(self.SongLevelRadioButton,
             QtCore.SIGNAL(u'pressed()'), self.onSongLevelButtonPressed)
         QtCore.QObject.connect(self.ServiceLevelRadioButton,
@@ -94,6 +94,7 @@ class ThemesTab(SettingsTab):
             QtCore.SIGNAL(u'theme_update_list'), self.updateThemeList)
 
     def retranslateUi(self):
+        self.tabTitleVisible = translate('OpenLP.ThemesTab', 'Themes')
         self.GlobalGroupBox.setTitle(
             translate('OpenLP.ThemesTab', 'Global Theme'))
         self.LevelGroupBox.setTitle(
@@ -116,20 +117,6 @@ class ThemesTab(SettingsTab):
         self.GlobalLevelLabel.setText(
             translate('OpenLP.ThemesTab', 'Use the global theme, overriding '
             'any themes associated with either the service or the songs.'))
-
-    def resizeEvent(self, event=None):
-        """
-        Resize the sides in two equal halves if the layout allows this.
-        """
-        if event:
-            SettingsTab.resizeEvent(self, event)
-        width = self.width() - self.ThemesTabLayout.spacing() - \
-            self.ThemesTabLayout.contentsMargins().left() - \
-            self.ThemesTabLayout.contentsMargins().right()
-        left_width = min(width - self.LevelGroupBox.minimumSizeHint().width(),
-            width / 2)
-        left_width = max(left_width, self.GlobalGroupBox.minimumSizeHint().width())
-        self.GlobalGroupBox.setMinimumWidth(left_width)
 
     def load(self):
         settings = QtCore.QSettings()

@@ -37,16 +37,8 @@ class RemoteTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'RemoteTab')
-        self.remoteLayout = QtGui.QHBoxLayout(self)
-        self.remoteLayout.setObjectName(u'remoteLayout')
-        self.leftWidget = QtGui.QWidget(self)
-        self.leftWidget.setSizePolicy(QtGui.QSizePolicy.Fixed,
-            QtGui.QSizePolicy.Preferred)
-        self.leftWidget.setObjectName(u'leftWidget')
-        self.leftLayout = QtGui.QVBoxLayout(self.leftWidget)
-        self.leftLayout.setMargin(0)
-        self.leftLayout.setObjectName(u'leftLayout')
-        self.serverSettingsGroupBox = QtGui.QGroupBox(self.leftWidget)
+        SettingsTab.setupUi(self)
+        self.serverSettingsGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.serverSettingsGroupBox.setObjectName(u'serverSettingsGroupBox')
         self.serverSettingsLayout = QtGui.QFormLayout(
             self.serverSettingsGroupBox)
@@ -54,6 +46,10 @@ class RemoteTab(SettingsTab):
         self.addressLabel = QtGui.QLabel(self.serverSettingsGroupBox)
         self.addressLabel.setObjectName(u'addressLabel')
         self.addressEdit = QtGui.QLineEdit(self.serverSettingsGroupBox)
+        self.addressEdit.setSizePolicy(QtGui.QSizePolicy.Preferred,
+            QtGui.QSizePolicy.Fixed)
+        self.addressEdit.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp(
+            u'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'), self))
         self.addressEdit.setObjectName(u'addressEdit')
         self.serverSettingsLayout.addRow(self.addressLabel, self.addressEdit)
         self.portLabel = QtGui.QLabel(self.serverSettingsGroupBox)
@@ -64,14 +60,7 @@ class RemoteTab(SettingsTab):
         self.serverSettingsLayout.addRow(self.portLabel, self.portSpinBox)
         self.leftLayout.addWidget(self.serverSettingsGroupBox)
         self.leftLayout.addStretch()
-        self.remoteLayout.addWidget(self.leftWidget)
-        self.rightWidget = QtGui.QWidget(self)
-        self.rightWidget.setObjectName(u'rightWidget')
-        self.rightLayout = QtGui.QVBoxLayout(self.rightWidget)
-        self.rightLayout.setMargin(0)
-        self.rightLayout.setObjectName(u'rightLayout')
         self.rightLayout.addStretch()
-        self.remoteLayout.addWidget(self.rightWidget)
 
     def retranslateUi(self):
         self.serverSettingsGroupBox.setTitle(
@@ -80,20 +69,6 @@ class RemoteTab(SettingsTab):
             'Serve on IP address:'))
         self.portLabel.setText(translate('RemotePlugin.RemoteTab',
             'Port number:'))
-
-    def resizeEvent(self, event=None):
-        """
-        Resize the sides in two equal halves if the layout allows this.
-        """
-        if event:
-            SettingsTab.resizeEvent(self, event)
-        width = self.width() - self.remoteLayout.spacing() - \
-            self.remoteLayout.contentsMargins().left() - \
-            self.remoteLayout.contentsMargins().right()
-        left_width = min(width - self.rightWidget.minimumSizeHint().width(),
-            width / 2)
-        left_width = max(left_width, self.leftWidget.minimumSizeHint().width())
-        self.leftWidget.setMinimumWidth(left_width)
 
     def load(self):
         self.portSpinBox.setValue(

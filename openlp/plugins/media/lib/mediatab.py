@@ -37,14 +37,8 @@ class MediaTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'MediaTab')
-        self.mediaLayout = QtGui.QHBoxLayout(self)
-        self.mediaLayout.setObjectName(u'mediaLayout')
-        self.leftWidget = QtGui.QWidget(self)
-        self.leftWidget.setObjectName(u'leftWidget')
-        self.leftLayout = QtGui.QVBoxLayout(self.leftWidget)
-        self.leftLayout.setMargin(0)
-        self.leftLayout.setObjectName(u'leftLayout')
-        self.mediaModeGroupBox = QtGui.QGroupBox(self.leftWidget)
+        SettingsTab.setupUi(self)
+        self.mediaModeGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.mediaModeGroupBox.setObjectName(u'mediaModeGroupBox')
         self.mediaModeLayout = QtGui.QFormLayout(self.mediaModeGroupBox)
         self.mediaModeLayout.setObjectName(u'mediaModeLayout')
@@ -53,14 +47,7 @@ class MediaTab(SettingsTab):
         self.mediaModeLayout.addRow(self.usePhononCheckBox)
         self.leftLayout.addWidget(self.mediaModeGroupBox)
         self.leftLayout.addStretch()
-        self.mediaLayout.addWidget(self.leftWidget)
-        self.rightWidget = QtGui.QWidget(self)
-        self.rightWidget.setObjectName(u'rightWidget')
-        self.rightLayout = QtGui.QVBoxLayout(self.rightWidget)
-        self.rightLayout.setMargin(0)
-        self.rightLayout.setObjectName(u'rightLayout')
         self.rightLayout.addStretch()
-        self.mediaLayout.addWidget(self.rightWidget)
         QtCore.QObject.connect(self.usePhononCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onUsePhononCheckBoxChanged)
@@ -71,20 +58,6 @@ class MediaTab(SettingsTab):
             'Media Display'))
         self.usePhononCheckBox.setText(
             translate('MediaPlugin.MediaTab', 'Use Phonon for video playback'))
-
-    def resizeEvent(self, event=None):
-        """
-        Resize the sides in two equal halves if the layout allows this.
-        """
-        if event:
-            SettingsTab.resizeEvent(self, event)
-        width = self.width() - self.mediaLayout.spacing() - \
-            self.mediaLayout.contentsMargins().left() - \
-            self.mediaLayout.contentsMargins().right()
-        left_width = min(width - self.rightWidget.minimumSizeHint().width(),
-            width / 2)
-        left_width = max(left_width, self.leftWidget.minimumSizeHint().width())
-        self.leftWidget.setMinimumWidth(left_width)
 
     def onUsePhononCheckBoxChanged(self, check_state):
         self.usePhonon = (check_state == QtCore.Qt.Checked)

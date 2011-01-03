@@ -85,14 +85,8 @@ class GeneralTab(SettingsTab):
         Create the user interface for the general settings tab
         """
         self.setObjectName(u'GeneralTab')
-        self.generalLayout = QtGui.QHBoxLayout(self)
-        self.generalLayout.setObjectName(u'generalLayout')
-        self.leftWidget = QtGui.QWidget(self)
-        self.leftWidget.setObjectName(u'leftWidget')
-        self.leftLayout = QtGui.QVBoxLayout(self.leftWidget)
-        self.leftLayout.setMargin(0)
-        self.leftLayout.setObjectName(u'leftLayout')
-        self.monitorGroupBox = QtGui.QGroupBox(self.leftWidget)
+        SettingsTab.setupUi(self)
+        self.monitorGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.monitorGroupBox.setObjectName(u'monitorGroupBox')
         self.monitorLayout = QtGui.QFormLayout(self.monitorGroupBox)
         self.monitorLayout.setObjectName(u'monitorLayout')
@@ -106,7 +100,7 @@ class GeneralTab(SettingsTab):
         self.displayOnMonitorCheck.setObjectName(u'monitorComboBox')
         self.monitorLayout.addRow(self.displayOnMonitorCheck)
         self.leftLayout.addWidget(self.monitorGroupBox)
-        self.startupGroupBox = QtGui.QGroupBox(self.leftWidget)
+        self.startupGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.startupGroupBox.setObjectName(u'startupGroupBox')
         self.startupLayout = QtGui.QVBoxLayout(self.startupGroupBox)
         self.startupLayout.setObjectName(u'startupLayout')
@@ -120,7 +114,7 @@ class GeneralTab(SettingsTab):
         self.showSplashCheckBox.setObjectName(u'showSplashCheckBox')
         self.startupLayout.addWidget(self.showSplashCheckBox)
         self.leftLayout.addWidget(self.startupGroupBox)
-        self.settingsGroupBox = QtGui.QGroupBox(self.leftWidget)
+        self.settingsGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.settingsGroupBox.setObjectName(u'settingsGroupBox')
         self.settingsLayout = QtGui.QFormLayout(self.settingsGroupBox)
         self.settingsLayout.setObjectName(u'settingsLayout')
@@ -138,13 +132,7 @@ class GeneralTab(SettingsTab):
         self.settingsLayout.addRow(self.timeoutLabel, self.timeoutSpinBox)
         self.leftLayout.addWidget(self.settingsGroupBox)
         self.leftLayout.addStretch()
-        self.generalLayout.addWidget(self.leftWidget)
-        self.rightWidget = QtGui.QWidget(self)
-        self.rightWidget.setObjectName(u'rightWidget')
-        self.rightLayout = QtGui.QVBoxLayout(self.rightWidget)
-        self.rightLayout.setMargin(0)
-        self.rightLayout.setObjectName(u'rightLayout')
-        self.ccliGroupBox = QtGui.QGroupBox(self.rightWidget)
+        self.ccliGroupBox = QtGui.QGroupBox(self.rightColumn)
         self.ccliGroupBox.setObjectName(u'ccliGroupBox')
         self.ccliLayout = QtGui.QFormLayout(self.ccliGroupBox)
         self.ccliLayout.setObjectName(u'ccliLayout')
@@ -166,7 +154,7 @@ class GeneralTab(SettingsTab):
         self.ccliLayout.addRow(self.passwordLabel, self.passwordEdit)
         self.rightLayout.addWidget(self.ccliGroupBox)
         # Moved here from display tab
-        self.displayGroupBox = QtGui.QGroupBox(self.rightWidget)
+        self.displayGroupBox = QtGui.QGroupBox(self.rightColumn)
         self.displayGroupBox.setObjectName(u'displayGroupBox')
         self.displayLayout = QtGui.QGridLayout(self.displayGroupBox)
         self.displayLayout.setObjectName(u'displayLayout')
@@ -225,7 +213,6 @@ class GeneralTab(SettingsTab):
         self.displayLayout.addWidget(self.customHeightValueEdit, 4, 3)
         self.rightLayout.addWidget(self.displayGroupBox)
         self.rightLayout.addStretch()
-        self.generalLayout.addWidget(self.rightWidget)
         # Signals and slots
         QtCore.QObject.connect(self.overrideCheckBox,
             QtCore.SIGNAL(u'toggled(bool)'), self.onOverrideCheckBoxToggled)
@@ -299,20 +286,6 @@ class GeneralTab(SettingsTab):
         self.customHeightLabel.setText(
             translate('OpenLP.GeneralTab', 'Height'))
         self.customWidthLabel.setText(translate('OpenLP.GeneralTab', 'Width'))
-
-    def resizeEvent(self, event=None):
-        """
-        Resize the sides in two equal halves if the layout allows this.
-        """
-        if event:
-            SettingsTab.resizeEvent(self, event)
-        width = self.width() - self.generalLayout.spacing() - \
-            self.generalLayout.contentsMargins().left() - \
-            self.generalLayout.contentsMargins().right()
-        left_width = min(width - self.rightWidget.minimumSizeHint().width(),
-            width / 2)
-        left_width = max(left_width, self.leftWidget.minimumSizeHint().width())
-        self.leftWidget.setMinimumWidth(left_width)
 
     def load(self):
         """

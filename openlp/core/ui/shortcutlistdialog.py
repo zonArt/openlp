@@ -31,7 +31,6 @@ from openlp.core.lib import translate, build_icon
 class Ui_ShortcutListDialog(object):
     def setupUi(self, shortcutListDialog):
         shortcutListDialog.setObjectName(u'shortcutListDialog')
-#        shortcutListDialog.resize(500, 438)
         self.dialogLayout = QtGui.QVBoxLayout(shortcutListDialog)
         self.dialogLayout.setObjectName(u'dialogLayout')
         self.treeWidget = QtGui.QTreeWidget(shortcutListDialog)

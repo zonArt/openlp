@@ -37,14 +37,8 @@ class CustomTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'CustomTab')
-        self.customLayout = QtGui.QHBoxLayout(self)
-        self.customLayout.setObjectName(u'customLayout')
-        self.leftWidget = QtGui.QWidget(self)
-        self.leftWidget.setObjectName(u'leftWidget')
-        self.leftLayout = QtGui.QVBoxLayout(self.leftWidget)
-        self.leftLayout.setMargin(0)
-        self.leftLayout.setObjectName(u'leftLayout')
-        self.customModeGroupBox = QtGui.QGroupBox(self.leftWidget)
+        SettingsTab.setupUi(self)
+        self.customModeGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.customModeGroupBox.setObjectName(u'customModeGroupBox')
         self.customModeLayout = QtGui.QFormLayout(self.customModeGroupBox)
         self.customModeLayout.setObjectName(u'customModeLayout')
@@ -53,14 +47,7 @@ class CustomTab(SettingsTab):
         self.customModeLayout.addRow(self.displayFooterCheckBox)
         self.leftLayout.addWidget(self.customModeGroupBox)
         self.leftLayout.addStretch()
-        self.customLayout.addWidget(self.leftWidget)
-        self.rightWidget = QtGui.QWidget(self)
-        self.rightWidget.setObjectName(u'rightWidget')
-        self.rightLayout = QtGui.QVBoxLayout(self.rightWidget)
-        self.rightLayout.setMargin(0)
-        self.rightLayout.setObjectName(u'rightLayout')
         self.rightLayout.addStretch()
-        self.customLayout.addWidget(self.rightWidget)
         QtCore.QObject.connect(self.displayFooterCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onDisplayFooterCheckBoxChanged)
@@ -70,20 +57,6 @@ class CustomTab(SettingsTab):
             'Custom Display'))
         self.displayFooterCheckBox.setText(
             translate('CustomPlugin.CustomTab', 'Display footer'))
-
-    def resizeEvent(self, event=None):
-        """
-        Resize the sides in two equal halves if the layout allows this.
-        """
-        if event:
-            SettingsTab.resizeEvent(self, event)
-        width = self.width() - self.customLayout.spacing() - \
-            self.customLayout.contentsMargins().left() - \
-            self.customLayout.contentsMargins().right()
-        left_width = min(width - self.rightWidget.minimumSizeHint().width(),
-            width / 2)
-        left_width = max(left_width, self.leftWidget.minimumSizeHint().width())
-        self.leftWidget.setMinimumWidth(left_width)
 
     def onDisplayFooterCheckBoxChanged(self, check_state):
         self.displayFooter = False

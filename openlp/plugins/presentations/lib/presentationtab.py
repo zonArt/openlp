@@ -44,14 +44,8 @@ class PresentationTab(SettingsTab):
         Create the controls for the settings tab
         """
         self.setObjectName(u'PresentationTab')
-        self.PresentationLayout = QtGui.QHBoxLayout(self)
-        self.PresentationLayout.setObjectName(u'PresentationLayout')
-        self.LeftWidget = QtGui.QWidget(self)
-        self.LeftWidget.setObjectName(u'LeftWidget')
-        self.LeftLayout = QtGui.QVBoxLayout(self.LeftWidget)
-        self.LeftLayout.setMargin(0)
-        self.LeftLayout.setObjectName(u'LeftLayout')
-        self.ControllersGroupBox = QtGui.QGroupBox(self.LeftWidget)
+        SettingsTab.setupUi(self)
+        self.ControllersGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.ControllersGroupBox.setObjectName(u'ControllersGroupBox')
         self.ControllersLayout = QtGui.QVBoxLayout(self.ControllersGroupBox)
         self.ControllersLayout.setObjectName(u'ControllersLayout')
@@ -63,24 +57,17 @@ class PresentationTab(SettingsTab):
             checkbox.setObjectName(controller.name + u'CheckBox')
             self.PresenterCheckboxes[controller.name] = checkbox
             self.ControllersLayout.addWidget(checkbox)
-        self.LeftLayout.addWidget(self.ControllersGroupBox)
-        self.AdvancedGroupBox = QtGui.QGroupBox(self.LeftWidget)
+        self.leftLayout.addWidget(self.ControllersGroupBox)
+        self.AdvancedGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.AdvancedGroupBox.setObjectName(u'AdvancedGroupBox')
         self.AdvancedLayout = QtGui.QVBoxLayout(self.AdvancedGroupBox)
         self.AdvancedLayout.setObjectName(u'AdvancedLayout')
         self.OverrideAppCheckBox = QtGui.QCheckBox(self.AdvancedGroupBox)
         self.OverrideAppCheckBox.setObjectName(u'OverrideAppCheckBox')
         self.AdvancedLayout.addWidget(self.OverrideAppCheckBox)
-        self.LeftLayout.addWidget(self.AdvancedGroupBox)
-        self.LeftLayout.addStretch()
-        self.PresentationLayout.addWidget(self.LeftWidget)
-        self.RightWidget = QtGui.QWidget(self)
-        self.RightWidget.setObjectName(u'RightWidget')
-        self.RightLayout = QtGui.QVBoxLayout(self.RightWidget)
-        self.RightLayout.setMargin(0)
-        self.RightLayout.setObjectName(u'RightLayout')
-        self.RightLayout.addStretch()
-        self.PresentationLayout.addWidget(self.RightWidget)
+        self.leftLayout.addWidget(self.AdvancedGroupBox)
+        self.leftLayout.addStretch()
+        self.rightLayout.addStretch()
 
     def retranslateUi(self):
         """
@@ -99,20 +86,6 @@ class PresentationTab(SettingsTab):
         self.OverrideAppCheckBox.setText(
             translate('PresentationPlugin.PresentationTab',
             'Allow presentation application to be overriden'))
-
-    def resizeEvent(self, event=None):
-        """
-        Resize the sides in two equal halves if the layout allows this.
-        """
-        if event:
-            SettingsTab.resizeEvent(self, event)
-        width = self.width() - self.PresentationLayout.spacing() - \
-            self.PresentationLayout.contentsMargins().left() - \
-            self.PresentationLayout.contentsMargins().right()
-        left_width = min(width - self.RightWidget.minimumSizeHint().width(),
-            width / 2)
-        left_width = max(left_width, self.LeftWidget.minimumSizeHint().width())
-        self.LeftWidget.setMinimumWidth(left_width)
 
     def load(self):
         """

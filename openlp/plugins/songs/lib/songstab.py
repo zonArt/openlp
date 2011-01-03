@@ -37,14 +37,8 @@ class SongsTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'SongsTab')
-        self.SongsLayout = QtGui.QHBoxLayout(self)
-        self.SongsLayout.setObjectName(u'SongsLayout')
-        self.LeftWidget = QtGui.QWidget(self)
-        self.LeftWidget.setObjectName(u'LeftWidget')
-        self.LeftLayout = QtGui.QVBoxLayout(self.LeftWidget)
-        self.LeftLayout.setMargin(0)
-        self.LeftLayout.setObjectName(u'LeftLayout')
-        self.SongsModeGroupBox = QtGui.QGroupBox(self.LeftWidget)
+        SettingsTab.setupUi(self)
+        self.SongsModeGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.SongsModeGroupBox.setObjectName(u'SongsModeGroupBox')
         self.SongsModeLayout = QtGui.QVBoxLayout(self.SongsModeGroupBox)
         self.SongsModeLayout.setObjectName(u'SongsModeLayout')
@@ -62,16 +56,9 @@ class SongsTab(SettingsTab):
         self.SongAddFromServiceCheckBox.setObjectName(
             u'SongAddFromServiceCheckBox')
         self.SongsModeLayout.addWidget(self.SongAddFromServiceCheckBox)
-        self.LeftLayout.addWidget(self.SongsModeGroupBox)
-        self.LeftLayout.addStretch()
-        self.SongsLayout.addWidget(self.LeftWidget)
-        self.RightWidget = QtGui.QWidget(self)
-        self.RightWidget.setObjectName(u'RightWidget')
-        self.RightLayout = QtGui.QVBoxLayout(self.RightWidget)
-        self.RightLayout.setMargin(0)
-        self.RightLayout.setObjectName(u'RightLayout')
-        self.RightLayout.addStretch()
-        self.SongsLayout.addWidget(self.RightWidget)
+        self.leftLayout.addWidget(self.SongsModeGroupBox)
+        self.leftLayout.addStretch()
+        self.rightLayout.addStretch()
         QtCore.QObject.connect(self.SearchAsTypeCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onSearchAsTypeCheckBoxChanged)
@@ -97,20 +84,6 @@ class SongsTab(SettingsTab):
         self.SongAddFromServiceCheckBox.setText(
             translate('SongsPlugin.SongsTab',
             'Add missing songs when opening service'))
-
-    def resizeEvent(self, event=None):
-        """
-        Resize the sides in two equal halves if the layout allows this.
-        """
-        if event:
-            SettingsTab.resizeEvent(self, event)
-        width = self.width() - self.SongsLayout.spacing() - \
-            self.SongsLayout.contentsMargins().left() - \
-            self.SongsLayout.contentsMargins().right()
-        left_width = min(width - self.RightWidget.minimumSizeHint().width(),
-            width / 2)
-        left_width = max(left_width, self.LeftWidget.minimumSizeHint().width())
-        self.LeftWidget.setMinimumWidth(left_width)
 
     def onSearchAsTypeCheckBoxChanged(self, check_state):
         self.song_search = False

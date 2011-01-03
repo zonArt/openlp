@@ -46,14 +46,8 @@ class BiblesTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'BiblesTab')
-        self.BibleLayout = QtGui.QHBoxLayout(self)
-        self.BibleLayout.setObjectName(u'BibleLayout')
-        self.LeftWidget = QtGui.QWidget(self)
-        self.LeftWidget.setObjectName(u'LeftWidget')
-        self.LeftLayout = QtGui.QVBoxLayout(self.LeftWidget)
-        self.LeftLayout.setMargin(0)
-        self.LeftLayout.setObjectName(u'LeftLayout')
-        self.VerseDisplayGroupBox = QtGui.QGroupBox(self.LeftWidget)
+        SettingsTab.setupUi(self)
+        self.VerseDisplayGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.VerseDisplayGroupBox.setObjectName(u'VerseDisplayGroupBox')
         self.VerseDisplayLayout = QtGui.QFormLayout(self.VerseDisplayGroupBox)
         self.VerseDisplayLayout.setObjectName(u'VerseDisplayLayout')
@@ -88,16 +82,9 @@ class BiblesTab(SettingsTab):
         self.ChangeNoteLabel.setWordWrap(True)
         self.ChangeNoteLabel.setObjectName(u'ChangeNoteLabel')
         self.VerseDisplayLayout.addRow(self.ChangeNoteLabel)
-        self.LeftLayout.addWidget(self.VerseDisplayGroupBox)
-        self.LeftLayout.addStretch()
-        self.BibleLayout.addWidget(self.LeftWidget)
-        self.RightWidget = QtGui.QWidget(self)
-        self.RightWidget.setObjectName(u'RightWidget')
-        self.RightLayout = QtGui.QVBoxLayout(self.RightWidget)
-        self.RightLayout.setMargin(0)
-        self.RightLayout.setObjectName(u'RightLayout')
-        self.RightLayout.addStretch()
-        self.BibleLayout.addWidget(self.RightWidget)
+        self.leftLayout.addWidget(self.VerseDisplayGroupBox)
+        self.leftLayout.addStretch()
+        self.rightLayout.addStretch()
         # Signals and slots
         QtCore.QObject.connect(
             self.NewChaptersCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
@@ -147,20 +134,6 @@ class BiblesTab(SettingsTab):
             'Note:\nChanges do not affect verses already in the service.'))
         self.BibleSecondCheckBox.setText(
             translate('BiblesPlugin.BiblesTab', 'Display second Bible verses'))
-
-    def resizeEvent(self, event=None):
-        """
-        Resize the sides in two equal halves if the layout allows this.
-        """
-        if event:
-            SettingsTab.resizeEvent(self, event)
-        width = self.width() - self.BibleLayout.spacing() - \
-            self.BibleLayout.contentsMargins().left() - \
-            self.BibleLayout.contentsMargins().right()
-        left_width = min(width - self.RightWidget.minimumSizeHint().width(),
-            width / 2)
-        left_width = max(left_width, self.LeftWidget.minimumSizeHint().width())
-        self.LeftWidget.setMinimumWidth(left_width)
 
     def onBibleThemeComboBoxChanged(self):
         self.bible_theme = self.BibleThemeComboBox.currentText()

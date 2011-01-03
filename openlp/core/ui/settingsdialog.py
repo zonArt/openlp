@@ -36,22 +36,15 @@ class Ui_SettingsDialog(object):
             build_icon(u':/system/system_settings.png'))
         self.settingsLayout = QtGui.QVBoxLayout(settingsDialog)
         margins = self.settingsLayout.contentsMargins()
-        self.settingsLayout.setContentsMargins(0, margins.top(), 0, 0)
         self.settingsLayout.setObjectName(u'settingsLayout')
         self.settingsTabWidget = QtGui.QTabWidget(settingsDialog)
-        self.settingsTabWidget.setDocumentMode(True)
         self.settingsTabWidget.setObjectName(u'settingsTabWidget')
         self.settingsLayout.addWidget(self.settingsTabWidget)
-        self.buttonBoxLayout = QtGui.QGridLayout()
-        self.buttonBoxLayout.setContentsMargins(margins.left(), 0,
-            margins.right(), margins.bottom())
-        self.buttonBoxLayout.setObjectName(u'buttonBoxLayout')
         self.buttonBox = QtGui.QDialogButtonBox(settingsDialog)
         self.buttonBox.setStandardButtons(
             QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(u'buttonBox')
-        self.buttonBoxLayout.addWidget(self.buttonBox)
-        self.settingsLayout.addLayout(self.buttonBoxLayout)
+        self.settingsLayout.addWidget(self.buttonBox)
         self.retranslateUi(settingsDialog)
         QtCore.QObject.connect(self.buttonBox,
             QtCore.SIGNAL(u'accepted()'), settingsDialog.accept)
