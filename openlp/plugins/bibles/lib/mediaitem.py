@@ -32,7 +32,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import MediaManagerItem, Receiver, BaseListWithDnD, \
     ItemCapabilities, translate
 from openlp.plugins.bibles.forms import BibleImportForm
-from openlp.plugins.bibles.lib import get_reference_match
+from openlp.plugins.bibles.lib import get_reference_match, \
+    get_local_bookname_dict, get_system_bookname_dict
 
 log = logging.getLogger(__name__)
 
@@ -330,6 +331,10 @@ class BibleMediaItem(MediaManagerItem):
             translate('BiblesPlugin.MediaItem', 'Clear'))
         self.ClearAdvancedSearchComboBox.addItem(
             translate('BiblesPlugin.MediaItem', 'Keep'))
+        self.verse_separator = get_reference_match(u'sep_v_display')
+        self.range_separator = get_reference_match(u'sep_r_display')
+        self.local_bookname = get_local_bookname_dict()
+        self.system_bookname = get_local_bookname_dict()
 
     def initialise(self):
         log.debug(u'bible manager initialise')
@@ -410,7 +415,12 @@ class BibleMediaItem(MediaManagerItem):
         first = True
         for book in book_data:
             row = self.AdvancedBookComboBox.count()
-            self.AdvancedBookComboBox.addItem(book[u'name'])
+            local_name = book[u'name']
+            if local_name in self.local_bookname:
+                local_name = self.local_bookname[local_name]
+            else:
+                log.debug(u'bookname %s not translatable', local_name)
+            self.AdvancedBookComboBox.addItem(local_name)
             self.AdvancedBookComboBox.setItemData(
                 row, QtCore.QVariant(book[u'chapters']))
             if first:
@@ -446,8 +456,12 @@ class BibleMediaItem(MediaManagerItem):
             bibles = self.parent.manager.get_bibles()
             bible = unicode(self.QuickVersionComboBox.currentText())
             if bible:
-                book_data = bibles[bible].get_books()
-                books = [book.name for book in book_data]
+                books = []
+                for book in bibles[bible].get_books():
+                    if book.name in self.local_bookname:
+                        books.append(self.local_bookname[book.name])
+                    else:
+                        books.append(book.name)
                 books.sort()
         completer = QtGui.QCompleter(books)
         completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
@@ -459,10 +473,12 @@ class BibleMediaItem(MediaManagerItem):
 
     def onAdvancedBookComboBox(self):
         item = int(self.AdvancedBookComboBox.currentIndex())
+        bookname = unicode(self.AdvancedBookComboBox.currentText())
+        if bookname in self.system_bookname:
+            bookname = self.system_bookname[bookname]
         self.initialiseChapterVerse(
             unicode(self.AdvancedVersionComboBox.currentText()),
-            unicode(self.AdvancedBookComboBox.currentText()),
-            self.AdvancedBookComboBox.itemData(item).toInt()[0])
+            bookname, self.AdvancedBookComboBox.itemData(item).toInt()[0])
 
     def onAdvancedFromVerse(self):
         chapter_from = int(self.AdvancedFromChapter.currentText())
@@ -470,6 +486,8 @@ class BibleMediaItem(MediaManagerItem):
         if chapter_from == chapter_to:
             bible = unicode(self.AdvancedVersionComboBox.currentText())
             book = unicode(self.AdvancedBookComboBox.currentText())
+            if book in self.system_bookname:
+                book = self.system_bookname[book]
             verse_from = int(self.AdvancedFromVerse.currentText())
             verse_count = self.parent.manager.get_verse_count(bible, book,
                 chapter_to)
@@ -479,6 +497,8 @@ class BibleMediaItem(MediaManagerItem):
     def onAdvancedToChapter(self):
         bible = unicode(self.AdvancedVersionComboBox.currentText())
         book = unicode(self.AdvancedBookComboBox.currentText())
+        if book in self.system_bookname:
+            book = self.system_bookname[book]
         chapter_from = int(self.AdvancedFromChapter.currentText())
         chapter_to = int(self.AdvancedToChapter.currentText())
         verse_from = int(self.AdvancedFromVerse.currentText())
@@ -493,6 +513,8 @@ class BibleMediaItem(MediaManagerItem):
     def onAdvancedFromChapter(self):
         bible = unicode(self.AdvancedVersionComboBox.currentText())
         book = unicode(self.AdvancedBookComboBox.currentText())
+        if book in self.system_bookname:
+            book = self.system_bookname[book]
         chapter_from = int(self.AdvancedFromChapter.currentText())
         chapter_to = int(self.AdvancedToChapter.currentText())
         verse_count = self.parent.manager.get_verse_count(bible, book,
@@ -545,14 +567,14 @@ class BibleMediaItem(MediaManagerItem):
         bible = unicode(self.AdvancedVersionComboBox.currentText())
         second_bible = unicode(self.AdvancedSecondBibleComboBox.currentText())
         book = unicode(self.AdvancedBookComboBox.currentText())
+        if book in self.system_bookname:
+            book = self.system_bookname[book]
         chapter_from = self.AdvancedFromChapter.currentText()
         chapter_to = self.AdvancedToChapter.currentText()
         verse_from = self.AdvancedFromVerse.currentText()
         verse_to = self.AdvancedToVerse.currentText()
-        verse_separator = get_reference_match(u'sep_v_display')
-        range_separator = get_reference_match(u'sep_r_display')
-        verse_range = chapter_from + verse_separator + verse_from + \
-            range_separator + chapter_to + verse_separator + verse_to
+        verse_range = chapter_from + self.verse_separator + verse_from + \
+            self.range_separator + chapter_to + self.verse_separator + verse_to
         versetext = u'%s %s' % (book, verse_range)
         self.search_results = self.parent.manager.get_verses(bible, versetext)
         if second_bible:
@@ -648,9 +670,12 @@ class BibleMediaItem(MediaManagerItem):
                 second_permissions = u''
         for count, verse in enumerate(self.search_results):
             if second_bible:
+                book = verse.book.name
                 try:
+                    if book in self.local_bookname:
+                         book = self.local_bookname[book]
                     vdict = {
-                        'book': QtCore.QVariant(verse.book.name),
+                        'book': QtCore.QVariant(book),
                         'chapter': QtCore.QVariant(verse.chapter),
                         'verse': QtCore.QVariant(verse.verse),
                         'bible': QtCore.QVariant(bible),
@@ -669,12 +694,15 @@ class BibleMediaItem(MediaManagerItem):
                     }
                 except IndexError:
                     break
-                bible_text = u' %s %d:%d (%s, %s)' % (verse.book.name,
-                    verse.chapter, verse.verse, version.value,
-                    second_version.value)
+                bible_text = u' %s %d%s%d (%s, %s)' % (book,
+                    verse.chapter, self.verse_separator, verse.verse,
+                    version.value, second_version.value)
             else:
+                book = verse.book.name
+                if book in self.local_bookname:
+                     book = self.local_bookname[book]
                 vdict = {
-                    'book': QtCore.QVariant(verse.book.name),
+                    'book': QtCore.QVariant(book),
                     'chapter': QtCore.QVariant(verse.chapter),
                     'verse': QtCore.QVariant(verse.verse),
                     'bible': QtCore.QVariant(bible),
@@ -688,8 +716,9 @@ class BibleMediaItem(MediaManagerItem):
                     'second_permissions': QtCore.QVariant(u''),
                     'second_text': QtCore.QVariant(u'')
                 }
-                bible_text = u'%s %d:%d (%s)' % (verse.book.name,
-                    verse.chapter, verse.verse, version.value)
+                bible_text = u'%s %d%s%d (%s)' % (book,
+                    verse.chapter, self.verse_separator, verse.verse,
+                    version.value)
             bible_verse = QtGui.QListWidgetItem(bible_text)
             bible_verse.setData(QtCore.Qt.UserRole, QtCore.QVariant(vdict))
             self.listView.addItem(bible_verse)
@@ -812,8 +841,6 @@ class BibleMediaItem(MediaManagerItem):
         ``old_item``
             The last item of a range.
         """
-        verse_separator = get_reference_match(u'sep_v_display')
-        range_separator = get_reference_match(u'sep_r_display')
         old_bitem = self.listView.item(old_item.row())
         old_chapter = self._decodeQtObject(old_bitem, 'chapter')
         old_verse = self._decodeQtObject(old_bitem, 'verse')
@@ -829,13 +856,14 @@ class BibleMediaItem(MediaManagerItem):
             bibles = start_bible
         if start_chapter == old_chapter:
             if start_verse == old_verse:
-                verse_range = start_chapter + verse_separator + start_verse
+                verse_range = start_chapter + self.verse_separator + start_verse
             else:
-                verse_range = start_chapter + verse_separator + start_verse + \
-                range_separator + old_verse
+                verse_range = start_chapter + self.verse_separator + \
+                start_verse + self.range_separator + old_verse
         else:
-            verse_range = start_chapter + verse_separator + start_verse + \
-                range_separator + old_chapter + verse_separator + old_verse
+            verse_range = start_chapter + self.verse_separator + start_verse + \
+                self.range_separator + old_chapter + self.verse_separator + \
+                old_verse
         title = u'%s %s (%s)' % (start_book, verse_range, bibles)
         return title
 
@@ -898,10 +926,10 @@ class BibleMediaItem(MediaManagerItem):
         ``verse``
             The verse number (int).
         """
-        verse_separator = get_reference_match(u'sep_v_display')
         if not self.parent.settings_tab.show_new_chapters or \
             old_chapter != chapter:
-            verse_text = unicode(chapter) + verse_separator + unicode(verse)
+            verse_text = unicode(chapter) + self.verse_separator + \
+                unicode(verse)
         else:
             verse_text = unicode(verse)
         if self.parent.settings_tab.display_style == 1:
