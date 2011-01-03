@@ -404,10 +404,8 @@ class SongMediaItem(MediaManagerItem):
         """
         Triggered by a song being loaded by the service item
         """
-        # TODO: fix db flooding
         log.debug(u'serviceLoad')
         if item.data_string:
-            print item.data_string
             search_results = self.parent.manager.get_all_objects(Song,
                 Song.search_title ==
                 item.data_string[u'title'].split(u'@')[0].lower(),

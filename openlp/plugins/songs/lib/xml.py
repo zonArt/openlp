@@ -298,8 +298,6 @@ class OpenLyricsParser(object):
                 verse[0][u'type'][0].lower(), verse[0][u'label'])
             element = \
                 self._add_text_to_element(u'verse', lyrics, None, verse_tag)
-            # Note that the <verses> element will not be in OpenLyrics 0.8:
-            # http://code.google.com/p/openlyrics/issues/detail?id=8
             element = self._add_text_to_element(u'lines', element)
             for line in unicode(verse[1]).split(u'\n'):
                 self._add_text_to_element(u'line', element, line)
@@ -307,7 +305,10 @@ class OpenLyricsParser(object):
 
     def xml_to_song(self, xml):
         """
-        Create and save a Song from OpenLyrics format xml.
+        Create and save a song from OpenLyrics format xml to the database. Since
+        we also export XML from external sources (e. g. OpenLyrics import), we
+        cannot ensure, that it completely conforms to the OpenLyrics standard.
+        That means, that we for example have to remove chords.
         """
         # No xml get out of here.
         if not xml:
@@ -315,28 +316,28 @@ class OpenLyricsParser(object):
         song = Song()
         if xml[:5] == u'<?xml':
             xml = xml[38:]
+        # Remove chords
+        xml = re.compile(u'<chord name=".*?"/>').sub(u'', xml)
         song_xml = objectify.fromstring(xml)
         properties = song_xml.properties
         # Process Copyright
         try:
-            song.copyright = unicode(properties.copyright.text)
-            if song.copyright == u'None':
-                song.copyright = u''
+            song.copyright = self._text(properties.copyright)
         except AttributeError:
             song.copyright = u''
         # Process CCLI number
         try:
-            song.ccli_number = unicode(properties.ccliNo.text)
+            song.ccli_number = self._text(properties.ccliNo)
         except AttributeError:
             song.ccli_number = u''
         # Process Titles
         for title in properties.titles.title:
             if not song.title:
-                song.title = unicode(title.text)
+                song.title = self._text(title)
                 song.search_title = unicode(song.title)
                 song.alternate_title = u''
             else:
-                song.alternate_title = unicode(title.text)
+                song.alternate_title = self._text(title)
                 song.search_title += u'@' + song.alternate_title
         song.search_title = re.sub(r'[\'"`,;:(){}?]+', u'',
             unicode(song.search_title)).lower()
@@ -347,8 +348,6 @@ class OpenLyricsParser(object):
         for lyrics in song_xml.lyrics:
             for verse in lyrics.verse:
                 text = u''
-                # Note that the <verses> element will not be in OpenLyrics 0.8:
-                # http://code.google.com/p/openlyrics/issues/detail?id=8
                 for line in verse.lines:
                     for line in line.line:
                         line = unicode(line)
@@ -356,18 +355,21 @@ class OpenLyricsParser(object):
                             text = line
                         else:
                             text += u'\n' + line
-                type_ = VerseType.expand_string(verse.attrib[u'name'][0])
-                # TODO: Here we need to create the verse order for the case that
-                # the song does not have a verseOrder property.
-                sxml.add_verse_to_lyrics(type_, verse.attrib[u'name'][1], text)
+                type = VerseType.expand_string(verse.attrib[u'name'][0])
+                sxml.add_verse_to_lyrics(type, verse.attrib[u'name'][1], text)
+                # TODO: test this verse_order thing!
+                song.verse_order += u'%s%s ' % (type[0],
+                    verse.attrib[u'name'][1])
                 search_text = search_text + text
         song.search_lyrics = search_text.lower()
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
+        song.verse_order = song.verse_order.strip()
         # Process verse order
         try:
-            song.verse_order = unicode(properties.verseOrder.text)
+            song.verse_order = self._text(properties.verseOrder)
         except AttributeError:
-            # TODO: Do not allow empty verse order.
+            # Do not worry, as the verse order has cautionary already been
+            # saved while creating the verses.
             pass
         if song.verse_order == u'None':
             song.verse_order = u''
@@ -376,29 +378,29 @@ class OpenLyricsParser(object):
         try:
             for comment in properties.comments.comment:
                 if not song.comments:
-                    song.comments = unicode(comment.text)
+                    song.comments = self._text(comment)
                 else:
-                    song.comments += u'\n' + unicode(comment.text)
+                    song.comments += u'\n' + self._text(comment)
         except AttributeError:
             pass
         # Process Authors
         try:
             for author in properties.authors.author:
-                self._process_author(author.text, song)
+                self._process_author(self._text(author), song)
         except AttributeError:
             pass
         if not song.authors:
             # Add "Author unknown" (can be translated)
-            self._process_author(translate('SongsPlugin.XML',
-                'Author unknown'), song)
+            self._process_author(unicode(translate('SongsPlugin.XML',
+                'Author unknown')), song)
         # Process Song Book and Song Number
         song.song_book_id = 0
         song.song_number = u''
         try:
             for songbook in properties.songbooks.songbook:
-                self._process_songbook(songbook.get(u'name'), song)
+                self._process_songbook(self._get(songbook, u'name'), song)
                 if songbook.get(u'entry'):
-                    song.song_number = unicode(songbook.get(u'entry'))
+                    song.song_number = self._get(songbook, u'entry')
                 # OpenLp does only support one song book, so take the first one.
                 break
         except AttributeError:
@@ -406,13 +408,38 @@ class OpenLyricsParser(object):
         # Process Topcis
         try:
             for topic in properties.themes.theme:
-                self._process_topic(topic.text, song)
+                self._process_topic(self._text(topic), song)
         except AttributeError:
             pass
         # Properties not yet supported.
         song.theme_name = u''
         self.manager.save_object(song)
         return song.id
+
+    def _get(self, element, attribute):
+        """
+        This takes care of empty attributes. It returns the element's attribute.
+
+        ``element``
+            The element.
+
+        ``attribute``
+            The element's attribute (unicode).
+        """
+        if element.get(attribute) is not None:
+            return element.get(attribute)
+        return u''
+
+    def _text(self, element):
+        """
+        This takes care of empty texts. It returns the element's text. 
+
+        ``element``
+            The element.
+        """
+        if element.text is not None:
+            return unicode(element.text)
+        return u''
 
     def _add_text_to_element(self, tag, parent, text=None, label=None):
         if label:
@@ -444,7 +471,7 @@ class OpenLyricsParser(object):
         object.
 
         ``name``
-            The display_name of the song (string).
+            The display_name of the song (unicode).
 
         ``song``
             The song the object.
@@ -452,7 +479,6 @@ class OpenLyricsParser(object):
         if not name:
             # Wrong use of XML here, as no text has been supplied.
             return
-        name = unicode(name)
         author = self.manager.get_object_filtered(Author,
             Author.display_name == name)
         if author is None:
@@ -468,7 +494,7 @@ class OpenLyricsParser(object):
         object.
 
         ``topictext``
-            The topictext of the topic (string).
+            The topictext of the topic (unicode).
 
         ``song``
             The song object.
@@ -476,7 +502,6 @@ class OpenLyricsParser(object):
         if not topictext:
             # Wrong use of XML here, as no text has been supplied.
             return
-        topictext = unicode(topictext)
         topic = self.manager.get_object_filtered(Topic, Topic.name == topictext)
         if topic is None:
             # We need to create a new topic, as the topic does not exist.
@@ -490,7 +515,7 @@ class OpenLyricsParser(object):
         object.
 
         ``bookname``
-            The name of the book (string).
+            The name of the book (unicode).
 
         ``song``
             The song object.
@@ -498,7 +523,6 @@ class OpenLyricsParser(object):
         if not bookname:
             # Wrong use of XML here, as no text has been supplied.
             return
-        bookname = unicode(bookname)
         book = self.manager.get_object_filtered(Book, Book.name == bookname)
         if book is None:
             # We need to create a new book, as the book does not exist.
