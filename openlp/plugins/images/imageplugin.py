@@ -41,7 +41,7 @@ class ImagePlugin(Plugin):
         self.icon = build_icon(self.icon_path)
 
     def getMediaManagerItem(self):
-        # Create the MediaManagerItem object
+        # Create the MediaManagerItem object.
         return ImageMediaItem(self, self, self.icon)
 
     def about(self):
