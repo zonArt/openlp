@@ -43,6 +43,7 @@ class ImageListView(BaseListWithDnD):
         self.PluginName = u'Images'
         BaseListWithDnD.__init__(self, parent)
 
+
 class ImageMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for images.
@@ -51,8 +52,8 @@ class ImageMediaItem(MediaManagerItem):
 
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'images/image'
-        # this next is a class, not an instance of a class - it will
-        # be instanced by the base MediaManagerItem
+        # This next is a class, not an instance of a class - it will
+        # be instanced by the base MediaManagerItem.
         self.ListViewWithDnD_class = ImageListView
         MediaManagerItem.__init__(self, parent, self, icon)
 
@@ -112,7 +113,7 @@ class ImageMediaItem(MediaManagerItem):
             u':/system/system_close.png',
             translate('ImagePlugin.MediaItem', 'Reset Live Background'),
             self.onResetClick, False)
-        # Add the song widget to the page layout
+        # Add the song widget to the page layout.
         self.pageLayout.addWidget(self.ImageWidget)
         self.resetButton.setVisible(False)
 
@@ -164,21 +165,40 @@ class ImageMediaItem(MediaManagerItem):
             service_item.add_capability(ItemCapabilities.AllowsAdditions)
             # force a nonexistent theme
             service_item.theme = -1
+            missing_items = []
+            missing_items_filenames = []
             for item in items:
                 bitem = self.listView.item(item.row())
                 filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
-                if os.path.exists(filename):
-                    (path, name) = os.path.split(filename)
-                    service_item.add_from_image(filename, name)
-                    return True
-                else:
-                    # File is no longer present
-                    QtGui.QMessageBox.critical(
-                        self, translate('ImagePlugin.MediaItem',
-                        'Missing Image'),
-                        unicode(translate('ImagePlugin.MediaItem',
-                        'The Image %s no longer exists.')) % filename)
-                    return False
+                if not os.path.exists(filename):
+                    missing_items.append(item)
+                    missing_items_filenames.append(filename)
+            for item in missing_items:
+                items.remove(item)
+            # We cannot continue, as all images do not exist.
+            if not items:
+                QtGui.QMessageBox.critical(self,
+                    translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
+                    unicode(translate('ImagePlugin.MediaItem',
+                    'The following image(s) no longer exist: %s')) %
+                    u'\n'.join(missing_items_filenames))
+                return False
+            # We have missing as well as existing images. We ask what to do.
+            elif missing_items and QtGui.QMessageBox.question(self,
+                translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
+                unicode(translate('ImagePlugin.MediaItem', 'The following '
+                'image(s) no longer exist: %s\nDo you want to add the other '
+                'images anyway?')) % u'\n'.join(missing_items_filenames),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
+                QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
+                return False
+            # Continue with the existing images.
+            for item in items:
+                bitem = self.listView.item(item.row())
+                filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
+                (path, name) = os.path.split(filename)
+                service_item.add_from_image(filename, name)
+            return True
         else:
             return False
 
@@ -190,12 +210,18 @@ class ImageMediaItem(MediaManagerItem):
         if check_item_selected(self.listView,
             translate('ImagePlugin.MediaItem',
             'You must select an image to replace the background with.')):
-            items = self.listView.selectedIndexes()
-            for item in items:
-                bitem = self.listView.item(item.row())
-                filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
+            item = self.listView.selectedIndexes()[0]
+            bitem = self.listView.item(item.row())
+            filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
+            if os.path.exists(filename):
                 (path, name) = os.path.split(filename)
                 self.parent.liveController.display.directImage(name, filename)
+            else:
+                QtGui.QMessageBox.critical(self,
+                    translate('ImagePlugin.MediaItem', 'Live Background Could '
+                    'Not Be Replaced'),
+                    unicode(translate('ImagePlugin.MediaItem',
+                    'The image %s no longer exists.')) % filename)
         self.resetButton.setVisible(True)
 
     def onPreviewClick(self):

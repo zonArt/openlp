@@ -95,7 +95,6 @@ class MainDisplay(DisplayWidget):
     """
     This is the display screen.
     """
-
     def __init__(self, parent, screens, live):
         DisplayWidget.__init__(self, live, parent=None)
         self.parent = parent
@@ -119,7 +118,7 @@ class MainDisplay(DisplayWidget):
         """
         Set up and build the output screen
         """
-        log.debug(u'Setup live = %s for %s ' % (self.isLive,
+        log.debug(u'Setup live = %s for monitor %s ' % (self.isLive,
             self.screens.monitor_number))
         self.usePhonon = QtCore.QSettings().value(
             u'media/use phonon', QtCore.QVariant(True)).toBool()
