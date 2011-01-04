@@ -208,6 +208,9 @@ class ImageMediaItem(MediaManagerItem):
         self.parent.liveController.display.resetImage()
 
     def onReplaceClick(self):
+        """
+        Called to replace Live backgound with the video selected
+        """
         if check_item_selected(self.listView,
             translate('ImagePlugin.MediaItem',
             'You must select an image to replace the background with.')):
