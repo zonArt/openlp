@@ -248,7 +248,8 @@ class OpenLyricsParser(object):
     This class represents the converter for Song to/from
     `OpenLyrics <http://openlyrics.info/>`_ XML.
     """
-    # TODO: complete OpenLyrics standard implementation as fare as possible!
+    # TODO: Complete OpenLyrics standard implementation and document what is
+    # supported and what not!
     def __init__(self, manager):
         self.manager = manager
 
@@ -316,8 +317,6 @@ class OpenLyricsParser(object):
         song = Song()
         if xml[:5] == u'<?xml':
             xml = xml[38:]
-        # Remove chords
-        xml = re.compile(u'<chord name=".*?"/>').sub(u'', xml)
         song_xml = objectify.fromstring(xml)
         properties = song_xml.properties
         # Process Copyright
@@ -349,17 +348,17 @@ class OpenLyricsParser(object):
             for verse in lyrics.verse:
                 text = u''
                 for line in verse.lines:
-                    for line in line.line:
-                        line = unicode(line)
-                        if not text:
-                            text = line
-                        else:
-                            text += u'\n' + line
-                type = VerseType.expand_string(verse.attrib[u'name'][0])
-                sxml.add_verse_to_lyrics(type, verse.attrib[u'name'][1], text)
-                # TODO: test this verse_order thing!
+                    text = u'\n'.join([unicode(line) for line in line.line])
+                # Remove chords
+                text = re.compile(u'<chord name=".*?"/>').sub(u'', text)
+                # OpenLyrics allows e. g. "c", but we need "c1".
+                if self._get(verse, u'name').isalpha():
+                    verse.set(u'name', self._get(verse, u'name') + u'1')
+                type = VerseType.expand_string(self._get(verse, u'name')[0])
+                sxml.add_verse_to_lyrics(
+                    type, self._get(verse, u'name')[1], text)
                 song.verse_order += u'%s%s ' % (type[0],
-                    verse.attrib[u'name'][1])
+                    self._get(verse, u'name')[1])
                 search_text = search_text + text
         song.search_lyrics = search_text.lower()
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
@@ -399,7 +398,7 @@ class OpenLyricsParser(object):
         try:
             for songbook in properties.songbooks.songbook:
                 self._process_songbook(self._get(songbook, u'name'), song)
-                if songbook.get(u'entry'):
+                if self._get(songbook, u'entry'):
                     song.song_number = self._get(songbook, u'entry')
                 # OpenLp does only support one song book, so take the first one.
                 break
@@ -427,7 +426,7 @@ class OpenLyricsParser(object):
             The element's attribute (unicode).
         """
         if element.get(attribute) is not None:
-            return element.get(attribute)
+            return unicode(element.get(attribute))
         return u''
 
     def _text(self, element):
@@ -483,8 +482,8 @@ class OpenLyricsParser(object):
             Author.display_name == name)
         if author is None:
             # We need to create a new author, as the author does not exist.
-            author = Author.populate(first_name=name.rsplit(u' ', 1)[0],
-                last_name=name.rsplit(u' ', 1)[1], display_name=name)
+            author = Author.populate(last_name=name.split(u' ')[-1],
+                first_name=u' '.join(name.split(u' ')[:-1]), display_name=name)
             self.manager.save_object(author)
         song.authors.append(author)
 

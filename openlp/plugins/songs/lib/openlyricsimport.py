@@ -28,11 +28,16 @@ The :mod:`openlyricsimport` module provides the functionality for importing
 songs which are saved as OpenLyrics files.
 """
 
+import logging
 import os
+
+from lxml import etree
 
 from openlp.core.lib import translate
 from openlp.plugins.songs.lib.songimport import SongImport
 from openlp.plugins.songs.lib import OpenLyricsParser
+
+log = logging.getLogger(__name__)
 
 class OpenLyricsImport(SongImport):
     """
@@ -42,6 +47,7 @@ class OpenLyricsImport(SongImport):
         """
         Initialise the import.
         """
+        log.debug(u'initialise OpenLyricsImport')
         SongImport.__init__(self, master_manager)
         self.master_manager = master_manager
         self.openLyricsParser = OpenLyricsParser(master_manager)
@@ -58,15 +64,14 @@ class OpenLyricsImport(SongImport):
         for file_path in self.import_source:
             if self.stop_import_flag:
                 return False
-            file = open(file_path)
-            lines = file.readlines()
-            file.close()
-            lines = [line.strip() for line in lines]
-            xml = u''.join(lines)
             self.import_wizard.incrementProgressBar(unicode(translate(
                 'SongsPlugin.OpenLyricsImport', 'Importing %s...')) %
                 os.path.basename(file_path))
+            parser = etree.XMLParser(remove_blank_text=True)
+            file = etree.parse(file_path, parser)
+            xml = etree.tostring(file)
             if self.openLyricsParser.xml_to_song(xml) == 0:
+                log.debug(u'File could not be imported: %s' % file_path)
                 # Importing this song failed! For now we stop import.
                 return False
         return True
