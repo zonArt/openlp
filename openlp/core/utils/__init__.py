@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -274,6 +274,13 @@ def get_images_filter():
         images_filter = u'%s %s %s' % (translate('OpenLP', 'Image Files'),
             visible_formats, actual_formats)
     return images_filter
+
+def split_filename(path):
+    path = os.path.abspath(path)
+    if not os.path.isfile(path):
+        return path, u''
+    else:
+        return os.path.split(path)
 
 from languagemanager import LanguageManager
 from actions import ActionList
