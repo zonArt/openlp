@@ -314,15 +314,14 @@ class SongMediaItem(MediaManagerItem):
             translate('SongsPlugin.MediaItem',
             'You must select an item to delete.')):
             items = self.listView.selectedIndexes()
-            ans = QtGui.QMessageBox.question(self,
+            if QtGui.QMessageBox.question(self,
                 translate('SongsPlugin.MediaItem', 'Delete Song(s)?'),
                 translate('SongsPlugin.MediaItem',
                 'Are you sure you want to delete the %n selected song(s)?', '',
                 QtCore.QCoreApplication.CodecForTr, len(items)),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok|
-                     QtGui.QMessageBox.Cancel),
-                QtGui.QMessageBox.Ok)
-            if ans == QtGui.QMessageBox.Cancel:
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok |
+                QtGui.QMessageBox.Cancel),
+                QtGui.QMessageBox.Ok) == QtGui.QMessageBox.Cancel:
                 return
             for item in items:
                 item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
@@ -396,8 +395,8 @@ class SongMediaItem(MediaManagerItem):
         service_item.audit = [
             song.title, author_audit, song.copyright, unicode(song.ccli_number)
         ]
-        service_item.data_string = {u'title':song.search_title,
-            u'authors':author_list}
+        service_item.data_string = {u'title': song.search_title,
+            u'authors': author_list}
         service_item.xml_version = self.openLyrics.song_to_xml(song)
         return True
 
@@ -409,7 +408,7 @@ class SongMediaItem(MediaManagerItem):
         if item.data_string:
             search_results = self.parent.manager.get_all_objects(Song,
                 Song.search_title ==
-                    item.data_string[u'title'].split(u'@')[0].lower() ,
+                item.data_string[u'title'].split(u'@')[0].lower(),
                 Song.search_title.asc())
             author_list = item.data_string[u'authors'].split(u', ')
             # The service item always has an author (at least it has u'' as
@@ -418,7 +417,6 @@ class SongMediaItem(MediaManagerItem):
             if u'' in author_list:
                 author_list.remove(u'')
             editId = 0
-            uuid = item._uuid
             add_song = True
             if search_results:
                 for song in search_results:
@@ -445,7 +443,7 @@ class SongMediaItem(MediaManagerItem):
             # Update service with correct song id.
             if editId != 0:
                 Receiver.send_message(u'service_item_update',
-                    u'%s:%s' %(editId, uuid))
+                    u'%s:%s' % (editId, item._uuid))
 
     def collateSongTitles(self, song_1, song_2):
         """

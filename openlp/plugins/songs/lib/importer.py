@@ -26,6 +26,7 @@
 
 from opensongimport import OpenSongImport
 from olpimport import OpenLPSongImport
+from openlyricsimport import OpenLyricsImport
 from wowimport import WowImport
 from cclifileimport import CCLIFileImport
 from ewimport import EasyWorshipSongImport
@@ -77,8 +78,10 @@ class SongFormat(object):
         """
         if format == SongFormat.OpenLP2:
             return OpenLPSongImport
-        if format == SongFormat.OpenLP1:
+        elif format == SongFormat.OpenLP1:
             return OpenLP1SongImport
+        elif format == SongFormat.OpenLyrics:
+            return OpenLyricsImport
         elif format == SongFormat.OpenSong:
             return OpenSongImport
         elif format == SongFormat.SongsOfFellowship:
@@ -93,7 +96,6 @@ class SongFormat(object):
             return EasyWorshipSongImport
         elif format == SongFormat.SongBeamer:
             return SongBeamerImport
-#        else:
         return None
 
     @staticmethod
