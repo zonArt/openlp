@@ -79,15 +79,6 @@ class MediaMediaItem(MediaManagerItem):
                 self.onReplaceClick))
 
     def addEndHeaderBar(self):
-        self.ImageWidget = QtGui.QWidget(self)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.ImageWidget.sizePolicy().hasHeightForWidth())
-        self.ImageWidget.setSizePolicy(sizePolicy)
-        self.ImageWidget.setObjectName(u'ImageWidget')
         # Replace backgrounds do not work at present so remove functionality.
         self.blankButton = self.toolbar.addToolbarButton(
             translate('MediaPlugin.MediaItem', 'Replace Background'),
@@ -98,8 +89,6 @@ class MediaMediaItem(MediaManagerItem):
             u'Reset Background', u':/system/system_close.png',
             translate('ImagePlugin.MediaItem', 'Reset Live Background'),
                 self.onResetClick, False)
-        # Add the song widget to the page layout
-        self.pageLayout.addWidget(self.ImageWidget)
         self.resetButton.setVisible(False)
 
     def onResetClick(self):

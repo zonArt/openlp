@@ -79,29 +79,18 @@ class SongMediaItem(MediaManagerItem):
             translate('SongsPlugin.MediaItem',
             'Maintain the lists of authors, topics and books'),
             ':/songs/song_maintenance.png', self.onSongMaintenanceClick)
-        self.pageLayout.setSpacing(4)
         self.SearchLayout = QtGui.QFormLayout()
-        self.SearchLayout.setMargin(0)
-        self.SearchLayout.setSpacing(4)
         self.SearchLayout.setObjectName(u'SearchLayout')
         self.SearchTextLabel = QtGui.QLabel(self)
-        self.SearchTextLabel.setAlignment(
-            QtCore.Qt.AlignBottom|QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft)
         self.SearchTextLabel.setObjectName(u'SearchTextLabel')
-        self.SearchLayout.setWidget(
-            0, QtGui.QFormLayout.LabelRole, self.SearchTextLabel)
         self.SearchTextEdit = SearchEdit(self)
         self.SearchTextEdit.setObjectName(u'SearchTextEdit')
-        self.SearchLayout.setWidget(
-            0, QtGui.QFormLayout.FieldRole, self.SearchTextEdit)
+        self.SearchTextLabel.setBuddy(self.SearchTextEdit)
+        self.SearchLayout.addRow(self.SearchTextLabel, self.SearchTextEdit)
         self.pageLayout.addLayout(self.SearchLayout)
         self.SearchButtonLayout = QtGui.QHBoxLayout()
-        self.SearchButtonLayout.setMargin(0)
-        self.SearchButtonLayout.setSpacing(4)
         self.SearchButtonLayout.setObjectName(u'SearchButtonLayout')
-        self.SearchButtonSpacer = QtGui.QSpacerItem(40, 20,
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.SearchButtonLayout.addItem(self.SearchButtonSpacer)
+        self.SearchButtonLayout.addStretch()
         self.SearchTextButton = QtGui.QPushButton(self)
         self.SearchTextButton.setObjectName(u'SearchTextButton')
         self.SearchButtonLayout.addWidget(self.SearchTextButton)

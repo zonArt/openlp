@@ -31,14 +31,13 @@ from openlp.core.lib import translate
 class Ui_FileRenameDialog(object):
     def setupUi(self, FileRenameDialog):
         FileRenameDialog.setObjectName(u'FileRenameDialog')
+        FileRenameDialog.resize(300, 10)
         self.dialogLayout = QtGui.QGridLayout(FileRenameDialog)
         self.dialogLayout.setObjectName(u'dialogLayout')
         self.fileNameLabel = QtGui.QLabel(FileRenameDialog)
         self.fileNameLabel.setObjectName(u'fileNameLabel')
         self.dialogLayout.addWidget(self.fileNameLabel, 0, 0)
         self.fileNameEdit = QtGui.QLineEdit(FileRenameDialog)
-        self.fileNameEdit.resize(self.fileNameEdit.sizeHint().width() * 2,
-            self.fileNameEdit.sizeHint().height())
         self.fileNameEdit.setObjectName(u'fileNameEdit')
         self.dialogLayout.addWidget(self.fileNameEdit, 0, 1)
         self.buttonBox = QtGui.QDialogButtonBox(FileRenameDialog)

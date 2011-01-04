@@ -107,26 +107,19 @@ class PresentationMediaItem(MediaManagerItem):
         Display custom media manager items for presentations
         """
         self.PresentationWidget = QtGui.QWidget(self)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.PresentationWidget.sizePolicy().hasHeightForWidth())
-        self.PresentationWidget.setSizePolicy(sizePolicy)
         self.PresentationWidget.setObjectName(u'PresentationWidget')
-        self.DisplayLayout = QtGui.QGridLayout(self.PresentationWidget)
+        self.DisplayLayout = QtGui.QFormLayout(self.PresentationWidget)
         self.DisplayLayout.setObjectName(u'DisplayLayout')
-        self.DisplayTypeComboBox = QtGui.QComboBox(self.PresentationWidget)
-        self.DisplayTypeComboBox.setObjectName(u'DisplayTypeComboBox')
-        self.DisplayLayout.addWidget(self.DisplayTypeComboBox, 0, 1, 1, 2)
         self.DisplayTypeLabel = QtGui.QLabel(self.PresentationWidget)
         self.DisplayTypeLabel.setObjectName(u'SearchTypeLabel')
-        self.DisplayLayout.addWidget(self.DisplayTypeLabel, 0, 0, 1, 1)
-        self.DisplayTypeLabel.setText(
-            translate('PresentationPlugin.MediaItem', 'Present using:'))
+        self.DisplayTypeComboBox = QtGui.QComboBox(self.PresentationWidget)
+        self.DisplayTypeComboBox.setObjectName(u'DisplayTypeComboBox')
+        self.DisplayTypeLabel.setBuddy(self.DisplayTypeComboBox)
+        self.DisplayLayout.addRow(self.DisplayTypeLabel, self.DisplayTypeComboBox)
         # Add the Presentation widget to the page layout
         self.pageLayout.addWidget(self.PresentationWidget)
+        self.DisplayTypeLabel.setText(
+            translate('PresentationPlugin.MediaItem', 'Present using:'))
 
     def initialise(self):
         """
