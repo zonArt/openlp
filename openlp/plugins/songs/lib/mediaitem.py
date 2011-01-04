@@ -151,11 +151,14 @@ class SongMediaItem(MediaManagerItem):
 
     def initialise(self):
         self.SearchTextEdit.setSearchTypes([
-            (1, u':/songs/song_search_all.png', translate('SongsPlugin.MediaItem', 'Entire Song')),
-            (2, u':/songs/song_search_title.png', translate('SongsPlugin.MediaItem', 'Titles')),
-            (3, u':/songs/song_search_lyrics.png', translate('SongsPlugin.MediaItem', 'Lyrics')),
-            (4, u':/songs/song_search_author.png', translate('SongsPlugin.MediaItem', 'Authors'))
-        ])
+            (1, u':/songs/song_search_all.png',
+                translate('SongsPlugin.MediaItem', 'Entire Song')),
+            (2, u':/songs/song_search_title.png',
+                translate('SongsPlugin.MediaItem', 'Titles')),
+            (3, u':/songs/song_search_lyrics.png',
+                translate('SongsPlugin.MediaItem', 'Lyrics')),
+            (4, u':/songs/song_search_author.png',
+                translate('SongsPlugin.MediaItem', 'Authors'))])
         self.configUpdated()
 
     def onSearchTextButtonClick(self):
