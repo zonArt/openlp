@@ -820,7 +820,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     QtGui.QMessageBox.Save),
                 QtGui.QMessageBox.Save)
             if ret == QtGui.QMessageBox.Save:
-                #self.ServiceManagerContents.onSaveService(True)
                 if self.ServiceManagerContents.saveFile():
                     self.cleanUp()
                     event.accept()
@@ -832,18 +831,25 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             else:
                 event.ignore()
         else:
-            ret = QtGui.QMessageBox.question(self,
-                translate('OpenLP.MainWindow', 'Close OpenLP'),
-                translate('OpenLP.MainWindow',
-                    'Are you sure you want to close OpenLP?'),
-                QtGui.QMessageBox.StandardButtons(
-                    QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
-                QtGui.QMessageBox.Yes)
-            if ret == QtGui.QMessageBox.Yes:
+            if QtCore.QSettings().value(u'advanced/enable exit confirmation',
+                QtCore.QVariant(True)).toBool():
+                ret = QtGui.QMessageBox.question(self,
+                    translate('OpenLP.MainWindow', 'Close OpenLP'),
+                    translate('OpenLP.MainWindow',
+                        'Are you sure you want to close OpenLP?'),
+                    QtGui.QMessageBox.StandardButtons(
+                        QtGui.QMessageBox.Yes |
+                        QtGui.QMessageBox.No),
+                    QtGui.QMessageBox.Yes)
+                if ret == QtGui.QMessageBox.Yes:
+                    self.cleanUp()
+                    event.accept()
+                else:
+                    event.ignore()
+            else:
                 self.cleanUp()
                 event.accept()
-            else:
-                event.ignore()
+
 
     def cleanUp(self):
         """

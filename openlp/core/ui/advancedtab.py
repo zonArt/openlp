@@ -67,6 +67,10 @@ class AdvancedTab(SettingsTab):
         self.expandServiceItemCheckBox.setObjectName(
             u'expandServiceItemCheckBox')
         self.uiLayout.addRow(self.expandServiceItemCheckBox)
+        self.enableAutoCloseCheckBox = QtGui.QCheckBox(self.uiGroupBox)
+        self.enableAutoCloseCheckBox.setObjectName(
+            u'enableAutoCloseCheckBox')
+        self.uiLayout.addRow(self.enableAutoCloseCheckBox)
         self.leftLayout.addWidget(self.uiGroupBox)
 #        self.sharedDirGroupBox = QtGui.QGroupBox(self.leftColumn)
 #        self.sharedDirGroupBox.setObjectName(u'sharedDirGroupBox')
@@ -111,6 +115,8 @@ class AdvancedTab(SettingsTab):
             'Double-click to send items straight to live'))
         self.expandServiceItemCheckBox.setText(translate('OpenLP.AdvancedTab',
             'Expand new service items on creation'))
+        self.enableAutoCloseCheckBox.setText(translate('OpenLP.AdvancedTab',
+            'Enable application exit confirmation'))
 #        self.sharedDirGroupBox.setTitle(
 #            translate('AdvancedTab', 'Central Data Store'))
 #        self.sharedCheckBox.setText(
@@ -141,6 +147,9 @@ class AdvancedTab(SettingsTab):
         self.expandServiceItemCheckBox.setChecked(
             settings.value(u'expand service item',
             QtCore.QVariant(False)).toBool())
+        self.enableAutoCloseCheckBox.setChecked(
+            settings.value(u'enable exit confirmation',
+            QtCore.QVariant(True)).toBool())
         settings.endGroup()
 
     def save(self):
@@ -157,12 +166,14 @@ class AdvancedTab(SettingsTab):
             QtCore.QVariant(self.doubleClickLiveCheckBox.isChecked()))
         settings.setValue(u'expand service item',
             QtCore.QVariant(self.expandServiceItemCheckBox.isChecked()))
+        settings.setValue(u'enable exit confirmation',
+            QtCore.QVariant(self.enableAutoCloseCheckBox.isChecked()))
         settings.endGroup()
 
-    def onSharedCheckBoxChanged(self, checked):
-        """
-        Enables the widgets to allow a shared data location
-        """
-        self.sharedLabel.setEnabled(checked)
-        self.sharedTextEdit.setEnabled(checked)
-        self.sharedPushButton.setEnabled(checked)
+#    def onSharedCheckBoxChanged(self, checked):
+#        """
+#        Enables the widgets to allow a shared data location
+#        """
+#        self.sharedLabel.setEnabled(checked)
+#        self.sharedTextEdit.setEnabled(checked)
+#        self.sharedPushButton.setEnabled(checked)
