@@ -31,7 +31,8 @@ import os
 from PyQt4 import QtCore, QtGui, QtWebKit
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte
+from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
+    translate
 from openlp.core.ui import HideMode
 
 log = logging.getLogger(__name__)
@@ -101,7 +102,7 @@ class MainDisplay(DisplayWidget):
         self.isLive = live
         self.alertTab = None
         self.hideMode = None
-        self.setWindowTitle(u'OpenLP Display')
+        self.retranslateUi()
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint |
             QtCore.Qt.WindowStaysOnTopHint)
@@ -110,6 +111,12 @@ class MainDisplay(DisplayWidget):
                 QtCore.SIGNAL(u'maindisplay_hide'), self.hideDisplay)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
+
+    def retranslateUi(self):
+        """
+        Setup the interface translation strings.
+        """
+        self.setWindowTitle(translate('OpenLP.MainDisplay', 'OpenLP Display'))
 
     def setup(self):
         """

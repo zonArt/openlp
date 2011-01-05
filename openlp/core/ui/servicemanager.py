@@ -118,7 +118,6 @@ class ServiceManager(QtGui.QWidget):
         self.layout = QtGui.QVBoxLayout(self)
         self.layout.setSpacing(0)
         self.layout.setMargin(0)
-        self.expandTabs = False
         # Create the top toolbar
         self.toolbar = OpenLPToolbar(self)
         self.toolbar.addToolbarButton(
@@ -140,13 +139,16 @@ class ServiceManager(QtGui.QWidget):
         self.themeLabel = QtGui.QLabel(translate('OpenLP.ServiceManager',
             'Theme:'), self)
         self.themeLabel.setMargin(3)
+        self.themeLabel.setObjectName(u'themeLabel')
         self.toolbar.addToolbarWidget(u'ThemeLabel', self.themeLabel)
         self.themeComboBox = QtGui.QComboBox(self.toolbar)
         self.themeComboBox.setToolTip(translate('OpenLP.ServiceManager',
             'Select a theme for the service'))
-        self.themeComboBox.setSizeAdjustPolicy(
-            QtGui.QComboBox.AdjustToContents)
+        self.themeComboBox.setSizePolicy(QtGui.QSizePolicy.Expanding,
+            QtGui.QSizePolicy.Fixed)
+        self.themeComboBox.setObjectName(u'themeComboBox')
         self.toolbar.addToolbarWidget(u'ThemeWidget', self.themeComboBox)
+        self.toolbar.setObjectName(u'toolbar')
         self.layout.addWidget(self.toolbar)
         # Create the service manager list
         self.serviceManagerList = ServiceManagerList(self)
@@ -216,6 +218,7 @@ class ServiceManager(QtGui.QWidget):
             translate('OpenLP.ServiceManager',
             'Collapse all the service items.'),
             self.onCollapseAll)
+        self.orderToolbar.setObjectName(u'orderToolbar')
         self.layout.addWidget(self.orderToolbar)
         # Connect up our signals and slots
         QtCore.QObject.connect(self.themeComboBox,
