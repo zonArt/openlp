@@ -545,6 +545,11 @@ class OpenLyricsParser(object):
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
         #TODO: make sure "c" becomes "c1"
 
+#        name = self._get(verse, u'name')
+#        type = name[0]
+#        number = re.compile(u'[a-zA-Z]*').sub(u'', name)
+#        part = re.compile(u'[0-9]*').sub(u'', name[1:])
+
     def _process_songbooks(self, properties, song):
         """
         Finds an existing book or creates a new book and adds it to the song
