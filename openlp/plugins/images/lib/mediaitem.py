@@ -214,7 +214,7 @@ class ImageMediaItem(MediaManagerItem):
                     'Live Background Error'),
                     u'message': unicode(translate('ImagePlugin.MediaItem',
                     'There was a problem replacing your background, '
-                    'the image file %s no longer exists.')) % filename})
+                    'the image file "%s" no longer exists.')) % filename})
 
     def onPreviewClick(self):
         MediaManagerItem.onPreviewClick(self)

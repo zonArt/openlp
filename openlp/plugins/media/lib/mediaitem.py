@@ -111,7 +111,7 @@ class MediaMediaItem(MediaManagerItem):
                     'Live Background Error'),
                     u'message': unicode(translate('MediaPlugin.MediaItem',
                     'There was a problem replacing your background, '
-                    'the media file %s no longer exists.')) % filename})
+                    'the media file "%s" no longer exists.')) % filename})
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
         if item is None:
