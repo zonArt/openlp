@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
     ItemCapabilities, SettingsManager, translate, check_item_selected, \
-    context_menu_action
+    context_menu_action, Receiver
 
 log = logging.getLogger(__name__)
 
@@ -97,12 +97,21 @@ class MediaMediaItem(MediaManagerItem):
 
     def onReplaceClick(self):
         if check_item_selected(self.listView,
-            translate('ImagePlugin.MediaItem',
+            translate('MediaPlugin.MediaItem',
             'You must select a media file to replace the background with.')):
             item = self.listView.currentItem()
             filename = unicode(item.data(QtCore.Qt.UserRole).toString())
-            self.parent.liveController.display.video(filename, 0, True)
-            self.resetAction.setVisible(True)
+            if os.path.exists(filename):
+                (path, name) = os.path.split(filename)
+                self.parent.liveController.display.video(filename, 0, True)
+                self.resetAction.setVisible(True)
+            else:
+                Receiver.send_message(u'openlp_error_message', {
+                    u'title':  translate('MediaPlugin.MediaItem',
+                    'Live Background Error'),
+                    u'message': unicode(translate('MediaPlugin.MediaItem',
+                    'There was a problem replacing your background, '
+                    'the media file %s no longer exists.')) % filename})
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
         if item is None:

@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
     context_menu_action, ItemCapabilities, SettingsManager, translate, \
-    check_item_selected
+    check_item_selected, Receiver
 from openlp.core.utils import AppLocation, get_images_filter
 
 log = logging.getLogger(__name__)
@@ -195,6 +195,9 @@ class ImageMediaItem(MediaManagerItem):
         self.parent.liveController.display.resetImage()
 
     def onReplaceClick(self):
+        """
+        Called to replace Live backgound with the video selected
+        """
         if check_item_selected(self.listView,
             translate('ImagePlugin.MediaItem',
             'You must select an image to replace the background with.')):
@@ -206,11 +209,12 @@ class ImageMediaItem(MediaManagerItem):
                 self.parent.liveController.display.directImage(name, filename)
                 self.resetAction.setVisible(True)
             else:
-                QtGui.QMessageBox.critical(self,
-                    translate('ImagePlugin.MediaItem', 'Live Background Could '
-                    'Not Be Replaced'),
-                    unicode(translate('ImagePlugin.MediaItem',
-                    'The image %s no longer exists.')) % filename)
+                Receiver.send_message(u'openlp_error_message', {
+                    u'title':  translate('ImagePlugin.MediaItem',
+                    'Live Background Error'),
+                    u'message': unicode(translate('ImagePlugin.MediaItem',
+                    'There was a problem replacing your background, '
+                    'the image file %s no longer exists.')) % filename})
 
     def onPreviewClick(self):
         MediaManagerItem.onPreviewClick(self)
