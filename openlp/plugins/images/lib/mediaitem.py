@@ -223,7 +223,7 @@ class ImageMediaItem(MediaManagerItem):
             else:
                 Receiver.send_message(u'openlp_error_message', {
                     u'title':  translate('ImagePlugin.MediaItem',
-                    'Live background could not be replaced.'),
+                    'Live Background Could Not Be Replaced.'),
                     u'message': unicode(translate('ImagePlugin.MediaItem',
                     'The image file %s no longer exists.')) % filename})
         self.resetButton.setVisible(True)
