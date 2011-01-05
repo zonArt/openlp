@@ -63,6 +63,14 @@ class MediaMediaItem(MediaManagerItem):
         self.OnNewFileMasks = unicode(translate('MediaPlugin.MediaItem',
             'Videos (%s);;Audio (%s);;All files (*)')) % \
             (self.parent.video_list, self.parent.audio_list)
+        self.replaceAction.setText(
+            translate('MediaPlugin.MediaItem', 'Replace Background'))
+        self.replaceAction.setToolTip(
+            translate('MediaPlugin.MediaItem', 'Replace Live Background'))
+        self.resetAction.setText(
+            translate('MediaPlugin.MediaItem', 'Reset Background'))
+        self.resetAction.setToolTip(
+            translate('ImagePlugin.MediaItem', 'Reset Live Background'))
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -73,26 +81,18 @@ class MediaMediaItem(MediaManagerItem):
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
         self.listView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-        self.listView.addAction(
-            context_menu_action(self.listView, u':/slides/slide_blank.png',
-                translate('MediaPlugin.MediaItem', 'Replace Live Background'),
-                self.onReplaceClick))
+        self.listView.addAction(self.replaceAction)
 
     def addEndHeaderBar(self):
         # Replace backgrounds do not work at present so remove functionality.
-        self.blankButton = self.toolbar.addToolbarButton(
-            translate('MediaPlugin.MediaItem', 'Replace Background'),
-            u':/slides/slide_blank.png',
-            translate('MediaPlugin.MediaItem', 'Replace Live Background'),
-                self.onReplaceClick, False)
-        self.resetButton = self.toolbar.addToolbarButton(
-            u'Reset Background', u':/system/system_close.png',
-            translate('ImagePlugin.MediaItem', 'Reset Live Background'),
-                self.onResetClick, False)
-        self.resetButton.setVisible(False)
+        self.replaceAction = self.addToolbarButton(u'', u'',
+            u':/slides/slide_blank.png', self.onReplaceClick, False)
+        self.resetAction = self.addToolbarButton(u'', u'',
+            u':/system/system_close.png', self.onResetClick, False)
+        self.resetAction.setVisible(False)
 
     def onResetClick(self):
-        self.resetButton.setVisible(False)
+        self.resetAction.setVisible(False)
         self.parent.liveController.display.resetVideo()
 
     def onReplaceClick(self):
@@ -102,7 +102,7 @@ class MediaMediaItem(MediaManagerItem):
             item = self.listView.currentItem()
             filename = unicode(item.data(QtCore.Qt.UserRole).toString())
             self.parent.liveController.display.video(filename, 0, True)
-        self.resetButton.setVisible(True)
+            self.resetAction.setVisible(True)
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
         if item is None:

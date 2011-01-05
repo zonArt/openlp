@@ -63,6 +63,14 @@ class ImageMediaItem(MediaManagerItem):
         file_formats = get_images_filter()
         self.OnNewFileMasks = u'%s;;%s (*.*) (*)' % (file_formats,
             unicode(translate('ImagePlugin.MediaItem', 'All Files')))
+        self.replaceAction.setText(
+            translate('ImagePlugin.MediaItem', 'Replace Background'))
+        self.replaceAction.setToolTip(
+            translate('ImagePlugin.MediaItem', 'Replace Live Background'))
+        self.resetAction.setText(
+            translate('ImagePlugin.MediaItem', 'Reset Background'))
+        self.resetAction.setToolTip(
+            translate('ImagePlugin.MediaItem', 'Reset Live Background'))
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -88,24 +96,14 @@ class ImageMediaItem(MediaManagerItem):
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
         self.listView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-        self.listView.addAction(
-            context_menu_action(
-                self.listView, u':/slides/slide_blank.png',
-                translate('ImagePlugin.MediaItem', 'Replace Live Background'),
-                self.onReplaceClick))
+        self.listView.addAction(self.replaceAction)
 
     def addEndHeaderBar(self):
-        self.blankButton = self.toolbar.addToolbarButton(
-            translate('ImagePlugin.MediaItem', 'Replace Background'),
-            u':/slides/slide_blank.png',
-            translate('ImagePlugin.MediaItem', 'Replace Live Background'),
-            self.onReplaceClick, False)
-        self.resetButton = self.toolbar.addToolbarButton(
-            translate('ImagePlugin.MediaItem', 'Reset Background'),
-            u':/system/system_close.png',
-            translate('ImagePlugin.MediaItem', 'Reset Live Background'),
-            self.onResetClick, False)
-        self.resetButton.setVisible(False)
+        self.replaceAction = self.addToolbarButton(u'', u'',
+            u':/slides/slide_blank.png', self.onReplaceClick, False)
+        self.resetAction = self.addToolbarButton(u'', u'',
+            u':/system/system_close.png', self.onResetClick, False)
+        self.resetAction.setVisible(False)
 
     def onDeleteClick(self):
         """
@@ -193,7 +191,7 @@ class ImageMediaItem(MediaManagerItem):
             return False
 
     def onResetClick(self):
-        self.resetButton.setVisible(False)
+        self.resetAction.setVisible(False)
         self.parent.liveController.display.resetImage()
 
     def onReplaceClick(self):
@@ -206,13 +204,13 @@ class ImageMediaItem(MediaManagerItem):
             if os.path.exists(filename):
                 (path, name) = os.path.split(filename)
                 self.parent.liveController.display.directImage(name, filename)
+                self.resetAction.setVisible(True)
             else:
                 QtGui.QMessageBox.critical(self,
                     translate('ImagePlugin.MediaItem', 'Live Background Could '
                     'Not Be Replaced'),
                     unicode(translate('ImagePlugin.MediaItem',
                     'The image %s no longer exists.')) % filename)
-        self.resetButton.setVisible(True)
 
     def onPreviewClick(self):
         MediaManagerItem.onPreviewClick(self)
