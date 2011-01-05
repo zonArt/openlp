@@ -370,7 +370,7 @@ class ServiceManager(QtGui.QWidget):
             translate('OpenLP.ServiceManager', 'Open File'),
             SettingsManager.get_last_dir(self.parent.serviceSettingsSection),
             translate('OpenLP.ServiceManager',
-            'OpenLP Service Files (*.osz) (*.osz)')))
+            'OpenLP Service Files (*.osz)')))
         if not fileName:
             return False
         SettingsManager.set_last_dir(self.parent.serviceSettingsSection,
@@ -460,7 +460,7 @@ class ServiceManager(QtGui.QWidget):
             translate('OpenLP.ServiceManager', 'Save Service'),
             SettingsManager.get_last_dir(self.parent.serviceSettingsSection),
             translate('OpenLP.ServiceManager',
-            'OpenLP Service Files (*.osz) (*.osz)')))
+            'OpenLP Service Files (*.osz)')))
         if not fileName:
             return False
         if os.path.splitext(fileName)[1] == u'':

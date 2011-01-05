@@ -31,12 +31,18 @@ class HideMode(object):
     """
     This is an enumeration class which specifies the different modes of hiding
     the display.
-    The ``Blank`` option is used to hide all output, specifically by covering
-    the display with a black screen.
-    The ``Theme`` option is used to hide all output, but covers the display with
-    the current theme background, as opposed to black.
-    Lastly, the ``Desktop`` mode hides all output by minimising the display,
-    leaving the user's desktop showing.
+
+    ``Blank``
+        This mode is used to hide all output, specifically by covering the
+        display with a black screen.
+        
+    ``Theme``
+        This mode is used to hide all output, but covers the display with the
+        current theme background, as opposed to black.
+        
+    ``Desktop``
+        This mode hides all output by minimising the display, leaving the user's
+        desktop showing.
     """
     Blank = 1
     Theme = 2
