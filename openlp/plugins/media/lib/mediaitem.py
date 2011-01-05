@@ -118,9 +118,10 @@ class MediaMediaItem(MediaManagerItem):
             else:
                 Receiver.send_message(u'openlp_error_message', {
                     u'title':  translate('MediaPlugin.MediaItem',
-                    'Live Background Could Not Be Replaced.'),
+                    'Live Background Error'),
                     u'message': unicode(translate('MediaPlugin.MediaItem',
-                    'The media file %s no longer exists.')) % filename})
+                    'There was a problem replacing your background, '
+                    'the media file %s no longer exists.')) % filename})
         self.resetButton.setVisible(True)
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False):

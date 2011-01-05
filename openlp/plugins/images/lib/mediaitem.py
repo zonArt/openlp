@@ -223,9 +223,10 @@ class ImageMediaItem(MediaManagerItem):
             else:
                 Receiver.send_message(u'openlp_error_message', {
                     u'title':  translate('ImagePlugin.MediaItem',
-                    'Live Background Could Not Be Replaced.'),
+                    'Live Background Error'),
                     u'message': unicode(translate('ImagePlugin.MediaItem',
-                    'The image file %s no longer exists.')) % filename})
+                    'There was a problem replacing your background, '
+                    'the image file %s no longer exists.')) % filename})
         self.resetButton.setVisible(True)
 
     def onPreviewClick(self):
