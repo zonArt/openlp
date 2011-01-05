@@ -626,6 +626,7 @@ class BibleMediaItem(MediaManagerItem):
         Displays the search results in the media manager. All data needed for
         further action is saved for/in each row.
         """
+        verse_separator = get_reference_match(u'sep_v_display')
         version = self.parent.manager.get_meta_data(bible, u'Version')
         copyright = self.parent.manager.get_meta_data(bible, u'Copyright')
         permissions = self.parent.manager.get_meta_data(bible, u'Permissions')
@@ -661,8 +662,8 @@ class BibleMediaItem(MediaManagerItem):
                     }
                 except IndexError:
                     break
-                bible_text = u' %s %d:%d (%s, %s)' % (verse.book.name,
-                    verse.chapter, verse.verse, version.value,
+                bible_text = u' %s %d%s%d (%s, %s)' % (verse.book.name,
+                    verse.chapter, verse_separator, verse.verse, version.value,
                     second_version.value)
             else:
                 vdict = {
@@ -680,8 +681,8 @@ class BibleMediaItem(MediaManagerItem):
                     'second_permissions': QtCore.QVariant(u''),
                     'second_text': QtCore.QVariant(u'')
                 }
-                bible_text = u'%s %d:%d (%s)' % (verse.book.name,
-                    verse.chapter, verse.verse, version.value)
+                bible_text = u'%s %d%s%d (%s)' % (verse.book.name,
+                    verse.chapter, verse_separator, verse.verse, version.value)
             bible_verse = QtGui.QListWidgetItem(bible_text)
             bible_verse.setData(QtCore.Qt.UserRole, QtCore.QVariant(vdict))
             self.listView.addItem(bible_verse)
