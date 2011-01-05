@@ -440,8 +440,10 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Background style Combo box has changed.
         """
-        self.theme.background_type = BackgroundType.to_string(index)
-        self.setBackgroundPageValues()
+        # do not allow updates when screen is building for the first time.
+        if self.updateThemeAllowed:
+            self.theme.background_type = BackgroundType.to_string(index)
+            self.setBackgroundPageValues()
 
     def onGradientComboBoxCurrentIndexChanged(self, index):
         """
