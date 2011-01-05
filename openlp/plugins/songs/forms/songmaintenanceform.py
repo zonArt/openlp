@@ -109,7 +109,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 author_name = QtGui.QListWidgetItem(author.display_name)
             else:
                 author_name = QtGui.QListWidgetItem(
-                    u' '.join(author.first_name, author.last_name))
+                    u' '.join([author.first_name, author.last_name]))
             author_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(author.id))
             self.AuthorsListWidget.addItem(author_name)
         if self.AuthorsListWidget.count() == 0:
