@@ -125,8 +125,10 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Set up display at start of theme edit.
         """
+        print "setdefaults 1", self.theme,  self.theme.theme_name
         self.restart()
         self.accepted = False
+        print "setdefaults 2", self.theme,  self.theme.theme_name
         self.setBackgroundPageValues()
         self.setMainAreaPageValues()
         self.setFooterAreaPageValues()
@@ -286,6 +288,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         Run the wizard.
         """
         log.debug(u'Editing theme %s' % self.theme.theme_name)
+        print "exec_", self.theme,  self.theme.theme_name
         self.updateThemeAllowed = False
         self.setDefaults()
         self.updateThemeAllowed = True
@@ -321,6 +324,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Handle the display and state of the Background page.
         """
+        print "setBPV", self.theme,  self.theme.theme_name
         if self.theme.background_type == \
             BackgroundType.to_string(BackgroundType.Solid):
             self.colorButton.setStyleSheet(u'background-color: %s' %

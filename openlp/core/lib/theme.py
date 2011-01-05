@@ -527,15 +527,15 @@ class ThemeXML(object):
                 value = u''
             setattr(self, tag, unicode(value).strip().lstrip())
 
-    def __str__(self):
-        """
-        Return a string representation of this object.
-        """
-        theme_strings = []
-        for key in dir(self):
-            if key[0:1] != u'_':
-                theme_strings.append(u'%30s: %s' % (key, getattr(self, key)))
-        return u'\n'.join(theme_strings)
+#    def __str__(self):
+#        """
+#        Return a string representation of this object.
+#        """
+#        theme_strings = []
+#        for key in dir(self):
+#            if key[0:1] != u'_':
+#                theme_strings.append(u'%30s: %s' % (key, getattr(self, key)))
+#        return u'\n'.join(theme_strings)
 
     def _de_hump(self, name):
         """
