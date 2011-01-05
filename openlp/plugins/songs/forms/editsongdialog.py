@@ -112,6 +112,8 @@ class Ui_EditSongDialog(object):
         self.authorAddLayout = QtGui.QHBoxLayout()
         self.authorAddLayout.setObjectName(u'authorAddLayout')
         self.authorsComboBox = QtGui.QComboBox(self.authorsGroupBox)
+        self.authorsComboBox.setSizeAdjustPolicy(
+            QtGui.QComboBox.AdjustToMinimumContentsLength)
         self.authorsComboBox.setSizePolicy(QtGui.QSizePolicy.Expanding,
             QtGui.QSizePolicy.Fixed)
         self.authorsComboBox.setEditable(True)
@@ -151,6 +153,8 @@ class Ui_EditSongDialog(object):
         self.topicAddLayout = QtGui.QHBoxLayout()
         self.topicAddLayout.setObjectName(u'topicAddLayout')
         self.topicsComboBox = QtGui.QComboBox(self.topicsGroupBox)
+        self.topicsComboBox.setSizeAdjustPolicy(
+            QtGui.QComboBox.AdjustToMinimumContentsLength)
         self.topicsComboBox.setSizePolicy(QtGui.QSizePolicy.Expanding,
             QtGui.QSizePolicy.Fixed)
         self.topicsComboBox.setEditable(True)
@@ -210,6 +214,8 @@ class Ui_EditSongDialog(object):
         self.themeLayout = QtGui.QHBoxLayout(self.themeGroupBox)
         self.themeLayout.setObjectName(u'themeLayout')
         self.themeComboBox = QtGui.QComboBox(self.themeGroupBox)
+        self.themeComboBox.setSizeAdjustPolicy(
+            QtGui.QComboBox.AdjustToMinimumContentsLength)
         self.themeComboBox.setSizePolicy(QtGui.QSizePolicy.Expanding,
             QtGui.QSizePolicy.Fixed)
         self.themeComboBox.setEditable(True)
@@ -230,7 +236,6 @@ class Ui_EditSongDialog(object):
         self.copyrightEdit.setObjectName(u'copyrightEdit')
         self.copyrightLayout.addWidget(self.copyrightEdit)
         self.copyrightInsertButton = QtGui.QToolButton(self.rightsGroupBox)
-        self.copyrightInsertButton.setAutoRaise(True)
         self.copyrightInsertButton.setObjectName(u'copyrightInsertButton')
         self.copyrightLayout.addWidget(self.copyrightInsertButton)
         self.rightsLayout.addLayout(self.copyrightLayout)
@@ -247,10 +252,6 @@ class Ui_EditSongDialog(object):
         self.themeLeftLayout.addStretch()
         self.themeTabLayout.addLayout(self.themeLeftLayout)
         self.commentsGroupBox = QtGui.QGroupBox(self.themeTab)
-        self.commentsSizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
-        self.commentsSizePolicy.setHorizontalStretch(1)
-        self.commentsGroupBox.setSizePolicy(self.commentsSizePolicy)
         self.commentsGroupBox.setObjectName(u'commentsGroupBox')
         self.commentsLayout = QtGui.QVBoxLayout(self.commentsGroupBox)
         self.commentsLayout.setObjectName(u'commentsLayout')
