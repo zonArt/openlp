@@ -420,7 +420,6 @@ class OpenLyricsParser(object):
         Create and save a song from OpenLyrics format xml to the database. Since
         we also export XML from external sources (e. g. OpenLyrics import), we
         cannot ensure, that it completely conforms to the OpenLyrics standard.
-        That means, that we for example have to remove chords.
         """
         # No xml get out of here.
         if not xml:
@@ -453,8 +452,6 @@ class OpenLyricsParser(object):
             # Do not worry, as the verse order has cautionary already been
             # saved while creating the verses.
             pass
-        if song.verse_order == u'None':
-            song.verse_order = u''
         self._process_comments(properties, song)
         self._process_authors(properties, song)
         self._process_songbooks(properties, song)
