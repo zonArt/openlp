@@ -38,8 +38,8 @@ log = logging.getLogger(__name__)
 
 class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
     """
-    This is the Bible Import Wizard, which allows easy importing of Bibles
-    into OpenLP from other formats like OSIS, CSV and OpenSong.
+    This is the Theme Import Wizard, which allows easy creation and editing of
+    OpenLP themes.
     """
     log.info(u'ThemeWizardForm loaded')
 

@@ -488,7 +488,7 @@ class HTTPBible(BibleDB):
                     Receiver.send_message(u'openlp_error_message', {
                         u'title': translate('BiblesPlugin', 'No Book Found'),
                         u'message': translate('BiblesPlugin', 'No matching '
-                        'book could be found in this Bible. Check that you'
+                        'book could be found in this Bible. Check that you '
                         'have spelled the name of the book correctly.')
                     })
                     return []

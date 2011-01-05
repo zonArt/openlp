@@ -49,12 +49,14 @@ class ThemeManager(QtGui.QWidget):
         QtGui.QWidget.__init__(self, parent)
         self.parent = parent
         self.settingsSection = u'themes'
+        self.themeForm = ThemeForm(self)
+        self.fileRenameForm = FileRenameForm(self)
         self.serviceComboBox = self.parent.ServiceManagerContents.themeComboBox
+        # start with the layout
         self.layout = QtGui.QVBoxLayout(self)
         self.layout.setSpacing(0)
         self.layout.setMargin(0)
-        self.themeForm = ThemeForm(self)
-        self.fileRenameForm = FileRenameForm(self)
+        self.layout.setObjectName(u'layout')
         self.toolbar = OpenLPToolbar(self)
         self.toolbar.addToolbarButton(
             translate('OpenLP.ThemeManager', 'New Theme'),
@@ -82,13 +84,17 @@ class ThemeManager(QtGui.QWidget):
             u':/general/general_export.png',
             translate('OpenLP.ThemeManager', 'Export a theme.'),
             self.onExportTheme)
-        self.themeWidget = QtGui.QWidgetAction(self.toolbar)
+        self.toolbar.setObjectName(u'toolbar')
         self.layout.addWidget(self.toolbar)
+        self.themeWidget = QtGui.QWidgetAction(self.toolbar)
+        self.themeWidget.setObjectName(u'themeWidget')
+        # create theme manager list
         self.themeListWidget = QtGui.QListWidget(self)
         self.themeListWidget.setAlternatingRowColors(True)
         self.themeListWidget.setIconSize(QtCore.QSize(88, 50))
-        self.layout.addWidget(self.themeListWidget)
         self.themeListWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.themeListWidget.setObjectName(u'themeListWidget')
+        self.layout.addWidget(self.themeListWidget)
         QtCore.QObject.connect(self.themeListWidget,
             QtCore.SIGNAL('customContextMenuRequested(QPoint)'),
             self.contextMenu)
@@ -106,8 +112,7 @@ class ThemeManager(QtGui.QWidget):
         self.deleteAction = self.menu.addAction(
             translate('OpenLP.ThemeManager', '&Delete Theme'))
         self.deleteAction.setIcon(build_icon(u':/general/general_delete.png'))
-        self.sep1 = self.menu.addAction(u'')
-        self.sep1.setSeparator(True)
+        self.separator = self.menu.addSeparator()
         self.globalAction = self.menu.addAction(
             translate('OpenLP.ThemeManager', 'Set As &Global Default'))
         self.globalAction.setIcon(build_icon(u':/general/general_export.png'))
