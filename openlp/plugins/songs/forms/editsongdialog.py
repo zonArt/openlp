@@ -65,11 +65,12 @@ class Ui_EditSongDialog(object):
             QtCore.Qt.AlignTop)
         self.verseListWidget = QtGui.QTableWidget(self.lyricsTab)
         self.verseListWidget.horizontalHeader().setVisible(False)
+        self.verseListWidget.setAlternatingRowColors(True)
+        self.verseListWidget.setColumnCount(1)
         self.verseListWidget.setSelectionBehavior(
             QtGui.QAbstractItemView.SelectRows)
         self.verseListWidget.setEditTriggers(
             QtGui.QAbstractItemView.NoEditTriggers)
-        self.verseListWidget.setAlternatingRowColors(True)
         self.verseListWidget.setObjectName(u'verseListWidget')
         self.lyricsLabel.setBuddy(self.verseListWidget)
         self.lyricsTabLayout.addWidget(self.verseListWidget, 2, 1)
@@ -233,7 +234,7 @@ class Ui_EditSongDialog(object):
         self.copyrightInsertButton.setObjectName(u'copyrightInsertButton')
         self.copyrightLayout.addWidget(self.copyrightInsertButton)
         self.rightsLayout.addLayout(self.copyrightLayout)
-        self.CCLILayout = QtGui.QVBoxLayout()
+        self.CCLILayout = QtGui.QHBoxLayout()
         self.CCLILayout.setObjectName(u'CCLILayout')
         self.CCLILabel = QtGui.QLabel(self.rightsGroupBox)
         self.CCLILabel.setObjectName(u'CCLILabel')

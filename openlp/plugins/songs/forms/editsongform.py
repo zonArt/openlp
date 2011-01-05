@@ -603,10 +603,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def onCopyrightInsertButtonTriggered(self):
         text = self.copyrightEdit.text()
         pos = self.copyrightEdit.cursorPosition()
-        text = text[:pos] + '\xa9' + text[pos:]
+        sign = translate('SongsPlugin.EditSongForm', '\xa9')
+        text = text[:pos] + sign + text[pos:]
         self.copyrightEdit.setText(text)
         self.copyrightEdit.setFocus()
-        self.copyrightEdit.setCursorPosition(pos + 1)
+        self.copyrightEdit.setCursorPosition(pos + len(sign))
 
     def onMaintenanceButtonClicked(self):
         temp_song_book = None
