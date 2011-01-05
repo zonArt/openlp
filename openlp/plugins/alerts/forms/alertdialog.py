@@ -29,81 +29,81 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import build_icon, translate
 
 class Ui_AlertDialog(object):
-    def setupUi(self, AlertDialog):
-        AlertDialog.setObjectName(u'AlertDialog')
-        AlertDialog.resize(400, 300)
-        AlertDialog.setWindowIcon(build_icon(u':/icon/openlp.org-icon-32.bmp'))
-        self.AlertDialogLayout = QtGui.QGridLayout(AlertDialog)
-        self.AlertDialogLayout.setObjectName(u'AlertDialogLayout')
-        self.AlertTextLayout = QtGui.QFormLayout()
-        self.AlertTextLayout.setObjectName(u'AlertTextLayout')
-        self.AlertEntryLabel = QtGui.QLabel(AlertDialog)
-        self.AlertEntryLabel.setObjectName(u'AlertEntryLabel')
-        self.AlertTextEdit = QtGui.QLineEdit(AlertDialog)
-        self.AlertTextEdit.setObjectName(u'AlertTextEdit')
-        self.AlertEntryLabel.setBuddy(self.AlertTextEdit)
-        self.AlertTextLayout.addRow(self.AlertEntryLabel, self.AlertTextEdit)
-        self.AlertParameter = QtGui.QLabel(AlertDialog)
-        self.AlertParameter.setObjectName(u'AlertParameter')
-        self.ParameterEdit = QtGui.QLineEdit(AlertDialog)
-        self.ParameterEdit.setObjectName(u'ParameterEdit')
-        self.AlertParameter.setBuddy(self.ParameterEdit)
-        self.AlertTextLayout.addRow(self.AlertParameter, self.ParameterEdit)
-        self.AlertDialogLayout.addLayout(self.AlertTextLayout, 0, 0, 1, 2)
-        self.AlertListWidget = QtGui.QListWidget(AlertDialog)
-        self.AlertListWidget.setAlternatingRowColors(True)
-        self.AlertListWidget.setObjectName(u'AlertListWidget')
-        self.AlertDialogLayout.addWidget(self.AlertListWidget, 1, 0)
-        self.ManageButtonLayout = QtGui.QVBoxLayout()
-        self.ManageButtonLayout.setObjectName(u'ManageButtonLayout')
-        self.NewButton = QtGui.QPushButton(AlertDialog)
-        self.NewButton.setIcon(build_icon(u':/general/general_new.png'))
-        self.NewButton.setObjectName(u'NewButton')
-        self.ManageButtonLayout.addWidget(self.NewButton)
-        self.SaveButton = QtGui.QPushButton(AlertDialog)
-        self.SaveButton.setEnabled(False)
-        self.SaveButton.setIcon(build_icon(u':/general/general_save.png'))
-        self.SaveButton.setObjectName(u'SaveButton')
-        self.ManageButtonLayout.addWidget(self.SaveButton)
-        self.DeleteButton = QtGui.QPushButton(AlertDialog)
-        self.DeleteButton.setIcon(build_icon(u':/general/general_delete.png'))
-        self.DeleteButton.setObjectName(u'DeleteButton')
-        self.ManageButtonLayout.addWidget(self.DeleteButton)
-        self.ManageButtonLayout.addStretch()
-        self.AlertDialogLayout.addLayout(self.ManageButtonLayout, 1, 1)
-        self.ButtonBox = QtGui.QDialogButtonBox(AlertDialog)
-        self.ButtonBox.addButton(QtGui.QDialogButtonBox.Close)
+    def setupUi(self, alertDialog):
+        alertDialog.setObjectName(u'alertDialog')
+        alertDialog.resize(400, 300)
+        alertDialog.setWindowIcon(build_icon(u':/icon/openlp.org-icon-32.bmp'))
+        self.alertDialogLayout = QtGui.QGridLayout(alertDialog)
+        self.alertDialogLayout.setObjectName(u'alertDialogLayout')
+        self.alertTextLayout = QtGui.QFormLayout()
+        self.alertTextLayout.setObjectName(u'alertTextLayout')
+        self.alertEntryLabel = QtGui.QLabel(alertDialog)
+        self.alertEntryLabel.setObjectName(u'alertEntryLabel')
+        self.alertTextEdit = QtGui.QLineEdit(alertDialog)
+        self.alertTextEdit.setObjectName(u'alertTextEdit')
+        self.alertEntryLabel.setBuddy(self.alertTextEdit)
+        self.alertTextLayout.addRow(self.alertEntryLabel, self.alertTextEdit)
+        self.alertParameter = QtGui.QLabel(alertDialog)
+        self.alertParameter.setObjectName(u'alertParameter')
+        self.parameterEdit = QtGui.QLineEdit(alertDialog)
+        self.parameterEdit.setObjectName(u'parameterEdit')
+        self.alertParameter.setBuddy(self.parameterEdit)
+        self.alertTextLayout.addRow(self.alertParameter, self.parameterEdit)
+        self.alertDialogLayout.addLayout(self.alertTextLayout, 0, 0, 1, 2)
+        self.alertListWidget = QtGui.QListWidget(alertDialog)
+        self.alertListWidget.setAlternatingRowColors(True)
+        self.alertListWidget.setObjectName(u'alertListWidget')
+        self.alertDialogLayout.addWidget(self.alertListWidget, 1, 0)
+        self.manageButtonLayout = QtGui.QVBoxLayout()
+        self.manageButtonLayout.setObjectName(u'manageButtonLayout')
+        self.newButton = QtGui.QPushButton(alertDialog)
+        self.newButton.setIcon(build_icon(u':/general/general_new.png'))
+        self.newButton.setObjectName(u'newButton')
+        self.manageButtonLayout.addWidget(self.newButton)
+        self.saveButton = QtGui.QPushButton(alertDialog)
+        self.saveButton.setEnabled(False)
+        self.saveButton.setIcon(build_icon(u':/general/general_save.png'))
+        self.saveButton.setObjectName(u'saveButton')
+        self.manageButtonLayout.addWidget(self.saveButton)
+        self.deleteButton = QtGui.QPushButton(alertDialog)
+        self.deleteButton.setIcon(build_icon(u':/general/general_delete.png'))
+        self.deleteButton.setObjectName(u'deleteButton')
+        self.manageButtonLayout.addWidget(self.deleteButton)
+        self.manageButtonLayout.addStretch()
+        self.alertDialogLayout.addLayout(self.manageButtonLayout, 1, 1)
+        self.buttonBox = QtGui.QDialogButtonBox(alertDialog)
+        self.buttonBox.addButton(QtGui.QDialogButtonBox.Close)
         displayIcon = build_icon(u':/general/general_live.png')
-        self.DisplayButton = QtGui.QPushButton(AlertDialog)
-        self.DisplayButton.setIcon(displayIcon)
-        self.DisplayButton.setObjectName(u'DisplayButton')
-        self.ButtonBox.addButton(self.DisplayButton,
+        self.displayButton = QtGui.QPushButton(alertDialog)
+        self.displayButton.setIcon(displayIcon)
+        self.displayButton.setObjectName(u'displayButton')
+        self.buttonBox.addButton(self.displayButton,
             QtGui.QDialogButtonBox.ActionRole)
-        self.DisplayCloseButton = QtGui.QPushButton(AlertDialog)
-        self.DisplayCloseButton.setIcon(displayIcon)
-        self.DisplayCloseButton.setObjectName(u'DisplayCloseButton')
-        self.ButtonBox.addButton(self.DisplayCloseButton,
+        self.displayCloseButton = QtGui.QPushButton(alertDialog)
+        self.displayCloseButton.setIcon(displayIcon)
+        self.displayCloseButton.setObjectName(u'displayCloseButton')
+        self.buttonBox.addButton(self.displayCloseButton,
             QtGui.QDialogButtonBox.ActionRole)
-        self.AlertDialogLayout.addWidget(self.ButtonBox, 2, 0, 1, 2)
-        self.retranslateUi(AlertDialog)
-        QtCore.QObject.connect(self.ButtonBox, QtCore.SIGNAL(u'rejected()'),
-            AlertDialog.close)
-        QtCore.QMetaObject.connectSlotsByName(AlertDialog)
+        self.alertDialogLayout.addWidget(self.buttonBox, 2, 0, 1, 2)
+        self.retranslateUi(alertDialog)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
+            alertDialog.close)
+        QtCore.QMetaObject.connectSlotsByName(alertDialog)
 
-    def retranslateUi(self, AlertDialog):
-        AlertDialog.setWindowTitle(
+    def retranslateUi(self, alertDialog):
+        alertDialog.setWindowTitle(
             translate('AlertsPlugin.AlertForm', 'Alert Message'))
-        self.AlertEntryLabel.setText(
+        self.alertEntryLabel.setText(
             translate('AlertsPlugin.AlertForm', 'Alert &text:'))
-        self.AlertParameter.setText(
+        self.alertParameter.setText(
             translate('AlertsPlugin.AlertForm', '&Parameter:'))
-        self.NewButton.setText(
+        self.newButton.setText(
             translate('AlertsPlugin.AlertForm', '&New'))
-        self.SaveButton.setText(
+        self.saveButton.setText(
             translate('AlertsPlugin.AlertForm', '&Save'))
-        self.DeleteButton.setText(
+        self.deleteButton.setText(
             translate('AlertsPlugin.AlertForm', '&Delete'))
-        self.DisplayButton.setText(
+        self.displayButton.setText(
             translate('AlertsPlugin.AlertForm', 'Displ&ay'))
-        self.DisplayCloseButton.setText(
+        self.displayCloseButton.setText(
             translate('AlertsPlugin.AlertForm', 'Display && Cl&ose'))
