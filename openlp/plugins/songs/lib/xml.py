@@ -355,57 +355,56 @@ class OpenLyricsParser(object):
     As OpenLyrics has a rich set of different features, we cannot support them
     all. The following features are supported by the :class:`OpenLyricsParser`::
 
-    ``<authors>``
-        OpenLP does not support the author ``type`` and consequently not 
-        ``lang`` for the author of the type ``translation``.
+    *<authors>*
+        OpenLP does not support the attribute *type* and *lang*.
 
-    ``<chord>``
+    *<chord>*
         This property is not supported. 
 
-    ``<comments>``
-        The ``<comments>`` property  is fully supported. But comments in lyrics
+    *<comments>*
+        The *<comments>* property  is fully supported. But comments in lyrics
         are not supported.
 
-    ``<copyright>``
+    *<copyright>*
         This property is fully supported.
 
-    ``<customVersion>``
+    *<customVersion>*
         This property is not supported.
 
-    ``<key>``
+    *<key>*
         This property is not supported. 
 
-    ``<keywords>``
+    *<keywords>*
         This property is not supported. 
 
-    ``<lines>``
-        The attribute ``part`` is not supported.
+    *<lines>*
+        The attribute *part* is not supported.
 
-    ``<publisher>``
+    *<publisher>*
         This property is not supported. 
 
-    ``<songbooks>``
+    *<songbooks>*
         As OpenLP does only support one songbook, we cannot consider more than
         one songbook.
 
-    ``<tempo>``
+    *<tempo>*
         This property is not supported. 
 
-    ``<themes>``
+    *<themes>*
         Topics, as they are called in OpenLP, are fully supported, whereby only
-        the topic text (e. g. Grace) is considered, but neither the ``id`` nor
-        ``lang``.
+        the topic text (e. g. Grace) is considered, but neither the *id* nor
+        *lang*.
 
-    ``<transposition>``
+    *<transposition>*
         This property is not supported.
 
-    ``<variant>``
+    *<variant>*
         This property is not supported. 
 
-    ``<verse name="v1a"  lang="he" translit="en">``
-        The attribute ``translit`` and ``lang`` are not supported.
+    *<verse name="v1a"  lang="he" translit="en">*
+        The attribute *translit* and *lang* are not supported.
 
-    ``<verseOrder>``
+    *<verseOrder>*
         OpenLP supports this property.
     """
     def __init__(self, manager):
