@@ -74,6 +74,10 @@ class BiblesTab(SettingsTab):
         self.BibleThemeLabel = QtGui.QLabel(self.VerseDisplayGroupBox)
         self.BibleThemeLabel.setObjectName(u'BibleThemeLabel')
         self.BibleThemeComboBox = QtGui.QComboBox(self.VerseDisplayGroupBox)
+        self.BibleThemeComboBox.setSizeAdjustPolicy(
+            QtGui.QComboBox.AdjustToMinimumContentsLength)
+        self.BibleThemeComboBox.setSizePolicy(QtGui.QSizePolicy.Expanding,
+            QtGui.QSizePolicy.Fixed)
         self.BibleThemeComboBox.addItem(u'')
         self.BibleThemeComboBox.setObjectName(u'BibleThemeComboBox')
         self.VerseDisplayLayout.addRow(self.BibleThemeLabel,
@@ -84,6 +88,8 @@ class BiblesTab(SettingsTab):
         self.VerseDisplayLayout.addRow(self.ChangeNoteLabel)
         self.leftLayout.addWidget(self.VerseDisplayGroupBox)
         self.leftLayout.addStretch()
+        self.rightColumn.setSizePolicy(QtGui.QSizePolicy.Expanding,
+            QtGui.QSizePolicy.Preferred)
         self.rightLayout.addStretch()
         # Signals and slots
         QtCore.QObject.connect(
