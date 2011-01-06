@@ -230,7 +230,7 @@ class BGExtract(object):
         Receiver.send_message(u'openlp_process_events')
         footnotes = soup.findAll(u'sup', u'footnote')
         if footnotes:
-        	[footnote.extract() for footnote in footnotes]
+            [footnote.extract() for footnote in footnotes]
         cleanup = [(re.compile('\s+'), lambda match: ' ')]
         verses = BeautifulSoup(str(soup), markupMassage=cleanup)
         content = verses.find(u'div', u'result-text-style-normal')

@@ -26,7 +26,7 @@
 
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, SettingsManager, translate
 from openlp.core.utils import AppLocation
