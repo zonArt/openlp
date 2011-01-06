@@ -272,7 +272,7 @@ class OpenLyricsBuilder(object):
     def __init__(self, manager):
         self.manager = manager
 
-    def song_to_xml(self, song):
+    def song_to_xml(self, song, pretty_print=False):
         """
         Convert the song to OpenLyrics Format.
         """
@@ -321,7 +321,7 @@ class OpenLyricsBuilder(object):
             element = self._add_text_to_element(u'lines', element)
             for line in unicode(verse[1]).split(u'\n'):
                 self._add_text_to_element(u'line', element, line)
-        return self._extract_xml(song_xml)
+        return self._extract_xml(song_xml, pretty_print)
 
     def _add_text_to_element(self, tag, parent, text=None, label=None):
         if label:
@@ -333,12 +333,12 @@ class OpenLyricsBuilder(object):
         parent.append(element)
         return element
 
-    def _extract_xml(self, xml):
+    def _extract_xml(self, xml, pretty_print):
         """
         Extract our newly created XML song.
         """
         return etree.tostring(xml, encoding=u'UTF-8',
-            xml_declaration=True)
+            xml_declaration=True, pretty_print=pretty_print)
 
     def _dump_xml(self, xml):
         """
