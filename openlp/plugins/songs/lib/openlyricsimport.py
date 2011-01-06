@@ -69,7 +69,7 @@ class OpenLyricsImport(SongImport):
                 os.path.basename(file_path))
             parser = etree.XMLParser(remove_blank_text=True)
             file = etree.parse(file_path, parser)
-            xml = etree.tostring(file)
+            xml = unicode(etree.tostring(file))
             if self.openLyricsParser.xml_to_song(xml) == 0:
                 log.debug(u'File could not be imported: %s' % file_path)
                 # Importing this song failed! For now we stop import.
