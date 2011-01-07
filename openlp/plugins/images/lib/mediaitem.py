@@ -30,8 +30,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    context_menu_action, ItemCapabilities, SettingsManager, translate, \
-    check_item_selected, Receiver
+    ItemCapabilities, SettingsManager, translate, check_item_selected, Receiver
 from openlp.core.utils import AppLocation, get_images_filter
 
 log = logging.getLogger(__name__)
