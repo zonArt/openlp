@@ -28,7 +28,7 @@ import logging
 import chardet
 import re
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
 from sqlalchemy import Column, ForeignKey, or_, Table, types
 from sqlalchemy.orm import class_mapper, mapper, relation
 from sqlalchemy.orm.exc import UnmappedClassError

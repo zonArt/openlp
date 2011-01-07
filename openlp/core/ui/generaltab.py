@@ -139,6 +139,7 @@ class GeneralTab(SettingsTab):
         self.numberLabel = QtGui.QLabel(self.ccliGroupBox)
         self.numberLabel.setObjectName(u'numberLabel')
         self.numberEdit = QtGui.QLineEdit(self.ccliGroupBox)
+        self.numberEdit.setValidator(QtGui.QIntValidator())
         self.numberEdit.setObjectName(u'numberEdit')
         self.ccliLayout.addRow(self.numberLabel, self.numberEdit)
         self.usernameLabel = QtGui.QLabel(self.ccliGroupBox)

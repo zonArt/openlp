@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
     ItemCapabilities, SettingsManager, translate, check_item_selected, \
-    context_menu_action, Receiver
+    Receiver
 
 log = logging.getLogger(__name__)
 
@@ -63,6 +63,14 @@ class MediaMediaItem(MediaManagerItem):
         self.OnNewFileMasks = unicode(translate('MediaPlugin.MediaItem',
             'Videos (%s);;Audio (%s);;All files (*)')) % \
             (self.parent.video_list, self.parent.audio_list)
+        self.replaceAction.setText(
+            translate('MediaPlugin.MediaItem', 'Replace Background'))
+        self.replaceAction.setToolTip(
+            translate('MediaPlugin.MediaItem', 'Replace Live Background'))
+        self.resetAction.setText(
+            translate('MediaPlugin.MediaItem', 'Reset Background'))
+        self.resetAction.setToolTip(
+            translate('ImagePlugin.MediaItem', 'Reset Live Background'))
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -73,37 +81,18 @@ class MediaMediaItem(MediaManagerItem):
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
         self.listView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-        self.listView.addAction(
-            context_menu_action(self.listView, u':/slides/slide_blank.png',
-                translate('MediaPlugin.MediaItem', 'Replace Live Background'),
-                self.onReplaceClick))
+        self.listView.addAction(self.replaceAction)
 
     def addEndHeaderBar(self):
-        self.ImageWidget = QtGui.QWidget(self)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.ImageWidget.sizePolicy().hasHeightForWidth())
-        self.ImageWidget.setSizePolicy(sizePolicy)
-        self.ImageWidget.setObjectName(u'ImageWidget')
         # Replace backgrounds do not work at present so remove functionality.
-        self.blankButton = self.toolbar.addToolbarButton(
-            translate('MediaPlugin.MediaItem', 'Replace Background'),
-            u':/slides/slide_blank.png',
-            translate('MediaPlugin.MediaItem', 'Replace Live Background'),
-                self.onReplaceClick, False)
-        self.resetButton = self.toolbar.addToolbarButton(
-            u'Reset Background', u':/system/system_close.png',
-            translate('ImagePlugin.MediaItem', 'Reset Live Background'),
-                self.onResetClick, False)
-        # Add the song widget to the page layout
-        self.pageLayout.addWidget(self.ImageWidget)
-        self.resetButton.setVisible(False)
+        self.replaceAction = self.addToolbarButton(u'', u'',
+            u':/slides/slide_blank.png', self.onReplaceClick, False)
+        self.resetAction = self.addToolbarButton(u'', u'',
+            u':/system/system_close.png', self.onResetClick, False)
+        self.resetAction.setVisible(False)
 
     def onResetClick(self):
-        self.resetButton.setVisible(False)
+        self.resetAction.setVisible(False)
         self.parent.liveController.display.resetVideo()
 
     def onReplaceClick(self):
@@ -115,14 +104,14 @@ class MediaMediaItem(MediaManagerItem):
             if os.path.exists(filename):
                 (path, name) = os.path.split(filename)
                 self.parent.liveController.display.video(filename, 0, True)
+                self.resetAction.setVisible(True)
             else:
                 Receiver.send_message(u'openlp_error_message', {
                     u'title':  translate('MediaPlugin.MediaItem',
                     'Live Background Error'),
                     u'message': unicode(translate('MediaPlugin.MediaItem',
                     'There was a problem replacing your background, '
-                    'the media file %s no longer exists.')) % filename})
-        self.resetButton.setVisible(True)
+                    'the media file "%s" no longer exists.')) % filename})
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
         if item is None:

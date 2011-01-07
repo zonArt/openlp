@@ -31,19 +31,20 @@ from openlp.core.lib import translate, SpellTextEdit
 class Ui_CustomSlideEditDialog(object):
     def setupUi(self, customSlideEditDialog):
         customSlideEditDialog.setObjectName(u'customSlideEditDialog')
-        customSlideEditDialog.resize(474, 442)
+        customSlideEditDialog.resize(350, 300)
+        self.dialogLayout = QtGui.QVBoxLayout(customSlideEditDialog)
+        self.slideTextEdit = SpellTextEdit(self)
+        self.slideTextEdit.setObjectName(u'slideTextEdit')
+        self.dialogLayout.addWidget(self.slideTextEdit)
         self.buttonBox = QtGui.QDialogButtonBox(customSlideEditDialog)
-        self.buttonBox.setGeometry(QtCore.QRect(8, 407, 458, 32))
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
             QtGui.QDialogButtonBox.Save)
         self.buttonBox.setObjectName(u'buttonBox')
-        self.slideTextEdit = SpellTextEdit(self)
-        self.slideTextEdit.setGeometry(QtCore.QRect(8, 8, 458, 349))
-        self.slideTextEdit.setObjectName(u'slideTextEdit')
         self.splitButton = QtGui.QPushButton(customSlideEditDialog)
-        self.splitButton.setGeometry(QtCore.QRect(380, 370, 85, 27))
         self.splitButton.setObjectName(u'splitButton')
+        self.buttonBox.addButton(self.splitButton,
+            QtGui.QDialogButtonBox.ActionRole)
+        self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(customSlideEditDialog)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'),
             customSlideEditDialog.accept)

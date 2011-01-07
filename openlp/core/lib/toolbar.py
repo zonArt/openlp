@@ -72,27 +72,27 @@ class OpenLPToolbar(QtGui.QToolBar):
         ``objectname``
             The name of the object, as used in `<button>.setObjectName()`.
         """
-        toolbarButton = None
+        newAction = None
         if icon:
-            buttonIcon = build_icon(icon)
+            actionIcon = build_icon(icon)
             if slot and not checkable:
-                toolbarButton = self.addAction(buttonIcon, title, slot)
+                newAction = self.addAction(actionIcon, title, slot)
             else:
-                toolbarButton = self.addAction(buttonIcon, title)
-            self.icons[title] = buttonIcon
+                newAction = self.addAction(actionIcon, title)
+            self.icons[title] = actionIcon
         else:
-            toolbarButton = QtGui.QAction(title, toolbarButton)
-            self.addAction(toolbarButton)
-            QtCore.QObject.connect(toolbarButton,
+            newAction = QtGui.QAction(title, newAction)
+            self.addAction(newAction)
+            QtCore.QObject.connect(newAction,
                 QtCore.SIGNAL(u'triggered()'), slot)
         if tooltip:
-            toolbarButton.setToolTip(tooltip)
+            newAction.setToolTip(tooltip)
         if checkable:
-            toolbarButton.setCheckable(True)
-            QtCore.QObject.connect(toolbarButton,
+            newAction.setCheckable(True)
+            QtCore.QObject.connect(newAction,
                 QtCore.SIGNAL(u'toggled(bool)'), slot)
-        self.actions[title] = toolbarButton
-        return toolbarButton
+        self.actions[title] = newAction
+        return newAction
 
     def addToolbarSeparator(self, handle):
         """
