@@ -212,13 +212,7 @@ class BGExtract(object):
             Receiver.send_message(u'openlp_process_events')
         except urllib2.URLError:
             log.exception(u'The web bible page could not be downloaded.')
-            Receiver.send_message(u'openlp_error_message', {
-                u'title': translate('BiblePlugin.HTTPBible', 'Download Error'),
-                u'message': translate('BiblePlugin.HTTPBible', 'There was a '
-                'problem downloading your verse selection. Please check your '
-                'Internet connection, and if this error continues to occur '
-                'consider reporting a bug.')
-            })
+            send_error_message(u'download')
         finally:
             if not page:
                 return None
@@ -229,15 +223,23 @@ class BGExtract(object):
         except HTMLParseError:
             log.exception(u'BeautifulSoup could not parse the bible page.')
             Receiver.send_message(u'bibles_download_error')
+            send_error_message(u'parse')
         finally:
             if not soup:
                 return None
         Receiver.send_message(u'openlp_process_events')
         footnotes = soup.findAll(u'sup', u'footnote')
-        [footnote.extract() for footnote in footnotes]
+        if footnotes:
+            [footnote.extract() for footnote in footnotes]
         cleanup = [(re.compile('\s+'), lambda match: ' ')]
         verses = BeautifulSoup(str(soup), markupMassage=cleanup)
         content = verses.find(u'div', u'result-text-style-normal')
+        if not content:
+            content = verses.find(u'div', u'result-text-style-rtl-serif')
+        if not content:
+            log.debug(u'No content found in the BibleGateway response.')
+            send_error_message(u'parse')
+            return None
         verse_count = len(verses.findAll(u'sup', u'versenum'))
         found_count = 0
         verse_list = {}
@@ -283,13 +285,7 @@ class BSExtract(object):
             Receiver.send_message(u'openlp_process_events')
         except urllib2.URLError:
             log.exception(u'The web bible page could not be downloaded.')
-            Receiver.send_message(u'openlp_error_message', {
-                u'title': translate('BiblePlugin.HTTPBible', 'Download Error'),
-                u'message': translate('BiblePlugin.HTTPBible', 'There was a '
-                'problem downloading your verse selection. Please check your '
-                'Internet connection, and if this error continues to occur '
-                'consider reporting a bug.')
-            })
+            send_error_message(u'download')
         finally:
             if not page:
                 return None
@@ -298,19 +294,15 @@ class BSExtract(object):
             soup = BeautifulSoup(page)
         except HTMLParseError:
             log.exception(u'BeautifulSoup could not parse the bible page.')
-            Receiver.send_message(u'openlp_error_message', {
-                u'title': translate('BiblePlugin.HTTPBible', 'Parse Error'),
-                u'message': translate('BiblePlugin.HTTPBible', 'There was a '
-                'problem extracting your verse selection. If this error '
-                'continues to occur consider reporting a bug.')
-            })
+            send_error_message(u'parse')
             return None
         Receiver.send_message(u'openlp_process_events')
         content = None
         try:
             content = soup.find(u'div', u'content').find(u'div').findAll(u'div')
         except:
-            log.exception(u'No verses found.')
+            log.exception(u'No verses found in the Bibleserver response.')
+            send_error_message(u'parse')
         finally:
             if not content:
                 return None
@@ -356,28 +348,21 @@ class CWExtract(object):
             Receiver.send_message(u'openlp_process_events')
         except urllib2.URLError:
             log.exception(u'The web bible page could not be downloaded.')
-            Receiver.send_message(u'openlp_error_message', {
-                u'title': translate('BiblePlugin.HTTPBible', 'Download Error'),
-                u'message': translate('BiblePlugin.HTTPBible', 'There was a '
-                'problem downloading your verse selection. Please check your '
-                'Internet connection, and if this error continues to occur '
-                'consider reporting a bug.')
-            })
+            send_error_message(u'download')
             return None
         soup = None
         try:
             soup = BeautifulSoup(page)
         except HTMLParseError:
             log.exception(u'BeautifulSoup could not parse the bible page.')
-            Receiver.send_message(u'openlp_error_message', {
-                u'title': translate('BiblePlugin.HTTPBible', 'Parse Error'),
-                u'message': translate('BiblePlugin.HTTPBible', 'There was a '
-                'problem extracting your verse selection. If this error '
-                'continues to occur consider reporting a bug.')
-            })
+            send_error_message(u'parse')
             return None
         Receiver.send_message(u'openlp_process_events')
         htmlverses = soup.findAll(u'span', u'versetext')
+        if not htmlverses:
+            log.debug(u'No verses found in the CrossWalk response.')
+            send_error_message(u'parse')
+            return None
         verses = {}
         reduce_spaces = re.compile(r'[ ]{2,}')
         fix_punctuation = re.compile(r'[ ]+([.,;])')
@@ -560,3 +545,20 @@ class HTTPBible(BibleDB):
             The chapter whose verses are being counted.
         """
         return HTTPBooks.get_verse_count(book, chapter)
+
+def send_error_message(reason):
+    if reason == u'downoad':
+        Receiver.send_message(u'openlp_error_message', {
+            u'title': translate('BiblePlugin.HTTPBible', 'Download Error'),
+            u'message': translate('BiblePlugin.HTTPBible', 'There was a '
+            'problem downloading your verse selection. Please check your '
+            'Internet connection, and if this error continues to occur '
+            'consider reporting a bug.')
+            })
+    elif reason == u'parse':
+        Receiver.send_message(u'openlp_error_message', {
+            u'title': translate('BiblePlugin.HTTPBible', 'Parse Error'),
+            u'message': translate('BiblePlugin.HTTPBible', 'There was a '
+            'problem extracting your verse selection. If this error continues '
+            'continues to occur consider reporting a bug.')
+            })
