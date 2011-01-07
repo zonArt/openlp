@@ -245,6 +245,7 @@ class Ui_EditSongDialog(object):
         self.CCLILabel.setObjectName(u'CCLILabel')
         self.CCLILayout.addWidget(self.CCLILabel)
         self.CCLNumberEdit = QtGui.QLineEdit(self.rightsGroupBox)
+        self.CCLNumberEdit.setValidator(QtGui.QIntValidator())
         self.CCLNumberEdit.setObjectName(u'CCLNumberEdit')
         self.CCLILayout.addWidget(self.CCLNumberEdit)
         self.rightsLayout.addLayout(self.CCLILayout)

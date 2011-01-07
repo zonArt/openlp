@@ -360,6 +360,8 @@ class Ui_ThemeWizard(object):
         self.themeNameLabel = QtGui.QLabel(self.previewPage)
         self.themeNameLabel.setObjectName(u'ThemeNameLabel')
         self.themeNameEdit = QtGui.QLineEdit(self.previewPage)
+        self.themeNameEdit.setValidator(QtGui.QRegExpValidator(
+            QtCore.QRegExp(r'[^/\\?*|<>\[\]":<>+%]+'), self))
         self.themeNameEdit.setObjectName(u'ThemeNameEdit')
         self.themeNameLayout.addRow(self.themeNameLabel, self.themeNameEdit)
         self.previewLayout.addLayout(self.themeNameLayout)
