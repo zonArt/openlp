@@ -28,6 +28,7 @@ import os
 import logging
 import cPickle
 import zipfile
+from pprint import pformat
 
 log = logging.getLogger(__name__)
 
@@ -307,7 +308,7 @@ class ServiceManager(QtGui.QWidget):
         Setter for service file.
         """
         self._fileName = unicode(fileName)
-        self.parent.setServiceModified(self.isModified, self.shortFileName())
+        self.parent.setServiceModified(self.isModified(), self.shortFileName())
         QtCore.QSettings(). \
             setValue(u'service/last file',QtCore.QVariant(fileName))
 
@@ -685,7 +686,7 @@ class ServiceManager(QtGui.QWidget):
         # Top Item was selected so set the last one
         if setLastItem:
             lastItem.setSelected(True)
-        self.isModified = True
+        self.setModified(True)
 
     def onMoveSelectionDown(self):
         """
@@ -708,7 +709,7 @@ class ServiceManager(QtGui.QWidget):
             serviceIterator += 1
         if setSelected:
             firstItem.setSelected(True)
-        self.isModified = True
+        self.setModified(True)
 
     def onCollapseAll(self):
         """
@@ -752,7 +753,7 @@ class ServiceManager(QtGui.QWidget):
             self.serviceItems.remove(self.serviceItems[item])
             self.serviceItems.insert(0, temp)
             self.repaintServiceList(0, count)
-        self.isModified = True
+        self.setModified(True)
 
     def onServiceUp(self):
         """
