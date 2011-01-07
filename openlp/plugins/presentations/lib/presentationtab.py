@@ -79,7 +79,12 @@ class PresentationTab(SettingsTab):
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = self.PresenterCheckboxes[controller.name]
-            checkbox.setText(controller.name)
+            if controller.available:
+                checkbox.setText(controller.name)
+            else:
+                checkbox.setText(
+                    unicode(translate('PresentationPlugin.PresentationTab',
+                    '%s (unvailable)')) % controller.name)
         self.AdvancedGroupBox.setTitle(
             translate('PresentationPlugin.PresentationTab',
             'Advanced'))
@@ -93,11 +98,10 @@ class PresentationTab(SettingsTab):
         """
         for key in self.controllers:
             controller = self.controllers[key]
-            if controller.available:
-                checkbox = self.PresenterCheckboxes[controller.name]
-                checkbox.setChecked(QtCore.QSettings().value(
-                    self.settingsSection + u'/' + controller.name,
-                    QtCore.QVariant(QtCore.Qt.Checked)).toInt()[0])
+            checkbox = self.PresenterCheckboxes[controller.name]
+            checkbox.setChecked(QtCore.QSettings().value(
+                self.settingsSection + u'/' + controller.name,
+                QtCore.QVariant(QtCore.Qt.Checked)).toInt()[0])
         self.OverrideAppCheckBox.setChecked(QtCore.QSettings().value(
             self.settingsSection + u'/override app',
             QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0])
@@ -109,16 +113,17 @@ class PresentationTab(SettingsTab):
         changed = False
         for key in self.controllers:
             controller = self.controllers[key]
-            checkbox = self.PresenterCheckboxes[controller.name]
-            setting_key = self.settingsSection + u'/' + controller.name
-            if QtCore.QSettings().value(setting_key) != checkbox.checkState():
-                changed = True
-                QtCore.QSettings().setValue(setting_key,
-                    QtCore.QVariant(checkbox.checkState()))
-                if checkbox.checkState() == QtCore.Qt.Checked:
-                    controller.start_process()
-                else:
-                    controller.kill()
+            if controller.available:
+                checkbox = self.PresenterCheckboxes[controller.name]
+                setting_key = self.settingsSection + u'/' + controller.name
+                if QtCore.QSettings().value(setting_key) != checkbox.checkState():
+                    changed = True
+                    QtCore.QSettings().setValue(setting_key,
+                        QtCore.QVariant(checkbox.checkState()))
+                    if checkbox.isChecked():
+                        controller.start_process()
+                    else:
+                        controller.kill()
         setting_key = self.settingsSection + u'/override app'
         if QtCore.QSettings().value(setting_key) != \
             self.OverrideAppCheckBox.checkState():
