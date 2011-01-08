@@ -709,11 +709,11 @@ class BibleMediaItem(MediaManagerItem):
         if len(items) == 0:
             return False
         bible_text = u''
+        old_item = None
         old_chapter = -1
         raw_footer = []
         raw_slides = []
         raw_title = []
-        first_item = True
         for item in items:
             bitem = self.listView.item(item.row())
             book = self._decodeQtObject(bitem, 'book')
@@ -754,9 +754,8 @@ class BibleMediaItem(MediaManagerItem):
             # We have to be 'Continuous'.
             else:
                 bible_text = u'%s %s\u00a0%s\n' % (bible_text, verse_text, text)
-            if first_item:
+            if not old_item:
                 start_item = item
-                first_item = False
             elif self.checkTitle(item, old_item):
                 raw_title.append(self.formatTitle(start_item, old_item))
                 start_item = item
