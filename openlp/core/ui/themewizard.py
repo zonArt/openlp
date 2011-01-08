@@ -321,7 +321,7 @@ class Ui_ThemeWizard(object):
         self.footerPositionLayout = QtGui.QFormLayout(
             self.footerPositionGroupBox)
         self.footerPositionLayout.setObjectName(u'FooterPositionLayout')
-        self.footerPositionCheckBox = QtGui.QCheckBox(i
+        self.footerPositionCheckBox = QtGui.QCheckBox(
             self.footerPositionGroupBox)
         self.footerPositionCheckBox.setObjectName(u'FooterPositionCheckBox')
         self.footerPositionLayout.addRow(self.footerPositionCheckBox)
