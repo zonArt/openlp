@@ -79,7 +79,7 @@ class MediaPlugin(Plugin):
         return MediaTab(self.name)
 
     def getMediaManagerItem(self):
-        # Create the MediaManagerItem object
+        # Create the MediaManagerItem object.
         return MediaMediaItem(self, self, self.icon)
 
     def about(self):

@@ -48,4 +48,3 @@ class OpenLPDockWidget(QtGui.QDockWidget):
             self.setObjectName(name)
         if icon:
             self.setWindowIcon(icon)
-        self.setFloating(False)

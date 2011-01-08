@@ -128,7 +128,6 @@ class SlideController(QtGui.QWidget):
         # Splitter
         self.Splitter = QtGui.QSplitter(self.Panel)
         self.Splitter.setOrientation(QtCore.Qt.Vertical)
-        self.Splitter.setOpaqueResize(False)
         self.PanelLayout.addWidget(self.Splitter)
         # Actual controller section
         self.Controller = QtGui.QWidget(self.Splitter)

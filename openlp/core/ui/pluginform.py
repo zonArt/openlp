@@ -67,23 +67,24 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             # sometimes when it's loaded from the config, it isn't cast to int.
             plugin.status = int(plugin.status)
             # Set the little status text in brackets next to the plugin name.
-            status_text = unicode(
-                translate('OpenLP.PluginForm', '%s (Inactive)'))
-            if plugin.status == PluginStatus.Active:
-                status_text = unicode(
-                    translate('OpenLP.PluginForm', '%s (Active)'))
-            elif plugin.status == PluginStatus.Inactive:
-                status_text = unicode(
-                    translate('OpenLP.PluginForm', '%s (Inactive)'))
-            elif plugin.status == PluginStatus.Disabled:
+            if plugin.status == PluginStatus.Disabled:
                 status_text = unicode(
                     translate('OpenLP.PluginForm', '%s (Disabled)'))
+            elif plugin.status == PluginStatus.Active:
+                status_text = unicode(
+                    translate('OpenLP.PluginForm', '%s (Active)'))
+            else:
+                # PluginStatus.Inactive
+                status_text = unicode(
+                    translate('OpenLP.PluginForm', '%s (Inactive)'))
             name_string = plugin.getString(StringContent.Name)
             item.setText(status_text % name_string[u'singular'])
             # If the plugin has an icon, set it!
             if plugin.icon:
                 item.setIcon(plugin.icon)
             self.pluginListWidget.addItem(item)
+        self.pluginListWidget.setFixedWidth(
+            self.pluginListWidget.sizeHint().width())
 
     def _clearDetails(self):
         self.statusComboBox.setCurrentIndex(-1)
