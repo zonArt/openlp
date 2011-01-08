@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -40,36 +40,36 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         self._autoDisplayName = False
-        QtCore.QObject.connect(self.FirstNameEdit,
+        QtCore.QObject.connect(self.firstNameEdit,
             QtCore.SIGNAL(u'textEdited(QString)'),
             self.onFirstNameEditTextEdited)
-        QtCore.QObject.connect(self.LastNameEdit,
+        QtCore.QObject.connect(self.lastNameEdit,
             QtCore.SIGNAL(u'textEdited(QString)'),
             self.onLastNameEditTextEdited)
 
     def exec_(self, clear=True):
         if clear:
-            self.FirstNameEdit.clear()
-            self.LastNameEdit.clear()
-            self.DisplayEdit.clear()
-        self.FirstNameEdit.setFocus()
+            self.firstNameEdit.clear()
+            self.lastNameEdit.clear()
+            self.displayEdit.clear()
+        self.firstNameEdit.setFocus()
         return QtGui.QDialog.exec_(self)
 
     def onFirstNameEditTextEdited(self, text):
         if not self._autoDisplayName:
             return
         display_name = text
-        if self.LastNameEdit.text() != u'':
-            display_name = display_name + u' ' + self.LastNameEdit.text()
-        self.DisplayEdit.setText(display_name)
+        if self.lastNameEdit.text() != u'':
+            display_name = display_name + u' ' + self.lastNameEdit.text()
+        self.displayEdit.setText(display_name)
 
     def onLastNameEditTextEdited(self, text):
         if not self._autoDisplayName:
             return
         display_name = text
-        if self.FirstNameEdit.text() != u'':
-            display_name = self.FirstNameEdit.text() + u' ' + display_name
-        self.DisplayEdit.setText(display_name)
+        if self.firstNameEdit.text() != u'':
+            display_name = self.firstNameEdit.text() + u' ' + display_name
+        self.displayEdit.setText(display_name)
 
     def autoDisplayName(self):
         return self._autoDisplayName
@@ -78,21 +78,21 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         self._autoDisplayName = on
 
     def accept(self):
-        if not self.FirstNameEdit.text():
+        if not self.firstNameEdit.text():
             QtGui.QMessageBox.critical(
                 self, translate('SongsPlugin.AuthorsForm', 'Error'),
                 translate('SongsPlugin.AuthorsForm',
                     'You need to type in the first name of the author.'))
-            self.FirstNameEdit.setFocus()
+            self.firstNameEdit.setFocus()
             return False
-        elif not self.LastNameEdit.text():
+        elif not self.lastNameEdit.text():
             QtGui.QMessageBox.critical(
                 self, translate('SongsPlugin.AuthorsForm', 'Error'),
                 translate('SongsPlugin.AuthorsForm',
                     'You need to type in the last name of the author.'))
-            self.LastNameEdit.setFocus()
+            self.lastNameEdit.setFocus()
             return False
-        elif not self.DisplayEdit.text():
+        elif not self.displayEdit.text():
             if QtGui.QMessageBox.critical(
                     self, translate('SongsPlugin.AuthorsForm', 'Error'),
                     translate('SongsPlugin.AuthorsForm',
@@ -101,11 +101,11 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
                     QtGui.QMessageBox.StandardButtons(
                         QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
                     ) == QtGui.QMessageBox.Yes:
-                self.DisplayEdit.setText(self.FirstNameEdit.text() + \
-                    u' ' + self.LastNameEdit.text())
+                self.displayEdit.setText(self.firstNameEdit.text() + \
+                    u' ' + self.lastNameEdit.text())
                 return QtGui.QDialog.accept(self)
             else:
-                self.DisplayEdit.setFocus()
+                self.displayEdit.setFocus()
                 return False
         else:
             return QtGui.QDialog.accept(self)

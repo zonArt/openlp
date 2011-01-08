@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -133,8 +133,8 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
         """
         Stop the import on cancel button, close button or ESC key.
         """
-        log.debug('Import canceled by user.')
-        if self.currentId() == 2:
+        log.debug(u'Import canceled by user.')
+        if self.currentPage() == self.importPage:
             Receiver.send_message(u'songs_stop_import')
         self.done(QtGui.QDialog.Rejected)
 
@@ -142,11 +142,9 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
         """
         Validate the current page before moving on to the next page.
         """
-        if self.currentId() == 0:
-            # Welcome page
+        if self.currentPage() == self.welcomePage:
             return True
-        elif self.currentId() == 1:
-            # Select page
+        elif self.currentPage() == self.sourcePage:
             source_format = self.formatComboBox.currentIndex()
             if source_format == SongFormat.OpenLP2:
                 if self.openLP2FilenameEdit.text().isEmpty():
@@ -250,8 +248,7 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
                     self.songBeamerAddButton.setFocus()
                     return False
             return True
-        elif self.currentId() == 2:
-            # Progress page
+        elif self.currentPage() == self.importPage:
             return True
 
     def getFileName(self, title, editbox, filters=u''):
@@ -275,8 +272,8 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
         filters += u'%s (*)' % translate('SongsPlugin.ImportWizardForm',
             'All Files')
         filename = QtGui.QFileDialog.getOpenFileName(self, title,
-            os.path.dirname(SettingsManager.get_last_dir(
-            self.plugin.settingsSection, 1)), filters)
+            SettingsManager.get_last_dir(self.plugin.settingsSection, 1),
+            filters)
         if filename:
             editbox.setText(filename)
             SettingsManager.set_last_dir(self.plugin.settingsSection,
@@ -303,8 +300,8 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
         filters += u'%s (*)' % translate('SongsPlugin.ImportWizardForm',
             'All Files')
         filenames = QtGui.QFileDialog.getOpenFileNames(self, title,
-            os.path.dirname(SettingsManager.get_last_dir(
-            self.plugin.settingsSection, 1)), filters)
+            SettingsManager.get_last_dir(self.plugin.settingsSection, 1),
+            filters)
         if filenames:
             listbox.addItems(filenames)
             SettingsManager.set_last_dir(
@@ -423,7 +420,7 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
         self.removeSelectedItems(self.songBeamerFileListWidget)
 
     def onCurrentIdChanged(self, id):
-        if id == 2:
+        if self.page(id) == self.importPage:
             self.preImport()
             self.performImport()
             self.postImport()

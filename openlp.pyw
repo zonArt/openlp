@@ -5,8 +5,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -162,6 +162,10 @@ class OpenLP(QtGui.QApplication):
         #provide a listener for widgets to reqest a screen update.
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlp_process_events'), self.processEvents)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'cursor_busy'), self.setBusyCursor)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'cursor_normal'), self.setNormalCursor)
         self.setOrganizationName(u'OpenLP')
         self.setOrganizationDomain(u'openlp.org')
         self.setApplicationName(u'OpenLP')
@@ -178,7 +182,7 @@ class OpenLP(QtGui.QApplication):
         screens = ScreenList()
         # Decide how many screens we have and their size
         for screen in xrange(0, self.desktop().numScreens()):
-            size = self.desktop().screenGeometry(screen);
+            size = self.desktop().screenGeometry(screen)
             screens.add_screen({u'number': screen,
                 u'size': size,
                 u'primary': (self.desktop().primaryScreen() == screen)})
@@ -201,7 +205,20 @@ class OpenLP(QtGui.QApplication):
             self.exceptionForm = ExceptionForm(self.mainWindow)
         self.exceptionForm.exceptionTextEdit.setPlainText(
             ''.join(format_exception(exctype, value, traceback)))
+        self.setNormalCursor()
         self.exceptionForm.exec_()
+
+    def setBusyCursor(self):
+        """
+        Sets the Busy Cursor for the Application
+        """
+        self.setOverrideCursor(QtCore.Qt.BusyCursor)
+
+    def setNormalCursor(self):
+        """
+        Sets the Normal Cursor forthe Application
+        """
+        self.restoreOverrideCursor()
 
 def main():
     """

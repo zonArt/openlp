@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -28,12 +28,12 @@ import logging
 import chardet
 import re
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
 from sqlalchemy import Column, ForeignKey, or_, Table, types
 from sqlalchemy.orm import class_mapper, mapper, relation
 from sqlalchemy.orm.exc import UnmappedClassError
 
-from openlp.core.lib import translate
+from openlp.core.lib import Receiver, translate
 from openlp.core.lib.db import BaseModel, init_db, Manager
 
 log = logging.getLogger(__name__)
@@ -166,7 +166,7 @@ class BibleDB(QtCore.QObject, Manager):
         """
         Stops the import of the Bible.
         """
-        log.debug('Stopping import')
+        log.debug(u'Stopping import')
         self.stop_import_flag = True
 
     def get_name(self):
@@ -354,12 +354,12 @@ class BibleDB(QtCore.QObject, Manager):
                 verse_list.extend(verses)
             else:
                 log.debug(u'OpenLP failed to find book %s', book)
-                QtGui.QMessageBox.information(self.bible_plugin.mediaItem,
-                    translate('BiblesPlugin.BibleDB', 'Book not found'),
-                    translate('BiblesPlugin.BibleDB', 'The book you requested '
-                    'could not be found in this Bible. Please check your '
-                    'spelling and that this is a complete Bible not just '
-                    'one testament.'))
+                Receiver.send_message(u'openlp_error_message', {
+                    u'title': translate('BiblesPlugin', 'No Book Found'),
+                    u'message': translate('BiblesPlugin', 'No matching book '
+                    'could be found in this Bible. Check that you have '
+                    'spelled the name of the book correctly.')
+                })
         return verse_list
 
     def verse_search(self, text):
@@ -430,7 +430,7 @@ class BibleDB(QtCore.QObject, Manager):
         Utility debugging method to dump the contents of a bible.
         """
         log.debug(u'.........Dumping Bible Database')
-        log.debug('...............................Books ')
+        log.debug(u'...............................Books ')
         books = self.session.query(Book).all()
         log.debug(books)
         log.debug(u'...............................Verses ')

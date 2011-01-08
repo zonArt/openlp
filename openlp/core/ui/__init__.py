@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -29,9 +29,20 @@ The :mod:`ui` module provides the core user interface for OpenLP
 
 class HideMode(object):
     """
-    This is basically an enumeration class which specifies the mode of a Bible.
-    Mode refers to whether or not a Bible in OpenLP is a full Bible or needs to
-    be downloaded from the Internet on an as-needed basis.
+    This is an enumeration class which specifies the different modes of hiding
+    the display.
+
+    ``Blank``
+        This mode is used to hide all output, specifically by covering the
+        display with a black screen.
+        
+    ``Theme``
+        This mode is used to hide all output, but covers the display with the
+        current theme background, as opposed to black.
+        
+    ``Desktop``
+        This mode hides all output by minimising the display, leaving the user's
+        desktop showing.
     """
     Blank = 1
     Theme = 2

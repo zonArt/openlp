@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -26,9 +26,9 @@
 
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
 
-from openlp.core.lib import SettingsManager, translate
+from openlp.core.lib import Receiver, SettingsManager, translate
 from openlp.core.utils import AppLocation
 from openlp.plugins.bibles.lib import parse_reference
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
@@ -257,14 +257,23 @@ class BibleManager(object):
                 - Genesis 1:1-10,2:1-10
         """
         log.debug(u'BibleManager.get_verses("%s", "%s")', bible, versetext)
+        if not bible:
+            Receiver.send_message(u'openlp_information_message', {
+                u'title': translate('BiblesPlugin.BibleManager',
+                'No Bibles available'),
+                u'message': translate('BiblesPlugin.BibleManager',
+                'There are no Bibles currently installed. Please use the '
+                'Import Wizard to install one or more Bibles.')
+                })
+            return None
         reflist = parse_reference(versetext)
         if reflist:
             return self.db_cache[bible].get_verses(reflist)
         else:
-            QtGui.QMessageBox.information(self.parent.mediaItem,
-                translate('BiblesPlugin.BibleManager',
+            Receiver.send_message(u'openlp_information_message', {
+                u'title': translate('BiblesPlugin.BibleManager',
                 'Scripture Reference Error'),
-                translate('BiblesPlugin.BibleManager', 'Your scripture '
+                u'message': translate('BiblesPlugin.BibleManager', 'Your scripture '
                 'reference is either not supported by OpenLP or is invalid. '
                 'Please make sure your reference conforms to one of the '
                 'following patterns:\n\n'
@@ -273,7 +282,8 @@ class BibleManager(object):
                 'Book Chapter:Verse-Verse\n'
                 'Book Chapter:Verse-Verse,Verse-Verse\n'
                 'Book Chapter:Verse-Verse,Chapter:Verse-Verse\n'
-                'Book Chapter:Verse-Chapter:Verse'))
+                'Book Chapter:Verse-Chapter:Verse')
+                })
             return None
 
     def verse_search(self, bible, second_bible, text):
@@ -298,22 +308,25 @@ class BibleManager(object):
             second_webbible = self.db_cache[second_bible].get_object(BibleMeta,
                 u'download source')
         if webbible or second_webbible:
-            QtGui.QMessageBox.information(self.parent.mediaItem,
-                translate('BiblesPlugin.BibleManager',
+            Receiver.send_message(u'openlp_information_message', {
+                u'title': translate('BiblesPlugin.BibleManager',
                 'Web Bible cannot be used'),
-                translate('BiblesPlugin.BibleManager', 'Text Search is not '
-                'available with Web Bibles.'))
+                u'message': translate('BiblesPlugin.BibleManager',
+                'Text Search is not available with Web Bibles.')
+                })
             return None
         if text:
             return self.db_cache[bible].verse_search(text)
         else:
-            QtGui.QMessageBox.information(self.parent.mediaItem,
-                translate('BiblesPlugin.BibleManager',
+            Receiver.send_message(u'openlp_information_message', {
+                u'title': translate('BiblesPlugin.BibleManager',
                 'Scripture Reference Error'),
-                translate('BiblesPlugin.BibleManager', 'You did not enter a '
-                'search keyword.\nYou can separate different keywords by a '
-                'space to search for all of your keywords and you can separate '
-                'them by a comma to search for one of them.'))
+                u'message': translate('BiblesPlugin.BibleManager',
+                'You did not enter a search keyword.\n'
+                'You can separate different keywords by a space to search for '
+                'all of your keywords and you can separate them by a comma to '
+                'search for one of them.')
+                })
             return None
 
     def save_meta_data(self, bible, version, copyright, permissions):
@@ -357,4 +370,3 @@ class BibleManager(object):
 BibleFormat.set_availability(BibleFormat.OpenLP1, has_openlp1)
 
 __all__ = [u'BibleFormat']
-

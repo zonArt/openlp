@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -37,15 +37,10 @@ class SongsTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'SongsTab')
-        self.SongsLayout = QtGui.QFormLayout(self)
-        self.SongsLayout.setSpacing(8)
-        self.SongsLayout.setMargin(8)
-        self.SongsLayout.setObjectName(u'SongsLayout')
-        self.SongsModeGroupBox = QtGui.QGroupBox(self)
+        SettingsTab.setupUi(self)
+        self.SongsModeGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.SongsModeGroupBox.setObjectName(u'SongsModeGroupBox')
         self.SongsModeLayout = QtGui.QVBoxLayout(self.SongsModeGroupBox)
-        self.SongsModeLayout.setSpacing(8)
-        self.SongsModeLayout.setMargin(8)
         self.SongsModeLayout.setObjectName(u'SongsModeLayout')
         self.SearchAsTypeCheckBox = QtGui.QCheckBox(self.SongsModeGroupBox)
         self.SearchAsTypeCheckBox.setObjectName(u'SearchAsTypeCheckBox')
@@ -61,8 +56,9 @@ class SongsTab(SettingsTab):
         self.SongAddFromServiceCheckBox.setObjectName(
             u'SongAddFromServiceCheckBox')
         self.SongsModeLayout.addWidget(self.SongAddFromServiceCheckBox)
-        self.SongsLayout.setWidget(
-            0, QtGui.QFormLayout.LabelRole, self.SongsModeGroupBox)
+        self.leftLayout.addWidget(self.SongsModeGroupBox)
+        self.leftLayout.addStretch()
+        self.rightLayout.addStretch()
         QtCore.QObject.connect(self.SearchAsTypeCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onSearchAsTypeCheckBoxChanged)
@@ -72,7 +68,7 @@ class SongsTab(SettingsTab):
         QtCore.QObject.connect(self.SongUpdateOnEditCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onSongUpdateOnEditCheckBoxChanged)
-        QtCore.QObject.connect(self.SongBarActiveCheckBox,
+        QtCore.QObject.connect(self.SongAddFromServiceCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onSongAddFromServiceCheckBoxChanged)
 
