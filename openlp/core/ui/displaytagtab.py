@@ -45,6 +45,9 @@ class DisplayTagTab(SettingsTab):
         '''
         SettingsTab.__init__(self, u'Display Tags')
 
+    def resizeEvent(self, event=None):
+        pass
+
     def preLoad(self):
         """
         Initialise values before the Load takes place
@@ -69,13 +72,13 @@ class DisplayTagTab(SettingsTab):
             translate(u'OpenLP.DisplayTagTab', 'Display Tags')
         self.displayTagEdit = QtGui.QWidget(self)
         self.editGroupBox = QtGui.QGroupBox(self.displayTagEdit)
-        self.editGroupBox.setGeometry(QtCore.QRect(10, 220, 691, 181))
+        self.editGroupBox.setGeometry(QtCore.QRect(10, 220, 650, 181))
         self.editGroupBox.setObjectName(u'editGroupBox')
         self.updatePushButton = QtGui.QPushButton(self.editGroupBox)
-        self.updatePushButton.setGeometry(QtCore.QRect(600, 140, 71, 26))
+        self.updatePushButton.setGeometry(QtCore.QRect(550, 140, 71, 26))
         self.updatePushButton.setObjectName(u'updatePushButton')
         self.layoutWidget = QtGui.QWidget(self.editGroupBox)
-        self.layoutWidget.setGeometry(QtCore.QRect(20, 50, 571, 114))
+        self.layoutWidget.setGeometry(QtCore.QRect(5, 20, 571, 114))
         self.layoutWidget.setObjectName(u'layoutWidget')
         self.formLayout = QtGui.QFormLayout(self.layoutWidget)
         self.formLayout.setObjectName(u'formLayout')
@@ -117,16 +120,16 @@ class DisplayTagTab(SettingsTab):
         self.formLayout.setWidget(3, QtGui.QFormLayout.FieldRole,
             self.endTagLineEdit)
         self.defaultPushButton = QtGui.QPushButton(self.displayTagEdit)
-        self.defaultPushButton.setGeometry(QtCore.QRect(450, 188, 71, 26))
+        self.defaultPushButton.setGeometry(QtCore.QRect(430, 188, 71, 26))
         self.defaultPushButton.setObjectName(u'updatePushButton')
         self.deletePushButton = QtGui.QPushButton(self.displayTagEdit)
-        self.deletePushButton.setGeometry(QtCore.QRect(530, 188, 71, 26))
+        self.deletePushButton.setGeometry(QtCore.QRect(510, 188, 71, 26))
         self.deletePushButton.setObjectName(u'deletePushButton')
         self.newPushButton = QtGui.QPushButton(self.displayTagEdit)
-        self.newPushButton.setGeometry(QtCore.QRect(610, 188, 71, 26))
+        self.newPushButton.setGeometry(QtCore.QRect(600, 188, 71, 26))
         self.newPushButton.setObjectName(u'newPushButton')
         self.tagTableWidget = QtGui.QTableWidget(self.displayTagEdit)
-        self.tagTableWidget.setGeometry(QtCore.QRect(10, 10, 691, 171))
+        self.tagTableWidget.setGeometry(QtCore.QRect(10, 10, 650, 171))
         self.tagTableWidget.setHorizontalScrollBarPolicy(
             QtCore.Qt.ScrollBarAlwaysOff)
         self.tagTableWidget.setEditTriggers(
@@ -174,7 +177,7 @@ class DisplayTagTab(SettingsTab):
         QtCore.QMetaObject.connectSlotsByName(self.displayTagEdit)
         self.tagTableWidget.setColumnWidth(0, 120)
         self.tagTableWidget.setColumnWidth(1, 40)
-        self.tagTableWidget.setColumnWidth(2, 280)
+        self.tagTableWidget.setColumnWidth(2, 240)
         self.tagTableWidget.setColumnWidth(3, 200)
         QtCore.QObject.connect(self.tagTableWidget,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onRowSelected)
@@ -283,6 +286,8 @@ class DisplayTagTab(SettingsTab):
             u'end html': u'</and here>', u'protected': False}
         DisplayTags.add_html_tag(tag)
         self._resetTable()
+        print self.tagTableWidget.rowCount()
+        self.tagTableWidget.selectRow(self.tagTableWidget.rowCount() - 1)
 
     def onDefaultPushed(self):
         """

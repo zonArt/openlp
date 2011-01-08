@@ -31,7 +31,7 @@ from openlp.core.lib import translate, build_icon
 class Ui_SettingsDialog(object):
     def setupUi(self, settingsDialog):
         settingsDialog.setObjectName(u'settingsDialog')
-        settingsDialog.resize(700, 300)
+        settingsDialog.resize(700, 500)
         settingsDialog.setWindowIcon(
             build_icon(u':/system/system_settings.png'))
         self.settingsLayout = QtGui.QVBoxLayout(settingsDialog)
