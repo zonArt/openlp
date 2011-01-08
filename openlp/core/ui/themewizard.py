@@ -249,7 +249,8 @@ class Ui_ThemeWizard(object):
         self.footerSizeSpinBox.setMaximum(999)
         self.footerSizeSpinBox.setValue(10)
         self.footerSizeSpinBox.setObjectName(u'FooterSizeSpinBox')
-        self.footerAreaLayout.addRow(self.footerSizeLabel, self.footerSizeSpinBox)
+        self.footerAreaLayout.addRow(self.footerSizeLabel,
+            self.footerSizeSpinBox)
         ThemeWizard.addPage(self.footerAreaPage)
         # Alignment Page
         self.alignmentPage = QtGui.QWizardPage()
@@ -317,9 +318,11 @@ class Ui_ThemeWizard(object):
         self.areaPositionLayout.addWidget(self.mainPositionGroupBox)
         self.footerPositionGroupBox = QtGui.QGroupBox(self.areaPositionPage)
         self.footerPositionGroupBox.setObjectName(u'FooterPositionGroupBox')
-        self.footerPositionLayout = QtGui.QFormLayout(self.footerPositionGroupBox)
+        self.footerPositionLayout = QtGui.QFormLayout(
+            self.footerPositionGroupBox)
         self.footerPositionLayout.setObjectName(u'FooterPositionLayout')
-        self.footerPositionCheckBox = QtGui.QCheckBox(self.footerPositionGroupBox)
+        self.footerPositionCheckBox = QtGui.QCheckBox(
+            self.footerPositionGroupBox)
         self.footerPositionCheckBox.setObjectName(u'FooterPositionCheckBox')
         self.footerPositionLayout.addRow(self.footerPositionCheckBox)
         self.footerXLabel = QtGui.QLabel(self.footerPositionGroupBox)

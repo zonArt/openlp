@@ -176,7 +176,8 @@ class MediaManagerItem(QtGui.QWidget):
         # break compatability), but it makes sense for the icon to
         # come before the tooltip (as you have to have an icon, but
         # not neccesarily a tooltip)
-        return self.toolbar.addToolbarButton(title, icon, tooltip, slot, checkable)
+        return self.toolbar.addToolbarButton(title, icon, tooltip, slot,
+            checkable)
 
     def addToolbarSeparator(self):
         """

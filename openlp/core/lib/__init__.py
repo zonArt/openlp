@@ -102,7 +102,8 @@ def translate(context, text, comment=None,
         An identifying string for when the same text is used in different roles
         within the same context.
     """
-    return QtCore.QCoreApplication.translate(context, text, comment, encoding, n)
+    return QtCore.QCoreApplication.translate(
+        context, text, comment, encoding, n)
 
 def get_text_file_string(text_file):
     """
