@@ -286,7 +286,7 @@ class DisplayTagTab(SettingsTab):
             u'end html': u'</and here>', u'protected': False}
         DisplayTags.add_html_tag(tag)
         self._resetTable()
-        print self.tagTableWidget.rowCount()
+        # Highlight new row
         self.tagTableWidget.selectRow(self.tagTableWidget.rowCount() - 1)
 
     def onDefaultPushed(self):
