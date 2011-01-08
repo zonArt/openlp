@@ -116,7 +116,8 @@ class PresentationTab(SettingsTab):
             if controller.available:
                 checkbox = self.PresenterCheckboxes[controller.name]
                 setting_key = self.settingsSection + u'/' + controller.name
-                if QtCore.QSettings().value(setting_key) != checkbox.checkState():
+                if QtCore.QSettings().value(setting_key) != \
+                    checkbox.checkState():
                     changed = True
                     QtCore.QSettings().setValue(setting_key,
                         QtCore.QVariant(checkbox.checkState()))

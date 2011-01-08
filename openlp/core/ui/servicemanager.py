@@ -28,7 +28,6 @@ import os
 import logging
 import cPickle
 import zipfile
-from pprint import pformat
 
 log = logging.getLogger(__name__)
 
@@ -986,8 +985,8 @@ class ServiceManager(QtGui.QWidget):
                         u'expanded':expand})
                 self.repaintServiceList(len(self.serviceItems) + 1, 0)
             else:
-                self.serviceItems.insert(self.dropPosition, {u'service_item': item,
-                    u'order': self.dropPosition,
+                self.serviceItems.insert(self.dropPosition,
+                    {u'service_item': item, u'order': self.dropPosition,
                     u'expanded':expand})
                 self.repaintServiceList(self.dropPosition, 0)
             # if rebuilding list make sure live is fixed.
