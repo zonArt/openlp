@@ -35,11 +35,11 @@ class HideMode(object):
     ``Blank``
         This mode is used to hide all output, specifically by covering the
         display with a black screen.
-        
+  
     ``Theme``
         This mode is used to hide all output, but covers the display with the
         current theme background, as opposed to black.
-        
+  
     ``Desktop``
         This mode hides all output by minimising the display, leaving the user's
         desktop showing.

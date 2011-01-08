@@ -39,7 +39,7 @@ class Ui_SongImportWizard(object):
             QtGui.QWizard.IndependentPages |
             QtGui.QWizard.NoBackButtonOnStartPage |
             QtGui.QWizard.NoBackButtonOnLastPage)
-        # Welcome Page 
+        # Welcome Page
         self.welcomePage = QtGui.QWizardPage()
         self.welcomePage.setPixmap(QtGui.QWizard.WatermarkPixmap,
             QtGui.QPixmap(u':/wizards/wizard_importsong.bmp'))

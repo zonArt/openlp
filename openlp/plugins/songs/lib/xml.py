@@ -359,10 +359,10 @@ class OpenLyricsParser(object):
         OpenLP does not support the attribute *type* and *lang*.
 
     *<chord>*
-        This property is not supported. 
+        This property is not supported.
 
     *<comments>*
-        The *<comments>* property  is fully supported. But comments in lyrics
+        The *<comments>* property is fully supported. But comments in lyrics
         are not supported.
 
     *<copyright>*
@@ -372,23 +372,23 @@ class OpenLyricsParser(object):
         This property is not supported.
 
     *<key>*
-        This property is not supported. 
+        This property is not supported.
 
     *<keywords>*
-        This property is not supported. 
+        This property is not supported.
 
     *<lines>*
         The attribute *part* is not supported.
 
     *<publisher>*
-        This property is not supported. 
+        This property is not supported.
 
     *<songbooks>*
         As OpenLP does only support one songbook, we cannot consider more than
         one songbook.
 
     *<tempo>*
-        This property is not supported. 
+        This property is not supported.
 
     *<themes>*
         Topics, as they are called in OpenLP, are fully supported, whereby only
@@ -399,9 +399,9 @@ class OpenLyricsParser(object):
         This property is not supported.
 
     *<variant>*
-        This property is not supported. 
+        This property is not supported.
 
-    *<verse name="v1a"  lang="he" translit="en">*
+    *<verse name="v1a" lang="he" translit="en">*
         The attribute *translit* and *lang* are not supported.
 
     *<verseOrder>*
