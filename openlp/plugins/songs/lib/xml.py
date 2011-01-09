@@ -213,9 +213,10 @@ class OpenLyrics(object):
             u'<song version="0.7" createdIn="OpenLP 2.0"/>')
         properties = etree.SubElement(song_xml, u'properties')
         titles = etree.SubElement(properties, u'titles')
-        self._add_text_to_element(u'title', titles, song.title)
+        self._add_text_to_element(u'title', titles, song.title.strip())
         if song.alternate_title:
-            self._add_text_to_element(u'title', titles, song.alternate_title)
+            self._add_text_to_element(
+                u'title', titles, song.alternate_title.strip())
         if song.comments:
             comments = etree.SubElement(properties, u'comments')
             self._add_text_to_element(u'comment', comments, song.comments)

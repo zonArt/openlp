@@ -351,8 +351,7 @@ class SongMediaItem(MediaManagerItem):
         service_item.theme = song.theme_name
         service_item.edit_id = item_id
         if song.lyrics.startswith(u'<?xml version='):
-            songXML = SongXML()
-            verseList = songXML.get_verses(song.lyrics)
+            verseList = SongXML().get_verses(song.lyrics)
             # no verse list or only 1 space (in error)
             if not song.verse_order or not song.verse_order.strip():
                 for verse in verseList:
@@ -405,8 +404,8 @@ class SongMediaItem(MediaManagerItem):
         log.debug(u'serviceLoad')
         if item.data_string:
             search_results = self.parent.manager.get_all_objects(Song,
-                Song.search_title ==
-                item.data_string[u'title'].split(u'@')[0].lower(),
+                Song.search_title == re.compile(r'\W+', re.UNICODE).sub(u' ',
+                item.data_string[u'title'].split(u'@')[0].lower()).strip(),
                 Song.search_title.asc())
             author_list = item.data_string[u'authors'].split(u', ')
             # The service item always has an author (at least it has u'' as
