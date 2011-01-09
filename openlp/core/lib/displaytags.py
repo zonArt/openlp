@@ -24,50 +24,44 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`ui` module provides the core user interface for OpenLP
+Provide Html Tag management and Display Tag access class
 """
 
-class HideMode(object):
+from openlp.core.lib import base_html_expands
+
+class DisplayTags(object):
     """
-    This is an enumeration class which specifies the different modes of hiding
-    the display.
-
-    ``Blank``
-        This mode is used to hide all output, specifically by covering the
-        display with a black screen.
-        
-    ``Theme``
-        This mode is used to hide all output, but covers the display with the
-        current theme background, as opposed to black.
-        
-    ``Desktop``
-        This mode hides all output by minimising the display, leaving the user's
-        desktop showing.
+    Static Class to HTML Tags to be access around the code the list is managed
+    by the Options Tab.
     """
-    Blank = 1
-    Theme = 2
-    Screen = 3
+    html_expands = []
 
-from themeform import ThemeForm
-from filerenameform import FileRenameForm
-from maindisplay import MainDisplay
-from servicenoteform import ServiceNoteForm
-from serviceitemeditform import ServiceItemEditForm
-from screen import ScreenList
-from slidecontroller import SlideController
-from splashscreen import SplashScreen
-from generaltab import GeneralTab
-from themestab import ThemesTab
-from advancedtab import AdvancedTab
-from displaytagtab import DisplayTagTab
-from aboutform import AboutForm
-from pluginform import PluginForm
-from settingsform import SettingsForm
-from shortcutlistform import ShortcutListForm
-from mediadockmanager import MediaDockManager
-from servicemanager import ServiceManager
-from thememanager import ThemeManager
+    @staticmethod
+    def get_html_tags():
+        """
+        Provide access to the html_expands list.
+        """
+        return DisplayTags.html_expands
 
-__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm',
-    'MainDisplay', 'SlideController', 'ServiceManager', 'ThemeManager',
-    'MediaDockManager', 'ServiceItemEditForm']
+    @staticmethod
+    def reset_html_tags():
+        """
+        Resets the html_expands list.
+        """
+        DisplayTags.html_expands = []
+        for html in base_html_expands:
+            DisplayTags.html_expands.append(html)
+
+    @staticmethod
+    def add_html_tag(tag):
+        """
+        Add a new tag to the list
+        """
+        DisplayTags.html_expands.append(tag)
+
+    @staticmethod
+    def remove_html_tag(id):
+        """
+        Removes amd individual html_expands list.
+        """
+        DisplayTags.html_expands.pop(id)
