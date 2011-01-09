@@ -42,17 +42,17 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
 
     def exec_(self, clear=True):
         if clear:
-            self.NameEdit.clear()
-        self.NameEdit.setFocus()
+            self.nameEdit.clear()
+        self.nameEdit.setFocus()
         return QtGui.QDialog.exec_(self)
 
     def accept(self):
-        if not self.NameEdit.text():
+        if not self.nameEdit.text():
             QtGui.QMessageBox.critical(
                 self, translate('SongsPlugin.TopicsForm', 'Error'),
                 translate('SongsPlugin.TopicsForm',
                     'You need to type in a topic name.'))
-            self.NameEdit.setFocus()
+            self.nameEdit.setFocus()
             return False
         else:
             return QtGui.QDialog.accept(self)

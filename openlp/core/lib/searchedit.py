@@ -69,7 +69,7 @@ class SearchEdit(QtGui.QLineEdit):
         """
         frameWidth = self.style().pixelMetric(
             QtGui.QStyle.PM_DefaultFrameWidth)
-        rightPadding = self.clearButton.sizeHint().width() + frameWidth
+        rightPadding = self.clearButton.width() + frameWidth
         if hasattr(self, u'menuButton'):
             leftPadding = self.menuButton.width()
             self.setStyleSheet(
@@ -78,10 +78,10 @@ class SearchEdit(QtGui.QLineEdit):
         else:
             self.setStyleSheet(u'QLineEdit { padding-right: %spx; } ' % \
                 rightPadding)
-        msz = self.minimumSizeHint();
+        msz = self.minimumSizeHint()
         self.setMinimumSize(
             max(msz.width(),
-                self.clearButton.sizeHint().width() + (frameWidth * 2) + 2),
+                self.clearButton.width() + (frameWidth * 2) + 2),
             max(msz.height(),
                 self.clearButton.height() + (frameWidth * 2) + 2)
         )
@@ -93,13 +93,13 @@ class SearchEdit(QtGui.QLineEdit):
         ``event``
             The event that happened.
         """
-        sz = self.clearButton.sizeHint()
+        sz = self.clearButton.size()
         frameWidth = self.style().pixelMetric(
             QtGui.QStyle.PM_DefaultFrameWidth)
         self.clearButton.move(self.rect().right() - frameWidth - sz.width(),
             (self.rect().bottom() + 1 - sz.height()) / 2)
         if hasattr(self, u'menuButton'):
-            sz = self.menuButton.sizeHint()
+            sz = self.menuButton.size()
             self.menuButton.move(self.rect().left() + frameWidth + 2,
                 (self.rect().bottom() + 1 - sz.height()) / 2)
 

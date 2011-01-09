@@ -111,7 +111,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.singleServiceItem = True
         self.pageLayout = QtGui.QVBoxLayout(self)
         self.pageLayout.setSpacing(0)
-        self.pageLayout.setContentsMargins(4, 0, 4, 0)
+        self.pageLayout.setMargin(0)
         self.requiredIcons()
         self.setupUi()
         self.retranslateUi()
@@ -176,7 +176,8 @@ class MediaManagerItem(QtGui.QWidget):
         # break compatability), but it makes sense for the icon to
         # come before the tooltip (as you have to have an icon, but
         # not neccesarily a tooltip)
-        self.toolbar.addToolbarButton(title, icon, tooltip, slot, checkable)
+        return self.toolbar.addToolbarButton(title, icon, tooltip, slot,
+            checkable)
 
     def addToolbarSeparator(self):
         """
@@ -268,7 +269,6 @@ class MediaManagerItem(QtGui.QWidget):
         #Add the List widget
         self.listView = self.ListViewWithDnD_class(self)
         self.listView.uniformItemSizes = True
-        self.listView.setGeometry(QtCore.QRect(10, 100, 256, 591))
         self.listView.setSpacing(1)
         self.listView.setSelectionMode(
             QtGui.QAbstractItemView.ExtendedSelection)

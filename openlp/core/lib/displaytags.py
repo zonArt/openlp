@@ -23,38 +23,45 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+Provide Html Tag management and Display Tag access class
+"""
 
-from PyQt4 import QtCore, QtGui
+from openlp.core.lib import base_html_expands
 
-from openlp.core.lib import translate, SpellTextEdit
+class DisplayTags(object):
+    """
+    Static Class to HTML Tags to be access around the code the list is managed
+    by the Options Tab.
+    """
+    html_expands = []
 
-class Ui_CustomSlideEditDialog(object):
-    def setupUi(self, customSlideEditDialog):
-        customSlideEditDialog.setObjectName(u'customSlideEditDialog')
-        customSlideEditDialog.resize(350, 300)
-        self.dialogLayout = QtGui.QVBoxLayout(customSlideEditDialog)
-        self.slideTextEdit = SpellTextEdit(self)
-        self.slideTextEdit.setObjectName(u'slideTextEdit')
-        self.dialogLayout.addWidget(self.slideTextEdit)
-        self.buttonBox = QtGui.QDialogButtonBox(customSlideEditDialog)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
-            QtGui.QDialogButtonBox.Save)
-        self.buttonBox.setObjectName(u'buttonBox')
-        self.splitButton = QtGui.QPushButton(customSlideEditDialog)
-        self.splitButton.setObjectName(u'splitButton')
-        self.buttonBox.addButton(self.splitButton,
-            QtGui.QDialogButtonBox.ActionRole)
-        self.dialogLayout.addWidget(self.buttonBox)
-        self.retranslateUi(customSlideEditDialog)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'),
-            customSlideEditDialog.accept)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
-            customSlideEditDialog.reject)
-        QtCore.QMetaObject.connectSlotsByName(customSlideEditDialog)
+    @staticmethod
+    def get_html_tags():
+        """
+        Provide access to the html_expands list.
+        """
+        return DisplayTags.html_expands
 
-    def retranslateUi(self, customSlideEditDialog):
-        self.splitButton.setText(
-            translate('CustomPlugin.EditCustomForm', 'Split Slide'))
-        self.splitButton.setToolTip(
-            translate('CustomPlugin.EditCustomForm', 'Split a slide into two '
-            'by inserting a slide splitter.'))
+    @staticmethod
+    def reset_html_tags():
+        """
+        Resets the html_expands list.
+        """
+        DisplayTags.html_expands = []
+        for html in base_html_expands:
+            DisplayTags.html_expands.append(html)
+
+    @staticmethod
+    def add_html_tag(tag):
+        """
+        Add a new tag to the list
+        """
+        DisplayTags.html_expands.append(tag)
+
+    @staticmethod
+    def remove_html_tag(id):
+        """
+        Removes amd individual html_expands list.
+        """
+        DisplayTags.html_expands.pop(id)
