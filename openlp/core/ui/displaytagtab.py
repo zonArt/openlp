@@ -57,7 +57,7 @@ class DisplayTagTab(SettingsTab):
         user_expands = QtCore.QSettings().value(u'displayTags/html_tags',
             QtCore.QVariant(u'')).toString()
         # cPickle only accepts str not unicode strings
-        user_tags = cPickle.loads(str(user_expands))
+        user_tags = cPickle.loads(str(unicode(user_expands).encode(u'utf8')))
         # If we have some user ones added them as well
         for t in user_tags:
             DisplayTags.add_html_tag(t)

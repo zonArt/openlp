@@ -34,7 +34,7 @@ from subprocess import Popen, PIPE
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, checkDirectoryExists
+from openlp.core.lib import Receiver, check_directory_exists
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
 from openlp.core.ui.exceptionform import ExceptionForm
@@ -243,7 +243,7 @@ def main():
         help='Set the Qt4 style (passed directly to Qt4).')
     # Set up logging
     log_path = AppLocation.get_directory(AppLocation.CacheDir)
-    checkDirectoryExists(log_path)
+    check_directory_exists(log_path)
     filename = os.path.join(log_path, u'openlp.log')
     logfile = logging.FileHandler(filename, u'w')
     logfile.setFormatter(logging.Formatter(

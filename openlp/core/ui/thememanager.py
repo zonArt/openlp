@@ -36,7 +36,7 @@ from openlp.core.ui import FileRenameForm, ThemeForm
 from openlp.core.theme import Theme
 from openlp.core.lib import OpenLPToolbar, ThemeXML, get_text_file_string, \
     build_icon, Receiver, SettingsManager, translate, check_item_selected, \
-    BackgroundType, BackgroundGradientType, checkDirectoryExists
+    BackgroundType, BackgroundGradientType, check_directory_exists
 from openlp.core.utils import AppLocation, get_filesystem_encoding
 
 log = logging.getLogger(__name__)
@@ -130,9 +130,9 @@ class ThemeManager(QtGui.QWidget):
         # Variables
         self.themelist = []
         self.path = AppLocation.get_section_data_path(self.settingsSection)
-        checkDirectoryExists(self.path)
+        check_directory_exists(self.path)
         self.thumbPath = os.path.join(self.path, u'thumbnails')
-        checkDirectoryExists(self.thumbPath)
+        check_directory_exists(self.thumbPath)
         self.themeForm.path = self.path
         self.oldBackgroundImage = None
         # Last little bits of setting up
@@ -492,7 +492,7 @@ class ThemeManager(QtGui.QWidget):
                 theme_dir = None
                 if osfile.endswith(os.path.sep):
                     theme_dir = os.path.join(dir, osfile)
-                    checkDirectoryExists(theme_dir)
+                    check_directory_exists(theme_dir)
                 else:
                     fullpath = os.path.join(dir, osfile)
                     names = osfile.split(os.path.sep)
@@ -502,7 +502,7 @@ class ThemeManager(QtGui.QWidget):
                             themename = names[0]
                         if theme_dir is None:
                             theme_dir = os.path.join(dir, names[0])
-                            checkDirectoryExists(theme_dir)
+                            check_directory_exists(theme_dir)
                         if os.path.splitext(ucsfile)[1].lower() in [u'.xml']:
                             xml_data = zip.read(file)
                             try:
@@ -522,7 +522,7 @@ class ThemeManager(QtGui.QWidget):
                 self.generateAndSaveImage(dir, themename, theme)
             else:
                 Receiver.send_message(u'openlp_error_message', {
-                    u'title': translate('OpenLP.ThemeManager', \
+                    u'title': translate('OpenLP.ThemeManager',
                     'Validation Error'),
                     u'message':translate('OpenLP.ThemeManager',
                     'File is not a valid theme.')})
@@ -530,7 +530,7 @@ class ThemeManager(QtGui.QWidget):
                     filename)
         except (IOError, NameError):
             Receiver.send_message(u'openlp_error_message', {
-                u'title': translate('OpenLP.ThemeManager', \
+                u'title': translate('OpenLP.ThemeManager',
                 'Validation Error'),
                 u'message':translate('OpenLP.ThemeManager',
                 'File is not a valid theme.')})
@@ -567,7 +567,7 @@ class ThemeManager(QtGui.QWidget):
         theme_dir = os.path.join(self.path, themeName)
         if os.path.exists(theme_dir):
             Receiver.send_message(u'openlp_error_message', {
-                u'title': translate('OpenLP.ThemeManager', \
+                u'title': translate('OpenLP.ThemeManager',
                 'Validation Error'),
                 u'message':translate('OpenLP.ThemeManager',
                 'A theme with this name already exists.')})
@@ -583,7 +583,7 @@ class ThemeManager(QtGui.QWidget):
         theme_pretty_xml = theme.extract_formatted_xml()
         log.debug(u'saveTheme %s %s', name, theme_pretty_xml)
         theme_dir = os.path.join(self.path, name)
-        checkDirectoryExists(theme_dir)
+        check_directory_exists(theme_dir)
         theme_file = os.path.join(theme_dir, name + u'.xml')
         if imageTo and self.oldBackgroundImage and \
             imageTo != self.oldBackgroundImage:
@@ -701,7 +701,7 @@ class ThemeManager(QtGui.QWidget):
                 for plugin in self.parent.pluginManager.plugins:
                     if plugin.usesTheme(theme):
                         Receiver.send_message(u'openlp_error_message', {
-                            u'title': translate('OpenLP.ThemeManager', \
+                            u'title': translate('OpenLP.ThemeManager',
                             'Validation Error'),
                             u'message': unicode(translate('OpenLP.ThemeManager',
                             'Theme %s is used in the %s plugin.')) % \

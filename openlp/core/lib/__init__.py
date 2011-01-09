@@ -306,14 +306,14 @@ def expand_tags(text):
         text = text.replace(tag[u'end tag'], tag[u'end html'])
     return text
 
-def checkDirectoryExists(dir):
+def check_directory_exists(dir):
     """
     Check a theme directory exists and if not create it
 
     ``dir``
         Theme directory to make sure exists
     """
-    log.debug(u'checkDirectoryExists')
+    log.debug(u'check_directory_exists')
     if not os.path.exists(dir):
         os.mkdir(dir)
 

@@ -29,57 +29,39 @@ Provide Html Tag management and Display Tag access class
 
 from openlp.core.lib import base_html_expands
 
-class HtmlTags(object):
-    """
-    """
-    def __init__(self):
-        self.html_expands = []
-        self.reset_list()
-
-    def reset_list(self):
-        """
-        """
-        self.html_expands = []
-        for html in base_html_expands:
-            self.html_expands.append(html)
-
-    def add_tag(self, html):
-        """
-        """
-        self.html_expands.append(html)
-
-
 class DisplayTags(object):
     """
     Static Class to HTML Tags to be access around the code the list is managed
     by the Options Tab.
     """
-    html_tags = HtmlTags()
+    html_expands = []
 
     @staticmethod
     def get_html_tags():
         """
         Provide access to the html_expands list.
         """
-        return DisplayTags.html_tags.html_expands
+        return DisplayTags.html_expands
 
     @staticmethod
     def reset_html_tags():
         """
         Resets the html_expands list.
         """
-        return DisplayTags.html_tags.reset_list()
+        DisplayTags.html_expands = []
+        for html in base_html_expands:
+            DisplayTags.html_expands.append(html)
 
     @staticmethod
     def add_html_tag(tag):
         """
         Add a new tag to the list
         """
-        return DisplayTags.html_tags.add_tag(tag)
+        DisplayTags.html_expands.append(tag)
 
     @staticmethod
     def remove_html_tag(id):
         """
         Removes amd individual html_expands list.
         """
-        return DisplayTags.html_tags.html_expands.pop(id)
+        DisplayTags.html_expands.pop(id)
