@@ -250,7 +250,7 @@ class ServiceManager(QtGui.QWidget):
             self.parent.serviceSettingsSection + u'/service theme',
             QtCore.QVariant(u'')).toString())
         self.servicePath = AppLocation.get_section_data_path(u'servicemanager')
-        #build the drag and drop context menu
+        # build the drag and drop context menu
         self.dndMenu = QtGui.QMenu()
         self.newAction = self.dndMenu.addAction(
             translate('OpenLP.ServiceManager', '&Add New Item'))
