@@ -592,7 +592,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             saveFrom = self.theme.background_filename
         if not self.edit_mode and \
             not self.thememanager.checkIfThemeExists(self.theme.theme_name):
-                return
+            return
         self.accepted = True
         self.thememanager.saveTheme(self.theme, saveFrom, saveTo)
         return QtGui.QDialog.accept(self)
