@@ -46,8 +46,8 @@ class ThemesTab(SettingsTab):
         self.DefaultComboBox = QtGui.QComboBox(self.GlobalGroupBox)
         self.DefaultComboBox.setSizeAdjustPolicy(
             QtGui.QComboBox.AdjustToMinimumContentsLength)
-        self.DefaultComboBox.setSizePolicy(QtGui.QSizePolicy.Expanding,
-            QtGui.QSizePolicy.Fixed)
+        self.DefaultComboBox.setSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
         self.DefaultComboBox.setObjectName(u'DefaultComboBox')
         self.GlobalGroupBoxLayout.addWidget(self.DefaultComboBox)
         self.DefaultListView = QtGui.QLabel(self.GlobalGroupBox)
