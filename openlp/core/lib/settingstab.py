@@ -114,6 +114,12 @@ class SettingsTab(QtGui.QWidget):
         """
         pass
 
+    def cancel(self):
+        """
+        Reset any settings
+        """
+        pass
+
     def postSetUp(self, postUpdate=False):
         """
         Changes which need to be made after setup of application

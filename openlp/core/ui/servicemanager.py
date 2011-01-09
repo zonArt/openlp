@@ -28,7 +28,6 @@ import os
 import logging
 import cPickle
 import zipfile
-from pprint import pformat
 
 log = logging.getLogger(__name__)
 
@@ -253,7 +252,7 @@ class ServiceManager(QtGui.QWidget):
             self.parent.serviceSettingsSection + u'/service theme',
             QtCore.QVariant(u'')).toString())
         self.servicePath = AppLocation.get_section_data_path(u'servicemanager')
-        #build the drag and drop context menu
+        # build the drag and drop context menu
         self.dndMenu = QtGui.QMenu()
         self.newAction = self.dndMenu.addAction(
             translate('OpenLP.ServiceManager', '&Add New Item'))
@@ -988,8 +987,8 @@ class ServiceManager(QtGui.QWidget):
                         u'expanded':expand})
                 self.repaintServiceList(len(self.serviceItems) + 1, 0)
             else:
-                self.serviceItems.insert(self.dropPosition, {u'service_item': item,
-                    u'order': self.dropPosition,
+                self.serviceItems.insert(self.dropPosition,
+                    {u'service_item': item, u'order': self.dropPosition,
                     u'expanded':expand})
                 self.repaintServiceList(self.dropPosition, 0)
             # if rebuilding list make sure live is fixed.
