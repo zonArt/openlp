@@ -291,7 +291,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.updateThemeAllowed = True
         self.themeNameLabel.setVisible(not edit)
         self.themeNameEdit.setVisible(not edit)
-        self.edit = edit
+        self.edit_mode = edit
         if edit:
             self.setWindowTitle(unicode(translate('OpenLP.ThemeWizard',
                 'Edit Theme - %s')) % self.theme.theme_name)
@@ -590,8 +590,8 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
                 os.path.split(unicode(self.theme.background_filename))[1]
             saveTo = os.path.join(self.path, self.theme.theme_name, filename)
             saveFrom = self.theme.background_filename
-        if not self.edit:
-            if not self.thememanager.checkIfThemeExists(self.theme.theme_name):
+        if not self.edit_mode and \
+            not self.thememanager.checkIfThemeExists(self.theme.theme_name):
                 return
         self.accepted = True
         self.thememanager.saveTheme(self.theme, saveFrom, saveTo)
