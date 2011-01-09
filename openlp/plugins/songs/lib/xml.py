@@ -269,7 +269,7 @@ class OpenLyrics(object):
         song = Song()
         if xml[:5] == u'<?xml':
             xml = xml[38:]
-        # Remove chords
+        # Remove chords from xml.
         xml = re.compile(u'<chord name=".*?"/>').sub(u'', xml)
         song_xml = objectify.fromstring(xml)
         properties = song_xml.properties
