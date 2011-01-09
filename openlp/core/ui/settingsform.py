@@ -55,9 +55,9 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         # Advanced tab
         self.advancedTab = AdvancedTab()
         self.addTab(u'Advanced', self.advancedTab)
-        # Edit Tags tab
-        displayTagTab = DisplayTagTab()
-        self.addTab(u'Display Tags', displayTagTab)
+        # Edit Display Tags tab
+        self.displayTagTab = DisplayTagTab()
+        self.addTab(u'Display Tags', self.displayTagTab)
 
     def addTab(self, name, tab):
         """

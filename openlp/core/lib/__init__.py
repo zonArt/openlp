@@ -316,7 +316,7 @@ def check_directory_exists(dir):
     """
     log.debug(u'check_directory_exists')
     if not os.path.exists(dir):
-        os.mkdir(dir)
+        os.makedirs(dir)
 
 from theme import ThemeLevel, ThemeXML, BackgroundGradientType, \
     BackgroundType, HorizontalType, VerticalType
