@@ -307,7 +307,8 @@ class ServiceManager(QtGui.QWidget):
         Setter for service file.
         """
         self._fileName = unicode(fileName)
-        self.mainwindow.setServiceModified(self.isModified, self.shortFileName())
+        self.mainwindow.setServiceModified(self.isModified(),
+            self.shortFileName())
         QtCore.QSettings(). \
             setValue(u'service/last file',QtCore.QVariant(fileName))
 
@@ -685,7 +686,7 @@ class ServiceManager(QtGui.QWidget):
         # Top Item was selected so set the last one
         if setLastItem:
             lastItem.setSelected(True)
-        self.isModified = True
+        self.setModified(True)
 
     def onMoveSelectionDown(self):
         """
@@ -708,7 +709,7 @@ class ServiceManager(QtGui.QWidget):
             serviceIterator += 1
         if setSelected:
             firstItem.setSelected(True)
-        self.isModified = True
+        self.setModified(True)
 
     def onCollapseAll(self):
         """
@@ -752,7 +753,7 @@ class ServiceManager(QtGui.QWidget):
             self.serviceItems.remove(self.serviceItems[item])
             self.serviceItems.insert(0, temp)
             self.repaintServiceList(0, count)
-        self.isModified = True
+        self.setModified(True)
 
     def onServiceUp(self):
         """
@@ -985,8 +986,8 @@ class ServiceManager(QtGui.QWidget):
                         u'expanded':expand})
                 self.repaintServiceList(len(self.serviceItems) + 1, 0)
             else:
-                self.serviceItems.insert(self.dropPosition, {u'service_item': item,
-                    u'order': self.dropPosition,
+                self.serviceItems.insert(self.dropPosition,
+                    {u'service_item': item, u'order': self.dropPosition,
                     u'expanded':expand})
                 self.repaintServiceList(self.dropPosition, 0)
             # if rebuilding list make sure live is fixed.
