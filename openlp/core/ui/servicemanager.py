@@ -144,8 +144,10 @@ class ServiceManager(QtGui.QWidget):
         self.themeComboBox = QtGui.QComboBox(self.toolbar)
         self.themeComboBox.setToolTip(translate('OpenLP.ServiceManager',
             'Select a theme for the service'))
-        self.themeComboBox.setSizePolicy(QtGui.QSizePolicy.Expanding,
-            QtGui.QSizePolicy.Fixed)
+        self.themeComboBox.setSizeAdjustPolicy(
+            QtGui.QComboBox.AdjustToMinimumContentsLength)
+        self.themeComboBox.setSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
         self.themeComboBox.setObjectName(u'themeComboBox')
         self.toolbar.addToolbarWidget(u'ThemeWidget', self.themeComboBox)
         self.toolbar.setObjectName(u'toolbar')
@@ -250,7 +252,7 @@ class ServiceManager(QtGui.QWidget):
             self.mainwindow.serviceSettingsSection + u'/service theme',
             QtCore.QVariant(u'')).toString())
         self.servicePath = AppLocation.get_section_data_path(u'servicemanager')
-        #build the drag and drop context menu
+        # build the drag and drop context menu
         self.dndMenu = QtGui.QMenu()
         self.newAction = self.dndMenu.addAction(
             translate('OpenLP.ServiceManager', '&Add New Item'))

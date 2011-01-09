@@ -86,6 +86,8 @@ class BibleMediaItem(MediaManagerItem):
         self.quickVersionLabel = QtGui.QLabel(self.quickTab)
         self.quickVersionLabel.setObjectName(u'quickVersionLabel')
         self.quickVersionComboBox = QtGui.QComboBox(self.quickTab)
+        self.quickVersionComboBox.setSizeAdjustPolicy(
+            QtGui.QComboBox.AdjustToMinimumContentsLength)
         self.quickVersionComboBox.setSizePolicy(
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
         self.quickVersionComboBox.setObjectName(u'quickVersionComboBox')
@@ -95,6 +97,8 @@ class BibleMediaItem(MediaManagerItem):
         self.quickSecondLabel = QtGui.QLabel(self.quickTab)
         self.quickSecondLabel.setObjectName(u'quickSecondLabel')
         self.quickSecondComboBox = QtGui.QComboBox(self.quickTab)
+        self.quickSecondComboBox.setSizeAdjustPolicy(
+            QtGui.QComboBox.AdjustToMinimumContentsLength)
         self.quickSecondComboBox.setSizePolicy(
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
         self.quickSecondComboBox.setObjectName(u'quickSecondComboBox')
@@ -103,6 +107,8 @@ class BibleMediaItem(MediaManagerItem):
         self.quickSearchTypeLabel = QtGui.QLabel(self.quickTab)
         self.quickSearchTypeLabel.setObjectName(u'quickSearchTypeLabel')
         self.quickSearchComboBox = QtGui.QComboBox(self.quickTab)
+        self.quickSearchComboBox.setSizeAdjustPolicy(
+            QtGui.QComboBox.AdjustToMinimumContentsLength)
         self.quickSearchComboBox.setSizePolicy(
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
         self.quickSearchComboBox.setObjectName(u'quickSearchComboBox')
@@ -118,6 +124,8 @@ class BibleMediaItem(MediaManagerItem):
         self.quickClearLabel = QtGui.QLabel(self.quickTab)
         self.quickClearLabel.setObjectName(u'quickClearLabel')
         self.quickClearComboBox = QtGui.QComboBox(self.quickTab)
+        self.quickClearComboBox.setSizeAdjustPolicy(
+            QtGui.QComboBox.AdjustToMinimumContentsLength)
         self.quickClearComboBox.setSizePolicy(
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
         self.quickClearComboBox.setObjectName(u'quickClearComboBox')
@@ -144,6 +152,8 @@ class BibleMediaItem(MediaManagerItem):
         self.advancedLayout.addWidget(self.advancedVersionLabel, 0, 0,
             QtCore.Qt.AlignRight)
         self.advancedVersionComboBox = QtGui.QComboBox(self.advancedTab)
+        self.advancedVersionComboBox.setSizeAdjustPolicy(
+            QtGui.QComboBox.AdjustToMinimumContentsLength)
         self.advancedVersionComboBox.setSizePolicy(
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
         self.advancedVersionComboBox.setObjectName(u'advancedVersionComboBox')
@@ -154,6 +164,8 @@ class BibleMediaItem(MediaManagerItem):
         self.advancedLayout.addWidget(self.advancedSecondLabel, 1, 0,
             QtCore.Qt.AlignRight)
         self.advancedSecondComboBox = QtGui.QComboBox(self.advancedTab)
+        self.advancedSecondComboBox.setSizeAdjustPolicy(
+            QtGui.QComboBox.AdjustToMinimumContentsLength)
         self.advancedSecondComboBox.setSizePolicy(
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
         self.advancedSecondComboBox.setObjectName(u'advancedSecondComboBox')
@@ -164,6 +176,8 @@ class BibleMediaItem(MediaManagerItem):
         self.advancedLayout.addWidget(self.advancedBookLabel, 2, 0,
             QtCore.Qt.AlignRight)
         self.advancedBookComboBox = QtGui.QComboBox(self.advancedTab)
+        self.advancedBookComboBox.setSizeAdjustPolicy(
+            QtGui.QComboBox.AdjustToMinimumContentsLength)
         self.advancedBookComboBox.setSizePolicy(
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
         self.advancedBookComboBox.setObjectName(u'advancedBookComboBox')
@@ -201,6 +215,8 @@ class BibleMediaItem(MediaManagerItem):
         self.advancedLayout.addWidget(self.advancedClearLabel, 6, 0,
             QtCore.Qt.AlignRight)
         self.advancedClearComboBox = QtGui.QComboBox(self.quickTab)
+        self.advancedClearComboBox.setSizeAdjustPolicy(
+            QtGui.QComboBox.AdjustToMinimumContentsLength)
         self.advancedClearComboBox.setSizePolicy(
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
         self.advancedClearComboBox.setObjectName(u'advancedClearComboBox')
@@ -709,11 +725,11 @@ class BibleMediaItem(MediaManagerItem):
         if len(items) == 0:
             return False
         bible_text = u''
+        old_item = None
         old_chapter = -1
         raw_footer = []
         raw_slides = []
         raw_title = []
-        first_item = True
         for item in items:
             bitem = self.listView.item(item.row())
             book = self._decodeQtObject(bitem, 'book')
@@ -754,9 +770,8 @@ class BibleMediaItem(MediaManagerItem):
             # We have to be 'Continuous'.
             else:
                 bible_text = u'%s %s\u00a0%s\n' % (bible_text, verse_text, text)
-            if first_item:
+            if not old_item:
                 start_item = item
-                first_item = False
             elif self.checkTitle(item, old_item):
                 raw_title.append(self.formatTitle(start_item, old_item))
                 start_item = item
