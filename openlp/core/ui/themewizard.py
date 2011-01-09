@@ -471,8 +471,6 @@ class Ui_ThemeWizard(object):
         self.mainColorLabel.setText(translate('OpenLP.ThemeWizard', 'Color:'))
         self.mainSizeLabel.setText(translate('OpenLP.ThemeWizard', 'Size:'))
         self.mainSizeSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'pt'))
-        self.mainLineCountLabel.setText(
-            translate('OpenLP.ThemeWizard', '(%d lines per slide)'))
         self.lineSpacingLabel.setText(
             translate('OpenLP.ThemeWizard', 'Line Spacing:'))
         self.lineSpacingSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'pt'))
@@ -564,17 +562,17 @@ class Ui_ThemeWizard(object):
         self.themeNameLabel.setText(
             translate('OpenLP.ThemeWizard', 'Theme name:'))
         # Align all QFormLayouts towards each other.
-        width = max(self.backgroundLabel.minimumSizeHint().width(),
-            self.colorLabel.minimumSizeHint().width())
-        width = max(width, self.gradientStartLabel.minimumSizeHint().width())
-        width = max(width, self.gradientEndLabel.minimumSizeHint().width())
-        width = max(width, self.gradientTypeLabel.minimumSizeHint().width())
-        width = max(width, self.imageLabel.minimumSizeHint().width())
-        self.backgroundTypeSpacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
-            QtGui.QSizePolicy.Fixed)
-        self.colorSpacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
-            QtGui.QSizePolicy.Fixed)
-        self.gradientSpacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
-            QtGui.QSizePolicy.Fixed)
-        self.imageSpacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
-            QtGui.QSizePolicy.Fixed)
+        labelWidth = max(self.backgroundLabel.minimumSizeHint().width(),
+            self.colorLabel.minimumSizeHint().width(),
+            self.gradientStartLabel.minimumSizeHint().width(),
+            self.gradientEndLabel.minimumSizeHint().width(),
+            self.gradientTypeLabel.minimumSizeHint().width(),
+            self.imageLabel.minimumSizeHint().width())
+        self.backgroundTypeSpacer.changeSize(labelWidth, 0,
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        self.colorSpacer.changeSize(labelWidth, 0,
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        self.gradientSpacer.changeSize(labelWidth, 0,
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        self.imageSpacer.changeSize(labelWidth, 0,
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)

@@ -45,13 +45,13 @@ class ThemeManager(QtGui.QWidget):
     """
     Manages the orders of Theme.
     """
-    def __init__(self, parent):
+    def __init__(self, mainwindow, parent=None):
         QtGui.QWidget.__init__(self, parent)
-        self.parent = parent
+        self.mainwindow = mainwindow
         self.settingsSection = u'themes'
         self.themeForm = ThemeForm(self)
         self.fileRenameForm = FileRenameForm(self)
-        self.serviceComboBox = self.parent.ServiceManagerContents.themeComboBox
+        self.serviceComboBox = self.mainwindow.ServiceManagerContents.themeComboBox
         # start with the layout
         self.layout = QtGui.QVBoxLayout(self)
         self.layout.setSpacing(0)
@@ -641,7 +641,7 @@ class ThemeManager(QtGui.QWidget):
                     (QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
                     QtGui.QMessageBox.No)
             if self.saveThemeName != u'':
-                for plugin in self.parent.pluginManager.plugins:
+                for plugin in self.mainwindow.pluginManager.plugins:
                     if plugin.usesTheme(self.saveThemeName):
                         plugin.renameTheme(self.saveThemeName, name)
                 if unicode(self.serviceComboBox.currentText()) == name:
@@ -727,7 +727,7 @@ class ThemeManager(QtGui.QWidget):
             Flag to tell message lines per page need to be generated.
         """
         log.debug(u'generateImage \n%s ', themeData)
-        return self.parent.renderManager.generate_preview(themeData, forcePage)
+        return self.mainwindow.renderManager.generate_preview(themeData, forcePage)
 
     def getPreviewImage(self, theme):
         """
@@ -788,7 +788,7 @@ class ThemeManager(QtGui.QWidget):
                 return False
             else:
                 if testPlugin:
-                    for plugin in self.parent.pluginManager.plugins:
+                    for plugin in self.mainwindow.pluginManager.plugins:
                         if plugin.usesTheme(theme):
                             QtGui.QMessageBox.critical(self,
                                 translate('OpenLP.ThemeManager', 'Error'),
