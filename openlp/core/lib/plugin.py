@@ -177,7 +177,7 @@ class Plugin(QtCore.QObject):
             self.settingsSection + u'/status', QtCore.QVariant(self.status))
         if new_status == PluginStatus.Active:
             self.initialise()
-        elif new_status == PluginStatus.InActive:
+        elif new_status == PluginStatus.Inactive:
             self.finalise()
 
     def isActive(self):
