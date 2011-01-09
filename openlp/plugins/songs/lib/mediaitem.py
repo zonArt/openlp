@@ -35,8 +35,7 @@ from openlp.core.lib import MediaManagerItem, BaseListWithDnD, Receiver, \
     ItemCapabilities, translate, check_item_selected
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     SongImportForm
-from openlp.plugins.songs.lib import OpenLyricsBuilder, OpenLyricsParser, \
-    SongXMLParser
+from openlp.plugins.songs.lib import OpenLyrics, SongXML
 from openlp.plugins.songs.lib.db import Author, Song
 from openlp.core.lib.searchedit import SearchEdit
 
@@ -59,8 +58,7 @@ class SongMediaItem(MediaManagerItem):
         self.ListViewWithDnD_class = SongListView
         MediaManagerItem.__init__(self, parent, self, icon)
         self.edit_song_form = EditSongForm(self, self.parent.manager)
-        self.openLyricsParser = OpenLyricsParser(self.parent.manager)
-        self.openLyricsBuilder = OpenLyricsBuilder(self.parent.manager)
+        self.openLyrics = OpenLyrics(self.parent.manager)
         self.singleServiceItem = False
         self.song_maintenance_form = SongMaintenanceForm(
             self.parent.manager, self)
@@ -353,8 +351,8 @@ class SongMediaItem(MediaManagerItem):
         service_item.theme = song.theme_name
         service_item.edit_id = item_id
         if song.lyrics.startswith(u'<?xml version='):
-            songXML = SongXMLParser(song.lyrics)
-            verseList = songXML.get_verses()
+            songXML = SongXML()
+            verseList = songXML.get_verses(song.lyrics)
             # no verse list or only 1 space (in error)
             if not song.verse_order or not song.verse_order.strip():
                 for verse in verseList:
@@ -397,7 +395,7 @@ class SongMediaItem(MediaManagerItem):
         ]
         service_item.data_string = {u'title': song.search_title,
             u'authors': author_list}
-        service_item.xml_version = self.openLyricsBuilder.song_to_xml(song)
+        service_item.xml_version = self.openLyrics.song_to_xml(song)
         return True
 
     def serviceLoad(self, item):
@@ -439,7 +437,7 @@ class SongMediaItem(MediaManagerItem):
                         break
             if add_song:
                 if self.addSongFromService:
-                    editId = self.openLyricsParser.xml_to_song(item.xml_version)
+                    editId = self.openLyrics.xml_to_song(item.xml_version)
             # Update service with correct song id.
             if editId != 0:
                 Receiver.send_message(u'service_item_update',

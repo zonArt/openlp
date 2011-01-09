@@ -175,7 +175,6 @@ def retrieve_windows_encoding(recommendation=None):
         return None
     return filter(lambda item: item[1] == choice[0], encodings)[0][0]
 
-from xml import OpenLyricsBuilder, OpenLyricsParser, SongXMLBuilder, \
-    SongXMLParser
+from xml import OpenLyrics, SongXML
 from songstab import SongsTab
 from mediaitem import SongMediaItem

@@ -35,7 +35,7 @@ from lxml import etree
 
 from openlp.core.lib import translate
 from openlp.plugins.songs.lib.songimport import SongImport
-from openlp.plugins.songs.lib import OpenLyricsParser
+from openlp.plugins.songs.lib import OpenLyrics
 
 log = logging.getLogger(__name__)
 
@@ -50,7 +50,7 @@ class OpenLyricsImport(SongImport):
         log.debug(u'initialise OpenLyricsImport')
         SongImport.__init__(self, master_manager)
         self.master_manager = master_manager
-        self.openLyricsParser = OpenLyricsParser(master_manager)
+        self.openLyrics = OpenLyrics(master_manager)
         if kwargs.has_key(u'filename'):
             self.import_source = kwargs[u'filename']
         if kwargs.has_key(u'filenames'):
@@ -70,7 +70,7 @@ class OpenLyricsImport(SongImport):
             parser = etree.XMLParser(remove_blank_text=True)
             file = etree.parse(file_path, parser)
             xml = unicode(etree.tostring(file))
-            if self.openLyricsParser.xml_to_song(xml) == 0:
+            if self.openLyrics.xml_to_song(xml) == 0:
                 log.debug(u'File could not be imported: %s' % file_path)
                 # Importing this song failed! For now we stop import.
                 return False
