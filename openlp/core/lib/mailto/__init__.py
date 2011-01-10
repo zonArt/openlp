@@ -230,7 +230,7 @@ def open(filename):
     return _open(filename)
 
 
-def _fix_addersses(**kwargs):
+def _fix_addresses(**kwargs):
     for headername in (u'address', u'to', u'cc', u'bcc'):
         try:
             headervalue = kwargs[headername]
@@ -260,7 +260,7 @@ def mailto_format(**kwargs):
     """
     # @TODO: implement utf8 option
 
-    kwargs = _fix_addersses(**kwargs)
+    kwargs = _fix_addresses(**kwargs)
     parts = []
     for headername in (u'to', u'cc', u'bcc', u'subject', u'body', u'attach'):
         if kwargs.has_key(headername):
