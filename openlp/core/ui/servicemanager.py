@@ -482,7 +482,7 @@ class ServiceManager(QtGui.QWidget):
         zip = None
         fileTo = None
         try:
-            zip = zipfile.ZipFile(unicode(fileName))
+            zip = zipfile.ZipFile(fileName)
             for file in zip.namelist():
                 try:
                     ucsfile = file.decode(u'utf-8')
