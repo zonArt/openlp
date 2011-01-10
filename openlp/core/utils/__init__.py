@@ -282,8 +282,38 @@ def split_filename(path):
     else:
         return os.path.split(path)
 
+def get_web_page(url, update_openlp=False):
+    """
+    Attempts to download the webpage at url and returns that page or None.
+
+    ``url``
+        The URL to be downloaded.
+
+    ``update_openlp``
+        Tells OpenLP to update itself if the page is successfully downloaded.
+        Defaults to False.
+    """
+    # TODO: Add proxy usage.  Get proxy info from OpenLP settings, add to a
+    # proxy_handler, build into an opener and install the opener into urllib2.
+    # http://docs.python.org/library/urllib2.html
+    if not url:
+        return None
+    page = None
+    log.debug(u'Downloading URL = %s' % url)
+    try:
+        page = urllib2.urlopen(url)
+        log.debug(u'Downloaded URL = %s' % page.geturl())
+    except urllib2.URLError:
+        log.exception(u'The web page could not be downloaded')
+    if not page:
+        return None
+    if update_openlp:
+        Receiver.send_message(u'openlp_process_events')
+    return page
+
 from languagemanager import LanguageManager
 from actions import ActionList
 
 __all__ = [u'AppLocation', u'check_latest_version', u'add_actions',
-    u'get_filesystem_encoding', u'LanguageManager', u'ActionList']
+    u'get_filesystem_encoding', u'LanguageManager', u'ActionList',
+    u'get_web_page']
