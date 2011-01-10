@@ -234,7 +234,7 @@ class Ui_BibleImportWizard(object):
             QtGui.QSizePolicy.Minimum)
         self.openlp1Layout.setItem(1, QtGui.QFormLayout.LabelRole,
             self.openlp1Spacer)
-        self.selectStack.addWidget(self.openlp1Widget) 
+        self.selectStack.addWidget(self.openlp1Widget)
         self.selectPageLayout.addLayout(self.selectStack)
         bibleImportWizard.addPage(self.selectPage)
         # License Page
