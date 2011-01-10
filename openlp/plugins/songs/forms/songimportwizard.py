@@ -39,7 +39,7 @@ class Ui_SongImportWizard(object):
             QtGui.QWizard.IndependentPages |
             QtGui.QWizard.NoBackButtonOnStartPage |
             QtGui.QWizard.NoBackButtonOnLastPage)
-        # Welcome Page 
+        # Welcome Page
         self.welcomePage = QtGui.QWizardPage()
         self.welcomePage.setPixmap(QtGui.QWizard.WatermarkPixmap,
             QtGui.QPixmap(u':/wizards/wizard_importsong.bmp'))
@@ -81,9 +81,6 @@ class Ui_SongImportWizard(object):
         self.addSingleFileSelectItem(u'openLP1', None, True)
         # OpenLyrics
         self.addMultiFileSelectItem(u'openLyrics', u'OpenLyrics', True)
-        # set OpenLyrics to disabled by default
-        self.openLyricsDisabledWidget.setVisible(True)
-        self.openLyricsImportWidget.setVisible(False)
         # Open Song
         self.addMultiFileSelectItem(u'openSong', u'OpenSong')
         # Words of Worship
@@ -177,10 +174,10 @@ class Ui_SongImportWizard(object):
             'importer has been disabled due to a missing Python module. If '
             'you want to use this importer, you will need to install the '
             '"python-sqlite" module.'))
-        #self.openLyricsAddButton.setText(
-        #    translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
-        #self.openLyricsRemoveButton.setText(
-        #    translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
+        self.openLyricsAddButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
+        self.openLyricsRemoveButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
         self.openLyricsDisabledLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'The OpenLyrics '
             'importer has not yet been developed, but as you can see, we are '

@@ -142,7 +142,8 @@ class Ui_MainWindow(object):
             build_icon(u':/system/system_servicemanager.png'))
         self.ServiceManagerDock.setMinimumWidth(
             self.settingsmanager.mainwindow_right)
-        self.ServiceManagerContents = ServiceManager(MainWindow)
+        self.ServiceManagerContents = ServiceManager(MainWindow,
+            self.ServiceManagerDock)
         self.ServiceManagerDock.setWidget(self.ServiceManagerContents)
         MainWindow.addDockWidget(QtCore.Qt.RightDockWidgetArea,
             self.ServiceManagerDock)
@@ -152,7 +153,8 @@ class Ui_MainWindow(object):
             build_icon(u':/system/system_thememanager.png'))
         self.ThemeManagerDock.setMinimumWidth(
             self.settingsmanager.mainwindow_right)
-        self.ThemeManagerContents = ThemeManager(MainWindow)
+        self.ThemeManagerContents = ThemeManager(MainWindow,
+            self.ThemeManagerDock)
         self.ThemeManagerContents.setObjectName(u'ThemeManagerContents')
         self.ThemeManagerDock.setWidget(self.ThemeManagerContents)
         MainWindow.addDockWidget(QtCore.Qt.RightDockWidgetArea,

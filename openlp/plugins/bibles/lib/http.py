@@ -231,6 +231,9 @@ class BGExtract(object):
         footnotes = soup.findAll(u'sup', u'footnote')
         if footnotes:
             [footnote.extract() for footnote in footnotes]
+        crossrefs = soup.findAll(u'sup', u'xref')
+        if crossrefs:
+            [crossref.extract() for crossref in crossrefs]
         cleanup = [(re.compile('\s+'), lambda match: ' ')]
         verses = BeautifulSoup(str(soup), markupMassage=cleanup)
         content = verses.find(u'div', u'result-text-style-normal')
@@ -306,7 +309,7 @@ class BSExtract(object):
         finally:
             if not content:
                 return None
-        verse_number = re.compile(r'v(\d{2})(\d{3})(\d{3}) verse')
+        verse_number = re.compile(r'v(\d{1,2})(\d{3})(\d{3}) verse')
         verses = {}
         for verse in content:
             Receiver.send_message(u'openlp_process_events')
