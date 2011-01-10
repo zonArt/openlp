@@ -373,19 +373,19 @@ class Ui_BibleImportWizard(object):
             'you want to use this importer, you will need to install the '
             '"python-sqlite" module.'))
         # Align all QFormLayouts towards each other.
-        width = max(self.formatLabel.minimumSizeHint().width(),
-            self.osisFileLabel.minimumSizeHint().width())
-        width = max(width, self.csvBooksLabel.minimumSizeHint().width())
-        width = max(width, self.csvVersesLabel.minimumSizeHint().width())
-        width = max(width, self.openSongFileLabel.minimumSizeHint().width())
-        width = max(width, self.openlp1FileLabel.minimumSizeHint().width())
-        self.formatSpacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
-            QtGui.QSizePolicy.Fixed)
-        self.osisSpacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
-            QtGui.QSizePolicy.Fixed)
-        self.csvSpacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
-            QtGui.QSizePolicy.Fixed)
-        self.openSongSpacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
-            QtGui.QSizePolicy.Fixed)
-        self.openlp1Spacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
-            QtGui.QSizePolicy.Fixed)
+        labelWidth = max(self.formatLabel.minimumSizeHint().width(),
+            self.osisFileLabel.minimumSizeHint().width(),
+            self.csvBooksLabel.minimumSizeHint().width(),
+            self.csvVersesLabel.minimumSizeHint().width(),
+            self.openSongFileLabel.minimumSizeHint().width(),
+            self.openlp1FileLabel.minimumSizeHint().width())
+        self.formatSpacer.changeSize(labelWidth, 0,
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        self.osisSpacer.changeSize(labelWidth, 0,
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        self.csvSpacer.changeSize(labelWidth, 0,
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        self.openSongSpacer.changeSize(labelWidth, 0,
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        self.openlp1Spacer.changeSize(labelWidth, 0,
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)

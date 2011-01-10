@@ -309,7 +309,7 @@ class BSExtract(object):
         finally:
             if not content:
                 return None
-        verse_number = re.compile(r'v(\d{2})(\d{3})(\d{3}) verse')
+        verse_number = re.compile(r'v(\d{1,2})(\d{3})(\d{3}) verse')
         verses = {}
         for verse in content:
             Receiver.send_message(u'openlp_process_events')

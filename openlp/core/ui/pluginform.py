@@ -61,6 +61,7 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         self.programaticChange = True
         self._clearDetails()
         self.programaticChange = True
+        pluginListWidth = 0
         for plugin in self.parent.pluginManager.plugins:
             item = QtGui.QListWidgetItem(self.pluginListWidget)
             # We do this just to make 100% sure the status is an integer as
@@ -83,8 +84,11 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             if plugin.icon:
                 item.setIcon(plugin.icon)
             self.pluginListWidget.addItem(item)
-        self.pluginListWidget.setFixedWidth(
-            self.pluginListWidget.sizeHint().width())
+            pluginListWidth = max(pluginListWidth, self.fontMetrics().width(
+                unicode(translate('OpenLP.PluginForm', '%s (Inactive)')) % 
+                name_string[u'singular']))
+        self.pluginListWidget.setFixedWidth(pluginListWidth +
+            self.pluginListWidget.iconSize().width() + 48)
 
     def _clearDetails(self):
         self.statusComboBox.setCurrentIndex(-1)
@@ -126,10 +130,8 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             return
         if status == 0:
             self.activePlugin.toggleStatus(PluginStatus.Active)
-            self.activePlugin.initialise()
         else:
             self.activePlugin.toggleStatus(PluginStatus.Inactive)
-            self.activePlugin.finalise()
         status_text = unicode(
             translate('OpenLP.PluginForm', '%s (Inactive)'))
         if self.activePlugin.status == PluginStatus.Active:

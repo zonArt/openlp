@@ -153,7 +153,11 @@ class SongMediaItem(MediaManagerItem):
             (3, u':/songs/song_search_lyrics.png',
                 translate('SongsPlugin.MediaItem', 'Lyrics')),
             (4, u':/songs/song_search_author.png',
-                translate('SongsPlugin.MediaItem', 'Authors'))])
+                translate('SongsPlugin.MediaItem', 'Authors')),
+            (5, u':/slides/slide_theme.png',
+                translate('SongsPlugin.MediaItem', 'Themes'))
+        ])
+
         self.configUpdated()
 
     def onSearchTextButtonClick(self):
@@ -187,6 +191,12 @@ class SongMediaItem(MediaManagerItem):
                 Author.display_name.like(u'%' + search_keywords + u'%'),
                 Author.display_name.asc())
             self.displayResultsAuthor(search_results)
+        elif search_type == 5:
+            log.debug(u'Theme Search')
+            search_results = self.parent.manager.get_all_objects(Song,
+                Song.theme_name == search_keywords,
+                Song.search_lyrics.asc())
+            self.displayResultsSong(search_results)
 
     def onSongListLoad(self):
         """

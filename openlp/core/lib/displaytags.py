@@ -23,35 +23,45 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+Provide Html Tag management and Display Tag access class
+"""
 
-from PyQt4 import QtCore, QtGui
+from openlp.core.lib import base_html_expands
 
-from openlp.core.lib import translate, build_icon
+class DisplayTags(object):
+    """
+    Static Class to HTML Tags to be access around the code the list is managed
+    by the Options Tab.
+    """
+    html_expands = []
 
-class Ui_SettingsDialog(object):
-    def setupUi(self, settingsDialog):
-        settingsDialog.setObjectName(u'settingsDialog')
-        settingsDialog.resize(700, 500)
-        settingsDialog.setWindowIcon(
-            build_icon(u':/system/system_settings.png'))
-        self.settingsLayout = QtGui.QVBoxLayout(settingsDialog)
-        margins = self.settingsLayout.contentsMargins()
-        self.settingsLayout.setObjectName(u'settingsLayout')
-        self.settingsTabWidget = QtGui.QTabWidget(settingsDialog)
-        self.settingsTabWidget.setObjectName(u'settingsTabWidget')
-        self.settingsLayout.addWidget(self.settingsTabWidget)
-        self.buttonBox = QtGui.QDialogButtonBox(settingsDialog)
-        self.buttonBox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName(u'buttonBox')
-        self.settingsLayout.addWidget(self.buttonBox)
-        self.retranslateUi(settingsDialog)
-        QtCore.QObject.connect(self.buttonBox,
-            QtCore.SIGNAL(u'accepted()'), settingsDialog.accept)
-        QtCore.QObject.connect(self.buttonBox,
-            QtCore.SIGNAL(u'rejected()'), settingsDialog.reject)
-        QtCore.QMetaObject.connectSlotsByName(settingsDialog)
+    @staticmethod
+    def get_html_tags():
+        """
+        Provide access to the html_expands list.
+        """
+        return DisplayTags.html_expands
 
-    def retranslateUi(self, settingsDialog):
-        settingsDialog.setWindowTitle(translate('OpenLP.SettingsForm',
-            'Configure OpenLP'))
+    @staticmethod
+    def reset_html_tags():
+        """
+        Resets the html_expands list.
+        """
+        DisplayTags.html_expands = []
+        for html in base_html_expands:
+            DisplayTags.html_expands.append(html)
+
+    @staticmethod
+    def add_html_tag(tag):
+        """
+        Add a new tag to the list
+        """
+        DisplayTags.html_expands.append(tag)
+
+    @staticmethod
+    def remove_html_tag(id):
+        """
+        Removes amd individual html_expands list.
+        """
+        DisplayTags.html_expands.pop(id)
