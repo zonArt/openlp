@@ -423,7 +423,7 @@ class BibleMediaItem(MediaManagerItem):
                 u'title': translate('BiblePlugin.MediaItem', 'Error'),
                 u'message': translate('BiblePlugin.MediaItem',
                 'Bible not fully loaded')
-                })
+            })
         else:
             self.advancedSearchButton.setEnabled(True)
             self.adjustComboBox(1, self.chapter_count, self.advancedFromChapter)
