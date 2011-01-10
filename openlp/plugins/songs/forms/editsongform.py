@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, translate
 from openlp.plugins.songs.forms import EditVerseForm
-from openlp.plugins.songs.lib import SongXMLBuilder, SongXMLParser, VerseType
+from openlp.plugins.songs.lib import SongXML, VerseType
 from openlp.plugins.songs.lib.db import Book, Song, Author, Topic
 from editsongdialog import Ui_EditSongDialog
 
@@ -263,8 +263,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if isinstance(self.song.lyrics, buffer):
             self.song.lyrics = unicode(self.song.lyrics)
         if self.song.lyrics.startswith(u'<?xml version='):
-            songXML = SongXMLParser(self.song.lyrics)
-            verseList = songXML.get_verses()
+            songXML = SongXML()
+            verseList = songXML.get_verses(self.song.lyrics)
             for count, verse in enumerate(verseList):
                 self.verseListWidget.setRowCount(
                     self.verseListWidget.rowCount() + 1)
@@ -731,7 +731,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def processLyrics(self):
         log.debug(u'processLyrics')
         try:
-            sxml = SongXMLBuilder()
+            sxml = SongXML()
             text = u''
             multiple = []
             for i in range(0, self.verseListWidget.rowCount()):

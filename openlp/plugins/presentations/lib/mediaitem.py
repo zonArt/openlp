@@ -116,8 +116,10 @@ class PresentationMediaItem(MediaManagerItem):
         self.displayTypeLabel = QtGui.QLabel(self.presentationWidget)
         self.displayTypeLabel.setObjectName(u'displayTypeLabel')
         self.displayTypeComboBox = QtGui.QComboBox(self.presentationWidget)
-        self.displayTypeComboBox.setSizePolicy(QtGui.QSizePolicy.Expanding,
-            QtGui.QSizePolicy.Fixed)
+        self.displayTypeComboBox.setSizeAdjustPolicy(
+            QtGui.QComboBox.AdjustToMinimumContentsLength)
+        self.displayTypeComboBox.setSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
         self.displayTypeComboBox.setObjectName(u'displayTypeComboBox')
         self.displayTypeLabel.setBuddy(self.displayTypeComboBox)
         self.displayLayout.addRow(self.displayTypeLabel,
