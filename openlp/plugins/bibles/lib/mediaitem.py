@@ -137,9 +137,6 @@ class BibleMediaItem(MediaManagerItem):
         self.quickSearchButton.setObjectName(u'quickSearchButton')
         self.quickSearchButtonLayout.addWidget(self.quickSearchButton)
         self.quickLayout.addRow(self.quickSearchButtonLayout)
-        self.quickMessage = QtGui.QLabel(self.quickTab)
-        self.quickMessage.setObjectName(u'quickMessage')
-        self.quickLayout.addRow(self.quickMessage)
         self.searchTabWidget.addTab(self.quickTab,
             translate('BiblesPlugin.MediaItem', 'Quick'))
         # Add the Advanced Search tab.
@@ -231,9 +228,6 @@ class BibleMediaItem(MediaManagerItem):
         self.advancedSearchButtonLayout.addWidget(self.advancedSearchButton)
         self.advancedLayout.addLayout(
             self.advancedSearchButtonLayout, 7, 0, 1, 3)
-        self.advancedMessage = QtGui.QLabel(self.advancedTab)
-        self.advancedMessage.setObjectName(u'advancedMessage')
-        self.advancedLayout.addWidget(self.advancedMessage, 8, 0, 1, 3)
         self.searchTabWidget.addTab(self.advancedTab,
             translate('BiblesPlugin.MediaItem', 'Advanced'))
         # Add the search tab widget to the page layout.
@@ -347,13 +341,6 @@ class BibleMediaItem(MediaManagerItem):
         self.configUpdated()
         log.debug(u'bible manager initialise complete')
 
-    def setQuickMessage(self, text):
-        self.quickMessage.setText(text)
-        self.advancedMessage.setText(text)
-        Receiver.send_message(u'openlp_process_events')
-        # Minor delay to get the events processed.
-        time.sleep(0.1)
-
     def onListViewResize(self, width, height):
         listViewGeometry = self.listView.geometry()
         self.SearchProgress.setGeometry(listViewGeometry.x(),
@@ -432,11 +419,13 @@ class BibleMediaItem(MediaManagerItem):
         verse_count = self.parent.manager.get_verse_count(bible, book, 1)
         if verse_count == 0:
             self.advancedSearchButton.setEnabled(False)
-            self.advancedMessage.setText(
-                translate('BiblesPlugin.MediaItem', 'Bible not fully loaded.'))
+            Receiver.send_message(u'openlp_error_message', {
+                u'title': translate('BiblePlugin.MediaItem', 'Error'),
+                u'message': translate('BiblePlugin.MediaItem',
+                'Bible not fully loaded')
+                })
         else:
             self.advancedSearchButton.setEnabled(True)
-            self.advancedMessage.setText(u'')
             self.adjustComboBox(1, self.chapter_count, self.advancedFromChapter)
             self.adjustComboBox(1, self.chapter_count, self.advancedToChapter)
             self.adjustComboBox(1, verse_count, self.advancedFromVerse)
@@ -606,6 +595,7 @@ class BibleMediaItem(MediaManagerItem):
                     second_bible, text)
         else:
             # We are doing a 'Text Search'.
+            Receiver.send_message(u'cursor_busy')
             bibles = self.parent.manager.get_bibles()
             self.search_results = self.parent.manager.verse_search(bible,
                 second_bible, text)
@@ -636,6 +626,7 @@ class BibleMediaItem(MediaManagerItem):
         elif self.search_results:
             self.displayResults(bible, second_bible)
         self.quickSearchButton.setEnabled(True)
+        Receiver.send_message(u'cursor_normal')
 
     def displayResults(self, bible, second_bible=u''):
         """
