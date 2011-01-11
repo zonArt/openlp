@@ -34,7 +34,7 @@ from subprocess import Popen, PIPE
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import Receiver, check_directory_exists
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
 from openlp.core.ui.exceptionform import ExceptionForm
@@ -150,16 +150,16 @@ class OpenLP(QtGui.QApplication):
             log.info(u'Openlp version %s' % app_version[u'version'])
         return app_version
 
-    def notify(self, obj, evt):
-        #TODO needed for presentation exceptions
-        return QtGui.QApplication.notify(self, obj, evt)
+#    def notify(self, obj, evt):
+#        #TODO needed for presentation exceptions
+#        return QtGui.QApplication.notify(self, obj, evt)
 
     def run(self):
         """
         Run the OpenLP application.
         """
         app_version = self._get_version()
-        #provide a listener for widgets to reqest a screen update.
+        # provide a listener for widgets to reqest a screen update.
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlp_process_events'), self.processEvents)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -182,7 +182,7 @@ class OpenLP(QtGui.QApplication):
         screens = ScreenList()
         # Decide how many screens we have and their size
         for screen in xrange(0, self.desktop().numScreens()):
-            size = self.desktop().screenGeometry(screen);
+            size = self.desktop().screenGeometry(screen)
             screens.add_screen({u'number': screen,
                 u'size': size,
                 u'primary': (self.desktop().primaryScreen() == screen)})
@@ -216,7 +216,7 @@ class OpenLP(QtGui.QApplication):
 
     def setNormalCursor(self):
         """
-        Sets the Normal Cursor forthe Application
+        Sets the Normal Cursor for the Application
         """
         self.restoreOverrideCursor()
 
@@ -243,8 +243,7 @@ def main():
         help='Set the Qt4 style (passed directly to Qt4).')
     # Set up logging
     log_path = AppLocation.get_directory(AppLocation.CacheDir)
-    if not os.path.exists(log_path):
-        os.makedirs(log_path)
+    check_directory_exists(log_path)
     filename = os.path.join(log_path, u'openlp.log')
     logfile = logging.FileHandler(filename, u'w')
     logfile.setFormatter(logging.Formatter(

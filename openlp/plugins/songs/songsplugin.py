@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
-from openlp.plugins.songs.lib import SongMediaItem, SongsTab, SongXMLParser
+from openlp.plugins.songs.lib import SongMediaItem, SongsTab, SongXML
 from openlp.plugins.songs.lib.db import init_schema, Song
 from openlp.plugins.songs.lib.importer import SongFormat
 
@@ -153,7 +153,7 @@ class SongsPlugin(Plugin):
             song.search_title = self.whitespace.sub(u' ', song.title.lower() + \
                 u' ' + song.alternate_title.lower())
             lyrics = u''
-            verses = SongXMLParser(song.lyrics).get_verses()
+            verses = SongXML().get_verses(song.lyrics)
             for verse in verses:
                 lyrics = lyrics + self.whitespace.sub(u' ', verse[1]) + u' '
             song.search_lyrics = lyrics.lower()

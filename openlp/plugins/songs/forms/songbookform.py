@@ -42,18 +42,18 @@ class SongBookForm(QtGui.QDialog, Ui_SongBookDialog):
 
     def exec_(self, clear=True):
         if clear:
-            self.NameEdit.clear()
-            self.PublisherEdit.clear()
-        self.NameEdit.setFocus()
+            self.nameEdit.clear()
+            self.publisherEdit.clear()
+        self.nameEdit.setFocus()
         return QtGui.QDialog.exec_(self)
 
     def accept(self):
-        if not self.NameEdit.text():
+        if not self.nameEdit.text():
             QtGui.QMessageBox.critical(
                 self, translate('SongsPlugin.SongBookForm', 'Error'),
                 translate('SongsPlugin.SongBookForm',
                     'You need to type in a name for the book.'))
-            self.NameEdit.setFocus()
+            self.nameEdit.setFocus()
             return False
         else:
             return QtGui.QDialog.accept(self)
