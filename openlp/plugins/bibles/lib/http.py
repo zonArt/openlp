@@ -438,7 +438,7 @@ class HTTPBible(BibleDB):
                     book_details[u'testament_id'])
             book = db_book.name
             if BibleDB.get_verse_count(self, book, reference[1]) == 0:
-                Receiver.send_message(u'bibles_showprogress')
+                Receiver.send_message(u'cursor_busy')
                 Receiver.send_message(u'openlp_process_events')
                 search_results = self.get_chapter(book, reference[1])
                 if search_results and search_results.has_verselist():
@@ -453,7 +453,7 @@ class HTTPBible(BibleDB):
                     self.create_chapter(db_book.id, search_results.chapter,
                         search_results.verselist)
                     Receiver.send_message(u'openlp_process_events')
-                Receiver.send_message(u'bibles_hideprogress')
+                Receiver.send_message(u'cursor_normal')
             Receiver.send_message(u'openlp_process_events')
         return BibleDB.get_verses(self, reference_list)
 

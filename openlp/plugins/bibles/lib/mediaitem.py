@@ -44,10 +44,6 @@ class BibleListView(BaseListWithDnD):
         self.PluginName = u'Bibles'
         BaseListWithDnD.__init__(self, parent)
 
-    def resizeEvent(self, event):
-        self.parent().onListViewResize(event.size().width(),
-            event.size().width())
-
 
 class BibleMediaItem(MediaManagerItem):
     """
@@ -257,22 +253,9 @@ class BibleMediaItem(MediaManagerItem):
         # Other stuff
         QtCore.QObject.connect(self.quickSearchEdit,
             QtCore.SIGNAL(u'returnPressed()'), self.onQuickSearchButton)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'bibles_showprogress'), self.onSearchProgressShow)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'bibles_hideprogress'), self.onSearchProgressHide)
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
-        # Progress Bar
-        self.SearchProgress = QtGui.QProgressBar(self)
-        self.SearchProgress.setFormat('')
-        self.SearchProgress.setMinimum(0)
-        self.SearchProgress.setMaximum(0)
-        self.SearchProgress.setGeometry(self.listView.geometry().left(),
-            self.listView.geometry().top(), 81, 23)
-        self.SearchProgress.setVisible(False)
-        self.SearchProgress.setObjectName(u'SearchProgress')
 
     def configUpdated(self):
         log.debug(u'configUpdated')
@@ -340,18 +323,6 @@ class BibleMediaItem(MediaManagerItem):
         self.updateAutoCompleter()
         self.configUpdated()
         log.debug(u'bible manager initialise complete')
-
-    def onListViewResize(self, width, height):
-        listViewGeometry = self.listView.geometry()
-        self.SearchProgress.setGeometry(listViewGeometry.x(),
-            (listViewGeometry.y() + listViewGeometry.height()) - 23, 81, 23)
-
-    def onSearchProgressShow(self):
-        self.SearchProgress.setVisible(True)
-        Receiver.send_message(u'openlp_process_events')
-
-    def onSearchProgressHide(self):
-        self.SearchProgress.setVisible(False)
 
     def onImportClick(self):
         if not hasattr(self, u'import_wizard'):

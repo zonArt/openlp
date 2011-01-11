@@ -207,12 +207,6 @@ class EventReceiver(QtCore.QObject):
     ``bibles_nobook``
         Attempt to find book resulted in no match
 
-    ``bibles_showprogress``
-        Show progress of bible verse import
-
-    ``bibles_hideprogress``
-        Hide progress of bible verse import
-
     ``bibles_stop_import``
         Stops the Bible Import
 
