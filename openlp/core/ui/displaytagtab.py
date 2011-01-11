@@ -59,7 +59,7 @@ class DisplayTagTab(SettingsTab):
         # cPickle only accepts str not unicode strings
         user_expands_string = str(unicode(user_expands).encode(u'utf8'))
         if user_expands_string:
-            user_tags = cPickle.loads(user_expand_string)
+            user_tags = cPickle.loads(user_expands_string)
             # If we have some user ones added them as well
             for t in user_tags:
                 DisplayTags.add_html_tag(t)
