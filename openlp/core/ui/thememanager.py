@@ -156,6 +156,7 @@ class ThemeManager(QtGui.QWidget):
         """
         realThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
         themeName = unicode(item.text())
+        # If default theme restrict actions
         if realThemeName == themeName:
             self.deleteToolbarAction.setVisible(True)
         else:
