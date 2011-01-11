@@ -51,7 +51,7 @@ class ThemeManager(QtGui.QWidget):
         self.settingsSection = u'themes'
         self.themeForm = ThemeForm(self)
         self.fileRenameForm = FileRenameForm(self)
-        self.serviceComboBox =\
+        self.serviceComboBox = \
             self.mainwindow.ServiceManagerContents.themeComboBox
         # start with the layout
         self.layout = QtGui.QVBoxLayout(self)
@@ -654,7 +654,8 @@ class ThemeManager(QtGui.QWidget):
             Flag to tell message lines per page need to be generated.
         """
         log.debug(u'generateImage \n%s ', themeData)
-        return self.mainwindow.renderManager.generate_preview(themeData, forcePage)
+        return self.mainwindow.renderManager.generate_preview(
+            themeData, forcePage)
 
     def getPreviewImage(self, theme):
         """

@@ -371,9 +371,9 @@ class ServiceManager(QtGui.QWidget):
                 self.saveFile()
         fileName = unicode(QtGui.QFileDialog.getOpenFileName(self.mainwindow,
             translate('OpenLP.ServiceManager', 'Open File'),
-            SettingsManager.get_last_dir(self.mainwindow.serviceSettingsSection),
-            translate('OpenLP.ServiceManager',
-            'OpenLP Service Files (*.osz)')))
+            SettingsManager.get_last_dir(
+            self.mainwindow.serviceSettingsSection),
+            translate('OpenLP.ServiceManager', 'OpenLP Service Files (*.osz)')))
         if not fileName:
             return False
         SettingsManager.set_last_dir(self.mainwindow.serviceSettingsSection,
@@ -461,9 +461,9 @@ class ServiceManager(QtGui.QWidget):
         """
         fileName = unicode(QtGui.QFileDialog.getSaveFileName(self.mainwindow,
             translate('OpenLP.ServiceManager', 'Save Service'),
-            SettingsManager.get_last_dir(self.mainwindow.serviceSettingsSection),
-            translate('OpenLP.ServiceManager',
-            'OpenLP Service Files (*.osz)')))
+            SettingsManager.get_last_dir(
+            self.mainwindow.serviceSettingsSection),
+            translate('OpenLP.ServiceManager', 'OpenLP Service Files (*.osz)')))
         if not fileName:
             return False
         if os.path.splitext(fileName)[1] == u'':
@@ -482,7 +482,7 @@ class ServiceManager(QtGui.QWidget):
         zip = None
         fileTo = None
         try:
-            zip = zipfile.ZipFile(unicode(fileName))
+            zip = zipfile.ZipFile(fileName)
             for file in zip.namelist():
                 try:
                     ucsfile = file.decode(u'utf-8')
@@ -951,7 +951,8 @@ class ServiceManager(QtGui.QWidget):
                 newItem.merge(item[u'service_item'])
                 item[u'service_item'] = newItem
                 self.repaintServiceList(itemcount + 1, 0)
-                self.mainwindow.liveController.replaceServiceManagerItem(newItem)
+                self.mainwindow.liveController.replaceServiceManagerItem(
+                    newItem)
         self.setModified(True)
 
     def addServiceItem(self, item, rebuild=False, expand=None, replace=False):

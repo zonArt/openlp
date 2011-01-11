@@ -25,7 +25,6 @@
 ###############################################################################
 
 import logging
-import time
 
 from PyQt4 import QtCore, QtGui
 
