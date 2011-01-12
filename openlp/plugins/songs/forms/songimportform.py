@@ -73,12 +73,12 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
         QtCore.QObject.connect(self.openLP1BrowseButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onOpenLP1BrowseButtonClicked)
-        #QtCore.QObject.connect(self.openLyricsAddButton,
-        #    QtCore.SIGNAL(u'clicked()'),
-        #    self.onOpenLyricsAddButtonClicked)
-        #QtCore.QObject.connect(self.openLyricsRemoveButton,
-        #    QtCore.SIGNAL(u'clicked()'),
-        #    self.onOpenLyricsRemoveButtonClicked)
+        QtCore.QObject.connect(self.openLyricsAddButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onOpenLyricsAddButtonClicked)
+        QtCore.QObject.connect(self.openLyricsRemoveButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onOpenLyricsRemoveButtonClicked)
         QtCore.QObject.connect(self.openSongAddButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onOpenSongAddButtonClicked)
@@ -133,8 +133,8 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
         """
         Stop the import on cancel button, close button or ESC key.
         """
-        log.debug('Import canceled by user.')
-        if self.currentId() == 2:
+        log.debug(u'Import canceled by user.')
+        if self.currentPage() == self.importPage:
             Receiver.send_message(u'songs_stop_import')
         self.done(QtGui.QDialog.Rejected)
 
@@ -142,11 +142,9 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
         """
         Validate the current page before moving on to the next page.
         """
-        if self.currentId() == 0:
-            # Welcome page
+        if self.currentPage() == self.welcomePage:
             return True
-        elif self.currentId() == 1:
-            # Select page
+        elif self.currentPage() == self.sourcePage:
             source_format = self.formatComboBox.currentIndex()
             if source_format == SongFormat.OpenLP2:
                 if self.openLP2FilenameEdit.text().isEmpty():
@@ -169,16 +167,15 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
                     self.openLP1BrowseButton.setFocus()
                     return False
             elif source_format == SongFormat.OpenLyrics:
-#                if self.openLyricsFileListWidget.count() == 0:
-#                    QtGui.QMessageBox.critical(self,
-#                        translate('SongsPlugin.ImportWizardForm',
-#                        'No OpenLyrics Files Selected'),
-#                        translate('SongsPlugin.ImportWizardForm',
-#                        'You need to add at least one OpenLyrics '
-#                        'song file to import from.'))
-#                    self.openLyricsAddButton.setFocus()
-#                    return False
-                return False
+                if self.openLyricsFileListWidget.count() == 0:
+                    QtGui.QMessageBox.critical(self,
+                        translate('SongsPlugin.ImportWizardForm',
+                        'No OpenLyrics Files Selected'),
+                        translate('SongsPlugin.ImportWizardForm',
+                        'You need to add at least one OpenLyrics '
+                        'song file to import from.'))
+                    self.openLyricsAddButton.setFocus()
+                    return False
             elif source_format == SongFormat.OpenSong:
                 if self.openSongFileListWidget.count() == 0:
                     QtGui.QMessageBox.critical(self,
@@ -250,8 +247,7 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
                     self.songBeamerAddButton.setFocus()
                     return False
             return True
-        elif self.currentId() == 2:
-            # Progress page
+        elif self.currentPage() == self.importPage:
             return True
 
     def getFileName(self, title, editbox, filters=u''):
@@ -275,8 +271,8 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
         filters += u'%s (*)' % translate('SongsPlugin.ImportWizardForm',
             'All Files')
         filename = QtGui.QFileDialog.getOpenFileName(self, title,
-            os.path.dirname(SettingsManager.get_last_dir(
-            self.plugin.settingsSection, 1)), filters)
+            SettingsManager.get_last_dir(self.plugin.settingsSection, 1),
+            filters)
         if filename:
             editbox.setText(filename)
             SettingsManager.set_last_dir(self.plugin.settingsSection,
@@ -303,8 +299,8 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
         filters += u'%s (*)' % translate('SongsPlugin.ImportWizardForm',
             'All Files')
         filenames = QtGui.QFileDialog.getOpenFileNames(self, title,
-            os.path.dirname(SettingsManager.get_last_dir(
-            self.plugin.settingsSection, 1)), filters)
+            SettingsManager.get_last_dir(self.plugin.settingsSection, 1),
+            filters)
         if filenames:
             listbox.addItems(filenames)
             SettingsManager.set_last_dir(
@@ -340,15 +336,15 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
             'openlp.org v1.x Databases')
         )
 
-    #def onOpenLyricsAddButtonClicked(self):
-    #    self.getFiles(
-    #        translate('SongsPlugin.ImportWizardForm',
-    #        'Select OpenLyrics Files'),
-    #        self.openLyricsFileListWidget
-    #    )
+    def onOpenLyricsAddButtonClicked(self):
+        self.getFiles(
+            translate('SongsPlugin.ImportWizardForm',
+            'Select OpenLyrics Files'),
+            self.openLyricsFileListWidget
+        )
 
-    #def onOpenLyricsRemoveButtonClicked(self):
-    #    self.removeSelectedItems(self.openLyricsFileListWidget)
+    def onOpenLyricsRemoveButtonClicked(self):
+        self.removeSelectedItems(self.openLyricsFileListWidget)
 
     def onOpenSongAddButtonClicked(self):
         self.getFiles(
@@ -423,7 +419,7 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
         self.removeSelectedItems(self.songBeamerFileListWidget)
 
     def onCurrentIdChanged(self, id):
-        if id == 2:
+        if self.page(id) == self.importPage:
             self.preImport()
             self.performImport()
             self.postImport()
@@ -438,7 +434,7 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
         self.formatComboBox.setCurrentIndex(0)
         self.openLP2FilenameEdit.setText(u'')
         self.openLP1FilenameEdit.setText(u'')
-        #self.openLyricsFileListWidget.clear()
+        self.openLyricsFileListWidget.clear()
         self.openSongFileListWidget.clear()
         self.wordsOfWorshipFileListWidget.clear()
         self.ccliFileListWidget.clear()

@@ -35,7 +35,7 @@ from openlp.core.lib import MediaManagerItem, BaseListWithDnD, Receiver, \
     ItemCapabilities, translate, check_item_selected
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     SongImportForm
-from openlp.plugins.songs.lib import SongXMLParser, OpenLyricsParser
+from openlp.plugins.songs.lib import OpenLyrics, SongXML
 from openlp.plugins.songs.lib.db import Author, Song
 from openlp.core.lib.searchedit import SearchEdit
 
@@ -58,7 +58,7 @@ class SongMediaItem(MediaManagerItem):
         self.ListViewWithDnD_class = SongListView
         MediaManagerItem.__init__(self, parent, self, icon)
         self.edit_song_form = EditSongForm(self, self.parent.manager)
-        self.openLyrics = OpenLyricsParser(self.parent.manager)
+        self.openLyrics = OpenLyrics(self.parent.manager)
         self.singleServiceItem = False
         self.song_maintenance_form = SongMaintenanceForm(
             self.parent.manager, self)
@@ -74,46 +74,37 @@ class SongMediaItem(MediaManagerItem):
     def addEndHeaderBar(self):
         self.addToolbarSeparator()
         ## Song Maintenance Button ##
-        self.addToolbarButton(
-            translate('SongsPlugin.MediaItem', 'Song Maintenance'),
-            translate('SongsPlugin.MediaItem',
-            'Maintain the lists of authors, topics and books'),
+        self.maintenanceAction = self.addToolbarButton(u'', u'',
             ':/songs/song_maintenance.png', self.onSongMaintenanceClick)
-        self.pageLayout.setSpacing(4)
-        self.SearchLayout = QtGui.QFormLayout()
-        self.SearchLayout.setMargin(0)
-        self.SearchLayout.setSpacing(4)
-        self.SearchLayout.setObjectName(u'SearchLayout')
-        self.SearchTextLabel = QtGui.QLabel(self)
-        self.SearchTextLabel.setAlignment(
-            QtCore.Qt.AlignBottom|QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft)
-        self.SearchTextLabel.setObjectName(u'SearchTextLabel')
-        self.SearchLayout.setWidget(
-            0, QtGui.QFormLayout.LabelRole, self.SearchTextLabel)
-        self.SearchTextEdit = SearchEdit(self)
-        self.SearchTextEdit.setObjectName(u'SearchTextEdit')
-        self.SearchLayout.setWidget(
-            0, QtGui.QFormLayout.FieldRole, self.SearchTextEdit)
-        self.pageLayout.addLayout(self.SearchLayout)
-        self.SearchButtonLayout = QtGui.QHBoxLayout()
-        self.SearchButtonLayout.setMargin(0)
-        self.SearchButtonLayout.setSpacing(4)
-        self.SearchButtonLayout.setObjectName(u'SearchButtonLayout')
-        self.SearchButtonSpacer = QtGui.QSpacerItem(40, 20,
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.SearchButtonLayout.addItem(self.SearchButtonSpacer)
-        self.SearchTextButton = QtGui.QPushButton(self)
-        self.SearchTextButton.setObjectName(u'SearchTextButton')
-        self.SearchButtonLayout.addWidget(self.SearchTextButton)
-        self.pageLayout.addLayout(self.SearchButtonLayout)
+        self.searchWidget = QtGui.QWidget(self)
+        self.searchWidget.setObjectName(u'searchWidget')
+        self.searchLayout = QtGui.QVBoxLayout(self.searchWidget)
+        self.searchLayout.setObjectName(u'searchLayout')
+        self.searchTextLayout = QtGui.QFormLayout()
+        self.searchTextLayout.setObjectName(u'searchTextLayout')
+        self.searchTextLabel = QtGui.QLabel(self.searchWidget)
+        self.searchTextLabel.setObjectName(u'searchTextLabel')
+        self.searchTextEdit = SearchEdit(self.searchWidget)
+        self.searchTextEdit.setObjectName(u'searchTextEdit')
+        self.searchTextLabel.setBuddy(self.searchTextEdit)
+        self.searchTextLayout.addRow(self.searchTextLabel, self.searchTextEdit)
+        self.searchLayout.addLayout(self.searchTextLayout)
+        self.searchButtonLayout = QtGui.QHBoxLayout()
+        self.searchButtonLayout.setObjectName(u'searchButtonLayout')
+        self.searchButtonLayout.addStretch()
+        self.searchTextButton = QtGui.QPushButton(self.searchWidget)
+        self.searchTextButton.setObjectName(u'searchTextButton')
+        self.searchButtonLayout.addWidget(self.searchTextButton)
+        self.searchLayout.addLayout(self.searchButtonLayout)
+        self.pageLayout.addWidget(self.searchWidget)
         # Signals and slots
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'plugin_list_refresh'), self.onSearchTextButtonClick)
-        QtCore.QObject.connect(self.SearchTextEdit,
+        QtCore.QObject.connect(self.searchTextEdit,
             QtCore.SIGNAL(u'returnPressed()'), self.onSearchTextButtonClick)
-        QtCore.QObject.connect(self.SearchTextButton,
+        QtCore.QObject.connect(self.searchTextButton,
             QtCore.SIGNAL(u'pressed()'), self.onSearchTextButtonClick)
-        QtCore.QObject.connect(self.SearchTextEdit,
+        QtCore.QObject.connect(self.searchTextEdit,
             QtCore.SIGNAL(u'textChanged(const QString&)'),
             self.onSearchTextEditChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -126,9 +117,9 @@ class SongMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'songs_edit'), self.onRemoteEdit)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'songs_edit_clear'), self.onRemoteEditClear)
-        QtCore.QObject.connect(self.SearchTextEdit,
+        QtCore.QObject.connect(self.searchTextEdit,
             QtCore.SIGNAL(u'cleared()'), self.onClearTextButtonClick)
-        QtCore.QObject.connect(self.SearchTextEdit,
+        QtCore.QObject.connect(self.searchTextEdit,
             QtCore.SIGNAL(u'searchTypeChanged(int)'),
             self.onSearchTextButtonClick)
 
@@ -144,25 +135,36 @@ class SongMediaItem(MediaManagerItem):
             QtCore.QVariant(u'True')).toBool()
 
     def retranslateUi(self):
-        self.SearchTextLabel.setText(
+        self.searchTextLabel.setText(
             translate('SongsPlugin.MediaItem', 'Search:'))
-        self.SearchTextButton.setText(
+        self.searchTextButton.setText(
             translate('SongsPlugin.MediaItem', 'Search'))
+        self.maintenanceAction.setText(
+            translate('SongsPlugin.MediaItem', 'Song Maintenance'))
+        self.maintenanceAction.setToolTip(translate('SongsPlugin.MediaItem',
+            'Maintain the lists of authors, topics and books'))
 
     def initialise(self):
-        self.SearchTextEdit.setSearchTypes([
-            (1, u':/songs/song_search_all.png', translate('SongsPlugin.MediaItem', 'Entire Song')),
-            (2, u':/songs/song_search_title.png', translate('SongsPlugin.MediaItem', 'Titles')),
-            (3, u':/songs/song_search_lyrics.png', translate('SongsPlugin.MediaItem', 'Lyrics')),
-            (4, u':/songs/song_search_author.png', translate('SongsPlugin.MediaItem', 'Authors'))
+        self.searchTextEdit.setSearchTypes([
+            (1, u':/songs/song_search_all.png',
+                translate('SongsPlugin.MediaItem', 'Entire Song')),
+            (2, u':/songs/song_search_title.png',
+                translate('SongsPlugin.MediaItem', 'Titles')),
+            (3, u':/songs/song_search_lyrics.png',
+                translate('SongsPlugin.MediaItem', 'Lyrics')),
+            (4, u':/songs/song_search_author.png',
+                translate('SongsPlugin.MediaItem', 'Authors')),
+            (5, u':/slides/slide_theme.png',
+                translate('SongsPlugin.MediaItem', 'Themes'))
         ])
+
         self.configUpdated()
 
     def onSearchTextButtonClick(self):
-        search_keywords = unicode(self.SearchTextEdit.displayText())
+        search_keywords = unicode(self.searchTextEdit.displayText())
         search_results = []
-        # search_type = self.SearchTypeComboBox.currentIndex()
-        search_type = self.SearchTextEdit.currentSearchType()
+        # search_type = self.searchTypeComboBox.currentIndex()
+        search_type = self.searchTextEdit.currentSearchType()
         if search_type == 1:
             log.debug(u'Entire Song Search')
             search_results = self.parent.manager.get_all_objects(Song,
@@ -189,6 +191,12 @@ class SongMediaItem(MediaManagerItem):
                 Author.display_name.like(u'%' + search_keywords + u'%'),
                 Author.display_name.asc())
             self.displayResultsAuthor(search_results)
+        elif search_type == 5:
+            log.debug(u'Theme Search')
+            search_results = self.parent.manager.get_all_objects(Song,
+                Song.theme_name == search_keywords,
+                Song.search_lyrics.asc())
+            self.displayResultsSong(search_results)
 
     def onSongListLoad(self):
         """
@@ -232,7 +240,7 @@ class SongMediaItem(MediaManagerItem):
         self.listView.clear()
         for author in searchresults:
             for song in author.songs:
-                song_detail = '%s (%s)' % (author.display_name, song.title)
+                song_detail = u'%s (%s)' % (author.display_name, song.title)
                 song_name = QtGui.QListWidgetItem(song_detail)
                 song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
                 self.listView.addItem(song_name)
@@ -241,7 +249,7 @@ class SongMediaItem(MediaManagerItem):
         """
         Clear the search text.
         """
-        self.SearchTextEdit.clear()
+        self.searchTextEdit.clear()
         self.onSearchTextButtonClick()
 
     def onSearchTextEditChanged(self, text):
@@ -252,9 +260,9 @@ class SongMediaItem(MediaManagerItem):
         """
         if self.searchAsYouType:
             search_length = 1
-            if self.SearchTextEdit.currentSearchType() == 1:
+            if self.searchTextEdit.currentSearchType() == 1:
                 search_length = 3
-            elif self.SearchTextEdit.currentSearchType() == 3:
+            elif self.searchTextEdit.currentSearchType() == 3:
                 search_length = 7
             if len(text) > search_length:
                 self.onSearchTextButtonClick()
@@ -314,20 +322,14 @@ class SongMediaItem(MediaManagerItem):
             translate('SongsPlugin.MediaItem',
             'You must select an item to delete.')):
             items = self.listView.selectedIndexes()
-            if len(items) == 1:
-                del_message = translate('SongsPlugin.MediaItem',
-                    'Are you sure you want to delete the selected song?')
-            else:
-                del_message = unicode(translate('SongsPlugin.MediaItem',
-                    'Are you sure you want to delete the %d selected '
-                    'songs?')) % len(items)
-            ans = QtGui.QMessageBox.question(self,
+            if QtGui.QMessageBox.question(self,
                 translate('SongsPlugin.MediaItem', 'Delete Song(s)?'),
-                del_message,
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok|
-                     QtGui.QMessageBox.Cancel),
-                QtGui.QMessageBox.Ok)
-            if ans == QtGui.QMessageBox.Cancel:
+                translate('SongsPlugin.MediaItem',
+                'Are you sure you want to delete the %n selected song(s)?', '',
+                QtCore.QCoreApplication.CodecForTr, len(items)),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok |
+                QtGui.QMessageBox.Cancel),
+                QtGui.QMessageBox.Ok) == QtGui.QMessageBox.Cancel:
                 return
             for item in items:
                 item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
@@ -359,8 +361,7 @@ class SongMediaItem(MediaManagerItem):
         service_item.theme = song.theme_name
         service_item.edit_id = item_id
         if song.lyrics.startswith(u'<?xml version='):
-            songXML = SongXMLParser(song.lyrics)
-            verseList = songXML.get_verses()
+            verseList = SongXML().get_verses(song.lyrics)
             # no verse list or only 1 space (in error)
             if not song.verse_order or not song.verse_order.strip():
                 for verse in verseList:
@@ -401,8 +402,8 @@ class SongMediaItem(MediaManagerItem):
         service_item.audit = [
             song.title, author_audit, song.copyright, unicode(song.ccli_number)
         ]
-        service_item.data_string = {u'title':song.search_title,
-            u'authors':author_list}
+        service_item.data_string = {u'title': song.search_title,
+            u'authors': author_list}
         service_item.xml_version = self.openLyrics.song_to_xml(song)
         return True
 
@@ -413,8 +414,8 @@ class SongMediaItem(MediaManagerItem):
         log.debug(u'serviceLoad')
         if item.data_string:
             search_results = self.parent.manager.get_all_objects(Song,
-                Song.search_title ==
-                    item.data_string[u'title'].split(u'@')[0].lower() ,
+                Song.search_title == re.compile(r'\W+', re.UNICODE).sub(u' ',
+                item.data_string[u'title'].split(u'@')[0].lower()).strip(),
                 Song.search_title.asc())
             author_list = item.data_string[u'authors'].split(u', ')
             # The service item always has an author (at least it has u'' as
@@ -423,7 +424,6 @@ class SongMediaItem(MediaManagerItem):
             if u'' in author_list:
                 author_list.remove(u'')
             editId = 0
-            uuid = item._uuid
             add_song = True
             if search_results:
                 for song in search_results:
@@ -450,7 +450,7 @@ class SongMediaItem(MediaManagerItem):
             # Update service with correct song id.
             if editId != 0:
                 Receiver.send_message(u'service_item_update',
-                    u'%s:%s' %(editId, uuid))
+                    u'%s:%s' % (editId, item._uuid))
 
     def collateSongTitles(self, song_1, song_2):
         """

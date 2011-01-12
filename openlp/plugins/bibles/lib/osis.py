@@ -125,7 +125,7 @@ class OSISBible(BibleDB):
                     verse = int(match.group(3))
                     verse_text = match.group(4)
                     if not db_book or db_book.name != self.books[book][0]:
-                        log.debug('New book: "%s"', self.books[book][0])
+                        log.debug(u'New book: "%s"', self.books[book][0])
                         if book == u'Matt':
                             testament += 1
                         db_book = self.create_book(
@@ -140,9 +140,10 @@ class OSISBible(BibleDB):
                     if last_chapter != chapter:
                         if last_chapter != 0:
                             self.session.commit()
-                        self.wizard.incrementProgressBar(u'%s %s %s...' % (
-                            translate('BiblesPlugin.OsisImport', 'Importing'),
-                            self.books[match.group(1)][0], chapter))
+                        self.wizard.incrementProgressBar(unicode(translate(
+                            'BiblesPlugin.OsisImport', 'Importing %s %s...',
+                            'Importing <book name> <chapter>...')) %
+                            (self.books[match.group(1)][0], chapter))
                         last_chapter = chapter
                     # All of this rigmarol below is because the mod2osis
                     # tool from the Sword library embeds XML in the OSIS

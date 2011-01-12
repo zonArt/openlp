@@ -90,7 +90,7 @@ class Controller(object):
         """
         Go to a specific slide
         """
-        log.debug(u'Live = %s, slide' %  self.is_live)
+        log.debug(u'Live = %s, slide' % self.is_live)
         if not self.is_live:
             return
         if self.doc.is_blank():
@@ -249,7 +249,7 @@ class MessageListener(object):
         self.timer = QtCore.QTimer()
         self.timer.setInterval(500)
         QtCore.QObject.connect(
-            self.timer, QtCore.SIGNAL("timeout()"), self.timeout)
+            self.timer, QtCore.SIGNAL(u'timeout()'), self.timeout)
 
     def startup(self, message):
         """

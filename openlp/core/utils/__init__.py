@@ -275,8 +275,51 @@ def get_images_filter():
             visible_formats, actual_formats)
     return images_filter
 
+def split_filename(path):
+    path = os.path.abspath(path)
+    if not os.path.isfile(path):
+        return path, u''
+    else:
+        return os.path.split(path)
+
+def get_web_page(url, header=None, update_openlp=False):
+    """
+    Attempts to download the webpage at url and returns that page or None.
+
+    ``url``
+        The URL to be downloaded.
+
+    ``header``
+        An optional HTTP header to pass in the request to the web server.
+
+    ``update_openlp``
+        Tells OpenLP to update itself if the page is successfully downloaded.
+        Defaults to False.
+    """
+    # TODO: Add proxy usage.  Get proxy info from OpenLP settings, add to a
+    # proxy_handler, build into an opener and install the opener into urllib2.
+    # http://docs.python.org/library/urllib2.html
+    if not url:
+        return None
+    req = urllib2.Request(url)
+    if header:
+        req.add_header(header[0], header[1])
+    page = None
+    log.debug(u'Downloading URL = %s' % url)
+    try:
+        page = urllib2.urlopen(req)
+        log.debug(u'Downloaded URL = %s' % page.geturl())
+    except urllib2.URLError:
+        log.exception(u'The web page could not be downloaded')
+    if not page:
+        return None
+    if update_openlp:
+        Receiver.send_message(u'openlp_process_events')
+    return page
+
 from languagemanager import LanguageManager
 from actions import ActionList
 
 __all__ = [u'AppLocation', u'check_latest_version', u'add_actions',
-    u'get_filesystem_encoding', u'LanguageManager', u'ActionList']
+    u'get_filesystem_encoding', u'LanguageManager', u'ActionList',
+    u'get_web_page']

@@ -30,21 +30,16 @@ from openlp.core.lib import translate
 class Ui_ServiceNoteEdit(object):
     def setupUi(self, serviceNoteEdit):
         serviceNoteEdit.setObjectName(u'serviceNoteEdit')
-        serviceNoteEdit.resize(400, 243)
-        self.widget = QtGui.QWidget(serviceNoteEdit)
-        self.widget.setGeometry(QtCore.QRect(20, 10, 361, 223))
-        self.widget.setObjectName(u'widget')
-        self.verticalLayout = QtGui.QVBoxLayout(self.widget)
-        self.verticalLayout.setObjectName(u'verticalLayout')
-        self.textEdit = QtGui.QTextEdit(self.widget)
+        self.dialogLayout = QtGui.QVBoxLayout(serviceNoteEdit)
+        self.dialogLayout.setObjectName(u'verticalLayout')
+        self.textEdit = QtGui.QTextEdit(serviceNoteEdit)
         self.textEdit.setObjectName(u'textEdit')
-        self.verticalLayout.addWidget(self.textEdit)
-        self.buttonBox = QtGui.QDialogButtonBox(self.widget)
+        self.dialogLayout.addWidget(self.textEdit)
+        self.buttonBox = QtGui.QDialogButtonBox(serviceNoteEdit)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
             QtGui.QDialogButtonBox.Save)
         self.buttonBox.setObjectName(u'buttonBox')
-        self.verticalLayout.addWidget(self.buttonBox)
-
+        self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(serviceNoteEdit)
         QtCore.QMetaObject.connectSlotsByName(serviceNoteEdit)
 

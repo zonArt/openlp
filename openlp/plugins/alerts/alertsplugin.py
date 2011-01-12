@@ -73,7 +73,7 @@ class AlertsPlugin(Plugin):
         self.toolsAlertItem.setStatusTip(
             translate('AlertsPlugin', 'Show an alert message.'))
         self.toolsAlertItem.setShortcut(u'F7')
-        self.serviceManager.parent.ToolsMenu.addAction(self.toolsAlertItem)
+        self.serviceManager.mainwindow.ToolsMenu.addAction(self.toolsAlertItem)
         QtCore.QObject.connect(self.toolsAlertItem,
             QtCore.SIGNAL(u'triggered()'), self.onAlertsTrigger)
         self.toolsAlertItem.setVisible(False)
@@ -114,10 +114,10 @@ class AlertsPlugin(Plugin):
         """
         ## Name PluginList ##
         self.textStrings[StringContent.Name] = {
-            u'singular': translate('AlertsPlugin', 'Alert'),
-            u'plural': translate('AlertsPlugin', 'Alerts')
+            u'singular': translate('AlertsPlugin', 'Alert', 'name singular'),
+            u'plural': translate('AlertsPlugin', 'Alerts', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.textStrings[StringContent.VisibleName] = {
-            u'title': translate('AlertsPlugin', 'Alerts')
+            u'title': translate('AlertsPlugin', 'Alerts', 'container title')
         }
