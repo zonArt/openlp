@@ -109,6 +109,9 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
         QtCore.QObject.connect(self.genericRemoveButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onGenericRemoveButtonClicked)
+        QtCore.QObject.connect(self.easiSlidesBrowseButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onEasiSlidesBrowseButtonClicked)
         QtCore.QObject.connect(self.ewBrowseButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onEWBrowseButtonClicked)
@@ -225,6 +228,16 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
                         'You need to add at least one document or '
                         'presentation file to import from.'))
                     self.genericAddButton.setFocus()
+                    return False
+            elif source_format == SongFormat.EasiSlides:
+                if self.easiSlidesFilenameEdit.text().isEmpty():
+                    QtGui.QMessageBox.critical(self,
+                        translate('SongsPlugin.ImportWizardForm',
+                        'No Easislides Song selected'),
+                        translate('SongsPlugin.ImportWizardForm',
+                        'You need to select an xml song file exported from '
+                        'EasiSlides, to import from.'))
+                    self.easiSlidesBrowseButton.setFocus()
                     return False
             elif source_format == SongFormat.EasyWorship:
                 if self.ewFilenameEdit.text().isEmpty():
@@ -400,6 +413,13 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
     def onGenericRemoveButtonClicked(self):
         self.removeSelectedItems(self.genericFileListWidget)
 
+    def onEasiSlidesBrowseButtonClicked(self):
+        self.getFileName(
+            translate('SongsPlugin.ImportWizardForm',
+            'Select EasiSlides songfile'),
+            self.easiSlidesFilenameEdit
+        )
+        
     def onEWBrowseButtonClicked(self):
         self.getFileName(
             translate('SongsPlugin.ImportWizardForm',
@@ -440,6 +460,7 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
         self.ccliFileListWidget.clear()
         self.songsOfFellowshipFileListWidget.clear()
         self.genericFileListWidget.clear()
+        self.easiSlidesFilenameEdit.setText(u'')
         self.ewFilenameEdit.setText(u'')
         self.songBeamerFileListWidget.clear()
         #self.csvFilenameEdit.setText(u'')
@@ -512,8 +533,13 @@ class SongImportForm(QtGui.QWizard, Ui_SongImportWizard):
             importer = self.plugin.importSongs(SongFormat.Generic,
                 filenames=self.getListOfFiles(self.genericFileListWidget)
             )
+        elif source_format == SongFormat.EasiSlides:
+            # Import an EasiSlides export file
+            importer = self.plugin.importSongs(SongFormat.EasiSlides,
+                filename=unicode(self.easiSlidesFilenameEdit.text())
+            )
         elif source_format == SongFormat.EasyWorship:
-            # Import an OpenLP 2.0 database
+            # Import an EasyWorship database
             importer = self.plugin.importSongs(SongFormat.EasyWorship,
                 filename=unicode(self.ewFilenameEdit.text())
             )

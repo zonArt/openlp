@@ -92,6 +92,8 @@ class Ui_SongImportWizard(object):
         # Generic Document/Presentation import
         self.addMultiFileSelectItem(u'generic', None, True)
         # EasyWorship
+        self.addSingleFileSelectItem(u'easiSlides')
+        # EasyWorship
         self.addSingleFileSelectItem(u'ew')
         # Words of Worship
         self.addMultiFileSelectItem(u'songBeamer')
@@ -156,8 +158,10 @@ class Ui_SongImportWizard(object):
             translate('SongsPlugin.ImportWizardForm',
             'Generic Document/Presentation'))
         self.formatComboBox.setItemText(8,
-            translate('SongsPlugin.ImportWizardForm', 'EasyWorship'))
+            translate('SongsPlugin.ImportWizardForm', 'EasiSlides'))
         self.formatComboBox.setItemText(9,
+            translate('SongsPlugin.ImportWizardForm', 'EasyWorship'))
+        self.formatComboBox.setItemText(10,
             translate('SongsPlugin.ImportWizardForm', 'SongBeamer'))
 #        self.formatComboBox.setItemText(9,
 #            translate('SongsPlugin.ImportWizardForm', 'CSV'))
@@ -211,6 +215,10 @@ class Ui_SongImportWizard(object):
             translate('SongsPlugin.ImportWizardForm', 'The generic document/'
             'presentation importer has been disabled because OpenLP cannot '
             'find OpenOffice.org on your computer.'))
+        self.easiSlidesFilenameLabel.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Filename:'))
+        self.easiSlidesBrowseButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Browse...'))
         self.ewFilenameLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Filename:'))
         self.ewBrowseButton.setText(
@@ -241,6 +249,8 @@ class Ui_SongImportWizard(object):
             QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         self.openLP1FormLabelSpacer.changeSize(width, 0,
             QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        self.easiSlidesFormLabelSpacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
+            QtGui.QSizePolicy.Fixed)
         self.ewFormLabelSpacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
             QtGui.QSizePolicy.Fixed)
 #        self.csvFormLabelSpacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
