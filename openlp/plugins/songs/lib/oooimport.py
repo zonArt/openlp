@@ -23,13 +23,15 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+import logging
 import os
 
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver
 from songimport import SongImport
+
+log = logging.getLogger(__name__)
 
 if os.name == u'nt':
     from win32com.client import Dispatch
@@ -116,7 +118,7 @@ class OooImport(SongImport):
                             + u'socket,host=localhost,port=2002;' \
                             + u'urp;StarOffice.ComponentContext')
                 except:
-                    pass
+                    log.exception("Failed to resolve uno connection")
                 self.start_ooo_process()
                 loop += 1
             manager = ctx.ServiceManager
@@ -143,7 +145,7 @@ class OooImport(SongImport):
                 process.waitForStarted()
             self.process_started = True
         except:
-            pass
+            log.exception("start_ooo_process failed")
 
     def open_ooo_file(self, filepath):
         """
@@ -167,7 +169,7 @@ class OooImport(SongImport):
                 self.import_wizard.incrementProgressBar(
                     u'Processing file ' + filepath, 0)
         except:
-            pass
+            log.exception("open_ooo_file failed")
         return
 
     def close_ooo_file(self):
