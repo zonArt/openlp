@@ -412,13 +412,17 @@ class SlideController(QtGui.QWidget):
             max_width = self.PreviewFrame.width() - self.grid.margin() * 2
             self.SlidePreview.setFixedSize(QtCore.QSize(max_width,
                 max_width / self.ratio))
-        width = self.parent.ControlSplitter.sizes()[self.split]
-        self.PreviewListWidget.setColumnWidth(0, width)
-        # Sort out image heights (Songs, bibles excluded)
-        if self.serviceItem and not self.serviceItem.is_text():
-            for framenumber in range(len(self.serviceItem.get_frames())):
-                self.PreviewListWidget.setRowHeight(
-                    framenumber, width / self.ratio)
+        # Make sure that the frames have the correct size.
+        if self.serviceItem:
+            self.PreviewListWidget.resizeRowsToContents()
+            # Sort out image heights (Songs, bibles excluded)
+            if not self.serviceItem.is_text():
+                width = self.parent.ControlSplitter.sizes()[self.split]
+                for framenumber in range(len(self.serviceItem.get_frames())):
+                    self.PreviewListWidget.setRowHeight(
+                        framenumber, width / self.ratio)
+        self.PreviewListWidget.setColumnWidth(0,
+            self.PreviewListWidget.viewport().size().width())
 
     def onSongBarHandler(self):
         request = unicode(self.sender().text())
@@ -590,7 +594,7 @@ class SlideController(QtGui.QWidget):
                         self.parent.renderManager.height)
                 else:
                     image = self.parent.renderManager.image_manager. \
-                            get_image(frame[u'title'])
+                        get_image(frame[u'title'])
                 label.setPixmap(QtGui.QPixmap.fromImage(image))
                 self.PreviewListWidget.setCellWidget(framenumber, 0, label)
                 slideHeight = width * self.parent.renderManager.screen_ratio
