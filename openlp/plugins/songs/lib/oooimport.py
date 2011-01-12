@@ -23,13 +23,15 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+import logging
 import os
 
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver
 from songimport import SongImport
+
+log = logging.getLogger(__name__)
 
 if os.name == u'nt':
     from win32com.client import Dispatch
