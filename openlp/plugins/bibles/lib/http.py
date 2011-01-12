@@ -208,7 +208,8 @@ class BGExtract(object):
             u'version': u'%s' % version})
         cleaner = [(re.compile('&nbsp;|<br />|\'\+\''), lambda match: '')]
         soup = get_soup_for_bible_ref(
-            u'http://www.biblegateway.com/passage/?%s' % url_params, cleaner)
+            u'http://www.biblegateway.com/passage/?%s' % url_params,
+                cleaner=cleaner)
         if not soup:
             return None
         Receiver.send_message(u'openlp_process_events')
