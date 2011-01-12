@@ -282,12 +282,15 @@ def split_filename(path):
     else:
         return os.path.split(path)
 
-def get_web_page(url, update_openlp=False):
+def get_web_page(url, header=None, update_openlp=False):
     """
     Attempts to download the webpage at url and returns that page or None.
 
     ``url``
         The URL to be downloaded.
+
+    ``header``
+        An optional HTTP header to pass in the request to the web server.
 
     ``update_openlp``
         Tells OpenLP to update itself if the page is successfully downloaded.
@@ -298,10 +301,13 @@ def get_web_page(url, update_openlp=False):
     # http://docs.python.org/library/urllib2.html
     if not url:
         return None
+    req = urllib2.Request(url)
+    if header:
+        req.add_header(header[0], header[1])
     page = None
     log.debug(u'Downloading URL = %s' % url)
     try:
-        page = urllib2.urlopen(url)
+        page = urllib2.urlopen(req)
         log.debug(u'Downloaded URL = %s' % page.geturl())
     except urllib2.URLError:
         log.exception(u'The web page could not be downloaded')

@@ -264,7 +264,8 @@ class BSExtract(object):
         log.debug(u'get_bible_chapter %s,%s,%s', version, bookname, chapter)
         chapter_url = u'http://m.bibleserver.com/text/%s/%s%s' % \
             (version, bookname, chapter)
-        soup = get_soup_for_bible_ref(chapter_url)
+        header = (u'Accept-Language', u'en')
+        soup = get_soup_for_bible_ref(chapter_url, header)
         if not soup:
             return None
         Receiver.send_message(u'openlp_process_events')
@@ -496,19 +497,22 @@ class HTTPBible(BibleDB):
         """
         return HTTPBooks.get_verse_count(book, chapter)
 
-def get_soup_for_bible_ref(reference_url, cleaner=None):
+def get_soup_for_bible_ref(reference_url, header=None, cleaner=None):
     """
     Gets a webpage and returns a parsed and optionally cleaned soup or None.
 
     ``reference_url``
         The URL to obtain the soup from.
 
+    ``header``
+        An optional HTTP header to pass to the bible web server.
+
     ``cleaner``
         An optional regex to use during webpage parsing.
     """
     if not reference_url:
         return None
-    page = get_web_page(reference_url, True)
+    page = get_web_page(reference_url, header, True)
     if not page:
         send_error_message(u'download')
         return None
