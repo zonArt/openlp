@@ -207,7 +207,7 @@ def check_latest_version(current_version):
         The current version of OpenLP.
     """
     version_string = current_version[u'full']
-    #set to prod in the distribution config file.
+    # set to prod in the distribution config file.
     settings = QtCore.QSettings()
     settings.beginGroup(u'general')
     last_test = unicode(settings.value(u'last version test',
