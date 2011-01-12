@@ -448,7 +448,7 @@ class SongMediaItem(MediaManagerItem):
                 if self.addSongFromService:
                     editId = self.openLyrics.xml_to_song(item.xml_version)
             # Update service with correct song id.
-            if editId is not None:
+            if editId:
                 Receiver.send_message(u'service_item_update',
                     u'%s:%s' % (editId, item._uuid))
 
