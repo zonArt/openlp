@@ -86,8 +86,7 @@ class ImageManager(QtCore.QObject):
         for key in self._cache.keys():
             image = self._cache[key]
             image.dirty = True
-            fullpath = os.path.join(image.path, image.name)
-            image.image = resize_image(fullpath,
+            image.image = resize_image(image.path,
                 self.width, self.height)
         self._cache_dirty = True
         # only one thread please

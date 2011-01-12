@@ -198,7 +198,7 @@ class MainDisplay(DisplayWidget):
             The slide text to be displayed
         """
         log.debug(u'text to display')
-        # Wait for the webview to update before displayiong text.
+        # Wait for the webview to update before displaying text.
         while not self.loaded:
             Receiver.send_message(u'openlp_process_events')
         self.frame.evaluateJavaScript(u'show_text("%s")' % \
