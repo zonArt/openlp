@@ -83,93 +83,145 @@ class EasiSlidesImport(SongImport):
         not a filename
         """
         self.set_defaults()
+        
+        # determines, if ENTIRELY UPPERCASE lines should be converted to lower
+        self.toLower = True
+        # determines, if title should be prepended to lyrics
+        self.titleIsLyrics = True
+
         try:
             context = etree.iterparse(file)
         except (Error, LxmlError):
             log.exception(u'Error parsing XML')
             return
             
-        song_dict = {}
+        data = {}
         for action, elem in context:
             if not elem.text:
                 text = None
             else:
-                text = elem.text
+                text = unicode(elem.text)
             
-            song_dict[elem.tag] = text
+            data[elem.tag.lower()] = text
             
             if elem.tag.lower() == u"item":
-                self.parse_song(song_dict)
+                self.parse_song(data)
                 self.import_wizard.incrementProgressBar(
                     unicode(translate('SongsPlugin.ImportWizardForm',
                         'Importing %s, song %s...')) % 
                         (os.path.split(self.filename)[-1], self.title))
                 if self.commit:
                     self.finish()
-                song_dict = {}
+                data = {}
                 
     def notCapsLock(self, string):
-        if string.upper() == string:
+        if self.toLower and string.upper() == string:
             return string.lower()
         else:
             return string
 
     def notCapsLockTitle(self, string):
-        if string.upper() == string:
+        if self.toLower and string.upper() == string:
             ret = string.lower()
             return u"%s%s" % (ret[0].upper(), ret[1:])
         else:
             return string
             
-    def parse_song(self, song_dict):
-        #for i in song_dict:
-            #if i != 'Contents' and song_dict[i] != None:
-            #print u"%s = '%s'" % (i, song_dict[i])
-        toLower = True
+    def parse_song(self, data):
+        # We should also check if the title is already used, if yes,
+        # maybe user sould decide if we should import
         
-        title = unicode(song_dict['Title1'])
-        if toLower:
-            self.title = self.notCapsLockTitle(title)
+        # set title
+        self.title = self.notCapsLockTitle(data['title1'])
         
-        if song_dict['Title2'] != None:
-            alttitle = unicode(song_dict['Title2'])
-            if toLower:
-                self.alternate_title = self.notCapsLockTitle(alttitle)
+        # set alternate title, if present
+        if data['title2'] != None:
+            self.alternate_title = self.notCapsLockTitle(data['title2'])
         
-        if song_dict['SongNumber'] != None:
-            self.song_number = int(song_dict['SongNumber'])
+        # folder name, we have no use for it, usually only one folder is 
+        # used in easislides and this contains no actual data, easislides 
+        # default database is named English, but usersmay not follow their
+        # example
+        # data['folder']
+        
+        # set song number, if present, 0 otherwise
+        if data['songnumber'] != None:
+            self.song_number = int(data['songnumber'])
         else:
             self.song_number = 0
-
-        #song_dict['Notations']
-        if song_dict['Sequence'] != None:
-            seq = song_dict['Sequence'].split(",")
-            print seq
         
-        if song_dict['Writer'] != None:
-            self.authors.append(song_dict['Writer'])
-
-        lyrics = unicode(song_dict['Contents'])
+        # Don't know how to use Notations
+        # data['notations']
         
-        titleIsFirstLine = True
-        if titleIsFirstLine:
+        # set song authors
+        if data['writer'] != None:
+            authors = data['writer'].split(u',')
+            for author in authors:
+                self.authors.append(author.strip())
+        
+        # set copyright data
+        # licenceadmins may contain Public Domain or CCLI, as shown in examples
+        # let's just concatenate these fields, it should be determined, if song
+        # No is actually CCLI nr, if it is set
+        copyright = []
+        if data['copyright']:
+            copyright.append(data['copyright'].strip())
+        if data['licenceadmin1']:
+            copyright.append(data['licenceadmin1'].strip())
+        if data['licenceadmin2']:
+            copyright.append(data['licenceadmin2'].strip())
+        self.add_copyright(" ".join(copyright))
+
+        # set topic data, I have seen no example, and should not use it,
+        # I even was not able to find place to set categories in easislides
+        # but then again, it would not hurt either
+        if data['category']:
+            for topic in data['category'].split(u','):
+                self.topics.append(topic.strip())
+
+        # don't know what to do with timing data
+        # may be either 3/4 or 4/4
+        # data['timing']
+        
+        # don't know what to do with music key
+        # data['musickey'], may be Db, C, G, F#, F#m
+        # data['capo'], is a number from 0 to 11, determing where to
+        # place a capo on guitar neck
+        
+        # set book data
+        if data['bookreference']:
+            for book in data['bookreference'].split(u','):
+                self.books.append(book.strip())
+
+        # don't know what to do with user
+        # data['userreference'], this is simple text entry, no 
+        # notable restrictions
+
+        # there is nothing to do with formatdata, this for sure is a messy
+        # thing, see an example: 
+        # 21=1&gt;23=0&gt;22=2&gt;25=2&gt;26=-16777216&gt;
+        # 27=-16777216&gt;28=11&gt;29=-1&gt;30=-256&gt;31=2&gt;32=2&gt;
+        # 41=16&gt;42=16&gt;43=Microsoft Sans Serif&gt;
+        # 44=Microsoft Sans Serif&gt;45=0&gt;46=45&gt;47=20&gt;48=40&gt;
+        # 50=0&gt;51=&gt;52=50&gt;53=-1&gt;54=0&gt;55=1&gt;61=&gt;62=2&gt;
+        # 63=1&gt;64=2&gt;65=2&gt;66=0&gt;71=0&gt;72=Fade&gt;73=Fade&gt;
+        #
+        # data['formatdata']
+
+        # don't know what to do with settings data either, this is similar
+        # nonsense: 10=2;5;0;0;1;0;»126;232;&gt;
+        # data['settings']
+
+        # LYRICS LYRICS LYRICS
+        # the big and messy part to handle lyrics
+        lyrics = data['contents']
+
+        # we add title to first line, if supposed to do so
+        if self.titleIsLyrics:
             lyrics = u"%s\n%s" % (self.title, lyrics)
-            
-            
-        # data storage while importing
-        verses = {}
-        # keep track of a "default" verse order, in case none is specified
-        our_verse_order = []
-        verses_seen = {}
-        # in the absence of any other indication, verses are the default,
-        # erm, versetype!
-        versetype = u'V'
-        versenum = None
-        seenorder = []
         
-        lines = lyrics.split(u'\n')
-        length = len(lines)
-        
+        # we count the [region 2] and [whatever] separartors,  to be able
+        # to tell how region data is used
         regions = 0
         separators = 0
         if lyrics.find(u'[') != -1:
@@ -182,37 +234,44 @@ class EasiSlidesImport(SongImport):
                     regions = regions+1
                 else:
                     separators = separators+1
-        
+
+        # data storage while importing
+        verses = {}
+        # keep track of a "default" verse order, in case none is specified
+        our_verse_order = []
+
+        lines = lyrics.split(u'\n')
+        length = len(lines)        
         for i in range(length):
             thisline = lines[i].strip()
             if i < length-1:
                 nextline = lines[i+1].strip()
-                # we don't care about nextline at the last line
             else:
+                # there is no nextline at the last line
                 nextline = False
-                
                 
             if len(thisline) is 0:
                 if separators == 0:
                     # empty line starts a new verse or chorus
                     if nextline and nextline is nextline.upper():
-                        # the next line is all uppercase, it is chorus
+                        # the next line is all uppercase, it must be chorus
                         versetype = u'C'
                     else:
                         # if the next line is not uppercase, it must be verse
                         versetype = u'V'
                     
                     if verses.has_key(versetype):
-                        keys = verses[versetype].keys()
-                        #print keys
-                        versenum = len(keys)+1
+                        versenum = len(verses[versetype].keys())+1
                     else:
                         versenum = u'1'
                     
-                    seenorder.append([versetype, versenum])
+                    our_verse_order.append([versetype, versenum])
+                else:
+                    # separators are not used, something must be done
+                    continue
                 continue
-
-            # verse/chorus/etc. marker
+            
+            # verse/chorus/etc. marker, this line contains no other data
             if thisline[0] == u'[':
                 if regions > 1:
                     # region markers are inside verse markers
@@ -236,6 +295,11 @@ class EasiSlidesImport(SongImport):
                 # to the end (even if there are some alpha chars on the end)
                 match = re.match(u'(.*)(\d+.*)', content)
                 if match is not None:
+                    # versetype normally is one of the following:
+                    # not set for verse (only number)
+                    # prechorus (p), chorus (c), bridge (w), 
+                    # ending, none of these is numbered in sequence
+                    # empty line means split screen
                     versetype = match.group(1)
                     versenum = match.group(2)
                 else:
@@ -243,65 +307,51 @@ class EasiSlidesImport(SongImport):
                     # the versetype
                     versetype = content
                     versenum = u'1'
-                seenorder.append([versetype, versenum])
+                our_verse_order.append([versetype, versenum])
                 continue
-            
+
             if i == 0:
-                # this is the first line, but no separator is found,
-                # let's say it's V1
+                # this is the first line, but still no separator is found,
+                # we say it's V1
                 versetype = u'V'
                 versenum = u'1'
-                seenorder.append([versetype, versenum])
+                our_verse_order.append([versetype, versenum])
             
-            words = None
-            # number at start of line.. it's verse number
-            if thisline[0].isdigit():
-                versenum = thisline[0]
-                words = thisline[1:].strip()
-            if words is None:
-                words = thisline
-                if not versenum:
-                    versenum = u'1'
-            if versenum is not None:
-                versetag = u'%s%s' % (versetype, versenum)
-                if not verses.has_key(versetype):
-                    verses[versetype] = {}
-                if not verses[versetype].has_key(versenum):
-                    # storage for lines in this verse
-                    verses[versetype][versenum] = []
-                if not verses_seen.has_key(versetag):
-                    verses_seen[versetag] = 1
-                    our_verse_order.append(versetag)
-            if words:
-                # Tidy text and remove the ____s from extended words
-                words = self.tidy_text(words)
-                words = words.replace('_', '')
-                if toLower:
-                    words = self.notCapsLock(words)
-                    
-                verses[versetype][versenum].append(words)
+            # We have versetype/number data, if it was there, now
+            # we parse text
+            if not verses.has_key(versetype):
+                verses[versetype] = {}
+            if not verses[versetype].has_key(versenum):
+                verses[versetype][versenum] = []
+            
+            # Tidy text and remove the ____s from extended words
+            words = self.tidy_text(thisline)
+            words = words.replace('_', '')
+            words = self.notCapsLock(words)
+            
+            verses[versetype][versenum].append(words)
         # done parsing
-
-        versetypes = verses.keys()
-        versetags = {}
-
-        for tag in seenorder:
-            vtype = tag[0]
-            vnum = tag[1]
+        
+        # we use our_verse_order to ensure, we insert lyrics in the same order
+        # as these appeared originally in the file
+        for tag in our_verse_order:
+            versetype = tag[0]
+            versenum = tag[1]
             
-            if not vtype in verses:
+            if not versetype in verses:
                 # something may have gone wrong
                 continue
-            if not vnum in verses[vtype]:
+            if not versenum in verses[versetype]:
                 # this most likely is caused by an extra empty line at the end,
                 # to be debugged later
                 continue
-            versetag = u'%s%s' % (vtype, vnum)
-            lines = u'\n'.join(verses[vtype][vnum])
+            versetag = u'%s%s' % (versetype, versenum)
+            lines = u'\n'.join(verses[versetype][versenum])
             self.verses.append([versetag, lines])
         
-        if song_dict['Sequence'] != None:
-            order = song_dict['Sequence'].split(u',')
+        # Make use of Sequence data, determining the order of verses, choruses
+        if data['sequence'] != None:
+            order = data['sequence'].split(u',')
             for tag in order:
                 if tag[0].isdigit():
                     # Assume it's a verse if it has no prefix
@@ -315,5 +365,16 @@ class EasiSlidesImport(SongImport):
                 else:
                     self.verse_order_list.append(tag)
         else:
-            for tag in seenorder:
+            for tag in our_verse_order:
+                if not tag[0] in verses:
+                    log.info(u'Got order from our_verse_order %s but not in'
+                        u'versetags, dropping this item from presentation order'
+                        u'missing was versetag %s', tag, tag[0])
+                    continue
+                if not tag[1] in verses[tag[0]]:
+                    log.info(u'Got order from our_verse_order %s but not in'
+                        u'versetags, dropping this item from presentation order'
+                        u'missing was versenum %s for versetag %s',
+                        tag, tag[1], tag[0])
+                    continue
                 self.verse_order_list.append(u'%s%s' % (tag[0], tag[1]))
