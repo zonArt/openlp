@@ -51,7 +51,8 @@ class ThemeManager(QtGui.QWidget):
         self.settingsSection = u'themes'
         self.themeForm = ThemeForm(self)
         self.fileRenameForm = FileRenameForm(self)
-        self.serviceComboBox = self.mainwindow.ServiceManagerContents.themeComboBox
+        self.serviceComboBox = \
+            self.mainwindow.ServiceManagerContents.themeComboBox
         # start with the layout
         self.layout = QtGui.QVBoxLayout(self)
         self.layout.setSpacing(0)
@@ -388,7 +389,8 @@ class ThemeManager(QtGui.QWidget):
         files = QtGui.QFileDialog.getOpenFileNames(self,
             translate('OpenLP.ThemeManager', 'Select Theme Import File'),
             SettingsManager.get_last_dir(self.settingsSection),
-            translate('OpenLP.ThemeManager', 'Theme (*.*)'))
+            translate('OpenLP.ThemeManager', 'Theme v1 (*.theme);;'
+            'Theme v2 (*.otz);;All Files (*.*)'))
         log.info(u'New Themes %s', unicode(files))
         if files:
             for file in files:
@@ -637,7 +639,8 @@ class ThemeManager(QtGui.QWidget):
             Flag to tell message lines per page need to be generated.
         """
         log.debug(u'generateImage \n%s ', themeData)
-        return self.mainwindow.renderManager.generate_preview(themeData, forcePage)
+        return self.mainwindow.renderManager.generate_preview(
+            themeData, forcePage)
 
     def getPreviewImage(self, theme):
         """
