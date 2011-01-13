@@ -69,7 +69,7 @@ class ThemeManager(QtGui.QWidget):
             u':/themes/theme_edit.png',
             translate('OpenLP.ThemeManager', 'Edit a theme.'),
             self.onEditTheme)
-        self.toolbar.addToolbarButton(
+        self.deleteToolbarAction = self.toolbar.addToolbarButton(
             translate('OpenLP.ThemeManager', 'Delete Theme'),
             u':/general/general_delete.png',
             translate('OpenLP.ThemeManager', 'Delete a theme.'),
@@ -124,6 +124,9 @@ class ThemeManager(QtGui.QWidget):
         QtCore.QObject.connect(self.themeListWidget,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
             self.changeGlobalFromScreen)
+        QtCore.QObject.connect(self.themeListWidget,
+            QtCore.SIGNAL(u'itemClicked(QListWidgetItem *)'),
+            self.checkListState)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'theme_update_global'), self.changeGlobalFromTab)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -146,6 +149,18 @@ class ThemeManager(QtGui.QWidget):
         self.global_theme = unicode(QtCore.QSettings().value(
             self.settingsSection + u'/global theme',
             QtCore.QVariant(u'')).toString())
+
+    def checkListState(self, item):
+        """
+        If Default theme selected remove delete button.
+        """
+        realThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
+        themeName = unicode(item.text())
+        # If default theme restrict actions
+        if realThemeName == themeName:
+            self.deleteToolbarAction.setVisible(True)
+        else:
+            self.deleteToolbarAction.setVisible(False)
 
     def contextMenu(self, point):
         """
