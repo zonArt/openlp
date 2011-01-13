@@ -89,7 +89,7 @@ class OpenSongBible(BibleDB):
                         'Importing <book name> <chapter>...')) %
                         (db_book.name, int(chapter.attrib[u'n'])))
                     self.session.commit()
-        except IOError, AttributeError:
+        except (IOError, AttributeError):
             log.exception(u'Loading bible from OpenSong file failed')
             success = False
         finally:

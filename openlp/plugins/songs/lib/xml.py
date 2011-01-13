@@ -143,10 +143,11 @@ class SongXML(object):
 
 class OpenLyrics(object):
     """
-    This class represents the converter for OpenLyrics XML to/from a song.
+    This class represents the converter for OpenLyrics XML (version 0.7)
+    to/from a song.
 
     As OpenLyrics has a rich set of different features, we cannot support them
-    all. The following features are supported by the :class:`OpenLyricsParser`::
+    all. The following features are supported by the :class:`OpenLyrics`::
 
     *<authors>*
         OpenLP does not support the attribute *type* and *lang*.
@@ -203,7 +204,7 @@ class OpenLyrics(object):
     def __init__(self, manager):
         self.manager = manager
 
-    def song_to_xml(self, song, pretty_print=False):
+    def song_to_xml(self, song):
         """
         Convert the song to OpenLyrics Format.
         """
@@ -253,7 +254,7 @@ class OpenLyrics(object):
             element = self._add_text_to_element(u'lines', element)
             for line in unicode(verse[1]).split(u'\n'):
                 self._add_text_to_element(u'line', element, line)
-        return self._extract_xml(song_xml, pretty_print)
+        return self._extract_xml(song_xml)
 
     def xml_to_song(self, xml):
         """
@@ -266,7 +267,7 @@ class OpenLyrics(object):
         """
         # No xml get out of here.
         if not xml:
-            return 0
+            return None
         song = Song()
         if xml[:5] == u'<?xml':
             xml = xml[38:]
@@ -296,12 +297,12 @@ class OpenLyrics(object):
         parent.append(element)
         return element
 
-    def _extract_xml(self, xml, pretty_print):
+    def _extract_xml(self, xml):
         """
         Extract our newly created XML song.
         """
         return etree.tostring(xml, encoding=u'UTF-8',
-            xml_declaration=True, pretty_print=pretty_print)
+            xml_declaration=True)
 
     def _get(self, element, attribute):
         """
@@ -495,7 +496,7 @@ class OpenLyrics(object):
                             song.song_number = self._get(songbook, u'entry')
                     except AttributeError:
                         pass
-                    # We does only support one song book, so take the first one.
+                    # We only support one song book, so take the first one.
                     break
         except AttributeError:
             pass

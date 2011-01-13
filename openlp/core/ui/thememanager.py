@@ -37,7 +37,8 @@ from openlp.core.theme import Theme
 from openlp.core.lib import OpenLPToolbar, ThemeXML, get_text_file_string, \
     build_icon, Receiver, SettingsManager, translate, check_item_selected, \
     BackgroundType, BackgroundGradientType, check_directory_exists
-from openlp.core.utils import AppLocation, get_filesystem_encoding
+from openlp.core.utils import AppLocation, file_is_unicode, \
+    get_filesystem_encoding
 
 log = logging.getLogger(__name__)
 
@@ -69,7 +70,7 @@ class ThemeManager(QtGui.QWidget):
             u':/themes/theme_edit.png',
             translate('OpenLP.ThemeManager', 'Edit a theme.'),
             self.onEditTheme)
-        self.toolbar.addToolbarButton(
+        self.deleteToolbarAction = self.toolbar.addToolbarButton(
             translate('OpenLP.ThemeManager', 'Delete Theme'),
             u':/general/general_delete.png',
             translate('OpenLP.ThemeManager', 'Delete a theme.'),
@@ -124,6 +125,9 @@ class ThemeManager(QtGui.QWidget):
         QtCore.QObject.connect(self.themeListWidget,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
             self.changeGlobalFromScreen)
+        QtCore.QObject.connect(self.themeListWidget,
+            QtCore.SIGNAL(u'itemClicked(QListWidgetItem *)'),
+            self.checkListState)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'theme_update_global'), self.changeGlobalFromTab)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -146,6 +150,18 @@ class ThemeManager(QtGui.QWidget):
         self.global_theme = unicode(QtCore.QSettings().value(
             self.settingsSection + u'/global theme',
             QtCore.QVariant(u'')).toString())
+
+    def checkListState(self, item):
+        """
+        If Default theme selected remove delete button.
+        """
+        realThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
+        themeName = unicode(item.text())
+        # If default theme restrict actions
+        if realThemeName == themeName:
+            self.deleteToolbarAction.setVisible(True)
+        else:
+            self.deleteToolbarAction.setVisible(False)
 
     def contextMenu(self, point):
         """
@@ -460,7 +476,8 @@ class ThemeManager(QtGui.QWidget):
             unicode(themeName) + u'.xml')
         xml = get_text_file_string(xmlFile)
         if not xml:
-            return self._baseTheme()
+            log.debug("No theme data - using default theme")
+            return ThemeXML()
         else:
             return self._createThemeFromXml(xml, self.path)
 
@@ -479,16 +496,13 @@ class ThemeManager(QtGui.QWidget):
             filexml = None
             themename = None
             for file in zip.namelist():
-                try:
-                    ucsfile = file.decode(u'utf-8')
-                except UnicodeDecodeError:
+                ucsfile = file_is_unicode(file)
+                if not ucsfile:
                     QtGui.QMessageBox.critical(
                         self, translate('OpenLP.ThemeManager', 'Error'),
                         translate('OpenLP.ThemeManager',
                             'File is not a valid theme.\n'
                             'The content encoding is not UTF-8.'))
-                    log.exception(u'Filename "%s" is not valid UTF-8' %
-                        file.decode(u'utf-8', u'replace'))
                     continue
                 osfile = unicode(QtCore.QDir.toNativeSeparators(ucsfile))
                 theme_dir = None
@@ -652,14 +666,6 @@ class ThemeManager(QtGui.QWidget):
         log.debug(u'getPreviewImage %s ', theme)
         image = os.path.join(self.path, theme + u'.png')
         return image
-
-    def _baseTheme(self):
-        """
-        Provide a base theme with sensible defaults
-        """
-        log.debug(u'base theme created')
-        newtheme = ThemeXML()
-        return newtheme
 
     def _createThemeFromXml(self, themeXml, path):
         """

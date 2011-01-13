@@ -207,7 +207,7 @@ def check_latest_version(current_version):
         The current version of OpenLP.
     """
     version_string = current_version[u'full']
-    #set to prod in the distribution config file.
+    # set to prod in the distribution config file.
     settings = QtCore.QSettings()
     settings.beginGroup(u'general')
     last_test = unicode(settings.value(u'last version test',
@@ -317,9 +317,29 @@ def get_web_page(url, header=None, update_openlp=False):
         Receiver.send_message(u'openlp_process_events')
     return page
 
+def file_is_unicode(filename):
+    """
+    Checks if a file is valid unicode and returns the unicode decoded file or
+    None.
+
+    ``filename``
+        File to check is valid unicode.
+    """
+    if not filename:
+        return None
+    ucsfile = None
+    try:
+        ucsfile = filename.decode(u'utf-8')
+    except UnicodeDecodeError:
+        log.exception(u'Filename "%s" is not valid UTF-8' %
+            filename.decode(u'utf-8', u'replace'))
+    if not ucsfile:
+        return None
+    return ucsfile
+
 from languagemanager import LanguageManager
 from actions import ActionList
 
 __all__ = [u'AppLocation', u'check_latest_version', u'add_actions',
     u'get_filesystem_encoding', u'LanguageManager', u'ActionList',
-    u'get_web_page']
+    u'get_web_page', u'file_is_unicode']
