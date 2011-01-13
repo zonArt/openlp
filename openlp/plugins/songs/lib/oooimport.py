@@ -63,11 +63,11 @@ class OooImport(SongImport):
         self.filenames = kwargs[u'filenames']
         self.uno_connection_type = u'pipe' #u'socket'
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'song_stop_import'), self.stop_import)
+            QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
 
     def do_import(self):
         self.abort = False
-        self.import_wizard.importProgressBar.setMaximum(0)
+        self.import_wizard.progressBar.setMaximum(0)
         self.start_ooo()
         for filename in self.filenames:
             if self.abort:
@@ -85,7 +85,7 @@ class OooImport(SongImport):
                         self.process_doc()
                     self.close_ooo_file()
         self.close_ooo()
-        self.import_wizard.importProgressBar.setMaximum(1)
+        self.import_wizard.progressBar.setMaximum(1)
         self.import_wizard.incrementProgressBar(u'', 1)
         return True
 

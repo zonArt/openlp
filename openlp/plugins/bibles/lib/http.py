@@ -387,7 +387,7 @@ class HTTPBible(BibleDB):
         Run the import. This method overrides the parent class method. Returns
         ``True`` on success, ``False`` on failure.
         """
-        self.wizard.importProgressBar.setMaximum(2)
+        self.wizard.progressBar.setMaximum(2)
         self.wizard.incrementProgressBar('Registering bible...')
         self.create_meta(u'download source', self.download_source)
         self.create_meta(u'download name', self.download_name)
@@ -532,19 +532,25 @@ def get_soup_for_bible_ref(reference_url, header=None, cleaner=None):
     Receiver.send_message(u'openlp_process_events')
     return soup
 
-def send_error_message(reason):
-    if reason == u'download':
+def send_error_message(error_type):
+    """
+    Send a standard error message informing the user of an issue.
+
+    ``error_type``
+        The type of error that occured for the issue.
+    """
+    if error_type == u'download':
         Receiver.send_message(u'openlp_error_message', {
             u'title': translate('BiblePlugin.HTTPBible', 'Download Error'),
             u'message': translate('BiblePlugin.HTTPBible', 'There was a '
             'problem downloading your verse selection. Please check your '
             'Internet connection, and if this error continues to occur '
-            'consider reporting a bug.')
+            'please consider reporting a bug.')
             })
-    elif reason == u'parse':
+    elif error_type == u'parse':
         Receiver.send_message(u'openlp_error_message', {
             u'title': translate('BiblePlugin.HTTPBible', 'Parse Error'),
             u'message': translate('BiblePlugin.HTTPBible', 'There was a '
             'problem extracting your verse selection. If this error continues '
-            'to occur consider reporting a bug.')
+            'to occur please consider reporting a bug.')
             })

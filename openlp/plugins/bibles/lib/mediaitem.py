@@ -327,7 +327,7 @@ class BibleMediaItem(MediaManagerItem):
         if not hasattr(self, u'import_wizard'):
             self.import_wizard = BibleImportForm(self, self.parent.manager,
                 self.parent)
-        # If the import was not canceled then reload.
+        # If the import was not cancelled then reload.
         if self.import_wizard.exec_():
             self.reloadBibles()
 
