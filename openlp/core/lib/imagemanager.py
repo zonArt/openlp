@@ -30,7 +30,6 @@ A Thread is used to convert the image to a byte array so the user does not need
 to wait for the conversion to happen.
 """
 import logging
-import os
 import time
 
 from PyQt4 import QtCore
