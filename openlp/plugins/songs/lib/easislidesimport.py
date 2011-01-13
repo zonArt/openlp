@@ -367,14 +367,14 @@ class EasiSlidesImport(SongImport):
         else:
             for tag in our_verse_order:
                 if not tag[0] in verses:
-                    log.info(u'Got order from our_verse_order %s but not in'
-                        u'versetags, dropping this item from presentation order'
-                        u'missing was versetag %s', tag, tag[0])
+                    #log.info(u'Got order from our_verse_order %s but not in'
+                    #    u'versetags, dropping this item from presentation order'
+                    #    u'missing was versetag %s', tag, tag[0])
                     continue
                 if not tag[1] in verses[tag[0]]:
-                    log.info(u'Got order from our_verse_order %s but not in'
-                        u'versetags, dropping this item from presentation order'
-                        u'missing was versenum %s for versetag %s',
-                        tag, tag[1], tag[0])
+                    #log.info(u'Got order from our_verse_order %s but not in'
+                    #    u'versetags, dropping this item from presentation order'
+                    #    u'missing was versenum %s for versetag %s',
+                    #    tag, tag[1], tag[0])
                     continue
                 self.verse_order_list.append(u'%s%s' % (tag[0], tag[1]))
