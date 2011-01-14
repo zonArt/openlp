@@ -399,7 +399,8 @@ class SlideController(QtGui.QWidget):
     def previewSizeChanged(self):
         """
         Takes care of the SlidePreview's size. Is called when one of the the
-        splitters is moved or when the screen size is changed.
+        splitters is moved or when the screen size is changed. Note, that this
+        method is (also) called frequently from the mainwindow *paintEvent*.
         """
         if self.ratio < float(self.PreviewFrame.width()) / float(
             self.PreviewFrame.height()):
@@ -412,13 +413,19 @@ class SlideController(QtGui.QWidget):
             max_width = self.PreviewFrame.width() - self.grid.margin() * 2
             self.SlidePreview.setFixedSize(QtCore.QSize(max_width,
                 max_width / self.ratio))
-        width = self.parent.ControlSplitter.sizes()[self.split]
-        self.PreviewListWidget.setColumnWidth(0, width)
-        # Sort out image heights (Songs, bibles excluded)
-        if self.serviceItem and not self.serviceItem.is_text():
-            for framenumber in range(len(self.serviceItem.get_frames())):
-                self.PreviewListWidget.setRowHeight(
-                    framenumber, width / self.ratio)
+        # Make sure that the frames have the correct size.
+        self.PreviewListWidget.setColumnWidth(0,
+            self.PreviewListWidget.viewport().size().width())
+        if self.serviceItem:
+            # Sort out songs, bibles, etc.
+            if self.serviceItem.is_text():
+                self.PreviewListWidget.resizeRowsToContents()
+            else:
+                # Sort out image heights.
+                width = self.parent.ControlSplitter.sizes()[self.split]
+                for framenumber in range(len(self.serviceItem.get_frames())):
+                    self.PreviewListWidget.setRowHeight(
+                        framenumber, width / self.ratio)
 
     def onSongBarHandler(self):
         request = unicode(self.sender().text())
@@ -590,7 +597,7 @@ class SlideController(QtGui.QWidget):
                         self.parent.renderManager.height)
                 else:
                     image = self.parent.renderManager.image_manager. \
-                            get_image(frame[u'title'])
+                        get_image(frame[u'title'])
                 label.setPixmap(QtGui.QPixmap.fromImage(image))
                 self.PreviewListWidget.setCellWidget(framenumber, 0, label)
                 slideHeight = width * self.parent.renderManager.screen_ratio
