@@ -34,9 +34,6 @@ from songimport import SongImport
 
 log = logging.getLogger(__name__)
 
-class CCLIFileImportError(Exception):
-    pass
-
 class CCLIFileImport(SongImport):
     """
     The :class:`CCLIFileImport` class provides OpenLP with the ability to
@@ -152,7 +149,6 @@ class CCLIFileImport(SongImport):
 
         """
         log.debug(u'USR file text: %s', textList)
-        lyrics = []
         self.set_defaults()
         for line in textList:
             if line.startswith(u'Title='):

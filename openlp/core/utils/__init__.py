@@ -282,6 +282,23 @@ def split_filename(path):
     else:
         return os.path.split(path)
 
+def delete_file(file_path_name):
+    """
+    Deletes a file from the system.
+
+    ``file_path_name``
+        The file, including path, to delete.
+    """
+    if not file_path_name:
+        return False
+    try:
+        if os.path.exists(file_path_name):
+            os.remove(file_path_name)
+        return True
+    except (IOError, OSError):
+        log.exception("Unable to delete file %s" % file_path_name)
+        return False
+
 def get_web_page(url, header=None, update_openlp=False):
     """
     Attempts to download the webpage at url and returns that page or None.
