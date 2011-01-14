@@ -718,12 +718,12 @@ class BibleMediaItem(MediaManagerItem):
                     raw_footer.append(footer)
                 bible_text = u'%s%s\n\n%s%s' % (verse_text, text,
                     verse_text, second_text)
-                raw_slides.append(bible_text)
+                raw_slides.append(bible_text.rstrip())
                 bible_text = u''
             # If we are 'Verse Per Slide' then create a new slide.
             elif self.parent.settings_tab.layout_style == 0:
                 bible_text = u'%s%s' % (verse_text, text)
-                raw_slides.append(bible_text)
+                raw_slides.append(bible_text.rstrip())
                 bible_text = u''
             # If we are 'Verse Per Line' then force a new line.
             elif self.parent.settings_tab.layout_style == 1:
@@ -741,7 +741,7 @@ class BibleMediaItem(MediaManagerItem):
         raw_title.append(self.formatTitle(start_item, item))
         # If there are no more items we check whether we have to add bible_text.
         if bible_text:
-            raw_slides.append(bible_text)
+            raw_slides.append(bible_text.lstrip())
             bible_text = u''
         # Service Item: Capabilities
         if self.parent.settings_tab.layout_style == 2 and not second_bible:
