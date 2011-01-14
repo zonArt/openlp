@@ -670,7 +670,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
                 QtGui.QMessageBox.Yes) == QtGui.QMessageBox.Yes:
                 book = Book.populate(name=text, publisher=u'')
-                self.manager.save_object(book)
+                self.manager.save_object(book, False)
             else:
                 return
         if self.saveSong():
