@@ -680,8 +680,17 @@ class SlideController(QtGui.QWidget):
         Allow the main display to blank the main display at startup time
         """
         log.debug(u'mainDisplaySetBackground live = %s' % self.isLive)
+        display_type = QtCore.QSettings().value(
+            self.parent.generalSettingsSection + u'/screen blank',
+            QtCore.QVariant(u'')).toString()
         if not self.display.primary:
-            self.onBlankDisplay(True)
+            # Order done to handle initial conversion
+            if display_type == u'themed':
+                self.onThemeDisplay(True)
+            elif display_type == u'hidden':
+                self.onHideDisplay(True)
+            else:
+                self.onBlankDisplay(True)
 
     def onSlideBlank(self):
         """
@@ -705,13 +714,15 @@ class SlideController(QtGui.QWidget):
         self.ThemeScreen.setChecked(False)
         if self.screens.display_count > 1:
             self.DesktopScreen.setChecked(False)
-        QtCore.QSettings().setValue(
-            self.parent.generalSettingsSection + u'/screen blank',
-            QtCore.QVariant(checked))
         if checked:
             Receiver.send_message(u'maindisplay_hide', HideMode.Blank)
+            QtCore.QSettings().setValue(
+                self.parent.generalSettingsSection + u'/screen blank',
+                QtCore.QVariant(u'blanked'))
         else:
             Receiver.send_message(u'maindisplay_show')
+            QtCore.QSettings().remove(
+                self.parent.generalSettingsSection + u'/screen blank')
         self.blankPlugin(checked)
 
     def onThemeDisplay(self, checked):
@@ -722,12 +733,18 @@ class SlideController(QtGui.QWidget):
         self.HideMenu.setDefaultAction(self.ThemeScreen)
         self.BlankScreen.setChecked(False)
         self.ThemeScreen.setChecked(checked)
+
         if self.screens.display_count > 1:
             self.DesktopScreen.setChecked(False)
         if checked:
             Receiver.send_message(u'maindisplay_hide', HideMode.Theme)
+            QtCore.QSettings().setValue(
+                self.parent.generalSettingsSection + u'/screen blank',
+                QtCore.QVariant(u'themed'))
         else:
             Receiver.send_message(u'maindisplay_show')
+            QtCore.QSettings().remove(
+                self.parent.generalSettingsSection + u'/screen blank')
         self.blankPlugin(checked)
 
     def onHideDisplay(self, checked):
@@ -738,12 +755,19 @@ class SlideController(QtGui.QWidget):
         self.HideMenu.setDefaultAction(self.DesktopScreen)
         self.BlankScreen.setChecked(False)
         self.ThemeScreen.setChecked(False)
-        if self.screens.display_count > 1:
-            self.DesktopScreen.setChecked(checked)
+        # On valid if more than 1 display
+        if self.screens.display_count <= 1:
+            return
+        self.DesktopScreen.setChecked(checked)
         if checked:
             Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
+            QtCore.QSettings().setValue(
+                self.parent.generalSettingsSection + u'/screen blank',
+                QtCore.QVariant(u'hidden'))
         else:
             Receiver.send_message(u'maindisplay_show')
+            QtCore.QSettings().remove(
+                self.parent.generalSettingsSection + u'/screen blank')
         self.hidePlugin(checked)
 
     def blankPlugin(self, blank):
@@ -1033,9 +1057,8 @@ class SlideController(QtGui.QWidget):
         if self.BlankScreen.isChecked:
             self.BlankScreen.setChecked(False)
             self.HideMenu.setDefaultAction(self.BlankScreen)
-            QtCore.QSettings().setValue(
-                self.parent.generalSettingsSection + u'/screen blank',
-                QtCore.QVariant(False))
+            QtCore.QSettings().remove(
+                self.parent.generalSettingsSection + u'/screen blank')
         if self.ThemeScreen.isChecked:
             self.ThemeScreen.setChecked(False)
             self.HideMenu.setDefaultAction(self.ThemeScreen)
