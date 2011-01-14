@@ -733,7 +733,6 @@ class SlideController(QtGui.QWidget):
         self.HideMenu.setDefaultAction(self.ThemeScreen)
         self.BlankScreen.setChecked(False)
         self.ThemeScreen.setChecked(checked)
-
         if self.screens.display_count > 1:
             self.DesktopScreen.setChecked(False)
         if checked:
