@@ -75,7 +75,6 @@ class SongBeamerImport(SongImport):
             The song manager for the running OpenLP installation.
         """
         SongImport.__init__(self, master_manager)
-        self.master_manager = master_manager
         if kwargs.has_key(u'filename'):
             self.import_source = kwargs[u'filename']
         if kwargs.has_key(u'filenames'):
@@ -87,7 +86,7 @@ class SongBeamerImport(SongImport):
         Recieve a single file, or a list of files to import.
         """
         if isinstance(self.import_source, list):
-            self.import_wizard.importProgressBar.setMaximum(
+            self.import_wizard.progressBar.setMaximum(
                 len(self.import_source))
             for file in self.import_source:
                 # TODO: check that it is a valid SongBeamer file

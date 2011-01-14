@@ -67,7 +67,7 @@ class CCLIFileImport(SongImport):
         """
         log.debug(u'Starting CCLI File Import')
         song_total = len(self.filenames)
-        self.import_wizard.importProgressBar.setMaximum(song_total)
+        self.import_wizard.progressBar.setMaximum(song_total)
         song_count = 1
         for filename in self.filenames:
             self.import_wizard.incrementProgressBar(unicode(translate(
