@@ -37,7 +37,7 @@ from openlp.core.lib import OpenLPToolbar, ServiceItem, context_menu_action, \
     Receiver, build_icon, ItemCapabilities, SettingsManager, translate, \
     ThemeLevel
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm
-from openlp.core.utils import AppLocation, split_filename
+from openlp.core.utils import AppLocation, file_is_unicode, split_filename
 
 class ServiceManagerList(QtGui.QTreeWidget):
     """
@@ -484,16 +484,13 @@ class ServiceManager(QtGui.QWidget):
         try:
             zip = zipfile.ZipFile(fileName)
             for file in zip.namelist():
-                try:
-                    ucsfile = file.decode(u'utf-8')
-                except UnicodeDecodeError:
+                ucsfile = file_is_unicode(file)
+                if not ucsfile:
                     QtGui.QMessageBox.critical(
                         self, translate('OpenLP.ServiceManager', 'Error'),
                         translate('OpenLP.ServiceManager',
                             'File is not a valid service.\n'
                             'The content encoding is not UTF-8.'))
-                    log.exception(u'Filename "%s" is not valid UTF-8' %
-                        file.decode(u'utf-8', u'replace'))
                     continue
                 osfile = unicode(QtCore.QDir.toNativeSeparators(ucsfile))
                 filePath = os.path.join(self.servicePath,
@@ -515,8 +512,7 @@ class ServiceManager(QtGui.QWidget):
                     serviceItem.set_from_service(item, self.servicePath)
                     self.validateItem(serviceItem)
                     self.addServiceItem(serviceItem)
-                    if serviceItem.is_capable(
-                        ItemCapabilities.OnLoadUpdate):
+                    if serviceItem.is_capable(ItemCapabilities.OnLoadUpdate):
                         Receiver.send_message(u'%s_service_load' %
                             serviceItem.name.lower(), serviceItem)
                 try:

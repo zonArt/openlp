@@ -37,7 +37,8 @@ from openlp.core.theme import Theme
 from openlp.core.lib import OpenLPToolbar, ThemeXML, get_text_file_string, \
     build_icon, Receiver, SettingsManager, translate, check_item_selected, \
     BackgroundType, BackgroundGradientType, check_directory_exists
-from openlp.core.utils import AppLocation, get_filesystem_encoding
+from openlp.core.utils import AppLocation, file_is_unicode, \
+    get_filesystem_encoding
 
 log = logging.getLogger(__name__)
 
@@ -475,7 +476,8 @@ class ThemeManager(QtGui.QWidget):
             unicode(themeName) + u'.xml')
         xml = get_text_file_string(xmlFile)
         if not xml:
-            return self._baseTheme()
+            log.debug("No theme data - using default theme")
+            return ThemeXML()
         else:
             return self._createThemeFromXml(xml, self.path)
 
@@ -494,16 +496,13 @@ class ThemeManager(QtGui.QWidget):
             filexml = None
             themename = None
             for file in zip.namelist():
-                try:
-                    ucsfile = file.decode(u'utf-8')
-                except UnicodeDecodeError:
+                ucsfile = file_is_unicode(file)
+                if not ucsfile:
                     QtGui.QMessageBox.critical(
                         self, translate('OpenLP.ThemeManager', 'Error'),
                         translate('OpenLP.ThemeManager',
                             'File is not a valid theme.\n'
                             'The content encoding is not UTF-8.'))
-                    log.exception(u'Filename "%s" is not valid UTF-8' %
-                        file.decode(u'utf-8', u'replace'))
                     continue
                 osfile = unicode(QtCore.QDir.toNativeSeparators(ucsfile))
                 theme_dir = None
@@ -667,14 +666,6 @@ class ThemeManager(QtGui.QWidget):
         log.debug(u'getPreviewImage %s ', theme)
         image = os.path.join(self.path, theme + u'.png')
         return image
-
-    def _baseTheme(self):
-        """
-        Provide a base theme with sensible defaults
-        """
-        log.debug(u'base theme created')
-        newtheme = ThemeXML()
-        return newtheme
 
     def _createThemeFromXml(self, themeXml, path):
         """

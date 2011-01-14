@@ -314,7 +314,7 @@ class MediaManagerItem(QtGui.QWidget):
                 context_menu_action(
                     self.listView, u':/general/general_add.png',
                     translate('OpenLP.MediaManagerItem',
-                        '&Add to selected Service Item'),
+                    '&Add to selected Service Item'),
                     self.onAddEditClick))
         QtCore.QObject.connect(self.listView,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
@@ -441,7 +441,7 @@ class MediaManagerItem(QtGui.QWidget):
             QtGui.QMessageBox.information(self,
                 translate('OpenLP.MediaManagerItem', 'No Items Selected'),
                 translate('OpenLP.MediaManagerItem',
-                    'You must select one or more items to preview.'))
+                'You must select one or more items to preview.'))
         else:
             log.debug(u'%s Preview requested', self.plugin.name)
             serviceItem = self.buildServiceItem()
