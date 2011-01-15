@@ -33,7 +33,7 @@ from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
     ItemCapabilities, SettingsManager, translate, check_item_selected, \
     check_directory_exists
 from openlp.core.ui import criticalErrorMessageBox
-from openlp.core.utils import AppLocation, get_images_filter
+from openlp.core.utils import AppLocation, delete_file, get_images_filter
 
 log = logging.getLogger(__name__)
 
@@ -116,12 +116,8 @@ class ImageMediaItem(MediaManagerItem):
             for row in row_list:
                 text = self.listView.item(row)
                 if text:
-                    try:
-                        os.remove(os.path.join(self.servicePath,
-                            unicode(text.text())))
-                    except OSError:
-                        # if not present do not worry
-                        pass
+                    delete_file(os.path.join(self.servicePath,
+                        unicode(text.text())))
                 self.listView.takeItem(row)
             SettingsManager.set_list(self.settingsSection,
                 self.settingsSection, self.getFileList())

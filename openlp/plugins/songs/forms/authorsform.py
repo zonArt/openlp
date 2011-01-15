@@ -94,7 +94,7 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
                 message=translate('SongsPlugin.AuthorsForm',
                 'You have not set a display name for the '
                 'author, combine the first and last names?'),
-                question=True) == QtGui.QMessageBox.Yes:
+                parent=self, question=True) == QtGui.QMessageBox.Yes:
                 self.displayEdit.setText(self.firstNameEdit.text() + \
                     u' ' + self.lastNameEdit.text())
                 return QtGui.QDialog.accept(self)

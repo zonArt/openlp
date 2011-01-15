@@ -536,7 +536,7 @@ class BibleMediaItem(MediaManagerItem):
                 message=translate('BiblePlugin.MediaItem',
                 'You cannot combine single and second bible verses. Do you '
                 'want to delete your search results and start a new search?'),
-                question=True) == QtGui.QMessageBox.Yes:
+                parent=self, question=True) == QtGui.QMessageBox.Yes:
                 self.listView.clear()
                 self.displayResults(bible, second_bible)
         else:
@@ -584,7 +584,7 @@ class BibleMediaItem(MediaManagerItem):
                 message=translate('BiblePlugin.MediaItem',
                 'You cannot combine single and second bible verses. Do you '
                 'want to delete your search results and start a new search?'),
-                question=True) == QtGui.QMessageBox.Yes:
+                parent=self, question=True) == QtGui.QMessageBox.Yes:
                 self.listView.clear()
                 self.displayResults(bible, second_bible)
         elif self.search_results:
@@ -710,21 +710,21 @@ class BibleMediaItem(MediaManagerItem):
                     second_copyright, second_permissions)
                 if footer not in raw_footer:
                     raw_footer.append(footer)
-                bible_text = u'%s\u00a0%s\n\n%s\u00a0%s' % (verse_text, text,
+                bible_text = u'%s&nbsp;%s\n\n%s&nbsp;%s' % (verse_text, text,
                     verse_text, second_text)
-                raw_slides.append(bible_text)
+                raw_slides.append(bible_text.rstrip())
                 bible_text = u''
             # If we are 'Verse Per Slide' then create a new slide.
             elif self.parent.settings_tab.layout_style == 0:
-                bible_text = u'%s\u00a0%s' % (verse_text, text)
-                raw_slides.append(bible_text)
+                bible_text = u'%s&nbsp;%s' % (verse_text, text)
+                raw_slides.append(bible_text.rstrip())
                 bible_text = u''
             # If we are 'Verse Per Line' then force a new line.
             elif self.parent.settings_tab.layout_style == 1:
-                bible_text = u'%s %s\u00a0%s\n' % (bible_text, verse_text, text)
+                bible_text = u'%s %s&nbsp;%s\n' % (bible_text, verse_text, text)
             # We have to be 'Continuous'.
             else:
-                bible_text = u'%s %s\u00a0%s\n' % (bible_text, verse_text, text)
+                bible_text = u'%s %s&nbsp;%s\n' % (bible_text, verse_text, text)
             if not old_item:
                 start_item = item
             elif self.checkTitle(item, old_item):
@@ -735,7 +735,7 @@ class BibleMediaItem(MediaManagerItem):
         raw_title.append(self.formatTitle(start_item, item))
         # If there are no more items we check whether we have to add bible_text.
         if bible_text:
-            raw_slides.append(bible_text)
+            raw_slides.append(bible_text.lstrip())
             bible_text = u''
         # Service Item: Capabilities
         if self.parent.settings_tab.layout_style == 2 and not second_bible:

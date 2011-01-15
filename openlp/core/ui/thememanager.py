@@ -37,7 +37,7 @@ from openlp.core.theme import Theme
 from openlp.core.lib import OpenLPToolbar, ThemeXML, get_text_file_string, \
     build_icon, Receiver, SettingsManager, translate, check_item_selected, \
     BackgroundType, BackgroundGradientType, check_directory_exists
-from openlp.core.utils import AppLocation, file_is_unicode, \
+from openlp.core.utils import AppLocation, delete_file, file_is_unicode, \
     get_filesystem_encoding
 
 log = logging.getLogger(__name__)
@@ -341,9 +341,9 @@ class ThemeManager(QtGui.QWidget):
         """
         self.themelist.remove(theme)
         thumb = theme + u'.png'
+        delete_file(os.path.join(self.path, thumb))
+        delete_file(os.path.join(self.thumbPath, thumb))
         try:
-            os.remove(os.path.join(self.path, thumb))
-            os.remove(os.path.join(self.thumbPath, thumb))
             encoding = get_filesystem_encoding()
             shutil.rmtree(os.path.join(self.path, theme).encode(encoding))
         except OSError:
@@ -518,13 +518,10 @@ class ThemeManager(QtGui.QWidget):
                             check_directory_exists(theme_dir)
                         if os.path.splitext(ucsfile)[1].lower() in [u'.xml']:
                             xml_data = zip.read(file)
-                            try:
-                                xml_data = xml_data.decode(u'utf-8')
-                            except UnicodeDecodeError:
-                                log.exception(u'Theme XML is not UTF-8 '
-                                    u'encoded.')
+                            xml_data = file_is_unicode(xml_data)
+                            if not xml_data:
                                 break
-                            filexml = self.checkVersionAndConvert(xml_data)
+                            filexml = self._checkVersionAndConvert(xml_data)
                             outfile = open(fullpath, u'w')
                             outfile.write(filexml.encode(u'utf-8'))
                         else:
@@ -551,22 +548,6 @@ class ThemeManager(QtGui.QWidget):
                 zip.close()
             if outfile:
                 outfile.close()
-
-    def checkVersionAndConvert(self, xml_data):
-        """
-        Check if a theme is from OpenLP version 1
-
-        ``xml_data``
-            Theme XML to check the version of
-        """
-        log.debug(u'checkVersion1 ')
-        theme = xml_data.encode(u'ascii', u'xmlcharrefreplace')
-        tree = ElementTree(element=XML(theme)).getroot()
-        # look for old version 1 tags
-        if tree.find(u'BackgroundType') is None:
-            return xml_data
-        else:
-            return self._migrateVersion122(xml_data)
 
     def checkIfThemeExists(self, themeName):
         """
@@ -597,10 +578,7 @@ class ThemeManager(QtGui.QWidget):
         theme_file = os.path.join(theme_dir, name + u'.xml')
         if imageTo and self.oldBackgroundImage and \
             imageTo != self.oldBackgroundImage:
-            try:
-                os.remove(self.oldBackgroundImage)
-            except OSError:
-                log.exception(u'Unable to remove old theme background')
+            delete_file(self.oldBackgroundImage)
         outfile = None
         try:
             outfile = open(theme_file, u'w')
@@ -660,6 +638,22 @@ class ThemeManager(QtGui.QWidget):
         log.debug(u'getPreviewImage %s ', theme)
         image = os.path.join(self.path, theme + u'.png')
         return image
+
+    def _checkVersionAndConvert(self, xml_data):
+        """
+        Check if a theme is from OpenLP version 1
+
+        ``xml_data``
+            Theme XML to check the version of
+        """
+        log.debug(u'checkVersion1 ')
+        theme = xml_data.encode(u'ascii', u'xmlcharrefreplace')
+        tree = ElementTree(element=XML(theme)).getroot()
+        # look for old version 1 tags
+        if tree.find(u'BackgroundType') is None:
+            return xml_data
+        else:
+            return self._migrateVersion122(xml_data)
 
     def _createThemeFromXml(self, themeXml, path):
         """

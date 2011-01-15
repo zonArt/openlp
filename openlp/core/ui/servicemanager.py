@@ -38,7 +38,8 @@ from openlp.core.lib import OpenLPToolbar, ServiceItem, context_menu_action, \
     ThemeLevel
 from openlp.core.ui import criticalErrorMessageBox, ServiceNoteForm, \
     ServiceItemEditForm
-from openlp.core.utils import AppLocation, file_is_unicode, split_filename
+from openlp.core.utils import AppLocation, delete_file, file_is_unicode, \
+    split_filename
 
 class ServiceManagerList(QtGui.QTreeWidget):
     """
@@ -446,11 +447,7 @@ class ServiceManager(QtGui.QWidget):
                     file.close()
                 if zip:
                     zip.close()
-            try:
-                os.remove(serviceFileName)
-            except (IOError, OSError):
-                # if not present do not worry
-                pass
+            delete_file(serviceFileName)
             self.mainwindow.addRecentFile(fileName)
             self.setModified(False)
         return True
@@ -515,11 +512,7 @@ class ServiceManager(QtGui.QWidget):
                     if serviceItem.is_capable(ItemCapabilities.OnLoadUpdate):
                         Receiver.send_message(u'%s_service_load' %
                             serviceItem.name.lower(), serviceItem)
-                try:
-                    if os.path.isfile(p_file):
-                        os.remove(p_file)
-                except (IOError, OSError):
-                    log.exception(u'Failed to remove osd file')
+                delete_file(p_file)
             else:
                 criticalErrorMessageBox(
                     message=translate('OpenLP.ServiceManager',
@@ -872,11 +865,7 @@ class ServiceManager(QtGui.QWidget):
         """
         for file in os.listdir(self.servicePath):
             file_path = os.path.join(self.servicePath, file)
-            try:
-                if os.path.isfile(file_path):
-                    os.remove(file_path)
-            except OSError:
-                log.exception(u'Failed to clean up servicePath')
+            delete_file(file_path)
 
     def onThemeComboBoxSelected(self, currentIndex):
         """

@@ -92,7 +92,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             item = self.manager.get_object(item_class, item_id)
             if item and len(item.songs) == 0:
                 if criticalErrorMessageBox(title=dlg_title, message=del_text,
-                    question=True) == QtGui.QMessageBox.Yes:
+                    parent=self, question=True) == QtGui.QMessageBox.Yes:
                     self.manager.delete_object(item_class, item.id)
                     reset_func()
             else:
@@ -303,7 +303,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     'exists. Would you like to make songs with author %s use '
                     'the existing author %s?')) % (author.display_name,
                     temp_display_name, author.display_name),
-                    question=True) == QtGui.QMessageBox.Yes:
+                    parent=self, question=True) == QtGui.QMessageBox.Yes:
                     self.mergeAuthors(author)
                     self.resetAuthors()
                     Receiver.send_message(u'songs_load_list')
@@ -339,7 +339,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     'The topic %s already exists. Would you like to make songs '
                     'with topic %s use the existing topic %s?')) % (topic.name,
                     temp_name, topic.name),
-                    question=True) == QtGui.QMessageBox.Yes:
+                    parent=self, question=True) == QtGui.QMessageBox.Yes:
                     self.mergeTopics(topic)
                     self.resetTopics()
                 else:
@@ -377,7 +377,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     'The book %s already exists. Would you like to make songs '
                     'with book %s use the existing book %s?')) % (book.name,
                     temp_name, book.name),
-                    question=True) == QtGui.QMessageBox.Yes:
+                    parent=self, question=True) == QtGui.QMessageBox.Yes:
                     self.mergeBooks(book)
                     self.resetBooks()
                 else:
