@@ -716,21 +716,21 @@ class BibleMediaItem(MediaManagerItem):
                     second_copyright, second_permissions)
                 if footer not in raw_footer:
                     raw_footer.append(footer)
-                bible_text = u'%s%s\n\n%s%s' % (verse_text, text,
+                bible_text = u'%s&nbsp;%s\n\n%s%s' % (verse_text, text,
                     verse_text, second_text)
                 raw_slides.append(bible_text.rstrip())
                 bible_text = u''
             # If we are 'Verse Per Slide' then create a new slide.
             elif self.parent.settings_tab.layout_style == 0:
-                bible_text = u'%s%s' % (verse_text, text)
+                bible_text = u'%s&nbsp;%s' % (verse_text, text)
                 raw_slides.append(bible_text.rstrip())
                 bible_text = u''
             # If we are 'Verse Per Line' then force a new line.
             elif self.parent.settings_tab.layout_style == 1:
-                bible_text = u'%s %s%s\n' % (bible_text, verse_text, text)
+                bible_text = u'%s %s&nbsp;%s\n' % (bible_text, verse_text, text)
             # We have to be 'Continuous'.
             else:
-                bible_text = u'%s %s%s\n' % (bible_text, verse_text, text)
+                bible_text = u'%s %s&nbsp;%s\n' % (bible_text, verse_text, text)
             if not old_item:
                 start_item = item
             elif self.checkTitle(item, old_item):
