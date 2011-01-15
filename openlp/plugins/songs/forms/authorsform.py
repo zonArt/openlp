@@ -27,6 +27,7 @@
 from PyQt4 import QtGui, QtCore
 
 from openlp.core.lib import translate
+from openlp.core.ui import criticalErrorMessageBox
 from openlp.plugins.songs.forms.authorsdialog import Ui_AuthorsDialog
 
 class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
@@ -79,28 +80,21 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
 
     def accept(self):
         if not self.firstNameEdit.text():
-            QtGui.QMessageBox.critical(
-                self, translate('SongsPlugin.AuthorsForm', 'Error'),
-                translate('SongsPlugin.AuthorsForm',
-                    'You need to type in the first name of the author.'))
+            criticalErrorMessageBox(self, translate('SongsPlugin.AuthorsForm',
+                'You need to type in the first name of the author.'))
             self.firstNameEdit.setFocus()
             return False
         elif not self.lastNameEdit.text():
-            QtGui.QMessageBox.critical(
-                self, translate('SongsPlugin.AuthorsForm', 'Error'),
-                translate('SongsPlugin.AuthorsForm',
-                    'You need to type in the last name of the author.'))
+            criticalErrorMessageBox(self, translate('SongsPlugin.AuthorsForm',
+                'You need to type in the last name of the author.'))
             self.lastNameEdit.setFocus()
             return False
         elif not self.displayEdit.text():
-            if QtGui.QMessageBox.critical(
-                    self, translate('SongsPlugin.AuthorsForm', 'Error'),
-                    translate('SongsPlugin.AuthorsForm',
-                        'You have not set a display name for the '
-                        'author, combine the first and last names?'),
-                    QtGui.QMessageBox.StandardButtons(
-                        QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
-                    ) == QtGui.QMessageBox.Yes:
+            if criticalErrorMessageBox(self,
+                translate('SongsPlugin.AuthorsForm',
+                'You have not set a display name for the '
+                'author, combine the first and last names?'),
+                True) == QtGui.QMessageBox.Yes:
                 self.displayEdit.setText(self.firstNameEdit.text() + \
                     u' ' + self.lastNameEdit.text())
                 return QtGui.QDialog.accept(self)

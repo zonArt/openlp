@@ -534,13 +534,11 @@ class BibleMediaItem(MediaManagerItem):
             if item_second_bible and second_bible or not item_second_bible and \
                 not second_bible:
                 self.displayResults(bible, second_bible)
-            elif QtGui.QMessageBox.critical(self,
-                translate('BiblePlugin.MediaItem', 'Error'),
+            elif criticalErrorMessageBox(self,
                 translate('BiblePlugin.MediaItem', 'You cannot combine single '
                 'and second bible verses. Do you want to delete your search '
                 'results and start a new search?'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
-                QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.Yes:
+                True) == QtGui.QMessageBox.Yes:
                 self.listView.clear()
                 self.displayResults(bible, second_bible)
         else:
@@ -584,13 +582,11 @@ class BibleMediaItem(MediaManagerItem):
             if item_second_bible and second_bible or not item_second_bible and \
                 not second_bible:
                 self.displayResults(bible, second_bible)
-            elif QtGui.QMessageBox.critical(self,
-                translate('BiblePlugin.MediaItem', 'Error'),
+            elif criticalErrorMessageBox(self,
                 translate('BiblePlugin.MediaItem', 'You cannot combine single '
                 'and second bible verses. Do you want to delete your search '
                 'results and start a new search?'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
-                QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.Yes:
+                True) == QtGui.QMessageBox.Yes:
                 self.listView.clear()
                 self.displayResults(bible, second_bible)
         elif self.search_results:

@@ -32,7 +32,7 @@ import logging
 from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.ui import FileRenameForm, ThemeForm
+from openlp.core.ui import criticalErrorMessageBox, FileRenameForm, ThemeForm
 from openlp.core.theme import Theme
 from openlp.core.lib import OpenLPToolbar, ThemeXML, get_text_file_string, \
     build_icon, Receiver, SettingsManager, translate, check_item_selected, \
@@ -359,9 +359,7 @@ class ThemeManager(QtGui.QWidget):
         """
         item = self.themeListWidget.currentItem()
         if item is None:
-            QtGui.QMessageBox.critical(self,
-                translate('OpenLP.ThemeManager', 'Error'),
-                translate('OpenLP.ThemeManager',
+            criticalErrorMessageBox(self, translate('OpenLP.ThemeManager',
                 'You have not selected a theme.'))
             return
         theme = unicode(item.data(QtCore.Qt.UserRole).toString())
@@ -498,11 +496,9 @@ class ThemeManager(QtGui.QWidget):
             for file in zip.namelist():
                 ucsfile = file_is_unicode(file)
                 if not ucsfile:
-                    QtGui.QMessageBox.critical(
-                        self, translate('OpenLP.ThemeManager', 'Error'),
-                        translate('OpenLP.ThemeManager',
-                            'File is not a valid theme.\n'
-                            'The content encoding is not UTF-8.'))
+                    criticalErrorMessageBox(self,
+                        translate('OpenLP.ThemeManager', 'File is not a valid '
+                            'theme.\nThe content encoding is not UTF-8.'))
                     continue
                 osfile = unicode(QtCore.QDir.toNativeSeparators(ucsfile))
                 theme_dir = None
@@ -700,10 +696,8 @@ class ThemeManager(QtGui.QWidget):
                 return False
             # should be the same unless default
             if theme != unicode(item.data(QtCore.Qt.UserRole).toString()):
-                QtGui.QMessageBox.critical(self,
-                    translate('OpenLP.ThemeManager', 'Error'),
-                    translate('OpenLP.ThemeManager',
-                        'You are unable to delete the default theme.'))
+                criticalErrorMessageBox(self, translate('OpenLP.ThemeManager',
+                    'You are unable to delete the default theme.'))
                 return False
             # check for use in the system else where.
             if testPlugin:

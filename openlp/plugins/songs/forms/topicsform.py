@@ -27,6 +27,7 @@
 from PyQt4 import QtGui
 
 from openlp.core.lib import translate
+from openlp.core.ui import criticalErrorMessageBox
 from openlp.plugins.songs.forms.topicsdialog import Ui_TopicsDialog
 
 class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
@@ -48,10 +49,8 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
 
     def accept(self):
         if not self.nameEdit.text():
-            QtGui.QMessageBox.critical(
-                self, translate('SongsPlugin.TopicsForm', 'Error'),
-                translate('SongsPlugin.TopicsForm',
-                    'You need to type in a topic name.'))
+            criticalErrorMessageBox(self, translate('SongsPlugin.TopicsForm',
+                'You need to type in a topic name.'))
             self.nameEdit.setFocus()
             return False
         else:

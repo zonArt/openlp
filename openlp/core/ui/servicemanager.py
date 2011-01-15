@@ -36,7 +36,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import OpenLPToolbar, ServiceItem, context_menu_action, \
     Receiver, build_icon, ItemCapabilities, SettingsManager, translate, \
     ThemeLevel
-from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm
+from openlp.core.ui import criticalErrorMessageBox, ServiceNoteForm, \
+    ServiceItemEditForm
 from openlp.core.utils import AppLocation, file_is_unicode, split_filename
 
 class ServiceManagerList(QtGui.QTreeWidget):
@@ -486,8 +487,7 @@ class ServiceManager(QtGui.QWidget):
             for file in zip.namelist():
                 ucsfile = file_is_unicode(file)
                 if not ucsfile:
-                    QtGui.QMessageBox.critical(
-                        self, translate('OpenLP.ServiceManager', 'Error'),
+                    criticalErrorMessageBox(self,
                         translate('OpenLP.ServiceManager',
                             'File is not a valid service.\n'
                             'The content encoding is not UTF-8.'))
@@ -521,10 +521,8 @@ class ServiceManager(QtGui.QWidget):
                 except (IOError, OSError):
                     log.exception(u'Failed to remove osd file')
             else:
-                QtGui.QMessageBox.critical(
-                    self, translate('OpenLP.ServiceManager', 'Error'),
-                    translate('OpenLP.ServiceManager',
-                        'File is not a valid service.'))
+                criticalErrorMessageBox(self, translate('OpenLP.ServiceManager',
+                    'File is not a valid service.'))
                 log.exception(u'File contains no service data')
         except (IOError, NameError):
             log.exception(u'Problem loading a service file')

@@ -29,6 +29,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
+from openlp.core.ui import criticalErrorMessageBox
 from openlp.plugins.songs.lib import VerseType, translate
 
 from editversedialog import Ui_EditVerseDialog
@@ -167,9 +168,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         else:
             value = self.getVerse()[0].split(u'\n')[1]
         if len(value) == 0:
-            QtGui.QMessageBox.critical(self,
-                translate('SongsPlugin.EditSongForm', 'Error'),
-                translate('SongsPlugin.EditSongForm',
+            criticalErrorMessageBox(self, translate('SongsPlugin.EditSongForm',
                 'You need to type some text in to the verse.'))
             return False
         QtGui.QDialog.accept(self)

@@ -26,6 +26,9 @@
 """
 The :mod:`ui` module provides the core user interface for OpenLP
 """
+from PyQt4 import QtGui
+
+from openlp.core.lib import translate
 
 class HideMode(object):
     """
@@ -48,6 +51,26 @@ class HideMode(object):
     Theme = 2
     Screen = 3
 
+
+def criticalErrorMessageBox(parent, message, question=False):
+    """
+    Provides a standard critical message box for errors that OpenLP displays
+    to users.
+
+    ``parent``
+        The parent UI element to attach the dialog to.
+
+    ``message``
+        The message to display to the user.
+    """
+    if question:
+        return QtGui.QMessageBox.critical(parent,
+            translate('OpenLP.Ui', 'Error'),
+            message, QtGui.QMessageBox.StandardButtons(
+            QtGui.QMessageBox.Yes | QtGui.QMessageBox.No))
+    return QtGui.QMessageBox.critical(parent, translate('OpenLP.Ui', 'Error'),
+        message)
+
 from themeform import ThemeForm
 from filerenameform import FileRenameForm
 from maindisplay import MainDisplay
@@ -68,6 +91,6 @@ from mediadockmanager import MediaDockManager
 from servicemanager import ServiceManager
 from thememanager import ThemeManager
 
-__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm',
-    'MainDisplay', 'SlideController', 'ServiceManager', 'ThemeManager',
-    'MediaDockManager', 'ServiceItemEditForm']
+__all__ = ['criticalErrorMessageBox', 'SplashScreen', 'AboutForm',
+    'SettingsForm', 'MainDisplay', 'SlideController', 'ServiceManager',
+    'ThemeManager', 'MediaDockManager', 'ServiceItemEditForm']
