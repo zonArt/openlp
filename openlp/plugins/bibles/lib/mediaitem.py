@@ -30,6 +30,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, Receiver, BaseListWithDnD, \
     ItemCapabilities, translate
+from openlp.core.ui import criticalErrorMessageBox
 from openlp.plugins.bibles.forms import BibleImportForm
 from openlp.plugins.bibles.lib import get_reference_match
 

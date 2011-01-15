@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, BackgroundType, BackgroundGradientType, \
     Receiver
-from openlp.core.ui import criticalErrorMessage
+from openlp.core.ui import criticalErrorMessageBox
 from openlp.core.utils import get_images_filter
 from themewizard import Ui_ThemeWizard
 
