@@ -524,7 +524,7 @@ class ThemeManager(QtGui.QWidget):
                             xml_data = file_is_unicode(xml_data)
                             if not xml_data:
                                 break
-                            filexml = self.checkVersionAndConvert(xml_data)
+                            filexml = self._checkVersionAndConvert(xml_data)
                             outfile = open(fullpath, u'w')
                             outfile.write(filexml.encode(u'utf-8'))
                         else:
@@ -553,22 +553,6 @@ class ThemeManager(QtGui.QWidget):
                 zip.close()
             if outfile:
                 outfile.close()
-
-    def checkVersionAndConvert(self, xml_data):
-        """
-        Check if a theme is from OpenLP version 1
-
-        ``xml_data``
-            Theme XML to check the version of
-        """
-        log.debug(u'checkVersion1 ')
-        theme = xml_data.encode(u'ascii', u'xmlcharrefreplace')
-        tree = ElementTree(element=XML(theme)).getroot()
-        # look for old version 1 tags
-        if tree.find(u'BackgroundType') is None:
-            return xml_data
-        else:
-            return self._migrateVersion122(xml_data)
 
     def checkIfThemeExists(self, themeName):
         """
@@ -660,6 +644,22 @@ class ThemeManager(QtGui.QWidget):
         log.debug(u'getPreviewImage %s ', theme)
         image = os.path.join(self.path, theme + u'.png')
         return image
+
+    def _checkVersionAndConvert(self, xml_data):
+        """
+        Check if a theme is from OpenLP version 1
+
+        ``xml_data``
+            Theme XML to check the version of
+        """
+        log.debug(u'checkVersion1 ')
+        theme = xml_data.encode(u'ascii', u'xmlcharrefreplace')
+        tree = ElementTree(element=XML(theme)).getroot()
+        # look for old version 1 tags
+        if tree.find(u'BackgroundType') is None:
+            return xml_data
+        else:
+            return self._migrateVersion122(xml_data)
 
     def _createThemeFromXml(self, themeXml, path):
         """
