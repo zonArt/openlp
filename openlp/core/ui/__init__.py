@@ -63,13 +63,12 @@ def criticalErrorMessageBox(parent, message, question=False):
     ``message``
         The message to display to the user.
     """
+    error = translate('OpenLP.Ui', 'Error')
     if question:
-        return QtGui.QMessageBox.critical(parent,
-            translate('OpenLP.Ui', 'Error'),
-            message, QtGui.QMessageBox.StandardButtons(
+        return QtGui.QMessageBox.critical(parent, error, message,
+            QtGui.QMessageBox.StandardButtons(
             QtGui.QMessageBox.Yes | QtGui.QMessageBox.No))
-    return QtGui.QMessageBox.critical(parent, translate('OpenLP.Ui', 'Error'),
-        message)
+    return QtGui.QMessageBox.critical(parent, error, message)
 
 from themeform import ThemeForm
 from filerenameform import FileRenameForm
