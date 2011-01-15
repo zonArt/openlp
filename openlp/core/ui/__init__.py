@@ -62,6 +62,9 @@ def criticalErrorMessageBox(parent, message, question=False):
 
     ``message``
         The message to display to the user.
+
+    ``question``
+        Should this message box question the user.
     """
     error = translate('OpenLP.Ui', 'Error')
     if question:
