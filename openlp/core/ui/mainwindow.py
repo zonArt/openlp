@@ -66,25 +66,10 @@ class Ui_MainWindow(object):
         MainWindow.setObjectName(u'MainWindow')
         MainWindow.resize(self.settingsmanager.width,
             self.settingsmanager.height)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,
-            QtGui.QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            MainWindow.sizePolicy().hasHeightForWidth())
-        MainWindow.setSizePolicy(sizePolicy)
-        MainIcon = build_icon(u':/icon/openlp-logo-16x16.png')
-        MainWindow.setWindowIcon(MainIcon)
-        self.setDockNestingEnabled(True)
+        MainWindow.setWindowIcon(build_icon(u':/icon/openlp-logo-16x16.png'))
+        MainWindow.setDockNestingEnabled(True)
         # Set up the main container, which contains all the other form widgets.
         self.MainContent = QtGui.QWidget(MainWindow)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,
-            QtGui.QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.MainContent.sizePolicy().hasHeightForWidth())
-        self.MainContent.setSizePolicy(sizePolicy)
         self.MainContent.setObjectName(u'MainContent')
         self.MainContentLayout = QtGui.QHBoxLayout(self.MainContent)
         self.MainContentLayout.setSpacing(0)
@@ -93,7 +78,6 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.MainContent)
         self.ControlSplitter = QtGui.QSplitter(self.MainContent)
         self.ControlSplitter.setOrientation(QtCore.Qt.Horizontal)
-        self.ControlSplitter.setOpaqueResize(False)
         self.ControlSplitter.setObjectName(u'ControlSplitter')
         self.MainContentLayout.addWidget(self.ControlSplitter)
         # Create slide controllers
@@ -109,7 +93,6 @@ class Ui_MainWindow(object):
         self.liveController.Panel.setVisible(liveVisible)
         # Create menu
         self.MenuBar = QtGui.QMenuBar(MainWindow)
-        self.MenuBar.setGeometry(QtCore.QRect(0, 0, 1087, 27))
         self.MenuBar.setObjectName(u'MenuBar')
         self.FileMenu = QtGui.QMenu(self.MenuBar)
         self.FileMenu.setObjectName(u'FileMenu')
@@ -147,38 +130,35 @@ class Ui_MainWindow(object):
         self.MediaManagerDock.setStyleSheet(MEDIA_MANAGER_STYLE)
         self.MediaManagerDock.setMinimumWidth(
             self.settingsmanager.mainwindow_left)
-        self.MediaManagerContents = QtGui.QWidget(MainWindow)
-        self.MediaManagerContents.setObjectName(u'MediaManagerContents')
-        self.MediaManagerLayout = QtGui.QHBoxLayout(self.MediaManagerContents)
-        self.MediaManagerLayout.setContentsMargins(0, 2, 0, 0)
-        self.MediaManagerLayout.setObjectName(u'MediaManagerLayout')
         # Create the media toolbox
-        self.MediaToolBox = QtGui.QToolBox(self.MediaManagerContents)
+        self.MediaToolBox = QtGui.QToolBox(self.MediaManagerDock)
         self.MediaToolBox.setObjectName(u'MediaToolBox')
-        self.MediaManagerLayout.addWidget(self.MediaToolBox)
-        self.MediaManagerDock.setWidget(self.MediaManagerContents)
-        MainWindow.addDockWidget(
-            QtCore.Qt.DockWidgetArea(1), self.MediaManagerDock)
+        self.MediaManagerDock.setWidget(self.MediaToolBox)
+        MainWindow.addDockWidget(QtCore.Qt.LeftDockWidgetArea,
+            self.MediaManagerDock)
         # Create the service manager
         self.ServiceManagerDock = OpenLPDockWidget(
             MainWindow, u'ServiceManagerDock',
             build_icon(u':/system/system_servicemanager.png'))
         self.ServiceManagerDock.setMinimumWidth(
             self.settingsmanager.mainwindow_right)
-        self.ServiceManagerContents = ServiceManager(self)
+        self.ServiceManagerContents = ServiceManager(MainWindow,
+            self.ServiceManagerDock)
         self.ServiceManagerDock.setWidget(self.ServiceManagerContents)
-        MainWindow.addDockWidget(
-            QtCore.Qt.DockWidgetArea(2), self.ServiceManagerDock)
+        MainWindow.addDockWidget(QtCore.Qt.RightDockWidgetArea,
+            self.ServiceManagerDock)
         # Create the theme manager
         self.ThemeManagerDock = OpenLPDockWidget(
             MainWindow, u'ThemeManagerDock',
             build_icon(u':/system/system_thememanager.png'))
         self.ThemeManagerDock.setMinimumWidth(
             self.settingsmanager.mainwindow_right)
-        self.ThemeManagerContents = ThemeManager(self)
+        self.ThemeManagerContents = ThemeManager(MainWindow,
+            self.ThemeManagerDock)
+        self.ThemeManagerContents.setObjectName(u'ThemeManagerContents')
         self.ThemeManagerDock.setWidget(self.ThemeManagerContents)
-        MainWindow.addDockWidget(
-            QtCore.Qt.DockWidgetArea(2), self.ThemeManagerDock)
+        MainWindow.addDockWidget(QtCore.Qt.RightDockWidgetArea,
+            self.ThemeManagerDock)
         # Create the menu items
         self.FileNewItem = QtGui.QAction(MainWindow)
         self.FileNewItem.setIcon(build_icon(u':/general/general_new.png'))
@@ -275,9 +255,12 @@ class Ui_MainWindow(object):
         self.AutoLanguageItem.setCheckable(True)
         MainWindow.actionList.add_action(self.AutoLanguageItem, u'Settings')
         self.LanguageGroup = QtGui.QActionGroup(MainWindow)
+        self.LanguageGroup.setExclusive(True)
+        self.LanguageGroup.setObjectName(u'LanguageGroup')
+        self.AutoLanguageItem.setChecked(LanguageManager.auto_language)
+        self.LanguageGroup.setDisabled(LanguageManager.auto_language)
         qmList = LanguageManager.get_qm_list()
         savedLanguage = LanguageManager.get_language()
-        self.AutoLanguageItem.setChecked(LanguageManager.auto_language)
         for key in sorted(qmList.keys()):
             languageItem = QtGui.QAction(MainWindow)
             languageItem.setObjectName(key)
@@ -285,7 +268,6 @@ class Ui_MainWindow(object):
             if qmList[key] == savedLanguage:
                 languageItem.setChecked(True)
             add_actions(self.LanguageGroup, [languageItem])
-        self.LanguageGroup.setDisabled(LanguageManager.auto_language)
         self.SettingsShortcutsItem = QtGui.QAction(MainWindow)
         self.SettingsShortcutsItem.setIcon(
             build_icon(u':/system/system_configure_shortcuts.png'))
@@ -334,15 +316,13 @@ class Ui_MainWindow(object):
         add_actions(self.SettingsMenu, (self.SettingsPluginListItem,
             self.SettingsLanguageMenu.menuAction(), None,
             self.SettingsShortcutsItem, self.SettingsConfigureItem))
-        add_actions(self.ToolsMenu,
-            (self.ToolsAddToolItem, None))
-        add_actions(self.HelpMenu,
-            (self.HelpDocumentationItem, self.HelpOnlineHelpItem, None,
-            self.HelpWebSiteItem, self.HelpAboutItem))
-        add_actions(self.MenuBar,
-            (self.FileMenu.menuAction(), self.ViewMenu.menuAction(),
-            self.ToolsMenu.menuAction(), self.SettingsMenu.menuAction(),
-            self.HelpMenu.menuAction()))
+        add_actions(self.ToolsMenu, (self.ToolsAddToolItem, None))
+        add_actions(self.HelpMenu, (self.HelpDocumentationItem,
+            self.HelpOnlineHelpItem, None, self.HelpWebSiteItem,
+            self.HelpAboutItem))
+        add_actions(self.MenuBar, (self.FileMenu.menuAction(),
+            self.ViewMenu.menuAction(), self.ToolsMenu.menuAction(),
+            self.SettingsMenu.menuAction(), self.HelpMenu.menuAction()))
         # Initialise the translation
         self.retranslateUi(MainWindow)
         self.MediaToolBox.setCurrentIndex(0)
@@ -857,7 +837,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 QtCore.QVariant(True)).toBool():
                 ret = QtGui.QMessageBox.question(self,
                     translate('OpenLP.MainWindow', 'Close OpenLP'),
-                    translate('OpenLP.MainWindow', 'Are you sure you want to close OpenLP?'),
+                    translate('OpenLP.MainWindow',
+                        'Are you sure you want to close OpenLP?'),
                     QtGui.QMessageBox.StandardButtons(
                         QtGui.QMessageBox.Yes |
                         QtGui.QMessageBox.No),

@@ -30,9 +30,9 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    context_menu_action, ItemCapabilities, SettingsManager, translate, \
-    check_item_selected
-from openlp.core.utils import AppLocation, get_images_filter
+    ItemCapabilities, SettingsManager, translate, check_item_selected, \
+    Receiver, check_directory_exists
+from openlp.core.utils import AppLocation, delete_file, get_images_filter
 
 log = logging.getLogger(__name__)
 
@@ -63,6 +63,14 @@ class ImageMediaItem(MediaManagerItem):
         file_formats = get_images_filter()
         self.OnNewFileMasks = u'%s;;%s (*.*) (*)' % (file_formats,
             unicode(translate('ImagePlugin.MediaItem', 'All Files')))
+        self.replaceAction.setText(
+            translate('ImagePlugin.MediaItem', 'Replace Background'))
+        self.replaceAction.setToolTip(
+            translate('ImagePlugin.MediaItem', 'Replace Live Background'))
+        self.resetAction.setText(
+            translate('ImagePlugin.MediaItem', 'Reset Background'))
+        self.resetAction.setToolTip(
+            translate('ImagePlugin.MediaItem', 'Reset Live Background'))
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -80,43 +88,21 @@ class ImageMediaItem(MediaManagerItem):
         self.servicePath = os.path.join(
             AppLocation.get_section_data_path(self.settingsSection),
             u'thumbnails')
-        if not os.path.exists(self.servicePath):
-            os.mkdir(self.servicePath)
+        check_directory_exists(self.servicePath)
         self.loadList(SettingsManager.load_list(
             self.settingsSection, self.settingsSection))
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
         self.listView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-        self.listView.addAction(
-            context_menu_action(
-                self.listView, u':/slides/slide_blank.png',
-                translate('ImagePlugin.MediaItem', 'Replace Live Background'),
-                self.onReplaceClick))
+        self.listView.addAction(self.replaceAction)
 
     def addEndHeaderBar(self):
-        self.ImageWidget = QtGui.QWidget(self)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.ImageWidget.sizePolicy().hasHeightForWidth())
-        self.ImageWidget.setSizePolicy(sizePolicy)
-        self.ImageWidget.setObjectName(u'ImageWidget')
-        self.blankButton = self.toolbar.addToolbarButton(
-            translate('ImagePlugin.MediaItem', 'Replace Background'),
-            u':/slides/slide_blank.png',
-            translate('ImagePlugin.MediaItem', 'Replace Live Background'),
-            self.onReplaceClick, False)
-        self.resetButton = self.toolbar.addToolbarButton(
-            translate('ImagePlugin.MediaItem', 'Reset Background'),
-            u':/system/system_close.png',
-            translate('ImagePlugin.MediaItem', 'Reset Live Background'),
-            self.onResetClick, False)
-        # Add the song widget to the page layout.
-        self.pageLayout.addWidget(self.ImageWidget)
-        self.resetButton.setVisible(False)
+        self.replaceAction = self.addToolbarButton(u'', u'',
+            u':/slides/slide_blank.png', self.onReplaceClick, False)
+        self.resetAction = self.addToolbarButton(u'', u'',
+            u':/system/system_close.png', self.onResetClick, False)
+        self.resetAction.setVisible(False)
 
     def onDeleteClick(self):
         """
@@ -129,12 +115,8 @@ class ImageMediaItem(MediaManagerItem):
             for row in row_list:
                 text = self.listView.item(row)
                 if text:
-                    try:
-                        os.remove(os.path.join(self.servicePath,
-                            unicode(text.text())))
-                    except OSError:
-                        # if not present do not worry
-                        pass
+                    delete_file(os.path.join(self.servicePath,
+                        unicode(text.text())))
                 self.listView.takeItem(row)
             SettingsManager.set_list(self.settingsSection,
                 self.settingsSection, self.getFileList())
@@ -204,10 +186,13 @@ class ImageMediaItem(MediaManagerItem):
             return False
 
     def onResetClick(self):
-        self.resetButton.setVisible(False)
+        self.resetAction.setVisible(False)
         self.parent.liveController.display.resetImage()
 
     def onReplaceClick(self):
+        """
+        Called to replace Live backgound with the video selected
+        """
         if check_item_selected(self.listView,
             translate('ImagePlugin.MediaItem',
             'You must select an image to replace the background with.')):
@@ -217,13 +202,14 @@ class ImageMediaItem(MediaManagerItem):
             if os.path.exists(filename):
                 (path, name) = os.path.split(filename)
                 self.parent.liveController.display.directImage(name, filename)
+                self.resetAction.setVisible(True)
             else:
-                QtGui.QMessageBox.critical(self,
-                    translate('ImagePlugin.MediaItem', 'Live Background Could '
-                    'Not Be Replaced'),
-                    unicode(translate('ImagePlugin.MediaItem',
-                    'The image %s no longer exists.')) % filename)
-        self.resetButton.setVisible(True)
+                Receiver.send_message(u'openlp_error_message', {
+                    u'title':  translate('ImagePlugin.MediaItem',
+                    'Live Background Error'),
+                    u'message': unicode(translate('ImagePlugin.MediaItem',
+                    'There was a problem replacing your background, '
+                    'the image file "%s" no longer exists.')) % filename})
 
     def onPreviewClick(self):
         MediaManagerItem.onPreviewClick(self)

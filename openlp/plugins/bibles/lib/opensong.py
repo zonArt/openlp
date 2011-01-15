@@ -30,7 +30,7 @@ from lxml import objectify
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, translate
-from db import BibleDB
+from openlp.plugins.bibles.lib.db import BibleDB
 
 log = logging.getLogger(__name__)
 
@@ -48,7 +48,7 @@ class OpenSongBible(BibleDB):
         BibleDB.__init__(self, parent, **kwargs)
         self.filename = kwargs['filename']
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'bibles_stop_import'), self.stop_import)
+            QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
 
     def do_import(self):
         """
@@ -89,7 +89,7 @@ class OpenSongBible(BibleDB):
                         'Importing <book name> <chapter>...')) %
                         (db_book.name, int(chapter.attrib[u'n'])))
                     self.session.commit()
-        except IOError, AttributeError:
+        except (IOError, AttributeError):
             log.exception(u'Loading bible from OpenSong file failed')
             success = False
         finally:

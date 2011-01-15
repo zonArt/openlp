@@ -31,27 +31,26 @@ from openlp.core.lib import translate
 class Ui_FileRenameDialog(object):
     def setupUi(self, FileRenameDialog):
         FileRenameDialog.setObjectName(u'FileRenameDialog')
-        FileRenameDialog.resize(400, 87)
+        FileRenameDialog.resize(300, 10)
+        self.dialogLayout = QtGui.QGridLayout(FileRenameDialog)
+        self.dialogLayout.setObjectName(u'dialogLayout')
+        self.fileNameLabel = QtGui.QLabel(FileRenameDialog)
+        self.fileNameLabel.setObjectName(u'fileNameLabel')
+        self.dialogLayout.addWidget(self.fileNameLabel, 0, 0)
+        self.fileNameEdit = QtGui.QLineEdit(FileRenameDialog)
+        self.fileNameEdit.setValidator(QtGui.QRegExpValidator(
+            QtCore.QRegExp(r'[^/\\?*|<>\[\]":<>+%]+'), self))
+        self.fileNameEdit.setObjectName(u'fileNameEdit')
+        self.dialogLayout.addWidget(self.fileNameEdit, 0, 1)
         self.buttonBox = QtGui.QDialogButtonBox(FileRenameDialog)
-        self.buttonBox.setGeometry(QtCore.QRect(210, 50, 171, 25))
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
             QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(u'buttonBox')
-        self.widget = QtGui.QWidget(FileRenameDialog)
-        self.widget.setGeometry(QtCore.QRect(10, 10, 381, 35))
-        self.widget.setObjectName(u'widget')
-        self.horizontalLayout = QtGui.QHBoxLayout(self.widget)
-        self.horizontalLayout.setObjectName(u'horizontalLayout')
-        self.fileRenameLabel = QtGui.QLabel(self.widget)
-        self.fileRenameLabel.setObjectName(u'fileRenameLabel')
-        self.horizontalLayout.addWidget(self.fileRenameLabel)
-        self.fileNameEdit = QtGui.QLineEdit(self.widget)
-        self.fileNameEdit.setObjectName(u'fileNameEdit')
-        self.horizontalLayout.addWidget(self.fileNameEdit)
-
+        self.dialogLayout.addWidget(self.buttonBox, 1, 0, 1, 2)
         self.retranslateUi(FileRenameDialog)
+        self.setMaximumHeight(self.sizeHint().height())
         QtCore.QMetaObject.connectSlotsByName(FileRenameDialog)
 
     def retranslateUi(self, FileRenameDialog):
-        self.fileRenameLabel.setText(translate('OpenLP.FileRenameForm',
+        self.fileNameLabel.setText(translate('OpenLP.FileRenameForm',
             'New File Name:'))
