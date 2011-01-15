@@ -80,21 +80,21 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
 
     def accept(self):
         if not self.firstNameEdit.text():
-            criticalErrorMessageBox(self, translate('SongsPlugin.AuthorsForm',
+            criticalErrorMessageBox(message=translate('SongsPlugin.AuthorsForm',
                 'You need to type in the first name of the author.'))
             self.firstNameEdit.setFocus()
             return False
         elif not self.lastNameEdit.text():
-            criticalErrorMessageBox(self, translate('SongsPlugin.AuthorsForm',
+            criticalErrorMessageBox(message=translate('SongsPlugin.AuthorsForm',
                 'You need to type in the last name of the author.'))
             self.lastNameEdit.setFocus()
             return False
         elif not self.displayEdit.text():
-            if criticalErrorMessageBox(self,
-                translate('SongsPlugin.AuthorsForm',
+            if criticalErrorMessageBox(
+                message=translate('SongsPlugin.AuthorsForm',
                 'You have not set a display name for the '
                 'author, combine the first and last names?'),
-                True) == QtGui.QMessageBox.Yes:
+                question=True) == QtGui.QMessageBox.Yes:
                 self.displayEdit.setText(self.firstNameEdit.text() + \
                     u' ' + self.lastNameEdit.text())
                 return QtGui.QDialog.accept(self)

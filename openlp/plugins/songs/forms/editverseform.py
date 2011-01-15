@@ -168,7 +168,8 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         else:
             value = self.getVerse()[0].split(u'\n')[1]
         if len(value) == 0:
-            criticalErrorMessageBox(self, translate('SongsPlugin.EditSongForm',
+            criticalErrorMessageBox(
+                message=translate('SongsPlugin.EditSongForm',
                 'You need to type some text in to the verse.'))
             return False
         QtGui.QDialog.accept(self)

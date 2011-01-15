@@ -28,7 +28,7 @@ The :mod:`ui` module provides the core user interface for OpenLP
 """
 from PyQt4 import QtGui
 
-from openlp.core.lib import translate
+from openlp.core.lib import translate, Receiver
 
 class HideMode(object):
     """
@@ -52,16 +52,20 @@ class HideMode(object):
     Screen = 3
 
 
-def criticalErrorMessageBox(parent, message, question=False):
+def criticalErrorMessageBox(title=None, message=None, parent=None,
+    question=False):
     """
     Provides a standard critical message box for errors that OpenLP displays
     to users.
 
-    ``parent``
-        The parent UI element to attach the dialog to.
+    ``title``
+        The title for the message box.
 
     ``message``
         The message to display to the user.
+
+    ``parent``
+        The parent UI element to attach the dialog to.
 
     ``question``
         Should this message box question the user.
@@ -71,7 +75,9 @@ def criticalErrorMessageBox(parent, message, question=False):
         return QtGui.QMessageBox.critical(parent, error, message,
             QtGui.QMessageBox.StandardButtons(
             QtGui.QMessageBox.Yes | QtGui.QMessageBox.No))
-    return QtGui.QMessageBox.critical(parent, error, message)
+    data = {u'message': message}
+    data[u'title'] = title if title else error
+    return Receiver.send_message(u'openlp_error_message', data)
 
 from themeform import ThemeForm
 from filerenameform import FileRenameForm

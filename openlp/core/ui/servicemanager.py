@@ -487,10 +487,10 @@ class ServiceManager(QtGui.QWidget):
             for file in zip.namelist():
                 ucsfile = file_is_unicode(file)
                 if not ucsfile:
-                    criticalErrorMessageBox(self,
-                        translate('OpenLP.ServiceManager',
-                            'File is not a valid service.\n'
-                            'The content encoding is not UTF-8.'))
+                    criticalErrorMessageBox(
+                        message=translate('OpenLP.ServiceManager',
+                        'File is not a valid service.\n'
+                        'The content encoding is not UTF-8.'))
                     continue
                 osfile = unicode(QtCore.QDir.toNativeSeparators(ucsfile))
                 filePath = os.path.join(self.servicePath,
@@ -521,7 +521,8 @@ class ServiceManager(QtGui.QWidget):
                 except (IOError, OSError):
                     log.exception(u'Failed to remove osd file')
             else:
-                criticalErrorMessageBox(self, translate('OpenLP.ServiceManager',
+                criticalErrorMessageBox(
+                    message=translate('OpenLP.ServiceManager',
                     'File is not a valid service.'))
                 log.exception(u'File contains no service data')
         except (IOError, NameError):
@@ -1002,7 +1003,7 @@ class ServiceManager(QtGui.QWidget):
             self.mainwindow.previewController.addServiceManagerItem(
                 self.serviceItems[item][u'service_item'], count)
         else:
-            QtGui.QMessageBox.critical(self,
+            criticalErrorMessageBox(
                 translate('OpenLP.ServiceManager', 'Missing Display Handler'),
                 translate('OpenLP.ServiceManager', 'Your item cannot be '
                     'displayed as there is no handler to display it'))
@@ -1036,11 +1037,11 @@ class ServiceManager(QtGui.QWidget):
                         self.serviceItems[item][u'service_item'], 0)
                     self.mainwindow.liveController.PreviewListWidget.setFocus()
         else:
-            QtGui.QMessageBox.critical(self,
+            criticalErrorMessageBox(
                 translate('OpenLP.ServiceManager', 'Missing Display Handler'),
                 translate('OpenLP.ServiceManager', 'Your item cannot be '
-                    'displayed as the plugin required to display it is missing '
-                    'or inactive'))
+                'displayed as the plugin required to display it is missing '
+                'or inactive'))
 
     def remoteEdit(self):
         """

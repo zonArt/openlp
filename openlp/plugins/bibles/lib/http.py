@@ -38,6 +38,7 @@ from HTMLParser import HTMLParseError
 from BeautifulSoup import BeautifulSoup, NavigableString
 
 from openlp.core.lib import Receiver, translate
+from openlp.core.ui import criticalErrorMessageBox
 from openlp.core.utils import AppLocation, get_web_page
 from openlp.plugins.bibles.lib import SearchResults
 from openlp.plugins.bibles.lib.db import BibleDB, Book
@@ -429,12 +430,11 @@ class HTTPBible(BibleDB):
             if not db_book:
                 book_details = HTTPBooks.get_book(book)
                 if not book_details:
-                    Receiver.send_message(u'openlp_error_message', {
-                        u'title': translate('BiblesPlugin', 'No Book Found'),
-                        u'message': translate('BiblesPlugin', 'No matching '
+                    criticalErrorMessageBox(
+                        translate('BiblesPlugin', 'No Book Found'),
+                        translate('BiblesPlugin', 'No matching '
                         'book could be found in this Bible. Check that you '
-                        'have spelled the name of the book correctly.')
-                    })
+                        'have spelled the name of the book correctly.'))
                     return []
                 db_book = self.create_book(book_details[u'name'],
                     book_details[u'abbreviation'],
@@ -540,17 +540,15 @@ def send_error_message(error_type):
         The type of error that occured for the issue.
     """
     if error_type == u'download':
-        Receiver.send_message(u'openlp_error_message', {
-            u'title': translate('BiblePlugin.HTTPBible', 'Download Error'),
-            u'message': translate('BiblePlugin.HTTPBible', 'There was a '
+        criticalErrorMessageBox(
+            translate('BiblePlugin.HTTPBible', 'Download Error'),
+            translate('BiblePlugin.HTTPBible', 'There was a '
             'problem downloading your verse selection. Please check your '
             'Internet connection, and if this error continues to occur '
-            'please consider reporting a bug.')
-            })
+            'please consider reporting a bug.'))
     elif error_type == u'parse':
-        Receiver.send_message(u'openlp_error_message', {
-            u'title': translate('BiblePlugin.HTTPBible', 'Parse Error'),
-            u'message': translate('BiblePlugin.HTTPBible', 'There was a '
+        criticalErrorMessageBox(
+            translate('BiblePlugin.HTTPBible', 'Parse Error'),
+            translate('BiblePlugin.HTTPBible', 'There was a '
             'problem extracting your verse selection. If this error continues '
-            'to occur please consider reporting a bug.')
-            })
+            'to occur please consider reporting a bug.'))

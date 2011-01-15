@@ -49,7 +49,7 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
 
     def accept(self):
         if not self.nameEdit.text():
-            criticalErrorMessageBox(self, translate('SongsPlugin.TopicsForm',
+            criticalErrorMessageBox(message=translate('SongsPlugin.TopicsForm',
                 'You need to type in a topic name.'))
             self.nameEdit.setFocus()
             return False
