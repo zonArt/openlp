@@ -331,7 +331,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 else:
                     author = Author.populate(first_name=text.rsplit(u' ', 1)[0],
                         last_name=text.rsplit(u' ', 1)[1], display_name=text)
-                self.manager.save_object(author)
+                self.manager.save_object(author, False)
                 author_item = QtGui.QListWidgetItem(
                     unicode(author.display_name))
                 author_item.setData(QtCore.Qt.UserRole,
@@ -386,7 +386,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
                 QtGui.QMessageBox.Yes) == QtGui.QMessageBox.Yes:
                 topic = Topic.populate(name=text)
-                self.manager.save_object(topic)
+                self.manager.save_object(topic, False)
                 topic_item = QtGui.QListWidgetItem(unicode(topic.name))
                 topic_item.setData(QtCore.Qt.UserRole,
                     QtCore.QVariant(topic.id))
@@ -654,7 +654,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def accept(self):
         """
-        Exit Dialog and save soong if valid
+        Exit Dialog and save song if valid
         """
         log.debug(u'accept')
         self.clearCaches()
@@ -670,7 +670,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
                 QtGui.QMessageBox.Yes) == QtGui.QMessageBox.Yes:
                 book = Book.populate(name=text, publisher=u'')
-                self.manager.save_object(book)
+                self.manager.save_object(book, False)
             else:
                 return
         if self.saveSong():
