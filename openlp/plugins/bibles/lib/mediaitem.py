@@ -716,7 +716,7 @@ class BibleMediaItem(MediaManagerItem):
                     second_copyright, second_permissions)
                 if footer not in raw_footer:
                     raw_footer.append(footer)
-                bible_text = u'%s&nbsp;%s\n\n%s%s' % (verse_text, text,
+                bible_text = u'%s&nbsp;%s\n\n%s&nbsp;%s' % (verse_text, text,
                     verse_text, second_text)
                 raw_slides.append(bible_text.rstrip())
                 bible_text = u''
