@@ -54,7 +54,7 @@ class Ui_AuthorsDialog(object):
         self.displayEdit.setObjectName(u'displayEdit')
         self.displayLabel.setBuddy(self.displayEdit)
         self.authorLayout.addRow(self.displayLabel, self.displayEdit)
-        self.dialogLayout.addLayout(self.authorLayout) 
+        self.dialogLayout.addLayout(self.authorLayout)
         self.buttonBox = QtGui.QDialogButtonBox(authorsDialog)
         self.buttonBox.setStandardButtons(
             QtGui.QDialogButtonBox.Save | QtGui.QDialogButtonBox.Cancel)

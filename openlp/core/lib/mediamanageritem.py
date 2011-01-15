@@ -266,7 +266,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Creates the main widget for listing items the media item is tracking
         """
-        #Add the List widget
+        # Add the List widget
         self.listView = self.ListViewWithDnD_class(self)
         self.listView.uniformItemSizes = True
         self.listView.setSpacing(1)
@@ -275,9 +275,9 @@ class MediaManagerItem(QtGui.QWidget):
         self.listView.setAlternatingRowColors(True)
         self.listView.setDragEnabled(True)
         self.listView.setObjectName(u'%sListView' % self.plugin.name)
-        #Add to pageLayout
+        # Add to pageLayout
         self.pageLayout.addWidget(self.listView)
-        #define and add the context menu
+        # define and add the context menu
         self.listView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         name_string = self.plugin.getString(StringContent.Name)
         if self.hasEditIcon:
@@ -314,7 +314,7 @@ class MediaManagerItem(QtGui.QWidget):
                 context_menu_action(
                     self.listView, u':/general/general_add.png',
                     translate('OpenLP.MediaManagerItem',
-                        '&Add to selected Service Item'),
+                    '&Add to selected Service Item'),
                     self.onAddEditClick))
         QtCore.QObject.connect(self.listView,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
@@ -441,7 +441,7 @@ class MediaManagerItem(QtGui.QWidget):
             QtGui.QMessageBox.information(self,
                 translate('OpenLP.MediaManagerItem', 'No Items Selected'),
                 translate('OpenLP.MediaManagerItem',
-                    'You must select one or more items to preview.'))
+                'You must select one or more items to preview.'))
         else:
             log.debug(u'%s Preview requested', self.plugin.name)
             serviceItem = self.buildServiceItem()

@@ -30,8 +30,8 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    ItemCapabilities, SettingsManager, translate, check_item_selected, \
-    Receiver
+    ItemCapabilities, SettingsManager, translate, check_item_selected
+from openlp.core.ui import criticalErrorMessageBox
 
 log = logging.getLogger(__name__)
 
@@ -106,12 +106,11 @@ class MediaMediaItem(MediaManagerItem):
                 self.parent.liveController.display.video(filename, 0, True)
                 self.resetAction.setVisible(True)
             else:
-                Receiver.send_message(u'openlp_error_message', {
-                    u'title':  translate('MediaPlugin.MediaItem',
+                criticalErrorMessageBox(translate('MediaPlugin.MediaItem',
                     'Live Background Error'),
-                    u'message': unicode(translate('MediaPlugin.MediaItem',
+                    unicode(translate('MediaPlugin.MediaItem',
                     'There was a problem replacing your background, '
-                    'the media file "%s" no longer exists.')) % filename})
+                    'the media file "%s" no longer exists.')) % filename)
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
         if item is None:
@@ -131,9 +130,8 @@ class MediaMediaItem(MediaManagerItem):
             return True
         else:
             # File is no longer present
-            QtGui.QMessageBox.critical(
-                self, translate('MediaPlugin.MediaItem',
-                'Missing Media File'),
+            criticalErrorMessageBox(
+                translate('MediaPlugin.MediaItem', 'Missing Media File'),
                 unicode(translate('MediaPlugin.MediaItem',
                 'The file %s no longer exists.')) % filename)
             return False

@@ -89,7 +89,7 @@ class SofImport(OooImport):
                     self.process_sof_file()
                     self.close_ooo_file()
         self.close_ooo()
-        self.import_wizard.importProgressBar.setMaximum(1)
+        self.import_wizard.progressBar.setMaximum(1)
         self.import_wizard.incrementProgressBar(u'', 1)
         return True
 
