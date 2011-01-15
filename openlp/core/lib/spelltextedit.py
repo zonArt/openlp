@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -36,7 +36,7 @@ except ImportError:
 # http://john.nachtimwald.com/2009/08/22/qplaintextedit-with-in-line-spell-check
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import html_expands, translate
+from openlp.core.lib import translate, DisplayTags
 
 class SpellTextEdit(QtGui.QPlainTextEdit):
     """
@@ -88,7 +88,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
                     popupMenu.insertMenu(popupMenu.actions()[0], spell_menu)
         tagMenu = QtGui.QMenu(translate('OpenLP.SpellTextEdit',
             'Formatting Tags'))
-        for html in html_expands:
+        for html in DisplayTags.get_html_tags():
             action = SpellAction( html[u'desc'], tagMenu)
             action.correct.connect(self.htmlTag)
             tagMenu.addAction(action)
@@ -110,7 +110,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         """
         Replaces the selected text with word.
         """
-        for html in html_expands:
+        for html in DisplayTags.get_html_tags():
             if tag == html[u'desc']:
                 cursor = self.textCursor()
                 if self.textCursor().hasSelection():

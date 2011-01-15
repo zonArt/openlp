@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -108,7 +108,7 @@ class Plugin(QtCore.QObject):
     """
     log.info(u'loaded')
 
-    def __init__(self, name, version=None, plugin_helpers=None):
+    def __init__(self, name, version=None, pluginHelpers=None):
         """
         This is the constructor for the plugin object. This provides an easy
         way for descendent plugins to populate common data. This method *must*
@@ -124,7 +124,7 @@ class Plugin(QtCore.QObject):
         ``version``
             Defaults to *None*. The version of the plugin.
 
-        ``plugin_helpers``
+        ``pluginHelpers``
             Defaults to *None*. A list of helper objects.
         """
         QtCore.QObject.__init__(self)
@@ -139,14 +139,14 @@ class Plugin(QtCore.QObject):
         self.status = PluginStatus.Inactive
         # Set up logging
         self.log = logging.getLogger(self.name)
-        self.previewController = plugin_helpers[u'preview']
-        self.liveController = plugin_helpers[u'live']
-        self.renderManager = plugin_helpers[u'render']
-        self.serviceManager = plugin_helpers[u'service']
-        self.settingsForm = plugin_helpers[u'settings form']
-        self.mediadock = plugin_helpers[u'toolbox']
-        self.pluginManager = plugin_helpers[u'pluginmanager']
-        self.formparent = plugin_helpers[u'formparent']
+        self.previewController = pluginHelpers[u'preview']
+        self.liveController = pluginHelpers[u'live']
+        self.renderManager = pluginHelpers[u'render']
+        self.serviceManager = pluginHelpers[u'service']
+        self.settingsForm = pluginHelpers[u'settings form']
+        self.mediadock = pluginHelpers[u'toolbox']
+        self.pluginManager = pluginHelpers[u'pluginmanager']
+        self.formparent = pluginHelpers[u'formparent']
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'%s_add_service_item' % self.name),
             self.processAddServiceEvent)
@@ -175,6 +175,10 @@ class Plugin(QtCore.QObject):
         self.status = new_status
         QtCore.QSettings().setValue(
             self.settingsSection + u'/status', QtCore.QVariant(self.status))
+        if new_status == PluginStatus.Active:
+            self.initialise()
+        elif new_status == PluginStatus.Inactive:
+            self.finalise()
 
     def isActive(self):
         """

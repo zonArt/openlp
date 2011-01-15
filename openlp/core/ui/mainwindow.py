@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -66,25 +66,10 @@ class Ui_MainWindow(object):
         MainWindow.setObjectName(u'MainWindow')
         MainWindow.resize(self.settingsmanager.width,
             self.settingsmanager.height)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,
-            QtGui.QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            MainWindow.sizePolicy().hasHeightForWidth())
-        MainWindow.setSizePolicy(sizePolicy)
-        MainIcon = build_icon(u':/icon/openlp-logo-16x16.png')
-        MainWindow.setWindowIcon(MainIcon)
-        self.setDockNestingEnabled(True)
-        # Set up the main container, which contains all the other form widgets
+        MainWindow.setWindowIcon(build_icon(u':/icon/openlp-logo-16x16.png'))
+        MainWindow.setDockNestingEnabled(True)
+        # Set up the main container, which contains all the other form widgets.
         self.MainContent = QtGui.QWidget(MainWindow)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,
-            QtGui.QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.MainContent.sizePolicy().hasHeightForWidth())
-        self.MainContent.setSizePolicy(sizePolicy)
         self.MainContent.setObjectName(u'MainContent')
         self.MainContentLayout = QtGui.QHBoxLayout(self.MainContent)
         self.MainContentLayout.setSpacing(0)
@@ -93,23 +78,21 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.MainContent)
         self.ControlSplitter = QtGui.QSplitter(self.MainContent)
         self.ControlSplitter.setOrientation(QtCore.Qt.Horizontal)
-        self.ControlSplitter.setOpaqueResize(False)
         self.ControlSplitter.setObjectName(u'ControlSplitter')
         self.MainContentLayout.addWidget(self.ControlSplitter)
         # Create slide controllers
-        self.PreviewController = SlideController(self, self.settingsmanager,
+        self.previewController = SlideController(self, self.settingsmanager,
             self.screens)
-        self.LiveController = SlideController(self, self.settingsmanager,
+        self.liveController = SlideController(self, self.settingsmanager,
             self.screens, True)
         previewVisible = QtCore.QSettings().value(
             u'user interface/preview panel', QtCore.QVariant(True)).toBool()
-        self.PreviewController.Panel.setVisible(previewVisible)
+        self.previewController.Panel.setVisible(previewVisible)
         liveVisible = QtCore.QSettings().value(u'user interface/live panel',
             QtCore.QVariant(True)).toBool()
-        self.LiveController.Panel.setVisible(liveVisible)
+        self.liveController.Panel.setVisible(liveVisible)
         # Create menu
         self.MenuBar = QtGui.QMenuBar(MainWindow)
-        self.MenuBar.setGeometry(QtCore.QRect(0, 0, 1087, 27))
         self.MenuBar.setObjectName(u'MenuBar')
         self.FileMenu = QtGui.QMenu(self.MenuBar)
         self.FileMenu.setObjectName(u'FileMenu')
@@ -141,47 +124,39 @@ class Ui_MainWindow(object):
         self.DefaultThemeLabel.setObjectName(u'DefaultThemeLabel')
         self.StatusBar.addPermanentWidget(self.DefaultThemeLabel)
         # Create the MediaManager
-        self.MediaManagerDock = OpenLPDockWidget(MainWindow)
-        self.MediaManagerDock.setWindowIcon(
+        self.MediaManagerDock = OpenLPDockWidget(
+            MainWindow, u'MediaManagerDock',
             build_icon(u':/system/system_mediamanager.png'))
         self.MediaManagerDock.setStyleSheet(MEDIA_MANAGER_STYLE)
         self.MediaManagerDock.setMinimumWidth(
             self.settingsmanager.mainwindow_left)
-        self.MediaManagerDock.setObjectName(u'MediaManagerDock')
-        self.MediaManagerContents = QtGui.QWidget()
-        self.MediaManagerContents.setObjectName(u'MediaManagerContents')
-        self.MediaManagerLayout = QtGui.QHBoxLayout(self.MediaManagerContents)
-        self.MediaManagerLayout.setContentsMargins(0, 2, 0, 0)
-        self.MediaManagerLayout.setObjectName(u'MediaManagerLayout')
         # Create the media toolbox
-        self.MediaToolBox = QtGui.QToolBox(self.MediaManagerContents)
+        self.MediaToolBox = QtGui.QToolBox(self.MediaManagerDock)
         self.MediaToolBox.setObjectName(u'MediaToolBox')
-        self.MediaManagerLayout.addWidget(self.MediaToolBox)
-        self.MediaManagerDock.setWidget(self.MediaManagerContents)
-        MainWindow.addDockWidget(
-            QtCore.Qt.DockWidgetArea(1), self.MediaManagerDock)
+        self.MediaManagerDock.setWidget(self.MediaToolBox)
+        MainWindow.addDockWidget(QtCore.Qt.LeftDockWidgetArea,
+            self.MediaManagerDock)
         # Create the service manager
-        self.ServiceManagerDock = OpenLPDockWidget(MainWindow)
-        self.ServiceManagerDock.setWindowIcon(
+        self.ServiceManagerDock = OpenLPDockWidget(
+            MainWindow, u'ServiceManagerDock',
             build_icon(u':/system/system_servicemanager.png'))
-        self.ServiceManagerDock.setObjectName(u'ServiceManagerDock')
         self.ServiceManagerDock.setMinimumWidth(
             self.settingsmanager.mainwindow_right)
-        self.ServiceManagerContents = ServiceManager(self)
+        self.ServiceManagerContents = ServiceManager(MainWindow)
         self.ServiceManagerDock.setWidget(self.ServiceManagerContents)
-        MainWindow.addDockWidget(
-            QtCore.Qt.DockWidgetArea(2), self.ServiceManagerDock)
+        MainWindow.addDockWidget(QtCore.Qt.RightDockWidgetArea,
+            self.ServiceManagerDock)
         # Create the theme manager
-        self.ThemeManagerDock = OpenLPDockWidget(MainWindow)
-        self.ThemeManagerDock.setWindowIcon(
+        self.ThemeManagerDock = OpenLPDockWidget(
+            MainWindow, u'ThemeManagerDock',
             build_icon(u':/system/system_thememanager.png'))
-        self.ThemeManagerDock.setObjectName(u'ThemeManagerDock')
         self.ThemeManagerDock.setMinimumWidth(
             self.settingsmanager.mainwindow_right)
-        self.ThemeManagerContents = ThemeManager(self)
+        self.ThemeManagerContents = ThemeManager(MainWindow)
+        self.ThemeManagerContents.setObjectName(u'ThemeManagerContents')
         self.ThemeManagerDock.setWidget(self.ThemeManagerContents)
-        MainWindow.addDockWidget(
-            QtCore.Qt.DockWidgetArea(2), self.ThemeManagerDock)
+        MainWindow.addDockWidget(QtCore.Qt.RightDockWidgetArea,
+            self.ThemeManagerDock)
         # Create the menu items
         self.FileNewItem = QtGui.QAction(MainWindow)
         self.FileNewItem.setIcon(build_icon(u':/general/general_new.png'))
@@ -272,15 +247,18 @@ class Ui_MainWindow(object):
         self.SettingsPluginListItem.setObjectName(u'SettingsPluginListItem')
         MainWindow.actionList.add_action(self.SettingsPluginListItem,
             u'Settings')
-        #i18n Language Items
+        # i18n Language Items
         self.AutoLanguageItem = QtGui.QAction(MainWindow)
         self.AutoLanguageItem.setObjectName(u'AutoLanguageItem')
         self.AutoLanguageItem.setCheckable(True)
         MainWindow.actionList.add_action(self.AutoLanguageItem, u'Settings')
         self.LanguageGroup = QtGui.QActionGroup(MainWindow)
+        self.LanguageGroup.setExclusive(True)
+        self.LanguageGroup.setObjectName(u'LanguageGroup')
+        self.AutoLanguageItem.setChecked(LanguageManager.auto_language)
+        self.LanguageGroup.setDisabled(LanguageManager.auto_language)
         qmList = LanguageManager.get_qm_list()
         savedLanguage = LanguageManager.get_language()
-        self.AutoLanguageItem.setChecked(LanguageManager.auto_language)
         for key in sorted(qmList.keys()):
             languageItem = QtGui.QAction(MainWindow)
             languageItem.setObjectName(key)
@@ -288,7 +266,6 @@ class Ui_MainWindow(object):
             if qmList[key] == savedLanguage:
                 languageItem.setChecked(True)
             add_actions(self.LanguageGroup, [languageItem])
-        self.LanguageGroup.setDisabled(LanguageManager.auto_language)
         self.SettingsShortcutsItem = QtGui.QAction(MainWindow)
         self.SettingsShortcutsItem.setIcon(
             build_icon(u':/system/system_configure_shortcuts.png'))
@@ -331,21 +308,19 @@ class Ui_MainWindow(object):
             None, self.ViewMediaManagerItem, self.ViewServiceManagerItem,
             self.ViewThemeManagerItem, None, self.ViewPreviewPanel,
             self.ViewLivePanel))
-        #i18n add Language Actions
+        # i18n add Language Actions
         add_actions(self.SettingsLanguageMenu, (self.AutoLanguageItem, None))
         add_actions(self.SettingsLanguageMenu, self.LanguageGroup.actions())
         add_actions(self.SettingsMenu, (self.SettingsPluginListItem,
             self.SettingsLanguageMenu.menuAction(), None,
             self.SettingsShortcutsItem, self.SettingsConfigureItem))
-        add_actions(self.ToolsMenu,
-            (self.ToolsAddToolItem, None))
-        add_actions(self.HelpMenu,
-            (self.HelpDocumentationItem, self.HelpOnlineHelpItem, None,
-            self.HelpWebSiteItem, self.HelpAboutItem))
-        add_actions(self.MenuBar,
-            (self.FileMenu.menuAction(), self.ViewMenu.menuAction(),
-            self.ToolsMenu.menuAction(), self.SettingsMenu.menuAction(),
-            self.HelpMenu.menuAction()))
+        add_actions(self.ToolsMenu, (self.ToolsAddToolItem, None))
+        add_actions(self.HelpMenu, (self.HelpDocumentationItem,
+            self.HelpOnlineHelpItem, None, self.HelpWebSiteItem,
+            self.HelpAboutItem))
+        add_actions(self.MenuBar, (self.FileMenu.menuAction(),
+            self.ViewMenu.menuAction(), self.ToolsMenu.menuAction(),
+            self.SettingsMenu.menuAction(), self.HelpMenu.menuAction()))
         # Initialise the translation
         self.retranslateUi(MainWindow)
         self.MediaToolBox.setCurrentIndex(0)
@@ -354,16 +329,7 @@ class Ui_MainWindow(object):
             QtCore.SIGNAL(u'aboutToShow()'), self.updateFileMenu)
         QtCore.QObject.connect(self.FileExitItem,
             QtCore.SIGNAL(u'triggered()'), MainWindow.close)
-        QtCore.QObject.connect(self.ControlSplitter,
-            QtCore.SIGNAL(u'splitterMoved(int, int)'), self.trackSplitter)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
-    def trackSplitter(self, tab, pos):
-        """
-        Splitter between the Preview and Live Controllers.
-        """
-        self.LiveController.widthChanged()
-        self.PreviewController.widthChanged()
 
     def retranslateUi(self, MainWindow):
         """
@@ -548,8 +514,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.recentFiles = QtCore.QStringList()
         # Set up the path with plugins
         pluginpath = AppLocation.get_directory(AppLocation.PluginsDir)
-        self.plugin_manager = PluginManager(pluginpath)
-        self.plugin_helpers = {}
+        self.pluginManager = PluginManager(pluginpath)
+        self.pluginHelpers = {}
         # Set up the interface
         self.setupUi(self)
         # Load settings after setupUi so default UI sizes are overwritten
@@ -594,16 +560,16 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(self.SettingsShortcutsItem,
             QtCore.SIGNAL(u'triggered()'), self.onSettingsShortcutsItemClicked)
         QtCore.QObject.connect(self.FileNewItem, QtCore.SIGNAL(u'triggered()'),
-            self.ServiceManagerContents.onNewService)
+            self.ServiceManagerContents.onNewServiceClicked)
         QtCore.QObject.connect(self.FileOpenItem,
             QtCore.SIGNAL(u'triggered()'),
-            self.ServiceManagerContents.onLoadService)
+            self.ServiceManagerContents.onLoadServiceClicked)
         QtCore.QObject.connect(self.FileSaveItem,
             QtCore.SIGNAL(u'triggered()'),
-            self.ServiceManagerContents.onQuickSaveService)
+            self.ServiceManagerContents.onSaveServiceClicked)
         QtCore.QObject.connect(self.FileSaveAsItem,
             QtCore.SIGNAL(u'triggered()'),
-            self.ServiceManagerContents.onSaveService)
+            self.ServiceManagerContents.onSaveServiceAsClicked)
         # i18n set signals for languages
         QtCore.QObject.connect(self.AutoLanguageItem,
             QtCore.SIGNAL(u'toggled(bool)'), self.setAutoLanguage)
@@ -624,6 +590,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'config_screen_changed'), self.screenChanged)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'maindisplay_status_text'), self.showStatusMessage)
+        Receiver.send_message(u'cursor_busy')
+        # Simple message boxes
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'openlp_error_message'), self.onErrorMessage)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'openlp_warning_message'), self.onWarningMessage)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'openlp_information_message'),
+            self.onInformationMessage)
         # warning cyclic dependency
         # RenderManager needs to call ThemeManager and
         # ThemeManager needs to call RenderManager
@@ -633,33 +608,33 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.mediaDockManager = MediaDockManager(self.MediaToolBox)
         log.info(u'Load Plugins')
         # make the controllers available to the plugins
-        self.plugin_helpers[u'preview'] = self.PreviewController
-        self.plugin_helpers[u'live'] = self.LiveController
-        self.plugin_helpers[u'render'] = self.renderManager
-        self.plugin_helpers[u'service'] = self.ServiceManagerContents
-        self.plugin_helpers[u'settings form'] = self.settingsForm
-        self.plugin_helpers[u'toolbox'] = self.mediaDockManager
-        self.plugin_helpers[u'pluginmanager'] = self.plugin_manager
-        self.plugin_helpers[u'formparent'] = self
-        self.plugin_manager.find_plugins(pluginpath, self.plugin_helpers)
+        self.pluginHelpers[u'preview'] = self.previewController
+        self.pluginHelpers[u'live'] = self.liveController
+        self.pluginHelpers[u'render'] = self.renderManager
+        self.pluginHelpers[u'service'] = self.ServiceManagerContents
+        self.pluginHelpers[u'settings form'] = self.settingsForm
+        self.pluginHelpers[u'toolbox'] = self.mediaDockManager
+        self.pluginHelpers[u'pluginmanager'] = self.pluginManager
+        self.pluginHelpers[u'formparent'] = self
+        self.pluginManager.find_plugins(pluginpath, self.pluginHelpers)
         # hook methods have to happen after find_plugins. Find plugins needs
         # the controllers hence the hooks have moved from setupUI() to here
         # Find and insert settings tabs
         log.info(u'hook settings')
-        self.plugin_manager.hook_settings_tabs(self.settingsForm)
+        self.pluginManager.hook_settings_tabs(self.settingsForm)
         # Find and insert media manager items
         log.info(u'hook media')
-        self.plugin_manager.hook_media_manager(self.mediaDockManager)
+        self.pluginManager.hook_media_manager(self.mediaDockManager)
         # Call the hook method to pull in import menus.
         log.info(u'hook menus')
-        self.plugin_manager.hook_import_menu(self.FileImportMenu)
+        self.pluginManager.hook_import_menu(self.FileImportMenu)
         # Call the hook method to pull in export menus.
-        self.plugin_manager.hook_export_menu(self.FileExportMenu)
+        self.pluginManager.hook_export_menu(self.FileExportMenu)
         # Call the hook method to pull in tools menus.
-        self.plugin_manager.hook_tools_menu(self.ToolsMenu)
+        self.pluginManager.hook_tools_menu(self.ToolsMenu)
         # Call the initialise method to setup plugins.
         log.info(u'initialise plugins')
-        self.plugin_manager.initialise_plugins()
+        self.pluginManager.initialise_plugins()
         # Once all components are initialised load the Themes
         log.info(u'Load Themes')
         self.ThemeManagerContents.loadThemes()
@@ -671,7 +646,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             if savedPlugin != -1:
                 self.MediaToolBox.setCurrentIndex(savedPlugin)
         self.settingsForm.postSetUp()
-        
+        Receiver.send_message(u'cursor_normal')
+
     def setAutoLanguage(self, value):
         self.LanguageGroup.setDisabled(value)
         LanguageManager.auto_language = value
@@ -695,15 +671,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Show the main form, as well as the display form
         """
         QtGui.QWidget.show(self)
-        self.LiveController.display.setup()
-        self.PreviewController.display.setup()
-        if self.LiveController.display.isVisible():
-            self.LiveController.display.setFocus()
+        self.liveController.display.setup()
+        self.previewController.display.setup()
+        if self.liveController.display.isVisible():
+            self.liveController.display.setFocus()
         self.activateWindow()
         if QtCore.QSettings().value(
             self.generalSettingsSection + u'/auto open',
             QtCore.QVariant(False)).toBool():
-            self.ServiceManagerContents.onLoadService(True)
+            self.ServiceManagerContents.loadLastFile()
         view_mode = QtCore.QSettings().value(u'%s/view mode' % \
             self.generalSettingsSection, u'default')
         if view_mode == u'default':
@@ -723,7 +699,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         settings = QtCore.QSettings()
         if settings.value(u'%s/screen blank' % self.generalSettingsSection,
             QtCore.QVariant(False)).toBool():
-            self.LiveController.mainDisplaySetBackground()
+            self.liveController.mainDisplaySetBackground()
             if settings.value(u'blank warning',
                 QtCore.QVariant(False)).toBool():
                 QtGui.QMessageBox.question(self,
@@ -731,6 +707,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                         'OpenLP Main Display Blanked'),
                     translate('OpenLP.MainWindow',
                          'The Main Display has been blanked out'))
+
+    def onErrorMessage(self, data):
+        QtGui.QMessageBox.critical(self, data[u'title'], data[u'message'])
+
+    def onWarningMessage(self, data):
+        QtGui.QMessageBox.warning(self, data[u'title'], data[u'message'])
+
+    def onInformationMessage(self, data):
+        QtGui.QMessageBox.information(self, data[u'title'], data[u'message'])
 
     def onHelpWebSiteClicked(self):
         """
@@ -759,11 +744,18 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         self.settingsForm.exec_()
 
+    def paintEvent(self, event):
+        """
+        We need to make sure, that the SlidePreview's size is correct.
+        """
+        self.previewController.previewSizeChanged()
+        self.liveController.previewSizeChanged()
+
     def onSettingsShortcutsItemClicked(self):
         """
         Show the shortcuts dialog
         """
-        self.shortcutForm.exec_(self)
+        self.shortcutForm.exec_(self.actionList)
 
     def onModeDefaultItemClicked(self):
         """
@@ -817,7 +809,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Hook to close the main window and display windows on exit
         """
-        if self.serviceNotSaved:
+        if self.ServiceManagerContents.isModified():
             ret = QtGui.QMessageBox.question(self,
                 translate('OpenLP.MainWindow', 'Save Changes to Service?'),
                 translate('OpenLP.MainWindow', 'Your service has changed. '
@@ -828,17 +820,36 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     QtGui.QMessageBox.Save),
                 QtGui.QMessageBox.Save)
             if ret == QtGui.QMessageBox.Save:
-                self.ServiceManagerContents.onSaveService(True)
-                self.cleanUp()
-                event.accept()
+                if self.ServiceManagerContents.saveFile():
+                    self.cleanUp()
+                    event.accept()
+                else:
+                    event.ignore()
             elif ret == QtGui.QMessageBox.Discard:
                 self.cleanUp()
                 event.accept()
             else:
                 event.ignore()
         else:
-            self.cleanUp()
-            event.accept()
+            if QtCore.QSettings().value(u'advanced/enable exit confirmation',
+                QtCore.QVariant(True)).toBool():
+                ret = QtGui.QMessageBox.question(self,
+                    translate('OpenLP.MainWindow', 'Close OpenLP'),
+                    translate('OpenLP.MainWindow',
+                        'Are you sure you want to close OpenLP?'),
+                    QtGui.QMessageBox.StandardButtons(
+                        QtGui.QMessageBox.Yes |
+                        QtGui.QMessageBox.No),
+                    QtGui.QMessageBox.Yes)
+                if ret == QtGui.QMessageBox.Yes:
+                    self.cleanUp()
+                    event.accept()
+                else:
+                    event.ignore()
+            else:
+                self.cleanUp()
+                event.accept()
+
 
     def cleanUp(self):
         """
@@ -852,11 +863,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 QtCore.QVariant(self.MediaToolBox.currentIndex()))
         # Call the cleanup method to shutdown plugins.
         log.info(u'cleanup plugins')
-        self.plugin_manager.finalise_plugins()
+        self.pluginManager.finalise_plugins()
         # Save settings
         self.saveSettings()
         # Close down the display
-        self.LiveController.display.close()
+        self.liveController.display.close()
 
     def serviceChanged(self, reset=False, serviceName=None):
         """
@@ -878,6 +889,23 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         else:
             self.serviceNotSaved = True
             title = u'%s - %s*' % (self.mainTitle, service_name)
+        self.setWindowTitle(title)
+
+    def setServiceModified(self, modified, fileName):
+        """
+        This method is called from the ServiceManager to set the title of the
+        main window.
+
+        ``modified``
+            Whether or not this service has been modified.
+
+        ``fileName``
+            The file name of the service file.
+        """
+        if modified:
+            title = u'%s - %s*' % (self.mainTitle, fileName)
+        else:
+            title = u'%s - %s' % (self.mainTitle, fileName)
         self.setWindowTitle(title)
 
     def showStatusMessage(self, message):
@@ -910,7 +938,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 True - Visible
                 False - Hidden
         """
-        self.PreviewController.Panel.setVisible(visible)
+        self.previewController.Panel.setVisible(visible)
         QtCore.QSettings().setValue(u'user interface/preview panel',
             QtCore.QVariant(visible))
         self.ViewPreviewPanel.setChecked(visible)
@@ -925,7 +953,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 True - Visible
                 False - Hidden
         """
-        self.LiveController.Panel.setVisible(visible)
+        self.liveController.Panel.setVisible(visible)
         QtCore.QSettings().setValue(u'user interface/live panel',
             QtCore.QVariant(visible))
         self.ViewLivePanel.setChecked(visible)
@@ -981,11 +1009,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if recentFilesToDisplay:
             self.FileMenu.addSeparator()
             for fileId, filename in enumerate(recentFilesToDisplay):
-                action = QtGui.QAction(u'&%d %s' % (fileId +1,
+                log.debug('Recent file name: %s', filename)
+                action = QtGui.QAction(u'&%d %s' % (fileId + 1,
                     QtCore.QFileInfo(filename).fileName()), self)
                 action.setData(QtCore.QVariant(filename))
                 self.connect(action, QtCore.SIGNAL(u'triggered()'),
-                    self.ServiceManagerContents.loadService)
+                    self.ServiceManagerContents.onRecentServiceClicked)
                 self.FileMenu.addAction(action)
         self.FileMenu.addSeparator()
         self.FileMenu.addAction(self.FileMenuActions[-1])
@@ -998,8 +1027,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             The service filename to add
         """
         # The maxRecentFiles value does not have an interface and so never gets
-        # actually stored in the settings therefore the default value of 20
-        # will always be used.
+        # actually stored in the settings therefore the default value of 20 will
+        # always be used.
         maxRecentFiles = QtCore.QSettings().value(u'advanced/max recent files',
             QtCore.QVariant(20)).toInt()[0]
         if filename:

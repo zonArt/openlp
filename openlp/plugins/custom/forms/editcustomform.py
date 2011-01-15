@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -224,27 +224,24 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         ``edit_all``
             Indicates if all slides or only one slide has been edited.
         """
-        if len(slides) == 1:
-            self.slideListView.currentItem().setText(slides[0])
+        if edit_all:
+            self.slideListView.clear()
+            for slide in slides:
+                self.slideListView.addItem(slide)
         else:
-            if edit_all:
-                self.slideListView.clear()
-                for slide in slides:
-                    self.slideListView.addItem(slide)
-            else:
-                old_slides = []
-                old_row = self.slideListView.currentRow()
-                # Create a list with all (old/unedited) slides.
-                old_slides = [self.slideListView.item(row).text() for row in \
-                    range(0, self.slideListView.count())]
-                self.slideListView.clear()
-                old_slides.pop(old_row)
-                # Insert all slides to make the old_slides list complete.
-                for slide in slides:
-                    old_slides.insert(old_row, slide)
-                for slide in old_slides:
-                    self.slideListView.addItem(slide)
-            self.slideListView.repaint()
+            old_slides = []
+            old_row = self.slideListView.currentRow()
+            # Create a list with all (old/unedited) slides.
+            old_slides = [self.slideListView.item(row).text() for row in \
+                range(0, self.slideListView.count())]
+            self.slideListView.clear()
+            old_slides.pop(old_row)
+            # Insert all slides to make the old_slides list complete.
+            for slide in slides:
+                old_slides.insert(old_row, slide)
+            for slide in old_slides:
+                self.slideListView.addItem(slide)
+        self.slideListView.repaint()
 
     def onDeleteButtonPressed(self):
         self.slideListView.takeItem(self.slideListView.currentRow())

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -31,17 +31,12 @@ from openlp.core.lib import build_icon, translate
 class Ui_AboutDialog(object):
     def setupUi(self, aboutDialog):
         aboutDialog.setObjectName(u'aboutDialog')
-        aboutDialog.resize(516, 481)
         aboutDialog.setWindowIcon(build_icon(u':/icon/openlp-logo-16x16.png'))
         self.aboutDialogLayout = QtGui.QVBoxLayout(aboutDialog)
-        self.aboutDialogLayout.setSpacing(8)
-        self.aboutDialogLayout.setMargin(8)
         self.aboutDialogLayout.setObjectName(u'aboutDialogLayout')
         self.logoLabel = QtGui.QLabel(aboutDialog)
         self.logoLabel.setPixmap(
             QtGui.QPixmap(u':/graphics/openlp-about-logo.png'))
-        self.logoLabel.setScaledContents(False)
-        self.logoLabel.setIndent(0)
         self.logoLabel.setObjectName(u'logoLabel')
         self.aboutDialogLayout.addWidget(self.logoLabel)
         self.aboutNotebook = QtGui.QTabWidget(aboutDialog)
@@ -49,59 +44,44 @@ class Ui_AboutDialog(object):
         self.aboutTab = QtGui.QWidget()
         self.aboutTab.setObjectName(u'aboutTab')
         self.aboutTabLayout = QtGui.QVBoxLayout(self.aboutTab)
-        self.aboutTabLayout.setSpacing(0)
-        self.aboutTabLayout.setMargin(8)
         self.aboutTabLayout.setObjectName(u'aboutTabLayout')
         self.aboutTextEdit = QtGui.QPlainTextEdit(self.aboutTab)
         self.aboutTextEdit.setReadOnly(True)
         self.aboutTextEdit.setObjectName(u'aboutTextEdit')
         self.aboutTabLayout.addWidget(self.aboutTextEdit)
-        self.aboutNotebook.addTab(self.aboutTab, '')
+        self.aboutNotebook.addTab(self.aboutTab, u'')
         self.creditsTab = QtGui.QWidget()
         self.creditsTab.setObjectName(u'creditsTab')
         self.creditsTabLayout = QtGui.QVBoxLayout(self.creditsTab)
-        self.creditsTabLayout.setSpacing(0)
-        self.creditsTabLayout.setMargin(8)
         self.creditsTabLayout.setObjectName(u'creditsTabLayout')
         self.creditsTextEdit = QtGui.QPlainTextEdit(self.creditsTab)
         self.creditsTextEdit.setReadOnly(True)
         self.creditsTextEdit.setObjectName(u'creditsTextEdit')
         self.creditsTabLayout.addWidget(self.creditsTextEdit)
-        self.aboutNotebook.addTab(self.creditsTab, '')
+        self.aboutNotebook.addTab(self.creditsTab, u'')
         self.licenseTab = QtGui.QWidget()
         self.licenseTab.setObjectName(u'licenseTab')
         self.licenseTabLayout = QtGui.QVBoxLayout(self.licenseTab)
-        self.licenseTabLayout.setSpacing(8)
-        self.licenseTabLayout.setMargin(8)
         self.licenseTabLayout.setObjectName(u'licenseTabLayout')
         self.licenseTextEdit = QtGui.QPlainTextEdit(self.licenseTab)
         self.licenseTextEdit.setReadOnly(True)
         self.licenseTextEdit.setObjectName(u'licenseTextEdit')
         self.licenseTabLayout.addWidget(self.licenseTextEdit)
-        self.aboutNotebook.addTab(self.licenseTab, '')
+        self.aboutNotebook.addTab(self.licenseTab, u'')
         self.aboutDialogLayout.addWidget(self.aboutNotebook)
-        self.buttonWidget = QtGui.QWidget(aboutDialog)
-        self.buttonWidget.setObjectName(u'buttonWidget')
-        self.buttonWidgetLayout = QtGui.QHBoxLayout(self.buttonWidget)
-        self.buttonWidgetLayout.setSpacing(8)
-        self.buttonWidgetLayout.setMargin(0)
-        self.buttonWidgetLayout.setObjectName(u'buttonWidgetLayout')
-        buttonSpacer = QtGui.QSpacerItem(275, 20,
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.buttonWidgetLayout.addItem(buttonSpacer)
-        self.contributeButton = QtGui.QPushButton(self.buttonWidget)
+        self.buttonBox = QtGui.QDialogButtonBox(aboutDialog)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Close)
+        self.buttonBox.setObjectName(u'buttonBox')
+        self.contributeButton = QtGui.QPushButton()
         self.contributeButton.setIcon(
             build_icon(u':/system/system_contribute.png'))
         self.contributeButton.setObjectName(u'contributeButton')
-        self.buttonWidgetLayout.addWidget(self.contributeButton)
-        self.closeButton = QtGui.QPushButton(self.buttonWidget)
-        self.closeButton.setIcon(build_icon(u':/system/system_close.png'))
-        self.closeButton.setObjectName(u'closeButton')
-        self.buttonWidgetLayout.addWidget(self.closeButton)
-        self.aboutDialogLayout.addWidget(self.buttonWidget)
+        self.buttonBox.addButton(self.contributeButton,
+            QtGui.QDialogButtonBox.ActionRole)
+        self.aboutDialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(aboutDialog)
         self.aboutNotebook.setCurrentIndex(0)
-        QtCore.QObject.connect(self.closeButton, QtCore.SIGNAL(u'clicked()'),
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
             aboutDialog.close)
         QtCore.QMetaObject.connectSlotsByName(aboutDialog)
 
@@ -166,13 +146,24 @@ class Ui_AboutDialog(object):
             '    PyQt4: http://www.riverbankcomputing.co.uk/software/pyqt/'
             'intro\n'
             '    Oxygen Icons: http://oxygen-icons.org/\n'
+            '\n'
+            'Final Credit\n'
+            '    "For God so loved the world that He gave\n'
+            '    His one and only Son, so that whoever\n'
+            '    believes in Him will not perish but inherit\n'
+            '    eternal life."  -- John 3:16\n\n'
+            '    And last but not least, final credit goes to\n'
+            '    God our Father, for sending His Son to die\n'
+            '    on the cross, setting us free from sin. We\n'
+            '    bring this software to you for free because\n'
+            '    He has set us free.'
         ))
         self.aboutNotebook.setTabText(
             self.aboutNotebook.indexOf(self.creditsTab),
             translate('OpenLP.AboutForm', 'Credits'))
         self.licenseTextEdit.setPlainText(translate('OpenLP.AboutForm',
-            'Copyright \xa9 2004-2010 Raoul Snyman\n'
-            'Portions copyright \xa9 2004-2010 '
+            'Copyright \xa9 2004-2011 Raoul Snyman\n'
+            'Portions copyright \xa9 2004-2011 '
             'Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri, '
             'Christian Richter, Maikel Stuivenberg, Martin Thompson, Jon '
             'Tibble, Carsten Tinggaard\n'
@@ -564,5 +555,3 @@ class Ui_AboutDialog(object):
             translate('OpenLP.AboutForm', 'License'))
         self.contributeButton.setText(translate('OpenLP.AboutForm',
             'Contribute'))
-        self.closeButton.setText(translate('OpenLP.AboutForm', 'Close'))
-

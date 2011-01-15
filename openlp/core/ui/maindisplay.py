@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -31,7 +31,9 @@ import os
 from PyQt4 import QtCore, QtGui, QtWebKit
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte
+from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
+    build_icon, translate
+
 from openlp.core.ui import HideMode
 
 log = logging.getLogger(__name__)
@@ -95,7 +97,6 @@ class MainDisplay(DisplayWidget):
     """
     This is the display screen.
     """
-
     def __init__(self, parent, screens, live):
         DisplayWidget.__init__(self, live, parent=None)
         self.parent = parent
@@ -103,7 +104,9 @@ class MainDisplay(DisplayWidget):
         self.isLive = live
         self.alertTab = None
         self.hideMode = None
-        self.setWindowTitle(u'OpenLP Display')
+        mainIcon = build_icon(u':/icon/openlp-logo-16x16.png')
+        self.setWindowIcon(mainIcon)
+        self.retranslateUi()
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint |
             QtCore.Qt.WindowStaysOnTopHint)
@@ -119,11 +122,17 @@ class MainDisplay(DisplayWidget):
 #            self.addAction(self.parent.next_service)
 #            self.addAction(self.parent.escape_item)
 
+    def retranslateUi(self):
+        """
+        Setup the interface translation strings.
+        """
+        self.setWindowTitle(translate('OpenLP.MainDisplay', 'OpenLP Display'))
+
     def setup(self):
         """
         Set up and build the output screen
         """
-        log.debug(u'Setup live = %s for %s ' % (self.isLive,
+        log.debug(u'Setup live = %s for monitor %s ' % (self.isLive,
             self.screens.monitor_number))
         self.usePhonon = QtCore.QSettings().value(
             u'media/use phonon', QtCore.QVariant(True)).toBool()
@@ -216,7 +225,7 @@ class MainDisplay(DisplayWidget):
             shrink = True
         else:
             shrink = False
-        js =  u'show_alert("%s", "%s")' % (
+        js = u'show_alert("%s", "%s")' % (
             text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'),
             u'top' if shrink else u'')
         height = self.frame.evaluateJavaScript(js)
@@ -242,8 +251,8 @@ class MainDisplay(DisplayWidget):
 
     def image(self, name):
         """
-        Add an image as the background.  The image is converted to a
-        bytestream on route.
+        Add an image as the background.  The image is converted to a bytestream
+        on route.
 
         `Image`
             The Image to be displayed can be QImage or QPixmap
@@ -428,8 +437,8 @@ class MainDisplay(DisplayWidget):
         Display the Footer
         """
         log.debug(u'footer')
-        js =  "show_footer('" + \
-            text.replace("\\", "\\\\").replace("\'", "\\\'") + "')"
+        js = u'show_footer(\'' + \
+            text.replace(u'\\', u'\\\\').replace(u'\'', u'\\\'') + u'\')'
         self.frame.evaluateJavaScript(js)
 
     def hideDisplay(self, mode=HideMode.Screen):
@@ -548,4 +557,3 @@ class AudioPlayer(QtCore.QObject):
         """
         log.debug(u'AudioPlayer Reached end of media playlist')
         self.mediaObject.clearQueue()
-

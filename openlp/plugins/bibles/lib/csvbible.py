@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -30,7 +30,7 @@ import csv
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import Receiver, translate
 from db import BibleDB
 
 log = logging.getLogger(__name__)
@@ -46,21 +46,19 @@ class CSVBible(BibleDB):
         This class assumes the files contain all the information and
         a clean bible is being loaded.
         """
-        BibleDB.__init__(self, parent, **kwargs)
         log.info(self.__class__.__name__)
-        if u'booksfile' not in kwargs:
-            raise KeyError(u'You have to supply a file to import books from.')
+        BibleDB.__init__(self, parent, **kwargs)
         self.booksfile = kwargs[u'booksfile']
-        if u'versefile' not in kwargs:
-            raise KeyError(u'You have to supply a file to import verses from.')
         self.versesfile = kwargs[u'versefile']
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'bibles_stop_import'), self.stop_import)
 
     def do_import(self):
-        #Populate the Tables
         success = True
         books_file = None
+        book_ptr = None
+        verse_file = None
+        # Populate the Tables
         try:
             books_file = open(self.booksfile, 'r')
             dialect = csv.Sniffer().sniff(books_file.read(1024))
@@ -74,7 +72,7 @@ class CSVBible(BibleDB):
                 self.create_book(unicode(line[1], details['encoding']),
                     line[2], int(line[0]))
                 Receiver.send_message(u'openlp_process_events')
-        except IOError:
+        except IOError, IndexError:
             log.exception(u'Loading books from file failed')
             success = False
         finally:
@@ -82,25 +80,26 @@ class CSVBible(BibleDB):
                 books_file.close()
         if not success:
             return False
-        verse_file = None
         try:
-            book_ptr = None
             verse_file = open(self.versesfile, 'r')
             dialect = csv.Sniffer().sniff(verse_file.read(1024))
             verse_file.seek(0)
             verse_reader = csv.reader(verse_file, dialect)
             for line in verse_reader:
-                if self.stop_import_flag:  # cancel pressed
+                if self.stop_import_flag:
+                    # cancel pressed
                     break
                 details = chardet.detect(line[3])
                 if book_ptr != line[0]:
                     book = self.get_book(line[0])
                     book_ptr = book.name
-                    self.wizard.incrementProgressBar(
-                        u'Importing %s %s' % (book.name, line[1]))
+                    self.wizard.incrementProgressBar(unicode(translate(
+                        'BiblesPlugin.CSVImport', 'Importing %s %s...',
+                        'Importing <book name> <chapter>...')) %
+                        (book.name, int(line[1])))
                     self.session.commit()
                 self.create_verse(book.id, line[1], line[2],
-                                  unicode(line[3], details['encoding']))
+                    unicode(line[3], details['encoding']))
                 Receiver.send_message(u'openlp_process_events')
             self.session.commit()
         except IOError:
@@ -110,7 +109,6 @@ class CSVBible(BibleDB):
             if verse_file:
                 verse_file.close()
         if self.stop_import_flag:
-            self.wizard.incrementProgressBar(u'Import canceled!')
             return False
         else:
             return success

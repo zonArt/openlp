@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -33,68 +33,48 @@ class Ui_SongImportWizard(object):
         self.openIcon = build_icon(u':/general/general_open.png')
         self.deleteIcon = build_icon(u':/general/general_delete.png')
         songImportWizard.setObjectName(u'songImportWizard')
-        songImportWizard.resize(550, 386)
         songImportWizard.setModal(True)
         songImportWizard.setWizardStyle(QtGui.QWizard.ModernStyle)
         songImportWizard.setOptions(
             QtGui.QWizard.IndependentPages |
             QtGui.QWizard.NoBackButtonOnStartPage |
             QtGui.QWizard.NoBackButtonOnLastPage)
+        # Welcome Page 
         self.welcomePage = QtGui.QWizardPage()
-        self.welcomePage.setObjectName(u'welcomePage')
         self.welcomePage.setPixmap(QtGui.QWizard.WatermarkPixmap,
             QtGui.QPixmap(u':/wizards/wizard_importsong.bmp'))
-        self.welcomeLayout = QtGui.QHBoxLayout(self.welcomePage)
-        self.welcomeLayout.setSpacing(8)
-        self.welcomeLayout.setMargin(0)
-        self.welcomeLayout.setObjectName(u'welcomeLayout')
-        self.welcomeTextLayout = QtGui.QVBoxLayout()
-        self.welcomeTextLayout.setSpacing(8)
-        self.welcomeTextLayout.setObjectName(u'welcomeTextLayout')
+        self.welcomePage.setObjectName(u'WelcomePage')
+        self.welcomeLayout = QtGui.QVBoxLayout(self.welcomePage)
+        self.welcomeLayout.setObjectName(u'WelcomeLayout')
         self.titleLabel = QtGui.QLabel(self.welcomePage)
         self.titleLabel.setObjectName(u'TitleLabel')
-        self.welcomeTextLayout.addWidget(self.titleLabel)
-        self.welcomeTopSpacer = QtGui.QSpacerItem(20, 40,
-            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
-        self.welcomeTextLayout.addItem(self.welcomeTopSpacer)
+        self.welcomeLayout.addWidget(self.titleLabel)
+        self.welcomeLayout.addSpacing(40)
         self.informationLabel = QtGui.QLabel(self.welcomePage)
         self.informationLabel.setWordWrap(True)
-        self.informationLabel.setMargin(10)
         self.informationLabel.setObjectName(u'InformationLabel')
-        self.welcomeTextLayout.addWidget(self.informationLabel)
-        self.welcomeBottomSpacer = QtGui.QSpacerItem(20, 40,
-            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.welcomeTextLayout.addItem(self.welcomeBottomSpacer)
-        self.welcomeLayout.addLayout(self.welcomeTextLayout)
+        self.welcomeLayout.addWidget(self.informationLabel)
+        self.welcomeLayout.addStretch()
         songImportWizard.addPage(self.welcomePage)
+        # Source Page
         self.sourcePage = QtGui.QWizardPage()
         self.sourcePage.setObjectName(u'SourcePage')
         self.sourceLayout = QtGui.QVBoxLayout(self.sourcePage)
-        self.sourceLayout.setSpacing(8)
-        self.sourceLayout.setMargin(20)
         self.sourceLayout.setObjectName(u'SourceLayout')
-        self.formatLayout = QtGui.QHBoxLayout()
-        self.formatLayout.setSpacing(8)
+        self.formatLayout = QtGui.QFormLayout()
         self.formatLayout.setObjectName(u'FormatLayout')
         self.formatLabel = QtGui.QLabel(self.sourcePage)
         self.formatLabel.setObjectName(u'FormatLabel')
-        self.formatLayout.addWidget(self.formatLabel)
         self.formatComboBox = QtGui.QComboBox(self.sourcePage)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding,
-            QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.formatComboBox.sizePolicy().hasHeightForWidth())
-        self.formatComboBox.setSizePolicy(sizePolicy)
-        self.formatComboBox.setObjectName(u'formatComboBox')
-        self.formatLayout.addWidget(self.formatComboBox)
-        self.formatSpacer = QtGui.QSpacerItem(40, 20,
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.formatLayout.addItem(self.formatSpacer)
+        self.formatComboBox.setObjectName(u'FormatComboBox')
+        self.formatLayout.addRow(self.formatLabel, self.formatComboBox)
+        self.formatSpacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
+            QtGui.QSizePolicy.Minimum)
+        self.formatLayout.setItem(1, QtGui.QFormLayout.LabelRole,
+            self.formatSpacer)
         self.sourceLayout.addLayout(self.formatLayout)
-        self.formatStackedWidget = QtGui.QStackedWidget(self.sourcePage)
-        self.formatStackedWidget.setObjectName(u'FormatStackedWidget')
+        self.formatStack = QtGui.QStackedLayout()
+        self.formatStack.setObjectName(u'FormatStack')
         # OpenLP 2.0
         self.addSingleFileSelectItem(u'openLP2')
         # openlp.org 1.x
@@ -120,28 +100,26 @@ class Ui_SongImportWizard(object):
         self.addMultiFileSelectItem(u'songBeamer')
 #        Commented out for future use.
 #        self.addSingleFileSelectItem(u'csv', u'CSV')
-        self.sourceLayout.addWidget(self.formatStackedWidget)
+        self.sourceLayout.addLayout(self.formatStack)
         songImportWizard.addPage(self.sourcePage)
+        # Import Page
         self.importPage = QtGui.QWizardPage()
-        self.importPage.setObjectName(u'importPage')
+        self.importPage.setObjectName(u'ImportPage')
         self.importLayout = QtGui.QVBoxLayout(self.importPage)
-        self.importLayout.setSpacing(8)
-        self.importLayout.setMargin(50)
-        self.importLayout.setObjectName(u'importLayout')
+        self.importLayout.setMargin(48)
+        self.importLayout.setObjectName(u'ImportLayout')
         self.importProgressLabel = QtGui.QLabel(self.importPage)
-        self.importProgressLabel.setObjectName(u'importProgressLabel')
+        self.importProgressLabel.setObjectName(u'ImportProgressLabel')
         self.importLayout.addWidget(self.importProgressLabel)
         self.importProgressBar = QtGui.QProgressBar(self.importPage)
-        self.importProgressBar.setProperty(u'value', 0)
-        self.importProgressBar.setInvertedAppearance(False)
-        self.importProgressBar.setObjectName(u'importProgressBar')
+        self.importProgressBar.setObjectName(u'ImportProgressBar')
         self.importLayout.addWidget(self.importProgressBar)
         songImportWizard.addPage(self.importPage)
         self.retranslateUi(songImportWizard)
-        self.formatStackedWidget.setCurrentIndex(0)
+        self.formatStack.setCurrentIndex(0)
         QtCore.QObject.connect(self.formatComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
-            self.formatStackedWidget.setCurrentIndex)
+            self.formatStack.setCurrentIndex)
         QtCore.QMetaObject.connectSlotsByName(songImportWizard)
 
     def retranslateUi(self, songImportWizard):
@@ -257,6 +235,19 @@ class Ui_SongImportWizard(object):
             translate('SongsPlugin.ImportWizardForm', 'Ready.'))
         self.importProgressBar.setFormat(
             translate('SongsPlugin.ImportWizardForm', '%p%'))
+        # Align all QFormLayouts towards each other.
+        width = max(self.formatLabel.minimumSizeHint().width(),
+            self.openLP2FilenameLabel.minimumSizeHint().width())
+        self.formatSpacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
+            QtGui.QSizePolicy.Fixed)
+        self.openLP2FormLabelSpacer.changeSize(width, 0,
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        self.openLP1FormLabelSpacer.changeSize(width, 0,
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        self.ewFormLabelSpacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
+            QtGui.QSizePolicy.Fixed)
+#        self.csvFormLabelSpacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
+#            QtGui.QSizePolicy.Fixed)
 
     def addSingleFileSelectItem(self, prefix, obj_prefix=None,
         can_disable=False):
@@ -270,16 +261,13 @@ class Ui_SongImportWizard(object):
             importWidget = page
         importLayout = QtGui.QFormLayout(importWidget)
         importLayout.setMargin(0)
-        importLayout.setSpacing(8)
         if can_disable:
             importLayout.setObjectName(obj_prefix + u'ImportLayout')
         else:
             importLayout.setObjectName(obj_prefix + u'Layout')
         filenameLabel = QtGui.QLabel(importWidget)
         filenameLabel.setObjectName(obj_prefix + u'FilenameLabel')
-        importLayout.setWidget(0, QtGui.QFormLayout.LabelRole, filenameLabel)
         fileLayout = QtGui.QHBoxLayout()
-        fileLayout.setSpacing(8)
         fileLayout.setObjectName(obj_prefix + u'FileLayout')
         filenameEdit = QtGui.QLineEdit(importWidget)
         filenameEdit.setObjectName(obj_prefix + u'FilenameEdit')
@@ -288,10 +276,14 @@ class Ui_SongImportWizard(object):
         browseButton.setIcon(self.openIcon)
         browseButton.setObjectName(obj_prefix + u'BrowseButton')
         fileLayout.addWidget(browseButton)
-        importLayout.setLayout(0, QtGui.QFormLayout.FieldRole, fileLayout)
-        self.formatStackedWidget.addWidget(page)
+        importLayout.addRow(filenameLabel, fileLayout)
+        formSpacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
+            QtGui.QSizePolicy.Minimum)
+        importLayout.setItem(1, QtGui.QFormLayout.LabelRole, formSpacer)
+        self.formatStack.addWidget(page)
         setattr(self, prefix + u'Page', page)
         setattr(self, prefix + u'FilenameLabel', filenameLabel)
+        setattr(self, prefix + u'FormLabelSpacer', formSpacer)
         setattr(self, prefix + u'FileLayout', fileLayout)
         setattr(self, prefix + u'FilenameEdit', filenameEdit)
         setattr(self, prefix + u'BrowseButton', browseButton)
@@ -313,7 +305,6 @@ class Ui_SongImportWizard(object):
             importWidget = page
         importLayout = QtGui.QVBoxLayout(importWidget)
         importLayout.setMargin(0)
-        importLayout.setSpacing(8)
         if can_disable:
             importLayout.setObjectName(obj_prefix + u'ImportLayout')
         else:
@@ -324,25 +315,21 @@ class Ui_SongImportWizard(object):
         fileListWidget.setObjectName(obj_prefix + u'FileListWidget')
         importLayout.addWidget(fileListWidget)
         buttonLayout = QtGui.QHBoxLayout()
-        buttonLayout.setSpacing(8)
         buttonLayout.setObjectName(obj_prefix + u'ButtonLayout')
         addButton = QtGui.QPushButton(importWidget)
         addButton.setIcon(self.openIcon)
         addButton.setObjectName(obj_prefix + u'AddButton')
         buttonLayout.addWidget(addButton)
-        buttonSpacer = QtGui.QSpacerItem(40, 20,
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        buttonLayout.addItem(buttonSpacer)
+        buttonLayout.addStretch()
         removeButton = QtGui.QPushButton(importWidget)
         removeButton.setIcon(self.deleteIcon)
         removeButton.setObjectName(obj_prefix + u'RemoveButton')
         buttonLayout.addWidget(removeButton)
         importLayout.addLayout(buttonLayout)
-        self.formatStackedWidget.addWidget(page)
+        self.formatStack.addWidget(page)
         setattr(self, prefix + u'Page', page)
         setattr(self, prefix + u'FileListWidget', fileListWidget)
         setattr(self, prefix + u'ButtonLayout', buttonLayout)
-        setattr(self, prefix + u'ButtonSpacer', buttonSpacer)
         setattr(self, prefix + u'AddButton', addButton)
         setattr(self, prefix + u'RemoveButton', removeButton)
         if can_disable:
@@ -350,7 +337,7 @@ class Ui_SongImportWizard(object):
         else:
             setattr(self, prefix + u'Layout', importLayout)
         self.formatComboBox.addItem(u'')
-        
+
     def disablableWidget(self, page, prefix, obj_prefix):
         layout = QtGui.QVBoxLayout(page)
         layout.setMargin(0)
@@ -361,7 +348,6 @@ class Ui_SongImportWizard(object):
         disabledWidget.setObjectName(obj_prefix + u'DisabledWidget')
         disabledLayout = QtGui.QVBoxLayout(disabledWidget)
         disabledLayout.setMargin(0)
-        disabledLayout.setSpacing(8)
         disabledLayout.setObjectName(obj_prefix + u'DisabledLayout')
         disabledLabel = QtGui.QLabel(disabledWidget)
         disabledLabel.setWordWrap(True)

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -184,11 +184,6 @@ class ActionList(object):
         else:
             self.categories[category].actions.add(action, weight)
 
-class ActionConfig(object):
-    """
-    Helper for configuration of OpenLP Shortcut actions
-    """
-    
     @staticmethod
     def set(action, widget, text, category, slot, shortcut, 
                 alternate=0, context=QtCore.Qt.WidgetShortcut):

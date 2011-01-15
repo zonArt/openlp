@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -33,11 +33,11 @@ processing version 1 themes in OpenLP version 2.
 from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtGui
 
-DELPHI_COLORS = {"clRed":0xFF0000,
-                 "clBlue":0x0000FF,
-                 "clYellow":0xFFFF00,
-                 "clBlack":0x000000,
-                 "clWhite":0xFFFFFF}
+DELPHI_COLORS = {u'clRed': 0xFF0000,
+                 u'clBlue': 0x0000FF,
+                 u'clYellow': 0xFFFF00,
+                 u'clBlack': 0x000000,
+                 u'clWhite': 0xFFFFFF}
 
 BLANK_STYLE_XML = \
 '''<?xml version="1.0" encoding="iso-8859-1"?>

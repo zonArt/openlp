@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -72,27 +72,27 @@ class OpenLPToolbar(QtGui.QToolBar):
         ``objectname``
             The name of the object, as used in `<button>.setObjectName()`.
         """
-        toolbarButton = None
+        newAction = None
         if icon:
-            buttonIcon = build_icon(icon)
+            actionIcon = build_icon(icon)
             if slot and not checkable:
-                toolbarButton = self.addAction(buttonIcon, title, slot)
+                newAction = self.addAction(actionIcon, title, slot)
             else:
-                toolbarButton = self.addAction(buttonIcon, title)
-            self.icons[title] = buttonIcon
+                newAction = self.addAction(actionIcon, title)
+            self.icons[title] = actionIcon
         else:
-            toolbarButton = QtGui.QAction(title, toolbarButton)
-            self.addAction(toolbarButton)
-            QtCore.QObject.connect(toolbarButton,
+            newAction = QtGui.QAction(title, newAction)
+            self.addAction(newAction)
+            QtCore.QObject.connect(newAction,
                 QtCore.SIGNAL(u'triggered()'), slot)
         if tooltip:
-            toolbarButton.setToolTip(tooltip)
+            newAction.setToolTip(tooltip)
         if checkable:
-            toolbarButton.setCheckable(True)
-            QtCore.QObject.connect(toolbarButton,
+            newAction.setCheckable(True)
+            QtCore.QObject.connect(newAction,
                 QtCore.SIGNAL(u'toggled(bool)'), slot)
-        self.actions[title] = toolbarButton
-        return toolbarButton
+        self.actions[title] = newAction
+        return newAction
 
     def addToolbarSeparator(self, handle):
         """

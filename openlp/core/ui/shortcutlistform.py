@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -30,7 +30,7 @@ import re
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.utils import translate
-from shortcutlistdialog import Ui_ShortcutListDialog, Ui_ShortcutDialog
+from shortcutlistdialog import Ui_ShortcutListDialog
 
 REMOVE_AMPERSAND = re.compile(r'&{1}')
 
@@ -49,214 +49,58 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         self.setupUi(self)
         self.actionList = None
         self.captureShortcut = False
-        self.currentItem = None
-        self.newShortcut = None
-        QtCore.QObject.connect(
-            self.shortcutPushButton,
-            QtCore.SIGNAL(u'toggled(bool)'),
-            self.onShortcutPushButtonClicked
-        )
-        self.shortcutListTreeWidget.itemDoubleClicked.connect(self.shortcutEdit)
+        QtCore.QObject.connect(self.shortcutButton,
+            QtCore.SIGNAL(u'toggled(bool)'), self.onShortcutButtonClicked)
 
-    def setNewShortcut(self, shortcut, alternate):
-        if self.currentItem:
-            self.actionList[self.currentItem].setShortcuts([shortcut, alternate])
-            self.shortcutListTreeWidget.currentItem().setText(1, shortcut.toString())
-            self.shortcutListTreeWidget.currentItem().setText(2, alternate.toString())
+    def keyReleaseEvent(self, event):
+        Qt = QtCore.Qt
+        if not self.captureShortcut:
+            return
+        key = event.key()
+        if key == Qt.Key_Shift or key == Qt.Key_Control or \
+            key == Qt.Key_Meta or key == Qt.Key_Alt:
+            return
+        key_string = QtGui.QKeySequence(key).toString()
+        if event.modifiers() & Qt.ControlModifier == Qt.ControlModifier:
+            key_string = u'Ctrl+' + key_string
+        if event.modifiers() & Qt.AltModifier == Qt.AltModifier:
+            key_string = u'Alt+' + key_string
+        if event.modifiers() & Qt.ShiftModifier == Qt.ShiftModifier:
+            key_string = u'Shift+' + key_string
+        key_sequence = QtGui.QKeySequence(key_string)
+        existing_key = QtGui.QKeySequence(u'Ctrl+Shift+F8')
+        if key_sequence == existing_key:
+            QtGui.QMessageBox.warning(
+                self,
+                translate('OpenLP.ShortcutListDialog', 'Duplicate Shortcut'),
+                unicode(translate('OpenLP.ShortcutListDialog', 'The shortcut '
+                    '"%s" is already assigned to another action, please '
+                    'use a different shortcut.')) % key_sequence.toString(),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
+                QtGui.QMessageBox.Ok
+            )
+        else:
+            self.shortcutButton.setText(key_sequence.toString())
+        self.shortcutButton.setChecked(False)
+        self.captureShortcut = False
 
-    def exec_(self, parent):
-        self.actionList = parent.findChildren(QtGui.QAction)
+    def exec_(self, actionList):
+        self.actionList = actionList
         self.refreshActions()
         return QtGui.QDialog.exec_(self)
 
     def refreshActions(self):
-        self.shortcutListTreeWidget.clear()
-        catItemDict = dict()
-        for num in range(len(self.actionList)):
-            action = self.actionList[num]
-            actionText = action.objectName() or action.parentWidget().objectName()
-            shortcutText = u''
-            shortcutAlternate = u''
-            if len(action.shortcuts()) > 0:
-                shortcutText = action.shortcuts()[0].toString()
-                if len(action.shortcuts()) > 1:
-                    shortcutAlternate = action.shortcuts()[1].toString()
-            if action.isSeparator():
-                continue
-            if not shortcutText:
-                continue
-            categorie = action.data().toString() or 'Unknown'
-            if not catItemDict.has_key(categorie):
-                catItemDict[categorie] = QtGui.QTreeWidgetItem([categorie])
-            actionItem = QtGui.QTreeWidgetItem([actionText, shortcutText, shortcutAlternate], num)
-            actionItem.setIcon(0, action.icon())
-            catItemDict[categorie].addChild(actionItem)
-            catItemDict[categorie].setExpanded(True)
-        for key in sorted(catItemDict.iterkeys()):
-            self.shortcutListTreeWidget.addTopLevelItem(catItemDict[key])
-            self.shortcutListTreeWidget.expandItem(catItemDict[key])
-        self.shortcutListTreeWidget.sortItems(0, QtCore.Qt.AscendingOrder)
+        self.treeWidget.clear()
+        for category in self.actionList.categories:
+            item = QtGui.QTreeWidgetItem([category.name])
+            for action in category.actions:
+                actionText = REMOVE_AMPERSAND.sub('', unicode(action.text()))
+                shortcutText = action.shortcut().toString()
+                actionItem = QtGui.QTreeWidgetItem([actionText, shortcutText])
+                actionItem.setIcon(0, action.icon())
+                item.addChild(actionItem)
+            item.setExpanded(True)
+            self.treeWidget.addTopLevelItem(item)
 
-    def onShortcutPushButtonClicked(self, toggled):
+    def onShortcutButtonClicked(self, toggled):
         self.captureShortcut = toggled
-
-    def shortcutEdit(self, item, column):
-        self.currentItem = item.type()
-        self.newShortcut = item.text(1)
-        dialog = ShortcutDialog(self, u'Press new Shortcut', item.text(1), item.text(2))
-        dialog.show()
-        #self.shortcutListTreeWidget.currentItem().setText(column, u'Press new Shortcut')
-        #self.captureShortcut = True
-   
-class ShortcutDialog(QtGui.QDialog, Ui_ShortcutDialog):
-    """
-    Class implementing a dialog for the configuration of a keyboard shortcut.
-    
-    """
-    def __init__(self, parent = None, name = None, key=0, alternate=0):
-        """
-        Constructor
-        
-        @param parent The parent widget of this dialog. (QWidget)
-        @param name The name of this dialog. (QString)
-        @param modal Flag indicating a modal dialog. (boolean)
-        """
-        QtGui.QDialog.__init__(self, parent)
-        self.parent = parent
-        if name:
-            self.setObjectName(name)
-        self.setupUi(self)
-        self.setKeys(key, alternate)
-        self.keyIndex = 0
-        self.keys = [0, 0, 0, 0]
-        self.noCheck = False
-        self.objectType = None
-        
-        self.connect(self.primaryClearButton, QtCore.SIGNAL("clicked()"), self.__clear)
-        self.connect(self.alternateClearButton, QtCore.SIGNAL("clicked()"), self.__clear)
-        self.connect(self.primaryButton, QtCore.SIGNAL("clicked()"), self.__typeChanged)
-        self.connect(self.alternateButton, QtCore.SIGNAL("clicked()"), self.__typeChanged)
-        
-        self.shortcutsGroup.installEventFilter(self)
-        self.primaryButton.installEventFilter(self)
-        self.alternateButton.installEventFilter(self)
-        self.primaryClearButton.installEventFilter(self)
-        self.alternateClearButton.installEventFilter(self)
-        
-        self.buttonBox.button(QtGui.QDialogButtonBox.Ok).installEventFilter(self)
-        self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).installEventFilter(self)
-
-    def setKeys(self, key, alternateKey,  noCheck=None, objectType=None):
-        """
-        Public method to set the key to be configured.
-        
-        @param key key sequence to be changed (QKeySequence)
-        @param alternateKey alternate key sequence to be changed (QKeySequence)
-        @param noCheck flag indicating that no uniqueness check should
-            be performed (boolean)
-        @param objectType type of the object (string).
-        """
-        self.keyIndex = 0
-        self.keys = [0, 0, 0, 0]
-        self.keyLabel.setText(QtCore.QString(key))
-        self.alternateKeyLabel.setText(QtCore.QString(alternateKey))
-        self.primaryButton.setChecked(True)
-        self.noCheck = noCheck
-        self.objectType = objectType
-        
-    def on_buttonBox_accepted(self):
-        """
-        Private slot to handle the OK button press.
-        """
-        self.parent.setNewShortcut(QtGui.QKeySequence(self.keyLabel.text()),
-                  QtGui.QKeySequence(self.alternateKeyLabel.text()))#, 
-#                  self.noCheck, self.objectType)
-        self.close()
-
-    def __clear(self):
-        """
-        Private slot to handle the Clear button press.
-        """
-        self.keyIndex = 0
-        self.keys = [0, 0, 0, 0]
-        self.__setKeyLabelText("")
-        
-    def __typeChanged(self):
-        """
-        Private slot to handle the change of the shortcuts type.
-        """
-        self.keyIndex = 0
-        self.keys = [0, 0, 0, 0]
-        
-    def __setKeyLabelText(self, txt):
-        """
-        Private method to set the text of a key label.
-        
-        @param txt text to be set (QString)
-        """
-        if self.primaryButton.isChecked():
-            self.keyLabel.setText(txt)
-        else:
-            self.alternateKeyLabel.setText(txt)
-        
-    def eventFilter(self, watched, event):
-        """
-        Method called to filter the event queue.
-        
-        @param watched the QObject being watched
-        @param event the event that occurred
-        @return always False
-        """
-        if event.type() == QtCore.QEvent.KeyPress:
-            self.keyPressEvent(event)
-            return True
-            
-        return False
-        
-    def keyPressEvent(self, evt):
-        """
-        Private method to handle a key press event.
-        
-        @param evt the key event (QKeyEvent)
-        """
-        if evt.key() == QtCore.Qt.Key_Control:
-            return
-        if evt.key() == QtCore.Qt.Key_Meta:
-            return
-        if evt.key() == QtCore.Qt.Key_Shift:
-            return
-        if evt.key() == QtCore.Qt.Key_Alt:
-            return
-        if evt.key() == QtCore.Qt.Key_Menu:
-            return
-    
-        if self.keyIndex == 4:
-            self.keyIndex = 0
-            self.keys = [0, 0, 0, 0]
-    
-        if evt.key() == QtCore.Qt.Key_Backtab and evt.modifiers() & QtCore.Qt.ShiftModifier:
-            self.keys[self.keyIndex] = QtCore.Qt.Key_Tab
-        else:
-            self.keys[self.keyIndex] = evt.key()
-        
-        if evt.modifiers() & QtCore.Qt.ShiftModifier:
-            self.keys[self.keyIndex] += QtCore.Qt.SHIFT
-        if evt.modifiers() & QtCore.Qt.ControlModifier:
-            self.keys[self.keyIndex] += QtCore.Qt.CTRL
-        if evt.modifiers() & QtCore.Qt.AltModifier:
-            self.keys[self.keyIndex] += QtCore.Qt.ALT
-        if evt.modifiers() & QtCore.Qt.MetaModifier:
-            self.keys[self.keyIndex] += QtCore.Qt.META
-        
-        self.keyIndex += 1
-        
-        if self.keyIndex == 1:
-            self.__setKeyLabelText(QtCore.QString(QtGui.QKeySequence(self.keys[0])))
-        elif self.keyIndex == 2:
-            self.__setKeyLabelText(QtCore.QString(QtGui.QKeySequence(self.keys[0], self.keys[1])))
-        elif self.keyIndex == 3:
-            self.__setKeyLabelText(QtCore.QString(QtGui.QKeySequence(self.keys[0], self.keys[1],
-                self.keys[2])))
-        elif self.keyIndex == 4:
-            self.__setKeyLabelText(QtCore.QString(QtGui.QKeySequence(self.keys[0], self.keys[1],
-                self.keys[2], self.keys[3])))
