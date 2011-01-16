@@ -31,6 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
     SettingsManager, translate, check_item_selected, Receiver, ItemCapabilities
+from openlp.core.ui import criticalErrorMessageBox
 from openlp.plugins.presentations.lib import MessageListener
 
 log = logging.getLogger(__name__)
@@ -76,6 +77,8 @@ class PresentationMediaItem(MediaManagerItem):
             'Select Presentation(s)')
         self.Automatic = translate('PresentationPlugin.MediaItem',
             'Automatic')
+        self.displayTypeLabel.setText(
+            translate('PresentationPlugin.MediaItem', 'Present using:'))
 
     def buildFileMaskString(self):
         """
@@ -106,27 +109,24 @@ class PresentationMediaItem(MediaManagerItem):
         """
         Display custom media manager items for presentations
         """
-        self.PresentationWidget = QtGui.QWidget(self)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.PresentationWidget.sizePolicy().hasHeightForWidth())
-        self.PresentationWidget.setSizePolicy(sizePolicy)
-        self.PresentationWidget.setObjectName(u'PresentationWidget')
-        self.DisplayLayout = QtGui.QGridLayout(self.PresentationWidget)
-        self.DisplayLayout.setObjectName(u'DisplayLayout')
-        self.DisplayTypeComboBox = QtGui.QComboBox(self.PresentationWidget)
-        self.DisplayTypeComboBox.setObjectName(u'DisplayTypeComboBox')
-        self.DisplayLayout.addWidget(self.DisplayTypeComboBox, 0, 1, 1, 2)
-        self.DisplayTypeLabel = QtGui.QLabel(self.PresentationWidget)
-        self.DisplayTypeLabel.setObjectName(u'SearchTypeLabel')
-        self.DisplayLayout.addWidget(self.DisplayTypeLabel, 0, 0, 1, 1)
-        self.DisplayTypeLabel.setText(
-            translate('PresentationPlugin.MediaItem', 'Present using:'))
+        self.presentationWidget = QtGui.QWidget(self)
+        self.presentationWidget.setObjectName(u'presentationWidget')
+        self.displayLayout = QtGui.QFormLayout(self.presentationWidget)
+        self.displayLayout.setMargin(self.displayLayout.spacing())
+        self.displayLayout.setObjectName(u'displayLayout')
+        self.displayTypeLabel = QtGui.QLabel(self.presentationWidget)
+        self.displayTypeLabel.setObjectName(u'displayTypeLabel')
+        self.displayTypeComboBox = QtGui.QComboBox(self.presentationWidget)
+        self.displayTypeComboBox.setSizeAdjustPolicy(
+            QtGui.QComboBox.AdjustToMinimumContentsLength)
+        self.displayTypeComboBox.setSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
+        self.displayTypeComboBox.setObjectName(u'displayTypeComboBox')
+        self.displayTypeLabel.setBuddy(self.displayTypeComboBox)
+        self.displayLayout.addRow(self.displayTypeLabel,
+            self.displayTypeComboBox)
         # Add the Presentation widget to the page layout
-        self.pageLayout.addWidget(self.PresentationWidget)
+        self.pageLayout.addWidget(self.presentationWidget)
 
     def initialise(self):
         """
@@ -151,19 +151,19 @@ class PresentationMediaItem(MediaManagerItem):
         Load the combobox with the enabled presentation controllers,
         allowing user to select a specific app if settings allow
         """
-        self.DisplayTypeComboBox.clear()
+        self.displayTypeComboBox.clear()
         for item in self.controllers:
             # load the drop down selection
             if self.controllers[item].enabled():
-                self.DisplayTypeComboBox.addItem(item)
-        if self.DisplayTypeComboBox.count() > 1:
-            self.DisplayTypeComboBox.insertItem(0, self.Automatic)
-            self.DisplayTypeComboBox.setCurrentIndex(0)
+                self.displayTypeComboBox.addItem(item)
+        if self.displayTypeComboBox.count() > 1:
+            self.displayTypeComboBox.insertItem(0, self.Automatic)
+            self.displayTypeComboBox.setCurrentIndex(0)
         if QtCore.QSettings().value(self.settingsSection + u'/override app',
             QtCore.QVariant(QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
-            self.PresentationWidget.show()
+            self.presentationWidget.show()
         else:
-            self.PresentationWidget.hide()
+            self.presentationWidget.hide()
 
     def loadList(self, list, initialLoad=False):
         """
@@ -181,7 +181,7 @@ class PresentationMediaItem(MediaManagerItem):
             filename = os.path.split(unicode(file))[1]
             if titles.count(filename) > 0:
                 if not initialLoad:
-                    QtGui.QMessageBox.critical(self,
+                    criticalErrorMessageBox(
                         translate('PresentationPlugin.MediaItem',
                         'File Exists'),
                         translate('PresentationPlugin.MediaItem',
@@ -205,7 +205,7 @@ class PresentationMediaItem(MediaManagerItem):
                 if initialLoad:
                     icon = build_icon(u':/general/general_delete.png')
                 else:
-                    QtGui.QMessageBox.critical(
+                    criticalErrorMessageBox(
                         self, translate('PresentationPlugin.MediaItem',
                         'Unsupported File'),
                         translate('PresentationPlugin.MediaItem',
@@ -247,8 +247,8 @@ class PresentationMediaItem(MediaManagerItem):
         items = self.listView.selectedIndexes()
         if len(items) > 1:
             return False
-        service_item.title = unicode(self.DisplayTypeComboBox.currentText())
-        service_item.shortname = unicode(self.DisplayTypeComboBox.currentText())
+        service_item.title = unicode(self.displayTypeComboBox.currentText())
+        service_item.shortname = unicode(self.displayTypeComboBox.currentText())
         service_item.add_capability(ItemCapabilities.ProvidesOwnDisplay)
         shortname = service_item.shortname
         if shortname:
@@ -276,8 +276,8 @@ class PresentationMediaItem(MediaManagerItem):
                     return True
                 else:
                     # File is no longer present
-                    QtGui.QMessageBox.critical(
-                        self, translate('PresentationPlugin.MediaItem',
+                    criticalErrorMessageBox(
+                        translate('PresentationPlugin.MediaItem',
                         'Missing Presentation'),
                         unicode(translate('PresentationPlugin.MediaItem',
                         'The Presentation %s no longer exists.')) % filename)

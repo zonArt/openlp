@@ -51,6 +51,7 @@ else:
 
 from PyQt4 import QtCore
 
+from openlp.core.utils import delete_file
 from presentationcontroller import PresentationController, PresentationDocument
 
 log = logging.getLogger(__name__)
@@ -169,7 +170,7 @@ class ImpressController(PresentationController):
         try:
             return Dispatch(u'com.sun.star.ServiceManager')
         except pywintypes.com_error:
-            log.warn(u'Failed to get COM service manager. '
+            log.exception(u'Failed to get COM service manager. '
                 u'Impress Controller has been disabled')
             return None
 
@@ -257,7 +258,6 @@ class ImpressDocument(PresentationDocument):
         except:
             log.exception(u'Failed to load presentation %s' % url)
             return False
-
         self.presentation = self.document.getPresentation()
         self.presentation.Display = \
             self.controller.plugin.renderManager.screens.current_display + 1
@@ -293,8 +293,7 @@ class ImpressDocument(PresentationDocument):
             try:
                 doc.storeToURL(urlpath, props)
                 self.convert_thumbnail(path, idx + 1)
-                if os.path.exists(path):
-                    os.remove(path)
+                delete_file(path)
             except:
                 log.exception(u'%s - Unable to store openoffice preview' % path)
 
@@ -327,8 +326,7 @@ class ImpressDocument(PresentationDocument):
                     self.presentation = None
                     self.document.dispose()
                 except:
-                    #We tried!
-                    pass
+                    log.exception("Closing presentation failed")
             self.document = None
         self.controller.remove_doc(self)
 
@@ -339,13 +337,14 @@ class ImpressDocument(PresentationDocument):
         log.debug(u'is loaded OpenOffice')
         #print "is_loaded "
         if self.presentation is None or self.document is None:
-            #print "no present or document"
+            log.debug("is_loaded: no presentation or document")
             return False
         try:
             if self.document.getPresentation() is None:
-                #print "no getPresentation"
+                log.debug("getPresentation failed to find a presentation")
                 return False
         except:
+            log.exception("getPresentation failed to find a presentation")
             return False
         return True
 

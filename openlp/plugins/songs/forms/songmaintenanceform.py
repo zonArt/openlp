@@ -23,14 +23,18 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+import logging
 
 from PyQt4 import QtGui, QtCore
 from sqlalchemy.sql import and_
 
 from openlp.core.lib import Receiver, translate
+from openlp.core.ui import criticalErrorMessageBox
 from openlp.plugins.songs.forms import AuthorsForm, TopicsForm, SongBookForm
 from openlp.plugins.songs.lib.db import Author, Book, Topic, Song
 from songmaintenancedialog import Ui_SongMaintenanceDialog
+
+log = logging.getLogger(__name__)
 
 class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
     """
@@ -46,31 +50,31 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         self.authorform = AuthorsForm(self)
         self.topicform = TopicsForm(self)
         self.bookform = SongBookForm(self)
-        QtCore.QObject.connect(self.AuthorAddButton,
+        QtCore.QObject.connect(self.authorsAddButton,
             QtCore.SIGNAL(u'pressed()'), self.onAuthorAddButtonClick)
-        QtCore.QObject.connect(self.TopicAddButton,
+        QtCore.QObject.connect(self.topicsAddButton,
             QtCore.SIGNAL(u'pressed()'), self.onTopicAddButtonClick)
-        QtCore.QObject.connect(self.BookAddButton,
+        QtCore.QObject.connect(self.booksAddButton,
             QtCore.SIGNAL(u'pressed()'), self.onBookAddButtonClick)
-        QtCore.QObject.connect(self.AuthorEditButton,
+        QtCore.QObject.connect(self.authorsEditButton,
             QtCore.SIGNAL(u'pressed()'), self.onAuthorEditButtonClick)
-        QtCore.QObject.connect(self.TopicEditButton,
+        QtCore.QObject.connect(self.topicsEditButton,
             QtCore.SIGNAL(u'pressed()'), self.onTopicEditButtonClick)
-        QtCore.QObject.connect(self.BookEditButton,
+        QtCore.QObject.connect(self.booksEditButton,
             QtCore.SIGNAL(u'pressed()'), self.onBookEditButtonClick)
-        QtCore.QObject.connect(self.AuthorDeleteButton,
+        QtCore.QObject.connect(self.authorsDeleteButton,
             QtCore.SIGNAL(u'pressed()'), self.onAuthorDeleteButtonClick)
-        QtCore.QObject.connect(self.TopicDeleteButton,
+        QtCore.QObject.connect(self.topicsDeleteButton,
             QtCore.SIGNAL(u'pressed()'), self.onTopicDeleteButtonClick)
-        QtCore.QObject.connect(self.BookDeleteButton,
+        QtCore.QObject.connect(self.booksDeleteButton,
             QtCore.SIGNAL(u'pressed()'), self.onBookDeleteButtonClick)
 
     def exec_(self):
-        self.TypeListWidget.setCurrentRow(0)
+        self.typeListWidget.setCurrentRow(0)
         self.resetAuthors()
         self.resetTopics()
         self.resetBooks()
-        self.TypeListWidget.setFocus()
+        self.typeListWidget.setFocus()
         return QtGui.QDialog.exec_(self)
 
     def _getCurrentItemId(self, ListWidget):
@@ -87,21 +91,20 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         if item_id != -1:
             item = self.manager.get_object(item_class, item_id)
             if item and len(item.songs) == 0:
-                if QtGui.QMessageBox.warning(self, dlg_title, del_text,
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
-                    QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.Yes:
+                if criticalErrorMessageBox(title=dlg_title, message=del_text,
+                    parent=self, question=True) == QtGui.QMessageBox.Yes:
                     self.manager.delete_object(item_class, item.id)
                     reset_func()
             else:
-                QtGui.QMessageBox.critical(self, dlg_title, err_text)
+                criticalErrorMessageBox(dlg_title, err_text)
         else:
-            QtGui.QMessageBox.critical(self, dlg_title, sel_text)
+            criticalErrorMessageBox(dlg_title, sel_text)
 
     def resetAuthors(self):
         """
         Reloads the Authors list.
         """
-        self.AuthorsListWidget.clear()
+        self.authorsListWidget.clear()
         authors = self.manager.get_all_objects(Author,
             order_by_ref=Author.display_name)
         for author in authors:
@@ -109,50 +112,50 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 author_name = QtGui.QListWidgetItem(author.display_name)
             else:
                 author_name = QtGui.QListWidgetItem(
-                    u' '.join(author.first_name, author.last_name))
+                    u' '.join([author.first_name, author.last_name]))
             author_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(author.id))
-            self.AuthorsListWidget.addItem(author_name)
-        if self.AuthorsListWidget.count() == 0:
-            self.AuthorDeleteButton.setEnabled(False)
-            self.AuthorEditButton.setEnabled(False)
+            self.authorsListWidget.addItem(author_name)
+        if self.authorsListWidget.count() == 0:
+            self.authorsDeleteButton.setEnabled(False)
+            self.authorsEditButton.setEnabled(False)
         else:
-            self.AuthorDeleteButton.setEnabled(True)
-            self.AuthorEditButton.setEnabled(True)
+            self.authorsDeleteButton.setEnabled(True)
+            self.authorsEditButton.setEnabled(True)
 
     def resetTopics(self):
         """
         Reloads the Topics list.
         """
-        self.TopicsListWidget.clear()
+        self.topicsListWidget.clear()
         topics = self.manager.get_all_objects(Topic, order_by_ref=Topic.name)
         for topic in topics:
             topic_name = QtGui.QListWidgetItem(topic.name)
             topic_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(topic.id))
-            self.TopicsListWidget.addItem(topic_name)
-        if self.TopicsListWidget.count() == 0:
-            self.TopicDeleteButton.setEnabled(False)
-            self.TopicEditButton.setEnabled(False)
+            self.topicsListWidget.addItem(topic_name)
+        if self.topicsListWidget.count() == 0:
+            self.topicsDeleteButton.setEnabled(False)
+            self.topicsEditButton.setEnabled(False)
         else:
-            self.TopicDeleteButton.setEnabled(True)
-            self.TopicEditButton.setEnabled(True)
+            self.topicsDeleteButton.setEnabled(True)
+            self.topicsEditButton.setEnabled(True)
 
     def resetBooks(self):
         """
         Reloads the Books list.
         """
-        self.BooksListWidget.clear()
+        self.booksListWidget.clear()
         books = self.manager.get_all_objects(Book, order_by_ref=Book.name)
         for book in books:
             book_name = QtGui.QListWidgetItem(u'%s (%s)' % (book.name,
                 book.publisher))
             book_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(book.id))
-            self.BooksListWidget.addItem(book_name)
-        if self.BooksListWidget.count() == 0:
-            self.BookDeleteButton.setEnabled(False)
-            self.BookEditButton.setEnabled(False)
+            self.booksListWidget.addItem(book_name)
+        if self.booksListWidget.count() == 0:
+            self.booksDeleteButton.setEnabled(False)
+            self.booksEditButton.setEnabled(False)
         else:
-            self.BookDeleteButton.setEnabled(True)
-            self.BookEditButton.setEnabled(True)
+            self.booksDeleteButton.setEnabled(True)
+            self.booksEditButton.setEnabled(True)
 
     def checkAuthor(self, new_author, edit=False):
         """
@@ -222,66 +225,60 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         self.authorform.setAutoDisplayName(True)
         if self.authorform.exec_():
             author = Author.populate(
-                first_name=unicode(self.authorform.FirstNameEdit.text()),
-                last_name=unicode(self.authorform.LastNameEdit.text()),
-                display_name=unicode(self.authorform.DisplayEdit.text()))
+                first_name=unicode(self.authorform.firstNameEdit.text()),
+                last_name=unicode(self.authorform.lastNameEdit.text()),
+                display_name=unicode(self.authorform.displayEdit.text()))
             if self.checkAuthor(author):
                 if self.manager.save_object(author):
                     self.resetAuthors()
                 else:
-                    QtGui.QMessageBox.critical(self,
-                        translate('SongsPlugin.SongMaintenanceForm', 'Error'),
-                        translate('SongsPlugin.SongMaintenanceForm',
+                    criticalErrorMessageBox(
+                        message=translate('SongsPlugin.SongMaintenanceForm',
                         'Could not add your author.'))
             else:
-                QtGui.QMessageBox.critical(self,
-                    translate('SongsPlugin.SongMaintenanceForm', 'Error'),
-                    translate('SongsPlugin.SongMaintenanceForm',
+                criticalErrorMessageBox(
+                    message=translate('SongsPlugin.SongMaintenanceForm',
                     'This author already exists.'))
 
     def onTopicAddButtonClick(self):
         if self.topicform.exec_():
-            topic = Topic.populate(name=unicode(self.topicform.NameEdit.text()))
+            topic = Topic.populate(name=unicode(self.topicform.nameEdit.text()))
             if self.checkTopic(topic):
                 if self.manager.save_object(topic):
                     self.resetTopics()
                 else:
-                    QtGui.QMessageBox.critical(self,
-                        translate('SongsPlugin.SongMaintenanceForm', 'Error'),
-                        translate('SongsPlugin.SongMaintenanceForm',
+                    criticalErrorMessageBox(
+                        message=translate('SongsPlugin.SongMaintenanceForm',
                         'Could not add your topic.'))
             else:
-                QtGui.QMessageBox.critical(self,
-                    translate('SongsPlugin.SongMaintenanceForm', 'Error'),
-                    translate('SongsPlugin.SongMaintenanceForm',
+                criticalErrorMessageBox(
+                    message=translate('SongsPlugin.SongMaintenanceForm',
                     'This topic already exists.'))
 
     def onBookAddButtonClick(self):
         if self.bookform.exec_():
-            book = Book.populate(name=unicode(self.bookform.NameEdit.text()),
-                publisher=unicode(self.bookform.PublisherEdit.text()))
+            book = Book.populate(name=unicode(self.bookform.nameEdit.text()),
+                publisher=unicode(self.bookform.publisherEdit.text()))
             if self.checkBook(book):
                 if self.manager.save_object(book):
                     self.resetBooks()
                 else:
-                    QtGui.QMessageBox.critical(self,
-                        translate('SongsPlugin.SongMaintenanceForm', 'Error'),
-                        translate('SongsPlugin.SongMaintenanceForm',
+                    criticalErrorMessageBox(
+                        message=translate('SongsPlugin.SongMaintenanceForm',
                         'Could not add your book.'))
             else:
-                QtGui.QMessageBox.critical(self,
-                    translate('SongsPlugin.SongMaintenanceForm', 'Error'),
-                    translate('SongsPlugin.SongMaintenanceForm',
+                criticalErrorMessageBox(
+                    message=translate('SongsPlugin.SongMaintenanceForm',
                     'This book already exists.'))
 
     def onAuthorEditButtonClick(self):
-        author_id = self._getCurrentItemId(self.AuthorsListWidget)
+        author_id = self._getCurrentItemId(self.authorsListWidget)
         if author_id != -1:
             author = self.manager.get_object(Author, author_id)
             self.authorform.setAutoDisplayName(False)
-            self.authorform.FirstNameEdit.setText(author.first_name)
-            self.authorform.LastNameEdit.setText(author.last_name)
-            self.authorform.DisplayEdit.setText(author.display_name)
+            self.authorform.firstNameEdit.setText(author.first_name)
+            self.authorform.lastNameEdit.setText(author.last_name)
+            self.authorform.displayEdit.setText(author.display_name)
             # Save the author's first and last name as well as the display name
             # for the case that they have to be restored.
             temp_first_name = author.first_name
@@ -289,29 +286,24 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             temp_display_name = author.display_name
             if self.authorform.exec_(False):
                 author.first_name = unicode(
-                    self.authorform.FirstNameEdit.text())
-                author.last_name = unicode(self.authorform.LastNameEdit.text())
+                    self.authorform.firstNameEdit.text())
+                author.last_name = unicode(self.authorform.lastNameEdit.text())
                 author.display_name = unicode(
-                    self.authorform.DisplayEdit.text())
+                    self.authorform.displayEdit.text())
                 if self.checkAuthor(author, True):
                     if self.manager.save_object(author):
                         self.resetAuthors()
                         Receiver.send_message(u'songs_load_list')
                     else:
-                        QtGui.QMessageBox.critical(self,
-                            translate('SongsPlugin.SongMaintenanceForm',
-                            'Error'),
-                            translate('SongsPlugin.SongMaintenanceForm',
+                        criticalErrorMessageBox(
+                            message=translate('SongsPlugin.SongMaintenanceForm',
                             'Could not save your changes.'))
-                elif QtGui.QMessageBox.critical(self,
-                    translate('SongsPlugin.SongMaintenanceForm', 'Error'),
-                    unicode(translate('SongsPlugin.SongMaintenanceForm',
-                    'The author %s already exists. Would you like to make songs'
-                    ' with author %s use the existing author %s?')) %
-                    (author.display_name, temp_display_name,
-                    author.display_name), QtGui.QMessageBox.StandardButtons(
-                    QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)) == \
-                    QtGui.QMessageBox.Yes:
+                elif criticalErrorMessageBox(message=unicode(translate(
+                    'SongsPlugin.SongMaintenanceForm', 'The author %s already '
+                    'exists. Would you like to make songs with author %s use '
+                    'the existing author %s?')) % (author.display_name,
+                    temp_display_name, author.display_name),
+                    parent=self, question=True) == QtGui.QMessageBox.Yes:
                     self.mergeAuthors(author)
                     self.resetAuthors()
                     Receiver.send_message(u'songs_load_list')
@@ -321,81 +313,71 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     author.first_name = temp_first_name
                     author.last_name = temp_last_name
                     author.display_name = temp_display_name
-                    QtGui.QMessageBox.critical(self,
-                        translate('SongsPlugin.SongMaintenanceForm', 'Error'),
-                        translate('SongsPlugin.SongMaintenanceForm',
+                    criticalErrorMessageBox(
+                        message=translate('SongsPlugin.SongMaintenanceForm',
                         'Could not save your modified author, because the '
                         'author already exists.'))
 
     def onTopicEditButtonClick(self):
-        topic_id = self._getCurrentItemId(self.TopicsListWidget)
+        topic_id = self._getCurrentItemId(self.topicsListWidget)
         if topic_id != -1:
             topic = self.manager.get_object(Topic, topic_id)
-            self.topicform.NameEdit.setText(topic.name)
+            self.topicform.nameEdit.setText(topic.name)
             # Save the topic's name for the case that he has to be restored.
             temp_name = topic.name
             if self.topicform.exec_(False):
-                topic.name = unicode(self.topicform.NameEdit.text())
+                topic.name = unicode(self.topicform.nameEdit.text())
                 if self.checkTopic(topic, True):
                     if self.manager.save_object(topic):
                         self.resetTopics()
                     else:
-                        QtGui.QMessageBox.critical(self,
-                            translate('SongsPlugin.SongMaintenanceForm',
-                            'Error'),
-                            translate('SongsPlugin.SongMaintenanceForm',
+                        criticalErrorMessageBox(
+                            message=translate('SongsPlugin.SongMaintenanceForm',
                             'Could not save your changes.'))
-                elif QtGui.QMessageBox.critical(self,
-                    translate('SongsPlugin.SongMaintenanceForm', 'Error'),
-                    unicode(translate('SongsPlugin.SongMaintenanceForm',
+                elif criticalErrorMessageBox(
+                    message=unicode(translate('SongsPlugin.SongMaintenanceForm',
                     'The topic %s already exists. Would you like to make songs '
                     'with topic %s use the existing topic %s?')) % (topic.name,
-                    temp_name, topic.name), QtGui.QMessageBox.StandardButtons(
-                    QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)) == \
-                    QtGui.QMessageBox.Yes:
+                    temp_name, topic.name),
+                    parent=self, question=True) == QtGui.QMessageBox.Yes:
                     self.mergeTopics(topic)
                     self.resetTopics()
                 else:
                     # We restore the topics's old name.
                     topic.name = temp_name
-                    QtGui.QMessageBox.critical(self,
-                        translate('SongsPlugin.SongMaintenanceForm', 'Error'),
-                        translate('SongsPlugin.SongMaintenanceForm',
+                    criticalErrorMessageBox(
+                        message=translate('SongsPlugin.SongMaintenanceForm',
                         'Could not save your modified topic, because it '
                         'already exists.'))
 
     def onBookEditButtonClick(self):
-        book_id = self._getCurrentItemId(self.BooksListWidget)
+        book_id = self._getCurrentItemId(self.booksListWidget)
         if book_id != -1:
             book = self.manager.get_object(Book, book_id)
             if book.publisher is None:
                 book.publisher = u''
-            self.bookform.NameEdit.setText(book.name)
-            self.bookform.PublisherEdit.setText(book.publisher)
+            self.bookform.nameEdit.setText(book.name)
+            self.bookform.publisherEdit.setText(book.publisher)
             # Save the book's name and publisher for the case that they have to
             # be restored.
             temp_name = book.name
             temp_publisher = book.publisher
             if self.bookform.exec_(False):
-                book.name = unicode(self.bookform.NameEdit.text())
-                book.publisher = unicode(self.bookform.PublisherEdit.text())
+                book.name = unicode(self.bookform.nameEdit.text())
+                book.publisher = unicode(self.bookform.publisherEdit.text())
                 if self.checkBook(book, True):
                     if self.manager.save_object(book):
                         self.resetBooks()
                     else:
-                        QtGui.QMessageBox.critical(self,
-                            translate('SongsPlugin.SongMaintenanceForm',
-                            'Error'),
-                            translate('SongsPlugin.SongMaintenanceForm',
+                        criticalErrorMessageBox(
+                            message=translate('SongsPlugin.SongMaintenanceForm',
                             'Could not save your changes.'))
-                elif QtGui.QMessageBox.critical(self,
-                    translate('SongsPlugin.SongMaintenanceForm', 'Error'),
-                    unicode(translate('SongsPlugin.SongMaintenanceForm',
+                elif criticalErrorMessageBox(
+                    message=unicode(translate('SongsPlugin.SongMaintenanceForm',
                     'The book %s already exists. Would you like to make songs '
                     'with book %s use the existing book %s?')) % (book.name,
-                    temp_name, book.name), QtGui.QMessageBox.StandardButtons(
-                    QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)) == \
-                    QtGui.QMessageBox.Yes:
+                    temp_name, book.name),
+                    parent=self, question=True) == QtGui.QMessageBox.Yes:
                     self.mergeBooks(book)
                     self.resetBooks()
                 else:
@@ -466,7 +448,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         """
         Delete the author if the author is not attached to any songs.
         """
-        self._deleteItem(Author, self.AuthorsListWidget, self.resetAuthors,
+        self._deleteItem(Author, self.authorsListWidget, self.resetAuthors,
             translate('SongsPlugin.SongMaintenanceForm', 'Delete Author'),
             translate('SongsPlugin.SongMaintenanceForm',
                 'Are you sure you want to delete the selected author?'),
@@ -479,7 +461,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         """
         Delete the Book is the Book is not attached to any songs.
         """
-        self._deleteItem(Topic, self.TopicsListWidget, self.resetTopics,
+        self._deleteItem(Topic, self.topicsListWidget, self.resetTopics,
             translate('SongsPlugin.SongMaintenanceForm', 'Delete Topic'),
             translate('SongsPlugin.SongMaintenanceForm',
                 'Are you sure you want to delete the selected topic?'),
@@ -492,7 +474,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         """
         Delete the Book is the Book is not attached to any songs.
         """
-        self._deleteItem(Book, self.BooksListWidget, self.resetBooks,
+        self._deleteItem(Book, self.booksListWidget, self.resetBooks,
             translate('SongsPlugin.SongMaintenanceForm', 'Delete Book'),
             translate('SongsPlugin.SongMaintenanceForm',
                 'Are you sure you want to delete the selected book?'),

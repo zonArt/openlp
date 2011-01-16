@@ -27,10 +27,11 @@
 The :mod:`songbeamerimport` module provides the functionality for importing
  SongBeamer songs into the OpenLP database.
 """
-import logging
-import os
 import chardet
 import codecs
+import logging
+import os
+import re
 
 from openlp.core.lib import translate
 from openlp.plugins.songs.lib.songimport import SongImport
@@ -74,7 +75,6 @@ class SongBeamerImport(SongImport):
             The song manager for the running OpenLP installation.
         """
         SongImport.__init__(self, master_manager)
-        self.master_manager = master_manager
         if kwargs.has_key(u'filename'):
             self.import_source = kwargs[u'filename']
         if kwargs.has_key(u'filenames'):
@@ -86,7 +86,7 @@ class SongBeamerImport(SongImport):
         Recieve a single file, or a list of files to import.
         """
         if isinstance(self.import_source, list):
-            self.import_wizard.importProgressBar.setMaximum(
+            self.import_wizard.progressBar.setMaximum(
                 len(self.import_source))
             for file in self.import_source:
                 # TODO: check that it is a valid SongBeamer file
@@ -151,23 +151,25 @@ class SongBeamerImport(SongImport):
             (u'</i>', u'{/it}'),
             (u'<u>', u'{u}'),
             (u'</u>', u'{/u}'),
-            (u'<br>', u'{st}'),
-            (u'</br>', u'{st}'),
-            (u'</ br>', u'{st}'),
             (u'<p>', u'{p}'),
             (u'</p>', u'{/p}'),
             (u'<super>', u'{su}'),
             (u'</super>', u'{/su}'),
             (u'<sub>', u'{sb}'),
             (u'</sub>', u'{/sb}'),
-            (u'<wordwrap>', u''),
-            (u'</wordwrap>', u''),
-            (u'<strike>', u''),
-            (u'</strike>', u'')
+            (u'<[/]?br.*?>', u'{st}'),
+            (u'<[/]?wordwrap>', u''),
+            (u'<[/]?strike>', u''),
+            (u'<[/]?h.*?>', u''),
+            (u'<[/]?s.*?>', u''),
+            (u'<[/]?linespacing.*?>', u''),
+            (u'<[/]?c.*?>', u''),
+            (u'<align.*?>', u''),
+            (u'<valign.*?>', u'')
             ]
         for pair in tag_pairs:
-            self.current_verse = self.current_verse.replace(pair[0], pair[1])
-        # TODO: check for unsupported tags (see wiki) and remove them as well.
+            self.current_verse = re.compile(pair[0]).sub(pair[1],
+                self.current_verse)
 
     def parse_tags(self, line):
         """

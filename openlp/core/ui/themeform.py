@@ -31,6 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, BackgroundType, BackgroundGradientType, \
     Receiver
+from openlp.core.ui import criticalErrorMessageBox
 from openlp.core.utils import get_images_filter
 from themewizard import Ui_ThemeWizard
 
@@ -38,8 +39,8 @@ log = logging.getLogger(__name__)
 
 class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
     """
-    This is the Bible Import Wizard, which allows easy importing of Bibles
-    into OpenLP from other formats like OSIS, CSV and OpenSong.
+    This is the Theme Import Wizard, which allows easy creation and editing of
+    OpenLP themes.
     """
     log.info(u'ThemeWizardForm loaded')
 
@@ -212,8 +213,8 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Updates the lines on a page on the wizard
         """
-        self.mainLineCountLabel.setText(unicode(translate('OpenLP.ThemeForm', \
-            '(%d lines per slide)' % int(lines))))
+        self.mainLineCountLabel.setText(unicode(translate('OpenLP.ThemeForm',
+            '(%d lines per slide)')) % int(lines))
 
     def resizeEvent(self, event=None):
         """
@@ -291,9 +292,10 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.updateThemeAllowed = True
         self.themeNameLabel.setVisible(not edit)
         self.themeNameEdit.setVisible(not edit)
+        self.edit_mode = edit
         if edit:
             self.setWindowTitle(unicode(translate('OpenLP.ThemeWizard',
-                'Edit Theme %s')) % self.theme.theme_name)
+                'Edit Theme - %s')) % self.theme.theme_name)
             self.next()
         else:
             self.setWindowTitle(translate('OpenLP.ThemeWizard', 'New Theme'))
@@ -435,8 +437,10 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Background style Combo box has changed.
         """
-        self.theme.background_type = BackgroundType.to_string(index)
-        self.setBackgroundPageValues()
+        # do not allow updates when screen is building for the first time.
+        if self.updateThemeAllowed:
+            self.theme.background_type = BackgroundType.to_string(index)
+            self.setBackgroundPageValues()
 
     def onGradientComboBoxCurrentIndexChanged(self, index):
         """
@@ -564,22 +568,17 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.theme.theme_name = \
             unicode(self.field(u'name').toString())
         if not self.theme.theme_name:
-            QtGui.QMessageBox.critical(self,
+            criticalErrorMessageBox(
                 translate('OpenLP.ThemeForm', 'Theme Name Missing'),
                 translate('OpenLP.ThemeForm',
-                    'There is no name for this theme. Please enter one.'),
-                (QtGui.QMessageBox.Ok),
-                QtGui.QMessageBox.Ok)
+                'There is no name for this theme. Please enter one.'))
             return
         if self.theme.theme_name == u'-1' or self.theme.theme_name == u'None':
-            QtGui.QMessageBox.critical(self,
+            criticalErrorMessageBox(
                 translate('OpenLP.ThemeForm', 'Theme Name Invalid'),
                 translate('OpenLP.ThemeForm',
-                    'Invalid theme name. Please enter one.'),
-                (QtGui.QMessageBox.Ok),
-                QtGui.QMessageBox.Ok)
+                'Invalid theme name. Please enter one.'))
             return
-        self.accepted = True
         saveFrom = None
         saveTo = None
         if self.theme.background_type == \
@@ -588,8 +587,12 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
                 os.path.split(unicode(self.theme.background_filename))[1]
             saveTo = os.path.join(self.path, self.theme.theme_name, filename)
             saveFrom = self.theme.background_filename
-        if self.thememanager.saveTheme(self.theme, saveFrom, saveTo):
-            return QtGui.QDialog.accept(self)
+        if not self.edit_mode and \
+            not self.thememanager.checkIfThemeExists(self.theme.theme_name):
+            return
+        self.accepted = True
+        self.thememanager.saveTheme(self.theme, saveFrom, saveTo)
+        return QtGui.QDialog.accept(self)
 
     def _colorButton(self, field):
         """

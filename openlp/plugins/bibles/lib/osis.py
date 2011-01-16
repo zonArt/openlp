@@ -35,7 +35,7 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, translate
 from openlp.core.utils import AppLocation
-from db import BibleDB
+from openlp.plugins.bibles.lib.db import BibleDB
 
 log = logging.getLogger(__name__)
 
@@ -87,7 +87,7 @@ class OSISBible(BibleDB):
             if fbibles:
                 fbibles.close()
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'bibles_stop_import'), self.stop_import)
+            QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
 
     def do_import(self):
         """
@@ -134,9 +134,9 @@ class OSISBible(BibleDB):
                             testament)
                     if last_chapter == 0:
                         if book == u'Gen':
-                            self.wizard.importProgressBar.setMaximum(1188)
+                            self.wizard.progressBar.setMaximum(1188)
                         else:
-                            self.wizard.importProgressBar.setMaximum(260)
+                            self.wizard.progressBar.setMaximum(260)
                     if last_chapter != chapter:
                         if last_chapter != 0:
                             self.session.commit()

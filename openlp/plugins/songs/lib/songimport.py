@@ -31,7 +31,7 @@ from PyQt4 import QtCore
 from openlp.core.lib import Receiver, translate
 from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.db import Song, Author, Topic, Book, MediaFile
-from openlp.plugins.songs.lib.xml import SongXMLBuilder
+from openlp.plugins.songs.lib.xml import SongXML
 
 log = logging.getLogger(__name__)
 
@@ -55,7 +55,7 @@ class SongImport(QtCore.QObject):
         self.stop_import_flag = False
         self.set_defaults()
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'songs_stop_import'), self.stop_import)
+            QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
 
     def set_defaults(self):
         """
@@ -270,7 +270,7 @@ class SongImport(QtCore.QObject):
         song.song_number = self.song_number
         song.search_lyrics = u''
         verses_changed_to_other = {}
-        sxml = SongXMLBuilder()
+        sxml = SongXML()
         other_count = 1
         for (versetag, versetext) in self.verses:
             if versetag[0] == u'C':
