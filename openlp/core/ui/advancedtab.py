@@ -72,6 +72,14 @@ class AdvancedTab(SettingsTab):
             u'enableAutoCloseCheckBox')
         self.uiLayout.addRow(self.enableAutoCloseCheckBox)
         self.leftLayout.addWidget(self.uiGroupBox)
+        self.hideMouseGroupBox = QtGui.QGroupBox(self.leftColumn)
+        self.hideMouseGroupBox.setObjectName(u'hideMouseGroupBox')
+        self.hideMouseLayout = QtGui.QVBoxLayout(self.hideMouseGroupBox)
+        self.hideMouseLayout.setObjectName(u'hideMouseLayout')
+        self.hideMouseCheckBox = QtGui.QCheckBox(self.hideMouseGroupBox)
+        self.hideMouseCheckBox.setObjectName(u'hideMouseCheckBox')
+        self.hideMouseLayout.addWidget(self.hideMouseCheckBox)
+        self.leftLayout.addWidget(self.hideMouseGroupBox)
 #        self.sharedDirGroupBox = QtGui.QGroupBox(self.leftColumn)
 #        self.sharedDirGroupBox.setObjectName(u'sharedDirGroupBox')
 #        self.sharedDirLayout = QtGui.QFormLayout(self.sharedDirGroupBox)
@@ -117,6 +125,10 @@ class AdvancedTab(SettingsTab):
             'Expand new service items on creation'))
         self.enableAutoCloseCheckBox.setText(translate('OpenLP.AdvancedTab',
             'Enable application exit confirmation'))
+        self.hideMouseGroupBox.setTitle(translate('OpenLP.GeneralTab',
+            'Mouse Cursor'))
+        self.hideMouseCheckBox.setText(translate('OpenLP.GeneralTab',
+            'Hide the Mouse Cursor'))
 #        self.sharedDirGroupBox.setTitle(
 #            translate('AdvancedTab', 'Central Data Store'))
 #        self.sharedCheckBox.setText(
@@ -150,6 +162,9 @@ class AdvancedTab(SettingsTab):
         self.enableAutoCloseCheckBox.setChecked(
             settings.value(u'enable exit confirmation',
             QtCore.QVariant(True)).toBool())
+        self.hideMouseCheckBox.setChecked(
+            settings.value(u'hide mouse',
+            QtCore.QVariant(False)).toBool())
         settings.endGroup()
 
     def save(self):
@@ -168,6 +183,8 @@ class AdvancedTab(SettingsTab):
             QtCore.QVariant(self.expandServiceItemCheckBox.isChecked()))
         settings.setValue(u'enable exit confirmation',
             QtCore.QVariant(self.enableAutoCloseCheckBox.isChecked()))
+        settings.setValue(u'hide mouse',
+            QtCore.QVariant(self.hideMouseCheckBox.isChecked()))
         settings.endGroup()
 
 #    def onSharedCheckBoxChanged(self, checked):
