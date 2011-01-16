@@ -263,72 +263,81 @@ class ServiceManager(QtGui.QWidget):
         self.menu.addMenu(self.themeMenu)
         self.configUpdated(True)
         self.setServiceHotkeys(self.serviceManagerList)
-        self.serviceManagerList.addActions([self.serviceManagerList.move_down, 
-                                            self.serviceManagerList.move_up, 
-                                            self.serviceManagerList.enter, 
-                                            self.serviceManagerList.home, 
-                                            self.serviceManagerList.end, 
-                                            self.serviceManagerList.up, 
-                                            self.serviceManagerList.down])
+        self.serviceManagerList.addActions(
+            [self.serviceManagerList.moveDown, 
+            self.serviceManagerList.moveUp, 
+            self.serviceManagerList.enter, 
+            self.serviceManagerList.home, 
+            self.serviceManagerList.end, 
+            self.serviceManagerList.up, 
+            self.serviceManagerList.down])
 
     def setServiceHotkeys(self, parent=None):
         widget = self
-        self.serviceManagerList.move_down = \
-                QtGui.QAction(QtGui.QIcon(u':/services/service_down.png'),
-                                    u'Move_down', parent)
-        ActionList.set(self.serviceManagerList.move_down, 
-                                    widget, u'Move_down', 
-                                    u'Service Settings', self.onServiceDown,  
-                                    QtCore.Qt.Key_PageDown)
-        self.mainwindow.actionList.add_action(self.serviceManagerList.move_down, u'Service')
-        self.serviceManagerList.move_up = \
-                QtGui.QAction(QtGui.QIcon(u':/services/service_up.png'),
-                                    u'Move_up', parent)
-        ActionList.set(self.serviceManagerList.move_up, 
-                                    widget, u'Move_up', 
-                                    u'Service Settings', self.onServiceUp,  
-                                    QtCore.Qt.Key_PageUp)
-        self.mainwindow.actionList.add_action(self.serviceManagerList.move_up, u'Service')
+        self.serviceManagerList.moveDown = \
+            QtGui.QAction(QtGui.QIcon(u':/services/service_down.png'),
+                u'Move_down', parent)
+        ActionList.set(self.serviceManagerList.moveDown, 
+            widget, u'Move_down', 
+            u'Service Settings', self.onServiceDown,  
+            QtCore.Qt.Key_PageDown)
+        self.mainwindow.actionList.add_action(
+            self.serviceManagerList.moveDown,
+            u'Service')
+        self.serviceManagerList.moveUp = \
+            QtGui.QAction(QtGui.QIcon(u':/services/service_up.png'),
+                u'Move_up', parent)
+        ActionList.set(self.serviceManagerList.moveUp, 
+            widget, u'Move_up', 
+            u'Service Settings', self.onServiceUp,  
+            QtCore.Qt.Key_PageUp)
+        self.mainwindow.actionList.add_action(self.serviceManagerList.moveUp,
+            u'Service')
         self.serviceManagerList.enter = \
-                QtGui.QAction(QtGui.QIcon(u':/services/service_up.png'),
-                                    u'Make Live', parent)
+            QtGui.QAction(QtGui.QIcon(u':/services/service_up.png'),
+                u'Make Live', parent)
         ActionList.set(self.serviceManagerList.enter, 
-                                    widget, u'Make Live', 
-                                    u'Service Settings', self.makeLive,  
-                                    QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return)
-        self.mainwindow.actionList.add_action(self.serviceManagerList.enter, u'Service')
+            widget, u'Make Live', 
+            u'Service Settings', self.makeLive,  
+            QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return)
+        self.mainwindow.actionList.add_action(self.serviceManagerList.enter,
+            u'Service')
         self.serviceManagerList.home = \
-                QtGui.QAction(QtGui.QIcon(u':/services/service_up.png'),
-                                    u'Home', parent)
+            QtGui.QAction(QtGui.QIcon(u':/services/service_up.png'),
+                u'Home', parent)
         ActionList.set(self.serviceManagerList.home, 
-                                    widget, u'Home', 
-                                    u'Service Settings', self.onServiceTop,  
-                                    QtCore.Qt.Key_Home)
-        self.mainwindow.actionList.add_action(self.serviceManagerList.home, u'Service')
+            widget, u'Home', 
+            u'Service Settings', self.onServiceTop,  
+            QtCore.Qt.Key_Home)
+        self.mainwindow.actionList.add_action(self.serviceManagerList.home,
+            u'Service')
         self.serviceManagerList.end = \
-                QtGui.QAction(QtGui.QIcon(u':/services/service_up.png'),
-                                    u'End', parent)
+            QtGui.QAction(QtGui.QIcon(u':/services/service_up.png'),
+                u'End', parent)
         ActionList.set(self.serviceManagerList.end, 
-                                    widget, u'End', 
-                                    u'Service Settings', self.onServiceEnd,  
-                                    QtCore.Qt.Key_End)
-        self.mainwindow.actionList.add_action(self.serviceManagerList.end, u'Service')
+            widget, u'End', 
+            u'Service Settings', self.onServiceEnd,  
+            QtCore.Qt.Key_End)
+        self.mainwindow.actionList.add_action(self.serviceManagerList.end,
+            u'Service')
         self.serviceManagerList.up = \
-                QtGui.QAction(QtGui.QIcon(u':/services/service_up.png'),
-                                    u'Move Selection up', parent)
+            QtGui.QAction(QtGui.QIcon(u':/services/service_up.png'),
+                u'Move Selection up', parent)
         ActionList.set(self.serviceManagerList.up, 
-                                    widget, u'Move Selection up', 
-                                    u'Service Settings', self.onMoveSelectionUp,  
-                                    QtCore.Qt.Key_Up)
-        self.mainwindow.actionList.add_action(self.serviceManagerList.up, u'Service')
+            widget, u'Move Selection up', 
+            u'Service Settings', self.onMoveSelectionUp,  
+            QtCore.Qt.Key_Up)
+        self.mainwindow.actionList.add_action(self.serviceManagerList.up,
+            u'Service')
         self.serviceManagerList.down = \
-                QtGui.QAction(QtGui.QIcon(u':/services/service_up.png'),
-                                    u'Move Selection down', parent)
+            QtGui.QAction(QtGui.QIcon(u':/services/service_up.png'),
+                u'Move Selection down', parent)
         ActionList.set(self.serviceManagerList.down, 
-                                    widget, u'Move Selection down', 
-                                    u'Service Settings', self.onMoveSelectionDown,  
-                                    QtCore.Qt.Key_Down)
-        self.mainwindow.actionList.add_action(self.serviceManagerList.down, u'Service')
+            widget, u'Move Selection down', 
+            u'Service Settings', self.onMoveSelectionDown,  
+            QtCore.Qt.Key_Down)
+        self.mainwindow.actionList.add_action(self.serviceManagerList.down,
+            u'Service')
 
     def setModified(self, modified=True):
         """
