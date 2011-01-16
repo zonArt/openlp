@@ -30,7 +30,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    ItemCapabilities, SettingsManager, translate, check_item_selected
+    ItemCapabilities, SettingsManager, translate, check_item_selected, Receiver
 from openlp.core.ui import criticalErrorMessageBox
 
 log = logging.getLogger(__name__)
@@ -39,6 +39,7 @@ class MediaListView(BaseListWithDnD):
     def __init__(self, parent=None):
         self.PluginName = u'Media'
         BaseListWithDnD.__init__(self, parent)
+
 
 class MediaMediaItem(MediaManagerItem):
     """
@@ -92,10 +93,18 @@ class MediaMediaItem(MediaManagerItem):
         self.resetAction.setVisible(False)
 
     def onResetClick(self):
+        """
+        Called to reset the Live backgound with the media selected,
+        """
         self.resetAction.setVisible(False)
         self.parent.liveController.display.resetVideo()
+        # Update the preview frame.
+        Receiver.send_message(u'maindisplay_active')
 
     def onReplaceClick(self):
+        """
+        Called to replace Live backgound with the media selected.
+        """
         if check_item_selected(self.listView,
             translate('MediaPlugin.MediaItem',
             'You must select a media file to replace the background with.')):
@@ -105,6 +114,8 @@ class MediaMediaItem(MediaManagerItem):
                 (path, name) = os.path.split(filename)
                 self.parent.liveController.display.video(filename, 0, True)
                 self.resetAction.setVisible(True)
+                # Update the preview frame.
+                Receiver.send_message(u'maindisplay_active')
             else:
                 criticalErrorMessageBox(translate('MediaPlugin.MediaItem',
                     'Live Background Error'),
