@@ -117,6 +117,8 @@ class MainDisplay(DisplayWidget):
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
 
+        self.generalSettingsSection = u'general'
+
     def retranslateUi(self):
         """
         Setup the interface translation strings.
@@ -205,6 +207,8 @@ class MainDisplay(DisplayWidget):
             Receiver.send_message(u'openlp_process_events')
         self.frame.evaluateJavaScript(u'show_text("%s")' % \
             slide.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
+        
+        self.hideMouseCursor()
         return self.preview()
 
     def alert(self, text):
@@ -270,6 +274,7 @@ class MainDisplay(DisplayWidget):
         else:
             js = u'show_image("");'
         self.frame.evaluateJavaScript(js)
+        self.hideMouseCursor()
 
     def resetImage(self):
         """
@@ -359,6 +364,8 @@ class MainDisplay(DisplayWidget):
             self.webView.setVisible(False)
             self.videoWidget.setVisible(True)
             self.audio.setVolume(vol)
+
+        self.hideMouseCursor()
         return self.preview()
 
     def isLoaded(self):
@@ -474,6 +481,19 @@ class MainDisplay(DisplayWidget):
         self.hideMode = None
         # Trigger actions when display is active again
         Receiver.send_message(u'maindisplay_active')
+    
+    def hideMouseCursor(self):
+        """
+        Hide the mouse cursor if enabled in settings
+        """
+        settings = QtCore.QSettings()
+        if settings.value(u'%s/hide mouse' % self.generalSettingsSection,
+            QtCore.QVariant(False)).toBool():
+            self.setCursor(QtCore.Qt.BlankCursor)
+            self.frame.evaluateJavaScript('document.body.style.cursor = "none"')
+        else:
+            self.setCursor(QtCore.Qt.ArrowCursor)
+            self.frame.evaluateJavaScript('document.body.style.cursor = "auto"')
 
 class AudioPlayer(QtCore.QObject):
     """
