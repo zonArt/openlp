@@ -213,6 +213,14 @@ class GeneralTab(SettingsTab):
         self.customHeightValueEdit.setObjectName(u'customHeightValueEdit')
         self.displayLayout.addWidget(self.customHeightValueEdit, 4, 3)
         self.rightLayout.addWidget(self.displayGroupBox)
+        self.hideMouseGroupBox = QtGui.QGroupBox(self.rightColumn)
+        self.hideMouseGroupBox.setObjectName(u'hideMouseGroupBox')
+        self.hideMouseLayout = QtGui.QVBoxLayout(self.hideMouseGroupBox)
+        self.hideMouseLayout.setObjectName(u'hideMouseLayout')
+        self.hideMouseCheckBox = QtGui.QCheckBox(self.hideMouseGroupBox)
+        self.hideMouseCheckBox.setObjectName(u'hideMouseCheckBox')
+        self.hideMouseLayout.addWidget(self.hideMouseCheckBox)
+        self.rightLayout.addWidget(self.hideMouseGroupBox)
         self.rightLayout.addStretch()
         # Signals and slots
         QtCore.QObject.connect(self.overrideCheckBox,
@@ -287,6 +295,10 @@ class GeneralTab(SettingsTab):
         self.customHeightLabel.setText(
             translate('OpenLP.GeneralTab', 'Height'))
         self.customWidthLabel.setText(translate('OpenLP.GeneralTab', 'Width'))
+        self.hideMouseGroupBox.setTitle(translate('OpenLP.GeneralTab',
+            'Mouse Cursor'))
+        self.hideMouseCheckBox.setText(translate('OpenLP.GeneralTab',
+            'Hide the Mouse Cursor'))
 
     def load(self):
         """
@@ -341,6 +353,8 @@ class GeneralTab(SettingsTab):
         self.customWidthValueEdit.setText(
             settings.value(u'width', QtCore.QVariant(
             self.screens.current[u'size'].width())).toString())
+        self.hideMouseCheckBox.setChecked(settings.value(u'hide mouse',
+            QtCore.QVariant(False)).toBool())
         settings.endGroup()
         self.customXValueEdit.setEnabled(self.overrideCheckBox.isChecked())
         self.customYValueEdit.setEnabled(self.overrideCheckBox.isChecked())
@@ -385,6 +399,8 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(self.customWidthValueEdit.text()))
         settings.setValue(u'override position',
             QtCore.QVariant(self.overrideCheckBox.isChecked()))
+        settings.setValue(u'hide mouse',
+            QtCore.QVariant(self.hideMouseCheckBox.isChecked()))
         settings.endGroup()
         self.screens.display = self.displayOnMonitorCheck.isChecked()
         # Monitor Number has changed.
