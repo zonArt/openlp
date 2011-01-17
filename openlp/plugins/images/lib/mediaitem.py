@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
     ItemCapabilities, SettingsManager, translate, check_item_selected, \
-    check_directory_exists, Receiver
+    check_directory_exists
 from openlp.core.ui import criticalErrorMessageBox
 from openlp.core.utils import AppLocation, delete_file, get_images_filter
 
@@ -192,8 +192,6 @@ class ImageMediaItem(MediaManagerItem):
         """
         self.resetAction.setVisible(False)
         self.parent.liveController.display.resetImage()
-        # Update the preview frame.
-        Receiver.send_message(u'maindisplay_active')
 
     def onReplaceClick(self):
         """
@@ -209,8 +207,6 @@ class ImageMediaItem(MediaManagerItem):
                 (path, name) = os.path.split(filename)
                 self.parent.liveController.display.directImage(name, filename)
                 self.resetAction.setVisible(True)
-                # Update the preview frame.
-                Receiver.send_message(u'maindisplay_active')
             else:
                 criticalErrorMessageBox(
                     translate('ImagePlugin.MediaItem', 'Live Background Error'),

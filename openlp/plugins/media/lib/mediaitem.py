@@ -30,7 +30,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    ItemCapabilities, SettingsManager, translate, check_item_selected, Receiver
+    ItemCapabilities, SettingsManager, translate, check_item_selected
 from openlp.core.ui import criticalErrorMessageBox
 
 log = logging.getLogger(__name__)
@@ -98,8 +98,6 @@ class MediaMediaItem(MediaManagerItem):
         """
         self.resetAction.setVisible(False)
         self.parent.liveController.display.resetVideo()
-        # Update the preview frame.
-        Receiver.send_message(u'maindisplay_active')
 
     def onReplaceClick(self):
         """
@@ -114,8 +112,6 @@ class MediaMediaItem(MediaManagerItem):
                 (path, name) = os.path.split(filename)
                 self.parent.liveController.display.video(filename, 0, True)
                 self.resetAction.setVisible(True)
-                # Update the preview frame.
-                Receiver.send_message(u'maindisplay_active')
             else:
                 criticalErrorMessageBox(translate('MediaPlugin.MediaItem',
                     'Live Background Error'),

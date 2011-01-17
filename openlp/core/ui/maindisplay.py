@@ -94,6 +94,8 @@ class DisplayWidget(QtGui.QGraphicsView):
         else:
             event.ignore()
 
+
+
 class MainDisplay(DisplayWidget):
     """
     This is the display screen.
@@ -270,6 +272,8 @@ class MainDisplay(DisplayWidget):
         else:
             js = u'show_image("");'
         self.frame.evaluateJavaScript(js)
+        # Update the preview frame.
+        Receiver.send_message(u'maindisplay_active')
 
     def resetImage(self):
         """
@@ -278,6 +282,8 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'resetImage')
         self.displayImage(self.serviceItem.bg_image_bytes)
+        # Update the preview frame.
+        Receiver.send_message(u'maindisplay_active')
 
     def resetVideo(self):
         """
@@ -292,6 +298,8 @@ class MainDisplay(DisplayWidget):
             self.phononActive = False
         else:
             self.frame.evaluateJavaScript(u'show_video("close");')
+        # Update the preview frame.
+        Receiver.send_message(u'maindisplay_active')
 
     def videoPlay(self):
         """
@@ -359,6 +367,8 @@ class MainDisplay(DisplayWidget):
             self.webView.setVisible(False)
             self.videoWidget.setVisible(True)
             self.audio.setVolume(vol)
+        # Update the preview frame.
+        Receiver.send_message(u'maindisplay_active')
         return self.preview()
 
     def isLoaded(self):
@@ -474,6 +484,7 @@ class MainDisplay(DisplayWidget):
         self.hideMode = None
         # Trigger actions when display is active again
         Receiver.send_message(u'maindisplay_active')
+
 
 class AudioPlayer(QtCore.QObject):
     """
