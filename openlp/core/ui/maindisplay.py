@@ -95,7 +95,6 @@ class DisplayWidget(QtGui.QGraphicsView):
             event.ignore()
 
 
-
 class MainDisplay(DisplayWidget):
     """
     This is the display screen.
