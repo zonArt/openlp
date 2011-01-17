@@ -63,7 +63,7 @@ class EasiSlidesImport(SongImport):
         """
         success = True
         
-        self.import_wizard.importProgressBar.setMaximum(1)
+        self.import_wizard.progressBar.setMaximum(1)
         
         log.info(u'Direct import %s', self.filename)
         self.import_wizard.incrementProgressBar(
@@ -72,7 +72,7 @@ class EasiSlidesImport(SongImport):
         file = open(self.filename)
         count = file.read().count('<Item>')
         file.seek(0)
-        self.import_wizard.importProgressBar.setMaximum(count)
+        self.import_wizard.progressBar.setMaximum(count)
         self.do_import_file(file)
         
         return success
@@ -158,7 +158,7 @@ class EasiSlidesImport(SongImport):
         
     def parse_song(self, data):
         # We should also check if the title is already used, if yes,
-        # maybe user sould decide if we should import
+        # maybe user sould be asked if we should import or not
         
         # set title
         self.title = self.notCapsLockTitle(data['title1'])
@@ -166,9 +166,6 @@ class EasiSlidesImport(SongImport):
         # set alternate title, if present
         if data['title2'] != None:
             self.alternate_title = self.notCapsLockTitle(data['title2'])
-            print self.alternate_title
-            print data['title2']
-            print "HERE HERE HERE"
         
         # folder name, we have no use for it, usually only one folder is 
         # used in easislides and this contains no actual data, easislides 
@@ -176,11 +173,11 @@ class EasiSlidesImport(SongImport):
         # example
         # data['folder']
         
-        # set song number, if present, 0 otherwise
-        if data['songnumber'] != None:
+        # set song number, if present, empty otherwise
+        # EasiSlides tends to set all not changed song numbers to 0,
+        # so this hardly ever carries any information
+        if data['songnumber'] != None and data['songnumber'] != u'0':
             self.song_number = int(data['songnumber'])
-        else:
-            self.song_number = 0
         
         # Don't know how to use Notations
         # data['notations']
@@ -222,10 +219,8 @@ class EasiSlidesImport(SongImport):
         # place a capo on guitar neck
         
         # set book data
-        #if data['bookreference']:
-        #    for book in data['bookreference'].split(u','):
-        #        self.books.append(book.strip())
-        # THIS NEEDS ATTENTION, DON'T KNOW HOW TO MAKE THIS WORK ↑ 
+        if data['bookreference']:
+            self.song_book_name = data['bookreference'].strip()
         
         # don't know what to do with user
         # data['userreference'], this is simple text entry, no 

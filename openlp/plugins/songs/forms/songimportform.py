@@ -180,6 +180,8 @@ class SongImportForm(OpenLPWizard):
         self.addMultiFileSelectItem(u'songsOfFellowship', None, True)
         # Generic Document/Presentation import
         self.addMultiFileSelectItem(u'generic', None, True)
+        # EasySlides
+        self.addSingleFileSelectItem(u'easiSlides')
         # EasyWorship
         self.addSingleFileSelectItem(u'ew')
         # Words of Worship
@@ -229,10 +231,12 @@ class SongImportForm(OpenLPWizard):
             translate('SongsPlugin.ImportWizardForm',
             'Generic Document/Presentation'))
         self.formatComboBox.setItemText(8,
-            translate('SongsPlugin.ImportWizardForm', 'EasyWorship'))
+            translate('SongsPlugin.ImportWizardForm', 'EasiSlides'))
         self.formatComboBox.setItemText(9,
+            translate('SongsPlugin.ImportWizardForm', 'EasyWorship'))
+        self.formatComboBox.setItemText(10,
             translate('SongsPlugin.ImportWizardForm', 'SongBeamer'))
-#        self.formatComboBox.setItemText(9,
+#        self.formatComboBox.setItemText(11,
 #            translate('SongsPlugin.ImportWizardForm', 'CSV'))
         self.openLP2FilenameLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Filename:'))
@@ -284,6 +288,10 @@ class SongImportForm(OpenLPWizard):
             translate('SongsPlugin.ImportWizardForm', 'The generic document/'
             'presentation importer has been disabled because OpenLP cannot '
             'find OpenOffice.org on your computer.'))
+        self.easiSlidesFilenameLabel.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Filename:'))
+        self.easiSlidesBrowseButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Browse...'))
         self.ewFilenameLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Filename:'))
         self.ewBrowseButton.setText(
@@ -313,6 +321,8 @@ class SongImportForm(OpenLPWizard):
         self.openLP2FormLabelSpacer.changeSize(width, 0,
             QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         self.openLP1FormLabelSpacer.changeSize(width, 0,
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        self.easiSlidesFormLabelSpacer.changeSize(width, 0, 
             QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         self.ewFormLabelSpacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
             QtGui.QSizePolicy.Fixed)
@@ -411,7 +421,7 @@ class SongImportForm(OpenLPWizard):
                 if self.easiSlidesFilenameEdit.text().isEmpty():
                     QtGui.QMessageBox.critical(self,
                         translate('SongsPlugin.ImportWizardForm',
-                        'No Easislides Song selected'),
+                        'No Easislides Songs file selected'),
                         translate('SongsPlugin.ImportWizardForm',
                         'You need to select an xml song file exported from '
                         'EasiSlides, to import from.'))

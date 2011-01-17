@@ -91,7 +91,7 @@ class Ui_SongImportWizard(object):
         self.addMultiFileSelectItem(u'songsOfFellowship', None, True)
         # Generic Document/Presentation import
         self.addMultiFileSelectItem(u'generic', None, True)
-        # EasyWorship
+        # EasySlides
         self.addSingleFileSelectItem(u'easiSlides')
         # EasyWorship
         self.addSingleFileSelectItem(u'ew')

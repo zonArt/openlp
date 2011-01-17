@@ -129,7 +129,7 @@ class OpenSongImport(SongImport):
             else:
                 numfiles += 1
         log.debug(u'Total number of files: %d', numfiles)
-        self.import_wizard.progressBar.setMaximum(numfiles)
+        self.import_wizard.importProgressBar.setMaximum(numfiles)
         for filename in self.filenames:
             if self.stop_import_flag:
                 success = False
