@@ -419,7 +419,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.EasiSlides:
                 if self.easiSlidesFilenameEdit.text().isEmpty():
-                    QtGui.QMessageBox.critical(self,
+                    criticalErrorMessageBox(
                         translate('SongsPlugin.ImportWizardForm',
                         'No Easislides Songs file selected'),
                         translate('SongsPlugin.ImportWizardForm',
