@@ -187,12 +187,15 @@ class ImageMediaItem(MediaManagerItem):
             return False
 
     def onResetClick(self):
+        """
+        Called to reset the Live backgound with the image selected,
+        """
         self.resetAction.setVisible(False)
         self.parent.liveController.display.resetImage()
 
     def onReplaceClick(self):
         """
-        Called to replace Live backgound with the video selected
+        Called to replace Live backgound with the image selected.
         """
         if check_item_selected(self.listView,
             translate('ImagePlugin.MediaItem',
