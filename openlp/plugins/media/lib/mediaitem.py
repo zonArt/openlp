@@ -40,6 +40,7 @@ class MediaListView(BaseListWithDnD):
         self.PluginName = u'Media'
         BaseListWithDnD.__init__(self, parent)
 
+
 class MediaMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for Media Slides.
@@ -92,10 +93,16 @@ class MediaMediaItem(MediaManagerItem):
         self.resetAction.setVisible(False)
 
     def onResetClick(self):
+        """
+        Called to reset the Live backgound with the media selected,
+        """
         self.resetAction.setVisible(False)
         self.parent.liveController.display.resetVideo()
 
     def onReplaceClick(self):
+        """
+        Called to replace Live backgound with the media selected.
+        """
         if check_item_selected(self.listView,
             translate('MediaPlugin.MediaItem',
             'You must select a media file to replace the background with.')):
