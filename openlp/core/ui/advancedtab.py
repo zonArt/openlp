@@ -128,7 +128,7 @@ class AdvancedTab(SettingsTab):
         self.hideMouseGroupBox.setTitle(translate('OpenLP.AdvancedTab',
             'Mouse Cursor'))
         self.hideMouseCheckBox.setText(translate('OpenLP.AdvancedTab',
-            'Hide the mouse cursor when over the display window'))
+            'Hide the mouse cursor when moved over the display window'))
 #        self.sharedDirGroupBox.setTitle(
 #            translate('AdvancedTab', 'Central Data Store'))
 #        self.sharedCheckBox.setText(
