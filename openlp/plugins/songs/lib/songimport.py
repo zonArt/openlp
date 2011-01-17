@@ -55,7 +55,7 @@ class SongImport(QtCore.QObject):
         self.stop_import_flag = False
         self.set_defaults()
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'songs_stop_import'), self.stop_import)
+            QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
 
     def set_defaults(self):
         """

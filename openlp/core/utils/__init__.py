@@ -282,6 +282,23 @@ def split_filename(path):
     else:
         return os.path.split(path)
 
+def delete_file(file_path_name):
+    """
+    Deletes a file from the system.
+
+    ``file_path_name``
+        The file, including path, to delete.
+    """
+    if not file_path_name:
+        return False
+    try:
+        if os.path.exists(file_path_name):
+            os.remove(file_path_name)
+        return True
+    except (IOError, OSError):
+        log.exception("Unable to delete file %s" % file_path_name)
+        return False
+
 def get_web_page(url, header=None, update_openlp=False):
     """
     Attempts to download the webpage at url and returns that page or None.
@@ -317,9 +334,48 @@ def get_web_page(url, header=None, update_openlp=False):
         Receiver.send_message(u'openlp_process_events')
     return page
 
+def file_is_unicode(filename):
+    """
+    Checks if a file is valid unicode and returns the unicode decoded file or
+    None.
+
+    ``filename``
+        File to check is valid unicode.
+    """
+    if not filename:
+        return None
+    ucsfile = None
+    try:
+        ucsfile = filename.decode(u'utf-8')
+    except UnicodeDecodeError:
+        log.exception(u'Filename "%s" is not valid UTF-8' %
+            filename.decode(u'utf-8', u'replace'))
+    if not ucsfile:
+        return None
+    return ucsfile
+
+def string_is_unicode(test_string):
+    """
+    Makes sure a string is unicode.
+
+    ``test_string``
+        The string to confirm is unicode.
+    """
+    return_string = u''
+    if not test_string:
+        return return_string
+    if isinstance(test_string, unicode):
+        return_string = test_string
+    if not isinstance(test_string, unicode):
+        try:
+            return_string = unicode(test_string, u'utf-8')
+        except UnicodeError:
+            log.exception("Error encoding string to unicode")
+    return return_string
+
 from languagemanager import LanguageManager
 from actions import ActionList
 
 __all__ = [u'AppLocation', u'check_latest_version', u'add_actions',
     u'get_filesystem_encoding', u'LanguageManager', u'ActionList',
-    u'get_web_page']
+    u'get_web_page', u'file_is_unicode', u'string_is_unicode']
