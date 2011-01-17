@@ -117,7 +117,6 @@ class MainDisplay(DisplayWidget):
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
 
-        self.advancedSettingsSection = u'advanced'
     def retranslateUi(self):
         """
         Setup the interface translation strings.
@@ -427,10 +426,9 @@ class MainDisplay(DisplayWidget):
         # if was hidden keep it hidden
         if self.hideMode and self.isLive:
             self.hideDisplay(self.hideMode)
-        # Hide the mouse cursor over display if enabled in settings
+        # Hide mouse cursor when moved over display if enabled in settings
         settings = QtCore.QSettings()
-        if settings.value(u'%s/hide mouse' % self.advancedSettingsSection,
-            QtCore.QVariant(False)).toBool():
+        if settings.value(u'advanced/hide mouse', QtCore.QVariant(False)).toBool():
             self.setCursor(QtCore.Qt.BlankCursor)
             self.frame.evaluateJavaScript('document.body.style.cursor = "none"')
         else:
