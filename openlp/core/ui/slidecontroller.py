@@ -374,57 +374,43 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'config_screen_changed'), self.screenSizeChanged)
 
     def setPreviewHotkeys(self, parent=None):
-        widget = self
         self.previewPreviousItem = QtGui.QAction(u'previous_item', parent)
-        ActionList.set(
-            self.previewPreviousItem, widget, u'previous_item', 
-            u'Preview Settings', self.onSlideSelectedPrevious, 
-            QtCore.Qt.Key_Up)
+        ActionList.set(self.previewPreviousItem, u'previous_item',
+            self.onSlideSelectedPrevious, QtCore.Qt.Key_Up)
         self.parent.actionList.add_action(self.previewPreviousItem,
             u'Preview')
         self.previewNextItem = QtGui.QAction(u'next_item', parent)
-        ActionList.set(self.previewNextItem, widget, u'next_item', 
-            u'Preview Settings', self.onSlideSelectedNext, 
-            QtCore.Qt.Key_Down)
+        ActionList.set(self.previewNextItem, u'next_item',
+            self.onSlideSelectedNext, QtCore.Qt.Key_Down)
         self.parent.actionList.add_action(self.previewNextItem, u'Preview')
         
     def setLiveHotkeys(self, parent=None):
-        widget = self
         self.nextItem = QtGui.QAction(u'next_item', parent)
-        ActionList.set(self.nextItem, widget, u'next_item', 
-            u'Live View Settings', self.onSlideSelectedNext, 
-            QtCore.Qt.Key_Down, QtCore.Qt.Key_PageDown, 
+        ActionList.set(self.nextItem, u'next_item', self.onSlideSelectedNext,
+            QtCore.Qt.Key_Down, QtCore.Qt.Key_PageDown,
             context=QtCore.Qt.WidgetWithChildrenShortcut)
         self.parent.actionList.add_action(self.nextItem, u'Live View Settings')
-            
         parent.previousService = QtGui.QAction(u'previous_service', parent)
-        ActionList.set(parent.previousService, widget, u'previous_service', 
-            u'Live View Settings', self.servicePrevious, 
-            QtCore.Qt.Key_Left, 
+        ActionList.set(parent.previousService, u'previous_service',
+            self.servicePrevious, QtCore.Qt.Key_Left,
             context=QtCore.Qt.WidgetWithChildrenShortcut)
         self.parent.actionList.add_action(self.previousService,
             u'Live View Settings')
-            
         self.nextService = QtGui.QAction(u'next_service', parent)
-        ActionList.set(self.nextService, widget, u'next_service', 
-            u'Live View Settings', self.serviceNext, 
-            QtCore.Qt.Key_Right, 
+        ActionList.set(self.nextService, u'next_service',
+            self.serviceNext, QtCore.Qt.Key_Right,
             context=QtCore.Qt.WidgetWithChildrenShortcut)
         self.parent.actionList.add_action(self.nextService,
             u'Live View Settings')
-            
         self.previousItem = QtGui.QAction(u'previous_item', parent)
-        ActionList.set(self.previousItem, widget, u'previous_item', 
-            u'Live View Settings', self.onSlideSelectedPrevious, 
-            QtCore.Qt.Key_Up, QtCore.Qt.Key_PageUp, 
-            context=QtCore.Qt.WidgetWithChildrenShortcut)
+        ActionList.set(self.previousItem, u'previous_item',
+            self.onSlideSelectedPrevious, QtCore.Qt.Key_Up,
+            QtCore.Qt.Key_PageUp, context=QtCore.Qt.WidgetWithChildrenShortcut)
         self.parent.actionList.add_action(self.previousItem,
             u'Live View Settings')
-            
         self.escapeItem = QtGui.QAction(u'escape_item', parent)
-        ActionList.set(self.escapeItem, widget, u'escape_item', 
-            u'Live View Settings', self.liveEscape, 
-            QtCore.Qt.Key_Escape, 
+        ActionList.set(self.escapeItem, u'escape_item',
+            self.liveEscape, QtCore.Qt.Key_Escape,
             context=QtCore.Qt.WidgetWithChildrenShortcut)
         self.parent.actionList.add_action(self.escapeItem,
             u'Live View Settings')
@@ -949,7 +935,7 @@ class SlideController(QtGui.QWidget):
                 if loop:
                     row = 0
                 else:
-                    #Receiver.send_message('servicemanager_next_item')
+                    Receiver.send_message('servicemanager_next_item')
                     return
             if row + 1 < self.PreviewListWidget.rowCount():
                 self.PreviewListWidget.scrollToItem(
