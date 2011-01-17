@@ -79,7 +79,7 @@ class EasiSlidesImport(SongImport):
             success = self._parse_song(song)
             if not success or self.stop_import_flag:
                 return False
-            if self.commit:
+            elif self.commit:
                 self.finish()
         return True
     
@@ -97,14 +97,18 @@ class EasiSlidesImport(SongImport):
     def _add_title(self, song):
         try:
             self.title = unicode(song.Title1).strip()
-        except:
-            log.info(u'no Title1')
+        except UnicodeDecodeError:
+            log.exception(u'Title1 unicode decode error')
+        except AttributeError:
+            log.exception(u'no Title1')
             self._success = False
         
     def _add_alttitle(self, song):
         try:
-            self.alternate_title = unicode(self.song.Title2).strip()
-        except:
+            self.alternate_title = unicode(song.Title2).strip()
+        except UnicodeDecodeError:
+            log.exception(u'Title2 unicode decode error')
+        except AttributeError:
             pass
     
     def _add_number(self, song):
@@ -112,75 +116,81 @@ class EasiSlidesImport(SongImport):
             number = int(song.SongNumber)
             if number != 0:
                 self.song_number = number
-                print number
-        except:
+        except UnicodeDecodeError:
+            log.exception(u'SongNumber unicode decode error')
+        except AttributeError:
             pass
 
     def _add_authors(self, song):
         try:
-            authors = unicode(song.Writer).strip().split(u',')
+            authors = unicode(song.Writer).split(u',')
             for author in authors:
-                self.authors.append(author.strip())
-        except:
+                author = author.strip()
+                if len(author) > 0:
+                    self.authors.append(author)
+        except UnicodeDecodeError:
+            log.exception(u'Writer unicode decode error')
+        except AttributeError:
             pass
             
     def _add_copyright(self, song):
         copyright = []
         try:
             copyright.append(unicode(song.Copyright).strip())
-        except:
+        except UnicodeDecodeError:
+            log.exception(u'Copyright unicode decode error')
+        except AttributeError:
             pass
         try:
             copyright.append(unicode(song.LicenceAdmin1).strip())
-        except:
+        except UnicodeDecodeError:
+            log.exception(u'LicenceAdmin1 unicode decode error')
+        except AttributeError:
             pass
         try:
             copyright.append(unicode(song.LicenceAdmin2).strip())
-        except:
+        except UnicodeDecodeError:
+            log.exception(u'LicenceAdmin2 unicode decode error')
+        except AttributeError:
             pass
         self.add_copyright(u' '.join(copyright))
         
     def _add_book(self, song):
         try:
             self.song_book_name = unicode(song.BookReference).strip()
-        except:
+        except UnicodeDecodeError:
+            log.exception(u'BookReference unicode decode error')
+        except AttributeError:
             pass
         
     def _parse_and_add_lyrics(self, song):
         try:
             lyrics = unicode(song.Contents).strip()
-        except:
-            log.info(u'no Contents')
+        except UnicodeDecodeError:
+            log.exception(u'Contents unicode decode error')
+        except AttributeError:
+            log.exception(u'no Contents')
             self._success = False
             
         lines = lyrics.split(u'\n')
-        length = len(lines)
         
         # we go over all lines first, to determine information,
         # which tells us how to parse verses later
-        emptylines = 0
         regionlines = {}
         separatorlines = 0
-        for i in range(length):
-            lines[i] = lines[i].strip()
-            thisline = lines[i]
-            if len(thisline) == 0:
-                emptylines = emptylines + 1
-            elif thisline[0] == u'[':
-                if thisline[1:7] == u'region':
-                    # this is region separator [region 2]
-                    # Easislides song can have only one extra region zone,
-                    # at least by now, but just in case the file happens 
-                    # to have [region 3] or more, we add a possiblity to  
-                    # count these separately, yeah, rather stupid, but 
-                    # count this as a programming exercise
-                    region = self._extractRegion(thisline)
-                    if regionlines.has_key(region):
-                        regionlines[region] = regionlines[region] + 1
-                    else:
-                        regionlines[region] = 1
+        for line in lines:
+            line = line.strip()
+            if len(line) == 0:
+                continue
+            elif line[1:7] == u'region':
+                # this is region separator, probably [region 2]
+                region = self._extractRegion(line)
+                if regionlines.has_key(region):
+                    regionlines[region] = regionlines[region] + 1
                 else:
-                    separatorlines = separatorlines + 1
+                    regionlines[region] = 1
+            elif line[0] == u'[':
+                separatorlines = separatorlines + 1
         
         # if the song has separators
         separators = (separatorlines > 0)
@@ -196,6 +206,14 @@ class EasiSlidesImport(SongImport):
         regionsInVerses = (regions and \
                     regionlines[regionlines.keys()[0]] > 1)
         
+        MarkTypes = {
+            u'chorus': u'C',
+            u'verse': u'V',
+            u'intro': u'I',
+            u'ending': u'E',
+            u'bridge': u'B',
+            u'prechorus': u'P'}
+            
         verses = {}
         # list as [region, versetype, versenum, instance]
         our_verse_order = []
@@ -204,24 +222,13 @@ class EasiSlidesImport(SongImport):
         verses[reg] = {}
         # instance differentiates occurrences of same verse tag
         inst = 1
-        
-        MarkTypes = {
-            u'chorus': u'C',
-            u'verse': u'V',
-            u'intro': u'I',
-            u'ending': u'E',
-            u'bridge': u'B',
-            u'prechorus': u'P'}
+        vt = u'V'
+        vn = u'1'
 
-        for i in range(length):
-            thisline = lines[i]
-            if i < length-1:
-                nextline = lines[i+1].strip()
-            else:
-                # there is no nextline at the last line
-                nextline = False
+        for line in lines:
+            line = line.strip()
             
-            if len(thisline) == 0:
+            if len(line) == 0:
                 if separators:
                     # separators are used, so empty line means slide break
                     # inside verse
@@ -237,43 +244,32 @@ class EasiSlidesImport(SongImport):
                         vn = u'1'
                         
                     inst = 1
-                    if not [reg, vt, vn, inst] in our_verse_order:
-                        our_verse_order.append([reg, vt, vn, inst])
                     continue
                 continue
             
-            elif thisline[0:7] == u'[region':
-                reg = self._extractRegion(thisline)
+            elif line[0:7] == u'[region':
+                reg = self._extractRegion(line)
                 if not verses.has_key(reg):
                     verses[reg] = {}
-                if i == 0:
-                    # the file started with [region 2]
-                    vt = u'V'
-                    vn = u'1'
-                    our_verse_order.append([reg, vt, vn, inst])
                 continue
                 
-            elif thisline[0] == u'[':
+            elif line[0] == u'[':
                 # this is a normal section marker
                 # drop the square brackets
-                right_bracket = thisline.find(u']')
-                marker = thisline[1:right_bracket].upper()
+                right_bracket = line.find(u']')
+                marker = line[1:right_bracket].upper()
                 # have we got any digits?
                 # If so, versenumber is everything from the digits to the end
                 match = re.match(u'(.*)(\d+.*)', marker)
                 if match is not None:
                     vt = match.group(1).strip()
                     vn = match.group(2)
-                    if vt == u'':
-                        vt = u'V'
-                    elif MarkTypes.has_key(vt.lower()):
+                    if MarkTypes.has_key(vt.lower()):
                         vt = MarkTypes[vt.lower()]
                     else:
                         vt = u'O'
                 else:
-                    if marker == u'':
-                        vt = u'V'
-                    elif MarkTypes.has_key(marker.lower()):
+                    if MarkTypes.has_key(marker.lower()):
                         vt = MarkTypes[marker.lower()]
                     else:
                         vt = u'O'
@@ -285,16 +281,9 @@ class EasiSlidesImport(SongImport):
                 inst = 1
                 if self._listHas(verses, [reg, vt, vn, inst]):
                     inst = len(verses[reg][vt][vn])+1
-                
-                if not [reg, vt, vn, inst] in our_verse_order:
-                    our_verse_order.append([reg, vt, vn, inst])
                 continue
             
-            if i == 0:
-                # this is the first line, but no separator is found,
-                # we say it's V1
-                vt = u'V'
-                vn = u'1'
+            if not [reg, vt, vn, inst] in our_verse_order:
                 our_verse_order.append([reg, vt, vn, inst])
             
             # We have versetype/number data, if it was there, now
@@ -306,7 +295,7 @@ class EasiSlidesImport(SongImport):
             if not verses[reg][vt][vn].has_key(inst):
                 verses[reg][vt][vn][inst] = []
             
-            words = self.tidy_text(thisline)
+            words = self.tidy_text(line)
             verses[reg][vt][vn][inst].append(words)
         # done parsing
         
@@ -340,7 +329,9 @@ class EasiSlidesImport(SongImport):
         try:
             order = unicode(song.Sequence).strip().split(u',')
             for tag in order:
-                if tag[0].isdigit():
+                if len(tag) == 0:
+                    continue
+                elif tag[0].isdigit():
                     # it's a verse if it has no prefix, but has a number
                     tag = u'V' + tag
                 elif SeqTypes.has_key(tag.lower()):
@@ -353,7 +344,9 @@ class EasiSlidesImport(SongImport):
                         u'dropping item from presentation order', tag)
                 else:
                     self.verse_order_list.append(tag)
-        except:
+        except UnicodeDecodeError:
+            log.exception(u'Sequence unicode decode error')
+        except AttributeError:
             pass
         
     def _listHas(self, lst, subitems):
@@ -367,6 +360,6 @@ class EasiSlidesImport(SongImport):
         return True
     
     def _extractRegion(self, line):
-        # this was true already: thisline[0:7] == u'[region':
+        # this was true already: line[0:7] == u'[region':
         right_bracket = line.find(u']')
         return line[7:right_bracket].strip()
