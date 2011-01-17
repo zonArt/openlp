@@ -107,7 +107,7 @@ class WowImport(SongImport):
 
     def do_import(self):
         """
-        Recieve a single file, or a list of files to import.
+        Receive a single file or a list of files to import.
         """
 
         if isinstance(self.import_source, list):

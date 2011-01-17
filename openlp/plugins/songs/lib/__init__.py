@@ -163,7 +163,7 @@ def retrieve_windows_encoding(recommendation=None):
             translate('SongsPlugin', 'Character Encoding'),
             translate('SongsPlugin', 'The codepage setting is responsible\n'
                 'for the correct character representation.\n'
-                'Usually you are fine with the preselected choise.'),
+                'Usually you are fine with the preselected choice.'),
             [pair[1] for pair in encodings], recommended_index, False)
     else:
         choice = QtGui.QInputDialog.getItem(None,
