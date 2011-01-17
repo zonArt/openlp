@@ -78,7 +78,7 @@ class SearchEdit(QtGui.QLineEdit):
         else:
             self.setStyleSheet(u'QLineEdit { padding-right: %spx; } ' % \
                 rightPadding)
-        msz = self.minimumSizeHint();
+        msz = self.minimumSizeHint()
         self.setMinimumSize(
             max(msz.width(),
                 self.clearButton.width() + (frameWidth * 2) + 2),

@@ -30,9 +30,10 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    context_menu_action, ItemCapabilities, SettingsManager, translate, \
-    check_item_selected, Receiver
-from openlp.core.utils import AppLocation, get_images_filter
+    ItemCapabilities, SettingsManager, translate, check_item_selected, \
+    check_directory_exists
+from openlp.core.ui import criticalErrorMessageBox
+from openlp.core.utils import AppLocation, delete_file, get_images_filter
 
 log = logging.getLogger(__name__)
 
@@ -88,8 +89,7 @@ class ImageMediaItem(MediaManagerItem):
         self.servicePath = os.path.join(
             AppLocation.get_section_data_path(self.settingsSection),
             u'thumbnails')
-        if not os.path.exists(self.servicePath):
-            os.mkdir(self.servicePath)
+        check_directory_exists(self.servicePath)
         self.loadList(SettingsManager.load_list(
             self.settingsSection, self.settingsSection))
 
@@ -116,12 +116,8 @@ class ImageMediaItem(MediaManagerItem):
             for row in row_list:
                 text = self.listView.item(row)
                 if text:
-                    try:
-                        os.remove(os.path.join(self.servicePath,
-                            unicode(text.text())))
-                    except OSError:
-                        # if not present do not worry
-                        pass
+                    delete_file(os.path.join(self.servicePath,
+                        unicode(text.text())))
                 self.listView.takeItem(row)
             SettingsManager.set_list(self.settingsSection,
                 self.settingsSection, self.getFileList())
@@ -165,7 +161,7 @@ class ImageMediaItem(MediaManagerItem):
                 items.remove(item)
             # We cannot continue, as all images do not exist.
             if not items:
-                QtGui.QMessageBox.critical(self,
+                criticalErrorMessageBox(
                     translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
                     unicode(translate('ImagePlugin.MediaItem',
                     'The following image(s) no longer exist: %s')) %
@@ -191,12 +187,15 @@ class ImageMediaItem(MediaManagerItem):
             return False
 
     def onResetClick(self):
+        """
+        Called to reset the Live backgound with the image selected,
+        """
         self.resetAction.setVisible(False)
         self.parent.liveController.display.resetImage()
 
     def onReplaceClick(self):
         """
-        Called to replace Live backgound with the video selected
+        Called to replace Live backgound with the image selected.
         """
         if check_item_selected(self.listView,
             translate('ImagePlugin.MediaItem',
@@ -209,12 +208,11 @@ class ImageMediaItem(MediaManagerItem):
                 self.parent.liveController.display.directImage(name, filename)
                 self.resetAction.setVisible(True)
             else:
-                Receiver.send_message(u'openlp_error_message', {
-                    u'title':  translate('ImagePlugin.MediaItem',
-                    'Live Background Error'),
-                    u'message': unicode(translate('ImagePlugin.MediaItem',
+                criticalErrorMessageBox(
+                    translate('ImagePlugin.MediaItem', 'Live Background Error'),
+                    unicode(translate('ImagePlugin.MediaItem',
                     'There was a problem replacing your background, '
-                    'the image file "%s" no longer exists.')) % filename})
+                    'the image file "%s" no longer exists.')) % filename)
 
     def onPreviewClick(self):
         MediaManagerItem.onPreviewClick(self)

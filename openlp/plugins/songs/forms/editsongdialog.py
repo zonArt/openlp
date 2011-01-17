@@ -114,8 +114,8 @@ class Ui_EditSongDialog(object):
         self.authorsComboBox = QtGui.QComboBox(self.authorsGroupBox)
         self.authorsComboBox.setSizeAdjustPolicy(
             QtGui.QComboBox.AdjustToMinimumContentsLength)
-        self.authorsComboBox.setSizePolicy(QtGui.QSizePolicy.Expanding,
-            QtGui.QSizePolicy.Fixed)
+        self.authorsComboBox.setSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
         self.authorsComboBox.setEditable(True)
         self.authorsComboBox.setInsertPolicy(QtGui.QComboBox.NoInsert)
         self.authorsComboBox.setObjectName(u'authorsComboBox')
@@ -155,8 +155,8 @@ class Ui_EditSongDialog(object):
         self.topicsComboBox = QtGui.QComboBox(self.topicsGroupBox)
         self.topicsComboBox.setSizeAdjustPolicy(
             QtGui.QComboBox.AdjustToMinimumContentsLength)
-        self.topicsComboBox.setSizePolicy(QtGui.QSizePolicy.Expanding,
-            QtGui.QSizePolicy.Fixed)
+        self.topicsComboBox.setSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
         self.topicsComboBox.setEditable(True)
         self.topicsComboBox.setInsertPolicy(QtGui.QComboBox.NoInsert)
         self.topicsComboBox.setObjectName(u'topicsComboBox')
@@ -184,8 +184,10 @@ class Ui_EditSongDialog(object):
         self.songBookNameLabel = QtGui.QLabel(self.songBookGroupBox)
         self.songBookNameLabel.setObjectName(u'songBookNameLabel')
         self.songBookComboBox = QtGui.QComboBox(self.songBookGroupBox)
-        self.songBookComboBox.setSizePolicy(QtGui.QSizePolicy.Expanding,
-            QtGui.QSizePolicy.Fixed)
+        self.songBookComboBox.setSizeAdjustPolicy(
+            QtGui.QComboBox.AdjustToMinimumContentsLength)
+        self.songBookComboBox.setSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
         self.songBookComboBox.setEditable(True)
         self.songBookComboBox.setInsertPolicy(QtGui.QComboBox.NoInsert)
         self.songBookComboBox.setObjectName(u'songBookComboBox')
@@ -216,8 +218,8 @@ class Ui_EditSongDialog(object):
         self.themeComboBox = QtGui.QComboBox(self.themeGroupBox)
         self.themeComboBox.setSizeAdjustPolicy(
             QtGui.QComboBox.AdjustToMinimumContentsLength)
-        self.themeComboBox.setSizePolicy(QtGui.QSizePolicy.Expanding,
-            QtGui.QSizePolicy.Fixed)
+        self.themeComboBox.setSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
         self.themeComboBox.setEditable(True)
         self.themeComboBox.setInsertPolicy(QtGui.QComboBox.NoInsert)
         self.themeComboBox.setObjectName(u'themeComboBox')
@@ -245,6 +247,7 @@ class Ui_EditSongDialog(object):
         self.CCLILabel.setObjectName(u'CCLILabel')
         self.CCLILayout.addWidget(self.CCLILabel)
         self.CCLNumberEdit = QtGui.QLineEdit(self.rightsGroupBox)
+        self.CCLNumberEdit.setValidator(QtGui.QIntValidator())
         self.CCLNumberEdit.setObjectName(u'CCLNumberEdit')
         self.CCLILayout.addWidget(self.CCLNumberEdit)
         self.rightsLayout.addLayout(self.CCLILayout)

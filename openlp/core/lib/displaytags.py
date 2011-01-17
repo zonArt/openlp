@@ -23,35 +23,45 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+Provide Html Tag management and Display Tag access class
+"""
 
-from PyQt4 import QtGui
+from openlp.core.lib import base_html_expands
 
-from openlp.core.lib import translate
-from openlp.core.ui import criticalErrorMessageBox
-from openlp.plugins.songs.forms.topicsdialog import Ui_TopicsDialog
-
-class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
+class DisplayTags(object):
     """
-    Class documentation goes here.
+    Static Class to HTML Tags to be access around the code the list is managed
+    by the Options Tab.
     """
-    def __init__(self, parent=None):
-        """
-        Constructor
-        """
-        QtGui.QDialog.__init__(self, parent)
-        self.setupUi(self)
+    html_expands = []
 
-    def exec_(self, clear=True):
-        if clear:
-            self.nameEdit.clear()
-        self.nameEdit.setFocus()
-        return QtGui.QDialog.exec_(self)
+    @staticmethod
+    def get_html_tags():
+        """
+        Provide access to the html_expands list.
+        """
+        return DisplayTags.html_expands
 
-    def accept(self):
-        if not self.nameEdit.text():
-            criticalErrorMessageBox(message=translate('SongsPlugin.TopicsForm',
-                'You need to type in a topic name.'))
-            self.nameEdit.setFocus()
-            return False
-        else:
-            return QtGui.QDialog.accept(self)
+    @staticmethod
+    def reset_html_tags():
+        """
+        Resets the html_expands list.
+        """
+        DisplayTags.html_expands = []
+        for html in base_html_expands:
+            DisplayTags.html_expands.append(html)
+
+    @staticmethod
+    def add_html_tag(tag):
+        """
+        Add a new tag to the list
+        """
+        DisplayTags.html_expands.append(tag)
+
+    @staticmethod
+    def remove_html_tag(id):
+        """
+        Removes amd individual html_expands list.
+        """
+        DisplayTags.html_expands.pop(id)

@@ -38,6 +38,8 @@ class Ui_FileRenameDialog(object):
         self.fileNameLabel.setObjectName(u'fileNameLabel')
         self.dialogLayout.addWidget(self.fileNameLabel, 0, 0)
         self.fileNameEdit = QtGui.QLineEdit(FileRenameDialog)
+        self.fileNameEdit.setValidator(QtGui.QRegExpValidator(
+            QtCore.QRegExp(r'[^/\\?*|<>\[\]":<>+%]+'), self))
         self.fileNameEdit.setObjectName(u'fileNameEdit')
         self.dialogLayout.addWidget(self.fileNameEdit, 0, 1)
         self.buttonBox = QtGui.QDialogButtonBox(FileRenameDialog)

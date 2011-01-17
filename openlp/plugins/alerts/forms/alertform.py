@@ -177,8 +177,8 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
                 'parameter to be replaced.\nDo you want to continue anyway?'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
                 QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
-                    self.parameterEdit.setFocus()
-                    return False
+                self.parameterEdit.setFocus()
+                return False
             # The ParameterEdit field is not empty, but we have not found '<>'
             # in the alert text.
             elif text.find(u'<>') == -1 and self.parameterEdit.text() and \
@@ -188,8 +188,8 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
                 ' contain \'<>\'.\nDo want to continue anyway?'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
                 QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
-                    self.parameterEdit.setFocus()
-                    return False
+                self.parameterEdit.setFocus()
+                return False
             text = text.replace(u'<>', unicode(self.parameterEdit.text()))
             self.parent.alertsmanager.displayAlert(text)
             return True

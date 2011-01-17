@@ -24,6 +24,8 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
+The :mod:`maindisplay` module provides the functionality to display screens
+and play multimedia within OpenLP.
 """
 import logging
 import os
@@ -32,7 +34,8 @@ from PyQt4 import QtCore, QtGui, QtWebKit
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
-    translate
+    build_icon, translate
+
 from openlp.core.ui import HideMode
 
 log = logging.getLogger(__name__)
@@ -91,6 +94,7 @@ class DisplayWidget(QtGui.QGraphicsView):
         else:
             event.ignore()
 
+
 class MainDisplay(DisplayWidget):
     """
     This is the display screen.
@@ -102,6 +106,8 @@ class MainDisplay(DisplayWidget):
         self.isLive = live
         self.alertTab = None
         self.hideMode = None
+        mainIcon = build_icon(u':/icon/openlp-logo-16x16.png')
+        self.setWindowIcon(mainIcon)
         self.retranslateUi()
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint |
@@ -195,7 +201,7 @@ class MainDisplay(DisplayWidget):
             The slide text to be displayed
         """
         log.debug(u'text to display')
-        # Wait for the webview to update before displayiong text.
+        # Wait for the webview to update before displaying text.
         while not self.loaded:
             Receiver.send_message(u'openlp_process_events')
         self.frame.evaluateJavaScript(u'show_text("%s")' % \
@@ -265,6 +271,8 @@ class MainDisplay(DisplayWidget):
         else:
             js = u'show_image("");'
         self.frame.evaluateJavaScript(js)
+        # Update the preview frame.
+        Receiver.send_message(u'maindisplay_active')
 
     def resetImage(self):
         """
@@ -273,6 +281,8 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'resetImage')
         self.displayImage(self.serviceItem.bg_image_bytes)
+        # Update the preview frame.
+        Receiver.send_message(u'maindisplay_active')
 
     def resetVideo(self):
         """
@@ -287,6 +297,8 @@ class MainDisplay(DisplayWidget):
             self.phononActive = False
         else:
             self.frame.evaluateJavaScript(u'show_video("close");')
+        # Update the preview frame.
+        Receiver.send_message(u'maindisplay_active')
 
     def videoPlay(self):
         """
@@ -354,6 +366,8 @@ class MainDisplay(DisplayWidget):
             self.webView.setVisible(False)
             self.videoWidget.setVisible(True)
             self.audio.setVolume(vol)
+        # Update the preview frame.
+        Receiver.send_message(u'maindisplay_active')
         return self.preview()
 
     def isLoaded(self):
@@ -469,6 +483,7 @@ class MainDisplay(DisplayWidget):
         self.hideMode = None
         # Trigger actions when display is active again
         Receiver.send_message(u'maindisplay_active')
+
 
 class AudioPlayer(QtCore.QObject):
     """

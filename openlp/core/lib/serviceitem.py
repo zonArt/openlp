@@ -60,6 +60,7 @@ class ItemCapabilities(object):
     AddIfNewItem = 9
     ProvidesOwnDisplay = 10
 
+
 class ServiceItem(object):
     """
     The service item is a base class for the plugins to use to interact with

@@ -46,8 +46,8 @@ class RemoteTab(SettingsTab):
         self.addressLabel = QtGui.QLabel(self.serverSettingsGroupBox)
         self.addressLabel.setObjectName(u'addressLabel')
         self.addressEdit = QtGui.QLineEdit(self.serverSettingsGroupBox)
-        self.addressEdit.setSizePolicy(QtGui.QSizePolicy.Preferred,
-            QtGui.QSizePolicy.Fixed)
+        self.addressEdit.setSizePolicy(
+            QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
         self.addressEdit.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp(
             u'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'), self))
         self.addressEdit.setObjectName(u'addressEdit')

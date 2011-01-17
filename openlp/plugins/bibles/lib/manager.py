@@ -26,7 +26,7 @@
 
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, SettingsManager, translate
 from openlp.core.utils import AppLocation
@@ -273,10 +273,10 @@ class BibleManager(object):
             Receiver.send_message(u'openlp_information_message', {
                 u'title': translate('BiblesPlugin.BibleManager',
                 'Scripture Reference Error'),
-                u'message': translate('BiblesPlugin.BibleManager', 'Your scripture '
-                'reference is either not supported by OpenLP or is invalid. '
-                'Please make sure your reference conforms to one of the '
-                'following patterns:\n\n'
+                u'message': translate('BiblesPlugin.BibleManager',
+                'Your scripture reference is either not supported by OpenLP '
+                'or is invalid.  Please make sure your reference conforms to '
+                'one of the following patterns:\n\n'
                 'Book Chapter\n'
                 'Book Chapter-Chapter\n'
                 'Book Chapter:Verse-Verse\n'
