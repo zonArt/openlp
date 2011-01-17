@@ -98,7 +98,8 @@ class EasiSlidesImport(SongImport):
         try:
             self.title = unicode(song.Title1).strip()
         except UnicodeDecodeError:
-            log.exception(u'Title1 unicode decode error')
+            log.exception(u'Unicode decode error while decoding Title1')
+            self._success = False
         except AttributeError:
             log.exception(u'no Title1')
             self._success = False
@@ -107,7 +108,8 @@ class EasiSlidesImport(SongImport):
         try:
             self.alternate_title = unicode(song.Title2).strip()
         except UnicodeDecodeError:
-            log.exception(u'Title2 unicode decode error')
+            log.exception(u'Unicode decode error while decoding Title2')
+            self._success = False
         except AttributeError:
             pass
     
@@ -117,7 +119,8 @@ class EasiSlidesImport(SongImport):
             if number != 0:
                 self.song_number = number
         except UnicodeDecodeError:
-            log.exception(u'SongNumber unicode decode error')
+            log.exception(u'Unicode decode error while decoding SongNumber')
+            self._success = False
         except AttributeError:
             pass
 
@@ -129,7 +132,8 @@ class EasiSlidesImport(SongImport):
                 if len(author) > 0:
                     self.authors.append(author)
         except UnicodeDecodeError:
-            log.exception(u'Writer unicode decode error')
+            log.exception(u'Unicode decode error while decoding Writer')
+            self._success = False
         except AttributeError:
             pass
             
@@ -138,19 +142,22 @@ class EasiSlidesImport(SongImport):
         try:
             copyright.append(unicode(song.Copyright).strip())
         except UnicodeDecodeError:
-            log.exception(u'Copyright unicode decode error')
+            log.exception(u'Unicode decode error while decoding Copyright')
+            self._success = False
         except AttributeError:
             pass
         try:
             copyright.append(unicode(song.LicenceAdmin1).strip())
         except UnicodeDecodeError:
-            log.exception(u'LicenceAdmin1 unicode decode error')
+            log.exception(u'Unicode decode error while decoding LicenceAdmin1')
+            self._success = False
         except AttributeError:
             pass
         try:
             copyright.append(unicode(song.LicenceAdmin2).strip())
         except UnicodeDecodeError:
-            log.exception(u'LicenceAdmin2 unicode decode error')
+            log.exception(u'Unicode decode error while decoding LicenceAdmin2')
+            self._success = False
         except AttributeError:
             pass
         self.add_copyright(u' '.join(copyright))
@@ -159,7 +166,8 @@ class EasiSlidesImport(SongImport):
         try:
             self.song_book_name = unicode(song.BookReference).strip()
         except UnicodeDecodeError:
-            log.exception(u'BookReference unicode decode error')
+            log.exception(u'Unicode decode error while decoding BookReference')
+            self._success = False
         except AttributeError:
             pass
         
@@ -167,7 +175,8 @@ class EasiSlidesImport(SongImport):
         try:
             lyrics = unicode(song.Contents).strip()
         except UnicodeDecodeError:
-            log.exception(u'Contents unicode decode error')
+            log.exception(u'Unicode decode error while decoding Contents')
+            self._success = False
         except AttributeError:
             log.exception(u'no Contents')
             self._success = False
@@ -207,12 +216,12 @@ class EasiSlidesImport(SongImport):
                     regionlines[regionlines.keys()[0]] > 1)
         
         MarkTypes = {
-            u'chorus': u'C',
-            u'verse': u'V',
-            u'intro': u'I',
-            u'ending': u'E',
-            u'bridge': u'B',
-            u'prechorus': u'P'}
+            u'CHORUS': u'C',
+            u'VERSE': u'V',
+            u'INTRO': u'I',
+            u'ENDING': u'E',
+            u'BRIDGE': u'B',
+            u'PRECHORUS': u'P'}
             
         verses = {}
         # list as [region, versetype, versenum, instance]
@@ -221,9 +230,9 @@ class EasiSlidesImport(SongImport):
         reg = defaultregion
         verses[reg] = {}
         # instance differentiates occurrences of same verse tag
-        inst = 1
         vt = u'V'
         vn = u'1'
+        inst = 1
 
         for line in lines:
             line = line.strip()
@@ -237,47 +246,39 @@ class EasiSlidesImport(SongImport):
                 else:
                     # separators are not used, so empty line starts a new verse
                     vt = u'V'
-                    
                     if verses[reg].has_key(vt):
                         vn = len(verses[reg][vt].keys())+1
                     else:
                         vn = u'1'
-                        
                     inst = 1
-                    continue
                 continue
-            
             elif line[0:7] == u'[region':
                 reg = self._extractRegion(line)
                 if not verses.has_key(reg):
                     verses[reg] = {}
+                if not regionsInVerses:
+                    vt = u'V'
+                    vn = u'1'
+                    inst = 1
                 continue
-                
             elif line[0] == u'[':
                 # this is a normal section marker
-                # drop the square brackets
-                right_bracket = line.find(u']')
-                marker = line[1:right_bracket].upper()
+                marker = line[1:line.find(u']')].upper()
+                vn = u'1'
                 # have we got any digits?
                 # If so, versenumber is everything from the digits to the end
                 match = re.match(u'(.*)(\d+.*)', marker)
-                if match is not None:
-                    vt = match.group(1).strip()
+                if match:
+                    marker = match.group(1).strip()
                     vn = match.group(2)
-                    if MarkTypes.has_key(vt.lower()):
-                        vt = MarkTypes[vt.lower()]
-                    else:
-                        vt = u'O'
+                if len(marker) == 0:
+                    vt = u'V'
+                elif MarkTypes.has_key(marker):
+                    vt = MarkTypes[marker]
                 else:
-                    if MarkTypes.has_key(marker.lower()):
-                        vt = MarkTypes[marker.lower()]
-                    else:
-                        vt = u'O'
-                    vn = u'1'
-                    
+                    vt = u'O'
                 if regionsInVerses:
                     region = defaultregion
-                
                 inst = 1
                 if self._listHas(verses, [reg, vt, vn, inst]):
                     inst = len(verses[reg][vt][vn])+1
@@ -286,8 +287,6 @@ class EasiSlidesImport(SongImport):
             if not [reg, vt, vn, inst] in our_verse_order:
                 our_verse_order.append([reg, vt, vn, inst])
             
-            # We have versetype/number data, if it was there, now
-            # we parse text
             if not verses[reg].has_key(vt):
                 verses[reg][vt] = {}
             if not verses[reg][vt].has_key(vn):
@@ -303,19 +302,12 @@ class EasiSlidesImport(SongImport):
         
         # we use our_verse_order to ensure, we insert lyrics in the same order
         # as these appeared originally in the file
-        
-        for tag in our_verse_order:
-            reg = tag[0]
-            vt = tag[1]
-            vn = tag[2]
-            inst = tag[3]
-            
-            if not self._listHas(verses, [reg, vt, vn, inst]):
-                continue
-            versetag = u'%s%s' % (vt, vn)
-            versetags.append(versetag)
-            lines = u'\n'.join(verses[reg][vt][vn][inst])
-            self.verses.append([versetag, lines])
+        for [reg, vt, vn, inst] in our_verse_order:
+            if self._listHas(verses, [reg, vt, vn, inst]):
+                versetag = u'%s%s' % (vt, vn)
+                versetags.append(versetag)
+                lines = u'\n'.join(verses[reg][vt][vn][inst])
+                self.verses.append([versetag, lines])
         
         SeqTypes = {
             u'p': u'P1',
@@ -332,20 +324,20 @@ class EasiSlidesImport(SongImport):
                 if len(tag) == 0:
                     continue
                 elif tag[0].isdigit():
-                    # it's a verse if it has no prefix, but has a number
                     tag = u'V' + tag
                 elif SeqTypes.has_key(tag.lower()):
                     tag = SeqTypes[tag.lower()]
                 else:
                     continue
                 
-                if not tag in versetags:
+                if tag in versetags:
+                    self.verse_order_list.append(tag)
+                else:
                     log.info(u'Got order item %s, which is not in versetags,'
                         u'dropping item from presentation order', tag)
-                else:
-                    self.verse_order_list.append(tag)
         except UnicodeDecodeError:
-            log.exception(u'Sequence unicode decode error')
+            log.exception(u'Unicode decode error while decoding Sequence')
+            self._success = False
         except AttributeError:
             pass
         
