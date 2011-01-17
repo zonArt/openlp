@@ -26,7 +26,7 @@
 
 import logging
 import os
-from lxml import etree
+from lxml import etree, objectify
 from lxml.etree import Error, LxmlError
 import re
 
@@ -60,156 +60,107 @@ class EasiSlidesImport(SongImport):
         """
         self.import_wizard.progressBar.setMaximum(1)
         
-        log.info(u'Direct import %s', self.filename)
+        log.info(u'Importing XML file %s', self.filename)
+        parser = etree.XMLParser(remove_blank_text=True)
+        file = etree.parse(self.filename, parser)
+        xml = unicode(etree.tostring(file))
+        song_xml = objectify.fromstring(xml)
+        
         self.import_wizard.incrementProgressBar(
             unicode(translate('SongsPlugin.ImportWizardForm',
                 u'Importing %s...')) % os.path.split(self.filename)[-1])
-        file = open(self.filename)
-        count = file.read().count('<Item>')
-        file.seek(0)
-        self.import_wizard.progressBar.setMaximum(count)
-        return self.do_import_file(file)
-
-    def do_import_file(self, file):
-        """
-        Process the EasiSlides file - pass in a file-like object,
-        not a filename
-        """
-        self.set_defaults()
-        success = True
+        self.import_wizard.progressBar.setMaximum(len(song_xml.Item))
         
-        # determines, if ENTIRELY UPPERCASE lines should be converted to lower
-        self.toLower = False
-        # list of names, which have always to be Uppercase, like Jesus
-        # only used, when self.toLower is True
-        self.backToUpper = [u'Jesus', u'God']
-        # determines, if title should be prepended to lyrics
-        self.titleIsLyrics = False
-        
-        try:
-            context = etree.iterparse(file)
-        except (Error, LxmlError):
-            log.exception(u'Error parsing XML')
-            return
-        
-        data = {}
-        for action, elem in context:
-            if not elem.text:
-                text = None
-            else:
-                text = unicode(elem.text)
-            
-            data[elem.tag.lower()] = text
-            
-            if elem.tag.lower() == u"item":
-                # just in case, it worked without set_defaults as well
-                self.set_defaults()
-                self.parse_song(data)
-                self.import_wizard.incrementProgressBar(
-                    unicode(translate('SongsPlugin.ImportWizardForm',
-                        u'Importing %s, song %s...')) % 
-                        (os.path.split(self.filename)[-1], self.title))
-                if self.commit:
-                    self.finish()
-                data = {}
-                # breakpoint here
-                if self.stop_import_flag:
-                    success = False
-                    break
-        return success
-        
-    def notCapsLock(self, string):
-        if self.toLower and string.upper() == string:
-            ret = string.lower()
-            if len(self.backToUpper) > 0:
-                for repl in self.backToUpper:
-                    if repl == u'':
-                        continue
-                    ret = ret.replace(repl.lower(), repl)
-            return ret
-        else:
-            return string
-        
-    def notCapsLockTitle(self, string):
-        if self.toLower and string.upper() == string:
-            ret = string.lower()
-            if len(self.backToUpper) > 0:
-                for repl in self.backToUpper:
-                    if repl == u'':
-                        continue
-                    ret = ret.replace(repl.lower(), repl)
-            return u"%s%s" % (ret[0].upper(), ret[1:])
-        else:
-            return string
-    
-    def listHas(self, lst, subitems):
-        for i in subitems:
-            if type(lst) == type({}) and lst.has_key(i):
-                lst = lst[i]
-            elif type(lst) == type([]) and i in lst:
-                lst = lst[i]
-            else:
+        for song in song_xml.Item:
+            self.import_wizard.incrementProgressBar(
+                unicode(translate('SongsPlugin.ImportWizardForm',
+                    u'Importing %s, song %s...')) % 
+                    (os.path.split(self.filename)[-1], song.Title1))
+            success = self._parse_song(song)
+            if not success or self.stop_import_flag:
                 return False
+            if self.commit:
+                self.finish()
         return True
     
-    def extractRegion(self, line):
-        # this was true already: thisline[0:7] == u'[region':
-        right_bracket = line.find(u']')
-        return line[7:right_bracket].strip()
+    def _parse_song(self, song):
+        self._success = True
+        self._add_title(song)
+        self._add_alttitle(song)
+        self._add_number(song)
+        self._add_authors(song)
+        self._add_copyright(song)
+        self._add_book(song)
+        self._parse_and_add_lyrics(song)
+        return self._success
         
-    def parse_song(self, data):
-        self.title = self.notCapsLockTitle(data['title1'])
+    def _add_title(self, song):
+        try:
+            self.title = unicode(song.Title1).strip()
+        except:
+            log.info(u'no Title1')
+            self._success = False
         
-        if data['title2'] != None:
-            self.alternate_title = self.notCapsLockTitle(data['title2'])
-        
-        # EasiSlides tends to set all not changed song numbers to 0,
-        # so this hardly ever carries any information
-        if data['songnumber'] != None and data['songnumber'] != u'0':
-            self.song_number = int(data['songnumber'])
-        
-        if data['writer'] != None:
-            authors = data['writer'].split(u',')
+    def _add_alttitle(self, song):
+        try:
+            self.alternate_title = unicode(self.song.Title2).strip()
+        except:
+            pass
+    
+    def _add_number(self, song):
+        try:
+            number = int(song.SongNumber)
+            if number != 0:
+                self.song_number = number
+                print number
+        except:
+            pass
+
+    def _add_authors(self, song):
+        try:
+            authors = unicode(song.Writer).strip().split(u',')
             for author in authors:
                 self.authors.append(author.strip())
-        
-        # licenceadmins may contain Public Domain or CCLI, as shown in examples
-        # let's just concatenate these fields
+        except:
+            pass
+            
+    def _add_copyright(self, song):
         copyright = []
-        if data['copyright']:
-            copyright.append(data['copyright'].strip())
-        if data['licenceadmin1']:
-            copyright.append(data['licenceadmin1'].strip())
-        if data['licenceadmin2']:
-            copyright.append(data['licenceadmin2'].strip())
+        try:
+            copyright.append(unicode(song.Copyright).strip())
+        except:
+            pass
+        try:
+            copyright.append(unicode(song.LicenceAdmin1).strip())
+        except:
+            pass
+        try:
+            copyright.append(unicode(song.LicenceAdmin2).strip())
+        except:
+            pass
         self.add_copyright(u' '.join(copyright))
-
-        # I was not able to find place to set categories in easislides
-        # but then again, it does not hurt either
-        if data['category']:
-            for topic in data['category'].split(u','):
-                self.topics.append(topic.strip())
         
-        if data['bookreference']:
-            self.song_book_name = data['bookreference'].strip()
+    def _add_book(self, song):
+        try:
+            self.song_book_name = unicode(song.BookReference).strip()
+        except:
+            pass
         
-        # LYRICS LYRICS LYRICS
-        lyrics = data['contents']
-
-        # we add title to first line, if supposed to do so
-        if self.titleIsLyrics:
-            lyrics = u"%s\n%s" % (data['title1'], lyrics)
-
+    def _parse_and_add_lyrics(self, song):
+        try:
+            lyrics = unicode(song.Contents).strip()
+        except:
+            log.info(u'no Contents')
+            self._success = False
+            
         lines = lyrics.split(u'\n')
         length = len(lines)
         
-        # we go over all lines first, to determine some information,
+        # we go over all lines first, to determine information,
         # which tells us how to parse verses later
         emptylines = 0
         regionlines = {}
         separatorlines = 0
-        uppercaselines = 0
-        notuppercaselines = 0
         for i in range(length):
             lines[i] = lines[i].strip()
             thisline = lines[i]
@@ -223,20 +174,14 @@ class EasiSlidesImport(SongImport):
                     # to have [region 3] or more, we add a possiblity to  
                     # count these separately, yeah, rather stupid, but 
                     # count this as a programming exercise
-                    region = self.extractRegion(thisline)
+                    region = self._extractRegion(thisline)
                     if regionlines.has_key(region):
                         regionlines[region] = regionlines[region] + 1
                     else:
                         regionlines[region] = 1
                 else:
                     separatorlines = separatorlines + 1
-            elif thisline == thisline.upper():
-                uppercaselines = uppercaselines + 1
-            else:
-                notuppercaselines = notuppercaselines + 1
         
-        # if the whole song is entirely UPPERCASE
-        allUpperCase = (notuppercaselines == 0)
         # if the song has separators
         separators = (separatorlines > 0)
         # the number of different regions in song - 1
@@ -280,18 +225,11 @@ class EasiSlidesImport(SongImport):
                 if separators:
                     # separators are used, so empty line means slide break
                     # inside verse
-                    if self.listHas(verses, [reg, vt, vn, inst]):
+                    if self._listHas(verses, [reg, vt, vn, inst]):
                         inst = inst + 1
                 else:
                     # separators are not used, so empty line starts a new verse
-                    if not allUpperCase and nextline and \
-                        nextline is nextline.upper():
-                        # the next line is all uppercase, it must be chorus
-                        vt = u'C'
-                    else:
-                        # if the next line is not uppercase, 
-                        # or whole song is uppercase, this must be verse
-                        vt = u'V'
+                    vt = u'V'
                     
                     if verses[reg].has_key(vt):
                         vn = len(verses[reg][vt].keys())+1
@@ -305,7 +243,7 @@ class EasiSlidesImport(SongImport):
                 continue
             
             elif thisline[0:7] == u'[region':
-                reg = self.extractRegion(thisline)
+                reg = self._extractRegion(thisline)
                 if not verses.has_key(reg):
                     verses[reg] = {}
                 if i == 0:
@@ -345,7 +283,7 @@ class EasiSlidesImport(SongImport):
                     region = defaultregion
                 
                 inst = 1
-                if self.listHas(verses, [reg, vt, vn, inst]):
+                if self._listHas(verses, [reg, vt, vn, inst]):
                     inst = len(verses[reg][vt][vn])+1
                 
                 if not [reg, vt, vn, inst] in our_verse_order:
@@ -369,8 +307,6 @@ class EasiSlidesImport(SongImport):
                 verses[reg][vt][vn][inst] = []
             
             words = self.tidy_text(thisline)
-            words = self.notCapsLock(words)
-            
             verses[reg][vt][vn][inst].append(words)
         # done parsing
         
@@ -385,7 +321,7 @@ class EasiSlidesImport(SongImport):
             vn = tag[2]
             inst = tag[3]
             
-            if not self.listHas(verses, [reg, vt, vn, inst]):
+            if not self._listHas(verses, [reg, vt, vn, inst]):
                 continue
             versetag = u'%s%s' % (vt, vn)
             versetags.append(versetag)
@@ -401,8 +337,8 @@ class EasiSlidesImport(SongImport):
             u'w': u'B2',
             u'e': u'E1'}
         # Make use of Sequence data, determining the order of verses
-        if data['sequence'] != None:
-            order = data['sequence'].split(u',')
+        try:
+            order = unicode(song.Sequence).strip().split(u',')
             for tag in order:
                 if tag[0].isdigit():
                     # it's a verse if it has no prefix, but has a number
@@ -417,3 +353,20 @@ class EasiSlidesImport(SongImport):
                         u'dropping item from presentation order', tag)
                 else:
                     self.verse_order_list.append(tag)
+        except:
+            pass
+        
+    def _listHas(self, lst, subitems):
+        for i in subitems:
+            if type(lst) == type({}) and lst.has_key(i):
+                lst = lst[i]
+            elif type(lst) == type([]) and i in lst:
+                lst = lst[i]
+            else:
+                return False
+        return True
+    
+    def _extractRegion(self, line):
+        # this was true already: thisline[0:7] == u'[region':
+        right_bracket = line.find(u']')
+        return line[7:right_bracket].strip()
