@@ -125,9 +125,9 @@ class AdvancedTab(SettingsTab):
             'Expand new service items on creation'))
         self.enableAutoCloseCheckBox.setText(translate('OpenLP.AdvancedTab',
             'Enable application exit confirmation'))
-        self.hideMouseGroupBox.setTitle(translate('OpenLP.GeneralTab',
+        self.hideMouseGroupBox.setTitle(translate('OpenLP.AdvancedTab',
             'Mouse Cursor'))
-        self.hideMouseCheckBox.setText(translate('OpenLP.GeneralTab',
+        self.hideMouseCheckBox.setText(translate('OpenLP.AdvancedTab',
             'Hide the ouse cursor when over the display window'))
 #        self.sharedDirGroupBox.setTitle(
 #            translate('AdvancedTab', 'Central Data Store'))
