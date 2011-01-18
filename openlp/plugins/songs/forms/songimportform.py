@@ -322,7 +322,7 @@ class SongImportForm(OpenLPWizard):
             QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         self.openLP1FormLabelSpacer.changeSize(width, 0,
             QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
-        self.easiSlidesFormLabelSpacer.changeSize(width, 0, 
+        self.easiSlidesFormLabelSpacer.changeSize(width, 0,
             QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         self.ewFormLabelSpacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
             QtGui.QSizePolicy.Fixed)
@@ -654,7 +654,7 @@ class SongImportForm(OpenLPWizard):
             'Select EasiSlides songfile'),
             self.easiSlidesFilenameEdit
         )
-        
+  
     def onEWBrowseButtonClicked(self):
         """
         Get EasyWorship song database files
