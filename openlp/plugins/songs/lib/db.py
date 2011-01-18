@@ -39,6 +39,7 @@ class Author(BaseModel):
     """
     pass
 
+
 class Book(BaseModel):
     """
     Book model
@@ -47,11 +48,13 @@ class Book(BaseModel):
         return u'<Book id="%s" name="%s" publisher="%s" />' % (
             str(self.id), self.name, self.publisher)
 
+
 class MediaFile(BaseModel):
     """
     MediaFile model
     """
     pass
+
 
 class Song(BaseModel):
     """
@@ -59,22 +62,22 @@ class Song(BaseModel):
     """
     pass
 
+
 class Topic(BaseModel):
     """
     Topic model
     """
     pass
 
+
 def init_schema(url):
     """
-    Setup the songs database connection and initialise the database schema
+    Setup the songs database connection and initialise the database schema.
 
     ``url``
         The database to setup
 
-    The song database is structured as follows::
-
-        The song database contains the following tables:
+    The song database contains the following tables:
         * authors
         * authors_songs
         * media_files
@@ -84,58 +87,47 @@ def init_schema(url):
         * songs_topics
         * topics
 
-
-        "authors" Table
+        *authors* Table
         ---------------
         This table holds the names of all the authors. It has the following
         columns:
-
         * id
         * first_name
         * last_name
         * display_name
 
-
-        "authors_songs" Table
+        *authors_songs* Table
         ---------------------
-        This is a bridging table between the "authors" and "songs" tables, which
+        This is a bridging table between the *authors* and *songs* tables, which
         serves to create a many-to-many relationship between the two tables. It
         has the following columns:
-
         * author_id
         * song_id
 
-        "media_files" Table
+        *media_files* Table
         -------------------
-
         * id
         * file_name
         * type
 
-
-        "media_files_songs" Table
+        *media_files_songs* Table
         -------------------------
-
         * media_file_id
         * song_id
 
-
-        "song_books" Table
+        *song_books* Table
         ------------------
-        The "song_books" table holds a list of books that a congregation gets
+        The *song_books* table holds a list of books that a congregation gets
         their songs from, or old hymnals now no longer used. This table has the
         following columns:
-
         * id
         * name
         * publisher
 
-
-        "songs" Table
+        *songs* Table
         -------------
         This table contains the songs, and each song has a list of attributes.
-        The "songs" table has the following columns:
-
+        The *songs* table has the following columns:
         * id
         * song_book_id
         * title
@@ -150,23 +142,19 @@ def init_schema(url):
         * search_title
         * search_lyrics
 
-
-        "songs_topics" Table
+        *songs_topics* Table
         --------------------
-        This is a bridging table between the "songs" and "topics" tables, which
+        This is a bridging table between the *songs* and *topics* tables, which
         serves to create a many-to-many relationship between the two tables. It
         has the following columns:
-
         * song_id
         * topic_id
 
-
-        "topics" Table
+        *topics* Table
         --------------
         The topics table holds a selection of topics that songs can cover. This
         is useful when a worship leader wants to select songs with a certain
         theme. This table has the following columns:
-
         * id
         * name
     """
