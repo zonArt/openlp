@@ -168,9 +168,6 @@ class MediaManagerItem(QtGui.QWidget):
 
         ``slot``
             The method to call when the button is clicked.
-
-        ``objectname``
-            The name of the button.
         """
         # NB different order (when I broke this out, I didn't want to
         # break compatability), but it makes sense for the icon to
