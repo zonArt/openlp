@@ -553,7 +553,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             return False
         if self.verseOrderEdit.text():
             order = []
-            order_names = self.verseOrderEdit.text().split()
+            order_names = unicode(self.verseOrderEdit.text()).split()
             for item in order_names:
                 if len(item) == 1:
                     order.append(item.lower() + u'1')
