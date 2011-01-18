@@ -168,6 +168,10 @@ class MediaManagerItem(QtGui.QWidget):
 
         ``slot``
             The method to call when the button is clicked.
+
+        ``checkable``
+            If *True* the button has two, *off* and *on*, states. Default is
+            *False*, which means the buttons has only one state.
         """
         # NB different order (when I broke this out, I didn't want to
         # break compatability), but it makes sense for the icon to
