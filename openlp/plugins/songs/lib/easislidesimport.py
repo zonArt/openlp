@@ -112,8 +112,8 @@ class EasiSlidesImport(SongImport):
 
     def _add_number(self, song):
         try:
-            number = int(song.SongNumber)
-            if number != 0:
+            number = unicode(song.SongNumber)
+            if number != u'0':
                 self.song_number = number
         except UnicodeDecodeError:
             log.exception(u'Unicode decode error while decoding SongNumber')
@@ -206,8 +206,7 @@ class EasiSlidesImport(SongImport):
         # if the song has regions
         regions = (len(regionlines) > 0)
         # if the regions are inside verses
-        regionsInVerses = (regions and \
-                    regionlines[regionlines.keys()[0]] > 1)
+        regionsInVerses = (regions and regionlines[regionlines.keys()[0]] > 1)
         MarkTypes = {
             u'CHORUS': u'C',
             u'VERSE': u'V',
