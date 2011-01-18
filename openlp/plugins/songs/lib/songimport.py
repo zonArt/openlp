@@ -62,7 +62,6 @@ class SongImport(QtCore.QObject):
         Create defaults for properties - call this before each song
         if importing many songs at once to ensure a clean beginning
         """
-        self.authors = []
         self.title = u''
         self.song_number = u''
         self.alternate_title = u''
@@ -251,17 +250,11 @@ class SongImport(QtCore.QObject):
 
     def finish(self):
         """
-        All fields have been set to this song. Write it away
+        All fields have been set to this song. Write the song to disk.
         """
         if not self.authors:
             self.authors.append(unicode(translate('SongsPlugin.SongImport',
                 'Author unknown')))
-        self.commit_song()
-
-    def commit_song(self):
-        """
-        Write the song and its fields to disk
-        """
         log.info(u'commiting song %s to database', self.title)
         song = Song()
         song.title = self.title

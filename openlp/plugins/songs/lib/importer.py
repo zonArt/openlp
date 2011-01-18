@@ -23,7 +23,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The :mod:`importer` modules provides the general song import functionality.
+"""
 from opensongimport import OpenSongImport
 from olpimport import OpenLPSongImport
 from openlyricsimport import OpenLyricsImport
@@ -34,19 +36,19 @@ from songbeamerimport import SongBeamerImport
 # Imports that might fail
 try:
     from olp1import import OpenLP1SongImport
-    has_openlp1 = True
+    HAS_OPENLP1 = True
 except ImportError:
-    has_openlp1 = False
+    HAS_OPENLP1 = False
 try:
     from sofimport import SofImport
-    has_sof = True
+    HAS_SOF = True
 except ImportError:
-    has_sof = False
+    HAS_SOF = False
 try:
     from oooimport import OooImport
-    has_ooo = True
+    HAS_OOO = True
 except ImportError:
-    has_ooo = False
+    HAS_OOO = False
 
 class SongFormat(object):
     """
@@ -118,14 +120,20 @@ class SongFormat(object):
 
     @staticmethod
     def set_availability(format, available):
+        """
+        Set the availability for a given song format.
+        """
         SongFormat._format_availability[format] = available
 
     @staticmethod
     def get_availability(format):
+        """
+        Return the availability of a given song format.
+        """
         return SongFormat._format_availability.get(format, True)
 
-SongFormat.set_availability(SongFormat.OpenLP1, has_openlp1)
-SongFormat.set_availability(SongFormat.SongsOfFellowship, has_sof)
-SongFormat.set_availability(SongFormat.Generic, has_ooo)
+SongFormat.set_availability(SongFormat.OpenLP1, HAS_OPENLP1)
+SongFormat.set_availability(SongFormat.SongsOfFellowship, HAS_SOF)
+SongFormat.set_availability(SongFormat.Generic, HAS_OOO)
 
 __all__ = [u'SongFormat']

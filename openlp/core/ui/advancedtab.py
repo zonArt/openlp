@@ -163,8 +163,7 @@ class AdvancedTab(SettingsTab):
             settings.value(u'enable exit confirmation',
             QtCore.QVariant(True)).toBool())
         self.hideMouseCheckBox.setChecked(
-            settings.value(u'hide mouse',
-            QtCore.QVariant(False)).toBool())
+            settings.value(u'hide mouse', QtCore.QVariant(False)).toBool())
         settings.endGroup()
 
     def save(self):
