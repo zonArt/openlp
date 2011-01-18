@@ -258,6 +258,7 @@ class SongImport(QtCore.QObject):
         log.info(u'commiting song %s to database', self.title)
         song = Song()
         song.title = self.title
+        song.alternate_title = self.alternate_title
         song.search_title = self.remove_punctuation(self.title).lower() \
             + '@' + self.remove_punctuation(self.alternate_title).lower()
         song.song_number = self.song_number
