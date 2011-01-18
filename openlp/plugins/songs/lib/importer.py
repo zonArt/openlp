@@ -134,3 +134,4 @@ SongFormat.set_availability(SongFormat.SongsOfFellowship, has_sof)
 SongFormat.set_availability(SongFormat.Generic, has_ooo)
 
 __all__ = [u'SongFormat']
+

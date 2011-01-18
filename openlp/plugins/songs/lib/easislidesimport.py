@@ -59,18 +59,15 @@ class EasiSlidesImport(SongImport):
         import will not be committed to the database (useful for test scripts).
         """
         self.import_wizard.progressBar.setMaximum(1)
-        
-        log.info(u'Importing XML file %s', self.filename)
+        log.info(u'Importing EasiSlides XML file %s', self.filename)
         parser = etree.XMLParser(remove_blank_text=True)
         file = etree.parse(self.filename, parser)
         xml = unicode(etree.tostring(file))
         song_xml = objectify.fromstring(xml)
-        
         self.import_wizard.incrementProgressBar(
             unicode(translate('SongsPlugin.ImportWizardForm',
                 u'Importing %s...')) % os.path.split(self.filename)[-1])
         self.import_wizard.progressBar.setMaximum(len(song_xml.Item))
-        
         for song in song_xml.Item:
             self.import_wizard.incrementProgressBar(
                 unicode(translate('SongsPlugin.ImportWizardForm',
@@ -82,7 +79,7 @@ class EasiSlidesImport(SongImport):
             elif self.commit:
                 self.finish()
         return True
-    
+
     def _parse_song(self, song):
         self._success = True
         self._add_title(song)
@@ -93,7 +90,7 @@ class EasiSlidesImport(SongImport):
         self._add_book(song)
         self._parse_and_add_lyrics(song)
         return self._success
-        
+
     def _add_title(self, song):
         try:
             self.title = unicode(song.Title1).strip()
@@ -103,7 +100,7 @@ class EasiSlidesImport(SongImport):
         except AttributeError:
             log.exception(u'no Title1')
             self._success = False
-        
+
     def _add_alttitle(self, song):
         try:
             self.alternate_title = unicode(song.Title2).strip()
@@ -112,7 +109,7 @@ class EasiSlidesImport(SongImport):
             self._success = False
         except AttributeError:
             pass
-    
+
     def _add_number(self, song):
         try:
             number = int(song.SongNumber)
@@ -136,7 +133,7 @@ class EasiSlidesImport(SongImport):
             self._success = False
         except AttributeError:
             pass
-            
+
     def _add_copyright(self, song):
         copyright = []
         try:
@@ -161,7 +158,7 @@ class EasiSlidesImport(SongImport):
         except AttributeError:
             pass
         self.add_copyright(u' '.join(copyright))
-        
+
     def _add_book(self, song):
         try:
             self.song_book_name = unicode(song.BookReference).strip()
@@ -170,7 +167,7 @@ class EasiSlidesImport(SongImport):
             self._success = False
         except AttributeError:
             pass
-        
+
     def _parse_and_add_lyrics(self, song):
         try:
             lyrics = unicode(song.Contents).strip()
@@ -180,9 +177,7 @@ class EasiSlidesImport(SongImport):
         except AttributeError:
             log.exception(u'no Contents')
             self._success = False
-            
         lines = lyrics.split(u'\n')
-        
         # we go over all lines first, to determine information,
         # which tells us how to parse verses later
         regionlines = {}
@@ -200,7 +195,6 @@ class EasiSlidesImport(SongImport):
                     regionlines[region] = 1
             elif line[0] == u'[':
                 separatorlines = separatorlines + 1
-        
         # if the song has separators
         separators = (separatorlines > 0)
         # the number of different regions in song - 1
@@ -214,7 +208,6 @@ class EasiSlidesImport(SongImport):
         # if the regions are inside verses
         regionsInVerses = (regions and \
                     regionlines[regionlines.keys()[0]] > 1)
-        
         MarkTypes = {
             u'CHORUS': u'C',
             u'VERSE': u'V',
@@ -222,7 +215,6 @@ class EasiSlidesImport(SongImport):
             u'ENDING': u'E',
             u'BRIDGE': u'B',
             u'PRECHORUS': u'P'}
-            
         verses = {}
         # list as [region, versetype, versenum, instance]
         our_verse_order = []
@@ -236,7 +228,6 @@ class EasiSlidesImport(SongImport):
 
         for line in lines:
             line = line.strip()
-            
             if len(line) == 0:
                 if separators:
                     # separators are used, so empty line means slide break
@@ -251,7 +242,6 @@ class EasiSlidesImport(SongImport):
                     else:
                         vn = u'1'
                     inst = 1
-                continue
             elif line[0:7] == u'[region':
                 reg = self._extractRegion(line)
                 if not verses.has_key(reg):
@@ -260,7 +250,6 @@ class EasiSlidesImport(SongImport):
                     vt = u'V'
                     vn = u'1'
                     inst = 1
-                continue
             elif line[0] == u'[':
                 # this is a normal section marker
                 marker = line[1:line.find(u']')].upper()
@@ -282,24 +271,20 @@ class EasiSlidesImport(SongImport):
                 inst = 1
                 if self._listHas(verses, [reg, vt, vn, inst]):
                     inst = len(verses[reg][vt][vn])+1
-                continue
-            
-            if not [reg, vt, vn, inst] in our_verse_order:
-                our_verse_order.append([reg, vt, vn, inst])
-            
-            if not verses[reg].has_key(vt):
-                verses[reg][vt] = {}
-            if not verses[reg][vt].has_key(vn):
-                verses[reg][vt][vn] = {}
-            if not verses[reg][vt][vn].has_key(inst):
-                verses[reg][vt][vn][inst] = []
-            
-            words = self.tidy_text(line)
-            verses[reg][vt][vn][inst].append(words)
+            else:
+                if not [reg, vt, vn, inst] in our_verse_order:
+                    our_verse_order.append([reg, vt, vn, inst])
+                if not verses[reg].has_key(vt):
+                    verses[reg][vt] = {}
+                if not verses[reg][vt].has_key(vn):
+                    verses[reg][vt][vn] = {}
+                if not verses[reg][vt][vn].has_key(inst):
+                    verses[reg][vt][vn][inst] = []
+                words = self.tidy_text(line)
+                verses[reg][vt][vn][inst].append(words)
         # done parsing
-        
+
         versetags = []
-        
         # we use our_verse_order to ensure, we insert lyrics in the same order
         # as these appeared originally in the file
         for [reg, vt, vn, inst] in our_verse_order:
@@ -308,7 +293,7 @@ class EasiSlidesImport(SongImport):
                 versetags.append(versetag)
                 lines = u'\n'.join(verses[reg][vt][vn][inst])
                 self.verses.append([versetag, lines])
-        
+
         SeqTypes = {
             u'p': u'P1',
             u'q': u'P2',
@@ -340,7 +325,7 @@ class EasiSlidesImport(SongImport):
             self._success = False
         except AttributeError:
             pass
-        
+
     def _listHas(self, lst, subitems):
         for i in subitems:
             if type(lst) == type({}) and lst.has_key(i):
@@ -350,7 +335,7 @@ class EasiSlidesImport(SongImport):
             else:
                 return False
         return True
-    
+
     def _extractRegion(self, line):
         # this was true already: line[0:7] == u'[region':
         right_bracket = line.find(u']')
