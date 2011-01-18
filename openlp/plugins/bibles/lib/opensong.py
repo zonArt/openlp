@@ -79,7 +79,7 @@ class OpenSongBible(BibleDB):
                             break
                         self.create_verse(
                             db_book.id,
-                            int(chapter.attrib[u'n']),
+                            int(chapter.attrib[u'n'].split()[-1]),
                             int(verse.attrib[u'n']),
                             unicode(verse.text)
                         )
@@ -87,7 +87,7 @@ class OpenSongBible(BibleDB):
                     self.wizard.incrementProgressBar(unicode(translate(
                         'BiblesPlugin.Opensong', 'Importing %s %s...',
                         'Importing <book name> <chapter>...')) %
-                        (db_book.name, int(chapter.attrib[u'n'])))
+                        (db_book.name, int(chapter.attrib[u'n'].split()[-1])))
                     self.session.commit()
         except (IOError, AttributeError):
             log.exception(u'Loading bible from OpenSong file failed')

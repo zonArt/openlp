@@ -35,6 +35,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, SettingsManager, translate
 from openlp.core.lib.db import delete_database
+from openlp.core.ui import criticalErrorMessageBox
 from openlp.core.ui.wizard import OpenLPWizard
 from openlp.core.utils import AppLocation, string_is_unicode
 from openlp.plugins.bibles.lib.manager import BibleFormat
@@ -468,7 +469,7 @@ class BibleImportForm(OpenLPWizard):
         elif self.currentPage() == self.selectPage:
             if self.field(u'source_format').toInt()[0] == BibleFormat.OSIS:
                 if not self.field(u'osis_location').toString():
-                    QtGui.QMessageBox.critical(self,
+                    criticalErrorMessageBox(
                         translate('BiblesPlugin.ImportWizardForm',
                         'Invalid Bible Location'),
                         translate('BiblesPlugin.ImportWizardForm',
@@ -478,7 +479,7 @@ class BibleImportForm(OpenLPWizard):
                     return False
             elif self.field(u'source_format').toInt()[0] == BibleFormat.CSV:
                 if not self.field(u'csv_booksfile').toString():
-                    QtGui.QMessageBox.critical(self,
+                    criticalErrorMessageBox(
                         translate('BiblesPlugin.ImportWizardForm',
                         'Invalid Books File'),
                         translate('BiblesPlugin.ImportWizardForm',
@@ -487,7 +488,7 @@ class BibleImportForm(OpenLPWizard):
                     self.csvBooksEdit.setFocus()
                     return False
                 elif not self.field(u'csv_versefile').toString():
-                    QtGui.QMessageBox.critical(self,
+                    criticalErrorMessageBox(
                         translate('BiblesPlugin.ImportWizardForm',
                         'Invalid Verse File'),
                         translate('BiblesPlugin.ImportWizardForm',
@@ -498,7 +499,7 @@ class BibleImportForm(OpenLPWizard):
             elif self.field(u'source_format').toInt()[0] == \
                 BibleFormat.OpenSong:
                 if not self.field(u'opensong_file').toString():
-                    QtGui.QMessageBox.critical(self,
+                    criticalErrorMessageBox(
                         translate('BiblesPlugin.ImportWizardForm',
                         'Invalid OpenSong Bible'),
                         translate('BiblesPlugin.ImportWizardForm',
@@ -508,7 +509,7 @@ class BibleImportForm(OpenLPWizard):
                     return False
             elif self.field(u'source_format').toInt()[0] == BibleFormat.OpenLP1:
                 if not self.field(u'openlp1_location').toString():
-                    QtGui.QMessageBox.critical(self,
+                    criticalErrorMessageBox(
                         translate('BiblesPlugin.ImportWizardForm',
                         'Invalid Bible Location'),
                         translate('BiblesPlugin.ImportWizardForm',
@@ -522,7 +523,7 @@ class BibleImportForm(OpenLPWizard):
             license_copyright = \
                 unicode(self.field(u'license_copyright').toString())
             if not license_version:
-                QtGui.QMessageBox.critical(self,
+                criticalErrorMessageBox(
                     translate('BiblesPlugin.ImportWizardForm',
                     'Empty Version Name'),
                     translate('BiblesPlugin.ImportWizardForm',
@@ -530,7 +531,7 @@ class BibleImportForm(OpenLPWizard):
                 self.versionNameEdit.setFocus()
                 return False
             elif not license_copyright:
-                QtGui.QMessageBox.critical(self,
+                criticalErrorMessageBox(
                     translate('BiblesPlugin.ImportWizardForm',
                     'Empty Copyright'),
                     translate('BiblesPlugin.ImportWizardForm',
@@ -539,7 +540,7 @@ class BibleImportForm(OpenLPWizard):
                 self.copyrightEdit.setFocus()
                 return False
             elif self.manager.exists(license_version):
-                QtGui.QMessageBox.critical(self,
+                criticalErrorMessageBox(
                     translate('BiblesPlugin.ImportWizardForm', 'Bible Exists'),
                     translate('BiblesPlugin.ImportWizardForm',
                     'This Bible already exists. Please import '

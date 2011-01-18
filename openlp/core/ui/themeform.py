@@ -31,6 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, BackgroundType, BackgroundGradientType, \
     Receiver
+from openlp.core.ui import criticalErrorMessageBox
 from openlp.core.utils import get_images_filter
 from themewizard import Ui_ThemeWizard
 
@@ -567,20 +568,16 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.theme.theme_name = \
             unicode(self.field(u'name').toString())
         if not self.theme.theme_name:
-            QtGui.QMessageBox.critical(self,
+            criticalErrorMessageBox(
                 translate('OpenLP.ThemeForm', 'Theme Name Missing'),
                 translate('OpenLP.ThemeForm',
-                    'There is no name for this theme. Please enter one.'),
-                (QtGui.QMessageBox.Ok),
-                QtGui.QMessageBox.Ok)
+                'There is no name for this theme. Please enter one.'))
             return
         if self.theme.theme_name == u'-1' or self.theme.theme_name == u'None':
-            QtGui.QMessageBox.critical(self,
+            criticalErrorMessageBox(
                 translate('OpenLP.ThemeForm', 'Theme Name Invalid'),
                 translate('OpenLP.ThemeForm',
-                    'Invalid theme name. Please enter one.'),
-                (QtGui.QMessageBox.Ok),
-                QtGui.QMessageBox.Ok)
+                'Invalid theme name. Please enter one.'))
             return
         saveFrom = None
         saveTo = None

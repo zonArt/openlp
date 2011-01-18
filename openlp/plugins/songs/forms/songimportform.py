@@ -32,6 +32,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, SettingsManager, translate
+from openlp.core.ui import criticalErrorMessageBox
 from openlp.core.ui.wizard import OpenLPWizard
 from openlp.plugins.songs.lib.importer import SongFormat
 
@@ -325,7 +326,7 @@ class SongImportForm(OpenLPWizard):
             source_format = self.formatComboBox.currentIndex()
             if source_format == SongFormat.OpenLP2:
                 if self.openLP2FilenameEdit.text().isEmpty():
-                    QtGui.QMessageBox.critical(self,
+                    criticalErrorMessageBox(
                         translate('SongsPlugin.ImportWizardForm',
                         'No OpenLP 2.0 Song Database Selected'),
                         translate('SongsPlugin.ImportWizardForm',
@@ -335,7 +336,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.OpenLP1:
                 if self.openLP1FilenameEdit.text().isEmpty():
-                    QtGui.QMessageBox.critical(self,
+                    criticalErrorMessageBox(
                         translate('SongsPlugin.ImportWizardForm',
                         'No openlp.org 1.x Song Database Selected'),
                         translate('SongsPlugin.ImportWizardForm',
@@ -345,7 +346,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.OpenLyrics:
                 if self.openLyricsFileListWidget.count() == 0:
-                    QtGui.QMessageBox.critical(self,
+                    criticalErrorMessageBox(
                         translate('SongsPlugin.ImportWizardForm',
                         'No OpenLyrics Files Selected'),
                         translate('SongsPlugin.ImportWizardForm',
@@ -355,7 +356,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.OpenSong:
                 if self.openSongFileListWidget.count() == 0:
-                    QtGui.QMessageBox.critical(self,
+                    criticalErrorMessageBox(
                         translate('SongsPlugin.ImportWizardForm',
                         'No OpenSong Files Selected'),
                         translate('SongsPlugin.ImportWizardForm',
@@ -365,7 +366,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.WordsOfWorship:
                 if self.wordsOfWorshipFileListWidget.count() == 0:
-                    QtGui.QMessageBox.critical(self,
+                    criticalErrorMessageBox(
                         translate('SongsPlugin.ImportWizardForm',
                         'No Words of Worship Files Selected'),
                         translate('SongsPlugin.ImportWizardForm',
@@ -375,7 +376,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.CCLI:
                 if self.ccliFileListWidget.count() == 0:
-                    QtGui.QMessageBox.critical(self,
+                    criticalErrorMessageBox(
                         translate('SongsPlugin.ImportWizardForm',
                         'No CCLI Files Selected'),
                         translate('SongsPlugin.ImportWizardForm',
@@ -385,7 +386,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.SongsOfFellowship:
                 if self.songsOfFellowshipFileListWidget.count() == 0:
-                    QtGui.QMessageBox.critical(self,
+                    criticalErrorMessageBox(
                         translate('SongsPlugin.ImportWizardForm',
                         'No Songs of Fellowship File Selected'),
                         translate('SongsPlugin.ImportWizardForm',
@@ -395,7 +396,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.Generic:
                 if self.genericFileListWidget.count() == 0:
-                    QtGui.QMessageBox.critical(self,
+                    criticalErrorMessageBox(
                         translate('SongsPlugin.ImportWizardForm',
                         'No Document/Presentation Selected'),
                         translate('SongsPlugin.ImportWizardForm',
@@ -405,7 +406,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.EasyWorship:
                 if self.ewFilenameEdit.text().isEmpty():
-                    QtGui.QMessageBox.critical(self,
+                    criticalErrorMessageBox(
                         translate('SongsPlugin.ImportWizardForm',
                         'No EasyWorship Song Database Selected'),
                         translate('SongsPlugin.ImportWizardForm',
@@ -415,7 +416,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.SongBeamer:
                 if self.songBeamerFileListWidget.count() == 0:
-                    QtGui.QMessageBox.critical(self,
+                    criticalErrorMessageBox(
                         translate('SongsPlugin.ImportWizardForm',
                         'No SongBeamer File Selected'),
                         translate('SongsPlugin.ImportWizardForm',
