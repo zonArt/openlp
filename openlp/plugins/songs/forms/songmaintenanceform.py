@@ -535,3 +535,4 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         else:
             self.booksDeleteButton.setEnabled(True)
             self.booksEditButton.setEnabled(True)
+
