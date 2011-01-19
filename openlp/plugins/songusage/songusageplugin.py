@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -42,7 +42,7 @@ class SongUsagePlugin(Plugin):
     log.info(u'SongUsage Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'SongUsage', u'1.9.3', plugin_helpers)
+        Plugin.__init__(self, u'SongUsage', u'1.9.4', plugin_helpers)
         self.weight = -4
         self.icon = build_icon(u':/plugins/plugin_songusage.png')
         self.manager = None
@@ -175,10 +175,13 @@ class SongUsagePlugin(Plugin):
         """
         ## Name PluginList ##
         self.textStrings[StringContent.Name] = {
-            u'singular': translate('SongUsagePlugin', 'SongUsage'),
-            u'plural': translate('SongUsagePlugin', 'SongUsage')
+            u'singular': translate('SongUsagePlugin', 'SongUsage',
+                'name singular'),
+            u'plural': translate('SongUsagePlugin', 'SongUsage',
+                'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.textStrings[StringContent.VisibleName] = {
-            u'title': translate('SongUsagePlugin', 'SongUsage')
+            u'title': translate('SongUsagePlugin', 'SongUsage',
+                'container title')
         }

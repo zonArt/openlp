@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -28,15 +28,15 @@ import re
 try:
     import enchant
     from enchant import DictNotFoundError
-    enchant_available = True
+    ENCHANT_AVAILABLE = True
 except ImportError:
-    enchant_available = False
+    ENCHANT_AVAILABLE = False
 
 # based on code from
 # http://john.nachtimwald.com/2009/08/22/qplaintextedit-with-in-line-spell-check
 
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import html_expands, translate
+from openlp.core.lib import translate, DisplayTags
 
 class SpellTextEdit(QtGui.QPlainTextEdit):
     """
@@ -45,7 +45,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
     def __init__(self, *args):
         QtGui.QPlainTextEdit.__init__(self, *args)
         # Default dictionary based on the current locale.
-        if enchant_available:
+        if ENCHANT_AVAILABLE:
             try:
                 self.dict = enchant.Dict()
             except DictNotFoundError:
@@ -72,7 +72,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         self.setTextCursor(cursor)
         # Check if the selected word is misspelled and offer spelling
         # suggestions if it is.
-        if enchant_available and self.textCursor().hasSelection():
+        if ENCHANT_AVAILABLE and self.textCursor().hasSelection():
             text = unicode(self.textCursor().selectedText())
             if not self.dict.check(text):
                 spell_menu = QtGui.QMenu(translate('OpenLP.SpellTextEdit',
@@ -88,7 +88,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
                     popupMenu.insertMenu(popupMenu.actions()[0], spell_menu)
         tagMenu = QtGui.QMenu(translate('OpenLP.SpellTextEdit',
             'Formatting Tags'))
-        for html in html_expands:
+        for html in DisplayTags.get_html_tags():
             action = SpellAction( html[u'desc'], tagMenu)
             action.correct.connect(self.htmlTag)
             tagMenu.addAction(action)
@@ -110,7 +110,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         """
         Replaces the selected text with word.
         """
-        for html in html_expands:
+        for html in DisplayTags.get_html_tags():
             if tag == html[u'desc']:
                 cursor = self.textCursor()
                 if self.textCursor().hasSelection():

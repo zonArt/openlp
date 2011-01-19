@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -24,6 +24,8 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
+The :mod:`maindisplay` module provides the functionality to display screens
+and play multimedia within OpenLP.
 """
 import logging
 import os
@@ -31,7 +33,9 @@ import os
 from PyQt4 import QtCore, QtGui, QtWebKit
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte
+from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
+    build_icon, translate
+
 from openlp.core.ui import HideMode
 
 log = logging.getLogger(__name__)
@@ -90,11 +94,11 @@ class DisplayWidget(QtGui.QGraphicsView):
         else:
             event.ignore()
 
+
 class MainDisplay(DisplayWidget):
     """
     This is the display screen.
     """
-
     def __init__(self, parent, screens, live):
         DisplayWidget.__init__(self, live, parent=None)
         self.parent = parent
@@ -102,7 +106,9 @@ class MainDisplay(DisplayWidget):
         self.isLive = live
         self.alertTab = None
         self.hideMode = None
-        self.setWindowTitle(u'OpenLP Display')
+        mainIcon = build_icon(u':/icon/openlp-logo-16x16.png')
+        self.setWindowIcon(mainIcon)
+        self.retranslateUi()
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint |
             QtCore.Qt.WindowStaysOnTopHint)
@@ -112,11 +118,17 @@ class MainDisplay(DisplayWidget):
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'maindisplay_show'), self.showDisplay)
 
+    def retranslateUi(self):
+        """
+        Setup the interface translation strings.
+        """
+        self.setWindowTitle(translate('OpenLP.MainDisplay', 'OpenLP Display'))
+
     def setup(self):
         """
         Set up and build the output screen
         """
-        log.debug(u'Setup live = %s for %s ' % (self.isLive,
+        log.debug(u'Setup live = %s for monitor %s ' % (self.isLive,
             self.screens.monitor_number))
         self.usePhonon = QtCore.QSettings().value(
             u'media/use phonon', QtCore.QVariant(True)).toBool()
@@ -189,7 +201,7 @@ class MainDisplay(DisplayWidget):
             The slide text to be displayed
         """
         log.debug(u'text to display')
-        # Wait for the webview to update before displayiong text.
+        # Wait for the webview to update before displaying text.
         while not self.loaded:
             Receiver.send_message(u'openlp_process_events')
         self.frame.evaluateJavaScript(u'show_text("%s")' % \
@@ -209,7 +221,7 @@ class MainDisplay(DisplayWidget):
             shrink = True
         else:
             shrink = False
-        js =  u'show_alert("%s", "%s")' % (
+        js = u'show_alert("%s", "%s")' % (
             text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'),
             u'top' if shrink else u'')
         height = self.frame.evaluateJavaScript(js)
@@ -235,8 +247,8 @@ class MainDisplay(DisplayWidget):
 
     def image(self, name):
         """
-        Add an image as the background.  The image is converted to a
-        bytestream on route.
+        Add an image as the background.  The image is converted to a bytestream
+        on route.
 
         `Image`
             The Image to be displayed can be QImage or QPixmap
@@ -259,6 +271,8 @@ class MainDisplay(DisplayWidget):
         else:
             js = u'show_image("");'
         self.frame.evaluateJavaScript(js)
+        # Update the preview frame.
+        Receiver.send_message(u'maindisplay_active')
 
     def resetImage(self):
         """
@@ -267,6 +281,8 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'resetImage')
         self.displayImage(self.serviceItem.bg_image_bytes)
+        # Update the preview frame.
+        Receiver.send_message(u'maindisplay_active')
 
     def resetVideo(self):
         """
@@ -281,6 +297,8 @@ class MainDisplay(DisplayWidget):
             self.phononActive = False
         else:
             self.frame.evaluateJavaScript(u'show_video("close");')
+        # Update the preview frame.
+        Receiver.send_message(u'maindisplay_active')
 
     def videoPlay(self):
         """
@@ -348,6 +366,8 @@ class MainDisplay(DisplayWidget):
             self.webView.setVisible(False)
             self.videoWidget.setVisible(True)
             self.audio.setVolume(vol)
+        # Update the preview frame.
+        Receiver.send_message(u'maindisplay_active')
         return self.preview()
 
     def isLoaded(self):
@@ -415,14 +435,23 @@ class MainDisplay(DisplayWidget):
         # if was hidden keep it hidden
         if self.hideMode and self.isLive:
             self.hideDisplay(self.hideMode)
+        # Hide mouse cursor when moved over display if enabled in settings
+        settings = QtCore.QSettings()
+        if settings.value(u'advanced/hide mouse',
+            QtCore.QVariant(False)).toBool():
+            self.setCursor(QtCore.Qt.BlankCursor)
+            self.frame.evaluateJavaScript('document.body.style.cursor = "none"')
+        else:
+            self.setCursor(QtCore.Qt.ArrowCursor)
+            self.frame.evaluateJavaScript('document.body.style.cursor = "auto"')
 
     def footer(self, text):
         """
         Display the Footer
         """
         log.debug(u'footer')
-        js =  "show_footer('" + \
-            text.replace("\\", "\\\\").replace("\'", "\\\'") + "')"
+        js = u'show_footer(\'' + \
+            text.replace(u'\\', u'\\\\').replace(u'\'', u'\\\'') + u'\')'
         self.frame.evaluateJavaScript(js)
 
     def hideDisplay(self, mode=HideMode.Screen):
@@ -463,6 +492,7 @@ class MainDisplay(DisplayWidget):
         self.hideMode = None
         # Trigger actions when display is active again
         Receiver.send_message(u'maindisplay_active')
+
 
 class AudioPlayer(QtCore.QObject):
     """
@@ -541,4 +571,3 @@ class AudioPlayer(QtCore.QObject):
         """
         log.debug(u'AudioPlayer Reached end of media playlist')
         self.mediaObject.clearQueue()
-

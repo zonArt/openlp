@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -30,7 +30,7 @@ from lxml import objectify
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, translate
-from db import BibleDB
+from openlp.plugins.bibles.lib.db import BibleDB
 
 log = logging.getLogger(__name__)
 
@@ -48,7 +48,7 @@ class OpenSongBible(BibleDB):
         BibleDB.__init__(self, parent, **kwargs)
         self.filename = kwargs['filename']
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'bibles_stop_import'), self.stop_import)
+            QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
 
     def do_import(self):
         """
@@ -79,16 +79,17 @@ class OpenSongBible(BibleDB):
                             break
                         self.create_verse(
                             db_book.id,
-                            int(chapter.attrib[u'n']),
+                            int(chapter.attrib[u'n'].split()[-1]),
                             int(verse.attrib[u'n']),
                             unicode(verse.text)
                         )
                         Receiver.send_message(u'openlp_process_events')
-                    self.wizard.incrementProgressBar(u'%s %s %s...' % (
-                        translate('BiblesPlugin.Opensong', 'Importing'),
-                        db_book.name, chapter.attrib[u'n']))
+                    self.wizard.incrementProgressBar(unicode(translate(
+                        'BiblesPlugin.Opensong', 'Importing %s %s...',
+                        'Importing <book name> <chapter>...')) %
+                        (db_book.name, int(chapter.attrib[u'n'].split()[-1])))
                     self.session.commit()
-        except IOError:
+        except (IOError, AttributeError):
             log.exception(u'Loading bible from OpenSong file failed')
             success = False
         finally:
