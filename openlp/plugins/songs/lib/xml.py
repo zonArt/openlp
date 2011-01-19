@@ -99,8 +99,8 @@ class SongXML(object):
             The actual text of the verse to be stored.
 
         ``lang``
-            The verse's language code. This is not required, but should be added
-            if available.
+            The verse's language code (ISO-639). This is not required, but
+            should be added if available.
         """
         verse = etree.Element(u'verse', type=unicode(type),
             label=unicode(number))
