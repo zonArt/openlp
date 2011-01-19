@@ -192,7 +192,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             # cause an error message later on).
             if edit:
                 for topic in topics:
-                    if topics.id != new_topic.id:
+                    if topic.id != new_topic.id:
                         return False
                 return True
             else:
@@ -213,7 +213,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             # cause an error message later on).
             if edit:
                 for book in books:
-                    if books.id != new_book.id:
+                    if book.id != new_book.id:
                         return False
                 return True
             else:
