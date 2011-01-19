@@ -32,6 +32,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, SettingsManager, translate
+from openlp.core.ui import criticalErrorMessageBox
 from openlp.core.ui.wizard import OpenLPWizard
 from openlp.plugins.songs.lib.importer import SongFormat
 
@@ -127,6 +128,9 @@ class SongImportForm(OpenLPWizard):
         QtCore.QObject.connect(self.genericRemoveButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onGenericRemoveButtonClicked)
+        QtCore.QObject.connect(self.easiSlidesBrowseButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onEasiSlidesBrowseButtonClicked)
         QtCore.QObject.connect(self.ewBrowseButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onEWBrowseButtonClicked)
@@ -176,6 +180,8 @@ class SongImportForm(OpenLPWizard):
         self.addMultiFileSelectItem(u'songsOfFellowship', None, True)
         # Generic Document/Presentation import
         self.addMultiFileSelectItem(u'generic', None, True)
+        # EasySlides
+        self.addSingleFileSelectItem(u'easiSlides')
         # EasyWorship
         self.addSingleFileSelectItem(u'ew')
         # Words of Worship
@@ -225,10 +231,12 @@ class SongImportForm(OpenLPWizard):
             translate('SongsPlugin.ImportWizardForm',
             'Generic Document/Presentation'))
         self.formatComboBox.setItemText(8,
-            translate('SongsPlugin.ImportWizardForm', 'EasyWorship'))
+            translate('SongsPlugin.ImportWizardForm', 'EasiSlides'))
         self.formatComboBox.setItemText(9,
+            translate('SongsPlugin.ImportWizardForm', 'EasyWorship'))
+        self.formatComboBox.setItemText(10,
             translate('SongsPlugin.ImportWizardForm', 'SongBeamer'))
-#        self.formatComboBox.setItemText(9,
+#        self.formatComboBox.setItemText(11,
 #            translate('SongsPlugin.ImportWizardForm', 'CSV'))
         self.openLP2FilenameLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Filename:'))
@@ -280,6 +288,10 @@ class SongImportForm(OpenLPWizard):
             translate('SongsPlugin.ImportWizardForm', 'The generic document/'
             'presentation importer has been disabled because OpenLP cannot '
             'find OpenOffice.org on your computer.'))
+        self.easiSlidesFilenameLabel.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Filename:'))
+        self.easiSlidesBrowseButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Browse...'))
         self.ewFilenameLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Filename:'))
         self.ewBrowseButton.setText(
@@ -310,6 +322,8 @@ class SongImportForm(OpenLPWizard):
             QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         self.openLP1FormLabelSpacer.changeSize(width, 0,
             QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        self.easiSlidesFormLabelSpacer.changeSize(width, 0,
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         self.ewFormLabelSpacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
             QtGui.QSizePolicy.Fixed)
 #        self.csvFormLabelSpacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
@@ -325,7 +339,7 @@ class SongImportForm(OpenLPWizard):
             source_format = self.formatComboBox.currentIndex()
             if source_format == SongFormat.OpenLP2:
                 if self.openLP2FilenameEdit.text().isEmpty():
-                    QtGui.QMessageBox.critical(self,
+                    criticalErrorMessageBox(
                         translate('SongsPlugin.ImportWizardForm',
                         'No OpenLP 2.0 Song Database Selected'),
                         translate('SongsPlugin.ImportWizardForm',
@@ -335,7 +349,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.OpenLP1:
                 if self.openLP1FilenameEdit.text().isEmpty():
-                    QtGui.QMessageBox.critical(self,
+                    criticalErrorMessageBox(
                         translate('SongsPlugin.ImportWizardForm',
                         'No openlp.org 1.x Song Database Selected'),
                         translate('SongsPlugin.ImportWizardForm',
@@ -345,7 +359,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.OpenLyrics:
                 if self.openLyricsFileListWidget.count() == 0:
-                    QtGui.QMessageBox.critical(self,
+                    criticalErrorMessageBox(
                         translate('SongsPlugin.ImportWizardForm',
                         'No OpenLyrics Files Selected'),
                         translate('SongsPlugin.ImportWizardForm',
@@ -355,7 +369,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.OpenSong:
                 if self.openSongFileListWidget.count() == 0:
-                    QtGui.QMessageBox.critical(self,
+                    criticalErrorMessageBox(
                         translate('SongsPlugin.ImportWizardForm',
                         'No OpenSong Files Selected'),
                         translate('SongsPlugin.ImportWizardForm',
@@ -365,7 +379,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.WordsOfWorship:
                 if self.wordsOfWorshipFileListWidget.count() == 0:
-                    QtGui.QMessageBox.critical(self,
+                    criticalErrorMessageBox(
                         translate('SongsPlugin.ImportWizardForm',
                         'No Words of Worship Files Selected'),
                         translate('SongsPlugin.ImportWizardForm',
@@ -375,7 +389,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.CCLI:
                 if self.ccliFileListWidget.count() == 0:
-                    QtGui.QMessageBox.critical(self,
+                    criticalErrorMessageBox(
                         translate('SongsPlugin.ImportWizardForm',
                         'No CCLI Files Selected'),
                         translate('SongsPlugin.ImportWizardForm',
@@ -385,7 +399,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.SongsOfFellowship:
                 if self.songsOfFellowshipFileListWidget.count() == 0:
-                    QtGui.QMessageBox.critical(self,
+                    criticalErrorMessageBox(
                         translate('SongsPlugin.ImportWizardForm',
                         'No Songs of Fellowship File Selected'),
                         translate('SongsPlugin.ImportWizardForm',
@@ -395,7 +409,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.Generic:
                 if self.genericFileListWidget.count() == 0:
-                    QtGui.QMessageBox.critical(self,
+                    criticalErrorMessageBox(
                         translate('SongsPlugin.ImportWizardForm',
                         'No Document/Presentation Selected'),
                         translate('SongsPlugin.ImportWizardForm',
@@ -403,9 +417,19 @@ class SongImportForm(OpenLPWizard):
                         'presentation file to import from.'))
                     self.genericAddButton.setFocus()
                     return False
+            elif source_format == SongFormat.EasiSlides:
+                if self.easiSlidesFilenameEdit.text().isEmpty():
+                    criticalErrorMessageBox(
+                        translate('SongsPlugin.ImportWizardForm',
+                        'No Easislides Songs file selected'),
+                        translate('SongsPlugin.ImportWizardForm',
+                        'You need to select an xml song file exported from '
+                        'EasiSlides, to import from.'))
+                    self.easiSlidesBrowseButton.setFocus()
+                    return False
             elif source_format == SongFormat.EasyWorship:
                 if self.ewFilenameEdit.text().isEmpty():
-                    QtGui.QMessageBox.critical(self,
+                    criticalErrorMessageBox(
                         translate('SongsPlugin.ImportWizardForm',
                         'No EasyWorship Song Database Selected'),
                         translate('SongsPlugin.ImportWizardForm',
@@ -415,7 +439,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.SongBeamer:
                 if self.songBeamerFileListWidget.count() == 0:
-                    QtGui.QMessageBox.critical(self,
+                    criticalErrorMessageBox(
                         translate('SongsPlugin.ImportWizardForm',
                         'No SongBeamer File Selected'),
                         translate('SongsPlugin.ImportWizardForm',
@@ -624,6 +648,13 @@ class SongImportForm(OpenLPWizard):
         """
         self.removeSelectedItems(self.genericFileListWidget)
 
+    def onEasiSlidesBrowseButtonClicked(self):
+        self.getFileName(
+            translate('SongsPlugin.ImportWizardForm',
+            'Select EasiSlides songfile'),
+            self.easiSlidesFilenameEdit
+        )
+  
     def onEWBrowseButtonClicked(self):
         """
         Get EasyWorship song database files
@@ -673,6 +704,7 @@ class SongImportForm(OpenLPWizard):
         self.ccliFileListWidget.clear()
         self.songsOfFellowshipFileListWidget.clear()
         self.genericFileListWidget.clear()
+        self.easiSlidesFilenameEdit.setText(u'')
         self.ewFilenameEdit.setText(u'')
         self.songBeamerFileListWidget.clear()
         #self.csvFilenameEdit.setText(u'')
@@ -736,8 +768,13 @@ class SongImportForm(OpenLPWizard):
             importer = self.plugin.importSongs(SongFormat.Generic,
                 filenames=self.getListOfFiles(self.genericFileListWidget)
             )
+        elif source_format == SongFormat.EasiSlides:
+            # Import an EasiSlides export file
+            importer = self.plugin.importSongs(SongFormat.EasiSlides,
+                filename=unicode(self.easiSlidesFilenameEdit.text())
+            )
         elif source_format == SongFormat.EasyWorship:
-            # Import an OpenLP 2.0 database
+            # Import an EasyWorship database
             importer = self.plugin.importSongs(SongFormat.EasyWorship,
                 filename=unicode(self.ewFilenameEdit.text())
             )
