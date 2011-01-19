@@ -183,21 +183,3 @@ class ActionList(object):
             self.categories[category].actions.append(action)
         else:
             self.categories[category].actions.add(action, weight)
-
-    @staticmethod
-    def set(action, text, slot, shortcut, alternate=0,
-        context=QtCore.Qt.WidgetShortcut):
-        """
-        Set Parameter for Action Items
-        
-        ``action`` action Item
-        ``text`` object name and menu title
-        ``slot`` connected slot
-        ``shortcut`` first shortcut
-        ``alternate`` alternate shortcut
-        ``context`` used context for this action
-        """
-        action.setObjectName(text)
-        action.setShortcuts([shortcut, alternate])
-        action.setShortcutContext(context)
-        QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), slot)
