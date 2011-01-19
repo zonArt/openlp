@@ -171,10 +171,10 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             # not return False when nothing has changed (because this would
             # cause an error message later on).
             if edit:
-                if authors[0].id == new_author.id:
-                    return True
-                else:
-                    return False
+                for author in authors:
+                    if author.id != new_author.id:
+                        return False
+                return True
             else:
                 return False
         else:
@@ -191,10 +191,10 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             # not return False when nothing has changed (because this would
             # cause an error message later on).
             if edit:
-                if topics[0].id == new_topic.id:
-                    return True
-                else:
-                    return False
+                for topic in topics:
+                    if topics.id != new_topic.id:
+                        return False
+                return True
             else:
                 return False
         else:
@@ -212,10 +212,10 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             # not return False when nothing has changed (because this would
             # cause an error message later on).
             if edit:
-                if books[0].id == new_book.id:
-                    return True
-                else:
-                    return False
+                for book in books:
+                    if books.id != new_book.id:
+                        return False
+                return True
             else:
                 return False
         else:
