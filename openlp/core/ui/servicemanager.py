@@ -36,8 +36,10 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import OpenLPToolbar, ServiceItem, context_menu_action, \
     Receiver, build_icon, ItemCapabilities, SettingsManager, translate, \
     ThemeLevel
-from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm
-from openlp.core.utils import AppLocation, split_filename
+from openlp.core.ui import criticalErrorMessageBox, ServiceNoteForm, \
+    ServiceItemEditForm
+from openlp.core.utils import AppLocation, delete_file, file_is_unicode, \
+    split_filename
 
 class ServiceManagerList(QtGui.QTreeWidget):
     """
@@ -445,11 +447,7 @@ class ServiceManager(QtGui.QWidget):
                     file.close()
                 if zip:
                     zip.close()
-            try:
-                os.remove(serviceFileName)
-            except (IOError, OSError):
-                # if not present do not worry
-                pass
+            delete_file(serviceFileName)
             self.mainwindow.addRecentFile(fileName)
             self.setModified(False)
         return True
@@ -484,16 +482,12 @@ class ServiceManager(QtGui.QWidget):
         try:
             zip = zipfile.ZipFile(fileName)
             for file in zip.namelist():
-                try:
-                    ucsfile = file.decode(u'utf-8')
-                except UnicodeDecodeError:
-                    QtGui.QMessageBox.critical(
-                        self, translate('OpenLP.ServiceManager', 'Error'),
-                        translate('OpenLP.ServiceManager',
-                            'File is not a valid service.\n'
-                            'The content encoding is not UTF-8.'))
-                    log.exception(u'Filename "%s" is not valid UTF-8' %
-                        file.decode(u'utf-8', u'replace'))
+                ucsfile = file_is_unicode(file)
+                if not ucsfile:
+                    criticalErrorMessageBox(
+                        message=translate('OpenLP.ServiceManager',
+                        'File is not a valid service.\n'
+                        'The content encoding is not UTF-8.'))
                     continue
                 osfile = unicode(QtCore.QDir.toNativeSeparators(ucsfile))
                 filePath = os.path.join(self.servicePath,
@@ -515,20 +509,14 @@ class ServiceManager(QtGui.QWidget):
                     serviceItem.set_from_service(item, self.servicePath)
                     self.validateItem(serviceItem)
                     self.addServiceItem(serviceItem)
-                    if serviceItem.is_capable(
-                        ItemCapabilities.OnLoadUpdate):
+                    if serviceItem.is_capable(ItemCapabilities.OnLoadUpdate):
                         Receiver.send_message(u'%s_service_load' %
                             serviceItem.name.lower(), serviceItem)
-                try:
-                    if os.path.isfile(p_file):
-                        os.remove(p_file)
-                except (IOError, OSError):
-                    log.exception(u'Failed to remove osd file')
+                delete_file(p_file)
             else:
-                QtGui.QMessageBox.critical(
-                    self, translate('OpenLP.ServiceManager', 'Error'),
-                    translate('OpenLP.ServiceManager',
-                        'File is not a valid service.'))
+                criticalErrorMessageBox(
+                    message=translate('OpenLP.ServiceManager',
+                    'File is not a valid service.'))
                 log.exception(u'File contains no service data')
         except (IOError, NameError):
             log.exception(u'Problem loading a service file')
@@ -877,11 +865,7 @@ class ServiceManager(QtGui.QWidget):
         """
         for file in os.listdir(self.servicePath):
             file_path = os.path.join(self.servicePath, file)
-            try:
-                if os.path.isfile(file_path):
-                    os.remove(file_path)
-            except OSError:
-                log.exception(u'Failed to clean up servicePath')
+            delete_file(file_path)
 
     def onThemeComboBoxSelected(self, currentIndex):
         """
@@ -1008,7 +992,7 @@ class ServiceManager(QtGui.QWidget):
             self.mainwindow.previewController.addServiceManagerItem(
                 self.serviceItems[item][u'service_item'], count)
         else:
-            QtGui.QMessageBox.critical(self,
+            criticalErrorMessageBox(
                 translate('OpenLP.ServiceManager', 'Missing Display Handler'),
                 translate('OpenLP.ServiceManager', 'Your item cannot be '
                     'displayed as there is no handler to display it'))
@@ -1042,11 +1026,11 @@ class ServiceManager(QtGui.QWidget):
                         self.serviceItems[item][u'service_item'], 0)
                     self.mainwindow.liveController.PreviewListWidget.setFocus()
         else:
-            QtGui.QMessageBox.critical(self,
+            criticalErrorMessageBox(
                 translate('OpenLP.ServiceManager', 'Missing Display Handler'),
                 translate('OpenLP.ServiceManager', 'Your item cannot be '
-                    'displayed as the plugin required to display it is missing '
-                    'or inactive'))
+                'displayed as the plugin required to display it is missing '
+                'or inactive'))
 
     def remoteEdit(self):
         """

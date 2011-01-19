@@ -30,6 +30,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, Receiver, BaseListWithDnD, \
     ItemCapabilities, translate
+from openlp.core.ui import criticalErrorMessageBox
 from openlp.plugins.bibles.forms import BibleImportForm
 from openlp.plugins.bibles.lib import get_reference_match
 
@@ -42,10 +43,6 @@ class BibleListView(BaseListWithDnD):
     def __init__(self, parent=None):
         self.PluginName = u'Bibles'
         BaseListWithDnD.__init__(self, parent)
-
-    def resizeEvent(self, event):
-        self.parent().onListViewResize(event.size().width(),
-            event.size().width())
 
 
 class BibleMediaItem(MediaManagerItem):
@@ -256,22 +253,9 @@ class BibleMediaItem(MediaManagerItem):
         # Other stuff
         QtCore.QObject.connect(self.quickSearchEdit,
             QtCore.SIGNAL(u'returnPressed()'), self.onQuickSearchButton)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'bibles_showprogress'), self.onSearchProgressShow)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'bibles_hideprogress'), self.onSearchProgressHide)
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
-        # Progress Bar
-        self.SearchProgress = QtGui.QProgressBar(self)
-        self.SearchProgress.setFormat('')
-        self.SearchProgress.setMinimum(0)
-        self.SearchProgress.setMaximum(0)
-        self.SearchProgress.setGeometry(self.listView.geometry().left(),
-            self.listView.geometry().top(), 81, 23)
-        self.SearchProgress.setVisible(False)
-        self.SearchProgress.setObjectName(u'SearchProgress')
 
     def configUpdated(self):
         log.debug(u'configUpdated')
@@ -340,23 +324,11 @@ class BibleMediaItem(MediaManagerItem):
         self.configUpdated()
         log.debug(u'bible manager initialise complete')
 
-    def onListViewResize(self, width, height):
-        listViewGeometry = self.listView.geometry()
-        self.SearchProgress.setGeometry(listViewGeometry.x(),
-            (listViewGeometry.y() + listViewGeometry.height()) - 23, 81, 23)
-
-    def onSearchProgressShow(self):
-        self.SearchProgress.setVisible(True)
-        Receiver.send_message(u'openlp_process_events')
-
-    def onSearchProgressHide(self):
-        self.SearchProgress.setVisible(False)
-
     def onImportClick(self):
         if not hasattr(self, u'import_wizard'):
             self.import_wizard = BibleImportForm(self, self.parent.manager,
                 self.parent)
-        # If the import was not canceled then reload.
+        # If the import was not cancelled then reload.
         if self.import_wizard.exec_():
             self.reloadBibles()
 
@@ -418,11 +390,8 @@ class BibleMediaItem(MediaManagerItem):
         verse_count = self.parent.manager.get_verse_count(bible, book, 1)
         if verse_count == 0:
             self.advancedSearchButton.setEnabled(False)
-            Receiver.send_message(u'openlp_error_message', {
-                u'title': translate('BiblePlugin.MediaItem', 'Error'),
-                u'message': translate('BiblePlugin.MediaItem',
-                'Bible not fully loaded')
-            })
+            criticalErrorMessageBox(message=translate('BiblePlugin.MediaItem',
+                'Bible not fully loaded'))
         else:
             self.advancedSearchButton.setEnabled(True)
             self.adjustComboBox(1, self.chapter_count, self.advancedFromChapter)
@@ -563,13 +532,11 @@ class BibleMediaItem(MediaManagerItem):
             if item_second_bible and second_bible or not item_second_bible and \
                 not second_bible:
                 self.displayResults(bible, second_bible)
-            elif QtGui.QMessageBox.critical(self,
-                translate('BiblePlugin.MediaItem', 'Error'),
-                translate('BiblePlugin.MediaItem', 'You cannot combine single '
-                'and second bible verses. Do you want to delete your search '
-                'results and start a new search?'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
-                QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.Yes:
+            elif criticalErrorMessageBox(
+                message=translate('BiblePlugin.MediaItem',
+                'You cannot combine single and second bible verses. Do you '
+                'want to delete your search results and start a new search?'),
+                parent=self, question=True) == QtGui.QMessageBox.Yes:
                 self.listView.clear()
                 self.displayResults(bible, second_bible)
         else:
@@ -613,13 +580,11 @@ class BibleMediaItem(MediaManagerItem):
             if item_second_bible and second_bible or not item_second_bible and \
                 not second_bible:
                 self.displayResults(bible, second_bible)
-            elif QtGui.QMessageBox.critical(self,
-                translate('BiblePlugin.MediaItem', 'Error'),
-                translate('BiblePlugin.MediaItem', 'You cannot combine single '
-                'and second bible verses. Do you want to delete your search '
-                'results and start a new search?'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
-                QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.Yes:
+            elif criticalErrorMessageBox(
+                message=translate('BiblePlugin.MediaItem',
+                'You cannot combine single and second bible verses. Do you '
+                'want to delete your search results and start a new search?'),
+                parent=self, question=True) == QtGui.QMessageBox.Yes:
                 self.listView.clear()
                 self.displayResults(bible, second_bible)
         elif self.search_results:
@@ -745,21 +710,21 @@ class BibleMediaItem(MediaManagerItem):
                     second_copyright, second_permissions)
                 if footer not in raw_footer:
                     raw_footer.append(footer)
-                bible_text = u'%s\u00a0%s\n\n%s\u00a0%s' % (verse_text, text,
+                bible_text = u'%s&nbsp;%s\n\n%s&nbsp;%s' % (verse_text, text,
                     verse_text, second_text)
-                raw_slides.append(bible_text)
+                raw_slides.append(bible_text.rstrip())
                 bible_text = u''
             # If we are 'Verse Per Slide' then create a new slide.
             elif self.parent.settings_tab.layout_style == 0:
-                bible_text = u'%s\u00a0%s' % (verse_text, text)
-                raw_slides.append(bible_text)
+                bible_text = u'%s&nbsp;%s' % (verse_text, text)
+                raw_slides.append(bible_text.rstrip())
                 bible_text = u''
             # If we are 'Verse Per Line' then force a new line.
             elif self.parent.settings_tab.layout_style == 1:
-                bible_text = u'%s %s\u00a0%s\n' % (bible_text, verse_text, text)
+                bible_text = u'%s %s&nbsp;%s\n' % (bible_text, verse_text, text)
             # We have to be 'Continuous'.
             else:
-                bible_text = u'%s %s\u00a0%s\n' % (bible_text, verse_text, text)
+                bible_text = u'%s %s&nbsp;%s\n' % (bible_text, verse_text, text)
             if not old_item:
                 start_item = item
             elif self.checkTitle(item, old_item):
@@ -770,7 +735,7 @@ class BibleMediaItem(MediaManagerItem):
         raw_title.append(self.formatTitle(start_item, item))
         # If there are no more items we check whether we have to add bible_text.
         if bible_text:
-            raw_slides.append(bible_text)
+            raw_slides.append(bible_text.lstrip())
             bible_text = u''
         # Service Item: Capabilities
         if self.parent.settings_tab.layout_style == 2 and not second_bible:

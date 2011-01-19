@@ -35,7 +35,7 @@ logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO)
 # Stubs to replace the UI functions for raw testing
 class wizard_stub:
     def __init__(self):
-        self.importProgressBar=progbar_stub()
+        self.progressBar=progbar_stub()
     def incrementProgressBar(self, str):
         pass
 class progbar_stub:

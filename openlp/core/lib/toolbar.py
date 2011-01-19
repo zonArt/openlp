@@ -69,8 +69,9 @@ class OpenLPToolbar(QtGui.QToolBar):
         ``slot``
             The method to run when this button is clicked.
 
-        ``objectname``
-            The name of the object, as used in `<button>.setObjectName()`.
+        ``checkable``
+            If *True* the button has two, *off* and *on*, states. Default is
+            *False*, which means the buttons has only one state.
         """
         newAction = None
         if icon:

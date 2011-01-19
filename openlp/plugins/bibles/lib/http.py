@@ -38,6 +38,7 @@ from HTMLParser import HTMLParseError
 from BeautifulSoup import BeautifulSoup, NavigableString
 
 from openlp.core.lib import Receiver, translate
+from openlp.core.ui import criticalErrorMessageBox
 from openlp.core.utils import AppLocation, get_web_page
 from openlp.plugins.bibles.lib import SearchResults
 from openlp.plugins.bibles.lib.db import BibleDB, Book
@@ -208,7 +209,8 @@ class BGExtract(object):
             u'version': u'%s' % version})
         cleaner = [(re.compile('&nbsp;|<br />|\'\+\''), lambda match: '')]
         soup = get_soup_for_bible_ref(
-            u'http://www.biblegateway.com/passage/?%s' % url_params, cleaner)
+            u'http://www.biblegateway.com/passage/?%s' % url_params,
+                cleaner=cleaner)
         if not soup:
             return None
         Receiver.send_message(u'openlp_process_events')
@@ -269,11 +271,12 @@ class BSExtract(object):
         if not soup:
             return None
         Receiver.send_message(u'openlp_process_events')
-        content = soup.find(u'div', u'content').find(u'div').findAll(u'div')
+        content = soup.find(u'div', u'content')
         if not content:
             log.exception(u'No verses found in the Bibleserver response.')
             send_error_message(u'parse')
             return None
+        content = content.find(u'div').findAll(u'div')
         verse_number = re.compile(r'v(\d{1,2})(\d{3})(\d{3}) verse')
         verses = {}
         for verse in content:
@@ -385,7 +388,7 @@ class HTTPBible(BibleDB):
         Run the import. This method overrides the parent class method. Returns
         ``True`` on success, ``False`` on failure.
         """
-        self.wizard.importProgressBar.setMaximum(2)
+        self.wizard.progressBar.setMaximum(2)
         self.wizard.incrementProgressBar('Registering bible...')
         self.create_meta(u'download source', self.download_source)
         self.create_meta(u'download name', self.download_name)
@@ -427,19 +430,18 @@ class HTTPBible(BibleDB):
             if not db_book:
                 book_details = HTTPBooks.get_book(book)
                 if not book_details:
-                    Receiver.send_message(u'openlp_error_message', {
-                        u'title': translate('BiblesPlugin', 'No Book Found'),
-                        u'message': translate('BiblesPlugin', 'No matching '
+                    criticalErrorMessageBox(
+                        translate('BiblesPlugin', 'No Book Found'),
+                        translate('BiblesPlugin', 'No matching '
                         'book could be found in this Bible. Check that you '
-                        'have spelled the name of the book correctly.')
-                    })
+                        'have spelled the name of the book correctly.'))
                     return []
                 db_book = self.create_book(book_details[u'name'],
                     book_details[u'abbreviation'],
                     book_details[u'testament_id'])
             book = db_book.name
             if BibleDB.get_verse_count(self, book, reference[1]) == 0:
-                Receiver.send_message(u'bibles_showprogress')
+                Receiver.send_message(u'cursor_busy')
                 Receiver.send_message(u'openlp_process_events')
                 search_results = self.get_chapter(book, reference[1])
                 if search_results and search_results.has_verselist():
@@ -454,7 +456,7 @@ class HTTPBible(BibleDB):
                     self.create_chapter(db_book.id, search_results.chapter,
                         search_results.verselist)
                     Receiver.send_message(u'openlp_process_events')
-                Receiver.send_message(u'bibles_hideprogress')
+                Receiver.send_message(u'cursor_normal')
             Receiver.send_message(u'openlp_process_events')
         return BibleDB.get_verses(self, reference_list)
 
@@ -530,19 +532,23 @@ def get_soup_for_bible_ref(reference_url, header=None, cleaner=None):
     Receiver.send_message(u'openlp_process_events')
     return soup
 
-def send_error_message(reason):
-    if reason == u'download':
-        Receiver.send_message(u'openlp_error_message', {
-            u'title': translate('BiblePlugin.HTTPBible', 'Download Error'),
-            u'message': translate('BiblePlugin.HTTPBible', 'There was a '
+def send_error_message(error_type):
+    """
+    Send a standard error message informing the user of an issue.
+
+    ``error_type``
+        The type of error that occured for the issue.
+    """
+    if error_type == u'download':
+        criticalErrorMessageBox(
+            translate('BiblePlugin.HTTPBible', 'Download Error'),
+            translate('BiblePlugin.HTTPBible', 'There was a '
             'problem downloading your verse selection. Please check your '
             'Internet connection, and if this error continues to occur '
-            'consider reporting a bug.')
-            })
-    elif reason == u'parse':
-        Receiver.send_message(u'openlp_error_message', {
-            u'title': translate('BiblePlugin.HTTPBible', 'Parse Error'),
-            u'message': translate('BiblePlugin.HTTPBible', 'There was a '
+            'please consider reporting a bug.'))
+    elif error_type == u'parse':
+        criticalErrorMessageBox(
+            translate('BiblePlugin.HTTPBible', 'Parse Error'),
+            translate('BiblePlugin.HTTPBible', 'There was a '
             'problem extracting your verse selection. If this error continues '
-            'to occur consider reporting a bug.')
-            })
+            'to occur please consider reporting a bug.'))

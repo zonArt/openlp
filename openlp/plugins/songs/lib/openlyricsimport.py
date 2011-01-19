@@ -60,7 +60,7 @@ class OpenLyricsImport(SongImport):
         """
         Imports the songs.
         """
-        self.import_wizard.importProgressBar.setMaximum(len(self.import_source))
+        self.import_wizard.progressBar.setMaximum(len(self.import_source))
         for file_path in self.import_source:
             if self.stop_import_flag:
                 return False
@@ -68,8 +68,8 @@ class OpenLyricsImport(SongImport):
                 'SongsPlugin.OpenLyricsImport', 'Importing %s...')) %
                 os.path.basename(file_path))
             parser = etree.XMLParser(remove_blank_text=True)
-            file = etree.parse(file_path, parser)
-            xml = unicode(etree.tostring(file))
+            parsed_file = etree.parse(file_path, parser)
+            xml = unicode(etree.tostring(parsed_file))
             if self.openLyrics.xml_to_song(xml) is None:
                 log.debug(u'File could not be imported: %s' % file_path)
                 # Importing this song failed! For now we stop import.
