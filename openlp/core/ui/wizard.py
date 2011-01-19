@@ -95,7 +95,7 @@ class OpenLPWizard(QtGui.QWizard):
 
     def addProgressPage(self):
         """
-        Add the progress page for the wizard.  This page informs the user how
+        Add the progress page for the wizard. This page informs the user how
         the wizard is progressing with its task.
         """
         self.progressPage = QtGui.QWizardPage()
@@ -125,7 +125,7 @@ class OpenLPWizard(QtGui.QWizard):
         log.debug(u'Wizard cancelled by user.')
         if self.currentPage() == self.progressPage:
             Receiver.send_message(u'openlp_stop_wizard')
-        self.done(QtGui.QDialog.Rejected) 
+        self.done(QtGui.QDialog.Rejected)
 
     def onCurrentIdChanged(self, pageId):
         """
