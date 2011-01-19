@@ -207,8 +207,8 @@ class SongImport(QtCore.QObject):
             The text of the verse.
 
         ``versetag``
-            The verse tag can be V1/C1/B etc, or 'V' and 'C' (will count the verses/
-            choruses itself) or None, where it will assume verse.
+            The verse tag can be V1/C1/B etc, or 'V' and 'C' (will count the
+            verses/choruses itself) or None, where it will assume verse.
 
         ``lang``
             The language code (ISO-639) of the verse, for example *en* or *de*.
