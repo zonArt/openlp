@@ -153,7 +153,7 @@ class SongsPlugin(Plugin):
             song.search_title = self.whitespace.sub(u' ', song.title.lower() +
                 u' ' + song.alternate_title.lower())
             # Remove the "language" attribute from lyrics tag. This is not very
-            # important, but this keeps the  database clean. This can be removed
+            # important, but this keeps the database clean. This can be removed
             # when everybody has run the reindex tool once.
             song.lyrics = song.lyrics.replace(
                 u'<lyrics language="en">', u'<lyrics>')

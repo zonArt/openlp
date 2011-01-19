@@ -313,7 +313,7 @@ class EasiSlidesImport(SongImport):
                     tag = SeqTypes[tag.lower()]
                 else:
                     continue
- 
+
                 if tag in versetags:
                     self.verse_order_list.append(tag)
                 else:
