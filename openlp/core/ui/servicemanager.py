@@ -246,6 +246,9 @@ class ServiceManager(QtGui.QWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_updated'), self.configUpdated)
         QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'config_screen_changed'),
+            self.regenerateServiceItems)
+        QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'theme_update_global'), self.themeChange)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'service_item_update'), self.serviceItemUpdate)
@@ -289,7 +292,7 @@ class ServiceManager(QtGui.QWidget):
         self.themeMenu = QtGui.QMenu(
             translate('OpenLP.ServiceManager', '&Change Item Theme'))
         self.menu.addMenu(self.themeMenu)
-        self.configUpdated(True)
+        self.configUpdated()
 
     def setModified(self, modified=True):
         """
@@ -328,15 +331,13 @@ class ServiceManager(QtGui.QWidget):
         """
         return split_filename(self._fileName)[1]
 
-    def configUpdated(self, firstTime=False):
+    def configUpdated(self):
         """
         Triggered when Config dialog is updated.
         """
         self.expandTabs = QtCore.QSettings().value(
             u'advanced/expand service item',
             QtCore.QVariant(u'False')).toBool()
-        if not firstTime:
-            self.regenerateServiceItems()
 
     def supportedSuffixes(self, suffix):
         self.suffixes.append(suffix)
