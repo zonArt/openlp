@@ -28,8 +28,6 @@ Provide common toolbar handling for OpenLP
 """
 import logging
 
-from PyQt4 import QtCore, QtGui
-
 from openlp.core.lib import build_icon
 
 log = logging.getLogger(__name__)
@@ -51,7 +49,7 @@ class OpenLPToolbar(QtGui.QToolBar):
         log.debug(u'Init done')
 
     def addToolbarButton(self, title, icon, tooltip=None, slot=None,
-        checkable=False,  shortcut=0,  alternate=0,
+        checkable=False, shortcut=0, alternate=0,
         context=QtCore.Qt.WidgetShortcut):
         """
         A method to help developers easily add a button to the toolbar.

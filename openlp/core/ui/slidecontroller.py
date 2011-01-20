@@ -432,9 +432,6 @@ class SlideController(QtGui.QWidget):
         self.display.imageManager = self.parent.renderManager.image_manager
         self.display.alertTab = self.alertTab
         self.display.setup()
-        self.SlidePreview.setFixedSize(
-            QtCore.QSize(self.settingsmanager.slidecontroller_image,
-            self.settingsmanager.slidecontroller_image / self.ratio))
         if self.isLive:
             self.display.addActions(
                 [self.previousItem,

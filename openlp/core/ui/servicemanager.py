@@ -155,13 +155,13 @@ class ServiceManager(QtGui.QWidget):
             u':/services/service_top.png',
             translate('OpenLP.ServiceManager',
             'Move item to the top of the service.'),
-            self.onServiceTop,  shortcut=QtCore.Qt.Key_Home)
+            self.onServiceTop, shortcut=QtCore.Qt.Key_Home)
         self.serviceManagerList.moveUp = self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', 'Move &up'),
             u':/services/service_up.png',
             translate('OpenLP.ServiceManager',
             'Move item up one position in the service.'),
-            self.onServiceUp,  shortcut=QtCore.Qt.Key_PageUp)
+            self.onServiceUp, shortcut=QtCore.Qt.Key_PageUp)
         self.serviceManagerList.moveDown = self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', 'Move &down'),
             u':/services/service_down.png',
