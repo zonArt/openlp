@@ -395,7 +395,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         Merges two authors into one author.
 
         ``old_author``
-            The author, which was edited. It will be deleted.
+            The object, which was edited, that will be deleted
         """
         # Find the duplicate.
         existing_author = self.manager.get_object_filtered(Author,
@@ -419,7 +419,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         Merges two topics into one topic.
 
         ``old_topic``
-            The topic, which was edited. It will be deleted.
+            The object, which was edited, that will be deleted
         """
         # Find the duplicate.
         existing_topic = self.manager.get_object_filtered(Topic,
@@ -441,7 +441,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         Merges two books into one book.
 
         ``old_book``
-            The book, which was edited. It will be deleted.
+            The object, which was edited, that will be deleted
         """
         # Find the duplicate.
         existing_book = self.manager.get_object_filtered(Book,
