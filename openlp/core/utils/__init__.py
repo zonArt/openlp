@@ -26,7 +26,6 @@
 """
 The :mod:`utils` module provides the utility libraries for OpenLP
 """
-
 import logging
 import os
 import re
@@ -36,12 +35,18 @@ import urllib2
 from datetime import datetime
 
 from PyQt4 import QtGui, QtCore
+if sys.platform != u'win32' and sys.platform != u'darwin':
+    try:
+        from xdg import BaseDirectory
+        XDG_BASE_AVAILABLE = True
+    except ImportError:
+        XDG_BASE_AVAILABLE = False
 
 import openlp
 from openlp.core.lib import Receiver, translate
 
 log = logging.getLogger(__name__)
-images_filter = None
+IMAGES_FILTER = None
 
 class VersionThread(QtCore.QThread):
     """
@@ -113,77 +118,46 @@ class AppLocation(object):
             The directory type you want, for instance the data directory.
         """
         if dir_type == AppLocation.AppDir:
-            if hasattr(sys, u'frozen') and sys.frozen == 1:
-                app_path = os.path.abspath(os.path.split(sys.argv[0])[0])
-            else:
-                app_path = os.path.split(openlp.__file__)[0]
-            return app_path
+            return _get_frozen_path(
+                os.path.abspath(os.path.split(sys.argv[0])[0]),
+                os.path.split(openlp.__file__)[0])
         elif dir_type == AppLocation.ConfigDir:
-            if sys.platform == u'win32':
-                path = os.path.join(os.getenv(u'APPDATA'), u'openlp')
-            elif sys.platform == u'darwin':
-                path = os.path.join(os.getenv(u'HOME'), u'Library',
-                    u'Application Support', u'openlp')
-            else:
-                try:
-                    from xdg import BaseDirectory
-                    path = os.path.join(
-                        BaseDirectory.xdg_config_home, u'openlp')
-                except ImportError:
-                    path = os.path.join(os.getenv(u'HOME'), u'.openlp')
-            return path
+            return _get_os_dir_path(u'openlp',
+                os.path.join(os.getenv(u'HOME'), u'Library',
+                    u'Application Support', u'openlp'),
+                os.path.join(BaseDirectory.xdg_config_home, u'openlp'),
+                os.path.join(os.getenv(u'HOME'), u'.openlp'))
         elif dir_type == AppLocation.DataDir:
-            if sys.platform == u'win32':
-                path = os.path.join(os.getenv(u'APPDATA'), u'openlp', u'data')
-            elif sys.platform == u'darwin':
-                path = os.path.join(os.getenv(u'HOME'), u'Library',
-                    u'Application Support', u'openlp', u'Data')
-            else:
-                try:
-                    from xdg import BaseDirectory
-                    path = os.path.join(BaseDirectory.xdg_data_home, u'openlp')
-                except ImportError:
-                    path = os.path.join(os.getenv(u'HOME'), u'.openlp', u'data')
-            return path
+            return _get_os_dir_path(os.path.join(u'openlp', u'data'),
+                os.path.join(os.getenv(u'HOME'), u'Library',
+                    u'Application Support', u'openlp', u'Data'),
+                os.path.join(BaseDirectory.xdg_data_home, u'openlp'),
+                os.path.join(os.getenv(u'HOME'), u'.openlp', u'data'))
         elif dir_type == AppLocation.PluginsDir:
-            plugin_path = None
             app_path = os.path.abspath(os.path.split(sys.argv[0])[0])
-            if hasattr(sys, u'frozen') and sys.frozen == 1:
-                plugin_path = os.path.join(app_path, u'plugins')
-            else:
-                plugin_path = os.path.join(
-                    os.path.split(openlp.__file__)[0], u'plugins')
-            return plugin_path
+            return _get_frozen_path(os.path.join(app_path, u'plugins'),
+                os.path.join(os.path.split(openlp.__file__)[0], u'plugins'))
         elif dir_type == AppLocation.VersionDir:
-            if hasattr(sys, u'frozen') and sys.frozen == 1:
-                version_path = os.path.abspath(os.path.split(sys.argv[0])[0])
-            else:
-                version_path = os.path.split(openlp.__file__)[0]
-            return version_path
+            return _get_frozen_path(
+                os.path.abspath(os.path.split(sys.argv[0])[0]),
+                os.path.split(openlp.__file__)[0])
         elif dir_type == AppLocation.CacheDir:
-            if sys.platform == u'win32':
-                path = os.path.join(os.getenv(u'APPDATA'), u'openlp')
-            elif sys.platform == u'darwin':
-                path = os.path.join(os.getenv(u'HOME'), u'Library',
-                    u'Application Support', u'openlp')
-            else:
-                try:
-                    from xdg import BaseDirectory
-                    path = os.path.join(
-                        BaseDirectory.xdg_cache_home, u'openlp')
-                except ImportError:
-                    path = os.path.join(os.getenv(u'HOME'), u'.openlp')
-            return path
+            return _get_os_dir_path(u'openlp',
+                os.path.join(os.getenv(u'HOME'), u'Library',
+                    u'Application Support', u'openlp'),
+                os.path.join(BaseDirectory.xdg_cache_home, u'openlp'),
+                os.path.join(os.getenv(u'HOME'), u'.openlp'))
         if dir_type == AppLocation.LanguageDir:
-            if hasattr(sys, u'frozen') and sys.frozen == 1:
-                app_path = os.path.abspath(os.path.split(sys.argv[0])[0])
-            else:
-                app_path = os.path.split(openlp.__file__)[0]
+            app_path = _get_frozen_path(
+                os.path.abspath(os.path.split(sys.argv[0])[0]),
+                os.path.split(openlp.__file__)[0])
             return os.path.join(app_path, u'i18n')
-
 
     @staticmethod
     def get_data_path():
+        """
+        Return the path OpenLP stores all its data under.
+        """
         path = AppLocation.get_directory(AppLocation.DataDir)
         if not os.path.exists(path):
             os.makedirs(path)
@@ -191,12 +165,38 @@ class AppLocation(object):
 
     @staticmethod
     def get_section_data_path(section):
+        """
+        Return the path a particular module stores its data under.
+        """
         data_path = AppLocation.get_data_path()
         path = os.path.join(data_path, section)
         if not os.path.exists(path):
             os.makedirs(path)
         return path
 
+def _get_os_dir_path(win_option, darwin_option, base_dir_option,
+    non_base_dir_option):
+    """
+    Return a path based on which OS and environment we are running in.
+    """
+    if sys.platform == u'win32':
+        return os.path.join(os.getenv(u'APPDATA'), win_option)
+    elif sys.platform == u'darwin':
+        return darwin_option
+    else:
+        if XDG_BASE_AVAILABLE:
+            return base_dir_option
+        else:
+            return non_base_dir_option
+
+def _get_frozen_path(frozen_option, non_frozen_option):
+    """
+    Return a path based on the system status.
+    """
+    if hasattr(sys, u'frozen') and sys.frozen == 1:
+        return frozen_option
+    else:
+        return non_frozen_option
 
 def check_latest_version(current_version):
     """
@@ -225,9 +225,8 @@ def check_latest_version(current_version):
         remote_version = None
         try:
             remote_version = unicode(urllib2.urlopen(req, None).read()).strip()
-        except IOError, e:
-            if hasattr(e, u'reason'):
-                log.exception(u'Reason for failure: %s', e.reason)
+        except IOError:
+            log.exception(u'Failed to download the latest OpenLP version file')
         if remote_version:
             version_string = remote_version
     return version_string
@@ -264,23 +263,43 @@ def get_images_filter():
     Returns a filter string for a file dialog containing all the supported
     image formats.
     """
-    global images_filter
-    if not images_filter:
+    global IMAGES_FILTER
+    if not IMAGES_FILTER:
         log.debug(u'Generating images filter.')
         formats = [unicode(fmt)
             for fmt in QtGui.QImageReader.supportedImageFormats()]
         visible_formats = u'(*.%s)' % u'; *.'.join(formats)
         actual_formats = u'(*.%s)' % u' *.'.join(formats)
-        images_filter = u'%s %s %s' % (translate('OpenLP', 'Image Files'),
+        IMAGES_FILTER = u'%s %s %s' % (translate('OpenLP', 'Image Files'),
             visible_formats, actual_formats)
-    return images_filter
+    return IMAGES_FILTER
 
 def split_filename(path):
+    """
+    Return a list of the parts in a given path.
+    """
     path = os.path.abspath(path)
     if not os.path.isfile(path):
         return path, u''
     else:
         return os.path.split(path)
+
+def delete_file(file_path_name):
+    """
+    Deletes a file from the system.
+
+    ``file_path_name``
+        The file, including path, to delete.
+    """
+    if not file_path_name:
+        return False
+    try:
+        if os.path.exists(file_path_name):
+            os.remove(file_path_name)
+        return True
+    except (IOError, OSError):
+        log.exception("Unable to delete file %s" % file_path_name)
+        return False
 
 def get_web_page(url, header=None, update_openlp=False):
     """
@@ -337,9 +356,28 @@ def file_is_unicode(filename):
         return None
     return ucsfile
 
+def string_is_unicode(test_string):
+    """
+    Makes sure a string is unicode.
+
+    ``test_string``
+        The string to confirm is unicode.
+    """
+    return_string = u''
+    if not test_string:
+        return return_string
+    if isinstance(test_string, unicode):
+        return_string = test_string
+    if not isinstance(test_string, unicode):
+        try:
+            return_string = unicode(test_string, u'utf-8')
+        except UnicodeError:
+            log.exception("Error encoding string to unicode")
+    return return_string
+
 from languagemanager import LanguageManager
 from actions import ActionList
 
 __all__ = [u'AppLocation', u'check_latest_version', u'add_actions',
     u'get_filesystem_encoding', u'LanguageManager', u'ActionList',
-    u'get_web_page', u'file_is_unicode']
+    u'get_web_page', u'file_is_unicode', u'string_is_unicode']

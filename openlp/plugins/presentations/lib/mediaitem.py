@@ -31,6 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
     SettingsManager, translate, check_item_selected, Receiver, ItemCapabilities
+from openlp.core.ui import criticalErrorMessageBox
 from openlp.plugins.presentations.lib import MessageListener
 
 log = logging.getLogger(__name__)
@@ -180,7 +181,7 @@ class PresentationMediaItem(MediaManagerItem):
             filename = os.path.split(unicode(file))[1]
             if titles.count(filename) > 0:
                 if not initialLoad:
-                    QtGui.QMessageBox.critical(self,
+                    criticalErrorMessageBox(
                         translate('PresentationPlugin.MediaItem',
                         'File Exists'),
                         translate('PresentationPlugin.MediaItem',
@@ -204,7 +205,7 @@ class PresentationMediaItem(MediaManagerItem):
                 if initialLoad:
                     icon = build_icon(u':/general/general_delete.png')
                 else:
-                    QtGui.QMessageBox.critical(
+                    criticalErrorMessageBox(
                         self, translate('PresentationPlugin.MediaItem',
                         'Unsupported File'),
                         translate('PresentationPlugin.MediaItem',
@@ -275,8 +276,8 @@ class PresentationMediaItem(MediaManagerItem):
                     return True
                 else:
                     # File is no longer present
-                    QtGui.QMessageBox.critical(
-                        self, translate('PresentationPlugin.MediaItem',
+                    criticalErrorMessageBox(
+                        translate('PresentationPlugin.MediaItem',
                         'Missing Presentation'),
                         unicode(translate('PresentationPlugin.MediaItem',
                         'The Presentation %s no longer exists.')) % filename)

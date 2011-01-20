@@ -31,7 +31,7 @@ import csv
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, translate
-from db import BibleDB
+from openlp.plugins.bibles.lib.db import BibleDB
 
 log = logging.getLogger(__name__)
 
@@ -51,7 +51,7 @@ class CSVBible(BibleDB):
         self.booksfile = kwargs[u'booksfile']
         self.versesfile = kwargs[u'versefile']
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'bibles_stop_import'), self.stop_import)
+            QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
 
     def do_import(self):
         success = True

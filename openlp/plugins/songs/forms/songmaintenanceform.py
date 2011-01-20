@@ -23,14 +23,18 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+import logging
 
 from PyQt4 import QtGui, QtCore
 from sqlalchemy.sql import and_
 
 from openlp.core.lib import Receiver, translate
+from openlp.core.ui import criticalErrorMessageBox
 from openlp.plugins.songs.forms import AuthorsForm, TopicsForm, SongBookForm
 from openlp.plugins.songs.lib.db import Author, Book, Topic, Song
 from songmaintenancedialog import Ui_SongMaintenanceDialog
+
+log = logging.getLogger(__name__)
 
 class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
     """
@@ -87,15 +91,14 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         if item_id != -1:
             item = self.manager.get_object(item_class, item_id)
             if item and len(item.songs) == 0:
-                if QtGui.QMessageBox.warning(self, dlg_title, del_text,
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
-                    QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.Yes:
+                if criticalErrorMessageBox(title=dlg_title, message=del_text,
+                    parent=self, question=True) == QtGui.QMessageBox.Yes:
                     self.manager.delete_object(item_class, item.id)
                     reset_func()
             else:
-                QtGui.QMessageBox.critical(self, dlg_title, err_text)
+                criticalErrorMessageBox(dlg_title, err_text)
         else:
-            QtGui.QMessageBox.critical(self, dlg_title, sel_text)
+            criticalErrorMessageBox(dlg_title, sel_text)
 
     def resetAuthors(self):
         """
@@ -168,10 +171,10 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             # not return False when nothing has changed (because this would
             # cause an error message later on).
             if edit:
-                if authors[0].id == new_author.id:
-                    return True
-                else:
-                    return False
+                for author in authors:
+                    if author.id != new_author.id:
+                        return False
+                return True
             else:
                 return False
         else:
@@ -188,10 +191,10 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             # not return False when nothing has changed (because this would
             # cause an error message later on).
             if edit:
-                if topics[0].id == new_topic.id:
-                    return True
-                else:
-                    return False
+                for topic in topics:
+                    if topic.id != new_topic.id:
+                        return False
+                return True
             else:
                 return False
         else:
@@ -209,10 +212,10 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             # not return False when nothing has changed (because this would
             # cause an error message later on).
             if edit:
-                if books[0].id == new_book.id:
-                    return True
-                else:
-                    return False
+                for book in books:
+                    if book.id != new_book.id:
+                        return False
+                return True
             else:
                 return False
         else:
@@ -229,14 +232,12 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 if self.manager.save_object(author):
                     self.resetAuthors()
                 else:
-                    QtGui.QMessageBox.critical(self,
-                        translate('SongsPlugin.SongMaintenanceForm', 'Error'),
-                        translate('SongsPlugin.SongMaintenanceForm',
+                    criticalErrorMessageBox(
+                        message=translate('SongsPlugin.SongMaintenanceForm',
                         'Could not add your author.'))
             else:
-                QtGui.QMessageBox.critical(self,
-                    translate('SongsPlugin.SongMaintenanceForm', 'Error'),
-                    translate('SongsPlugin.SongMaintenanceForm',
+                criticalErrorMessageBox(
+                    message=translate('SongsPlugin.SongMaintenanceForm',
                     'This author already exists.'))
 
     def onTopicAddButtonClick(self):
@@ -246,14 +247,12 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 if self.manager.save_object(topic):
                     self.resetTopics()
                 else:
-                    QtGui.QMessageBox.critical(self,
-                        translate('SongsPlugin.SongMaintenanceForm', 'Error'),
-                        translate('SongsPlugin.SongMaintenanceForm',
+                    criticalErrorMessageBox(
+                        message=translate('SongsPlugin.SongMaintenanceForm',
                         'Could not add your topic.'))
             else:
-                QtGui.QMessageBox.critical(self,
-                    translate('SongsPlugin.SongMaintenanceForm', 'Error'),
-                    translate('SongsPlugin.SongMaintenanceForm',
+                criticalErrorMessageBox(
+                    message=translate('SongsPlugin.SongMaintenanceForm',
                     'This topic already exists.'))
 
     def onBookAddButtonClick(self):
@@ -264,14 +263,12 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 if self.manager.save_object(book):
                     self.resetBooks()
                 else:
-                    QtGui.QMessageBox.critical(self,
-                        translate('SongsPlugin.SongMaintenanceForm', 'Error'),
-                        translate('SongsPlugin.SongMaintenanceForm',
+                    criticalErrorMessageBox(
+                        message=translate('SongsPlugin.SongMaintenanceForm',
                         'Could not add your book.'))
             else:
-                QtGui.QMessageBox.critical(self,
-                    translate('SongsPlugin.SongMaintenanceForm', 'Error'),
-                    translate('SongsPlugin.SongMaintenanceForm',
+                criticalErrorMessageBox(
+                    message=translate('SongsPlugin.SongMaintenanceForm',
                     'This book already exists.'))
 
     def onAuthorEditButtonClick(self):
@@ -298,20 +295,15 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                         self.resetAuthors()
                         Receiver.send_message(u'songs_load_list')
                     else:
-                        QtGui.QMessageBox.critical(self,
-                            translate('SongsPlugin.SongMaintenanceForm',
-                            'Error'),
-                            translate('SongsPlugin.SongMaintenanceForm',
+                        criticalErrorMessageBox(
+                            message=translate('SongsPlugin.SongMaintenanceForm',
                             'Could not save your changes.'))
-                elif QtGui.QMessageBox.critical(self,
-                    translate('SongsPlugin.SongMaintenanceForm', 'Error'),
-                    unicode(translate('SongsPlugin.SongMaintenanceForm',
-                    'The author %s already exists. Would you like to make songs'
-                    ' with author %s use the existing author %s?')) %
-                    (author.display_name, temp_display_name,
-                    author.display_name), QtGui.QMessageBox.StandardButtons(
-                    QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)) == \
-                    QtGui.QMessageBox.Yes:
+                elif criticalErrorMessageBox(message=unicode(translate(
+                    'SongsPlugin.SongMaintenanceForm', 'The author %s already '
+                    'exists. Would you like to make songs with author %s use '
+                    'the existing author %s?')) % (author.display_name,
+                    temp_display_name, author.display_name),
+                    parent=self, question=True) == QtGui.QMessageBox.Yes:
                     self.mergeAuthors(author)
                     self.resetAuthors()
                     Receiver.send_message(u'songs_load_list')
@@ -321,9 +313,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     author.first_name = temp_first_name
                     author.last_name = temp_last_name
                     author.display_name = temp_display_name
-                    QtGui.QMessageBox.critical(self,
-                        translate('SongsPlugin.SongMaintenanceForm', 'Error'),
-                        translate('SongsPlugin.SongMaintenanceForm',
+                    criticalErrorMessageBox(
+                        message=translate('SongsPlugin.SongMaintenanceForm',
                         'Could not save your modified author, because the '
                         'author already exists.'))
 
@@ -340,27 +331,22 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     if self.manager.save_object(topic):
                         self.resetTopics()
                     else:
-                        QtGui.QMessageBox.critical(self,
-                            translate('SongsPlugin.SongMaintenanceForm',
-                            'Error'),
-                            translate('SongsPlugin.SongMaintenanceForm',
+                        criticalErrorMessageBox(
+                            message=translate('SongsPlugin.SongMaintenanceForm',
                             'Could not save your changes.'))
-                elif QtGui.QMessageBox.critical(self,
-                    translate('SongsPlugin.SongMaintenanceForm', 'Error'),
-                    unicode(translate('SongsPlugin.SongMaintenanceForm',
+                elif criticalErrorMessageBox(
+                    message=unicode(translate('SongsPlugin.SongMaintenanceForm',
                     'The topic %s already exists. Would you like to make songs '
                     'with topic %s use the existing topic %s?')) % (topic.name,
-                    temp_name, topic.name), QtGui.QMessageBox.StandardButtons(
-                    QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)) == \
-                    QtGui.QMessageBox.Yes:
+                    temp_name, topic.name),
+                    parent=self, question=True) == QtGui.QMessageBox.Yes:
                     self.mergeTopics(topic)
                     self.resetTopics()
                 else:
                     # We restore the topics's old name.
                     topic.name = temp_name
-                    QtGui.QMessageBox.critical(self,
-                        translate('SongsPlugin.SongMaintenanceForm', 'Error'),
-                        translate('SongsPlugin.SongMaintenanceForm',
+                    criticalErrorMessageBox(
+                        message=translate('SongsPlugin.SongMaintenanceForm',
                         'Could not save your modified topic, because it '
                         'already exists.'))
 
@@ -383,19 +369,15 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     if self.manager.save_object(book):
                         self.resetBooks()
                     else:
-                        QtGui.QMessageBox.critical(self,
-                            translate('SongsPlugin.SongMaintenanceForm',
-                            'Error'),
-                            translate('SongsPlugin.SongMaintenanceForm',
+                        criticalErrorMessageBox(
+                            message=translate('SongsPlugin.SongMaintenanceForm',
                             'Could not save your changes.'))
-                elif QtGui.QMessageBox.critical(self,
-                    translate('SongsPlugin.SongMaintenanceForm', 'Error'),
-                    unicode(translate('SongsPlugin.SongMaintenanceForm',
+                elif criticalErrorMessageBox(
+                    message=unicode(translate('SongsPlugin.SongMaintenanceForm',
                     'The book %s already exists. Would you like to make songs '
                     'with book %s use the existing book %s?')) % (book.name,
-                    temp_name, book.name), QtGui.QMessageBox.StandardButtons(
-                    QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)) == \
-                    QtGui.QMessageBox.Yes:
+                    temp_name, book.name),
+                    parent=self, question=True) == QtGui.QMessageBox.Yes:
                     self.mergeBooks(book)
                     self.resetBooks()
                 else:

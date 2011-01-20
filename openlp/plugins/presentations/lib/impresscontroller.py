@@ -51,6 +51,7 @@ else:
 
 from PyQt4 import QtCore
 
+from openlp.core.utils import delete_file
 from presentationcontroller import PresentationController, PresentationDocument
 
 log = logging.getLogger(__name__)
@@ -292,8 +293,7 @@ class ImpressDocument(PresentationDocument):
             try:
                 doc.storeToURL(urlpath, props)
                 self.convert_thumbnail(path, idx + 1)
-                if os.path.exists(path):
-                    os.remove(path)
+                delete_file(path)
             except:
                 log.exception(u'%s - Unable to store openoffice preview' % path)
 

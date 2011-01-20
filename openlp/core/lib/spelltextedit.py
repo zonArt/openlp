@@ -28,9 +28,9 @@ import re
 try:
     import enchant
     from enchant import DictNotFoundError
-    enchant_available = True
+    ENCHANT_AVAILABLE = True
 except ImportError:
-    enchant_available = False
+    ENCHANT_AVAILABLE = False
 
 # based on code from
 # http://john.nachtimwald.com/2009/08/22/qplaintextedit-with-in-line-spell-check
@@ -45,7 +45,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
     def __init__(self, *args):
         QtGui.QPlainTextEdit.__init__(self, *args)
         # Default dictionary based on the current locale.
-        if enchant_available:
+        if ENCHANT_AVAILABLE:
             try:
                 self.dict = enchant.Dict()
             except DictNotFoundError:
@@ -72,7 +72,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         self.setTextCursor(cursor)
         # Check if the selected word is misspelled and offer spelling
         # suggestions if it is.
-        if enchant_available and self.textCursor().hasSelection():
+        if ENCHANT_AVAILABLE and self.textCursor().hasSelection():
             text = unicode(self.textCursor().selectedText())
             if not self.dict.check(text):
                 spell_menu = QtGui.QMenu(translate('OpenLP.SpellTextEdit',

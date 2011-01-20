@@ -169,8 +169,9 @@ class MediaManagerItem(QtGui.QWidget):
         ``slot``
             The method to call when the button is clicked.
 
-        ``objectname``
-            The name of the button.
+        ``checkable``
+            If *True* the button has two, *off* and *on*, states. Default is
+            *False*, which means the buttons has only one state.
         """
         # NB different order (when I broke this out, I didn't want to
         # break compatability), but it makes sense for the icon to
@@ -193,13 +194,13 @@ class MediaManagerItem(QtGui.QWidget):
         """
         # Add a toolbar
         self.addToolbar()
-        #Allow the plugin to define buttons at start of bar
+        # Allow the plugin to define buttons at start of bar
         self.addStartHeaderBar()
-        #Add the middle of the tool bar (pre defined)
+        # Add the middle of the tool bar (pre defined)
         self.addMiddleHeaderBar()
-        #Allow the plugin to define buttons at end of bar
+        # Allow the plugin to define buttons at end of bar
         self.addEndHeaderBar()
-        #Add the list view
+        # Add the list view
         self.addListViewToToolBar()
 
     def addMiddleHeaderBar(self):
@@ -314,7 +315,7 @@ class MediaManagerItem(QtGui.QWidget):
                 context_menu_action(
                     self.listView, u':/general/general_add.png',
                     translate('OpenLP.MediaManagerItem',
-                        '&Add to selected Service Item'),
+                    '&Add to selected Service Item'),
                     self.onAddEditClick))
         QtCore.QObject.connect(self.listView,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
@@ -441,7 +442,7 @@ class MediaManagerItem(QtGui.QWidget):
             QtGui.QMessageBox.information(self,
                 translate('OpenLP.MediaManagerItem', 'No Items Selected'),
                 translate('OpenLP.MediaManagerItem',
-                    'You must select one or more items to preview.'))
+                'You must select one or more items to preview.'))
         else:
             log.debug(u'%s Preview requested', self.plugin.name)
             serviceItem = self.buildServiceItem()
