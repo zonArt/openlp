@@ -157,7 +157,6 @@ class SongMediaItem(MediaManagerItem):
             (5, u':/slides/slide_theme.png',
                 translate('SongsPlugin.MediaItem', 'Themes'))
         ])
-
         self.configUpdated()
 
     def onSearchTextButtonClick(self):
@@ -269,8 +268,8 @@ class SongMediaItem(MediaManagerItem):
     def onImportClick(self):
         if not hasattr(self, u'import_wizard'):
             self.import_wizard = SongImportForm(self, self.parent)
-        self.import_wizard.exec_()
-        Receiver.send_message(u'songs_load_list')
+        if self.import_wizard.exec_() == QtGui.QDialog.Accepted:
+            Receiver.send_message(u'songs_load_list')
 
     def onNewClick(self):
         log.debug(u'onNewClick')
