@@ -844,13 +844,13 @@ class ServiceManager(QtGui.QWidget):
                 treewidgetitem1.setText(0, text[:40])
                 treewidgetitem1.setData(0, QtCore.Qt.UserRole,
                     QtCore.QVariant(count))
-                if serviceItem == itemcount and serviceItemCount == count:
+                if serviceItem == itemcount:
                     # Preserve expanding status as setCurrentItem sets it to
                     # True.
                     temp = item[u'expanded']
-                    if item[u'expanded']:
+                    if item[u'expanded'] and serviceItemCount == count:
                         self.serviceManagerList.setCurrentItem(treewidgetitem1)
-                    else:
+                    elif serviceItemCount == -1:
                         self.serviceManagerList.setCurrentItem(treewidgetitem)
                     item[u'expanded'] = temp
             treewidgetitem.setExpanded(item[u'expanded'])
@@ -1060,7 +1060,7 @@ class ServiceManager(QtGui.QWidget):
         """
         items = self.serviceManagerList.selectedItems()
         pos = 0
-        count = 0
+        count = -1
         for item in items:
             parentitem = item.parent()
             if parentitem is None:
