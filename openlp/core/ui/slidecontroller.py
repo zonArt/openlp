@@ -377,8 +377,6 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'slidecontroller_%s_text_request' % self.typePrefix),
             self.onTextRequest)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'config_updated'), self.refreshServiceItem)
-        QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_screen_changed'), self.screenSizeChanged)
 
     def screenSizeChanged(self):
@@ -395,6 +393,8 @@ class SlideController(QtGui.QWidget):
         self.ratio = float(self.screens.current[u'size'].width()) / \
             float(self.screens.current[u'size'].height())
         self.previewSizeChanged()
+        if self.serviceItem:
+            self.refreshServiceItem()
 
     def previewSizeChanged(self):
         """
@@ -493,11 +493,10 @@ class SlideController(QtGui.QWidget):
         Method to update the service item if the screen has changed
         """
         log.debug(u'refreshServiceItem live = %s' % self.isLive)
-        if self.serviceItem:
-            if self.serviceItem.is_text() or self.serviceItem.is_image():
-                item = self.serviceItem
-                item.render()
-                self._processItem(item, self.selectedRow)
+        if self.serviceItem.is_text() or self.serviceItem.is_image():
+            item = self.serviceItem
+            item.render()
+            self._processItem(item, self.selectedRow)
 
     def addServiceItem(self, item):
         """

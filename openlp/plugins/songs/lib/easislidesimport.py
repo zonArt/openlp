@@ -39,7 +39,7 @@ class EasiSlidesImport(SongImport):
     """
     Import songs exported from EasiSlides
 
-    The format example is here: 
+    The format example is here:
     http://wiki.openlp.org/Development:EasiSlides_-_Song_Data_Format
     """
     def __init__(self, manager, **kwargs):
@@ -71,7 +71,7 @@ class EasiSlidesImport(SongImport):
         for song in song_xml.Item:
             self.import_wizard.incrementProgressBar(
                 unicode(translate('SongsPlugin.ImportWizardForm',
-                    u'Importing %s, song %s...')) % 
+                    u'Importing %s, song %s...')) %
                     (os.path.split(self.filename)[-1], song.Title1))
             success = self._parse_song(song)
             if not success or self.stop_import_flag:
@@ -313,7 +313,7 @@ class EasiSlidesImport(SongImport):
                     tag = SeqTypes[tag.lower()]
                 else:
                     continue
-                
+ 
                 if tag in versetags:
                     self.verse_order_list.append(tag)
                 else:
