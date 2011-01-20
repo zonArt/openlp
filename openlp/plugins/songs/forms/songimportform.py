@@ -654,7 +654,7 @@ class SongImportForm(OpenLPWizard):
             'Select EasiSlides songfile'),
             self.easiSlidesFilenameEdit
         )
-  
+
     def onEWBrowseButtonClicked(self):
         """
         Get EasyWorship song database files
