@@ -279,13 +279,16 @@ class OpenLyrics(object):
         # No xml get out of here.
         if not xml:
             return None
-        song = Song()
         if xml[:5] == u'<?xml':
             xml = xml[38:]
         # Remove chords from xml.
         xml = re.compile(u'<chord name=".*?"/>').sub(u'', xml)
         song_xml = objectify.fromstring(xml)
-        properties = song_xml.properties
+        try:
+            properties = song_xml.properties
+        except AttributeError:
+            return None
+        song = Song()
         self._process_copyright(properties, song)
         self._process_cclinumber(properties, song)
         self._process_titles(properties, song)

@@ -70,11 +70,9 @@ class OpenLyricsImport(SongImport):
                 os.path.basename(file_path))
             try:
                 parsed_file = etree.parse(file_path, parser)
+                xml = unicode(etree.tostring(parsed_file))
+                if self.openLyrics.xml_to_song(xml) is None:
+                    log.debug(u'File could not be imported: %s' % file_path)
             except etree.XMLSyntaxError:
-                return False
-            xml = unicode(etree.tostring(parsed_file))
-            if self.openLyrics.xml_to_song(xml) is None:
-                log.debug(u'File could not be imported: %s' % file_path)
-                # Importing this song failed! For now we stop import.
-                return False
+                log.exception(u'XML syntax error in file %s' % file_path)
         return True
