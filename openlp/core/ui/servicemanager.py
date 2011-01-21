@@ -1082,7 +1082,7 @@ class ServiceManager(QtGui.QWidget):
         """
         link = event.mimeData()
         if link.hasText():
-            plugin = event.mimeData().text()
+            plugin = unicode(event.mimeData().text())
             item = self.serviceManagerList.itemAt(event.pos())
             # ServiceManager started the drag and drop
             if plugin == u'ServiceManager':
