@@ -84,7 +84,7 @@ class EasiSlidesImport(SongImport):
         self._add_title(self.title, song.Title1, True)
         self._add_alttitle(self.alternate_title, song.Title2)
         self._add_number(self.song_number, song.SongNumber)
-        if self.song_number = u'0':
+        if self.song_number == u'0':
             self.song_number = u''
         self._add_authors(song)
         self._add_copyright(song)
