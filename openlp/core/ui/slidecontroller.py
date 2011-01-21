@@ -33,6 +33,7 @@ from PyQt4.phonon import Phonon
 from openlp.core.ui import HideMode, MainDisplay
 from openlp.core.lib import OpenLPToolbar, Receiver, resize_image, \
     ItemCapabilities, translate
+from openlp.core.utils import ActionList
 
 log = logging.getLogger(__name__)
 
@@ -44,34 +45,6 @@ class SlideList(QtGui.QTableWidget):
     def __init__(self, parent=None, name=None):
         QtGui.QTableWidget.__init__(self, parent.Controller)
         self.parent = parent
-        self.hotkeyMap = {
-           QtCore.Qt.Key_Return: 'servicemanager_next_item',
-           QtCore.Qt.Key_Space: 'slidecontroller_live_next_noloop',
-           QtCore.Qt.Key_Enter: 'slidecontroller_live_next_noloop',
-           QtCore.Qt.Key_0: 'servicemanager_next_item',
-           QtCore.Qt.Key_Backspace: 'slidecontroller_live_previous_noloop'}
-
-    def keyPressEvent(self, event):
-        if isinstance(event, QtGui.QKeyEvent):
-            #here accept the event and do something
-            if event.key() == QtCore.Qt.Key_Up:
-                self.parent.onSlideSelectedPrevious()
-                event.accept()
-            elif event.key() == QtCore.Qt.Key_Down:
-                self.parent.onSlideSelectedNext()
-                event.accept()
-            elif event.key() == QtCore.Qt.Key_PageUp:
-                self.parent.onSlideSelectedFirst()
-                event.accept()
-            elif event.key() == QtCore.Qt.Key_PageDown:
-                self.parent.onSlideSelectedLast()
-                event.accept()
-            elif event.key() in self.hotkeyMap and self.parent.isLive:
-                Receiver.send_message(self.hotkeyMap[event.key()])
-                event.accept()
-            event.ignore()
-        else:
-            event.ignore()
 
 
 class SlideController(QtGui.QWidget):
@@ -162,12 +135,14 @@ class SlideController(QtGui.QWidget):
         sizeToolbarPolicy.setHeightForWidth(
             self.Toolbar.sizePolicy().hasHeightForWidth())
         self.Toolbar.setSizePolicy(sizeToolbarPolicy)
-        self.Toolbar.addToolbarButton(
-            u'Previous Slide', u':/slides/slide_previous.png',
+        self.previousItem = self.Toolbar.addToolbarButton(
+            translate('OpenLP.SlideController', 'Previous Slide'),
+            u':/slides/slide_previous.png',
             translate('OpenLP.SlideController', 'Move to previous'),
             self.onSlideSelectedPrevious)
-        self.Toolbar.addToolbarButton(
-            u'Next Slide', u':/slides/slide_next.png',
+        self.nextItem = self.Toolbar.addToolbarButton(
+            translate('OpenLP.SlideController', 'Next Slide'),
+            u':/slides/slide_next.png',
             translate('OpenLP.SlideController', 'Move to next'),
             self.onSlideSelectedNext)
         if self.isLive:
@@ -339,6 +314,25 @@ class SlideController(QtGui.QWidget):
                 self.onGoLiveClick)
             self.Toolbar.makeWidgetsInvisible(self.songEditList)
         self.Mediabar.setVisible(False)
+        if self.isLive:
+            self.setLiveHotkeys(self)
+            self.PreviewListWidget.addActions(
+                [self.previousItem,
+                self.nextItem,
+                self.previousService,
+                self.nextService,
+                self.escapeItem])
+            self.display.addActions(
+                [self.previousItem,
+                self.nextItem,
+                self.previousService,
+                self.nextService,
+                self.escapeItem])
+        else:
+            self.setPreviewHotkeys()
+            self.PreviewListWidget.addActions(
+                [self.nextItem,
+                self.previousItem])
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_%s_stop_loop' % self.typePrefix),
             self.onStopLoop)
@@ -379,6 +373,55 @@ class SlideController(QtGui.QWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_screen_changed'), self.screenSizeChanged)
 
+    def setPreviewHotkeys(self, parent=None):
+        actionList = self.parent.actionList
+        self.previousItem.setShortcuts([QtCore.Qt.Key_Up, 0])
+        actionList.add_action(self.previousItem, u'Preview')
+        self.nextItem.setShortcuts([QtCore.Qt.Key_Down, 0])
+        actionList.add_action(self.nextItem, u'Preview')
+
+    def setLiveHotkeys(self, parent=None):
+        actionList = self.parent.actionList
+        self.previousItem.setShortcuts([QtCore.Qt.Key_Up, QtCore.Qt.Key_PageUp])
+        self.previousItem.setShortcutContext(
+            QtCore.Qt.WidgetWithChildrenShortcut)
+        actionList.add_action(self.nextItem, u'Live')
+        self.nextItem.setShortcuts([QtCore.Qt.Key_Down, QtCore.Qt.Key_PageDown])
+        self.nextItem.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
+        actionList.add_action(self.nextItem, u'Live')
+        self.previousService = QtGui.QAction(translate(
+            'OpenLP.SlideController', 'Previous Service'), parent)
+        self.previousService.setShortcuts([QtCore.Qt.Key_Left, 0])
+        self.previousService.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
+        QtCore.QObject.connect(self.previousService,
+            QtCore.SIGNAL(u'triggered()'), self.servicePrevious)
+        actionList.add_action(self.previousService, u'Live')
+        self.nextService = QtGui.QAction(translate(
+            'OpenLP.SlideController', 'Next Service'), parent)
+        self.nextService.setShortcuts([QtCore.Qt.Key_Right, 0])
+        self.nextService.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
+        QtCore.QObject.connect(self.nextService,
+            QtCore.SIGNAL(u'triggered()'), self.serviceNext)
+        actionList.add_action(self.nextService, u'Live')
+        self.escapeItem = QtGui.QAction(translate(
+            'OpenLP.SlideController', 'Escape Item'), parent)
+        self.escapeItem.setShortcuts([QtCore.Qt.Key_Escape, 0])
+        self.escapeItem.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
+        QtCore.QObject.connect(self.escapeItem,
+            QtCore.SIGNAL(u'triggered()'), self.liveEscape)
+        actionList.add_action(self.escapeItem, u'Live')
+
+    def liveEscape(self):
+        self.display.setVisible(False)
+        self.display.videoStop()
+
+    def servicePrevious(self):
+        Receiver.send_message('servicemanager_previous_item')
+
+    def serviceNext(self):
+        Receiver.send_message('servicemanager_next_item')
+
+
     def screenSizeChanged(self):
         """
         Settings dialog has changed the screen size of adjust output and
@@ -389,6 +432,13 @@ class SlideController(QtGui.QWidget):
         self.display.imageManager = self.parent.renderManager.image_manager
         self.display.alertTab = self.alertTab
         self.display.setup()
+        if self.isLive:
+            self.display.addActions(
+                [self.previousItem,
+                self.nextItem,
+                self.previousService,
+                self.nextService,
+                self.escapeItem])
         # The SlidePreview's ratio.
         self.ratio = float(self.screens.current[u'size'].width()) / \
             float(self.screens.current[u'size'].height())
@@ -1071,4 +1121,3 @@ class SlideController(QtGui.QWidget):
             if self.DesktopScreen.isChecked:
                 self.DesktopScreen.setChecked(False)
                 self.HideMenu.setDefaultAction(self.DesktopScreen)
-
