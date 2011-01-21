@@ -784,7 +784,6 @@ class SongImportForm(OpenLPWizard):
                 filenames=self.getListOfFiles(self.songBeamerFileListWidget)
             )
         if importer.do_import():
-            # reload songs
             self.progressLabel.setText(
                 translate('SongsPlugin.SongImportForm', 'Finished import.'))
         else:
