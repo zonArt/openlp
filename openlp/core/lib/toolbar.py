@@ -28,6 +28,8 @@ Provide common toolbar handling for OpenLP
 """
 import logging
 
+from PyQt4 import QtCore, QtGui
+
 from openlp.core.lib import build_icon
 
 log = logging.getLogger(__name__)

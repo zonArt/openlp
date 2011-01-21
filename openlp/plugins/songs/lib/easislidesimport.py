@@ -27,7 +27,6 @@
 import logging
 import os
 from lxml import etree, objectify
-from lxml.etree import Error, LxmlError
 import re
 
 from openlp.core.lib import translate
