@@ -59,23 +59,23 @@ MEDIA_MANAGER_STYLE = """
 """
 
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
+    def setupUi(self, mainWindow):
         """
         Set up the user interface
         """
-        MainWindow.setObjectName(u'MainWindow')
-        MainWindow.resize(self.settingsmanager.width,
+        mainWindow.setObjectName(u'MainWindow')
+        mainWindow.resize(self.settingsmanager.width,
             self.settingsmanager.height)
-        MainWindow.setWindowIcon(build_icon(u':/icon/openlp-logo-16x16.png'))
-        MainWindow.setDockNestingEnabled(True)
+        mainWindow.setWindowIcon(build_icon(u':/icon/openlp-logo-16x16.png'))
+        mainWindow.setDockNestingEnabled(True)
         # Set up the main container, which contains all the other form widgets.
-        self.MainContent = QtGui.QWidget(MainWindow)
+        self.MainContent = QtGui.QWidget(mainWindow)
         self.MainContent.setObjectName(u'MainContent')
         self.MainContentLayout = QtGui.QHBoxLayout(self.MainContent)
         self.MainContentLayout.setSpacing(0)
         self.MainContentLayout.setMargin(0)
         self.MainContentLayout.setObjectName(u'MainContentLayout')
-        MainWindow.setCentralWidget(self.MainContent)
+        mainWindow.setCentralWidget(self.MainContent)
         self.ControlSplitter = QtGui.QSplitter(self.MainContent)
         self.ControlSplitter.setOrientation(QtCore.Qt.Horizontal)
         self.ControlSplitter.setObjectName(u'ControlSplitter')
@@ -92,7 +92,7 @@ class Ui_MainWindow(object):
             QtCore.QVariant(True)).toBool()
         self.liveController.Panel.setVisible(liveVisible)
         # Create menu
-        self.MenuBar = QtGui.QMenuBar(MainWindow)
+        self.MenuBar = QtGui.QMenuBar(mainWindow)
         self.MenuBar.setObjectName(u'MenuBar')
         self.FileMenu = QtGui.QMenu(self.MenuBar)
         self.FileMenu.setObjectName(u'FileMenu')
@@ -116,16 +116,16 @@ class Ui_MainWindow(object):
         # Help Menu
         self.HelpMenu = QtGui.QMenu(self.MenuBar)
         self.HelpMenu.setObjectName(u'HelpMenu')
-        MainWindow.setMenuBar(self.MenuBar)
-        self.StatusBar = QtGui.QStatusBar(MainWindow)
+        mainWindow.setMenuBar(self.MenuBar)
+        self.StatusBar = QtGui.QStatusBar(mainWindow)
         self.StatusBar.setObjectName(u'StatusBar')
-        MainWindow.setStatusBar(self.StatusBar)
+        mainWindow.setStatusBar(self.StatusBar)
         self.DefaultThemeLabel = QtGui.QLabel(self.StatusBar)
         self.DefaultThemeLabel.setObjectName(u'DefaultThemeLabel')
         self.StatusBar.addPermanentWidget(self.DefaultThemeLabel)
         # Create the MediaManager
         self.MediaManagerDock = OpenLPDockWidget(
-            MainWindow, u'MediaManagerDock',
+            mainWindow, u'MediaManagerDock',
             build_icon(u':/system/system_mediamanager.png'))
         self.MediaManagerDock.setStyleSheet(MEDIA_MANAGER_STYLE)
         self.MediaManagerDock.setMinimumWidth(
@@ -134,127 +134,127 @@ class Ui_MainWindow(object):
         self.MediaToolBox = QtGui.QToolBox(self.MediaManagerDock)
         self.MediaToolBox.setObjectName(u'MediaToolBox')
         self.MediaManagerDock.setWidget(self.MediaToolBox)
-        MainWindow.addDockWidget(QtCore.Qt.LeftDockWidgetArea,
+        mainWindow.addDockWidget(QtCore.Qt.LeftDockWidgetArea,
             self.MediaManagerDock)
         # Create the service manager
         self.ServiceManagerDock = OpenLPDockWidget(
-            MainWindow, u'ServiceManagerDock',
+            mainWindow, u'ServiceManagerDock',
             build_icon(u':/system/system_servicemanager.png'))
         self.ServiceManagerDock.setMinimumWidth(
             self.settingsmanager.mainwindow_right)
-        self.ServiceManagerContents = ServiceManager(MainWindow,
+        self.ServiceManagerContents = ServiceManager(mainWindow,
             self.ServiceManagerDock)
         self.ServiceManagerDock.setWidget(self.ServiceManagerContents)
-        MainWindow.addDockWidget(QtCore.Qt.RightDockWidgetArea,
+        mainWindow.addDockWidget(QtCore.Qt.RightDockWidgetArea,
             self.ServiceManagerDock)
         # Create the theme manager
         self.ThemeManagerDock = OpenLPDockWidget(
-            MainWindow, u'ThemeManagerDock',
+            mainWindow, u'ThemeManagerDock',
             build_icon(u':/system/system_thememanager.png'))
         self.ThemeManagerDock.setMinimumWidth(
             self.settingsmanager.mainwindow_right)
-        self.ThemeManagerContents = ThemeManager(MainWindow,
+        self.ThemeManagerContents = ThemeManager(mainWindow,
             self.ThemeManagerDock)
         self.ThemeManagerContents.setObjectName(u'ThemeManagerContents')
         self.ThemeManagerDock.setWidget(self.ThemeManagerContents)
-        MainWindow.addDockWidget(QtCore.Qt.RightDockWidgetArea,
+        mainWindow.addDockWidget(QtCore.Qt.RightDockWidgetArea,
             self.ThemeManagerDock)
         # Create the menu items
-        self.FileNewItem = QtGui.QAction(MainWindow)
+        self.FileNewItem = QtGui.QAction(mainWindow)
         self.FileNewItem.setIcon(build_icon(u':/general/general_new.png'))
         self.FileNewItem.setObjectName(u'FileNewItem')
-        MainWindow.actionList.add_action(self.FileNewItem, u'File')
-        self.FileOpenItem = QtGui.QAction(MainWindow)
+        mainWindow.actionList.add_action(self.FileNewItem, u'File')
+        self.FileOpenItem = QtGui.QAction(mainWindow)
         self.FileOpenItem.setIcon(build_icon(u':/general/general_open.png'))
         self.FileOpenItem.setObjectName(u'FileOpenItem')
-        MainWindow.actionList.add_action(self.FileOpenItem, u'File')
-        self.FileSaveItem = QtGui.QAction(MainWindow)
+        mainWindow.actionList.add_action(self.FileOpenItem, u'File')
+        self.FileSaveItem = QtGui.QAction(mainWindow)
         self.FileSaveItem.setIcon(build_icon(u':/general/general_save.png'))
         self.FileSaveItem.setObjectName(u'FileSaveItem')
-        MainWindow.actionList.add_action(self.FileSaveItem, u'File')
-        self.FileSaveAsItem = QtGui.QAction(MainWindow)
+        mainWindow.actionList.add_action(self.FileSaveItem, u'File')
+        self.FileSaveAsItem = QtGui.QAction(mainWindow)
         self.FileSaveAsItem.setObjectName(u'FileSaveAsItem')
-        MainWindow.actionList.add_action(self.FileSaveAsItem, u'File')
-        self.FileExitItem = QtGui.QAction(MainWindow)
+        mainWindow.actionList.add_action(self.FileSaveAsItem, u'File')
+        self.FileExitItem = QtGui.QAction(mainWindow)
         self.FileExitItem.setIcon(build_icon(u':/system/system_exit.png'))
         self.FileExitItem.setObjectName(u'FileExitItem')
-        MainWindow.actionList.add_action(self.FileExitItem, u'File')
-        self.ImportThemeItem = QtGui.QAction(MainWindow)
+        mainWindow.actionList.add_action(self.FileExitItem, u'File')
+        self.ImportThemeItem = QtGui.QAction(mainWindow)
         self.ImportThemeItem.setObjectName(u'ImportThemeItem')
-        MainWindow.actionList.add_action(self.ImportThemeItem, u'Import')
-        self.ImportLanguageItem = QtGui.QAction(MainWindow)
+        mainWindow.actionList.add_action(self.ImportThemeItem, u'Import')
+        self.ImportLanguageItem = QtGui.QAction(mainWindow)
         self.ImportLanguageItem.setObjectName(u'ImportLanguageItem')
-        MainWindow.actionList.add_action(self.ImportLanguageItem, u'Import')
-        self.ExportThemeItem = QtGui.QAction(MainWindow)
+        mainWindow.actionList.add_action(self.ImportLanguageItem, u'Import')
+        self.ExportThemeItem = QtGui.QAction(mainWindow)
         self.ExportThemeItem.setObjectName(u'ExportThemeItem')
-        MainWindow.actionList.add_action(self.ExportThemeItem, u'Export')
-        self.ExportLanguageItem = QtGui.QAction(MainWindow)
+        mainWindow.actionList.add_action(self.ExportThemeItem, u'Export')
+        self.ExportLanguageItem = QtGui.QAction(mainWindow)
         self.ExportLanguageItem.setObjectName(u'ExportLanguageItem')
-        MainWindow.actionList.add_action(self.ExportLanguageItem, u'Export')
-        self.ViewMediaManagerItem = QtGui.QAction(MainWindow)
+        mainWindow.actionList.add_action(self.ExportLanguageItem, u'Export')
+        self.ViewMediaManagerItem = QtGui.QAction(mainWindow)
         self.ViewMediaManagerItem.setCheckable(True)
         self.ViewMediaManagerItem.setChecked(self.MediaManagerDock.isVisible())
         self.ViewMediaManagerItem.setIcon(
             build_icon(u':/system/system_mediamanager.png'))
         self.ViewMediaManagerItem.setObjectName(u'ViewMediaManagerItem')
-        self.ViewThemeManagerItem = QtGui.QAction(MainWindow)
+        self.ViewThemeManagerItem = QtGui.QAction(mainWindow)
         self.ViewThemeManagerItem.setCheckable(True)
         self.ViewThemeManagerItem.setChecked(self.ThemeManagerDock.isVisible())
         self.ViewThemeManagerItem.setIcon(
             build_icon(u':/system/system_thememanager.png'))
         self.ViewThemeManagerItem.setObjectName(u'ViewThemeManagerItem')
-        MainWindow.actionList.add_action(self.ViewMediaManagerItem, u'View')
-        self.ViewServiceManagerItem = QtGui.QAction(MainWindow)
+        mainWindow.actionList.add_action(self.ViewMediaManagerItem, u'View')
+        self.ViewServiceManagerItem = QtGui.QAction(mainWindow)
         self.ViewServiceManagerItem.setCheckable(True)
         self.ViewServiceManagerItem.setChecked(
             self.ServiceManagerDock.isVisible())
         self.ViewServiceManagerItem.setIcon(
             build_icon(u':/system/system_servicemanager.png'))
         self.ViewServiceManagerItem.setObjectName(u'ViewServiceManagerItem')
-        MainWindow.actionList.add_action(self.ViewServiceManagerItem, u'View')
-        self.ViewPreviewPanel = QtGui.QAction(MainWindow)
+        mainWindow.actionList.add_action(self.ViewServiceManagerItem, u'View')
+        self.ViewPreviewPanel = QtGui.QAction(mainWindow)
         self.ViewPreviewPanel.setCheckable(True)
         self.ViewPreviewPanel.setChecked(previewVisible)
         self.ViewPreviewPanel.setObjectName(u'ViewPreviewPanel')
-        MainWindow.actionList.add_action(self.ViewPreviewPanel, u'View')
-        self.ViewLivePanel = QtGui.QAction(MainWindow)
+        mainWindow.actionList.add_action(self.ViewPreviewPanel, u'View')
+        self.ViewLivePanel = QtGui.QAction(mainWindow)
         self.ViewLivePanel.setCheckable(True)
         self.ViewLivePanel.setChecked(liveVisible)
         self.ViewLivePanel.setObjectName(u'ViewLivePanel')
-        MainWindow.actionList.add_action(self.ViewLivePanel, u'View')
-        self.ModeDefaultItem = QtGui.QAction(MainWindow)
+        mainWindow.actionList.add_action(self.ViewLivePanel, u'View')
+        self.ModeDefaultItem = QtGui.QAction(mainWindow)
         self.ModeDefaultItem.setCheckable(True)
         self.ModeDefaultItem.setObjectName(u'ModeDefaultItem')
-        MainWindow.actionList.add_action(self.ModeDefaultItem, u'View Mode')
-        self.ModeSetupItem = QtGui.QAction(MainWindow)
+        mainWindow.actionList.add_action(self.ModeDefaultItem, u'View Mode')
+        self.ModeSetupItem = QtGui.QAction(mainWindow)
         self.ModeSetupItem.setCheckable(True)
         self.ModeSetupItem.setObjectName(u'ModeLiveItem')
-        MainWindow.actionList.add_action(self.ModeSetupItem, u'View Mode')
-        self.ModeLiveItem = QtGui.QAction(MainWindow)
+        mainWindow.actionList.add_action(self.ModeSetupItem, u'View Mode')
+        self.ModeLiveItem = QtGui.QAction(mainWindow)
         self.ModeLiveItem.setCheckable(True)
         self.ModeLiveItem.setObjectName(u'ModeLiveItem')
-        MainWindow.actionList.add_action(self.ModeLiveItem, u'View Mode')
-        self.ModeGroup = QtGui.QActionGroup(MainWindow)
+        mainWindow.actionList.add_action(self.ModeLiveItem, u'View Mode')
+        self.ModeGroup = QtGui.QActionGroup(mainWindow)
         self.ModeGroup.addAction(self.ModeDefaultItem)
         self.ModeGroup.addAction(self.ModeSetupItem)
         self.ModeGroup.addAction(self.ModeLiveItem)
         self.ModeDefaultItem.setChecked(True)
-        self.ToolsAddToolItem = QtGui.QAction(MainWindow)
+        self.ToolsAddToolItem = QtGui.QAction(mainWindow)
         self.ToolsAddToolItem.setIcon(build_icon(u':/tools/tools_add.png'))
         self.ToolsAddToolItem.setObjectName(u'ToolsAddToolItem')
-        MainWindow.actionList.add_action(self.ToolsAddToolItem, u'Tools')
-        self.SettingsPluginListItem = QtGui.QAction(MainWindow)
+        mainWindow.actionList.add_action(self.ToolsAddToolItem, u'Tools')
+        self.SettingsPluginListItem = QtGui.QAction(mainWindow)
         self.SettingsPluginListItem.setIcon(
             build_icon(u':/system/settings_plugin_list.png'))
         self.SettingsPluginListItem.setObjectName(u'SettingsPluginListItem')
-        MainWindow.actionList.add_action(self.SettingsPluginListItem,
+        mainWindow.actionList.add_action(self.SettingsPluginListItem,
             u'Settings')
         # i18n Language Items
-        self.AutoLanguageItem = QtGui.QAction(MainWindow)
+        self.AutoLanguageItem = QtGui.QAction(mainWindow)
         self.AutoLanguageItem.setObjectName(u'AutoLanguageItem')
         self.AutoLanguageItem.setCheckable(True)
-        MainWindow.actionList.add_action(self.AutoLanguageItem, u'Settings')
-        self.LanguageGroup = QtGui.QActionGroup(MainWindow)
+        mainWindow.actionList.add_action(self.AutoLanguageItem, u'Settings')
+        self.LanguageGroup = QtGui.QActionGroup(mainWindow)
         self.LanguageGroup.setExclusive(True)
         self.LanguageGroup.setObjectName(u'LanguageGroup')
         self.AutoLanguageItem.setChecked(LanguageManager.auto_language)
@@ -262,40 +262,40 @@ class Ui_MainWindow(object):
         qmList = LanguageManager.get_qm_list()
         savedLanguage = LanguageManager.get_language()
         for key in sorted(qmList.keys()):
-            languageItem = QtGui.QAction(MainWindow)
+            languageItem = QtGui.QAction(mainWindow)
             languageItem.setObjectName(key)
             languageItem.setCheckable(True)
             if qmList[key] == savedLanguage:
                 languageItem.setChecked(True)
             add_actions(self.LanguageGroup, [languageItem])
-        self.SettingsShortcutsItem = QtGui.QAction(MainWindow)
+        self.SettingsShortcutsItem = QtGui.QAction(mainWindow)
         self.SettingsShortcutsItem.setIcon(
             build_icon(u':/system/system_configure_shortcuts.png'))
         self.SettingsShortcutsItem.setObjectName(u'SettingsShortcutsItem')
-        self.SettingsConfigureItem = QtGui.QAction(MainWindow)
+        self.SettingsConfigureItem = QtGui.QAction(mainWindow)
         self.SettingsConfigureItem.setIcon(
             build_icon(u':/system/system_settings.png'))
         self.SettingsConfigureItem.setObjectName(u'SettingsConfigureItem')
-        MainWindow.actionList.add_action(self.SettingsShortcutsItem,
+        mainWindow.actionList.add_action(self.SettingsShortcutsItem,
             u'Settings')
-        self.HelpDocumentationItem = QtGui.QAction(MainWindow)
+        self.HelpDocumentationItem = QtGui.QAction(mainWindow)
         self.HelpDocumentationItem.setIcon(
             build_icon(u':/system/system_help_contents.png'))
         self.HelpDocumentationItem.setObjectName(u'HelpDocumentationItem')
         self.HelpDocumentationItem.setEnabled(False)
-        MainWindow.actionList.add_action(self.HelpDocumentationItem, u'Help')
-        self.HelpAboutItem = QtGui.QAction(MainWindow)
+        mainWindow.actionList.add_action(self.HelpDocumentationItem, u'Help')
+        self.HelpAboutItem = QtGui.QAction(mainWindow)
         self.HelpAboutItem.setIcon(
             build_icon(u':/system/system_about.png'))
         self.HelpAboutItem.setObjectName(u'HelpAboutItem')
-        MainWindow.actionList.add_action(self.HelpAboutItem, u'Help')
-        self.HelpOnlineHelpItem = QtGui.QAction(MainWindow)
+        mainWindow.actionList.add_action(self.HelpAboutItem, u'Help')
+        self.HelpOnlineHelpItem = QtGui.QAction(mainWindow)
         self.HelpOnlineHelpItem.setObjectName(u'HelpOnlineHelpItem')
         self.HelpOnlineHelpItem.setEnabled(False)
-        MainWindow.actionList.add_action(self.HelpOnlineHelpItem, u'Help')
-        self.HelpWebSiteItem = QtGui.QAction(MainWindow)
+        mainWindow.actionList.add_action(self.HelpOnlineHelpItem, u'Help')
+        self.HelpWebSiteItem = QtGui.QAction(mainWindow)
         self.HelpWebSiteItem.setObjectName(u'HelpWebSiteItem')
-        MainWindow.actionList.add_action(self.HelpWebSiteItem, u'Help')
+        mainWindow.actionList.add_action(self.HelpWebSiteItem, u'Help')
         add_actions(self.FileImportMenu,
             (self.ImportThemeItem, self.ImportLanguageItem))
         add_actions(self.FileExportMenu,
@@ -324,21 +324,21 @@ class Ui_MainWindow(object):
             self.ViewMenu.menuAction(), self.ToolsMenu.menuAction(),
             self.SettingsMenu.menuAction(), self.HelpMenu.menuAction()))
         # Initialise the translation
-        self.retranslateUi(MainWindow)
+        self.retranslateUi(mainWindow)
         self.MediaToolBox.setCurrentIndex(0)
         # Connect up some signals and slots
         QtCore.QObject.connect(self.FileMenu,
             QtCore.SIGNAL(u'aboutToShow()'), self.updateFileMenu)
         QtCore.QObject.connect(self.FileExitItem,
-            QtCore.SIGNAL(u'triggered()'), MainWindow.close)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+            QtCore.SIGNAL(u'triggered()'), mainWindow.close)
+        QtCore.QMetaObject.connectSlotsByName(mainWindow)
 
-    def retranslateUi(self, MainWindow):
+    def retranslateUi(self, mainWindow):
         """
         Set up the translation system
         """
-        MainWindow.mainTitle = translate('OpenLP.MainWindow', 'OpenLP 2.0')
-        MainWindow.setWindowTitle(MainWindow.mainTitle)
+        mainWindow.mainTitle = translate('OpenLP.MainWindow', 'OpenLP 2.0')
+        mainWindow.setWindowTitle(mainWindow.mainTitle)
         self.FileMenu.setTitle(translate('OpenLP.MainWindow', '&File'))
         self.FileImportMenu.setTitle(translate('OpenLP.MainWindow', '&Import'))
         self.FileExportMenu.setTitle(translate('OpenLP.MainWindow', '&Export'))
@@ -450,39 +450,34 @@ class Ui_MainWindow(object):
         self.HelpAboutItem.setText(translate('OpenLP.MainWindow', '&About'))
         self.HelpAboutItem.setStatusTip(
             translate('OpenLP.MainWindow', 'More information about OpenLP'))
-        self.HelpAboutItem.setShortcut(translate('OpenLP.MainWindow',
-            'Ctrl+F1'))
+        self.HelpAboutItem.setShortcut(
+            translate('OpenLP.MainWindow', 'Ctrl+F1'))
         self.HelpOnlineHelpItem.setText(
             translate('OpenLP.MainWindow', '&Online Help'))
         self.HelpWebSiteItem.setText(
             translate('OpenLP.MainWindow', '&Web Site'))
         self.AutoLanguageItem.setText(
             translate('OpenLP.MainWindow', '&Auto Detect'))
-        self.AutoLanguageItem.setStatusTip(
-            translate('OpenLP.MainWindow',
-                'Use the system language, if available.'))
+        self.AutoLanguageItem.setStatusTip(translate('OpenLP.MainWindow',
+            'Use the system language, if available.'))
         for item in self.LanguageGroup.actions():
             item.setText(item.objectName())
             item.setStatusTip(unicode(translate('OpenLP.MainWindow',
                 'Set the interface language to %s')) % item.objectName())
         self.ToolsAddToolItem.setText(
             translate('OpenLP.MainWindow', 'Add &Tool...'))
-        self.ToolsAddToolItem.setStatusTip(
-            translate('OpenLP.MainWindow',
-                'Add an application to the list of tools.'))
+        self.ToolsAddToolItem.setStatusTip(translate('OpenLP.MainWindow',
+            'Add an application to the list of tools.'))
         self.ModeDefaultItem.setText(
             translate('OpenLP.MainWindow', '&Default'))
-        self.ModeDefaultItem.setStatusTip(
-            translate('OpenLP.MainWindow',
-                'Set the view mode back to the default.'))
+        self.ModeDefaultItem.setStatusTip(translate('OpenLP.MainWindow',
+            'Set the view mode back to the default.'))
         self.ModeSetupItem.setText(translate('OpenLP.MainWindow', '&Setup'))
         self.ModeSetupItem.setStatusTip(
-            translate('OpenLP.MainWindow',
-                'Set the view mode to Setup.'))
+            translate('OpenLP.MainWindow', 'Set the view mode to Setup.'))
         self.ModeLiveItem.setText(translate('OpenLP.MainWindow', '&Live'))
         self.ModeLiveItem.setStatusTip(
-            translate('OpenLP.MainWindow',
-                'Set the view mode to Live.'))
+            translate('OpenLP.MainWindow', 'Set the view mode to Live.'))
 
 
 class MainWindow(QtGui.QMainWindow, Ui_MainWindow):

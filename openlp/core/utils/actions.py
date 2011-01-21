@@ -27,8 +27,6 @@
 The :mod:`~openlp.core.utils.actions` module provides action list classes used
 by the shortcuts system.
 """
-from PyQt4 import QtCore
-
 class ActionCategory(object):
     """
     The :class:`~openlp.core.utils.ActionCategory` class encapsulates a
