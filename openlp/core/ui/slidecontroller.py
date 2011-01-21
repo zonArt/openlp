@@ -33,6 +33,7 @@ from PyQt4.phonon import Phonon
 from openlp.core.ui import HideMode, MainDisplay
 from openlp.core.lib import OpenLPToolbar, Receiver, resize_image, \
     ItemCapabilities, translate
+from openlp.core.utils import ActionList
 
 log = logging.getLogger(__name__)
 
@@ -42,7 +43,7 @@ class SlideList(QtGui.QTableWidget):
     events.
     """
     def __init__(self, parent=None, name=None):
-        QtGui.QTableWidget.__init__(self, parent.Controller)
+        QtGui.QTableWidget.__init__(self, parent.controller)
         self.parent = parent
 
 
@@ -84,25 +85,25 @@ class SlideController(QtGui.QWidget):
         self.panelLayout.setSpacing(0)
         self.panelLayout.setMargin(0)
         # Type label for the top of the slide controller
-        self.TypeLabel = QtGui.QLabel(self.Panel)
+        self.typeLabel = QtGui.QLabel(self.Panel)
         if self.isLive:
-            self.TypeLabel.setText(translate('OpenLP.SlideController', 'Live'))
+            self.typeLabel.setText(translate('OpenLP.SlideController', 'Live'))
             self.split = 1
             self.typePrefix = u'live'
         else:
-            self.TypeLabel.setText(translate('OpenLP.SlideController',
+            self.typeLabel.setText(translate('OpenLP.SlideController',
                 'Preview'))
             self.split = 0
             self.typePrefix = u'preview'
-        self.TypeLabel.setStyleSheet(u'font-weight: bold; font-size: 12pt;')
-        self.TypeLabel.setAlignment(QtCore.Qt.AlignCenter)
-        self.panelLayout.addWidget(self.TypeLabel)
+        self.typeLabel.setStyleSheet(u'font-weight: bold; font-size: 12pt;')
+        self.typeLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.panelLayout.addWidget(self.typeLabel)
         # Splitter
-        self.Splitter = QtGui.QSplitter(self.Panel)
-        self.Splitter.setOrientation(QtCore.Qt.Vertical)
-        self.panelLayout.addWidget(self.Splitter)
+        self.splitter = QtGui.QSplitter(self.Panel)
+        self.splitter.setOrientation(QtCore.Qt.Vertical)
+        self.panelLayout.addWidget(self.splitter)
         # Actual controller section
-        self.controller = QtGui.QWidget(self.Splitter)
+        self.controller = QtGui.QWidget(self.splitter)
         self.controller.setGeometry(QtCore.QRect(0, 0, 100, 536))
         self.controller.setSizePolicy(
             QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,
@@ -126,32 +127,32 @@ class SlideController(QtGui.QWidget):
         self.previewListWidget.setAlternatingRowColors(True)
         self.controllerLayout.addWidget(self.previewListWidget)
         # Build the full toolbar
-        self.Toolbar = OpenLPToolbar(self)
+        self.toolbar = OpenLPToolbar(self)
         sizeToolbarPolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
             QtGui.QSizePolicy.Fixed)
         sizeToolbarPolicy.setHorizontalStretch(0)
         sizeToolbarPolicy.setVerticalStretch(0)
         sizeToolbarPolicy.setHeightForWidth(
-            self.Toolbar.sizePolicy().hasHeightForWidth())
-        self.Toolbar.setSizePolicy(sizeToolbarPolicy)
-        self.previousItem = self.Toolbar.addToolbarButton(
+            self.toolbar.sizePolicy().hasHeightForWidth())
+        self.toolbar.setSizePolicy(sizeToolbarPolicy)
+        self.previousItem = self.toolbar.addToolbarButton(
             translate('OpenLP.SlideController', 'Previous Slide'),
             u':/slides/slide_previous.png',
             translate('OpenLP.SlideController', 'Move to previous'),
             self.onSlideSelectedPrevious)
-        self.nextItem = self.Toolbar.addToolbarButton(
+        self.nextItem = self.toolbar.addToolbarButton(
             translate('OpenLP.SlideController', 'Next Slide'),
             u':/slides/slide_next.png',
             translate('OpenLP.SlideController', 'Move to next'),
             self.onSlideSelectedNext)
         if self.isLive:
-            self.Toolbar.addToolbarSeparator(u'Close Separator')
-            self.HideMenu = QtGui.QToolButton(self.Toolbar)
+            self.toolbar.addToolbarSeparator(u'Close Separator')
+            self.HideMenu = QtGui.QToolButton(self.toolbar)
             self.HideMenu.setText(translate('OpenLP.SlideController', 'Hide'))
             self.HideMenu.setPopupMode(QtGui.QToolButton.MenuButtonPopup)
-            self.Toolbar.addToolbarWidget(u'Hide Menu', self.HideMenu)
+            self.toolbar.addToolbarWidget(u'Hide Menu', self.HideMenu)
             self.HideMenu.setMenu(QtGui.QMenu(
-                translate('OpenLP.SlideController', 'Hide'), self.Toolbar))
+                translate('OpenLP.SlideController', 'Hide'), self.toolbar))
             self.BlankScreen = QtGui.QAction(QtGui.QIcon(
                 u':/slides/slide_blank.png'),
                 translate('OpenLP.SlideController',
@@ -174,36 +175,36 @@ class SlideController(QtGui.QWidget):
                 self.DesktopScreen.setCheckable(True)
                 QtCore.QObject.connect(self.DesktopScreen,
                     QtCore.SIGNAL(u'triggered(bool)'), self.onHideDisplay)
-            self.Toolbar.addToolbarSeparator(u'Loop Separator')
-            self.Toolbar.addToolbarButton(
+            self.toolbar.addToolbarSeparator(u'Loop Separator')
+            self.toolbar.addToolbarButton(
                 u'Start Loop', u':/media/media_time.png',
                 translate('OpenLP.SlideController', 'Start continuous loop'),
                 self.onStartLoop)
-            self.Toolbar.addToolbarButton(
+            self.toolbar.addToolbarButton(
                 u'Stop Loop', u':/media/media_stop.png',
                 translate('OpenLP.SlideController', 'Stop continuous loop'),
                 self.onStopLoop)
             self.DelaySpinBox = QtGui.QSpinBox()
             self.DelaySpinBox.setMinimum(1)
             self.DelaySpinBox.setMaximum(180)
-            self.Toolbar.addToolbarWidget(u'Image SpinBox', self.DelaySpinBox)
+            self.toolbar.addToolbarWidget(u'Image SpinBox', self.DelaySpinBox)
             self.DelaySpinBox.setSuffix(translate('OpenLP.SlideController',
                 's'))
             self.DelaySpinBox.setToolTip(translate('OpenLP.SlideController',
                 'Delay between slides in seconds'))
         else:
-            self.Toolbar.addToolbarSeparator(u'Close Separator')
-            self.Toolbar.addToolbarButton(
+            self.toolbar.addToolbarSeparator(u'Close Separator')
+            self.toolbar.addToolbarButton(
                 u'Go Live', u':/general/general_live.png',
                 translate('OpenLP.SlideController', 'Move to live'),
                 self.onGoLive)
-            self.Toolbar.addToolbarSeparator(u'Close Separator')
-            self.Toolbar.addToolbarButton(
+            self.toolbar.addToolbarSeparator(u'Close Separator')
+            self.toolbar.addToolbarButton(
                 u'Edit Song', u':/general/general_edit.png',
                 translate('OpenLP.SlideController',
                 'Edit and reload song preview'),
                 self.onEditSong)
-        self.controllerLayout.addWidget(self.Toolbar)
+        self.controllerLayout.addWidget(self.toolbar)
         # Build a Media ToolBar
         self.Mediabar = OpenLPToolbar(self)
         self.Mediabar.addToolbarButton(
@@ -220,14 +221,14 @@ class SlideController(QtGui.QWidget):
             self.onMediaStop)
         if self.isLive:
             # Build the Song Toolbar
-            self.SongMenu = QtGui.QToolButton(self.Toolbar)
+            self.SongMenu = QtGui.QToolButton(self.toolbar)
             self.SongMenu.setText(translate('OpenLP.SlideController',
                 'Go To'))
             self.SongMenu.setPopupMode(QtGui.QToolButton.InstantPopup)
-            self.Toolbar.addToolbarWidget(u'Song Menu', self.SongMenu)
+            self.toolbar.addToolbarWidget(u'Song Menu', self.SongMenu)
             self.SongMenu.setMenu(QtGui.QMenu(
-                translate('OpenLP.SlideController', 'Go To'), self.Toolbar))
-            self.Toolbar.makeWidgetsInvisible([u'Song Menu'])
+                translate('OpenLP.SlideController', 'Go To'), self.toolbar))
+            self.toolbar.makeWidgetsInvisible([u'Song Menu'])
             # Build the volumeSlider.
             self.volumeSlider = QtGui.QSlider(QtCore.Qt.Horizontal)
             self.volumeSlider.setTickInterval(1)
@@ -246,7 +247,7 @@ class SlideController(QtGui.QWidget):
         self.Mediabar.addToolbarWidget(u'Audio Volume', self.volumeSlider)
         self.controllerLayout.addWidget(self.Mediabar)
         # Screen preview area
-        self.PreviewFrame = QtGui.QFrame(self.Splitter)
+        self.PreviewFrame = QtGui.QFrame(self.splitter)
         self.PreviewFrame.setGeometry(QtCore.QRect(0, 0, 300, 300 * self.ratio))
         self.PreviewFrame.setMinimumHeight(100)
         self.PreviewFrame.setSizePolicy(QtGui.QSizePolicy(
@@ -305,13 +306,13 @@ class SlideController(QtGui.QWidget):
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'slidecontroller_live_spin_delay'),
                 self.receiveSpinDelay)
-            self.Toolbar.makeWidgetsInvisible(self.loopList)
-            self.Toolbar.actions[u'Stop Loop'].setVisible(False)
+            self.toolbar.makeWidgetsInvisible(self.loopList)
+            self.toolbar.actions[u'Stop Loop'].setVisible(False)
         else:
             QtCore.QObject.connect(self.previewListWidget,
                 QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
                 self.onGoLiveClick)
-            self.Toolbar.makeWidgetsInvisible(self.songEditList)
+            self.toolbar.makeWidgetsInvisible(self.songEditList)
         self.Mediabar.setVisible(False)
         if self.isLive:
             self.setLiveHotkeys(self)
@@ -391,16 +392,14 @@ class SlideController(QtGui.QWidget):
         self.previousService = QtGui.QAction(translate(
             'OpenLP.SlideController', 'Previous Service'), parent)
         self.previousService.setShortcuts([QtCore.Qt.Key_Left, 0])
-        self.previousService.setShortcutContext(
-            QtCore.Qt.WidgetWithChildrenShortcut)
+        self.previousService.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
         QtCore.QObject.connect(self.previousService,
             QtCore.SIGNAL(u'triggered()'), self.servicePrevious)
         actionList.add_action(self.previousService, u'Live')
         self.nextService = QtGui.QAction(translate(
             'OpenLP.SlideController', 'Next Service'), parent)
         self.nextService.setShortcuts([QtCore.Qt.Key_Right, 0])
-        self.nextService.setShortcutContext(
-            QtCore.Qt.WidgetWithChildrenShortcut)
+        self.nextService.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
         QtCore.QObject.connect(self.nextService,
             QtCore.SIGNAL(u'triggered()'), self.serviceNext)
         actionList.add_action(self.nextService, u'Live')
@@ -508,34 +507,34 @@ class SlideController(QtGui.QWidget):
         """
         Allows the live toolbar to be customised
         """
-        self.Toolbar.setVisible(True)
+        self.toolbar.setVisible(True)
         self.Mediabar.setVisible(False)
-        self.Toolbar.makeWidgetsInvisible([u'Song Menu'])
-        self.Toolbar.makeWidgetsInvisible(self.loopList)
-        self.Toolbar.actions[u'Stop Loop'].setVisible(False)
+        self.toolbar.makeWidgetsInvisible([u'Song Menu'])
+        self.toolbar.makeWidgetsInvisible(self.loopList)
+        self.toolbar.actions[u'Stop Loop'].setVisible(False)
         if item.is_text():
             if QtCore.QSettings().value(
                 self.parent.songsSettingsSection + u'/display songbar',
                 QtCore.QVariant(True)).toBool() and len(self.slideList) > 0:
-                self.Toolbar.makeWidgetsVisible([u'Song Menu'])
+                self.toolbar.makeWidgetsVisible([u'Song Menu'])
         if item.is_capable(ItemCapabilities.AllowsLoop) and \
             len(item.get_frames()) > 1:
-            self.Toolbar.makeWidgetsVisible(self.loopList)
+            self.toolbar.makeWidgetsVisible(self.loopList)
         if item.is_media():
-            self.Toolbar.setVisible(False)
+            self.toolbar.setVisible(False)
             self.Mediabar.setVisible(True)
 
     def enablePreviewToolBar(self, item):
         """
         Allows the Preview toolbar to be customised
         """
-        self.Toolbar.setVisible(True)
+        self.toolbar.setVisible(True)
         self.Mediabar.setVisible(False)
-        self.Toolbar.makeWidgetsInvisible(self.songEditList)
+        self.toolbar.makeWidgetsInvisible(self.songEditList)
         if item.is_capable(ItemCapabilities.AllowsEdit) and item.from_plugin:
-            self.Toolbar.makeWidgetsVisible(self.songEditList)
+            self.toolbar.makeWidgetsVisible(self.songEditList)
         elif item.is_media():
-            self.Toolbar.setVisible(False)
+            self.toolbar.setVisible(False)
             self.Mediabar.setVisible(True)
             self.volumeSlider.setAudioOutput(self.audio)
 
@@ -986,8 +985,8 @@ class SlideController(QtGui.QWidget):
         if self.previewListWidget.rowCount() > 1:
             self.timer_id = self.startTimer(
                 int(self.DelaySpinBox.value()) * 1000)
-            self.Toolbar.actions[u'Stop Loop'].setVisible(True)
-            self.Toolbar.actions[u'Start Loop'].setVisible(False)
+            self.toolbar.actions[u'Stop Loop'].setVisible(True)
+            self.toolbar.actions[u'Start Loop'].setVisible(False)
 
     def onStopLoop(self):
         """
@@ -996,8 +995,8 @@ class SlideController(QtGui.QWidget):
         if self.timer_id != 0:
             self.killTimer(self.timer_id)
             self.timer_id = 0
-            self.Toolbar.actions[u'Start Loop'].setVisible(True)
-            self.Toolbar.actions[u'Stop Loop'].setVisible(False)
+            self.toolbar.actions[u'Start Loop'].setVisible(True)
+            self.toolbar.actions[u'Stop Loop'].setVisible(False)
 
     def timerEvent(self, event):
         """
