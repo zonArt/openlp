@@ -109,7 +109,7 @@ def parse_reference(reference):
     regular expression looks like this:
 
     1. ``^\s*(?!\s)(?P<book>[\d]*[^\d]+)(?<!\s)\s*``
-        The ``book`` group starts with the first non-whitespace character.  There
+        The ``book`` group starts with the first non-whitespace character. There
         are optional leading digits followed by non-digits. The group ends
         before the whitspace in front of the next digit.
     2. ``(?P<ranges>(?:`` + range_string + ``(?:%(sep_l)s|(?=\s*$)))+)\s*$``
