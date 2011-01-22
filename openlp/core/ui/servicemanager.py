@@ -808,17 +808,17 @@ class ServiceManager(QtGui.QWidget):
             self.repaintServiceList(0, 0)
         self.setModified(True)
 
-    def repaintServiceList(self, serviceItem, serviceItemCount):
+    def repaintServiceList(self, serviceItem, serviceItemChild):
         """
         Clear the existing service list and prepaint all the items. This is
         used when moving items as the move takes place in a supporting list,
         and when regenerating all the items due to theme changes.
 
         ``serviceItem``
-            The item which changed.
+            The item which changed. (int)
 
-        ``serviceItemCount``
-            The number of items in the service.
+        ``serviceItemChild``
+            The child of the ``serviceItem``, which will be selected. (int)
         """
         # Correct order of items in array
         count = 1
@@ -851,17 +851,17 @@ class ServiceManager(QtGui.QWidget):
             treewidgetitem.setToolTip(0, serviceitem.notes)
             treewidgetitem.setData(0, QtCore.Qt.UserRole,
                 QtCore.QVariant(item[u'order']))
+            # Add the children to their parent treewidgetitem.
             for count, frame in enumerate(serviceitem.get_frames()):
-                treewidgetitem1 = QtGui.QTreeWidgetItem(treewidgetitem)
+                child = QtGui.QTreeWidgetItem(treewidgetitem)
                 text = frame[u'title'].replace(u'\n', u' ')
-                treewidgetitem1.setText(0, text[:40])
-                treewidgetitem1.setData(0, QtCore.Qt.UserRole,
-                    QtCore.QVariant(count))
-                if serviceItem == itemcount and serviceItemCount == count:
-                    #preserve expanding status as setCurrentItem sets it to True
-                    temp = item[u'expanded']
-                    self.serviceManagerList.setCurrentItem(treewidgetitem1)
-                    item[u'expanded'] = temp
+                child.setText(0, text[:40])
+                child.setData(0, QtCore.Qt.UserRole, QtCore.QVariant(count))
+                if serviceItem == itemcount:
+                    if item[u'expanded'] and serviceItemChild == count:
+                        self.serviceManagerList.setCurrentItem(child)
+                    elif serviceItemChild == -1:
+                        self.serviceManagerList.setCurrentItem(treewidgetitem)
             treewidgetitem.setExpanded(item[u'expanded'])
 
     def validateItem(self, serviceItem):
@@ -972,7 +972,7 @@ class ServiceManager(QtGui.QWidget):
         if replace:
             item.merge(self.serviceItems[sitem][u'service_item'])
             self.serviceItems[sitem][u'service_item'] = item
-            self.repaintServiceList(sitem + 1, 0)
+            self.repaintServiceList(sitem, 0)
             self.mainwindow.liveController.replaceServiceManagerItem(item)
         else:
             # nothing selected for dnd
@@ -1060,11 +1060,16 @@ class ServiceManager(QtGui.QWidget):
 
     def findServiceItem(self):
         """
-        Finds a ServiceItem in the list
+        Finds a ServiceItem in the list and returns the position of the
+        serviceitem and its selected child item. For example, if the third child
+        item (in the Slidecontroller known as slide) in the second service item
+        is selected this will return::
+
+            (1, 2)
         """
         items = self.serviceManagerList.selectedItems()
         pos = 0
-        count = 0
+        count = -1
         for item in items:
             parentitem = item.parent()
             if parentitem is None:
