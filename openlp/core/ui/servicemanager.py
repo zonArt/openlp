@@ -794,7 +794,7 @@ class ServiceManager(QtGui.QWidget):
             self.repaintServiceList(0, 0)
         self.setModified(True)
 
-    def repaintServiceList(self, serviceItem, serviceItemCount):
+    def repaintServiceList(self, serviceItem, serviceItemChild):
         """
         Clear the existing service list and prepaint all the items. This is
         used when moving items as the move takes place in a supporting list,
@@ -803,7 +803,7 @@ class ServiceManager(QtGui.QWidget):
         ``serviceItem``
             The item which changed. (int)
 
-        ``serviceItemCount``
+        ``serviceItemChild``
             The child of the ``serviceItem``, which will be selected. (int)
         """
         # Correct order of items in array
@@ -839,20 +839,15 @@ class ServiceManager(QtGui.QWidget):
                 QtCore.QVariant(item[u'order']))
             # Add the children to their parent treewidgetitem.
             for count, frame in enumerate(serviceitem.get_frames()):
-                treewidgetitem1 = QtGui.QTreeWidgetItem(treewidgetitem)
+                child = QtGui.QTreeWidgetItem(treewidgetitem)
                 text = frame[u'title'].replace(u'\n', u' ')
-                treewidgetitem1.setText(0, text[:40])
-                treewidgetitem1.setData(0, QtCore.Qt.UserRole,
-                    QtCore.QVariant(count))
+                child.setText(0, text[:40])
+                child.setData(0, QtCore.Qt.UserRole, QtCore.QVariant(count))
                 if serviceItem == itemcount:
-                    # Preserve expanding status as setCurrentItem sets it to
-                    # True.
-                    temp = item[u'expanded']
-                    if item[u'expanded'] and serviceItemCount == count:
-                        self.serviceManagerList.setCurrentItem(treewidgetitem1)
-                    elif serviceItemCount == -1:
+                    if item[u'expanded'] and serviceItemChild == count:
+                        self.serviceManagerList.setCurrentItem(child)
+                    elif serviceItemChild == -1:
                         self.serviceManagerList.setCurrentItem(treewidgetitem)
-                    item[u'expanded'] = temp
             treewidgetitem.setExpanded(item[u'expanded'])
 
     def validateItem(self, serviceItem):
