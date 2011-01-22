@@ -243,7 +243,7 @@ class ServiceItem(object):
         file to represent this item.
         """
         service_header = {
-            u'name': self.name.lower(),
+            u'name': self.name,
             u'plugin': self.name,
             u'theme': self.theme,
             u'title': self.title,
@@ -392,10 +392,16 @@ class ServiceItem(object):
         """
         Returns the title of the raw frame
         """
-        return self._raw_frames[row][u'title']
+        try:
+            return self._raw_frames[row][u'title']
+        except IndexError:
+            return u''
 
     def get_frame_path(self, row=0):
         """
         Returns the path of the raw frame
         """
-        return self._raw_frames[row][u'path']
+        try:
+            return self._raw_frames[row][u'path']
+        except IndexError:
+            return u''

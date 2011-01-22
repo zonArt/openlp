@@ -49,34 +49,6 @@ class ServiceManagerList(QtGui.QTreeWidget):
         QtGui.QTreeWidget.__init__(self, parent)
         self.mainwindow = mainwindow
 
-    def keyPressEvent(self, event):
-        if isinstance(event, QtGui.QKeyEvent):
-            #here accept the event and do something
-            if event.key() == QtCore.Qt.Key_Enter:
-                self.mainwindow.makeLive()
-                event.accept()
-            elif event.key() == QtCore.Qt.Key_Home:
-                self.mainwindow.onServiceTop()
-                event.accept()
-            elif event.key() == QtCore.Qt.Key_End:
-                self.mainwindow.onServiceEnd()
-                event.accept()
-            elif event.key() == QtCore.Qt.Key_PageUp:
-                self.mainwindow.onServiceUp()
-                event.accept()
-            elif event.key() == QtCore.Qt.Key_PageDown:
-                self.mainwindow.onServiceDown()
-                event.accept()
-            elif event.key() == QtCore.Qt.Key_Up:
-                self.mainwindow.onMoveSelectionUp()
-                event.accept()
-            elif event.key() == QtCore.Qt.Key_Down:
-                self.mainwindow.onMoveSelectionDown()
-                event.accept()
-            event.ignore()
-        else:
-            event.ignore()
-
     def mouseMoveEvent(self, event):
         """
         Drag and drop event does not care what data is selected
@@ -178,50 +150,72 @@ class ServiceManager(QtGui.QWidget):
         self.layout.addWidget(self.serviceManagerList)
         # Add the bottom toolbar
         self.orderToolbar = OpenLPToolbar(self)
-        self.orderToolbar.addToolbarButton(
+        self.serviceManagerList.moveTop = self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', 'Move to &top'),
             u':/services/service_top.png',
             translate('OpenLP.ServiceManager',
             'Move item to the top of the service.'),
-            self.onServiceTop)
-        self.orderToolbar.addToolbarButton(
+            self.onServiceTop, shortcut=QtCore.Qt.Key_Home)
+        self.serviceManagerList.moveUp = self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', 'Move &up'),
             u':/services/service_up.png',
             translate('OpenLP.ServiceManager',
             'Move item up one position in the service.'),
-            self.onServiceUp)
-        self.orderToolbar.addToolbarButton(
+            self.onServiceUp, shortcut=QtCore.Qt.Key_PageUp)
+        self.serviceManagerList.moveDown = self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', 'Move &down'),
             u':/services/service_down.png',
             translate('OpenLP.ServiceManager',
             'Move item down one position in the service.'),
-            self.onServiceDown)
-        self.orderToolbar.addToolbarButton(
+            self.onServiceDown, shortcut=QtCore.Qt.Key_PageDown)
+        self.serviceManagerList.moveBottom = self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', 'Move to &bottom'),
             u':/services/service_bottom.png',
             translate('OpenLP.ServiceManager',
             'Move item to the end of the service.'),
-            self.onServiceEnd)
+            self.onServiceEnd, shortcut=QtCore.Qt.Key_End)
+        self.serviceManagerList.down = self.orderToolbar.addToolbarButton(
+            translate('OpenLP.ServiceManager', 'Move &down'),
+            None,
+            translate('OpenLP.ServiceManager',
+            'Moves the selection up the window.'),
+            self.onMoveSelectionDown, shortcut=QtCore.Qt.Key_Up)
+        self.serviceManagerList.down.setVisible(False)
+        self.serviceManagerList.up = self.orderToolbar.addToolbarButton(
+            translate('OpenLP.ServiceManager', 'Move up'),
+            None,
+            translate('OpenLP.ServiceManager',
+            'Moves the selection up the window.'),
+            self.onMoveSelectionUp, shortcut=QtCore.Qt.Key_Up)
+        self.serviceManagerList.up.setVisible(False)
         self.orderToolbar.addSeparator()
-        self.orderToolbar.addToolbarButton(
+        self.serviceManagerList.delete = self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', '&Delete From Service'),
             u':/general/general_delete.png',
             translate('OpenLP.ServiceManager',
             'Delete the selected item from the service.'),
             self.onDeleteFromService)
         self.orderToolbar.addSeparator()
-        self.orderToolbar.addToolbarButton(
+        self.serviceManagerList.expand = self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', '&Expand all'),
             u':/services/service_expand_all.png',
             translate('OpenLP.ServiceManager',
             'Expand all the service items.'),
             self.onExpandAll)
-        self.orderToolbar.addToolbarButton(
+        self.serviceManagerList.collapse = self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', '&Collapse all'),
             u':/services/service_collapse_all.png',
             translate('OpenLP.ServiceManager',
             'Collapse all the service items.'),
             self.onCollapseAll)
+        self.orderToolbar.addSeparator()
+        self.serviceManagerList.makeLive = self.orderToolbar.addToolbarButton(
+            translate('OpenLP.ServiceManager', 'Go Live'),
+            u':/general/general_live.png',
+            translate('OpenLP.ServiceManager',
+            'Send the selected item to Live.'),
+            self.makeLive, shortcut=QtCore.Qt.Key_Enter,
+            alternate=QtCore.Qt.Key_Return)
         self.orderToolbar.setObjectName(u'orderToolbar')
         self.layout.addWidget(self.orderToolbar)
         # Connect up our signals and slots
@@ -292,7 +286,27 @@ class ServiceManager(QtGui.QWidget):
         self.themeMenu = QtGui.QMenu(
             translate('OpenLP.ServiceManager', '&Change Item Theme'))
         self.menu.addMenu(self.themeMenu)
+        self.setServiceHotkeys()
+        self.serviceManagerList.addActions(
+            [self.serviceManagerList.moveDown,
+            self.serviceManagerList.moveUp,
+            self.serviceManagerList.makeLive,
+            self.serviceManagerList.moveTop,
+            self.serviceManagerList.moveBottom,
+            self.serviceManagerList.up,
+            self.serviceManagerList.down
+            ])
         self.configUpdated()
+
+    def setServiceHotkeys(self):
+        actionList = self.mainwindow.actionList
+        actionList.add_action(self.serviceManagerList.moveDown, u'Service')
+        actionList.add_action(self.serviceManagerList.moveUp, u'Service')
+        actionList.add_action(self.serviceManagerList.moveTop, u'Service')
+        actionList.add_action(self.serviceManagerList.moveBottom, u'Service')
+        actionList.add_action(self.serviceManagerList.makeLive, u'Service')
+        actionList.add_action(self.serviceManagerList.up, u'Service')
+        actionList.add_action(self.serviceManagerList.down, u'Service')
 
     def setModified(self, modified=True):
         """
@@ -794,17 +808,17 @@ class ServiceManager(QtGui.QWidget):
             self.repaintServiceList(0, 0)
         self.setModified(True)
 
-    def repaintServiceList(self, serviceItem, serviceItemCount):
+    def repaintServiceList(self, serviceItem, serviceItemChild):
         """
         Clear the existing service list and prepaint all the items. This is
         used when moving items as the move takes place in a supporting list,
         and when regenerating all the items due to theme changes.
 
         ``serviceItem``
-            The item which changed.
+            The item which changed. (int)
 
-        ``serviceItemCount``
-            The number of items in the service.
+        ``serviceItemChild``
+            The child of the ``serviceItem``, which will be selected. (int)
         """
         # Correct order of items in array
         count = 1
@@ -837,17 +851,17 @@ class ServiceManager(QtGui.QWidget):
             treewidgetitem.setToolTip(0, serviceitem.notes)
             treewidgetitem.setData(0, QtCore.Qt.UserRole,
                 QtCore.QVariant(item[u'order']))
+            # Add the children to their parent treewidgetitem.
             for count, frame in enumerate(serviceitem.get_frames()):
-                treewidgetitem1 = QtGui.QTreeWidgetItem(treewidgetitem)
+                child = QtGui.QTreeWidgetItem(treewidgetitem)
                 text = frame[u'title'].replace(u'\n', u' ')
-                treewidgetitem1.setText(0, text[:40])
-                treewidgetitem1.setData(0, QtCore.Qt.UserRole,
-                    QtCore.QVariant(count))
-                if serviceItem == itemcount and serviceItemCount == count:
-                    #preserve expanding status as setCurrentItem sets it to True
-                    temp = item[u'expanded']
-                    self.serviceManagerList.setCurrentItem(treewidgetitem1)
-                    item[u'expanded'] = temp
+                child.setText(0, text[:40])
+                child.setData(0, QtCore.Qt.UserRole, QtCore.QVariant(count))
+                if serviceItem == itemcount:
+                    if item[u'expanded'] and serviceItemChild == count:
+                        self.serviceManagerList.setCurrentItem(child)
+                    elif serviceItemChild == -1:
+                        self.serviceManagerList.setCurrentItem(treewidgetitem)
             treewidgetitem.setExpanded(item[u'expanded'])
 
     def validateItem(self, serviceItem):
@@ -958,7 +972,7 @@ class ServiceManager(QtGui.QWidget):
         if replace:
             item.merge(self.serviceItems[sitem][u'service_item'])
             self.serviceItems[sitem][u'service_item'] = item
-            self.repaintServiceList(sitem + 1, 0)
+            self.repaintServiceList(sitem, 0)
             self.mainwindow.liveController.replaceServiceManagerItem(item)
         else:
             # nothing selected for dnd
@@ -1025,7 +1039,7 @@ class ServiceManager(QtGui.QWidget):
                     ItemCapabilities.AllowsPreview):
                     self.mainwindow.previewController.addServiceManagerItem(
                         self.serviceItems[item][u'service_item'], 0)
-                    self.mainwindow.liveController.PreviewListWidget.setFocus()
+                    self.mainwindow.liveController.previewListWidget.setFocus()
         else:
             criticalErrorMessageBox(
                 translate('OpenLP.ServiceManager', 'Missing Display Handler'),
@@ -1046,11 +1060,16 @@ class ServiceManager(QtGui.QWidget):
 
     def findServiceItem(self):
         """
-        Finds a ServiceItem in the list
+        Finds a ServiceItem in the list and returns the position of the
+        serviceitem and its selected child item. For example, if the third child
+        item (in the Slidecontroller known as slide) in the second service item
+        is selected this will return::
+
+            (1, 2)
         """
         items = self.serviceManagerList.selectedItems()
         pos = 0
-        count = 0
+        count = -1
         for item in items:
             parentitem = item.parent()
             if parentitem is None:
@@ -1082,7 +1101,7 @@ class ServiceManager(QtGui.QWidget):
         """
         link = event.mimeData()
         if link.hasText():
-            plugin = event.mimeData().text()
+            plugin = unicode(event.mimeData().text())
             item = self.serviceManagerList.itemAt(event.pos())
             # ServiceManager started the drag and drop
             if plugin == u'ServiceManager':
