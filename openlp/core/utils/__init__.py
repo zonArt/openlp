@@ -47,6 +47,8 @@ from openlp.core.lib import Receiver, translate
 
 log = logging.getLogger(__name__)
 IMAGES_FILTER = None
+UNO_CONNECTION_TYPE = u'pipe'
+#UNO_CONNECTION_TYPE = u'socket'
 
 class VersionThread(QtCore.QThread):
     """
@@ -375,9 +377,37 @@ def string_is_unicode(test_string):
             log.exception("Error encoding string to unicode")
     return return_string
 
+def get_uno_command():
+    """
+    Returns the UNO command to launch an openoffice.org instance.
+    """
+    if UNO_CONNECTION_TYPE == u'pipe':
+        return u'openoffice.org -nologo -norestore -minimized -invisible ' \
+            + u'-nofirststartwizard -accept=pipe,name=openlp_pipe;urp;'
+    else:
+        return u'openoffice.org -nologo -norestore -minimized ' \
+            + u'-invisible -nofirststartwizard ' \
+            + u'-accept=socket,host=localhost,port=2002;urp;'
+
+def get_uno_instance(resolver):
+    """
+    Returns a running openoffice.org instance.
+
+    ``resolver``
+        The UNO resolver to use to find a running instance.
+    """
+    log.debug(u'get UNO Desktop Openoffice - resolve')
+    if UNO_CONNECTION_TYPE == u'pipe':
+        return resolver.resolve(u'uno:pipe,name=openlp_pipe;' \
+            + u'urp;StarOffice.ComponentContext')
+    else:
+        return resolver.resolve(u'uno:socket,host=localhost,port=2002;' \
+            + u'urp;StarOffice.ComponentContext')
+
 from languagemanager import LanguageManager
 from actions import ActionList
 
 __all__ = [u'AppLocation', u'check_latest_version', u'add_actions',
     u'get_filesystem_encoding', u'LanguageManager', u'ActionList',
-    u'get_web_page', u'file_is_unicode', u'string_is_unicode']
+    u'get_web_page', u'file_is_unicode', u'string_is_unicode',
+    u'get_uno_command', u'get_uno_instance', u'delete_file']
