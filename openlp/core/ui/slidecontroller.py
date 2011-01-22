@@ -783,6 +783,7 @@ class SlideController(QtGui.QWidget):
             QtCore.QSettings().remove(
                 self.parent.generalSettingsSection + u'/screen blank')
         self.blankPlugin(checked)
+        self.updatePreview()
 
     def onThemeDisplay(self, checked):
         """
@@ -804,6 +805,7 @@ class SlideController(QtGui.QWidget):
             QtCore.QSettings().remove(
                 self.parent.generalSettingsSection + u'/screen blank')
         self.blankPlugin(checked)
+        self.updatePreview()
 
     def onHideDisplay(self, checked):
         """
@@ -827,6 +829,7 @@ class SlideController(QtGui.QWidget):
             QtCore.QSettings().remove(
                 self.parent.generalSettingsSection + u'/screen blank')
         self.hidePlugin(checked)
+        self.updatePreview()
 
     def blankPlugin(self, blank):
         """

@@ -241,7 +241,10 @@ class MainDisplay(DisplayWidget):
         Used after Image plugin has changed the background
         """
         log.debug(u'resetImage')
-        self.displayImage(self.serviceItem.bg_image_bytes)
+        if hasattr(self, u'serviceItem'):
+            self.displayImage(self.serviceItem.bg_image_bytes)
+        else:
+            self.displayImage(None)
         # Update the preview frame.
         Receiver.send_message(u'maindisplay_active')
 
@@ -343,13 +346,11 @@ class MainDisplay(DisplayWidget):
         Generates a preview of the image displayed.
         """
         log.debug(u'preview for %s', self.isLive)
-        # We must have a service item to preview
-        if not hasattr(self, u'serviceItem'):
-            return
         Receiver.send_message(u'openlp_process_events')
-        if self.isLive:
+        # We must have a service item to preview
+        if self.isLive and hasattr(self, u'serviceItem'):
             # Wait for the fade to finish before geting the preview.
-            # Important otherwise preview will have incorrect text if at all !
+            # Important otherwise preview will have incorrect text if at all!
             if self.serviceItem.themedata and \
                 self.serviceItem.themedata.display_slide_transition:
                 while self.frame.evaluateJavaScript(u'show_text_complete()') \
@@ -362,9 +363,8 @@ class MainDisplay(DisplayWidget):
         # if was hidden keep it hidden
         if self.isLive:
             self.setVisible(True)
-        # if was hidden keep it hidden
-        if self.hideMode and self.isLive:
-            self.hideDisplay(self.hideMode)
+            if self.hideMode:
+                self.hideDisplay(self.hideMode)
         preview = QtGui.QImage(self.screen[u'size'].width(),
             self.screen[u'size'].height(),
             QtGui.QImage.Format_ARGB32_Premultiplied)
