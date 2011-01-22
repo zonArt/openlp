@@ -281,8 +281,8 @@ class PresentationMediaItem(MediaManagerItem):
                             translate('PresentationPlugin.MediaItem',
                             'Missing Presentation'),
                             unicode(translate('PresentationPlugin.MediaItem',
-                            'The Presentation %s is incomplete please reload.'))
-                            % filename)
+                            'The Presentation %s is incomplete,'
+                            ' please reload.')) % filename)
                         return False
                 else:
                     # File is no longer present
