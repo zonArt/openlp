@@ -576,6 +576,9 @@ class SlideController(QtGui.QWidget):
         Called by ServiceManager
         """
         log.debug(u'addServiceManagerItem live = %s' % self.isLive)
+        # If no valid slide number is specified we take the first one.
+        if slideno == -1:
+            slideno = 0
         # If service item is the same as the current on only change slide
         if item.__eq__(self.serviceItem):
             if slideno + 1 < self.PreviewListWidget.rowCount():
