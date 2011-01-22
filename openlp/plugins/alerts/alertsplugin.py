@@ -52,7 +52,8 @@ class AlertsPlugin(Plugin):
         """
         Return the settings tab for the Alerts plugin
         """
-        return AlertsTab(self, self.visible_name[u'title'])
+        self.alertsTab = AlertsTab(self, self.visible_name[u'title'])
+        return self.alertsTab
 
     def addToolsMenuItem(self, tools_menu):
         """
