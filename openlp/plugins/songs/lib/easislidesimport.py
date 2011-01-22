@@ -27,7 +27,6 @@
 import logging
 import os
 from lxml import etree, objectify
-from lxml.etree import Error, LxmlError
 import re
 
 from openlp.core.lib import translate
@@ -82,44 +81,43 @@ class EasiSlidesImport(SongImport):
 
     def _parse_song(self, song):
         self._success = True
-        self._add_title(song)
-        self._add_alttitle(song)
-        self._add_number(song)
+        self._add_title(self.title, song.Title1, True)
+        self._add_alttitle(self.alternate_title, song.Title2)
+        self._add_number(self.song_number, song.SongNumber)
+        if self.song_number == u'0':
+            self.song_number = u''
         self._add_authors(song)
         self._add_copyright(song)
-        self._add_book(song)
+        self._add_book(self.song_book_name, song.BookReference)
         self._parse_and_add_lyrics(song)
         return self._success
 
-    def _add_title(self, song):
-        try:
-            self.title = unicode(song.Title1).strip()
-        except UnicodeDecodeError:
-            log.exception(u'Unicode decode error while decoding Title1')
-            self._success = False
-        except AttributeError:
-            log.exception(u'no Title1')
-            self._success = False
+    def _add_unicode_attribute(self, self_attribute, import_attribute,
+        mandatory=False):
+        """
+        Add imported values to the song model converting them to unicode at the
+        same time.  If the unicode decode fails or a mandatory attribute is not
+        present _success is set to False so the importer can react
+        appropriately.
 
-    def _add_alttitle(self, song):
-        try:
-            self.alternate_title = unicode(song.Title2).strip()
-        except UnicodeDecodeError:
-            log.exception(u'Unicode decode error while decoding Title2')
-            self._success = False
-        except AttributeError:
-            pass
+        ``self_attribute``
+            The attribute in the song model to populate.
 
-    def _add_number(self, song):
+        ``import_attribute``
+            The imported value to convert to unicode and save to the song.
+
+        ``mandatory``
+            Signals that this attribute must exist in a valid song.
+        """
         try:
-            number = unicode(song.SongNumber)
-            if number != u'0':
-                self.song_number = number
+            self_attribute = unicode(import_attribute).strip()
         except UnicodeDecodeError:
-            log.exception(u'Unicode decode error while decoding SongNumber')
+            log.exception(u'UnicodeDecodeError decoding %s' % import_attribute)
             self._success = False
         except AttributeError:
-            pass
+            log.exception(u'No attribute %s' % import_attribute)
+            if mandatory:
+                self._success = False
 
     def _add_authors(self, song):
         try:
@@ -158,15 +156,6 @@ class EasiSlidesImport(SongImport):
         except AttributeError:
             pass
         self.add_copyright(u' '.join(copyright))
-
-    def _add_book(self, song):
-        try:
-            self.song_book_name = unicode(song.BookReference).strip()
-        except UnicodeDecodeError:
-            log.exception(u'Unicode decode error while decoding BookReference')
-            self._success = False
-        except AttributeError:
-            pass
 
     def _parse_and_add_lyrics(self, song):
         try:

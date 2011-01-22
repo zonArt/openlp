@@ -507,6 +507,7 @@ class BibleMediaItem(MediaManagerItem):
         """
         log.debug(u'Advanced Search Button pressed')
         self.advancedSearchButton.setEnabled(False)
+        Receiver.send_message(u'openlp_process_events')
         bible = unicode(self.advancedVersionComboBox.currentText())
         second_bible = unicode(self.advancedSecondComboBox.currentText())
         book = unicode(self.advancedBookComboBox.currentText())
@@ -519,6 +520,7 @@ class BibleMediaItem(MediaManagerItem):
         verse_range = chapter_from + verse_separator + verse_from + \
             range_separator + chapter_to + verse_separator + verse_to
         versetext = u'%s %s' % (book, verse_range)
+        Receiver.send_message(u'cursor_busy')
         self.search_results = self.parent.manager.get_verses(bible, versetext)
         if second_bible:
             self.second_search_results = self.parent.manager.get_verses(
@@ -541,7 +543,9 @@ class BibleMediaItem(MediaManagerItem):
                 self.displayResults(bible, second_bible)
         else:
             self.displayResults(bible, second_bible)
+        Receiver.send_message(u'cursor_normal')
         self.advancedSearchButton.setEnabled(True)
+        Receiver.send_message(u'openlp_process_events')
 
     def onQuickSearchButton(self):
         """
@@ -550,6 +554,7 @@ class BibleMediaItem(MediaManagerItem):
         """
         log.debug(u'Quick Search Button pressed')
         self.quickSearchButton.setEnabled(False)
+        Receiver.send_message(u'openlp_process_events')
         bible = unicode(self.quickVersionComboBox.currentText())
         second_bible = unicode(self.quickSecondComboBox.currentText())
         text = unicode(self.quickSearchEdit.text())
@@ -591,6 +596,7 @@ class BibleMediaItem(MediaManagerItem):
             self.displayResults(bible, second_bible)
         self.quickSearchButton.setEnabled(True)
         Receiver.send_message(u'cursor_normal')
+        Receiver.send_message(u'openlp_process_events')
 
     def displayResults(self, bible, second_bible=u''):
         """

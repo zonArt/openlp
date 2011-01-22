@@ -268,12 +268,22 @@ class PresentationMediaItem(MediaManagerItem):
                         doc.load_presentation()
                     i = 1
                     img = doc.get_thumbnail_path(i, True)
-                    while img:
-                        service_item.add_from_command(path, name, img)
-                        i = i + 1
-                        img = doc.get_thumbnail_path(i, True)
-                    doc.close_presentation()
-                    return True
+                    if img:
+                        while img:
+                            service_item.add_from_command(path, name, img)
+                            i = i + 1
+                            img = doc.get_thumbnail_path(i, True)
+                        doc.close_presentation()
+                        return True
+                    else:
+                        # File is no longer present
+                        criticalErrorMessageBox(
+                            translate('PresentationPlugin.MediaItem',
+                            'Missing Presentation'),
+                            unicode(translate('PresentationPlugin.MediaItem',
+                            'The Presentation %s is incomplete,'
+                            ' please reload.')) % filename)
+                        return False
                 else:
                     # File is no longer present
                     criticalErrorMessageBox(
