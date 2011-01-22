@@ -394,7 +394,7 @@ class ServiceItem(object):
         """
         try:
             return self._raw_frames[row][u'title']
-        except:
+        except keyError:
             return u''
 
     def get_frame_path(self, row=0):
@@ -403,5 +403,5 @@ class ServiceItem(object):
         """
         try:
             return self._raw_frames[row][u'path']
-        except:
+        except keyError:
             return u''
