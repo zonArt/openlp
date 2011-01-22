@@ -392,10 +392,16 @@ class ServiceItem(object):
         """
         Returns the title of the raw frame
         """
-        return self._raw_frames[row][u'title']
+        try:
+            return self._raw_frames[row][u'title']
+        except:
+            return u''
 
     def get_frame_path(self, row=0):
         """
         Returns the path of the raw frame
         """
-        return self._raw_frames[row][u'path']
+        try:
+            return self._raw_frames[row][u'path']
+        except:
+            return u''
