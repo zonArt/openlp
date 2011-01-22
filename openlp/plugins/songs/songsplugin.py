@@ -134,7 +134,7 @@ class SongsPlugin(Plugin):
 
     def onToolsReindexItemTriggered(self):
         """
-        Rebuild the search title of each song.
+        Rebuild each song.
         """
         maxSongs = self.manager.get_object_count(Song)
         progressDialog = QtGui.QProgressDialog(
@@ -150,8 +150,13 @@ class SongsPlugin(Plugin):
                 song.title = u''
             if song.alternate_title is None:
                 song.alternate_title = u''
-            song.search_title = self.whitespace.sub(u' ', song.title.lower() + \
+            song.search_title = self.whitespace.sub(u' ', song.title.lower() +
                 u' ' + song.alternate_title.lower())
+            # Remove the "language" attribute from lyrics tag. This is not very
+            # important, but this keeps the database clean. This can be removed
+            # when everybody has run the reindex tool once.
+            song.lyrics = song.lyrics.replace(
+                u'<lyrics language="en">', u'<lyrics>')
             lyrics = u''
             verses = SongXML().get_verses(song.lyrics)
             for verse in verses:
@@ -159,8 +164,7 @@ class SongsPlugin(Plugin):
             song.search_lyrics = lyrics.lower()
             progressDialog.setValue(counter)
         self.manager.save_objects(songs)
-        counter += 1
-        progressDialog.setValue(counter)
+        progressDialog.setValue(counter + 1)
         self.mediaItem.displayResultsSong(
             self.manager.get_all_objects(Song, order_by_ref=Song.search_title))
 
