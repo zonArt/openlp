@@ -123,18 +123,6 @@ class AppLocation(object):
             return _get_frozen_path(
                 os.path.abspath(os.path.split(sys.argv[0])[0]),
                 os.path.split(openlp.__file__)[0])
-        elif dir_type == AppLocation.ConfigDir:
-            return _get_os_dir_path(u'openlp',
-                os.path.join(os.getenv(u'HOME'), u'Library',
-                    u'Application Support', u'openlp'),
-                os.path.join(BaseDirectory.xdg_config_home, u'openlp'),
-                os.path.join(os.getenv(u'HOME'), u'.openlp'))
-        elif dir_type == AppLocation.DataDir:
-            return _get_os_dir_path(os.path.join(u'openlp', u'data'),
-                os.path.join(os.getenv(u'HOME'), u'Library',
-                    u'Application Support', u'openlp', u'Data'),
-                os.path.join(BaseDirectory.xdg_data_home, u'openlp'),
-                os.path.join(os.getenv(u'HOME'), u'.openlp', u'data'))
         elif dir_type == AppLocation.PluginsDir:
             app_path = os.path.abspath(os.path.split(sys.argv[0])[0])
             return _get_frozen_path(os.path.join(app_path, u'plugins'),
@@ -143,17 +131,16 @@ class AppLocation(object):
             return _get_frozen_path(
                 os.path.abspath(os.path.split(sys.argv[0])[0]),
                 os.path.split(openlp.__file__)[0])
-        elif dir_type == AppLocation.CacheDir:
-            return _get_os_dir_path(u'openlp',
-                os.path.join(os.getenv(u'HOME'), u'Library',
-                    u'Application Support', u'openlp'),
-                os.path.join(BaseDirectory.xdg_cache_home, u'openlp'),
-                os.path.join(os.getenv(u'HOME'), u'.openlp'))
-        if dir_type == AppLocation.LanguageDir:
+        elif dir_type == AppLocation.LanguageDir:
             app_path = _get_frozen_path(
                 os.path.abspath(os.path.split(sys.argv[0])[0]),
                 os.path.split(openlp.__file__)[0])
             return os.path.join(app_path, u'i18n')
+        else:
+            return _get_os_dir_path(u'openlp',
+                os.path.join(os.getenv(u'HOME'), u'Library',
+                    u'Application Support', u'openlp'),
+                None, os.path.join(os.getenv(u'HOME'), u'.openlp'), dir_type)
 
     @staticmethod
     def get_data_path():
@@ -177,17 +164,24 @@ class AppLocation(object):
         return path
 
 def _get_os_dir_path(win_option, darwin_option, base_dir_option,
-    non_base_dir_option):
+    non_base_dir_option, dir_type=1):
     """
     Return a path based on which OS and environment we are running in.
     """
     if sys.platform == u'win32':
         return os.path.join(os.getenv(u'APPDATA'), win_option)
     elif sys.platform == u'darwin':
+        if dir_type == AppLocation.DataDir:
+            return os.path.join(darwin_option, u'Data')
         return darwin_option
     else:
         if XDG_BASE_AVAILABLE:
-            return base_dir_option
+            if dir_type == AppLocation.ConfigDir:
+                return os.path.join(BaseDirectory.xdg_config_home, u'openlp')
+            elif dir_type == AppLocation.DataDir:
+                return os.path.join(BaseDirectory.xdg_data_home, u'openlp')
+            elif dir_type == AppLocation.CacheDir:
+                return os.path.join(BaseDirectory.xdg_cache_home, u'openlp')
         else:
             return non_base_dir_option
 
