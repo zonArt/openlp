@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -31,23 +31,16 @@ from openlp.core.lib import translate, build_icon
 class Ui_ExceptionDialog(object):
     def setupUi(self, exceptionDialog):
         exceptionDialog.setObjectName(u'exceptionDialog')
-        exceptionDialog.resize(580, 407)
         self.exceptionLayout = QtGui.QVBoxLayout(exceptionDialog)
-        self.exceptionLayout.setSpacing(8)
-        self.exceptionLayout.setMargin(8)
         self.exceptionLayout.setObjectName(u'exceptionLayout')
         self.messageLayout = QtGui.QHBoxLayout()
-        self.messageLayout.setSpacing(0)
-        self.messageLayout.setContentsMargins(0, -1, 0, -1)
         self.messageLayout.setObjectName(u'messageLayout')
+        self.messageLayout.addSpacing(12)
         self.bugLabel = QtGui.QLabel(exceptionDialog)
-        self.bugLabel.setMinimumSize(QtCore.QSize(64, 64))
-        self.bugLabel.setMaximumSize(QtCore.QSize(64, 64))
-        self.bugLabel.setText(u'')
         self.bugLabel.setPixmap(QtGui.QPixmap(u':/graphics/exception.png'))
-        self.bugLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.bugLabel.setObjectName(u'bugLabel')
         self.messageLayout.addWidget(self.bugLabel)
+        self.messageLayout.addSpacing(12)
         self.messageLabel = QtGui.QLabel(exceptionDialog)
         self.messageLabel.setWordWrap(True)
         self.messageLabel.setObjectName(u'messageLabel')
@@ -55,11 +48,9 @@ class Ui_ExceptionDialog(object):
         self.exceptionLayout.addLayout(self.messageLayout)
         self.exceptionTextEdit = QtGui.QPlainTextEdit(exceptionDialog)
         self.exceptionTextEdit.setReadOnly(True)
-        self.exceptionTextEdit.setBackgroundVisible(False)
         self.exceptionTextEdit.setObjectName(u'exceptionTextEdit')
         self.exceptionLayout.addWidget(self.exceptionTextEdit)
         self.exceptionButtonBox = QtGui.QDialogButtonBox(exceptionDialog)
-        self.exceptionButtonBox.setOrientation(QtCore.Qt.Horizontal)
         self.exceptionButtonBox.setStandardButtons(QtGui.QDialogButtonBox.Close)
         self.exceptionButtonBox.setObjectName(u'exceptionButtonBox')
         self.exceptionLayout.addWidget(self.exceptionButtonBox)
@@ -76,8 +67,6 @@ class Ui_ExceptionDialog(object):
             QtGui.QDialogButtonBox.ActionRole)
 
         self.retranslateUi(exceptionDialog)
-        QtCore.QObject.connect(self.exceptionButtonBox,
-            QtCore.SIGNAL(u'accepted()'), exceptionDialog.accept)
         QtCore.QObject.connect(self.exceptionButtonBox,
             QtCore.SIGNAL(u'rejected()'), exceptionDialog.reject)
         QtCore.QObject.connect(self.sendReportButton,

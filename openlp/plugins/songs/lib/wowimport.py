@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -32,7 +32,7 @@ import logging
 
 from openlp.plugins.songs.lib.songimport import SongImport
 
-BLOCK_TYPES = (u'V',  u'C',  u'B')
+BLOCK_TYPES = (u'V', u'C', u'B')
 
 log = logging.getLogger(__name__)
 
@@ -99,7 +99,6 @@ class WowImport(SongImport):
             The song manager for the running OpenLP installation.
         """
         SongImport.__init__(self, master_manager)
-        self.master_manager = master_manager
         if kwargs.has_key(u'filename'):
             self.import_source = kwargs[u'filename']
         if kwargs.has_key(u'filenames'):
@@ -108,65 +107,60 @@ class WowImport(SongImport):
 
     def do_import(self):
         """
-        Recieve a single file, or a list of files to import.
+        Receive a single file or a list of files to import.
         """
-
-        if isinstance(self.import_source,  list):
-            self.import_wizard.importProgressBar.setMaximum(
-                len(self.import_source))
+        if isinstance(self.import_source, list):
+            self.import_wizard.progressBar.setMaximum(len(self.import_source))
             for file in self.import_source:
-                self.author = u''
-                self.copyright = u''
-                self.file_name = os.path.split(file)[1]
+                author = u''
+                copyright = u''
+                file_name = os.path.split(file)[1]
                 self.import_wizard.incrementProgressBar(
-                    "Importing %s" % (self.file_name),  0)
+                    u'Importing %s' % (file_name), 0)
                 # Get the song title
-                self.title = self.file_name.rpartition(u'.')[0]
-                self.songData = open(file, 'rb')
-                if self.songData.read(19) != u'WoW File\nSong Words':
+                self.title = file_name.rpartition(u'.')[0]
+                songData = open(file, 'rb')
+                if songData.read(19) != u'WoW File\nSong Words':
                     continue
                 # Seek to byte which stores number of blocks in the song
-                self.songData.seek(56)
-                self.no_of_blocks = ord(self.songData.read(1))
+                songData.seek(56)
+                no_of_blocks = ord(songData.read(1))
                 # Seek to the beging of the first block
-                self.songData.seek(82)
-                for block in range(self.no_of_blocks):
-                    self.lines_to_read = ord(self.songData.read(1))
+                songData.seek(82)
+                for block in range(no_of_blocks):
+                    self.lines_to_read = ord(songData.read(1))
                     # Skip 3 nulls to the beginnig of the 1st line
-                    self.songData.seek(3, os.SEEK_CUR)
-                    self.block_text = u''
+                    songData.seek(3, os.SEEK_CUR)
+                    block_text = u''
                     while self.lines_to_read:
-                        self.length_of_line = ord(self.songData.read(1))
                         self.line_text = unicode(
-                            self.songData.read(self.length_of_line), u'cp1252')
-                        self.songData.seek(1, os.SEEK_CUR)
-                        if self.block_text != u'':
-                            self.block_text += u'\n'
-                        self.block_text += self.line_text
+                            songData.read(ord(songData.read(1))), u'cp1252')
+                        songData.seek(1, os.SEEK_CUR)
+                        if block_text != u'':
+                            block_text += u'\n'
+                        block_text += self.line_text
                         self.lines_to_read -= 1
-                    self.block_type = BLOCK_TYPES[ord(self.songData.read(1))]
+                    block_type = BLOCK_TYPES[ord(songData.read(1))]
                     # Skip 3 nulls at the end of the block
-                    self.songData.seek(3, os.SEEK_CUR)
+                    songData.seek(3, os.SEEK_CUR)
                     # Blocks are seperated by 2 bytes, skip them, but not if
                     # this is the last block!
-                    if (block + 1) < self.no_of_blocks:
-                        self.songData.seek(2, os.SEEK_CUR)
-                    self.add_verse(self.block_text, self.block_type)
-                # Now to extact the author
-                self.author_length = ord(self.songData.read(1))
-                if self.author_length != 0:
-                    self.author = unicode(
-                        self.songData.read(self.author_length), u'cp1252')
+                    if (block + 1) < no_of_blocks:
+                        songData.seek(2, os.SEEK_CUR)
+                    self.add_verse(block_text, block_type)
+                # Now to extract the author
+                author_length = ord(songData.read(1))
+                if author_length != 0:
+                    author = unicode(songData.read(author_length), u'cp1252')
                 # Finally the copyright
-                self.copyright_length = ord(self.songData.read(1))
-                if self.copyright_length != 0:
-                    self.copyright = unicode(
-                        self.songData.read(self.copyright_length), u'cp1252')
-                self.parse_author(self.author)
-                self.add_copyright(self.copyright)
-                self.songData.close()
+                copyright_length = ord(songData.read(1))
+                if copyright_length != 0:
+                    copyright = unicode(
+                        songData.read(copyright_length), u'cp1252')
+                self.parse_author(author)
+                self.add_copyright(copyright)
+                songData.close()
                 self.finish()
                 self.import_wizard.incrementProgressBar(
-                    "Importing %s" % (self.file_name))
+                    u'Importing %s' % (file_name))
             return True
-

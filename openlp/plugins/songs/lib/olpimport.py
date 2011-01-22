@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -34,6 +34,7 @@ from sqlalchemy.orm import class_mapper, mapper, relation, scoped_session, \
     sessionmaker
 from sqlalchemy.orm.exc import UnmappedClassError
 
+from openlp.core.lib import translate
 from openlp.core.lib.db import BaseModel
 from openlp.plugins.songs.lib.db import Author, Book, Song, Topic #, MediaFile
 from songimport import SongImport
@@ -145,11 +146,12 @@ class OpenLPSongImport(SongImport):
 
         source_songs = self.source_session.query(OldSong).all()
         song_total = len(source_songs)
-        self.import_wizard.importProgressBar.setMaximum(song_total)
+        self.import_wizard.progressBar.setMaximum(song_total)
         song_count = 1
         for song in source_songs:
-            self.import_wizard.incrementProgressBar(
-                u'Importing song %s of %s' % (song_count, song_total))
+            self.import_wizard.incrementProgressBar(unicode(translate(
+                'SongsPlugin.OpenLPSongImport', 'Importing song %d of %d.')) %
+                (song_count, song_total))
             new_song = Song()
             new_song.title = song.title
             if has_media_files and hasattr(song, 'alternate_title'):

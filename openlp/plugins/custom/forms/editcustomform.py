@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -29,6 +29,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, translate
+from openlp.core.ui import criticalErrorMessageBox
 from openlp.plugins.custom.lib import CustomXMLBuilder, CustomXMLParser
 from openlp.plugins.custom.lib.db import CustomSlide
 from editcustomdialog import Ui_CustomEditDialog
@@ -151,8 +152,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         """
         valid, message = self._validate()
         if not valid:
-            QtGui.QMessageBox.critical(self,
-                translate('CustomPlugin.EditCustomForm', 'Error'), message)
+            criticalErrorMessageBox(message=message)
             return False
         sxml = CustomXMLBuilder()
         sxml.new_document()
