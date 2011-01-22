@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -28,13 +28,12 @@ The :mod:`olp1import` module provides the functionality for importing
 openlp.org 1.x song databases into the current installation database.
 """
 
-from PyQt4 import QtGui
-
 import logging
 from chardet.universaldetector import UniversalDetector
 import sqlite
 
 from openlp.core.lib import translate
+from openlp.plugins.songs.lib import retrieve_windows_encoding
 from songimport import SongImport
 
 log = logging.getLogger(__name__)
@@ -79,7 +78,7 @@ class OpenLP1SongImport(SongImport):
         cursor.execute(u'SELECT COUNT(songid) FROM songs')
         count = cursor.fetchone()[0]
         success = True
-        self.import_wizard.importProgressBar.setMaximum(count)
+        self.import_wizard.progressBar.setMaximum(count)
         # "cache" our list of authors
         cursor.execute(u'-- types int, unicode')
         cursor.execute(u'SELECT authorid, authorname FROM authors')
@@ -185,64 +184,4 @@ class OpenLP1SongImport(SongImport):
                     detector.close()
                     return detector.result[u'encoding']
         detector.close()
-        guess = detector.result[u'encoding']
-
-        # map chardet result to compatible windows standard code page
-        codepage_mapping = {'IBM866': u'cp866', 'TIS-620': u'cp874',
-            'SHIFT_JIS': u'cp932', 'GB2312': u'cp936', 'HZ-GB-2312': u'cp936',
-            'EUC-KR': u'cp949', 'Big5': u'cp950', 'ISO-8859-2': u'cp1250',
-            'windows-1250': u'cp1250', 'windows-1251': u'cp1251',
-            'windows-1252': u'cp1252', 'ISO-8859-7': u'cp1253',
-            'windows-1253': u'cp1253', 'ISO-8859-8': u'cp1255',
-            'windows-1255': u'cp1255'}
-        if guess in codepage_mapping:
-            guess = codepage_mapping[guess]
-        else:
-            guess = u'cp1252'
-
-        # Show dialog for encoding selection
-        encodings = [(u'cp1256', translate('SongsPlugin.OpenLP1SongImport',
-                'Arabic (CP-1256)')),
-            (u'cp1257', translate('SongsPlugin.OpenLP1SongImport',
-                'Baltic (CP-1257)')),
-            (u'cp1250', translate('SongsPlugin.OpenLP1SongImport',
-                'Central European (CP-1250)')),
-            (u'cp1251', translate('SongsPlugin.OpenLP1SongImport',
-                'Cyrillic (CP-1251)')),
-            (u'cp1253', translate('SongsPlugin.OpenLP1SongImport',
-                'Greek (CP-1253)')),
-            (u'cp1255', translate('SongsPlugin.OpenLP1SongImport',
-                'Hebrew (CP-1255)')),
-            (u'cp932', translate('SongsPlugin.OpenLP1SongImport',
-                'Japanese (CP-932)')),
-            (u'cp949', translate('SongsPlugin.OpenLP1SongImport',
-                'Korean (CP-949)')),
-            (u'cp936', translate('SongsPlugin.OpenLP1SongImport',
-                'Simplified Chinese (CP-936)')),
-            (u'cp874', translate('SongsPlugin.OpenLP1SongImport',
-                'Thai (CP-874)')),
-            (u'cp950', translate('SongsPlugin.OpenLP1SongImport',
-                'Traditional Chinese (CP-950)')),
-            (u'cp1254', translate('SongsPlugin.OpenLP1SongImport',
-                'Turkish (CP-1254)')),
-            (u'cp1258', translate('SongsPlugin.OpenLP1SongImport',
-                'Vietnam (CP-1258)')),
-            (u'cp1252', translate('SongsPlugin.OpenLP1SongImport',
-                'Western European (CP-1252)'))]
-        encoding_index = 0
-        for index in range(len(encodings)):
-            if guess == encodings[index][0]:
-                encoding_index = index
-                break
-        chosen_encoding = QtGui.QInputDialog.getItem(None,
-            translate('SongsPlugin.OpenLP1SongImport',
-                'Database Character Encoding'),
-            translate('SongsPlugin.OpenLP1SongImport',
-                'The codepage setting is responsible\n'
-                'for the correct character representation.\n'
-                'Usually you are fine with the preselected choise.'),
-            [pair[1] for pair in encodings], encoding_index, False)
-        if not chosen_encoding[1]:
-            return None
-        return filter(lambda item: item[1] == chosen_encoding[0],
-            encodings)[0][0]
+        return retrieve_windows_encoding(detector.result[u'encoding'])

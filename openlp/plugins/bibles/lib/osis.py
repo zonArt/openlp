@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -35,7 +35,7 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, translate
 from openlp.core.utils import AppLocation
-from db import BibleDB
+from openlp.plugins.bibles.lib.db import BibleDB
 
 log = logging.getLogger(__name__)
 
@@ -87,7 +87,7 @@ class OSISBible(BibleDB):
             if fbibles:
                 fbibles.close()
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'bibles_stop_import'), self.stop_import)
+            QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
 
     def do_import(self):
         """
@@ -125,7 +125,7 @@ class OSISBible(BibleDB):
                     verse = int(match.group(3))
                     verse_text = match.group(4)
                     if not db_book or db_book.name != self.books[book][0]:
-                        log.debug('New book: "%s"', self.books[book][0])
+                        log.debug(u'New book: "%s"', self.books[book][0])
                         if book == u'Matt':
                             testament += 1
                         db_book = self.create_book(
@@ -134,15 +134,16 @@ class OSISBible(BibleDB):
                             testament)
                     if last_chapter == 0:
                         if book == u'Gen':
-                            self.wizard.importProgressBar.setMaximum(1188)
+                            self.wizard.progressBar.setMaximum(1188)
                         else:
-                            self.wizard.importProgressBar.setMaximum(260)
+                            self.wizard.progressBar.setMaximum(260)
                     if last_chapter != chapter:
                         if last_chapter != 0:
                             self.session.commit()
-                        self.wizard.incrementProgressBar(u'%s %s %s...' % (
-                            translate('BiblesPlugin.OsisImport', 'Importing'),
-                            self.books[match.group(1)][0], chapter))
+                        self.wizard.incrementProgressBar(unicode(translate(
+                            'BiblesPlugin.OsisImport', 'Importing %s %s...',
+                            'Importing <book name> <chapter>...')) %
+                            (self.books[match.group(1)][0], chapter))
                         last_chapter = chapter
                     # All of this rigmarol below is because the mod2osis
                     # tool from the Sword library embeds XML in the OSIS

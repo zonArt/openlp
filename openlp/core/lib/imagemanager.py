@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -30,7 +30,6 @@ A Thread is used to convert the image to a byte array so the user does not need
 to wait for the conversion to happen.
 """
 import logging
-import os
 import time
 
 from PyQt4 import QtCore
@@ -86,8 +85,7 @@ class ImageManager(QtCore.QObject):
         for key in self._cache.keys():
             image = self._cache[key]
             image.dirty = True
-            fullpath = os.path.join(image.path, image.name)
-            image.image = resize_image(fullpath,
+            image.image = resize_image(image.path,
                 self.width, self.height)
         self._cache_dirty = True
         # only one thread please

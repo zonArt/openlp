@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -58,6 +58,7 @@ class ItemCapabilities(object):
     NoLineBreaks = 7
     OnLoadUpdate = 8
     AddIfNewItem = 9
+    ProvidesOwnDisplay = 10
 
 
 class ServiceItem(object):
@@ -242,7 +243,7 @@ class ServiceItem(object):
         file to represent this item.
         """
         service_header = {
-            u'name': self.name.lower(),
+            u'name': self.name,
             u'plugin': self.name,
             u'theme': self.theme,
             u'title': self.title,
@@ -391,10 +392,16 @@ class ServiceItem(object):
         """
         Returns the title of the raw frame
         """
-        return self._raw_frames[row][u'title']
+        try:
+            return self._raw_frames[row][u'title']
+        except IndexError:
+            return u''
 
     def get_frame_path(self, row=0):
         """
         Returns the path of the raw frame
         """
-        return self._raw_frames[row][u'path']
+        try:
+            return self._raw_frames[row][u'path']
+        except IndexError:
+            return u''

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -84,7 +84,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             u'lxml: %s\n' % etree.__version__ + \
             u'Chardet: %s\n' % chardet_version + \
             u'PyEnchant: %s\n' % enchant_version + \
-            u'PySQLite: %s\n' %  sqlite_version
+            u'PySQLite: %s\n' % sqlite_version
         if platform.system() == u'Linux':
             if os.environ.get(u'KDE_FULL_SESSION') == u'true':
                 system = system + u'Desktop: KDE SC\n'
@@ -135,7 +135,9 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             '--- Please enter the report below this line. ---\n\n\n'
             '--- Exception Traceback ---\n%s\n'
             '--- System information ---\n%s\n'
-            '--- Library Versions ---\n%s\n'))
+            '--- Library Versions ---\n%s\n',
+            'Please add the information that bug reports are favoured written '
+            'in English.'))
         content = self._createReport()
         for line in content[1].split(u'\n'):
             if re.search(r'[/\\]openlp[/\\]', line):
