@@ -33,7 +33,6 @@ from PyQt4.phonon import Phonon
 from openlp.core.ui import HideMode, MainDisplay
 from openlp.core.lib import OpenLPToolbar, Receiver, resize_image, \
     ItemCapabilities, translate
-from openlp.core.utils import ActionList
 
 log = logging.getLogger(__name__)
 
@@ -392,7 +391,7 @@ class SlideController(QtGui.QWidget):
         self.previousService = QtGui.QAction(translate(
             'OpenLP.SlideController', 'Previous Service'), parent)
         self.previousService.setShortcuts([QtCore.Qt.Key_Left, 0])
-        self.previousService.setShortcutContext( \
+        self.previousService.setShortcutContext(
             QtCore.Qt.WidgetWithChildrenShortcut)
         QtCore.QObject.connect(self.previousService,
             QtCore.SIGNAL(u'triggered()'), self.servicePrevious)
@@ -400,7 +399,7 @@ class SlideController(QtGui.QWidget):
         self.nextService = QtGui.QAction(translate(
             'OpenLP.SlideController', 'Next Service'), parent)
         self.nextService.setShortcuts([QtCore.Qt.Key_Right, 0])
-        self.nextService.setShortcutContext( \
+        self.nextService.setShortcutContext(
             QtCore.Qt.WidgetWithChildrenShortcut)
         QtCore.QObject.connect(self.nextService,
             QtCore.SIGNAL(u'triggered()'), self.serviceNext)
