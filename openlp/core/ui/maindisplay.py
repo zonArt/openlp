@@ -137,11 +137,10 @@ class MainDisplay(DisplayWidget):
             painter_image.begin(initialFrame)
             painter_image.fillRect(initialFrame.rect(), QtCore.Qt.white)
             painter_image.drawImage(
-                (self.screens.current[u'size'].width() \
-                    - splash_image.width()) / 2,
-                (self.screens.current[u'size'].height() \
-                    - splash_image.height()) / 2,
-                splash_image)
+                (self.screens.current[u'size'].width() - 
+                splash_image.width()) / 2,
+                (self.screens.current[u'size'].height()
+                - splash_image.height()) / 2, splash_image)
             serviceItem = ServiceItem()
             serviceItem.bg_image_bytes = image_to_byte(initialFrame)
             self.webView.setHtml(build_html(serviceItem, self.screen,

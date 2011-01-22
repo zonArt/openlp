@@ -899,7 +899,11 @@ class SlideController(QtGui.QWidget):
             row)
 
     def updatePreview(self):
-        log.debug(u'updatePreview %s ' %self.screens.current[u'primary'])
+        """
+        This updates the preview frame, for example after changing a slide or
+        using *Blank to Theme*.
+        """
+        log.debug(u'updatePreview %s ' % self.screens.current[u'primary'])
         if not self.screens.current[u'primary']:
             # Grab now, but try again in a couple of seconds if slide change
             # is slow
@@ -910,6 +914,9 @@ class SlideController(QtGui.QWidget):
                 QtGui.QPixmap.fromImage(self.display.preview()))
 
     def grabMainDisplay(self):
+        """
+        Creates an image of the current screen and updates the preview frame.
+        """
         winid = QtGui.QApplication.desktop().winId()
         rect = self.screens.current[u'size']
         winimg = QtGui.QPixmap.grabWindow(winid, rect.x(),
