@@ -140,7 +140,7 @@ class AppLocation(object):
             return _get_os_dir_path(u'openlp',
                 os.path.join(os.getenv(u'HOME'), u'Library',
                     u'Application Support', u'openlp'),
-                None, os.path.join(os.getenv(u'HOME'), u'.openlp'), dir_type)
+                os.path.join(os.getenv(u'HOME'), u'.openlp'), dir_type)
 
     @staticmethod
     def get_data_path():
@@ -163,8 +163,8 @@ class AppLocation(object):
             os.makedirs(path)
         return path
 
-def _get_os_dir_path(win_option, darwin_option, base_dir_option,
-    non_base_dir_option, dir_type=1):
+def _get_os_dir_path(win_option, darwin_option, non_base_dir_option,
+    dir_type=1):
     """
     Return a path based on which OS and environment we are running in.
     """
