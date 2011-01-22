@@ -85,7 +85,7 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
                 item.setIcon(plugin.icon)
             self.pluginListWidget.addItem(item)
             pluginListWidth = max(pluginListWidth, self.fontMetrics().width(
-                unicode(translate('OpenLP.PluginForm', '%s (Inactive)')) % 
+                unicode(translate('OpenLP.PluginForm', '%s (Inactive)')) %
                 name_string[u'singular']))
         self.pluginListWidget.setFixedWidth(pluginListWidth +
             self.pluginListWidget.iconSize().width() + 48)

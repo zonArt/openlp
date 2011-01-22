@@ -157,7 +157,6 @@ class SongMediaItem(MediaManagerItem):
             (5, u':/slides/slide_theme.png',
                 translate('SongsPlugin.MediaItem', 'Themes'))
         ])
-
         self.configUpdated()
 
     def onSearchTextButtonClick(self):
@@ -194,8 +193,7 @@ class SongMediaItem(MediaManagerItem):
         elif search_type == 5:
             log.debug(u'Theme Search')
             search_results = self.parent.manager.get_all_objects(Song,
-                Song.theme_name == search_keywords,
-                Song.search_lyrics.asc())
+                Song.theme_name == search_keywords, Song.search_lyrics.asc())
             self.displayResultsSong(search_results)
 
     def onSongListLoad(self):
@@ -270,8 +268,8 @@ class SongMediaItem(MediaManagerItem):
     def onImportClick(self):
         if not hasattr(self, u'import_wizard'):
             self.import_wizard = SongImportForm(self, self.parent)
-        self.import_wizard.exec_()
-        Receiver.send_message(u'songs_load_list')
+        if self.import_wizard.exec_() == QtGui.QDialog.Accepted:
+            Receiver.send_message(u'songs_load_list')
 
     def onNewClick(self):
         log.debug(u'onNewClick')
@@ -448,7 +446,7 @@ class SongMediaItem(MediaManagerItem):
                 if self.addSongFromService:
                     editId = self.openLyrics.xml_to_song(item.xml_version)
             # Update service with correct song id.
-            if editId != 0:
+            if editId:
                 Receiver.send_message(u'service_item_update',
                     u'%s:%s' % (editId, item._uuid))
 

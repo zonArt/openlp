@@ -146,7 +146,7 @@ class OpenLPSongImport(SongImport):
 
         source_songs = self.source_session.query(OldSong).all()
         song_total = len(source_songs)
-        self.import_wizard.importProgressBar.setMaximum(song_total)
+        self.import_wizard.progressBar.setMaximum(song_total)
         song_count = 1
         for song in source_songs:
             self.import_wizard.incrementProgressBar(unicode(translate(

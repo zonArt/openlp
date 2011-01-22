@@ -109,7 +109,7 @@ def parse_reference(reference):
     regular expression looks like this:
 
     1. ``^\s*(?!\s)(?P<book>[\d]*[^\d]+)(?<!\s)\s*``
-        The ``book`` group starts with the first non-whitespace character.  There
+        The ``book`` group starts with the first non-whitespace character. There
         are optional leading digits followed by non-digits. The group ends
         before the whitspace in front of the next digit.
     2. ``(?P<ranges>(?:`` + range_string + ``(?:%(sep_l)s|(?=\s*$)))+)\s*$``
@@ -177,7 +177,7 @@ def parse_reference(reference):
                     to_verse = -1
                 if to_chapter > from_chapter:
                     ref_list.append((book, from_chapter, from_verse, -1))
-                    for i in range(from_chapter + 1, to_chapter - 1):
+                    for i in range(from_chapter + 1, to_chapter):
                         ref_list.append((book, i, 1, -1))
                     ref_list.append((book, to_chapter, 1, to_verse))
                 elif to_verse >= from_verse or to_verse == -1:

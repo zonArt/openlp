@@ -24,6 +24,8 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
+The :mod:`maindisplay` module provides the functionality to display screens
+and play multimedia within OpenLP.
 """
 import logging
 import os
@@ -52,45 +54,7 @@ class DisplayWidget(QtGui.QGraphicsView):
         QtGui.QGraphicsView.__init__(self)
         self.parent = parent
         self.live = live
-        self.hotkey_map = {
-            QtCore.Qt.Key_Return: 'servicemanager_next_item',
-            QtCore.Qt.Key_Space: 'slidecontroller_live_next_noloop',
-            QtCore.Qt.Key_Enter: 'slidecontroller_live_next_noloop',
-            QtCore.Qt.Key_0: 'servicemanager_next_item',
-            QtCore.Qt.Key_Backspace: 'slidecontroller_live_previous_noloop'}
-        self.setStyleSheet(u'border: none;')
 
-    def keyPressEvent(self, event):
-        """
-        Handle key events from display screen
-        """
-        # Key events only needed for live
-        if not self.live:
-            return
-        if isinstance(event, QtGui.QKeyEvent):
-            # Here accept the event and do something
-            if event.key() == QtCore.Qt.Key_Up:
-                Receiver.send_message(u'slidecontroller_live_previous')
-                event.accept()
-            elif event.key() == QtCore.Qt.Key_Down:
-                Receiver.send_message(u'slidecontroller_live_next')
-                event.accept()
-            elif event.key() == QtCore.Qt.Key_PageUp:
-                Receiver.send_message(u'slidecontroller_live_first')
-                event.accept()
-            elif event.key() == QtCore.Qt.Key_PageDown:
-                Receiver.send_message(u'slidecontroller_live_last')
-                event.accept()
-            elif event.key() in self.hotkey_map:
-                Receiver.send_message(self.hotkey_map[event.key()])
-                event.accept()
-            elif event.key() == QtCore.Qt.Key_Escape:
-                self.setVisible(False)
-                self.videoStop()
-                event.accept()
-            event.ignore()
-        else:
-            event.ignore()
 
 class MainDisplay(DisplayWidget):
     """
@@ -173,11 +137,10 @@ class MainDisplay(DisplayWidget):
             painter_image.begin(initialFrame)
             painter_image.fillRect(initialFrame.rect(), QtCore.Qt.white)
             painter_image.drawImage(
-                (self.screens.current[u'size'].width() \
-                    - splash_image.width()) / 2,
-                (self.screens.current[u'size'].height() \
-                    - splash_image.height()) / 2,
-                splash_image)
+                (self.screens.current[u'size'].width() - 
+                splash_image.width()) / 2,
+                (self.screens.current[u'size'].height()
+                - splash_image.height()) / 2, splash_image)
             serviceItem = ServiceItem()
             serviceItem.bg_image_bytes = image_to_byte(initialFrame)
             self.webView.setHtml(build_html(serviceItem, self.screen,
@@ -198,7 +161,7 @@ class MainDisplay(DisplayWidget):
             The slide text to be displayed
         """
         log.debug(u'text to display')
-        # Wait for the webview to update before displayiong text.
+        # Wait for the webview to update before displaying text.
         while not self.loaded:
             Receiver.send_message(u'openlp_process_events')
         self.frame.evaluateJavaScript(u'show_text("%s")' % \
@@ -268,6 +231,8 @@ class MainDisplay(DisplayWidget):
         else:
             js = u'show_image("");'
         self.frame.evaluateJavaScript(js)
+        # Update the preview frame.
+        Receiver.send_message(u'maindisplay_active')
 
     def resetImage(self):
         """
@@ -275,7 +240,12 @@ class MainDisplay(DisplayWidget):
         Used after Image plugin has changed the background
         """
         log.debug(u'resetImage')
-        self.displayImage(self.serviceItem.bg_image_bytes)
+        if hasattr(self, u'serviceItem'):
+            self.displayImage(self.serviceItem.bg_image_bytes)
+        else:
+            self.displayImage(None)
+        # Update the preview frame.
+        Receiver.send_message(u'maindisplay_active')
 
     def resetVideo(self):
         """
@@ -290,6 +260,8 @@ class MainDisplay(DisplayWidget):
             self.phononActive = False
         else:
             self.frame.evaluateJavaScript(u'show_video("close");')
+        # Update the preview frame.
+        Receiver.send_message(u'maindisplay_active')
 
     def videoPlay(self):
         """
@@ -357,6 +329,8 @@ class MainDisplay(DisplayWidget):
             self.webView.setVisible(False)
             self.videoWidget.setVisible(True)
             self.audio.setVolume(vol)
+        # Update the preview frame.
+        Receiver.send_message(u'maindisplay_active')
         return self.preview()
 
     def isLoaded(self):
@@ -371,13 +345,11 @@ class MainDisplay(DisplayWidget):
         Generates a preview of the image displayed.
         """
         log.debug(u'preview for %s', self.isLive)
-        # We must have a service item to preview
-        if not hasattr(self, u'serviceItem'):
-            return
         Receiver.send_message(u'openlp_process_events')
-        if self.isLive:
+        # We must have a service item to preview
+        if self.isLive and hasattr(self, u'serviceItem'):
             # Wait for the fade to finish before geting the preview.
-            # Important otherwise preview will have incorrect text if at all !
+            # Important otherwise preview will have incorrect text if at all!
             if self.serviceItem.themedata and \
                 self.serviceItem.themedata.display_slide_transition:
                 while self.frame.evaluateJavaScript(u'show_text_complete()') \
@@ -390,9 +362,8 @@ class MainDisplay(DisplayWidget):
         # if was hidden keep it hidden
         if self.isLive:
             self.setVisible(True)
-        # if was hidden keep it hidden
-        if self.hideMode and self.isLive:
-            self.hideDisplay(self.hideMode)
+            if self.hideMode:
+                self.hideDisplay(self.hideMode)
         preview = QtGui.QImage(self.screen[u'size'].width(),
             self.screen[u'size'].height(),
             QtGui.QImage.Format_ARGB32_Premultiplied)
@@ -424,6 +395,15 @@ class MainDisplay(DisplayWidget):
         # if was hidden keep it hidden
         if self.hideMode and self.isLive:
             self.hideDisplay(self.hideMode)
+        # Hide mouse cursor when moved over display if enabled in settings
+        settings = QtCore.QSettings()
+        if settings.value(u'advanced/hide mouse',
+            QtCore.QVariant(False)).toBool():
+            self.setCursor(QtCore.Qt.BlankCursor)
+            self.frame.evaluateJavaScript('document.body.style.cursor = "none"')
+        else:
+            self.setCursor(QtCore.Qt.ArrowCursor)
+            self.frame.evaluateJavaScript('document.body.style.cursor = "auto"')
 
     def footer(self, text):
         """
@@ -472,6 +452,7 @@ class MainDisplay(DisplayWidget):
         self.hideMode = None
         # Trigger actions when display is active again
         Receiver.send_message(u'maindisplay_active')
+
 
 class AudioPlayer(QtCore.QObject):
     """
