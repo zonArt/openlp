@@ -297,7 +297,6 @@ body {
     function show_text_complete(){
         return (text_opacity()==1);
     }
-
 </script>
 </head>
 <body>

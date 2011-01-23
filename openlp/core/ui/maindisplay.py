@@ -318,6 +318,9 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'video')
         self.webLoaded = True
+        # We are running a background theme
+        self.override[u'theme'] = u''
+        self.override[u'video'] = True
         vol = float(volume)/float(10)
         if isBackground or not self.usePhonon:
             js = u'show_video("init", "%s", %s, true); show_video("play");' % \
@@ -389,17 +392,17 @@ class MainDisplay(DisplayWidget):
         background = None
         # We have an image override so keep the image till the theme changes
         if self.override:
-            if self.override[u'theme'] != \
+            # We have an video override so allow it to be stopped
+            if u'video' in self.override:
+                Receiver.send_message(u'video_background_replaced')
+                self.override = {}
+            elif self.override[u'theme'] != \
                 serviceItem.themedata.theme_name:
                 Receiver.send_message(u'live_theme_changed')
                 self.override = {}
             else:
                 background = self.imageManager. \
                     get_image_bytes(self.override[u'image'])
-        # We have an video override so allow it to be stopped
-        if self.override and u'video' in self.override:
-            Receiver.send_message(u'video_background_replaced')
-            self.override = {}
         if self.serviceItem.themedata.background_filename:
             self.serviceItem.bg_image_bytes = self.imageManager. \
                 get_image_bytes(self.serviceItem.themedata.theme_name)
