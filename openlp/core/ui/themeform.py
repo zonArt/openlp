@@ -250,25 +250,27 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Change state as Outline check box changed
         """
-        if state == QtCore.Qt.Checked:
-            self.theme.font_main_outline = True
-        else:
-            self.theme.font_main_outline = False
-        self.outlineColorButton.setEnabled(self.theme.font_main_outline)
-        self.outlineSizeSpinBox.setEnabled(self.theme.font_main_outline)
-        self.calculateLines()
+        if self.updateThemeAllowed:
+            if state == QtCore.Qt.Checked:
+                self.theme.font_main_outline = True
+            else:
+                self.theme.font_main_outline = False
+            self.outlineColorButton.setEnabled(self.theme.font_main_outline)
+            self.outlineSizeSpinBox.setEnabled(self.theme.font_main_outline)
+            self.calculateLines()
 
     def onShadowCheckCheckBoxStateChanged(self, state):
         """
         Change state as Shadow check box changed
         """
-        if state == QtCore.Qt.Checked:
-            self.theme.font_main_shadow = True
-        else:
-            self.theme.font_main_shadow = False
-        self.shadowColorButton.setEnabled(self.theme.font_main_shadow)
-        self.shadowSizeSpinBox.setEnabled(self.theme.font_main_shadow)
-        self.calculateLines()
+        if self.updateThemeAllowed:
+            if state == QtCore.Qt.Checked:
+                self.theme.font_main_shadow = True
+            else:
+                self.theme.font_main_shadow = False
+            self.shadowColorButton.setEnabled(self.theme.font_main_shadow)
+            self.shadowSizeSpinBox.setEnabled(self.theme.font_main_shadow)
+            self.calculateLines()
 
     def onMainPositionCheckBoxStateChanged(self, value):
         """

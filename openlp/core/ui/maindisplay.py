@@ -67,6 +67,7 @@ class MainDisplay(DisplayWidget):
         self.isLive = live
         self.alertTab = None
         self.hideMode = None
+        self.override_image = None
         mainIcon = build_icon(u':/icon/openlp-logo-16x16.png')
         self.setWindowIcon(mainIcon)
         self.retranslateUi()
@@ -205,14 +206,15 @@ class MainDisplay(DisplayWidget):
         """
         self.imageManager.add_image(name, path)
         self.image(name)
+        self.override_image = name
 
     def image(self, name):
         """
-        Add an image as the background.  The image is converted to a bytestream
-        on route.
+        Add an image as the background. The image has already been added
+        to the cache.
 
         `Image`
-            The Image to be displayed can be QImage or QPixmap
+            The name of the image to be displayed
         """
         log.debug(u'image to display')
         image = self.imageManager.get_image_bytes(name)
