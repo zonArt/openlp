@@ -67,7 +67,7 @@ class MainDisplay(DisplayWidget):
         self.isLive = live
         self.alertTab = None
         self.hideMode = None
-        self.override_image = None
+        self.override = {}
         mainIcon = build_icon(u':/icon/openlp-logo-16x16.png')
         self.setWindowIcon(mainIcon)
         self.retranslateUi()
@@ -112,7 +112,7 @@ class MainDisplay(DisplayWidget):
         self.page = self.webView.page()
         self.frame = self.page.mainFrame()
         QtCore.QObject.connect(self.webView,
-            QtCore.SIGNAL(u'loadFinished(bool)'), self.isLoaded)
+            QtCore.SIGNAL(u'loadFinished(bool)'), self.isWebLoaded)
         self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.frame.setScrollBarPolicy(QtCore.Qt.Vertical,
@@ -138,14 +138,14 @@ class MainDisplay(DisplayWidget):
             painter_image.begin(initialFrame)
             painter_image.fillRect(initialFrame.rect(), QtCore.Qt.white)
             painter_image.drawImage(
-                (self.screens.current[u'size'].width() - 
+                (self.screens.current[u'size'].width() -
                 splash_image.width()) / 2,
                 (self.screens.current[u'size'].height()
                 - splash_image.height()) / 2, splash_image)
             serviceItem = ServiceItem()
             serviceItem.bg_image_bytes = image_to_byte(initialFrame)
             self.webView.setHtml(build_html(serviceItem, self.screen,
-                self.parent.alertTab, self.isLive))
+                self.parent.alertTab, self.isLive, None))
             self.initialFrame = True
             # To display or not to display?
             if not self.screen[u'primary']:
@@ -163,7 +163,7 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'text to display')
         # Wait for the webview to update before displaying text.
-        while not self.loaded:
+        while not self.webLoaded:
             Receiver.send_message(u'openlp_process_events')
         self.frame.evaluateJavaScript(u'show_text("%s")' % \
             slide.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
@@ -205,7 +205,9 @@ class MainDisplay(DisplayWidget):
         """
         self.imageManager.add_image(name, path)
         self.image(name)
-        self.override_image = name
+        if hasattr(self, u'serviceItem'):
+            self.override[u'image'] = name
+            self.override[u'theme'] = self.serviceItem.themedata.theme_name
 
     def image(self, name):
         """
@@ -315,7 +317,7 @@ class MainDisplay(DisplayWidget):
         Loads and starts a video to run with the option of sound
         """
         log.debug(u'video')
-        self.loaded = True
+        self.webLoaded = True
         vol = float(volume)/float(10)
         if isBackground or not self.usePhonon:
             js = u'show_video("init", "%s", %s, true); show_video("play");' % \
@@ -335,12 +337,12 @@ class MainDisplay(DisplayWidget):
         Receiver.send_message(u'maindisplay_active')
         return self.preview()
 
-    def isLoaded(self):
+    def isWebLoaded(self):
         """
         Called by webView event to show display is fully loaded
         """
-        log.debug(u'loaded')
-        self.loaded = True
+        log.debug(u'Webloaded')
+        self.webLoaded = True
 
     def preview(self):
         """
@@ -359,7 +361,7 @@ class MainDisplay(DisplayWidget):
                     Receiver.send_message(u'openlp_process_events')
         # Wait for the webview to update before geting the preview.
         # Important otherwise first preview will miss the background !
-        while not self.loaded:
+        while not self.webLoaded:
             Receiver.send_message(u'openlp_process_events')
         # if was hidden keep it hidden
         if self.isLive:
@@ -381,18 +383,32 @@ class MainDisplay(DisplayWidget):
         HTML to the display
         """
         log.debug(u'buildHtml')
-        self.loaded = False
+        self.webLoaded = False
         self.initialFrame = False
         self.serviceItem = serviceItem
+        background = None
+        # We have an image override so keep the image till the theme changes
+        if self.override:
+            if self.override[u'theme'] != \
+                serviceItem.themedata.theme_name:
+                Receiver.send_message(u'live_theme_changed')
+                self.override = {}
+            else:
+                background = self.imageManager. \
+                    get_image_bytes(self.override[u'image'])
+        # We have an video override so allow it to be stopped
+        if self.override and u'video' in self.override:
+            Receiver.send_message(u'video_background_replaced')
+            self.override = {}
         if self.serviceItem.themedata.background_filename:
             self.serviceItem.bg_image_bytes = self.imageManager. \
                 get_image_bytes(self.serviceItem.themedata.theme_name)
         html = build_html(self.serviceItem, self.screen, self.parent.alertTab,
-            self.isLive)
+            self.isLive, background)
         log.debug(u'buildHtml - pre setHtml')
         self.webView.setHtml(html)
         log.debug(u'buildHtml - post setHtml')
-        if serviceItem.foot_text and serviceItem.foot_text:
+        if serviceItem.foot_text:
             self.footer(serviceItem.foot_text)
         # if was hidden keep it hidden
         if self.hideMode and self.isLive:
