@@ -165,12 +165,13 @@ def _get_os_dir_path(dir_type):
     Return a path based on which OS and environment we are running in.
     """
     if sys.platform == u'win32':
-        return os.path.join(os.getenv(u'APPDATA', u'openlp')
+        return os.path.join(os.getenv(u'APPDATA'), u'openlp')
     elif sys.platform == u'darwin':
         if dir_type == AppLocation.DataDir:
             return os.path.join(os.getenv(u'HOME'), u'Library',
                 u'Application Support', u'openlp', u'Data')
-        return darwin_option
+        return os.path.join(os.getenv(u'HOME'), u'Library',
+            u'Application Support', u'openlp')
     else:
         if XDG_BASE_AVAILABLE:
             if dir_type == AppLocation.ConfigDir:
