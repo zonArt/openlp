@@ -253,7 +253,7 @@ class GeneralTab(SettingsTab):
         self.showSplashCheckBox.setText(
             translate('OpenLP.GeneralTab', 'Show the splash screen'))
         self.checkForUpdatesCheckBox.setText(
-            translate('OpenLP.GeneralTab', 'Check for updates'))
+            translate('OpenLP.GeneralTab', 'Check for updates to OpenLP'))
         self.settingsGroupBox.setTitle(
             translate('OpenLP.GeneralTab', 'Application Settings'))
         self.saveCheckServiceCheckBox.setText(translate('OpenLP.GeneralTab',
