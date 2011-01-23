@@ -212,6 +212,7 @@ class OpenLyrics(object):
     *<verseOrder>*
         OpenLP supports this property.
     """
+    IMPLEMENTED_VERSION = u'0.7'
     def __init__(self, manager):
         self.manager = manager
 

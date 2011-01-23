@@ -58,3 +58,5 @@ from editverseform import EditVerseForm
 from editsongform import EditSongForm
 from songmaintenanceform import SongMaintenanceForm
 from songimportform import SongImportForm
+from songexportform import SongExportForm
+

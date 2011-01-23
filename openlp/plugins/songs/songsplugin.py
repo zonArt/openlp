@@ -106,8 +106,17 @@ class SongsPlugin(Plugin):
             The actual **Export** menu item, so that your actions can
             use it as their parent.
         """
-        # No menu items for now.
-        pass
+        # Main song import menu item - will eventually be the only one
+        self.SongExportItem = QtGui.QAction(export_menu)
+        self.SongExportItem.setObjectName(u'SongExportItem')
+        self.SongExportItem.setText(translate(
+            'SongsPlugin', '&Song'))
+        self.SongExportItem.setToolTip(translate('SongsPlugin',
+            'Exports songs using the export wizard.'))
+        export_menu.addAction(self.SongExportItem)
+        # Signals and slots
+        QtCore.QObject.connect(self.SongExportItem,
+            QtCore.SIGNAL(u'triggered()'), self.onSongExportItemClicked)
 
     def addToolsMenuItem(self, tools_menu):
         """
@@ -171,6 +180,10 @@ class SongsPlugin(Plugin):
     def onSongImportItemClicked(self):
         if self.mediaItem:
             self.mediaItem.onImportClick()
+
+    def onSongExportItemClicked(self):
+        if self.mediaItem:
+            self.mediaItem.onExportClick()
 
     def about(self):
         about_text = translate('SongsPlugin', '<strong>Songs Plugin</strong>'

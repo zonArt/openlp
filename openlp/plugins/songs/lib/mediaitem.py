@@ -34,7 +34,7 @@ from sqlalchemy.sql import or_
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, Receiver, \
     ItemCapabilities, translate, check_item_selected
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
-    SongImportForm
+    SongImportForm, SongExportForm
 from openlp.plugins.songs.lib import OpenLyrics, SongXML
 from openlp.plugins.songs.lib.db import Author, Song
 from openlp.core.lib.searchedit import SearchEdit
@@ -269,6 +269,12 @@ class SongMediaItem(MediaManagerItem):
         if not hasattr(self, u'import_wizard'):
             self.import_wizard = SongImportForm(self, self.parent)
         if self.import_wizard.exec_() == QtGui.QDialog.Accepted:
+            Receiver.send_message(u'songs_load_list')
+
+    def onExportClick(self):
+        if not hasattr(self, u'export_wizard'):
+            self.export_wizard = SongExportForm(self, self.parent)
+        if self.export_wizard.exec_() == QtGui.QDialog.Accepted:
             Receiver.send_message(u'songs_load_list')
 
     def onNewClick(self):
