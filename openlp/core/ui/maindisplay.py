@@ -248,6 +248,7 @@ class MainDisplay(DisplayWidget):
             self.displayImage(self.serviceItem.bg_image_bytes)
         else:
             self.displayImage(None)
+        self.override = {}
         # Update the preview frame.
         Receiver.send_message(u'maindisplay_active')
 
@@ -264,6 +265,7 @@ class MainDisplay(DisplayWidget):
             self.phononActive = False
         else:
             self.frame.evaluateJavaScript(u'show_video("close");')
+        self.override = {}
         # Update the preview frame.
         Receiver.send_message(u'maindisplay_active')
 
