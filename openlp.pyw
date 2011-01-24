@@ -194,7 +194,10 @@ class OpenLP(QtGui.QApplication):
             # now kill the splashscreen
             self.splash.finish(self.mainWindow)
         self.mainWindow.repaint()
-        VersionThread(self.mainWindow, app_version).start()
+        update_check = QtCore.QSettings().value(
+            u'general/update check', QtCore.QVariant(True)).toBool()
+        if update_check:
+            VersionThread(self.mainWindow, app_version).start()
         return self.exec_()
 
     def hookException(self, exctype, value, traceback):
