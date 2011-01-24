@@ -27,11 +27,10 @@
 The song export function for OpenLP.
 """
 import logging
-import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, SettingsManager, translate
+from openlp.core.lib import Receiver, translate
 from openlp.core.ui import criticalErrorMessageBox
 from openlp.core.ui.wizard import OpenLPWizard
 from openlp.plugins.songs.lib.db import Song
@@ -59,6 +58,16 @@ class SongExportForm(OpenLPWizard):
         self.plugin = plugin
         OpenLPWizard.__init__(self, parent, plugin, u'songExportWizard',
             u':/wizards/wizard_importsong.bmp')
+        self.stop_export_flag = False
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_export)
+
+    def stop_export(self):
+        """
+        Sets the flag for exporters to stop their export
+        """
+        log.debug(u'Stopping songs export')
+        self.stop_export_flag = True
 
     def setupUi(self, image):
         """
@@ -70,25 +79,22 @@ class SongExportForm(OpenLPWizard):
         """
         Song wizard specific initialisation.
         """
-        songs = self.plugin.manager.get_all_objects(Song)
-        for song in songs:
-            author_list = u''
-            for author in song.authors:
-                if author_list != u'':
-                    author_list = author_list + u', '
-                author_list = author_list + author.display_name
-            song_title = unicode(song.title)
-            song_detail = u'%s (%s)' % (song_title, author_list)
-            song_name = QtGui.QListWidgetItem(song_detail)
-            song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song))
-            self.availableListWidget.addItem(song_name)
-        self.availableListWidget.selectAll()
+        pass
 
     def customSignals(self):
         """
         Song wizard specific signals.
         """
-        pass
+        QtCore.QObject.connect(self.addSelected,
+            QtCore.SIGNAL(u'clicked()'), self.onAddSelectedClicked)
+        QtCore.QObject.connect(self.removeSelected,
+            QtCore.SIGNAL(u'clicked()'), self.onRemoveSelectedClicked)
+        QtCore.QObject.connect(self.availableListWidget,
+            QtCore.SIGNAL(u'itemDoubleClicked(QListWidgetItem *)'),
+            self.onAvailableListItemDoubleClicked)
+        QtCore.QObject.connect(self.selectedListWidget,
+            QtCore.SIGNAL(u'itemDoubleClicked(QListWidgetItem *)'),
+            self.onSelectedListItemDoubleClicked)
 
     def addCustomPages(self):
         """
@@ -105,6 +111,11 @@ class SongExportForm(OpenLPWizard):
         self.verticalLayout.setObjectName(u'verticalLayout')
         self.availableListWidget = QtGui.QListWidget(self.availableGroupBox)
         self.availableListWidget.setObjectName(u'availableListWidget')
+        self.availableListWidget.setSelectionMode(
+            QtGui.QAbstractItemView.ExtendedSelection)
+        self.availableListWidget.setSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        self.availableListWidget.setSortingEnabled(True)
         self.verticalLayout.addWidget(self.availableListWidget)
         self.sourceLayout.addWidget(self.availableGroupBox)
         self.selectionWidget = QtGui.QWidget(self.sourcePage)
@@ -138,9 +149,15 @@ class SongExportForm(OpenLPWizard):
         self.verticalLayout.setObjectName(u'verticalLayout')
         self.selectedListWidget = QtGui.QListWidget(self.selectedGroupBox)
         self.selectedListWidget.setObjectName(u'selectedListWidget')
+        self.selectedListWidget.setSelectionMode(
+            QtGui.QAbstractItemView.ExtendedSelection)
+        self.selectedListWidget.setSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        self.selectedListWidget.setSortingEnabled(True)
         self.verticalLayout.addWidget(self.selectedListWidget)
         self.sourceLayout.addWidget(self.selectedGroupBox)
         self.addPage(self.sourcePage)
+        #TODO: Add save dialog
 
     def retranslateUi(self):
         """
@@ -151,28 +168,28 @@ class SongExportForm(OpenLPWizard):
         self.titleLabel.setText(
             u'<span style="font-size:14pt; font-weight:600;">%s</span>' % \
             translate('SongsPlugin.ExportWizardForm',
-                'Welcome to the Song Export Wizard'))
+            'Welcome to the Song Export Wizard'))
         self.informationLabel.setText(
             translate('SongsPlugin.ExportWizardForm', 'This wizard will help to '
             'export your songs to the free and open OpenLyrics worship song '
             'format. You can import these songs in all lyrics projection '
             'software, which supports OpenLyrics.'))
         self.sourcePage.setTitle(
-            translate('SongsPlugin.ExportWizardForm', 'Select Emport Source'))
+            translate('SongsPlugin.ExportWizardForm', 'Select Songs'))
         self.sourcePage.setSubTitle(
             translate('SongsPlugin.ExportWizardForm',
-            'Select the export format, and where to export from.'))
+            'Select the songs, you want to export.'))
 
         self.progressPage.setTitle(
             translate('SongsPlugin.ExportWizardForm', 'Exporting'))
         self.progressPage.setSubTitle(
             translate('SongsPlugin.ExportWizardForm',
-                'Please wait while your songs are exported.'))
+            'Please wait while your songs are exported.'))
         self.progressLabel.setText(
             translate('SongsPlugin.ExportWizardForm', 'Ready.'))
         self.progressBar.setFormat(
             translate('SongsPlugin.ExportWizardForm', '%p%'))
-            
+
         self.availableGroupBox.setTitle(
             translate('SongsPlugin.ExportWizardForm', 'Available Songs'))
         self.addSelected.setText(
@@ -187,10 +204,35 @@ class SongExportForm(OpenLPWizard):
         Validate the current page before moving on to the next page.
         """
         if self.currentPage() == self.welcomePage:
+            Receiver.send_message(u'cursor_busy')
+            songs = self.plugin.manager.get_all_objects(Song)
+            for song in songs:
+                author_list = u''
+                for author in song.authors:
+                    if author_list != u'':
+                        author_list = author_list + u', '
+                    author_list = author_list + author.display_name
+                song_title = unicode(song.title)
+                song_detail = u'%s (%s)' % (song_title, author_list)
+                song_name = QtGui.QListWidgetItem(song_detail)
+                song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song))
+                self.availableListWidget.addItem(song_name)
+            self.availableListWidget.selectAll()
+            Receiver.send_message(u'cursor_normal')
             return True
         elif self.currentPage() == self.sourcePage:
+            self.selectedListWidget.selectAll()
+            if not self.selectedListWidget.selectedItems():
+                criticalErrorMessageBox(
+                    translate('SongsPlugin.ExportWizardForm',
+                    'No Song Selected'),
+                    translate('SongsPlugin.ImportWizardForm',
+                    'You need to add at least one Song to export.'))
+                return False
             return True
         elif self.currentPage() == self.progressPage:
+            self.availableListWidget.clear()
+            self.selectedListWidget.clear()
             return True
 
     def registerFields(self):
@@ -222,8 +264,9 @@ class SongExportForm(OpenLPWizard):
         class, and then runs the ``do_export`` method of the exporter to do
         the actual exporting.
         """
-        exporter = OpenLyricsExport(self.plugin.manager,
-            self.plugin.manager.get_all_objects(Song), u'/tmp/')
+        songs = [item.data(QtCore.Qt.UserRole).toPyObject()
+            for item in self.selectedListWidget.selectedItems()]
+        exporter = OpenLyricsExport(self, songs, u'/tmp/')
         if exporter.do_export():
             self.progressLabel.setText(
                 translate('SongsPlugin.SongExportForm', 'Finished export.'))
@@ -231,3 +274,47 @@ class SongExportForm(OpenLPWizard):
             self.progressLabel.setText(
                 translate('SongsPlugin.SongExportForm',
                 'Your song export failed.'))
+
+    def onAddSelectedClicked(self):
+        """
+        Removes the selected items from the list of available songs and add them
+        to the list of selected songs.
+        """
+        items = self.availableListWidget.selectedItems()
+        # Save a list with tuples which consist of the item row, and the item.
+        items = [(self.availableListWidget.row(item), item) for item in items]
+        items.sort(reverse=True)
+        for item in items:
+            self.availableListWidget.takeItem(item[0])
+            self.selectedListWidget.addItem(item[1])
+
+    def onRemoveSelectedClicked(self):
+        """
+        Removes the selected items from the list of selected songs and add them
+        back to the list of available songs.
+        """
+        items = self.selectedListWidget.selectedItems()
+        # Save a list with tuples which consist of the item row, and the item.
+        items = [(self.selectedListWidget.row(item), item) for item in items]
+        items.sort(reverse=True)
+        for item in items:
+            self.selectedListWidget.takeItem(item[0])
+            self.availableListWidget.addItem(item[1])
+
+    def onAvailableListItemDoubleClicked(self, item):
+        """
+        Adds the double clicked item to the list of selected songs and removes
+        it from the list of availables songs.
+        """
+        row = self.availableListWidget.row(item)
+        self.availableListWidget.takeItem(row)
+        self.selectedListWidget.addItem(item)
+
+    def onSelectedListItemDoubleClicked(self, item):
+        """
+        Adds the double clicked item back to the list of available songs and
+        removes it from the list of selected songs.
+        """
+        row = self.selectedListWidget.row(item)
+        self.selectedListWidget.takeItem(row)
+        self.availableListWidget.addItem(item)
