@@ -30,7 +30,7 @@ songs from the database.
 import logging
 import os
 
-from lxml import etree, objectify
+from lxml import etree
 
 from openlp.core.lib import Receiver, translate
 from openlp.plugins.songs.lib import OpenLyrics
@@ -55,6 +55,7 @@ class OpenLyricsExport(object):
         """
         Export the songs.
         """
+        log.debug(u'started OpenLyricsExport')
         openLyrics = OpenLyrics(self.manager)
         self.parent.progressBar.setMaximum(len(self.songs))
         for song in self.songs:

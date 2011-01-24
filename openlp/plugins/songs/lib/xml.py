@@ -486,9 +486,9 @@ class OpenLyrics(object):
             for name in temp_verse_order:
                 if name[0] == previous_type:
                     if name[1] != previous_number:
-                        verse_order.append(u''.join((name[0], name[1])))
+                        verse_order.append(u''.join((name[0][0], name[1])))
                 else:
-                    verse_order.append(u''.join((name[0], name[1])))
+                    verse_order.append(u''.join((name[0][0], name[1])))
                 previous_type = name[0]
                 previous_number = name[1]
                 previous_part = name[2]

@@ -305,16 +305,20 @@ class SongExportForm(OpenLPWizard):
         """
         Adds the double clicked item to the list of selected songs and removes
         it from the list of availables songs.
+
+        ``item``
+            The *QListWidgetItem* which was double clicked.
         """
-        row = self.availableListWidget.row(item)
-        self.availableListWidget.takeItem(row)
+        self.availableListWidget.takeItem(self.availableListWidget.row(item))
         self.selectedListWidget.addItem(item)
 
     def onSelectedListItemDoubleClicked(self, item):
         """
         Adds the double clicked item back to the list of available songs and
         removes it from the list of selected songs.
+
+        ``ìtem``
+            The *QListWidgetItem* which was double clicked.
         """
-        row = self.selectedListWidget.row(item)
-        self.selectedListWidget.takeItem(row)
+        self.selectedListWidget.takeItem(self.selectedListWidget.row(item))
         self.availableListWidget.addItem(item)
