@@ -60,6 +60,7 @@ The XML of `OpenLyrics <http://openlyrics.info/>`_  songs is of the format::
     </song>
 """
 
+import datetime
 import logging
 import re
 
@@ -207,7 +208,8 @@ class OpenLyrics(object):
         This property is not supported.
 
     *<verse name="v1a" lang="he" translit="en">*
-        The attribute *translit* is not supported.
+        The attribute *translit* is not supported. Note, the attribute *lang* is
+        considered, but there is not further functionality implemented yet.
 
     *<verseOrder>*
         OpenLP supports this property.
@@ -222,8 +224,14 @@ class OpenLyrics(object):
         """
         sxml = SongXML()
         verse_list = sxml.get_verses(song.lyrics)
-        song_xml = objectify.fromstring(
-            u'<song version="0.7" createdIn="OpenLP 2.0"/>')
+        song_xml = objectify.fromstring(u'<song/>')
+        # Append the necessary meta data to the song.
+        song_xml.set(u'xmlns', u'http://openlyrics.info/namespace/2009/song')
+        song_xml.set(u'version', OpenLyrics.IMPLEMENTED_VERSION)
+        song_xml.set(u'createdIn', u'OpenLP 1.9.4')  # Use variable
+        song_xml.set(u'modifiedIn', u'OpenLP 1.9.4')  # Use variable
+        song_xml.set(u'modifiedDate',
+            datetime.datetime.now().strftime(u'%Y-%m-%dT%H:%M:%S'))
         properties = etree.SubElement(song_xml, u'properties')
         titles = etree.SubElement(properties, u'titles')
         self._add_text_to_element(u'title', titles, song.title.strip())
@@ -237,7 +245,7 @@ class OpenLyrics(object):
             self._add_text_to_element(u'copyright', properties, song.copyright)
         if song.verse_order:
             self._add_text_to_element(
-                u'verseOrder', properties, song.verse_order)
+                u'verseOrder', properties, song.verse_order.lower())
         if song.ccli_number:
             self._add_text_to_element(u'ccliNo', properties, song.ccli_number)
         if song.authors:
@@ -450,7 +458,7 @@ class OpenLyrics(object):
                     text += u'\n'
                 text += u'\n'.join([unicode(line) for line in lines.line])
             verse_name = self._get(verse, u'name')
-            verse_type = unicode(VerseType.to_string(verse_name[0]))[0]
+            verse_type = unicode(VerseType.to_string(verse_name[0]))
             verse_number = re.compile(u'[a-zA-Z]*').sub(u'', verse_name)
             verse_part = re.compile(u'[0-9]*').sub(u'', verse_name[1:])
             # OpenLyrics allows e. g. "c", but we need "c1".

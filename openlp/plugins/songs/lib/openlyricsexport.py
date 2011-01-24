@@ -27,13 +27,12 @@
 The :mod:`openlyricsexport` module provides the functionality for exporting
 songs from the database.
 """
-import datetime
 import logging
 import os
 
 from lxml import etree, objectify
 
-from openlp.core.lib import translate
+from openlp.core.lib import Receiver, translate
 from openlp.plugins.songs.lib import OpenLyrics
 
 log = logging.getLogger(__name__)
@@ -42,42 +41,34 @@ class OpenLyricsExport(object):
     """
     This provides the Openlyrics export.
     """
-    def __init__(self, master_manager, song_ids, save_path):
+    def __init__(self, parent, songs, save_path):
         """
         Initialise the export.
         """
         log.debug(u'initialise OpenLyricsExport')
-        self.master_manager = master_manager
-        self.songs = song_ids
+        self.parent = parent
+        self.manager = parent.plugin.manager
+        self.songs = songs
         self.save_path = save_path
 
     def do_export(self):
         """
         Export the songs.
         """
-        openLyrics = OpenLyrics(self.master_manager)
-#        self.export_wizard.exportProgressBar.setMaximum(len(songs))
+        openLyrics = OpenLyrics(self.manager)
+        self.parent.progressBar.setMaximum(len(self.songs))
         for song in self.songs:
-#            if self.stop_export_flag:
-#                return False
-#            self.export_wizard.incrementProgressBar(unicode(translate(
-#                'SongsPlugin.OpenLyricsExport', 'Exporting %s...')) %
-#                song.title)
+            Receiver.send_message(u'openlp_process_events')
+            if self.parent.stop_export_flag:
+                return False
+            self.parent.incrementProgressBar(unicode(translate(
+                'SongsPlugin.OpenLyricsExport', 'Exporting %s...')) %
+                song.title)
             # Check if path exists. If not, create the directories!
             # What do we do with songs with the same title? I do not want to
             # overwrite them!
             path = os.path.join(self.save_path, song.title + u'.xml')
-            # Convert the song object to an unicode string.
             xml = openLyrics.song_to_xml(song)
-            song_xml = objectify.fromstring(xml)
-            # Append the necessary meta data to the song.
-            # (Maybe move this to the xml module?
-            song_xml.set(u'version', OpenLyrics.IMPLEMENTED_VERSION)
-            song_xml.set(u'createdIn', u'OpenLP 1.9.4')  # Use variable
-            song_xml.set(u'modifiedIn', u'OpenLP 1.9.4')  # Use variable
-            song_xml.set(u'modifiedDate',
-                datetime.datetime.now().strftime(u'%Y-%m-%dT%H:%M:%S'))
-            xml = etree.tostring(song_xml)
             tree = etree.ElementTree(etree.fromstring(xml))
             tree.write(path, encoding=u'utf-8', xml_declaration=True,
                 pretty_print=True)
