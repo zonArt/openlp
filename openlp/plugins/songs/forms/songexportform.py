@@ -95,7 +95,7 @@ class SongExportForm(OpenLPWizard):
             self.onAvailableListItemDoubleClicked)
         QtCore.QObject.connect(self.selectedListWidget,
             QtCore.SIGNAL(u'itemDoubleClicked(QListWidgetItem *)'),
-            self.onSelectedListItemDoubleClicked)   
+            self.onSelectedListItemDoubleClicked)
 
     def addCustomPages(self):
         """
@@ -189,7 +189,7 @@ class SongExportForm(OpenLPWizard):
             translate('SongsPlugin.ExportWizardForm', 'Ready.'))
         self.progressBar.setFormat(
             translate('SongsPlugin.ExportWizardForm', '%p%'))
-            
+
         self.availableGroupBox.setTitle(
             translate('SongsPlugin.ExportWizardForm', 'Available Songs'))
         self.addSelected.setText(
