@@ -157,7 +157,7 @@ class SongExportForm(OpenLPWizard):
         self.verticalLayout.addWidget(self.selectedListWidget)
         self.sourceLayout.addWidget(self.selectedGroupBox)
         self.addPage(self.sourcePage)
-        #TODO: Add save dialog
+        #TODO: Add save dialog and search box.
 
     def retranslateUi(self):
         """
