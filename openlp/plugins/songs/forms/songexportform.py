@@ -173,12 +173,11 @@ class SongExportForm(OpenLPWizard):
         browseButton.setObjectName(obj_prefix + u'BrowseButton')
         fileLayout.addWidget(browseButton)
         """
-        
 
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setObjectName(u'horizontalLayout')
 
-        self.pathLabel = QtGui.QLabel()
+        self.pathLabel = QtGui.QLabel(self.sourcePage)
         self.pathLabel.setObjectName(u'pathLabel')
         self.horizontalLayout.addWidget(self.pathLabel)      
 
