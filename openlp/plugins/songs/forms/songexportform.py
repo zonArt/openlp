@@ -30,7 +30,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, translate
+from openlp.core.lib import Receiver, SettingsManager, translate
 from openlp.core.ui import criticalErrorMessageBox
 from openlp.core.ui.wizard import OpenLPWizard
 from openlp.plugins.songs.lib.db import Song
@@ -158,7 +158,43 @@ class SongExportForm(OpenLPWizard):
         self.selectedListWidget.setSortingEnabled(True)
         self.verticalLayout.addWidget(self.selectedListWidget)
         self.sourceLayout.addWidget(self.selectedGroupBox)
+        
+        """
+        importLayout.setObjectName(obj_prefix + u'Layout')
+        filenameLabel = QtGui.QLabel(importWidget)
+        filenameLabel.setObjectName(obj_prefix + u'FilenameLabel')
+        fileLayout = QtGui.QHBoxLayout()
+        fileLayout.setObjectName(obj_prefix + u'FileLayout')
+        filenameEdit = QtGui.QLineEdit(importWidget)
+        filenameEdit.setObjectName(obj_prefix + u'FilenameEdit')
+        fileLayout.addWidget(filenameEdit)
+        browseButton = QtGui.QToolButton(importWidget)
+        browseButton.setIcon(self.openIcon)
+        browseButton.setObjectName(obj_prefix + u'BrowseButton')
+        fileLayout.addWidget(browseButton)
+        """
+        
+
+        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.horizontalLayout.setObjectName(u'horizontalLayout')
+
+        self.pathLabel = QtGui.QLabel()
+        self.pathLabel.setObjectName(u'pathLabel')
+        self.horizontalLayout.addWidget(self.pathLabel)      
+
+        self.pathEdit = QtGui.QLineEdit(self.sourcePage)
+        self.pathEdit.setObjectName(u'pathEdit')
+        
+        self.horizontalLayout.addWidget(self.pathEdit)
+        
+        self.browseButton = QtGui.QPushButton(self.sourcePage)
+        self.browseButton.setObjectName(u'browseButton')
+        self.horizontalLayout.addWidget(self.browseButton)        
+        
+        self.sourceLayout.addLayout(self.horizontalLayout)
         self.addPage(self.sourcePage)
+
+        
         #TODO: Add save dialog and maybe a search box.
 
     def retranslateUi(self):
@@ -266,9 +302,14 @@ class SongExportForm(OpenLPWizard):
         class, and then runs the ``do_export`` method of the exporter to do
         the actual exporting.
         """
+        path = unicode(QtGui.QFileDialog.getExistingDirectory(self, translate(
+            'SongsPlugin.ExportWizardForm', 'Selecte to Folder'),
+            SettingsManager.get_last_dir(self.plugin.settingsSection, 1),
+            options=QtGui.QFileDialog.ShowDirsOnly))
+        SettingsManager.set_last_dir(self.plugin.settingsSection, path, 1)
         songs = [item.data(QtCore.Qt.UserRole).toPyObject()
             for item in self.selectedListWidget.selectedItems()]
-        exporter = OpenLyricsExport(self, songs, u'/tmp/')
+        exporter = OpenLyricsExport(self, songs, path)
         if exporter.do_export():
             self.progressLabel.setText(
                 translate('SongsPlugin.SongExportForm', 'Finished export.'))

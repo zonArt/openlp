@@ -271,6 +271,8 @@ class OpenLyrics(object):
                 verse[0][u'type'][0].lower(), verse[0][u'label'])
             element = \
                 self._add_text_to_element(u'verse', lyrics, None, verse_tag)
+            if verse[0].has_key(u'lang'):
+                element.set(u'lang', verse[0][u'lang'])
             element = self._add_text_to_element(u'lines', element)
             for line in unicode(verse[1]).split(u'\n'):
                 self._add_text_to_element(u'line', element, line)
