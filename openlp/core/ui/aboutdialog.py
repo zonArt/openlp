@@ -164,9 +164,10 @@ class Ui_AboutDialog(object):
         self.licenseTextEdit.setPlainText(translate('OpenLP.AboutForm',
             'Copyright \xa9 2004-2011 Raoul Snyman\n'
             'Portions copyright \xa9 2004-2011 '
-            'Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri, '
-            'Christian Richter, Maikel Stuivenberg, Martin Thompson, Jon '
-            'Tibble, Carsten Tinggaard\n'
+            'Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri,\n'
+            'Meinert Jordan, Andreas Preikschat, Christian Richter, Philip\n'
+            'Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Carstenn'
+            'Tinggaard, Frode Woldsund\n'
             '\n'
             'This program is free software; you can redistribute it and/or '
             'modify it under the terms of the GNU General Public License as '

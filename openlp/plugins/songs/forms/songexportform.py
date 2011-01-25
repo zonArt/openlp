@@ -109,6 +109,7 @@ class SongExportForm(OpenLPWizard):
         self.availableGroupBox.setObjectName(u'availableGroupBox')
         self.verticalLayout = QtGui.QVBoxLayout(self.availableGroupBox)
         self.verticalLayout.setObjectName(u'verticalLayout')
+        self.verticalLayout.setContentsMargins(0, -1, 0, 0)
         self.availableListWidget = QtGui.QListWidget(self.availableGroupBox)
         self.availableListWidget.setObjectName(u'availableListWidget')
         self.availableListWidget.setSelectionMode(
@@ -147,6 +148,7 @@ class SongExportForm(OpenLPWizard):
         self.selectedGroupBox.setObjectName(u'selectedGroupBox')
         self.verticalLayout = QtGui.QVBoxLayout(self.selectedGroupBox)
         self.verticalLayout.setObjectName(u'verticalLayout')
+        self.verticalLayout.setContentsMargins(0, -1, 0, 0)
         self.selectedListWidget = QtGui.QListWidget(self.selectedGroupBox)
         self.selectedListWidget.setObjectName(u'selectedListWidget')
         self.selectedListWidget.setSelectionMode(
@@ -157,7 +159,7 @@ class SongExportForm(OpenLPWizard):
         self.verticalLayout.addWidget(self.selectedListWidget)
         self.sourceLayout.addWidget(self.selectedGroupBox)
         self.addPage(self.sourcePage)
-        #TODO: Add save dialog
+        #TODO: Add save dialog and maybe a search box.
 
     def retranslateUi(self):
         """
