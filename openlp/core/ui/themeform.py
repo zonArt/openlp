@@ -55,7 +55,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.thememanager = parent
         self.setupUi(self)
         self.registerFields()
-        self.accepted = False
         self.updateThemeAllowed = True
         QtCore.QObject.connect(self.backgroundComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
@@ -120,14 +119,12 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         QtCore.QObject.connect(self.mainFontComboBox,
             QtCore.SIGNAL(u'activated(int)'),
             self.calculateLines)
-        QtCore.QObject.connect(self, QtCore.SIGNAL(u'accepted()'), self.accept)
 
     def setDefaults(self):
         """
         Set up display at start of theme edit.
         """
         self.restart()
-        self.accepted = False
         self.setBackgroundPageValues()
         self.setMainAreaPageValues()
         self.setFooterAreaPageValues()
@@ -448,9 +445,10 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Background gradient Combo box has changed.
         """
-        self.theme.background_direction = \
-            BackgroundGradientType.to_string(index)
-        self.setBackgroundPageValues()
+        if self.updateThemeAllowed:
+            self.theme.background_direction = \
+                BackgroundGradientType.to_string(index)
+            self.setBackgroundPageValues()
 
     def onColorButtonClicked(self):
         """
@@ -562,13 +560,8 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Lets save the them as Finish has been pressed
         """
-        # Some reason getting double submission.
-        # Hack to stop it for now.
-        if self.accepted:
-            return
         # Save the theme name
-        self.theme.theme_name = \
-            unicode(self.field(u'name').toString())
+        self.theme.theme_name = unicode(self.field(u'name').toString())
         if not self.theme.theme_name:
             criticalErrorMessageBox(
                 translate('OpenLP.ThemeForm', 'Theme Name Missing'),
@@ -592,7 +585,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         if not self.edit_mode and \
             not self.thememanager.checkIfThemeExists(self.theme.theme_name):
             return
-        self.accepted = True
         self.thememanager.saveTheme(self.theme, saveFrom, saveTo)
         return QtGui.QDialog.accept(self)
 
