@@ -98,13 +98,9 @@ class MediaManagerItem(QtGui.QWidget):
         visible_title = self.plugin.getString(StringContent.VisibleName)
         self.title = unicode(visible_title[u'title'])
         self.settingsSection = self.plugin.name.lower()
-        if isinstance(icon, QtGui.QIcon):
-            self.icon = icon
-        elif isinstance(icon, basestring):
-            self.icon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
-                QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        else:
-            self.icon = None
+        self.icon = None
+        if icon:
+            self.icon = build_icon(icon)
         self.toolbar = None
         self.remoteTriggered = None
         self.serviceItemIconName = None
