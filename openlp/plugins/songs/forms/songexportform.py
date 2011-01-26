@@ -64,7 +64,7 @@ class SongExportForm(OpenLPWizard):
 
     def stop_export(self):
         """
-        Sets the flag for exporters to stop their export
+        Sets the flag for the exporter to stop the export.
         """
         log.debug(u'Stopping songs export')
         self.stop_export_flag = True
@@ -140,7 +140,7 @@ class SongExportForm(OpenLPWizard):
         self.removeSelected = QtGui.QToolButton(self.selectionWidget)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(
-            u':/imports/import_remove.png'),
+            u':/exports/export_remove.png'),
             QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.removeSelected.setIcon(icon)
         self.removeSelected.setIconSize(QtCore.QSize(20, 20))
@@ -192,7 +192,7 @@ class SongExportForm(OpenLPWizard):
             'Welcome to the Song Export Wizard'))
         self.informationLabel.setText(
             translate('SongsPlugin.ExportWizardForm', 'This wizard will help to '
-            'export your songs to the free and open OpenLyrics worship song '
+            'export your songs to the open and free OpenLyrics worship song '
             'format. You can import these songs in all lyrics projection '
             'software, which supports OpenLyrics.'))
         self.sourcePage.setTitle(
@@ -213,10 +213,6 @@ class SongExportForm(OpenLPWizard):
 
         self.availableGroupBox.setTitle(
             translate('SongsPlugin.ExportWizardForm', 'Available Songs'))
-        self.addSelected.setText(
-            translate('SongsPlugin.ExportWizardForm', 'Select Songs'))
-        self.removeSelected.setText(
-            translate('SongsPlugin.ExportWizardForm', 'Select Songs'))
         self.selectedGroupBox.setTitle(
             translate('SongsPlugin.ExportWizardForm', 'Selected Songs'))
 
