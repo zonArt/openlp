@@ -76,10 +76,10 @@ class SofImport(OooImport):
         OooImport.__init__(self, master_manager, **kwargs)
 
     def do_import(self):
-        self.abort = False
+        self.stop_import_flag = False
         self.start_ooo()
         for filename in self.filenames:
-            if self.abort:
+            if self.stop_import_flag:
                 self.import_wizard.incrementProgressBar(u'Import cancelled', 0)
                 return
             filename = unicode(filename)
@@ -101,7 +101,7 @@ class SofImport(OooImport):
         self.new_song()
         paragraphs = self.document.getText().createEnumeration()
         while paragraphs.hasMoreElements():
-            if self.abort:
+            if self.stop_import_flag:
                 self.import_wizard.incrementProgressBar(u'Import cancelled', 0)
                 return
             paragraph = paragraphs.nextElement()

@@ -220,6 +220,3 @@ class ImageMediaItem(MediaManagerItem):
                     unicode(translate('ImagePlugin.MediaItem',
                     'There was a problem replacing your background, '
                     'the image file "%s" no longer exists.')) % filename)
-
-    def onPreviewClick(self):
-        MediaManagerItem.onPreviewClick(self)

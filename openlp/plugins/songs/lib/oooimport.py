@@ -66,11 +66,11 @@ class OooImport(SongImport):
             QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
 
     def do_import(self):
-        self.abort = False
+        self.stop_import_flag = False
         self.import_wizard.progressBar.setMaximum(0)
         self.start_ooo()
         for filename in self.filenames:
-            if self.abort:
+            if self.stop_import_flag:
                 self.import_wizard.incrementProgressBar(u'Import cancelled', 0)
                 return
             filename = unicode(filename)
@@ -88,9 +88,6 @@ class OooImport(SongImport):
         self.import_wizard.progressBar.setMaximum(1)
         self.import_wizard.incrementProgressBar(u'', 1)
         return True
-
-    def stop_import(self):
-        self.abort = True
 
     def start_ooo(self):
         """
@@ -180,7 +177,7 @@ class OooImport(SongImport):
         slides = doc.getDrawPages()
         text = u''
         for slide_no in range(slides.getCount()):
-            if self.abort:
+            if self.stop_import_flag:
                 self.import_wizard.incrementProgressBar(u'Import cancelled', 0)
                 return
             slide = slides.getByIndex(slide_no)
