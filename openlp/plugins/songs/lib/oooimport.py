@@ -77,17 +77,23 @@ class OooImport(SongImport):
             if os.path.isfile(filename):
                 self.open_ooo_file(filename)
                 if self.document:
-                    if self.document.supportsService(
-                        "com.sun.star.presentation.PresentationDocument"):
-                        self.process_pres()
-                    if self.document.supportsService(
-                            "com.sun.star.text.TextDocument"):
-                        self.process_doc()
+                    self.process_ooo_document()
                     self.close_ooo_file()
         self.close_ooo()
         self.import_wizard.progressBar.setMaximum(1)
         self.import_wizard.incrementProgressBar(u'', 1)
         return True
+
+    def process_ooo_document(self):
+        """
+        Handle the import process for OpenOffice files. This method facilitates
+        allowing subclasses to handle specific types of OpenOffice files.
+        """
+        if self.document.supportsService(
+            "com.sun.star.presentation.PresentationDocument"):
+            self.process_pres()
+        if self.document.supportsService("com.sun.star.text.TextDocument"):
+            self.process_doc()
 
     def start_ooo(self):
         """
