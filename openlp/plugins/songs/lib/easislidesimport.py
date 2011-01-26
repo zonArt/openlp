@@ -314,11 +314,11 @@ class EasiSlidesImport(SongImport):
             pass
 
     def _listHas(self, lst, subitems):
-        for i in subitems:
-            if type(lst) == type({}) and lst.has_key(i):
-                lst = lst[i]
-            elif type(lst) == type([]) and i in lst:
-                lst = lst[i]
+        for subitem in subitems:
+            if isinstance(lst, dict) and lst.has_key(subitem):
+                lst = lst[subitem]
+            elif isinstance(lst, list) and subitem in lst:
+                lst = lst[subitem]
             else:
                 return False
         return True
