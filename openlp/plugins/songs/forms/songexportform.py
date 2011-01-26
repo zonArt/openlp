@@ -125,6 +125,9 @@ class SongExportForm(OpenLPWizard):
         self.selectionLayout.setSpacing(0)
         self.selectionLayout.setMargin(0)
         self.selectionLayout.setObjectName(u'selectionLayout')
+        spacerItem = QtGui.QSpacerItem(20, 0,
+            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.MinimumExpanding)
+        self.selectionLayout.addItem(spacerItem)
         self.addSelected = QtGui.QToolButton(self.selectionWidget)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(
@@ -143,6 +146,9 @@ class SongExportForm(OpenLPWizard):
         self.removeSelected.setIconSize(QtCore.QSize(20, 20))
         self.removeSelected.setObjectName(u'removeSelected')
         self.selectionLayout.addWidget(self.removeSelected)
+        spacerItem = QtGui.QSpacerItem(20, 0,
+            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.MinimumExpanding)
+        self.selectionLayout.addItem(spacerItem)
         self.sourceLayout.addWidget(self.selectionWidget)
         self.selectedGroupBox = QtGui.QGroupBox(self.sourcePage)
         self.selectedGroupBox.setObjectName(u'selectedGroupBox')

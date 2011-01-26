@@ -274,8 +274,7 @@ class SongMediaItem(MediaManagerItem):
     def onExportClick(self):
         if not hasattr(self, u'export_wizard'):
             self.export_wizard = SongExportForm(self, self.parent)
-        if self.export_wizard.exec_() == QtGui.QDialog.Accepted:
-            Receiver.send_message(u'songs_load_list')
+        self.export_wizard.exec_()
 
     def onNewClick(self):
         log.debug(u'onNewClick')
