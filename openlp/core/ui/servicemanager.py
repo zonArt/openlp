@@ -179,7 +179,7 @@ class ServiceManager(QtGui.QWidget):
             None,
             translate('OpenLP.ServiceManager',
             'Moves the selection up the window.'),
-            self.onMoveSelectionDown, shortcut=QtCore.Qt.Key_Up)
+            self.onMoveSelectionDown, shortcut=QtCore.Qt.Key_Down)
         self.serviceManagerList.down.setVisible(False)
         self.serviceManagerList.up = self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', 'Move up'),
