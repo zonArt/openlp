@@ -68,9 +68,6 @@ class CustomMediaItem(MediaManagerItem):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'custom_preview'), self.onPreviewClick)
 
-    def requiredIcons(self):
-        MediaManagerItem.requiredIcons(self)
-
     def initialise(self):
         self.loadCustomListView(self.manager.get_all_objects(
             CustomSlide, order_by_ref=CustomSlide.title))

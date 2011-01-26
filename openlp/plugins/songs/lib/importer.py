@@ -105,7 +105,7 @@ class SongFormat(object):
         return None
 
     @staticmethod
-    def list():
+    def get_formats_list():
         """
         Return a list of the supported song formats.
         """
