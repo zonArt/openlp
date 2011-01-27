@@ -25,7 +25,7 @@
 ###############################################################################
 """
 The :mod:`openlyricsexport` module provides the functionality for exporting
-songs from the database.
+songs from the database to the OpenLyrics format.
 """
 import logging
 import os
@@ -50,6 +50,8 @@ class OpenLyricsExport(object):
         self.manager = parent.plugin.manager
         self.songs = songs
         self.save_path = save_path
+        if not os.path.exists(self.save_path):
+            os.mkdir(self.save_path)
 
     def do_export(self):
         """
@@ -65,12 +67,8 @@ class OpenLyricsExport(object):
             self.parent.incrementProgressBar(unicode(translate(
                 'SongsPlugin.OpenLyricsExport', 'Exporting %s...')) %
                 song.title)
-            # Check if path exists. If not, create the directories!
-            # What do we do with songs with the same title? I do not want to
-            # overwrite them!
-            path = os.path.join(self.save_path, song.title + u'.xml')
             xml = openLyrics.song_to_xml(song)
             tree = etree.ElementTree(etree.fromstring(xml))
-            tree.write(path, encoding=u'utf-8', xml_declaration=True,
-                pretty_print=True)
+            tree.write(os.path.join(self.save_path, song.title + u'.xml'),
+                encoding=u'utf-8', xml_declaration=True, pretty_print=True)
         return True

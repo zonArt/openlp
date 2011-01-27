@@ -84,6 +84,7 @@
     <file>export_move_to_list.png</file>
   </qresource>
   <qresource prefix="wizards">
+    <file>wizard_exportsong.bmp</file>
     <file>wizard_importsong.bmp</file>
     <file>wizard_importbible.bmp</file>
     <file>wizard_createtheme.bmp</file>
