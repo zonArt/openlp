@@ -203,7 +203,6 @@ class SongExportForm(OpenLPWizard):
             translate('SongsPlugin.ExportWizardForm',
             'Add the songs, you want to export to the list on the right hand '
             'side. You can use the buttons below or double click them.'))
-
         self.progressPage.setTitle(
             translate('SongsPlugin.ExportWizardForm', 'Exporting'))
         self.progressPage.setSubTitle(
@@ -213,7 +212,6 @@ class SongExportForm(OpenLPWizard):
             translate('SongsPlugin.ExportWizardForm', 'Ready.'))
         self.progressBar.setFormat(
             translate('SongsPlugin.ExportWizardForm', '%p%'))
-
         self.directoryLabel.setText(translate('SongsPlugin.ExportWizardForm',
             'Directory:'))
         self.availableLabel.setText(
