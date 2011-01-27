@@ -134,7 +134,7 @@ class CSVBible(BibleDB):
         """
         self.wizard.progressBar.setValue(0)
         self.wizard.progressBar.setMinimum(0)
-        self.wizard.progressBar.setMaximum(65)
+        self.wizard.progressBar.setMaximum(66)
         success = True
         books_file = None
         book_list = {}
@@ -162,6 +162,7 @@ class CSVBible(BibleDB):
         if self.stop_import_flag or not success:
             return False
         self.wizard.progressBar.setValue(0)
+        self.wizard.progressBar.setMaximum(67)
         verse_file = None
         try:
             book_ptr = None
@@ -180,6 +181,8 @@ class CSVBible(BibleDB):
                     self.session.commit()
                 self.create_verse(book.id, line[1], line[2],
                     unicode(line[3], details['encoding']))
+            self.wizard.incrementProgressBar(translate('BibleDB.Wizard',
+                'Importing verses... done.'))
             Receiver.send_message(u'openlp_process_events')
             self.session.commit()
         except IOError:
