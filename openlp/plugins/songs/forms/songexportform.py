@@ -157,11 +157,6 @@ class SongExportForm(OpenLPWizard):
         self.gridLayout.addWidget(self.availableListWidget, 1, 0, 1, 1)
         # Button to select all songs in the "selectedListWidget".
         self.allSelectedButton = QtGui.QToolButton(self.sourcePage)
-#        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
-#        sizePolicy.setHorizontalStretch(0)
-#        sizePolicy.setVerticalStretch(0)
-#        sizePolicy.setHeightForWidth(self.allSelectedButton.sizePolicy().hasHeightForWidth())
-#        self.allSelectedButton.setSizePolicy(sizePolicy)
         self.allSelectedButton.setObjectName(u'allSelectedButton')
         self.gridLayout.addWidget(self.allSelectedButton, 3, 2, 1, 1)
         # Button to select all songs in the "availableListWidget".
