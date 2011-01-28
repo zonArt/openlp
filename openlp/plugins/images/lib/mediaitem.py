@@ -96,7 +96,6 @@ class ImageMediaItem(MediaManagerItem):
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
-        self.listView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.listView.addAction(self.replaceAction)
 
     def addEndHeaderBar(self):
@@ -220,6 +219,3 @@ class ImageMediaItem(MediaManagerItem):
                     unicode(translate('ImagePlugin.MediaItem',
                     'There was a problem replacing your background, '
                     'the image file "%s" no longer exists.')) % filename)
-
-    def onPreviewClick(self):
-        MediaManagerItem.onPreviewClick(self)

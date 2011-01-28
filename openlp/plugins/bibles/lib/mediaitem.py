@@ -254,9 +254,6 @@ class BibleMediaItem(MediaManagerItem):
         QtCore.QObject.connect(self.quickSearchEdit,
             QtCore.SIGNAL(u'returnPressed()'), self.onQuickSearchButton)
 
-    def addListViewToToolBar(self):
-        MediaManagerItem.addListViewToToolBar(self)
-
     def configUpdated(self):
         log.debug(u'configUpdated')
         if QtCore.QSettings().value(self.settingsSection + u'/second bibles',

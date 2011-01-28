@@ -68,9 +68,6 @@ class SongMediaItem(MediaManagerItem):
         self.editItem = None
         self.whitespace = re.compile(r'\W+', re.UNICODE)
 
-    def requiredIcons(self):
-        MediaManagerItem.requiredIcons(self)
-
     def addEndHeaderBar(self):
         self.addToolbarSeparator()
         ## Song Maintenance Button ##

@@ -84,7 +84,6 @@ class MediaMediaItem(MediaManagerItem):
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
-        self.listView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.listView.addAction(self.replaceAction)
 
     def addEndHeaderBar(self):

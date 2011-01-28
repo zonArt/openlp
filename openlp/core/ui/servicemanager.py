@@ -108,7 +108,7 @@ class ServiceManager(QtGui.QWidget):
             translate('OpenLP.ServiceManager', 'Save Service'),
             u':/general/general_save.png',
             translate('OpenLP.ServiceManager', 'Save this service'),
-            self.onSaveServiceClicked)
+            self.saveFile)
         self.toolbar.addSeparator()
         self.themeLabel = QtGui.QLabel(translate('OpenLP.ServiceManager',
             'Theme:'), self)
@@ -361,12 +361,7 @@ class ServiceManager(QtGui.QWidget):
         Create a new service.
         """
         if self.isModified():
-            result = QtGui.QMessageBox.question(self.mainwindow,
-                translate('OpenLP.ServiceManager', 'Save Changes'),
-                translate('OpenLP.ServiceManager', 'The current service has '
-                'been modified, would you like to save it?'),
-                QtGui.QMessageBox.Save | QtGui.QMessageBox.Discard |
-                QtGui.QMessageBox.Cancel, QtGui.QMessageBox.Save)
+            result = self.saveModifiedService()
             if result == QtGui.QMessageBox.Cancel:
                 return False
             elif result == QtGui.QMessageBox.Save:
@@ -376,12 +371,7 @@ class ServiceManager(QtGui.QWidget):
 
     def onLoadServiceClicked(self):
         if self.isModified():
-            result = QtGui.QMessageBox.question(self.mainwindow,
-                translate('OpenLP.ServiceManager', 'Save Changes'),
-                translate('OpenLP.ServiceManager', 'The current service has '
-                'been modified, would you like to save it?'),
-                QtGui.QMessageBox.Save | QtGui.QMessageBox.Discard |
-                QtGui.QMessageBox.Cancel, QtGui.QMessageBox.Save)
+            result = self.saveModifiedService()
             if result == QtGui.QMessageBox.Cancel:
                 return False
             elif result == QtGui.QMessageBox.Save:
@@ -397,11 +387,13 @@ class ServiceManager(QtGui.QWidget):
             split_filename(fileName)[0])
         self.loadFile(fileName)
 
-    def onSaveServiceClicked(self):
-        self.saveFile()
-
-    def onSaveServiceAsClicked(self):
-        self.saveFileAs()
+    def saveModifiedService(self):
+        return QtGui.QMessageBox.question(self.mainwindow,
+            translate('OpenLP.ServiceManager', 'Modified Service'),
+            translate('OpenLP.ServiceManager', 'The current service has '
+            'been modified.  Would you like to save this service?'),
+            QtGui.QMessageBox.Save | QtGui.QMessageBox.Discard |
+            QtGui.QMessageBox.Cancel, QtGui.QMessageBox.Save)
 
     def onRecentServiceClicked(self):
         sender = self.sender()

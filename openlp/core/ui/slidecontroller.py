@@ -119,6 +119,8 @@ class SlideController(QtGui.QWidget):
         self.previewListWidget.isLive = self.isLive
         self.previewListWidget.setObjectName(u'PreviewListWidget')
         self.previewListWidget.setSelectionBehavior(1)
+        self.previewListWidget.setSelectionMode(
+            QtGui.QAbstractItemView.SingleSelection)
         self.previewListWidget.setEditTriggers(
             QtGui.QAbstractItemView.NoEditTriggers)
         self.previewListWidget.setHorizontalScrollBarPolicy(
