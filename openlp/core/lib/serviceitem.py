@@ -314,6 +314,18 @@ class ServiceItem(object):
                     path, text_image[u'title'], text_image[u'image'] )
         self._new_item()
 
+    def get_title(self):
+        """
+        Returns the title of the service item.
+        """
+        if self.is_text():
+            return self.title
+        else:
+            if len(self._raw_frames) > 1:
+                return self.title
+            else:
+                return self._raw_frames[0][u'title']
+
     def merge(self, other):
         """
         Updates the _uuid with the value from the original one
