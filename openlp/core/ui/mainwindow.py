@@ -175,6 +175,10 @@ class Ui_MainWindow(object):
         self.FileSaveAsItem = QtGui.QAction(mainWindow)
         self.FileSaveAsItem.setObjectName(u'FileSaveAsItem')
         mainWindow.actionList.add_action(self.FileSaveAsItem, u'File')
+        self.PrintServiceOrderItem = QtGui.QAction(mainWindow) 
+        self.PrintServiceOrderItem.setObjectName(u'PrintServiceItem')
+        mainWindow.actionList.add_action(
+            self.PrintServiceOrderItem, u'Print Service Order')
         self.FileExitItem = QtGui.QAction(mainWindow)
         self.FileExitItem.setIcon(build_icon(u':/system/system_exit.png'))
         self.FileExitItem.setObjectName(u'FileExitItem')
@@ -302,8 +306,8 @@ class Ui_MainWindow(object):
             (self.ExportThemeItem, self.ExportLanguageItem))
         self.FileMenuActions = (self.FileNewItem, self.FileOpenItem,
             self.FileSaveItem, self.FileSaveAsItem, None,
-            self.FileImportMenu.menuAction(), self.FileExportMenu.menuAction(),
-            self.FileExitItem)
+            self.PrintServiceOrderItem, None, self.FileImportMenu.menuAction(),
+            self.FileExportMenu.menuAction(), self.FileExitItem)
         add_actions(self.ViewModeMenu, (self.ModeDefaultItem,
             self.ModeSetupItem, self.ModeLiveItem))
         add_actions(self.ViewMenu, (self.ViewModeMenu.menuAction(),
@@ -381,6 +385,12 @@ class Ui_MainWindow(object):
             'Save the current service under a new name.'))
         self.FileSaveAsItem.setShortcut(
             translate('OpenLP.MainWindow', 'Ctrl+Shift+S'))
+        self.PrintServiceOrderItem.setText(
+            translate('OpenLP.MainWindow', 'Print Service Order'))
+        self.PrintServiceOrderItem.setStatusTip(translate('OpenLP.MainWindow',
+            'Print the current Service Order.'))
+        self.PrintServiceOrderItem.setShortcut(
+            translate('OpenLP.MainWindow', 'Ctrl+P'))
         self.FileExitItem.setText(
             translate('OpenLP.MainWindow', 'E&xit'))
         self.FileExitItem.setStatusTip(
@@ -567,6 +577,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(self.FileSaveAsItem,
             QtCore.SIGNAL(u'triggered()'),
             self.ServiceManagerContents.saveFileAs)
+        QtCore.QObject.connect(self.PrintServiceOrderItem,
+            QtCore.SIGNAL(u'triggered()'),
+            self.ServiceManagerContents.printServiceOrder)
         # i18n set signals for languages
         QtCore.QObject.connect(self.AutoLanguageItem,
             QtCore.SIGNAL(u'toggled(bool)'), self.setAutoLanguage)

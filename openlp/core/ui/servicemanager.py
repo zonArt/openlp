@@ -1182,3 +1182,31 @@ class ServiceManager(QtGui.QWidget):
             data_item[u'selected'] = (item == curitem)
             data.append(data_item)
         Receiver.send_message(u'servicemanager_list_response', data)
+
+    def printServiceOrder(self):
+        """
+        Print a Service Order Sheet.
+        """
+        # TODO: Add settings, consider footer. If saved service, print service
+        # file name.
+        printer = QtGui.QPrinter()
+        printer.setPaperSize(QtGui.QPrinter.A4)
+        text = u'<h1>%s</h1>' % translate('OpenLP.ServiceManager',
+            'Service Order Sheet')
+        for item in self.serviceItems:
+            text += u'<h2>' + item[u'service_item'].title + u'</h2>'
+            if item[u'service_item'].is_text():
+                for slide in item[u'service_item'].get_frames():
+                    text += u'<p>' + slide[u'text'] + u'</p>'
+            elif item[u'service_item'].is_image():
+                # Get child title
+                pass
+            else:
+                # What to do with the other types?
+                pass
+            if item[u'service_item'].notes:
+                text += u'<p> %s ' % translate('OpenLP.ServiceManager',
+                    'Notes:') + item[u'service_item'].notes + u'</p>'
+        doc = QtGui.QTextDocument()
+        doc.setHtml(text)
+        doc.print_(printer)
