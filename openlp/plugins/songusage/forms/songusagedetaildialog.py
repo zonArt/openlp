@@ -61,6 +61,7 @@ class Ui_SongUsageDetailDialog(object):
         self.fileLineEdit = QtGui.QLineEdit(self.fileGroupBox)
         self.fileLineEdit.setObjectName(u'fileLineEdit')
         self.fileLineEdit.setReadOnly(True)
+        self.fileLineEdit.setEnabled(False)
         self.horizontalLayout.addWidget(self.fileLineEdit)
         self.saveFilePushButton = QtGui.QPushButton(self.fileGroupBox)
         self.saveFilePushButton.setIcon(

@@ -30,7 +30,8 @@ import os
 from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import and_
 
-from openlp.core.lib import SettingsManager, translate, check_directory_exists
+from openlp.core.lib import SettingsManager, translate, Receiver, \
+    check_directory_exists
 from openlp.plugins.songusage.lib.db import SongUsageItem
 from songusagedetaildialog import Ui_SongUsageDetailDialog
 
@@ -110,6 +111,12 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
                     instance.usagedate, instance.usagetime, instance.title,
                     instance.copyright, instance.ccl_number, instance.authors)
                 fileHandle.write(record.encode(u'utf-8'))
+            Receiver.send_message(u'openlp_information_message', {
+                u'title': translate('SongUsagePlugin.SongUsageDetailForm',
+                'Report Creation'),
+                u'message': unicode(translate(
+                'SongUsagePlugin.SongUsageDetailForm', 'Report \n%s \n'
+                'has been sucessfully created. ')) % outname})
         except IOError:
             log.exception(u'Failed to write out song usage records')
         finally:
