@@ -116,7 +116,7 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
                 'Report Creation'),
                 u'message': unicode(translate(
                 'SongUsagePlugin.SongUsageDetailForm', 'Report \n%s \n'
-                'has been sucessfully created. ')) % outname})
+                'has been successfully created. ')) % outname})
         except IOError:
             log.exception(u'Failed to write out song usage records')
         finally:

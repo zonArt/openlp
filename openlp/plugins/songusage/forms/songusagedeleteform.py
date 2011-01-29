@@ -57,7 +57,7 @@ class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
                 SongUsageItem.usagedate <= deleteDate)
             Receiver.send_message(u'openlp_information_message', {
                 u'title': translate('SongUsagePlugin.SongUsageDeleteForm',
-                'Deletion Sucessful'),
+                'Deletion Successful'),
                 u'message': translate('SongUsagePlugin.SongUsageDeleteForm',
-                'All requested data has been deleted sucessfully. ')})
+                'All requested data has been deleted successfully. ')})
         self.close()
