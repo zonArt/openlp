@@ -178,8 +178,8 @@ class ServiceManager(QtGui.QWidget):
             translate('OpenLP.ServiceManager', 'Move &down'),
             None,
             translate('OpenLP.ServiceManager',
-            'Moves the selection up the window.'),
-            self.onMoveSelectionDown, shortcut=QtCore.Qt.Key_Up)
+            'Moves the selection down the window.'),
+            self.onMoveSelectionDown, shortcut=QtCore.Qt.Key_Down)
         self.serviceManagerList.down.setVisible(False)
         self.serviceManagerList.up = self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', 'Move up'),
@@ -833,7 +833,7 @@ class ServiceManager(QtGui.QWidget):
             else:
                 treewidgetitem.setIcon(0,
                     build_icon(u':/general/general_delete.png'))
-            treewidgetitem.setText(0, serviceitem.title)
+            treewidgetitem.setText(0, serviceitem.get_display_title())
             treewidgetitem.setToolTip(0, serviceitem.notes)
             treewidgetitem.setData(0, QtCore.Qt.UserRole,
                 QtCore.QVariant(item[u'order']))
@@ -1176,7 +1176,7 @@ class ServiceManager(QtGui.QWidget):
         for item in self.serviceItems:
             service_item = item[u'service_item']
             data_item = {}
-            data_item[u'title'] = unicode(service_item.title)
+            data_item[u'title'] = unicode(service_item.get_display_title())
             data_item[u'plugin'] = unicode(service_item.name)
             data_item[u'notes'] = unicode(service_item.notes)
             data_item[u'selected'] = (item == curitem)
