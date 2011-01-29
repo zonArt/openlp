@@ -59,6 +59,7 @@ class ItemCapabilities(object):
     OnLoadUpdate = 8
     AddIfNewItem = 9
     ProvidesOwnDisplay = 10
+    AllowsDetailedTitleDisplay = 11
 
 
 class ServiceItem(object):
@@ -314,14 +315,16 @@ class ServiceItem(object):
                     path, text_image[u'title'], text_image[u'image'] )
         self._new_item()
 
-    def get_title(self):
+    def get_display_title(self):
         """
         Returns the title of the service item.
         """
         if self.is_text():
             return self.title
         else:
-            if len(self._raw_frames) > 1:
+            if ItemCapabilities.AllowsDetailedTitleDisplay in self.capabilities:
+                return self._raw_frames[0][u'title']
+            elif len(self._raw_frames) > 1:
                 return self.title
             else:
                 return self._raw_frames[0][u'title']
