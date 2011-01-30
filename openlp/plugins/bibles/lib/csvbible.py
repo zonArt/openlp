@@ -172,8 +172,12 @@ class CSVBible(BibleDB):
             for line in verse_reader:
                 if self.stop_import_flag:
                     break
-                if book_ptr != book_list[int(line[0])]:
-                    book = self.get_book(book_list[int(line[0])])
+                try:
+                    line_book = book_list[int(line[0])]
+                except ValueError:
+                    line_book = unicode(line[0], details['encoding'])
+                if book_ptr != line_book:
+                    book = self.get_book(line_book)
                     book_ptr = book.name
                     self.wizard.incrementProgressBar(unicode(translate(
                         'BibleDB.Wizard', 'Importing verses from %s...',
