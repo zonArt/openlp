@@ -142,7 +142,7 @@ class ImageMediaItem(MediaManagerItem):
         items = self.listView.selectedIndexes()
         if items:
             service_item.title = unicode(
-                translate('ImagePlugin.MediaItem', 'Image(s)'))
+                translate('ImagePlugin.MediaItem', 'Images'))
             service_item.add_capability(ItemCapabilities.AllowsMaintain)
             service_item.add_capability(ItemCapabilities.AllowsPreview)
             service_item.add_capability(ItemCapabilities.AllowsLoop)
