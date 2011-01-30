@@ -1187,26 +1187,31 @@ class ServiceManager(QtGui.QWidget):
         """
         Print a Service Order Sheet.
         """
-        # TODO: Add settings, consider footer. If saved service, print service
-        # file name.
-        printer = QtGui.QPrinter()
-        printer.setPaperSize(QtGui.QPrinter.A4)
+        # TODO: Add settings.
+        if not self.serviceItems:
+            return
+        printDialog = QtGui.QPrintDialog()
+        if not printDialog.exec_():
+            return
         text = u'<h1>%s</h1>' % translate('OpenLP.ServiceManager',
             'Service Order Sheet')
         for item in self.serviceItems:
-            text += u'<h2>' + item[u'service_item'].title + u'</h2>'
-            if item[u'service_item'].is_text():
-                for slide in item[u'service_item'].get_frames():
+            item = item[u'service_item']
+            text += u'<h2><img src="%s"></img> %s</h2>' % (item.icon,
+                item.get_display_title())
+            if item.is_text():
+                for slide in item.get_frames():
                     text += u'<p>' + slide[u'text'] + u'</p>'
-            elif item[u'service_item'].is_image():
-                # Get child title
-                pass
-            else:
-                # What to do with the other types?
-                pass
-            if item[u'service_item'].notes:
-                text += u'<p> %s ' % translate('OpenLP.ServiceManager',
-                    'Notes:') + item[u'service_item'].notes + u'</p>'
-        doc = QtGui.QTextDocument()
-        doc.setHtml(text)
-        doc.print_(printer)
+            elif item.is_image():
+                text += u'<ol>'
+                for slide in range(len(item.get_frames())):
+                    text += u'<li><p>%s</p></li>' % item.get_frame_title(slide)
+                text += u'</ol>'
+            if item.foot_text:
+                text += u'<p>%s</p>' % item.foot_text
+            if item.notes:
+                text += u'<p><b>%s</b> %s</p>' % (translate(
+                    'OpenLP.ServiceManager', 'Notes:'), item.notes)
+        serviceDocument = QtGui.QTextDocument()
+        serviceDocument.setHtml(text)
+        serviceDocument.print_(printDialog.printer())
