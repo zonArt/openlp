@@ -50,14 +50,17 @@ The format of the books file is:
         ...
         40,2,Matthew,Matt
 
-The format of the verses file is:
+There are two acceptable formats of the verses file.  They are:
 
     <book_id>,<chapter_number>,<verse_number>,<verse_text>
+    or
+    <book_name>,<chapter_number>,<verse_number>,<verse_text>
 
     For example:
 
         1,1,1,"In the beginning God created the heaven and the earth."
-        1,1,2,"And the earth was without form, and void; and darkness...."
+        or
+        "Genesis",1,2,"And the earth was without form, and void; and...."
 
 All CSV files are expected to use a comma (',') as the delimeter and double
 quotes ('"') as the quote symbol.
