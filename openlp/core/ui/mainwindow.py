@@ -563,10 +563,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.ServiceManagerContents.onLoadServiceClicked)
         QtCore.QObject.connect(self.FileSaveItem,
             QtCore.SIGNAL(u'triggered()'),
-            self.ServiceManagerContents.onSaveServiceClicked)
+            self.ServiceManagerContents.saveFile)
         QtCore.QObject.connect(self.FileSaveAsItem,
             QtCore.SIGNAL(u'triggered()'),
-            self.ServiceManagerContents.onSaveServiceAsClicked)
+            self.ServiceManagerContents.saveFileAs)
         # i18n set signals for languages
         QtCore.QObject.connect(self.AutoLanguageItem,
             QtCore.SIGNAL(u'toggled(bool)'), self.setAutoLanguage)
@@ -807,15 +807,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Hook to close the main window and display windows on exit
         """
         if self.ServiceManagerContents.isModified():
-            ret = QtGui.QMessageBox.question(self,
-                translate('OpenLP.MainWindow', 'Save Changes to Service?'),
-                translate('OpenLP.MainWindow', 'Your service has changed. '
-                    'Do you want to save those changes?'),
-                QtGui.QMessageBox.StandardButtons(
-                    QtGui.QMessageBox.Cancel |
-                    QtGui.QMessageBox.Discard |
-                    QtGui.QMessageBox.Save),
-                QtGui.QMessageBox.Save)
+            ret = self.ServiceManagerContents.saveModifiedService()
             if ret == QtGui.QMessageBox.Save:
                 if self.ServiceManagerContents.saveFile():
                     self.cleanUp()
@@ -846,7 +838,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             else:
                 self.cleanUp()
                 event.accept()
-
 
     def cleanUp(self):
         """

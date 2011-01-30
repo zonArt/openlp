@@ -66,31 +66,34 @@ class OooImport(SongImport):
             QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
 
     def do_import(self):
-        self.abort = False
+        self.stop_import_flag = False
         self.import_wizard.progressBar.setMaximum(0)
         self.start_ooo()
         for filename in self.filenames:
-            if self.abort:
+            if self.stop_import_flag:
                 self.import_wizard.incrementProgressBar(u'Import cancelled', 0)
                 return
             filename = unicode(filename)
             if os.path.isfile(filename):
                 self.open_ooo_file(filename)
                 if self.document:
-                    if self.document.supportsService(
-                        "com.sun.star.presentation.PresentationDocument"):
-                        self.process_pres()
-                    if self.document.supportsService(
-                            "com.sun.star.text.TextDocument"):
-                        self.process_doc()
+                    self.process_ooo_document()
                     self.close_ooo_file()
         self.close_ooo()
         self.import_wizard.progressBar.setMaximum(1)
         self.import_wizard.incrementProgressBar(u'', 1)
         return True
 
-    def stop_import(self):
-        self.abort = True
+    def process_ooo_document(self):
+        """
+        Handle the import process for OpenOffice files. This method facilitates
+        allowing subclasses to handle specific types of OpenOffice files.
+        """
+        if self.document.supportsService(
+            "com.sun.star.presentation.PresentationDocument"):
+            self.process_pres()
+        if self.document.supportsService("com.sun.star.text.TextDocument"):
+            self.process_doc()
 
     def start_ooo(self):
         """
@@ -180,7 +183,7 @@ class OooImport(SongImport):
         slides = doc.getDrawPages()
         text = u''
         for slide_no in range(slides.getCount()):
-            if self.abort:
+            if self.stop_import_flag:
                 self.import_wizard.incrementProgressBar(u'Import cancelled', 0)
                 return
             slide = slides.getByIndex(slide_no)

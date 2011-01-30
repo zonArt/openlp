@@ -60,10 +60,12 @@ class Ui_SongUsageDetailDialog(object):
         self.horizontalLayout.setObjectName(u'horizontalLayout')
         self.fileLineEdit = QtGui.QLineEdit(self.fileGroupBox)
         self.fileLineEdit.setObjectName(u'fileLineEdit')
+        self.fileLineEdit.setReadOnly(True)
+        self.fileLineEdit.setEnabled(False)
         self.horizontalLayout.addWidget(self.fileLineEdit)
         self.saveFilePushButton = QtGui.QPushButton(self.fileGroupBox)
         self.saveFilePushButton.setIcon(
-            build_icon(u':/general/general_load.png'))
+            build_icon(u':/general/general_open.png'))
         self.saveFilePushButton.setObjectName(u'saveFilePushButton')
         self.horizontalLayout.addWidget(self.saveFilePushButton)
         self.verticalLayout4.addLayout(self.horizontalLayout)

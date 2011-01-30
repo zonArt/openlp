@@ -314,7 +314,7 @@ body {
 </html>
     """
 
-def build_html(item, screen, alert, islive):
+def build_html(item, screen, alert, islive, background):
     """
     Build the full web paged structure for display
 
@@ -332,7 +332,9 @@ def build_html(item, screen, alert, islive):
     theme = item.themedata
     webkitvers = webkit_version()
     # Image generated and poked in
-    if item.bg_image_bytes:
+    if background:
+        image = u'src="data:image/png;base64,%s"' % background
+    elif item.bg_image_bytes:
         image = u'src="data:image/png;base64,%s"' % item.bg_image_bytes
     else:
         image = u'style="display:none;"'
