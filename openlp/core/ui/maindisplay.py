@@ -244,6 +244,7 @@ class MainDisplay(DisplayWidget):
         Used after Image plugin has changed the background
         """
         log.debug(u'resetImage')
+        a=c
         if hasattr(self, u'serviceItem'):
             self.displayImage(self.serviceItem.bg_image_bytes)
         else:

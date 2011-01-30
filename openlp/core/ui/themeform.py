@@ -272,14 +272,18 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
     def onMainPositionCheckBoxStateChanged(self, value):
         """
         Change state as Main Area Position check box changed
+        NOTE the font_main_override is the inverse of the check box value
         """
-        self.theme.font_main_override = (value == QtCore.Qt.Checked)
+        if self.updateThemeAllowed:
+            self.theme.font_main_override = not (value == QtCore.Qt.Checked)
 
     def onFooterPositionCheckBoxStateChanged(self, value):
         """
         Change state as Footer Area Position check box changed
+        NOTE the font_footer_override is the inverse of the check box value
         """
-        self.theme.font_footer_override = (value == QtCore.Qt.Checked)
+        if self.updateThemeAllowed:
+            self.theme.font_footer_override = not (value == QtCore.Qt.Checked)
 
     def exec_(self, edit=False):
         """
