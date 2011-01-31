@@ -103,7 +103,6 @@ class MediaManagerItem(QtGui.QWidget):
             self.icon = build_icon(icon)
         self.toolbar = None
         self.remoteTriggered = None
-        self.serviceItemIconName = None
         self.singleServiceItem = True
         self.pageLayout = QtGui.QVBoxLayout(self)
         self.pageLayout.setSpacing(0)
@@ -525,10 +524,7 @@ class MediaManagerItem(QtGui.QWidget):
         Common method for generating a service item
         """
         serviceItem = ServiceItem(self.parent)
-        if self.serviceItemIconName:
-            serviceItem.add_icon(self.serviceItemIconName)
-        else:
-            serviceItem.add_icon(self.parent.icon_path)
+        serviceItem.add_icon(self.parent.icon_path)
         if self.generateSlideData(serviceItem, item, xmlVersion):
             return serviceItem
         else:
