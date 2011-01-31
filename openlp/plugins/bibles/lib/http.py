@@ -210,7 +210,8 @@ class BGExtract(object):
         cleaner = [(re.compile('&nbsp;|<br />|\'\+\''), lambda match: '')]
         soup = get_soup_for_bible_ref(
             u'http://www.biblegateway.com/passage/?%s' % url_params,
-                cleaner=cleaner)
+            pre_parse_regex=r'<meta name.*?/>', pre_parse_substitute='',
+            cleaner=cleaner)
         if not soup:
             return None
         Receiver.send_message(u'openlp_process_events')
@@ -499,7 +500,8 @@ class HTTPBible(BibleDB):
         """
         return HTTPBooks.get_verse_count(book, chapter)
 
-def get_soup_for_bible_ref(reference_url, header=None, cleaner=None):
+def get_soup_for_bible_ref(reference_url, header=None, pre_parse_regex=None,
+    pre_parse_substitute=None, cleaner=None):
     """
     Gets a webpage and returns a parsed and optionally cleaned soup or None.
 
@@ -508,6 +510,13 @@ def get_soup_for_bible_ref(reference_url, header=None, cleaner=None):
 
     ``header``
         An optional HTTP header to pass to the bible web server.
+
+    ``pre_parse_regex``
+        A regular expression to run on the webpage. Allows manipulation of the
+        webpage before passing to BeautifulSoup for parsing.
+
+    ``pre_parse_substitute``
+        The text to replace any matches to the regular expression with.
 
     ``cleaner``
         An optional regex to use during webpage parsing.
@@ -518,12 +527,15 @@ def get_soup_for_bible_ref(reference_url, header=None, cleaner=None):
     if not page:
         send_error_message(u'download')
         return None
+    page_source = page.read()
+    if pre_parse_regex and pre_parse_substitute is not None:
+        page_source = re.sub(pre_parse_regex, pre_parse_substitute, page_source)
     soup = None
     try:
         if cleaner:
-            soup = BeautifulSoup(page, markupMassage=cleaner)
+            soup = BeautifulSoup(page_source, markupMassage=cleaner)
         else:
-            soup = BeautifulSoup(page)
+            soup = BeautifulSoup(page_source)
     except HTMLParseError:
         log.exception(u'BeautifulSoup could not parse the bible page.')
     if not soup:
