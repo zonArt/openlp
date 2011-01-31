@@ -1187,7 +1187,6 @@ class ServiceManager(QtGui.QWidget):
         """
         Print a Service Order Sheet.
         """
-        # TODO: Add settings.
         if not self.serviceItems:
             return
         printDialog = QtGui.QPrintDialog()
@@ -1200,6 +1199,9 @@ class ServiceManager(QtGui.QWidget):
             # add the title
             text += u'<h2><img src="%s" /> %s</h2>' % (item.icon,
                 item.get_display_title())
+            if not QtCore.QSettings().value(u'advanced' +
+                u'/detailed service print', QtCore.QVariant(True)).toBool():
+                continue
             if item.is_text():
                 # Add the text of the service item.
                 for slide in item.get_frames():
