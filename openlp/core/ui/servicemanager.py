@@ -1197,19 +1197,24 @@ class ServiceManager(QtGui.QWidget):
             'Service Order Sheet')
         for item in self.serviceItems:
             item = item[u'service_item']
-            text += u'<h2><img src="%s"></img> %s</h2>' % (item.icon,
+            # add the title
+            text += u'<h2><img src="%s" /> %s</h2>' % (item.icon,
                 item.get_display_title())
             if item.is_text():
+                # Add the text of the service item.
                 for slide in item.get_frames():
                     text += u'<p>' + slide[u'text'] + u'</p>'
             elif item.is_image():
+                # Add the image names of the service item.
                 text += u'<ol>'
                 for slide in range(len(item.get_frames())):
                     text += u'<li><p>%s</p></li>' % item.get_frame_title(slide)
                 text += u'</ol>'
             if item.foot_text:
+                # add footer
                 text += u'<p>%s</p>' % item.foot_text
             if item.notes:
+                # add notes
                 text += u'<p><b>%s</b> %s</p>' % (translate(
                     'OpenLP.ServiceManager', 'Notes:'), item.notes)
         serviceDocument = QtGui.QTextDocument()
