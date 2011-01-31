@@ -39,9 +39,7 @@ from oooimport import OooImport
 if os.name == u'nt':
     BOLD = 150.0
     ITALIC = 2
-    PAGE_BEFORE = 4
-    PAGE_AFTER = 5
-    PAGE_BOTH = 6
+    from oooimport import PAGE_BEFORE, PAGE_AFTER, PAGE_BOTH
 else:
     try:
         from com.sun.star.awt.FontWeight import BOLD
@@ -75,23 +73,11 @@ class SofImport(OooImport):
         """
         OooImport.__init__(self, master_manager, **kwargs)
 
-    def do_import(self):
-        self.abort = False
-        self.start_ooo()
-        for filename in self.filenames:
-            if self.abort:
-                self.import_wizard.incrementProgressBar(u'Import cancelled', 0)
-                return
-            filename = unicode(filename)
-            if os.path.isfile(filename):
-                self.open_ooo_file(filename)
-                if self.document:
-                    self.process_sof_file()
-                    self.close_ooo_file()
-        self.close_ooo()
-        self.import_wizard.importProgressBar.setMaximum(1)
-        self.import_wizard.incrementProgressBar(u'', 1)
-        return True
+    def process_ooo_document(self):
+        """
+        Handle the import process for SoF files.
+        """
+        self.process_sof_file()
 
     def process_sof_file(self):
         """
@@ -101,7 +87,7 @@ class SofImport(OooImport):
         self.new_song()
         paragraphs = self.document.getText().createEnumeration()
         while paragraphs.hasMoreElements():
-            if self.abort:
+            if self.stop_import_flag:
                 self.import_wizard.incrementProgressBar(u'Import cancelled', 0)
                 return
             paragraph = paragraphs.nextElement()
@@ -317,7 +303,6 @@ class SofImport(OooImport):
             self.song.add_verse(self.currentverse, versetag)
         self.currentverse = u''
         self.is_chorus = False
-
 
     def uncap_text(self, text):
         """

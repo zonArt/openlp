@@ -293,6 +293,7 @@ def clean_tags(text):
     Remove Tags from text for display
     """
     text = text.replace(u'<br>', u'\n')
+    text = text.replace(u'&nbsp;', u' ')
     for tag in DisplayTags.get_html_tags():
         text = text.replace(tag[u'start tag'], u'')
         text = text.replace(tag[u'end tag'], u'')
@@ -314,7 +315,7 @@ def check_directory_exists(dir):
     ``dir``
         Theme directory to make sure exists
     """
-    log.debug(u'check_directory_exists')
+    log.debug(u'check_directory_exists %s' % dir)
     if not os.path.exists(dir):
         os.makedirs(dir)
 

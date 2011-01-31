@@ -35,7 +35,7 @@ from openlp.core.lib import MediaManagerItem, BaseListWithDnD, Receiver, \
     ItemCapabilities, translate, check_item_selected
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     SongImportForm
-from openlp.plugins.songs.lib import SongXMLParser, OpenLyricsParser
+from openlp.plugins.songs.lib import OpenLyrics, SongXML
 from openlp.plugins.songs.lib.db import Author, Song
 from openlp.core.lib.searchedit import SearchEdit
 
@@ -58,7 +58,7 @@ class SongMediaItem(MediaManagerItem):
         self.ListViewWithDnD_class = SongListView
         MediaManagerItem.__init__(self, parent, self, icon)
         self.edit_song_form = EditSongForm(self, self.parent.manager)
-        self.openLyrics = OpenLyricsParser(self.parent.manager)
+        self.openLyrics = OpenLyrics(self.parent.manager)
         self.singleServiceItem = False
         self.song_maintenance_form = SongMaintenanceForm(
             self.parent.manager, self)
@@ -67,9 +67,6 @@ class SongMediaItem(MediaManagerItem):
         self.remoteSong = -1
         self.editItem = None
         self.whitespace = re.compile(r'\W+', re.UNICODE)
-
-    def requiredIcons(self):
-        MediaManagerItem.requiredIcons(self)
 
     def addEndHeaderBar(self):
         self.addToolbarSeparator()
@@ -157,7 +154,6 @@ class SongMediaItem(MediaManagerItem):
             (5, u':/slides/slide_theme.png',
                 translate('SongsPlugin.MediaItem', 'Themes'))
         ])
-
         self.configUpdated()
 
     def onSearchTextButtonClick(self):
@@ -194,8 +190,7 @@ class SongMediaItem(MediaManagerItem):
         elif search_type == 5:
             log.debug(u'Theme Search')
             search_results = self.parent.manager.get_all_objects(Song,
-                Song.theme_name == search_keywords,
-                Song.search_lyrics.asc())
+                Song.theme_name == search_keywords, Song.search_lyrics.asc())
             self.displayResultsSong(search_results)
 
     def onSongListLoad(self):
@@ -270,8 +265,8 @@ class SongMediaItem(MediaManagerItem):
     def onImportClick(self):
         if not hasattr(self, u'import_wizard'):
             self.import_wizard = SongImportForm(self, self.parent)
-        self.import_wizard.exec_()
-        Receiver.send_message(u'songs_load_list')
+        if self.import_wizard.exec_() == QtGui.QDialog.Accepted:
+            Receiver.send_message(u'songs_load_list')
 
     def onNewClick(self):
         log.debug(u'onNewClick')
@@ -322,15 +317,14 @@ class SongMediaItem(MediaManagerItem):
             translate('SongsPlugin.MediaItem',
             'You must select an item to delete.')):
             items = self.listView.selectedIndexes()
-            ans = QtGui.QMessageBox.question(self,
+            if QtGui.QMessageBox.question(self,
                 translate('SongsPlugin.MediaItem', 'Delete Song(s)?'),
                 translate('SongsPlugin.MediaItem',
                 'Are you sure you want to delete the %n selected song(s)?', '',
                 QtCore.QCoreApplication.CodecForTr, len(items)),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok|
-                     QtGui.QMessageBox.Cancel),
-                QtGui.QMessageBox.Ok)
-            if ans == QtGui.QMessageBox.Cancel:
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok |
+                QtGui.QMessageBox.Cancel),
+                QtGui.QMessageBox.Ok) == QtGui.QMessageBox.Cancel:
                 return
             for item in items:
                 item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
@@ -362,8 +356,7 @@ class SongMediaItem(MediaManagerItem):
         service_item.theme = song.theme_name
         service_item.edit_id = item_id
         if song.lyrics.startswith(u'<?xml version='):
-            songXML = SongXMLParser(song.lyrics)
-            verseList = songXML.get_verses()
+            verseList = SongXML().get_verses(song.lyrics)
             # no verse list or only 1 space (in error)
             if not song.verse_order or not song.verse_order.strip():
                 for verse in verseList:
@@ -404,8 +397,8 @@ class SongMediaItem(MediaManagerItem):
         service_item.audit = [
             song.title, author_audit, song.copyright, unicode(song.ccli_number)
         ]
-        service_item.data_string = {u'title':song.search_title,
-            u'authors':author_list}
+        service_item.data_string = {u'title': song.search_title,
+            u'authors': author_list}
         service_item.xml_version = self.openLyrics.song_to_xml(song)
         return True
 
@@ -416,8 +409,8 @@ class SongMediaItem(MediaManagerItem):
         log.debug(u'serviceLoad')
         if item.data_string:
             search_results = self.parent.manager.get_all_objects(Song,
-                Song.search_title ==
-                    item.data_string[u'title'].split(u'@')[0].lower() ,
+                Song.search_title == re.compile(r'\W+', re.UNICODE).sub(u' ',
+                item.data_string[u'title'].split(u'@')[0].lower()).strip(),
                 Song.search_title.asc())
             author_list = item.data_string[u'authors'].split(u', ')
             # The service item always has an author (at least it has u'' as
@@ -426,7 +419,6 @@ class SongMediaItem(MediaManagerItem):
             if u'' in author_list:
                 author_list.remove(u'')
             editId = 0
-            uuid = item._uuid
             add_song = True
             if search_results:
                 for song in search_results:
@@ -451,9 +443,9 @@ class SongMediaItem(MediaManagerItem):
                 if self.addSongFromService:
                     editId = self.openLyrics.xml_to_song(item.xml_version)
             # Update service with correct song id.
-            if editId != 0:
+            if editId:
                 Receiver.send_message(u'service_item_update',
-                    u'%s:%s' %(editId, uuid))
+                    u'%s:%s' % (editId, item._uuid))
 
     def collateSongTitles(self, song_1, song_2):
         """

@@ -5,7 +5,7 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
+# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -23,35 +23,56 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The :mod:`openlyricsimport` module provides the functionality for importing
+songs which are saved as OpenLyrics files.
+"""
 
-from PyQt4 import QtGui
+import logging
+import os
+
+from lxml import etree
 
 from openlp.core.lib import translate
-from openlp.core.ui import criticalErrorMessageBox
-from openlp.plugins.songs.forms.topicsdialog import Ui_TopicsDialog
+from openlp.plugins.songs.lib.songimport import SongImport
+from openlp.plugins.songs.lib import OpenLyrics
 
-class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
+log = logging.getLogger(__name__)
+
+class OpenLyricsImport(SongImport):
     """
-    Class documentation goes here.
+    This provides the Openlyrics import.
     """
-    def __init__(self, parent=None):
+    def __init__(self, master_manager, **kwargs):
         """
-        Constructor
+        Initialise the import.
         """
-        QtGui.QDialog.__init__(self, parent)
-        self.setupUi(self)
+        log.debug(u'initialise OpenLyricsImport')
+        SongImport.__init__(self, master_manager)
+        self.master_manager = master_manager
+        self.openLyrics = OpenLyrics(master_manager)
+        if kwargs.has_key(u'filename'):
+            self.import_source = kwargs[u'filename']
+        if kwargs.has_key(u'filenames'):
+            self.import_source = kwargs[u'filenames']
 
-    def exec_(self, clear=True):
-        if clear:
-            self.nameEdit.clear()
-        self.nameEdit.setFocus()
-        return QtGui.QDialog.exec_(self)
-
-    def accept(self):
-        if not self.nameEdit.text():
-            criticalErrorMessageBox(message=translate('SongsPlugin.TopicsForm',
-                'You need to type in a topic name.'))
-            self.nameEdit.setFocus()
-            return False
-        else:
-            return QtGui.QDialog.accept(self)
+    def do_import(self):
+        """
+        Imports the songs.
+        """
+        self.import_wizard.progressBar.setMaximum(len(self.import_source))
+        parser = etree.XMLParser(remove_blank_text=True)
+        for file_path in self.import_source:
+            if self.stop_import_flag:
+                return False
+            self.import_wizard.incrementProgressBar(unicode(translate(
+                'SongsPlugin.OpenLyricsImport', 'Importing %s...')) %
+                os.path.basename(file_path))
+            try:
+                parsed_file = etree.parse(file_path, parser)
+                xml = unicode(etree.tostring(parsed_file))
+                if self.openLyrics.xml_to_song(xml) is None:
+                    log.debug(u'File could not be imported: %s' % file_path)
+            except etree.XMLSyntaxError:
+                log.exception(u'XML syntax error in file %s' % file_path)
+        return True
