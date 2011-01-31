@@ -186,8 +186,11 @@ class CSVBible(BibleDB):
                         'BibleDB.Wizard', 'Importing verses from %s...',
                         'Importing verses from <book name>...')) % book.name)
                     self.session.commit()
-                self.create_verse(book.id, line[1], line[2],
-                    unicode(line[3], details['encoding']))
+                try:
+                    verse_text = unicode(line[3], details['encoding'])
+                except UnicodeError:
+                    verse_text = unicode(line[3], u'cp1252')
+                self.create_verse(book.id, line[1], line[2], verse_text)
             self.wizard.incrementProgressBar(translate('BibleDB.Wizard',
                 'Importing verses... done.'))
             Receiver.send_message(u'openlp_process_events')
