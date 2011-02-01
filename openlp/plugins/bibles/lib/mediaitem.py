@@ -525,7 +525,7 @@ class BibleMediaItem(MediaManagerItem):
         if self.advancedClearComboBox.currentIndex() == 0:
             self.listView.clear()
         if self.listView.count() != 0:
-            self.__checkSecondBible()
+            self.__checkSecondBible(bible, second_bible)
         else:
             self.displayResults(bible, second_bible)
         Receiver.send_message(u'cursor_normal')
@@ -565,14 +565,14 @@ class BibleMediaItem(MediaManagerItem):
         if self.quickClearComboBox.currentIndex() == 0:
             self.listView.clear()
         if self.listView.count() != 0 and self.search_results:
-            self.__checkSecondBible()
+            self.__checkSecondBible(bible, second_bible)
         elif self.search_results:
             self.displayResults(bible, second_bible)
         self.quickSearchButton.setEnabled(True)
         Receiver.send_message(u'cursor_normal')
         Receiver.send_message(u'openlp_process_events')
 
-    def __checkSecondBible(self):
+    def __checkSecondBible(self, bible, second_bible):
         """
         Check if the first item is a second bible item or not.
         """

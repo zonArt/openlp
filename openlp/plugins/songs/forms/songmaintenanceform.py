@@ -94,8 +94,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         self.typeListWidget.setFocus()
         return QtGui.QDialog.exec_(self)
 
-    def _getCurrentItemId(self, ListWidget):
-        item = ListWidget.currentItem()
+    def _getCurrentItemId(self, listWidget):
+        item = listWidget.currentItem()
         if item:
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             return item_id
@@ -390,13 +390,13 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 book.name = temp_name
                 book.publisher = temp_publisher
 
-    def __mergeObjects(self, object, merge, reset):
+    def __mergeObjects(self, dbObject, merge, reset):
         """
         Utility method to merge two objects to leave one in the database.
         """
         Receiver.send_message(u'cursor_busy')
         Receiver.send_message(u'openlp_process_events')
-        merge(object)
+        merge(dbObject)
         reset()
         Receiver.send_message(u'songs_load_list')
         Receiver.send_message(u'cursor_normal')
