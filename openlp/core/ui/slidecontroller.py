@@ -482,14 +482,7 @@ class SlideController(QtGui.QWidget):
     def onSongBarHandler(self):
         request = unicode(self.sender().text())
         slideno = self.slideList[request]
-        if slideno > self.previewListWidget.rowCount():
-            self.previewListWidget.selectRow(
-                self.previewListWidget.rowCount() - 1)
-        else:
-            if slideno + 1 < self.previewListWidget.rowCount():
-                self.previewListWidget.scrollToItem(
-                    self.previewListWidget.item(slideno + 1, 0))
-            self.previewListWidget.selectRow(slideno)
+        self.__updatePreviewSelection(slideno)
         self.onSlideSelected()
 
     def receiveSpinDelay(self, value):
@@ -665,14 +658,7 @@ class SlideController(QtGui.QWidget):
             self.previewListWidget.resizeRowsToContents()
         self.previewListWidget.setColumnWidth(0,
             self.previewListWidget.viewport().size().width())
-        if slideno > self.previewListWidget.rowCount():
-            self.previewListWidget.selectRow(
-                self.previewListWidget.rowCount() - 1)
-        else:
-            if slideno + 1 < self.previewListWidget.rowCount():
-                self.previewListWidget.scrollToItem(
-                    self.previewListWidget.item(slideno + 1, 0))
-            self.previewListWidget.selectRow(slideno)
+        self.__updatePreviewSelection(slideno)
         self.enableToolBar(serviceItem)
         # Pass to display for viewing
         self.display.buildHtml(self.serviceItem)
@@ -682,6 +668,19 @@ class SlideController(QtGui.QWidget):
         self.previewListWidget.setFocus()
         Receiver.send_message(u'slidecontroller_%s_started' % self.typePrefix,
             [serviceItem])
+
+    def __updatePreviewSelection(self, slideno):
+        """
+        Utility method to update the selected slide in the list.
+        """
+        if slideno > self.previewListWidget.rowCount():
+            self.previewListWidget.selectRow(
+                self.previewListWidget.rowCount() - 1)
+        else:
+            if slideno + 1 < self.previewListWidget.rowCount():
+                self.previewListWidget.scrollToItem(
+                    self.previewListWidget.item(slideno + 1, 0))
+            self.previewListWidget.selectRow(slideno)
 
     def onTextRequest(self):
         """

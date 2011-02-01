@@ -310,12 +310,8 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 'the existing author %s?')) % (author.display_name,
                 temp_display_name, author.display_name),
                 parent=self, question=True) == QtGui.QMessageBox.Yes:
-                Receiver.send_message(u'cursor_busy')
-                Receiver.send_message(u'openlp_process_events')
-                self.mergeAuthors(author)
-                self.resetAuthors()
-                Receiver.send_message(u'songs_load_list')
-                Receiver.send_message(u'cursor_normal')
+                self.__mergeObjects(author, self.mergeAuthors,
+                    self.resetAuthors)
             else:
                 # We restore the author's old first and last name as well as
                 # his display name.
@@ -350,11 +346,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 'with topic %s use the existing topic %s?')) % (topic.name,
                 temp_name, topic.name),
                 parent=self, question=True) == QtGui.QMessageBox.Yes:
-                Receiver.send_message(u'cursor_busy')
-                Receiver.send_message(u'openlp_process_events')
-                self.mergeTopics(topic)
-                self.resetTopics()
-                Receiver.send_message(u'cursor_normal')
+                self.__mergeObjects(topic, self.mergeTopics, self.resetTopics)
             else:
                 # We restore the topics's old name.
                 topic.name = temp_name
@@ -392,15 +384,22 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 'with book %s use the existing book %s?')) % (book.name,
                 temp_name, book.name),
                 parent=self, question=True) == QtGui.QMessageBox.Yes:
-                Receiver.send_message(u'cursor_busy')
-                Receiver.send_message(u'openlp_process_events')
-                self.mergeBooks(book)
-                self.resetBooks()
-                Receiver.send_message(u'cursor_normal')
+                self.__mergeObjects(book, self.mergeBooks, self.resetBooks)
             else:
                 # We restore the book's old name and publisher.
                 book.name = temp_name
                 book.publisher = temp_publisher
+
+    def __mergeObjects(self, object, merge, reset):
+        """
+        Utility method to merge two objects to leave one in the database.
+        """
+        Receiver.send_message(u'cursor_busy')
+        Receiver.send_message(u'openlp_process_events')
+        merge(object)
+        reset()
+        Receiver.send_message(u'songs_load_list')
+        Receiver.send_message(u'cursor_normal')
 
     def mergeAuthors(self, old_author):
         """
@@ -508,42 +507,32 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
 
     def onAuthorsListRowChanged(self, row):
         """
-        Called when the *authorsListWidget* current's row has changed.
-
-        ``row``
-            The current row. If there is no current row, the value is -1
+        Called when the *authorsListWidget*s current row has changed.
         """
-        if row == -1:
-            self.authorsDeleteButton.setEnabled(False)
-            self.authorsEditButton.setEnabled(False)
-        else:
-            self.authorsDeleteButton.setEnabled(True)
-            self.authorsEditButton.setEnabled(True)
+        self.__rowChange(row, self.authorsEditButton, self.authorsDeleteButton)
 
     def onTopicsListRowChanged(self, row):
         """
-        Called when the *booksListWidget* current's row has changed.
-
-        ``row``
-            The current row. If there is no current row, the value is -1.
+        Called when the *topicsListWidget*s current row has changed.
         """
-        if row == -1:
-            self.topicsDeleteButton.setEnabled(False)
-            self.topicsEditButton.setEnabled(False)
-        else:
-            self.topicsDeleteButton.setEnabled(True)
-            self.topicsEditButton.setEnabled(True)
+        self.__rowChange(row, self.topicsEditButton, self.topicsDeleteButton)
 
     def onBooksListRowChanged(self, row):
         """
-        Called when the *booksListWidget* current's row has changed.
+        Called when the *booksListWidget*s current row has changed.
+        """
+        self.__rowChange(row, self.booksEditButton, self.booksDeleteButton)
+
+    def __rowChange(self, row, editButton, deleteButton):
+        """
+        Utility method to toggle if buttons are enabled.
 
         ``row``
             The current row. If there is no current row, the value is -1.
         """
         if row == -1:
-            self.booksDeleteButton.setEnabled(False)
-            self.booksEditButton.setEnabled(False)
+            deleteButton.setEnabled(False)
+            editButton.setEnabled(False)
         else:
-            self.booksDeleteButton.setEnabled(True)
-            self.booksEditButton.setEnabled(True)
+            deleteButton.setEnabled(True)
+            editButton.setEnabled(True)

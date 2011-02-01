@@ -133,29 +133,37 @@ class EasiSlidesImport(SongImport):
             pass
 
     def _add_copyright(self, song):
+        """
+        Assign the copyright information from the import to the song being
+        created.
+
+        ``song``
+            The current song being imported.
+        """
         copyright = []
-        try:
-            copyright.append(unicode(song.Copyright).strip())
-        except UnicodeDecodeError:
-            log.exception(u'Unicode decode error while decoding Copyright')
-            self._success = False
-        except AttributeError:
-            pass
-        try:
-            copyright.append(unicode(song.LicenceAdmin1).strip())
-        except UnicodeDecodeError:
-            log.exception(u'Unicode decode error while decoding LicenceAdmin1')
-            self._success = False
-        except AttributeError:
-            pass
-        try:
-            copyright.append(unicode(song.LicenceAdmin2).strip())
-        except UnicodeDecodeError:
-            log.exception(u'Unicode decode error while decoding LicenceAdmin2')
-            self._success = False
-        except AttributeError:
-            pass
+        self.__add_copyright_element(copyright, song.Copyright)
+        self.__add_copyright_element(copyright, song.LicenceAdmin1)
+        self.__add_copyright_element(copyright, song.LicenceAdmin2)
         self.add_copyright(u' '.join(copyright))
+
+    def __add_copyright_element(self, copyright, element):
+        """
+        Add a piece of copyright to the total copyright information for the
+        song.
+
+        ``copyright``
+            The array to add the information to.
+
+        ``element``
+            The imported variable to get the data from.
+        """
+        try:
+            copyright.append(unicode(element).strip())
+        except UnicodeDecodeError:
+            log.exception(u'Unicode error decoding %s' % element)
+            self._success = False
+        except AttributeError:
+            pass
 
     def _parse_and_add_lyrics(self, song):
         try:
