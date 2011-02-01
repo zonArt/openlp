@@ -26,6 +26,7 @@
 
 from PyQt4 import QtCore, QtGui
 
+from openlp.core.lib import dialogButtonsSaveCancel, translate
 from servicenotedialog import Ui_ServiceNoteEdit
 
 class ServiceNoteForm(QtGui.QDialog, Ui_ServiceNoteEdit):
@@ -37,8 +38,19 @@ class ServiceNoteForm(QtGui.QDialog, Ui_ServiceNoteEdit):
         Constructor
         """
         QtGui.QDialog.__init__(self, parent)
-        self.setupUi(self)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'),
-            self.accept)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
-            self.reject)
+        self.setupUi()
+        self.retranslateUi()
+
+    def setupUi(self):
+        self.setObjectName(u'serviceNoteEdit')
+        self.dialogLayout = QtGui.QVBoxLayout(self)
+        self.dialogLayout.setObjectName(u'verticalLayout')
+        self.textEdit = QtGui.QTextEdit(self)
+        self.textEdit.setObjectName(u'textEdit')
+        self.dialogLayout.addWidget(self.textEdit)
+        self.dialogLayout.addWidget(dialogButtonsSaveCancel(self))
+        QtCore.QMetaObject.connectSlotsByName(self)
+
+    def retranslateUi(self):
+        self.setWindowTitle(
+            translate('OpenLP.ServiceNoteForm', 'Service Item Notes')) 

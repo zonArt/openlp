@@ -540,3 +540,25 @@ class MediaManagerItem(QtGui.QWidget):
         individual service items need to be processed by the plugins
         """
         pass
+
+    def _getIdOfItemToGenerate(self, item, remoteItem):
+        """
+        Utility method to check items being submitted for slide generation.
+
+        ``item``
+            The item to check.
+
+        ``remoteItem``
+            The id to assign if the slide generation was remotely triggered.
+        """
+        if item is None:
+            if self.remoteTriggered is None:
+                item = self.listView.currentItem()
+                if item is None:
+                    return False
+                item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            else:
+                item_id = remoteItem
+        else:
+            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        return item_id
