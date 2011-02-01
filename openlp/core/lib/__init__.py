@@ -319,7 +319,7 @@ def check_directory_exists(dir):
     if not os.path.exists(dir):
         os.makedirs(dir)
 
-def dialogButtonsSaveCancel(parent):
+def save_cancel_button_box(parent):
     """
     Return a standard dialog button box with save and cancel buttons.
     """

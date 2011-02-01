@@ -26,7 +26,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import dialogButtonsSaveCancel, translate
+from openlp.core.lib import translate, save_cancel_button_box
 
 class Ui_AuthorsDialog(object):
     def setupUi(self, authorsDialog):
@@ -55,7 +55,7 @@ class Ui_AuthorsDialog(object):
         self.displayLabel.setBuddy(self.displayEdit)
         self.authorLayout.addRow(self.displayLabel, self.displayEdit)
         self.dialogLayout.addLayout(self.authorLayout)
-        self.dialogLayout.addWidget(dialogButtonsSaveCancel(authorsDialog))
+        self.dialogLayout.addWidget(save_cancel_button_box(authorsDialog))
         self.retranslateUi(authorsDialog)
         authorsDialog.setMaximumHeight(authorsDialog.sizeHint().height())
         QtCore.QMetaObject.connectSlotsByName(authorsDialog)

@@ -26,7 +26,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, translate, dialogButtonsSaveCancel
+from openlp.core.lib import build_icon, translate, save_cancel_button_box
 
 class Ui_CustomEditDialog(object):
     def setupUi(self, customEditDialog):
@@ -93,7 +93,7 @@ class Ui_CustomEditDialog(object):
         self.creditLabel.setBuddy(self.creditEdit)
         self.bottomFormLayout.addRow(self.creditLabel, self.creditEdit)
         self.dialogLayout.addLayout(self.bottomFormLayout)
-        self.buttonBox = dialogButtonsSaveCancel(customEditDialog)
+        self.buttonBox = save_cancel_button_box(customEditDialog)
         self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(customEditDialog)
         QtCore.QMetaObject.connectSlotsByName(customEditDialog)
