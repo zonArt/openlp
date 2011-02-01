@@ -26,7 +26,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, translate
+from openlp.core.lib import build_icon, translate, save_cancel_button_box
 
 class Ui_EditSongDialog(object):
     def setupUi(self, editSongDialog):
@@ -264,16 +264,9 @@ class Ui_EditSongDialog(object):
         self.themeTabLayout.addWidget(self.commentsGroupBox)
         self.songTabWidget.addTab(self.themeTab, u'')
         self.dialogLayout.addWidget(self.songTabWidget)
-        self.buttonBox = QtGui.QDialogButtonBox(editSongDialog)
-        self.buttonBox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Save)
-        self.buttonBox.setObjectName(u'buttonBox')
+        self.buttonBox = save_cancel_button_box(editSongDialog)
         self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(editSongDialog)
-        QtCore.QObject.connect(self.buttonBox,
-            QtCore.SIGNAL(u'rejected()'), editSongDialog.closePressed)
-        QtCore.QObject.connect(self.buttonBox,
-            QtCore.SIGNAL(u'accepted()'), editSongDialog.accept)
         QtCore.QMetaObject.connectSlotsByName(editSongDialog)
 
     def retranslateUi(self, editSongDialog):

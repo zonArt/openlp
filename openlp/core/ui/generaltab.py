@@ -51,6 +51,7 @@ class ValidEdit(QtGui.QLineEdit):
         else:
             return self.text()
 
+
 class GeneralTab(SettingsTab):
     """
     GeneralTab is the general settings tab in the settings dialog.
