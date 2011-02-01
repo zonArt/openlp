@@ -648,6 +648,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         """
         Free up autocompletion memory on dialog exit
         """
+        log.debug (u'SongEditForm.clearCaches')
         self.authors = []
         self.themes = []
         self.books = []
@@ -657,20 +658,21 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         """
         Exit Dialog and do not save
         """
+        log.debug (u'SongEditForm.reject')
         Receiver.send_message(u'songs_edit_clear')
         self.clearCaches()
-        self.close()
+        QtGui.QDialog.reject(self)
 
     def accept(self):
         """
         Exit Dialog and save song if valid
         """
-        log.debug(u'accept')
+        log.debug(u'SongEditForm.accept')
         self.clearCaches()
         if self._validate_song():
             self.saveSong()
             Receiver.send_message(u'songs_load_list')
-            self.close()
+            QtGui.QDialog.accept(self)
 
     def saveSong(self, preview=False):
         """
