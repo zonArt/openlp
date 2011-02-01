@@ -142,7 +142,7 @@ class AdvancedTab(SettingsTab):
         self.serviceOrderGroupBox.setTitle(translate('OpenLP.AdvancedTab',
             'Service Order Print'))
         self.detailedServicePrintCheckBox.setText(translate('OpenLP.AdvancedTab',
-            'Included detailed information'))
+            'Print slide texts and service item notes as well'))
 #        self.sharedDirGroupBox.setTitle(
 #            translate('AdvancedTab', 'Central Data Store'))
 #        self.sharedCheckBox.setText(

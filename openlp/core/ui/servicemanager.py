@@ -856,7 +856,7 @@ class ServiceManager(QtGui.QWidget):
         one it allows the item to be displayed.
         """
         if serviceItem.is_command():
-            type = serviceItem._raw_frames[0][u'title'].split(u'.')[1]
+            type = serviceItem._raw_frames[0][u'title'].split(u'.')[-1]
             if type not in self.suffixes:
                 serviceItem.is_valid = False
 
@@ -1188,16 +1188,19 @@ class ServiceManager(QtGui.QWidget):
         Print a Service Order Sheet.
         """
         if not self.serviceItems:
+            criticalErrorMessageBox(
+                message=translate('OpenLP.ServiceManager',
+                'There is no service item in this service.'))
             return
         printDialog = QtGui.QPrintDialog()
         if not printDialog.exec_():
             return
-        text = u'<h1>%s</h1>' % translate('OpenLP.ServiceManager',
+        text = u'<h2>%s</h2>' % translate('OpenLP.ServiceManager',
             'Service Order Sheet')
         for item in self.serviceItems:
             item = item[u'service_item']
             # add the title
-            text += u'<h2><img src="%s" /> %s</h2>' % (item.icon,
+            text += u'<h4><img src="%s" /> %s</h4>' % (item.icon,
                 item.get_display_title())
             if not QtCore.QSettings().value(u'advanced' +
                 u'/detailed service print', QtCore.QVariant(True)).toBool():
