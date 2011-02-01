@@ -141,7 +141,8 @@ class AdvancedTab(SettingsTab):
             'Hide the mouse cursor when moved over the display window'))
         self.serviceOrderGroupBox.setTitle(translate('OpenLP.AdvancedTab',
             'Service Order Print'))
-        self.detailedServicePrintCheckBox.setText(translate('OpenLP.AdvancedTab',
+        self.detailedServicePrintCheckBox.setText(
+            translate('OpenLP.AdvancedTab',
             'Print slide texts and service item notes as well'))
 #        self.sharedDirGroupBox.setTitle(
 #            translate('AdvancedTab', 'Central Data Store'))
