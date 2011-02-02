@@ -507,7 +507,7 @@ class MediaManagerItem(QtGui.QWidget):
                         'No Service Item Selected'),
                     translate('OpenLP.MediaManagerItem',
                         'You must select an existing service item to add to.'))
-            elif self.title.lower() == serviceItem.name.lower():
+            elif self.plugin.name.lower() == serviceItem.name.lower():
                 self.generateSlideData(serviceItem)
                 self.parent.serviceManager.addServiceItem(serviceItem,
                     replace=True)
