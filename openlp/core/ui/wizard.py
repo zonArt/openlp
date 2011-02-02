@@ -31,6 +31,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, Receiver
+from openlp.core.lib.ui import add_welcome_page
 
 log = logging.getLogger(__name__)
 
@@ -63,7 +64,7 @@ class OpenLPWizard(QtGui.QWizard):
         self.setOptions(QtGui.QWizard.IndependentPages |
             QtGui.QWizard.NoBackButtonOnStartPage |
             QtGui.QWizard.NoBackButtonOnLastPage)
-        addWelcomePage(self, image)
+        add_welcome_page(self, image)
         self.addCustomPages()
         self.addProgressPage()
         self.retranslateUi()
@@ -145,27 +146,3 @@ class OpenLPWizard(QtGui.QWizard):
         self.finishButton.setVisible(True)
         self.cancelButton.setVisible(False)
         Receiver.send_message(u'openlp_process_events')
-
-def addWelcomePage(parent, image):
-    """
-    Generate an opening welcome page for a wizard using a provided image.
-
-    ``image``
-        A splash image for the wizard.
-    """
-    parent.welcomePage = QtGui.QWizardPage()
-    parent.welcomePage.setPixmap(QtGui.QWizard.WatermarkPixmap,
-        QtGui.QPixmap(image))
-    parent.welcomePage.setObjectName(u'WelcomePage')
-    parent.welcomeLayout = QtGui.QVBoxLayout(parent.welcomePage)
-    parent.welcomeLayout.setObjectName(u'WelcomeLayout')
-    parent.titleLabel = QtGui.QLabel(parent.welcomePage)
-    parent.titleLabel.setObjectName(u'TitleLabel')
-    parent.welcomeLayout.addWidget(parent.titleLabel)
-    parent.welcomeLayout.addSpacing(40)
-    parent.informationLabel = QtGui.QLabel(parent.welcomePage)
-    parent.informationLabel.setWordWrap(True)
-    parent.informationLabel.setObjectName(u'InformationLabel')
-    parent.welcomeLayout.addWidget(parent.informationLabel)
-    parent.welcomeLayout.addStretch()
-    parent.addPage(parent.welcomePage)
