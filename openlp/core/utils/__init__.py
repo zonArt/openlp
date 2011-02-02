@@ -137,10 +137,7 @@ class AppLocation(object):
                 os.path.split(openlp.__file__)[0])
             return os.path.join(app_path, u'i18n')
         else:
-            return _get_os_dir_path(u'openlp',
-                os.path.join(os.getenv(u'HOME'), u'Library',
-                    u'Application Support', u'openlp'),
-                None, os.path.join(os.getenv(u'HOME'), u'.openlp'), dir_type)
+            return _get_os_dir_path(dir_type)
 
     @staticmethod
     def get_data_path():
@@ -163,17 +160,18 @@ class AppLocation(object):
             os.makedirs(path)
         return path
 
-def _get_os_dir_path(win_option, darwin_option, base_dir_option,
-    non_base_dir_option, dir_type=1):
+def _get_os_dir_path(dir_type):
     """
     Return a path based on which OS and environment we are running in.
     """
     if sys.platform == u'win32':
-        return os.path.join(os.getenv(u'APPDATA'), win_option)
+        return os.path.join(os.getenv(u'APPDATA'), u'openlp')
     elif sys.platform == u'darwin':
         if dir_type == AppLocation.DataDir:
-            return os.path.join(darwin_option, u'Data')
-        return darwin_option
+            return os.path.join(os.getenv(u'HOME'), u'Library',
+                u'Application Support', u'openlp', u'Data')
+        return os.path.join(os.getenv(u'HOME'), u'Library',
+            u'Application Support', u'openlp')
     else:
         if XDG_BASE_AVAILABLE:
             if dir_type == AppLocation.ConfigDir:
@@ -183,7 +181,7 @@ def _get_os_dir_path(win_option, darwin_option, base_dir_option,
             elif dir_type == AppLocation.CacheDir:
                 return os.path.join(BaseDirectory.xdg_cache_home, u'openlp')
         else:
-            return non_base_dir_option
+            return os.path.join(os.getenv(u'HOME'), u'.openlp')
 
 def _get_frozen_path(frozen_option, non_frozen_option):
     """

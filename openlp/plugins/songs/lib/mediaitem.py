@@ -68,9 +68,6 @@ class SongMediaItem(MediaManagerItem):
         self.editItem = None
         self.whitespace = re.compile(r'\W+', re.UNICODE)
 
-    def requiredIcons(self):
-        MediaManagerItem.requiredIcons(self)
-
     def addEndHeaderBar(self):
         self.addToolbarSeparator()
         ## Song Maintenance Button ##
@@ -340,16 +337,7 @@ class SongMediaItem(MediaManagerItem):
         author_list = u''
         author_audit = []
         ccli = u''
-        if item is None:
-            if self.remoteTriggered is None:
-                item = self.listView.currentItem()
-                if item is None:
-                    return False
-                item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-            else:
-                item_id = self.remoteSong
-        else:
-            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        item_id = self._getIdOfItemToGenerate(item, self.remoteSong)
         service_item.add_capability(ItemCapabilities.AllowsEdit)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)

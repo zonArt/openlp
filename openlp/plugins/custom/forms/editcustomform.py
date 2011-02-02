@@ -136,7 +136,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         if preview:
             self.previewButton.setVisible(True)
 
-    def closePressed(self):
+    def reject(self):
         Receiver.send_message(u'custom_edit_clear')
         self.close()
 

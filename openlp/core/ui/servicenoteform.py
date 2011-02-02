@@ -26,9 +26,9 @@
 
 from PyQt4 import QtCore, QtGui
 
-from servicenotedialog import Ui_ServiceNoteEdit
+from openlp.core.lib import save_cancel_button_box, translate
 
-class ServiceNoteForm(QtGui.QDialog, Ui_ServiceNoteEdit):
+class ServiceNoteForm(QtGui.QDialog):
     """
     This is the form that is used to edit the verses of the song.
     """
@@ -37,8 +37,19 @@ class ServiceNoteForm(QtGui.QDialog, Ui_ServiceNoteEdit):
         Constructor
         """
         QtGui.QDialog.__init__(self, parent)
-        self.setupUi(self)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'),
-            self.accept)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
-            self.reject)
+        self.setupUi()
+        self.retranslateUi()
+
+    def setupUi(self):
+        self.setObjectName(u'serviceNoteEdit')
+        self.dialogLayout = QtGui.QVBoxLayout(self)
+        self.dialogLayout.setObjectName(u'verticalLayout')
+        self.textEdit = QtGui.QTextEdit(self)
+        self.textEdit.setObjectName(u'textEdit')
+        self.dialogLayout.addWidget(self.textEdit)
+        self.dialogLayout.addWidget(save_cancel_button_box(self))
+        QtCore.QMetaObject.connectSlotsByName(self)
+
+    def retranslateUi(self):
+        self.setWindowTitle(
+            translate('OpenLP.ServiceNoteForm', 'Service Item Notes')) 

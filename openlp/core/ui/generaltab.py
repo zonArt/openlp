@@ -51,6 +51,7 @@ class ValidEdit(QtGui.QLineEdit):
         else:
             return self.text()
 
+
 class GeneralTab(SettingsTab):
     """
     GeneralTab is the general settings tab in the settings dialog.
@@ -113,6 +114,9 @@ class GeneralTab(SettingsTab):
         self.showSplashCheckBox = QtGui.QCheckBox(self.startupGroupBox)
         self.showSplashCheckBox.setObjectName(u'showSplashCheckBox')
         self.startupLayout.addWidget(self.showSplashCheckBox)
+        self.checkForUpdatesCheckBox = QtGui.QCheckBox(self.startupGroupBox)
+        self.checkForUpdatesCheckBox.setObjectName(u'checkForUpdatesCheckBox')
+        self.startupLayout.addWidget(self.checkForUpdatesCheckBox)
         self.leftLayout.addWidget(self.startupGroupBox)
         self.settingsGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.settingsGroupBox.setObjectName(u'settingsGroupBox')
@@ -249,6 +253,8 @@ class GeneralTab(SettingsTab):
             'Automatically open the last service'))
         self.showSplashCheckBox.setText(
             translate('OpenLP.GeneralTab', 'Show the splash screen'))
+        self.checkForUpdatesCheckBox.setText(
+            translate('OpenLP.GeneralTab', 'Check for updates to OpenLP'))
         self.settingsGroupBox.setTitle(
             translate('OpenLP.GeneralTab', 'Application Settings'))
         self.saveCheckServiceCheckBox.setText(translate('OpenLP.GeneralTab',
@@ -317,6 +323,8 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(False)).toBool())
         self.showSplashCheckBox.setChecked(settings.value(u'show splash',
             QtCore.QVariant(True)).toBool())
+        self.checkForUpdatesCheckBox.setChecked(settings.value(u'update check',
+            QtCore.QVariant(True)).toBool())
         self.autoPreviewCheckBox.setChecked(settings.value(u'auto preview',
             QtCore.QVariant(False)).toBool())
         self.timeoutSpinBox.setValue(settings.value(u'loop delay',
@@ -363,6 +371,8 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(self.autoOpenCheckBox.isChecked()))
         settings.setValue(u'show splash',
             QtCore.QVariant(self.showSplashCheckBox.isChecked()))
+        settings.setValue(u'update check',
+            QtCore.QVariant(self.checkForUpdatesCheckBox.isChecked()))
         settings.setValue(u'save prompt',
             QtCore.QVariant(self.saveCheckServiceCheckBox.isChecked()))
         settings.setValue(u'auto preview',

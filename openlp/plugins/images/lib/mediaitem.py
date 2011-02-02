@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
     ItemCapabilities, SettingsManager, translate, check_item_selected, \
-    check_directory_exists
+    check_directory_exists, Receiver
 from openlp.core.ui import criticalErrorMessageBox
 from openlp.core.utils import AppLocation, delete_file, get_images_filter
 
@@ -43,7 +43,6 @@ class ImageListView(BaseListWithDnD):
     def __init__(self, parent=None):
         self.PluginName = u'Images'
         BaseListWithDnD.__init__(self, parent)
-
 
 class ImageMediaItem(MediaManagerItem):
     """
@@ -57,6 +56,8 @@ class ImageMediaItem(MediaManagerItem):
         # be instanced by the base MediaManagerItem.
         self.ListViewWithDnD_class = ImageListView
         MediaManagerItem.__init__(self, parent, self, icon)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'live_theme_changed'), self.liveThemeChanged)
 
     def retranslateUi(self):
         self.OnNewPrompt = translate('ImagePlugin.MediaItem',
@@ -95,7 +96,6 @@ class ImageMediaItem(MediaManagerItem):
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
-        self.listView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.listView.addAction(self.replaceAction)
 
     def addEndHeaderBar(self):
@@ -142,7 +142,7 @@ class ImageMediaItem(MediaManagerItem):
         items = self.listView.selectedIndexes()
         if items:
             service_item.title = unicode(
-                translate('ImagePlugin.MediaItem', 'Image(s)'))
+                translate('ImagePlugin.MediaItem', 'Images'))
             service_item.add_capability(ItemCapabilities.AllowsMaintain)
             service_item.add_capability(ItemCapabilities.AllowsPreview)
             service_item.add_capability(ItemCapabilities.AllowsLoop)
@@ -193,6 +193,12 @@ class ImageMediaItem(MediaManagerItem):
         self.resetAction.setVisible(False)
         self.parent.liveController.display.resetImage()
 
+    def liveThemeChanged(self):
+        """
+        Triggered by the change of theme in the slide controller
+        """
+        self.resetAction.setVisible(False)
+
     def onReplaceClick(self):
         """
         Called to replace Live backgound with the image selected.
@@ -213,6 +219,3 @@ class ImageMediaItem(MediaManagerItem):
                     unicode(translate('ImagePlugin.MediaItem',
                     'There was a problem replacing your background, '
                     'the image file "%s" no longer exists.')) % filename)
-
-    def onPreviewClick(self):
-        MediaManagerItem.onPreviewClick(self)

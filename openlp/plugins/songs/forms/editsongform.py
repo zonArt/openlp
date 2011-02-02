@@ -333,11 +333,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     author = Author.populate(first_name=text.rsplit(u' ', 1)[0],
                         last_name=text.rsplit(u' ', 1)[1], display_name=text)
                 self.manager.save_object(author)
-                author_item = QtGui.QListWidgetItem(
-                    unicode(author.display_name))
-                author_item.setData(QtCore.Qt.UserRole,
-                    QtCore.QVariant(author.id))
-                self.authorsListView.addItem(author_item)
+                self.__addAuthorToList(author)
                 self.loadAuthors()
                 self.authorsComboBox.setCurrentIndex(0)
             else:
@@ -351,11 +347,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     message=translate('SongsPlugin.EditSongForm',
                     'This author is already in the list.'))
             else:
-                author_item = QtGui.QListWidgetItem(unicode(
-                    author.display_name))
-                author_item.setData(QtCore.Qt.UserRole,
-                    QtCore.QVariant(author.id))
-                self.authorsListView.addItem(author_item)
+                self.__addAuthorToList(author)
             self.authorsComboBox.setCurrentIndex(0)
         else:
             QtGui.QMessageBox.warning(self,
@@ -364,6 +356,14 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 'a valid author. Either select an author from the list, '
                 'or type in a new author and click the "Add Author to '
                 'Song" button to add the new author.'))
+
+    def __addAuthorToList(self, author):
+        """
+        Add an author to the author list.
+        """
+        author_item = QtGui.QListWidgetItem(unicode(author.display_name))
+        author_item.setData(QtCore.Qt.UserRole, QtCore.QVariant(author.id))
+        self.authorsListView.addItem(author_item)
 
     def onAuthorsListViewPressed(self):
         if self.authorsListView.count() > 1:
@@ -648,29 +648,31 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         """
         Free up autocompletion memory on dialog exit
         """
+        log.debug (u'SongEditForm.clearCaches')
         self.authors = []
         self.themes = []
         self.books = []
         self.topics = []
 
-    def closePressed(self):
+    def reject(self):
         """
         Exit Dialog and do not save
         """
+        log.debug (u'SongEditForm.reject')
         Receiver.send_message(u'songs_edit_clear')
         self.clearCaches()
-        self.close()
+        QtGui.QDialog.reject(self)
 
     def accept(self):
         """
         Exit Dialog and save song if valid
         """
-        log.debug(u'accept')
+        log.debug(u'SongEditForm.accept')
         self.clearCaches()
         if self._validate_song():
             self.saveSong()
             Receiver.send_message(u'songs_load_list')
-            self.close()
+            QtGui.QDialog.accept(self)
 
     def saveSong(self, preview=False):
         """

@@ -133,29 +133,37 @@ class EasiSlidesImport(SongImport):
             pass
 
     def _add_copyright(self, song):
-        copyright = []
+        """
+        Assign the copyright information from the import to the song being
+        created.
+
+        ``song``
+            The current song being imported.
+        """
+        copyright_list = []
+        self.__add_copyright_element(copyright_list, song.Copyright)
+        self.__add_copyright_element(copyright_list, song.LicenceAdmin1)
+        self.__add_copyright_element(copyright_list, song.LicenceAdmin2)
+        self.add_copyright(u' '.join(copyright_list))
+
+    def __add_copyright_element(self, copyright_list, element):
+        """
+        Add a piece of copyright to the total copyright information for the
+        song.
+
+        ``copyright_list``
+            The array to add the information to.
+
+        ``element``
+            The imported variable to get the data from.
+        """
         try:
-            copyright.append(unicode(song.Copyright).strip())
+            copyright_list.append(unicode(element).strip())
         except UnicodeDecodeError:
-            log.exception(u'Unicode decode error while decoding Copyright')
+            log.exception(u'Unicode error decoding %s' % element)
             self._success = False
         except AttributeError:
             pass
-        try:
-            copyright.append(unicode(song.LicenceAdmin1).strip())
-        except UnicodeDecodeError:
-            log.exception(u'Unicode decode error while decoding LicenceAdmin1')
-            self._success = False
-        except AttributeError:
-            pass
-        try:
-            copyright.append(unicode(song.LicenceAdmin2).strip())
-        except UnicodeDecodeError:
-            log.exception(u'Unicode decode error while decoding LicenceAdmin2')
-            self._success = False
-        except AttributeError:
-            pass
-        self.add_copyright(u' '.join(copyright))
 
     def _parse_and_add_lyrics(self, song):
         try:
@@ -314,11 +322,11 @@ class EasiSlidesImport(SongImport):
             pass
 
     def _listHas(self, lst, subitems):
-        for i in subitems:
-            if type(lst) == type({}) and lst.has_key(i):
-                lst = lst[i]
-            elif type(lst) == type([]) and i in lst:
-                lst = lst[i]
+        for subitem in subitems:
+            if isinstance(lst, dict) and lst.has_key(subitem):
+                lst = lst[subitem]
+            elif isinstance(lst, list) and subitem in lst:
+                lst = lst[subitem]
             else:
                 return False
         return True

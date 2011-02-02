@@ -55,7 +55,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.thememanager = parent
         self.setupUi(self)
         self.registerFields()
-        self.accepted = False
         self.updateThemeAllowed = True
         QtCore.QObject.connect(self.backgroundComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
@@ -120,14 +119,12 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         QtCore.QObject.connect(self.mainFontComboBox,
             QtCore.SIGNAL(u'activated(int)'),
             self.calculateLines)
-        QtCore.QObject.connect(self, QtCore.SIGNAL(u'accepted()'), self.accept)
 
     def setDefaults(self):
         """
         Set up display at start of theme edit.
         """
         self.restart()
-        self.accepted = False
         self.setBackgroundPageValues()
         self.setMainAreaPageValues()
         self.setFooterAreaPageValues()
@@ -250,37 +247,43 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Change state as Outline check box changed
         """
-        if state == QtCore.Qt.Checked:
-            self.theme.font_main_outline = True
-        else:
-            self.theme.font_main_outline = False
-        self.outlineColorButton.setEnabled(self.theme.font_main_outline)
-        self.outlineSizeSpinBox.setEnabled(self.theme.font_main_outline)
-        self.calculateLines()
+        if self.updateThemeAllowed:
+            if state == QtCore.Qt.Checked:
+                self.theme.font_main_outline = True
+            else:
+                self.theme.font_main_outline = False
+            self.outlineColorButton.setEnabled(self.theme.font_main_outline)
+            self.outlineSizeSpinBox.setEnabled(self.theme.font_main_outline)
+            self.calculateLines()
 
     def onShadowCheckCheckBoxStateChanged(self, state):
         """
         Change state as Shadow check box changed
         """
-        if state == QtCore.Qt.Checked:
-            self.theme.font_main_shadow = True
-        else:
-            self.theme.font_main_shadow = False
-        self.shadowColorButton.setEnabled(self.theme.font_main_shadow)
-        self.shadowSizeSpinBox.setEnabled(self.theme.font_main_shadow)
-        self.calculateLines()
+        if self.updateThemeAllowed:
+            if state == QtCore.Qt.Checked:
+                self.theme.font_main_shadow = True
+            else:
+                self.theme.font_main_shadow = False
+            self.shadowColorButton.setEnabled(self.theme.font_main_shadow)
+            self.shadowSizeSpinBox.setEnabled(self.theme.font_main_shadow)
+            self.calculateLines()
 
     def onMainPositionCheckBoxStateChanged(self, value):
         """
         Change state as Main Area Position check box changed
+        NOTE the font_main_override is the inverse of the check box value
         """
-        self.theme.font_main_override = (value == QtCore.Qt.Checked)
+        if self.updateThemeAllowed:
+            self.theme.font_main_override = not (value == QtCore.Qt.Checked)
 
     def onFooterPositionCheckBoxStateChanged(self, value):
         """
         Change state as Footer Area Position check box changed
+        NOTE the font_footer_override is the inverse of the check box value
         """
-        self.theme.font_footer_override = (value == QtCore.Qt.Checked)
+        if self.updateThemeAllowed:
+            self.theme.font_footer_override = not (value == QtCore.Qt.Checked)
 
     def exec_(self, edit=False):
         """
@@ -446,9 +449,10 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Background gradient Combo box has changed.
         """
-        self.theme.background_direction = \
-            BackgroundGradientType.to_string(index)
-        self.setBackgroundPageValues()
+        if self.updateThemeAllowed:
+            self.theme.background_direction = \
+                BackgroundGradientType.to_string(index)
+            self.setBackgroundPageValues()
 
     def onColorButtonClicked(self):
         """
@@ -560,13 +564,8 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Lets save the them as Finish has been pressed
         """
-        # Some reason getting double submission.
-        # Hack to stop it for now.
-        if self.accepted:
-            return
         # Save the theme name
-        self.theme.theme_name = \
-            unicode(self.field(u'name').toString())
+        self.theme.theme_name = unicode(self.field(u'name').toString())
         if not self.theme.theme_name:
             criticalErrorMessageBox(
                 translate('OpenLP.ThemeForm', 'Theme Name Missing'),
@@ -590,7 +589,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         if not self.edit_mode and \
             not self.thememanager.checkIfThemeExists(self.theme.theme_name):
             return
-        self.accepted = True
         self.thememanager.saveTheme(self.theme, saveFrom, saveTo)
         return QtGui.QDialog.accept(self)
 

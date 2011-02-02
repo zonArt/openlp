@@ -30,7 +30,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    ItemCapabilities, SettingsManager, translate, check_item_selected
+    ItemCapabilities, SettingsManager, translate, check_item_selected, Receiver
 from openlp.core.ui import criticalErrorMessageBox
 
 log = logging.getLogger(__name__)
@@ -57,7 +57,9 @@ class MediaMediaItem(MediaManagerItem):
             u':/media/media_video.png').toImage()
         MediaManagerItem.__init__(self, parent, self, icon)
         self.singleServiceItem = False
-        self.serviceItemIconName = u':/media/image_clapperboard.png'
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'video_background_replaced'),
+            self.videobackgroundReplaced)
 
     def retranslateUi(self):
         self.OnNewPrompt = translate('MediaPlugin.MediaItem', 'Select Media')
@@ -81,7 +83,6 @@ class MediaMediaItem(MediaManagerItem):
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
-        self.listView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.listView.addAction(self.replaceAction)
 
     def addEndHeaderBar(self):
@@ -98,6 +99,12 @@ class MediaMediaItem(MediaManagerItem):
         """
         self.resetAction.setVisible(False)
         self.parent.liveController.display.resetVideo()
+
+    def videobackgroundReplaced(self):
+        """
+        Triggered by main display on change of serviceitem
+        """
+        self.resetAction.setVisible(False)
 
     def onReplaceClick(self):
         """
