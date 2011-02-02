@@ -138,13 +138,13 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
 
     def reject(self):
         Receiver.send_message(u'custom_edit_clear')
-        self.close()
+        QtGui.QDialog.reject(self)
 
     def accept(self):
         log.debug(u'accept')
         if self.saveCustom():
             Receiver.send_message(u'custom_load_list')
-            self.close()
+            QtGui.QDialog.accept(self)
 
     def saveCustom(self):
         """
