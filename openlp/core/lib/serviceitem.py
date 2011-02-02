@@ -314,6 +314,8 @@ class ServiceItem(object):
                 self.add_from_command(
                     path, text_image[u'title'], text_image[u'image'] )
         self._new_item()
+        print self.shortname
+        print self.from_plugin
 
     def get_display_title(self):
         """
@@ -328,6 +330,8 @@ class ServiceItem(object):
                 return self.title
             else:
                 return self._raw_frames[0][u'title']
+        print self.shortname
+        print self.from_plugin
 
     def merge(self, other):
         """
