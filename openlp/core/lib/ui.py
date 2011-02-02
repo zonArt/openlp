@@ -55,3 +55,17 @@ def add_welcome_page(parent, image):
     parent.welcomeLayout.addWidget(parent.informationLabel)
     parent.welcomeLayout.addStretch()
     parent.addPage(parent.welcomePage)
+
+def save_cancel_button_box(parent):
+    """
+    Return a standard dialog button box with save and cancel buttons.
+    """
+    button_box = QtGui.QDialogButtonBox(parent)
+    button_box.setStandardButtons(
+        QtGui.QDialogButtonBox.Save | QtGui.QDialogButtonBox.Cancel)
+    button_box.setObjectName(u'%sButtonBox' % parent)
+    QtCore.QObject.connect(button_box, QtCore.SIGNAL(u'accepted()'),
+        parent.accept)
+    QtCore.QObject.connect(button_box, QtCore.SIGNAL(u'rejected()'),
+        parent.reject)
+    return button_box 
