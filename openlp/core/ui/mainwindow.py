@@ -771,34 +771,29 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Put OpenLP into "Default" view mode.
         """
-        settings = QtCore.QSettings()
-        settings.setValue(u'%s/view mode' % self.generalSettingsSection,
-            u'default')
-        self.setViewMode(True, True, True, True, True)
+        self.setViewMode(True, True, True, True, True, u'default')
 
     def onModeSetupItemClicked(self):
         """
         Put OpenLP into "Setup" view mode.
         """
-        settings = QtCore.QSettings()
-        settings.setValue(u'%s/view mode' % self.generalSettingsSection,
-            u'setup')
-        self.setViewMode(True, True, False, True, False)
+        self.setViewMode(True, True, False, True, False, u'setup')
 
     def onModeLiveItemClicked(self):
         """
         Put OpenLP into "Live" view mode.
         """
-        settings = QtCore.QSettings()
-        settings.setValue(u'%s/view mode' % self.generalSettingsSection,
-            u'live')
-        self.setViewMode(False, True, False, False, True)
+        self.setViewMode(False, True, False, False, True, u'live')
 
     def setViewMode(self, media=True, service=True, theme=True, preview=True,
-        live=True):
+        live=True, mode=u''):
         """
         Set OpenLP to a different view mode.
         """
+        if mode:
+            settings = QtCore.QSettings()
+            settings.setValue(u'%s/view mode' % self.generalSettingsSection,
+                mode)
         self.MediaManagerDock.setVisible(media)
         self.ServiceManagerDock.setVisible(service)
         self.ThemeManagerDock.setVisible(theme)

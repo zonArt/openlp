@@ -63,35 +63,11 @@ class OpenLPWizard(QtGui.QWizard):
         self.setOptions(QtGui.QWizard.IndependentPages |
             QtGui.QWizard.NoBackButtonOnStartPage |
             QtGui.QWizard.NoBackButtonOnLastPage)
-        self.addWelcomePage(image)
+        addWelcomePage(self, image)
         self.addCustomPages()
         self.addProgressPage()
         self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self)
-
-    def addWelcomePage(self, image):
-        """
-        Add the opening welcome page to the wizard.
-
-        ``image``
-            A splash image for the wizard
-        """
-        self.welcomePage = QtGui.QWizardPage()
-        self.welcomePage.setPixmap(QtGui.QWizard.WatermarkPixmap,
-            QtGui.QPixmap(image))
-        self.welcomePage.setObjectName(u'WelcomePage')
-        self.welcomeLayout = QtGui.QVBoxLayout(self.welcomePage)
-        self.welcomeLayout.setObjectName(u'WelcomeLayout')
-        self.titleLabel = QtGui.QLabel(self.welcomePage)
-        self.titleLabel.setObjectName(u'TitleLabel')
-        self.welcomeLayout.addWidget(self.titleLabel)
-        self.welcomeLayout.addSpacing(40)
-        self.informationLabel = QtGui.QLabel(self.welcomePage)
-        self.informationLabel.setWordWrap(True)
-        self.informationLabel.setObjectName(u'InformationLabel')
-        self.welcomeLayout.addWidget(self.informationLabel)
-        self.welcomeLayout.addStretch()
-        self.addPage(self.welcomePage)
 
     def addProgressPage(self):
         """
@@ -169,3 +145,27 @@ class OpenLPWizard(QtGui.QWizard):
         self.finishButton.setVisible(True)
         self.cancelButton.setVisible(False)
         Receiver.send_message(u'openlp_process_events')
+
+def addWelcomePage(parent, image):
+    """
+    Generate an opening welcome page for a wizard using a provided image.
+
+    ``image``
+        A splash image for the wizard.
+    """
+    parent.welcomePage = QtGui.QWizardPage()
+    parent.welcomePage.setPixmap(QtGui.QWizard.WatermarkPixmap,
+        QtGui.QPixmap(image))
+    parent.welcomePage.setObjectName(u'WelcomePage')
+    parent.welcomeLayout = QtGui.QVBoxLayout(parent.welcomePage)
+    parent.welcomeLayout.setObjectName(u'WelcomeLayout')
+    parent.titleLabel = QtGui.QLabel(parent.welcomePage)
+    parent.titleLabel.setObjectName(u'TitleLabel')
+    parent.welcomeLayout.addWidget(parent.titleLabel)
+    parent.welcomeLayout.addSpacing(40)
+    parent.informationLabel = QtGui.QLabel(parent.welcomePage)
+    parent.informationLabel.setWordWrap(True)
+    parent.informationLabel.setObjectName(u'InformationLabel')
+    parent.welcomeLayout.addWidget(parent.informationLabel)
+    parent.welcomeLayout.addStretch()
+    parent.addPage(parent.welcomePage)

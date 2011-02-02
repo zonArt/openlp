@@ -27,6 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, build_icon
+from openlp.core.ui.wizard import addWelcomePage
 
 class Ui_ThemeWizard(object):
     def setupUi(self, themeWizard):
@@ -36,22 +37,7 @@ class Ui_ThemeWizard(object):
         themeWizard.setOptions(QtGui.QWizard.IndependentPages |
             QtGui.QWizard.NoBackButtonOnStartPage)
         # Welcome Page
-        self.welcomePage = QtGui.QWizardPage()
-        self.welcomePage.setPixmap(QtGui.QWizard.WatermarkPixmap,
-            QtGui.QPixmap(u':/wizards/wizard_createtheme.bmp'))
-        self.welcomePage.setObjectName(u'WelcomePage')
-        self.welcomeLayout = QtGui.QVBoxLayout(self.welcomePage)
-        self.welcomeLayout.setObjectName(u'WelcomeLayout')
-        self.titleLabel = QtGui.QLabel(self.welcomePage)
-        self.titleLabel.setObjectName(u'TitleLabel')
-        self.welcomeLayout.addWidget(self.titleLabel)
-        self.welcomeLayout.addSpacing(40)
-        self.informationLabel = QtGui.QLabel(self.welcomePage)
-        self.informationLabel.setWordWrap(True)
-        self.informationLabel.setObjectName(u'InformationLabel')
-        self.welcomeLayout.addWidget(self.informationLabel)
-        self.welcomeLayout.addStretch()
-        themeWizard.addPage(self.welcomePage)
+        addWelcomePage(themeWizard, u':/wizards/wizard_createtheme.bmp')
         # Background Page
         self.backgroundPage = QtGui.QWizardPage()
         self.backgroundPage.setObjectName(u'BackgroundPage')
