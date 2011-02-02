@@ -526,7 +526,7 @@ class ServiceManager(QtGui.QWidget):
                     'File is not a valid service.'))
                 log.exception(u'File contains no service data')
         except (IOError, NameError):
-            log.exception(u'Problem loading a service file')
+            log.exception(u'Problem loading service file %s' % filename)
         finally:
             if fileTo:
                 fileTo.close()
