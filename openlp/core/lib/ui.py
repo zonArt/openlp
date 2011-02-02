@@ -28,7 +28,9 @@ The :mod:`ui` module provides standard UI components for OpenLP.
 """
 import logging
 
-from PyQt4 import QtGui
+from PyQt4 import QtCore, QtGui
+
+from openlp.core.lib import translate
 
 log = logging.getLogger(__name__)
 
@@ -68,4 +70,31 @@ def save_cancel_button_box(parent):
         parent.accept)
     QtCore.QObject.connect(button_box, QtCore.SIGNAL(u'rejected()'),
         parent.reject)
-    return button_box 
+    return button_box
+
+def critical_error_message_box(title=None, message=None, parent=None,
+    question=False):
+    """
+    Provides a standard critical message box for errors that OpenLP displays
+    to users.
+
+    ``title``
+        The title for the message box.
+
+    ``message``
+        The message to display to the user.
+
+    ``parent``
+        The parent UI element to attach the dialog to.
+
+    ``question``
+        Should this message box question the user.
+    """
+    error = translate('OpenLP.Ui', 'Error')
+    if question:
+        return QtGui.QMessageBox.critical(parent, error, message,
+            QtGui.QMessageBox.StandardButtons(
+            QtGui.QMessageBox.Yes | QtGui.QMessageBox.No))
+    data = {u'message': message}
+    data[u'title'] = title if title else error
+    return Receiver.send_message(u'openlp_error_message', data)

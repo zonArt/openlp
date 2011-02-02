@@ -29,7 +29,7 @@ from PyQt4 import QtGui, QtCore
 from sqlalchemy.sql import and_
 
 from openlp.core.lib import Receiver, translate
-from openlp.core.ui import criticalErrorMessageBox
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.songs.forms import AuthorsForm, TopicsForm, SongBookForm
 from openlp.plugins.songs.lib.db import Author, Book, Topic, Song
 from songmaintenancedialog import Ui_SongMaintenanceDialog
@@ -108,14 +108,14 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         if item_id != -1:
             item = self.manager.get_object(item_class, item_id)
             if item and len(item.songs) == 0:
-                if criticalErrorMessageBox(title=dlg_title, message=del_text,
+                if critical_error_message_box(title=dlg_title, message=del_text,
                     parent=self, question=True) == QtGui.QMessageBox.Yes:
                     self.manager.delete_object(item_class, item.id)
                     reset_func()
             else:
-                criticalErrorMessageBox(dlg_title, err_text)
+                critical_error_message_box(dlg_title, err_text)
         else:
-            criticalErrorMessageBox(dlg_title, sel_text)
+            critical_error_message_box(dlg_title, sel_text)
 
     def resetAuthors(self):
         """
@@ -237,11 +237,11 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 if self.manager.save_object(author):
                     self.resetAuthors()
                 else:
-                    criticalErrorMessageBox(
+                    critical_error_message_box(
                         message=translate('SongsPlugin.SongMaintenanceForm',
                         'Could not add your author.'))
             else:
-                criticalErrorMessageBox(
+                critical_error_message_box(
                     message=translate('SongsPlugin.SongMaintenanceForm',
                     'This author already exists.'))
 
@@ -252,11 +252,11 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 if self.manager.save_object(topic):
                     self.resetTopics()
                 else:
-                    criticalErrorMessageBox(
+                    critical_error_message_box(
                         message=translate('SongsPlugin.SongMaintenanceForm',
                         'Could not add your topic.'))
             else:
-                criticalErrorMessageBox(
+                critical_error_message_box(
                     message=translate('SongsPlugin.SongMaintenanceForm',
                     'This topic already exists.'))
 
@@ -268,11 +268,11 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 if self.manager.save_object(book):
                     self.resetBooks()
                 else:
-                    criticalErrorMessageBox(
+                    critical_error_message_box(
                         message=translate('SongsPlugin.SongMaintenanceForm',
                         'Could not add your book.'))
             else:
-                criticalErrorMessageBox(
+                critical_error_message_box(
                     message=translate('SongsPlugin.SongMaintenanceForm',
                     'This book already exists.'))
 
@@ -301,10 +301,10 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     self.resetAuthors()
                     Receiver.send_message(u'songs_load_list')
                 else:
-                    criticalErrorMessageBox(
+                    critical_error_message_box(
                         message=translate('SongsPlugin.SongMaintenanceForm',
                         'Could not save your changes.'))
-            elif criticalErrorMessageBox(message=unicode(translate(
+            elif critical_error_message_box(message=unicode(translate(
                 'SongsPlugin.SongMaintenanceForm', 'The author %s already '
                 'exists. Would you like to make songs with author %s use '
                 'the existing author %s?')) % (author.display_name,
@@ -318,7 +318,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 author.first_name = temp_first_name
                 author.last_name = temp_last_name
                 author.display_name = temp_display_name
-                criticalErrorMessageBox(
+                critical_error_message_box(
                     message=translate('SongsPlugin.SongMaintenanceForm',
                     'Could not save your modified author, because the '
                     'author already exists.'))
@@ -337,10 +337,10 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 if self.manager.save_object(topic):
                     self.resetTopics()
                 else:
-                    criticalErrorMessageBox(
+                    critical_error_message_box(
                         message=translate('SongsPlugin.SongMaintenanceForm',
                         'Could not save your changes.'))
-            elif criticalErrorMessageBox(
+            elif critical_error_message_box(
                 message=unicode(translate('SongsPlugin.SongMaintenanceForm',
                 'The topic %s already exists. Would you like to make songs '
                 'with topic %s use the existing topic %s?')) % (topic.name,
@@ -350,7 +350,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             else:
                 # We restore the topics's old name.
                 topic.name = temp_name
-                criticalErrorMessageBox(
+                critical_error_message_box(
                     message=translate('SongsPlugin.SongMaintenanceForm',
                     'Could not save your modified topic, because it '
                     'already exists.'))
@@ -375,10 +375,10 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 if self.manager.save_object(book):
                     self.resetBooks()
                 else:
-                    criticalErrorMessageBox(
+                    critical_error_message_box(
                         message=translate('SongsPlugin.SongMaintenanceForm',
                         'Could not save your changes.'))
-            elif criticalErrorMessageBox(
+            elif critical_error_message_box(
                 message=unicode(translate('SongsPlugin.SongMaintenanceForm',
                 'The book %s already exists. Would you like to make songs '
                 'with book %s use the existing book %s?')) % (book.name,

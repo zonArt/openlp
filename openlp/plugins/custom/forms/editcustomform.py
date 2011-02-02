@@ -29,7 +29,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, translate
-from openlp.core.ui import criticalErrorMessageBox
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.custom.lib import CustomXMLBuilder, CustomXMLParser
 from openlp.plugins.custom.lib.db import CustomSlide
 from editcustomdialog import Ui_CustomEditDialog
@@ -152,7 +152,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         """
         valid, message = self._validate()
         if not valid:
-            criticalErrorMessageBox(message=message)
+            critical_error_message_box(message=message)
             return False
         sxml = CustomXMLBuilder()
         sxml.new_document()
