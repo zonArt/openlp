@@ -245,7 +245,7 @@ class MediaManagerItem(QtGui.QWidget):
             preview_string[u'title'],
             preview_string[u'tooltip'],
             u':/general/general_preview.png', self.onPreviewClick)
-        ## Live  Button ##
+        ## Live Button ##
         live_string = self.plugin.getString(StringContent.Live)
         self.addToolbarButton(
             live_string[u'title'],
