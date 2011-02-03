@@ -36,8 +36,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import OpenLPToolbar, ServiceItem, context_menu_action, \
     Receiver, build_icon, ItemCapabilities, SettingsManager, translate, \
     ThemeLevel
-from openlp.core.ui import criticalErrorMessageBox, ServiceNoteForm, \
-    ServiceItemEditForm
+from openlp.core.lib.ui import critical_error_message_box
+from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm
 from openlp.core.utils import AppLocation, delete_file, file_is_unicode, \
     split_filename
 
@@ -491,7 +491,7 @@ class ServiceManager(QtGui.QWidget):
             for file in zip.namelist():
                 ucsfile = file_is_unicode(file)
                 if not ucsfile:
-                    criticalErrorMessageBox(
+                    critical_error_message_box(
                         message=translate('OpenLP.ServiceManager',
                         'File is not a valid service.\n'
                         'The content encoding is not UTF-8.'))
@@ -506,6 +506,8 @@ class ServiceManager(QtGui.QWidget):
                 if filePath.endswith(u'osd'):
                     p_file = filePath
             if 'p_file' in locals():
+                Receiver.send_message(u'cursor_busy')
+                Receiver.send_message(u'openlp_process_events')
                 fileTo = open(p_file, u'r')
                 items = cPickle.load(fileTo)
                 fileTo.close()
@@ -520,8 +522,9 @@ class ServiceManager(QtGui.QWidget):
                         Receiver.send_message(u'%s_service_load' %
                             serviceItem.name.lower(), serviceItem)
                 delete_file(p_file)
+                Receiver.send_message(u'cursor_normal')
             else:
-                criticalErrorMessageBox(
+                critical_error_message_box(
                     message=translate('OpenLP.ServiceManager',
                     'File is not a valid service.'))
                 log.exception(u'File contains no service data')
@@ -536,9 +539,7 @@ class ServiceManager(QtGui.QWidget):
         self.mainwindow.addRecentFile(fileName)
         self.setModified(False)
         QtCore.QSettings(). \
-            setValue(u'service/last file',QtCore.QVariant(fileName))
-        # Refresh Plugin lists
-        Receiver.send_message(u'plugin_list_refresh')
+            setValue(u'service/last file', QtCore.QVariant(fileName))
 
     def loadLastFile(self):
         """
@@ -993,7 +994,7 @@ class ServiceManager(QtGui.QWidget):
             self.mainwindow.previewController.addServiceManagerItem(
                 self.serviceItems[item][u'service_item'], child)
         else:
-            criticalErrorMessageBox(
+            critical_error_message_box(
                 translate('OpenLP.ServiceManager', 'Missing Display Handler'),
                 translate('OpenLP.ServiceManager', 'Your item cannot be '
                 'displayed as there is no handler to display it'))
@@ -1027,7 +1028,7 @@ class ServiceManager(QtGui.QWidget):
                         self.serviceItems[item][u'service_item'], 0)
                     self.mainwindow.liveController.previewListWidget.setFocus()
         else:
-            criticalErrorMessageBox(
+            critical_error_message_box(
                 translate('OpenLP.ServiceManager', 'Missing Display Handler'),
                 translate('OpenLP.ServiceManager', 'Your item cannot be '
                 'displayed as the plugin required to display it is missing '
@@ -1188,7 +1189,7 @@ class ServiceManager(QtGui.QWidget):
         Print a Service Order Sheet.
         """
         if not self.serviceItems:
-            criticalErrorMessageBox(
+            critical_error_message_box(
                 message=translate('OpenLP.ServiceManager',
                 'There is no service item in this service.'))
             return

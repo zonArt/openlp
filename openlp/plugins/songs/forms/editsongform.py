@@ -30,7 +30,7 @@ import re
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, translate
-from openlp.core.ui import criticalErrorMessageBox
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.songs.forms import EditVerseForm
 from openlp.plugins.songs.lib import SongXML, VerseType
 from openlp.plugins.songs.lib.db import Book, Song, Author, Topic
@@ -255,7 +255,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.songBookNumberEdit.setText(self.song.song_number)
         else:
             self.songBookNumberEdit.setText(u'')
-
         # lazy xml migration for now
         self.verseListWidget.clear()
         self.verseListWidget.setRowCount(0)
@@ -343,7 +342,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             author = self.manager.get_object(Author, item_id)
             if self.authorsListView.findItems(unicode(author.display_name),
                 QtCore.Qt.MatchExactly):
-                criticalErrorMessageBox(
+                critical_error_message_box(
                     message=translate('SongsPlugin.EditSongForm',
                     'This author is already in the list.'))
             else:
@@ -400,7 +399,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             topic = self.manager.get_object(Topic, item_id)
             if self.topicsListView.findItems(unicode(topic.name),
                 QtCore.Qt.MatchExactly):
-                criticalErrorMessageBox(
+                critical_error_message_box(
                     message=translate('SongsPlugin.EditSongForm',
                     'This topic is already in the list.'))
             else:
@@ -533,21 +532,21 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if not self.titleEdit.text():
             self.songTabWidget.setCurrentIndex(0)
             self.titleEdit.setFocus()
-            criticalErrorMessageBox(
+            critical_error_message_box(
                 message=translate('SongsPlugin.EditSongForm',
                 'You need to type in a song title.'))
             return False
         if self.verseListWidget.rowCount() == 0:
             self.songTabWidget.setCurrentIndex(0)
             self.verseListWidget.setFocus()
-            criticalErrorMessageBox(
+            critical_error_message_box(
                 message=translate('SongsPlugin.EditSongForm',
                 'You need to type in at least one verse.'))
             return False
         if self.authorsListView.count() == 0:
             self.songTabWidget.setCurrentIndex(1)
             self.authorsListView.setFocus()
-            criticalErrorMessageBox(
+            critical_error_message_box(
                 message=translate('SongsPlugin.EditSongForm',
                 'You need to have an author for this song.'))
             return False
@@ -575,7 +574,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     valid = verses.pop(0)
                     for verse in verses:
                         valid = valid + u', ' + verse
-                    criticalErrorMessageBox(
+                    critical_error_message_box(
                         message=unicode(translate('SongsPlugin.EditSongForm',
                         'The verse order is invalid. There is no verse '
                         'corresponding to %s. Valid entries are %s.')) % \
