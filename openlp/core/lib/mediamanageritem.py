@@ -98,16 +98,11 @@ class MediaManagerItem(QtGui.QWidget):
         visible_title = self.plugin.getString(StringContent.VisibleName)
         self.title = unicode(visible_title[u'title'])
         self.settingsSection = self.plugin.name.lower()
-        if isinstance(icon, QtGui.QIcon):
-            self.icon = icon
-        elif isinstance(icon, basestring):
-            self.icon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
-                QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        else:
-            self.icon = None
+        self.icon = None
+        if icon:
+            self.icon = build_icon(icon)
         self.toolbar = None
         self.remoteTriggered = None
-        self.serviceItemIconName = None
         self.singleServiceItem = True
         self.pageLayout = QtGui.QVBoxLayout(self)
         self.pageLayout.setSpacing(0)
@@ -169,8 +164,9 @@ class MediaManagerItem(QtGui.QWidget):
         ``slot``
             The method to call when the button is clicked.
 
-        ``objectname``
-            The name of the button.
+        ``checkable``
+            If *True* the button has two, *off* and *on*, states. Default is
+            *False*, which means the buttons has only one state.
         """
         # NB different order (when I broke this out, I didn't want to
         # break compatability), but it makes sense for the icon to
@@ -193,13 +189,13 @@ class MediaManagerItem(QtGui.QWidget):
         """
         # Add a toolbar
         self.addToolbar()
-        #Allow the plugin to define buttons at start of bar
+        # Allow the plugin to define buttons at start of bar
         self.addStartHeaderBar()
-        #Add the middle of the tool bar (pre defined)
+        # Add the middle of the tool bar (pre defined)
         self.addMiddleHeaderBar()
-        #Allow the plugin to define buttons at end of bar
+        # Allow the plugin to define buttons at end of bar
         self.addEndHeaderBar()
-        #Add the list view
+        # Add the list view
         self.addListViewToToolBar()
 
     def addMiddleHeaderBar(self):
@@ -249,7 +245,7 @@ class MediaManagerItem(QtGui.QWidget):
             preview_string[u'title'],
             preview_string[u'tooltip'],
             u':/general/general_preview.png', self.onPreviewClick)
-        ## Live  Button ##
+        ## Live Button ##
         live_string = self.plugin.getString(StringContent.Live)
         self.addToolbarButton(
             live_string[u'title'],
@@ -511,7 +507,7 @@ class MediaManagerItem(QtGui.QWidget):
                         'No Service Item Selected'),
                     translate('OpenLP.MediaManagerItem',
                         'You must select an existing service item to add to.'))
-            elif self.title.lower() == serviceItem.name.lower():
+            elif self.plugin.name.lower() == serviceItem.name.lower():
                 self.generateSlideData(serviceItem)
                 self.parent.serviceManager.addServiceItem(serviceItem,
                     replace=True)
@@ -528,10 +524,7 @@ class MediaManagerItem(QtGui.QWidget):
         Common method for generating a service item
         """
         serviceItem = ServiceItem(self.parent)
-        if self.serviceItemIconName:
-            serviceItem.add_icon(self.serviceItemIconName)
-        else:
-            serviceItem.add_icon(self.parent.icon_path)
+        serviceItem.add_icon(self.parent.icon_path)
         if self.generateSlideData(serviceItem, item, xmlVersion):
             return serviceItem
         else:
@@ -543,3 +536,25 @@ class MediaManagerItem(QtGui.QWidget):
         individual service items need to be processed by the plugins
         """
         pass
+
+    def _getIdOfItemToGenerate(self, item, remoteItem):
+        """
+        Utility method to check items being submitted for slide generation.
+
+        ``item``
+            The item to check.
+
+        ``remoteItem``
+            The id to assign if the slide generation was remotely triggered.
+        """
+        if item is None:
+            if self.remoteTriggered is None:
+                item = self.listView.currentItem()
+                if item is None:
+                    return False
+                item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            else:
+                item_id = remoteItem
+        else:
+            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        return item_id

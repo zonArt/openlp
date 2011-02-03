@@ -68,9 +68,6 @@ class SongMediaItem(MediaManagerItem):
         self.editItem = None
         self.whitespace = re.compile(r'\W+', re.UNICODE)
 
-    def requiredIcons(self):
-        MediaManagerItem.requiredIcons(self)
-
     def addEndHeaderBar(self):
         self.addToolbarSeparator()
         ## Song Maintenance Button ##
@@ -98,8 +95,6 @@ class SongMediaItem(MediaManagerItem):
         self.searchLayout.addLayout(self.searchButtonLayout)
         self.pageLayout.addWidget(self.searchWidget)
         # Signals and slots
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'plugin_list_refresh'), self.onSearchTextButtonClick)
         QtCore.QObject.connect(self.searchTextEdit,
             QtCore.SIGNAL(u'returnPressed()'), self.onSearchTextButtonClick)
         QtCore.QObject.connect(self.searchTextButton,
@@ -157,7 +152,6 @@ class SongMediaItem(MediaManagerItem):
             (5, u':/slides/slide_theme.png',
                 translate('SongsPlugin.MediaItem', 'Themes'))
         ])
-
         self.configUpdated()
 
     def onSearchTextButtonClick(self):
@@ -269,8 +263,8 @@ class SongMediaItem(MediaManagerItem):
     def onImportClick(self):
         if not hasattr(self, u'import_wizard'):
             self.import_wizard = SongImportForm(self, self.parent)
-        self.import_wizard.exec_()
-        Receiver.send_message(u'songs_load_list')
+        if self.import_wizard.exec_() == QtGui.QDialog.Accepted:
+            Receiver.send_message(u'songs_load_list')
 
     def onNewClick(self):
         log.debug(u'onNewClick')
@@ -341,16 +335,7 @@ class SongMediaItem(MediaManagerItem):
         author_list = u''
         author_audit = []
         ccli = u''
-        if item is None:
-            if self.remoteTriggered is None:
-                item = self.listView.currentItem()
-                if item is None:
-                    return False
-                item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-            else:
-                item_id = self.remoteSong
-        else:
-            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        item_id = self._getIdOfItemToGenerate(item, self.remoteSong)
         service_item.add_capability(ItemCapabilities.AllowsEdit)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
@@ -446,6 +431,7 @@ class SongMediaItem(MediaManagerItem):
             if add_song:
                 if self.addSongFromService:
                     editId = self.openLyrics.xml_to_song(item.xml_version)
+                    self.onSearchTextButtonClick()
             # Update service with correct song id.
             if editId:
                 Receiver.send_message(u'service_item_update',

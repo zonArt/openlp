@@ -51,7 +51,7 @@ else:
 
 from PyQt4 import QtCore
 
-from openlp.core.utils import delete_file
+from openlp.core.utils import delete_file, get_uno_command, get_uno_instance
 from presentationcontroller import PresentationController, PresentationDocument
 
 log = logging.getLogger(__name__)
@@ -75,7 +75,6 @@ class ImpressController(PresentationController):
         self.process = None
         self.desktop = None
         self.manager = None
-        self.uno_connection_type = u'pipe' #u'socket'
 
     def check_available(self):
         """
@@ -100,14 +99,7 @@ class ImpressController(PresentationController):
             self.manager._FlagAsMethod(u'Bridge_GetValueObject')
         else:
             # -headless
-            if self.uno_connection_type == u'pipe':
-                cmd = u'openoffice.org -nologo -norestore -minimized ' \
-                    + u'-invisible -nofirststartwizard ' \
-                    + u'-accept=pipe,name=openlp_pipe;urp;'
-            else:
-                cmd = u'openoffice.org -nologo -norestore -minimized ' \
-                    + u'-invisible -nofirststartwizard ' \
-                    + u'-accept=socket,host=localhost,port=2002;urp;'
+            cmd = get_uno_command()
             self.process = QtCore.QProcess()
             self.process.startDetached(cmd)
             self.process.waitForStarted()
@@ -118,7 +110,7 @@ class ImpressController(PresentationController):
         which will be used to manage impress
         """
         log.debug(u'get UNO Desktop Openoffice')
-        ctx = None
+        uno_instance = None
         loop = 0
         log.debug(u'get UNO Desktop Openoffice - getComponentContext')
         context = uno.getComponentContext()
@@ -126,27 +118,19 @@ class ImpressController(PresentationController):
             u'UnoUrlResolver')
         resolver = context.ServiceManager.createInstanceWithContext(
             u'com.sun.star.bridge.UnoUrlResolver', context)
-        while ctx is None and loop < 3:
+        while uno_instance is None and loop < 3:
             try:
-                log.debug(u'get UNO Desktop Openoffice - resolve')
-                if self.uno_connection_type == u'pipe':
-                    ctx = resolver.resolve(u'uno:' \
-                        + u'pipe,name=openlp_pipe;' \
-                        + u'urp;StarOffice.ComponentContext')
-                else:
-                    ctx = resolver.resolve(u'uno:' \
-                        + u'socket,host=localhost,port=2002;' \
-                        + u'urp;StarOffice.ComponentContext')
+                uno_instance = get_uno_instance(resolver)
             except:
                 log.exception(u'Unable to find running instance ')
                 self.start_process()
                 loop += 1
         try:
-            self.manager = ctx.ServiceManager
+            self.manager = uno_instance.ServiceManager
             log.debug(u'get UNO Desktop Openoffice - createInstanceWithContext'
                 u' - Desktop')
             desktop = self.manager.createInstanceWithContext(
-                "com.sun.star.frame.Desktop", ctx )
+                "com.sun.star.frame.Desktop", uno_instance)
             return desktop
         except:
             log.exception(u'Failed to get UNO desktop')
@@ -187,11 +171,11 @@ class ImpressController(PresentationController):
             desktop = self.get_com_desktop()
         #Sometimes we get a failure and desktop is None
         if not desktop:
-            log.exception(u'Failed to terminate OpenOffice')
+            log.exception(u'Failed to find an OpenOffice desktop to terminate')
             return
         docs = desktop.getComponents()
         if docs.hasElements():
-            log.debug(u'OpenOffice not terminated')
+            log.debug(u'OpenOffice not terminated as docs are still open')
         else:
             try:
                 desktop.terminate()

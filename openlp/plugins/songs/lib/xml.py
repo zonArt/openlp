@@ -31,7 +31,7 @@ The basic XML for storing the lyrics in the song database is of the format::
     <?xml version="1.0" encoding="UTF-8"?>
     <song version="1.0">
         <lyrics>
-            <verse type="chorus" label="1">
+            <verse type="Chorus" label="1" lang="en">
                 <![CDATA[ ... ]]>
             </verse>
         </lyrics>
@@ -84,7 +84,7 @@ class SongXML(object):
         self.song_xml = objectify.fromstring(u'<song version="1.0" />')
         self.lyrics = etree.SubElement(self.song_xml, u'lyrics')
 
-    def add_verse_to_lyrics(self, type, number, content):
+    def add_verse_to_lyrics(self, type, number, content, lang=None):
         """
         Add a verse to the *<lyrics>* tag.
 
@@ -97,9 +97,15 @@ class SongXML(object):
 
         ``content``
             The actual text of the verse to be stored.
+
+        ``lang``
+            The verse's language code (ISO-639). This is not required, but
+            should be added if available.
         """
         verse = etree.Element(u'verse', type=unicode(type),
             label=unicode(number))
+        if lang:
+            verse.set(u'lang', lang)
         verse.text = etree.CDATA(content)
         self.lyrics.append(verse)
 
@@ -117,6 +123,11 @@ class SongXML(object):
 
         ``xml``
             The XML of the song to be parsed.
+
+        The returned list has the following format::
+
+            [[{'lang': 'en', 'type': 'V', 'label': '1'}, u"The English verse."],
+            [{'lang': 'en', 'type': 'C', 'label': '1'}, u"The English chorus."]]
         """
         self.song_xml = None
         if xml[:5] == u'<?xml':
@@ -196,7 +207,7 @@ class OpenLyrics(object):
         This property is not supported.
 
     *<verse name="v1a" lang="he" translit="en">*
-        The attribute *translit* and *lang* are not supported.
+        The attribute *translit* is not supported.
 
     *<verseOrder>*
         OpenLP supports this property.
@@ -268,13 +279,16 @@ class OpenLyrics(object):
         # No xml get out of here.
         if not xml:
             return None
-        song = Song()
         if xml[:5] == u'<?xml':
             xml = xml[38:]
         # Remove chords from xml.
         xml = re.compile(u'<chord name=".*?"/>').sub(u'', xml)
         song_xml = objectify.fromstring(xml)
-        properties = song_xml.properties
+        try:
+            properties = song_xml.properties
+        except AttributeError:
+            return None
+        song = Song()
         self._process_copyright(properties, song)
         self._process_cclinumber(properties, song)
         self._process_titles(properties, song)
@@ -442,7 +456,10 @@ class OpenLyrics(object):
             if not verse_number:
                 verse_number = u'1'
             temp_verse_order.append((verse_type, verse_number, verse_part))
-            sxml.add_verse_to_lyrics(verse_type, verse_number, text)
+            lang = None
+            if self._get(verse, u'lang'):
+                lang = self._get(verse, u'lang')
+            sxml.add_verse_to_lyrics(verse_type, verse_number, text, lang)
             search_text = search_text + text
         song.search_lyrics = search_text.lower()
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')

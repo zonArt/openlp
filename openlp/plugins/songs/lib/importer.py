@@ -27,6 +27,7 @@
 The :mod:`importer` modules provides the general song import functionality.
 """
 from opensongimport import OpenSongImport
+from easislidesimport import EasiSlidesImport
 from olpimport import OpenLPSongImport
 from openlyricsimport import OpenLyricsImport
 from wowimport import WowImport
@@ -67,8 +68,9 @@ class SongFormat(object):
     SongsOfFellowship = 6
     Generic = 7
     #CSV = 8
-    EasyWorship = 8
-    SongBeamer = 9
+    EasiSlides = 8
+    EasyWorship = 9
+    SongBeamer = 10
 
     @staticmethod
     def get_class(format):
@@ -94,6 +96,8 @@ class SongFormat(object):
             return OooImport
         elif format == SongFormat.CCLI:
             return CCLIFileImport
+        elif format == SongFormat.EasiSlides:
+            return EasiSlidesImport
         elif format == SongFormat.EasyWorship:
             return EasyWorshipSongImport
         elif format == SongFormat.SongBeamer:
@@ -101,7 +105,7 @@ class SongFormat(object):
         return None
 
     @staticmethod
-    def list():
+    def get_formats_list():
         """
         Return a list of the supported song formats.
         """
@@ -114,6 +118,7 @@ class SongFormat(object):
             SongFormat.CCLI,
             SongFormat.SongsOfFellowship,
             SongFormat.Generic,
+            SongFormat.EasiSlides,
             SongFormat.EasyWorship,
             SongFormat.SongBeamer
         ]
@@ -137,3 +142,4 @@ SongFormat.set_availability(SongFormat.SongsOfFellowship, HAS_SOF)
 SongFormat.set_availability(SongFormat.Generic, HAS_OOO)
 
 __all__ = [u'SongFormat']
+

@@ -38,7 +38,7 @@ from HTMLParser import HTMLParseError
 from BeautifulSoup import BeautifulSoup, NavigableString
 
 from openlp.core.lib import Receiver, translate
-from openlp.core.ui import criticalErrorMessageBox
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, get_web_page
 from openlp.plugins.bibles.lib import SearchResults
 from openlp.plugins.bibles.lib.db import BibleDB, Book
@@ -210,7 +210,8 @@ class BGExtract(object):
         cleaner = [(re.compile('&nbsp;|<br />|\'\+\''), lambda match: '')]
         soup = get_soup_for_bible_ref(
             u'http://www.biblegateway.com/passage/?%s' % url_params,
-                cleaner=cleaner)
+            pre_parse_regex=r'<meta name.*?/>', pre_parse_substitute='',
+            cleaner=cleaner)
         if not soup:
             return None
         Receiver.send_message(u'openlp_process_events')
@@ -430,7 +431,7 @@ class HTTPBible(BibleDB):
             if not db_book:
                 book_details = HTTPBooks.get_book(book)
                 if not book_details:
-                    criticalErrorMessageBox(
+                    critical_error_message_box(
                         translate('BiblesPlugin', 'No Book Found'),
                         translate('BiblesPlugin', 'No matching '
                         'book could be found in this Bible. Check that you '
@@ -499,7 +500,8 @@ class HTTPBible(BibleDB):
         """
         return HTTPBooks.get_verse_count(book, chapter)
 
-def get_soup_for_bible_ref(reference_url, header=None, cleaner=None):
+def get_soup_for_bible_ref(reference_url, header=None, pre_parse_regex=None,
+    pre_parse_substitute=None, cleaner=None):
     """
     Gets a webpage and returns a parsed and optionally cleaned soup or None.
 
@@ -508,6 +510,13 @@ def get_soup_for_bible_ref(reference_url, header=None, cleaner=None):
 
     ``header``
         An optional HTTP header to pass to the bible web server.
+
+    ``pre_parse_regex``
+        A regular expression to run on the webpage. Allows manipulation of the
+        webpage before passing to BeautifulSoup for parsing.
+
+    ``pre_parse_substitute``
+        The text to replace any matches to the regular expression with.
 
     ``cleaner``
         An optional regex to use during webpage parsing.
@@ -518,12 +527,15 @@ def get_soup_for_bible_ref(reference_url, header=None, cleaner=None):
     if not page:
         send_error_message(u'download')
         return None
+    page_source = page.read()
+    if pre_parse_regex and pre_parse_substitute is not None:
+        page_source = re.sub(pre_parse_regex, pre_parse_substitute, page_source)
     soup = None
     try:
         if cleaner:
-            soup = BeautifulSoup(page, markupMassage=cleaner)
+            soup = BeautifulSoup(page_source, markupMassage=cleaner)
         else:
-            soup = BeautifulSoup(page)
+            soup = BeautifulSoup(page_source)
     except HTMLParseError:
         log.exception(u'BeautifulSoup could not parse the bible page.')
     if not soup:
@@ -540,14 +552,14 @@ def send_error_message(error_type):
         The type of error that occured for the issue.
     """
     if error_type == u'download':
-        criticalErrorMessageBox(
+        critical_error_message_box(
             translate('BiblePlugin.HTTPBible', 'Download Error'),
             translate('BiblePlugin.HTTPBible', 'There was a '
             'problem downloading your verse selection. Please check your '
             'Internet connection, and if this error continues to occur '
             'please consider reporting a bug.'))
     elif error_type == u'parse':
-        criticalErrorMessageBox(
+        critical_error_message_box(
             translate('BiblePlugin.HTTPBible', 'Parse Error'),
             translate('BiblePlugin.HTTPBible', 'There was a '
             'problem extracting your verse selection. If this error continues '

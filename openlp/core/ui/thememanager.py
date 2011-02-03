@@ -32,11 +32,12 @@ import logging
 from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.ui import criticalErrorMessageBox, FileRenameForm, ThemeForm
-from openlp.core.theme import Theme
 from openlp.core.lib import OpenLPToolbar, ThemeXML, get_text_file_string, \
     build_icon, Receiver, SettingsManager, translate, check_item_selected, \
     BackgroundType, BackgroundGradientType, check_directory_exists
+from openlp.core.lib.ui import critical_error_message_box
+from openlp.core.theme import Theme
+from openlp.core.ui import FileRenameForm, ThemeForm
 from openlp.core.utils import AppLocation, delete_file, file_is_unicode, \
     get_filesystem_encoding
 
@@ -359,7 +360,7 @@ class ThemeManager(QtGui.QWidget):
         """
         item = self.themeListWidget.currentItem()
         if item is None:
-            criticalErrorMessageBox(message=translate('OpenLP.ThemeManager',
+            critical_error_message_box(message=translate('OpenLP.ThemeManager',
                 'You have not selected a theme.'))
             return
         theme = unicode(item.data(QtCore.Qt.UserRole).toString())
@@ -386,7 +387,7 @@ class ThemeManager(QtGui.QWidget):
                         'Your theme has been successfully exported.'))
             except (IOError, OSError):
                 log.exception(u'Export Theme Failed')
-                criticalErrorMessageBox(
+                critical_error_message_box(
                     translate('OpenLP.ThemeManager', 'Theme Export Failed'),
                     translate('OpenLP.ThemeManager',
                     'Your theme could not be exported due to an error.'))
@@ -496,7 +497,7 @@ class ThemeManager(QtGui.QWidget):
             for file in zip.namelist():
                 ucsfile = file_is_unicode(file)
                 if not ucsfile:
-                    criticalErrorMessageBox(
+                    critical_error_message_box(
                         message=translate('OpenLP.ThemeManager',
                         'File is not a valid theme.\n'
                         'The content encoding is not UTF-8.'))
@@ -531,14 +532,14 @@ class ThemeManager(QtGui.QWidget):
                 theme = self._createThemeFromXml(filexml, self.path)
                 self.generateAndSaveImage(dir, themename, theme)
             else:
-                criticalErrorMessageBox(
+                critical_error_message_box(
                     translate('OpenLP.ThemeManager', 'Validation Error'),
                     translate('OpenLP.ThemeManager',
                     'File is not a valid theme.'))
                 log.exception(u'Theme file does not contain XML data %s' %
                     filename)
         except (IOError, NameError):
-            criticalErrorMessageBox(
+            critical_error_message_box(
                 translate('OpenLP.ThemeManager', 'Validation Error'),
                 translate('OpenLP.ThemeManager',
                 'File is not a valid theme.'))
@@ -558,7 +559,7 @@ class ThemeManager(QtGui.QWidget):
         """
         theme_dir = os.path.join(self.path, themeName)
         if os.path.exists(theme_dir):
-            criticalErrorMessageBox(
+            critical_error_message_box(
                 translate('OpenLP.ThemeManager', 'Validation Error'),
                 translate('OpenLP.ThemeManager',
                 'A theme with this name already exists.'))
@@ -688,7 +689,7 @@ class ThemeManager(QtGui.QWidget):
                 return False
             # should be the same unless default
             if theme != unicode(item.data(QtCore.Qt.UserRole).toString()):
-                criticalErrorMessageBox(
+                critical_error_message_box(
                     message=translate('OpenLP.ThemeManager',
                     'You are unable to delete the default theme.'))
                 return False
@@ -696,7 +697,8 @@ class ThemeManager(QtGui.QWidget):
             if testPlugin:
                 for plugin in self.mainwindow.pluginManager.plugins:
                     if plugin.usesTheme(theme):
-                        criticalErrorMessageBox(translate('OpenLP.ThemeManager',
+                        critical_error_message_box(
+                            translate('OpenLP.ThemeManager',
                             'Validation Error'),
                             unicode(translate('OpenLP.ThemeManager',
                             'Theme %s is used in the %s plugin.')) % \
