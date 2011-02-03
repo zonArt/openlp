@@ -159,7 +159,7 @@ class OpenLyrics(object):
     to/from a song.
 
     As OpenLyrics has a rich set of different features, we cannot support them
-    all. The following features are supported by the :class:`OpenLyrics`::
+    all. The following features are supported by the :class:`OpenLyrics`:
 
     *<authors>*
         OpenLP does not support the attribute *type* and *lang*.
