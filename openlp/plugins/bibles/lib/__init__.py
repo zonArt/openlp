@@ -91,7 +91,7 @@ def parse_reference(reference):
     ``range_string`` is a regular expression which matches for verse range
     declarations:
 
-    1. ``(?:(?P<from_chapter>[0-9]+)%(sep_v)s)?'
+    1. ``(?:(?P<from_chapter>[0-9]+)%(sep_v)s)?``
         It starts with a optional chapter reference ``from_chapter`` followed by
         a verse separator.
     2. ``(?P<from_verse>[0-9]+)``
