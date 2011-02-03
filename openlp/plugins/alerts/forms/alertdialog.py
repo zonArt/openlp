@@ -67,6 +67,7 @@ class Ui_AlertDialog(object):
         self.saveButton.setObjectName(u'saveButton')
         self.manageButtonLayout.addWidget(self.saveButton)
         self.deleteButton = delete_push_button(alertDialog)
+        self.deleteButton.setEnabled(False)
         self.manageButtonLayout.addWidget(self.deleteButton)
         self.manageButtonLayout.addStretch()
         self.alertDialogLayout.addLayout(self.manageButtonLayout, 1, 1)
@@ -74,11 +75,13 @@ class Ui_AlertDialog(object):
         self.buttonBox.addButton(QtGui.QDialogButtonBox.Close)
         displayIcon = build_icon(u':/general/general_live.png')
         self.displayButton = QtGui.QPushButton(alertDialog)
+        self.displayButton.setEnabled(False)
         self.displayButton.setIcon(displayIcon)
         self.displayButton.setObjectName(u'displayButton')
         self.buttonBox.addButton(self.displayButton,
             QtGui.QDialogButtonBox.ActionRole)
         self.displayCloseButton = QtGui.QPushButton(alertDialog)
+        self.displayCloseButton.setEnabled(False)
         self.displayCloseButton.setIcon(displayIcon)
         self.displayCloseButton.setObjectName(u'displayCloseButton')
         self.buttonBox.addButton(self.displayCloseButton,
