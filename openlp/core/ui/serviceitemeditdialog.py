@@ -26,7 +26,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, build_icon
+from openlp.core.lib import translate
 from openlp.core.lib.ui import save_cancel_button_box, delete_push_button, \
     up_down_push_button_set
 
