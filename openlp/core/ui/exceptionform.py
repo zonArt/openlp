@@ -72,6 +72,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
 
     def exec_(self):
         self.onDescriptionUpdated()
+        self.fileAttachment = None
         return QtGui.QDialog.exec_(self)
 
     def _createReport(self):
@@ -152,9 +153,9 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             if u':' in line:
                 exception = line.split(u'\n')[-1].split(u':')[0]
         subject = u'Bug report: %s in %s' % (exception, source)
-        if attach:
+        if self.fileAttachment:
             mailto(address=u'bugs@openlp.org', subject=subject,
-                body=body % content, attach=attach)
+                body=body % content, attach=self.fileAttachment)
         else:
             mailto(address=u'bugs@openlp.org', subject=subject,
                 body=body % content)
@@ -163,9 +164,24 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         count = int(20 - len(self.descriptionTextEdit.toPlainText()))
         if count < 0:
             count = 0
+            self.__buttonState(True)
+        else:
+            self.__buttonState(False)
         self.descriptionWordCount.setText(
             unicode(translate('OpenLP.ExceptionDialog',
             'Characters to Enter : %s')) % count )
 
     def onAttachFileButtonPressed(self):
-        print self.descriptionTextEdit.toPlainText()
+        files = QtGui.QFileDialog.getOpenFileName(
+            self,translate('ImagePlugin.ExceptionDialog',
+            'Select Attachment'),
+            SettingsManager.get_last_dir(u'exceptions'),
+            u'%s (*.*) (*)' %
+            unicode(translate('ImagePlugin.MediaItem', 'All Files')))
+        log.info(u'New files(s) %s', unicode(files))
+        if files:
+            self.fileAttachment = unicode(files)
+
+    def __buttonState(self, state):
+        self.saveReportButton.setEnabled(state)
+        self.sendReportButton.setEnabled(state)
