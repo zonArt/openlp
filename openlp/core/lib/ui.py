@@ -30,7 +30,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, translate
+from openlp.core.lib import build_icon, Receiver, translate
 
 log = logging.getLogger(__name__)
 
