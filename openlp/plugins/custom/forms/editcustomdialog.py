@@ -27,7 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate
-from openlp.core.lib.ui import save_cancel_button_box
+from openlp.core.lib.ui import save_cancel_button_box, delete_push_button
 
 class Ui_CustomEditDialog(object):
     def setupUi(self, customEditDialog):
@@ -64,8 +64,7 @@ class Ui_CustomEditDialog(object):
         self.editAllButton = QtGui.QPushButton(customEditDialog)
         self.editAllButton.setObjectName(u'editAllButton')
         self.buttonLayout.addWidget(self.editAllButton)
-        self.deleteButton = QtGui.QPushButton(customEditDialog)
-        self.deleteButton.setObjectName(u'deleteButton')
+        self.deleteButton = delete_push_button(customEditDialog)
         self.buttonLayout.addWidget(self.deleteButton)
         self.buttonLayout.addStretch()
         self.upButton = QtGui.QPushButton(customEditDialog)
@@ -125,11 +124,6 @@ class Ui_CustomEditDialog(object):
         self.editAllButton.setToolTip(
             translate('CustomPlugin.EditCustomForm', 'Edit all the slides at '
             'once.'))
-        self.deleteButton.setText(
-            translate('CustomPlugin.EditCustomForm', '&Delete'))
-        self.deleteButton.setToolTip(
-            translate('CustomPlugin.EditCustomForm', 'Delete the selected '
-            'slide.'))
         self.themeLabel.setText(
             translate('CustomPlugin.EditCustomForm', 'The&me:'))
         self.creditLabel.setText(

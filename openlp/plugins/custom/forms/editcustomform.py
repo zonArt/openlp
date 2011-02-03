@@ -62,8 +62,6 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             QtCore.SIGNAL(u'pressed()'), self.onEditButtonPressed)
         QtCore.QObject.connect(self.editAllButton,
             QtCore.SIGNAL(u'pressed()'), self.onEditAllButtonPressed)
-        QtCore.QObject.connect(self.deleteButton,
-            QtCore.SIGNAL(u'pressed()'), self.onDeleteButtonPressed)
         QtCore.QObject.connect(self.upButton,
             QtCore.SIGNAL(u'pressed()'), self.onUpButtonPressed)
         QtCore.QObject.connect(self.downButton,
@@ -243,7 +241,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
                 self.slideListView.addItem(slide)
         self.slideListView.repaint()
 
-    def onDeleteButtonPressed(self):
+    def onDeleteButtonClicked(self):
         self.slideListView.takeItem(self.slideListView.currentRow())
         self.editButton.setEnabled(True)
         self.editAllButton.setEnabled(True)

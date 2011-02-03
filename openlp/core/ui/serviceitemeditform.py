@@ -44,8 +44,6 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
             QtCore.SIGNAL(u'clicked()'), self.onItemUp)
         QtCore.QObject.connect(self.downButton,
             QtCore.SIGNAL(u'clicked()'), self.onItemDown)
-        QtCore.QObject.connect(self.deleteButton,
-            QtCore.SIGNAL(u'clicked()'), self.onItemDelete)
         QtCore.QObject.connect(self.listWidget,
             QtCore.SIGNAL(u'currentRowChanged(int)'), self.onCurrentRowChanged)
 
@@ -77,7 +75,7 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
             item_name = QtGui.QListWidgetItem(frame[u'title'])
             self.listWidget.addItem(item_name)
 
-    def onItemDelete(self):
+    def onDeleteButtonClicked(self):
         """
         Delete the current row.
         """

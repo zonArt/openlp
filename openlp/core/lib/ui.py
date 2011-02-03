@@ -30,7 +30,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate
+from openlp.core.lib import build_icon, translate
 
 log = logging.getLogger(__name__)
 
@@ -108,3 +108,18 @@ def media_item_combo_box(parent, name):
     combo.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToMinimumContentsLength)
     combo.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
     return combo
+
+def delete_push_button(parent, icon=None):
+    """
+    Return a standard push button with delete label.
+    """
+    delete_button = QtGui.QPushButton(parent)
+    delete_button.setObjectName(u'deleteButton')
+    delete_icon = icon if icon else u':/general/general_delete.png'
+    delete_button.setIcon(build_icon(delete_icon))
+    delete_button.setText(translate('OpenLP.Ui', '&Delete'))
+    delete_button.setToolTip(
+        translate('OpenLP.Ui', 'Delete the selected item.'))
+    QtCore.QObject.connect(delete_button,
+        QtCore.SIGNAL(u'clicked()'), parent.onDeleteButtonClicked)
+    return delete_button

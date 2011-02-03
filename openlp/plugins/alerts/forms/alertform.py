@@ -52,8 +52,6 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             QtCore.SIGNAL(u'textChanged(const QString&)'), self.onTextChanged)
         QtCore.QObject.connect(self.newButton, QtCore.SIGNAL(u'clicked()'),
             self.onNewClick)
-        QtCore.QObject.connect(self.deleteButton, QtCore.SIGNAL(u'clicked()'),
-            self.onDeleteClick)
         QtCore.QObject.connect(self.saveButton, QtCore.SIGNAL(u'clicked()'),
             self.onSaveClick)
         QtCore.QObject.connect(self.alertListWidget,
@@ -83,7 +81,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         if self.triggerAlert(unicode(self.alertTextEdit.text())):
             self.close()
 
-    def onDeleteClick(self):
+    def onDeleteButtonClicked(self):
         """
         Deletes the selected item.
         """
