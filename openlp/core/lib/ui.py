@@ -98,3 +98,13 @@ def critical_error_message_box(title=None, message=None, parent=None,
     data = {u'message': message}
     data[u'title'] = title if title else error
     return Receiver.send_message(u'openlp_error_message', data)
+
+def media_item_combo_box(parent, name):
+    """
+    Provide a standard combo box for media items.
+    """
+    combo = QtGui.QComboBox(parent)
+    combo.setObjectName(name)
+    combo.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToMinimumContentsLength)
+    combo.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
+    return combo
