@@ -70,8 +70,13 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         self.setupUi(self)
         self.settingsSection = u'crashreport'
 
+    def exec_(self):
+        self.onDescriptionUpdated()
+        return QtGui.QDialog.exec_(self)
+
     def _createReport(self):
         openlp_version = self.parent().applicationVersion[u'full']
+        description = unicode(self.descriptionTextEdit.toPlainText())
         traceback = unicode(self.exceptionTextEdit.toPlainText())
         system = unicode(translate('OpenLP.ExceptionForm',
             'Platform: %s\n')) % platform.platform()
@@ -90,7 +95,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
                 system = system + u'Desktop: KDE SC\n'
             elif os.environ.get(u'GNOME_DESKTOP_SESSION_ID'):
                 system = system + u'Desktop: GNOME\n'
-        return (openlp_version, traceback, system, libraries)
+        return (openlp_version, description, traceback, system, libraries)
 
     def onSaveReportButtonPressed(self):
         """
@@ -99,6 +104,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         report = unicode(translate('OpenLP.ExceptionForm',
             '**OpenLP Bug Report**\n'
             'Version: %s\n\n'
+            '--- Details of the Exception. ---\n\n%s\n\n '
             '--- Exception Traceback ---\n%s\n'
             '--- System information ---\n%s\n'
             '--- Library Versions ---\n%s\n'))
@@ -129,10 +135,11 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         Opening systems default email client and inserting exception log and
         system informations.
         """
+        attach = None
         body = unicode(translate('OpenLP.ExceptionForm',
             '*OpenLP Bug Report*\n'
             'Version: %s\n\n'
-            '--- Please enter the report below this line. ---\n\n\n'
+            '--- Details of the Exception. ---\n\n%s\n\n '
             '--- Exception Traceback ---\n%s\n'
             '--- System information ---\n%s\n'
             '--- Library Versions ---\n%s\n',
@@ -145,5 +152,20 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             if u':' in line:
                 exception = line.split(u'\n')[-1].split(u':')[0]
         subject = u'Bug report: %s in %s' % (exception, source)
-        mailto(address=u'bugs@openlp.org', subject=subject,
-            body=body % content)
+        if attach:
+            mailto(address=u'bugs@openlp.org', subject=subject,
+                body=body % content, attach=attach)
+        else:
+            mailto(address=u'bugs@openlp.org', subject=subject,
+                body=body % content)
+
+    def onDescriptionUpdated(self):
+        count = int(20 - len(self.descriptionTextEdit.toPlainText()))
+        if count < 0:
+            count = 0
+        self.descriptionWordCount.setText(
+            unicode(translate('OpenLP.ExceptionDialog',
+            'Characters to Enter : %s')) % count )
+
+    def onAttachFileButtonPressed(self):
+        print self.descriptionTextEdit.toPlainText()

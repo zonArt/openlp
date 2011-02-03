@@ -196,6 +196,7 @@ class OpenLP(QtGui.QApplication):
         self.mainWindow.repaint()
         update_check = QtCore.QSettings().value(
             u'general/update check', QtCore.QVariant(True)).toBool()
+        a=c
         if update_check:
             VersionThread(self.mainWindow, app_version).start()
         return self.exec_()

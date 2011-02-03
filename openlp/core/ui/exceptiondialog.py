@@ -46,6 +46,15 @@ class Ui_ExceptionDialog(object):
         self.messageLabel.setObjectName(u'messageLabel')
         self.messageLayout.addWidget(self.messageLabel)
         self.exceptionLayout.addLayout(self.messageLayout)
+        self.descriptionExplanation = QtGui.QLabel(exceptionDialog)
+        self.descriptionExplanation.setObjectName(u'descriptionExplanation')
+        self.exceptionLayout.addWidget(self.descriptionExplanation)
+        self.descriptionTextEdit = QtGui.QPlainTextEdit(exceptionDialog)
+        self.descriptionTextEdit.setObjectName(u'descriptionTextEdit')
+        self.exceptionLayout.addWidget(self.descriptionTextEdit)
+        self.descriptionWordCount = QtGui.QLabel(exceptionDialog)
+        self.descriptionWordCount.setObjectName(u'descriptionWordCount')
+        self.exceptionLayout.addWidget(self.descriptionWordCount)
         self.exceptionTextEdit = QtGui.QPlainTextEdit(exceptionDialog)
         self.exceptionTextEdit.setReadOnly(True)
         self.exceptionTextEdit.setObjectName(u'exceptionTextEdit')
@@ -65,19 +74,31 @@ class Ui_ExceptionDialog(object):
         self.saveReportButton.setObjectName(u'saveReportButton')
         self.exceptionButtonBox.addButton(self.saveReportButton,
             QtGui.QDialogButtonBox.ActionRole)
+        self.attachFileButton = QtGui.QPushButton(exceptionDialog)
+        self.attachFileButton.setIcon(build_icon(u':/general/general_open.png'))
+        self.attachFileButton.setObjectName(u'attachFileButton')
+        self.exceptionButtonBox.addButton(self.attachFileButton,
+            QtGui.QDialogButtonBox.ActionRole)
 
         self.retranslateUi(exceptionDialog)
+        QtCore.QObject.connect(self.descriptionTextEdit,
+            QtCore.SIGNAL(u'textChanged()'), self.onDescriptionUpdated)
         QtCore.QObject.connect(self.exceptionButtonBox,
             QtCore.SIGNAL(u'rejected()'), exceptionDialog.reject)
         QtCore.QObject.connect(self.sendReportButton,
             QtCore.SIGNAL(u'pressed()'), self.onSendReportButtonPressed)
         QtCore.QObject.connect(self.saveReportButton,
             QtCore.SIGNAL(u'pressed()'), self.onSaveReportButtonPressed)
+        QtCore.QObject.connect(self.attachFileButton,
+            QtCore.SIGNAL(u'pressed()'), self.onAttachFileButtonPressed)
         QtCore.QMetaObject.connectSlotsByName(exceptionDialog)
 
     def retranslateUi(self, exceptionDialog):
         exceptionDialog.setWindowTitle(
             translate('OpenLP.ExceptionDialog', 'Error Occurred'))
+        self.descriptionExplanation.setText(translate('OpenLP.ExceptionDialog',
+            'Please enter a description of what you were doing to cause this '
+            'error'))
         self.messageLabel.setText(translate('OpenLP.ExceptionDialog', 'Oops! '
             'OpenLP hit a problem, and couldn\'t recover. The text in the box '
             'below contains information that might be helpful to the OpenLP '
@@ -88,3 +109,5 @@ class Ui_ExceptionDialog(object):
             'Send E-Mail'))
         self.saveReportButton.setText(translate('OpenLP.ExceptionDialog',
             'Save to File'))
+        self.attachFileButton.setText(translate('OpenLP.ExceptionDialog',
+            'Attach File'))
