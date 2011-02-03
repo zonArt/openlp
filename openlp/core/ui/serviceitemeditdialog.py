@@ -27,7 +27,8 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, build_icon
-from openlp.core.lib.ui import save_cancel_button_box, delete_push_button
+from openlp.core.lib.ui import save_cancel_button_box, delete_push_button, \
+    up_down_push_button_set
 
 class Ui_ServiceItemEditDialog(object):
     def setupUi(self, serviceItemEditDialog):
@@ -43,13 +44,9 @@ class Ui_ServiceItemEditDialog(object):
         self.deleteButton = delete_push_button(serviceItemEditDialog)
         self.buttonLayout.addWidget(self.deleteButton)
         self.buttonLayout.addStretch()
-        self.upButton = QtGui.QPushButton(serviceItemEditDialog)
-        self.upButton.setIcon(build_icon(u':/services/service_up.png'))
-        self.upButton.setObjectName(u'upButton')
+        self.upButton, self.downButton = up_down_push_button_set(
+            serviceItemEditDialog)
         self.buttonLayout.addWidget(self.upButton)
-        self.downButton = QtGui.QPushButton(serviceItemEditDialog)
-        self.downButton.setIcon(build_icon(u':/services/service_down.png'))
-        self.downButton.setObjectName(u'downButton')
         self.buttonLayout.addWidget(self.downButton)
         self.dialogLayout.addLayout(self.buttonLayout, 0, 1)
         self.dialogLayout.addWidget(

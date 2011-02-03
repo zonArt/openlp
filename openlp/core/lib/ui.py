@@ -123,3 +123,23 @@ def delete_push_button(parent, icon=None):
     QtCore.QObject.connect(delete_button,
         QtCore.SIGNAL(u'clicked()'), parent.onDeleteButtonClicked)
     return delete_button
+
+def up_down_push_button_set(parent):
+    """
+    Return a standard set of two push buttons for up and down use with lists.
+    """
+    up_button = QtGui.QPushButton(parent)
+    up_button.setIcon(build_icon(u':/services/service_up.png'))
+    up_button.setObjectName(u'upButton')
+    up_button.setToolTip(
+        translate('OpenLP.Ui', 'Move selection up one position.'))
+    down_button = QtGui.QPushButton(parent)
+    down_button.setIcon(build_icon(u':/services/service_down.png'))
+    down_button.setObjectName(u'downButton')
+    down_button.setToolTip(
+        translate('OpenLP.Ui', 'Move selection down one position.'))
+    QtCore.QObject.connect(up_button,
+        QtCore.SIGNAL(u'clicked()'), parent.onUpButtonClicked)
+    QtCore.QObject.connect(down_button,
+        QtCore.SIGNAL(u'clicked()'), parent.onDownButtonClicked)
+    return up_button, down_button

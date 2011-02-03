@@ -27,7 +27,8 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate
-from openlp.core.lib.ui import save_cancel_button_box, delete_push_button
+from openlp.core.lib.ui import save_cancel_button_box, delete_push_button, \
+    up_down_push_button_set
 
 class Ui_CustomEditDialog(object):
     def setupUi(self, customEditDialog):
@@ -67,13 +68,9 @@ class Ui_CustomEditDialog(object):
         self.deleteButton = delete_push_button(customEditDialog)
         self.buttonLayout.addWidget(self.deleteButton)
         self.buttonLayout.addStretch()
-        self.upButton = QtGui.QPushButton(customEditDialog)
-        self.upButton.setIcon(build_icon(u':/services/service_up.png'))
-        self.upButton.setObjectName(u'upButton')
+        self.upButton, self.downButton = up_down_push_button_set(
+            customEditDialog)
         self.buttonLayout.addWidget(self.upButton)
-        self.downButton = QtGui.QPushButton(customEditDialog)
-        self.downButton.setIcon(build_icon(u':/services/service_down.png'))
-        self.downButton.setObjectName(u'downButton')
         self.buttonLayout.addWidget(self.downButton)
         self.centralLayout.addLayout(self.buttonLayout)
         self.dialogLayout.addLayout(self.centralLayout)
@@ -101,12 +98,6 @@ class Ui_CustomEditDialog(object):
     def retranslateUi(self, customEditDialog):
         customEditDialog.setWindowTitle(
             translate('CustomPlugin.EditCustomForm', 'Edit Custom Slides'))
-        self.upButton.setToolTip(
-            translate('CustomPlugin.EditCustomForm', 'Move slide up one '
-            'position.'))
-        self.downButton.setToolTip(
-            translate('CustomPlugin.EditCustomForm', 'Move slide down one '
-            'position.'))
         self.titleLabel.setText(
             translate('CustomPlugin.EditCustomForm', '&Title:'))
         self.addButton.setText(
