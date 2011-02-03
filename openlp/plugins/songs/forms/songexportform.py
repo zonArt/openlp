@@ -32,7 +32,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, SettingsManager, translate
-from openlp.core.ui import criticalErrorMessageBox
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard
 from openlp.plugins.songs.lib.db import Song
 from openlp.plugins.songs.lib.openlyricsexport import OpenLyricsExport
@@ -231,14 +231,14 @@ class SongExportForm(OpenLPWizard):
             return True
         elif self.currentPage() == self.sourcePage:
             if not self.selectedListWidget.count():
-                criticalErrorMessageBox(
+                critical_error_message_box(
                     translate('SongsPlugin.ExportWizardForm',
                     'No Song Selected'),
                     translate('SongsPlugin.ExportWizardForm',
                     'You need to add at least one Song to export.'))
                 return False
             elif not self.directoryLineEdit.text():
-                criticalErrorMessageBox(
+                critical_error_message_box(
                     translate('SongsPlugin.ExportWizardForm',
                     'No Save Location specified'),
                     translate('SongsPlugin.ExportWizardForm',
