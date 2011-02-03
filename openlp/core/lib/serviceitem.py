@@ -59,6 +59,7 @@ class ItemCapabilities(object):
     OnLoadUpdate = 8
     AddIfNewItem = 9
     ProvidesOwnDisplay = 10
+    AllowsDetailedTitleDisplay = 11
 
 
 class ServiceItem(object):
@@ -313,6 +314,20 @@ class ServiceItem(object):
                 self.add_from_command(
                     path, text_image[u'title'], text_image[u'image'] )
         self._new_item()
+
+    def get_display_title(self):
+        """
+        Returns the title of the service item.
+        """
+        if self.is_text():
+            return self.title
+        else:
+            if ItemCapabilities.AllowsDetailedTitleDisplay in self.capabilities:
+                return self._raw_frames[0][u'title']
+            elif len(self._raw_frames) > 1:
+                return self.title
+            else:
+                return self._raw_frames[0][u'title']
 
     def merge(self, other):
         """

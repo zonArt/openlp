@@ -315,7 +315,7 @@ def check_directory_exists(dir):
     ``dir``
         Theme directory to make sure exists
     """
-    log.debug(u'check_directory_exists')
+    log.debug(u'check_directory_exists %s' % dir)
     if not os.path.exists(dir):
         os.makedirs(dir)
 
