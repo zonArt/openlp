@@ -362,7 +362,7 @@ class SongExportForm(OpenLPWizard):
 
     def onDirectoryButtonClicked(self):
         """
-        Called when click on the *directoryButton*. Opens a dialog and writes
+        Called when the *directoryButton* was clicked. Opens a dialog and writes
         the path to *directoryLineEdit*.
         """
         path = unicode(QtGui.QFileDialog.getExistingDirectory(self,
