@@ -159,66 +159,43 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
     def checkAuthor(self, new_author, edit=False):
         """
         Returns *False* if the given Author already exists, otherwise *True*.
-
-        ``edit``
-            If we edit an item, this should be *True*.
         """
         authors = self.manager.get_all_objects(Author,
             and_(Author.first_name == new_author.first_name,
                 Author.last_name == new_author.last_name,
                 Author.display_name == new_author.display_name))
-        # Check if this author already exists.
-        if len(authors) > 0:
-            # If we edit an existing Author, we need to make sure that we do
-            # not return False when nothing has changed.
-            if edit:
-                for author in authors:
-                    if author.id != new_author.id:
-                        return False
-                return True
-            else:
-                return False
-        else:
-            return True
+        return self.__checkObject(authors, new_author, edit)
 
     def checkTopic(self, new_topic, edit=False):
         """
         Returns *False* if the given Topic already exists, otherwise *True*.
-
-        ``edit``
-            If we edit an item, this should be *True*.
         """
         topics = self.manager.get_all_objects(Topic,
             Topic.name == new_topic.name)
-        if len(topics) > 0:
-            # If we edit an existing Topic, we need to make sure that we do
-            # not return False when nothing has changed.
-            if edit:
-                for topic in topics:
-                    if topic.id != new_topic.id:
-                        return False
-                return True
-            else:
-                return False
-        else:
-            return True
+        return self.__checkObject(topics, new_topic, edit)
 
     def checkBook(self, new_book, edit=False):
         """
         Returns *False* if the given Topic already exists, otherwise *True*.
-
-        ``edit``
-            If we edit an item, this should be *True*.
         """
         books = self.manager.get_all_objects(Book,
             and_(Book.name == new_book.name,
                 Book.publisher == new_book.publisher))
-        if len(books) > 0:
-            # If we edit an existing Book, we need to make sure that we do
+        return self.__checkObject(books, new_book, edit)
+
+    def __checkObject(self, objects, new_object, edit):
+        """
+        Utility method to check for an existing object.
+
+        ``edit``
+            If we edit an item, this should be *True*.
+        """
+        if len(objects) > 0:
+            # If we edit an existing object, we need to make sure that we do
             # not return False when nothing has changed.
             if edit:
-                for book in books:
-                    if book.id != new_book.id:
+                for object in objects:
+                    if object.id != new_object.id:
                         return False
                 return True
             else:
