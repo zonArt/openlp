@@ -217,6 +217,7 @@ class OpenLP(QtGui.QApplication):
         Sets the Busy Cursor for the Application
         """
         self.setOverrideCursor(QtCore.Qt.BusyCursor)
+        self.processEvents()
 
     def setNormalCursor(self):
         """

@@ -146,7 +146,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             'Please add the information that bug reports are favoured written '
             'in English.'))
         content = self._createReport()
-        for line in content[1].split(u'\n'):
+        for line in content[2].split(u'\n'):
             if re.search(r'[/\\]openlp[/\\]', line):
                 source = re.sub(r'.*[/\\]openlp[/\\](.*)".*', r'\1', line)
             if u':' in line:
