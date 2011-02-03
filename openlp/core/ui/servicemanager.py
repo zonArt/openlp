@@ -506,6 +506,8 @@ class ServiceManager(QtGui.QWidget):
                 if filePath.endswith(u'osd'):
                     p_file = filePath
             if 'p_file' in locals():
+                Receiver.send_message(u'cursor_busy')
+                Receiver.send_message(u'openlp_process_events')
                 fileTo = open(p_file, u'r')
                 items = cPickle.load(fileTo)
                 fileTo.close()
@@ -520,6 +522,7 @@ class ServiceManager(QtGui.QWidget):
                         Receiver.send_message(u'%s_service_load' %
                             serviceItem.name.lower(), serviceItem)
                 delete_file(p_file)
+                Receiver.send_message(u'cursor_normal')
             else:
                 critical_error_message_box(
                     message=translate('OpenLP.ServiceManager',
@@ -536,9 +539,7 @@ class ServiceManager(QtGui.QWidget):
         self.mainwindow.addRecentFile(fileName)
         self.setModified(False)
         QtCore.QSettings(). \
-            setValue(u'service/last file',QtCore.QVariant(fileName))
-        # Refresh Plugin lists
-        Receiver.send_message(u'plugin_list_refresh')
+            setValue(u'service/last file', QtCore.QVariant(fileName))
 
     def loadLastFile(self):
         """

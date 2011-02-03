@@ -95,8 +95,6 @@ class SongMediaItem(MediaManagerItem):
         self.searchLayout.addLayout(self.searchButtonLayout)
         self.pageLayout.addWidget(self.searchWidget)
         # Signals and slots
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'plugin_list_refresh'), self.onSearchTextButtonClick)
         QtCore.QObject.connect(self.searchTextEdit,
             QtCore.SIGNAL(u'returnPressed()'), self.onSearchTextButtonClick)
         QtCore.QObject.connect(self.searchTextButton,
@@ -433,6 +431,7 @@ class SongMediaItem(MediaManagerItem):
             if add_song:
                 if self.addSongFromService:
                     editId = self.openLyrics.xml_to_song(item.xml_version)
+                    self.onSearchTextButtonClick()
             # Update service with correct song id.
             if editId:
                 Receiver.send_message(u'service_item_update',
