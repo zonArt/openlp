@@ -27,32 +27,17 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, build_icon
+from openlp.core.ui.wizard import addWelcomePage
 
 class Ui_ThemeWizard(object):
-    def setupUi(self, ThemeWizard):
-        ThemeWizard.setObjectName(u'OpenLP.ThemeWizard')
-        ThemeWizard.setModal(True)
-        ThemeWizard.setWizardStyle(QtGui.QWizard.ModernStyle)
-        ThemeWizard.setOptions(
-            QtGui.QWizard.IndependentPages |
+    def setupUi(self, themeWizard):
+        themeWizard.setObjectName(u'OpenLP.ThemeWizard')
+        themeWizard.setModal(True)
+        themeWizard.setWizardStyle(QtGui.QWizard.ModernStyle)
+        themeWizard.setOptions(QtGui.QWizard.IndependentPages |
             QtGui.QWizard.NoBackButtonOnStartPage)
         # Welcome Page
-        self.welcomePage = QtGui.QWizardPage()
-        self.welcomePage.setPixmap(QtGui.QWizard.WatermarkPixmap,
-            QtGui.QPixmap(u':/wizards/wizard_createtheme.bmp'))
-        self.welcomePage.setObjectName(u'WelcomePage')
-        self.welcomeLayout = QtGui.QVBoxLayout(self.welcomePage)
-        self.welcomeLayout.setObjectName(u'WelcomeLayout')
-        self.titleLabel = QtGui.QLabel(self.welcomePage)
-        self.titleLabel.setObjectName(u'TitleLabel')
-        self.welcomeLayout.addWidget(self.titleLabel)
-        self.welcomeLayout.addSpacing(40)
-        self.informationLabel = QtGui.QLabel(self.welcomePage)
-        self.informationLabel.setWordWrap(True)
-        self.informationLabel.setObjectName(u'InformationLabel')
-        self.welcomeLayout.addWidget(self.informationLabel)
-        self.welcomeLayout.addStretch()
-        ThemeWizard.addPage(self.welcomePage)
+        addWelcomePage(themeWizard, u':/wizards/wizard_createtheme.bmp')
         # Background Page
         self.backgroundPage = QtGui.QWizardPage()
         self.backgroundPage.setObjectName(u'BackgroundPage')
@@ -142,7 +127,7 @@ class Ui_ThemeWizard(object):
             self.imageSpacer)
         self.backgroundStack.addWidget(self.imageWidget)
         self.backgroundLayout.addLayout(self.backgroundStack)
-        ThemeWizard.addPage(self.backgroundPage)
+        themeWizard.addPage(self.backgroundPage)
         # Main Area Page
         self.mainAreaPage = QtGui.QWizardPage()
         self.mainAreaPage.setObjectName(u'MainAreaPage')
@@ -225,7 +210,7 @@ class Ui_ThemeWizard(object):
         self.shadowSizeSpinBox.setObjectName(u'ShadowSizeSpinBox')
         self.shadowLayout.addWidget(self.shadowSizeSpinBox)
         self.mainAreaLayout.addRow(self.shadowCheckBox, self.shadowLayout)
-        ThemeWizard.addPage(self.mainAreaPage)
+        themeWizard.addPage(self.mainAreaPage)
         # Footer Area Page
         self.footerAreaPage = QtGui.QWizardPage()
         self.footerAreaPage.setObjectName(u'FooterAreaPage')
@@ -251,7 +236,7 @@ class Ui_ThemeWizard(object):
         self.footerSizeSpinBox.setObjectName(u'FooterSizeSpinBox')
         self.footerAreaLayout.addRow(self.footerSizeLabel,
             self.footerSizeSpinBox)
-        ThemeWizard.addPage(self.footerAreaPage)
+        themeWizard.addPage(self.footerAreaPage)
         # Alignment Page
         self.alignmentPage = QtGui.QWizardPage()
         self.alignmentPage.setObjectName(u'AlignmentPage')
@@ -276,7 +261,7 @@ class Ui_ThemeWizard(object):
         self.transitionsCheckBox.setObjectName(u'TransitionsCheckBox')
         self.alignmentLayout.addRow(self.transitionsLabel,
             self.transitionsCheckBox)
-        ThemeWizard.addPage(self.alignmentPage)
+        themeWizard.addPage(self.alignmentPage)
         # Area Position Page
         self.areaPositionPage = QtGui.QWizardPage()
         self.areaPositionPage.setObjectName(u'AreaPositionPage')
@@ -352,7 +337,7 @@ class Ui_ThemeWizard(object):
         self.footerPositionLayout.addRow(self.footerHeightLabel,
             self.footerHeightSpinBox)
         self.areaPositionLayout.addWidget(self.footerPositionGroupBox)
-        ThemeWizard.addPage(self.areaPositionPage)
+        themeWizard.addPage(self.areaPositionPage)
         # Preview Page
         self.previewPage = QtGui.QWizardPage()
         self.previewPage.setObjectName(u'PreviewPage')
@@ -381,9 +366,8 @@ class Ui_ThemeWizard(object):
         self.previewBoxLabel.setObjectName(u'PreviewBoxLabel')
         self.previewAreaLayout.addWidget(self.previewBoxLabel)
         self.previewLayout.addWidget(self.previewArea)
-        ThemeWizard.addPage(self.previewPage)
-
-        self.retranslateUi(ThemeWizard)
+        themeWizard.addPage(self.previewPage)
+        self.retranslateUi(themeWizard)
         QtCore.QObject.connect(self.backgroundComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'), self.backgroundStack,
             QtCore.SLOT(u'setCurrentIndex(int)'))
@@ -423,10 +407,10 @@ class Ui_ThemeWizard(object):
         QtCore.QObject.connect(self.footerPositionCheckBox,
             QtCore.SIGNAL(u'toggled(bool)'), self.footerHeightSpinBox,
             QtCore.SLOT(u'setDisabled(bool)'))
-        QtCore.QMetaObject.connectSlotsByName(ThemeWizard)
+        QtCore.QMetaObject.connectSlotsByName(themeWizard)
 
-    def retranslateUi(self, ThemeWizard):
-        ThemeWizard.setWindowTitle(
+    def retranslateUi(self, themeWizard):
+        themeWizard.setWindowTitle(
             translate('OpenLP.ThemeWizard', 'Theme Wizard'))
         self.titleLabel.setText(
             u'<span style="font-size:14pt; font-weight:600;">%s</span>' % \

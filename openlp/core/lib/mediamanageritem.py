@@ -103,7 +103,6 @@ class MediaManagerItem(QtGui.QWidget):
             self.icon = build_icon(icon)
         self.toolbar = None
         self.remoteTriggered = None
-        self.serviceItemIconName = None
         self.singleServiceItem = True
         self.pageLayout = QtGui.QVBoxLayout(self)
         self.pageLayout.setSpacing(0)
@@ -246,7 +245,7 @@ class MediaManagerItem(QtGui.QWidget):
             preview_string[u'title'],
             preview_string[u'tooltip'],
             u':/general/general_preview.png', self.onPreviewClick)
-        ## Live  Button ##
+        ## Live Button ##
         live_string = self.plugin.getString(StringContent.Live)
         self.addToolbarButton(
             live_string[u'title'],
@@ -508,7 +507,7 @@ class MediaManagerItem(QtGui.QWidget):
                         'No Service Item Selected'),
                     translate('OpenLP.MediaManagerItem',
                         'You must select an existing service item to add to.'))
-            elif self.title.lower() == serviceItem.name.lower():
+            elif self.plugin.name.lower() == serviceItem.name.lower():
                 self.generateSlideData(serviceItem)
                 self.parent.serviceManager.addServiceItem(serviceItem,
                     replace=True)
@@ -525,10 +524,7 @@ class MediaManagerItem(QtGui.QWidget):
         Common method for generating a service item
         """
         serviceItem = ServiceItem(self.parent)
-        if self.serviceItemIconName:
-            serviceItem.add_icon(self.serviceItemIconName)
-        else:
-            serviceItem.add_icon(self.parent.icon_path)
+        serviceItem.add_icon(self.parent.icon_path)
         if self.generateSlideData(serviceItem, item, xmlVersion):
             return serviceItem
         else:
@@ -540,3 +536,25 @@ class MediaManagerItem(QtGui.QWidget):
         individual service items need to be processed by the plugins
         """
         pass
+
+    def _getIdOfItemToGenerate(self, item, remoteItem):
+        """
+        Utility method to check items being submitted for slide generation.
+
+        ``item``
+            The item to check.
+
+        ``remoteItem``
+            The id to assign if the slide generation was remotely triggered.
+        """
+        if item is None:
+            if self.remoteTriggered is None:
+                item = self.listView.currentItem()
+                if item is None:
+                    return False
+                item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            else:
+                item_id = remoteItem
+        else:
+            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        return item_id

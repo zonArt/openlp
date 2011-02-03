@@ -178,8 +178,8 @@ class ServiceManager(QtGui.QWidget):
             translate('OpenLP.ServiceManager', 'Move &down'),
             None,
             translate('OpenLP.ServiceManager',
-            'Moves the selection up the window.'),
-            self.onMoveSelectionDown, shortcut=QtCore.Qt.Key_Up)
+            'Moves the selection down the window.'),
+            self.onMoveSelectionDown, shortcut=QtCore.Qt.Key_Down)
         self.serviceManagerList.down.setVisible(False)
         self.serviceManagerList.up = self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', 'Move up'),
@@ -526,7 +526,7 @@ class ServiceManager(QtGui.QWidget):
                     'File is not a valid service.'))
                 log.exception(u'File contains no service data')
         except (IOError, NameError):
-            log.exception(u'Problem loading a service file')
+            log.exception(u'Problem loading service file %s' % fileName)
         finally:
             if fileTo:
                 fileTo.close()
@@ -833,7 +833,7 @@ class ServiceManager(QtGui.QWidget):
             else:
                 treewidgetitem.setIcon(0,
                     build_icon(u':/general/general_delete.png'))
-            treewidgetitem.setText(0, serviceitem.title)
+            treewidgetitem.setText(0, serviceitem.get_display_title())
             treewidgetitem.setToolTip(0, serviceitem.notes)
             treewidgetitem.setData(0, QtCore.Qt.UserRole,
                 QtCore.QVariant(item[u'order']))
@@ -856,7 +856,7 @@ class ServiceManager(QtGui.QWidget):
         one it allows the item to be displayed.
         """
         if serviceItem.is_command():
-            type = serviceItem._raw_frames[0][u'title'].split(u'.')[1]
+            type = serviceItem._raw_frames[0][u'title'].split(u'.')[-1]
             if type not in self.suffixes:
                 serviceItem.is_valid = False
 
@@ -1176,9 +1176,52 @@ class ServiceManager(QtGui.QWidget):
         for item in self.serviceItems:
             service_item = item[u'service_item']
             data_item = {}
-            data_item[u'title'] = unicode(service_item.title)
+            data_item[u'title'] = unicode(service_item.get_display_title())
             data_item[u'plugin'] = unicode(service_item.name)
             data_item[u'notes'] = unicode(service_item.notes)
             data_item[u'selected'] = (item == curitem)
             data.append(data_item)
         Receiver.send_message(u'servicemanager_list_response', data)
+
+    def printServiceOrder(self):
+        """
+        Print a Service Order Sheet.
+        """
+        if not self.serviceItems:
+            criticalErrorMessageBox(
+                message=translate('OpenLP.ServiceManager',
+                'There is no service item in this service.'))
+            return
+        printDialog = QtGui.QPrintDialog()
+        if not printDialog.exec_():
+            return
+        text = u'<h2>%s</h2>' % translate('OpenLP.ServiceManager',
+            'Service Order Sheet')
+        for item in self.serviceItems:
+            item = item[u'service_item']
+            # add the title
+            text += u'<h4><img src="%s" /> %s</h4>' % (item.icon,
+                item.get_display_title())
+            if not QtCore.QSettings().value(u'advanced' +
+                u'/detailed service print', QtCore.QVariant(True)).toBool():
+                continue
+            if item.is_text():
+                # Add the text of the service item.
+                for slide in item.get_frames():
+                    text += u'<p>' + slide[u'text'] + u'</p>'
+            elif item.is_image():
+                # Add the image names of the service item.
+                text += u'<ol>'
+                for slide in range(len(item.get_frames())):
+                    text += u'<li><p>%s</p></li>' % item.get_frame_title(slide)
+                text += u'</ol>'
+            if item.foot_text:
+                # add footer
+                text += u'<p>%s</p>' % item.foot_text
+            if item.notes:
+                # add notes
+                text += u'<p><b>%s</b> %s</p>' % (translate(
+                    'OpenLP.ServiceManager', 'Notes:'), item.notes)
+        serviceDocument = QtGui.QTextDocument()
+        serviceDocument.setHtml(text)
+        serviceDocument.print_(printDialog.printer())

@@ -206,10 +206,16 @@ class BibleDB(QtCore.QObject, Manager):
         """
         self.wizard = wizard
         self.create_meta(u'dbversion', u'2')
+        self.setup_testaments()
+        return self.name
+
+    def setup_testaments(self):
+        """
+        Initialise the testaments section of a bible with suitable defaults.
+        """
         self.save_object(Testament.populate(name=u'Old Testament'))
         self.save_object(Testament.populate(name=u'New Testament'))
         self.save_object(Testament.populate(name=u'Apocrypha'))
-        return self.name
 
     def create_book(self, name, abbrev, testament=1):
         """

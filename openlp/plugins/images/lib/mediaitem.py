@@ -96,7 +96,6 @@ class ImageMediaItem(MediaManagerItem):
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
-        self.listView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.listView.addAction(self.replaceAction)
 
     def addEndHeaderBar(self):
@@ -143,7 +142,7 @@ class ImageMediaItem(MediaManagerItem):
         items = self.listView.selectedIndexes()
         if items:
             service_item.title = unicode(
-                translate('ImagePlugin.MediaItem', 'Image(s)'))
+                translate('ImagePlugin.MediaItem', 'Images'))
             service_item.add_capability(ItemCapabilities.AllowsMaintain)
             service_item.add_capability(ItemCapabilities.AllowsPreview)
             service_item.add_capability(ItemCapabilities.AllowsLoop)

@@ -26,7 +26,7 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import translate
+from openlp.core.lib import translate, Receiver
 from openlp.plugins.songusage.lib.db import SongUsageItem
 from songusagedeletedialog import Ui_SongUsageDeleteDialog
 
@@ -55,4 +55,9 @@ class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
             deleteDate = self.deleteCalendar.selectedDate().toPyDate()
             self.manager.delete_all_objects(SongUsageItem,
                 SongUsageItem.usagedate <= deleteDate)
+            Receiver.send_message(u'openlp_information_message', {
+                u'title': translate('SongUsagePlugin.SongUsageDeleteForm',
+                'Deletion Successful'),
+                u'message': translate('SongUsagePlugin.SongUsageDeleteForm',
+                'All requested data has been deleted successfully. ')})
         self.close()

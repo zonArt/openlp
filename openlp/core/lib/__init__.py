@@ -315,9 +315,23 @@ def check_directory_exists(dir):
     ``dir``
         Theme directory to make sure exists
     """
-    log.debug(u'check_directory_exists')
+    log.debug(u'check_directory_exists %s' % dir)
     if not os.path.exists(dir):
         os.makedirs(dir)
+
+def save_cancel_button_box(parent):
+    """
+    Return a standard dialog button box with save and cancel buttons.
+    """
+    button_box = QtGui.QDialogButtonBox(parent)
+    button_box.setStandardButtons(QtGui.QDialogButtonBox.Save |
+        QtGui.QDialogButtonBox.Cancel)
+    button_box.setObjectName(u'%sButtonBox' % parent)
+    QtCore.QObject.connect(button_box, QtCore.SIGNAL(u'accepted()'),
+        parent.accept)
+    QtCore.QObject.connect(button_box, QtCore.SIGNAL(u'rejected()'),
+        parent.reject)
+    return button_box
 
 from theme import ThemeLevel, ThemeXML, BackgroundGradientType, \
     BackgroundType, HorizontalType, VerticalType

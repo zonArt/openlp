@@ -136,15 +136,15 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         if preview:
             self.previewButton.setVisible(True)
 
-    def closePressed(self):
+    def reject(self):
         Receiver.send_message(u'custom_edit_clear')
-        self.close()
+        QtGui.QDialog.reject(self)
 
     def accept(self):
         log.debug(u'accept')
         if self.saveCustom():
             Receiver.send_message(u'custom_load_list')
-            self.close()
+            QtGui.QDialog.accept(self)
 
     def saveCustom(self):
         """

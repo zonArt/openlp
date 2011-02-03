@@ -42,6 +42,7 @@ class PluginStatus(object):
     Inactive = 0
     Disabled = -1
 
+
 class StringContent(object):
     Name = u'name'
     Import = u'import'
@@ -53,6 +54,7 @@ class StringContent(object):
     Live = u'live'
     Service = u'service'
     VisibleName = u'visible_name'
+
 
 class Plugin(QtCore.QObject):
     """
