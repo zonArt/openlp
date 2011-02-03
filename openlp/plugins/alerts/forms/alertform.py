@@ -44,22 +44,24 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         self.item_id = None
         QtGui.QDialog.__init__(self, plugin.formparent)
         self.setupUi(self)
-        QtCore.QObject.connect(self.displayButton, QtCore.SIGNAL(u'clicked()'),
-            self.onDisplayClicked)
+        QtCore.QObject.connect(self.displayButton,
+            QtCore.SIGNAL(u'clicked()'), self.onDisplayClicked)
         QtCore.QObject.connect(self.displayCloseButton,
             QtCore.SIGNAL(u'clicked()'), self.onDisplayCloseClicked)
         QtCore.QObject.connect(self.alertTextEdit,
             QtCore.SIGNAL(u'textChanged(const QString&)'), self.onTextChanged)
-        QtCore.QObject.connect(self.newButton, QtCore.SIGNAL(u'clicked()'),
-            self.onNewClick)
-        QtCore.QObject.connect(self.deleteButton, QtCore.SIGNAL(u'clicked()'),
-            self.onDeleteClick)
-        QtCore.QObject.connect(self.saveButton, QtCore.SIGNAL(u'clicked()'),
-            self.onSaveClick)
+        QtCore.QObject.connect(self.newButton,
+            QtCore.SIGNAL(u'clicked()'), self.onNewClick)
+        QtCore.QObject.connect(self.deleteButton,
+            QtCore.SIGNAL(u'clicked()'), self.onDeleteClick)
+        QtCore.QObject.connect(self.saveButton,
+            QtCore.SIGNAL(u'clicked()'), self.onSaveClick)
         QtCore.QObject.connect(self.alertListWidget,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onDoubleClick)
         QtCore.QObject.connect(self.alertListWidget,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSingleClick)
+        QtCore.QObject.connect(self.alertListWidget,
+            QtCore.SIGNAL(u'currentRowChanged(int)'), self.onCurrentRowChanged)
 
     def loadList(self):
         """
@@ -72,8 +74,6 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             item_name = QtGui.QListWidgetItem(alert.text)
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(alert.id))
             self.alertListWidget.addItem(item_name)
-        self.saveButton.setEnabled(False)
-        self.deleteButton.setEnabled(False)
 
     def onDisplayClicked(self):
         if self.triggerAlert(unicode(self.alertTextEdit.text())):
@@ -95,8 +95,6 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             self.alertListWidget.takeItem(row)
         self.item_id = None
         self.alertTextEdit.setText(u'')
-        self.saveButton.setEnabled(False)
-        self.deleteButton.setEnabled(False)
 
     def onNewClick(self):
         if len(self.alertTextEdit.text()) == 0:
@@ -142,7 +140,6 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             self.alertTextEdit.setText(unicode(bitem.text()))
             self.item_id = (bitem.data(QtCore.Qt.UserRole)).toInt()[0]
         self.saveButton.setEnabled(False)
-        self.deleteButton.setEnabled(True)
 
     def onSingleClick(self):
         """
@@ -158,7 +155,6 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         if unicode(self.alertTextEdit.text()).find(u'<>') == -1:
             self.parameterEdit.setText(u'')
         self.saveButton.setEnabled(False)
-        self.deleteButton.setEnabled(True)
 
     def triggerAlert(self, text):
         """
@@ -194,3 +190,23 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             self.parent.alertsmanager.displayAlert(text)
             return True
         return False
+
+    def onCurrentRowChanged(self, row):
+        """
+        Called when the *alertListWidget*'s current row has been changed. This
+        enables or disables buttons which require an item to act on.
+
+        ``row``
+            The row (int). If there is no current row, the value is -1.
+        """
+        if row == -1:
+            self.displayButton.setEnabled(False)
+            self.displayCloseButton.setEnabled(False)
+            self.saveButton.setEnabled(False)
+            self.deleteButton.setEnabled(False)
+        else:
+            self.displayButton.setEnabled(True)
+            self.displayCloseButton.setEnabled(True)
+            self.deleteButton.setEnabled(True)
+            # We do not need to enable the save button, as it is only enabled
+            # when typing text in the "alertTextEdit".
