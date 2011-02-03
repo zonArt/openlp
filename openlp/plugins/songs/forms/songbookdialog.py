@@ -26,7 +26,8 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, save_cancel_button_box
+from openlp.core.lib import translate
+from openlp.core.lib.ui import save_cancel_button_box
 
 class Ui_SongBookDialog(object):
     def setupUi(self, songBookDialog):

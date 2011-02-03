@@ -26,7 +26,8 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, translate, save_cancel_button_box
+from openlp.core.lib import build_icon, translate
+from openlp.core.lib.ui import save_cancel_button_box
 
 class Ui_CustomEditDialog(object):
     def setupUi(self, customEditDialog):
