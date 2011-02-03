@@ -27,6 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, build_icon
+from openlp.core.lib.ui import save_cancel_button_box
 
 class Ui_ServiceItemEditDialog(object):
     def setupUi(self, serviceItemEditDialog):
@@ -52,12 +53,8 @@ class Ui_ServiceItemEditDialog(object):
         self.downButton.setObjectName(u'downButton')
         self.buttonLayout.addWidget(self.downButton)
         self.dialogLayout.addLayout(self.buttonLayout, 0, 1)
-        self.buttonBox = QtGui.QDialogButtonBox(serviceItemEditDialog)
-        self.buttonBox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Save)
-        self.buttonBox.setObjectName(u'buttonBox')
-        self.dialogLayout.addWidget(self.buttonBox, 1, 0, 1, 2)
-
+        self.dialogLayout.addWidget(
+            save_cancel_button_box(serviceItemEditDialog), 1, 0, 1, 2)
         self.retranslateUi(serviceItemEditDialog)
         QtCore.QMetaObject.connectSlotsByName(serviceItemEditDialog)
 

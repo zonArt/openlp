@@ -92,7 +92,7 @@ class BibleFormat(object):
             return None
 
     @staticmethod
-    def list():
+    def get_formats_list():
         """
         Return a list of the supported Bible formats.
         """

@@ -30,8 +30,8 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    ItemCapabilities, SettingsManager, translate, check_item_selected
-from openlp.core.ui import criticalErrorMessageBox
+    ItemCapabilities, SettingsManager, translate, check_item_selected, Receiver
+from openlp.core.lib.ui import critical_error_message_box
 
 log = logging.getLogger(__name__)
 
@@ -57,7 +57,9 @@ class MediaMediaItem(MediaManagerItem):
             u':/media/media_video.png').toImage()
         MediaManagerItem.__init__(self, parent, self, icon)
         self.singleServiceItem = False
-        self.serviceItemIconName = u':/media/image_clapperboard.png'
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'video_background_replaced'),
+            self.videobackgroundReplaced)
 
     def retranslateUi(self):
         self.OnNewPrompt = translate('MediaPlugin.MediaItem', 'Select Media')
@@ -81,7 +83,6 @@ class MediaMediaItem(MediaManagerItem):
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
-        self.listView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.listView.addAction(self.replaceAction)
 
     def addEndHeaderBar(self):
@@ -99,6 +100,12 @@ class MediaMediaItem(MediaManagerItem):
         self.resetAction.setVisible(False)
         self.parent.liveController.display.resetVideo()
 
+    def videobackgroundReplaced(self):
+        """
+        Triggered by main display on change of serviceitem
+        """
+        self.resetAction.setVisible(False)
+
     def onReplaceClick(self):
         """
         Called to replace Live backgound with the media selected.
@@ -113,7 +120,7 @@ class MediaMediaItem(MediaManagerItem):
                 self.parent.liveController.display.video(filename, 0, True)
                 self.resetAction.setVisible(True)
             else:
-                criticalErrorMessageBox(translate('MediaPlugin.MediaItem',
+                critical_error_message_box(translate('MediaPlugin.MediaItem',
                     'Live Background Error'),
                     unicode(translate('MediaPlugin.MediaItem',
                     'There was a problem replacing your background, '
@@ -137,7 +144,7 @@ class MediaMediaItem(MediaManagerItem):
             return True
         else:
             # File is no longer present
-            criticalErrorMessageBox(
+            critical_error_message_box(
                 translate('MediaPlugin.MediaItem', 'Missing Media File'),
                 unicode(translate('MediaPlugin.MediaItem',
                 'The file %s no longer exists.')) % filename)
