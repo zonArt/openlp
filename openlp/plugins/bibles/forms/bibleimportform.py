@@ -162,6 +162,8 @@ class BibleImportForm(OpenLPWizard):
         self.formatLayout.setItem(1, QtGui.QFormLayout.LabelRole,
             self.formatSpacer)
         self.selectPageLayout.addLayout(self.formatLayout)
+        self.typeSpacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
+            QtGui.QSizePolicy.Minimum)
         self.selectStack = QtGui.QStackedLayout()
         self.selectStack.setObjectName(u'SelectStack')
         self.osisWidget = QtGui.QWidget(self.selectPage)
@@ -181,9 +183,7 @@ class BibleImportForm(OpenLPWizard):
         self.osisBrowseButton.setObjectName(u'OsisBrowseButton')
         self.osisFileLayout.addWidget(self.osisBrowseButton)
         self.osisLayout.addRow(self.osisFileLabel, self.osisFileLayout)
-        self.osisSpacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
-            QtGui.QSizePolicy.Minimum)
-        self.osisLayout.setItem(1, QtGui.QFormLayout.LabelRole, self.osisSpacer)
+        self.osisLayout.setItem(1, QtGui.QFormLayout.LabelRole, self.typeSpacer)
         self.selectStack.addWidget(self.osisWidget)
         self.csvWidget = QtGui.QWidget(self.selectPage)
         self.csvWidget.setObjectName(u'CsvWidget')
@@ -226,9 +226,7 @@ class BibleImportForm(OpenLPWizard):
         self.csvVersesButton.setObjectName(u'CsvVersesButton')
         self.csvVersesLayout.addWidget(self.csvVersesButton)
         self.csvLayout.addRow(self.csvVersesLabel, self.csvVersesLayout)
-        self.csvSpacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
-            QtGui.QSizePolicy.Minimum)
-        self.csvLayout.setItem(3, QtGui.QFormLayout.LabelRole, self.csvSpacer)
+        self.csvLayout.setItem(3, QtGui.QFormLayout.LabelRole, self.typeSpacer)
         self.selectStack.addWidget(self.csvWidget)
         self.openSongWidget = QtGui.QWidget(self.selectPage)
         self.openSongWidget.setObjectName(u'OpenSongWidget')
@@ -248,10 +246,8 @@ class BibleImportForm(OpenLPWizard):
         self.openSongFileLayout.addWidget(self.openSongBrowseButton)
         self.openSongLayout.addRow(self.openSongFileLabel,
             self.openSongFileLayout)
-        self.openSongSpacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
-            QtGui.QSizePolicy.Minimum)
         self.openSongLayout.setItem(1, QtGui.QFormLayout.LabelRole,
-            self.openSongSpacer)
+            self.typeSpacer)
         self.selectStack.addWidget(self.openSongWidget)
         self.webTabWidget = QtGui.QTabWidget(self.selectPage)
         self.webTabWidget.setObjectName(u'WebTabWidget')
@@ -330,10 +326,8 @@ class BibleImportForm(OpenLPWizard):
         self.openlp1DisabledLabel.setWordWrap(True)
         self.openlp1DisabledLabel.setObjectName(u'Openlp1DisabledLabel')
         self.openlp1Layout.addRow(self.openlp1DisabledLabel)
-        self.openlp1Spacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
-            QtGui.QSizePolicy.Minimum)
         self.openlp1Layout.setItem(1, QtGui.QFormLayout.LabelRole,
-            self.openlp1Spacer)
+            self.typeSpacer)
         self.selectStack.addWidget(self.openlp1Widget)
         self.selectPageLayout.addLayout(self.selectStack)
         self.addPage(self.selectPage)
@@ -401,17 +395,17 @@ class BibleImportForm(OpenLPWizard):
         self.formatComboBox.setItemText(4,
             translate('BiblesPlugin.ImportWizardForm', 'openlp.org 1.x'))
         self.openlp1FileLabel.setText(
-            translate('BiblesPlugin.ImportWizardForm', 'File location:'))
+            translate('BiblesPlugin.ImportWizardForm', 'Bible file:'))
         self.osisFileLabel.setText(
-            translate('BiblesPlugin.ImportWizardForm', 'File location:'))
+            translate('BiblesPlugin.ImportWizardForm', 'Bible file:'))
         self.csvTestamentsLabel.setText(
-            translate('BiblesPlugin.ImportWizardForm', 'Testaments location:'))
+            translate('BiblesPlugin.ImportWizardForm', 'Testaments file:'))
         self.csvBooksLabel.setText(
-            translate('BiblesPlugin.ImportWizardForm', 'Books location:'))
+            translate('BiblesPlugin.ImportWizardForm', 'Books file:'))
         self.csvVersesLabel.setText(
-            translate('BiblesPlugin.ImportWizardForm', 'Verse location:'))
+            translate('BiblesPlugin.ImportWizardForm', 'Verses file:'))
         self.openSongFileLabel.setText(
-            translate('BiblesPlugin.ImportWizardForm', 'Bible filename:'))
+            translate('BiblesPlugin.ImportWizardForm', 'Bible file:'))
         self.webSourceLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'Location:'))
         self.webSourceComboBox.setItemText(0,
@@ -462,19 +456,14 @@ class BibleImportForm(OpenLPWizard):
         # Align all QFormLayouts towards each other.
         labelWidth = max(self.formatLabel.minimumSizeHint().width(),
             self.osisFileLabel.minimumSizeHint().width(),
+            self.csvTestamentsLabel.minimumSizeHint().width(),
             self.csvBooksLabel.minimumSizeHint().width(),
             self.csvVersesLabel.minimumSizeHint().width(),
             self.openSongFileLabel.minimumSizeHint().width(),
             self.openlp1FileLabel.minimumSizeHint().width())
         self.formatSpacer.changeSize(labelWidth, 0,
             QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
-        self.osisSpacer.changeSize(labelWidth, 0,
-            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
-        self.csvSpacer.changeSize(labelWidth, 0,
-            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
-        self.openSongSpacer.changeSize(labelWidth, 0,
-            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
-        self.openlp1Spacer.changeSize(labelWidth, 0,
+        self.typeSpacer.changeSize(labelWidth, 0,
             QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
 
     def validateCurrentPage(self):
