@@ -372,7 +372,6 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         Utility method to merge two objects to leave one in the database.
         """
         Receiver.send_message(u'cursor_busy')
-        Receiver.send_message(u'openlp_process_events')
         merge(dbObject)
         reset()
         Receiver.send_message(u'songs_load_list')
