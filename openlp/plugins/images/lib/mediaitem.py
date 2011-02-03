@@ -32,7 +32,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
     ItemCapabilities, SettingsManager, translate, check_item_selected, \
     check_directory_exists, Receiver
-from openlp.core.ui import criticalErrorMessageBox
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file, get_images_filter
 
 log = logging.getLogger(__name__)
@@ -161,7 +161,7 @@ class ImageMediaItem(MediaManagerItem):
                 items.remove(item)
             # We cannot continue, as all images do not exist.
             if not items:
-                criticalErrorMessageBox(
+                critical_error_message_box(
                     translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
                     unicode(translate('ImagePlugin.MediaItem',
                     'The following image(s) no longer exist: %s')) %
@@ -214,7 +214,7 @@ class ImageMediaItem(MediaManagerItem):
                 self.parent.liveController.display.directImage(name, filename)
                 self.resetAction.setVisible(True)
             else:
-                criticalErrorMessageBox(
+                critical_error_message_box(
                     translate('ImagePlugin.MediaItem', 'Live Background Error'),
                     unicode(translate('ImagePlugin.MediaItem',
                     'There was a problem replacing your background, '

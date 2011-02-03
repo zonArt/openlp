@@ -26,10 +26,10 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import save_cancel_button_box, translate
-from servicenotedialog import Ui_ServiceNoteEdit
+from openlp.core.lib import translate
+from openlp.core.lib.ui import save_cancel_button_box
 
-class ServiceNoteForm(QtGui.QDialog, Ui_ServiceNoteEdit):
+class ServiceNoteForm(QtGui.QDialog):
     """
     This is the form that is used to edit the verses of the song.
     """

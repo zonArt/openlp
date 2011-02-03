@@ -26,7 +26,8 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, SpellTextEdit, save_cancel_button_box
+from openlp.core.lib import translate, SpellTextEdit
+from openlp.core.lib.ui import save_cancel_button_box
 
 class Ui_CustomSlideEditDialog(object):
     def setupUi(self, customSlideEditDialog):

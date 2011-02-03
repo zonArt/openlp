@@ -140,25 +140,25 @@ class EasiSlidesImport(SongImport):
         ``song``
             The current song being imported.
         """
-        copyright = []
-        self.__add_copyright_element(copyright, song.Copyright)
-        self.__add_copyright_element(copyright, song.LicenceAdmin1)
-        self.__add_copyright_element(copyright, song.LicenceAdmin2)
-        self.add_copyright(u' '.join(copyright))
+        copyright_list = []
+        self.__add_copyright_element(copyright_list, song.Copyright)
+        self.__add_copyright_element(copyright_list, song.LicenceAdmin1)
+        self.__add_copyright_element(copyright_list, song.LicenceAdmin2)
+        self.add_copyright(u' '.join(copyright_list))
 
-    def __add_copyright_element(self, copyright, element):
+    def __add_copyright_element(self, copyright_list, element):
         """
         Add a piece of copyright to the total copyright information for the
         song.
 
-        ``copyright``
+        ``copyright_list``
             The array to add the information to.
 
         ``element``
             The imported variable to get the data from.
         """
         try:
-            copyright.append(unicode(element).strip())
+            copyright_list.append(unicode(element).strip())
         except UnicodeDecodeError:
             log.exception(u'Unicode error decoding %s' % element)
             self._success = False

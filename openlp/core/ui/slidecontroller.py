@@ -77,14 +77,14 @@ class SlideController(QtGui.QWidget):
         self.selectedRow = 0
         self.serviceItem = None
         self.alertTab = None
-        self.Panel = QtGui.QWidget(parent.ControlSplitter)
+        self.panel = QtGui.QWidget(parent.ControlSplitter)
         self.slideList = {}
         # Layout for holding panel
-        self.panelLayout = QtGui.QVBoxLayout(self.Panel)
+        self.panelLayout = QtGui.QVBoxLayout(self.panel)
         self.panelLayout.setSpacing(0)
         self.panelLayout.setMargin(0)
         # Type label for the top of the slide controller
-        self.typeLabel = QtGui.QLabel(self.Panel)
+        self.typeLabel = QtGui.QLabel(self.panel)
         if self.isLive:
             self.typeLabel.setText(translate('OpenLP.SlideController', 'Live'))
             self.split = 1
@@ -98,7 +98,7 @@ class SlideController(QtGui.QWidget):
         self.typeLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.panelLayout.addWidget(self.typeLabel)
         # Splitter
-        self.splitter = QtGui.QSplitter(self.Panel)
+        self.splitter = QtGui.QSplitter(self.panel)
         self.splitter.setOrientation(QtCore.Qt.Vertical)
         self.panelLayout.addWidget(self.splitter)
         # Actual controller section
@@ -185,13 +185,13 @@ class SlideController(QtGui.QWidget):
                 u'Stop Loop', u':/media/media_stop.png',
                 translate('OpenLP.SlideController', 'Stop continuous loop'),
                 self.onStopLoop)
-            self.DelaySpinBox = QtGui.QSpinBox()
-            self.DelaySpinBox.setMinimum(1)
-            self.DelaySpinBox.setMaximum(180)
-            self.toolbar.addToolbarWidget(u'Image SpinBox', self.DelaySpinBox)
-            self.DelaySpinBox.setSuffix(translate('OpenLP.SlideController',
+            self.delaySpinBox = QtGui.QSpinBox()
+            self.delaySpinBox.setMinimum(1)
+            self.delaySpinBox.setMaximum(180)
+            self.toolbar.addToolbarWidget(u'Image SpinBox', self.delaySpinBox)
+            self.delaySpinBox.setSuffix(translate('OpenLP.SlideController',
                 's'))
-            self.DelaySpinBox.setToolTip(translate('OpenLP.SlideController',
+            self.delaySpinBox.setToolTip(translate('OpenLP.SlideController',
                 'Delay between slides in seconds'))
         else:
             self.toolbar.addToolbarSeparator(u'Close Separator')
@@ -486,7 +486,7 @@ class SlideController(QtGui.QWidget):
         self.onSlideSelected()
 
     def receiveSpinDelay(self, value):
-        self.DelaySpinBox.setValue(int(value))
+        self.delaySpinBox.setValue(int(value))
 
     def enableToolBar(self, item):
         """
@@ -998,7 +998,7 @@ class SlideController(QtGui.QWidget):
         """
         if self.previewListWidget.rowCount() > 1:
             self.timer_id = self.startTimer(
-                int(self.DelaySpinBox.value()) * 1000)
+                int(self.delaySpinBox.value()) * 1000)
             self.toolbar.actions[u'Stop Loop'].setVisible(True)
             self.toolbar.actions[u'Start Loop'].setVisible(False)
 
