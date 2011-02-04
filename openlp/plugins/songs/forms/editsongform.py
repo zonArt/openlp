@@ -139,8 +139,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.books = []
         self.__loadObjects(Book, self.songBookComboBox, self.books)
 
-    def __loadObjects(self, class, combo, cache):
-        objects = self.manager.get_all_objects(class, order_by_ref=class.name)
+    def __loadObjects(self, cls, combo, cache):
+        objects = self.manager.get_all_objects(cls, order_by_ref=cls.name)
         combo.clear()
         combo.addItem(u'')
         for object in objects:
