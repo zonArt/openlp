@@ -42,6 +42,16 @@ class PrintServiceOrderForm(QtGui.QDialog):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi()
         self.retranslateUi()
+        # Load the settings for this dialog.
+        settings = QtCore.QSettings()
+        settings.beginGroup(u'advanced')
+        self.printSlideTextCheckBox.setChecked(settings.value(
+            u'print slide text', QtCore.QVariant(False)).toBool())
+        self.printMetaDataCheckBox.setChecked(settings.value(
+            u'print file meta data', QtCore.QVariant(False)).toBool())
+        self.printNotesCheckBox.setChecked(settings.value(
+            u'print notes', QtCore.QVariant(False)).toBool())
+        settings.endGroup()
 
     def setupUi(self):
         self.dialogLayout = QtGui.QHBoxLayout(self)
@@ -63,9 +73,9 @@ class PrintServiceOrderForm(QtGui.QDialog):
         self.printNotesCheckBox = QtGui.QCheckBox(self)
         self.printNotesCheckBox.setObjectName(u'printNotesCheckBox')
         self.verticalLayout.addWidget(self.printNotesCheckBox)
-        self.metaDataCheckBox = QtGui.QCheckBox(self)
-        self.metaDataCheckBox.setObjectName(u'metaDataCheckBox')
-        self.verticalLayout.addWidget(self.metaDataCheckBox)
+        self.printMetaDataCheckBox = QtGui.QCheckBox(self)
+        self.printMetaDataCheckBox.setObjectName(u'printMetaDataCheckBox')
+        self.verticalLayout.addWidget(self.printMetaDataCheckBox)
         self.verticalLayout.addWidget(save_cancel_button_box(self))
         self.dialogLayout.addLayout(self.verticalLayout)
         QtCore.QMetaObject.connectSlotsByName(self)
@@ -77,7 +87,8 @@ class PrintServiceOrderForm(QtGui.QDialog):
             'OpenLP.PrintServiceOrderForm', 'Include slide text if avaialbe'))
         self.printNotesCheckBox.setText(translate(
             'OpenLP.PrintServiceOrderForm', 'Include service item notes'))
-        self.metaDataCheckBox.setText(translate('OpenLP.PrintServiceOrderForm',
+        self.printMetaDataCheckBox.setText(
+            translate('OpenLP.PrintServiceOrderForm',
             'Include play lenght of media items'))
         self.serviceTitleLabel.setText(translate(
             'OpenLP.PrintServiceOrderForm', 'Service Order Title:'))
@@ -118,7 +129,7 @@ class PrintServiceOrderForm(QtGui.QDialog):
                     text += u'<p><b>%s</b> %s</p>' % (translate(
                         'OpenLP.ServiceManager', 'Notes:'), item.notes)
             # Add play length of media files.
-            if item.is_media() and self.metaDataCheckBox.isChecked():
+            if item.is_media() and self.printMetaDataCheckBox.isChecked():
                 path = os.path.join(item.get_frames()[0][u'path'],
                     item.get_frames()[0][u'title'])
                 if not os.path.isfile(path):
@@ -129,4 +140,14 @@ class PrintServiceOrderForm(QtGui.QDialog):
                     text += u'<p><b>%s</b> %s</p>' % (translate(
                         'OpenLP.ServiceManager', u'Playing time:'),
                         unicode(datetime.timedelta(seconds=length)))
+        # Save the settings for this dialog.
+        settings = QtCore.QSettings()
+        settings.beginGroup(u'advanced')
+        settings.setValue(u'print slide text',
+            QtCore.QVariant(self.printSlideTextCheckBox.isChecked()))
+        settings.setValue(u'print file meta data',
+            QtCore.QVariant(self.printMetaDataCheckBox.isChecked()))
+        settings.setValue(u'print notes',
+            QtCore.QVariant(self.printNotesCheckBox.isChecked()))
+        settings.endGroup()
         return text
