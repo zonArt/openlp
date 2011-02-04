@@ -87,10 +87,10 @@ class Ui_MainWindow(object):
             self.screens, True)
         previewVisible = QtCore.QSettings().value(
             u'user interface/preview panel', QtCore.QVariant(True)).toBool()
-        self.previewController.Panel.setVisible(previewVisible)
+        self.previewController.panel.setVisible(previewVisible)
         liveVisible = QtCore.QSettings().value(u'user interface/live panel',
             QtCore.QVariant(True)).toBool()
-        self.liveController.Panel.setVisible(liveVisible)
+        self.liveController.panel.setVisible(liveVisible)
         # Create menu
         self.MenuBar = QtGui.QMenuBar(mainWindow)
         self.MenuBar.setObjectName(u'MenuBar')
@@ -771,34 +771,29 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Put OpenLP into "Default" view mode.
         """
-        settings = QtCore.QSettings()
-        settings.setValue(u'%s/view mode' % self.generalSettingsSection,
-            u'default')
-        self.setViewMode(True, True, True, True, True)
+        self.setViewMode(True, True, True, True, True, u'default')
 
     def onModeSetupItemClicked(self):
         """
         Put OpenLP into "Setup" view mode.
         """
-        settings = QtCore.QSettings()
-        settings.setValue(u'%s/view mode' % self.generalSettingsSection,
-            u'setup')
-        self.setViewMode(True, True, False, True, False)
+        self.setViewMode(True, True, False, True, False, u'setup')
 
     def onModeLiveItemClicked(self):
         """
         Put OpenLP into "Live" view mode.
         """
-        settings = QtCore.QSettings()
-        settings.setValue(u'%s/view mode' % self.generalSettingsSection,
-            u'live')
-        self.setViewMode(False, True, False, False, True)
+        self.setViewMode(False, True, False, False, True, u'live')
 
     def setViewMode(self, media=True, service=True, theme=True, preview=True,
-        live=True):
+        live=True, mode=u''):
         """
         Set OpenLP to a different view mode.
         """
+        if mode:
+            settings = QtCore.QSettings()
+            settings.setValue(u'%s/view mode' % self.generalSettingsSection,
+                mode)
         self.MediaManagerDock.setVisible(media)
         self.ServiceManagerDock.setVisible(service)
         self.ThemeManagerDock.setVisible(theme)
@@ -939,7 +934,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 True - Visible
                 False - Hidden
         """
-        self.previewController.Panel.setVisible(visible)
+        self.previewController.panel.setVisible(visible)
         QtCore.QSettings().setValue(u'user interface/preview panel',
             QtCore.QVariant(visible))
         self.ViewPreviewPanel.setChecked(visible)
@@ -954,7 +949,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 True - Visible
                 False - Hidden
         """
-        self.liveController.Panel.setVisible(visible)
+        self.liveController.panel.setVisible(visible)
         QtCore.QSettings().setValue(u'user interface/live panel',
             QtCore.QVariant(visible))
         self.ViewLivePanel.setChecked(visible)

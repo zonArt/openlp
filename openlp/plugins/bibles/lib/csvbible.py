@@ -50,14 +50,17 @@ The format of the books file is:
         ...
         40,2,Matthew,Matt
 
-The format of the verses file is:
+There are two acceptable formats of the verses file.  They are:
 
     <book_id>,<chapter_number>,<verse_number>,<verse_text>
+    or
+    <book_name>,<chapter_number>,<verse_number>,<verse_text>
 
     For example:
 
         1,1,1,"In the beginning God created the heaven and the earth."
-        1,1,2,"And the earth was without form, and void; and darkness...."
+        or
+        "Genesis",1,2,"And the earth was without form, and void; and...."
 
 All CSV files are expected to use a comma (',') as the delimeter and double
 quotes ('"') as the quote symbol.
@@ -172,15 +175,22 @@ class CSVBible(BibleDB):
             for line in verse_reader:
                 if self.stop_import_flag:
                     break
-                if book_ptr != book_list[int(line[0])]:
-                    book = self.get_book(book_list[int(line[0])])
+                try:
+                    line_book = book_list[int(line[0])]
+                except ValueError:
+                    line_book = unicode(line[0], details['encoding'])
+                if book_ptr != line_book:
+                    book = self.get_book(line_book)
                     book_ptr = book.name
                     self.wizard.incrementProgressBar(unicode(translate(
                         'BibleDB.Wizard', 'Importing verses from %s...',
                         'Importing verses from <book name>...')) % book.name)
                     self.session.commit()
-                self.create_verse(book.id, line[1], line[2],
-                    unicode(line[3], details['encoding']))
+                try:
+                    verse_text = unicode(line[3], details['encoding'])
+                except UnicodeError:
+                    verse_text = unicode(line[3], u'cp1252')
+                self.create_verse(book.id, line[1], line[2], verse_text)
             self.wizard.incrementProgressBar(translate('BibleDB.Wizard',
                 'Importing verses... done.'))
             Receiver.send_message(u'openlp_process_events')

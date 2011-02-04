@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
     ItemCapabilities, SettingsManager, translate, check_item_selected, Receiver
-from openlp.core.ui import criticalErrorMessageBox
+from openlp.core.lib.ui import critical_error_message_box
 
 log = logging.getLogger(__name__)
 
@@ -120,7 +120,7 @@ class MediaMediaItem(MediaManagerItem):
                 self.parent.liveController.display.video(filename, 0, True)
                 self.resetAction.setVisible(True)
             else:
-                criticalErrorMessageBox(translate('MediaPlugin.MediaItem',
+                critical_error_message_box(translate('MediaPlugin.MediaItem',
                     'Live Background Error'),
                     unicode(translate('MediaPlugin.MediaItem',
                     'There was a problem replacing your background, '
@@ -144,7 +144,7 @@ class MediaMediaItem(MediaManagerItem):
             return True
         else:
             # File is no longer present
-            criticalErrorMessageBox(
+            critical_error_message_box(
                 translate('MediaPlugin.MediaItem', 'Missing Media File'),
                 unicode(translate('MediaPlugin.MediaItem',
                 'The file %s no longer exists.')) % filename)

@@ -146,16 +146,7 @@ class CustomMediaItem(MediaManagerItem):
         raw_footer = []
         slide = None
         theme = None
-        if item is None:
-            if self.remoteTriggered is None:
-                item = self.listView.currentItem()
-                if item is None:
-                    return False
-                item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-            else:
-                item_id = self.remoteCustom
-        else:
-            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        item_id = self._getIdOfItemToGenerate(item, self.remoteCustom)
         service_item.add_capability(ItemCapabilities.AllowsEdit)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
