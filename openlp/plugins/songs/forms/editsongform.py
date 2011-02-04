@@ -30,7 +30,7 @@ import re
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, translate
-from openlp.core.lib.ui import critical_error_message_box
+from openlp.core.lib.ui import add_widget_completer, critical_error_message_box
 from openlp.plugins.songs.forms import EditVerseForm
 from openlp.plugins.songs.lib import SongXML, VerseType
 from openlp.plugins.songs.lib.db import Book, Song, Author, Topic
@@ -129,37 +129,26 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.authorsComboBox.setItemData(
                 row, QtCore.QVariant(author.id))
             self.authors.append(author.display_name)
-        completer = QtGui.QCompleter(self.authors)
-        completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
-        self.authorsComboBox.setCompleter(completer)
+        add_widget_completer(self.authors, self.authorsComboBox)
 
     def loadTopics(self):
-        topics = self.manager.get_all_objects(Topic, order_by_ref=Topic.name)
-        self.topicsComboBox.clear()
-        self.topicsComboBox.addItem(u'')
         self.topics = []
-        for topic in topics:
-            row = self.topicsComboBox.count()
-            self.topicsComboBox.addItem(topic.name)
-            self.topics.append(topic.name)
-            self.topicsComboBox.setItemData(row, QtCore.QVariant(topic.id))
-        completer = QtGui.QCompleter(self.topics)
-        completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
-        self.topicsComboBox.setCompleter(completer)
+        self.__loadObjects(Topic, self.topicsComboBox, self.topics)
 
     def loadBooks(self):
-        books = self.manager.get_all_objects(Book, order_by_ref=Book.name)
-        self.songBookComboBox.clear()
-        self.songBookComboBox.addItem(u'')
         self.books = []
-        for book in books:
-            row = self.songBookComboBox.count()
-            self.songBookComboBox.addItem(book.name)
-            self.books.append(book.name)
-            self.songBookComboBox.setItemData(row, QtCore.QVariant(book.id))
-        completer = QtGui.QCompleter(self.books)
-        completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
-        self.songBookComboBox.setCompleter(completer)
+        self.__loadObjects(Book, self.songBookComboBox, self.books)
+
+    def __loadObjects(self, class, combo, cache):
+        objects = self.manager.get_all_objects(class, order_by_ref=class.name)
+        combo.clear()
+        combo.addItem(u'')
+        for object in objects:
+            row = combo.count()
+            combo.addItem(object.name)
+            cache.append(object.name)
+            combo.setItemData(row, QtCore.QVariant(object.id))
+        add_widget_completer(cache, combo)
 
     def loadThemes(self, theme_list):
         self.themeComboBox.clear()
@@ -168,9 +157,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         for theme in theme_list:
             self.themeComboBox.addItem(theme)
             self.themes.append(theme)
-        completer = QtGui.QCompleter(self.themes)
-        completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
-        self.themeComboBox.setCompleter(completer)
+        add_widget_completer(self.themes, self.themeComboBox)
 
     def newSong(self):
         log.debug(u'New Song')

@@ -30,7 +30,8 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, Receiver, BaseListWithDnD, \
     ItemCapabilities, translate
-from openlp.core.lib.ui import critical_error_message_box, media_item_combo_box
+from openlp.core.lib.ui import add_widget_completer, media_item_combo_box, \
+    critical_error_message_box
 from openlp.plugins.bibles.forms import BibleImportForm
 from openlp.plugins.bibles.lib import get_reference_match
 
@@ -379,9 +380,7 @@ class BibleMediaItem(MediaManagerItem):
                 book_data = bibles[bible].get_books()
                 books = [book.name for book in book_data]
                 books.sort()
-        completer = QtGui.QCompleter(books)
-        completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
-        self.quickSearchEdit.setCompleter(completer)
+        add_widget_completer(books, self.quickSearchEdit)
 
     def onAdvancedVersionComboBox(self):
         self.initialiseBible(
