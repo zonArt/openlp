@@ -1211,7 +1211,8 @@ class ServiceManager(QtGui.QWidget):
                     # Add the image names of the service item.
                     text += u'<ol>'
                     for slide in range(len(item.get_frames())):
-                        text += u'<li><p>%s</p></li>' % item.get_frame_title(slide)
+                        text += u'<li><p>%s</p></li>' % \
+                            item.get_frame_title(slide)
                     text += u'</ol>'
                 if item.foot_text:
                     # add footer
