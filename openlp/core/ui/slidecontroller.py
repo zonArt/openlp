@@ -30,9 +30,10 @@ import os
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
-from openlp.core.ui import HideMode, MainDisplay
 from openlp.core.lib import OpenLPToolbar, Receiver, resize_image, \
     ItemCapabilities, translate
+from openlp.core.lib.ui import shortcut_action
+from openlp.core.ui import HideMode, MainDisplay
 
 log = logging.getLogger(__name__)
 
@@ -390,28 +391,17 @@ class SlideController(QtGui.QWidget):
         self.nextItem.setShortcuts([QtCore.Qt.Key_Down, QtCore.Qt.Key_PageDown])
         self.nextItem.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
         actionList.add_action(self.nextItem, u'Live')
-        self.previousService = QtGui.QAction(translate(
-            'OpenLP.SlideController', 'Previous Service'), parent)
-        self.previousService.setShortcuts([QtCore.Qt.Key_Left, 0])
-        self.previousService.setShortcutContext(
-            QtCore.Qt.WidgetWithChildrenShortcut)
-        QtCore.QObject.connect(self.previousService,
-            QtCore.SIGNAL(u'triggered()'), self.servicePrevious)
+        self.previousService = shortcut_action(parent,
+            translate('OpenLP.SlideController', 'Previous Service'),
+            [QtCore.Qt.Key_Left, 0], self.servicePrevious)
         actionList.add_action(self.previousService, u'Live')
-        self.nextService = QtGui.QAction(translate(
-            'OpenLP.SlideController', 'Next Service'), parent)
-        self.nextService.setShortcuts([QtCore.Qt.Key_Right, 0])
-        self.nextService.setShortcutContext(
-            QtCore.Qt.WidgetWithChildrenShortcut)
-        QtCore.QObject.connect(self.nextService,
-            QtCore.SIGNAL(u'triggered()'), self.serviceNext)
+        self.nextService = shortcut_action(parent,
+            translate('OpenLP.SlideController', 'Next Service'),
+            [QtCore.Qt.Key_Right, 0], self.serviceNext)
         actionList.add_action(self.nextService, u'Live')
-        self.escapeItem = QtGui.QAction(translate(
-            'OpenLP.SlideController', 'Escape Item'), parent)
-        self.escapeItem.setShortcuts([QtCore.Qt.Key_Escape, 0])
-        self.escapeItem.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
-        QtCore.QObject.connect(self.escapeItem,
-            QtCore.SIGNAL(u'triggered()'), self.liveEscape)
+        self.escapeItem = shortcut_action(parent,
+            translate('OpenLP.SlideController', 'Escape Item'),
+            [QtCore.Qt.Key_Escape, 0], self.liveEscape)
         actionList.add_action(self.escapeItem, u'Live')
 
     def liveEscape(self):

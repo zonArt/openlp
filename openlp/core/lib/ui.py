@@ -172,3 +172,13 @@ def icon_action(parent, name, icon, checked=None):
         action = base_action(parent, name)
     action.setIcon(build_icon(icon))
     return action
+
+def shortcut_action(parent, text, shortcuts, function):
+    """
+    Return a shortcut enabled action.
+    """
+    action = QtGui.QAction(text, parent)
+    action.setShortcuts(shortcuts)
+    action.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
+    QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), function)
+    return action
