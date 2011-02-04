@@ -71,6 +71,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         self.settingsSection = u'crashreport'
 
     def exec_(self):
+        self.descriptionTextEdit.setPlainText(u'')
         self.onDescriptionUpdated()
         self.fileAttachment = None
         return QtGui.QDialog.exec_(self)
@@ -136,7 +137,6 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         Opening systems default email client and inserting exception log and
         system informations.
         """
-        attach = None
         body = unicode(translate('OpenLP.ExceptionForm',
             '*OpenLP Bug Report*\n'
             'Version: %s\n\n'
