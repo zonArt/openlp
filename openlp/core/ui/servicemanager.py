@@ -24,9 +24,11 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import os
-import logging
 import cPickle
+import datetime
+import logging
+import mutagen
+import os
 import zipfile
 
 log = logging.getLogger(__name__)
@@ -1188,11 +1190,6 @@ class ServiceManager(QtGui.QWidget):
         """
         Print a Service Order Sheet.
         """
-        if not self.serviceItems:
-            critical_error_message_box(
-                message=translate('OpenLP.ServiceManager',
-                'There is no service item in this service.'))
-            return
         printDialog = QtGui.QPrintDialog()
         if not printDialog.exec_():
             return
@@ -1200,29 +1197,44 @@ class ServiceManager(QtGui.QWidget):
             'Service Order Sheet')
         for item in self.serviceItems:
             item = item[u'service_item']
-            # add the title
+            # Add the title of the service item.
             text += u'<h4><img src="%s" /> %s</h4>' % (item.icon,
                 item.get_display_title())
-            if not QtCore.QSettings().value(u'advanced' +
-                u'/detailed service print', QtCore.QVariant(True)).toBool():
-                continue
-            if item.is_text():
-                # Add the text of the service item.
-                for slide in item.get_frames():
-                    text += u'<p>' + slide[u'text'] + u'</p>'
-            elif item.is_image():
-                # Add the image names of the service item.
-                text += u'<ol>'
-                for slide in range(len(item.get_frames())):
-                    text += u'<li><p>%s</p></li>' % item.get_frame_title(slide)
-                text += u'</ol>'
-            if item.foot_text:
-                # add footer
-                text += u'<p>%s</p>' % item.foot_text
-            if item.notes:
-                # add notes
-                text += u'<p><b>%s</b> %s</p>' % (translate(
-                    'OpenLP.ServiceManager', 'Notes:'), item.notes)
+            # Add slide text of the service item.
+            if QtCore.QSettings().value(u'advanced' +
+                u'/print slide text', QtCore.QVariant(False)).toBool():
+                if item.is_text():
+                    # Add the text of the service item.
+                    for slide in item.get_frames():
+                        text += u'<p>' + slide[u'text'] + u'</p>'
+                elif item.is_image():
+                    # Add the image names of the service item.
+                    text += u'<ol>'
+                    for slide in range(len(item.get_frames())):
+                        text += u'<li><p>%s</p></li>' % item.get_frame_title(slide)
+                    text += u'</ol>'
+                if item.foot_text:
+                    # add footer
+                    text += u'<p>%s</p>' % item.foot_text
+            # Add service items' notes.
+            if QtCore.QSettings().value(u'advanced' +
+                u'/print notes', QtCore.QVariant(False)).toBool():
+                if item.notes:
+                    text += u'<p><b>%s</b> %s</p>' % (translate(
+                        'OpenLP.ServiceManager', 'Notes:'), item.notes)
+            # Add play length of media files.
+            if item.is_media() and QtCore.QSettings().value(u'advanced' +
+                u'/print file meta data', QtCore.QVariant(False)).toBool():
+                path = os.path.join(item.get_frames()[0][u'path'],
+                    item.get_frames()[0][u'title'])
+                if not os.path.isfile(path):
+                    continue
+                file = mutagen.File(path)
+                if file is not None:
+                    length = int(file.info.length)
+                    text += u'<p><b>%s</b> %s</p>' % (translate(
+                        'OpenLP.ServiceManager', u'Playing time:'),
+                        unicode(datetime.timedelta(seconds=length)))
         serviceDocument = QtGui.QTextDocument()
         serviceDocument.setHtml(text)
         serviceDocument.print_(printDialog.printer())
