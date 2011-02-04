@@ -80,17 +80,17 @@ class PrintServiceOrderForm(QtGui.QDialog):
         self.metaDataCheckBox.setText(translate('OpenLP.PrintServiceOrderForm',
             'Include play lenght of media items'))
         self.serviceTitleLabel.setText(translate(
-            'OpenLP.PrintServiceOrderForm', 'Service Order Title'))
+            'OpenLP.PrintServiceOrderForm', 'Service Order Title:'))
+        self.serviceTitleLineEdit.setText(translate('OpenLP.ServiceManager',
+            'Service Order Sheet'))
 
     def serviceOrderText(self):
         """
         Creates the html text, to print the service items.
         """
+        text = u''
         if self.serviceTitleLineEdit.text():
-            text = u'<h2>%s</h2>' % unicode(self.serviceTitleLineEdit.text())
-        else:
-            text = u'<h2>%s</h2>' % translate('OpenLP.ServiceManager',
-                'Service Order Sheet')
+            text += u'<h2>%s</h2>' % unicode(self.serviceTitleLineEdit.text())
         for item in self.serviceManager.serviceItems:
             item = item[u'service_item']
             # Add the title of the service item.
