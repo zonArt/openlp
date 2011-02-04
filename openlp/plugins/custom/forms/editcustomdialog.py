@@ -27,7 +27,8 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate
-from openlp.core.lib.ui import save_cancel_button_box
+from openlp.core.lib.ui import save_cancel_button_box, delete_push_button, \
+    up_down_push_button_set
 
 class Ui_CustomEditDialog(object):
     def setupUi(self, customEditDialog):
@@ -65,20 +66,15 @@ class Ui_CustomEditDialog(object):
         self.editAllButton = QtGui.QPushButton(customEditDialog)
         self.editAllButton.setObjectName(u'editAllButton')
         self.buttonLayout.addWidget(self.editAllButton)
-        self.deleteButton = QtGui.QPushButton(customEditDialog)
+        self.deleteButton = delete_push_button(customEditDialog)
         self.deleteButton.setEnabled(False)
-        self.deleteButton.setObjectName(u'deleteButton')
         self.buttonLayout.addWidget(self.deleteButton)
         self.buttonLayout.addStretch()
-        self.upButton = QtGui.QPushButton(customEditDialog)
+        self.upButton, self.downButton = up_down_push_button_set(
+            customEditDialog)
         self.upButton.setEnabled(False)
-        self.upButton.setIcon(build_icon(u':/services/service_up.png'))
-        self.upButton.setObjectName(u'upButton')
-        self.buttonLayout.addWidget(self.upButton)
-        self.downButton = QtGui.QPushButton(customEditDialog)
         self.downButton.setEnabled(False)
-        self.downButton.setIcon(build_icon(u':/services/service_down.png'))
-        self.downButton.setObjectName(u'downButton')
+        self.buttonLayout.addWidget(self.upButton)
         self.buttonLayout.addWidget(self.downButton)
         self.centralLayout.addLayout(self.buttonLayout)
         self.dialogLayout.addLayout(self.centralLayout)
@@ -109,12 +105,6 @@ class Ui_CustomEditDialog(object):
     def retranslateUi(self, customEditDialog):
         customEditDialog.setWindowTitle(
             translate('CustomPlugin.EditCustomForm', 'Edit Custom Slides'))
-        self.upButton.setToolTip(
-            translate('CustomPlugin.EditCustomForm', 'Move slide up one '
-            'position.'))
-        self.downButton.setToolTip(
-            translate('CustomPlugin.EditCustomForm', 'Move slide down one '
-            'position.'))
         self.titleLabel.setText(
             translate('CustomPlugin.EditCustomForm', '&Title:'))
         self.addButton.setText(
@@ -132,11 +122,6 @@ class Ui_CustomEditDialog(object):
         self.editAllButton.setToolTip(
             translate('CustomPlugin.EditCustomForm', 'Edit all the slides at '
             'once.'))
-        self.deleteButton.setText(
-            translate('CustomPlugin.EditCustomForm', '&Delete'))
-        self.deleteButton.setToolTip(
-            translate('CustomPlugin.EditCustomForm', 'Delete the selected '
-            'slide.'))
         self.themeLabel.setText(
             translate('CustomPlugin.EditCustomForm', 'The&me:'))
         self.creditLabel.setText(

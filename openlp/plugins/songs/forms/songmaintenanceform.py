@@ -372,7 +372,6 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         Utility method to merge two objects to leave one in the database.
         """
         Receiver.send_message(u'cursor_busy')
-        Receiver.send_message(u'openlp_process_events')
         merge(dbObject)
         reset()
         Receiver.send_message(u'songs_load_list')
@@ -484,19 +483,19 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
 
     def onAuthorsListRowChanged(self, row):
         """
-        Called when the *authorsListWidget*s current row has changed.
+        Called when the *authorsListWidget*'s current row has changed.
         """
         self.__rowChange(row, self.authorsEditButton, self.authorsDeleteButton)
 
     def onTopicsListRowChanged(self, row):
         """
-        Called when the *topicsListWidget*s current row has changed.
+        Called when the *topicsListWidget*'s current row has changed.
         """
         self.__rowChange(row, self.topicsEditButton, self.topicsDeleteButton)
 
     def onBooksListRowChanged(self, row):
         """
-        Called when the *booksListWidget*s current row has changed.
+        Called when the *booksListWidget*'s current row has changed.
         """
         self.__rowChange(row, self.booksEditButton, self.booksDeleteButton)
 

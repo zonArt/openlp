@@ -507,7 +507,6 @@ class ServiceManager(QtGui.QWidget):
                     p_file = filePath
             if 'p_file' in locals():
                 Receiver.send_message(u'cursor_busy')
-                Receiver.send_message(u'openlp_process_events')
                 fileTo = open(p_file, u'r')
                 items = cPickle.load(fileTo)
                 fileTo.close()

@@ -39,13 +39,6 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         self.itemList = []
-        # enable drop
-        QtCore.QObject.connect(self.upButton,
-            QtCore.SIGNAL(u'clicked()'), self.onItemUp)
-        QtCore.QObject.connect(self.downButton,
-            QtCore.SIGNAL(u'clicked()'), self.onItemDown)
-        QtCore.QObject.connect(self.deleteButton,
-            QtCore.SIGNAL(u'clicked()'), self.onItemDelete)
         QtCore.QObject.connect(self.listWidget,
             QtCore.SIGNAL(u'currentRowChanged(int)'), self.onCurrentRowChanged)
 
@@ -77,7 +70,7 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
             item_name = QtGui.QListWidgetItem(frame[u'title'])
             self.listWidget.addItem(item_name)
 
-    def onItemDelete(self):
+    def onDeleteButtonClicked(self):
         """
         Delete the current row.
         """
@@ -92,13 +85,13 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         else:
             self.listWidget.setCurrentRow(row)
 
-    def onItemUp(self):
+    def onUpButtonClicked(self):
         """
         Move the current row up in the list.
         """
         self.__moveItem(u'up')
 
-    def onItemDown(self):
+    def onDownButtonClicked(self):
         """
         Move the current row down in the list
         """

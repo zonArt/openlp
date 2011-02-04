@@ -443,7 +443,6 @@ class HTTPBible(BibleDB):
             book = db_book.name
             if BibleDB.get_verse_count(self, book, reference[1]) == 0:
                 Receiver.send_message(u'cursor_busy')
-                Receiver.send_message(u'openlp_process_events')
                 search_results = self.get_chapter(book, reference[1])
                 if search_results and search_results.has_verselist():
                     ## We have found a book of the bible lets check to see

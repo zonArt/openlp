@@ -30,7 +30,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate
+from openlp.core.lib import build_icon, Receiver, translate
 
 log = logging.getLogger(__name__)
 
@@ -108,3 +108,77 @@ def media_item_combo_box(parent, name):
     combo.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToMinimumContentsLength)
     combo.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
     return combo
+
+def delete_push_button(parent, icon=None):
+    """
+    Return a standard push button with delete label.
+    """
+    delete_button = QtGui.QPushButton(parent)
+    delete_button.setObjectName(u'deleteButton')
+    delete_icon = icon if icon else u':/general/general_delete.png'
+    delete_button.setIcon(build_icon(delete_icon))
+    delete_button.setText(translate('OpenLP.Ui', '&Delete'))
+    delete_button.setToolTip(
+        translate('OpenLP.Ui', 'Delete the selected item.'))
+    QtCore.QObject.connect(delete_button,
+        QtCore.SIGNAL(u'clicked()'), parent.onDeleteButtonClicked)
+    return delete_button
+
+def up_down_push_button_set(parent):
+    """
+    Return a standard set of two push buttons for up and down use with lists.
+    """
+    up_button = QtGui.QPushButton(parent)
+    up_button.setIcon(build_icon(u':/services/service_up.png'))
+    up_button.setObjectName(u'upButton')
+    up_button.setToolTip(
+        translate('OpenLP.Ui', 'Move selection up one position.'))
+    down_button = QtGui.QPushButton(parent)
+    down_button.setIcon(build_icon(u':/services/service_down.png'))
+    down_button.setObjectName(u'downButton')
+    down_button.setToolTip(
+        translate('OpenLP.Ui', 'Move selection down one position.'))
+    QtCore.QObject.connect(up_button,
+        QtCore.SIGNAL(u'clicked()'), parent.onUpButtonClicked)
+    QtCore.QObject.connect(down_button,
+        QtCore.SIGNAL(u'clicked()'), parent.onDownButtonClicked)
+    return up_button, down_button
+
+def base_action(parent, name):
+    """
+    Return the most basic action with the object name set.
+    """
+    action = QtGui.QAction(parent)
+    action.setObjectName(name)
+    return action
+
+def checkable_action(parent, name, checked=None):
+    """
+    Return a standard action with the checkable attribute set.
+    """
+    action = base_action(parent, name)
+    action.setCheckable(True)
+    if checked is not None:
+        action.setChecked(checked)
+    return action
+
+def icon_action(parent, name, icon, checked=None):
+    """
+    Return a standard action with an icon.
+    """
+    if checked is not None:
+        action = checkable_action(parent, name, checked)
+    else:
+        action = base_action(parent, name)
+    action.setIcon(build_icon(icon))
+    return action
+
+def shortcut_action(parent, text, shortcuts, function):
+    """
+    Return a shortcut enabled action.
+    """
+    action = QtGui.QAction(text, parent)
+    action.setShortcuts(shortcuts)
+    action.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
+    QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), function)
+    return action
