@@ -70,6 +70,7 @@ from shortcutlistform import ShortcutListForm
 from mediadockmanager import MediaDockManager
 from servicemanager import ServiceManager
 from thememanager import ThemeManager
+from printserviceorderform import PrintServiceOrderForm
 
 __all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainDisplay',
     'SlideController', 'ServiceManager', 'ThemeManager', 'MediaDockManager',
