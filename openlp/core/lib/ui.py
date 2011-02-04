@@ -143,3 +143,32 @@ def up_down_push_button_set(parent):
     QtCore.QObject.connect(down_button,
         QtCore.SIGNAL(u'clicked()'), parent.onDownButtonClicked)
     return up_button, down_button
+
+def base_action(parent, name):
+    """
+    Return the most basic action with the object name set.
+    """
+    action = QtGui.QAction(parent)
+    action.setObjectName(name)
+    return action
+
+def checkable_action(parent, name, checked=None):
+    """
+    Return a standard action with the checkable attribute set.
+    """
+    action = base_action(parent, name)
+    action.setCheckable(True)
+    if checked is not None:
+        action.setChecked(checked)
+    return action
+
+def icon_action(parent, name, icon, checked=None):
+    """
+    Return a standard action with an icon.
+    """
+    if checked is not None:
+        action = checkable_action(parent, name, checked)
+    else:
+        action = base_action(parent, name)
+    action.setIcon(build_icon(icon))
+    return action
