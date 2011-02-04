@@ -62,12 +62,6 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             QtCore.SIGNAL(u'pressed()'), self.onEditButtonPressed)
         QtCore.QObject.connect(self.editAllButton,
             QtCore.SIGNAL(u'pressed()'), self.onEditAllButtonPressed)
-        QtCore.QObject.connect(self.deleteButton,
-            QtCore.SIGNAL(u'pressed()'), self.onDeleteButtonPressed)
-        QtCore.QObject.connect(self.upButton,
-            QtCore.SIGNAL(u'pressed()'), self.onUpButtonPressed)
-        QtCore.QObject.connect(self.downButton,
-            QtCore.SIGNAL(u'pressed()'), self.onDownButtonPressed)
         QtCore.QObject.connect(self.slideListView,
             QtCore.SIGNAL(u'itemClicked(QListWidgetItem*)'),
             self.onSlideListViewPressed)
@@ -168,14 +162,14 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         self.customSlide.theme_name = unicode(self.themeComboBox.currentText())
         return self.manager.save_object(self.customSlide)
 
-    def onUpButtonPressed(self):
+    def onUpButtonClicked(self):
         selectedRow = self.slideListView.currentRow()
         if selectedRow != 0:
             qw = self.slideListView.takeItem(selectedRow)
             self.slideListView.insertItem(selectedRow - 1, qw)
             self.slideListView.setCurrentRow(selectedRow - 1)
 
-    def onDownButtonPressed(self):
+    def onDownButtonClicked(self):
         selectedRow = self.slideListView.currentRow()
         # zero base arrays
         if selectedRow != self.slideListView.count() - 1:
@@ -243,7 +237,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
                 self.slideListView.addItem(slide)
         self.slideListView.repaint()
 
-    def onDeleteButtonPressed(self):
+    def onDeleteButtonClicked(self):
         self.slideListView.takeItem(self.slideListView.currentRow())
         self.editButton.setEnabled(True)
         self.editAllButton.setEnabled(True)
