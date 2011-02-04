@@ -169,7 +169,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             self.__buttonState(False)
         self.descriptionWordCount.setText(
             unicode(translate('OpenLP.ExceptionDialog',
-            'Characters to Enter : %s')) % count )
+            'Description characters to Enter : %s')) % count )
 
     def onAttachFileButtonPressed(self):
         files = QtGui.QFileDialog.getOpenFileName(

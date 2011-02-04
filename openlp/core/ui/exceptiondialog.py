@@ -63,17 +63,20 @@ class Ui_ExceptionDialog(object):
         self.exceptionButtonBox.setStandardButtons(QtGui.QDialogButtonBox.Close)
         self.exceptionButtonBox.setObjectName(u'exceptionButtonBox')
         self.exceptionLayout.addWidget(self.exceptionButtonBox)
+
         self.sendReportButton = QtGui.QPushButton(exceptionDialog)
         self.sendReportButton.setIcon(build_icon(
             u':/general/general_email.png'))
         self.sendReportButton.setObjectName(u'sendReportButton')
         self.exceptionButtonBox.addButton(self.sendReportButton,
             QtGui.QDialogButtonBox.ActionRole)
+
         self.saveReportButton = QtGui.QPushButton(exceptionDialog)
         self.saveReportButton.setIcon(build_icon(u':/general/general_save.png'))
         self.saveReportButton.setObjectName(u'saveReportButton')
         self.exceptionButtonBox.addButton(self.saveReportButton,
             QtGui.QDialogButtonBox.ActionRole)
+
         self.attachFileButton = QtGui.QPushButton(exceptionDialog)
         self.attachFileButton.setIcon(build_icon(u':/general/general_open.png'))
         self.attachFileButton.setObjectName(u'attachFileButton')
