@@ -38,6 +38,7 @@ from openlp.core.lib import OpenLPToolbar, ServiceItem, context_menu_action, \
     ThemeLevel
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm
+from openlp.core.ui.printserviceorderform import PrintServiceOrderForm
 from openlp.core.utils import AppLocation, delete_file, file_is_unicode, \
     split_filename
 
@@ -1188,11 +1189,11 @@ class ServiceManager(QtGui.QWidget):
         """
         Print a Service Order Sheet.
         """
-        from openlp.core.ui import PrintServiceOrderForm
-        dialog = PrintServiceOrderForm(self)
-        if dialog.exec_():
-            serviceDocument = QtGui.QTextDocument()
-            serviceDocument.setHtml(dialog.printServiceOrder())
+        settingDialog = PrintServiceOrderForm(self)
+        if not settingDialog.exec_():
+            return
+        serviceDocument = QtGui.QTextDocument()
+        serviceDocument.setHtml(settingDialog.serviceOrderText())
         printDialog = QtGui.QPrintDialog()
         if not printDialog.exec_(): 
             return
