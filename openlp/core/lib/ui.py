@@ -182,3 +182,11 @@ def shortcut_action(parent, text, shortcuts, function):
     action.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
     QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), function)
     return action
+
+def add_widget_completer(cache, widget):
+    """
+    Add a text autocompleter to a widget.
+    """
+    completer = QtGui.QCompleter(cache)
+    completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
+    widget.setCompleter(completer)
