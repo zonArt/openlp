@@ -25,15 +25,13 @@
 ###############################################################################
 
 import cPickle
-import datetime
 import logging
-import mutagen
 import os
 import zipfile
 
 log = logging.getLogger(__name__)
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore, QtGui, QtWebKit
 
 from openlp.core.lib import OpenLPToolbar, ServiceItem, context_menu_action, \
     Receiver, build_icon, ItemCapabilities, SettingsManager, translate, \
@@ -1190,52 +1188,13 @@ class ServiceManager(QtGui.QWidget):
         """
         Print a Service Order Sheet.
         """
+        from openlp.core.ui import PrintServiceOrderForm
+        dialog = PrintServiceOrderForm(self)
+        if dialog.exec_():
+            serviceDocument = QtGui.QTextDocument()
+            serviceDocument.setHtml(dialog.printServiceOrder())
         printDialog = QtGui.QPrintDialog()
-        if not printDialog.exec_():
+        if not printDialog.exec_(): 
             return
-        text = u'<h2>%s</h2>' % translate('OpenLP.ServiceManager',
-            'Service Order Sheet')
-        for item in self.serviceItems:
-            item = item[u'service_item']
-            # Add the title of the service item.
-            text += u'<h4><img src="%s" /> %s</h4>' % (item.icon,
-                item.get_display_title())
-            # Add slide text of the service item.
-            if QtCore.QSettings().value(u'advanced' +
-                u'/print slide text', QtCore.QVariant(False)).toBool():
-                if item.is_text():
-                    # Add the text of the service item.
-                    for slide in item.get_frames():
-                        text += u'<p>' + slide[u'text'] + u'</p>'
-                elif item.is_image():
-                    # Add the image names of the service item.
-                    text += u'<ol>'
-                    for slide in range(len(item.get_frames())):
-                        text += u'<li><p>%s</p></li>' % \
-                            item.get_frame_title(slide)
-                    text += u'</ol>'
-                if item.foot_text:
-                    # add footer
-                    text += u'<p>%s</p>' % item.foot_text
-            # Add service items' notes.
-            if QtCore.QSettings().value(u'advanced' +
-                u'/print notes', QtCore.QVariant(False)).toBool():
-                if item.notes:
-                    text += u'<p><b>%s</b> %s</p>' % (translate(
-                        'OpenLP.ServiceManager', 'Notes:'), item.notes)
-            # Add play length of media files.
-            if item.is_media() and QtCore.QSettings().value(u'advanced' +
-                u'/print file meta data', QtCore.QVariant(False)).toBool():
-                path = os.path.join(item.get_frames()[0][u'path'],
-                    item.get_frames()[0][u'title'])
-                if not os.path.isfile(path):
-                    continue
-                file = mutagen.File(path)
-                if file is not None:
-                    length = int(file.info.length)
-                    text += u'<p><b>%s</b> %s</p>' % (translate(
-                        'OpenLP.ServiceManager', u'Playing time:'),
-                        unicode(datetime.timedelta(seconds=length)))
-        serviceDocument = QtGui.QTextDocument()
-        serviceDocument.setHtml(text)
         serviceDocument.print_(printDialog.printer())
+       
