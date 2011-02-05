@@ -83,10 +83,9 @@ Root: HKCU; SubKey: Software\OpenLP\OpenLP\custom; ValueType: dword; ValueName: 
 Root: HKCU; SubKey: Software\OpenLP\OpenLP\images; ValueType: dword; ValueName: status; ValueData: $00000001
 Root: HKCU; SubKey: Software\OpenLP\OpenLP\media; ValueType: dword; ValueName: status; ValueData: $00000001
 Root: HKCU; SubKey: Software\OpenLP\OpenLP\presentations; ValueType: dword; ValueName: status; ValueData: $00000001
-Root: HKCU; SubKey: Software\OpenLP\OpenLP\remotes; ValueType: dword; ValueName: status; ValueData: $00000001
+Root: HKCU; SubKey: Software\OpenLP\OpenLP\remotes; ValueType: dword; ValueName: status; ValueData: $00000000
 Root: HKCU; SubKey: Software\OpenLP\OpenLP\songs; ValueType: dword; ValueName: status; ValueData: $00000001
 Root: HKCU; SubKey: Software\OpenLP\OpenLP\songusage; ValueType: dword; ValueName: status; ValueData: $00000001
-
 
 [Code]
 function GetUninstallString(): String;
