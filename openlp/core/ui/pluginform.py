@@ -129,7 +129,9 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         if self.programaticChange:
             return
         if status == 0:
+            Receiver.send_message(u'cursor_busy')
             self.activePlugin.toggleStatus(PluginStatus.Active)
+            Receiver.send_message(u'cursor_normal')
         else:
             self.activePlugin.toggleStatus(PluginStatus.Inactive)
         status_text = unicode(
