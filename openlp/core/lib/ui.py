@@ -38,6 +38,9 @@ def add_welcome_page(parent, image):
     """
     Generate an opening welcome page for a wizard using a provided image.
 
+    ``parent``
+        A ``QWizard`` object to add the welcome page to.
+
     ``image``
         A splash image for the wizard.
     """
@@ -58,9 +61,14 @@ def add_welcome_page(parent, image):
     parent.welcomeLayout.addStretch()
     parent.addPage(parent.welcomePage)
 
-def save_cancel_button_box(parent):
+def create_save_cancel_button_box(parent):
     """
-    Return a standard dialog button box with save and cancel buttons.
+    Creates a standard dialog button box with save and cancel buttons.  The
+    button box is connected to the parent's ``accept()`` and ``reject()``
+    methods to handle the default ``accepted()`` and ``rejected()`` signals.
+
+    ``parent``
+        The parent object.  This should be a ``QWidget`` descendant.
     """
     button_box = QtGui.QDialogButtonBox(parent)
     button_box.setStandardButtons(
@@ -109,9 +117,18 @@ def media_item_combo_box(parent, name):
     combo.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
     return combo
 
-def delete_push_button(parent, icon=None):
+def create_delete_push_button(parent, icon=None):
     """
-    Return a standard push button with delete label.
+    Creates a standard push button with a delete label and optional icon.  The
+    button is connected to the parent's ``onDeleteButtonClicked()`` method to
+    handle the ``clicked()`` signal.
+
+    ``parent``
+        The parent object.  This should be a ``QWidget`` descendant.
+
+    ``icon``
+        An icon to display on the button.  This can be either a ``QIcon``, a
+        resource path or a file name.
     """
     delete_button = QtGui.QPushButton(parent)
     delete_button.setObjectName(u'deleteButton')
@@ -124,9 +141,15 @@ def delete_push_button(parent, icon=None):
         QtCore.SIGNAL(u'clicked()'), parent.onDeleteButtonClicked)
     return delete_button
 
-def up_down_push_button_set(parent):
+def create_up_down_push_button_set(parent):
     """
-    Return a standard set of two push buttons for up and down use with lists.
+    Creates a standard set of two push buttons, one for up and the other for
+    down, for use with lists.  The buttons use arrow icons and no text and are
+    connected to the parent's ``onUpButtonClicked()`` and
+    ``onDownButtonClicked()`` to handle their respective ``clicked()`` signals.
+
+    ``parent``
+        The parent object.  This should be a ``QWidget`` descendant.
     """
     up_button = QtGui.QPushButton(parent)
     up_button.setIcon(build_icon(u':/services/service_up.png'))
@@ -185,7 +208,13 @@ def shortcut_action(parent, text, shortcuts, function):
 
 def add_widget_completer(cache, widget):
     """
-    Add a text autocompleter to a widget.
+    Adds a text autocompleter to a widget.
+
+    ``cache``
+        The list of items to use as suggestions.
+
+    ``widget``
+        The object to use the completer.
     """
     completer = QtGui.QCompleter(cache)
     completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)

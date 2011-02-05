@@ -27,7 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
-from openlp.core.lib.ui import save_cancel_button_box
+from openlp.core.lib.ui import create_save_cancel_button_box
 
 class ServiceNoteForm(QtGui.QDialog):
     """
@@ -48,7 +48,7 @@ class ServiceNoteForm(QtGui.QDialog):
         self.textEdit = QtGui.QTextEdit(self)
         self.textEdit.setObjectName(u'textEdit')
         self.dialogLayout.addWidget(self.textEdit)
-        self.dialogLayout.addWidget(save_cancel_button_box(self))
+        self.dialogLayout.addWidget(create_save_cancel_button_box(self))
         QtCore.QMetaObject.connectSlotsByName(self)
 
     def retranslateUi(self):
