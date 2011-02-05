@@ -260,7 +260,7 @@ class ThemeManager(QtGui.QWidget):
             'You must select a theme to rename.')),
             unicode(translate('OpenLP.ThemeManager', 'Rename Confirmation')),
             unicode(translate('OpenLP.ThemeManager', 'Rename %s theme?')),
-            False):
+            False, False):
             item = self.themeListWidget.currentItem()
             oldThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
             self.fileRenameForm.fileNameEdit.setText(oldThemeName)
@@ -675,7 +675,7 @@ class ThemeManager(QtGui.QWidget):
         return theme
 
     def _validate_theme_action(self, select_text, confirm_title, confirm_text,
-        testPlugin=True):
+        testPlugin=True, confirm=True):
         """
         Check to see if theme has been selected and the destructive action
         is allowed.
@@ -687,12 +687,13 @@ class ThemeManager(QtGui.QWidget):
             item = self.themeListWidget.currentItem()
             theme = unicode(item.text())
             # confirm deletion
-            answer = QtGui.QMessageBox.question(self, confirm_title,
-                confirm_text % theme, QtGui.QMessageBox.StandardButtons(
-                QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
-                QtGui.QMessageBox.No)
-            if answer == QtGui.QMessageBox.No:
-                return False
+            if confirm:
+                answer = QtGui.QMessageBox.question(self, confirm_title,
+                    confirm_text % theme, QtGui.QMessageBox.StandardButtons(
+                    QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
+                    QtGui.QMessageBox.No)
+                if answer == QtGui.QMessageBox.No:
+                    return False
             # should be the same unless default
             if theme != unicode(item.data(QtCore.Qt.UserRole).toString()):
                 critical_error_message_box(
