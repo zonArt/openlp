@@ -268,8 +268,8 @@ class ThemeManager(QtGui.QWidget):
                 newThemeName =  unicode(self.fileRenameForm.fileNameEdit.text())
                 if self.checkIfThemeExists(newThemeName):
                     oldThemeData = self.getThemeData(oldThemeName)
-                    self.deleteTheme(oldThemeName)
                     self.cloneThemeData(oldThemeData, newThemeName)
+                    self.deleteTheme(oldThemeName)
                     for plugin in self.mainwindow.pluginManager.plugins:
                         if plugin.usesTheme(oldThemeName):
                             plugin.renameTheme(oldThemeName, newThemeName)
@@ -295,11 +295,13 @@ class ThemeManager(QtGui.QWidget):
         log.debug(u'cloneThemeData')
         saveTo = None
         saveFrom = None
+        print themeData.background_type
         if themeData.background_type == u'image':
             saveTo = os.path.join(self.path, newThemeName,
                 os.path.split(unicode(themeData.background_filename))[1])
             saveFrom = themeData.background_filename
         themeData.theme_name = newThemeName
+        themeData.extend_image_filename(self.path)
         self.saveTheme(themeData, saveFrom, saveTo)
 
     def onEditTheme(self):
@@ -349,7 +351,7 @@ class ThemeManager(QtGui.QWidget):
             shutil.rmtree(os.path.join(self.path, theme).encode(encoding))
         except OSError:
             log.exception(u'Error deleting theme %s', theme)
-        # As we do not reload the themes push out the change
+        # As we do not reload the themes, push out the change
         # Reaload the list as the internal lists and events need
         # to be triggered
         self.pushThemes()
@@ -577,6 +579,7 @@ class ThemeManager(QtGui.QWidget):
         theme_dir = os.path.join(self.path, name)
         check_directory_exists(theme_dir)
         theme_file = os.path.join(theme_dir, name + u'.xml')
+        print imageTo, self.oldBackgroundImage
         if imageTo and self.oldBackgroundImage and \
             imageTo != self.oldBackgroundImage:
             delete_file(self.oldBackgroundImage)
@@ -589,6 +592,7 @@ class ThemeManager(QtGui.QWidget):
         finally:
             if outfile:
                 outfile.close()
+        print imageFrom, imageTo
         if imageFrom and imageFrom != imageTo:
             try:
                 encoding = get_filesystem_encoding()
@@ -603,7 +607,7 @@ class ThemeManager(QtGui.QWidget):
 
     def generateAndSaveImage(self, dir, name, theme):
         log.debug(u'generateAndSaveImage %s %s', dir, name)
-        theme_xml = theme.extract_xml()
+        #theme_xml = theme.extract_xml()
         frame = self.generateImage(theme)
         samplepathname = os.path.join(self.path, name + u'.png')
         if os.path.exists(samplepathname):
