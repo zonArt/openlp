@@ -34,7 +34,7 @@ import cPickle
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, translate, DisplayTags
-from openlp.core.ui import criticalErrorMessageBox
+from openlp.core.lib.ui import critical_error_message_box
 
 class DisplayTagTab(SettingsTab):
     '''
@@ -276,7 +276,7 @@ class DisplayTagTab(SettingsTab):
         """
         for html in DisplayTags.get_html_tags():
             if self._strip(html[u'start tag']) == u'n':
-                criticalErrorMessageBox(
+                critical_error_message_box(
                     translate('OpenLP.DisplayTagTab', 'Update Error'),
                     translate('OpenLP.DisplayTagTab',
                     'Tag "n" already defined.'))
@@ -317,7 +317,7 @@ class DisplayTagTab(SettingsTab):
             for linenumber, html1 in enumerate(html_expands):
                 if self._strip(html1[u'start tag']) == tag and \
                     linenumber != self.selected:
-                    criticalErrorMessageBox(
+                    critical_error_message_box(
                         translate('OpenLP.DisplayTagTab', 'Update Error'),
                         unicode(translate('OpenLP.DisplayTagTab',
                         'Tag %s already defined.')) % tag)

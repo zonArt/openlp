@@ -30,7 +30,7 @@ import re
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, translate
-from openlp.core.ui import criticalErrorMessageBox
+from openlp.core.lib.ui import add_widget_completer, critical_error_message_box
 from openlp.plugins.songs.forms import EditVerseForm
 from openlp.plugins.songs.lib import SongXML, VerseType
 from openlp.plugins.songs.lib.db import Book, Song, Author, Topic
@@ -129,37 +129,26 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.authorsComboBox.setItemData(
                 row, QtCore.QVariant(author.id))
             self.authors.append(author.display_name)
-        completer = QtGui.QCompleter(self.authors)
-        completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
-        self.authorsComboBox.setCompleter(completer)
+        add_widget_completer(self.authors, self.authorsComboBox)
 
     def loadTopics(self):
-        topics = self.manager.get_all_objects(Topic, order_by_ref=Topic.name)
-        self.topicsComboBox.clear()
-        self.topicsComboBox.addItem(u'')
         self.topics = []
-        for topic in topics:
-            row = self.topicsComboBox.count()
-            self.topicsComboBox.addItem(topic.name)
-            self.topics.append(topic.name)
-            self.topicsComboBox.setItemData(row, QtCore.QVariant(topic.id))
-        completer = QtGui.QCompleter(self.topics)
-        completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
-        self.topicsComboBox.setCompleter(completer)
+        self.__loadObjects(Topic, self.topicsComboBox, self.topics)
 
     def loadBooks(self):
-        books = self.manager.get_all_objects(Book, order_by_ref=Book.name)
-        self.songBookComboBox.clear()
-        self.songBookComboBox.addItem(u'')
         self.books = []
-        for book in books:
-            row = self.songBookComboBox.count()
-            self.songBookComboBox.addItem(book.name)
-            self.books.append(book.name)
-            self.songBookComboBox.setItemData(row, QtCore.QVariant(book.id))
-        completer = QtGui.QCompleter(self.books)
-        completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
-        self.songBookComboBox.setCompleter(completer)
+        self.__loadObjects(Book, self.songBookComboBox, self.books)
+
+    def __loadObjects(self, cls, combo, cache):
+        objects = self.manager.get_all_objects(cls, order_by_ref=cls.name)
+        combo.clear()
+        combo.addItem(u'')
+        for object in objects:
+            row = combo.count()
+            combo.addItem(object.name)
+            cache.append(object.name)
+            combo.setItemData(row, QtCore.QVariant(object.id))
+        add_widget_completer(cache, combo)
 
     def loadThemes(self, theme_list):
         self.themeComboBox.clear()
@@ -168,9 +157,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         for theme in theme_list:
             self.themeComboBox.addItem(theme)
             self.themes.append(theme)
-        completer = QtGui.QCompleter(self.themes)
-        completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
-        self.themeComboBox.setCompleter(completer)
+        add_widget_completer(self.themes, self.themeComboBox)
 
     def newSong(self):
         log.debug(u'New Song')
@@ -255,7 +242,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.songBookNumberEdit.setText(self.song.song_number)
         else:
             self.songBookNumberEdit.setText(u'')
-
         # lazy xml migration for now
         self.verseListWidget.clear()
         self.verseListWidget.setRowCount(0)
@@ -343,7 +329,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             author = self.manager.get_object(Author, item_id)
             if self.authorsListView.findItems(unicode(author.display_name),
                 QtCore.Qt.MatchExactly):
-                criticalErrorMessageBox(
+                critical_error_message_box(
                     message=translate('SongsPlugin.EditSongForm',
                     'This author is already in the list.'))
             else:
@@ -400,7 +386,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             topic = self.manager.get_object(Topic, item_id)
             if self.topicsListView.findItems(unicode(topic.name),
                 QtCore.Qt.MatchExactly):
-                criticalErrorMessageBox(
+                critical_error_message_box(
                     message=translate('SongsPlugin.EditSongForm',
                     'This topic is already in the list.'))
             else:
@@ -533,21 +519,21 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if not self.titleEdit.text():
             self.songTabWidget.setCurrentIndex(0)
             self.titleEdit.setFocus()
-            criticalErrorMessageBox(
+            critical_error_message_box(
                 message=translate('SongsPlugin.EditSongForm',
                 'You need to type in a song title.'))
             return False
         if self.verseListWidget.rowCount() == 0:
             self.songTabWidget.setCurrentIndex(0)
             self.verseListWidget.setFocus()
-            criticalErrorMessageBox(
+            critical_error_message_box(
                 message=translate('SongsPlugin.EditSongForm',
                 'You need to type in at least one verse.'))
             return False
         if self.authorsListView.count() == 0:
             self.songTabWidget.setCurrentIndex(1)
             self.authorsListView.setFocus()
-            criticalErrorMessageBox(
+            critical_error_message_box(
                 message=translate('SongsPlugin.EditSongForm',
                 'You need to have an author for this song.'))
             return False
@@ -575,7 +561,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     valid = verses.pop(0)
                     for verse in verses:
                         valid = valid + u', ' + verse
-                    criticalErrorMessageBox(
+                    critical_error_message_box(
                         message=unicode(translate('SongsPlugin.EditSongForm',
                         'The verse order is invalid. There is no verse '
                         'corresponding to %s. Valid entries are %s.')) % \

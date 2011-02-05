@@ -38,7 +38,6 @@ class OpenSongBible(BibleDB):
     """
     OpenSong Bible format importer class.
     """
-
     def __init__(self, parent, **kwargs):
         """
         Constructor to create and set up an instance of the OpenSongBible
@@ -81,14 +80,13 @@ class OpenSongBible(BibleDB):
                             db_book.id,
                             int(chapter.attrib[u'n'].split()[-1]),
                             int(verse.attrib[u'n']),
-                            unicode(verse.text)
-                        )
-                        Receiver.send_message(u'openlp_process_events')
+                            unicode(verse.text))
                     self.wizard.incrementProgressBar(unicode(translate(
                         'BiblesPlugin.Opensong', 'Importing %s %s...',
                         'Importing <book name> <chapter>...')) %
                         (db_book.name, int(chapter.attrib[u'n'].split()[-1])))
-                    self.session.commit()
+                self.session.commit()
+            Receiver.send_message(u'openlp_process_events')
         except (IOError, AttributeError):
             log.exception(u'Loading bible from OpenSong file failed')
             success = False
