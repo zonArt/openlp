@@ -27,8 +27,8 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
-from openlp.core.lib.ui import save_cancel_button_box, delete_push_button, \
-    up_down_push_button_set
+from openlp.core.lib.ui import create_save_cancel_button_box, \
+    create_delete_push_button, create_up_down_push_button_set
 
 class Ui_ServiceItemEditDialog(object):
     def setupUi(self, serviceItemEditDialog):
@@ -41,16 +41,16 @@ class Ui_ServiceItemEditDialog(object):
         self.dialogLayout.addWidget(self.listWidget, 0, 0)
         self.buttonLayout = QtGui.QVBoxLayout()
         self.buttonLayout.setObjectName(u'buttonLayout')
-        self.deleteButton = delete_push_button(serviceItemEditDialog)
+        self.deleteButton = create_delete_push_button(serviceItemEditDialog)
         self.buttonLayout.addWidget(self.deleteButton)
         self.buttonLayout.addStretch()
-        self.upButton, self.downButton = up_down_push_button_set(
+        self.upButton, self.downButton = create_up_down_push_button_set(
             serviceItemEditDialog)
         self.buttonLayout.addWidget(self.upButton)
         self.buttonLayout.addWidget(self.downButton)
         self.dialogLayout.addLayout(self.buttonLayout, 0, 1)
         self.dialogLayout.addWidget(
-            save_cancel_button_box(serviceItemEditDialog), 1, 0, 1, 2)
+            create_save_cancel_button_box(serviceItemEditDialog), 1, 0, 1, 2)
         self.retranslateUi(serviceItemEditDialog)
         QtCore.QMetaObject.connectSlotsByName(serviceItemEditDialog)
 
