@@ -74,7 +74,11 @@ class PresentationPlugin(Plugin):
         self.insertToolboxItem()
         for controller in self.controllers:
             if self.controllers[controller].enabled():
-                self.controllers[controller].start_process()
+                try:
+                    self.controllers[controller].start_process()
+                except:
+                    log.exception(u'Failed to start controller process')
+                    self.controllers[controller].available = False
         self.mediaItem.buildFileMaskString()
 
     def finalise(self):

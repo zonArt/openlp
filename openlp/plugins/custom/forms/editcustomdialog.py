@@ -27,8 +27,8 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate
-from openlp.core.lib.ui import save_cancel_button_box, delete_push_button, \
-    up_down_push_button_set
+from openlp.core.lib.ui import create_save_cancel_button_box, \
+    create_delete_push_button, create_up_down_push_button_set
 
 class Ui_CustomEditDialog(object):
     def setupUi(self, customEditDialog):
@@ -60,16 +60,20 @@ class Ui_CustomEditDialog(object):
         self.addButton.setObjectName(u'addButton')
         self.buttonLayout.addWidget(self.addButton)
         self.editButton = QtGui.QPushButton(customEditDialog)
+        self.editButton.setEnabled(False)
         self.editButton.setObjectName(u'editButton')
         self.buttonLayout.addWidget(self.editButton)
         self.editAllButton = QtGui.QPushButton(customEditDialog)
         self.editAllButton.setObjectName(u'editAllButton')
         self.buttonLayout.addWidget(self.editAllButton)
-        self.deleteButton = delete_push_button(customEditDialog)
+        self.deleteButton = create_delete_push_button(customEditDialog)
+        self.deleteButton.setEnabled(False)
         self.buttonLayout.addWidget(self.deleteButton)
         self.buttonLayout.addStretch()
-        self.upButton, self.downButton = up_down_push_button_set(
+        self.upButton, self.downButton = create_up_down_push_button_set(
             customEditDialog)
+        self.upButton.setEnabled(False)
+        self.downButton.setEnabled(False)
         self.buttonLayout.addWidget(self.upButton)
         self.buttonLayout.addWidget(self.downButton)
         self.centralLayout.addLayout(self.buttonLayout)
@@ -90,7 +94,10 @@ class Ui_CustomEditDialog(object):
         self.creditLabel.setBuddy(self.creditEdit)
         self.bottomFormLayout.addRow(self.creditLabel, self.creditEdit)
         self.dialogLayout.addLayout(self.bottomFormLayout)
-        self.buttonBox = save_cancel_button_box(customEditDialog)
+        self.buttonBox = create_save_cancel_button_box(customEditDialog)
+        self.previewButton = QtGui.QPushButton()
+        self.buttonBox.addButton(
+            self.previewButton, QtGui.QDialogButtonBox.ActionRole)
         self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(customEditDialog)
         QtCore.QMetaObject.connectSlotsByName(customEditDialog)
@@ -119,3 +126,5 @@ class Ui_CustomEditDialog(object):
             translate('CustomPlugin.EditCustomForm', 'The&me:'))
         self.creditLabel.setText(
             translate('CustomPlugin.EditCustomForm', '&Credits:'))
+        self.previewButton.setText(
+            translate('CustomPlugin.EditCustomForm', 'Save && Preview'))
