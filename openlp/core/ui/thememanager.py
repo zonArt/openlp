@@ -241,7 +241,7 @@ class ThemeManager(QtGui.QWidget):
                     QtCore.QVariant(self.global_theme))
                 Receiver.send_message(u'theme_update_global',
                     self.global_theme)
-                self.pushThemes()
+                self._pushThemes()
 
     def onAddTheme(self):
         """
@@ -273,6 +273,7 @@ class ThemeManager(QtGui.QWidget):
                     for plugin in self.mainwindow.pluginManager.plugins:
                         if plugin.usesTheme(oldThemeName):
                             plugin.renameTheme(oldThemeName, newThemeName)
+                    self.loadThemes()
 
     def onCopyTheme(self):
         """
@@ -295,7 +296,6 @@ class ThemeManager(QtGui.QWidget):
         log.debug(u'cloneThemeData')
         saveTo = None
         saveFrom = None
-        print themeData.background_type
         if themeData.background_type == u'image':
             saveTo = os.path.join(self.path, newThemeName,
                 os.path.split(unicode(themeData.background_filename))[1])
@@ -334,6 +334,10 @@ class ThemeManager(QtGui.QWidget):
             row = self.themeListWidget.row(item)
             self.themeListWidget.takeItem(row)
             self.deleteTheme(theme)
+            # As we do not reload the themes, push out the change
+            # Reaload the list as the internal lists and events need
+            # to be triggered
+            self._pushThemes()
 
     def deleteTheme(self, theme):
         """
@@ -351,10 +355,6 @@ class ThemeManager(QtGui.QWidget):
             shutil.rmtree(os.path.join(self.path, theme).encode(encoding))
         except OSError:
             log.exception(u'Error deleting theme %s', theme)
-        # As we do not reload the themes, push out the change
-        # Reaload the list as the internal lists and events need
-        # to be triggered
-        self.pushThemes()
 
     def onExportTheme(self):
         """
@@ -451,9 +451,9 @@ class ThemeManager(QtGui.QWidget):
                         QtCore.QVariant(textName))
                     self.themeListWidget.addItem(item_name)
                     self.themelist.append(textName)
-        self.pushThemes()
+        self._pushThemes()
 
-    def pushThemes(self):
+    def _pushThemes(self):
         """
         Notify listeners that the theme list has been updated
         """
@@ -573,13 +573,20 @@ class ThemeManager(QtGui.QWidget):
         Called by thememaintenance Dialog to save the theme
         and to trigger the reload of the theme list
         """
+        self._writeTheme(theme, imageFrom, imageTo)
+        self.loadThemes()
+
+    def _writeTheme(self, theme, imageFrom, imageTo):
+        """
+        Writes the theme to the disk and handles the background image if
+        necessary
+        """
         name = theme.theme_name
         theme_pretty_xml = theme.extract_formatted_xml()
         log.debug(u'saveTheme %s %s', name, theme_pretty_xml)
         theme_dir = os.path.join(self.path, name)
         check_directory_exists(theme_dir)
         theme_file = os.path.join(theme_dir, name + u'.xml')
-        print imageTo, self.oldBackgroundImage
         if imageTo and self.oldBackgroundImage and \
             imageTo != self.oldBackgroundImage:
             delete_file(self.oldBackgroundImage)
@@ -592,7 +599,6 @@ class ThemeManager(QtGui.QWidget):
         finally:
             if outfile:
                 outfile.close()
-        print imageFrom, imageTo
         if imageFrom and imageFrom != imageTo:
             try:
                 encoding = get_filesystem_encoding()
@@ -602,8 +608,6 @@ class ThemeManager(QtGui.QWidget):
             except IOError:
                 log.exception(u'Failed to save theme image')
         self.generateAndSaveImage(self.path, name, theme)
-        self.loadThemes()
-        self.pushThemes()
 
     def generateAndSaveImage(self, dir, name, theme):
         log.debug(u'generateAndSaveImage %s %s', dir, name)
