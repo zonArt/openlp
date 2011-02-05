@@ -30,6 +30,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, Receiver, BaseListWithDnD, \
     ItemCapabilities, translate
+from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import add_widget_completer, media_item_combo_box, \
     critical_error_message_box
 from openlp.plugins.bibles.forms import BibleImportForm
@@ -93,18 +94,17 @@ class BibleMediaItem(MediaManagerItem):
             u'quickSecondComboBox')
         self.quickSecondLabel.setBuddy(self.quickSecondComboBox)
         self.quickLayout.addRow(self.quickSecondLabel, self.quickSecondComboBox)
-        self.quickSearchTypeLabel = QtGui.QLabel(self.quickTab)
-        self.quickSearchTypeLabel.setObjectName(u'quickSearchTypeLabel')
-        self.quickSearchComboBox = media_item_combo_box(self.quickTab,
-            u'quickSearchComboBox')
-        self.quickSearchTypeLabel.setBuddy(self.quickSearchComboBox)
-        self.quickLayout.addRow(self.quickSearchTypeLabel,
-            self.quickSearchComboBox)
         self.quickSearchLabel = QtGui.QLabel(self.quickTab)
         self.quickSearchLabel.setObjectName(u'quickSearchLabel')
-        self.quickSearchEdit = QtGui.QLineEdit(self.quickTab)
+        self.quickSearchEdit = SearchEdit(self.quickTab)
         self.quickSearchEdit.setObjectName(u'quickSearchEdit')
         self.quickSearchLabel.setBuddy(self.quickSearchEdit)
+        self.quickSearchEdit.setSearchTypes([
+            (1, u':/songs/song_topic_edit.png',
+            translate('BiblesPlugin.MediaItem', 'Verse Search')),
+            (2, u':/songs/song_search_author.png',
+            translate('BiblesPlugin.MediaItem', 'Text Search'))
+        ])
         self.quickLayout.addRow(self.quickSearchLabel, self.quickSearchEdit)
         self.quickClearLabel = QtGui.QLabel(self.quickTab)
         self.quickClearLabel.setObjectName(u'quickClearLabel')
@@ -207,8 +207,8 @@ class BibleMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'activated(int)'), self.onAdvancedFromVerse)
         QtCore.QObject.connect(self.advancedToChapter,
             QtCore.SIGNAL(u'activated(int)'), self.onAdvancedToChapter)
-        QtCore.QObject.connect(self.quickSearchComboBox,
-            QtCore.SIGNAL(u'activated(int)'), self.updateAutoCompleter)
+        QtCore.QObject.connect(self.quickSearchEdit,
+            QtCore.SIGNAL(u'searchTypeChanged(int)'), self.updateAutoCompleter)
         QtCore.QObject.connect(self.quickVersionComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.updateAutoCompleter)
         # Buttons
@@ -242,8 +242,6 @@ class BibleMediaItem(MediaManagerItem):
             translate('BiblesPlugin.MediaItem', 'Version:'))
         self.quickSecondLabel.setText(
             translate('BiblesPlugin.MediaItem', 'Second:'))
-        self.quickSearchTypeLabel.setText(
-            translate('BiblesPlugin.MediaItem', 'Search type:'))
         self.quickSearchLabel.setText(
             translate('BiblesPlugin.MediaItem', 'Find:'))
         self.quickSearchButton.setText(
@@ -268,10 +266,6 @@ class BibleMediaItem(MediaManagerItem):
             translate('BiblesPlugin.MediaItem', 'Results:'))
         self.advancedSearchButton.setText(
             translate('BiblesPlugin.MediaItem', 'Search'))
-        self.quickSearchComboBox.addItem(
-            translate('BiblesPlugin.MediaItem', 'Verse Search'))
-        self.quickSearchComboBox.addItem(
-            translate('BiblesPlugin.MediaItem', 'Text Search'))
         self.quickClearComboBox.addItem(
             translate('BiblesPlugin.MediaItem', 'Clear'))
         self.quickClearComboBox.addItem(
@@ -373,7 +367,7 @@ class BibleMediaItem(MediaManagerItem):
         """
         books = []
         # We have to do a 'Verse Search'.
-        if self.quickSearchComboBox.currentIndex() == 0:
+        if self.quickSearchEdit.currentSearchType() == 1:
             bibles = self.parent.manager.get_bibles()
             bible = unicode(self.quickVersionComboBox.currentText())
             if bible:
@@ -510,7 +504,7 @@ class BibleMediaItem(MediaManagerItem):
         bible = unicode(self.quickVersionComboBox.currentText())
         second_bible = unicode(self.quickSecondComboBox.currentText())
         text = unicode(self.quickSearchEdit.text())
-        if self.quickSearchComboBox.currentIndex() == 0:
+        if self.quickSearchEdit.currentSearchType() == 1:
             # We are doing a 'Verse Search'.
             self.search_results = self.parent.manager.get_verses(bible, text)
             if second_bible and self.search_results:
