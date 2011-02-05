@@ -80,20 +80,6 @@ class AdvancedTab(SettingsTab):
         self.hideMouseCheckBox.setObjectName(u'hideMouseCheckBox')
         self.hideMouseLayout.addWidget(self.hideMouseCheckBox)
         self.leftLayout.addWidget(self.hideMouseGroupBox)
-        self.serviceOrderGroupBox = QtGui.QGroupBox(self.leftColumn)
-        self.serviceOrderGroupBox.setObjectName(u'serviceOrderGroupBox')
-        self.serviceOrderLayout = QtGui.QVBoxLayout(self.serviceOrderGroupBox)
-        self.serviceOrderLayout.setObjectName(u'serviceOrderLayout')
-        self.printSlideTextCheckBox = QtGui.QCheckBox(self.serviceOrderGroupBox)
-        self.printSlideTextCheckBox.setObjectName(u'printSlideTextCheckBox')
-        self.serviceOrderLayout.addWidget(self.printSlideTextCheckBox)
-        self.printMetaDataCheckBox = QtGui.QCheckBox(self.serviceOrderGroupBox)
-        self.printMetaDataCheckBox.setObjectName(u'printMetaDataCheckBox')
-        self.serviceOrderLayout.addWidget(self.printMetaDataCheckBox)
-        self.printNotesCheckBox = QtGui.QCheckBox(self.serviceOrderGroupBox)
-        self.printNotesCheckBox.setObjectName(u'printNotesCheckBox')
-        self.serviceOrderLayout.addWidget(self.printNotesCheckBox)
-        self.leftLayout.addWidget(self.serviceOrderGroupBox)
 #        self.sharedDirGroupBox = QtGui.QGroupBox(self.leftColumn)
 #        self.sharedDirGroupBox.setObjectName(u'sharedDirGroupBox')
 #        self.sharedDirLayout = QtGui.QFormLayout(self.sharedDirGroupBox)
@@ -143,14 +129,6 @@ class AdvancedTab(SettingsTab):
             'Mouse Cursor'))
         self.hideMouseCheckBox.setText(translate('OpenLP.AdvancedTab',
             'Hide the mouse cursor when moved over the display window'))
-        self.serviceOrderGroupBox.setTitle(translate('OpenLP.AdvancedTab',
-            'Service Order Print'))
-        self.printSlideTextCheckBox.setText(
-            translate('OpenLP.AdvancedTab', 'Include text slides if available'))
-        self.printMetaDataCheckBox.setText(translate(
-            'OpenLP.AdvancedTab', 'Include playing time of media files'))
-        self.printNotesCheckBox.setText(
-            translate('OpenLP.AdvancedTab', 'Include service item notes'))
 #        self.sharedDirGroupBox.setTitle(
 #            translate('AdvancedTab', 'Central Data Store'))
 #        self.sharedCheckBox.setText(
@@ -186,12 +164,6 @@ class AdvancedTab(SettingsTab):
             QtCore.QVariant(True)).toBool())
         self.hideMouseCheckBox.setChecked(
             settings.value(u'hide mouse', QtCore.QVariant(False)).toBool())
-        self.printSlideTextCheckBox.setChecked(settings.value(
-            u'print slide text', QtCore.QVariant(False)).toBool())
-        self.printMetaDataCheckBox.setChecked(settings.value(
-            u'print file meta data', QtCore.QVariant(False)).toBool())
-        self.printNotesCheckBox.setChecked(settings.value(
-            u'print notes', QtCore.QVariant(False)).toBool())
         settings.endGroup()
 
     def save(self):
@@ -212,12 +184,6 @@ class AdvancedTab(SettingsTab):
             QtCore.QVariant(self.enableAutoCloseCheckBox.isChecked()))
         settings.setValue(u'hide mouse',
             QtCore.QVariant(self.hideMouseCheckBox.isChecked()))
-        settings.setValue(u'print slide text',
-            QtCore.QVariant(self.printSlideTextCheckBox.isChecked()))
-        settings.setValue(u'print file meta data',
-            QtCore.QVariant(self.printMetaDataCheckBox.isChecked()))
-        settings.setValue(u'print notes',
-            QtCore.QVariant(self.printNotesCheckBox.isChecked()))
         settings.endGroup()
 
 #    def onSharedCheckBoxChanged(self, checked):

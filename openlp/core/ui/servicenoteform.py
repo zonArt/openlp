@@ -53,4 +53,4 @@ class ServiceNoteForm(QtGui.QDialog):
 
     def retranslateUi(self):
         self.setWindowTitle(
-            translate('OpenLP.ServiceNoteForm', 'Service Item Notes')) 
+            translate('OpenLP.ServiceNoteForm', 'Service Item Notes'))
