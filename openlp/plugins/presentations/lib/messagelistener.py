@@ -116,7 +116,7 @@ class Controller(object):
 
     def last(self):
         """
-        Based on the handler passed at startup triggers the first slide
+        Based on the handler passed at startup triggers the last slide
         """
         log.debug(u'Live = %s, last' % self.is_live)
         if not self.is_live:

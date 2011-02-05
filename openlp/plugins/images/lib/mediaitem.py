@@ -31,8 +31,8 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
     ItemCapabilities, SettingsManager, translate, check_item_selected, \
-    check_directory_exists
-from openlp.core.ui import criticalErrorMessageBox
+    check_directory_exists, Receiver
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file, get_images_filter
 
 log = logging.getLogger(__name__)
@@ -43,7 +43,6 @@ class ImageListView(BaseListWithDnD):
     def __init__(self, parent=None):
         self.PluginName = u'Images'
         BaseListWithDnD.__init__(self, parent)
-
 
 class ImageMediaItem(MediaManagerItem):
     """
@@ -57,6 +56,8 @@ class ImageMediaItem(MediaManagerItem):
         # be instanced by the base MediaManagerItem.
         self.ListViewWithDnD_class = ImageListView
         MediaManagerItem.__init__(self, parent, self, icon)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'live_theme_changed'), self.liveThemeChanged)
 
     def retranslateUi(self):
         self.OnNewPrompt = translate('ImagePlugin.MediaItem',
@@ -95,7 +96,6 @@ class ImageMediaItem(MediaManagerItem):
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
-        self.listView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.listView.addAction(self.replaceAction)
 
     def addEndHeaderBar(self):
@@ -123,26 +123,26 @@ class ImageMediaItem(MediaManagerItem):
                 self.settingsSection, self.getFileList())
 
     def loadList(self, list):
-        for file in list:
-            filename = os.path.split(unicode(file))[1]
+        for imageFile in list:
+            filename = os.path.split(unicode(imageFile))[1]
             thumb = os.path.join(self.servicePath, filename)
             if os.path.exists(thumb):
-                if self.validate(file, thumb):
+                if self.validate(imageFile, thumb):
                     icon = build_icon(thumb)
                 else:
                     icon = build_icon(u':/general/general_delete.png')
             else:
-                icon = self.iconFromFile(file, thumb)
+                icon = self.iconFromFile(imageFile, thumb)
             item_name = QtGui.QListWidgetItem(filename)
             item_name.setIcon(icon)
-            item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
+            item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(imageFile))
             self.listView.addItem(item_name)
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
         items = self.listView.selectedIndexes()
         if items:
             service_item.title = unicode(
-                translate('ImagePlugin.MediaItem', 'Image(s)'))
+                translate('ImagePlugin.MediaItem', 'Images'))
             service_item.add_capability(ItemCapabilities.AllowsMaintain)
             service_item.add_capability(ItemCapabilities.AllowsPreview)
             service_item.add_capability(ItemCapabilities.AllowsLoop)
@@ -161,7 +161,7 @@ class ImageMediaItem(MediaManagerItem):
                 items.remove(item)
             # We cannot continue, as all images do not exist.
             if not items:
-                criticalErrorMessageBox(
+                critical_error_message_box(
                     translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
                     unicode(translate('ImagePlugin.MediaItem',
                     'The following image(s) no longer exist: %s')) %
@@ -193,6 +193,12 @@ class ImageMediaItem(MediaManagerItem):
         self.resetAction.setVisible(False)
         self.parent.liveController.display.resetImage()
 
+    def liveThemeChanged(self):
+        """
+        Triggered by the change of theme in the slide controller
+        """
+        self.resetAction.setVisible(False)
+
     def onReplaceClick(self):
         """
         Called to replace Live backgound with the image selected.
@@ -208,11 +214,8 @@ class ImageMediaItem(MediaManagerItem):
                 self.parent.liveController.display.directImage(name, filename)
                 self.resetAction.setVisible(True)
             else:
-                criticalErrorMessageBox(
+                critical_error_message_box(
                     translate('ImagePlugin.MediaItem', 'Live Background Error'),
                     unicode(translate('ImagePlugin.MediaItem',
                     'There was a problem replacing your background, '
                     'the image file "%s" no longer exists.')) % filename)
-
-    def onPreviewClick(self):
-        MediaManagerItem.onPreviewClick(self)
