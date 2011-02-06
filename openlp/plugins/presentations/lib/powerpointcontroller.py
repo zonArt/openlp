@@ -291,13 +291,7 @@ class PowerpointDocument(PresentationDocument):
         ``slide_no``
             The slide the text is required for, starting at 1.
         """
-        text = ''
-        shapes = self.presentation.Slides(slide_no).Shapes
-        for idx in range(shapes.Count):
-            shape = shapes(idx + 1)
-            if shape.HasTextFrame:
-                text += shape.TextFrame.TextRange.Text + '\n'
-        return text
+        return _get_text_from_shapes(self.presentation.Slides(slide_no).Shapes)
 
     def get_slide_notes(self, slide_no):
         """
@@ -306,10 +300,19 @@ class PowerpointDocument(PresentationDocument):
         ``slide_no``
             The slide the notes are required for, starting at 1.
         """
-        text = ''
-        shapes = self.presentation.Slides(slide_no).NotesPage.Shapes
-        for idx in range(shapes.Count):
-            shape = shapes(idx + 1)
-            if shape.HasTextFrame:
-                text += shape.TextFrame.TextRange.Text + '\n'
-        return text
+        return _get_text_from_shapes(
+            self.presentation.Slides(slide_no).NotesPage.Shapes)
+
+def _get_text_from_shapes(shapes):
+    """
+    Returns any text extracted from the shapes on a presentation slide.
+
+    ``shapes``
+        A set of shapes to search for text.
+    """
+    text = ''
+    for idx in range(shapes.Count):
+        shape = shapes(idx + 1)
+        if shape.HasTextFrame:
+            text += shape.TextFrame.TextRange.Text + '\n'
+    return text
