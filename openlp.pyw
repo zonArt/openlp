@@ -76,7 +76,7 @@ class OpenLP(QtGui.QApplication):
         """
         Load and store current Application Version
         """
-        if u'--dev-version' in sys.argv:
+        if u'--dev-version' in sys.argv or u'-d' in sys.argv:
             # If we're running the dev version, let's use bzr to get the version
             try:
                 # If bzrlib is availble, use it
@@ -194,7 +194,10 @@ class OpenLP(QtGui.QApplication):
             # now kill the splashscreen
             self.splash.finish(self.mainWindow)
         self.mainWindow.repaint()
-        VersionThread(self.mainWindow, app_version).start()
+        update_check = QtCore.QSettings().value(
+            u'general/update check', QtCore.QVariant(True)).toBool()
+        if update_check:
+            VersionThread(self.mainWindow, app_version).start()
         return self.exec_()
 
     def hookException(self, exctype, value, traceback):
@@ -213,6 +216,7 @@ class OpenLP(QtGui.QApplication):
         Sets the Busy Cursor for the Application
         """
         self.setOverrideCursor(QtCore.Qt.BusyCursor)
+        self.processEvents()
 
     def setNormalCursor(self):
         """

@@ -73,13 +73,13 @@ class OpenLPToolbar(QtGui.QToolBar):
         ``checkable``
             If *True* the button has two, *off* and *on*, states. Default is
             *False*, which means the buttons has only one state.
-        
+
         ``shortcut``
             The primary shortcut for this action
-        
+
         ``alternate``
             The alternate shortcut for this action
-            
+
         ``context``
             Specify the context in which this shortcut is valid
         """

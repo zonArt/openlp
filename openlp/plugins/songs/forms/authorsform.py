@@ -27,7 +27,7 @@
 from PyQt4 import QtGui, QtCore
 
 from openlp.core.lib import translate
-from openlp.core.ui import criticalErrorMessageBox
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.songs.forms.authorsdialog import Ui_AuthorsDialog
 
 class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
@@ -80,17 +80,19 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
 
     def accept(self):
         if not self.firstNameEdit.text():
-            criticalErrorMessageBox(message=translate('SongsPlugin.AuthorsForm',
+            critical_error_message_box(
+                message=translate('SongsPlugin.AuthorsForm',
                 'You need to type in the first name of the author.'))
             self.firstNameEdit.setFocus()
             return False
         elif not self.lastNameEdit.text():
-            criticalErrorMessageBox(message=translate('SongsPlugin.AuthorsForm',
+            critical_error_message_box(
+                message=translate('SongsPlugin.AuthorsForm',
                 'You need to type in the last name of the author.'))
             self.lastNameEdit.setFocus()
             return False
         elif not self.displayEdit.text():
-            if criticalErrorMessageBox(
+            if critical_error_message_box(
                 message=translate('SongsPlugin.AuthorsForm',
                 'You have not set a display name for the '
                 'author, combine the first and last names?'),

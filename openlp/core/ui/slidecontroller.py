@@ -30,9 +30,10 @@ import os
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
-from openlp.core.ui import HideMode, MainDisplay
 from openlp.core.lib import OpenLPToolbar, Receiver, resize_image, \
     ItemCapabilities, translate
+from openlp.core.lib.ui import shortcut_action
+from openlp.core.ui import HideMode, MainDisplay
 
 log = logging.getLogger(__name__)
 
@@ -77,14 +78,14 @@ class SlideController(QtGui.QWidget):
         self.selectedRow = 0
         self.serviceItem = None
         self.alertTab = None
-        self.Panel = QtGui.QWidget(parent.ControlSplitter)
+        self.panel = QtGui.QWidget(parent.ControlSplitter)
         self.slideList = {}
         # Layout for holding panel
-        self.panelLayout = QtGui.QVBoxLayout(self.Panel)
+        self.panelLayout = QtGui.QVBoxLayout(self.panel)
         self.panelLayout.setSpacing(0)
         self.panelLayout.setMargin(0)
         # Type label for the top of the slide controller
-        self.typeLabel = QtGui.QLabel(self.Panel)
+        self.typeLabel = QtGui.QLabel(self.panel)
         if self.isLive:
             self.typeLabel.setText(translate('OpenLP.SlideController', 'Live'))
             self.split = 1
@@ -98,7 +99,7 @@ class SlideController(QtGui.QWidget):
         self.typeLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.panelLayout.addWidget(self.typeLabel)
         # Splitter
-        self.splitter = QtGui.QSplitter(self.Panel)
+        self.splitter = QtGui.QSplitter(self.panel)
         self.splitter.setOrientation(QtCore.Qt.Vertical)
         self.panelLayout.addWidget(self.splitter)
         # Actual controller section
@@ -119,6 +120,8 @@ class SlideController(QtGui.QWidget):
         self.previewListWidget.isLive = self.isLive
         self.previewListWidget.setObjectName(u'PreviewListWidget')
         self.previewListWidget.setSelectionBehavior(1)
+        self.previewListWidget.setSelectionMode(
+            QtGui.QAbstractItemView.SingleSelection)
         self.previewListWidget.setEditTriggers(
             QtGui.QAbstractItemView.NoEditTriggers)
         self.previewListWidget.setHorizontalScrollBarPolicy(
@@ -183,13 +186,13 @@ class SlideController(QtGui.QWidget):
                 u'Stop Loop', u':/media/media_stop.png',
                 translate('OpenLP.SlideController', 'Stop continuous loop'),
                 self.onStopLoop)
-            self.DelaySpinBox = QtGui.QSpinBox()
-            self.DelaySpinBox.setMinimum(1)
-            self.DelaySpinBox.setMaximum(180)
-            self.toolbar.addToolbarWidget(u'Image SpinBox', self.DelaySpinBox)
-            self.DelaySpinBox.setSuffix(translate('OpenLP.SlideController',
+            self.delaySpinBox = QtGui.QSpinBox()
+            self.delaySpinBox.setMinimum(1)
+            self.delaySpinBox.setMaximum(180)
+            self.toolbar.addToolbarWidget(u'Image SpinBox', self.delaySpinBox)
+            self.delaySpinBox.setSuffix(translate('OpenLP.SlideController',
                 's'))
-            self.DelaySpinBox.setToolTip(translate('OpenLP.SlideController',
+            self.delaySpinBox.setToolTip(translate('OpenLP.SlideController',
                 'Delay between slides in seconds'))
         else:
             self.toolbar.addToolbarSeparator(u'Close Separator')
@@ -315,18 +318,8 @@ class SlideController(QtGui.QWidget):
         self.mediabar.setVisible(False)
         if self.isLive:
             self.setLiveHotkeys(self)
-            self.previewListWidget.addActions(
-                [self.previousItem,
-                self.nextItem,
-                self.previousService,
-                self.nextService,
-                self.escapeItem])
-            self.display.addActions(
-                [self.previousItem,
-                self.nextItem,
-                self.previousService,
-                self.nextService,
-                self.escapeItem])
+            self.__addActionsToWidget(self.previewListWidget)
+            self.__addActionsToWidget(self.display)
         else:
             self.setPreviewHotkeys()
             self.previewListWidget.addActions(
@@ -388,28 +381,17 @@ class SlideController(QtGui.QWidget):
         self.nextItem.setShortcuts([QtCore.Qt.Key_Down, QtCore.Qt.Key_PageDown])
         self.nextItem.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
         actionList.add_action(self.nextItem, u'Live')
-        self.previousService = QtGui.QAction(translate(
-            'OpenLP.SlideController', 'Previous Service'), parent)
-        self.previousService.setShortcuts([QtCore.Qt.Key_Left, 0])
-        self.previousService.setShortcutContext(
-            QtCore.Qt.WidgetWithChildrenShortcut)
-        QtCore.QObject.connect(self.previousService,
-            QtCore.SIGNAL(u'triggered()'), self.servicePrevious)
+        self.previousService = shortcut_action(parent,
+            translate('OpenLP.SlideController', 'Previous Service'),
+            [QtCore.Qt.Key_Left, 0], self.servicePrevious)
         actionList.add_action(self.previousService, u'Live')
-        self.nextService = QtGui.QAction(translate(
-            'OpenLP.SlideController', 'Next Service'), parent)
-        self.nextService.setShortcuts([QtCore.Qt.Key_Right, 0])
-        self.nextService.setShortcutContext(
-            QtCore.Qt.WidgetWithChildrenShortcut)
-        QtCore.QObject.connect(self.nextService,
-            QtCore.SIGNAL(u'triggered()'), self.serviceNext)
+        self.nextService = shortcut_action(parent,
+            translate('OpenLP.SlideController', 'Next Service'),
+            [QtCore.Qt.Key_Right, 0], self.serviceNext)
         actionList.add_action(self.nextService, u'Live')
-        self.escapeItem = QtGui.QAction(translate(
-            'OpenLP.SlideController', 'Escape Item'), parent)
-        self.escapeItem.setShortcuts([QtCore.Qt.Key_Escape, 0])
-        self.escapeItem.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
-        QtCore.QObject.connect(self.escapeItem,
-            QtCore.SIGNAL(u'triggered()'), self.liveEscape)
+        self.escapeItem = shortcut_action(parent,
+            translate('OpenLP.SlideController', 'Escape Item'),
+            [QtCore.Qt.Key_Escape, 0], self.liveEscape)
         actionList.add_action(self.escapeItem, u'Live')
 
     def liveEscape(self):
@@ -433,18 +415,19 @@ class SlideController(QtGui.QWidget):
         self.display.alertTab = self.alertTab
         self.display.setup()
         if self.isLive:
-            self.display.addActions(
-                [self.previousItem,
-                self.nextItem,
-                self.previousService,
-                self.nextService,
-                self.escapeItem])
+            self.__addActionsToWidget(self.display)
         # The SlidePreview's ratio.
         self.ratio = float(self.screens.current[u'size'].width()) / \
             float(self.screens.current[u'size'].height())
         self.previewSizeChanged()
         if self.serviceItem:
             self.refreshServiceItem()
+
+    def __addActionsToWidget(self, widget):
+        widget.addActions([
+            self.previousItem, self.nextItem,
+            self.previousService, self.nextService,
+            self.escapeItem])
 
     def previewSizeChanged(self):
         """
@@ -480,18 +463,11 @@ class SlideController(QtGui.QWidget):
     def onSongBarHandler(self):
         request = unicode(self.sender().text())
         slideno = self.slideList[request]
-        if slideno > self.previewListWidget.rowCount():
-            self.previewListWidget.selectRow(
-                self.previewListWidget.rowCount() - 1)
-        else:
-            if slideno + 1 < self.previewListWidget.rowCount():
-                self.previewListWidget.scrollToItem(
-                    self.previewListWidget.item(slideno + 1, 0))
-            self.previewListWidget.selectRow(slideno)
+        self.__updatePreviewSelection(slideno)
         self.onSlideSelected()
 
     def receiveSpinDelay(self, value):
-        self.DelaySpinBox.setValue(int(value))
+        self.delaySpinBox.setValue(int(value))
 
     def enableToolBar(self, item):
         """
@@ -580,10 +556,7 @@ class SlideController(QtGui.QWidget):
             slideno = 0
         # If service item is the same as the current on only change slide
         if item.__eq__(self.serviceItem):
-            if slideno + 1 < self.previewListWidget.rowCount():
-                self.previewListWidget.scrollToItem(
-                    self.previewListWidget.item(slideno + 1, 0))
-            self.previewListWidget.selectRow(slideno)
+            self.__checkUpdateSelectedSlide(slideno)
             self.onSlideSelected()
             return
         self._processItem(item, slideno)
@@ -663,14 +636,7 @@ class SlideController(QtGui.QWidget):
             self.previewListWidget.resizeRowsToContents()
         self.previewListWidget.setColumnWidth(0,
             self.previewListWidget.viewport().size().width())
-        if slideno > self.previewListWidget.rowCount():
-            self.previewListWidget.selectRow(
-                self.previewListWidget.rowCount() - 1)
-        else:
-            if slideno + 1 < self.previewListWidget.rowCount():
-                self.previewListWidget.scrollToItem(
-                    self.previewListWidget.item(slideno + 1, 0))
-            self.previewListWidget.selectRow(slideno)
+        self.__updatePreviewSelection(slideno)
         self.enableToolBar(serviceItem)
         # Pass to display for viewing
         self.display.buildHtml(self.serviceItem)
@@ -680,6 +646,16 @@ class SlideController(QtGui.QWidget):
         self.previewListWidget.setFocus()
         Receiver.send_message(u'slidecontroller_%s_started' % self.typePrefix,
             [serviceItem])
+
+    def __updatePreviewSelection(self, slideno):
+        """
+        Utility method to update the selected slide in the list.
+        """
+        if slideno > self.previewListWidget.rowCount():
+            self.previewListWidget.selectRow(
+                self.previewListWidget.rowCount() - 1)
+        else:
+            self.__checkUpdateSelectedSlide(slideno)
 
     def onTextRequest(self):
         """
@@ -728,10 +704,7 @@ class SlideController(QtGui.QWidget):
                 [self.serviceItem, self.isLive, index])
             self.updatePreview()
         else:
-            if index + 1 < self.previewListWidget.rowCount():
-                self.previewListWidget.scrollToItem(
-                    self.previewListWidget.item(index + 1, 0))
-            self.previewListWidget.selectRow(index)
+            self.__checkUpdateSelectedSlide(index)
             self.onSlideSelected()
 
     def mainDisplaySetBackground(self):
@@ -890,10 +863,7 @@ class SlideController(QtGui.QWidget):
         """
         The slide has been changed. Update the slidecontroller accordingly
         """
-        if row + 1 < self.previewListWidget.rowCount():
-            self.previewListWidget.scrollToItem(
-                self.previewListWidget.item(row + 1, 0))
-        self.previewListWidget.selectRow(row)
+        self.__checkUpdateSelectedSlide(row)
         self.updatePreview()
         Receiver.send_message(u'slidecontroller_%s_changed' % self.typePrefix,
             row)
@@ -944,10 +914,7 @@ class SlideController(QtGui.QWidget):
                 else:
                     Receiver.send_message('servicemanager_next_item')
                     return
-            if row + 1 < self.previewListWidget.rowCount():
-                self.previewListWidget.scrollToItem(
-                    self.previewListWidget.item(row + 1, 0))
-            self.previewListWidget.selectRow(row)
+            self.__checkUpdateSelectedSlide(row)
             self.onSlideSelected()
 
     def onSlideSelectedPreviousNoloop(self):
@@ -970,11 +937,14 @@ class SlideController(QtGui.QWidget):
                     row = self.previewListWidget.rowCount() - 1
                 else:
                     row = 0
-            if row + 1 < self.previewListWidget.rowCount():
-                self.previewListWidget.scrollToItem(
-                    self.previewListWidget.item(row + 1, 0))
-            self.previewListWidget.selectRow(row)
+            self.__checkUpdateSelectedSlide(row)
             self.onSlideSelected()
+
+    def __checkUpdateSelectedSlide(self, row):
+        if row + 1 < self.previewListWidget.rowCount():
+            self.previewListWidget.scrollToItem(
+                self.previewListWidget.item(row + 1, 0))
+        self.previewListWidget.selectRow(row)
 
     def onSlideSelectedLast(self):
         """
@@ -997,7 +967,7 @@ class SlideController(QtGui.QWidget):
         """
         if self.previewListWidget.rowCount() > 1:
             self.timer_id = self.startTimer(
-                int(self.DelaySpinBox.value()) * 1000)
+                int(self.delaySpinBox.value()) * 1000)
             self.toolbar.actions[u'Stop Loop'].setVisible(True)
             self.toolbar.actions[u'Start Loop'].setVisible(False)
 

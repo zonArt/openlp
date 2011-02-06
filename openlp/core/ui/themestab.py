@@ -165,13 +165,7 @@ class ThemesTab(SettingsTab):
         self.global_theme = unicode(self.DefaultComboBox.currentText())
         self.parent.renderManager.set_global_theme(
             self.global_theme, self.theme_level)
-        image = self.parent.ThemeManagerContents.getPreviewImage(
-            self.global_theme)
-        preview = QtGui.QPixmap(unicode(image))
-        if not preview.isNull():
-            preview = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio,
-                QtCore.Qt.SmoothTransformation)
-        self.DefaultListView.setPixmap(preview)
+        self.__previewGlobalTheme()
 
     def updateThemeList(self, theme_list):
         """
@@ -198,10 +192,16 @@ class ThemesTab(SettingsTab):
         self.parent.renderManager.set_global_theme(
             self.global_theme, self.theme_level)
         if self.global_theme is not u'':
-            image = self.parent.ThemeManagerContents.getPreviewImage(
-                self.global_theme)
-            preview = QtGui.QPixmap(unicode(image))
-            if not preview.isNull():
-                preview = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio,
-                    QtCore.Qt.SmoothTransformation)
-            self.DefaultListView.setPixmap(preview)
+            self.__previewGlobalTheme()
+
+    def __previewGlobalTheme(self):
+        """
+        Utility method to update the global theme preview image.
+        """
+        image = self.parent.ThemeManagerContents.getPreviewImage(
+            self.global_theme)
+        preview = QtGui.QPixmap(unicode(image))
+        if not preview.isNull():
+            preview = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio,
+                QtCore.Qt.SmoothTransformation)
+        self.DefaultListView.setPixmap(preview)
