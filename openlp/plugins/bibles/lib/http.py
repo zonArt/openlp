@@ -38,7 +38,7 @@ from HTMLParser import HTMLParseError
 from BeautifulSoup import BeautifulSoup, NavigableString
 
 from openlp.core.lib import Receiver, translate
-from openlp.core.ui import criticalErrorMessageBox
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, get_web_page
 from openlp.plugins.bibles.lib import SearchResults
 from openlp.plugins.bibles.lib.db import BibleDB, Book
@@ -431,7 +431,7 @@ class HTTPBible(BibleDB):
             if not db_book:
                 book_details = HTTPBooks.get_book(book)
                 if not book_details:
-                    criticalErrorMessageBox(
+                    critical_error_message_box(
                         translate('BiblesPlugin', 'No Book Found'),
                         translate('BiblesPlugin', 'No matching '
                         'book could be found in this Bible. Check that you '
@@ -443,7 +443,6 @@ class HTTPBible(BibleDB):
             book = db_book.name
             if BibleDB.get_verse_count(self, book, reference[1]) == 0:
                 Receiver.send_message(u'cursor_busy')
-                Receiver.send_message(u'openlp_process_events')
                 search_results = self.get_chapter(book, reference[1])
                 if search_results and search_results.has_verselist():
                     ## We have found a book of the bible lets check to see
@@ -552,14 +551,14 @@ def send_error_message(error_type):
         The type of error that occured for the issue.
     """
     if error_type == u'download':
-        criticalErrorMessageBox(
+        critical_error_message_box(
             translate('BiblePlugin.HTTPBible', 'Download Error'),
             translate('BiblePlugin.HTTPBible', 'There was a '
             'problem downloading your verse selection. Please check your '
             'Internet connection, and if this error continues to occur '
             'please consider reporting a bug.'))
     elif error_type == u'parse':
-        criticalErrorMessageBox(
+        critical_error_message_box(
             translate('BiblePlugin.HTTPBible', 'Parse Error'),
             translate('BiblePlugin.HTTPBible', 'There was a '
             'problem extracting your verse selection. If this error continues '

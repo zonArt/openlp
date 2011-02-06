@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
     SettingsManager, translate, check_item_selected, Receiver, ItemCapabilities
-from openlp.core.ui import criticalErrorMessageBox
+from openlp.core.lib.ui import critical_error_message_box, media_item_combo_box
 from openlp.plugins.presentations.lib import MessageListener
 
 log = logging.getLogger(__name__)
@@ -116,12 +116,8 @@ class PresentationMediaItem(MediaManagerItem):
         self.displayLayout.setObjectName(u'displayLayout')
         self.displayTypeLabel = QtGui.QLabel(self.presentationWidget)
         self.displayTypeLabel.setObjectName(u'displayTypeLabel')
-        self.displayTypeComboBox = QtGui.QComboBox(self.presentationWidget)
-        self.displayTypeComboBox.setSizeAdjustPolicy(
-            QtGui.QComboBox.AdjustToMinimumContentsLength)
-        self.displayTypeComboBox.setSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
-        self.displayTypeComboBox.setObjectName(u'displayTypeComboBox')
+        self.displayTypeComboBox = media_item_combo_box(
+            self.presentationWidget, u'displayTypeComboBox')
         self.displayTypeLabel.setBuddy(self.displayTypeComboBox)
         self.displayLayout.addRow(self.displayTypeLabel,
             self.displayTypeComboBox)
@@ -181,7 +177,7 @@ class PresentationMediaItem(MediaManagerItem):
             filename = os.path.split(unicode(file))[1]
             if titles.count(filename) > 0:
                 if not initialLoad:
-                    criticalErrorMessageBox(
+                    critical_error_message_box(
                         translate('PresentationPlugin.MediaItem',
                         'File Exists'),
                         translate('PresentationPlugin.MediaItem',
@@ -205,7 +201,7 @@ class PresentationMediaItem(MediaManagerItem):
                 if initialLoad:
                     icon = build_icon(u':/general/general_delete.png')
                 else:
-                    criticalErrorMessageBox(
+                    critical_error_message_box(
                         self, translate('PresentationPlugin.MediaItem',
                         'Unsupported File'),
                         translate('PresentationPlugin.MediaItem',
@@ -278,7 +274,7 @@ class PresentationMediaItem(MediaManagerItem):
                         return True
                     else:
                         # File is no longer present
-                        criticalErrorMessageBox(
+                        critical_error_message_box(
                             translate('PresentationPlugin.MediaItem',
                             'Missing Presentation'),
                             unicode(translate('PresentationPlugin.MediaItem',
@@ -287,7 +283,7 @@ class PresentationMediaItem(MediaManagerItem):
                         return False
                 else:
                     # File is no longer present
-                    criticalErrorMessageBox(
+                    critical_error_message_box(
                         translate('PresentationPlugin.MediaItem',
                         'Missing Presentation'),
                         unicode(translate('PresentationPlugin.MediaItem',

@@ -36,8 +36,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import OpenLPToolbar, ServiceItem, context_menu_action, \
     Receiver, build_icon, ItemCapabilities, SettingsManager, translate, \
     ThemeLevel
-from openlp.core.ui import criticalErrorMessageBox, ServiceNoteForm, \
-    ServiceItemEditForm
+from openlp.core.lib.ui import critical_error_message_box
+from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm
 from openlp.core.utils import AppLocation, delete_file, file_is_unicode, \
     split_filename
 
@@ -491,7 +491,7 @@ class ServiceManager(QtGui.QWidget):
             for file in zip.namelist():
                 ucsfile = file_is_unicode(file)
                 if not ucsfile:
-                    criticalErrorMessageBox(
+                    critical_error_message_box(
                         message=translate('OpenLP.ServiceManager',
                         'File is not a valid service.\n'
                         'The content encoding is not UTF-8.'))
@@ -506,6 +506,7 @@ class ServiceManager(QtGui.QWidget):
                 if filePath.endswith(u'osd'):
                     p_file = filePath
             if 'p_file' in locals():
+                Receiver.send_message(u'cursor_busy')
                 fileTo = open(p_file, u'r')
                 items = cPickle.load(fileTo)
                 fileTo.close()
@@ -520,13 +521,14 @@ class ServiceManager(QtGui.QWidget):
                         Receiver.send_message(u'%s_service_load' %
                             serviceItem.name.lower(), serviceItem)
                 delete_file(p_file)
+                Receiver.send_message(u'cursor_normal')
             else:
-                criticalErrorMessageBox(
+                critical_error_message_box(
                     message=translate('OpenLP.ServiceManager',
                     'File is not a valid service.'))
                 log.exception(u'File contains no service data')
         except (IOError, NameError):
-            log.exception(u'Problem loading a service file')
+            log.exception(u'Problem loading service file %s' % fileName)
         finally:
             if fileTo:
                 fileTo.close()
@@ -536,9 +538,7 @@ class ServiceManager(QtGui.QWidget):
         self.mainwindow.addRecentFile(fileName)
         self.setModified(False)
         QtCore.QSettings(). \
-            setValue(u'service/last file',QtCore.QVariant(fileName))
-        # Refresh Plugin lists
-        Receiver.send_message(u'plugin_list_refresh')
+            setValue(u'service/last file', QtCore.QVariant(fileName))
 
     def loadLastFile(self):
         """
@@ -856,7 +856,7 @@ class ServiceManager(QtGui.QWidget):
         one it allows the item to be displayed.
         """
         if serviceItem.is_command():
-            type = serviceItem._raw_frames[0][u'title'].split(u'.')[1]
+            type = serviceItem._raw_frames[0][u'title'].split(u'.')[-1]
             if type not in self.suffixes:
                 serviceItem.is_valid = False
 
@@ -993,7 +993,7 @@ class ServiceManager(QtGui.QWidget):
             self.mainwindow.previewController.addServiceManagerItem(
                 self.serviceItems[item][u'service_item'], child)
         else:
-            criticalErrorMessageBox(
+            critical_error_message_box(
                 translate('OpenLP.ServiceManager', 'Missing Display Handler'),
                 translate('OpenLP.ServiceManager', 'Your item cannot be '
                 'displayed as there is no handler to display it'))
@@ -1027,7 +1027,7 @@ class ServiceManager(QtGui.QWidget):
                         self.serviceItems[item][u'service_item'], 0)
                     self.mainwindow.liveController.previewListWidget.setFocus()
         else:
-            criticalErrorMessageBox(
+            critical_error_message_box(
                 translate('OpenLP.ServiceManager', 'Missing Display Handler'),
                 translate('OpenLP.ServiceManager', 'Your item cannot be '
                 'displayed as the plugin required to display it is missing '
@@ -1182,3 +1182,46 @@ class ServiceManager(QtGui.QWidget):
             data_item[u'selected'] = (item == curitem)
             data.append(data_item)
         Receiver.send_message(u'servicemanager_list_response', data)
+
+    def printServiceOrder(self):
+        """
+        Print a Service Order Sheet.
+        """
+        if not self.serviceItems:
+            critical_error_message_box(
+                message=translate('OpenLP.ServiceManager',
+                'There is no service item in this service.'))
+            return
+        printDialog = QtGui.QPrintDialog()
+        if not printDialog.exec_():
+            return
+        text = u'<h2>%s</h2>' % translate('OpenLP.ServiceManager',
+            'Service Order Sheet')
+        for item in self.serviceItems:
+            item = item[u'service_item']
+            # add the title
+            text += u'<h4><img src="%s" /> %s</h4>' % (item.icon,
+                item.get_display_title())
+            if not QtCore.QSettings().value(u'advanced' +
+                u'/detailed service print', QtCore.QVariant(True)).toBool():
+                continue
+            if item.is_text():
+                # Add the text of the service item.
+                for slide in item.get_frames():
+                    text += u'<p>' + slide[u'text'] + u'</p>'
+            elif item.is_image():
+                # Add the image names of the service item.
+                text += u'<ol>'
+                for slide in range(len(item.get_frames())):
+                    text += u'<li><p>%s</p></li>' % item.get_frame_title(slide)
+                text += u'</ol>'
+            if item.foot_text:
+                # add footer
+                text += u'<p>%s</p>' % item.foot_text
+            if item.notes:
+                # add notes
+                text += u'<p><b>%s</b> %s</p>' % (translate(
+                    'OpenLP.ServiceManager', 'Notes:'), item.notes)
+        serviceDocument = QtGui.QTextDocument()
+        serviceDocument.setHtml(text)
+        serviceDocument.print_(printDialog.printer())

@@ -91,21 +91,30 @@ class ThemeLevel(object):
     Song = 3
 
 class BackgroundType(object):
+    """
+    Type enumeration for backgrounds.
+    """
     Solid = 0
     Gradient = 1
     Image = 2
 
     @staticmethod
-    def to_string(type):
-        if type == BackgroundType.Solid:
+    def to_string(background_type):
+        """
+        Return a string representation of a background type.
+        """
+        if background_type == BackgroundType.Solid:
             return u'solid'
-        elif type == BackgroundType.Gradient:
+        elif background_type == BackgroundType.Gradient:
             return u'gradient'
-        elif type == BackgroundType.Image:
+        elif background_type == BackgroundType.Image:
             return u'image'
 
     @staticmethod
     def from_string(type_string):
+        """
+        Return a background type for the given string.
+        """
         if type_string == u'solid':
             return BackgroundType.Solid
         elif type_string == u'gradient':
@@ -114,6 +123,9 @@ class BackgroundType(object):
             return BackgroundType.Image
 
 class BackgroundGradientType(object):
+    """
+    Type enumeration for background gradients.
+    """
     Horizontal = 0
     Vertical = 1
     Circular = 2
@@ -121,20 +133,26 @@ class BackgroundGradientType(object):
     LeftBottom = 4
 
     @staticmethod
-    def to_string(type):
-        if type == BackgroundGradientType.Horizontal:
+    def to_string(gradient_type):
+        """
+        Return a string representation of a background gradient type.
+        """
+        if gradient_type == BackgroundGradientType.Horizontal:
             return u'horizontal'
-        elif type == BackgroundGradientType.Vertical:
+        elif gradient_type == BackgroundGradientType.Vertical:
             return u'vertical'
-        elif type == BackgroundGradientType.Circular:
+        elif gradient_type == BackgroundGradientType.Circular:
             return u'circular'
-        elif type == BackgroundGradientType.LeftTop:
+        elif gradient_type == BackgroundGradientType.LeftTop:
             return u'leftTop'
-        elif type == BackgroundGradientType.LeftBottom:
+        elif gradient_type == BackgroundGradientType.LeftBottom:
             return u'leftBottom'
 
     @staticmethod
     def from_string(type_string):
+        """
+        Return a background gradient type for the given string.
+        """
         if type_string == u'horizontal':
             return BackgroundGradientType.Horizontal
         elif type_string == u'vertical':
@@ -147,19 +165,25 @@ class BackgroundGradientType(object):
             return BackgroundGradientType.LeftBottom
 
 class HorizontalType(object):
+    """
+    Type enumeration for horizontal alignment.
+    """
     Left = 0
     Center = 1
     Right = 2
 
 class VerticalType(object):
+    """
+    Type enumeration for vertical alignment.
+    """
     Top = 0
     Middle = 1
     Bottom = 2
 
-boolean_list = [u'italics', u'override', u'outline', u'shadow',
+BOOLEAN_LIST = [u'bold', u'italics', u'override', u'outline', u'shadow',
     u'slide_transition']
 
-integer_list = [u'size', u'line_adjustment', u'x', u'height', u'y',
+INTEGER_LIST = [u'size', u'line_adjustment', u'x', u'height', u'y',
     u'width', u'shadow_size', u'outline_size', u'horizontal_align',
     u'vertical_align', u'wrap_style']
 
@@ -514,9 +538,9 @@ class ThemeXML(object):
             return
         field = self._de_hump(element)
         tag = master + u'_' + field
-        if field in boolean_list:
+        if field in BOOLEAN_LIST:
             setattr(self, tag, str_to_bool(value))
-        elif field in integer_list:
+        elif field in INTEGER_LIST:
             setattr(self, tag, int(value))
         else:
             # make string value unicode
