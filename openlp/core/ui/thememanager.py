@@ -334,9 +334,8 @@ class ThemeManager(QtGui.QWidget):
             row = self.themeListWidget.row(item)
             self.themeListWidget.takeItem(row)
             self.deleteTheme(theme)
-            # As we do not reload the themes, push out the change
-            # Reaload the list as the internal lists and events need
-            # to be triggered
+            # As we do not reload the themes, push out the change. Reload the
+            # list as the internal lists and events need to be triggered.
             self._pushThemes()
 
     def deleteTheme(self, theme):
