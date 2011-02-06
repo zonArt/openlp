@@ -26,9 +26,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate
-from openlp.core.lib.ui import save_cancel_button_box
-
+from openlp.core.lib import build_icon, translate
 
 class Ui_PrintServiceOrderDialog(object):
     def setupUi(self, printServiceOrderDialog):
@@ -99,17 +97,12 @@ class Ui_PrintServiceOrderDialog(object):
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.zoomButtonLayout.addItem(spacerItem)
         self.zoomOutButton = QtGui.QToolButton(printServiceOrderDialog)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(u':/general/general_zoom_out.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.zoomOutButton.setIcon(icon)
+        self.zoomOutButton.setIcon(
+            build_icon(u':/general/general_zoom_out.png'))
         self.zoomOutButton.setObjectName(u'zoomOutButton')
         self.zoomButtonLayout.addWidget(self.zoomOutButton)
         self.zoomInButton = QtGui.QToolButton(printServiceOrderDialog)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(u':/general/general_zoom_in.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.zoomInButton.setIcon(icon)
+        self.zoomInButton.setIcon(build_icon(u':/general/general_zoom_in.png'))
         self.zoomInButton.setObjectName(u'zoomInButton')
         self.zoomButtonLayout.addWidget(self.zoomInButton)
         self.dialogLayout.addLayout(self.zoomButtonLayout, 1, 0, 1, 1)

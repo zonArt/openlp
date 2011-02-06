@@ -30,7 +30,6 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
-from openlp.core.lib.ui import save_cancel_button_box
 from openlp.core.ui.printserviceorderdialog import Ui_PrintServiceOrderDialog
 
 class PrintServiceOrderForm(QtGui.QDialog, Ui_PrintServiceOrderDialog):
