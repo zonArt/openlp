@@ -106,7 +106,7 @@ class PrintServiceOrderForm(QtGui.QDialog, Ui_PrintServiceOrderDialog):
             # Add service items' notes.
             if self.printNotesCheckBox.isChecked():
                 if item.notes:
-                    text += u'<p><b>%s</b></p><br />%s' % (translate(
+                    text += u'<p><b>%s</b></p>%s' % (translate(
                         'OpenLP.ServiceManager', 'Notes:'),
                         item.notes.replace(u'\n', u'<br />'))
             # Add play length of media files.
