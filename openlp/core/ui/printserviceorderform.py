@@ -38,14 +38,13 @@ class PrintServiceOrderForm(QtGui.QDialog):
         """
         Constructor
         """
-        self.serviceManager = parent
         QtGui.QDialog.__init__(self, parent)
-        self.setupUi()
-        self.retranslateUi()
-        self.html = u''
+        self.serviceManager = parent
         self.printer = QtGui.QPrinter()
         self.printDialog = QtGui.QPrintDialog(self.printer, self)
         self.document = QtGui.QTextDocument()
+        self.setupUi()
+        self.retranslateUi()
         # Load the settings for this dialog.
         settings = QtCore.QSettings()
         settings.beginGroup(u'advanced')
@@ -56,37 +55,109 @@ class PrintServiceOrderForm(QtGui.QDialog):
         self.printNotesCheckBox.setChecked(settings.value(
             u'print notes', QtCore.QVariant(False)).toBool())
         settings.endGroup()
+        # Signals
+        QtCore.QObject.connect(self.printButton,
+            QtCore.SIGNAL('clicked()'), self.printServiceOrder)
+        QtCore.QObject.connect(self.zoomOutButton,
+            QtCore.SIGNAL('clicked()'), self.zoomOut)
+        QtCore.QObject.connect(self.zoomInButton,
+            QtCore.SIGNAL('clicked()'), self.zoomIn)
+        QtCore.QObject.connect(self.previewWidget,
+            QtCore.SIGNAL('paintRequested(QPrinter *)'), self.paintRequested)
+        QtCore.QObject.connect(self.serviceTitleLineEdit,
+            QtCore.SIGNAL('textChanged(const QString)'), self.updatePreviewText)
+        QtCore.QObject.connect(self.printSlideTextCheckBox,
+            QtCore.SIGNAL('stateChanged(int)'), self.updatePreviewText)
+        QtCore.QObject.connect(self.printNotesCheckBox,
+            QtCore.SIGNAL('stateChanged(int)'), self.updatePreviewText)
+        QtCore.QObject.connect(self.printMetaDataCheckBox,
+            QtCore.SIGNAL('stateChanged(int)'), self.updatePreviewText)
+        self.updatePreviewText()
 
     def setupUi(self):
         self.dialogLayout = QtGui.QHBoxLayout(self)
         self.dialogLayout.setObjectName(u'dialogLayout')
-        self.verticalLayout = QtGui.QVBoxLayout()
-        self.verticalLayout.setObjectName(u'verticalLayout')
+        self.perviewLayout = QtGui.QVBoxLayout()
+        self.perviewLayout.setObjectName(u'perviewLayout')
+        self.previewLabel = QtGui.QLabel(self)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.previewLabel.sizePolicy().hasHeightForWidth())
+        self.previewLabel.setSizePolicy(sizePolicy)
+        self.previewLabel.setObjectName(u'previewLabel')
+        self.perviewLayout.addWidget(self.previewLabel)
+        self.previewWidget = QtGui.QPrintPreviewWidget(self.printer, self, QtCore.Qt.Widget)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.previewWidget.sizePolicy().hasHeightForWidth())
+        self.previewWidget.setSizePolicy(sizePolicy)
+        self.previewWidget.setObjectName(u'previewWidget')
+        self.previewWidget.fitToWidth()
+        self.perviewLayout.addWidget(self.previewWidget)
+        self.dialogLayout.addLayout(self.perviewLayout)
+        self.settingsLayout = QtGui.QVBoxLayout()
+        self.settingsLayout.setObjectName(u'settingsLayout')
         self.serviceTitleLayout = QtGui.QHBoxLayout()
         self.serviceTitleLayout.setObjectName(u'serviceTitleLayout')
         self.serviceTitleLabel = QtGui.QLabel(self)
         self.serviceTitleLabel.setObjectName(u'serviceTitleLabel')
         self.serviceTitleLayout.addWidget(self.serviceTitleLabel)
         self.serviceTitleLineEdit = QtGui.QLineEdit(self)
+        self.serviceTitleLineEdit.setSizePolicy(
+            QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
         self.serviceTitleLineEdit.setObjectName(u'serviceTitleLineEdit')
         self.serviceTitleLayout.addWidget(self.serviceTitleLineEdit)
-        self.verticalLayout.addLayout(self.serviceTitleLayout)
+        self.settingsLayout.addLayout(self.serviceTitleLayout)
         self.printSlideTextCheckBox = QtGui.QCheckBox(self)
         self.printSlideTextCheckBox.setObjectName(u'printSlideTextCheckBox')
-        self.verticalLayout.addWidget(self.printSlideTextCheckBox)
+        self.settingsLayout.addWidget(self.printSlideTextCheckBox)
         self.printNotesCheckBox = QtGui.QCheckBox(self)
         self.printNotesCheckBox.setObjectName(u'printNotesCheckBox')
-        self.verticalLayout.addWidget(self.printNotesCheckBox)
+        self.settingsLayout.addWidget(self.printNotesCheckBox)
         self.printMetaDataCheckBox = QtGui.QCheckBox(self)
         self.printMetaDataCheckBox.setObjectName(u'printMetaDataCheckBox')
-        self.verticalLayout.addWidget(self.printMetaDataCheckBox)
-        self.verticalLayout.addWidget(save_cancel_button_box(self))
-        self.dialogLayout.addLayout(self.verticalLayout)
+        self.settingsLayout.addWidget(self.printMetaDataCheckBox)
+        self.buttonLayout = QtGui.QHBoxLayout()
+        self.zoomOutButton = QtGui.QToolButton(self)
+        icon = QtGui.QIcon()
+        #icon.addPixmap(QtGui.QPixmap(u':/exports/export_move_to_list.png'),
+        icon.addPixmap(QtGui.QPixmap(u'/home/andreas/zoom-out.png'),
+            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.zoomOutButton.setIcon(icon)
+        self.zoomOutButton.setObjectName(u'zoomOutButton')
+        self.buttonLayout.addWidget(self.zoomOutButton)
+        self.zoomInButton = QtGui.QToolButton(self)
+        icon = QtGui.QIcon()
+        #icon.addPixmap(QtGui.QPixmap(u':/exports/export_remove.png'),
+        icon.addPixmap(QtGui.QPixmap(u'/home/andreas/zoom-in.png'),
+            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.zoomInButton.setIcon(icon)
+        self.zoomInButton.setObjectName(u'toolButton')
+        self.buttonLayout.addWidget(self.zoomInButton)
+        spacerItem = QtGui.QSpacerItem(20, 40,
+            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.settingsLayout.addItem(spacerItem)
+        self.buttonLayout.setObjectName(u'buttonLayout')
+        spacerItem = QtGui.QSpacerItem(40, 20,
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.buttonLayout.addItem(spacerItem)
+        self.cancelButton = QtGui.QPushButton(self)
+        self.cancelButton.setObjectName(u'cancelButton')
+        self.buttonLayout.addWidget(self.cancelButton)
+        self.printButton = QtGui.QPushButton(self)
+        self.printButton.setObjectName(u'printButton')
+        self.buttonLayout.addWidget(self.printButton)
+        self.settingsLayout.addLayout(self.buttonLayout)
+        self.dialogLayout.addLayout(self.settingsLayout)
         QtCore.QMetaObject.connectSlotsByName(self)
 
     def retranslateUi(self):
         self.setWindowTitle(
             translate('OpenLP.PrintServiceOrderForm', 'Print Service Order'))
+        self.previewLabel.setText(
+            translate('OpenLP.ServiceManager', '<b>Preview:</b>'))
         self.printSlideTextCheckBox.setText(translate(
             'OpenLP.PrintServiceOrderForm', 'Include slide text if avaialbe'))
         self.printNotesCheckBox.setText(translate(
@@ -95,14 +166,17 @@ class PrintServiceOrderForm(QtGui.QDialog):
             translate('OpenLP.PrintServiceOrderForm',
             'Include play lenght of media items'))
         self.serviceTitleLabel.setText(translate(
-            'OpenLP.PrintServiceOrderForm', 'Service Order Title:'))
+            'OpenLP.PrintServiceOrderForm', 'Title:'))
         self.serviceTitleLineEdit.setText(translate('OpenLP.ServiceManager',
             'Service Order Sheet'))
+        self.printButton.setText(translate('OpenLP.ServiceManager', 'Print'))
+        self.cancelButton.setText(translate('OpenLP.ServiceManager', 'Cancel'))
 
-    def serviceOrderText(self):
+    def updatePreviewText(self):
         """
         Creates the html text, to print the service items.
         """
+        text = u''
         if self.serviceTitleLineEdit.text():
             text += u'<h2>%s</h2>' % unicode(self.serviceTitleLineEdit.text())
         for item in self.serviceManager.serviceItems:
@@ -129,8 +203,9 @@ class PrintServiceOrderForm(QtGui.QDialog):
             # Add service items' notes.
             if self.printNotesCheckBox.isChecked():
                 if item.notes:
-                    text += u'<p><b>%s</b> %s</p>' % (translate(
-                        'OpenLP.ServiceManager', 'Notes:'), item.notes)
+                    text += u'<p><b>%s</b></p><br />%s' % (translate(
+                        'OpenLP.ServiceManager', 'Notes:'),
+                        item.notes.replace(u'\n', u'<br />'))
             # Add play length of media files.
             if item.is_media() and self.printMetaDataCheckBox.isChecked():
                 path = os.path.join(item.get_frames()[0][u'path'],
@@ -143,6 +218,19 @@ class PrintServiceOrderForm(QtGui.QDialog):
                     text += u'<p><b>%s</b> %s</p>' % (translate(
                         'OpenLP.ServiceManager', u'Playing time:'),
                         unicode(datetime.timedelta(seconds=length)))
+        self.document.setHtml(text)
+        self.previewWidget.updatePreview()
+
+    def paintRequested(self, printer):
+        """
+        Paint the preview.
+        """
+        self.document.print_(printer)   
+
+    def printServiceOrder(self):
+        if not self.printDialog.exec_():
+            return
+        self.document.print_(self.printer)
         # Save the settings for this dialog.
         settings = QtCore.QSettings()
         settings.beginGroup(u'advanced')
@@ -153,12 +241,9 @@ class PrintServiceOrderForm(QtGui.QDialog):
         settings.setValue(u'print notes',
             QtCore.QVariant(self.printNotesCheckBox.isChecked()))
         settings.endGroup()
-        self.document.setHtml(text)
 
-    def printServiceOrder(self):
-        serviceDocument = QtGui.QTextDocument()
-        serviceDocument.setHtml(settingDialog.serviceOrderText())
-        printDialog = QtGui.QPrintDialog()
-        if not printDialog.exec_():
-            return
-        serviceDocument.print_(printDialog.printer())
+    def zoomIn(self):
+        self.previewWidget.zoomIn()
+        
+    def zoomOut(self):
+        self.previewWidget.zoomOut()

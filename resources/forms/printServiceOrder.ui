@@ -13,10 +13,10 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout_2">
+  <layout class="QHBoxLayout" name="horizontalLayout_3">
    <item>
-    <layout class="QHBoxLayout" name="dialogLayout">
-     <item>
+    <layout class="QGridLayout" name="dialogLayout">
+     <item row="0" column="0">
       <layout class="QVBoxLayout" name="perviewLayout">
        <item>
         <widget class="QLabel" name="previewLabel">
@@ -33,34 +33,44 @@
        </item>
        <item>
         <widget class="QWidget" name="previewWidget" native="true">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <zorder></zorder>
         </widget>
        </item>
       </layout>
      </item>
-     <item>
+     <item row="0" column="3">
       <layout class="QVBoxLayout" name="settingsLayout">
        <item>
-        <layout class="QHBoxLayout" name="serviceTitleLayout">
-         <item>
-          <widget class="QLabel" name="serviceTitleLabel">
-           <property name="text">
-            <string>Service Title:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
+        <layout class="QGridLayout" name="serviceTitleLayout">
+         <item row="1" column="1">
           <widget class="QLineEdit" name="serviceTitleLineEdit">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="serviceTitleLabel">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Service Title:</string>
            </property>
           </widget>
          </item>
@@ -81,14 +91,14 @@
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="metaDataCheckBox">
+        <widget class="QCheckBox" name="printMetaDataCheckBox">
          <property name="text">
           <string>Include play lenght of media items</string>
          </property>
         </widget>
        </item>
        <item>
-        <spacer name="verticalSpacer">
+        <spacer name="spacer_2">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
@@ -100,36 +110,75 @@
          </property>
         </spacer>
        </item>
+      </layout>
+     </item>
+     <item row="1" column="3">
+      <layout class="QHBoxLayout" name="buttonLayout">
        <item>
-        <layout class="QHBoxLayout" name="buttonLayout">
-         <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QPushButton" name="cancelButton">
-           <property name="text">
-            <string>Cancel</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="printButton">
-           <property name="text">
-            <string>Print</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <spacer name="spacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="cancelButton">
+         <property name="text">
+          <string>Cancel</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="printButton">
+         <property name="text">
+          <string>Print</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="1" column="0">
+      <layout class="QHBoxLayout" name="zoomButtonLayout">
+       <item>
+        <spacer name="spacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QToolButton" name="zoomOutButton">
+         <property name="text">
+          <string>...</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>../../../../../zoom-out.png</normaloff>../../../../../zoom-out.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="zoomInButton">
+         <property name="text">
+          <string>...</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>../../../../../zoom-in.png</normaloff>../../../../../zoom-in.png</iconset>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -137,6 +186,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../images/openlp-2.qrc"/>
+ </resources>
  <connections/>
 </ui>
