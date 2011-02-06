@@ -78,9 +78,7 @@
     <file>import_load.png</file>
   </qresource>
   <qresource prefix="exports">
-    <file>export_remove.png</file>
     <file>export_load.png</file>
-    <file>export_move_to_list.png</file>
   </qresource>
   <qresource prefix="wizards">
     <file>wizard_exportsong.bmp</file>
