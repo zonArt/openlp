@@ -175,7 +175,7 @@ class Ui_MainWindow(object):
         self.FileSaveAsItem = QtGui.QAction(mainWindow)
         self.FileSaveAsItem.setObjectName(u'FileSaveAsItem')
         mainWindow.actionList.add_action(self.FileSaveAsItem, u'File')
-        self.printServiceOrderItem = QtGui.QAction(mainWindow) 
+        self.printServiceOrderItem = QtGui.QAction(mainWindow)
         self.printServiceOrderItem.setObjectName(u'printServiceItem')
         mainWindow.actionList.add_action(
             self.printServiceOrderItem, u'Print Service Order')
