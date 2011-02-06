@@ -1185,7 +1185,7 @@ class ServiceManager(QtGui.QWidget):
 
     def printServiceOrder(self):
         """
-        Open a Print a Service Order Sheet.
+        Print a Service Order Sheet.
         """
         settingDialog = PrintServiceOrderForm(self.mainwindow, self)
         settingDialog.exec_()
