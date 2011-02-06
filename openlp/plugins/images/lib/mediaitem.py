@@ -123,19 +123,19 @@ class ImageMediaItem(MediaManagerItem):
                 self.settingsSection, self.getFileList())
 
     def loadList(self, list):
-        for file in list:
-            filename = os.path.split(unicode(file))[1]
+        for imageFile in list:
+            filename = os.path.split(unicode(imageFile))[1]
             thumb = os.path.join(self.servicePath, filename)
             if os.path.exists(thumb):
-                if self.validate(file, thumb):
+                if self.validate(imageFile, thumb):
                     icon = build_icon(thumb)
                 else:
                     icon = build_icon(u':/general/general_delete.png')
             else:
-                icon = self.iconFromFile(file, thumb)
+                icon = self.iconFromFile(imageFile, thumb)
             item_name = QtGui.QListWidgetItem(filename)
             item_name.setIcon(icon)
-            item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
+            item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(imageFile))
             self.listView.addItem(item_name)
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False):

@@ -27,7 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, SpellTextEdit
-from openlp.core.lib.ui import save_cancel_button_box
+from openlp.core.lib.ui import create_save_cancel_button_box
 
 class Ui_CustomSlideEditDialog(object):
     def setupUi(self, customSlideEditDialog):
@@ -37,7 +37,7 @@ class Ui_CustomSlideEditDialog(object):
         self.slideTextEdit = SpellTextEdit(self)
         self.slideTextEdit.setObjectName(u'slideTextEdit')
         self.dialogLayout.addWidget(self.slideTextEdit)
-        self.buttonBox = save_cancel_button_box(customSlideEditDialog)
+        self.buttonBox = create_save_cancel_button_box(customSlideEditDialog)
         self.splitButton = QtGui.QPushButton(customSlideEditDialog)
         self.splitButton.setObjectName(u'splitButton')
         self.buttonBox.addButton(self.splitButton,

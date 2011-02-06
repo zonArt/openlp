@@ -69,7 +69,7 @@ class CustomMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'custom_preview'), self.onPreviewClick)
 
     def initialise(self):
-        self.loadCustomListView(self.manager.get_all_objects(
+        self.loadList(self.manager.get_all_objects(
             CustomSlide, order_by_ref=CustomSlide.title))
         # Called to redisplay the custom list screen edith from a search
         # or from the exit of the Custom edit dialog. If remote editing is
@@ -80,7 +80,7 @@ class CustomMediaItem(MediaManagerItem):
             self.onPreviewClick()
         self.onRemoteEditClear()
 
-    def loadCustomListView(self, list):
+    def loadList(self, list):
         self.listView.clear()
         for customSlide in list:
             custom_name = QtGui.QListWidgetItem(customSlide.title)

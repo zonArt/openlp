@@ -27,7 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
-from openlp.core.lib.ui import save_cancel_button_box
+from openlp.core.lib.ui import create_save_cancel_button_box
 
 class Ui_TopicsDialog(object):
     def setupUi(self, topicsDialog):
@@ -44,7 +44,8 @@ class Ui_TopicsDialog(object):
         self.nameLabel.setBuddy(self.nameEdit)
         self.nameLayout.addRow(self.nameLabel, self.nameEdit)
         self.dialogLayout.addLayout(self.nameLayout)
-        self.dialogLayout.addWidget(save_cancel_button_box(topicsDialog))
+        self.dialogLayout.addWidget(
+            create_save_cancel_button_box(topicsDialog))
         self.retranslateUi(topicsDialog)
         topicsDialog.setMaximumHeight(topicsDialog.sizeHint().height())
         QtCore.QMetaObject.connectSlotsByName(topicsDialog)
