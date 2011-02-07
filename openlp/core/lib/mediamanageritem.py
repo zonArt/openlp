@@ -158,7 +158,7 @@ class MediaManagerItem(QtGui.QWidget):
 
         ``icon``
             The icon of the button. This can be an instance of QIcon, or a
-            string cotaining either the absolute path to the image, or an
+            string containing either the absolute path to the image, or an
             internal resource path starting with ':/'.
 
         ``slot``
