@@ -53,7 +53,8 @@ class PowerpointController(PresentationController):
         Initialise the class
         """
         log.debug(u'Initialising')
-        PresentationController.__init__(self, plugin, u'Powerpoint')
+        PresentationController.__init__(self, plugin, u'Powerpoint',
+            PowerpointDocument)
         self.supports = [u'ppt', u'pps', u'pptx', u'ppsx']
         self.process = None
 
@@ -97,14 +98,6 @@ class PowerpointController(PresentationController):
                 pass
             self.process = None
 
-        def add_doc(self, name):
-            """
-            Called when a new powerpoint document is opened
-            """
-            log.debug(u'Add Doc PowerPoint')
-            doc = PowerpointDocument(self, name)
-            self.docs.append(doc)
-            return doc
 
 class PowerpointDocument(PresentationDocument):
     """

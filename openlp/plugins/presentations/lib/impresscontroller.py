@@ -69,7 +69,8 @@ class ImpressController(PresentationController):
         Initialise the class
         """
         log.debug(u'Initialising')
-        PresentationController.__init__(self, plugin, u'Impress')
+        PresentationController.__init__(self, plugin, u'Impress',
+            ImpressDocument)
         self.supports = [u'odp']
         self.alsosupports = [u'ppt', u'pps', u'pptx', u'ppsx']
         self.process = None
@@ -183,14 +184,6 @@ class ImpressController(PresentationController):
             except:
                 log.exception(u'Failed to terminate OpenOffice')
 
-    def add_doc(self, name):
-        """
-        Called when a new Impress document is opened
-        """
-        log.debug(u'Add Doc OpenOffice')
-        doc = ImpressDocument(self, name)
-        self.docs.append(doc)
-        return doc
 
 class ImpressDocument(PresentationDocument):
     """
