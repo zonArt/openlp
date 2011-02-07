@@ -132,6 +132,9 @@ class PrintServiceOrderForm(QtGui.QDialog, Ui_PrintServiceOrderDialog):
     def paintRequested(self, printer):
         """
         Paint the preview of the *self.document*.
+
+        ``printer``
+            A *QPrinter* object.
         """
         self.document.print_(printer)
 
