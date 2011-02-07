@@ -121,12 +121,12 @@ class Ui_PrintServiceOrderDialog(object):
         self.previewLabel.setText(
             translate('OpenLP.ServiceManager', '<b>Preview:</b>'))
         self.printSlideTextCheckBox.setText(translate(
-            'OpenLP.PrintServiceOrderForm', 'Include slide text if avaialbe'))
+            'OpenLP.PrintServiceOrderForm', 'Include slide text if available'))
         self.printNotesCheckBox.setText(translate(
             'OpenLP.PrintServiceOrderForm', 'Include service item notes'))
         self.printMetaDataCheckBox.setText(
             translate('OpenLP.PrintServiceOrderForm',
-            'Include play lenght of media items'))
+            'Include play length of media items'))
         self.serviceTitleLabel.setText(translate(
             'OpenLP.PrintServiceOrderForm', 'Title:'))
         self.serviceTitleLineEdit.setText(translate('OpenLP.ServiceManager',
