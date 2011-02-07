@@ -60,8 +60,8 @@ class DisplayTags(object):
         DisplayTags.html_expands.append(tag)
 
     @staticmethod
-    def remove_html_tag(id):
+    def remove_html_tag(tag_id):
         """
-        Removes amd individual html_expands list.
+        Removes an individual html_expands tag.
         """
-        DisplayTags.html_expands.pop(id)
+        DisplayTags.html_expands.pop(tag_id)
