@@ -72,7 +72,7 @@ class MainDisplay(DisplayWidget):
         self.setWindowIcon(mainIcon)
         self.retranslateUi()
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
-        self.setWindowFlags(QtCore.Qt.FramelessWindowHint |
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool |
             QtCore.Qt.WindowStaysOnTopHint)
         if self.isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
