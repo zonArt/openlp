@@ -55,21 +55,24 @@ class PrintServiceOrderForm(QtGui.QDialog, Ui_PrintServiceOrderDialog):
         settings.endGroup()
         # Signals
         QtCore.QObject.connect(self.printButton,
-            QtCore.SIGNAL('clicked()'), self.printServiceOrder)
+            QtCore.SIGNAL(u'clicked()'), self.printServiceOrder)
         QtCore.QObject.connect(self.zoomOutButton,
-            QtCore.SIGNAL('clicked()'), self.zoomOut)
+            QtCore.SIGNAL(u'clicked()'), self.zoomOut)
         QtCore.QObject.connect(self.zoomInButton,
-            QtCore.SIGNAL('clicked()'), self.zoomIn)
+            QtCore.SIGNAL(u'clicked()'), self.zoomIn)
         QtCore.QObject.connect(self.previewWidget,
-            QtCore.SIGNAL('paintRequested(QPrinter *)'), self.paintRequested)
+            QtCore.SIGNAL(u'paintRequested(QPrinter *)'), self.paintRequested)
         QtCore.QObject.connect(self.serviceTitleLineEdit,
-            QtCore.SIGNAL('textChanged(const QString)'), self.updatePreviewText)
+            QtCore.SIGNAL(u'textChanged(const QString)'),
+            self.updatePreviewText)
         QtCore.QObject.connect(self.printSlideTextCheckBox,
-            QtCore.SIGNAL('stateChanged(int)'), self.updatePreviewText)
+            QtCore.SIGNAL(u'stateChanged(int)'), self.updatePreviewText)
         QtCore.QObject.connect(self.printNotesCheckBox,
-            QtCore.SIGNAL('stateChanged(int)'), self.updatePreviewText)
+            QtCore.SIGNAL(u'stateChanged(int)'), self.updatePreviewText)
         QtCore.QObject.connect(self.printMetaDataCheckBox,
-            QtCore.SIGNAL('stateChanged(int)'), self.updatePreviewText)
+            QtCore.SIGNAL(u'stateChanged(int)'), self.updatePreviewText)
+        QtCore.QObject.connect(self.customNoteEdit,
+            QtCore.SIGNAL(u'textChanged()'), self.updatePreviewText)
         QtCore.QObject.connect(self.cancelButton,
             QtCore.SIGNAL(u'clicked()'), self.reject)
         self.updatePreviewText()
@@ -120,6 +123,9 @@ class PrintServiceOrderForm(QtGui.QDialog, Ui_PrintServiceOrderDialog):
                     text += u'<p><b>%s</b> %s</p>' % (translate(
                         'OpenLP.ServiceManager', u'Playing time:'),
                         unicode(datetime.timedelta(seconds=length)))
+        if self.customNoteEdit.toPlainText():
+            text += u'<h4>%s</h4>%s' % (translate('OpenLP.ServiceManager',
+                u'Custom Service Notes:'), self.customNoteEdit.toPlainText())
         self.document.setHtml(text)
         self.previewWidget.updatePreview()
 

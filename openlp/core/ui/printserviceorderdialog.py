@@ -26,7 +26,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, translate
+from openlp.core.lib import build_icon, translate, SpellTextEdit
 
 class Ui_PrintServiceOrderDialog(object):
     def setupUi(self, printServiceOrderDialog):
@@ -78,6 +78,12 @@ class Ui_PrintServiceOrderDialog(object):
         spacerItem = QtGui.QSpacerItem(20, 40,
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.settingsLayout.addItem(spacerItem)
+        self.customNotesLabel = QtGui.QLabel(self)
+        self.customNotesLabel.setObjectName(u'customNotesLabel')
+        self.settingsLayout.addWidget(self.customNotesLabel)
+        self.customNoteEdit = SpellTextEdit(self)
+        self.customNoteEdit.setObjectName(u'customNoteEdit')
+        self.settingsLayout.addWidget(self.customNoteEdit)
         self.dialogLayout.addLayout(self.settingsLayout, 0, 3, 1, 1)
         self.buttonLayout = QtGui.QHBoxLayout()
         self.buttonLayout.setObjectName(u'buttonLayout')
@@ -127,3 +133,5 @@ class Ui_PrintServiceOrderDialog(object):
             'Service Order Sheet'))
         self.printButton.setText(translate('OpenLP.ServiceManager', 'Print'))
         self.cancelButton.setText(translate('OpenLP.ServiceManager', 'Cancel'))
+        self.customNotesLabel.setText(
+            translate('OpenLP.ServiceManager', '<b>Custom Service Notes:</b>'))

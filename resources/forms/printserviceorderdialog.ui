@@ -79,6 +79,16 @@
          </property>
         </spacer>
        </item>
+       <item>
+        <widget class="QLabel" name="customNotesLabel">
+         <property name="text">
+          <string>&lt;b&gt;Custom Notes:&lt;/b&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTextEdit" name="customNoteEdit"/>
+       </item>
       </layout>
      </item>
      <item row="1" column="3">
