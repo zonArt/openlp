@@ -76,7 +76,7 @@ class AlertsTab(SettingsTab):
         self.TimeoutSpinBox.setMaximum(180)
         self.TimeoutSpinBox.setObjectName(u'TimeoutSpinBox')
         self.fontLayout.addRow(self.TimeoutLabel, self.TimeoutSpinBox)
-        create_valign_combo(self.fontGroupBox, self.fontLayout)
+        create_valign_combo(self, self.fontGroupBox, self.fontLayout)
         self.leftLayout.addWidget(self.fontGroupBox)
         self.leftLayout.addStretch()
         self.PreviewGroupBox = QtGui.QGroupBox(self.rightColumn)
@@ -171,7 +171,7 @@ class AlertsTab(SettingsTab):
             u'background-color: %s' % self.font_color)
         self.BackgroundColorButton.setStyleSheet(
             u'background-color: %s' % self.bg_color)
-        self.LocationComboBox.setCurrentIndex(self.location)
+        self.verticalComboBox.setCurrentIndex(self.location)
         font = QtGui.QFont()
         font.setFamily(self.font_face)
         self.FontComboBox.setCurrentFont(font)
@@ -186,7 +186,7 @@ class AlertsTab(SettingsTab):
         self.font_face = self.FontComboBox.currentFont().family()
         settings.setValue(u'font face', QtCore.QVariant(self.font_face))
         settings.setValue(u'timeout', QtCore.QVariant(self.timeout))
-        self.location = self.LocationComboBox.currentIndex()
+        self.location = self.verticalComboBox.currentIndex()
         settings.setValue(u'location', QtCore.QVariant(self.location))
         settings.endGroup()
 
