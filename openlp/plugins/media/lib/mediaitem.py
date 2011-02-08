@@ -151,8 +151,6 @@ class MediaMediaItem(MediaManagerItem):
             return False
 
     def initialise(self):
-        self.listView.setSelectionMode(
-            QtGui.QAbstractItemView.ExtendedSelection)
         self.listView.setIconSize(QtCore.QSize(88, 50))
         self.loadList(SettingsManager.load_list(self.settingsSection,
             self.settingsSection))

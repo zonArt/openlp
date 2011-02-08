@@ -186,7 +186,7 @@ class PresentationMediaItem(MediaManagerItem):
             controller_name = self.findControllerByType(filename)
             if controller_name:
                 controller = self.controllers[controller_name]
-                doc = controller.add_doc(unicode(file))
+                doc = controller.add_document(unicode(file))
                 thumb = os.path.join(doc.get_thumbnail_folder(), u'icon.png')
                 preview = doc.get_thumbnail_path(1, True)
                 if not preview and not initialLoad:
@@ -226,7 +226,7 @@ class PresentationMediaItem(MediaManagerItem):
                 filepath = unicode(item.data(
                     QtCore.Qt.UserRole).toString())
                 for cidx in self.controllers:
-                    doc = self.controllers[cidx].add_doc(filepath)
+                    doc = self.controllers[cidx].add_document(filepath)
                     doc.presentation_deleted()
                     doc.close_presentation()
             for row in row_list:
@@ -260,7 +260,7 @@ class PresentationMediaItem(MediaManagerItem):
                             return False
                     controller = self.controllers[service_item.shortname]
                     (path, name) = os.path.split(filename)
-                    doc = controller.add_doc(filename)
+                    doc = controller.add_document(filename)
                     if doc.get_thumbnail_path(1, True) is None:
                         doc.load_presentation()
                     i = 1

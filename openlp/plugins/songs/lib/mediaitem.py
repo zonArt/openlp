@@ -383,10 +383,12 @@ class SongMediaItem(MediaManagerItem):
         raw_footer.append(song.title)
         raw_footer.append(author_list)
         raw_footer.append(song.copyright)
-        raw_footer.append(unicode(
-            translate('SongsPlugin.MediaItem', 'CCLI License: ') +
-            QtCore.QSettings().value(u'general/ccli number',
-            QtCore.QVariant(u'')).toString()))
+        if QtCore.QSettings().value(u'general/ccli number',
+            QtCore.QVariant(u'')).toString():
+            raw_footer.append(unicode(
+                translate('SongsPlugin.MediaItem', 'CCLI License: ') +
+                QtCore.QSettings().value(u'general/ccli number',
+                QtCore.QVariant(u'')).toString()))
         service_item.raw_footer = raw_footer
         service_item.audit = [
             song.title, author_audit, song.copyright, unicode(song.ccli_number)

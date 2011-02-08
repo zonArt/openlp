@@ -49,7 +49,8 @@ class PptviewController(PresentationController):
         """
         log.debug(u'Initialising')
         self.process = None
-        PresentationController.__init__(self, plugin, u'Powerpoint Viewer')
+        PresentationController.__init__(self, plugin, u'Powerpoint Viewer',
+            PptviewDocument)
         self.supports = [u'ppt', u'pps', u'pptx', u'ppsx']
 
     def check_available(self):
@@ -93,14 +94,6 @@ class PptviewController(PresentationController):
             while self.docs:
                 self.docs[0].close_presentation()
 
-        def add_doc(self, name):
-            """
-            Called when a new powerpoint document is opened
-            """
-            log.debug(u'Add Doc PPTView')
-            doc = PptviewDocument(self, name)
-            self.docs.append(doc)
-            return doc
 
 class PptviewDocument(PresentationDocument):
     """

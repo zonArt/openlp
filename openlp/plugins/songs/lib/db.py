@@ -71,7 +71,6 @@ class Topic(BaseModel):
 
 
 def init_schema(url):
-
     """
     Setup the songs database connection and initialise the database schema.
 

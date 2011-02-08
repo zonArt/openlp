@@ -44,6 +44,9 @@ class PluginStatus(object):
 
 
 class StringContent(object):
+    """
+    Provide standard strings for objects to use.
+    """
     Name = u'name'
     Import = u'import'
     Load = u'load'
