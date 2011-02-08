@@ -242,7 +242,8 @@ class Ui_ThemeWizard(object):
         self.horizontalComboBox.setObjectName(u'HorizontalComboBox')
         self.alignmentLayout.addRow(self.horizontalLabel,
             self.horizontalComboBox)
-        create_valign_combo(self.alignmentPage, self.alignmentLayout)
+        create_valign_combo(themeWizard, self.alignmentPage,
+            self.alignmentLayout)
         self.transitionsLabel = QtGui.QLabel(self.alignmentPage)
         self.transitionsLabel.setObjectName(u'TransitionsLabel')
         self.transitionsCheckBox = QtGui.QCheckBox(self.alignmentPage)

@@ -220,10 +220,13 @@ def add_widget_completer(cache, widget):
     completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
     widget.setCompleter(completer)
 
-def create_valign_combo(parent, layout):
+def create_valign_combo(form, parent, layout):
     """
     Creates a standard label and combo box for asking users to select a
     vertical alignment.
+
+    ``form``
+        The UI screen that the label and combo will appear on.
 
     ``parent``
         The parent object.  This should be a ``QWidget`` descendant.
@@ -234,10 +237,10 @@ def create_valign_combo(parent, layout):
     verticalLabel = QtGui.QLabel(parent)
     verticalLabel.setObjectName(u'VerticalLabel')
     verticalLabel.setText(translate('OpenLP.Ui', '&Vertical Align:'))
-    verticalComboBox = QtGui.QComboBox(parent)
-    verticalComboBox.setObjectName(u'VerticalComboBox')
-    verticalComboBox.addItem(translate('OpenLP.Ui', 'Top'))
-    verticalComboBox.addItem(translate('OpenLP.Ui', 'Middle'))
-    verticalComboBox.addItem(translate('OpenLP.Ui', 'Bottom'))
-    verticalLabel.setBuddy(verticalComboBox)
-    layout.addRow(verticalLabel, verticalComboBox)
+    form.verticalComboBox = QtGui.QComboBox(parent)
+    form.verticalComboBox.setObjectName(u'VerticalComboBox')
+    form.verticalComboBox.addItem(translate('OpenLP.Ui', 'Top'))
+    form.verticalComboBox.addItem(translate('OpenLP.Ui', 'Middle'))
+    form.verticalComboBox.addItem(translate('OpenLP.Ui', 'Bottom'))
+    verticalLabel.setBuddy(form.verticalComboBox)
+    layout.addRow(verticalLabel, form.verticalComboBox)
