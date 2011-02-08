@@ -81,14 +81,14 @@ class EasiSlidesImport(SongImport):
 
     def _parse_song(self, song):
         self._success = True
-        self._add_title(self.title, song.Title1, True)
-        self._add_alttitle(self.alternate_title, song.Title2)
-        self._add_number(self.song_number, song.SongNumber)
+        self._add_unicode_attribute(self.title, song.Title1, True)
+        self._add_unicode_attribute(self.alternate_title, song.Title2)
+        self._add_unicode_attribute(self.song_number, song.SongNumber)
         if self.song_number == u'0':
             self.song_number = u''
         self._add_authors(song)
         self._add_copyright(song)
-        self._add_book(self.song_book_name, song.BookReference)
+        self._add_unicode_attribute(self.song_book_name, song.BookReference)
         self._parse_and_add_lyrics(song)
         return self._success
 
