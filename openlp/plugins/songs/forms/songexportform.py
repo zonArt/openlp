@@ -31,7 +31,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, SettingsManager, translate
+from openlp.core.lib import build_icon, Receiver, SettingsManager, translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard
 from openlp.plugins.songs.lib.db import Song
@@ -112,7 +112,6 @@ class SongExportForm(OpenLPWizard):
 #        self.availableSongsLayout.addLayout(self.gridLayout)
         self.availableSongsLayout.addWidget(self.availableListWidget)
         self.addPage(self.availableSongsPage)
-
         # The page with the selected songs.
         self.exportSongPage = QtGui.QWizardPage()
         self.exportSongPage.setObjectName(u'availableSongsPage')
@@ -132,10 +131,7 @@ class SongExportForm(OpenLPWizard):
         self.directoryLineEdit.setObjectName(u'directoryLineEdit')
         self.horizontalLayout.addWidget(self.directoryLineEdit)
         self.directoryButton = QtGui.QToolButton(self.exportSongPage)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(u':/exports/export_load.png'),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.directoryButton.setIcon(icon)
+        self.directoryButton.setIcon(build_icon(u':/exports/export_load.png'))
         self.directoryButton.setObjectName(u'directoryButton')
         self.horizontalLayout.addWidget(self.directoryButton)
         self.gridLayout.addLayout(self.horizontalLayout, 0, 0, 1, 1)
@@ -185,10 +181,10 @@ class SongExportForm(OpenLPWizard):
         if self.currentPage() == self.welcomePage:
             return True
         elif self.currentPage() == self.availableSongsPage:
-            songs = [song for song in self.availableListWidget.findItems(
+            items = [item for item in self.availableListWidget.findItems(
                 QtCore.QString(u''), QtCore.Qt.MatchContains)
-                if song.checkState() == QtCore.Qt.Checked]
-            if not songs:
+                if item.checkState() == QtCore.Qt.Checked]
+            if not items:
                 critical_error_message_box(
                     translate('SongsPlugin.ExportWizardForm',
                     'No Song Selected'),
@@ -196,13 +192,13 @@ class SongExportForm(OpenLPWizard):
                     'You need to add at least one Song to export.'))
                 return False
             self.selectedListWidget.clear()
-            # Add the songs to the list of selectd songs.
-            for song in songs:
-                title = song.text()
-                new_song = QtGui.QListWidgetItem(title)
-                new_song.setData(QtCore.Qt.UserRole, QtCore.QVariant(song))
-                new_song.setFlags(QtCore.Qt.ItemIsEnabled)
-                self.selectedListWidget.addItem(new_song)
+            # Add the songs to the list of selected songs.
+            for item in items:
+                song = QtGui.QListWidgetItem(item.text())
+                song.setData(QtCore.Qt.UserRole,
+                    QtCore.QVariant(item.data(QtCore.Qt.UserRole).toPyObject()))
+                song.setFlags(QtCore.Qt.ItemIsEnabled)
+                self.selectedListWidget.addItem(song)
             return True
         elif self.currentPage() == self.exportSongPage:
             if not self.directoryLineEdit.text():
@@ -241,12 +237,12 @@ class SongExportForm(OpenLPWizard):
             authors = u', '.join([author.display_name
                 for author in song.authors])
             title = u'%s (%s)' % (unicode(song.title), authors)
-            song = QtGui.QListWidgetItem(title)
-            song.setData(QtCore.Qt.UserRole, QtCore.QVariant(song))
-            song.setFlags(QtCore.Qt.ItemIsSelectable|
+            item = QtGui.QListWidgetItem(title)
+            item.setData(QtCore.Qt.UserRole, QtCore.QVariant(song))
+            item.setFlags(QtCore.Qt.ItemIsSelectable|
                 QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
-            song.setCheckState(QtCore.Qt.Checked)
-            self.availableListWidget.addItem(song)
+            item.setCheckState(QtCore.Qt.Checked)
+            self.availableListWidget.addItem(item)
         Receiver.send_message(u'cursor_normal')
 
     def preWizard(self):
