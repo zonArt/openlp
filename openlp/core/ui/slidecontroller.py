@@ -78,7 +78,7 @@ class SlideController(QtGui.QWidget):
         self.selectedRow = 0
         self.serviceItem = None
         self.alertTab = None
-        self.panel = QtGui.QWidget(parent.ControlSplitter)
+        self.panel = QtGui.QWidget(parent.controlSplitter)
         self.slideList = {}
         # Layout for holding panel
         self.panelLayout = QtGui.QVBoxLayout(self.panel)
@@ -455,7 +455,7 @@ class SlideController(QtGui.QWidget):
                 self.previewListWidget.resizeRowsToContents()
             else:
                 # Sort out image heights.
-                width = self.parent.ControlSplitter.sizes()[self.split]
+                width = self.parent.controlSplitter.sizes()[self.split]
                 for framenumber in range(len(self.serviceItem.get_frames())):
                     self.previewListWidget.setRowHeight(
                         framenumber, width / self.ratio)
@@ -584,7 +584,7 @@ class SlideController(QtGui.QWidget):
         Receiver.send_message(u'%s_start' % serviceItem.name.lower(),
             [serviceItem, self.isLive, blanked, slideno])
         self.slideList = {}
-        width = self.parent.ControlSplitter.sizes()[self.split]
+        width = self.parent.controlSplitter.sizes()[self.split]
         self.serviceItem = serviceItem
         self.previewListWidget.clear()
         self.previewListWidget.setRowCount(0)

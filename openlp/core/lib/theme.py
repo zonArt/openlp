@@ -583,8 +583,7 @@ class ThemeXML(object):
                 self.background_end_color,
                 self.background_direction)
         else:
-            filename = \
-                os.path.split(self.background_filename)[1]
+            filename = os.path.split(self.background_filename)[1]
             self.add_background_image(filename)
         self.add_font(self.font_main_name,
             self.font_main_color,

@@ -23,10 +23,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
-import os
-import logging
 import cPickle
+import logging
+import os
 import zipfile
 
 log = logging.getLogger(__name__)
@@ -38,6 +37,7 @@ from openlp.core.lib import OpenLPToolbar, ServiceItem, context_menu_action, \
     ThemeLevel
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm
+from openlp.core.ui.printserviceorderform import PrintServiceOrderForm
 from openlp.core.utils import AppLocation, delete_file, file_is_unicode, \
     split_filename
 
@@ -67,8 +67,8 @@ class ServiceManagerList(QtGui.QTreeWidget):
 
 class ServiceManager(QtGui.QWidget):
     """
-    Manages the services.  This involves taking text strings from plugins and
-    adding them to the service.  This service can then be zipped up with all
+    Manages the services. This involves taking text strings from plugins and
+    adding them to the service. This service can then be zipped up with all
     the resources used into one OSZ file for use on any OpenLP v2 installation.
     Also handles the UI tasks of moving things up and down etc.
     """
@@ -391,7 +391,7 @@ class ServiceManager(QtGui.QWidget):
         return QtGui.QMessageBox.question(self.mainwindow,
             translate('OpenLP.ServiceManager', 'Modified Service'),
             translate('OpenLP.ServiceManager', 'The current service has '
-            'been modified.  Would you like to save this service?'),
+            'been modified. Would you like to save this service?'),
             QtGui.QMessageBox.Save | QtGui.QMessageBox.Discard |
             QtGui.QMessageBox.Cancel, QtGui.QMessageBox.Save)
 
@@ -1187,41 +1187,5 @@ class ServiceManager(QtGui.QWidget):
         """
         Print a Service Order Sheet.
         """
-        if not self.serviceItems:
-            critical_error_message_box(
-                message=translate('OpenLP.ServiceManager',
-                'There is no service item in this service.'))
-            return
-        printDialog = QtGui.QPrintDialog()
-        if not printDialog.exec_():
-            return
-        text = u'<h2>%s</h2>' % translate('OpenLP.ServiceManager',
-            'Service Order Sheet')
-        for item in self.serviceItems:
-            item = item[u'service_item']
-            # add the title
-            text += u'<h4><img src="%s" /> %s</h4>' % (item.icon,
-                item.get_display_title())
-            if not QtCore.QSettings().value(u'advanced' +
-                u'/detailed service print', QtCore.QVariant(True)).toBool():
-                continue
-            if item.is_text():
-                # Add the text of the service item.
-                for slide in item.get_frames():
-                    text += u'<p>' + slide[u'text'] + u'</p>'
-            elif item.is_image():
-                # Add the image names of the service item.
-                text += u'<ol>'
-                for slide in range(len(item.get_frames())):
-                    text += u'<li><p>%s</p></li>' % item.get_frame_title(slide)
-                text += u'</ol>'
-            if item.foot_text:
-                # add footer
-                text += u'<p>%s</p>' % item.foot_text
-            if item.notes:
-                # add notes
-                text += u'<p><b>%s</b> %s</p>' % (translate(
-                    'OpenLP.ServiceManager', 'Notes:'), item.notes)
-        serviceDocument = QtGui.QTextDocument()
-        serviceDocument.setHtml(text)
-        serviceDocument.print_(printDialog.printer())
+        settingDialog = PrintServiceOrderForm(self.mainwindow, self)
+        settingDialog.exec_()

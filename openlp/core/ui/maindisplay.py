@@ -326,8 +326,7 @@ class MainDisplay(DisplayWidget):
         vol = float(volume)/float(10)
         if isBackground or not self.usePhonon:
             js = u'show_video("init", "%s", %s, true); show_video("play");' % \
-                (videoPath.replace(u'\\', u'\\\\'), \
-                str(vol))
+                (videoPath.replace(u'\\', u'\\\\'), str(vol))
             self.frame.evaluateJavaScript(js)
         else:
             self.phononActive = True
@@ -398,8 +397,7 @@ class MainDisplay(DisplayWidget):
             if u'video' in self.override:
                 Receiver.send_message(u'video_background_replaced')
                 self.override = {}
-            elif self.override[u'theme'] != \
-                serviceItem.themedata.theme_name:
+            elif self.override[u'theme'] != serviceItem.themedata.theme_name:
                 Receiver.send_message(u'live_theme_changed')
                 self.override = {}
             else:

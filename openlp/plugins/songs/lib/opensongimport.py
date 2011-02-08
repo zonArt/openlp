@@ -36,9 +36,6 @@ from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
 
-class OpenSongImportError(Exception):
-    pass
-
 class OpenSongImport(SongImport):
     """
     Import songs exported from OpenSong
