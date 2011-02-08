@@ -104,6 +104,15 @@ class VerseType(object):
 
 
 def retrieve_windows_encoding(recommendation=None):
+    """
+    Determines which encoding to use on an information source. The process uses
+    both automated detection, which is passed to this method as a
+    recommendation, and user confirmation to return an encoding.
+
+    ``recommendation``
+        A recommended encoding discovered programmatically for the user to
+        confirm.
+    """
     # map chardet result to compatible windows standard code page
     codepage_mapping = {'IBM866': u'cp866', 'TIS-620': u'cp874',
         'SHIFT_JIS': u'cp932', 'GB2312': u'cp936', 'HZ-GB-2312': u'cp936',
