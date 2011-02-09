@@ -87,7 +87,7 @@ class SongExportForm(OpenLPWizard):
         Song wizard specific signals.
         """
         QtCore.QObject.connect(self.availableListWidget,
-            QtCore.SIGNAL(u'itemPressed(QListWidgetItem*)'), self.onItemPressed)
+            QtCore.SIGNAL(u'itemActivated(QListWidgetItem*)'), self.onItemPressed)
         QtCore.QObject.connect(self.searchLineEdit,
             QtCore.SIGNAL(u'textEdited(const QString&)'),
             self.onSearchLineEditChanged)
@@ -324,7 +324,6 @@ class SongExportForm(OpenLPWizard):
         ``item``
             The *QListWidgetItem* which was pressed.
         """
-        return
         item.setCheckState(
             QtCore.Qt.Unchecked if item.checkState() else QtCore.Qt.Checked)
 
