@@ -90,8 +90,10 @@ class SongXML(object):
         Add a verse to the *<lyrics>* tag.
 
         ``type``
-            A string denoting the type of verse. Possible values are "V",
-            "C", "B", "P", "I", "E" and "O".
+            A string denoting the type of verse. Possible values are *Verse*,
+            *Chorus*, *Bridge*, *Pre-Chorus*, *Intro*, *Ending* and *Other*.
+            Any other type is **not** allowed, this also includes translated
+            types.
 
         ``number``
             An integer denoting the number of the item, for example: verse 1.
@@ -127,8 +129,8 @@ class SongXML(object):
 
         The returned list has the following format::
 
-            [[{'lang': 'en', 'type': 'V', 'label': '1'}, u"The English verse."],
-            [{'lang': 'en', 'type': 'C', 'label': '1'}, u"The English chorus."]]
+            [[{'lang': 'en', 'type': 'Verse', 'label': '1'}, u"English verse"],
+            [{'lang': 'en', 'type': 'Chorus', 'label': '1'}, u"English chorus"]]
         """
         self.song_xml = None
         if xml[:5] == u'<?xml':
