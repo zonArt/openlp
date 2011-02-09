@@ -35,7 +35,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import OpenLPToolbar, ThemeXML, get_text_file_string, \
     build_icon, Receiver, SettingsManager, translate, check_item_selected, \
     BackgroundType, BackgroundGradientType, check_directory_exists
-from openlp.core.lib.ui import critical_error_message_box
+from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.theme import Theme
 from openlp.core.ui import FileRenameForm, ThemeForm
 from openlp.core.utils import AppLocation, delete_file, file_is_unicode, \
@@ -62,28 +62,28 @@ class ThemeManager(QtGui.QWidget):
         self.layout.setObjectName(u'layout')
         self.toolbar = OpenLPToolbar(self)
         self.toolbar.addToolbarButton(
-            translate('OpenLP.ThemeManager', 'New Theme'),
+            UiStrings.NewType % UiStrings.Theme,
             u':/themes/theme_new.png',
             translate('OpenLP.ThemeManager', 'Create a new theme.'),
             self.onAddTheme)
         self.toolbar.addToolbarButton(
-            translate('OpenLP.ThemeManager', 'Edit Theme'),
+            UiStrings.EditType % UiStrings.Theme,
             u':/themes/theme_edit.png',
             translate('OpenLP.ThemeManager', 'Edit a theme.'),
             self.onEditTheme)
         self.deleteToolbarAction = self.toolbar.addToolbarButton(
-            translate('OpenLP.ThemeManager', 'Delete Theme'),
+            UiStrings.DeleteType % UiStrings.Theme,
             u':/general/general_delete.png',
             translate('OpenLP.ThemeManager', 'Delete a theme.'),
             self.onDeleteTheme)
         self.toolbar.addSeparator()
         self.toolbar.addToolbarButton(
-            translate('OpenLP.ThemeManager', 'Import Theme'),
+            UiStrings.ImportType % UiStrings.Theme,
             u':/general/general_import.png',
             translate('OpenLP.ThemeManager', 'Import a theme.'),
             self.onImportTheme)
         self.toolbar.addToolbarButton(
-            translate('OpenLP.ThemeManager', 'Export Theme'),
+            UiStrings.ExportType % UiStrings.Theme,
             u':/general/general_export.png',
             translate('OpenLP.ThemeManager', 'Export a theme.'),
             self.onExportTheme)

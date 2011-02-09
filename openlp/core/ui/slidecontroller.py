@@ -178,10 +178,12 @@ class SlideController(QtGui.QWidget):
                     QtCore.SIGNAL(u'triggered(bool)'), self.onHideDisplay)
             self.toolbar.addToolbarSeparator(u'Loop Separator')
             self.toolbar.addToolbarButton(
+                # Does not need translating - control string.
                 u'Start Loop', u':/media/media_time.png',
                 translate('OpenLP.SlideController', 'Start continuous loop'),
                 self.onStartLoop)
             self.toolbar.addToolbarButton(
+                # Does not need translating - control string.
                 u'Stop Loop', u':/media/media_stop.png',
                 translate('OpenLP.SlideController', 'Stop continuous loop'),
                 self.onStopLoop)
@@ -196,11 +198,13 @@ class SlideController(QtGui.QWidget):
         else:
             self.toolbar.addToolbarSeparator(u'Close Separator')
             self.toolbar.addToolbarButton(
+                # Does not need translating - control string.
                 u'Go Live', u':/general/general_live.png',
                 translate('OpenLP.SlideController', 'Move to live'),
                 self.onGoLive)
             self.toolbar.addToolbarSeparator(u'Close Separator')
             self.toolbar.addToolbarButton(
+                # Does not need translating - control string.
                 u'Edit Song', u':/general/general_edit.png',
                 translate('OpenLP.SlideController',
                 'Edit and reload song preview'),

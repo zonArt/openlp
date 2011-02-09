@@ -141,35 +141,4 @@ class BiblePlugin(Plugin):
             u'title': UiStrings.Import,
             u'tooltip': translate('BiblesPlugin', 'Import a Bible')
         }
-        ## New Action ##
-        self.textStrings[StringContent.New] = {
-            u'title': UiStrings.Add,
-            u'tooltip': translate('BiblesPlugin', 'Add a new Bible')
-        }
-        ## Edit Action ##
-        self.textStrings[StringContent.Edit] = {
-            u'title': UiStrings.Edit,
-            u'tooltip': translate('BiblesPlugin', 'Edit the selected Bible')
-        }
-        ## Delete Action ##
-        self.textStrings[StringContent.Delete] = {
-            u'title': UiStrings.Delete,
-            u'tooltip': translate('BiblesPlugin', 'Delete the selected Bible')
-        }
-        ## Preview Action ##
-        self.textStrings[StringContent.Preview] = {
-            u'title': UiStrings.Preview,
-            u'tooltip': translate('BiblesPlugin', 'Preview the selected Bible')
-        }
-        ## Send Live Action ##
-        self.textStrings[StringContent.Live] = {
-            u'title': UiStrings.Live,
-            u'tooltip': translate('BiblesPlugin',
-                'Send the selected Bible live')
-        }
-        ## Add to Service Action ##
-        self.textStrings[StringContent.Service] = {
-            u'title': UiStrings.Service,
-            u'tooltip': translate('BiblesPlugin',
-                'Add the selected Bible to the service')
-        }
+        Plugin.setPluginTextStrings(self)
