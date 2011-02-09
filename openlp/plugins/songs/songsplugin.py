@@ -239,42 +239,7 @@ class SongsPlugin(Plugin):
             u'title': translate('SongsPlugin', 'Songs', 'container title')
         }
         # Middle Header Bar
-        ## New Action ##
-        self.textStrings[StringContent.New] = {
-            u'title': UiStrings.Add,
-            u'tooltip': translate('SongsPlugin',
-                'Add a new Song')
-        }
-        ## Edit Action ##
-        self.textStrings[StringContent.Edit] = {
-            u'title': UiStrings.Edit,
-            u'tooltip': translate('SongsPlugin',
-                'Edit the selected Song')
-        }
-        ## Delete Action ##
-        self.textStrings[StringContent.Delete] = {
-            u'title': UiStrings.Delete,
-            u'tooltip': translate('SongsPlugin',
-                'Delete the selected Song')
-        }
-        ## Preview Action ##
-        self.textStrings[StringContent.Preview] = {
-            u'title': UiStrings.Preview,
-            u'tooltip': translate('SongsPlugin',
-                'Preview the selected Song')
-        }
-        ## Send Live Action ##
-        self.textStrings[StringContent.Live] = {
-            u'title': UiStrings.Live,
-            u'tooltip': translate('SongsPlugin',
-                'Send the selected Song live')
-        }
-        ## Add to Service Action ##
-        self.textStrings[StringContent.Service] = {
-            u'title': UiStrings.Service,
-            u'tooltip': translate('SongsPlugin',
-                'Add the selected Song to the service')
-        }
+        Plugin.setPluginTextStrings(self)
 
     def finalise(self):
         """

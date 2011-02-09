@@ -102,45 +102,4 @@ class MediaPlugin(Plugin):
             u'title': translate('MediaPlugin', 'Media', 'container title')
         }
         # Middle Header Bar
-        ## Load Action ##
-        self.textStrings[StringContent.Load] = {
-            u'title': UiStrings.Load,
-            u'tooltip': translate('MediaPlugin',
-                'Load a new Media')
-        }
-        ## New Action ##
-        self.textStrings[StringContent.New] = {
-            u'title': UiStrings.Add,
-            u'tooltip': translate('MediaPlugin',
-                'Add a new Media')
-        }
-        ## Edit Action ##
-        self.textStrings[StringContent.Edit] = {
-            u'title': UiStrings.Edit,
-            u'tooltip': translate('MediaPlugin',
-                'Edit the selected Media')
-        }
-        ## Delete Action ##
-        self.textStrings[StringContent.Delete] = {
-            u'title': UiStrings.Delete,
-            u'tooltip': translate('MediaPlugin',
-                'Delete the selected Media')
-        }
-        ## Preview Action ##
-        self.textStrings[StringContent.Preview] = {
-            u'title': UiStrings.Preview,
-            u'tooltip': translate('MediaPlugin',
-                'Preview the selected Media')
-        }
-        ## Send Live Action ##
-        self.textStrings[StringContent.Live] = {
-            u'title': UiStrings.Live,
-            u'tooltip': translate('MediaPlugin',
-                'Send the selected Media live')
-        }
-        ## Add to Service Action ##
-        self.textStrings[StringContent.Service] = {
-            u'title': UiStrings.Service,
-            u'tooltip': translate('MediaPlugin',
-                'Add the selected Media to the service')
-        }
+        Plugin.setPluginTextStrings(self)
