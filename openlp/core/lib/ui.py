@@ -34,6 +34,29 @@ from openlp.core.lib import build_icon, Receiver, translate
 
 log = logging.getLogger(__name__)
 
+class UiStrings(object):
+    """
+    Provide standard strings for objects to use.
+    """
+    # These strings should need a good reason to be retranslated elsewhere.
+    # Should some/more/less of these have an &amp; attached?
+    Add = translate('OpenLP.Ui', '&Add')
+    AllFiles = translate('OpenLP.Ui', 'All Files')
+    Authors = translate('OpenLP.Ui', 'Authors')
+    Delete = translate('OpenLP.Ui', '&Delete')
+    Edit = translate('OpenLP.Ui', '&Edit')
+    Error = translate('OpenLP.Ui', 'Error')
+    Import = translate('OpenLP.Ui', 'Import')
+    Live = translate('OpenLP.Ui', 'Live')
+    Load = translate('OpenLP.Ui', 'Load')
+    New = translate('OpenLP.Ui', 'New')
+    OLPV2 = translate('OpenLP.Ui', 'OpenLP 2.0')
+    Preview = translate('OpenLP.Ui', 'Preview')
+    Service = translate('OpenLP.Ui', 'Service')
+    Theme = translate('OpenLP.Ui', 'Theme')
+    Themes = translate('OpenLP.Ui', 'Themes')
+
+
 def add_welcome_page(parent, image):
     """
     Generate an opening welcome page for a wizard using a provided image.
@@ -98,13 +121,12 @@ def critical_error_message_box(title=None, message=None, parent=None,
     ``question``
         Should this message box question the user.
     """
-    error = translate('OpenLP.Ui', 'Error')
     if question:
         return QtGui.QMessageBox.critical(parent, error, message,
             QtGui.QMessageBox.StandardButtons(
             QtGui.QMessageBox.Yes | QtGui.QMessageBox.No))
     data = {u'message': message}
-    data[u'title'] = title if title else error
+    data[u'title'] = title if title else UiStrings.Error
     return Receiver.send_message(u'openlp_error_message', data)
 
 def media_item_combo_box(parent, name):
@@ -134,7 +156,7 @@ def create_delete_push_button(parent, icon=None):
     delete_button.setObjectName(u'deleteButton')
     delete_icon = icon if icon else u':/general/general_delete.png'
     delete_button.setIcon(build_icon(delete_icon))
-    delete_button.setText(translate('OpenLP.Ui', '&Delete'))
+    delete_button.setText(UiStrings.Delete)
     delete_button.setToolTip(
         translate('OpenLP.Ui', 'Delete the selected item.'))
     QtCore.QObject.connect(delete_button,

@@ -27,7 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate
-from openlp.core.lib.ui import create_save_cancel_button_box
+from openlp.core.lib.ui import UiStrings, create_save_cancel_button_box
 
 class Ui_EditSongDialog(object):
     def setupUi(self, editSongDialog):
@@ -257,19 +257,15 @@ class Ui_EditSongDialog(object):
             translate('SongsPlugin.EditSongForm', '&Lyrics:'))
         self.verseOrderLabel.setText(
             translate('SongsPlugin.EditSongForm', '&Verse order:'))
-        self.verseAddButton.setText(
-            translate('SongsPlugin.EditSongForm', '&Add'))
-        self.verseEditButton.setText(
-            translate('SongsPlugin.EditSongForm', '&Edit'))
+        self.verseAddButton.setText(UiStrings.Add)
+        self.verseEditButton.setText(UiStrings.Edit)
         self.verseEditAllButton.setText(
             translate('SongsPlugin.EditSongForm', 'Ed&it All'))
-        self.verseDeleteButton.setText(
-            translate('SongsPlugin.EditSongForm', '&Delete'))
+        self.verseDeleteButton.setText(UiStrings.Delete)
         self.songTabWidget.setTabText(
             self.songTabWidget.indexOf(self.lyricsTab),
             translate('SongsPlugin.EditSongForm', 'Title && Lyrics'))
-        self.authorsGroupBox.setTitle(
-            translate('SongsPlugin.EditSongForm', 'Authors'))
+        self.authorsGroupBox.setTitle(UiStrings.Authors)
         self.authorAddButton.setText(
             translate('SongsPlugin.EditSongForm', '&Add to Song'))
         self.authorRemoveButton.setText(
@@ -292,8 +288,7 @@ class Ui_EditSongDialog(object):
             self.songTabWidget.indexOf(self.authorsTab),
             translate('SongsPlugin.EditSongForm',
                 'Authors, Topics && Song Book'))
-        self.themeGroupBox.setTitle(
-            translate('SongsPlugin.EditSongForm', 'Theme'))
+        self.themeGroupBox.setTitle(UiStrings.Theme)
         self.themeAddButton.setText(
             translate('SongsPlugin.EditSongForm', 'New &Theme'))
         self.rightsGroupBox.setTitle(
