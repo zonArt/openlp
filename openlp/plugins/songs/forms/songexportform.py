@@ -180,9 +180,9 @@ class SongExportForm(OpenLPWizard):
         self.searchLabel.setText(
             translate('SongsPlugin.ExportWizardForm', 'Search:'))
         self.uncheckButton.setText(
-            translate('SongsPlugin.ExportWizardForm', 'Deselect All'))
+            translate('SongsPlugin.ExportWizardForm', 'Uncheck All'))
         self.checkButton.setText(
-            translate('SongsPlugin.ExportWizardForm', 'Select All'))
+            translate('SongsPlugin.ExportWizardForm', 'Check All'))
         self.exportSongPage.setTitle(
                 translate('SongsPlugin.ExportWizardForm', 'Select Directory'))
         self.exportSongPage.setSubTitle(
