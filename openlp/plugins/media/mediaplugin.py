@@ -30,6 +30,7 @@ import mimetypes
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
+from openlp.core.lib.ui import UiStrings
 from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 
 log = logging.getLogger(__name__)
@@ -103,43 +104,43 @@ class MediaPlugin(Plugin):
         # Middle Header Bar
         ## Load Action ##
         self.textStrings[StringContent.Load] = {
-            u'title': translate('MediaPlugin', 'Load'),
+            u'title': UiStrings.Load,
             u'tooltip': translate('MediaPlugin',
                 'Load a new Media')
         }
         ## New Action ##
         self.textStrings[StringContent.New] = {
-            u'title': translate('MediaPlugin', 'Add'),
+            u'title': UiStrings.Add,
             u'tooltip': translate('MediaPlugin',
                 'Add a new Media')
         }
         ## Edit Action ##
         self.textStrings[StringContent.Edit] = {
-            u'title': translate('MediaPlugin', 'Edit'),
+            u'title': UiStrings.Edit,
             u'tooltip': translate('MediaPlugin',
                 'Edit the selected Media')
         }
         ## Delete Action ##
         self.textStrings[StringContent.Delete] = {
-            u'title': translate('MediaPlugin', 'Delete'),
+            u'title': UiStrings.Delete,
             u'tooltip': translate('MediaPlugin',
                 'Delete the selected Media')
         }
         ## Preview Action ##
         self.textStrings[StringContent.Preview] = {
-            u'title': translate('MediaPlugin', 'Preview'),
+            u'title': UiStrings.Preview,
             u'tooltip': translate('MediaPlugin',
                 'Preview the selected Media')
         }
         ## Send Live Action ##
         self.textStrings[StringContent.Live] = {
-            u'title': translate('MediaPlugin', 'Live'),
+            u'title': UiStrings.Live,
             u'tooltip': translate('MediaPlugin',
                 'Send the selected Media live')
         }
         ## Add to Service Action ##
         self.textStrings[StringContent.Service] = {
-            u'title': translate('MediaPlugin', 'Service'),
+            u'title': UiStrings.Service,
             u'tooltip': translate('MediaPlugin',
                 'Add the selected Media to the service')
         }
