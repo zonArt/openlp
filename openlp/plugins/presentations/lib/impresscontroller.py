@@ -429,7 +429,7 @@ class ImpressDocument(PresentationDocument):
         ``slide_no``
             The slide the text is required for, starting at 1
         """
-        return __get_text_from_slide(slide_no)
+        return self.__get_text_from_page(slide_no)
 
     def get_slide_notes(self, slide_no):
         """
@@ -438,7 +438,7 @@ class ImpressDocument(PresentationDocument):
         ``slide_no``
             The slide the notes are required for, starting at 1
         """
-        return __get_text_from_page(slide_no, True)
+        return self.__get_text_from_page(slide_no, True)
 
     def __get_text_from_page(self, slide_no, notes=False):
         """

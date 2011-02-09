@@ -122,7 +122,7 @@ def critical_error_message_box(title=None, message=None, parent=None,
         Should this message box question the user.
     """
     if question:
-        return QtGui.QMessageBox.critical(parent, error, message,
+        return QtGui.QMessageBox.critical(parent, UiStrings.Error, message,
             QtGui.QMessageBox.StandardButtons(
             QtGui.QMessageBox.Yes | QtGui.QMessageBox.No))
     data = {u'message': message}
