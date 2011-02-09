@@ -31,7 +31,6 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
-from openlp.core.lib.ui import UiStrings
 from openlp.plugins.songs.lib import SongMediaItem, SongsTab, SongXML
 from openlp.plugins.songs.lib.db import init_schema, Song
 from openlp.plugins.songs.lib.importer import SongFormat
