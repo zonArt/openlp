@@ -27,7 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, build_icon
-from openlp.core.lib.ui import add_welcome_page
+from openlp.core.lib.ui import add_welcome_page, create_valign_combo
 
 class Ui_ThemeWizard(object):
     def setupUi(self, themeWizard):
@@ -242,12 +242,8 @@ class Ui_ThemeWizard(object):
         self.horizontalComboBox.setObjectName(u'HorizontalComboBox')
         self.alignmentLayout.addRow(self.horizontalLabel,
             self.horizontalComboBox)
-        self.verticalLabel = QtGui.QLabel(self.alignmentPage)
-        self.verticalLabel.setObjectName(u'VerticalLabel')
-        self.verticalComboBox = QtGui.QComboBox(self.alignmentPage)
-        self.verticalComboBox.addItems([u'', u'', u''])
-        self.verticalComboBox.setObjectName(u'VerticalComboBox')
-        self.alignmentLayout.addRow(self.verticalLabel, self.verticalComboBox)
+        create_valign_combo(themeWizard, self.alignmentPage,
+            self.alignmentLayout)
         self.transitionsLabel = QtGui.QLabel(self.alignmentPage)
         self.transitionsLabel.setObjectName(u'TransitionsLabel')
         self.transitionsCheckBox = QtGui.QCheckBox(self.alignmentPage)
@@ -450,8 +446,7 @@ class Ui_ThemeWizard(object):
         self.mainAreaPage.setSubTitle(
             translate('OpenLP.ThemeWizard', 'Define the font and display '
                 'characteristics for the Display text'))
-        self.mainFontLabel.setText(
-            translate('OpenLP.ThemeWizard', 'Font:'))
+        self.mainFontLabel.setText(translate('OpenLP.ThemeWizard', 'Font:'))
         self.mainColorLabel.setText(translate('OpenLP.ThemeWizard', 'Color:'))
         self.mainSizeLabel.setText(translate('OpenLP.ThemeWizard', 'Size:'))
         self.mainSizeSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'pt'))
@@ -465,8 +460,7 @@ class Ui_ThemeWizard(object):
         self.shadowCheckBox.setText(translate('OpenLP.ThemeWizard', '&Shadow:'))
         self.shadowSizeLabel.setText(translate('OpenLP.ThemeWizard', 'Size:'))
         self.shadowSizeSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'pt'))
-        self.mainBoldCheckBox.setText(
-            translate('OpenLP.ThemeWizard', 'Bold'))
+        self.mainBoldCheckBox.setText(translate('OpenLP.ThemeWizard', 'Bold'))
         self.mainItalicsCheckBox.setText(
             translate('OpenLP.ThemeWizard', 'Italic'))
         self.footerAreaPage.setTitle(
@@ -491,14 +485,6 @@ class Ui_ThemeWizard(object):
             translate('OpenLP.ThemeWizard', 'Right'))
         self.horizontalComboBox.setItemText(2,
             translate('OpenLP.ThemeWizard', 'Center'))
-        self.verticalLabel.setText(
-            translate('OpenLP.ThemeWizard', 'Vertical Align:'))
-        self.verticalComboBox.setItemText(0,
-            translate('OpenLP.ThemeWizard', 'Top'))
-        self.verticalComboBox.setItemText(1,
-            translate('OpenLP.ThemeWizard', 'Middle'))
-        self.verticalComboBox.setItemText(2,
-            translate('OpenLP.ThemeWizard', 'Bottom'))
         self.transitionsLabel.setText(
             translate('OpenLP.ThemeWizard', 'Transitions:'))
         self.areaPositionPage.setTitle(

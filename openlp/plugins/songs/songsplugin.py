@@ -31,6 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
+from openlp.core.lib.ui import UiStrings
 from openlp.plugins.songs.lib import SongMediaItem, SongsTab, SongXML
 from openlp.plugins.songs.lib.db import init_schema, Song
 from openlp.plugins.songs.lib.importer import SongFormat
@@ -225,42 +226,7 @@ class SongsPlugin(Plugin):
             u'title': translate('SongsPlugin', 'Songs', 'container title')
         }
         # Middle Header Bar
-        ## New Action ##
-        self.textStrings[StringContent.New] = {
-            u'title': translate('SongsPlugin', 'Add'),
-            u'tooltip': translate('SongsPlugin',
-                'Add a new Song')
-        }
-        ## Edit Action ##
-        self.textStrings[StringContent.Edit] = {
-            u'title': translate('SongsPlugin', 'Edit'),
-            u'tooltip': translate('SongsPlugin',
-                'Edit the selected Song')
-        }
-        ## Delete Action ##
-        self.textStrings[StringContent.Delete] = {
-            u'title': translate('SongsPlugin', 'Delete'),
-            u'tooltip': translate('SongsPlugin',
-                'Delete the selected Song')
-        }
-        ## Preview Action ##
-        self.textStrings[StringContent.Preview] = {
-            u'title': translate('SongsPlugin', 'Preview'),
-            u'tooltip': translate('SongsPlugin',
-                'Preview the selected Song')
-        }
-        ## Send Live Action ##
-        self.textStrings[StringContent.Live] = {
-            u'title': translate('SongsPlugin', 'Live'),
-            u'tooltip': translate('SongsPlugin',
-                'Send the selected Song live')
-        }
-        ## Add to Service Action ##
-        self.textStrings[StringContent.Service] = {
-            u'title': translate('SongsPlugin', 'Service'),
-            u'tooltip': translate('SongsPlugin',
-                'Add the selected Song to the service')
-        }
+        Plugin.setPluginTextStrings(self)
 
     def finalise(self):
         """

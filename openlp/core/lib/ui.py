@@ -34,6 +34,43 @@ from openlp.core.lib import build_icon, Receiver, translate
 
 log = logging.getLogger(__name__)
 
+class UiStrings(object):
+    """
+    Provide standard strings for objects to use.
+    """
+    # These strings should need a good reason to be retranslated elsewhere.
+    # Should some/more/less of these have an &amp; attached?
+    Add = translate('OpenLP.Ui', '&Add')
+    AddANew = unicode(translate('OpenLP.Ui', 'Add a new %s'))
+    AddSelectService = unicode(translate('OpenLP.Ui',
+        'Add the selected %s to the service'))
+    AllFiles = translate('OpenLP.Ui', 'All Files')
+    Authors = translate('OpenLP.Ui', 'Authors')
+    Delete = translate('OpenLP.Ui', '&Delete')
+    DeleteSelect = unicode(translate('OpenLP.Ui', 'Delete the selected %s'))
+    DeleteType = unicode(translate('OpenLP.Ui', 'Delete %s'))
+    Edit = translate('OpenLP.Ui', '&Edit')
+    EditSelect = unicode(translate('OpenLP.Ui', 'Edit the selected %s'))
+    EditType = unicode(translate('OpenLP.Ui', 'Edit %s'))
+    Error = translate('OpenLP.Ui', 'Error')
+    ExportType = unicode(translate('OpenLP.Ui', 'Export %s'))
+    Import = translate('OpenLP.Ui', 'Import')
+    ImportType = unicode(translate('OpenLP.Ui', 'Import %s'))
+    Live = translate('OpenLP.Ui', 'Live')
+    Load = translate('OpenLP.Ui', 'Load')
+    LoadANew = unicode(translate('OpenLP.Ui', 'Load a new %s'))
+    New = translate('OpenLP.Ui', 'New')
+    NewType = unicode(translate('OpenLP.Ui', 'New %s'))
+    OLPV2 = translate('OpenLP.Ui', 'OpenLP 2.0')
+    Preview = translate('OpenLP.Ui', 'Preview')
+    PreviewSelect = unicode(translate('OpenLP.Ui', 'Preview the selected %s'))
+    SendSelectLive = unicode(translate('OpenLP.Ui',
+        'Send the selected %s live'))
+    Service = translate('OpenLP.Ui', 'Service')
+    Theme = translate('OpenLP.Ui', 'Theme')
+    Themes = translate('OpenLP.Ui', 'Themes')
+
+
 def add_welcome_page(parent, image):
     """
     Generate an opening welcome page for a wizard using a provided image.
@@ -98,13 +135,12 @@ def critical_error_message_box(title=None, message=None, parent=None,
     ``question``
         Should this message box question the user.
     """
-    error = translate('OpenLP.Ui', 'Error')
     if question:
-        return QtGui.QMessageBox.critical(parent, error, message,
+        return QtGui.QMessageBox.critical(parent, UiStrings.Error, message,
             QtGui.QMessageBox.StandardButtons(
             QtGui.QMessageBox.Yes | QtGui.QMessageBox.No))
     data = {u'message': message}
-    data[u'title'] = title if title else error
+    data[u'title'] = title if title else UiStrings.Error
     return Receiver.send_message(u'openlp_error_message', data)
 
 def media_item_combo_box(parent, name):
@@ -134,7 +170,7 @@ def create_delete_push_button(parent, icon=None):
     delete_button.setObjectName(u'deleteButton')
     delete_icon = icon if icon else u':/general/general_delete.png'
     delete_button.setIcon(build_icon(delete_icon))
-    delete_button.setText(translate('OpenLP.Ui', '&Delete'))
+    delete_button.setText(UiStrings.Delete)
     delete_button.setToolTip(
         translate('OpenLP.Ui', 'Delete the selected item.'))
     QtCore.QObject.connect(delete_button,
@@ -219,3 +255,28 @@ def add_widget_completer(cache, widget):
     completer = QtGui.QCompleter(cache)
     completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
     widget.setCompleter(completer)
+
+def create_valign_combo(form, parent, layout):
+    """
+    Creates a standard label and combo box for asking users to select a
+    vertical alignment.
+
+    ``form``
+        The UI screen that the label and combo will appear on.
+
+    ``parent``
+        The parent object.  This should be a ``QWidget`` descendant.
+
+    ``layout``
+        A layout object to add the label and combo widgets to.
+    """
+    verticalLabel = QtGui.QLabel(parent)
+    verticalLabel.setObjectName(u'VerticalLabel')
+    verticalLabel.setText(translate('OpenLP.Ui', '&Vertical Align:'))
+    form.verticalComboBox = QtGui.QComboBox(parent)
+    form.verticalComboBox.setObjectName(u'VerticalComboBox')
+    form.verticalComboBox.addItem(translate('OpenLP.Ui', 'Top'))
+    form.verticalComboBox.addItem(translate('OpenLP.Ui', 'Middle'))
+    form.verticalComboBox.addItem(translate('OpenLP.Ui', 'Bottom'))
+    verticalLabel.setBuddy(form.verticalComboBox)
+    layout.addRow(verticalLabel, form.verticalComboBox)

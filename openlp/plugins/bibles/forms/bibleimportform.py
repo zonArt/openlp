@@ -35,7 +35,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, SettingsManager, translate
 from openlp.core.lib.db import delete_database
-from openlp.core.lib.ui import critical_error_message_box
+from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard
 from openlp.core.utils import AppLocation, string_is_unicode
 from openlp.plugins.bibles.lib.manager import BibleFormat
@@ -745,8 +745,7 @@ class BibleImportForm(OpenLPWizard):
         """
         if filters:
             filters += u';;'
-        filters += u'%s (*)' % translate('BiblesPlugin.ImportWizardForm',
-            'All Files')
+        filters += u'%s (*)' % UiStrings.AllFiles
         filename = QtGui.QFileDialog.getOpenFileName(self, title,
             os.path.dirname(SettingsManager.get_last_dir(
             self.plugin.settingsSection, 1)), filters)

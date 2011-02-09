@@ -72,7 +72,7 @@ class MainDisplay(DisplayWidget):
         self.setWindowIcon(mainIcon)
         self.retranslateUi()
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
-        self.setWindowFlags(QtCore.Qt.FramelessWindowHint |
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool |
             QtCore.Qt.WindowStaysOnTopHint)
         if self.isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
@@ -326,8 +326,7 @@ class MainDisplay(DisplayWidget):
         vol = float(volume)/float(10)
         if isBackground or not self.usePhonon:
             js = u'show_video("init", "%s", %s, true); show_video("play");' % \
-                (videoPath.replace(u'\\', u'\\\\'), \
-                str(vol))
+                (videoPath.replace(u'\\', u'\\\\'), str(vol))
             self.frame.evaluateJavaScript(js)
         else:
             self.phononActive = True
@@ -398,8 +397,7 @@ class MainDisplay(DisplayWidget):
             if u'video' in self.override:
                 Receiver.send_message(u'video_background_replaced')
                 self.override = {}
-            elif self.override[u'theme'] != \
-                serviceItem.themedata.theme_name:
+            elif self.override[u'theme'] != serviceItem.themedata.theme_name:
                 Receiver.send_message(u'live_theme_changed')
                 self.override = {}
             else:

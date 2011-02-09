@@ -35,7 +35,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import OpenLPToolbar, ThemeXML, get_text_file_string, \
     build_icon, Receiver, SettingsManager, translate, check_item_selected, \
     BackgroundType, BackgroundGradientType, check_directory_exists
-from openlp.core.lib.ui import critical_error_message_box
+from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.theme import Theme
 from openlp.core.ui import FileRenameForm, ThemeForm
 from openlp.core.utils import AppLocation, delete_file, file_is_unicode, \
@@ -62,28 +62,28 @@ class ThemeManager(QtGui.QWidget):
         self.layout.setObjectName(u'layout')
         self.toolbar = OpenLPToolbar(self)
         self.toolbar.addToolbarButton(
-            translate('OpenLP.ThemeManager', 'New Theme'),
+            UiStrings.NewType % UiStrings.Theme,
             u':/themes/theme_new.png',
             translate('OpenLP.ThemeManager', 'Create a new theme.'),
             self.onAddTheme)
         self.toolbar.addToolbarButton(
-            translate('OpenLP.ThemeManager', 'Edit Theme'),
+            UiStrings.EditType % UiStrings.Theme,
             u':/themes/theme_edit.png',
             translate('OpenLP.ThemeManager', 'Edit a theme.'),
             self.onEditTheme)
         self.deleteToolbarAction = self.toolbar.addToolbarButton(
-            translate('OpenLP.ThemeManager', 'Delete Theme'),
+            UiStrings.DeleteType % UiStrings.Theme,
             u':/general/general_delete.png',
             translate('OpenLP.ThemeManager', 'Delete a theme.'),
             self.onDeleteTheme)
         self.toolbar.addSeparator()
         self.toolbar.addToolbarButton(
-            translate('OpenLP.ThemeManager', 'Import Theme'),
+            UiStrings.ImportType % UiStrings.Theme,
             u':/general/general_import.png',
             translate('OpenLP.ThemeManager', 'Import a theme.'),
             self.onImportTheme)
         self.toolbar.addToolbarButton(
-            translate('OpenLP.ThemeManager', 'Export Theme'),
+            UiStrings.ExportType % UiStrings.Theme,
             u':/general/general_export.png',
             translate('OpenLP.ThemeManager', 'Export a theme.'),
             self.onExportTheme)
@@ -260,7 +260,7 @@ class ThemeManager(QtGui.QWidget):
             'You must select a theme to rename.')),
             unicode(translate('OpenLP.ThemeManager', 'Rename Confirmation')),
             unicode(translate('OpenLP.ThemeManager', 'Rename %s theme?')),
-            False):
+            False, False):
             item = self.themeListWidget.currentItem()
             oldThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
             self.fileRenameForm.fileNameEdit.setText(oldThemeName)
@@ -334,9 +334,8 @@ class ThemeManager(QtGui.QWidget):
             row = self.themeListWidget.row(item)
             self.themeListWidget.takeItem(row)
             self.deleteTheme(theme)
-            # As we do not reload the themes, push out the change
-            # Reaload the list as the internal lists and events need
-            # to be triggered
+            # As we do not reload the themes, push out the change. Reload the
+            # list as the internal lists and events need to be triggered.
             self._pushThemes()
 
     def deleteTheme(self, theme):
@@ -676,7 +675,7 @@ class ThemeManager(QtGui.QWidget):
         return theme
 
     def _validate_theme_action(self, select_text, confirm_title, confirm_text,
-        testPlugin=True):
+        testPlugin=True, confirm=True):
         """
         Check to see if theme has been selected and the destructive action
         is allowed.
@@ -688,12 +687,13 @@ class ThemeManager(QtGui.QWidget):
             item = self.themeListWidget.currentItem()
             theme = unicode(item.text())
             # confirm deletion
-            answer = QtGui.QMessageBox.question(self, confirm_title,
-                confirm_text % theme, QtGui.QMessageBox.StandardButtons(
-                QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
-                QtGui.QMessageBox.No)
-            if answer == QtGui.QMessageBox.No:
-                return False
+            if confirm:
+                answer = QtGui.QMessageBox.question(self, confirm_title,
+                    confirm_text % theme, QtGui.QMessageBox.StandardButtons(
+                    QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
+                    QtGui.QMessageBox.No)
+                if answer == QtGui.QMessageBox.No:
+                    return False
             # should be the same unless default
             if theme != unicode(item.data(QtCore.Qt.UserRole).toString()):
                 critical_error_message_box(

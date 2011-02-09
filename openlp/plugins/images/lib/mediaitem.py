@@ -32,7 +32,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
     ItemCapabilities, SettingsManager, translate, check_item_selected, \
     check_directory_exists, Receiver
-from openlp.core.lib.ui import critical_error_message_box
+from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file, get_images_filter
 
 log = logging.getLogger(__name__)
@@ -64,7 +64,7 @@ class ImageMediaItem(MediaManagerItem):
             'Select Image(s)')
         file_formats = get_images_filter()
         self.OnNewFileMasks = u'%s;;%s (*.*) (*)' % (file_formats,
-            unicode(translate('ImagePlugin.MediaItem', 'All Files')))
+            unicode(UiStrings.AllFiles))
         self.replaceAction.setText(
             translate('ImagePlugin.MediaItem', 'Replace Background'))
         self.replaceAction.setToolTip(
@@ -84,8 +84,6 @@ class ImageMediaItem(MediaManagerItem):
     def initialise(self):
         log.debug(u'initialise')
         self.listView.clear()
-        self.listView.setSelectionMode(
-            QtGui.QAbstractItemView.ExtendedSelection)
         self.listView.setIconSize(QtCore.QSize(88, 50))
         self.servicePath = os.path.join(
             AppLocation.get_section_data_path(self.settingsSection),
