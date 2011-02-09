@@ -34,7 +34,7 @@ import cPickle
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, translate, DisplayTags
-from openlp.core.lib.ui import critical_error_message_box
+from openlp.core.lib.ui import UiStrings, critical_error_message_box
 
 class DisplayTagTab(SettingsTab):
     """
@@ -164,8 +164,7 @@ class DisplayTagTab(SettingsTab):
         self.startTagLabel.setText(
             translate('OpenLP.DisplayTagTab', 'Start tag'))
         self.endTagLabel.setText(translate('OpenLP.DisplayTagTab', 'End tag'))
-        self.deletePushButton.setText(
-            translate('OpenLP.DisplayTagTab', 'Delete'))
+        self.deletePushButton.setText(UiStrings.Delete)
         self.defaultPushButton.setText(
             translate('OpenLP.DisplayTagTab', 'Default'))
         self.newPushButton.setText(translate('OpenLP.DisplayTagTab', 'New'))

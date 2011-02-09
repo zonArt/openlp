@@ -32,7 +32,7 @@ from PyQt4.phonon import Phonon
 
 from openlp.core.lib import OpenLPToolbar, Receiver, resize_image, \
     ItemCapabilities, translate
-from openlp.core.lib.ui import shortcut_action
+from openlp.core.lib.ui import UiStrings, shortcut_action
 from openlp.core.ui import HideMode, MainDisplay
 
 log = logging.getLogger(__name__)
@@ -87,12 +87,11 @@ class SlideController(QtGui.QWidget):
         # Type label for the top of the slide controller
         self.typeLabel = QtGui.QLabel(self.panel)
         if self.isLive:
-            self.typeLabel.setText(translate('OpenLP.SlideController', 'Live'))
+            self.typeLabel.setText(UiStrings.Live)
             self.split = 1
             self.typePrefix = u'live'
         else:
-            self.typeLabel.setText(translate('OpenLP.SlideController',
-                'Preview'))
+            self.typeLabel.setText(UiStrings.Preview)
             self.split = 0
             self.typePrefix = u'preview'
         self.typeLabel.setStyleSheet(u'font-weight: bold; font-size: 12pt;')
@@ -874,7 +873,8 @@ class SlideController(QtGui.QWidget):
         using *Blank to Theme*.
         """
         log.debug(u'updatePreview %s ' % self.screens.current[u'primary'])
-        if not self.screens.current[u'primary']:
+        if not self.screens.current[u'primary'] and \
+            self.serviceItem.is_capable(ItemCapabilities.ProvidesOwnDisplay):
             # Grab now, but try again in a couple of seconds if slide change
             # is slow
             QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)

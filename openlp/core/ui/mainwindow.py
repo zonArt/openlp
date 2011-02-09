@@ -30,7 +30,8 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import RenderManager, build_icon, OpenLPDockWidget, \
     SettingsManager, PluginManager, Receiver, translate
-from openlp.core.lib.ui import base_action, checkable_action, icon_action
+from openlp.core.lib.ui import UiStrings, base_action, checkable_action, \
+    icon_action
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
     ThemeManager, SlideController, PluginForm, MediaDockManager, \
     ShortcutListForm
@@ -295,7 +296,7 @@ class Ui_MainWindow(object):
         """
         Set up the translation system
         """
-        mainWindow.mainTitle = translate('OpenLP.MainWindow', 'OpenLP 2.0')
+        mainWindow.mainTitle = UiStrings.OLPV2
         mainWindow.setWindowTitle(mainWindow.mainTitle)
         self.FileMenu.setTitle(translate('OpenLP.MainWindow', '&File'))
         self.FileImportMenu.setTitle(translate('OpenLP.MainWindow', '&Import'))
