@@ -103,7 +103,6 @@ class MediaManagerItem(QtGui.QWidget):
             self.icon = build_icon(icon)
         self.toolbar = None
         self.remoteTriggered = None
-        self.serviceItemIconName = None
         self.singleServiceItem = True
         self.pageLayout = QtGui.QVBoxLayout(self)
         self.pageLayout.setSpacing(0)
@@ -159,7 +158,7 @@ class MediaManagerItem(QtGui.QWidget):
 
         ``icon``
             The icon of the button. This can be an instance of QIcon, or a
-            string cotaining either the absolute path to the image, or an
+            string containing either the absolute path to the image, or an
             internal resource path starting with ':/'.
 
         ``slot``
@@ -246,7 +245,7 @@ class MediaManagerItem(QtGui.QWidget):
             preview_string[u'title'],
             preview_string[u'tooltip'],
             u':/general/general_preview.png', self.onPreviewClick)
-        ## Live  Button ##
+        ## Live Button ##
         live_string = self.plugin.getString(StringContent.Live)
         self.addToolbarButton(
             live_string[u'title'],
@@ -367,33 +366,34 @@ class MediaManagerItem(QtGui.QWidget):
             count += 1
         return filelist
 
-    def validate(self, file, thumb):
+    def validate(self, image, thumb):
         """
-        Validates to see if the file still exists or thumbnail is up to date
+        Validates whether an image still exists and, if it does, is the
+        thumbnail representation of the image up to date.
         """
-        if not os.path.exists(file):
+        if not os.path.exists(image):
             return False
         if os.path.exists(thumb):
-            filedate = os.stat(file).st_mtime
-            thumbdate = os.stat(thumb).st_mtime
-            # if file updated rebuild icon
-            if filedate > thumbdate:
-                self.iconFromFile(file, thumb)
+            imageDate = os.stat(image).st_mtime
+            thumbDate = os.stat(thumb).st_mtime
+            # If image has been updated rebuild icon
+            if imageDate > thumbDate:
+                self.iconFromFile(image, thumb)
         else:
-            self.iconFromFile(file, thumb)
+            self.iconFromFile(image, thumb)
         return True
 
-    def iconFromFile(self, file, thumb):
+    def iconFromFile(self, image, thumb):
         """
-        Create a thumbnail icon from a given file
+        Create a thumbnail icon from a given image.
 
-        ``file``
-            The file to create the icon from
+        ``image``
+            The image file to create the icon from.
 
         ``thumb``
             The filename to save the thumbnail to
         """
-        icon = build_icon(unicode(file))
+        icon = build_icon(unicode(image))
         pixmap = icon.pixmap(QtCore.QSize(88, 50))
         ext = os.path.splitext(thumb)[1].lower()
         pixmap.save(thumb, ext[1:])
@@ -404,12 +404,16 @@ class MediaManagerItem(QtGui.QWidget):
             u'defined by the plugin')
 
     def onNewClick(self):
-        raise NotImplementedError(u'MediaManagerItem.onNewClick needs to be '
-            u'defined by the plugin')
+        """
+        Hook for plugins to define behaviour for adding new items.
+        """
+        pass
 
     def onEditClick(self):
-        raise NotImplementedError(u'MediaManagerItem.onEditClick needs to be '
-            u'defined by the plugin')
+        """
+        Hook for plugins to define behaviour for editing items.
+        """
+        pass
 
     def onDeleteClick(self):
         raise NotImplementedError(u'MediaManagerItem.onDeleteClick needs to '
@@ -508,7 +512,7 @@ class MediaManagerItem(QtGui.QWidget):
                         'No Service Item Selected'),
                     translate('OpenLP.MediaManagerItem',
                         'You must select an existing service item to add to.'))
-            elif self.title.lower() == serviceItem.name.lower():
+            elif self.plugin.name.lower() == serviceItem.name.lower():
                 self.generateSlideData(serviceItem)
                 self.parent.serviceManager.addServiceItem(serviceItem,
                     replace=True)
@@ -525,10 +529,7 @@ class MediaManagerItem(QtGui.QWidget):
         Common method for generating a service item
         """
         serviceItem = ServiceItem(self.parent)
-        if self.serviceItemIconName:
-            serviceItem.add_icon(self.serviceItemIconName)
-        else:
-            serviceItem.add_icon(self.parent.icon_path)
+        serviceItem.add_icon(self.parent.icon_path)
         if self.generateSlideData(serviceItem, item, xmlVersion):
             return serviceItem
         else:
@@ -540,3 +541,25 @@ class MediaManagerItem(QtGui.QWidget):
         individual service items need to be processed by the plugins
         """
         pass
+
+    def _getIdOfItemToGenerate(self, item, remoteItem):
+        """
+        Utility method to check items being submitted for slide generation.
+
+        ``item``
+            The item to check.
+
+        ``remoteItem``
+            The id to assign if the slide generation was remotely triggered.
+        """
+        if item is None:
+            if self.remoteTriggered is None:
+                item = self.listView.currentItem()
+                if item is None:
+                    return False
+                item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            else:
+                item_id = remoteItem
+        else:
+            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        return item_id

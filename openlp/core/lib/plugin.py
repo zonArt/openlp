@@ -42,7 +42,11 @@ class PluginStatus(object):
     Inactive = 0
     Disabled = -1
 
+
 class StringContent(object):
+    """
+    Provide standard strings for objects to use.
+    """
     Name = u'name'
     Import = u'import'
     Load = u'load'
@@ -53,6 +57,7 @@ class StringContent(object):
     Live = u'live'
     Service = u'service'
     VisibleName = u'visible_name'
+
 
 class Plugin(QtCore.QObject):
     """
@@ -116,7 +121,7 @@ class Plugin(QtCore.QObject):
 
             class MyPlugin(Plugin):
                 def __init__(self):
-                    Plugin.__init(self, u'MyPlugin', u'0.1')
+                    Plugin.__init__(self, u'MyPlugin', u'0.1')
 
         ``name``
             Defaults to *None*. The name of the plugin.

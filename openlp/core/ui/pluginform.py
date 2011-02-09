@@ -28,13 +28,15 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import PluginStatus, StringContent, translate
+from openlp.core.lib import PluginStatus, Receiver, StringContent, translate
 from plugindialog import Ui_PluginViewDialog
 
 log = logging.getLogger(__name__)
 
 class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
-
+    """
+    The plugin form provides user control over the plugins OpenLP uses.
+    """
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
         self.parent = parent
@@ -129,7 +131,9 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         if self.programaticChange:
             return
         if status == 0:
+            Receiver.send_message(u'cursor_busy')
             self.activePlugin.toggleStatus(PluginStatus.Active)
+            Receiver.send_message(u'cursor_normal')
         else:
             self.activePlugin.toggleStatus(PluginStatus.Inactive)
         status_text = unicode(

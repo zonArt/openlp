@@ -27,6 +27,7 @@
 import logging
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
+from openlp.core.lib.ui import UiStrings
 from openlp.plugins.images.lib import ImageMediaItem
 
 log = logging.getLogger(__name__)
@@ -74,43 +75,43 @@ class ImagePlugin(Plugin):
         # Middle Header Bar
         ## Load Button ##
         self.textStrings[StringContent.Load] = {
-            u'title': translate('ImagePlugin', 'Load'),
+            u'title': UiStrings.Load,
             u'tooltip': translate('ImagePlugin',
                 'Load a new Image')
         }
         ## New Button ##
         self.textStrings[StringContent.New] = {
-            u'title': translate('ImagePlugin', 'Add'),
+            u'title': UiStrings.Add,
             u'tooltip': translate('ImagePlugin',
                 'Add a new Image')
         }
         ## Edit Button ##
         self.textStrings[StringContent.Edit] = {
-            u'title': translate('ImagePlugin', 'Edit'),
+            u'title': UiStrings.Edit,
             u'tooltip': translate('ImagePlugin',
                 'Edit the selected Image')
         }
         ## Delete Button ##
         self.textStrings[StringContent.Delete] = {
-            u'title': translate('ImagePlugin', 'Delete'),
+            u'title': UiStrings.Delete,
             u'tooltip': translate('ImagePlugin',
                 'Delete the selected Image')
         }
         ## Preview ##
         self.textStrings[StringContent.Preview] = {
-            u'title': translate('ImagePlugin', 'Preview'),
+            u'title': UiStrings.Preview,
             u'tooltip': translate('ImagePlugin',
                 'Preview the selected Image')
         }
         ## Live  Button ##
         self.textStrings[StringContent.Live] = {
-            u'title': translate('ImagePlugin', 'Live'),
+            u'title': UiStrings.Live,
             u'tooltip': translate('ImagePlugin',
                 'Send the selected Image live')
         }
         ## Add to service Button ##
         self.textStrings[StringContent.Service] = {
-            u'title': translate('ImagePlugin', 'Service'),
+            u'title': UiStrings.Service,
             u'tooltip': translate('ImagePlugin',
                 'Add the selected Image to the service')
         }

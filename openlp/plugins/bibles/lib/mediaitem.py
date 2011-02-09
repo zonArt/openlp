@@ -30,7 +30,8 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, Receiver, BaseListWithDnD, \
     ItemCapabilities, translate
-from openlp.core.ui import criticalErrorMessageBox
+from openlp.core.lib.ui import add_widget_completer, media_item_combo_box, \
+    critical_error_message_box
 from openlp.plugins.bibles.forms import BibleImportForm
 from openlp.plugins.bibles.lib import get_reference_match
 
@@ -81,33 +82,21 @@ class BibleMediaItem(MediaManagerItem):
         self.quickLayout.setObjectName(u'quickLayout')
         self.quickVersionLabel = QtGui.QLabel(self.quickTab)
         self.quickVersionLabel.setObjectName(u'quickVersionLabel')
-        self.quickVersionComboBox = QtGui.QComboBox(self.quickTab)
-        self.quickVersionComboBox.setSizeAdjustPolicy(
-            QtGui.QComboBox.AdjustToMinimumContentsLength)
-        self.quickVersionComboBox.setSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
-        self.quickVersionComboBox.setObjectName(u'quickVersionComboBox')
+        self.quickVersionComboBox = media_item_combo_box(self.quickTab,
+            u'quickVersionComboBox')
         self.quickVersionLabel.setBuddy(self.quickVersionComboBox)
         self.quickLayout.addRow(self.quickVersionLabel,
             self.quickVersionComboBox)
         self.quickSecondLabel = QtGui.QLabel(self.quickTab)
         self.quickSecondLabel.setObjectName(u'quickSecondLabel')
-        self.quickSecondComboBox = QtGui.QComboBox(self.quickTab)
-        self.quickSecondComboBox.setSizeAdjustPolicy(
-            QtGui.QComboBox.AdjustToMinimumContentsLength)
-        self.quickSecondComboBox.setSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
-        self.quickSecondComboBox.setObjectName(u'quickSecondComboBox')
+        self.quickSecondComboBox = media_item_combo_box(self.quickTab,
+            u'quickSecondComboBox')
         self.quickSecondLabel.setBuddy(self.quickSecondComboBox)
         self.quickLayout.addRow(self.quickSecondLabel, self.quickSecondComboBox)
         self.quickSearchTypeLabel = QtGui.QLabel(self.quickTab)
         self.quickSearchTypeLabel.setObjectName(u'quickSearchTypeLabel')
-        self.quickSearchComboBox = QtGui.QComboBox(self.quickTab)
-        self.quickSearchComboBox.setSizeAdjustPolicy(
-            QtGui.QComboBox.AdjustToMinimumContentsLength)
-        self.quickSearchComboBox.setSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
-        self.quickSearchComboBox.setObjectName(u'quickSearchComboBox')
+        self.quickSearchComboBox = media_item_combo_box(self.quickTab,
+            u'quickSearchComboBox')
         self.quickSearchTypeLabel.setBuddy(self.quickSearchComboBox)
         self.quickLayout.addRow(self.quickSearchTypeLabel,
             self.quickSearchComboBox)
@@ -119,12 +108,8 @@ class BibleMediaItem(MediaManagerItem):
         self.quickLayout.addRow(self.quickSearchLabel, self.quickSearchEdit)
         self.quickClearLabel = QtGui.QLabel(self.quickTab)
         self.quickClearLabel.setObjectName(u'quickClearLabel')
-        self.quickClearComboBox = QtGui.QComboBox(self.quickTab)
-        self.quickClearComboBox.setSizeAdjustPolicy(
-            QtGui.QComboBox.AdjustToMinimumContentsLength)
-        self.quickClearComboBox.setSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
-        self.quickClearComboBox.setObjectName(u'quickClearComboBox')
+        self.quickClearComboBox = media_item_combo_box(self.quickTab,
+            u'quickClearComboBox')
         self.quickLayout.addRow(self.quickClearLabel, self.quickClearComboBox)
         self.quickSearchButtonLayout = QtGui.QHBoxLayout()
         self.quickSearchButtonLayout.setObjectName(u'quickSearchButtonLayout')
@@ -144,36 +129,24 @@ class BibleMediaItem(MediaManagerItem):
         self.advancedVersionLabel.setObjectName(u'advancedVersionLabel')
         self.advancedLayout.addWidget(self.advancedVersionLabel, 0, 0,
             QtCore.Qt.AlignRight)
-        self.advancedVersionComboBox = QtGui.QComboBox(self.advancedTab)
-        self.advancedVersionComboBox.setSizeAdjustPolicy(
-            QtGui.QComboBox.AdjustToMinimumContentsLength)
-        self.advancedVersionComboBox.setSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
-        self.advancedVersionComboBox.setObjectName(u'advancedVersionComboBox')
+        self.advancedVersionComboBox = media_item_combo_box(self.advancedTab,
+            u'advancedVersionComboBox')
         self.advancedVersionLabel.setBuddy(self.advancedVersionComboBox)
         self.advancedLayout.addWidget(self.advancedVersionComboBox, 0, 1, 1, 2)
         self.advancedSecondLabel = QtGui.QLabel(self.advancedTab)
         self.advancedSecondLabel.setObjectName(u'advancedSecondLabel')
         self.advancedLayout.addWidget(self.advancedSecondLabel, 1, 0,
             QtCore.Qt.AlignRight)
-        self.advancedSecondComboBox = QtGui.QComboBox(self.advancedTab)
-        self.advancedSecondComboBox.setSizeAdjustPolicy(
-            QtGui.QComboBox.AdjustToMinimumContentsLength)
-        self.advancedSecondComboBox.setSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
-        self.advancedSecondComboBox.setObjectName(u'advancedSecondComboBox')
+        self.advancedSecondComboBox = media_item_combo_box(self.advancedTab,
+            u'advancedSecondComboBox')
         self.advancedSecondLabel.setBuddy(self.advancedSecondComboBox)
         self.advancedLayout.addWidget(self.advancedSecondComboBox, 1, 1, 1, 2)
         self.advancedBookLabel = QtGui.QLabel(self.advancedTab)
         self.advancedBookLabel.setObjectName(u'advancedBookLabel')
         self.advancedLayout.addWidget(self.advancedBookLabel, 2, 0,
             QtCore.Qt.AlignRight)
-        self.advancedBookComboBox = QtGui.QComboBox(self.advancedTab)
-        self.advancedBookComboBox.setSizeAdjustPolicy(
-            QtGui.QComboBox.AdjustToMinimumContentsLength)
-        self.advancedBookComboBox.setSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
-        self.advancedBookComboBox.setObjectName(u'advancedBookComboBox')
+        self.advancedBookComboBox = media_item_combo_box(self.advancedTab,
+            u'advancedBookComboBox')
         self.advancedBookLabel.setBuddy(self.advancedBookComboBox)
         self.advancedLayout.addWidget(self.advancedBookComboBox, 2, 1, 1, 2)
         self.advancedChapterLabel = QtGui.QLabel(self.advancedTab)
@@ -202,17 +175,12 @@ class BibleMediaItem(MediaManagerItem):
         self.advancedToVerse = QtGui.QComboBox(self.advancedTab)
         self.advancedToVerse.setObjectName(u'advancedToVerse')
         self.advancedLayout.addWidget(self.advancedToVerse, 5, 2)
-
         self.advancedClearLabel = QtGui.QLabel(self.quickTab)
         self.advancedClearLabel.setObjectName(u'advancedClearLabel')
         self.advancedLayout.addWidget(self.advancedClearLabel, 6, 0,
             QtCore.Qt.AlignRight)
-        self.advancedClearComboBox = QtGui.QComboBox(self.quickTab)
-        self.advancedClearComboBox.setSizeAdjustPolicy(
-            QtGui.QComboBox.AdjustToMinimumContentsLength)
-        self.advancedClearComboBox.setSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
-        self.advancedClearComboBox.setObjectName(u'advancedClearComboBox')
+        self.advancedClearComboBox = media_item_combo_box(self.quickTab,
+            u'advancedClearComboBox')
         self.advancedClearLabel.setBuddy(self.advancedClearComboBox)
         self.advancedLayout.addWidget(self.advancedClearComboBox, 6, 1, 1, 2)
         self.advancedSearchButtonLayout = QtGui.QHBoxLayout()
@@ -387,7 +355,8 @@ class BibleMediaItem(MediaManagerItem):
         verse_count = self.parent.manager.get_verse_count(bible, book, 1)
         if verse_count == 0:
             self.advancedSearchButton.setEnabled(False)
-            criticalErrorMessageBox(message=translate('BiblePlugin.MediaItem',
+            critical_error_message_box(
+                message=translate('BiblePlugin.MediaItem',
                 'Bible not fully loaded'))
         else:
             self.advancedSearchButton.setEnabled(True)
@@ -411,9 +380,7 @@ class BibleMediaItem(MediaManagerItem):
                 book_data = bibles[bible].get_books()
                 books = [book.name for book in book_data]
                 books.sort()
-        completer = QtGui.QCompleter(books)
-        completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
-        self.quickSearchEdit.setCompleter(completer)
+        add_widget_completer(books, self.quickSearchEdit)
 
     def onAdvancedVersionComboBox(self):
         self.initialiseBible(
@@ -525,19 +492,7 @@ class BibleMediaItem(MediaManagerItem):
         if self.advancedClearComboBox.currentIndex() == 0:
             self.listView.clear()
         if self.listView.count() != 0:
-            # Check if the first item is a second bible item or not.
-            bitem = self.listView.item(0)
-            item_second_bible = self._decodeQtObject(bitem, 'second_bible')
-            if item_second_bible and second_bible or not item_second_bible and \
-                not second_bible:
-                self.displayResults(bible, second_bible)
-            elif criticalErrorMessageBox(
-                message=translate('BiblePlugin.MediaItem',
-                'You cannot combine single and second bible verses. Do you '
-                'want to delete your search results and start a new search?'),
-                parent=self, question=True) == QtGui.QMessageBox.Yes:
-                self.listView.clear()
-                self.displayResults(bible, second_bible)
+            self.__checkSecondBible(bible, second_bible)
         else:
             self.displayResults(bible, second_bible)
         Receiver.send_message(u'cursor_normal')
@@ -577,23 +532,29 @@ class BibleMediaItem(MediaManagerItem):
         if self.quickClearComboBox.currentIndex() == 0:
             self.listView.clear()
         if self.listView.count() != 0 and self.search_results:
-            bitem = self.listView.item(0)
-            item_second_bible = self._decodeQtObject(bitem, 'second_bible')
-            if item_second_bible and second_bible or not item_second_bible and \
-                not second_bible:
-                self.displayResults(bible, second_bible)
-            elif criticalErrorMessageBox(
-                message=translate('BiblePlugin.MediaItem',
-                'You cannot combine single and second bible verses. Do you '
-                'want to delete your search results and start a new search?'),
-                parent=self, question=True) == QtGui.QMessageBox.Yes:
-                self.listView.clear()
-                self.displayResults(bible, second_bible)
+            self.__checkSecondBible(bible, second_bible)
         elif self.search_results:
             self.displayResults(bible, second_bible)
         self.quickSearchButton.setEnabled(True)
         Receiver.send_message(u'cursor_normal')
         Receiver.send_message(u'openlp_process_events')
+
+    def __checkSecondBible(self, bible, second_bible):
+        """
+        Check if the first item is a second bible item or not.
+        """
+        bitem = self.listView.item(0)
+        item_second_bible = self._decodeQtObject(bitem, 'second_bible')
+        if item_second_bible and second_bible or not item_second_bible and \
+            not second_bible:
+            self.displayResults(bible, second_bible)
+        elif critical_error_message_box(
+            message=translate('BiblePlugin.MediaItem',
+            'You cannot combine single and second bible verses. Do you '
+            'want to delete your search results and start a new search?'),
+            parent=self, question=True) == QtGui.QMessageBox.Yes:
+            self.listView.clear()
+            self.displayResults(bible, second_bible)
 
     def displayResults(self, bible, second_bible=u''):
         """
