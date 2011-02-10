@@ -39,9 +39,7 @@ from oooimport import OooImport
 if os.name == u'nt':
     BOLD = 150.0
     ITALIC = 2
-    PAGE_BEFORE = 4
-    PAGE_AFTER = 5
-    PAGE_BOTH = 6
+    from oooimport import PAGE_BEFORE, PAGE_AFTER, PAGE_BOTH
 else:
     try:
         from com.sun.star.awt.FontWeight import BOLD
@@ -305,7 +303,6 @@ class SofImport(OooImport):
             self.song.add_verse(self.currentverse, versetag)
         self.currentverse = u''
         self.is_chorus = False
-
 
     def uncap_text(self, text):
         """

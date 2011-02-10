@@ -27,6 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
+from openlp.core.lib.ui import create_save_cancel_button_box
 
 class Ui_SongBookDialog(object):
     def setupUi(self, songBookDialog):
@@ -49,17 +50,10 @@ class Ui_SongBookDialog(object):
         self.publisherLabel.setBuddy(self.publisherEdit)
         self.bookLayout.addRow(self.publisherLabel, self.publisherEdit)
         self.dialogLayout.addLayout(self.bookLayout)
-        self.buttonBox = QtGui.QDialogButtonBox(songBookDialog)
-        self.buttonBox.setStandardButtons(
-            QtGui.QDialogButtonBox.Save | QtGui.QDialogButtonBox.Cancel)
-        self.buttonBox.setObjectName(u'buttonBox')
-        self.dialogLayout.addWidget(self.buttonBox)
+        self.dialogLayout.addWidget(
+            create_save_cancel_button_box(songBookDialog))
         self.retranslateUi(songBookDialog)
         songBookDialog.setMaximumHeight(songBookDialog.sizeHint().height())
-        QtCore.QObject.connect(self.buttonBox,
-            QtCore.SIGNAL(u'accepted()'), songBookDialog.accept)
-        QtCore.QObject.connect(self.buttonBox,
-            QtCore.SIGNAL(u'rejected()'), songBookDialog.reject)
         QtCore.QMetaObject.connectSlotsByName(songBookDialog)
 
     def retranslateUi(self, songBookDialog):

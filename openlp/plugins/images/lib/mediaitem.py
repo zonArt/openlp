@@ -32,7 +32,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
     ItemCapabilities, SettingsManager, translate, check_item_selected, \
     check_directory_exists, Receiver
-from openlp.core.ui import criticalErrorMessageBox
+from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file, get_images_filter
 
 log = logging.getLogger(__name__)
@@ -64,7 +64,7 @@ class ImageMediaItem(MediaManagerItem):
             'Select Image(s)')
         file_formats = get_images_filter()
         self.OnNewFileMasks = u'%s;;%s (*.*) (*)' % (file_formats,
-            unicode(translate('ImagePlugin.MediaItem', 'All Files')))
+            unicode(UiStrings.AllFiles))
         self.replaceAction.setText(
             translate('ImagePlugin.MediaItem', 'Replace Background'))
         self.replaceAction.setToolTip(
@@ -84,8 +84,6 @@ class ImageMediaItem(MediaManagerItem):
     def initialise(self):
         log.debug(u'initialise')
         self.listView.clear()
-        self.listView.setSelectionMode(
-            QtGui.QAbstractItemView.ExtendedSelection)
         self.listView.setIconSize(QtCore.QSize(88, 50))
         self.servicePath = os.path.join(
             AppLocation.get_section_data_path(self.settingsSection),
@@ -96,7 +94,6 @@ class ImageMediaItem(MediaManagerItem):
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
-        self.listView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         self.listView.addAction(self.replaceAction)
 
     def addEndHeaderBar(self):
@@ -124,26 +121,26 @@ class ImageMediaItem(MediaManagerItem):
                 self.settingsSection, self.getFileList())
 
     def loadList(self, list):
-        for file in list:
-            filename = os.path.split(unicode(file))[1]
+        for imageFile in list:
+            filename = os.path.split(unicode(imageFile))[1]
             thumb = os.path.join(self.servicePath, filename)
             if os.path.exists(thumb):
-                if self.validate(file, thumb):
+                if self.validate(imageFile, thumb):
                     icon = build_icon(thumb)
                 else:
                     icon = build_icon(u':/general/general_delete.png')
             else:
-                icon = self.iconFromFile(file, thumb)
+                icon = self.iconFromFile(imageFile, thumb)
             item_name = QtGui.QListWidgetItem(filename)
             item_name.setIcon(icon)
-            item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
+            item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(imageFile))
             self.listView.addItem(item_name)
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
         items = self.listView.selectedIndexes()
         if items:
             service_item.title = unicode(
-                translate('ImagePlugin.MediaItem', 'Image(s)'))
+                translate('ImagePlugin.MediaItem', 'Images'))
             service_item.add_capability(ItemCapabilities.AllowsMaintain)
             service_item.add_capability(ItemCapabilities.AllowsPreview)
             service_item.add_capability(ItemCapabilities.AllowsLoop)
@@ -162,7 +159,7 @@ class ImageMediaItem(MediaManagerItem):
                 items.remove(item)
             # We cannot continue, as all images do not exist.
             if not items:
-                criticalErrorMessageBox(
+                critical_error_message_box(
                     translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
                     unicode(translate('ImagePlugin.MediaItem',
                     'The following image(s) no longer exist: %s')) %
@@ -215,7 +212,7 @@ class ImageMediaItem(MediaManagerItem):
                 self.parent.liveController.display.directImage(name, filename)
                 self.resetAction.setVisible(True)
             else:
-                criticalErrorMessageBox(
+                critical_error_message_box(
                     translate('ImagePlugin.MediaItem', 'Live Background Error'),
                     unicode(translate('ImagePlugin.MediaItem',
                     'There was a problem replacing your background, '

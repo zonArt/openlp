@@ -227,7 +227,7 @@ class SongImport(QtCore.QObject):
             self.versecounts[versetag[0]] = int(versetag[1:])
         self.verses.append([versetag, versetext.rstrip(), lang])
         self.verse_order_list.append(versetag)
-        if versetag.startswith(u'V') and self.contains_verse(u'C1'):
+        if versetag.startswith(u'V') and u'C1' in self.verse_order_list:
             self.verse_order_list.append(u'C1')
 
     def repeat_verse(self):
@@ -235,9 +235,6 @@ class SongImport(QtCore.QObject):
         Repeat the previous verse in the verse order
         """
         self.verse_order_list.append(self.verse_order_list[-1])
-
-    def contains_verse(self, versetag):
-        return versetag in self.verse_order_list
 
     def check_complete(self):
         """

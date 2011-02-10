@@ -23,10 +23,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
-import os
-import logging
 import cPickle
+import logging
+import os
 import zipfile
 
 log = logging.getLogger(__name__)
@@ -36,8 +35,9 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import OpenLPToolbar, ServiceItem, context_menu_action, \
     Receiver, build_icon, ItemCapabilities, SettingsManager, translate, \
     ThemeLevel
-from openlp.core.ui import criticalErrorMessageBox, ServiceNoteForm, \
-    ServiceItemEditForm
+from openlp.core.lib.ui import critical_error_message_box
+from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm
+from openlp.core.ui.printserviceorderform import PrintServiceOrderForm
 from openlp.core.utils import AppLocation, delete_file, file_is_unicode, \
     split_filename
 
@@ -67,8 +67,8 @@ class ServiceManagerList(QtGui.QTreeWidget):
 
 class ServiceManager(QtGui.QWidget):
     """
-    Manages the services.  This involves taking text strings from plugins and
-    adding them to the service.  This service can then be zipped up with all
+    Manages the services. This involves taking text strings from plugins and
+    adding them to the service. This service can then be zipped up with all
     the resources used into one OSZ file for use on any OpenLP v2 installation.
     Also handles the UI tasks of moving things up and down etc.
     """
@@ -178,8 +178,8 @@ class ServiceManager(QtGui.QWidget):
             translate('OpenLP.ServiceManager', 'Move &down'),
             None,
             translate('OpenLP.ServiceManager',
-            'Moves the selection up the window.'),
-            self.onMoveSelectionDown, shortcut=QtCore.Qt.Key_Up)
+            'Moves the selection down the window.'),
+            self.onMoveSelectionDown, shortcut=QtCore.Qt.Key_Down)
         self.serviceManagerList.down.setVisible(False)
         self.serviceManagerList.up = self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', 'Move up'),
@@ -391,7 +391,7 @@ class ServiceManager(QtGui.QWidget):
         return QtGui.QMessageBox.question(self.mainwindow,
             translate('OpenLP.ServiceManager', 'Modified Service'),
             translate('OpenLP.ServiceManager', 'The current service has '
-            'been modified.  Would you like to save this service?'),
+            'been modified. Would you like to save this service?'),
             QtGui.QMessageBox.Save | QtGui.QMessageBox.Discard |
             QtGui.QMessageBox.Cancel, QtGui.QMessageBox.Save)
 
@@ -491,7 +491,7 @@ class ServiceManager(QtGui.QWidget):
             for file in zip.namelist():
                 ucsfile = file_is_unicode(file)
                 if not ucsfile:
-                    criticalErrorMessageBox(
+                    critical_error_message_box(
                         message=translate('OpenLP.ServiceManager',
                         'File is not a valid service.\n'
                         'The content encoding is not UTF-8.'))
@@ -506,6 +506,7 @@ class ServiceManager(QtGui.QWidget):
                 if filePath.endswith(u'osd'):
                     p_file = filePath
             if 'p_file' in locals():
+                Receiver.send_message(u'cursor_busy')
                 fileTo = open(p_file, u'r')
                 items = cPickle.load(fileTo)
                 fileTo.close()
@@ -520,13 +521,14 @@ class ServiceManager(QtGui.QWidget):
                         Receiver.send_message(u'%s_service_load' %
                             serviceItem.name.lower(), serviceItem)
                 delete_file(p_file)
+                Receiver.send_message(u'cursor_normal')
             else:
-                criticalErrorMessageBox(
+                critical_error_message_box(
                     message=translate('OpenLP.ServiceManager',
                     'File is not a valid service.'))
                 log.exception(u'File contains no service data')
         except (IOError, NameError):
-            log.exception(u'Problem loading a service file')
+            log.exception(u'Problem loading service file %s' % fileName)
         finally:
             if fileTo:
                 fileTo.close()
@@ -536,9 +538,7 @@ class ServiceManager(QtGui.QWidget):
         self.mainwindow.addRecentFile(fileName)
         self.setModified(False)
         QtCore.QSettings(). \
-            setValue(u'service/last file',QtCore.QVariant(fileName))
-        # Refresh Plugin lists
-        Receiver.send_message(u'plugin_list_refresh')
+            setValue(u'service/last file', QtCore.QVariant(fileName))
 
     def loadLastFile(self):
         """
@@ -833,7 +833,7 @@ class ServiceManager(QtGui.QWidget):
             else:
                 treewidgetitem.setIcon(0,
                     build_icon(u':/general/general_delete.png'))
-            treewidgetitem.setText(0, serviceitem.title)
+            treewidgetitem.setText(0, serviceitem.get_display_title())
             treewidgetitem.setToolTip(0, serviceitem.notes)
             treewidgetitem.setData(0, QtCore.Qt.UserRole,
                 QtCore.QVariant(item[u'order']))
@@ -856,7 +856,7 @@ class ServiceManager(QtGui.QWidget):
         one it allows the item to be displayed.
         """
         if serviceItem.is_command():
-            type = serviceItem._raw_frames[0][u'title'].split(u'.')[1]
+            type = serviceItem._raw_frames[0][u'title'].split(u'.')[-1]
             if type not in self.suffixes:
                 serviceItem.is_valid = False
 
@@ -993,7 +993,7 @@ class ServiceManager(QtGui.QWidget):
             self.mainwindow.previewController.addServiceManagerItem(
                 self.serviceItems[item][u'service_item'], child)
         else:
-            criticalErrorMessageBox(
+            critical_error_message_box(
                 translate('OpenLP.ServiceManager', 'Missing Display Handler'),
                 translate('OpenLP.ServiceManager', 'Your item cannot be '
                 'displayed as there is no handler to display it'))
@@ -1027,7 +1027,7 @@ class ServiceManager(QtGui.QWidget):
                         self.serviceItems[item][u'service_item'], 0)
                     self.mainwindow.liveController.previewListWidget.setFocus()
         else:
-            criticalErrorMessageBox(
+            critical_error_message_box(
                 translate('OpenLP.ServiceManager', 'Missing Display Handler'),
                 translate('OpenLP.ServiceManager', 'Your item cannot be '
                 'displayed as the plugin required to display it is missing '
@@ -1176,9 +1176,16 @@ class ServiceManager(QtGui.QWidget):
         for item in self.serviceItems:
             service_item = item[u'service_item']
             data_item = {}
-            data_item[u'title'] = unicode(service_item.title)
+            data_item[u'title'] = unicode(service_item.get_display_title())
             data_item[u'plugin'] = unicode(service_item.name)
             data_item[u'notes'] = unicode(service_item.notes)
             data_item[u'selected'] = (item == curitem)
             data.append(data_item)
         Receiver.send_message(u'servicemanager_list_response', data)
+
+    def printServiceOrder(self):
+        """
+        Print a Service Order Sheet.
+        """
+        settingDialog = PrintServiceOrderForm(self.mainwindow, self)
+        settingDialog.exec_()

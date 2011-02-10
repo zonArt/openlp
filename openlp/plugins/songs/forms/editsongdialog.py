@@ -27,6 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate
+from openlp.core.lib.ui import UiStrings, create_save_cancel_button_box
 
 class Ui_EditSongDialog(object):
     def setupUi(self, editSongDialog):
@@ -111,14 +112,8 @@ class Ui_EditSongDialog(object):
         self.authorsLayout.setObjectName(u'authorsLayout')
         self.authorAddLayout = QtGui.QHBoxLayout()
         self.authorAddLayout.setObjectName(u'authorAddLayout')
-        self.authorsComboBox = QtGui.QComboBox(self.authorsGroupBox)
-        self.authorsComboBox.setSizeAdjustPolicy(
-            QtGui.QComboBox.AdjustToMinimumContentsLength)
-        self.authorsComboBox.setSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
-        self.authorsComboBox.setEditable(True)
-        self.authorsComboBox.setInsertPolicy(QtGui.QComboBox.NoInsert)
-        self.authorsComboBox.setObjectName(u'authorsComboBox')
+        self.authorsComboBox = editSongDialogComboBox(
+            self.authorsGroupBox, u'authorsComboBox')
         self.authorAddLayout.addWidget(self.authorsComboBox)
         self.authorAddButton = QtGui.QPushButton(self.authorsGroupBox)
         self.authorAddButton.setObjectName(u'authorAddButton')
@@ -152,14 +147,8 @@ class Ui_EditSongDialog(object):
         self.topicsLayout.setObjectName(u'topicsLayout')
         self.topicAddLayout = QtGui.QHBoxLayout()
         self.topicAddLayout.setObjectName(u'topicAddLayout')
-        self.topicsComboBox = QtGui.QComboBox(self.topicsGroupBox)
-        self.topicsComboBox.setSizeAdjustPolicy(
-            QtGui.QComboBox.AdjustToMinimumContentsLength)
-        self.topicsComboBox.setSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
-        self.topicsComboBox.setEditable(True)
-        self.topicsComboBox.setInsertPolicy(QtGui.QComboBox.NoInsert)
-        self.topicsComboBox.setObjectName(u'topicsComboBox')
+        self.topicsComboBox = editSongDialogComboBox(
+            self.topicsGroupBox, u'topicsComboBox')
         self.topicAddLayout.addWidget(self.topicsComboBox)
         self.topicAddButton = QtGui.QPushButton(self.topicsGroupBox)
         self.topicAddButton.setObjectName(u'topicAddButton')
@@ -183,14 +172,8 @@ class Ui_EditSongDialog(object):
         self.songBookLayout.setObjectName(u'songBookLayout')
         self.songBookNameLabel = QtGui.QLabel(self.songBookGroupBox)
         self.songBookNameLabel.setObjectName(u'songBookNameLabel')
-        self.songBookComboBox = QtGui.QComboBox(self.songBookGroupBox)
-        self.songBookComboBox.setSizeAdjustPolicy(
-            QtGui.QComboBox.AdjustToMinimumContentsLength)
-        self.songBookComboBox.setSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
-        self.songBookComboBox.setEditable(True)
-        self.songBookComboBox.setInsertPolicy(QtGui.QComboBox.NoInsert)
-        self.songBookComboBox.setObjectName(u'songBookComboBox')
+        self.songBookComboBox = editSongDialogComboBox(
+            self.songBookGroupBox, u'songBookComboBox')
         self.songBookNameLabel.setBuddy(self.songBookComboBox)
         self.songBookLayout.addRow(self.songBookNameLabel,
             self.songBookComboBox)
@@ -215,14 +198,8 @@ class Ui_EditSongDialog(object):
         self.themeGroupBox.setObjectName(u'themeGroupBox')
         self.themeLayout = QtGui.QHBoxLayout(self.themeGroupBox)
         self.themeLayout.setObjectName(u'themeLayout')
-        self.themeComboBox = QtGui.QComboBox(self.themeGroupBox)
-        self.themeComboBox.setSizeAdjustPolicy(
-            QtGui.QComboBox.AdjustToMinimumContentsLength)
-        self.themeComboBox.setSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
-        self.themeComboBox.setEditable(True)
-        self.themeComboBox.setInsertPolicy(QtGui.QComboBox.NoInsert)
-        self.themeComboBox.setObjectName(u'themeComboBox')
+        self.themeComboBox = editSongDialogComboBox(
+            self.themeGroupBox, u'themeComboBox')
         self.themeLayout.addWidget(self.themeComboBox)
         self.themeAddButton = QtGui.QPushButton(self.themeGroupBox)
         self.themeAddButton.setObjectName(u'themeAddButton')
@@ -264,16 +241,9 @@ class Ui_EditSongDialog(object):
         self.themeTabLayout.addWidget(self.commentsGroupBox)
         self.songTabWidget.addTab(self.themeTab, u'')
         self.dialogLayout.addWidget(self.songTabWidget)
-        self.buttonBox = QtGui.QDialogButtonBox(editSongDialog)
-        self.buttonBox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Save)
-        self.buttonBox.setObjectName(u'buttonBox')
+        self.buttonBox = create_save_cancel_button_box(editSongDialog)
         self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(editSongDialog)
-        QtCore.QObject.connect(self.buttonBox,
-            QtCore.SIGNAL(u'rejected()'), editSongDialog.closePressed)
-        QtCore.QObject.connect(self.buttonBox,
-            QtCore.SIGNAL(u'accepted()'), editSongDialog.accept)
         QtCore.QMetaObject.connectSlotsByName(editSongDialog)
 
     def retranslateUi(self, editSongDialog):
@@ -287,19 +257,15 @@ class Ui_EditSongDialog(object):
             translate('SongsPlugin.EditSongForm', '&Lyrics:'))
         self.verseOrderLabel.setText(
             translate('SongsPlugin.EditSongForm', '&Verse order:'))
-        self.verseAddButton.setText(
-            translate('SongsPlugin.EditSongForm', '&Add'))
-        self.verseEditButton.setText(
-            translate('SongsPlugin.EditSongForm', '&Edit'))
+        self.verseAddButton.setText(UiStrings.Add)
+        self.verseEditButton.setText(UiStrings.Edit)
         self.verseEditAllButton.setText(
             translate('SongsPlugin.EditSongForm', 'Ed&it All'))
-        self.verseDeleteButton.setText(
-            translate('SongsPlugin.EditSongForm', '&Delete'))
+        self.verseDeleteButton.setText(UiStrings.Delete)
         self.songTabWidget.setTabText(
             self.songTabWidget.indexOf(self.lyricsTab),
             translate('SongsPlugin.EditSongForm', 'Title && Lyrics'))
-        self.authorsGroupBox.setTitle(
-            translate('SongsPlugin.EditSongForm', 'Authors'))
+        self.authorsGroupBox.setTitle(UiStrings.Authors)
         self.authorAddButton.setText(
             translate('SongsPlugin.EditSongForm', '&Add to Song'))
         self.authorRemoveButton.setText(
@@ -322,8 +288,7 @@ class Ui_EditSongDialog(object):
             self.songTabWidget.indexOf(self.authorsTab),
             translate('SongsPlugin.EditSongForm',
                 'Authors, Topics && Song Book'))
-        self.themeGroupBox.setTitle(
-            translate('SongsPlugin.EditSongForm', 'Theme'))
+        self.themeGroupBox.setTitle(UiStrings.Theme)
         self.themeAddButton.setText(
             translate('SongsPlugin.EditSongForm', 'New &Theme'))
         self.rightsGroupBox.setTitle(
@@ -338,3 +303,15 @@ class Ui_EditSongDialog(object):
             self.songTabWidget.indexOf(self.themeTab),
             translate('SongsPlugin.EditSongForm',
                 'Theme, Copyright Info && Comments'))
+
+def editSongDialogComboBox(parent, name):
+    """
+    Utility method to generate a standard combo box for this dialog.
+    """
+    comboBox = QtGui.QComboBox(parent)
+    comboBox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToMinimumContentsLength)
+    comboBox.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
+    comboBox.setEditable(True)
+    comboBox.setInsertPolicy(QtGui.QComboBox.NoInsert)
+    comboBox.setObjectName(name)
+    return comboBox
