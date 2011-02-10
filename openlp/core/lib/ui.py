@@ -41,17 +41,31 @@ class UiStrings(object):
     # These strings should need a good reason to be retranslated elsewhere.
     # Should some/more/less of these have an &amp; attached?
     Add = translate('OpenLP.Ui', '&Add')
+    AddANew = unicode(translate('OpenLP.Ui', 'Add a new %s'))
+    AddSelectService = unicode(translate('OpenLP.Ui',
+        'Add the selected %s to the service'))
     AllFiles = translate('OpenLP.Ui', 'All Files')
     Authors = translate('OpenLP.Ui', 'Authors')
     Delete = translate('OpenLP.Ui', '&Delete')
+    DeleteSelect = unicode(translate('OpenLP.Ui', 'Delete the selected %s'))
+    DeleteType = unicode(translate('OpenLP.Ui', 'Delete %s'))
     Edit = translate('OpenLP.Ui', '&Edit')
+    EditSelect = unicode(translate('OpenLP.Ui', 'Edit the selected %s'))
+    EditType = unicode(translate('OpenLP.Ui', 'Edit %s'))
     Error = translate('OpenLP.Ui', 'Error')
+    ExportType = unicode(translate('OpenLP.Ui', 'Export %s'))
     Import = translate('OpenLP.Ui', 'Import')
+    ImportType = unicode(translate('OpenLP.Ui', 'Import %s'))
     Live = translate('OpenLP.Ui', 'Live')
     Load = translate('OpenLP.Ui', 'Load')
+    LoadANew = unicode(translate('OpenLP.Ui', 'Load a new %s'))
     New = translate('OpenLP.Ui', 'New')
+    NewType = unicode(translate('OpenLP.Ui', 'New %s'))
     OLPV2 = translate('OpenLP.Ui', 'OpenLP 2.0')
     Preview = translate('OpenLP.Ui', 'Preview')
+    PreviewSelect = unicode(translate('OpenLP.Ui', 'Preview the selected %s'))
+    SendSelectLive = unicode(translate('OpenLP.Ui',
+        'Send the selected %s live'))
     Service = translate('OpenLP.Ui', 'Service')
     Theme = translate('OpenLP.Ui', 'Theme')
     Themes = translate('OpenLP.Ui', 'Themes')
@@ -122,7 +136,7 @@ def critical_error_message_box(title=None, message=None, parent=None,
         Should this message box question the user.
     """
     if question:
-        return QtGui.QMessageBox.critical(parent, error, message,
+        return QtGui.QMessageBox.critical(parent, UiStrings.Error, message,
             QtGui.QMessageBox.StandardButtons(
             QtGui.QMessageBox.Yes | QtGui.QMessageBox.No))
     data = {u'message': message}
