@@ -56,6 +56,7 @@ except ImportError:
 
 from openlp.core.lib import translate, SettingsManager
 from openlp.core.lib.mailto import mailto
+from openlp.core.lib.ui import UiStrings
 
 from exceptiondialog import Ui_ExceptionDialog
 
