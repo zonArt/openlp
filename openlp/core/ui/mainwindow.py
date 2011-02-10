@@ -315,10 +315,9 @@ class Ui_MainWindow(object):
         self.themeManagerDock.setWindowTitle(
             translate('OpenLP.MainWindow', 'Theme Manager'))
         self.FileNewItem.setText(translate('OpenLP.MainWindow', '&New'))
-        self.FileNewItem.setToolTip(
-            translate('OpenLP.MainWindow', 'New Service'))
+        self.FileNewItem.setToolTip(UiStrings.NewType % UiStrings.Service)
         self.FileNewItem.setStatusTip(
-            translate('OpenLP.MainWindow', 'Create a new service.'))
+            UiStrings.CreateANew % UiStrings.Service.toLower())
         self.FileNewItem.setShortcut(translate('OpenLP.MainWindow', 'Ctrl+N'))
         self.FileOpenItem.setText(translate('OpenLP.MainWindow', '&Open'))
         self.FileOpenItem.setToolTip(

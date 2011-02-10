@@ -64,7 +64,7 @@ class ThemeManager(QtGui.QWidget):
         self.toolbar.addToolbarButton(
             UiStrings.NewType % UiStrings.Theme,
             u':/themes/theme_new.png',
-            translate('OpenLP.ThemeManager', 'Create a new theme.'),
+            UiStrings.CreateANew % UiStrings.Theme.toLower(),
             self.onAddTheme)
         self.toolbar.addToolbarButton(
             UiStrings.EditType % UiStrings.Theme,
