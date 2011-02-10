@@ -26,7 +26,7 @@
 """
 The :mod:`xml` module provides the XML functionality.
 
-The basic XML for storing the lyrics in the song database is of the format::
+The basic XML for storing the lyrics in the song database looks like this::
 
     <?xml version="1.0" encoding="UTF-8"?>
     <song version="1.0">
@@ -38,7 +38,7 @@ The basic XML for storing the lyrics in the song database is of the format::
     </song>
 
 
-The XML of `OpenLyrics <http://openlyrics.info/>`_  songs is of the format::
+The XML of an `OpenLyrics <http://openlyrics.info/>`_  song looks like this::
 
     <song xmlns="http://openlyrics.info/namespace/2009/song"
         version="0.7"
@@ -86,7 +86,7 @@ class SongXML(object):
 
     def add_verse_to_lyrics(self, type, number, content, lang=None):
         """
-        Add a verse to the *<lyrics>* tag.
+        Add a verse to the ``<lyrics>`` tag.
 
         ``type``
             A string denoting the type of verse. Possible values are "V",
@@ -158,59 +158,60 @@ class OpenLyrics(object):
     to/from a song.
 
     As OpenLyrics has a rich set of different features, we cannot support them
-    all. The following features are supported by the :class:`OpenLyrics`::
+    all. The following features are supported by the :class:`OpenLyrics` class:
 
-    *<authors>*
+    ``<authors>``
         OpenLP does not support the attribute *type* and *lang*.
 
-    *<chord>*
+    ``<chord>``
         This property is not supported.
 
-    *<comments>*
-        The *<comments>* property is fully supported. But comments in lyrics
+    ``<comments>``
+        The ``<comments>`` property is fully supported. But comments in lyrics
         are not supported.
 
-    *<copyright>*
+    ``<copyright>``
         This property is fully supported.
 
-    *<customVersion>*
+    ``<customVersion>``
         This property is not supported.
 
-    *<key>*
+    ``<key>``
         This property is not supported.
 
-    *<keywords>*
+    ``<keywords>``
         This property is not supported.
 
-    *<lines>*
+    ``<lines>``
         The attribute *part* is not supported.
 
-    *<publisher>*
+    ``<publisher>``
         This property is not supported.
 
-    *<songbooks>*
+    ``<songbooks>``
         As OpenLP does only support one songbook, we cannot consider more than
         one songbook.
 
-    *<tempo>*
+    ``<tempo>``
         This property is not supported.
 
-    *<themes>*
+    ``<themes>``
         Topics, as they are called in OpenLP, are fully supported, whereby only
         the topic text (e. g. Grace) is considered, but neither the *id* nor
         *lang*.
 
-    *<transposition>*
+    ``<transposition>``
         This property is not supported.
 
-    *<variant>*
+    ``<variant>``
         This property is not supported.
 
-    *<verse name="v1a" lang="he" translit="en">*
+    ``<verse name="v1a" lang="he" translit="en">``
         The attribute *translit* is not supported.
 
-    *<verseOrder>*
+    ``<verseOrder>``
         OpenLP supports this property.
+
     """
     def __init__(self, manager):
         self.manager = manager
