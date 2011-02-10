@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -23,9 +23,13 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The :mod:`importer` modules provides the general song import functionality.
+"""
 from opensongimport import OpenSongImport
+from easislidesimport import EasiSlidesImport
 from olpimport import OpenLPSongImport
+from openlyricsimport import OpenLyricsImport
 from wowimport import WowImport
 from cclifileimport import CCLIFileImport
 from ewimport import EasyWorshipSongImport
@@ -33,19 +37,19 @@ from songbeamerimport import SongBeamerImport
 # Imports that might fail
 try:
     from olp1import import OpenLP1SongImport
-    has_openlp1 = True
+    HAS_OPENLP1 = True
 except ImportError:
-    has_openlp1 = False
+    HAS_OPENLP1 = False
 try:
     from sofimport import SofImport
-    has_sof = True
+    HAS_SOF = True
 except ImportError:
-    has_sof = False
+    HAS_SOF = False
 try:
     from oooimport import OooImport
-    has_ooo = True
+    HAS_OOO = True
 except ImportError:
-    has_ooo = False
+    HAS_OOO = False
 
 class SongFormat(object):
     """
@@ -64,8 +68,9 @@ class SongFormat(object):
     SongsOfFellowship = 6
     Generic = 7
     #CSV = 8
-    EasyWorship = 8
-    SongBeamer = 9
+    EasiSlides = 8
+    EasyWorship = 9
+    SongBeamer = 10
 
     @staticmethod
     def get_class(format):
@@ -77,8 +82,10 @@ class SongFormat(object):
         """
         if format == SongFormat.OpenLP2:
             return OpenLPSongImport
-        if format == SongFormat.OpenLP1:
+        elif format == SongFormat.OpenLP1:
             return OpenLP1SongImport
+        elif format == SongFormat.OpenLyrics:
+            return OpenLyricsImport
         elif format == SongFormat.OpenSong:
             return OpenSongImport
         elif format == SongFormat.SongsOfFellowship:
@@ -89,15 +96,16 @@ class SongFormat(object):
             return OooImport
         elif format == SongFormat.CCLI:
             return CCLIFileImport
+        elif format == SongFormat.EasiSlides:
+            return EasiSlidesImport
         elif format == SongFormat.EasyWorship:
             return EasyWorshipSongImport
         elif format == SongFormat.SongBeamer:
             return SongBeamerImport
-#        else:
         return None
 
     @staticmethod
-    def list():
+    def get_formats_list():
         """
         Return a list of the supported song formats.
         """
@@ -110,20 +118,28 @@ class SongFormat(object):
             SongFormat.CCLI,
             SongFormat.SongsOfFellowship,
             SongFormat.Generic,
+            SongFormat.EasiSlides,
             SongFormat.EasyWorship,
             SongFormat.SongBeamer
         ]
 
     @staticmethod
     def set_availability(format, available):
+        """
+        Set the availability for a given song format.
+        """
         SongFormat._format_availability[format] = available
 
     @staticmethod
     def get_availability(format):
+        """
+        Return the availability of a given song format.
+        """
         return SongFormat._format_availability.get(format, True)
 
-SongFormat.set_availability(SongFormat.OpenLP1, has_openlp1)
-SongFormat.set_availability(SongFormat.SongsOfFellowship, has_sof)
-SongFormat.set_availability(SongFormat.Generic, has_ooo)
+SongFormat.set_availability(SongFormat.OpenLP1, HAS_OPENLP1)
+SongFormat.set_availability(SongFormat.SongsOfFellowship, HAS_SOF)
+SongFormat.set_availability(SongFormat.Generic, HAS_OOO)
 
 __all__ = [u'SongFormat']
+

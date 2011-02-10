@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -30,6 +30,7 @@ import mimetypes
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
+from openlp.core.lib.ui import UiStrings
 from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 
 log = logging.getLogger(__name__)
@@ -38,7 +39,7 @@ class MediaPlugin(Plugin):
     log.info(u'%s MediaPlugin loaded', __name__)
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Media', u'1.9.3', plugin_helpers)
+        Plugin.__init__(self, u'Media', u'1.9.4', plugin_helpers)
         self.weight = -6
         self.icon_path = u':/plugins/plugin_media.png'
         self.icon = build_icon(self.icon_path)
@@ -65,7 +66,7 @@ class MediaPlugin(Plugin):
     def _addToList(self, list, value, mimetype):
         # Is it a media type
         if len(value) == 2:
-            extensions =  mimetypes.guess_all_extensions(unicode(mimetype))
+            extensions = mimetypes.guess_all_extensions(unicode(mimetype))
             # we have an extension
             if extensions:
                 for extension in extensions:
@@ -79,7 +80,7 @@ class MediaPlugin(Plugin):
         return MediaTab(self.name)
 
     def getMediaManagerItem(self):
-        # Create the MediaManagerItem object
+        # Create the MediaManagerItem object.
         return MediaMediaItem(self, self, self.icon)
 
     def about(self):
@@ -93,53 +94,12 @@ class MediaPlugin(Plugin):
         """
         ## Name PluginList ##
         self.textStrings[StringContent.Name] = {
-            u'singular': translate('MediaPlugin', 'Media'),
-            u'plural': translate('MediaPlugin', 'Media')
+            u'singular': translate('MediaPlugin', 'Media', 'name singular'),
+            u'plural': translate('MediaPlugin', 'Media', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.textStrings[StringContent.VisibleName] = {
-            u'title': translate('MediaPlugin', 'Media')
+            u'title': translate('MediaPlugin', 'Media', 'container title')
         }
         # Middle Header Bar
-        ## Load Button ##
-        self.textStrings[StringContent.Load] = {
-            u'title': translate('MediaPlugin', 'Load'),
-            u'tooltip': translate('MediaPlugin',
-                'Load a new Media')
-        }
-        ## New Button ##
-        self.textStrings[StringContent.New] = {
-            u'title': translate('MediaPlugin', 'Add'),
-            u'tooltip': translate('MediaPlugin',
-                'Add a new Media')
-        }
-        ## Edit Button ##
-        self.textStrings[StringContent.Edit] = {
-            u'title': translate('MediaPlugin', 'Edit'),
-            u'tooltip': translate('MediaPlugin',
-                'Edit the selected Media')
-        }
-        ## Delete Button ##
-        self.textStrings[StringContent.Delete] = {
-            u'title': translate('MediaPlugin', 'Delete'),
-            u'tooltip': translate('MediaPlugin',
-                'Delete the selected Media')
-        }
-        ## Preview ##
-        self.textStrings[StringContent.Preview] = {
-            u'title': translate('MediaPlugin', 'Preview'),
-            u'tooltip': translate('MediaPlugin',
-                'Preview the selected Media')
-        }
-        ## Live  Button ##
-        self.textStrings[StringContent.Live] = {
-            u'title': translate('MediaPlugin', 'Live'),
-            u'tooltip': translate('MediaPlugin',
-                'Send the selected Media live')
-        }
-        ## Add to service Button ##
-        self.textStrings[StringContent.Service] = {
-            u'title': translate('MediaPlugin', 'Service'),
-            u'tooltip': translate('MediaPlugin',
-                'Add the selected Media to the service')
-        }
+        Plugin.setPluginTextStrings(self)

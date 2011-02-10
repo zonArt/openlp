@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -30,7 +30,6 @@ A Thread is used to convert the image to a byte array so the user does not need
 to wait for the conversion to happen.
 """
 import logging
-import os
 import time
 
 from PyQt4 import QtCore
@@ -62,10 +61,10 @@ class Image(object):
     image = None
     image_bytes = None
 
+
 class ImageManager(QtCore.QObject):
     """
     Image Manager handles the conversion and sizing of images.
-
     """
     log.info(u'Image Manager loaded')
 
@@ -86,8 +85,7 @@ class ImageManager(QtCore.QObject):
         for key in self._cache.keys():
             image = self._cache[key]
             image.dirty = True
-            fullpath = os.path.join(image.path, image.name)
-            image.image = resize_image(fullpath,
+            image.image = resize_image(image.path,
                 self.width, self.height)
         self._cache_dirty = True
         # only one thread please
@@ -113,6 +111,14 @@ class ImageManager(QtCore.QObject):
                 time.sleep(0.1)
         return self._cache[name].image_bytes
 
+    def del_image(self, name):
+        """
+        Delete the Image from the Cache
+        """
+        log.debug(u'del_image %s' % name)
+        if name in self._cache:
+            del self._cache[name]
+
     def add_image(self, name, path):
         """
         Add image to cache if it is not already there
@@ -125,6 +131,8 @@ class ImageManager(QtCore.QObject):
             image.image = resize_image(path,
                 self.width, self.height)
             self._cache[name] = image
+        else:
+            log.debug(u'Image in cache %s:%s' % (name, path))
         self._cache_dirty = True
         # only one thread please
         if not self._thread_running:

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -35,9 +35,6 @@ from openlp.core.lib import translate
 from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
-
-class OpenSongImportError(Exception):
-    pass
 
 class OpenSongImport(SongImport):
     """
@@ -128,8 +125,8 @@ class OpenSongImport(SongImport):
                 numfiles += len(z.infolist())
             else:
                 numfiles += 1
-        log.debug("Total number of files: %d", numfiles)
-        self.import_wizard.importProgressBar.setMaximum(numfiles)
+        log.debug(u'Total number of files: %d', numfiles)
+        self.import_wizard.progressBar.setMaximum(numfiles)
         for filename in self.filenames:
             if self.stop_import_flag:
                 success = False
@@ -159,7 +156,7 @@ class OpenSongImport(SongImport):
                     break
             else:
                 # not a zipfile
-                log.info('Direct import %s', filename)
+                log.info(u'Direct import %s', filename)
                 self.import_wizard.incrementProgressBar(
                     unicode(translate('SongsPlugin.ImportWizardForm',
                         'Importing %s...')) % os.path.split(filename)[-1])
@@ -249,7 +246,7 @@ class OpenSongImport(SongImport):
                 words = thisline[1:].strip()
             if words is None:
                 words = thisline
-                if not versenum: 
+                if not versenum:
                     versenum = u'1'
             if versenum is not None:
                 versetag = u'%s%s' % (versetype, versenum)
@@ -298,7 +295,7 @@ class OpenSongImport(SongImport):
         for tag in order:
             if tag[0].isdigit():
                 # Assume it's a verse if it has no prefix
-                tag = u'V' + tag 
+                tag = u'V' + tag
             elif not re.search('\d+', tag):
                 # Assume it's no.1 if there's no digits
                 tag = tag + u'1'

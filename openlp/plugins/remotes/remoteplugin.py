@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -38,7 +38,7 @@ class RemotesPlugin(Plugin):
         """
         remotes constructor
         """
-        Plugin.__init__(self, u'Remotes', u'1.9.3', plugin_helpers)
+        Plugin.__init__(self, u'Remotes', u'1.9.4', plugin_helpers)
         self.icon = build_icon(u':/plugins/plugin_remote.png')
         self.weight = -1
         self.server = None
@@ -77,17 +77,17 @@ class RemotesPlugin(Plugin):
             'a running version of OpenLP on a different computer via a web '
             'browser or through the remote API.')
         return about_text
-    
+
     def setPluginTextStrings(self):
         """
         Called to define all translatable texts of the plugin
         """
         ## Name PluginList ##
         self.textStrings[StringContent.Name] = {
-            u'singular': translate('RemotePlugin', 'Remote'),
-            u'plural': translate('RemotePlugin', 'Remotes')
+            u'singular': translate('RemotePlugin', 'Remote', 'name singular'),
+            u'plural': translate('RemotePlugin', 'Remotes', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.textStrings[StringContent.VisibleName] = {
-            u'title': translate('RemotePlugin', 'Remotes')
+            u'title': translate('RemotePlugin', 'Remote', 'container title')
         }

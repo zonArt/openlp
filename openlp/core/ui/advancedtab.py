@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -46,93 +46,65 @@ class AdvancedTab(SettingsTab):
         Configure the UI elements for the tab.
         """
         self.setObjectName(u'AdvancedTab')
-        self.tabTitleVisible = translate('OpenLP.AdvancedTab', 'Advanced')
-        self.advancedTabLayout = QtGui.QHBoxLayout(self)
-        self.advancedTabLayout.setSpacing(8)
-        self.advancedTabLayout.setMargin(8)
-        self.leftWidget = QtGui.QWidget(self)
-        self.leftLayout = QtGui.QVBoxLayout(self.leftWidget)
-        self.leftLayout.setSpacing(8)
-        self.leftLayout.setMargin(0)
-        self.uiGroupBox = QtGui.QGroupBox(self.leftWidget)
+        SettingsTab.setupUi(self)
+        self.uiGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.uiGroupBox.setObjectName(u'uiGroupBox')
-        self.uiLayout = QtGui.QVBoxLayout(self.uiGroupBox)
-        self.uiLayout.setSpacing(8)
-        self.uiLayout.setMargin(6)
+        self.uiLayout = QtGui.QFormLayout(self.uiGroupBox)
         self.uiLayout.setObjectName(u'uiLayout')
-        self.recentLayout = QtGui.QHBoxLayout()
-        self.recentLayout.setSpacing(8)
-        self.recentLayout.setMargin(0)
-        self.recentLayout.setObjectName(u'recentLayout')
         self.recentLabel = QtGui.QLabel(self.uiGroupBox)
         self.recentLabel.setObjectName(u'recentLabel')
-        self.recentLayout.addWidget(self.recentLabel)
         self.recentSpinBox = QtGui.QSpinBox(self.uiGroupBox)
         self.recentSpinBox.setObjectName(u'recentSpinBox')
         self.recentSpinBox.setMinimum(0)
-        self.recentLayout.addWidget(self.recentSpinBox)
-        self.recentSpacer = QtGui.QSpacerItem(50, 20,
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.recentLayout.addItem(self.recentSpacer)
-        self.uiLayout.addLayout(self.recentLayout)
+        self.uiLayout.addRow(self.recentLabel, self.recentSpinBox)
         self.mediaPluginCheckBox = QtGui.QCheckBox(self.uiGroupBox)
         self.mediaPluginCheckBox.setObjectName(u'mediaPluginCheckBox')
-        self.uiLayout.addWidget(self.mediaPluginCheckBox)
+        self.uiLayout.addRow(self.mediaPluginCheckBox)
         self.doubleClickLiveCheckBox = QtGui.QCheckBox(self.uiGroupBox)
         self.doubleClickLiveCheckBox.setObjectName(u'doubleClickLiveCheckBox')
-        self.uiLayout.addWidget(self.doubleClickLiveCheckBox)
-#        self.expandServiceItemCheckBox = QtGui.QCheckBox(self.uiGroupBox)
-#        self.expandServiceItemCheckBox.setObjectName(
-#            u'expandServiceItemCheckBox')
-#        self.uiLayout.addWidget(self.expandServiceItemCheckBox)
-        self.leftLayout.addWidget(self.uiGroupBox)
+        self.uiLayout.addRow(self.doubleClickLiveCheckBox)
         self.expandServiceItemCheckBox = QtGui.QCheckBox(self.uiGroupBox)
         self.expandServiceItemCheckBox.setObjectName(
             u'expandServiceItemCheckBox')
-        self.uiLayout.addWidget(self.expandServiceItemCheckBox)
-#        self.sharedDirGroupBox = QtGui.QGroupBox(self.leftWidget)
+        self.uiLayout.addRow(self.expandServiceItemCheckBox)
+        self.enableAutoCloseCheckBox = QtGui.QCheckBox(self.uiGroupBox)
+        self.enableAutoCloseCheckBox.setObjectName(
+            u'enableAutoCloseCheckBox')
+        self.uiLayout.addRow(self.enableAutoCloseCheckBox)
+        self.leftLayout.addWidget(self.uiGroupBox)
+        self.hideMouseGroupBox = QtGui.QGroupBox(self.leftColumn)
+        self.hideMouseGroupBox.setObjectName(u'hideMouseGroupBox')
+        self.hideMouseLayout = QtGui.QVBoxLayout(self.hideMouseGroupBox)
+        self.hideMouseLayout.setObjectName(u'hideMouseLayout')
+        self.hideMouseCheckBox = QtGui.QCheckBox(self.hideMouseGroupBox)
+        self.hideMouseCheckBox.setObjectName(u'hideMouseCheckBox')
+        self.hideMouseLayout.addWidget(self.hideMouseCheckBox)
+        self.leftLayout.addWidget(self.hideMouseGroupBox)
+#        self.sharedDirGroupBox = QtGui.QGroupBox(self.leftColumn)
 #        self.sharedDirGroupBox.setObjectName(u'sharedDirGroupBox')
-#        self.sharedDirGroupBox.setGeometry(QtCore.QRect(0, 65, 500, 85))
-#        self.sharedDirGroupBox.setMaximumSize(QtCore.QSize(500, 85))
-#        self.sharedDirLayout = QtGui.QVBoxLayout(self.sharedDirGroupBox)
-#        self.sharedDirLayout.setSpacing(8)
-#        self.sharedDirLayout.setMargin(8)
+#        self.sharedDirLayout = QtGui.QFormLayout(self.sharedDirGroupBox)
 #        self.sharedCheckBox = QtGui.QCheckBox(self.sharedDirGroupBox)
 #        self.sharedCheckBox.setObjectName(u'sharedCheckBox')
-#        self.sharedDirLayout.addWidget(self.sharedCheckBox)
-#        self.sharedSubLayout = QtGui.QHBoxLayout()
-#        self.sharedSubLayout.setSpacing(8)
-#        self.sharedSubLayout.setMargin(0)
+#        self.sharedDirLayout.addRow(self.sharedCheckBox)
 #        self.sharedLabel = QtGui.QLabel(self.sharedDirGroupBox)
 #        self.sharedLabel.setObjectName(u'sharedLabel')
-#        self.sharedSubLayout.addWidget(self.sharedLabel)
+#        self.sharedSubLayout = QtGui.QHBoxLayout()
+#        self.sharedSubLayout.setObjectName(u'sharedSubLayout')
 #        self.sharedLineEdit = QtGui.QLineEdit(self.sharedDirGroupBox)
 #        self.sharedLineEdit.setObjectName(u'sharedLineEdit')
 #        self.sharedSubLayout.addWidget(self.sharedLineEdit)
 #        self.sharedPushButton = QtGui.QPushButton(self.sharedDirGroupBox)
 #        self.sharedPushButton.setObjectName(u'sharedPushButton')
 #        self.sharedSubLayout.addWidget(self.sharedPushButton)
-#        self.sharedDirLayout.addLayout(self.sharedSubLayout)
+#        self.sharedDirLayout.addRow(self.sharedLabel, self.sharedSubLayout)
 #        self.leftLayout.addWidget(self.sharedDirGroupBox)
-        self.leftSpacer = QtGui.QSpacerItem(20, 40,
-            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.leftLayout.addItem(self.leftSpacer)
-        self.advancedTabLayout.addWidget(self.leftWidget)
-        self.rightWidget = QtGui.QWidget(self)
-        self.rightLayout = QtGui.QVBoxLayout(self.rightWidget)
-        self.rightLayout.setSpacing(8)
-        self.rightLayout.setMargin(0)
-#        self.databaseGroupBox = QtGui.QGroupBox(self.rightWidget)
+        self.leftLayout.addStretch()
+#        self.databaseGroupBox = QtGui.QGroupBox(self.rightColumn)
 #        self.databaseGroupBox.setObjectName(u'databaseGroupBox')
 #        self.databaseGroupBox.setEnabled(False)
 #        self.databaseLayout = QtGui.QVBoxLayout(self.databaseGroupBox)
-#        self.databaseLayout.setSpacing(8)
-#        self.databaseLayout.setMargin(8)
 #        self.rightLayout.addWidget(self.databaseGroupBox)
-        self.rightSpacer = QtGui.QSpacerItem(20, 40,
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
-        self.rightLayout.addItem(self.rightSpacer)
-        self.advancedTabLayout.addWidget(self.rightWidget)
+        self.rightLayout.addStretch()
 #        QtCore.QObject.connect(self.sharedCheckBox,
 #            QtCore.SIGNAL(u'stateChanged(int)'), self.onSharedCheckBoxChanged)
 
@@ -140,6 +112,7 @@ class AdvancedTab(SettingsTab):
         """
         Setup the interface translation strings.
         """
+        self.tabTitleVisible = translate('OpenLP.AdvancedTab', 'Advanced')
         self.uiGroupBox.setTitle(translate('OpenLP.AdvancedTab', 'UI Settings'))
         self.recentLabel.setText(
             translate('OpenLP.AdvancedTab',
@@ -150,6 +123,12 @@ class AdvancedTab(SettingsTab):
             'Double-click to send items straight to live'))
         self.expandServiceItemCheckBox.setText(translate('OpenLP.AdvancedTab',
             'Expand new service items on creation'))
+        self.enableAutoCloseCheckBox.setText(translate('OpenLP.AdvancedTab',
+            'Enable application exit confirmation'))
+        self.hideMouseGroupBox.setTitle(translate('OpenLP.AdvancedTab',
+            'Mouse Cursor'))
+        self.hideMouseCheckBox.setText(translate('OpenLP.AdvancedTab',
+            'Hide the mouse cursor when moved over the display window'))
 #        self.sharedDirGroupBox.setTitle(
 #            translate('AdvancedTab', 'Central Data Store'))
 #        self.sharedCheckBox.setText(
@@ -180,6 +159,11 @@ class AdvancedTab(SettingsTab):
         self.expandServiceItemCheckBox.setChecked(
             settings.value(u'expand service item',
             QtCore.QVariant(False)).toBool())
+        self.enableAutoCloseCheckBox.setChecked(
+            settings.value(u'enable exit confirmation',
+            QtCore.QVariant(True)).toBool())
+        self.hideMouseCheckBox.setChecked(
+            settings.value(u'hide mouse', QtCore.QVariant(False)).toBool())
         settings.endGroup()
 
     def save(self):
@@ -196,12 +180,16 @@ class AdvancedTab(SettingsTab):
             QtCore.QVariant(self.doubleClickLiveCheckBox.isChecked()))
         settings.setValue(u'expand service item',
             QtCore.QVariant(self.expandServiceItemCheckBox.isChecked()))
+        settings.setValue(u'enable exit confirmation',
+            QtCore.QVariant(self.enableAutoCloseCheckBox.isChecked()))
+        settings.setValue(u'hide mouse',
+            QtCore.QVariant(self.hideMouseCheckBox.isChecked()))
         settings.endGroup()
 
-    def onSharedCheckBoxChanged(self, checked):
-        """
-        Enables the widgets to allow a shared data location
-        """
-        self.sharedLabel.setEnabled(checked)
-        self.sharedTextEdit.setEnabled(checked)
-        self.sharedPushButton.setEnabled(checked)
+#    def onSharedCheckBoxChanged(self, checked):
+#        """
+#        Enables the widgets to allow a shared data location
+#        """
+#        self.sharedLabel.setEnabled(checked)
+#        self.sharedTextEdit.setEnabled(checked)
+#        self.sharedPushButton.setEnabled(checked)

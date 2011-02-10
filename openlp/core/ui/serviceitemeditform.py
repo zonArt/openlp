@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -25,6 +25,7 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+
 from serviceitemeditdialog import Ui_ServiceItemEditDialog
 
 class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
@@ -38,17 +39,8 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         self.itemList = []
-        # enable drop
-        QtCore.QObject.connect(self.upButton, QtCore.SIGNAL(u'clicked()'),
-            self.onItemUp)
-        QtCore.QObject.connect(self.downButton, QtCore.SIGNAL(u'clicked()'),
-            self.onItemDown)
-        QtCore.QObject.connect(self.deleteButton, QtCore.SIGNAL(u'clicked()'),
-            self.onItemDelete)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'),
-            self.accept)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
-            self.reject)
+        QtCore.QObject.connect(self.listWidget,
+            QtCore.SIGNAL(u'currentRowChanged(int)'), self.onCurrentRowChanged)
 
     def setServiceItem(self, item):
         self.item = item
@@ -58,69 +50,94 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
             for frame in self.item._raw_frames:
                 self.itemList.append(frame)
         self.loadData()
+        self.listWidget.setCurrentItem(self.listWidget.currentItem())
 
     def getServiceItem(self):
         if self.data:
             self.item._raw_frames = []
             if self.item.is_image():
                 for item in self.itemList:
-                    self.item.add_from_image(item[u'path'], item[u'title'],
-                        item[u'image'])
+                    self.item.add_from_image(item[u'path'], item[u'title'])
             self.item.render()
         return self.item
 
     def loadData(self):
+        """
+        Loads the image list.
+        """
         self.listWidget.clear()
         for frame in self.itemList:
             item_name = QtGui.QListWidgetItem(frame[u'title'])
             self.listWidget.addItem(item_name)
-        if self.listWidget.count() == 1:
+
+    def onDeleteButtonClicked(self):
+        """
+        Delete the current row.
+        """
+        item = self.listWidget.currentItem()
+        if not item:
+            return
+        row = self.listWidget.row(item)
+        self.itemList.remove(self.itemList[row])
+        self.loadData()
+        if row == self.listWidget.count():
+            self.listWidget.setCurrentRow(row - 1)
+        else:
+            self.listWidget.setCurrentRow(row)
+
+    def onUpButtonClicked(self):
+        """
+        Move the current row up in the list.
+        """
+        self.__moveItem(u'up')
+
+    def onDownButtonClicked(self):
+        """
+        Move the current row down in the list
+        """
+        self.__moveItem(u'down')
+
+    def __moveItem(self, direction=u''):
+        """
+        Move the current item.
+        """
+        if not direction:
+            return
+        item = self.listWidget.currentItem()
+        if not item:
+            return
+        row = self.listWidget.row(item)
+        temp = self.itemList[row]
+        self.itemList.remove(self.itemList[row])
+        if direction == u'up':
+            self.itemList.insert(row - 1, temp)
+        else:
+            self.itemList.insert(row + 1, temp)
+        self.loadData()
+        self.listWidget.setCurrentRow(row + 1)
+
+    def onCurrentRowChanged(self, row):
+        """
+        Called when the currentRow has changed.
+
+        ``row``
+            The row number (int).
+        """
+        # Disable all buttons, as no row is selected or only one image is left.
+        if row == -1 or self.listWidget.count() == 1:
             self.downButton.setEnabled(False)
             self.upButton.setEnabled(False)
             self.deleteButton.setEnabled(False)
         else:
-            self.downButton.setEnabled(True)
-            self.upButton.setEnabled(True)
+            # Check if we are at the end of the list.
+            if self.listWidget.count() == row + 1:
+                self.downButton.setEnabled(False)
+            else:
+                self.downButton.setEnabled(True)
+            # Check if we are at the beginning of the list.
+            if row == 0:
+                self.upButton.setEnabled(False)
+            else:
+                self.upButton.setEnabled(True)
             self.deleteButton.setEnabled(True)
 
-    def onItemDelete(self):
-        """
-        Delete the selected row
-        """
-        items = self.listWidget.selectedItems()
-        for item in items:
-            row = self.listWidget.row(item)
-            self.itemList.remove(self.itemList[row])
-            self.loadData()
-            if row == self.listWidget.count():
-                self.listWidget.setCurrentRow(row - 1)
-            else:
-                self.listWidget.setCurrentRow(row)
-
-    def onItemUp(self):
-        """
-        Move the selected row up in the list
-        """
-        items = self.listWidget.selectedItems()
-        for item in items:
-            row = self.listWidget.row(item)
-            if row > 0:
-                temp = self.itemList[row]
-                self.itemList.remove(self.itemList[row])
-                self.itemList.insert(row - 1, temp)
-                self.loadData()
-                self.listWidget.setCurrentRow(row - 1)
-
-    def onItemDown(self):
-        """
-        Move the selected row down in the list
-        """
-        items = self.listWidget.selectedItems()
-        for item in items:
-            row = self.listWidget.row(item)
-            if row < len(self.itemList) and row is not -1:
-                temp = self.itemList[row]
-                self.itemList.remove(self.itemList[row])
-                self.itemList.insert(row + 1, temp)
-                self.loadData()
-                self.listWidget.setCurrentRow(row + 1)

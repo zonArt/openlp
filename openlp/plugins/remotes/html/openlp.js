@@ -206,8 +206,12 @@ OpenLP.Namespace.create("OpenLP.Remote", {
     },
     sendLiveSet: function (e)
     {
-        var id = OpenLP.Events.getElement(e).parent().attr("value");
-        OpenLP.Remote.sendEvent("slidecontroller_live_set", id);
+        var tr = OpenLP.Events.getElement(e).parent();
+        if (tr[0].tagName != "TR")
+        {
+            tr = tr.parent();
+        }
+        OpenLP.Remote.sendEvent("slidecontroller_live_set", tr.attr("value"));
         return false;
     },
     sendSetItem: function (e)

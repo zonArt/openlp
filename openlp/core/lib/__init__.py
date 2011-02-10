@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -35,56 +35,56 @@ from PyQt4 import QtCore, QtGui
 
 log = logging.getLogger(__name__)
 
-# TODO make external and configurable in alpha 4 via a settings dialog
-html_expands = []
+base_html_expands = []
 
-html_expands.append({u'desc': u'Red', u'start tag': u'{r}',
+base_html_expands.append({u'desc': u'Red', u'start tag': u'{r}',
     u'start html': u'<span style="-webkit-text-fill-color:red">',
-    u'end tag': u'{/r}', u'end html': u'</span>', u'protected': False})
-html_expands.append({u'desc': u'Black', u'start tag': u'{b}',
+    u'end tag': u'{/r}', u'end html': u'</span>', u'protected': True})
+base_html_expands.append({u'desc': u'Black', u'start tag': u'{b}',
     u'start html': u'<span style="-webkit-text-fill-color:black">',
-    u'end tag': u'{/b}', u'end html': u'</span>', u'protected': False})
-html_expands.append({u'desc': u'Blue', u'start tag': u'{bl}',
+    u'end tag': u'{/b}', u'end html': u'</span>', u'protected': True})
+base_html_expands.append({u'desc': u'Blue', u'start tag': u'{bl}',
     u'start html': u'<span style="-webkit-text-fill-color:blue">',
-    u'end tag': u'{/bl}', u'end html': u'</span>', u'protected': False})
-html_expands.append({u'desc': u'Yellow', u'start tag': u'{y}',
+    u'end tag': u'{/bl}', u'end html': u'</span>', u'protected': True})
+base_html_expands.append({u'desc': u'Yellow', u'start tag': u'{y}',
     u'start html': u'<span style="-webkit-text-fill-color:yellow">',
-    u'end tag': u'{/y}', u'end html': u'</span>', u'protected': False})
-html_expands.append({u'desc': u'Green', u'start tag': u'{g}',
+    u'end tag': u'{/y}', u'end html': u'</span>', u'protected': True})
+base_html_expands.append({u'desc': u'Green', u'start tag': u'{g}',
     u'start html': u'<span style="-webkit-text-fill-color:green">',
-    u'end tag': u'{/g}', u'end html': u'</span>', u'protected': False})
-html_expands.append({u'desc': u'Pink', u'start tag': u'{pk}',
+    u'end tag': u'{/g}', u'end html': u'</span>', u'protected': True})
+base_html_expands.append({u'desc': u'Pink', u'start tag': u'{pk}',
     u'start html': u'<span style="-webkit-text-fill-color:#CC33CC">',
-    u'end tag': u'{/pk}', u'end html': u'</span>', u'protected': False})
-html_expands.append({u'desc': u'Orange', u'start tag': u'{o}',
+    u'end tag': u'{/pk}', u'end html': u'</span>', u'protected': True})
+base_html_expands.append({u'desc': u'Orange', u'start tag': u'{o}',
     u'start html': u'<span style="-webkit-text-fill-color:#CC0033">',
-    u'end tag': u'{/o}', u'end html': u'</span>', u'protected': False})
-html_expands.append({u'desc': u'Purple', u'start tag': u'{pp}',
+    u'end tag': u'{/o}', u'end html': u'</span>', u'protected': True})
+base_html_expands.append({u'desc': u'Purple', u'start tag': u'{pp}',
     u'start html': u'<span style="-webkit-text-fill-color:#9900FF">',
-    u'end tag': u'{/pp}', u'end html': u'</span>', u'protected': False})
-html_expands.append({u'desc': u'White', u'start tag': u'{w}',
+    u'end tag': u'{/pp}', u'end html': u'</span>', u'protected': True})
+base_html_expands.append({u'desc': u'White', u'start tag': u'{w}',
     u'start html': u'<span style="-webkit-text-fill-color:white">',
-    u'end tag': u'{/w}', u'end html': u'</span>', u'protected': False})
-html_expands.append({u'desc': u'Superscript', u'start tag': u'{su}',
+    u'end tag': u'{/w}', u'end html': u'</span>', u'protected': True})
+base_html_expands.append({u'desc': u'Superscript', u'start tag': u'{su}',
     u'start html': u'<sup>', u'end tag': u'{/su}', u'end html': u'</sup>',
     u'protected': True})
-html_expands.append({u'desc': u'Subscript', u'start tag': u'{sb}',
+base_html_expands.append({u'desc': u'Subscript', u'start tag': u'{sb}',
     u'start html': u'<sub>', u'end tag': u'{/sb}', u'end html': u'</sub>',
     u'protected': True})
-html_expands.append({u'desc': u'Paragraph', u'start tag': u'{p}',
+base_html_expands.append({u'desc': u'Paragraph', u'start tag': u'{p}',
     u'start html': u'<p>', u'end tag': u'{/p}', u'end html': u'</p>',
     u'protected': True})
-html_expands.append({u'desc': u'Bold', u'start tag': u'{st}',
+base_html_expands.append({u'desc': u'Bold', u'start tag': u'{st}',
     u'start html': u'<strong>', u'end tag': u'{/st}', u'end html': u'</strong>',
     u'protected': True})
-html_expands.append({u'desc': u'Italics', u'start tag': u'{it}',
+base_html_expands.append({u'desc': u'Italics', u'start tag': u'{it}',
     u'start html': u'<em>', u'end tag': u'{/it}', u'end html': u'</em>',
     u'protected': True})
-html_expands.append({u'desc': u'Underline', u'start tag': u'{u}',
+base_html_expands.append({u'desc': u'Underline', u'start tag': u'{u}',
     u'start html': u'<span style="text-decoration: underline;">',
     u'end tag': u'{/u}', u'end html': u'</span>', u'protected': True})
 
-def translate(context, text, comment=None):
+def translate(context, text, comment=None,
+    encoding=QtCore.QCoreApplication.CodecForTr, n=-1):
     """
     A special shortcut method to wrap around the Qt4 translation functions.
     This abstracts the translation procedure so that we can change it if at a
@@ -101,7 +101,8 @@ def translate(context, text, comment=None):
         An identifying string for when the same text is used in different roles
         within the same context.
     """
-    return QtCore.QCoreApplication.translate(context, text, comment)
+    return QtCore.QCoreApplication.translate(
+        context, text, comment, encoding, n)
 
 def get_text_file_string(text_file):
     """
@@ -292,7 +293,8 @@ def clean_tags(text):
     Remove Tags from text for display
     """
     text = text.replace(u'<br>', u'\n')
-    for tag in html_expands:
+    text = text.replace(u'&nbsp;', u' ')
+    for tag in DisplayTags.get_html_tags():
         text = text.replace(tag[u'start tag'], u'')
         text = text.replace(tag[u'end tag'], u'')
     return text
@@ -301,13 +303,25 @@ def expand_tags(text):
     """
     Expand tags HTML for display
     """
-    for tag in html_expands:
+    for tag in DisplayTags.get_html_tags():
         text = text.replace(tag[u'start tag'], tag[u'start html'])
         text = text.replace(tag[u'end tag'], tag[u'end html'])
     return text
 
+def check_directory_exists(dir):
+    """
+    Check a theme directory exists and if not create it
+
+    ``dir``
+        Theme directory to make sure exists
+    """
+    log.debug(u'check_directory_exists %s' % dir)
+    if not os.path.exists(dir):
+        os.makedirs(dir)
+
 from theme import ThemeLevel, ThemeXML, BackgroundGradientType, \
     BackgroundType, HorizontalType, VerticalType
+from displaytags import DisplayTags
 from spelltextedit import SpellTextEdit
 from eventreceiver import Receiver
 from imagemanager import ImageManager

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -33,9 +33,9 @@ import re
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import Receiver, translate
 from openlp.core.utils import AppLocation
-from db import BibleDB
+from openlp.plugins.bibles.lib.db import BibleDB
 
 log = logging.getLogger(__name__)
 
@@ -50,11 +50,11 @@ class OSISBible(BibleDB):
         Constructor to create and set up an instance of the OpenSongBible
         class. This class is used to import Bibles from OpenSong's XML format.
         """
-        log.debug(__name__)
+        log.debug(self.__class__.__name__)
         BibleDB.__init__(self, parent, **kwargs)
-        if u'filename' not in kwargs:
-            raise KeyError(u'You have to supply a file name to import from.')
         self.filename = kwargs[u'filename']
+        fbibles = None
+        self.books = {}
         self.verse_regex = re.compile(
             r'<verse osisID="([a-zA-Z0-9 ]*).([0-9]*).([0-9]*)">(.*?)</verse>')
         self.note_regex = re.compile(r'<note(.*?)>(.*?)</note>')
@@ -72,11 +72,9 @@ class OSISBible(BibleDB):
         self.divineName_regex = re.compile(
             r'<divineName(.*?)>(.*?)</divineName>')
         self.spaces_regex = re.compile(r'([ ]{2,})')
-        self.books = {}
         filepath = os.path.join(
             AppLocation.get_directory(AppLocation.PluginsDir), u'bibles',
             u'resources', u'osisbooks.csv')
-        fbibles = None
         try:
             fbibles = open(filepath, u'r')
             for line in fbibles:
@@ -89,16 +87,22 @@ class OSISBible(BibleDB):
             if fbibles:
                 fbibles.close()
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'bibles_stop_import'), self.stop_import)
+            QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
 
     def do_import(self):
         """
         Loads a Bible from file.
         """
         log.debug(u'Starting OSIS import from "%s"' % self.filename)
-        self.wizard.incrementProgressBar(
-            u'Detecting encoding (this may take a few minutes)...')
         detect_file = None
+        db_book = None
+        osis = None
+        success = True
+        last_chapter = 0
+        testament = 1
+        match_count = 0
+        self.wizard.incrementProgressBar(translate('BiblesPlugin.OsisImport',
+            'Detecting encoding (this may take a few minutes)...'))
         try:
             detect_file = open(self.filename, u'r')
             details = chardet.detect(detect_file.read(1048576))
@@ -108,14 +112,8 @@ class OSISBible(BibleDB):
         finally:
             if detect_file:
                 detect_file.close()
-        osis = None
-        success = True
         try:
             osis = codecs.open(self.filename, u'r', details['encoding'])
-            last_chapter = 0
-            testament = 1
-            match_count = 0
-            db_book = None
             for file_record in osis:
                 if self.stop_import_flag:
                     break
@@ -127,7 +125,7 @@ class OSISBible(BibleDB):
                     verse = int(match.group(3))
                     verse_text = match.group(4)
                     if not db_book or db_book.name != self.books[book][0]:
-                        log.debug('New book: "%s"', self.books[book][0])
+                        log.debug(u'New book: "%s"', self.books[book][0])
                         if book == u'Matt':
                             testament += 1
                         db_book = self.create_book(
@@ -136,14 +134,15 @@ class OSISBible(BibleDB):
                             testament)
                     if last_chapter == 0:
                         if book == u'Gen':
-                            self.wizard.ImportProgressBar.setMaximum(1188)
+                            self.wizard.progressBar.setMaximum(1188)
                         else:
-                            self.wizard.ImportProgressBar.setMaximum(260)
+                            self.wizard.progressBar.setMaximum(260)
                     if last_chapter != chapter:
                         if last_chapter != 0:
                             self.session.commit()
-                        self.wizard.incrementProgressBar(
-                            u'Importing %s %s...' % \
+                        self.wizard.incrementProgressBar(unicode(translate(
+                            'BiblesPlugin.OsisImport', 'Importing %s %s...',
+                            'Importing <book name> <chapter>...')) %
                             (self.books[match.group(1)][0], chapter))
                         last_chapter = chapter
                     # All of this rigmarol below is because the mod2osis
@@ -171,7 +170,6 @@ class OSISBible(BibleDB):
                     self.create_verse(db_book.id, chapter, verse, verse_text)
                     Receiver.send_message(u'openlp_process_events')
             self.session.commit()
-            self.wizard.incrementProgressBar(u'Finishing import...')
             if match_count == 0:
                 success = False
         except (ValueError, IOError):
@@ -181,7 +179,6 @@ class OSISBible(BibleDB):
             if osis:
                 osis.close()
         if self.stop_import_flag:
-            self.wizard.incrementProgressBar(u'Import canceled!')
             return False
         else:
             return success

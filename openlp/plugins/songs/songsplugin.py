@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -31,7 +31,8 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
-from openlp.plugins.songs.lib import SongMediaItem, SongsTab
+from openlp.core.lib.ui import UiStrings
+from openlp.plugins.songs.lib import SongMediaItem, SongsTab, SongXML
 from openlp.plugins.songs.lib.db import init_schema, Song
 from openlp.plugins.songs.lib.importer import SongFormat
 
@@ -51,12 +52,12 @@ class SongsPlugin(Plugin):
         """
         Create and set up the Songs plugin.
         """
-        Plugin.__init__(self, u'Songs', u'1.9.3', plugin_helpers)
+        Plugin.__init__(self, u'Songs', u'1.9.4', plugin_helpers)
         self.weight = -10
         self.manager = Manager(u'songs', init_schema)
         self.icon_path = u':/plugins/plugin_songs.png'
         self.icon = build_icon(self.icon_path)
-        self.whitespace = re.compile(r'\W+')
+        self.whitespace = re.compile(r'\W+', re.UNICODE)
 
     def getSettingsTab(self):
         visible_name = self.getString(StringContent.VisibleName)
@@ -134,7 +135,7 @@ class SongsPlugin(Plugin):
 
     def onToolsReindexItemTriggered(self):
         """
-        Rebuild the search title of each song.
+        Rebuild each song.
         """
         maxSongs = self.manager.get_object_count(Song)
         progressDialog = QtGui.QProgressDialog(
@@ -150,13 +151,21 @@ class SongsPlugin(Plugin):
                 song.title = u''
             if song.alternate_title is None:
                 song.alternate_title = u''
-            song.search_title = self.whitespace.sub(u' ', \
-                song.title.lower()) + u' ' + \
-                self.whitespace.sub(u' ', song.alternate_title.lower())
+            song.search_title = self.whitespace.sub(u' ', song.title.lower() +
+                u' ' + song.alternate_title.lower())
+            # Remove the "language" attribute from lyrics tag. This is not very
+            # important, but this keeps the database clean. This can be removed
+            # when everybody has run the reindex tool once.
+            song.lyrics = song.lyrics.replace(
+                u'<lyrics language="en">', u'<lyrics>')
+            lyrics = u''
+            verses = SongXML().get_verses(song.lyrics)
+            for verse in verses:
+                lyrics = lyrics + self.whitespace.sub(u' ', verse[1]) + u' '
+            song.search_lyrics = lyrics.lower()
             progressDialog.setValue(counter)
         self.manager.save_objects(songs)
-        counter += 1
-        progressDialog.setValue(counter)
+        progressDialog.setValue(counter + 1)
         self.mediaItem.displayResultsSong(
             self.manager.get_all_objects(Song, order_by_ref=Song.search_title))
 
@@ -209,50 +218,15 @@ class SongsPlugin(Plugin):
         """
         ## Name PluginList ##
         self.textStrings[StringContent.Name] = {
-            u'singular': translate('SongsPlugin', 'Song'),
-            u'plural': translate('SongsPlugin', 'Songs')
+            u'singular': translate('SongsPlugin', 'Song', 'name singular'),
+            u'plural': translate('SongsPlugin', 'Songs', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.textStrings[StringContent.VisibleName] = {
-            u'title': translate('SongsPlugin', 'Songs')
+            u'title': translate('SongsPlugin', 'Songs', 'container title')
         }
         # Middle Header Bar
-        ## New Button ##
-        self.textStrings[StringContent.New] = {
-            u'title': translate('SongsPlugin', 'Add'),
-            u'tooltip': translate('SongsPlugin',
-                'Add a new Song')
-        }
-        ## Edit Button ##
-        self.textStrings[StringContent.Edit] = {
-            u'title': translate('SongsPlugin', 'Edit'),
-            u'tooltip': translate('SongsPlugin',
-                'Edit the selected Song')
-        }
-        ## Delete Button ##
-        self.textStrings[StringContent.Delete] = {
-            u'title': translate('SongsPlugin', 'Delete'),
-            u'tooltip': translate('SongsPlugin',
-                'Delete the selected Song')
-        }
-        ## Preview ##
-        self.textStrings[StringContent.Preview] = {
-            u'title': translate('SongsPlugin', 'Preview'),
-            u'tooltip': translate('SongsPlugin',
-                'Preview the selected Song')
-        }
-        ## Live  Button ##
-        self.textStrings[StringContent.Live] = {
-            u'title': translate('SongsPlugin', 'Live'),
-            u'tooltip': translate('SongsPlugin',
-                'Send the selected Song live')
-        }
-        ## Add to service Button ##
-        self.textStrings[StringContent.Service] = {
-            u'title': translate('SongsPlugin', 'Service'),
-            u'tooltip': translate('SongsPlugin',
-                'Add the selected Song to the service')
-        }
+        Plugin.setPluginTextStrings(self)
 
     def finalise(self):
         """
@@ -262,4 +236,3 @@ class SongsPlugin(Plugin):
         self.manager.finalise()
         self.toolsReindexItem.setVisible(False)
         Plugin.finalise(self)
-

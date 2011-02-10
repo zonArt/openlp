@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -314,7 +314,7 @@ body {
 </html>
     """
 
-def build_html(item, screen, alert, islive):
+def build_html(item, screen, alert, islive, background):
     """
     Build the full web paged structure for display
 
@@ -332,7 +332,9 @@ def build_html(item, screen, alert, islive):
     theme = item.themedata
     webkitvers = webkit_version()
     # Image generated and poked in
-    if item.bg_image_bytes:
+    if background:
+        image = u'src="data:image/png;base64,%s"' % background
+    elif item.bg_image_bytes:
         image = u'src="data:image/png;base64,%s"' % item.bg_image_bytes
     else:
         image = u'style="display:none;"'

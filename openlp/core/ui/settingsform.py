@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -31,7 +31,7 @@ import logging
 from PyQt4 import QtGui
 
 from openlp.core.lib import Receiver
-from openlp.core.ui import AdvancedTab, GeneralTab, ThemesTab
+from openlp.core.ui import AdvancedTab, GeneralTab, ThemesTab, DisplayTagTab
 from settingsdialog import Ui_SettingsDialog
 
 log = logging.getLogger(__name__)
@@ -55,6 +55,9 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         # Advanced tab
         self.advancedTab = AdvancedTab()
         self.addTab(u'Advanced', self.advancedTab)
+        # Edit Display Tags tab
+        self.displayTagTab = DisplayTagTab()
+        self.addTab(u'Display Tags', self.displayTagTab)
 
     def addTab(self, name, tab):
         """
@@ -68,9 +71,9 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         Add a tab to the form at a specific location
         """
         log.debug(u'Inserting %s tab' % tab.tabTitle)
-        # 14 : There are 3 tables currently and locations starts at -10
+        # 15 : There are 4 tables currently and locations starts at -10
         self.settingsTabWidget.insertTab(
-            location + 14, tab, tab.tabTitleVisible)
+            location + 15, tab, tab.tabTitleVisible)
 
     def removeTab(self, tab):
         """
@@ -92,6 +95,14 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         # Must go after all settings are save
         Receiver.send_message(u'config_updated')
         return QtGui.QDialog.accept(self)
+
+    def reject(self):
+        """
+        Process the form saving the settings
+        """
+        for tabIndex in range(0, self.settingsTabWidget.count()):
+            self.settingsTabWidget.widget(tabIndex).cancel()
+        return QtGui.QDialog.reject(self)
 
     def postSetUp(self):
         """

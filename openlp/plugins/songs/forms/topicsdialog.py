@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -27,42 +27,31 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
+from openlp.core.lib.ui import create_save_cancel_button_box
 
 class Ui_TopicsDialog(object):
-    def setupUi(self, TopicsDialog):
-        TopicsDialog.setObjectName(u'TopicsDialog')
-        TopicsDialog.resize(365, 77)
-        self.TopicLayout = QtGui.QFormLayout(TopicsDialog)
-        self.TopicLayout.setFieldGrowthPolicy(
-            QtGui.QFormLayout.ExpandingFieldsGrow)
-        self.TopicLayout.setMargin(8)
-        self.TopicLayout.setSpacing(8)
-        self.TopicLayout.setObjectName(u'TopicLayout')
-        self.NameLabel = QtGui.QLabel(TopicsDialog)
-        self.NameLabel.setObjectName(u'NameLabel')
-        self.TopicLayout.setWidget(0,
-            QtGui.QFormLayout.LabelRole, self.NameLabel)
-        self.NameEdit = QtGui.QLineEdit(TopicsDialog)
-        self.NameEdit.setObjectName(u'NameEdit')
-        self.TopicLayout.setWidget(0,
-            QtGui.QFormLayout.FieldRole, self.NameEdit)
-        self.TopicButtonBox = QtGui.QDialogButtonBox(TopicsDialog)
-        self.TopicButtonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.TopicButtonBox.setStandardButtons(
-            QtGui.QDialogButtonBox.Save | QtGui.QDialogButtonBox.Cancel)
-        self.TopicButtonBox.setObjectName(u'TopicButtonBox')
-        self.TopicLayout.setWidget(1,
-            QtGui.QFormLayout.FieldRole, self.TopicButtonBox)
+    def setupUi(self, topicsDialog):
+        topicsDialog.setObjectName(u'topicsDialog')
+        topicsDialog.resize(300, 10)
+        self.dialogLayout = QtGui.QVBoxLayout(topicsDialog)
+        self.dialogLayout.setObjectName(u'dialogLayout')
+        self.nameLayout = QtGui.QFormLayout()
+        self.nameLayout.setObjectName(u'nameLayout')
+        self.nameLabel = QtGui.QLabel(topicsDialog)
+        self.nameLabel.setObjectName(u'nameLabel')
+        self.nameEdit = QtGui.QLineEdit(topicsDialog)
+        self.nameEdit.setObjectName(u'nameEdit')
+        self.nameLabel.setBuddy(self.nameEdit)
+        self.nameLayout.addRow(self.nameLabel, self.nameEdit)
+        self.dialogLayout.addLayout(self.nameLayout)
+        self.dialogLayout.addWidget(
+            create_save_cancel_button_box(topicsDialog))
+        self.retranslateUi(topicsDialog)
+        topicsDialog.setMaximumHeight(topicsDialog.sizeHint().height())
+        QtCore.QMetaObject.connectSlotsByName(topicsDialog)
 
-        self.retranslateUi(TopicsDialog)
-        QtCore.QObject.connect(self.TopicButtonBox,
-            QtCore.SIGNAL(u'accepted()'), TopicsDialog.accept)
-        QtCore.QObject.connect(self.TopicButtonBox,
-            QtCore.SIGNAL(u'rejected()'), TopicsDialog.reject)
-        QtCore.QMetaObject.connectSlotsByName(TopicsDialog)
-
-    def retranslateUi(self, TopicsDialog):
-        TopicsDialog.setWindowTitle(
+    def retranslateUi(self, topicsDialog):
+        topicsDialog.setWindowTitle(
             translate('SongsPlugin.TopicsForm', 'Topic Maintenance'))
-        self.NameLabel.setText(
+        self.nameLabel.setText(
             translate('SongsPlugin.TopicsForm', 'Topic name:'))

@@ -115,17 +115,30 @@ build_path = os.path.join(branch_path, u'build', u'pyi.win32', u'OpenLP')
 dist_path = os.path.join(branch_path, u'dist', u'OpenLP')
 enchant_path = os.path.join(site_packages, u'enchant')
 
+def update_code():
+    print u'Updating the code...'
+    os.chdir(branch_path)
+    bzr = Popen((u'bzr', u'update'), stdout=PIPE)
+    output, error = bzr.communicate()
+    code = bzr.wait()
+    if code != 0:
+       print output
+       raise Exception(u'Error updating the code')
+
 def clean_build_directories():
-    #if not os.path.exists(build_path)
-    for root, dirs, files in os.walk(build_path, topdown=False):
-        print root
-        for file in files:
-            os.remove(os.path.join(root, file))
-    #os.removedirs(build_path)
-    for root, dirs, files in os.walk(dist_path, topdown=False):
-        for file in files:
-            os.remove(os.path.join(root, file))
-    #os.removedirs(dist_path)
+    dist_dir = os.path.join(build_path, u'dist')
+    build_dir = os.path.join(build_path, u'build')
+    if os.path.exists(dist_dir):
+        for root, dirs, files in os.walk(dist_dir, topdown=False):
+            print root
+            for file in files:
+                os.remove(os.path.join(root, file))
+        os.removedirs(dist_dir)
+    if os.path.exists(build_dir):
+        for root, dirs, files in os.walk(build_dir, topdown=False):
+            for file in files:
+                os.remove(os.path.join(root, file))
+        os.removedirs(build_dir)
 
 def run_pyinstaller():
     print u'Running PyInstaller...'
@@ -239,6 +252,7 @@ def main():
        print "PyInstaller:", pyi_build
        print "Inno Setup path:", innosetup_path
        print "Windows resources:", winres_path
+    update_code()
     #clean_build_directories()
     run_pyinstaller()
     write_version_file()

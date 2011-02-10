@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -60,10 +60,12 @@ class Ui_SongUsageDetailDialog(object):
         self.horizontalLayout.setObjectName(u'horizontalLayout')
         self.fileLineEdit = QtGui.QLineEdit(self.fileGroupBox)
         self.fileLineEdit.setObjectName(u'fileLineEdit')
+        self.fileLineEdit.setReadOnly(True)
+        self.fileLineEdit.setEnabled(False)
         self.horizontalLayout.addWidget(self.fileLineEdit)
         self.saveFilePushButton = QtGui.QPushButton(self.fileGroupBox)
         self.saveFilePushButton.setIcon(
-            build_icon(u':/general/general_load.png'))
+            build_icon(u':/general/general_open.png'))
         self.saveFilePushButton.setObjectName(u'saveFilePushButton')
         self.horizontalLayout.addWidget(self.saveFilePushButton)
         self.verticalLayout4.addLayout(self.horizontalLayout)

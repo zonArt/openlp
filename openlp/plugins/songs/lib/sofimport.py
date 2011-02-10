@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -39,9 +39,7 @@ from oooimport import OooImport
 if os.name == u'nt':
     BOLD = 150.0
     ITALIC = 2
-    PAGE_BEFORE = 4
-    PAGE_AFTER = 5
-    PAGE_BOTH = 6
+    from oooimport import PAGE_BEFORE, PAGE_AFTER, PAGE_BOTH
 else:
     try:
         from com.sun.star.awt.FontWeight import BOLD
@@ -56,13 +54,13 @@ class SofImport(OooImport):
     """
     Import songs provided on disks with the Songs of Fellowship music books
     VOLS1_2.RTF, sof3words.rtf and sof4words.rtf
-    
+
     Use OpenOffice.org Writer for processing the rtf file
 
-    The three books are not only inconsistant with each other, they are 
+    The three books are not only inconsistant with each other, they are
     inconsistant in themselves too with their formatting. Not only this, but
     the 1+2 book does not space out verses correctly. This script attempts
-    to sort it out, but doesn't get it 100% right. But better than having to 
+    to sort it out, but doesn't get it 100% right. But better than having to
     type them all out!
 
     It attempts to detect italiced verses, and treats these as choruses in
@@ -75,33 +73,21 @@ class SofImport(OooImport):
         """
         OooImport.__init__(self, master_manager, **kwargs)
 
-    def do_import(self):
-        self.abort = False
-        self.start_ooo()
-        for filename in self.filenames:
-            if self.abort:
-                self.import_wizard.incrementProgressBar(u'Import cancelled', 0)
-                return
-            filename = unicode(filename)
-            if os.path.isfile(filename):
-                self.open_ooo_file(filename)
-                if self.document:
-                    self.process_sof_file()
-                    self.close_ooo_file()
-        self.close_ooo()
-        self.import_wizard.importProgressBar.setMaximum(1)
-        self.import_wizard.incrementProgressBar(u'', 1)
-        return True
+    def process_ooo_document(self):
+        """
+        Handle the import process for SoF files.
+        """
+        self.process_sof_file()
 
     def process_sof_file(self):
         """
         Process the RTF file, a paragraph at a time
-        """            
+        """
         self.blanklines = 0
         self.new_song()
         paragraphs = self.document.getText().createEnumeration()
         while paragraphs.hasMoreElements():
-            if self.abort:
+            if self.stop_import_flag:
                 self.import_wizard.incrementProgressBar(u'Import cancelled', 0)
                 return
             paragraph = paragraphs.nextElement()
@@ -113,11 +99,11 @@ class SofImport(OooImport):
 
     def process_paragraph(self, paragraph):
         """
-        Process a paragraph. 
+        Process a paragraph.
         In the first book, a paragraph is a single line. In the latter ones
         they may contain multiple lines.
         Each paragraph contains textportions. Each textportion has it's own
-        styling, e.g. italics, bold etc. 
+        styling, e.g. italics, bold etc.
         Also check for page breaks, which indicates a new song in books 1+2.
         In later books, there may not be line breaks, so check for 3 or more
         newlines
@@ -136,7 +122,7 @@ class SofImport(OooImport):
                 self.new_song()
                 text = u''
         self.process_paragraph_text(text)
-        
+
     def process_paragraph_text(self, text):
         """
         Split the paragraph text into multiple lines and process
@@ -147,12 +133,12 @@ class SofImport(OooImport):
             self.new_song()
 
     def process_paragraph_line(self, text):
-        """ 
+        """
         Process a single line. Throw away that text which isn't relevant, i.e.
         stuff that appears at the end of the song.
         Anything that is OK, append to the current verse
         """
-        text = text.strip()        
+        text = text.strip()
         if text == u'':
             self.blanklines += 1
             if self.blanklines > 1:
@@ -164,7 +150,7 @@ class SofImport(OooImport):
         if self.skip_to_close_bracket:
             if text.endswith(u')'):
                 self.skip_to_close_bracket = False
-            return 
+            return
         if text.startswith(u'CCL Licence'):
             self.italics = False
             return
@@ -264,7 +250,7 @@ class SofImport(OooImport):
         """
         Add the author. OpenLP stores them individually so split by 'and', '&'
         and comma.
-        However need to check for "Mr and Mrs Smith" and turn it to 
+        However need to check for "Mr and Mrs Smith" and turn it to
         "Mr Smith" and "Mrs Smith".
         """
         text = text.replace(u' and ', u' & ')
@@ -276,7 +262,7 @@ class SofImport(OooImport):
         we're beyond the second line of first verse, then this indicates
         a change of verse. Italics are a chorus
         """
-        if self.italics != self.is_chorus and ((len(self.song.verses) > 0) or 
+        if self.italics != self.is_chorus and ((len(self.song.verses) > 0) or
             (self.currentverse.count(u'\n') > 1)):
             self.finish_verse()
         if self.italics:
@@ -307,7 +293,7 @@ class SofImport(OooImport):
                     ln = 0
                     if line:
                         verse = line + u'\n'
-                    else:   
+                    else:
                         verse = u''
                 else:
                     verse += line + u'\n'
@@ -318,36 +304,35 @@ class SofImport(OooImport):
         self.currentverse = u''
         self.is_chorus = False
 
-
     def uncap_text(self, text):
-        """ 
+        """
         Words in the title are in all capitals, so we lowercase them.
-        However some of these words, e.g. referring to God need a leading 
+        However some of these words, e.g. referring to God need a leading
         capital letter.
-        
-        There is a complicated word "One", which is sometimes lower and 
+
+        There is a complicated word "One", which is sometimes lower and
         sometimes upper depending on context. Never mind, keep it lower.
         """
         textarr = re.split(u'(\W+)', text)
         textarr[0] = textarr[0].capitalize()
         for i in range(1, len(textarr)):
             # Do not translate these. Fixed strings in SOF song file
-            if textarr[i] in (u'JESUS', u'CHRIST', u'KING', u'ALMIGHTY', 
-                u'REDEEMER', u'SHEPHERD', u'SON', u'GOD', u'LORD', u'FATHER', 
-                u'HOLY', u'SPIRIT', u'LAMB', u'YOU', u'YOUR', u'I', u'I\'VE', 
-                u'I\'M', u'I\'LL', u'SAVIOUR', u'O', u'YOU\'RE', u'HE', u'HIS', 
-                u'HIM', u'ZION', u'EMMANUEL', u'MAJESTY', u'JESUS\'', u'JIREH', 
-                u'JUDAH', u'LION', u'LORD\'S', u'ABRAHAM', u'GOD\'S', 
+            if textarr[i] in (u'JESUS', u'CHRIST', u'KING', u'ALMIGHTY',
+                u'REDEEMER', u'SHEPHERD', u'SON', u'GOD', u'LORD', u'FATHER',
+                u'HOLY', u'SPIRIT', u'LAMB', u'YOU', u'YOUR', u'I', u'I\'VE',
+                u'I\'M', u'I\'LL', u'SAVIOUR', u'O', u'YOU\'RE', u'HE', u'HIS',
+                u'HIM', u'ZION', u'EMMANUEL', u'MAJESTY', u'JESUS\'', u'JIREH',
+                u'JUDAH', u'LION', u'LORD\'S', u'ABRAHAM', u'GOD\'S',
                 u'FATHER\'S', u'ELIJAH'):
                 textarr[i] = textarr[i].capitalize()
             else:
                 textarr[i] = textarr[i].lower()
         text = u''.join(textarr)
         return text
-        
+
     def verse_splits(self, song_number):
         """
-        Because someone at Kingsway forgot to check the 1+2 RTF file, 
+        Because someone at Kingsway forgot to check the 1+2 RTF file,
         some verses were not formatted correctly.
         """
         if song_number == 11:
@@ -369,7 +354,7 @@ class SofImport(OooImport):
         if song_number == 50:
             return 8
         if song_number == 70:
-            return 4	
+            return 4
         if song_number == 75:
             return 8
         if song_number == 79:
@@ -529,7 +514,7 @@ class SofImport(OooImport):
         if song_number == 955:
             return 9
         if song_number == 968:
-            return 8		
+            return 8
         if song_number == 972:
             return 7
         if song_number == 974:

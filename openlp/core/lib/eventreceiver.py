@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -207,18 +207,27 @@ class EventReceiver(QtCore.QObject):
     ``bibles_nobook``
         Attempt to find book resulted in no match
 
-    ``bibles_showprogress``
-        Show progress of bible verse import
-
-    ``bibles_hideprogress``
-        Hide progress of bible verse import
-
-    ``bibles_stop_import``
-        Stops the Bible Import
+    ``openlp_stop_wizard``
+        Stops a wizard before completion
 
     ``remotes_poll_request``
         Waits for openlp to do something "interesting" and sends a
         remotes_poll_response signal when it does
+
+    ``openlp_warning_message``
+        Displays a standalone Warning Message
+
+    ``openlp_error_message``
+        Displays a standalone Error Message
+
+    ``openlp_information_message``
+        Displays a standalone Information Message
+
+    ``cursor_busy``
+        Makes the cursor got to a busy form
+
+    ``cursor_normal``
+        Resets the cursor to default
 
     """
     def __init__(self):

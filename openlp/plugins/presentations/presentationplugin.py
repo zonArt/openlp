@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -31,6 +31,7 @@ import os
 import logging
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
+from openlp.core.lib.ui import UiStrings
 from openlp.core.utils import AppLocation
 from openlp.plugins.presentations.lib import PresentationController, \
     PresentationMediaItem, PresentationTab
@@ -51,7 +52,7 @@ class PresentationPlugin(Plugin):
         """
         log.debug(u'Initialised')
         self.controllers = {}
-        Plugin.__init__(self, u'Presentations', u'1.9.3', plugin_helpers)
+        Plugin.__init__(self, u'Presentations', u'1.9.4', plugin_helpers)
         self.weight = -8
         self.icon_path = u':/plugins/plugin_presentations.png'
         self.icon = build_icon(self.icon_path)
@@ -74,7 +75,11 @@ class PresentationPlugin(Plugin):
         self.insertToolboxItem()
         for controller in self.controllers:
             if self.controllers[controller].enabled():
-                self.controllers[controller].start_process()
+                try:
+                    self.controllers[controller].start_process()
+                except:
+                    log.exception(u'Failed to start controller process')
+                    self.controllers[controller].available = False
         self.mediaItem.buildFileMaskString()
 
     def finalise(self):
@@ -152,41 +157,15 @@ class PresentationPlugin(Plugin):
         """
         ## Name PluginList ##
         self.textStrings[StringContent.Name] = {
-            u'singular': translate('PresentationPlugin', 'Presentation'),
-            u'plural': translate('PresentationPlugin', 'Presentations')
+            u'singular': translate('PresentationPlugin', 'Presentation',
+                'name singular'),
+            u'plural': translate('PresentationPlugin', 'Presentations',
+                'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.textStrings[StringContent.VisibleName] = {
-            u'title': translate('PresentationPlugin', 'Presentations')
+            u'title': translate('PresentationPlugin', 'Presentations',
+                'container title')
         }
         # Middle Header Bar
-        ## Load Button ##
-        self.textStrings[StringContent.Load] = {
-            u'title': translate('PresentationPlugin', 'Load'),
-            u'tooltip': translate('PresentationPlugin', 
-                'Load a new Presentation')
-        }
-        ## Delete Button ##
-        self.textStrings[StringContent.Delete] = {
-            u'title': translate('PresentationPlugin', 'Delete'),
-            u'tooltip': translate('PresentationPlugin', 
-                'Delete the selected Presentation')
-        }
-        ## Preview ##
-        self.textStrings[StringContent.Preview] = {
-            u'title': translate('PresentationPlugin', 'Preview'),
-            u'tooltip': translate('PresentationPlugin', 
-                'Preview the selected Presentation')
-        }
-        ## Live  Button ##
-        self.textStrings[StringContent.Live] = {
-            u'title': translate('PresentationPlugin', 'Live'),
-            u'tooltip': translate('PresentationPlugin', 
-                'Send the selected Presentation live')
-        }
-        ## Add to service Button ##
-        self.textStrings[StringContent.Service] = {
-            u'title': translate('PresentationPlugin', 'Service'),
-            u'tooltip': translate('PresentationPlugin', 
-                'Add the selected Presentation to the service')
-        }
+        Plugin.setPluginTextStrings(self)

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -49,7 +49,8 @@ class PptviewController(PresentationController):
         """
         log.debug(u'Initialising')
         self.process = None
-        PresentationController.__init__(self, plugin, u'Powerpoint Viewer')
+        PresentationController.__init__(self, plugin, u'Powerpoint Viewer',
+            PptviewDocument)
         self.supports = [u'ppt', u'pps', u'pptx', u'ppsx']
 
     def check_available(self):
@@ -93,14 +94,6 @@ class PptviewController(PresentationController):
             while self.docs:
                 self.docs[0].close_presentation()
 
-        def add_doc(self, name):
-            """
-            Called when a new powerpoint document is opened
-            """
-            log.debug(u'Add Doc PPTView')
-            doc = PptviewDocument(self, name)
-            self.docs.append(doc)
-            return doc
 
 class PptviewDocument(PresentationDocument):
     """
@@ -108,7 +101,7 @@ class PptviewDocument(PresentationDocument):
     """
     def __init__(self, controller, presentation):
         """
-        Constructor, store information about the file and initialise 
+        Constructor, store information about the file and initialise
         """
         log.debug(u'Init Presentation PowerPoint')
         PresentationDocument.__init__(self, controller, presentation)

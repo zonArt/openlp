@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -28,13 +28,14 @@ import logging
 import chardet
 import re
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
 from sqlalchemy import Column, ForeignKey, or_, Table, types
 from sqlalchemy.orm import class_mapper, mapper, relation
 from sqlalchemy.orm.exc import UnmappedClassError
 
 from openlp.core.lib import translate
 from openlp.core.lib.db import BaseModel, init_db, Manager
+from openlp.core.lib.ui import critical_error_message_box
 
 log = logging.getLogger(__name__)
 
@@ -166,7 +167,7 @@ class BibleDB(QtCore.QObject, Manager):
         """
         Stops the import of the Bible.
         """
-        log.debug('Stopping import')
+        log.debug(u'Stopping import')
         self.stop_import_flag = True
 
     def get_name(self):
@@ -205,10 +206,16 @@ class BibleDB(QtCore.QObject, Manager):
         """
         self.wizard = wizard
         self.create_meta(u'dbversion', u'2')
+        self.setup_testaments()
+        return self.name
+
+    def setup_testaments(self):
+        """
+        Initialise the testaments section of a bible with suitable defaults.
+        """
         self.save_object(Testament.populate(name=u'Old Testament'))
         self.save_object(Testament.populate(name=u'New Testament'))
         self.save_object(Testament.populate(name=u'Apocrypha'))
-        return self.name
 
     def create_book(self, name, abbrev, testament=1):
         """
@@ -231,7 +238,7 @@ class BibleDB(QtCore.QObject, Manager):
 
     def create_chapter(self, book_id, chapter, textlist):
         """
-        Add a chapter and it's verses to a book.
+        Add a chapter and its verses to a book.
 
         ``book_id``
             The id of the book being appended.
@@ -339,11 +346,11 @@ class BibleDB(QtCore.QObject, Manager):
         verse_list = []
         for book, chapter, start_verse, end_verse in reference_list:
             db_book = self.get_book(book)
-            if end_verse == -1:
-                end_verse = self.get_verse_count(book, chapter)
             if db_book:
                 book = db_book.name
                 log.debug(u'Book name corrected to "%s"', book)
+                if end_verse == -1:
+                    end_verse = self.get_verse_count(book, chapter)
                 verses = self.session.query(Verse)\
                     .filter_by(book_id=db_book.id)\
                     .filter_by(chapter=chapter)\
@@ -354,12 +361,11 @@ class BibleDB(QtCore.QObject, Manager):
                 verse_list.extend(verses)
             else:
                 log.debug(u'OpenLP failed to find book %s', book)
-                QtGui.QMessageBox.information(self.bible_plugin.mediaItem,
-                    translate('BiblesPlugin.BibleDB', 'Book not found'),
-                    translate('BiblesPlugin.BibleDB', 'The book you requested '
-                    'could not be found in this Bible. Please check your '
-                    'spelling and that this is a complete Bible not just '
-                    'one testament.'))
+                critical_error_message_box(
+                    translate('BiblesPlugin', 'No Book Found'),
+                    translate('BiblesPlugin', 'No matching book '
+                    'could be found in this Bible. Check that you have '
+                    'spelled the name of the book correctly.'))
         return verse_list
 
     def verse_search(self, text):
@@ -430,7 +436,7 @@ class BibleDB(QtCore.QObject, Manager):
         Utility debugging method to dump the contents of a bible.
         """
         log.debug(u'.........Dumping Bible Database')
-        log.debug('...............................Books ')
+        log.debug(u'...............................Books ')
         books = self.session.query(Book).all()
         log.debug(books)
         log.debug(u'...............................Verses ')

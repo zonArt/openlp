@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -44,6 +44,7 @@ class ServiceItemType(object):
     Image = 2
     Command = 3
 
+
 class ItemCapabilities(object):
     """
     Provides an enumeration of a serviceitem's capabilities
@@ -57,6 +58,8 @@ class ItemCapabilities(object):
     NoLineBreaks = 7
     OnLoadUpdate = 8
     AddIfNewItem = 9
+    ProvidesOwnDisplay = 10
+    AllowsDetailedTitleDisplay = 11
 
 
 class ServiceItem(object):
@@ -241,7 +244,7 @@ class ServiceItem(object):
         file to represent this item.
         """
         service_header = {
-            u'name': self.name.lower(),
+            u'name': self.name,
             u'plugin': self.name,
             u'theme': self.theme,
             u'title': self.title,
@@ -311,6 +314,20 @@ class ServiceItem(object):
                 self.add_from_command(
                     path, text_image[u'title'], text_image[u'image'] )
         self._new_item()
+
+    def get_display_title(self):
+        """
+        Returns the title of the service item.
+        """
+        if self.is_text():
+            return self.title
+        else:
+            if ItemCapabilities.AllowsDetailedTitleDisplay in self.capabilities:
+                return self._raw_frames[0][u'title']
+            elif len(self._raw_frames) > 1:
+                return self.title
+            else:
+                return self._raw_frames[0][u'title']
 
     def merge(self, other):
         """
@@ -390,10 +407,16 @@ class ServiceItem(object):
         """
         Returns the title of the raw frame
         """
-        return self._raw_frames[row][u'title']
+        try:
+            return self._raw_frames[row][u'title']
+        except IndexError:
+            return u''
 
     def get_frame_path(self, row=0):
         """
         Returns the path of the raw frame
         """
-        return self._raw_frames[row][u'path']
+        try:
+            return self._raw_frames[row][u'path']
+        except IndexError:
+            return u''

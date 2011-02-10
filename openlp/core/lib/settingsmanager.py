@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -55,7 +55,7 @@ class SettingsManager(object):
             self.mainwindow_left = mainwindow_docbars
             self.mainwindow_right = mainwindow_docbars
         self.slidecontroller = (self.width - (
-            self.mainwindow_left + self.mainwindow_right) - 100 ) / 2
+            self.mainwindow_left + self.mainwindow_right) - 100) / 2
         self.slidecontroller_image = self.slidecontroller - 50
 
     @staticmethod

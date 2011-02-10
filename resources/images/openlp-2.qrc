@@ -1,5 +1,9 @@
 <RCC>
   <qresource prefix="songs">
+    <file>song_search_all.png</file>
+    <file>song_search_author.png</file>
+    <file>song_search_lyrics.png</file>
+    <file>song_search_title.png</file>
     <file>topic_edit.png</file>
     <file>author_add.png</file>
     <file>author_delete.png</file>
@@ -37,8 +41,11 @@
     <file>general_export.png</file>
     <file>general_import.png</file>
     <file>general_new.png</file>
+    <file>general_zoom_out.png</file>
+    <file>general_zoom_in.png</file>
     <file>general_open.png</file>
     <file>general_save.png</file>
+    <file>general_email.png</file>
   </qresource>
   <qresource prefix="slides">
     <file>slide_close.png</file>

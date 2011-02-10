@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2010 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Copyright (c) 2008-2011 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -33,11 +33,14 @@ processing version 1 themes in OpenLP version 2.
 from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtGui
 
-DELPHI_COLORS = {"clRed":0xFF0000,
-                 "clBlue":0x0000FF,
-                 "clYellow":0xFFFF00,
-                 "clBlack":0x000000,
-                 "clWhite":0xFFFFFF}
+DELPHI_COLORS = {
+    u'clAqua': 0x00FFFF,    u'clBlack': 0x000000,   u'clBlue': 0x0000FF,
+    u'clFuchsia': 0xFF00FF, u'clGray': 0x808080,    u'clGreen': 0x008000,
+    u'clLime': 0x00FF00,    u'clMaroon': 0x800000,  u'clNavy': 0x000080,
+    u'clOlive': 0x808000,   u'clPurple': 0x800080,  u'clRed': 0xFF0000,
+    u'clSilver': 0xC0C0C0,  u'clTeal': 0x008080,    u'clWhite': 0xFFFFFF,
+    u'clYellow': 0xFFFF00
+}
 
 BLANK_STYLE_XML = \
 '''<?xml version="1.0" encoding="iso-8859-1"?>
@@ -196,7 +199,6 @@ class Theme(object):
             if element.tag != u'Theme':
                 element_text = element.text
                 val = 0
-                # easy!
                 if element_text is None:
                     val = element_text
                 # strings need special handling to sort the colours out
