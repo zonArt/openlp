@@ -178,11 +178,11 @@ class HorizontalType(object):
         """
         Return a string representation of a horizontal type.
         """
-        If horizontal_type == Horizontal.Right:
+        if horizontal_type == Horizontal.Right:
             return u'right'
         elif horizontal_type == Horizontal.Center:
             return u'center'
-        else
+        else:
             return u'left'
 
 
@@ -199,11 +199,11 @@ class VerticalType(object):
         """
         Return a string representation of a vertical type.
         """
-        If vertical_type == VerticalType.Bottom:
+        if vertical_type == VerticalType.Bottom:
             return u'bottom'
         elif vertical_type == VerticalType.Middle:
             return u'middle'
-        else
+        else:
             return u'top'
 
 
