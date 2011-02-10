@@ -149,12 +149,14 @@ class SongsPlugin(Plugin):
             counter += 1
             # The song does not have any author, add one.
             if not song.authors:
-                name = unicode(translate('SongsPlugin', 'Author unknown'))
+                name = unicode(translate('SongsPlugin', 'Author unknown',
+                    'Translation must contain a blank character!'))
                 author = self.manager.get_object_filtered(Author,
                     Author.display_name == name)
                 if author is None:
-                    author = Author.populate(first_name=name.rsplit(u' ', 1)[0],
-                        last_name=name.rsplit(u' ', 1)[1], display_name=name)
+                    author = Author.populate(
+                        first_name=name.split(u' ', 1)[:-1],
+                        last_name=name.split(u' ', 1)[-1], display_name=name)
                 song.authors.append(author)
             if song.title is None:
                 song.title = u''
