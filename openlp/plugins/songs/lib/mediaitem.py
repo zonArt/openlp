@@ -33,8 +33,9 @@ from sqlalchemy.sql import or_
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, Receiver, \
     ItemCapabilities, translate, check_item_selected, PluginStatus
+from openlp.core.lib.ui import UiStrings
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
-    SongImportForm
+    SongImportForm, SongExportForm
 from openlp.plugins.songs.lib import OpenLyrics, SongXML
 from openlp.plugins.songs.lib.db import Author, Song
 from openlp.core.lib.searchedit import SearchEdit
@@ -147,10 +148,8 @@ class SongMediaItem(MediaManagerItem):
                 translate('SongsPlugin.MediaItem', 'Titles')),
             (3, u':/songs/song_search_lyrics.png',
                 translate('SongsPlugin.MediaItem', 'Lyrics')),
-            (4, u':/songs/song_search_author.png',
-                translate('SongsPlugin.MediaItem', 'Authors')),
-            (5, u':/slides/slide_theme.png',
-                translate('SongsPlugin.MediaItem', 'Themes'))
+            (4, u':/songs/song_search_author.png', UiStrings.Authors),
+            (5, u':/slides/slide_theme.png', UiStrings.Themes)
         ])
         self.configUpdated()
 
@@ -265,6 +264,11 @@ class SongMediaItem(MediaManagerItem):
             self.import_wizard = SongImportForm(self, self.parent)
         if self.import_wizard.exec_() == QtGui.QDialog.Accepted:
             Receiver.send_message(u'songs_load_list')
+
+    def onExportClick(self):
+        if not hasattr(self, u'export_wizard'):
+            self.export_wizard = SongExportForm(self, self.parent)
+        self.export_wizard.exec_()
 
     def onNewClick(self):
         log.debug(u'onNewClick')

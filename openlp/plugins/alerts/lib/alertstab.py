@@ -27,7 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, translate
-from openlp.core.lib.ui import create_valign_combo
+from openlp.core.lib.ui import UiStrings, create_valign_combo
 
 class AlertsTab(SettingsTab):
     """
@@ -117,10 +117,8 @@ class AlertsTab(SettingsTab):
             translate('AlertsPlugin.AlertsTab', 'Alert timeout:'))
         self.TimeoutSpinBox.setSuffix(
             translate('AlertsPlugin.AlertsTab', 's'))
-        self.PreviewGroupBox.setTitle(
-            translate('AlertsPlugin.AlertsTab', 'Preview'))
-        self.FontPreview.setText(
-            translate('AlertsPlugin.AlertsTab', 'OpenLP 2.0'))
+        self.PreviewGroupBox.setTitle(UiStrings.Preview)
+        self.FontPreview.setText(UiStrings.OLPV2)
 
     def onBackgroundColorButtonClicked(self):
         new_color = QtGui.QColorDialog.getColor(

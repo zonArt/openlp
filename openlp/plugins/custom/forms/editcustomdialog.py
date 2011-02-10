@@ -27,7 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate
-from openlp.core.lib.ui import create_save_cancel_button_box, \
+from openlp.core.lib.ui import UiStrings, create_save_cancel_button_box, \
     create_delete_push_button, create_up_down_push_button_set
 
 class Ui_CustomEditDialog(object):
@@ -107,13 +107,11 @@ class Ui_CustomEditDialog(object):
             translate('CustomPlugin.EditCustomForm', 'Edit Custom Slides'))
         self.titleLabel.setText(
             translate('CustomPlugin.EditCustomForm', '&Title:'))
-        self.addButton.setText(
-            translate('CustomPlugin.EditCustomForm', '&Add'))
+        self.addButton.setText(UiStrings.Add)
         self.addButton.setToolTip(
             translate('CustomPlugin.EditCustomForm', 'Add a new slide at '
             'bottom.'))
-        self.editButton.setText(
-            translate('CustomPlugin.EditCustomForm', '&Edit'))
+        self.editButton.setText(UiStrings.Edit)
         self.editButton.setToolTip(
             translate('CustomPlugin.EditCustomForm', 'Edit the selected '
             'slide.'))

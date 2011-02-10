@@ -27,6 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, Receiver, ThemeLevel, translate
+from openlp.core.lib.ui import UiStrings
 
 class ThemesTab(SettingsTab):
     """
@@ -98,7 +99,7 @@ class ThemesTab(SettingsTab):
             QtCore.SIGNAL(u'theme_update_list'), self.updateThemeList)
 
     def retranslateUi(self):
-        self.tabTitleVisible = translate('OpenLP.ThemesTab', 'Themes')
+        self.tabTitleVisible = UiStrings.Themes
         self.GlobalGroupBox.setTitle(
             translate('OpenLP.ThemesTab', 'Global Theme'))
         self.LevelGroupBox.setTitle(

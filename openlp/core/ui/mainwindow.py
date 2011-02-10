@@ -30,7 +30,8 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import RenderManager, build_icon, OpenLPDockWidget, \
     SettingsManager, PluginManager, Receiver, translate
-from openlp.core.lib.ui import base_action, checkable_action, icon_action
+from openlp.core.lib.ui import UiStrings, base_action, checkable_action, \
+    icon_action
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
     ThemeManager, SlideController, PluginForm, MediaDockManager, \
     ShortcutListForm
@@ -215,6 +216,9 @@ class Ui_MainWindow(object):
         self.ToolsAddToolItem = icon_action(mainWindow, u'ToolsAddToolItem',
             u':/tools/tools_add.png')
         mainWindow.actionList.add_action(self.ToolsAddToolItem, u'Tools')
+        self.ToolsOpenDataFolder = icon_action(mainWindow, u'ToolsOpenDataFolder',
+            u':/general/general_open.png')
+        mainWindow.actionList.add_action(self.ToolsOpenDataFolder, u'Tools')
         self.settingsPluginListItem = icon_action(mainWindow,
             u'settingsPluginListItem', u':/system/settings_plugin_list.png')
         mainWindow.actionList.add_action(self.settingsPluginListItem,
@@ -275,6 +279,7 @@ class Ui_MainWindow(object):
             self.SettingsLanguageMenu.menuAction(), None,
             self.SettingsShortcutsItem, self.SettingsConfigureItem))
         add_actions(self.ToolsMenu, (self.ToolsAddToolItem, None))
+        add_actions(self.ToolsMenu, (self.ToolsOpenDataFolder, None))
         add_actions(self.HelpMenu, (self.HelpDocumentationItem,
             self.HelpOnlineHelpItem, None, self.HelpWebSiteItem,
             self.HelpAboutItem))
@@ -295,7 +300,7 @@ class Ui_MainWindow(object):
         """
         Set up the translation system
         """
-        mainWindow.mainTitle = translate('OpenLP.MainWindow', 'OpenLP 2.0')
+        mainWindow.mainTitle = UiStrings.OLPV2
         mainWindow.setWindowTitle(mainWindow.mainTitle)
         self.FileMenu.setTitle(translate('OpenLP.MainWindow', '&File'))
         self.FileImportMenu.setTitle(translate('OpenLP.MainWindow', '&Import'))
@@ -432,6 +437,10 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', 'Add &Tool...'))
         self.ToolsAddToolItem.setStatusTip(translate('OpenLP.MainWindow',
             'Add an application to the list of tools.'))
+        self.ToolsOpenDataFolder.setText(
+            translate('OpenLP.MainWindow', 'Open &Data Folder...'))
+        self.ToolsOpenDataFolder.setStatusTip(translate('OpenLP.MainWindow',
+            'Open the folder where songs, bibles and other data resides.'))
         self.ModeDefaultItem.setText(
             translate('OpenLP.MainWindow', '&Default'))
         self.ModeDefaultItem.setStatusTip(translate('OpenLP.MainWindow',
@@ -514,6 +523,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'triggered()'), self.onHelpWebSiteClicked)
         QtCore.QObject.connect(self.HelpAboutItem,
             QtCore.SIGNAL(u'triggered()'), self.onHelpAboutItemClicked)
+        QtCore.QObject.connect(self.ToolsOpenDataFolder,
+            QtCore.SIGNAL(u'triggered()'), self.onToolsOpenDataFolderClicked)
         QtCore.QObject.connect(self.settingsPluginListItem,
             QtCore.SIGNAL(u'triggered()'), self.onPluginItemClicked)
         QtCore.QObject.connect(self.SettingsConfigureItem,
@@ -701,6 +712,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         self.pluginForm.load()
         self.pluginForm.exec_()
+
+    def onToolsOpenDataFolderClicked(self):
+        """
+        Open data folder
+        """
+        path = AppLocation.get_data_path()
+        QtGui.QDesktopServices.openUrl(QtCore.QUrl("file:///" + path))
 
     def onSettingsConfigureItemClicked(self):
         """
