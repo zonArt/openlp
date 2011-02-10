@@ -29,17 +29,11 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    ItemCapabilities, SettingsManager, translate, check_item_selected, Receiver
+from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
+    SettingsManager, translate, check_item_selected, Receiver
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 
 log = logging.getLogger(__name__)
-
-class MediaListView(BaseListWithDnD):
-    def __init__(self, parent=None):
-        self.PluginName = u'Media'
-        BaseListWithDnD.__init__(self, parent)
-
 
 class MediaMediaItem(MediaManagerItem):
     """
@@ -50,9 +44,6 @@ class MediaMediaItem(MediaManagerItem):
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'images/image'
         self.background = False
-        # this next is a class, not an instance of a class - it will
-        # be instanced by the base MediaManagerItem
-        self.ListViewWithDnD_class = MediaListView
         self.PreviewFunction = QtGui.QPixmap(
             u':/media/media_video.png').toImage()
         MediaManagerItem.__init__(self, parent, self, icon)

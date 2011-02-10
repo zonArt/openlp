@@ -319,6 +319,7 @@ def check_directory_exists(dir):
     if not os.path.exists(dir):
         os.makedirs(dir)
 
+from baselistwithdnd import BaseListWithDnD
 from theme import ThemeLevel, ThemeXML, BackgroundGradientType, \
     BackgroundType, HorizontalType, VerticalType
 from displaytags import DisplayTags
@@ -339,4 +340,3 @@ from dockwidget import OpenLPDockWidget
 from renderer import Renderer
 from rendermanager import RenderManager
 from mediamanageritem import MediaManagerItem
-from baselistwithdnd import BaseListWithDnD

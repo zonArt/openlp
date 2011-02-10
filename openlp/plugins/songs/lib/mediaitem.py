@@ -31,8 +31,8 @@ import re
 from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_
 
-from openlp.core.lib import MediaManagerItem, BaseListWithDnD, Receiver, \
-    ItemCapabilities, translate, check_item_selected, PluginStatus
+from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
+    translate, check_item_selected, PluginStatus
 from openlp.core.lib.ui import UiStrings
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     SongImportForm
@@ -42,12 +42,6 @@ from openlp.core.lib.searchedit import SearchEdit
 
 log = logging.getLogger(__name__)
 
-class SongListView(BaseListWithDnD):
-    def __init__(self, parent=None):
-        self.PluginName = u'Songs'
-        BaseListWithDnD.__init__(self, parent)
-
-
 class SongMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for Songs.
@@ -56,7 +50,6 @@ class SongMediaItem(MediaManagerItem):
 
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'songs/song'
-        self.ListViewWithDnD_class = SongListView
         MediaManagerItem.__init__(self, parent, self, icon)
         self.edit_song_form = EditSongForm(self, self.parent.manager)
         self.openLyrics = OpenLyrics(self.parent.manager)
