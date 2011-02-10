@@ -727,33 +727,6 @@ class BibleImportForm(OpenLPWizard):
             if books_file:
                 books_file.close()
 
-    def getFileName(self, title, editbox, filters=u''):
-        """
-        Opens a QFileDialog and saves the filename to the given editbox.
-
-        ``title``
-            The title of the dialog (unicode).
-
-        ``editbox``
-            A editbox (QLineEdit).
-
-        ``filters``
-            The file extension filters. It should contain the file description
-            as well as the file extension. For example::
-
-                u'openlp.org 1.x bible (*.bible)'
-        """
-        if filters:
-            filters += u';;'
-        filters += u'%s (*)' % UiStrings.AllFiles
-        filename = QtGui.QFileDialog.getOpenFileName(self, title,
-            os.path.dirname(SettingsManager.get_last_dir(
-            self.plugin.settingsSection, 1)), filters)
-        if filename:
-            editbox.setText(filename)
-            SettingsManager.set_last_dir(
-                self.plugin.settingsSection, filename, 1)
-
     def preWizard(self):
         """
         Prepare the UI for the import.
