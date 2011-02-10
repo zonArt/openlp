@@ -30,7 +30,6 @@ import mimetypes
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
-from openlp.core.lib.ui import UiStrings
 from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 
 log = logging.getLogger(__name__)

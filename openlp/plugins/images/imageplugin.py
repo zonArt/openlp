@@ -27,7 +27,6 @@
 import logging
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
-from openlp.core.lib.ui import UiStrings
 from openlp.plugins.images.lib import ImageMediaItem
 
 log = logging.getLogger(__name__)

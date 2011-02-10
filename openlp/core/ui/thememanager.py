@@ -64,7 +64,7 @@ class ThemeManager(QtGui.QWidget):
         self.toolbar.addToolbarButton(
             UiStrings.NewType % UiStrings.Theme,
             u':/themes/theme_new.png',
-            translate('OpenLP.ThemeManager', 'Create a new theme.'),
+            UiStrings.CreateANew % UiStrings.Theme.toLower(),
             self.onAddTheme)
         self.toolbar.addToolbarButton(
             UiStrings.EditType % UiStrings.Theme,
@@ -406,7 +406,7 @@ class ThemeManager(QtGui.QWidget):
             translate('OpenLP.ThemeManager', 'Select Theme Import File'),
             SettingsManager.get_last_dir(self.settingsSection),
             translate('OpenLP.ThemeManager', 'Theme v1 (*.theme);;'
-            'Theme v2 (*.otz);;All Files (*.*)'))
+            'Theme v2 (*.otz);;%s (*.*)') % UiStrings.AllFiles)
         log.info(u'New Themes %s', unicode(files))
         if files:
             for file in files:

@@ -460,8 +460,7 @@ class SongImportForm(OpenLPWizard):
         """
         if filters:
             filters += u';;'
-        filters += u'%s (*)' % translate('SongsPlugin.ImportWizardForm',
-            'All Files')
+        filters += u'%s (*)' % UiStrings.AllFiles
         filename = QtGui.QFileDialog.getOpenFileName(self, title,
             SettingsManager.get_last_dir(self.plugin.settingsSection, 1),
             filters)

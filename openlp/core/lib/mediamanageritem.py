@@ -500,7 +500,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         if not self.listView.selectedIndexes() and not self.remoteTriggered:
             QtGui.QMessageBox.information(self,
-                translate('OpenLP.MediaManagerItem', 'No items selected'),
+                translate('OpenLP.MediaManagerItem', 'No Items Selected'),
                 translate('OpenLP.MediaManagerItem',
                     'You must select one or more items'))
         else:

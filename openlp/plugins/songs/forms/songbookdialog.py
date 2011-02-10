@@ -27,7 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
-from openlp.core.lib.ui import create_save_cancel_button_box
+from openlp.core.lib.ui import create_accept_reject_button_box
 
 class Ui_SongBookDialog(object):
     def setupUi(self, songBookDialog):
@@ -51,7 +51,7 @@ class Ui_SongBookDialog(object):
         self.bookLayout.addRow(self.publisherLabel, self.publisherEdit)
         self.dialogLayout.addLayout(self.bookLayout)
         self.dialogLayout.addWidget(
-            create_save_cancel_button_box(songBookDialog))
+            create_accept_reject_button_box(songBookDialog))
         self.retranslateUi(songBookDialog)
         songBookDialog.setMaximumHeight(songBookDialog.sizeHint().height())
         QtCore.QMetaObject.connectSlotsByName(songBookDialog)
