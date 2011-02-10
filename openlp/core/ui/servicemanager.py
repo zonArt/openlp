@@ -461,7 +461,7 @@ class ServiceManager(QtGui.QWidget):
 
     def saveFileAs(self):
         """
-        Get a file name and then call :function:`ServiceManager.saveFile` to
+        Get a file name and then call :func:`ServiceManager.saveFile` to
         save the file.
         """
         fileName = unicode(QtGui.QFileDialog.getSaveFileName(self.mainwindow,
