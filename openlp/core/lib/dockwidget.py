@@ -31,6 +31,8 @@ import logging
 
 from PyQt4 import QtGui
 
+from openlp.core.lib import build_icon
+
 log = logging.getLogger(__name__)
 
 class OpenLPDockWidget(QtGui.QDockWidget):
@@ -47,5 +49,4 @@ class OpenLPDockWidget(QtGui.QDockWidget):
         if name:
             self.setObjectName(name)
         if icon:
-            self.setWindowIcon(icon)
-        self.setFloating(False)
+            self.setWindowIcon(build_icon(icon))

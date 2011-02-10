@@ -26,12 +26,26 @@
 """
 The :mod:`ui` module provides the core user interface for OpenLP
 """
+from PyQt4 import QtGui
+
+from openlp.core.lib import translate, Receiver
 
 class HideMode(object):
     """
-    This is basically an enumeration class which specifies the mode of a Bible.
-    Mode refers to whether or not a Bible in OpenLP is a full Bible or needs to
-    be downloaded from the Internet on an as-needed basis.
+    This is an enumeration class which specifies the different modes of hiding
+    the display.
+
+    ``Blank``
+        This mode is used to hide all output, specifically by covering the
+        display with a black screen.
+
+    ``Theme``
+        This mode is used to hide all output, but covers the display with the
+        current theme background, as opposed to black.
+
+    ``Desktop``
+        This mode hides all output by minimising the display, leaving the user's
+        desktop showing.
     """
     Blank = 1
     Theme = 2
@@ -48,6 +62,7 @@ from splashscreen import SplashScreen
 from generaltab import GeneralTab
 from themestab import ThemesTab
 from advancedtab import AdvancedTab
+from displaytagtab import DisplayTagTab
 from aboutform import AboutForm
 from pluginform import PluginForm
 from settingsform import SettingsForm
@@ -56,6 +71,6 @@ from mediadockmanager import MediaDockManager
 from servicemanager import ServiceManager
 from thememanager import ThemeManager
 
-__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm',
-    'MainDisplay', 'SlideController', 'ServiceManager', 'ThemeManager',
-    'MediaDockManager', 'ServiceItemEditForm']
+__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainDisplay',
+    'SlideController', 'ServiceManager', 'ThemeManager', 'MediaDockManager',
+    'ServiceItemEditForm']

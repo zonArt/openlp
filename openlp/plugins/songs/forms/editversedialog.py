@@ -27,36 +27,28 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate, SpellTextEdit
+from openlp.core.lib.ui import create_save_cancel_button_box
 from openlp.plugins.songs.lib import VerseType
 
 class Ui_EditVerseDialog(object):
     def setupUi(self, editVerseDialog):
         editVerseDialog.setObjectName(u'editVerseDialog')
-        editVerseDialog.resize(474, 442)
+        editVerseDialog.resize(400, 400)
         editVerseDialog.setModal(True)
-        self.editVerseLayout = QtGui.QVBoxLayout(editVerseDialog)
-        self.editVerseLayout.setSpacing(8)
-        self.editVerseLayout.setMargin(8)
-        self.editVerseLayout.setObjectName(u'editVerseLayout')
+        self.dialogLayout = QtGui.QVBoxLayout(editVerseDialog)
+        self.dialogLayout.setObjectName(u'dialogLayout')
         self.verseTextEdit = SpellTextEdit(editVerseDialog)
         self.verseTextEdit.setObjectName(u'verseTextEdit')
-        self.editVerseLayout.addWidget(self.verseTextEdit)
+        self.dialogLayout.addWidget(self.verseTextEdit)
         self.verseTypeLayout = QtGui.QHBoxLayout()
-        self.verseTypeLayout.setSpacing(8)
         self.verseTypeLayout.setObjectName(u'verseTypeLayout')
         self.verseTypeLabel = QtGui.QLabel(editVerseDialog)
         self.verseTypeLabel.setObjectName(u'verseTypeLabel')
         self.verseTypeLayout.addWidget(self.verseTypeLabel)
         self.verseTypeComboBox = QtGui.QComboBox(editVerseDialog)
+        self.verseTypeComboBox.addItems([u'', u'', u'', u'', u'', u'', u''])
         self.verseTypeComboBox.setObjectName(u'verseTypeComboBox')
         self.verseTypeLabel.setBuddy(self.verseTypeComboBox)
-        self.verseTypeComboBox.addItem(u'')
-        self.verseTypeComboBox.addItem(u'')
-        self.verseTypeComboBox.addItem(u'')
-        self.verseTypeComboBox.addItem(u'')
-        self.verseTypeComboBox.addItem(u'')
-        self.verseTypeComboBox.addItem(u'')
-        self.verseTypeComboBox.addItem(u'')
         self.verseTypeLayout.addWidget(self.verseTypeComboBox)
         self.verseNumberBox = QtGui.QSpinBox(editVerseDialog)
         self.verseNumberBox.setMinimum(1)
@@ -66,22 +58,11 @@ class Ui_EditVerseDialog(object):
         self.insertButton.setIcon(build_icon(u':/general/general_add.png'))
         self.insertButton.setObjectName(u'insertButton')
         self.verseTypeLayout.addWidget(self.insertButton)
-        self.verseTypeSpacer = QtGui.QSpacerItem(40, 20,
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.verseTypeLayout.addItem(self.verseTypeSpacer)
-        self.editVerseLayout.addLayout(self.verseTypeLayout)
-        self.editButtonBox = QtGui.QDialogButtonBox(editVerseDialog)
-        self.editButtonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.editButtonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
-            QtGui.QDialogButtonBox.Save)
-        self.editButtonBox.setObjectName(u'editButtonBox')
-        self.editVerseLayout.addWidget(self.editButtonBox)
-
+        self.verseTypeLayout.addStretch()
+        self.dialogLayout.addLayout(self.verseTypeLayout)
+        self.dialogLayout.addWidget(
+            create_save_cancel_button_box(editVerseDialog))
         self.retranslateUi(editVerseDialog)
-        QtCore.QObject.connect(self.editButtonBox, QtCore.SIGNAL(u'accepted()'),
-            editVerseDialog.accept)
-        QtCore.QObject.connect(self.editButtonBox, QtCore.SIGNAL(u'rejected()'),
-            editVerseDialog.reject)
         QtCore.QMetaObject.connectSlotsByName(editVerseDialog)
 
     def retranslateUi(self, editVerseDialog):

@@ -27,6 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, Receiver, ThemeLevel, translate
+from openlp.core.lib.ui import UiStrings
 
 class ThemesTab(SettingsTab):
     """
@@ -38,63 +39,54 @@ class ThemesTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'ThemesTab')
-        self.tabTitleVisible = translate('OpenLP.ThemesTab', 'Themes')
-        self.ThemesTabLayout = QtGui.QHBoxLayout(self)
-        self.ThemesTabLayout.setSpacing(8)
-        self.ThemesTabLayout.setMargin(8)
-        self.ThemesTabLayout.setObjectName(u'ThemesTabLayout')
-        self.GlobalGroupBox = QtGui.QGroupBox(self)
+        SettingsTab.setupUi(self)
+        self.GlobalGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.GlobalGroupBox.setObjectName(u'GlobalGroupBox')
         self.GlobalGroupBoxLayout = QtGui.QVBoxLayout(self.GlobalGroupBox)
-        self.GlobalGroupBoxLayout.setSpacing(8)
-        self.GlobalGroupBoxLayout.setMargin(8)
         self.GlobalGroupBoxLayout.setObjectName(u'GlobalGroupBoxLayout')
         self.DefaultComboBox = QtGui.QComboBox(self.GlobalGroupBox)
+        self.DefaultComboBox.setSizeAdjustPolicy(
+            QtGui.QComboBox.AdjustToMinimumContentsLength)
+        self.DefaultComboBox.setSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
         self.DefaultComboBox.setObjectName(u'DefaultComboBox')
         self.GlobalGroupBoxLayout.addWidget(self.DefaultComboBox)
         self.DefaultListView = QtGui.QLabel(self.GlobalGroupBox)
         self.DefaultListView.setObjectName(u'DefaultListView')
         self.GlobalGroupBoxLayout.addWidget(self.DefaultListView)
-        self.ThemesTabLayout.addWidget(self.GlobalGroupBox)
-        self.LevelGroupBox = QtGui.QGroupBox(self)
+        self.leftLayout.addWidget(self.GlobalGroupBox)
+        self.leftLayout.addStretch()
+        self.LevelGroupBox = QtGui.QGroupBox(self.rightColumn)
         self.LevelGroupBox.setObjectName(u'LevelGroupBox')
         self.LevelLayout = QtGui.QFormLayout(self.LevelGroupBox)
         self.LevelLayout.setLabelAlignment(
-            QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+            QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.LevelLayout.setFormAlignment(
-            QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
-        self.LevelLayout.setMargin(8)
-        self.LevelLayout.setSpacing(8)
+            QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.LevelLayout.setObjectName(u'LevelLayout')
         self.SongLevelRadioButton = QtGui.QRadioButton(self.LevelGroupBox)
         self.SongLevelRadioButton.setObjectName(u'SongLevelRadioButton')
-        self.LevelLayout.setWidget(0, QtGui.QFormLayout.LabelRole,
-            self.SongLevelRadioButton)
         self.SongLevelLabel = QtGui.QLabel(self.LevelGroupBox)
         self.SongLevelLabel.setWordWrap(True)
         self.SongLevelLabel.setObjectName(u'SongLevelLabel')
-        self.LevelLayout.setWidget(0, QtGui.QFormLayout.FieldRole,
-            self.SongLevelLabel)
+        self.LevelLayout.addRow(self.SongLevelRadioButton, self.SongLevelLabel)
         self.ServiceLevelRadioButton = QtGui.QRadioButton(self.LevelGroupBox)
         self.ServiceLevelRadioButton.setObjectName(u'ServiceLevelRadioButton')
-        self.LevelLayout.setWidget(1, QtGui.QFormLayout.LabelRole,
-            self.ServiceLevelRadioButton)
         self.ServiceLevelLabel = QtGui.QLabel(self.LevelGroupBox)
         self.ServiceLevelLabel.setWordWrap(True)
         self.ServiceLevelLabel.setObjectName(u'ServiceLevelLabel')
-        self.LevelLayout.setWidget(1, QtGui.QFormLayout.FieldRole,
+        self.LevelLayout.addRow(self.ServiceLevelRadioButton,
             self.ServiceLevelLabel)
         self.GlobalLevelRadioButton = QtGui.QRadioButton(self.LevelGroupBox)
         self.GlobalLevelRadioButton.setChecked(True)
         self.GlobalLevelRadioButton.setObjectName(u'GlobalLevelRadioButton')
-        self.LevelLayout.setWidget(2, QtGui.QFormLayout.LabelRole,
-            self.GlobalLevelRadioButton)
         self.GlobalLevelLabel = QtGui.QLabel(self.LevelGroupBox)
         self.GlobalLevelLabel.setWordWrap(True)
         self.GlobalLevelLabel.setObjectName(u'GlobalLevelLabel')
-        self.LevelLayout.setWidget(2, QtGui.QFormLayout.FieldRole,
+        self.LevelLayout.addRow(self.GlobalLevelRadioButton,
             self.GlobalLevelLabel)
-        self.ThemesTabLayout.addWidget(self.LevelGroupBox)
+        self.rightLayout.addWidget(self.LevelGroupBox)
+        self.rightLayout.addStretch()
         QtCore.QObject.connect(self.SongLevelRadioButton,
             QtCore.SIGNAL(u'pressed()'), self.onSongLevelButtonPressed)
         QtCore.QObject.connect(self.ServiceLevelRadioButton,
@@ -107,6 +99,7 @@ class ThemesTab(SettingsTab):
             QtCore.SIGNAL(u'theme_update_list'), self.updateThemeList)
 
     def retranslateUi(self):
+        self.tabTitleVisible = UiStrings.Themes
         self.GlobalGroupBox.setTitle(
             translate('OpenLP.ThemesTab', 'Global Theme'))
         self.LevelGroupBox.setTitle(
@@ -173,13 +166,7 @@ class ThemesTab(SettingsTab):
         self.global_theme = unicode(self.DefaultComboBox.currentText())
         self.parent.renderManager.set_global_theme(
             self.global_theme, self.theme_level)
-        image = self.parent.ThemeManagerContents.getPreviewImage(
-            self.global_theme)
-        preview = QtGui.QPixmap(unicode(image))
-        if not preview.isNull():
-            preview = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio,
-                QtCore.Qt.SmoothTransformation)
-        self.DefaultListView.setPixmap(preview)
+        self.__previewGlobalTheme()
 
     def updateThemeList(self, theme_list):
         """
@@ -206,10 +193,16 @@ class ThemesTab(SettingsTab):
         self.parent.renderManager.set_global_theme(
             self.global_theme, self.theme_level)
         if self.global_theme is not u'':
-            image = self.parent.ThemeManagerContents.getPreviewImage(
-                self.global_theme)
-            preview = QtGui.QPixmap(unicode(image))
-            if not preview.isNull():
-                preview = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio,
-                    QtCore.Qt.SmoothTransformation)
-            self.DefaultListView.setPixmap(preview)
+            self.__previewGlobalTheme()
+
+    def __previewGlobalTheme(self):
+        """
+        Utility method to update the global theme preview image.
+        """
+        image = self.parent.ThemeManagerContents.getPreviewImage(
+            self.global_theme)
+        preview = QtGui.QPixmap(unicode(image))
+        if not preview.isNull():
+            preview = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio,
+                QtCore.Qt.SmoothTransformation)
+        self.DefaultListView.setPixmap(preview)

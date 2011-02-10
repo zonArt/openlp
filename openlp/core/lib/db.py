@@ -34,7 +34,7 @@ from sqlalchemy import create_engine, MetaData
 from sqlalchemy.exceptions import InvalidRequestError
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-from openlp.core.utils import AppLocation
+from openlp.core.utils import AppLocation, delete_file
 
 log = logging.getLogger(__name__)
 
@@ -75,11 +75,7 @@ def delete_database(plugin_name, db_file_name=None):
     else:
         db_file_path = os.path.join(
             AppLocation.get_section_data_path(plugin_name), plugin_name)
-    try:
-        os.remove(db_file_path)
-        return True
-    except OSError:
-        return False
+    return delete_file(db_file_path)
 
 class BaseModel(object):
     """
@@ -90,10 +86,10 @@ class BaseModel(object):
         """
         Creates an instance of a class and populates it, returning the instance
         """
-        me = cls()
+        instance = cls()
         for key in kwargs:
-            me.__setattr__(key, kwargs[key])
-        return me
+            instance.__setattr__(key, kwargs[key])
+        return instance
 
 class Manager(object):
     """

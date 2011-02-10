@@ -37,27 +37,23 @@ class MediaTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'MediaTab')
-        self.tabTitleVisible = translate('MediaPlugin.MediaTab', 'Media')
-        self.mediaLayout = QtGui.QFormLayout(self)
-        self.mediaLayout.setSpacing(8)
-        self.mediaLayout.setMargin(8)
-        self.mediaLayout.setObjectName(u'mediaLayout')
-        self.mediaModeGroupBox = QtGui.QGroupBox(self)
+        SettingsTab.setupUi(self)
+        self.mediaModeGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.mediaModeGroupBox.setObjectName(u'mediaModeGroupBox')
-        self.mediaModeLayout = QtGui.QVBoxLayout(self.mediaModeGroupBox)
-        self.mediaModeLayout.setSpacing(8)
-        self.mediaModeLayout.setMargin(8)
+        self.mediaModeLayout = QtGui.QFormLayout(self.mediaModeGroupBox)
         self.mediaModeLayout.setObjectName(u'mediaModeLayout')
         self.usePhononCheckBox = QtGui.QCheckBox(self.mediaModeGroupBox)
         self.usePhononCheckBox.setObjectName(u'usePhononCheckBox')
-        self.mediaModeLayout.addWidget(self.usePhononCheckBox)
-        self.mediaLayout.setWidget(
-            0, QtGui.QFormLayout.LabelRole, self.mediaModeGroupBox)
+        self.mediaModeLayout.addRow(self.usePhononCheckBox)
+        self.leftLayout.addWidget(self.mediaModeGroupBox)
+        self.leftLayout.addStretch()
+        self.rightLayout.addStretch()
         QtCore.QObject.connect(self.usePhononCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onUsePhononCheckBoxChanged)
 
     def retranslateUi(self):
+        self.tabTitleVisible = translate('MediaPlugin.MediaTab', 'Media')
         self.mediaModeGroupBox.setTitle(translate('MediaPlugin.MediaTab',
             'Media Display'))
         self.usePhononCheckBox.setText(

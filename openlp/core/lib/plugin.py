@@ -31,6 +31,7 @@ import logging
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver
+from openlp.core.lib.ui import UiStrings
 
 log = logging.getLogger(__name__)
 
@@ -42,7 +43,11 @@ class PluginStatus(object):
     Inactive = 0
     Disabled = -1
 
+
 class StringContent(object):
+    """
+    Provide standard strings for objects to use.
+    """
     Name = u'name'
     Import = u'import'
     Load = u'load'
@@ -53,6 +58,7 @@ class StringContent(object):
     Live = u'live'
     Service = u'service'
     VisibleName = u'visible_name'
+
 
 class Plugin(QtCore.QObject):
     """
@@ -116,7 +122,7 @@ class Plugin(QtCore.QObject):
 
             class MyPlugin(Plugin):
                 def __init__(self):
-                    Plugin.__init(self, u'MyPlugin', u'0.1')
+                    Plugin.__init__(self, u'MyPlugin', u'0.1')
 
         ``name``
             Defaults to *None*. The name of the plugin.
@@ -175,6 +181,10 @@ class Plugin(QtCore.QObject):
         self.status = new_status
         QtCore.QSettings().setValue(
             self.settingsSection + u'/status', QtCore.QVariant(self.status))
+        if new_status == PluginStatus.Active:
+            self.initialise()
+        elif new_status == PluginStatus.Inactive:
+            self.finalise()
 
     def isActive(self):
         """
@@ -314,4 +324,33 @@ class Plugin(QtCore.QObject):
         """
         Called to define all translatable texts of the plugin
         """
-        pass
+        ## Load Action ##
+        self._setSingularTextString(StringContent.Load,
+            UiStrings.Load, UiStrings.LoadANew)
+        ## New Action ##
+        self._setSingularTextString(StringContent.New,
+            UiStrings.Add, UiStrings.AddANew)
+        ## Edit Action ##
+        self._setSingularTextString(StringContent.Edit,
+            UiStrings.Edit, UiStrings.EditSelect)
+        ## Delete Action ##
+        self._setSingularTextString(StringContent.Delete,
+            UiStrings.Delete, UiStrings.DeleteSelect)
+        ## Preview Action ##
+        self._setSingularTextString(StringContent.Preview,
+            UiStrings.Preview, UiStrings.PreviewSelect)
+        ## Send Live Action ##
+        self._setSingularTextString(StringContent.Live,
+            UiStrings.Live, UiStrings.SendSelectLive)
+        ## Add to Service Action ##
+        self._setSingularTextString(StringContent.Service,
+            UiStrings.Service, UiStrings.AddSelectService)
+
+    def _setSingularTextString(self, name, title, tooltip):
+        """
+        Utility method for creating a plugin's textStrings. This method makes
+        use of the singular name of the plugin object so must only be called
+        after this has been set.
+        """
+        self.textStrings[name] = { u'title': title, u'tooltip': tooltip %
+            self.getString(StringContent.Name)[u'singular']}

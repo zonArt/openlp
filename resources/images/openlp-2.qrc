@@ -41,6 +41,8 @@
     <file>general_export.png</file>
     <file>general_import.png</file>
     <file>general_new.png</file>
+    <file>general_zoom_out.png</file>
+    <file>general_zoom_in.png</file>
     <file>general_open.png</file>
     <file>general_save.png</file>
     <file>general_email.png</file>

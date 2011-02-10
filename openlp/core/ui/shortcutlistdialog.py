@@ -31,83 +31,57 @@ from openlp.core.lib import translate, build_icon
 class Ui_ShortcutListDialog(object):
     def setupUi(self, shortcutListDialog):
         shortcutListDialog.setObjectName(u'shortcutListDialog')
-        shortcutListDialog.resize(500, 438)
-        self.shortcutListLayout = QtGui.QVBoxLayout(shortcutListDialog)
-        self.shortcutListLayout.setSpacing(8)
-        self.shortcutListLayout.setMargin(8)
-        self.shortcutListLayout.setObjectName(u'shortcutListLayout')
-        self.shortcutListTreeWidget = QtGui.QTreeWidget(shortcutListDialog)
-        self.shortcutListTreeWidget.setAlternatingRowColors(True)
-        self.shortcutListTreeWidget.setObjectName(u'shortcutListTreeWidget')
-        self.shortcutListTreeWidget.setColumnCount(2)
-        self.shortcutListTreeWidget.setSelectionBehavior(
-            QtGui.QAbstractItemView.SelectRows)
-        self.shortcutListLayout.addWidget(self.shortcutListTreeWidget)
-        self.shortcutLayout = QtGui.QVBoxLayout()
-        self.shortcutLayout.setSpacing(8)
-        self.shortcutLayout.setContentsMargins(0, -1, -1, -1)
-        self.shortcutLayout.setObjectName(u'shortcutLayout')
-        self.defaultRadioButton = QtGui.QRadioButton(shortcutListDialog)
-        self.defaultRadioButton.setChecked(True)
-        self.defaultRadioButton.setObjectName(u'defaultRadioButton')
-        self.shortcutLayout.addWidget(self.defaultRadioButton)
-        self.customShortcutLayout = QtGui.QHBoxLayout()
-        self.customShortcutLayout.setSpacing(8)
-        self.customShortcutLayout.setObjectName(u'customShortcutLayout')
-        self.customRadioButton = QtGui.QRadioButton(shortcutListDialog)
-        self.customRadioButton.setObjectName(u'customRadioButton')
-        self.customShortcutLayout.addWidget(self.customRadioButton)
-        self.shortcutPushButton = QtGui.QPushButton(shortcutListDialog)
-        self.shortcutPushButton.setMinimumSize(QtCore.QSize(84, 0))
-        self.shortcutPushButton.setIcon(
+        self.dialogLayout = QtGui.QVBoxLayout(shortcutListDialog)
+        self.dialogLayout.setObjectName(u'dialogLayout')
+        self.treeWidget = QtGui.QTreeWidget(shortcutListDialog)
+        self.treeWidget.setAlternatingRowColors(True)
+        self.treeWidget.setObjectName(u'treeWidget')
+        self.treeWidget.setColumnCount(2)
+        self.dialogLayout.addWidget(self.treeWidget)
+        self.defaultButton = QtGui.QRadioButton(shortcutListDialog)
+        self.defaultButton.setChecked(True)
+        self.defaultButton.setObjectName(u'defaultButton')
+        self.dialogLayout.addWidget(self.defaultButton)
+        self.customLayout = QtGui.QHBoxLayout()
+        self.customLayout.setObjectName(u'customLayout')
+        self.customButton = QtGui.QRadioButton(shortcutListDialog)
+        self.customButton.setObjectName(u'customButton')
+        self.customLayout.addWidget(self.customButton)
+        self.shortcutButton = QtGui.QPushButton(shortcutListDialog)
+        self.shortcutButton.setIcon(
             build_icon(u':/system/system_configure_shortcuts.png'))
-        self.shortcutPushButton.setCheckable(True)
-        self.shortcutPushButton.setChecked(False)
-        self.shortcutPushButton.setObjectName(u'shortcutPushButton')
-        self.customShortcutLayout.addWidget(self.shortcutPushButton)
-        self.clearShortcutToolButton = QtGui.QToolButton(shortcutListDialog)
-        self.clearShortcutToolButton.setMinimumSize(QtCore.QSize(0, 16))
-        self.clearShortcutToolButton.setText(u'')
-        self.clearShortcutToolButton.setIcon(
+        self.shortcutButton.setCheckable(True)
+        self.shortcutButton.setObjectName(u'shortcutButton')
+        self.customLayout.addWidget(self.shortcutButton)
+        self.clearShortcutButton = QtGui.QToolButton(shortcutListDialog)
+        self.clearShortcutButton.setIcon(
             build_icon(u':/system/clear_shortcut.png'))
-        self.clearShortcutToolButton.setObjectName(u'clearShortcutToolButton')
-        self.customShortcutLayout.addWidget(self.clearShortcutToolButton)
-        self.customShortcutSpacer = QtGui.QSpacerItem(40, 20,
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.customShortcutLayout.addItem(self.customShortcutSpacer)
-        self.shortcutLayout.addLayout(self.customShortcutLayout)
-        self.shortcutListLayout.addLayout(self.shortcutLayout)
-        self.shortcutListButtonBox = QtGui.QDialogButtonBox(shortcutListDialog)
-        self.shortcutListButtonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.shortcutListButtonBox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok |
-            QtGui.QDialogButtonBox.Reset)
-        self.shortcutListButtonBox.setObjectName(u'shortcutListButtonBox')
-        self.shortcutListLayout.addWidget(self.shortcutListButtonBox)
-
+        self.clearShortcutButton.setAutoRaise(True)
+        self.clearShortcutButton.setObjectName(u'clearShortcutButton')
+        self.customLayout.addWidget(self.clearShortcutButton)
+        self.customLayout.addStretch()
+        self.dialogLayout.addLayout(self.customLayout)
+        self.buttonBox = QtGui.QDialogButtonBox(shortcutListDialog)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
+            QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.Reset)
+        self.buttonBox.setObjectName(u'buttonBox')
+        self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(shortcutListDialog)
-        QtCore.QObject.connect(
-            self.shortcutListButtonBox,
-            QtCore.SIGNAL(u'accepted()'),
-            shortcutListDialog.accept
-        )
-        QtCore.QObject.connect(
-            self.shortcutListButtonBox,
-            QtCore.SIGNAL(u'rejected()'),
-            shortcutListDialog.reject
-        )
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'),
+            shortcutListDialog.accept)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
+            shortcutListDialog.reject)
         QtCore.QMetaObject.connectSlotsByName(shortcutListDialog)
 
     def retranslateUi(self, shortcutListDialog):
         shortcutListDialog.setWindowTitle(
             translate('OpenLP.ShortcutListDialog', 'Customize Shortcuts'))
-        self.shortcutListTreeWidget.setHeaderLabels([
+        self.treeWidget.setHeaderLabels([
             translate('OpenLP.ShortcutListDialog', 'Action'),
-            translate('OpenLP.ShortcutListDialog', 'Shortcut')
-        ])
-        self.defaultRadioButton.setText(
+            translate('OpenLP.ShortcutListDialog', 'Shortcut')])
+        self.defaultButton.setText(
             translate('OpenLP.ShortcutListDialog', 'Default: %s'))
-        self.customRadioButton.setText(
+        self.customButton.setText(
             translate('OpenLP.ShortcutListDialog', 'Custom:'))
-        self.shortcutPushButton.setText(
+        self.shortcutButton.setText(
             translate('OpenLP.ShortcutListDialog', 'None'))

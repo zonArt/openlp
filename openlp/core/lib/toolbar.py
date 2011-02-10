@@ -51,7 +51,8 @@ class OpenLPToolbar(QtGui.QToolBar):
         log.debug(u'Init done')
 
     def addToolbarButton(self, title, icon, tooltip=None, slot=None,
-        checkable=False):
+        checkable=False, shortcut=0, alternate=0,
+        context=QtCore.Qt.WidgetShortcut):
         """
         A method to help developers easily add a button to the toolbar.
 
@@ -60,7 +61,7 @@ class OpenLPToolbar(QtGui.QToolBar):
 
         ``icon``
             The icon of the button. This can be an instance of QIcon, or a
-            string cotaining either the absolute path to the image, or an
+            string containing either the absolute path to the image, or an
             internal resource path starting with ':/'.
 
         ``tooltip``
@@ -69,30 +70,42 @@ class OpenLPToolbar(QtGui.QToolBar):
         ``slot``
             The method to run when this button is clicked.
 
-        ``objectname``
-            The name of the object, as used in `<button>.setObjectName()`.
+        ``checkable``
+            If *True* the button has two, *off* and *on*, states. Default is
+            *False*, which means the buttons has only one state.
+
+        ``shortcut``
+            The primary shortcut for this action
+
+        ``alternate``
+            The alternate shortcut for this action
+
+        ``context``
+            Specify the context in which this shortcut is valid
         """
-        toolbarButton = None
+        newAction = None
         if icon:
-            buttonIcon = build_icon(icon)
+            actionIcon = build_icon(icon)
             if slot and not checkable:
-                toolbarButton = self.addAction(buttonIcon, title, slot)
+                newAction = self.addAction(actionIcon, title, slot)
             else:
-                toolbarButton = self.addAction(buttonIcon, title)
-            self.icons[title] = buttonIcon
+                newAction = self.addAction(actionIcon, title)
+            self.icons[title] = actionIcon
         else:
-            toolbarButton = QtGui.QAction(title, toolbarButton)
-            self.addAction(toolbarButton)
-            QtCore.QObject.connect(toolbarButton,
+            newAction = QtGui.QAction(title, newAction)
+            self.addAction(newAction)
+            QtCore.QObject.connect(newAction,
                 QtCore.SIGNAL(u'triggered()'), slot)
         if tooltip:
-            toolbarButton.setToolTip(tooltip)
+            newAction.setToolTip(tooltip)
         if checkable:
-            toolbarButton.setCheckable(True)
-            QtCore.QObject.connect(toolbarButton,
+            newAction.setCheckable(True)
+            QtCore.QObject.connect(newAction,
                 QtCore.SIGNAL(u'toggled(bool)'), slot)
-        self.actions[title] = toolbarButton
-        return toolbarButton
+        self.actions[title] = newAction
+        newAction.setShortcuts([shortcut, alternate])
+        newAction.setShortcutContext(context)
+        return newAction
 
     def addToolbarSeparator(self, handle):
         """

@@ -30,7 +30,7 @@ import sqlite
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, translate
-from db import BibleDB
+from openlp.plugins.bibles.lib.db import BibleDB
 
 log = logging.getLogger(__name__)
 
@@ -46,7 +46,7 @@ class OpenLP1Bible(BibleDB):
         BibleDB.__init__(self, parent, **kwargs)
         self.filename = kwargs[u'filename']
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'bibles_stop_import'), self.stop_import)
+            QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
 
     def do_import(self):
         """
@@ -62,7 +62,7 @@ class OpenLP1Bible(BibleDB):
         # Create all books.
         cursor.execute(u'SELECT id, testament_id, name, abbreviation FROM book')
         books = cursor.fetchall()
-        self.wizard.importProgressBar.setMaximum(len(books) + 1)
+        self.wizard.progressBar.setMaximum(len(books) + 1)
         for book in books:
             if self.stop_import_flag:
                 connection.close()

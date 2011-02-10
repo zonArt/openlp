@@ -23,31 +23,45 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+Provide Html Tag management and Display Tag access class
+"""
 
-from PyQt4 import QtCore, QtGui
-from openlp.core.lib import translate
+from openlp.core.lib import base_html_expands
 
-class Ui_ServiceNoteEdit(object):
-    def setupUi(self, serviceNoteEdit):
-        serviceNoteEdit.setObjectName(u'serviceNoteEdit')
-        serviceNoteEdit.resize(400, 243)
-        self.widget = QtGui.QWidget(serviceNoteEdit)
-        self.widget.setGeometry(QtCore.QRect(20, 10, 361, 223))
-        self.widget.setObjectName(u'widget')
-        self.verticalLayout = QtGui.QVBoxLayout(self.widget)
-        self.verticalLayout.setObjectName(u'verticalLayout')
-        self.textEdit = QtGui.QTextEdit(self.widget)
-        self.textEdit.setObjectName(u'textEdit')
-        self.verticalLayout.addWidget(self.textEdit)
-        self.buttonBox = QtGui.QDialogButtonBox(self.widget)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
-            QtGui.QDialogButtonBox.Save)
-        self.buttonBox.setObjectName(u'buttonBox')
-        self.verticalLayout.addWidget(self.buttonBox)
+class DisplayTags(object):
+    """
+    Static Class to HTML Tags to be access around the code the list is managed
+    by the Options Tab.
+    """
+    html_expands = []
 
-        self.retranslateUi(serviceNoteEdit)
-        QtCore.QMetaObject.connectSlotsByName(serviceNoteEdit)
+    @staticmethod
+    def get_html_tags():
+        """
+        Provide access to the html_expands list.
+        """
+        return DisplayTags.html_expands
 
-    def retranslateUi(self, serviceNoteEdit):
-        serviceNoteEdit.setWindowTitle(
-            translate('OpenLP.ServiceNoteForm', 'Service Item Notes'))
+    @staticmethod
+    def reset_html_tags():
+        """
+        Resets the html_expands list.
+        """
+        DisplayTags.html_expands = []
+        for html in base_html_expands:
+            DisplayTags.html_expands.append(html)
+
+    @staticmethod
+    def add_html_tag(tag):
+        """
+        Add a new tag to the list
+        """
+        DisplayTags.html_expands.append(tag)
+
+    @staticmethod
+    def remove_html_tag(tag_id):
+        """
+        Removes an individual html_expands tag.
+        """
+        DisplayTags.html_expands.pop(tag_id)

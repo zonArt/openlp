@@ -37,21 +37,17 @@ class CustomTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'CustomTab')
-        self.customLayout = QtGui.QFormLayout(self)
-        self.customLayout.setSpacing(8)
-        self.customLayout.setMargin(8)
-        self.customLayout.setObjectName(u'customLayout')
-        self.customModeGroupBox = QtGui.QGroupBox(self)
+        SettingsTab.setupUi(self)
+        self.customModeGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.customModeGroupBox.setObjectName(u'customModeGroupBox')
-        self.customModeLayout = QtGui.QVBoxLayout(self.customModeGroupBox)
-        self.customModeLayout.setSpacing(8)
-        self.customModeLayout.setMargin(8)
+        self.customModeLayout = QtGui.QFormLayout(self.customModeGroupBox)
         self.customModeLayout.setObjectName(u'customModeLayout')
         self.displayFooterCheckBox = QtGui.QCheckBox(self.customModeGroupBox)
         self.displayFooterCheckBox.setObjectName(u'displayFooterCheckBox')
-        self.customModeLayout.addWidget(self.displayFooterCheckBox)
-        self.customLayout.setWidget(
-            0, QtGui.QFormLayout.LabelRole, self.customModeGroupBox)
+        self.customModeLayout.addRow(self.displayFooterCheckBox)
+        self.leftLayout.addWidget(self.customModeGroupBox)
+        self.leftLayout.addStretch()
+        self.rightLayout.addStretch()
         QtCore.QObject.connect(self.displayFooterCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onDisplayFooterCheckBoxChanged)

@@ -36,9 +36,6 @@ from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
 
-class OpenSongImportError(Exception):
-    pass
-
 class OpenSongImport(SongImport):
     """
     Import songs exported from OpenSong
@@ -129,7 +126,7 @@ class OpenSongImport(SongImport):
             else:
                 numfiles += 1
         log.debug(u'Total number of files: %d', numfiles)
-        self.import_wizard.importProgressBar.setMaximum(numfiles)
+        self.import_wizard.progressBar.setMaximum(numfiles)
         for filename in self.filenames:
             if self.stop_import_flag:
                 success = False

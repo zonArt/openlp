@@ -37,15 +37,10 @@ class SongsTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'SongsTab')
-        self.SongsLayout = QtGui.QFormLayout(self)
-        self.SongsLayout.setSpacing(8)
-        self.SongsLayout.setMargin(8)
-        self.SongsLayout.setObjectName(u'SongsLayout')
-        self.SongsModeGroupBox = QtGui.QGroupBox(self)
+        SettingsTab.setupUi(self)
+        self.SongsModeGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.SongsModeGroupBox.setObjectName(u'SongsModeGroupBox')
         self.SongsModeLayout = QtGui.QVBoxLayout(self.SongsModeGroupBox)
-        self.SongsModeLayout.setSpacing(8)
-        self.SongsModeLayout.setMargin(8)
         self.SongsModeLayout.setObjectName(u'SongsModeLayout')
         self.SearchAsTypeCheckBox = QtGui.QCheckBox(self.SongsModeGroupBox)
         self.SearchAsTypeCheckBox.setObjectName(u'SearchAsTypeCheckBox')
@@ -61,8 +56,9 @@ class SongsTab(SettingsTab):
         self.SongAddFromServiceCheckBox.setObjectName(
             u'SongAddFromServiceCheckBox')
         self.SongsModeLayout.addWidget(self.SongAddFromServiceCheckBox)
-        self.SongsLayout.setWidget(
-            0, QtGui.QFormLayout.LabelRole, self.SongsModeGroupBox)
+        self.leftLayout.addWidget(self.SongsModeGroupBox)
+        self.leftLayout.addStretch()
+        self.rightLayout.addStretch()
         QtCore.QObject.connect(self.SearchAsTypeCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onSearchAsTypeCheckBoxChanged)

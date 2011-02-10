@@ -27,51 +27,38 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
+from openlp.core.lib.ui import create_save_cancel_button_box
 
 class Ui_SongBookDialog(object):
-    def setupUi(self, SongBookDialog):
-        SongBookDialog.setObjectName(u'SongBookDialog')
-        SongBookDialog.resize(367, 120)
-        self.SongBookLayout = QtGui.QFormLayout(SongBookDialog)
-        self.SongBookLayout.setMargin(8)
-        self.SongBookLayout.setSpacing(8)
-        self.SongBookLayout.setObjectName(u'SongBookLayout')
-        self.NameLabel = QtGui.QLabel(SongBookDialog)
-        self.NameLabel.setObjectName(u'NameLabel')
-        self.SongBookLayout.setWidget(0,
-            QtGui.QFormLayout.LabelRole, self.NameLabel)
-        self.NameEdit = QtGui.QLineEdit(SongBookDialog)
-        self.NameEdit.setObjectName(u'NameEdit')
-        self.NameLabel.setBuddy(self.NameEdit)
-        self.SongBookLayout.setWidget(0,
-            QtGui.QFormLayout.FieldRole, self.NameEdit)
-        self.PublisherLabel = QtGui.QLabel(SongBookDialog)
-        self.PublisherLabel.setObjectName(u'PublisherLabel')
-        self.SongBookLayout.setWidget(1,
-            QtGui.QFormLayout.LabelRole, self.PublisherLabel)
-        self.PublisherEdit = QtGui.QLineEdit(SongBookDialog)
-        self.PublisherEdit.setObjectName(u'PublisherEdit')
-        self.PublisherLabel.setBuddy(self.PublisherEdit)
-        self.SongBookLayout.setWidget(1,
-            QtGui.QFormLayout.FieldRole, self.PublisherEdit)
-        self.ButtonBox = QtGui.QDialogButtonBox(SongBookDialog)
-        self.ButtonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.ButtonBox.setStandardButtons(
-            QtGui.QDialogButtonBox.Save | QtGui.QDialogButtonBox.Cancel)
-        self.ButtonBox.setObjectName(u'ButtonBox')
-        self.SongBookLayout.setWidget(2,
-            QtGui.QFormLayout.FieldRole, self.ButtonBox)
+    def setupUi(self, songBookDialog):
+        songBookDialog.setObjectName(u'songBookDialog')
+        songBookDialog.resize(300, 10)
+        self.dialogLayout = QtGui.QVBoxLayout(songBookDialog)
+        self.dialogLayout.setObjectName(u'dialogLayout')
+        self.bookLayout = QtGui.QFormLayout()
+        self.bookLayout.setObjectName(u'bookLayout')
+        self.nameLabel = QtGui.QLabel(songBookDialog)
+        self.nameLabel.setObjectName(u'nameLabel')
+        self.nameEdit = QtGui.QLineEdit(songBookDialog)
+        self.nameEdit.setObjectName(u'nameEdit')
+        self.nameLabel.setBuddy(self.nameEdit)
+        self.bookLayout.addRow(self.nameLabel, self.nameEdit)
+        self.publisherLabel = QtGui.QLabel(songBookDialog)
+        self.publisherLabel.setObjectName(u'publisherLabel')
+        self.publisherEdit = QtGui.QLineEdit(songBookDialog)
+        self.publisherEdit.setObjectName(u'publisherEdit')
+        self.publisherLabel.setBuddy(self.publisherEdit)
+        self.bookLayout.addRow(self.publisherLabel, self.publisherEdit)
+        self.dialogLayout.addLayout(self.bookLayout)
+        self.dialogLayout.addWidget(
+            create_save_cancel_button_box(songBookDialog))
+        self.retranslateUi(songBookDialog)
+        songBookDialog.setMaximumHeight(songBookDialog.sizeHint().height())
+        QtCore.QMetaObject.connectSlotsByName(songBookDialog)
 
-        self.retranslateUi(SongBookDialog)
-        QtCore.QObject.connect(self.ButtonBox,
-            QtCore.SIGNAL(u'accepted()'), SongBookDialog.accept)
-        QtCore.QObject.connect(self.ButtonBox,
-            QtCore.SIGNAL(u'rejected()'), SongBookDialog.reject)
-        QtCore.QMetaObject.connectSlotsByName(SongBookDialog)
-
-    def retranslateUi(self, SongBookDialog):
-        SongBookDialog.setWindowTitle(
+    def retranslateUi(self, songBookDialog):
+        songBookDialog.setWindowTitle(
             translate('SongsPlugin.SongBookForm', 'Song Book Maintenance'))
-        self.NameLabel.setText(translate('SongsPlugin.SongBookForm', '&Name:'))
-        self.PublisherLabel.setText(
+        self.nameLabel.setText(translate('SongsPlugin.SongBookForm', '&Name:'))
+        self.publisherLabel.setText(
             translate('SongsPlugin.SongBookForm', '&Publisher:'))

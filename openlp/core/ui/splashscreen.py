@@ -26,33 +26,17 @@
 
 from PyQt4 import QtCore, QtGui
 
-class SplashScreen(object):
+class SplashScreen(QtGui.QSplashScreen):
     def __init__(self):
-        self.splash_screen = QtGui.QSplashScreen()
+        QtGui.QSplashScreen.__init__(self)
         self.setupUi()
 
     def setupUi(self):
-        self.splash_screen.setObjectName(u'splash_screen')
-        self.splash_screen.setWindowModality(QtCore.Qt.NonModal)
-        self.splash_screen.setEnabled(True)
-        self.splash_screen.resize(370, 370)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.splash_screen.sizePolicy().hasHeightForWidth())
-        self.splash_screen.setSizePolicy(sizePolicy)
-        self.splash_screen.setContextMenuPolicy(QtCore.Qt.PreventContextMenu)
+        self.setObjectName(u'splash_screen')
+        self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
+        self.setContextMenuPolicy(QtCore.Qt.PreventContextMenu)
         splash_image = QtGui.QPixmap(u':/graphics/openlp-splash-screen.png')
-        self.splash_screen.setPixmap(splash_image)
-        self.splash_screen.setMask(splash_image.mask())
-        self.splash_screen.setWindowFlags(
-            QtCore.Qt.SplashScreen | QtCore.Qt.WindowStaysOnTopHint)
-        QtCore.QMetaObject.connectSlotsByName(self.splash_screen)
-
-    def show(self):
-        self.splash_screen.show()
-
-    def finish(self, widget):
-        self.splash_screen.finish(widget)
+        self.setPixmap(splash_image)
+        self.setMask(splash_image.mask())
+        self.resize(370, 370)
+        QtCore.QMetaObject.connectSlotsByName(self)
