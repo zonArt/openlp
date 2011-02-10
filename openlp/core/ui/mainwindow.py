@@ -217,7 +217,7 @@ class Ui_MainWindow(object):
             u':/tools/tools_add.png')
         mainWindow.actionList.add_action(self.ToolsAddToolItem, u'Tools')
         self.ToolsOpenDataFolder = icon_action(mainWindow, u'ToolsOpenDataFolder',
-            u':/tools/tools_add.png')
+            u':/general/general_open.png')
         mainWindow.actionList.add_action(self.ToolsOpenDataFolder, u'Tools')
         self.settingsPluginListItem = icon_action(mainWindow,
             u'settingsPluginListItem', u':/system/settings_plugin_list.png')
