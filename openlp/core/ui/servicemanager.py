@@ -100,12 +100,12 @@ class ServiceManager(QtGui.QWidget):
             UiStrings.CreateANew % UiStrings.Service.toLower(),
             self.onNewServiceClicked)
         self.toolbar.addToolbarButton(
-            translate('OpenLP.ServiceManager', 'Open Service'),
+            UiStrings.OpenType % UiStrings.Service,
             u':/general/general_open.png',
             translate('OpenLP.ServiceManager', 'Load an existing service'),
             self.onLoadServiceClicked)
         self.toolbar.addToolbarButton(
-            translate('OpenLP.ServiceManager', 'Save Service'),
+            UiStrings.SaveType % UiStrings.Service,
             u':/general/general_save.png',
             translate('OpenLP.ServiceManager', 'Save this service'),
             self.saveFile)
@@ -465,7 +465,7 @@ class ServiceManager(QtGui.QWidget):
         save the file.
         """
         fileName = unicode(QtGui.QFileDialog.getSaveFileName(self.mainwindow,
-            translate('OpenLP.ServiceManager', 'Save Service'),
+            UiStrings.SaveType % UiStrings.Service,
             SettingsManager.get_last_dir(
             self.mainwindow.serviceSettingsSection),
             translate('OpenLP.ServiceManager', 'OpenLP Service Files (*.osz)')))

@@ -164,6 +164,7 @@ class BackgroundGradientType(object):
         elif type_string == u'leftBottom':
             return BackgroundGradientType.LeftBottom
 
+
 class HorizontalType(object):
     """
     Type enumeration for horizontal alignment.
@@ -172,6 +173,19 @@ class HorizontalType(object):
     Center = 1
     Right = 2
 
+    @staticmethod
+    def to_string(horizontal_type):
+        """
+        Return a string representation of a horizontal type.
+        """
+        If horizontal_type == Horizontal.Right:
+            return u'right'
+        elif horizontal_type == Horizontal.Center:
+            return u'center'
+        else
+            return u'left'
+
+
 class VerticalType(object):
     """
     Type enumeration for vertical alignment.
@@ -179,6 +193,19 @@ class VerticalType(object):
     Top = 0
     Middle = 1
     Bottom = 2
+
+    @staticmethod
+    def to_string(vertical_type):
+        """
+        Return a string representation of a vertical type.
+        """
+        If vertical_type == VerticalType.Bottom:
+            return u'bottom'
+        elif vertical_type == VerticalType.Middle:
+            return u'middle'
+        else
+            return u'top'
+
 
 BOOLEAN_LIST = [u'bold', u'italics', u'override', u'outline', u'shadow',
     u'slide_transition']

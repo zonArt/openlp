@@ -324,14 +324,12 @@ class Ui_MainWindow(object):
             UiStrings.CreateANew % UiStrings.Service.toLower())
         self.FileNewItem.setShortcut(translate('OpenLP.MainWindow', 'Ctrl+N'))
         self.FileOpenItem.setText(translate('OpenLP.MainWindow', '&Open'))
-        self.FileOpenItem.setToolTip(
-            translate('OpenLP.MainWindow', 'Open Service'))
+        self.FileOpenItem.setToolTip(UiStrings.OpenType % UiStrings.Service)
         self.FileOpenItem.setStatusTip(
             translate('OpenLP.MainWindow', 'Open an existing service.'))
         self.FileOpenItem.setShortcut(translate('OpenLP.MainWindow', 'Ctrl+O'))
         self.FileSaveItem.setText(translate('OpenLP.MainWindow', '&Save'))
-        self.FileSaveItem.setToolTip(
-            translate('OpenLP.MainWindow', 'Save Service'))
+        self.FileSaveItem.setToolTip(UiStrings.SaveType % UiStrings.Service)
         self.FileSaveItem.setStatusTip(
             translate('OpenLP.MainWindow', 'Save the current service to disk.'))
         self.FileSaveItem.setShortcut(translate('OpenLP.MainWindow', 'Ctrl+S'))
