@@ -33,7 +33,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import context_menu_action, context_menu_separator, \
     SettingsManager, OpenLPToolbar, ServiceItem, StringContent, build_icon, \
-    translate, Receiver, BaseListWithDnD
+    translate, Receiver, ListWidgetWithDnD
 
 log = logging.getLogger(__name__)
 
@@ -258,7 +258,7 @@ class MediaManagerItem(QtGui.QWidget):
         Creates the main widget for listing items the media item is tracking
         """
         # Add the List widget
-        self.listView = BaseListWithDnD(self, self.title)
+        self.listView = ListWidgetWithDnD(self, self.title)
         self.listView.uniformItemSizes = True
         self.listView.setSpacing(1)
         self.listView.setSelectionMode(

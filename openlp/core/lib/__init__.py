@@ -319,7 +319,7 @@ def check_directory_exists(dir):
     if not os.path.exists(dir):
         os.makedirs(dir)
 
-from baselistwithdnd import BaseListWithDnD
+from listwidgetwithdnd import ListWidgetWithDnD
 from theme import ThemeLevel, ThemeXML, BackgroundGradientType, \
     BackgroundType, HorizontalType, VerticalType
 from displaytags import DisplayTags

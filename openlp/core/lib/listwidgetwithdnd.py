@@ -28,7 +28,7 @@ Extend QListWidget to handle drag and drop functionality
 """
 from PyQt4 import QtCore, QtGui
 
-class BaseListWithDnD(QtGui.QListWidget):
+class ListWidgetWithDnD(QtGui.QListWidget):
     """
     Provide a list widget to store objects and handle drag and drop events
     """
