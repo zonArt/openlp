@@ -70,6 +70,12 @@ class OpenLPWizard(QtGui.QWizard):
         self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self)
 
+    def registerFields(self):
+        """
+        Hook method for wizards to register any fields they need.
+        """
+        pass
+
     def addProgressPage(self):
         """
         Add the progress page for the wizard. This page informs the user how

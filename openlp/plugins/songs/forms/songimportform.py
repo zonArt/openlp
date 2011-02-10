@@ -671,12 +671,6 @@ class SongImportForm(OpenLPWizard):
         """
         self.removeSelectedItems(self.songBeamerFileListWidget)
 
-    def registerFields(self):
-        """
-        Register song import wizard fields.
-        """
-        pass
-
     def setDefaults(self):
         """
         Set default form values for the song import wizard.
