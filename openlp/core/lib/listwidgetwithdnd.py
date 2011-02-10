@@ -28,17 +28,17 @@ Extend QListWidget to handle drag and drop functionality
 """
 from PyQt4 import QtCore, QtGui
 
-class BaseListWithDnD(QtGui.QListWidget):
+class ListWidgetWithDnD(QtGui.QListWidget):
     """
     Provide a list widget to store objects and handle drag and drop events
     """
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, name=u''):
         """
         Initialise the list widget
         """
         QtGui.QListWidget.__init__(self, parent)
-        # this must be set by the class which is inheriting
-        assert(self.PluginName)
+        self.mimeDataText = name
+        assert(self.mimeDataText)
 
     def mouseMoveEvent(self, event):
         """
@@ -47,9 +47,10 @@ class BaseListWithDnD(QtGui.QListWidget):
         just tell it what plugin to call
         """
         if event.buttons() != QtCore.Qt.LeftButton:
+            event.ignore()
             return
         drag = QtGui.QDrag(self)
         mimeData = QtCore.QMimeData()
         drag.setMimeData(mimeData)
-        mimeData.setText(self.PluginName)
+        mimeData.setText(self.mimeDataText)
         drag.start(QtCore.Qt.CopyAction)

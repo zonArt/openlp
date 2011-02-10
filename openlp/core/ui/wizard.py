@@ -70,6 +70,12 @@ class OpenLPWizard(QtGui.QWizard):
         self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self)
 
+    def registerFields(self):
+        """
+        Hook method for wizards to register any fields they need.
+        """
+        pass
+
     def addProgressPage(self):
         """
         Add the progress page for the wizard. This page informs the user how
@@ -146,3 +152,30 @@ class OpenLPWizard(QtGui.QWizard):
         self.finishButton.setVisible(True)
         self.cancelButton.setVisible(False)
         Receiver.send_message(u'openlp_process_events')
+
+    def getFileName(self, title, editbox, filters=u''):
+        """
+        Opens a QFileDialog and saves the filename to the given editbox.
+
+        ``title``
+            The title of the dialog (unicode).
+
+        ``editbox``
+            A editbox (QLineEdit).
+
+        ``filters``
+            The file extension filters. It should contain the file description
+            as well as the file extension. For example::
+
+                u'OpenLP 2.0 Databases (*.sqlite)'
+        """
+        if filters:
+            filters += u';;'
+        filters += u'%s (*)' % UiStrings.AllFiles
+        filename = QtGui.QFileDialog.getOpenFileName(self, title,
+            os.path.dirname(SettingsManager.get_last_dir(
+            self.plugin.settingsSection, 1)), filters)
+        if filename:
+            editbox.setText(filename)
+            SettingsManager.set_last_dir(self.plugin.settingsSection,
+                filename, 1)

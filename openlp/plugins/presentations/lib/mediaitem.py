@@ -29,23 +29,12 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    SettingsManager, translate, check_item_selected, Receiver, ItemCapabilities
+from openlp.core.lib import MediaManagerItem, build_icon, SettingsManager, \
+    translate, check_item_selected, Receiver, ItemCapabilities
 from openlp.core.lib.ui import critical_error_message_box, media_item_combo_box
 from openlp.plugins.presentations.lib import MessageListener
 
 log = logging.getLogger(__name__)
-
-class PresentationListView(BaseListWithDnD):
-    """
-    Class for the list of Presentations
-
-    We have to explicitly create separate classes for each plugin
-    in order for DnD to the Service manager to work correctly.
-    """
-    def __init__(self, parent=None):
-        self.PluginName = u'Presentations'
-        BaseListWithDnD.__init__(self, parent)
 
 class PresentationMediaItem(MediaManagerItem):
     """
@@ -61,9 +50,6 @@ class PresentationMediaItem(MediaManagerItem):
         self.controllers = controllers
         self.IconPath = u'presentations/presentation'
         self.Automatic = u''
-        # this next is a class, not an instance of a class - it will
-        # be instanced by the base MediaManagerItem
-        self.ListViewWithDnD_class = PresentationListView
         MediaManagerItem.__init__(self, parent, self, icon)
         self.message_listener = MessageListener(self)
         QtCore.QObject.connect(Receiver.get_receiver(),

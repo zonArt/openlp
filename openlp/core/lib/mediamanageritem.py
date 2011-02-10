@@ -33,7 +33,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import context_menu_action, context_menu_separator, \
     SettingsManager, OpenLPToolbar, ServiceItem, StringContent, build_icon, \
-    translate, Receiver
+    translate, Receiver, ListWidgetWithDnD
 
 log = logging.getLogger(__name__)
 
@@ -72,11 +72,6 @@ class MediaManagerItem(QtGui.QWidget):
         Defaults to *'Images (*.jpg *jpeg *.gif *.png *.bmp)'*. This
         assumes that the new action is to load a file. If not, you
         need to override the ``OnNew`` method.
-
-     ``self.ListViewWithDnD_class``
-        This must be a **class**, not an object, descended from
-        ``openlp.core.lib.BaseListWithDnD`` that is not used in any
-        other part of OpenLP.
 
      ``self.PreviewFunction``
         This must be a method which returns a QImage to represent the
@@ -263,7 +258,7 @@ class MediaManagerItem(QtGui.QWidget):
         Creates the main widget for listing items the media item is tracking
         """
         # Add the List widget
-        self.listView = self.ListViewWithDnD_class(self)
+        self.listView = ListWidgetWithDnD(self, self.title)
         self.listView.uniformItemSizes = True
         self.listView.setSpacing(1)
         self.listView.setSelectionMode(

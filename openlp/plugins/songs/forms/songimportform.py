@@ -442,33 +442,6 @@ class SongImportForm(OpenLPWizard):
         elif self.currentPage() == self.progressPage:
             return True
 
-    def getFileName(self, title, editbox, filters=u''):
-        """
-        Opens a QFileDialog and writes the filename to the given editbox.
-
-        ``title``
-            The title of the dialog (unicode).
-
-        ``editbox``
-            A editbox (QLineEdit).
-
-        ``filters``
-            The file extension filters. It should contain the file descriptions
-            as well as the file extensions. For example::
-
-                u'OpenLP 2.0 Databases (*.sqlite)'
-        """
-        if filters:
-            filters += u';;'
-        filters += u'%s (*)' % UiStrings.AllFiles
-        filename = QtGui.QFileDialog.getOpenFileName(self, title,
-            SettingsManager.get_last_dir(self.plugin.settingsSection, 1),
-            filters)
-        if filename:
-            editbox.setText(filename)
-            SettingsManager.set_last_dir(self.plugin.settingsSection,
-                os.path.split(unicode(filename))[0], 1)
-
     def getFiles(self, title, listbox, filters=u''):
         """
         Opens a QFileDialog and writes the filenames to the given listbox.
@@ -670,12 +643,6 @@ class SongImportForm(OpenLPWizard):
         Remove selected SongBeamer files from the import list
         """
         self.removeSelectedItems(self.songBeamerFileListWidget)
-
-    def registerFields(self):
-        """
-        Register song import wizard fields.
-        """
-        pass
 
     def setDefaults(self):
         """

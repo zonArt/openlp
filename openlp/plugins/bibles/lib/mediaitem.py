@@ -28,23 +28,14 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, Receiver, BaseListWithDnD, \
-    ItemCapabilities, translate
+from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
+    translate
 from openlp.core.lib.ui import UiStrings, add_widget_completer, \
     media_item_combo_box, critical_error_message_box
 from openlp.plugins.bibles.forms import BibleImportForm
 from openlp.plugins.bibles.lib import get_reference_match
 
 log = logging.getLogger(__name__)
-
-class BibleListView(BaseListWithDnD):
-    """
-    Custom list view descendant, required for drag and drop.
-    """
-    def __init__(self, parent=None):
-        self.PluginName = u'Bibles'
-        BaseListWithDnD.__init__(self, parent)
-
 
 class BibleMediaItem(MediaManagerItem):
     """
@@ -54,7 +45,6 @@ class BibleMediaItem(MediaManagerItem):
 
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'songs/song'
-        self.ListViewWithDnD_class = BibleListView
         MediaManagerItem.__init__(self, parent, plugin, icon)
         # Place to store the search results for both bibles.
         self.search_results = {}
