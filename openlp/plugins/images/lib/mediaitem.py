@@ -64,15 +64,11 @@ class ImageMediaItem(MediaManagerItem):
             'Select Image(s)')
         file_formats = get_images_filter()
         self.OnNewFileMasks = u'%s;;%s (*.*) (*)' % (file_formats,
-            unicode(UiStrings.AllFiles))
-        self.replaceAction.setText(
-            translate('ImagePlugin.MediaItem', 'Replace Background'))
-        self.replaceAction.setToolTip(
-            translate('ImagePlugin.MediaItem', 'Replace Live Background'))
-        self.resetAction.setText(
-            translate('ImagePlugin.MediaItem', 'Reset Background'))
-        self.resetAction.setToolTip(
-            translate('ImagePlugin.MediaItem', 'Reset Live Background'))
+            UiStrings.AllFiles)
+        self.replaceAction.setText(UiStrings.ReplaceBG)
+        self.replaceAction.setToolTip(UiStrings.ReplaceLiveBG)
+        self.resetAction.setText(UiStrings.ResetBG)
+        self.resetAction.setToolTip(UiStrings.ResetLiveBG)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)

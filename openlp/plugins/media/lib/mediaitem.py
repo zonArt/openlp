@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
     ItemCapabilities, SettingsManager, translate, check_item_selected, Receiver
-from openlp.core.lib.ui import critical_error_message_box
+from openlp.core.lib.ui import UiStrings, critical_error_message_box
 
 log = logging.getLogger(__name__)
 
@@ -64,16 +64,12 @@ class MediaMediaItem(MediaManagerItem):
     def retranslateUi(self):
         self.OnNewPrompt = translate('MediaPlugin.MediaItem', 'Select Media')
         self.OnNewFileMasks = unicode(translate('MediaPlugin.MediaItem',
-            'Videos (%s);;Audio (%s);;All files (*)')) % \
-            (self.parent.video_list, self.parent.audio_list)
-        self.replaceAction.setText(
-            translate('MediaPlugin.MediaItem', 'Replace Background'))
-        self.replaceAction.setToolTip(
-            translate('MediaPlugin.MediaItem', 'Replace Live Background'))
-        self.resetAction.setText(
-            translate('MediaPlugin.MediaItem', 'Reset Background'))
-        self.resetAction.setToolTip(
-            translate('ImagePlugin.MediaItem', 'Reset Live Background'))
+            'Videos (%s);;Audio (%s);;%s (*)')) % (self.parent.video_list,
+            self.parent.audio_list, UiStrings.AllFiles)
+        self.replaceAction.setText(UiStrings.ReplaceBG)
+        self.replaceAction.setToolTip(UiStrings.ReplaceLiveBG)
+        self.resetAction.setText(UiStrings.ResetBG)
+        self.resetAction.setToolTip(UiStrings.ResetLiveBG)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)

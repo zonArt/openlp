@@ -37,10 +37,6 @@ class FileRenameForm(QtGui.QDialog, Ui_FileRenameDialog):
     def __init__(self, parent):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'),
-            self.accept)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
-            self.reject)
 
     def exec_(self, copy=False):
         """
@@ -51,5 +47,5 @@ class FileRenameForm(QtGui.QDialog, Ui_FileRenameDialog):
                 'File Copy'))
         else:
             self.setWindowTitle(translate('OpenLP.FileRenameForm',
-            'File Rename'))
+                'File Rename'))
         return QtGui.QDialog.exec_(self)

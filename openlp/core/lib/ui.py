@@ -64,6 +64,10 @@ class UiStrings(object):
     OLPV2 = translate('OpenLP.Ui', 'OpenLP 2.0')
     Preview = translate('OpenLP.Ui', 'Preview')
     PreviewSelect = unicode(translate('OpenLP.Ui', 'Preview the selected %s'))
+    ReplaceBG = translate('OpenLP.Ui', 'Replace Background')
+    ReplaceLiveBG = translate('OpenLP.Ui', 'Replace Live Background')
+    ResetBG = translate('OpenLP.Ui', 'Reset Background')
+    ResetLiveBG = translate('OpenLP.Ui', 'Reset Live Background')
     SendSelectLive = unicode(translate('OpenLP.Ui',
         'Send the selected %s live'))
     Service = translate('OpenLP.Ui', 'Service')
@@ -98,18 +102,25 @@ def add_welcome_page(parent, image):
     parent.welcomeLayout.addStretch()
     parent.addPage(parent.welcomePage)
 
-def create_save_cancel_button_box(parent):
+def create_accept_reject_button_box(parent, okay=False):
     """
-    Creates a standard dialog button box with save and cancel buttons.  The
-    button box is connected to the parent's ``accept()`` and ``reject()``
+    Creates a standard dialog button box with two buttons. The buttons default
+    to save and cancel but the ``okay`` parameter can be used to make the
+    buttons okay and cancel instead.
+    The button box is connected to the parent's ``accept()`` and ``reject()``
     methods to handle the default ``accepted()`` and ``rejected()`` signals.
 
     ``parent``
         The parent object.  This should be a ``QWidget`` descendant.
+
+    ``okay``
+        If true creates an okay/cancel combination instead of save/cancel.
     """
     button_box = QtGui.QDialogButtonBox(parent)
-    button_box.setStandardButtons(
-        QtGui.QDialogButtonBox.Save | QtGui.QDialogButtonBox.Cancel)
+    accept_button = QtGui.QDialogButtonBox.Save
+    if okay:
+        accept_button = QtGui.QDialogButtonBox.Ok
+    button_box.setStandardButtons(accept_button | QtGui.QDialogButtonBox.Cancel)
     button_box.setObjectName(u'%sButtonBox' % parent)
     QtCore.QObject.connect(button_box, QtCore.SIGNAL(u'accepted()'),
         parent.accept)
