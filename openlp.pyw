@@ -76,7 +76,7 @@ class OpenLP(QtGui.QApplication):
         """
         Load and store current Application Version
         """
-        if u'--dev-version' in sys.argv:
+        if u'--dev-version' in sys.argv or u'-d' in sys.argv:
             # If we're running the dev version, let's use bzr to get the version
             try:
                 # If bzrlib is availble, use it
@@ -216,6 +216,7 @@ class OpenLP(QtGui.QApplication):
         Sets the Busy Cursor for the Application
         """
         self.setOverrideCursor(QtCore.Qt.BusyCursor)
+        self.processEvents()
 
     def setNormalCursor(self):
         """

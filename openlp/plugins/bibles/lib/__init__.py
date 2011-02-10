@@ -33,6 +33,13 @@ import re
 log = logging.getLogger(__name__)
 
 def get_reference_match(match_type):
+    """
+    Provides the regexes and matches to use while parsing strings for bible
+    references.
+
+    ``match_type``
+        The type of reference information trying to be extracted in this call.
+    """
     local_separator = unicode(u':;;\s*[:vV]\s*;;-;;\s*-\s*;;,;;\s*,\s*;;end'
         ).split(u';;') # English
     # local_separator = unicode(u',;;\s*,\s*;;-;;\s*-\s*;;.;;\.;;[Ee]nde'

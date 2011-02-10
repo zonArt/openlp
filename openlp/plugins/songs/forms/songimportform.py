@@ -32,7 +32,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, SettingsManager, translate
-from openlp.core.lib.ui import critical_error_message_box
+from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard
 from openlp.plugins.songs.lib.importer import SongFormat
 
@@ -162,6 +162,8 @@ class SongImportForm(OpenLPWizard):
         self.formatLayout.setItem(1, QtGui.QFormLayout.LabelRole,
             self.formatSpacer)
         self.sourceLayout.addLayout(self.formatLayout)
+        self.stackSpacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
+            QtGui.QSizePolicy.Expanding)
         self.formatStack = QtGui.QStackedLayout()
         self.formatStack.setObjectName(u'FormatStack')
         # OpenLP 2.0
@@ -213,8 +215,7 @@ class SongImportForm(OpenLPWizard):
             'Select the import format, and where to import from.'))
         self.formatLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Format:'))
-        self.formatComboBox.setItemText(0,
-            translate('SongsPlugin.ImportWizardForm', 'OpenLP 2.0'))
+        self.formatComboBox.setItemText(0, UiStrings.OLPV2)
         self.formatComboBox.setItemText(1,
             translate('SongsPlugin.ImportWizardForm', 'openlp.org 1.x'))
         self.formatComboBox.setItemText(2,
@@ -487,8 +488,7 @@ class SongImportForm(OpenLPWizard):
         """
         if filters:
             filters += u';;'
-        filters += u'%s (*)' % translate('SongsPlugin.ImportWizardForm',
-            'All Files')
+        filters += u'%s (*)' % UiStrings.AllFiles
         filenames = QtGui.QFileDialog.getOpenFileNames(self, title,
             SettingsManager.get_last_dir(self.plugin.settingsSection, 1),
             filters)
@@ -807,10 +807,8 @@ class SongImportForm(OpenLPWizard):
             browseButton.setIcon(self.openIcon)
             browseButton.setObjectName(obj_prefix + u'BrowseButton')
             fileLayout.addWidget(browseButton)
-            formSpacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
-                QtGui.QSizePolicy.Expanding)
             importLayout.addLayout(fileLayout)
-            importLayout.addSpacerItem(formSpacer)
+            importLayout.addSpacerItem(self.stackSpacer)
         else:
             fileListWidget = QtGui.QListWidget(importWidget)
             fileListWidget.setSelectionMode(
@@ -859,6 +857,7 @@ class SongImportForm(OpenLPWizard):
         disabledLabel.setWordWrap(True)
         disabledLabel.setObjectName(obj_prefix + u'DisabledLabel')
         disabledLayout.addWidget(disabledLabel)
+        disabledLayout.addSpacerItem(self.stackSpacer)
         layout.addWidget(disabledWidget)
         importWidget = QtGui.QWidget(page)
         importWidget.setObjectName(obj_prefix + u'ImportWidget')

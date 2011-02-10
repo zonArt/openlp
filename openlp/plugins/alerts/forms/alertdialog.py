@@ -27,6 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate
+from openlp.core.lib.ui import create_delete_push_button
 
 class Ui_AlertDialog(object):
     def setupUi(self, alertDialog):
@@ -65,10 +66,8 @@ class Ui_AlertDialog(object):
         self.saveButton.setIcon(build_icon(u':/general/general_save.png'))
         self.saveButton.setObjectName(u'saveButton')
         self.manageButtonLayout.addWidget(self.saveButton)
-        self.deleteButton = QtGui.QPushButton(alertDialog)
+        self.deleteButton = create_delete_push_button(alertDialog)
         self.deleteButton.setEnabled(False)
-        self.deleteButton.setIcon(build_icon(u':/general/general_delete.png'))
-        self.deleteButton.setObjectName(u'deleteButton')
         self.manageButtonLayout.addWidget(self.deleteButton)
         self.manageButtonLayout.addStretch()
         self.alertDialogLayout.addLayout(self.manageButtonLayout, 1, 1)
@@ -104,8 +103,6 @@ class Ui_AlertDialog(object):
             translate('AlertsPlugin.AlertForm', '&New'))
         self.saveButton.setText(
             translate('AlertsPlugin.AlertForm', '&Save'))
-        self.deleteButton.setText(
-            translate('AlertsPlugin.AlertForm', '&Delete'))
         self.displayButton.setText(
             translate('AlertsPlugin.AlertForm', 'Displ&ay'))
         self.displayCloseButton.setText(
