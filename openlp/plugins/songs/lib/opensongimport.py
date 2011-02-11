@@ -36,6 +36,7 @@ from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
 
+#TODO: Use lxml for parsing and make sure we use methods of "SongImport" .
 class OpenSongImport(SongImport):
     """
     Import songs exported from OpenSong
@@ -146,7 +147,7 @@ class OpenSongImport(SongImport):
                     log.info(u'Zip importing %s', parts[-1])
                     self.import_wizard.incrementProgressBar(
                         unicode(translate('SongsPlugin.ImportWizardForm',
-                            'Importing %s...')) % parts[-1])
+                        'Importing %s...')) % parts[-1])
                     songfile = z.open(song)
                     self.do_import_file(songfile)
                     if self.commit:
@@ -276,7 +277,7 @@ class OpenSongImport(SongImport):
             for num in versenums:
                 versetag = u'%s%s' % (our_verse_type, num)
                 lines = u'\n'.join(verses[versetype][num])
-                self.verses.append([versetag, lines])
+                self.add_verse(lines, versetag)
                 # Keep track of what we have for error checking later
                 versetags[versetag] = 1
         # now figure out the presentation order
@@ -292,6 +293,8 @@ class OpenSongImport(SongImport):
             else:
                 log.warn(u'No verse order available for %s, skipping.',
                     self.title)
+        # TODO: make sure that the default order list will be overwritten, if
+        # the songs provides its own order list.
         for tag in order:
             if tag[0].isdigit():
                 # Assume it's a verse if it has no prefix

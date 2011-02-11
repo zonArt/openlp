@@ -415,7 +415,6 @@ class SlideController(QtGui.QWidget):
         # rebuild display as screen size changed
         self.display = MainDisplay(self, self.screens, self.isLive)
         self.display.imageManager = self.parent.renderManager.image_manager
-        self.display.alertTab = self.alertTab
         self.display.setup()
         if self.isLive:
             self.__addActionsToWidget(self.display)
@@ -877,7 +876,7 @@ class SlideController(QtGui.QWidget):
         using *Blank to Theme*.
         """
         log.debug(u'updatePreview %s ' % self.screens.current[u'primary'])
-        if not self.screens.current[u'primary'] and \
+        if not self.screens.current[u'primary'] and self.serviceItem and \
             self.serviceItem.is_capable(ItemCapabilities.ProvidesOwnDisplay):
             # Grab now, but try again in a couple of seconds if slide change
             # is slow

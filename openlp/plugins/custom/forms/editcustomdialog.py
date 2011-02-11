@@ -27,7 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate
-from openlp.core.lib.ui import UiStrings, create_save_cancel_button_box, \
+from openlp.core.lib.ui import UiStrings, create_accept_reject_button_box, \
     create_delete_push_button, create_up_down_push_button_set
 
 class Ui_CustomEditDialog(object):
@@ -94,7 +94,7 @@ class Ui_CustomEditDialog(object):
         self.creditLabel.setBuddy(self.creditEdit)
         self.bottomFormLayout.addRow(self.creditLabel, self.creditEdit)
         self.dialogLayout.addLayout(self.bottomFormLayout)
-        self.buttonBox = create_save_cancel_button_box(customEditDialog)
+        self.buttonBox = create_accept_reject_button_box(customEditDialog)
         self.previewButton = QtGui.QPushButton()
         self.buttonBox.addButton(
             self.previewButton, QtGui.QDialogButtonBox.ActionRole)
