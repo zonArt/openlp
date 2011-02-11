@@ -26,7 +26,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, translate
+from openlp.core.lib import build_icon
 from openlp.core.lib.ui import UiStrings
 from openlp.plugins.songs.lib.ui import SongStrings
 

@@ -34,6 +34,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import context_menu_action, context_menu_separator, \
     SettingsManager, OpenLPToolbar, ServiceItem, StringContent, build_icon, \
     translate, Receiver, ListWidgetWithDnD
+from openlp.core.lib.ui import UiStrings
 
 log = logging.getLogger(__name__)
 

@@ -130,7 +130,7 @@ class SongMediaItem(MediaManagerItem):
         self.searchTextButton.setText(
             translate('SongsPlugin.MediaItem', 'Search'))
         self.maintenanceAction.setText(
-            SongStrings.TypeMaintenance % SongString.Song)
+            SongStrings.TypeMaintenance % SongStrings.Song)
         self.maintenanceAction.setToolTip(translate('SongsPlugin.MediaItem',
             'Maintain the lists of authors, topics and books'))
 
