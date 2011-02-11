@@ -59,8 +59,10 @@ class UiStrings(object):
     Import = translate('OpenLP.Ui', 'Import')
     ImportType = unicode(translate('OpenLP.Ui', 'Import %s'))
     Live = translate('OpenLP.Ui', 'Live')
+    LivePanel = translate('OpenLP.Ui', 'Live Panel')
     Load = translate('OpenLP.Ui', 'Load')
     LoadANew = unicode(translate('OpenLP.Ui', 'Load a new %s.'))
+    MediaManager = translate('OpenLP.Ui', 'Media Manager')
     New = translate('OpenLP.Ui', 'New')
     NewType = unicode(translate('OpenLP.Ui', 'New %s'))
     NFSs = translate('OpenLP.Ui', 'No File Selected', 'Singular')
@@ -70,6 +72,7 @@ class UiStrings(object):
     OLPV2 = translate('OpenLP.Ui', 'OpenLP 2.0')
     OpenType = unicode(translate('OpenLP.Ui', 'Open %s'))
     Preview = translate('OpenLP.Ui', 'Preview')
+    PreviewPanel = translate('OpenLP.Ui', 'Preview Panel')
     PreviewSelect = unicode(translate('OpenLP.Ui', 'Preview the selected %s.'))
     ReplaceBG = translate('OpenLP.Ui', 'Replace Background')
     ReplaceLiveBG = translate('OpenLP.Ui', 'Replace Live Background')
@@ -79,8 +82,13 @@ class UiStrings(object):
     SendSelectLive = unicode(translate('OpenLP.Ui',
         'Send the selected %s live.'))
     Service = translate('OpenLP.Ui', 'Service')
+    ServiceManager = translate('OpenLP.Ui', 'Service Manager')
     Theme = translate('OpenLP.Ui', 'Theme', 'Singular')
     Themes = translate('OpenLP.Ui', 'Themes', 'Plural')
+    ThemeManager = translate('OpenLP.Ui', 'Theme Manager')
+    ToggleType = unicode(translate('OpenLP.Ui', 'Toggle %s'))
+    ToggleVisibility = unicode(translate('OpenLP.Ui',
+        'Toggle the visibility of the %s.'))
 
 
 def add_welcome_page(parent, image):

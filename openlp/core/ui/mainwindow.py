@@ -312,12 +312,9 @@ class Ui_MainWindow(object):
         self.SettingsLanguageMenu.setTitle(translate('OpenLP.MainWindow',
             '&Language'))
         self.HelpMenu.setTitle(translate('OpenLP.MainWindow', '&Help'))
-        self.mediaManagerDock.setWindowTitle(
-            translate('OpenLP.MainWindow', 'Media Manager'))
-        self.serviceManagerDock.setWindowTitle(
-            translate('OpenLP.MainWindow', 'Service Manager'))
-        self.themeManagerDock.setWindowTitle(
-            translate('OpenLP.MainWindow', 'Theme Manager'))
+        self.mediaManagerDock.setWindowTitle(UiStrings.MediaManager)
+        self.serviceManagerDock.setWindowTitle(UiStrings.ServiceManager)
+        self.themeManagerDock.setWindowTitle(UiStrings.ThemeManager)
         self.FileNewItem.setText(translate('OpenLP.MainWindow', '&New'))
         self.FileNewItem.setToolTip(UiStrings.NewType % UiStrings.Service)
         self.FileNewItem.setStatusTip(
@@ -368,41 +365,41 @@ class Ui_MainWindow(object):
         self.ViewMediaManagerItem.setText(
             translate('OpenLP.MainWindow', '&Media Manager'))
         self.ViewMediaManagerItem.setToolTip(
-            translate('OpenLP.MainWindow', 'Toggle Media Manager'))
-        self.ViewMediaManagerItem.setStatusTip(translate('OpenLP.MainWindow',
-            'Toggle the visibility of the media manager.'))
+            UiStrings.Toggle % UiStrings.MediaManager)
+        self.ViewMediaManagerItem.setStatusTip(
+            UiStrings.ToggleVisibility % UiStrings.MediaManager.toLower())
         self.ViewMediaManagerItem.setShortcut(
             translate('OpenLP.MainWindow', 'F8'))
         self.ViewThemeManagerItem.setText(
             translate('OpenLP.MainWindow', '&Theme Manager'))
         self.ViewThemeManagerItem.setToolTip(
-            translate('OpenLP.MainWindow', 'Toggle Theme Manager'))
-        self.ViewThemeManagerItem.setStatusTip(translate('OpenLP.MainWindow',
-            'Toggle the visibility of the theme manager.'))
+            UiStrings.Toggle % UiStrings.ThemeManager)
+        self.ViewThemeManagerItem.setStatusTip(
+            UiStrings.ToggleVisibility % UiStrings.ThemeManager.toLower())
         self.ViewThemeManagerItem.setShortcut(
             translate('OpenLP.MainWindow', 'F10'))
         self.ViewServiceManagerItem.setText(
             translate('OpenLP.MainWindow', '&Service Manager'))
         self.ViewServiceManagerItem.setToolTip(
-            translate('OpenLP.MainWindow', 'Toggle Service Manager'))
-        self.ViewServiceManagerItem.setStatusTip(translate('OpenLP.MainWindow',
-            'Toggle the visibility of the service manager.'))
+            UiStrings.Toggle % UiStrings.ServiceManager)
+        self.ViewServiceManagerItem.setStatusTip(
+            UiStrings.ToggleVisibility % UiStrings.ServiceManager.toLower())
         self.ViewServiceManagerItem.setShortcut(
             translate('OpenLP.MainWindow', 'F9'))
         self.ViewPreviewPanel.setText(
             translate('OpenLP.MainWindow', '&Preview Panel'))
         self.ViewPreviewPanel.setToolTip(
-            translate('OpenLP.MainWindow', 'Toggle Preview Panel'))
-        self.ViewPreviewPanel.setStatusTip(translate('OpenLP.MainWindow',
-            'Toggle the visibility of the preview panel.'))
+            UiStrings.Toggle % UiStrings.PreviewPanel)
+        self.ViewPreviewPanel.setStatusTip(
+            UiStrings.ToggleVisibility % UiStrings.PreviewPanel.toLower())
         self.ViewPreviewPanel.setShortcut(
             translate('OpenLP.MainWindow', 'F11'))
         self.ViewLivePanel.setText(
             translate('OpenLP.MainWindow', '&Live Panel'))
         self.ViewLivePanel.setToolTip(
-            translate('OpenLP.MainWindow', 'Toggle Live Panel'))
-        self.ViewLivePanel.setStatusTip(translate('OpenLP.MainWindow',
-            'Toggle the visibility of the live panel.'))
+            UiStrings.Toggle % UiStrings.LivePanel)
+        self.ViewLivePanel.setStatusTip(
+            UiStrings.ToggleVisibility % UiStrings.LivePanel.toLower())
         self.ViewLivePanel.setShortcut(
             translate('OpenLP.MainWindow', 'F12'))
         self.settingsPluginListItem.setText(translate('OpenLP.MainWindow',
