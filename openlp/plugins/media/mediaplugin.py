@@ -30,7 +30,6 @@ import mimetypes
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
-from openlp.core.lib.ui import UiStrings
 from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 
 log = logging.getLogger(__name__)
@@ -39,7 +38,8 @@ class MediaPlugin(Plugin):
     log.info(u'%s MediaPlugin loaded', __name__)
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Media', u'1.9.4', plugin_helpers)
+        Plugin.__init__(self, u'Media', u'1.9.4', plugin_helpers,
+            MediaMediaItem, MediaTab)
         self.weight = -6
         self.icon_path = u':/plugins/plugin_media.png'
         self.icon = build_icon(self.icon_path)
@@ -75,13 +75,6 @@ class MediaPlugin(Plugin):
                         self.serviceManager.supportedSuffixes(extension[1:])
                 mimetype = u''
         return list, mimetype
-
-    def getSettingsTab(self):
-        return MediaTab(self.name)
-
-    def getMediaManagerItem(self):
-        # Create the MediaManagerItem object.
-        return MediaMediaItem(self, self, self.icon)
 
     def about(self):
         about_text = translate('MediaPlugin', '<strong>Media Plugin</strong>'

@@ -263,7 +263,8 @@ class OpenLyrics(object):
             songbooks = etree.SubElement(properties, u'songbooks')
             element = self._add_text_to_element(
                 u'songbook', songbooks, None, book)
-            element.set(u'entry', song.song_number)
+            if song.song_number:
+                element.set(u'entry', song.song_number)
         if song.topics:
             themes = etree.SubElement(properties, u'themes')
             for topic in song.topics:

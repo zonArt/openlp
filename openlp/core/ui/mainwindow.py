@@ -216,8 +216,8 @@ class Ui_MainWindow(object):
         self.ToolsAddToolItem = icon_action(mainWindow, u'ToolsAddToolItem',
             u':/tools/tools_add.png')
         mainWindow.actionList.add_action(self.ToolsAddToolItem, u'Tools')
-        self.ToolsOpenDataFolder = icon_action(mainWindow, u'ToolsOpenDataFolder',
-            u':/general/general_open.png')
+        self.ToolsOpenDataFolder = icon_action(mainWindow,
+            u'ToolsOpenDataFolder', u':/general/general_open.png')
         mainWindow.actionList.add_action(self.ToolsOpenDataFolder, u'Tools')
         self.settingsPluginListItem = icon_action(mainWindow,
             u'settingsPluginListItem', u':/system/settings_plugin_list.png')
@@ -319,20 +319,17 @@ class Ui_MainWindow(object):
         self.themeManagerDock.setWindowTitle(
             translate('OpenLP.MainWindow', 'Theme Manager'))
         self.FileNewItem.setText(translate('OpenLP.MainWindow', '&New'))
-        self.FileNewItem.setToolTip(
-            translate('OpenLP.MainWindow', 'New Service'))
+        self.FileNewItem.setToolTip(UiStrings.NewType % UiStrings.Service)
         self.FileNewItem.setStatusTip(
-            translate('OpenLP.MainWindow', 'Create a new service.'))
+            UiStrings.CreateANew % UiStrings.Service.toLower())
         self.FileNewItem.setShortcut(translate('OpenLP.MainWindow', 'Ctrl+N'))
         self.FileOpenItem.setText(translate('OpenLP.MainWindow', '&Open'))
-        self.FileOpenItem.setToolTip(
-            translate('OpenLP.MainWindow', 'Open Service'))
+        self.FileOpenItem.setToolTip(UiStrings.OpenType % UiStrings.Service)
         self.FileOpenItem.setStatusTip(
             translate('OpenLP.MainWindow', 'Open an existing service.'))
         self.FileOpenItem.setShortcut(translate('OpenLP.MainWindow', 'Ctrl+O'))
         self.FileSaveItem.setText(translate('OpenLP.MainWindow', '&Save'))
-        self.FileSaveItem.setToolTip(
-            translate('OpenLP.MainWindow', 'Save Service'))
+        self.FileSaveItem.setToolTip(UiStrings.SaveType % UiStrings.Service)
         self.FileSaveItem.setStatusTip(
             translate('OpenLP.MainWindow', 'Save the current service to disk.'))
         self.FileSaveItem.setShortcut(translate('OpenLP.MainWindow', 'Ctrl+S'))

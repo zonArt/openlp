@@ -27,30 +27,28 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
+from openlp.core.lib.ui import create_accept_reject_button_box
 
 class Ui_FileRenameDialog(object):
-    def setupUi(self, FileRenameDialog):
-        FileRenameDialog.setObjectName(u'FileRenameDialog')
-        FileRenameDialog.resize(300, 10)
-        self.dialogLayout = QtGui.QGridLayout(FileRenameDialog)
+    def setupUi(self, fileRenameDialog):
+        fileRenameDialog.setObjectName(u'fileRenameDialog')
+        fileRenameDialog.resize(300, 10)
+        self.dialogLayout = QtGui.QGridLayout(fileRenameDialog)
         self.dialogLayout.setObjectName(u'dialogLayout')
-        self.fileNameLabel = QtGui.QLabel(FileRenameDialog)
+        self.fileNameLabel = QtGui.QLabel(fileRenameDialog)
         self.fileNameLabel.setObjectName(u'fileNameLabel')
         self.dialogLayout.addWidget(self.fileNameLabel, 0, 0)
-        self.fileNameEdit = QtGui.QLineEdit(FileRenameDialog)
+        self.fileNameEdit = QtGui.QLineEdit(fileRenameDialog)
         self.fileNameEdit.setValidator(QtGui.QRegExpValidator(
             QtCore.QRegExp(r'[^/\\?*|<>\[\]":<>+%]+'), self))
         self.fileNameEdit.setObjectName(u'fileNameEdit')
         self.dialogLayout.addWidget(self.fileNameEdit, 0, 1)
-        self.buttonBox = QtGui.QDialogButtonBox(FileRenameDialog)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
-            QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName(u'buttonBox')
+        self.buttonBox = create_accept_reject_button_box(fileRenameDialog, True)
         self.dialogLayout.addWidget(self.buttonBox, 1, 0, 1, 2)
-        self.retranslateUi(FileRenameDialog)
+        self.retranslateUi(fileRenameDialog)
         self.setMaximumHeight(self.sizeHint().height())
-        QtCore.QMetaObject.connectSlotsByName(FileRenameDialog)
+        QtCore.QMetaObject.connectSlotsByName(fileRenameDialog)
 
-    def retranslateUi(self, FileRenameDialog):
+    def retranslateUi(self, fileRenameDialog):
         self.fileNameLabel.setText(translate('OpenLP.FileRenameForm',
             'New File Name:'))

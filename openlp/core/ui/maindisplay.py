@@ -65,7 +65,6 @@ class MainDisplay(DisplayWidget):
         self.parent = parent
         self.screens = screens
         self.isLive = live
-        self.alertTab = None
         self.hideMode = None
         self.override = {}
         mainIcon = build_icon(u':/icon/openlp-logo-16x16.png')

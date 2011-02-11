@@ -87,7 +87,8 @@ class SongExportForm(OpenLPWizard):
         Song wizard specific signals.
         """
         QtCore.QObject.connect(self.availableListWidget,
-            QtCore.SIGNAL(u'itemActivated(QListWidgetItem*)'), self.onItemPressed)
+            QtCore.SIGNAL(u'itemActivated(QListWidgetItem*)'),
+            self.onItemPressed)
         QtCore.QObject.connect(self.searchLineEdit,
             QtCore.SIGNAL(u'textEdited(const QString&)'),
             self.onSearchLineEditChanged)
@@ -240,12 +241,6 @@ class SongExportForm(OpenLPWizard):
             self.availableListWidget.clear()
             self.selectedListWidget.clear()
             return True
-
-    def registerFields(self):
-        """
-        Register song export wizard fields.
-        """
-        pass
 
     def setDefaults(self):
         """
