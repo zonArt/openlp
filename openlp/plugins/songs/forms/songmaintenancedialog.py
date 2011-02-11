@@ -28,6 +28,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate
 from openlp.core.lib.ui import UiStrings
+from openlp.plugins.songs.lib.ui import SongStrings
 
 class Ui_SongMaintenanceDialog(object):
     def setupUi(self, songMaintenanceDialog):
@@ -145,13 +146,10 @@ class Ui_SongMaintenanceDialog(object):
 
     def retranslateUi(self, songMaintenanceDialog):
         songMaintenanceDialog.setWindowTitle(
-            translate('SongsPlugin.SongMaintenanceForm', 'Song Maintenance'))
-        authorsString = UiStrings.Authors
-        topicsString = translate('SongsPlugin.SongMaintenanceForm', 'Topics')
-        booksString = translate('SongsPlugin.SongMaintenanceForm', 'Song Books')
-        self.listItemAuthors.setText(authorsString)
-        self.listItemTopics.setText(topicsString)
-        self.listItemBooks.setText(booksString)
+            SongStrings.TypeMaintenance % SongStrings.Song)
+        self.listItemAuthors.setText(SongStrings.Authors)
+        self.listItemTopics.setText(SongStrings.Topics)
+        self.listItemBooks.setText(SongStrings.SongBooks)
         self.authorsAddButton.setText(UiStrings.Add)
         self.authorsEditButton.setText(UiStrings.Edit)
         self.authorsDeleteButton.setText(UiStrings.Delete)
@@ -161,8 +159,8 @@ class Ui_SongMaintenanceDialog(object):
         self.booksAddButton.setText(UiStrings.Add)
         self.booksEditButton.setText(UiStrings.Edit)
         self.booksDeleteButton.setText(UiStrings.Delete)
-        typeListWidth = max(self.fontMetrics().width(authorsString),
-            self.fontMetrics().width(topicsString),
-            self.fontMetrics().width(booksString))
+        typeListWidth = max(self.fontMetrics().width(SongStrings.Authors),
+            self.fontMetrics().width(SongStrings.Topics),
+            self.fontMetrics().width(SongStrings.SongBooks))
         self.typeListWidget.setFixedWidth(typeListWidth +
             self.typeListWidget.iconSize().width() + 32)

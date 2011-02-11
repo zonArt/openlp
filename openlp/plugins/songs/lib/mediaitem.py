@@ -38,6 +38,7 @@ from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     SongImportForm, SongExportForm
 from openlp.plugins.songs.lib import OpenLyrics, SongXML
 from openlp.plugins.songs.lib.db import Author, Song
+from openlp.plugins.songs.lib.ui import SongStrings
 from openlp.core.lib.searchedit import SearchEdit
 
 log = logging.getLogger(__name__)
@@ -129,7 +130,7 @@ class SongMediaItem(MediaManagerItem):
         self.searchTextButton.setText(
             translate('SongsPlugin.MediaItem', 'Search'))
         self.maintenanceAction.setText(
-            translate('SongsPlugin.MediaItem', 'Song Maintenance'))
+            SongStrings.TypeMaintenance % SongString.Song)
         self.maintenanceAction.setToolTip(translate('SongsPlugin.MediaItem',
             'Maintain the lists of authors, topics and books'))
 
@@ -141,7 +142,7 @@ class SongMediaItem(MediaManagerItem):
                 translate('SongsPlugin.MediaItem', 'Titles')),
             (3, u':/songs/song_search_lyrics.png',
                 translate('SongsPlugin.MediaItem', 'Lyrics')),
-            (4, u':/songs/song_search_author.png', UiStrings.Authors),
+            (4, u':/songs/song_search_author.png', SongStrings.Authors),
             (5, u':/slides/slide_theme.png', UiStrings.Themes)
         ])
         self.configUpdated()

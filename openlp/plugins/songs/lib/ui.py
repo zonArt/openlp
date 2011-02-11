@@ -23,38 +23,21 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
-from PyQt4 import QtCore, QtGui
-
+"""
+The :mod:`openlp.plugins.songs.lib.ui` module provides standard UI components
+for the songs plugin.
+"""
 from openlp.core.lib import translate
-from openlp.core.lib.ui import UiStrings, create_accept_reject_button_box, \
-    create_delete_push_button, create_up_down_push_button_set
 
-class Ui_ServiceItemEditDialog(object):
-    def setupUi(self, serviceItemEditDialog):
-        serviceItemEditDialog.setObjectName(u'serviceItemEditDialog')
-        self.dialogLayout = QtGui.QGridLayout(serviceItemEditDialog)
-        self.dialogLayout.setObjectName(u'dialogLayout')
-        self.listWidget = QtGui.QListWidget(serviceItemEditDialog)
-        self.listWidget.setAlternatingRowColors(True)
-        self.listWidget.setObjectName(u'listWidget')
-        self.dialogLayout.addWidget(self.listWidget, 0, 0)
-        self.buttonLayout = QtGui.QVBoxLayout()
-        self.buttonLayout.setObjectName(u'buttonLayout')
-        self.deleteButton = create_delete_push_button(
-            serviceItemEditDialog, UiStrings.Service.toLower())
-        self.buttonLayout.addWidget(self.deleteButton)
-        self.buttonLayout.addStretch()
-        self.upButton, self.downButton = create_up_down_push_button_set(
-            serviceItemEditDialog)
-        self.buttonLayout.addWidget(self.upButton)
-        self.buttonLayout.addWidget(self.downButton)
-        self.dialogLayout.addLayout(self.buttonLayout, 0, 1)
-        self.dialogLayout.addWidget(
-            create_accept_reject_button_box(serviceItemEditDialog), 1, 0, 1, 2)
-        self.retranslateUi(serviceItemEditDialog)
-        QtCore.QMetaObject.connectSlotsByName(serviceItemEditDialog)
-
-    def retranslateUi(self, serviceItemEditDialog):
-        serviceItemEditDialog.setWindowTitle(
-            translate('OpenLP.ServiceItemEditForm', 'Reorder Service Item'))
+class SongStrings(object):
+    """
+    Provide standard strings for use throughout the songs plugin.
+    """
+    # These strings should need a good reason to be retranslated elsewhere.
+    Author = translate('OpenLP.Ui', 'Author', 'Singular')
+    Authors = translate('OpenLP.Ui', 'Authors', 'Plural')
+    SongBook = translate('OpenLP.Ui', 'Song Book', 'Singular')
+    SongBooks = translate('OpenLP.Ui', 'Song Books', 'Plural')
+    Topic = translate('OpenLP.Ui', 'Topic', 'Singular')
+    Topics = translate('OpenLP.Ui', 'Topics', 'Plural')
+    TypeMaintenance = unicode(translate('OpenLP.Ui', '%s Maintenance'))

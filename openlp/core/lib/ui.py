@@ -46,7 +46,6 @@ class UiStrings(object):
         'Add the selected %s to the service.'))
     Advanced = translate('OpenLP.Ui', 'Advanced')
     AllFiles = translate('OpenLP.Ui', 'All Files')
-    Authors = translate('OpenLP.Ui', 'Authors')
     CreateANew = unicode(translate('OpenLP.Ui', 'Create a new %s.'))
     Delete = translate('OpenLP.Ui', '&Delete')
     DeleteSelect = unicode(translate('OpenLP.Ui', 'Delete the selected %s.'))
@@ -54,6 +53,7 @@ class UiStrings(object):
     Edit = translate('OpenLP.Ui', '&Edit')
     EditSelect = unicode(translate('OpenLP.Ui', 'Edit the selected %s.'))
     EditType = unicode(translate('OpenLP.Ui', 'Edit %s'))
+    EmptyField = translate('OpenLP.Ui', 'Empty Field')
     Error = translate('OpenLP.Ui', 'Error')
     ExportType = unicode(translate('OpenLP.Ui', 'Export %s'))
     Import = translate('OpenLP.Ui', 'Import')
@@ -63,6 +63,10 @@ class UiStrings(object):
     LoadANew = unicode(translate('OpenLP.Ui', 'Load a new %s.'))
     New = translate('OpenLP.Ui', 'New')
     NewType = unicode(translate('OpenLP.Ui', 'New %s'))
+    NFSs = translate('OpenLP.Ui', 'No File Selected', 'Singular')
+    NFSp = translate('OpenLP.Ui', 'No Files Selected', 'Plural')
+    NISs = translate('OpenLP.Ui', 'No Item Selected', 'Singular')
+    NISp = translate('OpenLP.Ui', 'No Items Selected', 'Plural')
     OLPV2 = translate('OpenLP.Ui', 'OpenLP 2.0')
     OpenType = unicode(translate('OpenLP.Ui', 'Open %s'))
     Preview = translate('OpenLP.Ui', 'Preview')
@@ -75,8 +79,8 @@ class UiStrings(object):
     SendSelectLive = unicode(translate('OpenLP.Ui',
         'Send the selected %s live.'))
     Service = translate('OpenLP.Ui', 'Service')
-    Theme = translate('OpenLP.Ui', 'Theme')
-    Themes = translate('OpenLP.Ui', 'Themes')
+    Theme = translate('OpenLP.Ui', 'Theme', 'Singular')
+    Themes = translate('OpenLP.Ui', 'Themes', 'Plural')
 
 
 def add_welcome_page(parent, image):
@@ -168,7 +172,7 @@ def media_item_combo_box(parent, name):
     combo.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
     return combo
 
-def create_delete_push_button(parent, icon=None):
+def create_delete_push_button(parent, item_name, icon=None):
     """
     Creates a standard push button with a delete label and optional icon.  The
     button is connected to the parent's ``onDeleteButtonClicked()`` method to
@@ -186,8 +190,7 @@ def create_delete_push_button(parent, icon=None):
     delete_icon = icon if icon else u':/general/general_delete.png'
     delete_button.setIcon(build_icon(delete_icon))
     delete_button.setText(UiStrings.Delete)
-    delete_button.setToolTip(
-        translate('OpenLP.Ui', 'Delete the selected item.'))
+    delete_button.setToolTip(UiStrings.DeleteSelect % item_name)
     QtCore.QObject.connect(delete_button,
         QtCore.SIGNAL(u'clicked()'), parent.onDeleteButtonClicked)
     return delete_button

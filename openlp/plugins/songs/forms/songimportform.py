@@ -330,9 +330,7 @@ class SongImportForm(OpenLPWizard):
             source_format = self.formatComboBox.currentIndex()
             if source_format == SongFormat.OpenLP2:
                 if self.openLP2FilenameEdit.text().isEmpty():
-                    critical_error_message_box(
-                        translate('SongsPlugin.ImportWizardForm',
-                        'No OpenLP 2.0 Song Database Selected'),
+                    critical_error_message_box(UiStrings.NFSs,
                         translate('SongsPlugin.ImportWizardForm',
                         'You need to select an OpenLP 2.0 song database '
                         'file to import from.'))
@@ -340,9 +338,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.OpenLP1:
                 if self.openLP1FilenameEdit.text().isEmpty():
-                    critical_error_message_box(
-                        translate('SongsPlugin.ImportWizardForm',
-                        'No openlp.org 1.x Song Database Selected'),
+                    critical_error_message_box(UiStrings.NFSs,
                         translate('SongsPlugin.ImportWizardForm',
                         'You need to select an openlp.org 1.x song '
                         'database file to import from.'))
@@ -350,9 +346,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.OpenLyrics:
                 if self.openLyricsFileListWidget.count() == 0:
-                    critical_error_message_box(
-                        translate('SongsPlugin.ImportWizardForm',
-                        'No OpenLyrics Files Selected'),
+                    critical_error_message_box(UiStrings.NFSp,
                         translate('SongsPlugin.ImportWizardForm',
                         'You need to add at least one OpenLyrics '
                         'song file to import from.'))
@@ -360,9 +354,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.OpenSong:
                 if self.openSongFileListWidget.count() == 0:
-                    critical_error_message_box(
-                        translate('SongsPlugin.ImportWizardForm',
-                        'No OpenSong Files Selected'),
+                    critical_error_message_box(UiStrings.NFSp,
                         translate('SongsPlugin.ImportWizardForm',
                         'You need to add at least one OpenSong '
                         'song file to import from.'))
@@ -370,9 +362,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.WordsOfWorship:
                 if self.wordsOfWorshipFileListWidget.count() == 0:
-                    critical_error_message_box(
-                        translate('SongsPlugin.ImportWizardForm',
-                        'No Words of Worship Files Selected'),
+                    critical_error_message_box(UiStrings.NFSp,
                         translate('SongsPlugin.ImportWizardForm',
                         'You need to add at least one Words of Worship '
                         'file to import from.'))
@@ -380,9 +370,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.CCLI:
                 if self.ccliFileListWidget.count() == 0:
-                    critical_error_message_box(
-                        translate('SongsPlugin.ImportWizardForm',
-                        'No CCLI Files Selected'),
+                    critical_error_message_box(UiStrings.NFSp,
                         translate('SongsPlugin.ImportWizardForm',
                         'You need to add at least one CCLI file '
                         'to import from.'))
@@ -390,9 +378,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.SongsOfFellowship:
                 if self.songsOfFellowshipFileListWidget.count() == 0:
-                    critical_error_message_box(
-                        translate('SongsPlugin.ImportWizardForm',
-                        'No Songs of Fellowship File Selected'),
+                    critical_error_message_box(UiStrings.NFSp,
                         translate('SongsPlugin.ImportWizardForm',
                         'You need to add at least one Songs of Fellowship '
                         'file to import from.'))
@@ -400,9 +386,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.Generic:
                 if self.genericFileListWidget.count() == 0:
-                    critical_error_message_box(
-                        translate('SongsPlugin.ImportWizardForm',
-                        'No Document/Presentation Selected'),
+                    critical_error_message_box(UiStrings.NFSp,
                         translate('SongsPlugin.ImportWizardForm',
                         'You need to add at least one document or '
                         'presentation file to import from.'))
@@ -410,9 +394,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.EasiSlides:
                 if self.easiSlidesFilenameEdit.text().isEmpty():
-                    critical_error_message_box(
-                        translate('SongsPlugin.ImportWizardForm',
-                        'No Easislides Songs file selected'),
+                    critical_error_message_box(UiStrings.NFSp,
                         translate('SongsPlugin.ImportWizardForm',
                         'You need to select an xml song file exported from '
                         'EasiSlides, to import from.'))
@@ -420,9 +402,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.EasyWorship:
                 if self.ewFilenameEdit.text().isEmpty():
-                    critical_error_message_box(
-                        translate('SongsPlugin.ImportWizardForm',
-                        'No EasyWorship Song Database Selected'),
+                    critical_error_message_box(UiStrings.NFSs,
                         translate('SongsPlugin.ImportWizardForm',
                         'You need to select an EasyWorship song database '
                         'file to import from.'))
@@ -430,9 +410,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.SongBeamer:
                 if self.songBeamerFileListWidget.count() == 0:
-                    critical_error_message_box(
-                        translate('SongsPlugin.ImportWizardForm',
-                        'No SongBeamer File Selected'),
+                    critical_error_message_box(UiStrings.NFSp,
                         translate('SongsPlugin.ImportWizardForm',
                         'You need to add at least one SongBeamer '
                         'file to import from.'))
@@ -585,7 +563,7 @@ class SongImportForm(OpenLPWizard):
             'Select Songs of Fellowship Files'),
             self.songsOfFellowshipFileListWidget, u'%s (*.rtf)'
             % translate('SongsPlugin.ImportWizardForm',
-            'Songs Of Felloship Song Files')
+            'Songs Of Fellowship Song Files')
         )
 
     def onSongsOfFellowshipRemoveButtonClicked(self):

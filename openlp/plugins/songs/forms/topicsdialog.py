@@ -28,6 +28,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
 from openlp.core.lib.ui import create_accept_reject_button_box
+from openlp.plugins.songs.lib.ui import SongStrings
 
 class Ui_TopicsDialog(object):
     def setupUi(self, topicsDialog):
@@ -52,6 +53,6 @@ class Ui_TopicsDialog(object):
 
     def retranslateUi(self, topicsDialog):
         topicsDialog.setWindowTitle(
-            translate('SongsPlugin.TopicsForm', 'Topic Maintenance'))
+            SongStrings.TypeMaintenance % SongStrings.Topic)
         self.nameLabel.setText(
             translate('SongsPlugin.TopicsForm', 'Topic name:'))

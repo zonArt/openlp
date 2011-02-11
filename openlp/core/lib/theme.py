@@ -178,9 +178,9 @@ class HorizontalType(object):
         """
         Return a string representation of a horizontal type.
         """
-        if horizontal_type == Horizontal.Right:
+        if horizontal_type == HorizontalType.Right:
             return u'right'
-        elif horizontal_type == Horizontal.Center:
+        elif horizontal_type == HorizontalType.Center:
             return u'center'
         else:
             return u'left'

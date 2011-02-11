@@ -449,8 +449,7 @@ class MediaManagerItem(QtGui.QWidget):
         Add a selected item to the current service
         """
         if not self.listView.selectedIndexes() and not self.remoteTriggered:
-            QtGui.QMessageBox.information(self,
-                translate('OpenLP.MediaManagerItem', 'No Items Selected'),
+            QtGui.QMessageBox.information(self, UiStrings.NISp,
                 translate('OpenLP.MediaManagerItem',
                     'You must select one or more items.'))
         else:
@@ -476,17 +475,14 @@ class MediaManagerItem(QtGui.QWidget):
         Add a selected item to an existing item in the current service.
         """
         if not self.listView.selectedIndexes() and not self.remoteTriggered:
-            QtGui.QMessageBox.information(self,
-                translate('OpenLP.MediaManagerItem', 'No Items Selected'),
+            QtGui.QMessageBox.information(self, UiStrings.NISp,
                 translate('OpenLP.MediaManagerItem',
                     'You must select one or more items'))
         else:
             log.debug(u'%s Add requested', self.plugin.name)
             serviceItem = self.parent.serviceManager.getServiceItem()
             if not serviceItem:
-                QtGui.QMessageBox.information(self,
-                    translate('OpenLP.MediaManagerItem',
-                        'No Service Item Selected'),
+                QtGui.QMessageBox.information(self, UiStrings.NISs,
                     translate('OpenLP.MediaManagerItem',
                         'You must select an existing service item to add to.'))
             elif self.plugin.name.lower() == serviceItem.name.lower():
