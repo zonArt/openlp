@@ -138,6 +138,7 @@ class MediaMediaItem(MediaManagerItem):
             return False
 
     def initialise(self):
+        self.listView.clear()
         self.listView.setIconSize(QtCore.QSize(88, 50))
         self.loadList(SettingsManager.load_list(self.settingsSection,
             self.settingsSection))

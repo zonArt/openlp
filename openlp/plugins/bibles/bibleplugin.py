@@ -38,7 +38,8 @@ class BiblePlugin(Plugin):
     log.info(u'Bible Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Bibles', u'1.9.4', plugin_helpers)
+        Plugin.__init__(self, u'Bibles', u'1.9.4', plugin_helpers,
+            BibleMediaItem, BiblesTab)
         self.weight = -9
         self.icon_path = u':/plugins/plugin_bibles.png'
         self.icon = build_icon(self.icon_path)
@@ -61,14 +62,6 @@ class BiblePlugin(Plugin):
         Plugin.finalise(self)
         self.importBibleItem.setVisible(False)
         self.exportBibleItem.setVisible(False)
-
-    def getSettingsTab(self):
-        visible_name = self.getString(StringContent.VisibleName)
-        return BiblesTab(self.name, visible_name[u'title'])
-
-    def getMediaManagerItem(self):
-        # Create the BibleManagerItem object.
-        return BibleMediaItem(self, self, self.icon)
 
     def addImportMenuItem(self, import_menu):
         self.importBibleItem = QtGui.QAction(import_menu)

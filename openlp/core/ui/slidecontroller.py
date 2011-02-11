@@ -415,7 +415,6 @@ class SlideController(QtGui.QWidget):
         # rebuild display as screen size changed
         self.display = MainDisplay(self, self.screens, self.isLive)
         self.display.imageManager = self.parent.renderManager.image_manager
-        self.display.alertTab = self.alertTab
         self.display.setup()
         if self.isLive:
             self.__addActionsToWidget(self.display)
