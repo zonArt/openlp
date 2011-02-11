@@ -32,8 +32,8 @@ class MediaTab(SettingsTab):
     """
     MediaTab is the Media settings tab in the settings dialog.
     """
-    def __init__(self, title):
-        SettingsTab.__init__(self, title)
+    def __init__(self, title, visible_title):
+        SettingsTab.__init__(self, title, visible_title)
 
     def setupUi(self):
         self.setObjectName(u'MediaTab')
@@ -53,9 +53,8 @@ class MediaTab(SettingsTab):
             self.onUsePhononCheckBoxChanged)
 
     def retranslateUi(self):
-        self.tabTitleVisible = translate('MediaPlugin.MediaTab', 'Media')
-        self.mediaModeGroupBox.setTitle(translate('MediaPlugin.MediaTab',
-            'Media Display'))
+        self.mediaModeGroupBox.setTitle(
+            translate('MediaPlugin.MediaTab', 'Media Display'))
         self.usePhononCheckBox.setText(
             translate('MediaPlugin.MediaTab', 'Use Phonon for video playback'))
 

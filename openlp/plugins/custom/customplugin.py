@@ -48,20 +48,13 @@ class CustomPlugin(Plugin):
     log.info(u'Custom Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Custom', u'1.9.4', plugin_helpers)
+        Plugin.__init__(self, u'Custom', u'1.9.4', plugin_helpers,
+            CustomMediaItem, CustomTab)
         self.weight = -5
         self.manager = Manager(u'custom', init_schema)
         self.edit_custom_form = EditCustomForm(self.manager)
         self.icon_path = u':/plugins/plugin_custom.png'
         self.icon = build_icon(self.icon_path)
-
-    def getSettingsTab(self):
-        visible_name = self.getString(StringContent.VisibleName)
-        return CustomTab(self.name, visible_name[u'title'])
-
-    def getMediaManagerItem(self):
-        # Create the ManagerItem object
-        return CustomMediaItem(self, self, self.icon)
 
     def about(self):
         about_text = translate('CustomPlugin', '<strong>Custom Plugin</strong>'

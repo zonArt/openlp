@@ -51,16 +51,13 @@ class SongsPlugin(Plugin):
         """
         Create and set up the Songs plugin.
         """
-        Plugin.__init__(self, u'Songs', u'1.9.4', plugin_helpers)
+        Plugin.__init__(self, u'Songs', u'1.9.4', plugin_helpers,
+            SongMediaItem, SongsTab)
         self.weight = -10
         self.manager = Manager(u'songs', init_schema)
         self.icon_path = u':/plugins/plugin_songs.png'
         self.icon = build_icon(self.icon_path)
         self.whitespace = re.compile(r'\W+', re.UNICODE)
-
-    def getSettingsTab(self):
-        visible_name = self.getString(StringContent.VisibleName)
-        return SongsTab(self.name, visible_name[u'title'])
 
     def initialise(self):
         log.info(u'Songs Initialising')
@@ -68,13 +65,6 @@ class SongsPlugin(Plugin):
         self.toolsReindexItem.setVisible(True)
         self.mediaItem.displayResultsSong(
             self.manager.get_all_objects(Song, order_by_ref=Song.search_title))
-
-    def getMediaManagerItem(self):
-        """
-        Create the MediaManagerItem object, which is displaed in the
-        Media Manager.
-        """
-        return SongMediaItem(self, self, self.icon)
 
     def addImportMenuItem(self, import_menu):
         """
