@@ -60,6 +60,7 @@ class ItemCapabilities(object):
     AddIfNewItem = 9
     ProvidesOwnDisplay = 10
     AllowsDetailedTitleDisplay = 11
+    AllowsVarableStartTime = 12
 
 
 class ServiceItem(object):
@@ -105,6 +106,7 @@ class ServiceItem(object):
         self.data_string = u''
         self.edit_id = None
         self.xml_version = None
+        self.start_time =[0, 0, 0]
         self._new_item()
 
     def _new_item(self):
@@ -257,7 +259,8 @@ class ServiceItem(object):
             u'capabilities': self.capabilities,
             u'search': self.search_string,
             u'data': self.data_string,
-            u'xml_version': self.xml_version
+            u'xml_version': self.xml_version,
+            u'start_time': self.start_time
         }
         service_data = []
         if self.service_item_type == ServiceItemType.Text:
@@ -301,6 +304,8 @@ class ServiceItem(object):
             self.data_string = header[u'data']
         if u'xml_version' in header:
             self.xml_version = header[u'xml_version']
+        if u'start_time' in header:
+            self.start_time = header[u'start_time']
         if self.service_item_type == ServiceItemType.Text:
             for slide in serviceitem[u'serviceitem'][u'data']:
                 self._raw_frames.append(slide)

@@ -23,55 +23,26 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-"""
-The :mod:`ui` module provides the core user interface for OpenLP
-"""
+
 from PyQt4 import QtGui
+
+from starttimedialog import Ui_StartTimeDialog
 
 from openlp.core.lib import translate
 
-class HideMode(object):
+class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog):
     """
-    This is an enumeration class which specifies the different modes of hiding
-    the display.
-
-    ``Blank``
-        This mode is used to hide all output, specifically by covering the
-        display with a black screen.
-
-    ``Theme``
-        This mode is used to hide all output, but covers the display with the
-        current theme background, as opposed to black.
-
-    ``Desktop``
-        This mode hides all output by minimising the display, leaving the user's
-        desktop showing.
+    The exception dialog
     """
-    Blank = 1
-    Theme = 2
-    Screen = 3
+    def __init__(self, parent):
+        QtGui.QDialog.__init__(self, parent)
+        self.setupUi(self)
 
-from themeform import ThemeForm
-from filerenameform import FileRenameForm
-from starttimeform import StartTimeForm
-from maindisplay import MainDisplay
-from servicenoteform import ServiceNoteForm
-from serviceitemeditform import ServiceItemEditForm
-from screen import ScreenList
-from slidecontroller import SlideController
-from splashscreen import SplashScreen
-from generaltab import GeneralTab
-from themestab import ThemesTab
-from advancedtab import AdvancedTab
-from displaytagtab import DisplayTagTab
-from aboutform import AboutForm
-from pluginform import PluginForm
-from settingsform import SettingsForm
-from shortcutlistform import ShortcutListForm
-from mediadockmanager import MediaDockManager
-from servicemanager import ServiceManager
-from thememanager import ThemeManager
-
-__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainDisplay',
-    'SlideController', 'ServiceManager', 'ThemeManager', 'MediaDockManager',
-    'ServiceItemEditForm']
+    def exec_(self):
+        """
+        Run the Dialog with correct heading.
+        """
+        self.hourSpinBox.setValue(self.item[u'service_item'].start_time[0])
+        self.minuteSpinBox.setValue(self.item[u'service_item'].start_time[1])
+        self.secondSpinBox.setValue(self.item[u'service_item'].start_time[2])
+        return QtGui.QDialog.exec_(self)

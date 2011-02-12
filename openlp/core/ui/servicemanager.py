@@ -36,7 +36,7 @@ from openlp.core.lib import OpenLPToolbar, ServiceItem, context_menu_action, \
     Receiver, build_icon, ItemCapabilities, SettingsManager, translate, \
     ThemeLevel
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
-from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm
+from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm, StartTimeForm
 from openlp.core.ui.printserviceorderform import PrintServiceOrderForm
 from openlp.core.utils import AppLocation, delete_file, file_is_unicode, \
     split_filename
@@ -88,6 +88,7 @@ class ServiceManager(QtGui.QWidget):
         self._fileName = u''
         self.serviceNoteForm = ServiceNoteForm(self.mainwindow)
         self.serviceItemEditForm = ServiceItemEditForm(self.mainwindow)
+        self.startTimeForm = StartTimeForm(self.mainwindow)
         # start with the layout
         self.layout = QtGui.QVBoxLayout(self)
         self.layout.setSpacing(0)
@@ -270,16 +271,19 @@ class ServiceManager(QtGui.QWidget):
         self.notesAction = self.menu.addAction(
             translate('OpenLP.ServiceManager', '&Notes'))
         self.notesAction.setIcon(build_icon(u':/services/service_notes.png'))
+        self.timeAction = self.menu.addAction(
+            translate('OpenLP.ServiceManager', '&Start Time'))
+        self.timeAction.setIcon(build_icon(u':/media/media_time.png'))
         self.deleteAction = self.menu.addAction(
             translate('OpenLP.ServiceManager', '&Delete From Service'))
         self.deleteAction.setIcon(build_icon(u':/general/general_delete.png'))
         self.sep1 = self.menu.addAction(u'')
         self.sep1.setSeparator(True)
         self.previewAction = self.menu.addAction(
-            translate('OpenLP.ServiceManager', '&Preview Verse'))
+            translate('OpenLP.ServiceManager', 'Show &Preview'))
         self.previewAction.setIcon(build_icon(u':/general/general_preview.png'))
         self.liveAction = self.menu.addAction(
-            translate('OpenLP.ServiceManager', '&Live Verse'))
+            translate('OpenLP.ServiceManager', 'Show &Live'))
         self.liveAction.setIcon(build_icon(u':/general/general_live.png'))
         self.sep2 = self.menu.addAction(u'')
         self.sep2.setSeparator(True)
@@ -563,6 +567,7 @@ class ServiceManager(QtGui.QWidget):
         self.editAction.setVisible(False)
         self.maintainAction.setVisible(False)
         self.notesAction.setVisible(False)
+        self.timeAction.setVisible(False)
         if serviceItem[u'service_item'].is_capable(ItemCapabilities.AllowsEdit)\
             and serviceItem[u'service_item'].edit_id:
             self.editAction.setVisible(True)
@@ -571,6 +576,9 @@ class ServiceManager(QtGui.QWidget):
             self.maintainAction.setVisible(True)
         if item.parent() is None:
             self.notesAction.setVisible(True)
+        if serviceItem[u'service_item']\
+            .is_capable(ItemCapabilities.AllowsVarableStartTime):
+            self.timeAction.setVisible(True)
         self.themeMenu.menuAction().setVisible(False)
         if serviceItem[u'service_item'].is_text():
             self.themeMenu.menuAction().setVisible(True)
@@ -583,6 +591,8 @@ class ServiceManager(QtGui.QWidget):
             self.onDeleteFromService()
         if action == self.notesAction:
             self.onServiceItemNoteForm()
+        if action == self.timeAction:
+            self.onStartTimeForm()
         if action == self.previewAction:
             self.makePreview()
         if action == self.liveAction:
@@ -596,6 +606,17 @@ class ServiceManager(QtGui.QWidget):
             self.serviceItems[item][u'service_item'].notes = \
                 self.serviceNoteForm.textEdit.toPlainText()
             self.repaintServiceList(item, -1)
+
+    def onStartTimeForm(self):
+        item = self.findServiceItem()[0]
+        self.startTimeForm.item = self.serviceItems[item]
+        if self.startTimeForm.exec_():
+            self.serviceItems[item][u'service_item'].start_time[0] = \
+                self.startTimeForm.hourSpinBox.value()
+            self.serviceItems[item][u'service_item'].start_time[1] = \
+                self.startTimeForm.minuteSpinBox.value()
+            self.serviceItems[item][u'service_item'].start_time[2] = \
+                self.startTimeForm.secondSpinBox.value()
 
     def onServiceItemEditForm(self):
         item = self.findServiceItem()[0]

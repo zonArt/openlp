@@ -170,8 +170,8 @@ class HorizontalType(object):
     Type enumeration for horizontal alignment.
     """
     Left = 0
-    Center = 1
-    Right = 2
+    Center = 2
+    Right = 1
 
     @staticmethod
     def to_string(horizontal_type):
