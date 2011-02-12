@@ -74,6 +74,7 @@ class UiStrings(object):
     NFSp = translate('OpenLP.Ui', 'No Files Selected', 'Plural')
     NISs = translate('OpenLP.Ui', 'No Item Selected', 'Singular')
     NISp = translate('OpenLP.Ui', 'No Items Selected', 'Plural')
+    OLPV1 = translate('OpenLP.Ui', 'openlp.org 1.x')
     OLPV2 = translate('OpenLP.Ui', 'OpenLP 2.0')
     OpenType = unicode(translate('OpenLP.Ui', 'Open %s'))
     Preview = translate('OpenLP.Ui', 'Preview')

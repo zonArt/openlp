@@ -41,6 +41,20 @@ class WizardStrings(object):
     """
     Provide standard strings for wizards to use.
     """
+    # Applications/Formats we import from or export to. These get used in
+    # multiple places but do not need translating unless you find evidence of
+    # the writers translating their own product name.
+    CCLI = u'CCLI/SongSelect'
+    CSV = u'CSV'
+    EW = u'EasyWorship'
+    ES = u'EasiSlides'
+    GDP = translate('OpenLP.Ui', 'Generic Document or Presentation')
+    OL = u'OpenLyrics'
+    OS = u'OpenSong'
+    OSIS = u'OSIS'
+    SB = u'SongBeamer'
+    SoF = u'Songs of Fellowship'
+    WoW = u'Words of Worship'
     # These strings should need a good reason to be retranslated elsewhere.
     Description = unicode(translate('OpenLP.Ui', 'This wizard will help you '
         'to %s %s from a variety of formats. Click the next button '
@@ -52,9 +66,12 @@ class WizardStrings(object):
     ImportSelect = translate('OpenLP.Ui', 'Select Import Source')
     ImportSelectLong = unicode(translate('OpenLP.Ui',
         'Select the import format and the location to import from.'))
+    OpenTypeFile = unicode(translate('OpenLP.Ui', 'Open %s File'))
     Welcome = u'<span style="font-size:14pt; font-weight:600;">%s</span>' % \
         translate('OpenLP.Ui', 'Welcome to the %s %s Wizard',
         'Variable 1 is the type e.g. Bible and variable 2 is import/export')
+    YouSpecifyFile = unicode(translate('OpenLP.Ui', 'You need to specify at '
+        'least one %s file to import from.', 'A file type e.g. OpenSong'))
 
 
 class OpenLPWizard(QtGui.QWizard):

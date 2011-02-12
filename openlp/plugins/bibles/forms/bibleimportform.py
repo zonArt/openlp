@@ -370,12 +370,9 @@ class BibleImportForm(OpenLPWizard):
         self.selectPage.setTitle(WizardStrings.ImportSelect)
         self.selectPage.setSubTitle(WizardStrings.ImportSelectLong)
         self.formatLabel.setText(WizardStrings.FormatLabel)
-        self.formatComboBox.setItemText(0,
-            translate('BiblesPlugin.ImportWizardForm', 'OSIS'))
-        self.formatComboBox.setItemText(1,
-            translate('BiblesPlugin.ImportWizardForm', 'CSV'))
-        self.formatComboBox.setItemText(2,
-            translate('BiblesPlugin.ImportWizardForm', 'OpenSong'))
+        self.formatComboBox.setItemText(0, WizardStrings.OSIS)
+        self.formatComboBox.setItemText(1, WizardStrings.CSV)
+        self.formatComboBox.setItemText(2, WizardStrings.OS)
         self.formatComboBox.setItemText(3,
             translate('BiblesPlugin.ImportWizardForm', 'Web Download'))
         self.formatComboBox.setItemText(4,
@@ -459,9 +456,7 @@ class BibleImportForm(OpenLPWizard):
             if self.field(u'source_format').toInt()[0] == BibleFormat.OSIS:
                 if not self.field(u'osis_location').toString():
                     critical_error_message_box(UiStrings.NFSs,
-                        translate('BiblesPlugin.ImportWizardForm',
-                        'You need to specify a file to import your '
-                        'Bible from.'))
+                        WizardStrings.YouSpecifyFile % WizardStrings.OSIS)
                     self.osisFileEdit.setFocus()
                     return False
             elif self.field(u'source_format').toInt()[0] == BibleFormat.CSV:
@@ -473,7 +468,7 @@ class BibleImportForm(OpenLPWizard):
                     if answer == QtGui.QMessageBox.No:
                         self.csvTestamentsEdit.setFocus()
                         return False
-                elif not self.field(u'csv_booksfile').toString():
+                if not self.field(u'csv_booksfile').toString():
                     critical_error_message_box(UiStrings.NFSs,
                         translate('BiblesPlugin.ImportWizardForm',
                         'You need to specify a file with books of '
@@ -491,17 +486,13 @@ class BibleImportForm(OpenLPWizard):
                 BibleFormat.OpenSong:
                 if not self.field(u'opensong_file').toString():
                     critical_error_message_box(UiStrings.NFSs,
-                        translate('BiblesPlugin.ImportWizardForm',
-                        'You need to specify an OpenSong Bible '
-                        'file to import.'))
+                        WizardStrings.YouSpecifyFile % WizardStrings.OS)
                     self.openSongFileEdit.setFocus()
                     return False
             elif self.field(u'source_format').toInt()[0] == BibleFormat.OpenLP1:
                 if not self.field(u'openlp1_location').toString():
                     critical_error_message_box(UiStrings.NFSs,
-                        translate('BiblesPlugin.ImportWizardForm',
-                        'You need to specify a file to import your '
-                        'Bible from.'))
+                        WizardStrings.YouSpecifyFile % UiStrings.OLPV1)
                     self.openlp1FileEdit.setFocus()
                     return False
             return True
@@ -551,24 +542,22 @@ class BibleImportForm(OpenLPWizard):
         """
         Show the file open dialog for the OSIS file.
         """
-        self.getFileName(
-            translate('BiblesPlugin.ImportWizardForm', 'Open OSIS File'),
+        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.OSIS,
             self.osisFileEdit)
 
     def onCsvTestamentsBrowseButtonClicked(self):
         """
         Show the file open dialog for the testaments CSV file.
         """
-        self.getFileName(translate('BiblesPlugin.ImportWizardForm',
-            'Open Testaments CSV File'), self.csvTestamentsEdit, u'%s (*.csv)'
+        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.CSV,
+            self.csvTestamentsEdit, u'%s (*.csv)'
             % translate('BiblesPlugin.ImportWizardForm', 'CSV File'))
 
     def onCsvBooksBrowseButtonClicked(self):
         """
         Show the file open dialog for the books CSV file.
         """
-        self.getFileName(
-            translate('BiblesPlugin.ImportWizardForm', 'Open Books CSV File'),
+        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.CSV,
             self.csvBooksEdit, u'%s (*.csv)'
             % translate('BiblesPlugin.ImportWizardForm', 'CSV File'))
 
@@ -576,27 +565,24 @@ class BibleImportForm(OpenLPWizard):
         """
         Show the file open dialog for the verses CSV file.
         """
-        self.getFileName(translate('BiblesPlugin.ImportWizardForm',
-            'Open Verses CSV File'), self.csvVersesEdit, u'%s (*.csv)'
+        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.CSV,
+            self.csvVersesEdit, u'%s (*.csv)'
             % translate('BiblesPlugin.ImportWizardForm', 'CSV File'))
 
     def onOpenSongBrowseButtonClicked(self):
         """
         Show the file open dialog for the OpenSong file.
         """
-        self.getFileName(
-            translate('BiblesPlugin.ImportWizardForm', 'Open OpenSong Bible'),
+        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.OS,
             self.openSongFileEdit)
 
     def onOpenlp1BrowseButtonClicked(self):
         """
         Show the file open dialog for the openlp.org 1.x file.
         """
-        self.getFileName(
-            translate('BiblesPlugin.ImportWizardForm',
-            'Open openlp.org 1.x Bible'), self.openlp1FileEdit,
-            u'%s (*.bible)' % translate('BiblesPlugin.ImportWizardForm',
-            'openlp.org 1.x bible'))
+        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.OLPV1,
+            self.openlp1FileEdit, u'%s (*.bible)' %
+            translate('BiblesPlugin.ImportWizardForm', 'openlp.org 1.x bible'))
 
     def registerFields(self):
         """
