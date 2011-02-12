@@ -48,6 +48,7 @@ class WizardStrings(object):
         'Variable 1 & 3 are import/export. Variable 2 is a type like Bibles'))
     FinishedType = unicode(translate('OpenLP.Ui', 'Finished %s.'))
     FormatLabel = translate('OpenLP.Ui', 'Format:')
+    Importing = translate('OpenLP.Ui', 'Importing')
     ImportSelect = translate('OpenLP.Ui', 'Select Import Source')
     ImportSelectLong = unicode(translate('OpenLP.Ui',
         'Select the import format and the location to import from.'))

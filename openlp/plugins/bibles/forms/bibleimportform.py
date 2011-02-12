@@ -426,8 +426,7 @@ class BibleImportForm(OpenLPWizard):
             translate('BiblesPlugin.ImportWizardForm', 'Copyright:'))
         self.permissionsLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'Permissions:'))
-        self.progressPage.setTitle(
-            translate('BiblesPlugin.ImportWizardForm', 'Importing'))
+        self.progressPage.setTitle(WizardStrings.Importing)
         self.progressPage.setSubTitle(
             translate('BiblesPlugin.ImportWizardForm',
             'Please wait while your Bible is imported.'))

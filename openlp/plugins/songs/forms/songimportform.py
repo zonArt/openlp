@@ -291,8 +291,7 @@ class SongImportForm(OpenLPWizard):
 #        self.csvFilenameLabel.setText(
 #            translate('SongsPlugin.ImportWizardForm', 'Filename:'))
 #        self.csvBrowseButton.setText(UiStrings.Browse)
-        self.progressPage.setTitle(
-            translate('SongsPlugin.ImportWizardForm', 'Importing'))
+        self.progressPage.setTitle(WizardStrings.Importing)
         self.progressPage.setSubTitle(
             translate('SongsPlugin.ImportWizardForm',
                 'Please wait while your songs are imported.'))
