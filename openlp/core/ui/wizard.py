@@ -31,7 +31,8 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, Receiver, SettingsManager, translate
+from openlp.core.lib import build_icon, Receiver, SettingsManager, translate, \
+    StringContent
 from openlp.core.lib.ui import UiStrings, add_welcome_page
 
 log = logging.getLogger(__name__)
@@ -60,10 +61,12 @@ class OpenLPWizard(QtGui.QWizard):
     Generic OpenLP wizard to provide generic functionality and a unified look
     and feel.
     """
-    def __init__(self, parent, plugin, name, image):
+    def __init__(self, parent, plugin, name, image, direction):
         QtGui.QWizard.__init__(self, parent)
         self.plugin = plugin
         self.setObjectName(name)
+        self.itemType = self.plugin.getString(StringContent.Name)
+        self.direction = direction
         self.openIcon = build_icon(u':/general/general_open.png')
         self.deleteIcon = build_icon(u':/general/general_delete.png')
         self.finishButton = self.button(QtGui.QWizard.FinishButton)
@@ -89,6 +92,13 @@ class OpenLPWizard(QtGui.QWizard):
         self.addProgressPage()
         self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self)
+
+    def retranslateUi(self):
+        """
+        Provides generic wizard localisation
+        """
+        self.titleLabel.setText(WizardStrings.Welcome %
+            (self.itemType[u'singular'], self.direction))
 
     def registerFields(self):
         """

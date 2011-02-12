@@ -227,20 +227,17 @@ class BibleMediaItem(MediaManagerItem):
 
     def retranslateUi(self):
         log.debug(u'retranslateUi')
-        self.quickVersionLabel.setText(
-            translate('BiblesPlugin.MediaItem', 'Version:'))
+        self.quickVersionLabel.setText(u'%s:' % UiStrings.Version)
         self.quickSecondLabel.setText(
             translate('BiblesPlugin.MediaItem', 'Second:'))
         self.quickSearchTypeLabel.setText(
             translate('BiblesPlugin.MediaItem', 'Search type:'))
         self.quickSearchLabel.setText(
             translate('BiblesPlugin.MediaItem', 'Find:'))
-        self.quickSearchButton.setText(
-            translate('BiblesPlugin.MediaItem', 'Search'))
+        self.quickSearchButton.setText(UiStrings.Search)
         self.quickClearLabel.setText(
             translate('BiblesPlugin.MediaItem', 'Results:'))
-        self.advancedVersionLabel.setText(
-            translate('BiblesPlugin.MediaItem', 'Version:'))
+        self.advancedVersionLabel.setText(u'%s:' % UiStrings.Version)
         self.advancedSecondLabel.setText(
             translate('BiblesPlugin.MediaItem', 'Second:'))
         self.advancedBookLabel.setText(
@@ -255,8 +252,7 @@ class BibleMediaItem(MediaManagerItem):
             translate('BiblesPlugin.MediaItem', 'To:'))
         self.advancedClearLabel.setText(
             translate('BiblesPlugin.MediaItem', 'Results:'))
-        self.advancedSearchButton.setText(
-            translate('BiblesPlugin.MediaItem', 'Search'))
+        self.advancedSearchButton.setText(UiStrings.Search)
         self.quickSearchComboBox.addItem(
             translate('BiblesPlugin.MediaItem', 'Verse Search'))
         self.quickSearchComboBox.addItem(

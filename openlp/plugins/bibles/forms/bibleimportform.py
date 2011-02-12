@@ -88,7 +88,7 @@ class BibleImportForm(OpenLPWizard):
         self.manager = manager
         self.web_bible_list = {}
         OpenLPWizard.__init__(self, parent, bibleplugin, u'bibleImportWizard',
-            u':/wizards/wizard_importbible.bmp')
+            u':/wizards/wizard_importbible.bmp', UiStrings.Import)
 
     def setupUi(self, image):
         """
@@ -361,15 +361,12 @@ class BibleImportForm(OpenLPWizard):
         """
         Allow for localisation of the bible import wizard.
         """
+        OpenLPWizard.retranslateUi(self)
         self.setWindowTitle(
             translate('BiblesPlugin.ImportWizardForm', 'Bible Import Wizard'))
-        self.titleLabel.setText(WizardStrings.Welcome % (
-            self.plugin.getString(StringContent.Name)[u'singular'],
-            UiStrings.Import))
         self.informationLabel.setText(WizardStrings.Description % (
-            UiStrings.Import.toLower(),
-            self.plugin.getString(StringContent.Name)[u'plural'],
-            UiStrings.Import.toLower()))
+            self.direction.toLower(), self.itemType[u'plural'],
+            self.direction.toLower()))
         self.selectPage.setTitle(WizardStrings.ImportSelect)
         self.selectPage.setSubTitle(WizardStrings.ImportSelectLong)
         self.formatLabel.setText(WizardStrings.FormatLabel)

@@ -56,7 +56,7 @@ class SongImportForm(OpenLPWizard):
             The songs plugin.
         """
         OpenLPWizard.__init__(self, parent, plugin, u'songImportWizard',
-            u':/wizards/wizard_importsong.bmp')
+            u':/wizards/wizard_importsong.bmp', UiStrings.Import)
 
     def setupUi(self, image):
         """
@@ -197,15 +197,12 @@ class SongImportForm(OpenLPWizard):
         """
         Song wizard localisation.
         """
+        OpenLPWizard.retranslateUi(self)
         self.setWindowTitle(
             translate('SongsPlugin.ImportWizardForm', 'Song Import Wizard'))
-        self.titleLabel.setText(WizardStrings.Welcome % (
-            self.plugin.getString(StringContent.Name)[u'singular'],
-            UiStrings.Import))
         self.informationLabel.setText(WizardStrings.Description % (
-            UiStrings.Import.toLower(),
-            self.plugin.getString(StringContent.Name)[u'plural'],
-            UiStrings.Import.toLower()))
+            self.direction.toLower(), self.itemType[u'plural'],
+            self.direction.toLower()))
         self.sourcePage.setTitle(WizardStrings.ImportSelect)
         self.sourcePage.setSubTitle(WizardStrings.ImportSelectLong)
         self.formatLabel.setText(WizardStrings.FormatLabel)
@@ -235,12 +232,10 @@ class SongImportForm(OpenLPWizard):
 #            translate('SongsPlugin.ImportWizardForm', 'CSV'))
         self.openLP2FilenameLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Filename:'))
-        self.openLP2BrowseButton.setText(
-            translate('SongsPlugin.ImportWizardForm', 'Browse...'))
+        self.openLP2BrowseButton.setText(UiStrings.Browse)
         self.openLP1FilenameLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Filename:'))
-        self.openLP1BrowseButton.setText(
-            translate('SongsPlugin.ImportWizardForm', 'Browse...'))
+        self.openLP1BrowseButton.setText(UiStrings.Browse)
         self.openLP1DisabledLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'The openlp.org 1.x '
             'importer has been disabled due to a missing Python module. If '
@@ -285,20 +280,17 @@ class SongImportForm(OpenLPWizard):
             'find OpenOffice.org on your computer.'))
         self.easiSlidesFilenameLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Filename:'))
-        self.easiSlidesBrowseButton.setText(
-            translate('SongsPlugin.ImportWizardForm', 'Browse...'))
+        self.easiSlidesBrowseButton.setText(UiStrings.Browse)
         self.ewFilenameLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Filename:'))
-        self.ewBrowseButton.setText(
-            translate('SongsPlugin.ImportWizardForm', 'Browse...'))
+        self.ewBrowseButton.setText(UiStrings.Browse)
         self.songBeamerAddButton.setText(
             translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
         self.songBeamerRemoveButton.setText(
             translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
 #        self.csvFilenameLabel.setText(
 #            translate('SongsPlugin.ImportWizardForm', 'Filename:'))
-#        self.csvBrowseButton.setText(
-#            translate('SongsPlugin.ImportWizardForm', 'Browse...'))
+#        self.csvBrowseButton.setText(UiStrings.Browse)
         self.progressPage.setTitle(
             translate('SongsPlugin.ImportWizardForm', 'Importing'))
         self.progressPage.setSubTitle(

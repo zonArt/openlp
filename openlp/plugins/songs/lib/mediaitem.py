@@ -125,10 +125,8 @@ class SongMediaItem(MediaManagerItem):
             QtCore.QVariant(u'True')).toBool()
 
     def retranslateUi(self):
-        self.searchTextLabel.setText(
-            translate('SongsPlugin.MediaItem', 'Search:'))
-        self.searchTextButton.setText(
-            translate('SongsPlugin.MediaItem', 'Search'))
+        self.searchTextLabel.setText(u'%s:' % UiStrings.Search)
+        self.searchTextButton.setText(UiStrings.Search)
         self.maintenanceAction.setText(SongStrings.TypeMaintenance %
             self.plugin.getString(StringContent.Name)[u'singular'])
         self.maintenanceAction.setToolTip(translate('SongsPlugin.MediaItem',

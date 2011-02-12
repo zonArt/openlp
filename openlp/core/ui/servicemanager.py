@@ -110,8 +110,7 @@ class ServiceManager(QtGui.QWidget):
             translate('OpenLP.ServiceManager', 'Save this service'),
             self.saveFile)
         self.toolbar.addSeparator()
-        self.themeLabel = QtGui.QLabel(translate('OpenLP.ServiceManager',
-            'Theme:'), self)
+        self.themeLabel = QtGui.QLabel(u'%s:' % UiStrings.Theme, self)
         self.themeLabel.setMargin(3)
         self.themeLabel.setObjectName(u'themeLabel')
         self.toolbar.addToolbarWidget(u'ThemeLabel', self.themeLabel)

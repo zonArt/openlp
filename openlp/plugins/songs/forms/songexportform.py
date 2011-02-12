@@ -56,9 +56,8 @@ class SongExportForm(OpenLPWizard):
         ``plugin``
             The songs plugin.
         """
-        self.plugin = plugin
         OpenLPWizard.__init__(self, parent, plugin, u'songExportWizard',
-            u':/wizards/wizard_exportsong.bmp')
+            u':/wizards/wizard_exportsong.bmp', UiStrings.Export)
         self.stop_export_flag = False
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_export)
@@ -163,12 +162,9 @@ class SongExportForm(OpenLPWizard):
         """
         Song wizard localisation.
         """
+        OpenLPWizard.retranslateUi(self)
         self.setWindowTitle(
             translate('SongsPlugin.ExportWizardForm', 'Song Export Wizard'))
-        self.titleLabel.setText(
-            u'<span style="font-size:14pt; font-weight:600;">%s</span>' %
-            translate('SongsPlugin.ExportWizardForm',
-            'Welcome to the Song Export Wizard'))
         self.informationLabel.setText(
             translate('SongsPlugin.ExportWizardForm', 'This wizard will help to'
             ' export your songs to the open and free OpenLyrics worship song '
@@ -177,15 +173,14 @@ class SongExportForm(OpenLPWizard):
             translate('SongsPlugin.ExportWizardForm', 'Select Songs'))
         self.availableSongsPage.setSubTitle(
             translate('SongsPlugin.ExportWizardForm',
-            'Check the songs, you want to export.'))
-        self.searchLabel.setText(
-            translate('SongsPlugin.ExportWizardForm', 'Search:'))
+            'Check the songs you want to export.'))
+        self.searchLabel.setText(u'%s:' % UiStrings.Search)
         self.uncheckButton.setText(
             translate('SongsPlugin.ExportWizardForm', 'Uncheck All'))
         self.checkButton.setText(
             translate('SongsPlugin.ExportWizardForm', 'Check All'))
         self.exportSongPage.setTitle(
-                translate('SongsPlugin.ExportWizardForm', 'Select Directory'))
+            translate('SongsPlugin.ExportWizardForm', 'Select Directory'))
         self.exportSongPage.setSubTitle(
             translate('SongsPlugin.ExportWizardForm',
             'Select the directory you want the songs to be saved.'))

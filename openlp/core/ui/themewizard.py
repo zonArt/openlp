@@ -27,7 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, build_icon
-from openlp.core.lib.ui import add_welcome_page, create_valign_combo
+from openlp.core.lib.ui import UiStrings, add_welcome_page, create_valign_combo
 
 class Ui_ThemeWizard(object):
     def setupUi(self, themeWizard):
@@ -421,8 +421,7 @@ class Ui_ThemeWizard(object):
             translate('OpenLP.ThemeWizard', 'Solid Color'))
         self.backgroundComboBox.setItemText(1,
             translate('OpenLP.ThemeWizard', 'Gradient'))
-        self.backgroundComboBox.setItemText(2,
-            translate('OpenLP.ThemeWizard', 'Image'))
+        self.backgroundComboBox.setItemText(2, UiStrings.Image)
         self.colorLabel.setText(translate('OpenLP.ThemeWizard', 'Color:'))
         self.gradientStartLabel.setText(
             translate(u'OpenLP.ThemeWizard', 'Starting color:'))
@@ -440,7 +439,7 @@ class Ui_ThemeWizard(object):
             translate('OpenLP.ThemeWizard', 'Top Left - Bottom Right'))
         self.gradientComboBox.setItemText(4,
             translate('OpenLP.ThemeWizard', 'Bottom Left - Top Right'))
-        self.imageLabel.setText(translate('OpenLP.ThemeWizard', 'Image:'))
+        self.imageLabel.setText(u'%s:' % UiStrings.Image)
         self.mainAreaPage.setTitle(
             translate('OpenLP.ThemeWizard', 'Main Area Font Details'))
         self.mainAreaPage.setSubTitle(
