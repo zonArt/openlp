@@ -365,7 +365,7 @@ class Ui_MainWindow(object):
         self.ViewMediaManagerItem.setText(
             translate('OpenLP.MainWindow', '&Media Manager'))
         self.ViewMediaManagerItem.setToolTip(
-            UiStrings.Toggle % UiStrings.MediaManager)
+            UiStrings.ToggleType % UiStrings.MediaManager)
         self.ViewMediaManagerItem.setStatusTip(
             UiStrings.ToggleVisibility % UiStrings.MediaManager.toLower())
         self.ViewMediaManagerItem.setShortcut(
@@ -373,7 +373,7 @@ class Ui_MainWindow(object):
         self.ViewThemeManagerItem.setText(
             translate('OpenLP.MainWindow', '&Theme Manager'))
         self.ViewThemeManagerItem.setToolTip(
-            UiStrings.Toggle % UiStrings.ThemeManager)
+            UiStrings.ToggleType % UiStrings.ThemeManager)
         self.ViewThemeManagerItem.setStatusTip(
             UiStrings.ToggleVisibility % UiStrings.ThemeManager.toLower())
         self.ViewThemeManagerItem.setShortcut(
@@ -381,7 +381,7 @@ class Ui_MainWindow(object):
         self.ViewServiceManagerItem.setText(
             translate('OpenLP.MainWindow', '&Service Manager'))
         self.ViewServiceManagerItem.setToolTip(
-            UiStrings.Toggle % UiStrings.ServiceManager)
+            UiStrings.ToggleType % UiStrings.ServiceManager)
         self.ViewServiceManagerItem.setStatusTip(
             UiStrings.ToggleVisibility % UiStrings.ServiceManager.toLower())
         self.ViewServiceManagerItem.setShortcut(
@@ -389,7 +389,7 @@ class Ui_MainWindow(object):
         self.ViewPreviewPanel.setText(
             translate('OpenLP.MainWindow', '&Preview Panel'))
         self.ViewPreviewPanel.setToolTip(
-            UiStrings.Toggle % UiStrings.PreviewPanel)
+            UiStrings.ToggleType % UiStrings.PreviewPanel)
         self.ViewPreviewPanel.setStatusTip(
             UiStrings.ToggleVisibility % UiStrings.PreviewPanel.toLower())
         self.ViewPreviewPanel.setShortcut(
@@ -397,7 +397,7 @@ class Ui_MainWindow(object):
         self.ViewLivePanel.setText(
             translate('OpenLP.MainWindow', '&Live Panel'))
         self.ViewLivePanel.setToolTip(
-            UiStrings.Toggle % UiStrings.LivePanel)
+            UiStrings.ToggleType % UiStrings.LivePanel)
         self.ViewLivePanel.setStatusTip(
             UiStrings.ToggleVisibility % UiStrings.LivePanel.toLower())
         self.ViewLivePanel.setShortcut(

@@ -26,7 +26,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon
+from openlp.core.lib import build_icon, StringContent
 from openlp.core.lib.ui import UiStrings
 from openlp.plugins.songs.lib.ui import SongStrings
 
@@ -145,8 +145,9 @@ class Ui_SongMaintenanceDialog(object):
         QtCore.QMetaObject.connectSlotsByName(songMaintenanceDialog)
 
     def retranslateUi(self, songMaintenanceDialog):
-        songMaintenanceDialog.setWindowTitle(
-            SongStrings.TypeMaintenance % SongStrings.Song)
+        songMaintenanceDialog.setWindowTitle(SongStrings.TypeMaintenance %
+            songMaintenanceDialog.parent().plugin.getString(
+            StringContent.Name)[u'singular'])
         self.listItemAuthors.setText(SongStrings.Authors)
         self.listItemTopics.setText(SongStrings.Topics)
         self.listItemBooks.setText(SongStrings.SongBooks)
