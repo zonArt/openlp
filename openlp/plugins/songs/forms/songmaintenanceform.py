@@ -29,9 +29,10 @@ from PyQt4 import QtGui, QtCore
 from sqlalchemy.sql import and_
 
 from openlp.core.lib import Receiver, translate
-from openlp.core.lib.ui import critical_error_message_box
+from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.plugins.songs.forms import AuthorsForm, TopicsForm, SongBookForm
 from openlp.plugins.songs.lib.db import Author, Book, Topic, Song
+from openlp.plugins.songs.lib.ui import SongStrings
 from songmaintenancedialog import Ui_SongMaintenanceDialog
 
 log = logging.getLogger(__name__)
@@ -447,7 +448,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         Delete the author if the author is not attached to any songs.
         """
         self._deleteItem(Author, self.authorsListWidget, self.resetAuthors,
-            translate('SongsPlugin.SongMaintenanceForm', 'Delete Author'),
+            UiStrings.DeleteType % SongStrings.Author,
             translate('SongsPlugin.SongMaintenanceForm',
                 'Are you sure you want to delete the selected author?'),
             translate('SongsPlugin.SongMaintenanceForm',
@@ -457,10 +458,10 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
 
     def onTopicDeleteButtonClick(self):
         """
-        Delete the Book is the Book is not attached to any songs.
+        Delete the Book if the Book is not attached to any songs.
         """
         self._deleteItem(Topic, self.topicsListWidget, self.resetTopics,
-            translate('SongsPlugin.SongMaintenanceForm', 'Delete Topic'),
+            UiStrings.DeleteType % SongStrings.Topic,
             translate('SongsPlugin.SongMaintenanceForm',
                 'Are you sure you want to delete the selected topic?'),
             translate('SongsPlugin.SongMaintenanceForm',
@@ -470,10 +471,10 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
 
     def onBookDeleteButtonClick(self):
         """
-        Delete the Book is the Book is not attached to any songs.
+        Delete the Book if the Book is not attached to any songs.
         """
         self._deleteItem(Book, self.booksListWidget, self.resetBooks,
-            translate('SongsPlugin.SongMaintenanceForm', 'Delete Book'),
+            UiStrings.DeleteType % SongStrings.SongBook,
             translate('SongsPlugin.SongMaintenanceForm',
                 'Are you sure you want to delete the selected book?'),
             translate('SongsPlugin.SongMaintenanceForm',
