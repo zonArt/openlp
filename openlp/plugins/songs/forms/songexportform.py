@@ -32,8 +32,8 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, Receiver, SettingsManager, translate
-from openlp.core.lib.ui import critical_error_message_box
-from openlp.core.ui.wizard import OpenLPWizard
+from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.plugins.songs.lib.db import Song
 from openlp.plugins.songs.lib.openlyricsexport import OpenLyricsExport
 
@@ -213,9 +213,7 @@ class SongExportForm(OpenLPWizard):
                 self.availableListWidget) if item.checkState()
             ]
             if not items:
-                critical_error_message_box(
-                    translate('SongsPlugin.ExportWizardForm',
-                    'No Song Selected'),
+                critical_error_message_box(UiStrings.NISp,
                     translate('SongsPlugin.ExportWizardForm',
                     'You need to add at least one Song to export.'))
                 return False
@@ -289,7 +287,7 @@ class SongExportForm(OpenLPWizard):
             self, songs, unicode(self.directoryLineEdit.text()))
         if exporter.do_export():
             self.progressLabel.setText(
-                translate('SongsPlugin.SongExportForm', 'Finished export.'))
+                WizardStrings.FinishedType % UiStrings.Export.toLower())
         else:
             self.progressLabel.setText(
                 translate('SongsPlugin.SongExportForm',

@@ -31,10 +31,29 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, Receiver, SettingsManager
+from openlp.core.lib import build_icon, Receiver, SettingsManager, translate
 from openlp.core.lib.ui import UiStrings, add_welcome_page
 
 log = logging.getLogger(__name__)
+
+class WizardStrings(object):
+    """
+    Provide standard strings for wizards to use.
+    """
+    # These strings should need a good reason to be retranslated elsewhere.
+    Description = unicode(translate('OpenLP.Ui', 'This wizard will help you '
+        'to %s %s from a variety of formats. Click the next button '
+        'below to start the process by selecting a format to %s from.',
+        'Variable 1 & 3 are import/export. Variable 2 is a type like Bibles'))
+    FinishedType = unicode(translate('OpenLP.Ui', 'Finished %s.'))
+    FormatLabel = translate('OpenLP.Ui', 'Format:')
+    ImportSelect = translate('OpenLP.Ui', 'Select Import Source')
+    ImportSelectLong = unicode(translate('OpenLP.Ui',
+        'Select the import format and the location to import from.'))
+    Welcome = u'<span style="font-size:14pt; font-weight:600;">%s</span>' % \
+        translate('OpenLP.Ui', 'Welcome to the %s %s Wizard',
+        'Variable 1 is the type e.g. Bible and variable 2 is import/export')
+
 
 class OpenLPWizard(QtGui.QWizard):
     """
@@ -43,6 +62,7 @@ class OpenLPWizard(QtGui.QWizard):
     """
     def __init__(self, parent, plugin, name, image):
         QtGui.QWizard.__init__(self, parent)
+        self.plugin = plugin
         self.setObjectName(name)
         self.openIcon = build_icon(u':/general/general_open.png')
         self.deleteIcon = build_icon(u':/general/general_delete.png')
@@ -50,7 +70,6 @@ class OpenLPWizard(QtGui.QWizard):
         self.cancelButton = self.button(QtGui.QWizard.CancelButton)
         self.setupUi(image)
         self.registerFields()
-        self.plugin = plugin
         self.customInit()
         self.customSignals()
         QtCore.QObject.connect(self, QtCore.SIGNAL(u'currentIdChanged(int)'),

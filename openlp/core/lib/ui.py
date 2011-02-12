@@ -55,6 +55,7 @@ class UiStrings(object):
     EditType = unicode(translate('OpenLP.Ui', 'Edit %s'))
     EmptyField = translate('OpenLP.Ui', 'Empty Field')
     Error = translate('OpenLP.Ui', 'Error')
+    Export = translate('OpenLP.Ui', 'Export')
     ExportType = unicode(translate('OpenLP.Ui', 'Export %s'))
     Import = translate('OpenLP.Ui', 'Import')
     ImportType = unicode(translate('OpenLP.Ui', 'Import %s'))

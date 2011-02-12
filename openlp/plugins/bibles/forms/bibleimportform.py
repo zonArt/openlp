@@ -33,10 +33,10 @@ import os.path
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, translate
+from openlp.core.lib import Receiver, StringContent, translate
 from openlp.core.lib.db import delete_database
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
-from openlp.core.ui.wizard import OpenLPWizard
+from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.core.utils import AppLocation, string_is_unicode
 from openlp.plugins.bibles.lib.manager import BibleFormat
 
@@ -363,22 +363,16 @@ class BibleImportForm(OpenLPWizard):
         """
         self.setWindowTitle(
             translate('BiblesPlugin.ImportWizardForm', 'Bible Import Wizard'))
-        self.titleLabel.setText(
-            u'<span style="font-size:14pt; font-weight:600;">%s</span>' % \
-            translate('BiblesPlugin.ImportWizardForm',
-            'Welcome to the Bible Import Wizard'))
-        self.informationLabel.setText(
-            translate('BiblesPlugin.ImportWizardForm',
-            'This wizard will help you to import Bibles from a '
-            'variety of formats. Click the next button below to start the '
-            'process by selecting a format to import from.'))
-        self.selectPage.setTitle(translate('BiblesPlugin.ImportWizardForm',
-            'Select Import Source'))
-        self.selectPage.setSubTitle(
-            translate('BiblesPlugin.ImportWizardForm',
-            'Select the import format, and where to import from.'))
-        self.formatLabel.setText(
-            translate('BiblesPlugin.ImportWizardForm', 'Format:'))
+        self.titleLabel.setText(WizardStrings.Welcome % (
+            self.plugin.getString(StringContent.Name)[u'singular'],
+            UiStrings.Import))
+        self.informationLabel.setText(WizardStrings.Description % (
+            UiStrings.Import.toLower(),
+            self.plugin.getString(StringContent.Name)[u'plural'],
+            UiStrings.Import.toLower()))
+        self.selectPage.setTitle(WizardStrings.ImportSelect)
+        self.selectPage.setSubTitle(WizardStrings.ImportSelectLong)
+        self.formatLabel.setText(WizardStrings.FormatLabel)
         self.formatComboBox.setItemText(0,
             translate('BiblesPlugin.ImportWizardForm', 'OSIS'))
         self.formatComboBox.setItemText(1,
@@ -796,8 +790,8 @@ class BibleImportForm(OpenLPWizard):
                     'bible. Please note, that verses will be downloaded on\n'
                     'demand and thus an internet connection is required.'))
             else:
-                self.progressLabel.setText(translate(
-                    'BiblesPlugin.ImportWizardForm', 'Finished import.'))
+                self.progressLabel.setText(
+                    WizardStrings.FinishedType % UiStrings.Import.toLower())
         else:
             self.progressLabel.setText(translate(
                 'BiblesPlugin.ImportWizardForm', 'Your Bible import failed.'))

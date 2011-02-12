@@ -31,9 +31,9 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, SettingsManager, translate
+from openlp.core.lib import Receiver, SettingsManager, StringContent, translate
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
-from openlp.core.ui.wizard import OpenLPWizard
+from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.plugins.songs.lib.importer import SongFormat
 
 log = logging.getLogger(__name__)
@@ -199,22 +199,16 @@ class SongImportForm(OpenLPWizard):
         """
         self.setWindowTitle(
             translate('SongsPlugin.ImportWizardForm', 'Song Import Wizard'))
-        self.titleLabel.setText(
-            u'<span style="font-size:14pt; font-weight:600;">%s</span>' % \
-            translate('SongsPlugin.ImportWizardForm',
-                'Welcome to the Song Import Wizard'))
-        self.informationLabel.setText(
-            translate('SongsPlugin.ImportWizardForm',
-                'This wizard will help you to import songs from a variety of '
-                'formats. Click the next button below to start the process by '
-                'selecting a format to import from.'))
-        self.sourcePage.setTitle(
-            translate('SongsPlugin.ImportWizardForm', 'Select Import Source'))
-        self.sourcePage.setSubTitle(
-            translate('SongsPlugin.ImportWizardForm',
-            'Select the import format, and where to import from.'))
-        self.formatLabel.setText(
-            translate('SongsPlugin.ImportWizardForm', 'Format:'))
+        self.titleLabel.setText(WizardStrings.Welcome % (
+            self.plugin.getString(StringContent.Name)[u'singular'],
+            UiStrings.Import))
+        self.informationLabel.setText(WizardStrings.Description % (
+            UiStrings.Import.toLower(),
+            self.plugin.getString(StringContent.Name)[u'plural'],
+            UiStrings.Import.toLower()))
+        self.sourcePage.setTitle(WizardStrings.ImportSelect)
+        self.sourcePage.setSubTitle(WizardStrings.ImportSelectLong)
+        self.formatLabel.setText(WizardStrings.FormatLabel)
         self.formatComboBox.setItemText(0, UiStrings.OLPV2)
         self.formatComboBox.setItemText(1,
             translate('SongsPlugin.ImportWizardForm', 'openlp.org 1.x'))
@@ -719,7 +713,7 @@ class SongImportForm(OpenLPWizard):
             )
         if importer.do_import():
             self.progressLabel.setText(
-                translate('SongsPlugin.SongImportForm', 'Finished import.'))
+                WizardStrings.FinishedType % UiStrings.Import.toLower())
         else:
             self.progressLabel.setText(
                 translate('SongsPlugin.SongImportForm',
