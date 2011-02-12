@@ -33,7 +33,7 @@ import os.path
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, StringContent, translate
+from openlp.core.lib import Receiver, translate
 from openlp.core.lib.db import delete_database
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
