@@ -191,8 +191,7 @@ class SlideController(QtGui.QWidget):
             self.delaySpinBox.setMinimum(1)
             self.delaySpinBox.setMaximum(180)
             self.toolbar.addToolbarWidget(u'Image SpinBox', self.delaySpinBox)
-            self.delaySpinBox.setSuffix(translate('OpenLP.SlideController',
-                's'))
+            self.delaySpinBox.setSuffix(UiStrings.S)
             self.delaySpinBox.setToolTip(translate('OpenLP.SlideController',
                 'Delay between slides in seconds'))
         else:

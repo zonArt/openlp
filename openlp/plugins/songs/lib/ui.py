@@ -36,6 +36,7 @@ class SongStrings(object):
     # These strings should need a good reason to be retranslated elsewhere.
     Author = translate('OpenLP.Ui', 'Author', 'Singular')
     Authors = translate('OpenLP.Ui', 'Authors', 'Plural')
+    AuthorUnknown = translate('OpenLP.Ui', 'Author Unknown')
     SongBook = translate('OpenLP.Ui', 'Song Book', 'Singular')
     SongBooks = translate('OpenLP.Ui', 'Song Books', 'Plural')
     Topic = translate('OpenLP.Ui', 'Topic', 'Singular')

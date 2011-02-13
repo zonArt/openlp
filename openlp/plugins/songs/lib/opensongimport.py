@@ -32,6 +32,7 @@ from lxml.etree import Error, LxmlError
 import re
 
 from openlp.core.lib import translate
+from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
@@ -159,8 +160,7 @@ class OpenSongImport(SongImport):
                 # not a zipfile
                 log.info(u'Direct import %s', filename)
                 self.import_wizard.incrementProgressBar(
-                    unicode(translate('SongsPlugin.ImportWizardForm',
-                        'Importing %s...')) % os.path.split(filename)[-1])
+                    WizardStrings.ImportingType % os.path.split(filename)[-1])
                 file = open(filename)
                 self.do_import_file(file)
                 if self.commit:

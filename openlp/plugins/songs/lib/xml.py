@@ -377,9 +377,7 @@ class OpenLyrics(object):
         except AttributeError:
             pass
         if not authors:
-            # Add "Author unknown" (can be translated).
-            authors.append((unicode(translate('SongsPlugin.XML',
-                'Author unknown'))))
+            authors.append(u'Author Unknown')
         for display_name in authors:
             author = self.manager.get_object_filtered(Author,
                 Author.display_name == display_name)

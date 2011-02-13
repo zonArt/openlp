@@ -260,8 +260,7 @@ class SongImport(QtCore.QObject):
         All fields have been set to this song. Write the song to disk.
         """
         if not self.authors:
-            self.authors.append(unicode(translate('SongsPlugin.SongImport',
-                'Author unknown')))
+            self.authors.append(u'Author Unknown')
         log.info(u'commiting song %s to database', self.title)
         song = Song()
         song.title = self.title
