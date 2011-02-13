@@ -38,8 +38,10 @@ class SongStrings(object):
     Authors = translate('OpenLP.Ui', 'Authors', 'Plural')
     AuthorUnknown = translate('OpenLP.Ui', 'Author Unknown') # Used in the UI.
     AuthorUnknownUnT = u'Author Unknown' # Used to populate the database.
+    CouldNotAdd = unicode(translate('OpenLP.Ui', 'Could not add your %s.'))
     SongBook = translate('OpenLP.Ui', 'Song Book', 'Singular')
     SongBooks = translate('OpenLP.Ui', 'Song Books', 'Plural')
+    ThisTypeExists = unicode(translate('OpenLP.Ui', 'This %s already exists.'))
     Topic = translate('OpenLP.Ui', 'Topic', 'Singular')
     Topics = translate('OpenLP.Ui', 'Topics', 'Plural')
     TypeMaintenance = unicode(translate('OpenLP.Ui', '%s Maintenance'))
