@@ -90,9 +90,9 @@ class BibleMediaItem(MediaManagerItem):
         self.quickSearchEdit.setObjectName(u'quickSearchEdit')
         self.quickSearchLabel.setBuddy(self.quickSearchEdit)
         self.quickSearchEdit.setSearchTypes([
-            (1, u':/bibles/bibles_serach_reference.png',
+            (1, u':/bibles/bibles_search_reference.png',
             translate('BiblesPlugin.MediaItem', 'Scripture Reference')),
-            (2, u':/bibles/bibles_serach_text.png',
+            (2, u':/bibles/bibles_search_text.png',
             translate('BiblesPlugin.MediaItem', 'Text Search'))
         ])
         self.quickLayout.addRow(self.quickSearchLabel, self.quickSearchEdit)
