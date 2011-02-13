@@ -63,10 +63,17 @@ class WizardStrings(object):
     FinishedType = unicode(translate('OpenLP.Ui', 'Finished %s.'))
     FormatLabel = translate('OpenLP.Ui', 'Format:')
     Importing = translate('OpenLP.Ui', 'Importing')
+    ImportingType = unicode(translate('OpenLP.Ui', 'Importing %s...'))
     ImportSelect = translate('OpenLP.Ui', 'Select Import Source')
     ImportSelectLong = unicode(translate('OpenLP.Ui',
         'Select the import format and the location to import from.'))
+    NoSqlite = translate('OpenLP.Ui', 'The openlp.org 1.x importer has been '
+        'disabled due to a missing Python module. If you want to use this '
+        'importer, you will need to install the &quot;python-sqlite&quot; '
+        'module.')
     OpenTypeFile = unicode(translate('OpenLP.Ui', 'Open %s File'))
+    Ready = translate('OpenLP.Ui', 'Ready.')
+    StartingImport = translate('OpenLP.Ui', 'Starting import...')
     Welcome = u'<span style="font-size:14pt; font-weight:600;">%s</span>' % \
         translate('OpenLP.Ui', 'Welcome to the %s %s Wizard',
         'Variable 1 is the type e.g. Bible and variable 2 is import/export')

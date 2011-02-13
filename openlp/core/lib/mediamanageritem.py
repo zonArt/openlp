@@ -417,8 +417,7 @@ class MediaManagerItem(QtGui.QWidget):
         item to the preview slide controller.
         """
         if not self.listView.selectedIndexes() and not self.remoteTriggered:
-            QtGui.QMessageBox.information(self,
-                translate('OpenLP.MediaManagerItem', 'No Items Selected'),
+            QtGui.QMessageBox.information(self, UiStrings.NISp,
                 translate('OpenLP.MediaManagerItem',
                 'You must select one or more items to preview.'))
         else:
@@ -434,8 +433,7 @@ class MediaManagerItem(QtGui.QWidget):
         item to the live slide controller.
         """
         if not self.listView.selectedIndexes():
-            QtGui.QMessageBox.information(self,
-                translate('OpenLP.MediaManagerItem', 'No Items Selected'),
+            QtGui.QMessageBox.information(self, UiStrings.NISp,
                 translate('OpenLP.MediaManagerItem',
                     'You must select one or more items to send live.'))
         else:

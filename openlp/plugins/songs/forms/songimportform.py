@@ -206,29 +206,31 @@ class SongImportForm(OpenLPWizard):
         self.sourcePage.setTitle(WizardStrings.ImportSelect)
         self.sourcePage.setSubTitle(WizardStrings.ImportSelectLong)
         self.formatLabel.setText(WizardStrings.FormatLabel)
-        self.formatComboBox.setItemText(0, UiStrings.OLPV2)
-        self.formatComboBox.setItemText(1, UiStrings.OLPV1)
-        self.formatComboBox.setItemText(2, WizardStrings.OL)
-        self.formatComboBox.setItemText(3, WizardStrings.OS)
-        self.formatComboBox.setItemText(4, WizardStrings.WoW)
-        self.formatComboBox.setItemText(5, WizardStrings.CCLI)
-        self.formatComboBox.setItemText(6, WizardStrings.SoF)
-        self.formatComboBox.setItemText(7, WizardStrings.GDP)
-        self.formatComboBox.setItemText(8, WizardStrings.ES)
-        self.formatComboBox.setItemText(9, WizardStrings.EW)
-        self.formatComboBox.setItemText(10, WizardStrings.SB)
-#        self.formatComboBox.setItemText(11, WizardStrings.CSV)
+        self.formatComboBox.setItemText(SongFormat.OpenLP2, UiStrings.OLPV2)
+        self.formatComboBox.setItemText(SongFormat.OpenLP1, UiStrings.OLPV1)
+        self.formatComboBox.setItemText(
+            SongFormat.OpenLyrics, WizardStrings.OL)
+        self.formatComboBox.setItemText(SongFormat.OpenSong, WizardStrings.OS)
+        self.formatComboBox.setItemText(
+            SongFormat.WordsOfWorship, WizardStrings.WoW)
+        self.formatComboBox.setItemText(SongFormat.CCLI, WizardStrings.CCLI)
+        self.formatComboBox.setItemText(
+            SongFormat.SongsOfFellowship, WizardStrings.SoF)
+        self.formatComboBox.setItemText(SongFormat.Generic, WizardStrings.GDP)
+        self.formatComboBox.setItemText(
+            SongFormat.EasiSlides, WizardStrings.ES)
+        self.formatComboBox.setItemText(
+            SongFormat.EasyWorship, WizardStrings.EW)
+        self.formatComboBox.setItemText(
+            SongFormat.SongBeamer, WizardStrings.SB)
+#        self.formatComboBox.setItemText(SongFormat.CSV, WizardStrings.CSV)
         self.openLP2FilenameLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Filename:'))
         self.openLP2BrowseButton.setText(UiStrings.Browse)
         self.openLP1FilenameLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Filename:'))
         self.openLP1BrowseButton.setText(UiStrings.Browse)
-        self.openLP1DisabledLabel.setText(
-            translate('SongsPlugin.ImportWizardForm', 'The openlp.org 1.x '
-            'importer has been disabled due to a missing Python module. If '
-            'you want to use this importer, you will need to install the '
-            '"python-sqlite" module.'))
+        self.openLP1DisabledLabel.setText(WizardStrings.NoSqlite)
         self.openLyricsAddButton.setText(
             translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
         self.openLyricsRemoveButton.setText(
@@ -283,8 +285,7 @@ class SongImportForm(OpenLPWizard):
         self.progressPage.setSubTitle(
             translate('SongsPlugin.ImportWizardForm',
                 'Please wait while your songs are imported.'))
-        self.progressLabel.setText(
-            translate('SongsPlugin.ImportWizardForm', 'Ready.'))
+        self.progressLabel.setText(WizardStrings.Ready)
         self.progressBar.setFormat(
             translate('SongsPlugin.ImportWizardForm', '%p%'))
         # Align all QFormLayouts towards each other.
@@ -573,8 +574,7 @@ class SongImportForm(OpenLPWizard):
         Perform pre import tasks
         """
         OpenLPWizard.preWizard(self)
-        self.progressLabel.setText(
-            translate('SongsPlugin.ImportWizardForm', 'Starting import...'))
+        self.progressLabel.setText(WizardStrings.StartingImport)
         Receiver.send_message(u'openlp_process_events')
 
     def performWizard(self):

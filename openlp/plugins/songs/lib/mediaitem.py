@@ -318,9 +318,7 @@ class SongMediaItem(MediaManagerItem):
         """
         Remove a song from the list and database
         """
-        if check_item_selected(self.listView,
-            translate('SongsPlugin.MediaItem',
-            'You must select an item to delete.')):
+        if check_item_selected(self.listView, UiStrings.SelectDelete):
             items = self.listView.selectedIndexes()
             if QtGui.QMessageBox.question(self,
                 translate('SongsPlugin.MediaItem', 'Delete Song(s)?'),

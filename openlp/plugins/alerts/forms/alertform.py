@@ -26,7 +26,8 @@
 
 from PyQt4 import QtGui, QtCore
 
-from openlp.core.lib import translate
+from openlp.core.lib import translate, StringContent
+from openlp.core.lib.ui import UiStrings
 from openlp.plugins.alerts.lib.db import AlertItem
 
 from alertdialog import Ui_AlertDialog
@@ -95,8 +96,8 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
 
     def onNewClick(self):
         if len(self.alertTextEdit.text()) == 0:
-            QtGui.QMessageBox.information(self,
-                translate('AlertsPlugin.AlertForm', 'New Alert'),
+            QtGui.QMessageBox.information(self, UiStrings.NewType %
+                self.plugin.getString(StringContent.Name)[u'singular']
                 translate('AlertsPlugin.AlertForm', 'You haven\'t specified '
                 'any text for your alert. Please type in some text before '
                 'clicking New.'))

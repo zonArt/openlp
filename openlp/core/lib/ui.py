@@ -86,6 +86,7 @@ class UiStrings(object):
     ResetLiveBG = translate('OpenLP.Ui', 'Reset Live Background')
     SaveType = unicode(translate('OpenLP.Ui', 'Save %s'))
     Search = translate('OpenLP.Ui', 'Search')
+    SelectDelete = translate('OpenLP.Ui', 'You must select an item to delete.')
     SendSelectLive = unicode(translate('OpenLP.Ui',
         'Send the selected %s live.'))
     Service = translate('OpenLP.Ui', 'Service')

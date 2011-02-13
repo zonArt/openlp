@@ -30,7 +30,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
-    SettingsManager, translate, check_item_selected, Receiver
+    SettingsManager, translate, check_item_selected, Receiver, StringContent
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 
 log = logging.getLogger(__name__)
@@ -121,7 +121,7 @@ class MediaMediaItem(MediaManagerItem):
         filename = unicode(item.data(QtCore.Qt.UserRole).toString())
         if os.path.exists(filename):
             service_item.title = unicode(
-                translate('MediaPlugin.MediaItem', 'Media'))
+                self.plugin.getString(StringContent.Name)[u'singular'])
             service_item.add_capability(ItemCapabilities.RequiresMedia)
             # force a nonexistent theme
             service_item.theme = -1

@@ -370,13 +370,12 @@ class BibleImportForm(OpenLPWizard):
         self.selectPage.setTitle(WizardStrings.ImportSelect)
         self.selectPage.setSubTitle(WizardStrings.ImportSelectLong)
         self.formatLabel.setText(WizardStrings.FormatLabel)
-        self.formatComboBox.setItemText(0, WizardStrings.OSIS)
-        self.formatComboBox.setItemText(1, WizardStrings.CSV)
-        self.formatComboBox.setItemText(2, WizardStrings.OS)
-        self.formatComboBox.setItemText(3,
+        self.formatComboBox.setItemText(BibleFormat.OSIS, WizardStrings.OSIS)
+        self.formatComboBox.setItemText(BibleFormat.CSV, WizardStrings.CSV)
+        self.formatComboBox.setItemText(BibleFormat.OpenSong, WizardStrings.OS)
+        self.formatComboBox.setItemText(BibleFormat.WebDownload,
             translate('BiblesPlugin.ImportWizardForm', 'Web Download'))
-        self.formatComboBox.setItemText(4,
-            translate('BiblesPlugin.ImportWizardForm', 'openlp.org 1.x'))
+        self.formatComboBox.setItemText(BibleFormat.OpenLP1, UiStrings.OLPV1)
         self.openlp1FileLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'Bible file:'))
         self.osisFileLabel.setText(
@@ -427,14 +426,9 @@ class BibleImportForm(OpenLPWizard):
         self.progressPage.setSubTitle(
             translate('BiblesPlugin.ImportWizardForm',
             'Please wait while your Bible is imported.'))
-        self.progressLabel.setText(
-            translate('BiblesPlugin.ImportWizardForm', 'Ready.'))
+        self.progressLabel.setText(WizardStrings.Ready)
         self.progressBar.setFormat(u'%p%')
-        self.openlp1DisabledLabel.setText(
-            translate('BiblesPlugin.ImportWizardForm', 'The openlp.org 1.x '
-            'importer has been disabled due to a missing Python module. If '
-            'you want to use this importer, you will need to install the '
-            '"python-sqlite" module.'))
+        self.openlp1DisabledLabel.setText(WizardStrings.NoSqlite)
         # Align all QFormLayouts towards each other.
         labelWidth = max(self.formatLabel.minimumSizeHint().width(),
             self.osisFileLabel.minimumSizeHint().width(),
@@ -580,7 +574,7 @@ class BibleImportForm(OpenLPWizard):
         """
         Show the file open dialog for the openlp.org 1.x file.
         """
-        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.OLPV1,
+        self.getFileName(WizardStrings.OpenTypeFile % UiStrings.OLPV1,
             self.openlp1FileEdit, u'%s (*.bible)' %
             translate('BiblesPlugin.ImportWizardForm', 'openlp.org 1.x bible'))
 
@@ -699,8 +693,7 @@ class BibleImportForm(OpenLPWizard):
                 'BiblesPlugin.ImportWizardForm',
                 'Starting Registering bible...'))
         else:
-            self.progressLabel.setText(translate(
-                'BiblesPlugin.ImportWizardForm', 'Starting import...'))
+            self.progressLabel.setText(translate(WizardStrings.StartingImport)
         Receiver.send_message(u'openlp_process_events')
 
     def performWizard(self):

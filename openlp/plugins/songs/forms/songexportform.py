@@ -191,8 +191,7 @@ class SongExportForm(OpenLPWizard):
         self.progressPage.setSubTitle(
             translate('SongsPlugin.ExportWizardForm',
             'Please wait while your songs are exported.'))
-        self.progressLabel.setText(
-            translate('SongsPlugin.ExportWizardForm', 'Ready.'))
+        self.progressLabel.setText(WizardStrings.Ready)
         self.progressBar.setFormat(
             translate('SongsPlugin.ExportWizardForm', '%p%'))
 

@@ -34,6 +34,7 @@ import os
 from lxml import etree
 
 from openlp.core.lib import translate
+from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib.songimport import SongImport
 from openlp.plugins.songs.lib import OpenLyrics
 
@@ -65,9 +66,8 @@ class OpenLyricsImport(SongImport):
         for file_path in self.import_source:
             if self.stop_import_flag:
                 return False
-            self.import_wizard.incrementProgressBar(unicode(translate(
-                'SongsPlugin.OpenLyricsImport', 'Importing %s...')) %
-                os.path.basename(file_path))
+            self.import_wizard.incrementProgressBar(
+                WizardStrings.ImportingType % os.path.basename(file_path))
             try:
                 parsed_file = etree.parse(file_path, parser)
                 xml = unicode(etree.tostring(parsed_file))
