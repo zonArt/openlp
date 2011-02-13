@@ -123,6 +123,7 @@ class MediaMediaItem(MediaManagerItem):
             service_item.title = unicode(
                 self.plugin.getString(StringContent.Name)[u'singular'])
             service_item.add_capability(ItemCapabilities.RequiresMedia)
+            service_item.add_capability(ItemCapabilities.AllowsVarableStartTime)
             # force a nonexistent theme
             service_item.theme = -1
             frame = u':/media/image_clapperboard.png'

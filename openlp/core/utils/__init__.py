@@ -184,7 +184,7 @@ def _get_os_dir_path(dir_type):
             elif dir_type == AppLocation.CacheDir:
                 return os.path.join(BaseDirectory.xdg_cache_home, u'openlp')
         if dir_type == AppLocation.DataDir:
-            return os.path.join(os.getenv(u'HOME'), u'openlp', u'data')
+            return os.path.join(os.getenv(u'HOME'), u'.openlp', u'data')
         return os.path.join(os.getenv(u'HOME'), u'.openlp')
 
 def _get_frozen_path(frozen_option, non_frozen_option):

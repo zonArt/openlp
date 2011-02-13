@@ -63,6 +63,7 @@ class UiStrings(object):
     Image = translate('OpenLP.Ui', 'Image')
     Import = translate('OpenLP.Ui', 'Import')
     ImportType = unicode(translate('OpenLP.Ui', 'Import %s'))
+    LengthTime = unicode(translate('OpenLP.Ui', 'Length %s'))
     Live = translate('OpenLP.Ui', 'Live')
     LivePanel = translate('OpenLP.Ui', 'Live Panel')
     Load = translate('OpenLP.Ui', 'Load')
@@ -92,6 +93,7 @@ class UiStrings(object):
         'Send the selected %s live.'))
     Service = translate('OpenLP.Ui', 'Service')
     ServiceManager = translate('OpenLP.Ui', 'Service Manager')
+    StartTimeCode = unicode(translate('OpenLP.Ui', 'Start %s'))
     Theme = translate('OpenLP.Ui', 'Theme', 'Singular')
     Themes = translate('OpenLP.Ui', 'Themes', 'Plural')
     ThemeManager = translate('OpenLP.Ui', 'Theme Manager')
@@ -99,7 +101,6 @@ class UiStrings(object):
     ToggleVisibility = unicode(translate('OpenLP.Ui',
         'Toggle the visibility of the %s.'))
     Version = translate('OpenLP.Ui', 'Version')
-
 
 def add_welcome_page(parent, image):
     """
