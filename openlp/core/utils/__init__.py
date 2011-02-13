@@ -179,8 +179,7 @@ def _get_os_dir_path(dir_type):
             if dir_type == AppLocation.ConfigDir:
                 return os.path.join(BaseDirectory.xdg_config_home, u'openlp')
             elif dir_type == AppLocation.DataDir:
-                return os.path.join(BaseDirectory.xdg_data_home, u'openlp',
-                    u'data')
+                return os.path.join(BaseDirectory.xdg_data_home, u'openlp')
             elif dir_type == AppLocation.CacheDir:
                 return os.path.join(BaseDirectory.xdg_cache_home, u'openlp')
         if dir_type == AppLocation.DataDir:
