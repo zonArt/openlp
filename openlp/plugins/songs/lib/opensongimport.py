@@ -147,8 +147,7 @@ class OpenSongImport(SongImport):
                         continue
                     log.info(u'Zip importing %s', parts[-1])
                     self.import_wizard.incrementProgressBar(
-                        unicode(translate('SongsPlugin.ImportWizardForm',
-                        'Importing %s...')) % parts[-1])
+                        WizardStrings.ImportingType % parts[-1])
                     songfile = z.open(song)
                     self.do_import_file(songfile)
                     if self.commit:

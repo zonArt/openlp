@@ -66,7 +66,6 @@ import re
 
 from lxml import etree, objectify
 
-from openlp.core.lib import translate
 from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.db import Author, Book, Song, Topic
 from openlp.plugins.songs.lib.ui import SongStrings

@@ -116,27 +116,27 @@ class SongShowPlusImport(SongImport):
                     u'Importing %s' % (file_name), 0)        
                 songData = open(file, 'rb')
                 while (1):
-                    blockKey, = struct.unpack("I",songData.read(4))
+                    blockKey, = struct.unpack("I", songData.read(4))
                     # The file ends with 4 NUL's
                     if blockKey == 0:
                         break
-                    nextBlockStarts, = struct.unpack("I",songData.read(4))
+                    nextBlockStarts, = struct.unpack("I", songData.read(4))
                     if blockKey == VERSE or blockKey == CHORUS:
-                        null, verseNo,  = struct.unpack("BB",songData.read(2))
+                        null, verseNo,  = struct.unpack("BB", songData.read(2))
                     elif blockKey == CUSTOM_VERSE:
                         null, verseNameLength,  = struct.unpack("BB",
                             songData.read(2))
                         verseName = songData.read(verseNameLength)
-                    lengthDescriptorSize, = struct.unpack("B",songData.read(1))
+                    lengthDescriptorSize, = struct.unpack("B", songData.read(1))
                     # Detect if/how long the length descriptor is
                     if lengthDescriptorSize == 12:
-                        lengthDescriptor, = struct.unpack("I",songData.read(4))
+                        lengthDescriptor, = struct.unpack("I", songData.read(4))
                     elif lengthDescriptorSize == 2:
                         lengthDescriptor = 1
                     elif lengthDescriptorSize == 9:
                         lengthDescriptor = 0
                     else: 
-                        lengthDescriptor, = struct.unpack("B",songData.read(1))
+                        lengthDescriptor, = struct.unpack("B", songData.read(1))
                     data = songData.read(lengthDescriptor)
                     
                     if blockKey == TITLE:
