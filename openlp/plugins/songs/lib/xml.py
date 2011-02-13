@@ -69,6 +69,7 @@ from lxml import etree, objectify
 from openlp.core.lib import translate
 from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.db import Author, Book, Song, Topic
+from openlp.plugins.songs.lib.ui import SongStrings
 
 log = logging.getLogger(__name__)
 
@@ -377,7 +378,7 @@ class OpenLyrics(object):
         except AttributeError:
             pass
         if not authors:
-            authors.append(u'Author Unknown')
+            authors.append(SongStrings.AuthorUnknownUnT)
         for display_name in authors:
             author = self.manager.get_object_filtered(Author,
                 Author.display_name == display_name)

@@ -31,6 +31,7 @@ from PyQt4 import QtCore
 from openlp.core.lib import Receiver, translate
 from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.db import Song, Author, Topic, Book, MediaFile
+from openlp.plugins.songs.lib.ui import SongStrings
 from openlp.plugins.songs.lib.xml import SongXML
 
 log = logging.getLogger(__name__)
@@ -260,7 +261,7 @@ class SongImport(QtCore.QObject):
         All fields have been set to this song. Write the song to disk.
         """
         if not self.authors:
-            self.authors.append(u'Author Unknown')
+            self.authors.append(SongStrings.AuthorUnknownUnT)
         log.info(u'commiting song %s to database', self.title)
         song = Song()
         song.title = self.title
