@@ -33,7 +33,6 @@ import os
 
 from lxml import etree
 
-from openlp.core.lib import translate
 from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib.songimport import SongImport
 from openlp.plugins.songs.lib import OpenLyrics

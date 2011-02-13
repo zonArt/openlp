@@ -97,7 +97,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
     def onNewClick(self):
         if len(self.alertTextEdit.text()) == 0:
             QtGui.QMessageBox.information(self, UiStrings.NewType %
-                self.plugin.getString(StringContent.Name)[u'singular']
+                self.plugin.getString(StringContent.Name)[u'singular'],
                 translate('AlertsPlugin.AlertForm', 'You haven\'t specified '
                 'any text for your alert. Please type in some text before '
                 'clicking New.'))
