@@ -34,7 +34,8 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, ThemeXML, get_text_file_string, \
     build_icon, Receiver, SettingsManager, translate, check_item_selected, \
-    BackgroundType, BackgroundGradientType, check_directory_exists
+    BackgroundType, BackgroundGradientType, check_directory_exists, \
+    VerticalType
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.theme import Theme
 from openlp.core.ui import FileRenameForm, ThemeForm
@@ -64,7 +65,7 @@ class ThemeManager(QtGui.QWidget):
         self.toolbar.addToolbarButton(
             UiStrings.NewType % UiStrings.Theme,
             u':/themes/theme_new.png',
-            translate('OpenLP.ThemeManager', 'Create a new theme.'),
+            UiStrings.CreateANew % UiStrings.Theme.toLower(),
             self.onAddTheme)
         self.toolbar.addToolbarButton(
             UiStrings.EditType % UiStrings.Theme,
@@ -406,7 +407,7 @@ class ThemeManager(QtGui.QWidget):
             translate('OpenLP.ThemeManager', 'Select Theme Import File'),
             SettingsManager.get_last_dir(self.settingsSection),
             translate('OpenLP.ThemeManager', 'Theme v1 (*.theme);;'
-            'Theme v2 (*.otz);;All Files (*.*)'))
+            'Theme v2 (*.otz);;%s (*.*)') % UiStrings.AllFiles)
         log.info(u'New Themes %s', unicode(files))
         if files:
             for file in files:
@@ -762,11 +763,11 @@ class ThemeManager(QtGui.QWidget):
             newtheme.font_main_outline = True
             newtheme.font_main_outline_color = \
                 unicode(theme.OutlineColor.name())
-        vAlignCorrection = 0
+        vAlignCorrection = VerticalType.Top
         if theme.VerticalAlign == 2:
-            vAlignCorrection = 1
+            vAlignCorrection = VerticalType.Middle
         elif theme.VerticalAlign == 1:
-            vAlignCorrection = 2
+            vAlignCorrection = VerticalType.Bottom
         newtheme.display_horizontal_align = theme.HorizontalAlign
         newtheme.display_vertical_align = vAlignCorrection
         return newtheme.extract_xml()

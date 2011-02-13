@@ -35,7 +35,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import OpenLPToolbar, ServiceItem, context_menu_action, \
     Receiver, build_icon, ItemCapabilities, SettingsManager, translate, \
     ThemeLevel
-from openlp.core.lib.ui import critical_error_message_box
+from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm
 from openlp.core.ui.printserviceorderform import PrintServiceOrderForm
 from openlp.core.utils import AppLocation, delete_file, file_is_unicode, \
@@ -95,17 +95,17 @@ class ServiceManager(QtGui.QWidget):
         # Create the top toolbar
         self.toolbar = OpenLPToolbar(self)
         self.toolbar.addToolbarButton(
-            translate('OpenLP.ServiceManager', 'New Service'),
+            UiStrings.NewType % UiStrings.Service,
             u':/general/general_new.png',
-            translate('OpenLP.ServiceManager', 'Create a new service'),
+            UiStrings.CreateANew % UiStrings.Service.toLower(),
             self.onNewServiceClicked)
         self.toolbar.addToolbarButton(
-            translate('OpenLP.ServiceManager', 'Open Service'),
+            UiStrings.OpenType % UiStrings.Service,
             u':/general/general_open.png',
             translate('OpenLP.ServiceManager', 'Load an existing service'),
             self.onLoadServiceClicked)
         self.toolbar.addToolbarButton(
-            translate('OpenLP.ServiceManager', 'Save Service'),
+            UiStrings.SaveType % UiStrings.Service,
             u':/general/general_save.png',
             translate('OpenLP.ServiceManager', 'Save this service'),
             self.saveFile)
@@ -461,11 +461,11 @@ class ServiceManager(QtGui.QWidget):
 
     def saveFileAs(self):
         """
-        Get a file name and then call :function:`ServiceManager.saveFile` to
+        Get a file name and then call :func:`ServiceManager.saveFile` to
         save the file.
         """
         fileName = unicode(QtGui.QFileDialog.getSaveFileName(self.mainwindow,
-            translate('OpenLP.ServiceManager', 'Save Service'),
+            UiStrings.SaveType % UiStrings.Service,
             SettingsManager.get_last_dir(
             self.mainwindow.serviceSettingsSection),
             translate('OpenLP.ServiceManager', 'OpenLP Service Files (*.osz)')))

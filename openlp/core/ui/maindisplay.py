@@ -145,7 +145,7 @@ class MainDisplay(DisplayWidget):
             serviceItem = ServiceItem()
             serviceItem.bg_image_bytes = image_to_byte(initialFrame)
             self.webView.setHtml(build_html(serviceItem, self.screen,
-                self.parent.alertTab, self.isLive, None))
+                self.alertTab, self.isLive, None))
             self.initialFrame = True
             # To display or not to display?
             if not self.screen[u'primary']:
@@ -406,7 +406,7 @@ class MainDisplay(DisplayWidget):
         if self.serviceItem.themedata.background_filename:
             self.serviceItem.bg_image_bytes = self.imageManager. \
                 get_image_bytes(self.serviceItem.themedata.theme_name)
-        html = build_html(self.serviceItem, self.screen, self.parent.alertTab,
+        html = build_html(self.serviceItem, self.screen, self.alertTab,
             self.isLive, background)
         log.debug(u'buildHtml - pre setHtml')
         self.webView.setHtml(html)

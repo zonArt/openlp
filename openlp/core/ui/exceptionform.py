@@ -56,6 +56,7 @@ except ImportError:
 
 from openlp.core.lib import translate, SettingsManager
 from openlp.core.lib.mailto import mailto
+from openlp.core.lib.ui import UiStrings
 
 from exceptiondialog import Ui_ExceptionDialog
 
@@ -176,8 +177,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             self,translate('ImagePlugin.ExceptionDialog',
             'Select Attachment'),
             SettingsManager.get_last_dir(u'exceptions'),
-            u'%s (*.*) (*)' %
-            unicode(translate('ImagePlugin.MediaItem', 'All Files')))
+            u'%s (*.*) (*)' % UiStrings.AllFiles)
         log.info(u'New files(s) %s', unicode(files))
         if files:
             self.fileAttachment = unicode(files)
