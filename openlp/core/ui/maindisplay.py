@@ -349,10 +349,7 @@ class MainDisplay(DisplayWidget):
         Start the video at a predetermined point.
         """
         if newState == 2:
-            time = self.serviceItem.start_time[0] * 60 * 60 + \
-                self.serviceItem.start_time[1] * 60 + \
-                self.serviceItem.start_time[2]
-            self.mediaObject.seek(time * 1000)
+            self.mediaObject.seek(self.serviceItem.start_time * 1000)
 
     def isWebLoaded(self):
         """

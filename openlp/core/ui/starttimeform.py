@@ -28,8 +28,6 @@ from PyQt4 import QtGui
 
 from starttimedialog import Ui_StartTimeDialog
 
-from openlp.core.lib import translate
-
 class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog):
     """
     The exception dialog
@@ -42,8 +40,13 @@ class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog):
         """
         Run the Dialog with correct heading.
         """
-        self.hourSpinBox.setValue(self.item[u'service_item'].start_time[0])
-        self.minuteSpinBox.setValue(self.item[u'service_item'].start_time[1])
-        self.secondSpinBox.setValue(self.item[u'service_item'].start_time[2])
+        seconds = self.item[u'service_item'].start_time
+        hours = seconds / 3600
+        seconds -= 3600 * hours
+        minutes = seconds / 60
+        seconds -= 60 * minutes
+        self.hourSpinBox.setValue(hours)
+        self.minuteSpinBox.setValue(minutes)
+        self.secondSpinBox.setValue(seconds)
         return QtGui.QDialog.exec_(self)
 

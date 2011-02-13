@@ -109,7 +109,7 @@ class ServiceItem(object):
         self.data_string = u''
         self.edit_id = None
         self.xml_version = None
-        self.start_time = [0, 0, 0]
+        self.start_time = 0
         self._new_item()
 
     def _new_item(self):
@@ -436,16 +436,16 @@ class ServiceItem(object):
         tooltip = None
         start = None
         end = None
-        if self.start_time != [0, 0, 0]:
-            start = UiStrings.Start % \
-                (self.start_time[0], self.start_time[1], self.start_time[2])
+        if self.start_time != 0:
+            start = UiStrings.StartTimeCode % \
+                unicode(datetime.timedelta(seconds=self.start_time))
         path = os.path.join(self.get_frames()[0][u'path'],
             self.get_frames()[0][u'title'])
         if os.path.isfile(path):
             file = mutagen.File(path)
             if file is not None:
                 seconds = int(file.info.length)
-                end = UiStrings.Length % \
+                end = UiStrings.LengthTime % \
                     unicode(datetime.timedelta(seconds=seconds))
         if not start and not end:
             return None
