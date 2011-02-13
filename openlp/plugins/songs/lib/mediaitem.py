@@ -306,9 +306,7 @@ class SongMediaItem(MediaManagerItem):
         Edit a song
         """
         log.debug(u'onEditClick')
-        if check_item_selected(self.listView,
-            translate('SongsPlugin.MediaItem',
-            'You must select an item to edit.')):
+        if check_item_selected(self.listView, UiStrings.SelectEdit):
             self.editItem = self.listView.currentItem()
             item_id = (self.editItem.data(QtCore.Qt.UserRole)).toInt()[0]
             self.edit_song_form.loadSong(item_id, False)
