@@ -106,6 +106,9 @@ class MainDisplay(DisplayWidget):
         self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
         Phonon.createPath(self.mediaObject, self.videoWidget)
         Phonon.createPath(self.mediaObject, self.audio)
+        QtCore.QObject.connect(self.mediaObject,
+            QtCore.SIGNAL(u'stateChanged(Phonon::State, Phonon::State)'),
+            self.videoStart)
         self.webView = QtWebKit.QWebView(self)
         self.webView.setGeometry(0, 0,
             self.screen[u'size'].width(), self.screen[u'size'].height())
@@ -340,6 +343,13 @@ class MainDisplay(DisplayWidget):
         # Update the preview frame.
         Receiver.send_message(u'maindisplay_active')
         return self.preview()
+
+    def videoStart(self, newState, oldState):
+        """
+        Start the video at a predetermined point.
+        """
+        if newState == 2:
+            self.mediaObject.seek(self.serviceItem.start_time * 1000)
 
     def isWebLoaded(self):
         """

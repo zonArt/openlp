@@ -58,6 +58,7 @@ class UiStrings(object):
     ExportType = unicode(translate('OpenLP.Ui', 'Export %s'))
     Import = translate('OpenLP.Ui', 'Import')
     ImportType = unicode(translate('OpenLP.Ui', 'Import %s'))
+    LengthTime = unicode(translate('OpenLP.Ui', 'Length %s'))
     Live = translate('OpenLP.Ui', 'Live')
     Load = translate('OpenLP.Ui', 'Load')
     LoadANew = unicode(translate('OpenLP.Ui', 'Load a new %s.'))
@@ -75,9 +76,9 @@ class UiStrings(object):
     SendSelectLive = unicode(translate('OpenLP.Ui',
         'Send the selected %s live.'))
     Service = translate('OpenLP.Ui', 'Service')
+    StartTimeCode = unicode(translate('OpenLP.Ui', 'Start %s'))
     Theme = translate('OpenLP.Ui', 'Theme')
     Themes = translate('OpenLP.Ui', 'Themes')
-
 
 def add_welcome_page(parent, image):
     """
