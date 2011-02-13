@@ -90,9 +90,9 @@ class BibleMediaItem(MediaManagerItem):
         self.quickSearchEdit.setObjectName(u'quickSearchEdit')
         self.quickSearchLabel.setBuddy(self.quickSearchEdit)
         self.quickSearchEdit.setSearchTypes([
-            (1, u':/songs/song_topic_edit.png',
-            translate('BiblesPlugin.MediaItem', 'Verse Search')),
-            (2, u':/songs/song_search_author.png',
+            (1, u':/bibles/bibles_serach_reference.png',
+            translate('BiblesPlugin.MediaItem', 'Scripture Reference')),
+            (2, u':/bibles/bibles_serach_text.png',
             translate('BiblesPlugin.MediaItem', 'Text Search'))
         ])
         self.quickLayout.addRow(self.quickSearchLabel, self.quickSearchEdit)
@@ -352,10 +352,10 @@ class BibleMediaItem(MediaManagerItem):
         """
         This updates the bible book completion list for the search field. The
         completion depends on the bible. It is only updated when we are doing a
-        verse search, otherwise the auto completion list is removed.
+        reference search, otherwise the auto completion list is removed.
         """
         books = []
-        # We have to do a 'Verse Search'.
+        # We have to do a 'Reference Search'.
         if self.quickSearchEdit.currentSearchType() == 1:
             bibles = self.parent.manager.get_bibles()
             bible = unicode(self.quickVersionComboBox.currentText())
@@ -485,7 +485,7 @@ class BibleMediaItem(MediaManagerItem):
     def onQuickSearchButton(self):
         """
         Does a quick search and saves the search results. Quick search can
-        either be "Verse Search" or "Text Search".
+        either be "Reference Search" or "Text Search".
         """
         log.debug(u'Quick Search Button pressed')
         self.quickSearchButton.setEnabled(False)
@@ -494,7 +494,7 @@ class BibleMediaItem(MediaManagerItem):
         second_bible = unicode(self.quickSecondComboBox.currentText())
         text = unicode(self.quickSearchEdit.text())
         if self.quickSearchEdit.currentSearchType() == 1:
-            # We are doing a 'Verse Search'.
+            # We are doing a 'Reference Search'.
             self.search_results = self.parent.manager.get_verses(bible, text)
             if second_bible and self.search_results:
                 self.second_search_results = self.parent.manager.get_verses(
