@@ -28,11 +28,14 @@ The :mod:`serviceitem` provides the service item functionality including the
 type and capability of an item.
 """
 
+import datetime
 import logging
+import mutagen
 import os
 import uuid
 
 from openlp.core.lib import build_icon, clean_tags, expand_tags
+from openlp.core.lib.ui import UiStrings
 
 log = logging.getLogger(__name__)
 
@@ -106,7 +109,7 @@ class ServiceItem(object):
         self.data_string = u''
         self.edit_id = None
         self.xml_version = None
-        self.start_time =[0, 0, 0]
+        self.start_time = [0, 0, 0]
         self._new_item()
 
     def _new_item(self):
@@ -425,3 +428,30 @@ class ServiceItem(object):
             return self._raw_frames[row][u'path']
         except IndexError:
             return u''
+
+    def get_media_time(self):
+        """
+        Returns the start and finish time for a media item
+        """
+        tooltip = None
+        start = None
+        end = None
+        if self.start_time != [0, 0, 0]:
+            start = UiStrings.Start % \
+                (self.start_time[0], self.start_time[1], self.start_time[2])
+        path = os.path.join(self.get_frames()[0][u'path'],
+            self.get_frames()[0][u'title'])
+        if os.path.isfile(path):
+            file = mutagen.File(path)
+            if file is not None:
+                seconds = int(file.info.length)
+                end = UiStrings.Length % \
+                    unicode(datetime.timedelta(seconds=seconds))
+        if not start and not end:
+            return None
+        elif start and not end:
+            return start
+        elif not start and end:
+            return end
+        else:
+            return u'%s : %s' % (start, end)

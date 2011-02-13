@@ -611,12 +611,14 @@ class ServiceManager(QtGui.QWidget):
         item = self.findServiceItem()[0]
         self.startTimeForm.item = self.serviceItems[item]
         if self.startTimeForm.exec_():
+            self.serviceItems[item][u'service_item'].start_time = [0, 0, 0]
             self.serviceItems[item][u'service_item'].start_time[0] = \
                 self.startTimeForm.hourSpinBox.value()
             self.serviceItems[item][u'service_item'].start_time[1] = \
                 self.startTimeForm.minuteSpinBox.value()
             self.serviceItems[item][u'service_item'].start_time[2] = \
                 self.startTimeForm.secondSpinBox.value()
+            self.repaintServiceList(item, -1)
 
     def onServiceItemEditForm(self):
         item = self.findServiceItem()[0]
@@ -864,6 +866,9 @@ class ServiceManager(QtGui.QWidget):
                 text = frame[u'title'].replace(u'\n', u' ')
                 child.setText(0, text[:40])
                 child.setData(0, QtCore.Qt.UserRole, QtCore.QVariant(count))
+                tip= item[u'service_item'].get_media_time()
+                if tip:
+                    child.setToolTip(0, tip)
                 if serviceItem == itemcount:
                     if item[u'expanded'] and serviceItemChild == count:
                         self.serviceManagerList.setCurrentItem(child)

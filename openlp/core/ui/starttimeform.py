@@ -46,3 +46,4 @@ class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog):
         self.minuteSpinBox.setValue(self.item[u'service_item'].start_time[1])
         self.secondSpinBox.setValue(self.item[u'service_item'].start_time[2])
         return QtGui.QDialog.exec_(self)
+
