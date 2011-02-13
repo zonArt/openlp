@@ -54,6 +54,7 @@ class WizardStrings(object):
     OSIS = u'OSIS'
     SB = u'SongBeamer'
     SoF = u'Songs of Fellowship'
+    SSP = u'SongShow Plus'
     WoW = u'Words of Worship'
     # These strings should need a good reason to be retranslated elsewhere.
     Description = unicode(translate('OpenLP.Ui', 'This wizard will help you '
