@@ -97,7 +97,7 @@ class ServiceManager(QtGui.QWidget):
         self.toolbar = OpenLPToolbar(self)
         self.toolbar.addToolbarButton(
             UiStrings.NewService, u':/general/general_new.png',
-            UiStrings.Create.Service, self.onNewServiceClicked)
+            UiStrings.CreateService, self.onNewServiceClicked)
         self.toolbar.addToolbarButton(
             UiStrings.OpenService, u':/general/general_open.png',
             translate('OpenLP.ServiceManager', 'Load an existing service'),
