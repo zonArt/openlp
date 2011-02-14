@@ -21,6 +21,10 @@
     <file>song_topic_edit.png</file>
     <file>song_book_edit.png</file>
   </qresource>
+  <qresource prefix="bibles">
+    <file>bibles_search_text.png</file>
+    <file>bibles_search_reference.png</file>
+  </qresource>
   <qresource prefix="plugins">
     <file>plugin_alerts.png</file>
     <file>plugin_bibles.png</file>
