@@ -23,13 +23,16 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+import logging
 import os
 
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver
+from openlp.core.utils import get_uno_command, get_uno_instance
 from songimport import SongImport
+
+log = logging.getLogger(__name__)
 
 if os.name == u'nt':
     from win32com.client import Dispatch
@@ -59,36 +62,38 @@ class OooImport(SongImport):
         self.document = None
         self.process_started = False
         self.filenames = kwargs[u'filenames']
-        self.uno_connection_type = u'pipe' #u'socket'
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'song_stop_import'), self.stop_import)
+            QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
 
     def do_import(self):
-        self.abort = False
-        self.import_wizard.importProgressBar.setMaximum(0)
+        self.stop_import_flag = False
+        self.import_wizard.progressBar.setMaximum(0)
         self.start_ooo()
         for filename in self.filenames:
-            if self.abort:
+            if self.stop_import_flag:
                 self.import_wizard.incrementProgressBar(u'Import cancelled', 0)
                 return
             filename = unicode(filename)
             if os.path.isfile(filename):
                 self.open_ooo_file(filename)
                 if self.document:
-                    if self.document.supportsService(
-                        "com.sun.star.presentation.PresentationDocument"):
-                        self.process_pres()
-                    if self.document.supportsService(
-                            "com.sun.star.text.TextDocument"):
-                        self.process_doc()
+                    self.process_ooo_document()
                     self.close_ooo_file()
         self.close_ooo()
-        self.import_wizard.importProgressBar.setMaximum(1)
+        self.import_wizard.progressBar.setMaximum(1)
         self.import_wizard.incrementProgressBar(u'', 1)
         return True
 
-    def stop_import(self):
-        self.abort = True
+    def process_ooo_document(self):
+        """
+        Handle the import process for OpenOffice files. This method facilitates
+        allowing subclasses to handle specific types of OpenOffice files.
+        """
+        if self.document.supportsService(
+            "com.sun.star.presentation.PresentationDocument"):
+            self.process_pres()
+        if self.document.supportsService("com.sun.star.text.TextDocument"):
+            self.process_doc()
 
     def start_ooo(self):
         """
@@ -103,25 +108,18 @@ class OooImport(SongImport):
             context = uno.getComponentContext()
             resolver = context.ServiceManager.createInstanceWithContext(
                 u'com.sun.star.bridge.UnoUrlResolver', context)
-            ctx = None
+            uno_instance = None
             loop = 0
-            while ctx is None and loop < 5:
+            while uno_instance is None and loop < 5:
                 try:
-                    if self.uno_connection_type == u'pipe':
-                        ctx = resolver.resolve(u'uno:' \
-                            + u'pipe,name=openlp_pipe;' \
-                            + u'urp;StarOffice.ComponentContext')
-                    else:
-                        ctx = resolver.resolve(u'uno:' \
-                            + u'socket,host=localhost,port=2002;' \
-                            + u'urp;StarOffice.ComponentContext')
+                    uno_instance = get_uno_instance(resolver)
                 except:
-                    pass
-                self.start_ooo_process()
-                loop += 1
-            manager = ctx.ServiceManager
+                    log.exception("Failed to resolve uno connection")
+                    self.start_ooo_process()
+                    loop += 1
+            manager = uno_instance.ServiceManager
             self.desktop = manager.createInstanceWithContext(
-                "com.sun.star.frame.Desktop", ctx)
+                "com.sun.star.frame.Desktop", uno_instance)
 
     def start_ooo_process(self):
         try:
@@ -130,20 +128,13 @@ class OooImport(SongImport):
                 self.manager._FlagAsMethod(u'Bridge_GetStruct')
                 self.manager._FlagAsMethod(u'Bridge_GetValueObject')
             else:
-                if self.uno_connection_type == u'pipe':
-                    cmd = u'openoffice.org -nologo -norestore -minimized ' \
-                        + u'-invisible -nofirststartwizard ' \
-                        + u'-accept=pipe,name=openlp_pipe;urp;'
-                else:
-                    cmd = u'openoffice.org -nologo -norestore -minimized ' \
-                        + u'-invisible -nofirststartwizard ' \
-                        + u'-accept=socket,host=localhost,port=2002;urp;'
+                cmd = get_uno_command()
                 process = QtCore.QProcess()
                 process.startDetached(cmd)
                 process.waitForStarted()
             self.process_started = True
         except:
-            pass
+            log.exception("start_ooo_process failed")
 
     def open_ooo_file(self, filepath):
         """
@@ -167,7 +158,7 @@ class OooImport(SongImport):
                 self.import_wizard.incrementProgressBar(
                     u'Processing file ' + filepath, 0)
         except:
-            pass
+            log.exception("open_ooo_file failed")
         return
 
     def close_ooo_file(self):
@@ -192,7 +183,7 @@ class OooImport(SongImport):
         slides = doc.getDrawPages()
         text = u''
         for slide_no in range(slides.getCount()):
-            if self.abort:
+            if self.stop_import_flag:
                 self.import_wizard.incrementProgressBar(u'Import cancelled', 0)
                 return
             slide = slides.getByIndex(slide_no)

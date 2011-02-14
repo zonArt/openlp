@@ -78,7 +78,7 @@ class OpenLP1SongImport(SongImport):
         cursor.execute(u'SELECT COUNT(songid) FROM songs')
         count = cursor.fetchone()[0]
         success = True
-        self.import_wizard.importProgressBar.setMaximum(count)
+        self.import_wizard.progressBar.setMaximum(count)
         # "cache" our list of authors
         cursor.execute(u'-- types int, unicode')
         cursor.execute(u'SELECT authorid, authorname FROM authors')

@@ -48,49 +48,27 @@ class VerseType(object):
         ``verse_type``
             The type to return a string for
         """
-        if verse_type == VerseType.Verse:
-            return translate('SongsPlugin.VerseType', 'Verse')
-        elif verse_type == VerseType.Chorus:
-            return translate('SongsPlugin.VerseType', 'Chorus')
-        elif verse_type == VerseType.Bridge:
-            return translate('SongsPlugin.VerseType', 'Bridge')
-        elif verse_type == VerseType.PreChorus:
-            return translate('SongsPlugin.VerseType', 'Pre-Chorus')
-        elif verse_type == VerseType.Intro:
-            return translate('SongsPlugin.VerseType', 'Intro')
-        elif verse_type == VerseType.Ending:
-            return translate('SongsPlugin.VerseType', 'Ending')
-        elif verse_type == VerseType.Other:
-            return translate('SongsPlugin.VerseType', 'Other')
-
-    @staticmethod
-    def expand_string(verse_type):
-        """
-        Return the VerseType for a given string
-
-        ``verse_type``
-            The string to return a VerseType for
-        """
-        verse_type = verse_type.lower()
-        if verse_type == \
+        if not isinstance(verse_type, int):
+            verse_type = verse_type.lower()
+        if verse_type == VerseType.Verse or verse_type == \
             unicode(VerseType.to_string(VerseType.Verse)).lower()[0]:
             return translate('SongsPlugin.VerseType', 'Verse')
-        elif verse_type == \
+        elif verse_type == VerseType.Chorus or verse_type == \
             unicode(VerseType.to_string(VerseType.Chorus)).lower()[0]:
             return translate('SongsPlugin.VerseType', 'Chorus')
-        elif verse_type == \
+        elif verse_type == VerseType.Bridge or verse_type == \
             unicode(VerseType.to_string(VerseType.Bridge)).lower()[0]:
             return translate('SongsPlugin.VerseType', 'Bridge')
-        elif verse_type == \
+        elif verse_type == VerseType.PreChorus or verse_type == \
             unicode(VerseType.to_string(VerseType.PreChorus)).lower()[0]:
-            return translate('SongsPlugin.VerseType', 'PreChorus')
-        elif verse_type == \
+            return translate('SongsPlugin.VerseType', 'Pre-Chorus')
+        elif verse_type == VerseType.Intro or verse_type == \
             unicode(VerseType.to_string(VerseType.Intro)).lower()[0]:
             return translate('SongsPlugin.VerseType', 'Intro')
-        elif verse_type == \
+        elif verse_type == VerseType.Ending or verse_type == \
             unicode(VerseType.to_string(VerseType.Ending)).lower()[0]:
             return translate('SongsPlugin.VerseType', 'Ending')
-        elif verse_type == \
+        elif verse_type == VerseType.Other or verse_type == \
             unicode(VerseType.to_string(VerseType.Other)).lower()[0]:
             return translate('SongsPlugin.VerseType', 'Other')
 
@@ -126,6 +104,15 @@ class VerseType(object):
 
 
 def retrieve_windows_encoding(recommendation=None):
+    """
+    Determines which encoding to use on an information source. The process uses
+    both automated detection, which is passed to this method as a
+    recommendation, and user confirmation to return an encoding.
+
+    ``recommendation``
+        A recommended encoding discovered programmatically for the user to
+        confirm.
+    """
     # map chardet result to compatible windows standard code page
     codepage_mapping = {'IBM866': u'cp866', 'TIS-620': u'cp874',
         'SHIFT_JIS': u'cp932', 'GB2312': u'cp936', 'HZ-GB-2312': u'cp936',
@@ -163,7 +150,7 @@ def retrieve_windows_encoding(recommendation=None):
             translate('SongsPlugin', 'Character Encoding'),
             translate('SongsPlugin', 'The codepage setting is responsible\n'
                 'for the correct character representation.\n'
-                'Usually you are fine with the preselected choise.'),
+                'Usually you are fine with the preselected choice.'),
             [pair[1] for pair in encodings], recommended_index, False)
     else:
         choice = QtGui.QInputDialog.getItem(None,
@@ -175,6 +162,6 @@ def retrieve_windows_encoding(recommendation=None):
         return None
     return filter(lambda item: item[1] == choice[0], encodings)[0][0]
 
-from xml import LyricsXML, SongXMLBuilder, SongXMLParser, OpenLyricsParser
+from xml import OpenLyrics, SongXML
 from songstab import SongsTab
 from mediaitem import SongMediaItem

@@ -30,7 +30,6 @@ A Thread is used to convert the image to a byte array so the user does not need
 to wait for the conversion to happen.
 """
 import logging
-import os
 import time
 
 from PyQt4 import QtCore
@@ -62,10 +61,10 @@ class Image(object):
     image = None
     image_bytes = None
 
+
 class ImageManager(QtCore.QObject):
     """
     Image Manager handles the conversion and sizing of images.
-
     """
     log.info(u'Image Manager loaded')
 
@@ -86,8 +85,7 @@ class ImageManager(QtCore.QObject):
         for key in self._cache.keys():
             image = self._cache[key]
             image.dirty = True
-            fullpath = os.path.join(image.path, image.name)
-            image.image = resize_image(fullpath,
+            image.image = resize_image(image.path,
                 self.width, self.height)
         self._cache_dirty = True
         # only one thread please

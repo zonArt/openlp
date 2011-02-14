@@ -40,21 +40,13 @@ class AlertsPlugin(Plugin):
     log.info(u'Alerts Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Alerts', u'1.9.4', plugin_helpers)
+        Plugin.__init__(self, u'Alerts', u'1.9.4', plugin_helpers,
+            settingsTabClass=AlertsTab)
         self.weight = -3
         self.icon = build_icon(u':/plugins/plugin_alerts.png')
         self.alertsmanager = AlertsManager(self)
         self.manager = Manager(u'alerts', init_schema)
-        visible_name = self.getString(StringContent.VisibleName)
-        self.alertForm = AlertForm(self, visible_name[u'title'])
-
-    def getSettingsTab(self):
-        """
-        Return the settings tab for the Alerts plugin
-        """
-        visible_name = self.getString(StringContent.VisibleName)
-        self.alertsTab = AlertsTab(self, visible_name[u'title'])
-        return self.alertsTab
+        self.alertForm = AlertForm(self)
 
     def addToolsMenuItem(self, tools_menu):
         """
@@ -73,7 +65,7 @@ class AlertsPlugin(Plugin):
         self.toolsAlertItem.setStatusTip(
             translate('AlertsPlugin', 'Show an alert message.'))
         self.toolsAlertItem.setShortcut(u'F7')
-        self.serviceManager.parent.ToolsMenu.addAction(self.toolsAlertItem)
+        self.serviceManager.mainwindow.ToolsMenu.addAction(self.toolsAlertItem)
         QtCore.QObject.connect(self.toolsAlertItem,
             QtCore.SIGNAL(u'triggered()'), self.onAlertsTrigger)
         self.toolsAlertItem.setVisible(False)
@@ -82,7 +74,7 @@ class AlertsPlugin(Plugin):
         log.info(u'Alerts Initialising')
         Plugin.initialise(self)
         self.toolsAlertItem.setVisible(True)
-        self.liveController.alertTab = self.alertsTab
+        self.liveController.alertTab = self.settings_tab
 
     def finalise(self):
         """

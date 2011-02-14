@@ -186,7 +186,7 @@ class EasyWorshipSongImport(SongImport):
         # There does not appear to be a _reliable_ way of getting the number
         # of songs/records, so let's use file blocks for measuring progress.
         total_blocks = (db_size - header_size) / (block_size * 1024)
-        self.import_wizard.importProgressBar.setMaximum(total_blocks)
+        self.import_wizard.progressBar.setMaximum(total_blocks)
         # Read the field description information
         db_file.seek(120)
         field_info = db_file.read(num_fields * 2)

@@ -26,6 +26,9 @@
 """
 The :mod:`ui` module provides the core user interface for OpenLP
 """
+from PyQt4 import QtGui
+
+from openlp.core.lib import translate
 
 class HideMode(object):
     """
@@ -35,11 +38,11 @@ class HideMode(object):
     ``Blank``
         This mode is used to hide all output, specifically by covering the
         display with a black screen.
-        
+
     ``Theme``
         This mode is used to hide all output, but covers the display with the
         current theme background, as opposed to black.
-        
+
     ``Desktop``
         This mode hides all output by minimising the display, leaving the user's
         desktop showing.
@@ -50,6 +53,7 @@ class HideMode(object):
 
 from themeform import ThemeForm
 from filerenameform import FileRenameForm
+from starttimeform import StartTimeForm
 from maindisplay import MainDisplay
 from servicenoteform import ServiceNoteForm
 from serviceitemeditform import ServiceItemEditForm
@@ -68,6 +72,6 @@ from mediadockmanager import MediaDockManager
 from servicemanager import ServiceManager
 from thememanager import ThemeManager
 
-__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm',
-    'MainDisplay', 'SlideController', 'ServiceManager', 'ThemeManager',
-    'MediaDockManager', 'ServiceItemEditForm']
+__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainDisplay',
+    'SlideController', 'ServiceManager', 'ThemeManager', 'MediaDockManager',
+    'ServiceItemEditForm']

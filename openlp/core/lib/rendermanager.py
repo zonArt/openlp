@@ -68,7 +68,6 @@ class RenderManager(object):
         self.theme_level = u''
         self.override_background = None
         self.theme_data = None
-        self.alertTab = None
         self.force_page = False
 
     def update_display(self):

@@ -74,7 +74,11 @@ class PresentationPlugin(Plugin):
         self.insertToolboxItem()
         for controller in self.controllers:
             if self.controllers[controller].enabled():
-                self.controllers[controller].start_process()
+                try:
+                    self.controllers[controller].start_process()
+                except:
+                    log.exception(u'Failed to start controller process')
+                    self.controllers[controller].available = False
         self.mediaItem.buildFileMaskString()
 
     def finalise(self):
@@ -163,33 +167,18 @@ class PresentationPlugin(Plugin):
                 'container title')
         }
         # Middle Header Bar
-        ## Load Action ##
-        self.textStrings[StringContent.Load] = {
-            u'title': translate('PresentationPlugin', 'Load'),
-            u'tooltip': translate('PresentationPlugin',
-                'Load a new Presentation')
-        }
-        ## Delete Action ##
-        self.textStrings[StringContent.Delete] = {
-            u'title': translate('PresentationPlugin', 'Delete'),
-            u'tooltip': translate('PresentationPlugin',
-                'Delete the selected Presentation')
-        }
-        ## Preview Action ##
-        self.textStrings[StringContent.Preview] = {
-            u'title': translate('PresentationPlugin', 'Preview'),
-            u'tooltip': translate('PresentationPlugin',
-                'Preview the selected Presentation')
-        }
-        ## Send Live Action ##
-        self.textStrings[StringContent.Live] = {
-            u'title': translate('PresentationPlugin', 'Live'),
-            u'tooltip': translate('PresentationPlugin',
-                'Send the selected Presentation live')
-        }
-        ## Add to Service Action ##
-        self.textStrings[StringContent.Service] = {
-            u'title': translate('PresentationPlugin', 'Service'),
-            u'tooltip': translate('PresentationPlugin',
+        tooltips = {
+            u'load': translate('PresentationPlugin', 'Load a new Presentation'),
+            u'import': u'',
+            u'new': u'',
+            u'edit': u'',
+            u'delete': translate('PresentationPlugin',
+                'Delete the selected Presentation'),
+            u'preview': translate('PresentationPlugin',
+                'Preview the selected Presentation'),
+            u'live': translate('PresentationPlugin',
+                'Send the selected Presentation live'),
+            u'service': translate('PresentationPlugin',
                 'Add the selected Presentation to the service')
         }
+        self.setPluginUiTextStrings(tooltips)

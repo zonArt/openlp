@@ -23,26 +23,27 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-'''
+"""
 The :mod:`DisplayTagTab` provides an Tag Edit facility.  The Base set are
 protected and included each time loaded.  Custom tags can be defined and saved.
 The Custom Tag arrays are saved in a pickle so QSettings works on them.  Base
 Tags cannot be changed.
-
-'''
+"""
 import cPickle
+
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, translate, DisplayTags
+from openlp.core.lib.ui import UiStrings, critical_error_message_box
 
 class DisplayTagTab(SettingsTab):
-    '''
+    """
     The :class:`DisplayTagTab` manages the settings tab .
-    '''
+    """
     def __init__(self):
-        '''
+        """
         Initialise the settings tab
-        '''
+        """
         SettingsTab.__init__(self, u'Display Tags')
 
     def resizeEvent(self, event=None):
@@ -59,16 +60,16 @@ class DisplayTagTab(SettingsTab):
         # cPickle only accepts str not unicode strings
         user_expands_string = str(unicode(user_expands).encode(u'utf8'))
         if user_expands_string:
-            user_tags = cPickle.loads(user_expand_string)
+            user_tags = cPickle.loads(user_expands_string)
             # If we have some user ones added them as well
             for t in user_tags:
                 DisplayTags.add_html_tag(t)
         self.selected = -1
 
     def setupUi(self):
-        '''
+        """
         Configure the UI elements for the tab.
-        '''
+        """
         self.setObjectName(u'DisplayTagTab')
         self.tabTitleVisible = \
             translate(u'OpenLP.DisplayTagTab', 'Display Tags')
@@ -163,8 +164,7 @@ class DisplayTagTab(SettingsTab):
         self.startTagLabel.setText(
             translate('OpenLP.DisplayTagTab', 'Start tag'))
         self.endTagLabel.setText(translate('OpenLP.DisplayTagTab', 'End tag'))
-        self.deletePushButton.setText(
-            translate('OpenLP.DisplayTagTab', 'Delete'))
+        self.deletePushButton.setText(UiStrings.Delete)
         self.defaultPushButton.setText(
             translate('OpenLP.DisplayTagTab', 'Default'))
         self.newPushButton.setText(translate('OpenLP.DisplayTagTab', 'New'))
@@ -275,12 +275,10 @@ class DisplayTagTab(SettingsTab):
         """
         for html in DisplayTags.get_html_tags():
             if self._strip(html[u'start tag']) == u'n':
-                QtGui.QMessageBox.critical(self,
+                critical_error_message_box(
                     translate('OpenLP.DisplayTagTab', 'Update Error'),
                     translate('OpenLP.DisplayTagTab',
-                    'Tag "n" already defined.'),
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
-                    QtGui.QMessageBox.Ok)
+                    'Tag "n" already defined.'))
                 return
         # Add new tag to list
         tag = {u'desc': u'New Item', u'start tag': u'{n}',
@@ -318,12 +316,10 @@ class DisplayTagTab(SettingsTab):
             for linenumber, html1 in enumerate(html_expands):
                 if self._strip(html1[u'start tag']) == tag and \
                     linenumber != self.selected:
-                    QtGui.QMessageBox.critical(self,
+                    critical_error_message_box(
                         translate('OpenLP.DisplayTagTab', 'Update Error'),
                         unicode(translate('OpenLP.DisplayTagTab',
-                        'Tag %s already defined.')) % tag,
-                        QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
-                        QtGui.QMessageBox.Ok)
+                        'Tag %s already defined.')) % tag)
                     return
             html[u'desc'] = unicode(self.descriptionLineEdit.text())
             html[u'start html'] = unicode(self.startTagLineEdit.text())

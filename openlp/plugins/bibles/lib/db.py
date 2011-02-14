@@ -33,8 +33,9 @@ from sqlalchemy import Column, ForeignKey, or_, Table, types
 from sqlalchemy.orm import class_mapper, mapper, relation
 from sqlalchemy.orm.exc import UnmappedClassError
 
-from openlp.core.lib import Receiver, translate
+from openlp.core.lib import translate
 from openlp.core.lib.db import BaseModel, init_db, Manager
+from openlp.core.lib.ui import critical_error_message_box
 
 log = logging.getLogger(__name__)
 
@@ -205,10 +206,16 @@ class BibleDB(QtCore.QObject, Manager):
         """
         self.wizard = wizard
         self.create_meta(u'dbversion', u'2')
+        self.setup_testaments()
+        return self.name
+
+    def setup_testaments(self):
+        """
+        Initialise the testaments section of a bible with suitable defaults.
+        """
         self.save_object(Testament.populate(name=u'Old Testament'))
         self.save_object(Testament.populate(name=u'New Testament'))
         self.save_object(Testament.populate(name=u'Apocrypha'))
-        return self.name
 
     def create_book(self, name, abbrev, testament=1):
         """
@@ -339,11 +346,11 @@ class BibleDB(QtCore.QObject, Manager):
         verse_list = []
         for book, chapter, start_verse, end_verse in reference_list:
             db_book = self.get_book(book)
-            if end_verse == -1:
-                end_verse = self.get_verse_count(book, chapter)
             if db_book:
                 book = db_book.name
                 log.debug(u'Book name corrected to "%s"', book)
+                if end_verse == -1:
+                    end_verse = self.get_verse_count(book, chapter)
                 verses = self.session.query(Verse)\
                     .filter_by(book_id=db_book.id)\
                     .filter_by(chapter=chapter)\
@@ -354,12 +361,11 @@ class BibleDB(QtCore.QObject, Manager):
                 verse_list.extend(verses)
             else:
                 log.debug(u'OpenLP failed to find book %s', book)
-                Receiver.send_message(u'openlp_error_message', {
-                    u'title': translate('BiblesPlugin', 'No Book Found'),
-                    u'message': translate('BiblesPlugin', 'No matching book '
+                critical_error_message_box(
+                    translate('BiblesPlugin', 'No Book Found'),
+                    translate('BiblesPlugin', 'No matching book '
                     'could be found in this Bible. Check that you have '
-                    'spelled the name of the book correctly.')
-                })
+                    'spelled the name of the book correctly.'))
         return verse_list
 
     def verse_search(self, text):

@@ -27,6 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate
+from openlp.core.lib.ui import UiStrings
 
 class Ui_SongMaintenanceDialog(object):
     def setupUi(self, songMaintenanceDialog):
@@ -36,8 +37,6 @@ class Ui_SongMaintenanceDialog(object):
         self.dialogLayout = QtGui.QGridLayout(songMaintenanceDialog)
         self.dialogLayout.setObjectName(u'dialogLayout')
         self.typeListWidget = QtGui.QListWidget(songMaintenanceDialog)
-        # Caution: fixed widget width
-        self.typeListWidget.setFixedWidth(172)
         self.typeListWidget.setIconSize(QtCore.QSize(32, 32))
         self.typeListWidget.setUniformItemSizes(True)
         self.typeListWidget.setObjectName(u'typeListWidget')
@@ -147,27 +146,23 @@ class Ui_SongMaintenanceDialog(object):
     def retranslateUi(self, songMaintenanceDialog):
         songMaintenanceDialog.setWindowTitle(
             translate('SongsPlugin.SongMaintenanceForm', 'Song Maintenance'))
-        self.listItemAuthors.setText(
-            translate('SongsPlugin.SongMaintenanceForm', 'Authors'))
-        self.listItemTopics.setText(
-            translate('SongsPlugin.SongMaintenanceForm', 'Topics'))
-        self.listItemBooks.setText(
-            translate('SongsPlugin.SongMaintenanceForm', 'Song Books'))
-        self.authorsAddButton.setText(
-            translate('SongsPlugin.SongMaintenanceForm', '&Add'))
-        self.authorsEditButton.setText(
-            translate('SongsPlugin.SongMaintenanceForm', '&Edit'))
-        self.authorsDeleteButton.setText(
-            translate('SongsPlugin.SongMaintenanceForm', '&Delete'))
-        self.topicsAddButton.setText(
-            translate('SongsPlugin.SongMaintenanceForm', '&Add'))
-        self.topicsEditButton.setText(
-            translate('SongsPlugin.SongMaintenanceForm', '&Edit'))
-        self.topicsDeleteButton.setText(
-            translate('SongsPlugin.SongMaintenanceForm', '&Delete'))
-        self.booksAddButton.setText(
-            translate('SongsPlugin.SongMaintenanceForm', '&Add'))
-        self.booksEditButton.setText(
-            translate('SongsPlugin.SongMaintenanceForm', '&Edit'))
-        self.booksDeleteButton.setText(
-            translate('SongsPlugin.SongMaintenanceForm', '&Delete'))
+        authorsString = UiStrings.Authors
+        topicsString = translate('SongsPlugin.SongMaintenanceForm', 'Topics')
+        booksString = translate('SongsPlugin.SongMaintenanceForm', 'Song Books')
+        self.listItemAuthors.setText(authorsString)
+        self.listItemTopics.setText(topicsString)
+        self.listItemBooks.setText(booksString)
+        self.authorsAddButton.setText(UiStrings.Add)
+        self.authorsEditButton.setText(UiStrings.Edit)
+        self.authorsDeleteButton.setText(UiStrings.Delete)
+        self.topicsAddButton.setText(UiStrings.Add)
+        self.topicsEditButton.setText(UiStrings.Edit)
+        self.topicsDeleteButton.setText(UiStrings.Delete)
+        self.booksAddButton.setText(UiStrings.Add)
+        self.booksEditButton.setText(UiStrings.Edit)
+        self.booksDeleteButton.setText(UiStrings.Delete)
+        typeListWidth = max(self.fontMetrics().width(authorsString),
+            self.fontMetrics().width(topicsString),
+            self.fontMetrics().width(booksString))
+        self.typeListWidget.setFixedWidth(typeListWidth +
+            self.typeListWidget.iconSize().width() + 32)

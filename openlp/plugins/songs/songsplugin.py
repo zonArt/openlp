@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
-from openlp.plugins.songs.lib import SongMediaItem, SongsTab, SongXMLParser
+from openlp.plugins.songs.lib import SongMediaItem, SongsTab, SongXML
 from openlp.plugins.songs.lib.db import init_schema, Song
 from openlp.plugins.songs.lib.importer import SongFormat
 
@@ -51,16 +51,13 @@ class SongsPlugin(Plugin):
         """
         Create and set up the Songs plugin.
         """
-        Plugin.__init__(self, u'Songs', u'1.9.4', plugin_helpers)
+        Plugin.__init__(self, u'Songs', u'1.9.4', plugin_helpers,
+            SongMediaItem, SongsTab)
         self.weight = -10
         self.manager = Manager(u'songs', init_schema)
         self.icon_path = u':/plugins/plugin_songs.png'
         self.icon = build_icon(self.icon_path)
         self.whitespace = re.compile(r'\W+', re.UNICODE)
-
-    def getSettingsTab(self):
-        visible_name = self.getString(StringContent.VisibleName)
-        return SongsTab(self.name, visible_name[u'title'])
 
     def initialise(self):
         log.info(u'Songs Initialising')
@@ -68,13 +65,6 @@ class SongsPlugin(Plugin):
         self.toolsReindexItem.setVisible(True)
         self.mediaItem.displayResultsSong(
             self.manager.get_all_objects(Song, order_by_ref=Song.search_title))
-
-    def getMediaManagerItem(self):
-        """
-        Create the MediaManagerItem object, which is displaed in the
-        Media Manager.
-        """
-        return SongMediaItem(self, self, self.icon)
 
     def addImportMenuItem(self, import_menu):
         """
@@ -106,8 +96,17 @@ class SongsPlugin(Plugin):
             The actual **Export** menu item, so that your actions can
             use it as their parent.
         """
-        # No menu items for now.
-        pass
+        # Main song import menu item - will eventually be the only one
+        self.SongExportItem = QtGui.QAction(export_menu)
+        self.SongExportItem.setObjectName(u'SongExportItem')
+        self.SongExportItem.setText(translate(
+            'SongsPlugin', '&Song'))
+        self.SongExportItem.setToolTip(translate('SongsPlugin',
+            'Exports songs using the export wizard.'))
+        export_menu.addAction(self.SongExportItem)
+        # Signals and slots
+        QtCore.QObject.connect(self.SongExportItem,
+            QtCore.SIGNAL(u'triggered()'), self.onSongExportItemClicked)
 
     def addToolsMenuItem(self, tools_menu):
         """
@@ -134,7 +133,7 @@ class SongsPlugin(Plugin):
 
     def onToolsReindexItemTriggered(self):
         """
-        Rebuild the search title of each song.
+        Rebuild each song.
         """
         maxSongs = self.manager.get_object_count(Song)
         progressDialog = QtGui.QProgressDialog(
@@ -150,23 +149,31 @@ class SongsPlugin(Plugin):
                 song.title = u''
             if song.alternate_title is None:
                 song.alternate_title = u''
-            song.search_title = self.whitespace.sub(u' ', song.title.lower() + \
+            song.search_title = self.whitespace.sub(u' ', song.title.lower() +
                 u' ' + song.alternate_title.lower())
+            # Remove the "language" attribute from lyrics tag. This is not very
+            # important, but this keeps the database clean. This can be removed
+            # when everybody has run the reindex tool once.
+            song.lyrics = song.lyrics.replace(
+                u'<lyrics language="en">', u'<lyrics>')
             lyrics = u''
-            verses = SongXMLParser(song.lyrics).get_verses()
+            verses = SongXML().get_verses(song.lyrics)
             for verse in verses:
                 lyrics = lyrics + self.whitespace.sub(u' ', verse[1]) + u' '
             song.search_lyrics = lyrics.lower()
             progressDialog.setValue(counter)
         self.manager.save_objects(songs)
-        counter += 1
-        progressDialog.setValue(counter)
+        progressDialog.setValue(counter + 1)
         self.mediaItem.displayResultsSong(
             self.manager.get_all_objects(Song, order_by_ref=Song.search_title))
 
     def onSongImportItemClicked(self):
         if self.mediaItem:
             self.mediaItem.onImportClick()
+
+    def onSongExportItemClicked(self):
+        if self.mediaItem:
+            self.mediaItem.onExportClick()
 
     def about(self):
         about_text = translate('SongsPlugin', '<strong>Songs Plugin</strong>'
@@ -221,42 +228,18 @@ class SongsPlugin(Plugin):
             u'title': translate('SongsPlugin', 'Songs', 'container title')
         }
         # Middle Header Bar
-        ## New Action ##
-        self.textStrings[StringContent.New] = {
-            u'title': translate('SongsPlugin', 'Add'),
-            u'tooltip': translate('SongsPlugin',
-                'Add a new Song')
-        }
-        ## Edit Action ##
-        self.textStrings[StringContent.Edit] = {
-            u'title': translate('SongsPlugin', 'Edit'),
-            u'tooltip': translate('SongsPlugin',
-                'Edit the selected Song')
-        }
-        ## Delete Action ##
-        self.textStrings[StringContent.Delete] = {
-            u'title': translate('SongsPlugin', 'Delete'),
-            u'tooltip': translate('SongsPlugin',
-                'Delete the selected Song')
-        }
-        ## Preview Action ##
-        self.textStrings[StringContent.Preview] = {
-            u'title': translate('SongsPlugin', 'Preview'),
-            u'tooltip': translate('SongsPlugin',
-                'Preview the selected Song')
-        }
-        ## Send Live Action ##
-        self.textStrings[StringContent.Live] = {
-            u'title': translate('SongsPlugin', 'Live'),
-            u'tooltip': translate('SongsPlugin',
-                'Send the selected Song live')
-        }
-        ## Add to Service Action ##
-        self.textStrings[StringContent.Service] = {
-            u'title': translate('SongsPlugin', 'Service'),
-            u'tooltip': translate('SongsPlugin',
+        tooltips = {
+            u'load': u'',
+            u'import': u'',
+            u'new': translate('SongsPlugin', 'Add a new Song'),
+            u'edit': translate('SongsPlugin', 'Edit the selected Song'),
+            u'delete': translate('SongsPlugin', 'Delete the selected Song'),
+            u'preview': translate('SongsPlugin', 'Preview the selected Song'),
+            u'live': translate('SongsPlugin', 'Send the selected Song live'),
+            u'service': translate('SongsPlugin',
                 'Add the selected Song to the service')
         }
+        self.setPluginUiTextStrings(tooltips)
 
     def finalise(self):
         """

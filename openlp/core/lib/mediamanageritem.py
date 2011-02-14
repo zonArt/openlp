@@ -33,7 +33,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import context_menu_action, context_menu_separator, \
     SettingsManager, OpenLPToolbar, ServiceItem, StringContent, build_icon, \
-    translate, Receiver
+    translate, Receiver, ListWidgetWithDnD
 
 log = logging.getLogger(__name__)
 
@@ -73,11 +73,6 @@ class MediaManagerItem(QtGui.QWidget):
         assumes that the new action is to load a file. If not, you
         need to override the ``OnNew`` method.
 
-     ``self.ListViewWithDnD_class``
-        This must be a **class**, not an object, descended from
-        ``openlp.core.lib.BaseListWithDnD`` that is not used in any
-        other part of OpenLP.
-
      ``self.PreviewFunction``
         This must be a method which returns a QImage to represent the
         item (usually a preview). No scaling is required, that is
@@ -98,16 +93,11 @@ class MediaManagerItem(QtGui.QWidget):
         visible_title = self.plugin.getString(StringContent.VisibleName)
         self.title = unicode(visible_title[u'title'])
         self.settingsSection = self.plugin.name.lower()
-        if isinstance(icon, QtGui.QIcon):
-            self.icon = icon
-        elif isinstance(icon, basestring):
-            self.icon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
-                QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        else:
-            self.icon = None
+        self.icon = None
+        if icon:
+            self.icon = build_icon(icon)
         self.toolbar = None
         self.remoteTriggered = None
-        self.serviceItemIconName = None
         self.singleServiceItem = True
         self.pageLayout = QtGui.QVBoxLayout(self)
         self.pageLayout.setSpacing(0)
@@ -163,14 +153,15 @@ class MediaManagerItem(QtGui.QWidget):
 
         ``icon``
             The icon of the button. This can be an instance of QIcon, or a
-            string cotaining either the absolute path to the image, or an
+            string containing either the absolute path to the image, or an
             internal resource path starting with ':/'.
 
         ``slot``
             The method to call when the button is clicked.
 
-        ``objectname``
-            The name of the button.
+        ``checkable``
+            If *True* the button has two, *off* and *on*, states. Default is
+            *False*, which means the buttons has only one state.
         """
         # NB different order (when I broke this out, I didn't want to
         # break compatability), but it makes sense for the icon to
@@ -193,81 +184,63 @@ class MediaManagerItem(QtGui.QWidget):
         """
         # Add a toolbar
         self.addToolbar()
-        #Allow the plugin to define buttons at start of bar
+        # Allow the plugin to define buttons at start of bar
         self.addStartHeaderBar()
-        #Add the middle of the tool bar (pre defined)
+        # Add the middle of the tool bar (pre defined)
         self.addMiddleHeaderBar()
-        #Allow the plugin to define buttons at end of bar
+        # Allow the plugin to define buttons at end of bar
         self.addEndHeaderBar()
-        #Add the list view
+        # Add the list view
         self.addListViewToToolBar()
 
     def addMiddleHeaderBar(self):
         """
         Create buttons for the media item toolbar
         """
+        toolbar_actions = []
         ## Import Button ##
         if self.hasImportIcon:
-            import_string = self.plugin.getString(StringContent.Import)
-            self.addToolbarButton(
-                import_string[u'title'],
-                import_string[u'tooltip'],
-                u':/general/general_import.png', self.onImportClick)
+            toolbar_actions.append([StringContent.Import,
+            u':/general/general_import.png', self.onImportClick])
         ## Load Button ##
         if self.hasFileIcon:
-            load_string = self.plugin.getString(StringContent.Load)
-            self.addToolbarButton(
-                load_string[u'title'],
-                load_string[u'tooltip'],
-                u':/general/general_open.png', self.onFileClick)
+            toolbar_actions.append([StringContent.Load,
+                u':/general/general_open.png', self.onFileClick])
         ## New Button ##
         if self.hasNewIcon:
-            new_string = self.plugin.getString(StringContent.New)
-            self.addToolbarButton(
-                new_string[u'title'],
-                new_string[u'tooltip'],
-                u':/general/general_new.png', self.onNewClick)
+            toolbar_actions.append([StringContent.New,
+                u':/general/general_new.png', self.onNewClick])
         ## Edit Button ##
         if self.hasEditIcon:
-            edit_string = self.plugin.getString(StringContent.Edit)
-            self.addToolbarButton(
-                edit_string[u'title'],
-                edit_string[u'tooltip'],
-                u':/general/general_edit.png', self.onEditClick)
+            toolbar_actions.append([StringContent.Edit,
+                u':/general/general_edit.png', self.onEditClick])
         ## Delete Button ##
         if self.hasDeleteIcon:
-            delete_string = self.plugin.getString(StringContent.Delete)
-            self.addToolbarButton(
-                delete_string[u'title'],
-                delete_string[u'tooltip'],
-                u':/general/general_delete.png', self.onDeleteClick)
+            toolbar_actions.append([StringContent.Delete,
+                u':/general/general_delete.png', self.onDeleteClick])
         ## Separator Line ##
         self.addToolbarSeparator()
         ## Preview ##
-        preview_string = self.plugin.getString(StringContent.Preview)
-        self.addToolbarButton(
-            preview_string[u'title'],
-            preview_string[u'tooltip'],
-            u':/general/general_preview.png', self.onPreviewClick)
-        ## Live  Button ##
-        live_string = self.plugin.getString(StringContent.Live)
-        self.addToolbarButton(
-            live_string[u'title'],
-            live_string[u'tooltip'],
-            u':/general/general_live.png', self.onLiveClick)
+        toolbar_actions.append([StringContent.Preview,
+            u':/general/general_preview.png', self.onPreviewClick])
+        ## Live Button ##
+        toolbar_actions.append([StringContent.Live,
+            u':/general/general_live.png', self.onLiveClick])
         ## Add to service Button ##
-        service_string = self.plugin.getString(StringContent.Service)
-        self.addToolbarButton(
-            service_string[u'title'],
-            service_string[u'tooltip'],
-            u':/general/general_add.png', self.onAddClick)
+        toolbar_actions.append([StringContent.Service,
+            u':/general/general_add.png', self.onAddClick])
+        for action in toolbar_actions:
+            self.addToolbarButton(
+                self.plugin.getString(action[0])[u'title'],
+                self.plugin.getString(action[0])[u'tooltip'],
+                action[1], action[2])
 
     def addListViewToToolBar(self):
         """
         Creates the main widget for listing items the media item is tracking
         """
-        #Add the List widget
-        self.listView = self.ListViewWithDnD_class(self)
+        # Add the List widget
+        self.listView = ListWidgetWithDnD(self, self.title)
         self.listView.uniformItemSizes = True
         self.listView.setSpacing(1)
         self.listView.setSelectionMode(
@@ -275,9 +248,9 @@ class MediaManagerItem(QtGui.QWidget):
         self.listView.setAlternatingRowColors(True)
         self.listView.setDragEnabled(True)
         self.listView.setObjectName(u'%sListView' % self.plugin.name)
-        #Add to pageLayout
+        # Add to pageLayout
         self.pageLayout.addWidget(self.listView)
-        #define and add the context menu
+        # define and add the context menu
         self.listView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         name_string = self.plugin.getString(StringContent.Name)
         if self.hasEditIcon:
@@ -314,7 +287,7 @@ class MediaManagerItem(QtGui.QWidget):
                 context_menu_action(
                     self.listView, u':/general/general_add.png',
                     translate('OpenLP.MediaManagerItem',
-                        '&Add to selected Service Item'),
+                    '&Add to selected Service Item'),
                     self.onAddEditClick))
         QtCore.QObject.connect(self.listView,
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
@@ -370,33 +343,34 @@ class MediaManagerItem(QtGui.QWidget):
             count += 1
         return filelist
 
-    def validate(self, file, thumb):
+    def validate(self, image, thumb):
         """
-        Validates to see if the file still exists or thumbnail is up to date
+        Validates whether an image still exists and, if it does, is the
+        thumbnail representation of the image up to date.
         """
-        if not os.path.exists(file):
+        if not os.path.exists(image):
             return False
         if os.path.exists(thumb):
-            filedate = os.stat(file).st_mtime
-            thumbdate = os.stat(thumb).st_mtime
-            # if file updated rebuild icon
-            if filedate > thumbdate:
-                self.iconFromFile(file, thumb)
+            imageDate = os.stat(image).st_mtime
+            thumbDate = os.stat(thumb).st_mtime
+            # If image has been updated rebuild icon
+            if imageDate > thumbDate:
+                self.iconFromFile(image, thumb)
         else:
-            self.iconFromFile(file, thumb)
+            self.iconFromFile(image, thumb)
         return True
 
-    def iconFromFile(self, file, thumb):
+    def iconFromFile(self, image, thumb):
         """
-        Create a thumbnail icon from a given file
+        Create a thumbnail icon from a given image.
 
-        ``file``
-            The file to create the icon from
+        ``image``
+            The image file to create the icon from.
 
         ``thumb``
             The filename to save the thumbnail to
         """
-        icon = build_icon(unicode(file))
+        icon = build_icon(unicode(image))
         pixmap = icon.pixmap(QtCore.QSize(88, 50))
         ext = os.path.splitext(thumb)[1].lower()
         pixmap.save(thumb, ext[1:])
@@ -407,12 +381,16 @@ class MediaManagerItem(QtGui.QWidget):
             u'defined by the plugin')
 
     def onNewClick(self):
-        raise NotImplementedError(u'MediaManagerItem.onNewClick needs to be '
-            u'defined by the plugin')
+        """
+        Hook for plugins to define behaviour for adding new items.
+        """
+        pass
 
     def onEditClick(self):
-        raise NotImplementedError(u'MediaManagerItem.onEditClick needs to be '
-            u'defined by the plugin')
+        """
+        Hook for plugins to define behaviour for editing items.
+        """
+        pass
 
     def onDeleteClick(self):
         raise NotImplementedError(u'MediaManagerItem.onDeleteClick needs to '
@@ -441,7 +419,7 @@ class MediaManagerItem(QtGui.QWidget):
             QtGui.QMessageBox.information(self,
                 translate('OpenLP.MediaManagerItem', 'No Items Selected'),
                 translate('OpenLP.MediaManagerItem',
-                    'You must select one or more items to preview.'))
+                'You must select one or more items to preview.'))
         else:
             log.debug(u'%s Preview requested', self.plugin.name)
             serviceItem = self.buildServiceItem()
@@ -499,7 +477,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         if not self.listView.selectedIndexes() and not self.remoteTriggered:
             QtGui.QMessageBox.information(self,
-                translate('OpenLP.MediaManagerItem', 'No items selected'),
+                translate('OpenLP.MediaManagerItem', 'No Items Selected'),
                 translate('OpenLP.MediaManagerItem',
                     'You must select one or more items'))
         else:
@@ -511,7 +489,7 @@ class MediaManagerItem(QtGui.QWidget):
                         'No Service Item Selected'),
                     translate('OpenLP.MediaManagerItem',
                         'You must select an existing service item to add to.'))
-            elif self.title.lower() == serviceItem.name.lower():
+            elif self.plugin.name.lower() == serviceItem.name.lower():
                 self.generateSlideData(serviceItem)
                 self.parent.serviceManager.addServiceItem(serviceItem,
                     replace=True)
@@ -528,10 +506,7 @@ class MediaManagerItem(QtGui.QWidget):
         Common method for generating a service item
         """
         serviceItem = ServiceItem(self.parent)
-        if self.serviceItemIconName:
-            serviceItem.add_icon(self.serviceItemIconName)
-        else:
-            serviceItem.add_icon(self.parent.icon_path)
+        serviceItem.add_icon(self.parent.icon_path)
         if self.generateSlideData(serviceItem, item, xmlVersion):
             return serviceItem
         else:
@@ -543,3 +518,25 @@ class MediaManagerItem(QtGui.QWidget):
         individual service items need to be processed by the plugins
         """
         pass
+
+    def _getIdOfItemToGenerate(self, item, remoteItem):
+        """
+        Utility method to check items being submitted for slide generation.
+
+        ``item``
+            The item to check.
+
+        ``remoteItem``
+            The id to assign if the slide generation was remotely triggered.
+        """
+        if item is None:
+            if self.remoteTriggered is None:
+                item = self.listView.currentItem()
+                if item is None:
+                    return False
+                item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            else:
+                item_id = remoteItem
+        else:
+            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        return item_id

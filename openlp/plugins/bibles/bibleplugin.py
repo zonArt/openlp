@@ -29,6 +29,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
+from openlp.core.lib.ui import UiStrings
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
 
 log = logging.getLogger(__name__)
@@ -37,7 +38,8 @@ class BiblePlugin(Plugin):
     log.info(u'Bible Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Bibles', u'1.9.4', plugin_helpers)
+        Plugin.__init__(self, u'Bibles', u'1.9.4', plugin_helpers,
+            BibleMediaItem, BiblesTab)
         self.weight = -9
         self.icon_path = u':/plugins/plugin_bibles.png'
         self.icon = build_icon(self.icon_path)
@@ -60,14 +62,6 @@ class BiblePlugin(Plugin):
         Plugin.finalise(self)
         self.importBibleItem.setVisible(False)
         self.exportBibleItem.setVisible(False)
-
-    def getSettingsTab(self):
-        visible_name = self.getString(StringContent.VisibleName)
-        return BiblesTab(self.name, visible_name[u'title'])
-
-    def getMediaManagerItem(self):
-        # Create the BibleManagerItem object.
-        return BibleMediaItem(self, self, self.icon)
 
     def addImportMenuItem(self, import_menu):
         self.importBibleItem = QtGui.QAction(import_menu)
@@ -102,7 +96,7 @@ class BiblePlugin(Plugin):
         Called to find out if the bible plugin is currently using a theme.
         Returns True if the theme is being used, otherwise returns False.
         """
-        if self.settings_tab.bible_theme == theme:
+        if unicode(self.settings_tab.bible_theme) == theme:
             return True
         return False
 
@@ -119,6 +113,7 @@ class BiblePlugin(Plugin):
             The new name the plugin should now use.
         """
         self.settings_tab.bible_theme = newTheme
+        self.settings_tab.save()
 
     def setPluginTextStrings(self):
         """
@@ -134,40 +129,15 @@ class BiblePlugin(Plugin):
             u'title': translate('BiblesPlugin', 'Bibles', 'container title')
         }
         # Middle Header Bar
-        ## Import Action ##
-        self.textStrings[StringContent.Import] = {
-            u'title': translate('BiblesPlugin', '&Import'),
-            u'tooltip': translate('BiblesPlugin', 'Import a Bible')
-        }
-        ## New Action ##
-        self.textStrings[StringContent.New] = {
-            u'title': translate('BiblesPlugin', '&Add'),
-            u'tooltip': translate('BiblesPlugin', 'Add a new Bible')
-        }
-        ## Edit Action ##
-        self.textStrings[StringContent.Edit] = {
-            u'title': translate('BiblesPlugin', '&Edit'),
-            u'tooltip': translate('BiblesPlugin', 'Edit the selected Bible')
-        }
-        ## Delete Action ##
-        self.textStrings[StringContent.Delete] = {
-            u'title': translate('BiblesPlugin', '&Delete'),
-            u'tooltip': translate('BiblesPlugin', 'Delete the selected Bible')
-        }
-        ## Preview Action ##
-        self.textStrings[StringContent.Preview] = {
-            u'title': translate('BiblesPlugin', 'Preview'),
-            u'tooltip': translate('BiblesPlugin', 'Preview the selected Bible')
-        }
-        ## Send Live Action ##
-        self.textStrings[StringContent.Live] = {
-            u'title': translate('BiblesPlugin', 'Live'),
-            u'tooltip': translate('BiblesPlugin',
-                'Send the selected Bible live')
-        }
-        ## Add to Service Action ##
-        self.textStrings[StringContent.Service] = {
-            u'title': translate('BiblesPlugin', 'Service'),
-            u'tooltip': translate('BiblesPlugin',
+        tooltips = {
+            u'load': u'',
+            u'import': translate('BiblesPlugin', 'Import a Bible'),
+            u'new': translate('BiblesPlugin', 'Add a new Bible'),
+            u'edit': translate('BiblesPlugin', 'Edit the selected Bible'),
+            u'delete': translate('BiblesPlugin', 'Delete the selected Bible'),
+            u'preview': translate('BiblesPlugin', 'Preview the selected Bible'),
+            u'live': translate('BiblesPlugin', 'Send the selected Bible live'),
+            u'service': translate('BiblesPlugin',
                 'Add the selected Bible to the service')
         }
+        self.setPluginUiTextStrings(tooltips)

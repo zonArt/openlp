@@ -72,9 +72,6 @@ Song Importers
 .. automodule:: openlp.plugins.songs.lib.cclifileimport
    :members:
 
-.. autoclass:: openlp.plugins.songs.lib.cclifileimport.CCLIFileImportError
-   :members:
-
 .. automodule:: openlp.plugins.songs.lib.ewimport
    :members:
 

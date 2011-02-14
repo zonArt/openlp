@@ -27,6 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, SpellTextEdit
+from openlp.core.lib.ui import create_accept_reject_button_box
 
 class Ui_CustomSlideEditDialog(object):
     def setupUi(self, customSlideEditDialog):
@@ -36,20 +37,13 @@ class Ui_CustomSlideEditDialog(object):
         self.slideTextEdit = SpellTextEdit(self)
         self.slideTextEdit.setObjectName(u'slideTextEdit')
         self.dialogLayout.addWidget(self.slideTextEdit)
-        self.buttonBox = QtGui.QDialogButtonBox(customSlideEditDialog)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
-            QtGui.QDialogButtonBox.Save)
-        self.buttonBox.setObjectName(u'buttonBox')
+        self.buttonBox = create_accept_reject_button_box(customSlideEditDialog)
         self.splitButton = QtGui.QPushButton(customSlideEditDialog)
         self.splitButton.setObjectName(u'splitButton')
         self.buttonBox.addButton(self.splitButton,
             QtGui.QDialogButtonBox.ActionRole)
         self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(customSlideEditDialog)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'),
-            customSlideEditDialog.accept)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
-            customSlideEditDialog.reject)
         QtCore.QMetaObject.connectSlotsByName(customSlideEditDialog)
 
     def retranslateUi(self, customSlideEditDialog):
