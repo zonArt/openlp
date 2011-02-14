@@ -30,12 +30,21 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
     translate
+from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings, add_widget_completer, \
     media_item_combo_box, critical_error_message_box
 from openlp.plugins.bibles.forms import BibleImportForm
 from openlp.plugins.bibles.lib import get_reference_match
 
 log = logging.getLogger(__name__)
+
+class BibleSearch(object):
+    """
+    Enumeration class for the different search methods for the "quick search".
+    """
+    Reference = 1
+    Text = 2
+
 
 class BibleMediaItem(MediaManagerItem):
     """
@@ -83,18 +92,17 @@ class BibleMediaItem(MediaManagerItem):
             u'quickSecondComboBox')
         self.quickSecondLabel.setBuddy(self.quickSecondComboBox)
         self.quickLayout.addRow(self.quickSecondLabel, self.quickSecondComboBox)
-        self.quickSearchTypeLabel = QtGui.QLabel(self.quickTab)
-        self.quickSearchTypeLabel.setObjectName(u'quickSearchTypeLabel')
-        self.quickSearchComboBox = media_item_combo_box(self.quickTab,
-            u'quickSearchComboBox')
-        self.quickSearchTypeLabel.setBuddy(self.quickSearchComboBox)
-        self.quickLayout.addRow(self.quickSearchTypeLabel,
-            self.quickSearchComboBox)
         self.quickSearchLabel = QtGui.QLabel(self.quickTab)
         self.quickSearchLabel.setObjectName(u'quickSearchLabel')
-        self.quickSearchEdit = QtGui.QLineEdit(self.quickTab)
+        self.quickSearchEdit = SearchEdit(self.quickTab)
         self.quickSearchEdit.setObjectName(u'quickSearchEdit')
         self.quickSearchLabel.setBuddy(self.quickSearchEdit)
+        self.quickSearchEdit.setSearchTypes([
+            (BibleSearch.Reference, u':/bibles/bibles_search_reference.png',
+            translate('BiblesPlugin.MediaItem', 'Scripture Reference')),
+            (BibleSearch.Text, u':/bibles/bibles_search_text.png',
+            translate('BiblesPlugin.MediaItem', 'Text Search'))
+        ])
         self.quickLayout.addRow(self.quickSearchLabel, self.quickSearchEdit)
         self.quickClearLabel = QtGui.QLabel(self.quickTab)
         self.quickClearLabel.setObjectName(u'quickClearLabel')
@@ -196,8 +204,8 @@ class BibleMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'activated(int)'), self.onAdvancedFromVerse)
         QtCore.QObject.connect(self.advancedToChapter,
             QtCore.SIGNAL(u'activated(int)'), self.onAdvancedToChapter)
-        QtCore.QObject.connect(self.quickSearchComboBox,
-            QtCore.SIGNAL(u'activated(int)'), self.updateAutoCompleter)
+        QtCore.QObject.connect(self.quickSearchEdit,
+            QtCore.SIGNAL(u'searchTypeChanged(int)'), self.updateAutoCompleter)
         QtCore.QObject.connect(self.quickVersionComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.updateAutoCompleter)
         # Buttons
@@ -231,8 +239,6 @@ class BibleMediaItem(MediaManagerItem):
             translate('BiblesPlugin.MediaItem', 'Version:'))
         self.quickSecondLabel.setText(
             translate('BiblesPlugin.MediaItem', 'Second:'))
-        self.quickSearchTypeLabel.setText(
-            translate('BiblesPlugin.MediaItem', 'Search type:'))
         self.quickSearchLabel.setText(
             translate('BiblesPlugin.MediaItem', 'Find:'))
         self.quickSearchButton.setText(
@@ -257,10 +263,6 @@ class BibleMediaItem(MediaManagerItem):
             translate('BiblesPlugin.MediaItem', 'Results:'))
         self.advancedSearchButton.setText(
             translate('BiblesPlugin.MediaItem', 'Search'))
-        self.quickSearchComboBox.addItem(
-            translate('BiblesPlugin.MediaItem', 'Verse Search'))
-        self.quickSearchComboBox.addItem(
-            translate('BiblesPlugin.MediaItem', 'Text Search'))
         self.quickClearComboBox.addItem(
             translate('BiblesPlugin.MediaItem', 'Clear'))
         self.quickClearComboBox.addItem(
@@ -358,11 +360,11 @@ class BibleMediaItem(MediaManagerItem):
         """
         This updates the bible book completion list for the search field. The
         completion depends on the bible. It is only updated when we are doing a
-        verse search, otherwise the auto completion list is removed.
+        reference search, otherwise the auto completion list is removed.
         """
         books = []
-        # We have to do a 'Verse Search'.
-        if self.quickSearchComboBox.currentIndex() == 0:
+        # We have to do a 'Reference Search'.
+        if self.quickSearchEdit.currentSearchType() == BibleSearch.Reference:
             bibles = self.parent.manager.get_bibles()
             bible = unicode(self.quickVersionComboBox.currentText())
             if bible:
@@ -491,7 +493,7 @@ class BibleMediaItem(MediaManagerItem):
     def onQuickSearchButton(self):
         """
         Does a quick search and saves the search results. Quick search can
-        either be "Verse Search" or "Text Search".
+        either be "Reference Search" or "Text Search".
         """
         log.debug(u'Quick Search Button pressed')
         self.quickSearchButton.setEnabled(False)
@@ -499,8 +501,8 @@ class BibleMediaItem(MediaManagerItem):
         bible = unicode(self.quickVersionComboBox.currentText())
         second_bible = unicode(self.quickSecondComboBox.currentText())
         text = unicode(self.quickSearchEdit.text())
-        if self.quickSearchComboBox.currentIndex() == 0:
-            # We are doing a 'Verse Search'.
+        if self.quickSearchEdit.currentSearchType() == BibleSearch.Reference:
+            # We are doing a 'Reference Search'.
             self.search_results = self.parent.manager.get_verses(bible, text)
             if second_bible and self.search_results:
                 self.second_search_results = self.parent.manager.get_verses(
