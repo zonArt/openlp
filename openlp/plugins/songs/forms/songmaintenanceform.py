@@ -103,20 +103,22 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         else:
             return -1
 
-    def _deleteItem(self, item_class, list_widget, reset_func, dlg_title,
-        del_text, err_text, sel_text):
+    def _deleteItem(self, item_class, list_widget, reset_func, del_type):
+        dlg_title = UiStrings.DeleteType % del_type
         item_id = self._getCurrentItemId(list_widget)
         if item_id != -1:
             item = self.manager.get_object(item_class, item_id)
             if item and len(item.songs) == 0:
-                if critical_error_message_box(title=dlg_title, message=del_text,
-                    parent=self, question=True) == QtGui.QMessageBox.Yes:
+                if critical_error_message_box(dlg_title,
+                    SongStrings.SureDeleteType % del_type,
+                    self, True) == QtGui.QMessageBox.Yes:
                     self.manager.delete_object(item_class, item.id)
                     reset_func()
             else:
-                critical_error_message_box(dlg_title, err_text)
+                critical_error_message_box(dlg_title,
+                    SongStrings.NoDeleteAssigned % del_type)
         else:
-            critical_error_message_box(dlg_title, sel_text)
+            critical_error_message_box(dlg_title, UiStrings.NISs)
 
     def resetAuthors(self):
         """
@@ -440,39 +442,21 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         Delete the author if the author is not attached to any songs.
         """
         self._deleteItem(Author, self.authorsListWidget, self.resetAuthors,
-            UiStrings.DeleteType % SongStrings.Author,
-            translate('SongsPlugin.SongMaintenanceForm',
-                'Are you sure you want to delete the selected author?'),
-            translate('SongsPlugin.SongMaintenanceForm',
-                'This author cannot be deleted, they are currently '
-                'assigned to at least one song.'),
-            translate('SongsPlugin.SongMaintenanceForm', 'No author selected!'))
+            SongStrings.Author)
 
     def onTopicDeleteButtonClick(self):
         """
         Delete the Book if the Book is not attached to any songs.
         """
         self._deleteItem(Topic, self.topicsListWidget, self.resetTopics,
-            UiStrings.DeleteType % SongStrings.Topic,
-            translate('SongsPlugin.SongMaintenanceForm',
-                'Are you sure you want to delete the selected topic?'),
-            translate('SongsPlugin.SongMaintenanceForm',
-                'This topic cannot be deleted, it is currently '
-                'assigned to at least one song.'),
-            translate('SongsPlugin.SongMaintenanceForm', 'No topic selected!'))
+            SongStrings.Topic)
 
     def onBookDeleteButtonClick(self):
         """
         Delete the Book if the Book is not attached to any songs.
         """
         self._deleteItem(Book, self.booksListWidget, self.resetBooks,
-            UiStrings.DeleteType % SongStrings.SongBook,
-            translate('SongsPlugin.SongMaintenanceForm',
-                'Are you sure you want to delete the selected book?'),
-            translate('SongsPlugin.SongMaintenanceForm',
-                'This book cannot be deleted, it is currently '
-                'assigned to at least one song.'),
-            translate('SongsPlugin.SongMaintenanceForm', 'No book selected!'))
+            SongStrings.SongBook)
 
     def onAuthorsListRowChanged(self, row):
         """
