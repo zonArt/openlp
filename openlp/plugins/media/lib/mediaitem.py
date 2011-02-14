@@ -29,17 +29,11 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    ItemCapabilities, SettingsManager, translate, check_item_selected, Receiver
-from openlp.core.lib.ui import critical_error_message_box
+from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
+    SettingsManager, translate, check_item_selected, Receiver
+from openlp.core.lib.ui import UiStrings, critical_error_message_box
 
 log = logging.getLogger(__name__)
-
-class MediaListView(BaseListWithDnD):
-    def __init__(self, parent=None):
-        self.PluginName = u'Media'
-        BaseListWithDnD.__init__(self, parent)
-
 
 class MediaMediaItem(MediaManagerItem):
     """
@@ -50,9 +44,6 @@ class MediaMediaItem(MediaManagerItem):
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'images/image'
         self.background = False
-        # this next is a class, not an instance of a class - it will
-        # be instanced by the base MediaManagerItem
-        self.ListViewWithDnD_class = MediaListView
         self.PreviewFunction = QtGui.QPixmap(
             u':/media/media_video.png').toImage()
         MediaManagerItem.__init__(self, parent, self, icon)
@@ -64,16 +55,12 @@ class MediaMediaItem(MediaManagerItem):
     def retranslateUi(self):
         self.OnNewPrompt = translate('MediaPlugin.MediaItem', 'Select Media')
         self.OnNewFileMasks = unicode(translate('MediaPlugin.MediaItem',
-            'Videos (%s);;Audio (%s);;All files (*)')) % \
-            (self.parent.video_list, self.parent.audio_list)
-        self.replaceAction.setText(
-            translate('MediaPlugin.MediaItem', 'Replace Background'))
-        self.replaceAction.setToolTip(
-            translate('MediaPlugin.MediaItem', 'Replace Live Background'))
-        self.resetAction.setText(
-            translate('MediaPlugin.MediaItem', 'Reset Background'))
-        self.resetAction.setToolTip(
-            translate('ImagePlugin.MediaItem', 'Reset Live Background'))
+            'Videos (%s);;Audio (%s);;%s (*)')) % (self.parent.video_list,
+            self.parent.audio_list, UiStrings.AllFiles)
+        self.replaceAction.setText(UiStrings.ReplaceBG)
+        self.replaceAction.setToolTip(UiStrings.ReplaceLiveBG)
+        self.resetAction.setText(UiStrings.ResetBG)
+        self.resetAction.setToolTip(UiStrings.ResetLiveBG)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -136,6 +123,7 @@ class MediaMediaItem(MediaManagerItem):
             service_item.title = unicode(
                 translate('MediaPlugin.MediaItem', 'Media'))
             service_item.add_capability(ItemCapabilities.RequiresMedia)
+            service_item.add_capability(ItemCapabilities.AllowsVarableStartTime)
             # force a nonexistent theme
             service_item.theme = -1
             frame = u':/media/image_clapperboard.png'
@@ -151,8 +139,7 @@ class MediaMediaItem(MediaManagerItem):
             return False
 
     def initialise(self):
-        self.listView.setSelectionMode(
-            QtGui.QAbstractItemView.ExtendedSelection)
+        self.listView.clear()
         self.listView.setIconSize(QtCore.QSize(88, 50))
         self.loadList(SettingsManager.load_list(self.settingsSection,
             self.settingsSection))

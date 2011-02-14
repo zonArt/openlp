@@ -110,11 +110,12 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         temp = self.itemList[row]
         self.itemList.remove(self.itemList[row])
         if direction == u'up':
-            self.itemList.insert(row - 1, temp)
+            row -= 1
         else:
-            self.itemList.insert(row + 1, temp)
+            row += 1
+        self.itemList.insert(row, temp)
         self.loadData()
-        self.listWidget.setCurrentRow(row + 1)
+        self.listWidget.setCurrentRow(row)
 
     def onCurrentRowChanged(self, row):
         """

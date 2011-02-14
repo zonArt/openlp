@@ -27,8 +27,8 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate
-from openlp.core.lib.ui import save_cancel_button_box, delete_push_button, \
-    up_down_push_button_set
+from openlp.core.lib.ui import UiStrings, create_accept_reject_button_box, \
+    create_delete_push_button, create_up_down_push_button_set
 
 class Ui_CustomEditDialog(object):
     def setupUi(self, customEditDialog):
@@ -66,11 +66,11 @@ class Ui_CustomEditDialog(object):
         self.editAllButton = QtGui.QPushButton(customEditDialog)
         self.editAllButton.setObjectName(u'editAllButton')
         self.buttonLayout.addWidget(self.editAllButton)
-        self.deleteButton = delete_push_button(customEditDialog)
+        self.deleteButton = create_delete_push_button(customEditDialog)
         self.deleteButton.setEnabled(False)
         self.buttonLayout.addWidget(self.deleteButton)
         self.buttonLayout.addStretch()
-        self.upButton, self.downButton = up_down_push_button_set(
+        self.upButton, self.downButton = create_up_down_push_button_set(
             customEditDialog)
         self.upButton.setEnabled(False)
         self.downButton.setEnabled(False)
@@ -94,7 +94,7 @@ class Ui_CustomEditDialog(object):
         self.creditLabel.setBuddy(self.creditEdit)
         self.bottomFormLayout.addRow(self.creditLabel, self.creditEdit)
         self.dialogLayout.addLayout(self.bottomFormLayout)
-        self.buttonBox = save_cancel_button_box(customEditDialog)
+        self.buttonBox = create_accept_reject_button_box(customEditDialog)
         self.previewButton = QtGui.QPushButton()
         self.buttonBox.addButton(
             self.previewButton, QtGui.QDialogButtonBox.ActionRole)
@@ -107,13 +107,11 @@ class Ui_CustomEditDialog(object):
             translate('CustomPlugin.EditCustomForm', 'Edit Custom Slides'))
         self.titleLabel.setText(
             translate('CustomPlugin.EditCustomForm', '&Title:'))
-        self.addButton.setText(
-            translate('CustomPlugin.EditCustomForm', '&Add'))
+        self.addButton.setText(UiStrings.Add)
         self.addButton.setToolTip(
             translate('CustomPlugin.EditCustomForm', 'Add a new slide at '
             'bottom.'))
-        self.editButton.setText(
-            translate('CustomPlugin.EditCustomForm', '&Edit'))
+        self.editButton.setText(UiStrings.Edit)
         self.editButton.setToolTip(
             translate('CustomPlugin.EditCustomForm', 'Edit the selected '
             'slide.'))

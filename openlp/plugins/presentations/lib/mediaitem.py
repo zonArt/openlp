@@ -29,23 +29,12 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    SettingsManager, translate, check_item_selected, Receiver, ItemCapabilities
+from openlp.core.lib import MediaManagerItem, build_icon, SettingsManager, \
+    translate, check_item_selected, Receiver, ItemCapabilities
 from openlp.core.lib.ui import critical_error_message_box, media_item_combo_box
 from openlp.plugins.presentations.lib import MessageListener
 
 log = logging.getLogger(__name__)
-
-class PresentationListView(BaseListWithDnD):
-    """
-    Class for the list of Presentations
-
-    We have to explicitly create separate classes for each plugin
-    in order for DnD to the Service manager to work correctly.
-    """
-    def __init__(self, parent=None):
-        self.PluginName = u'Presentations'
-        BaseListWithDnD.__init__(self, parent)
 
 class PresentationMediaItem(MediaManagerItem):
     """
@@ -61,9 +50,6 @@ class PresentationMediaItem(MediaManagerItem):
         self.controllers = controllers
         self.IconPath = u'presentations/presentation'
         self.Automatic = u''
-        # this next is a class, not an instance of a class - it will
-        # be instanced by the base MediaManagerItem
-        self.ListViewWithDnD_class = PresentationListView
         MediaManagerItem.__init__(self, parent, self, icon)
         self.message_listener = MessageListener(self)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -186,7 +172,7 @@ class PresentationMediaItem(MediaManagerItem):
             controller_name = self.findControllerByType(filename)
             if controller_name:
                 controller = self.controllers[controller_name]
-                doc = controller.add_doc(unicode(file))
+                doc = controller.add_document(unicode(file))
                 thumb = os.path.join(doc.get_thumbnail_folder(), u'icon.png')
                 preview = doc.get_thumbnail_path(1, True)
                 if not preview and not initialLoad:
@@ -226,7 +212,7 @@ class PresentationMediaItem(MediaManagerItem):
                 filepath = unicode(item.data(
                     QtCore.Qt.UserRole).toString())
                 for cidx in self.controllers:
-                    doc = self.controllers[cidx].add_doc(filepath)
+                    doc = self.controllers[cidx].add_document(filepath)
                     doc.presentation_deleted()
                     doc.close_presentation()
             for row in row_list:
@@ -260,7 +246,7 @@ class PresentationMediaItem(MediaManagerItem):
                             return False
                     controller = self.controllers[service_item.shortname]
                     (path, name) = os.path.split(filename)
-                    doc = controller.add_doc(filename)
+                    doc = controller.add_document(filename)
                     if doc.get_thumbnail_path(1, True) is None:
                         doc.load_presentation()
                     i = 1

@@ -31,21 +31,16 @@ import re
 from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_
 
-from openlp.core.lib import MediaManagerItem, BaseListWithDnD, Receiver, \
-    ItemCapabilities, translate, check_item_selected
+from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
+    translate, check_item_selected, PluginStatus
+from openlp.core.lib.ui import UiStrings
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
-    SongImportForm
+    SongImportForm, SongExportForm
 from openlp.plugins.songs.lib import OpenLyrics, SongXML
 from openlp.plugins.songs.lib.db import Author, Song
 from openlp.core.lib.searchedit import SearchEdit
 
 log = logging.getLogger(__name__)
-
-class SongListView(BaseListWithDnD):
-    def __init__(self, parent=None):
-        self.PluginName = u'Songs'
-        BaseListWithDnD.__init__(self, parent)
-
 
 class SongMediaItem(MediaManagerItem):
     """
@@ -55,7 +50,6 @@ class SongMediaItem(MediaManagerItem):
 
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'songs/song'
-        self.ListViewWithDnD_class = SongListView
         MediaManagerItem.__init__(self, parent, self, icon)
         self.edit_song_form = EditSongForm(self, self.parent.manager)
         self.openLyrics = OpenLyrics(self.parent.manager)
@@ -147,10 +141,8 @@ class SongMediaItem(MediaManagerItem):
                 translate('SongsPlugin.MediaItem', 'Titles')),
             (3, u':/songs/song_search_lyrics.png',
                 translate('SongsPlugin.MediaItem', 'Lyrics')),
-            (4, u':/songs/song_search_author.png',
-                translate('SongsPlugin.MediaItem', 'Authors')),
-            (5, u':/slides/slide_theme.png',
-                translate('SongsPlugin.MediaItem', 'Themes'))
+            (4, u':/songs/song_search_author.png', UiStrings.Authors),
+            (5, u':/slides/slide_theme.png', UiStrings.Themes)
         ])
         self.configUpdated()
 
@@ -266,6 +258,11 @@ class SongMediaItem(MediaManagerItem):
         if self.import_wizard.exec_() == QtGui.QDialog.Accepted:
             Receiver.send_message(u'songs_load_list')
 
+    def onExportClick(self):
+        if not hasattr(self, u'export_wizard'):
+            self.export_wizard = SongExportForm(self, self.parent)
+        self.export_wizard.exec_()
+
     def onNewClick(self):
         log.debug(u'onNewClick')
         self.edit_song_form.newSong()
@@ -378,10 +375,12 @@ class SongMediaItem(MediaManagerItem):
         raw_footer.append(song.title)
         raw_footer.append(author_list)
         raw_footer.append(song.copyright)
-        raw_footer.append(unicode(
-            translate('SongsPlugin.MediaItem', 'CCLI License: ') +
-            QtCore.QSettings().value(u'general/ccli number',
-            QtCore.QVariant(u'')).toString()))
+        if QtCore.QSettings().value(u'general/ccli number',
+            QtCore.QVariant(u'')).toString():
+            raw_footer.append(unicode(
+                translate('SongsPlugin.MediaItem', 'CCLI License: ') +
+                QtCore.QSettings().value(u'general/ccli number',
+                QtCore.QVariant(u'')).toString()))
         service_item.raw_footer = raw_footer
         service_item.audit = [
             song.title, author_audit, song.copyright, unicode(song.ccli_number)
@@ -396,46 +395,46 @@ class SongMediaItem(MediaManagerItem):
         Triggered by a song being loaded by the service item
         """
         log.debug(u'serviceLoad')
-        if item.data_string:
-            search_results = self.parent.manager.get_all_objects(Song,
-                Song.search_title == re.compile(r'\W+', re.UNICODE).sub(u' ',
-                item.data_string[u'title'].split(u'@')[0].lower()).strip(),
-                Song.search_title.asc())
-            author_list = item.data_string[u'authors'].split(u', ')
-            # The service item always has an author (at least it has u'' as
-            # author). However, songs saved in the database do not have to have
-            # an author.
-            if u'' in author_list:
-                author_list.remove(u'')
-            editId = 0
-            add_song = True
-            if search_results:
-                for song in search_results:
-                    same_authors = True
-                    # If the author counts are different, we do not have to do
-                    # any further checking. This is also important when a song
-                    # does not have any author (because we can not loop over an
-                    # empty list).
-                    if len(song.authors) == len(author_list):
-                        for author in song.authors:
-                            if author.display_name not in author_list:
-                                same_authors = False
-                    else:
-                        same_authors = False
-                    # All authors are the same, so we can stop here and the song
-                    # does not have to be saved.
-                    if same_authors:
-                        add_song = False
-                        editId = song.id
-                        break
-            if add_song:
-                if self.addSongFromService:
-                    editId = self.openLyrics.xml_to_song(item.xml_version)
-                    self.onSearchTextButtonClick()
-            # Update service with correct song id.
-            if editId:
-                Receiver.send_message(u'service_item_update',
-                    u'%s:%s' % (editId, item._uuid))
+        if self.plugin.status != PluginStatus.Active or not item.data_string:
+            return
+        search_results = self.parent.manager.get_all_objects(Song,
+            Song.search_title == re.compile(r'\W+', re.UNICODE).sub(u' ',
+            item.data_string[u'title'].split(u'@')[0].lower()).strip(),
+            Song.search_title.asc())
+        author_list = item.data_string[u'authors'].split(u', ')
+        # The service item always has an author (at least it has u'' as
+        # author). However, songs saved in the database do not have to have
+        # an author.
+        if u'' in author_list:
+            author_list.remove(u'')
+        editId = 0
+        add_song = True
+        if search_results:
+            for song in search_results:
+                same_authors = True
+                # If the author counts are different, we do not have to do any
+                # further checking. This is also important when a song does not
+                # have any author (because we can not loop over an empty list).
+                if len(song.authors) == len(author_list):
+                    for author in song.authors:
+                        if author.display_name not in author_list:
+                            same_authors = False
+                else:
+                    same_authors = False
+                # All authors are the same, so we can stop here and the song
+                # does not have to be saved.
+                if same_authors:
+                    add_song = False
+                    editId = song.id
+                    break
+        if add_song:
+            if self.addSongFromService:
+                editId = self.openLyrics.xml_to_song(item.xml_version)
+                self.onSearchTextButtonClick()
+        # Update service with correct song id.
+        if editId:
+            Receiver.send_message(u'service_item_update',
+                u'%s:%s' % (editId, item._uuid))
 
     def collateSongTitles(self, song_1, song_2):
         """

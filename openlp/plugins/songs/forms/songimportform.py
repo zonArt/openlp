@@ -32,7 +32,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, SettingsManager, translate
-from openlp.core.lib.ui import critical_error_message_box
+from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard
 from openlp.plugins.songs.lib.importer import SongFormat
 
@@ -140,6 +140,12 @@ class SongImportForm(OpenLPWizard):
         QtCore.QObject.connect(self.songBeamerRemoveButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onSongBeamerRemoveButtonClicked)
+        QtCore.QObject.connect(self.songShowPlusAddButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onSongShowPlusAddButtonClicked)
+        QtCore.QObject.connect(self.songShowPlusRemoveButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onSongShowPlusRemoveButtonClicked)
 
     def addCustomPages(self):
         """
@@ -188,6 +194,8 @@ class SongImportForm(OpenLPWizard):
         self.addFileSelectItem(u'ew', single_select=True)
         # Words of Worship
         self.addFileSelectItem(u'songBeamer')
+        # Song Show Plus
+        self.addFileSelectItem(u'songShowPlus')
 #        Commented out for future use.
 #        self.addFileSelectItem(u'csv', u'CSV', single_select=True)
         self.sourceLayout.addLayout(self.formatStack)
@@ -215,8 +223,7 @@ class SongImportForm(OpenLPWizard):
             'Select the import format, and where to import from.'))
         self.formatLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Format:'))
-        self.formatComboBox.setItemText(0,
-            translate('SongsPlugin.ImportWizardForm', 'OpenLP 2.0'))
+        self.formatComboBox.setItemText(0, UiStrings.OLPV2)
         self.formatComboBox.setItemText(1,
             translate('SongsPlugin.ImportWizardForm', 'openlp.org 1.x'))
         self.formatComboBox.setItemText(2,
@@ -238,6 +245,8 @@ class SongImportForm(OpenLPWizard):
             translate('SongsPlugin.ImportWizardForm', 'EasyWorship'))
         self.formatComboBox.setItemText(10,
             translate('SongsPlugin.ImportWizardForm', 'SongBeamer'))
+        self.formatComboBox.setItemText(11,
+            translate('SongsPlugin.ImportWizardForm', 'SongShow Plus'))
 #        self.formatComboBox.setItemText(11,
 #            translate('SongsPlugin.ImportWizardForm', 'CSV'))
         self.openLP2FilenameLabel.setText(
@@ -301,6 +310,10 @@ class SongImportForm(OpenLPWizard):
         self.songBeamerAddButton.setText(
             translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
         self.songBeamerRemoveButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
+        self.songShowPlusAddButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
+        self.songShowPlusRemoveButton.setText(
             translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
 #        self.csvFilenameLabel.setText(
 #            translate('SongsPlugin.ImportWizardForm', 'Filename:'))
@@ -439,37 +452,19 @@ class SongImportForm(OpenLPWizard):
                         'file to import from.'))
                     self.songBeamerAddButton.setFocus()
                     return False
+            elif source_format == SongFormat.SongShowPlus:
+                if self.songShowPlusFileListWidget.count() == 0:
+                    critical_error_message_box(
+                        translate('SongsPlugin.ImportWizardForm',
+                        'No SongShow Plus Files Selected'),
+                        translate('SongsPlugin.ImportWizardForm',
+                        'You need to add at least one SongShow Plus '
+                        'file to import from.'))
+                    self.wordsOfWorshipAddButton.setFocus()
+                    return False
             return True
         elif self.currentPage() == self.progressPage:
             return True
-
-    def getFileName(self, title, editbox, filters=u''):
-        """
-        Opens a QFileDialog and writes the filename to the given editbox.
-
-        ``title``
-            The title of the dialog (unicode).
-
-        ``editbox``
-            A editbox (QLineEdit).
-
-        ``filters``
-            The file extension filters. It should contain the file descriptions
-            as well as the file extensions. For example::
-
-                u'OpenLP 2.0 Databases (*.sqlite)'
-        """
-        if filters:
-            filters += u';;'
-        filters += u'%s (*)' % translate('SongsPlugin.ImportWizardForm',
-            'All Files')
-        filename = QtGui.QFileDialog.getOpenFileName(self, title,
-            SettingsManager.get_last_dir(self.plugin.settingsSection, 1),
-            filters)
-        if filename:
-            editbox.setText(filename)
-            SettingsManager.set_last_dir(self.plugin.settingsSection,
-                os.path.split(unicode(filename))[0], 1)
 
     def getFiles(self, title, listbox, filters=u''):
         """
@@ -489,8 +484,7 @@ class SongImportForm(OpenLPWizard):
         """
         if filters:
             filters += u';;'
-        filters += u'%s (*)' % translate('SongsPlugin.ImportWizardForm',
-            'All Files')
+        filters += u'%s (*)' % UiStrings.AllFiles
         filenames = QtGui.QFileDialog.getOpenFileNames(self, title,
             SettingsManager.get_last_dir(self.plugin.settingsSection, 1),
             filters)
@@ -673,12 +667,24 @@ class SongImportForm(OpenLPWizard):
         Remove selected SongBeamer files from the import list
         """
         self.removeSelectedItems(self.songBeamerFileListWidget)
+        
+    def onSongShowPlusAddButtonClicked(self):
+        """
+        Get SongShow Plus song database files
+        """
+        self.getFiles(
+            translate('SongsPlugin.ImportWizardForm',
+            'Select SongShow Plus Files'),
+            self.songShowPlusFileListWidget, u'%s (*.sbsong)'
+            % translate('SongsPlugin.ImportWizardForm',
+            'SongShow Plus Song Files')
+        )
 
-    def registerFields(self):
+    def onSongShowPlusRemoveButtonClicked(self):
         """
-        Register song import wizard fields.
+        Remove selected SongShow Plus files from the import list
         """
-        pass
+        self.removeSelectedItems(self.songShowPlusFileListWidget)
 
     def setDefaults(self):
         """
@@ -699,6 +705,7 @@ class SongImportForm(OpenLPWizard):
         self.easiSlidesFilenameEdit.setText(u'')
         self.ewFilenameEdit.setText(u'')
         self.songBeamerFileListWidget.clear()
+        self.songShowPlusFileListWidget.clear()
         #self.csvFilenameEdit.setText(u'')
 
     def preWizard(self):
@@ -774,6 +781,12 @@ class SongImportForm(OpenLPWizard):
             # Import SongBeamer songs
             importer = self.plugin.importSongs(SongFormat.SongBeamer,
                 filenames=self.getListOfFiles(self.songBeamerFileListWidget)
+            )
+        elif source_format == SongFormat.SongShowPlus:
+            # Import ShongShow Plus songs
+            importer = self.plugin.importSongs(SongFormat.SongShowPlus,
+                filenames=self.getListOfFiles(
+                    self.songShowPlusFileListWidget)
             )
         if importer.do_import():
             self.progressLabel.setText(

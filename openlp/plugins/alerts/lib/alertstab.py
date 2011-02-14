@@ -27,61 +27,55 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, translate
+from openlp.core.lib.ui import UiStrings, create_valign_combo
 
 class AlertsTab(SettingsTab):
     """
     AlertsTab is the alerts settings tab in the settings dialog.
     """
-    def __init__(self, parent, visible_title):
-        self.parent = parent
-        self.manager = parent.manager
-        SettingsTab.__init__(self, parent.name, visible_title)
+    def __init__(self, name, visible_title):
+        SettingsTab.__init__(self, name, visible_title)
 
     def setupUi(self):
         self.setObjectName(u'AlertsTab')
         SettingsTab.setupUi(self)
-        self.FontGroupBox = QtGui.QGroupBox(self.leftColumn)
-        self.FontGroupBox.setObjectName(u'FontGroupBox')
-        self.FontLayout = QtGui.QFormLayout(self.FontGroupBox)
-        self.FontLayout.setObjectName(u'FontLayout')
-        self.FontLabel = QtGui.QLabel(self.FontGroupBox)
+        self.fontGroupBox = QtGui.QGroupBox(self.leftColumn)
+        self.fontGroupBox.setObjectName(u'fontGroupBox')
+        self.fontLayout = QtGui.QFormLayout(self.fontGroupBox)
+        self.fontLayout.setObjectName(u'fontLayout')
+        self.FontLabel = QtGui.QLabel(self.fontGroupBox)
         self.FontLabel.setObjectName(u'FontLabel')
-        self.FontComboBox = QtGui.QFontComboBox(self.FontGroupBox)
+        self.FontComboBox = QtGui.QFontComboBox(self.fontGroupBox)
         self.FontComboBox.setObjectName(u'FontComboBox')
-        self.FontLayout.addRow(self.FontLabel, self.FontComboBox)
-        self.FontColorLabel = QtGui.QLabel(self.FontGroupBox)
+        self.fontLayout.addRow(self.FontLabel, self.FontComboBox)
+        self.FontColorLabel = QtGui.QLabel(self.fontGroupBox)
         self.FontColorLabel.setObjectName(u'FontColorLabel')
         self.ColorLayout = QtGui.QHBoxLayout()
         self.ColorLayout.setObjectName(u'ColorLayout')
-        self.FontColorButton = QtGui.QPushButton(self.FontGroupBox)
+        self.FontColorButton = QtGui.QPushButton(self.fontGroupBox)
         self.FontColorButton.setObjectName(u'FontColorButton')
         self.ColorLayout.addWidget(self.FontColorButton)
         self.ColorLayout.addSpacing(20)
-        self.BackgroundColorLabel = QtGui.QLabel(self.FontGroupBox)
+        self.BackgroundColorLabel = QtGui.QLabel(self.fontGroupBox)
         self.BackgroundColorLabel.setObjectName(u'BackgroundColorLabel')
         self.ColorLayout.addWidget(self.BackgroundColorLabel)
-        self.BackgroundColorButton = QtGui.QPushButton(self.FontGroupBox)
+        self.BackgroundColorButton = QtGui.QPushButton(self.fontGroupBox)
         self.BackgroundColorButton.setObjectName(u'BackgroundColorButton')
         self.ColorLayout.addWidget(self.BackgroundColorButton)
-        self.FontLayout.addRow(self.FontColorLabel, self.ColorLayout)
-        self.FontSizeLabel = QtGui.QLabel(self.FontGroupBox)
+        self.fontLayout.addRow(self.FontColorLabel, self.ColorLayout)
+        self.FontSizeLabel = QtGui.QLabel(self.fontGroupBox)
         self.FontSizeLabel.setObjectName(u'FontSizeLabel')
-        self.FontSizeSpinBox = QtGui.QSpinBox(self.FontGroupBox)
+        self.FontSizeSpinBox = QtGui.QSpinBox(self.fontGroupBox)
         self.FontSizeSpinBox.setObjectName(u'FontSizeSpinBox')
-        self.FontLayout.addRow(self.FontSizeLabel, self.FontSizeSpinBox)
-        self.TimeoutLabel = QtGui.QLabel(self.FontGroupBox)
+        self.fontLayout.addRow(self.FontSizeLabel, self.FontSizeSpinBox)
+        self.TimeoutLabel = QtGui.QLabel(self.fontGroupBox)
         self.TimeoutLabel.setObjectName(u'TimeoutLabel')
-        self.TimeoutSpinBox = QtGui.QSpinBox(self.FontGroupBox)
+        self.TimeoutSpinBox = QtGui.QSpinBox(self.fontGroupBox)
         self.TimeoutSpinBox.setMaximum(180)
         self.TimeoutSpinBox.setObjectName(u'TimeoutSpinBox')
-        self.FontLayout.addRow(self.TimeoutLabel, self.TimeoutSpinBox)
-        self.LocationLabel = QtGui.QLabel(self.FontGroupBox)
-        self.LocationLabel.setObjectName(u'LocationLabel')
-        self.LocationComboBox = QtGui.QComboBox(self.FontGroupBox)
-        self.LocationComboBox.addItems([u'', u'', u''])
-        self.LocationComboBox.setObjectName(u'LocationComboBox')
-        self.FontLayout.addRow(self.LocationLabel, self.LocationComboBox)
-        self.leftLayout.addWidget(self.FontGroupBox)
+        self.fontLayout.addRow(self.TimeoutLabel, self.TimeoutSpinBox)
+        create_valign_combo(self, self.fontGroupBox, self.fontLayout)
+        self.leftLayout.addWidget(self.fontGroupBox)
         self.leftLayout.addStretch()
         self.PreviewGroupBox = QtGui.QGroupBox(self.rightColumn)
         self.PreviewGroupBox.setObjectName(u'PreviewGroupBox')
@@ -99,15 +93,13 @@ class AlertsTab(SettingsTab):
             QtCore.SIGNAL(u'pressed()'), self.onFontColorButtonClicked)
         QtCore.QObject.connect(self.FontComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onFontComboBoxClicked)
-        QtCore.QObject.connect(self.LocationComboBox,
-            QtCore.SIGNAL(u'activated(int)'), self.onLocationComboBoxClicked)
         QtCore.QObject.connect(self.TimeoutSpinBox,
             QtCore.SIGNAL(u'valueChanged(int)'), self.onTimeoutSpinBoxChanged)
         QtCore.QObject.connect(self.FontSizeSpinBox,
             QtCore.SIGNAL(u'valueChanged(int)'), self.onFontSizeSpinBoxChanged)
 
     def retranslateUi(self):
-        self.FontGroupBox.setTitle(
+        self.fontGroupBox.setTitle(
             translate('AlertsPlugin.AlertsTab', 'Font'))
         self.FontLabel.setText(
             translate('AlertsPlugin.AlertsTab', 'Font name:'))
@@ -123,18 +115,8 @@ class AlertsTab(SettingsTab):
             translate('AlertsPlugin.AlertsTab', 'Alert timeout:'))
         self.TimeoutSpinBox.setSuffix(
             translate('AlertsPlugin.AlertsTab', 's'))
-        self.LocationLabel.setText(
-            translate('AlertsPlugin.AlertsTab', 'Location:'))
-        self.PreviewGroupBox.setTitle(
-            translate('AlertsPlugin.AlertsTab', 'Preview'))
-        self.FontPreview.setText(
-            translate('AlertsPlugin.AlertsTab', 'OpenLP 2.0'))
-        self.LocationComboBox.setItemText(0,
-            translate('AlertsPlugin.AlertsTab', 'Top'))
-        self.LocationComboBox.setItemText(1,
-            translate('AlertsPlugin.AlertsTab', 'Middle'))
-        self.LocationComboBox.setItemText(2,
-            translate('AlertsPlugin.AlertsTab', 'Bottom'))
+        self.PreviewGroupBox.setTitle(UiStrings.Preview)
+        self.FontPreview.setText(UiStrings.OLPV2)
 
     def onBackgroundColorButtonClicked(self):
         new_color = QtGui.QColorDialog.getColor(
@@ -147,9 +129,6 @@ class AlertsTab(SettingsTab):
 
     def onFontComboBoxClicked(self):
         self.updateDisplay()
-
-    def onLocationComboBoxClicked(self, location):
-        self.location = location
 
     def onFontColorButtonClicked(self):
         new_color = QtGui.QColorDialog.getColor(
@@ -188,7 +167,7 @@ class AlertsTab(SettingsTab):
             u'background-color: %s' % self.font_color)
         self.BackgroundColorButton.setStyleSheet(
             u'background-color: %s' % self.bg_color)
-        self.LocationComboBox.setCurrentIndex(self.location)
+        self.verticalComboBox.setCurrentIndex(self.location)
         font = QtGui.QFont()
         font.setFamily(self.font_face)
         self.FontComboBox.setCurrentFont(font)
@@ -197,14 +176,14 @@ class AlertsTab(SettingsTab):
     def save(self):
         settings = QtCore.QSettings()
         settings.beginGroup(self.settingsSection)
-        self.font_face = self.FontComboBox.currentFont().family()
         settings.setValue(u'background color', QtCore.QVariant(self.bg_color))
         settings.setValue(u'font color', QtCore.QVariant(self.font_color))
         settings.setValue(u'font size', QtCore.QVariant(self.font_size))
+        self.font_face = self.FontComboBox.currentFont().family()
         settings.setValue(u'font face', QtCore.QVariant(self.font_face))
         settings.setValue(u'timeout', QtCore.QVariant(self.timeout))
-        settings.setValue(u'location',
-            QtCore.QVariant(self.LocationComboBox.currentIndex()))
+        self.location = self.verticalComboBox.currentIndex()
+        settings.setValue(u'location', QtCore.QVariant(self.location))
         settings.endGroup()
 
     def updateDisplay(self):
