@@ -29,6 +29,7 @@ The :mod:`advancedtab` provides an advanced settings facility.
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, translate
+from openlp.core.lib.ui import UiStrings
 
 class AdvancedTab(SettingsTab):
     """
@@ -112,7 +113,7 @@ class AdvancedTab(SettingsTab):
         """
         Setup the interface translation strings.
         """
-        self.tabTitleVisible = translate('OpenLP.AdvancedTab', 'Advanced')
+        self.tabTitleVisible = UiStrings.Advanced
         self.uiGroupBox.setTitle(translate('OpenLP.AdvancedTab', 'UI Settings'))
         self.recentLabel.setText(
             translate('OpenLP.AdvancedTab',

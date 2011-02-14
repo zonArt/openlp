@@ -145,7 +145,12 @@ class ImpressController(PresentationController):
         log.debug(u'get COM Desktop OpenOffice')
         if not self.manager:
             return None
-        return self.manager.createInstance(u'com.sun.star.frame.Desktop')
+        desktop = None
+        try:
+            desktop = self.manager.createInstance(u'com.sun.star.frame.Desktop')
+        except AttributeError:
+            log.exception(u'Failure to find desktop - Impress may have closed')
+        return desktop if desktop else None
 
     def get_com_servicemanager(self):
         """
@@ -166,13 +171,15 @@ class ImpressController(PresentationController):
         log.debug(u'Kill OpenOffice')
         while self.docs:
             self.docs[0].close_presentation()
-        if os.name != u'nt':
-            desktop = self.get_uno_desktop()
-        else:
-            desktop = self.get_com_desktop()
-        #Sometimes we get a failure and desktop is None
-        if not desktop:
+        desktop = None
+        try:
+            if os.name != u'nt':
+                desktop = self.get_uno_desktop()
+            else:
+                desktop = self.get_com_desktop()
+        except:
             log.exception(u'Failed to find an OpenOffice desktop to terminate')
+        if not desktop:
             return
         docs = desktop.getComponents()
         if docs.hasElements():
@@ -429,7 +436,7 @@ class ImpressDocument(PresentationDocument):
         ``slide_no``
             The slide the text is required for, starting at 1
         """
-        return __get_text_from_slide(slide_no)
+        return self.__get_text_from_page(slide_no)
 
     def get_slide_notes(self, slide_no):
         """
@@ -438,7 +445,7 @@ class ImpressDocument(PresentationDocument):
         ``slide_no``
             The slide the notes are required for, starting at 1
         """
-        return __get_text_from_page(slide_no, True)
+        return self.__get_text_from_page(slide_no, True)
 
     def __get_text_from_page(self, slide_no, notes=False):
         """

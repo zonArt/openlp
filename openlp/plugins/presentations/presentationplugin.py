@@ -31,7 +31,6 @@ import os
 import logging
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
-from openlp.core.lib.ui import UiStrings
 from openlp.core.utils import AppLocation
 from openlp.plugins.presentations.lib import PresentationController, \
     PresentationMediaItem, PresentationTab
@@ -168,33 +167,4 @@ class PresentationPlugin(Plugin):
                 'container title')
         }
         # Middle Header Bar
-        ## Load Action ##
-        self.textStrings[StringContent.Load] = {
-            u'title': UiStrings.Load,
-            u'tooltip': translate('PresentationPlugin',
-                'Load a new Presentation')
-        }
-        ## Delete Action ##
-        self.textStrings[StringContent.Delete] = {
-            u'title': UiStrings.Delete,
-            u'tooltip': translate('PresentationPlugin',
-                'Delete the selected Presentation')
-        }
-        ## Preview Action ##
-        self.textStrings[StringContent.Preview] = {
-            u'title': UiStrings.Preview,
-            u'tooltip': translate('PresentationPlugin',
-                'Preview the selected Presentation')
-        }
-        ## Send Live Action ##
-        self.textStrings[StringContent.Live] = {
-            u'title': UiStrings.Live,
-            u'tooltip': translate('PresentationPlugin',
-                'Send the selected Presentation live')
-        }
-        ## Add to Service Action ##
-        self.textStrings[StringContent.Service] = {
-            u'title': UiStrings.Service,
-            u'tooltip': translate('PresentationPlugin',
-                'Add the selected Presentation to the service')
-        }
+        Plugin.setPluginTextStrings(self)

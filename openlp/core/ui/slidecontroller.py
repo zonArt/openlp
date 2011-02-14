@@ -178,10 +178,12 @@ class SlideController(QtGui.QWidget):
                     QtCore.SIGNAL(u'triggered(bool)'), self.onHideDisplay)
             self.toolbar.addToolbarSeparator(u'Loop Separator')
             self.toolbar.addToolbarButton(
+                # Does not need translating - control string.
                 u'Start Loop', u':/media/media_time.png',
                 translate('OpenLP.SlideController', 'Start continuous loop'),
                 self.onStartLoop)
             self.toolbar.addToolbarButton(
+                # Does not need translating - control string.
                 u'Stop Loop', u':/media/media_stop.png',
                 translate('OpenLP.SlideController', 'Stop continuous loop'),
                 self.onStopLoop)
@@ -196,11 +198,13 @@ class SlideController(QtGui.QWidget):
         else:
             self.toolbar.addToolbarSeparator(u'Close Separator')
             self.toolbar.addToolbarButton(
+                # Does not need translating - control string.
                 u'Go Live', u':/general/general_live.png',
                 translate('OpenLP.SlideController', 'Move to live'),
                 self.onGoLive)
             self.toolbar.addToolbarSeparator(u'Close Separator')
             self.toolbar.addToolbarButton(
+                # Does not need translating - control string.
                 u'Edit Song', u':/general/general_edit.png',
                 translate('OpenLP.SlideController',
                 'Edit and reload song preview'),
@@ -873,7 +877,7 @@ class SlideController(QtGui.QWidget):
         using *Blank to Theme*.
         """
         log.debug(u'updatePreview %s ' % self.screens.current[u'primary'])
-        if not self.screens.current[u'primary'] and \
+        if not self.screens.current[u'primary'] and self.serviceItem and \
             self.serviceItem.is_capable(ItemCapabilities.ProvidesOwnDisplay):
             # Grab now, but try again in a couple of seconds if slide change
             # is slow

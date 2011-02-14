@@ -28,17 +28,12 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, BaseListWithDnD, \
-    Receiver, ItemCapabilities, translate, check_item_selected
+from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
+    translate, check_item_selected
 from openlp.plugins.custom.lib import CustomXMLParser
 from openlp.plugins.custom.lib.db import CustomSlide
 
 log = logging.getLogger(__name__)
-
-class CustomListView(BaseListWithDnD):
-    def __init__(self, parent=None):
-        self.PluginName = u'Custom'
-        BaseListWithDnD.__init__(self, parent)
 
 class CustomMediaItem(MediaManagerItem):
     """
@@ -48,9 +43,6 @@ class CustomMediaItem(MediaManagerItem):
 
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'custom/custom'
-        # this next is a class, not an instance of a class - it will
-        # be instanced by the base MediaManagerItem
-        self.ListViewWithDnD_class = CustomListView
         MediaManagerItem.__init__(self, parent, self, icon)
         self.singleServiceItem = False
         # Holds information about whether the edit is remotly triggered and

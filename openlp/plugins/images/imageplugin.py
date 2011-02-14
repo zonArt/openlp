@@ -27,7 +27,6 @@
 import logging
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
-from openlp.core.lib.ui import UiStrings
 from openlp.plugins.images.lib import ImageMediaItem
 
 log = logging.getLogger(__name__)
@@ -36,14 +35,11 @@ class ImagePlugin(Plugin):
     log.info(u'Image Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Images', u'1.9.4', plugin_helpers)
+        Plugin.__init__(self, u'Images', u'1.9.4', plugin_helpers,
+            ImageMediaItem)
         self.weight = -7
         self.icon_path = u':/plugins/plugin_images.png'
         self.icon = build_icon(self.icon_path)
-
-    def getMediaManagerItem(self):
-        # Create the MediaManagerItem object.
-        return ImageMediaItem(self, self, self.icon)
 
     def about(self):
         about_text = translate('ImagePlugin', '<strong>Image Plugin</strong>'
@@ -73,45 +69,4 @@ class ImagePlugin(Plugin):
             u'title': translate('ImagePlugin', 'Images', 'container title')
         }
         # Middle Header Bar
-        ## Load Button ##
-        self.textStrings[StringContent.Load] = {
-            u'title': UiStrings.Load,
-            u'tooltip': translate('ImagePlugin',
-                'Load a new Image')
-        }
-        ## New Button ##
-        self.textStrings[StringContent.New] = {
-            u'title': UiStrings.Add,
-            u'tooltip': translate('ImagePlugin',
-                'Add a new Image')
-        }
-        ## Edit Button ##
-        self.textStrings[StringContent.Edit] = {
-            u'title': UiStrings.Edit,
-            u'tooltip': translate('ImagePlugin',
-                'Edit the selected Image')
-        }
-        ## Delete Button ##
-        self.textStrings[StringContent.Delete] = {
-            u'title': UiStrings.Delete,
-            u'tooltip': translate('ImagePlugin',
-                'Delete the selected Image')
-        }
-        ## Preview ##
-        self.textStrings[StringContent.Preview] = {
-            u'title': UiStrings.Preview,
-            u'tooltip': translate('ImagePlugin',
-                'Preview the selected Image')
-        }
-        ## Live  Button ##
-        self.textStrings[StringContent.Live] = {
-            u'title': UiStrings.Live,
-            u'tooltip': translate('ImagePlugin',
-                'Send the selected Image live')
-        }
-        ## Add to service Button ##
-        self.textStrings[StringContent.Service] = {
-            u'title': UiStrings.Service,
-            u'tooltip': translate('ImagePlugin',
-                'Add the selected Image to the service')
-        }
+        Plugin.setPluginTextStrings(self)

@@ -6,16 +6,16 @@ Object Library
 .. automodule:: openlp.core.lib
    :members:
 
-:mod:`BaseListWithDnD`
-----------------------
-
-.. autoclass:: openlp.core.lib.baselistwithdnd.BaseListWithDnD
-   :members:
-
 :mod:`EventReceiver`
 --------------------
 
 .. autoclass:: openlp.core.lib.eventreceiver.EventReceiver
+   :members:
+
+:mod:`ListWidgetWithDnD`
+----------------------
+
+.. autoclass:: openlp.core.lib.listwidgetwithdnd.ListWidgetWithDnD
    :members:
 
 :mod:`MediaManagerItem`

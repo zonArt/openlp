@@ -106,6 +106,9 @@ class MainDisplay(DisplayWidget):
         self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
         Phonon.createPath(self.mediaObject, self.videoWidget)
         Phonon.createPath(self.mediaObject, self.audio)
+        QtCore.QObject.connect(self.mediaObject,
+            QtCore.SIGNAL(u'stateChanged(Phonon::State, Phonon::State)'),
+            self.videoStart)
         self.webView = QtWebKit.QWebView(self)
         self.webView.setGeometry(0, 0,
             self.screen[u'size'].width(), self.screen[u'size'].height())
@@ -145,7 +148,7 @@ class MainDisplay(DisplayWidget):
             serviceItem = ServiceItem()
             serviceItem.bg_image_bytes = image_to_byte(initialFrame)
             self.webView.setHtml(build_html(serviceItem, self.screen,
-                self.parent.alertTab, self.isLive, None))
+                self.alertTab, self.isLive, None))
             self.initialFrame = True
             # To display or not to display?
             if not self.screen[u'primary']:
@@ -341,6 +344,13 @@ class MainDisplay(DisplayWidget):
         Receiver.send_message(u'maindisplay_active')
         return self.preview()
 
+    def videoStart(self, newState, oldState):
+        """
+        Start the video at a predetermined point.
+        """
+        if newState == Phonon.PlayingState:
+            self.mediaObject.seek(self.serviceItem.start_time * 1000)
+
     def isWebLoaded(self):
         """
         Called by webView event to show display is fully loaded
@@ -406,7 +416,7 @@ class MainDisplay(DisplayWidget):
         if self.serviceItem.themedata.background_filename:
             self.serviceItem.bg_image_bytes = self.imageManager. \
                 get_image_bytes(self.serviceItem.themedata.theme_name)
-        html = build_html(self.serviceItem, self.screen, self.parent.alertTab,
+        html = build_html(self.serviceItem, self.screen, self.alertTab,
             self.isLive, background)
         log.debug(u'buildHtml - pre setHtml')
         self.webView.setHtml(html)
