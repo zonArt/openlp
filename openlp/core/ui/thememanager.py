@@ -63,28 +63,28 @@ class ThemeManager(QtGui.QWidget):
         self.layout.setObjectName(u'layout')
         self.toolbar = OpenLPToolbar(self)
         self.toolbar.addToolbarButton(
-            UiStrings.NewType % UiStrings.Theme,
+            translate('OpenLP.ThemeManager', 'New Theme'),
             u':/themes/theme_new.png',
-            UiStrings.CreateANew % UiStrings.Theme.toLower(),
+            translate('OpenLP.ThemeManager', 'Create a new theme.'),
             self.onAddTheme)
         self.toolbar.addToolbarButton(
-            UiStrings.EditType % UiStrings.Theme,
+            translate('OpenLP.ThemeManager', 'Edit Theme'),
             u':/themes/theme_edit.png',
             translate('OpenLP.ThemeManager', 'Edit a theme.'),
             self.onEditTheme)
         self.deleteToolbarAction = self.toolbar.addToolbarButton(
-            UiStrings.DeleteType % UiStrings.Theme,
+            translate('OpenLP.ThemeManager', 'Delete Theme'),
             u':/general/general_delete.png',
             translate('OpenLP.ThemeManager', 'Delete a theme.'),
             self.onDeleteTheme)
         self.toolbar.addSeparator()
         self.toolbar.addToolbarButton(
-            UiStrings.ImportType % UiStrings.Theme,
+            translate('OpenLP.ThemeManager', 'Import Theme'),
             u':/general/general_import.png',
             translate('OpenLP.ThemeManager', 'Import a theme.'),
             self.onImportTheme)
         self.toolbar.addToolbarButton(
-            UiStrings.ExportType % UiStrings.Theme,
+            translate('OpenLP.ThemeManager', 'Export Theme'),
             u':/general/general_export.png',
             translate('OpenLP.ThemeManager', 'Export a theme.'),
             self.onExportTheme)
@@ -405,8 +405,8 @@ class ThemeManager(QtGui.QWidget):
         files = QtGui.QFileDialog.getOpenFileNames(self,
             translate('OpenLP.ThemeManager', 'Select Theme Import File'),
             SettingsManager.get_last_dir(self.settingsSection),
-            translate('OpenLP.ThemeManager', 'Theme v1 (*.theme);;'
-            'Theme v2 (*.otz);;%s (*.*)') % UiStrings.AllFiles)
+            unicode(translate('OpenLP.ThemeManager', 'Theme v1 (*.theme);;'
+            'Theme v2 (*.otz);;%s (*.*)')) % UiStrings.AllFiles)
         log.info(u'New Themes %s', unicode(files))
         if files:
             for file in files:

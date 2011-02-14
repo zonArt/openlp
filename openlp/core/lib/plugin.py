@@ -335,38 +335,40 @@ class Plugin(QtCore.QObject):
         """
         return self.textStrings[name]
 
-    def setPluginTextStrings(self):
+    def setPluginUiTextStrings(self, tooltips):
         """
         Called to define all translatable texts of the plugin
         """
         self.nameStrings = self.textStrings[StringContent.Name]
         ## Load Action ##
-        self._setSingularTextString(StringContent.Load,
-            UiStrings.Load, UiStrings.LoadANew)
+        self.__setNameTextString(StringContent.Load,
+            UiStrings.Load, tooltips[u'load'])
+        ## Import Action ##
+        self.__setNameTextString(StringContent.Import,
+            UiStrings.Import, tooltips[u'import'])
         ## New Action ##
-        self._setSingularTextString(StringContent.New,
-            UiStrings.Add, UiStrings.AddANew)
+        self.__setNameTextString(StringContent.New,
+            UiStrings.Add, tooltips[u'new'])
         ## Edit Action ##
-        self._setSingularTextString(StringContent.Edit,
-            UiStrings.Edit, UiStrings.EditSelect)
+        self.__setNameTextString(StringContent.Edit,
+            UiStrings.Edit, tooltips[u'edit'])
         ## Delete Action ##
-        self._setSingularTextString(StringContent.Delete,
-            UiStrings.Delete, UiStrings.DeleteSelect)
+        self.__setNameTextString(StringContent.Delete,
+            UiStrings.Delete, tooltips[u'delete'])
         ## Preview Action ##
-        self._setSingularTextString(StringContent.Preview,
-            UiStrings.Preview, UiStrings.PreviewSelect)
+        self.__setNameTextString(StringContent.Preview,
+            UiStrings.Preview, tooltips[u'preview'])
         ## Send Live Action ##
-        self._setSingularTextString(StringContent.Live,
-            UiStrings.Live, UiStrings.SendSelectLive)
+        self.__setNameTextString(StringContent.Live,
+            UiStrings.Live, tooltips[u'live'])
         ## Add to Service Action ##
-        self._setSingularTextString(StringContent.Service,
-            UiStrings.Service, UiStrings.AddSelectService)
+        self.__setNameTextString(StringContent.Service,
+            UiStrings.Service, tooltips[u'service'])
 
-    def _setSingularTextString(self, name, title, tooltip):
+    def __setNameTextString(self, name, title, tooltip):
         """
         Utility method for creating a plugin's textStrings. This method makes
         use of the singular name of the plugin object so must only be called
         after this has been set.
         """
-        self.textStrings[name] = { u'title': title, u'tooltip': tooltip %
-            self.nameStrings[u'singular']}
+        self.textStrings[name] = {u'title': title, u'tooltip': tooltip}

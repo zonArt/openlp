@@ -316,17 +316,16 @@ class Ui_MainWindow(object):
         self.serviceManagerDock.setWindowTitle(UiStrings.ServiceManager)
         self.themeManagerDock.setWindowTitle(UiStrings.ThemeManager)
         self.FileNewItem.setText(translate('OpenLP.MainWindow', '&New'))
-        self.FileNewItem.setToolTip(UiStrings.NewType % UiStrings.Service)
-        self.FileNewItem.setStatusTip(
-            UiStrings.CreateANew % UiStrings.Service.toLower())
+        self.FileNewItem.setToolTip(UiStrings.NewService)
+        self.FileNewItem.setStatusTip(UiStrings.CreateService)
         self.FileNewItem.setShortcut(translate('OpenLP.MainWindow', 'Ctrl+N'))
         self.FileOpenItem.setText(translate('OpenLP.MainWindow', '&Open'))
-        self.FileOpenItem.setToolTip(UiStrings.OpenType % UiStrings.Service)
+        self.FileOpenItem.setToolTip(UiStrings.OpenService)
         self.FileOpenItem.setStatusTip(
             translate('OpenLP.MainWindow', 'Open an existing service.'))
         self.FileOpenItem.setShortcut(translate('OpenLP.MainWindow', 'Ctrl+O'))
         self.FileSaveItem.setText(translate('OpenLP.MainWindow', '&Save'))
-        self.FileSaveItem.setToolTip(UiStrings.SaveType % UiStrings.Service)
+        self.FileSaveItem.setToolTip(UiStrings.SaveService)
         self.FileSaveItem.setStatusTip(
             translate('OpenLP.MainWindow', 'Save the current service to disk.'))
         self.FileSaveItem.setShortcut(translate('OpenLP.MainWindow', 'Ctrl+S'))
