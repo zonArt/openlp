@@ -341,28 +341,28 @@ class Plugin(QtCore.QObject):
         """
         ## Load Action ##
         self.__setNameTextString(StringContent.Load,
-            UiStrings.Load, tooltips[load])
+            UiStrings.Load, tooltips[u'load'])
         ## Import Action ##
         self.__setNameTextString(StringContent.Import,
-            UiStrings.Import, tooltips[import])
+            UiStrings.Import, tooltips[u'import'])
         ## New Action ##
         self.__setNameTextString(StringContent.New,
-            UiStrings.Add, tooltips[new])
+            UiStrings.Add, tooltips[u'new'])
         ## Edit Action ##
         self.__setNameTextString(StringContent.Edit,
-            UiStrings.Edit, tooltips[edit])
+            UiStrings.Edit, tooltips[u'edit'])
         ## Delete Action ##
         self.__setNameTextString(StringContent.Delete,
-            UiStrings.Delete, tooltips[delete])
+            UiStrings.Delete, tooltips[u'delete'])
         ## Preview Action ##
         self.__setNameTextString(StringContent.Preview,
-            UiStrings.Preview, tooltips[preview])
+            UiStrings.Preview, tooltips[u'preview'])
         ## Send Live Action ##
         self.__setNameTextString(StringContent.Live,
-            UiStrings.Live, tooltips[live])
+            UiStrings.Live, tooltips[u'live'])
         ## Add to Service Action ##
         self.__setNameTextString(StringContent.Service,
-            UiStrings.Service, tooltips[service])
+            UiStrings.Service, tooltips[u'service'])
 
     def __setNameTextString(self, name, title, tooltip):
         """

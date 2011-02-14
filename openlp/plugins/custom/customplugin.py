@@ -107,14 +107,16 @@ class CustomPlugin(Plugin):
         }
         # Middle Header Bar
         tooltips = {
-            load: translate('CustomsPlugin', 'Load a new Custom'),
-            import: translate('CustomsPlugin', 'Import a Custom'),
-            new: translate('CustomsPlugin', 'Add a new Custom'),
-            edit: translate('CustomsPlugin', 'Edit the selected Custom'),
-            delete: translate('CustomsPlugin', 'Delete the selected Custom'),
-            preview: translate('CustomsPlugin', 'Preview the selected Custom'),
-            live: translate('CustomsPlugin', 'Send the selected Custom live'),
-            service: translate('CustomsPlugin',
+            u'load': translate('CustomsPlugin', 'Load a new Custom'),
+            u'import': translate('CustomsPlugin', 'Import a Custom'),
+            u'new': translate('CustomsPlugin', 'Add a new Custom'),
+            u'edit': translate('CustomsPlugin', 'Edit the selected Custom'),
+            u'delete': translate('CustomsPlugin', 'Delete the selected Custom'),
+            u'preview': translate('CustomsPlugin',
+                'Preview the selected Custom'),
+            u'live': translate('CustomsPlugin',
+                'Send the selected Custom live'),
+            u'service': translate('CustomsPlugin',
                 'Add the selected Custom to the service')
         }
         self.setPluginUiTextStrings(tooltips)

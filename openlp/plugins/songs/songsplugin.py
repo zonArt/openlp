@@ -229,14 +229,14 @@ class SongsPlugin(Plugin):
         }
         # Middle Header Bar
         tooltips = {
-            load: u'',
-            import: u'',
-            new: translate('SongsPlugin', 'Add a new Song'),
-            edit: translate('SongsPlugin', 'Edit the selected Song'),
-            delete: translate('SongsPlugin', 'Delete the selected Song'),
-            preview: translate('SongsPlugin', 'Preview the selected Song'),
-            live: translate('SongsPlugin', 'Send the selected Song live'),
-            service: translate('SongsPlugin',
+            u'load': u'',
+            u'import': u'',
+            u'new': translate('SongsPlugin', 'Add a new Song'),
+            u'edit': translate('SongsPlugin', 'Edit the selected Song'),
+            u'delete': translate('SongsPlugin', 'Delete the selected Song'),
+            u'preview': translate('SongsPlugin', 'Preview the selected Song'),
+            u'live': translate('SongsPlugin', 'Send the selected Song live'),
+            u'service': translate('SongsPlugin',
                 'Add the selected Song to the service')
         }
         self.setPluginUiTextStrings(tooltips)

@@ -70,14 +70,14 @@ class ImagePlugin(Plugin):
         }
         # Middle Header Bar
         tooltips = {
-            load: translate('ImagePlugin', 'Load a new Image'),
-            import: u'',
-            new: translate('ImagePlugin', 'Add a new Image'),
-            edit: translate('ImagePlugin', 'Edit the selected Image'),
-            delete: translate('ImagePlugin', 'Delete the selected Image'),
-            preview: translate('ImagePlugin', 'Preview the selected Image'),
-            live: translate('ImagePlugin', 'Send the selected Image live'),
-            service: translate('ImagePlugin',
+            u'load': translate('ImagePlugin', 'Load a new Image'),
+            u'import': u'',
+            u'new': translate('ImagePlugin', 'Add a new Image'),
+            u'edit': translate('ImagePlugin', 'Edit the selected Image'),
+            u'delete': translate('ImagePlugin', 'Delete the selected Image'),
+            u'preview': translate('ImagePlugin', 'Preview the selected Image'),
+            u'live': translate('ImagePlugin', 'Send the selected Image live'),
+            u'service': translate('ImagePlugin',
                 'Add the selected Image to the service')
         }
         self.setPluginUiTextStrings(tooltips)

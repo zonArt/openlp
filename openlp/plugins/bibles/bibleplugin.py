@@ -130,14 +130,14 @@ class BiblePlugin(Plugin):
         }
         # Middle Header Bar
         tooltips = {
-            load: u'',
-            import: translate('BiblesPlugin', 'Import a Bible'),
-            new: translate('BiblesPlugin', 'Add a new Bible'),
-            edit: translate('BiblesPlugin', 'Edit the selected Bible'),
-            delete: translate('BiblesPlugin', 'Delete the selected Bible'),
-            preview: translate('BiblesPlugin', 'Preview the selected Bible'),
-            live: translate('BiblesPlugin', 'Send the selected Bible live'),
-            service: translate('BiblesPlugin',
+            u'load': u'',
+            u'import': translate('BiblesPlugin', 'Import a Bible'),
+            u'new': translate('BiblesPlugin', 'Add a new Bible'),
+            u'edit': translate('BiblesPlugin', 'Edit the selected Bible'),
+            u'delete': translate('BiblesPlugin', 'Delete the selected Bible'),
+            u'preview': translate('BiblesPlugin', 'Preview the selected Bible'),
+            u'live': translate('BiblesPlugin', 'Send the selected Bible live'),
+            u'service': translate('BiblesPlugin',
                 'Add the selected Bible to the service')
         }
         self.setPluginUiTextStrings(tooltips)
