@@ -15,12 +15,15 @@ import sys
 # variable expansion:
 # - %(dog)s --- normal python expansion
 # - %(dog%)s --- no python expansion, leave as is (stripping the trailing %)
-# - %(dog:cat) --- if there is an expansion for dog, dog will be used; otherwise if cat exists cat will be used
-# - %(dog=cat) --- if there is an expansion for dog, dog will be used; otherwise "cat" will be used
-# reConf = re.compile(r'(?<!%)%\((?P<key>[^\(]+?)\)s')
-reConf = re.compile(r'(?P<verbatim>%?)%\((?P<key>[^+=:&\)]+?)(?:(?P<kind>[+=:&])(?P<default>[^\)]+))?\)(?P<type>s|d)')
+# - %(dog:cat) --- if there is an expansion for dog, dog will be used;
+#                  otherwise if cat exists cat will be used
+# - %(dog=cat) --- if there is an expansion for dog, dog will be used;
+#                  otherwise "cat" will be used
+# re_conf = re.compile(r'(?<!%)%\((?P<key>[^\(]+?)\)s')
+re_conf = re.compile(r'(?P<verbatim>%?)%\((?P<key>[^+=:&\)]+?)' 
+    + '(?:(?P<kind>[+=:&])(?P<default>[^\)]+))?\)(?P<type>s|d)')
 
-def expandVariable(match, expansions, errors):
+def expand_variable(match, expansions, errors):
     key = match.group('key')
     kind = match.group('kind')
     default = match.group('default')
@@ -74,10 +77,14 @@ if __name__ == '__main__':
 
     # get config file
     parser = optparse.OptionParser()
-    parser.add_option('-c', '--config', dest = 'config', help = 'config file', metavar = 'CONFIG')
-    parser.add_option('-t', '--template', dest = 'template', help = 'template file', metavar = 'TEMPLATE')
-    parser.add_option('-x', '--expandto', dest = 'expanded', help = 'expanded file', metavar = 'EXPANDED')
-    parser.add_option('-e', '--echo', dest = 'echo', help = 'echo variable', metavar = 'ECHOVAR')
+    parser.add_option('-c', '--config', dest='config',
+        help='config file', metavar='CONFIG')
+    parser.add_option('-t', '--template', dest='template',
+        help='template file', metavar='TEMPLATE')
+    parser.add_option('-x', '--expandto', dest='expanded',
+        help='expanded file', metavar='EXPANDED')
+    parser.add_option('-e', '--echo', dest='echo',
+        help='echo variable', metavar='ECHOVAR')
 
     (options, args) = parser.parse_args()
 
@@ -89,13 +96,14 @@ if __name__ == '__main__':
         if not options.template:
             parser.error('option --template|-t is required')
         if not os.path.exists(options.template):
-            parser.error('template file "%s" does not exist' % options.template)
+            parser.error('template file "%s" does not exist' \
+                % options.template)
         if not options.expanded:
             parser.error('option --expandto|-e is required')
 
     logHandler = logging.StreamHandler()
-    logHandler.setFormatter(logging.Formatter('%(asctime)s %(levelname)-8s %(message)s',
-                                              '%a, %d %b %Y %H:%M:%S'))
+    logHandler.setFormatter(logging.Formatter('%(asctime)s %(levelname)-8s '
+        + ' %(message)s', '%a, %d %b %Y %H:%M:%S'))
     logging.getLogger().addHandler(logHandler)
     logging.getLogger().setLevel(logging.DEBUG)
 
@@ -103,8 +111,8 @@ if __name__ == '__main__':
     config.readfp(open(options.config, 'r'))
 
     if not config.has_section('openlp'):
-        logging.error('[expander] %s: config file "%s" lacks an [openlp] section',
-                      options.template, options.config)
+        logging.error('[expander] %s: config file "%s" lacks an [openlp] '
+            + 'section', options.template, options.config)
 
     expansions = dict()
     for k in config.options('openlp'):
@@ -125,12 +133,10 @@ if __name__ == '__main__':
         else:
             sys.exit(1)
 
-
     # closure to capture expansions and errors variable
     errors = []
     expanded = []
     
-
     try:
         # try to expand the template
         line = 0
@@ -141,14 +147,15 @@ if __name__ == '__main__':
         template.close()
 
         def _expand(m):
-            return expandVariable(m, expansions = expansions, errors = errors)
+            return expand_variable(m, expansions = expansions, errors = errors)
     
         for l in raw:
             line += 1
-            exp = reConf.sub(_expand, l)
+            exp = re_conf.sub(_expand, l)
             if errors:
                 for key in errors:
-                    logging.error('[expander] %s: line %d: could not expand key "%s"', options.template, line, key)
+                    logging.error('[expander] %s: line %d: could not expand '
+                        + 'key "%s"', options.template, line, key)
                 faulty = True
                 errors = []
             else:
@@ -157,17 +164,18 @@ if __name__ == '__main__':
         if faulty:
             sys.exit(1)
 
-        # successfully expanded template, now backup potentially existing target file
+        # successfully expanded template, now backup potentially existing
+        # target file
         targetFile = options.expanded % expansions
         if os.path.exists(targetFile):
             if os.path.exists('%s~' % targetFile):
                 os.unlink('%s~' % targetFile)
             os.rename(options.expanded, '%s~' % targetFile)
-            logging.info('[expander] %s: backed up existing target file "%s" to "%s"',
-                         options.template, targetFile, '%s~' % options.expanded)
-        
+            logging.info('[expander] %s: backed up existing target file "%s" '
+                 + 'to "%s"', options.template, targetFile,
+                 '%s~' % options.expanded)
 
-        # TODO: make sure that target directory exists
+        # make sure that target directory exists
         targetDir = os.path.dirname(targetFile)
         if not os.path.exists(targetDir):
             os.makedirs(targetDir)
@@ -179,8 +187,8 @@ if __name__ == '__main__':
                 target.write(exp)
             target.close()
         except Exception, e:
-            logging.error('[expander] %s: could not expand to "%s"', options.template, options.expaned, e)
-
+            logging.error('[expander] %s: could not expand to "%s"',
+                options.template, options.expaned, e)
 
         # copy over file access mode from template
         mode = os.stat(options.template)
@@ -189,7 +197,6 @@ if __name__ == '__main__':
         logging.info('[expander] expanded "%s" to "%s"',
                      options.template, options.expanded)
     
-
     except:
         pass
 
