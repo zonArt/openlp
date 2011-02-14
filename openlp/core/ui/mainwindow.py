@@ -240,7 +240,7 @@ class Ui_MainWindow(object):
                 languageItem.setChecked(True)
             add_actions(self.LanguageGroup, [languageItem])
         self.SettingsShortcutsItem = icon_action(mainWindow,
-            u'SettingsShortcutsItem', 
+            u'SettingsShortcutsItem',
             u':/system/system_configure_shortcuts.png')
         self.SettingsConfigureItem = icon_action(mainWindow,
             u'SettingsConfigureItem', u':/system/system_settings.png')
@@ -458,7 +458,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     actionList = ActionList()
 
-    def __init__(self, screens, applicationVersion):
+    def __init__(self, screens, applicationVersion, clipboard):
         """
         This constructor sets up the interface, the various managers, and the
         plugins.
@@ -467,6 +467,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.screens = screens
         self.actionList = ActionList()
         self.applicationVersion = applicationVersion
+        self.clipboard = clipboard
         # Set up settings sections for the main application
         # (not for use by plugins)
         self.uiSettingsSection = u'user interface'

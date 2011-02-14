@@ -37,6 +37,7 @@ class PrintServiceOrderForm(QtGui.QDialog, Ui_PrintServiceOrderDialog):
         Constructor
         """
         QtGui.QDialog.__init__(self, parent)
+        self.parent = parent
         self.serviceManager = serviceManager
         self.printer = QtGui.QPrinter()
         self.printDialog = QtGui.QPrintDialog(self.printer, self)
@@ -86,14 +87,14 @@ class PrintServiceOrderForm(QtGui.QDialog, Ui_PrintServiceOrderDialog):
         for item in self.serviceManager.serviceItems:
             item = item[u'service_item']
             # Add the title of the service item.
-            text += u'<h4><img src="%s" /> %s</h4>' % (item.icon,
+            text += u'<h3><img src="%s" /> %s</h3>' % (item.icon,
                 item.get_display_title())
             # Add slide text of the service item.
             if self.printSlideTextCheckBox.isChecked():
                 if item.is_text():
                     # Add the text of the service item.
                     for slide in item.get_frames():
-                        text += u'<p>' + slide[u'text'] + u'</p>'
+                        text += u'<p>' + slide[u'html'] + u'</p>'
                 elif item.is_image():
                     # Add the image names of the service item.
                     text += u'<ol>'
@@ -120,6 +121,7 @@ class PrintServiceOrderForm(QtGui.QDialog, Ui_PrintServiceOrderDialog):
                 u'Custom Service Notes:'), self.customNoteEdit.toPlainText())
         self.document.setHtml(text)
         self.previewWidget.updatePreview()
+        self.parent.clipboard.setText(text)
 
     def paintRequested(self, printer):
         """
