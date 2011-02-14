@@ -183,7 +183,7 @@ class MediaMediaItem(MediaManagerItem):
         """
         Start the video at a predetermined point.
         """
-        if newState == 2:
+        if newState == Phonon.PlayingState:
             self.MediaState = newState
             self.mediaLength = self.mediaObject.totalTime()/1000
             self.mediaObject.stop()
