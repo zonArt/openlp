@@ -228,7 +228,18 @@ class SongsPlugin(Plugin):
             u'title': translate('SongsPlugin', 'Songs', 'container title')
         }
         # Middle Header Bar
-        Plugin.setPluginTextStrings(self)
+        tooltips = {
+            load: u''
+            import: u''
+            new: translate('SongsPlugin', 'Add a new Song')
+            edit: translate('SongsPlugin', 'Edit the selected Song')
+            delete: translate('SongsPlugin', 'Delete the selected Song')
+            preview: translate('SongsPlugin', 'Preview the selected Song')
+            live: translate('SongsPlugin', 'Send the selected Song live')
+            service: translate('SongsPlugin',
+                'Add the selected Song to the service')
+        }
+        self.setPluginUiTextStrings(tooltips)
 
     def finalise(self):
         """

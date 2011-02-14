@@ -69,4 +69,15 @@ class ImagePlugin(Plugin):
             u'title': translate('ImagePlugin', 'Images', 'container title')
         }
         # Middle Header Bar
-        Plugin.setPluginTextStrings(self)
+        tooltips = {
+            load: translate('ImagePlugin', 'Load a new Image')
+            import: u''
+            new: translate('ImagePlugin', 'Add a new Image')
+            edit: translate('ImagePlugin', 'Edit the selected Image')
+            delete: translate('ImagePlugin', 'Delete the selected Image')
+            preview: translate('ImagePlugin', 'Preview the selected Image')
+            live: translate('ImagePlugin', 'Send the selected Image live')
+            service: translate('ImagePlugin',
+                'Add the selected Image to the service')
+        }
+        self.setPluginUiTextStrings(tooltips)

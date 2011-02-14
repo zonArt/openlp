@@ -96,18 +96,14 @@ class ServiceManager(QtGui.QWidget):
         # Create the top toolbar
         self.toolbar = OpenLPToolbar(self)
         self.toolbar.addToolbarButton(
-            UiStrings.NewType % UiStrings.Service,
-            u':/general/general_new.png',
-            UiStrings.CreateANew % UiStrings.Service.toLower(),
-            self.onNewServiceClicked)
+            UiStrings.NewService, u':/general/general_new.png',
+            UiStrings.Create.Service, self.onNewServiceClicked)
         self.toolbar.addToolbarButton(
-            UiStrings.OpenType % UiStrings.Service,
-            u':/general/general_open.png',
+            UiStrings.OpenService, u':/general/general_open.png',
             translate('OpenLP.ServiceManager', 'Load an existing service'),
             self.onLoadServiceClicked)
         self.toolbar.addToolbarButton(
-            UiStrings.SaveType % UiStrings.Service,
-            u':/general/general_save.png',
+            UiStrings.SaveService, u':/general/general_save.png',
             translate('OpenLP.ServiceManager', 'Save this service'),
             self.saveFile)
         self.toolbar.addSeparator()
@@ -469,7 +465,7 @@ class ServiceManager(QtGui.QWidget):
         save the file.
         """
         fileName = unicode(QtGui.QFileDialog.getSaveFileName(self.mainwindow,
-            UiStrings.SaveType % UiStrings.Service,
+            UiStrings.SaveService,
             SettingsManager.get_last_dir(
             self.mainwindow.serviceSettingsSection),
             translate('OpenLP.ServiceManager', 'OpenLP Service Files (*.osz)')))

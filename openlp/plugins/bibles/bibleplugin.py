@@ -129,9 +129,15 @@ class BiblePlugin(Plugin):
             u'title': translate('BiblesPlugin', 'Bibles', 'container title')
         }
         # Middle Header Bar
-        ## Import Action ##
-        self.textStrings[StringContent.Import] = {
-            u'title': UiStrings.Import,
-            u'tooltip': translate('BiblesPlugin', 'Import a Bible')
+        tooltips = {
+            load: u''
+            import: translate('BiblesPlugin', 'Import a Bible')
+            new: translate('BiblesPlugin', 'Add a new Bible')
+            edit: translate('BiblesPlugin', 'Edit the selected Bible')
+            delete: translate('BiblesPlugin', 'Delete the selected Bible')
+            preview: translate('BiblesPlugin', 'Preview the selected Bible')
+            live: translate('BiblesPlugin', 'Send the selected Bible live')
+            service: translate('BiblesPlugin',
+                'Add the selected Bible to the service')
         }
-        Plugin.setPluginTextStrings(self)
+        self.setPluginUiTextStrings(tooltips)

@@ -106,13 +106,18 @@ class CustomPlugin(Plugin):
             u'title': translate('CustomsPlugin', 'Custom', 'container title')
         }
         # Middle Header Bar
-        ## Import Action ##
-        self.textStrings[StringContent.Import] = {
-            u'title': UiStrings.Import,
-            u'tooltip': translate('CustomsPlugin',
-                'Import a Custom')
+        tooltips = {
+            load: translate('CustomsPlugin', 'Load a new Custom')
+            import: translate('CustomsPlugin', 'Import a Custom')
+            new: translate('CustomsPlugin', 'Add a new Custom')
+            edit: translate('CustomsPlugin', 'Edit the selected Custom')
+            delete: translate('CustomsPlugin', 'Delete the selected Custom')
+            preview: translate('CustomsPlugin', 'Preview the selected Custom')
+            live: translate('CustomsPlugin', 'Send the selected Custom live')
+            service: translate('CustomsPlugin',
+                'Add the selected Custom to the service')
         }
-        Plugin.setPluginTextStrings(self)
+        self.setPluginUiTextStrings(tooltips)
 
     def finalise(self):
         """
