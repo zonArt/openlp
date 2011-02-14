@@ -457,7 +457,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
 
     def onTopicDeleteButtonClick(self):
         """
-        Delete the Book is the Book is not attached to any songs.
+        Delete the Book if the Book is not attached to any songs.
         """
         self._deleteItem(Topic, self.topicsListWidget, self.resetTopics,
             translate('SongsPlugin.SongMaintenanceForm', 'Delete Topic'),
@@ -470,7 +470,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
 
     def onBookDeleteButtonClick(self):
         """
-        Delete the Book is the Book is not attached to any songs.
+        Delete the Book if the Book is not attached to any songs.
         """
         self._deleteItem(Book, self.booksListWidget, self.resetBooks,
             translate('SongsPlugin.SongMaintenanceForm', 'Delete Book'),
