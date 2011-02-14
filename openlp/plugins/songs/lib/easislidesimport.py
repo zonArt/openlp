@@ -30,6 +30,7 @@ from lxml import etree, objectify
 import re
 
 from openlp.core.lib import translate
+from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
@@ -64,8 +65,7 @@ class EasiSlidesImport(SongImport):
         xml = unicode(etree.tostring(file))
         song_xml = objectify.fromstring(xml)
         self.import_wizard.incrementProgressBar(
-            unicode(translate('SongsPlugin.ImportWizardForm',
-                u'Importing %s...')) % os.path.split(self.filename)[-1])
+            WizardStrings.ImportingType % os.path.split(self.filename)[-1])
         self.import_wizard.progressBar.setMaximum(len(song_xml.Item))
         for song in song_xml.Item:
             self.import_wizard.incrementProgressBar(

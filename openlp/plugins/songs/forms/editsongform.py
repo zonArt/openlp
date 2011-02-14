@@ -30,10 +30,12 @@ import re
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, translate
-from openlp.core.lib.ui import add_widget_completer, critical_error_message_box
+from openlp.core.lib.ui import UiStrings, add_widget_completer, \
+    critical_error_message_box
 from openlp.plugins.songs.forms import EditVerseForm
 from openlp.plugins.songs.lib import SongXML, VerseType
 from openlp.plugins.songs.lib.db import Book, Song, Author, Topic
+from openlp.plugins.songs.lib.ui import SongStrings
 from editsongdialog import Ui_EditSongDialog
 
 log = logging.getLogger(__name__)
@@ -307,7 +309,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         text = unicode(self.authorsComboBox.currentText())
         if item == 0 and text:
             if QtGui.QMessageBox.question(self,
-                translate('SongsPlugin.EditSongForm', 'Add Author'),
+                UiStrings.AddType % SongStrings.Author,
                 translate('SongsPlugin.EditSongForm', 'This author does not '
                 'exist, do you want to add them?'),
                 QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
@@ -336,8 +338,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 self.__addAuthorToList(author)
             self.authorsComboBox.setCurrentIndex(0)
         else:
-            QtGui.QMessageBox.warning(self,
-                translate('SongsPlugin.EditSongForm', 'No Author Selected'),
+            QtGui.QMessageBox.warning(self, UiStrings.NISs,
                 translate('SongsPlugin.EditSongForm', 'You have not selected '
                 'a valid author. Either select an author from the list, '
                 'or type in a new author and click the "Add Author to '
@@ -366,7 +367,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         text = unicode(self.topicsComboBox.currentText())
         if item == 0 and text:
             if QtGui.QMessageBox.question(self,
-                translate('SongsPlugin.EditSongForm', 'Add Topic'),
+                UiStrings.AddType % SongStrings.Topic,
                 translate('SongsPlugin.EditSongForm', 'This topic does not '
                 'exist, do you want to add it?'),
                 QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
@@ -396,8 +397,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 self.topicsListView.addItem(topic_item)
             self.topicsComboBox.setCurrentIndex(0)
         else:
-            QtGui.QMessageBox.warning(self,
-                translate('SongsPlugin.EditSongForm', 'No Topic Selected'),
+            QtGui.QMessageBox.warning(self, UiStrings.NISs,
                 translate('SongsPlugin.EditSongForm', 'You have not selected '
                 'a valid topic. Either select a topic from the list, or '
                 'type in a new topic and click the "Add Topic to Song" '
@@ -584,7 +584,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         text = unicode(self.songBookComboBox.currentText())
         if self.songBookComboBox.findText(text, QtCore.Qt.MatchExactly) < 0:
             if QtGui.QMessageBox.question(self,
-                translate('SongsPlugin.EditSongForm', 'Add Book'),
+                UiStrings.AddType % SongStrings.SongBook,
                 translate('SongsPlugin.EditSongForm', 'This song book does '
                 'not exist, do you want to add it?'),
                 QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,

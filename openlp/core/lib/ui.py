@@ -45,6 +45,7 @@ class UiStrings(object):
     AddANew = unicode(translate('OpenLP.Ui', 'Add a new %s.'))
     AddSelectService = unicode(translate('OpenLP.Ui',
         'Add the selected %s to the service.'))
+    AddType = unicode(translate('OpenLP.Ui', 'Add %s'))
     Advanced = translate('OpenLP.Ui', 'Advanced')
     AllFiles = translate('OpenLP.Ui', 'All Files')
     Browse = translate('OpenLP.Ui', 'Browse...')

@@ -31,6 +31,7 @@ import os
 import logging
 import struct
 
+from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib.songimport import SongImport
 
 TITLE = 1
@@ -113,7 +114,7 @@ class SongShowPlusImport(SongImport):
                 otherList = {}
                 file_name = os.path.split(file)[1]
                 self.import_wizard.incrementProgressBar(
-                    u'Importing %s' % (file_name), 0)        
+                    WizardStrings.ImportingType % file_name, 0)
                 songData = open(file, 'rb')
                 while (1):
                     blockKey, = struct.unpack("I", songData.read(4))
@@ -138,7 +139,6 @@ class SongShowPlusImport(SongImport):
                     else: 
                         lengthDescriptor, = struct.unpack("B", songData.read(1))
                     data = songData.read(lengthDescriptor)
-                    
                     if blockKey == TITLE:
                         self.title =  unicode(data, u'cp1252')
                     elif blockKey == AUTHOR:
@@ -153,10 +153,10 @@ class SongShowPlusImport(SongImport):
                     elif blockKey == CCLI_NO:
                         self.ccli_number = int(data)
                     elif blockKey == VERSE:
-                        self.add_verse(unicode(data, u'cp1252'), 
+                        self.add_verse(unicode(data, u'cp1252'),
                             "V%s" % verseNo)
                     elif blockKey == CHORUS:
-                        self.add_verse(unicode(data, u'cp1252'), 
+                        self.add_verse(unicode(data, u'cp1252'),
                             "C%s" % verseNo)
                     elif blockKey == TOPIC:
                         self.topics.append(unicode(data, u'cp1252'))
@@ -180,11 +180,11 @@ class SongShowPlusImport(SongImport):
                 songData.close()
                 self.finish()
                 self.import_wizard.incrementProgressBar(
-                    u'Importing %s' % (file_name))
+                    WizardStrings.ImportingType % file_name)
             return True
-    
+
     def toOpenLPVerseTag(self, verseName):
-        if verseName.find(" ")!=-1:
+        if verseName.find(" ") != -1:
             verseParts = verseName.split(" ")
             verseType = verseParts[0]
             verseNumber = verseParts[1]

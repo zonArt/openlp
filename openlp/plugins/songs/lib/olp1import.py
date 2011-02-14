@@ -33,6 +33,7 @@ from chardet.universaldetector import UniversalDetector
 import sqlite
 
 from openlp.core.lib import translate
+from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib import retrieve_windows_encoding
 from songimport import SongImport
 
@@ -103,8 +104,7 @@ class OpenLP1SongImport(SongImport):
             lyrics = song[2].replace(u'\r\n', u'\n')
             copyright = song[3]
             self.import_wizard.incrementProgressBar(
-                unicode(translate('SongsPlugin.ImportWizardForm',
-                    'Importing "%s"...')) % title)
+                WizardStrings.ImportingType % title)
             self.title = title
             verses = lyrics.split(u'\n\n')
             for verse in verses:

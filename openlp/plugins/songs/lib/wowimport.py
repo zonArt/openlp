@@ -30,6 +30,7 @@ Worship songs into the OpenLP database.
 import os
 import logging
 
+from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib.songimport import SongImport
 
 BLOCK_TYPES = (u'V', u'C', u'B')
@@ -116,7 +117,7 @@ class WowImport(SongImport):
                 copyright = u''
                 file_name = os.path.split(file)[1]
                 self.import_wizard.incrementProgressBar(
-                    u'Importing %s' % (file_name), 0)
+                    WizardStrings.ImportingType % file_name, 0)
                 # Get the song title
                 self.title = file_name.rpartition(u'.')[0]
                 songData = open(file, 'rb')
@@ -162,5 +163,5 @@ class WowImport(SongImport):
                 songData.close()
                 self.finish()
                 self.import_wizard.incrementProgressBar(
-                    u'Importing %s' % (file_name))
+                    WizardStrings.ImportingType % file_name)
             return True
