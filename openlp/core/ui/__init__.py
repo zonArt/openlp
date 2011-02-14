@@ -28,7 +28,7 @@ The :mod:`ui` module provides the core user interface for OpenLP
 """
 from PyQt4 import QtGui
 
-from openlp.core.lib import translate, Receiver
+from openlp.core.lib import translate
 
 class HideMode(object):
     """
@@ -51,36 +51,9 @@ class HideMode(object):
     Theme = 2
     Screen = 3
 
-
-def criticalErrorMessageBox(title=None, message=None, parent=None,
-    question=False):
-    """
-    Provides a standard critical message box for errors that OpenLP displays
-    to users.
-
-    ``title``
-        The title for the message box.
-
-    ``message``
-        The message to display to the user.
-
-    ``parent``
-        The parent UI element to attach the dialog to.
-
-    ``question``
-        Should this message box question the user.
-    """
-    error = translate('OpenLP.Ui', 'Error')
-    if question:
-        return QtGui.QMessageBox.critical(parent, error, message,
-            QtGui.QMessageBox.StandardButtons(
-            QtGui.QMessageBox.Yes | QtGui.QMessageBox.No))
-    data = {u'message': message}
-    data[u'title'] = title if title else error
-    return Receiver.send_message(u'openlp_error_message', data)
-
 from themeform import ThemeForm
 from filerenameform import FileRenameForm
+from starttimeform import StartTimeForm
 from maindisplay import MainDisplay
 from servicenoteform import ServiceNoteForm
 from serviceitemeditform import ServiceItemEditForm
@@ -99,6 +72,6 @@ from mediadockmanager import MediaDockManager
 from servicemanager import ServiceManager
 from thememanager import ThemeManager
 
-__all__ = ['criticalErrorMessageBox', 'SplashScreen', 'AboutForm',
-    'SettingsForm', 'MainDisplay', 'SlideController', 'ServiceManager',
-    'ThemeManager', 'MediaDockManager', 'ServiceItemEditForm']
+__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainDisplay',
+    'SlideController', 'ServiceManager', 'ThemeManager', 'MediaDockManager',
+    'ServiceItemEditForm']

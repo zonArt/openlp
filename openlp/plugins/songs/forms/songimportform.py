@@ -32,7 +32,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, SettingsManager, translate
-from openlp.core.ui import criticalErrorMessageBox
+from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard
 from openlp.plugins.songs.lib.importer import SongFormat
 
@@ -146,6 +146,12 @@ class SongImportForm(OpenLPWizard):
         QtCore.QObject.connect(self.foilPresenterRemoveButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onFoilPresenterRemoveButtonClicked)
+        QtCore.QObject.connect(self.songShowPlusAddButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onSongShowPlusAddButtonClicked)
+        QtCore.QObject.connect(self.songShowPlusRemoveButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onSongShowPlusRemoveButtonClicked)
 
     def addCustomPages(self):
         """
@@ -168,34 +174,38 @@ class SongImportForm(OpenLPWizard):
         self.formatLayout.setItem(1, QtGui.QFormLayout.LabelRole,
             self.formatSpacer)
         self.sourceLayout.addLayout(self.formatLayout)
+        self.stackSpacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
+            QtGui.QSizePolicy.Expanding)
         self.formatStack = QtGui.QStackedLayout()
         self.formatStack.setObjectName(u'FormatStack')
         # OpenLP 2.0
-        self.addSingleFileSelectItem(u'openLP2')
+        self.addFileSelectItem(u'openLP2', single_select=True)
         # openlp.org 1.x
-        self.addSingleFileSelectItem(u'openLP1', None, True)
+        self.addFileSelectItem(u'openLP1', None, True, True)
         # OpenLyrics
-        self.addMultiFileSelectItem(u'openLyrics', u'OpenLyrics', True)
+        self.addFileSelectItem(u'openLyrics', u'OpenLyrics', True)
         # Open Song
-        self.addMultiFileSelectItem(u'openSong', u'OpenSong')
+        self.addFileSelectItem(u'openSong', u'OpenSong')
         # Words of Worship
-        self.addMultiFileSelectItem(u'wordsOfWorship')
+        self.addFileSelectItem(u'wordsOfWorship')
         # CCLI File import
-        self.addMultiFileSelectItem(u'ccli')
+        self.addFileSelectItem(u'ccli')
         # Songs of Fellowship
-        self.addMultiFileSelectItem(u'songsOfFellowship', None, True)
+        self.addFileSelectItem(u'songsOfFellowship', None, True)
         # Generic Document/Presentation import
-        self.addMultiFileSelectItem(u'generic', None, True)
+        self.addFileSelectItem(u'generic', None, True)
         # EasySlides
-        self.addSingleFileSelectItem(u'easiSlides')
+        self.addFileSelectItem(u'easiSlides', single_select=True)
         # EasyWorship
-        self.addSingleFileSelectItem(u'ew')
+        self.addFileSelectItem(u'ew', single_select=True)
         # Words of Worship
-        self.addMultiFileSelectItem(u'songBeamer')
+        self.addFileSelectItem(u'songBeamer')
         # Foilpresenter
-        self.addMultiFileSelectItem(u'foilPresenter')
+        self.addFileSelectItem(u'foilPresenter')
+        # Song Show Plus
+        self.addFileSelectItem(u'songShowPlus')
 #        Commented out for future use.
-#        self.addSingleFileSelectItem(u'csv', u'CSV')
+#        self.addFileSelectItem(u'csv', u'CSV', single_select=True)
         self.sourceLayout.addLayout(self.formatStack)
         self.addPage(self.sourcePage)
 
@@ -221,8 +231,7 @@ class SongImportForm(OpenLPWizard):
             'Select the import format, and where to import from.'))
         self.formatLabel.setText(
             translate('SongsPlugin.ImportWizardForm', 'Format:'))
-        self.formatComboBox.setItemText(0,
-            translate('SongsPlugin.ImportWizardForm', 'OpenLP 2.0'))
+        self.formatComboBox.setItemText(0, UiStrings.OLPV2)
         self.formatComboBox.setItemText(1,
             translate('SongsPlugin.ImportWizardForm', 'openlp.org 1.x'))
         self.formatComboBox.setItemText(2,
@@ -245,6 +254,8 @@ class SongImportForm(OpenLPWizard):
         self.formatComboBox.setItemText(10,
             translate('SongsPlugin.ImportWizardForm', 'SongBeamer'))
         self.formatComboBox.setItemText(11,
+            translate('SongsPlugin.ImportWizardForm', 'SongShow Plus'))
+        self.formatComboBox.setItemText(12,
             translate('SongsPlugin.ImportWizardForm', 'FoilPresenter'))
 #        self.formatComboBox.setItemText(11,
 #            translate('SongsPlugin.ImportWizardForm', 'CSV'))
@@ -310,6 +321,10 @@ class SongImportForm(OpenLPWizard):
             translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
         self.songBeamerRemoveButton.setText(
             translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
+        self.songShowPlusAddButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
+        self.songShowPlusRemoveButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
         self.foilPresenterAddButton.setText(
             translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
         self.foilPresenterRemoveButton.setText(
@@ -332,16 +347,6 @@ class SongImportForm(OpenLPWizard):
             self.openLP2FilenameLabel.minimumSizeHint().width())
         self.formatSpacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
             QtGui.QSizePolicy.Fixed)
-        self.openLP2FormLabelSpacer.changeSize(width, 0,
-            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
-        self.openLP1FormLabelSpacer.changeSize(width, 0,
-            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
-        self.easiSlidesFormLabelSpacer.changeSize(width, 0, 
-            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
-        self.ewFormLabelSpacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
-            QtGui.QSizePolicy.Fixed)
-#        self.csvFormLabelSpacer.changeSize(width, 0, QtGui.QSizePolicy.Fixed,
-#            QtGui.QSizePolicy.Fixed)
 
     def validateCurrentPage(self):
         """
@@ -353,7 +358,7 @@ class SongImportForm(OpenLPWizard):
             source_format = self.formatComboBox.currentIndex()
             if source_format == SongFormat.OpenLP2:
                 if self.openLP2FilenameEdit.text().isEmpty():
-                    criticalErrorMessageBox(
+                    critical_error_message_box(
                         translate('SongsPlugin.ImportWizardForm',
                         'No OpenLP 2.0 Song Database Selected'),
                         translate('SongsPlugin.ImportWizardForm',
@@ -363,7 +368,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.OpenLP1:
                 if self.openLP1FilenameEdit.text().isEmpty():
-                    criticalErrorMessageBox(
+                    critical_error_message_box(
                         translate('SongsPlugin.ImportWizardForm',
                         'No openlp.org 1.x Song Database Selected'),
                         translate('SongsPlugin.ImportWizardForm',
@@ -373,7 +378,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.OpenLyrics:
                 if self.openLyricsFileListWidget.count() == 0:
-                    criticalErrorMessageBox(
+                    critical_error_message_box(
                         translate('SongsPlugin.ImportWizardForm',
                         'No OpenLyrics Files Selected'),
                         translate('SongsPlugin.ImportWizardForm',
@@ -383,7 +388,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.OpenSong:
                 if self.openSongFileListWidget.count() == 0:
-                    criticalErrorMessageBox(
+                    critical_error_message_box(
                         translate('SongsPlugin.ImportWizardForm',
                         'No OpenSong Files Selected'),
                         translate('SongsPlugin.ImportWizardForm',
@@ -393,7 +398,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.WordsOfWorship:
                 if self.wordsOfWorshipFileListWidget.count() == 0:
-                    criticalErrorMessageBox(
+                    critical_error_message_box(
                         translate('SongsPlugin.ImportWizardForm',
                         'No Words of Worship Files Selected'),
                         translate('SongsPlugin.ImportWizardForm',
@@ -403,7 +408,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.CCLI:
                 if self.ccliFileListWidget.count() == 0:
-                    criticalErrorMessageBox(
+                    critical_error_message_box(
                         translate('SongsPlugin.ImportWizardForm',
                         'No CCLI Files Selected'),
                         translate('SongsPlugin.ImportWizardForm',
@@ -413,7 +418,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.SongsOfFellowship:
                 if self.songsOfFellowshipFileListWidget.count() == 0:
-                    criticalErrorMessageBox(
+                    critical_error_message_box(
                         translate('SongsPlugin.ImportWizardForm',
                         'No Songs of Fellowship File Selected'),
                         translate('SongsPlugin.ImportWizardForm',
@@ -423,7 +428,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.Generic:
                 if self.genericFileListWidget.count() == 0:
-                    criticalErrorMessageBox(
+                    critical_error_message_box(
                         translate('SongsPlugin.ImportWizardForm',
                         'No Document/Presentation Selected'),
                         translate('SongsPlugin.ImportWizardForm',
@@ -433,7 +438,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.EasiSlides:
                 if self.easiSlidesFilenameEdit.text().isEmpty():
-                    criticalErrorMessageBox(
+                    critical_error_message_box(
                         translate('SongsPlugin.ImportWizardForm',
                         'No Easislides Songs file selected'),
                         translate('SongsPlugin.ImportWizardForm',
@@ -443,7 +448,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.EasyWorship:
                 if self.ewFilenameEdit.text().isEmpty():
-                    criticalErrorMessageBox(
+                    critical_error_message_box(
                         translate('SongsPlugin.ImportWizardForm',
                         'No EasyWorship Song Database Selected'),
                         translate('SongsPlugin.ImportWizardForm',
@@ -453,7 +458,7 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.SongBeamer:
                 if self.songBeamerFileListWidget.count() == 0:
-                    criticalErrorMessageBox(
+                    critical_error_message_box(
                         translate('SongsPlugin.ImportWizardForm',
                         'No SongBeamer File Selected'),
                         translate('SongsPlugin.ImportWizardForm',
@@ -461,6 +466,15 @@ class SongImportForm(OpenLPWizard):
                         'file to import from.'))
                     self.songBeamerAddButton.setFocus()
                     return False
+            elif source_format == SongFormat.SongShowPlus:
+                if self.songShowPlusFileListWidget.count() == 0:
+                    critical_error_message_box(
+                        translate('SongsPlugin.ImportWizardForm',
+                        'No SongShow Plus Files Selected'),
+                        translate('SongsPlugin.ImportWizardForm',
+                        'You need to add at least one SongShow Plus '
+                        'file to import from.'))
+                    self.wordsOfWorshipAddButton.setFocus()
             elif source_format == SongFormat.FoilPresenter:
                 if self.foilPresenterFileListWidget.count() == 0:
                     criticalErrorMessageBox(
@@ -474,34 +488,6 @@ class SongImportForm(OpenLPWizard):
             return True
         elif self.currentPage() == self.progressPage:
             return True
-
-    def getFileName(self, title, editbox, filters=u''):
-        """
-        Opens a QFileDialog and writes the filename to the given editbox.
-
-        ``title``
-            The title of the dialog (unicode).
-
-        ``editbox``
-            A editbox (QLineEdit).
-
-        ``filters``
-            The file extension filters. It should contain the file descriptions
-            as well as the file extensions. For example::
-
-                u'OpenLP 2.0 Databases (*.sqlite)'
-        """
-        if filters:
-            filters += u';;'
-        filters += u'%s (*)' % translate('SongsPlugin.ImportWizardForm',
-            'All Files')
-        filename = QtGui.QFileDialog.getOpenFileName(self, title,
-            SettingsManager.get_last_dir(self.plugin.settingsSection, 1),
-            filters)
-        if filename:
-            editbox.setText(filename)
-            SettingsManager.set_last_dir(self.plugin.settingsSection,
-                os.path.split(unicode(filename))[0], 1)
 
     def getFiles(self, title, listbox, filters=u''):
         """
@@ -521,8 +507,7 @@ class SongImportForm(OpenLPWizard):
         """
         if filters:
             filters += u';;'
-        filters += u'%s (*)' % translate('SongsPlugin.ImportWizardForm',
-            'All Files')
+        filters += u'%s (*)' % UiStrings.AllFiles
         filenames = QtGui.QFileDialog.getOpenFileNames(self, title,
             SettingsManager.get_last_dir(self.plugin.settingsSection, 1),
             filters)
@@ -678,7 +663,7 @@ class SongImportForm(OpenLPWizard):
             'Select EasiSlides songfile'),
             self.easiSlidesFilenameEdit
         )
-        
+
     def onEWBrowseButtonClicked(self):
         """
         Get EasyWorship song database files
@@ -705,6 +690,18 @@ class SongImportForm(OpenLPWizard):
         Remove selected SongBeamer files from the import list
         """
         self.removeSelectedItems(self.songBeamerFileListWidget)
+        
+    def onSongShowPlusAddButtonClicked(self):
+        """
+        Get SongShow Plus song database files
+        """
+        self.getFiles(
+            translate('SongsPlugin.ImportWizardForm',
+            'Select SongShow Plus Files'),
+            self.songShowPlusFileListWidget, u'%s (*.sbsong)'
+            % translate('SongsPlugin.ImportWizardForm',
+            'SongShow Plus Song Files')
+        )
 
     def onFoilPresenterAddButtonClicked(self):
         """
@@ -728,6 +725,12 @@ class SongImportForm(OpenLPWizard):
         """
         pass
 
+    def onSongShowPlusRemoveButtonClicked(self):
+        """
+        Remove selected SongShow Plus files from the import list
+        """
+        self.removeSelectedItems(self.songShowPlusFileListWidget)
+
     def setDefaults(self):
         """
         Set default form values for the song import wizard.
@@ -747,6 +750,7 @@ class SongImportForm(OpenLPWizard):
         self.easiSlidesFilenameEdit.setText(u'')
         self.ewFilenameEdit.setText(u'')
         self.songBeamerFileListWidget.clear()
+        self.songShowPlusFileListWidget.clear()
         self.foilPresenterFileListWidget.clear()
         #self.csvFilenameEdit.setText(u'')
 
@@ -824,13 +828,18 @@ class SongImportForm(OpenLPWizard):
             importer = self.plugin.importSongs(SongFormat.SongBeamer,
                 filenames=self.getListOfFiles(self.songBeamerFileListWidget)
             )
+        elif source_format == SongFormat.SongShowPlus:
+            # Import ShongShow Plus songs
+            importer = self.plugin.importSongs(SongFormat.SongShowPlus,
+                filenames=self.getListOfFiles(
+                    self.songShowPlusFileListWidget)
+            )
         elif source_format == SongFormat.FoilPresenter:
             # Import Foilpresenter songs
             importer = self.plugin.importSongs(SongFormat.FoilPresenter,
                 filenames=self.getListOfFiles(self.foilPresenterFileListWidget)
             )
         if importer.do_import():
-            # reload songs
             self.progressLabel.setText(
                 translate('SongsPlugin.SongImportForm', 'Finished import.'))
         else:
@@ -838,52 +847,8 @@ class SongImportForm(OpenLPWizard):
                 translate('SongsPlugin.SongImportForm',
                 'Your song import failed.'))
 
-    def addSingleFileSelectItem(self, prefix, obj_prefix=None,
-        can_disable=False):
-        if not obj_prefix:
-            obj_prefix = prefix
-        page = QtGui.QWidget()
-        page.setObjectName(obj_prefix + u'Page')
-        if can_disable:
-            importWidget = self.disablableWidget(page, prefix, obj_prefix)
-        else:
-            importWidget = page
-        importLayout = QtGui.QFormLayout(importWidget)
-        importLayout.setMargin(0)
-        if can_disable:
-            importLayout.setObjectName(obj_prefix + u'ImportLayout')
-        else:
-            importLayout.setObjectName(obj_prefix + u'Layout')
-        filenameLabel = QtGui.QLabel(importWidget)
-        filenameLabel.setObjectName(obj_prefix + u'FilenameLabel')
-        fileLayout = QtGui.QHBoxLayout()
-        fileLayout.setObjectName(obj_prefix + u'FileLayout')
-        filenameEdit = QtGui.QLineEdit(importWidget)
-        filenameEdit.setObjectName(obj_prefix + u'FilenameEdit')
-        fileLayout.addWidget(filenameEdit)
-        browseButton = QtGui.QToolButton(importWidget)
-        browseButton.setIcon(self.openIcon)
-        browseButton.setObjectName(obj_prefix + u'BrowseButton')
-        fileLayout.addWidget(browseButton)
-        importLayout.addRow(filenameLabel, fileLayout)
-        formSpacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed,
-            QtGui.QSizePolicy.Minimum)
-        importLayout.setItem(1, QtGui.QFormLayout.LabelRole, formSpacer)
-        self.formatStack.addWidget(page)
-        setattr(self, prefix + u'Page', page)
-        setattr(self, prefix + u'FilenameLabel', filenameLabel)
-        setattr(self, prefix + u'FormLabelSpacer', formSpacer)
-        setattr(self, prefix + u'FileLayout', fileLayout)
-        setattr(self, prefix + u'FilenameEdit', filenameEdit)
-        setattr(self, prefix + u'BrowseButton', browseButton)
-        if can_disable:
-            setattr(self, prefix + u'ImportLayout', importLayout)
-        else:
-            setattr(self, prefix + u'Layout', importLayout)
-        self.formatComboBox.addItem(u'')
-
-    def addMultiFileSelectItem(self, prefix, obj_prefix=None,
-        can_disable=False):
+    def addFileSelectItem(self, prefix, obj_prefix=None, can_disable=False,
+        single_select=False):
         if not obj_prefix:
             obj_prefix = prefix
         page = QtGui.QWidget()
@@ -894,37 +859,53 @@ class SongImportForm(OpenLPWizard):
             importWidget = page
         importLayout = QtGui.QVBoxLayout(importWidget)
         importLayout.setMargin(0)
-        if can_disable:
-            importLayout.setObjectName(obj_prefix + u'ImportLayout')
+        importLayout.setObjectName(obj_prefix + u'ImportLayout')
+        if single_select:
+            fileLayout = QtGui.QHBoxLayout()
+            fileLayout.setObjectName(obj_prefix + u'FileLayout')
+            filenameLabel = QtGui.QLabel(importWidget)
+            filenameLabel.setObjectName(obj_prefix + u'FilenameLabel')
+            fileLayout.addWidget(filenameLabel)
+            filenameEdit = QtGui.QLineEdit(importWidget)
+            filenameEdit.setObjectName(obj_prefix + u'FilenameEdit')
+            fileLayout.addWidget(filenameEdit)
+            browseButton = QtGui.QToolButton(importWidget)
+            browseButton.setIcon(self.openIcon)
+            browseButton.setObjectName(obj_prefix + u'BrowseButton')
+            fileLayout.addWidget(browseButton)
+            importLayout.addLayout(fileLayout)
+            importLayout.addSpacerItem(self.stackSpacer)
         else:
-            importLayout.setObjectName(obj_prefix + u'Layout')
-        fileListWidget = QtGui.QListWidget(importWidget)
-        fileListWidget.setSelectionMode(
-            QtGui.QAbstractItemView.ExtendedSelection)
-        fileListWidget.setObjectName(obj_prefix + u'FileListWidget')
-        importLayout.addWidget(fileListWidget)
-        buttonLayout = QtGui.QHBoxLayout()
-        buttonLayout.setObjectName(obj_prefix + u'ButtonLayout')
-        addButton = QtGui.QPushButton(importWidget)
-        addButton.setIcon(self.openIcon)
-        addButton.setObjectName(obj_prefix + u'AddButton')
-        buttonLayout.addWidget(addButton)
-        buttonLayout.addStretch()
-        removeButton = QtGui.QPushButton(importWidget)
-        removeButton.setIcon(self.deleteIcon)
-        removeButton.setObjectName(obj_prefix + u'RemoveButton')
-        buttonLayout.addWidget(removeButton)
-        importLayout.addLayout(buttonLayout)
+            fileListWidget = QtGui.QListWidget(importWidget)
+            fileListWidget.setSelectionMode(
+                QtGui.QAbstractItemView.ExtendedSelection)
+            fileListWidget.setObjectName(obj_prefix + u'FileListWidget')
+            importLayout.addWidget(fileListWidget)
+            buttonLayout = QtGui.QHBoxLayout()
+            buttonLayout.setObjectName(obj_prefix + u'ButtonLayout')
+            addButton = QtGui.QPushButton(importWidget)
+            addButton.setIcon(self.openIcon)
+            addButton.setObjectName(obj_prefix + u'AddButton')
+            buttonLayout.addWidget(addButton)
+            buttonLayout.addStretch()
+            removeButton = QtGui.QPushButton(importWidget)
+            removeButton.setIcon(self.deleteIcon)
+            removeButton.setObjectName(obj_prefix + u'RemoveButton')
+            buttonLayout.addWidget(removeButton)
+            importLayout.addLayout(buttonLayout)
         self.formatStack.addWidget(page)
         setattr(self, prefix + u'Page', page)
-        setattr(self, prefix + u'FileListWidget', fileListWidget)
-        setattr(self, prefix + u'ButtonLayout', buttonLayout)
-        setattr(self, prefix + u'AddButton', addButton)
-        setattr(self, prefix + u'RemoveButton', removeButton)
-        if can_disable:
-            setattr(self, prefix + u'ImportLayout', importLayout)
+        if single_select:
+            setattr(self, prefix + u'FilenameLabel', filenameLabel)
+            setattr(self, prefix + u'FileLayout', fileLayout)
+            setattr(self, prefix + u'FilenameEdit', filenameEdit)
+            setattr(self, prefix + u'BrowseButton', browseButton)
         else:
-            setattr(self, prefix + u'Layout', importLayout)
+            setattr(self, prefix + u'FileListWidget', fileListWidget)
+            setattr(self, prefix + u'ButtonLayout', buttonLayout)
+            setattr(self, prefix + u'AddButton', addButton)
+            setattr(self, prefix + u'RemoveButton', removeButton)
+        setattr(self, prefix + u'ImportLayout', importLayout)
         self.formatComboBox.addItem(u'')
 
     def disablableWidget(self, page, prefix, obj_prefix):
@@ -942,6 +923,7 @@ class SongImportForm(OpenLPWizard):
         disabledLabel.setWordWrap(True)
         disabledLabel.setObjectName(obj_prefix + u'DisabledLabel')
         disabledLayout.addWidget(disabledLabel)
+        disabledLayout.addSpacerItem(self.stackSpacer)
         layout.addWidget(disabledWidget)
         importWidget = QtGui.QWidget(page)
         importWidget.setObjectName(obj_prefix + u'ImportWidget')

@@ -56,6 +56,7 @@ except ImportError:
 
 from openlp.core.lib import translate, SettingsManager
 from openlp.core.lib.mailto import mailto
+from openlp.core.lib.ui import UiStrings
 
 from exceptiondialog import Ui_ExceptionDialog
 
@@ -70,8 +71,15 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         self.setupUi(self)
         self.settingsSection = u'crashreport'
 
+    def exec_(self):
+        self.descriptionTextEdit.setPlainText(u'')
+        self.onDescriptionUpdated()
+        self.fileAttachment = None
+        return QtGui.QDialog.exec_(self)
+
     def _createReport(self):
         openlp_version = self.parent().applicationVersion[u'full']
+        description = unicode(self.descriptionTextEdit.toPlainText())
         traceback = unicode(self.exceptionTextEdit.toPlainText())
         system = unicode(translate('OpenLP.ExceptionForm',
             'Platform: %s\n')) % platform.platform()
@@ -90,7 +98,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
                 system = system + u'Desktop: KDE SC\n'
             elif os.environ.get(u'GNOME_DESKTOP_SESSION_ID'):
                 system = system + u'Desktop: GNOME\n'
-        return (openlp_version, traceback, system, libraries)
+        return (openlp_version, description, traceback, system, libraries)
 
     def onSaveReportButtonPressed(self):
         """
@@ -99,6 +107,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         report = unicode(translate('OpenLP.ExceptionForm',
             '**OpenLP Bug Report**\n'
             'Version: %s\n\n'
+            '--- Details of the Exception. ---\n\n%s\n\n '
             '--- Exception Traceback ---\n%s\n'
             '--- System information ---\n%s\n'
             '--- Library Versions ---\n%s\n'))
@@ -132,18 +141,47 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         body = unicode(translate('OpenLP.ExceptionForm',
             '*OpenLP Bug Report*\n'
             'Version: %s\n\n'
-            '--- Please enter the report below this line. ---\n\n\n'
+            '--- Details of the Exception. ---\n\n%s\n\n '
             '--- Exception Traceback ---\n%s\n'
             '--- System information ---\n%s\n'
             '--- Library Versions ---\n%s\n',
             'Please add the information that bug reports are favoured written '
             'in English.'))
         content = self._createReport()
-        for line in content[1].split(u'\n'):
+        for line in content[2].split(u'\n'):
             if re.search(r'[/\\]openlp[/\\]', line):
                 source = re.sub(r'.*[/\\]openlp[/\\](.*)".*', r'\1', line)
             if u':' in line:
                 exception = line.split(u'\n')[-1].split(u':')[0]
         subject = u'Bug report: %s in %s' % (exception, source)
-        mailto(address=u'bugs@openlp.org', subject=subject,
-            body=body % content)
+        if self.fileAttachment:
+            mailto(address=u'bugs@openlp.org', subject=subject,
+                body=body % content, attach=self.fileAttachment)
+        else:
+            mailto(address=u'bugs@openlp.org', subject=subject,
+                body=body % content)
+
+    def onDescriptionUpdated(self):
+        count = int(20 - len(self.descriptionTextEdit.toPlainText()))
+        if count < 0:
+            count = 0
+            self.__buttonState(True)
+        else:
+            self.__buttonState(False)
+        self.descriptionWordCount.setText(
+            unicode(translate('OpenLP.ExceptionDialog',
+            'Description characters to enter : %s')) % count )
+
+    def onAttachFileButtonPressed(self):
+        files = QtGui.QFileDialog.getOpenFileName(
+            self,translate('ImagePlugin.ExceptionDialog',
+            'Select Attachment'),
+            SettingsManager.get_last_dir(u'exceptions'),
+            u'%s (*.*) (*)' % UiStrings.AllFiles)
+        log.info(u'New files(s) %s', unicode(files))
+        if files:
+            self.fileAttachment = unicode(files)
+
+    def __buttonState(self, state):
+        self.saveReportButton.setEnabled(state)
+        self.sendReportButton.setEnabled(state)

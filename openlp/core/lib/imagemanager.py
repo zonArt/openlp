@@ -61,10 +61,10 @@ class Image(object):
     image = None
     image_bytes = None
 
+
 class ImageManager(QtCore.QObject):
     """
     Image Manager handles the conversion and sizing of images.
-
     """
     log.info(u'Image Manager loaded')
 

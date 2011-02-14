@@ -27,10 +27,12 @@
 The :mod:``wizard`` module provides generic wizard tools for OpenLP.
 """
 import logging
+import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, Receiver
+from openlp.core.lib import build_icon, Receiver, SettingsManager
+from openlp.core.lib.ui import UiStrings, add_welcome_page
 
 log = logging.getLogger(__name__)
 
@@ -63,39 +65,21 @@ class OpenLPWizard(QtGui.QWizard):
         self.setOptions(QtGui.QWizard.IndependentPages |
             QtGui.QWizard.NoBackButtonOnStartPage |
             QtGui.QWizard.NoBackButtonOnLastPage)
-        self.addWelcomePage(image)
+        add_welcome_page(self, image)
         self.addCustomPages()
         self.addProgressPage()
         self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self)
 
-    def addWelcomePage(self, image):
+    def registerFields(self):
         """
-        Add the opening welcome page to the wizard.
-
-        ``image``
-            A splash image for the wizard
+        Hook method for wizards to register any fields they need.
         """
-        self.welcomePage = QtGui.QWizardPage()
-        self.welcomePage.setPixmap(QtGui.QWizard.WatermarkPixmap,
-            QtGui.QPixmap(image))
-        self.welcomePage.setObjectName(u'WelcomePage')
-        self.welcomeLayout = QtGui.QVBoxLayout(self.welcomePage)
-        self.welcomeLayout.setObjectName(u'WelcomeLayout')
-        self.titleLabel = QtGui.QLabel(self.welcomePage)
-        self.titleLabel.setObjectName(u'TitleLabel')
-        self.welcomeLayout.addWidget(self.titleLabel)
-        self.welcomeLayout.addSpacing(40)
-        self.informationLabel = QtGui.QLabel(self.welcomePage)
-        self.informationLabel.setWordWrap(True)
-        self.informationLabel.setObjectName(u'InformationLabel')
-        self.welcomeLayout.addWidget(self.informationLabel)
-        self.welcomeLayout.addStretch()
-        self.addPage(self.welcomePage)
+        pass
 
     def addProgressPage(self):
         """
-        Add the progress page for the wizard.  This page informs the user how
+        Add the progress page for the wizard. This page informs the user how
         the wizard is progressing with its task.
         """
         self.progressPage = QtGui.QWizardPage()
@@ -125,7 +109,7 @@ class OpenLPWizard(QtGui.QWizard):
         log.debug(u'Wizard cancelled by user.')
         if self.currentPage() == self.progressPage:
             Receiver.send_message(u'openlp_stop_wizard')
-        self.done(QtGui.QDialog.Rejected) 
+        self.done(QtGui.QDialog.Rejected)
 
     def onCurrentIdChanged(self, pageId):
         """
@@ -169,3 +153,30 @@ class OpenLPWizard(QtGui.QWizard):
         self.finishButton.setVisible(True)
         self.cancelButton.setVisible(False)
         Receiver.send_message(u'openlp_process_events')
+
+    def getFileName(self, title, editbox, filters=u''):
+        """
+        Opens a QFileDialog and saves the filename to the given editbox.
+
+        ``title``
+            The title of the dialog (unicode).
+
+        ``editbox``
+            A editbox (QLineEdit).
+
+        ``filters``
+            The file extension filters. It should contain the file description
+            as well as the file extension. For example::
+
+                u'OpenLP 2.0 Databases (*.sqlite)'
+        """
+        if filters:
+            filters += u';;'
+        filters += u'%s (*)' % UiStrings.AllFiles
+        filename = QtGui.QFileDialog.getOpenFileName(self, title,
+            os.path.dirname(SettingsManager.get_last_dir(
+            self.plugin.settingsSection, 1)), filters)
+        if filename:
+            editbox.setText(filename)
+            SettingsManager.set_last_dir(self.plugin.settingsSection,
+                filename, 1)

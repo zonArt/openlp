@@ -34,7 +34,11 @@ from wowimport import WowImport
 from cclifileimport import CCLIFileImport
 from ewimport import EasyWorshipSongImport
 from songbeamerimport import SongBeamerImport
+<<<<<<< TREE
 from foilpresenterimport import FoilPresenterImport
+=======
+from songshowplusimport import SongShowPlusImport
+>>>>>>> MERGE-SOURCE
 # Imports that might fail
 try:
     from olp1import import OpenLP1SongImport
@@ -72,7 +76,8 @@ class SongFormat(object):
     EasiSlides = 8
     EasyWorship = 9
     SongBeamer = 10
-    FoilPresenter = 11
+    SongShowPlus = 11
+    FoilPresenter = 12
 
     @staticmethod
     def get_class(format):
@@ -104,12 +109,14 @@ class SongFormat(object):
             return EasyWorshipSongImport
         elif format == SongFormat.SongBeamer:
             return SongBeamerImport
+        elif format == SongFormat.SongShowPlus:
+            return SongShowPlusImport
         elif format == SongFormat.FoilPresenter:
             return FoilPresenterImport
         return None
 
     @staticmethod
-    def list():
+    def get_formats_list():
         """
         Return a list of the supported song formats.
         """
@@ -125,6 +132,7 @@ class SongFormat(object):
             SongFormat.EasiSlides,
             SongFormat.EasyWorship,
             SongFormat.SongBeamer,
+            SongFormat.SongShowPlus,
             SongFormat.FoilPresenter
         ]
 
