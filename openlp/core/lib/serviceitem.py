@@ -30,7 +30,6 @@ type and capability of an item.
 
 import datetime
 import logging
-import mutagen
 import os
 import uuid
 
@@ -110,6 +109,7 @@ class ServiceItem(object):
         self.edit_id = None
         self.xml_version = None
         self.start_time = 0
+        self.media_length = 0
         self._new_item()
 
     def _new_item(self):
@@ -263,7 +263,8 @@ class ServiceItem(object):
             u'search': self.search_string,
             u'data': self.data_string,
             u'xml_version': self.xml_version,
-            u'start_time': self.start_time
+            u'start_time': self.start_time,
+            u'media_length': self.media_length
         }
         service_data = []
         if self.service_item_type == ServiceItemType.Text:
@@ -309,6 +310,8 @@ class ServiceItem(object):
             self.xml_version = header[u'xml_version']
         if u'start_time' in header:
             self.start_time = header[u'start_time']
+        if u'media_length' in header:
+            self.media_length = header[u'media_length']
         if self.service_item_type == ServiceItemType.Text:
             for slide in serviceitem[u'serviceitem'][u'data']:
                 self._raw_frames.append(slide)
@@ -439,14 +442,9 @@ class ServiceItem(object):
         if self.start_time != 0:
             start = UiStrings.StartTimeCode % \
                 unicode(datetime.timedelta(seconds=self.start_time))
-        path = os.path.join(self.get_frames()[0][u'path'],
-            self.get_frames()[0][u'title'])
-        if os.path.isfile(path):
-            file = mutagen.File(path)
-            if file is not None:
-                seconds = int(file.info.length)
-                end = UiStrings.LengthTime % \
-                    unicode(datetime.timedelta(seconds=seconds))
+        if self.media_length != 0:
+            end = UiStrings.LengthTime % \
+                    unicode(datetime.timedelta(seconds=self.media_length))
         if not start and not end:
             return None
         elif start and not end:
