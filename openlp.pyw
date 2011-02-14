@@ -273,6 +273,8 @@ def main():
     qInitResources()
     # Now create and actually run the application.
     app = OpenLP(qt_args)
+    if sys.platform == 'darwin':
+         QtGui.QApplication.addLibraryPath(QtGui.QApplication.applicationDirPath() + "/qt4_plugins")
     #i18n Set Language
     language = LanguageManager.get_language()
     appTranslator = LanguageManager.get_translator(language)
