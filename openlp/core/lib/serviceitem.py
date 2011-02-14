@@ -433,7 +433,6 @@ class ServiceItem(object):
         """
         Returns the start and finish time for a media item
         """
-        tooltip = None
         start = None
         end = None
         if self.start_time != 0:

@@ -209,7 +209,7 @@ class SongImportForm(OpenLPWizard):
         self.setWindowTitle(
             translate('SongsPlugin.ImportWizardForm', 'Song Import Wizard'))
         self.informationLabel.setText(WizardStrings.Description % (
-            self.direction.toLower(), self.itemType[u'plural'],
+            self.direction.toLower(), self.plugin.nameStrings[u'plural'],
             self.direction.toLower()))
         self.sourcePage.setTitle(WizardStrings.ImportSelect)
         self.sourcePage.setSubTitle(WizardStrings.ImportSelectLong)

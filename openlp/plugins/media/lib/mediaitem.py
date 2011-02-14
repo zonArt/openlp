@@ -30,7 +30,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
-    SettingsManager, translate, check_item_selected, Receiver, StringContent
+    SettingsManager, translate, check_item_selected, Receiver
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 
 log = logging.getLogger(__name__)
@@ -107,11 +107,9 @@ class MediaMediaItem(MediaManagerItem):
                 self.parent.liveController.display.video(filename, 0, True)
                 self.resetAction.setVisible(True)
             else:
-                critical_error_message_box(translate('MediaPlugin.MediaItem',
-                    'Live Background Error'),
-                    unicode(translate('MediaPlugin.MediaItem',
-                    'There was a problem replacing your background, '
-                    'the media file "%s" no longer exists.')) % filename)
+                critical_error_message_box(UiStrings.LiveBGError,
+                    UiStrings.ProbReplaceBG % (
+                    self.plugin.nameStrings[u'singular'].toLower(), filename))
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
         if item is None:
@@ -120,8 +118,7 @@ class MediaMediaItem(MediaManagerItem):
                 return False
         filename = unicode(item.data(QtCore.Qt.UserRole).toString())
         if os.path.exists(filename):
-            service_item.title = unicode(
-                self.plugin.getString(StringContent.Name)[u'singular'])
+            service_item.title = unicode(self.plugin.nameStrings[u'singular'])
             service_item.add_capability(ItemCapabilities.RequiresMedia)
             service_item.add_capability(ItemCapabilities.AllowsVarableStartTime)
             # force a nonexistent theme

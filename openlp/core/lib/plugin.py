@@ -339,6 +339,7 @@ class Plugin(QtCore.QObject):
         """
         Called to define all translatable texts of the plugin
         """
+        self.nameStrings = self.textStrings[StringContent.Name]
         ## Load Action ##
         self._setSingularTextString(StringContent.Load,
             UiStrings.Load, UiStrings.LoadANew)
@@ -368,4 +369,4 @@ class Plugin(QtCore.QObject):
         after this has been set.
         """
         self.textStrings[name] = { u'title': title, u'tooltip': tooltip %
-            self.getString(StringContent.Name)[u'singular']}
+            self.nameStrings[u'singular']}

@@ -365,7 +365,7 @@ class BibleImportForm(OpenLPWizard):
         self.setWindowTitle(
             translate('BiblesPlugin.ImportWizardForm', 'Bible Import Wizard'))
         self.informationLabel.setText(WizardStrings.Description % (
-            self.direction.toLower(), self.itemType[u'plural'],
+            self.direction.toLower(), self.plugin.nameStrings[u'plural'],
             self.direction.toLower()))
         self.selectPage.setTitle(WizardStrings.ImportSelect)
         self.selectPage.setSubTitle(WizardStrings.ImportSelectLong)

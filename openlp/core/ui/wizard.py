@@ -31,8 +31,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, Receiver, SettingsManager, translate, \
-    StringContent
+from openlp.core.lib import build_icon, Receiver, SettingsManager, translate
 from openlp.core.lib.ui import UiStrings, add_welcome_page
 
 log = logging.getLogger(__name__)
@@ -91,7 +90,6 @@ class OpenLPWizard(QtGui.QWizard):
         QtGui.QWizard.__init__(self, parent)
         self.plugin = plugin
         self.setObjectName(name)
-        self.itemType = self.plugin.getString(StringContent.Name)
         self.direction = direction
         self.openIcon = build_icon(u':/general/general_open.png')
         self.deleteIcon = build_icon(u':/general/general_delete.png')
@@ -124,7 +122,7 @@ class OpenLPWizard(QtGui.QWizard):
         Provides generic wizard localisation
         """
         self.titleLabel.setText(WizardStrings.Welcome %
-            (self.itemType[u'singular'], self.direction))
+            (self.plugin.nameStrings[u'singular'], self.direction))
 
     def registerFields(self):
         """

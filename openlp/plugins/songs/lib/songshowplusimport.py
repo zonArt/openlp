@@ -108,7 +108,6 @@ class SongShowPlusImport(SongImport):
             self.import_wizard.progressBar.setMaximum(len(self.import_source))
             for file in self.import_source:
                 author = u''
-                copyright = u''
                 self.sspVerseOrderList = []
                 otherCount = 0
                 otherList = {}
@@ -203,7 +202,7 @@ class SongShowPlusImport(SongImport):
         elif verseType == "bridge":
             verseTag = "B"
         else:
-            if  not self.otherList.has_key(verseName):
+            if not self.otherList.has_key(verseName):
                 self.otherCount = self.otherCount + 1
                 self.otherList[verseName] = str(self.otherCount)
             verseTag = "O"

@@ -253,7 +253,6 @@ class MediaManagerItem(QtGui.QWidget):
         self.pageLayout.addWidget(self.listView)
         # define and add the context menu
         self.listView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-        name_string = self.plugin.getString(StringContent.Name)
         if self.hasEditIcon:
             self.listView.addAction(
                 context_menu_action(

@@ -32,7 +32,7 @@ from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
-    translate, check_item_selected, PluginStatus, StringContent
+    translate, check_item_selected, PluginStatus
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
@@ -138,7 +138,7 @@ class SongMediaItem(MediaManagerItem):
         self.searchTextLabel.setText(u'%s:' % UiStrings.Search)
         self.searchTextButton.setText(UiStrings.Search)
         self.maintenanceAction.setText(SongStrings.TypeMaintenance %
-            self.plugin.getString(StringContent.Name)[u'singular'])
+            self.plugin.nameStrings[u'singular'])
         self.maintenanceAction.setToolTip(translate('SongsPlugin.MediaItem',
             'Maintain the lists of authors, topics and books'))
 

@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
     SettingsManager, translate, check_item_selected, check_directory_exists, \
-    Receiver, StringContent
+    Receiver
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file, get_images_filter
 
@@ -125,8 +125,7 @@ class ImageMediaItem(MediaManagerItem):
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
         items = self.listView.selectedIndexes()
         if items:
-            service_item.title = unicode(
-                self.plugin.getString(StringContent.Name)[u'plural'])
+            service_item.title = unicode(self.plugin.nameStrings[u'plural'])
             service_item.add_capability(ItemCapabilities.AllowsMaintain)
             service_item.add_capability(ItemCapabilities.AllowsPreview)
             service_item.add_capability(ItemCapabilities.AllowsLoop)
@@ -198,8 +197,6 @@ class ImageMediaItem(MediaManagerItem):
                 self.parent.liveController.display.directImage(name, filename)
                 self.resetAction.setVisible(True)
             else:
-                critical_error_message_box(
-                    translate('ImagePlugin.MediaItem', 'Live Background Error'),
-                    unicode(translate('ImagePlugin.MediaItem',
-                    'There was a problem replacing your background, '
-                    'the image file "%s" no longer exists.')) % filename)
+                critical_error_message_box(UiStrings.LiveBGError,
+                    UiStrings.ProbReplaceBG % (
+                    self.plugin.nameStrings[u'singular'].toLower(), filename))

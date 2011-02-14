@@ -204,7 +204,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         # Do not trigger on start up
         if self.currentPage != self.welcomePage:
             self.updateTheme()
-            frame = self.thememanager.generateImage(self.theme, True)
+            self.thememanager.generateImage(self.theme, True)
 
     def updateLinesText(self, lines):
         """

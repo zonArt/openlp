@@ -66,6 +66,7 @@ class UiStrings(object):
     ImportType = unicode(translate('OpenLP.Ui', 'Import %s'))
     LengthTime = unicode(translate('OpenLP.Ui', 'Length %s'))
     Live = translate('OpenLP.Ui', 'Live')
+    LiveBGError = translate('OpenLP.Ui', 'Live Background Error')
     LivePanel = translate('OpenLP.Ui', 'Live Panel')
     Load = translate('OpenLP.Ui', 'Load')
     LoadANew = unicode(translate('OpenLP.Ui', 'Load a new %s.'))
@@ -82,6 +83,8 @@ class UiStrings(object):
     Preview = translate('OpenLP.Ui', 'Preview')
     PreviewPanel = translate('OpenLP.Ui', 'Preview Panel')
     PreviewSelect = unicode(translate('OpenLP.Ui', 'Preview the selected %s.'))
+    ProbReplaceBG = unicode(translate('OpenLP.Ui', 'There was a problem '
+        'replacing your background, the %s file "%s" no longer exists.'))
     ReplaceBG = translate('OpenLP.Ui', 'Replace Background')
     ReplaceLiveBG = translate('OpenLP.Ui', 'Replace Live Background')
     ResetBG = translate('OpenLP.Ui', 'Reset Background')
