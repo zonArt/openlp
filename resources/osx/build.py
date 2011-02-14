@@ -35,28 +35,28 @@ Python 2.6
     This build script only works with Python 2.6.
 
 PyQt4
-    You should already have this installed, OpenLP doesn't work without it. The
-    version the script expects is the packaged one available from River Bank
-    Computing.
+    You should already have this installed, OpenLP doesn't work without it.
+    The version the script expects is the packaged one available from River
+    Bank Computing.
 
 PyInstaller
     PyInstaller should be a checkout of revision 1355 of trunk, and in a
     directory  which is configured in the openlp.cfg. The revision is very
     important as there is just included a fix for builds on OS X.
 
-    To install PyInstaller, first checkout trunk from Subversion. The easiest
-    way is to do a
+    To install PyInstaller, first checkout trunk from Subversion. The
+    easiest way is to do a
     
         svn co http://svn.pyinstaller.org/trunk
 
     Then you need to copy the two hook-*.py files from the "pyinstaller"
-    subdirectory in OpenLP's "resources" directory into PyInstaller's "hooks"
-    directory.
+    subdirectory in OpenLP's "resources" directory into PyInstaller's
+    "hooks" directory.
     
 openlp.cfg
     The configuration file contains settings of the version string to include
-    in the bundle as well as directory and file settings for different purposes
-    (e.g. PyInstaller location or installer background image)
+    in the bundle as well as directory and file settings for different
+    purposes (e.g. PyInstaller location or installer background image)
     
 To start the build process do a 
 
@@ -111,16 +111,6 @@ def build_application(settings, app_name_lower, app_dir):
         sys.exit(1)
 
     dist_folder = os.getcwd() + '/dist/' + app_name_lower
-    # logging.info('[%s] copying the additional app files (from %s)...',
-    #    script_name, dist_folder)
-    # result = os.system('cp -R %(dist_directory)s/* '
-    #    + '%(application_directory)s/Contents/MacOS' \
-    #    % { 'dist_directory' : dist_folder,
-    #        'application_directory' : app_dir })
-    # if (result != 0):
-    #     logging.error('[%s] could not copy additional files, cannot '
-    #         + 'continue!', script_name)
-    #     sys.exit(1)
 
     logging.info('[%s] copying the new plugins...', script_name)
     result = os.system('cp -R %(openlp_directory)s/openlp/plugins \
