@@ -444,7 +444,7 @@ class ServiceItem(object):
                 unicode(datetime.timedelta(seconds=self.start_time))
         if self.media_length != 0:
             end = UiStrings.LengthTime % \
-                    unicode(datetime.timedelta(seconds=self.media_length))
+                unicode(datetime.timedelta(seconds=self.media_length))
         if not start and not end:
             return None
         elif start and not end:
