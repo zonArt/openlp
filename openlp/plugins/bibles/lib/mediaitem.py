@@ -38,6 +38,14 @@ from openlp.plugins.bibles.lib import get_reference_match
 
 log = logging.getLogger(__name__)
 
+class BibleSearch(object):
+    """
+    Enumeration class for the different search methods for the "quick search".
+    """
+    Reference = 1
+    Text = 2
+
+
 class BibleMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for Bibles.
@@ -90,9 +98,9 @@ class BibleMediaItem(MediaManagerItem):
         self.quickSearchEdit.setObjectName(u'quickSearchEdit')
         self.quickSearchLabel.setBuddy(self.quickSearchEdit)
         self.quickSearchEdit.setSearchTypes([
-            (1, u':/bibles/bibles_search_reference.png',
+            (BibleSearch.Reference, u':/bibles/bibles_search_reference.png',
             translate('BiblesPlugin.MediaItem', 'Scripture Reference')),
-            (2, u':/bibles/bibles_search_text.png',
+            (BibleSearch.Text, u':/bibles/bibles_search_text.png',
             translate('BiblesPlugin.MediaItem', 'Text Search'))
         ])
         self.quickLayout.addRow(self.quickSearchLabel, self.quickSearchEdit)
@@ -356,7 +364,7 @@ class BibleMediaItem(MediaManagerItem):
         """
         books = []
         # We have to do a 'Reference Search'.
-        if self.quickSearchEdit.currentSearchType() == 1:
+        if self.quickSearchEdit.currentSearchType() == BibleSearch.Reference:
             bibles = self.parent.manager.get_bibles()
             bible = unicode(self.quickVersionComboBox.currentText())
             if bible:
@@ -493,7 +501,7 @@ class BibleMediaItem(MediaManagerItem):
         bible = unicode(self.quickVersionComboBox.currentText())
         second_bible = unicode(self.quickSecondComboBox.currentText())
         text = unicode(self.quickSearchEdit.text())
-        if self.quickSearchEdit.currentSearchType() == 1:
+        if self.quickSearchEdit.currentSearchType() == BibleSearch.Reference:
             # We are doing a 'Reference Search'.
             self.search_results = self.parent.manager.get_verses(bible, text)
             if second_bible and self.search_results:
