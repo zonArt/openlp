@@ -32,6 +32,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
     SettingsManager, translate, check_item_selected, Receiver
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from PyQt4.phonon import Phonon
 
 log = logging.getLogger(__name__)
 
@@ -48,9 +49,13 @@ class MediaMediaItem(MediaManagerItem):
             u':/media/media_video.png').toImage()
         MediaManagerItem.__init__(self, parent, self, icon)
         self.singleServiceItem = False
+        self.mediaObject = Phonon.MediaObject(self)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'video_background_replaced'),
             self.videobackgroundReplaced)
+        QtCore.QObject.connect(self.mediaObject,
+            QtCore.SIGNAL(u'stateChanged(Phonon::State, Phonon::State)'),
+            self.videoStart)
 
     def retranslateUi(self):
         self.OnNewPrompt = translate('MediaPlugin.MediaItem', 'Select Media')
@@ -120,6 +125,11 @@ class MediaMediaItem(MediaManagerItem):
                 return False
         filename = unicode(item.data(QtCore.Qt.UserRole).toString())
         if os.path.exists(filename):
+            self.MediaState = None
+            self.mediaObject.stop()
+            self.mediaObject.clearQueue()
+            self.mediaObject.setCurrentSource(Phonon.MediaSource(filename))
+            self.mediaObject.play()
             service_item.title = unicode(
                 translate('MediaPlugin.MediaItem', 'Media'))
             service_item.add_capability(ItemCapabilities.RequiresMedia)
@@ -128,6 +138,9 @@ class MediaMediaItem(MediaManagerItem):
             service_item.theme = -1
             frame = u':/media/image_clapperboard.png'
             (path, name) = os.path.split(filename)
+            while not self.MediaState:
+                Receiver.send_message(u'openlp_process_events')
+            service_item.media_length = self.mediaLength
             service_item.add_from_command(path, name, frame)
             return True
         else:
@@ -165,3 +178,12 @@ class MediaMediaItem(MediaManagerItem):
             item_name.setIcon(build_icon(img))
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.listView.addItem(item_name)
+
+    def videoStart(self, newState, oldState):
+        """
+        Start the video at a predetermined point.
+        """
+        if newState == Phonon.PlayingState:
+            self.MediaState = newState
+            self.mediaLength = self.mediaObject.totalTime()/1000
+            self.mediaObject.stop()
