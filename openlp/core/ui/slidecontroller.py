@@ -380,7 +380,7 @@ class SlideController(QtGui.QWidget):
         self.previousItem.setShortcuts([QtCore.Qt.Key_Up, QtCore.Qt.Key_PageUp])
         self.previousItem.setShortcutContext(
             QtCore.Qt.WidgetWithChildrenShortcut)
-        actionList.add_action(self.nextItem, u'Live')
+        actionList.add_action(self.previousItem, u'Live')
         self.nextItem.setShortcuts([QtCore.Qt.Key_Down, QtCore.Qt.Key_PageDown])
         self.nextItem.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
         actionList.add_action(self.nextItem, u'Live')
