@@ -49,6 +49,7 @@ class UiStrings(object):
     Edit = translate('OpenLP.Ui', '&Edit')
     Error = translate('OpenLP.Ui', 'Error')
     Import = translate('OpenLP.Ui', 'Import')
+    LengthTime = unicode(translate('OpenLP.Ui', 'Length %s'))
     Live = translate('OpenLP.Ui', 'Live')
     Load = translate('OpenLP.Ui', 'Load')
     New = translate('OpenLP.Ui', 'New')
