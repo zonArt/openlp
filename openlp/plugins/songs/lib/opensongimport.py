@@ -31,7 +31,6 @@ from lxml import objectify
 from lxml.etree import Error, LxmlError
 import re
 
-from openlp.core.lib import translate
 from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib.songimport import SongImport
 

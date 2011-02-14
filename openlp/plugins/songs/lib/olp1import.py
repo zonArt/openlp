@@ -32,7 +32,6 @@ import logging
 from chardet.universaldetector import UniversalDetector
 import sqlite
 
-from openlp.core.lib import translate
 from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib import retrieve_windows_encoding
 from songimport import SongImport
