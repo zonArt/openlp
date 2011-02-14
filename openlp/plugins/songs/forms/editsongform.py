@@ -310,8 +310,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if item == 0 and text:
             if QtGui.QMessageBox.question(self,
                 UiStrings.AddType % SongStrings.Author,
-                translate('SongsPlugin.EditSongForm', 'This author does not '
-                'exist, do you want to add them?'),
+                SongStrings.TypeNotExistAdd % SongStrings.Author.toLower(),
                 QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
                 QtGui.QMessageBox.Yes) == QtGui.QMessageBox.Yes:
                 if text.find(u' ') == -1:
@@ -332,8 +331,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             if self.authorsListView.findItems(unicode(author.display_name),
                 QtCore.Qt.MatchExactly):
                 critical_error_message_box(
-                    message=translate('SongsPlugin.EditSongForm',
-                    'This author is already in the list.'))
+                    message=SongStrings.TypeInList %
+                    SongStrings.Author.toLower())
             else:
                 self.__addAuthorToList(author)
             self.authorsComboBox.setCurrentIndex(0)
@@ -368,8 +367,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if item == 0 and text:
             if QtGui.QMessageBox.question(self,
                 UiStrings.AddType % SongStrings.Topic,
-                translate('SongsPlugin.EditSongForm', 'This topic does not '
-                'exist, do you want to add it?'),
+                SongStrings.TypeNotExistAdd % SongStrings.Topic.toLower(),
                 QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
                 QtGui.QMessageBox.Yes) == QtGui.QMessageBox.Yes:
                 topic = Topic.populate(name=text)
@@ -388,8 +386,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             if self.topicsListView.findItems(unicode(topic.name),
                 QtCore.Qt.MatchExactly):
                 critical_error_message_box(
-                    message=translate('SongsPlugin.EditSongForm',
-                    'This topic is already in the list.'))
+                    message=SongStrings.TypeInList %
+                    SongStrings.Topic.toLower())
             else:
                 topic_item = QtGui.QListWidgetItem(unicode(topic.name))
                 topic_item.setData(QtCore.Qt.UserRole,
@@ -585,8 +583,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if self.songBookComboBox.findText(text, QtCore.Qt.MatchExactly) < 0:
             if QtGui.QMessageBox.question(self,
                 UiStrings.AddType % SongStrings.SongBook,
-                translate('SongsPlugin.EditSongForm', 'This song book does '
-                'not exist, do you want to add it?'),
+                SongStrings.TypeNotExistAdd % SongStrings.SongBook.toLower(),
                 QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
                 QtGui.QMessageBox.Yes) == QtGui.QMessageBox.Yes:
                 book = Book.populate(name=text, publisher=u'')
