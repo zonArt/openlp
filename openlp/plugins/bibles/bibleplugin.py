@@ -130,13 +130,13 @@ class BiblePlugin(Plugin):
         }
         # Middle Header Bar
         tooltips = {
-            load: u''
-            import: translate('BiblesPlugin', 'Import a Bible')
-            new: translate('BiblesPlugin', 'Add a new Bible')
-            edit: translate('BiblesPlugin', 'Edit the selected Bible')
-            delete: translate('BiblesPlugin', 'Delete the selected Bible')
-            preview: translate('BiblesPlugin', 'Preview the selected Bible')
-            live: translate('BiblesPlugin', 'Send the selected Bible live')
+            load: u'',
+            import: translate('BiblesPlugin', 'Import a Bible'),
+            new: translate('BiblesPlugin', 'Add a new Bible'),
+            edit: translate('BiblesPlugin', 'Edit the selected Bible'),
+            delete: translate('BiblesPlugin', 'Delete the selected Bible'),
+            preview: translate('BiblesPlugin', 'Preview the selected Bible'),
+            live: translate('BiblesPlugin', 'Send the selected Bible live'),
             service: translate('BiblesPlugin',
                 'Add the selected Bible to the service')
         }

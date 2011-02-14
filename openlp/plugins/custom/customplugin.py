@@ -107,13 +107,13 @@ class CustomPlugin(Plugin):
         }
         # Middle Header Bar
         tooltips = {
-            load: translate('CustomsPlugin', 'Load a new Custom')
-            import: translate('CustomsPlugin', 'Import a Custom')
-            new: translate('CustomsPlugin', 'Add a new Custom')
-            edit: translate('CustomsPlugin', 'Edit the selected Custom')
-            delete: translate('CustomsPlugin', 'Delete the selected Custom')
-            preview: translate('CustomsPlugin', 'Preview the selected Custom')
-            live: translate('CustomsPlugin', 'Send the selected Custom live')
+            load: translate('CustomsPlugin', 'Load a new Custom'),
+            import: translate('CustomsPlugin', 'Import a Custom'),
+            new: translate('CustomsPlugin', 'Add a new Custom'),
+            edit: translate('CustomsPlugin', 'Edit the selected Custom'),
+            delete: translate('CustomsPlugin', 'Delete the selected Custom'),
+            preview: translate('CustomsPlugin', 'Preview the selected Custom'),
+            live: translate('CustomsPlugin', 'Send the selected Custom live'),
             service: translate('CustomsPlugin',
                 'Add the selected Custom to the service')
         }

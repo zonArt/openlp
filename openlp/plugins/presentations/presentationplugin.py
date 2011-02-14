@@ -168,17 +168,17 @@ class PresentationPlugin(Plugin):
         }
         # Middle Header Bar
         tooltips = {
-            load: translate('PresentationPlugin', 'Load a new Presentation')
-            import: u''
-            new: u''
-            edit: u''
+            load: translate('PresentationPlugin', 'Load a new Presentation'),
+            import: u'',
+            new: u'',
+            edit: u'',
             delete: translate('PresentationPlugin',
-                'Delete the selected Presentation')
+                'Delete the selected Presentation'),
             preview: translate('PresentationPlugin',
-                'Preview the selected Presentation')
+                'Preview the selected Presentation'),
             live: translate('PresentationPlugin',
-                'Send the selected Presentation live')
+                'Send the selected Presentation live'),
             service: translate('PresentationPlugin',
                 'Add the selected Presentation to the service')
-            }
-            self.setPluginUiTextStrings(tooltips)
+        }
+        self.setPluginUiTextStrings(tooltips)
