@@ -140,18 +140,18 @@ class SongImportForm(OpenLPWizard):
         QtCore.QObject.connect(self.songBeamerRemoveButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onSongBeamerRemoveButtonClicked)
-        QtCore.QObject.connect(self.foilPresenterAddButton,
-            QtCore.SIGNAL(u'clicked()'),
-            self.onFoilPresenterAddButtonClicked), 
-        QtCore.QObject.connect(self.foilPresenterRemoveButton,
-            QtCore.SIGNAL(u'clicked()'),
-            self.onFoilPresenterRemoveButtonClicked)
         QtCore.QObject.connect(self.songShowPlusAddButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onSongShowPlusAddButtonClicked)
         QtCore.QObject.connect(self.songShowPlusRemoveButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onSongShowPlusRemoveButtonClicked)
+        QtCore.QObject.connect(self.foilPresenterAddButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onFoilPresenterAddButtonClicked)
+        QtCore.QObject.connect(self.foilPresenterRemoveButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onFoilPresenterRemoveButtonClicked)
 
     def addCustomPages(self):
         """
@@ -200,10 +200,10 @@ class SongImportForm(OpenLPWizard):
         self.addFileSelectItem(u'ew', single_select=True)
         # Words of Worship
         self.addFileSelectItem(u'songBeamer')
-        # Foilpresenter
-        self.addFileSelectItem(u'foilPresenter')
         # Song Show Plus
         self.addFileSelectItem(u'songShowPlus')
+        # Foilpresenter
+        self.addFileSelectItem(u'foilPresenter')
 #        Commented out for future use.
 #        self.addFileSelectItem(u'csv', u'CSV', single_select=True)
         self.sourceLayout.addLayout(self.formatStack)
@@ -475,6 +475,7 @@ class SongImportForm(OpenLPWizard):
                         'You need to add at least one SongShow Plus '
                         'file to import from.'))
                     self.wordsOfWorshipAddButton.setFocus()
+                    return False
             elif source_format == SongFormat.FoilPresenter:
                 if self.foilPresenterFileListWidget.count() == 0:
                     criticalErrorMessageBox(

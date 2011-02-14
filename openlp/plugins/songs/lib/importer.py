@@ -34,11 +34,8 @@ from wowimport import WowImport
 from cclifileimport import CCLIFileImport
 from ewimport import EasyWorshipSongImport
 from songbeamerimport import SongBeamerImport
-<<<<<<< TREE
-from foilpresenterimport import FoilPresenterImport
-=======
 from songshowplusimport import SongShowPlusImport
->>>>>>> MERGE-SOURCE
+from foilpresenterimport import FoilPresenterImport
 # Imports that might fail
 try:
     from olp1import import OpenLP1SongImport
