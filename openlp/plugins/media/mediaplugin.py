@@ -95,4 +95,15 @@ class MediaPlugin(Plugin):
             u'title': translate('MediaPlugin', 'Media', 'container title')
         }
         # Middle Header Bar
-        Plugin.setPluginTextStrings(self)
+        tooltips = {
+            u'load': translate('MediaPlugin', 'Load a new Media'),
+            u'import': u'',
+            u'new': translate('MediaPlugin', 'Add a new Media'),
+            u'edit': translate('MediaPlugin', 'Edit the selected Media'),
+            u'delete': translate('MediaPlugin', 'Delete the selected Media'),
+            u'preview': translate('MediaPlugin', 'Preview the selected Media'),
+            u'live': translate('MediaPlugin', 'Send the selected Media live'),
+            u'service': translate('MediaPlugin',
+                'Add the selected Media to the service')
+        }
+        self.setPluginUiTextStrings(tooltips)

@@ -36,7 +36,6 @@ class Ui_SettingsDialog(object):
         settingsDialog.setWindowIcon(
             build_icon(u':/system/system_settings.png'))
         self.settingsLayout = QtGui.QVBoxLayout(settingsDialog)
-        margins = self.settingsLayout.contentsMargins()
         self.settingsLayout.setObjectName(u'settingsLayout')
         self.settingsTabWidget = QtGui.QTabWidget(settingsDialog)
         self.settingsTabWidget.setObjectName(u'settingsTabWidget')
