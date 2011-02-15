@@ -161,6 +161,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def newSong(self):
         log.debug(u'New Song')
+        self.song = None
         self.initialise()
         self.songTabWidget.setCurrentIndex(0)
         self.titleEdit.setText(u'')

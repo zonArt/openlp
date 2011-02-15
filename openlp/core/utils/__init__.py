@@ -164,27 +164,34 @@ def _get_os_dir_path(dir_type):
     """
     Return a path based on which OS and environment we are running in.
     """
+    encoding = sys.getfilesystemencoding()
     if sys.platform == u'win32':
         if dir_type == AppLocation.DataDir:
-            return os.path.join(os.getenv(u'APPDATA'), u'openlp', u'data')
-        return os.path.join(os.getenv(u'APPDATA'), u'openlp')
+            return os.path.join(unicode(os.getenv(u'APPDATA'), encoding),
+                u'openlp', u'data')
+        return os.path.join(unicode(os.getenv(u'APPDATA'), encoding),
+            u'openlp')
     elif sys.platform == u'darwin':
         if dir_type == AppLocation.DataDir:
-            return os.path.join(os.getenv(u'HOME'), u'Library',
-                u'Application Support', u'openlp', u'Data')
-        return os.path.join(os.getenv(u'HOME'), u'Library',
-            u'Application Support', u'openlp')
+            return os.path.join(unicode(os.getenv(u'HOME'), encoding),
+                u'Library', u'Application Support', u'openlp', u'Data')
+        return os.path.join(unicode(os.getenv(u'HOME'), encoding),
+            u'Library', u'Application Support', u'openlp')
     else:
         if XDG_BASE_AVAILABLE:
             if dir_type == AppLocation.ConfigDir:
-                return os.path.join(BaseDirectory.xdg_config_home, u'openlp')
+                return os.path.join(unicode(BaseDirectory.xdg_config_home,
+                    encoding), u'openlp')
             elif dir_type == AppLocation.DataDir:
-                return os.path.join(BaseDirectory.xdg_data_home, u'openlp')
+                return os.path.join(
+                    unicode(BaseDirectory.xdg_data_home, encoding), u'openlp')
             elif dir_type == AppLocation.CacheDir:
-                return os.path.join(BaseDirectory.xdg_cache_home, u'openlp')
+                return os.path.join(unicode(BaseDirectory.xdg_cache_home,
+                    encoding), u'openlp')
         if dir_type == AppLocation.DataDir:
-            return os.path.join(os.getenv(u'HOME'), u'.openlp', u'data')
-        return os.path.join(os.getenv(u'HOME'), u'.openlp')
+            return os.path.join(unicode(os.getenv(u'HOME'), encoding),
+                u'.openlp', u'data')
+        return os.path.join(unicode(os.getenv(u'HOME'), encoding), u'.openlp')
 
 def _get_frozen_path(frozen_option, non_frozen_option):
     """
