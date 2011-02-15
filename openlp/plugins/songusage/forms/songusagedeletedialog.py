@@ -25,7 +25,9 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+
 from openlp.core.lib import translate
+from openlp.core.lib.ui import create_accept_reject_button_box
 
 class Ui_SongUsageDeleteDialog(object):
     def setupUi(self, songUsageDeleteDialog):
@@ -43,19 +45,11 @@ class Ui_SongUsageDeleteDialog(object):
             QtGui.QCalendarWidget.NoVerticalHeader)
         self.deleteCalendar.setObjectName(u'deleteCalendar')
         self.verticalLayout.addWidget(self.deleteCalendar)
-        self.buttonBox = QtGui.QDialogButtonBox(songUsageDeleteDialog)
+        self.buttonBox = create_accept_reject_button_box(
+            songUsageDeleteDialog, True)
         self.buttonBox.setGeometry(QtCore.QRect(30, 210, 245, 25))
-        self.buttonBox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(u'buttonBox')
-
         self.retranslateUi(songUsageDeleteDialog)
-        QtCore.QObject.connect(
-            self.buttonBox, QtCore.SIGNAL(u'accepted()'),
-            songUsageDeleteDialog.accept)
-        QtCore.QObject.connect(
-            self.buttonBox, QtCore.SIGNAL(u'rejected()'),
-            songUsageDeleteDialog.close)
         QtCore.QMetaObject.connectSlotsByName(songUsageDeleteDialog)
 
     def retranslateUi(self, songUsageDeleteDialog):

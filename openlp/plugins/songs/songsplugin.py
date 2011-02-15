@@ -31,7 +31,6 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
-from openlp.core.lib.ui import UiStrings
 from openlp.plugins.songs.lib import SongMediaItem, SongsTab, SongXML
 from openlp.plugins.songs.lib.db import Author, init_schema, Song
 from openlp.plugins.songs.lib.importer import SongFormat
@@ -52,16 +51,13 @@ class SongsPlugin(Plugin):
         """
         Create and set up the Songs plugin.
         """
-        Plugin.__init__(self, u'Songs', u'1.9.4', plugin_helpers)
+        Plugin.__init__(self, u'Songs', u'1.9.4', plugin_helpers,
+            SongMediaItem, SongsTab)
         self.weight = -10
         self.manager = Manager(u'songs', init_schema)
         self.icon_path = u':/plugins/plugin_songs.png'
         self.icon = build_icon(self.icon_path)
         self.whitespace = re.compile(r'\W+', re.UNICODE)
-
-    def getSettingsTab(self):
-        visible_name = self.getString(StringContent.VisibleName)
-        return SongsTab(self.name, visible_name[u'title'])
 
     def initialise(self):
         log.info(u'Songs Initialising')
@@ -69,13 +65,6 @@ class SongsPlugin(Plugin):
         self.toolsReindexItem.setVisible(True)
         self.mediaItem.displayResultsSong(
             self.manager.get_all_objects(Song, order_by_ref=Song.search_title))
-
-    def getMediaManagerItem(self):
-        """
-        Create the MediaManagerItem object, which is displaed in the
-        Media Manager.
-        """
-        return SongMediaItem(self, self, self.icon)
 
     def addImportMenuItem(self, import_menu):
         """
@@ -107,8 +96,17 @@ class SongsPlugin(Plugin):
             The actual **Export** menu item, so that your actions can
             use it as their parent.
         """
-        # No menu items for now.
-        pass
+        # Main song import menu item - will eventually be the only one
+        self.SongExportItem = QtGui.QAction(export_menu)
+        self.SongExportItem.setObjectName(u'SongExportItem')
+        self.SongExportItem.setText(translate(
+            'SongsPlugin', '&Song'))
+        self.SongExportItem.setToolTip(translate('SongsPlugin',
+            'Exports songs using the export wizard.'))
+        export_menu.addAction(self.SongExportItem)
+        # Signals and slots
+        QtCore.QObject.connect(self.SongExportItem,
+            QtCore.SIGNAL(u'triggered()'), self.onSongExportItemClicked)
 
     def addToolsMenuItem(self, tools_menu):
         """
@@ -184,6 +182,10 @@ class SongsPlugin(Plugin):
         if self.mediaItem:
             self.mediaItem.onImportClick()
 
+    def onSongExportItemClicked(self):
+        if self.mediaItem:
+            self.mediaItem.onExportClick()
+
     def about(self):
         about_text = translate('SongsPlugin', '<strong>Songs Plugin</strong>'
             '<br />The songs plugin provides the ability to display and '
@@ -237,7 +239,18 @@ class SongsPlugin(Plugin):
             u'title': translate('SongsPlugin', 'Songs', 'container title')
         }
         # Middle Header Bar
-        Plugin.setPluginTextStrings(self)
+        tooltips = {
+            u'load': u'',
+            u'import': u'',
+            u'new': translate('SongsPlugin', 'Add a new Song'),
+            u'edit': translate('SongsPlugin', 'Edit the selected Song'),
+            u'delete': translate('SongsPlugin', 'Delete the selected Song'),
+            u'preview': translate('SongsPlugin', 'Preview the selected Song'),
+            u'live': translate('SongsPlugin', 'Send the selected Song live'),
+            u'service': translate('SongsPlugin',
+                'Add the selected Song to the service')
+        }
+        self.setPluginUiTextStrings(tooltips)
 
     def finalise(self):
         """

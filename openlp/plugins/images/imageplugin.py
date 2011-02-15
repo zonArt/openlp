@@ -27,7 +27,6 @@
 import logging
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
-from openlp.core.lib.ui import UiStrings
 from openlp.plugins.images.lib import ImageMediaItem
 
 log = logging.getLogger(__name__)
@@ -36,14 +35,11 @@ class ImagePlugin(Plugin):
     log.info(u'Image Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Images', u'1.9.4', plugin_helpers)
+        Plugin.__init__(self, u'Images', u'1.9.4', plugin_helpers,
+            ImageMediaItem)
         self.weight = -7
         self.icon_path = u':/plugins/plugin_images.png'
         self.icon = build_icon(self.icon_path)
-
-    def getMediaManagerItem(self):
-        # Create the MediaManagerItem object.
-        return ImageMediaItem(self, self, self.icon)
 
     def about(self):
         about_text = translate('ImagePlugin', '<strong>Image Plugin</strong>'
@@ -73,4 +69,15 @@ class ImagePlugin(Plugin):
             u'title': translate('ImagePlugin', 'Images', 'container title')
         }
         # Middle Header Bar
-        Plugin.setPluginTextStrings(self)
+        tooltips = {
+            u'load': translate('ImagePlugin', 'Load a new Image'),
+            u'import': u'',
+            u'new': translate('ImagePlugin', 'Add a new Image'),
+            u'edit': translate('ImagePlugin', 'Edit the selected Image'),
+            u'delete': translate('ImagePlugin', 'Delete the selected Image'),
+            u'preview': translate('ImagePlugin', 'Preview the selected Image'),
+            u'live': translate('ImagePlugin', 'Send the selected Image live'),
+            u'service': translate('ImagePlugin',
+                'Add the selected Image to the service')
+        }
+        self.setPluginUiTextStrings(tooltips)

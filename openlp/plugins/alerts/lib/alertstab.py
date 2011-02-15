@@ -33,10 +33,8 @@ class AlertsTab(SettingsTab):
     """
     AlertsTab is the alerts settings tab in the settings dialog.
     """
-    def __init__(self, parent, visible_title):
-        self.parent = parent
-        self.manager = parent.manager
-        SettingsTab.__init__(self, parent.name, visible_title)
+    def __init__(self, name, visible_title):
+        SettingsTab.__init__(self, name, visible_title)
 
     def setupUi(self):
         self.setObjectName(u'AlertsTab')

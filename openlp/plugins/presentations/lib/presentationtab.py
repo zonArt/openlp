@@ -27,6 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, SettingsTab, translate
+from openlp.core.lib.ui import UiStrings
 
 class PresentationTab(SettingsTab):
     """
@@ -85,9 +86,7 @@ class PresentationTab(SettingsTab):
                 checkbox.setText(
                     unicode(translate('PresentationPlugin.PresentationTab',
                     '%s (unvailable)')) % controller.name)
-        self.AdvancedGroupBox.setTitle(
-            translate('PresentationPlugin.PresentationTab',
-            'Advanced'))
+        self.AdvancedGroupBox.setTitle(UiStrings.Advanced)
         self.OverrideAppCheckBox.setText(
             translate('PresentationPlugin.PresentationTab',
             'Allow presentation application to be overriden'))

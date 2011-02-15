@@ -60,6 +60,7 @@ The XML of an `OpenLyrics <http://openlyrics.info/>`_  song looks like this::
     </song>
 """
 
+import datetime
 import logging
 import re
 
@@ -89,8 +90,10 @@ class SongXML(object):
         Add a verse to the ``<lyrics>`` tag.
 
         ``type``
-            A string denoting the type of verse. Possible values are "V",
-            "C", "B", "P", "I", "E" and "O".
+            A string denoting the type of verse. Possible values are *Verse*,
+            *Chorus*, *Bridge*, *Pre-Chorus*, *Intro*, *Ending* and *Other*.
+            Any other type is **not** allowed, this also includes translated
+            types.
 
         ``number``
             An integer denoting the number of the item, for example: verse 1.
@@ -126,8 +129,8 @@ class SongXML(object):
 
         The returned list has the following format::
 
-            [[{'lang': 'en', 'type': 'V', 'label': '1'}, u"The English verse."],
-            [{'lang': 'en', 'type': 'C', 'label': '1'}, u"The English chorus."]]
+            [[{'lang': 'en', 'type': 'Verse', 'label': '1'}, u"English verse"],
+            [{'lang': 'en', 'type': 'Chorus', 'label': '1'}, u"English chorus"]]
         """
         self.song_xml = None
         if xml[:5] == u'<?xml':
@@ -207,12 +210,14 @@ class OpenLyrics(object):
         This property is not supported.
 
     ``<verse name="v1a" lang="he" translit="en">``
-        The attribute *translit* is not supported.
+        The attribute *translit* is not supported. Note, the attribute *lang* is
+        considered, but there is not further functionality implemented yet.
 
     ``<verseOrder>``
         OpenLP supports this property.
 
     """
+    IMPLEMENTED_VERSION = u'0.7'
     def __init__(self, manager):
         self.manager = manager
 
@@ -222,8 +227,14 @@ class OpenLyrics(object):
         """
         sxml = SongXML()
         verse_list = sxml.get_verses(song.lyrics)
-        song_xml = objectify.fromstring(
-            u'<song version="0.7" createdIn="OpenLP 2.0"/>')
+        song_xml = objectify.fromstring(u'<song/>')
+        # Append the necessary meta data to the song.
+        song_xml.set(u'xmlns', u'http://openlyrics.info/namespace/2009/song')
+        song_xml.set(u'version', OpenLyrics.IMPLEMENTED_VERSION)
+        song_xml.set(u'createdIn', u'OpenLP 1.9.4')  # Use variable
+        song_xml.set(u'modifiedIn', u'OpenLP 1.9.4')  # Use variable
+        song_xml.set(u'modifiedDate',
+            datetime.datetime.now().strftime(u'%Y-%m-%dT%H:%M:%S'))
         properties = etree.SubElement(song_xml, u'properties')
         titles = etree.SubElement(properties, u'titles')
         self._add_text_to_element(u'title', titles, song.title.strip())
@@ -237,7 +248,7 @@ class OpenLyrics(object):
             self._add_text_to_element(u'copyright', properties, song.copyright)
         if song.verse_order:
             self._add_text_to_element(
-                u'verseOrder', properties, song.verse_order)
+                u'verseOrder', properties, song.verse_order.lower())
         if song.ccli_number:
             self._add_text_to_element(u'ccliNo', properties, song.ccli_number)
         if song.authors:
@@ -252,7 +263,8 @@ class OpenLyrics(object):
             songbooks = etree.SubElement(properties, u'songbooks')
             element = self._add_text_to_element(
                 u'songbook', songbooks, None, book)
-            element.set(u'entry', song.song_number)
+            if song.song_number:
+                element.set(u'entry', song.song_number)
         if song.topics:
             themes = etree.SubElement(properties, u'themes')
             for topic in song.topics:
@@ -263,6 +275,8 @@ class OpenLyrics(object):
                 verse[0][u'type'][0].lower(), verse[0][u'label'])
             element = \
                 self._add_text_to_element(u'verse', lyrics, None, verse_tag)
+            if verse[0].has_key(u'lang'):
+                element.set(u'lang', verse[0][u'lang'])
             element = self._add_text_to_element(u'lines', element)
             for line in unicode(verse[1]).split(u'\n'):
                 self._add_text_to_element(u'line', element, line)
@@ -450,7 +464,7 @@ class OpenLyrics(object):
                     text += u'\n'
                 text += u'\n'.join([unicode(line) for line in lines.line])
             verse_name = self._get(verse, u'name')
-            verse_type = unicode(VerseType.to_string(verse_name[0]))[0]
+            verse_type = unicode(VerseType.to_string(verse_name[0]))
             verse_number = re.compile(u'[a-zA-Z]*').sub(u'', verse_name)
             verse_part = re.compile(u'[0-9]*').sub(u'', verse_name[1:])
             # OpenLyrics allows e. g. "c", but we need "c1".
@@ -478,9 +492,9 @@ class OpenLyrics(object):
             for name in temp_verse_order:
                 if name[0] == previous_type:
                     if name[1] != previous_number:
-                        verse_order.append(u''.join((name[0], name[1])))
+                        verse_order.append(u''.join((name[0][0], name[1])))
                 else:
-                    verse_order.append(u''.join((name[0], name[1])))
+                    verse_order.append(u''.join((name[0][0], name[1])))
                 previous_type = name[0]
                 previous_number = name[1]
                 previous_part = name[2]

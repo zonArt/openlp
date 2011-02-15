@@ -31,7 +31,6 @@ import os
 import logging
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
-from openlp.core.lib.ui import UiStrings
 from openlp.core.utils import AppLocation
 from openlp.plugins.presentations.lib import PresentationController, \
     PresentationMediaItem, PresentationTab
@@ -168,4 +167,18 @@ class PresentationPlugin(Plugin):
                 'container title')
         }
         # Middle Header Bar
-        Plugin.setPluginTextStrings(self)
+        tooltips = {
+            u'load': translate('PresentationPlugin', 'Load a new Presentation'),
+            u'import': u'',
+            u'new': u'',
+            u'edit': u'',
+            u'delete': translate('PresentationPlugin',
+                'Delete the selected Presentation'),
+            u'preview': translate('PresentationPlugin',
+                'Preview the selected Presentation'),
+            u'live': translate('PresentationPlugin',
+                'Send the selected Presentation live'),
+            u'service': translate('PresentationPlugin',
+                'Add the selected Presentation to the service')
+        }
+        self.setPluginUiTextStrings(tooltips)
