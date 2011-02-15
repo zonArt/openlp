@@ -406,7 +406,7 @@ class ThemeManager(QtGui.QWidget):
             translate('OpenLP.ThemeManager', 'Select Theme Import File'),
             SettingsManager.get_last_dir(self.settingsSection),
             unicode(translate('OpenLP.ThemeManager',
-            'OpenLP Themes (*.theme *.otz);;%s (*.*)')) % UiStrings.AllFiles)
+            'OpenLP Themes (*.theme *.otz)')))
         log.info(u'New Themes %s', unicode(files))
         if files:
             for file in files:
