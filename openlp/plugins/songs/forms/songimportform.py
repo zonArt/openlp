@@ -407,7 +407,7 @@ class SongImportForm(OpenLPWizard):
             The file extension filters. It should contain the file descriptions
             as well as the file extensions. For example::
 
-                u'SongBeamer files (*.sng)'
+                u'SongBeamer Files (*.sng)'
         """
         if filters:
             filters += u';;'

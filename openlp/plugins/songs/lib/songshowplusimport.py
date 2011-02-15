@@ -43,7 +43,7 @@ CHORUS = 20
 TOPIC = 29
 COMMENTS = 30
 VERSE_ORDER = 31
-SONG_BOOK = 35 
+SONG_BOOK = 35
 SONG_NUMBER = 36
 CUSTOM_VERSE = 37
 
@@ -51,32 +51,32 @@ log = logging.getLogger(__name__)
 
 class SongShowPlusImport(SongImport):
     """
-    The :class:`SongShowPlusImport` class provides the ability to import song 
+    The :class:`SongShowPlusImport` class provides the ability to import song
     files from SongShow Plus.
 
     **SongShow Plus Song File Format:**
 
     The SongShow Plus song file format is as follows:
-    
-    * Each piece of data in the song file has some information that precedes 
+
+    * Each piece of data in the song file has some information that precedes
     it.
     * The general format of this data is as follows:
-    4 Bytes, forming a 32 bit number, a key if you will, this describes what 
+    4 Bytes, forming a 32 bit number, a key if you will, this describes what
     the data is (see blockKey below)
-    4 Bytes, forming a 32 bit number, which is the number of bytes until the 
+    4 Bytes, forming a 32 bit number, which is the number of bytes until the
     next block starts
     1 Byte, which tells how namy bytes follows
-    1 or 4 Bytes, describes how long the string is, if its 1 byte, the string 
+    1 or 4 Bytes, describes how long the string is, if its 1 byte, the string
     is less than 255
     The next bytes are the actuall data.
     The next block of data follows on.
-    
-    This description does differ for verses. Which includes extra bytes 
-    stating the verse type or number. In some cases a "custom" verse is used, 
-    in that case, this block will in include 2 strings, with the associated 
-    string length descriptors. The first string is the name of the verse, the 
+
+    This description does differ for verses. Which includes extra bytes
+    stating the verse type or number. In some cases a "custom" verse is used,
+    in that case, this block will in include 2 strings, with the associated
+    string length descriptors. The first string is the name of the verse, the
     second is the verse content.
-    
+
     The file is ended with four null bytes.
 
     Valid extensions for a SongShow Plus song file are:
@@ -99,7 +99,7 @@ class SongShowPlusImport(SongImport):
         if kwargs.has_key(u'filenames'):
             self.import_source = kwargs[u'filenames']
         log.debug(self.import_source)
-        
+
     def do_import(self):
         """
         Receive a single file or a list of files to import.
@@ -124,7 +124,7 @@ class SongShowPlusImport(SongImport):
                     if blockKey == VERSE or blockKey == CHORUS:
                         null, verseNo,  = struct.unpack("BB", songData.read(2))
                     elif blockKey == CUSTOM_VERSE:
-                        null, verseNameLength,  = struct.unpack("BB",
+                        null, verseNameLength, = struct.unpack("BB",
                             songData.read(2))
                         verseName = songData.read(verseNameLength)
                     lengthDescriptorSize, = struct.unpack("B", songData.read(1))
@@ -135,7 +135,7 @@ class SongShowPlusImport(SongImport):
                         lengthDescriptor = 1
                     elif lengthDescriptorSize == 9:
                         lengthDescriptor = 0
-                    else: 
+                    else:
                         lengthDescriptor, = struct.unpack("B", songData.read(1))
                     data = songData.read(lengthDescriptor)
                     if blockKey == TITLE:
@@ -145,8 +145,8 @@ class SongShowPlusImport(SongImport):
                         for author in authors:
                             if author.find(",") !=-1:
                                 authorParts = author.split(", ")
-                                author = authorParts[1]  + " " + authorParts[0]
-                            self.parse_author(unicode(author,  u'cp1252'))
+                                author = authorParts[1] + " " + authorParts[0]
+                            self.parse_author(unicode(author, u'cp1252'))
                     elif blockKey == COPYRIGHT:
                         self.add_copyright(unicode(data, u'cp1252'))
                     elif blockKey == CCLI_NO:
