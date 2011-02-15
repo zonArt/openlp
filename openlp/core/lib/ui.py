@@ -44,7 +44,7 @@ class UiStrings(object):
     Advanced = translate('OpenLP.Ui', 'Advanced')
     AllFiles = translate('OpenLP.Ui', 'All Files')
     Authors = translate('OpenLP.Ui', 'Authors')
-    CopyToHtml = translate('OpenLP.Ui', 'Copy to Html')
+    CopyToHtml = translate('OpenLP.Ui', 'Copy to HTML')
     CopyToText = translate('OpenLP.Ui', 'Copy to Text')
     CreateService = translate('OpenLP.Ui', 'Create a new service.')
     Delete = translate('OpenLP.Ui', '&Delete')

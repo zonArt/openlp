@@ -187,7 +187,6 @@ class PrintServiceOrderForm(QtGui.QDialog, Ui_PrintServiceOrderDialog):
         else:
             self.copyTextButton.setText(UiStrings.CopyToText)
 
-
     def accept(self):
         """
         Save the settings and close the dialog.
