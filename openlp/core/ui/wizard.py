@@ -47,7 +47,6 @@ class WizardStrings(object):
     CSV = u'CSV'
     EW = u'EasyWorship'
     ES = u'EasiSlides'
-    GDP = translate('OpenLP.Ui', 'Generic Document or Presentation')
     OL = u'OpenLyrics'
     OS = u'OpenSong'
     OSIS = u'OSIS'
@@ -56,14 +55,9 @@ class WizardStrings(object):
     SSP = u'SongShow Plus'
     WoW = u'Words of Worship'
     # These strings should need a good reason to be retranslated elsewhere.
-    Description = unicode(translate('OpenLP.Ui', 'This wizard will help you '
-        'to %s %s from a variety of formats. Click the next button '
-        'below to start the process by selecting a format to %s from.',
-        'Variable 1 & 3 are import/export. Variable 2 is a type like Bibles'))
-    FinishedType = unicode(translate('OpenLP.Ui', 'Finished %s.'))
     FormatLabel = translate('OpenLP.Ui', 'Format:')
     Importing = translate('OpenLP.Ui', 'Importing')
-    ImportingType = unicode(translate('OpenLP.Ui', 'Importing %s...'))
+    ImportingType = unicode(translate('OpenLP.Ui', 'Importing "%s"...'))
     ImportSelect = translate('OpenLP.Ui', 'Select Import Source')
     ImportSelectLong = unicode(translate('OpenLP.Ui',
         'Select the import format and the location to import from.'))
@@ -74,9 +68,6 @@ class WizardStrings(object):
     OpenTypeFile = unicode(translate('OpenLP.Ui', 'Open %s File'))
     Ready = translate('OpenLP.Ui', 'Ready.')
     StartingImport = translate('OpenLP.Ui', 'Starting import...')
-    Welcome = u'<span style="font-size:14pt; font-weight:600;">%s</span>' % \
-        translate('OpenLP.Ui', 'Welcome to the %s %s Wizard',
-        'Variable 1 is the type e.g. Bible and variable 2 is import/export')
     YouSpecifyFile = unicode(translate('OpenLP.Ui', 'You need to specify at '
         'least one %s file to import from.', 'A file type e.g. OpenSong'))
 

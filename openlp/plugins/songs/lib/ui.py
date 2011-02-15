@@ -38,18 +38,7 @@ class SongStrings(object):
     Authors = translate('OpenLP.Ui', 'Authors', 'Plural')
     AuthorUnknown = translate('OpenLP.Ui', 'Author Unknown') # Used in the UI.
     AuthorUnknownUnT = u'Author Unknown' # Used to populate the database.
-    CouldNotAdd = unicode(translate('OpenLP.Ui', 'Could not add your %s.'))
-    NoDeleteAssigned = unicode(translate('OpenLP.Ui', 'This %s cannot be '
-        'deleted as it is currently assigned to at least one song.'))
     SongBook = translate('OpenLP.Ui', 'Song Book', 'Singular')
     SongBooks = translate('OpenLP.Ui', 'Song Books', 'Plural')
-    SureDeleteType = unicode(translate('OpenLP.Ui',
-        'Are you sure you want to delete the selected %s?'))
-    ThisTypeExists = unicode(translate('OpenLP.Ui', 'This %s already exists.'))
     Topic = translate('OpenLP.Ui', 'Topic', 'Singular')
     Topics = translate('OpenLP.Ui', 'Topics', 'Plural')
-    TypeInList = unicode(translate('OpenLP.Ui',
-        'This %s is already in the list.'))
-    TypeMaintenance = unicode(translate('OpenLP.Ui', '%s Maintenance'))
-    TypeNotExistAdd = unicode(translate('OpenLP.Ui',
-        'This %s does not exist, do you want to add it?'))
