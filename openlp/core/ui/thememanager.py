@@ -314,7 +314,6 @@ class ThemeManager(QtGui.QWidget):
             translate('OpenLP.ThemeManager',
             'You must select a theme to edit.')):
             item = self.themeListWidget.currentItem()
-            themeName = unicode(item.text())
             theme = self.getThemeData(
                 unicode(item.data(QtCore.Qt.UserRole).toString()))
             if theme.background_type == u'image':
