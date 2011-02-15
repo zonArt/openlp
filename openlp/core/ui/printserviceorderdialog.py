@@ -27,6 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate, SpellTextEdit
+from openlp.core.lib.ui import UiStrings
 
 class Ui_PrintServiceOrderDialog(object):
     def setupUi(self, printServiceOrderDialog):
@@ -75,6 +76,9 @@ class Ui_PrintServiceOrderDialog(object):
         self.printMetaDataCheckBox = QtGui.QCheckBox(printServiceOrderDialog)
         self.printMetaDataCheckBox.setObjectName(u'printMetaDataCheckBox')
         self.settingsLayout.addWidget(self.printMetaDataCheckBox)
+        self.copyMetaDataCheckBox = QtGui.QCheckBox(printServiceOrderDialog)
+        self.copyMetaDataCheckBox.setObjectName(u'copyMetaDataCheckBox')
+        self.settingsLayout.addWidget(self.copyMetaDataCheckBox)
         spacerItem = QtGui.QSpacerItem(20, 40,
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.settingsLayout.addItem(spacerItem)
@@ -90,12 +94,15 @@ class Ui_PrintServiceOrderDialog(object):
         spacerItem = QtGui.QSpacerItem(40, 20,
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.buttonLayout.addItem(spacerItem)
-        self.cancelButton = QtGui.QPushButton(printServiceOrderDialog)
-        self.cancelButton.setObjectName(u'cancelButton')
-        self.buttonLayout.addWidget(self.cancelButton)
+        self.copyTextButton = QtGui.QPushButton(printServiceOrderDialog)
+        self.copyTextButton.setObjectName(u'copyTextButton')
+        self.buttonLayout.addWidget(self.copyTextButton)
         self.printButton = QtGui.QPushButton(printServiceOrderDialog)
         self.printButton.setObjectName(u'printButton')
         self.buttonLayout.addWidget(self.printButton)
+        self.cancelButton = QtGui.QPushButton(printServiceOrderDialog)
+        self.cancelButton.setObjectName(u'cancelButton')
+        self.buttonLayout.addWidget(self.cancelButton)
         self.dialogLayout.addLayout(self.buttonLayout, 1, 3, 1, 1)
         self.zoomButtonLayout = QtGui.QHBoxLayout()
         self.zoomButtonLayout.setObjectName(u'zoomButtonLayout')
@@ -119,7 +126,7 @@ class Ui_PrintServiceOrderDialog(object):
         printServiceOrderDialog.setWindowTitle(
             translate('OpenLP.PrintServiceOrderForm', 'Print Service Order'))
         self.previewLabel.setText(
-            translate('OpenLP.ServiceManager', '<b>Preview:</b>'))
+            translate('OpenLP.PrintServiceOrderForm', '<b>Preview:</b>'))
         self.printSlideTextCheckBox.setText(translate(
             'OpenLP.PrintServiceOrderForm', 'Include slide text if available'))
         self.printNotesCheckBox.setText(translate(
@@ -127,10 +134,14 @@ class Ui_PrintServiceOrderDialog(object):
         self.printMetaDataCheckBox.setText(
             translate('OpenLP.PrintServiceOrderForm',
             'Include play length of media items'))
+        self.copyMetaDataCheckBox.setText(
+            translate('OpenLP.PrintServiceOrderForm',
+            'Copy output as HTML'))
         self.serviceTitleLabel.setText(translate(
             'OpenLP.PrintServiceOrderForm', 'Title:'))
         self.serviceTitleLineEdit.setText(translate('OpenLP.ServiceManager',
             'Service Order Sheet'))
+        self.copyTextButton.setText(UiStrings.CopyToText)
         self.printButton.setText(translate('OpenLP.ServiceManager', 'Print'))
         self.cancelButton.setText(translate('OpenLP.ServiceManager', 'Cancel'))
         self.customNotesLabel.setText(

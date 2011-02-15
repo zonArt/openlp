@@ -29,9 +29,11 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
+from openlp.core.lib.ui import UiStrings
 from openlp.core.ui.printserviceorderdialog import Ui_PrintServiceOrderDialog
 
 class PrintServiceOrderForm(QtGui.QDialog, Ui_PrintServiceOrderDialog):
+
     def __init__(self, parent, serviceManager):
         """
         Constructor
@@ -52,6 +54,10 @@ class PrintServiceOrderForm(QtGui.QDialog, Ui_PrintServiceOrderDialog):
             u'print file meta data', QtCore.QVariant(False)).toBool())
         self.printNotesCheckBox.setChecked(settings.value(
             u'print notes', QtCore.QVariant(False)).toBool())
+        self.copyMetaDataCheckBox.setChecked(settings.value(
+            u'html copy', QtCore.QVariant(False)).toBool())
+        if self.copyMetaDataCheckBox.isChecked():
+            self.copyTextButton.setText(UiStrings.CopyToHtml)
         settings.endGroup()
         # Signals
         QtCore.QObject.connect(self.printButton,
@@ -75,6 +81,10 @@ class PrintServiceOrderForm(QtGui.QDialog, Ui_PrintServiceOrderDialog):
             QtCore.SIGNAL(u'textChanged()'), self.updatePreviewText)
         QtCore.QObject.connect(self.cancelButton,
             QtCore.SIGNAL(u'clicked()'), self.reject)
+        QtCore.QObject.connect(self.copyTextButton,
+            QtCore.SIGNAL(u'clicked()'), self.copyText)
+        QtCore.QObject.connect(self.copyMetaDataCheckBox,
+            QtCore.SIGNAL(u'stateChanged(int)'), self.updateTextFormat)
         self.updatePreviewText()
 
     def updatePreviewText(self):
@@ -93,8 +103,17 @@ class PrintServiceOrderForm(QtGui.QDialog, Ui_PrintServiceOrderDialog):
             if self.printSlideTextCheckBox.isChecked():
                 if item.is_text():
                     # Add the text of the service item.
+                    verse = None
                     for slide in item.get_frames():
-                        text += u'<p>' + slide[u'html'] + u'</p>'
+                        if not verse:
+                            text += u'<p>' + slide[u'html']
+                            verse = slide[u'verseTag']
+                        elif verse != slide[u'verseTag']:
+                            text += u'<\p><p>' + slide[u'html']
+                            verse = slide[u'verseTag']
+                        else:
+                            text += u'<br/>' + slide[u'html']
+                    text += u'</p>'
                 elif item.is_image():
                     # Add the image names of the service item.
                     text += u'<ol>'
@@ -121,7 +140,6 @@ class PrintServiceOrderForm(QtGui.QDialog, Ui_PrintServiceOrderDialog):
                 u'Custom Service Notes:'), self.customNoteEdit.toPlainText())
         self.document.setHtml(text)
         self.previewWidget.updatePreview()
-        self.parent.clipboard.setText(text)
 
     def paintRequested(self, printer):
         """
@@ -131,6 +149,13 @@ class PrintServiceOrderForm(QtGui.QDialog, Ui_PrintServiceOrderDialog):
             A *QPrinter* object.
         """
         self.document.print_(printer)
+
+    def copyText(self):
+        if self.copyMetaDataCheckBox.isChecked():
+            self.parent.clipboard.setText(self.document.toHtml())
+        else:
+            self.parent.clipboard.setText(self.document.toPlainText())
+        self.accept()
 
     def printServiceOrder(self):
         """
@@ -154,6 +179,16 @@ class PrintServiceOrderForm(QtGui.QDialog, Ui_PrintServiceOrderDialog):
         """
         self.previewWidget.zoomOut()
 
+    def updateTextFormat(self, value):
+        """
+        Called when html copy check box is selected.
+        """
+        if value == QtCore.Qt.Checked:
+            self.copyTextButton.setText(UiStrings.CopyToHtml)
+        else:
+            self.copyTextButton.setText(UiStrings.CopyToText)
+
+
     def accept(self):
         """
         Save the settings and close the dialog.
@@ -167,6 +202,8 @@ class PrintServiceOrderForm(QtGui.QDialog, Ui_PrintServiceOrderDialog):
             QtCore.QVariant(self.printMetaDataCheckBox.isChecked()))
         settings.setValue(u'print notes',
             QtCore.QVariant(self.printNotesCheckBox.isChecked()))
+        settings.setValue(u'html copy',
+            QtCore.QVariant(self.copyMetaDataCheckBox.isChecked()))
         settings.endGroup()
         # Close the dialog.
         return QtGui.QDialog.accept(self)

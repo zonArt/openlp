@@ -48,6 +48,8 @@ class UiStrings(object):
     AllFiles = translate('OpenLP.Ui', 'All Files')
     Authors = translate('OpenLP.Ui', 'Authors')
     CreateANew = unicode(translate('OpenLP.Ui', 'Create a new %s.'))
+    CopyToHtml = translate('OpenLP.Ui', 'Copy to Html')
+    CopyToText = translate('OpenLP.Ui', 'Copy to Text')
     Delete = translate('OpenLP.Ui', '&Delete')
     DeleteSelect = unicode(translate('OpenLP.Ui', 'Delete the selected %s.'))
     DeleteType = unicode(translate('OpenLP.Ui', 'Delete %s'))
