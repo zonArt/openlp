@@ -149,23 +149,25 @@ class OpenSongImport(SongImport):
                         unicode(translate('SongsPlugin.ImportWizardForm',
                         'Importing %s...')) % parts[-1])
                     songfile = z.open(song)
-                    self.do_import_file(songfile)
-                    if self.commit:
+                    if self.do_import_file(songfile) and self.commit and \
+                        not self.stop_import_flag:
                         self.finish()
-                if self.stop_import_flag:
-                    success = False
-                    break
+                    else:
+                        success = False
+                        break
             else:
                 # not a zipfile
                 log.info(u'Direct import %s', filename)
                 self.import_wizard.incrementProgressBar(
                     unicode(translate('SongsPlugin.ImportWizardForm',
                         'Importing %s...')) % os.path.split(filename)[-1])
-                file = open(filename)
-                self.do_import_file(file)
-                if self.commit:
+                songfile = open(filename)
+                if self.do_import_file(songfile) and self.commit and \
+                    not self.stop_import_flag:
                     self.finish()
-
+                else:
+                    success = False
+                    break
         return success
 
     def do_import_file(self, file):
@@ -178,7 +180,7 @@ class OpenSongImport(SongImport):
             tree = objectify.parse(file)
         except (Error, LxmlError):
             log.exception(u'Error parsing XML')
-            return
+            return False
         root = tree.getroot()
         fields = dir(root)
         decode = {
@@ -196,19 +198,22 @@ class OpenSongImport(SongImport):
                     setattr(self, fn_or_string, ustring)
                 else:
                     fn_or_string(ustring)
+        if not len(self.title):
+            # to prevent creation of empty songs from wrong files
+            return False
         if u'theme' in fields and unicode(root.theme) not in self.topics:
             self.topics.append(unicode(root.theme))
         if u'alttheme' in fields and unicode(root.alttheme) not in self.topics:
             self.topics.append(unicode(root.alttheme))
         # data storage while importing
         verses = {}
-        # keep track of a "default" verse order, in case none is specified
+        # keep track of verses appearance order
         our_verse_order = []
-        verses_seen = {}
-        # in the absence of any other indication, verses are the default,
-        # erm, versetype!
-        versetype = u'V'
-        versenum = None
+        # default versetype
+        vt = u'V'
+        vn = u'1'
+        # for the case where song has several sections with same marker
+        inst = 1
         lyrics = unicode(root.lyrics)
         for thisline in lyrics.split(u'\n'):
             # remove comments
@@ -216,14 +221,14 @@ class OpenSongImport(SongImport):
             if semicolon >= 0:
                 thisline = thisline[:semicolon]
             thisline = thisline.strip()
-            if len(thisline) == 0:
+            if not len(thisline):
                 continue
-            # skip inthisline guitar chords and page and column breaks
-            if thisline[0] == u'.' or thisline.startswith(u'---') \
+            # skip guitar chords and page and column breaks
+            if thisline.startswith(u'.') or thisline.startswith(u'---') \
                 or thisline.startswith(u'-!!'):
                 continue
             # verse/chorus/etc. marker
-            if thisline[0] == u'[':
+            if thisline.startswith(u'['):
                 # drop the square brackets
                 right_bracket = thisline.find(u']')
                 content = thisline[1:right_bracket].upper()
@@ -232,78 +237,63 @@ class OpenSongImport(SongImport):
                 # to the end (even if there are some alpha chars on the end)
                 match = re.match(u'(.*)(\d+.*)', content)
                 if match is not None:
-                    versetype = match.group(1)
-                    versenum = match.group(2)
+                    vt = match.group(1)
+                    vn = match.group(2)
                 else:
                     # otherwise we assume number 1 and take the whole prefix as
                     # the versetype
-                    versetype = content
-                    versenum = u'1'
+                    vt = content
+                    vn = u'1'
+                inst = 1
+                if [vt, vn, inst] in our_verse_order and verses.has_key(vt) \
+                    and verses[vt].has_key(vn):
+                    inst = len(verses[vt][vn])+1
+                our_verse_order.append([vt, vn, inst])
                 continue
-            words = None
             # number at start of line.. it's verse number
             if thisline[0].isdigit():
-                versenum = thisline[0]
-                words = thisline[1:].strip()
-            if words is None:
-                words = thisline
-                if not versenum:
-                    versenum = u'1'
-            if versenum is not None:
-                versetag = u'%s%s' % (versetype, versenum)
-                if not verses.has_key(versetype):
-                    verses[versetype] = {}
-                if not verses[versetype].has_key(versenum):
-                    # storage for lines in this verse
-                    verses[versetype][versenum] = []
-                if not verses_seen.has_key(versetag):
-                    verses_seen[versetag] = 1
-                    our_verse_order.append(versetag)
+                vn = thisline[0]
+                thisline = thisline[1:].strip()
+                our_verse_order.append([vt, vn, inst])
+            if not verses.has_key(vt):
+                verses[vt] = {}
+            if not verses[vt].has_key(vn):
+                verses[vt][vn] = {}
+            if not verses[vt][vn].has_key(inst):
+                verses[vt][vn][inst] = []
             if words:
                 # Tidy text and remove the ____s from extended words
-                words = self.tidy_text(words)
-                words = words.replace('_', '')
-                verses[versetype][versenum].append(words)
+                thisline = self.tidy_text(thisline)
+                thisline = thisline.replace(u'_', u'')
+                thisline = thisline.replace(u'|', u'\n')
+                verses[vt][vn][inst].append(thisline)
         # done parsing
-        versetypes = verses.keys()
-        versetypes.sort()
-        versetags = {}
-        for versetype in versetypes:
-            our_verse_type = versetype
-            if our_verse_type == u'':
-                our_verse_type = u'V'
-            versenums = verses[versetype].keys()
-            versenums.sort()
-            for num in versenums:
-                versetag = u'%s%s' % (our_verse_type, num)
-                lines = u'\n'.join(verses[versetype][num])
-                self.add_verse(lines, versetag)
-                # Keep track of what we have for error checking later
-                versetags[versetag] = 1
-        # now figure out the presentation order
-        order = []
+        # add verses in original order
+        for (vt, vn, inst) in our_verse_order:
+            vtag = u'%s%s' % (vt, vn)
+            lines = u'\n'.join(verses[vt][vn][inst])
+            self.add_verse(lines, vtag)
+        # figure out the presentation order, if present
         if u'presentation' in fields and root.presentation != u'':
             order = unicode(root.presentation)
             # We make all the tags in the lyrics upper case, so match that here
             # and then split into a list on the whitespace
             order = order.upper().split()
-        else:
-            if len(our_verse_order) > 0:
-                order = our_verse_order
-            else:
-                log.warn(u'No verse order available for %s, skipping.',
-                    self.title)
-        # TODO: make sure that the default order list will be overwritten, if
-        # the songs provides its own order list.
-        for tag in order:
-            if tag[0].isdigit():
-                # Assume it's a verse if it has no prefix
-                tag = u'V' + tag
-            elif not re.search('\d+', tag):
-                # Assume it's no.1 if there's no digits
-                tag = tag + u'1'
-            if not versetags.has_key(tag):
-                log.info(u'Got order %s but not in versetags, dropping this'
-                    u'item from presentation order', tag)
-            else:
-                self.verse_order_list.append(tag)
+            for tag in order:
+                match = re.match(u'(.*)(\d+.*)', tag)
+                if match is not None:
+                    vt = match.group(1)
+                    vn = match.group(2)
+                    if not len(vt):
+                        vt = u'V'
+                else:
+                    # Assume it's no.1 if there are no digits
+                    vt = tag
+                    vn = u'1'
+                vtagString = u'%s%s' % (vt, vn)
+                if verses.has_key(vt) and verses[vt].has_key(vn):
+                    self.verse_order_list.append(vtagString)
+                else:
+                    log.info(u'Got order %s but not in versetags, dropping'
+                        u'this item from presentation order', vtagString)
+        return True

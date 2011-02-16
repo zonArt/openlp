@@ -75,6 +75,8 @@ class SongImport(QtCore.QObject):
         self.media_files = []
         self.song_book_name = u''
         self.song_book_pub = u''
+        self.verse_order_list_generated_useful = False
+        self.verse_order_list_generated = []
         self.verse_order_list = []
         self.verses = []
         self.versecounts = {}
@@ -217,7 +219,8 @@ class SongImport(QtCore.QObject):
         """
         for (oldversetag, oldverse, oldlang) in self.verses:
             if oldverse.strip() == versetext.strip():
-                self.verse_order_list.append(oldversetag)
+                self.verse_order_list_generated.append(oldversetag)
+                self.verse_order_list_generated_useful = True
                 return
         if versetag[0] in self.versecounts:
             self.versecounts[versetag[0]] += 1
@@ -228,15 +231,15 @@ class SongImport(QtCore.QObject):
         elif int(versetag[1:]) > self.versecounts[versetag[0]]:
             self.versecounts[versetag[0]] = int(versetag[1:])
         self.verses.append([versetag, versetext.rstrip(), lang])
-        self.verse_order_list.append(versetag)
-        if versetag.startswith(u'V') and u'C1' in self.verse_order_list:
-            self.verse_order_list.append(u'C1')
+        self.verse_order_list_generated.append(versetag)
 
     def repeat_verse(self):
         """
         Repeat the previous verse in the verse order
         """
-        self.verse_order_list.append(self.verse_order_list[-1])
+        self.verse_order_list_generated.append(
+            self.verse_order_list_generated[-1])
+        self.verse_order_list_generated_useful = True
 
     def check_complete(self):
         """
@@ -297,6 +300,9 @@ class SongImport(QtCore.QObject):
             song.search_lyrics += u' ' + self.remove_punctuation(versetext)
         song.search_lyrics = song.search_lyrics.lower()
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
+        if not len(self.verse_order_list) and \
+            self.verse_order_list_generated_useful:
+            self.verse_order_list = self.verse_order_list_generated            
         for i, current_verse_tag in enumerate(self.verse_order_list):
             if verses_changed_to_other.has_key(current_verse_tag):
                 self.verse_order_list[i] = \
@@ -348,6 +354,7 @@ class SongImport(QtCore.QObject):
         for (versetag, versetext, lang) in self.verses:
             print u'VERSE ' + versetag + u': ' + versetext
         print u'ORDER: ' + u' '.join(self.verse_order_list)
+        print u'GENERATED ORDER: ' + u' '.join(self.verse_order_list_generated)
         for author in self.authors:
             print u'AUTHOR: ' + author
         if self.copyright:
