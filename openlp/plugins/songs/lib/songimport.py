@@ -138,12 +138,12 @@ class SongImport(QtCore.QObject):
     def process_verse_text(self, text):
         lines = text.split(u'\n')
         if text.lower().find(self.copyright_string) >= 0 \
-            or text.lower().find(self.copyright_symbol) >= 0:
+            or text.find(self.copyright_symbol) >= 0:
             copyright_found = False
             for line in lines:
                 if (copyright_found or
                     line.lower().find(self.copyright_string) >= 0 or
-                    line.lower().find(self.copyright_symbol) >= 0):
+                    line.find(self.copyright_symbol) >= 0):
                     copyright_found = True
                     self.add_copyright(line)
                 else:
@@ -219,6 +219,7 @@ class SongImport(QtCore.QObject):
         """
         for (oldversetag, oldverse, oldlang) in self.verses:
             if oldverse.strip() == versetext.strip():
+                # this verse is already present
                 self.verse_order_list_generated.append(oldversetag)
                 self.verse_order_list_generated_useful = True
                 return
@@ -278,17 +279,17 @@ class SongImport(QtCore.QObject):
         other_count = 1
         for (versetag, versetext, lang) in self.verses:
             if versetag[0] == u'C':
-                versetype = VerseType.to_string(VerseType.Chorus)
+                versetype = u'Chorus'
             elif versetag[0] == u'V':
-                versetype = VerseType.to_string(VerseType.Verse)
+                versetype = u'Verse'
             elif versetag[0] == u'B':
-                versetype = VerseType.to_string(VerseType.Bridge)
+                versetype = u'Bridge'
             elif versetag[0] == u'I':
-                versetype = VerseType.to_string(VerseType.Intro)
+                versetype = u'Intro'
             elif versetag[0] == u'P':
-                versetype = VerseType.to_string(VerseType.PreChorus)
+                versetype = u'Pre-Chorus'
             elif versetag[0] == u'E':
-                versetype = VerseType.to_string(VerseType.Ending)
+                versetype = u'Ending'
             else:
                 newversetag = u'O%d' % other_count
                 verses_changed_to_other[versetag] = newversetag
