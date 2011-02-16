@@ -210,8 +210,8 @@ class OpenSongImport(SongImport):
         # keep track of verses appearance order
         our_verse_order = []
         # default versetype
-        vt = u'V'
-        vn = u'1'
+        versetype = u'V'
+        versenum = u'1'
         # for the case where song has several sections with same marker
         inst = 1
         lyrics = unicode(root.lyrics)
@@ -237,40 +237,41 @@ class OpenSongImport(SongImport):
                 # to the end (even if there are some alpha chars on the end)
                 match = re.match(u'(.*)(\d+.*)', content)
                 if match is not None:
-                    vt = match.group(1)
-                    vn = match.group(2)
+                    versetype = match.group(1)
+                    versenum = match.group(2)
                 else:
                     # otherwise we assume number 1 and take the whole prefix as
                     # the versetype
-                    vt = content
-                    vn = u'1'
+                    versetype = content
+                    versenum = u'1'
                 inst = 1
-                if [vt, vn, inst] in our_verse_order and verses.has_key(vt) \
-                    and verses[vt].has_key(vn):
-                    inst = len(verses[vt][vn])+1
-                our_verse_order.append([vt, vn, inst])
+                if [versetype, versenum, inst] in our_verse_order \
+                    and verses.has_key(versetype) \
+                    and verses[versetype].has_key(versenum):
+                    inst = len(verses[versetype][versenum])+1
+                our_verse_order.append([versetype, versenum, inst])
                 continue
             # number at start of line.. it's verse number
             if thisline[0].isdigit():
-                vn = thisline[0]
+                versenum = thisline[0]
                 thisline = thisline[1:].strip()
-                our_verse_order.append([vt, vn, inst])
-            if not verses.has_key(vt):
-                verses[vt] = {}
-            if not verses[vt].has_key(vn):
-                verses[vt][vn] = {}
-            if not verses[vt][vn].has_key(inst):
-                verses[vt][vn][inst] = []
+                our_verse_order.append([versetype, versenum, inst])
+            if not verses.has_key(versetype):
+                verses[versetype] = {}
+            if not verses[versetype].has_key(versenum):
+                verses[versetype][versenum] = {}
+            if not verses[versetype][versenum].has_key(inst):
+                verses[versetype][versenum][inst] = []
             # Tidy text and remove the ____s from extended words
             thisline = self.tidy_text(thisline)
             thisline = thisline.replace(u'_', u'')
             thisline = thisline.replace(u'|', u'\n')
-            verses[vt][vn][inst].append(thisline)
+            verses[versetype][versenum][inst].append(thisline)
         # done parsing
         # add verses in original order
-        for (vt, vn, inst) in our_verse_order:
-            vtag = u'%s%s' % (vt, vn)
-            lines = u'\n'.join(verses[vt][vn][inst])
+        for (versetype, versenum, inst) in our_verse_order:
+            vtag = u'%s%s' % (versetype, versenum)
+            lines = u'\n'.join(verses[versetype][versenum][inst])
             self.add_verse(lines, vtag)
         # figure out the presentation order, if present
         if u'presentation' in fields and root.presentation != u'':
@@ -281,16 +282,17 @@ class OpenSongImport(SongImport):
             for tag in order:
                 match = re.match(u'(.*)(\d+.*)', tag)
                 if match is not None:
-                    vt = match.group(1)
-                    vn = match.group(2)
-                    if not len(vt):
-                        vt = u'V'
+                    versetype = match.group(1)
+                    versenum = match.group(2)
+                    if not len(versetype):
+                        versetype = u'V'
                 else:
                     # Assume it's no.1 if there are no digits
-                    vt = tag
-                    vn = u'1'
-                vtagString = u'%s%s' % (vt, vn)
-                if verses.has_key(vt) and verses[vt].has_key(vn):
+                    versetype = tag
+                    versenum = u'1'
+                vtagString = u'%s%s' % (versetype, versenum)
+                if verses.has_key(versetype) \
+                    and verses[versetype].has_key(versenum):
                     self.verse_order_list.append(vtagString)
                 else:
                     log.info(u'Got order %s but not in versetags, dropping'
