@@ -187,7 +187,7 @@ class CCLIFileImport(SongImport):
             if check_first_verse_line:
                 if verse_lines[0].startswith(u'(PRE-CHORUS'):
                     verse_type = u'P'
-                    log.debug(u'USR verse PRE-CHORUS: %s', verse_lines[0] )
+                    log.debug(u'USR verse PRE-CHORUS: %s', verse_lines[0])
                     verse_text = verse_lines[1]
                 elif verse_lines[0].startswith(u'(BRIDGE'):
                     verse_type = u'B'

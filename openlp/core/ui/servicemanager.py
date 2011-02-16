@@ -1061,8 +1061,8 @@ class ServiceManager(QtGui.QWidget):
         if self.serviceItems[item][u'service_item']\
             .is_capable(ItemCapabilities.AllowsEdit):
             Receiver.send_message(u'%s_edit' %
-                self.serviceItems[item][u'service_item'].name.lower(), u'L:%s' %
-                self.serviceItems[item][u'service_item'].edit_id )
+                self.serviceItems[item][u'service_item'].name.lower(),
+                u'L:%s' % self.serviceItems[item][u'service_item'].edit_id)
 
     def findServiceItem(self):
         """

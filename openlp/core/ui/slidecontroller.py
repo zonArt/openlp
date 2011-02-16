@@ -603,8 +603,8 @@ class SlideController(QtGui.QWidget):
             if self.serviceItem.is_text():
                 if frame[u'verseTag']:
                     bits = frame[u'verseTag'].split(u':')
-                    tag = u'%s\n%s' % (bits[0][0], bits[1][0:] )
-                    tag1 = u'%s%s' % (bits[0][0], bits[1][0:] )
+                    tag = u'%s\n%s' % (bits[0][0], bits[1][0:])
+                    tag1 = u'%s%s' % (bits[0][0], bits[1][0:])
                     row = tag
                     if self.isLive:
                         if tag1 not in self.slideList:

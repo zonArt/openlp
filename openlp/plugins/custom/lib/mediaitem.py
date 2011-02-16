@@ -55,7 +55,7 @@ class CustomMediaItem(MediaManagerItem):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'custom_edit'), self.onRemoteEdit)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'custom_edit_clear' ), self.onRemoteEditClear)
+            QtCore.SIGNAL(u'custom_edit_clear'), self.onRemoteEditClear)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'custom_load_list'), self.initialise)
         QtCore.QObject.connect(Receiver.get_receiver(),

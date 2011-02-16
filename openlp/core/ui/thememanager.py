@@ -36,7 +36,7 @@ from openlp.core.lib import OpenLPToolbar, ThemeXML, get_text_file_string, \
     build_icon, Receiver, SettingsManager, translate, check_item_selected, \
     BackgroundType, BackgroundGradientType, check_directory_exists, \
     VerticalType
-from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.theme import Theme
 from openlp.core.ui import FileRenameForm, ThemeForm
 from openlp.core.utils import AppLocation, delete_file, file_is_unicode, \
