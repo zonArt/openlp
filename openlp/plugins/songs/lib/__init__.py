@@ -39,69 +39,138 @@ class VerseType(object):
     Intro = 4
     Ending = 5
     Other = 6
+    Tags = [
+        u'v',
+        u'c',
+        u'b',
+        u'p',
+        u'i',
+        u'e',
+        u'o']
+    Names = [
+        u'Verse',
+        u'Chorus',
+        u'Bridge',
+        u'Pre-Chorus',
+        u'Intro',
+        u'Ending',
+        u'Other']
+    Translations = [
+        translate('SongsPlugin.VerseType', 'Verse'),
+        translate('SongsPlugin.VerseType', 'Chorus'),
+        translate('SongsPlugin.VerseType', 'Bridge'),
+        translate('SongsPlugin.VerseType', 'Pre-Chorus'),
+        translate('SongsPlugin.VerseType', 'Intro'),
+        translate('SongsPlugin.VerseType', 'Ending'),
+        translate('SongsPlugin.VerseType', 'Other')]
 
     @staticmethod
-    def to_string(verse_type):
+    def tag(verse_type, strict=False):
         """
-        Return a string for a given VerseType
+        Return a string for a given VerseType tag
+
+        ``verse_type``
+            The verse type to return a string for
+
+        ``strict``
+            If strict, False is returned instead of Other, when not found
+        """
+        if isinstance(verse_type, int):
+            if verse_type >=0 and verse_type <= 6:
+                return VerseType.Tags[verse_type]
+            else:
+                return self.returnvalue(VerseType.Tags, strict)
+        elif verse_type[0].lower() in VerseType.Tags:
+            return verse_type[0].lower()
+        else:
+            return VerseType.returnvalue(VerseType.Tags, strict)
+
+    @staticmethod
+    def to_string(verse_type, strict=False):
+        """
+        Return a string for a given VerseType Name
 
         ``verse_type``
             The type to return a string for
+        
+        ``strict``
+            If strict, False is returned instead of Other, when not found
         """
-        if not isinstance(verse_type, int):
-            verse_type = verse_type.lower()
-        if verse_type == VerseType.Verse or verse_type == \
-            unicode(VerseType.to_string(VerseType.Verse)).lower()[0]:
-            return translate('SongsPlugin.VerseType', 'Verse')
-        elif verse_type == VerseType.Chorus or verse_type == \
-            unicode(VerseType.to_string(VerseType.Chorus)).lower()[0]:
-            return translate('SongsPlugin.VerseType', 'Chorus')
-        elif verse_type == VerseType.Bridge or verse_type == \
-            unicode(VerseType.to_string(VerseType.Bridge)).lower()[0]:
-            return translate('SongsPlugin.VerseType', 'Bridge')
-        elif verse_type == VerseType.PreChorus or verse_type == \
-            unicode(VerseType.to_string(VerseType.PreChorus)).lower()[0]:
-            return translate('SongsPlugin.VerseType', 'Pre-Chorus')
-        elif verse_type == VerseType.Intro or verse_type == \
-            unicode(VerseType.to_string(VerseType.Intro)).lower()[0]:
-            return translate('SongsPlugin.VerseType', 'Intro')
-        elif verse_type == VerseType.Ending or verse_type == \
-            unicode(VerseType.to_string(VerseType.Ending)).lower()[0]:
-            return translate('SongsPlugin.VerseType', 'Ending')
-        elif verse_type == VerseType.Other or verse_type == \
-            unicode(VerseType.to_string(VerseType.Other)).lower()[0]:
-            return translate('SongsPlugin.VerseType', 'Other')
+        if isinstance(verse_type, int):
+            if verse_type >=0 and verse_type <= 6:
+                return VerseType.Names[verse_type]
+            else:
+                return self.returnvalue(VerseType.Names, strict)
+        else:
+            verse_type = verse_type[0].lower()
+            for num, tag in enumerate(VerseType.Tags):
+                if verse_type == tag:
+                    return VerseType.Names[num]
+            return VerseType.returnvalue(VerseType.Names, strict)
 
     @staticmethod
-    def from_string(verse_type):
+    def to_translated_string(verse_type, strict=False):
+        """
+        Return a string for a given VerseType Name
+
+        ``verse_type``
+            The type to return a string for
+
+        ``strict``
+            If strict, False is returned instead of Other, when not found
+        """
+        if isinstance(verse_type, int):
+            if verse_type >=0 and verse_type <= 6:
+                return VerseType.Translations[verse_type]
+            else:
+                return self.returnvalue(VerseType.Translations, strict)
+        else:
+            verse_type = verse_type[0].lower()
+            for num, tag in enumerate(VerseType.Tags):
+                if verse_type == tag:
+                    return VerseType.Translations[num]
+            return VerseType.returnvalue(VerseType.Translations, strict)
+
+    @staticmethod
+    def from_string(verse_type, strict=False):
         """
         Return the VerseType for a given string
 
         ``verse_type``
             The string to return a VerseType for
+
+        ``strict``
+            If strict, False is returned instead of Other, when not found
         """
         verse_type = verse_type.lower()
-        if verse_type == unicode(VerseType.to_string(VerseType.Verse)).lower():
-            return VerseType.Verse
-        elif verse_type == \
-            unicode(VerseType.to_string(VerseType.Chorus)).lower():
-            return VerseType.Chorus
-        elif verse_type == \
-            unicode(VerseType.to_string(VerseType.Bridge)).lower():
-            return VerseType.Bridge
-        elif verse_type == \
-            unicode(VerseType.to_string(VerseType.PreChorus)).lower():
-            return VerseType.PreChorus
-        elif verse_type == \
-            unicode(VerseType.to_string(VerseType.Intro)).lower():
-            return VerseType.Intro
-        elif verse_type == \
-            unicode(VerseType.to_string(VerseType.Ending)).lower():
-            return VerseType.Ending
-        elif verse_type == \
-            unicode(VerseType.to_string(VerseType.Other)).lower():
-            return VerseType.Other
+        for num, string in enumerate(VerseType.Names):
+            if verse_type == string:
+                return num
+        return VerseType.returnvalue(range(0,7), strict)
 
+    @staticmethod
+    def from_translated_string(verse_type, strict=False):
+        """
+        Return the VerseType for a given string
+
+        ``verse_type``
+            The string to return a VerseType for
+
+        ``strict``
+            If strict, False is returned instead of Other, when not found
+        """
+        verse_type = verse_type.lower()
+        for num, translation in enumerate(VerseType.Translations):
+            if verse_type == translation:
+                return num
+        return VerseType.returnvalue(range(0,7), strict)
+
+    @staticmethod
+    def returnvalue(lst, strict):
+        if strict:
+            return False
+        else:
+            return lst[VerseType.Other]
 
 def retrieve_windows_encoding(recommendation=None):
     """
