@@ -470,7 +470,7 @@ class Ui_ThemeWizard(object):
         self.footerFontLabel.setText(translate('OpenLP.ThemeWizard', 'Font:'))
         self.footerColorLabel.setText(translate('OpenLP.ThemeWizard', 'Color:'))
         self.footerSizeLabel.setText(translate('OpenLP.ThemeWizard', 'Size:'))
-        self.footerSizeSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'pt'))
+        self.footerSizeSpinBox.setSuffix(UiStrings.FontSizePtUnit)
         self.alignmentPage.setTitle(
             translate('OpenLP.ThemeWizard', 'Text Formatting Details'))
         self.alignmentPage.setSubTitle(

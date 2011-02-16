@@ -55,8 +55,9 @@ class WizardStrings(object):
     SSP = u'SongShow Plus'
     WoW = u'Words of Worship'
     # These strings should need a good reason to be retranslated elsewhere.
+    FinishedImport = translate('OpenLP.Ui', 'Finished import.')
     FormatLabel = translate('OpenLP.Ui', 'Format:')
-    Header = u'<span style="font-size:14pt; font-weight:600;">%s</span>'
+    HeaderStyle = u'<span style="font-size:14pt; font-weight:600;">%s</span>'
     Importing = translate('OpenLP.Ui', 'Importing')
     ImportingType = unicode(translate('OpenLP.Ui', 'Importing "%s"...'))
     ImportSelect = translate('OpenLP.Ui', 'Select Import Source')
@@ -67,6 +68,7 @@ class WizardStrings(object):
         'importer, you will need to install the "python-sqlite" '
         'module.')
     OpenTypeFile = unicode(translate('OpenLP.Ui', 'Open %s File'))
+    PercentSymbolFormat = unicode(translate('OpenLP.Ui', '%p%'))
     Ready = translate('OpenLP.Ui', 'Ready.')
     StartingImport = translate('OpenLP.Ui', 'Starting import...')
     YouSpecifyFile = unicode(translate('OpenLP.Ui', 'You need to specify at '
@@ -78,11 +80,10 @@ class OpenLPWizard(QtGui.QWizard):
     Generic OpenLP wizard to provide generic functionality and a unified look
     and feel.
     """
-    def __init__(self, parent, plugin, name, image, direction):
+    def __init__(self, parent, plugin, name, image):
         QtGui.QWizard.__init__(self, parent)
         self.plugin = plugin
         self.setObjectName(name)
-        self.direction = direction
         self.openIcon = build_icon(u':/general/general_open.png')
         self.deleteIcon = build_icon(u':/general/general_delete.png')
         self.finishButton = self.button(QtGui.QWizard.FinishButton)

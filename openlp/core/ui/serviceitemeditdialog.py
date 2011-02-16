@@ -27,7 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
-from openlp.core.lib.ui import UiStrings, create_accept_reject_button_box, \
+from openlp.core.lib.ui import create_accept_reject_button_box, \
     create_delete_push_button, create_up_down_push_button_set
 
 class Ui_ServiceItemEditDialog(object):
@@ -41,8 +41,7 @@ class Ui_ServiceItemEditDialog(object):
         self.dialogLayout.addWidget(self.listWidget, 0, 0)
         self.buttonLayout = QtGui.QVBoxLayout()
         self.buttonLayout.setObjectName(u'buttonLayout')
-        self.deleteButton = create_delete_push_button(
-            serviceItemEditDialog, UiStrings.Service.toLower())
+        self.deleteButton = create_delete_push_button(serviceItemEditDialog)
         self.buttonLayout.addWidget(self.deleteButton)
         self.buttonLayout.addStretch()
         self.upButton, self.downButton = create_up_down_push_button_set(

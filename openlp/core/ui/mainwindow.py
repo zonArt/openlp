@@ -312,9 +312,12 @@ class Ui_MainWindow(object):
         self.SettingsLanguageMenu.setTitle(translate('OpenLP.MainWindow',
             '&Language'))
         self.HelpMenu.setTitle(translate('OpenLP.MainWindow', '&Help'))
-        self.mediaManagerDock.setWindowTitle(UiStrings.MediaManager)
-        self.serviceManagerDock.setWindowTitle(UiStrings.ServiceManager)
-        self.themeManagerDock.setWindowTitle(UiStrings.ThemeManager)
+        self.mediaManagerDock.setWindowTitle(
+            translate('OpenLP.MainWindow', 'Media Manager'))
+        self.serviceManagerDock.setWindowTitle(
+            translate('OpenLP.MainWindow', 'Service Manager'))
+        self.themeManagerDock.setWindowTitle(
+            translate('OpenLP.MainWindow', 'Theme Manager'))
         self.FileNewItem.setText(translate('OpenLP.MainWindow', '&New'))
         self.FileNewItem.setToolTip(UiStrings.NewService)
         self.FileNewItem.setStatusTip(UiStrings.CreateService)
@@ -337,8 +340,7 @@ class Ui_MainWindow(object):
             'Save the current service under a new name.'))
         self.FileSaveAsItem.setShortcut(
             translate('OpenLP.MainWindow', 'Ctrl+Shift+S'))
-        self.printServiceOrderItem.setText(
-            translate('OpenLP.MainWindow', 'Print Service Order'))
+        self.printServiceOrderItem.setText(UiStrings.PrintServiceOrder)
         self.printServiceOrderItem.setStatusTip(translate('OpenLP.MainWindow',
             'Print the current Service Order.'))
         self.printServiceOrderItem.setShortcut(

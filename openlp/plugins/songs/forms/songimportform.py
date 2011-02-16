@@ -56,7 +56,7 @@ class SongImportForm(OpenLPWizard):
             The songs plugin.
         """
         OpenLPWizard.__init__(self, parent, plugin, u'songImportWizard',
-            u':/wizards/wizard_importsong.bmp', UiStrings.Import)
+            u':/wizards/wizard_importsong.bmp')
 
     def setupUi(self, image):
         """
@@ -207,7 +207,7 @@ class SongImportForm(OpenLPWizard):
         """
         self.setWindowTitle(
             translate('SongsPlugin.ImportWizardForm', 'Song Import Wizard'))
-        self.titleLabel.setText(WizardStrings.Header %
+        self.titleLabel.setText(WizardStrings.HeaderStyle %
             translate('OpenLP.Ui', 'Welcome to the Song Import Wizard'))
         self.informationLabel.setText(
             translate('SongsPlugin.ImportWizardForm',
@@ -305,8 +305,7 @@ class SongImportForm(OpenLPWizard):
             translate('SongsPlugin.ImportWizardForm',
                 'Please wait while your songs are imported.'))
         self.progressLabel.setText(WizardStrings.Ready)
-        self.progressBar.setFormat(
-            translate('SongsPlugin.ImportWizardForm', '%p%'))
+        self.progressBar.setFormat(WizardStrings.PercentSymbolFormat)
         # Align all QFormLayouts towards each other.
         width = max(self.formatLabel.minimumSizeHint().width(),
             self.openLP2FilenameLabel.minimumSizeHint().width())
@@ -367,7 +366,7 @@ class SongImportForm(OpenLPWizard):
                 if self.genericFileListWidget.count() == 0:
                     critical_error_message_box(UiStrings.NFSp,
                         translate('SongsPlugin.ImportWizardForm',
-                        'You need to add at least one document or '
+                        'You need to specify at least one document or '
                         'presentation file to import from.'))
                     self.genericAddButton.setFocus()
                     return False
@@ -693,8 +692,7 @@ class SongImportForm(OpenLPWizard):
                 filenames=self.getListOfFiles(self.songShowPlusFileListWidget)
             )
         if importer.do_import():
-            self.progressLabel.setText(
-                translate('SongsPlugin.SongImportForm', 'Finished import.'))
+            self.progressLabel.setText(WizardStrings.FinishedImport)
         else:
             self.progressLabel.setText(
                 translate('SongsPlugin.SongImportForm',

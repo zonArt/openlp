@@ -66,8 +66,7 @@ class Ui_AlertDialog(object):
         self.saveButton.setIcon(build_icon(u':/general/general_save.png'))
         self.saveButton.setObjectName(u'saveButton')
         self.manageButtonLayout.addWidget(self.saveButton)
-        self.deleteButton = create_delete_push_button(alertDialog,
-            self.parent.nameStrings[u'singular'].toLower())
+        self.deleteButton = create_delete_push_button(alertDialog)
         self.deleteButton.setEnabled(False)
         self.manageButtonLayout.addWidget(self.deleteButton)
         self.manageButtonLayout.addStretch()

@@ -27,6 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate, SpellTextEdit
+from openlp.core.lib.ui import UiStrings
 
 class Ui_PrintServiceOrderDialog(object):
     def setupUi(self, printServiceOrderDialog):
@@ -116,8 +117,7 @@ class Ui_PrintServiceOrderDialog(object):
         QtCore.QMetaObject.connectSlotsByName(printServiceOrderDialog)
 
     def retranslateUi(self, printServiceOrderDialog):
-        printServiceOrderDialog.setWindowTitle(
-            translate('OpenLP.PrintServiceOrderForm', 'Print Service Order'))
+        printServiceOrderDialog.setWindowTitle(UiStrings.PrintServiceOrder)
         self.previewLabel.setText(
             translate('OpenLP.ServiceManager', '<b>Preview:</b>'))
         self.printSlideTextCheckBox.setText(translate(

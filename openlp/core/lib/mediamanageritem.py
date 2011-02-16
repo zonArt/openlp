@@ -475,7 +475,7 @@ class MediaManagerItem(QtGui.QWidget):
         if not self.listView.selectedIndexes() and not self.remoteTriggered:
             QtGui.QMessageBox.information(self, UiStrings.NISp,
                 translate('OpenLP.MediaManagerItem',
-                    'You must select one or more items'))
+                    'You must select one or more items.'))
         else:
             log.debug(u'%s Add requested', self.plugin.name)
             serviceItem = self.parent.serviceManager.getServiceItem()

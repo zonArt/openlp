@@ -88,7 +88,7 @@ class BibleImportForm(OpenLPWizard):
         self.manager = manager
         self.web_bible_list = {}
         OpenLPWizard.__init__(self, parent, bibleplugin, u'bibleImportWizard',
-            u':/wizards/wizard_importbible.bmp', UiStrings.Import)
+            u':/wizards/wizard_importbible.bmp')
 
     def setupUi(self, image):
         """
@@ -363,7 +363,7 @@ class BibleImportForm(OpenLPWizard):
         """
         self.setWindowTitle(
             translate('BiblesPlugin.ImportWizardForm', 'Bible Import Wizard'))
-        self.titleLabel.setText(WizardStrings.Header %
+        self.titleLabel.setText(WizardStrings.HeaderStyle %
             translate('OpenLP.Ui', 'Welcome to the Bible Import Wizard'))
         self.informationLabel.setText(
             translate('BiblesPlugin.ImportWizardForm',
@@ -768,8 +768,7 @@ class BibleImportForm(OpenLPWizard):
                     'bible. Please note, that verses will be downloaded on\n'
                     'demand and thus an internet connection is required.'))
             else:
-                self.progressLabel.setText(translate(
-                    'BiblesPlugin.ImportWizardForm', 'Finished import.'))
+                self.progressLabel.setText(WizardStrings.FinishedImport)
         else:
             self.progressLabel.setText(translate(
                 'BiblesPlugin.ImportWizardForm', 'Your Bible import failed.'))

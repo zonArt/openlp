@@ -81,8 +81,6 @@ class SongImport(QtCore.QObject):
         self.versecounts = {}
         self.copyright_string = unicode(translate(
             'SongsPlugin.SongImport', 'copyright'))
-        self.copyright_symbol = unicode(translate(
-            'SongsPlugin.SongImport', '\xa9'))
 
     def stop_import(self):
         """
@@ -137,12 +135,12 @@ class SongImport(QtCore.QObject):
     def process_verse_text(self, text):
         lines = text.split(u'\n')
         if text.lower().find(self.copyright_string) >= 0 \
-            or text.lower().find(self.copyright_symbol) >= 0:
+            or text.lower().find(SongStrings.CopyrightSymbol) >= 0:
             copyright_found = False
             for line in lines:
                 if (copyright_found or
                     line.lower().find(self.copyright_string) >= 0 or
-                    line.lower().find(self.copyright_symbol) >= 0):
+                    line.lower().find(SongStrings.CopyrightSymbol) >= 0):
                     copyright_found = True
                     self.add_copyright(line)
                 else:

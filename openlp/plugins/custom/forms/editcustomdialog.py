@@ -26,7 +26,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import StringContent, build_icon, translate
+from openlp.core.lib import build_icon, translate
 from openlp.core.lib.ui import UiStrings, create_accept_reject_button_box, \
     create_delete_push_button, create_up_down_push_button_set
 
@@ -66,9 +66,7 @@ class Ui_CustomEditDialog(object):
         self.editAllButton = QtGui.QPushButton(customEditDialog)
         self.editAllButton.setObjectName(u'editAllButton')
         self.buttonLayout.addWidget(self.editAllButton)
-        self.deleteButton = create_delete_push_button(customEditDialog,
-            customEditDialog.parent.getString(
-            StringContent.Name)[u'singular'].toLower())
+        self.deleteButton = create_delete_push_button(customEditDialog)
         self.deleteButton.setEnabled(False)
         self.buttonLayout.addWidget(self.deleteButton)
         self.buttonLayout.addStretch()
@@ -126,5 +124,4 @@ class Ui_CustomEditDialog(object):
             translate('CustomPlugin.EditCustomForm', 'The&me:'))
         self.creditLabel.setText(
             translate('CustomPlugin.EditCustomForm', '&Credits:'))
-        self.previewButton.setText(
-            translate('CustomPlugin.EditCustomForm', 'Save && Preview'))
+        self.previewButton.setText(UiStrings.SaveAndPreview)

@@ -35,24 +35,24 @@ from PyQt4 import Qt, QtCore, QtGui
 
 try:
     from PyQt4.phonon import Phonon
-    phonon_version = Phonon.phononVersion()
+    PHONON_VERSION = Phonon.phononVersion()
 except ImportError:
-    phonon_version = u'-'
+    PHONON_VERSION = u'-'
 try:
     import chardet
-    chardet_version = chardet.__version__
+    CHARDET_VERSION = chardet.__version__
 except ImportError:
-    chardet_version = u'-'
+    CHARDET_VERSION = u'-'
 try:
     import enchant
-    enchant_version = enchant.__version__
+    ENCHANT_VERSION = enchant.__version__
 except ImportError:
-    enchant_version = u'-'
+    ENCHANT_VERSION = u'-'
 try:
     import sqlite
-    sqlite_version = sqlite.version
+    SQLITE_VERSION = sqlite.version
 except ImportError:
-    sqlite_version = u'-'
+    SQLITE_VERSION = u'-'
 
 from openlp.core.lib import translate, SettingsManager
 from openlp.core.lib.mailto import mailto
@@ -85,14 +85,14 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             'Platform: %s\n')) % platform.platform()
         libraries = u'Python: %s\n' % platform.python_version() + \
             u'Qt4: %s\n' % Qt.qVersion() + \
-            u'Phonon: %s\n' % phonon_version + \
+            u'Phonon: %s\n' % PHONON_VERSION + \
             u'PyQt4: %s\n' % Qt.PYQT_VERSION_STR + \
             u'SQLAlchemy: %s\n' % sqlalchemy.__version__ + \
             u'BeautifulSoup: %s\n' % BeautifulSoup.__version__ + \
             u'lxml: %s\n' % etree.__version__ + \
-            u'Chardet: %s\n' % chardet_version + \
-            u'PyEnchant: %s\n' % enchant_version + \
-            u'PySQLite: %s\n' % sqlite_version
+            u'Chardet: %s\n' % CHARDET_VERSION + \
+            u'PyEnchant: %s\n' % ENCHANT_VERSION + \
+            u'PySQLite: %s\n' % SQLITE_VERSION
         if platform.system() == u'Linux':
             if os.environ.get(u'KDE_FULL_SESSION') == u'true':
                 system = system + u'Desktop: KDE SC\n'

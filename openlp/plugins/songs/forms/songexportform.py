@@ -57,7 +57,7 @@ class SongExportForm(OpenLPWizard):
             The songs plugin.
         """
         OpenLPWizard.__init__(self, parent, plugin, u'songExportWizard',
-            u':/wizards/wizard_exportsong.bmp', UiStrings.Export)
+            u':/wizards/wizard_exportsong.bmp')
         self.stop_export_flag = False
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_export)
@@ -164,7 +164,7 @@ class SongExportForm(OpenLPWizard):
         """
         self.setWindowTitle(
             translate('SongsPlugin.ExportWizardForm', 'Song Export Wizard'))
-        self.titleLabel.setText(WizardStrings.Header %
+        self.titleLabel.setText(WizardStrings.HeaderStyle %
             translate('OpenLP.Ui', 'Welcome to the Song Export Wizard'))
         self.informationLabel.setText(
             translate('SongsPlugin.ExportWizardForm', 'This wizard will help to'
@@ -193,8 +193,7 @@ class SongExportForm(OpenLPWizard):
             translate('SongsPlugin.ExportWizardForm',
             'Please wait while your songs are exported.'))
         self.progressLabel.setText(WizardStrings.Ready)
-        self.progressBar.setFormat(
-            translate('SongsPlugin.ExportWizardForm', '%p%'))
+        self.progressBar.setFormat(WizardStrings.PercentSymbolFormat)
 
     def validateCurrentPage(self):
         """
