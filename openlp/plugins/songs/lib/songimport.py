@@ -279,17 +279,17 @@ class SongImport(QtCore.QObject):
         other_count = 1
         for (versetag, versetext, lang) in self.verses:
             if versetag[0] == u'C':
-                versetype = u'Chorus'
+                versetype = VerseType.to_string(VerseType.Chorus)
             elif versetag[0] == u'V':
-                versetype = u'Verse'
+                versetype = VerseType.to_string(VerseType.Verse)
             elif versetag[0] == u'B':
-                versetype = u'Bridge'
+                versetype = VerseType.to_string(VerseType.Bridge)
             elif versetag[0] == u'I':
-                versetype = u'Intro'
+                versetype = VerseType.to_string(VerseType.Intro)
             elif versetag[0] == u'P':
-                versetype = u'Pre-Chorus'
+                versetype = VerseType.to_string(VerseType.PreChorus)
             elif versetag[0] == u'E':
-                versetype = u'Ending'
+                versetype = VerseType.to_string(VerseType.Ending)
             else:
                 newversetag = u'O%d' % other_count
                 verses_changed_to_other[versetag] = newversetag
