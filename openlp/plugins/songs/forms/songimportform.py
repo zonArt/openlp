@@ -205,12 +205,15 @@ class SongImportForm(OpenLPWizard):
         """
         Song wizard localisation.
         """
-        OpenLPWizard.retranslateUi(self)
         self.setWindowTitle(
             translate('SongsPlugin.ImportWizardForm', 'Song Import Wizard'))
-        self.informationLabel.setText(WizardStrings.Description % (
-            self.direction.toLower(), self.plugin.nameStrings[u'plural'],
-            self.direction.toLower()))
+        self.titleLabel.setText(WizardStrings.Header %
+            translate('OpenLP.Ui', 'Welcome to the Song Import Wizard'))
+        self.informationLabel.setText(
+            translate('SongsPlugin.ImportWizardForm',
+                'This wizard will help you to import songs from a variety of '
+                'formats. Click the next button below to start the process by '
+                'selecting a format to import from.'))
         self.sourcePage.setTitle(WizardStrings.ImportSelect)
         self.sourcePage.setSubTitle(WizardStrings.ImportSelectLong)
         self.formatLabel.setText(WizardStrings.FormatLabel)
@@ -224,7 +227,9 @@ class SongImportForm(OpenLPWizard):
         self.formatComboBox.setItemText(SongFormat.CCLI, WizardStrings.CCLI)
         self.formatComboBox.setItemText(
             SongFormat.SongsOfFellowship, WizardStrings.SoF)
-        self.formatComboBox.setItemText(SongFormat.Generic, WizardStrings.GDP)
+        self.formatComboBox.setItemText(SongFormat.Generic,
+            translate('SongsPlugin.ImportWizardForm',
+            'Generic Document/Presentation'))
         self.formatComboBox.setItemText(
             SongFormat.EasiSlides, WizardStrings.ES)
         self.formatComboBox.setItemText(
@@ -361,8 +366,9 @@ class SongImportForm(OpenLPWizard):
             elif source_format == SongFormat.Generic:
                 if self.genericFileListWidget.count() == 0:
                     critical_error_message_box(UiStrings.NFSp,
-                        WizardStrings.YouSpecifyFile %
-                        WizardStrings.GDP.toLower())
+                        translate('SongsPlugin.ImportWizardForm',
+                        'You need to add at least one document or '
+                        'presentation file to import from.'))
                     self.genericAddButton.setFocus()
                     return False
             elif source_format == SongFormat.EasiSlides:
@@ -417,8 +423,7 @@ class SongImportForm(OpenLPWizard):
             filters)
         if filenames:
             listbox.addItems(filenames)
-            SettingsManager.set_last_dir(
-                self.plugin.settingsSection,
+            SettingsManager.set_last_dir(self.plugin.settingsSection,
                 os.path.split(unicode(filenames[0]))[0], 1)
 
     def getListOfFiles(self, listbox):
@@ -533,8 +538,11 @@ class SongImportForm(OpenLPWizard):
         """
         Get song database files
         """
-        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.GDP,
-            self.genericFileListWidget)
+        self.getFileName(
+            translate('SongsPlugin.ImportWizardForm',
+            'Select Document/Presentation Files'),
+            self.genericFileListWidget
+        )
 
     def onGenericRemoveButtonClicked(self):
         """
@@ -572,7 +580,7 @@ class SongImportForm(OpenLPWizard):
         """
         Get SongShow Plus song database files
         """
-        self.getFiles(WizardStrings.OpenFileType % WizardStrings.SSP,
+        self.getFiles(WizardStrings.OpenTypeFile % WizardStrings.SSP,
             self.songShowPlusFileListWidget, u'%s (*.sbsong)'
             % translate('SongsPlugin.ImportWizardForm',
             'SongShow Plus Song Files')
@@ -660,7 +668,7 @@ class SongImportForm(OpenLPWizard):
                     self.songsOfFellowshipFileListWidget)
             )
         elif source_format == SongFormat.Generic:
-            # Import a generic document or presentatoin
+            # Import a generic document or presentation
             importer = self.plugin.importSongs(SongFormat.Generic,
                 filenames=self.getListOfFiles(self.genericFileListWidget)
             )
@@ -686,7 +694,7 @@ class SongImportForm(OpenLPWizard):
             )
         if importer.do_import():
             self.progressLabel.setText(
-                WizardStrings.FinishedType % UiStrings.Import.toLower())
+                translate('SongsPlugin.SongImportForm', 'Finished import.'))
         else:
             self.progressLabel.setText(
                 translate('SongsPlugin.SongImportForm',

@@ -113,8 +113,9 @@ class MediaMediaItem(MediaManagerItem):
                 self.resetAction.setVisible(True)
             else:
                 critical_error_message_box(UiStrings.LiveBGError,
-                    UiStrings.ProbReplaceBG % (
-                    self.plugin.nameStrings[u'singular'].toLower(), filename))
+                    unicode(translate('MediaPlugin.MediaItem',
+                    'There was a problem replacing your background, '
+                    'the media file "%s" no longer exists.')) % filename)
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
         if item is None:

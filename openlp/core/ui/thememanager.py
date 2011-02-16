@@ -105,7 +105,7 @@ class ThemeManager(QtGui.QWidget):
         # build the context menu
         self.menu = QtGui.QMenu()
         self.editAction = self.menu.addAction(
-            UiStrings.EditType % UiStrings.Theme)
+            translate('OpenLP.ThemeManager', '&Edit Theme'))
         self.editAction.setIcon(build_icon(u':/themes/theme_edit.png'))
         self.copyAction = self.menu.addAction(
             translate('OpenLP.ThemeManager', '&Copy Theme'))
@@ -114,14 +114,14 @@ class ThemeManager(QtGui.QWidget):
             translate('OpenLP.ThemeManager', '&Rename Theme'))
         self.renameAction.setIcon(build_icon(u':/themes/theme_edit.png'))
         self.deleteAction = self.menu.addAction(
-            UiStrings.AmpDeleteType % UiStrings.Theme)
+            translate('OpenLP.ThemeManager', '&Delete Theme'))
         self.deleteAction.setIcon(build_icon(u':/general/general_delete.png'))
         self.separator = self.menu.addSeparator()
         self.globalAction = self.menu.addAction(
             translate('OpenLP.ThemeManager', 'Set As &Global Default'))
         self.globalAction.setIcon(build_icon(u':/general/general_export.png'))
         self.exportAction = self.menu.addAction(
-            UiStrings.ExportType % UiStrings.Theme)
+            translate('OpenLP.ThemeManager', '&Export Theme'))
         self.exportAction.setIcon(build_icon(u':/general/general_export.png'))
         # Signals
         QtCore.QObject.connect(self.themeListWidget,

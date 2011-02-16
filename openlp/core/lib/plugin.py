@@ -144,6 +144,7 @@ class Plugin(QtCore.QObject):
         self.name = name
         self.textStrings = {}
         self.setPluginTextStrings()
+        self.nameStrings = self.textStrings[StringContent.Name]
         if version:
             self.version = version
         self.settingsSection = self.name.lower()
@@ -339,7 +340,6 @@ class Plugin(QtCore.QObject):
         """
         Called to define all translatable texts of the plugin
         """
-        self.nameStrings = self.textStrings[StringContent.Name]
         ## Load Action ##
         self.__setNameTextString(StringContent.Load,
             UiStrings.Load, tooltips[u'load'])

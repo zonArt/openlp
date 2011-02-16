@@ -32,7 +32,6 @@ from openlp.core.lib import Receiver, translate
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.plugins.songs.forms import AuthorsForm, TopicsForm, SongBookForm
 from openlp.plugins.songs.lib.db import Author, Book, Topic, Song
-from openlp.plugins.songs.lib.ui import SongStrings
 from songmaintenancedialog import Ui_SongMaintenanceDialog
 
 log = logging.getLogger(__name__)
@@ -103,20 +102,18 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         else:
             return -1
 
-    def _deleteItem(self, item_class, list_widget, reset_func, del_type):
-        dlg_title = UiStrings.DeleteType % del_type
+    def _deleteItem(self, item_class, list_widget, reset_func, dlg_title,
+        del_text, err_text):
         item_id = self._getCurrentItemId(list_widget)
         if item_id != -1:
             item = self.manager.get_object(item_class, item_id)
             if item and len(item.songs) == 0:
-                if critical_error_message_box(dlg_title,
-                    SongStrings.SureDeleteType % del_type,
-                    self, True) == QtGui.QMessageBox.Yes:
+                if critical_error_message_box(dlg_title, del_text, self,
+                    True) == QtGui.QMessageBox.Yes:
                     self.manager.delete_object(item_class, item.id)
                     reset_func()
             else:
-                critical_error_message_box(dlg_title,
-                    SongStrings.NoDeleteAssigned % del_type)
+                critical_error_message_box(dlg_title, err_text)
         else:
             critical_error_message_box(dlg_title, UiStrings.NISs)
 
@@ -217,11 +214,13 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 if self.manager.save_object(author):
                     self.resetAuthors()
                 else:
-                    critical_error_message_box(SongStrings.CouldNotAdd %
-                        SongStrings.Author.toLower())
+                    critical_error_message_box(
+                        message=translate('SongsPlugin.SongMaintenanceForm',
+                        'Could not add your author.'))
             else:
                 critical_error_message_box(
-                    SongStrings.ThisTypeExists % SongStrings.Author.toLower())
+                    message=translate('SongsPlugin.SongMaintenanceForm',
+                    'This author already exists.'))
 
     def onTopicAddButtonClick(self):
         if self.topicform.exec_():
@@ -230,11 +229,13 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 if self.manager.save_object(topic):
                     self.resetTopics()
                 else:
-                    critical_error_message_box(SongStrings.CouldNotAdd %
-                        SongStrings.Topic.toLower())
+                    critical_error_message_box(
+                        message=translate('SongsPlugin.SongMaintenanceForm',
+                        'Could not add your topic.'))
             else:
                 critical_error_message_box(
-                    SongStrings.ThisTypeExists % SongStrings.Topic.toLower())
+                    message=translate('SongsPlugin.SongMaintenanceForm',
+                    'This topic already exists.'))
 
     def onBookAddButtonClick(self):
         if self.bookform.exec_():
@@ -244,11 +245,13 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 if self.manager.save_object(book):
                     self.resetBooks()
                 else:
-                    critical_error_message_box(SongStrings.CouldNotAdd %
-                        SongStrings.SongBook.toLower())
+                    critical_error_message_box(
+                        message=translate('SongsPlugin.SongMaintenanceForm',
+                        'Could not add your book.'))
             else:
                 critical_error_message_box(
-                    SongStrings.ThisTypeExists % SongStrings.SongBook.toLower())
+                    message=translate('SongsPlugin.SongMaintenanceForm',
+                    'This book already exists.'))
 
     def onAuthorEditButtonClick(self):
         author_id = self._getCurrentItemId(self.authorsListWidget)
@@ -442,21 +445,33 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         Delete the author if the author is not attached to any songs.
         """
         self._deleteItem(Author, self.authorsListWidget, self.resetAuthors,
-            SongStrings.Author)
+            translate('SongsPlugin.SongMaintenanceForm', 'Delete Author'),
+            translate('SongsPlugin.SongMaintenanceForm',
+            'Are you sure you want to delete the selected author?'),
+            translate('SongsPlugin.SongMaintenanceForm', 'This author cannot '
+            'be deleted, they are currently assigned to at least one song.'))
 
     def onTopicDeleteButtonClick(self):
         """
         Delete the Book if the Book is not attached to any songs.
         """
         self._deleteItem(Topic, self.topicsListWidget, self.resetTopics,
-            SongStrings.Topic)
+            translate('SongsPlugin.SongMaintenanceForm', 'Delete Topic'),
+            translate('SongsPlugin.SongMaintenanceForm',
+            'Are you sure you want to delete the selected topic?'),
+            translate('SongsPlugin.SongMaintenanceForm', 'This topic cannot '
+            'be deleted, it is currently assigned to at least one song.'))
 
     def onBookDeleteButtonClick(self):
         """
         Delete the Book if the Book is not attached to any songs.
         """
         self._deleteItem(Book, self.booksListWidget, self.resetBooks,
-            SongStrings.SongBook)
+            translate('SongsPlugin.SongMaintenanceForm', 'Delete Book'),
+            translate('SongsPlugin.SongMaintenanceForm',
+            'Are you sure you want to delete the selected book?'),
+            translate('SongsPlugin.SongMaintenanceForm', 'This book cannot be '
+            'deleted, it is currently assigned to at least one song.'))
 
     def onAuthorsListRowChanged(self, row):
         """

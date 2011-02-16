@@ -162,9 +162,10 @@ class SongExportForm(OpenLPWizard):
         """
         Song wizard localisation.
         """
-        OpenLPWizard.retranslateUi(self)
         self.setWindowTitle(
             translate('SongsPlugin.ExportWizardForm', 'Song Export Wizard'))
+        self.titleLabel.setText(WizardStrings.Header %
+            translate('OpenLP.Ui', 'Welcome to the Song Export Wizard'))
         self.informationLabel.setText(
             translate('SongsPlugin.ExportWizardForm', 'This wizard will help to'
             ' export your songs to the open and free OpenLyrics worship song '
@@ -281,7 +282,7 @@ class SongExportForm(OpenLPWizard):
             self, songs, unicode(self.directoryLineEdit.text()))
         if exporter.do_export():
             self.progressLabel.setText(
-                WizardStrings.FinishedType % UiStrings.Export.toLower())
+                translate('SongsPlugin.SongExportForm', 'Finished export.'))
         else:
             self.progressLabel.setText(
                 translate('SongsPlugin.SongExportForm',

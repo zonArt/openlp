@@ -28,7 +28,6 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
 from openlp.core.lib.ui import create_accept_reject_button_box
-from openlp.plugins.songs.lib.ui import SongStrings
 
 class Ui_SongBookDialog(object):
     def setupUi(self, songBookDialog):
@@ -59,7 +58,7 @@ class Ui_SongBookDialog(object):
 
     def retranslateUi(self, songBookDialog):
         songBookDialog.setWindowTitle(
-            SongStrings.TypeMaintenance % SongStrings.SongBook)
+            translate('SongsPlugin.SongBookForm', 'Song Book Maintenance'))
         self.nameLabel.setText(translate('SongsPlugin.SongBookForm', '&Name:'))
         self.publisherLabel.setText(
             translate('SongsPlugin.SongBookForm', '&Publisher:'))

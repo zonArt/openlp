@@ -301,7 +301,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
                 'Edit Theme - %s')) % self.theme.theme_name)
             self.next()
         else:
-            self.setWindowTitle(UiStrings.NewType % UiStrings.Theme)
+            self.setWindowTitle(translate('OpenLP.ThemeWizard', 'New Theme'))
         return QtGui.QWizard.exec_(self)
 
     def initializePage(self, id):

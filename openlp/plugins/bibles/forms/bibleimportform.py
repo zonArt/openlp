@@ -361,12 +361,15 @@ class BibleImportForm(OpenLPWizard):
         """
         Allow for localisation of the bible import wizard.
         """
-        OpenLPWizard.retranslateUi(self)
         self.setWindowTitle(
             translate('BiblesPlugin.ImportWizardForm', 'Bible Import Wizard'))
-        self.informationLabel.setText(WizardStrings.Description % (
-            self.direction.toLower(), self.plugin.nameStrings[u'plural'],
-            self.direction.toLower()))
+        self.titleLabel.setText(WizardStrings.Header %
+            translate('OpenLP.Ui', 'Welcome to the Bible Import Wizard'))
+        self.informationLabel.setText(
+            translate('BiblesPlugin.ImportWizardForm',
+            'This wizard will help you to import Bibles from a variety of '
+            'formats. Click the next button below to start the process by '
+            'selecting a format to import from.'))
         self.selectPage.setTitle(WizardStrings.ImportSelect)
         self.selectPage.setSubTitle(WizardStrings.ImportSelectLong)
         self.formatLabel.setText(WizardStrings.FormatLabel)
@@ -765,8 +768,8 @@ class BibleImportForm(OpenLPWizard):
                     'bible. Please note, that verses will be downloaded on\n'
                     'demand and thus an internet connection is required.'))
             else:
-                self.progressLabel.setText(
-                    WizardStrings.FinishedType % UiStrings.Import.toLower())
+                self.progressLabel.setText(translate(
+                    'BiblesPlugin.ImportWizardForm', 'Finished import.'))
         else:
             self.progressLabel.setText(translate(
                 'BiblesPlugin.ImportWizardForm', 'Your Bible import failed.'))

@@ -137,8 +137,8 @@ class SongMediaItem(MediaManagerItem):
     def retranslateUi(self):
         self.searchTextLabel.setText(u'%s:' % UiStrings.Search)
         self.searchTextButton.setText(UiStrings.Search)
-        self.maintenanceAction.setText(SongStrings.TypeMaintenance %
-            self.plugin.nameStrings[u'singular'])
+        self.maintenanceAction.setText(
+            translate('SongsPlugin.MediaItem', 'Song Maintenance'))
         self.maintenanceAction.setToolTip(translate('SongsPlugin.MediaItem',
             'Maintain the lists of authors, topics and books'))
 

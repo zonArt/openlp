@@ -177,7 +177,7 @@ def media_item_combo_box(parent, name):
     combo.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
     return combo
 
-def create_delete_push_button(parent, item_name, icon=None):
+def create_delete_push_button(parent, icon=None):
     """
     Creates a standard push button with a delete label and optional icon.  The
     button is connected to the parent's ``onDeleteButtonClicked()`` method to
@@ -195,7 +195,8 @@ def create_delete_push_button(parent, item_name, icon=None):
     delete_icon = icon if icon else u':/general/general_delete.png'
     delete_button.setIcon(build_icon(delete_icon))
     delete_button.setText(UiStrings.Delete)
-    delete_button.setToolTip(UiStrings.DeleteSelect % item_name)
+    delete_button.setToolTip(
+        translate('OpenLP.Ui', 'Delete the selected item.'))
     QtCore.QObject.connect(delete_button,
         QtCore.SIGNAL(u'clicked()'), parent.onDeleteButtonClicked)
     return delete_button

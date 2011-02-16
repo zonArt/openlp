@@ -198,5 +198,6 @@ class ImageMediaItem(MediaManagerItem):
                 self.resetAction.setVisible(True)
             else:
                 critical_error_message_box(UiStrings.LiveBGError,
-                    UiStrings.ProbReplaceBG % (
-                    self.plugin.nameStrings[u'singular'].toLower(), filename))
+                    unicode(translate('ImagePlugin.MediaItem',
+                    'There was a problem replacing your background, '
+                    'the image file "%s" no longer exists.')) % filename)

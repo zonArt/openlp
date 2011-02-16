@@ -56,6 +56,7 @@ class WizardStrings(object):
     WoW = u'Words of Worship'
     # These strings should need a good reason to be retranslated elsewhere.
     FormatLabel = translate('OpenLP.Ui', 'Format:')
+    Header = u'<span style="font-size:14pt; font-weight:600;">%s</span>'
     Importing = translate('OpenLP.Ui', 'Importing')
     ImportingType = unicode(translate('OpenLP.Ui', 'Importing "%s"...'))
     ImportSelect = translate('OpenLP.Ui', 'Select Import Source')
@@ -63,7 +64,7 @@ class WizardStrings(object):
         'Select the import format and the location to import from.'))
     NoSqlite = translate('OpenLP.Ui', 'The openlp.org 1.x importer has been '
         'disabled due to a missing Python module. If you want to use this '
-        'importer, you will need to install the &quot;python-sqlite&quot; '
+        'importer, you will need to install the "python-sqlite" '
         'module.')
     OpenTypeFile = unicode(translate('OpenLP.Ui', 'Open %s File'))
     Ready = translate('OpenLP.Ui', 'Ready.')
@@ -107,13 +108,6 @@ class OpenLPWizard(QtGui.QWizard):
         self.addProgressPage()
         self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self)
-
-    def retranslateUi(self):
-        """
-        Provides generic wizard localisation
-        """
-        self.titleLabel.setText(WizardStrings.Welcome %
-            (self.plugin.nameStrings[u'singular'], self.direction))
 
     def registerFields(self):
         """
