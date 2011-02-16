@@ -231,7 +231,7 @@ class OpenSongImport(SongImport):
             if thisline.startswith(u'['):
                 # drop the square brackets
                 right_bracket = thisline.find(u']')
-                content = thisline[1:right_bracket].upper()
+                content = thisline[1:right_bracket].lower()
                 # have we got any digits?
                 # If so, versenumber is everything from the digits
                 # to the end (even if there are some alpha chars on the end)
@@ -276,9 +276,9 @@ class OpenSongImport(SongImport):
         # figure out the presentation order, if present
         if u'presentation' in fields and root.presentation != u'':
             order = unicode(root.presentation)
-            # We make all the tags in the lyrics upper case, so match that here
+            # We make all the tags in the lyrics lower case, so match that here
             # and then split into a list on the whitespace
-            order = order.upper().split()
+            order = order.lower().split()
             for tag in order:
                 match = re.match(u'(.*)(\d+.*)', tag)
                 if match is not None:
