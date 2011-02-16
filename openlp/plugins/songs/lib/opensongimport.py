@@ -261,12 +261,11 @@ class OpenSongImport(SongImport):
                 verses[vt][vn] = {}
             if not verses[vt][vn].has_key(inst):
                 verses[vt][vn][inst] = []
-            if words:
-                # Tidy text and remove the ____s from extended words
-                thisline = self.tidy_text(thisline)
-                thisline = thisline.replace(u'_', u'')
-                thisline = thisline.replace(u'|', u'\n')
-                verses[vt][vn][inst].append(thisline)
+            # Tidy text and remove the ____s from extended words
+            thisline = self.tidy_text(thisline)
+            thisline = thisline.replace(u'_', u'')
+            thisline = thisline.replace(u'|', u'\n')
+            verses[vt][vn][inst].append(thisline)
         # done parsing
         # add verses in original order
         for (vt, vn, inst) in our_verse_order:
