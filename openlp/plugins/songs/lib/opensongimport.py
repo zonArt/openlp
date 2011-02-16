@@ -210,7 +210,7 @@ class OpenSongImport(SongImport):
         # keep track of verses appearance order
         our_verse_order = []
         # default versetype
-        versetype = u'V'
+        versetype = u'v'
         versenum = u'1'
         # for the case where song has several sections with same marker
         inst = 1
@@ -285,7 +285,7 @@ class OpenSongImport(SongImport):
                     versetype = match.group(1)
                     versenum = match.group(2)
                     if not len(versetype):
-                        versetype = u'V'
+                        versetype = u'v'
                 else:
                     # Assume it's no.1 if there are no digits
                     versetype = tag

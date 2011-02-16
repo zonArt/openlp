@@ -200,7 +200,7 @@ class SongImport(QtCore.QObject):
             return
         self.media_files.append(filename)
 
-    def add_verse(self, versetext, versetag=u'V', lang=None):
+    def add_verse(self, versetext, versetag=u'v', lang=None):
         """
         Add a verse. This is the whole verse, lines split by \\n. It will also
         attempt to detect duplicates. In this case it will just add to the verse
@@ -278,23 +278,14 @@ class SongImport(QtCore.QObject):
         sxml = SongXML()
         other_count = 1
         for (versetag, versetext, lang) in self.verses:
-            if versetag[0] == u'C':
-                versetype = VerseType.to_string(VerseType.Chorus)
-            elif versetag[0] == u'V':
-                versetype = VerseType.to_string(VerseType.Verse)
-            elif versetag[0] == u'B':
-                versetype = VerseType.to_string(VerseType.Bridge)
-            elif versetag[0] == u'I':
-                versetype = VerseType.to_string(VerseType.Intro)
-            elif versetag[0] == u'P':
-                versetype = VerseType.to_string(VerseType.PreChorus)
-            elif versetag[0] == u'E':
-                versetype = VerseType.to_string(VerseType.Ending)
+            if versetag[0].lower() in VerseType.Tags:
+                versetype = versetag[0].lower()
             else:
-                newversetag = u'O%d' % other_count
+                newversetag = u'%s%d' % (VerseType.Tags[VerseType.Other],
+                    other_count)
                 verses_changed_to_other[versetag] = newversetag
                 other_count += 1
-                versetype = VerseType.to_string(VerseType.Other)
+                versetype = VerseType.Tags[VerseType.Other]
                 log.info(u'Versetype %s changing to %s' , versetag, newversetag)
                 versetag = newversetag
             sxml.add_verse_to_lyrics(versetype, versetag[1:], versetext, lang)
