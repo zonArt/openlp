@@ -382,13 +382,13 @@ def get_uno_command():
     """
     Returns the UNO command to launch an openoffice.org instance.
     """
+    COMMAND = u'soffice'
+    OPTIONS = u'-nologo -norestore -minimized -invisible -nofirststartwizard'
     if UNO_CONNECTION_TYPE == u'pipe':
-        return u'openoffice.org -nologo -norestore -minimized -invisible ' \
-            + u'-nofirststartwizard -accept=pipe,name=openlp_pipe;urp;'
+        CONNECTION = u'"-accept=pipe,name=openlp_pipe;urp;"'
     else:
-        return u'openoffice.org -nologo -norestore -minimized ' \
-            + u'-invisible -nofirststartwizard ' \
-            + u'-accept=socket,host=localhost,port=2002;urp;'
+        CONNECTION = u'"-accept=socket,host=localhost,port=2002;urp;"' 
+    return u'%s %s %s' % (COMMAND, OPTIONS, CONNECTION)
 
 def get_uno_instance(resolver):
     """

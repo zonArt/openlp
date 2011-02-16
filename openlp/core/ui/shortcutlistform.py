@@ -95,8 +95,13 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             item = QtGui.QTreeWidgetItem([category.name])
             for action in category.actions:
                 actionText = REMOVE_AMPERSAND.sub('', unicode(action.text()))
-                shortcutText = action.shortcut().toString()
-                actionItem = QtGui.QTreeWidgetItem([actionText, shortcutText])
+                if (len(action.shortcuts()) == 2):
+                    shortcutText = action.shortcuts()[0].toString()
+                    alternateText = action.shortcuts()[1].toString()
+                else:
+                    shortcutText = action.shortcut().toString()
+                    alternateText = u''
+                actionItem = QtGui.QTreeWidgetItem([actionText, shortcutText, alternateText])
                 actionItem.setIcon(0, action.icon())
                 item.addChild(actionItem)
             item.setExpanded(True)
