@@ -36,7 +36,7 @@ from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
 from openlp.core.lib.ui import UiStrings
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     SongImportForm, SongExportForm
-from openlp.plugins.songs.lib import OpenLyrics, SongXML
+from openlp.plugins.songs.lib import OpenLyrics, SongXML, VerseType
 from openlp.plugins.songs.lib.db import Author, Song
 from openlp.core.lib.searchedit import SearchEdit
 
@@ -344,22 +344,26 @@ class SongMediaItem(MediaManagerItem):
         if song.lyrics.startswith(u'<?xml version='):
             verseList = SongXML().get_verses(song.lyrics)
             # no verse list or only 1 space (in error)
-            if not song.verse_order or not song.verse_order.strip():
+            if not song.verse_order.strip():
                 for verse in verseList:
-                    verseTag = u'%s:%s' % (
-                        verse[0][u'type'], verse[0][u'label'])
+                    verseindex = VerseType.from_tag(verse[0][u'type'])
+                    versetype = VerseType.Translations[verseindex][0]
+                    verseTag = u'%s:%s' % (versetype, verse[0][u'label'])
                     service_item.add_from_text(
                         verse[1][:30], unicode(verse[1]), verseTag)
             else:
                 # Loop through the verse list and expand the song accordingly.
-                for order in song.verse_order.upper().split():
+                print song.verse_order
+                for order in song.verse_order.lower().split():
                     if len(order) == 0:
                         break
                     for verse in verseList:
                         if verse[0][u'type'][0] == order[0] and \
                             (verse[0][u'label'] == order[1:] or not order[1:]):
+                            verseindex = VerseType.from_tag(verse[0][u'type'])
+                            versetype = VerseType.Translations[verseindex][0]
                             verseTag = u'%s:%s' % \
-                                (verse[0][u'type'], verse[0][u'label'])
+                                (versetype, verse[0][u'label'])
                             service_item.add_from_text(
                                 verse[1][:30], verse[1], verseTag)
         else:

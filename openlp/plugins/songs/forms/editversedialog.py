@@ -71,18 +71,18 @@ class Ui_EditVerseDialog(object):
         self.verseTypeLabel.setText(
             translate('SongsPlugin.EditVerseForm', '&Verse type:'))
         self.verseTypeComboBox.setItemText(0,
-            VerseType.to_string(VerseType.Verse))
+            VerseType.Translations[VerseType.Verse])
         self.verseTypeComboBox.setItemText(1,
-            VerseType.to_string(VerseType.Chorus))
+            VerseType.Translations[VerseType.Chorus])
         self.verseTypeComboBox.setItemText(2,
-            VerseType.to_string(VerseType.Bridge))
+            VerseType.Translations[VerseType.Bridge])
         self.verseTypeComboBox.setItemText(3,
-            VerseType.to_string(VerseType.PreChorus))
+            VerseType.Translations[VerseType.PreChorus])
         self.verseTypeComboBox.setItemText(4,
-            VerseType.to_string(VerseType.Intro))
+            VerseType.Translations[VerseType.Intro])
         self.verseTypeComboBox.setItemText(5,
-            VerseType.to_string(VerseType.Ending))
+            VerseType.Translations[VerseType.Ending])
         self.verseTypeComboBox.setItemText(6,
-            VerseType.to_string(VerseType.Other))
+            VerseType.Translations[VerseType.Other])
         self.insertButton.setText(
             translate('SongsPlugin.EditVerseForm', '&Insert'))

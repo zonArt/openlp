@@ -57,7 +57,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         QtCore.QObject.connect(self.verseTypeComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
             self.onVerseTypeComboBoxChanged)
-        self.verse_regex = re.compile(r'---\[([-\w]+):([\d]+)\]---')
+        self.verse_regex = re.compile(r'---\[(.+):(.+)\]---')
 
     def contextMenu(self, point):
         item = self.serviceManagerList.itemAt(point)
@@ -70,8 +70,8 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
 
     def onInsertButtonClicked(self):
         verse_type = self.verseTypeComboBox.currentIndex()
-        if VerseType.to_string(verse_type) is not None:
-            self.insertVerse(VerseType.to_string(verse_type),
+        if VerseType.to_translated_string(verse_type) is not None:
+            self.insertVerse(VerseType.to_translated_string(verse_type),
                 self.verseNumberBox.value())
 
     def onVerseTypeComboBoxChanged(self):
@@ -81,7 +81,8 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         """
         position = self.verseTextEdit.textCursor().position()
         text = unicode(self.verseTextEdit.toPlainText())
-        verse_type = VerseType.to_string(self.verseTypeComboBox.currentIndex())
+        verse_type = VerseType.Translations[
+            self.verseTypeComboBox.currentIndex()]
         if not text:
             return
         position = text.rfind(u'---[%s' % verse_type, 0, position)
@@ -97,7 +98,11 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         if match:
             verse_type = match.group(1)
             verse_number = int(match.group(2))
-            verse_type_index = VerseType.from_string(verse_type)
+            verse_type_index = VerseType.from_translated_string(verse_type)
+            if verse_type_index is None:
+                verse_type_index = VerseType.from_string(verse_type)
+            if verse_type_index is None:
+                verse_type_index = VerseType.from_tag(verse_type)
             if verse_type_index is not None:
                 self.verseNumberBox.setValue(verse_number)
 
@@ -125,24 +130,25 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         if match:
             verse_type = match.group(1)
             verse_number = int(match.group(2))
-            verse_type_index = VerseType.from_string(verse_type)
+            verse_type_index = VerseType.from_loose_input(verse_type)
             if verse_type_index is not None:
                 self.verseTypeComboBox.setCurrentIndex(verse_type_index)
                 self.verseNumberBox.setValue(verse_number)
 
     def setVerse(self, text, single=False,
-        tag=u'%s:1' % VerseType.to_string(VerseType.Verse)):
+        tag=u'%s:1' % VerseType.tag(VerseType.Verse)):
         self.hasSingleVerse = single
         if single:
             verse_type, verse_number = tag.split(u':')
-            verse_type_index = VerseType.from_string(verse_type)
+            verse_type_index = VerseType.from_tag(verse_type)
             if verse_type_index is not None:
                 self.verseTypeComboBox.setCurrentIndex(verse_type_index)
             self.verseNumberBox.setValue(int(verse_number))
             self.insertButton.setVisible(False)
         else:
             if not text:
-                text = u'---[%s:1]---\n' % VerseType.to_string(VerseType.Verse)
+                text = u'---[%s:1]---\n' % \
+                    VerseType.to_translated_string(VerseType.Verse)
             self.verseTypeComboBox.setCurrentIndex(0)
             self.verseNumberBox.setValue(1)
             self.insertButton.setVisible(True)
@@ -152,14 +158,14 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
 
     def getVerse(self):
         return self.verseTextEdit.toPlainText(), \
-            VerseType.to_string(self.verseTypeComboBox.currentIndex()), \
+            VerseType.Tags[self.verseTypeComboBox.currentIndex()], \
             unicode(self.verseNumberBox.value())
 
     def getVerseAll(self):
         text = self.verseTextEdit.toPlainText()
         if not text.startsWith(u'---['):
-            text = u'---[%s:1]---\n%s' % (VerseType.to_string(VerseType.Verse),
-                text)
+            text = u'---[%s:1]---\n%s' % \
+                (VerseType.to_translated_string(VerseType.Verse), text)
         return text
 
     def accept(self):
