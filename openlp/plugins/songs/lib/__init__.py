@@ -39,14 +39,7 @@ class VerseType(object):
     Intro = 4
     Ending = 5
     Other = 6
-    Tags = [
-        u'v',
-        u'c',
-        u'b',
-        u'p',
-        u'i',
-        u'e',
-        u'o']
+
     Names = [
         u'Verse',
         u'Chorus',
@@ -55,7 +48,11 @@ class VerseType(object):
         u'Intro',
         u'Ending',
         u'Other']
-    Translations = [
+    Tags = []
+    for name in Names:
+        Tags.append(name[0].lower())
+
+    TranslatedNames = [
         unicode(translate('SongsPlugin.VerseType', 'Verse')),
         unicode(translate('SongsPlugin.VerseType', 'Chorus')),
         unicode(translate('SongsPlugin.VerseType', 'Bridge')),
@@ -63,60 +60,9 @@ class VerseType(object):
         unicode(translate('SongsPlugin.VerseType', 'Intro')),
         unicode(translate('SongsPlugin.VerseType', 'Ending')),
         unicode(translate('SongsPlugin.VerseType', 'Other'))]
-
-    @staticmethod
-    def tag(verse_type):
-        """
-        Return a string for a given VerseType tag
-
-        ``verse_type``
-            The verse type to return a string for
-        """
-        if isinstance(verse_type, int):
-            try:
-                return VerseType.Tags[verse_type]
-            except:
-                return
-        elif verse_type[0].lower() in VerseType.Tags:
-            return verse_type[0].lower()
-
-    @staticmethod
-    def to_string(verse_type):
-        """
-        Return a string for a given VerseType Name
-
-        ``verse_type``
-            The type to return a string for
-        """
-        if isinstance(verse_type, int):
-            try:
-                return VerseType.Names[verse_type]
-            except:
-                return
-        else:
-            verse_type = verse_type[0].lower()
-            for num, tag in enumerate(VerseType.Tags):
-                if verse_type == tag:
-                    return VerseType.Names[num]
-
-    @staticmethod
-    def to_translated_string(verse_type):
-        """
-        Return a string for a given VerseType Name
-
-        ``verse_type``
-            The type to return a string for
-        """
-        if isinstance(verse_type, int):
-            try:
-                return VerseType.Translations[verse_type]
-            except:
-                return
-        else:
-            verse_type = verse_type[0].lower()
-            for num, tag in enumerate(VerseType.Tags):
-                if verse_type == tag:
-                    return VerseType.Translations[num]
+    TranslatedTags = []
+    for name in TranslatedNames:
+        TranslatedTags.append(name[0].lower())
 
     @staticmethod
     def from_tag(verse_type):
@@ -140,9 +86,9 @@ class VerseType(object):
             The string to return a VerseType for
         """
         verse_type = verse_type[0].lower()
-        for num, string in enumerate(VerseType.Translations):
-            if verse_type == string[0].lower():
-                return num
+        for vtypeIndex, vtypeTag in enumerate(VerseType.TranslatedTags):
+            if verse_type == vtypeTag:
+                return vtypeIndex
 
     @staticmethod
     def from_string(verse_type):
@@ -153,9 +99,9 @@ class VerseType(object):
             The string to return a VerseType for
         """
         verse_type = verse_type.lower()
-        for num, string in enumerate(VerseType.Names):
-            if verse_type == string.lower():
-                return num
+        for vtypeIndex, vtypeName in enumerate(VerseType.Names):
+            if verse_type == vtypeName.lower():
+                return vtypeIndex
 
     @staticmethod
     def from_translated_string(verse_type):
@@ -166,7 +112,7 @@ class VerseType(object):
             The string to return a VerseType for
         """
         verse_type = verse_type.lower()
-        for num, translation in enumerate(VerseType.Translations):
+        for num, translation in enumerate(VerseType.TranslatedNames):
             if verse_type == translation.lower():
                 return num
 

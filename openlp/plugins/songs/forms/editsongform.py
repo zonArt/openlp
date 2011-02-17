@@ -230,11 +230,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if self.song.verse_order:
             # we translate verse order
             translated = []
-            for verse in self.song.verse_order.split():
-                verseindex = VerseType.from_tag(verse[0])
-                versetype = VerseType.Translations[verseindex][0]
-                versetag = verse[1:]
-                translated.append(u'%s%s' % (versetype, versetag))
+            for versetag in self.song.verse_order.split():
+                verseindex = VerseType.from_tag(versetag[0])
+                versetype = VerseType.TranslatedTags[verseindex]
+                versenum = versetag[1:]
+                translated.append(u'%s%s' % (versetype.upper(), versenum))
             self.verseOrderEdit.setText(u' '.join(translated))
         else:
             self.verseOrderEdit.setText(u'')
@@ -263,9 +263,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             for count, verse in enumerate(verseList):
                 self.verseListWidget.setRowCount(
                     self.verseListWidget.rowCount() + 1)
-                # this takes care of silently migrating from old or any markup
-                # if we entirely trusted the database, this should
-                # be unnecessary in the future
+                # This silently migrates from localized verse type markup.
+                # If we trusted the database, this would be unnecessary.
                 vtype = verse[0][u'type']
                 index = None
                 if len(vtype) > 1:
@@ -277,7 +276,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 if index is None:
                     index = VerseType.Other
                 verse[0][u'type'] = VerseType.Tags[index]
-                variant = u'%s:%s' % (verse[0][u'type'], verse[0][u'label'])
+                variant = u'%s%s' % (verse[0][u'type'], verse[0][u'label'])
                 item = QtGui.QTableWidgetItem(verse[1])
                 item.setData(QtCore.Qt.UserRole, QtCore.QVariant(variant))
                 self.verseListWidget.setItem(count, 0, item)
@@ -318,10 +317,10 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         rowLabel = []
         for row in range(0, self.verseListWidget.rowCount()):
             item = self.verseListWidget.item(row, 0)
-            data = unicode(item.data(QtCore.Qt.UserRole).toString())
-            bit = data.split(u':')
-            bit[0] = VerseType.Translations[VerseType.from_tag(bit[0])][0]
-            rowTag = u'%s%s' % (bit[0], bit[1])
+            versetag = unicode(item.data(QtCore.Qt.UserRole).toString())
+            versetype = VerseType.TranslatedTags[
+                VerseType.from_tag(versetag[0])].upper()
+            rowTag = u'%s%s' % (versetype, versetag[1:])
             rowLabel.append(rowTag)
         self.verseListWidget.setVerticalHeaderLabels(rowLabel)
 
@@ -442,10 +441,10 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def onVerseAddButtonClicked(self):
         self.verse_form.setVerse(u'', True)
         if self.verse_form.exec_():
-            afterText, verse, subVerse = self.verse_form.getVerse()
-            data = u'%s:%s' % (verse, subVerse)
+            afterText, versetype, versenum = self.verse_form.getVerse()
+            versetag = u'%s%s' % (versetype, versenum)
             item = QtGui.QTableWidgetItem(afterText)
-            item.setData(QtCore.Qt.UserRole, QtCore.QVariant(data))
+            item.setData(QtCore.Qt.UserRole, QtCore.QVariant(versetag))
             item.setText(afterText)
             self.verseListWidget.setRowCount(
                 self.verseListWidget.rowCount() + 1)
@@ -462,9 +461,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             verseId = unicode(item.data(QtCore.Qt.UserRole).toString())
             self.verse_form.setVerse(tempText, True, verseId)
             if self.verse_form.exec_():
-                afterText, verse, subVerse = self.verse_form.getVerse()
-                data = u'%s:%s' % (verse, subVerse)
-                item.setData(QtCore.Qt.UserRole, QtCore.QVariant(data))
+                afterText, versetype, versenum = self.verse_form.getVerse()
+                versetag = u'%s%s' % (versetype, versenum)
+                item.setData(QtCore.Qt.UserRole, QtCore.QVariant(versetag))
                 item.setText(afterText)
                 # number of lines has change so repaint the list moving the data
                 if len(tempText.split(u'\n')) != len(afterText.split(u'\n')):
@@ -489,8 +488,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             for row in range(0, self.verseListWidget.rowCount()):
                 item = self.verseListWidget.item(row, 0)
                 field = unicode(item.data(QtCore.Qt.UserRole).toString())
-                versetype, versenum = field.split(u':')
-                versetype = VerseType.to_translated_string(versetype)
+                versetypeindex = VerseType.from_tag(field[0])
+                versetype = VerseType.TranslatedNames[versetypeindex]
+                versenum = field[1:]
                 verse_list += u'---[%s:%s]---\n' % (versetype, versenum)
                 verse_list += item.text()
                 verse_list += u'\n'
@@ -510,15 +510,25 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                                 # handling carefully user inputted versetags
                                 separator = parts.find(u':')
                                 if separator >= 0:
-                                    verse = parts[0:separator].strip()
-                                    subVerse = parts[separator+1:].strip()
+                                    versetype = parts[0:separator].strip()
+                                    versenum = parts[separator+1:].strip()
                                 else:
-                                    verse = parts
-                                verseIndex = VerseType.from_loose_input(verse)
-                                verseType = VerseType.Tags[verseIndex]
-                                if not len(subVerse):
-                                    subVerse = u'1'
-                                variant = u'%s:%s' % (verseType, subVerse)
+                                    versetype = parts
+                                    versenum = u'1'
+                                verseindex = \
+                                    VerseType.from_loose_input(versetype)
+                                if verseindex is None:
+                                    verseindex = VerseType.Verse
+                                versetype = VerseType.Tags[verseindex]
+                                # Later we need to handle v1a as well.
+                                #regex = re.compile(r'(\d+\w.)')
+                                regex = re.compile(r'\D*(\d+)\D*')
+                                match = regex.match(versenum)
+                                if match:
+                                    versenum = match.group(1)
+                                else:
+                                    versenum = u'1'
+                                variant = u'%s%s' % (versetype, versenum)
                             else:
                                 if parts.endswith(u'\n'):
                                     parts = parts.rstrip(u'\n')
@@ -585,7 +595,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     order.append(u'%s%s' % (versetag, versenum))
             verses = []
             verse_names = []
-            for index in range (0, self.verseListWidget.rowCount()):
+            for index in range(0, self.verseListWidget.rowCount()):
                 verse = self.verseListWidget.item(index, 0)
                 verse = unicode(verse.data(QtCore.Qt.UserRole).toString())
                 if verse not in verse_names:
@@ -609,9 +619,10 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 if verse not in order:
                     self.songTabWidget.setCurrentIndex(0)
                     self.verseOrderEdit.setFocus()
-                    versetype, versenum = verse_names[count].split(u':')
+                    versetype = verse_names[count][0]
+                    versenum = verse_names[count][1:]
                     verseindex = VerseType.from_tag(versetype)
-                    versetype = VerseType.Translations[verseindex][0]
+                    versetype = VerseType.TranslatedTags[verseindex].upper()
                     versename = u'%s%s' % (versetype, versenum)
                     answer = QtGui.QMessageBox.warning(self,
                         translate('SongsPlugin.EditSongForm', 'Warning'),
@@ -731,7 +742,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             versetag = VerseType.Tags[
                 VerseType.from_translated_tag(item[0])]
             versenum = item[1:].lower()
-            order.append(u'%s%s' % (versetag, versenum)) 
+            order.append(u'%s%s' % (versetag, versenum))
         self.song.verse_order = u' '.join(order)
         self.song.ccli_number = unicode(self.CCLNumberEdit.text())
         self.song.song_number = unicode(self.songBookNumberEdit.text())
@@ -775,12 +786,14 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             for i in range(0, self.verseListWidget.rowCount()):
                 item = self.verseListWidget.item(i, 0)
                 verseId = unicode(item.data(QtCore.Qt.UserRole).toString())
-                bits = verseId.split(u':')
-                sxml.add_verse_to_lyrics(bits[0], bits[1], unicode(item.text()))
+                versetype = verseId[0]
+                versenum = verseId[1:]
+                sxml.add_verse_to_lyrics(versetype, versenum,
+                    unicode(item.text()))
                 text = text + self.whitespace.sub(u' ',
                     unicode(self.verseListWidget.item(i, 0).text())) + u' '
-                if (bits[1] > u'1') and (bits[0][0] not in multiple):
-                    multiple.append(bits[0][0])
+                if (versenum > u'1') and (versetype not in multiple):
+                    multiple.append(versetype)
             self.song.search_lyrics = text.lower()
             self.song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
             for verse in multiple:

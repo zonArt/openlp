@@ -70,19 +70,19 @@ class Ui_EditVerseDialog(object):
             translate('SongsPlugin.EditVerseForm', 'Edit Verse'))
         self.verseTypeLabel.setText(
             translate('SongsPlugin.EditVerseForm', '&Verse type:'))
-        self.verseTypeComboBox.setItemText(0,
-            VerseType.Translations[VerseType.Verse])
-        self.verseTypeComboBox.setItemText(1,
-            VerseType.Translations[VerseType.Chorus])
-        self.verseTypeComboBox.setItemText(2,
-            VerseType.Translations[VerseType.Bridge])
-        self.verseTypeComboBox.setItemText(3,
-            VerseType.Translations[VerseType.PreChorus])
-        self.verseTypeComboBox.setItemText(4,
-            VerseType.Translations[VerseType.Intro])
-        self.verseTypeComboBox.setItemText(5,
-            VerseType.Translations[VerseType.Ending])
-        self.verseTypeComboBox.setItemText(6,
-            VerseType.Translations[VerseType.Other])
+        self.verseTypeComboBox.setItemText(VerseType.Verse,
+            VerseType.TranslatedNames[VerseType.Verse])
+        self.verseTypeComboBox.setItemText(VerseType.Chorus,
+            VerseType.TranslatedNames[VerseType.Chorus])
+        self.verseTypeComboBox.setItemText(VerseType.Bridge,
+            VerseType.TranslatedNames[VerseType.Bridge])
+        self.verseTypeComboBox.setItemText(VerseType.PreChorus,
+            VerseType.TranslatedNames[VerseType.PreChorus])
+        self.verseTypeComboBox.setItemText(VerseType.Intro,
+            VerseType.TranslatedNames[VerseType.Intro])
+        self.verseTypeComboBox.setItemText(VerseType.Ending,
+            VerseType.TranslatedNames[VerseType.Ending])
+        self.verseTypeComboBox.setItemText(VerseType.Other,
+            VerseType.TranslatedNames[VerseType.Other])
         self.insertButton.setText(
             translate('SongsPlugin.EditVerseForm', '&Insert'))

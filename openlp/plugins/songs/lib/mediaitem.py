@@ -346,8 +346,8 @@ class SongMediaItem(MediaManagerItem):
             # no verse list or only 1 space (in error)
             if not song.verse_order.strip():
                 for verse in verseList:
-                    # we cannot use from_loose_input() here, because database
-                    # is supposed to contain English lowercase singlechar tags
+                    # We cannot use from_loose_input() here, because database
+                    # is supposed to contain English lowercase singlechar tags.
                     verse_type = verse[0][u'type']
                     verseIndex = None
                     if len(verse_type) > 1:
@@ -359,13 +359,12 @@ class SongMediaItem(MediaManagerItem):
                         verseIndex = VerseType.from_tag(verse_type)
                     if verseIndex is None:
                         verseIndex = VerseType.Other
-                    versetype = VerseType.Translations[verseIndex][0]
-                    verseTag = u'%s:%s' % (versetype, verse[0][u'label'])
+                    versetype = VerseType.TranslatedTags[verseIndex].upper()
+                    verseTag = u'%s%s' % (versetype, verse[0][u'label'])
                     service_item.add_from_text(
                         verse[1][:30], unicode(verse[1]), verseTag)
             else:
                 # Loop through the verse list and expand the song accordingly.
-                print song.verse_order
                 for order in song.verse_order.lower().split():
                     if len(order) == 0:
                         break
@@ -373,9 +372,10 @@ class SongMediaItem(MediaManagerItem):
                         if verse[0][u'type'][0] == order[0] and \
                             (verse[0][u'label'] == order[1:] or not order[1:]):
                             verseindex = VerseType.from_tag(verse[0][u'type'])
-                            versetype = VerseType.Translations[verseindex][0]
-                            verseTag = u'%s:%s' % \
-                                (versetype, verse[0][u'label'])
+                            versetype = VerseType.TranslatedTags[verseindex]\
+                                .upper()
+                            verseTag = u'%s%s' % (versetype,
+                                verse[0][u'label'])
                             service_item.add_from_text(
                                 verse[1][:30], verse[1], verseTag)
         else:

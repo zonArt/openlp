@@ -57,22 +57,23 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         QtCore.QObject.connect(self.verseTypeComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
             self.onVerseTypeComboBoxChanged)
-        self.verse_regex = re.compile(r'---\[(.+):(.+)\]---')
+        self.verse_regex = re.compile(r'---\[(.+):\D*(\d+)\D*\]---')
 
     def contextMenu(self, point):
         item = self.serviceManagerList.itemAt(point)
 
-    def insertVerse(self, title, num=1):
+    def insertVerse(self, versetype, num=1):
         if self.verseTextEdit.textCursor().columnNumber() != 0:
             self.verseTextEdit.insertPlainText(u'\n')
-        self.verseTextEdit.insertPlainText(u'---[%s:%s]---\n' % (title, num))
+        versetype = VerseType.TranslatedNames[VerseTag.from_tag(versetype)]
+        self.verseTextEdit.insertPlainText(u'---[%s:%s]---\n' % \
+            (versetype, num))
         self.verseTextEdit.setFocus()
 
     def onInsertButtonClicked(self):
-        verse_type = self.verseTypeComboBox.currentIndex()
-        if VerseType.to_translated_string(verse_type) is not None:
-            self.insertVerse(VerseType.to_translated_string(verse_type),
-                self.verseNumberBox.value())
+        vtypeindex = self.verseTypeComboBox.currentIndex()
+        self.insertVerse(VerseType.Tags[vtypeindex],
+            self.verseNumberBox.value())
 
     def onVerseTypeComboBoxChanged(self):
         """
@@ -81,7 +82,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         """
         position = self.verseTextEdit.textCursor().position()
         text = unicode(self.verseTextEdit.toPlainText())
-        verse_type = VerseType.Translations[
+        verse_type = VerseType.TranslatedNames[
             self.verseTypeComboBox.currentIndex()]
         if not text:
             return
@@ -98,11 +99,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         if match:
             verse_type = match.group(1)
             verse_number = int(match.group(2))
-            verse_type_index = VerseType.from_translated_string(verse_type)
-            if verse_type_index is None:
-                verse_type_index = VerseType.from_string(verse_type)
-            if verse_type_index is None:
-                verse_type_index = VerseType.from_tag(verse_type)
+            verse_type_index = VerseType.from_loose_input(verse_type)
             if verse_type_index is not None:
                 self.verseNumberBox.setValue(verse_number)
 
@@ -128,19 +125,20 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         text = text[:position + 4]
         match = self.verse_regex.match(text)
         if match:
-            verse_type = match.group(1)
-            verse_number = int(match.group(2))
-            verse_type_index = VerseType.from_loose_input(verse_type)
-            if verse_type_index is not None:
-                self.verseTypeComboBox.setCurrentIndex(verse_type_index)
-                self.verseNumberBox.setValue(verse_number)
+            versetype = match.group(1)
+            vtypeindex = VerseType.from_loose_input(versetype)
+            regex = re.compile(r'(\d+)')
+            versenum = int(match.group(2))
+            if vtypeindex is not None:
+                self.verseTypeComboBox.setCurrentIndex(vtypeindex)
+                self.verseNumberBox.setValue(versenum)
 
     def setVerse(self, text, single=False,
-        tag=u'%s:1' % VerseType.tag(VerseType.Verse)):
+        tag=u'%s1' % VerseType.Tags[VerseType.Verse]):
         self.hasSingleVerse = single
         if single:
-            verse_type, verse_number = tag.split(u':')
-            verse_type_index = VerseType.from_tag(verse_type)
+            verse_type_index = VerseType.from_tag(tag[0])
+            verse_number = tag[1:]
             if verse_type_index is not None:
                 self.verseTypeComboBox.setCurrentIndex(verse_type_index)
             self.verseNumberBox.setValue(int(verse_number))
@@ -148,7 +146,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         else:
             if not text:
                 text = u'---[%s:1]---\n' % \
-                    VerseType.to_translated_string(VerseType.Verse)
+                    VerseType.TranslatedNames[VerseType.Verse]
             self.verseTypeComboBox.setCurrentIndex(0)
             self.verseNumberBox.setValue(1)
             self.insertButton.setVisible(True)
@@ -165,7 +163,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         text = self.verseTextEdit.toPlainText()
         if not text.startsWith(u'---['):
             text = u'---[%s:1]---\n%s' % \
-                (VerseType.to_translated_string(VerseType.Verse), text)
+                (VerseType.TranslatedNames[VerseType.Verse], text)
         return text
 
     def accept(self):
