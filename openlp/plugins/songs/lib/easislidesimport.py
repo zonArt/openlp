@@ -81,14 +81,16 @@ class EasiSlidesImport(SongImport):
 
     def _parse_song(self, song):
         self._success = True
-        self._add_unicode_attribute(self.title, song.Title1, True)
-        self._add_unicode_attribute(self.alternate_title, song.Title2)
-        self._add_unicode_attribute(self.song_number, song.SongNumber)
+        self._add_unicode_attribute(u'title', song.Title1, True)
+        self._add_unicode_attribute(u'alternate_title', song.Title2)
+        self._add_unicode_attribute(u'song_number', song.SongNumber)
         if self.song_number == u'0':
             self.song_number = u''
         self._add_authors(song)
-        self._add_copyright(song)
-        self._add_unicode_attribute(self.song_book_name, song.BookReference)
+        self._add_copyright(song.Copyright)
+        self._add_copyright(song.LicenceAdmin1)
+        self._add_copyright(song.LicenceAdmin2)
+        self._add_unicode_attribute(u'song_book_name', song.BookReference)
         self._parse_and_add_lyrics(song)
         return self._success
 
@@ -110,7 +112,7 @@ class EasiSlidesImport(SongImport):
             Signals that this attribute must exist in a valid song.
         """
         try:
-            self_attribute = unicode(import_attribute).strip()
+            setattr(self, self_attribute, unicode(import_attribute).strip())
         except UnicodeDecodeError:
             log.exception(u'UnicodeDecodeError decoding %s' % import_attribute)
             self._success = False
@@ -124,7 +126,7 @@ class EasiSlidesImport(SongImport):
             authors = unicode(song.Writer).split(u',')
             for author in authors:
                 author = author.strip()
-                if len(author) > 0:
+                if len(author):
                     self.authors.append(author)
         except UnicodeDecodeError:
             log.exception(u'Unicode decode error while decoding Writer')
@@ -132,35 +134,18 @@ class EasiSlidesImport(SongImport):
         except AttributeError:
             pass
 
-    def _add_copyright(self, song):
-        """
-        Assign the copyright information from the import to the song being
-        created.
-
-        ``song``
-            The current song being imported.
-        """
-        copyright_list = []
-        self.__add_copyright_element(copyright_list, song.Copyright)
-        self.__add_copyright_element(copyright_list, song.LicenceAdmin1)
-        self.__add_copyright_element(copyright_list, song.LicenceAdmin2)
-        self.add_copyright(u' '.join(copyright_list))
-
-    def __add_copyright_element(self, copyright_list, element):
+    def _add_copyright(self, element):
         """
         Add a piece of copyright to the total copyright information for the
         song.
-
-        ``copyright_list``
-            The array to add the information to.
 
         ``element``
             The imported variable to get the data from.
         """
         try:
-            copyright_list.append(unicode(element).strip())
+            self.add_copyright(unicode(element).strip())
         except UnicodeDecodeError:
-            log.exception(u'Unicode error decoding %s' % element)
+            log.exception(u'Unicode error on decoding copyright: %s' % element)
             self._success = False
         except AttributeError:
             pass
@@ -285,10 +270,12 @@ class EasiSlidesImport(SongImport):
         # as these appeared originally in the file
         for [reg, vt, vn, inst] in our_verse_order:
             if self._listHas(verses, [reg, vt, vn, inst]):
+                # this is false, but needs user input
+                lang = None
                 versetag = u'%s%s' % (vt, vn)
                 versetags.append(versetag)
                 lines = u'\n'.join(verses[reg][vt][vn][inst])
-                self.verses.append([versetag, lines])
+                self.verses.append([versetag, lines, lang])
 
         SeqTypes = {
             u'p': u'P1',
