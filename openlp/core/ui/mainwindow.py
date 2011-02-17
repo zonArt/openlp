@@ -216,6 +216,9 @@ class Ui_MainWindow(object):
         self.ToolsAddToolItem = icon_action(mainWindow, u'ToolsAddToolItem',
             u':/tools/tools_add.png')
         mainWindow.actionList.add_action(self.ToolsAddToolItem, u'Tools')
+        self.ToolsOpenDataFolder = icon_action(mainWindow,
+            u'ToolsOpenDataFolder', u':/general/general_open.png')
+        mainWindow.actionList.add_action(self.ToolsOpenDataFolder, u'Tools')
         self.settingsPluginListItem = icon_action(mainWindow,
             u'settingsPluginListItem', u':/system/settings_plugin_list.png')
         mainWindow.actionList.add_action(self.settingsPluginListItem,
@@ -276,6 +279,7 @@ class Ui_MainWindow(object):
             self.SettingsLanguageMenu.menuAction(), None,
             self.SettingsShortcutsItem, self.SettingsConfigureItem))
         add_actions(self.ToolsMenu, (self.ToolsAddToolItem, None))
+        add_actions(self.ToolsMenu, (self.ToolsOpenDataFolder, None))
         add_actions(self.HelpMenu, (self.HelpDocumentationItem,
             self.HelpOnlineHelpItem, None, self.HelpWebSiteItem,
             self.HelpAboutItem))
@@ -315,20 +319,16 @@ class Ui_MainWindow(object):
         self.themeManagerDock.setWindowTitle(
             translate('OpenLP.MainWindow', 'Theme Manager'))
         self.FileNewItem.setText(translate('OpenLP.MainWindow', '&New'))
-        self.FileNewItem.setToolTip(
-            translate('OpenLP.MainWindow', 'New Service'))
-        self.FileNewItem.setStatusTip(
-            translate('OpenLP.MainWindow', 'Create a new service.'))
+        self.FileNewItem.setToolTip(UiStrings.NewService)
+        self.FileNewItem.setStatusTip(UiStrings.CreateService)
         self.FileNewItem.setShortcut(translate('OpenLP.MainWindow', 'Ctrl+N'))
         self.FileOpenItem.setText(translate('OpenLP.MainWindow', '&Open'))
-        self.FileOpenItem.setToolTip(
-            translate('OpenLP.MainWindow', 'Open Service'))
+        self.FileOpenItem.setToolTip(UiStrings.OpenService)
         self.FileOpenItem.setStatusTip(
             translate('OpenLP.MainWindow', 'Open an existing service.'))
         self.FileOpenItem.setShortcut(translate('OpenLP.MainWindow', 'Ctrl+O'))
         self.FileSaveItem.setText(translate('OpenLP.MainWindow', '&Save'))
-        self.FileSaveItem.setToolTip(
-            translate('OpenLP.MainWindow', 'Save Service'))
+        self.FileSaveItem.setToolTip(UiStrings.SaveService)
         self.FileSaveItem.setStatusTip(
             translate('OpenLP.MainWindow', 'Save the current service to disk.'))
         self.FileSaveItem.setShortcut(translate('OpenLP.MainWindow', 'Ctrl+S'))
@@ -433,6 +433,10 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', 'Add &Tool...'))
         self.ToolsAddToolItem.setStatusTip(translate('OpenLP.MainWindow',
             'Add an application to the list of tools.'))
+        self.ToolsOpenDataFolder.setText(
+            translate('OpenLP.MainWindow', 'Open &Data Folder...'))
+        self.ToolsOpenDataFolder.setStatusTip(translate('OpenLP.MainWindow',
+            'Open the folder where songs, bibles and other data resides.'))
         self.ModeDefaultItem.setText(
             translate('OpenLP.MainWindow', '&Default'))
         self.ModeDefaultItem.setStatusTip(translate('OpenLP.MainWindow',
@@ -515,6 +519,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'triggered()'), self.onHelpWebSiteClicked)
         QtCore.QObject.connect(self.HelpAboutItem,
             QtCore.SIGNAL(u'triggered()'), self.onHelpAboutItemClicked)
+        QtCore.QObject.connect(self.ToolsOpenDataFolder,
+            QtCore.SIGNAL(u'triggered()'), self.onToolsOpenDataFolderClicked)
         QtCore.QObject.connect(self.settingsPluginListItem,
             QtCore.SIGNAL(u'triggered()'), self.onPluginItemClicked)
         QtCore.QObject.connect(self.SettingsConfigureItem,
@@ -702,6 +708,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         self.pluginForm.load()
         self.pluginForm.exec_()
+
+    def onToolsOpenDataFolderClicked(self):
+        """
+        Open data folder
+        """
+        path = AppLocation.get_data_path()
+        QtGui.QDesktopServices.openUrl(QtCore.QUrl("file:///" + path))
 
     def onSettingsConfigureItemClicked(self):
         """

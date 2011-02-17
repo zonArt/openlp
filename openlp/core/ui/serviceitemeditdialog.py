@@ -27,7 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
-from openlp.core.lib.ui import create_save_cancel_button_box, \
+from openlp.core.lib.ui import create_accept_reject_button_box, \
     create_delete_push_button, create_up_down_push_button_set
 
 class Ui_ServiceItemEditDialog(object):
@@ -50,7 +50,7 @@ class Ui_ServiceItemEditDialog(object):
         self.buttonLayout.addWidget(self.downButton)
         self.dialogLayout.addLayout(self.buttonLayout, 0, 1)
         self.dialogLayout.addWidget(
-            create_save_cancel_button_box(serviceItemEditDialog), 1, 0, 1, 2)
+            create_accept_reject_button_box(serviceItemEditDialog), 1, 0, 1, 2)
         self.retranslateUi(serviceItemEditDialog)
         QtCore.QMetaObject.connectSlotsByName(serviceItemEditDialog)
 

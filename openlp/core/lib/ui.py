@@ -41,35 +41,31 @@ class UiStrings(object):
     # These strings should need a good reason to be retranslated elsewhere.
     # Should some/more/less of these have an &amp; attached?
     Add = translate('OpenLP.Ui', '&Add')
-    AddANew = unicode(translate('OpenLP.Ui', 'Add a new %s'))
-    AddSelectService = unicode(translate('OpenLP.Ui',
-        'Add the selected %s to the service'))
+    Advanced = translate('OpenLP.Ui', 'Advanced')
     AllFiles = translate('OpenLP.Ui', 'All Files')
     Authors = translate('OpenLP.Ui', 'Authors')
+    CreateService = translate('OpenLP.Ui', 'Create a new service.')
     Delete = translate('OpenLP.Ui', '&Delete')
-    DeleteSelect = unicode(translate('OpenLP.Ui', 'Delete the selected %s'))
-    DeleteType = unicode(translate('OpenLP.Ui', 'Delete %s'))
     Edit = translate('OpenLP.Ui', '&Edit')
-    EditSelect = unicode(translate('OpenLP.Ui', 'Edit the selected %s'))
-    EditType = unicode(translate('OpenLP.Ui', 'Edit %s'))
     Error = translate('OpenLP.Ui', 'Error')
-    ExportType = unicode(translate('OpenLP.Ui', 'Export %s'))
     Import = translate('OpenLP.Ui', 'Import')
-    ImportType = unicode(translate('OpenLP.Ui', 'Import %s'))
+    LengthTime = unicode(translate('OpenLP.Ui', 'Length %s'))
     Live = translate('OpenLP.Ui', 'Live')
     Load = translate('OpenLP.Ui', 'Load')
-    LoadANew = unicode(translate('OpenLP.Ui', 'Load a new %s'))
     New = translate('OpenLP.Ui', 'New')
-    NewType = unicode(translate('OpenLP.Ui', 'New %s'))
+    NewService = translate('OpenLP.Ui', 'New Service')
     OLPV2 = translate('OpenLP.Ui', 'OpenLP 2.0')
+    OpenService = translate('OpenLP.Ui', 'Open Service')
     Preview = translate('OpenLP.Ui', 'Preview')
-    PreviewSelect = unicode(translate('OpenLP.Ui', 'Preview the selected %s'))
-    SendSelectLive = unicode(translate('OpenLP.Ui',
-        'Send the selected %s live'))
+    ReplaceBG = translate('OpenLP.Ui', 'Replace Background')
+    ReplaceLiveBG = translate('OpenLP.Ui', 'Replace Live Background')
+    ResetBG = translate('OpenLP.Ui', 'Reset Background')
+    ResetLiveBG = translate('OpenLP.Ui', 'Reset Live Background')
+    SaveService = translate('OpenLP.Ui', 'Save Service')
     Service = translate('OpenLP.Ui', 'Service')
+    StartTimeCode = unicode(translate('OpenLP.Ui', 'Start %s'))
     Theme = translate('OpenLP.Ui', 'Theme')
     Themes = translate('OpenLP.Ui', 'Themes')
-
 
 def add_welcome_page(parent, image):
     """
@@ -98,18 +94,25 @@ def add_welcome_page(parent, image):
     parent.welcomeLayout.addStretch()
     parent.addPage(parent.welcomePage)
 
-def create_save_cancel_button_box(parent):
+def create_accept_reject_button_box(parent, okay=False):
     """
-    Creates a standard dialog button box with save and cancel buttons.  The
-    button box is connected to the parent's ``accept()`` and ``reject()``
+    Creates a standard dialog button box with two buttons. The buttons default
+    to save and cancel but the ``okay`` parameter can be used to make the
+    buttons okay and cancel instead.
+    The button box is connected to the parent's ``accept()`` and ``reject()``
     methods to handle the default ``accepted()`` and ``rejected()`` signals.
 
     ``parent``
         The parent object.  This should be a ``QWidget`` descendant.
+
+    ``okay``
+        If true creates an okay/cancel combination instead of save/cancel.
     """
     button_box = QtGui.QDialogButtonBox(parent)
-    button_box.setStandardButtons(
-        QtGui.QDialogButtonBox.Save | QtGui.QDialogButtonBox.Cancel)
+    accept_button = QtGui.QDialogButtonBox.Save
+    if okay:
+        accept_button = QtGui.QDialogButtonBox.Ok
+    button_box.setStandardButtons(accept_button | QtGui.QDialogButtonBox.Cancel)
     button_box.setObjectName(u'%sButtonBox' % parent)
     QtCore.QObject.connect(button_box, QtCore.SIGNAL(u'accepted()'),
         parent.accept)

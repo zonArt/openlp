@@ -30,7 +30,6 @@ import mimetypes
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
-from openlp.core.lib.ui import UiStrings
 from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 
 log = logging.getLogger(__name__)
@@ -39,7 +38,8 @@ class MediaPlugin(Plugin):
     log.info(u'%s MediaPlugin loaded', __name__)
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Media', u'1.9.4', plugin_helpers)
+        Plugin.__init__(self, u'Media', u'1.9.4', plugin_helpers,
+            MediaMediaItem, MediaTab)
         self.weight = -6
         self.icon_path = u':/plugins/plugin_media.png'
         self.icon = build_icon(self.icon_path)
@@ -76,13 +76,6 @@ class MediaPlugin(Plugin):
                 mimetype = u''
         return list, mimetype
 
-    def getSettingsTab(self):
-        return MediaTab(self.name)
-
-    def getMediaManagerItem(self):
-        # Create the MediaManagerItem object.
-        return MediaMediaItem(self, self, self.icon)
-
     def about(self):
         about_text = translate('MediaPlugin', '<strong>Media Plugin</strong>'
             '<br />The media plugin provides playback of audio and video.')
@@ -102,4 +95,15 @@ class MediaPlugin(Plugin):
             u'title': translate('MediaPlugin', 'Media', 'container title')
         }
         # Middle Header Bar
-        Plugin.setPluginTextStrings(self)
+        tooltips = {
+            u'load': translate('MediaPlugin', 'Load a new Media'),
+            u'import': u'',
+            u'new': translate('MediaPlugin', 'Add a new Media'),
+            u'edit': translate('MediaPlugin', 'Edit the selected Media'),
+            u'delete': translate('MediaPlugin', 'Delete the selected Media'),
+            u'preview': translate('MediaPlugin', 'Preview the selected Media'),
+            u'live': translate('MediaPlugin', 'Send the selected Media live'),
+            u'service': translate('MediaPlugin',
+                'Add the selected Media to the service')
+        }
+        self.setPluginUiTextStrings(tooltips)

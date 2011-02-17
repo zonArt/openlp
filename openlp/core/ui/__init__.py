@@ -53,6 +53,7 @@ class HideMode(object):
 
 from themeform import ThemeForm
 from filerenameform import FileRenameForm
+from starttimeform import StartTimeForm
 from maindisplay import MainDisplay
 from servicenoteform import ServiceNoteForm
 from serviceitemeditform import ServiceItemEditForm
