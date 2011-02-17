@@ -346,8 +346,20 @@ class SongMediaItem(MediaManagerItem):
             # no verse list or only 1 space (in error)
             if not song.verse_order.strip():
                 for verse in verseList:
-                    verseindex = VerseType.from_tag(verse[0][u'type'])
-                    versetype = VerseType.Translations[verseindex][0]
+                    # we cannot use from_loose_input() here, because database
+                    # is supposed to contain English lowercase singlechar tags
+                    verse_type = verse[0][u'type']
+                    verseIndex = None
+                    if len(verse_type) > 1:
+                        verseIndex = \
+                            VerseType.from_translated_string(verse_type)
+                        if verseIndex is None:
+                            verseIndex = VerseType.from_string(verse_type)
+                    if verseIndex is None:
+                        verseIndex = VerseType.from_tag(verse_type)
+                    if verseIndex is None:
+                        verseIndex = VerseType.Other
+                    versetype = VerseType.Translations[verseIndex][0]
                     verseTag = u'%s:%s' % (versetype, verse[0][u'label'])
                     service_item.add_from_text(
                         verse[1][:30], unicode(verse[1]), verseTag)
