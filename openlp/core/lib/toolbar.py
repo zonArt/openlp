@@ -61,7 +61,7 @@ class OpenLPToolbar(QtGui.QToolBar):
 
         ``icon``
             The icon of the button. This can be an instance of QIcon, or a
-            string cotaining either the absolute path to the image, or an
+            string containing either the absolute path to the image, or an
             internal resource path starting with ':/'.
 
         ``tooltip``
@@ -73,13 +73,13 @@ class OpenLPToolbar(QtGui.QToolBar):
         ``checkable``
             If *True* the button has two, *off* and *on*, states. Default is
             *False*, which means the buttons has only one state.
-        
+
         ``shortcut``
             The primary shortcut for this action
-        
+
         ``alternate``
             The alternate shortcut for this action
-            
+
         ``context``
             Specify the context in which this shortcut is valid
         """

@@ -28,7 +28,8 @@ import logging
 
 from PyQt4 import QtWebKit
 
-from openlp.core.lib import BackgroundType, BackgroundGradientType
+from openlp.core.lib import BackgroundType, BackgroundGradientType, \
+    VerticalType
 
 log = logging.getLogger(__name__)
 
@@ -314,7 +315,7 @@ body {
 </html>
     """
 
-def build_html(item, screen, alert, islive):
+def build_html(item, screen, alert, islive, background):
     """
     Build the full web paged structure for display
 
@@ -332,7 +333,9 @@ def build_html(item, screen, alert, islive):
     theme = item.themedata
     webkitvers = webkit_version()
     # Image generated and poked in
-    if item.bg_image_bytes:
+    if background:
+        image = u'src="data:image/png;base64,%s"' % background
+    elif item.bg_image_bytes:
         image = u'src="data:image/png;base64,%s"' % item.bg_image_bytes
     else:
         image = u'style="display:none;"'
@@ -534,12 +537,7 @@ def build_lyrics_format_css(theme, width, height):
         align = u'right'
     else:
         align = u'left'
-    if theme.display_vertical_align == 2:
-        valign = u'bottom'
-    elif theme.display_vertical_align == 1:
-        valign = u'middle'
-    else:
-        valign = u'top'
+    valign = VerticalType.to_string(theme.display_vertical_align)
     if theme.font_main_outline:
         left_margin = int(theme.font_main_outline_size) * 2
     else:
@@ -632,13 +630,7 @@ def build_alert_css(alertTab, width):
     """
     if not alertTab:
         return u''
-    align = u''
-    if alertTab.location == 2:
-        align = u'bottom'
-    elif alertTab.location == 1:
-        align = u'middle'
-    else:
-        align = u'top'
+    align = VerticalType.to_string(alertTab.location)
     alert = style % (width, align, alertTab.font_face, alertTab.font_size,
         alertTab.font_color, alertTab.bg_color)
     return alert

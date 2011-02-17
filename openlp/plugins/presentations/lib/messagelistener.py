@@ -59,7 +59,7 @@ class Controller(object):
         self.controller = controller
         if self.doc is not None:
             self.shutdown()
-        self.doc = self.controller.add_doc(file)
+        self.doc = self.controller.add_document(file)
         if not self.doc.load_presentation():
             # Display error message to user
             # Inform slidecontroller that the action failed?
@@ -116,7 +116,7 @@ class Controller(object):
 
     def last(self):
         """
-        Based on the handler passed at startup triggers the first slide
+        Based on the handler passed at startup triggers the last slide
         """
         log.debug(u'Live = %s, last' % self.is_live)
         if not self.is_live:

@@ -28,17 +28,12 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, BaseListWithDnD, \
-    Receiver, ItemCapabilities, translate, check_item_selected
+from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
+    translate, check_item_selected
 from openlp.plugins.custom.lib import CustomXMLParser
 from openlp.plugins.custom.lib.db import CustomSlide
 
 log = logging.getLogger(__name__)
-
-class CustomListView(BaseListWithDnD):
-    def __init__(self, parent=None):
-        self.PluginName = u'Custom'
-        BaseListWithDnD.__init__(self, parent)
 
 class CustomMediaItem(MediaManagerItem):
     """
@@ -48,9 +43,6 @@ class CustomMediaItem(MediaManagerItem):
 
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'custom/custom'
-        # this next is a class, not an instance of a class - it will
-        # be instanced by the base MediaManagerItem
-        self.ListViewWithDnD_class = CustomListView
         MediaManagerItem.__init__(self, parent, self, icon)
         self.singleServiceItem = False
         # Holds information about whether the edit is remotly triggered and
@@ -68,11 +60,8 @@ class CustomMediaItem(MediaManagerItem):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'custom_preview'), self.onPreviewClick)
 
-    def requiredIcons(self):
-        MediaManagerItem.requiredIcons(self)
-
     def initialise(self):
-        self.loadCustomListView(self.manager.get_all_objects(
+        self.loadList(self.manager.get_all_objects(
             CustomSlide, order_by_ref=CustomSlide.title))
         # Called to redisplay the custom list screen edith from a search
         # or from the exit of the Custom edit dialog. If remote editing is
@@ -83,7 +72,7 @@ class CustomMediaItem(MediaManagerItem):
             self.onPreviewClick()
         self.onRemoteEditClear()
 
-    def loadCustomListView(self, list):
+    def loadList(self, list):
         self.listView.clear()
         for customSlide in list:
             custom_name = QtGui.QListWidgetItem(customSlide.title)
@@ -149,16 +138,7 @@ class CustomMediaItem(MediaManagerItem):
         raw_footer = []
         slide = None
         theme = None
-        if item is None:
-            if self.remoteTriggered is None:
-                item = self.listView.currentItem()
-                if item is None:
-                    return False
-                item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
-            else:
-                item_id = self.remoteCustom
-        else:
-            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+        item_id = self._getIdOfItemToGenerate(item, self.remoteCustom)
         service_item.add_capability(ItemCapabilities.AllowsEdit)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)

@@ -50,6 +50,7 @@ class SongImport(QtCore.QObject):
         ``manager``
             An instance of a SongManager, through which all database access is
             performed.
+
         """
         self.manager = manager
         self.stop_import_flag = False
@@ -199,7 +200,7 @@ class SongImport(QtCore.QObject):
 
     def add_verse(self, versetext, versetag=u'V', lang=None):
         """
-        Add a verse. This is the whole verse, lines split by \n. It will also
+        Add a verse. This is the whole verse, lines split by \\n. It will also
         attempt to detect duplicates. In this case it will just add to the verse
         order.
 
@@ -212,6 +213,7 @@ class SongImport(QtCore.QObject):
 
         ``lang``
             The language code (ISO-639) of the verse, for example *en* or *de*.
+
         """
         for (oldversetag, oldverse, oldlang) in self.verses:
             if oldverse.strip() == versetext.strip():
@@ -227,7 +229,7 @@ class SongImport(QtCore.QObject):
             self.versecounts[versetag[0]] = int(versetag[1:])
         self.verses.append([versetag, versetext.rstrip(), lang])
         self.verse_order_list.append(versetag)
-        if versetag.startswith(u'V') and self.contains_verse(u'C1'):
+        if versetag.startswith(u'V') and u'C1' in self.verse_order_list:
             self.verse_order_list.append(u'C1')
 
     def repeat_verse(self):
@@ -235,9 +237,6 @@ class SongImport(QtCore.QObject):
         Repeat the previous verse in the verse order
         """
         self.verse_order_list.append(self.verse_order_list[-1])
-
-    def contains_verse(self, versetag):
-        return versetag in self.verse_order_list
 
     def check_complete(self):
         """

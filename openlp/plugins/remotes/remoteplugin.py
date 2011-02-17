@@ -38,7 +38,8 @@ class RemotesPlugin(Plugin):
         """
         remotes constructor
         """
-        Plugin.__init__(self, u'Remotes', u'1.9.4', plugin_helpers)
+        Plugin.__init__(self, u'Remotes', u'1.9.4', plugin_helpers,
+            settingsTabClass=RemoteTab)
         self.icon = build_icon(u':/plugins/plugin_remote.png')
         self.weight = -1
         self.server = None
@@ -60,13 +61,6 @@ class RemotesPlugin(Plugin):
         Plugin.finalise(self)
         if self.server:
             self.server.close()
-
-    def getSettingsTab(self):
-        """
-        Create the settings Tab
-        """
-        visible_name = self.getString(StringContent.VisibleName)
-        return RemoteTab(self.name, visible_name[u'title'])
 
     def about(self):
         """

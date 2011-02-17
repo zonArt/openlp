@@ -69,7 +69,8 @@ class ImpressController(PresentationController):
         Initialise the class
         """
         log.debug(u'Initialising')
-        PresentationController.__init__(self, plugin, u'Impress')
+        PresentationController.__init__(self, plugin, u'Impress',
+            ImpressDocument)
         self.supports = [u'odp']
         self.alsosupports = [u'ppt', u'pps', u'pptx', u'ppsx']
         self.process = None
@@ -144,7 +145,12 @@ class ImpressController(PresentationController):
         log.debug(u'get COM Desktop OpenOffice')
         if not self.manager:
             return None
-        return self.manager.createInstance(u'com.sun.star.frame.Desktop')
+        desktop = None
+        try:
+            desktop = self.manager.createInstance(u'com.sun.star.frame.Desktop')
+        except AttributeError:
+            log.exception(u'Failure to find desktop - Impress may have closed')
+        return desktop if desktop else None
 
     def get_com_servicemanager(self):
         """
@@ -165,17 +171,19 @@ class ImpressController(PresentationController):
         log.debug(u'Kill OpenOffice')
         while self.docs:
             self.docs[0].close_presentation()
-        if os.name != u'nt':
-            desktop = self.get_uno_desktop()
-        else:
-            desktop = self.get_com_desktop()
-        #Sometimes we get a failure and desktop is None
+        desktop = None
+        try:
+            if os.name != u'nt':
+                desktop = self.get_uno_desktop()
+            else:
+                desktop = self.get_com_desktop()
+        except:
+            log.exception(u'Failed to find an OpenOffice desktop to terminate')
         if not desktop:
-            log.exception(u'Failed to terminate OpenOffice')
             return
         docs = desktop.getComponents()
         if docs.hasElements():
-            log.debug(u'OpenOffice not terminated')
+            log.debug(u'OpenOffice not terminated as docs are still open')
         else:
             try:
                 desktop.terminate()
@@ -183,14 +191,6 @@ class ImpressController(PresentationController):
             except:
                 log.exception(u'Failed to terminate OpenOffice')
 
-    def add_doc(self, name):
-        """
-        Called when a new Impress document is opened
-        """
-        log.debug(u'Add Doc OpenOffice')
-        doc = ImpressDocument(self, name)
-        self.docs.append(doc)
-        return doc
 
 class ImpressDocument(PresentationDocument):
     """
@@ -431,35 +431,36 @@ class ImpressDocument(PresentationDocument):
 
     def get_slide_text(self, slide_no):
         """
-        Returns the text on the slide
+        Returns the text on the slide.
 
         ``slide_no``
-        The slide the text is required for, starting at 1
+            The slide the text is required for, starting at 1
         """
-        doc = self.document
-        pages = doc.getDrawPages()
-        text = ''
-        page = pages.getByIndex(slide_no - 1)
-        for idx in range(page.getCount()):
-            shape = page.getByIndex(idx)
-            if shape.supportsService("com.sun.star.drawing.Text"):
-                text += shape.getString() + '\n'
-        return text
+        return self.__get_text_from_page(slide_no)
 
     def get_slide_notes(self, slide_no):
         """
-        Returns the text on the slide
+        Returns the text in the slide notes.
 
         ``slide_no``
-        The slide the notes are required for, starting at 1
+            The slide the notes are required for, starting at 1
         """
-        doc = self.document
-        pages = doc.getDrawPages()
+        return self.__get_text_from_page(slide_no, True)
+
+    def __get_text_from_page(self, slide_no, notes=False):
+        """
+        Return any text extracted from the presentation page.
+
+        ``notes``
+            A boolean. If set the method searches the notes of the slide.
+        """
         text = ''
+        pages = self.document.getDrawPages()
         page = pages.getByIndex(slide_no - 1)
-        notes = page.getNotesPage()
-        for idx in range(notes.getCount()):
-            shape = notes.getByIndex(idx)
+        if notes:
+            page = page.getNotesPage()
+        for idx in range(page.getCount()):
+            shape = page.getByIndex(idx)
             if shape.supportsService("com.sun.star.drawing.Text"):
                 text += shape.getString() + '\n'
         return text
