@@ -529,6 +529,18 @@ class ThemeManager(QtGui.QWidget):
                         else:
                             outfile = open(fullpath, u'wb')
                             outfile.write(zip.read(file))
+        except (IOError, NameError):
+            critical_error_message_box(
+                translate('OpenLP.ThemeManager', 'Validation Error'),
+                translate('OpenLP.ThemeManager', 'File is not a valid theme.'))
+            log.exception(u'Importing theme from zip failed %s' % filename)
+        finally:
+            # Close the files, to be able to continue creating the theme.
+            if zip:
+                zip.close()
+            if outfile:
+                outfile.close()
+            # As all files are closed, we can create the Theme.
             if filexml:
                 theme = self._createThemeFromXml(filexml, self.path)
                 self.generateAndSaveImage(dir, themename, theme)
@@ -539,17 +551,6 @@ class ThemeManager(QtGui.QWidget):
                     'File is not a valid theme.'))
                 log.exception(u'Theme file does not contain XML data %s' %
                     filename)
-        except (IOError, NameError):
-            critical_error_message_box(
-                translate('OpenLP.ThemeManager', 'Validation Error'),
-                translate('OpenLP.ThemeManager',
-                'File is not a valid theme.'))
-            log.exception(u'Importing theme from zip failed %s' % filename)
-        finally:
-            if zip:
-                zip.close()
-            if outfile:
-                outfile.close()
 
     def checkIfThemeExists(self, themeName):
         """
