@@ -60,7 +60,7 @@ class PresentationMediaItem(MediaManagerItem):
         """
         The name of the plugin media displayed in UI
         """
-        self.OnNewPrompt = translate('PresentationPlugin.MediaItem',
+        self.onNewPrompt = translate('PresentationPlugin.MediaItem',
             'Select Presentation(s)')
         self.Automatic = translate('PresentationPlugin.MediaItem',
             'Automatic')
@@ -80,7 +80,7 @@ class PresentationMediaItem(MediaManagerItem):
                     if fileType.find(type) == -1:
                         fileType += u'*.%s ' % type
                         self.parent.serviceManager.supportedSuffixes(type)
-        self.OnNewFileMasks = unicode(translate('PresentationPlugin.MediaItem',
+        self.onNewFileMasks = unicode(translate('PresentationPlugin.MediaItem',
             'Presentations (%s)')) % fileType
 
     def requiredIcons(self):

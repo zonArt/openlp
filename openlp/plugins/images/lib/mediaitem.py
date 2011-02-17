@@ -50,10 +50,10 @@ class ImageMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'live_theme_changed'), self.liveThemeChanged)
 
     def retranslateUi(self):
-        self.OnNewPrompt = translate('ImagePlugin.MediaItem',
+        self.onNewPrompt = translate('ImagePlugin.MediaItem',
             'Select Image(s)')
         file_formats = get_images_filter()
-        self.OnNewFileMasks = u'%s;;%s (*.*) (*)' % (file_formats,
+        self.onNewFileMasks = u'%s;;%s (*.*) (*)' % (file_formats,
             UiStrings.AllFiles)
         self.replaceAction.setText(UiStrings.ReplaceBG)
         self.replaceAction.setToolTip(UiStrings.ReplaceLiveBG)

@@ -58,8 +58,8 @@ class MediaMediaItem(MediaManagerItem):
             self.videoStart)
 
     def retranslateUi(self):
-        self.OnNewPrompt = translate('MediaPlugin.MediaItem', 'Select Media')
-        self.OnNewFileMasks = unicode(translate('MediaPlugin.MediaItem',
+        self.onNewPrompt = translate('MediaPlugin.MediaItem', 'Select Media')
+        self.onNewFileMasks = unicode(translate('MediaPlugin.MediaItem',
             'Videos (%s);;Audio (%s);;%s (*)')) % (self.parent.video_list,
             self.parent.audio_list, UiStrings.AllFiles)
         self.replaceAction.setText(UiStrings.ReplaceBG)
@@ -124,7 +124,7 @@ class MediaMediaItem(MediaManagerItem):
                 return False
         filename = unicode(item.data(QtCore.Qt.UserRole).toString())
         if os.path.exists(filename):
-            self.MediaState = None
+            self.mediaState = None
             self.mediaObject.stop()
             self.mediaObject.clearQueue()
             self.mediaObject.setCurrentSource(Phonon.MediaSource(filename))
@@ -136,7 +136,7 @@ class MediaMediaItem(MediaManagerItem):
             service_item.theme = -1
             frame = u':/media/image_clapperboard.png'
             (path, name) = os.path.split(filename)
-            while not self.MediaState:
+            while not self.mediaState:
                 Receiver.send_message(u'openlp_process_events')
             service_item.media_length = self.mediaLength
             service_item.add_from_command(path, name, frame)
@@ -182,6 +182,6 @@ class MediaMediaItem(MediaManagerItem):
         Start the video at a predetermined point.
         """
         if newState == Phonon.PlayingState:
-            self.MediaState = newState
+            self.mediaState = newState
             self.mediaLength = self.mediaObject.totalTime()/1000
             self.mediaObject.stop()

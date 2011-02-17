@@ -199,7 +199,7 @@ class ThemesTab(SettingsTab):
         """
         Utility method to update the global theme preview image.
         """
-        image = self.parent.ThemeManagerContents.getPreviewImage(
+        image = self.parent.themeManagerContents.getPreviewImage(
             self.global_theme)
         preview = QtGui.QPixmap(unicode(image))
         if not preview.isNull():

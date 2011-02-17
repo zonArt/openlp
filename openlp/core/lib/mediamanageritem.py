@@ -66,10 +66,11 @@ class MediaManagerItem(QtGui.QWidget):
     When creating a descendant class from this class for your plugin,
     the following member variables should be set.
 
-     ``self.OnNewPrompt``
+     ``self.onNewPrompt``
+
         Defaults to *'Select Image(s)'*.
 
-     ``self.OnNewFileMasks``
+     ``self.onNewFileMasks``
         Defaults to *'Images (*.jpg *jpeg *.gif *.png *.bmp)'*. This
         assumes that the new action is to load a file. If not, you
         need to override the ``OnNew`` method.
@@ -317,9 +318,9 @@ class MediaManagerItem(QtGui.QWidget):
         Add a file to the list widget to make it available for showing
         """
         files = QtGui.QFileDialog.getOpenFileNames(
-            self, self.OnNewPrompt,
+            self, self.onNewPrompt,
             SettingsManager.get_last_dir(self.settingsSection),
-            self.OnNewFileMasks)
+            self.onNewFileMasks)
         log.info(u'New files(s) %s', unicode(files))
         if files:
             Receiver.send_message(u'cursor_busy')
