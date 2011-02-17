@@ -252,6 +252,7 @@ class SongExportForm(OpenLPWizard):
         self.availableListWidget.clear()
         self.selectedListWidget.clear()
         self.directoryLineEdit.clear()
+        self.searchLineEdit.clear()
         # Load the list of songs.
         Receiver.send_message(u'cursor_busy')
         songs = self.plugin.manager.get_all_objects(Song)
@@ -340,19 +341,21 @@ class SongExportForm(OpenLPWizard):
 
     def onUncheckButtonClicked(self):
         """
-        The *uncheckButton* has been clicked. Set all songs unchecked.
+        The *uncheckButton* has been clicked. Set all visible songs unchecked.
         """
         for row in range(self.availableListWidget.count()):
             item = self.availableListWidget.item(row)
-            item.setCheckState(QtCore.Qt.Unchecked)
+            if not item.isHidden():
+                item.setCheckState(QtCore.Qt.Unchecked)
 
     def onCheckButtonClicked(self):
         """
-        The *checkButton* has been clicked. Set all songs checked.
+        The *checkButton* has been clicked. Set all visible songs checked.
         """
         for row in range(self.availableListWidget.count()):
             item = self.availableListWidget.item(row)
-            item.setCheckState(QtCore.Qt.Checked)
+            if not item.isHidden():
+                item.setCheckState(QtCore.Qt.Checked)
 
     def onDirectoryButtonClicked(self):
         """
