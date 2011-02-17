@@ -85,8 +85,7 @@ class ImageManager(QtCore.QObject):
         for key in self._cache.keys():
             image = self._cache[key]
             image.dirty = True
-            image.image = resize_image(image.path,
-                self.width, self.height)
+            image.image = resize_image(image.path, self.width, self.height)
         self._cache_dirty = True
         # only one thread please
         if not self._thread_running:
@@ -128,8 +127,7 @@ class ImageManager(QtCore.QObject):
             image = Image()
             image.name = name
             image.path = path
-            image.image = resize_image(path,
-                self.width, self.height)
+            image.image = resize_image(path, self.width, self.height)
             self._cache[name] = image
         else:
             log.debug(u'Image in cache %s:%s' % (name, path))
