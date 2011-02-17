@@ -34,6 +34,39 @@ from openlp.core.lib import build_icon, Receiver, translate
 
 log = logging.getLogger(__name__)
 
+class UiStrings(object):
+    """
+    Provide standard strings for objects to use.
+    """
+    # These strings should need a good reason to be retranslated elsewhere.
+    # Should some/more/less of these have an &amp; attached?
+    Add = translate('OpenLP.Ui', '&Add')
+    Advanced = translate('OpenLP.Ui', 'Advanced')
+    AllFiles = translate('OpenLP.Ui', 'All Files')
+    Authors = translate('OpenLP.Ui', 'Authors')
+    CreateService = translate('OpenLP.Ui', 'Create a new service.')
+    Delete = translate('OpenLP.Ui', '&Delete')
+    Edit = translate('OpenLP.Ui', '&Edit')
+    Error = translate('OpenLP.Ui', 'Error')
+    Import = translate('OpenLP.Ui', 'Import')
+    LengthTime = unicode(translate('OpenLP.Ui', 'Length %s'))
+    Live = translate('OpenLP.Ui', 'Live')
+    Load = translate('OpenLP.Ui', 'Load')
+    New = translate('OpenLP.Ui', 'New')
+    NewService = translate('OpenLP.Ui', 'New Service')
+    OLPV2 = translate('OpenLP.Ui', 'OpenLP 2.0')
+    OpenService = translate('OpenLP.Ui', 'Open Service')
+    Preview = translate('OpenLP.Ui', 'Preview')
+    ReplaceBG = translate('OpenLP.Ui', 'Replace Background')
+    ReplaceLiveBG = translate('OpenLP.Ui', 'Replace Live Background')
+    ResetBG = translate('OpenLP.Ui', 'Reset Background')
+    ResetLiveBG = translate('OpenLP.Ui', 'Reset Live Background')
+    SaveService = translate('OpenLP.Ui', 'Save Service')
+    Service = translate('OpenLP.Ui', 'Service')
+    StartTimeCode = unicode(translate('OpenLP.Ui', 'Start %s'))
+    Theme = translate('OpenLP.Ui', 'Theme')
+    Themes = translate('OpenLP.Ui', 'Themes')
+
 def add_welcome_page(parent, image):
     """
     Generate an opening welcome page for a wizard using a provided image.
@@ -61,18 +94,25 @@ def add_welcome_page(parent, image):
     parent.welcomeLayout.addStretch()
     parent.addPage(parent.welcomePage)
 
-def create_save_cancel_button_box(parent):
+def create_accept_reject_button_box(parent, okay=False):
     """
-    Creates a standard dialog button box with save and cancel buttons.  The
-    button box is connected to the parent's ``accept()`` and ``reject()``
+    Creates a standard dialog button box with two buttons. The buttons default
+    to save and cancel but the ``okay`` parameter can be used to make the
+    buttons okay and cancel instead.
+    The button box is connected to the parent's ``accept()`` and ``reject()``
     methods to handle the default ``accepted()`` and ``rejected()`` signals.
 
     ``parent``
         The parent object.  This should be a ``QWidget`` descendant.
+
+    ``okay``
+        If true creates an okay/cancel combination instead of save/cancel.
     """
     button_box = QtGui.QDialogButtonBox(parent)
-    button_box.setStandardButtons(
-        QtGui.QDialogButtonBox.Save | QtGui.QDialogButtonBox.Cancel)
+    accept_button = QtGui.QDialogButtonBox.Save
+    if okay:
+        accept_button = QtGui.QDialogButtonBox.Ok
+    button_box.setStandardButtons(accept_button | QtGui.QDialogButtonBox.Cancel)
     button_box.setObjectName(u'%sButtonBox' % parent)
     QtCore.QObject.connect(button_box, QtCore.SIGNAL(u'accepted()'),
         parent.accept)
@@ -98,13 +138,12 @@ def critical_error_message_box(title=None, message=None, parent=None,
     ``question``
         Should this message box question the user.
     """
-    error = translate('OpenLP.Ui', 'Error')
     if question:
-        return QtGui.QMessageBox.critical(parent, error, message,
+        return QtGui.QMessageBox.critical(parent, UiStrings.Error, message,
             QtGui.QMessageBox.StandardButtons(
             QtGui.QMessageBox.Yes | QtGui.QMessageBox.No))
     data = {u'message': message}
-    data[u'title'] = title if title else error
+    data[u'title'] = title if title else UiStrings.Error
     return Receiver.send_message(u'openlp_error_message', data)
 
 def media_item_combo_box(parent, name):
@@ -134,7 +173,7 @@ def create_delete_push_button(parent, icon=None):
     delete_button.setObjectName(u'deleteButton')
     delete_icon = icon if icon else u':/general/general_delete.png'
     delete_button.setIcon(build_icon(delete_icon))
-    delete_button.setText(translate('OpenLP.Ui', '&Delete'))
+    delete_button.setText(UiStrings.Delete)
     delete_button.setToolTip(
         translate('OpenLP.Ui', 'Delete the selected item.'))
     QtCore.QObject.connect(delete_button,
@@ -219,3 +258,28 @@ def add_widget_completer(cache, widget):
     completer = QtGui.QCompleter(cache)
     completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
     widget.setCompleter(completer)
+
+def create_valign_combo(form, parent, layout):
+    """
+    Creates a standard label and combo box for asking users to select a
+    vertical alignment.
+
+    ``form``
+        The UI screen that the label and combo will appear on.
+
+    ``parent``
+        The parent object.  This should be a ``QWidget`` descendant.
+
+    ``layout``
+        A layout object to add the label and combo widgets to.
+    """
+    verticalLabel = QtGui.QLabel(parent)
+    verticalLabel.setObjectName(u'VerticalLabel')
+    verticalLabel.setText(translate('OpenLP.Ui', '&Vertical Align:'))
+    form.verticalComboBox = QtGui.QComboBox(parent)
+    form.verticalComboBox.setObjectName(u'VerticalComboBox')
+    form.verticalComboBox.addItem(translate('OpenLP.Ui', 'Top'))
+    form.verticalComboBox.addItem(translate('OpenLP.Ui', 'Middle'))
+    form.verticalComboBox.addItem(translate('OpenLP.Ui', 'Bottom'))
+    verticalLabel.setBuddy(form.verticalComboBox)
+    layout.addRow(verticalLabel, form.verticalComboBox)

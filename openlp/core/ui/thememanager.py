@@ -34,8 +34,9 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, ThemeXML, get_text_file_string, \
     build_icon, Receiver, SettingsManager, translate, check_item_selected, \
-    BackgroundType, BackgroundGradientType, check_directory_exists
-from openlp.core.lib.ui import critical_error_message_box
+    BackgroundType, BackgroundGradientType, check_directory_exists, \
+    VerticalType
+from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.theme import Theme
 from openlp.core.ui import FileRenameForm, ThemeForm
 from openlp.core.utils import AppLocation, delete_file, file_is_unicode, \
@@ -313,7 +314,6 @@ class ThemeManager(QtGui.QWidget):
             translate('OpenLP.ThemeManager',
             'You must select a theme to edit.')):
             item = self.themeListWidget.currentItem()
-            themeName = unicode(item.text())
             theme = self.getThemeData(
                 unicode(item.data(QtCore.Qt.UserRole).toString()))
             if theme.background_type == u'image':
@@ -405,8 +405,8 @@ class ThemeManager(QtGui.QWidget):
         files = QtGui.QFileDialog.getOpenFileNames(self,
             translate('OpenLP.ThemeManager', 'Select Theme Import File'),
             SettingsManager.get_last_dir(self.settingsSection),
-            translate('OpenLP.ThemeManager', 'Theme v1 (*.theme);;'
-            'Theme v2 (*.otz);;All Files (*.*)'))
+            unicode(translate('OpenLP.ThemeManager',
+            'OpenLP Themes (*.theme *.otz)')))
         log.info(u'New Themes %s', unicode(files))
         if files:
             for file in files:
@@ -529,6 +529,18 @@ class ThemeManager(QtGui.QWidget):
                         else:
                             outfile = open(fullpath, u'wb')
                             outfile.write(zip.read(file))
+        except (IOError, NameError):
+            critical_error_message_box(
+                translate('OpenLP.ThemeManager', 'Validation Error'),
+                translate('OpenLP.ThemeManager', 'File is not a valid theme.'))
+            log.exception(u'Importing theme from zip failed %s' % filename)
+        finally:
+            # Close the files, to be able to continue creating the theme.
+            if zip:
+                zip.close()
+            if outfile:
+                outfile.close()
+            # As all files are closed, we can create the Theme.
             if filexml:
                 theme = self._createThemeFromXml(filexml, self.path)
                 self.generateAndSaveImage(dir, themename, theme)
@@ -539,17 +551,6 @@ class ThemeManager(QtGui.QWidget):
                     'File is not a valid theme.'))
                 log.exception(u'Theme file does not contain XML data %s' %
                     filename)
-        except (IOError, NameError):
-            critical_error_message_box(
-                translate('OpenLP.ThemeManager', 'Validation Error'),
-                translate('OpenLP.ThemeManager',
-                'File is not a valid theme.'))
-            log.exception(u'Importing theme from zip failed %s' % filename)
-        finally:
-            if zip:
-                zip.close()
-            if outfile:
-                outfile.close()
 
     def checkIfThemeExists(self, themeName):
         """
@@ -762,11 +763,11 @@ class ThemeManager(QtGui.QWidget):
             newtheme.font_main_outline = True
             newtheme.font_main_outline_color = \
                 unicode(theme.OutlineColor.name())
-        vAlignCorrection = 0
+        vAlignCorrection = VerticalType.Top
         if theme.VerticalAlign == 2:
-            vAlignCorrection = 1
+            vAlignCorrection = VerticalType.Middle
         elif theme.VerticalAlign == 1:
-            vAlignCorrection = 2
+            vAlignCorrection = VerticalType.Bottom
         newtheme.display_horizontal_align = theme.HorizontalAlign
         newtheme.display_vertical_align = vAlignCorrection
         return newtheme.extract_xml()

@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, BackgroundType, BackgroundGradientType, \
     Receiver
-from openlp.core.lib.ui import critical_error_message_box
+from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.utils import get_images_filter
 from themewizard import Ui_ThemeWizard
 
@@ -483,8 +483,8 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         Background Image button pushed.
         """
         images_filter = get_images_filter()
-        images_filter = '%s;;%s (*.*) (*)' % (images_filter,
-            translate('OpenLP.ThemeForm', 'All Files'))
+        images_filter = u'%s;;%s (*.*) (*)' % (
+            images_filter, UiStrings.AllFiles)
         filename = QtGui.QFileDialog.getOpenFileName(self,
             translate('OpenLP.ThemeForm', 'Select Image'), u'',
             images_filter)

@@ -29,6 +29,7 @@ The :mod:`advancedtab` provides an advanced settings facility.
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, translate
+from openlp.core.lib.ui import UiStrings
 
 class AdvancedTab(SettingsTab):
     """
@@ -80,16 +81,6 @@ class AdvancedTab(SettingsTab):
         self.hideMouseCheckBox.setObjectName(u'hideMouseCheckBox')
         self.hideMouseLayout.addWidget(self.hideMouseCheckBox)
         self.leftLayout.addWidget(self.hideMouseGroupBox)
-        self.serviceOrderGroupBox = QtGui.QGroupBox(self.leftColumn)
-        self.serviceOrderGroupBox.setObjectName(u'serviceOrderGroupBox')
-        self.serviceOrderLayout = QtGui.QVBoxLayout(self.serviceOrderGroupBox)
-        self.serviceOrderLayout.setObjectName(u'serviceOrderLayout')
-        self.detailedServicePrintCheckBox = QtGui.QCheckBox(
-            self.serviceOrderGroupBox)
-        self.detailedServicePrintCheckBox.setObjectName(
-            u'detailedServicePrintCheckBox')
-        self.serviceOrderLayout.addWidget(self.detailedServicePrintCheckBox)
-        self.leftLayout.addWidget(self.serviceOrderGroupBox)
 #        self.sharedDirGroupBox = QtGui.QGroupBox(self.leftColumn)
 #        self.sharedDirGroupBox.setObjectName(u'sharedDirGroupBox')
 #        self.sharedDirLayout = QtGui.QFormLayout(self.sharedDirGroupBox)
@@ -122,7 +113,7 @@ class AdvancedTab(SettingsTab):
         """
         Setup the interface translation strings.
         """
-        self.tabTitleVisible = translate('OpenLP.AdvancedTab', 'Advanced')
+        self.tabTitleVisible = UiStrings.Advanced
         self.uiGroupBox.setTitle(translate('OpenLP.AdvancedTab', 'UI Settings'))
         self.recentLabel.setText(
             translate('OpenLP.AdvancedTab',
@@ -139,11 +130,6 @@ class AdvancedTab(SettingsTab):
             'Mouse Cursor'))
         self.hideMouseCheckBox.setText(translate('OpenLP.AdvancedTab',
             'Hide the mouse cursor when moved over the display window'))
-        self.serviceOrderGroupBox.setTitle(translate('OpenLP.AdvancedTab',
-            'Service Order Print'))
-        self.detailedServicePrintCheckBox.setText(
-            translate('OpenLP.AdvancedTab',
-            'Print slide texts and service item notes as well'))
 #        self.sharedDirGroupBox.setTitle(
 #            translate('AdvancedTab', 'Central Data Store'))
 #        self.sharedCheckBox.setText(
@@ -179,8 +165,6 @@ class AdvancedTab(SettingsTab):
             QtCore.QVariant(True)).toBool())
         self.hideMouseCheckBox.setChecked(
             settings.value(u'hide mouse', QtCore.QVariant(False)).toBool())
-        self.detailedServicePrintCheckBox.setChecked(settings.value(
-            u'detailed service print', QtCore.QVariant(False)).toBool())
         settings.endGroup()
 
     def save(self):
@@ -201,8 +185,6 @@ class AdvancedTab(SettingsTab):
             QtCore.QVariant(self.enableAutoCloseCheckBox.isChecked()))
         settings.setValue(u'hide mouse',
             QtCore.QVariant(self.hideMouseCheckBox.isChecked()))
-        settings.setValue(u'detailed service print',
-            QtCore.QVariant(self.detailedServicePrintCheckBox.isChecked()))
         settings.endGroup()
 
 #    def onSharedCheckBoxChanged(self, checked):

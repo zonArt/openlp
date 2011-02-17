@@ -24,7 +24,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 from filerenamedialog import Ui_FileRenameDialog
 
@@ -37,10 +37,6 @@ class FileRenameForm(QtGui.QDialog, Ui_FileRenameDialog):
     def __init__(self, parent):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'),
-            self.accept)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
-            self.reject)
 
     def exec_(self, copy=False):
         """
@@ -51,5 +47,5 @@ class FileRenameForm(QtGui.QDialog, Ui_FileRenameDialog):
                 'File Copy'))
         else:
             self.setWindowTitle(translate('OpenLP.FileRenameForm',
-            'File Rename'))
+                'File Rename'))
         return QtGui.QDialog.exec_(self)

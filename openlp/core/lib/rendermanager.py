@@ -68,7 +68,6 @@ class RenderManager(object):
         self.theme_level = u''
         self.override_background = None
         self.theme_data = None
-        self.alertTab = None
         self.force_page = False
 
     def update_display(self):
@@ -204,12 +203,12 @@ class RenderManager(object):
         # set the default image size for previews
         self.calculate_default(self.screens.preview[u'size'])
         verse = u'The Lord said to {r}Noah{/r}: \n' \
-        'There\'s gonna be a {su}floody{/su}, {sb}floody{/sb}\n' \
-        'The Lord said to {g}Noah{/g}:\n' \
-        'There\'s gonna be a {st}floody{/st}, {it}floody{/it}\n' \
-        'Get those children out of the muddy, muddy \n' \
-        '{r}C{/r}{b}h{/b}{bl}i{/bl}{y}l{/y}{g}d{/g}{pk}' \
-        'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
+            'There\'s gonna be a {su}floody{/su}, {sb}floody{/sb}\n' \
+            'The Lord said to {g}Noah{/g}:\n' \
+            'There\'s gonna be a {st}floody{/st}, {it}floody{/it}\n' \
+            'Get those children out of the muddy, muddy \n' \
+            '{r}C{/r}{b}h{/b}{bl}i{/bl}{y}l{/y}{g}d{/g}{pk}' \
+            'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
         # make big page for theme edit dialog to get line count
         if self.force_page:
             verse = verse + verse + verse

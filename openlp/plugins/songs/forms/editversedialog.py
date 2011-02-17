@@ -27,7 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate, SpellTextEdit
-from openlp.core.lib.ui import create_save_cancel_button_box
+from openlp.core.lib.ui import create_accept_reject_button_box
 from openlp.plugins.songs.lib import VerseType
 
 class Ui_EditVerseDialog(object):
@@ -61,7 +61,7 @@ class Ui_EditVerseDialog(object):
         self.verseTypeLayout.addStretch()
         self.dialogLayout.addLayout(self.verseTypeLayout)
         self.dialogLayout.addWidget(
-            create_save_cancel_button_box(editVerseDialog))
+            create_accept_reject_button_box(editVerseDialog))
         self.retranslateUi(editVerseDialog)
         QtCore.QMetaObject.connectSlotsByName(editVerseDialog)
 

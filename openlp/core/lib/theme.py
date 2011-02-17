@@ -164,13 +164,27 @@ class BackgroundGradientType(object):
         elif type_string == u'leftBottom':
             return BackgroundGradientType.LeftBottom
 
+
 class HorizontalType(object):
     """
     Type enumeration for horizontal alignment.
     """
     Left = 0
-    Center = 1
-    Right = 2
+    Center = 2
+    Right = 1
+
+    @staticmethod
+    def to_string(horizontal_type):
+        """
+        Return a string representation of a horizontal type.
+        """
+        if horizontal_type == HorizontalType.Right:
+            return u'right'
+        elif horizontal_type == HorizontalType.Center:
+            return u'center'
+        else:
+            return u'left'
+
 
 class VerticalType(object):
     """
@@ -179,6 +193,19 @@ class VerticalType(object):
     Top = 0
     Middle = 1
     Bottom = 2
+
+    @staticmethod
+    def to_string(vertical_type):
+        """
+        Return a string representation of a vertical type.
+        """
+        if vertical_type == VerticalType.Bottom:
+            return u'bottom'
+        elif vertical_type == VerticalType.Middle:
+            return u'middle'
+        else:
+            return u'top'
+
 
 BOOLEAN_LIST = [u'bold', u'italics', u'override', u'outline', u'shadow',
     u'slide_transition']
@@ -583,8 +610,7 @@ class ThemeXML(object):
                 self.background_end_color,
                 self.background_direction)
         else:
-            filename = \
-                os.path.split(self.background_filename)[1]
+            filename = os.path.split(self.background_filename)[1]
             self.add_background_image(filename)
         self.add_font(self.font_main_name,
             self.font_main_color,
