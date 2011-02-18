@@ -678,8 +678,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             A button (QPushButton).
         """
         log.debug(u'onPreview')
-        if unicode(button.objectName()) == u'previewButton' and \
-            self.saveSong(True):
+        if unicode(button.objectName()) == u'previewButton':
+            self.saveSong(True)
             Receiver.send_message(u'songs_preview')
 
     def clearCaches(self):
