@@ -28,7 +28,6 @@ import os
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver
 from openlp.core.utils import get_uno_command, get_uno_instance
 from songimport import SongImport
 
