@@ -405,8 +405,8 @@ class ThemeManager(QtGui.QWidget):
         files = QtGui.QFileDialog.getOpenFileNames(self,
             translate('OpenLP.ThemeManager', 'Select Theme Import File'),
             SettingsManager.get_last_dir(self.settingsSection),
-            unicode(translate('OpenLP.ThemeManager', 'Theme v1 (*.theme);;'
-            'Theme v2 (*.otz);;%s (*.*)')) % UiStrings.AllFiles)
+            unicode(translate('OpenLP.ThemeManager',
+            'OpenLP Themes (*.theme *.otz)')))
         log.info(u'New Themes %s', unicode(files))
         if files:
             for file in files:
@@ -529,6 +529,18 @@ class ThemeManager(QtGui.QWidget):
                         else:
                             outfile = open(fullpath, u'wb')
                             outfile.write(zip.read(file))
+        except (IOError, NameError):
+            critical_error_message_box(
+                translate('OpenLP.ThemeManager', 'Validation Error'),
+                translate('OpenLP.ThemeManager', 'File is not a valid theme.'))
+            log.exception(u'Importing theme from zip failed %s' % filename)
+        finally:
+            # Close the files, to be able to continue creating the theme.
+            if zip:
+                zip.close()
+            if outfile:
+                outfile.close()
+            # As all files are closed, we can create the Theme.
             if filexml:
                 theme = self._createThemeFromXml(filexml, self.path)
                 self.generateAndSaveImage(dir, themename, theme)
@@ -539,17 +551,6 @@ class ThemeManager(QtGui.QWidget):
                     'File is not a valid theme.'))
                 log.exception(u'Theme file does not contain XML data %s' %
                     filename)
-        except (IOError, NameError):
-            critical_error_message_box(
-                translate('OpenLP.ThemeManager', 'Validation Error'),
-                translate('OpenLP.ThemeManager',
-                'File is not a valid theme.'))
-            log.exception(u'Importing theme from zip failed %s' % filename)
-        finally:
-            if zip:
-                zip.close()
-            if outfile:
-                outfile.close()
 
     def checkIfThemeExists(self, themeName):
         """

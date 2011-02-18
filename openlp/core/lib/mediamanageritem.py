@@ -240,7 +240,7 @@ class MediaManagerItem(QtGui.QWidget):
         Creates the main widget for listing items the media item is tracking
         """
         # Add the List widget
-        self.listView = ListWidgetWithDnD(self, self.title)
+        self.listView = ListWidgetWithDnD(self, self.plugin.name)
         self.listView.uniformItemSizes = True
         self.listView.setSpacing(1)
         self.listView.setSelectionMode(
