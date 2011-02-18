@@ -24,27 +24,29 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
-from openlp.core.lib import translate, build_icon
-from openlp.core.lib.ui import create_accept_reject_button_box
+from starttimedialog import Ui_StartTimeDialog
 
-class Ui_SettingsDialog(object):
-    def setupUi(self, settingsDialog):
-        settingsDialog.setObjectName(u'settingsDialog')
-        settingsDialog.resize(700, 500)
-        settingsDialog.setWindowIcon(
-            build_icon(u':/system/system_settings.png'))
-        self.settingsLayout = QtGui.QVBoxLayout(settingsDialog)
-        self.settingsLayout.setObjectName(u'settingsLayout')
-        self.settingsTabWidget = QtGui.QTabWidget(settingsDialog)
-        self.settingsTabWidget.setObjectName(u'settingsTabWidget')
-        self.settingsLayout.addWidget(self.settingsTabWidget)
-        self.buttonBox = create_accept_reject_button_box(settingsDialog, True)
-        self.settingsLayout.addWidget(self.buttonBox)
-        self.retranslateUi(settingsDialog)
-        QtCore.QMetaObject.connectSlotsByName(settingsDialog)
+class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog):
+    """
+    The exception dialog
+    """
+    def __init__(self, parent):
+        QtGui.QDialog.__init__(self, parent)
+        self.setupUi(self)
 
-    def retranslateUi(self, settingsDialog):
-        settingsDialog.setWindowTitle(translate('OpenLP.SettingsForm',
-            'Configure OpenLP'))
+    def exec_(self):
+        """
+        Run the Dialog with correct heading.
+        """
+        seconds = self.item[u'service_item'].start_time
+        hours = seconds / 3600
+        seconds -= 3600 * hours
+        minutes = seconds / 60
+        seconds -= 60 * minutes
+        self.hourSpinBox.setValue(hours)
+        self.minuteSpinBox.setValue(minutes)
+        self.secondSpinBox.setValue(seconds)
+        return QtGui.QDialog.exec_(self)
+

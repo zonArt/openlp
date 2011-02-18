@@ -140,6 +140,12 @@ class SongImportForm(OpenLPWizard):
         QtCore.QObject.connect(self.songBeamerRemoveButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onSongBeamerRemoveButtonClicked)
+        QtCore.QObject.connect(self.songShowPlusAddButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onSongShowPlusAddButtonClicked)
+        QtCore.QObject.connect(self.songShowPlusRemoveButton,
+            QtCore.SIGNAL(u'clicked()'),
+            self.onSongShowPlusRemoveButtonClicked)
 
     def addCustomPages(self):
         """
@@ -188,6 +194,8 @@ class SongImportForm(OpenLPWizard):
         self.addFileSelectItem(u'ew', single_select=True)
         # Words of Worship
         self.addFileSelectItem(u'songBeamer')
+        # Song Show Plus
+        self.addFileSelectItem(u'songShowPlus')
 #        Commented out for future use.
 #        self.addFileSelectItem(u'csv', u'CSV', single_select=True)
         self.sourceLayout.addLayout(self.formatStack)
@@ -237,6 +245,8 @@ class SongImportForm(OpenLPWizard):
             translate('SongsPlugin.ImportWizardForm', 'EasyWorship'))
         self.formatComboBox.setItemText(10,
             translate('SongsPlugin.ImportWizardForm', 'SongBeamer'))
+        self.formatComboBox.setItemText(11,
+            translate('SongsPlugin.ImportWizardForm', 'SongShow Plus'))
 #        self.formatComboBox.setItemText(11,
 #            translate('SongsPlugin.ImportWizardForm', 'CSV'))
         self.openLP2FilenameLabel.setText(
@@ -300,6 +310,10 @@ class SongImportForm(OpenLPWizard):
         self.songBeamerAddButton.setText(
             translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
         self.songBeamerRemoveButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
+        self.songShowPlusAddButton.setText(
+            translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
+        self.songShowPlusRemoveButton.setText(
             translate('SongsPlugin.ImportWizardForm', 'Remove File(s)'))
 #        self.csvFilenameLabel.setText(
 #            translate('SongsPlugin.ImportWizardForm', 'Filename:'))
@@ -438,6 +452,16 @@ class SongImportForm(OpenLPWizard):
                         'file to import from.'))
                     self.songBeamerAddButton.setFocus()
                     return False
+            elif source_format == SongFormat.SongShowPlus:
+                if self.songShowPlusFileListWidget.count() == 0:
+                    critical_error_message_box(
+                        translate('SongsPlugin.ImportWizardForm',
+                        'No SongShow Plus Files Selected'),
+                        translate('SongsPlugin.ImportWizardForm',
+                        'You need to add at least one SongShow Plus '
+                        'file to import from.'))
+                    self.wordsOfWorshipAddButton.setFocus()
+                    return False
             return True
         elif self.currentPage() == self.progressPage:
             return True
@@ -456,7 +480,7 @@ class SongImportForm(OpenLPWizard):
             The file extension filters. It should contain the file descriptions
             as well as the file extensions. For example::
 
-                u'SongBeamer files (*.sng)'
+                u'SongBeamer Files (*.sng)'
         """
         if filters:
             filters += u';;'
@@ -585,7 +609,7 @@ class SongImportForm(OpenLPWizard):
             'Select Songs of Fellowship Files'),
             self.songsOfFellowshipFileListWidget, u'%s (*.rtf)'
             % translate('SongsPlugin.ImportWizardForm',
-            'Songs Of Felloship Song Files')
+            'Songs Of Fellowship Song Files')
         )
 
     def onSongsOfFellowshipRemoveButtonClicked(self):
@@ -635,7 +659,7 @@ class SongImportForm(OpenLPWizard):
             translate('SongsPlugin.ImportWizardForm',
             'Select SongBeamer Files'),
             self.songBeamerFileListWidget, u'%s (*.sng)' %
-            translate('SongsPlugin.ImportWizardForm', 'SongBeamer files')
+            translate('SongsPlugin.ImportWizardForm', 'SongBeamer Files')
         )
 
     def onSongBeamerRemoveButtonClicked(self):
@@ -643,6 +667,24 @@ class SongImportForm(OpenLPWizard):
         Remove selected SongBeamer files from the import list
         """
         self.removeSelectedItems(self.songBeamerFileListWidget)
+        
+    def onSongShowPlusAddButtonClicked(self):
+        """
+        Get SongShow Plus song database files
+        """
+        self.getFiles(
+            translate('SongsPlugin.ImportWizardForm',
+            'Select SongShow Plus Files'),
+            self.songShowPlusFileListWidget, u'%s (*.sbsong)'
+            % translate('SongsPlugin.ImportWizardForm',
+            'SongShow Plus Song Files')
+        )
+
+    def onSongShowPlusRemoveButtonClicked(self):
+        """
+        Remove selected SongShow Plus files from the import list
+        """
+        self.removeSelectedItems(self.songShowPlusFileListWidget)
 
     def setDefaults(self):
         """
@@ -663,6 +705,7 @@ class SongImportForm(OpenLPWizard):
         self.easiSlidesFilenameEdit.setText(u'')
         self.ewFilenameEdit.setText(u'')
         self.songBeamerFileListWidget.clear()
+        self.songShowPlusFileListWidget.clear()
         #self.csvFilenameEdit.setText(u'')
 
     def preWizard(self):
@@ -738,6 +781,12 @@ class SongImportForm(OpenLPWizard):
             # Import SongBeamer songs
             importer = self.plugin.importSongs(SongFormat.SongBeamer,
                 filenames=self.getListOfFiles(self.songBeamerFileListWidget)
+            )
+        elif source_format == SongFormat.SongShowPlus:
+            # Import ShongShow Plus songs
+            importer = self.plugin.importSongs(SongFormat.SongShowPlus,
+                filenames=self.getListOfFiles(
+                    self.songShowPlusFileListWidget)
             )
         if importer.do_import():
             self.progressLabel.setText(
