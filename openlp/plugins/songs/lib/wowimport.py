@@ -99,12 +99,7 @@ class WowImport(SongImport):
         ``master_manager``
             The song manager for the running OpenLP installation.
         """
-        SongImport.__init__(self, master_manager)
-        if kwargs.has_key(u'filename'):
-            self.import_source = kwargs[u'filename']
-        if kwargs.has_key(u'filenames'):
-            self.import_source = kwargs[u'filenames']
-        log.debug(self.import_source)
+        SongImport.__init__(self, master_manager, **kwargs)
 
     def do_import(self):
         """

@@ -51,22 +51,17 @@ class CCLIFileImport(SongImport):
         ``filenames``
             The files to be imported.
         """
-        SongImport.__init__(self, manager)
-        if u'filenames' in kwargs:
-            self.filenames = kwargs[u'filenames']
-            log.debug(self.filenames)
-        else:
-            raise KeyError(u'Keyword argument "filenames" not supplied.')
+        SongImport.__init__(self, manager, **kwargs)
 
     def do_import(self):
         """
         Import either a .usr or a .txt SongSelect file
         """
         log.debug(u'Starting CCLI File Import')
-        song_total = len(self.filenames)
+        song_total = len(self.import_source)
         self.import_wizard.progressBar.setMaximum(song_total)
         song_count = 1
-        for filename in self.filenames:
+        for filename in self.import_source:
             self.import_wizard.incrementProgressBar(unicode(translate(
                 'SongsPlugin.CCLIFileImport', 'Importing song %d of %d')) %
                 (song_count, song_total))

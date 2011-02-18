@@ -56,20 +56,15 @@ class OooImport(SongImport):
         Initialise the class. Requires a songmanager class which is passed
         to SongImport for writing song to disk
         """
-        SongImport.__init__(self, master_manager)
-        self.song = None
-        self.master_manager = master_manager
+        SongImport.__init__(self, master_manager, **kwargs)
         self.document = None
         self.process_started = False
-        self.filenames = kwargs[u'filenames']
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
 
     def do_import(self):
         self.stop_import_flag = False
         self.import_wizard.progressBar.setMaximum(0)
         self.start_ooo()
-        for filename in self.filenames:
+        for filename in self.import_source:
             if self.stop_import_flag:
                 self.import_wizard.incrementProgressBar(u'Import cancelled', 0)
                 return

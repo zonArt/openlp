@@ -105,21 +105,19 @@ class OpenSongImport(SongImport):
         """
         Initialise the class.
         """
-        SongImport.__init__(self, manager)
-        self.filenames = kwargs[u'filenames']
-        self.song = None
+        SongImport.__init__(self, manager, **kwargs)
         self.commit = True
 
     def do_import(self):
         """
-        Import either each of the files in self.filenames - each element of
+        Import either each of the files in self.import_source - each element of
         which can be either a single opensong file, or a zipfile containing
         multiple opensong files. If `self.commit` is set False, the
         import will not be committed to the database (useful for test scripts).
         """
         success = True
         numfiles = 0
-        for filename in self.filenames:
+        for filename in self.import_source:
             ext = os.path.splitext(filename)[1]
             if ext.lower() == u'.zip':
                 z = ZipFile(filename, u'r')
@@ -128,7 +126,7 @@ class OpenSongImport(SongImport):
                 numfiles += 1
         log.debug(u'Total number of files: %d', numfiles)
         self.import_wizard.progressBar.setMaximum(numfiles)
-        for filename in self.filenames:
+        for filename in self.import_source:
             if self.stop_import_flag:
                 success = False
                 break

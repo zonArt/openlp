@@ -55,8 +55,7 @@ class OpenLP1SongImport(SongImport):
         ``filename``
             The database providing the data to import.
         """
-        SongImport.__init__(self, manager)
-        self.import_source = kwargs[u'filename']
+        SongImport.__init__(self, manager, **kwargs)
 
     def do_import(self):
         """

@@ -46,32 +46,30 @@ class EasiSlidesImport(SongImport):
         """
         Initialise the class.
         """
-        SongImport.__init__(self, manager)
-        self.filename = kwargs[u'filename']
-        self.song = None
+        SongImport.__init__(self, manager, **kwargs)
         self.commit = True
 
     def do_import(self):
         """
-        Import either each of the files in self.filenames - each element of
+        Import either each of the files in self.import_sources - each element of
         which can be either a single opensong file, or a zipfile containing
         multiple opensong files. If `self.commit` is set False, the
         import will not be committed to the database (useful for test scripts).
         """
         self.import_wizard.progressBar.setMaximum(1)
-        log.info(u'Importing EasiSlides XML file %s', self.filename)
+        log.info(u'Importing EasiSlides XML file %s', self.import_source)
         parser = etree.XMLParser(remove_blank_text=True)
-        file = etree.parse(self.filename, parser)
+        file = etree.parse(self.import_source, parser)
         xml = unicode(etree.tostring(file))
         song_xml = objectify.fromstring(xml)
         self.import_wizard.incrementProgressBar(
-            WizardStrings.ImportingType % os.path.split(self.filename)[-1])
+            WizardStrings.ImportingType % os.path.split(self.import_source)[-1])
         self.import_wizard.progressBar.setMaximum(len(song_xml.Item))
         for song in song_xml.Item:
             self.import_wizard.incrementProgressBar(
                 unicode(translate('SongsPlugin.ImportWizardForm',
                     u'Importing %s, song %s...')) %
-                    (os.path.split(self.filename)[-1], song.Title1))
+                    (os.path.split(self.import_source)[-1], song.Title1))
             success = self._parse_song(song)
             if not success or self.stop_import_flag:
                 return False

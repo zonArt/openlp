@@ -44,7 +44,7 @@ class SongImport(QtCore.QObject):
     whether the authors etc already exist and add them or refer to them
     as necessary
     """
-    def __init__(self, manager):
+    def __init__(self, manager, **kwargs):
         """
         Initialise and create defaults for properties
 
@@ -54,6 +54,14 @@ class SongImport(QtCore.QObject):
 
         """
         self.manager = manager
+        if kwargs.has_key(u'filename'):
+            self.import_source = kwargs[u'filename']
+        elif kwargs.has_key(u'filenames'):
+            self.import_source = kwargs[u'filenames']
+        else:
+            raise KeyError(u'Keyword arguments "filename[s]" not supplied.')
+        log.debug(self.import_source)
+        self.song = None
         self.stop_import_flag = False
         self.set_defaults()
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -263,7 +271,7 @@ class SongImport(QtCore.QObject):
         """
         if not self.authors:
             self.authors.append(SongStrings.AuthorUnknownUnT)
-        log.info(u'commiting song %s to database', self.title)
+        log.info(u'committing song %s to database', self.title)
         song = Song()
         song.title = self.title
         song.alternate_title = self.alternate_title

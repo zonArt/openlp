@@ -48,13 +48,8 @@ class OpenLyricsImport(SongImport):
         Initialise the import.
         """
         log.debug(u'initialise OpenLyricsImport')
-        SongImport.__init__(self, master_manager)
-        self.master_manager = master_manager
-        self.openLyrics = OpenLyrics(master_manager)
-        if kwargs.has_key(u'filename'):
-            self.import_source = kwargs[u'filename']
-        if kwargs.has_key(u'filenames'):
-            self.import_source = kwargs[u'filenames']
+        SongImport.__init__(self, master_manager, **kwargs)
+        self.openLyrics = OpenLyrics(self.manager)
 
     def do_import(self):
         """
