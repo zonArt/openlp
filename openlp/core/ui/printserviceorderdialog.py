@@ -132,6 +132,6 @@ class Ui_PrintServiceOrderDialog(object):
         self.serviceTitleLineEdit.setText(translate('OpenLP.ServiceManager',
             'Service Order Sheet'))
         self.printButton.setText(translate('OpenLP.ServiceManager', 'Print'))
-        self.cancelButton.setText(translate('OpenLP.ServiceManager', 'Cancel'))
+        self.cancelButton.setText(UiStrings.Cancel)
         self.customNotesLabel.setText(
             translate('OpenLP.ServiceManager', '<b>Custom Service Notes:</b>'))

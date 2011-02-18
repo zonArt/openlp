@@ -448,17 +448,17 @@ class Ui_ThemeWizard(object):
         self.mainFontLabel.setText(translate('OpenLP.ThemeWizard', 'Font:'))
         self.mainColorLabel.setText(translate('OpenLP.ThemeWizard', 'Color:'))
         self.mainSizeLabel.setText(translate('OpenLP.ThemeWizard', 'Size:'))
-        self.mainSizeSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'pt'))
+        self.mainSizeSpinBox.setSuffix(UiStrings.FontSizePtUnit)
         self.lineSpacingLabel.setText(
             translate('OpenLP.ThemeWizard', 'Line Spacing:'))
-        self.lineSpacingSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'pt'))
+        self.lineSpacingSpinBox.setSuffix(UiStrings.FontSizePtUnit)
         self.outlineCheckBox.setText(
             translate('OpenLP.ThemeWizard', '&Outline:'))
         self.outlineSizeLabel.setText(translate('OpenLP.ThemeWizard', 'Size:'))
-        self.outlineSizeSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'pt'))
+        self.outlineSizeSpinBox.setSuffix(UiStrings.FontSizePtUnit)
         self.shadowCheckBox.setText(translate('OpenLP.ThemeWizard', '&Shadow:'))
         self.shadowSizeLabel.setText(translate('OpenLP.ThemeWizard', 'Size:'))
-        self.shadowSizeSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'pt'))
+        self.shadowSizeSpinBox.setSuffix(UiStrings.FontSizePtUnit)
         self.mainBoldCheckBox.setText(translate('OpenLP.ThemeWizard', 'Bold'))
         self.mainItalicsCheckBox.setText(
             translate('OpenLP.ThemeWizard', 'Italic'))
