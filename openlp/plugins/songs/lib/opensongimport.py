@@ -161,8 +161,8 @@ class OpenSongImport(SongImport):
                 self.import_wizard.incrementProgressBar(
                     unicode(translate('SongsPlugin.ImportWizardForm',
                         'Importing %s...')) % os.path.split(filename)[-1])
-                songfile = open(filename)
-                if self.do_import_file(songfile) and self.commit and \
+                song_file = open(filename)
+                if self.do_import_file(song_file) and self.commit and \
                     not self.stop_import_flag:
                     self.finish()
                 else:
@@ -209,92 +209,92 @@ class OpenSongImport(SongImport):
         verses = {}
         # keep track of verses appearance order
         our_verse_order = []
-        # default versetype
-        versetype = u'v'
-        versenum = u'1'
+        # default verse
+        verse_tag = u'v'
+        verse_num = u'1'
         # for the case where song has several sections with same marker
         inst = 1
         lyrics = unicode(root.lyrics)
-        for thisline in lyrics.split(u'\n'):
+        for this_line in lyrics.split(u'\n'):
             # remove comments
-            semicolon = thisline.find(u';')
+            semicolon = this_line.find(u';')
             if semicolon >= 0:
-                thisline = thisline[:semicolon]
-            thisline = thisline.strip()
-            if not len(thisline):
+                this_line = this_line[:semicolon]
+            this_line = this_line.strip()
+            if not len(this_line):
                 continue
             # skip guitar chords and page and column breaks
-            if thisline.startswith(u'.') or thisline.startswith(u'---') \
-                or thisline.startswith(u'-!!'):
+            if this_line.startswith(u'.') or this_line.startswith(u'---') \
+                or this_line.startswith(u'-!!'):
                 continue
             # verse/chorus/etc. marker
-            if thisline.startswith(u'['):
+            if this_line.startswith(u'['):
                 # drop the square brackets
-                right_bracket = thisline.find(u']')
-                content = thisline[1:right_bracket].lower()
+                right_bracket = this_line.find(u']')
+                content = this_line[1:right_bracket].lower()
                 # have we got any digits?
-                # If so, versenumber is everything from the digits
+                # If so, verse number is everything from the digits
                 # to the end (even if there are some alpha chars on the end)
                 match = re.match(u'(.*)(\d+.*)', content)
                 if match is not None:
-                    versetype = match.group(1)
-                    versenum = match.group(2)
+                    verse_tag = match.group(1)
+                    verse_num = match.group(2)
                 else:
                     # otherwise we assume number 1 and take the whole prefix as
-                    # the versetype
-                    versetype = content
-                    versenum = u'1'
+                    # the verse tag
+                    verse_tag = content
+                    verse_num = u'1'
                 inst = 1
-                if [versetype, versenum, inst] in our_verse_order \
-                    and verses.has_key(versetype) \
-                    and verses[versetype].has_key(versenum):
-                    inst = len(verses[versetype][versenum])+1
-                our_verse_order.append([versetype, versenum, inst])
+                if [verse_tag, verse_num, inst] in our_verse_order \
+                    and verses.has_key(verse_tag) \
+                    and verses[verse_tag].has_key(verse_num):
+                    inst = len(verses[verse_tag][verse_num])+1
+                our_verse_order.append([verse_tag, verse_num, inst])
                 continue
             # number at start of line.. it's verse number
-            if thisline[0].isdigit():
-                versenum = thisline[0]
-                thisline = thisline[1:].strip()
-                our_verse_order.append([versetype, versenum, inst])
-            if not verses.has_key(versetype):
-                verses[versetype] = {}
-            if not verses[versetype].has_key(versenum):
-                verses[versetype][versenum] = {}
-            if not verses[versetype][versenum].has_key(inst):
-                verses[versetype][versenum][inst] = []
+            if this_line[0].isdigit():
+                verse_num = this_line[0]
+                this_line = this_line[1:].strip()
+                our_verse_order.append([verse_tag, verse_num, inst])
+            if not verses.has_key(verse_tag):
+                verses[verse_tag] = {}
+            if not verses[verse_tag].has_key(verse_num):
+                verses[verse_tag][verse_num] = {}
+            if not verses[verse_tag][verse_num].has_key(inst):
+                verses[verse_tag][verse_num][inst] = []
             # Tidy text and remove the ____s from extended words
-            thisline = self.tidy_text(thisline)
-            thisline = thisline.replace(u'_', u'')
-            thisline = thisline.replace(u'|', u'\n')
-            verses[versetype][versenum][inst].append(thisline)
+            this_line = self.tidy_text(this_line)
+            this_line = this_line.replace(u'_', u'')
+            this_line = this_line.replace(u'|', u'\n')
+            verses[verse_tag][verse_num][inst].append(this_line)
         # done parsing
         # add verses in original order
-        for (versetype, versenum, inst) in our_verse_order:
-            vtag = u'%s%s' % (versetype, versenum)
-            lines = u'\n'.join(verses[versetype][versenum][inst])
-            self.add_verse(lines, vtag)
+        for (verse_tag, verse_num, inst) in our_verse_order:
+            verse_def = u'%s%s' % (verse_tag, verse_num)
+            lines = u'\n'.join(verses[verse_tag][verse_num][inst])
+            self.add_verse(lines, verse_def)
         # figure out the presentation order, if present
         if u'presentation' in fields and root.presentation != u'':
             order = unicode(root.presentation)
             # We make all the tags in the lyrics lower case, so match that here
             # and then split into a list on the whitespace
             order = order.lower().split()
-            for tag in order:
-                match = re.match(u'(.*)(\d+.*)', tag)
+            for verse_def in order:
+                match = re.match(u'(.*)(\d+.*)', verse_def)
                 if match is not None:
-                    versetype = match.group(1)
-                    versenum = match.group(2)
-                    if not len(versetype):
-                        versetype = u'v'
+                    verse_tag = match.group(1)
+                    verse_num = match.group(2)
+                    if not len(verse_tag):
+                        verse_tag = u'v'
                 else:
                     # Assume it's no.1 if there are no digits
-                    versetype = tag
-                    versenum = u'1'
-                vtagString = u'%s%s' % (versetype, versenum)
-                if verses.has_key(versetype) \
-                    and verses[versetype].has_key(versenum):
-                    self.verse_order_list.append(vtagString)
+                    verse_tag = verse_def
+                    verse_num = u'1'
+                verse_def = u'%s%s' % (verse_tag, verse_num)
+                if verses.has_key(verse_tag) \
+                    and verses[verse_tag].has_key(verse_num):
+                    self.verse_order_list.append(verse_def)
                 else:
-                    log.info(u'Got order %s but not in versetags, dropping'
-                        u'this item from presentation order', vtagString)
+                    log.info(u'Got order %s but not in verse tags, dropping'
+                        u'this item from presentation order', verse_def)
         return True

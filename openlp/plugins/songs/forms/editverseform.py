@@ -127,11 +127,10 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         if match:
             verse_type = match.group(1)
             verse_type_index = VerseType.from_loose_input(verse_type)
-            regex = re.compile(r'(\d+)')
-            verse_num = int(match.group(2))
+            verse_number = int(match.group(2))
             if verse_type_index is not None:
                 self.verseTypeComboBox.setCurrentIndex(verse_type_index)
-                self.verseNumberBox.setValue(verse_num)
+                self.verseNumberBox.setValue(verse_number)
 
     def setVerse(self, text, single=False,
         tag=u'%s1' % VerseType.Tags[VerseType.Verse]):
