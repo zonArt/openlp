@@ -465,8 +465,6 @@ class OpenLyrics(object):
                 text += u'\n'.join([unicode(line) for line in lines.line])
             verse_name = self._get(verse, u'name')
             verse_type_index = VerseType.from_tag(verse_name[0])
-            if verse_type_index is None:
-             verse_type_index = VerseType.Other
             verse_type = VerseType.Names[verse_type_index]
             verse_number = re.compile(u'[a-zA-Z]*').sub(u'', verse_name)
             verse_part = re.compile(u'[0-9]*').sub(u'', verse_name[1:])

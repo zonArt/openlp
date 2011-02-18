@@ -344,40 +344,49 @@ class SongMediaItem(MediaManagerItem):
         if song.lyrics.startswith(u'<?xml version='):
             verseList = SongXML().get_verses(song.lyrics)
             # no verse list or only 1 space (in error)
+            verse_tags_translated = False
+            if VerseType.from_translated_string(unicode(
+                verseList[0][0][u'type'])) is not None:
+                verse_tags_translated = True
             if not song.verse_order.strip():
                 for verse in verseList:
                     # We cannot use from_loose_input() here, because database
                     # is supposed to contain English lowercase singlechar tags.
-                    verse_type = verse[0][u'type']
-                    verseIndex = None
-                    if len(verse_type) > 1:
-                        verseIndex = \
-                            VerseType.from_translated_string(verse_type)
-                        if verseIndex is None:
-                            verseIndex = VerseType.from_string(verse_type)
-                    if verseIndex is None:
-                        verseIndex = VerseType.from_tag(verse_type)
-                    if verseIndex is None:
-                        verseIndex = VerseType.Other
-                    versetype = VerseType.TranslatedTags[verseIndex].upper()
-                    verseTag = u'%s%s' % (versetype, verse[0][u'label'])
+                    verse_tag = verse[0][u'type']
+                    verse_index = None
+                    if len(verse_tag) > 1:
+                        verse_index = \
+                            VerseType.from_translated_string(verse_tag)
+                        if verse_index is None:
+                            verse_index = VerseType.from_string(verse_tag)
+                    if verse_index is None:
+                        verse_index = VerseType.from_tag(verse_tag)
+                    verse_tag = VerseType.TranslatedTags[verse_index].upper()
+                    verse_def = u'%s%s' % (verse_tag, verse[0][u'label'])
                     service_item.add_from_text(
-                        verse[1][:30], unicode(verse[1]), verseTag)
+                        verse[1][:30], unicode(verse[1]), verse_def)
             else:
                 # Loop through the verse list and expand the song accordingly.
                 for order in song.verse_order.lower().split():
                     if len(order) == 0:
                         break
                     for verse in verseList:
-                        if verse[0][u'type'][0] == order[0] and \
-                            (verse[0][u'label'] == order[1:] or not order[1:]):
-                            verseindex = VerseType.from_tag(verse[0][u'type'])
-                            versetype = VerseType.TranslatedTags[verseindex]\
-                                .upper()
-                            verseTag = u'%s%s' % (versetype,
+                        if verse[0][u'type'][0].lower() == order[0] and \
+                            (verse[0][u'label'].lower() == order[1:] or \
+                            not order[1:]):
+                            if verse_tags_translated:
+                                verse_index = VerseType.from_translated_tag(
+                                    verse[0][u'type'])
+                            else:
+                                verse_index = VerseType.from_tag(
+                                    verse[0][u'type'])
+                            if verse_index is None:
+                                verse_index = VerseType.Other
+                            verse_tag = VerseType.TranslatedTags[verse_index]
+                            verse_def = u'%s%s' % (verse_tag,
                                 verse[0][u'label'])
                             service_item.add_from_text(
-                                verse[1][:30], verse[1], verseTag)
+                                verse[1][:30], verse[1], verse_def)
         else:
             verses = song.lyrics.split(u'\n\n')
             for slide in verses:

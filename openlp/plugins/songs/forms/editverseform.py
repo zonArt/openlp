@@ -57,22 +57,22 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         QtCore.QObject.connect(self.verseTypeComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
             self.onVerseTypeComboBoxChanged)
-        self.verse_regex = re.compile(r'---\[(.+):\D*(\d+)\D*\]---')
+        self.verse_regex = re.compile(r'---\[(.+):\D*(\d.)\D*\]---')
 
     def contextMenu(self, point):
         item = self.serviceManagerList.itemAt(point)
 
-    def insertVerse(self, versetype, num=1):
+    def insertVerse(self, verse_tag, verse_num=1):
         if self.verseTextEdit.textCursor().columnNumber() != 0:
             self.verseTextEdit.insertPlainText(u'\n')
-        versetype = VerseType.TranslatedNames[VerseTag.from_tag(versetype)]
-        self.verseTextEdit.insertPlainText(u'---[%s:%s]---\n' % \
-            (versetype, num))
+        verse_tag = VerseType.translated_name(verse_tag)
+        self.verseTextEdit.insertPlainText(u'---[%s:%s]---\n' %
+            (verse_tag, verse_num))
         self.verseTextEdit.setFocus()
 
     def onInsertButtonClicked(self):
-        vtypeindex = self.verseTypeComboBox.currentIndex()
-        self.insertVerse(VerseType.Tags[vtypeindex],
+        verse_type_index = self.verseTypeComboBox.currentIndex()
+        self.insertVerse(VerseType.Tags[verse_type_index],
             self.verseNumberBox.value())
 
     def onVerseTypeComboBoxChanged(self):
@@ -82,11 +82,11 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         """
         position = self.verseTextEdit.textCursor().position()
         text = unicode(self.verseTextEdit.toPlainText())
-        verse_type = VerseType.TranslatedNames[
+        verse_name = VerseType.TranslatedNames[
             self.verseTypeComboBox.currentIndex()]
         if not text:
             return
-        position = text.rfind(u'---[%s' % verse_type, 0, position)
+        position = text.rfind(u'---[%s' % verse_name, 0, position)
         if position == -1:
             self.verseNumberBox.setValue(1)
             return
@@ -97,11 +97,11 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         text = text[:position + 4]
         match = self.verse_regex.match(text)
         if match:
-            verse_type = match.group(1)
-            verse_number = int(match.group(2))
-            verse_type_index = VerseType.from_loose_input(verse_type)
+            verse_tag = match.group(1)
+            verse_num = int(match.group(2))
+            verse_type_index = VerseType.from_loose_input(verse_tag)
             if verse_type_index is not None:
-                self.verseNumberBox.setValue(verse_number)
+                self.verseNumberBox.setValue(verse_num)
 
     def onCursorPositionChanged(self):
         """
@@ -125,13 +125,13 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         text = text[:position + 4]
         match = self.verse_regex.match(text)
         if match:
-            versetype = match.group(1)
-            vtypeindex = VerseType.from_loose_input(versetype)
+            verse_type = match.group(1)
+            verse_type_index = VerseType.from_loose_input(verse_type)
             regex = re.compile(r'(\d+)')
-            versenum = int(match.group(2))
-            if vtypeindex is not None:
-                self.verseTypeComboBox.setCurrentIndex(vtypeindex)
-                self.verseNumberBox.setValue(versenum)
+            verse_num = int(match.group(2))
+            if verse_type_index is not None:
+                self.verseTypeComboBox.setCurrentIndex(verse_type_index)
+                self.verseNumberBox.setValue(verse_num)
 
     def setVerse(self, text, single=False,
         tag=u'%s1' % VerseType.Tags[VerseType.Verse]):

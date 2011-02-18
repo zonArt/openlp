@@ -604,14 +604,14 @@ class SlideController(QtGui.QWidget):
             if self.serviceItem.is_text():
                 if frame[u'verseTag']:
                     # These tags are already translated.
-                    versetag = frame[u'verseTag']
-                    versetag = u'%s%s' % (versetag[0].upper(), versetag[1:])
-                    twolineTag = u'%s\n%s' % (versetag[0], versetag[1:] )
-                    row = twolineTag
+                    verse_def = frame[u'verseTag']
+                    verse_def = u'%s%s' % (verse_def[0].upper(), verse_def[1:])
+                    two_line_def = u'%s\n%s' % (verse_def[0], verse_def[1:] )
+                    row = two_line_def
                     if self.isLive:
-                        if versetag not in self.slideList:
-                            self.slideList[versetag] = framenumber
-                            self.songMenu.menu().addAction(versetag,
+                        if verse_def not in self.slideList:
+                            self.slideList[verse_def] = framenumber
+                            self.songMenu.menu().addAction(verse_def,
                                 self.onSongBarHandler)
                 else:
                     row += 1
