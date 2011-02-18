@@ -239,7 +239,8 @@ def resize_image(image, width, height, background=QtCore.Qt.black):
     Resize an image to fit on the current screen.
 
     ``image``
-        The image to resize.
+        The image to resize. It has to be either a ``QImage`` instance or the
+        path to the image.
 
     ``width``
         The new image width.
