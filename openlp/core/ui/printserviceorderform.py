@@ -53,10 +53,6 @@ class PrintServiceOrderForm(QtGui.QDialog, Ui_PrintServiceOrderDialog):
             u'print file meta data', QtCore.QVariant(False)).toBool())
         self.printNotesCheckBox.setChecked(settings.value(
             u'print notes', QtCore.QVariant(False)).toBool())
-        self.copyMetaDataCheckBox.setChecked(settings.value(
-            u'html copy', QtCore.QVariant(False)).toBool())
-        if self.copyMetaDataCheckBox.isChecked():
-            self.copyTextButton.setText(UiStrings.CopyToHtml)
         settings.endGroup()
         # Signals
         QtCore.QObject.connect(self.printButton,
@@ -82,8 +78,8 @@ class PrintServiceOrderForm(QtGui.QDialog, Ui_PrintServiceOrderDialog):
             QtCore.SIGNAL(u'clicked()'), self.reject)
         QtCore.QObject.connect(self.copyTextButton,
             QtCore.SIGNAL(u'clicked()'), self.copyText)
-        QtCore.QObject.connect(self.copyMetaDataCheckBox,
-            QtCore.SIGNAL(u'stateChanged(int)'), self.updateTextFormat)
+        QtCore.QObject.connect(self.copyHtmlButton,
+            QtCore.SIGNAL(u'clicked()'), self.copyHtmlText)
         self.updatePreviewText()
 
     def updatePreviewText(self):
@@ -150,11 +146,18 @@ class PrintServiceOrderForm(QtGui.QDialog, Ui_PrintServiceOrderDialog):
         self.document.print_(printer)
 
     def copyText(self):
-        if self.copyMetaDataCheckBox.isChecked():
-            self.parent.clipboard.setText(self.document.toHtml())
-        else:
-            self.parent.clipboard.setText(self.document.toPlainText())
-        self.accept()
+        """
+        Copies the display text to the clipboard as plain text
+        """
+        self.parent.clipboard.setText(self.document.toPlainText())
+
+
+    def copyHtmlText(self):
+        """
+        Copies the display text to the clipboard as Html
+        """
+        self.parent.clipboard.setText(self.document.toHtml())
+
 
     def printServiceOrder(self):
         """
@@ -200,8 +203,6 @@ class PrintServiceOrderForm(QtGui.QDialog, Ui_PrintServiceOrderDialog):
             QtCore.QVariant(self.printMetaDataCheckBox.isChecked()))
         settings.setValue(u'print notes',
             QtCore.QVariant(self.printNotesCheckBox.isChecked()))
-        settings.setValue(u'html copy',
-            QtCore.QVariant(self.copyMetaDataCheckBox.isChecked()))
         settings.endGroup()
         # Close the dialog.
         return QtGui.QDialog.accept(self)

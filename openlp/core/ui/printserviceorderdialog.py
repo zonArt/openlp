@@ -32,6 +32,8 @@ from openlp.core.lib.ui import UiStrings
 class Ui_PrintServiceOrderDialog(object):
     def setupUi(self, printServiceOrderDialog):
         printServiceOrderDialog.setObjectName(u'printServiceOrderDialog')
+        self.verticalLayout = QtGui.QGridLayout(printServiceOrderDialog)
+        self.verticalLayout.setObjectName(u'verticalLayout')
         self.dialogLayout = QtGui.QGridLayout(printServiceOrderDialog)
         self.dialogLayout.setObjectName(u'dialogLayout')
         self.perviewLayout = QtGui.QVBoxLayout()
@@ -76,9 +78,6 @@ class Ui_PrintServiceOrderDialog(object):
         self.printMetaDataCheckBox = QtGui.QCheckBox(printServiceOrderDialog)
         self.printMetaDataCheckBox.setObjectName(u'printMetaDataCheckBox')
         self.settingsLayout.addWidget(self.printMetaDataCheckBox)
-        self.copyMetaDataCheckBox = QtGui.QCheckBox(printServiceOrderDialog)
-        self.copyMetaDataCheckBox.setObjectName(u'copyMetaDataCheckBox')
-        self.settingsLayout.addWidget(self.copyMetaDataCheckBox)
         spacerItem = QtGui.QSpacerItem(20, 40,
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.settingsLayout.addItem(spacerItem)
@@ -94,6 +93,9 @@ class Ui_PrintServiceOrderDialog(object):
         spacerItem = QtGui.QSpacerItem(40, 20,
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.buttonLayout.addItem(spacerItem)
+        self.copyHtmlButton = QtGui.QPushButton(printServiceOrderDialog)
+        self.copyHtmlButton.setObjectName(u'copyHtmlButton')
+        self.buttonLayout.addWidget(self.copyHtmlButton)
         self.copyTextButton = QtGui.QPushButton(printServiceOrderDialog)
         self.copyTextButton.setObjectName(u'copyTextButton')
         self.buttonLayout.addWidget(self.copyTextButton)
@@ -103,7 +105,7 @@ class Ui_PrintServiceOrderDialog(object):
         self.cancelButton = QtGui.QPushButton(printServiceOrderDialog)
         self.cancelButton.setObjectName(u'cancelButton')
         self.buttonLayout.addWidget(self.cancelButton)
-        self.dialogLayout.addLayout(self.buttonLayout, 1, 3, 1, 1)
+        self.dialogLayout.addLayout(self.buttonLayout, 2, 2, 1, 1)
         self.zoomButtonLayout = QtGui.QHBoxLayout()
         self.zoomButtonLayout.setObjectName(u'zoomButtonLayout')
         spacerItem = QtGui.QSpacerItem(40, 20,
@@ -134,14 +136,14 @@ class Ui_PrintServiceOrderDialog(object):
         self.printMetaDataCheckBox.setText(
             translate('OpenLP.PrintServiceOrderForm',
             'Include play length of media items'))
-        self.copyMetaDataCheckBox.setText(
-            translate('OpenLP.PrintServiceOrderForm',
-            'Copy output as HTML'))
         self.serviceTitleLabel.setText(translate(
             'OpenLP.PrintServiceOrderForm', 'Title:'))
         self.serviceTitleLineEdit.setText(translate('OpenLP.ServiceManager',
             'Service Order Sheet'))
-        self.copyTextButton.setText(UiStrings.CopyToText)
+        self.copyTextButton.setText(translate('OpenLP.ServiceManager',
+            'Copy to Clipboard as Text'))
+        self.copyHtmlButton.setText(translate('OpenLP.ServiceManager',
+            'Copy to Clipboard as Html'))
         self.printButton.setText(translate('OpenLP.ServiceManager', 'Print'))
         self.cancelButton.setText(translate('OpenLP.ServiceManager', 'Cancel'))
         self.customNotesLabel.setText(
