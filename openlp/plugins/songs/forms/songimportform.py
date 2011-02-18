@@ -466,7 +466,7 @@ class SongImportForm(OpenLPWizard):
         """
         Get OpenLyrics song database files
         """
-        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.OL,
+        self.getFiles(WizardStrings.OpenTypeFile % WizardStrings.OL,
             self.openLyricsFileListWidget)
 
     def onOpenLyricsRemoveButtonClicked(self):
@@ -479,7 +479,7 @@ class SongImportForm(OpenLPWizard):
         """
         Get OpenSong song database files
         """
-        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.OS,
+        self.getFiles(WizardStrings.OpenTypeFile % WizardStrings.OS,
             self.openSongFileListWidget)
 
     def onOpenSongRemoveButtonClicked(self):
@@ -492,7 +492,7 @@ class SongImportForm(OpenLPWizard):
         """
         Get Words of Worship song database files
         """
-        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.WoW,
+        self.getFiles(WizardStrings.OpenTypeFile % WizardStrings.WoW,
             self.wordsOfWorshipFileListWidget, u'%s (*.wsg *.wow-song)'
             % translate('SongsPlugin.ImportWizardForm',
             'Words Of Worship Song Files')
@@ -508,7 +508,7 @@ class SongImportForm(OpenLPWizard):
         """
         Get CCLI song database files
         """
-        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.CCLI,
+        self.getFiles(WizardStrings.OpenTypeFile % WizardStrings.CCLI,
             self.ccliFileListWidget)
 
     def onCCLIRemoveButtonClicked(self):
@@ -521,7 +521,7 @@ class SongImportForm(OpenLPWizard):
         """
         Get Songs of Fellowship song database files
         """
-        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.SoF,
+        self.getFiles(WizardStrings.OpenTypeFile % WizardStrings.SoF,
             self.songsOfFellowshipFileListWidget, u'%s (*.rtf)'
             % translate('SongsPlugin.ImportWizardForm',
             'Songs Of Fellowship Song Files')
@@ -537,7 +537,7 @@ class SongImportForm(OpenLPWizard):
         """
         Get song database files
         """
-        self.getFileName(
+        self.getFiles(
             translate('SongsPlugin.ImportWizardForm',
             'Select Document/Presentation Files'),
             self.genericFileListWidget
@@ -564,7 +564,7 @@ class SongImportForm(OpenLPWizard):
         """
         Get SongBeamer song database files
         """
-        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.SB,
+        self.getFiles(WizardStrings.OpenTypeFile % WizardStrings.SB,
             self.songBeamerFileListWidget, u'%s (*.sng)' %
             translate('SongsPlugin.ImportWizardForm', 'SongBeamer Files')
         )
