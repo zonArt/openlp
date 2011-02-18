@@ -79,7 +79,7 @@ class SongImport(QtCore.QObject):
         self.verse_order_list_generated = []
         self.verse_order_list = []
         self.verses = []
-        self.versecounts = {}
+        self.verse_counts = {}
         self.copyright_string = unicode(translate(
             'SongsPlugin.SongImport', 'copyright'))
         self.copyright_symbol = unicode(translate(
@@ -130,10 +130,10 @@ class SongImport(QtCore.QObject):
         return text
 
     def process_song_text(self, text):
-        versetexts = text.split(u'\n\n')
-        for versetext in versetexts:
-            if versetext.strip() != u'':
-                self.process_verse_text(versetext.strip())
+        verse_texts = text.split(u'\n\n')
+        for verse_text in verse_texts:
+            if verse_text.strip() != u'':
+                self.process_verse_text(verse_text.strip())
 
     def process_verse_text(self, text):
         lines = text.split(u'\n')
@@ -227,10 +227,10 @@ class SongImport(QtCore.QObject):
         else:
             self.verse_counts[verse_def[0]] = 1
         if len(verse_def) == 1:
-            verse_def += unicode(self.versecounts[verse_def[0]])
-        elif int(verse_def[1:]) > self.versecounts[verse_def[0]]:
-            self.versecounts[verse_def[0]] = int(verse_def[1:])
-        self.verses.append([verse_def, versetext.rstrip(), lang])
+            verse_def += unicode(self.verse_counts[verse_def[0]])
+        elif int(verse_def[1:]) > self.verse_counts[verse_def[0]]:
+            self.verse_counts[verse_def[0]] = int(verse_def[1:])
+        self.verses.append([verse_def, verse_text.rstrip(), lang])
         self.verse_order_list_generated.append(verse_def)
 
     def repeat_verse(self):
@@ -278,7 +278,7 @@ class SongImport(QtCore.QObject):
         other_count = 1
         for (verse_def, verse_text, lang) in self.verses:
             if verse_def[0].lower() in VerseType.Tags:
-                verse_def = verse_def[0].lower()
+                verse_tag = verse_def[0].lower()
             else:
                 new_verse_def = u'%s%d' % (VerseType.Tags[VerseType.Other],
                     other_count)

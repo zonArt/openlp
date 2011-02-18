@@ -448,7 +448,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if self.verse_form.exec_():
             after_text, verse_tag, verse_num = self.verse_form.getVerse()
             verse_def = u'%s%s' % (verse_tag, verse_num)
-            item = QtGui.QTableWidgetItem(afterText)
+            item = QtGui.QTableWidgetItem(after_text)
             item.setData(QtCore.Qt.UserRole, QtCore.QVariant(verse_def))
             item.setText(after_text)
             self.verseListWidget.setRowCount(

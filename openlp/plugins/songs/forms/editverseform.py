@@ -57,7 +57,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         QtCore.QObject.connect(self.verseTypeComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
             self.onVerseTypeComboBoxChanged)
-        self.verse_regex = re.compile(r'---\[(.+):\D*(\d.)\D*\]---')
+        self.verse_regex = re.compile(r'---\[(.+):\D*(\d*)\D*.*\]---')
 
     def contextMenu(self, point):
         item = self.serviceManagerList.itemAt(point)
