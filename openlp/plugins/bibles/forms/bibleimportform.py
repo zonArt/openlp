@@ -51,18 +51,7 @@ class WebDownload(object):
     BibleGateway = 1
     Bibleserver = 2
 
-    Names = {
-        0: u'Crosswalk',
-        1: u'BibleGateway',
-        2: u'Bibleserver'
-    }
-
-    @classmethod
-    def get_name(cls, name):
-        """
-        Get the web bible type name.
-        """
-        return cls.Names[name]
+    Names = [u'Crosswalk', u'BibleGateway', u'Bibleserver']
 
 
 class BibleImportForm(OpenLPWizard):
@@ -393,11 +382,11 @@ class BibleImportForm(OpenLPWizard):
             translate('BiblesPlugin.ImportWizardForm', 'Bible file:'))
         self.webSourceLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'Location:'))
-        self.webSourceComboBox.setItemText(0,
+        self.webSourceComboBox.setItemText(WebDownload.Crosswalk,
             translate('BiblesPlugin.ImportWizardForm', 'Crosswalk'))
-        self.webSourceComboBox.setItemText(1,
+        self.webSourceComboBox.setItemText(WebDownload.BibleGateway,
             translate('BiblesPlugin.ImportWizardForm', 'BibleGateway'))
-        self.webSourceComboBox.setItemText(2,
+        self.webSourceComboBox.setItemText(WebDownload.Bibleserver,
             translate('BiblesPlugin.ImportWizardForm', 'Bibleserver'))
         self.webTranslationLabel.setText(
             translate('BiblesPlugin.ImportWizardForm', 'Bible:'))
@@ -680,7 +669,7 @@ class BibleImportForm(OpenLPWizard):
                 self.web_bible_list[download_type][ver] = name.strip()
         except IOError:
             log.exception(u'%s resources missing' %
-                WebDownload.get_name(download_type))
+                WebDownload.Names[download_type])
         finally:
             if books_file:
                 books_file.close()
@@ -734,18 +723,10 @@ class BibleImportForm(OpenLPWizard):
             self.progressBar.setMaximum(1)
             download_location = self.field(u'web_location').toInt()[0]
             bible_version = unicode(self.webTranslationComboBox.currentText())
-            if download_location == WebDownload.Crosswalk:
-                bible = \
-                    self.web_bible_list[WebDownload.Crosswalk][bible_version]
-            elif download_location == WebDownload.BibleGateway:
-                bible = \
-                    self.web_bible_list[WebDownload.BibleGateway][bible_version]
-            elif download_location == WebDownload.Bibleserver:
-                bible = \
-                    self.web_bible_list[WebDownload.Bibleserver][bible_version]
+            bible = self.web_bible_list[download_location][bible_version]
             importer = self.manager.import_bible(
                 BibleFormat.WebDownload, name=license_version,
-                download_source=WebDownload.get_name(download_location),
+                download_source=WebDownload.Names[download_location],
                 download_name=bible,
                 proxy_server=unicode(self.field(u'proxy_server').toString()),
                 proxy_username=\

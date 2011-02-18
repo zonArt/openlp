@@ -28,7 +28,8 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Renderer, ThemeLevel, ServiceItem, ImageManager
+from openlp.core.lib import Renderer, ServiceItem, ImageManager
+from openlp.core.lib.theme import ThemeLevel
 from openlp.core.ui import MainDisplay
 
 log = logging.getLogger(__name__)

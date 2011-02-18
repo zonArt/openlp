@@ -29,8 +29,8 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, BackgroundType, BackgroundGradientType, \
-    Receiver
+from openlp.core.lib import Receiver, translate
+from openlp.core.lib.theme import BackgroundType, BackgroundGradientType
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.utils import get_images_filter
 from themewizard import Ui_ThemeWizard
