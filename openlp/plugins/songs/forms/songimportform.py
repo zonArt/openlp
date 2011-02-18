@@ -256,7 +256,7 @@ class SongImportForm(OpenLPWizard):
         self.formatComboBox.setItemText(11,
             translate('SongsPlugin.ImportWizardForm', 'SongShow Plus'))
         self.formatComboBox.setItemText(12,
-            translate('SongsPlugin.ImportWizardForm', 'FoilPresenter'))
+            translate('SongsPlugin.ImportWizardForm', 'Foilpresenter'))
 #        self.formatComboBox.setItemText(11,
 #            translate('SongsPlugin.ImportWizardForm', 'CSV'))
         self.openLP2FilenameLabel.setText(
@@ -711,7 +711,9 @@ class SongImportForm(OpenLPWizard):
         self.getFiles(
             translate('SongsPlugin.ImportWizardForm',
             'Select FoilPresenter Files'),
-            self.foilPresenterFileListWidget
+            self.foilPresenterFileListWidget, u'%s (*.foil)'
+            % translate('SongsPlugin.ImportWizardForm',
+            'Foilpresenter Song Files')
         )
 
     def onFoilPresenterRemoveButtonClicked(self):
