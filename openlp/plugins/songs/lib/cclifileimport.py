@@ -199,8 +199,11 @@ class CCLIFileImport(SongImport):
         if len(author_list) < 2:
             author_list = song_author.split(u'|')
         for author in author_list:
-            seperated = author.split(u',')
-            self.add_author(u' '.join(seperated))
+            separated = author.split(u',')
+            if len(separated) > 1:
+                self.add_author(u' '.join(reversed(separated)))
+            else:
+                self.add_author(author)
         self.title = song_name
         self.copyright = song_copyright
         self.ccli_number = song_ccli
