@@ -101,7 +101,8 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                 else:
                     shortcutText = action.shortcut().toString()
                     alternateText = u''
-                actionItem = QtGui.QTreeWidgetItem([actionText, shortcutText, alternateText])
+                actionItem = QtGui.QTreeWidgetItem(
+                    [actionText, shortcutText, alternateText])
                 actionItem.setIcon(0, action.icon())
                 item.addChild(actionItem)
             item.setExpanded(True)

@@ -31,6 +31,7 @@ from PyQt4 import QtCore
 from openlp.core.lib import Receiver, translate
 from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.db import Song, Author, Topic, Book, MediaFile
+from openlp.plugins.songs.lib.ui import SongStrings
 from openlp.plugins.songs.lib.xml import SongXML
 
 log = logging.getLogger(__name__)
@@ -43,7 +44,7 @@ class SongImport(QtCore.QObject):
     whether the authors etc already exist and add them or refer to them
     as necessary
     """
-    def __init__(self, manager):
+    def __init__(self, manager, **kwargs):
         """
         Initialise and create defaults for properties
 
@@ -53,6 +54,14 @@ class SongImport(QtCore.QObject):
 
         """
         self.manager = manager
+        if kwargs.has_key(u'filename'):
+            self.import_source = kwargs[u'filename']
+        elif kwargs.has_key(u'filenames'):
+            self.import_source = kwargs[u'filenames']
+        else:
+            raise KeyError(u'Keyword arguments "filename[s]" not supplied.')
+        log.debug(self.import_source)
+        self.song = None
         self.stop_import_flag = False
         self.set_defaults()
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -82,8 +91,6 @@ class SongImport(QtCore.QObject):
         self.verse_counts = {}
         self.copyright_string = unicode(translate(
             'SongsPlugin.SongImport', 'copyright'))
-        self.copyright_symbol = unicode(translate(
-            'SongsPlugin.SongImport', '\xa9'))
 
     def stop_import(self):
         """
@@ -138,12 +145,12 @@ class SongImport(QtCore.QObject):
     def process_verse_text(self, text):
         lines = text.split(u'\n')
         if text.lower().find(self.copyright_string) >= 0 \
-            or text.find(self.copyright_symbol) >= 0:
+            or text.find(SongStrings.CopyrightSymbol) >= 0:
             copyright_found = False
             for line in lines:
                 if (copyright_found or
                     line.lower().find(self.copyright_string) >= 0 or
-                    line.find(self.copyright_symbol) >= 0):
+                    line.find(SongStrings.CopyrightSymbol) >= 0):
                     copyright_found = True
                     self.add_copyright(line)
                 else:
@@ -263,9 +270,8 @@ class SongImport(QtCore.QObject):
         All fields have been set to this song. Write the song to disk.
         """
         if not self.authors:
-            self.authors.append(unicode(translate('SongsPlugin.SongImport',
-                'Author unknown')))
-        log.info(u'commiting song %s to database', self.title)
+            self.authors.append(SongStrings.AuthorUnknownUnT)
+        log.info(u'committing song %s to database', self.title)
         song = Song()
         song.title = self.title
         song.alternate_title = self.alternate_title

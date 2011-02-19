@@ -144,6 +144,7 @@ class Plugin(QtCore.QObject):
         self.name = name
         self.textStrings = {}
         self.setPluginTextStrings()
+        self.nameStrings = self.textStrings[StringContent.Name]
         if version:
             self.version = version
         self.settingsSection = self.name.lower()
