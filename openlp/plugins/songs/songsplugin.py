@@ -35,6 +35,7 @@ from openlp.core.lib.ui import UiStrings
 from openlp.plugins.songs.lib import SongMediaItem, SongsTab, SongXML
 from openlp.plugins.songs.lib.db import Author, init_schema, Song
 from openlp.plugins.songs.lib.importer import SongFormat
+from openlp.plugins.songs.lib.ui import SongStrings
 
 log = logging.getLogger(__name__)
 
@@ -147,8 +148,7 @@ class SongsPlugin(Plugin):
             counter += 1
             # The song does not have any author, add one.
             if not song.authors:
-                name = unicode(translate('SongsPlugin', 'Author unknown',
-                    'Translation must contain a blank character!'))
+                name = unicode(SongStrings.AuthorUnknownUnT)
                 author = self.manager.get_object_filtered(Author,
                     Author.display_name == name)
                 if author is None:
