@@ -5,7 +5,7 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2010 Tim Bentley, Jonathan Corwin, Michael      #
+# Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
 # Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
 # Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
 # Carsten Tinggaard, Frode Woldsund                                           #
@@ -24,49 +24,23 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`openlyricsimport` module provides the functionality for importing
-songs which are saved as OpenLyrics files.
+The :mod:`openlp.plugins.songs.lib.ui` module provides standard UI components
+for the songs plugin.
 """
+from openlp.core.lib import translate
 
-import logging
-import os
-
-from lxml import etree
-
-from openlp.core.ui.wizard import WizardStrings
-from openlp.plugins.songs.lib.songimport import SongImport
-from openlp.plugins.songs.lib import OpenLyrics
-
-log = logging.getLogger(__name__)
-
-class OpenLyricsImport(SongImport):
+class SongStrings(object):
     """
-    This provides the Openlyrics import.
+    Provide standard strings for use throughout the songs plugin.
     """
-    def __init__(self, master_manager, **kwargs):
-        """
-        Initialise the import.
-        """
-        log.debug(u'initialise OpenLyricsImport')
-        SongImport.__init__(self, master_manager, **kwargs)
-        self.openLyrics = OpenLyrics(self.manager)
-
-    def do_import(self):
-        """
-        Imports the songs.
-        """
-        self.import_wizard.progressBar.setMaximum(len(self.import_source))
-        parser = etree.XMLParser(remove_blank_text=True)
-        for file_path in self.import_source:
-            if self.stop_import_flag:
-                return False
-            self.import_wizard.incrementProgressBar(
-                WizardStrings.ImportingType % os.path.basename(file_path))
-            try:
-                parsed_file = etree.parse(file_path, parser)
-                xml = unicode(etree.tostring(parsed_file))
-                if self.openLyrics.xml_to_song(xml) is None:
-                    log.debug(u'File could not be imported: %s' % file_path)
-            except etree.XMLSyntaxError:
-                log.exception(u'XML syntax error in file %s' % file_path)
-        return True
+    # These strings should need a good reason to be retranslated elsewhere.
+    Author = translate('OpenLP.Ui', 'Author', 'Singular')
+    Authors = translate('OpenLP.Ui', 'Authors', 'Plural')
+    AuthorUnknown = translate('OpenLP.Ui', 'Author Unknown') # Used in the UI.
+    AuthorUnknownUnT = u'Author Unknown' # Used to populate the database.
+    CopyrightSymbol = translate('OpenLP.Ui', '\xa9', 'Copyright symbol.')
+    SongBook = translate('OpenLP.Ui', 'Song Book', 'Singular')
+    SongBooks = translate('OpenLP.Ui', 'Song Books', 'Plural')
+    SongMaintenance = translate('OpenLP.Ui', 'Song Maintenance')
+    Topic = translate('OpenLP.Ui', 'Topic', 'Singular')
+    Topics = translate('OpenLP.Ui', 'Topics', 'Plural')

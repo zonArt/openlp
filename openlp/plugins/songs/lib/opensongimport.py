@@ -31,7 +31,7 @@ from lxml import objectify
 from lxml.etree import Error, LxmlError
 import re
 
-from openlp.core.lib import translate
+from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
@@ -105,21 +105,19 @@ class OpenSongImport(SongImport):
         """
         Initialise the class.
         """
-        SongImport.__init__(self, manager)
-        self.filenames = kwargs[u'filenames']
-        self.song = None
+        SongImport.__init__(self, manager, **kwargs)
         self.commit = True
 
     def do_import(self):
         """
-        Import either each of the files in self.filenames - each element of
+        Import either each of the files in self.import_source - each element of
         which can be either a single opensong file, or a zipfile containing
         multiple opensong files. If `self.commit` is set False, the
         import will not be committed to the database (useful for test scripts).
         """
         success = True
         numfiles = 0
-        for filename in self.filenames:
+        for filename in self.import_source:
             ext = os.path.splitext(filename)[1]
             if ext.lower() == u'.zip':
                 z = ZipFile(filename, u'r')
@@ -128,7 +126,7 @@ class OpenSongImport(SongImport):
                 numfiles += 1
         log.debug(u'Total number of files: %d', numfiles)
         self.import_wizard.progressBar.setMaximum(numfiles)
-        for filename in self.filenames:
+        for filename in self.import_source:
             if self.stop_import_flag:
                 success = False
                 break
@@ -146,8 +144,7 @@ class OpenSongImport(SongImport):
                         continue
                     log.info(u'Zip importing %s', parts[-1])
                     self.import_wizard.incrementProgressBar(
-                        unicode(translate('SongsPlugin.ImportWizardForm',
-                        'Importing %s...')) % parts[-1])
+                        WizardStrings.ImportingType % parts[-1])
                     songfile = z.open(song)
                     if self.do_import_file(songfile) and self.commit and \
                         not self.stop_import_flag:
@@ -159,8 +156,7 @@ class OpenSongImport(SongImport):
                 # not a zipfile
                 log.info(u'Direct import %s', filename)
                 self.import_wizard.incrementProgressBar(
-                    unicode(translate('SongsPlugin.ImportWizardForm',
-                        'Importing %s...')) % os.path.split(filename)[-1])
+                    WizardStrings.ImportingType % os.path.split(filename)[-1])
                 song_file = open(filename)
                 if self.do_import_file(song_file) and self.commit and \
                     not self.stop_import_flag:

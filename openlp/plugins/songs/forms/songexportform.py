@@ -32,8 +32,8 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, Receiver, SettingsManager, translate
-from openlp.core.lib.ui import critical_error_message_box
-from openlp.core.ui.wizard import OpenLPWizard
+from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.plugins.songs.lib.db import Song
 from openlp.plugins.songs.lib.openlyricsexport import OpenLyricsExport
 
@@ -56,7 +56,6 @@ class SongExportForm(OpenLPWizard):
         ``plugin``
             The songs plugin.
         """
-        self.plugin = plugin
         OpenLPWizard.__init__(self, parent, plugin, u'songExportWizard',
             u':/wizards/wizard_exportsong.bmp')
         self.stop_export_flag = False
@@ -165,10 +164,8 @@ class SongExportForm(OpenLPWizard):
         """
         self.setWindowTitle(
             translate('SongsPlugin.ExportWizardForm', 'Song Export Wizard'))
-        self.titleLabel.setText(
-            u'<span style="font-size:14pt; font-weight:600;">%s</span>' %
-            translate('SongsPlugin.ExportWizardForm',
-            'Welcome to the Song Export Wizard'))
+        self.titleLabel.setText(WizardStrings.HeaderStyle %
+            translate('OpenLP.Ui', 'Welcome to the Song Export Wizard'))
         self.informationLabel.setText(
             translate('SongsPlugin.ExportWizardForm', 'This wizard will help to'
             ' export your songs to the open and free OpenLyrics worship song '
@@ -177,15 +174,14 @@ class SongExportForm(OpenLPWizard):
             translate('SongsPlugin.ExportWizardForm', 'Select Songs'))
         self.availableSongsPage.setSubTitle(
             translate('SongsPlugin.ExportWizardForm',
-            'Check the songs, you want to export.'))
-        self.searchLabel.setText(
-            translate('SongsPlugin.ExportWizardForm', 'Search:'))
+            'Check the songs you want to export.'))
+        self.searchLabel.setText(u'%s:' % UiStrings.Search)
         self.uncheckButton.setText(
             translate('SongsPlugin.ExportWizardForm', 'Uncheck All'))
         self.checkButton.setText(
             translate('SongsPlugin.ExportWizardForm', 'Check All'))
         self.exportSongPage.setTitle(
-                translate('SongsPlugin.ExportWizardForm', 'Select Directory'))
+            translate('SongsPlugin.ExportWizardForm', 'Select Directory'))
         self.exportSongPage.setSubTitle(
             translate('SongsPlugin.ExportWizardForm',
             'Select the directory you want the songs to be saved.'))
@@ -196,10 +192,8 @@ class SongExportForm(OpenLPWizard):
         self.progressPage.setSubTitle(
             translate('SongsPlugin.ExportWizardForm',
             'Please wait while your songs are exported.'))
-        self.progressLabel.setText(
-            translate('SongsPlugin.ExportWizardForm', 'Ready.'))
-        self.progressBar.setFormat(
-            translate('SongsPlugin.ExportWizardForm', '%p%'))
+        self.progressLabel.setText(WizardStrings.Ready)
+        self.progressBar.setFormat(WizardStrings.PercentSymbolFormat)
 
     def validateCurrentPage(self):
         """
@@ -213,9 +207,7 @@ class SongExportForm(OpenLPWizard):
                 self.availableListWidget) if item.checkState()
             ]
             if not items:
-                critical_error_message_box(
-                    translate('SongsPlugin.ExportWizardForm',
-                    'No Song Selected'),
+                critical_error_message_box(UiStrings.NISp,
                     translate('SongsPlugin.ExportWizardForm',
                     'You need to add at least one Song to export.'))
                 return False
