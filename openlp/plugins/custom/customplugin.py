@@ -51,7 +51,7 @@ class CustomPlugin(Plugin):
             CustomMediaItem, CustomTab)
         self.weight = -5
         self.manager = Manager(u'custom', init_schema)
-        self.edit_custom_form = EditCustomForm(self.manager)
+        self.edit_custom_form = EditCustomForm(self)
         self.icon_path = u':/plugins/plugin_custom.png'
         self.icon = build_icon(self.icon_path)
 

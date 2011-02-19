@@ -33,7 +33,7 @@ import logging
 import os
 import re
 
-from openlp.core.lib import translate
+from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
@@ -74,12 +74,7 @@ class SongBeamerImport(SongImport):
         ``master_manager``
             The song manager for the running OpenLP installation.
         """
-        SongImport.__init__(self, master_manager)
-        if kwargs.has_key(u'filename'):
-            self.import_source = kwargs[u'filename']
-        if kwargs.has_key(u'filenames'):
-            self.import_source = kwargs[u'filenames']
-        log.debug(self.import_source)
+        SongImport.__init__(self, master_manager, **kwargs)
 
     def do_import(self):
         """
@@ -96,7 +91,7 @@ class SongBeamerImport(SongImport):
                 read_verses = False
                 file_name = os.path.split(file)[1]
                 self.import_wizard.incrementProgressBar(
-                    u'Importing %s' % (file_name), 0)
+                    WizardStrings.ImportingType % file_name, 0)
                 if os.path.isfile(file):
                     detect_file = open(file, u'r')
                     details = chardet.detect(detect_file.read(2048))
@@ -134,9 +129,8 @@ class SongBeamerImport(SongImport):
                     self.add_verse(self.current_verse, self.current_verse_type)
                 if self.check_complete():
                     self.finish()
-                self.import_wizard.incrementProgressBar(unicode(translate(
-                    'SongsPlugin.SongBeamerImport', 'Importing %s...')) %
-                    file_name)
+                self.import_wizard.incrementProgressBar(
+                    WizardStrings.ImportingType % file_name)
             return True
 
     def replace_html_tags(self):

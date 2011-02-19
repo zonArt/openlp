@@ -28,7 +28,8 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Renderer, ThemeLevel, ServiceItem, ImageManager
+from openlp.core.lib import Renderer, ServiceItem, ImageManager
+from openlp.core.lib.theme import ThemeLevel
 from openlp.core.ui import MainDisplay
 
 log = logging.getLogger(__name__)
@@ -173,14 +174,13 @@ class RenderManager(object):
         main_rect = None
         footer_rect = None
         if not theme.font_main_override:
-            main_rect = QtCore.QRect(10, 0,
-                            self.width - 20, self.footer_start)
+            main_rect = QtCore.QRect(10, 0, self.width - 20, self.footer_start)
         else:
             main_rect = QtCore.QRect(theme.font_main_x, theme.font_main_y,
                 theme.font_main_width - 1, theme.font_main_height - 1)
         if not theme.font_footer_override:
-            footer_rect = QtCore.QRect(10, self.footer_start,
-                            self.width - 20, self.height - self.footer_start)
+            footer_rect = QtCore.QRect(10, self.footer_start, self.width - 20,
+                self.height - self.footer_start)
         else:
             footer_rect = QtCore.QRect(theme.font_footer_x,
                 theme.font_footer_y, theme.font_footer_width - 1,
@@ -215,7 +215,7 @@ class RenderManager(object):
         else:
             self.image_manager.del_image(theme_data.theme_name)
         footer = []
-        footer.append(u'Arky Arky (Unknown)' )
+        footer.append(u'Arky Arky (Unknown)')
         footer.append(u'Public Domain')
         footer.append(u'CCLI 123456')
         # build a service item to generate preview
@@ -258,6 +258,6 @@ class RenderManager(object):
         self.height = screen.height()
         self.screen_ratio = float(self.height) / float(self.width)
         log.debug(u'calculate default %d, %d, %f',
-            self.width, self.height, self.screen_ratio )
+            self.width, self.height, self.screen_ratio)
         # 90% is start of footer
         self.footer_start = int(self.height * 0.90)

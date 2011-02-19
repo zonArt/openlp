@@ -26,7 +26,8 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, Receiver, ThemeLevel, translate
+from openlp.core.lib import SettingsTab, Receiver, translate
+from openlp.core.lib.theme import ThemeLevel
 from openlp.core.lib.ui import UiStrings
 
 class ThemesTab(SettingsTab):
@@ -199,7 +200,7 @@ class ThemesTab(SettingsTab):
         """
         Utility method to update the global theme preview image.
         """
-        image = self.parent.ThemeManagerContents.getPreviewImage(
+        image = self.parent.themeManagerContents.getPreviewImage(
             self.global_theme)
         preview = QtGui.QPixmap(unicode(image))
         if not preview.isNull():

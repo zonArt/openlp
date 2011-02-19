@@ -135,7 +135,7 @@ class AdvancedTab(SettingsTab):
 #        self.sharedCheckBox.setText(
 #            translate('AdvancedTab', 'Enable a shared data location'))
 #        self.sharedLabel.setText(translate('AdvancedTab', 'Store location:'))
-#        self.sharedPushButton.setText(translate('AdvancedTab', 'Browse...'))
+#        self.sharedPushButton.setText(UiStrings.Browse)
 #        self.databaseGroupBox.setTitle(translate('AdvancedTab', 'Databases'))
 
     def load(self):

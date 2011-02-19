@@ -32,6 +32,7 @@ import os
 import struct
 
 from openlp.core.lib import translate
+from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib import retrieve_windows_encoding
 from songimport import SongImport
 
@@ -134,8 +135,7 @@ class EasyWorshipSongImport(SongImport):
     ability to import EasyWorship song files.
     """
     def __init__(self, manager, **kwargs):
-        self.import_source = kwargs[u'filename']
-        SongImport.__init__(self, manager)
+        SongImport.__init__(self, manager, **kwargs)
 
     def do_import(self):
         # Open the DB and MB files if they exist
@@ -231,8 +231,7 @@ class EasyWorshipSongImport(SongImport):
                 title = self.get_field(fi_title)
                 if title:
                     self.import_wizard.incrementProgressBar(
-                        unicode(translate('SongsPlugin.ImportWizardForm',
-                            'Importing "%s"...')) % title, 0)
+                        WizardStrings.ImportingType % title, 0)
                     self.title = title
                 # Get remaining fields
                 copy = self.get_field(fi_copy)

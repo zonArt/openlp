@@ -27,7 +27,9 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, build_icon
-from openlp.core.lib.ui import add_welcome_page, create_valign_combo
+from openlp.core.lib.theme import HorizontalType, BackgroundType, \
+    BackgroundGradientType
+from openlp.core.lib.ui import UiStrings, add_welcome_page, create_valign_combo
 
 class Ui_ThemeWizard(object):
     def setupUi(self, themeWizard):
@@ -417,12 +419,12 @@ class Ui_ThemeWizard(object):
                 'according to the parameters below.'))
         self.backgroundLabel.setText(
             translate('OpenLP.ThemeWizard', 'Background type:'))
-        self.backgroundComboBox.setItemText(0,
+        self.backgroundComboBox.setItemText(BackgroundType.Solid,
             translate('OpenLP.ThemeWizard', 'Solid Color'))
-        self.backgroundComboBox.setItemText(1,
+        self.backgroundComboBox.setItemText(BackgroundType.Gradient,
             translate('OpenLP.ThemeWizard', 'Gradient'))
-        self.backgroundComboBox.setItemText(2,
-            translate('OpenLP.ThemeWizard', 'Image'))
+        self.backgroundComboBox.setItemText(
+            BackgroundType.Image, UiStrings.Image)
         self.colorLabel.setText(translate('OpenLP.ThemeWizard', 'Color:'))
         self.gradientStartLabel.setText(
             translate(u'OpenLP.ThemeWizard', 'Starting color:'))
@@ -430,17 +432,17 @@ class Ui_ThemeWizard(object):
             translate(u'OpenLP.ThemeWizard', 'Ending color:'))
         self.gradientTypeLabel.setText(
             translate('OpenLP.ThemeWizard', 'Gradient:'))
-        self.gradientComboBox.setItemText(0,
+        self.gradientComboBox.setItemText(BackgroundGradientType.Horizontal,
             translate('OpenLP.ThemeWizard', 'Horizontal'))
-        self.gradientComboBox.setItemText(1,
+        self.gradientComboBox.setItemText(BackgroundGradientType.Vertical,
             translate('OpenLP.ThemeWizard', 'Vertical'))
-        self.gradientComboBox.setItemText(2,
+        self.gradientComboBox.setItemText(BackgroundGradientType.Circular,
             translate('OpenLP.ThemeWizard', 'Circular'))
-        self.gradientComboBox.setItemText(3,
+        self.gradientComboBox.setItemText(BackgroundGradientType.LeftTop,
             translate('OpenLP.ThemeWizard', 'Top Left - Bottom Right'))
-        self.gradientComboBox.setItemText(4,
+        self.gradientComboBox.setItemText(BackgroundGradientType.LeftBottom,
             translate('OpenLP.ThemeWizard', 'Bottom Left - Top Right'))
-        self.imageLabel.setText(translate('OpenLP.ThemeWizard', 'Image:'))
+        self.imageLabel.setText(u'%s:' % UiStrings.Image)
         self.mainAreaPage.setTitle(
             translate('OpenLP.ThemeWizard', 'Main Area Font Details'))
         self.mainAreaPage.setSubTitle(
@@ -449,17 +451,17 @@ class Ui_ThemeWizard(object):
         self.mainFontLabel.setText(translate('OpenLP.ThemeWizard', 'Font:'))
         self.mainColorLabel.setText(translate('OpenLP.ThemeWizard', 'Color:'))
         self.mainSizeLabel.setText(translate('OpenLP.ThemeWizard', 'Size:'))
-        self.mainSizeSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'pt'))
+        self.mainSizeSpinBox.setSuffix(UiStrings.FontSizePtUnit)
         self.lineSpacingLabel.setText(
             translate('OpenLP.ThemeWizard', 'Line Spacing:'))
-        self.lineSpacingSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'pt'))
+        self.lineSpacingSpinBox.setSuffix(UiStrings.FontSizePtUnit)
         self.outlineCheckBox.setText(
             translate('OpenLP.ThemeWizard', '&Outline:'))
         self.outlineSizeLabel.setText(translate('OpenLP.ThemeWizard', 'Size:'))
-        self.outlineSizeSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'pt'))
+        self.outlineSizeSpinBox.setSuffix(UiStrings.FontSizePtUnit)
         self.shadowCheckBox.setText(translate('OpenLP.ThemeWizard', '&Shadow:'))
         self.shadowSizeLabel.setText(translate('OpenLP.ThemeWizard', 'Size:'))
-        self.shadowSizeSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'pt'))
+        self.shadowSizeSpinBox.setSuffix(UiStrings.FontSizePtUnit)
         self.mainBoldCheckBox.setText(translate('OpenLP.ThemeWizard', 'Bold'))
         self.mainItalicsCheckBox.setText(
             translate('OpenLP.ThemeWizard', 'Italic'))
@@ -471,7 +473,7 @@ class Ui_ThemeWizard(object):
         self.footerFontLabel.setText(translate('OpenLP.ThemeWizard', 'Font:'))
         self.footerColorLabel.setText(translate('OpenLP.ThemeWizard', 'Color:'))
         self.footerSizeLabel.setText(translate('OpenLP.ThemeWizard', 'Size:'))
-        self.footerSizeSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'pt'))
+        self.footerSizeSpinBox.setSuffix(UiStrings.FontSizePtUnit)
         self.alignmentPage.setTitle(
             translate('OpenLP.ThemeWizard', 'Text Formatting Details'))
         self.alignmentPage.setSubTitle(
@@ -479,11 +481,11 @@ class Ui_ThemeWizard(object):
                 'formatting information to be defined'))
         self.horizontalLabel.setText(
             translate('OpenLP.ThemeWizard', 'Horizontal Align:'))
-        self.horizontalComboBox.setItemText(0,
+        self.horizontalComboBox.setItemText(HorizontalType.Left,
             translate('OpenLP.ThemeWizard', 'Left'))
-        self.horizontalComboBox.setItemText(1,
+        self.horizontalComboBox.setItemText(HorizontalType.Right,
             translate('OpenLP.ThemeWizard', 'Right'))
-        self.horizontalComboBox.setItemText(2,
+        self.horizontalComboBox.setItemText(HorizontalType.Center,
             translate('OpenLP.ThemeWizard', 'Center'))
         self.transitionsLabel.setText(
             translate('OpenLP.ThemeWizard', 'Transitions:'))
