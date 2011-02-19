@@ -69,12 +69,12 @@ class SongFormat(object):
     CCLI = 5
     SongsOfFellowship = 6
     Generic = 7
-    #CSV = 8
     EasiSlides = 8
     EasyWorship = 9
     SongBeamer = 10
     SongShowPlus = 11
     FoilPresenter = 12
+    #CSV = 13
 
     @staticmethod
     def get_class(format):

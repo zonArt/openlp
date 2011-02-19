@@ -504,7 +504,7 @@ class SongImportForm(OpenLPWizard):
             The file extension filters. It should contain the file descriptions
             as well as the file extensions. For example::
 
-                u'SongBeamer files (*.sng)'
+                u'SongBeamer Files (*.sng)'
         """
         if filters:
             filters += u';;'
@@ -633,7 +633,7 @@ class SongImportForm(OpenLPWizard):
             'Select Songs of Fellowship Files'),
             self.songsOfFellowshipFileListWidget, u'%s (*.rtf)'
             % translate('SongsPlugin.ImportWizardForm',
-            'Songs Of Felloship Song Files')
+            'Songs Of Fellowship Song Files')
         )
 
     def onSongsOfFellowshipRemoveButtonClicked(self):
@@ -683,7 +683,7 @@ class SongImportForm(OpenLPWizard):
             translate('SongsPlugin.ImportWizardForm',
             'Select SongBeamer Files'),
             self.songBeamerFileListWidget, u'%s (*.sng)' %
-            translate('SongsPlugin.ImportWizardForm', 'SongBeamer files')
+            translate('SongsPlugin.ImportWizardForm', 'SongBeamer Files')
         )
 
     def onSongBeamerRemoveButtonClicked(self):
