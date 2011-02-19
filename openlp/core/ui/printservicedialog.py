@@ -29,7 +29,23 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import build_icon, translate, SpellTextEdit
 from openlp.core.lib.ui import UiStrings
 
-class Ui_PrintServiceOrderDialog(object):
+class ZoomSize():
+    """
+    Type enumeration for Combo Box sizes
+    """
+    Page = 0
+    Width = 1
+    OneHundred = 2
+    SeventyFive = 3
+    Fifty = 4
+    TwentyFive = 5
+
+    Sizes = [
+        translate('OpenLP.PrintServiceDialog', 'Fit Page'),
+        translate('OpenLP.PrintServiceDialog', 'Fit Width'),
+        u'100%', u'75%', u'50%', u'25%']
+
+class Ui_PrintServiceDialog(object):
     def setupUi(self, printServiceDialog):
         printServiceDialog.setObjectName(u'printServiceDialog')
         printServiceDialog.resize(664, 594)
@@ -40,23 +56,24 @@ class Ui_PrintServiceOrderDialog(object):
         self.toolbar = QtGui.QToolBar(printServiceDialog)
         self.toolbar.setIconSize(QtCore.QSize(22, 22))
         self.toolbar.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
-        self.toolbar.addAction(
+        self.printButton = self.toolbar.addAction(
             QtGui.QIcon(build_icon(u':/general/general_print.png')), 'Print')
         self.optionsButton = QtGui.QToolButton(self.toolbar)
         self.optionsButton.setText(u'Options')
-        self.optionsButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
+        self.optionsButton.setToolButtonStyle(
+            QtCore.Qt.ToolButtonTextBesideIcon)
         self.optionsButton.setIcon(QtGui.QIcon(
             build_icon(u':/system/system_configure.png')))
         self.optionsButton.setCheckable(True)
         self.toolbar.addWidget(self.optionsButton)
-        self.toolbar.addAction(
+        self.closeButton = self.toolbar.addAction(
             QtGui.QIcon(build_icon(u':/system/system_close.png')),
             'Close')
         self.toolbar.addSeparator()
-        self.toolbar.addAction(
+        self.plainCopy = self.toolbar.addAction(
             QtGui.QIcon(build_icon(u':/system/system_edit_copy.png')),
             'Copy')
-        self.toolbar.addAction(
+        self.htmlCopy = self.toolbar.addAction(
             QtGui.QIcon(build_icon(u':/system/system_edit_copy.png')),
             'Copy as HTML')
         self.toolbar.addSeparator()
@@ -83,22 +100,10 @@ class Ui_PrintServiceOrderDialog(object):
         self.toolbar.addWidget(self.zoomOriginalButton)
         self.zoomComboBox = QtGui.QComboBox(printServiceDialog)
         self.zoomComboBox.setObjectName((u'zoomComboBox'))
-        self.zoomComboBox.addItem(u'Fit Page')
-        self.zoomComboBox.addItem(u'Fit Width')
-        self.zoomComboBox.addItem(u'100%')
-        self.zoomComboBox.addItem(u'75%')
-        self.zoomComboBox.addItem(u'50%')
-        self.zoomComboBox.addItem(u'25%')
         self.toolbar.addWidget(self.zoomComboBox)
         self.mainLayout.addWidget(self.toolbar)
-        self.scrollArea = QtGui.QScrollArea(printServiceDialog)
-        self.scrollArea.setWidgetResizable(True)
-        self.scrollArea.setObjectName(u'scrollArea')
-        self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 227, 473))
-        self.scrollAreaWidgetContents.setObjectName(u'scrollAreaWidgetContents')
-        self.scrollArea.setWidget(self.scrollAreaWidgetContents)
-        self.mainLayout.addWidget(self.scrollArea)
+        self.previewWidget = QtGui.QPrintPreviewWidget(printServiceDialog)
+        self.mainLayout.addWidget(self.previewWidget)
         self.optionsWidget = QtGui.QWidget(printServiceDialog)
         self.optionsWidget.hide()
         self.optionsWidget.resize(400, 300)
@@ -123,7 +128,7 @@ class Ui_PrintServiceOrderDialog(object):
         self.groupLayout = QtGui.QVBoxLayout()
         self.slideTextCheckBox = QtGui.QCheckBox()
         self.groupLayout.addWidget(self.slideTextCheckBox)
-        self.notesCheckBox = QtGui.QCheckBox('Include service item notes')
+        self.notesCheckBox = QtGui.QCheckBox()
         self.groupLayout.addWidget(self.notesCheckBox)
         self.metaDataCheckBox = QtGui.QCheckBox()
         self.groupLayout.addWidget(self.metaDataCheckBox)
@@ -136,21 +141,22 @@ class Ui_PrintServiceOrderDialog(object):
         QtCore.QObject.connect(self.optionsButton,
             QtCore.SIGNAL(u'toggled(bool)'), self.toggleOptions)
 
-        self.retranslateUi(printServiceDialog)
-        QtCore.QMetaObject.connectSlotsByName(printServiceDialog)
-
     def retranslateUi(self, printServiceDialog):
         printServiceDialog.setWindowTitle(
-            translate('OpenLP.PrintServiceOrderForm', 'Print Service Order'))
-#        self.previewLabel.setText(
-#            translate('OpenLP.PrintServiceOrderForm', '<b>Preview:</b>'))
-        self.slideTextCheckBox.setText(translate(
-            'OpenLP.PrintServiceOrderForm', 'Include slide text if available'))
-        self.notesCheckBox.setText(translate(
-            'OpenLP.PrintServiceOrderForm', 'Include service item notes'))
-        self.metaDataCheckBox.setText(
-            translate('OpenLP.PrintServiceOrderForm',
+            translate('OpenLP.PrintServiceForm', 'Print Service Order'))
+        self.slideTextCheckBox.setText(translate('OpenLP.PrintServiceForm',
+            'Include slide text if available'))
+        self.notesCheckBox.setText(translate('OpenLP.PrintServiceForm',
+            'Include service item notes'))
+        self.metaDataCheckBox.setText(translate('OpenLP.PrintServiceForm',
             'Include play length of media items'))
+        self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.Page])
+        self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.Width])
+        self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.OneHundred])
+        self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.SeventyFive])
+        self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.Fifty])
+        self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.TwentyFive])
+
 #        self.serviceTitleLabel.setText(translate(
 #            'OpenLP.PrintServiceOrderForm', 'Title:'))
 #        self.serviceTitleLineEdit.setText(translate('OpenLP.ServiceManager',
