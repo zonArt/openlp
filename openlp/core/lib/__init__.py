@@ -321,8 +321,6 @@ def check_directory_exists(dir):
         os.makedirs(dir)
 
 from listwidgetwithdnd import ListWidgetWithDnD
-from theme import ThemeLevel, ThemeXML, BackgroundGradientType, \
-    BackgroundType, HorizontalType, VerticalType
 from displaytags import DisplayTags
 from spelltextedit import SpellTextEdit
 from eventreceiver import Receiver

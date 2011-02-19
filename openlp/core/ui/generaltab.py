@@ -28,6 +28,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, Receiver, translate
+from openlp.core.lib.ui import UiStrings
 
 log = logging.getLogger(__name__)
 
@@ -267,8 +268,7 @@ class GeneralTab(SettingsTab):
             translate('OpenLP.GeneralTab', ' sec'))
         self.ccliGroupBox.setTitle(
             translate('OpenLP.GeneralTab', 'CCLI Details'))
-        self.numberLabel.setText(
-            translate('OpenLP.GeneralTab', 'CCLI number:'))
+        self.numberLabel.setText(UiStrings.CCLINumberLabel)
         self.usernameLabel.setText(
             translate('OpenLP.GeneralTab', 'SongSelect username:'))
         self.passwordLabel.setText(

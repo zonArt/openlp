@@ -54,9 +54,6 @@ Helper Classes & Functions
 .. automodule:: openlp.plugins.songs.lib.mediaitem
    :members:
 
-.. autoclass:: openlp.plugins.songs.lib.mediaitem.SongListView
-   :members:
-
 .. automodule:: openlp.plugins.songs.lib.songimport
    :members:
 

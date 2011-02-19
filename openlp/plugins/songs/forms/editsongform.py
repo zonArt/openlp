@@ -30,10 +30,12 @@ import re
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, translate
-from openlp.core.lib.ui import add_widget_completer, critical_error_message_box
+from openlp.core.lib.ui import UiStrings, add_widget_completer, \
+    critical_error_message_box
 from openlp.plugins.songs.forms import EditVerseForm
 from openlp.plugins.songs.lib import SongXML, VerseType
 from openlp.plugins.songs.lib.db import Book, Song, Author, Topic
+from openlp.plugins.songs.lib.ui import SongStrings
 from editsongdialog import Ui_EditSongDialog
 
 log = logging.getLogger(__name__)
@@ -94,8 +96,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
         self.previewButton = QtGui.QPushButton()
         self.previewButton.setObjectName(u'previewButton')
-        self.previewButton.setText(
-            translate('SongsPlugin.EditSongForm', 'Save && Preview'))
+        self.previewButton.setText(UiStrings.SaveAndPreview)
         self.buttonBox.addButton(
             self.previewButton, QtGui.QDialogButtonBox.ActionRole)
         QtCore.QObject.connect(self.buttonBox,
@@ -363,8 +364,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 self.__addAuthorToList(author)
             self.authorsComboBox.setCurrentIndex(0)
         else:
-            QtGui.QMessageBox.warning(self,
-                translate('SongsPlugin.EditSongForm', 'No Author Selected'),
+            QtGui.QMessageBox.warning(self, UiStrings.NISs,
                 translate('SongsPlugin.EditSongForm', 'You have not selected '
                 'a valid author. Either select an author from the list, '
                 'or type in a new author and click the "Add Author to '
@@ -423,8 +423,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 self.topicsListView.addItem(topic_item)
             self.topicsComboBox.setCurrentIndex(0)
         else:
-            QtGui.QMessageBox.warning(self,
-                translate('SongsPlugin.EditSongForm', 'No Topic Selected'),
+            QtGui.QMessageBox.warning(self, UiStrings.NISs,
                 translate('SongsPlugin.EditSongForm', 'You have not selected '
                 'a valid topic. Either select a topic from the list, or '
                 'type in a new topic and click the "Add Topic to Song" '
@@ -650,7 +649,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def onCopyrightInsertButtonTriggered(self):
         text = self.copyrightEdit.text()
         pos = self.copyrightEdit.cursorPosition()
-        sign = translate('SongsPlugin.EditSongForm', '\xa9')
+        sign = SongStrings.CopyrightSymbol
         text = text[:pos] + sign + text[pos:]
         self.copyrightEdit.setText(text)
         self.copyrightEdit.setFocus()

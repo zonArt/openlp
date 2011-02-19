@@ -32,6 +32,25 @@ import re
 
 log = logging.getLogger(__name__)
 
+class LayoutStyle(object):
+    """
+    An enumeration for bible screen layout styles.
+    """
+    VersePerSlide = 0
+    VersePerLine = 1
+    Continuous = 2
+
+
+class DisplayStyle(object):
+    """
+    An enumeration for bible text bracket display styles.
+    """
+    NoBrackets = 0
+    Round = 1
+    Curly = 2
+    Square = 3
+
+
 def get_reference_match(match_type):
     """
     Provides the regexes and matches to use while parsing strings for bible

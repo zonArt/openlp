@@ -29,8 +29,8 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, BackgroundType, BackgroundGradientType, \
-    Receiver
+from openlp.core.lib import Receiver, translate
+from openlp.core.lib.theme import BackgroundType, BackgroundGradientType
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.utils import get_images_filter
 from themewizard import Ui_ThemeWizard
@@ -204,7 +204,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         # Do not trigger on start up
         if self.currentPage != self.welcomePage:
             self.updateTheme()
-            frame = self.thememanager.generateImage(self.theme, True)
+            self.thememanager.generateImage(self.theme, True)
 
     def updateLinesText(self, lines):
         """
@@ -301,7 +301,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
                 'Edit Theme - %s')) % self.theme.theme_name)
             self.next()
         else:
-            self.setWindowTitle(translate('OpenLP.ThemeWizard', 'New Theme'))
+            self.setWindowTitle(UiStrings.NewTheme)
         return QtGui.QWizard.exec_(self)
 
     def initializePage(self, id):
