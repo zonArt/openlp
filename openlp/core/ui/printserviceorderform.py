@@ -47,40 +47,50 @@ class PrintServiceOrderForm(QtGui.QDialog, Ui_PrintServiceOrderDialog):
         # Load the settings for the dialog.
         settings = QtCore.QSettings()
         settings.beginGroup(u'advanced')
-        self.printSlideTextCheckBox.setChecked(settings.value(
+        self.slideTextCheckBox.setChecked(settings.value(
             u'print slide text', QtCore.QVariant(False)).toBool())
-        self.printMetaDataCheckBox.setChecked(settings.value(
+        self.metaDataCheckBox.setChecked(settings.value(
             u'print file meta data', QtCore.QVariant(False)).toBool())
-        self.printNotesCheckBox.setChecked(settings.value(
+        self.notesCheckBox.setChecked(settings.value(
             u'print notes', QtCore.QVariant(False)).toBool())
         settings.endGroup()
         # Signals
-        QtCore.QObject.connect(self.printButton,
-            QtCore.SIGNAL(u'clicked()'), self.printServiceOrder)
-        QtCore.QObject.connect(self.zoomOutButton,
-            QtCore.SIGNAL(u'clicked()'), self.zoomOut)
-        QtCore.QObject.connect(self.zoomInButton,
-            QtCore.SIGNAL(u'clicked()'), self.zoomIn)
-        QtCore.QObject.connect(self.previewWidget,
-            QtCore.SIGNAL(u'paintRequested(QPrinter *)'), self.paintRequested)
-        QtCore.QObject.connect(self.serviceTitleLineEdit,
-            QtCore.SIGNAL(u'textChanged(const QString)'),
-            self.updatePreviewText)
-        QtCore.QObject.connect(self.printSlideTextCheckBox,
-            QtCore.SIGNAL(u'stateChanged(int)'), self.updatePreviewText)
-        QtCore.QObject.connect(self.printNotesCheckBox,
-            QtCore.SIGNAL(u'stateChanged(int)'), self.updatePreviewText)
-        QtCore.QObject.connect(self.printMetaDataCheckBox,
-            QtCore.SIGNAL(u'stateChanged(int)'), self.updatePreviewText)
-        QtCore.QObject.connect(self.customNoteEdit,
-            QtCore.SIGNAL(u'textChanged()'), self.updatePreviewText)
-        QtCore.QObject.connect(self.cancelButton,
-            QtCore.SIGNAL(u'clicked()'), self.reject)
-        QtCore.QObject.connect(self.copyTextButton,
-            QtCore.SIGNAL(u'clicked()'), self.copyText)
-        QtCore.QObject.connect(self.copyHtmlButton,
-            QtCore.SIGNAL(u'clicked()'), self.copyHtmlText)
-        self.updatePreviewText()
+#        QtCore.QObject.connect(self.printButton,
+#            QtCore.SIGNAL(u'clicked()'), self.printServiceOrder)
+#        QtCore.QObject.connect(self.zoomOutButton,
+#            QtCore.SIGNAL(u'clicked()'), self.zoomOut)
+#        QtCore.QObject.connect(self.zoomInButton,
+#            QtCore.SIGNAL(u'clicked()'), self.zoomIn)
+#        QtCore.QObject.connect(self.previewWidget,
+#            QtCore.SIGNAL(u'paintRequested(QPrinter *)'), self.paintRequested)
+#        QtCore.QObject.connect(self.serviceTitleLineEdit,
+#            QtCore.SIGNAL(u'textChanged(const QString)'),
+#            self.updatePreviewText)
+#        QtCore.QObject.connect(self.slideTextCheckBox,
+#            QtCore.SIGNAL(u'stateChanged(int)'), self.updatePreviewText)
+#        QtCore.QObject.connect(self.notesCheckBox,
+#            QtCore.SIGNAL(u'stateChanged(int)'), self.updatePreviewText)
+#        QtCore.QObject.connect(self.metaDataCheckBox,
+#            QtCore.SIGNAL(u'stateChanged(int)'), self.updatePreviewText)
+#        QtCore.QObject.connect(self.customNoteEdit,
+#            QtCore.SIGNAL(u'textChanged()'), self.updatePreviewText)
+#        QtCore.QObject.connect(self.cancelButton,
+#            QtCore.SIGNAL(u'clicked()'), self.reject)
+#        QtCore.QObject.connect(self.copyTextButton,
+#            QtCore.SIGNAL(u'clicked()'), self.copyText)
+#        QtCore.QObject.connect(self.copyHtmlButton,
+#            QtCore.SIGNAL(u'clicked()'), self.copyHtmlText)
+#        self.updatePreviewText()
+
+    def toggleOptions(self, checked):
+        self.optionsWidget.setVisible(checked)
+        if checked:
+            left = self.optionsButton.pos().x()
+            top = self.toolbar.height()
+            self.optionsWidget.move(left, top)
+            self.titleLineEdit.setFocus()
+        else:
+            self.saveOptions()
 
     def updatePreviewText(self):
         """
@@ -95,7 +105,7 @@ class PrintServiceOrderForm(QtGui.QDialog, Ui_PrintServiceOrderDialog):
             text += u'<h3><img src="%s" /> %s</h3>' % (item.icon,
                 item.get_display_title())
             # Add slide text of the service item.
-            if self.printSlideTextCheckBox.isChecked():
+            if self.slideTextCheckBox.isChecked():
                 if item.is_text():
                     # Add the text of the service item.
                     verse = None
@@ -120,13 +130,13 @@ class PrintServiceOrderForm(QtGui.QDialog, Ui_PrintServiceOrderDialog):
                     # add footer
                     text += u'<p>%s</p>' % item.foot_text
             # Add service items' notes.
-            if self.printNotesCheckBox.isChecked():
+            if self.notesCheckBox.isChecked():
                 if item.notes:
                     text += u'<p><b>%s</b></p>%s' % (translate(
                         'OpenLP.ServiceManager', 'Notes:'),
                         item.notes.replace(u'\n', u'<br />'))
             # Add play length of media files.
-            if item.is_media() and self.printMetaDataCheckBox.isChecked():
+            if item.is_media() and self.metaDataCheckBox.isChecked():
                 text += u'<p><b>%s</b> %s</p>' % (translate(
                     'OpenLP.ServiceManager', u'Playing time:'),
                     unicode(datetime.timedelta(seconds=item.media_length)))
@@ -167,7 +177,6 @@ class PrintServiceOrderForm(QtGui.QDialog, Ui_PrintServiceOrderDialog):
             return
         # Print the document.
         self.document.print_(self.printer)
-        self.accept()
 
     def zoomIn(self):
         """
@@ -190,7 +199,7 @@ class PrintServiceOrderForm(QtGui.QDialog, Ui_PrintServiceOrderDialog):
         else:
             self.copyTextButton.setText(UiStrings.CopyToText)
 
-    def accept(self):
+    def saveOptions(self):
         """
         Save the settings and close the dialog.
         """
@@ -198,17 +207,14 @@ class PrintServiceOrderForm(QtGui.QDialog, Ui_PrintServiceOrderDialog):
         settings = QtCore.QSettings()
         settings.beginGroup(u'advanced')
         settings.setValue(u'print slide text',
-            QtCore.QVariant(self.printSlideTextCheckBox.isChecked()))
+            QtCore.QVariant(self.slideTextCheckBox.isChecked()))
         settings.setValue(u'print file meta data',
-            QtCore.QVariant(self.printMetaDataCheckBox.isChecked()))
+            QtCore.QVariant(self.metaDataCheckBox.isChecked()))
         settings.setValue(u'print notes',
-            QtCore.QVariant(self.printNotesCheckBox.isChecked()))
+            QtCore.QVariant(self.notesCheckBox.isChecked()))
         settings.endGroup()
+
+    def close(self):
         # Close the dialog.
         return QtGui.QDialog.accept(self)
 
-    def reject(self):
-        """
-        Close the dialog, do not print the service and do not save the settings.
-        """
-        return QtGui.QDialog.reject(self)
