@@ -147,8 +147,10 @@ class PowerpointDocument(PresentationDocument):
         """
         if self.check_thumbnails():
             return
-        self.presentation.Export(os.path.join(self.get_thumbnail_folder(), ''),
-            'png', 320, 240)
+        for num in range(0, self.presentation.Slides.Count):
+            self.presentation.Slides(num + 1).Export(os.path.join(
+                self.get_thumbnail_folder(), 'slide%d.png' % (num + 1)),
+                'png', 320, 240)
 
     def close_presentation(self):
         """

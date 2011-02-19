@@ -30,7 +30,6 @@ from forms import EditCustomForm
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
-from openlp.core.lib.ui import UiStrings
 from openlp.plugins.custom.lib import CustomMediaItem, CustomTab
 from openlp.plugins.custom.lib.db import CustomSlide, init_schema
 
@@ -106,13 +105,20 @@ class CustomPlugin(Plugin):
             u'title': translate('CustomsPlugin', 'Custom', 'container title')
         }
         # Middle Header Bar
-        ## Import Action ##
-        self.textStrings[StringContent.Import] = {
-            u'title': UiStrings.Import,
-            u'tooltip': translate('CustomsPlugin',
-                'Import a Custom')
+        tooltips = {
+            u'load': translate('CustomsPlugin', 'Load a new Custom'),
+            u'import': translate('CustomsPlugin', 'Import a Custom'),
+            u'new': translate('CustomsPlugin', 'Add a new Custom'),
+            u'edit': translate('CustomsPlugin', 'Edit the selected Custom'),
+            u'delete': translate('CustomsPlugin', 'Delete the selected Custom'),
+            u'preview': translate('CustomsPlugin',
+                'Preview the selected Custom'),
+            u'live': translate('CustomsPlugin',
+                'Send the selected Custom live'),
+            u'service': translate('CustomsPlugin',
+                'Add the selected Custom to the service')
         }
-        Plugin.setPluginTextStrings(self)
+        self.setPluginUiTextStrings(tooltips)
 
     def finalise(self):
         """

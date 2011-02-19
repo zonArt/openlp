@@ -170,17 +170,17 @@ class HorizontalType(object):
     Type enumeration for horizontal alignment.
     """
     Left = 0
-    Center = 1
-    Right = 2
+    Center = 2
+    Right = 1
 
     @staticmethod
     def to_string(horizontal_type):
         """
         Return a string representation of a horizontal type.
         """
-        if horizontal_type == Horizontal.Right:
+        if horizontal_type == HorizontalType.Right:
             return u'right'
-        elif horizontal_type == Horizontal.Center:
+        elif horizontal_type == HorizontalType.Center:
             return u'center'
         else:
             return u'left'

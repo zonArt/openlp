@@ -380,7 +380,7 @@ class SlideController(QtGui.QWidget):
         self.previousItem.setShortcuts([QtCore.Qt.Key_Up, QtCore.Qt.Key_PageUp])
         self.previousItem.setShortcutContext(
             QtCore.Qt.WidgetWithChildrenShortcut)
-        actionList.add_action(self.nextItem, u'Live')
+        actionList.add_action(self.previousItem, u'Live')
         self.nextItem.setShortcuts([QtCore.Qt.Key_Down, QtCore.Qt.Key_PageDown])
         self.nextItem.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
         actionList.add_action(self.nextItem, u'Live')
@@ -415,6 +415,7 @@ class SlideController(QtGui.QWidget):
         # rebuild display as screen size changed
         self.display = MainDisplay(self, self.screens, self.isLive)
         self.display.imageManager = self.parent.renderManager.image_manager
+        self.display.alertTab = self.alertTab
         self.display.setup()
         if self.isLive:
             self.__addActionsToWidget(self.display)
@@ -602,14 +603,15 @@ class SlideController(QtGui.QWidget):
             slideHeight = 0
             if self.serviceItem.is_text():
                 if frame[u'verseTag']:
-                    bits = frame[u'verseTag'].split(u':')
-                    tag = u'%s\n%s' % (bits[0][0], bits[1][0:] )
-                    tag1 = u'%s%s' % (bits[0][0], bits[1][0:] )
-                    row = tag
+                    # These tags are already translated.
+                    verse_def = frame[u'verseTag']
+                    verse_def = u'%s%s' % (verse_def[0].upper(), verse_def[1:])
+                    two_line_def = u'%s\n%s' % (verse_def[0], verse_def[1:] )
+                    row = two_line_def
                     if self.isLive:
-                        if tag1 not in self.slideList:
-                            self.slideList[tag1] = framenumber
-                            self.songMenu.menu().addAction(tag1,
+                        if verse_def not in self.slideList:
+                            self.slideList[verse_def] = framenumber
+                            self.songMenu.menu().addAction(verse_def,
                                 self.onSongBarHandler)
                 else:
                     row += 1

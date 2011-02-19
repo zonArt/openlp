@@ -154,8 +154,9 @@ class PptviewDocument(PresentationDocument):
         being shut down
         """
         log.debug(u'ClosePresentation')
-        self.controller.process.ClosePPT(self.pptid)
-        self.pptid = -1
+        if self.controller.process:
+            self.controller.process.ClosePPT(self.pptid)
+            self.pptid = -1
         self.controller.remove_doc(self)
 
     def is_loaded(self):
