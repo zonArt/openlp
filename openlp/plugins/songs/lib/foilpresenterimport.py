@@ -94,6 +94,7 @@ import os
 from lxml import etree, objectify
 
 from openlp.core.lib import translate
+from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.songimport import SongImport
 from openlp.plugins.songs.lib.db import Author, Book, Song, Topic
@@ -110,32 +111,27 @@ class FoilPresenterImport(SongImport):
         Initialise the import.
         """
         log.debug(u'initialise FoilPresenterImport')
-        SongImport.__init__(self, master_manager)
-        self.master_manager = master_manager
-        self.FoilPresenter = FoilPresenter(master_manager)
-        if kwargs.has_key(u'filename'):
-            self.import_source = kwargs[u'filename']
-        if kwargs.has_key(u'filenames'):
-            self.import_source = kwargs[u'filenames']
+        SongImport.__init__(self, master_manager, **kwargs)
+        self.FoilPresenter = FoilPresenter(self.manager)
 
     def do_import(self):
         """
         Imports the songs.
         """
         self.import_wizard.progressBar.setMaximum(len(self.import_source))
+        parser = etree.XMLParser(remove_blank_text=True)
         for file_path in self.import_source:
             if self.stop_import_flag:
                 return False
-            self.import_wizard.incrementProgressBar(unicode(translate(
-                'SongsPlugin.FoilPresenterImport', 'Importing %s...')) %
-                os.path.basename(file_path))
-            parser = etree.XMLParser(remove_blank_text=True)
-            parsed_file = etree.parse(file_path, parser)
-            xml = unicode(etree.tostring(parsed_file))
-            if self.FoilPresenter.xml_to_song(xml) is None:
-                log.debug(u'File could not be imported: %s' % file_path)
-                # Importing this song failed! For now we stop import.
-                return False
+            self.import_wizard.incrementProgressBar(
+                WizardStrings.ImportingType % os.path.basename(file_path))
+            try:
+                parsed_file = etree.parse(file_path, parser)
+                xml = unicode(etree.tostring(parsed_file))
+                if self.FoilPresenter.xml_to_song(xml) is None:
+                    log.debug(u'File could not be imported: %s' % file_path)
+            except etree.XMLSyntaxError:
+                log.exception(u'XML syntax error in file %s' % file_path)
         return True
 
 class FoilPresenter(object):
@@ -325,9 +321,9 @@ class FoilPresenter(object):
                 for test_temp in test:
                     author_temp.append(test_temp)
                 for author in author_temp:
-                    author = re.compile(
-                        u'^[\/,;\-\s]+|[\/,;\-\s]+$|\s*[0-9]{4}\s*[\-\/]?\s*([0-9]{4})?[\/,;\-\s]*$'
-                        ).sub(u'', author)
+                    regex = u'^[\/,;\-\s]+|[\/,;\-\s]+$|'\
+                        '\s*[0-9]{4}\s*[\-\/]?\s*([0-9]{4})?[\/,;\-\s]*$'
+                    author = re.compile(regex).sub(u'', author)
                     author = re.compile(
                         u'[0-9]{1,2}\.\s?J(ahr)?h\.|um\s*$|vor\s*$').sub(u'', 
                         author)

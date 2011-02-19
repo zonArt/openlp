@@ -410,12 +410,8 @@ class SongImportForm(OpenLPWizard):
                     return False
             elif source_format == SongFormat.FoilPresenter:
                 if self.foilPresenterFileListWidget.count() == 0:
-                    criticalErrorMessageBox(
-                        translate('SongsPlugin.ImportWizardForm',
-                        'No Foilpresenter Files Selected'),
-                        translate('SongsPlugin.ImportWizardForm',
-                        'You need to add at least one Foilpresenter '
-                        'song file to import from.'))
+                    critical_error_message_box(UiStrings.NFSp,
+                        WizardStrings.YouSpecifyFile % WizardStrings.FP)
                     self.foilPresenterAddButton.setFocus()
                     return False
             return True
@@ -613,9 +609,7 @@ class SongImportForm(OpenLPWizard):
         """
         Get FoilPresenter song database files
         """
-        self.getFiles(
-            translate('SongsPlugin.ImportWizardForm',
-            'Select FoilPresenter Files'),
+        self.getFiles(WizardStrings.OpenTypeFile % WizardStrings.FP,
             self.foilPresenterFileListWidget, u'%s (*.foil)'
             % translate('SongsPlugin.ImportWizardForm',
             'Foilpresenter Song Files')
