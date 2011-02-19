@@ -43,6 +43,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         self.printer = QtGui.QPrinter()
         self.printDialog = QtGui.QPrintDialog(self.printer, self)
         self.document = QtGui.QTextDocument()
+        self.zoom = 0
         self.setupUi(self)
         # Load the settings for the dialog.
         settings = QtCore.QSettings()
@@ -53,6 +54,8 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             u'print file meta data', QtCore.QVariant(False)).toBool())
         self.notesCheckBox.setChecked(settings.value(
             u'print notes', QtCore.QVariant(False)).toBool())
+        self.zoomComboBox.setCurrentIndex(settings.value(
+            u'display size', QtCore.QVariant(0)).toInt()[0])
         settings.endGroup()
         # Signals
         QtCore.QObject.connect(self.printButton,
@@ -69,23 +72,10 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             QtCore.SIGNAL(u'paintRequested(QPrinter *)'), self.paintRequested)
         QtCore.QObject.connect(self.zoomComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'), self.displaySizeChanged)
-#        QtCore.QObject.connect(self.serviceTitleLineEdit,
-#            QtCore.SIGNAL(u'textChanged(const QString)'),
-#            self.updatePreviewText)
-#        QtCore.QObject.connect(self.slideTextCheckBox,
-#            QtCore.SIGNAL(u'stateChanged(int)'), self.updatePreviewText)
-#        QtCore.QObject.connect(self.notesCheckBox,
-#            QtCore.SIGNAL(u'stateChanged(int)'), self.updatePreviewText)
-#        QtCore.QObject.connect(self.metaDataCheckBox,
-#            QtCore.SIGNAL(u'stateChanged(int)'), self.updatePreviewText)
-#        QtCore.QObject.connect(self.footerTextEdit,
-#            QtCore.SIGNAL(u'textChanged()'), self.updatePreviewText)
-#        QtCore.QObject.connect(self.cancelButton,
-#            QtCore.SIGNAL(u'clicked()'), self.reject)
-#        QtCore.QObject.connect(self.copyTextButton,
-#            QtCore.SIGNAL(u'clicked()'), self.copyText)
-#        QtCore.QObject.connect(self.copyHtmlButton,
-#            QtCore.SIGNAL(u'clicked()'), self.copyHtmlText)
+        QtCore.QObject.connect(self.plainCopy,
+            QtCore.SIGNAL(u'triggered()'), self.copyText)
+        QtCore.QObject.connect(self.htmlCopy,
+            QtCore.SIGNAL(u'triggered()'), self.copyHtmlText)
         self.updatePreviewText()
 
     def toggleOptions(self, checked):
@@ -97,6 +87,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             self.titleLineEdit.setFocus()
         else:
             self.saveOptions()
+        self.updatePreviewText()
 
     def updatePreviewText(self):
         """
@@ -171,12 +162,16 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             self.previewWidget.fitToWidth()
         elif display == ZoomSize.OneHundred:
             self.previewWidget.fitToWidth()
+            self.previewWidget.zoomIn(1)
         elif display == ZoomSize.SeventyFive:
             self.previewWidget.fitToWidth()
+            self.previewWidget.zoomIn(0.75)
         elif display == ZoomSize.Fifty:
             self.previewWidget.fitToWidth()
+            self.previewWidget.zoomIn(0.5)
         elif display == ZoomSize.TwentyFive:
             self.previewWidget.fitToWidth()
+            self.previewWidget.zoomIn(0.25)
         settings = QtCore.QSettings()
         settings.beginGroup(u'advanced')
         settings.setValue(u'display size',QtCore.QVariant(display))
@@ -208,18 +203,21 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         Called when *zoomInButton* is clicked.
         """
         self.previewWidget.zoomIn()
+        self.zoom -= 0.1
 
     def zoomOut(self):
         """
         Called when *zoomOutButton* is clicked.
         """
         self.previewWidget.zoomOut()
+        self.zoom += 0.1
 
     def zoomOriginal(self):
         """
         Called when *zoomOutButton* is clicked.
         """
-        self.previewWidget.fitInView()
+        self.previewWidget.zoomIn(1 + self.zoom)
+        self.zoom = 0
 
     def updateTextFormat(self, value):
         """

@@ -59,7 +59,8 @@ class Ui_PrintServiceDialog(object):
         self.printButton = self.toolbar.addAction(
             QtGui.QIcon(build_icon(u':/general/general_print.png')), 'Print')
         self.optionsButton = QtGui.QToolButton(self.toolbar)
-        self.optionsButton.setText(u'Options')
+        self.optionsButton.setText(translate('OpenLP.PrintServiceForm',
+            'Options'))
         self.optionsButton.setToolButtonStyle(
             QtCore.Qt.ToolButtonTextBesideIcon)
         self.optionsButton.setIcon(QtGui.QIcon(
@@ -68,38 +69,41 @@ class Ui_PrintServiceDialog(object):
         self.toolbar.addWidget(self.optionsButton)
         self.closeButton = self.toolbar.addAction(
             QtGui.QIcon(build_icon(u':/system/system_close.png')),
-            'Close')
+            translate('OpenLP.PrintServiceForm', 'Close'))
         self.toolbar.addSeparator()
         self.plainCopy = self.toolbar.addAction(
             QtGui.QIcon(build_icon(u':/system/system_edit_copy.png')),
-            'Copy')
+            translate('OpenLP.PrintServiceForm', 'Copy'))
         self.htmlCopy = self.toolbar.addAction(
             QtGui.QIcon(build_icon(u':/system/system_edit_copy.png')),
-            'Copy as HTML')
+            translate('OpenLP.PrintServiceForm', 'Copy as HTML'))
         self.toolbar.addSeparator()
         self.zoomInButton = QtGui.QToolButton(self.toolbar)
         self.zoomInButton.setIcon(QtGui.QIcon(
             build_icon(u':/general/general_zoom_in.png')))
-        self.zoomInButton.setToolTip(u'Zoom In')
+        self.zoomInButton.setToolTip(translate('OpenLP.PrintServiceForm',
+            'Zoom In'))
         self.zoomInButton.setObjectName(u'zoomInButton')
         self.zoomInButton.setIconSize(QtCore.QSize(22, 22))
         self.toolbar.addWidget(self.zoomInButton)
         self.zoomOutButton = QtGui.QToolButton(self.toolbar)
         self.zoomOutButton.setIcon(QtGui.QIcon(
             build_icon(u':/general/general_zoom_out.png')))
-        self.zoomOutButton.setToolTip(u'Zoom Out')
+        self.zoomOutButton.setToolTip(translate('OpenLP.PrintServiceForm',
+            'Zoom Out'))
         self.zoomOutButton.setObjectName(u'zoomOutButton')
         self.zoomOutButton.setIconSize(QtCore.QSize(22, 22))
         self.toolbar.addWidget(self.zoomOutButton)
         self.zoomOriginalButton = QtGui.QToolButton(self.toolbar)
         self.zoomOriginalButton.setIcon(QtGui.QIcon(
             build_icon(u':/general/general_zoom_original.png')))
-        self.zoomOriginalButton.setToolTip(u'Zoom Original')
+        self.zoomOriginalButton.setToolTip(translate('OpenLP.PrintServiceForm',
+            'Zoom Original'))
         self.zoomOriginalButton.setObjectName(u'zoomOriginalButton')
         self.zoomOriginalButton.setIconSize(QtCore.QSize(22, 22))
         self.toolbar.addWidget(self.zoomOriginalButton)
         self.zoomComboBox = QtGui.QComboBox(printServiceDialog)
-        self.zoomComboBox.setObjectName((u'zoomComboBox'))
+        self.zoomComboBox.setObjectName(u'zoomComboBox')
         self.toolbar.addWidget(self.zoomComboBox)
         self.mainLayout.addWidget(self.toolbar)
         self.previewWidget = QtGui.QPrintPreviewWidget(printServiceDialog)
@@ -111,7 +115,7 @@ class Ui_PrintServiceDialog(object):
         self.optionsLayout = QtGui.QVBoxLayout(self.optionsWidget)
         self.optionsLayout.setContentsMargins(8, 8, 8, 8)
         self.titleLabel = QtGui.QLabel(self.optionsWidget)
-        self.titleLabel.setObjectName((u'titleLabel'))
+        self.titleLabel.setObjectName(u'titleLabel')
         self.titleLabel.setText(u'Title:')
         self.optionsLayout.addWidget(self.titleLabel)
         self.titleLineEdit = QtGui.QLineEdit(self.optionsWidget)
@@ -121,10 +125,11 @@ class Ui_PrintServiceDialog(object):
         self.footerLabel.setObjectName(u'footerLabel')
         self.footerLabel.setText(u'Custom Footer Text:')
         self.optionsLayout.addWidget(self.footerLabel)
-        self.footerTextEdit = QtGui.QTextEdit(self.optionsWidget)
+        self.footerTextEdit = SpellTextEdit(self.optionsWidget)
         self.footerTextEdit.setObjectName(u'footerTextEdit')
         self.optionsLayout.addWidget(self.footerTextEdit)
-        self.optionsGroupBox = QtGui.QGroupBox(u'Other Options')
+        self.optionsGroupBox = QtGui.QGroupBox(
+            translate('OpenLP.PrintServiceForm','Other Options'))
         self.groupLayout = QtGui.QVBoxLayout()
         self.slideTextCheckBox = QtGui.QCheckBox()
         self.groupLayout.addWidget(self.slideTextCheckBox)
@@ -150,22 +155,11 @@ class Ui_PrintServiceDialog(object):
             'Include service item notes'))
         self.metaDataCheckBox.setText(translate('OpenLP.PrintServiceForm',
             'Include play length of media items'))
+        self.titleLineEdit.setText(translate('OpenLP.PrintServiceForm',
+            'Service Order Sheet'))
         self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.Page])
         self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.Width])
         self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.OneHundred])
         self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.SeventyFive])
         self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.Fifty])
         self.zoomComboBox.addItem(ZoomSize.Sizes[ZoomSize.TwentyFive])
-
-#        self.serviceTitleLabel.setText(translate(
-#            'OpenLP.PrintServiceOrderForm', 'Title:'))
-#        self.serviceTitleLineEdit.setText(translate('OpenLP.ServiceManager',
-#            'Service Order Sheet'))
-#        self.copyTextButton.setText(translate('OpenLP.ServiceManager',
-#            'Copy to Clipboard as Text'))
-#        self.copyHtmlButton.setText(translate('OpenLP.ServiceManager',
-#            'Copy to Clipboard as Html'))
-#        self.printButton.setText(translate('OpenLP.ServiceManager', 'Print'))
-#        self.cancelButton.setText(translate('OpenLP.ServiceManager', 'Cancel'))
-#        self.customNotesLabel.setText(
-#            translate('OpenLP.ServiceManager', '<b>Custom Service Notes:</b>'))
