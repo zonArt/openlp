@@ -31,6 +31,7 @@ import os
 import logging
 import struct
 
+from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib.songimport import SongImport
 
 TITLE = 1
@@ -92,12 +93,7 @@ class SongShowPlusImport(SongImport):
         ``master_manager``
             The song manager for the running OpenLP installation.
         """
-        SongImport.__init__(self, master_manager)
-        if kwargs.has_key(u'filename'):
-            self.import_source = kwargs[u'filename']
-        if kwargs.has_key(u'filenames'):
-            self.import_source = kwargs[u'filenames']
-        log.debug(self.import_source)
+        SongImport.__init__(self, master_manager, **kwargs)
 
     def do_import(self):
         """
@@ -112,7 +108,7 @@ class SongShowPlusImport(SongImport):
                 otherList = {}
                 file_name = os.path.split(file)[1]
                 self.import_wizard.incrementProgressBar(
-                    u'Importing %s' % (file_name), 0)
+                    WizardStrings.ImportingType % file_name, 0)
                 songData = open(file, 'rb')
                 while (1):
                     blockKey, = struct.unpack("I", songData.read(4))
@@ -178,11 +174,11 @@ class SongShowPlusImport(SongImport):
                 songData.close()
                 self.finish()
                 self.import_wizard.incrementProgressBar(
-                    u'Importing %s' % (file_name))
+                    WizardStrings.ImportingType % file_name)
             return True
 
     def toOpenLPVerseTag(self, verseName):
-        if verseName.find(" ") !=-1:
+        if verseName.find(" ") != -1:
             verseParts = verseName.split(" ")
             verseType = verseParts[0]
             verseNumber = verseParts[1]

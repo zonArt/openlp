@@ -31,6 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
+from openlp.core.lib.ui import UiStrings
 from openlp.plugins.songs.lib import SongMediaItem, SongsTab, SongXML
 from openlp.plugins.songs.lib.db import init_schema, Song
 from openlp.plugins.songs.lib.importer import SongFormat
@@ -137,8 +138,7 @@ class SongsPlugin(Plugin):
         """
         maxSongs = self.manager.get_object_count(Song)
         progressDialog = QtGui.QProgressDialog(
-            translate('SongsPlugin', 'Reindexing songs...'),
-            translate('SongsPlugin', 'Cancel'),
+            translate('SongsPlugin', 'Reindexing songs...'), UiStrings.Cancel,
             0, maxSongs + 1, self.formparent)
         progressDialog.setWindowModality(QtCore.Qt.WindowModal)
         songs = self.manager.get_all_objects(Song)

@@ -13,7 +13,7 @@ Object Library
    :members:
 
 :mod:`ListWidgetWithDnD`
-----------------------
+------------------------
 
 .. autoclass:: openlp.core.lib.listwidgetwithdnd.ListWidgetWithDnD
    :members:

@@ -239,7 +239,8 @@ def resize_image(image, width, height, background=QtCore.Qt.black):
     Resize an image to fit on the current screen.
 
     ``image``
-        The image to resize.
+        The image to resize. It has to be either a ``QImage`` instance or the
+        path to the image.
 
     ``width``
         The new image width.
@@ -320,8 +321,6 @@ def check_directory_exists(dir):
         os.makedirs(dir)
 
 from listwidgetwithdnd import ListWidgetWithDnD
-from theme import ThemeLevel, ThemeXML, BackgroundGradientType, \
-    BackgroundType, HorizontalType, VerticalType
 from displaytags import DisplayTags
 from spelltextedit import SpellTextEdit
 from eventreceiver import Receiver

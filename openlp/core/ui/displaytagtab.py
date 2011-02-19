@@ -167,7 +167,7 @@ class DisplayTagTab(SettingsTab):
         self.deletePushButton.setText(UiStrings.Delete)
         self.defaultPushButton.setText(
             translate('OpenLP.DisplayTagTab', 'Default'))
-        self.newPushButton.setText(translate('OpenLP.DisplayTagTab', 'New'))
+        self.newPushButton.setText(UiStrings.New)
         self.tagTableWidget.horizontalHeaderItem(0)\
             .setText(translate('OpenLP.DisplayTagTab', 'Description'))
         self.tagTableWidget.horizontalHeaderItem(1)\

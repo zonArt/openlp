@@ -191,8 +191,7 @@ class SlideController(QtGui.QWidget):
             self.delaySpinBox.setMinimum(1)
             self.delaySpinBox.setMaximum(180)
             self.toolbar.addToolbarWidget(u'Image SpinBox', self.delaySpinBox)
-            self.delaySpinBox.setSuffix(translate('OpenLP.SlideController',
-                's'))
+            self.delaySpinBox.setSuffix(UiStrings.S)
             self.delaySpinBox.setToolTip(translate('OpenLP.SlideController',
                 'Delay between slides in seconds'))
         else:
@@ -603,14 +602,15 @@ class SlideController(QtGui.QWidget):
             slideHeight = 0
             if self.serviceItem.is_text():
                 if frame[u'verseTag']:
-                    bits = frame[u'verseTag'].split(u':')
-                    tag = u'%s\n%s' % (bits[0][0], bits[1][0:] )
-                    tag1 = u'%s%s' % (bits[0][0], bits[1][0:] )
-                    row = tag
+                    # These tags are already translated.
+                    verse_def = frame[u'verseTag']
+                    verse_def = u'%s%s' % (verse_def[0].upper(), verse_def[1:])
+                    two_line_def = u'%s\n%s' % (verse_def[0], verse_def[1:])
+                    row = two_line_def
                     if self.isLive:
-                        if tag1 not in self.slideList:
-                            self.slideList[tag1] = framenumber
-                            self.songMenu.menu().addAction(tag1,
+                        if verse_def not in self.slideList:
+                            self.slideList[verse_def] = framenumber
+                            self.songMenu.menu().addAction(verse_def,
                                 self.onSongBarHandler)
                 else:
                     row += 1

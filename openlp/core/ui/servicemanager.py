@@ -33,8 +33,8 @@ log = logging.getLogger(__name__)
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, ServiceItem, context_menu_action, \
-    Receiver, build_icon, ItemCapabilities, SettingsManager, translate, \
-    ThemeLevel
+    Receiver, build_icon, ItemCapabilities, SettingsManager, translate
+from openlp.core.lib.theme import ThemeLevel
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm, StartTimeForm
 from openlp.core.ui.printserviceorderform import PrintServiceOrderForm
@@ -107,8 +107,7 @@ class ServiceManager(QtGui.QWidget):
             translate('OpenLP.ServiceManager', 'Save this service'),
             self.saveFile)
         self.toolbar.addSeparator()
-        self.themeLabel = QtGui.QLabel(translate('OpenLP.ServiceManager',
-            'Theme:'), self)
+        self.themeLabel = QtGui.QLabel(u'%s:' % UiStrings.Theme, self)
         self.themeLabel.setMargin(3)
         self.themeLabel.setObjectName(u'themeLabel')
         self.toolbar.addToolbarWidget(u'ThemeLabel', self.themeLabel)
@@ -1062,8 +1061,8 @@ class ServiceManager(QtGui.QWidget):
         if self.serviceItems[item][u'service_item']\
             .is_capable(ItemCapabilities.AllowsEdit):
             Receiver.send_message(u'%s_edit' %
-                self.serviceItems[item][u'service_item'].name.lower(), u'L:%s' %
-                self.serviceItems[item][u'service_item'].edit_id )
+                self.serviceItems[item][u'service_item'].name.lower(),
+                u'L:%s' % self.serviceItems[item][u'service_item'].edit_id)
 
     def findServiceItem(self):
         """

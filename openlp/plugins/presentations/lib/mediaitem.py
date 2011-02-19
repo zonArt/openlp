@@ -31,7 +31,8 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, build_icon, SettingsManager, \
     translate, check_item_selected, Receiver, ItemCapabilities
-from openlp.core.lib.ui import critical_error_message_box, media_item_combo_box
+from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
+    media_item_combo_box
 from openlp.plugins.presentations.lib import MessageListener
 
 log = logging.getLogger(__name__)
@@ -59,7 +60,7 @@ class PresentationMediaItem(MediaManagerItem):
         """
         The name of the plugin media displayed in UI
         """
-        self.OnNewPrompt = translate('PresentationPlugin.MediaItem',
+        self.onNewPrompt = translate('PresentationPlugin.MediaItem',
             'Select Presentation(s)')
         self.Automatic = translate('PresentationPlugin.MediaItem',
             'Automatic')
@@ -79,7 +80,7 @@ class PresentationMediaItem(MediaManagerItem):
                     if fileType.find(type) == -1:
                         fileType += u'*.%s ' % type
                         self.parent.serviceManager.supportedSuffixes(type)
-        self.OnNewFileMasks = unicode(translate('PresentationPlugin.MediaItem',
+        self.onNewFileMasks = unicode(translate('PresentationPlugin.MediaItem',
             'Presentations (%s)')) % fileType
 
     def requiredIcons(self):
@@ -202,9 +203,7 @@ class PresentationMediaItem(MediaManagerItem):
         """
         Remove a presentation item from the list
         """
-        if check_item_selected(self.listView,
-            translate('PresentationPlugin.MediaItem',
-            'You must select an item to delete.')):
+        if check_item_selected(self.listView, UiStrings.SelectDelete):
             items = self.listView.selectedIndexes()
             row_list = [item.row() for item in items]
             row_list.sort(reverse=True)
