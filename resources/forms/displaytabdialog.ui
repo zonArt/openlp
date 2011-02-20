@@ -112,6 +112,32 @@
      </item>
     </layout>
    </widget>
+   <widget class="QPushButton" name="addPushButton">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>40</y>
+      <width>71</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Add</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="newPushButton">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>70</y>
+      <width>71</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>New</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
@@ -123,13 +149,13 @@
     </rect>
    </property>
    <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
    </property>
   </widget>
   <widget class="QPushButton" name="deletePushButton">
    <property name="geometry">
     <rect>
-     <x>530</x>
+     <x>630</x>
      <y>280</y>
      <width>71</width>
      <height>26</height>
@@ -137,19 +163,6 @@
    </property>
    <property name="text">
     <string>Delete</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="addPushButton">
-   <property name="geometry">
-    <rect>
-     <x>610</x>
-     <y>280</y>
-     <width>71</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Add</string>
    </property>
   </widget>
   <widget class="QTableWidget" name="tagTableWidget">
@@ -202,6 +215,19 @@
      <string>End Tag</string>
     </property>
    </column>
+  </widget>
+  <widget class="QPushButton" name="defaultPushButton">
+   <property name="geometry">
+    <rect>
+     <x>550</x>
+     <y>280</y>
+     <width>71</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Default</string>
+   </property>
   </widget>
  </widget>
  <resources/>

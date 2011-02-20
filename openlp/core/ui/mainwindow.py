@@ -481,7 +481,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.settingsmanager = SettingsManager(screens)
         self.aboutForm = AboutForm(self, applicationVersion)
         self.settingsForm = SettingsForm(self.screens, self, self)
-        self.displayTagForm = DisplayTagForm()
+        self.displayTagForm = DisplayTagForm(self)
         self.shortcutForm = ShortcutListForm(self)
         self.recentFiles = QtCore.QStringList()
         # Set up the path with plugins
