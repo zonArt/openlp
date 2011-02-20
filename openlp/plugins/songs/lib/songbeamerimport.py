@@ -245,6 +245,8 @@ class SongBeamerImport(SongImport):
                 self.song_number = u''
         elif tag_val[0] == u'#Speed':
             pass
+        elif tag_val[0] == u'Tempo':
+            pass
         elif tag_val[0] == u'#TextAlign':
             pass
         elif tag_val[0] == u'#Title':

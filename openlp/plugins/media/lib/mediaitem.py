@@ -60,8 +60,9 @@ class MediaMediaItem(MediaManagerItem):
     def retranslateUi(self):
         self.onNewPrompt = translate('MediaPlugin.MediaItem', 'Select Media')
         self.onNewFileMasks = unicode(translate('MediaPlugin.MediaItem',
-            'Videos (%s);;Audio (%s);;%s (*)')) % (self.parent.video_list,
-            self.parent.audio_list, UiStrings.AllFiles)
+            'Videos (%s);;Audio (%s);;%s (*)')) % (
+            u' '.join(self.parent.video_list), 
+            u' '.join(self.parent.audio_list), UiStrings.AllFiles)
         self.replaceAction.setText(UiStrings.ReplaceBG)
         self.replaceAction.setToolTip(UiStrings.ReplaceLiveBG)
         self.resetAction.setText(UiStrings.ResetBG)
