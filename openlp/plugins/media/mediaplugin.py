@@ -62,6 +62,8 @@ class MediaPlugin(Plugin):
             type = mimetype.split(u'video/')
             self.video_list, mimetype = self._addToList(self.video_list,
                 type, mimetype)
+        log.info(u'MediaPlugin handles audio extensions: %s', self.audio_list)
+        log.info(u'MediaPlugin handles video extensions: %s', self.video_list)
 
     def _addToList(self, list, value, mimetype):
         # Is it a media type
