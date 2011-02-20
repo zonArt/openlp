@@ -188,7 +188,8 @@ class OpenLP(QtGui.QApplication):
                 u'primary': (self.desktop().primaryScreen() == screen)})
             log.info(u'Screen %d found with resolution %s', screen, size)
         # start the main app window
-        self.mainWindow = MainWindow(screens, app_version)
+        self.appClipboard = self.clipboard()
+        self.mainWindow = MainWindow(screens, app_version, self.appClipboard)
         self.mainWindow.show()
         if show_splash:
             # now kill the splashscreen
