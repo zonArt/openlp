@@ -33,10 +33,11 @@ import cPickle
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate, DisplayTags
+from openlp.core.lib import translate, DisplayTags
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.ui.displaytagdialog import Ui_DisplayTagDialog
 
-class DisplayTagTab(SettingsTab):
+class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
     """
     The :class:`DisplayTagTab` manages the settings tab .
     """
@@ -44,7 +45,7 @@ class DisplayTagTab(SettingsTab):
         """
         Initialise the settings tab
         """
-        SettingsTab.__init__(self, u'Display Tags')
+        #SettingsTab.__init__(self, u'Display Tags')
 
     def resizeEvent(self, event=None):
         pass

@@ -23,56 +23,29 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-"""
-The :mod:`ui` module provides the core user interface for OpenLP
-"""
-from PyQt4 import QtGui
 
-from openlp.core.lib import translate
+from PyQt4 import QtCore, QtGui
 
-class HideMode(object):
-    """
-    This is an enumeration class which specifies the different modes of hiding
-    the display.
+from openlp.core.lib import translate, build_icon
+from openlp.core.lib.ui import create_accept_reject_button_box
 
-    ``Blank``
-        This mode is used to hide all output, specifically by covering the
-        display with a black screen.
+class Ui_DisplayTagDialog(object):
+    def setupUi(self, settingsDialog):
+        settingsDialog.setObjectName(u'settingsDialog')
+        settingsDialog.resize(700, 500)
+        settingsDialog.setWindowIcon(
+            build_icon(u':/system/system_settings.png'))
+        self.settingsLayout = QtGui.QVBoxLayout(settingsDialog)
+        self.settingsLayout.setObjectName(u'settingsLayout')
+        self.settingsTabWidget = QtGui.QTabWidget(settingsDialog)
+        self.settingsTabWidget.setObjectName(u'settingsTabWidget')
+        self.settingsLayout.addWidget(self.settingsTabWidget)
 
-    ``Theme``
-        This mode is used to hide all output, but covers the display with the
-        current theme background, as opposed to black.
+        self.buttonBox = create_accept_reject_button_box(settingsDialog, True)
+        self.settingsLayout.addWidget(self.buttonBox)
+        self.retranslateUi(settingsDialog)
+        QtCore.QMetaObject.connectSlotsByName(settingsDialog)
 
-    ``Desktop``
-        This mode hides all output by minimising the display, leaving the user's
-        desktop showing.
-    """
-    Blank = 1
-    Theme = 2
-    Screen = 3
-
-from themeform import ThemeForm
-from filerenameform import FileRenameForm
-from starttimeform import StartTimeForm
-from maindisplay import MainDisplay
-from servicenoteform import ServiceNoteForm
-from serviceitemeditform import ServiceItemEditForm
-from screen import ScreenList
-from slidecontroller import SlideController
-from splashscreen import SplashScreen
-from generaltab import GeneralTab
-from themestab import ThemesTab
-from advancedtab import AdvancedTab
-from displaytagtab import DisplayTagTab
-from aboutform import AboutForm
-from pluginform import PluginForm
-from settingsform import SettingsForm
-from displaytagform import DisplayTagForm
-from shortcutlistform import ShortcutListForm
-from mediadockmanager import MediaDockManager
-from servicemanager import ServiceManager
-from thememanager import ThemeManager
-
-__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainDisplay',
-    'SlideController', 'ServiceManager', 'ThemeManager', 'MediaDockManager',
-    'ServiceItemEditForm']
+    def retranslateUi(self, settingsDialog):
+        settingsDialog.setWindowTitle(translate('OpenLP.SettingsForm',
+            'Configure OpenLP'))
