@@ -57,7 +57,7 @@ class Ui_PrintServiceDialog(object):
         self.toolbar.setIconSize(QtCore.QSize(22, 22))
         self.toolbar.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
         self.printButton = self.toolbar.addAction(
-            QtGui.QIcon(build_icon(u':/general/general_print.png')), 'Print')
+            build_icon(u':/general/general_print.png'), 'Print')
         self.optionsButton = QtGui.QToolButton(self.toolbar)
         self.optionsButton.setText(translate('OpenLP.PrintServiceForm',
             'Options'))
@@ -68,14 +68,14 @@ class Ui_PrintServiceDialog(object):
         self.optionsButton.setCheckable(True)
         self.toolbar.addWidget(self.optionsButton)
         self.closeButton = self.toolbar.addAction(
-            QtGui.QIcon(build_icon(u':/system/system_close.png')),
+            build_icon(u':/system/system_close.png'),
             translate('OpenLP.PrintServiceForm', 'Close'))
         self.toolbar.addSeparator()
         self.plainCopy = self.toolbar.addAction(
-            QtGui.QIcon(build_icon(u':/system/system_edit_copy.png')),
+            build_icon(u':/system/system_edit_copy.png'),
             translate('OpenLP.PrintServiceForm', 'Copy'))
         self.htmlCopy = self.toolbar.addAction(
-            QtGui.QIcon(build_icon(u':/system/system_edit_copy.png')),
+            build_icon(u':/system/system_edit_copy.png'),
             translate('OpenLP.PrintServiceForm', 'Copy as HTML'))
         self.toolbar.addSeparator()
         self.zoomInButton = QtGui.QToolButton(self.toolbar)
@@ -147,8 +147,7 @@ class Ui_PrintServiceDialog(object):
             QtCore.SIGNAL(u'toggled(bool)'), self.toggleOptions)
 
     def retranslateUi(self, printServiceDialog):
-        printServiceDialog.setWindowTitle(
-            translate('OpenLP.PrintServiceForm', 'Print Service Order'))
+        printServiceDialog.setWindowTitle(UiStrings.PrintServiceOrder)
         self.slideTextCheckBox.setText(translate('OpenLP.PrintServiceForm',
             'Include slide text if available'))
         self.notesCheckBox.setText(translate('OpenLP.PrintServiceForm',

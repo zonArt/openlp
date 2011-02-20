@@ -18,3 +18,4 @@ translate OpenLP, have a look at the OpenLP wiki::
     http://wiki.openlp.org/
 
 Thanks for downloading OpenLP 2.0!
+

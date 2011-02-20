@@ -129,12 +129,12 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             # Add service items' notes.
             if self.notesCheckBox.isChecked():
                 if item.notes:
-                    text += u'<p><b>%s</b></p>%s' % (translate(
+                    text += u'<p><strong>%s</strong></p>%s' % (translate(
                         'OpenLP.ServiceManager', 'Notes:'),
                         item.notes.replace(u'\n', u'<br />'))
             # Add play length of media files.
             if item.is_media() and self.metaDataCheckBox.isChecked():
-                text += u'<p><b>%s</b> %s</p>' % (translate(
+                text += u'<p><strong>%s</strong> %s</p>' % (translate(
                     'OpenLP.ServiceManager', u'Playing time:'),
                     unicode(datetime.timedelta(seconds=item.media_length)))
         if self.footerTextEdit.toPlainText():
