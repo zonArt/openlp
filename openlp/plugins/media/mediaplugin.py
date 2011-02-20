@@ -63,8 +63,9 @@ class MediaPlugin(Plugin):
         # Is it a media type
         extensions = mimetypes.guess_all_extensions(unicode(mimetype))
         for extension in extensions:
-            if extension not in list:
-                list.append(u'*%s' % extension)
+            ext = u'*%s' % extension
+            if ext not in list:
+                list.append(ext)
                 self.serviceManager.supportedSuffixes(extension[1:])
 
     def about(self):
