@@ -243,7 +243,7 @@ class Ui_MainWindow(object):
             u'SettingsShortcutsItem',
             u':/system/system_configure_shortcuts.png')
         self.DisplayTagItem = icon_action(mainWindow,
-            u'DisplayTagItem', u':/system/system_settings.png')
+            u'DisplayTagItem', u':/system/tag_editor.png')
         self.SettingsConfigureItem = icon_action(mainWindow,
             u'SettingsConfigureItem', u':/system/system_settings.png')
         mainWindow.actionList.add_action(self.SettingsShortcutsItem,

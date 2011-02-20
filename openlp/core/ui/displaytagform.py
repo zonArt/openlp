@@ -63,6 +63,7 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
         Load Display and set field state.
         """
         # Create initial copy from master
+        self._resetTable()
         DisplayTags.reset_html_tags()
         user_expands = QtCore.QSettings().value(u'displayTags/html_tags',
             QtCore.QVariant(u'')).toString()
@@ -102,7 +103,7 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
         self.startTagLineEdit.setEnabled(False)
         self.endTagLineEdit.setEnabled(False)
 
-    def save(self):
+    def accept(self):
         """
         Save Custom tags in a pickle .
         """
@@ -117,13 +118,14 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
         else:
             QtCore.QSettings().setValue(u'displayTags/html_tags',
                 QtCore.QVariant(u''))
+        return QtGui.QDialog.accept(self)
 
-    def cancel(self):
+    def reject(self):
         """
         Reset Custom tags from Settings.
         """
-        self.preLoad()
         self._resetTable()
+        return QtGui.QDialog.reject(self)
 
     def onRowSelected(self):
         """
@@ -170,6 +172,7 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
         self._resetTable()
         # Highlight new row
         self.tagTableWidget.selectRow(self.tagTableWidget.rowCount() - 1)
+        self.onRowSelected()
 
     def onDefaultPushed(self):
         """
@@ -217,7 +220,6 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
         """
         self.tagTableWidget.clearContents()
         self.tagTableWidget.setRowCount(0)
-        self.load()
 
     def _strip(self, tag):
         """
