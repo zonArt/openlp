@@ -25,7 +25,9 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+
 from openlp.core.lib import translate
+from openlp.core.lib.ui import UiStrings
 
 class Ui_PluginViewDialog(object):
     def setupUi(self, pluginViewDialog):
@@ -76,10 +78,8 @@ class Ui_PluginViewDialog(object):
             translate('OpenLP.PluginForm', 'Plugin List'))
         self.pluginInfoGroupBox.setTitle(
             translate('OpenLP.PluginForm', 'Plugin Details'))
-        self.versionLabel.setText(
-            translate('OpenLP.PluginForm', 'Version:'))
-        self.aboutLabel.setText(
-            translate('OpenLP.PluginForm', 'About:'))
+        self.versionLabel.setText(u'%s:' % UiStrings.Version)
+        self.aboutLabel.setText(u'%s:' % UiStrings.About)
         self.statusLabel.setText(
             translate('OpenLP.PluginForm', 'Status:'))
         self.statusComboBox.setItemText(0,

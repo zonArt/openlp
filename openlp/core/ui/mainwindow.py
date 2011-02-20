@@ -73,15 +73,15 @@ class Ui_MainWindow(object):
         # Set up the main container, which contains all the other form widgets.
         self.MainContent = QtGui.QWidget(mainWindow)
         self.MainContent.setObjectName(u'MainContent')
-        self.MainContentLayout = QtGui.QHBoxLayout(self.MainContent)
-        self.MainContentLayout.setSpacing(0)
-        self.MainContentLayout.setMargin(0)
-        self.MainContentLayout.setObjectName(u'MainContentLayout')
+        self.mainContentLayout = QtGui.QHBoxLayout(self.MainContent)
+        self.mainContentLayout.setSpacing(0)
+        self.mainContentLayout.setMargin(0)
+        self.mainContentLayout.setObjectName(u'mainContentLayout')
         mainWindow.setCentralWidget(self.MainContent)
         self.controlSplitter = QtGui.QSplitter(self.MainContent)
         self.controlSplitter.setOrientation(QtCore.Qt.Horizontal)
         self.controlSplitter.setObjectName(u'controlSplitter')
-        self.MainContentLayout.addWidget(self.controlSplitter)
+        self.mainContentLayout.addWidget(self.controlSplitter)
         # Create slide controllers
         self.previewController = SlideController(self, self.settingsmanager,
             self.screens)
@@ -152,10 +152,10 @@ class Ui_MainWindow(object):
             u'themeManagerDock', u':/system/system_thememanager.png')
         self.themeManagerDock.setMinimumWidth(
             self.settingsmanager.mainwindow_right)
-        self.ThemeManagerContents = ThemeManager(mainWindow,
+        self.themeManagerContents = ThemeManager(mainWindow,
             self.themeManagerDock)
-        self.ThemeManagerContents.setObjectName(u'ThemeManagerContents')
-        self.themeManagerDock.setWidget(self.ThemeManagerContents)
+        self.themeManagerContents.setObjectName(u'themeManagerContents')
+        self.themeManagerDock.setWidget(self.themeManagerContents)
         mainWindow.addDockWidget(QtCore.Qt.RightDockWidgetArea,
             self.themeManagerDock)
         # Create the menu items
@@ -240,7 +240,7 @@ class Ui_MainWindow(object):
                 languageItem.setChecked(True)
             add_actions(self.LanguageGroup, [languageItem])
         self.SettingsShortcutsItem = icon_action(mainWindow,
-            u'SettingsShortcutsItem', 
+            u'SettingsShortcutsItem',
             u':/system/system_configure_shortcuts.png')
         self.SettingsConfigureItem = icon_action(mainWindow,
             u'SettingsConfigureItem', u':/system/system_settings.png')
@@ -256,8 +256,8 @@ class Ui_MainWindow(object):
         self.HelpOnlineHelpItem = base_action(mainWindow, u'HelpOnlineHelpItem')
         self.HelpOnlineHelpItem.setEnabled(False)
         mainWindow.actionList.add_action(self.HelpOnlineHelpItem, u'Help')
-        self.HelpWebSiteItem = base_action(mainWindow, u'HelpWebSiteItem')
-        mainWindow.actionList.add_action(self.HelpWebSiteItem, u'Help')
+        self.helpWebSiteItem = base_action(mainWindow, u'helpWebSiteItem')
+        mainWindow.actionList.add_action(self.helpWebSiteItem, u'Help')
         add_actions(self.FileImportMenu,
             (self.ImportThemeItem, self.ImportLanguageItem))
         add_actions(self.FileExportMenu,
@@ -281,7 +281,7 @@ class Ui_MainWindow(object):
         add_actions(self.ToolsMenu, (self.ToolsAddToolItem, None))
         add_actions(self.ToolsMenu, (self.ToolsOpenDataFolder, None))
         add_actions(self.HelpMenu, (self.HelpDocumentationItem,
-            self.HelpOnlineHelpItem, None, self.HelpWebSiteItem,
+            self.HelpOnlineHelpItem, None, self.helpWebSiteItem,
             self.HelpAboutItem))
         add_actions(self.MenuBar, (self.FileMenu.menuAction(),
             self.viewMenu.menuAction(), self.ToolsMenu.menuAction(),
@@ -340,8 +340,7 @@ class Ui_MainWindow(object):
             'Save the current service under a new name.'))
         self.FileSaveAsItem.setShortcut(
             translate('OpenLP.MainWindow', 'Ctrl+Shift+S'))
-        self.printServiceOrderItem.setText(
-            translate('OpenLP.MainWindow', 'Print Service Order'))
+        self.printServiceOrderItem.setText(UiStrings.PrintServiceOrder)
         self.printServiceOrderItem.setStatusTip(translate('OpenLP.MainWindow',
             'Print the current Service Order.'))
         self.printServiceOrderItem.setShortcut(
@@ -419,7 +418,7 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', 'Ctrl+F1'))
         self.HelpOnlineHelpItem.setText(
             translate('OpenLP.MainWindow', '&Online Help'))
-        self.HelpWebSiteItem.setText(
+        self.helpWebSiteItem.setText(
             translate('OpenLP.MainWindow', '&Web Site'))
         self.AutoLanguageItem.setText(
             translate('OpenLP.MainWindow', '&Auto Detect'))
@@ -457,7 +456,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     actionList = ActionList()
 
-    def __init__(self, screens, applicationVersion):
+    def __init__(self, screens, applicationVersion, clipboard):
         """
         This constructor sets up the interface, the various managers, and the
         plugins.
@@ -466,6 +465,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.screens = screens
         self.actionList = ActionList()
         self.applicationVersion = applicationVersion
+        self.clipboard = clipboard
         # Set up settings sections for the main application
         # (not for use by plugins)
         self.uiSettingsSection = u'user interface'
@@ -492,10 +492,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Set up signals and slots
         QtCore.QObject.connect(self.ImportThemeItem,
             QtCore.SIGNAL(u'triggered()'),
-            self.ThemeManagerContents.onImportTheme)
+            self.themeManagerContents.onImportTheme)
         QtCore.QObject.connect(self.ExportThemeItem,
             QtCore.SIGNAL(u'triggered()'),
-            self.ThemeManagerContents.onExportTheme)
+            self.themeManagerContents.onExportTheme)
         QtCore.QObject.connect(self.ViewMediaManagerItem,
             QtCore.SIGNAL(u'triggered(bool)'), self.toggleMediaManager)
         QtCore.QObject.connect(self.ViewServiceManagerItem,
@@ -515,7 +515,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(self.themeManagerDock,
             QtCore.SIGNAL(u'visibilityChanged(bool)'),
             self.ViewThemeManagerItem.setChecked)
-        QtCore.QObject.connect(self.HelpWebSiteItem,
+        QtCore.QObject.connect(self.helpWebSiteItem,
             QtCore.SIGNAL(u'triggered()'), self.onHelpWebSiteClicked)
         QtCore.QObject.connect(self.HelpAboutItem,
             QtCore.SIGNAL(u'triggered()'), self.onHelpAboutItemClicked)
@@ -574,7 +574,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # RenderManager needs to call ThemeManager and
         # ThemeManager needs to call RenderManager
         self.renderManager = RenderManager(
-            self.ThemeManagerContents, self.screens)
+            self.themeManagerContents, self.screens)
         # Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.MediaToolBox)
         log.info(u'Load Plugins')
@@ -608,7 +608,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.pluginManager.initialise_plugins()
         # Once all components are initialised load the Themes
         log.info(u'Load Themes')
-        self.ThemeManagerContents.loadThemes()
+        self.themeManagerContents.loadThemes()
         log.info(u'Load data from Settings')
         if QtCore.QSettings().value(u'advanced/save current plugin',
             QtCore.QVariant(False)).toBool():

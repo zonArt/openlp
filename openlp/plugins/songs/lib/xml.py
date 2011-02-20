@@ -66,9 +66,9 @@ import re
 
 from lxml import etree, objectify
 
-from openlp.core.lib import translate
 from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.db import Author, Book, Song, Topic
+from openlp.plugins.songs.lib.ui import SongStrings
 
 log = logging.getLogger(__name__)
 
@@ -377,9 +377,7 @@ class OpenLyrics(object):
         except AttributeError:
             pass
         if not authors:
-            # Add "Author unknown" (can be translated).
-            authors.append((unicode(translate('SongsPlugin.XML',
-                'Author unknown'))))
+            authors.append(SongStrings.AuthorUnknownUnT)
         for display_name in authors:
             author = self.manager.get_object_filtered(Author,
                 Author.display_name == display_name)
@@ -464,7 +462,8 @@ class OpenLyrics(object):
                     text += u'\n'
                 text += u'\n'.join([unicode(line) for line in lines.line])
             verse_name = self._get(verse, u'name')
-            verse_type = unicode(VerseType.to_string(verse_name[0]))
+            verse_type_index = VerseType.from_tag(verse_name[0])
+            verse_type = VerseType.Names[verse_type_index]
             verse_number = re.compile(u'[a-zA-Z]*').sub(u'', verse_name)
             verse_part = re.compile(u'[0-9]*').sub(u'', verse_name[1:])
             # OpenLyrics allows e. g. "c", but we need "c1".

@@ -86,9 +86,8 @@ class OpenLPSongImport(SongImport):
         ``source_db``
             The database providing the data to import.
         """
-        SongImport.__init__(self, manager)
-        self.import_source = u'sqlite:///%s' % kwargs[u'filename']
-        log.debug(self.import_source)
+        SongImport.__init__(self, manager, **kwargs)
+        self.import_source = u'sqlite:///%s' % self.import_source
         self.source_session = None
 
     def do_import(self):

@@ -109,12 +109,10 @@ class AlertsTab(SettingsTab):
             translate('AlertsPlugin.AlertsTab', 'Background color:'))
         self.FontSizeLabel.setText(
             translate('AlertsPlugin.AlertsTab', 'Font size:'))
-        self.FontSizeSpinBox.setSuffix(
-            translate('AlertsPlugin.AlertsTab', 'pt'))
+        self.FontSizeSpinBox.setSuffix(UiStrings.FontSizePtUnit)
         self.TimeoutLabel.setText(
             translate('AlertsPlugin.AlertsTab', 'Alert timeout:'))
-        self.TimeoutSpinBox.setSuffix(
-            translate('AlertsPlugin.AlertsTab', 's'))
+        self.TimeoutSpinBox.setSuffix(UiStrings.S)
         self.PreviewGroupBox.setTitle(UiStrings.Preview)
         self.FontPreview.setText(UiStrings.OLPV2)
 

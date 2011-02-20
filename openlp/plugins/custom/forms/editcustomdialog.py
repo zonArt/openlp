@@ -124,5 +124,4 @@ class Ui_CustomEditDialog(object):
             translate('CustomPlugin.EditCustomForm', 'The&me:'))
         self.creditLabel.setText(
             translate('CustomPlugin.EditCustomForm', '&Credits:'))
-        self.previewButton.setText(
-            translate('CustomPlugin.EditCustomForm', 'Save && Preview'))
+        self.previewButton.setText(UiStrings.SaveAndPreview)
