@@ -26,7 +26,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, build_icon
+from openlp.core.lib import translate
 from openlp.core.lib.ui import UiStrings, create_accept_reject_button_box
 
 class Ui_DisplayTagDialog(object):
@@ -134,7 +134,8 @@ class Ui_DisplayTagDialog(object):
         self.tagLabel.setText(translate('OpenLP.DisplayTagDialog', 'Tag'))
         self.startTagLabel.setText(
             translate('OpenLP.DisplayTagDialog', 'Start tag'))
-        self.endTagLabel.setText(translate('OpenLP.DisplayTagDialog', 'End tag'))
+        self.endTagLabel.setText(
+            translate('OpenLP.DisplayTagDialog', 'End tag'))
         self.deletePushButton.setText(UiStrings.Delete)
         self.defaultPushButton.setText(
             translate('OpenLP.DisplayTagDialog', 'Default'))

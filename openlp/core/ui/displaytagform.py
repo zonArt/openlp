@@ -34,7 +34,7 @@ import cPickle
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, DisplayTags
-from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.displaytagdialog import Ui_DisplayTagDialog
 
 class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
