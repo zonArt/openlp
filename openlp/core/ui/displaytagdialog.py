@@ -123,30 +123,30 @@ class Ui_DisplayTagDialog(object):
         QtCore.QMetaObject.connectSlotsByName(displayTagDialog)
 
     def retranslateUi(self, displayTagDialog):
-        displayTagDialog.setWindowTitle(translate('OpenLP.displayTagForm',
+        displayTagDialog.setWindowTitle(translate('OpenLP.displayTagDialog',
             'Configure Display Tags'))
         self.editGroupBox.setTitle(
-            translate('OpenLP.DisplayTagTab', 'Edit Selection'))
+            translate('OpenLP.DisplayTagDialog', 'Edit Selection'))
         self.updatePushButton.setText(
-            translate('OpenLP.DisplayTagTab', 'Update'))
+            translate('OpenLP.DisplayTagDialog', 'Update'))
         self.descriptionLabel.setText(
-            translate('OpenLP.DisplayTagTab', 'Description'))
-        self.tagLabel.setText(translate('OpenLP.DisplayTagTab', 'Tag'))
+            translate('OpenLP.DisplayTagDialog', 'Description'))
+        self.tagLabel.setText(translate('OpenLP.DisplayTagDialog', 'Tag'))
         self.startTagLabel.setText(
-            translate('OpenLP.DisplayTagTab', 'Start tag'))
-        self.endTagLabel.setText(translate('OpenLP.DisplayTagTab', 'End tag'))
+            translate('OpenLP.DisplayTagDialog', 'Start tag'))
+        self.endTagLabel.setText(translate('OpenLP.DisplayTagDialog', 'End tag'))
         self.deletePushButton.setText(UiStrings.Delete)
         self.defaultPushButton.setText(
-            translate('OpenLP.DisplayTagTab', 'Default'))
+            translate('OpenLP.DisplayTagDialog', 'Default'))
         self.newPushButton.setText(UiStrings.New)
         self.tagTableWidget.horizontalHeaderItem(0).setText(
-            translate('OpenLP.DisplayTagTab', 'Description'))
+            translate('OpenLP.DisplayTagDialog', 'Description'))
         self.tagTableWidget.horizontalHeaderItem(1).setText(
-            translate('OpenLP.DisplayTagTab', 'Tag id'))
+            translate('OpenLP.DisplayTagDialog', 'Tag id'))
         self.tagTableWidget.horizontalHeaderItem(2).setText(
-            translate('OpenLP.DisplayTagTab', 'Start Html'))
+            translate('OpenLP.DisplayTagDialog', 'Start Html'))
         self.tagTableWidget.horizontalHeaderItem(3).setText(
-            translate('OpenLP.DisplayTagTab', 'End Html'))
+            translate('OpenLP.DisplayTagDialog', 'End Html'))
         self.tagTableWidget.setColumnWidth(0, 120)
         self.tagTableWidget.setColumnWidth(1, 40)
         self.tagTableWidget.setColumnWidth(2, 240)
