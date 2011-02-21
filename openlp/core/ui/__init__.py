@@ -63,7 +63,6 @@ from splashscreen import SplashScreen
 from generaltab import GeneralTab
 from themestab import ThemesTab
 from advancedtab import AdvancedTab
-from displaytagtab import DisplayTagTab
 from aboutform import AboutForm
 from pluginform import PluginForm
 from settingsform import SettingsForm
