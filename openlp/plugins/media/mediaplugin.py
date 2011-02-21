@@ -45,15 +45,19 @@ class MediaPlugin(Plugin):
         self.icon = build_icon(self.icon_path)
         # passed with drag and drop messages
         self.dnd_id = u'Media'
-        self.audio_list = []
-        self.video_list = []
+        # This is yet a dummy example:
+        self.additional_extensions = {
+            'audio/msaudio': ['.mp3', '.aac'],
+            'video/msvideo': ['.wmv', '.avi']}
+        self.audio_extensions_list = []
+        self.video_extensions_list = []
         mimetypes.init()
         for mimetype in Phonon.BackendCapabilities.availableMimeTypes():
             mimetype = unicode(mimetype)
             if mimetype.startswith(u'audio/'):
-                self._addToList(self.audio_list, mimetype)
+                self._addToList(self.audio_extensions_list, mimetype)
             elif mimetype.startswith(u'video/'):
-                self._addToList(self.video_list, mimetype)
+                self._addToList(self.video_extensions_list, mimetype)
 
     def _addToList(self, list, mimetype):
         extensions = mimetypes.guess_all_extensions(unicode(mimetype))
@@ -64,6 +68,14 @@ class MediaPlugin(Plugin):
                 self.serviceManager.supportedSuffixes(extension[1:])
         log.info(u'MediaPlugin: %s extensions: %s' % (mimetype,
             u' '.join(extensions)))
+        if mimetype in self.additional_extensions.keys():
+            for extension in self.additional_extensions[mimetype]:
+                ext = u'*%s' % extensions
+                if ext not in list:
+                    list.append(ext)
+                    self.serviceManager.supportedSuffixes(extension[1:])
+            log.info(u'MediaPlugin: %s additional extensions: %s' % (mimetype,
+                u' '.join(self.additional_extensions[mimetype])))
 
     def about(self):
         about_text = translate('MediaPlugin', '<strong>Media Plugin</strong>'
