@@ -99,6 +99,7 @@ from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.songimport import SongImport
 from openlp.plugins.songs.lib.db import Author, Book, Song, Topic
 from openlp.plugins.songs.lib.xml import SongXML
+from openlp.plugins.songs.lib.ui import SongStrings
 
 log = logging.getLogger(__name__)
 
@@ -261,40 +262,40 @@ class FoilPresenter(object):
         if copyright:
             strings = []
             author_temp = []
-            if copyright.find(u"Copyright") != -1:
-                test = copyright.partition(u"Copyright")
+            if copyright.find(u'Copyright') != -1:
+                test = copyright.partition(u'Copyright')
                 copyright = test[0]
-            elif copyright.find(u"copyright") != -1:
-                test = copyright.partition(u"copyright")
+            elif copyright.find(u'copyright') != -1:
+                test = copyright.partition(u'copyright')
                 copyright = test[0]
-            elif copyright.find(u"©") != -1:
-                test = copyright.partition(u"©")
+            elif copyright.find(u'©') != -1:
+                test = copyright.partition(u'©')
                 copyright = test[0]
-            elif copyright.find(u"(c)") != -1:
-                test = copyright.partition(u"(c)")
+            elif copyright.find(u'(c)') != -1:
+                test = copyright.partition(u'(c)')
                 copyright = test[0]
-            elif copyright.find(u"(C)") != -1:
-                test = copyright.partition(u"(C)")
+            elif copyright.find(u'(C)') != -1:
+                test = copyright.partition(u'(C)')
                 copyright = test[0]
-            elif copyright.find(u"c)") != -1:
-                test = copyright.partition(u"c)")
+            elif copyright.find(u'c)') != -1:
+                test = copyright.partition(u'c)')
                 copyright = test[0]
-            elif copyright.find(u"C)") != -1:
-                test = copyright.partition(u"C)")
+            elif copyright.find(u'C)') != -1:
+                test = copyright.partition(u'C)')
                 copyright = test[0]
-            elif copyright.find(u"C:") != -1:
-                test = copyright.partition(u"C:")
+            elif copyright.find(u'C:') != -1:
+                test = copyright.partition(u'C:')
                 copyright = test[0]
-            elif copyright.find(u"C,)") != -1:
-                test = copyright.partition(u"C,)")
+            elif copyright.find(u'C,)') != -1:
+                test = copyright.partition(u'C,)')
                 copyright = test[0]
             copyright = re.compile(u'\\n').sub(u' ', copyright)
             copyright = re.compile(u'\(.*\)').sub(u'', copyright)
-            if copyright.find(u"Rechte") != -1:
-                test = copyright.partition(u"Rechte")
+            if copyright.find(u'Rechte') != -1:
+                test = copyright.partition(u'Rechte')
                 copyright = test[0]
             markers = [u'Text +u\.?n?d? +Melodie[a-zA-Z0-9\,\. ]*:', 
-                u'Text +u\.?n?d? +Musik', u"T & M", u'Melodie und Satz', 
+                u'Text +u\.?n?d? +Musik', u'T & M', u'Melodie und Satz', 
                 u'Text[a-zA-Z0-9\,\. ]*:', u'Melodie', u'Musik', u'Satz', 
                 u'Weise', u'[dD]eutsch', u'[dD]t[\.\:]', u'Englisch',  
                 u'[oO]riginal',  u'Bearbeitung',  u'[R|r]efrain'] 
@@ -304,9 +305,9 @@ class FoilPresenter(object):
             i = 0
             x = 0
             while i != 1:
-                if copyright.find(u"<marker>") != -1:
-                    test = copyright.partition(u"<marker>")
-                    if (test[0].strip() != u"") & (x > 0):
+                if copyright.find(u'<marker>') != -1:
+                    test = copyright.partition(u'<marker>')
+                    if (test[0].strip() != u'') & (x > 0):
                         strings.append(test[0])
                     copyright = test[2]
                     x += 1
@@ -316,7 +317,7 @@ class FoilPresenter(object):
                 else: 
                     i = 1
             for author in strings:
-                test = re.split(u",(?=\D{2})|(?<=\D),|\/(?=\D{3,})|(?<=\D);",  
+                test = re.split(u',(?=\D{2})|(?<=\D),|\/(?=\D{3,})|(?<=\D);',  
                     author) 
                 for test_temp in test:
                     author_temp.append(test_temp)
@@ -332,16 +333,14 @@ class FoilPresenter(object):
                     if re.search(
                         u'\w+\.?\s+\w{3,}\s+[a|u]nd\s|\w+\.?\s+\w{3,}\s+&\s', 
                         author,  re.U) != None:
-                        temp = re.split(u'\s[a|u]nd\s|\s&\s',author)
+                        temp = re.split(u'\s[a|u]nd\s|\s&\s', author)
                         for temp_temp in temp:
                             temp_temp = temp_temp.strip()
                             authors.append(temp_temp)
                     elif (len(author) > 2):
                         authors.append(author)
         if not authors:
-            # Add "Author unknown" (can be translated).
-            authors.append((unicode(translate('SongsPlugin.XML',
-                'Author unknown'))))
+            authors.append(SongStrings.AuthorUnknownUnT)
         for display_name in authors:
             author = self.manager.get_object_filtered(Author,
                 Author.display_name == display_name)
@@ -415,18 +414,18 @@ class FoilPresenter(object):
         search_text = u''
         temp_verse_order = {}
         temp_verse_order_backup = []
-        temp_verse_sort= []
+        temp_verse_sort = []
         temp_sortnr_backup = 1
         temp_sortnr_liste = []
-        versenumber = {u"V":1,  u"C": 1, u"B": 1, u"E": 1, u"O": 1, u"I": 1, 
-            u"P": 1 }
+        versenumber = {u'V': 1,  u'C': 1, u'B': 1, u'E': 1, u'O': 1, u'I': 1, 
+            u'P': 1 }
         for strophe in foilpresenterfolie.strophen.strophe:
             text = self._child(strophe.text_)
             verse_name = self._child(strophe.key)
             children = strophe.getchildren()
             sortnr = 0
             for child in children:
-                if child.tag == "sortnr":
+                if child.tag == 'sortnr':
                     verse_sortnr = self._child(strophe.sortnr)
                     sortnr = 1
                 # In older Version there is no sortnr, but we need one
@@ -437,26 +436,26 @@ class FoilPresenter(object):
             temp_sortnr_liste.append(verse_sortnr)
             temp_verse_name = re.compile(u'[0-9].*').sub(u'', verse_name)
             temp_verse_name = temp_verse_name[:3].lower()
-            if temp_verse_name == u"ref":
+            if temp_verse_name == u'ref':
                 verse_type = u'C'
-            elif temp_verse_name == u"r":
+            elif temp_verse_name == u'r':
                 verse_type = u'C'
-            elif temp_verse_name == u"":
+            elif temp_verse_name == u'':
                 verse_type = u'V'
-            elif temp_verse_name == u"v":
+            elif temp_verse_name == u'v':
                 verse_type = u'V'
-            elif temp_verse_name == u"bri":
+            elif temp_verse_name == u'bri':
                 verse_type = u'B'
-            elif temp_verse_name == u"cod":
+            elif temp_verse_name == u'cod':
                 verse_type = u'E'
-            elif temp_verse_name == u"sch":
+            elif temp_verse_name == u'sch':
                 verse_type = u'E'
-            elif temp_verse_name == u"pre":
+            elif temp_verse_name == u'pre':
                 verse_type = u'P'
-            elif temp_verse_name == u"int":
+            elif temp_verse_name == u'int':
                 verse_type = u'I'
             else:
-                verse_type = u"O"
+                verse_type = u'O'
             verse_number = re.compile(u'[a-zA-Z.+-_ ]*').sub(u'', verse_name)
             verse_part = re.compile(u'[0-9]*').sub(u'', verse_name[1:])
             # Foilpresenter allows e. g. "C", but we need "C1".
