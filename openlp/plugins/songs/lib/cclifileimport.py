@@ -78,20 +78,7 @@ class CCLIFileImport(SongImport):
                     details = chardet.detect(detect_content)
                 detect_file.close()
                 infile = codecs.open(filename, u'r', details['encoding'])
-                try:
-                    lines = infile.readlines()
-                    infile.close()
-                except UnicodeDecodeError:
-                    # First 2kB were not sufficient to detect file encoding.
-                    # This time we read entire file.
-                    detect_file = open(filename, u'r')
-                    detect_content = detect_file.read()
-                    details = chardet.detect(detect_content)
-                    detect_file.close()
-                    # We read the contents again. Should it be a try as well?
-                    infile = codecs.open(filename, u'r', details['encoding'])
-                    lines = infile.readlines()
-                    infile.close()
+                lines = infile.readlines()
                 ext = os.path.splitext(filename)[1]
                 if ext.lower() == u'.usr':
                     log.info(u'SongSelect .usr format file found %s: ',
