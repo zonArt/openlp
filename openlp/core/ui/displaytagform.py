@@ -79,6 +79,9 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
         return QtGui.QDialog.exec_(self)
 
     def load(self):
+        """
+        Load the form with data and set the initial state of the buttons
+        """
         self.newPushButton.setEnabled(True)
         self.updatePushButton.setEnabled(False)
         self.deletePushButton.setEnabled(False)

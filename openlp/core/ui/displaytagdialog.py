@@ -139,14 +139,14 @@ class Ui_DisplayTagDialog(object):
         self.defaultPushButton.setText(
             translate('OpenLP.DisplayTagTab', 'Default'))
         self.newPushButton.setText(UiStrings.New)
-        self.tagTableWidget.horizontalHeaderItem(0) \
-            .setText(translate('OpenLP.DisplayTagTab', 'Description'))
-        self.tagTableWidget.horizontalHeaderItem(1) \
-            .setText(translate('OpenLP.DisplayTagTab', 'Tag id'))
-        self.tagTableWidget.horizontalHeaderItem(2) \
-            .setText(translate('OpenLP.DisplayTagTab', 'Start Html'))
-        self.tagTableWidget.horizontalHeaderItem(3) \
-            .setText(translate('OpenLP.DisplayTagTab', 'End Html'))
+        self.tagTableWidget.horizontalHeaderItem(0).setText(
+            translate('OpenLP.DisplayTagTab', 'Description'))
+        self.tagTableWidget.horizontalHeaderItem(1).setText(
+            translate('OpenLP.DisplayTagTab', 'Tag id'))
+        self.tagTableWidget.horizontalHeaderItem(2).setText(
+            translate('OpenLP.DisplayTagTab', 'Start Html'))
+        self.tagTableWidget.horizontalHeaderItem(3).setText(
+            translate('OpenLP.DisplayTagTab', 'End Html'))
         self.tagTableWidget.setColumnWidth(0, 120)
         self.tagTableWidget.setColumnWidth(1, 40)
         self.tagTableWidget.setColumnWidth(2, 240)
