@@ -31,7 +31,7 @@ import logging
 from PyQt4 import QtGui
 
 from openlp.core.lib import Receiver
-from openlp.core.ui import AdvancedTab, GeneralTab, ThemesTab, DisplayTagTab
+from openlp.core.ui import AdvancedTab, GeneralTab, ThemesTab
 from settingsdialog import Ui_SettingsDialog
 
 log = logging.getLogger(__name__)
@@ -47,17 +47,14 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         # General tab
-        self.generalTab = GeneralTab(screens)
-        self.addTab(u'General', self.generalTab)
+        generalTab = GeneralTab(screens)
+        self.addTab(u'General', generalTab)
         # Themes tab
-        self.themesTab = ThemesTab(mainWindow)
-        self.addTab(u'Themes', self.themesTab)
+        themesTab = ThemesTab(mainWindow)
+        self.addTab(u'Themes', themesTab)
         # Advanced tab
-        self.advancedTab = AdvancedTab()
-        self.addTab(u'Advanced', self.advancedTab)
-        # Edit Display Tags tab
-        self.displayTagTab = DisplayTagTab()
-        self.addTab(u'Display Tags', self.displayTagTab)
+        advancedTab = AdvancedTab()
+        self.addTab(u'Advanced', advancedTab)
 
     def addTab(self, name, tab):
         """
@@ -71,9 +68,9 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         Add a tab to the form at a specific location
         """
         log.debug(u'Inserting %s tab' % tab.tabTitle)
-        # 15 : There are 4 tables currently and locations starts at -10
+        # 14 : There are 3 tables currently and locations starts at -10
         self.settingsTabWidget.insertTab(
-            location + 15, tab, tab.tabTitleVisible)
+            location + 14, tab, tab.tabTitleVisible)
 
     def removeTab(self, tab):
         """

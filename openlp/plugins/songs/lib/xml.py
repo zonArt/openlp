@@ -66,9 +66,9 @@ import re
 
 from lxml import etree, objectify
 
-from openlp.core.lib import translate
 from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.db import Author, Book, Song, Topic
+from openlp.plugins.songs.lib.ui import SongStrings
 
 log = logging.getLogger(__name__)
 
@@ -299,9 +299,9 @@ class OpenLyrics(object):
         # Remove chords from xml.
         xml = re.compile(u'<chord name=".*?"/>').sub(u'', xml)
         song_xml = objectify.fromstring(xml)
-        try:
+        if hasattr(song_xml, u'properties'):
             properties = song_xml.properties
-        except AttributeError:
+        else:
             return None
         song = Song()
         self._process_copyright(properties, song)
@@ -369,17 +369,13 @@ class OpenLyrics(object):
             The song object.
         """
         authors = []
-        try:
+        if hasattr(properties, u'authors'):
             for author in properties.authors.author:
                 display_name = self._text(author)
                 if display_name:
                     authors.append(display_name)
-        except AttributeError:
-            pass
         if not authors:
-            # Add "Author unknown" (can be translated).
-            authors.append((unicode(translate('SongsPlugin.XML',
-                'Author unknown'))))
+            authors.append(SongStrings.AuthorUnknownUnT)
         for display_name in authors:
             author = self.manager.get_object_filtered(Author,
                 Author.display_name == display_name)
@@ -401,10 +397,8 @@ class OpenLyrics(object):
         ``song``
             The song object.
         """
-        try:
+        if hasattr(properties, u'ccliNo'):
             song.ccli_number = self._text(properties.ccliNo)
-        except AttributeError:
-            song.ccli_number = u''
 
     def _process_comments(self, properties, song):
         """
@@ -416,15 +410,13 @@ class OpenLyrics(object):
         ``song``
             The song object.
         """
-        try:
-            comments_list = []
+        if hasattr(properties, u'comments'):
+            comments_list = []  
             for comment in properties.comments.comment:
                 commenttext = self._text(comment)
                 if commenttext:
                     comments_list.append(commenttext)
             song.comments = u'\n'.join(comments_list)
-        except AttributeError:
-            song.comments = u''
 
     def _process_copyright(self, properties, song):
         """
@@ -436,10 +428,8 @@ class OpenLyrics(object):
         ``song``
             The song object.
         """
-        try:
+        if hasattr(properties, u'copyright'):
             song.copyright = self._text(properties.copyright)
-        except AttributeError:
-            song.copyright = u''
 
     def _process_lyrics(self, properties, lyrics, song):
         """
@@ -480,9 +470,9 @@ class OpenLyrics(object):
         song.search_lyrics = search_text.lower()
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
         # Process verse order
-        try:
+        if hasattr(properties, u'verseOrder'):
             song.verse_order = self._text(properties.verseOrder)
-        except AttributeError:
+        else:
             # We have to process the temp_verse_order, as the verseOrder
             # property is not present.
             previous_type = u''
@@ -513,7 +503,7 @@ class OpenLyrics(object):
         """
         song.song_book_id = 0
         song.song_number = u''
-        try:
+        if hasattr(properties, u'songbooks'):
             for songbook in properties.songbooks.songbook:
                 bookname = self._get(songbook, u'name')
                 if bookname:
@@ -524,15 +514,10 @@ class OpenLyrics(object):
                         book = Book.populate(name=bookname, publisher=u'')
                         self.manager.save_object(book)
                     song.song_book_id = book.id
-                    try:
-                        if self._get(songbook, u'entry'):
-                            song.song_number = self._get(songbook, u'entry')
-                    except AttributeError:
-                        pass
+                    if hasattr(songbook, u'entry'):
+                        song.song_number = self._get(songbook, u'entry')
                     # We only support one song book, so take the first one.
                     break
-        except AttributeError:
-            pass
 
     def _process_titles(self, properties, song):
         """
@@ -565,7 +550,7 @@ class OpenLyrics(object):
         ``song``
             The song object.
         """
-        try:
+        if hasattr(properties, u'themes'):
             for topictext in properties.themes.theme:
                 topictext = self._text(topictext)
                 if topictext:
@@ -576,8 +561,6 @@ class OpenLyrics(object):
                         topic = Topic.populate(name=topictext)
                         self.manager.save_object(topic)
                     song.topics.append(topic)
-        except AttributeError:
-            pass
 
     def _dump_xml(self, xml):
         """

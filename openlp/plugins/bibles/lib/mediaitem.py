@@ -34,7 +34,8 @@ from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings, add_widget_completer, \
     media_item_combo_box, critical_error_message_box
 from openlp.plugins.bibles.forms import BibleImportForm
-from openlp.plugins.bibles.lib import get_reference_match
+from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle, \
+    get_reference_match
 
 log = logging.getLogger(__name__)
 
@@ -56,6 +57,7 @@ class BibleMediaItem(MediaManagerItem):
         self.IconPath = u'songs/song'
         MediaManagerItem.__init__(self, parent, plugin, icon)
         # Place to store the search results for both bibles.
+        self.settings = self.parent.settings_tab
         self.search_results = {}
         self.second_search_results = {}
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -235,18 +237,15 @@ class BibleMediaItem(MediaManagerItem):
 
     def retranslateUi(self):
         log.debug(u'retranslateUi')
-        self.quickVersionLabel.setText(
-            translate('BiblesPlugin.MediaItem', 'Version:'))
+        self.quickVersionLabel.setText(u'%s:' % UiStrings.Version)
         self.quickSecondLabel.setText(
             translate('BiblesPlugin.MediaItem', 'Second:'))
         self.quickSearchLabel.setText(
             translate('BiblesPlugin.MediaItem', 'Find:'))
-        self.quickSearchButton.setText(
-            translate('BiblesPlugin.MediaItem', 'Search'))
+        self.quickSearchButton.setText(UiStrings.Search)
         self.quickClearLabel.setText(
             translate('BiblesPlugin.MediaItem', 'Results:'))
-        self.advancedVersionLabel.setText(
-            translate('BiblesPlugin.MediaItem', 'Version:'))
+        self.advancedVersionLabel.setText(u'%s:' % UiStrings.Version)
         self.advancedSecondLabel.setText(
             translate('BiblesPlugin.MediaItem', 'Second:'))
         self.advancedBookLabel.setText(
@@ -261,8 +260,7 @@ class BibleMediaItem(MediaManagerItem):
             translate('BiblesPlugin.MediaItem', 'To:'))
         self.advancedClearLabel.setText(
             translate('BiblesPlugin.MediaItem', 'Results:'))
-        self.advancedSearchButton.setText(
-            translate('BiblesPlugin.MediaItem', 'Search'))
+        self.advancedSearchButton.setText(UiStrings.Search)
         self.quickClearComboBox.addItem(
             translate('BiblesPlugin.MediaItem', 'Clear'))
         self.quickClearComboBox.addItem(
@@ -670,12 +668,12 @@ class BibleMediaItem(MediaManagerItem):
                 raw_slides.append(bible_text.rstrip())
                 bible_text = u''
             # If we are 'Verse Per Slide' then create a new slide.
-            elif self.parent.settings_tab.layout_style == 0:
+            elif self.settings.layout_style == LayoutStyle.VersePerSlide:
                 bible_text = u'%s&nbsp;%s' % (verse_text, text)
                 raw_slides.append(bible_text.rstrip())
                 bible_text = u''
             # If we are 'Verse Per Line' then force a new line.
-            elif self.parent.settings_tab.layout_style == 1:
+            elif self.settings.layout_style == LayoutStyle.VersePerLine:
                 bible_text = u'%s %s&nbsp;%s\n' % (bible_text, verse_text, text)
             # We have to be 'Continuous'.
             else:
@@ -693,7 +691,8 @@ class BibleMediaItem(MediaManagerItem):
             raw_slides.append(bible_text.lstrip())
             bible_text = u''
         # Service Item: Capabilities
-        if self.parent.settings_tab.layout_style == 2 and not second_bible:
+        if self.settings.layout_style == LayoutStyle.Continuous and \
+            not second_bible:
             # Split the line but do not replace line breaks in renderer.
             service_item.add_capability(ItemCapabilities.NoLineBreaks)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
@@ -705,10 +704,10 @@ class BibleMediaItem(MediaManagerItem):
             else:
                 service_item.title += u', ' + title
         # Service Item: Theme
-        if len(self.parent.settings_tab.bible_theme) == 0:
+        if len(self.settings.bible_theme) == 0:
             service_item.theme = None
         else:
-            service_item.theme = self.parent.settings_tab.bible_theme
+            service_item.theme = self.settings.bible_theme
         for slide in raw_slides:
             service_item.add_from_text(slide[:30], slide)
         if service_item.raw_footer:
@@ -817,16 +816,15 @@ class BibleMediaItem(MediaManagerItem):
             The verse number (int).
         """
         verse_separator = get_reference_match(u'sep_v_display')
-        if not self.parent.settings_tab.show_new_chapters or \
-            old_chapter != chapter:
+        if not self.settings.show_new_chapters or old_chapter != chapter:
             verse_text = unicode(chapter) + verse_separator + unicode(verse)
         else:
             verse_text = unicode(verse)
-        if self.parent.settings_tab.display_style == 1:
+        if self.settings.display_style == DisplayStyle.Round:
             verse_text = u'{su}(' + verse_text + u'){/su}'
-        elif self.parent.settings_tab.display_style == 2:
+        elif self.settings.display_style == DisplayStyle.Curly:
             verse_text = u'{su}{' + verse_text + u'}{/su}'
-        elif self.parent.settings_tab.display_style == 3:
+        elif self.settings.display_style == DisplayStyle.Square:
             verse_text = u'{su}[' + verse_text + u']{/su}'
         else:
             verse_text = u'{su}' + verse_text + u'{/su}'

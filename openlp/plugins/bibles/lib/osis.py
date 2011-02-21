@@ -69,7 +69,7 @@ class OSISBible(BibleDB):
         self.q1_regex = re.compile(r'<q(.*?)level="1"(.*?)>')
         self.q2_regex = re.compile(r'<q(.*?)level="2"(.*?)>')
         self.trans_regex = re.compile(r'<transChange(.*?)>(.*?)</transChange>')
-        self.divineName_regex = re.compile(
+        self.divine_name_regex = re.compile(
             r'<divineName(.*?)>(.*?)</divineName>')
         self.spaces_regex = re.compile(r'([ ]{2,})')
         filepath = os.path.join(
@@ -161,7 +161,7 @@ class OSISBible(BibleDB):
                     verse_text = self.q1_regex.sub(u'"', verse_text)
                     verse_text = self.q2_regex.sub(u'\'', verse_text)
                     verse_text = self.trans_regex.sub(u'', verse_text)
-                    verse_text = self.divineName_regex.sub(u'', verse_text)
+                    verse_text = self.divine_name_regex.sub(u'', verse_text)
                     verse_text = verse_text.replace(u'</lb>', u'')\
                         .replace(u'</l>', u'').replace(u'<lg>', u'')\
                         .replace(u'</lg>', u'').replace(u'</q>', u'')\

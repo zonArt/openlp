@@ -71,5 +71,5 @@ class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
         """
         if self.slideTextEdit.textCursor().columnNumber() != 0:
             self.slideTextEdit.insertPlainText(u'\n')
-        self.slideTextEdit.insertPlainText(u'[---]\n' )
+        self.slideTextEdit.insertPlainText(u'[---]\n')
         self.slideTextEdit.setFocus()
