@@ -594,7 +594,7 @@ class SongImportForm(OpenLPWizard):
         Remove selected SongBeamer files from the import list
         """
         self.removeSelectedItems(self.songBeamerFileListWidget)
-        
+
     def onSongShowPlusAddButtonClicked(self):
         """
         Get SongShow Plus song database files
@@ -604,7 +604,7 @@ class SongImportForm(OpenLPWizard):
             % translate('SongsPlugin.ImportWizardForm',
             'SongShow Plus Song Files')
         )
-        
+
     def onSongShowPlusRemoveButtonClicked(self):
         """
         Remove selected SongShow Plus files from the import list
