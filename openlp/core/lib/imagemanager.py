@@ -69,6 +69,7 @@ class ImageManager(QtCore.QObject):
     log.info(u'Image Manager loaded')
 
     def __init__(self):
+        QtCore.QObject.__init__(self)
         self._cache = {}
         self._thread_running = False
         self._cache_dirty = False

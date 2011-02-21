@@ -47,6 +47,8 @@
     <file>general_new.png</file>
     <file>general_zoom_out.png</file>
     <file>general_zoom_in.png</file>
+    <file>general_zoom_original.png</file>
+    <file>general_print.png</file>
     <file>general_open.png</file>
     <file>general_save.png</file>
     <file>general_email.png</file>
@@ -114,6 +116,8 @@
     <file>system_exit.png</file>
     <file>settings_plugin_list.png</file>
     <file>system_settings.png</file>
+    <file>system_configure.png</file>
+    <file>system_edit_copy.png</file>
     <file>system_configure_shortcuts.png</file>
   </qresource>
   <qresource prefix="media">

@@ -54,6 +54,7 @@ class SongImport(QtCore.QObject):
 
         """
         self.manager = manager
+        QtCore.QObject.__init__(self)
         if kwargs.has_key(u'filename'):
             self.import_source = kwargs[u'filename']
         elif kwargs.has_key(u'filenames'):
