@@ -27,6 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate
+from openlp.core.lib.ui import UiStrings
 
 class Ui_AboutDialog(object):
     def setupUi(self, aboutDialog):
@@ -86,8 +87,7 @@ class Ui_AboutDialog(object):
         QtCore.QMetaObject.connectSlotsByName(aboutDialog)
 
     def retranslateUi(self, aboutDialog):
-        aboutDialog.setWindowTitle(translate('OpenLP.AboutForm',
-            'About OpenLP'))
+        aboutDialog.setWindowTitle(u'%s OpenLP' % UiStrings.About)
         self.aboutTextEdit.setPlainText(translate('OpenLP.AboutForm',
             'OpenLP <version><revision> - Open Source Lyrics '
             'Projection\n'
@@ -105,8 +105,7 @@ class Ui_AboutDialog(object):
             'consider contributing by using the button below.'
         ))
         self.aboutNotebook.setTabText(
-            self.aboutNotebook.indexOf(self.aboutTab),
-            translate('OpenLP.AboutForm', 'About'))
+            self.aboutNotebook.indexOf(self.aboutTab), UiStrings.About)
         self.creditsTextEdit.setPlainText(translate('OpenLP.AboutForm',
             'Project Lead\n'
             '    Raoul "superfly" Snyman\n'

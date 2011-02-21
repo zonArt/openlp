@@ -29,7 +29,8 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
-    translate, check_item_selected
+    check_item_selected
+from openlp.core.lib.ui import UiStrings
 from openlp.plugins.custom.lib import CustomXMLParser
 from openlp.plugins.custom.lib.db import CustomSlide
 
@@ -54,7 +55,7 @@ class CustomMediaItem(MediaManagerItem):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'custom_edit'), self.onRemoteEdit)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'custom_edit_clear' ), self.onRemoteEditClear)
+            QtCore.SIGNAL(u'custom_edit_clear'), self.onRemoteEditClear)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'custom_load_list'), self.initialise)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -108,9 +109,7 @@ class CustomMediaItem(MediaManagerItem):
         """
         Edit a custom item
         """
-        if check_item_selected(self.listView,
-            translate('CustomPlugin.MediaItem',
-            'You haven\'t selected an item to edit.')):
+        if check_item_selected(self.listView, UiStrings.SelectEdit):
             item = self.listView.currentItem()
             item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.parent.edit_custom_form.loadCustom(item_id, False)
@@ -121,9 +120,7 @@ class CustomMediaItem(MediaManagerItem):
         """
         Remove a custom item from the list and database
         """
-        if check_item_selected(self.listView,
-            translate('CustomPlugin.MediaItem',
-            'You haven\'t selected an item to delete.')):
+        if check_item_selected(self.listView, UiStrings.SelectDelete):
             row_list = [item.row() for item in self.listView.selectedIndexes()]
             row_list.sort(reverse=True)
             id_list = [(item.data(QtCore.Qt.UserRole)).toInt()[0]

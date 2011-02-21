@@ -29,7 +29,8 @@ import sqlite
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver, translate
+from openlp.core.lib import Receiver
+from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.bibles.lib.db import BibleDB
 
 log = logging.getLogger(__name__)
@@ -73,8 +74,7 @@ class OpenLP1Bible(BibleDB):
             abbreviation = unicode(book[3], u'cp1252')
             self.create_book(name, abbreviation, testament_id)
             # Update the progess bar.
-            self.wizard.incrementProgressBar(unicode(translate(
-                'BiblesPlugin.OpenLP1Import', 'Importing %s...')) % name)
+            self.wizard.incrementProgressBar(WizardStrings.ImportingType % name)
             # Import the verses for this book.
             cursor.execute(u'SELECT chapter, verse, text || \'\' AS text FROM '
                 'verse WHERE book_id=%s' % book_id)

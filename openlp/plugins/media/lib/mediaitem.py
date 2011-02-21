@@ -58,10 +58,11 @@ class MediaMediaItem(MediaManagerItem):
             self.videoStart)
 
     def retranslateUi(self):
-        self.OnNewPrompt = translate('MediaPlugin.MediaItem', 'Select Media')
-        self.OnNewFileMasks = unicode(translate('MediaPlugin.MediaItem',
-            'Videos (%s);;Audio (%s);;%s (*)')) % (self.parent.video_list,
-            self.parent.audio_list, UiStrings.AllFiles)
+        self.onNewPrompt = translate('MediaPlugin.MediaItem', 'Select Media')
+        self.onNewFileMasks = unicode(translate('MediaPlugin.MediaItem',
+            'Videos (%s);;Audio (%s);;%s (*)')) % (
+            u' '.join(self.parent.video_list), 
+            u' '.join(self.parent.audio_list), UiStrings.AllFiles)
         self.replaceAction.setText(UiStrings.ReplaceBG)
         self.replaceAction.setToolTip(UiStrings.ReplaceLiveBG)
         self.resetAction.setText(UiStrings.ResetBG)
@@ -112,8 +113,7 @@ class MediaMediaItem(MediaManagerItem):
                 self.parent.liveController.display.video(filename, 0, True)
                 self.resetAction.setVisible(True)
             else:
-                critical_error_message_box(translate('MediaPlugin.MediaItem',
-                    'Live Background Error'),
+                critical_error_message_box(UiStrings.LiveBGError,
                     unicode(translate('MediaPlugin.MediaItem',
                     'There was a problem replacing your background, '
                     'the media file "%s" no longer exists.')) % filename)
@@ -125,20 +125,19 @@ class MediaMediaItem(MediaManagerItem):
                 return False
         filename = unicode(item.data(QtCore.Qt.UserRole).toString())
         if os.path.exists(filename):
-            self.MediaState = None
+            self.mediaState = None
             self.mediaObject.stop()
             self.mediaObject.clearQueue()
             self.mediaObject.setCurrentSource(Phonon.MediaSource(filename))
             self.mediaObject.play()
-            service_item.title = unicode(
-                translate('MediaPlugin.MediaItem', 'Media'))
+            service_item.title = unicode(self.plugin.nameStrings[u'singular'])
             service_item.add_capability(ItemCapabilities.RequiresMedia)
             service_item.add_capability(ItemCapabilities.AllowsVarableStartTime)
             # force a nonexistent theme
             service_item.theme = -1
             frame = u':/media/image_clapperboard.png'
             (path, name) = os.path.split(filename)
-            while not self.MediaState:
+            while not self.mediaState:
                 Receiver.send_message(u'openlp_process_events')
             service_item.media_length = self.mediaLength
             service_item.add_from_command(path, name, frame)
@@ -184,6 +183,6 @@ class MediaMediaItem(MediaManagerItem):
         Start the video at a predetermined point.
         """
         if newState == Phonon.PlayingState:
-            self.MediaState = newState
+            self.mediaState = newState
             self.mediaLength = self.mediaObject.totalTime()/1000
             self.mediaObject.stop()

@@ -51,22 +51,17 @@ class CCLIFileImport(SongImport):
         ``filenames``
             The files to be imported.
         """
-        SongImport.__init__(self, manager)
-        if u'filenames' in kwargs:
-            self.filenames = kwargs[u'filenames']
-            log.debug(self.filenames)
-        else:
-            raise KeyError(u'Keyword argument "filenames" not supplied.')
+        SongImport.__init__(self, manager, **kwargs)
 
     def do_import(self):
         """
         Import either a .usr or a .txt SongSelect file
         """
         log.debug(u'Starting CCLI File Import')
-        song_total = len(self.filenames)
+        song_total = len(self.import_source)
         self.import_wizard.progressBar.setMaximum(song_total)
         song_count = 1
-        for filename in self.filenames:
+        for filename in self.import_source:
             self.import_wizard.incrementProgressBar(unicode(translate(
                 'SongsPlugin.CCLIFileImport', 'Importing song %d of %d')) %
                 (song_count, song_total))
@@ -187,7 +182,7 @@ class CCLIFileImport(SongImport):
             if check_first_verse_line:
                 if verse_lines[0].startswith(u'(PRE-CHORUS'):
                     verse_type = u'P'
-                    log.debug(u'USR verse PRE-CHORUS: %s', verse_lines[0] )
+                    log.debug(u'USR verse PRE-CHORUS: %s', verse_lines[0])
                     verse_text = verse_lines[1]
                 elif verse_lines[0].startswith(u'(BRIDGE'):
                     verse_type = u'B'
@@ -204,8 +199,11 @@ class CCLIFileImport(SongImport):
         if len(author_list) < 2:
             author_list = song_author.split(u'|')
         for author in author_list:
-            seperated = author.split(u',')
-            self.add_author(seperated[1].strip() + u' ' + seperated[0].strip())
+            separated = author.split(u',')
+            if len(separated) > 1:
+                self.add_author(u' '.join(reversed(separated)))
+            else:
+                self.add_author(author)
         self.title = song_name
         self.copyright = song_copyright
         self.ccli_number = song_ccli

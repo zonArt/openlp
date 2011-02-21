@@ -45,36 +45,28 @@ class MediaPlugin(Plugin):
         self.icon = build_icon(self.icon_path)
         # passed with drag and drop messages
         self.dnd_id = u'Media'
-        self.audio_list = u''
-        self.video_list = u''
+        self.audio_list = []
+        self.video_list = []
         mimetypes.init()
         for mimetype in Phonon.BackendCapabilities.availableMimeTypes():
             mimetype = unicode(mimetype)
-            type = mimetype.split(u'audio/x-')
-            self.audio_list, mimetype = self._addToList(self.audio_list,
-                type, mimetype)
-            type = mimetype.split(u'audio/')
-            self.audio_list, mimetype = self._addToList(self.audio_list,
-                type, mimetype)
-            type = mimetype.split(u'video/x-')
-            self.video_list, mimetype = self._addToList(self.video_list,
-                type, mimetype)
-            type = mimetype.split(u'video/')
-            self.video_list, mimetype = self._addToList(self.video_list,
-                type, mimetype)
+            if mimetype.startswith(u'audio/'):
+                self._addToList(self.audio_list, mimetype)
+            elif mimetype.startswith(u'video/'):
+                self._addToList(self.video_list, mimetype)
+        log.info(u'MediaPlugin handles audio extensions: %s',
+            u' '.join(self.audio_list))
+        log.info(u'MediaPlugin handles video extensions: %s',
+            u' '.join(self.video_list))
 
-    def _addToList(self, list, value, mimetype):
+    def _addToList(self, list, mimetype):
         # Is it a media type
-        if len(value) == 2:
-            extensions = mimetypes.guess_all_extensions(unicode(mimetype))
-            # we have an extension
-            if extensions:
-                for extension in extensions:
-                    if list.find(extension) == -1:
-                        list += u'*%s ' % extension
-                        self.serviceManager.supportedSuffixes(extension[1:])
-                mimetype = u''
-        return list, mimetype
+        extensions = mimetypes.guess_all_extensions(unicode(mimetype))
+        for extension in extensions:
+            ext = u'*%s' % extension
+            if ext not in list:
+                list.append(ext)
+                self.serviceManager.supportedSuffixes(extension[1:])
 
     def about(self):
         about_text = translate('MediaPlugin', '<strong>Media Plugin</strong>'
