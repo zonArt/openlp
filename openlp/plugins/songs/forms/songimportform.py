@@ -604,6 +604,12 @@ class SongImportForm(OpenLPWizard):
             % translate('SongsPlugin.ImportWizardForm',
             'SongShow Plus Song Files')
         )
+        
+    def onSongShowPlusRemoveButtonClicked(self):
+        """
+        Remove selected SongShow Plus files from the import list
+        """
+        self.removeSelectedItems(self.songShowPlusFileListWidget)
 
     def onFoilPresenterAddButtonClicked(self):
         """
@@ -620,18 +626,6 @@ class SongImportForm(OpenLPWizard):
         Remove selected FoilPresenter files from the import list
         """
         self.removeSelectedItems(self.foilPresenterFileListWidget)
-
-    def registerFields(self):
-        """
-        Register song import wizard fields.
-        """
-        pass
-
-    def onSongShowPlusRemoveButtonClicked(self):
-        """
-        Remove selected SongShow Plus files from the import list
-        """
-        self.removeSelectedItems(self.songShowPlusFileListWidget)
 
     def setDefaults(self):
         """
