@@ -47,6 +47,7 @@ class WizardStrings(object):
     CSV = u'CSV'
     EW = u'EasyWorship'
     ES = u'EasiSlides'
+    FP = u'Foilpresenter'
     OL = u'OpenLyrics'
     OS = u'OpenSong'
     OSIS = u'OSIS'
@@ -54,7 +55,6 @@ class WizardStrings(object):
     SoF = u'Songs of Fellowship'
     SSP = u'SongShow Plus'
     WoW = u'Words of Worship'
-    FP = u'Foilpresenter'
     # These strings should need a good reason to be retranslated elsewhere.
     FinishedImport = translate('OpenLP.Ui', 'Finished import.')
     FormatLabel = translate('OpenLP.Ui', 'Format:')
