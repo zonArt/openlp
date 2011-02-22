@@ -46,7 +46,7 @@ class MediaPlugin(Plugin):
         # passed with drag and drop messages
         self.dnd_id = u'Media'
         self.additional_extensions = {}
-            #'video/msvideo': ['.avi']} This is an example line.
+        #   'video/msvideo': ['.avi']} This is an example line.
         self.audio_extensions_list = []
         self.video_extensions_list = []
         mimetypes.init()
@@ -67,8 +67,9 @@ class MediaPlugin(Plugin):
                 self.serviceManager.supportedSuffixes(extension[1:])
         log.info(u'MediaPlugin: %s extensions: %s' % (mimetype,
             u' '.join(extensions)))
-        # Add all extensions listed in self.additional_extensions, to hack
-        # away mimetypes' shortcomings.
+        # Add all extensions listed in self.additional_extensions, which
+        # have this mimetype, previously claimed to be supported by Phonon,
+        # to hack away mimetypes' shortcomings in providing some extensions.
         if mimetype in self.additional_extensions.keys():
             for extension in self.additional_extensions[mimetype]:
                 ext = u'*%s' % extensions
