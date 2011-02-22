@@ -105,7 +105,7 @@ log = logging.getLogger(__name__)
 
 class FoilPresenterImport(SongImport):
     """
-    This provides the Openlyrics import.
+    This provides the Foilpresenter import.
     """
     def __init__(self, master_manager, **kwargs):
         """
@@ -263,37 +263,37 @@ class FoilPresenter(object):
             strings = []
             author_temp = []
             if copyright.find(u'Copyright') != -1:
-                test = copyright.partition(u'Copyright')
-                copyright = test[0]
+                temp = copyright.partition(u'Copyright')
+                copyright = temp[0]
             elif copyright.find(u'copyright') != -1:
-                test = copyright.partition(u'copyright')
-                copyright = test[0]
+                temp = copyright.partition(u'copyright')
+                copyright = temp[0]
             elif copyright.find(u'©') != -1:
-                test = copyright.partition(u'©')
-                copyright = test[0]
+                temp = copyright.partition(u'©')
+                copyright = temp[0]
             elif copyright.find(u'(c)') != -1:
-                test = copyright.partition(u'(c)')
-                copyright = test[0]
+                temp = copyright.partition(u'(c)')
+                copyright = temp[0]
             elif copyright.find(u'(C)') != -1:
-                test = copyright.partition(u'(C)')
-                copyright = test[0]
+                temp = copyright.partition(u'(C)')
+                copyright = temp[0]
             elif copyright.find(u'c)') != -1:
-                test = copyright.partition(u'c)')
-                copyright = test[0]
+                temp = copyright.partition(u'c)')
+                copyright = temp[0]
             elif copyright.find(u'C)') != -1:
-                test = copyright.partition(u'C)')
-                copyright = test[0]
+                temp = copyright.partition(u'C)')
+                copyright = temp[0]
             elif copyright.find(u'C:') != -1:
-                test = copyright.partition(u'C:')
-                copyright = test[0]
+                temp = copyright.partition(u'C:')
+                copyright = temp[0]
             elif copyright.find(u'C,)') != -1:
-                test = copyright.partition(u'C,)')
-                copyright = test[0]
+                temp = copyright.partition(u'C,)')
+                copyright = temp[0]
             copyright = re.compile(u'\\n').sub(u' ', copyright)
             copyright = re.compile(u'\(.*\)').sub(u'', copyright)
             if copyright.find(u'Rechte') != -1:
-                test = copyright.partition(u'Rechte')
-                copyright = test[0]
+                temp = copyright.partition(u'Rechte')
+                copyright = temp[0]
             markers = [u'Text +u\.?n?d? +Melodie[a-zA-Z0-9\,\. ]*:', 
                 u'Text +u\.?n?d? +Musik', u'T & M', u'Melodie und Satz', 
                 u'Text[a-zA-Z0-9\,\. ]*:', u'Melodie', u'Musik', u'Satz', 
@@ -306,10 +306,10 @@ class FoilPresenter(object):
             x = 0
             while i != 1:
                 if copyright.find(u'<marker>') != -1:
-                    test = copyright.partition(u'<marker>')
-                    if (test[0].strip() != u'') & (x > 0):
-                        strings.append(test[0])
-                    copyright = test[2]
+                    temp = copyright.partition(u'<marker>')
+                    if (temp[0].strip() != u'') & (x > 0):
+                        strings.append(temp[0])
+                    copyright = temp[2]
                     x += 1
                 elif x > 0:
                     strings.append(copyright)
@@ -317,10 +317,10 @@ class FoilPresenter(object):
                 else: 
                     i = 1
             for author in strings:
-                test = re.split(u',(?=\D{2})|(?<=\D),|\/(?=\D{3,})|(?<=\D);',  
+                temp = re.split(u',(?=\D{2})|(?<=\D),|\/(?=\D{3,})|(?<=\D);',  
                     author) 
-                for test_temp in test:
-                    author_temp.append(test_temp)
+                for tempx in temp:
+                    author_temp.append(tempx)
                 for author in author_temp:
                     regex = u'^[\/,;\-\s]+|[\/,;\-\s]+$|'\
                         '\s*[0-9]{4}\s*[\-\/]?\s*([0-9]{4})?[\/,;\-\s]*$'
@@ -334,9 +334,9 @@ class FoilPresenter(object):
                         u'\w+\.?\s+\w{3,}\s+[a|u]nd\s|\w+\.?\s+\w{3,}\s+&\s', 
                         author,  re.U) != None:
                         temp = re.split(u'\s[a|u]nd\s|\s&\s', author)
-                        for temp_temp in temp:
-                            temp_temp = temp_temp.strip()
-                            authors.append(temp_temp)
+                        for tempx in temp:
+                            tempx = tempx.strip()
+                            authors.append(tempx)
                     elif (len(author) > 2):
                         authors.append(author)
         if not authors:
@@ -347,8 +347,8 @@ class FoilPresenter(object):
             if author is None:
                 # We need to create a new author, as the author does not exist.
                 author = Author.populate(display_name=display_name,
-                    last_name=display_name.split(u' ')[-1],
-                    first_name=u' '.join(display_name.split(u' ')[:-1]))
+                    last_name = display_name.split(u' ')[-1],
+                    first_name = u' '.join(display_name.split(u' ')[:-1]))
             self.manager.save_object(author)
             song.authors.append(author)
 
@@ -404,9 +404,6 @@ class FoilPresenter(object):
         ``foilpresenterfolie``
             The foilpresenterfolie object (lxml.objectify.ObjectifiedElement).
 
-        ``lyrics``
-            The lyrics object (lxml.objectify.ObjectifiedElement).
-
         ``song``
             The song object.
         """
@@ -418,14 +415,14 @@ class FoilPresenter(object):
         temp_sortnr_backup = 1
         temp_sortnr_liste = []
         versenumber = {u'V': 1,  u'C': 1, u'B': 1, u'E': 1, u'O': 1, u'I': 1, 
-            u'P': 1 }
+            u'P': 1}
         for strophe in foilpresenterfolie.strophen.strophe:
             text = self._child(strophe.text_)
             verse_name = self._child(strophe.key)
             children = strophe.getchildren()
             sortnr = 0
             for child in children:
-                if child.tag == 'sortnr':
+                if child.tag == u'sortnr':
                     verse_sortnr = self._child(strophe.sortnr)
                     sortnr = 1
                 # In older Version there is no sortnr, but we need one
@@ -506,8 +503,8 @@ class FoilPresenter(object):
         song.song_book_id = 0
         song.song_number = u''
         try:
-            for songbook in foilpresenterfolie.buch.bucheintrag:
-                bookname = self._child(songbook.name)
+            for bucheintrag in foilpresenterfolie.buch.bucheintrag:
+                bookname = self._child(bucheintrag.name)
                 if bookname:
                     book = self.manager.get_object_filtered(Book,
                         Book.name == bookname)
@@ -517,8 +514,8 @@ class FoilPresenter(object):
                         self.manager.save_object(book)
                     song.song_book_id = book.id
                     try:
-                        if self._child(songbook.nummer):
-                            song.song_number = self._child(songbook.nummer)
+                        if self._child(bucheintrag.nummer):
+                            song.song_number = self._child(bucheintrag.nummer)
                     except AttributeError:
                         pass
                     # We only support one song book, so take the first one.
@@ -536,13 +533,13 @@ class FoilPresenter(object):
         ``song``
             The song object.
         """
-        for title in foilpresenterfolie.titel.titelstring:
+        for titelstring in foilpresenterfolie.titel.titelstring:
             if not song.title:
-                song.title = self._child(title)
+                song.title = self._child(titelstring)
                 song.search_title = unicode(song.title)
                 song.alternate_title = u''
             else:
-                song.alternate_title = self._child(title)
+                song.alternate_title = self._child(titelstring)
                 song.search_title += u'@' + song.alternate_title
         song.search_title = re.sub(r'[\'"`,;:(){}?]+', u'',
             unicode(song.search_title)).lower()
@@ -558,8 +555,8 @@ class FoilPresenter(object):
             The song object.
         """
         try:
-            for topictext in foilpresenterfolie.kategorien.name:
-                topictext = self._child(topictext)
+            for name in foilpresenterfolie.kategorien.name:
+                topictext = self._child(name)
                 if topictext:
                     topic = self.manager.get_object_filtered(Topic,
                         Topic.name == topictext)
