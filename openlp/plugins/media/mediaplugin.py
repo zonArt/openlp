@@ -47,8 +47,7 @@ class MediaPlugin(Plugin):
         self.dnd_id = u'Media'
         # This is yet a dummy example:
         self.additional_extensions = {
-            'audio/msaudio': ['.mp3', '.aac'],
-            'video/msvideo': ['.wmv', '.avi']}
+            'video/msvideo': ['.avi']} # only an example line, unnecessary
         self.audio_extensions_list = []
         self.video_extensions_list = []
         mimetypes.init()
