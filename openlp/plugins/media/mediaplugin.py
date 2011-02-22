@@ -45,9 +45,8 @@ class MediaPlugin(Plugin):
         self.icon = build_icon(self.icon_path)
         # passed with drag and drop messages
         self.dnd_id = u'Media'
-        # This is yet a dummy example:
-        self.additional_extensions = {
-            'video/msvideo': ['.avi']} # only an example line, unnecessary
+        self.additional_extensions = {}
+            #'video/msvideo': ['.avi']} This is an example line.
         self.audio_extensions_list = []
         self.video_extensions_list = []
         mimetypes.init()
@@ -59,6 +58,7 @@ class MediaPlugin(Plugin):
                 self._addToList(self.video_extensions_list, mimetype)
 
     def _addToList(self, list, mimetype):
+        # Add all extensions which mimetypes provides us for supported types.
         extensions = mimetypes.guess_all_extensions(unicode(mimetype))
         for extension in extensions:
             ext = u'*%s' % extension
@@ -67,6 +67,8 @@ class MediaPlugin(Plugin):
                 self.serviceManager.supportedSuffixes(extension[1:])
         log.info(u'MediaPlugin: %s extensions: %s' % (mimetype,
             u' '.join(extensions)))
+        # Add all extensions listed in self.additional_extensions, to hack
+        # away mimetypes' shortcomings.
         if mimetype in self.additional_extensions.keys():
             for extension in self.additional_extensions[mimetype]:
                 ext = u'*%s' % extensions
