@@ -40,9 +40,9 @@ from osis import OSISBible
 # Imports that might fail.
 try:
     from openlp1 import OpenLP1Bible
-    has_openlp1 = True
+    HAS_OPENLP1 = True
 except ImportError:
-    has_openlp1 = False
+    HAS_OPENLP1 = False
 
 log = logging.getLogger(__name__)
 
@@ -367,6 +367,6 @@ class BibleManager(object):
         for bible in self.db_cache:
             self.db_cache[bible].finalise()
 
-BibleFormat.set_availability(BibleFormat.OpenLP1, has_openlp1)
+BibleFormat.set_availability(BibleFormat.OpenLP1, HAS_OPENLP1)
 
 __all__ = [u'BibleFormat']
