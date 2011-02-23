@@ -420,13 +420,13 @@ class FoilPresenter(object):
             text = self._child(strophe.text_)
             verse_name = self._child(strophe.key)
             children = strophe.getchildren()
-            sortnr = 0
+            sortnr = False 
             for child in children:
                 if child.tag == u'sortnr':
                     verse_sortnr = self._child(strophe.sortnr)
-                    sortnr = 1
+                    sortnr = True
                 # In older Version there is no sortnr, but we need one
-            if sortnr == 0:
+            if sortnr == False:
                 verse_sortnr = unicode(temp_sortnr_backup)
                 temp_sortnr_backup += 1
             # Foilpresenter allows e. g. "Ref" or "1", but we need "C1" or "V1".
