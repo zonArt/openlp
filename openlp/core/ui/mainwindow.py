@@ -34,7 +34,7 @@ from openlp.core.lib.ui import UiStrings, base_action, checkable_action, \
     icon_action
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
     ThemeManager, SlideController, PluginForm, MediaDockManager, \
-    ShortcutListForm
+    ShortcutListForm, DisplayTagForm
 from openlp.core.utils import AppLocation, add_actions, LanguageManager, \
     ActionList
 
@@ -240,8 +240,10 @@ class Ui_MainWindow(object):
                 languageItem.setChecked(True)
             add_actions(self.LanguageGroup, [languageItem])
         self.SettingsShortcutsItem = icon_action(mainWindow,
-            u'SettingsShortcutsItem', 
+            u'SettingsShortcutsItem',
             u':/system/system_configure_shortcuts.png')
+        self.DisplayTagItem = icon_action(mainWindow,
+            u'DisplayTagItem', u':/system/tag_editor.png')
         self.SettingsConfigureItem = icon_action(mainWindow,
             u'SettingsConfigureItem', u':/system/system_settings.png')
         mainWindow.actionList.add_action(self.SettingsShortcutsItem,
@@ -277,7 +279,8 @@ class Ui_MainWindow(object):
         add_actions(self.SettingsLanguageMenu, self.LanguageGroup.actions())
         add_actions(self.SettingsMenu, (self.settingsPluginListItem,
             self.SettingsLanguageMenu.menuAction(), None,
-            self.SettingsShortcutsItem, self.SettingsConfigureItem))
+            self.SettingsShortcutsItem, self.DisplayTagItem,
+            self.SettingsConfigureItem))
         add_actions(self.ToolsMenu, (self.ToolsAddToolItem, None))
         add_actions(self.ToolsMenu, (self.ToolsOpenDataFolder, None))
         add_actions(self.HelpMenu, (self.HelpDocumentationItem,
@@ -361,6 +364,8 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', '&Language'))
         self.SettingsShortcutsItem.setText(
             translate('OpenLP.MainWindow', 'Configure &Shortcuts...'))
+        self.DisplayTagItem.setText(
+            translate('OpenLP.MainWindow', '&Configure Display Tags'))
         self.SettingsConfigureItem.setText(
             translate('OpenLP.MainWindow', '&Configure OpenLP...'))
         self.ViewMediaManagerItem.setText(
@@ -456,7 +461,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     actionList = ActionList()
 
-    def __init__(self, screens, applicationVersion):
+    def __init__(self, screens, applicationVersion, clipboard):
         """
         This constructor sets up the interface, the various managers, and the
         plugins.
@@ -465,6 +470,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.screens = screens
         self.actionList = ActionList()
         self.applicationVersion = applicationVersion
+        self.clipboard = clipboard
         # Set up settings sections for the main application
         # (not for use by plugins)
         self.uiSettingsSection = u'user interface'
@@ -475,6 +481,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.settingsmanager = SettingsManager(screens)
         self.aboutForm = AboutForm(self, applicationVersion)
         self.settingsForm = SettingsForm(self.screens, self, self)
+        self.displayTagForm = DisplayTagForm(self)
         self.shortcutForm = ShortcutListForm(self)
         self.recentFiles = QtCore.QStringList()
         # Set up the path with plugins
@@ -522,6 +529,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'triggered()'), self.onToolsOpenDataFolderClicked)
         QtCore.QObject.connect(self.settingsPluginListItem,
             QtCore.SIGNAL(u'triggered()'), self.onPluginItemClicked)
+        QtCore.QObject.connect(self.DisplayTagItem,
+            QtCore.SIGNAL(u'triggered()'), self.onDisplayTagItemClicked)
         QtCore.QObject.connect(self.SettingsConfigureItem,
             QtCore.SIGNAL(u'triggered()'), self.onSettingsConfigureItemClicked)
         QtCore.QObject.connect(self.SettingsShortcutsItem,
@@ -714,6 +723,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         path = AppLocation.get_data_path()
         QtGui.QDesktopServices.openUrl(QtCore.QUrl("file:///" + path))
+
+    def onDisplayTagItemClicked(self):
+        """
+        Show the Settings dialog
+        """
+        self.displayTagForm.exec_()
 
     def onSettingsConfigureItemClicked(self):
         """
