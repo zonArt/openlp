@@ -270,8 +270,6 @@ class SongImport(QtCore.QObject):
         """
         All fields have been set to this song. Write the song to disk.
         """
-        if not self.authors:
-            self.authors.append(SongStrings.AuthorUnknownUnT)
         log.info(u'committing song %s to database', self.title)
         song = Song()
         song.title = self.title
@@ -315,9 +313,18 @@ class SongImport(QtCore.QObject):
             author = self.manager.get_object_filtered(Author,
                 Author.display_name == authortext)
             if not author:
-                author = Author.populate(display_name = authortext,
+                author = Author.populate(display_name=authortext,
                     last_name=authortext.split(u' ')[-1],
                     first_name=u' '.join(authortext.split(u' ')[:-1]))
+            song.authors.append(author)
+        # No author, add the default author.
+        if not song.authors:
+            name = SongStrings.AuthorUnknown
+            author = self.manager.get_object_filtered(
+                Author, Author.display_name == name)
+            if not author:
+                author = Author.populate(
+                    display_name=name, last_name=u'', first_name=u'')
             song.authors.append(author)
         for filename in self.media_files:
             media_file = self.manager.get_object_filtered(MediaFile,

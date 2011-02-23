@@ -374,8 +374,6 @@ class OpenLyrics(object):
                 display_name = self._text(author)
                 if display_name:
                     authors.append(display_name)
-        if not authors:
-            authors.append(SongStrings.AuthorUnknownUnT)
         for display_name in authors:
             author = self.manager.get_object_filtered(Author,
                 Author.display_name == display_name)
@@ -384,7 +382,14 @@ class OpenLyrics(object):
                 author = Author.populate(display_name=display_name,
                     last_name=display_name.split(u' ')[-1],
                     first_name=u' '.join(display_name.split(u' ')[:-1]))
-            self.manager.save_object(author)
+        # The song does not have an author, add a default author.
+        if not song.authors:
+            name = SongStrings.AuthorUnknown
+            author = self.manager.get_object_filtered(
+                Author, Author.display_name == name)
+            if author is None:
+                author = Author.populate(
+                    display_name=name, last_name=u'', first_name=u'')
             song.authors.append(author)
 
     def _process_cclinumber(self, properties, song):
