@@ -47,6 +47,7 @@ class WizardStrings(object):
     CSV = u'CSV'
     EW = u'EasyWorship'
     ES = u'EasiSlides'
+    FP = u'Foilpresenter'
     OL = u'OpenLyrics'
     OS = u'OpenSong'
     OSIS = u'OSIS'
