@@ -98,8 +98,14 @@ class AdvancedTab(SettingsTab):
         self.defaultFileLabel.setObjectName(u'defaultFileLabel')
         self.defaultFileEdit = QtGui.QLineEdit(self.defaultImageGroupBox)
         self.defaultFileEdit.setObjectName(u'defaultFileEdit')
+        self.defaultBrowseButton = QtGui.QToolButton(self.defaultImageGroupBox)
+        self.defaultBrowseButton.setObjectName(u'defaultBrowseButton')
+        self.defaultFileLayout = QtGui.QHBoxLayout()
+        self.defaultFileLayout.setObjectName(u'defaultFileLayout')
+        self.defaultFileLayout.addWidget(self.defaultFileEdit)
+        self.defaultFileLayout.addWidget(self.defaultBrowseButton)
         self.defaultImageLayout.addRow(self.defaultFileLabel,
-            self.defaultFileEdit)
+            self.defaultFileLayout)
         self.rightLayout.addWidget(self.defaultImageGroupBox)
         self.rightLayout.addStretch()
 
@@ -133,6 +139,7 @@ class AdvancedTab(SettingsTab):
             'Background color:'))
         self.defaultFileLabel.setText(translate('OpenLP.AdvancedTab',
             'Image file:'))
+        self.defaultBrowseButton.setTitle('...')
 
     def load(self):
         """
