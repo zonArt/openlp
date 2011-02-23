@@ -28,8 +28,9 @@ The :mod:`advancedtab` provides an advanced settings facility.
 """
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate
+from openlp.core.lib import SettingsTab, translate, build_icon
 from openlp.core.lib.ui import UiStrings
+from openlp.core.utils import get_images_filter
 
 class AdvancedTab(SettingsTab):
     """
@@ -100,6 +101,8 @@ class AdvancedTab(SettingsTab):
         self.defaultFileEdit.setObjectName(u'defaultFileEdit')
         self.defaultBrowseButton = QtGui.QToolButton(self.defaultImageGroupBox)
         self.defaultBrowseButton.setObjectName(u'defaultBrowseButton')
+        self.defaultBrowseButton.setIcon(
+            build_icon(u':/general/general_open.png'))
         self.defaultFileLayout = QtGui.QHBoxLayout()
         self.defaultFileLayout.setObjectName(u'defaultFileLayout')
         self.defaultFileLayout.addWidget(self.defaultFileEdit)
@@ -111,6 +114,8 @@ class AdvancedTab(SettingsTab):
 
         QtCore.QObject.connect(self.defaultColorButton,
             QtCore.SIGNAL(u'pressed()'), self.onDefaultColorButtonPressed)
+        QtCore.QObject.connect(self.defaultBrowseButton,
+            QtCore.SIGNAL(u'pressed()'), self.onDefaultBrowseButtonPressed)
 
     def retranslateUi(self):
         """
@@ -139,7 +144,6 @@ class AdvancedTab(SettingsTab):
             'Background color:'))
         self.defaultFileLabel.setText(translate('OpenLP.AdvancedTab',
             'Image file:'))
-        self.defaultBrowseButton.setTitle('...')
 
     def load(self):
         """
@@ -195,8 +199,8 @@ class AdvancedTab(SettingsTab):
             QtCore.QVariant(self.enableAutoCloseCheckBox.isChecked()))
         settings.setValue(u'hide mouse',
             QtCore.QVariant(self.hideMouseCheckBox.isChecked()))
-        settings.setValue(u'default background color', self.default_color)
-        settings.setValue(u'default image', self.default_image)
+        settings.setValue(u'default color', self.default_color)
+        settings.setValue(u'default image', self.defaultFileEdit.text())
         settings.endGroup()
 
     def onDefaultColorButtonPressed(self):
@@ -207,3 +211,12 @@ class AdvancedTab(SettingsTab):
             self.defaultColorButton.setStyleSheet(
                 u'background-color: %s' % self.default_color)
 
+    def onDefaultBrowseButtonPressed(self):
+        file_filters = u'%s;;%s (*.*) (*)' % (get_images_filter(),
+            UiStrings.AllFiles)
+        filename = QtGui.QFileDialog.getOpenFileName(self,
+            translate('OpenLP.AdvancedTab', 'Open File'), '',
+            file_filters)
+        if filename:
+            self.defaultFileEdit.setText(filename)
+        self.defaultFileEdit.setFocus()
