@@ -264,4 +264,3 @@ def add_author_unknown(manager, song):
 from xml import OpenLyrics, SongXML
 from songstab import SongsTab
 from mediaitem import SongMediaItem
-
