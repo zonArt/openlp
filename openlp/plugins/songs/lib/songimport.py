@@ -29,7 +29,7 @@ import re
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, translate
-from openlp.plugins.songs.lib import VerseType
+from openlp.plugins.songs.lib import add_author_unknown, VerseType
 from openlp.plugins.songs.lib.db import Song, Author, Topic, Book, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
 from openlp.plugins.songs.lib.xml import SongXML
@@ -319,13 +319,7 @@ class SongImport(QtCore.QObject):
             song.authors.append(author)
         # No author, add the default author.
         if not song.authors:
-            name = SongStrings.AuthorUnknown
-            author = self.manager.get_object_filtered(
-                Author, Author.display_name == name)
-            if not author:
-                author = Author.populate(
-                    display_name=name, last_name=u'', first_name=u'')
-            song.authors.append(author)
+            add_author_unknown(self.manager, song)
         for filename in self.media_files:
             media_file = self.manager.get_object_filtered(MediaFile,
                 MediaFile.file_name == filename)

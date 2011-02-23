@@ -66,7 +66,7 @@ import re
 
 from lxml import etree, objectify
 
-from openlp.plugins.songs.lib import VerseType
+from openlp.plugins.songs.lib import add_author_unknown, VerseType
 from openlp.plugins.songs.lib.db import Author, Book, Song, Topic
 from openlp.plugins.songs.lib.ui import SongStrings
 
@@ -382,15 +382,8 @@ class OpenLyrics(object):
                 author = Author.populate(display_name=display_name,
                     last_name=display_name.split(u' ')[-1],
                     first_name=u' '.join(display_name.split(u' ')[:-1]))
-        # The song does not have an author, add a default author.
         if not song.authors:
-            name = SongStrings.AuthorUnknown
-            author = self.manager.get_object_filtered(
-                Author, Author.display_name == name)
-            if author is None:
-                author = Author.populate(
-                    display_name=name, last_name=u'', first_name=u'')
-            song.authors.append(author)
+            add_author_unknown(self.manager, song)
 
     def _process_cclinumber(self, properties, song):
         """
