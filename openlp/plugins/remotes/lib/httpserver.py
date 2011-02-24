@@ -27,6 +27,7 @@
 import logging
 import os
 import urlparse
+import re
 
 try:
     import json
@@ -39,6 +40,18 @@ from openlp.core.lib import Receiver
 from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
+
+class HttpResponse(object):
+    """
+    A simple object to encapsulate a pseudo-http response.
+    """
+    content = u''
+    mimetype = None
+
+    def __init__(self, content=u'', mimetype=None):
+        self.content = content
+        self.mimetype = mimetype
+
 
 class HttpServer(object):
     """
@@ -144,6 +157,12 @@ class HttpConnection(object):
             socket.peerAddress().toString())
         self.socket = socket
         self.parent = parent
+        self.routes = [
+            (u'^/$', self.serve_file, [u'filename'], {u'filename': u''}),
+            (r'^/files/(?P<filename>.*)$', self.serve_file, [u'filename'], None),
+            (r'^/send/(?P<name>.*)$', self.process_event, [u'name', u'parameters'], None),
+            (r'^/request/(?P<name>.*)$', self.process_request, [u'name', u'parameters'], None)
+        ]
         QtCore.QObject.connect(self.socket, QtCore.SIGNAL(u'readyRead()'),
             self.ready_read)
         QtCore.QObject.connect(self.socket, QtCore.SIGNAL(u'disconnected()'),
@@ -158,11 +177,35 @@ class HttpConnection(object):
             data = unicode(self.socket.readLine())
             log.debug(u'received: ' + data)
             words = data.split(u' ')
-            html = None
-            mimetype = None
+            response = None
             if words[0] == u'GET':
                 url = urlparse.urlparse(words[1])
                 params = self.load_params(url.query)
+                # Loop through the routes we set up earlier and execute them
+                for route, func, kws, defaults in self.routes:
+                    match = re.match(route, url.path)
+                    if match:
+                        log.debug(u'Matched on "%s" from "%s"', route, url.path)
+                        log.debug(u'Groups: %s', match.groups())
+                        kwargs = {}
+                        # Loop through all the keywords supplied
+                        for keyword in kws:
+                            groups = match.groupdict()
+                            if keyword in groups:
+                                # If we find a valid keyword in our URL, use it
+                                kwargs[keyword] = groups[keyword]
+                            elif defaults and keyword in defaults:
+                                # Otherwise, if we have defaults, use them
+                                kwargs[keyword] = defaults[keyword]
+                            else:
+                                # Lastly, set our parameter to None.
+                                kwargs[keyword] = None
+                        if u'parameters' in kwargs:
+                            kwargs[u'parameters'] = params
+                        log.debug(u'Keyword arguments: %s', kwargs)
+                        response = func(**kwargs)
+                        break
+                """
                 folders = url.path.split(u'/')
                 if folders[1] == u'':
                     mimetype, html = self.serve_file(u'')
@@ -173,17 +216,21 @@ class HttpConnection(object):
                 elif folders[1] == u'request':
                     if self.process_request(folders[2], params):
                         return
-            if html:
-                if mimetype:
-                    self.send_200_ok(mimetype)
+                """
+            if response:
+                if hasattr(response, u'mimetype'):
+                    self.send_200_ok(response.mimetype)
                 else:
                     self.send_200_ok()
-                self.socket.write(html)
+                if hasattr(response, u'content'):
+                    self.socket.write(response.content)
+                else:
+                    self.socket.write(response)
             else:
                 self.send_404_not_found()
             self.close()
 
-    def serve_file(self, filename):
+    def serve_file(self, **kwargs):
         """
         Send a file to the socket. For now, just a subset of file types
         and must be top level inside the html folder.
@@ -192,6 +239,7 @@ class HttpConnection(object):
         Ultimately for i18n, this could first look for xx/file.html before
         falling back to file.html... where xx is the language, e.g. 'en'
         """
+        filename = kwargs.get(u'filename', u'')
         log.debug(u'serve file request %s' % filename)
         if not filename:
             filename = u'index.html'
@@ -224,7 +272,7 @@ class HttpConnection(object):
         finally:
             if file_handle:
                 file_handle.close()
-        return (mimetype, html)
+        return HttpResponse(content=html, mimetype=mimetype)
 
     def load_params(self, query):
         """
@@ -237,12 +285,14 @@ class HttpConnection(object):
         else:
             return params['q']
 
-    def process_event(self, event, params):
+    def process_event(self, **kwargs):
         """
         Send a signal to openlp to perform an action.
         Currently lets anything through. Later we should restrict and perform
         basic parameter checking, otherwise rogue clients could crash openlp
         """
+        event = kwargs.get(u'name')
+        params = kwargs.get(u'parameters')
         log.debug(u'Processing event %s' % event)
         if params:
             Receiver.send_message(event, params)
@@ -250,7 +300,7 @@ class HttpConnection(object):
             Receiver.send_message(event)
         return json.dumps([u'OK'])
 
-    def process_request(self, event, params):
+    def process_request(self, **kwargs):
         """
         Client has requested data. Send the signal and parameters for openlp
         to handle, then listen out for a corresponding ``_request`` signal
@@ -267,6 +317,8 @@ class HttpConnection(object):
         ``params``
             Parameters sent with the event.
         """
+        event = kwargs.get(u'name')
+        params = kwargs.get(u'parameters')
         log.debug(u'Processing request %s' % event)
         if not event.endswith(u'_request'):
             return False
