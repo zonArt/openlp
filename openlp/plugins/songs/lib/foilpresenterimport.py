@@ -94,11 +94,10 @@ import os
 from lxml import etree, objectify
 
 from openlp.core.ui.wizard import WizardStrings
-from openlp.plugins.songs.lib import VerseType
+from openlp.plugins.songs.lib import add_author_unknown, VerseType
 from openlp.plugins.songs.lib.songimport import SongImport
 from openlp.plugins.songs.lib.db import Author, Book, Song, Topic
 from openlp.plugins.songs.lib.xml import SongXML
-from openlp.plugins.songs.lib.ui import SongStrings
 
 log = logging.getLogger(__name__)
 
@@ -293,13 +292,13 @@ class FoilPresenter(object):
             if copyright.find(u'Rechte') != -1:
                 temp = copyright.partition(u'Rechte')
                 copyright = temp[0]
-            markers = [u'Text +u\.?n?d? +Melodie[a-zA-Z0-9\,\. ]*:',
+            markers = [u'Text +u\.?n?d? +Melodie[\w\,\. ]*:',
                 u'Text +u\.?n?d? +Musik', u'T & M', u'Melodie und Satz',
-                u'Text[a-zA-Z0-9\,\. ]*:', u'Melodie', u'Musik', u'Satz',
+                u'Text[\w\,\. ]*:', u'Melodie', u'Musik', u'Satz',
                 u'Weise', u'[dD]eutsch', u'[dD]t[\.\:]', u'Englisch',
                 u'[oO]riginal',  u'Bearbeitung',  u'[R|r]efrain']
             for marker in markers:
-                copyright = re.compile(marker).sub(u'<marker>', copyright)
+                copyright = re.compile(marker).sub(u'<marker>', copyright,  re.U)
             copyright = re.compile(u'(?<=<marker>) *:').sub(u'', copyright)
             i = 0
             x = 0
@@ -338,8 +337,6 @@ class FoilPresenter(object):
                             authors.append(tempx)
                     elif (len(author) > 2):
                         authors.append(author)
-        if not authors:
-            authors.append(SongStrings.AuthorUnknown)
         for display_name in authors:
             author = self.manager.get_object_filtered(Author,
                 Author.display_name == display_name)
@@ -350,6 +347,8 @@ class FoilPresenter(object):
                     first_name = u' '.join(display_name.split(u' ')[:-1]))
                 self.manager.save_object(author)
             song.authors.append(author)
+        if not song.authors:
+            add_author_unknown(self.manager, song)
 
     def _process_cclinumber(self, foilpresenterfolie, song):
         """
