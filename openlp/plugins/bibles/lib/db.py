@@ -33,7 +33,7 @@ from sqlalchemy import Column, ForeignKey, or_, Table, types
 from sqlalchemy.orm import class_mapper, mapper, relation
 from sqlalchemy.orm.exc import UnmappedClassError
 
-from openlp.core.lib import translate
+from openlp.core.lib import Receiver, translate
 from openlp.core.lib.db import BaseModel, init_db, Manager
 from openlp.core.lib.ui import critical_error_message_box
 
@@ -162,6 +162,8 @@ class BibleDB(QtCore.QObject, Manager):
         if u'file' in kwargs:
             self.get_name()
         self.wizard = None
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
 
     def stop_import(self):
         """

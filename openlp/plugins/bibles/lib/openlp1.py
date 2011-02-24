@@ -46,8 +46,6 @@ class OpenLP1Bible(BibleDB):
         log.debug(self.__class__.__name__)
         BibleDB.__init__(self, parent, **kwargs)
         self.filename = kwargs[u'filename']
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
 
     def do_import(self):
         """
