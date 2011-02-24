@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -100,37 +100,37 @@ def parse_reference(reference):
     this::
 
         (book, chapter, from_verse, to_verse)
-        
+
     For example::
-    
+
         [(u'John', 3, 16, 18), (u'John', 4, 1, 1)]
 
     **Reference string details:**
 
     Each reference starts with the book name and a chapter number. These are
     both mandatory.
-    
+
     * ``John 3`` refers to Gospel of John chapter 3
 
     A reference range can be given after a range separator.
-    
+
     * ``John 3-5`` refers to John chapters 3 to 5
 
     Single verses can be addressed after a verse separator.
-    
+
     * ``John 3:16`` refers to John chapter 3 verse 16
     * ``John 3:16-4:3`` refers to John chapter 3 verse 16 to chapter 4 verse 3
 
     After a verse reference all further single values are treat as verse in
     the last selected chapter.
-    
+
     * ``John 3:16-18`` refers to John chapter 3 verses 16 to 18
 
     After a list separator it is possible to refer to additional verses. They
     are build analog to the first ones. This way it is possible to define each
     number of verse references. It is not possible to refer to verses in
     additional books.
-    
+
     * ``John 3:16,18`` refers to John chapter 3 verses 16 and 18
     * ``John 3:16-18,20`` refers to John chapter 3 verses 16 to 18 and 20
     * ``John 3:16-18,4:1`` refers to John chapter 3 verses 16 to 18 and
