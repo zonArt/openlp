@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,7 +29,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import build_icon, translate, SpellTextEdit
 from openlp.core.lib.ui import UiStrings
 
-class ZoomSize():
+class ZoomSize(object):
     """
     Type enumeration for Combo Box sizes
     """
@@ -44,6 +44,7 @@ class ZoomSize():
         translate('OpenLP.PrintServiceDialog', 'Fit Page'),
         translate('OpenLP.PrintServiceDialog', 'Fit Width'),
         u'100%', u'75%', u'50%', u'25%']
+
 
 class Ui_PrintServiceDialog(object):
     def setupUi(self, printServiceDialog):

@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -236,8 +236,20 @@ class BGExtract(object):
         while found_count < verse_count:
             content = content.findNext(u'sup', u'versenum')
             raw_verse_num = content.next
-            raw_verse_text = raw_verse_num.next
-            verse_list[int(str(raw_verse_num))] = unicode(raw_verse_text)
+            clean_verse_num = 0
+            # Not all verses exist in all translations and may or may not be
+            # represented by a verse number.  If they are not fine, if they are
+            # it will probably be in a format that breaks int().  We will then
+            # have no idea what garbage may be sucked in to the verse text so
+            # if we do not get a clean int() then ignore the verse completely.
+            try:
+                clean_verse_num = int(str(raw_verse_num))
+            except ValueError:
+                log.exception(u'Illegal verse number in %s %s %s:%s',
+                    version, bookname, chapter, unicode(raw_verse_num))
+            if clean_verse_num:
+                raw_verse_text = raw_verse_num.next
+                verse_list[clean_verse_num] = unicode(raw_verse_text)
             found_count += 1
         return SearchResults(bookname, chapter, verse_list)
 
