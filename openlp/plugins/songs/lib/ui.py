@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -36,8 +36,7 @@ class SongStrings(object):
     # These strings should need a good reason to be retranslated elsewhere.
     Author = translate('OpenLP.Ui', 'Author', 'Singular')
     Authors = translate('OpenLP.Ui', 'Authors', 'Plural')
-    AuthorUnknown = translate('OpenLP.Ui', 'Author Unknown') # Used in the UI.
-    AuthorUnknownUnT = u'Author Unknown' # Used to populate the database.
+    AuthorUnknown = u'Author Unknown' # Used to populate the database.
     CopyrightSymbol = translate('OpenLP.Ui', '\xa9', 'Copyright symbol.')
     SongBook = translate('OpenLP.Ui', 'Song Book', 'Singular')
     SongBooks = translate('OpenLP.Ui', 'Song Books', 'Plural')

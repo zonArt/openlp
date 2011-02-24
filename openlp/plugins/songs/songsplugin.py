@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -32,7 +32,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import UiStrings
-from openlp.plugins.songs.lib import SongMediaItem, SongsTab, SongXML
+from openlp.plugins.songs.lib import add_author_unknown, SongMediaItem, \
+    SongsTab, SongXML
 from openlp.plugins.songs.lib.db import init_schema, Song
 from openlp.plugins.songs.lib.importer import SongFormat
 
@@ -145,6 +146,9 @@ class SongsPlugin(Plugin):
         counter = 0
         for song in songs:
             counter += 1
+            # The song does not have any author, add one.
+            if not song.authors:
+                add_author_unknown(self.manager, song)
             if song.title is None:
                 song.title = u''
             if song.alternate_title is None:
