@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -132,14 +132,22 @@ class MainDisplay(DisplayWidget):
             painter_image.begin(self.black)
             painter_image.fillRect(self.black.rect(), QtCore.Qt.black)
             # Build the initial frame.
+            image_file = QtCore.QSettings().value(u'advanced/default image',
+                QtCore.QVariant(u':/graphics/openlp-splash-screen.png'))\
+                .toString()
+            background_color = QtGui.QColor(QtCore.QSettings().value(
+                u'advanced/default color',
+                QtCore.QVariant(u'#ffffff')).toString())
+            if not background_color.isValid():
+                background_color = QtCore.Qt.white
+            splash_image = QtGui.QImage(image_file)
             initialFrame = QtGui.QImage(
                 self.screens.current[u'size'].width(),
                 self.screens.current[u'size'].height(),
                 QtGui.QImage.Format_ARGB32_Premultiplied)
-            splash_image = QtGui.QImage(u':/graphics/openlp-splash-screen.png')
             painter_image = QtGui.QPainter()
             painter_image.begin(initialFrame)
-            painter_image.fillRect(initialFrame.rect(), QtCore.Qt.white)
+            painter_image.fillRect(initialFrame.rect(), background_color)
             painter_image.drawImage(
                 (self.screens.current[u'size'].width() -
                 splash_image.width()) / 2,

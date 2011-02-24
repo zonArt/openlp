@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,7 +29,7 @@ import re
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, translate
-from openlp.plugins.songs.lib import VerseType
+from openlp.plugins.songs.lib import add_author_unknown, VerseType
 from openlp.plugins.songs.lib.db import Song, Author, Topic, Book, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
 from openlp.plugins.songs.lib.xml import SongXML
@@ -54,6 +54,7 @@ class SongImport(QtCore.QObject):
 
         """
         self.manager = manager
+        QtCore.QObject.__init__(self)
         if kwargs.has_key(u'filename'):
             self.import_source = kwargs[u'filename']
         elif kwargs.has_key(u'filenames'):
@@ -269,8 +270,6 @@ class SongImport(QtCore.QObject):
         """
         All fields have been set to this song. Write the song to disk.
         """
-        if not self.authors:
-            self.authors.append(SongStrings.AuthorUnknownUnT)
         log.info(u'committing song %s to database', self.title)
         song = Song()
         song.title = self.title
@@ -300,7 +299,7 @@ class SongImport(QtCore.QObject):
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
         if not len(self.verse_order_list) and \
             self.verse_order_list_generated_useful:
-            self.verse_order_list = self.verse_order_list_generated            
+            self.verse_order_list = self.verse_order_list_generated
         for i, current_verse_def in enumerate(self.verse_order_list):
             if verses_changed_to_other.has_key(current_verse_def):
                 self.verse_order_list[i] = \
@@ -314,10 +313,13 @@ class SongImport(QtCore.QObject):
             author = self.manager.get_object_filtered(Author,
                 Author.display_name == authortext)
             if not author:
-                author = Author.populate(display_name = authortext,
+                author = Author.populate(display_name=authortext,
                     last_name=authortext.split(u' ')[-1],
                     first_name=u' '.join(authortext.split(u' ')[:-1]))
             song.authors.append(author)
+        # No author, add the default author.
+        if not song.authors:
+            add_author_unknown(self.manager, song)
         for filename in self.media_files:
             media_file = self.manager.get_object_filtered(MediaFile,
                 MediaFile.file_name == filename)

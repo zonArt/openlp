@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -40,9 +40,9 @@ from osis import OSISBible
 # Imports that might fail.
 try:
     from openlp1 import OpenLP1Bible
-    has_openlp1 = True
+    HAS_OPENLP1 = True
 except ImportError:
-    has_openlp1 = False
+    HAS_OPENLP1 = False
 
 log = logging.getLogger(__name__)
 
@@ -367,6 +367,6 @@ class BibleManager(object):
         for bible in self.db_cache:
             self.db_cache[bible].finalise()
 
-BibleFormat.set_availability(BibleFormat.OpenLP1, has_openlp1)
+BibleFormat.set_availability(BibleFormat.OpenLP1, HAS_OPENLP1)
 
 __all__ = [u'BibleFormat']
