@@ -339,7 +339,7 @@ class FoilPresenter(object):
                     elif (len(author) > 2):
                         authors.append(author)
         if not authors:
-            authors.append(SongStrings.AuthorUnknownUnT)
+            authors.append(SongStrings.AuthorUnknown)
         for display_name in authors:
             author = self.manager.get_object_filtered(Author,
                 Author.display_name == display_name)
@@ -348,7 +348,7 @@ class FoilPresenter(object):
                 author = Author.populate(display_name=display_name,
                     last_name = display_name.split(u' ')[-1],
                     first_name = u' '.join(display_name.split(u' ')[:-1]))
-            self.manager.save_object(author)
+                self.manager.save_object(author)
             song.authors.append(author)
 
     def _process_cclinumber(self, foilpresenterfolie, song):
