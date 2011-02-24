@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -299,7 +299,7 @@ class SongImport(QtCore.QObject):
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
         if not len(self.verse_order_list) and \
             self.verse_order_list_generated_useful:
-            self.verse_order_list = self.verse_order_list_generated            
+            self.verse_order_list = self.verse_order_list_generated
         for i, current_verse_def in enumerate(self.verse_order_list):
             if verses_changed_to_other.has_key(current_verse_def):
                 self.verse_order_list[i] = \

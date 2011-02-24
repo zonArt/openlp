@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -138,48 +138,48 @@ class FoilPresenter(object):
     """
     This class represents the converter for Foilpresenter XML from a song.
 
-    As Foilpresenter has a rich set of different features, we cannot support 
+    As Foilpresenter has a rich set of different features, we cannot support
     them all. The following features are supported by the :class:`Foilpresenter`
 
-    OpenPL does not support styletype and font attributes like "align, font, 
-        textsize, bold, italic, underline" 
-    
+    OpenPL does not support styletype and font attributes like "align, font,
+        textsize, bold, italic, underline"
+
     *<lastchanged>*
-        This property is currently not supported.    
-    
-    *<title>* 
-        As OpenLP does only support one title, the first titlestring becomes 
+        This property is currently not supported.
+
+    *<title>*
+        As OpenLP does only support one title, the first titlestring becomes
             title, all other titlestrings will be alternate titles
 
     *<sprache>*
         This property is not supported.
 
-    *<ccliid>* 
+    *<ccliid>*
         The *<ccliid>* property is fully supported.
 
-    *<tonart>* 
+    *<tonart>*
         This property is currently not supported.
 
     *<valign>*
         This property is not supported.
-        
-    *<notiz>* 
+
+    *<notiz>*
         The *<notiz>* property is fully supported.
 
     *<versionsinfo>*
-        This property is not supported. 
+        This property is not supported.
 
     *<farben>*
-        This property is not supported.    
-    
+        This property is not supported.
+
     *<reihenfolge>* = verseOrder
-        OpenLP supports this property.    
+        OpenLP supports this property.
 
     *<strophen>*
         Only the attributes *key* and *text* are supported.
 
     *<verkn>*
-        This property is not supported. 
+        This property is not supported.
 
     *<verkn>*
         This property is not supported.
@@ -194,8 +194,8 @@ class FoilPresenter(object):
     *<kategorien>*
         This property is not supported.
 
-    The tag *<author>* is not support by foilpresenter, mostly the author is 
-        named in the <copyright> tag. We try to extract the authors from the 
+    The tag *<author>* is not support by foilpresenter, mostly the author is
+        named in the <copyright> tag. We try to extract the authors from the
         <copyright> tag.
 
     """
@@ -204,7 +204,7 @@ class FoilPresenter(object):
 
     def xml_to_song(self, xml):
         """
-        Create and save a song from Foilpresenter format xml to the database. 
+        Create and save a song from Foilpresenter format xml to the database.
 
         ``xml``
             The XML to parse (unicode).
@@ -293,11 +293,11 @@ class FoilPresenter(object):
             if copyright.find(u'Rechte') != -1:
                 temp = copyright.partition(u'Rechte')
                 copyright = temp[0]
-            markers = [u'Text +u\.?n?d? +Melodie[a-zA-Z0-9\,\. ]*:', 
-                u'Text +u\.?n?d? +Musik', u'T & M', u'Melodie und Satz', 
-                u'Text[a-zA-Z0-9\,\. ]*:', u'Melodie', u'Musik', u'Satz', 
-                u'Weise', u'[dD]eutsch', u'[dD]t[\.\:]', u'Englisch',  
-                u'[oO]riginal',  u'Bearbeitung',  u'[R|r]efrain'] 
+            markers = [u'Text +u\.?n?d? +Melodie[a-zA-Z0-9\,\. ]*:',
+                u'Text +u\.?n?d? +Musik', u'T & M', u'Melodie und Satz',
+                u'Text[a-zA-Z0-9\,\. ]*:', u'Melodie', u'Musik', u'Satz',
+                u'Weise', u'[dD]eutsch', u'[dD]t[\.\:]', u'Englisch',
+                u'[oO]riginal',  u'Bearbeitung',  u'[R|r]efrain']
             for marker in markers:
                 copyright = re.compile(marker).sub(u'<marker>', copyright)
             copyright = re.compile(u'(?<=<marker>) *:').sub(u'', copyright)
@@ -313,11 +313,11 @@ class FoilPresenter(object):
                 elif x > 0:
                     strings.append(copyright)
                     i = 1
-                else: 
+                else:
                     i = 1
             for author in strings:
-                temp = re.split(u',(?=\D{2})|(?<=\D),|\/(?=\D{3,})|(?<=\D);',  
-                    author) 
+                temp = re.split(u',(?=\D{2})|(?<=\D),|\/(?=\D{3,})|(?<=\D);',
+                    author)
                 for tempx in temp:
                     author_temp.append(tempx)
                 for author in author_temp:
@@ -325,12 +325,12 @@ class FoilPresenter(object):
                         '\s*[0-9]{4}\s*[\-\/]?\s*([0-9]{4})?[\/,;\-\s]*$'
                     author = re.compile(regex).sub(u'', author)
                     author = re.compile(
-                        u'[0-9]{1,2}\.\s?J(ahr)?h\.|um\s*$|vor\s*$').sub(u'', 
+                        u'[0-9]{1,2}\.\s?J(ahr)?h\.|um\s*$|vor\s*$').sub(u'',
                         author)
                     author = re.compile(u'[N|n]ach.*$').sub(u'', author)
                     author = author.strip()
                     if re.search(
-                        u'\w+\.?\s+\w{3,}\s+[a|u]nd\s|\w+\.?\s+\w{3,}\s+&\s', 
+                        u'\w+\.?\s+\w{3,}\s+[a|u]nd\s|\w+\.?\s+\w{3,}\s+&\s',
                         author,  re.U) != None:
                         temp = re.split(u'\s[a|u]nd\s|\s&\s', author)
                         for tempx in temp:
@@ -412,13 +412,13 @@ class FoilPresenter(object):
         temp_verse_order_backup = []
         temp_sortnr_backup = 1
         temp_sortnr_liste = []
-        versenumber = {u'V': 1,  u'C': 1, u'B': 1, u'E': 1, u'O': 1, u'I': 1, 
+        versenumber = {u'V': 1,  u'C': 1, u'B': 1, u'E': 1, u'O': 1, u'I': 1,
             u'P': 1}
         for strophe in foilpresenterfolie.strophen.strophe:
             text = self._child(strophe.text_)
             verse_name = self._child(strophe.key)
             children = strophe.getchildren()
-            sortnr = False 
+            sortnr = False
             for child in children:
                 if child.tag == u'sortnr':
                     verse_sortnr = self._child(strophe.sortnr)
@@ -465,9 +465,9 @@ class FoilPresenter(object):
                         verse_number = unicode(int(verse_number) + 1)
             verse_type_index = VerseType.from_tag(verse_type[0])
             verse_type = VerseType.Names[verse_type_index]
-            temp_verse_order[verse_sortnr] = (u''.join((verse_type[0], 
+            temp_verse_order[verse_sortnr] = (u''.join((verse_type[0],
                 verse_number)))
-            temp_verse_order_backup.append(u''.join((verse_type[0], 
+            temp_verse_order_backup.append(u''.join((verse_type[0],
                 verse_number)))
             sxml.add_verse_to_lyrics(verse_type, verse_number, text)
             search_text = search_text + text
