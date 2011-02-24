@@ -298,7 +298,7 @@ class FoilPresenter(object):
                 u'Weise', u'[dD]eutsch', u'[dD]t[\.\:]', u'Englisch',
                 u'[oO]riginal',  u'Bearbeitung',  u'[R|r]efrain']
             for marker in markers:
-                copyright = re.compile(marker).sub(u'<marker>', copyright,  re.U)
+                copyright = re.compile(marker).sub(u'<marker>', copyright, re.U)
             copyright = re.compile(u'(?<=<marker>) *:').sub(u'', copyright)
             i = 0
             x = 0
