@@ -93,7 +93,6 @@ import os
 
 from lxml import etree, objectify
 
-from openlp.core.lib import translate
 from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.songimport import SongImport
@@ -411,7 +410,6 @@ class FoilPresenter(object):
         search_text = u''
         temp_verse_order = {}
         temp_verse_order_backup = []
-        temp_verse_sort = []
         temp_sortnr_backup = 1
         temp_sortnr_liste = []
         versenumber = {u'V': 1,  u'C': 1, u'B': 1, u'E': 1, u'O': 1, u'I': 1, 
@@ -454,7 +452,7 @@ class FoilPresenter(object):
             else:
                 verse_type = u'O'
             verse_number = re.compile(u'[a-zA-Z.+-_ ]*').sub(u'', verse_name)
-            verse_part = re.compile(u'[0-9]*').sub(u'', verse_name[1:])
+            #verse_part = re.compile(u'[0-9]*').sub(u'', verse_name[1:])
             # Foilpresenter allows e. g. "C", but we need "C1".
             if not verse_number:
                 verse_number = unicode(versenumber[verse_type])

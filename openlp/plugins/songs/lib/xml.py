@@ -68,7 +68,6 @@ from lxml import etree, objectify
 
 from openlp.plugins.songs.lib import add_author_unknown, VerseType
 from openlp.plugins.songs.lib.db import Author, Book, Song, Topic
-from openlp.plugins.songs.lib.ui import SongStrings
 
 log = logging.getLogger(__name__)
 
