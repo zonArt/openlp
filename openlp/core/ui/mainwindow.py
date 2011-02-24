@@ -279,7 +279,7 @@ class Ui_MainWindow(object):
         add_actions(self.SettingsLanguageMenu, self.LanguageGroup.actions())
         add_actions(self.SettingsMenu, (self.settingsPluginListItem,
             self.SettingsLanguageMenu.menuAction(), None,
-            self.SettingsShortcutsItem, self.DisplayTagItem,
+            self.DisplayTagItem, self.SettingsShortcutsItem,
             self.SettingsConfigureItem))
         add_actions(self.ToolsMenu, (self.ToolsAddToolItem, None))
         add_actions(self.ToolsMenu, (self.ToolsOpenDataFolder, None))
