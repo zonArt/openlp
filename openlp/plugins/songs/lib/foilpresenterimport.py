@@ -106,12 +106,12 @@ class FoilPresenterImport(SongImport):
     """
     This provides the Foilpresenter import.
     """
-    def __init__(self, master_manager, **kwargs):
+    def __init__(self, manager, **kwargs):
         """
         Initialise the import.
         """
         log.debug(u'initialise FoilPresenterImport')
-        SongImport.__init__(self, master_manager, **kwargs)
+        SongImport.__init__(self, manager, **kwargs)
         self.FoilPresenter = FoilPresenter(self.manager)
 
     def do_import(self):
