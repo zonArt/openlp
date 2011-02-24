@@ -86,14 +86,11 @@ class SongShowPlusImport(SongImport):
     otherList = {}
     otherCount = 0
 
-    def __init__(self, master_manager, **kwargs):
+    def __init__(self, manager, **kwargs):
         """
-        Initialise the import.
-
-        ``master_manager``
-            The song manager for the running OpenLP installation.
+        Initialise the SongShow Plus importer.
         """
-        SongImport.__init__(self, master_manager, **kwargs)
+        SongImport.__init__(self, manager, **kwargs)
 
     def do_import(self):
         """

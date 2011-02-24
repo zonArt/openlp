@@ -174,7 +174,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             self.previewWidget.zoomIn(0.25)
         settings = QtCore.QSettings()
         settings.beginGroup(u'advanced')
-        settings.setValue(u'display size',QtCore.QVariant(display))
+        settings.setValue(u'display size', QtCore.QVariant(display))
         settings.endGroup()
 
     def copyText(self):

@@ -67,14 +67,11 @@ class SongBeamerImport(SongImport):
     Song Beamer file format is text based
     in the beginning are one or more control tags written
     """
-    def __init__(self, master_manager, **kwargs):
+    def __init__(self, manager, **kwargs):
         """
-        Initialise the import.
-
-        ``master_manager``
-            The song manager for the running OpenLP installation.
+        Initialise the Song Beamer importer.
         """
-        SongImport.__init__(self, master_manager, **kwargs)
+        SongImport.__init__(self, manager, **kwargs)
 
     def do_import(self):
         """

@@ -93,7 +93,6 @@ import os
 
 from lxml import etree, objectify
 
-from openlp.core.lib import translate
 from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.songimport import SongImport
@@ -107,12 +106,12 @@ class FoilPresenterImport(SongImport):
     """
     This provides the Foilpresenter import.
     """
-    def __init__(self, master_manager, **kwargs):
+    def __init__(self, manager, **kwargs):
         """
         Initialise the import.
         """
         log.debug(u'initialise FoilPresenterImport')
-        SongImport.__init__(self, master_manager, **kwargs)
+        SongImport.__init__(self, manager, **kwargs)
         self.FoilPresenter = FoilPresenter(self.manager)
 
     def do_import(self):
@@ -340,7 +339,7 @@ class FoilPresenter(object):
                     elif (len(author) > 2):
                         authors.append(author)
         if not authors:
-            authors.append(SongStrings.AuthorUnknownUnT)
+            authors.append(SongStrings.AuthorUnknown)
         for display_name in authors:
             author = self.manager.get_object_filtered(Author,
                 Author.display_name == display_name)
@@ -349,7 +348,7 @@ class FoilPresenter(object):
                 author = Author.populate(display_name=display_name,
                     last_name = display_name.split(u' ')[-1],
                     first_name = u' '.join(display_name.split(u' ')[:-1]))
-            self.manager.save_object(author)
+                self.manager.save_object(author)
             song.authors.append(author)
 
     def _process_cclinumber(self, foilpresenterfolie, song):
@@ -411,7 +410,6 @@ class FoilPresenter(object):
         search_text = u''
         temp_verse_order = {}
         temp_verse_order_backup = []
-        temp_verse_sort = []
         temp_sortnr_backup = 1
         temp_sortnr_liste = []
         versenumber = {u'V': 1,  u'C': 1, u'B': 1, u'E': 1, u'O': 1, u'I': 1, 
@@ -454,7 +452,7 @@ class FoilPresenter(object):
             else:
                 verse_type = u'O'
             verse_number = re.compile(u'[a-zA-Z.+-_ ]*').sub(u'', verse_name)
-            verse_part = re.compile(u'[0-9]*').sub(u'', verse_name[1:])
+            #verse_part = re.compile(u'[0-9]*').sub(u'', verse_name[1:])
             # Foilpresenter allows e. g. "C", but we need "C1".
             if not verse_number:
                 verse_number = unicode(versenumber[verse_type])

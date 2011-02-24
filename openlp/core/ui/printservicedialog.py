@@ -29,7 +29,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import build_icon, translate, SpellTextEdit
 from openlp.core.lib.ui import UiStrings
 
-class ZoomSize():
+class ZoomSize(object):
     """
     Type enumeration for Combo Box sizes
     """
@@ -44,6 +44,7 @@ class ZoomSize():
         translate('OpenLP.PrintServiceDialog', 'Fit Page'),
         translate('OpenLP.PrintServiceDialog', 'Fit Width'),
         u'100%', u'75%', u'50%', u'25%']
+
 
 class Ui_PrintServiceDialog(object):
     def setupUi(self, printServiceDialog):
