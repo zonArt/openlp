@@ -35,6 +35,7 @@ from cclifileimport import CCLIFileImport
 from ewimport import EasyWorshipSongImport
 from songbeamerimport import SongBeamerImport
 from songshowplusimport import SongShowPlusImport
+from foilpresenterimport import FoilPresenterImport
 # Imports that might fail
 try:
     from olp1import import OpenLP1SongImport
@@ -72,7 +73,8 @@ class SongFormat(object):
     EasyWorship = 9
     SongBeamer = 10
     SongShowPlus = 11
-    #CSV = 12
+    FoilPresenter = 12
+    #CSV = 13
 
     @staticmethod
     def get_class(format):
@@ -106,6 +108,8 @@ class SongFormat(object):
             return SongBeamerImport
         elif format == SongFormat.SongShowPlus:
             return SongShowPlusImport
+        elif format == SongFormat.FoilPresenter:
+            return FoilPresenterImport
         return None
 
     @staticmethod
@@ -125,7 +129,8 @@ class SongFormat(object):
             SongFormat.EasiSlides,
             SongFormat.EasyWorship,
             SongFormat.SongBeamer,
-            SongFormat.SongShowPlus
+            SongFormat.SongShowPlus,
+            SongFormat.FoilPresenter
         ]
 
     @staticmethod

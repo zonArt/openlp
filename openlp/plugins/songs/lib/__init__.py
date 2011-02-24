@@ -25,7 +25,10 @@
 ###############################################################################
 
 from PyQt4 import QtGui
+
 from openlp.core.lib import translate
+from db import Author
+from ui import SongStrings
 
 class VerseType(object):
     """
@@ -240,6 +243,23 @@ def retrieve_windows_encoding(recommendation=None):
     if not choice[1]:
         return None
     return filter(lambda item: item[1] == choice[0], encodings)[0][0]
+
+def add_author_unknown(manager, song):
+    """
+    Add the default author *Author Unknown* to the song.
+
+    ``manager``
+        The song's manager.
+
+    ``song``
+        The song object.
+    """
+    name = SongStrings.AuthorUnknown
+    author = manager.get_object_filtered(Author, Author.display_name == name)
+    if author is None:
+        author = Author.populate(
+            display_name=name, last_name=u'', first_name=u'')
+    song.authors.append(author)
 
 from xml import OpenLyrics, SongXML
 from songstab import SongsTab
