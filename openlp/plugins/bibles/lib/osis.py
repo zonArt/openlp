@@ -41,15 +41,11 @@ log = logging.getLogger(__name__)
 
 class OSISBible(BibleDB):
     """
-    OSIS Bible format importer class.
+    `OSIS <http://www.bibletechnologies.net/>`_ Bible format importer class.
     """
     log.info(u'BibleOSISImpl loaded')
 
     def __init__(self, parent, **kwargs):
-        """
-        Constructor to create and set up an instance of the OpenSongBible
-        class. This class is used to import Bibles from OpenSong's XML format.
-        """
         log.debug(self.__class__.__name__)
         BibleDB.__init__(self, parent, **kwargs)
         self.filename = kwargs[u'filename']
@@ -86,8 +82,6 @@ class OSISBible(BibleDB):
         finally:
             if fbibles:
                 fbibles.close()
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
 
     def do_import(self):
         """
