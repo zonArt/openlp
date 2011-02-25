@@ -133,6 +133,7 @@ class FoilPresenterImport(SongImport):
                 log.exception(u'XML syntax error in file %s' % file_path)
         return True
 
+
 class FoilPresenter(object):
     """
     This class represents the converter for Foilpresenter XML from a song.
@@ -259,7 +260,6 @@ class FoilPresenter(object):
             copyright = None
         if copyright:
             strings = []
-            author_temp = []
             if copyright.find(u'Copyright') != -1:
                 temp = copyright.partition(u'Copyright')
                 copyright = temp[0]
@@ -305,7 +305,7 @@ class FoilPresenter(object):
             while i != 1:
                 if copyright.find(u'<marker>') != -1:
                     temp = copyright.partition(u'<marker>')
-                    if (temp[0].strip() != u'') & (x > 0):
+                    if temp[0].strip() and x > 0:
                         strings.append(temp[0])
                     copyright = temp[2]
                     x += 1
@@ -330,12 +330,12 @@ class FoilPresenter(object):
                     author = author.strip()
                     if re.search(
                         u'\w+\.?\s+\w{3,}\s+[a|u]nd\s|\w+\.?\s+\w{3,}\s+&\s',
-                        author,  re.U) != None:
+                        author, re.U):
                         temp = re.split(u'\s[a|u]nd\s|\s&\s', author)
                         for tempx in temp:
                             tempx = tempx.strip()
                             authors.append(tempx)
-                    elif (len(author) > 2):
+                    elif len(author) > 2:
                         authors.append(author)
         for display_name in authors:
             author = self.manager.get_object_filtered(Author,
