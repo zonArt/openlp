@@ -753,4 +753,5 @@ class BibleImportForm(OpenLPWizard):
         else:
             self.progressLabel.setText(translate(
                 'BiblesPlugin.ImportWizardForm', 'Your Bible import failed.'))
+            del self.manager.db_cache[importer.name]
             delete_database(self.plugin.settingsSection, importer.file)

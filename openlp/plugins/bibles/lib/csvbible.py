@@ -94,8 +94,6 @@ class CSVBible(BibleDB):
             self.testamentsfile = None
         self.booksfile = kwargs[u'booksfile']
         self.versesfile = kwargs[u'versefile']
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
 
     def setup_testaments(self):
         """
