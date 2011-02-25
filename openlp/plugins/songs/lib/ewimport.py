@@ -129,6 +129,7 @@ class FieldDescEntry:
         self.type = type
         self.size = size
 
+
 class EasyWorshipSongImport(SongImport):
     """
     The :class:`EasyWorshipSongImport` class provides OpenLP with the

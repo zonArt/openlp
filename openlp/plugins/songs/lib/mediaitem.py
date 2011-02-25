@@ -53,6 +53,7 @@ class SongSearch(object):
     Authors = 4
     Themes = 5
 
+
 class SongMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for Songs.

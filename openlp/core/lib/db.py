@@ -91,6 +91,7 @@ class BaseModel(object):
             instance.__setattr__(key, kwargs[key])
         return instance
 
+
 class Manager(object):
     """
     Provide generic object persistence management
