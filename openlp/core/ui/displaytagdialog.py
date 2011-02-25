@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,7 +26,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, build_icon
+from openlp.core.lib import translate
 from openlp.core.lib.ui import UiStrings, create_accept_reject_button_box
 
 class Ui_DisplayTagDialog(object):
@@ -123,30 +123,31 @@ class Ui_DisplayTagDialog(object):
         QtCore.QMetaObject.connectSlotsByName(displayTagDialog)
 
     def retranslateUi(self, displayTagDialog):
-        displayTagDialog.setWindowTitle(translate('OpenLP.displayTagForm',
+        displayTagDialog.setWindowTitle(translate('OpenLP.displayTagDialog',
             'Configure Display Tags'))
         self.editGroupBox.setTitle(
-            translate('OpenLP.DisplayTagTab', 'Edit Selection'))
+            translate('OpenLP.DisplayTagDialog', 'Edit Selection'))
         self.updatePushButton.setText(
-            translate('OpenLP.DisplayTagTab', 'Update'))
+            translate('OpenLP.DisplayTagDialog', 'Update'))
         self.descriptionLabel.setText(
-            translate('OpenLP.DisplayTagTab', 'Description'))
-        self.tagLabel.setText(translate('OpenLP.DisplayTagTab', 'Tag'))
+            translate('OpenLP.DisplayTagDialog', 'Description'))
+        self.tagLabel.setText(translate('OpenLP.DisplayTagDialog', 'Tag'))
         self.startTagLabel.setText(
-            translate('OpenLP.DisplayTagTab', 'Start tag'))
-        self.endTagLabel.setText(translate('OpenLP.DisplayTagTab', 'End tag'))
+            translate('OpenLP.DisplayTagDialog', 'Start tag'))
+        self.endTagLabel.setText(
+            translate('OpenLP.DisplayTagDialog', 'End tag'))
         self.deletePushButton.setText(UiStrings.Delete)
         self.defaultPushButton.setText(
-            translate('OpenLP.DisplayTagTab', 'Default'))
+            translate('OpenLP.DisplayTagDialog', 'Default'))
         self.newPushButton.setText(UiStrings.New)
         self.tagTableWidget.horizontalHeaderItem(0).setText(
-            translate('OpenLP.DisplayTagTab', 'Description'))
+            translate('OpenLP.DisplayTagDialog', 'Description'))
         self.tagTableWidget.horizontalHeaderItem(1).setText(
-            translate('OpenLP.DisplayTagTab', 'Tag id'))
+            translate('OpenLP.DisplayTagDialog', 'Tag id'))
         self.tagTableWidget.horizontalHeaderItem(2).setText(
-            translate('OpenLP.DisplayTagTab', 'Start Html'))
+            translate('OpenLP.DisplayTagDialog', 'Start Html'))
         self.tagTableWidget.horizontalHeaderItem(3).setText(
-            translate('OpenLP.DisplayTagTab', 'End Html'))
+            translate('OpenLP.DisplayTagDialog', 'End Html'))
         self.tagTableWidget.setColumnWidth(0, 120)
         self.tagTableWidget.setColumnWidth(1, 40)
         self.tagTableWidget.setColumnWidth(2, 240)

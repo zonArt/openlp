@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -34,7 +34,7 @@ import cPickle
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, DisplayTags
-from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.displaytagdialog import Ui_DisplayTagDialog
 
 class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
@@ -47,6 +47,7 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
+        self.preLoad()
         QtCore.QObject.connect(self.tagTableWidget,
             QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onRowSelected)
         QtCore.QObject.connect(self.defaultPushButton,
@@ -63,7 +64,18 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
         Load Display and set field state.
         """
         # Create initial copy from master
+        self.preLoad()
         self._resetTable()
+        self.selected = -1
+        return QtGui.QDialog.exec_(self)
+
+    def preLoad(self):
+        """
+        Load the Tags from store so can be used in the system or used to
+        update the display.  If Cancel was selected this is needed to reset the
+        dsiplay to the correct version.
+        """
+        # Initial Load of the Tags
         DisplayTags.reset_html_tags()
         user_expands = QtCore.QSettings().value(u'displayTags/html_tags',
             QtCore.QVariant(u'')).toString()
@@ -74,37 +86,6 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
             # If we have some user ones added them as well
             for t in user_tags:
                 DisplayTags.add_html_tag(t)
-        self.selected = -1
-        self.load()
-        return QtGui.QDialog.exec_(self)
-
-    def load(self):
-        """
-        Load the form with data and set the initial state of the buttons
-        """
-        self.newPushButton.setEnabled(True)
-        self.updatePushButton.setEnabled(False)
-        self.deletePushButton.setEnabled(False)
-        for linenumber, html in enumerate(DisplayTags.get_html_tags()):
-            self.tagTableWidget.setRowCount(
-                self.tagTableWidget.rowCount() + 1)
-            self.tagTableWidget.setItem(linenumber, 0,
-                QtGui.QTableWidgetItem(html[u'desc']))
-            self.tagTableWidget.setItem(linenumber, 1,
-                QtGui.QTableWidgetItem(self._strip(html[u'start tag'])))
-            self.tagTableWidget.setItem(linenumber, 2,
-                QtGui.QTableWidgetItem(html[u'start html']))
-            self.tagTableWidget.setItem(linenumber, 3,
-                QtGui.QTableWidgetItem(html[u'end html']))
-            self.tagTableWidget.resizeRowsToContents()
-        self.descriptionLineEdit.setText(u'')
-        self.tagLineEdit.setText(u'')
-        self.startTagLineEdit.setText(u'')
-        self.endTagLineEdit.setText(u'')
-        self.descriptionLineEdit.setEnabled(False)
-        self.tagLineEdit.setEnabled(False)
-        self.startTagLineEdit.setEnabled(False)
-        self.endTagLineEdit.setEnabled(False)
 
     def accept(self):
         """
@@ -223,6 +204,29 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
         """
         self.tagTableWidget.clearContents()
         self.tagTableWidget.setRowCount(0)
+        self.newPushButton.setEnabled(True)
+        self.updatePushButton.setEnabled(False)
+        self.deletePushButton.setEnabled(False)
+        for linenumber, html in enumerate(DisplayTags.get_html_tags()):
+            self.tagTableWidget.setRowCount(
+                self.tagTableWidget.rowCount() + 1)
+            self.tagTableWidget.setItem(linenumber, 0,
+                QtGui.QTableWidgetItem(html[u'desc']))
+            self.tagTableWidget.setItem(linenumber, 1,
+                QtGui.QTableWidgetItem(self._strip(html[u'start tag'])))
+            self.tagTableWidget.setItem(linenumber, 2,
+                QtGui.QTableWidgetItem(html[u'start html']))
+            self.tagTableWidget.setItem(linenumber, 3,
+                QtGui.QTableWidgetItem(html[u'end html']))
+            self.tagTableWidget.resizeRowsToContents()
+        self.descriptionLineEdit.setText(u'')
+        self.tagLineEdit.setText(u'')
+        self.startTagLineEdit.setText(u'')
+        self.endTagLineEdit.setText(u'')
+        self.descriptionLineEdit.setEnabled(False)
+        self.tagLineEdit.setEnabled(False)
+        self.startTagLineEdit.setEnabled(False)
+        self.endTagLineEdit.setEnabled(False)
 
     def _strip(self, tag):
         """
