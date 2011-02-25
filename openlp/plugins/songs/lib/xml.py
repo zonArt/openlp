@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -68,7 +68,6 @@ from lxml import etree, objectify
 
 from openlp.plugins.songs.lib import add_author_unknown, VerseType
 from openlp.plugins.songs.lib.db import Author, Book, Song, Topic
-from openlp.plugins.songs.lib.ui import SongStrings
 
 log = logging.getLogger(__name__)
 
@@ -382,6 +381,7 @@ class OpenLyrics(object):
                 author = Author.populate(display_name=display_name,
                     last_name=display_name.split(u' ')[-1],
                     first_name=u' '.join(display_name.split(u' ')[:-1]))
+            song.authors.append(author)
         if not song.authors:
             add_author_unknown(self.manager, song)
 
@@ -409,7 +409,7 @@ class OpenLyrics(object):
             The song object.
         """
         if hasattr(properties, u'comments'):
-            comments_list = []  
+            comments_list = []
             for comment in properties.comments.comment:
                 commenttext = self._text(comment)
                 if commenttext:
