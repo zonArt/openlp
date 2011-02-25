@@ -72,7 +72,7 @@ def strip_rtf(blob, encoding):
                     elif control_str == 'tab':
                         clear_text.append(u'\t')
                     # Prefer the encoding specified by the RTF data to that
-                    #  specified by the Paradox table header
+                    # specified by the Paradox table header
                     # West European encoding
                     elif control_str == 'fcharset0':
                         encoding = u'cp1252'
@@ -163,7 +163,7 @@ class EasyWorshipSongImport(SongImport):
         if code_page == 852:
             self.encoding = u'cp1250'
         # The following codepage to actual encoding mappings have not been
-        #  observed, but merely guessed.  Actual example files are needed.
+        # observed, but merely guessed. Actual example files are needed.
         elif code_page == 737:
             self.encoding = u'cp1253'
         elif code_page == 775:

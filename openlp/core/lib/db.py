@@ -65,7 +65,7 @@ def delete_database(plugin_name, db_file_name=None):
         The name of the plugin to remove the database for
 
     ``db_file_name``
-        The database file name.  Defaults to None resulting in the
+        The database file name. Defaults to None resulting in the
         plugin_name being used.
     """
     db_file_path = None
@@ -107,7 +107,7 @@ class Manager(object):
             The init_schema function for this database
 
         ``db_file_name``
-            The file name to use for this database.  Defaults to None resulting
+            The file name to use for this database. Defaults to None resulting
             in the plugin_name being used.
         """
         settings = QtCore.QSettings()
@@ -211,11 +211,11 @@ class Manager(object):
             The type of objects to return
 
         ``filter_clause``
-            The filter governing selection of objects to return.  Defaults to
+            The filter governing selection of objects to return. Defaults to
             None.
 
         ``order_by_ref``
-            Any parameters to order the returned objects by.  Defaults to None.
+            Any parameters to order the returned objects by. Defaults to None.
         """
         query = self.session.query(object_class)
         if filter_clause is not None:
@@ -232,7 +232,7 @@ class Manager(object):
             The type of objects to return.
 
         ``filter_clause``
-            The filter governing selection of objects to return.  Defaults to
+            The filter governing selection of objects to return. Defaults to
             None.
         """
         query = self.session.query(object_class)

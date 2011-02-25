@@ -296,7 +296,7 @@ class FoilPresenter(object):
                 u'Text +u\.?n?d? +Musik', u'T & M', u'Melodie und Satz',
                 u'Text[\w\,\. ]*:', u'Melodie', u'Musik', u'Satz',
                 u'Weise', u'[dD]eutsch', u'[dD]t[\.\:]', u'Englisch',
-                u'[oO]riginal',  u'Bearbeitung',  u'[R|r]efrain']
+                u'[oO]riginal', u'Bearbeitung', u'[R|r]efrain']
             for marker in markers:
                 copyright = re.compile(marker).sub(u'<marker>', copyright, re.U)
             copyright = re.compile(u'(?<=<marker>) *:').sub(u'', copyright)
@@ -411,7 +411,7 @@ class FoilPresenter(object):
         temp_verse_order_backup = []
         temp_sortnr_backup = 1
         temp_sortnr_liste = []
-        versenumber = {u'V': 1,  u'C': 1, u'B': 1, u'E': 1, u'O': 1, u'I': 1,
+        versenumber = {u'V': 1, u'C': 1, u'B': 1, u'E': 1, u'O': 1, u'I': 1,
             u'P': 1}
         for strophe in foilpresenterfolie.strophen.strophe:
             text = self._child(strophe.text_)

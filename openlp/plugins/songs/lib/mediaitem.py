@@ -199,7 +199,7 @@ class SongMediaItem(MediaManagerItem):
         """
         log.debug(u'onSongListLoad')
         # Called to redisplay the song list screen edit from a search
-        # or from the exit of the Song edit dialog.  If remote editing is active
+        # or from the exit of the Song edit dialog. If remote editing is active
         # Trigger it and clean up so it will not update again.
         if self.remoteTriggered == u'L':
             self.onAddClick()
