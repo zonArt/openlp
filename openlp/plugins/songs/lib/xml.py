@@ -381,6 +381,7 @@ class OpenLyrics(object):
                 author = Author.populate(display_name=display_name,
                     last_name=display_name.split(u' ')[-1],
                     first_name=u' '.join(display_name.split(u' ')[:-1]))
+            song.authors.append(author)
         if not song.authors:
             add_author_unknown(self.manager, song)
 
