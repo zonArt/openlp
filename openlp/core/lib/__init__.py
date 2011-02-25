@@ -106,8 +106,8 @@ def translate(context, text, comment=None,
 
 def get_text_file_string(text_file):
     """
-    Open a file and return its content as unicode string.  If the supplied file
-    name is not a file then the function returns False.  If there is an error
+    Open a file and return its content as unicode string. If the supplied file
+    name is not a file then the function returns False. If there is an error
     loading the file or the content can't be decoded then the function will
     return None.
 

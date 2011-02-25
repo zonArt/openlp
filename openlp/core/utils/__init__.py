@@ -242,7 +242,7 @@ def add_actions(target, actions):
         The menu or toolbar to add actions to.
 
     ``actions``
-        The actions to be added.  An action consisting of the keyword 'None'
+        The actions to be added. An action consisting of the keyword 'None'
         will result in a separator being inserted into the target.
     """
     for action in actions:
@@ -318,7 +318,7 @@ def get_web_page(url, header=None, update_openlp=False):
         Tells OpenLP to update itself if the page is successfully downloaded.
         Defaults to False.
     """
-    # TODO: Add proxy usage.  Get proxy info from OpenLP settings, add to a
+    # TODO: Add proxy usage. Get proxy info from OpenLP settings, add to a
     # proxy_handler, build into an opener and install the opener into urllib2.
     # http://docs.python.org/library/urllib2.html
     if not url:
