@@ -739,7 +739,6 @@ class BibleImportForm(OpenLPWizard):
                 name=license_version,
                 filename=unicode(self.field(u'openlp1_location').toString())
             )
-        bible_name = importer.name
         if importer.do_import():
             self.manager.save_meta_data(license_version, license_version,
                 license_copyright, license_permissions)
@@ -754,5 +753,5 @@ class BibleImportForm(OpenLPWizard):
         else:
             self.progressLabel.setText(translate(
                 'BiblesPlugin.ImportWizardForm', 'Your Bible import failed.'))
+            del self.manager.db_cache[importer.name]
             delete_database(self.plugin.settingsSection, importer.file)
-            del self.manager.db_cache[bible_name]
