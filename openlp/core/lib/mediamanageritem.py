@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -34,6 +34,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import context_menu_action, context_menu_separator, \
     SettingsManager, OpenLPToolbar, ServiceItem, StringContent, build_icon, \
     translate, Receiver, ListWidgetWithDnD
+from openlp.core.lib.ui import UiStrings
 
 log = logging.getLogger(__name__)
 
@@ -65,10 +66,11 @@ class MediaManagerItem(QtGui.QWidget):
     When creating a descendant class from this class for your plugin,
     the following member variables should be set.
 
-     ``self.OnNewPrompt``
+     ``self.onNewPrompt``
+
         Defaults to *'Select Image(s)'*.
 
-     ``self.OnNewFileMasks``
+     ``self.onNewFileMasks``
         Defaults to *'Images (*.jpg *jpeg *.gif *.png *.bmp)'*. This
         assumes that the new action is to load a file. If not, you
         need to override the ``OnNew`` method.
@@ -240,7 +242,7 @@ class MediaManagerItem(QtGui.QWidget):
         Creates the main widget for listing items the media item is tracking
         """
         # Add the List widget
-        self.listView = ListWidgetWithDnD(self, self.title)
+        self.listView = ListWidgetWithDnD(self, self.plugin.name)
         self.listView.uniformItemSizes = True
         self.listView.setSpacing(1)
         self.listView.setSelectionMode(
@@ -316,9 +318,9 @@ class MediaManagerItem(QtGui.QWidget):
         Add a file to the list widget to make it available for showing
         """
         files = QtGui.QFileDialog.getOpenFileNames(
-            self, self.OnNewPrompt,
+            self, self.onNewPrompt,
             SettingsManager.get_last_dir(self.settingsSection),
-            self.OnNewFileMasks)
+            self.onNewFileMasks)
         log.info(u'New files(s) %s', unicode(files))
         if files:
             Receiver.send_message(u'cursor_busy')
@@ -415,8 +417,7 @@ class MediaManagerItem(QtGui.QWidget):
         item to the preview slide controller.
         """
         if not self.listView.selectedIndexes() and not self.remoteTriggered:
-            QtGui.QMessageBox.information(self,
-                translate('OpenLP.MediaManagerItem', 'No Items Selected'),
+            QtGui.QMessageBox.information(self, UiStrings.NISp,
                 translate('OpenLP.MediaManagerItem',
                 'You must select one or more items to preview.'))
         else:
@@ -432,8 +433,7 @@ class MediaManagerItem(QtGui.QWidget):
         item to the live slide controller.
         """
         if not self.listView.selectedIndexes():
-            QtGui.QMessageBox.information(self,
-                translate('OpenLP.MediaManagerItem', 'No Items Selected'),
+            QtGui.QMessageBox.information(self, UiStrings.NISp,
                 translate('OpenLP.MediaManagerItem',
                     'You must select one or more items to send live.'))
         else:
@@ -448,8 +448,7 @@ class MediaManagerItem(QtGui.QWidget):
         Add a selected item to the current service
         """
         if not self.listView.selectedIndexes() and not self.remoteTriggered:
-            QtGui.QMessageBox.information(self,
-                translate('OpenLP.MediaManagerItem', 'No Items Selected'),
+            QtGui.QMessageBox.information(self, UiStrings.NISp,
                 translate('OpenLP.MediaManagerItem',
                     'You must select one or more items.'))
         else:
@@ -475,17 +474,14 @@ class MediaManagerItem(QtGui.QWidget):
         Add a selected item to an existing item in the current service.
         """
         if not self.listView.selectedIndexes() and not self.remoteTriggered:
-            QtGui.QMessageBox.information(self,
-                translate('OpenLP.MediaManagerItem', 'No Items Selected'),
+            QtGui.QMessageBox.information(self, UiStrings.NISp,
                 translate('OpenLP.MediaManagerItem',
-                    'You must select one or more items'))
+                    'You must select one or more items.'))
         else:
             log.debug(u'%s Add requested', self.plugin.name)
             serviceItem = self.parent.serviceManager.getServiceItem()
             if not serviceItem:
-                QtGui.QMessageBox.information(self,
-                    translate('OpenLP.MediaManagerItem',
-                        'No Service Item Selected'),
+                QtGui.QMessageBox.information(self, UiStrings.NISs,
                     translate('OpenLP.MediaManagerItem',
                         'You must select an existing service item to add to.'))
             elif self.plugin.name.lower() == serviceItem.name.lower():

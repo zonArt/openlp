@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -33,7 +33,8 @@ import logging
 from xml.dom.minidom import Document
 from lxml import etree, objectify
 
-from openlp.core.lib import str_to_bool
+from openlp.core.lib import str_to_bool, translate
+from openlp.core.lib.ui import UiStrings
 
 log = logging.getLogger(__name__)
 
@@ -170,20 +171,14 @@ class HorizontalType(object):
     Type enumeration for horizontal alignment.
     """
     Left = 0
-    Center = 2
     Right = 1
+    Center = 2
 
-    @staticmethod
-    def to_string(horizontal_type):
-        """
-        Return a string representation of a horizontal type.
-        """
-        if horizontal_type == HorizontalType.Right:
-            return u'right'
-        elif horizontal_type == HorizontalType.Center:
-            return u'center'
-        else:
-            return u'left'
+    Names = [u'left', u'right', u'center']
+    TranslatedNames = [
+        translate('OpenLP.ThemeWizard', 'Left'),
+        translate('OpenLP.ThemeWizard', 'Right'),
+        translate('OpenLP.ThemeWizard', 'Center')]
 
 
 class VerticalType(object):
@@ -194,17 +189,8 @@ class VerticalType(object):
     Middle = 1
     Bottom = 2
 
-    @staticmethod
-    def to_string(vertical_type):
-        """
-        Return a string representation of a vertical type.
-        """
-        if vertical_type == VerticalType.Bottom:
-            return u'bottom'
-        elif vertical_type == VerticalType.Middle:
-            return u'middle'
-        else:
-            return u'top'
+    Names = [u'top', u'middle', u'bottom']
+    TranslatedNames = [UiStrings.Top, UiStrings.Middle, UiStrings.Bottom]
 
 
 BOOLEAN_LIST = [u'bold', u'italics', u'override', u'outline', u'shadow',

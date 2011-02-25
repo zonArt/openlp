@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,7 +28,6 @@ import os
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver
 from openlp.core.utils import get_uno_command, get_uno_instance
 from songimport import SongImport
 
@@ -51,25 +50,20 @@ class OooImport(SongImport):
     """
     Import songs from Impress/Powerpoint docs using Impress
     """
-    def __init__(self, master_manager, **kwargs):
+    def __init__(self, manager, **kwargs):
         """
         Initialise the class. Requires a songmanager class which is passed
         to SongImport for writing song to disk
         """
-        SongImport.__init__(self, master_manager)
-        self.song = None
-        self.master_manager = master_manager
+        SongImport.__init__(self, manager, **kwargs)
         self.document = None
         self.process_started = False
-        self.filenames = kwargs[u'filenames']
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
 
     def do_import(self):
         self.stop_import_flag = False
         self.import_wizard.progressBar.setMaximum(0)
         self.start_ooo()
-        for filename in self.filenames:
+        for filename in self.import_source:
             if self.stop_import_flag:
                 self.import_wizard.incrementProgressBar(u'Import cancelled', 0)
                 return

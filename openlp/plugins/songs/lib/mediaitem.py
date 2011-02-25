@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -33,14 +33,25 @@ from sqlalchemy.sql import or_
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
     translate, check_item_selected, PluginStatus
+from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     SongImportForm, SongExportForm
-from openlp.plugins.songs.lib import OpenLyrics, SongXML
+from openlp.plugins.songs.lib import OpenLyrics, SongXML, VerseType
 from openlp.plugins.songs.lib.db import Author, Song
-from openlp.core.lib.searchedit import SearchEdit
+from openlp.plugins.songs.lib.ui import SongStrings
 
 log = logging.getLogger(__name__)
+
+class SongSearch(object):
+    """
+    An enumeration for song search methods.
+    """
+    Entire = 1
+    Titles = 2
+    Lyrics = 3
+    Authors = 4
+    Themes = 5
 
 class SongMediaItem(MediaManagerItem):
     """
@@ -124,25 +135,23 @@ class SongMediaItem(MediaManagerItem):
             QtCore.QVariant(u'True')).toBool()
 
     def retranslateUi(self):
-        self.searchTextLabel.setText(
-            translate('SongsPlugin.MediaItem', 'Search:'))
-        self.searchTextButton.setText(
-            translate('SongsPlugin.MediaItem', 'Search'))
-        self.maintenanceAction.setText(
-            translate('SongsPlugin.MediaItem', 'Song Maintenance'))
+        self.searchTextLabel.setText(u'%s:' % UiStrings.Search)
+        self.searchTextButton.setText(UiStrings.Search)
+        self.maintenanceAction.setText(SongStrings.SongMaintenance)
         self.maintenanceAction.setToolTip(translate('SongsPlugin.MediaItem',
             'Maintain the lists of authors, topics and books'))
 
     def initialise(self):
         self.searchTextEdit.setSearchTypes([
-            (1, u':/songs/song_search_all.png',
+            (SongSearch.Entire, u':/songs/song_search_all.png',
                 translate('SongsPlugin.MediaItem', 'Entire Song')),
-            (2, u':/songs/song_search_title.png',
+            (SongSearch.Titles, u':/songs/song_search_title.png',
                 translate('SongsPlugin.MediaItem', 'Titles')),
-            (3, u':/songs/song_search_lyrics.png',
+            (SongSearch.Lyrics, u':/songs/song_search_lyrics.png',
                 translate('SongsPlugin.MediaItem', 'Lyrics')),
-            (4, u':/songs/song_search_author.png', UiStrings.Authors),
-            (5, u':/slides/slide_theme.png', UiStrings.Themes)
+            (SongSearch.Authors, u':/songs/song_search_author.png',
+                SongStrings.Authors),
+            (SongSearch.Themes, u':/slides/slide_theme.png', UiStrings.Themes)
         ])
         self.configUpdated()
 
@@ -151,7 +160,7 @@ class SongMediaItem(MediaManagerItem):
         search_results = []
         # search_type = self.searchTypeComboBox.currentIndex()
         search_type = self.searchTextEdit.currentSearchType()
-        if search_type == 1:
+        if search_type == SongSearch.Entire:
             log.debug(u'Entire Song Search')
             search_results = self.parent.manager.get_all_objects(Song,
                 or_(Song.search_title.like(u'%' + self.whitespace.sub(u' ',
@@ -159,25 +168,25 @@ class SongMediaItem(MediaManagerItem):
                 Song.search_lyrics.like(u'%' + search_keywords.lower() + \
                 u'%')), Song.search_title.asc())
             self.displayResultsSong(search_results)
-        if search_type == 2:
+        elif search_type == SongSearch.Titles:
             log.debug(u'Titles Search')
             search_results = self.parent.manager.get_all_objects(Song,
                 Song.search_title.like(u'%' + self.whitespace.sub(u' ',
                 search_keywords.lower()) + u'%'), Song.search_title.asc())
             self.displayResultsSong(search_results)
-        elif search_type == 3:
+        elif search_type == SongSearch.Lyrics:
             log.debug(u'Lyrics Search')
             search_results = self.parent.manager.get_all_objects(Song,
                 Song.search_lyrics.like(u'%' + search_keywords.lower() + u'%'),
                 Song.search_lyrics.asc())
             self.displayResultsSong(search_results)
-        elif search_type == 4:
+        elif search_type == SongSearch.Authors:
             log.debug(u'Authors Search')
             search_results = self.parent.manager.get_all_objects(Author,
                 Author.display_name.like(u'%' + search_keywords + u'%'),
                 Author.display_name.asc())
             self.displayResultsAuthor(search_results)
-        elif search_type == 5:
+        elif search_type == SongSearch.Themes:
             log.debug(u'Theme Search')
             search_results = self.parent.manager.get_all_objects(Song,
                 Song.theme_name == search_keywords, Song.search_lyrics.asc())
@@ -245,9 +254,9 @@ class SongMediaItem(MediaManagerItem):
         """
         if self.searchAsYouType:
             search_length = 1
-            if self.searchTextEdit.currentSearchType() == 1:
+            if self.searchTextEdit.currentSearchType() == SongSearch.Entire:
                 search_length = 3
-            elif self.searchTextEdit.currentSearchType() == 3:
+            elif self.searchTextEdit.currentSearchType() == SongSearch.Lyrics:
                 search_length = 7
             if len(text) > search_length:
                 self.onSearchTextButtonClick()
@@ -296,9 +305,7 @@ class SongMediaItem(MediaManagerItem):
         Edit a song
         """
         log.debug(u'onEditClick')
-        if check_item_selected(self.listView,
-            translate('SongsPlugin.MediaItem',
-            'You must select an item to edit.')):
+        if check_item_selected(self.listView, UiStrings.SelectEdit):
             self.editItem = self.listView.currentItem()
             item_id = (self.editItem.data(QtCore.Qt.UserRole)).toInt()[0]
             self.edit_song_form.loadSong(item_id, False)
@@ -308,9 +315,7 @@ class SongMediaItem(MediaManagerItem):
         """
         Remove a song from the list and database
         """
-        if check_item_selected(self.listView,
-            translate('SongsPlugin.MediaItem',
-            'You must select an item to delete.')):
+        if check_item_selected(self.listView, UiStrings.SelectDelete):
             items = self.listView.selectedIndexes()
             if QtGui.QMessageBox.question(self,
                 translate('SongsPlugin.MediaItem', 'Delete Song(s)?'),
@@ -344,24 +349,49 @@ class SongMediaItem(MediaManagerItem):
         if song.lyrics.startswith(u'<?xml version='):
             verseList = SongXML().get_verses(song.lyrics)
             # no verse list or only 1 space (in error)
-            if not song.verse_order or not song.verse_order.strip():
+            verse_tags_translated = False
+            if VerseType.from_translated_string(unicode(
+                verseList[0][0][u'type'])) is not None:
+                verse_tags_translated = True
+            if not song.verse_order.strip():
                 for verse in verseList:
-                    verseTag = u'%s:%s' % (
-                        verse[0][u'type'], verse[0][u'label'])
+                    # We cannot use from_loose_input() here, because database
+                    # is supposed to contain English lowercase singlechar tags.
+                    verse_tag = verse[0][u'type']
+                    verse_index = None
+                    if len(verse_tag) > 1:
+                        verse_index = \
+                            VerseType.from_translated_string(verse_tag)
+                        if verse_index is None:
+                            verse_index = VerseType.from_string(verse_tag)
+                    if verse_index is None:
+                        verse_index = VerseType.from_tag(verse_tag)
+                    verse_tag = VerseType.TranslatedTags[verse_index].upper()
+                    verse_def = u'%s%s' % (verse_tag, verse[0][u'label'])
                     service_item.add_from_text(
-                        verse[1][:30], unicode(verse[1]), verseTag)
+                        verse[1][:30], unicode(verse[1]), verse_def)
             else:
                 # Loop through the verse list and expand the song accordingly.
-                for order in song.verse_order.upper().split():
+                for order in song.verse_order.lower().split():
                     if len(order) == 0:
                         break
                     for verse in verseList:
-                        if verse[0][u'type'][0] == order[0] and \
-                            (verse[0][u'label'] == order[1:] or not order[1:]):
-                            verseTag = u'%s:%s' % \
-                                (verse[0][u'type'], verse[0][u'label'])
+                        if verse[0][u'type'][0].lower() == order[0] and \
+                            (verse[0][u'label'].lower() == order[1:] or \
+                            not order[1:]):
+                            if verse_tags_translated:
+                                verse_index = VerseType.from_translated_tag(
+                                    verse[0][u'type'])
+                            else:
+                                verse_index = VerseType.from_tag(
+                                    verse[0][u'type'])
+                            if verse_index is None:
+                                verse_index = VerseType.Other
+                            verse_tag = VerseType.TranslatedTags[verse_index]
+                            verse_def = u'%s%s' % (verse_tag,
+                                verse[0][u'label'])
                             service_item.add_from_text(
-                                verse[1][:30], verse[1], verseTag)
+                                verse[1][:30], verse[1], verse_def)
         else:
             verses = song.lyrics.split(u'\n\n')
             for slide in verses:

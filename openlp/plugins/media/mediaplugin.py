@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -45,36 +45,26 @@ class MediaPlugin(Plugin):
         self.icon = build_icon(self.icon_path)
         # passed with drag and drop messages
         self.dnd_id = u'Media'
-        self.audio_list = u''
-        self.video_list = u''
+        self.audio_extensions_list = []
+        self.video_extensions_list = []
         mimetypes.init()
         for mimetype in Phonon.BackendCapabilities.availableMimeTypes():
             mimetype = unicode(mimetype)
-            type = mimetype.split(u'audio/x-')
-            self.audio_list, mimetype = self._addToList(self.audio_list,
-                type, mimetype)
-            type = mimetype.split(u'audio/')
-            self.audio_list, mimetype = self._addToList(self.audio_list,
-                type, mimetype)
-            type = mimetype.split(u'video/x-')
-            self.video_list, mimetype = self._addToList(self.video_list,
-                type, mimetype)
-            type = mimetype.split(u'video/')
-            self.video_list, mimetype = self._addToList(self.video_list,
-                type, mimetype)
+            if mimetype.startswith(u'audio/'):
+                self._addToList(self.audio_extensions_list, mimetype)
+            elif mimetype.startswith(u'video/'):
+                self._addToList(self.video_extensions_list, mimetype)
 
-    def _addToList(self, list, value, mimetype):
-        # Is it a media type
-        if len(value) == 2:
-            extensions = mimetypes.guess_all_extensions(unicode(mimetype))
-            # we have an extension
-            if extensions:
-                for extension in extensions:
-                    if list.find(extension) == -1:
-                        list += u'*%s ' % extension
-                        self.serviceManager.supportedSuffixes(extension[1:])
-                mimetype = u''
-        return list, mimetype
+    def _addToList(self, list, mimetype):
+        # Add all extensions which mimetypes provides us for supported types.
+        extensions = mimetypes.guess_all_extensions(unicode(mimetype))
+        for extension in extensions:
+            ext = u'*%s' % extension
+            if ext not in list:
+                list.append(ext)
+                self.serviceManager.supportedSuffixes(extension[1:])
+        log.info(u'MediaPlugin:   %s extensions: %s' % (mimetype,
+            u' '.join(extensions)))
 
     def about(self):
         about_text = translate('MediaPlugin', '<strong>Media Plugin</strong>'

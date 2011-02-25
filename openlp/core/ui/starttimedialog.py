@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,7 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
-from openlp.core.lib.ui import create_accept_reject_button_box
+from openlp.core.lib.ui import UiStrings, create_accept_reject_button_box
 
 class Ui_StartTimeDialog(object):
     def setupUi(self, StartTimeDialog):
@@ -65,6 +65,6 @@ class Ui_StartTimeDialog(object):
         self.hourLabel.setText(translate('OpenLP.StartTimeForm', 'Hours:'))
         self.hourSpinBox.setSuffix(translate('OpenLP.StartTimeForm', 'h'))
         self.minuteSpinBox.setSuffix(translate('OpenLP.StartTimeForm', 'm'))
-        self.secondSpinBox.setSuffix(translate('OpenLP.StartTimeForm', 's'))
+        self.secondSpinBox.setSuffix(UiStrings.S)
         self.minuteLabel.setText(translate('OpenLP.StartTimeForm', 'Minutes:'))
         self.secondLabel.setText(translate('OpenLP.StartTimeForm', 'Seconds:'))

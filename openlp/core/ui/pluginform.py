@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,7 +28,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import PluginStatus, Receiver, StringContent, translate
+from openlp.core.lib import PluginStatus, Receiver, translate
 from plugindialog import Ui_PluginViewDialog
 
 log = logging.getLogger(__name__)
@@ -80,15 +80,14 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
                 # PluginStatus.Inactive
                 status_text = unicode(
                     translate('OpenLP.PluginForm', '%s (Inactive)'))
-            name_string = plugin.getString(StringContent.Name)
-            item.setText(status_text % name_string[u'singular'])
+            item.setText(status_text % plugin.nameStrings[u'singular'])
             # If the plugin has an icon, set it!
             if plugin.icon:
                 item.setIcon(plugin.icon)
             self.pluginListWidget.addItem(item)
             pluginListWidth = max(pluginListWidth, self.fontMetrics().width(
                 unicode(translate('OpenLP.PluginForm', '%s (Inactive)')) %
-                name_string[u'singular']))
+                plugin.nameStrings[u'singular']))
         self.pluginListWidget.setFixedWidth(pluginListWidth +
             self.pluginListWidget.iconSize().width() + 48)
 
@@ -118,8 +117,7 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             self.pluginListWidget.currentItem().text().split(u' ')[0]
         self.activePlugin = None
         for plugin in self.parent.pluginManager.plugins:
-            name_string = plugin.getString(StringContent.Name)
-            if name_string[u'singular'] == plugin_name_singular:
+            if plugin.nameStrings[u'singular'] == plugin_name_singular:
                 self.activePlugin = plugin
                 break
         if self.activePlugin:
@@ -147,6 +145,5 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         elif self.activePlugin.status == PluginStatus.Disabled:
             status_text = unicode(
                 translate('OpenLP.PluginForm', '%s (Disabled)'))
-        name_string = self.activePlugin.getString(StringContent.Name)
         self.pluginListWidget.currentItem().setText(
-            status_text % name_string[u'singular'])
+            status_text % self.activePlugin.nameStrings[u'singular'])

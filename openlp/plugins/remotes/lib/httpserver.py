@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -68,11 +68,13 @@ class HttpServer(object):
         """
         log.debug(u'Start TCP server')
         port = QtCore.QSettings().value(
-            self.parent.settingsSection + u'/remote port',
+            self.parent.settingsSection + u'/port',
             QtCore.QVariant(4316)).toInt()[0]
+        address = QtCore.QSettings().value(
+            self.parent.settingsSection + u'/ip address',
+            QtCore.QVariant(u'0.0.0.0')).toString()
         self.server = QtNetwork.QTcpServer()
-        self.server.listen(QtNetwork.QHostAddress(QtNetwork.QHostAddress.Any),
-            port)
+        self.server.listen(QtNetwork.QHostAddress(address), port)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'slidecontroller_live_changed'),
             self.slide_change)
