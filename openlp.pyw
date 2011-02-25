@@ -34,7 +34,8 @@ from subprocess import Popen, PIPE
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, check_directory_exists
+from openlp.core.lib import Receiver, translate, check_directory_exists
+from openlp.core.lib.ui import information_message_box
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
 from openlp.core.ui.exceptionform import ExceptionForm
@@ -166,6 +167,9 @@ class OpenLP(QtGui.QApplication):
             QtCore.SIGNAL(u'cursor_busy'), self.setBusyCursor)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'cursor_normal'), self.setNormalCursor)
+        QtCore.QObject.connect(self.desktop(),
+            QtCore.SIGNAL(u'screenCountChanged(int)'),
+            self.onScreenCountChanged)
         self.setOrganizationName(u'OpenLP')
         self.setOrganizationDomain(u'openlp.org')
         self.setApplicationName(u'OpenLP')
@@ -224,6 +228,15 @@ class OpenLP(QtGui.QApplication):
         Sets the Normal Cursor for the Application
         """
         self.restoreOverrideCursor()
+
+    def onScreenCountChanged(self):
+        """
+        Called when the user changes the monitor set up.
+        """
+        information_message_box(
+            message=translate('OpenLP','You have changed the monitor set up. '
+            'You have to restart OpenLP in order to change the live display '
+            'monitor.'))
 
 def main():
     """
