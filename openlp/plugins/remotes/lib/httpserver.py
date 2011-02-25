@@ -28,6 +28,7 @@ import logging
 import os
 import urlparse
 import re
+from pprint import pformat
 
 try:
     import json
@@ -45,12 +46,18 @@ class HttpResponse(object):
     """
     A simple object to encapsulate a pseudo-http response.
     """
-    content = u''
-    mimetype = None
+    code = '200 OK'
+    content = ''
+    headers = {
+        'Content-Type': 'text/html; charset="utf-8"\r\n'
+    }
 
-    def __init__(self, content=u'', mimetype=None):
+    def __init__(self, content='', headers={}, code=None):
         self.content = content
-        self.mimetype = mimetype
+        for key, value in headers.iteritems():
+            self.headers[key] = value
+        if code:
+            self.code = code
 
 
 class HttpServer(object):
@@ -110,6 +117,7 @@ class HttpServer(object):
         Item (song) change listener. Store the slide and tell the clients
         """
         self.current_item = items[0].title
+        log.debug(pformat(items[0].__dict__, 2))
         self.send_poll()
 
     def send_poll(self):
@@ -148,20 +156,86 @@ class HttpConnection(object):
     """
     A single connection, this handles communication between the server
     and the client
+
+    Routes:
+
+    ``/``
+        Go to the web interface.
+
+    ``/files/{filename}``
+        Serve a static file.
+
+    ``/api/poll``
+        Poll to see if there are any changes. Returns a JSON-encoded dict of
+        any changes that occurred::
+
+            {"results": {"type": "controller"}}
+
+        Or, if there were no results, False::
+
+            {"results": False}
+
+    ``/api/controller/{live|preview}/{action}``
+        Perform ``{action}`` on the live or preview controller. Valid actions
+        are:
+
+        ``next``
+            Load the next slide.
+
+        ``previous``
+            Load the previous slide.
+
+        ``jump``
+            Jump to a specific slide. Requires an id return in a JSON-encoded
+            dict like so::
+
+                {"request": {"id": 1}}
+
+        ``first``
+            Load the first slide.
+
+        ``last``
+            Load the last slide.
+
+        ``text``
+            Request the text of the current slide.
+
+    ``/api/service/{action}``
+        Perform ``{action}`` on the service manager (e.g. go live). Data is
+        passed as a json-encoded ``data`` parameter. Valid actions are:
+
+        ``next``
+            Load the next item in the service.
+
+        ``previous``
+            Load the previews item in the service.
+
+        ``jump``
+            Jump to a specific item in the service. Requires an id returned in
+            a JSON-encoded dict like so::
+
+                {"request": {"id": 1}}
+
+        ``list``
+            Request a list of items in the service.
+
     """
     def __init__(self, parent, socket):
         """
-        Initialise the http connection. Listen out for socket signals
-        """
+        Initialise the http connection. Listen out for socket signals.
+                """
         log.debug(u'Initialise HttpConnection: %s' %
             socket.peerAddress().toString())
         self.socket = socket
         self.parent = parent
         self.routes = [
-            (u'^/$', self.serve_file, [u'filename'], {u'filename': u''}),
-            (r'^/files/(?P<filename>.*)$', self.serve_file, [u'filename'], None),
-            (r'^/send/(?P<name>.*)$', self.process_event, [u'name', u'parameters'], None),
-            (r'^/request/(?P<name>.*)$', self.process_request, [u'name', u'parameters'], None)
+            (u'^/$', self.serve_file),
+            (r'^/files/(.*)$', self.serve_file),
+            #(r'^/send/(.*)$', self.process_event),
+            #(r'^/request/(.*)$', self.process_request),
+            (r'^/api/poll$', self.poll),
+            (r'^/api/controller/(live|preview)/(.*)$', self.controller),
+            (r'^/api/service/(.*)$', self.service)
         ]
         QtCore.QObject.connect(self.socket, QtCore.SIGNAL(u'readyRead()'),
             self.ready_read)
@@ -180,57 +254,34 @@ class HttpConnection(object):
             response = None
             if words[0] == u'GET':
                 url = urlparse.urlparse(words[1])
-                params = self.load_params(url.query)
+                self.url_params = urlparse.parse_qs(url.query)
                 # Loop through the routes we set up earlier and execute them
-                for route, func, kws, defaults in self.routes:
+                for route, func in self.routes:
                     match = re.match(route, url.path)
                     if match:
-                        log.debug(u'Matched on "%s" from "%s"', route, url.path)
-                        log.debug(u'Groups: %s', match.groups())
-                        kwargs = {}
-                        # Loop through all the keywords supplied
-                        for keyword in kws:
-                            groups = match.groupdict()
-                            if keyword in groups:
-                                # If we find a valid keyword in our URL, use it
-                                kwargs[keyword] = groups[keyword]
-                            elif defaults and keyword in defaults:
-                                # Otherwise, if we have defaults, use them
-                                kwargs[keyword] = defaults[keyword]
-                            else:
-                                # Lastly, set our parameter to None.
-                                kwargs[keyword] = None
-                        if u'parameters' in kwargs:
-                            kwargs[u'parameters'] = params
-                        log.debug(u'Keyword arguments: %s', kwargs)
-                        response = func(**kwargs)
+                        log.debug('Route "%s" matched "%s"', route, url.path)
+                        args = []
+                        for param in match.groups():
+                            args.append(param)
+                        response = func(*args)
                         break
-                """
-                folders = url.path.split(u'/')
-                if folders[1] == u'':
-                    mimetype, html = self.serve_file(u'')
-                elif folders[1] == u'files':
-                    mimetype, html = self.serve_file(os.sep.join(folders[2:]))
-                elif folders[1] == u'send':
-                    html = self.process_event(folders[2], params)
-                elif folders[1] == u'request':
-                    if self.process_request(folders[2], params):
-                        return
-                """
             if response:
+                self.send_response(response)
+                """
                 if hasattr(response, u'mimetype'):
                     self.send_200_ok(response.mimetype)
                 else:
                     self.send_200_ok()
                 if hasattr(response, u'content'):
                     self.socket.write(response.content)
-                else:
+                elif isinstance(response, basestring):
                     self.socket.write(response)
+                """
             else:
-                self.send_404_not_found()
+                self.send_response(HttpResponse(code='404 Not Found'))
             self.close()
 
-    def serve_file(self, **kwargs):
+    def serve_file(self, filename=None):
         """
         Send a file to the socket. For now, just a subset of file types
         and must be top level inside the html folder.
@@ -239,13 +290,12 @@ class HttpConnection(object):
         Ultimately for i18n, this could first look for xx/file.html before
         falling back to file.html... where xx is the language, e.g. 'en'
         """
-        filename = kwargs.get(u'filename', u'')
         log.debug(u'serve file request %s' % filename)
         if not filename:
             filename = u'index.html'
         path = os.path.normpath(os.path.join(self.parent.html_dir, filename))
         if not path.startswith(self.parent.html_dir):
-            return None
+            return HttpResponse(code=u'404 Not Found')
         ext = os.path.splitext(filename)[1]
         if ext == u'.html':
             mimetype = u'text/html'
@@ -260,30 +310,62 @@ class HttpConnection(object):
         elif ext == u'.png':
             mimetype = u'image/png'
         else:
-            return (None, None)
+            mimetype = u'text/plain'
         file_handle = None
         try:
             file_handle = open(path, u'rb')
             log.debug(u'Opened %s' % path)
-            html = file_handle.read()
+            content = file_handle.read()
         except IOError:
             log.exception(u'Failed to open %s' % path)
-            return None
+            return HttpResponse(code=u'404 Not Found')
         finally:
             if file_handle:
                 file_handle.close()
-        return HttpResponse(content=html, mimetype=mimetype)
+        return HttpResponse(content, {u'Content-Type': mimetype})
 
-    def load_params(self, query):
+    def poll(self):
         """
-        Decode the query string parameters sent from the browser
+        Poll OpenLP to determine the current slide number and item name.
         """
-        log.debug(u'loading params %s' % query)
-        params = urlparse.parse_qs(query)
-        if not params:
-            return None
+        return HttpResponse(json.dumps({'slide': self.parent.current_slide,
+             'item': self.parent.current_item}),
+             {'Content-Type': 'application/json'})
+
+    def controller(self, type, action):
+        """
+        Perform an action on the slide controller.
+
+        ``type``
+            This is the type of slide controller, either ``preview`` or
+            ``live``.
+
+        ``action``
+            The action to perform.
+        """
+        event = u'slidecontroller_%s_%s' % (type, action)
+        if action == u'text':
+            event += u'_request'
+        Receiver.send_message(event)
+        json_data = {u'results': {u'success': True}}
+        #if action == u'text':
+        #    json_data = {u'results': }
+        return HttpResponse(json.dumps(json_data),
+            {'Content-Type': 'application/json'})
+
+    def service(self, action):
+        event = u'servicemanager_%s' % action
+        if action == u'list':
+            event += u'_request'
         else:
-            return params['q']
+            event += u'_item'
+        if self.url_params and self.url_params.get(u'data'):
+            data = json.loads(self.url_params[u'data'][0])
+            Receiver.send_message(event, data[u'request'][u'id'])
+        else:
+            Receiver.send_message(event)
+        return HttpResponse(json.dumps({'results': {u'success': True}}),
+            {'Content-Type': 'application/json'})
 
     def process_event(self, **kwargs):
         """
@@ -291,11 +373,10 @@ class HttpConnection(object):
         Currently lets anything through. Later we should restrict and perform
         basic parameter checking, otherwise rogue clients could crash openlp
         """
-        event = kwargs.get(u'name')
-        params = kwargs.get(u'parameters')
+        event = kwargs.get(u'event')
         log.debug(u'Processing event %s' % event)
-        if params:
-            Receiver.send_message(event, params)
+        if self.url_params:
+            Receiver.send_message(event, self.url_params)
         else:
             Receiver.send_message(event)
         return json.dumps([u'OK'])
@@ -317,11 +398,10 @@ class HttpConnection(object):
         ``params``
             Parameters sent with the event.
         """
-        event = kwargs.get(u'name')
-        params = kwargs.get(u'parameters')
+        event = kwargs.get(u'event')
         log.debug(u'Processing request %s' % event)
         if not event.endswith(u'_request'):
-            return False
+            return None
         self.event = event
         response = event.replace(u'_request', u'_response')
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -334,11 +414,11 @@ class HttpConnection(object):
             self.timer.start(60000)
         else:
             self.timer.start(10000)
-        if params:
-            Receiver.send_message(event, params)
+        if self.url_params:
+            Receiver.send_message(event, self.url_params)
         else:
             Receiver.send_message(event)
-        return True
+        return None
 
     def process_response(self, data):
         """
@@ -349,10 +429,17 @@ class HttpConnection(object):
         if not self.socket:
             return
         self.timer.stop()
-        html = json.dumps(data)
+        json_data = json.dumps(data)
         self.send_200_ok()
-        self.socket.write(html)
+        self.socket.write(json_data)
         self.close()
+
+    def send_response(self, response):
+        http = u'HTTP/1.1 %s\r\n' % response.code
+        for header in response.headers.iteritems():
+            http += '%s: %s\r\n' % header
+        http += '\r\n'
+        self.socket.write(response.content)
 
     def send_200_ok(self, mimetype='text/html; charset="utf-8"'):
         """
