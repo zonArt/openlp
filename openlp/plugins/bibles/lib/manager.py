@@ -46,16 +46,6 @@ except ImportError:
 
 log = logging.getLogger(__name__)
 
-class BibleMode(object):
-    """
-    This is basically an enumeration class which specifies the mode of a Bible.
-    Mode refers to whether or not a Bible in OpenLP is a full Bible or needs to
-    be downloaded from the Internet on an as-needed basis.
-    """
-    Full = 1
-    Partial = 2
-
-
 class BibleFormat(object):
     """
     This is a special enumeration class that holds the various types of Bibles,
