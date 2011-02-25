@@ -58,7 +58,6 @@ class UiStrings(object):
         'Abbreviated font pointsize unit')
     Image = translate('OpenLP.Ui', 'Image')
     Import = translate('OpenLP.Ui', 'Import')
-    Information = translate('OpenLP.Ui', 'Information')
     LengthTime = unicode(translate('OpenLP.Ui', 'Length %s'))
     Live = translate('OpenLP.Ui', 'Live')
     LiveBGError = translate('OpenLP.Ui', 'Live Background Error')
@@ -173,32 +172,6 @@ def critical_error_message_box(title=None, message=None, parent=None,
     data = {u'message': message}
     data[u'title'] = title if title else UiStrings.Error
     return Receiver.send_message(u'openlp_error_message', data)
-
-def information_message_box(title=None, message=None, parent=None,
-    question=False):
-    """
-    Provides a standard information message box for notes that OpenLP displays
-    to users.
-
-    ``title``
-        The title for the message box.
-
-    ``message``
-        The message to display to the user.
-
-    ``parent``
-        The parent UI element to attach the dialog to.
-
-    ``question``
-        Should this message box question the user.
-    """
-    if question:
-        return QtGui.QMessageBox.critical(parent, UiStrings.Information,
-            message, QtGui.QMessageBox.StandardButtons(
-            QtGui.QMessageBox.Yes | QtGui.QMessageBox.No))
-    data = {u'message': message}
-    data[u'title'] = title if title else UiStrings.Information
-    return Receiver.send_message(u'openlp_information_message', data)
 
 def media_item_combo_box(parent, name):
     """

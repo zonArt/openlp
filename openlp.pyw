@@ -35,7 +35,6 @@ from subprocess import Popen, PIPE
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, translate, check_directory_exists
-from openlp.core.lib.ui import information_message_box
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
 from openlp.core.ui.exceptionform import ExceptionForm
@@ -233,10 +232,13 @@ class OpenLP(QtGui.QApplication):
         """
         Called when the user changes the monitor set up.
         """
-        information_message_box(
-            message=translate('OpenLP','You have changed the monitor set up. '
-            'You have to restart OpenLP in order to change the live display '
-            'monitor.'))
+        data = {
+            u'title': translate('OpenLP.Ui', 'Information'),
+            u'message': translate('OpenLP','The monitor set up has changed. You'
+            ' have to restart OpenLP in order to change the live display'
+            ' monitor.')
+        }
+        Receiver.send_message(u'openlp_information_message', data)
 
 def main():
     """
