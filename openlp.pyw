@@ -37,6 +37,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Receiver, check_directory_exists
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
+from openlp.core.ui.firsttimeform import FirstTimeForm
 from openlp.core.ui.exceptionform import ExceptionForm
 from openlp.core.ui import SplashScreen, ScreenList
 from openlp.core.utils import AppLocation, LanguageManager, VersionThread
@@ -175,7 +176,7 @@ class OpenLP(QtGui.QApplication):
         # First time checks in settings
         if QtCore.QSettings().value(
             u'general/first time', QtCore.QVariant(True)).toBool():
-            print "first time"
+            FirstTimeForm() #.exec_()
         show_splash = QtCore.QSettings().value(
             u'general/show splash', QtCore.QVariant(True)).toBool()
         if show_splash:
