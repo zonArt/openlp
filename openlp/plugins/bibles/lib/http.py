@@ -231,8 +231,8 @@ class BGExtract(object):
             raw_verse_num =  verse.next
             clean_verse_num = 0
             # Not all verses exist in all translations and may or may not be
-            # represented by a verse number.  If they are not fine, if they are
-            # it will probably be in a format that breaks int().  We will then
+            # represented by a verse number. If they are not fine, if they are
+            # it will probably be in a format that breaks int(). We will then
             # have no idea what garbage may be sucked in to the verse text so
             # if we do not get a clean int() then ignore the verse completely.
             try:
@@ -390,7 +390,7 @@ class HTTPBible(BibleDB):
         BibleDB.__init__(self, parent, **kwargs)
         self.download_source = kwargs[u'download_source']
         self.download_name = kwargs[u'download_name']
-        # TODO: Clean up proxy stuff.  We probably want one global proxy per
+        # TODO: Clean up proxy stuff. We probably want one global proxy per
         # connection type (HTTP and HTTPS) at most.
         self.proxy_server = None
         self.proxy_username = None
@@ -464,8 +464,8 @@ class HTTPBible(BibleDB):
                 search_results = self.get_chapter(book, reference[1])
                 if search_results and search_results.has_verselist():
                     ## We have found a book of the bible lets check to see
-                    ## if it was there.  By reusing the returned book name
-                    ## we get a correct book.  For example it is possible
+                    ## if it was there. By reusing the returned book name
+                    ## we get a correct book. For example it is possible
                     ## to request ac and get Acts back.
                     bookname = search_results.book
                     Receiver.send_message(u'openlp_process_events')

@@ -322,7 +322,7 @@ class BibleDB(QtCore.QObject, Manager):
     def get_books(self):
         """
         A wrapper so both local and web bibles have a get_books() method that
-        manager can call.  Used in the media manager advanced search tab.
+        manager can call. Used in the media manager advanced search tab.
         """
         return self.get_all_objects(Book, order_by_ref=Book.id)
 

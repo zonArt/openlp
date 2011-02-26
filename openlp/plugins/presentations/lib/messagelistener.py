@@ -213,6 +213,7 @@ class Controller(object):
     def poll(self):
         self.doc.poll_slidenumber(self.is_live)
 
+
 class MessageListener(object):
     """
     This is the Presentation listener who acts on events from the slide
