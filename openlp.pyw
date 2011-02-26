@@ -172,6 +172,10 @@ class OpenLP(QtGui.QApplication):
         self.setApplicationVersion(app_version[u'version'])
         if os.name == u'nt':
             self.setStyleSheet(application_stylesheet)
+        # First time checks in settings
+        if QtCore.QSettings().value(
+            u'general/first time', QtCore.QVariant(True)).toBool():
+            print "first time"
         show_splash = QtCore.QSettings().value(
             u'general/show splash', QtCore.QVariant(True)).toBool()
         if show_splash:
@@ -273,7 +277,9 @@ def main():
     qInitResources()
     # Now create and actually run the application.
     app = OpenLP(qt_args)
-    #i18n Set Language
+    # Define the settings environment
+    QtCore.QSettings(u'OpenLP', u'OpenLP')
+    # i18n Set Language
     language = LanguageManager.get_language()
     appTranslator = LanguageManager.get_translator(language)
     app.installTranslator(appTranslator)
