@@ -173,10 +173,13 @@ class OpenLP(QtGui.QApplication):
         self.setApplicationVersion(app_version[u'version'])
         if os.name == u'nt':
             self.setStyleSheet(application_stylesheet)
+        print "1"
         # First time checks in settings
         if QtCore.QSettings().value(
             u'general/first time', QtCore.QVariant(True)).toBool():
-            FirstTimeForm() #.exec_()
+            FirstTimeForm().exec_()
+        # make sure Qt really display the splash screen
+        self.processEvents()
         show_splash = QtCore.QSettings().value(
             u'general/show splash', QtCore.QVariant(True)).toBool()
         if show_splash:
@@ -207,13 +210,17 @@ class OpenLP(QtGui.QApplication):
         return self.exec_()
 
     def hookException(self, exctype, value, traceback):
+        print "a"
         if not hasattr(self, u'mainWindow'):
             log.exception(''.join(format_exception(exctype, value, traceback)))
             return
+        print "b"
         if not hasattr(self, u'exceptionForm'):
             self.exceptionForm = ExceptionForm(self.mainWindow)
+        print "c"
         self.exceptionForm.exceptionTextEdit.setPlainText(
             ''.join(format_exception(exctype, value, traceback)))
+        print "d"
         self.setNormalCursor()
         self.exceptionForm.exec_()
 

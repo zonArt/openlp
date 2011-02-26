@@ -24,16 +24,31 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import logging
+
 from PyQt4 import QtGui
 
-#from filerenamedialog import Ui_FileRenameDialog
+from firsttimewizard import Ui_FirstTimeWizard
 
 from openlp.core.lib import translate
 from openlp.core.utils import get_web_page
 
-class FirstTimeForm():#QtGui.QDialog, Ui_FileRenameDialog):
+log = logging.getLogger(__name__)
 
-    def __init__(self):
+class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
+    """
+    This is the Theme Import Wizard, which allows easy creation and editing of
+    OpenLP themes.
+    """
+    log.info(u'ThemeWizardForm loaded')
+
+    def __init__(self, parent=None):
         # check to see if we have web access
         self.WebAccess = get_web_page(u'http://openlp.org1')
         print self.WebAccess
+        QtGui.QWizard.__init__(self, parent)
+        self.setupUi(self)
+        #self.registerFields()
+
+    def accept(self):
+        return QtGui.QWizard.accept(self)
