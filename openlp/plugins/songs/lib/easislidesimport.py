@@ -96,7 +96,7 @@ class EasiSlidesImport(SongImport):
         mandatory=False):
         """
         Add imported values to the song model converting them to unicode at the
-        same time.  If the unicode decode fails or a mandatory attribute is not
+        same time. If the unicode decode fails or a mandatory attribute is not
         present _success is set to False so the importer can react
         appropriately.
 

@@ -64,7 +64,7 @@ class SettingsManager(object):
         Read the last directory used for plugin.
 
         ``section``
-            The section of code calling the method.  This is used in the
+            The section of code calling the method. This is used in the
             settings key.
 
         ``num``
@@ -84,7 +84,7 @@ class SettingsManager(object):
         Save the last directory used for plugin.
 
         ``section``
-            The section of code calling the method.  This is used in the
+            The section of code calling the method. This is used in the
             settings key.
 
         ``directory``
@@ -160,11 +160,11 @@ class SettingsManager(object):
         Get a list of files from the data files path.
 
         ``section``
-            Defaults to *None*.  The section of code getting the files - used
+            Defaults to *None*. The section of code getting the files - used
             to load from a section's data subdirectory.
 
         ``extension``
-            Defaults to *None*.  The extension to search for.
+            Defaults to *None*. The extension to search for.
         """
         path = AppLocation.get_data_path()
         if section:
