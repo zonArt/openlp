@@ -92,7 +92,7 @@ class Theme(object):
             * ``solid`` - color
 
     ``BackgroundParameter2``
-        Extra information about the background.  The contents of this attribute
+        Extra information about the background. The contents of this attribute
         depend on the BackgroundType:
 
             * ``image`` - border color
@@ -100,7 +100,7 @@ class Theme(object):
             * ``solid`` - N/A
 
     ``BackgroundParameter3``
-        Extra information about the background.  The contents of this attribute
+        Extra information about the background. The contents of this attribute
         depend on the BackgroundType:
 
             * ``image`` - N/A
@@ -142,7 +142,7 @@ class Theme(object):
         Color for the outline (or None if Outline is 0)
 
     ``HorizontalAlign``
-        The horizontal alignment to apply to text.  Valid alignments are:
+        The horizontal alignment to apply to text. Valid alignments are:
 
             * ``0`` - left align
             * ``1`` - right align
@@ -156,7 +156,7 @@ class Theme(object):
             * ``2`` - centre align
 
     ``WrapStyle``
-        The wrap style to apply to the text.  Valid styles are:
+        The wrap style to apply to the text. Valid styles are:
 
             * ``0`` - normal
             * ``1`` - lyrics
