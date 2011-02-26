@@ -300,6 +300,7 @@ class GeneralTab(SettingsTab):
         """
         settings = QtCore.QSettings()
         settings.beginGroup(self.settingsSection)
+        self.monitorComboBox.clear()
         for screen in self.screens.screen_list:
             screen_name = u'%s %d' % (translate('OpenLP.GeneralTab', 'Screen'),
                 screen[u'number'] + 1)

@@ -25,7 +25,7 @@
 ###############################################################################
 """
 The :mod:`screen` module provides management functionality for a machines'
-displays
+displays.
 """
 import logging
 import copy
@@ -51,25 +51,58 @@ class ScreenList(object):
 
     def add_screen(self, screen):
         """
-        Add a screen to the list of known screens
+        Add a screen to the list of known screens.
+
+        ``screen``
+            A dict with the screen properties::
+
+            {
+                u'primary': True,
+                u'number': 0,
+                u'size': PyQt4.QtCore.QRect(0, 0, 1024, 768)
+            }
+
         """
+        print u'add screen: %s' % screen
         if screen[u'primary']:
             self.current = screen
         self.screen_list.append(screen)
         self.display_count += 1
 
+    def remove_screen(self, number):
+        """
+        Remove a screen from the list of known screens.
+
+        ``number``
+            The screen number (int).
+        """
+        print u'remove screen %s' % number
+        for screen in self.screen_list:
+            if screen[u'number'] == number:
+                self.screen_list.remove(screen)
+                self.display_count -= 1
+                break
+
     def screen_exists(self, number):
         """
-        Confirms a screen is known
+        Confirms a screen is known.
+
+        ``number``
+            The screen number (int).
         """
         for screen in self.screen_list:
             if screen[u'number'] == number:
+                print u'screen %s exists' % number
                 return True
+        print u'screen %s does not exist' % number
         return False
 
     def set_current_display(self, number):
         """
-        Set up the current screen dimensions
+        Set up the current screen dimensions.
+
+        ``number``
+            The screen number (int).
         """
         log.debug(u'set_current_display %s', number)
         if number + 1 > self.display_count:
@@ -86,8 +119,8 @@ class ScreenList(object):
 
     def set_override_display(self):
         """
-        replace the current size with the override values
-        user wants to have their own screen attributes
+        Replace the current size with the override values, as the user wants to
+        have their own screen attributes.
         """
         log.debug(u'set_override_display')
         self.current = copy.deepcopy(self.override)
@@ -95,8 +128,8 @@ class ScreenList(object):
 
     def reset_current_display(self):
         """
-        replace the current values with the correct values
-        user wants to use the correct screen attributes
+        Replace the current values with the correct values, as the user wants to
+        use the correct screen attributes.
         """
         log.debug(u'reset_current_display')
         self.set_current_display(self.current_display)

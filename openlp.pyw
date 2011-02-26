@@ -167,8 +167,7 @@ class OpenLP(QtGui.QApplication):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'cursor_normal'), self.setNormalCursor)
         QtCore.QObject.connect(self.desktop(),
-            QtCore.SIGNAL(u'screenCountChanged(int)'),
-            self.onScreenCountChanged)
+            QtCore.SIGNAL(u'screenCountChanged(int)'), self.updateScreenList)
         self.setOrganizationName(u'OpenLP')
         self.setOrganizationDomain(u'openlp.org')
         self.setApplicationName(u'OpenLP')
@@ -182,17 +181,13 @@ class OpenLP(QtGui.QApplication):
             self.splash.show()
         # make sure Qt really display the splash screen
         self.processEvents()
-        screens = ScreenList()
+        self.screens = ScreenList()
         # Decide how many screens we have and their size
-        for screen in xrange(0, self.desktop().numScreens()):
-            size = self.desktop().screenGeometry(screen)
-            screens.add_screen({u'number': screen,
-                u'size': size,
-                u'primary': (self.desktop().primaryScreen() == screen)})
-            log.info(u'Screen %d found with resolution %s', screen, size)
+        self.updateScreenList(True)
         # start the main app window
         self.appClipboard = self.clipboard()
-        self.mainWindow = MainWindow(screens, app_version, self.appClipboard)
+        self.mainWindow = MainWindow(
+            self.screens, app_version, self.appClipboard)
         self.mainWindow.show()
         if show_splash:
             # now kill the splashscreen
@@ -228,17 +223,33 @@ class OpenLP(QtGui.QApplication):
         """
         self.restoreOverrideCursor()
 
-    def onScreenCountChanged(self):
+    def updateScreenList(self, applicationStart=False):
         """
-        Called when the user changes the monitor set up.
+        Called when the list of screens has to be updated.
+
+        ``applicationStart``
+            Should be ``True`` when starting the application, otherwise
+            ``False``.
         """
-        data = {
-            u'title': translate('OpenLP.Ui', 'Information'),
-            u'message': translate('OpenLP','The monitor set up has changed. You'
-            ' have to restart OpenLP in order to change the live display'
-            ' monitor.')
-        }
-        Receiver.send_message(u'openlp_information_message', data)
+        # Add new screens.
+        for number in xrange(0, self.desktop().numScreens()):
+            if not self.screens.screen_exists(number):
+                size = self.desktop().screenGeometry(number)
+                self.screens.add_screen({
+                    u'number': number,
+                    u'size': size,
+                    u'primary': (self.desktop().primaryScreen() == number)
+                })
+                log.info(u'Screen %d found with resolution %s', number, size)
+        # Remove unplugged screens.
+        for screen in self.screens.screen_list:
+            if screen[u'number'] > self.desktop().numScreens():
+                self.screens.remove_screen(screen)
+                log.info(u'Screen %d removed' % creen[u'number'])
+        if not applicationStart:
+            pass
+            # TODO: Refresh settings.
+            # TODO: Make the new (second) monitor the live display.
 
 def main():
     """
