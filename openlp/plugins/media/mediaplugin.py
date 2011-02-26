@@ -63,7 +63,7 @@ class MediaPlugin(Plugin):
             if ext not in list:
                 list.append(ext)
                 self.serviceManager.supportedSuffixes(extension[1:])
-        log.info(u'MediaPlugin:   %s extensions: %s' % (mimetype,
+        log.info(u'MediaPlugin: %s extensions: %s' % (mimetype,
             u' '.join(extensions)))
 
     def about(self):

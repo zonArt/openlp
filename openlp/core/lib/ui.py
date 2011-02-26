@@ -130,7 +130,7 @@ def create_accept_reject_button_box(parent, okay=False):
     methods to handle the default ``accepted()`` and ``rejected()`` signals.
 
     ``parent``
-        The parent object.  This should be a ``QWidget`` descendant.
+        The parent object. This should be a ``QWidget`` descendant.
 
     ``okay``
         If true creates an okay/cancel combination instead of save/cancel.
@@ -185,15 +185,15 @@ def media_item_combo_box(parent, name):
 
 def create_delete_push_button(parent, icon=None):
     """
-    Creates a standard push button with a delete label and optional icon.  The
+    Creates a standard push button with a delete label and optional icon. The
     button is connected to the parent's ``onDeleteButtonClicked()`` method to
     handle the ``clicked()`` signal.
 
     ``parent``
-        The parent object.  This should be a ``QWidget`` descendant.
+        The parent object. This should be a ``QWidget`` descendant.
 
     ``icon``
-        An icon to display on the button.  This can be either a ``QIcon``, a
+        An icon to display on the button. This can be either a ``QIcon``, a
         resource path or a file name.
     """
     delete_button = QtGui.QPushButton(parent)
@@ -210,12 +210,12 @@ def create_delete_push_button(parent, icon=None):
 def create_up_down_push_button_set(parent):
     """
     Creates a standard set of two push buttons, one for up and the other for
-    down, for use with lists.  The buttons use arrow icons and no text and are
+    down, for use with lists. The buttons use arrow icons and no text and are
     connected to the parent's ``onUpButtonClicked()`` and
     ``onDownButtonClicked()`` to handle their respective ``clicked()`` signals.
 
     ``parent``
-        The parent object.  This should be a ``QWidget`` descendant.
+        The parent object. This should be a ``QWidget`` descendant.
     """
     up_button = QtGui.QPushButton(parent)
     up_button.setIcon(build_icon(u':/services/service_up.png'))
@@ -295,7 +295,7 @@ def create_valign_combo(form, parent, layout):
         The UI screen that the label and combo will appear on.
 
     ``parent``
-        The parent object.  This should be a ``QWidget`` descendant.
+        The parent object. This should be a ``QWidget`` descendant.
 
     ``layout``
         A layout object to add the label and combo widgets to.

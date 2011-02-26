@@ -43,7 +43,7 @@ log = logging.getLogger(__name__)
 class HttpServer(object):
     """
     Ability to control OpenLP via a webbrowser
-    e.g.  http://localhost:4316/send/slidecontroller_live_next
+    e.g. http://localhost:4316/send/slidecontroller_live_next
           http://localhost:4316/send/alerts_text?q=your%20alert%20text
     """
     def __init__(self, parent):

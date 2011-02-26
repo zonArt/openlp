@@ -91,6 +91,7 @@ class ThemeLevel(object):
     Service = 2
     Song = 3
 
+
 class BackgroundType(object):
     """
     Type enumeration for backgrounds.
@@ -122,6 +123,7 @@ class BackgroundType(object):
             return BackgroundType.Gradient
         elif type_string == u'image':
             return BackgroundType.Image
+
 
 class BackgroundGradientType(object):
     """
@@ -199,6 +201,7 @@ BOOLEAN_LIST = [u'bold', u'italics', u'override', u'outline', u'shadow',
 INTEGER_LIST = [u'size', u'line_adjustment', u'x', u'height', u'y',
     u'width', u'shadow_size', u'outline_size', u'horizontal_align',
     u'vertical_align', u'wrap_style']
+
 
 class ThemeXML(object):
     """
