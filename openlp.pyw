@@ -151,10 +151,6 @@ class OpenLP(QtGui.QApplication):
             log.info(u'Openlp version %s' % app_version[u'version'])
         return app_version
 
-#    def notify(self, obj, evt):
-#        #TODO needed for presentation exceptions
-#        return QtGui.QApplication.notify(self, obj, evt)
-
     def run(self):
         """
         Run the OpenLP application.
@@ -173,13 +169,6 @@ class OpenLP(QtGui.QApplication):
         self.setApplicationVersion(app_version[u'version'])
         if os.name == u'nt':
             self.setStyleSheet(application_stylesheet)
-        print "1"
-        # First time checks in settings
-        if QtCore.QSettings().value(
-            u'general/first time', QtCore.QVariant(True)).toBool():
-            FirstTimeForm().exec_()
-        # make sure Qt really display the splash screen
-        self.processEvents()
         show_splash = QtCore.QSettings().value(
             u'general/show splash', QtCore.QVariant(True)).toBool()
         if show_splash:
@@ -210,17 +199,13 @@ class OpenLP(QtGui.QApplication):
         return self.exec_()
 
     def hookException(self, exctype, value, traceback):
-        print "a"
         if not hasattr(self, u'mainWindow'):
             log.exception(''.join(format_exception(exctype, value, traceback)))
             return
-        print "b"
         if not hasattr(self, u'exceptionForm'):
             self.exceptionForm = ExceptionForm(self.mainWindow)
-        print "c"
         self.exceptionForm.exceptionTextEdit.setPlainText(
             ''.join(format_exception(exctype, value, traceback)))
-        print "d"
         self.setNormalCursor()
         self.exceptionForm.exec_()
 
@@ -287,6 +272,10 @@ def main():
     app = OpenLP(qt_args)
     # Define the settings environment
     QtCore.QSettings(u'OpenLP', u'OpenLP')
+    # First time checks in settings
+    if QtCore.QSettings().value(
+        u'general/first time', QtCore.QVariant(True)).toBool():
+        FirstTimeForm().exec_()
     # i18n Set Language
     language = LanguageManager.get_language()
     appTranslator = LanguageManager.get_translator(language)

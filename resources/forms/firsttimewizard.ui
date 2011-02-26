@@ -199,7 +199,7 @@ p, li { white-space: pre-wrap; }
       <item>
        <widget class="QCheckBox" name="remoteCheckBox">
         <property name="text">
-         <string>Remote Control</string>
+         <string>Allow remote access</string>
         </property>
        </widget>
       </item>
@@ -207,6 +207,16 @@ p, li { white-space: pre-wrap; }
        <widget class="QCheckBox" name="songUsageCheckBox">
         <property name="text">
          <string>Monitor Song Usage</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="alertCheckBox">
+        <property name="text">
+         <string>Allow Alerts</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -229,12 +239,12 @@ p, li { white-space: pre-wrap; }
      <rect>
       <x>20</x>
       <y>20</y>
-      <width>416</width>
+      <width>461</width>
       <height>17</height>
      </rect>
     </property>
     <property name="text">
-     <string>No Internet connection found so unable to download any defaults</string>
+     <string>No Internet connection found so unable to download any default files.</string>
     </property>
    </widget>
    <widget class="QGroupBox" name="internetGroupBox">
@@ -247,7 +257,7 @@ p, li { white-space: pre-wrap; }
      </rect>
     </property>
     <property name="title">
-     <string>Download Samples</string>
+     <string>Download Example Files</string>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_4">
      <item>
@@ -280,18 +290,18 @@ p, li { white-space: pre-wrap; }
   </widget>
   <widget class="QWizardPage" name="DefaultsPage">
    <property name="title">
-    <string>Configure Settings</string>
+    <string>Default Settings</string>
    </property>
    <property name="subTitle">
-    <string>Configure the initial value for settings</string>
+    <string>Set up default values to be used by OpenLP</string>
    </property>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>20</x>
       <y>20</y>
       <width>252</width>
-      <height>58</height>
+      <height>88</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout">
@@ -329,45 +339,35 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="languageLabel">
+       <property name="text">
+        <string>Select default language</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QComboBox" name="LanguageComboBox"/>
+     </item>
     </layout>
    </widget>
-  </widget>
-  <widget class="QWizardPage" name="UpdatesPage">
-   <property name="title">
-    <string>Apply Updates</string>
-   </property>
-   <property name="subTitle">
-    <string>Press Finish to apply requested updates.</string>
-   </property>
-   <layout class="QVBoxLayout" name="previewLayout">
-    <property name="spacing">
-     <number>8</number>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>190</y>
+      <width>471</width>
+      <height>17</height>
+     </rect>
     </property>
-    <property name="margin">
-     <number>20</number>
+    <property name="text">
+     <string>Press Finish to apply all you changes and start OpenLP</string>
     </property>
-   </layout>
+   </widget>
   </widget>
  </widget>
  <resources>
   <include location="../images/openlp-2.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>FirstTimeWizard</sender>
-   <signal>accepted()</signal>
-   <receiver>FirstTimeWizard</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>455</x>
-     <y>368</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>483</x>
-     <y>401</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

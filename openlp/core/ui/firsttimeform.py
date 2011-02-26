@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 from firsttimewizard import Ui_FirstTimeWizard
 
 from openlp.core.lib import translate, PluginStatus
-from openlp.core.utils import get_web_page
+from openlp.core.utils import get_web_page, LanguageManager
 
 log = logging.getLogger(__name__)
 
@@ -44,11 +44,34 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
 
     def __init__(self, parent=None):
         # check to see if we have web access
-        self.WebAccess = get_web_page(u'http://openlp.org1')
-        print self.WebAccess
+        self.webAccess = get_web_page(u'http://openlp.org1')
+        print self.webAccess
         QtGui.QWizard.__init__(self, parent)
         self.setupUi(self)
         #self.registerFields()
+
+    def exec_(self, edit=False):
+        """
+        Run the wizard.
+        """
+        self.setDefaults()
+        return QtGui.QWizard.exec_(self)
+
+    def setDefaults(self):
+        """
+        Set up display at start of theme edit.
+        """
+        self.restart()
+        # Sort out internet access
+        if self.webAccess:
+            self.internetGroupBox.setVisible(True)
+            self.noInternetLabel.setVisible(False)
+        else:
+            self.internetGroupBox.setVisible(False)
+            self.noInternetLabel.setVisible(True)
+        self.qmList = LanguageManager.get_qm_list()
+        for key in sorted(self.qmList.keys()):
+            self.LanguageComboBox.addItem(key)
 
     def accept(self):
         self.__pluginStatus(self.songsCheckBox, u'songs/status')
@@ -59,7 +82,9 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.__pluginStatus(self.remoteCheckBox, u'remote/status')
         self.__pluginStatus(self.customCheckBox, u'custom/status')
         self.__pluginStatus(self.songUsageCheckBox, u'songusage/status')
-        #self.__pluginStatus(self.alertsCheckBox, u'alerts/status')
+        self.__pluginStatus(self.alertCheckBox, u'alerts/status')
+
+        print self.qmList[unicode(self.LanguageComboBox.currentText())]
         return QtGui.QWizard.accept(self)
 
     def __pluginStatus(self, field, tag):
