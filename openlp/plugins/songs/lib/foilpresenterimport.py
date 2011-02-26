@@ -314,14 +314,15 @@ class FoilPresenter(object):
                     i = 1
                 else:
                     i = 1
+            author_temp = []
             for author in strings:
                 temp = re.split(u',(?=\D{2})|(?<=\D),|\/(?=\D{3,})|(?<=\D);',
                     author)
                 for tempx in temp:
                     author_temp.append(tempx)
                 for author in author_temp:
-                    regex = u'^[\/,;\-\s]+|[\/,;\-\s]+$|'\
-                        '\s*[0-9]{4}\s*[\-\/]?\s*([0-9]{4})?[\/,;\-\s]*$'
+                    regex = u'^[\/,;\-\s\.]+|[\/,;\-\s\.]+$|'\
+                        '\s*[0-9]{4}\s*[\-\/]?\s*([0-9]{4})?[\/,;\-\s\.]*$'
                     author = re.compile(regex).sub(u'', author)
                     author = re.compile(
                         u'[0-9]{1,2}\.\s?J(ahr)?h\.|um\s*$|vor\s*$').sub(u'',
