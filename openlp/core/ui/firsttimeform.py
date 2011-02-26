@@ -26,11 +26,11 @@
 
 import logging
 
-from PyQt4 import QtGui
+from PyQt4 import QtCore, QtGui
 
 from firsttimewizard import Ui_FirstTimeWizard
 
-from openlp.core.lib import translate
+from openlp.core.lib import translate, PluginStatus
 from openlp.core.utils import get_web_page
 
 log = logging.getLogger(__name__)
@@ -51,4 +51,18 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         #self.registerFields()
 
     def accept(self):
+        self.__pluginStatus(self.songsCheckBox, u'songs/status')
+        self.__pluginStatus(self.bibleCheckBox, u'bibles/status')
+        self.__pluginStatus(self.presentationCheckBox, u'presentations/status')
+        self.__pluginStatus(self.imageCheckBox, u'images/status')
+        self.__pluginStatus(self.mediaCheckBox, u'media/status')
+        self.__pluginStatus(self.remoteCheckBox, u'remote/status')
+        self.__pluginStatus(self.customCheckBox, u'custom/status')
+        self.__pluginStatus(self.songUsageCheckBox, u'songusage/status')
+        #self.__pluginStatus(self.alertsCheckBox, u'alerts/status')
         return QtGui.QWizard.accept(self)
+
+    def __pluginStatus(self, field, tag):
+        status = PluginStatus.Active if field.checkState() \
+            == QtCore.Qt.Checked else PluginStatus.Inactive
+        QtCore.QSettings().setValue(tag, QtCore.QVariant(status))
