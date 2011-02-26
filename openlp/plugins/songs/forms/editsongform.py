@@ -557,7 +557,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         """
         Check the validity of the song.
         """
-        # This checks data in the form *not* self.song.  self.song is still
+        # This checks data in the form *not* self.song. self.song is still
         # None at this point.
         log.debug(u'Validate Song')
         # Lets be nice and assume the data is correct.
@@ -714,14 +714,14 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def saveSong(self, preview=False):
         """
         Get all the data from the widgets on the form, and then save it to the
-        database.  The form has been validated and all reference items
+        database. The form has been validated and all reference items
         (Authors, Books and Topics) have been saved before this function is
         called.
 
         ``preview``
             Should be ``True`` if the song is also previewed (boolean).
         """
-        # The Song() assignment.  No database calls should be made while a
+        # The Song() assignment. No database calls should be made while a
         # Song() is in a partially complete state.
         if not self.song:
             self.song = Song()

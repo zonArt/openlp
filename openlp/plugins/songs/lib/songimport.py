@@ -347,7 +347,7 @@ class SongImport(QtCore.QObject):
         """
         For debugging
         """
-        print u'========================================'   \
+        print u'========================================' \
             + u'========================================'
         print u'TITLE: ' + self.title
         print u'ALT TITLE: ' + self.alternate_title

@@ -72,7 +72,7 @@ class DisplayTagForm(QtGui.QDialog, Ui_DisplayTagDialog):
     def preLoad(self):
         """
         Load the Tags from store so can be used in the system or used to
-        update the display.  If Cancel was selected this is needed to reset the
+        update the display. If Cancel was selected this is needed to reset the
         dsiplay to the correct version.
         """
         # Initial Load of the Tags
