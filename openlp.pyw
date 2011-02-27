@@ -7,9 +7,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -188,7 +188,8 @@ class OpenLP(QtGui.QApplication):
                 u'primary': (self.desktop().primaryScreen() == screen)})
             log.info(u'Screen %d found with resolution %s', screen, size)
         # start the main app window
-        self.mainWindow = MainWindow(screens, app_version)
+        self.appClipboard = self.clipboard()
+        self.mainWindow = MainWindow(screens, app_version, self.appClipboard)
         self.mainWindow.show()
         if show_splash:
             # now kill the splashscreen

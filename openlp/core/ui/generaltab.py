@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,6 +28,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, Receiver, translate
+from openlp.core.lib.ui import UiStrings
 
 log = logging.getLogger(__name__)
 
@@ -44,7 +45,7 @@ class ValidEdit(QtGui.QLineEdit):
 
     def validText(self):
         """
-        Only return Integers.  Space is 0
+        Only return Integers. Space is 0
         """
         if self.text().isEmpty():
             return QtCore.QString(u'0')
@@ -267,8 +268,7 @@ class GeneralTab(SettingsTab):
             translate('OpenLP.GeneralTab', ' sec'))
         self.ccliGroupBox.setTitle(
             translate('OpenLP.GeneralTab', 'CCLI Details'))
-        self.numberLabel.setText(
-            translate('OpenLP.GeneralTab', 'CCLI number:'))
+        self.numberLabel.setText(UiStrings.CCLINumberLabel)
         self.usernameLabel.setText(
             translate('OpenLP.GeneralTab', 'SongSelect username:'))
         self.passwordLabel.setText(

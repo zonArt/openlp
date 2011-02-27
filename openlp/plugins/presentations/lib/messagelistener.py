@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -59,7 +59,7 @@ class Controller(object):
         self.controller = controller
         if self.doc is not None:
             self.shutdown()
-        self.doc = self.controller.add_doc(file)
+        self.doc = self.controller.add_document(file)
         if not self.doc.load_presentation():
             # Display error message to user
             # Inform slidecontroller that the action failed?
@@ -212,6 +212,7 @@ class Controller(object):
 
     def poll(self):
         self.doc.poll_slidenumber(self.is_live)
+
 
 class MessageListener(object):
     """

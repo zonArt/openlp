@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -33,7 +33,8 @@ import logging
 from xml.dom.minidom import Document
 from lxml import etree, objectify
 
-from openlp.core.lib import str_to_bool
+from openlp.core.lib import str_to_bool, translate
+from openlp.core.lib.ui import UiStrings
 
 log = logging.getLogger(__name__)
 
@@ -90,6 +91,7 @@ class ThemeLevel(object):
     Service = 2
     Song = 3
 
+
 class BackgroundType(object):
     """
     Type enumeration for backgrounds.
@@ -121,6 +123,7 @@ class BackgroundType(object):
             return BackgroundType.Gradient
         elif type_string == u'image':
             return BackgroundType.Image
+
 
 class BackgroundGradientType(object):
     """
@@ -164,13 +167,21 @@ class BackgroundGradientType(object):
         elif type_string == u'leftBottom':
             return BackgroundGradientType.LeftBottom
 
+
 class HorizontalType(object):
     """
     Type enumeration for horizontal alignment.
     """
     Left = 0
-    Center = 1
-    Right = 2
+    Right = 1
+    Center = 2
+
+    Names = [u'left', u'right', u'center']
+    TranslatedNames = [
+        translate('OpenLP.ThemeWizard', 'Left'),
+        translate('OpenLP.ThemeWizard', 'Right'),
+        translate('OpenLP.ThemeWizard', 'Center')]
+
 
 class VerticalType(object):
     """
@@ -180,12 +191,17 @@ class VerticalType(object):
     Middle = 1
     Bottom = 2
 
+    Names = [u'top', u'middle', u'bottom']
+    TranslatedNames = [UiStrings.Top, UiStrings.Middle, UiStrings.Bottom]
+
+
 BOOLEAN_LIST = [u'bold', u'italics', u'override', u'outline', u'shadow',
     u'slide_transition']
 
 INTEGER_LIST = [u'size', u'line_adjustment', u'x', u'height', u'y',
     u'width', u'shadow_size', u'outline_size', u'horizontal_align',
     u'vertical_align', u'wrap_style']
+
 
 class ThemeXML(object):
     """
@@ -583,8 +599,7 @@ class ThemeXML(object):
                 self.background_end_color,
                 self.background_direction)
         else:
-            filename = \
-                os.path.split(self.background_filename)[1]
+            filename = os.path.split(self.background_filename)[1]
             self.add_background_image(filename)
         self.add_font(self.font_main_name,
             self.font_main_color,

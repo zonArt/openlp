@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,7 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
-from openlp.core.lib.ui import create_save_cancel_button_box
+from openlp.core.lib.ui import create_accept_reject_button_box
 
 class ServiceNoteForm(QtGui.QDialog):
     """
@@ -48,9 +48,9 @@ class ServiceNoteForm(QtGui.QDialog):
         self.textEdit = QtGui.QTextEdit(self)
         self.textEdit.setObjectName(u'textEdit')
         self.dialogLayout.addWidget(self.textEdit)
-        self.dialogLayout.addWidget(create_save_cancel_button_box(self))
+        self.dialogLayout.addWidget(create_accept_reject_button_box(self))
         QtCore.QMetaObject.connectSlotsByName(self)
 
     def retranslateUi(self):
         self.setWindowTitle(
-            translate('OpenLP.ServiceNoteForm', 'Service Item Notes')) 
+            translate('OpenLP.ServiceNoteForm', 'Service Item Notes'))

@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,6 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, build_icon
+from openlp.core.lib.ui import create_accept_reject_button_box
 
 class Ui_SettingsDialog(object):
     def setupUi(self, settingsDialog):
@@ -35,21 +36,13 @@ class Ui_SettingsDialog(object):
         settingsDialog.setWindowIcon(
             build_icon(u':/system/system_settings.png'))
         self.settingsLayout = QtGui.QVBoxLayout(settingsDialog)
-        margins = self.settingsLayout.contentsMargins()
         self.settingsLayout.setObjectName(u'settingsLayout')
         self.settingsTabWidget = QtGui.QTabWidget(settingsDialog)
         self.settingsTabWidget.setObjectName(u'settingsTabWidget')
         self.settingsLayout.addWidget(self.settingsTabWidget)
-        self.buttonBox = QtGui.QDialogButtonBox(settingsDialog)
-        self.buttonBox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName(u'buttonBox')
+        self.buttonBox = create_accept_reject_button_box(settingsDialog, True)
         self.settingsLayout.addWidget(self.buttonBox)
         self.retranslateUi(settingsDialog)
-        QtCore.QObject.connect(self.buttonBox,
-            QtCore.SIGNAL(u'accepted()'), settingsDialog.accept)
-        QtCore.QObject.connect(self.buttonBox,
-            QtCore.SIGNAL(u'rejected()'), settingsDialog.reject)
         QtCore.QMetaObject.connectSlotsByName(settingsDialog)
 
     def retranslateUi(self, settingsDialog):

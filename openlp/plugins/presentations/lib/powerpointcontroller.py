@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -53,7 +53,8 @@ class PowerpointController(PresentationController):
         Initialise the class
         """
         log.debug(u'Initialising')
-        PresentationController.__init__(self, plugin, u'Powerpoint')
+        PresentationController.__init__(self, plugin, u'Powerpoint',
+            PowerpointDocument)
         self.supports = [u'ppt', u'pps', u'pptx', u'ppsx']
         self.process = None
 
@@ -97,14 +98,6 @@ class PowerpointController(PresentationController):
                 pass
             self.process = None
 
-        def add_doc(self, name):
-            """
-            Called when a new powerpoint document is opened
-            """
-            log.debug(u'Add Doc PowerPoint')
-            doc = PowerpointDocument(self, name)
-            self.docs.append(doc)
-            return doc
 
 class PowerpointDocument(PresentationDocument):
     """
@@ -154,8 +147,10 @@ class PowerpointDocument(PresentationDocument):
         """
         if self.check_thumbnails():
             return
-        self.presentation.Export(os.path.join(self.get_thumbnail_folder(), ''),
-            'png', 320, 240)
+        for num in range(0, self.presentation.Slides.Count):
+            self.presentation.Slides(num + 1).Export(os.path.join(
+                self.get_thumbnail_folder(), 'slide%d.png' % (num + 1)),
+                'png', 320, 240)
 
     def close_presentation(self):
         """
@@ -291,13 +286,7 @@ class PowerpointDocument(PresentationDocument):
         ``slide_no``
             The slide the text is required for, starting at 1.
         """
-        text = ''
-        shapes = self.presentation.Slides(slide_no).Shapes
-        for idx in range(shapes.Count):
-            shape = shapes(idx + 1)
-            if shape.HasTextFrame:
-                text += shape.TextFrame.TextRange.Text + '\n'
-        return text
+        return _get_text_from_shapes(self.presentation.Slides(slide_no).Shapes)
 
     def get_slide_notes(self, slide_no):
         """
@@ -306,10 +295,19 @@ class PowerpointDocument(PresentationDocument):
         ``slide_no``
             The slide the notes are required for, starting at 1.
         """
-        text = ''
-        shapes = self.presentation.Slides(slide_no).NotesPage.Shapes
-        for idx in range(shapes.Count):
-            shape = shapes(idx + 1)
-            if shape.HasTextFrame:
-                text += shape.TextFrame.TextRange.Text + '\n'
-        return text
+        return _get_text_from_shapes(
+            self.presentation.Slides(slide_no).NotesPage.Shapes)
+
+def _get_text_from_shapes(shapes):
+    """
+    Returns any text extracted from the shapes on a presentation slide.
+
+    ``shapes``
+        A set of shapes to search for text.
+    """
+    text = ''
+    for idx in range(shapes.Count):
+        shape = shapes(idx + 1)
+        if shape.HasTextFrame:
+            text += shape.TextFrame.TextRange.Text + '\n'
+    return text

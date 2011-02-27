@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -36,6 +36,7 @@ from sqlalchemy.orm.exc import UnmappedClassError
 
 from openlp.core.lib import translate
 from openlp.core.lib.db import BaseModel
+from openlp.plugins.songs.lib import add_author_unknown
 from openlp.plugins.songs.lib.db import Author, Book, Song, Topic #, MediaFile
 from songimport import SongImport
 
@@ -47,11 +48,13 @@ class OldAuthor(BaseModel):
     """
     pass
 
+
 class OldBook(BaseModel):
     """
     Book model
     """
     pass
+
 
 class OldMediaFile(BaseModel):
     """
@@ -59,17 +62,20 @@ class OldMediaFile(BaseModel):
     """
     pass
 
+
 class OldSong(BaseModel):
     """
     Song model
     """
     pass
 
+
 class OldTopic(BaseModel):
     """
     Topic model
     """
     pass
+
 
 class OpenLPSongImport(SongImport):
     """
@@ -86,9 +92,8 @@ class OpenLPSongImport(SongImport):
         ``source_db``
             The database providing the data to import.
         """
-        SongImport.__init__(self, manager)
-        self.import_source = u'sqlite:///%s' % kwargs[u'filename']
-        log.debug(self.import_source)
+        SongImport.__init__(self, manager, **kwargs)
+        self.import_source = u'sqlite:///%s' % self.import_source
         self.source_session = None
 
     def do_import(self):
@@ -171,25 +176,18 @@ class OpenLPSongImport(SongImport):
             new_song.comments = song.comments
             new_song.theme_name = song.theme_name
             new_song.ccli_number = song.ccli_number
-            if song.authors:
-                for author in song.authors:
-                    existing_author = self.manager.get_object_filtered(
-                        Author, Author.display_name == author.display_name)
-                    if existing_author:
-                        new_song.authors.append(existing_author)
-                    else:
-                        new_song.authors.append(Author.populate(
-                            first_name=author.first_name,
-                            last_name=author.last_name,
-                            display_name=author.display_name))
-            else:
-                au = self.manager.get_object_filtered(Author,
-                    Author.display_name == u'Author Unknown')
-                if au:
-                    new_song.authors.append(au)
+            for author in song.authors:
+                existing_author = self.manager.get_object_filtered(
+                    Author, Author.display_name == author.display_name)
+                if existing_author:
+                    new_song.authors.append(existing_author)
                 else:
                     new_song.authors.append(Author.populate(
-                        display_name=u'Author Unknown'))
+                        first_name=author.first_name,
+                        last_name=author.last_name,
+                        display_name=author.display_name))
+            if not new_song.authors:
+                add_author_unknown(self.manager, new_song)
             if song.book:
                 existing_song_book = self.manager.get_object_filtered(
                     Book, Book.name == song.book.name)

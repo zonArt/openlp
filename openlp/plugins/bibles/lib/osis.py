@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -41,15 +41,11 @@ log = logging.getLogger(__name__)
 
 class OSISBible(BibleDB):
     """
-    OSIS Bible format importer class.
+    `OSIS <http://www.bibletechnologies.net/>`_ Bible format importer class.
     """
     log.info(u'BibleOSISImpl loaded')
 
     def __init__(self, parent, **kwargs):
-        """
-        Constructor to create and set up an instance of the OpenSongBible
-        class. This class is used to import Bibles from OpenSong's XML format.
-        """
         log.debug(self.__class__.__name__)
         BibleDB.__init__(self, parent, **kwargs)
         self.filename = kwargs[u'filename']
@@ -69,7 +65,7 @@ class OSISBible(BibleDB):
         self.q1_regex = re.compile(r'<q(.*?)level="1"(.*?)>')
         self.q2_regex = re.compile(r'<q(.*?)level="2"(.*?)>')
         self.trans_regex = re.compile(r'<transChange(.*?)>(.*?)</transChange>')
-        self.divineName_regex = re.compile(
+        self.divine_name_regex = re.compile(
             r'<divineName(.*?)>(.*?)</divineName>')
         self.spaces_regex = re.compile(r'([ ]{2,})')
         filepath = os.path.join(
@@ -86,8 +82,6 @@ class OSISBible(BibleDB):
         finally:
             if fbibles:
                 fbibles.close()
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
 
     def do_import(self):
         """
@@ -126,7 +120,7 @@ class OSISBible(BibleDB):
                     verse_text = match.group(4)
                     if not db_book or db_book.name != self.books[book][0]:
                         log.debug(u'New book: "%s"', self.books[book][0])
-                        if book == u'Matt':
+                        if book == u'Matt' or book == u'Jdt':
                             testament += 1
                         db_book = self.create_book(
                             unicode(self.books[book][0]),
@@ -161,7 +155,7 @@ class OSISBible(BibleDB):
                     verse_text = self.q1_regex.sub(u'"', verse_text)
                     verse_text = self.q2_regex.sub(u'\'', verse_text)
                     verse_text = self.trans_regex.sub(u'', verse_text)
-                    verse_text = self.divineName_regex.sub(u'', verse_text)
+                    verse_text = self.divine_name_regex.sub(u'', verse_text)
                     verse_text = verse_text.replace(u'</lb>', u'')\
                         .replace(u'</l>', u'').replace(u'<lg>', u'')\
                         .replace(u'</lg>', u'').replace(u'</q>', u'')\
