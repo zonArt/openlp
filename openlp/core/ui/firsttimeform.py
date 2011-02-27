@@ -48,6 +48,9 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         print self.webAccess
         QtGui.QWizard.__init__(self, parent)
         self.setupUi(self)
+        QtCore.QObject.connect(self.autoLanguageCheckBox,
+            QtCore.SIGNAL(u'stateChanged(int)'),
+            self.onAutoLanguageClicked)
         #self.registerFields()
 
     def exec_(self, edit=False):
@@ -62,15 +65,16 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         Set up display at start of theme edit.
         """
         self.restart()
-        # Sort out internet access
+        # Sort out internet access for downloads
         if self.webAccess:
             self.internetGroupBox.setVisible(True)
             self.noInternetLabel.setVisible(False)
         else:
             self.internetGroupBox.setVisible(False)
             self.noInternetLabel.setVisible(True)
-        if LanguageManager.auto_language:
-            self.LanguageComboBox.setEnabled(False)
+        # Sort out Language settings
+        self.autoLanguageCheckBox.setChecked(True)
+        self.LanguageComboBox.setEnabled(False)
         self.qmList = LanguageManager.get_qm_list()
         for key in sorted(self.qmList.keys()):
             self.LanguageComboBox.addItem(key)
@@ -81,7 +85,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.__pluginStatus(self.presentationCheckBox, u'presentations/status')
         self.__pluginStatus(self.imageCheckBox, u'images/status')
         self.__pluginStatus(self.mediaCheckBox, u'media/status')
-        self.__pluginStatus(self.remoteCheckBox, u'remote/status')
+        self.__pluginStatus(self.remoteCheckBox, u'remotes/status')
         self.__pluginStatus(self.customCheckBox, u'custom/status')
         self.__pluginStatus(self.songUsageCheckBox, u'songusage/status')
         self.__pluginStatus(self.alertCheckBox, u'alerts/status')
@@ -94,6 +98,12 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             action.setObjectName(unicode(self.LanguageComboBox.currentText()))
             LanguageManager.set_language(action, False)
         return QtGui.QWizard.accept(self)
+
+    def onAutoLanguageClicked(self, state):
+        if state == QtCore.Qt.Checked:
+            self.LanguageComboBox.setEnabled(False)
+        else:
+            self.LanguageComboBox.setEnabled(True)
 
     def __pluginStatus(self, field, tag):
         status = PluginStatus.Active if field.checkState() \

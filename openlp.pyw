@@ -276,10 +276,8 @@ def main():
     if QtCore.QSettings().value(
         u'general/first time', QtCore.QVariant(True)).toBool():
         FirstTimeForm().exec_()
-        pass
     # i18n Set Language
     language = LanguageManager.get_language()
-    print language
     appTranslator = LanguageManager.get_translator(language)
     app.installTranslator(appTranslator)
     if not options.no_error_form:

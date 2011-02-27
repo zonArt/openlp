@@ -112,12 +112,13 @@ class LanguageManager(object):
         language = u'en'
         if action:
             action_name = u'%s' % action.objectName()
-            print action_name
             qm_list = LanguageManager.get_qm_list()
             language = u'%s' % qm_list[action_name]
         if LanguageManager.auto_language:
             language = u'[%s]' % language
-        QtCore.QSettings().setValue(
+        # This needs to be here for the setValue to work
+        settings = QtCore.QSettings(u'OpenLP', u'OpenLP')
+        settings.setValue(
             u'general/language', QtCore.QVariant(language))
         log.info(u'Language file: \'%s\' written to conf file' % language)
         if message:
