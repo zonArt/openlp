@@ -185,7 +185,7 @@ class OpenLP(QtGui.QApplication):
         self.processEvents()
         self.screens = ScreenList()
         # Decide how many screens we have and their size
-        self.updateScreenList(True)
+        self.updateScreenList()
         # start the main app window
         self.appClipboard = self.clipboard()
         self.mainWindow = MainWindow(
@@ -225,12 +225,12 @@ class OpenLP(QtGui.QApplication):
         """
         self.restoreOverrideCursor()
 
-    def updateScreenList(self, applicationStart=False):
+    def updateScreenList(self, count=-1):
         """
         Called when the list of screens has to be updated.
 
-        ``applicationStart``
-            ``True`` when starting the application, otherwise ``False``.
+        ``count``
+            The screen's number which has been (un)plugged
         """
         for screen in copy.deepcopy(self.screens.screen_list):
             # Remove unplugged screens.
@@ -254,10 +254,10 @@ class OpenLP(QtGui.QApplication):
                     u'size': self.desktop().screenGeometry(number),
                     u'primary': (self.desktop().primaryScreen() == number)
                 })
-        if not applicationStart:
+        if count != -1:
             # Reload setting tabs to apply possible changes.
             self.mainWindow.settingsForm.reload()
-            #Receiver.send_message(u'config_screen_changed')
+            Receiver.send_message(u'config_screen_changed')
             # TODO: Make the new (second) monitor the live display.
 
 def main():

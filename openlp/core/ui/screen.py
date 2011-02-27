@@ -64,7 +64,6 @@ class ScreenList(object):
                 u'size': PyQt4.QtCore.QRect(0, 0, 1024, 768)
             }
         """
-        print u'add screen: %s' % screen
         log.info(u'Screen %d found with resolution %s',
             screen[u'number'], screen[u'size'])
         if screen[u'primary']:
@@ -86,7 +85,6 @@ class ScreenList(object):
                     u'size': PyQt4.QtCore.QRect(0, 0, 1024, 768)
                 }
         """
-        print u'update_screen %s' % newScreen[u'number']
         log.info(u'update_screen %d' % newScreen[u'number'])
         for oldScreen in self.screen_list:
             if newScreen[u'number'] == oldScreen[u'number']:
@@ -109,7 +107,6 @@ class ScreenList(object):
         log.info(u'remove_screen %d' % number)
         for screen in self.screen_list:
             if screen[u'number'] == number:
-                print u'remove screen %s' % number
                 self.screen_list.remove(screen)
                 self.display_count -= 1
                 break
