@@ -250,10 +250,10 @@ p, li { white-space: pre-wrap; }
    <widget class="QGroupBox" name="internetGroupBox">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>50</y>
-      <width>441</width>
-      <height>191</height>
+      <x>20</x>
+      <y>0</y>
+      <width>501</width>
+      <height>281</height>
      </rect>
     </property>
     <property name="title">
@@ -261,29 +261,28 @@ p, li { white-space: pre-wrap; }
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_4">
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <item>
-        <widget class="QCheckBox" name="downLoadSongsCheckBox">
-         <property name="text">
-          <string>Sample Songs </string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="downLoadBibleCheckBox">
-         <property name="text">
-          <string>Bible XXX (Repeat per bible)</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="downLoadThemeCheckBox">
-         <property name="text">
-          <string>Theme XXX (Repeat per theme)</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      <widget class="QTreeWidget" name="selectionTreeWidget">
+       <property name="horizontalScrollBarPolicy">
+        <enum>Qt::ScrollBarAlwaysOff</enum>
+       </property>
+       <property name="showDropIndicator" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alternatingRowColors">
+        <bool>true</bool>
+       </property>
+       <property name="selectionMode">
+        <enum>QAbstractItemView::NoSelection</enum>
+       </property>
+       <attribute name="headerVisible">
+        <bool>false</bool>
+       </attribute>
+       <column>
+        <property name="text">
+         <string notr="true">1</string>
+        </property>
+       </column>
+      </widget>
      </item>
     </layout>
    </widget>

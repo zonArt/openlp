@@ -44,8 +44,14 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
 
     def __init__(self, parent=None):
         # check to see if we have web access
-        self.webAccess = get_web_page(u'http://openlp.org1')
+        self.webAccess = get_web_page(u'http://openlp.org/files/frw/themes.lst')
         print self.webAccess
+        if self.webAccess:
+            self.themes = self.webAccess.read()
+            songs = get_web_page(u'http://openlp.org/files/frw/songs.lst')
+            self.songs = songs.read()
+            bibles = get_web_page(u'http://openlp.org/files/frw/bibles.lst')
+            self.bibles = bibles.read()
         QtGui.QWizard.__init__(self, parent)
         self.setupUi(self)
         QtCore.QObject.connect(self.autoLanguageCheckBox,
@@ -78,6 +84,26 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.qmList = LanguageManager.get_qm_list()
         for key in sorted(self.qmList.keys()):
             self.LanguageComboBox.addItem(key)
+        treewidgetitem = QtGui.QTreeWidgetItem(self.selectionTreeWidget)
+        treewidgetitem.setText(0, u'Songs')
+        self.__loadChild(treewidgetitem, self.songs)
+        treewidgetitem = QtGui.QTreeWidgetItem(self.selectionTreeWidget)
+        treewidgetitem.setText(0, u'Bibles')
+        self.__loadChild(treewidgetitem, self.bibles)
+        treewidgetitem = QtGui.QTreeWidgetItem(self.selectionTreeWidget)
+        treewidgetitem.setText(0, u'Themes')
+        self.__loadChild(treewidgetitem, self.themes)
+
+    def __loadChild(self, tree, list):
+        list = list.split(u'\n')
+        for item in list:
+            if item:
+                child = QtGui.QTreeWidgetItem(tree)
+                child.setText(0, item)
+                child.setCheckState(0, QtCore.Qt.Unchecked)
+                child.setFlags(QtCore.Qt.ItemIsUserCheckable |
+                    QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+            #self.themeSelectionComboBox.addItem(theme)
 
     def accept(self):
         self.__pluginStatus(self.songsCheckBox, u'songs/status')
