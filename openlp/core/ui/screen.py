@@ -30,8 +30,6 @@ displays.
 import logging
 import copy
 
-from openlp.core.lib import Receiver
-
 log = logging.getLogger(__name__)
 
 class ScreenList(object):
@@ -82,11 +80,11 @@ class ScreenList(object):
         ``newScreen``
             A dict with the new properties of the screen::
 
-            {
-                u'primary': True,
-                u'number': 0,
-                u'size': PyQt4.QtCore.QRect(0, 0, 1024, 768)
-            }
+                {
+                    u'primary': True,
+                    u'number': 0,
+                    u'size': PyQt4.QtCore.QRect(0, 0, 1024, 768)
+                }
         """
         print u'update_screen %s' % newScreen[u'number']
         log.info(u'update_screen %d' % newScreen[u'number'])
@@ -99,7 +97,6 @@ class ScreenList(object):
                 if oldScreen == self.override:
                     self.override = copy.deepcopy(newScreen)
                     self.set_override_display()
-                    Receiver.send_message(u'config_screen_changed')
                 break
 
     def remove_screen(self, number):

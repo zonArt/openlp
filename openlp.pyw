@@ -257,6 +257,7 @@ class OpenLP(QtGui.QApplication):
         if not applicationStart:
             # Reload setting tabs to apply possible changes.
             self.mainWindow.settingsForm.reload()
+            #Receiver.send_message(u'config_screen_changed')
             # TODO: Make the new (second) monitor the live display.
 
 def main():
