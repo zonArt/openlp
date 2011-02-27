@@ -300,8 +300,8 @@ p, li { white-space: pre-wrap; }
      <rect>
       <x>20</x>
       <y>20</y>
-      <width>252</width>
-      <height>88</height>
+      <width>491</width>
+      <height>113</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout">
@@ -339,15 +339,29 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </item>
-     <item row="2" column="0">
+     <item row="3" column="0">
       <widget class="QLabel" name="languageLabel">
        <property name="text">
         <string>Select default language</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="QComboBox" name="LanguageComboBox"/>
+     <item row="3" column="1">
+      <widget class="QComboBox" name="LanguageComboBox">
+       <property name="sizeAdjustPolicy">
+        <enum>QComboBox::AdjustToContents</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QCheckBox" name="autoLanguageCheckBox">
+       <property name="text">
+        <string>Auto Language</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>

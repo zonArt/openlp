@@ -69,6 +69,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         else:
             self.internetGroupBox.setVisible(False)
             self.noInternetLabel.setVisible(True)
+        if LanguageManager.auto_language:
+            self.LanguageComboBox.setEnabled(False)
         self.qmList = LanguageManager.get_qm_list()
         for key in sorted(self.qmList.keys()):
             self.LanguageComboBox.addItem(key)
@@ -83,8 +85,14 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.__pluginStatus(self.customCheckBox, u'custom/status')
         self.__pluginStatus(self.songUsageCheckBox, u'songusage/status')
         self.__pluginStatus(self.alertCheckBox, u'alerts/status')
-
-        print self.qmList[unicode(self.LanguageComboBox.currentText())]
+        if self.autoLanguageCheckBox.checkState() == QtCore.Qt.Checked:
+            LanguageManager.auto_language = True
+            LanguageManager.set_language(False, False)
+        else:
+            LanguageManager.auto_language = False
+            action = QtGui.QAction(None)
+            action.setObjectName(unicode(self.LanguageComboBox.currentText()))
+            LanguageManager.set_language(action, False)
         return QtGui.QWizard.accept(self)
 
     def __pluginStatus(self, field, tag):
