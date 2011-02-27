@@ -107,3 +107,12 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         for tabIndex in range(0, self.settingsTabWidget.count()):
             self.settingsTabWidget.widget(tabIndex).postSetUp()
+
+    def reload(self):
+        """
+        Reload all tabs to update settings which have been changed and are
+        outside of our scope.
+        """
+        print u'reload'
+        for tabIndex in range(0, self.settingsTabWidget.count()):
+            self.settingsTabWidget.widget(tabIndex).load()

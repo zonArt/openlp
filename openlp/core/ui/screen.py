@@ -30,6 +30,8 @@ displays.
 import logging
 import copy
 
+from openlp.core.lib import Receiver
+
 log = logging.getLogger(__name__)
 
 class ScreenList(object):
@@ -39,6 +41,8 @@ class ScreenList(object):
     log.info(u'Screen loaded')
 
     def __init__(self):
+        # The screen used for the rendermanager.
+        # (Why does the rendermanager needs his own?)
         self.preview = None
         self.current = None
         self.override = None
@@ -61,13 +65,42 @@ class ScreenList(object):
                 u'number': 0,
                 u'size': PyQt4.QtCore.QRect(0, 0, 1024, 768)
             }
-
         """
         print u'add screen: %s' % screen
+        log.info(u'Screen %d found with resolution %s',
+            screen[u'number'], screen[u'size'])
         if screen[u'primary']:
             self.current = screen
         self.screen_list.append(screen)
         self.display_count += 1
+
+    def update_screen(self, newScreen):
+        """
+        Adjusts the screen's properties in the ``screen_list`` to the properties
+        of the given screen.
+
+        ``newScreen``
+            A dict with the new properties of the screen::
+
+            {
+                u'primary': True,
+                u'number': 0,
+                u'size': PyQt4.QtCore.QRect(0, 0, 1024, 768)
+            }
+        """
+        print u'update_screen %s' % newScreen[u'number']
+        log.info(u'update_screen %d' % newScreen[u'number'])
+        for oldScreen in self.screen_list:
+            if newScreen[u'number'] == oldScreen[u'number']:
+                self.remove_screen(oldScreen[u'number'])
+                self.add_screen(newScreen)
+                # The screen's default size is used, that is why we have to
+                # update the override screen.
+                if oldScreen == self.override:
+                    self.override = copy.deepcopy(newScreen)
+                    self.set_override_display()
+                    Receiver.send_message(u'config_screen_changed')
+                break
 
     def remove_screen(self, number):
         """
@@ -76,9 +109,10 @@ class ScreenList(object):
         ``number``
             The screen number (int).
         """
-        print u'remove screen %s' % number
+        log.info(u'remove_screen %d' % number)
         for screen in self.screen_list:
             if screen[u'number'] == number:
+                print u'remove screen %s' % number
                 self.screen_list.remove(screen)
                 self.display_count -= 1
                 break
@@ -92,9 +126,7 @@ class ScreenList(object):
         """
         for screen in self.screen_list:
             if screen[u'number'] == number:
-                print u'screen %s exists' % number
                 return True
-        print u'screen %s does not exist' % number
         return False
 
     def set_current_display(self, number):

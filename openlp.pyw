@@ -24,7 +24,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+import copy
 import os
 import sys
 import logging
@@ -168,6 +168,8 @@ class OpenLP(QtGui.QApplication):
             QtCore.SIGNAL(u'cursor_normal'), self.setNormalCursor)
         QtCore.QObject.connect(self.desktop(),
             QtCore.SIGNAL(u'screenCountChanged(int)'), self.updateScreenList)
+        QtCore.QObject.connect(self.desktop(),
+            QtCore.SIGNAL(u'resized(int)'), self.updateScreenList)
         self.setOrganizationName(u'OpenLP')
         self.setOrganizationDomain(u'openlp.org')
         self.setApplicationName(u'OpenLP')
@@ -228,27 +230,33 @@ class OpenLP(QtGui.QApplication):
         Called when the list of screens has to be updated.
 
         ``applicationStart``
-            Should be ``True`` when starting the application, otherwise
-            ``False``.
+            ``True`` when starting the application, otherwise ``False``.
         """
+        for screen in copy.deepcopy(self.screens.screen_list):
+            # Remove unplugged screens.
+            if screen[u'number'] == self.desktop().numScreens():
+                self.screens.remove_screen(screen[u'number'])
+            else:
+                # Check if the screen has changed.
+                temp_screen = {
+                    u'number': screen[u'number'],
+                    u'size': self.desktop().screenGeometry(screen[u'number']),
+                    u'primary': 
+                        (self.desktop().primaryScreen() == screen[u'number'])
+                }
+                if temp_screen != screen:
+                    self.screens.update_screen(temp_screen)
         # Add new screens.
         for number in xrange(0, self.desktop().numScreens()):
             if not self.screens.screen_exists(number):
-                size = self.desktop().screenGeometry(number)
                 self.screens.add_screen({
                     u'number': number,
-                    u'size': size,
+                    u'size': self.desktop().screenGeometry(number),
                     u'primary': (self.desktop().primaryScreen() == number)
                 })
-                log.info(u'Screen %d found with resolution %s', number, size)
-        # Remove unplugged screens.
-        for screen in self.screens.screen_list:
-            if screen[u'number'] > self.desktop().numScreens():
-                self.screens.remove_screen(screen)
-                log.info(u'Screen %d removed' % creen[u'number'])
         if not applicationStart:
-            pass
-            # TODO: Refresh settings.
+            # Reload setting tabs to apply possible changes.
+            self.mainWindow.settingsForm.reload()
             # TODO: Make the new (second) monitor the live display.
 
 def main():
