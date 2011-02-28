@@ -34,7 +34,7 @@ from subprocess import Popen, PIPE
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, translate, check_directory_exists
+from openlp.core.lib import Receiver, check_directory_exists
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
 from openlp.core.ui.exceptionform import ExceptionForm
