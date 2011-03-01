@@ -4,24 +4,24 @@
     <name>AlertPlugin.AlertForm</name>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="165"/>
-        <source>No Parameter found</source>
-        <translation>Pas de paramètre trouvé</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/alerts/forms/alertform.py" line="165"/>
         <source>You have not entered a parameter to be replaced.
 Do you want to continue anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="176"/>
-        <source>No Placeholder found</source>
+        <source>The alert text does not contain &apos;&lt;&gt;&apos;.
+Do want to continue anyway?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/alerts/forms/alertform.py" line="165"/>
+        <source>No Parameter Found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="176"/>
-        <source>The alert text does not contain &apos;&lt;&gt;&apos;.
-Do want to continue anyway?</source>
+        <source>No Placeholder Found</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -955,13 +955,13 @@ Voulez-vous ajouter de toute façon d&apos;autres images ?</translation>
         <location filename="openlp/plugins/media/mediaplugin.py" line="81"/>
         <source>Media</source>
         <comment>name plural</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Médias</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/mediaplugin.py" line="85"/>
         <source>Media</source>
         <comment>container title</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Médias</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/mediaplugin.py" line="89"/>

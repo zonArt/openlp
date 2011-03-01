@@ -4,11 +4,6 @@
     <name>AlertPlugin.AlertForm</name>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="165"/>
-        <source>No Parameter found</source>
-        <translation>Параметр не найден</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/alerts/forms/alertform.py" line="165"/>
         <source>You have not entered a parameter to be replaced.
 Do you want to continue anyway?</source>
         <translation>Вы не указали параметры для замены.
@@ -16,15 +11,20 @@ Do you want to continue anyway?</source>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="176"/>
-        <source>No Placeholder found</source>
-        <translation>Заполнитель не найден</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/alerts/forms/alertform.py" line="176"/>
         <source>The alert text does not contain &apos;&lt;&gt;&apos;.
 Do want to continue anyway?</source>
         <translation>Текст оповещения не содержит  &apos;&lt;&gt;&apos;.
 Все равно продолжить?</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/alerts/forms/alertform.py" line="165"/>
+        <source>No Parameter Found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/alerts/forms/alertform.py" line="176"/>
+        <source>No Placeholder Found</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3285,7 +3285,7 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/core/lib/ui.py" line="59"/>
         <source>Image</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Изображение</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="60"/>

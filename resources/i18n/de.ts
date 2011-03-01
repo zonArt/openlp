@@ -4,11 +4,6 @@
     <name>AlertPlugin.AlertForm</name>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="165"/>
-        <source>No Parameter found</source>
-        <translation>Kein Parameter gefunden</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/alerts/forms/alertform.py" line="165"/>
         <source>You have not entered a parameter to be replaced.
 Do you want to continue anyway?</source>
         <translation>Sie haben keinen Parameter angegeben, der ersetzt werden könnte.
@@ -16,15 +11,20 @@ Möchten Sie trotzdem fortfahren?</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="176"/>
-        <source>No Placeholder found</source>
-        <translation>Kein Platzhalter gefunden</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/alerts/forms/alertform.py" line="176"/>
         <source>The alert text does not contain &apos;&lt;&gt;&apos;.
 Do want to continue anyway?</source>
         <translation>Der Hinweistext enthält kein &apos;&lt;&gt;&apos;.
 Möchten Sie trotzdem fortfahren?</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/alerts/forms/alertform.py" line="165"/>
+        <source>No Parameter Found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/alerts/forms/alertform.py" line="176"/>
+        <source>No Placeholder Found</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
