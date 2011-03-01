@@ -24,7 +24,6 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-import copy
 import os
 import sys
 import logging
@@ -166,10 +165,6 @@ class OpenLP(QtGui.QApplication):
             QtCore.SIGNAL(u'cursor_busy'), self.setBusyCursor)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'cursor_normal'), self.setNormalCursor)
-        QtCore.QObject.connect(self.desktop(),
-            QtCore.SIGNAL(u'screenCountChanged(int)'), self.updateScreenList)
-        QtCore.QObject.connect(self.desktop(),
-            QtCore.SIGNAL(u'resized(int)'), self.updateScreenList)
         self.setOrganizationName(u'OpenLP')
         self.setOrganizationDomain(u'openlp.org')
         self.setApplicationName(u'OpenLP')
@@ -183,13 +178,11 @@ class OpenLP(QtGui.QApplication):
             self.splash.show()
         # make sure Qt really display the splash screen
         self.processEvents()
-        self.screens = ScreenList()
         # Decide how many screens we have and their size
-        self.updateScreenList()
+        screens = ScreenList(self, self.desktop())
         # start the main app window
         self.appClipboard = self.clipboard()
-        self.mainWindow = MainWindow(
-            self.screens, app_version, self.appClipboard)
+        self.mainWindow = MainWindow(screens, app_version, self.appClipboard)
         self.mainWindow.show()
         if show_splash:
             # now kill the splashscreen
@@ -224,41 +217,6 @@ class OpenLP(QtGui.QApplication):
         Sets the Normal Cursor for the Application
         """
         self.restoreOverrideCursor()
-
-    def updateScreenList(self, count=-1):
-        """
-        Called when the list of screens has to be updated.
-
-        ``count``
-            The screen's number which has been (un)plugged
-        """
-        for screen in copy.deepcopy(self.screens.screen_list):
-            # Remove unplugged screens.
-            if screen[u'number'] == self.desktop().numScreens():
-                self.screens.remove_screen(screen[u'number'])
-            else:
-                # Check if the screen has changed.
-                temp_screen = {
-                    u'number': screen[u'number'],
-                    u'size': self.desktop().screenGeometry(screen[u'number']),
-                    u'primary': 
-                        (self.desktop().primaryScreen() == screen[u'number'])
-                }
-                if temp_screen != screen:
-                    self.screens.update_screen(temp_screen)
-        # Add new screens.
-        for number in xrange(0, self.desktop().numScreens()):
-            if not self.screens.screen_exists(number):
-                self.screens.add_screen({
-                    u'number': number,
-                    u'size': self.desktop().screenGeometry(number),
-                    u'primary': (self.desktop().primaryScreen() == number)
-                })
-        if count != -1:
-            # Reload setting tabs to apply possible changes.
-            self.mainWindow.settingsForm.reload()
-            Receiver.send_message(u'config_screen_changed')
-            # TODO: Make the new (second) monitor the live display.
 
 def main():
     """

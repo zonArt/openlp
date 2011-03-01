@@ -30,6 +30,10 @@ displays.
 import logging
 import copy
 
+from PyQt4 import QtCore
+
+from openlp.core.lib import Receiver
+
 log = logging.getLogger(__name__)
 
 class ScreenList(object):
@@ -38,7 +42,11 @@ class ScreenList(object):
     """
     log.info(u'Screen loaded')
 
-    def __init__(self):
+    def __init__(self, parent, desktop):
+        """
+        """
+        self.parent = parent
+        self.desktop = desktop
         # The screen used for the rendermanager.
         # (Why does the rendermanager needs his own?)
         self.preview = None
@@ -50,6 +58,62 @@ class ScreenList(object):
         self.current_display = 0
         # save config display number
         self.monitor_number = 0
+        self.screenCountChanged()
+        QtCore.QObject.connect(desktop,
+            QtCore.SIGNAL(u'resized(int)'), self.screenResolutionChanged)
+        QtCore.QObject.connect(desktop,
+            QtCore.SIGNAL(u'screenCountChanged(int)'), self.screenCountChanged)
+
+    def screenResolutionChanged(self, number):
+        """
+        Called when the resolution of a screen has changed.
+
+        ``number``
+            The number of the screen, which size has changed.
+        """
+        log.info(u'screenResolutionChanged %d' % number)
+        for screen in self.screen_list:
+            if number == screen[u'number']:
+                newScreen = {
+                    u'number': number,
+                    u'size': self.desktop.screenGeometry(number),
+                    u'primary':  (self.desktop.primaryScreen() == number)
+                }
+                self.remove_screen(number)
+                self.add_screen(newScreen)
+                # The screen's default size is used, that is why we have to
+                # update the override screen.
+                if screen == self.override:
+                    self.override = copy.deepcopy(newScreen)
+                    self.set_override_display()
+                self.parent.mainWindow.settingsForm.reload()
+                Receiver.send_message(u'config_screen_changed')
+                break
+
+    def screenCountChanged(self, count=-1):
+        """
+        Called when a screen has been added or removed.
+
+        ``count``
+            The screen's number which has been (un)plugged.
+        """
+        # Remove unplugged screens.
+        for screen in copy.deepcopy(self.screen_list):
+            if screen[u'number'] == self.desktop.numScreens():
+                self.remove_screen(screen[u'number'])
+        # Add new screens.
+        for number in xrange(0, self.desktop.numScreens()):
+            if not self.screen_exists(number):
+                self.add_screen({
+                    u'number': number,
+                    u'size': self.desktop.screenGeometry(number),
+                    u'primary': (self.desktop.primaryScreen() == number)
+                })
+        if count != -1:
+            # Reload setting tabs to apply possible changes.
+            self.parent.mainWindow.settingsForm.reload()
+            Receiver.send_message(u'config_screen_changed')
+            # TODO: Make the new (second) monitor the live display.
 
     def add_screen(self, screen):
         """
@@ -58,11 +122,11 @@ class ScreenList(object):
         ``screen``
             A dict with the screen properties::
 
-            {
-                u'primary': True,
-                u'number': 0,
-                u'size': PyQt4.QtCore.QRect(0, 0, 1024, 768)
-            }
+                {
+                    u'primary': True,
+                    u'number': 0,
+                    u'size': PyQt4.QtCore.QRect(0, 0, 1024, 768)
+                }
         """
         log.info(u'Screen %d found with resolution %s',
             screen[u'number'], screen[u'size'])
@@ -70,32 +134,6 @@ class ScreenList(object):
             self.current = screen
         self.screen_list.append(screen)
         self.display_count += 1
-
-    def update_screen(self, newScreen):
-        """
-        Adjusts the screen's properties in the ``screen_list`` to the properties
-        of the given screen.
-
-        ``newScreen``
-            A dict with the new properties of the screen::
-
-                {
-                    u'primary': True,
-                    u'number': 0,
-                    u'size': PyQt4.QtCore.QRect(0, 0, 1024, 768)
-                }
-        """
-        log.info(u'update_screen %d' % newScreen[u'number'])
-        for oldScreen in self.screen_list:
-            if newScreen[u'number'] == oldScreen[u'number']:
-                self.remove_screen(oldScreen[u'number'])
-                self.add_screen(newScreen)
-                # The screen's default size is used, that is why we have to
-                # update the override screen.
-                if oldScreen == self.override:
-                    self.override = copy.deepcopy(newScreen)
-                    self.set_override_display()
-                break
 
     def remove_screen(self, number):
         """
