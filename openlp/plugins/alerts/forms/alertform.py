@@ -163,7 +163,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         # We found '<>' in the alert text, but the ParameterEdit field is empty.
         if text.find(u'<>') != -1 and not self.parameterEdit.text() and \
             QtGui.QMessageBox.question(self,
-            translate('AlertPlugin.AlertForm', 'No Parameter found'),
+            translate('AlertPlugin.AlertForm', 'No Parameter Found'),
             translate('AlertPlugin.AlertForm', 'You have not entered a '
             'parameter to be replaced.\nDo you want to continue anyway?'),
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
@@ -174,7 +174,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         # in the alert text.
         elif text.find(u'<>') == -1 and self.parameterEdit.text() and \
             QtGui.QMessageBox.question(self,
-            translate('AlertPlugin.AlertForm', 'No Placeholder found'),
+            translate('AlertPlugin.AlertForm', 'No Placeholder Found'),
             translate('AlertPlugin.AlertForm', 'The alert text does not'
             ' contain \'<>\'.\nDo want to continue anyway?'),
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
