@@ -39,6 +39,7 @@ class FirstTimeLanguageForm(QtGui.QDialog, Ui_FirstTimeLanguageDialog):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         self.qmList = LanguageManager.get_qm_list()
+        self.LanguageComboBox.addItem(u'Automatic')
         for key in sorted(self.qmList.keys()):
             self.LanguageComboBox.addItem(key)
 
@@ -49,19 +50,18 @@ class FirstTimeLanguageForm(QtGui.QDialog, Ui_FirstTimeLanguageDialog):
         return QtGui.QDialog.exec_(self)
 
     def accept(self):
-        print "Accept"
-#                if self.autoLanguageCheckBox.checkState() == QtCore.Qt.Checked:
-#            LanguageManager.auto_language = True
-#            LanguageManager.set_language(False, False)
-#        else:
-#            LanguageManager.auto_language = False
-#            action = QtGui.QAction(None)
-#            action.setObjectName(unicode(self.LanguageComboBox.currentText()))
-#            LanguageManager.set_language(action, False)
+        # It's the first row so must be Automatic
+        if self.LanguageComboBox.currentIndex() == 0:
+            LanguageManager.auto_language = True
+            LanguageManager.set_language(False, False)
+        else:
+            LanguageManager.auto_language = False
+            action = QtGui.QAction(None)
+            action.setObjectName(unicode(self.LanguageComboBox.currentText()))
+            LanguageManager.set_language(action, False)
         return QtGui.QDialog.accept(self)
 
     def reject(self):
-        print "Reject"
         LanguageManager.auto_language = True
         LanguageManager.set_language(False, False)
         return QtGui.QDialog.reject(self)
