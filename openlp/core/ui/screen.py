@@ -32,7 +32,7 @@ import copy
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import Receiver, translate
 
 log = logging.getLogger(__name__)
 
@@ -58,13 +58,14 @@ class ScreenList(object):
         self.current_display = 0
         # save config display number
         self.monitor_number = 0
-        self.screenCountChanged()
+        self.screen_count_changed()
         QtCore.QObject.connect(desktop,
-            QtCore.SIGNAL(u'resized(int)'), self.screenResolutionChanged)
+            QtCore.SIGNAL(u'resized(int)'), self.screen_resolution_changed)
         QtCore.QObject.connect(desktop,
-            QtCore.SIGNAL(u'screenCountChanged(int)'), self.screenCountChanged)
+            QtCore.SIGNAL(u'screenCountChanged(int)'),
+            self.screen_count_changed)
 
-    def screenResolutionChanged(self, number):
+    def screen_resolution_changed(self, number):
         """
         Called when the resolution of a screen has changed.
 
@@ -86,15 +87,14 @@ class ScreenList(object):
                 if screen == self.override:
                     self.override = copy.deepcopy(newScreen)
                     self.set_override_display()
-                self.parent.mainWindow.settingsForm.reload()
                 Receiver.send_message(u'config_screen_changed')
                 break
 
-    def screenCountChanged(self, count=-1):
+    def screen_count_changed(self, changed_screen=-1):
         """
         Called when a screen has been added or removed.
 
-        ``count``
+        ``changed_screen``
             The screen's number which has been (un)plugged.
         """
         # Remove unplugged screens.
@@ -109,11 +109,28 @@ class ScreenList(object):
                     u'size': self.desktop.screenGeometry(number),
                     u'primary': (self.desktop.primaryScreen() == number)
                 })
-        if count != -1:
+        # We do not want to send this message, when the method is called the
+        # first time.
+        if changed_screen != -1:
             # Reload setting tabs to apply possible changes.
-            self.parent.mainWindow.settingsForm.reload()
             Receiver.send_message(u'config_screen_changed')
-            # TODO: Make the new (second) monitor the live display.
+
+    def get_screen_list(self):
+        """
+        Returns a list with the screens. This should only be used to display
+        available screens to the user::
+
+            [u'Screen 1 (primary)', Screen 2']
+        """
+        screen_list= []
+        for screen in self.screen_list:
+            screen_name = u'%s %d' % (translate('OpenLP.ScreenList', 'Screen'),
+                screen[u'number'] + 1)
+            if screen[u'primary']:
+                screen_name = u'%s (%s)' % (screen_name,
+                    translate('OpenLP.ScreenList', 'primary'))
+            screen_list.append(screen_name)
+        return screen_list
 
     def add_screen(self, screen):
         """
