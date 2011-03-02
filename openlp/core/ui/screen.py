@@ -121,7 +121,7 @@ class ScreenList(object):
         Returns a list with the screens. This should only be used to display
         available screens to the user::
 
-            [u'Screen 1 (primary)', Screen 2']
+            [u'Screen 1 (primary)', u'Screen 2']
         """
         screen_list= []
         for screen in self.screen_list:
