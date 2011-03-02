@@ -79,7 +79,7 @@ class ScreenList(object):
                 newScreen = {
                     u'number': number,
                     u'size': self.desktop.screenGeometry(number),
-                    u'primary':  (self.desktop.primaryScreen() == number)
+                    u'primary': self.desktop.primaryScreen() == number
                 }
                 self.remove_screen(number)
                 self.add_screen(newScreen)
