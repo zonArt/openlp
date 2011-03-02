@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 from firsttimewizard import Ui_FirstTimeWizard
 
 from openlp.core.lib import translate, PluginStatus
-from openlp.core.utils import get_web_page, LanguageManager
+from openlp.core.utils import get_web_page
 
 log = logging.getLogger(__name__)
 
@@ -54,9 +54,6 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             self.bibles = bibles.read()
         QtGui.QWizard.__init__(self, parent)
         self.setupUi(self)
-        QtCore.QObject.connect(self.autoLanguageCheckBox,
-            QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onAutoLanguageClicked)
         #self.registerFields()
 
     def exec_(self, edit=False):
@@ -79,11 +76,6 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             self.internetGroupBox.setVisible(False)
             self.noInternetLabel.setVisible(True)
         # Sort out Language settings
-        self.autoLanguageCheckBox.setChecked(True)
-        self.LanguageComboBox.setEnabled(False)
-        self.qmList = LanguageManager.get_qm_list()
-        for key in sorted(self.qmList.keys()):
-            self.LanguageComboBox.addItem(key)
         treewidgetitem = QtGui.QTreeWidgetItem(self.selectionTreeWidget)
         treewidgetitem.setText(0, u'Songs')
         self.__loadChild(treewidgetitem, self.songs)
@@ -115,21 +107,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.__pluginStatus(self.customCheckBox, u'custom/status')
         self.__pluginStatus(self.songUsageCheckBox, u'songusage/status')
         self.__pluginStatus(self.alertCheckBox, u'alerts/status')
-        if self.autoLanguageCheckBox.checkState() == QtCore.Qt.Checked:
-            LanguageManager.auto_language = True
-            LanguageManager.set_language(False, False)
-        else:
-            LanguageManager.auto_language = False
-            action = QtGui.QAction(None)
-            action.setObjectName(unicode(self.LanguageComboBox.currentText()))
-            LanguageManager.set_language(action, False)
         return QtGui.QWizard.accept(self)
-
-    def onAutoLanguageClicked(self, state):
-        if state == QtCore.Qt.Checked:
-            self.LanguageComboBox.setEnabled(False)
-        else:
-            self.LanguageComboBox.setEnabled(True)
 
     def __pluginStatus(self, field, tag):
         status = PluginStatus.Active if field.checkState() \

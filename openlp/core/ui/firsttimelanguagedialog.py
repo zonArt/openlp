@@ -23,57 +23,33 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-"""
-The :mod:`ui` module provides the core user interface for OpenLP
-"""
-from PyQt4 import QtGui
+
+from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
+from openlp.core.lib.ui import create_accept_reject_button_box
 
-class HideMode(object):
-    """
-    This is an enumeration class which specifies the different modes of hiding
-    the display.
+class Ui_FirstTimeLanguageDialog(object):
+    def setupUi(self, firstTimeLanguageDialog):
+        firstTimeLanguageDialog.setObjectName(u'firstTimeLanguageDialog')
+        firstTimeLanguageDialog.resize(300, 10)
+        self.dialogLayout = QtGui.QGridLayout(firstTimeLanguageDialog)
+        self.dialogLayout.setObjectName(u'dialogLayout')
+        self.fileNameLabel = QtGui.QLabel(firstTimeLanguageDialog)
+        self.fileNameLabel.setObjectName(u'fileNameLabel')
+        self.dialogLayout.addWidget(self.fileNameLabel, 0, 0)
+        self.LanguageComboBox = QtGui.QComboBox(firstTimeLanguageDialog)
+        self.LanguageComboBox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
+        self.LanguageComboBox.setObjectName("LanguageComboBox")
+        self.dialogLayout.addWidget(self.LanguageComboBox, 0, 1)
+        self.buttonBox = create_accept_reject_button_box(firstTimeLanguageDialog, True)
+        self.dialogLayout.addWidget(self.buttonBox, 1, 0, 1, 2)
+        self.retranslateUi(firstTimeLanguageDialog)
+        self.setMaximumHeight(self.sizeHint().height())
+        QtCore.QMetaObject.connectSlotsByName(firstTimeLanguageDialog)
 
-    ``Blank``
-        This mode is used to hide all output, specifically by covering the
-        display with a black screen.
-
-    ``Theme``
-        This mode is used to hide all output, but covers the display with the
-        current theme background, as opposed to black.
-
-    ``Desktop``
-        This mode hides all output by minimising the display, leaving the user's
-        desktop showing.
-    """
-    Blank = 1
-    Theme = 2
-    Screen = 3
-
-from firsttimeform import FirstTimeForm
-from firsttimelanguageform import FirstTimeLanguageForm
-from themeform import ThemeForm
-from filerenameform import FileRenameForm
-from starttimeform import StartTimeForm
-from maindisplay import MainDisplay
-from servicenoteform import ServiceNoteForm
-from serviceitemeditform import ServiceItemEditForm
-from screen import ScreenList
-from slidecontroller import SlideController
-from splashscreen import SplashScreen
-from generaltab import GeneralTab
-from themestab import ThemesTab
-from advancedtab import AdvancedTab
-from aboutform import AboutForm
-from pluginform import PluginForm
-from settingsform import SettingsForm
-from displaytagform import DisplayTagForm
-from shortcutlistform import ShortcutListForm
-from mediadockmanager import MediaDockManager
-from servicemanager import ServiceManager
-from thememanager import ThemeManager
-
-__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainDisplay',
-    'SlideController', 'ServiceManager', 'ThemeManager', 'MediaDockManager',
-    'ServiceItemEditForm', u'FirstTimeForm']
+    def retranslateUi(self, firstTimeLanguageDialog):
+        self.setWindowTitle(translate('OpenLP.FirstTimeLanguageForm',
+                'Initial Set up Language'))
+        self.fileNameLabel.setText(translate('OpenLP.FirstTimeLanguageForm',
+            'Initial Language:'))

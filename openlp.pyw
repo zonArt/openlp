@@ -37,6 +37,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Receiver, check_directory_exists
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
+from openlp.core.ui.firsttimelanguageform import FirstTimeLanguageForm
 from openlp.core.ui.firsttimeform import FirstTimeForm
 from openlp.core.ui.exceptionform import ExceptionForm
 from openlp.core.ui import SplashScreen, ScreenList
@@ -275,14 +276,18 @@ def main():
     # First time checks in settings
     if QtCore.QSettings().value(
         u'general/first time', QtCore.QVariant(True)).toBool():
-        FirstTimeForm().exec_()
+        FirstTimeLanguageForm().exec_()
     # i18n Set Language
     language = LanguageManager.get_language()
     appTranslator = LanguageManager.get_translator(language)
     app.installTranslator(appTranslator)
+    # First time checks in settings
+    if QtCore.QSettings().value(
+        u'general/first time', QtCore.QVariant(True)).toBool():
+        FirstTimeForm().exec_()
     if not options.no_error_form:
         sys.excepthook = app.hookException
-    sys.exit(app.run())
+    sys.exit()#(app.run())
 
 if __name__ == u'__main__':
     """
