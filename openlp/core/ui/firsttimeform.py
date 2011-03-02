@@ -24,6 +24,8 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import ConfigParser
+import io
 import logging
 
 from PyQt4 import QtCore, QtGui
@@ -44,14 +46,11 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
 
     def __init__(self, parent=None):
         # check to see if we have web access
-        self.webAccess = get_web_page(u'http://openlp.org/files/frw/themes.lst')
-        print self.webAccess
+        self.config = ConfigParser.ConfigParser()
+        self.webAccess = get_web_page(u'http://openlp.org/files/frw/download.cfg')
         if self.webAccess:
-            self.themes = self.webAccess.read()
-            songs = get_web_page(u'http://openlp.org/files/frw/songs.lst')
-            self.songs = songs.read()
-            bibles = get_web_page(u'http://openlp.org/files/frw/bibles.lst')
-            self.bibles = bibles.read()
+            files = self.webAccess.read()
+            self.config.readfp(io.BytesIO(files))
         QtGui.QWizard.__init__(self, parent)
         self.setupUi(self)
         #self.registerFields()
@@ -72,30 +71,29 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         if self.webAccess:
             self.internetGroupBox.setVisible(True)
             self.noInternetLabel.setVisible(False)
+            treewidgetitem = QtGui.QTreeWidgetItem(self.selectionTreeWidget)
+            treewidgetitem.setText(0, u'Songs')
+            self.__loadChild(treewidgetitem, u'songs', u'languages', u'songs')
+            treewidgetitem = QtGui.QTreeWidgetItem(self.selectionTreeWidget)
+            treewidgetitem.setText(0, u'Bibles')
+            self.__loadChild(treewidgetitem, u'bibles', u'translations', u'bible')
+            treewidgetitem = QtGui.QTreeWidgetItem(self.selectionTreeWidget)
+            treewidgetitem.setText(0, u'Themes')
+            self.__loadChild(treewidgetitem, u'themes', u'files', 'theme')
         else:
             self.internetGroupBox.setVisible(False)
             self.noInternetLabel.setVisible(True)
-        # Sort out Language settings
-        treewidgetitem = QtGui.QTreeWidgetItem(self.selectionTreeWidget)
-        treewidgetitem.setText(0, u'Songs')
-        self.__loadChild(treewidgetitem, self.songs)
-        treewidgetitem = QtGui.QTreeWidgetItem(self.selectionTreeWidget)
-        treewidgetitem.setText(0, u'Bibles')
-        self.__loadChild(treewidgetitem, self.bibles)
-        treewidgetitem = QtGui.QTreeWidgetItem(self.selectionTreeWidget)
-        treewidgetitem.setText(0, u'Themes')
-        self.__loadChild(treewidgetitem, self.themes)
 
-    def __loadChild(self, tree, list):
-        list = list.split(u'\n')
-        for item in list:
-            if item:
+    def __loadChild(self, tree, list, tag, root):
+        files = self.config.get(list, tag)
+        files = files.split(u',')
+        for file in files:
+            if file:
                 child = QtGui.QTreeWidgetItem(tree)
-                child.setText(0, item)
+                child.setText(0, self.config.get(u'%s_%s' %(root, file), u'title'))
                 child.setCheckState(0, QtCore.Qt.Unchecked)
                 child.setFlags(QtCore.Qt.ItemIsUserCheckable |
                     QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
-            #self.themeSelectionComboBox.addItem(theme)
 
     def accept(self):
         self.__pluginStatus(self.songsCheckBox, u'songs/status')

@@ -287,7 +287,7 @@ def main():
         FirstTimeForm().exec_()
     if not options.no_error_form:
         sys.excepthook = app.hookException
-    sys.exit(app.run())
+    sys.exit()#(app.run())
 
 if __name__ == u'__main__':
     """
