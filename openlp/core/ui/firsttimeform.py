@@ -91,9 +91,25 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             if file:
                 child = QtGui.QTreeWidgetItem(tree)
                 child.setText(0, self.config.get(u'%s_%s' %(root, file), u'title'))
+                child.setData(0, QtCore.Qt.UserRole,
+                    QtCore.QVariant(self.config.get(u'%s_%s' %(root, file), u'filename')))
                 child.setCheckState(0, QtCore.Qt.Unchecked)
                 child.setFlags(QtCore.Qt.ItemIsUserCheckable |
                     QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+
+    def initializePage(self, id):
+        """
+        Set up the pages for Initial run through dialog
+        """
+        wizardPage = self.page(id)
+        if wizardPage == self.DefaultsPage:
+            listIterator = QtGui.QTreeWidgetItemIterator(self.selectionTreeWidget)
+            while listIterator.value():
+                parent = listIterator.value().parent()
+                if parent and listIterator.value().checkState(0) == QtCore.Qt.Checked:
+                    if unicode(parent.text(0)) == u'Themes':
+                        self.themeSelectionComboBox.addItem(listIterator.value().text(0))
+                listIterator += 1
 
     def accept(self):
         self.__pluginStatus(self.songsCheckBox, u'songs/status')
@@ -105,6 +121,17 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.__pluginStatus(self.customCheckBox, u'custom/status')
         self.__pluginStatus(self.songUsageCheckBox, u'songusage/status')
         self.__pluginStatus(self.alertCheckBox, u'alerts/status')
+
+        listIterator = QtGui.QTreeWidgetItemIterator(self.selectionTreeWidget)
+        while listIterator.value():
+            type = listIterator.value().parent()
+            if listIterator.value().parent():
+                if listIterator.value().checkState(0) == QtCore.Qt.Checked:
+                    # Install
+                    print type,  listIterator.value().data(0, QtCore.Qt.UserRole).toString()
+                    #if type == u'Themes':
+                        #self.themeSelectionComboBox.addItem(listIterator.value().text())
+            listIterator += 1
         return QtGui.QWizard.accept(self)
 
     def __pluginStatus(self, field, tag):
