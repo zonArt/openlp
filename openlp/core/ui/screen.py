@@ -42,13 +42,14 @@ class ScreenList(object):
     """
     log.info(u'Screen loaded')
 
-    def __init__(self, parent, desktop):
+    def __init__(self, desktop):
         """
+        Initialise the screen list.
+
+        ``desktop``
+            A ``QDesktopWidget`` object.
         """
-        self.parent = parent
         self.desktop = desktop
-        # The screen used for the rendermanager.
-        # (Why does the rendermanager needs his own?)
         self.preview = None
         self.current = None
         self.override = None
