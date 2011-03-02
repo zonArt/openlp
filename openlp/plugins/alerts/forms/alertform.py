@@ -176,7 +176,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             QtGui.QMessageBox.question(self,
             translate('AlertPlugin.AlertForm', 'No Placeholder Found'),
             translate('AlertPlugin.AlertForm', 'The alert text does not'
-            ' contain \'<>\'.\nDo want to continue anyway?'),
+            ' contain \'<>\'.\nDo you want to continue anyway?'),
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
             QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
             self.parameterEdit.setFocus()
