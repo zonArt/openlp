@@ -35,6 +35,7 @@ import urllib2
 from datetime import datetime
 
 from PyQt4 import QtGui, QtCore
+
 if sys.platform != u'win32' and sys.platform != u'darwin':
     try:
         from xdg import BaseDirectory

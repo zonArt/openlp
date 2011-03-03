@@ -110,15 +110,15 @@ class HttpServer(object):
         Slide change listener. Store the item and tell the clients
         """
         self.current_slide = row
-        self.send_poll()
+        #self.send_poll()
 
     def item_change(self, items):
         """
         Item (song) change listener. Store the slide and tell the clients
         """
-        self.current_item = items[0].title
-        log.debug(pformat(items[0].__dict__, 2))
-        self.send_poll()
+        self.current_item = items[0]
+        #log.debug(pformat(items[0].__dict__, 2))
+        #self.send_poll()
 
     def send_poll(self):
         """
@@ -156,69 +156,6 @@ class HttpConnection(object):
     """
     A single connection, this handles communication between the server
     and the client
-
-    Routes:
-
-    ``/``
-        Go to the web interface.
-
-    ``/files/{filename}``
-        Serve a static file.
-
-    ``/api/poll``
-        Poll to see if there are any changes. Returns a JSON-encoded dict of
-        any changes that occurred::
-
-            {"results": {"type": "controller"}}
-
-        Or, if there were no results, False::
-
-            {"results": False}
-
-    ``/api/controller/{live|preview}/{action}``
-        Perform ``{action}`` on the live or preview controller. Valid actions
-        are:
-
-        ``next``
-            Load the next slide.
-
-        ``previous``
-            Load the previous slide.
-
-        ``jump``
-            Jump to a specific slide. Requires an id return in a JSON-encoded
-            dict like so::
-
-                {"request": {"id": 1}}
-
-        ``first``
-            Load the first slide.
-
-        ``last``
-            Load the last slide.
-
-        ``text``
-            Request the text of the current slide.
-
-    ``/api/service/{action}``
-        Perform ``{action}`` on the service manager (e.g. go live). Data is
-        passed as a json-encoded ``data`` parameter. Valid actions are:
-
-        ``next``
-            Load the next item in the service.
-
-        ``previous``
-            Load the previews item in the service.
-
-        ``jump``
-            Jump to a specific item in the service. Requires an id returned in
-            a JSON-encoded dict like so::
-
-                {"request": {"id": 1}}
-
-        ``list``
-            Request a list of items in the service.
-
     """
     def __init__(self, parent, socket):
         """
@@ -241,6 +178,24 @@ class HttpConnection(object):
             self.ready_read)
         QtCore.QObject.connect(self.socket, QtCore.SIGNAL(u'disconnected()'),
             self.disconnected)
+
+    def _get_service_items(self):
+        service_items = []
+        service_manager = self.parent.parent.serviceManager
+        item = service_manager.findServiceItem()[0]
+        if item >= 0 and item < len(service_manager.serviceItems):
+            curitem = service_manager.serviceItems[item]
+        else:
+            curitem = None
+        for item in service_manager.serviceItems:
+            service_item = item[u'service_item']
+            service_items.append({
+                u'title': unicode(service_item.get_display_title()),
+                u'plugin': unicode(service_item.name),
+                u'notes': unicode(service_item.notes),
+                u'selected': (item == curitem)
+            })
+        return service_items
 
     def ready_read(self):
         """
@@ -328,8 +283,12 @@ class HttpConnection(object):
         """
         Poll OpenLP to determine the current slide number and item name.
         """
-        return HttpResponse(json.dumps({'slide': self.parent.current_slide,
-             'item': self.parent.current_item}),
+        result = {
+            u'slide': self.parent.current_slide or 0,
+            u'item': self.parent.current_item.title \
+                if self.parent.current_item else u''
+        }
+        return HttpResponse(json.dumps({u'results': result}),
              {'Content-Type': 'application/json'})
 
     def controller(self, type, action):
@@ -345,9 +304,23 @@ class HttpConnection(object):
         """
         event = u'slidecontroller_%s_%s' % (type, action)
         if action == u'text':
-            event += u'_request'
-        Receiver.send_message(event)
-        json_data = {u'results': {u'success': True}}
+            current_item = self.parent.current_item
+            data = []
+            if current_item:
+                for index, frame in enumerate(current_item.get_frames()):
+                    item = {}
+                    if current_item.is_text():
+                        item[u'tag'] = unicode(frame[u'verseTag'])
+                        item[u'text'] = unicode(frame[u'html'])
+                    else:
+                        item[u'tag'] = unicode(index)
+                        item[u'text'] = u''
+                    item[u'selected'] = (self.parent.current_slide == index)
+                    data.append(item)
+            json_data = {u'results': {u'slides': data}}
+        else:
+            Receiver.send_message(event)
+            json_data = {u'results': {u'success': True}}
         #if action == u'text':
         #    json_data = {u'results': }
         return HttpResponse(json.dumps(json_data),
@@ -356,7 +329,9 @@ class HttpConnection(object):
     def service(self, action):
         event = u'servicemanager_%s' % action
         if action == u'list':
-            event += u'_request'
+            return HttpResponse(
+                json.dumps({'results': self._get_service_items()}),
+                {'Content-Type': 'application/json'})
         else:
             event += u'_item'
         if self.url_params and self.url_params.get(u'data'):
