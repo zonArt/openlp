@@ -234,7 +234,7 @@ class GeneralTab(SettingsTab):
         QtCore.QObject.connect(self.customXValueEdit,
             QtCore.SIGNAL(u'textEdited(const QString&)'),
             self.onDisplayPositionChanged)
-        # Reload the tab, as the screen resolution/count may has changed.
+        # Reload the tab, as the screen resolution/count may have changed.
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_screen_changed'), self.load)
 
