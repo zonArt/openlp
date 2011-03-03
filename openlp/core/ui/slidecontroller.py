@@ -624,6 +624,10 @@ class SlideController(QtGui.QWidget):
                         self.parent.renderManager.width,
                         self.parent.renderManager.height)
                 else:
+                    if framenumber == slideno:
+                        self.serviceItem.bg_image_bytes = \
+                            self.parent.renderManager.image_manager. \
+                            get_image_bytes(frame[u'title'])
                     image = self.parent.renderManager.image_manager. \
                         get_image(frame[u'title'])
                 label.setPixmap(QtGui.QPixmap.fromImage(image))
