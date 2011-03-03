@@ -226,7 +226,7 @@ class SongExportForm(OpenLPWizard):
                     translate('SongsPlugin.ExportWizardForm',
                     'No Save Location specified'),
                     translate('SongsPlugin.ExportWizardForm',
-                    'You need to specify a directory where to save the songs.'))
+                    'You need to specify a directory.'))
                 return False
             return True
         elif self.currentPage() == self.progressPage:

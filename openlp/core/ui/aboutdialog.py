@@ -176,8 +176,7 @@ class Ui_AboutDialog(object):
             'but WITHOUT ANY WARRANTY; without even the implied warranty of '
             'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See below '
             'for more details.')
-        gpltext = translate('OpenLP.AboutForm',
-            'GNU GENERAL PUBLIC LICENSE\n'
+        gpltext = ('GNU GENERAL PUBLIC LICENSE\n'
             'Version 2, June 1991\n'
             '\n'
             'Copyright (C) 1989, 1991 Free Software Foundation, Inc., 51 '
