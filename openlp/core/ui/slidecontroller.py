@@ -624,6 +624,7 @@ class SlideController(QtGui.QWidget):
                         self.parent.renderManager.width,
                         self.parent.renderManager.height)
                 else:
+                    # If current slide set background to image
                     if framenumber == slideno:
                         self.serviceItem.bg_image_bytes = \
                             self.parent.renderManager.image_manager. \
@@ -861,6 +862,8 @@ class SlideController(QtGui.QWidget):
                     frame = self.display.text(toDisplay)
                 else:
                     frame = self.display.image(toDisplay)
+                    # reset the store used to display first image
+                    self.serviceItem.bg_image_bytes = None
                 self.slidePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
             self.selectedRow = row
         Receiver.send_message(u'slidecontroller_%s_changed' % self.typePrefix,
