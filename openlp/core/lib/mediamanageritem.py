@@ -220,8 +220,6 @@ class MediaManagerItem(QtGui.QWidget):
         if self.hasDeleteIcon:
             toolbar_actions.append([StringContent.Delete,
                 u':/general/general_delete.png', self.onDeleteClick])
-        ## Separator Line ##
-        self.addToolbarSeparator()
         ## Preview ##
         toolbar_actions.append([StringContent.Preview,
             u':/general/general_preview.png', self.onPreviewClick])
@@ -232,6 +230,8 @@ class MediaManagerItem(QtGui.QWidget):
         toolbar_actions.append([StringContent.Service,
             u':/general/general_add.png', self.onAddClick])
         for action in toolbar_actions:
+            if action[0] == StringContent.Preview:
+                self.addToolbarSeparator()
             self.addToolbarButton(
                 self.plugin.getString(action[0])[u'title'],
                 self.plugin.getString(action[0])[u'tooltip'],

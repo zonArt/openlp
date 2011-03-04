@@ -24,7 +24,6 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
 import os
 import sys
 import logging
@@ -179,14 +178,8 @@ class OpenLP(QtGui.QApplication):
             self.splash.show()
         # make sure Qt really display the splash screen
         self.processEvents()
-        screens = ScreenList()
         # Decide how many screens we have and their size
-        for screen in xrange(0, self.desktop().numScreens()):
-            size = self.desktop().screenGeometry(screen)
-            screens.add_screen({u'number': screen,
-                u'size': size,
-                u'primary': (self.desktop().primaryScreen() == screen)})
-            log.info(u'Screen %d found with resolution %s', screen, size)
+        screens = ScreenList(self.desktop())
         # start the main app window
         self.appClipboard = self.clipboard()
         self.mainWindow = MainWindow(screens, app_version, self.appClipboard)
