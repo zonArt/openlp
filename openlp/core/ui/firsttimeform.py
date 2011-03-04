@@ -27,13 +27,15 @@
 import ConfigParser
 import io
 import logging
+import os
+import urllib
 
 from PyQt4 import QtCore, QtGui
 
 from firsttimewizard import Ui_FirstTimeWizard
 
-from openlp.core.lib import translate, PluginStatus
-from openlp.core.utils import get_web_page
+from openlp.core.lib import translate, PluginStatus, check_directory_exists
+from openlp.core.utils import get_web_page, AppLocation
 
 log = logging.getLogger(__name__)
 
@@ -46,8 +48,9 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
 
     def __init__(self, parent=None):
         # check to see if we have web access
+        self.web = u'http://openlp.org/files/frw/'
         self.config = ConfigParser.ConfigParser()
-        self.webAccess = get_web_page(u'http://openlp.org/files/frw/download.cfg')
+        self.webAccess = get_web_page(u'%s%s' % (self.web, u'download.cfg'))
         if self.webAccess:
             files = self.webAccess.read()
             self.config.readfp(io.BytesIO(files))
@@ -123,14 +126,27 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.__pluginStatus(self.alertCheckBox, u'alerts/status')
 
         listIterator = QtGui.QTreeWidgetItemIterator(self.selectionTreeWidget)
+        songsDestination = AppLocation.get_section_data_path(u'songs')
+        check_directory_exists(songsDestination)
+        bibleDestination = AppLocation.get_section_data_path(u'bibles')
+        check_directory_exists(bibleDestination)
+        themeDestination = AppLocation.get_section_data_path(u'themes')
+        check_directory_exists(themeDestination)
         while listIterator.value():
             type = listIterator.value().parent()
             if listIterator.value().parent():
                 if listIterator.value().checkState(0) == QtCore.Qt.Checked:
                     # Install
-                    print type,  listIterator.value().data(0, QtCore.Qt.UserRole).toString()
-                    #if type == u'Themes':
-                        #self.themeSelectionComboBox.addItem(listIterator.value().text())
+                    if unicode(type.text(0)) == u'Bibles':
+                        theme = unicode(listIterator.value().data(0,
+                            QtCore.Qt.UserRole).toString())
+                        urllib.urlretrieve(u'%s%s' % (self.web, theme),
+                            os.path.join(bibleDestination, theme))
+                    if unicode(type.text(0)) == u'Themes':
+                        theme = unicode(listIterator.value().data(0,
+                            QtCore.Qt.UserRole).toString())
+                        urllib.urlretrieve(u'%s%s' % (self.web, theme),
+                            os.path.join(themeDestination, theme))
             listIterator += 1
         return QtGui.QWizard.accept(self)
 
