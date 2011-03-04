@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -482,7 +482,7 @@ class BibleMediaItem(MediaManagerItem):
             self.listView.clear()
         if self.listView.count() != 0:
             self.__checkSecondBible(bible, second_bible)
-        else:
+        elif self.search_results:
             self.displayResults(bible, second_bible)
         Receiver.send_message(u'cursor_normal')
         self.advancedSearchButton.setEnabled(True)
@@ -698,11 +698,7 @@ class BibleMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.AllowsPreview)
         service_item.add_capability(ItemCapabilities.AllowsLoop)
         # Service Item: Title
-        for title in raw_title:
-            if not service_item.title:
-                service_item.title = title
-            else:
-                service_item.title += u', ' + title
+        service_item.title = u', '.join(raw_title)
         # Service Item: Theme
         if len(self.settings.bible_theme) == 0:
             service_item.theme = None

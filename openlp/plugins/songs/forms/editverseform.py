@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -98,7 +98,10 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         match = self.verse_regex.match(text)
         if match:
             verse_tag = match.group(1)
-            verse_num = int(match.group(2))
+            try:
+                verse_num = int(match.group(2))
+            except ValueError:
+                verse_num = 1
             verse_type_index = VerseType.from_loose_input(verse_tag)
             if verse_type_index is not None:
                 self.verseNumberBox.setValue(verse_num)
@@ -127,7 +130,10 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         if match:
             verse_type = match.group(1)
             verse_type_index = VerseType.from_loose_input(verse_type)
-            verse_number = int(match.group(2))
+            try:
+                verse_number = int(match.group(2))
+            except ValueError:
+                verse_number = 1
             if verse_type_index is not None:
                 self.verseTypeComboBox.setCurrentIndex(verse_type_index)
                 self.verseNumberBox.setValue(verse_number)

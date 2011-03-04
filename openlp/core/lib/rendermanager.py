@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -33,6 +33,15 @@ from openlp.core.lib.theme import ThemeLevel
 from openlp.core.ui import MainDisplay
 
 log = logging.getLogger(__name__)
+
+VERSE = u'The Lord said to {r}Noah{/r}: \n' \
+    'There\'s gonna be a {su}floody{/su}, {sb}floody{/sb}\n' \
+    'The Lord said to {g}Noah{/g}:\n' \
+    'There\'s gonna be a {st}floody{/st}, {it}floody{/it}\n' \
+    'Get those children out of the muddy, muddy \n' \
+    '{r}C{/r}{b}h{/b}{bl}i{/bl}{y}l{/y}{g}d{/g}{pk}' \
+    'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
+FOOTER = [u'Arky Arky (Unknown)', u'Public Domain', u'CCLI 123456']
 
 class RenderManager(object):
     """
@@ -202,28 +211,17 @@ class RenderManager(object):
         self.force_page = force_page
         # set the default image size for previews
         self.calculate_default(self.screens.preview[u'size'])
-        verse = u'The Lord said to {r}Noah{/r}: \n' \
-            'There\'s gonna be a {su}floody{/su}, {sb}floody{/sb}\n' \
-            'The Lord said to {g}Noah{/g}:\n' \
-            'There\'s gonna be a {st}floody{/st}, {it}floody{/it}\n' \
-            'Get those children out of the muddy, muddy \n' \
-            '{r}C{/r}{b}h{/b}{bl}i{/bl}{y}l{/y}{g}d{/g}{pk}' \
-            'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
-        # make big page for theme edit dialog to get line count
-        if self.force_page:
-            verse = verse + verse + verse
-        else:
-            self.image_manager.del_image(theme_data.theme_name)
-        footer = []
-        footer.append(u'Arky Arky (Unknown)')
-        footer.append(u'Public Domain')
-        footer.append(u'CCLI 123456')
         # build a service item to generate preview
         serviceItem = ServiceItem()
         serviceItem.theme = theme_data
-        serviceItem.add_from_text(u'', verse, footer)
+        if self.force_page:
+            # make big page for theme edit dialog to get line count
+            serviceItem.add_from_text(u'', VERSE + VERSE + VERSE, FOOTER)
+        else:
+            self.image_manager.del_image(theme_data.theme_name)
+            serviceItem.add_from_text(u'', VERSE, FOOTER)
         serviceItem.render_manager = self
-        serviceItem.raw_footer = footer
+        serviceItem.raw_footer = FOOTER
         serviceItem.render(True)
         if not self.force_page:
             self.display.buildHtml(serviceItem)

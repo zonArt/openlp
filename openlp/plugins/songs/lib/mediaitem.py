@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -52,6 +52,7 @@ class SongSearch(object):
     Lyrics = 3
     Authors = 4
     Themes = 5
+
 
 class SongMediaItem(MediaManagerItem):
     """
@@ -199,7 +200,7 @@ class SongMediaItem(MediaManagerItem):
         """
         log.debug(u'onSongListLoad')
         # Called to redisplay the song list screen edit from a search
-        # or from the exit of the Song edit dialog.  If remote editing is active
+        # or from the exit of the Song edit dialog. If remote editing is active
         # Trigger it and clean up so it will not update again.
         if self.remoteTriggered == u'L':
             self.onAddClick()
@@ -218,13 +219,9 @@ class SongMediaItem(MediaManagerItem):
         self.listView.clear()
         searchresults.sort(cmp=self.collateSongTitles)
         for song in searchresults:
-            author_list = u''
-            for author in song.authors:
-                if author_list != u'':
-                    author_list = author_list + u', '
-                author_list = author_list + author.display_name
+            author_list = [author.display_name for author in song.authors]
             song_title = unicode(song.title)
-            song_detail = u'%s (%s)' % (song_title, author_list)
+            song_detail = u'%s (%s)' % (song_title, u', '.join(author_list))
             song_name = QtGui.QListWidgetItem(song_detail)
             song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
             self.listView.addItem(song_name)
@@ -334,9 +331,6 @@ class SongMediaItem(MediaManagerItem):
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
         log.debug(u'generateSlideData (%s:%s)' % (service_item, item))
         raw_footer = []
-        author_list = u''
-        author_audit = []
-        ccli = u''
         item_id = self._getIdOfItemToGenerate(item, self.remoteSong)
         service_item.add_capability(ItemCapabilities.AllowsEdit)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
@@ -397,13 +391,9 @@ class SongMediaItem(MediaManagerItem):
             for slide in verses:
                 service_item.add_from_text(slide[:30], unicode(slide))
         service_item.title = song.title
-        for author in song.authors:
-            if len(author_list) > 1:
-                author_list = author_list + u', '
-            author_list = author_list + unicode(author.display_name)
-            author_audit.append(unicode(author.display_name))
+        author_list = [unicode(author.display_name) for author in song.authors]
         raw_footer.append(song.title)
-        raw_footer.append(author_list)
+        raw_footer.append(u', '.join(author_list))
         raw_footer.append(song.copyright)
         if QtCore.QSettings().value(u'general/ccli number',
             QtCore.QVariant(u'')).toString():
@@ -413,10 +403,10 @@ class SongMediaItem(MediaManagerItem):
                 QtCore.QVariant(u'')).toString()))
         service_item.raw_footer = raw_footer
         service_item.audit = [
-            song.title, author_audit, song.copyright, unicode(song.ccli_number)
+            song.title, author_list, song.copyright, unicode(song.ccli_number)
         ]
         service_item.data_string = {u'title': song.search_title,
-            u'authors': author_list}
+            u'authors': u', '.join(author_list)}
         service_item.xml_version = self.openLyrics.song_to_xml(song)
         return True
 

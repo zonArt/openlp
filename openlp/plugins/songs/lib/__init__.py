@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,7 +25,10 @@
 ###############################################################################
 
 from PyQt4 import QtGui
+
 from openlp.core.lib import translate
+from db import Author
+from ui import SongStrings
 
 class VerseType(object):
     """
@@ -240,6 +243,23 @@ def retrieve_windows_encoding(recommendation=None):
     if not choice[1]:
         return None
     return filter(lambda item: item[1] == choice[0], encodings)[0][0]
+
+def add_author_unknown(manager, song):
+    """
+    Add the default author *Author Unknown* to the song.
+
+    ``manager``
+        The song's manager.
+
+    ``song``
+        The song object.
+    """
+    name = SongStrings.AuthorUnknown
+    author = manager.get_object_filtered(Author, Author.display_name == name)
+    if author is None:
+        author = Author.populate(
+            display_name=name, last_name=u'', first_name=u'')
+    song.authors.append(author)
 
 from xml import OpenLyrics, SongXML
 from songstab import SongsTab

@@ -7,9 +7,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,7 +24,6 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
 import os
 import sys
 import logging
@@ -179,14 +178,8 @@ class OpenLP(QtGui.QApplication):
             self.splash.show()
         # make sure Qt really display the splash screen
         self.processEvents()
-        screens = ScreenList()
         # Decide how many screens we have and their size
-        for screen in xrange(0, self.desktop().numScreens()):
-            size = self.desktop().screenGeometry(screen)
-            screens.add_screen({u'number': screen,
-                u'size': size,
-                u'primary': (self.desktop().primaryScreen() == screen)})
-            log.info(u'Screen %d found with resolution %s', screen, size)
+        screens = ScreenList(self.desktop())
         # start the main app window
         self.appClipboard = self.clipboard()
         self.mainWindow = MainWindow(screens, app_version, self.appClipboard)
@@ -273,6 +266,9 @@ def main():
     qInitResources()
     # Now create and actually run the application.
     app = OpenLP(qt_args)
+    if sys.platform == 'darwin':
+        OpenLP.addLibraryPath(QtGui.QApplication.applicationDirPath()
+            + "/qt4_plugins")
     #i18n Set Language
     language = LanguageManager.get_language()
     appTranslator = LanguageManager.get_translator(language)

@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -162,9 +162,7 @@ class ServiceItem(object):
         line_break = True
         if self.is_capable(ItemCapabilities.NoLineBreaks):
             line_break = False
-        theme = None
-        if self.theme:
-            theme = self.theme
+        theme = self.theme if self.theme else None
         self.main, self.footer = \
             self.render_manager.set_override_theme(theme, useOverride)
         self.themedata = self.render_manager.renderer._theme
@@ -187,11 +185,7 @@ class ServiceItem(object):
         self.title = clean_tags(self.title)
         self.foot_text = None
         if self.raw_footer:
-            for foot in self.raw_footer:
-                if not self.foot_text:
-                    self.foot_text = foot
-                else:
-                    self.foot_text = u'%s<br>%s' % (self.foot_text, foot)
+            self.foot_text = u'<br>'.join(self.raw_footer)
 
     def add_from_image(self, path, title):
         """
@@ -204,8 +198,7 @@ class ServiceItem(object):
             A title for the slide in the service item.
         """
         self.service_item_type = ServiceItemType.Image
-        self._raw_frames.append(
-            {u'title': title, u'path': path})
+        self._raw_frames.append({u'title': title, u'path': path})
         self.render_manager.image_manager.add_image(title, path)
         self._new_item()
 
