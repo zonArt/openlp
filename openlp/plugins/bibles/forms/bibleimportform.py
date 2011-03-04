@@ -568,7 +568,7 @@ class BibleImportForm(OpenLPWizard):
         """
         self.getFileName(WizardStrings.OpenTypeFile % UiStrings.OLPV1,
             self.openlp1FileEdit, u'%s (*.bible)' %
-            translate('BiblesPlugin.ImportWizardForm', 'openlp.org 1.x bible'))
+            translate('BiblesPlugin.ImportWizardForm', 'openlp.org 1.x Bible Files'))
 
     def registerFields(self):
         """
