@@ -123,7 +123,7 @@ class ScreenList(object):
 
             [u'Screen 1 (primary)', u'Screen 2']
         """
-        screen_list= []
+        screen_list = []
         for screen in self.screen_list:
             screen_name = u'%s %d' % (translate('OpenLP.ScreenList', 'Screen'),
                 screen[u'number'] + 1)
