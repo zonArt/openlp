@@ -209,12 +209,12 @@ Do you want to continue anyway?</translation>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="347"/>
         <source>Bible not fully loaded.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bible not fully loaded.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="540"/>
         <source>You cannot combine single and dual Bible verse search results. Do you want to delete your search results and start a new search?</source>
-        <translation type="unfinished"></translation>
+        <translation>You cannot combine single and dual Bible verse search results. Do you want to delete your search results and start a new search?</translation>
     </message>
 </context>
 <context>
@@ -320,7 +320,7 @@ You can separate different keywords by a space to search for all of your keyword
     <message>
         <location filename="openlp/plugins/bibles/lib/manager.py" line="251"/>
         <source>There are no Bibles currently installed. Please use the Import Wizard to install one or more Bibles.</source>
-        <translation type="unfinished"></translation>
+        <translation>There are no Bibles currently installed. Please use the Import Wizard to install one or more Bibles.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/manager.py" line="263"/>
@@ -332,12 +332,19 @@ Book Chapter:Verse-Verse
 Book Chapter:Verse-Verse,Verse-Verse
 Book Chapter:Verse-Verse,Chapter:Verse-Verse
 Book Chapter:Verse-Chapter:Verse</source>
-        <translation type="unfinished"></translation>
+        <translation>Your scripture reference is either not supported by OpenLP or is invalid. Please make sure your reference conforms to one of the following patterns:
+
+Book Chapter
+Book Chapter-Chapter
+Book Chapter:Verse-Verse
+Book Chapter:Verse-Verse,Verse-Verse
+Book Chapter:Verse-Verse,Chapter:Verse-Verse
+Book Chapter:Verse-Chapter:Verse</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/manager.py" line="251"/>
         <source>No Bibles Available</source>
-        <translation type="unfinished"></translation>
+        <translation>No Bibles Available</translation>
     </message>
 </context>
 <context>
@@ -558,12 +565,7 @@ demand and thus an internet connection is required.</translation>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="554"/>
         <source>CSV File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="569"/>
-        <source>openlp.org 1.x bible</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV File</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="389"/>
@@ -593,6 +595,11 @@ demand and thus an internet connection is required.</translation>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="450"/>
         <source>You have not specified a testaments file. Do you want to proceed with the import?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="569"/>
+        <source>openlp.org 1.x Bible Files</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

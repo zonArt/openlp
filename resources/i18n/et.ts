@@ -566,11 +566,6 @@ vajadusel, seetõttu on vajalik internetiühendus.</translation>
         <translation>CSV fail</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="569"/>
-        <source>openlp.org 1.x bible</source>
-        <translation>openlp.org 1.x Piibel</translation>
-    </message>
-    <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="389"/>
         <source>Bibleserver</source>
         <translation>Piibliserver</translation>
@@ -599,6 +594,11 @@ vajadusel, seetõttu on vajalik internetiühendus.</translation>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="450"/>
         <source>You have not specified a testaments file. Do you want to proceed with the import?</source>
         <translation>Sa pole määranud testamentide faili. Kas tahad importimisega jätkata?</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="569"/>
+        <source>openlp.org 1.x Bible Files</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

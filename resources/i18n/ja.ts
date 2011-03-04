@@ -557,11 +557,6 @@ demand and thus an internet connection is required.</source>
         <translation>CSVファイル</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="569"/>
-        <source>openlp.org 1.x bible</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="389"/>
         <source>Bibleserver</source>
         <translation></translation>
@@ -590,6 +585,11 @@ demand and thus an internet connection is required.</source>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="450"/>
         <source>You have not specified a testaments file. Do you want to proceed with the import?</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="569"/>
+        <source>openlp.org 1.x Bible Files</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

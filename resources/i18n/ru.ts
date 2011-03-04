@@ -551,11 +551,6 @@ Changes do not affect verses already in the service.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="569"/>
-        <source>openlp.org 1.x bible</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="684"/>
         <source>Starting Registering bible...</source>
         <translation type="unfinished"></translation>
@@ -589,6 +584,11 @@ demand and thus an internet connection is required.</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="379"/>
         <source>Verses file:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="569"/>
+        <source>openlp.org 1.x Bible Files</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
