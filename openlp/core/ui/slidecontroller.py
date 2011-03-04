@@ -32,7 +32,7 @@ from PyQt4.phonon import Phonon
 
 from openlp.core.lib import OpenLPToolbar, Receiver, resize_image, \
     ItemCapabilities, translate
-from openlp.core.lib.ui import UiStrings, shortcut_action
+from openlp.core.lib.ui import icon_action, UiStrings, shortcut_action
 from openlp.core.ui import HideMode, MainDisplay
 
 log = logging.getLogger(__name__)
@@ -146,34 +146,33 @@ class SlideController(QtGui.QWidget):
             u':/slides/slide_next.png',
             translate('OpenLP.SlideController', 'Move to next'),
             self.onSlideSelectedNext)
+        self.toolbar.addToolbarSeparator(u'Close Separator')
         if self.isLive:
-            self.toolbar.addToolbarSeparator(u'Close Separator')
             self.hideMenu = QtGui.QToolButton(self.toolbar)
             self.hideMenu.setText(translate('OpenLP.SlideController', 'Hide'))
             self.hideMenu.setPopupMode(QtGui.QToolButton.MenuButtonPopup)
             self.toolbar.addToolbarWidget(u'Hide Menu', self.hideMenu)
             self.hideMenu.setMenu(QtGui.QMenu(
                 translate('OpenLP.SlideController', 'Hide'), self.toolbar))
-            self.blankScreen = QtGui.QAction(QtGui.QIcon(
-                u':/slides/slide_blank.png'),
-                translate('OpenLP.SlideController',
-                    'Blank Screen'), self.hideMenu)
-            self.blankScreen.setCheckable(True)
-            self.themeScreen = QtGui.QAction(QtGui.QIcon(
-                u':/slides/slide_theme.png'),
-                translate('OpenLP.SlideController',
-                    'Blank to Theme'), self.hideMenu)
-            self.themeScreen.setCheckable(True)
+            self.blankScreen = icon_action(self.hideMenu, u'Blank Screen',
+                u':/slides/slide_blank.png', False)
+            self.blankScreen.setText(
+                translate('OpenLP.SlideController', 'Blank Screen'))
+            self.themeScreen = icon_action(self.hideMenu, u'Blank Theme',
+                u':/slides/slide_theme.png', False)
+            self.themeScreen.setText(
+                translate('OpenLP.SlideController', 'Blank to Theme'))
+            self.desktopScreen = icon_action(self.hideMenu, u'Desktop Screen',
+                    u':/slides/slide_desktop.png', False)
+            self.desktopScreen.setText(
+                translate('OpenLP.SlideController', 'Show Desktop'))
+            self.desktopScreen.setVisible(False)
             self.hideMenu.setDefaultAction(self.blankScreen)
             self.hideMenu.menu().addAction(self.blankScreen)
             self.hideMenu.menu().addAction(self.themeScreen)
+            self.hideMenu.menu().addAction(self.desktopScreen)
             if self.screens.display_count > 1:
-                self.desktopScreen = QtGui.QAction(QtGui.QIcon(
-                    u':/slides/slide_desktop.png'),
-                    translate('OpenLP.SlideController',
-                    'Show Desktop'), self.hideMenu)
-                self.hideMenu.menu().addAction(self.desktopScreen)
-                self.desktopScreen.setCheckable(True)
+                self.desktopScreen.setVisible(True)
                 QtCore.QObject.connect(self.desktopScreen,
                     QtCore.SIGNAL(u'triggered(bool)'), self.onHideDisplay)
             self.toolbar.addToolbarSeparator(u'Loop Separator')
@@ -195,7 +194,6 @@ class SlideController(QtGui.QWidget):
             self.delaySpinBox.setToolTip(translate('OpenLP.SlideController',
                 'Delay between slides in seconds'))
         else:
-            self.toolbar.addToolbarSeparator(u'Close Separator')
             self.toolbar.addToolbarButton(
                 # Does not need translating - control string.
                 u'Go Live', u':/general/general_live.png',
@@ -411,6 +409,8 @@ class SlideController(QtGui.QWidget):
         Settings dialog has changed the screen size of adjust output and
         screen previews.
         """
+        if hasattr(self, u'desktopScreen'):
+            self.desktopScreen.setVisible(self.screens.display_count > 1)
         # rebuild display as screen size changed
         self.display = MainDisplay(self, self.screens, self.isLive)
         self.display.imageManager = self.parent.renderManager.image_manager
