@@ -114,8 +114,7 @@ class SlideController(QtGui.QWidget):
         self.previewListWidget = SlideList(self)
         self.previewListWidget.setColumnCount(1)
         self.previewListWidget.horizontalHeader().setVisible(False)
-        self.previewListWidget.setColumnWidth(
-            0, self.controller.width())
+        self.previewListWidget.setColumnWidth(0, self.controller.width())
         self.previewListWidget.isLive = self.isLive
         self.previewListWidget.setObjectName(u'PreviewListWidget')
         self.previewListWidget.setSelectionBehavior(1)
@@ -166,15 +165,11 @@ class SlideController(QtGui.QWidget):
                     u':/slides/slide_desktop.png', False)
             self.desktopScreen.setText(
                 translate('OpenLP.SlideController', 'Show Desktop'))
-            self.desktopScreen.setVisible(False)
+            self.desktopScreen.setVisible(self.screens.display_count > 1)
             self.hideMenu.setDefaultAction(self.blankScreen)
             self.hideMenu.menu().addAction(self.blankScreen)
             self.hideMenu.menu().addAction(self.themeScreen)
             self.hideMenu.menu().addAction(self.desktopScreen)
-            if self.screens.display_count > 1:
-                self.desktopScreen.setVisible(True)
-                QtCore.QObject.connect(self.desktopScreen,
-                    QtCore.SIGNAL(u'triggered(bool)'), self.onHideDisplay)
             self.toolbar.addToolbarSeparator(u'Loop Separator')
             self.toolbar.addToolbarButton(
                 # Does not need translating - control string.
@@ -224,8 +219,7 @@ class SlideController(QtGui.QWidget):
         if self.isLive:
             # Build the Song Toolbar
             self.songMenu = QtGui.QToolButton(self.toolbar)
-            self.songMenu.setText(translate('OpenLP.SlideController',
-                'Go To'))
+            self.songMenu.setText(translate('OpenLP.SlideController', 'Go To'))
             self.songMenu.setPopupMode(QtGui.QToolButton.InstantPopup)
             self.toolbar.addToolbarWidget(u'Song Menu', self.songMenu)
             self.songMenu.setMenu(QtGui.QMenu(
@@ -301,6 +295,8 @@ class SlideController(QtGui.QWidget):
                 QtCore.SIGNAL(u'triggered(bool)'), self.onBlankDisplay)
             QtCore.QObject.connect(self.themeScreen,
                 QtCore.SIGNAL(u'triggered(bool)'), self.onThemeDisplay)
+            QtCore.QObject.connect(self.desktopScreen,
+                QtCore.SIGNAL(u'triggered(bool)'), self.onHideDisplay)
             QtCore.QObject.connect(self.volumeSlider,
                 QtCore.SIGNAL(u'sliderReleased()'), self.mediaVolume)
             QtCore.QObject.connect(Receiver.get_receiver(),
@@ -409,7 +405,7 @@ class SlideController(QtGui.QWidget):
         Settings dialog has changed the screen size of adjust output and
         screen previews.
         """
-        if hasattr(self, u'desktopScreen'):
+        if self.isLive:
             self.desktopScreen.setVisible(self.screens.display_count > 1)
         # rebuild display as screen size changed
         self.display = MainDisplay(self, self.screens, self.isLive)
