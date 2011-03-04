@@ -35,7 +35,7 @@ import socket
 import urllib
 from HTMLParser import HTMLParseError
 
-from BeautifulSoup import BeautifulSoup, NavigableString
+from BeautifulSoup import BeautifulSoup, NavigableString, Tag
 
 from openlp.core.lib import Receiver, translate
 from openlp.core.lib.ui import critical_error_message_box
@@ -221,21 +221,14 @@ class BGExtract(object):
         crossrefs = soup.findAll(u'sup', u'xref')
         if crossrefs:
             [crossref.extract() for crossref in crossrefs]
+        headings = soup.findAll(u'h5')
+        if headings:
+            [heading.extract() for heading in headings]
         cleanup = [(re.compile('\s+'), lambda match: ' ')]
         verses = BeautifulSoup(str(soup), markupMassage=cleanup)
-        content = verses.find(u'div', u'result-text-style-normal')
-        if not content:
-            content = verses.find(u'div', u'result-text-style-rtl-serif')
-        if not content:
-            log.debug(u'No content found in the BibleGateway response.')
-            send_error_message(u'parse')
-            return None
-        verse_count = len(verses.findAll(u'sup', u'versenum'))
-        found_count = 0
         verse_list = {}
-        while found_count < verse_count:
-            content = content.findNext(u'sup', u'versenum')
-            raw_verse_num = content.next
+        for verse in verses(u'sup', u'versenum'):
+            raw_verse_num =  verse.next
             clean_verse_num = 0
             # Not all verses exist in all translations and may or may not be
             # represented by a verse number. If they are not fine, if they are
@@ -248,9 +241,22 @@ class BGExtract(object):
                 log.exception(u'Illegal verse number in %s %s %s:%s',
                     version, bookname, chapter, unicode(raw_verse_num))
             if clean_verse_num:
-                raw_verse_text = raw_verse_num.next
-                verse_list[clean_verse_num] = unicode(raw_verse_text)
-            found_count += 1
+                verse_text = raw_verse_num.next
+                part = raw_verse_num.next.next
+                while not (isinstance(part, Tag) and part.attrMap and
+                    part.attrMap[u'class'] == u'versenum'):
+                    # While we are still in the same verse grab all the text.
+                    if isinstance(part, NavigableString):
+                        verse_text = verse_text + part
+                    if isinstance(part.next, Tag) and part.next.name == u'div':
+                        # Run out of verses so stop.
+                        break
+                    part = part.next 
+                verse_list[clean_verse_num] = unicode(verse_text)
+        if not verse_list:
+            log.debug(u'No content found in the BibleGateway response.')
+            send_error_message(u'parse')
+            return None
         return SearchResults(bookname, chapter, verse_list)
 
 

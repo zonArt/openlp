@@ -338,43 +338,32 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="languageLabel">
-       <property name="text">
-        <string>Select default language</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QComboBox" name="LanguageComboBox">
-       <property name="sizeAdjustPolicy">
-        <enum>QComboBox::AdjustToContents</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QCheckBox" name="autoLanguageCheckBox">
-       <property name="text">
-        <string>Auto Language</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
     </layout>
    </widget>
-   <widget class="QLabel" name="label">
+   <widget class="QLabel" name="messageLabel">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>190</y>
+      <x>60</x>
+      <y>160</y>
       <width>471</width>
       <height>17</height>
      </rect>
     </property>
     <property name="text">
      <string>Press Finish to apply all you changes and start OpenLP</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="updateLabel">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>220</y>
+      <width>351</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
   </widget>

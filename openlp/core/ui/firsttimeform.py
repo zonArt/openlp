@@ -46,7 +46,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
     """
     log.info(u'ThemeWizardForm loaded')
 
-    def __init__(self, parent=None):
+    def __init__(self, screens, parent=None):
         # check to see if we have web access
         self.web = u'http://openlp.org/files/frw/'
         self.config = ConfigParser.ConfigParser()
@@ -56,7 +56,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             self.config.readfp(io.BytesIO(files))
         QtGui.QWizard.__init__(self, parent)
         self.setupUi(self)
-        #self.registerFields()
+        for screen in screens.get_screen_list():
+            self.displaySelectionComboBox.addItem(screen)
 
     def exec_(self, edit=False):
         """
