@@ -206,7 +206,7 @@ class Ui_MainWindow(object):
         mainWindow.actionList.add_action(self.ModeDefaultItem, u'View Mode')
         self.ModeSetupItem = checkable_action(mainWindow, u'ModeLiveItem')
         mainWindow.actionList.add_action(self.ModeSetupItem, u'View Mode')
-        self.ModeLiveItem = checkable_action(mainWindow, u'ModeLiveItem')
+        self.ModeLiveItem = checkable_action(mainWindow, u'ModeLiveItem', True)
         mainWindow.actionList.add_action(self.ModeLiveItem, u'View Mode')
         self.ModeGroup = QtGui.QActionGroup(mainWindow)
         self.ModeGroup.addAction(self.ModeDefaultItem)
@@ -215,6 +215,8 @@ class Ui_MainWindow(object):
         self.ModeDefaultItem.setChecked(True)
         self.ToolsAddToolItem = icon_action(mainWindow, u'ToolsAddToolItem',
             u':/tools/tools_add.png')
+        # Hide the entry, as it does not have any functionality yet.
+        self.ToolsAddToolItem.setVisible(False)
         mainWindow.actionList.add_action(self.ToolsAddToolItem, u'Tools')
         self.ToolsOpenDataFolder = icon_action(mainWindow,
             u'ToolsOpenDataFolder', u':/general/general_open.png')
@@ -225,19 +227,17 @@ class Ui_MainWindow(object):
             u'Settings')
         # i18n Language Items
         self.AutoLanguageItem = checkable_action(mainWindow,
-            u'AutoLanguageItem')
+            u'AutoLanguageItem', LanguageManager.auto_language)
         mainWindow.actionList.add_action(self.AutoLanguageItem, u'Settings')
         self.LanguageGroup = QtGui.QActionGroup(mainWindow)
         self.LanguageGroup.setExclusive(True)
         self.LanguageGroup.setObjectName(u'LanguageGroup')
-        self.AutoLanguageItem.setChecked(LanguageManager.auto_language)
         self.LanguageGroup.setDisabled(LanguageManager.auto_language)
         qmList = LanguageManager.get_qm_list()
         savedLanguage = LanguageManager.get_language()
         for key in sorted(qmList.keys()):
-            languageItem = checkable_action(mainWindow, key)
-            if qmList[key] == savedLanguage:
-                languageItem.setChecked(True)
+            languageItem = checkable_action(
+                mainWindow, key, qmList[key] == savedLanguage)
             add_actions(self.LanguageGroup, [languageItem])
         self.SettingsShortcutsItem = icon_action(mainWindow,
             u'SettingsShortcutsItem',
@@ -650,8 +650,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Show the main form, as well as the display form
         """
         QtGui.QWidget.show(self)
-        self.liveController.display.setup()
-        self.previewController.display.setup()
         if self.liveController.display.isVisible():
             self.liveController.display.setFocus()
         self.activateWindow()

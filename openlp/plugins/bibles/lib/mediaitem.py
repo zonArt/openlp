@@ -346,7 +346,7 @@ class BibleMediaItem(MediaManagerItem):
             self.advancedSearchButton.setEnabled(False)
             critical_error_message_box(
                 message=translate('BiblePlugin.MediaItem',
-                'Bible not fully loaded'))
+                'Bible not fully loaded.'))
         else:
             self.advancedSearchButton.setEnabled(True)
             self.adjustComboBox(1, self.chapter_count, self.advancedFromChapter)
@@ -539,8 +539,9 @@ class BibleMediaItem(MediaManagerItem):
             self.displayResults(bible, second_bible)
         elif critical_error_message_box(
             message=translate('BiblePlugin.MediaItem',
-            'You cannot combine single and second bible verses. Do you '
-            'want to delete your search results and start a new search?'),
+            'You cannot combine single and dual Bible verse search results. '
+            'Do you want to delete your search results and start a new '
+            'search?'),
             parent=self, question=True) == QtGui.QMessageBox.Yes:
             self.listView.clear()
             self.displayResults(bible, second_bible)
@@ -635,7 +636,6 @@ class BibleMediaItem(MediaManagerItem):
         bible_text = u''
         old_item = None
         old_chapter = -1
-        raw_footer = []
         raw_slides = []
         raw_title = []
         for item in items:
@@ -656,13 +656,13 @@ class BibleMediaItem(MediaManagerItem):
             second_text = self._decodeQtObject(bitem, 'second_text')
             verse_text = self.formatVerse(old_chapter, chapter, verse)
             footer = u'%s (%s %s %s)' % (book, version, copyright, permissions)
-            if footer not in raw_footer:
-                raw_footer.append(footer)
+            if footer not in service_item.raw_footer:
+                service_item.raw_footer.append(footer)
             if second_bible:
                 footer = u'%s (%s %s %s)' % (book, second_version,
                     second_copyright, second_permissions)
-                if footer not in raw_footer:
-                    raw_footer.append(footer)
+                if footer not in service_item.raw_footer:
+                    service_item.raw_footer.append(footer)
                 bible_text = u'%s&nbsp;%s\n\n%s&nbsp;%s' % (verse_text, text,
                     verse_text, second_text)
                 raw_slides.append(bible_text.rstrip())
@@ -706,11 +706,6 @@ class BibleMediaItem(MediaManagerItem):
             service_item.theme = self.settings.bible_theme
         for slide in raw_slides:
             service_item.add_from_text(slide[:30], slide)
-        if service_item.raw_footer:
-            for footer in raw_footer:
-                service_item.raw_footer.append(footer)
-        else:
-            service_item.raw_footer = raw_footer
         return True
 
     def formatTitle(self, start_item, old_item):
