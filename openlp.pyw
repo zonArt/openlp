@@ -172,8 +172,8 @@ class OpenLP(QtGui.QApplication):
         # First time checks in settings
         firstTime = QtCore.QSettings().value(
             u'general/first time', QtCore.QVariant(True)).toBool()
-#        if firstTime:
-#            FirstTimeForm(screens).exec_()
+        if firstTime:
+            FirstTimeForm(screens).exec_()
         if os.name == u'nt':
             self.setStyleSheet(application_stylesheet)
         show_splash = QtCore.QSettings().value(
