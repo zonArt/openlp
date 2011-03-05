@@ -205,18 +205,18 @@ class Ui_AboutDialog(object):
             '    bring this software to you for free because\n'
             '    He has set us free.')) % (lead, u'\n    '.join(developers),
             u'\n    '.join(contributors), u'\n    '.join(testers),
-            u'\n    '.join(packagers), u'\n    '.join(translators[u'af']),
-            u'\n    '.join(translators[u'de']),
-            u'\n    '.join(translators[u'en_GB']),
-            u'\n    '.join(translators[u'en_ZA']),
-            u'\n    '.join(translators[u'et']),
-            u'\n    '.join(translators[u'fr']),
-            u'\n    '.join(translators[u'hu']),
-            u'\n    '.join(translators[u'ja']),
-            u'\n    '.join(translators[u'nb']),
-            u'\n    '.join(translators[u'nl']),
-            u'\n    '.join(translators[u'pt_BR']),
-            u'\n    '.join(translators[u'ru']),
+            u'\n    '.join(packagers), u'\n        '.join(translators[u'af']),
+            u'\n        '.join(translators[u'de']),
+            u'\n        '.join(translators[u'en_GB']),
+            u'\n        '.join(translators[u'en_ZA']),
+            u'\n        '.join(translators[u'et']),
+            u'\n        '.join(translators[u'fr']),
+            u'\n        '.join(translators[u'hu']),
+            u'\n        '.join(translators[u'ja']),
+            u'\n        '.join(translators[u'nb']),
+            u'\n        '.join(translators[u'nl']),
+            u'\n        '.join(translators[u'pt_BR']),
+            u'\n        '.join(translators[u'ru']),
             u'\n    '.join(documentors)))
         self.aboutNotebook.setTabText(
             self.aboutNotebook.indexOf(self.creditsTab),
@@ -238,7 +238,7 @@ class Ui_AboutDialog(object):
             'but WITHOUT ANY WARRANTY; without even the implied warranty of '
             'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See below '
             'for more details.')
-        gpltext = 'GNU GENERAL PUBLIC LICENSE\n'
+        gpltext = ('GNU GENERAL PUBLIC LICENSE\n'
             'Version 2, June 1991\n'
             '\n'
             'Copyright (C) 1989, 1991 Free Software Foundation, Inc., 51 '
@@ -608,7 +608,7 @@ class Ui_AboutDialog(object):
             'subroutine library, you may consider it more useful to permit '
             'linking proprietary applications with the library. If this is '
             'what you want to do, use the GNU Lesser General Public License '
-            'instead of this License.'
+            'instead of this License.')
         self.licenseTextEdit.setPlainText(u'%s\n\n%s\n\n%s\n\n\n%s' %
             (copyright, licence, disclaimer, gpltext))
         self.aboutNotebook.setTabText(
