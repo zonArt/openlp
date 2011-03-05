@@ -346,7 +346,7 @@ class BibleMediaItem(MediaManagerItem):
             self.advancedSearchButton.setEnabled(False)
             critical_error_message_box(
                 message=translate('BiblePlugin.MediaItem',
-                'Bible not fully loaded'))
+                'Bible not fully loaded.'))
         else:
             self.advancedSearchButton.setEnabled(True)
             self.adjustComboBox(1, self.chapter_count, self.advancedFromChapter)
@@ -539,8 +539,9 @@ class BibleMediaItem(MediaManagerItem):
             self.displayResults(bible, second_bible)
         elif critical_error_message_box(
             message=translate('BiblePlugin.MediaItem',
-            'You cannot combine single and second bible verses. Do you '
-            'want to delete your search results and start a new search?'),
+            'You cannot combine single and dual Bible verse search results. '
+            'Do you want to delete your search results and start a new '
+            'search?'),
             parent=self, question=True) == QtGui.QMessageBox.Yes:
             self.listView.clear()
             self.displayResults(bible, second_bible)
