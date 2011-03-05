@@ -1,57 +1,93 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>OpenLP Remote Controller</title>
-    <script type="text/javascript" src="/files/jquery.js"></script>
-    <script type='text/javascript' src="/files/openlp.js"></script>
-    <script type='text/javascript' src="/files/init.js"></script>
-    <link rel="stylesheet" href="/files/style.css" type="text/css" />
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>OpenLP 2.0 Remote</title>
+  <link rel="stylesheet" href="/files/jquery.mobile.css" />
+  <script type="text/javascript" src="/files/jquery.js"></script>
+  <script type="text/javascript" src="/files/openlp.js"></script>
+  <script type="text/javascript" src="/files/jquery.mobile.js"></script>
 </head>
 <body>
-    <h1>OpenLP Controller</h1>
-    <p>Quick Links: <a href="#service-manager">Service Manager</a> | <a href="#slide-controller">Slide Controller</a> | <a href="#miscellaneous">Miscellaneous</a></p>
-    <h2 id="service-manager">Service Manager</h2>
-    <div id="service"></div>
-    <p><em>(Click service item to go live.)</em></p>
-    <fieldset>
-        <legend>Controls</legend>
-        <div id="service-buttons">
-            <input type="button" value="Refresh Service" id="servicemanager_list_request" />
-        </div>
-        <div id="item-buttons">
-            <input type="button" value="&lt;- Previous Item" id="servicemanager_previous_item" />
-            <input type="button" value="Next Item -&gt;" id="servicemanager_next_item" />
-        </div>
-    </fieldset>
-    <hr>
-    <h2 id="slide-controller">Slide Controller</h2>
-    <div id="current-item"></div>
-    <p><em>(Click verse to display.)</em></p>
-    <fieldset>
-        <legend>Controls</legend>
-        <div id="item-buttons">
-            <input type="button" value="Refresh Item" id="slidecontroller_live_text_request" />
-        </div>
-        <div id="slide-buttons">
-            <input type="button" value="&lt;- Previous Slide" id="slidecontroller_live_previous" />
-            <input type="button" value="Next Slide -&gt;" id="slidecontroller_live_next" />
-        </div>
-    </fieldset>
-    <hr>
-    <h2 id="miscellaneous">Miscellaneous</h2>
-    <div id="display-buttons">
-        <input type="button" value="Blank" id="slidecontroller_live_blank" />
-        <input type="button" value="Unblank" id="slidecontroller_live_unblank" />
+<div data-role="page" id="home">
+  <div data-role="header">
+    <h1>OpenLP 2.0 Remote</h1>
+  </div>
+  <div data-role="content">
+    <div data-role="controlgroup">
+      <a href="#service-manager" data-role="button" data-icon="arrow-r" data-iconpos="right">Service Manager</a>
+      <a href="#slide-controller" data-role="button" data-icon="arrow-r" data-iconpos="right">Slide Controller</a>
+      <a href="#alerts" data-role="button" data-icon="arrow-r" data-iconpos="right">Alerts</a>
     </div>
-    <div id="alert-details">
-        <label for="alert-text">Alert text:</label>
-        <input type="text" id="alert-text" />
-        <input type="button" value="Send" id="alert-send" />
+  </div>
+</div>
+<div data-role="page" id="service-manager">
+  <div data-role="header">
+    <a href="#" data-rel="back" data-icon="arrow-l">Back</a>
+    <h1>Service Manager</h1>
+  </div>
+  <div data-role="content">
+  </div>
+</div>
+<div data-role="page" id="slide-controller">
+  <div data-role="header">
+    <a href="#" data-rel="back" data-icon="arrow-l">Back</a>
+    <h1>Slide Controller</h1>
+  </div>
+  <div data-role="content">
+    <ul data-role="listview" data-inset="true">
+      <li data-role="list-divider">Amazing Grace</li>
+      <li data-icon="false" data-theme="e"><a href="#">
+        Amazing grace, how sweet the sound,<br />
+        That saved a wretch like me!<br />
+        I once was lost, but now I'm found,<br />
+        Was blind but now I see!
+      </a></li>
+      <li data-icon="false"><a href="#">
+        T'was Grace that taught my heart to fear.<br />
+        And Grace, my fears relieved.<br />
+        How precious did that Grace appear<br />
+        The hour I first believed.
+      </a></li>
+      <li data-icon="false"><a href="#">
+        Through many dangers, toils and snares<br />
+        I have already come;<br />
+        'Tis Grace that brought me safe thus far<br />
+        and Grace will lead me home.
+      </a></li>
+      <li data-icon="false"><a href="#">
+        The Lord has promised good to me.<br />
+        His word my hope secures.<br />
+        He will my shield and portion be,<br />
+        As long as life endures.
+      </a></li>
+      <li data-icon="false"><a href="#">
+        Yea, when this flesh and heart shall fail,<br />
+        And mortal life shall cease,<br />
+        I shall possess within the veil,<br />
+        A life of joy and peace.
+      </a></li>
+      <li data-icon="false"><a href="#">
+        When we've been here ten thousand years<br />
+        Bright shining as the sun.<br />
+        We've no less days to sing God's praise<br />
+        Than when we've first begun.
+      </a></li>
+    </ul>
+  </div>
+</div>
+<div data-role="page" id="alerts">
+  <div data-role="header">
+    <a href="#" data-rel="back" data-icon="arrow-l">Back</a>
+    <h1>Alerts</h1>
+  </div>
+  <div data-role="content">
+    <div data-role="fieldcontain">
+      <label for="alert-text">Text:</label>
+      <input type="text" name="alert-text" id="alert-text" value="" />
     </div>
-    <hr>
-    <a href="http://openlp.org/">OpenLP website</a>
+    <a href="#" data-role="button">Show Alert</a>
+  </div>
+</div>
 </body>
 </html>
-
