@@ -250,7 +250,7 @@ class BibleManager(object):
         if not bible:
             Receiver.send_message(u'openlp_information_message', {
                 u'title': translate('BiblesPlugin.BibleManager',
-                'No Bibles available'),
+                'No Bibles Available'),
                 u'message': translate('BiblesPlugin.BibleManager',
                 'There are no Bibles currently installed. Please use the '
                 'Import Wizard to install one or more Bibles.')
