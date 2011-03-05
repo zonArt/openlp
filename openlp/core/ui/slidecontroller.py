@@ -165,7 +165,6 @@ class SlideController(QtGui.QWidget):
                     u':/slides/slide_desktop.png', False)
             self.desktopScreen.setText(
                 translate('OpenLP.SlideController', 'Show Desktop'))
-            self.desktopScreen.setVisible(self.screens.display_count > 1)
             self.hideMenu.setDefaultAction(self.blankScreen)
             self.hideMenu.menu().addAction(self.blankScreen)
             self.hideMenu.menu().addAction(self.themeScreen)
@@ -405,8 +404,6 @@ class SlideController(QtGui.QWidget):
         Settings dialog has changed the screen size of adjust output and
         screen previews.
         """
-        if self.isLive:
-            self.desktopScreen.setVisible(self.screens.display_count > 1)
         # rebuild display as screen size changed
         self.display = MainDisplay(self, self.screens, self.isLive)
         self.display.imageManager = self.parent.renderManager.image_manager
@@ -465,6 +462,9 @@ class SlideController(QtGui.QWidget):
         self.onSlideSelected()
 
     def receiveSpinDelay(self, value):
+        """
+        Adjusts the value of the ``delaySpinBox`` to the given one.
+        """
         self.delaySpinBox.setValue(int(value))
 
     def enableToolBar(self, item):
@@ -748,8 +748,7 @@ class SlideController(QtGui.QWidget):
         self.hideMenu.setDefaultAction(self.blankScreen)
         self.blankScreen.setChecked(checked)
         self.themeScreen.setChecked(False)
-        if self.screens.display_count > 1:
-            self.desktopScreen.setChecked(False)
+        self.desktopScreen.setChecked(False)
         if checked:
             Receiver.send_message(u'maindisplay_hide', HideMode.Blank)
             QtCore.QSettings().setValue(
@@ -770,8 +769,7 @@ class SlideController(QtGui.QWidget):
         self.hideMenu.setDefaultAction(self.themeScreen)
         self.blankScreen.setChecked(False)
         self.themeScreen.setChecked(checked)
-        if self.screens.display_count > 1:
-            self.desktopScreen.setChecked(False)
+        self.desktopScreen.setChecked(False)
         if checked:
             Receiver.send_message(u'maindisplay_hide', HideMode.Theme)
             QtCore.QSettings().setValue(
@@ -792,9 +790,6 @@ class SlideController(QtGui.QWidget):
         self.hideMenu.setDefaultAction(self.desktopScreen)
         self.blankScreen.setChecked(False)
         self.themeScreen.setChecked(False)
-        # On valid if more than 1 display
-        if self.screens.display_count <= 1:
-            return
         self.desktopScreen.setChecked(checked)
         if checked:
             Receiver.send_message(u'maindisplay_hide', HideMode.Screen)
@@ -1099,15 +1094,15 @@ class SlideController(QtGui.QWidget):
         Used by command items which provide their own displays to reset the
         screen hide attributes
         """
+        blank = None
         if self.blankScreen.isChecked:
-            self.blankScreen.setChecked(False)
-            self.hideMenu.setDefaultAction(self.blankScreen)
+            blank = self.blankScreen
+        if self.themeScreen.isChecked:
+            blank = self.themeScreen
+        if self.desktopScreen.isChecked:
+            blank = self.desktopScreen
+        if blank:
+            blank.setChecked(False)
+            self.hideMenu.setDefaultAction(blank)
             QtCore.QSettings().remove(
                 self.parent.generalSettingsSection + u'/screen blank')
-        if self.themeScreen.isChecked:
-            self.themeScreen.setChecked(False)
-            self.hideMenu.setDefaultAction(self.themeScreen)
-        if self.screens.display_count > 1:
-            if self.desktopScreen.isChecked:
-                self.desktopScreen.setChecked(False)
-                self.hideMenu.setDefaultAction(self.desktopScreen)

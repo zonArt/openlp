@@ -319,7 +319,7 @@ class MainDisplay(DisplayWidget):
         Changes the volume of a running video
         """
         log.debug(u'videoVolume %d' % volume)
-        vol = float(volume)/float(10)
+        vol = float(volume) / float(10)
         if self.phononActive:
             self.audio.setVolume(vol)
         else:
@@ -335,7 +335,7 @@ class MainDisplay(DisplayWidget):
         # We are running a background theme
         self.override[u'theme'] = u''
         self.override[u'video'] = True
-        vol = float(volume)/float(10)
+        vol = float(volume) / float(10)
         if isBackground or not self.usePhonon:
             js = u'show_video("init", "%s", %s, true); show_video("play");' % \
                 (videoPath.replace(u'\\', u'\\\\'), str(vol))
@@ -388,9 +388,10 @@ class MainDisplay(DisplayWidget):
             Receiver.send_message(u'openlp_process_events')
         # if was hidden keep it hidden
         if self.isLive:
-            self.setVisible(True)
-            if self.hideMode:
-                self.hideDisplay(self.hideMode)
+           if self.hideMode:
+            self.hideDisplay(self.hideMode)
+           else:
+               self.setVisible(True)
         preview = QtGui.QImage(self.screen[u'size'].width(),
             self.screen[u'size'].height(),
             QtGui.QImage.Format_ARGB32_Premultiplied)
