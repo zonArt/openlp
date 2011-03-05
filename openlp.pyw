@@ -151,7 +151,7 @@ class OpenLP(QtGui.QApplication):
             log.info(u'Openlp version %s' % app_version[u'version'])
         return app_version
 
-    def run(self, screens):
+    def run(self):
         """
         Run the OpenLP application.
         """
@@ -167,6 +167,13 @@ class OpenLP(QtGui.QApplication):
         self.setOrganizationDomain(u'openlp.org')
         self.setApplicationName(u'OpenLP')
         self.setApplicationVersion(app_version[u'version'])
+        # Decide how many screens we have and their size
+        screens = ScreenList(self.desktop())
+        # First time checks in settings
+        firstTime = QtCore.QSettings().value(
+            u'general/first time', QtCore.QVariant(True)).toBool()
+#        if firstTime:
+#            FirstTimeForm(screens).exec_()
         if os.name == u'nt':
             self.setStyleSheet(application_stylesheet)
         show_splash = QtCore.QSettings().value(
@@ -178,7 +185,8 @@ class OpenLP(QtGui.QApplication):
         self.processEvents()
         # start the main app window
         self.appClipboard = self.clipboard()
-        self.mainWindow = MainWindow(screens, app_version, self.appClipboard)
+        self.mainWindow = MainWindow(screens, app_version, self.appClipboard,
+            firstTime)
         self.mainWindow.show()
         if show_splash:
             # now kill the splashscreen
@@ -265,11 +273,11 @@ def main():
     # Define the settings environment
     QtCore.QSettings(u'OpenLP', u'OpenLP')
     # First time checks in settings
-    if QtCore.QSettings().value(
-        u'general/first time', QtCore.QVariant(True)).toBool():
-        if not FirstTimeLanguageForm().exec_():
-            # if cancel then stop processing
-            sys.exit()
+#    if QtCore.QSettings().value(
+#        u'general/first time', QtCore.QVariant(True)).toBool():
+#        if not FirstTimeLanguageForm().exec_():
+#            # if cancel then stop processing
+#            sys.exit()
     if sys.platform == u'darwin':
         OpenLP.addLibraryPath(QtGui.QApplication.applicationDirPath()
             + "/qt4_plugins")
@@ -277,15 +285,9 @@ def main():
     language = LanguageManager.get_language()
     appTranslator = LanguageManager.get_translator(language)
     app.installTranslator(appTranslator)
-    # Decide how many screens we have and their size
-    screens = ScreenList(app.desktop())
-    # First time checks in settings
-    if QtCore.QSettings().value(
-        u'general/first time', QtCore.QVariant(True)).toBool():
-        FirstTimeForm(screens).exec_()
     if not options.no_error_form:
         sys.excepthook = app.hookException
-    sys.exit()#(app.run(screens))
+    sys.exit(app.run())
 
 if __name__ == u'__main__':
     """

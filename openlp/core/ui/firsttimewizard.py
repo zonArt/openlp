@@ -163,13 +163,16 @@ class Ui_FirstTimeWizard(object):
             QtGui.QComboBox.AdjustToContents)
         self.themeSelectionComboBox.setObjectName(u'themeSelectionComboBox')
         self.gridLayout.addWidget(self.themeSelectionComboBox, 1, 1, 1, 1)
-        self.label = QtGui.QLabel(self.DefaultsPage)
-        self.label.setGeometry(QtCore.QRect(40, 190, 471, 17))
-        self.label.setObjectName(u'label')
+        self.messageLabel = QtGui.QLabel(self.DefaultsPage)
+        self.messageLabel.setGeometry(QtCore.QRect(60, 160, 471, 17))
+        self.messageLabel.setObjectName(u'messageLabel')
+        self.updateLabel = QtGui.QLabel(self.DefaultsPage)
+        self.updateLabel.setGeometry(QtCore.QRect(60, 220, 351, 17))
+        self.updateLabel.setObjectName(u'updateLabel')
         FirstTimeWizard.addPage(self.DefaultsPage)
 
         self.retranslateUi(FirstTimeWizard)
-        QtCore.QMetaObject.connectSlotsByName(OpenLP.FirstTimeWizard)
+        QtCore.QMetaObject.connectSlotsByName(FirstTimeWizard)
 
     def retranslateUi(self, FirstTimeWizard):
         FirstTimeWizard.setWindowTitle(translate(
@@ -220,5 +223,5 @@ class Ui_FirstTimeWizard(object):
             'Default output display'))
         self.themeSelectionLabel.setText(translate('OpenLP.FirstTimeWizard',
             'Select the default Theme'))
-        self.label.setText(translate('OpenLP.FirstTimeWizard',
+        self.messageLabel.setText(translate('OpenLP.FirstTimeWizard',
             'Press Finish to apply all you changes and start OpenLP'))

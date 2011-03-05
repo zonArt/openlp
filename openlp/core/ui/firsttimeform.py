@@ -34,7 +34,7 @@ from PyQt4 import QtCore, QtGui
 
 from firsttimewizard import Ui_FirstTimeWizard
 
-from openlp.core.lib import translate, PluginStatus, check_directory_exists
+from openlp.core.lib import translate, PluginStatus, check_directory_exists, Receiver
 from openlp.core.utils import get_web_page, AppLocation
 
 log = logging.getLogger(__name__)
@@ -58,6 +58,17 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.setupUi(self)
         for screen in screens.get_screen_list():
             self.displaySelectionComboBox.addItem(screen)
+        self.songsText = translate('OpenLP.FirstTimeWizard', 'Songs')
+        self.biblesText = translate('OpenLP.FirstTimeWizard', 'Bibles')
+        self.themesText = translate('OpenLP.FirstTimeWizard', 'Themes')
+        self.startUpdates = translate('OpenLP.FirstTimeWizard',
+            'Starting Updates')
+        self.downloadSongs = unicode(translate('OpenLP.FirstTimeWizard',
+            'Downloading Songs.'))
+        self.downloadBible = unicode(translate('OpenLP.FirstTimeWizard',
+            'Downloading bible'))
+        self.downloadTheme = unicode(translate('OpenLP.FirstTimeWizard',
+            'Downloading theme'))
 
     def exec_(self, edit=False):
         """
@@ -76,13 +87,13 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             self.internetGroupBox.setVisible(True)
             self.noInternetLabel.setVisible(False)
             treewidgetitem = QtGui.QTreeWidgetItem(self.selectionTreeWidget)
-            treewidgetitem.setText(0, u'Songs')
+            treewidgetitem.setText(0, self.songsText)
             self.__loadChild(treewidgetitem, u'songs', u'languages', u'songs')
             treewidgetitem = QtGui.QTreeWidgetItem(self.selectionTreeWidget)
-            treewidgetitem.setText(0, u'Bibles')
+            treewidgetitem.setText(0, self.biblesText)
             self.__loadChild(treewidgetitem, u'bibles', u'translations', u'bible')
             treewidgetitem = QtGui.QTreeWidgetItem(self.selectionTreeWidget)
-            treewidgetitem.setText(0, u'Themes')
+            treewidgetitem.setText(0, self.themesText)
             self.__loadChild(treewidgetitem, u'themes', u'files', 'theme')
         else:
             self.internetGroupBox.setVisible(False)
@@ -94,9 +105,11 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         for file in files:
             if file:
                 child = QtGui.QTreeWidgetItem(tree)
-                child.setText(0, self.config.get(u'%s_%s' %(root, file), u'title'))
+                child.setText(0, self.config.get(u'%s_%s'
+                    % (root, file), u'title'))
                 child.setData(0, QtCore.Qt.UserRole,
-                    QtCore.QVariant(self.config.get(u'%s_%s' %(root, file), u'filename')))
+                    QtCore.QVariant(self.config.get(u'%s_%s'
+                    % (root, file), u'filename')))
                 child.setCheckState(0, QtCore.Qt.Unchecked)
                 child.setFlags(QtCore.Qt.ItemIsUserCheckable |
                     QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
@@ -107,15 +120,18 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         """
         wizardPage = self.page(id)
         if wizardPage == self.DefaultsPage:
-            listIterator = QtGui.QTreeWidgetItemIterator(self.selectionTreeWidget)
+            listIterator = QtGui.QTreeWidgetItemIterator(
+                self.selectionTreeWidget)
             while listIterator.value():
                 parent = listIterator.value().parent()
-                if parent and listIterator.value().checkState(0) == QtCore.Qt.Checked:
-                    if unicode(parent.text(0)) == u'Themes':
+                if parent and listIterator.value().checkState(0) \
+                    == QtCore.Qt.Checked:
+                    if unicode(parent.text(0)) == self.themesText:
                         self.themeSelectionComboBox.addItem(listIterator.value().text(0))
                 listIterator += 1
 
     def accept(self):
+        self.__updateMessage(self.startUpdates)
         self.__pluginStatus(self.songsCheckBox, u'songs/status')
         self.__pluginStatus(self.bibleCheckBox, u'bibles/status')
         self.__pluginStatus(self.presentationCheckBox, u'presentations/status')
@@ -138,14 +154,18 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             if listIterator.value().parent():
                 if listIterator.value().checkState(0) == QtCore.Qt.Checked:
                     # Install
-                    if unicode(type.text(0)) == u'Bibles':
+                    if unicode(type.text(0)) == self.biblesText:
+                        bible = unicode(listIterator.value().data(0,
+                            QtCore.Qt.UserRole).toString())
+                        message = u'%s %s' % (self.downloadBible, bible)
+                        self.__updateMessage(message)
+                        urllib.urlretrieve(u'%s%s' % (self.web, bible),
+                            os.path.join(bibleDestination, bible))
+                    if unicode(type.text(0)) == self.themesText:
                         theme = unicode(listIterator.value().data(0,
                             QtCore.Qt.UserRole).toString())
-                        urllib.urlretrieve(u'%s%s' % (self.web, theme),
-                            os.path.join(bibleDestination, theme))
-                    if unicode(type.text(0)) == u'Themes':
-                        theme = unicode(listIterator.value().data(0,
-                            QtCore.Qt.UserRole).toString())
+                        message = u'%s %s' % (self.downloadTheme, bible)
+                        self.__updateMessage(message)
                         urllib.urlretrieve(u'%s%s' % (self.web, theme),
                             os.path.join(themeDestination, theme))
             listIterator += 1
@@ -155,3 +175,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         status = PluginStatus.Active if field.checkState() \
             == QtCore.Qt.Checked else PluginStatus.Inactive
         QtCore.QSettings().setValue(tag, QtCore.QVariant(status))
+
+    def __updateMessage(self, text):
+        self.updateLabel.setText(text)
+        Receiver.send_message(u'openlp_process_events')
