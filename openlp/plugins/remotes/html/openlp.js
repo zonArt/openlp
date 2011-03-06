@@ -20,37 +20,94 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA                     *
  *****************************************************************************/
 
-$("#service-manager").live("pagebeforeshow", function (event) {
-  $.getJSON(
-    "/api/service/list",
-    function (data, status) {
-      var ul = $("<ul data-role=\"listview\" data-inset=\"true\">");
-      for (idx in data.results) {
-        var li = $("<li data-icon=\"false\">").append(
-          $("<a href=\"#\">").text(data.results[idx]["title"]));
-        ul.append(li);
-      }
-      $("#service-manager > div[data-role=content]").html(ul);
-      $("#service-manager").refresh();
+window.OpenLP = {
+  getElement: function(event) {
+    var targ;
+    if (!event) {
+      var event = window.event;
     }
-  );
-});
-
-$("#slide-controller").live("pagebeforeshow", function (event) {
-  $.getJSON(
-    "/api/controller/live/text",
-    function (data, status) {
-      var ul = $("<ul data-role=\"listview\" data-inset=\"true\">");
-      for (idx in data.results.slides) {
-        var li = $("<li data-icon=\"false\">").append(
-          $("<a href=\"#\">").html(data.results.slides[idx]["text"]));
-        if (data.results.slides[idx]["selected"]) {
-          li.attr("data-theme", "e");
+    if (event.target) {
+      targ = event.target;
+    }
+    else if (event.srcElement) {
+      targ = event.srcElement;
+    }
+    if (targ.nodeType == 3) {
+      // defeat Safari bug
+      targ = targ.parentNode;
+    }
+    return $(targ);
+  },
+  loadService: function (event) {
+    $.getJSON(
+      "/api/service/list",
+      function (data, status) {
+        var ul = $("#service-manager > div[data-role=content] > ul[data-role=listview]");
+        ul.html("");
+        for (idx in data.results) {
+          var li = $("<li data-icon=\"false\">").append(
+            $("<a href=\"#\">").attr("value", idx + 1).text(data.results[idx]["title"]));
+          li.children("a").click(OpenLP.setItem);
+          ul.append(li);
         }
-        ul.append(li);
+        ul.listview("refresh");
       }
-      $("#slide-controller div[data-role=content]").html(ul);
-      $("#slide-controller").refresh();
-    }
-  );
-});
+    );
+  },
+  loadController: function (event) {
+    $.getJSON(
+      "/api/controller/live/text",
+      function (data, status) {
+        var ul = $("#slide-controller > div[data-role=content] > ul[data-role=listview]");
+        ul.html("");
+        for (idx in data.results.slides) {
+          var li = $("<li data-icon=\"false\">").append(
+            $("<a href=\"#\">").attr("value", idx + 1).html(data.results.slides[idx]["text"]));
+          if (data.results.slides[idx]["selected"]) {
+            li.attr("data-theme", "e");
+          }
+          li.children("a").click(OpenLP.setSlide);
+          ul.append(li);
+        }
+        ul.listview("refresh");
+      }
+    );
+  },
+  setItem: function (event) {
+    var item = OpenLP.getElement(event);
+    var id = item.attr("value");
+    var text = JSON.stringify({"request": {"id": id}});
+    $.getJSON(
+      "/api/service/set",
+      {"data": text},
+      function (data, status) {
+        $("#service-manager > div[data-role=content] ul[data-role=listview] li").attr("data-theme", "c").removeClass("ui-btn-up-e").addClass("ui-btn-up-c");
+        while (item[0].tagName != "LI") {
+          item = item.parent();
+        }
+        item.attr("data-theme", "e").removeClass("ui-btn-up-c").addClass("ui-btn-up-e");
+        $("#service-manager > div[data-role=content] ul[data-role=listview]").listview("refresh");
+      }
+    );
+  },
+  setSlide: function (event) {
+    var slide = OpenLP.getElement(event);
+    var id = slide.attr("value");
+    var text = JSON.stringify({"request": {"id": id}});
+    $.getJSON(
+      "/api/controller/live/set",
+      {"data": text},
+      function (data, status) {
+        $("#slide-controller div[data-role=content] ul[data-role=listview] li").attr("data-theme", "c").removeClass("ui-btn-up-e").addClass("ui-btn-up-c");
+        while (slide[0].tagName != "LI") {
+          slide = slide.parent();
+        }
+        slide.attr("data-theme", "e").removeClass("ui-btn-up-c").addClass("ui-btn-up-e");
+        $("#slide-controller div[data-role=content] ul[data-role=listview]").listview("refresh");
+      }
+    );
+  }
+}
+
+$("#service-manager").live("pagebeforeshow", OpenLP.loadService);
+$("#slide-controller").live("pagebeforeshow", OpenLP.loadController);

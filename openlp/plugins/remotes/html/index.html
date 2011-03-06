@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <title>OpenLP 2.0 Remote</title>
   <link rel="stylesheet" href="/files/jquery.mobile.css" />
+  <link rel="stylesheet" href="/files/openlp.css" />
   <script type="text/javascript" src="/files/jquery.js"></script>
   <script type="text/javascript" src="/files/openlp.js"></script>
   <script type="text/javascript" src="/files/jquery.mobile.js"></script>
@@ -27,6 +28,15 @@
     <h1>Service Manager</h1>
   </div>
   <div data-role="content">
+    <ul data-role="listview" data-inset="true">
+    </ul>
+  </div>
+  <div data-role="footer" data-theme="b" class="ui-bar">
+	<a href="#" data-role="button" data-icon="blank">Blank</a>
+	<a href="#" data-role="button" data-icon="unblank">Unblank</a>
+	<a href="#" data-role="button" data-icon="refresh">Refresh</a>
+	<a href="#" data-role="button" data-icon="arrow-l">Previous</a>
+    <a href="#" data-role="button" data-icon="arrow-r" data-iconpos="right">Next</a>
   </div>
 </div>
 <div data-role="page" id="slide-controller">
@@ -36,44 +46,14 @@
   </div>
   <div data-role="content">
     <ul data-role="listview" data-inset="true">
-      <li data-role="list-divider">Amazing Grace</li>
-      <li data-icon="false" data-theme="e"><a href="#">
-        Amazing grace, how sweet the sound,<br />
-        That saved a wretch like me!<br />
-        I once was lost, but now I'm found,<br />
-        Was blind but now I see!
-      </a></li>
-      <li data-icon="false"><a href="#">
-        T'was Grace that taught my heart to fear.<br />
-        And Grace, my fears relieved.<br />
-        How precious did that Grace appear<br />
-        The hour I first believed.
-      </a></li>
-      <li data-icon="false"><a href="#">
-        Through many dangers, toils and snares<br />
-        I have already come;<br />
-        'Tis Grace that brought me safe thus far<br />
-        and Grace will lead me home.
-      </a></li>
-      <li data-icon="false"><a href="#">
-        The Lord has promised good to me.<br />
-        His word my hope secures.<br />
-        He will my shield and portion be,<br />
-        As long as life endures.
-      </a></li>
-      <li data-icon="false"><a href="#">
-        Yea, when this flesh and heart shall fail,<br />
-        And mortal life shall cease,<br />
-        I shall possess within the veil,<br />
-        A life of joy and peace.
-      </a></li>
-      <li data-icon="false"><a href="#">
-        When we've been here ten thousand years<br />
-        Bright shining as the sun.<br />
-        We've no less days to sing God's praise<br />
-        Than when we've first begun.
-      </a></li>
     </ul>
+  </div>
+  <div data-role="footer" data-theme="b" class="ui-bar">
+	<a href="#" data-role="button" data-icon="blank">Blank</a>
+	<a href="#" data-role="button" data-icon="unblank">Unblank</a>
+	<a href="#" data-role="button" data-icon="refresh">Refresh</a>
+	<a href="#" data-role="button" data-icon="arrow-l">Previous</a>
+    <a href="#" data-role="button" data-icon="arrow-r" data-iconpos="right">Next</a>
   </div>
 </div>
 <div data-role="page" id="alerts">

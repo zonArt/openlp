@@ -319,7 +319,11 @@ class HttpConnection(object):
                     data.append(item)
             json_data = {u'results': {u'slides': data}}
         else:
-            Receiver.send_message(event)
+            if self.url_params and self.url_params.get(u'data'):
+                data = json.loads(self.url_params[u'data'][0])
+                Receiver.send_message(event, data[u'request'][u'id'])
+            else:
+                Receiver.send_message(event)
             json_data = {u'results': {u'success': True}}
         #if action == u'text':
         #    json_data = {u'results': }
