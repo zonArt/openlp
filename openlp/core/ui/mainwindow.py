@@ -629,7 +629,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Import themes if first time
         if firstTime:
             self.themeManagerContents.firstTime()
-        self.themeManagerContents.firstTime()
 
 
     def setAutoLanguage(self, value):

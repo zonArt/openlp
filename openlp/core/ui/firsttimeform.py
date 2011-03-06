@@ -38,7 +38,7 @@ from openlp.core.lib import translate, PluginStatus, check_directory_exists,  \
     Receiver
 from openlp.core.utils import get_web_page, AppLocation
 
-log = logging.getLogger(__name__)
+log = logging.getLogger(_name_)
 
 class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
     """
@@ -47,7 +47,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
     """
     log.info(u'ThemeWizardForm loaded')
 
-    def __init__(self, screens, parent=None):
+    def _init_(self, screens, parent=None):
         # check to see if we have web access
         self.web = u'http://openlp.org/files/frw/'
         self.config = ConfigParser.ConfigParser()
@@ -55,7 +55,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         if self.webAccess:
             files = self.webAccess.read()
             self.config.readfp(io.BytesIO(files))
-        QtGui.QWizard.__init__(self, parent)
+        QtGui.QWizard._init_(self, parent)
         self.setupUi(self)
         for screen in screens.get_screen_list():
             self.displaySelectionComboBox.addItem(screen)
@@ -65,7 +65,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.startUpdates = translate('OpenLP.FirstTimeWizard',
             'Starting Updates')
         self.downloadSongs = unicode(translate('OpenLP.FirstTimeWizard',
-            'Downloading Songs.'))
+            'Downloading songs'))
         self.downloadBible = unicode(translate('OpenLP.FirstTimeWizard',
             'Downloading bible'))
         self.downloadTheme = unicode(translate('OpenLP.FirstTimeWizard',
@@ -89,19 +89,19 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             self.noInternetLabel.setVisible(False)
             treewidgetitem = QtGui.QTreeWidgetItem(self.selectionTreeWidget)
             treewidgetitem.setText(0, self.songsText)
-            self.__loadChild(treewidgetitem, u'songs', u'languages', u'songs')
+            self._loadChild(treewidgetitem, u'songs', u'languages', u'songs')
             treewidgetitem = QtGui.QTreeWidgetItem(self.selectionTreeWidget)
             treewidgetitem.setText(0, self.biblesText)
-            self.__loadChild(treewidgetitem, u'bibles', u'translations',
+            self._loadChild(treewidgetitem, u'bibles', u'translations',
                 u'bible')
             treewidgetitem = QtGui.QTreeWidgetItem(self.selectionTreeWidget)
             treewidgetitem.setText(0, self.themesText)
-            self.__loadChild(treewidgetitem, u'themes', u'files', 'theme')
+            self._loadChild(treewidgetitem, u'themes', u'files', 'theme')
         else:
             self.internetGroupBox.setVisible(False)
             self.noInternetLabel.setVisible(True)
 
-    def __loadChild(self, tree, list, tag, root):
+    def _loadChild(self, tree, list, tag, root):
         files = self.config.get(list, tag)
         files = files.split(u',')
         for file in files:
@@ -134,17 +134,17 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 listIterator += 1
 
     def accept(self):
-        self.__updateMessage(self.startUpdates)
+        self._updateMessage(self.startUpdates)
         # Set up the Plugin status's
-        self.__pluginStatus(self.songsCheckBox, u'songs/status')
-        self.__pluginStatus(self.bibleCheckBox, u'bibles/status')
-        self.__pluginStatus(self.presentationCheckBox, u'presentations/status')
-        self.__pluginStatus(self.imageCheckBox, u'images/status')
-        self.__pluginStatus(self.mediaCheckBox, u'media/status')
-        self.__pluginStatus(self.remoteCheckBox, u'remotes/status')
-        self.__pluginStatus(self.customCheckBox, u'custom/status')
-        self.__pluginStatus(self.songUsageCheckBox, u'songusage/status')
-        self.__pluginStatus(self.alertCheckBox, u'alerts/status')
+        self._pluginStatus(self.songsCheckBox, u'songs/status')
+        self._pluginStatus(self.bibleCheckBox, u'bibles/status')
+        self._pluginStatus(self.presentationCheckBox, u'presentations/status')
+        self._pluginStatus(self.imageCheckBox, u'images/status')
+        self._pluginStatus(self.mediaCheckBox, u'media/status')
+        self._pluginStatus(self.remoteCheckBox, u'remotes/status')
+        self._pluginStatus(self.customCheckBox, u'custom/status')
+        self._pluginStatus(self.songUsageCheckBox, u'songusage/status')
+        self._pluginStatus(self.alertCheckBox, u'alerts/status')
         # Build directories for downloads
         songsDestination = AppLocation.get_section_data_path(u'songs')
         check_directory_exists(songsDestination)
@@ -165,7 +165,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                         songs = unicode(listIterator.value().data(0,
                             QtCore.Qt.UserRole).toString())
                         message = u'%s %s' % (self.downloadSongs, item)
-                        self.__updateMessage(message)
+                        self._updateMessage(message)
                         # Song database is a fixed file name
                         urllib.urlretrieve(u'%s%s' % (self.web, songs),
                             os.path.join(songsDestination, u'songs.sqlite'))
@@ -174,7 +174,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                         bible = unicode(listIterator.value().data(0,
                             QtCore.Qt.UserRole).toString())
                         message = u'%s %s' % (self.downloadBible, item)
-                        self.__updateMessage(message)
+                        self._updateMessage(message)
                         urllib.urlretrieve(u'%s%s' % (self.web, bible),
                             os.path.join(bibleDestination, bible))
                     # Download any themes
@@ -182,7 +182,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                         theme = unicode(listIterator.value().data(0,
                             QtCore.Qt.UserRole).toString())
                         message = u'%s %s' % (self.downloadTheme, item)
-                        self.__updateMessage(message)
+                        self._updateMessage(message)
                         urllib.urlretrieve(u'%s%s' % (self.web, theme),
                             os.path.join(themeDestination, theme))
             listIterator += 1
@@ -199,12 +199,12 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             QtCore.QVariant(False))
         return QtGui.QWizard.accept(self)
 
-    def __pluginStatus(self, field, tag):
+    def _pluginStatus(self, field, tag):
         status = PluginStatus.Active if field.checkState() \
             == QtCore.Qt.Checked else PluginStatus.Inactive
         QtCore.QSettings().setValue(tag, QtCore.QVariant(status))
 
-    def __updateMessage(self, text):
+    def _updateMessage(self, text):
         """
         Keep screen up to date
         """
