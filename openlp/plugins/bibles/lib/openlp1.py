@@ -27,8 +27,6 @@
 import logging
 import sqlite
 
-from PyQt4 import QtCore
-
 from openlp.core.lib import Receiver
 from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.bibles.lib.db import BibleDB
