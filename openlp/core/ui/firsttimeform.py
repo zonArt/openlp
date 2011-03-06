@@ -38,7 +38,7 @@ from openlp.core.lib import translate, PluginStatus, check_directory_exists,  \
     Receiver
 from openlp.core.utils import get_web_page, AppLocation
 
-log = logging.getLogger(_name_)
+log = logging.getLogger(__name__)
 
 class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
     """
@@ -47,7 +47,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
     """
     log.info(u'ThemeWizardForm loaded')
 
-    def _init_(self, screens, parent=None):
+    def __init__(self, screens, parent=None):
         # check to see if we have web access
         self.web = u'http://openlp.org/files/frw/'
         self.config = ConfigParser.ConfigParser()
@@ -55,7 +55,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         if self.webAccess:
             files = self.webAccess.read()
             self.config.readfp(io.BytesIO(files))
-        QtGui.QWizard._init_(self, parent)
+        QtGui.QWizard.__init__(self, parent)
         self.setupUi(self)
         for screen in screens.get_screen_list():
             self.displaySelectionComboBox.addItem(screen)
@@ -65,11 +65,11 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.startUpdates = translate('OpenLP.FirstTimeWizard',
             'Starting Updates')
         self.downloadSongs = unicode(translate('OpenLP.FirstTimeWizard',
-            'Downloading songs'))
+            'Downloading songs: %s'))
         self.downloadBible = unicode(translate('OpenLP.FirstTimeWizard',
-            'Downloading bible'))
+            'Downloading bible: %s'))
         self.downloadTheme = unicode(translate('OpenLP.FirstTimeWizard',
-            'Downloading theme'))
+            'Downloading theme: %s'))
 
     def exec_(self, edit=False):
         """
@@ -164,7 +164,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                     if unicode(type.text(0)) == self.songsText:
                         songs = unicode(listIterator.value().data(0,
                             QtCore.Qt.UserRole).toString())
-                        message = u'%s %s' % (self.downloadSongs, item)
+                        message = self.downloadSongs % item
                         self._updateMessage(message)
                         # Song database is a fixed file name
                         urllib.urlretrieve(u'%s%s' % (self.web, songs),
@@ -173,7 +173,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                     if unicode(type.text(0)) == self.biblesText:
                         bible = unicode(listIterator.value().data(0,
                             QtCore.Qt.UserRole).toString())
-                        message = u'%s %s' % (self.downloadBible, item)
+                        message = self.downloadBible % item
                         self._updateMessage(message)
                         urllib.urlretrieve(u'%s%s' % (self.web, bible),
                             os.path.join(bibleDestination, bible))
@@ -181,7 +181,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                     if unicode(type.text(0)) == self.themesText:
                         theme = unicode(listIterator.value().data(0,
                             QtCore.Qt.UserRole).toString())
-                        message = u'%s %s' % (self.downloadTheme, item)
+                        message = self.downloadTheme % item
                         self._updateMessage(message)
                         urllib.urlretrieve(u'%s%s' % (self.web, theme),
                             os.path.join(themeDestination, theme))
