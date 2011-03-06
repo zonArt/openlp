@@ -810,4 +810,4 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         # This method must only be run after the self.song = Song() assignment.
         log.debug(u'processTitle')
         self.song.search_title = re.sub(r'[\'"`,;:(){}?]+', u'',
-            unicode(self.song.search_title)).lower()
+            unicode(self.song.search_title)).lower().strip()
