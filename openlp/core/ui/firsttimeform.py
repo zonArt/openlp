@@ -64,12 +64,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.themesText = translate('OpenLP.FirstTimeWizard', 'Themes')
         self.startUpdates = translate('OpenLP.FirstTimeWizard',
             'Starting Updates')
-        self.downloadSongs = unicode(translate('OpenLP.FirstTimeWizard',
-            'Downloading songs: %s'))
-        self.downloadBible = unicode(translate('OpenLP.FirstTimeWizard',
-            'Downloading bible: %s'))
-        self.downloadTheme = unicode(translate('OpenLP.FirstTimeWizard',
-            'Downloading theme: %s'))
+        self.downloading = unicode(translate('OpenLP.FirstTimeWizard',
+            'Downloading %s'))
 
     def exec_(self, edit=False):
         """
@@ -164,7 +160,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                     if unicode(type.text(0)) == self.songsText:
                         songs = unicode(listIterator.value().data(0,
                             QtCore.Qt.UserRole).toString())
-                        message = self.downloadSongs % item
+                        message = self.downloading % item
                         self._updateMessage(message)
                         # Song database is a fixed file name
                         urllib.urlretrieve(u'%s%s' % (self.web, songs),
@@ -173,7 +169,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                     if unicode(type.text(0)) == self.biblesText:
                         bible = unicode(listIterator.value().data(0,
                             QtCore.Qt.UserRole).toString())
-                        message = self.downloadBible % item
+                        message = self.downloading % item
                         self._updateMessage(message)
                         urllib.urlretrieve(u'%s%s' % (self.web, bible),
                             os.path.join(bibleDestination, bible))
@@ -181,7 +177,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                     if unicode(type.text(0)) == self.themesText:
                         theme = unicode(listIterator.value().data(0,
                             QtCore.Qt.UserRole).toString())
-                        message = self.downloadTheme % item
+                        message = self.downloading % item
                         self._updateMessage(message)
                         urllib.urlretrieve(u'%s%s' % (self.web, theme),
                             os.path.join(themeDestination, theme))
