@@ -650,8 +650,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Show the main form, as well as the display form
         """
         QtGui.QWidget.show(self)
-        self.liveController.display.setup()
-        self.previewController.display.setup()
         if self.liveController.display.isVisible():
             self.liveController.display.setFocus()
         self.activateWindow()

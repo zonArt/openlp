@@ -330,7 +330,6 @@ class SongMediaItem(MediaManagerItem):
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
         log.debug(u'generateSlideData (%s:%s)' % (service_item, item))
-        raw_footer = []
         item_id = self._getIdOfItemToGenerate(item, self.remoteSong)
         service_item.add_capability(ItemCapabilities.AllowsEdit)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
@@ -392,16 +391,15 @@ class SongMediaItem(MediaManagerItem):
                 service_item.add_from_text(slide[:30], unicode(slide))
         service_item.title = song.title
         author_list = [unicode(author.display_name) for author in song.authors]
-        raw_footer.append(song.title)
-        raw_footer.append(u', '.join(author_list))
-        raw_footer.append(song.copyright)
+        service_item.raw_footer.append(song.title)
+        service_item.raw_footer.append(u', '.join(author_list))
+        service_item.raw_footer.append(song.copyright)
         if QtCore.QSettings().value(u'general/ccli number',
             QtCore.QVariant(u'')).toString():
-            raw_footer.append(unicode(
+            service_item.raw_footer.append(unicode(
                 translate('SongsPlugin.MediaItem', 'CCLI License: ') +
                 QtCore.QSettings().value(u'general/ccli number',
                 QtCore.QVariant(u'')).toString()))
-        service_item.raw_footer = raw_footer
         service_item.audit = [
             song.title, author_list, song.copyright, unicode(song.ccli_number)
         ]
