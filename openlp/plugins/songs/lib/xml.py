@@ -536,7 +536,7 @@ class OpenLyrics(object):
                 song.alternate_title = self._text(title)
                 song.search_title += u'@' + song.alternate_title
         song.search_title = re.sub(r'[\'"`,;:(){}?]+', u'',
-            unicode(song.search_title)).lower()
+            unicode(song.search_title)).lower().strip()
 
     def _process_topics(self, properties, song):
         """

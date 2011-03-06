@@ -167,7 +167,7 @@ class OpenLPSongImport(SongImport):
                     new_song.alternate_title = old_titles[1]
                 else:
                     new_song.alternate_title = u''
-            new_song.search_title = song.search_title
+            new_song.search_title = song.search_title.strip()
             new_song.song_number = song.song_number
             new_song.lyrics = song.lyrics
             new_song.search_lyrics = song.search_lyrics
