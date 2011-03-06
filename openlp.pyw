@@ -273,11 +273,12 @@ def main():
     # Define the settings environment
     QtCore.QSettings(u'OpenLP', u'OpenLP')
     # First time checks in settings
-#    if QtCore.QSettings().value(
-#        u'general/first time', QtCore.QVariant(True)).toBool():
-#        if not FirstTimeLanguageForm().exec_():
-#            # if cancel then stop processing
-#            sys.exit()
+    # Use explicit reference as not inside a QT environment yet
+    if QtCore.QSettings(u'OpenLP', u'OpenLP').value(
+        u'general/first time', QtCore.QVariant(True)).toBool():
+        if not FirstTimeLanguageForm().exec_():
+            # if cancel then stop processing
+            sys.exit()
     if sys.platform == u'darwin':
         OpenLP.addLibraryPath(QtGui.QApplication.applicationDirPath()
             + "/qt4_plugins")

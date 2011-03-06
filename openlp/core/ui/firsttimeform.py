@@ -34,7 +34,8 @@ from PyQt4 import QtCore, QtGui
 
 from firsttimewizard import Ui_FirstTimeWizard
 
-from openlp.core.lib import translate, PluginStatus, check_directory_exists, Receiver
+from openlp.core.lib import translate, PluginStatus, check_directory_exists,  \
+    Receiver
 from openlp.core.utils import get_web_page, AppLocation
 
 log = logging.getLogger(__name__)
@@ -91,7 +92,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             self.__loadChild(treewidgetitem, u'songs', u'languages', u'songs')
             treewidgetitem = QtGui.QTreeWidgetItem(self.selectionTreeWidget)
             treewidgetitem.setText(0, self.biblesText)
-            self.__loadChild(treewidgetitem, u'bibles', u'translations', u'bible')
+            self.__loadChild(treewidgetitem, u'bibles', u'translations',
+                u'bible')
             treewidgetitem = QtGui.QTreeWidgetItem(self.selectionTreeWidget)
             treewidgetitem.setText(0, self.themesText)
             self.__loadChild(treewidgetitem, u'themes', u'files', 'theme')
@@ -127,11 +129,13 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 if parent and listIterator.value().checkState(0) \
                     == QtCore.Qt.Checked:
                     if unicode(parent.text(0)) == self.themesText:
-                        self.themeSelectionComboBox.addItem(listIterator.value().text(0))
+                        self.themeSelectionComboBox.addItem(
+                            listIterator.value().text(0))
                 listIterator += 1
 
     def accept(self):
         self.__updateMessage(self.startUpdates)
+        # Set up the Plugin status's
         self.__pluginStatus(self.songsCheckBox, u'songs/status')
         self.__pluginStatus(self.bibleCheckBox, u'bibles/status')
         self.__pluginStatus(self.presentationCheckBox, u'presentations/status')
@@ -141,34 +145,58 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.__pluginStatus(self.customCheckBox, u'custom/status')
         self.__pluginStatus(self.songUsageCheckBox, u'songusage/status')
         self.__pluginStatus(self.alertCheckBox, u'alerts/status')
-
-        listIterator = QtGui.QTreeWidgetItemIterator(self.selectionTreeWidget)
+        # Build directories for downloads
         songsDestination = AppLocation.get_section_data_path(u'songs')
         check_directory_exists(songsDestination)
         bibleDestination = AppLocation.get_section_data_path(u'bibles')
         check_directory_exists(bibleDestination)
         themeDestination = AppLocation.get_section_data_path(u'themes')
         check_directory_exists(themeDestination)
+        # Install Selected Items looping through them
+        listIterator = QtGui.QTreeWidgetItemIterator(self.selectionTreeWidget)
         while listIterator.value():
             type = listIterator.value().parent()
             if listIterator.value().parent():
                 if listIterator.value().checkState(0) == QtCore.Qt.Checked:
-                    # Install
+                    # Install items as theu have been selected
+                    item = unicode(listIterator.value().text(0))
+                    # Download Song database if selected
+                    if unicode(type.text(0)) == self.songsText:
+                        songs = unicode(listIterator.value().data(0,
+                            QtCore.Qt.UserRole).toString())
+                        message = u'%s %s' % (self.downloadSongs, item)
+                        self.__updateMessage(message)
+                        # Song database is a fixed file name
+                        urllib.urlretrieve(u'%s%s' % (self.web, songs),
+                            os.path.join(songsDestination, u'songs.sqlite'))
+                    # Download and selected Bibles
                     if unicode(type.text(0)) == self.biblesText:
                         bible = unicode(listIterator.value().data(0,
                             QtCore.Qt.UserRole).toString())
-                        message = u'%s %s' % (self.downloadBible, bible)
+                        message = u'%s %s' % (self.downloadBible, item)
                         self.__updateMessage(message)
                         urllib.urlretrieve(u'%s%s' % (self.web, bible),
                             os.path.join(bibleDestination, bible))
+                    # Download any themes
                     if unicode(type.text(0)) == self.themesText:
                         theme = unicode(listIterator.value().data(0,
                             QtCore.Qt.UserRole).toString())
-                        message = u'%s %s' % (self.downloadTheme, bible)
+                        message = u'%s %s' % (self.downloadTheme, item)
                         self.__updateMessage(message)
                         urllib.urlretrieve(u'%s%s' % (self.web, theme),
                             os.path.join(themeDestination, theme))
             listIterator += 1
+        # Set Default Display
+        if self.displaySelectionComboBox.currentIndex() != -1:
+            QtCore.QSettings().setValue(u'General/monitor',
+                QtCore.QVariant(self.displaySelectionComboBox.
+                currentIndex()))
+        # Set Global Theme
+        if self.themeSelectionComboBox.currentIndex() != -1:
+            QtCore.QSettings().setValue(u'themes/global theme',
+                QtCore.QVariant(self.themeSelectionComboBox.currentText()))
+        QtCore.QSettings().setValue(u'general/first time',
+            QtCore.QVariant(False))
         return QtGui.QWizard.accept(self)
 
     def __pluginStatus(self, field, tag):
@@ -177,5 +205,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         QtCore.QSettings().setValue(tag, QtCore.QVariant(status))
 
     def __updateMessage(self, text):
+        """
+        Keep screen up to date
+        """
         self.updateLabel.setText(text)
         Receiver.send_message(u'openlp_process_events')

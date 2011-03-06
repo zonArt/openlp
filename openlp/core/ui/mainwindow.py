@@ -627,8 +627,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.settingsForm.postSetUp()
         Receiver.send_message(u'cursor_normal')
         # Import themes if first time
-#        if firstTime:
-#            self.themeManagerContents.firstTime()
+        if firstTime:
+            self.themeManagerContents.firstTime()
 
     def setAutoLanguage(self, value):
         self.LanguageGroup.setDisabled(value)
