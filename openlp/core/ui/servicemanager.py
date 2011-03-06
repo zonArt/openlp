@@ -943,6 +943,7 @@ class ServiceManager(QtGui.QWidget):
         for item in self.serviceItems:
             if item[u'service_item']._uuid == uuid:
                 item[u'service_item'].edit_id = editId
+        self.setModified(True)
 
     def replaceServiceItem(self, newItem):
         """
@@ -1123,13 +1124,14 @@ class ServiceManager(QtGui.QWidget):
                 self.serviceItems.remove(serviceItem)
                 self.serviceItems.insert(endpos, serviceItem)
                 self.repaintServiceList(endpos, child)
+                self.setModified(True)
             else:
                 # we are not over anything so drop
                 replace = False
                 if item is None:
                     self.dropPosition = len(self.serviceItems)
                 else:
-                    # we are over somthing so lets investigate
+                    # we are over something so lets investigate
                     pos = self._getParentItemData(item) - 1
                     serviceItem = self.serviceItems[pos]
                     if (plugin == serviceItem[u'service_item'].name and
