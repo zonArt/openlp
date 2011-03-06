@@ -276,6 +276,7 @@ class SongImport(QtCore.QObject):
         song.alternate_title = self.alternate_title
         song.search_title = self.remove_punctuation(self.title).lower() \
             + '@' + self.remove_punctuation(self.alternate_title).lower()
+        song.search_title = song.search_title.strip()
         song.song_number = self.song_number
         song.search_lyrics = u''
         verses_changed_to_other = {}
