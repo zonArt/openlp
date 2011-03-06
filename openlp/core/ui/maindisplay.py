@@ -233,9 +233,6 @@ class MainDisplay(DisplayWidget):
         image = self.imageManager.get_image_bytes(name)
         self.resetVideo()
         self.displayImage(image)
-        # show screen
-        if self.isLive:
-            self.setVisible(True)
         return self.preview()
 
     def displayImage(self, image):
@@ -388,9 +385,9 @@ class MainDisplay(DisplayWidget):
             Receiver.send_message(u'openlp_process_events')
         # if was hidden keep it hidden
         if self.isLive:
-           if self.hideMode:
-            self.hideDisplay(self.hideMode)
-           else:
+            if self.hideMode:
+                self.hideDisplay(self.hideMode)
+            else:
                self.setVisible(True)
         preview = QtGui.QImage(self.screen[u'size'].width(),
             self.screen[u'size'].height(),
