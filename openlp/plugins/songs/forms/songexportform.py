@@ -355,7 +355,8 @@ class SongExportForm(OpenLPWizard):
         the path to *directoryLineEdit*.
         """
         path = unicode(QtGui.QFileDialog.getExistingDirectory(self,
-            translate('SongsPlugin.ExportWizardForm', 'Select Destination Folder'),
+            translate('SongsPlugin.ExportWizardForm',
+            'Select Destination Folder'),
             SettingsManager.get_last_dir(self.plugin.settingsSection, 1),
             options=QtGui.QFileDialog.ShowDirsOnly))
         SettingsManager.set_last_dir(self.plugin.settingsSection, path, 1)
