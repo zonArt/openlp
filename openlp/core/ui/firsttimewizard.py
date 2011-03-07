@@ -224,4 +224,4 @@ class Ui_FirstTimeWizard(object):
         self.themeSelectionLabel.setText(translate('OpenLP.FirstTimeWizard',
             'Select the default Theme'))
         self.messageLabel.setText(translate('OpenLP.FirstTimeWizard',
-            'Press Finish to apply all you changes and start OpenLP'))
+            'Press Finish to apply all your changes and start OpenLP'))
