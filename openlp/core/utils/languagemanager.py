@@ -100,12 +100,15 @@ class LanguageManager(object):
         return language
 
     @staticmethod
-    def set_language(action):
+    def set_language(action, message=True):
         """
         Set the language to translate OpenLP into
 
         ``action``
             The language menu option
+
+        ``message``
+            Display the message option
         """
         language = u'en'
         if action:
@@ -114,13 +117,16 @@ class LanguageManager(object):
             language = u'%s' % qm_list[action_name]
         if LanguageManager.auto_language:
             language = u'[%s]' % language
-        QtCore.QSettings().setValue(
+        # This needs to be here for the setValue to work
+        settings = QtCore.QSettings(u'OpenLP', u'OpenLP')
+        settings.setValue(
             u'general/language', QtCore.QVariant(language))
         log.info(u'Language file: \'%s\' written to conf file' % language)
-        QtGui.QMessageBox.information(None,
-            translate('OpenLP.LanguageManager', 'Language'),
-            translate('OpenLP.LanguageManager',
-                'Please restart OpenLP to use your new language setting.'))
+        if message:
+            QtGui.QMessageBox.information(None,
+                translate('OpenLP.LanguageManager', 'Language'),
+                translate('OpenLP.LanguageManager',
+                    'Please restart OpenLP to use your new language setting.'))
 
     @staticmethod
     def init_qm_list():
