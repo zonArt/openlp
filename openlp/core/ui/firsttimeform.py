@@ -83,9 +83,13 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         if self.webAccess:
             self.internetGroupBox.setVisible(True)
             self.noInternetLabel.setVisible(False)
-            treewidgetitem = QtGui.QTreeWidgetItem(self.selectionTreeWidget)
-            treewidgetitem.setText(0, self.songsText)
-            self._loadChild(treewidgetitem, u'songs', u'languages', u'songs')
+            # If songs database exists do not allow a copy
+            songs = os.path.join(AppLocation.get_section_data_path(u'songs'),
+                u'songs.sqlite')
+            if not os.path.exists(songs):
+                treewidgetitem = QtGui.QTreeWidgetItem(self.selectionTreeWidget)
+                treewidgetitem.setText(0, self.songsText)
+                self._loadChild(treewidgetitem, u'songs', u'languages', u'songs')
             treewidgetitem = QtGui.QTreeWidgetItem(self.selectionTreeWidget)
             treewidgetitem.setText(0, self.biblesText)
             self._loadChild(treewidgetitem, u'bibles', u'translations',
