@@ -66,6 +66,9 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             'Starting Updates')
         self.downloading = unicode(translate('OpenLP.FirstTimeWizard',
             'Downloading %s'))
+        QtCore.QObject.connect(self,
+            QtCore.SIGNAL(u'currentIdChanged(int)'),
+            self.onCurrentIdChanged)
 
     def exec_(self, edit=False):
         """
@@ -116,12 +119,11 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 child.setFlags(QtCore.Qt.ItemIsUserCheckable |
                     QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
 
-    def initializePage(self, id):
+    def onCurrentIdChanged(self, pageId):
         """
-        Set up the pages for Initial run through dialog
+        Detects Page changes and updates as approprate.
         """
-        wizardPage = self.page(id)
-        if wizardPage == self.DefaultsPage:
+        if self.page(pageId) == self.DefaultsPage:
             listIterator = QtGui.QTreeWidgetItemIterator(
                 self.selectionTreeWidget)
             while listIterator.value():
@@ -134,6 +136,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 listIterator += 1
 
     def accept(self):
+        Receiver.send_message(u'cursor_busy')
         self._updateMessage(self.startUpdates)
         # Set up the Plugin status's
         self._pluginStatus(self.songsCheckBox, u'songs/status')
@@ -197,6 +200,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 QtCore.QVariant(self.themeSelectionComboBox.currentText()))
         QtCore.QSettings().setValue(u'general/first time',
             QtCore.QVariant(False))
+        Receiver.send_message(u'cursor_normal')
         return QtGui.QWizard.accept(self)
 
     def _pluginStatus(self, field, tag):
