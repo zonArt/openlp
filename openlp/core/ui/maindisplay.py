@@ -245,7 +245,8 @@ class MainDisplay(DisplayWidget):
             js = u'show_image("");'
         self.frame.evaluateJavaScript(js)
         # Update the preview frame.
-        Receiver.send_message(u'maindisplay_active')
+        if self.isLive:
+            Receiver.send_message(u'maindisplay_active')
 
     def resetImage(self):
         """
@@ -259,7 +260,8 @@ class MainDisplay(DisplayWidget):
             self.displayImage(None)
         self.override = {}
         # Update the preview frame.
-        Receiver.send_message(u'maindisplay_active')
+        if self.isLive:
+            Receiver.send_message(u'maindisplay_active')
 
     def resetVideo(self):
         """
@@ -276,7 +278,8 @@ class MainDisplay(DisplayWidget):
             self.frame.evaluateJavaScript(u'show_video("close");')
         self.override = {}
         # Update the preview frame.
-        Receiver.send_message(u'maindisplay_active')
+        if self.isLive:
+            Receiver.send_message(u'maindisplay_active')
 
     def videoPlay(self):
         """
@@ -347,7 +350,8 @@ class MainDisplay(DisplayWidget):
             self.videoWidget.setVisible(True)
             self.audio.setVolume(vol)
         # Update the preview frame.
-        Receiver.send_message(u'maindisplay_active')
+        if self.isLive:
+            Receiver.send_message(u'maindisplay_active')
         return self.preview()
 
     def videoStart(self, newState, oldState):
@@ -481,7 +485,8 @@ class MainDisplay(DisplayWidget):
             self.videoPlay()
         self.hideMode = None
         # Trigger actions when display is active again
-        Receiver.send_message(u'maindisplay_active')
+        if self.isLive:
+            Receiver.send_message(u'maindisplay_active')
 
     def __hideMouse(self):
         # Hide mouse cursor when moved over display if enabled in settings
