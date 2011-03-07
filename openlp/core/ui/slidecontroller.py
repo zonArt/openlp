@@ -162,7 +162,7 @@ class SlideController(QtGui.QWidget):
             self.themeScreen.setText(
                 translate('OpenLP.SlideController', 'Blank to Theme'))
             self.desktopScreen = icon_action(self.hideMenu, u'Desktop Screen',
-                    u':/slides/slide_desktop.png', False)
+                u':/slides/slide_desktop.png', False)
             self.desktopScreen.setText(
                 translate('OpenLP.SlideController', 'Show Desktop'))
             self.hideMenu.setDefaultAction(self.blankScreen)
