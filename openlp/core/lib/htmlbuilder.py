@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,7 +28,8 @@ import logging
 
 from PyQt4 import QtWebKit
 
-from openlp.core.lib import BackgroundType, BackgroundGradientType
+from openlp.core.lib.theme import BackgroundType, BackgroundGradientType, \
+    VerticalType, HorizontalType
 
 log = logging.getLogger(__name__)
 
@@ -314,7 +315,7 @@ body {
 </html>
     """
 
-def build_html(item, screen, alert, islive):
+def build_html(item, screen, alert, islive, background):
     """
     Build the full web paged structure for display
 
@@ -332,7 +333,9 @@ def build_html(item, screen, alert, islive):
     theme = item.themedata
     webkitvers = webkit_version()
     # Image generated and poked in
-    if item.bg_image_bytes:
+    if background:
+        image = u'src="data:image/png;base64,%s"' % background
+    elif item.bg_image_bytes:
         image = u'src="data:image/png;base64,%s"' % item.bg_image_bytes
     else:
         image = u'style="display:none;"'
@@ -528,18 +531,8 @@ def build_lyrics_format_css(theme, width, height):
         Height of the lyrics block
 
     """
-    if theme.display_horizontal_align == 2:
-        align = u'center'
-    elif theme.display_horizontal_align == 1:
-        align = u'right'
-    else:
-        align = u'left'
-    if theme.display_vertical_align == 2:
-        valign = u'bottom'
-    elif theme.display_vertical_align == 1:
-        valign = u'middle'
-    else:
-        valign = u'top'
+    align = HorizontalType.Names[theme.display_horizontal_align]
+    valign = VerticalType.Names[theme.display_vertical_align]
     if theme.font_main_outline:
         left_margin = int(theme.font_main_outline_size) * 2
     else:
@@ -632,13 +625,7 @@ def build_alert_css(alertTab, width):
     """
     if not alertTab:
         return u''
-    align = u''
-    if alertTab.location == 2:
-        align = u'bottom'
-    elif alertTab.location == 1:
-        align = u'middle'
-    else:
-        align = u'top'
+    align = VerticalType.Names[alertTab.location]
     alert = style % (width, align, alertTab.font_face, alertTab.font_size,
         alertTab.font_color, alertTab.bg_color)
     return alert

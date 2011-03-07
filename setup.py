@@ -7,9 +7,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -69,8 +69,7 @@ OpenLP (previously openlp.org) is free church presentation software, or lyrics p
     url='http://openlp.org/',
     license='GNU General Public License',
     packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
-    scripts=['openlp.pyw', 'scripts/openlp-1to2-converter.py',
-        'scripts/bible-1to2-converter.py','scripts/openlp-remoteclient.py'],
+    scripts=['openlp.pyw', 'scripts/openlp-remoteclient.py'],
     include_package_data=True,
     zip_safe=False,
     install_requires=[

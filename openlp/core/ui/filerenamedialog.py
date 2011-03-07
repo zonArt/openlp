@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,31 +27,28 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
+from openlp.core.lib.ui import create_accept_reject_button_box
 
 class Ui_FileRenameDialog(object):
-    def setupUi(self, FileRenameDialog):
-        FileRenameDialog.setObjectName(u'FileRenameDialog')
-        FileRenameDialog.resize(400, 87)
-        self.buttonBox = QtGui.QDialogButtonBox(FileRenameDialog)
-        self.buttonBox.setGeometry(QtCore.QRect(210, 50, 171, 25))
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
-            QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName(u'buttonBox')
-        self.widget = QtGui.QWidget(FileRenameDialog)
-        self.widget.setGeometry(QtCore.QRect(10, 10, 381, 35))
-        self.widget.setObjectName(u'widget')
-        self.horizontalLayout = QtGui.QHBoxLayout(self.widget)
-        self.horizontalLayout.setObjectName(u'horizontalLayout')
-        self.fileRenameLabel = QtGui.QLabel(self.widget)
-        self.fileRenameLabel.setObjectName(u'fileRenameLabel')
-        self.horizontalLayout.addWidget(self.fileRenameLabel)
-        self.fileNameEdit = QtGui.QLineEdit(self.widget)
+    def setupUi(self, fileRenameDialog):
+        fileRenameDialog.setObjectName(u'fileRenameDialog')
+        fileRenameDialog.resize(300, 10)
+        self.dialogLayout = QtGui.QGridLayout(fileRenameDialog)
+        self.dialogLayout.setObjectName(u'dialogLayout')
+        self.fileNameLabel = QtGui.QLabel(fileRenameDialog)
+        self.fileNameLabel.setObjectName(u'fileNameLabel')
+        self.dialogLayout.addWidget(self.fileNameLabel, 0, 0)
+        self.fileNameEdit = QtGui.QLineEdit(fileRenameDialog)
+        self.fileNameEdit.setValidator(QtGui.QRegExpValidator(
+            QtCore.QRegExp(r'[^/\\?*|<>\[\]":<>+%]+'), self))
         self.fileNameEdit.setObjectName(u'fileNameEdit')
-        self.horizontalLayout.addWidget(self.fileNameEdit)
+        self.dialogLayout.addWidget(self.fileNameEdit, 0, 1)
+        self.buttonBox = create_accept_reject_button_box(fileRenameDialog, True)
+        self.dialogLayout.addWidget(self.buttonBox, 1, 0, 1, 2)
+        self.retranslateUi(fileRenameDialog)
+        self.setMaximumHeight(self.sizeHint().height())
+        QtCore.QMetaObject.connectSlotsByName(fileRenameDialog)
 
-        self.retranslateUi(FileRenameDialog)
-        QtCore.QMetaObject.connectSlotsByName(FileRenameDialog)
-
-    def retranslateUi(self, FileRenameDialog):
-        self.fileRenameLabel.setText(translate('OpenLP.FileRenameForm',
+    def retranslateUi(self, fileRenameDialog):
+        self.fileNameLabel.setText(translate('OpenLP.FileRenameForm',
             'New File Name:'))

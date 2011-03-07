@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,621 +27,404 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, build_icon
+from openlp.core.lib.theme import HorizontalType, BackgroundType, \
+    BackgroundGradientType
+from openlp.core.lib.ui import UiStrings, add_welcome_page, create_valign_combo
 
 class Ui_ThemeWizard(object):
-    def setupUi(self, ThemeWizard):
-        ThemeWizard.setObjectName(u'OpenLP.ThemeWizard')
-        ThemeWizard.resize(550, 386)
-        ThemeWizard.setModal(True)
-        ThemeWizard.setWizardStyle(QtGui.QWizard.ModernStyle)
-        ThemeWizard.setOptions(
-            QtGui.QWizard.IndependentPages |
+    def setupUi(self, themeWizard):
+        themeWizard.setObjectName(u'OpenLP.ThemeWizard')
+        themeWizard.setModal(True)
+        themeWizard.setWizardStyle(QtGui.QWizard.ModernStyle)
+        themeWizard.setOptions(QtGui.QWizard.IndependentPages |
             QtGui.QWizard.NoBackButtonOnStartPage)
-        self.welcomePage = QtGui.QWizardPage()
-        self.welcomePage.setTitle(u'')
-        self.welcomePage.setSubTitle(u'')
-        self.welcomePage.setObjectName(u'welcomePage')
-        self.welcomePage.setPixmap(QtGui.QWizard.WatermarkPixmap,
-            QtGui.QPixmap(u':/wizards/wizard_createtheme.bmp'))
-        self.welcomeLayout = QtGui.QHBoxLayout(self.welcomePage)
-        self.welcomeLayout.setSpacing(8)
-        self.welcomeLayout.setMargin(0)
-        self.welcomeLayout.setObjectName(u'welcomeLayout')
-        self.welcomePageLayout = QtGui.QVBoxLayout()
-        self.welcomePageLayout.setSpacing(8)
-        self.welcomePageLayout.setObjectName(u'welcomePageLayout')
-        self.titleLabel = QtGui.QLabel(self.welcomePage)
-        self.titleLabel.setObjectName(u'titleLabel')
-        self.welcomePageLayout.addWidget(self.titleLabel)
-        self.welcomeTopSpacer = QtGui.QSpacerItem(20, 40,
-            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
-        self.welcomePageLayout.addItem(self.welcomeTopSpacer)
-        self.informationLabel = QtGui.QLabel(self.welcomePage)
-        self.informationLabel.setWordWrap(True)
-        self.informationLabel.setMargin(10)
-        self.informationLabel.setObjectName(u'informationLabel')
-        self.welcomePageLayout.addWidget(self.informationLabel)
-        self.welcomeBottomSpacer = QtGui.QSpacerItem(20, 40,
-            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.welcomePageLayout.addItem(self.welcomeBottomSpacer)
-        self.welcomeLayout.addLayout(self.welcomePageLayout)
-        ThemeWizard.addPage(self.welcomePage)
+        self.spacer = QtGui.QSpacerItem(10, 0,
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
+        # Welcome Page
+        add_welcome_page(themeWizard, u':/wizards/wizard_createtheme.bmp')
+        # Background Page
         self.backgroundPage = QtGui.QWizardPage()
-        self.backgroundPage.setObjectName(u'backgroundPage')
+        self.backgroundPage.setObjectName(u'BackgroundPage')
         self.backgroundLayout = QtGui.QVBoxLayout(self.backgroundPage)
-        self.backgroundLayout.setSpacing(8)
-        self.backgroundLayout.setMargin(20)
-        self.backgroundLayout.setObjectName(u'backgroundLayout')
-        self.backgroundTypeLayout = QtGui.QHBoxLayout()
-        self.backgroundTypeLayout.setSpacing(8)
-        self.backgroundTypeLayout.setObjectName(u'backgroundTypeLayout')
-        self.backgroundTypeLabel = QtGui.QLabel(self.backgroundPage)
-        self.backgroundTypeLabel.setObjectName(u'backgroundTypeLabel')
-        self.backgroundTypeLayout.addWidget(self.backgroundTypeLabel)
-        self.backgroundTypeComboBox = QtGui.QComboBox(self.backgroundPage)
-        self.backgroundTypeComboBox.setObjectName(u'backgroundTypeComboBox')
-        self.backgroundTypeComboBox.addItem(u'')
-        self.backgroundTypeComboBox.addItem(u'')
-        self.backgroundTypeComboBox.addItem(u'')
-        self.backgroundTypeLayout.addWidget(self.backgroundTypeComboBox)
-        self.backgroundTypeSpacer = QtGui.QSpacerItem(40, 20,
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.backgroundTypeLayout.addItem(self.backgroundTypeSpacer)
+        self.backgroundLayout.setObjectName(u'BackgroundLayout')
+        self.backgroundTypeLayout = QtGui.QFormLayout()
+        self.backgroundTypeLayout.setObjectName(u'BackgroundTypeLayout')
+        self.backgroundLabel = QtGui.QLabel(self.backgroundPage)
+        self.backgroundLabel.setObjectName(u'BackgroundLabel')
+        self.backgroundComboBox = QtGui.QComboBox(self.backgroundPage)
+        self.backgroundComboBox.addItems([u'', u'', u''])
+        self.backgroundComboBox.setObjectName(u'BackgroundComboBox')
+        self.backgroundTypeLayout.addRow(self.backgroundLabel,
+            self.backgroundComboBox)
+        self.backgroundTypeLayout.setItem(1, QtGui.QFormLayout.LabelRole,
+            self.spacer)
         self.backgroundLayout.addLayout(self.backgroundTypeLayout)
-        self.backgroundStackedWidget = QtGui.QStackedWidget(
-            self.backgroundPage)
-        self.backgroundStackedWidget.setObjectName(u'backgroundStackedWidget')
-        self.colorPage = QtGui.QWidget()
-        self.colorPage.setObjectName(u'colorPage')
-        self.colorLayout = QtGui.QFormLayout(self.colorPage)
+        self.backgroundStack = QtGui.QStackedLayout()
+        self.backgroundStack.setObjectName(u'BackgroundStack')
+        self.colorWidget = QtGui.QWidget(self.backgroundPage)
+        self.colorWidget.setObjectName(u'ColorWidget')
+        self.colorLayout = QtGui.QFormLayout(self.colorWidget)
         self.colorLayout.setMargin(0)
-        self.colorLayout.setSpacing(8)
-        self.colorLayout.setObjectName(u'colorLayout')
-        self.colorLabel = QtGui.QLabel(self.colorPage)
-        self.colorLabel.setMinimumSize(QtCore.QSize(103, 0))
-        self.colorLabel.setAlignment(QtCore.Qt.AlignRight |
-            QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
-        self.colorLabel.setObjectName(u'colorLabel')
-        self.colorLayout.setWidget(0,
-            QtGui.QFormLayout.LabelRole, self.colorLabel)
-        self.colorButton = QtGui.QPushButton(self.colorPage)
-        self.colorButton.setText(u'')
-        self.colorButton.setObjectName(u'colorButton')
-        self.colorLayout.setWidget(0,
-            QtGui.QFormLayout.FieldRole, self.colorButton)
-        self.backgroundStackedWidget.addWidget(self.colorPage)
-        self.gradientPage = QtGui.QWidget()
-        self.gradientPage.setObjectName(u'gradientPage')
-        self.gradientLayout = QtGui.QFormLayout(self.gradientPage)
+        self.colorLayout.setObjectName(u'ColorLayout')
+        self.colorLabel = QtGui.QLabel(self.colorWidget)
+        self.colorLabel.setObjectName(u'ColorLabel')
+        self.colorButton = QtGui.QPushButton(self.colorWidget)
+        self.colorButton.setObjectName(u'ColorButton')
+        self.colorLayout.addRow(self.colorLabel, self.colorButton)
+        self.colorLayout.setItem(1, QtGui.QFormLayout.LabelRole, self.spacer)
+        self.backgroundStack.addWidget(self.colorWidget)
+        self.gradientWidget = QtGui.QWidget(self.backgroundPage)
+        self.gradientWidget.setObjectName(u'GradientWidget')
+        self.gradientLayout = QtGui.QFormLayout(self.gradientWidget)
         self.gradientLayout.setMargin(0)
-        self.gradientLayout.setSpacing(8)
-        self.gradientLayout.setObjectName(u'gradientLayout')
-        self.gradientStartLabel = QtGui.QLabel(self.gradientPage)
-        self.gradientStartLabel.setMinimumSize(QtCore.QSize(103, 0))
-        self.gradientStartLabel.setAlignment(QtCore.Qt.AlignRight |
-            QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
-        self.gradientStartLabel.setObjectName(u'gradientStartLabel')
-        self.gradientLayout.setWidget(0,
-            QtGui.QFormLayout.LabelRole, self.gradientStartLabel)
-        self.gradientStartButton = QtGui.QPushButton(self.gradientPage)
-        self.gradientStartButton.setText(u'')
-        self.gradientStartButton.setObjectName(u'gradientStartButton')
-        self.gradientLayout.setWidget(0,
-            QtGui.QFormLayout.FieldRole, self.gradientStartButton)
-        self.gradientEndLabel = QtGui.QLabel(self.gradientPage)
-        self.gradientEndLabel.setMinimumSize(QtCore.QSize(103, 0))
-        self.gradientEndLabel.setAlignment(QtCore.Qt.AlignRight |
-            QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
-        self.gradientEndLabel.setObjectName(u'gradientEndLabel')
-        self.gradientLayout.setWidget(1,
-            QtGui.QFormLayout.LabelRole, self.gradientEndLabel)
-        self.gradientEndButton = QtGui.QPushButton(self.gradientPage)
-        self.gradientEndButton.setText(u'')
-        self.gradientEndButton.setObjectName(u'gradientEndButton')
-        self.gradientLayout.setWidget(1,
-            QtGui.QFormLayout.FieldRole, self.gradientEndButton)
-        self.gradientTypeLabel = QtGui.QLabel(self.gradientPage)
-        self.gradientTypeLabel.setMinimumSize(QtCore.QSize(103, 0))
-        self.gradientTypeLabel.setAlignment(QtCore.Qt.AlignRight |
-            QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
-        self.gradientTypeLabel.setObjectName(u'gradientTypeLabel')
-        self.gradientLayout.setWidget(2,
-            QtGui.QFormLayout.LabelRole, self.gradientTypeLabel)
-        self.gradientComboBox = QtGui.QComboBox(self.gradientPage)
-        self.gradientComboBox.setObjectName(u'gradientComboBox')
-        self.gradientComboBox.addItem(u'')
-        self.gradientComboBox.addItem(u'')
-        self.gradientComboBox.addItem(u'')
-        self.gradientComboBox.addItem(u'')
-        self.gradientComboBox.addItem(u'')
-        self.gradientLayout.setWidget(2,
-            QtGui.QFormLayout.FieldRole, self.gradientComboBox)
-        self.backgroundStackedWidget.addWidget(self.gradientPage)
-        self.imagePage = QtGui.QWidget()
-        self.imagePage.setObjectName(u'imagePage')
-        self.imageLayout = QtGui.QFormLayout(self.imagePage)
+        self.gradientLayout.setObjectName(u'GradientLayout')
+        self.gradientStartLabel = QtGui.QLabel(self.gradientWidget)
+        self.gradientStartLabel.setObjectName(u'GradientStartLabel')
+        self.gradientStartButton = QtGui.QPushButton(self.gradientWidget)
+        self.gradientStartButton.setObjectName(u'GradientStartButton')
+        self.gradientLayout.addRow(self.gradientStartLabel,
+            self.gradientStartButton)
+        self.gradientEndLabel = QtGui.QLabel(self.gradientWidget)
+        self.gradientEndLabel.setObjectName(u'GradientEndLabel')
+        self.gradientEndButton = QtGui.QPushButton(self.gradientWidget)
+        self.gradientEndButton.setObjectName(u'GradientEndButton')
+        self.gradientLayout.addRow(self.gradientEndLabel,
+            self.gradientEndButton)
+        self.gradientTypeLabel = QtGui.QLabel(self.gradientWidget)
+        self.gradientTypeLabel.setObjectName(u'GradientTypeLabel')
+        self.gradientComboBox = QtGui.QComboBox(self.gradientWidget)
+        self.gradientComboBox.setObjectName(u'GradientComboBox')
+        self.gradientComboBox.addItems([u'', u'', u'', u'', u''])
+        self.gradientLayout.addRow(self.gradientTypeLabel,
+            self.gradientComboBox)
+        self.gradientLayout.setItem(3, QtGui.QFormLayout.LabelRole, self.spacer)
+        self.backgroundStack.addWidget(self.gradientWidget)
+        self.imageWidget = QtGui.QWidget(self.backgroundPage)
+        self.imageWidget.setObjectName(u'ImageWidget')
+        self.imageLayout = QtGui.QFormLayout(self.imageWidget)
         self.imageLayout.setMargin(0)
-        self.imageLayout.setSpacing(8)
-        self.imageLayout.setObjectName(u'imageLayout')
-        self.imageLabel = QtGui.QLabel(self.imagePage)
-        self.imageLabel.setMinimumSize(QtCore.QSize(103, 0))
-        self.imageLabel.setAlignment(QtCore.Qt.AlignRight |
-            QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
-        self.imageLabel.setObjectName(u'imageLabel')
-        self.imageLayout.setWidget(0,
-            QtGui.QFormLayout.LabelRole, self.imageLabel)
+        self.imageLayout.setObjectName(u'ImageLayout')
+        self.imageLabel = QtGui.QLabel(self.imageWidget)
+        self.imageLabel.setObjectName(u'ImageLabel')
         self.imageFileLayout = QtGui.QHBoxLayout()
-        self.imageFileLayout.setSpacing(8)
-        self.imageFileLayout.setObjectName(u'imageFileLayout')
-        self.imageLineEdit = QtGui.QLineEdit(self.imagePage)
-        self.imageLineEdit.setObjectName(u'imageLineEdit')
-        self.imageFileLayout.addWidget(self.imageLineEdit)
-        self.imageBrowseButton = QtGui.QToolButton(self.imagePage)
-        self.imageBrowseButton.setText(u'')
+        self.imageFileLayout.setObjectName(u'ImageFileLayout')
+        self.imageFileEdit = QtGui.QLineEdit(self.imageWidget)
+        self.imageFileEdit.setObjectName(u'ImageFileEdit')
+        self.imageFileLayout.addWidget(self.imageFileEdit)
+        self.imageBrowseButton = QtGui.QToolButton(self.imageWidget)
+        self.imageBrowseButton.setObjectName(u'ImageBrowseButton')
         self.imageBrowseButton.setIcon(
             build_icon(u':/general/general_open.png'))
-        self.imageBrowseButton.setObjectName(u'imageBrowseButton')
         self.imageFileLayout.addWidget(self.imageBrowseButton)
-        self.imageLayout.setLayout(0,
-            QtGui.QFormLayout.FieldRole, self.imageFileLayout)
-        self.backgroundStackedWidget.addWidget(self.imagePage)
-        self.backgroundLayout.addWidget(self.backgroundStackedWidget)
-        ThemeWizard.addPage(self.backgroundPage)
+        self.imageLayout.addRow(self.imageLabel, self.imageFileLayout)
+        self.imageLayout.setItem(1, QtGui.QFormLayout.LabelRole, self.spacer)
+        self.backgroundStack.addWidget(self.imageWidget)
+        self.backgroundLayout.addLayout(self.backgroundStack)
+        themeWizard.addPage(self.backgroundPage)
+        # Main Area Page
         self.mainAreaPage = QtGui.QWizardPage()
-        self.mainAreaPage.setObjectName(u'mainAreaPage')
+        self.mainAreaPage.setObjectName(u'MainAreaPage')
         self.mainAreaLayout = QtGui.QFormLayout(self.mainAreaPage)
-        self.mainAreaLayout.setFormAlignment(QtCore.Qt.AlignLeading |
-            QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
-        self.mainAreaLayout.setMargin(20)
-        self.mainAreaLayout.setSpacing(8)
-        self.mainAreaLayout.setObjectName(u'mainAreaLayout')
+        self.mainAreaLayout.setObjectName(u'MainAreaLayout')
         self.mainFontLabel = QtGui.QLabel(self.mainAreaPage)
-        self.mainFontLabel.setMinimumSize(QtCore.QSize(103, 0))
-        self.mainFontLabel.setAlignment(QtCore.Qt.AlignRight |
-            QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
-        self.mainFontLabel.setObjectName(u'mainFontLabel')
-        self.mainAreaLayout.setWidget(0,
-            QtGui.QFormLayout.LabelRole, self.mainFontLabel)
+        self.mainFontLabel.setObjectName(u'MainFontLabel')
         self.mainFontComboBox = QtGui.QFontComboBox(self.mainAreaPage)
-        self.mainFontComboBox.setObjectName(u'mainFontComboBox')
-        self.mainAreaLayout.setWidget(0,
-            QtGui.QFormLayout.FieldRole, self.mainFontComboBox)
+        self.mainFontComboBox.setObjectName(u'MainFontComboBox')
+        self.mainAreaLayout.addRow(self.mainFontLabel, self.mainFontComboBox)
         self.mainColorLabel = QtGui.QLabel(self.mainAreaPage)
-        self.mainColorLabel.setObjectName(u'mainColorLabel')
-        self.mainAreaLayout.setWidget(1,
-            QtGui.QFormLayout.LabelRole, self.mainColorLabel)
-        self.fontPropertiesLayout = QtGui.QHBoxLayout()
-        self.fontPropertiesLayout.setSpacing(24)
-        self.fontPropertiesLayout.setObjectName(u'fontPropertiesLayout')
-        self.mainColorPushButton = QtGui.QPushButton(self.mainAreaPage)
-        self.mainColorPushButton.setText(u'')
-        self.mainColorPushButton.setObjectName(u'mainColorPushButton')
-        self.fontPropertiesLayout.addWidget(self.mainColorPushButton)
-        self.boldCheckBox = QtGui.QCheckBox(self.mainAreaPage)
-        self.boldCheckBox.setObjectName(u'boldCheckBox')
-        self.fontPropertiesLayout.addWidget(self.boldCheckBox)
-        self.italicsCheckBox = QtGui.QCheckBox(self.mainAreaPage)
-        self.italicsCheckBox.setObjectName(u'italicsCheckBox')
-        self.fontPropertiesLayout.addWidget(self.italicsCheckBox)
-        self.mainAreaLayout.setLayout(1,
-            QtGui.QFormLayout.FieldRole, self.fontPropertiesLayout)
+        self.mainColorLabel.setObjectName(u'MainColorLabel')
+        self.mainPropertiesLayout = QtGui.QHBoxLayout()
+        self.mainPropertiesLayout.setObjectName(u'MainPropertiesLayout')
+        self.mainColorButton = QtGui.QPushButton(self.mainAreaPage)
+        self.mainColorButton.setObjectName(u'MainColorButton')
+        self.mainPropertiesLayout.addWidget(self.mainColorButton)
+        self.mainPropertiesLayout.addSpacing(20)
+        self.mainBoldCheckBox = QtGui.QCheckBox(self.mainAreaPage)
+        self.mainBoldCheckBox.setObjectName(u'MainBoldCheckBox')
+        self.mainPropertiesLayout.addWidget(self.mainBoldCheckBox)
+        self.mainPropertiesLayout.addSpacing(20)
+        self.mainItalicsCheckBox = QtGui.QCheckBox(self.mainAreaPage)
+        self.mainItalicsCheckBox.setObjectName(u'MainItalicsCheckBox')
+        self.mainPropertiesLayout.addWidget(self.mainItalicsCheckBox)
+        self.mainAreaLayout.addRow(self.mainColorLabel,
+            self.mainPropertiesLayout)
         self.mainSizeLabel = QtGui.QLabel(self.mainAreaPage)
-        self.mainSizeLabel.setObjectName(u'mainSizeLabel')
-        self.mainAreaLayout.setWidget(2,
-            QtGui.QFormLayout.LabelRole, self.mainSizeLabel)
+        self.mainSizeLabel.setObjectName(u'MainSizeLabel')
         self.mainSizeLayout = QtGui.QHBoxLayout()
-        self.mainSizeLayout.setSpacing(8)
-        self.mainSizeLayout.setMargin(0)
-        self.mainSizeLayout.setObjectName(u'mainSizeLayout')
+        self.mainSizeLayout.setObjectName(u'MainSizeLayout')
         self.mainSizeSpinBox = QtGui.QSpinBox(self.mainAreaPage)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.mainSizeSpinBox.sizePolicy().hasHeightForWidth())
-        self.mainSizeSpinBox.setSizePolicy(sizePolicy)
-        self.mainSizeSpinBox.setMinimumSize(QtCore.QSize(70, 0))
         self.mainSizeSpinBox.setMaximum(999)
-        self.mainSizeSpinBox.setProperty(u'value', 16)
-        self.mainSizeSpinBox.setObjectName(u'mainSizeSpinBox')
+        self.mainSizeSpinBox.setValue(16)
+        self.mainSizeSpinBox.setObjectName(u'MainSizeSpinBox')
         self.mainSizeLayout.addWidget(self.mainSizeSpinBox)
         self.mainLineCountLabel = QtGui.QLabel(self.mainAreaPage)
-        self.mainLineCountLabel.setObjectName(u'mainLineCountLabel')
+        self.mainLineCountLabel.setObjectName(u'MainLineCountLabel')
         self.mainSizeLayout.addWidget(self.mainLineCountLabel)
-        self.mainAreaLayout.setLayout(2,
-            QtGui.QFormLayout.FieldRole, self.mainSizeLayout)
+        self.mainAreaLayout.addRow(self.mainSizeLabel, self.mainSizeLayout)
         self.lineSpacingLabel = QtGui.QLabel(self.mainAreaPage)
-        self.lineSpacingLabel.setObjectName(u'lineSpacingLabel')
-        self.mainAreaLayout.setWidget(3,
-            QtGui.QFormLayout.LabelRole, self.lineSpacingLabel)
+        self.lineSpacingLabel.setObjectName(u'LineSpacingLabel')
         self.lineSpacingSpinBox = QtGui.QSpinBox(self.mainAreaPage)
         self.lineSpacingSpinBox.setMinimum(-50)
         self.lineSpacingSpinBox.setMaximum(50)
-        self.lineSpacingSpinBox.setObjectName(u'lineSpacingSpinBox')
-        self.mainAreaLayout.setWidget(3,
-            QtGui.QFormLayout.FieldRole, self.lineSpacingSpinBox)
+        self.lineSpacingSpinBox.setObjectName(u'LineSpacingSpinBox')
+        self.mainAreaLayout.addRow(self.lineSpacingLabel,
+            self.lineSpacingSpinBox)
         self.outlineCheckBox = QtGui.QCheckBox(self.mainAreaPage)
-        self.outlineCheckBox.setObjectName(u'outlineCheckBox')
-        self.mainAreaLayout.setWidget(4,
-            QtGui.QFormLayout.LabelRole, self.outlineCheckBox)
+        self.outlineCheckBox.setObjectName(u'OutlineCheckBox')
         self.outlineLayout = QtGui.QHBoxLayout()
-        self.outlineLayout.setObjectName(u'outlineLayout')
-        self.outlineColorPushButton = QtGui.QPushButton(self.mainAreaPage)
-        self.outlineColorPushButton.setEnabled(True)
-        self.outlineColorPushButton.setText(u'')
-        self.outlineColorPushButton.setObjectName(u'outlineColorPushButton')
-        self.outlineLayout.addWidget(self.outlineColorPushButton)
+        self.outlineLayout.setObjectName(u'OutlineLayout')
+        self.outlineColorButton = QtGui.QPushButton(self.mainAreaPage)
+        self.outlineColorButton.setEnabled(False)
+        self.outlineColorButton.setObjectName(u'OutlineColorButton')
+        self.outlineLayout.addWidget(self.outlineColorButton)
+        self.outlineLayout.addSpacing(20)
         self.outlineSizeLabel = QtGui.QLabel(self.mainAreaPage)
-        self.outlineSizeLabel.setObjectName(u'outlineSizeLabel')
+        self.outlineSizeLabel.setObjectName(u'OutlineSizeLabel')
         self.outlineLayout.addWidget(self.outlineSizeLabel)
         self.outlineSizeSpinBox = QtGui.QSpinBox(self.mainAreaPage)
-        self.outlineSizeSpinBox.setObjectName(u'outlineSizeSpinBox')
+        self.outlineSizeSpinBox.setEnabled(False)
+        self.outlineSizeSpinBox.setObjectName(u'OutlineSizeSpinBox')
         self.outlineLayout.addWidget(self.outlineSizeSpinBox)
-        self.mainAreaLayout.setLayout(4,
-            QtGui.QFormLayout.FieldRole, self.outlineLayout)
+        self.mainAreaLayout.addRow(self.outlineCheckBox, self.outlineLayout)
         self.shadowCheckBox = QtGui.QCheckBox(self.mainAreaPage)
-        self.shadowCheckBox.setObjectName(u'shadowCheckBox')
-        self.mainAreaLayout.setWidget(5,
-            QtGui.QFormLayout.LabelRole, self.shadowCheckBox)
+        self.shadowCheckBox.setObjectName(u'ShadowCheckBox')
         self.shadowLayout = QtGui.QHBoxLayout()
-        self.shadowLayout.setObjectName(u'shadowLayout')
-        self.shadowColorPushButton = QtGui.QPushButton(self.mainAreaPage)
-        self.shadowColorPushButton.setEnabled(True)
-        self.shadowColorPushButton.setText(u'')
-        self.shadowColorPushButton.setObjectName(u'shadowColorPushButton')
-        self.shadowLayout.addWidget(self.shadowColorPushButton)
+        self.shadowLayout.setObjectName(u'ShadowLayout')
+        self.shadowColorButton = QtGui.QPushButton(self.mainAreaPage)
+        self.shadowColorButton.setEnabled(False)
+        self.shadowColorButton.setObjectName(u'shadowColorButton')
+        self.shadowLayout.addWidget(self.shadowColorButton)
+        self.shadowLayout.addSpacing(20)
         self.shadowSizeLabel = QtGui.QLabel(self.mainAreaPage)
-        self.shadowSizeLabel.setObjectName(u'shadowSizeLabel')
+        self.shadowSizeLabel.setObjectName(u'ShadowSizeLabel')
         self.shadowLayout.addWidget(self.shadowSizeLabel)
         self.shadowSizeSpinBox = QtGui.QSpinBox(self.mainAreaPage)
-        self.shadowSizeSpinBox.setObjectName(u'shadowSizeSpinBox')
+        self.shadowSizeSpinBox.setEnabled(False)
+        self.shadowSizeSpinBox.setObjectName(u'ShadowSizeSpinBox')
         self.shadowLayout.addWidget(self.shadowSizeSpinBox)
-        self.mainAreaLayout.setLayout(5,
-            QtGui.QFormLayout.FieldRole, self.shadowLayout)
-        ThemeWizard.addPage(self.mainAreaPage)
+        self.mainAreaLayout.addRow(self.shadowCheckBox, self.shadowLayout)
+        themeWizard.addPage(self.mainAreaPage)
+        # Footer Area Page
         self.footerAreaPage = QtGui.QWizardPage()
-        self.footerAreaPage.setObjectName(u'footerAreaPage')
-        self.footerLayout = QtGui.QFormLayout(self.footerAreaPage)
-        self.footerLayout.setFieldGrowthPolicy(
-            QtGui.QFormLayout.ExpandingFieldsGrow)
-        self.footerLayout.setMargin(20)
-        self.footerLayout.setSpacing(8)
-        self.footerLayout.setObjectName(u'footerLayout')
+        self.footerAreaPage.setObjectName(u'FooterAreaPage')
+        self.footerAreaLayout = QtGui.QFormLayout(self.footerAreaPage)
+        self.footerAreaLayout.setObjectName(u'FooterAreaLayout')
         self.footerFontLabel = QtGui.QLabel(self.footerAreaPage)
-        self.footerFontLabel.setMinimumSize(QtCore.QSize(103, 0))
-        self.footerFontLabel.setAlignment(QtCore.Qt.AlignRight |
-            QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
-        self.footerFontLabel.setObjectName(u'footerFontLabel')
-        self.footerLayout.setWidget(0,
-            QtGui.QFormLayout.LabelRole, self.footerFontLabel)
+        self.footerFontLabel.setObjectName(u'FooterFontLabel')
         self.footerFontComboBox = QtGui.QFontComboBox(self.footerAreaPage)
         self.footerFontComboBox.setObjectName(u'footerFontComboBox')
-        self.footerLayout.setWidget(0,
-            QtGui.QFormLayout.FieldRole, self.footerFontComboBox)
+        self.footerAreaLayout.addRow(self.footerFontLabel,
+            self.footerFontComboBox)
         self.footerColorLabel = QtGui.QLabel(self.footerAreaPage)
-        self.footerColorLabel.setObjectName(u'footerColorLabel')
-        self.footerLayout.setWidget(1,
-            QtGui.QFormLayout.LabelRole, self.footerColorLabel)
-        self.footerColorPushButton = QtGui.QPushButton(self.footerAreaPage)
-        self.footerColorPushButton.setText(u'')
-        self.footerColorPushButton.setObjectName(u'footerColorPushButton')
-        self.footerLayout.setWidget(1,
-            QtGui.QFormLayout.FieldRole, self.footerColorPushButton)
+        self.footerColorLabel.setObjectName(u'FooterColorLabel')
+        self.footerColorButton = QtGui.QPushButton(self.footerAreaPage)
+        self.footerColorButton.setObjectName(u'footerColorButton')
+        self.footerAreaLayout.addRow(self.footerColorLabel,
+            self.footerColorButton)
         self.footerSizeLabel = QtGui.QLabel(self.footerAreaPage)
-        self.footerSizeLabel.setObjectName(u'footerSizeLabel')
-        self.footerLayout.setWidget(2,
-            QtGui.QFormLayout.LabelRole, self.footerSizeLabel)
+        self.footerSizeLabel.setObjectName(u'FooterSizeLabel')
         self.footerSizeSpinBox = QtGui.QSpinBox(self.footerAreaPage)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.footerSizeSpinBox.sizePolicy().hasHeightForWidth())
-        self.footerSizeSpinBox.setSizePolicy(sizePolicy)
-        self.footerSizeSpinBox.setMinimumSize(QtCore.QSize(70, 0))
         self.footerSizeSpinBox.setMaximum(999)
-        self.footerSizeSpinBox.setProperty(u'value', 10)
-        self.footerSizeSpinBox.setObjectName(u'footerSizeSpinBox')
-        self.footerLayout.setWidget(2,
-            QtGui.QFormLayout.FieldRole, self.footerSizeSpinBox)
-        ThemeWizard.addPage(self.footerAreaPage)
+        self.footerSizeSpinBox.setValue(10)
+        self.footerSizeSpinBox.setObjectName(u'FooterSizeSpinBox')
+        self.footerAreaLayout.addRow(self.footerSizeLabel,
+            self.footerSizeSpinBox)
+        self.footerAreaLayout.setItem(3, QtGui.QFormLayout.LabelRole,
+            self.spacer)
+        themeWizard.addPage(self.footerAreaPage)
+        # Alignment Page
         self.alignmentPage = QtGui.QWizardPage()
-        self.alignmentPage.setObjectName(u'alignmentPage')
+        self.alignmentPage.setObjectName(u'AlignmentPage')
         self.alignmentLayout = QtGui.QFormLayout(self.alignmentPage)
-        self.alignmentLayout.setMargin(20)
-        self.alignmentLayout.setSpacing(8)
-        self.alignmentLayout.setObjectName(u'alignmentLayout')
+        self.alignmentLayout.setObjectName(u'AlignmentLayout')
         self.horizontalLabel = QtGui.QLabel(self.alignmentPage)
-        self.horizontalLabel.setMinimumSize(QtCore.QSize(103, 0))
-        self.horizontalLabel.setAlignment(QtCore.Qt.AlignRight |
-            QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
-        self.horizontalLabel.setObjectName(u'horizontalLabel')
-        self.alignmentLayout.setWidget(0,
-            QtGui.QFormLayout.LabelRole, self.horizontalLabel)
+        self.horizontalLabel.setObjectName(u'HorizontalLabel')
         self.horizontalComboBox = QtGui.QComboBox(self.alignmentPage)
-        self.horizontalComboBox.setEditable(False)
-        self.horizontalComboBox.setObjectName(u'horizontalComboBox')
-        self.horizontalComboBox.addItem(u'')
-        self.horizontalComboBox.addItem(u'')
-        self.horizontalComboBox.addItem(u'')
-        self.alignmentLayout.setWidget(0,
-            QtGui.QFormLayout.FieldRole, self.horizontalComboBox)
-        self.verticalLabel = QtGui.QLabel(self.alignmentPage)
-        self.verticalLabel.setObjectName(u'verticalLabel')
-        self.alignmentLayout.setWidget(1,
-            QtGui.QFormLayout.LabelRole, self.verticalLabel)
-        self.verticalComboBox = QtGui.QComboBox(self.alignmentPage)
-        self.verticalComboBox.setObjectName(u'verticalComboBox')
-        self.verticalComboBox.addItem(u'')
-        self.verticalComboBox.addItem(u'')
-        self.verticalComboBox.addItem(u'')
-        self.alignmentLayout.setWidget(1,
-            QtGui.QFormLayout.FieldRole, self.verticalComboBox)
+        self.horizontalComboBox.addItems([u'', u'', u''])
+        self.horizontalComboBox.setObjectName(u'HorizontalComboBox')
+        self.alignmentLayout.addRow(self.horizontalLabel,
+            self.horizontalComboBox)
+        create_valign_combo(themeWizard, self.alignmentPage,
+            self.alignmentLayout)
+        self.transitionsLabel = QtGui.QLabel(self.alignmentPage)
+        self.transitionsLabel.setObjectName(u'TransitionsLabel')
         self.transitionsCheckBox = QtGui.QCheckBox(self.alignmentPage)
-        self.transitionsCheckBox.setObjectName(u'transitionsCheckBox')
-        self.alignmentLayout.setWidget(2,
-            QtGui.QFormLayout.FieldRole, self.transitionsCheckBox)
-        ThemeWizard.addPage(self.alignmentPage)
+        self.transitionsCheckBox.setObjectName(u'TransitionsCheckBox')
+        self.alignmentLayout.addRow(self.transitionsLabel,
+            self.transitionsCheckBox)
+        self.alignmentLayout.setItem(3, QtGui.QFormLayout.LabelRole,
+            self.spacer)
+        themeWizard.addPage(self.alignmentPage)
+        # Area Position Page
         self.areaPositionPage = QtGui.QWizardPage()
-        self.areaPositionPage.setObjectName(u'areaPositionPage')
-        self.areaPositionLayout = QtGui.QGridLayout(self.areaPositionPage)
-        self.areaPositionLayout.setMargin(20)
-        self.areaPositionLayout.setSpacing(8)
-        self.areaPositionLayout.setObjectName(u'areaPositionLayout')
+        self.areaPositionPage.setObjectName(u'AreaPositionPage')
+        self.areaPositionLayout = QtGui.QHBoxLayout(self.areaPositionPage)
+        self.areaPositionLayout.setObjectName(u'AreaPositionLayout')
         self.mainPositionGroupBox = QtGui.QGroupBox(self.areaPositionPage)
-        self.mainPositionGroupBox.setMinimumSize(QtCore.QSize(248, 0))
-        self.mainPositionGroupBox.setObjectName(u'mainPositionGroupBox')
+        self.mainPositionGroupBox.setObjectName(u'MainPositionGroupBox')
         self.mainPositionLayout = QtGui.QFormLayout(self.mainPositionGroupBox)
-        self.mainPositionLayout.setMargin(8)
-        self.mainPositionLayout.setSpacing(8)
-        self.mainPositionLayout.setObjectName(u'mainPositionLayout')
-        self.mainDefaultPositionCheckBox = QtGui.QCheckBox(
-            self.mainPositionGroupBox)
-        self.mainDefaultPositionCheckBox.setChecked(True)
-        self.mainDefaultPositionCheckBox.setTristate(False)
-        self.mainDefaultPositionCheckBox.setObjectName(
-            u'mainDefaultPositionCheckBox')
-        self.mainPositionLayout.setWidget(0, QtGui.QFormLayout.FieldRole,
-            self.mainDefaultPositionCheckBox)
-        self.nainXLabel = QtGui.QLabel(self.mainPositionGroupBox)
-        self.nainXLabel.setObjectName(u'nainXLabel')
-        self.mainPositionLayout.setWidget(1,
-            QtGui.QFormLayout.LabelRole, self.nainXLabel)
+        self.mainPositionLayout.setObjectName(u'MainPositionLayout')
+        self.mainPositionCheckBox = QtGui.QCheckBox(self.mainPositionGroupBox)
+        self.mainPositionCheckBox.setObjectName(u'MainPositionCheckBox')
+        self.mainPositionLayout.addRow(self.mainPositionCheckBox)
+        self.mainXLabel = QtGui.QLabel(self.mainPositionGroupBox)
+        self.mainXLabel.setObjectName(u'MainXLabel')
         self.mainXSpinBox = QtGui.QSpinBox(self.mainPositionGroupBox)
-        self.mainXSpinBox.setEnabled(False)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.mainXSpinBox.sizePolicy().hasHeightForWidth())
-        self.mainXSpinBox.setSizePolicy(sizePolicy)
-        self.mainXSpinBox.setMinimumSize(QtCore.QSize(78, 0))
         self.mainXSpinBox.setMaximum(9999)
-        self.mainXSpinBox.setProperty(u'value', 0)
-        self.mainXSpinBox.setObjectName(u'mainXSpinBox')
-        self.mainPositionLayout.setWidget(1,
-            QtGui.QFormLayout.FieldRole, self.mainXSpinBox)
-        self.mainYSpinBox = QtGui.QSpinBox(self.mainPositionGroupBox)
-        self.mainYSpinBox.setEnabled(False)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.mainYSpinBox.sizePolicy().hasHeightForWidth())
-        self.mainYSpinBox.setSizePolicy(sizePolicy)
-        self.mainYSpinBox.setMinimumSize(QtCore.QSize(78, 0))
-        self.mainYSpinBox.setMaximum(9999)
-        self.mainYSpinBox.setObjectName(u'mainYSpinBox')
-        self.mainPositionLayout.setWidget(2,
-            QtGui.QFormLayout.FieldRole, self.mainYSpinBox)
+        self.mainXSpinBox.setObjectName(u'MainXSpinBox')
+        self.mainPositionLayout.addRow(self.mainXLabel, self.mainXSpinBox)
         self.mainYLabel = QtGui.QLabel(self.mainPositionGroupBox)
-        self.mainYLabel.setObjectName(u'mainYLabel')
-        self.mainPositionLayout.setWidget(2,
-            QtGui.QFormLayout.LabelRole, self.mainYLabel)
-        self.mainWidthSpinBox = QtGui.QSpinBox(self.mainPositionGroupBox)
-        self.mainWidthSpinBox.setEnabled(False)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.mainWidthSpinBox.sizePolicy().hasHeightForWidth())
-        self.mainWidthSpinBox.setSizePolicy(sizePolicy)
-        self.mainWidthSpinBox.setMinimumSize(QtCore.QSize(78, 0))
-        self.mainWidthSpinBox.setMaximum(9999)
-        self.mainWidthSpinBox.setObjectName(u'mainWidthSpinBox')
-        self.mainPositionLayout.setWidget(3,
-            QtGui.QFormLayout.FieldRole, self.mainWidthSpinBox)
+        self.mainYLabel.setObjectName(u'MainYLabel')
+        self.mainYSpinBox = QtGui.QSpinBox(self.mainPositionGroupBox)
+        self.mainYSpinBox.setMaximum(9999)
+        self.mainYSpinBox.setObjectName(u'MainYSpinBox')
+        self.mainPositionLayout.addRow(self.mainYLabel, self.mainYSpinBox)
         self.mainWidthLabel = QtGui.QLabel(self.mainPositionGroupBox)
-        self.mainWidthLabel.setObjectName(u'mainWidthLabel')
-        self.mainPositionLayout.setWidget(3,
-            QtGui.QFormLayout.LabelRole, self.mainWidthLabel)
-        self.mainHeightSpinBox = QtGui.QSpinBox(self.mainPositionGroupBox)
-        self.mainHeightSpinBox.setEnabled(False)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.mainHeightSpinBox.sizePolicy().hasHeightForWidth())
-        self.mainHeightSpinBox.setSizePolicy(sizePolicy)
-        self.mainHeightSpinBox.setMinimumSize(QtCore.QSize(78, 0))
-        self.mainHeightSpinBox.setMaximum(9999)
-        self.mainHeightSpinBox.setObjectName(u'mainHeightSpinBox')
-        self.mainPositionLayout.setWidget(4,
-            QtGui.QFormLayout.FieldRole, self.mainHeightSpinBox)
+        self.mainWidthLabel.setObjectName(u'MainWidthLabel')
+        self.mainWidthSpinBox = QtGui.QSpinBox(self.mainPositionGroupBox)
+        self.mainWidthSpinBox.setMaximum(9999)
+        self.mainWidthSpinBox.setObjectName(u'MainWidthSpinBox')
+        self.mainPositionLayout.addRow(self.mainWidthLabel,
+            self.mainWidthSpinBox)
         self.mainHeightLabel = QtGui.QLabel(self.mainPositionGroupBox)
-        self.mainHeightLabel.setObjectName(u'mainHeightLabel')
-        self.mainPositionLayout.setWidget(4,
-            QtGui.QFormLayout.LabelRole, self.mainHeightLabel)
-        self.areaPositionLayout.addWidget(
-            self.mainPositionGroupBox, 1, 0, 1, 1)
+        self.mainHeightLabel.setObjectName(u'MainHeightLabel')
+        self.mainHeightSpinBox = QtGui.QSpinBox(self.mainPositionGroupBox)
+        self.mainHeightSpinBox.setMaximum(9999)
+        self.mainHeightSpinBox.setObjectName(u'MainHeightSpinBox')
+        self.mainPositionLayout.addRow(self.mainHeightLabel,
+            self.mainHeightSpinBox)
+        self.areaPositionLayout.addWidget(self.mainPositionGroupBox)
         self.footerPositionGroupBox = QtGui.QGroupBox(self.areaPositionPage)
-        self.footerPositionGroupBox.setMinimumSize(QtCore.QSize(248, 0))
-        self.footerPositionGroupBox.setObjectName(u'footerPositionGroupBox')
+        self.footerPositionGroupBox.setObjectName(u'FooterPositionGroupBox')
         self.footerPositionLayout = QtGui.QFormLayout(
             self.footerPositionGroupBox)
-        self.footerPositionLayout.setMargin(8)
-        self.footerPositionLayout.setSpacing(8)
-        self.footerPositionLayout.setObjectName(u'footerPositionLayout')
-        self.footerXLabel = QtGui.QLabel(self.footerPositionGroupBox)
-        self.footerXLabel.setObjectName(u'footerXLabel')
-        self.footerPositionLayout.setWidget(1,
-            QtGui.QFormLayout.LabelRole, self.footerXLabel)
-        self.footerXSpinBox = QtGui.QSpinBox(self.footerPositionGroupBox)
-        self.footerXSpinBox.setEnabled(False)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.footerXSpinBox.sizePolicy().hasHeightForWidth())
-        self.footerXSpinBox.setSizePolicy(sizePolicy)
-        self.footerXSpinBox.setMinimumSize(QtCore.QSize(78, 0))
-        self.footerXSpinBox.setMaximum(9999)
-        self.footerXSpinBox.setProperty(u'value', 0)
-        self.footerXSpinBox.setObjectName(u'footerXSpinBox')
-        self.footerPositionLayout.setWidget(1,
-            QtGui.QFormLayout.FieldRole, self.footerXSpinBox)
-        self.footerYLabel = QtGui.QLabel(self.footerPositionGroupBox)
-        self.footerYLabel.setObjectName(u'footerYLabel')
-        self.footerPositionLayout.setWidget(2,
-            QtGui.QFormLayout.LabelRole, self.footerYLabel)
-        self.footerYSpinBox = QtGui.QSpinBox(self.footerPositionGroupBox)
-        self.footerYSpinBox.setEnabled(False)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.footerYSpinBox.sizePolicy().hasHeightForWidth())
-        self.footerYSpinBox.setSizePolicy(sizePolicy)
-        self.footerYSpinBox.setMinimumSize(QtCore.QSize(78, 0))
-        self.footerYSpinBox.setMaximum(9999)
-        self.footerYSpinBox.setProperty(u'value', 0)
-        self.footerYSpinBox.setObjectName(u'footerYSpinBox')
-        self.footerPositionLayout.setWidget(2,
-            QtGui.QFormLayout.FieldRole, self.footerYSpinBox)
-        self.footerWidthLabel = QtGui.QLabel(self.footerPositionGroupBox)
-        self.footerWidthLabel.setObjectName(u'footerWidthLabel')
-        self.footerPositionLayout.setWidget(3,
-            QtGui.QFormLayout.LabelRole, self.footerWidthLabel)
-        self.footerWidthSpinBox = QtGui.QSpinBox(self.footerPositionGroupBox)
-        self.footerWidthSpinBox.setEnabled(False)
-        self.footerWidthSpinBox.setMinimumSize(QtCore.QSize(78, 0))
-        self.footerWidthSpinBox.setMaximum(9999)
-        self.footerWidthSpinBox.setObjectName(u'footerWidthSpinBox')
-        self.footerPositionLayout.setWidget(3,
-            QtGui.QFormLayout.FieldRole, self.footerWidthSpinBox)
-        self.footerHeightLabel = QtGui.QLabel(self.footerPositionGroupBox)
-        self.footerHeightLabel.setObjectName(u'footerHeightLabel')
-        self.footerPositionLayout.setWidget(4,
-            QtGui.QFormLayout.LabelRole, self.footerHeightLabel)
-        self.footerHeightSpinBox = QtGui.QSpinBox(self.footerPositionGroupBox)
-        self.footerHeightSpinBox.setEnabled(False)
-        self.footerHeightSpinBox.setMinimumSize(QtCore.QSize(78, 0))
-        self.footerHeightSpinBox.setMaximum(9999)
-        self.footerHeightSpinBox.setObjectName(u'footerHeightSpinBox')
-        self.footerPositionLayout.setWidget(4,
-            QtGui.QFormLayout.FieldRole, self.footerHeightSpinBox)
-        self.footerDefaultPositionCheckBox = QtGui.QCheckBox(
+        self.footerPositionLayout.setObjectName(u'FooterPositionLayout')
+        self.footerPositionCheckBox = QtGui.QCheckBox(
             self.footerPositionGroupBox)
-        self.footerDefaultPositionCheckBox.setChecked(True)
-        self.footerDefaultPositionCheckBox.setObjectName(
-            u'footerDefaultPositionCheckBox')
-        self.footerPositionLayout.setWidget(0, QtGui.QFormLayout.FieldRole,
-            self.footerDefaultPositionCheckBox)
-        self.areaPositionLayout.addWidget(
-            self.footerPositionGroupBox, 1, 1, 1, 1)
-        ThemeWizard.addPage(self.areaPositionPage)
+        self.footerPositionCheckBox.setObjectName(u'FooterPositionCheckBox')
+        self.footerPositionLayout.addRow(self.footerPositionCheckBox)
+        self.footerXLabel = QtGui.QLabel(self.footerPositionGroupBox)
+        self.footerXLabel.setObjectName(u'FooterXLabel')
+        self.footerXSpinBox = QtGui.QSpinBox(self.footerPositionGroupBox)
+        self.footerXSpinBox.setMaximum(9999)
+        self.footerXSpinBox.setObjectName(u'FooterXSpinBox')
+        self.footerPositionLayout.addRow(self.footerXLabel, self.footerXSpinBox)
+        self.footerYLabel = QtGui.QLabel(self.footerPositionGroupBox)
+        self.footerYLabel.setObjectName(u'FooterYLabel')
+        self.footerYSpinBox = QtGui.QSpinBox(self.footerPositionGroupBox)
+        self.footerYSpinBox.setMaximum(9999)
+        self.footerYSpinBox.setObjectName(u'FooterYSpinBox')
+        self.footerPositionLayout.addRow(self.footerYLabel, self.footerYSpinBox)
+        self.footerWidthLabel = QtGui.QLabel(self.footerPositionGroupBox)
+        self.footerWidthLabel.setObjectName(u'FooterWidthLabel')
+        self.footerWidthSpinBox = QtGui.QSpinBox(self.footerPositionGroupBox)
+        self.footerWidthSpinBox.setMaximum(9999)
+        self.footerWidthSpinBox.setObjectName(u'FooterWidthSpinBox')
+        self.footerPositionLayout.addRow(self.footerWidthLabel,
+            self.footerWidthSpinBox)
+        self.footerHeightLabel = QtGui.QLabel(self.footerPositionGroupBox)
+        self.footerHeightLabel.setObjectName(u'FooterHeightLabel')
+        self.footerHeightSpinBox = QtGui.QSpinBox(self.footerPositionGroupBox)
+        self.footerHeightSpinBox.setMaximum(9999)
+        self.footerHeightSpinBox.setObjectName(u'FooterHeightSpinBox')
+        self.footerPositionLayout.addRow(self.footerHeightLabel,
+            self.footerHeightSpinBox)
+        self.areaPositionLayout.addWidget(self.footerPositionGroupBox)
+        themeWizard.addPage(self.areaPositionPage)
+        # Preview Page
         self.previewPage = QtGui.QWizardPage()
-        self.previewPage.setObjectName(u'previewPage')
+        self.previewPage.setObjectName(u'PreviewPage')
         self.previewLayout = QtGui.QVBoxLayout(self.previewPage)
-        self.previewLayout.setSpacing(8)
-        self.previewLayout.setMargin(20)
-        self.previewLayout.setObjectName(u'previewLayout')
-        self.themeNameLayout = QtGui.QHBoxLayout()
-        self.themeNameLayout.setSpacing(8)
-        self.themeNameLayout.setObjectName(u'themeNameLayout')
+        self.previewLayout.setObjectName(u'PreviewLayout')
+        self.themeNameLayout = QtGui.QFormLayout()
+        self.themeNameLayout.setObjectName(u'ThemeNameLayout')
         self.themeNameLabel = QtGui.QLabel(self.previewPage)
-        self.themeNameLabel.setMinimumSize(QtCore.QSize(103, 0))
-        self.themeNameLabel.setTextFormat(QtCore.Qt.PlainText)
-        self.themeNameLabel.setAlignment(QtCore.Qt.AlignRight |
-            QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
-        self.themeNameLabel.setObjectName(u'themeNameLabel')
-        self.themeNameLayout.addWidget(self.themeNameLabel)
+        self.themeNameLabel.setObjectName(u'ThemeNameLabel')
         self.themeNameEdit = QtGui.QLineEdit(self.previewPage)
-        self.themeNameEdit.setObjectName(u'themeNameEdit')
-        self.themeNameLayout.addWidget(self.themeNameEdit)
+        self.themeNameEdit.setValidator(QtGui.QRegExpValidator(
+            QtCore.QRegExp(r'[^/\\?*|<>\[\]":<>+%]+'), self))
+        self.themeNameEdit.setObjectName(u'ThemeNameEdit')
+        self.themeNameLayout.addRow(self.themeNameLabel, self.themeNameEdit)
         self.previewLayout.addLayout(self.themeNameLayout)
-        self.previewPaneLayout = QtGui.QHBoxLayout()
-        self.previewPaneLayout.setSpacing(0)
-        self.previewPaneLayout.setObjectName(u'previewPaneLayout')
-        self.previewLeftSpacer = QtGui.QSpacerItem(58, 20,
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.previewPaneLayout.addItem(self.previewLeftSpacer)
-        self.previewBoxLabel = QtGui.QLabel(self.previewPage)
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.previewBoxLabel.sizePolicy().hasHeightForWidth())
-        self.previewBoxLabel.setSizePolicy(sizePolicy)
-        self.previewBoxLabel.setMinimumSize(QtCore.QSize(100, 150))
-        self.previewBoxLabel.setFrameShape(QtGui.QFrame.WinPanel)
-        self.previewBoxLabel.setFrameShadow(QtGui.QFrame.Sunken)
-        self.previewBoxLabel.setLineWidth(1)
-        self.previewBoxLabel.setText(u'')
+        self.previewArea = QtGui.QWidget(self.previewPage)
+        self.previewArea.setObjectName(u'PreviewArea')
+        self.previewAreaLayout = QtGui.QGridLayout(self.previewArea)
+        self.previewAreaLayout.setMargin(0)
+        self.previewAreaLayout.setColumnStretch(0, 1)
+        self.previewAreaLayout.setRowStretch(0, 1)
+        self.previewAreaLayout.setObjectName(u'PreviewAreaLayout')
+        self.previewBoxLabel = QtGui.QLabel(self.previewArea)
+        self.previewBoxLabel.setFrameShape(QtGui.QFrame.Box)
         self.previewBoxLabel.setScaledContents(True)
-        self.previewBoxLabel.setObjectName(u'previewBoxLabel')
-        self.previewPaneLayout.addWidget(self.previewBoxLabel)
-        self.previewRightSpacer = QtGui.QSpacerItem(78, 20,
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.previewPaneLayout.addItem(self.previewRightSpacer)
-        self.previewLayout.addLayout(self.previewPaneLayout)
-        ThemeWizard.addPage(self.previewPage)
-        self.themeNameLabel.setBuddy(self.themeNameEdit)
+        self.previewBoxLabel.setObjectName(u'PreviewBoxLabel')
+        self.previewAreaLayout.addWidget(self.previewBoxLabel)
+        self.previewLayout.addWidget(self.previewArea)
+        themeWizard.addPage(self.previewPage)
+        self.retranslateUi(themeWizard)
+        QtCore.QObject.connect(self.backgroundComboBox,
+            QtCore.SIGNAL(u'currentIndexChanged(int)'), self.backgroundStack,
+            QtCore.SLOT(u'setCurrentIndex(int)'))
+        QtCore.QObject.connect(self.outlineCheckBox,
+            QtCore.SIGNAL(u'toggled(bool)'), self.outlineColorButton,
+            QtCore.SLOT(u'setEnabled(bool)'))
+        QtCore.QObject.connect(self.outlineCheckBox,
+            QtCore.SIGNAL(u'toggled(bool)'), self.outlineSizeSpinBox,
+            QtCore.SLOT(u'setEnabled(bool)'))
+        QtCore.QObject.connect(self.shadowCheckBox,
+            QtCore.SIGNAL(u'toggled(bool)'), self.shadowColorButton,
+            QtCore.SLOT(u'setEnabled(bool)'))
+        QtCore.QObject.connect(self.shadowCheckBox,
+            QtCore.SIGNAL(u'toggled(bool)'), self.shadowSizeSpinBox,
+            QtCore.SLOT(u'setEnabled(bool)'))
+        QtCore.QObject.connect(self.mainPositionCheckBox,
+            QtCore.SIGNAL(u'toggled(bool)'), self.mainXSpinBox,
+            QtCore.SLOT(u'setDisabled(bool)'))
+        QtCore.QObject.connect(self.mainPositionCheckBox,
+            QtCore.SIGNAL(u'toggled(bool)'), self.mainYSpinBox,
+            QtCore.SLOT(u'setDisabled(bool)'))
+        QtCore.QObject.connect(self.mainPositionCheckBox,
+            QtCore.SIGNAL(u'toggled(bool)'), self.mainWidthSpinBox,
+            QtCore.SLOT(u'setDisabled(bool)'))
+        QtCore.QObject.connect(self.mainPositionCheckBox,
+            QtCore.SIGNAL(u'toggled(bool)'), self.mainHeightSpinBox,
+            QtCore.SLOT(u'setDisabled(bool)'))
+        QtCore.QObject.connect(self.footerPositionCheckBox,
+            QtCore.SIGNAL(u'toggled(bool)'), self.footerXSpinBox,
+            QtCore.SLOT(u'setDisabled(bool)'))
+        QtCore.QObject.connect(self.footerPositionCheckBox,
+            QtCore.SIGNAL(u'toggled(bool)'), self.footerYSpinBox,
+            QtCore.SLOT(u'setDisabled(bool)'))
+        QtCore.QObject.connect(self.footerPositionCheckBox,
+            QtCore.SIGNAL(u'toggled(bool)'), self.footerWidthSpinBox,
+            QtCore.SLOT(u'setDisabled(bool)'))
+        QtCore.QObject.connect(self.footerPositionCheckBox,
+            QtCore.SIGNAL(u'toggled(bool)'), self.footerHeightSpinBox,
+            QtCore.SLOT(u'setDisabled(bool)'))
+        QtCore.QMetaObject.connectSlotsByName(themeWizard)
 
-        self.retranslateUi(ThemeWizard)
-        self.backgroundStackedWidget.setCurrentIndex(0)
-        QtCore.QObject.connect(
-            ThemeWizard,
-            QtCore.SIGNAL(u'accepted()'),
-            ThemeWizard.accept)
-        QtCore.QObject.connect(
-            self.backgroundTypeComboBox,
-            QtCore.SIGNAL(u'currentIndexChanged(int)'),
-            self.backgroundStackedWidget.setCurrentIndex)
-        QtCore.QMetaObject.connectSlotsByName(ThemeWizard)
-
-    def retranslateUi(self, ThemeWizard):
-        ThemeWizard.setWindowTitle(
+    def retranslateUi(self, themeWizard):
+        themeWizard.setWindowTitle(
             translate('OpenLP.ThemeWizard', 'Theme Wizard'))
         self.titleLabel.setText(
             u'<span style="font-size:14pt; font-weight:600;">%s</span>' % \
             translate('OpenLP.ThemeWizard', 'Welcome to the Theme Wizard'))
         self.informationLabel.setText(
             translate('OpenLP.ThemeWizard', 'This wizard will help you to '
-                'create and edit your themes . Click the next button below to '
+                'create and edit your themes. Click the next button below to '
                 'start the process by setting up your background.'))
         self.backgroundPage.setTitle(
             translate('OpenLP.ThemeWizard', 'Set Up Background'))
         self.backgroundPage.setSubTitle(
             translate('OpenLP.ThemeWizard', 'Set up your theme\'s background '
                 'according to the parameters below.'))
-        self.backgroundTypeLabel.setText(
+        self.backgroundLabel.setText(
             translate('OpenLP.ThemeWizard', 'Background type:'))
-        self.backgroundTypeComboBox.setItemText(0,
+        self.backgroundComboBox.setItemText(BackgroundType.Solid,
             translate('OpenLP.ThemeWizard', 'Solid Color'))
-        self.backgroundTypeComboBox.setItemText(1,
+        self.backgroundComboBox.setItemText(BackgroundType.Gradient,
             translate('OpenLP.ThemeWizard', 'Gradient'))
-        self.backgroundTypeComboBox.setItemText(2,
-            translate('OpenLP.ThemeWizard', 'Image'))
+        self.backgroundComboBox.setItemText(
+            BackgroundType.Image, UiStrings.Image)
         self.colorLabel.setText(translate('OpenLP.ThemeWizard', 'Color:'))
         self.gradientStartLabel.setText(
             translate(u'OpenLP.ThemeWizard', 'Starting color:'))
@@ -649,42 +432,38 @@ class Ui_ThemeWizard(object):
             translate(u'OpenLP.ThemeWizard', 'Ending color:'))
         self.gradientTypeLabel.setText(
             translate('OpenLP.ThemeWizard', 'Gradient:'))
-        self.gradientComboBox.setItemText(0,
+        self.gradientComboBox.setItemText(BackgroundGradientType.Horizontal,
             translate('OpenLP.ThemeWizard', 'Horizontal'))
-        self.gradientComboBox.setItemText(1,
+        self.gradientComboBox.setItemText(BackgroundGradientType.Vertical,
             translate('OpenLP.ThemeWizard', 'Vertical'))
-        self.gradientComboBox.setItemText(2,
+        self.gradientComboBox.setItemText(BackgroundGradientType.Circular,
             translate('OpenLP.ThemeWizard', 'Circular'))
-        self.gradientComboBox.setItemText(3,
+        self.gradientComboBox.setItemText(BackgroundGradientType.LeftTop,
             translate('OpenLP.ThemeWizard', 'Top Left - Bottom Right'))
-        self.gradientComboBox.setItemText(4,
+        self.gradientComboBox.setItemText(BackgroundGradientType.LeftBottom,
             translate('OpenLP.ThemeWizard', 'Bottom Left - Top Right'))
-        self.imageLabel.setText(translate('OpenLP.ThemeWizard', 'Image:'))
+        self.imageLabel.setText(u'%s:' % UiStrings.Image)
         self.mainAreaPage.setTitle(
             translate('OpenLP.ThemeWizard', 'Main Area Font Details'))
         self.mainAreaPage.setSubTitle(
             translate('OpenLP.ThemeWizard', 'Define the font and display '
                 'characteristics for the Display text'))
-        self.mainFontLabel.setText(
-            translate('OpenLP.ThemeWizard', 'Font:'))
+        self.mainFontLabel.setText(translate('OpenLP.ThemeWizard', 'Font:'))
         self.mainColorLabel.setText(translate('OpenLP.ThemeWizard', 'Color:'))
         self.mainSizeLabel.setText(translate('OpenLP.ThemeWizard', 'Size:'))
-        self.mainSizeSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'pt'))
-        self.mainLineCountLabel.setText(
-            translate('OpenLP.ThemeWizard', '(%d lines per slide)'))
+        self.mainSizeSpinBox.setSuffix(UiStrings.FontSizePtUnit)
         self.lineSpacingLabel.setText(
             translate('OpenLP.ThemeWizard', 'Line Spacing:'))
-        self.lineSpacingSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'pt'))
+        self.lineSpacingSpinBox.setSuffix(UiStrings.FontSizePtUnit)
         self.outlineCheckBox.setText(
             translate('OpenLP.ThemeWizard', '&Outline:'))
         self.outlineSizeLabel.setText(translate('OpenLP.ThemeWizard', 'Size:'))
-        self.outlineSizeSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'pt'))
+        self.outlineSizeSpinBox.setSuffix(UiStrings.FontSizePtUnit)
         self.shadowCheckBox.setText(translate('OpenLP.ThemeWizard', '&Shadow:'))
         self.shadowSizeLabel.setText(translate('OpenLP.ThemeWizard', 'Size:'))
-        self.shadowSizeSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'pt'))
-        self.boldCheckBox.setText(
-            translate('OpenLP.ThemeWizard', 'Bold'))
-        self.italicsCheckBox.setText(
+        self.shadowSizeSpinBox.setSuffix(UiStrings.FontSizePtUnit)
+        self.mainBoldCheckBox.setText(translate('OpenLP.ThemeWizard', 'Bold'))
+        self.mainItalicsCheckBox.setText(
             translate('OpenLP.ThemeWizard', 'Italic'))
         self.footerAreaPage.setTitle(
             translate('OpenLP.ThemeWizard', 'Footer Area Font Details'))
@@ -694,7 +473,7 @@ class Ui_ThemeWizard(object):
         self.footerFontLabel.setText(translate('OpenLP.ThemeWizard', 'Font:'))
         self.footerColorLabel.setText(translate('OpenLP.ThemeWizard', 'Color:'))
         self.footerSizeLabel.setText(translate('OpenLP.ThemeWizard', 'Size:'))
-        self.footerSizeSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'pt'))
+        self.footerSizeSpinBox.setSuffix(UiStrings.FontSizePtUnit)
         self.alignmentPage.setTitle(
             translate('OpenLP.ThemeWizard', 'Text Formatting Details'))
         self.alignmentPage.setSubTitle(
@@ -702,22 +481,14 @@ class Ui_ThemeWizard(object):
                 'formatting information to be defined'))
         self.horizontalLabel.setText(
             translate('OpenLP.ThemeWizard', 'Horizontal Align:'))
-        self.horizontalComboBox.setItemText(0,
+        self.horizontalComboBox.setItemText(HorizontalType.Left,
             translate('OpenLP.ThemeWizard', 'Left'))
-        self.horizontalComboBox.setItemText(1,
+        self.horizontalComboBox.setItemText(HorizontalType.Right,
             translate('OpenLP.ThemeWizard', 'Right'))
-        self.horizontalComboBox.setItemText(2,
+        self.horizontalComboBox.setItemText(HorizontalType.Center,
             translate('OpenLP.ThemeWizard', 'Center'))
-        self.verticalLabel.setText(
-            translate('OpenLP.ThemeWizard', 'Vertical Align:'))
-        self.verticalComboBox.setItemText(0,
-            translate('OpenLP.ThemeWizard', 'Top'))
-        self.verticalComboBox.setItemText(1,
-            translate('OpenLP.ThemeWizard', 'Middle'))
-        self.verticalComboBox.setItemText(2,
-            translate('OpenLP.ThemeWizard', 'Bottom'))
-        self.transitionsCheckBox.setText(
-            translate('OpenLP.ThemeWizard', 'Transitions'))
+        self.transitionsLabel.setText(
+            translate('OpenLP.ThemeWizard', 'Transitions:'))
         self.areaPositionPage.setTitle(
             translate('OpenLP.ThemeWizard', 'Output Area Locations'))
         self.areaPositionPage.setSubTitle(
@@ -725,9 +496,9 @@ class Ui_ThemeWizard(object):
                 ' main and footer areas.'))
         self.mainPositionGroupBox.setTitle(
             translate('OpenLP.ThemeWizard', '&Main Area'))
-        self.mainDefaultPositionCheckBox.setText(
+        self.mainPositionCheckBox.setText(
             translate('OpenLP.ThemeWizard', '&Use default location'))
-        self.nainXLabel.setText(translate('OpenLP.ThemeWizard', 'X position:'))
+        self.mainXLabel.setText(translate('OpenLP.ThemeWizard', 'X position:'))
         self.mainXSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'px'))
         self.mainYSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'px'))
         self.mainYLabel.setText(translate('OpenLP.ThemeWizard', 'Y position:'))
@@ -737,7 +508,7 @@ class Ui_ThemeWizard(object):
         self.mainHeightLabel.setText(
             translate('OpenLP.ThemeWizard', 'Height:'))
         self.footerPositionGroupBox.setTitle(
-            translate('OpenLP.ThemeWizard', 'Footer Area'))
+            translate('OpenLP.ThemeWizard', '&Footer Area'))
         self.footerXLabel.setText(
             translate('OpenLP.ThemeWizard', 'X position:'))
         self.footerXSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'px'))
@@ -752,7 +523,7 @@ class Ui_ThemeWizard(object):
             translate('OpenLP.ThemeWizard', 'Height:'))
         self.footerHeightSpinBox.setSuffix(
             translate('OpenLP.ThemeWizard', 'px'))
-        self.footerDefaultPositionCheckBox.setText(
+        self.footerPositionCheckBox.setText(
             translate('OpenLP.ThemeWizard', 'Use default location'))
         self.previewPage.setTitle(
             translate('OpenLP.ThemeWizard', 'Save and Preview'))
@@ -762,3 +533,8 @@ class Ui_ThemeWizard(object):
                 'new theme'))
         self.themeNameLabel.setText(
             translate('OpenLP.ThemeWizard', 'Theme name:'))
+        # Align all QFormLayouts towards each other.
+        labelWidth = max(self.backgroundLabel.minimumSizeHint().width(),
+            self.horizontalLabel.minimumSizeHint().width())
+        self.spacer.changeSize(labelWidth, 0,
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)

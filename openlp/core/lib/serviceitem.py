@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,11 +28,13 @@ The :mod:`serviceitem` provides the service item functionality including the
 type and capability of an item.
 """
 
+import datetime
 import logging
 import os
 import uuid
 
 from openlp.core.lib import build_icon, clean_tags, expand_tags
+from openlp.core.lib.ui import UiStrings
 
 log = logging.getLogger(__name__)
 
@@ -59,6 +61,9 @@ class ItemCapabilities(object):
     OnLoadUpdate = 8
     AddIfNewItem = 9
     ProvidesOwnDisplay = 10
+    AllowsDetailedTitleDisplay = 11
+    AllowsVarableStartTime = 12
+
 
 class ServiceItem(object):
     """
@@ -83,8 +88,8 @@ class ServiceItem(object):
         self.audit = u''
         self.items = []
         self.iconic_representation = None
-        self.raw_footer = None
-        self.foot_text = None
+        self.raw_footer = []
+        self.foot_text = u''
         self.theme = None
         self.service_item_type = None
         self._raw_frames = []
@@ -103,6 +108,8 @@ class ServiceItem(object):
         self.data_string = u''
         self.edit_id = None
         self.xml_version = None
+        self.start_time = 0
+        self.media_length = 0
         self._new_item()
 
     def _new_item(self):
@@ -155,9 +162,7 @@ class ServiceItem(object):
         line_break = True
         if self.is_capable(ItemCapabilities.NoLineBreaks):
             line_break = False
-        theme = None
-        if self.theme:
-            theme = self.theme
+        theme = self.theme if self.theme else None
         self.main, self.footer = \
             self.render_manager.set_override_theme(theme, useOverride)
         self.themedata = self.render_manager.renderer._theme
@@ -178,13 +183,8 @@ class ServiceItem(object):
         else:
             log.error(u'Invalid value renderer :%s' % self.service_item_type)
         self.title = clean_tags(self.title)
-        self.foot_text = None
-        if self.raw_footer:
-            for foot in self.raw_footer:
-                if not self.foot_text:
-                    self.foot_text = foot
-                else:
-                    self.foot_text = u'%s<br>%s' % (self.foot_text, foot)
+        self.foot_text = \
+            u'<br>'.join([footer for footer in self.raw_footer if footer])
 
     def add_from_image(self, path, title):
         """
@@ -197,8 +197,7 @@ class ServiceItem(object):
             A title for the slide in the service item.
         """
         self.service_item_type = ServiceItemType.Image
-        self._raw_frames.append(
-            {u'title': title, u'path': path})
+        self._raw_frames.append({u'title': title, u'path': path})
         self.render_manager.image_manager.add_image(title, path)
         self._new_item()
 
@@ -242,7 +241,7 @@ class ServiceItem(object):
         file to represent this item.
         """
         service_header = {
-            u'name': self.name.lower(),
+            u'name': self.name,
             u'plugin': self.name,
             u'theme': self.theme,
             u'title': self.title,
@@ -255,7 +254,9 @@ class ServiceItem(object):
             u'capabilities': self.capabilities,
             u'search': self.search_string,
             u'data': self.data_string,
-            u'xml_version': self.xml_version
+            u'xml_version': self.xml_version,
+            u'start_time': self.start_time,
+            u'media_length': self.media_length
         }
         service_data = []
         if self.service_item_type == ServiceItemType.Text:
@@ -299,6 +300,10 @@ class ServiceItem(object):
             self.data_string = header[u'data']
         if u'xml_version' in header:
             self.xml_version = header[u'xml_version']
+        if u'start_time' in header:
+            self.start_time = header[u'start_time']
+        if u'media_length' in header:
+            self.media_length = header[u'media_length']
         if self.service_item_type == ServiceItemType.Text:
             for slide in serviceitem[u'serviceitem'][u'data']:
                 self._raw_frames.append(slide)
@@ -310,8 +315,22 @@ class ServiceItem(object):
             for text_image in serviceitem[u'serviceitem'][u'data']:
                 filename = os.path.join(path, text_image[u'title'])
                 self.add_from_command(
-                    path, text_image[u'title'], text_image[u'image'] )
+                    path, text_image[u'title'], text_image[u'image'])
         self._new_item()
+
+    def get_display_title(self):
+        """
+        Returns the title of the service item.
+        """
+        if self.is_text():
+            return self.title
+        else:
+            if ItemCapabilities.AllowsDetailedTitleDisplay in self.capabilities:
+                return self._raw_frames[0][u'title']
+            elif len(self._raw_frames) > 1:
+                return self.title
+            else:
+                return self._raw_frames[0][u'title']
 
     def merge(self, other):
         """
@@ -391,10 +410,37 @@ class ServiceItem(object):
         """
         Returns the title of the raw frame
         """
-        return self._raw_frames[row][u'title']
+        try:
+            return self._raw_frames[row][u'title']
+        except IndexError:
+            return u''
 
     def get_frame_path(self, row=0):
         """
         Returns the path of the raw frame
         """
-        return self._raw_frames[row][u'path']
+        try:
+            return self._raw_frames[row][u'path']
+        except IndexError:
+            return u''
+
+    def get_media_time(self):
+        """
+        Returns the start and finish time for a media item
+        """
+        start = None
+        end = None
+        if self.start_time != 0:
+            start = UiStrings.StartTimeCode % \
+                unicode(datetime.timedelta(seconds=self.start_time))
+        if self.media_length != 0:
+            end = UiStrings.LengthTime % \
+                unicode(datetime.timedelta(seconds=self.media_length))
+        if not start and not end:
+            return None
+        elif start and not end:
+            return start
+        elif not start and end:
+            return end
+        else:
+            return u'%s : %s' % (start, end)

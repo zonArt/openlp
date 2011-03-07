@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -32,34 +32,29 @@ class MediaTab(SettingsTab):
     """
     MediaTab is the Media settings tab in the settings dialog.
     """
-    def __init__(self, title):
-        SettingsTab.__init__(self, title)
+    def __init__(self, title, visible_title):
+        SettingsTab.__init__(self, title, visible_title)
 
     def setupUi(self):
         self.setObjectName(u'MediaTab')
-        self.tabTitleVisible = translate('MediaPlugin.MediaTab', 'Media')
-        self.mediaLayout = QtGui.QFormLayout(self)
-        self.mediaLayout.setSpacing(8)
-        self.mediaLayout.setMargin(8)
-        self.mediaLayout.setObjectName(u'mediaLayout')
-        self.mediaModeGroupBox = QtGui.QGroupBox(self)
+        SettingsTab.setupUi(self)
+        self.mediaModeGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.mediaModeGroupBox.setObjectName(u'mediaModeGroupBox')
-        self.mediaModeLayout = QtGui.QVBoxLayout(self.mediaModeGroupBox)
-        self.mediaModeLayout.setSpacing(8)
-        self.mediaModeLayout.setMargin(8)
+        self.mediaModeLayout = QtGui.QFormLayout(self.mediaModeGroupBox)
         self.mediaModeLayout.setObjectName(u'mediaModeLayout')
         self.usePhononCheckBox = QtGui.QCheckBox(self.mediaModeGroupBox)
         self.usePhononCheckBox.setObjectName(u'usePhononCheckBox')
-        self.mediaModeLayout.addWidget(self.usePhononCheckBox)
-        self.mediaLayout.setWidget(
-            0, QtGui.QFormLayout.LabelRole, self.mediaModeGroupBox)
+        self.mediaModeLayout.addRow(self.usePhononCheckBox)
+        self.leftLayout.addWidget(self.mediaModeGroupBox)
+        self.leftLayout.addStretch()
+        self.rightLayout.addStretch()
         QtCore.QObject.connect(self.usePhononCheckBox,
             QtCore.SIGNAL(u'stateChanged(int)'),
             self.onUsePhononCheckBoxChanged)
 
     def retranslateUi(self):
-        self.mediaModeGroupBox.setTitle(translate('MediaPlugin.MediaTab',
-            'Media Display'))
+        self.mediaModeGroupBox.setTitle(
+            translate('MediaPlugin.MediaTab', 'Media Display'))
         self.usePhononCheckBox.setText(
             translate('MediaPlugin.MediaTab', 'Use Phonon for video playback'))
 

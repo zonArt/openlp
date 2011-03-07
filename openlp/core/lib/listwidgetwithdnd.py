@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -23,31 +23,34 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+Extend QListWidget to handle drag and drop functionality
+"""
 from PyQt4 import QtCore, QtGui
-from openlp.core.lib import translate
 
-class Ui_ServiceNoteEdit(object):
-    def setupUi(self, serviceNoteEdit):
-        serviceNoteEdit.setObjectName(u'serviceNoteEdit')
-        serviceNoteEdit.resize(400, 243)
-        self.widget = QtGui.QWidget(serviceNoteEdit)
-        self.widget.setGeometry(QtCore.QRect(20, 10, 361, 223))
-        self.widget.setObjectName(u'widget')
-        self.verticalLayout = QtGui.QVBoxLayout(self.widget)
-        self.verticalLayout.setObjectName(u'verticalLayout')
-        self.textEdit = QtGui.QTextEdit(self.widget)
-        self.textEdit.setObjectName(u'textEdit')
-        self.verticalLayout.addWidget(self.textEdit)
-        self.buttonBox = QtGui.QDialogButtonBox(self.widget)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
-            QtGui.QDialogButtonBox.Save)
-        self.buttonBox.setObjectName(u'buttonBox')
-        self.verticalLayout.addWidget(self.buttonBox)
+class ListWidgetWithDnD(QtGui.QListWidget):
+    """
+    Provide a list widget to store objects and handle drag and drop events
+    """
+    def __init__(self, parent=None, name=u''):
+        """
+        Initialise the list widget
+        """
+        QtGui.QListWidget.__init__(self, parent)
+        self.mimeDataText = name
+        assert(self.mimeDataText)
 
-        self.retranslateUi(serviceNoteEdit)
-        QtCore.QMetaObject.connectSlotsByName(serviceNoteEdit)
-
-    def retranslateUi(self, serviceNoteEdit):
-        serviceNoteEdit.setWindowTitle(
-            translate('OpenLP.ServiceNoteForm', 'Service Item Notes'))
+    def mouseMoveEvent(self, event):
+        """
+        Drag and drop event does not care what data is selected
+        as the recipient will use events to request the data move
+        just tell it what plugin to call
+        """
+        if event.buttons() != QtCore.Qt.LeftButton:
+            event.ignore()
+            return
+        drag = QtGui.QDrag(self)
+        mimeData = QtCore.QMimeData()
+        drag.setMimeData(mimeData)
+        mimeData.setText(self.mimeDataText)
+        drag.start(QtCore.Qt.CopyAction)

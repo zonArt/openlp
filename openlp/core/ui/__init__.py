@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,19 +26,36 @@
 """
 The :mod:`ui` module provides the core user interface for OpenLP
 """
+from PyQt4 import QtGui
+
+from openlp.core.lib import translate
 
 class HideMode(object):
     """
-    This is basically an enumeration class which specifies the mode of a Bible.
-    Mode refers to whether or not a Bible in OpenLP is a full Bible or needs to
-    be downloaded from the Internet on an as-needed basis.
+    This is an enumeration class which specifies the different modes of hiding
+    the display.
+
+    ``Blank``
+        This mode is used to hide all output, specifically by covering the
+        display with a black screen.
+
+    ``Theme``
+        This mode is used to hide all output, but covers the display with the
+        current theme background, as opposed to black.
+
+    ``Desktop``
+        This mode hides all output by minimising the display, leaving the user's
+        desktop showing.
     """
     Blank = 1
     Theme = 2
     Screen = 3
 
+from firsttimeform import FirstTimeForm
+from firsttimelanguageform import FirstTimeLanguageForm
 from themeform import ThemeForm
 from filerenameform import FileRenameForm
+from starttimeform import StartTimeForm
 from maindisplay import MainDisplay
 from servicenoteform import ServiceNoteForm
 from serviceitemeditform import ServiceItemEditForm
@@ -51,11 +68,12 @@ from advancedtab import AdvancedTab
 from aboutform import AboutForm
 from pluginform import PluginForm
 from settingsform import SettingsForm
+from displaytagform import DisplayTagForm
 from shortcutlistform import ShortcutListForm
 from mediadockmanager import MediaDockManager
 from servicemanager import ServiceManager
 from thememanager import ThemeManager
 
-__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm',
-    'MainDisplay', 'SlideController', 'ServiceManager', 'ThemeManager',
-    'MediaDockManager', 'ServiceItemEditForm']
+__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainDisplay',
+    'SlideController', 'ServiceManager', 'ThemeManager', 'MediaDockManager',
+    'ServiceItemEditForm', u'FirstTimeForm']

@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,6 +27,7 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, translate
+from openlp.core.lib.ui import create_accept_reject_button_box
 
 class Ui_SongUsageDetailDialog(object):
     def setupUi(self, songUsageDetailDialog):
@@ -60,26 +61,21 @@ class Ui_SongUsageDetailDialog(object):
         self.horizontalLayout.setObjectName(u'horizontalLayout')
         self.fileLineEdit = QtGui.QLineEdit(self.fileGroupBox)
         self.fileLineEdit.setObjectName(u'fileLineEdit')
+        self.fileLineEdit.setReadOnly(True)
+        self.fileLineEdit.setEnabled(False)
         self.horizontalLayout.addWidget(self.fileLineEdit)
         self.saveFilePushButton = QtGui.QPushButton(self.fileGroupBox)
         self.saveFilePushButton.setIcon(
-            build_icon(u':/general/general_load.png'))
+            build_icon(u':/general/general_open.png'))
         self.saveFilePushButton.setObjectName(u'saveFilePushButton')
         self.horizontalLayout.addWidget(self.saveFilePushButton)
         self.verticalLayout4.addLayout(self.horizontalLayout)
         self.verticalLayout2.addWidget(self.fileGroupBox)
         self.verticalLayout.addWidget(self.dateRangeGroupBox)
-        self.buttonBox = QtGui.QDialogButtonBox(songUsageDetailDialog)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
-            QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName(u'buttonBox')
+        self.buttonBox = create_accept_reject_button_box(
+            songUsageDetailDialog, True)
         self.verticalLayout.addWidget(self.buttonBox)
-
         self.retranslateUi(songUsageDetailDialog)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'accepted()'),
-            songUsageDetailDialog.accept)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
-            songUsageDetailDialog.close)
         QtCore.QObject.connect(self.saveFilePushButton,
             QtCore.SIGNAL(u'pressed()'),
             songUsageDetailDialog.defineOutputLocation)

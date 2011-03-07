@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,12 +27,13 @@
 The :mod:`songbeamerimport` module provides the functionality for importing
  SongBeamer songs into the OpenLP database.
 """
-import logging
-import os
 import chardet
 import codecs
+import logging
+import os
+import re
 
-from openlp.core.lib import translate
+from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
@@ -66,27 +67,18 @@ class SongBeamerImport(SongImport):
     Song Beamer file format is text based
     in the beginning are one or more control tags written
     """
-    def __init__(self, master_manager, **kwargs):
+    def __init__(self, manager, **kwargs):
         """
-        Initialise the import.
-
-        ``master_manager``
-            The song manager for the running OpenLP installation.
+        Initialise the Song Beamer importer.
         """
-        SongImport.__init__(self, master_manager)
-        self.master_manager = master_manager
-        if kwargs.has_key(u'filename'):
-            self.import_source = kwargs[u'filename']
-        if kwargs.has_key(u'filenames'):
-            self.import_source = kwargs[u'filenames']
-        log.debug(self.import_source)
+        SongImport.__init__(self, manager, **kwargs)
 
     def do_import(self):
         """
-        Recieve a single file, or a list of files to import.
+        Receive a single file or a list of files to import.
         """
-        if isinstance(self.import_source,  list):
-            self.import_wizard.importProgressBar.setMaximum(
+        if isinstance(self.import_source, list):
+            self.import_wizard.progressBar.setMaximum(
                 len(self.import_source))
             for file in self.import_source:
                 # TODO: check that it is a valid SongBeamer file
@@ -94,21 +86,21 @@ class SongBeamerImport(SongImport):
                 self.current_verse = u''
                 self.current_verse_type = u'V'
                 read_verses = False
-                self.file_name = os.path.split(file)[1]
+                file_name = os.path.split(file)[1]
                 self.import_wizard.incrementProgressBar(
-                    "Importing %s" % (self.file_name),  0)
+                    WizardStrings.ImportingType % file_name, 0)
                 if os.path.isfile(file):
                     detect_file = open(file, u'r')
                     details = chardet.detect(detect_file.read(2048))
                     detect_file.close()
                     infile = codecs.open(file, u'r', details['encoding'])
-                    self.songData = infile.readlines()
+                    songData = infile.readlines()
                     infile.close()
                 else:
                     return False
-                self.title = self.file_name.split('.sng')[0]
+                self.title = file_name.split('.sng')[0]
                 read_verses = False
-                for line in self.songData:
+                for line in songData:
                     # Just make sure that the line is of the type 'Unicode'.
                     line = unicode(line).strip()
                     if line.startswith(u'#') and not read_verses:
@@ -126,17 +118,16 @@ class SongBeamerImport(SongImport):
                         if verse_start:
                             verse_start = False
                             if not self.check_verse_marks(line):
-                                self.current_verse = u'%s\n' % line
+                                self.current_verse = line + u'\n'
                         else:
-                            self.current_verse += u'%s\n' % line
+                            self.current_verse += line + u'\n'
                 if self.current_verse:
                     self.replace_html_tags()
                     self.add_verse(self.current_verse, self.current_verse_type)
                 if self.check_complete():
                     self.finish()
-                self.import_wizard.incrementProgressBar(u'%s %s...' %
-                    (translate('SongsPlugin.SongBeamerImport', 'Importing'),
-                    self.file_name))
+                self.import_wizard.incrementProgressBar(
+                    WizardStrings.ImportingType % file_name)
             return True
 
     def replace_html_tags(self):
@@ -151,23 +142,25 @@ class SongBeamerImport(SongImport):
             (u'</i>', u'{/it}'),
             (u'<u>', u'{u}'),
             (u'</u>', u'{/u}'),
-            (u'<br>', u'{st}'),
-            (u'</br>', u'{st}'),
-            (u'</ br>', u'{st}'),
             (u'<p>', u'{p}'),
             (u'</p>', u'{/p}'),
             (u'<super>', u'{su}'),
             (u'</super>', u'{/su}'),
             (u'<sub>', u'{sb}'),
             (u'</sub>', u'{/sb}'),
-            (u'<wordwrap>', u''),
-            (u'</wordwrap>', u''),
-            (u'<strike>', u''),
-            (u'</strike>', u'')
+            (u'<[/]?br.*?>', u'{st}'),
+            (u'<[/]?wordwrap>', u''),
+            (u'<[/]?strike>', u''),
+            (u'<[/]?h.*?>', u''),
+            (u'<[/]?s.*?>', u''),
+            (u'<[/]?linespacing.*?>', u''),
+            (u'<[/]?c.*?>', u''),
+            (u'<align.*?>', u''),
+            (u'<valign.*?>', u'')
             ]
         for pair in tag_pairs:
-            self.current_verse = self.current_verse.replace(pair[0], pair[1])
-        # TODO: check for unsupported tags (see wiki) and remove them as well.
+            self.current_verse = re.compile(pair[0]).sub(pair[1],
+                self.current_verse)
 
     def parse_tags(self, line):
         """
@@ -249,10 +242,12 @@ class SongBeamerImport(SongImport):
                 self.song_number = u''
         elif tag_val[0] == u'#Speed':
             pass
+        elif tag_val[0] == u'Tempo':
+            pass
         elif tag_val[0] == u'#TextAlign':
             pass
         elif tag_val[0] == u'#Title':
-            self.title = u'%s' % tag_val[1]
+            self.title = unicode(tag_val[1])
         elif tag_val[0] == u'#TitleAlign':
             pass
         elif tag_val[0] == u'#TitleFontSize':

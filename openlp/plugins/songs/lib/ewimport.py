@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund, Jeffrey Smith                            #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -32,6 +32,8 @@ import os
 import struct
 
 from openlp.core.lib import translate
+from openlp.core.ui.wizard import WizardStrings
+from openlp.plugins.songs.lib import retrieve_windows_encoding
 from songimport import SongImport
 
 def strip_rtf(blob, encoding):
@@ -70,7 +72,7 @@ def strip_rtf(blob, encoding):
                     elif control_str == 'tab':
                         clear_text.append(u'\t')
                     # Prefer the encoding specified by the RTF data to that
-                    #  specified by the Paradox table header
+                    # specified by the Paradox table header
                     # West European encoding
                     elif control_str == 'fcharset0':
                         encoding = u'cp1252'
@@ -127,14 +129,14 @@ class FieldDescEntry:
         self.type = type
         self.size = size
 
+
 class EasyWorshipSongImport(SongImport):
     """
     The :class:`EasyWorshipSongImport` class provides OpenLP with the
     ability to import EasyWorship song files.
     """
     def __init__(self, manager, **kwargs):
-        self.import_source = kwargs[u'filename']
-        SongImport.__init__(self, manager)
+        SongImport.__init__(self, manager, **kwargs)
 
     def do_import(self):
         # Open the DB and MB files if they exist
@@ -162,27 +164,30 @@ class EasyWorshipSongImport(SongImport):
         if code_page == 852:
             self.encoding = u'cp1250'
         # The following codepage to actual encoding mappings have not been
-        #  observed, but merely guessed.  Actual example files are needed.
-        #if code_page == 737:
-        #    self.encoding = u'cp1253'
-        #if code_page == 775:
-        #    self.encoding = u'cp1257'
-        #if code_page == 855:
-        #    self.encoding = u'cp1251'
-        #if code_page == 857:
-        #    self.encoding = u'cp1254'
-        #if code_page == 866:
-        #    self.encoding = u'cp1251'
-        #if code_page == 869:
-        #    self.encoding = u'cp1253'
-        #if code_page == 862:
-        #    self.encoding = u'cp1255'
-        #if code_page == 874:
-        #    self.encoding = u'cp874'
+        # observed, but merely guessed. Actual example files are needed.
+        elif code_page == 737:
+            self.encoding = u'cp1253'
+        elif code_page == 775:
+            self.encoding = u'cp1257'
+        elif code_page == 855:
+            self.encoding = u'cp1251'
+        elif code_page == 857:
+            self.encoding = u'cp1254'
+        elif code_page == 866:
+            self.encoding = u'cp1251'
+        elif code_page == 869:
+            self.encoding = u'cp1253'
+        elif code_page == 862:
+            self.encoding = u'cp1255'
+        elif code_page == 874:
+            self.encoding = u'cp874'
+        self.encoding = retrieve_windows_encoding(self.encoding)
+        if not self.encoding:
+            return False
         # There does not appear to be a _reliable_ way of getting the number
         # of songs/records, so let's use file blocks for measuring progress.
         total_blocks = (db_size - header_size) / (block_size * 1024)
-        self.import_wizard.importProgressBar.setMaximum(total_blocks)
+        self.import_wizard.progressBar.setMaximum(total_blocks)
         # Read the field description information
         db_file.seek(120)
         field_info = db_file.read(num_fields * 2)
@@ -227,8 +232,7 @@ class EasyWorshipSongImport(SongImport):
                 title = self.get_field(fi_title)
                 if title:
                     self.import_wizard.incrementProgressBar(
-                        unicode(translate('SongsPlugin.ImportWizardForm',
-                            'Importing "%s"...')) % title, 0)
+                        WizardStrings.ImportingType % title, 0)
                     self.title = title
                 # Get remaining fields
                 copy = self.get_field(fi_copy)

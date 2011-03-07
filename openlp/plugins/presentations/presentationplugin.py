@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -74,7 +74,11 @@ class PresentationPlugin(Plugin):
         self.insertToolboxItem()
         for controller in self.controllers:
             if self.controllers[controller].enabled():
-                self.controllers[controller].start_process()
+                try:
+                    self.controllers[controller].start_process()
+                except:
+                    log.exception(u'Failed to start controller process')
+                    self.controllers[controller].available = False
         self.mediaItem.buildFileMaskString()
 
     def finalise(self):
@@ -152,41 +156,29 @@ class PresentationPlugin(Plugin):
         """
         ## Name PluginList ##
         self.textStrings[StringContent.Name] = {
-            u'singular': translate('PresentationPlugin', 'Presentation'),
-            u'plural': translate('PresentationPlugin', 'Presentations')
+            u'singular': translate('PresentationPlugin', 'Presentation',
+                'name singular'),
+            u'plural': translate('PresentationPlugin', 'Presentations',
+                'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.textStrings[StringContent.VisibleName] = {
-            u'title': translate('PresentationPlugin', 'Presentations')
+            u'title': translate('PresentationPlugin', 'Presentations',
+                'container title')
         }
         # Middle Header Bar
-        ## Load Button ##
-        self.textStrings[StringContent.Load] = {
-            u'title': translate('PresentationPlugin', 'Load'),
-            u'tooltip': translate('PresentationPlugin',
-                'Load a new Presentation')
-        }
-        ## Delete Button ##
-        self.textStrings[StringContent.Delete] = {
-            u'title': translate('PresentationPlugin', 'Delete'),
-            u'tooltip': translate('PresentationPlugin',
-                'Delete the selected Presentation')
-        }
-        ## Preview ##
-        self.textStrings[StringContent.Preview] = {
-            u'title': translate('PresentationPlugin', 'Preview'),
-            u'tooltip': translate('PresentationPlugin',
-                'Preview the selected Presentation')
-        }
-        ## Live  Button ##
-        self.textStrings[StringContent.Live] = {
-            u'title': translate('PresentationPlugin', 'Live'),
-            u'tooltip': translate('PresentationPlugin',
-                'Send the selected Presentation live')
-        }
-        ## Add to service Button ##
-        self.textStrings[StringContent.Service] = {
-            u'title': translate('PresentationPlugin', 'Service'),
-            u'tooltip': translate('PresentationPlugin',
+        tooltips = {
+            u'load': translate('PresentationPlugin', 'Load a new Presentation'),
+            u'import': u'',
+            u'new': u'',
+            u'edit': u'',
+            u'delete': translate('PresentationPlugin',
+                'Delete the selected Presentation'),
+            u'preview': translate('PresentationPlugin',
+                'Preview the selected Presentation'),
+            u'live': translate('PresentationPlugin',
+                'Send the selected Presentation live'),
+            u'service': translate('PresentationPlugin',
                 'Add the selected Presentation to the service')
         }
+        self.setPluginUiTextStrings(tooltips)

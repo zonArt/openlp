@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund, Derek Scotney                            #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,12 +29,10 @@ import os
 import chardet
 import codecs
 
+from openlp.core.lib import translate
 from songimport import SongImport
 
 log = logging.getLogger(__name__)
-
-class CCLIFileImportError(Exception):
-    pass
 
 class CCLIFileImport(SongImport):
     """
@@ -53,24 +51,20 @@ class CCLIFileImport(SongImport):
         ``filenames``
             The files to be imported.
         """
-        SongImport.__init__(self, manager)
-        if u'filenames' in kwargs:
-            self.filenames = kwargs[u'filenames']
-            log.debug(self.filenames)
-        else:
-            raise KeyError(u'Keyword argument "filenames" not supplied.')
+        SongImport.__init__(self, manager, **kwargs)
 
     def do_import(self):
         """
         Import either a .usr or a .txt SongSelect file
         """
         log.debug(u'Starting CCLI File Import')
-        song_total = len(self.filenames)
-        self.import_wizard.importProgressBar.setMaximum(song_total)
+        song_total = len(self.import_source)
+        self.import_wizard.progressBar.setMaximum(song_total)
         song_count = 1
-        for filename in self.filenames:
-            self.import_wizard.incrementProgressBar(
-                u'Importing song %s of %s' % (song_count, song_total))
+        for filename in self.import_source:
+            self.import_wizard.incrementProgressBar(unicode(translate(
+                'SongsPlugin.CCLIFileImport', 'Importing song %d of %d')) %
+                (song_count, song_total))
             filename = unicode(filename)
             log.debug(u'Importing CCLI File: %s', filename)
             lines = []
@@ -86,11 +80,11 @@ class CCLIFileImport(SongImport):
                 infile = codecs.open(filename, u'r', details['encoding'])
                 lines = infile.readlines()
                 ext = os.path.splitext(filename)[1]
-                if ext.lower() == ".usr":
+                if ext.lower() == u'.usr':
                     log.info(u'SongSelect .usr format file found %s: ',
                         filename)
                     self.do_import_usr_file(lines)
-                elif ext.lower() == ".txt":
+                elif ext.lower() == u'.txt':
                     log.info(u'SongSelect .txt format file found %s: ',
                         filename)
                     self.do_import_txt_file(lines)
@@ -124,7 +118,7 @@ class CCLIFileImport(SongImport):
         ``Title=``
             Contains the song title (e.g. *Title=Above All*)
         ``Author=``
-            Contains a | delimited list of the  song authors
+            Contains a | delimited list of the song authors
             e.g. *Author=LeBlanc, Lenny | Baloche, Paul*
         ``Copyright=``
             Contains a | delimited list of the song copyrights
@@ -150,7 +144,6 @@ class CCLIFileImport(SongImport):
 
         """
         log.debug(u'USR file text: %s', textList)
-        lyrics = []
         self.set_defaults()
         for line in textList:
             if line.startswith(u'Title='):
@@ -184,12 +177,12 @@ class CCLIFileImport(SongImport):
                 verse_type = u'O'
                 check_first_verse_line = True
             verse_text = unicode(words_list[counter])
-            verse_text = verse_text.replace("/n",  "\n")
-            verse_lines = verse_text.split(u'\n',  1)
+            verse_text = verse_text.replace(u'/n', u'\n')
+            verse_lines = verse_text.split(u'\n', 1)
             if check_first_verse_line:
                 if verse_lines[0].startswith(u'(PRE-CHORUS'):
                     verse_type = u'P'
-                    log.debug(u'USR verse PRE-CHORUS: %s', verse_lines[0] )
+                    log.debug(u'USR verse PRE-CHORUS: %s', verse_lines[0])
                     verse_text = verse_lines[1]
                 elif verse_lines[0].startswith(u'(BRIDGE'):
                     verse_type = u'B'
@@ -206,8 +199,11 @@ class CCLIFileImport(SongImport):
         if len(author_list) < 2:
             author_list = song_author.split(u'|')
         for author in author_list:
-            seperated = author.split(u',')
-            self.add_author(seperated[1].strip() + " " + seperated[0].strip())
+            separated = author.split(u',')
+            if len(separated) > 1:
+                self.add_author(u' '.join(reversed(separated)))
+            else:
+                self.add_author(author)
         self.title = song_name
         self.copyright = song_copyright
         self.ccli_number = song_ccli

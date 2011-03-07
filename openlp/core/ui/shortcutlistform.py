@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -49,11 +49,8 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         self.setupUi(self)
         self.actionList = None
         self.captureShortcut = False
-        QtCore.QObject.connect(
-            self.shortcutPushButton,
-            QtCore.SIGNAL(u'toggled(bool)'),
-            self.onShortcutPushButtonClicked
-        )
+        QtCore.QObject.connect(self.shortcutButton,
+            QtCore.SIGNAL(u'toggled(bool)'), self.onShortcutButtonClicked)
 
     def keyReleaseEvent(self, event):
         Qt = QtCore.Qt
@@ -71,7 +68,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         if event.modifiers() & Qt.ShiftModifier == Qt.ShiftModifier:
             key_string = u'Shift+' + key_string
         key_sequence = QtGui.QKeySequence(key_string)
-        existing_key = QtGui.QKeySequence("Ctrl+Shift+F8")
+        existing_key = QtGui.QKeySequence(u'Ctrl+Shift+F8')
         if key_sequence == existing_key:
             QtGui.QMessageBox.warning(
                 self,
@@ -83,8 +80,8 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                 QtGui.QMessageBox.Ok
             )
         else:
-            self.shortcutPushButton.setText(key_sequence.toString())
-        self.shortcutPushButton.setChecked(False)
+            self.shortcutButton.setText(key_sequence.toString())
+        self.shortcutButton.setChecked(False)
         self.captureShortcut = False
 
     def exec_(self, actionList):
@@ -93,17 +90,23 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         return QtGui.QDialog.exec_(self)
 
     def refreshActions(self):
-        self.shortcutListTreeWidget.clear()
+        self.treeWidget.clear()
         for category in self.actionList.categories:
             item = QtGui.QTreeWidgetItem([category.name])
             for action in category.actions:
                 actionText = REMOVE_AMPERSAND.sub('', unicode(action.text()))
-                shortcutText = action.shortcut().toString()
-                actionItem = QtGui.QTreeWidgetItem([actionText, shortcutText])
+                if (len(action.shortcuts()) == 2):
+                    shortcutText = action.shortcuts()[0].toString()
+                    alternateText = action.shortcuts()[1].toString()
+                else:
+                    shortcutText = action.shortcut().toString()
+                    alternateText = u''
+                actionItem = QtGui.QTreeWidgetItem(
+                    [actionText, shortcutText, alternateText])
                 actionItem.setIcon(0, action.icon())
                 item.addChild(actionItem)
             item.setExpanded(True)
-            self.shortcutListTreeWidget.addTopLevelItem(item)
+            self.treeWidget.addTopLevelItem(item)
 
-    def onShortcutPushButtonClicked(self, toggled):
+    def onShortcutButtonClicked(self, toggled):
         self.captureShortcut = toggled

@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -34,7 +34,7 @@ from sqlalchemy import create_engine, MetaData
 from sqlalchemy.exceptions import InvalidRequestError
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-from openlp.core.utils import AppLocation
+from openlp.core.utils import AppLocation, delete_file
 
 log = logging.getLogger(__name__)
 
@@ -65,7 +65,7 @@ def delete_database(plugin_name, db_file_name=None):
         The name of the plugin to remove the database for
 
     ``db_file_name``
-        The database file name.  Defaults to None resulting in the
+        The database file name. Defaults to None resulting in the
         plugin_name being used.
     """
     db_file_path = None
@@ -75,11 +75,7 @@ def delete_database(plugin_name, db_file_name=None):
     else:
         db_file_path = os.path.join(
             AppLocation.get_section_data_path(plugin_name), plugin_name)
-    try:
-        os.remove(db_file_path)
-        return True
-    except OSError:
-        return False
+    return delete_file(db_file_path)
 
 class BaseModel(object):
     """
@@ -90,10 +86,11 @@ class BaseModel(object):
         """
         Creates an instance of a class and populates it, returning the instance
         """
-        me = cls()
+        instance = cls()
         for key in kwargs:
-            me.__setattr__(key, kwargs[key])
-        return me
+            instance.__setattr__(key, kwargs[key])
+        return instance
+
 
 class Manager(object):
     """
@@ -111,7 +108,7 @@ class Manager(object):
             The init_schema function for this database
 
         ``db_file_name``
-            The file name to use for this database.  Defaults to None resulting
+            The file name to use for this database. Defaults to None resulting
             in the plugin_name being used.
         """
         settings = QtCore.QSettings()
@@ -215,11 +212,11 @@ class Manager(object):
             The type of objects to return
 
         ``filter_clause``
-            The filter governing selection of objects to return.  Defaults to
+            The filter governing selection of objects to return. Defaults to
             None.
 
         ``order_by_ref``
-            Any parameters to order the returned objects by.  Defaults to None.
+            Any parameters to order the returned objects by. Defaults to None.
         """
         query = self.session.query(object_class)
         if filter_clause is not None:
@@ -236,7 +233,7 @@ class Manager(object):
             The type of objects to return.
 
         ``filter_clause``
-            The filter governing selection of objects to return.  Defaults to
+            The filter governing selection of objects to return. Defaults to
             None.
         """
         query = self.session.query(object_class)

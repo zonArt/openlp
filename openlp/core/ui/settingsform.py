@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -47,14 +47,14 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         # General tab
-        self.generalTab = GeneralTab(screens)
-        self.addTab(u'General', self.generalTab)
+        generalTab = GeneralTab(screens)
+        self.addTab(u'General', generalTab)
         # Themes tab
-        self.themesTab = ThemesTab(mainWindow)
-        self.addTab(u'Themes', self.themesTab)
+        themesTab = ThemesTab(mainWindow)
+        self.addTab(u'Themes', themesTab)
         # Advanced tab
-        self.advancedTab = AdvancedTab()
-        self.addTab(u'Advanced', self.advancedTab)
+        advancedTab = AdvancedTab()
+        self.addTab(u'Advanced', advancedTab)
 
     def addTab(self, name, tab):
         """
@@ -92,6 +92,14 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         # Must go after all settings are save
         Receiver.send_message(u'config_updated')
         return QtGui.QDialog.accept(self)
+
+    def reject(self):
+        """
+        Process the form saving the settings
+        """
+        for tabIndex in range(0, self.settingsTabWidget.count()):
+            self.settingsTabWidget.widget(tabIndex).cancel()
+        return QtGui.QDialog.reject(self)
 
     def postSetUp(self):
         """

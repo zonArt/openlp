@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -175,10 +175,13 @@ class SongUsagePlugin(Plugin):
         """
         ## Name PluginList ##
         self.textStrings[StringContent.Name] = {
-            u'singular': translate('SongUsagePlugin', 'SongUsage'),
-            u'plural': translate('SongUsagePlugin', 'SongUsage')
+            u'singular': translate('SongUsagePlugin', 'SongUsage',
+                'name singular'),
+            u'plural': translate('SongUsagePlugin', 'SongUsage',
+                'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.textStrings[StringContent.VisibleName] = {
-            u'title': translate('SongUsagePlugin', 'SongUsage')
+            u'title': translate('SongUsagePlugin', 'SongUsage',
+                'container title')
         }
