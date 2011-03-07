@@ -135,8 +135,9 @@ class OooImport(SongImport):
         Open the passed file in OpenOffice.org Impress
         """
         if os.name == u'nt':
-            url = u'file:///' + filepath.replace(u'\\', u'/')
+            url = filepath.replace(u'\\', u'/')
             url = url.replace(u':', u'|').replace(u' ', u'%20')
+            url = u'file:///' + url
         else:
             url = uno.systemPathToFileUrl(filepath)
         properties = []
