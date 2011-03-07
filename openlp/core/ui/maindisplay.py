@@ -158,6 +158,7 @@ class MainDisplay(DisplayWidget):
             self.webView.setHtml(build_html(serviceItem, self.screen,
                 self.alertTab, self.isLive, None))
             self.initialFrame = True
+            self.__hideMouse()
             # To display or not to display?
             if not self.screen[u'primary']:
                 self.show()
@@ -232,9 +233,6 @@ class MainDisplay(DisplayWidget):
         image = self.imageManager.get_image_bytes(name)
         self.resetVideo()
         self.displayImage(image)
-        # show screen
-        if self.isLive:
-            self.setVisible(True)
         return self.preview()
 
     def displayImage(self, image):
@@ -318,7 +316,7 @@ class MainDisplay(DisplayWidget):
         Changes the volume of a running video
         """
         log.debug(u'videoVolume %d' % volume)
-        vol = float(volume)/float(10)
+        vol = float(volume) / float(10)
         if self.phononActive:
             self.audio.setVolume(vol)
         else:
@@ -334,7 +332,7 @@ class MainDisplay(DisplayWidget):
         # We are running a background theme
         self.override[u'theme'] = u''
         self.override[u'video'] = True
-        vol = float(volume)/float(10)
+        vol = float(volume) / float(10)
         if isBackground or not self.usePhonon:
             js = u'show_video("init", "%s", %s, true); show_video("play");' % \
                 (videoPath.replace(u'\\', u'\\\\'), str(vol))
@@ -387,9 +385,10 @@ class MainDisplay(DisplayWidget):
             Receiver.send_message(u'openlp_process_events')
         # if was hidden keep it hidden
         if self.isLive:
-            self.setVisible(True)
             if self.hideMode:
                 self.hideDisplay(self.hideMode)
+            else:
+               self.setVisible(True)
         preview = QtGui.QImage(self.screen[u'size'].width(),
             self.screen[u'size'].height(),
             QtGui.QImage.Format_ARGB32_Premultiplied)
@@ -434,15 +433,7 @@ class MainDisplay(DisplayWidget):
         # if was hidden keep it hidden
         if self.hideMode and self.isLive:
             self.hideDisplay(self.hideMode)
-        # Hide mouse cursor when moved over display if enabled in settings
-        settings = QtCore.QSettings()
-        if settings.value(u'advanced/hide mouse',
-            QtCore.QVariant(False)).toBool():
-            self.setCursor(QtCore.Qt.BlankCursor)
-            self.frame.evaluateJavaScript('document.body.style.cursor = "none"')
-        else:
-            self.setCursor(QtCore.Qt.ArrowCursor)
-            self.frame.evaluateJavaScript('document.body.style.cursor = "auto"')
+        self.__hideMouse()
 
     def footer(self, text):
         """
@@ -491,6 +482,16 @@ class MainDisplay(DisplayWidget):
         self.hideMode = None
         # Trigger actions when display is active again
         Receiver.send_message(u'maindisplay_active')
+
+    def __hideMouse(self):
+        # Hide mouse cursor when moved over display if enabled in settings
+        if QtCore.QSettings().value(u'advanced/hide mouse',
+            QtCore.QVariant(False)).toBool():
+            self.setCursor(QtCore.Qt.BlankCursor)
+            self.frame.evaluateJavaScript('document.body.style.cursor = "none"')
+        else:
+            self.setCursor(QtCore.Qt.ArrowCursor)
+            self.frame.evaluateJavaScript('document.body.style.cursor = "auto"')
 
 
 class AudioPlayer(QtCore.QObject):

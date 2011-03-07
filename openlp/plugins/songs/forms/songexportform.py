@@ -226,7 +226,7 @@ class SongExportForm(OpenLPWizard):
                     translate('SongsPlugin.ExportWizardForm',
                     'No Save Location specified'),
                     translate('SongsPlugin.ExportWizardForm',
-                    'You need to specified a directory to save the songs in.'))
+                    'You need to specify a directory.'))
                 return False
             return True
         elif self.currentPage() == self.progressPage:
@@ -355,7 +355,8 @@ class SongExportForm(OpenLPWizard):
         the path to *directoryLineEdit*.
         """
         path = unicode(QtGui.QFileDialog.getExistingDirectory(self,
-            translate('SongsPlugin.ExportWizardForm', 'Selecte to Folder'),
+            translate('SongsPlugin.ExportWizardForm',
+            'Select Destination Folder'),
             SettingsManager.get_last_dir(self.plugin.settingsSection, 1),
             options=QtGui.QFileDialog.ShowDirsOnly))
         SettingsManager.set_last_dir(self.plugin.settingsSection, path, 1)
