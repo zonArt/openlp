@@ -444,16 +444,20 @@ class ServiceManager(QtGui.QWidget):
                                 size_limit = 52428800 # 50MiB
                                 if file_size > size_limit:
                                     # File exeeds size_limit bytes, ask user
-                                    message = unicode(self.trUtf8('Do you want'
-                                        ' to include \n%.1f MiB file "%s"\n'
+                                    message = unicode(translate(
+                                        'OpenLP.ServiceManager', 'Do you want'
+                                        ' to include \n%.1f MB file "%s"\n'
                                         'into the service file?\n'
                                         'This may take some time.\n\n'
                                         'Please note that you need to\n'
-                                        'take care of that file yourself.')) %\
+                                        'take care of that file yourself,\n'
+                                        'if you leave it out.')) %\
                                         (file_size/1048576,
                                         os.path.split(path_from)[1])
-                                    ans = QtGui.QMessageBox.question(self,
-                                        self.trUtf8('Including Large File'),
+                                    ans = QtGui.QMessageBox.question(
+                                        self.mainwindow,
+                                        translate('OpenLP.ServiceManager',
+                                        'Including Large File'),
                                         message,
                                         QtGui.QMessageBox.StandardButtons(
                                         QtGui.QMessageBox.Ok|\
