@@ -17,3 +17,6 @@ Contents:
    mediamanager
    songs
 
+Credits
+-------
+Edited by john
