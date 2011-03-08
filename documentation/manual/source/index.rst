@@ -16,7 +16,3 @@ Contents:
    dualmonitors
    mediamanager
    songs
-
-Credits
--------
-Edited by john
