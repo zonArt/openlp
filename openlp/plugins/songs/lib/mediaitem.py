@@ -198,7 +198,7 @@ class SongMediaItem(MediaManagerItem):
         Handle the exit from the edit dialog and trigger remote updates
         of songs
         """
-        log.debug(u'onSongListLoad')
+        log.debug(u'onSongListLoad - start')
         # Called to redisplay the song list screen edit from a search
         # or from the exit of the Song edit dialog. If remote editing is active
         # Trigger it and clean up so it will not update again.
@@ -213,6 +213,7 @@ class SongMediaItem(MediaManagerItem):
             self.parent.serviceManager.replaceServiceItem(item)
         self.onRemoteEditClear()
         self.onSearchTextButtonClick()
+        log.debug(u'onSongListLoad - finished')
 
     def displayResultsSong(self, searchresults):
         log.debug(u'display results Song')
