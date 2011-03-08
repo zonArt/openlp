@@ -124,6 +124,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         Detects Page changes and updates as approprate.
         """
         if self.page(pageId) == self.DefaultsPage:
+            self.themeSelectionComboBox.clear()
             listIterator = QtGui.QTreeWidgetItemIterator(
                 self.selectionTreeWidget)
             while listIterator.value():
