@@ -419,17 +419,15 @@ class ServiceManager(QtGui.QWidget):
             path_file_name = unicode(self.fileName())
             (path, file_name) = os.path.split(path_file_name)
             basename = file_name[0:file_name.rfind(u'.')-1]
-            file_name = basename + '.osz'
             service_file_name = basename + '.osd'
             log.debug(u'ServiceManager.saveFile - %s' % path_file_name)
             SettingsManager.set_last_dir(self.mainwindow.serviceSettingsSection,
                 path)
             service = []
             zip = None
-            file = None
             try:
                 write_list = []
-                zip = zipfile.ZipFile(path_file_name, 'w')
+                total_size = 0
                 for item in self.serviceItems:
                     service.append({u'serviceitem':
                         item[u'service_item'].get_service_repr()})
@@ -440,20 +438,54 @@ class ServiceManager(QtGui.QWidget):
                             else:
                                 path_from = os.path.join(frame[u'path'],
                                     frame[u'title'])
-                            # On write a file once
+                            # Only write a file once
                             if not path_from in write_list:
-                                write_list.append(path_from)
-                                zip.write(path_from,
-                                    path_from.encode(u'utf-8'))
+                                file_size = os.path.getsize(path_from)
+                                size_limit = 52428800 # 50MiB
+                                if file_size > size_limit:
+                                    # File exeeds size_limit bytes, ask user
+                                    message = unicode(self.trUtf8('Do you want'
+                                        ' to include \n%.1f MiB file "%s"\n'
+                                        'into the service file?\n'
+                                        'This may take some time.\n\n'
+                                        'Please note that you need to\n'
+                                        'take care of that file yourself.')) %\
+                                        (file_size/1048576,
+                                        os.path.split(path_from)[1])
+                                    ans = QtGui.QMessageBox.question(self,
+                                        self.trUtf8('Including Large File'),
+                                        message,
+                                        QtGui.QMessageBox.StandardButtons(
+                                        QtGui.QMessageBox.Ok|\
+                                        QtGui.QMessageBox.Cancel),
+                                        QtGui.QMessageBox.Ok)
+                                    if ans == QtGui.QMessageBox.Ok:
+                                        write_list.append(path_from)
+                                        total_size += file_size
+                                else:
+                                    write_list.append(path_from)
+                                    total_size += file_size
+                log.debug(u'ServiceManager.saveFile - ZIP contents size is %i'
+                    ' bytes' % total_size)
+                service_content = cPickle.dumps(service)
+                # Usual Zip file cannot exceed 2GiB, file with Zip64 cannot be
+                # extracted using unzip in UNIX.
+                allow_zip_64 = (total_size > 2147483648 + len(service_content))
+                log.debug(u'ServiceManager.saveFile - allowZip64 is %s' %
+                    allow_zip_64)
+                zip = zipfile.ZipFile(path_file_name, 'w', zipfile.ZIP_STORED,
+                    allow_zip_64)
+                # We first add service contents.
+                # We save ALL filenames into ZIP using UTF-8.
                 zip.writestr(service_file_name.encode(u'utf-8'),
-                    cPickle.dumps(service))
+                    service_content)
+                # Finally add all the listed media files.
+                for path_from in write_list:
+                    zip.write(path_from, path_from.encode(u'utf-8'))
+                zip.close()
             except IOError:
                 log.exception(u'Failed to save service to disk')
-            finally:
-                if file:
-                    file.close()
-                if zip:
-                    zip.close()
+                return False
             self.mainwindow.addRecentFile(path_file_name)
             self.setModified(False)
         return True
