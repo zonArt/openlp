@@ -416,36 +416,37 @@ class ServiceManager(QtGui.QWidget):
         if not self.fileName():
             return self.saveFileAs()
         else:
-            fileName = self.fileName()
-            log.debug(u'ServiceManager.saveFile - %s' % fileName)
+            path_file_name = unicode(self.fileName())
+            (path, file_name) = os.path.split(path_file_name)
+            basename = file_name[0:file_name.rfind(u'.')-1]
+            file_name = basename + '.osz'
+            service_file_name = basename + '.osd'
+            log.debug(u'ServiceManager.saveFile - %s' % path_file_name)
             SettingsManager.set_last_dir(self.mainwindow.serviceSettingsSection,
-                split_filename(fileName)[0])
+                path)
             service = []
-            serviceFileName = fileName.replace(u'.osz', u'.osd')
             zip = None
             file = None
             try:
                 write_list = []
-                zip = zipfile.ZipFile(unicode(fileName), 'w')
+                zip = zipfile.ZipFile(path_file_name, 'w')
                 for item in self.serviceItems:
-                    service.append({u'serviceitem': \
+                    service.append({u'serviceitem':
                         item[u'service_item'].get_service_repr()})
                     if item[u'service_item'].uses_file():
                         for frame in item[u'service_item'].get_frames():
                             if item[u'service_item'].is_image():
                                 path_from = frame[u'path']
                             else:
-                                path_from = unicode(os.path.join(
-                                    frame[u'path'],
-                                    frame[u'title']))
+                                path_from = os.path.join(frame[u'path'],
+                                    frame[u'title'])
                             # On write a file once
                             if not path_from in write_list:
                                 write_list.append(path_from)
-                                zip.write(path_from.encode(u'utf-8'))
-                file = open(serviceFileName, u'wb')
-                cPickle.dump(service, file)
-                file.close()
-                zip.write(serviceFileName.encode(u'utf-8'))
+                                zip.write(path_from,
+                                    path_from.encode(u'utf-8'))
+                zip.writestr(service_file_name.encode(u'utf-8'),
+                    cPickle.dumps(service))
             except IOError:
                 log.exception(u'Failed to save service to disk')
             finally:
@@ -453,8 +454,7 @@ class ServiceManager(QtGui.QWidget):
                     file.close()
                 if zip:
                     zip.close()
-            delete_file(serviceFileName)
-            self.mainwindow.addRecentFile(fileName)
+            self.mainwindow.addRecentFile(path_file_name)
             self.setModified(False)
         return True
 
