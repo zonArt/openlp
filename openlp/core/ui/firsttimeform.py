@@ -32,11 +32,10 @@ import urllib
 
 from PyQt4 import QtCore, QtGui
 
-from firsttimewizard import Ui_FirstTimeWizard
-
-from openlp.core.lib import translate, PluginStatus, check_directory_exists,  \
+from openlp.core.lib import translate, PluginStatus, check_directory_exists, \
     Receiver
 from openlp.core.utils import get_web_page, AppLocation
+from firsttimewizard import Ui_FirstTimeWizard, FirstTimePage
 
 log = logging.getLogger(__name__)
 
@@ -49,6 +48,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
 
     def __init__(self, screens, parent=None):
         QtGui.QWizard.__init__(self, parent)
+        self.setupUi(self)
         # check to see if we have web access
         self.web = u'http://openlp.org/files/frw/'
         self.config = ConfigParser.ConfigParser()
@@ -56,7 +56,6 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         if self.webAccess:
             files = self.webAccess.read()
             self.config.readfp(io.BytesIO(files))
-        self.setupUi(self)
         for screen in screens.get_screen_list():
             self.displaySelectionComboBox.addItem(screen)
         self.songsText = translate('OpenLP.FirstTimeWizard', 'Songs')
@@ -85,7 +84,6 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         # Sort out internet access for downloads
         if self.webAccess:
             self.internetGroupBox.setVisible(True)
-            self.noInternetLabel.setVisible(False)
             # If songs database exists do not allow a copy
             songs = os.path.join(AppLocation.get_section_data_path(u'songs'),
                 u'songs.sqlite')
@@ -100,9 +98,9 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             treewidgetitem = QtGui.QTreeWidgetItem(self.selectionTreeWidget)
             treewidgetitem.setText(0, self.themesText)
             self._loadChild(treewidgetitem, u'themes', u'files', 'theme')
-        else:
-            self.internetGroupBox.setVisible(False)
-            self.noInternetLabel.setVisible(True)
+#        else:
+#            self.internetGroupBox.setVisible(False)
+#            self.noInternetLabel.setVisible(True)
 
     def _loadChild(self, tree, list, tag, root):
         files = self.config.get(list, tag)
@@ -119,11 +117,27 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 child.setFlags(QtCore.Qt.ItemIsUserCheckable |
                     QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
 
+    def nextId(self):
+        """
+        Determine the next page in the Wizard to go to.
+        """
+        if self.currentId() == FirstTimePage.Plugins:
+            if not self.webAccess:
+                return FirstTimePage.NoInternet
+            else:
+                return FirstTimePage.Songs
+        else:
+            return self.currentId() + 1
+
     def onCurrentIdChanged(self, pageId):
         """
         Detects Page changes and updates as approprate.
         """
-        if self.page(pageId) == self.DefaultsPage:
+        if pageId == FirstTimePage.NoInternet:
+            self.finishButton.setVisible(True)
+            self.finishButton.setEnabled(True)
+            self.nextButton.setVisible(False)
+        elif self.page(pageId) == self.DefaultsPage:
             self.themeSelectionComboBox.clear()
             listIterator = QtGui.QTreeWidgetItemIterator(
                 self.selectionTreeWidget)

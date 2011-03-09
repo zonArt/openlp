@@ -29,6 +29,15 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import translate
 from openlp.core.lib.ui import add_welcome_page
 
+class FirstTimePage(object):
+    Welcome = 0
+    Plugins = 1
+    NoInternet = 2
+    Songs = 3
+    Bibles = 4
+    Defaults = 5
+
+
 class Ui_FirstTimeWizard(object):
     def setupUi(self, FirstTimeWizard):
         FirstTimeWizard.setObjectName(u'FirstTimeWizard')
@@ -37,6 +46,9 @@ class Ui_FirstTimeWizard(object):
         FirstTimeWizard.setWizardStyle(QtGui.QWizard.ModernStyle)
         FirstTimeWizard.setOptions(QtGui.QWizard.IndependentPages|
             QtGui.QWizard.NoBackButtonOnStartPage)
+        self.finishButton = self.button(QtGui.QWizard.FinishButton)
+        self.cancelButton = self.button(QtGui.QWizard.CancelButton)
+        self.nextButton = self.button(QtGui.QWizard.NextButton)
         add_welcome_page(FirstTimeWizard, u':/wizards/wizard_firsttime.bmp')
         # The plugins page
         self.pluginPage = QtGui.QWizardPage()
@@ -79,14 +91,28 @@ class Ui_FirstTimeWizard(object):
         self.alertCheckBox.setChecked(True)
         self.alertCheckBox.setObjectName(u'alertCheckBox')
         self.pluginLayout.addWidget(self.alertCheckBox)
-        FirstTimeWizard.addPage(self.pluginPage)
-        # The song samples page
-        self.downloadDefaultsPage = QtGui.QWizardPage()
-        self.downloadDefaultsPage.setObjectName(u'downloadDefaultsPage')
-        self.noInternetLabel = QtGui.QLabel(self.downloadDefaultsPage)
-        self.noInternetLabel.setGeometry(QtCore.QRect(20, 20, 461, 17))
+        FirstTimeWizard.setPage(FirstTimePage.Plugins, self.pluginPage)
+        # The "you don't have an internet connection" page.
+        self.noInternetPage = QtGui.QWizardPage()
+        self.noInternetPage.setObjectName(u'noInternetPage')
+        self.noInternetLayout = QtGui.QVBoxLayout(self.noInternetPage)
+        self.noInternetLayout.setContentsMargins(50, 40, 50, 40)
+        self.noInternetLayout.setObjectName(u'noInternetLayout')
+        self.noInternetLabel = QtGui.QLabel(self.noInternetPage)
+        self.noInternetLabel.setWordWrap(True)
         self.noInternetLabel.setObjectName(u'noInternetLabel')
-        self.internetGroupBox = QtGui.QGroupBox(self.downloadDefaultsPage)
+        self.noInternetLayout.addWidget(self.noInternetLabel)
+        FirstTimeWizard.setPage(FirstTimePage.NoInternet, self.noInternetPage)
+
+        # The song samples page
+        self.songsPage = QtGui.QWizardPage()
+        self.songsPage.setObjectName(u'songsPage')
+        FirstTimeWizard.setPage(FirstTimePage.Songs, self.songsPage)
+
+        # download page
+        self.biblesPage = QtGui.QWizardPage()
+        self.biblesPage.setObjectName(u'biblesPage')
+        self.internetGroupBox = QtGui.QGroupBox(self.biblesPage)
         self.internetGroupBox.setGeometry(QtCore.QRect(20, 10, 501, 271))
         self.internetGroupBox.setObjectName(u'internetGroupBox')
         self.pluginLayout_4 = QtGui.QVBoxLayout(self.internetGroupBox)
@@ -100,7 +126,8 @@ class Ui_FirstTimeWizard(object):
         self.selectionTreeWidget.headerItem().setText(0, u'1')
         self.selectionTreeWidget.header().setVisible(False)
         self.pluginLayout_4.addWidget(self.selectionTreeWidget)
-        FirstTimeWizard.addPage(self.downloadDefaultsPage)
+        FirstTimeWizard.setPage(FirstTimePage.Bibles, self.biblesPage)
+
         self.DefaultsPage = QtGui.QWizardPage()
         self.DefaultsPage.setObjectName(u'DefaultsPage')
         self.layoutWidget = QtGui.QWidget(self.DefaultsPage)
@@ -133,7 +160,7 @@ class Ui_FirstTimeWizard(object):
         self.updateLabel = QtGui.QLabel(self.DefaultsPage)
         self.updateLabel.setGeometry(QtCore.QRect(60, 220, 351, 17))
         self.updateLabel.setObjectName(u'updateLabel')
-        FirstTimeWizard.addPage(self.DefaultsPage)
+        FirstTimeWizard.setPage(FirstTimePage.Defaults, self.DefaultsPage)
 
         self.retranslateUi(FirstTimeWizard)
         QtCore.QMetaObject.connectSlotsByName(FirstTimeWizard)
@@ -169,14 +196,29 @@ class Ui_FirstTimeWizard(object):
             'Monitor Song Usage'))
         self.alertCheckBox.setText(translate('OpenLP.FirstTimeWizard',
             'Allow Alerts'))
-        self.downloadDefaultsPage.setTitle(translate('OpenLP.FirstTimeWizard',
+        self.noInternetPage.setTitle(translate('OpenLP.FirstTimeWizard',
+            'No Internet Connection'))
+        self.noInternetPage.setSubTitle(translate(
+            'OpenLP.FirstTimeWizard',
+            'Unable to detect an Internet connection.'))
+        self.noInternetLabel.setText(translate('OpenLP.FirstTimeWizard',
+            'No Internet connection was found. The First Time Wizard needs an '
+            'Internet connection in order to be able to download sample '
+            'songs, Bibles and themes.\n\nTo re-run the First Time Wizard and '
+            'import this sample data at a later stage, press the cancel '
+            'button now, check your Internet connection, and restart OpenLP.'
+            '\n\nTo cancel the First Time Wizard completely, press the finish '
+            'button now.'))
+        self.songsPage.setTitle(translate('OpenLP.FirstTimeWizard',
+            'Sample Songs'))
+        self.songsPage.setSubTitle(translate(
+            'OpenLP.FirstTimeWizard',
+            'Select and download public domain songs.'))
+        self.biblesPage.setTitle(translate('OpenLP.FirstTimeWizard',
             'Download Samples from OpenLP.org'))
-        self.downloadDefaultsPage.setSubTitle(translate(
+        self.biblesPage.setSubTitle(translate(
             'OpenLP.FirstTimeWizard',
             'Select samples to downlaod and install for use.'))
-        self.noInternetLabel.setText(translate('OpenLP.FirstTimeWizard',
-            'No Internet connection found so unable to download any default'
-            ' files.'))
         self.internetGroupBox.setTitle(translate('OpenLP.FirstTimeWizard',
             'Download Example Files'))
         self.DefaultsPage.setTitle(translate('OpenLP.FirstTimeWizard',
