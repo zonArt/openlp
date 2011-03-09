@@ -376,7 +376,7 @@ class ServiceManager(QtGui.QWidget):
             elif result == QtGui.QMessageBox.Save:
                 self.saveFile()
         fileName = unicode(QtGui.QFileDialog.getOpenFileName(self.mainwindow,
-            translate('OpenLP.ServiceManager', 'Open File'),
+            UiStrings.OpenFile,
             SettingsManager.get_last_dir(
             self.mainwindow.serviceSettingsSection),
             translate('OpenLP.ServiceManager', 'OpenLP Service Files (*.osz)')))
