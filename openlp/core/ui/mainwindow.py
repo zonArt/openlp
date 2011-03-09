@@ -462,7 +462,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     actionList = ActionList()
 
-    def __init__(self, screens, applicationVersion, clipboard):
+    def __init__(self, screens, applicationVersion, clipboard, firstTime):
         """
         This constructor sets up the interface, the various managers, and the
         plugins.
@@ -627,6 +627,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 self.MediaToolBox.setCurrentIndex(savedPlugin)
         self.settingsForm.postSetUp()
         Receiver.send_message(u'cursor_normal')
+        # Import themes if first time
+        if firstTime:
+            self.themeManagerContents.firstTime()
+
 
     def setAutoLanguage(self, value):
         self.LanguageGroup.setDisabled(value)
