@@ -413,7 +413,6 @@ class ServiceManager(QtGui.QWidget):
         """
         Save the current Service file.
         """
-        success = True
         if not self.fileName():
             return self.saveFileAs()
         path_file_name = unicode(self.fileName())
@@ -478,13 +477,13 @@ class ServiceManager(QtGui.QWidget):
                 zip.write(path_from, path_from.encode(u'utf-8'))
         except IOError:
             log.exception(u'Failed to save service to disk')
-            success = False
+            zip.close()
+            return False
         finally:
             zip.close()
             self.mainwindow.addRecentFile(path_file_name)
-        if success:
             self.setModified(False)
-        return success
+            return True
 
     def saveFileAs(self):
         """
