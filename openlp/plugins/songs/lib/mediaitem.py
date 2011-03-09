@@ -255,7 +255,7 @@ class SongMediaItem(MediaManagerItem):
             if self.searchTextEdit.currentSearchType() == SongSearch.Entire:
                 search_length = 7
             elif self.searchTextEdit.currentSearchType() == SongSearch.Lyrics:
-                search_length = 3
+                search_length = 6
             if len(text) > search_length:
                 self.onSearchTextButtonClick()
             elif len(text) == 0:
