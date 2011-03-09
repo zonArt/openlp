@@ -159,15 +159,15 @@ class SongMediaItem(MediaManagerItem):
     def onSearchTextButtonClick(self):
         search_keywords = unicode(self.searchTextEdit.displayText())
         search_results = []
-        # search_type = self.searchTypeComboBox.currentIndex()
         search_type = self.searchTextEdit.currentSearchType()
         if search_type == SongSearch.Entire:
             log.debug(u'Entire Song Search')
             search_results = self.parent.manager.get_all_objects(Song,
                 or_(Song.search_title.like(u'%' + self.whitespace.sub(u' ',
                 search_keywords.lower()) + u'%'),
-                Song.search_lyrics.like(u'%' + search_keywords.lower() + \
-                u'%')), Song.search_title.asc())
+                Song.search_lyrics.like(u'%' + search_keywords.lower() + u'%'),
+                Song.comments.like(u'%' + search_keywords.lower() + u'%')),
+                Song.search_title.asc())
             self.displayResultsSong(search_results)
         elif search_type == SongSearch.Titles:
             log.debug(u'Titles Search')
@@ -198,7 +198,7 @@ class SongMediaItem(MediaManagerItem):
         Handle the exit from the edit dialog and trigger remote updates
         of songs
         """
-        log.debug(u'onSongListLoad')
+        log.debug(u'onSongListLoad - start')
         # Called to redisplay the song list screen edit from a search
         # or from the exit of the Song edit dialog. If remote editing is active
         # Trigger it and clean up so it will not update again.
@@ -213,6 +213,7 @@ class SongMediaItem(MediaManagerItem):
             self.parent.serviceManager.replaceServiceItem(item)
         self.onRemoteEditClear()
         self.onSearchTextButtonClick()
+        log.debug(u'onSongListLoad - finished')
 
     def displayResultsSong(self, searchresults):
         log.debug(u'display results Song')
@@ -252,11 +253,13 @@ class SongMediaItem(MediaManagerItem):
         if self.searchAsYouType:
             search_length = 1
             if self.searchTextEdit.currentSearchType() == SongSearch.Entire:
-                search_length = 3
-            elif self.searchTextEdit.currentSearchType() == SongSearch.Lyrics:
                 search_length = 7
+            elif self.searchTextEdit.currentSearchType() == SongSearch.Lyrics:
+                search_length = 6
             if len(text) > search_length:
                 self.onSearchTextButtonClick()
+            elif len(text) == 0:
+                self.onClearTextButtonClick()
 
     def onImportClick(self):
         if not hasattr(self, u'import_wizard'):
@@ -445,10 +448,9 @@ class SongMediaItem(MediaManagerItem):
                     add_song = False
                     editId = song.id
                     break
-        if add_song:
-            if self.addSongFromService:
-                editId = self.openLyrics.xml_to_song(item.xml_version)
-                self.onSearchTextButtonClick()
+        if add_song and self.addSongFromService:
+            editId = self.openLyrics.xml_to_song(item.xml_version)
+            self.onSearchTextButtonClick()
         # Update service with correct song id.
         if editId:
             Receiver.send_message(u'service_item_update',

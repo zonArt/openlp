@@ -90,8 +90,8 @@ class MainDisplay(DisplayWidget):
         """
         Set up and build the output screen
         """
-        log.debug(u'Setup live = %s for monitor %s ' % (self.isLive,
-            self.screens.monitor_number))
+        log.debug(u'Start setup for monitor %s (live = %s)' % 
+            (self.screens.monitor_number, self.isLive))
         self.usePhonon = QtCore.QSettings().value(
             u'media/use phonon', QtCore.QVariant(True)).toBool()
         self.phononActive = False
@@ -102,6 +102,7 @@ class MainDisplay(DisplayWidget):
         self.videoWidget.setVisible(False)
         self.videoWidget.setGeometry(QtCore.QRect(0, 0,
             self.screen[u'size'].width(), self.screen[u'size'].height()))
+        log.debug(u'Setup Phonon for monitor %s' % self.screens.monitor_number)
         self.mediaObject = Phonon.MediaObject(self)
         self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
         Phonon.createPath(self.mediaObject, self.videoWidget)
@@ -109,6 +110,7 @@ class MainDisplay(DisplayWidget):
         QtCore.QObject.connect(self.mediaObject,
             QtCore.SIGNAL(u'stateChanged(Phonon::State, Phonon::State)'),
             self.videoStart)
+        log.debug(u'Setup webView for monitor %s' % self.screens.monitor_number)
         self.webView = QtWebKit.QWebView(self)
         self.webView.setGeometry(0, 0,
             self.screen[u'size'].width(), self.screen[u'size'].height())
@@ -165,6 +167,8 @@ class MainDisplay(DisplayWidget):
                 self.primary = False
             else:
                 self.primary = True
+        log.debug(
+            u'Finished setup for monitor %s' % self.screens.monitor_number)
 
     def text(self, slide):
         """
@@ -512,9 +516,6 @@ class AudioPlayer(QtCore.QObject):
 
         ``parent``
             The parent widget.
-
-        ``screens``
-            The list of screens.
         """
         log.debug(u'AudioPlayer Initialisation started')
         QtCore.QObject.__init__(self, parent)
