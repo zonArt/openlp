@@ -516,9 +516,6 @@ class AudioPlayer(QtCore.QObject):
 
         ``parent``
             The parent widget.
-
-        ``screens``
-            The list of screens.
         """
         log.debug(u'AudioPlayer Initialisation started')
         QtCore.QObject.__init__(self, parent)
