@@ -482,6 +482,7 @@ class ServiceManager(QtGui.QWidget):
         finally:
             zip.close()
             self.mainwindow.addRecentFile(path_file_name)
+        if success:
             self.setModified(False)
         return success
 
