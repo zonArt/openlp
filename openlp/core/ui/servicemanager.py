@@ -415,84 +415,74 @@ class ServiceManager(QtGui.QWidget):
         """
         if not self.fileName():
             return self.saveFileAs()
-        else:
-            path_file_name = unicode(self.fileName())
-            (path, file_name) = os.path.split(path_file_name)
-            basename = file_name[0:file_name.rfind(u'.')-1]
-            service_file_name = basename + '.osd'
-            log.debug(u'ServiceManager.saveFile - %s' % path_file_name)
-            SettingsManager.set_last_dir(self.mainwindow.serviceSettingsSection,
-                path)
-            service = []
-            zip = None
-            try:
-                write_list = []
-                total_size = 0
-                for item in self.serviceItems:
-                    service.append({u'serviceitem':
-                        item[u'service_item'].get_service_repr()})
-                    if item[u'service_item'].uses_file():
-                        for frame in item[u'service_item'].get_frames():
-                            if item[u'service_item'].is_image():
-                                path_from = frame[u'path']
-                            else:
-                                path_from = os.path.join(frame[u'path'],
-                                    frame[u'title'])
-                            # Only write a file once
-                            if not path_from in write_list:
-                                file_size = os.path.getsize(path_from)
-                                size_limit = 52428800 # 50MiB
-                                if file_size > size_limit:
-                                    # File exeeds size_limit bytes, ask user
-                                    message = unicode(translate(
-                                        'OpenLP.ServiceManager', 'Do you want'
-                                        ' to include \n%.1f MB file "%s"\n'
-                                        'into the service file?\n'
-                                        'This may take some time.\n\n'
-                                        'Please note that you need to\n'
-                                        'take care of that file yourself,\n'
-                                        'if you leave it out.')) %\
-                                        (file_size/1048576,
-                                        os.path.split(path_from)[1])
-                                    ans = QtGui.QMessageBox.question(
-                                        self.mainwindow,
-                                        translate('OpenLP.ServiceManager',
-                                        'Including Large File'),
-                                        message,
-                                        QtGui.QMessageBox.StandardButtons(
-                                        QtGui.QMessageBox.Ok|\
-                                        QtGui.QMessageBox.Cancel),
-                                        QtGui.QMessageBox.Ok)
-                                    if ans == QtGui.QMessageBox.Ok:
-                                        write_list.append(path_from)
-                                        total_size += file_size
-                                else:
-                                    write_list.append(path_from)
-                                    total_size += file_size
-                log.debug(u'ServiceManager.saveFile - ZIP contents size is %i'
-                    ' bytes' % total_size)
-                service_content = cPickle.dumps(service)
-                # Usual Zip file cannot exceed 2GiB, file with Zip64 cannot be
-                # extracted using unzip in UNIX.
-                allow_zip_64 = (total_size > 2147483648 + len(service_content))
-                log.debug(u'ServiceManager.saveFile - allowZip64 is %s' %
-                    allow_zip_64)
-                zip = zipfile.ZipFile(path_file_name, 'w', zipfile.ZIP_STORED,
-                    allow_zip_64)
-                # We first add service contents.
-                # We save ALL filenames into ZIP using UTF-8.
-                zip.writestr(service_file_name.encode(u'utf-8'),
-                    service_content)
-                # Finally add all the listed media files.
-                for path_from in write_list:
-                    zip.write(path_from, path_from.encode(u'utf-8'))
-                zip.close()
-            except IOError:
-                log.exception(u'Failed to save service to disk')
-                return False
+        path_file_name = unicode(self.fileName())
+        (path, file_name) = os.path.split(path_file_name)
+        basename = file_name[0:file_name.rfind(u'.')-1]
+        service_file_name = basename + '.osd'
+        log.debug(u'ServiceManager.saveFile - %s' % path_file_name)
+        SettingsManager.set_last_dir(self.mainwindow.serviceSettingsSection,
+            path)
+        service = []
+        write_list = []
+        total_size = 0
+        for item in self.serviceItems:
+            service.append({u'serviceitem':
+                item[u'service_item'].get_service_repr()})
+            if not item[u'service_item'].uses_file():
+                continue
+            for frame in item[u'service_item'].get_frames():
+                if item[u'service_item'].is_image():
+                    path_from = frame[u'path']
+                else:
+                    path_from = os.path.join(frame[u'path'], frame[u'title'])
+                # Only write a file once
+                if path_from in write_list:
+                    continue
+                file_size = os.path.getsize(path_from)
+                size_limit = 52428800 # 50MiB
+                if file_size > size_limit:
+                    # File exeeds size_limit bytes, ask user
+                    message = unicode(translate('OpenLP.ServiceManager',
+                        'Do you want to include \n%.1f MB file "%s"\n'
+                        'into the service file?\nThis may take some time.\n\n'
+                        'Please note that you need to\ntake care of that file '
+                        'yourself,\nif you leave it out.')) % \
+                        (file_size/1048576, os.path.split(path_from)[1])
+                    ans = QtGui.QMessageBox.question(self.mainwindow,
+                        translate('OpenLP.ServiceManager', 'Including Large '
+                        'File'), message, QtGui.QMessageBox.StandardButtons(
+                        QtGui.QMessageBox.Ok|QtGui.QMessageBox.Cancel),
+                        QtGui.QMessageBox.Ok)
+                    if ans == QtGui.QMessageBox.Cancel:
+                        continue
+                write_list.append(path_from)
+                total_size += file_size
+        log.debug(u'ServiceManager.saveFile - ZIP contents size is %i bytes' %
+            total_size)
+        service_content = cPickle.dumps(service)
+        # Usual Zip file cannot exceed 2GiB, file with Zip64 cannot be
+        # extracted using unzip in UNIX.
+        allow_zip_64 = (total_size > 2147483648 + len(service_content))
+        log.debug(u'ServiceManager.saveFile - allowZip64 is %s' %
+            allow_zip_64)
+        try:
+            zip = zipfile.ZipFile(path_file_name, 'w', zipfile.ZIP_STORED,
+                allow_zip_64)
+            # First we add service contents.
+            # We save ALL filenames into ZIP using UTF-8.
+            zip.writestr(service_file_name.encode(u'utf-8'),
+                service_content)
+            # Finally add all the listed media files.
+            for path_from in write_list:
+                zip.write(path_from, path_from.encode(u'utf-8'))
+        except IOError:
+            log.exception(u'Failed to save service to disk')
+        finally:
+            zip.close()
             self.mainwindow.addRecentFile(path_file_name)
             self.setModified(False)
-        return True
+            return True
+        return False
 
     def saveFileAs(self):
         """
