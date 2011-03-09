@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -30,10 +30,12 @@ import re
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, translate
-from openlp.core.lib.ui import add_widget_completer, critical_error_message_box
+from openlp.core.lib.ui import UiStrings, add_widget_completer, \
+    critical_error_message_box
 from openlp.plugins.songs.forms import EditVerseForm
 from openlp.plugins.songs.lib import SongXML, VerseType
 from openlp.plugins.songs.lib.db import Book, Song, Author, Topic
+from openlp.plugins.songs.lib.ui import SongStrings
 from editsongdialog import Ui_EditSongDialog
 
 log = logging.getLogger(__name__)
@@ -94,8 +96,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
         self.previewButton = QtGui.QPushButton()
         self.previewButton.setObjectName(u'previewButton')
-        self.previewButton.setText(
-            translate('SongsPlugin.EditSongForm', 'Save && Preview'))
+        self.previewButton.setText(UiStrings.SaveAndPreview)
         self.buttonBox.addButton(
             self.previewButton, QtGui.QDialogButtonBox.ActionRole)
         QtCore.QObject.connect(self.buttonBox,
@@ -227,10 +228,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.copyrightEdit.setText(u'')
         self.verseListWidget.clear()
         self.verseListWidget.setRowCount(0)
-        if self.song.verse_order:
-            self.verseOrderEdit.setText(self.song.verse_order)
-        else:
-            self.verseOrderEdit.setText(u'')
         if self.song.comments:
             self.commentsEdit.setPlainText(self.song.comments)
         else:
@@ -250,15 +247,31 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         # This is just because occasionally the lyrics come back as a "buffer"
         if isinstance(self.song.lyrics, buffer):
             self.song.lyrics = unicode(self.song.lyrics)
+        verse_tags_translated = False
         if self.song.lyrics.startswith(u'<?xml version='):
             songXML = SongXML()
             verseList = songXML.get_verses(self.song.lyrics)
             for count, verse in enumerate(verseList):
                 self.verseListWidget.setRowCount(
                     self.verseListWidget.rowCount() + 1)
-                variant = u'%s:%s' % (verse[0][u'type'], verse[0][u'label'])
+                # This silently migrates from localized verse type markup.
+                # If we trusted the database, this would be unnecessary.
+                verse_tag = verse[0][u'type']
+                index = None
+                if len(verse_tag) > 1:
+                    index = VerseType.from_translated_string(verse_tag)
+                    if index is None:
+                        index = VerseType.from_string(verse_tag)
+                    else:
+                        verse_tags_translated = True
+                if index is None:
+                    index = VerseType.from_tag(verse_tag)
+                if index is None:
+                    index = VerseType.Other
+                verse[0][u'type'] = VerseType.Tags[index]
+                verse_def = u'%s%s' % (verse[0][u'type'], verse[0][u'label'])
                 item = QtGui.QTableWidgetItem(verse[1])
-                item.setData(QtCore.Qt.UserRole, QtCore.QVariant(variant))
+                item.setData(QtCore.Qt.UserRole, QtCore.QVariant(verse_def))
                 self.verseListWidget.setItem(count, 0, item)
         else:
             verses = self.song.lyrics.split(u'\n\n')
@@ -266,10 +279,24 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 self.verseListWidget.setRowCount(
                     self.verseListWidget.rowCount() + 1)
                 item = QtGui.QTableWidgetItem(verse)
-                variant = u'%s:%s' % \
-                    (VerseType.to_string(VerseType.Verse), unicode(count + 1))
-                item.setData(QtCore.Qt.UserRole, QtCore.QVariant(variant))
+                verse_def = u'%s%s' % \
+                    (VerseType.Tags[VerseType.Verse], unicode(count + 1))
+                item.setData(QtCore.Qt.UserRole, QtCore.QVariant(verse_def))
                 self.verseListWidget.setItem(count, 0, item)
+        if self.song.verse_order:
+            # we translate verse order
+            translated = []
+            for verse_def in self.song.verse_order.split():
+                verse_index = None
+                if verse_tags_translated:
+                    verse_index = VerseType.from_translated_tag(verse_def[0])
+                if verse_index is None:
+                    verse_index = VerseType.from_tag(verse_def[0])
+                verse_tag = VerseType.TranslatedTags[verse_index].upper()
+                translated.append(u'%s%s' % (verse_tag, verse_def[1:]))
+            self.verseOrderEdit.setText(u' '.join(translated))
+        else:
+            self.verseOrderEdit.setText(u'')
         self.verseListWidget.resizeRowsToContents()
         self.tagRows()
         # clear the results
@@ -294,14 +321,14 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         """
         Tag the Song List rows based on the verse list
         """
-        rowLabel = []
+        row_label = []
         for row in range(0, self.verseListWidget.rowCount()):
             item = self.verseListWidget.item(row, 0)
-            data = unicode(item.data(QtCore.Qt.UserRole).toString())
-            bit = data.split(u':')
-            rowTag = u'%s%s' % (bit[0][0:1], bit[1])
-            rowLabel.append(rowTag)
-        self.verseListWidget.setVerticalHeaderLabels(rowLabel)
+            verse_def = unicode(item.data(QtCore.Qt.UserRole).toString())
+            verse_tag = VerseType.translated_tag(verse_def[0])
+            row_def = u'%s%s' % (verse_tag, verse_def[1:])
+            row_label.append(row_def)
+        self.verseListWidget.setVerticalHeaderLabels(row_label)
 
     def onAuthorAddButtonClicked(self):
         item = int(self.authorsComboBox.currentIndex())
@@ -337,8 +364,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 self.__addAuthorToList(author)
             self.authorsComboBox.setCurrentIndex(0)
         else:
-            QtGui.QMessageBox.warning(self,
-                translate('SongsPlugin.EditSongForm', 'No Author Selected'),
+            QtGui.QMessageBox.warning(self, UiStrings.NISs,
                 translate('SongsPlugin.EditSongForm', 'You have not selected '
                 'a valid author. Either select an author from the list, '
                 'or type in a new author and click the "Add Author to '
@@ -397,8 +423,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 self.topicsListView.addItem(topic_item)
             self.topicsComboBox.setCurrentIndex(0)
         else:
-            QtGui.QMessageBox.warning(self,
-                translate('SongsPlugin.EditSongForm', 'No Topic Selected'),
+            QtGui.QMessageBox.warning(self, UiStrings.NISs,
                 translate('SongsPlugin.EditSongForm', 'You have not selected '
                 'a valid topic. Either select a topic from the list, or '
                 'type in a new topic and click the "Add Topic to Song" '
@@ -420,11 +445,11 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def onVerseAddButtonClicked(self):
         self.verse_form.setVerse(u'', True)
         if self.verse_form.exec_():
-            afterText, verse, subVerse = self.verse_form.getVerse()
-            data = u'%s:%s' % (verse, subVerse)
-            item = QtGui.QTableWidgetItem(afterText)
-            item.setData(QtCore.Qt.UserRole, QtCore.QVariant(data))
-            item.setText(afterText)
+            after_text, verse_tag, verse_num = self.verse_form.getVerse()
+            verse_def = u'%s%s' % (verse_tag, verse_num)
+            item = QtGui.QTableWidgetItem(after_text)
+            item.setData(QtCore.Qt.UserRole, QtCore.QVariant(verse_def))
+            item.setText(after_text)
             self.verseListWidget.setRowCount(
                 self.verseListWidget.rowCount() + 1)
             self.verseListWidget.setItem(
@@ -440,12 +465,12 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             verseId = unicode(item.data(QtCore.Qt.UserRole).toString())
             self.verse_form.setVerse(tempText, True, verseId)
             if self.verse_form.exec_():
-                afterText, verse, subVerse = self.verse_form.getVerse()
-                data = u'%s:%s' % (verse, subVerse)
-                item.setData(QtCore.Qt.UserRole, QtCore.QVariant(data))
-                item.setText(afterText)
+                after_text, verse_tag, verse_num = self.verse_form.getVerse()
+                verse_def = u'%s%s' % (verse_tag, verse_num)
+                item.setData(QtCore.Qt.UserRole, QtCore.QVariant(verse_def))
+                item.setText(after_text)
                 # number of lines has change so repaint the list moving the data
-                if len(tempText.split(u'\n')) != len(afterText.split(u'\n')):
+                if len(tempText.split(u'\n')) != len(after_text.split(u'\n')):
                     tempList = {}
                     tempId = {}
                     for row in range(0, self.verseListWidget.rowCount()):
@@ -467,7 +492,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             for row in range(0, self.verseListWidget.rowCount()):
                 item = self.verseListWidget.item(row, 0)
                 field = unicode(item.data(QtCore.Qt.UserRole).toString())
-                verse_list += u'---[%s]---\n' % field
+                verse_tag = VerseType.translated_name(field[0])
+                verse_num = field[1:]
+                verse_list += u'---[%s:%s]---\n' % (verse_tag, verse_num)
                 verse_list += item.text()
                 verse_list += u'\n'
             self.verse_form.setVerse(verse_list)
@@ -483,15 +510,32 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     for count, parts in enumerate(match.split(u']---\n')):
                         if len(parts) > 1:
                             if count == 0:
-                                # make sure the tag is correctly cased
-                                variant = u'%s%s' % \
-                                    (parts[0:1].upper(), parts[1:].lower())
+                                # handling carefully user inputted versetags
+                                separator = parts.find(u':')
+                                if separator >= 0:
+                                    verse_name = parts[0:separator].strip()
+                                    verse_num = parts[separator+1:].strip()
+                                else:
+                                    verse_name = parts
+                                    verse_num = u'1'
+                                verse_index = \
+                                    VerseType.from_loose_input(verse_name)
+                                verse_tag = VerseType.Tags[verse_index]
+                                # Later we need to handle v1a as well.
+                                #regex = re.compile(r'(\d+\w.)')
+                                regex = re.compile(r'\D*(\d+)\D*')
+                                match = regex.match(verse_num)
+                                if match:
+                                    verse_num = match.group(1)
+                                else:
+                                    verse_num = u'1'
+                                verse_def = u'%s%s' % (verse_tag, verse_num)
                             else:
                                 if parts.endswith(u'\n'):
                                     parts = parts.rstrip(u'\n')
                                 item = QtGui.QTableWidgetItem(parts)
                                 item.setData(QtCore.Qt.UserRole,
-                                    QtCore.QVariant(variant))
+                                    QtCore.QVariant(verse_def))
                                 self.verseListWidget.setRowCount(
                                     self.verseListWidget.rowCount() + 1)
                                 self.verseListWidget.setItem(
@@ -513,7 +557,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         """
         Check the validity of the song.
         """
-        # This checks data in the form *not* self.song.  self.song is still
+        # This checks data in the form *not* self.song. self.song is still
         # None at this point.
         log.debug(u'Validate Song')
         # Lets be nice and assume the data is correct.
@@ -543,25 +587,31 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             order_names = unicode(self.verseOrderEdit.text()).split()
             for item in order_names:
                 if len(item) == 1:
-                    order.append(item.lower() + u'1')
+                    verse_index = VerseType.from_translated_tag(item)
+                    if verse_index is not None:
+                        order.append(VerseType.Tags[verse_index] + u'1')
+                    else:
+                        order.append(u'') # it matches no verses anyway
                 else:
-                    order.append(item.lower())
+                    verse_index = VerseType.from_translated_tag(item[0])
+                    if verse_index is None:
+                        order.append(u'') # same as above
+                    else:
+                        verse_tag = VerseType.Tags[verse_index]
+                        verse_num = item[1:].lower()
+                        order.append(verse_tag + verse_num)
             verses = []
             verse_names = []
-            for index in range (0, self.verseListWidget.rowCount()):
+            for index in range(0, self.verseListWidget.rowCount()):
                 verse = self.verseListWidget.item(index, 0)
                 verse = unicode(verse.data(QtCore.Qt.UserRole).toString())
                 if verse not in verse_names:
-                    verses.append(
-                        re.sub(r'(.)[^:]*:(.*)', r'\1\2', verse.lower()))
-                    verse_names.append(verse)
+                    verses.append(verse)
+                    verse_names.append(u'%s%s' % (
+                        VerseType.translated_tag(verse[0]), verse[1:]))
             for count, item in enumerate(order):
                 if item not in verses:
-                    self.songTabWidget.setCurrentIndex(0)
-                    self.verseOrderEdit.setFocus()
-                    valid = verses.pop(0)
-                    for verse in verses:
-                        valid = valid + u', ' + verse
+                    valid = u', '.join(verse_names)
                     critical_error_message_box(
                         message=unicode(translate('SongsPlugin.EditSongForm',
                         'The verse order is invalid. There is no verse '
@@ -577,7 +627,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                         unicode(translate('SongsPlugin.EditSongForm',
                         'You have not used %s anywhere in the verse '
                         'order. Are you sure you want to save the song '
-                        'like this?')) % verse_names[count].replace(u':', u' '),
+                        'like this?')) % verse_names[count],
                         QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
                     if answer == QtGui.QMessageBox.No:
                         return False
@@ -599,7 +649,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def onCopyrightInsertButtonTriggered(self):
         text = self.copyrightEdit.text()
         pos = self.copyrightEdit.cursorPosition()
-        sign = translate('SongsPlugin.EditSongForm', '\xa9')
+        sign = SongStrings.CopyrightSymbol
         text = text[:pos] + sign + text[pos:]
         self.copyrightEdit.setText(text)
         self.copyrightEdit.setFocus()
@@ -627,8 +677,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             A button (QPushButton).
         """
         log.debug(u'onPreview')
-        if unicode(button.objectName()) == u'previewButton' and \
-            self.saveSong(True):
+        if unicode(button.objectName()) == u'previewButton':
+            self.saveSong(True)
             Receiver.send_message(u'songs_preview')
 
     def clearCaches(self):
@@ -664,14 +714,14 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def saveSong(self, preview=False):
         """
         Get all the data from the widgets on the form, and then save it to the
-        database.  The form has been validated and all reference items
+        database. The form has been validated and all reference items
         (Authors, Books and Topics) have been saved before this function is
         called.
 
         ``preview``
             Should be ``True`` if the song is also previewed (boolean).
         """
-        # The Song() assignment.  No database calls should be made while a
+        # The Song() assignment. No database calls should be made while a
         # Song() is in a partially complete state.
         if not self.song:
             self.song = Song()
@@ -684,7 +734,14 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         else:
             self.song.search_title = self.song.title
         self.song.comments = unicode(self.commentsEdit.toPlainText())
-        self.song.verse_order = unicode(self.verseOrderEdit.text())
+        ordertext = unicode(self.verseOrderEdit.text())
+        order = []
+        for item in ordertext.split():
+            verse_tag = VerseType.Tags[
+                VerseType.from_translated_tag(item[0])]
+            verse_num = item[1:].lower()
+            order.append(u'%s%s' % (verse_tag, verse_num))
+        self.song.verse_order = u' '.join(order)
         self.song.ccli_number = unicode(self.CCLNumberEdit.text())
         self.song.song_number = unicode(self.songBookNumberEdit.text())
         book_name = unicode(self.songBookComboBox.currentText())
@@ -727,12 +784,14 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             for i in range(0, self.verseListWidget.rowCount()):
                 item = self.verseListWidget.item(i, 0)
                 verseId = unicode(item.data(QtCore.Qt.UserRole).toString())
-                bits = verseId.split(u':')
-                sxml.add_verse_to_lyrics(bits[0], bits[1], unicode(item.text()))
+                verse_tag = verseId[0]
+                verse_num = verseId[1:]
+                sxml.add_verse_to_lyrics(verse_tag, verse_num,
+                    unicode(item.text()))
                 text = text + self.whitespace.sub(u' ',
                     unicode(self.verseListWidget.item(i, 0).text())) + u' '
-                if (bits[1] > u'1') and (bits[0][0] not in multiple):
-                    multiple.append(bits[0][0])
+                if (verse_num > u'1') and (verse_tag not in multiple):
+                    multiple.append(verse_tag)
             self.song.search_lyrics = text.lower()
             self.song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
             for verse in multiple:
@@ -751,4 +810,4 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         # This method must only be run after the self.song = Song() assignment.
         log.debug(u'processTitle')
         self.song.search_title = re.sub(r'[\'"`,;:(){}?]+', u'',
-            unicode(self.song.search_title)).lower()
+            unicode(self.song.search_title)).lower().strip()

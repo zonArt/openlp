@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -90,8 +90,8 @@ class MainDisplay(DisplayWidget):
         """
         Set up and build the output screen
         """
-        log.debug(u'Setup live = %s for monitor %s ' % (self.isLive,
-            self.screens.monitor_number))
+        log.debug(u'Start setup for monitor %s (live = %s)' % 
+            (self.screens.monitor_number, self.isLive))
         self.usePhonon = QtCore.QSettings().value(
             u'media/use phonon', QtCore.QVariant(True)).toBool()
         self.phononActive = False
@@ -102,6 +102,7 @@ class MainDisplay(DisplayWidget):
         self.videoWidget.setVisible(False)
         self.videoWidget.setGeometry(QtCore.QRect(0, 0,
             self.screen[u'size'].width(), self.screen[u'size'].height()))
+        log.debug(u'Setup Phonon for monitor %s' % self.screens.monitor_number)
         self.mediaObject = Phonon.MediaObject(self)
         self.audio = Phonon.AudioOutput(Phonon.VideoCategory, self.mediaObject)
         Phonon.createPath(self.mediaObject, self.videoWidget)
@@ -109,6 +110,7 @@ class MainDisplay(DisplayWidget):
         QtCore.QObject.connect(self.mediaObject,
             QtCore.SIGNAL(u'stateChanged(Phonon::State, Phonon::State)'),
             self.videoStart)
+        log.debug(u'Setup webView for monitor %s' % self.screens.monitor_number)
         self.webView = QtWebKit.QWebView(self)
         self.webView.setGeometry(0, 0,
             self.screen[u'size'].width(), self.screen[u'size'].height())
@@ -132,14 +134,22 @@ class MainDisplay(DisplayWidget):
             painter_image.begin(self.black)
             painter_image.fillRect(self.black.rect(), QtCore.Qt.black)
             # Build the initial frame.
+            image_file = QtCore.QSettings().value(u'advanced/default image',
+                QtCore.QVariant(u':/graphics/openlp-splash-screen.png'))\
+                .toString()
+            background_color = QtGui.QColor(QtCore.QSettings().value(
+                u'advanced/default color',
+                QtCore.QVariant(u'#ffffff')).toString())
+            if not background_color.isValid():
+                background_color = QtCore.Qt.white
+            splash_image = QtGui.QImage(image_file)
             initialFrame = QtGui.QImage(
                 self.screens.current[u'size'].width(),
                 self.screens.current[u'size'].height(),
                 QtGui.QImage.Format_ARGB32_Premultiplied)
-            splash_image = QtGui.QImage(u':/graphics/openlp-splash-screen.png')
             painter_image = QtGui.QPainter()
             painter_image.begin(initialFrame)
-            painter_image.fillRect(initialFrame.rect(), QtCore.Qt.white)
+            painter_image.fillRect(initialFrame.rect(), background_color)
             painter_image.drawImage(
                 (self.screens.current[u'size'].width() -
                 splash_image.width()) / 2,
@@ -150,12 +160,15 @@ class MainDisplay(DisplayWidget):
             self.webView.setHtml(build_html(serviceItem, self.screen,
                 self.alertTab, self.isLive, None))
             self.initialFrame = True
+            self.__hideMouse()
             # To display or not to display?
             if not self.screen[u'primary']:
                 self.show()
                 self.primary = False
             else:
                 self.primary = True
+        log.debug(
+            u'Finished setup for monitor %s' % self.screens.monitor_number)
 
     def text(self, slide):
         """
@@ -224,9 +237,6 @@ class MainDisplay(DisplayWidget):
         image = self.imageManager.get_image_bytes(name)
         self.resetVideo()
         self.displayImage(image)
-        # show screen
-        if self.isLive:
-            self.setVisible(True)
         return self.preview()
 
     def displayImage(self, image):
@@ -239,7 +249,8 @@ class MainDisplay(DisplayWidget):
             js = u'show_image("");'
         self.frame.evaluateJavaScript(js)
         # Update the preview frame.
-        Receiver.send_message(u'maindisplay_active')
+        if self.isLive:
+            Receiver.send_message(u'maindisplay_active')
 
     def resetImage(self):
         """
@@ -253,7 +264,8 @@ class MainDisplay(DisplayWidget):
             self.displayImage(None)
         self.override = {}
         # Update the preview frame.
-        Receiver.send_message(u'maindisplay_active')
+        if self.isLive:
+            Receiver.send_message(u'maindisplay_active')
 
     def resetVideo(self):
         """
@@ -270,7 +282,8 @@ class MainDisplay(DisplayWidget):
             self.frame.evaluateJavaScript(u'show_video("close");')
         self.override = {}
         # Update the preview frame.
-        Receiver.send_message(u'maindisplay_active')
+        if self.isLive:
+            Receiver.send_message(u'maindisplay_active')
 
     def videoPlay(self):
         """
@@ -310,7 +323,7 @@ class MainDisplay(DisplayWidget):
         Changes the volume of a running video
         """
         log.debug(u'videoVolume %d' % volume)
-        vol = float(volume)/float(10)
+        vol = float(volume) / float(10)
         if self.phononActive:
             self.audio.setVolume(vol)
         else:
@@ -326,7 +339,7 @@ class MainDisplay(DisplayWidget):
         # We are running a background theme
         self.override[u'theme'] = u''
         self.override[u'video'] = True
-        vol = float(volume)/float(10)
+        vol = float(volume) / float(10)
         if isBackground or not self.usePhonon:
             js = u'show_video("init", "%s", %s, true); show_video("play");' % \
                 (videoPath.replace(u'\\', u'\\\\'), str(vol))
@@ -341,7 +354,8 @@ class MainDisplay(DisplayWidget):
             self.videoWidget.setVisible(True)
             self.audio.setVolume(vol)
         # Update the preview frame.
-        Receiver.send_message(u'maindisplay_active')
+        if self.isLive:
+            Receiver.send_message(u'maindisplay_active')
         return self.preview()
 
     def videoStart(self, newState, oldState):
@@ -379,9 +393,10 @@ class MainDisplay(DisplayWidget):
             Receiver.send_message(u'openlp_process_events')
         # if was hidden keep it hidden
         if self.isLive:
-            self.setVisible(True)
             if self.hideMode:
                 self.hideDisplay(self.hideMode)
+            else:
+               self.setVisible(True)
         preview = QtGui.QImage(self.screen[u'size'].width(),
             self.screen[u'size'].height(),
             QtGui.QImage.Format_ARGB32_Premultiplied)
@@ -426,15 +441,7 @@ class MainDisplay(DisplayWidget):
         # if was hidden keep it hidden
         if self.hideMode and self.isLive:
             self.hideDisplay(self.hideMode)
-        # Hide mouse cursor when moved over display if enabled in settings
-        settings = QtCore.QSettings()
-        if settings.value(u'advanced/hide mouse',
-            QtCore.QVariant(False)).toBool():
-            self.setCursor(QtCore.Qt.BlankCursor)
-            self.frame.evaluateJavaScript('document.body.style.cursor = "none"')
-        else:
-            self.setCursor(QtCore.Qt.ArrowCursor)
-            self.frame.evaluateJavaScript('document.body.style.cursor = "auto"')
+        self.__hideMouse()
 
     def footer(self, text):
         """
@@ -482,7 +489,18 @@ class MainDisplay(DisplayWidget):
             self.videoPlay()
         self.hideMode = None
         # Trigger actions when display is active again
-        Receiver.send_message(u'maindisplay_active')
+        if self.isLive:
+            Receiver.send_message(u'maindisplay_active')
+
+    def __hideMouse(self):
+        # Hide mouse cursor when moved over display if enabled in settings
+        if QtCore.QSettings().value(u'advanced/hide mouse',
+            QtCore.QVariant(False)).toBool():
+            self.setCursor(QtCore.Qt.BlankCursor)
+            self.frame.evaluateJavaScript('document.body.style.cursor = "none"')
+        else:
+            self.setCursor(QtCore.Qt.ArrowCursor)
+            self.frame.evaluateJavaScript('document.body.style.cursor = "auto"')
 
 
 class AudioPlayer(QtCore.QObject):
@@ -498,9 +516,6 @@ class AudioPlayer(QtCore.QObject):
 
         ``parent``
             The parent widget.
-
-        ``screens``
-            The list of screens.
         """
         log.debug(u'AudioPlayer Initialisation started')
         QtCore.QObject.__init__(self, parent)

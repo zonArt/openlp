@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -31,6 +31,7 @@ import os
 import logging
 import struct
 
+from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib.songimport import SongImport
 
 TITLE = 1
@@ -85,19 +86,11 @@ class SongShowPlusImport(SongImport):
     otherList = {}
     otherCount = 0
 
-    def __init__(self, master_manager, **kwargs):
+    def __init__(self, manager, **kwargs):
         """
-        Initialise the import.
-
-        ``master_manager``
-            The song manager for the running OpenLP installation.
+        Initialise the SongShow Plus importer.
         """
-        SongImport.__init__(self, master_manager)
-        if kwargs.has_key(u'filename'):
-            self.import_source = kwargs[u'filename']
-        if kwargs.has_key(u'filenames'):
-            self.import_source = kwargs[u'filenames']
-        log.debug(self.import_source)
+        SongImport.__init__(self, manager, **kwargs)
 
     def do_import(self):
         """
@@ -112,7 +105,7 @@ class SongShowPlusImport(SongImport):
                 otherList = {}
                 file_name = os.path.split(file)[1]
                 self.import_wizard.incrementProgressBar(
-                    u'Importing %s' % (file_name), 0)
+                    WizardStrings.ImportingType % file_name, 0)
                 songData = open(file, 'rb')
                 while (1):
                     blockKey, = struct.unpack("I", songData.read(4))
@@ -178,11 +171,11 @@ class SongShowPlusImport(SongImport):
                 songData.close()
                 self.finish()
                 self.import_wizard.incrementProgressBar(
-                    u'Importing %s' % (file_name))
+                    WizardStrings.ImportingType % file_name)
             return True
 
     def toOpenLPVerseTag(self, verseName):
-        if verseName.find(" ") !=-1:
+        if verseName.find(" ") != -1:
             verseParts = verseName.split(" ")
             verseType = verseParts[0]
             verseNumber = verseParts[1]

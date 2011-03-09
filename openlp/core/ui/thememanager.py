@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -32,10 +32,11 @@ import logging
 from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import OpenLPToolbar, ThemeXML, get_text_file_string, \
-    build_icon, Receiver, SettingsManager, translate, check_item_selected, \
-    BackgroundType, BackgroundGradientType, check_directory_exists, \
-    VerticalType
+from openlp.core.lib import OpenLPToolbar, get_text_file_string, build_icon, \
+    Receiver, SettingsManager, translate, check_item_selected, \
+    check_directory_exists
+from openlp.core.lib.theme import ThemeXML, BackgroundType, VerticalType, \
+    BackgroundGradientType
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.theme import Theme
 from openlp.core.ui import FileRenameForm, ThemeForm
@@ -62,8 +63,7 @@ class ThemeManager(QtGui.QWidget):
         self.layout.setMargin(0)
         self.layout.setObjectName(u'layout')
         self.toolbar = OpenLPToolbar(self)
-        self.toolbar.addToolbarButton(
-            translate('OpenLP.ThemeManager', 'New Theme'),
+        self.toolbar.addToolbarButton(UiStrings.NewTheme,
             u':/themes/theme_new.png',
             translate('OpenLP.ThemeManager', 'Create a new theme.'),
             self.onAddTheme)
@@ -144,6 +144,20 @@ class ThemeManager(QtGui.QWidget):
         self.oldBackgroundImage = None
         # Last little bits of setting up
         self.configUpdated()
+
+    def firstTime(self):
+        """
+        Import new themes downloaded by the first time wizard
+        """
+        Receiver.send_message(u'cursor_busy')
+        encoding = get_filesystem_encoding()
+        files = SettingsManager.get_files(self.settingsSection, u'.otz')
+        for file in files:
+            file = os.path.join(self.path, file).encode(encoding)
+            self.unzipTheme(file, self.path)
+            delete_file(file)
+        self.loadThemes()
+        Receiver.send_message(u'cursor_normal')
 
     def configUpdated(self, firstTime=False):
         """
@@ -266,7 +280,7 @@ class ThemeManager(QtGui.QWidget):
             oldThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
             self.fileRenameForm.fileNameEdit.setText(oldThemeName)
             if self.fileRenameForm.exec_():
-                newThemeName =  unicode(self.fileRenameForm.fileNameEdit.text())
+                newThemeName = unicode(self.fileRenameForm.fileNameEdit.text())
                 if self.checkIfThemeExists(newThemeName):
                     oldThemeData = self.getThemeData(oldThemeName)
                     self.cloneThemeData(oldThemeData, newThemeName)
@@ -284,7 +298,7 @@ class ThemeManager(QtGui.QWidget):
         oldThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
         self.fileRenameForm.fileNameEdit.setText(oldThemeName)
         if self.fileRenameForm.exec_(True):
-            newThemeName =  unicode(self.fileRenameForm.fileNameEdit.text())
+            newThemeName = unicode(self.fileRenameForm.fileNameEdit.text())
             if self.checkIfThemeExists(newThemeName):
                 themeData = self.getThemeData(oldThemeName)
                 self.cloneThemeData(themeData, newThemeName)
@@ -370,6 +384,7 @@ class ThemeManager(QtGui.QWidget):
             'Save Theme - (%s)')) % theme,
             SettingsManager.get_last_dir(self.settingsSection, 1))
         path = unicode(path)
+        Receiver.send_message(u'cursor_busy')
         if path:
             SettingsManager.set_last_dir(self.settingsSection, path, 1)
             themePath = os.path.join(path, theme + u'.otz')
@@ -395,11 +410,12 @@ class ThemeManager(QtGui.QWidget):
             finally:
                 if zip:
                     zip.close()
+        Receiver.send_message(u'cursor_normal')
 
     def onImportTheme(self):
         """
         Opens a file dialog to select the theme file(s) to import before
-        attempting to extract OpenLP themes from those files.  This process
+        attempting to extract OpenLP themes from those files. This process
         will load both OpenLP version 1 and version 2 themes.
         """
         files = QtGui.QFileDialog.getOpenFileNames(self,
@@ -408,12 +424,14 @@ class ThemeManager(QtGui.QWidget):
             unicode(translate('OpenLP.ThemeManager',
             'OpenLP Themes (*.theme *.otz)')))
         log.info(u'New Themes %s', unicode(files))
+        Receiver.send_message(u'cursor_busy')
         if files:
             for file in files:
                 SettingsManager.set_last_dir(
                     self.settingsSection, unicode(file))
                 self.unzipTheme(file, self.path)
         self.loadThemes()
+        Receiver.send_message(u'cursor_normal')
 
     def loadThemes(self):
         """
@@ -529,6 +547,18 @@ class ThemeManager(QtGui.QWidget):
                         else:
                             outfile = open(fullpath, u'wb')
                             outfile.write(zip.read(file))
+        except (IOError, NameError):
+            critical_error_message_box(
+                translate('OpenLP.ThemeManager', 'Validation Error'),
+                translate('OpenLP.ThemeManager', 'File is not a valid theme.'))
+            log.exception(u'Importing theme from zip failed %s' % filename)
+        finally:
+            # Close the files, to be able to continue creating the theme.
+            if zip:
+                zip.close()
+            if outfile:
+                outfile.close()
+            # As all files are closed, we can create the Theme.
             if filexml:
                 theme = self._createThemeFromXml(filexml, self.path)
                 self.generateAndSaveImage(dir, themename, theme)
@@ -539,17 +569,6 @@ class ThemeManager(QtGui.QWidget):
                     'File is not a valid theme.'))
                 log.exception(u'Theme file does not contain XML data %s' %
                     filename)
-        except (IOError, NameError):
-            critical_error_message_box(
-                translate('OpenLP.ThemeManager', 'Validation Error'),
-                translate('OpenLP.ThemeManager',
-                'File is not a valid theme.'))
-            log.exception(u'Importing theme from zip failed %s' % filename)
-        finally:
-            if zip:
-                zip.close()
-            if outfile:
-                outfile.close()
 
     def checkIfThemeExists(self, themeName):
         """

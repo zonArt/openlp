@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -242,7 +242,7 @@ def add_actions(target, actions):
         The menu or toolbar to add actions to.
 
     ``actions``
-        The actions to be added.  An action consisting of the keyword 'None'
+        The actions to be added. An action consisting of the keyword 'None'
         will result in a separator being inserted into the target.
     """
     for action in actions:
@@ -318,7 +318,7 @@ def get_web_page(url, header=None, update_openlp=False):
         Tells OpenLP to update itself if the page is successfully downloaded.
         Defaults to False.
     """
-    # TODO: Add proxy usage.  Get proxy info from OpenLP settings, add to a
+    # TODO: Add proxy usage. Get proxy info from OpenLP settings, add to a
     # proxy_handler, build into an opener and install the opener into urllib2.
     # http://docs.python.org/library/urllib2.html
     if not url:
@@ -387,7 +387,7 @@ def get_uno_command():
     if UNO_CONNECTION_TYPE == u'pipe':
         CONNECTION = u'"-accept=pipe,name=openlp_pipe;urp;"'
     else:
-        CONNECTION = u'"-accept=socket,host=localhost,port=2002;urp;"' 
+        CONNECTION = u'"-accept=socket,host=localhost,port=2002;urp;"'
     return u'%s %s %s' % (COMMAND, OPTIONS, CONNECTION)
 
 def get_uno_instance(resolver):

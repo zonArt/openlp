@@ -7,9 +7,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,7 +24,6 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
 import os
 import sys
 import logging
@@ -37,6 +36,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Receiver, check_directory_exists
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
+from openlp.core.ui.firsttimelanguageform import FirstTimeLanguageForm
+from openlp.core.ui.firsttimeform import FirstTimeForm
 from openlp.core.ui.exceptionform import ExceptionForm
 from openlp.core.ui import SplashScreen, ScreenList
 from openlp.core.utils import AppLocation, LanguageManager, VersionThread
@@ -150,10 +151,6 @@ class OpenLP(QtGui.QApplication):
             log.info(u'Openlp version %s' % app_version[u'version'])
         return app_version
 
-#    def notify(self, obj, evt):
-#        #TODO needed for presentation exceptions
-#        return QtGui.QApplication.notify(self, obj, evt)
-
     def run(self):
         """
         Run the OpenLP application.
@@ -170,6 +167,13 @@ class OpenLP(QtGui.QApplication):
         self.setOrganizationDomain(u'openlp.org')
         self.setApplicationName(u'OpenLP')
         self.setApplicationVersion(app_version[u'version'])
+        # Decide how many screens we have and their size
+        screens = ScreenList(self.desktop())
+        # First time checks in settings
+        firstTime = QtCore.QSettings().value(
+            u'general/first time', QtCore.QVariant(True)).toBool()
+        if firstTime:
+            FirstTimeForm(screens).exec_()
         if os.name == u'nt':
             self.setStyleSheet(application_stylesheet)
         show_splash = QtCore.QSettings().value(
@@ -179,16 +183,10 @@ class OpenLP(QtGui.QApplication):
             self.splash.show()
         # make sure Qt really display the splash screen
         self.processEvents()
-        screens = ScreenList()
-        # Decide how many screens we have and their size
-        for screen in xrange(0, self.desktop().numScreens()):
-            size = self.desktop().screenGeometry(screen)
-            screens.add_screen({u'number': screen,
-                u'size': size,
-                u'primary': (self.desktop().primaryScreen() == screen)})
-            log.info(u'Screen %d found with resolution %s', screen, size)
         # start the main app window
-        self.mainWindow = MainWindow(screens, app_version)
+        self.appClipboard = self.clipboard()
+        self.mainWindow = MainWindow(screens, app_version, self.appClipboard,
+            firstTime)
         self.mainWindow.show()
         if show_splash:
             # now kill the splashscreen
@@ -272,7 +270,19 @@ def main():
     qInitResources()
     # Now create and actually run the application.
     app = OpenLP(qt_args)
-    #i18n Set Language
+    # Define the settings environment
+    QtCore.QSettings(u'OpenLP', u'OpenLP')
+    # First time checks in settings
+    # Use explicit reference as not inside a QT environment yet
+    if QtCore.QSettings(u'OpenLP', u'OpenLP').value(
+        u'general/first time', QtCore.QVariant(True)).toBool():
+        if not FirstTimeLanguageForm().exec_():
+            # if cancel then stop processing
+            sys.exit()
+    if sys.platform == u'darwin':
+        OpenLP.addLibraryPath(QtGui.QApplication.applicationDirPath()
+            + "/qt4_plugins")
+    # i18n Set Language
     language = LanguageManager.get_language()
     appTranslator = LanguageManager.get_translator(language)
     app.installTranslator(appTranslator)

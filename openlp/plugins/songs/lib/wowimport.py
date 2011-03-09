@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -30,6 +30,7 @@ Worship songs into the OpenLP database.
 import os
 import logging
 
+from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib.songimport import SongImport
 
 BLOCK_TYPES = (u'V', u'C', u'B')
@@ -91,19 +92,11 @@ class WowImport(SongImport):
     * .wow-song
     """
 
-    def __init__(self, master_manager, **kwargs):
+    def __init__(self, manager, **kwargs):
         """
-        Initialise the import.
-
-        ``master_manager``
-            The song manager for the running OpenLP installation.
+        Initialise the Words of Worship importer.
         """
-        SongImport.__init__(self, master_manager)
-        if kwargs.has_key(u'filename'):
-            self.import_source = kwargs[u'filename']
-        if kwargs.has_key(u'filenames'):
-            self.import_source = kwargs[u'filenames']
-        log.debug(self.import_source)
+        SongImport.__init__(self, manager, **kwargs)
 
     def do_import(self):
         """
@@ -116,7 +109,7 @@ class WowImport(SongImport):
                 copyright = u''
                 file_name = os.path.split(file)[1]
                 self.import_wizard.incrementProgressBar(
-                    u'Importing %s' % (file_name), 0)
+                    WizardStrings.ImportingType % file_name, 0)
                 # Get the song title
                 self.title = file_name.rpartition(u'.')[0]
                 songData = open(file, 'rb')
@@ -162,5 +155,5 @@ class WowImport(SongImport):
                 songData.close()
                 self.finish()
                 self.import_wizard.incrementProgressBar(
-                    u'Importing %s' % (file_name))
+                    WizardStrings.ImportingType % file_name)
             return True

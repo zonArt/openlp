@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -69,6 +69,7 @@ class ImageManager(QtCore.QObject):
     log.info(u'Image Manager loaded')
 
     def __init__(self):
+        QtCore.QObject.__init__(self)
         self._cache = {}
         self._thread_running = False
         self._cache_dirty = False
@@ -85,8 +86,7 @@ class ImageManager(QtCore.QObject):
         for key in self._cache.keys():
             image = self._cache[key]
             image.dirty = True
-            image.image = resize_image(image.path,
-                self.width, self.height)
+            image.image = resize_image(image.path, self.width, self.height)
         self._cache_dirty = True
         # only one thread please
         if not self._thread_running:
@@ -128,8 +128,7 @@ class ImageManager(QtCore.QObject):
             image = Image()
             image.name = name
             image.path = path
-            image.image = resize_image(path,
-                self.width, self.height)
+            image.image = resize_image(path, self.width, self.height)
             self._cache[name] = image
         else:
             log.debug(u'Image in cache %s:%s' % (name, path))

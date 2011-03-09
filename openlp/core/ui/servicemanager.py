@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -33,11 +33,11 @@ log = logging.getLogger(__name__)
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, ServiceItem, context_menu_action, \
-    Receiver, build_icon, ItemCapabilities, SettingsManager, translate, \
-    ThemeLevel
+    Receiver, build_icon, ItemCapabilities, SettingsManager, translate
+from openlp.core.lib.theme import ThemeLevel
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm, StartTimeForm
-from openlp.core.ui.printserviceorderform import PrintServiceOrderForm
+from openlp.core.ui.printserviceform import PrintServiceForm
 from openlp.core.utils import AppLocation, delete_file, file_is_unicode, \
     split_filename
 
@@ -120,8 +120,7 @@ class ServiceManager(QtGui.QWidget):
             translate('OpenLP.ServiceManager', 'Save this service'),
             self.saveFile)
         self.toolbar.addSeparator()
-        self.themeLabel = QtGui.QLabel(translate('OpenLP.ServiceManager',
-            'Theme:'), self)
+        self.themeLabel = QtGui.QLabel(u'%s:' % UiStrings.Theme, self)
         self.themeLabel.setMargin(3)
         self.themeLabel.setObjectName(u'themeLabel')
         self.toolbar.addToolbarWidget(u'ThemeLabel', self.themeLabel)
@@ -939,6 +938,7 @@ class ServiceManager(QtGui.QWidget):
         for item in self.serviceItems:
             if item[u'service_item']._uuid == uuid:
                 item[u'service_item'].edit_id = editId
+        self.setModified(True)
 
     def replaceServiceItem(self, newItem):
         """
@@ -1057,8 +1057,8 @@ class ServiceManager(QtGui.QWidget):
         if self.serviceItems[item][u'service_item']\
             .is_capable(ItemCapabilities.AllowsEdit):
             Receiver.send_message(u'%s_edit' %
-                self.serviceItems[item][u'service_item'].name.lower(), u'L:%s' %
-                self.serviceItems[item][u'service_item'].edit_id )
+                self.serviceItems[item][u'service_item'].name.lower(),
+                u'L:%s' % self.serviceItems[item][u'service_item'].edit_id)
 
     def findServiceItem(self):
         """
@@ -1119,13 +1119,14 @@ class ServiceManager(QtGui.QWidget):
                 self.serviceItems.remove(serviceItem)
                 self.serviceItems.insert(endpos, serviceItem)
                 self.repaintServiceList(endpos, child)
+                self.setModified(True)
             else:
                 # we are not over anything so drop
                 replace = False
                 if item is None:
                     self.dropPosition = len(self.serviceItems)
                 else:
-                    # we are over somthing so lets investigate
+                    # we are over something so lets investigate
                     pos = self._getParentItemData(item) - 1
                     serviceItem = self.serviceItems[pos]
                     if (plugin == serviceItem[u'service_item'].name and
@@ -1203,5 +1204,5 @@ class ServiceManager(QtGui.QWidget):
         """
         Print a Service Order Sheet.
         """
-        settingDialog = PrintServiceOrderForm(self.mainwindow, self)
+        settingDialog = PrintServiceForm(self.mainwindow, self)
         settingDialog.exec_()
