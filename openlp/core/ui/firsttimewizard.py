@@ -96,7 +96,7 @@ class Ui_FirstTimeWizard(object):
         self.noInternetPage = QtGui.QWizardPage()
         self.noInternetPage.setObjectName(u'noInternetPage')
         self.noInternetLayout = QtGui.QVBoxLayout(self.noInternetPage)
-        self.noInternetLayout.setContentsMargins(50, 40, 50, 40)
+        self.noInternetLayout.setContentsMargins(50, 30, 50, 40)
         self.noInternetLayout.setObjectName(u'noInternetLayout')
         self.noInternetLabel = QtGui.QLabel(self.noInternetPage)
         self.noInternetLabel.setWordWrap(True)
@@ -107,6 +107,11 @@ class Ui_FirstTimeWizard(object):
         # The song samples page
         self.songsPage = QtGui.QWizardPage()
         self.songsPage.setObjectName(u'songsPage')
+        self.songsLayout = QtGui.QVBoxLayout(self.songsPage)
+        self.songsLayout.setContentsMargins(50, 20, 50, 20)
+        self.songsLayout.setObjectName(u'songsLayout')
+        self.songsListWidget = QtGui.QListWidget(self.songsPage)
+        self.songsListWidget.setObjectName(u'songsListWidget')
         FirstTimeWizard.setPage(FirstTimePage.Songs, self.songsPage)
 
         # download page
