@@ -465,6 +465,7 @@ class ServiceManager(QtGui.QWidget):
         allow_zip_64 = (total_size > 2147483648 + len(service_content))
         log.debug(u'ServiceManager.saveFile - allowZip64 is %s' %
             allow_zip_64)
+        zip = None
         try:
             zip = zipfile.ZipFile(path_file_name, 'w', zipfile.ZIP_STORED,
                 allow_zip_64)
@@ -477,13 +478,13 @@ class ServiceManager(QtGui.QWidget):
                 zip.write(path_from, path_from.encode(u'utf-8'))
         except IOError:
             log.exception(u'Failed to save service to disk')
-            zip.close()
             return False
         finally:
-            zip.close()
-            self.mainwindow.addRecentFile(path_file_name)
-            self.setModified(False)
-            return True
+            if zip:
+                zip.close()
+        self.mainwindow.addRecentFile(path_file_name)
+        self.setModified(False)
+        return True
 
     def saveFileAs(self):
         """
