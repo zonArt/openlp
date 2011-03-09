@@ -413,6 +413,7 @@ class ServiceManager(QtGui.QWidget):
         """
         Save the current Service file.
         """
+        success = True
         if not self.fileName():
             return self.saveFileAs()
         path_file_name = unicode(self.fileName())
@@ -440,21 +441,21 @@ class ServiceManager(QtGui.QWidget):
                     continue
                 file_size = os.path.getsize(path_from)
                 size_limit = 52428800 # 50MiB
-                if file_size > size_limit:
-                    # File exeeds size_limit bytes, ask user
-                    message = unicode(translate('OpenLP.ServiceManager',
-                        'Do you want to include \n%.1f MB file "%s"\n'
-                        'into the service file?\nThis may take some time.\n\n'
-                        'Please note that you need to\ntake care of that file '
-                        'yourself,\nif you leave it out.')) % \
-                        (file_size/1048576, os.path.split(path_from)[1])
-                    ans = QtGui.QMessageBox.question(self.mainwindow,
-                        translate('OpenLP.ServiceManager', 'Including Large '
-                        'File'), message, QtGui.QMessageBox.StandardButtons(
-                        QtGui.QMessageBox.Ok|QtGui.QMessageBox.Cancel),
-                        QtGui.QMessageBox.Ok)
-                    if ans == QtGui.QMessageBox.Cancel:
-                        continue
+                #if file_size > size_limit:
+                #    # File exeeds size_limit bytes, ask user
+                #    message = unicode(translate('OpenLP.ServiceManager',
+                #        'Do you want to include \n%.1f MB file "%s"\n'
+                #        'into the service file?\nThis may take some time.\n\n'
+                #        'Please note that you need to\ntake care of that file'
+                #        ' yourself,\nif you leave it out.')) % \
+                #        (file_size/1048576, os.path.split(path_from)[1])
+                #    ans = QtGui.QMessageBox.question(self.mainwindow,
+                #        translate('OpenLP.ServiceManager', 'Including Large '
+                #        'File'), message, QtGui.QMessageBox.StandardButtons(
+                #        QtGui.QMessageBox.Ok|QtGui.QMessageBox.Cancel),
+                #        QtGui.QMessageBox.Ok)
+                #    if ans == QtGui.QMessageBox.Cancel:
+                #        continue
                 write_list.append(path_from)
                 total_size += file_size
         log.debug(u'ServiceManager.saveFile - ZIP contents size is %i bytes' %
@@ -477,12 +478,12 @@ class ServiceManager(QtGui.QWidget):
                 zip.write(path_from, path_from.encode(u'utf-8'))
         except IOError:
             log.exception(u'Failed to save service to disk')
+            success = False
         finally:
             zip.close()
             self.mainwindow.addRecentFile(path_file_name)
             self.setModified(False)
-            return True
-        return False
+        return success
 
     def saveFileAs(self):
         """
