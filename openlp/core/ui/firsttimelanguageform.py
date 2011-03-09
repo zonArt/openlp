@@ -28,7 +28,6 @@ from PyQt4 import QtGui
 
 from firsttimelanguagedialog import Ui_FirstTimeLanguageDialog
 
-from openlp.core.lib import translate
 from openlp.core.utils import LanguageManager
 
 class FirstTimeLanguageForm(QtGui.QDialog, Ui_FirstTimeLanguageDialog):

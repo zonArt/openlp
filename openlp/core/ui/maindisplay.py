@@ -396,7 +396,7 @@ class MainDisplay(DisplayWidget):
             if self.hideMode:
                 self.hideDisplay(self.hideMode)
             else:
-               self.setVisible(True)
+                self.setVisible(True)
         preview = QtGui.QImage(self.screen[u'size'].width(),
             self.screen[u'size'].height(),
             QtGui.QImage.Format_ARGB32_Premultiplied)
