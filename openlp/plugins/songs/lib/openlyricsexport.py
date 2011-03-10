@@ -29,11 +29,11 @@ songs from the database to the OpenLyrics format.
 """
 import logging
 import os
+import re
 
 from lxml import etree
 
-from openlp.core.lib import check_directory_exists, clean_file_name, Receiver, \
-    translate
+from openlp.core.lib import check_directory_exists, Receiver, translate
 from openlp.plugins.songs.lib import OpenLyrics
 
 log = logging.getLogger(__name__)
@@ -69,8 +69,10 @@ class OpenLyricsExport(object):
                 song.title)
             xml = openLyrics.song_to_xml(song)
             tree = etree.ElementTree(etree.fromstring(xml))
-            filename = clean_file_name(u'%s (%s).xml' % (song.title,
-                u', '.join([author.display_name for author in song.authors])))
+            filename = u'%s (%s).xml' % (song.title,
+                u', '.join([author.display_name for author in song.authors]))
+            filename = re.sub(
+                r'[/\\?*|<>\[\]":<>+%]+', u'_', filename).strip(u'_')
             tree.write(os.path.join(self.save_path, filename),
                 encoding=u'utf-8', xml_declaration=True, pretty_print=True)
         return True

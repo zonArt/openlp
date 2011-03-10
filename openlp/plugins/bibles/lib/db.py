@@ -26,13 +26,14 @@
 
 import logging
 import chardet
+import re
 
 from PyQt4 import QtCore
 from sqlalchemy import Column, ForeignKey, or_, Table, types
 from sqlalchemy.orm import class_mapper, mapper, relation
 from sqlalchemy.orm.exc import UnmappedClassError
 
-from openlp.core.lib import clean_file_name, Receiver, translate
+from openlp.core.lib import Receiver, translate
 from openlp.core.lib.db import BaseModel, init_db, Manager
 from openlp.core.lib.ui import critical_error_message_box
 
@@ -154,7 +155,7 @@ class BibleDB(QtCore.QObject, Manager):
             self.name = kwargs[u'name']
             if not isinstance(self.name, unicode):
                 self.name = unicode(self.name, u'utf-8')
-            self.file = clean_file_name(self.name) + u'.sqlite'
+            self.file = self.clean_filename(self.name)
         if u'file' in kwargs:
             self.file = kwargs[u'file']
         Manager.__init__(self, u'bibles', init_schema, self.file)
@@ -181,6 +182,19 @@ class BibleDB(QtCore.QObject, Manager):
         else:
             self.name = None
         return self.name
+
+    def clean_filename(self, old_filename):
+        """
+        Clean up the version name of the Bible and convert it into a valid
+        file name.
+
+        ``old_filename``
+            The "dirty" file name or version name.
+        """
+        if not isinstance(old_filename, unicode):
+            old_filename = unicode(old_filename, u'utf-8')
+        old_filename = re.sub(r'[^\w]+', u'_', old_filename).strip(u'_')
+        return old_filename + u'.sqlite'
 
     def register(self, wizard):
         """

@@ -29,7 +29,6 @@ OpenLP work.
 """
 import logging
 import os.path
-import re
 import types
 
 from PyQt4 import QtCore, QtGui
@@ -320,17 +319,6 @@ def check_directory_exists(dir):
     log.debug(u'check_directory_exists %s' % dir)
     if not os.path.exists(dir):
         os.makedirs(dir)
-
-def clean_file_name(path):
-    """
-    Removes not supported characters from the given path.
-
-    ``path``
-        The path to clean.
-    """
-    if not isinstance(path, unicode):
-        path = unicode(path, u'utf-8')
-    return re.sub(r'[/\\?*|<>\[\]":<>+%]+', u'_', path).strip(u'_')
 
 from listwidgetwithdnd import ListWidgetWithDnD
 from displaytags import DisplayTags
