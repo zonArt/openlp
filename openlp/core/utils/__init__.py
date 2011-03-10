@@ -337,6 +337,7 @@ def get_web_page(url, header=None, update_openlp=False):
         return None
     if update_openlp:
         Receiver.send_message(u'openlp_process_events')
+    log.debug(page)
     return page
 
 def file_is_unicode(filename):
