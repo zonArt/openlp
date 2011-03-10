@@ -25,4 +25,4 @@ clean:
 	rm -rf OpenLP.app
 	rm -f warnopenlp.txt
 	rm -f *dmg
-
+        
