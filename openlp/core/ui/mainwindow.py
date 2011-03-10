@@ -38,7 +38,7 @@ from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
     ThemeManager, SlideController, PluginForm, MediaDockManager, \
     ShortcutListForm, DisplayTagForm
 from openlp.core.utils import AppLocation, add_actions, LanguageManager, \
-    ActionList
+    ActionList, get_application_version
 
 log = logging.getLogger(__name__)
 
@@ -469,14 +469,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     actionList = ActionList()
 
-    def __init__(self, screens, applicationVersion, clipboard):
+    def __init__(self, screens, clipboard):
         """
         This constructor sets up the interface, the various managers, and the
         plugins.
         """
         QtGui.QMainWindow.__init__(self)
         self.screens = screens
-        self.applicationVersion = applicationVersion
         self.clipboard = clipboard
         # Set up settings sections for the main application
         # (not for use by plugins)
@@ -487,7 +486,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.serviceNotSaved = False
         self.actionList = ActionList()
         self.settingsmanager = SettingsManager(screens)
-        self.aboutForm = AboutForm(self, applicationVersion)
+        self.aboutForm = AboutForm(self)
         self.settingsForm = SettingsForm(self.screens, self, self)
         self.displayTagForm = DisplayTagForm(self)
         self.shortcutForm = ShortcutListForm(self)
@@ -651,7 +650,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             'version from http://openlp.org/.'))
         QtGui.QMessageBox.question(self,
             translate('OpenLP.MainWindow', 'OpenLP Version Updated'),
-            version_text % (version, self.applicationVersion[u'full']))
+            version_text % (version, get_application_version()[u'full']))
 
     def show(self):
         """
@@ -734,7 +733,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Show the About form
         """
-        self.aboutForm.applicationVersion = self.applicationVersion
         self.aboutForm.exec_()
 
     def onPluginItemClicked(self):
