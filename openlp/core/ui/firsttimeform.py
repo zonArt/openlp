@@ -24,11 +24,12 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import ConfigParser
 import io
 import logging
 import os
 import urllib
+from random import randint
+from ConfigParser import SafeConfigParser
 
 from PyQt4 import QtCore, QtGui
 
@@ -51,13 +52,13 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.setupUi(self)
         # check to see if we have web access
         self.web = u'http://openlp.org/files/frw/'
-        self.config = ConfigParser.ConfigParser()
-        self.webAccess = get_web_page(u'%s%s' % (self.web, u'download.cfg'))
+        self.config = SafeConfigParser()
+        self.webAccess = get_web_page(u'%s%s' % (self.web, u'download.cfg?%s' % randint(0, 20)))
         if self.webAccess:
             files = self.webAccess.read()
             self.config.readfp(io.BytesIO(files))
         for screen in screens.get_screen_list():
-            self.displaySelectionComboBox.addItem(screen)
+            self.displayComboBox.addItem(screen)
         self.songsText = translate('OpenLP.FirstTimeWizard', 'Songs')
         self.biblesText = translate('OpenLP.FirstTimeWizard', 'Bibles')
         self.themesText = translate('OpenLP.FirstTimeWizard', 'Themes')
@@ -83,39 +84,47 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.restart()
         # Sort out internet access for downloads
         if self.webAccess:
-            self.internetGroupBox.setVisible(True)
-            # If songs database exists do not allow a copy
-            songs = os.path.join(AppLocation.get_section_data_path(u'songs'),
-                u'songs.sqlite')
-            if not os.path.exists(songs):
-                treewidgetitem = QtGui.QTreeWidgetItem(self.selectionTreeWidget)
-                treewidgetitem.setText(0, self.songsText)
-                self._loadChild(treewidgetitem, u'songs', u'languages', u'songs')
-            treewidgetitem = QtGui.QTreeWidgetItem(self.selectionTreeWidget)
-            treewidgetitem.setText(0, self.biblesText)
-            self._loadChild(treewidgetitem, u'bibles', u'translations',
-                u'bible')
-            treewidgetitem = QtGui.QTreeWidgetItem(self.selectionTreeWidget)
-            treewidgetitem.setText(0, self.themesText)
-            self._loadChild(treewidgetitem, u'themes', u'files', 'theme')
-#        else:
-#            self.internetGroupBox.setVisible(False)
-#            self.noInternetLabel.setVisible(True)
-
-    def _loadChild(self, tree, list, tag, root):
-        files = self.config.get(list, tag)
-        files = files.split(u',')
-        for file in files:
-            if file:
-                child = QtGui.QTreeWidgetItem(tree)
-                child.setText(0, self.config.get(u'%s_%s'
-                    % (root, file), u'title'))
-                child.setData(0, QtCore.Qt.UserRole,
-                    QtCore.QVariant(self.config.get(u'%s_%s'
-                    % (root, file), u'filename')))
-                child.setCheckState(0, QtCore.Qt.Unchecked)
-                child.setFlags(QtCore.Qt.ItemIsUserCheckable |
-                    QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+            songs = self.config.get(u'songs', u'languages')
+            songs = songs.split(u',')
+            for song in songs:
+                title = unicode(self.config.get(
+                    u'songs_%s' % song, u'title'), u'utf8')
+                filename = unicode(self.config.get(
+                    u'songs_%s' % song, u'filename'), u'utf8')
+                item = QtGui.QListWidgetItem(title, self.songsListWidget)
+                item.setData(QtCore.Qt.UserRole, QtCore.QVariant(filename))
+                item.setCheckState(QtCore.Qt.Unchecked)
+                item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
+            bible_languages = self.config.get(u'bibles', u'languages')
+            bible_languages = bible_languages.split(u',')
+            for lang in bible_languages: 
+                language = unicode(self.config.get(
+                    u'bibles_%s' % lang, u'title'), u'utf8')
+                langItem = QtGui.QTreeWidgetItem(
+                   self.biblesTreeWidget, QtCore.QStringList(language))
+                bibles = self.config.get(u'bibles_%s' % lang, u'translations')
+                bibles = bibles.split(u',')
+                for bible in bibles:
+                    title = unicode(self.config.get(
+                        u'bible_%s' % bible, u'title'), u'utf8')
+                    filename = unicode(self.config.get(
+                        u'bible_%s' % bible, u'filename'))
+                    item = QtGui.QTreeWidgetItem(
+                       langItem, QtCore.QStringList(title))
+                    item.setData(0, QtCore.Qt.UserRole, QtCore.QVariant(filename))
+                    item.setCheckState(0, QtCore.Qt.Unchecked)
+                    item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
+            self.biblesTreeWidget.expandAll()
+            themes = self.config.get(u'themes', u'files')
+            themes = themes.split(u',')
+            for theme in themes:
+                title = self.config.get(u'theme_%s' % theme, u'title')
+                filename = self.config.get(u'theme_%s' % theme, u'filename')
+                screenshot = self.config.get(u'theme_%s' % theme, u'screenshot')
+                item = QtGui.QListWidgetItem(title, self.themesListWidget)
+                item.setData(QtCore.Qt.UserRole, QtCore.QVariant(filename))
+                item.setCheckState(QtCore.Qt.Unchecked)
+                item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
 
     def nextId(self):
         """
@@ -137,16 +146,16 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             self.finishButton.setVisible(True)
             self.finishButton.setEnabled(True)
             self.nextButton.setVisible(False)
-        elif self.page(pageId) == self.DefaultsPage:
-            self.themeSelectionComboBox.clear()
+        elif pageId == FirstTimePage.Defaults:
+            self.themeComboBox.clear()
             listIterator = QtGui.QTreeWidgetItemIterator(
                 self.selectionTreeWidget)
             while listIterator.value():
                 parent = listIterator.value().parent()
-                if parent and listIterator.value().checkState(0) \
-                    == QtCore.Qt.Checked:
+                if parent and \
+                    listIterator.value().checkState(0) == QtCore.Qt.Checked:
                     if unicode(parent.text(0)) == self.themesText:
-                        self.themeSelectionComboBox.addItem(
+                        self.themeComboBox.addItem(
                             listIterator.value().text(0))
                 listIterator += 1
 
@@ -164,55 +173,47 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self._pluginStatus(self.songUsageCheckBox, u'songusage/status')
         self._pluginStatus(self.alertCheckBox, u'alerts/status')
         # Build directories for downloads
-        songsDestination = AppLocation.get_section_data_path(u'songs')
-        check_directory_exists(songsDestination)
-        bibleDestination = AppLocation.get_section_data_path(u'bibles')
-        check_directory_exists(bibleDestination)
-        themeDestination = AppLocation.get_section_data_path(u'themes')
-        check_directory_exists(themeDestination)
-        # Install Selected Items looping through them
-        listIterator = QtGui.QTreeWidgetItemIterator(self.selectionTreeWidget)
-        while listIterator.value():
-            type = listIterator.value().parent()
-            if listIterator.value().parent():
-                if listIterator.value().checkState(0) == QtCore.Qt.Checked:
-                    # Install items as theu have been selected
-                    item = unicode(listIterator.value().text(0))
-                    # Download Song database if selected
-                    if unicode(type.text(0)) == self.songsText:
-                        songs = unicode(listIterator.value().data(0,
-                            QtCore.Qt.UserRole).toString())
-                        message = self.downloading % item
-                        self._updateMessage(message)
-                        # Song database is a fixed file name
-                        urllib.urlretrieve(u'%s%s' % (self.web, songs),
-                            os.path.join(songsDestination, u'songs.sqlite'))
-                    # Download and selected Bibles
-                    if unicode(type.text(0)) == self.biblesText:
-                        bible = unicode(listIterator.value().data(0,
-                            QtCore.Qt.UserRole).toString())
-                        message = self.downloading % item
-                        self._updateMessage(message)
-                        urllib.urlretrieve(u'%s%s' % (self.web, bible),
-                            os.path.join(bibleDestination, bible))
-                    # Download any themes
-                    if unicode(type.text(0)) == self.themesText:
-                        theme = unicode(listIterator.value().data(0,
-                            QtCore.Qt.UserRole).toString())
-                        message = self.downloading % item
-                        self._updateMessage(message)
-                        urllib.urlretrieve(u'%s%s' % (self.web, theme),
-                            os.path.join(themeDestination, theme))
-            listIterator += 1
+        destination = AppLocation.get_temp_path()
+        check_directory_exists(destination)
+        bibles_destination = AppLocation.get_section_data_path(u'bibles')
+        check_directory_exists(bibles_destination)
+        themes_destination = AppLocation.get_section_data_path(u'themes')
+        check_directory_exists(destination)
+        # Install songs
+        songs_iterator = QtGui.QListWidgetItemIterator(self.songsListWidget)
+        while songs_iterator.value():
+            item = songs_iterator.value()
+            if item.checkState() == QtCore.Qt.Checked:
+                filename = item.data(QtCore.Qt.UserRole).toString()
+                urllib.urlretrieve(u'%s%s' % (self.web, filename),
+                    os.path.join(destination, filename))
+                #importer = SongImporter()
+            songs_iterator += 1
+        # Install Bibles
+        bibles_iterator = QtGui.QTreeWidgetItemIterator(self.biblesTreeWidget)
+        while bibles_iterator.value():
+            item = bibles_iterator.value()
+            if item.parent() and item.checkState(0) == QtCore.Qt.Checked:
+                bible = unicode(item.data(0, QtCore.Qt.UserRole).toString())
+                urllib.urlretrieve(u'%s%s' % (self.web, bible),
+                    os.path.join(bibles_destination, bible))
+            bibles_iterator += 1
+        themes_iterator = QtGui.QListWidgetItemIterator(self.themesListWidget)
+        while themes_iterator.value():
+            item = themes_iterator.value()
+            if item.checkState() == QtCore.Qt.Checked:
+                theme = unicode(item.data(QtCore.Qt.UserRole).toString())
+                urllib.urlretrieve(u'%s%s' % (self.web, theme),
+                    os.path.join(theme_destination, theme))
+            themes_iterator += 1
         # Set Default Display
-        if self.displaySelectionComboBox.currentIndex() != -1:
+        if self.displayComboBox.currentIndex() != -1:
             QtCore.QSettings().setValue(u'General/monitor',
-                QtCore.QVariant(self.displaySelectionComboBox.
-                currentIndex()))
+                QtCore.QVariant(self.displayComboBox.currentIndex()))
         # Set Global Theme
-        if self.themeSelectionComboBox.currentIndex() != -1:
+        if self.themeComboBox.currentIndex() != -1:
             QtCore.QSettings().setValue(u'themes/global theme',
-                QtCore.QVariant(self.themeSelectionComboBox.currentText()))
+                QtCore.QVariant(self.themeComboBox.currentText()))
         QtCore.QSettings().setValue(u'general/first time',
             QtCore.QVariant(False))
         Receiver.send_message(u'cursor_normal')

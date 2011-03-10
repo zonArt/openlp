@@ -35,7 +35,8 @@ class FirstTimePage(object):
     NoInternet = 2
     Songs = 3
     Bibles = 4
-    Defaults = 5
+    Themes = 5
+    Defaults = 6
 
 
 class Ui_FirstTimeWizard(object):
@@ -103,65 +104,70 @@ class Ui_FirstTimeWizard(object):
         self.noInternetLabel.setObjectName(u'noInternetLabel')
         self.noInternetLayout.addWidget(self.noInternetLabel)
         FirstTimeWizard.setPage(FirstTimePage.NoInternet, self.noInternetPage)
-
         # The song samples page
         self.songsPage = QtGui.QWizardPage()
         self.songsPage.setObjectName(u'songsPage')
+        self.songsLayout = QtGui.QVBoxLayout(self.songsPage)
+        self.songsLayout.setContentsMargins(50, 20, 50, 20)
+        self.songsLayout.setObjectName(u'songsLayout')
+        self.songsListWidget = QtGui.QListWidget(self.songsPage)
+        self.songsListWidget.setAlternatingRowColors(True)
+        self.songsListWidget.setObjectName(u'songsListWidget')
+        self.songsLayout.addWidget(self.songsListWidget)
         FirstTimeWizard.setPage(FirstTimePage.Songs, self.songsPage)
-
-        # download page
+        # The Bible samples page
         self.biblesPage = QtGui.QWizardPage()
         self.biblesPage.setObjectName(u'biblesPage')
-        self.internetGroupBox = QtGui.QGroupBox(self.biblesPage)
-        self.internetGroupBox.setGeometry(QtCore.QRect(20, 10, 501, 271))
-        self.internetGroupBox.setObjectName(u'internetGroupBox')
-        self.pluginLayout_4 = QtGui.QVBoxLayout(self.internetGroupBox)
-        self.pluginLayout_4.setObjectName(u'pluginLayout_4')
-        self.selectionTreeWidget = QtGui.QTreeWidget(self.internetGroupBox)
-        self.selectionTreeWidget.setHorizontalScrollBarPolicy(
-            QtCore.Qt.ScrollBarAlwaysOff)
-        self.selectionTreeWidget.setProperty(u'showDropIndicator', False)
-        self.selectionTreeWidget.setAlternatingRowColors(True)
-        self.selectionTreeWidget.setObjectName(u'selectionTreeWidget')
-        self.selectionTreeWidget.headerItem().setText(0, u'1')
-        self.selectionTreeWidget.header().setVisible(False)
-        self.pluginLayout_4.addWidget(self.selectionTreeWidget)
+        self.biblesLayout = QtGui.QVBoxLayout(self.biblesPage)
+        self.biblesLayout.setContentsMargins(50, 20, 50, 20)
+        self.biblesLayout.setObjectName(u'biblesLayout')
+        self.biblesTreeWidget = QtGui.QTreeWidget(self.biblesPage)
+        self.biblesTreeWidget.setAlternatingRowColors(True)
+        self.biblesTreeWidget.header().setVisible(False)
+        self.biblesTreeWidget.setObjectName(u'biblesTreeWidget')
+        self.biblesLayout.addWidget(self.biblesTreeWidget)
         FirstTimeWizard.setPage(FirstTimePage.Bibles, self.biblesPage)
-
-        self.DefaultsPage = QtGui.QWizardPage()
-        self.DefaultsPage.setObjectName(u'DefaultsPage')
-        self.layoutWidget = QtGui.QWidget(self.DefaultsPage)
-        self.layoutWidget.setGeometry(QtCore.QRect(20, 20, 491, 113))
-        self.layoutWidget.setObjectName(u'layoutWidget')
-        self.gridLayout = QtGui.QGridLayout(self.layoutWidget)
-        self.gridLayout.setMargin(0)
-        self.gridLayout.setObjectName(u'gridLayout')
-        self.displaySelectionLabel = QtGui.QLabel(self.layoutWidget)
-        self.displaySelectionLabel.setObjectName(u'displaySelectionLabel')
-        self.gridLayout.addWidget(self.displaySelectionLabel, 0, 0, 1, 1)
-        self.displaySelectionComboBox = QtGui.QComboBox(self.layoutWidget)
-        self.displaySelectionComboBox.setEditable(False)
-        self.displaySelectionComboBox.setInsertPolicy(QtGui.QComboBox.NoInsert)
-        self.displaySelectionComboBox.setSizeAdjustPolicy(
+        # The theme samples page
+        self.themesPage = QtGui.QWizardPage()
+        self.themesPage.setObjectName(u'themesPage')
+        self.themesLayout = QtGui.QVBoxLayout(self.themesPage)
+        self.themesLayout.setContentsMargins(20, 50, 20, 50)
+        self.themesLayout.setObjectName(u'themesLayout')
+        self.themesListWidget = QtGui.QListWidget(self.themesPage)
+        self.themesListWidget.setFlow(QtGui.QListView.LeftToRight)
+        self.themesListWidget.setViewMode(QtGui.QListView.IconMode)
+        self.themesListWidget.setMovement(QtGui.QListView.Static)
+        self.themesListWidget.setSpacing(4)
+        self.themesListWidget.setUniformItemSizes(True)
+        self.themesListWidget.setObjectName(u'themesListWidget')
+        self.themesLayout.addWidget(self.themesListWidget)
+        FirstTimeWizard.setPage(FirstTimePage.Themes, self.themesPage)
+        # the default settings page
+        self.defaultsPage = QtGui.QWizardPage()
+        self.defaultsPage.setObjectName(u'defaultsPage')
+        self.defaultsLayout = QtGui.QFormLayout(self.defaultsPage)
+        self.defaultsLayout.setContentsMargins(50, 20, 50, 20)
+        self.defaultsLayout.setObjectName(u'defaultsLayout')
+        self.displayLabel = QtGui.QLabel(self.defaultsPage)
+        self.displayLabel.setObjectName(u'displayLabel')
+        self.displayComboBox = QtGui.QComboBox(self.defaultsPage)
+        self.displayComboBox.setEditable(False)
+        self.displayComboBox.setInsertPolicy(QtGui.QComboBox.NoInsert)
+        self.displayComboBox.setSizeAdjustPolicy(
             QtGui.QComboBox.AdjustToContents)
-        self.displaySelectionComboBox.setObjectName(u'displaySelectionComboBox')
-        self.gridLayout.addWidget(self.displaySelectionComboBox, 0, 1, 1, 1)
-        self.themeSelectionLabel = QtGui.QLabel(self.layoutWidget)
-        self.themeSelectionLabel.setObjectName(u'themeSelectionLabel')
-        self.gridLayout.addWidget(self.themeSelectionLabel, 1, 0, 1, 1)
-        self.themeSelectionComboBox = QtGui.QComboBox(self.layoutWidget)
-        self.themeSelectionComboBox.setSizeAdjustPolicy(
+        self.displayComboBox.setObjectName(u'displayComboBox')
+        self.defaultsLayout.addRow(self.displayLabel, self.displayComboBox)
+        self.themeLabel = QtGui.QLabel(self.defaultsPage)
+        self.themeLabel.setObjectName(u'themeLabel')
+        self.themeComboBox = QtGui.QComboBox(self.defaultsPage)
+        self.themeComboBox.setEditable(False)
+        self.themeComboBox.setInsertPolicy(QtGui.QComboBox.NoInsert)
+        self.themeComboBox.setSizeAdjustPolicy(
             QtGui.QComboBox.AdjustToContents)
-        self.themeSelectionComboBox.setObjectName(u'themeSelectionComboBox')
-        self.gridLayout.addWidget(self.themeSelectionComboBox, 1, 1, 1, 1)
-        self.messageLabel = QtGui.QLabel(self.DefaultsPage)
-        self.messageLabel.setGeometry(QtCore.QRect(60, 160, 471, 17))
-        self.messageLabel.setObjectName(u'messageLabel')
-        self.updateLabel = QtGui.QLabel(self.DefaultsPage)
-        self.updateLabel.setGeometry(QtCore.QRect(60, 220, 351, 17))
-        self.updateLabel.setObjectName(u'updateLabel')
-        FirstTimeWizard.setPage(FirstTimePage.Defaults, self.DefaultsPage)
-
+        self.themeComboBox.setObjectName(u'themeComboBox')
+        self.defaultsLayout.addRow(self.themeLabel, self.themeComboBox)
+        FirstTimeWizard.setPage(FirstTimePage.Defaults, self.defaultsPage)
+        
         self.retranslateUi(FirstTimeWizard)
         QtCore.QMetaObject.connectSlotsByName(FirstTimeWizard)
 
@@ -211,23 +217,21 @@ class Ui_FirstTimeWizard(object):
             'button now.'))
         self.songsPage.setTitle(translate('OpenLP.FirstTimeWizard',
             'Sample Songs'))
-        self.songsPage.setSubTitle(translate(
-            'OpenLP.FirstTimeWizard',
+        self.songsPage.setSubTitle(translate('OpenLP.FirstTimeWizard',
             'Select and download public domain songs.'))
         self.biblesPage.setTitle(translate('OpenLP.FirstTimeWizard',
-            'Download Samples from OpenLP.org'))
-        self.biblesPage.setSubTitle(translate(
-            'OpenLP.FirstTimeWizard',
-            'Select samples to downlaod and install for use.'))
-        self.internetGroupBox.setTitle(translate('OpenLP.FirstTimeWizard',
-            'Download Example Files'))
-        self.DefaultsPage.setTitle(translate('OpenLP.FirstTimeWizard',
+            'Sample Bibles'))
+        self.biblesPage.setSubTitle(translate('OpenLP.FirstTimeWizard',
+            'Select and download free Bibles.'))
+        self.themesPage.setTitle(translate('OpenLP.FirstTimeWizard',
+            'Sample Themes'))
+        self.themesPage.setSubTitle(translate('OpenLP.FirstTimeWizard',
+            'Select and download sample themes.'))
+        self.defaultsPage.setTitle(translate('OpenLP.FirstTimeWizard',
             'Default Settings'))
-        self.DefaultsPage.setSubTitle(translate('OpenLP.FirstTimeWizard',
-            'Set up default values to be used by OpenLP'))
-        self.displaySelectionLabel.setText(translate('OpenLP.FirstTimeWizard',
-            'Default output display'))
-        self.themeSelectionLabel.setText(translate('OpenLP.FirstTimeWizard',
-            'Select the default Theme'))
-        self.messageLabel.setText(translate('OpenLP.FirstTimeWizard',
-            'Press finish to apply all your changes and start OpenLP'))
+        self.defaultsPage.setSubTitle(translate('OpenLP.FirstTimeWizard',
+            'Set up default settings to be used by OpenLP.'))
+        self.displayLabel.setText(translate('OpenLP.FirstTimeWizard',
+            'Default output display:'))
+        self.themeLabel.setText(translate('OpenLP.FirstTimeWizard',
+            'Select default theme:'))
