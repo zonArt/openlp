@@ -55,13 +55,14 @@ class SongImport(QtCore.QObject):
         """
         self.manager = manager
         QtCore.QObject.__init__(self)
-        if kwargs.has_key(u'filename'):
-            self.import_source = kwargs[u'filename']
-        elif kwargs.has_key(u'filenames'):
-            self.import_source = kwargs[u'filenames']
-        else:
-            raise KeyError(u'Keyword arguments "filename[s]" not supplied.')
-        log.debug(self.import_source)
+        if kwargs:
+            if kwargs.has_key(u'filename'):
+                self.import_source = kwargs[u'filename']
+            elif kwargs.has_key(u'filenames'):
+                self.import_source = kwargs[u'filenames']
+            else:
+                raise KeyError(u'Keyword arguments "filename[s]" not supplied.')
+            log.debug(self.import_source)
         self.song = None
         self.stop_import_flag = False
         self.set_defaults()
@@ -146,12 +147,12 @@ class SongImport(QtCore.QObject):
     def process_verse_text(self, text):
         lines = text.split(u'\n')
         if text.lower().find(self.copyright_string) >= 0 \
-            or text.find(SongStrings.CopyrightSymbol) >= 0:
+            or text.find(unicode(SongStrings.CopyrightSymbol)) >= 0:
             copyright_found = False
             for line in lines:
                 if (copyright_found or
                     line.lower().find(self.copyright_string) >= 0 or
-                    line.find(SongStrings.CopyrightSymbol) >= 0):
+                    line.find(unicode(SongStrings.CopyrightSymbol)) >= 0):
                     copyright_found = True
                     self.add_copyright(line)
                 else:
