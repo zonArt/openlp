@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -220,8 +220,6 @@ class MediaManagerItem(QtGui.QWidget):
         if self.hasDeleteIcon:
             toolbar_actions.append([StringContent.Delete,
                 u':/general/general_delete.png', self.onDeleteClick])
-        ## Separator Line ##
-        self.addToolbarSeparator()
         ## Preview ##
         toolbar_actions.append([StringContent.Preview,
             u':/general/general_preview.png', self.onPreviewClick])
@@ -232,6 +230,8 @@ class MediaManagerItem(QtGui.QWidget):
         toolbar_actions.append([StringContent.Service,
             u':/general/general_add.png', self.onAddClick])
         for action in toolbar_actions:
+            if action[0] == StringContent.Preview:
+                self.addToolbarSeparator()
             self.addToolbarButton(
                 self.plugin.getString(action[0])[u'title'],
                 self.plugin.getString(action[0])[u'tooltip'],
@@ -349,11 +349,11 @@ class MediaManagerItem(QtGui.QWidget):
         Validates whether an image still exists and, if it does, is the
         thumbnail representation of the image up to date.
         """
-        if not os.path.exists(image):
+        if not os.path.exists(unicode(image)):
             return False
         if os.path.exists(thumb):
-            imageDate = os.stat(image).st_mtime
-            thumbDate = os.stat(thumb).st_mtime
+            imageDate = os.stat(unicode(image)).st_mtime
+            thumbDate = os.stat(unicode(thumb)).st_mtime
             # If image has been updated rebuild icon
             if imageDate > thumbDate:
                 self.iconFromFile(image, thumb)

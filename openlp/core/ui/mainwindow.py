@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,6 +25,8 @@
 ###############################################################################
 
 import logging
+import os
+from tempfile import gettempdir
 
 from PyQt4 import QtCore, QtGui
 
@@ -206,7 +208,7 @@ class Ui_MainWindow(object):
         mainWindow.actionList.add_action(self.ModeDefaultItem, u'View Mode')
         self.ModeSetupItem = checkable_action(mainWindow, u'ModeLiveItem')
         mainWindow.actionList.add_action(self.ModeSetupItem, u'View Mode')
-        self.ModeLiveItem = checkable_action(mainWindow, u'ModeLiveItem')
+        self.ModeLiveItem = checkable_action(mainWindow, u'ModeLiveItem', True)
         mainWindow.actionList.add_action(self.ModeLiveItem, u'View Mode')
         self.ModeGroup = QtGui.QActionGroup(mainWindow)
         self.ModeGroup.addAction(self.ModeDefaultItem)
@@ -225,19 +227,17 @@ class Ui_MainWindow(object):
             u'Settings')
         # i18n Language Items
         self.AutoLanguageItem = checkable_action(mainWindow,
-            u'AutoLanguageItem')
+            u'AutoLanguageItem', LanguageManager.auto_language)
         mainWindow.actionList.add_action(self.AutoLanguageItem, u'Settings')
         self.LanguageGroup = QtGui.QActionGroup(mainWindow)
         self.LanguageGroup.setExclusive(True)
         self.LanguageGroup.setObjectName(u'LanguageGroup')
-        self.AutoLanguageItem.setChecked(LanguageManager.auto_language)
-        self.LanguageGroup.setDisabled(LanguageManager.auto_language)
+        add_actions(self.LanguageGroup, [self.AutoLanguageItem])
         qmList = LanguageManager.get_qm_list()
         savedLanguage = LanguageManager.get_language()
         for key in sorted(qmList.keys()):
-            languageItem = checkable_action(mainWindow, key)
-            if qmList[key] == savedLanguage:
-                languageItem.setChecked(True)
+            languageItem = checkable_action(
+                mainWindow, key, qmList[key] == savedLanguage)
             add_actions(self.LanguageGroup, [languageItem])
         self.SettingsShortcutsItem = icon_action(mainWindow,
             u'SettingsShortcutsItem',
@@ -256,7 +256,6 @@ class Ui_MainWindow(object):
             u':/system/system_about.png')
         mainWindow.actionList.add_action(self.HelpAboutItem, u'Help')
         self.HelpOnlineHelpItem = base_action(mainWindow, u'HelpOnlineHelpItem')
-        self.HelpOnlineHelpItem.setEnabled(False)
         mainWindow.actionList.add_action(self.HelpOnlineHelpItem, u'Help')
         self.helpWebSiteItem = base_action(mainWindow, u'helpWebSiteItem')
         mainWindow.actionList.add_action(self.helpWebSiteItem, u'Help')
@@ -298,6 +297,12 @@ class Ui_MainWindow(object):
         QtCore.QObject.connect(self.FileExitItem,
             QtCore.SIGNAL(u'triggered()'), mainWindow.close)
         QtCore.QMetaObject.connectSlotsByName(mainWindow)
+        # Hide the entry, as it does not have any functionality yet.
+        self.ToolsAddToolItem.setVisible(False)
+        self.ImportLanguageItem.setVisible(False)
+        self.ExportLanguageItem.setVisible(False)
+        self.SettingsShortcutsItem.setVisible(False)
+        self.HelpDocumentationItem.setVisible(False)
 
     def retranslateUi(self, mainWindow):
         """
@@ -423,16 +428,19 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', 'Ctrl+F1'))
         self.HelpOnlineHelpItem.setText(
             translate('OpenLP.MainWindow', '&Online Help'))
+        # Uncomment after 1.9.5 beta string freeze
+        #self.HelpOnlineHelpItem.setShortcut(
+        #    translate('OpenLP.MainWindow', 'F1'))
         self.helpWebSiteItem.setText(
             translate('OpenLP.MainWindow', '&Web Site'))
-        self.AutoLanguageItem.setText(
-            translate('OpenLP.MainWindow', '&Auto Detect'))
-        self.AutoLanguageItem.setStatusTip(translate('OpenLP.MainWindow',
-            'Use the system language, if available.'))
         for item in self.LanguageGroup.actions():
             item.setText(item.objectName())
             item.setStatusTip(unicode(translate('OpenLP.MainWindow',
                 'Set the interface language to %s')) % item.objectName())
+        self.AutoLanguageItem.setText(
+            translate('OpenLP.MainWindow', '&Autodetect'))
+        self.AutoLanguageItem.setStatusTip(translate('OpenLP.MainWindow',
+            'Use the system language, if available.'))
         self.ToolsAddToolItem.setText(
             translate('OpenLP.MainWindow', 'Add &Tool...'))
         self.ToolsAddToolItem.setStatusTip(translate('OpenLP.MainWindow',
@@ -468,7 +476,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         QtGui.QMainWindow.__init__(self)
         self.screens = screens
-        self.actionList = ActionList()
         self.applicationVersion = applicationVersion
         self.clipboard = clipboard
         # Set up settings sections for the main application
@@ -478,6 +485,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.serviceSettingsSection = u'servicemanager'
         self.songsSettingsSection = u'songs'
         self.serviceNotSaved = False
+        self.actionList = ActionList()
         self.settingsmanager = SettingsManager(screens)
         self.aboutForm = AboutForm(self, applicationVersion)
         self.settingsForm = SettingsForm(self.screens, self, self)
@@ -523,6 +531,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.ViewThemeManagerItem.setChecked)
         QtCore.QObject.connect(self.helpWebSiteItem,
             QtCore.SIGNAL(u'triggered()'), self.onHelpWebSiteClicked)
+        QtCore.QObject.connect(self.HelpOnlineHelpItem,
+            QtCore.SIGNAL(u'triggered()'), self.onHelpOnLineHelpClicked)
         QtCore.QObject.connect(self.HelpAboutItem,
             QtCore.SIGNAL(u'triggered()'), self.onHelpAboutItemClicked)
         QtCore.QObject.connect(self.ToolsOpenDataFolder,
@@ -550,8 +560,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'triggered()'),
             self.ServiceManagerContents.printServiceOrder)
         # i18n set signals for languages
-        QtCore.QObject.connect(self.AutoLanguageItem,
-            QtCore.SIGNAL(u'toggled(bool)'), self.setAutoLanguage)
         self.LanguageGroup.triggered.connect(LanguageManager.set_language)
         QtCore.QObject.connect(self.ModeDefaultItem,
             QtCore.SIGNAL(u'triggered()'), self.onModeDefaultItemClicked)
@@ -650,8 +658,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Show the main form, as well as the display form
         """
         QtGui.QWidget.show(self)
-        self.liveController.display.setup()
-        self.previewController.display.setup()
         if self.liveController.display.isVisible():
             self.liveController.display.setFocus()
         self.activateWindow()
@@ -669,6 +675,20 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         elif view_mode == u'live':
             self.setViewMode(False, True, False, False, True)
             self.ModeLiveItem.setChecked(True)
+
+    def firstTime(self):
+        # Import themes if first time
+        Receiver.send_message(u'openlp_process_events')
+        self.themeManagerContents.firstTime()
+        for plugin in self.pluginManager.plugins:
+            if hasattr(plugin, u'firstTime'):
+                Receiver.send_message(u'openlp_process_events')
+                plugin.firstTime()
+        Receiver.send_message(u'openlp_process_events')
+        temp_dir = os.path.join(unicode(gettempdir()), u'openlp')
+        for filename in os.listdir(temp_dir):
+            os.remove(os.path.join(temp_dir, filename))
+        os.removedirs(temp_dir)
 
     def blankCheck(self):
         """
@@ -702,6 +722,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         import webbrowser
         webbrowser.open_new(u'http://openlp.org/')
+
+    def onHelpOnLineHelpClicked(self):
+        """
+        Load the online OpenLP manual
+        """
+        import webbrowser
+        webbrowser.open_new(u'http://manual.openlp.org/')
 
     def onHelpAboutItemClicked(self):
         """

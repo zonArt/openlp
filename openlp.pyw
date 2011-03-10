@@ -7,9 +7,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,7 +24,6 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
 import os
 import sys
 import logging
@@ -37,6 +36,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Receiver, check_directory_exists
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
+from openlp.core.ui.firsttimelanguageform import FirstTimeLanguageForm
+from openlp.core.ui.firsttimeform import FirstTimeForm
 from openlp.core.ui.exceptionform import ExceptionForm
 from openlp.core.ui import SplashScreen, ScreenList
 from openlp.core.utils import AppLocation, LanguageManager, VersionThread
@@ -70,12 +71,14 @@ class OpenLP(QtGui.QApplication):
     The core application class. This class inherits from Qt's QApplication
     class in order to provide the core of the application.
     """
-    log.info(u'OpenLP Application Loaded')
+    app_version = None
 
-    def _get_version(self):
+    def get_version(self):
         """
         Load and store current Application Version
         """
+        if self.app_version:
+            return self.app_version
         if u'--dev-version' in sys.argv or u'-d' in sys.argv:
             # If we're running the dev version, let's use bzr to get the version
             try:
@@ -135,30 +138,25 @@ class OpenLP(QtGui.QApplication):
                 if fversion:
                     fversion.close()
         bits = full_version.split(u'-')
-        app_version = {
+        self.app_version = {
             u'full': full_version,
             u'version': bits[0],
             u'build': bits[1] if len(bits) > 1 else None
         }
-        if app_version[u'build']:
+        if self.app_version[u'build']:
             log.info(
                 u'Openlp version %s build %s',
-                app_version[u'version'],
-                app_version[u'build']
+                self.app_version[u'version'],
+                self.app_version[u'build']
             )
         else:
-            log.info(u'Openlp version %s' % app_version[u'version'])
-        return app_version
-
-#    def notify(self, obj, evt):
-#        #TODO needed for presentation exceptions
-#        return QtGui.QApplication.notify(self, obj, evt)
+            log.info(u'Openlp version %s' % self.app_version[u'version'])
+        return self.app_version
 
     def run(self):
         """
         Run the OpenLP application.
         """
-        app_version = self._get_version()
         # provide a listener for widgets to reqest a screen update.
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlp_process_events'), self.processEvents)
@@ -166,10 +164,15 @@ class OpenLP(QtGui.QApplication):
             QtCore.SIGNAL(u'cursor_busy'), self.setBusyCursor)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'cursor_normal'), self.setNormalCursor)
-        self.setOrganizationName(u'OpenLP')
-        self.setOrganizationDomain(u'openlp.org')
-        self.setApplicationName(u'OpenLP')
-        self.setApplicationVersion(app_version[u'version'])
+        # Decide how many screens we have and their size
+        screens = ScreenList(self.desktop())
+        # First time checks in settings
+        has_run_wizard = QtCore.QSettings().value(
+            u'general/has run wizard', QtCore.QVariant(False)).toBool()
+        if not has_run_wizard:
+            if FirstTimeForm(screens).exec_() == QtGui.QDialog.Accepted:
+                QtCore.QSettings().setValue(u'general/has run wizard',
+                    QtCore.QVariant(True))
         if os.name == u'nt':
             self.setStyleSheet(application_stylesheet)
         show_splash = QtCore.QSettings().value(
@@ -179,26 +182,21 @@ class OpenLP(QtGui.QApplication):
             self.splash.show()
         # make sure Qt really display the splash screen
         self.processEvents()
-        screens = ScreenList()
-        # Decide how many screens we have and their size
-        for screen in xrange(0, self.desktop().numScreens()):
-            size = self.desktop().screenGeometry(screen)
-            screens.add_screen({u'number': screen,
-                u'size': size,
-                u'primary': (self.desktop().primaryScreen() == screen)})
-            log.info(u'Screen %d found with resolution %s', screen, size)
         # start the main app window
-        self.appClipboard = self.clipboard()
-        self.mainWindow = MainWindow(screens, app_version, self.appClipboard)
+        self.mainWindow = MainWindow(screens, self.app_version,
+            self.clipboard())
         self.mainWindow.show()
         if show_splash:
             # now kill the splashscreen
             self.splash.finish(self.mainWindow)
         self.mainWindow.repaint()
+        self.processEvents()
+        if not has_run_wizard:
+            self.mainWindow.firstTime()
         update_check = QtCore.QSettings().value(
             u'general/update check', QtCore.QVariant(True)).toBool()
         if update_check:
-            VersionThread(self.mainWindow, app_version).start()
+            VersionThread(self.mainWindow, self.app_version).start()
         return self.exec_()
 
     def hookException(self, exctype, value, traceback):
@@ -273,10 +271,20 @@ def main():
     qInitResources()
     # Now create and actually run the application.
     app = OpenLP(qt_args)
-    if sys.platform == 'darwin':
+    app.setOrganizationName(u'OpenLP')
+    app.setOrganizationDomain(u'openlp.org')
+    app.setApplicationName(u'OpenLP')
+    app.setApplicationVersion(app.get_version()[u'version'])
+    # First time checks in settings
+    if not QtCore.QSettings().value(u'general/has run wizard',
+        QtCore.QVariant(False)).toBool():
+        if not FirstTimeLanguageForm().exec_():
+            # if cancel then stop processing
+            sys.exit()
+    if sys.platform == u'darwin':
         OpenLP.addLibraryPath(QtGui.QApplication.applicationDirPath()
             + "/qt4_plugins")
-    #i18n Set Language
+    # i18n Set Language
     language = LanguageManager.get_language()
     appTranslator = LanguageManager.get_translator(language)
     app.installTranslator(appTranslator)

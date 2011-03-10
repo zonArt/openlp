@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -35,7 +35,7 @@ from openlp.core.lib.ui import UiStrings, add_widget_completer, \
     media_item_combo_box, critical_error_message_box
 from openlp.plugins.bibles.forms import BibleImportForm
 from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle, \
-    get_reference_match
+    VerseReferenceList, get_reference_match
 
 log = logging.getLogger(__name__)
 
@@ -346,7 +346,7 @@ class BibleMediaItem(MediaManagerItem):
             self.advancedSearchButton.setEnabled(False)
             critical_error_message_box(
                 message=translate('BiblePlugin.MediaItem',
-                'Bible not fully loaded'))
+                'Bible not fully loaded.'))
         else:
             self.advancedSearchButton.setEnabled(True)
             self.adjustComboBox(1, self.chapter_count, self.advancedFromChapter)
@@ -449,8 +449,7 @@ class BibleMediaItem(MediaManagerItem):
         if restore:
             old_text = unicode(combo.currentText())
         combo.clear()
-        for i in range(range_from, range_to + 1):
-            combo.addItem(unicode(i))
+        combo.addItems([unicode(i) for i in range(range_from, range_to + 1)])
         if restore and combo.findText(old_text) != -1:
             combo.setCurrentIndex(combo.findText(old_text))
 
@@ -539,8 +538,9 @@ class BibleMediaItem(MediaManagerItem):
             self.displayResults(bible, second_bible)
         elif critical_error_message_box(
             message=translate('BiblePlugin.MediaItem',
-            'You cannot combine single and second bible verses. Do you '
-            'want to delete your search results and start a new search?'),
+            'You cannot combine single and dual Bible verse search results. '
+            'Do you want to delete your search results and start a new '
+            'search?'),
             parent=self, question=True) == QtGui.QMessageBox.Yes:
             self.listView.clear()
             self.displayResults(bible, second_bible)
@@ -635,9 +635,9 @@ class BibleMediaItem(MediaManagerItem):
         bible_text = u''
         old_item = None
         old_chapter = -1
-        raw_footer = []
         raw_slides = []
         raw_title = []
+        verses = VerseReferenceList()
         for item in items:
             bitem = self.listView.item(item.row())
             book = self._decodeQtObject(bitem, 'book')
@@ -654,15 +654,9 @@ class BibleMediaItem(MediaManagerItem):
             second_permissions = \
                 self._decodeQtObject(bitem, 'second_permissions')
             second_text = self._decodeQtObject(bitem, 'second_text')
+            verses.add(book, chapter, verse, version, copyright, permissions)
             verse_text = self.formatVerse(old_chapter, chapter, verse)
-            footer = u'%s (%s %s %s)' % (book, version, copyright, permissions)
-            if footer not in raw_footer:
-                raw_footer.append(footer)
             if second_bible:
-                footer = u'%s (%s %s %s)' % (book, second_version,
-                    second_copyright, second_permissions)
-                if footer not in raw_footer:
-                    raw_footer.append(footer)
                 bible_text = u'%s&nbsp;%s\n\n%s&nbsp;%s' % (verse_text, text,
                     verse_text, second_text)
                 raw_slides.append(bible_text.rstrip())
@@ -685,6 +679,12 @@ class BibleMediaItem(MediaManagerItem):
                 start_item = item
             old_item = item
             old_chapter = chapter
+        # Add footer
+        service_item.raw_footer.append(verses.format_verses())
+        if second_bible:
+            verses.add_version(second_version, second_copyright,
+                second_permissions)
+        service_item.raw_footer.append(verses.format_versions())
         raw_title.append(self.formatTitle(start_item, item))
         # If there are no more items we check whether we have to add bible_text.
         if bible_text:
@@ -704,13 +704,7 @@ class BibleMediaItem(MediaManagerItem):
             service_item.theme = None
         else:
             service_item.theme = self.settings.bible_theme
-        for slide in raw_slides:
-            service_item.add_from_text(slide[:30], slide)
-        if service_item.raw_footer:
-            for footer in raw_footer:
-                service_item.raw_footer.append(footer)
-        else:
-            service_item.raw_footer = raw_footer
+        [service_item.add_from_text(slide[:30], slide) for slide in raw_slides]
         return True
 
     def formatTitle(self, start_item, old_item):
@@ -749,8 +743,7 @@ class BibleMediaItem(MediaManagerItem):
         else:
             verse_range = start_chapter + verse_separator + start_verse + \
                 range_separator + old_chapter + verse_separator + old_verse
-        title = u'%s %s (%s)' % (start_book, verse_range, bibles)
-        return title
+        return u'%s %s (%s)' % (start_book, verse_range, bibles)
 
     def checkTitle(self, item, old_item):
         """

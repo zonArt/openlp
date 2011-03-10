@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -35,6 +35,7 @@ import urllib2
 from datetime import datetime
 
 from PyQt4 import QtGui, QtCore
+
 if sys.platform != u'win32' and sys.platform != u'darwin':
     try:
         from xdg import BaseDirectory
@@ -134,7 +135,7 @@ class AppLocation(object):
         elif dir_type == AppLocation.LanguageDir:
             app_path = _get_frozen_path(
                 os.path.abspath(os.path.split(sys.argv[0])[0]),
-                os.path.split(openlp.__file__)[0])
+                _get_os_dir_path(dir_type))
             return os.path.join(app_path, u'i18n')
         else:
             return _get_os_dir_path(dir_type)
@@ -169,15 +170,21 @@ def _get_os_dir_path(dir_type):
         if dir_type == AppLocation.DataDir:
             return os.path.join(unicode(os.getenv(u'APPDATA'), encoding),
                 u'openlp', u'data')
+        elif dir_type == AppLocation.LanguageDir:
+            return os.path.split(openlp.__file__)[0]
         return os.path.join(unicode(os.getenv(u'APPDATA'), encoding),
             u'openlp')
     elif sys.platform == u'darwin':
         if dir_type == AppLocation.DataDir:
             return os.path.join(unicode(os.getenv(u'HOME'), encoding),
                 u'Library', u'Application Support', u'openlp', u'Data')
+        elif dir_type == AppLocation.LanguageDir:
+            return os.path.split(openlp.__file__)[0]
         return os.path.join(unicode(os.getenv(u'HOME'), encoding),
             u'Library', u'Application Support', u'openlp')
     else:
+        if dir_type == AppLocation.LanguageDir:
+            return os.path.join(u'/usr', u'share', u'openlp')
         if XDG_BASE_AVAILABLE:
             if dir_type == AppLocation.ConfigDir:
                 return os.path.join(unicode(BaseDirectory.xdg_config_home,
@@ -337,6 +344,7 @@ def get_web_page(url, header=None, update_openlp=False):
         return None
     if update_openlp:
         Receiver.send_message(u'openlp_process_events')
+    log.debug(page)
     return page
 
 def file_is_unicode(filename):
@@ -383,7 +391,7 @@ def get_uno_command():
     Returns the UNO command to launch an openoffice.org instance.
     """
     COMMAND = u'soffice'
-    OPTIONS = u'-nologo -norestore -minimized -invisible -nofirststartwizard'
+    OPTIONS = u'-nologo -norestore -minimized -nodefault -nofirststartwizard'
     if UNO_CONNECTION_TYPE == u'pipe':
         CONNECTION = u'"-accept=pipe,name=openlp_pipe;urp;"'
     else:
