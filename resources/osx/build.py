@@ -128,8 +128,8 @@ def build_application(settings, app_name_lower, app_dir):
         %(application_directory)s/Contents/MacOS/plugins/presentations' \
         % { 'application_directory' : app_dir })
     if (result != 0):
-        logging.error('[%s] could not remove presentations plugins, dmg creation failed!',
-            script_name)
+        logging.error('[%s] could not remove presentations plugins, dmg \
+            creation failed!', script_name)
         sys.exit(1)
 
     logging.info('[%s] copying the icons to the resource directory...',
@@ -170,8 +170,8 @@ def build_application(settings, app_name_lower, app_dir):
             % { 'ts_file' : ts_file, 'target_directory' : app_dir,
             'base': os.path.splitext(os.path.basename(ts_file))[0] })
         if (result != 0):
-            logging.error('[%s] could not copy the translations, dmg creation \
-                failed!', script_name)
+            logging.error('[%s] could not copy the translations, dmg \
+                creation failed!', script_name)
             sys.exit(1)
 
 def deploy_qt(settings):
