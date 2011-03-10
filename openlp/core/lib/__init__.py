@@ -248,9 +248,8 @@ def resize_image(image, width, height, background=QtCore.Qt.black):
     ``height``
         The new image height.
 
-     ``background``
+    ``background``
         The background colour defaults to black.
-
     """
     log.debug(u'resize_image - start')
     if isinstance(image, QtGui.QImage):

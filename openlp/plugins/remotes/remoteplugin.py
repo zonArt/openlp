@@ -38,7 +38,7 @@ class RemotesPlugin(Plugin):
         """
         remotes constructor
         """
-        Plugin.__init__(self, u'Remotes', u'1.9.4', plugin_helpers,
+        Plugin.__init__(self, u'Remotes', plugin_helpers,
             settingsTabClass=RemoteTab)
         self.icon = build_icon(u':/plugins/plugin_remote.png')
         self.weight = -1
