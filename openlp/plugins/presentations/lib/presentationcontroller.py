@@ -357,7 +357,7 @@ class PresentationController(object):
     def __init__(self, plugin=None, name=u'PresentationController',
         document_class=PresentationDocument):
         """
-        This is the constructor for the presentationcontroller object.  This
+        This is the constructor for the presentationcontroller object. This
         provides an easy way for descendent plugins to populate common data.
         This method *must* be overridden, like so::
 

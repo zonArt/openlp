@@ -45,7 +45,7 @@ class ValidEdit(QtGui.QLineEdit):
 
     def validText(self):
         """
-        Only return Integers.  Space is 0
+        Only return Integers. Space is 0
         """
         if self.text().isEmpty():
             return QtCore.QString(u'0')
@@ -234,6 +234,9 @@ class GeneralTab(SettingsTab):
         QtCore.QObject.connect(self.customXValueEdit,
             QtCore.SIGNAL(u'textEdited(const QString&)'),
             self.onDisplayPositionChanged)
+        # Reload the tab, as the screen resolution/count may have changed.
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'config_screen_changed'), self.load)
 
     def retranslateUi(self):
         """
@@ -300,13 +303,9 @@ class GeneralTab(SettingsTab):
         """
         settings = QtCore.QSettings()
         settings.beginGroup(self.settingsSection)
-        for screen in self.screens.screen_list:
-            screen_name = u'%s %d' % (translate('OpenLP.GeneralTab', 'Screen'),
-                screen[u'number'] + 1)
-            if screen[u'primary']:
-                screen_name = u'%s (%s)' % (screen_name,
-                    translate('OpenLP.GeneralTab', 'primary'))
-            self.monitorComboBox.addItem(screen_name)
+        self.monitorComboBox.clear()
+        for screen in self.screens.get_screen_list():
+            self.monitorComboBox.addItem(screen)
         self.numberEdit.setText(unicode(settings.value(
             u'ccli number', QtCore.QVariant(u'')).toString()))
         self.usernameEdit.setText(unicode(settings.value(

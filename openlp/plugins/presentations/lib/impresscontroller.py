@@ -211,8 +211,8 @@ class ImpressDocument(PresentationDocument):
         """
         Called when a presentation is added to the SlideController.
         It builds the environment, starts communcations with the background
-        OpenOffice task started earlier.  If OpenOffice is not present is is
-        started.  Once the environment is available the presentation is loaded
+        OpenOffice task started earlier. If OpenOffice is not present is is
+        started. Once the environment is available the presentation is loaded
         and started.
 
         ``presentation``

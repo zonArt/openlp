@@ -145,6 +145,20 @@ class ThemeManager(QtGui.QWidget):
         # Last little bits of setting up
         self.configUpdated()
 
+    def firstTime(self):
+        """
+        Import new themes downloaded by the first time wizard
+        """
+        Receiver.send_message(u'cursor_busy')
+        encoding = get_filesystem_encoding()
+        files = SettingsManager.get_files(self.settingsSection, u'.otz')
+        for file in files:
+            file = os.path.join(self.path, file).encode(encoding)
+            self.unzipTheme(file, self.path)
+            delete_file(file)
+        self.loadThemes()
+        Receiver.send_message(u'cursor_normal')
+
     def configUpdated(self, firstTime=False):
         """
         Triggered when Config dialog is updated.
@@ -266,7 +280,7 @@ class ThemeManager(QtGui.QWidget):
             oldThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
             self.fileRenameForm.fileNameEdit.setText(oldThemeName)
             if self.fileRenameForm.exec_():
-                newThemeName =  unicode(self.fileRenameForm.fileNameEdit.text())
+                newThemeName = unicode(self.fileRenameForm.fileNameEdit.text())
                 if self.checkIfThemeExists(newThemeName):
                     oldThemeData = self.getThemeData(oldThemeName)
                     self.cloneThemeData(oldThemeData, newThemeName)
@@ -284,7 +298,7 @@ class ThemeManager(QtGui.QWidget):
         oldThemeName = unicode(item.data(QtCore.Qt.UserRole).toString())
         self.fileRenameForm.fileNameEdit.setText(oldThemeName)
         if self.fileRenameForm.exec_(True):
-            newThemeName =  unicode(self.fileRenameForm.fileNameEdit.text())
+            newThemeName = unicode(self.fileRenameForm.fileNameEdit.text())
             if self.checkIfThemeExists(newThemeName):
                 themeData = self.getThemeData(oldThemeName)
                 self.cloneThemeData(themeData, newThemeName)
@@ -370,6 +384,7 @@ class ThemeManager(QtGui.QWidget):
             'Save Theme - (%s)')) % theme,
             SettingsManager.get_last_dir(self.settingsSection, 1))
         path = unicode(path)
+        Receiver.send_message(u'cursor_busy')
         if path:
             SettingsManager.set_last_dir(self.settingsSection, path, 1)
             themePath = os.path.join(path, theme + u'.otz')
@@ -395,11 +410,12 @@ class ThemeManager(QtGui.QWidget):
             finally:
                 if zip:
                     zip.close()
+        Receiver.send_message(u'cursor_normal')
 
     def onImportTheme(self):
         """
         Opens a file dialog to select the theme file(s) to import before
-        attempting to extract OpenLP themes from those files.  This process
+        attempting to extract OpenLP themes from those files. This process
         will load both OpenLP version 1 and version 2 themes.
         """
         files = QtGui.QFileDialog.getOpenFileNames(self,
@@ -408,12 +424,14 @@ class ThemeManager(QtGui.QWidget):
             unicode(translate('OpenLP.ThemeManager',
             'OpenLP Themes (*.theme *.otz)')))
         log.info(u'New Themes %s', unicode(files))
+        Receiver.send_message(u'cursor_busy')
         if files:
             for file in files:
                 SettingsManager.set_last_dir(
                     self.settingsSection, unicode(file))
                 self.unzipTheme(file, self.path)
         self.loadThemes()
+        Receiver.send_message(u'cursor_normal')
 
     def loadThemes(self):
         """
