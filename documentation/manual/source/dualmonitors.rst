@@ -29,7 +29,8 @@ Some computers also incorporate the use of :abbr:`S-Video (Separate Video)` or
 
 A typical OpenLP setup consist of your normal single monitor, with your
 projector hooked up to your computer as the second monitor. With the option of 
-extending your desktop across the second monitor, or your operating system's equivalent.
+extending your desktop across the second monitor, or your operating system's 
+equivalent.
 
 Microsoft Windows
 -----------------
@@ -46,8 +47,8 @@ press :kbd:`Windows+P`.
 
 The more traditional way is also fairly straight forward. Go to
 :guilabel:`Control Panel` and click on :guilabel:`Display`. This will open up
-the :guilabel:`Display` dialog. You may also bypass this step by a right click on
-a blank area on your desktop and selecting :guilabel:`Resolution`.
+the :guilabel:`Display` dialog. You may also bypass this step by a right click 
+on a blank area on your desktop and selecting :guilabel:`Resolution`.
 
 .. image:: pics/winsevendisplay.png
 
@@ -123,7 +124,8 @@ Linux Systems Using nVidia Drivers
 
 This guide is for users of the proprietary nVidia driver on Linux Distributions.
 It is assumed that you have properly setup your drivers according to your
-distribution's documentation, and you have a working ``xorg.conf`` file in place.
+distribution's documentation, and you have a working ``xorg.conf`` file in 
+place.
 
 If you wish to make the changes permanent in setting up your system for dual
 monitors it will be necessary to modify your ``xorg.conf`` file. It is always a

@@ -58,8 +58,9 @@ the folder.
 .. image:: pics/selectsongs.png
 
 On most operating systems, to select all the songs, first select the first song
-in the list, press the shift key, and select the last song in the list. After this
-press :guilabel:`Next` and you will see that your import has been successful.
+in the list, press the shift key, and select the last song in the list. After
+this press :guilabel:`Next` and you will see that your import has been 
+successful.
 
 .. image:: pics/finishedimport.png
 
@@ -89,8 +90,9 @@ Choose either the .txt or .usr file. You will be asked to chose a download
 location if your browser does not automatically select that for you. Select 
 this file from the OpenLP import window and then click :guilabel:`Next` You can
 also select multiple songs for import at once on most operating systems by 
-selecting the first item in the list then holding the shift key and select the last 
-item in the list. When finished, you will see that your import has completed.
+selecting the first item in the list then holding the shift key and select the
+last item in the list. When finished, you will see that your import has 
+completed.
 
 .. image:: pics/finishedimport.png
 
