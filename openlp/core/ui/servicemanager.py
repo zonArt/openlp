@@ -417,7 +417,7 @@ class ServiceManager(QtGui.QWidget):
             return self.saveFileAs()
         path_file_name = unicode(self.fileName())
         (path, file_name) = os.path.split(path_file_name)
-        basename = file_name[0:file_name.rfind(u'.')-1]
+        (basename, extension) = os.path.splitext(file_name)
         service_file_name = basename + '.osd'
         log.debug(u'ServiceManager.saveFile - %s' % path_file_name)
         SettingsManager.set_last_dir(self.mainwindow.serviceSettingsSection,
