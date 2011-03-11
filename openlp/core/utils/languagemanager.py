@@ -112,9 +112,13 @@ class LanguageManager(object):
         """
         language = u'en'
         if action:
-            action_name = u'%s' % action.objectName()
-            qm_list = LanguageManager.get_qm_list()
-            language = u'%s' % qm_list[action_name]
+            action_name = unicode(action.objectName())
+            if action_name == u'AutoLanguageItem':
+                LanguageManager.auto_language = True
+            else:
+                LanguageManager.auto_language = False
+                qm_list = LanguageManager.get_qm_list()
+                language = unicode(qm_list[action_name])
         if LanguageManager.auto_language:
             language = u'[%s]' % language
         # This needs to be here for the setValue to work
