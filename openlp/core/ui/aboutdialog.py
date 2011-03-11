@@ -226,7 +226,7 @@ class Ui_AboutDialog(object):
             'Portions copyright \xa9 2004-2011 '
             'Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri,\n'
             'Meinert Jordan, Andreas Preikschat, Christian Richter, Philip\n'
-            'Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Carstenn'
+            'Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Carsten\n'
             'Tinggaard, Frode Woldsund')
         licence = translate('OpenLP.AboutForm',
             'This program is free software; you can redistribute it and/or '

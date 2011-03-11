@@ -253,9 +253,9 @@ class SongMediaItem(MediaManagerItem):
         if self.searchAsYouType:
             search_length = 1
             if self.searchTextEdit.currentSearchType() == SongSearch.Entire:
-                search_length = 7
+                search_length = 4
             elif self.searchTextEdit.currentSearchType() == SongSearch.Lyrics:
-                search_length = 6
+                search_length = 3
             if len(text) > search_length:
                 self.onSearchTextButtonClick()
             elif len(text) == 0:
@@ -310,6 +310,7 @@ class SongMediaItem(MediaManagerItem):
             item_id = (self.editItem.data(QtCore.Qt.UserRole)).toInt()[0]
             self.edit_song_form.loadSong(item_id, False)
             self.edit_song_form.exec_()
+        self.editItem = None
 
     def onDeleteClick(self):
         """
