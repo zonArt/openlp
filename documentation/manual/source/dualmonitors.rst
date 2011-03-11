@@ -4,11 +4,11 @@ Dual Monitor Setup
 
 The first step in getting OpenLP working on your system is to setup your
 computer properly for dual monitors. This is not very difficult, but the steps
-do vary depending on operating system.
+will vary depending on operating system.
 
-Most modern computers do have the ability for dual monitors. To be certain
+Most modern computers have the ability for dual monitors. To be certain,
 check your computer's documentation. A typical desktop computer capable of dual
-monitors will have two of, or a combination of the two connectors below.
+monitors will have two of, or a combination of the two, connectors below.
 
 **VGA**
 
@@ -18,8 +18,8 @@ monitors will have two of, or a combination of the two connectors below.
 
 .. image:: pics/dvi.png
 
-A laptop computer setup only varies slightly, generally you will need only one
-of outputs pictured above since your laptops screen serves as one of the
+A laptop computer setup only varies slightly. Generally you will need only one
+of the outputs pictured above since your laptop screen serves as one of the
 monitors. Sometimes with older laptops a key stroke generally involving the
 :kbd:`Fn` key and another key is required to enable the second monitor on
 laptops.
@@ -27,9 +27,10 @@ laptops.
 Some computers also incorporate the use of :abbr:`S-Video (Separate Video)` or
 :abbr:`HDMI (High-Definition Multimedia Interface)` connections.
 
-A typical OpenLP set up consist of your normal single monitor setup, with your
-projector setup as the second monitor. With the option of extending your
-desktop across the second monitor, or your operating system's equivalent.
+A typical OpenLP setup consist of your normal single monitor, with your
+projector hooked up to your computer as the second monitor. With the option of 
+extending your desktop across the second monitor, or your operating system's 
+equivalent.
 
 Microsoft Windows
 -----------------
@@ -46,8 +47,8 @@ press :kbd:`Windows+P`.
 
 The more traditional way is also fairly straight forward. Go to
 :guilabel:`Control Panel` and click on :guilabel:`Display`. This will open up
-the :guilabel:`Display` dialog. You can also bypass this step by right click on
-a blank area on your desktop and selecting :guilabel:`Resolution`.
+the :guilabel:`Display` dialog. You may also bypass this step by a right click 
+on a blank area on your desktop and selecting :guilabel:`Resolution`.
 
 .. image:: pics/winsevendisplay.png
 
@@ -66,7 +67,7 @@ a blank place on the desktop and click :guilabel:`Personalization`.
 .. image:: pics/vistapersonalize.png
 
 From the :guilabel:`Personalization` window click on :guilabel:`Display
-Settings`. Then enable the montior that represents your projector and make sure
+Settings`. Click on the montior that represents your projector and make sure
 you have checked :guilabel:`Extend the desktop onto this monitor`.
 
 .. image:: pics/vistadisplaysettings.png
@@ -77,7 +78,7 @@ Windows XP
 From :guilabel:`Control Panel` select :guilabel:`Display`, or right click on a
 blank area of the desktop and select :guilabel:`Properties`. From the
 :guilabel:`Display Properties` window click on the :guilabel:`Settings` tab.
-Then click on the monitor that represents your projector and make sure you have
+Click on the monitor that represents your projector and make sure you have
 checked :guilabel:`Extend my Windows desktop onto this monitor`.
 
 .. image:: pics/xpdisplaysettings.png
@@ -87,7 +88,7 @@ Linux
 
 Due to the vast varieties of hardware, distributions, desktops, and drivers
 this is not an exhaustive guide to dual monitor setup on Linux. This guide
-assumes that you have properly set up any proprietary drivers if needed. You
+assumes you have properly set up any proprietary drivers if needed. You
 should seek out your distributions documentation if this general guide does not
 work.
 
@@ -123,7 +124,8 @@ Linux Systems Using nVidia Drivers
 
 This guide is for users of the proprietary nVidia driver on Linux Distributions.
 It is assumed that you have properly setup your drivers according to your
-distribution's documentation, and you have a working ``xorg.conf`` file in place.
+distribution's documentation, and you have a working ``xorg.conf`` file in 
+place.
 
 If you wish to make the changes permanent in setting up your system for dual
 monitors it will be necessary to modify your ``xorg.conf`` file. It is always a
@@ -166,7 +168,7 @@ After clicking :guilabel:`Configure`, select :guilabel:`TwinView`. Then click
 
 .. image:: pics/twinview.png
 
-Then click :guilabel:`Apply` and if you are happy with the way things look click
+Click :guilabel:`Apply` and if you are happy with the way things look click
 :guilabel:`Keep` to keep your new settings. Don't worry if all goes wrong the
 settings will return back to the previous settings in 15 seconds without any
 action. nVidia Settings should take care of selecting your optimum resolution
@@ -175,6 +177,6 @@ on :guilabel:`Save to X Configuration File`.
 
 .. image:: pics/xorgwrite.png
 
-Then click :guilabel:`Save` and you should be set. You may want to restart X or
+Click :guilabel:`Save` and you should be set. You may want to restart X or
 your machine just to make sure all the settings carry over the next time you log
 in.
