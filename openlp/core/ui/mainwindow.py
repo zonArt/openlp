@@ -228,11 +228,10 @@ class Ui_MainWindow(object):
         # i18n Language Items
         self.AutoLanguageItem = checkable_action(mainWindow,
             u'AutoLanguageItem', LanguageManager.auto_language)
-        #mainWindow.actionList.add_action(self.AutoLanguageItem, u'Settings')
+        mainWindow.actionList.add_action(self.AutoLanguageItem, u'Settings')
         self.LanguageGroup = QtGui.QActionGroup(mainWindow)
         self.LanguageGroup.setExclusive(True)
         self.LanguageGroup.setObjectName(u'LanguageGroup')
-        #self.LanguageGroup.setDisabled(LanguageManager.auto_language)
         add_actions(self.LanguageGroup, [self.AutoLanguageItem])
         qmList = LanguageManager.get_qm_list()
         savedLanguage = LanguageManager.get_language()
