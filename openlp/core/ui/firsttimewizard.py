@@ -37,6 +37,7 @@ class FirstTimePage(object):
     Bibles = 4
     Themes = 5
     Defaults = 6
+    Progress = 7
 
 
 class Ui_FirstTimeWizard(object):
@@ -46,10 +47,12 @@ class Ui_FirstTimeWizard(object):
         FirstTimeWizard.setModal(True)
         FirstTimeWizard.setWizardStyle(QtGui.QWizard.ModernStyle)
         FirstTimeWizard.setOptions(QtGui.QWizard.IndependentPages|
-            QtGui.QWizard.NoBackButtonOnStartPage)
+            QtGui.QWizard.NoBackButtonOnStartPage |
+            QtGui.QWizard.NoBackButtonOnLastPage)
         self.finishButton = self.button(QtGui.QWizard.FinishButton)
         self.cancelButton = self.button(QtGui.QWizard.CancelButton)
         self.nextButton = self.button(QtGui.QWizard.NextButton)
+        self.backButton = self.button(QtGui.QWizard.BackButton)
         add_welcome_page(FirstTimeWizard, u':/wizards/wizard_firsttime.bmp')
         # The plugins page
         self.pluginPage = QtGui.QWizardPage()
@@ -169,6 +172,19 @@ class Ui_FirstTimeWizard(object):
         self.themeComboBox.setObjectName(u'themeComboBox')
         self.defaultsLayout.addRow(self.themeLabel, self.themeComboBox)
         FirstTimeWizard.setPage(FirstTimePage.Defaults, self.defaultsPage)
+        # Progress page
+        self.progressPage = QtGui.QWizardPage()
+        self.progressPage.setObjectName(u'progressPage')
+        self.progressLayout = QtGui.QVBoxLayout(self.progressPage)
+        self.progressLayout.setMargin(48)
+        self.progressLayout.setObjectName(u'progressLayout')
+        self.progressLabel = QtGui.QLabel(self.progressPage)
+        self.progressLabel.setObjectName(u'progressLabel')
+        self.progressLayout.addWidget(self.progressLabel)
+        self.progressBar = QtGui.QProgressBar(self.progressPage)
+        self.progressBar.setObjectName(u'progressBar')
+        self.progressLayout.addWidget(self.progressBar)
+        FirstTimeWizard.setPage(FirstTimePage.Progress, self.progressPage)
 
         self.retranslateUi(FirstTimeWizard)
         QtCore.QMetaObject.connectSlotsByName(FirstTimeWizard)
@@ -233,7 +249,13 @@ class Ui_FirstTimeWizard(object):
             'Default Settings'))
         self.defaultsPage.setSubTitle(translate('OpenLP.FirstTimeWizard',
             'Set up default settings to be used by OpenLP.'))
+        self.progressPage.setTitle(translate('OpenLP.FirstTimeWizard',
+            'Setting Up And Importing'))
+        self.progressPage.setSubTitle(translate('OpenLP.FirstTimeWizard',
+            'Please wait while OpenLP is set up and your data is imported.'))
         self.displayLabel.setText(translate('OpenLP.FirstTimeWizard',
             'Default output display:'))
         self.themeLabel.setText(translate('OpenLP.FirstTimeWizard',
             'Select default theme:'))
+        self.progressLabel.setText(translate('OpenLP.FirstTimeWizard',
+            'Starting configuration process...'))

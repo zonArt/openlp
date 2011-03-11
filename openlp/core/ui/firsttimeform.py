@@ -54,19 +54,14 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         # check to see if we have web access
         self.web = u'http://openlp.org/files/frw/'
         self.config = SafeConfigParser()
-        self.webAccess = get_web_page(u'%s%s' % (self.web, u'download.cfg?%s' % randint(0, 20)))
+        self.webAccess = get_web_page(u'%s%s' % (self.web, u'download.cfg'))
         if self.webAccess:
             files = self.webAccess.read()
             self.config.readfp(io.BytesIO(files))
         for screen in screens.get_screen_list():
             self.displayComboBox.addItem(screen)
-        self.songsText = translate('OpenLP.FirstTimeWizard', 'Songs')
-        self.biblesText = translate('OpenLP.FirstTimeWizard', 'Bibles')
-        self.themesText = translate('OpenLP.FirstTimeWizard', 'Themes')
-        self.startUpdates = translate('OpenLP.FirstTimeWizard',
-            'Starting Updates')
         self.downloading = unicode(translate('OpenLP.FirstTimeWizard',
-            'Downloading %s'))
+            'Downloading %s...'))
         QtCore.QObject.connect(self,
             QtCore.SIGNAL(u'currentIdChanged(int)'),
             self.onCurrentIdChanged)
@@ -141,6 +136,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 return FirstTimePage.NoInternet
             else:
                 return FirstTimePage.Songs
+        elif self.currentId() == FirstTimePage.Progress:
+            return -1
         else:
             return self.currentId() + 1
 
@@ -158,54 +155,128 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 item = self.themesListWidget.item(iter)
                 if item.checkState() == QtCore.Qt.Checked:
                     self.themeComboBox.addItem(item.text())
+        elif pageId == FirstTimePage.Progress:
+            self._preWizard()
+            self._performWizard()
+            self._postWizard()
 
-    def accept(self):
-        Receiver.send_message(u'cursor_busy')
-        self._updateMessage(self.startUpdates)
-        # Set up the Plugin status's
-        self._pluginStatus(self.songsCheckBox, u'songs/status')
-        self._pluginStatus(self.bibleCheckBox, u'bibles/status')
-        self._pluginStatus(self.presentationCheckBox, u'presentations/status')
-        self._pluginStatus(self.imageCheckBox, u'images/status')
-        self._pluginStatus(self.mediaCheckBox, u'media/status')
-        self._pluginStatus(self.remoteCheckBox, u'remotes/status')
-        self._pluginStatus(self.customCheckBox, u'custom/status')
-        self._pluginStatus(self.songUsageCheckBox, u'songusage/status')
-        self._pluginStatus(self.alertCheckBox, u'alerts/status')
+    def _incrementProgressBar(self, status_text, increment=1):
+        """
+        Update the wizard progress page.
+
+        ``status_text``
+            Current status information to display.
+
+        ``increment``
+            The value to increment the progress bar by.
+        """
+        if status_text:
+            self.progressLabel.setText(status_text)
+        if increment > 0:
+            self.progressBar.setValue(self.progressBar.value() + increment)
+        Receiver.send_message(u'openlp_process_events')
+
+    def _preWizard(self):
+        """
+        Prepare the UI for the process.
+        """
+        # We start on 9 for the 9 plugins
+        max_progress = 9
+        # Loop through the songs list and increase for each selected item
+        for i in xrange(self.songsListWidget.count()):
+            if self.songsListWidget.item(i).checkState() == QtCore.Qt.Checked:
+                max_progress += 1
+        # Loop through the Bibles list and increase for each selected item
+        iterator = QtGui.QTreeWidgetItemIterator(self.biblesTreeWidget)
+        while iterator.value():
+            item = iterator.value()
+            if item.parent() and item.checkState(0) == QtCore.Qt.Checked:
+                max_progress += 1
+            iterator += 1
+        # Loop through the themes list and increase for each selected item
+        for i in xrange(self.themesListWidget.count()):
+            if self.themesListWidget.item(i).checkState() == QtCore.Qt.Checked:
+                max_progress += 1
+        self.finishButton.setVisible(False)
+        self.progressBar.setValue(0)
+        self.progressBar.setMinimum(0)
+        self.progressBar.setMaximum(max_progress)
+
+    def _postWizard(self):
+        """
+        Clean up the UI after the process has finished.
+        """
+        self.progressBar.setValue(self.progressBar.maximum())
+        self.finishButton.setVisible(True)
+        self.finishButton.setEnabled(True)
+        self.cancelButton.setVisible(False)
+        self.nextButton.setVisible(False)
+        Receiver.send_message(u'openlp_process_events')
+
+    def _performWizard(self):
+        """
+        Run the tasks in the wizard.
+        """
+        # Set plugin states
+        self._incrementProgressBar(translate('OpenLP.FirstTimeWizard',
+            'Enabling selected plugins...'))
+        self._setPluginStatus(self.songsCheckBox, u'songs/status')
+        self._incrementProgressBar(None)
+        self._setPluginStatus(self.bibleCheckBox, u'bibles/status')
+        self._incrementProgressBar(None)
+        self._setPluginStatus(self.presentationCheckBox, u'presentations/status')
+        self._incrementProgressBar(None)
+        self._setPluginStatus(self.imageCheckBox, u'images/status')
+        self._incrementProgressBar(None)
+        self._setPluginStatus(self.mediaCheckBox, u'media/status')
+        self._incrementProgressBar(None)
+        self._setPluginStatus(self.remoteCheckBox, u'remotes/status')
+        self._incrementProgressBar(None)
+        self._setPluginStatus(self.customCheckBox, u'custom/status')
+        self._incrementProgressBar(None)
+        self._setPluginStatus(self.songUsageCheckBox, u'songusage/status')
+        self._incrementProgressBar(None)
+        self._setPluginStatus(self.alertCheckBox, u'alerts/status')
         # Build directories for downloads
-        destination = AppLocation.get_temp_path()
-        check_directory_exists(destination)
+        songs_destination = AppLocation.get_section_data_path(u'songs')
         bibles_destination = AppLocation.get_section_data_path(u'bibles')
-        check_directory_exists(bibles_destination)
         themes_destination = AppLocation.get_section_data_path(u'themes')
-        check_directory_exists(destination)
         # Install songs
-        songs_iterator = QtGui.QListWidgetItemIterator(self.songsListWidget)
-        while songs_iterator.value():
-            item = songs_iterator.value()
+        for i in xrange(self.songsListWidget.count()):
+            item = self.songsListWidget.item(i)
             if item.checkState() == QtCore.Qt.Checked:
                 filename = item.data(QtCore.Qt.UserRole).toString()
-                urllib.urlretrieve(u'%s%s' % (self.web, filename),
-                    os.path.join(destination, filename))
-                #importer = SongImporter()
-            songs_iterator += 1
+                self._incrementProgressBar(self.downloading % filename)
+                destination = os.path.join(songs_destination, u'songs.sqlite')
+                if os.path.exists(destination):
+                    if QtGui.QMessageBox.question(self,
+                        translate('OpenLP.FirstTimeWizard',
+                        'Overwrite Existing Songs?'),
+                        translate('OpenLP.FirstTimeWizard', 'Your songs '
+                        'database already exists, are you sure you want to '
+                        'overwrite it?'),
+                        QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
+                        QtGui.QMessageBox.No) != QtGui.QMessageBox.Yes:
+                        continue
+                urllib.urlretrieve(u'%s%s' % (self.web, filename), destination)
         # Install Bibles
         bibles_iterator = QtGui.QTreeWidgetItemIterator(self.biblesTreeWidget)
         while bibles_iterator.value():
             item = bibles_iterator.value()
             if item.parent() and item.checkState(0) == QtCore.Qt.Checked:
                 bible = unicode(item.data(0, QtCore.Qt.UserRole).toString())
+                self._incrementProgressBar(self.downloading % bible)
                 urllib.urlretrieve(u'%s%s' % (self.web, bible),
                     os.path.join(bibles_destination, bible))
             bibles_iterator += 1
-        themes_iterator = QtGui.QListWidgetItemIterator(self.themesListWidget)
-        while themes_iterator.value():
-            item = themes_iterator.value()
+        # Install themes
+        for i in xrange(self.themesListWidget.count()):
+            item = self.themesListWidget.item(i)
             if item.checkState() == QtCore.Qt.Checked:
                 theme = unicode(item.data(QtCore.Qt.UserRole).toString())
+                self._incrementProgressBar(self.downloading % theme)
                 urllib.urlretrieve(u'%s%s' % (self.web, theme),
-                    os.path.join(theme_destination, theme))
-            themes_iterator += 1
+                    os.path.join(themes_destination, theme))
         # Set Default Display
         if self.displayComboBox.currentIndex() != -1:
             QtCore.QSettings().setValue(u'General/monitor',
@@ -214,19 +285,11 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         if self.themeComboBox.currentIndex() != -1:
             QtCore.QSettings().setValue(u'themes/global theme',
                 QtCore.QVariant(self.themeComboBox.currentText()))
-        QtCore.QSettings().setValue(u'general/first time',
-            QtCore.QVariant(False))
-        Receiver.send_message(u'cursor_normal')
-        return QtGui.QWizard.accept(self)
+        QtCore.QSettings().setValue(u'general/has run wizard',
+            QtCore.QVariant(True))
 
-    def _pluginStatus(self, field, tag):
+    def _setPluginStatus(self, field, tag):
         status = PluginStatus.Active if field.checkState() \
             == QtCore.Qt.Checked else PluginStatus.Inactive
         QtCore.QSettings().setValue(tag, QtCore.QVariant(status))
 
-    def _updateMessage(self, text):
-        """
-        Keep screen up to date
-        """
-        self.updateLabel.setText(text)
-        Receiver.send_message(u'openlp_process_events')
