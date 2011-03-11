@@ -170,9 +170,9 @@ class OpenLP(QtGui.QApplication):
         # Decide how many screens we have and their size
         screens = ScreenList(self.desktop())
         # First time checks in settings
-        firstTime = QtCore.QSettings().value(
+        has_run_wizard = QtCore.QSettings().value(
             u'general/has run wizard', QtCore.QVariant(False)).toBool()
-        if not firstTime:
+        if not has_run_wizard:
             FirstTimeForm(screens).exec_()
         if os.name == u'nt':
             self.setStyleSheet(application_stylesheet)

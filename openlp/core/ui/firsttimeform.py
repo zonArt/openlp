@@ -253,8 +253,9 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                         translate('OpenLP.FirstTimeWizard',
                         'Overwrite Existing Songs?'),
                         translate('OpenLP.FirstTimeWizard', 'Your songs '
-                        'database already exists, are you sure you want to '
-                        'overwrite it?'),
+                        'database already exists and your current songs will '
+                        'be permanently lost, are you sure you want to '
+                        'replace it ?'),
                         QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
                         QtGui.QMessageBox.No) != QtGui.QMessageBox.Yes:
                         continue
