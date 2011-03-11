@@ -274,6 +274,7 @@ class SongMediaItem(MediaManagerItem):
 
     def onNewClick(self):
         log.debug(u'onNewClick')
+        self.editItem = None
         self.edit_song_form.newSong()
         self.edit_song_form.exec_()
 
