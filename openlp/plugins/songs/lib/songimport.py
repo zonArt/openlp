@@ -103,23 +103,7 @@ class SongImport(QtCore.QObject):
     def register(self, import_wizard):
         self.import_wizard = import_wizard
 
-    @staticmethod
-    def process_songs_text(manager, text):
-        songs = []
-        songtexts = SongImport.tidy_text(text).split(u'\f')
-        song = SongImport(manager)
-        for songtext in songtexts:
-            if songtext.strip():
-                song.process_song_text(songtext.strip())
-                if song.check_complete():
-                    songs.append(song)
-                    song = SongImport(manager)
-        if song.check_complete():
-            songs.append(song)
-        return songs
-
-    @staticmethod
-    def tidy_text(text):
+    def tidy_text(self, text):
         """
         Get rid of some dodgy unicode and formatting characters we're not
         interested in. Some can be converted to ascii.
@@ -146,12 +130,12 @@ class SongImport(QtCore.QObject):
     def process_verse_text(self, text):
         lines = text.split(u'\n')
         if text.lower().find(self.copyright_string) >= 0 \
-            or text.find(SongStrings.CopyrightSymbol) >= 0:
+            or text.find(unicode(SongStrings.CopyrightSymbol)) >= 0:
             copyright_found = False
             for line in lines:
                 if (copyright_found or
                     line.lower().find(self.copyright_string) >= 0 or
-                    line.find(SongStrings.CopyrightSymbol) >= 0):
+                    line.find(unicode(SongStrings.CopyrightSymbol)) >= 0):
                     copyright_found = True
                     self.add_copyright(line)
                 else:
@@ -240,7 +224,7 @@ class SongImport(QtCore.QObject):
             self.verse_counts[verse_def[0]] = int(verse_def[1:])
         self.verses.append([verse_def, verse_text.rstrip(), lang])
         self.verse_order_list_generated.append(verse_def)
-
+        
     def repeat_verse(self):
         """
         Repeat the previous verse in the verse order
