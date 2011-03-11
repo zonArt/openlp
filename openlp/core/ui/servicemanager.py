@@ -417,7 +417,7 @@ class ServiceManager(QtGui.QWidget):
             return self.saveFileAs()
         path_file_name = unicode(self.fileName())
         (path, file_name) = os.path.split(path_file_name)
-        (basename, extension) = os.path.splitext(file_name)
+        basename = os.path.splitext(file_name)[0]
         service_file_name = basename + '.osd'
         log.debug(u'ServiceManager.saveFile - %s' % path_file_name)
         SettingsManager.set_last_dir(self.mainwindow.serviceSettingsSection,
@@ -439,7 +439,7 @@ class ServiceManager(QtGui.QWidget):
                 if path_from in write_list:
                     continue
                 file_size = os.path.getsize(path_from)
-                size_limit = 52428800 # 50MiB
+                #size_limit = 52428800 # 50MiB
                 #if file_size > size_limit:
                 #    # File exeeds size_limit bytes, ask user
                 #    message = unicode(translate('OpenLP.ServiceManager',

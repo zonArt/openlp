@@ -162,9 +162,9 @@ class ImageMediaItem(MediaManagerItem):
             # Continue with the existing images.
             for item in items:
                 bitem = self.listView.item(item.row())
-                filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
-                (path, name) = os.path.split(filename)
-                service_item.add_from_image(filename, name)
+                filepath = unicode(bitem.data(QtCore.Qt.UserRole).toString())
+                filename = os.path.split(filepath)[1]
+                service_item.add_from_image(filepath, filename)
             return True
         else:
             return False
@@ -191,13 +191,14 @@ class ImageMediaItem(MediaManagerItem):
             'You must select an image to replace the background with.')):
             item = self.listView.selectedIndexes()[0]
             bitem = self.listView.item(item.row())
-            filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
-            if os.path.exists(filename):
-                (path, name) = os.path.split(filename)
-                self.parent.liveController.display.directImage(name, filename)
+            filepath = unicode(bitem.data(QtCore.Qt.UserRole).toString())
+            if os.path.exists(filepath):
+                filename = os.path.split(filename)[1]
+                self.parent.liveController.display.directImage(filename,
+                    filepath)
                 self.resetAction.setVisible(True)
             else:
                 critical_error_message_box(UiStrings.LiveBGError,
                     unicode(translate('ImagePlugin.MediaItem',
                     'There was a problem replacing your background, '
-                    'the image file "%s" no longer exists.')) % filename)
+                    'the image file "%s" no longer exists.')) % filepath)
