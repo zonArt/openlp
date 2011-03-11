@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,6 +28,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, Receiver, translate
+from openlp.core.lib.ui import UiStrings
 
 log = logging.getLogger(__name__)
 
@@ -44,12 +45,13 @@ class ValidEdit(QtGui.QLineEdit):
 
     def validText(self):
         """
-        Only return Integers.  Space is 0
+        Only return Integers. Space is 0
         """
         if self.text().isEmpty():
             return QtCore.QString(u'0')
         else:
             return self.text()
+
 
 class GeneralTab(SettingsTab):
     """
@@ -113,6 +115,9 @@ class GeneralTab(SettingsTab):
         self.showSplashCheckBox = QtGui.QCheckBox(self.startupGroupBox)
         self.showSplashCheckBox.setObjectName(u'showSplashCheckBox')
         self.startupLayout.addWidget(self.showSplashCheckBox)
+        self.checkForUpdatesCheckBox = QtGui.QCheckBox(self.startupGroupBox)
+        self.checkForUpdatesCheckBox.setObjectName(u'checkForUpdatesCheckBox')
+        self.startupLayout.addWidget(self.checkForUpdatesCheckBox)
         self.leftLayout.addWidget(self.startupGroupBox)
         self.settingsGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.settingsGroupBox.setObjectName(u'settingsGroupBox')
@@ -229,6 +234,9 @@ class GeneralTab(SettingsTab):
         QtCore.QObject.connect(self.customXValueEdit,
             QtCore.SIGNAL(u'textEdited(const QString&)'),
             self.onDisplayPositionChanged)
+        # Reload the tab, as the screen resolution/count may have changed.
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'config_screen_changed'), self.load)
 
     def retranslateUi(self):
         """
@@ -249,6 +257,8 @@ class GeneralTab(SettingsTab):
             'Automatically open the last service'))
         self.showSplashCheckBox.setText(
             translate('OpenLP.GeneralTab', 'Show the splash screen'))
+        self.checkForUpdatesCheckBox.setText(
+            translate('OpenLP.GeneralTab', 'Check for updates to OpenLP'))
         self.settingsGroupBox.setTitle(
             translate('OpenLP.GeneralTab', 'Application Settings'))
         self.saveCheckServiceCheckBox.setText(translate('OpenLP.GeneralTab',
@@ -261,8 +271,7 @@ class GeneralTab(SettingsTab):
             translate('OpenLP.GeneralTab', ' sec'))
         self.ccliGroupBox.setTitle(
             translate('OpenLP.GeneralTab', 'CCLI Details'))
-        self.numberLabel.setText(
-            translate('OpenLP.GeneralTab', 'CCLI number:'))
+        self.numberLabel.setText(UiStrings.CCLINumberLabel)
         self.usernameLabel.setText(
             translate('OpenLP.GeneralTab', 'SongSelect username:'))
         self.passwordLabel.setText(
@@ -294,13 +303,9 @@ class GeneralTab(SettingsTab):
         """
         settings = QtCore.QSettings()
         settings.beginGroup(self.settingsSection)
-        for screen in self.screens.screen_list:
-            screen_name = u'%s %d' % (translate('OpenLP.GeneralTab', 'Screen'),
-                screen[u'number'] + 1)
-            if screen[u'primary']:
-                screen_name = u'%s (%s)' % (screen_name,
-                    translate('OpenLP.GeneralTab', 'primary'))
-            self.monitorComboBox.addItem(screen_name)
+        self.monitorComboBox.clear()
+        for screen in self.screens.get_screen_list():
+            self.monitorComboBox.addItem(screen)
         self.numberEdit.setText(unicode(settings.value(
             u'ccli number', QtCore.QVariant(u'')).toString()))
         self.usernameEdit.setText(unicode(settings.value(
@@ -316,6 +321,8 @@ class GeneralTab(SettingsTab):
         self.autoOpenCheckBox.setChecked(settings.value(u'auto open',
             QtCore.QVariant(False)).toBool())
         self.showSplashCheckBox.setChecked(settings.value(u'show splash',
+            QtCore.QVariant(True)).toBool())
+        self.checkForUpdatesCheckBox.setChecked(settings.value(u'update check',
             QtCore.QVariant(True)).toBool())
         self.autoPreviewCheckBox.setChecked(settings.value(u'auto preview',
             QtCore.QVariant(False)).toBool())
@@ -363,6 +370,8 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(self.autoOpenCheckBox.isChecked()))
         settings.setValue(u'show splash',
             QtCore.QVariant(self.showSplashCheckBox.isChecked()))
+        settings.setValue(u'update check',
+            QtCore.QVariant(self.checkForUpdatesCheckBox.isChecked()))
         settings.setValue(u'save prompt',
             QtCore.QVariant(self.saveCheckServiceCheckBox.isChecked()))
         settings.setValue(u'auto preview',

@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -38,7 +38,8 @@ class RemotesPlugin(Plugin):
         """
         remotes constructor
         """
-        Plugin.__init__(self, u'Remotes', u'1.9.4', plugin_helpers)
+        Plugin.__init__(self, u'Remotes', plugin_helpers,
+            settingsTabClass=RemoteTab)
         self.icon = build_icon(u':/plugins/plugin_remote.png')
         self.weight = -1
         self.server = None
@@ -60,13 +61,6 @@ class RemotesPlugin(Plugin):
         Plugin.finalise(self)
         if self.server:
             self.server.close()
-
-    def getSettingsTab(self):
-        """
-        Create the settings Tab
-        """
-        visible_name = self.getString(StringContent.VisibleName)
-        return RemoteTab(self.name, visible_name[u'title'])
 
     def about(self):
         """

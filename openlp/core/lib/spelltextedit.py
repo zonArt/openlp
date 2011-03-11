@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -47,13 +47,16 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         # Default dictionary based on the current locale.
         if ENCHANT_AVAILABLE:
             try:
-                self.dict = enchant.Dict()
+                self.dictionary = enchant.Dict()
             except DictNotFoundError:
-                self.dict = enchant.Dict(u'en_US')
+                self.dictionary = enchant.Dict(u'en_US')
             self.highlighter = Highlighter(self.document())
-            self.highlighter.setDict(self.dict)
+            self.highlighter.spellingDictionary = self.dictionary
 
     def mousePressEvent(self, event):
+        """
+        Handle mouse clicks within the text edit region.
+        """
         if event.button() == QtCore.Qt.RightButton:
             # Rewrite the mouse event to a left button event so the cursor is
             # moved to the location of the pointer.
@@ -63,6 +66,9 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         QtGui.QPlainTextEdit.mousePressEvent(self, event)
 
     def contextMenuEvent(self, event):
+        """
+        Provide the context menu for the text edit region.
+        """
         popupMenu = self.createStandardContextMenu()
         # Select the word under the cursor.
         cursor = self.textCursor()
@@ -74,10 +80,10 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         # suggestions if it is.
         if ENCHANT_AVAILABLE and self.textCursor().hasSelection():
             text = unicode(self.textCursor().selectedText())
-            if not self.dict.check(text):
+            if not self.dictionary.check(text):
                 spell_menu = QtGui.QMenu(translate('OpenLP.SpellTextEdit',
                     'Spelling Suggestions'))
-                for word in self.dict.suggest(text):
+                for word in self.dictionary.suggest(text):
                     action = SpellAction(word, spell_menu)
                     action.correct.connect(self.correctWord)
                     spell_menu.addAction(action)
@@ -126,28 +132,32 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
                     cursor.insertText(html[u'start tag'])
                     cursor.insertText(html[u'end tag'])
 
-class Highlighter(QtGui.QSyntaxHighlighter):
 
+class Highlighter(QtGui.QSyntaxHighlighter):
+    """
+    Provides a text highlighter for pointing out spelling errors in text.
+    """
     WORDS = u'(?iu)[\w\']+'
 
     def __init__(self, *args):
         QtGui.QSyntaxHighlighter.__init__(self, *args)
-        self.dict = None
-
-    def setDict(self, dict):
-        self.dict = dict
+        self.spellingDictionary = None
 
     def highlightBlock(self, text):
-        if not self.dict:
+        """
+        Highlight misspelt words in a block of text
+        """
+        if not self.spellingDictionary:
             return
         text = unicode(text)
-        format = QtGui.QTextCharFormat()
-        format.setUnderlineColor(QtCore.Qt.red)
-        format.setUnderlineStyle(QtGui.QTextCharFormat.SpellCheckUnderline)
+        charFormat = QtGui.QTextCharFormat()
+        charFormat.setUnderlineColor(QtCore.Qt.red)
+        charFormat.setUnderlineStyle(QtGui.QTextCharFormat.SpellCheckUnderline)
         for word_object in re.finditer(self.WORDS, text):
-            if not self.dict.check(word_object.group()):
+            if not self.spellingDictionary.check(word_object.group()):
                 self.setFormat(word_object.start(),
-                    word_object.end() - word_object.start(), format)
+                    word_object.end() - word_object.start(), charFormat)
+
 
 class SpellAction(QtGui.QAction):
     """

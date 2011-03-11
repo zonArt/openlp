@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,9 +29,9 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, BackgroundType, BackgroundGradientType, \
-    Receiver
-from openlp.core.ui import criticalErrorMessageBox
+from openlp.core.lib import Receiver, translate
+from openlp.core.lib.theme import BackgroundType, BackgroundGradientType
+from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.utils import get_images_filter
 from themewizard import Ui_ThemeWizard
 
@@ -55,7 +55,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.thememanager = parent
         self.setupUi(self)
         self.registerFields()
-        self.accepted = False
         self.updateThemeAllowed = True
         QtCore.QObject.connect(self.backgroundComboBox,
             QtCore.SIGNAL(u'currentIndexChanged(int)'),
@@ -120,14 +119,12 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         QtCore.QObject.connect(self.mainFontComboBox,
             QtCore.SIGNAL(u'activated(int)'),
             self.calculateLines)
-        QtCore.QObject.connect(self, QtCore.SIGNAL(u'accepted()'), self.accept)
 
     def setDefaults(self):
         """
         Set up display at start of theme edit.
         """
         self.restart()
-        self.accepted = False
         self.setBackgroundPageValues()
         self.setMainAreaPageValues()
         self.setFooterAreaPageValues()
@@ -207,7 +204,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         # Do not trigger on start up
         if self.currentPage != self.welcomePage:
             self.updateTheme()
-            frame = self.thememanager.generateImage(self.theme, True)
+            self.thememanager.generateImage(self.theme, True)
 
     def updateLinesText(self, lines):
         """
@@ -250,37 +247,43 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Change state as Outline check box changed
         """
-        if state == QtCore.Qt.Checked:
-            self.theme.font_main_outline = True
-        else:
-            self.theme.font_main_outline = False
-        self.outlineColorButton.setEnabled(self.theme.font_main_outline)
-        self.outlineSizeSpinBox.setEnabled(self.theme.font_main_outline)
-        self.calculateLines()
+        if self.updateThemeAllowed:
+            if state == QtCore.Qt.Checked:
+                self.theme.font_main_outline = True
+            else:
+                self.theme.font_main_outline = False
+            self.outlineColorButton.setEnabled(self.theme.font_main_outline)
+            self.outlineSizeSpinBox.setEnabled(self.theme.font_main_outline)
+            self.calculateLines()
 
     def onShadowCheckCheckBoxStateChanged(self, state):
         """
         Change state as Shadow check box changed
         """
-        if state == QtCore.Qt.Checked:
-            self.theme.font_main_shadow = True
-        else:
-            self.theme.font_main_shadow = False
-        self.shadowColorButton.setEnabled(self.theme.font_main_shadow)
-        self.shadowSizeSpinBox.setEnabled(self.theme.font_main_shadow)
-        self.calculateLines()
+        if self.updateThemeAllowed:
+            if state == QtCore.Qt.Checked:
+                self.theme.font_main_shadow = True
+            else:
+                self.theme.font_main_shadow = False
+            self.shadowColorButton.setEnabled(self.theme.font_main_shadow)
+            self.shadowSizeSpinBox.setEnabled(self.theme.font_main_shadow)
+            self.calculateLines()
 
     def onMainPositionCheckBoxStateChanged(self, value):
         """
         Change state as Main Area Position check box changed
+        NOTE the font_main_override is the inverse of the check box value
         """
-        self.theme.font_main_override = (value == QtCore.Qt.Checked)
+        if self.updateThemeAllowed:
+            self.theme.font_main_override = not (value == QtCore.Qt.Checked)
 
     def onFooterPositionCheckBoxStateChanged(self, value):
         """
         Change state as Footer Area Position check box changed
+        NOTE the font_footer_override is the inverse of the check box value
         """
-        self.theme.font_footer_override = (value == QtCore.Qt.Checked)
+        if self.updateThemeAllowed:
+            self.theme.font_footer_override = not (value == QtCore.Qt.Checked)
 
     def exec_(self, edit=False):
         """
@@ -298,7 +301,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
                 'Edit Theme - %s')) % self.theme.theme_name)
             self.next()
         else:
-            self.setWindowTitle(translate('OpenLP.ThemeWizard', 'New Theme'))
+            self.setWindowTitle(UiStrings.NewTheme)
         return QtGui.QWizard.exec_(self)
 
     def initializePage(self, id):
@@ -446,9 +449,10 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Background gradient Combo box has changed.
         """
-        self.theme.background_direction = \
-            BackgroundGradientType.to_string(index)
-        self.setBackgroundPageValues()
+        if self.updateThemeAllowed:
+            self.theme.background_direction = \
+                BackgroundGradientType.to_string(index)
+            self.setBackgroundPageValues()
 
     def onColorButtonClicked(self):
         """
@@ -479,8 +483,8 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         Background Image button pushed.
         """
         images_filter = get_images_filter()
-        images_filter = '%s;;%s (*.*) (*)' % (images_filter,
-            translate('OpenLP.ThemeForm', 'All Files'))
+        images_filter = u'%s;;%s (*.*) (*)' % (
+            images_filter, UiStrings.AllFiles)
         filename = QtGui.QFileDialog.getOpenFileName(self,
             translate('OpenLP.ThemeForm', 'Select Image'), u'',
             images_filter)
@@ -560,21 +564,16 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Lets save the them as Finish has been pressed
         """
-        # Some reason getting double submission.
-        # Hack to stop it for now.
-        if self.accepted:
-            return
         # Save the theme name
-        self.theme.theme_name = \
-            unicode(self.field(u'name').toString())
+        self.theme.theme_name = unicode(self.field(u'name').toString())
         if not self.theme.theme_name:
-            criticalErrorMessageBox(
+            critical_error_message_box(
                 translate('OpenLP.ThemeForm', 'Theme Name Missing'),
                 translate('OpenLP.ThemeForm',
                 'There is no name for this theme. Please enter one.'))
             return
         if self.theme.theme_name == u'-1' or self.theme.theme_name == u'None':
-            criticalErrorMessageBox(
+            critical_error_message_box(
                 translate('OpenLP.ThemeForm', 'Theme Name Invalid'),
                 translate('OpenLP.ThemeForm',
                 'Invalid theme name. Please enter one.'))
@@ -590,7 +589,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         if not self.edit_mode and \
             not self.thememanager.checkIfThemeExists(self.theme.theme_name):
             return
-        self.accepted = True
         self.thememanager.saveTheme(self.theme, saveFrom, saveTo)
         return QtGui.QDialog.accept(self)
 

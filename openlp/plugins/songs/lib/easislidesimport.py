@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,10 +27,10 @@
 import logging
 import os
 from lxml import etree, objectify
-from lxml.etree import Error, LxmlError
 import re
 
 from openlp.core.lib import translate
+from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
@@ -46,33 +46,30 @@ class EasiSlidesImport(SongImport):
         """
         Initialise the class.
         """
-        SongImport.__init__(self, manager)
-        self.filename = kwargs[u'filename']
-        self.song = None
+        SongImport.__init__(self, manager, **kwargs)
         self.commit = True
 
     def do_import(self):
         """
-        Import either each of the files in self.filenames - each element of
+        Import either each of the files in self.import_sources - each element of
         which can be either a single opensong file, or a zipfile containing
         multiple opensong files. If `self.commit` is set False, the
         import will not be committed to the database (useful for test scripts).
         """
         self.import_wizard.progressBar.setMaximum(1)
-        log.info(u'Importing EasiSlides XML file %s', self.filename)
+        log.info(u'Importing EasiSlides XML file %s', self.import_source)
         parser = etree.XMLParser(remove_blank_text=True)
-        file = etree.parse(self.filename, parser)
+        file = etree.parse(self.import_source, parser)
         xml = unicode(etree.tostring(file))
         song_xml = objectify.fromstring(xml)
         self.import_wizard.incrementProgressBar(
-            unicode(translate('SongsPlugin.ImportWizardForm',
-                u'Importing %s...')) % os.path.split(self.filename)[-1])
+            WizardStrings.ImportingType % os.path.split(self.import_source)[-1])
         self.import_wizard.progressBar.setMaximum(len(song_xml.Item))
         for song in song_xml.Item:
             self.import_wizard.incrementProgressBar(
                 unicode(translate('SongsPlugin.ImportWizardForm',
                     u'Importing %s, song %s...')) %
-                    (os.path.split(self.filename)[-1], song.Title1))
+                    (os.path.split(self.import_source)[-1], song.Title1))
             success = self._parse_song(song)
             if not success or self.stop_import_flag:
                 return False
@@ -82,51 +79,52 @@ class EasiSlidesImport(SongImport):
 
     def _parse_song(self, song):
         self._success = True
-        self._add_title(song)
-        self._add_alttitle(song)
-        self._add_number(song)
+        self._add_unicode_attribute(u'title', song.Title1, True)
+        self._add_unicode_attribute(u'alternate_title', song.Title2)
+        self._add_unicode_attribute(u'song_number', song.SongNumber)
+        if self.song_number == u'0':
+            self.song_number = u''
         self._add_authors(song)
-        self._add_copyright(song)
-        self._add_book(song)
+        self._add_copyright(song.Copyright)
+        self._add_copyright(song.LicenceAdmin1)
+        self._add_copyright(song.LicenceAdmin2)
+        self._add_unicode_attribute(u'song_book_name', song.BookReference)
         self._parse_and_add_lyrics(song)
         return self._success
 
-    def _add_title(self, song):
-        try:
-            self.title = unicode(song.Title1).strip()
-        except UnicodeDecodeError:
-            log.exception(u'Unicode decode error while decoding Title1')
-            self._success = False
-        except AttributeError:
-            log.exception(u'no Title1')
-            self._success = False
+    def _add_unicode_attribute(self, self_attribute, import_attribute,
+        mandatory=False):
+        """
+        Add imported values to the song model converting them to unicode at the
+        same time. If the unicode decode fails or a mandatory attribute is not
+        present _success is set to False so the importer can react
+        appropriately.
 
-    def _add_alttitle(self, song):
-        try:
-            self.alternate_title = unicode(song.Title2).strip()
-        except UnicodeDecodeError:
-            log.exception(u'Unicode decode error while decoding Title2')
-            self._success = False
-        except AttributeError:
-            pass
+        ``self_attribute``
+            The attribute in the song model to populate.
 
-    def _add_number(self, song):
+        ``import_attribute``
+            The imported value to convert to unicode and save to the song.
+
+        ``mandatory``
+            Signals that this attribute must exist in a valid song.
+        """
         try:
-            number = unicode(song.SongNumber)
-            if number != u'0':
-                self.song_number = number
+            setattr(self, self_attribute, unicode(import_attribute).strip())
         except UnicodeDecodeError:
-            log.exception(u'Unicode decode error while decoding SongNumber')
+            log.exception(u'UnicodeDecodeError decoding %s' % import_attribute)
             self._success = False
         except AttributeError:
-            pass
+            log.exception(u'No attribute %s' % import_attribute)
+            if mandatory:
+                self._success = False
 
     def _add_authors(self, song):
         try:
             authors = unicode(song.Writer).split(u',')
             for author in authors:
                 author = author.strip()
-                if len(author) > 0:
+                if len(author):
                     self.authors.append(author)
         except UnicodeDecodeError:
             log.exception(u'Unicode decode error while decoding Writer')
@@ -134,36 +132,18 @@ class EasiSlidesImport(SongImport):
         except AttributeError:
             pass
 
-    def _add_copyright(self, song):
-        copyright = []
-        try:
-            copyright.append(unicode(song.Copyright).strip())
-        except UnicodeDecodeError:
-            log.exception(u'Unicode decode error while decoding Copyright')
-            self._success = False
-        except AttributeError:
-            pass
-        try:
-            copyright.append(unicode(song.LicenceAdmin1).strip())
-        except UnicodeDecodeError:
-            log.exception(u'Unicode decode error while decoding LicenceAdmin1')
-            self._success = False
-        except AttributeError:
-            pass
-        try:
-            copyright.append(unicode(song.LicenceAdmin2).strip())
-        except UnicodeDecodeError:
-            log.exception(u'Unicode decode error while decoding LicenceAdmin2')
-            self._success = False
-        except AttributeError:
-            pass
-        self.add_copyright(u' '.join(copyright))
+    def _add_copyright(self, element):
+        """
+        Add a piece of copyright to the total copyright information for the
+        song.
 
-    def _add_book(self, song):
+        ``element``
+            The imported variable to get the data from.
+        """
         try:
-            self.song_book_name = unicode(song.BookReference).strip()
+            self.add_copyright(unicode(element).strip())
         except UnicodeDecodeError:
-            log.exception(u'Unicode decode error while decoding BookReference')
+            log.exception(u'Unicode error on decoding copyright: %s' % element)
             self._success = False
         except AttributeError:
             pass
@@ -288,10 +268,12 @@ class EasiSlidesImport(SongImport):
         # as these appeared originally in the file
         for [reg, vt, vn, inst] in our_verse_order:
             if self._listHas(verses, [reg, vt, vn, inst]):
+                # this is false, but needs user input
+                lang = None
                 versetag = u'%s%s' % (vt, vn)
                 versetags.append(versetag)
                 lines = u'\n'.join(verses[reg][vt][vn][inst])
-                self.verses.append([versetag, lines])
+                self.verses.append([versetag, lines, lang])
 
         SeqTypes = {
             u'p': u'P1',
@@ -313,7 +295,6 @@ class EasiSlidesImport(SongImport):
                     tag = SeqTypes[tag.lower()]
                 else:
                     continue
- 
                 if tag in versetags:
                     self.verse_order_list.append(tag)
                 else:
@@ -326,11 +307,11 @@ class EasiSlidesImport(SongImport):
             pass
 
     def _listHas(self, lst, subitems):
-        for i in subitems:
-            if type(lst) == type({}) and lst.has_key(i):
-                lst = lst[i]
-            elif type(lst) == type([]) and i in lst:
-                lst = lst[i]
+        for subitem in subitems:
+            if isinstance(lst, dict) and lst.has_key(subitem):
+                lst = lst[subitem]
+            elif isinstance(lst, list) and subitem in lst:
+                lst = lst[subitem]
             else:
                 return False
         return True

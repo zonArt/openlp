@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,7 +26,9 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, Receiver, ThemeLevel, translate
+from openlp.core.lib import SettingsTab, Receiver, translate
+from openlp.core.lib.theme import ThemeLevel
+from openlp.core.lib.ui import UiStrings
 
 class ThemesTab(SettingsTab):
     """
@@ -98,7 +100,7 @@ class ThemesTab(SettingsTab):
             QtCore.SIGNAL(u'theme_update_list'), self.updateThemeList)
 
     def retranslateUi(self):
-        self.tabTitleVisible = translate('OpenLP.ThemesTab', 'Themes')
+        self.tabTitleVisible = UiStrings.Themes
         self.GlobalGroupBox.setTitle(
             translate('OpenLP.ThemesTab', 'Global Theme'))
         self.LevelGroupBox.setTitle(
@@ -165,13 +167,7 @@ class ThemesTab(SettingsTab):
         self.global_theme = unicode(self.DefaultComboBox.currentText())
         self.parent.renderManager.set_global_theme(
             self.global_theme, self.theme_level)
-        image = self.parent.ThemeManagerContents.getPreviewImage(
-            self.global_theme)
-        preview = QtGui.QPixmap(unicode(image))
-        if not preview.isNull():
-            preview = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio,
-                QtCore.Qt.SmoothTransformation)
-        self.DefaultListView.setPixmap(preview)
+        self.__previewGlobalTheme()
 
     def updateThemeList(self, theme_list):
         """
@@ -198,10 +194,16 @@ class ThemesTab(SettingsTab):
         self.parent.renderManager.set_global_theme(
             self.global_theme, self.theme_level)
         if self.global_theme is not u'':
-            image = self.parent.ThemeManagerContents.getPreviewImage(
-                self.global_theme)
-            preview = QtGui.QPixmap(unicode(image))
-            if not preview.isNull():
-                preview = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio,
-                    QtCore.Qt.SmoothTransformation)
-            self.DefaultListView.setPixmap(preview)
+            self.__previewGlobalTheme()
+
+    def __previewGlobalTheme(self):
+        """
+        Utility method to update the global theme preview image.
+        """
+        image = self.parent.themeManagerContents.getPreviewImage(
+            self.global_theme)
+        preview = QtGui.QPixmap(unicode(image))
+        if not preview.isNull():
+            preview = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio,
+                QtCore.Qt.SmoothTransformation)
+        self.DefaultListView.setPixmap(preview)

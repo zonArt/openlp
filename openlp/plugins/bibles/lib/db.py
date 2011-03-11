@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -33,9 +33,9 @@ from sqlalchemy import Column, ForeignKey, or_, Table, types
 from sqlalchemy.orm import class_mapper, mapper, relation
 from sqlalchemy.orm.exc import UnmappedClassError
 
-from openlp.core.lib import translate
+from openlp.core.lib import Receiver, translate
 from openlp.core.lib.db import BaseModel, init_db, Manager
-from openlp.core.ui import criticalErrorMessageBox
+from openlp.core.lib.ui import critical_error_message_box
 
 log = logging.getLogger(__name__)
 
@@ -162,6 +162,8 @@ class BibleDB(QtCore.QObject, Manager):
         if u'file' in kwargs:
             self.get_name()
         self.wizard = None
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
 
     def stop_import(self):
         """
@@ -206,10 +208,16 @@ class BibleDB(QtCore.QObject, Manager):
         """
         self.wizard = wizard
         self.create_meta(u'dbversion', u'2')
+        self.setup_testaments()
+        return self.name
+
+    def setup_testaments(self):
+        """
+        Initialise the testaments section of a bible with suitable defaults.
+        """
         self.save_object(Testament.populate(name=u'Old Testament'))
         self.save_object(Testament.populate(name=u'New Testament'))
         self.save_object(Testament.populate(name=u'Apocrypha'))
-        return self.name
 
     def create_book(self, name, abbrev, testament=1):
         """
@@ -314,7 +322,7 @@ class BibleDB(QtCore.QObject, Manager):
     def get_books(self):
         """
         A wrapper so both local and web bibles have a get_books() method that
-        manager can call.  Used in the media manager advanced search tab.
+        manager can call. Used in the media manager advanced search tab.
         """
         return self.get_all_objects(Book, order_by_ref=Book.id)
 
@@ -355,7 +363,7 @@ class BibleDB(QtCore.QObject, Manager):
                 verse_list.extend(verses)
             else:
                 log.debug(u'OpenLP failed to find book %s', book)
-                criticalErrorMessageBox(
+                critical_error_message_box(
                     translate('BiblesPlugin', 'No Book Found'),
                     translate('BiblesPlugin', 'No matching book '
                     'could be found in this Bible. Check that you have '

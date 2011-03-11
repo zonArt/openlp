@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -106,8 +106,8 @@ def translate(context, text, comment=None,
 
 def get_text_file_string(text_file):
     """
-    Open a file and return its content as unicode string.  If the supplied file
-    name is not a file then the function returns False.  If there is an error
+    Open a file and return its content as unicode string. If the supplied file
+    name is not a file then the function returns False. If there is an error
     loading the file or the content can't be decoded then the function will
     return None.
 
@@ -239,7 +239,8 @@ def resize_image(image, width, height, background=QtCore.Qt.black):
     Resize an image to fit on the current screen.
 
     ``image``
-        The image to resize.
+        The image to resize. It has to be either a ``QImage`` instance or the
+        path to the image.
 
     ``width``
         The new image width.
@@ -247,9 +248,8 @@ def resize_image(image, width, height, background=QtCore.Qt.black):
     ``height``
         The new image height.
 
-     ``background``
+    ``background``
         The background colour defaults to black.
-
     """
     log.debug(u'resize_image - start')
     if isinstance(image, QtGui.QImage):
@@ -315,12 +315,11 @@ def check_directory_exists(dir):
     ``dir``
         Theme directory to make sure exists
     """
-    log.debug(u'check_directory_exists')
+    log.debug(u'check_directory_exists %s' % dir)
     if not os.path.exists(dir):
         os.makedirs(dir)
 
-from theme import ThemeLevel, ThemeXML, BackgroundGradientType, \
-    BackgroundType, HorizontalType, VerticalType
+from listwidgetwithdnd import ListWidgetWithDnD
 from displaytags import DisplayTags
 from spelltextedit import SpellTextEdit
 from eventreceiver import Receiver
@@ -339,4 +338,3 @@ from dockwidget import OpenLPDockWidget
 from renderer import Renderer
 from rendermanager import RenderManager
 from mediamanageritem import MediaManagerItem
-from baselistwithdnd import BaseListWithDnD

@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -93,15 +93,15 @@ class SearchEdit(QtGui.QLineEdit):
         ``event``
             The event that happened.
         """
-        sz = self.clearButton.size()
+        size = self.clearButton.size()
         frameWidth = self.style().pixelMetric(
             QtGui.QStyle.PM_DefaultFrameWidth)
-        self.clearButton.move(self.rect().right() - frameWidth - sz.width(),
-            (self.rect().bottom() + 1 - sz.height()) / 2)
+        self.clearButton.move(self.rect().right() - frameWidth - size.width(),
+            (self.rect().bottom() + 1 - size.height()) / 2)
         if hasattr(self, u'menuButton'):
-            sz = self.menuButton.size()
+            size = self.menuButton.size()
             self.menuButton.move(self.rect().left() + frameWidth + 2,
-                (self.rect().bottom() + 1 - sz.height()) / 2)
+                (self.rect().bottom() + 1 - size.height()) / 2)
 
     def currentSearchType(self):
         """

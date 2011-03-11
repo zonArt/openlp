@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -33,7 +33,8 @@ import logging
 from xml.dom.minidom import Document
 from lxml import etree, objectify
 
-from openlp.core.lib import str_to_bool
+from openlp.core.lib import str_to_bool, translate
+from openlp.core.lib.ui import UiStrings
 
 log = logging.getLogger(__name__)
 
@@ -90,22 +91,32 @@ class ThemeLevel(object):
     Service = 2
     Song = 3
 
+
 class BackgroundType(object):
+    """
+    Type enumeration for backgrounds.
+    """
     Solid = 0
     Gradient = 1
     Image = 2
 
     @staticmethod
-    def to_string(type):
-        if type == BackgroundType.Solid:
+    def to_string(background_type):
+        """
+        Return a string representation of a background type.
+        """
+        if background_type == BackgroundType.Solid:
             return u'solid'
-        elif type == BackgroundType.Gradient:
+        elif background_type == BackgroundType.Gradient:
             return u'gradient'
-        elif type == BackgroundType.Image:
+        elif background_type == BackgroundType.Image:
             return u'image'
 
     @staticmethod
     def from_string(type_string):
+        """
+        Return a background type for the given string.
+        """
         if type_string == u'solid':
             return BackgroundType.Solid
         elif type_string == u'gradient':
@@ -113,7 +124,11 @@ class BackgroundType(object):
         elif type_string == u'image':
             return BackgroundType.Image
 
+
 class BackgroundGradientType(object):
+    """
+    Type enumeration for background gradients.
+    """
     Horizontal = 0
     Vertical = 1
     Circular = 2
@@ -121,20 +136,26 @@ class BackgroundGradientType(object):
     LeftBottom = 4
 
     @staticmethod
-    def to_string(type):
-        if type == BackgroundGradientType.Horizontal:
+    def to_string(gradient_type):
+        """
+        Return a string representation of a background gradient type.
+        """
+        if gradient_type == BackgroundGradientType.Horizontal:
             return u'horizontal'
-        elif type == BackgroundGradientType.Vertical:
+        elif gradient_type == BackgroundGradientType.Vertical:
             return u'vertical'
-        elif type == BackgroundGradientType.Circular:
+        elif gradient_type == BackgroundGradientType.Circular:
             return u'circular'
-        elif type == BackgroundGradientType.LeftTop:
+        elif gradient_type == BackgroundGradientType.LeftTop:
             return u'leftTop'
-        elif type == BackgroundGradientType.LeftBottom:
+        elif gradient_type == BackgroundGradientType.LeftBottom:
             return u'leftBottom'
 
     @staticmethod
     def from_string(type_string):
+        """
+        Return a background gradient type for the given string.
+        """
         if type_string == u'horizontal':
             return BackgroundGradientType.Horizontal
         elif type_string == u'vertical':
@@ -146,22 +167,41 @@ class BackgroundGradientType(object):
         elif type_string == u'leftBottom':
             return BackgroundGradientType.LeftBottom
 
+
 class HorizontalType(object):
+    """
+    Type enumeration for horizontal alignment.
+    """
     Left = 0
-    Center = 1
-    Right = 2
+    Right = 1
+    Center = 2
+
+    Names = [u'left', u'right', u'center']
+    TranslatedNames = [
+        translate('OpenLP.ThemeWizard', 'Left'),
+        translate('OpenLP.ThemeWizard', 'Right'),
+        translate('OpenLP.ThemeWizard', 'Center')]
+
 
 class VerticalType(object):
+    """
+    Type enumeration for vertical alignment.
+    """
     Top = 0
     Middle = 1
     Bottom = 2
 
-boolean_list = [u'italics', u'override', u'outline', u'shadow',
+    Names = [u'top', u'middle', u'bottom']
+    TranslatedNames = [UiStrings.Top, UiStrings.Middle, UiStrings.Bottom]
+
+
+BOOLEAN_LIST = [u'bold', u'italics', u'override', u'outline', u'shadow',
     u'slide_transition']
 
-integer_list = [u'size', u'line_adjustment', u'x', u'height', u'y',
+INTEGER_LIST = [u'size', u'line_adjustment', u'x', u'height', u'y',
     u'width', u'shadow_size', u'outline_size', u'horizontal_align',
     u'vertical_align', u'wrap_style']
+
 
 class ThemeXML(object):
     """
@@ -261,7 +301,7 @@ class ThemeXML(object):
     def add_font(self, name, color, size, override, fonttype=u'main',
         bold=u'False', italics=u'False', line_adjustment=0,
         xpos=0, ypos=0, width=0, height=0 , outline=u'False',
-        outline_color=u'#ffffff', outline_pixel=2,  shadow=u'False',
+        outline_color=u'#ffffff', outline_pixel=2, shadow=u'False',
         shadow_color=u'#ffffff', shadow_pixel=5):
         """
         Add a Font.
@@ -514,9 +554,9 @@ class ThemeXML(object):
             return
         field = self._de_hump(element)
         tag = master + u'_' + field
-        if field in boolean_list:
+        if field in BOOLEAN_LIST:
             setattr(self, tag, str_to_bool(value))
-        elif field in integer_list:
+        elif field in INTEGER_LIST:
             setattr(self, tag, int(value))
         else:
             # make string value unicode
@@ -559,8 +599,7 @@ class ThemeXML(object):
                 self.background_end_color,
                 self.background_direction)
         else:
-            filename = \
-                os.path.split(self.background_filename)[1]
+            filename = os.path.split(self.background_filename)[1]
             self.add_background_image(filename)
         self.add_font(self.font_main_name,
             self.font_main_color,

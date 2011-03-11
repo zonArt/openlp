@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -32,7 +32,33 @@ import re
 
 log = logging.getLogger(__name__)
 
+class LayoutStyle(object):
+    """
+    An enumeration for bible screen layout styles.
+    """
+    VersePerSlide = 0
+    VersePerLine = 1
+    Continuous = 2
+
+
+class DisplayStyle(object):
+    """
+    An enumeration for bible text bracket display styles.
+    """
+    NoBrackets = 0
+    Round = 1
+    Curly = 2
+    Square = 3
+
+
 def get_reference_match(match_type):
+    """
+    Provides the regexes and matches to use while parsing strings for bible
+    references.
+
+    ``match_type``
+        The type of reference information trying to be extracted in this call.
+    """
     local_separator = unicode(u':;;\s*[:vV]\s*;;-;;\s*-\s*;;,;;\s*,\s*;;end'
         ).split(u';;') # English
     # local_separator = unicode(u',;;\s*,\s*;;-;;\s*-\s*;;.;;\.;;[Ee]nde'
@@ -62,69 +88,90 @@ def get_reference_match(match_type):
 def parse_reference(reference):
     """
     This is the next generation über-awesome function that takes a person's
-    typed in string and converts it to a reference list, a list of references to
-    be queried from the Bible database files.
+    typed in string and converts it to a list of references to be queried from
+    the Bible database files.
 
-    This is a user manual like description, how the references are working.
+    ``reference``
+        A string. The Bible reference to parse.
 
-    - Each reference starts with the book name. A chapter name is manditory.
-        ``John 3`` refers to Gospel of John chapter 3
-    - A reference range can be given after a range separator.
-        ``John 3-5`` refers to John chapters 3 to 5
-    - Single verses can be addressed after a verse separator
-        ``John 3:16`` refers to John chapter 3 verse 16
-        ``John 3:16-4:3`` refers to John chapter 3 verse 16 to chapter 4 verse 3
-    - After a verse reference all further single values are treat as verse in
-      the last selected chapter.
-        ``John 3:16-18`` refers to John chapter 3 verses 16 to 18
-    - After a list separator it is possible to refer to additional verses.  They
-      are build analog to the first ones.  This way it is possible to define
-      each number of verse references.  It is not possible to refer to verses in
-      additional books.
-        ``John 3:16,18`` refers to John chapter 3 verses 16 and 18
-        ``John 3:16-18,20`` refers to John chapter 3 verses 16 to 18 and 20
-        ``John 3:16-18,4:1`` refers to John chapter 3 verses 16 to 18 and
-        chapter 3 verse 1
-    - If there is a range separator without further verse declaration the last
-      refered chapter is addressed until the end.
-
-    ``range_string`` is a regular expression which matches for verse range
-    declarations:
-
-    1. ``(?:(?P<from_chapter>[0-9]+)%(sep_v)s)?'
-        It starts with a optional chapter reference ``from_chapter`` followed by
-        a verse separator.
-    2. ``(?P<from_verse>[0-9]+)``
-        The verse reference ``from_verse`` is manditory
-    3.  ``(?P<range_to>%(sep_r)s(?:`` ... ``|%(sep_e)s)?)?``
-        A ``range_to`` declaration is optional. It starts with a range separator
-        and contains optional a chapter and verse declaration or a end
-        separator.
-    4.  ``(?:(?P<to_chapter>[0-9]+)%(sep_v)s)?``
-        The ``to_chapter`` reference with separator is equivalent to group 1.
-    5. ``(?P<to_verse>[0-9]+)``
-        The ``to_verse`` reference is equivalent to group 2.
-
-    The full reference is matched against get_reference_match(u'full').  This
-    regular expression looks like this:
-
-    1. ``^\s*(?!\s)(?P<book>[\d]*[^\d]+)(?<!\s)\s*``
-        The ``book`` group starts with the first non-whitespace character.  There
-        are optional leading digits followed by non-digits. The group ends
-        before the whitspace in front of the next digit.
-    2. ``(?P<ranges>(?:`` + range_string + ``(?:%(sep_l)s|(?=\s*$)))+)\s*$``
-        The second group contains all ``ranges``.  This can be multiple
-        declarations of a range_string separated by a list separator.
+    Returns ``None`` or a reference list.
 
     The reference list is a list of tuples, with each tuple structured like
     this::
 
         (book, chapter, from_verse, to_verse)
 
-    ``reference``
-        The bible reference to parse.
+    For example::
 
-    Returns None or a reference list.
+        [(u'John', 3, 16, 18), (u'John', 4, 1, 1)]
+
+    **Reference string details:**
+
+    Each reference starts with the book name and a chapter number. These are
+    both mandatory.
+
+    * ``John 3`` refers to Gospel of John chapter 3
+
+    A reference range can be given after a range separator.
+
+    * ``John 3-5`` refers to John chapters 3 to 5
+
+    Single verses can be addressed after a verse separator.
+
+    * ``John 3:16`` refers to John chapter 3 verse 16
+    * ``John 3:16-4:3`` refers to John chapter 3 verse 16 to chapter 4 verse 3
+
+    After a verse reference all further single values are treat as verse in
+    the last selected chapter.
+
+    * ``John 3:16-18`` refers to John chapter 3 verses 16 to 18
+
+    After a list separator it is possible to refer to additional verses. They
+    are build analog to the first ones. This way it is possible to define each
+    number of verse references. It is not possible to refer to verses in
+    additional books.
+
+    * ``John 3:16,18`` refers to John chapter 3 verses 16 and 18
+    * ``John 3:16-18,20`` refers to John chapter 3 verses 16 to 18 and 20
+    * ``John 3:16-18,4:1`` refers to John chapter 3 verses 16 to 18 and
+      chapter 4 verse 1
+
+    If there is a range separator without further verse declaration the last
+    refered chapter is addressed until the end.
+
+    ``range_string`` is a regular expression which matches for verse range
+    declarations:
+
+    ``(?:(?P<from_chapter>[0-9]+)%(sep_v)s)?``
+        It starts with a optional chapter reference ``from_chapter`` followed by
+        a verse separator.
+
+    ``(?P<from_verse>[0-9]+)``
+        The verse reference ``from_verse`` is manditory
+
+    ``(?P<range_to>%(sep_r)s(?:`` ... ``|%(sep_e)s)?)?``
+        A ``range_to`` declaration is optional. It starts with a range separator
+        and contains optional a chapter and verse declaration or a end
+        separator.
+
+    ``(?:(?P<to_chapter>[0-9]+)%(sep_v)s)?``
+        The ``to_chapter`` reference with separator is equivalent to group 1.
+
+    ``(?P<to_verse>[0-9]+)``
+        The ``to_verse`` reference is equivalent to group 2.
+
+    The full reference is matched against get_reference_match(u'full'). This
+    regular expression looks like this:
+
+    ``^\s*(?!\s)(?P<book>[\d]*[^\d]+)(?<!\s)\s*``
+        The ``book`` group starts with the first non-whitespace character. There
+        are optional leading digits followed by non-digits. The group ends
+        before the whitspace in front of the next digit.
+
+    ``(?P<ranges>(?:`` + range_string + ``(?:%(sep_l)s|(?=\s*$)))+)\s*$``
+        The second group contains all ``ranges``. This can be multiple
+        declarations of a range_string separated by a list separator.
+
     """
     log.debug(u'parse_reference("%s")', reference)
     match = get_reference_match(u'full').match(reference)
@@ -177,7 +224,7 @@ def parse_reference(reference):
                     to_verse = -1
                 if to_chapter > from_chapter:
                     ref_list.append((book, from_chapter, from_verse, -1))
-                    for i in range(from_chapter + 1, to_chapter - 1):
+                    for i in range(from_chapter + 1, to_chapter):
                         ref_list.append((book, i, 1, -1))
                     ref_list.append((book, to_chapter, 1, to_verse))
                 elif to_verse >= from_verse or to_verse == -1:
@@ -194,7 +241,7 @@ def parse_reference(reference):
 
 class SearchResults(object):
     """
-    Encapsulate a set of search results.  This is Bible-type independent.
+    Encapsulate a set of search results. This is Bible-type independent.
     """
     def __init__(self, book, chapter, verselist):
         """
@@ -207,7 +254,8 @@ class SearchResults(object):
             The chapter of the book.
 
         ``verselist``
-            The list of verses for this reading
+            The list of verses for this reading.
+
         """
         self.book = book
         self.chapter = chapter

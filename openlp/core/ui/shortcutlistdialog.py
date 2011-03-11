@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -36,7 +36,7 @@ class Ui_ShortcutListDialog(object):
         self.treeWidget = QtGui.QTreeWidget(shortcutListDialog)
         self.treeWidget.setAlternatingRowColors(True)
         self.treeWidget.setObjectName(u'treeWidget')
-        self.treeWidget.setColumnCount(2)
+        self.treeWidget.setColumnCount(3)
         self.dialogLayout.addWidget(self.treeWidget)
         self.defaultButton = QtGui.QRadioButton(shortcutListDialog)
         self.defaultButton.setChecked(True)
@@ -78,7 +78,8 @@ class Ui_ShortcutListDialog(object):
             translate('OpenLP.ShortcutListDialog', 'Customize Shortcuts'))
         self.treeWidget.setHeaderLabels([
             translate('OpenLP.ShortcutListDialog', 'Action'),
-            translate('OpenLP.ShortcutListDialog', 'Shortcut')])
+            translate('OpenLP.ShortcutListDialog', 'Shortcut'),
+            translate('OpenLP.ShortcutListDialog', 'Alternate')])
         self.defaultButton.setText(
             translate('OpenLP.ShortcutListDialog', 'Default: %s'))
         self.customButton.setText(

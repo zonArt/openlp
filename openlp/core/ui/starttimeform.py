@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -23,33 +23,30 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-"""
-Extend QListWidget to handle drag and drop functionality
-"""
-from PyQt4 import QtCore, QtGui
 
-class BaseListWithDnD(QtGui.QListWidget):
-    """
-    Provide a list widget to store objects and handle drag and drop events
-    """
-    def __init__(self, parent=None):
-        """
-        Initialise the list widget
-        """
-        QtGui.QListWidget.__init__(self, parent)
-        # this must be set by the class which is inheriting
-        assert(self.PluginName)
+from PyQt4 import QtGui
 
-    def mouseMoveEvent(self, event):
+from starttimedialog import Ui_StartTimeDialog
+
+class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog):
+    """
+    The exception dialog
+    """
+    def __init__(self, parent):
+        QtGui.QDialog.__init__(self, parent)
+        self.setupUi(self)
+
+    def exec_(self):
         """
-        Drag and drop event does not care what data is selected
-        as the recipient will use events to request the data move
-        just tell it what plugin to call
+        Run the Dialog with correct heading.
         """
-        if event.buttons() != QtCore.Qt.LeftButton:
-            return
-        drag = QtGui.QDrag(self)
-        mimeData = QtCore.QMimeData()
-        drag.setMimeData(mimeData)
-        mimeData.setText(self.PluginName)
-        drag.start(QtCore.Qt.CopyAction)
+        seconds = self.item[u'service_item'].start_time
+        hours = seconds / 3600
+        seconds -= 3600 * hours
+        minutes = seconds / 60
+        seconds -= 60 * minutes
+        self.hourSpinBox.setValue(hours)
+        self.minuteSpinBox.setValue(minutes)
+        self.secondSpinBox.setValue(seconds)
+        return QtGui.QDialog.exec_(self)
+

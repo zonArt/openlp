@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -32,8 +32,8 @@ class MediaTab(SettingsTab):
     """
     MediaTab is the Media settings tab in the settings dialog.
     """
-    def __init__(self, title):
-        SettingsTab.__init__(self, title)
+    def __init__(self, title, visible_title):
+        SettingsTab.__init__(self, title, visible_title)
 
     def setupUi(self):
         self.setObjectName(u'MediaTab')
@@ -53,9 +53,8 @@ class MediaTab(SettingsTab):
             self.onUsePhononCheckBoxChanged)
 
     def retranslateUi(self):
-        self.tabTitleVisible = translate('MediaPlugin.MediaTab', 'Media')
-        self.mediaModeGroupBox.setTitle(translate('MediaPlugin.MediaTab',
-            'Media Display'))
+        self.mediaModeGroupBox.setTitle(
+            translate('MediaPlugin.MediaTab', 'Media Display'))
         self.usePhononCheckBox.setText(
             translate('MediaPlugin.MediaTab', 'Use Phonon for video playback'))
 
