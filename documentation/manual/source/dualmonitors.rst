@@ -67,7 +67,7 @@ a blank place on the desktop and click :guilabel:`Personalization`.
 .. image:: pics/vistapersonalize.png
 
 From the :guilabel:`Personalization` window click on :guilabel:`Display
-Settings`. Click on the montior that represents your projector and make sure
+Settings`. Click on the monitor that represents your projector and make sure
 you have checked :guilabel:`Extend the desktop onto this monitor`.
 
 .. image:: pics/vistadisplaysettings.png
