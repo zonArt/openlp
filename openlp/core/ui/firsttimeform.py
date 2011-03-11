@@ -28,7 +28,6 @@ import io
 import logging
 import os
 import urllib
-from random import randint
 from tempfile import gettempdir
 from ConfigParser import SafeConfigParser
 
@@ -58,8 +57,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         if self.webAccess:
             files = self.webAccess.read()
             self.config.readfp(io.BytesIO(files))
-        for screen in screens.get_screen_list():
-            self.displayComboBox.addItem(screen)
+        self.displayComboBox.addItems(screens.get_screen_list())
         self.downloading = unicode(translate('OpenLP.FirstTimeWizard',
             'Downloading %s...'))
         QtCore.QObject.connect(self,

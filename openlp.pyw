@@ -186,7 +186,7 @@ class OpenLP(QtGui.QApplication):
         # start the main app window
         self.appClipboard = self.clipboard()
         self.mainWindow = MainWindow(screens, app_version, self.appClipboard,
-            firstTime)
+            has_run_wizard)
         self.mainWindow.show()
         if show_splash:
             # now kill the splashscreen
@@ -271,11 +271,11 @@ def main():
     # Now create and actually run the application.
     app = OpenLP(qt_args)
     # Define the settings environment
-    QtCore.QSettings(u'OpenLP', u'OpenLP')
+    settings = QtCore.QSettings(u'OpenLP', u'OpenLP')
     # First time checks in settings
     # Use explicit reference as not inside a QT environment yet
-    if QtCore.QSettings(u'OpenLP', u'OpenLP').value(
-        u'general/first time', QtCore.QVariant(True)).toBool():
+    if not settings.value(u'general/has run wizard',
+        QtCore.QVariant(False)).toBool():
         if not FirstTimeLanguageForm().exec_():
             # if cancel then stop processing
             sys.exit()
