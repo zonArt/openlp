@@ -26,9 +26,8 @@
 
 from PyQt4 import QtGui
 
-from firsttimelanguagedialog import Ui_FirstTimeLanguageDialog
-
 from openlp.core.utils import LanguageManager
+from firsttimelanguagedialog import Ui_FirstTimeLanguageDialog
 
 class FirstTimeLanguageForm(QtGui.QDialog, Ui_FirstTimeLanguageDialog):
     """
@@ -38,9 +37,9 @@ class FirstTimeLanguageForm(QtGui.QDialog, Ui_FirstTimeLanguageDialog):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         self.qmList = LanguageManager.get_qm_list()
-        self.LanguageComboBox.addItem(u'Automatic')
+        self.languageComboBox.addItem(u'Autodetect')
         for key in sorted(self.qmList.keys()):
-            self.LanguageComboBox.addItem(key)
+            self.languageComboBox.addItem(key)
 
     def exec_(self):
         """
@@ -50,13 +49,13 @@ class FirstTimeLanguageForm(QtGui.QDialog, Ui_FirstTimeLanguageDialog):
 
     def accept(self):
         # It's the first row so must be Automatic
-        if self.LanguageComboBox.currentIndex() == 0:
+        if self.languageComboBox.currentIndex() == 0:
             LanguageManager.auto_language = True
             LanguageManager.set_language(False, False)
         else:
             LanguageManager.auto_language = False
             action = QtGui.QAction(None)
-            action.setObjectName(unicode(self.LanguageComboBox.currentText()))
+            action.setObjectName(unicode(self.languageComboBox.currentText()))
             LanguageManager.set_language(action, False)
         return QtGui.QDialog.accept(self)
 

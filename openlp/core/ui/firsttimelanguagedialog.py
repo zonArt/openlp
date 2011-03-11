@@ -30,26 +30,37 @@ from openlp.core.lib import translate
 from openlp.core.lib.ui import create_accept_reject_button_box
 
 class Ui_FirstTimeLanguageDialog(object):
-    def setupUi(self, firstTimeLanguageDialog):
-        firstTimeLanguageDialog.setObjectName(u'firstTimeLanguageDialog')
-        firstTimeLanguageDialog.resize(300, 10)
-        self.dialogLayout = QtGui.QGridLayout(firstTimeLanguageDialog)
+    def setupUi(self, languageDialog):
+        languageDialog.setObjectName(u'languageDialog')
+        languageDialog.resize(300, 50)
+        self.dialogLayout = QtGui.QVBoxLayout(languageDialog)
+        self.dialogLayout.setContentsMargins(8, 8, 8, 8)
+        self.dialogLayout.setSpacing(8)
         self.dialogLayout.setObjectName(u'dialogLayout')
-        self.fileNameLabel = QtGui.QLabel(firstTimeLanguageDialog)
-        self.fileNameLabel.setObjectName(u'fileNameLabel')
-        self.dialogLayout.addWidget(self.fileNameLabel, 0, 0)
-        self.LanguageComboBox = QtGui.QComboBox(firstTimeLanguageDialog)
-        self.LanguageComboBox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
-        self.LanguageComboBox.setObjectName("LanguageComboBox")
-        self.dialogLayout.addWidget(self.LanguageComboBox, 0, 1)
-        self.buttonBox = create_accept_reject_button_box(firstTimeLanguageDialog, True)
-        self.dialogLayout.addWidget(self.buttonBox, 1, 0, 1, 2)
-        self.retranslateUi(firstTimeLanguageDialog)
-        self.setMaximumHeight(self.sizeHint().height())
-        QtCore.QMetaObject.connectSlotsByName(firstTimeLanguageDialog)
+        self.infoLabel = QtGui.QLabel(languageDialog)
+        self.infoLabel.setObjectName(u'infoLabel')
+        self.dialogLayout.addWidget(self.infoLabel)
+        self.languageLayout = QtGui.QHBoxLayout()
+        self.languageLayout.setObjectName(u'languageLayout')
+        self.languageLabel = QtGui.QLabel(languageDialog)
+        self.languageLabel.setObjectName(u'languageLabel')
+        self.languageLayout.addWidget(self.languageLabel)
+        self.languageComboBox = QtGui.QComboBox(languageDialog)
+        self.languageComboBox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
+        self.languageComboBox.setObjectName("languageComboBox")
+        self.languageLayout.addWidget(self.languageComboBox)
+        self.dialogLayout.addLayout(self.languageLayout)
+        self.buttonBox = create_accept_reject_button_box(languageDialog, True)
+        self.dialogLayout.addWidget(self.buttonBox)
 
-    def retranslateUi(self, firstTimeLanguageDialog):
+        self.retranslateUi(languageDialog)
+        self.setMaximumHeight(self.sizeHint().height())
+        QtCore.QMetaObject.connectSlotsByName(languageDialog)
+
+    def retranslateUi(self, languageDialog):
         self.setWindowTitle(translate('OpenLP.FirstTimeLanguageForm',
-                'Initial Set up Language'))
-        self.fileNameLabel.setText(translate('OpenLP.FirstTimeLanguageForm',
-            'Initial Language:'))
+                'Select Translation'))
+        self.infoLabel.setText(translate('OpenLP.FirstTimeLanguageForm',
+            'Choose the translation you\'d like to use in OpenLP.'))
+        self.languageLabel.setText(translate('OpenLP.FirstTimeLanguageForm',
+            'Translation:'))
