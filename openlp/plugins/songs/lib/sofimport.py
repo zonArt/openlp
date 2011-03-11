@@ -33,7 +33,6 @@
 import os
 import re
 
-from songimport import SongImport
 from oooimport import OooImport
 
 if os.name == u'nt':
