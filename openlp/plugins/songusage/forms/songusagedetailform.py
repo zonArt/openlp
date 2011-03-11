@@ -88,6 +88,14 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         """
         log.debug(u'accept')
         path = unicode(self.fileLineEdit.text())
+        if path == u'':
+            Receiver.send_message(u'openlp_error_message', {
+                u'title': translate('SongUsagePlugin.SongUsageDetailForm',
+                'Report Creation'),
+                u'message': unicode(translate(
+                'SongUsagePlugin.SongUsageDetailForm', 'No output path has been'
+                ' selected for the report.'))})
+            return
         check_directory_exists(path)
         filename = unicode(translate('SongUsagePlugin.SongUsageDetailForm',
             'usage_detail_%s_%s.txt')) % (
