@@ -1,0 +1,19 @@
+Source: openlp
+Section: python
+Priority: extra
+Maintainer: OpenLP Developers <openlp-dev@lists.launchpad.net>
+Build-Depends: cdbs, debhelper (>= 5), python-setuptools, python-support,
+ python, qt4-dev-tools
+Standards-Version: 3.8.3
+Homepage: http://openlp.org/
+
+Package: openlp
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-qt4,
+ python-qt4-phonon, python-sqlalchemy, python-chardet, python-beautifulsoup,
+ python-lxml, python-sqlite, python-enchant
+Conflicts: python-openlp
+Description: Church lyrics projection application
+ OpenLP is free church presentation software, or lyrics projection software,
+ used to display slides of songs, Bible verses, videos, images, and even
+ presentations for church worship using a computer and a data projector.
