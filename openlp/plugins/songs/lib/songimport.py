@@ -55,14 +55,13 @@ class SongImport(QtCore.QObject):
         """
         self.manager = manager
         QtCore.QObject.__init__(self)
-        if kwargs:
-            if kwargs.has_key(u'filename'):
-                self.import_source = kwargs[u'filename']
-            elif kwargs.has_key(u'filenames'):
-                self.import_source = kwargs[u'filenames']
-            else:
-                raise KeyError(u'Keyword arguments "filename[s]" not supplied.')
-            log.debug(self.import_source)
+        if kwargs.has_key(u'filename'):
+            self.import_source = kwargs[u'filename']
+        elif kwargs.has_key(u'filenames'):
+            self.import_source = kwargs[u'filenames']
+        else:
+            raise KeyError(u'Keyword arguments "filename[s]" not supplied.')
+        log.debug(self.import_source)
         self.song = None
         self.stop_import_flag = False
         self.set_defaults()
@@ -104,23 +103,7 @@ class SongImport(QtCore.QObject):
     def register(self, import_wizard):
         self.import_wizard = import_wizard
 
-    @staticmethod
-    def process_songs_text(manager, text):
-        songs = []
-        songtexts = SongImport.tidy_text(text).split(u'\f')
-        song = SongImport(manager)
-        for songtext in songtexts:
-            if songtext.strip():
-                song.process_song_text(songtext.strip())
-                if song.check_complete():
-                    songs.append(song)
-                    song = SongImport(manager)
-        if song.check_complete():
-            songs.append(song)
-        return songs
-
-    @staticmethod
-    def tidy_text(text):
+    def tidy_text(self, text):
         """
         Get rid of some dodgy unicode and formatting characters we're not
         interested in. Some can be converted to ascii.
@@ -241,7 +224,7 @@ class SongImport(QtCore.QObject):
             self.verse_counts[verse_def[0]] = int(verse_def[1:])
         self.verses.append([verse_def, verse_text.rstrip(), lang])
         self.verse_order_list_generated.append(verse_def)
-
+        
     def repeat_verse(self):
         """
         Repeat the previous verse in the verse order

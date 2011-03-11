@@ -183,7 +183,7 @@ class SofImport(OooImport):
         into line
         """
         text = textportion.getString()
-        text = SongImport.tidy_text(text)
+        text = self.tidy_text(text)
         if text.strip() == u'':
             return text
         if textportion.CharWeight == BOLD:
@@ -299,8 +299,15 @@ class SofImport(OooImport):
                     verse += line + u'\n'
             if verse:
                 self.song.add_verse(verse, versetag)
+                if not self.is_chorus and \
+                    u'C1' in self.verse_order_list_generated:
+                    self.verse_order_list_generated.append(u'C1')
+                    self.verse_order_list_generated_useful = True                    
         else:
             self.song.add_verse(self.currentverse, versetag)
+            if not self.is_chorus and u'C1' in self.verse_order_list_generated:
+                self.verse_order_list_generated.append(u'C1')
+                self.verse_order_list_generated_useful = True                    
         self.currentverse = u''
         self.is_chorus = False
 

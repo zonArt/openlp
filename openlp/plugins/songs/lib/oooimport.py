@@ -192,9 +192,7 @@ class OooImport(SongImport):
             if slidetext.strip() == u'':
                 slidetext = u'\f'
             text += slidetext
-        songs = SongImport.process_songs_text(self.manager, text)
-        for song in songs:
-            song.finish()
+        self.process_songs_text(text)
         return
 
     def process_doc(self):
@@ -216,6 +214,16 @@ class OooImport(SongImport):
                     if textportion.BreakType in (PAGE_AFTER, PAGE_BOTH):
                         paratext += u'\f'
             text += paratext + u'\n'
-        songs = SongImport.process_songs_text(self.manager, text)
-        for song in songs:
-            song.finish()
+        self.process_songs_text(text)
+
+    def process_songs_text(self, text):
+        songtexts = self.tidy_text(text).split(u'\f')
+        self.set_defaults()
+        for songtext in songtexts:
+            if songtext.strip():
+                self.process_song_text(songtext.strip())
+                if self.check_complete():
+                    self.finish()
+                    self.set_defaults()
+        if self.check_complete():
+            self.finish()
