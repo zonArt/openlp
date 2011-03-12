@@ -48,7 +48,7 @@ class OpenLPToolbar(QtGui.QToolBar):
         self.icons = {}
         self.setIconSize(QtCore.QSize(20, 20))
         self.actions = {}
-        log.debug(u'Init done')
+        log.debug(u'Init done for %s' % parent.__class__.__name__)
 
     def addToolbarButton(self, title, icon, tooltip=None, slot=None,
         checkable=False, shortcut=0, alternate=0,

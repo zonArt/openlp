@@ -55,10 +55,7 @@ class PluginManager(object):
             sys.path.insert(0, plugin_dir)
         self.basepath = os.path.abspath(plugin_dir)
         log.debug(u'Base path %s ', self.basepath)
-        self.plugin_helpers = []
         self.plugins = []
-        # this has to happen after the UI is sorted
-        # self.find_plugins(plugin_dir)
         log.info(u'Plugin manager Initialised')
 
     def find_plugins(self, plugin_dir, plugin_helpers):
@@ -73,7 +70,7 @@ class PluginManager(object):
             A list of helper objects to pass to the plugins.
 
         """
-        #self.plugin_helpers = plugin_helpers
+        log.info(u'Finding plugins')
         startdepth = len(os.path.abspath(plugin_dir).split(os.sep))
         log.debug(u'finding plugins in %s at depth %d',
             unicode(plugin_dir), startdepth)
@@ -203,6 +200,7 @@ class PluginManager(object):
         Loop through all the plugins and give them an opportunity to
         initialise themselves.
         """
+        log.info(u'Initialise Plugings - Started')
         for plugin in self.plugins:
             log.info(u'initialising plugins %s in a %s state'
                 % (plugin.name, plugin.isActive()))
@@ -211,6 +209,7 @@ class PluginManager(object):
                 log.info(u'Initialisation Complete for %s ' % plugin.name)
             if not plugin.isActive():
                 plugin.removeToolboxItem()
+        log.info(u'Initialise Plugings - Finished')
 
     def finalise_plugins(self):
         """
