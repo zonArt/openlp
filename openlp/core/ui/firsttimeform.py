@@ -178,8 +178,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         """
         Prepare the UI for the process.
         """
-        # We start on 9 for the 9 plugins
-        max_progress = 9
+        # We start on 2 for plugins status setting plus a "finished" point.
+        max_progress = 2
         # Loop through the songs list and increase for each selected item
         for i in xrange(self.songsListWidget.count()):
             if self.songsListWidget.item(i).checkState() == QtCore.Qt.Checked:
@@ -209,6 +209,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.finishButton.setEnabled(True)
         self.cancelButton.setVisible(False)
         self.nextButton.setVisible(False)
+        self.progressLabel.setText(translate('OpenLP.FirstTimeWizard',
+            'Download complete. Click the finish button to start OpenLP.'))
         Receiver.send_message(u'openlp_process_events')
 
     def _performWizard(self):
@@ -219,21 +221,13 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self._incrementProgressBar(translate('OpenLP.FirstTimeWizard',
             'Enabling selected plugins...'))
         self._setPluginStatus(self.songsCheckBox, u'songs/status')
-        self._incrementProgressBar(None)
         self._setPluginStatus(self.bibleCheckBox, u'bibles/status')
-        self._incrementProgressBar(None)
         self._setPluginStatus(self.presentationCheckBox, u'presentations/status')
-        self._incrementProgressBar(None)
         self._setPluginStatus(self.imageCheckBox, u'images/status')
-        self._incrementProgressBar(None)
         self._setPluginStatus(self.mediaCheckBox, u'media/status')
-        self._incrementProgressBar(None)
         self._setPluginStatus(self.remoteCheckBox, u'remotes/status')
-        self._incrementProgressBar(None)
         self._setPluginStatus(self.customCheckBox, u'custom/status')
-        self._incrementProgressBar(None)
         self._setPluginStatus(self.songUsageCheckBox, u'songusage/status')
-        self._incrementProgressBar(None)
         self._setPluginStatus(self.alertCheckBox, u'alerts/status')
         # Build directories for downloads
         songs_destination = AppLocation.get_section_data_path(u'songs')
