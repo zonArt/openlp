@@ -73,7 +73,7 @@ class PluginManager(object):
             A list of helper objects to pass to the plugins.
 
         """
-        self.plugin_helpers = plugin_helpers
+        #self.plugin_helpers = plugin_helpers
         startdepth = len(os.path.abspath(plugin_dir).split(os.sep))
         log.debug(u'finding plugins in %s at depth %d',
             unicode(plugin_dir), startdepth)
@@ -102,11 +102,11 @@ class PluginManager(object):
         plugin_objects = []
         for p in plugin_classes:
             try:
-                plugin = p(self.plugin_helpers)
-                log.debug(u'Loaded plugin %s with helpers', unicode(p))
+                plugin = p(plugin_helpers)
+                log.debug(u'Loaded plugin %s', unicode(p))
                 plugin_objects.append(plugin)
             except TypeError:
-                log.exception(u'loaded plugin %s has no helpers', unicode(p))
+                log.exception(u'Failed to load plugin %s', unicode(p))
         plugins_list = sorted(plugin_objects, self.order_by_weight)
         for plugin in plugins_list:
             if plugin.checkPreConditions():
