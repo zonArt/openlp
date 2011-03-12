@@ -82,7 +82,7 @@ class MediaPlugin(Plugin):
         # by providing possibly missing extensions.
         if mimetype in self.additional_extensions.keys():
             for extension in self.additional_extensions[mimetype]:
-                ext = u'*%s' % extensions
+                ext = u'*%s' % extension
                 if ext not in list:
                     list.append(ext)
                     self.serviceManager.supportedSuffixes(extension[1:])
