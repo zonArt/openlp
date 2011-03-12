@@ -185,7 +185,7 @@ class OpenLP(QtGui.QApplication):
         self.processEvents()
         # start the main app window
         self.mainWindow = MainWindow(screens, app_version, self.clipboard(),
-            has_run_wizard)
+            not has_run_wizard)
         self.mainWindow.show()
         if show_splash:
             # now kill the splashscreen
