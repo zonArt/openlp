@@ -10,12 +10,12 @@ include /usr/share/cdbs/1/class/python-distutils.mk
 include /usr/share/cdbs/1/class/makefile.mk
 
 binary-post-install/openlp::
-    for SIZE in 16x16 32x32 48x48 64x64 128x128 256x256; do \
-        mkdir -p debian/openlp/usr/share/icons/hicolor/$$SIZE/apps && \
-        cp resources/images/openlp-logo-$$SIZE.png debian/openlp/usr/share/icons/hicolor/$$SIZE/apps/openlp.png; \
-    done
+	for SIZE in 16x16 32x32 48x48 64x64 128x128 256x256; do \
+		mkdir -p debian/openlp/usr/share/icons/hicolor/$$SIZE/apps && \
+		cp resources/images/openlp-logo-$$SIZE.png debian/openlp/usr/share/icons/hicolor/$$SIZE/apps/openlp.png; \
+	done
 
-    mkdir -p debian/openlp/usr/share/icons/hicolor/scalable/apps && \
-    cp resources/images/openlp-logo.svg debian/openlp/usr/share/icons/hicolor/scalable/apps/openlp.svg
+	mkdir -p debian/openlp/usr/share/icons/hicolor/scalable/apps && \
+	cp resources/images/openlp-logo.svg debian/openlp/usr/share/icons/hicolor/scalable/apps/openlp.svg
 
-    cd debian/openlp/usr/bin/ && mv openlp.pyw openlp
+	cd debian/openlp/usr/bin/ && mv openlp.pyw openlp
