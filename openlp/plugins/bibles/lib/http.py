@@ -41,145 +41,9 @@ from openlp.core.lib import Receiver, translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, get_web_page
 from openlp.plugins.bibles.lib import SearchResults
-from openlp.plugins.bibles.lib.db import BibleDB, Book
+from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB,  Book
 
 log = logging.getLogger(__name__)
-
-class HTTPBooks(object):
-    """
-    A wrapper class around a small SQLite database which contains the books,
-    chapter counts and verse counts for the web download Bibles. This class
-    contains a singleton "cursor" so that only one connection to the SQLite
-    database is ever used.
-    """
-    cursor = None
-
-    @staticmethod
-    def get_cursor():
-        """
-        Return the cursor object. Instantiate one if it doesn't exist yet.
-        """
-        if HTTPBooks.cursor is None:
-            filepath = os.path.join(
-                AppLocation.get_directory(AppLocation.PluginsDir), u'bibles',
-                u'resources', u'httpbooks.sqlite')
-            conn = sqlite3.connect(filepath)
-            HTTPBooks.cursor = conn.cursor()
-        return HTTPBooks.cursor
-
-    @staticmethod
-    def run_sql(query, parameters=()):
-        """
-        Run an SQL query on the database, returning the results.
-
-        ``query``
-            The actual SQL query to run.
-
-        ``parameters``
-            Any variable parameters to add to the query.
-        """
-        cursor = HTTPBooks.get_cursor()
-        cursor.execute(query, parameters)
-        return cursor.fetchall()
-
-    @staticmethod
-    def get_books():
-        """
-        Return a list of all the books of the Bible.
-        """
-        books = HTTPBooks.run_sql(u'SELECT id, testament_id, name, '
-                u'abbreviation, chapters FROM books ORDER BY id')
-        book_list = []
-        for book in books:
-            book_list.append({
-                u'id': book[0],
-                u'testament_id': book[1],
-                u'name': unicode(book[2]),
-                u'abbreviation': unicode(book[3]),
-                u'chapters': book[4]
-            })
-        return book_list
-
-    @staticmethod
-    def get_book(name):
-        """
-        Return a book by name or abbreviation.
-
-        ``name``
-            The name or abbreviation of the book.
-        """
-        if not isinstance(name, unicode):
-            name = unicode(name)
-        name = name.title()
-        books = HTTPBooks.run_sql(u'SELECT id, testament_id, name, '
-                u'abbreviation, chapters FROM books WHERE name = ? OR '
-                u'abbreviation = ?', (name, name))
-        if books:
-            return {
-                u'id': books[0][0],
-                u'testament_id': books[0][1],
-                u'name': unicode(books[0][2]),
-                u'abbreviation': unicode(books[0][3]),
-                u'chapters': books[0][4]
-            }
-        else:
-            return None
-
-    @staticmethod
-    def get_chapter(name, chapter):
-        """
-        Return the chapter details for a specific chapter of a book.
-
-        ``name``
-            The name or abbreviation of a book.
-
-        ``chapter``
-            The chapter number.
-        """
-        if not isinstance(name, int):
-            chapter = int(chapter)
-        book = HTTPBooks.get_book(name)
-        chapters = HTTPBooks.run_sql(u'SELECT id, book_id, chapter, '
-            u'verses FROM chapters WHERE book_id = ?', (book[u'id'],))
-        if chapters:
-            return {
-                u'id': chapters[chapter-1][0],
-                u'book_id': chapters[chapter-1][1],
-                u'chapter': chapters[chapter-1][2],
-                u'verses': chapters[chapter-1][3]
-            }
-        else:
-            return None
-
-    @staticmethod
-    def get_chapter_count(book):
-        """
-        Return the number of chapters in a book.
-
-        ``book``
-            The name or abbreviation of the book.
-        """
-        details = HTTPBooks.get_book(book)
-        if details:
-            return details[u'chapters']
-        return 0
-
-    @staticmethod
-    def get_verse_count(book, chapter):
-        """
-        Return the number of verses in a chapter.
-
-        ``book``
-            The name or abbreviation of the book.
-
-        ``chapter``
-            The number of the chapter.
-        """
-        details = HTTPBooks.get_chapter(book, chapter)
-        if details:
-            return details[u'verses']
-        return 0
-
 
 class BGExtract(object):
     """
@@ -447,7 +311,7 @@ class HTTPBible(BibleDB):
             book = reference[0]
             db_book = self.get_book(book)
             if not db_book:
-                book_details = HTTPBooks.get_book(book)
+                book_details = BiblesResourcesDB.get_book(book)
                 if not book_details:
                     critical_error_message_box(
                         translate('BiblesPlugin', 'No Book Found'),
@@ -497,13 +361,13 @@ class HTTPBible(BibleDB):
         Return the list of books.
         """
         return [Book.populate(name=book['name'])
-            for book in HTTPBooks.get_books()]
+            for book in BiblesResourcesDB.get_books()]
 
     def get_chapter_count(self, book):
         """
         Return the number of chapters in a particular book.
         """
-        return HTTPBooks.get_chapter_count(book)
+        return BiblesResourcesDB.get_chapter_count(book)
 
     def get_verse_count(self, book, chapter):
         """
@@ -515,7 +379,7 @@ class HTTPBible(BibleDB):
         ``chapter``
             The chapter whose verses are being counted.
         """
-        return HTTPBooks.get_verse_count(book, chapter)
+        return BiblesResourcesDB.get_verse_count(book, chapter)
 
 def get_soup_for_bible_ref(reference_url, header=None, pre_parse_regex=None,
     pre_parse_substitute=None, cleaner=None):

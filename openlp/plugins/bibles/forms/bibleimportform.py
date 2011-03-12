@@ -39,6 +39,7 @@ from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.core.utils import AppLocation, string_is_unicode
 from openlp.plugins.bibles.lib.manager import BibleFormat
+from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
 log = logging.getLogger(__name__)
 
@@ -634,46 +635,27 @@ class BibleImportForm(OpenLPWizard):
         """
         Load the lists of Crosswalk, BibleGateway and Bibleserver bibles.
         """
-        filepath = AppLocation.get_directory(AppLocation.PluginsDir)
-        filepath = os.path.join(filepath, u'bibles', u'resources')
         # Load Crosswalk Bibles.
-        self.loadBibleResourceFile(
-            os.path.join(filepath, u'crosswalkbooks.csv'),
-            WebDownload.Crosswalk)
+        self.loadBibleResource(WebDownload.Crosswalk)
         # Load BibleGateway Bibles.
-        self.loadBibleResourceFile(os.path.join(filepath, u'biblegateway.csv'),
-            WebDownload.BibleGateway)
+        self.loadBibleResource(WebDownload.BibleGateway)
         # Load and Bibleserver Bibles.
-        self.loadBibleResourceFile(os.path.join(filepath, u'bibleserver.csv'),
-            WebDownload.Bibleserver)
+        self.loadBibleResource(WebDownload.Bibleserver)
 
-    def loadBibleResourceFile(self, file_path_name, download_type):
+    def loadBibleResource(self, download_type):
         """
-        Loads a web bible resource file.
-
-        ``file_path_name``
-            The file to load including the file's path.
+        Loads a web bible from bible_resources.sqlite.
 
         ``download_type``
-            The WebDownload type this file is for.
+            The WebDownload type e.g. bibleserver.
         """
         self.web_bible_list[download_type] = {}
-        books_file = None
-        try:
-            books_file = open(file_path_name, 'rb')
-            dialect = csv.Sniffer().sniff(books_file.read(1024))
-            books_file.seek(0)
-            books_reader = csv.reader(books_file, dialect)
-            for line in books_reader:
-                ver = string_is_unicode(line[0])
-                name = string_is_unicode(line[1])
-                self.web_bible_list[download_type][ver] = name.strip()
-        except IOError:
-            log.exception(u'%s resources missing' %
-                WebDownload.Names[download_type])
-        finally:
-            if books_file:
-                books_file.close()
+        bibles = BiblesResourcesDB.get_webbibles(
+            WebDownload.Names[download_type])
+        for bible in bibles:
+            ver = bible[u'name']
+            name = bible[u'abbreviation']
+            self.web_bible_list[download_type][ver] = name.strip()
 
     def preWizard(self):
         """
