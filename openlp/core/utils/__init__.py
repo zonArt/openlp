@@ -384,7 +384,7 @@ def get_uno_command():
     Returns the UNO command to launch an openoffice.org instance.
     """
     COMMAND = u'soffice'
-    OPTIONS = u'-nologo -norestore -minimized -nofirststartwizard'
+    OPTIONS = u'-nologo -norestore -minimized -nodefault -nofirststartwizard'
     if UNO_CONNECTION_TYPE == u'pipe':
         CONNECTION = u'"-accept=pipe,name=openlp_pipe;urp;"'
     else:
