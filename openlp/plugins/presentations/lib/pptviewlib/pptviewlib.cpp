@@ -404,7 +404,7 @@ DllExport int GetCurrentSlide(int id)
 // Take a step forwards through the show 
 DllExport void NextStep(int id)
 {
-	DEBUG("NextStep:%d\n", id);
+	DEBUG("NextStep:%d (%d)\n", id, pptviewobj[id].currentSlide);
 	if(pptviewobj[id].currentSlide>pptviewobj[id].slideCount)
 		return;
 	PostMessage(pptviewobj[id].hWnd2, WM_MOUSEWHEEL, MAKEWPARAM(0, -WHEEL_DELTA), 0);
@@ -413,7 +413,7 @@ DllExport void NextStep(int id)
 // Take a step backwards through the show 
 DllExport void PrevStep(int id)
 {
-	DEBUG("PrevStep:%d\n", id);
+	DEBUG("PrevStep:%d (%d)\n", id, pptviewobj[id].currentSlide);
 	PostMessage(pptviewobj[id].hWnd2, WM_MOUSEWHEEL, MAKEWPARAM(0, WHEEL_DELTA), 0);
 }
 
@@ -630,7 +630,7 @@ LRESULT CALLBACK CwpProc(int nCode, WPARAM wParam, LPARAM lParam){
 	if((id>=0)&&(nCode==HC_ACTION))
 	{
 		if(cwp->message==WM_USER+22)
-		{
+			{
 			if(pptviewobj[id].state != PPT_LOADED)
 			{
 				if((pptviewobj[id].currentSlide>0)
@@ -651,6 +651,13 @@ LRESULT CALLBACK CwpProc(int nCode, WPARAM wParam, LPARAM lParam){
 			else
 			{
 				pptviewobj[id].currentSlide = cwp->wParam - 255;
+				if(pptviewobj[id].state != PPT_LOADED) 
+				{
+					if(pptviewobj[id].currentSlide<pptviewobj[id].slideCount)
+					{
+						pptviewobj[id].state = PPT_LOADED;
+					}
+				}
 				if(pptviewobj[id].currentSlide>pptviewobj[id].slideCount)
 					pptviewobj[id].slideCount = pptviewobj[id].currentSlide;
 			}

@@ -143,24 +143,23 @@ class MainDisplay(DisplayWidget):
             if not background_color.isValid():
                 background_color = QtCore.Qt.white
             splash_image = QtGui.QImage(image_file)
-            initialFrame = QtGui.QImage(
+            self.initialFrame = QtGui.QImage(
                 self.screens.current[u'size'].width(),
                 self.screens.current[u'size'].height(),
-                QtGui.QImage.Format_ARGB32_Premultiplied)
+                QtGui.QImage.Format_ARGB32_Premultiplied)            
             painter_image = QtGui.QPainter()
-            painter_image.begin(initialFrame)
-            painter_image.fillRect(initialFrame.rect(), background_color)
+            painter_image.begin(self.initialFrame)
+            painter_image.fillRect(self.initialFrame.rect(), background_color)
             painter_image.drawImage(
                 (self.screens.current[u'size'].width() -
                 splash_image.width()) / 2,
                 (self.screens.current[u'size'].height()
                 - splash_image.height()) / 2, splash_image)
             serviceItem = ServiceItem()
-            serviceItem.bg_image_bytes = image_to_byte(initialFrame)
+            serviceItem.bg_image_bytes = image_to_byte(self.initialFrame)
             self.webView.setHtml(build_html(serviceItem, self.screen,
                 self.alertTab, self.isLive, None))
-            self.initialFrame = True
-            self.__hideMouse()
+            self.__hideMouse()  
             # To display or not to display?
             if not self.screen[u'primary']:
                 self.show()
@@ -422,7 +421,7 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'buildHtml')
         self.webLoaded = False
-        self.initialFrame = False
+        self.initialFrame = None
         self.serviceItem = serviceItem
         background = None
         # We have an image override so keep the image till the theme changes
