@@ -181,6 +181,7 @@ class MainDisplay(DisplayWidget):
         # Wait for the webview to update before displaying text.
         while not self.webLoaded:
             Receiver.send_message(u'openlp_process_events')
+        self.setGeometry(self.screen[u'size'])
         self.frame.evaluateJavaScript(u'show_text("%s")' % \
             slide.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
         return self.preview()
@@ -192,7 +193,7 @@ class MainDisplay(DisplayWidget):
         `slide`
             The slide text to be displayed
         """
-        log.debug(u'alert to display')
+        log.debug(u'alert to display')  
         if self.height() != self.screen[u'size'].height() \
             or not self.isVisible() or self.videoWidget.isVisible():
             shrink = True
@@ -208,12 +209,18 @@ class MainDisplay(DisplayWidget):
             else:
                 shrinkItem = self
             if text:
-                shrinkItem.resize(self.width(), int(height.toString()))
+                alert_height = int(height.toString())
+                shrinkItem.resize(self.width(), alert_height)
                 shrinkItem.setVisible(True)
+                if self.alertTab.location == 1:
+                    shrinkItem.move(self.screen[u'size'].left(),
+                    (self.screen[u'size'].height() - alert_height) / 2)
+                elif self.alertTab.location == 2:
+                    shrinkItem.move(self.screen[u'size'].left(),
+                        self.screen[u'size'].height() - alert_height)
             else:
                 shrinkItem.setVisible(False)
-                shrinkItem.resize(self.screen[u'size'].width(),
-                    self.screen[u'size'].height())
+                self.setGeometry(self.screen[u'size'])
 
     def directImage(self, name, path):
         """
@@ -243,6 +250,7 @@ class MainDisplay(DisplayWidget):
         """
         Display an image, as is.
         """
+        self.setGeometry(self.screen[u'size'])
         if image:
             js = u'show_image("data:image/png;base64,%s");' % image
         else:
@@ -336,6 +344,7 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'video')
         self.webLoaded = True
+        self.setGeometry(self.screen[u'size'])
         # We are running a background theme
         self.override[u'theme'] = u''
         self.override[u'video'] = True
