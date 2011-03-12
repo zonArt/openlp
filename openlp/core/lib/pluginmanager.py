@@ -49,7 +49,7 @@ class PluginManager(object):
         ``plugin_dir``
             The directory to search for plugins.
         """
-        log.info(u'Plugin manager initing')
+        log.info(u'Plugin manager Initialising')
         if not plugin_dir in sys.path:
             log.debug(u'Inserting %s into sys.path', plugin_dir)
             sys.path.insert(0, plugin_dir)
@@ -200,7 +200,7 @@ class PluginManager(object):
         Loop through all the plugins and give them an opportunity to
         initialise themselves.
         """
-        log.info(u'Initialise Plugings - Started')
+        log.info(u'Initialise Plugins - Started')
         for plugin in self.plugins:
             log.info(u'initialising plugins %s in a %s state'
                 % (plugin.name, plugin.isActive()))
@@ -209,7 +209,7 @@ class PluginManager(object):
                 log.info(u'Initialisation Complete for %s ' % plugin.name)
             if not plugin.isActive():
                 plugin.removeToolboxItem()
-        log.info(u'Initialise Plugings - Finished')
+        log.info(u'Initialise Plugins - Finished')
 
     def finalise_plugins(self):
         """
