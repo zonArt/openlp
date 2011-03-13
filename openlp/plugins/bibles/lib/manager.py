@@ -25,15 +25,15 @@
 ###############################################################################
 
 import logging
+import os
 
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, SettingsManager, translate
-from openlp.core.utils import AppLocation
+from openlp.core.utils import AppLocation, delete_file
 from openlp.plugins.bibles.lib import parse_reference
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta, SpellingDB,  \
-    Spelling,  BiblesResourcesDB
-
+    Spelling, BiblesResourcesDB
 from csvbible import CSVBible
 from http import HTTPBible
 from opensong import OpenSongBible
@@ -146,6 +146,10 @@ class BibleManager(object):
         for filename in files:
             bible = BibleDB(self.parent, path=self.path, file=filename)
             name = bible.get_name()
+            # Remove corrupted files.
+            if name is None:
+                delete_file(os.path.join(self.path, filename))
+                continue
             log.debug(u'Bible Name: "%s"', name)
             self.db_cache[name] = bible
             # Look to see if lazy load bible exists and get create getter.
@@ -173,13 +177,6 @@ class BibleManager(object):
         self.spelling_cache = {}
         self.spelling_cache[u'spelling'] = SpellingDB(self.parent, 
             path=self.path)
-        #db_spelling = self.spelling_cache[u'spelling'].get_book_reference_id(u'Markus', 40)
-        #db_spelling = BiblesResourcesDB.get_spelling(u'1.Mose',  30)
-        #db_spelling = BiblesResourcesDB.get_language(u'de')
-        #db_spelling = BiblesResourcesDB.get_books()
-        #db_spelling = BiblesResourcesDB.get_testament_reference()
-        #db_spelling = self.spelling_cache[u'spelling'] .create_spelling(u'Johannes', 43, 40)
-        #log.debug(u'Spellings: %s' % db_spelling)
         log.debug(u'Spelling reloaded')
 
     def set_process_dialog(self, wizard):

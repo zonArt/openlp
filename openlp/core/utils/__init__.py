@@ -35,6 +35,7 @@ import urllib2
 from datetime import datetime
 
 from PyQt4 import QtGui, QtCore
+
 if sys.platform != u'win32' and sys.platform != u'darwin':
     try:
         from xdg import BaseDirectory
@@ -134,7 +135,7 @@ class AppLocation(object):
         elif dir_type == AppLocation.LanguageDir:
             app_path = _get_frozen_path(
                 os.path.abspath(os.path.split(sys.argv[0])[0]),
-                os.path.split(openlp.__file__)[0])
+                _get_os_dir_path(dir_type))
             return os.path.join(app_path, u'i18n')
         else:
             return _get_os_dir_path(dir_type)
@@ -169,15 +170,21 @@ def _get_os_dir_path(dir_type):
         if dir_type == AppLocation.DataDir:
             return os.path.join(unicode(os.getenv(u'APPDATA'), encoding),
                 u'openlp', u'data')
+        elif dir_type == AppLocation.LanguageDir:
+            return os.path.split(openlp.__file__)[0]
         return os.path.join(unicode(os.getenv(u'APPDATA'), encoding),
             u'openlp')
     elif sys.platform == u'darwin':
         if dir_type == AppLocation.DataDir:
             return os.path.join(unicode(os.getenv(u'HOME'), encoding),
                 u'Library', u'Application Support', u'openlp', u'Data')
+        elif dir_type == AppLocation.LanguageDir:
+            return os.path.split(openlp.__file__)[0]
         return os.path.join(unicode(os.getenv(u'HOME'), encoding),
             u'Library', u'Application Support', u'openlp')
     else:
+        if dir_type == AppLocation.LanguageDir:
+            return os.path.join(u'/usr', u'share', u'openlp')
         if XDG_BASE_AVAILABLE:
             if dir_type == AppLocation.ConfigDir:
                 return os.path.join(unicode(BaseDirectory.xdg_config_home,
