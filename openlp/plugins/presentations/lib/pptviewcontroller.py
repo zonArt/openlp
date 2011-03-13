@@ -140,8 +140,10 @@ class PptviewDocument(PresentationDocument):
         PPTviewLib creates large BMP's, but we want small PNG's for consistency.
         Convert them here.
         """
+        log.debug(u'create_thumbnails')
         if self.check_thumbnails():
             return
+        log.debug(u'create_thumbnails proceeding')
         for idx in range(self.get_slide_count()):
             path = u'%s\\slide%s.bmp' % (self.get_temp_folder(),
                 unicode(idx + 1))

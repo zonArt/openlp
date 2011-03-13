@@ -27,11 +27,14 @@ VOID SaveBitmap (CHAR* filename, HBITMAP hBmp) ;
 VOID CaptureAndSaveWindow(HWND hWnd, CHAR* filename);
 BOOL GetPPTInfo(int id);
 BOOL SavePPTInfo(int id);
-
+BOOL InitPPTObject(int id, char *filename, HWND hParentWnd, 
+	RECT rect, char *previewpath);
+BOOL StartPPTView(int id);
 
 void Unhook(int id);
 
-#define MAX_PPTOBJS 50
+#define MAX_PPTOBJS 16
+#define MAX_SLIDES 256
 
 struct PPTVIEWOBJ 
 {
@@ -49,7 +52,9 @@ struct PPTVIEWOBJ
 	int currentSlide;
 	int firstSlideSteps;
 	int steps;
+	int guess;
 	char filename[MAX_PATH];
 	char previewpath[MAX_PATH];
+	int slideNo[MAX_SLIDES];
 	PPTVIEWSTATE state;
 };
