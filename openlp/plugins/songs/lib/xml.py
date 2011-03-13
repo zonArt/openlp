@@ -454,6 +454,10 @@ class OpenLyrics(object):
             verse_type_index = VerseType.from_tag(verse_name[0])
             verse_type = VerseType.Names[verse_type_index]
             verse_number = re.compile(u'[a-zA-Z]*').sub(u'', verse_name)
+            # OpenLyrics allows e. g. "c", but we need "c1". However, this does
+            # not correct the verse order.
+            if not verse_number:
+                verse_number = u'1'
             lang = None
             if self._get(verse, u'lang'):
                 lang = self._get(verse, u'lang')
