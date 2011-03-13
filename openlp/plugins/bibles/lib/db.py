@@ -69,6 +69,12 @@ class Verse(BaseModel):
     """
     pass
 
+class Spelling(BaseModel):
+    """
+    Spelling model
+    """
+    pass
+
 
 def init_schema(url):
     """
@@ -123,6 +129,29 @@ def init_schema(url):
     metadata.create_all(checkfirst=True)
     return session
 
+def init_schema_spelling_extension(url):
+    """
+    Setup a spelling database connection and initialise the database schema.
+
+    ``url``
+        The database to setup.
+    """
+    session, metadata = init_db(url)
+
+    spelling_table = Table(u'spelling', metadata,
+        Column(u'id', types.Integer, primary_key=True),
+        Column(u'book_reference_id', types.Integer),
+        Column(u'language_id', types.Integer),
+        Column(u'name', types.Unicode(50), index=True),
+    )
+
+    try:
+        class_mapper(Spelling)
+    except UnmappedClassError:
+        mapper(Spelling, spelling_table)
+
+    metadata.create_all(checkfirst=True)
+    return session
 
 class BibleDB(QtCore.QObject, Manager):
     """
@@ -592,7 +621,7 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
     @staticmethod
     def get_download_source(source):
         """
-        Return a download_source by source.
+        Return a download_source_id by source.
 
         ``name``
             The name or abbreviation of the book.
@@ -600,8 +629,6 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         if not isinstance(source, unicode):
             source = unicode(source)
         source = source.title()
-        #source = source.lower()
-        log.debug(u'Test: %s' % source)
         dl_source = BiblesResourcesDB.run_sql(u'SELECT id, source FROM '
                 u'download_source WHERE source = ?', (source.lower(),))
         if dl_source:
@@ -615,7 +642,7 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
     @staticmethod
     def get_webbibles(source):
         """
-        Return the chapter details for a specific chapter of a book.
+        Return the bibles a webbible provide for download.
 
         ``name``
             The name of the webbible.
@@ -626,13 +653,156 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
         bibles = BiblesResourcesDB.run_sql(u'SELECT id, name, abbreviation, '
             u'language_id, download_source_id FROM webbibles WHERE '
             u'download_source_id = ?', (source[u'id'],))
-        bibles_temp = []
-        for bible in bibles:
-            bibles_temp.append({
-                u'id': bible[0],
-                u'name': bible[1],
-                u'abbreviation': bible[2],
-                u'language_id': bible[3], 
-                u'download_source_id': bible[4]
-                })
-        return bibles_temp
+        if bibles:
+            bibles_temp = []
+            for bible in bibles:
+                bibles_temp.append({
+                    u'id': bible[0],
+                    u'name': bible[1],
+                    u'abbreviation': bible[2],
+                    u'language_id': bible[3], 
+                    u'download_source_id': bible[4]
+                    })
+            return bibles_temp
+        else:
+            return None
+
+    @staticmethod
+    def get_spelling(name,  language_id=None):
+        """
+        Return a book_reference_id if the name matches.
+        """
+        if language_id:
+            id = BiblesResourcesDB.run_sql(u'SELECT book_reference_id '
+                u'FROM spelling WHERE name = ? and language_id = ? ORDER BY id',
+                (name, language_id))
+        else:
+            id = BiblesResourcesDB.run_sql(u'SELECT book_reference_id '
+                u'FROM spelling WHERE name = ? ORDER BY id',  (name, ))
+        if id:
+            return int(id[0][0])
+        else:
+            return None
+
+    @staticmethod
+    def get_language(name):
+        """
+        Return a dict containing the language id, name and code by name or 
+        abbreviation.
+
+        ``name``
+            The name or abbreviation of the language.
+        """
+        if not isinstance(name, unicode):
+            name = unicode(name)
+        name = name.title()
+        language = BiblesResourcesDB.run_sql(u'SELECT id, name, code FROM '
+                u'language WHERE name = ? OR code = ?', (name, name.lower()))
+        if language:
+            return {
+                u'id': language[0][0],
+                u'name': unicode(language[0][1]),
+                u'code': unicode(language[0][2])
+            }
+        else:
+            return None
+
+    @staticmethod
+    def get_testament_reference():
+        """
+        Return a list of all testaments and their id of the Bible.
+        """
+        testaments = BiblesResourcesDB.run_sql(u'SELECT id, name FROM '
+                u'testament_reference ORDER BY id')
+        testament_list = []
+        for testament in testaments:
+            testament_list.append({
+                u'id': testament[0],
+                u'name': unicode(testament[1])
+            })
+        return testament_list
+
+class SpellingDB(QtCore.QObject, Manager):
+    """
+    This class represents a database-bound spelling. 
+    """
+
+    def __init__(self, parent, **kwargs):
+        """
+        The constructor loads up the database and creates and initialises the
+        tables if the database doesn't exist.
+
+        **Required keyword arguments:**
+
+        ``path``
+            The path to the bible database file.
+
+        ``name``
+            The name of the database. This is also used as the file name for
+            SQLite databases.
+        """
+        log.info(u'SpellingDB loaded')
+        QtCore.QObject.__init__(self)
+        self.bible_plugin = parent
+        if u'path' not in kwargs:
+            raise KeyError(u'Missing keyword argument "path".')
+        self.stop_import_flag = False
+        self.name = u'spelling_extension.sqlite'
+        if not isinstance(self.name, unicode):
+            self.name = unicode(self.name, u'utf-8')
+        self.file = self.name
+        Manager.__init__(self, u'bibles/resources', 
+            init_schema_spelling_extension, self.file)
+        self.wizard = None
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
+
+    def stop_import(self):
+        """
+        Stops the import of the Bible.
+        """
+        log.debug(u'Stopping import')
+        self.stop_import_flag = True
+
+    def get_book_reference_id(self, name,  language=None):
+        """
+        Return the book_reference_id of a name.
+
+        ``name``
+            The name to search the id.
+            
+        ``language``
+            The language for which should be searched
+        """
+        log.debug(u'SpellingDB.get_book_reference_id("%s")', name)
+        if language:
+            id = self.session.query(Spelling.book_reference_id)\
+                .filter(Spelling.name.like(name))\
+                .filter(Spelling.language_id.like(language)).first()
+        else:
+            id = self.get_object_filtered(Spelling.book_reference_id,
+                Spelling.name.like(name))
+        if not id:
+            return None
+        else:
+            return id
+
+    def create_spelling(self, name, book_reference_id, language_id):
+        """
+        Add a spelling to the database.
+
+        ``name``
+            The name of the spelling.
+
+        ``book_reference_id``
+            The book_reference_id of the book.
+
+        ``language_id``
+            The language which the spelling of the book name is.
+        """
+        log.debug(u'create_spelling %s, book_reference_id:%s, language_id:%s', 
+            name, book_reference_id, language_id)
+        spelling = Spelling.populate(name=name, 
+            book_reference_id=book_reference_id, language_id=language_id)
+        self.save_object(spelling)
+        return spelling

@@ -31,7 +31,8 @@ from PyQt4 import QtCore
 from openlp.core.lib import Receiver, SettingsManager, translate
 from openlp.core.utils import AppLocation
 from openlp.plugins.bibles.lib import parse_reference
-from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
+from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta, SpellingDB,  \
+    Spelling,  BiblesResourcesDB
 
 from csvbible import CSVBible
 from http import HTTPBible
@@ -129,6 +130,7 @@ class BibleManager(object):
         self.suffix = u'.sqlite'
         self.import_wizard = None
         self.reload_bibles()
+        self.reload_spelling()
         self.media = None
 
     def reload_bibles(self):
@@ -161,6 +163,24 @@ class BibleManager(object):
                     web_bible.proxy_server = meta_proxy.value
                 self.db_cache[name] = web_bible
         log.debug(u'Bibles reloaded')
+
+    def reload_spelling(self):
+        """
+        Reloads the Spelling from the Spelling table and spelling_extension 
+        database on disk.
+        """
+        log.debug(u'Reload spelling')
+        self.spelling_cache = {}
+        self.spelling_cache[u'spelling'] = SpellingDB(self.parent, 
+            path=self.path)
+        #db_spelling = self.spelling_cache[u'spelling'].get_book_reference_id(u'Markus', 40)
+        #db_spelling = BiblesResourcesDB.get_spelling(u'1.Mose',  30)
+        #db_spelling = BiblesResourcesDB.get_language(u'de')
+        #db_spelling = BiblesResourcesDB.get_books()
+        #db_spelling = BiblesResourcesDB.get_testament_reference()
+        #db_spelling = self.spelling_cache[u'spelling'] .create_spelling(u'Johannes', 43, 40)
+        #log.debug(u'Spellings: %s' % db_spelling)
+        log.debug(u'Spelling reloaded')
 
     def set_process_dialog(self, wizard):
         """
