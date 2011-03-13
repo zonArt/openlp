@@ -16,4 +16,3 @@ Contents:
    dualmonitors
    mediamanager
    songs
-
