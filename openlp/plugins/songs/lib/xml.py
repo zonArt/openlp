@@ -444,7 +444,6 @@ class OpenLyrics(object):
         """
         sxml = SongXML()
         search_text = u''
-        temp_verse_order = []
         for verse in lyrics.verse:
             text = u''
             for lines in verse.lines:
@@ -455,11 +454,6 @@ class OpenLyrics(object):
             verse_type_index = VerseType.from_tag(verse_name[0])
             verse_type = VerseType.Names[verse_type_index]
             verse_number = re.compile(u'[a-zA-Z]*').sub(u'', verse_name)
-            verse_part = re.compile(u'[0-9]*').sub(u'', verse_name[1:])
-            # OpenLyrics allows e. g. "c", but we need "c1".
-            if not verse_number:
-                verse_number = u'1'
-            temp_verse_order.append((verse_type, verse_number, verse_part))
             lang = None
             if self._get(verse, u'lang'):
                 lang = self._get(verse, u'lang')
@@ -470,24 +464,6 @@ class OpenLyrics(object):
         # Process verse order
         if hasattr(properties, u'verseOrder'):
             song.verse_order = self._text(properties.verseOrder)
-        else:
-            # We have to process the temp_verse_order, as the verseOrder
-            # property is not present.
-            previous_type = u''
-            previous_number = u''
-            previous_part = u''
-            verse_order = []
-            # Currently we do not support different "parts"!
-            for name in temp_verse_order:
-                if name[0] == previous_type:
-                    if name[1] != previous_number:
-                        verse_order.append(u''.join((name[0][0], name[1])))
-                else:
-                    verse_order.append(u''.join((name[0][0], name[1])))
-                previous_type = name[0]
-                previous_number = name[1]
-                previous_part = name[2]
-            song.verse_order = u' '.join(verse_order)
 
     def _process_songbooks(self, properties, song):
         """
