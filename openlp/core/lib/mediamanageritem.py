@@ -349,11 +349,11 @@ class MediaManagerItem(QtGui.QWidget):
         Validates whether an image still exists and, if it does, is the
         thumbnail representation of the image up to date.
         """
-        if not os.path.exists(image):
+        if not os.path.exists(unicode(image)):
             return False
         if os.path.exists(thumb):
-            imageDate = os.stat(image).st_mtime
-            thumbDate = os.stat(thumb).st_mtime
+            imageDate = os.stat(unicode(image)).st_mtime
+            thumbDate = os.stat(unicode(thumb)).st_mtime
             # If image has been updated rebuild icon
             if imageDate > thumbDate:
                 self.iconFromFile(image, thumb)

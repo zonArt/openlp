@@ -53,8 +53,7 @@ class SongsPlugin(Plugin):
         """
         Create and set up the Songs plugin.
         """
-        Plugin.__init__(self, u'Songs', u'1.9.4', plugin_helpers,
-            SongMediaItem, SongsTab)
+        Plugin.__init__(self, u'Songs', plugin_helpers, SongMediaItem, SongsTab)
         self.weight = -10
         self.manager = Manager(u'songs', init_schema)
         self.icon_path = u':/plugins/plugin_songs.png'
@@ -154,7 +153,7 @@ class SongsPlugin(Plugin):
             if song.alternate_title is None:
                 song.alternate_title = u''
             song.search_title = self.whitespace.sub(u' ', song.title.lower() +
-                u' ' + song.alternate_title.lower())
+                u' ' + song.alternate_title.lower()).strip()
             # Remove the "language" attribute from lyrics tag. This is not very
             # important, but this keeps the database clean. This can be removed
             # when everybody has run the reindex tool once.

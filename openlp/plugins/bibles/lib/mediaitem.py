@@ -449,8 +449,7 @@ class BibleMediaItem(MediaManagerItem):
         if restore:
             old_text = unicode(combo.currentText())
         combo.clear()
-        for i in range(range_from, range_to + 1):
-            combo.addItem(unicode(i))
+        combo.addItems([unicode(i) for i in range(range_from, range_to + 1)])
         if restore and combo.findText(old_text) != -1:
             combo.setCurrentIndex(combo.findText(old_text))
 
@@ -636,7 +635,6 @@ class BibleMediaItem(MediaManagerItem):
         bible_text = u''
         old_item = None
         old_chapter = -1
-        raw_footer = []
         raw_slides = []
         raw_title = []
         for item in items:
@@ -657,13 +655,13 @@ class BibleMediaItem(MediaManagerItem):
             second_text = self._decodeQtObject(bitem, 'second_text')
             verse_text = self.formatVerse(old_chapter, chapter, verse)
             footer = u'%s (%s %s %s)' % (book, version, copyright, permissions)
-            if footer not in raw_footer:
-                raw_footer.append(footer)
+            if footer not in service_item.raw_footer:
+                service_item.raw_footer.append(footer)
             if second_bible:
                 footer = u'%s (%s %s %s)' % (book, second_version,
                     second_copyright, second_permissions)
-                if footer not in raw_footer:
-                    raw_footer.append(footer)
+                if footer not in service_item.raw_footer:
+                    service_item.raw_footer.append(footer)
                 bible_text = u'%s&nbsp;%s\n\n%s&nbsp;%s' % (verse_text, text,
                     verse_text, second_text)
                 raw_slides.append(bible_text.rstrip())
@@ -705,13 +703,7 @@ class BibleMediaItem(MediaManagerItem):
             service_item.theme = None
         else:
             service_item.theme = self.settings.bible_theme
-        for slide in raw_slides:
-            service_item.add_from_text(slide[:30], slide)
-        if service_item.raw_footer:
-            for footer in raw_footer:
-                service_item.raw_footer.append(footer)
-        else:
-            service_item.raw_footer = raw_footer
+        [service_item.add_from_text(slide[:30], slide) for slide in raw_slides]
         return True
 
     def formatTitle(self, start_item, old_item):
@@ -750,8 +742,7 @@ class BibleMediaItem(MediaManagerItem):
         else:
             verse_range = start_chapter + verse_separator + start_verse + \
                 range_separator + old_chapter + verse_separator + old_verse
-        title = u'%s %s (%s)' % (start_book, verse_range, bibles)
-        return title
+        return u'%s %s (%s)' % (start_book, verse_range, bibles)
 
     def checkTitle(self, item, old_item):
         """
