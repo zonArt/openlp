@@ -346,7 +346,7 @@ class BibleMediaItem(MediaManagerItem):
             self.advancedSearchButton.setEnabled(False)
             critical_error_message_box(
                 message=translate('BiblePlugin.MediaItem',
-                'Bible not fully loaded'))
+                'Bible not fully loaded.'))
         else:
             self.advancedSearchButton.setEnabled(True)
             self.adjustComboBox(1, self.chapter_count, self.advancedFromChapter)
@@ -449,8 +449,7 @@ class BibleMediaItem(MediaManagerItem):
         if restore:
             old_text = unicode(combo.currentText())
         combo.clear()
-        for i in range(range_from, range_to + 1):
-            combo.addItem(unicode(i))
+        combo.addItems([unicode(i) for i in range(range_from, range_to + 1)])
         if restore and combo.findText(old_text) != -1:
             combo.setCurrentIndex(combo.findText(old_text))
 
@@ -539,8 +538,9 @@ class BibleMediaItem(MediaManagerItem):
             self.displayResults(bible, second_bible)
         elif critical_error_message_box(
             message=translate('BiblePlugin.MediaItem',
-            'You cannot combine single and second bible verses. Do you '
-            'want to delete your search results and start a new search?'),
+            'You cannot combine single and dual Bible verse search results. '
+            'Do you want to delete your search results and start a new '
+            'search?'),
             parent=self, question=True) == QtGui.QMessageBox.Yes:
             self.listView.clear()
             self.displayResults(bible, second_bible)
@@ -703,8 +703,7 @@ class BibleMediaItem(MediaManagerItem):
             service_item.theme = None
         else:
             service_item.theme = self.settings.bible_theme
-        for slide in raw_slides:
-            service_item.add_from_text(slide[:30], slide)
+        [service_item.add_from_text(slide[:30], slide) for slide in raw_slides]
         return True
 
     def formatTitle(self, start_item, old_item):
@@ -743,8 +742,7 @@ class BibleMediaItem(MediaManagerItem):
         else:
             verse_range = start_chapter + verse_separator + start_verse + \
                 range_separator + old_chapter + verse_separator + old_verse
-        title = u'%s %s (%s)' % (start_book, verse_range, bibles)
-        return title
+        return u'%s %s (%s)' % (start_book, verse_range, bibles)
 
     def checkTitle(self, item, old_item):
         """

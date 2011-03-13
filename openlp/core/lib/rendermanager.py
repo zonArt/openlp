@@ -69,7 +69,6 @@ class RenderManager(object):
         self.image_manager = ImageManager()
         self.display = MainDisplay(self, screens, False)
         self.display.imageManager = self.image_manager
-        self.display.setup()
         self.theme_manager = theme_manager
         self.renderer = Renderer()
         self.calculate_default(self.screens.current[u'size'])
