@@ -51,7 +51,7 @@ class PresentationPlugin(Plugin):
         """
         log.debug(u'Initialised')
         self.controllers = {}
-        Plugin.__init__(self, u'Presentations', u'1.9.4', plugin_helpers)
+        Plugin.__init__(self, u'Presentations', plugin_helpers)
         self.weight = -8
         self.icon_path = u':/plugins/plugin_presentations.png'
         self.icon = build_icon(self.icon_path)
