@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -557,7 +557,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         """
         Check the validity of the song.
         """
-        # This checks data in the form *not* self.song.  self.song is still
+        # This checks data in the form *not* self.song. self.song is still
         # None at this point.
         log.debug(u'Validate Song')
         # Lets be nice and assume the data is correct.
@@ -677,8 +677,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             A button (QPushButton).
         """
         log.debug(u'onPreview')
-        if unicode(button.objectName()) == u'previewButton' and \
-            self.saveSong(True):
+        if unicode(button.objectName()) == u'previewButton':
+            self.saveSong(True)
             Receiver.send_message(u'songs_preview')
 
     def clearCaches(self):
@@ -714,14 +714,14 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def saveSong(self, preview=False):
         """
         Get all the data from the widgets on the form, and then save it to the
-        database.  The form has been validated and all reference items
+        database. The form has been validated and all reference items
         (Authors, Books and Topics) have been saved before this function is
         called.
 
         ``preview``
             Should be ``True`` if the song is also previewed (boolean).
         """
-        # The Song() assignment.  No database calls should be made while a
+        # The Song() assignment. No database calls should be made while a
         # Song() is in a partially complete state.
         if not self.song:
             self.song = Song()
@@ -810,4 +810,4 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         # This method must only be run after the self.song = Song() assignment.
         log.debug(u'processTitle')
         self.song.search_title = re.sub(r'[\'"`,;:(){}?]+', u'',
-            unicode(self.song.search_title)).lower()
+            unicode(self.song.search_title)).lower().strip()

@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -40,21 +40,11 @@ from osis import OSISBible
 # Imports that might fail.
 try:
     from openlp1 import OpenLP1Bible
-    has_openlp1 = True
+    HAS_OPENLP1 = True
 except ImportError:
-    has_openlp1 = False
+    HAS_OPENLP1 = False
 
 log = logging.getLogger(__name__)
-
-class BibleMode(object):
-    """
-    This is basically an enumeration class which specifies the mode of a Bible.
-    Mode refers to whether or not a Bible in OpenLP is a full Bible or needs to
-    be downloaded from the Internet on an as-needed basis.
-    """
-    Full = 1
-    Partial = 2
-
 
 class BibleFormat(object):
     """
@@ -260,7 +250,7 @@ class BibleManager(object):
         if not bible:
             Receiver.send_message(u'openlp_information_message', {
                 u'title': translate('BiblesPlugin.BibleManager',
-                'No Bibles available'),
+                'No Bibles Available'),
                 u'message': translate('BiblesPlugin.BibleManager',
                 'There are no Bibles currently installed. Please use the '
                 'Import Wizard to install one or more Bibles.')
@@ -275,7 +265,7 @@ class BibleManager(object):
                 'Scripture Reference Error'),
                 u'message': translate('BiblesPlugin.BibleManager',
                 'Your scripture reference is either not supported by OpenLP '
-                'or is invalid.  Please make sure your reference conforms to '
+                'or is invalid. Please make sure your reference conforms to '
                 'one of the following patterns:\n\n'
                 'Book Chapter\n'
                 'Book Chapter-Chapter\n'
@@ -367,6 +357,6 @@ class BibleManager(object):
         for bible in self.db_cache:
             self.db_cache[bible].finalise()
 
-BibleFormat.set_availability(BibleFormat.OpenLP1, has_openlp1)
+BibleFormat.set_availability(BibleFormat.OpenLP1, HAS_OPENLP1)
 
 __all__ = [u'BibleFormat']

@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -226,7 +226,7 @@ class SongExportForm(OpenLPWizard):
                     translate('SongsPlugin.ExportWizardForm',
                     'No Save Location specified'),
                     translate('SongsPlugin.ExportWizardForm',
-                    'You need to specified a directory to save the songs in.'))
+                    'You need to specify a directory.'))
                 return False
             return True
         elif self.currentPage() == self.progressPage:
@@ -355,7 +355,8 @@ class SongExportForm(OpenLPWizard):
         the path to *directoryLineEdit*.
         """
         path = unicode(QtGui.QFileDialog.getExistingDirectory(self,
-            translate('SongsPlugin.ExportWizardForm', 'Selecte to Folder'),
+            translate('SongsPlugin.ExportWizardForm',
+            'Select Destination Folder'),
             SettingsManager.get_last_dir(self.plugin.settingsSection, 1),
             options=QtGui.QFileDialog.ShowDirsOnly))
         SettingsManager.set_last_dir(self.plugin.settingsSection, path, 1)
