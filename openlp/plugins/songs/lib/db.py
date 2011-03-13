@@ -256,7 +256,7 @@ def init_schema(url):
     mapper(Song, songs_table,
         properties={
             'authors': relation(Author, backref='songs',
-                secondary=authors_songs_table),
+                secondary=authors_songs_table, lazy=False),
             'book': relation(Book, backref='songs'),
             'media_files': relation(MediaFile, backref='songs',
                 secondary=media_files_songs_table),

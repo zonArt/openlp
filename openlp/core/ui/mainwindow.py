@@ -232,7 +232,7 @@ class Ui_MainWindow(object):
         self.LanguageGroup = QtGui.QActionGroup(mainWindow)
         self.LanguageGroup.setExclusive(True)
         self.LanguageGroup.setObjectName(u'LanguageGroup')
-        self.LanguageGroup.setDisabled(LanguageManager.auto_language)
+        add_actions(self.LanguageGroup, [self.AutoLanguageItem])
         qmList = LanguageManager.get_qm_list()
         savedLanguage = LanguageManager.get_language()
         for key in sorted(qmList.keys()):
@@ -425,14 +425,14 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', '&Online Help'))
         self.helpWebSiteItem.setText(
             translate('OpenLP.MainWindow', '&Web Site'))
-        self.AutoLanguageItem.setText(
-            translate('OpenLP.MainWindow', '&Auto Detect'))
-        self.AutoLanguageItem.setStatusTip(translate('OpenLP.MainWindow',
-            'Use the system language, if available.'))
         for item in self.LanguageGroup.actions():
             item.setText(item.objectName())
             item.setStatusTip(unicode(translate('OpenLP.MainWindow',
                 'Set the interface language to %s')) % item.objectName())
+        self.AutoLanguageItem.setText(
+            translate('OpenLP.MainWindow', '&Autodetect'))
+        self.AutoLanguageItem.setStatusTip(translate('OpenLP.MainWindow',
+            'Use the system language, if available.'))
         self.ToolsAddToolItem.setText(
             translate('OpenLP.MainWindow', 'Add &Tool...'))
         self.ToolsAddToolItem.setStatusTip(translate('OpenLP.MainWindow',
@@ -461,7 +461,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     actionList = ActionList()
 
-    def __init__(self, screens, applicationVersion, clipboard):
+    def __init__(self, screens, applicationVersion, clipboard, firstTime):
         """
         This constructor sets up the interface, the various managers, and the
         plugins.
@@ -550,8 +550,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'triggered()'),
             self.ServiceManagerContents.printServiceOrder)
         # i18n set signals for languages
-        QtCore.QObject.connect(self.AutoLanguageItem,
-            QtCore.SIGNAL(u'toggled(bool)'), self.setAutoLanguage)
         self.LanguageGroup.triggered.connect(LanguageManager.set_language)
         QtCore.QObject.connect(self.ModeDefaultItem,
             QtCore.SIGNAL(u'triggered()'), self.onModeDefaultItemClicked)
@@ -626,6 +624,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 self.MediaToolBox.setCurrentIndex(savedPlugin)
         self.settingsForm.postSetUp()
         Receiver.send_message(u'cursor_normal')
+        # Import themes if first time
+        if firstTime:
+            self.themeManagerContents.firstTime()
+
 
     def setAutoLanguage(self, value):
         self.LanguageGroup.setDisabled(value)

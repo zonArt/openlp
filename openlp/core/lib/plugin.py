@@ -114,8 +114,8 @@ class Plugin(QtCore.QObject):
     """
     log.info(u'loaded')
 
-    def __init__(self, name, version=None, pluginHelpers=None,
-        mediaItemClass=None, settingsTabClass=None):
+    def __init__(self, name, pluginHelpers=None, mediaItemClass=None,
+        settingsTabClass=None, version=None):
         """
         This is the constructor for the plugin object. This provides an easy
         way for descendent plugins to populate common data. This method *must*
@@ -123,7 +123,7 @@ class Plugin(QtCore.QObject):
 
             class MyPlugin(Plugin):
                 def __init__(self):
-                    Plugin.__init__(self, u'MyPlugin', u'0.1')
+                    Plugin.__init__(self, u'MyPlugin', version=u'0.1')
 
         ``name``
             Defaults to *None*. The name of the plugin.
@@ -145,8 +145,7 @@ class Plugin(QtCore.QObject):
         self.textStrings = {}
         self.setPluginTextStrings()
         self.nameStrings = self.textStrings[StringContent.Name]
-        if version:
-            self.version = version
+        self.version = version if version else u'1.9.4'
         self.settingsSection = self.name.lower()
         self.icon = None
         self.mediaItemClass = mediaItemClass

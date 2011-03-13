@@ -36,6 +36,8 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Receiver, check_directory_exists
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
+from openlp.core.ui.firsttimelanguageform import FirstTimeLanguageForm
+from openlp.core.ui.firsttimeform import FirstTimeForm
 from openlp.core.ui.exceptionform import ExceptionForm
 from openlp.core.ui import SplashScreen, ScreenList
 from openlp.core.utils import AppLocation, LanguageManager, VersionThread
@@ -165,6 +167,13 @@ class OpenLP(QtGui.QApplication):
         self.setOrganizationDomain(u'openlp.org')
         self.setApplicationName(u'OpenLP')
         self.setApplicationVersion(app_version[u'version'])
+        # Decide how many screens we have and their size
+        screens = ScreenList(self.desktop())
+        # First time checks in settings
+        has_run_wizard = QtCore.QSettings().value(
+            u'general/has run wizard', QtCore.QVariant(False)).toBool()
+        if not has_run_wizard:
+            FirstTimeForm(screens).exec_()
         if os.name == u'nt':
             self.setStyleSheet(application_stylesheet)
         show_splash = QtCore.QSettings().value(
@@ -174,11 +183,9 @@ class OpenLP(QtGui.QApplication):
             self.splash.show()
         # make sure Qt really display the splash screen
         self.processEvents()
-        # Decide how many screens we have and their size
-        screens = ScreenList(self.desktop())
         # start the main app window
-        self.appClipboard = self.clipboard()
-        self.mainWindow = MainWindow(screens, app_version, self.appClipboard)
+        self.mainWindow = MainWindow(screens, app_version, self.clipboard(),
+            not has_run_wizard)
         self.mainWindow.show()
         if show_splash:
             # now kill the splashscreen
@@ -262,10 +269,19 @@ def main():
     qInitResources()
     # Now create and actually run the application.
     app = OpenLP(qt_args)
-    if sys.platform == 'darwin':
+    # Define the settings environment
+    settings = QtCore.QSettings(u'OpenLP', u'OpenLP')
+    # First time checks in settings
+    # Use explicit reference as not inside a QT environment yet
+    if not settings.value(u'general/has run wizard',
+        QtCore.QVariant(False)).toBool():
+        if not FirstTimeLanguageForm().exec_():
+            # if cancel then stop processing
+            sys.exit()
+    if sys.platform == u'darwin':
         OpenLP.addLibraryPath(QtGui.QApplication.applicationDirPath()
             + "/qt4_plugins")
-    #i18n Set Language
+    # i18n Set Language
     language = LanguageManager.get_language()
     appTranslator = LanguageManager.get_translator(language)
     app.installTranslator(appTranslator)
