@@ -251,8 +251,7 @@ class SongsPlugin(Plugin):
             importer = OpenLPSongImport(self.manager, filename=db)
             importer.do_import()
         progress.setValue(len(song_dbs))
-        self.mediaItem.displayResultsSong(
-            self.manager.get_all_objects(Song, order_by_ref=Song.search_title))
+        self.mediaItem.onSearchTextButtonClick()
 
     def finalise(self):
         """
