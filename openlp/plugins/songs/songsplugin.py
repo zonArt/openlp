@@ -260,7 +260,7 @@ class SongsPlugin(Plugin):
                 song_dbs.append(os.path.join(db_dir, sfile))
         progress = QtGui.QProgressDialog(self.formparent)
         progress.setWindowModality(QtCore.Qt.WindowModal)
-        progress.setLabelText(translate('SongsPlugin', 'Importing songs...'))
+        progress.setLabelText(translate('OpenLP.Ui', 'Starting import...'))
         progress.setCancelButton(None)
         progress.setRange(0, len(song_dbs))
         progress.setMinimumDuration(0)
@@ -273,6 +273,7 @@ class SongsPlugin(Plugin):
         progress.setValue(len(song_dbs))
         self.mediaItem.displayResultsSong(
             self.manager.get_all_objects(Song, order_by_ref=Song.search_title))
+        self.onToolsReindexItemTriggered()
 
     def finalise(self):
         """
