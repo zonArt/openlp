@@ -138,6 +138,8 @@ class SongsPlugin(Plugin):
         Rebuild each song.
         """
         maxSongs = self.manager.get_object_count(Song)
+        if maxSongs == 0:
+            return
         progressDialog = QtGui.QProgressDialog(
             translate('SongsPlugin', 'Reindexing songs...'), UiStrings.Cancel,
             0, maxSongs, self.formparent)
@@ -233,6 +235,7 @@ class SongsPlugin(Plugin):
             if sfile.startswith(u'songs_') and sfile.endswith(u'.sqlite'):
                 song_dbs.append(os.path.join(db_dir, sfile))
         if len(song_dbs) == 0:
+            self.onToolsReindexItemTriggered()
             return
         progress = QtGui.QProgressDialog(self.formparent)
         progress.setWindowModality(QtCore.Qt.WindowModal)
@@ -241,6 +244,7 @@ class SongsPlugin(Plugin):
         progress.setRange(0, len(song_dbs))
         progress.setMinimumDuration(0)
         progress.forceShow()
+        self.onToolsReindexItemTriggered()
         for idx, db in enumerate(song_dbs):
             progress.setValue(idx)
             Receiver.send_message(u'openlp_process_events')
@@ -249,7 +253,6 @@ class SongsPlugin(Plugin):
         progress.setValue(len(song_dbs))
         self.mediaItem.displayResultsSong(
             self.manager.get_all_objects(Song, order_by_ref=Song.search_title))
-        self.onToolsReindexItemTriggered()
 
     def finalise(self):
         """
