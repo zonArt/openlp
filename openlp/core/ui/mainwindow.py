@@ -678,6 +678,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 plugin.firstTime()
         Receiver.send_message(u'openlp_process_events')
         temp_dir = os.path.join(unicode(gettempdir()), u'openlp')
+        if not os.path.isdir(temp_dir):
+            return
         for filename in os.listdir(temp_dir):
             os.remove(os.path.join(temp_dir, filename))
         os.removedirs(temp_dir)

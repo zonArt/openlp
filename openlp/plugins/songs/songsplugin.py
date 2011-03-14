@@ -255,6 +255,8 @@ class SongsPlugin(Plugin):
         """
         db_dir = unicode(os.path.join(gettempdir(), u'openlp'))
         song_dbs = []
+        if not os.path.isdir(db_dir):
+            return
         for sfile in os.listdir(db_dir):
             if sfile.startswith(u'songs_') and sfile.endswith(u'.sqlite'):
                 song_dbs.append(os.path.join(db_dir, sfile))
