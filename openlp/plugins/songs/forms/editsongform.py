@@ -33,7 +33,7 @@ from openlp.core.lib import Receiver, translate
 from openlp.core.lib.ui import UiStrings, add_widget_completer, \
     critical_error_message_box
 from openlp.plugins.songs.forms import EditVerseForm
-from openlp.plugins.songs.lib import SongXML, VerseType
+from openlp.plugins.songs.lib import SongXML, VerseType, clean_song
 from openlp.plugins.songs.lib.db import Book, Song, Author, Topic
 from openlp.plugins.songs.lib.ui import SongStrings
 from editsongdialog import Ui_EditSongDialog
@@ -728,17 +728,12 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.song.title = unicode(self.titleEdit.text())
         self.song.alternate_title = unicode(self.alternativeEdit.text())
         self.song.copyright = unicode(self.copyrightEdit.text())
-        if self.song.alternate_title:
-            self.song.search_title = self.song.title + u'@' + \
-                self.song.alternate_title
-        else:
-            self.song.search_title = self.song.title
+        self.song.search_title = u''
         self.song.comments = unicode(self.commentsEdit.toPlainText())
         ordertext = unicode(self.verseOrderEdit.text())
         order = []
         for item in ordertext.split():
-            verse_tag = VerseType.Tags[
-                VerseType.from_translated_tag(item[0])]
+            verse_tag = VerseType.Tags[VerseType.from_translated_tag(item[0])]
             verse_num = item[1:].lower()
             order.append(u'%s%s' % (verse_tag, verse_num))
         self.song.verse_order = u' '.join(order)
@@ -788,6 +783,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 verse_num = verseId[1:]
                 sxml.add_verse_to_lyrics(verse_tag, verse_num,
                     unicode(item.text()))
+                # FIXME
                 text = text + self.whitespace.sub(u' ',
                     unicode(self.verseListWidget.item(i, 0).text())) + u' '
                 if (verse_num > u'1') and (verse_tag not in multiple):
@@ -809,5 +805,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         """
         # This method must only be run after the self.song = Song() assignment.
         log.debug(u'processTitle')
+        # FIXME
         self.song.search_title = re.sub(r'[\'"`,;:(){}?]+', u'',
             unicode(self.song.search_title)).lower().strip()
