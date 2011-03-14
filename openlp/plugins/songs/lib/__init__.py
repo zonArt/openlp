@@ -23,6 +23,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+import re
 
 from PyQt4 import QtGui
 
@@ -244,9 +245,11 @@ def retrieve_windows_encoding(recommendation=None):
         return None
     return filter(lambda item: item[1] == choice[0], encodings)[0][0]
 
-def add_author_unknown(manager, song):
+def clean_song(manager, song):
     """
-    Add the default author *Author Unknown* to the song.
+    Cleans the serach title, rebuilds the serach lyrics, adds a default author
+    if the song does not have one and other clean ups. This should alsways
+    called when a new song is added.
 
     ``manager``
         The song's manager.
@@ -254,12 +257,30 @@ def add_author_unknown(manager, song):
     ``song``
         The song object.
     """
-    name = SongStrings.AuthorUnknown
-    author = manager.get_object_filtered(Author, Author.display_name == name)
-    if author is None:
-        author = Author.populate(
-            display_name=name, last_name=u'', first_name=u'')
-    song.authors.append(author)
+    # The song does not have any author, add one.
+    if not song.authors:
+        name = SongStrings.AuthorUnknown
+        author = manager.get_object_filtered(
+            Author, Author.display_name == name)
+        if author is None:
+            author = Author.populate(
+                display_name=name, last_name=u'', first_name=u'')
+        song.authors.append(author)
+    song.title = song.title.strip() if song.title else u''
+    if song.alternate_title is None:
+        song.alternate_title = u''
+    song.alternate_title = song.alternate_title.strip()
+    whitespace = re.compile(r'\W+', re.UNICODE)
+    search_title = (whitespace.sub(u' ', song.title.lower()) +
+        u'@' + whitespace.sub(u' ', song.alternate_title.lower())).strip()
+    song.search_title = search_title if search_title else u''
+    # Remove the "language" attribute from lyrics tag. This is not very
+    # important, but this keeps the database clean. This can be removed
+    # when everybody has cleaned his songs.
+    song.lyrics = song.lyrics.replace(u'<lyrics language="en">', u'<lyrics>')
+    verses = SongXML().get_verses(song.lyrics)
+    lyrics = u' '.join([whitespace.sub(u' ', verse[1]) for verse in verses])
+    song.search_lyrics = lyrics.lower()
 
 from xml import OpenLyrics, SongXML
 from songstab import SongsTab

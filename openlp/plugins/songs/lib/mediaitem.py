@@ -268,9 +268,8 @@ class SongMediaItem(MediaManagerItem):
             Receiver.send_message(u'songs_load_list')
 
     def onExportClick(self):
-        if not hasattr(self, u'export_wizard'):
-            self.export_wizard = SongExportForm(self, self.parent)
-        self.export_wizard.exec_()
+        export_wizard = SongExportForm(self, self.parent)
+        export_wizard.exec_()
 
     def onNewClick(self):
         log.debug(u'onNewClick')
@@ -414,7 +413,7 @@ class SongMediaItem(MediaManagerItem):
 
     def serviceLoad(self, item):
         """
-        Triggered by a song being loaded by the service item
+        Triggered by a song being loaded by the service manager.
         """
         log.debug(u'serviceLoad')
         if self.plugin.status != PluginStatus.Active or not item.data_string:
@@ -435,8 +434,7 @@ class SongMediaItem(MediaManagerItem):
             for song in search_results:
                 same_authors = True
                 # If the author counts are different, we do not have to do any
-                # further checking. This is also important when a song does not
-                # have any author (because we can not loop over an empty list).
+                # further checking.
                 if len(song.authors) == len(author_list):
                     for author in song.authors:
                         if author.display_name not in author_list:

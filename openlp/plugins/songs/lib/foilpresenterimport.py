@@ -94,7 +94,7 @@ import os
 from lxml import etree, objectify
 
 from openlp.core.ui.wizard import WizardStrings
-from openlp.plugins.songs.lib import add_author_unknown, VerseType
+from openlp.plugins.songs.lib import clean_song, VerseType
 from openlp.plugins.songs.lib.songimport import SongImport
 from openlp.plugins.songs.lib.db import Author, Book, Song, Topic
 from openlp.plugins.songs.lib.xml import SongXML
@@ -229,6 +229,7 @@ class FoilPresenter(object):
         self._process_authors(foilpresenterfolie, song)
         self._process_songbooks(foilpresenterfolie, song)
         self._process_topics(foilpresenterfolie, song)
+        clean_song(self.manager, song)
         self.manager.save_object(song)
         return song.id
 
@@ -348,8 +349,6 @@ class FoilPresenter(object):
                     first_name = u' '.join(display_name.split(u' ')[:-1]))
                 self.manager.save_object(author)
             song.authors.append(author)
-        if not song.authors:
-            add_author_unknown(self.manager, song)
 
     def _process_cclinumber(self, foilpresenterfolie, song):
         """
@@ -407,7 +406,6 @@ class FoilPresenter(object):
             The song object.
         """
         sxml = SongXML()
-        search_text = u''
         temp_verse_order = {}
         temp_verse_order_backup = []
         temp_sortnr_backup = 1
@@ -452,7 +450,6 @@ class FoilPresenter(object):
             else:
                 verse_type = u'O'
             verse_number = re.compile(u'[a-zA-Z.+-_ ]*').sub(u'', verse_name)
-            #verse_part = re.compile(u'[0-9]*').sub(u'', verse_name[1:])
             # Foilpresenter allows e. g. "C", but we need "C1".
             if not verse_number:
                 verse_number = unicode(versenumber[verse_type])
@@ -470,8 +467,6 @@ class FoilPresenter(object):
             temp_verse_order_backup.append(u''.join((verse_type[0],
                 verse_number)))
             sxml.add_verse_to_lyrics(verse_type, verse_number, text)
-            search_text = search_text + text
-        song.search_lyrics = search_text.lower()
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
         # Process verse order
         verse_order = []
@@ -487,6 +482,7 @@ class FoilPresenter(object):
                 numberx = temp_sortnr_liste[int(number)]
                 verse_order.append(temp_verse_order[unicode(numberx)])
         song.verse_order = u' '.join(verse_order)
+        song.search_lyrics = u''
 
     def _process_songbooks(self, foilpresenterfolie, song):
         """
@@ -534,13 +530,10 @@ class FoilPresenter(object):
         for titelstring in foilpresenterfolie.titel.titelstring:
             if not song.title:
                 song.title = self._child(titelstring)
-                song.search_title = unicode(song.title)
                 song.alternate_title = u''
             else:
                 song.alternate_title = self._child(titelstring)
-                song.search_title += u'@' + song.alternate_title
-        song.search_title = re.sub(r'[\'"`,;:(){}?]+', u'',
-            unicode(song.search_title)).lower().strip()
+        song.search_title = u''
 
     def _process_topics(self, foilpresenterfolie, song):
         """
@@ -565,10 +558,3 @@ class FoilPresenter(object):
                     song.topics.append(topic)
         except AttributeError:
             pass
-
-    def _dump_xml(self, xml):
-        """
-        Debugging aid to dump XML so that we can see what we have.
-        """
-        return etree.tostring(xml, encoding=u'UTF-8',
-            xml_declaration=True, pretty_print=True)
