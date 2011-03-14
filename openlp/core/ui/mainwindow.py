@@ -25,6 +25,8 @@
 ###############################################################################
 
 import logging
+import os
+from tempfile import gettempdir
 
 from PyQt4 import QtCore, QtGui
 
@@ -461,14 +463,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     actionList = ActionList()
 
-    def __init__(self, screens, applicationVersion, clipboard, firstTime):
+    def __init__(self, screens, applicationVersion, clipboard):
         """
         This constructor sets up the interface, the various managers, and the
         plugins.
         """
         QtGui.QMainWindow.__init__(self)
         self.screens = screens
-        self.actionList = ActionList()
         self.applicationVersion = applicationVersion
         self.clipboard = clipboard
         # Set up settings sections for the main application
@@ -478,6 +479,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.serviceSettingsSection = u'servicemanager'
         self.songsSettingsSection = u'songs'
         self.serviceNotSaved = False
+        self.actionList = ActionList()
         self.settingsmanager = SettingsManager(screens)
         self.aboutForm = AboutForm(self, applicationVersion)
         self.settingsForm = SettingsForm(self.screens, self, self)
@@ -624,10 +626,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 self.MediaToolBox.setCurrentIndex(savedPlugin)
         self.settingsForm.postSetUp()
         Receiver.send_message(u'cursor_normal')
-        # Import themes if first time
-        if firstTime:
-            self.themeManagerContents.firstTime()
-
 
     def setAutoLanguage(self, value):
         self.LanguageGroup.setDisabled(value)
@@ -669,6 +667,20 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         elif view_mode == u'live':
             self.setViewMode(False, True, False, False, True)
             self.ModeLiveItem.setChecked(True)
+
+    def firstTime(self):
+        # Import themes if first time
+        Receiver.send_message(u'openlp_process_events')
+        self.themeManagerContents.firstTime()
+        for plugin in self.pluginManager.plugins:
+            if hasattr(plugin, u'firstTime'):
+                Receiver.send_message(u'openlp_process_events')
+                plugin.firstTime()
+        Receiver.send_message(u'openlp_process_events')
+        temp_dir = os.path.join(unicode(gettempdir()), u'openlp')
+        for filename in os.listdir(temp_dir):
+            os.remove(os.path.join(temp_dir, filename))
+        os.removedirs(temp_dir)
 
     def blankCheck(self):
         """
