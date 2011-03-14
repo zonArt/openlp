@@ -310,6 +310,7 @@ class SongMediaItem(MediaManagerItem):
             item_id = (self.editItem.data(QtCore.Qt.UserRole)).toInt()[0]
             self.edit_song_form.loadSong(item_id, False)
             self.edit_song_form.exec_()
+        self.editItem = None
 
     def onDeleteClick(self):
         """
