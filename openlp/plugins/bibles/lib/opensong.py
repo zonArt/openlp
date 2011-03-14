@@ -25,9 +25,7 @@
 ###############################################################################
 
 import logging
-
 from lxml import objectify
-from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, translate
 from openlp.plugins.bibles.lib.db import BibleDB

@@ -25,6 +25,8 @@
 ###############################################################################
 
 import logging
+import os
+from tempfile import gettempdir
 
 from PyQt4 import QtCore, QtGui
 
@@ -206,7 +208,7 @@ class Ui_MainWindow(object):
         mainWindow.actionList.add_action(self.ModeDefaultItem, u'View Mode')
         self.ModeSetupItem = checkable_action(mainWindow, u'ModeLiveItem')
         mainWindow.actionList.add_action(self.ModeSetupItem, u'View Mode')
-        self.ModeLiveItem = checkable_action(mainWindow, u'ModeLiveItem')
+        self.ModeLiveItem = checkable_action(mainWindow, u'ModeLiveItem', True)
         mainWindow.actionList.add_action(self.ModeLiveItem, u'View Mode')
         self.ModeGroup = QtGui.QActionGroup(mainWindow)
         self.ModeGroup.addAction(self.ModeDefaultItem)
@@ -215,6 +217,8 @@ class Ui_MainWindow(object):
         self.ModeDefaultItem.setChecked(True)
         self.ToolsAddToolItem = icon_action(mainWindow, u'ToolsAddToolItem',
             u':/tools/tools_add.png')
+        # Hide the entry, as it does not have any functionality yet.
+        self.ToolsAddToolItem.setVisible(False)
         mainWindow.actionList.add_action(self.ToolsAddToolItem, u'Tools')
         self.ToolsOpenDataFolder = icon_action(mainWindow,
             u'ToolsOpenDataFolder', u':/general/general_open.png')
@@ -225,19 +229,17 @@ class Ui_MainWindow(object):
             u'Settings')
         # i18n Language Items
         self.AutoLanguageItem = checkable_action(mainWindow,
-            u'AutoLanguageItem')
+            u'AutoLanguageItem', LanguageManager.auto_language)
         mainWindow.actionList.add_action(self.AutoLanguageItem, u'Settings')
         self.LanguageGroup = QtGui.QActionGroup(mainWindow)
         self.LanguageGroup.setExclusive(True)
         self.LanguageGroup.setObjectName(u'LanguageGroup')
-        self.AutoLanguageItem.setChecked(LanguageManager.auto_language)
-        self.LanguageGroup.setDisabled(LanguageManager.auto_language)
+        add_actions(self.LanguageGroup, [self.AutoLanguageItem])
         qmList = LanguageManager.get_qm_list()
         savedLanguage = LanguageManager.get_language()
         for key in sorted(qmList.keys()):
-            languageItem = checkable_action(mainWindow, key)
-            if qmList[key] == savedLanguage:
-                languageItem.setChecked(True)
+            languageItem = checkable_action(
+                mainWindow, key, qmList[key] == savedLanguage)
             add_actions(self.LanguageGroup, [languageItem])
         self.SettingsShortcutsItem = icon_action(mainWindow,
             u'SettingsShortcutsItem',
@@ -425,14 +427,14 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', '&Online Help'))
         self.helpWebSiteItem.setText(
             translate('OpenLP.MainWindow', '&Web Site'))
-        self.AutoLanguageItem.setText(
-            translate('OpenLP.MainWindow', '&Auto Detect'))
-        self.AutoLanguageItem.setStatusTip(translate('OpenLP.MainWindow',
-            'Use the system language, if available.'))
         for item in self.LanguageGroup.actions():
             item.setText(item.objectName())
             item.setStatusTip(unicode(translate('OpenLP.MainWindow',
                 'Set the interface language to %s')) % item.objectName())
+        self.AutoLanguageItem.setText(
+            translate('OpenLP.MainWindow', '&Autodetect'))
+        self.AutoLanguageItem.setStatusTip(translate('OpenLP.MainWindow',
+            'Use the system language, if available.'))
         self.ToolsAddToolItem.setText(
             translate('OpenLP.MainWindow', 'Add &Tool...'))
         self.ToolsAddToolItem.setStatusTip(translate('OpenLP.MainWindow',
@@ -468,7 +470,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         QtGui.QMainWindow.__init__(self)
         self.screens = screens
-        self.actionList = ActionList()
         self.applicationVersion = applicationVersion
         self.clipboard = clipboard
         # Set up settings sections for the main application
@@ -478,6 +479,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.serviceSettingsSection = u'servicemanager'
         self.songsSettingsSection = u'songs'
         self.serviceNotSaved = False
+        self.actionList = ActionList()
         self.settingsmanager = SettingsManager(screens)
         self.aboutForm = AboutForm(self, applicationVersion)
         self.settingsForm = SettingsForm(self.screens, self, self)
@@ -550,8 +552,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtCore.SIGNAL(u'triggered()'),
             self.ServiceManagerContents.printServiceOrder)
         # i18n set signals for languages
-        QtCore.QObject.connect(self.AutoLanguageItem,
-            QtCore.SIGNAL(u'toggled(bool)'), self.setAutoLanguage)
         self.LanguageGroup.triggered.connect(LanguageManager.set_language)
         QtCore.QObject.connect(self.ModeDefaultItem,
             QtCore.SIGNAL(u'triggered()'), self.onModeDefaultItemClicked)
@@ -650,8 +650,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Show the main form, as well as the display form
         """
         QtGui.QWidget.show(self)
-        self.liveController.display.setup()
-        self.previewController.display.setup()
         if self.liveController.display.isVisible():
             self.liveController.display.setFocus()
         self.activateWindow()
@@ -669,6 +667,20 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         elif view_mode == u'live':
             self.setViewMode(False, True, False, False, True)
             self.ModeLiveItem.setChecked(True)
+
+    def firstTime(self):
+        # Import themes if first time
+        Receiver.send_message(u'openlp_process_events')
+        self.themeManagerContents.firstTime()
+        for plugin in self.pluginManager.plugins:
+            if hasattr(plugin, u'firstTime'):
+                Receiver.send_message(u'openlp_process_events')
+                plugin.firstTime()
+        Receiver.send_message(u'openlp_process_events')
+        temp_dir = os.path.join(unicode(gettempdir()), u'openlp')
+        for filename in os.listdir(temp_dir):
+            os.remove(os.path.join(temp_dir, filename))
+        os.removedirs(temp_dir)
 
     def blankCheck(self):
         """

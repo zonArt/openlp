@@ -88,8 +88,8 @@ class ServiceItem(object):
         self.audit = u''
         self.items = []
         self.iconic_representation = None
-        self.raw_footer = None
-        self.foot_text = None
+        self.raw_footer = []
+        self.foot_text = u''
         self.theme = None
         self.service_item_type = None
         self._raw_frames = []
@@ -183,9 +183,12 @@ class ServiceItem(object):
         else:
             log.error(u'Invalid value renderer :%s' % self.service_item_type)
         self.title = clean_tags(self.title)
-        self.foot_text = None
-        if self.raw_footer:
-            self.foot_text = u'<br>'.join(self.raw_footer)
+        # The footer should never be None, but to be compatible with older
+        # release of OpenLP, we have to correct this to avoid tracebacks.
+        if self.raw_footer is None:
+            self.raw_footer = []
+        self.foot_text = \
+            u'<br>'.join([footer for footer in self.raw_footer if footer])
 
     def add_from_image(self, path, title):
         """

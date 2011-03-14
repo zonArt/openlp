@@ -25,14 +25,14 @@
 ###############################################################################
 
 import logging
+import os
 
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, SettingsManager, translate
-from openlp.core.utils import AppLocation
+from openlp.core.utils import AppLocation, delete_file
 from openlp.plugins.bibles.lib import parse_reference
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
-
 from csvbible import CSVBible
 from http import HTTPBible
 from opensong import OpenSongBible
@@ -144,6 +144,10 @@ class BibleManager(object):
         for filename in files:
             bible = BibleDB(self.parent, path=self.path, file=filename)
             name = bible.get_name()
+            # Remove corrupted files.
+            if name is None:
+                delete_file(os.path.join(self.path, filename))
+                continue
             log.debug(u'Bible Name: "%s"', name)
             self.db_cache[name] = bible
             # Look to see if lazy load bible exists and get create getter.
@@ -250,7 +254,7 @@ class BibleManager(object):
         if not bible:
             Receiver.send_message(u'openlp_information_message', {
                 u'title': translate('BiblesPlugin.BibleManager',
-                'No Bibles available'),
+                'No Bibles Available'),
                 u'message': translate('BiblesPlugin.BibleManager',
                 'There are no Bibles currently installed. Please use the '
                 'Import Wizard to install one or more Bibles.')

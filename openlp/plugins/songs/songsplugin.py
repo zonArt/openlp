@@ -26,16 +26,20 @@
 
 import logging
 import re
+import os
+from tempfile import gettempdir
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate
+from openlp.core.lib import Plugin, StringContent, build_icon, translate, \
+    Receiver
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import UiStrings
 from openlp.plugins.songs.lib import add_author_unknown, SongMediaItem, \
     SongsTab, SongXML
 from openlp.plugins.songs.lib.db import init_schema, Song
 from openlp.plugins.songs.lib.importer import SongFormat
+from openlp.plugins.songs.lib.olpimport import OpenLPSongImport
 
 log = logging.getLogger(__name__)
 
@@ -53,8 +57,7 @@ class SongsPlugin(Plugin):
         """
         Create and set up the Songs plugin.
         """
-        Plugin.__init__(self, u'Songs', u'1.9.4', plugin_helpers,
-            SongMediaItem, SongsTab)
+        Plugin.__init__(self, u'Songs', plugin_helpers, SongMediaItem, SongsTab)
         self.weight = -10
         self.manager = Manager(u'songs', init_schema)
         self.icon_path = u':/plugins/plugin_songs.png'
@@ -154,7 +157,7 @@ class SongsPlugin(Plugin):
             if song.alternate_title is None:
                 song.alternate_title = u''
             song.search_title = self.whitespace.sub(u' ', song.title.lower() +
-                u' ' + song.alternate_title.lower())
+                u' ' + song.alternate_title.lower()).strip()
             # Remove the "language" attribute from lyrics tag. This is not very
             # important, but this keeps the database clean. This can be removed
             # when everybody has run the reindex tool once.
@@ -244,6 +247,35 @@ class SongsPlugin(Plugin):
                 'Add the selected Song to the service')
         }
         self.setPluginUiTextStrings(tooltips)
+
+    def firstTime(self):
+        """
+        If the first time wizard has run, this function is run to import all the
+        new songs into the database.
+        """
+        db_dir = unicode(os.path.join(gettempdir(), u'openlp'))
+        song_dbs = []
+        for sfile in os.listdir(db_dir):
+            if sfile.startswith(u'songs_') and sfile.endswith(u'.sqlite'):
+                song_dbs.append(os.path.join(db_dir, sfile))
+        if len(song_dbs) == 0:
+            return
+        progress = QtGui.QProgressDialog(self.formparent)
+        progress.setWindowModality(QtCore.Qt.WindowModal)
+        progress.setLabelText(translate('OpenLP.Ui', 'Starting import...'))
+        progress.setCancelButton(None)
+        progress.setRange(0, len(song_dbs))
+        progress.setMinimumDuration(0)
+        progress.forceShow()
+        for idx, db in enumerate(song_dbs):
+            progress.setValue(idx)
+            Receiver.send_message(u'openlp_process_events')
+            importer = OpenLPSongImport(self.manager, filename=db)
+            importer.do_import()
+        progress.setValue(len(song_dbs))
+        self.mediaItem.displayResultsSong(
+            self.manager.get_all_objects(Song, order_by_ref=Song.search_title))
+        self.onToolsReindexItemTriggered()
 
     def finalise(self):
         """

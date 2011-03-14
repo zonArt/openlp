@@ -108,19 +108,40 @@ class Ui_AboutDialog(object):
             self.aboutNotebook.indexOf(self.aboutTab), UiStrings.About)
         lead = u'Raoul "superfly" Snyman'
         developers = [u'Tim "TRB143" Bentley', u'Jonathan "gushie" Corwin',
-            u'Michael "cocooncrash" Gorven', u'Scott "sguerrieri" Guerrieri',
-            u'Raoul "superfly" Snyman', u'Martin "mijiti" Thompson',
-            u'Jon "Meths" Tibble<']
-        contributors = [u'Meinert "m2j" Jordan', u'Andreas "googol" Preikschat',
+            u'Michael "cocooncrash" Gorven',
+            u'Andreas "googol" Preikschat', u'Raoul "superfly" Snyman',
+            u'Martin "mijiti" Thompson', u'Jon "Meths" Tibble']
+        contributors = [u'Scott "sguerrieri" Guerrieri',
+            u'Meinert "m2j" Jordan', u'Armin "orangeshirt" K\xf6hler',
             u'Christian "crichter" Richter', u'Philip "Phill" Ridout',
-            u'Maikel Stuivenberg', u'Carsten "catini" Tingaard',
-            u'Frode "frodus" Woldsund']
-        testers = [u'Philip "Phill" Ridout', u'Wesley "wrst" Stout (lead)']
-        packagers = [u'Thomas "tabthorpe" Abthorpe (FreeBSD)',
+            u'Jeffrey "whydoubt" Smith', u'Maikel Stuivenberg',
+            u'Carsten "catini" Tingaard', u'Frode "frodus" Woldsund']
+        testers = [u'Philip "Phill" Ridout', u'Wesley "wrst" Stout',
+            u'John "jseagull1" Cegalis (lead)']
+        packagers = ['Thomas "tabthorpe" Abthorpe (FreeBSD)',
             u'Tim "TRB143" Bentley (Fedora)',
             u'Michael "cocooncrash" Gorven (Ubuntu)',
             u'Matthias "matthub" Hub (Mac OS X)',
             u'Raoul "superfly" Snyman (Windows, Ubuntu)']
+        translators = {
+            u'af': [u'Johan "nuvolari" Mynhardt'],
+            u'de': [u'Patrick "madmuffin" Br\xfcckner',
+                u'Meinert "m2j" Jordan',
+                u'Andreas "googol" Preikschat',
+                u'Christian "crichter" Richter'],
+            u'en_GB': [u'Tim "TRB143" Bentley', u'Jonathan "gushie" Corwin'],
+            u'en_ZA': [u'Raoul "superfly" Snyman'],
+            u'et': [u'Mattias "mahfiaz" P\xf5ldaru'],
+            u'fr': [u'Stephan\xe9 "stbrunner" Brunner'],
+            u'hu': [u'Gyuris Gellért'],
+            u'ja': [u'Kunio "Kunio" Nakamaru'],
+            u'nb': [u'Atle "pendlaren" Weibell', u'Frode "frodus" Woldsund'],
+            u'nl': [u'Arjen "typovar" van Voorst'],
+            u'pt_BR': [u'Rafael "rafaellerm" Lerm'],
+            u'ru': [u'Sergey "ratz" Ratz']
+        }
+        documentors = [u'Wesley "wrst" Stout',
+            u'John "jseagull1" Cegalis (lead)']
         self.creditsTextEdit.setPlainText(unicode(translate('OpenLP.AboutForm',
             'Project Lead\n'
             '    %s\n'
@@ -135,6 +156,35 @@ class Ui_AboutDialog(object):
             '    %s\n'
             '\n'
             'Packagers\n'
+            '    %s\n'
+            '\n'
+            'Translators\n'
+            '    Afrikaans (af)\n'
+            '        %s\n'
+            '    German (de)\n'
+            '        %s\n'
+            '    English, United Kingdom (en_GB)\n'
+            '        %s\n'
+            '    English, South Africa (en_ZA)\n'
+            '        %s\n'
+            '    Estonian (et)\n'
+            '        %s\n'
+            '    French (fr)\n'
+            '        %s\n'
+            '    Hungarian (hu)\n'
+            '        %s\n'
+            '    Japanese (ja)\n'
+            '        %s\n'
+            '    Norwegian Bokm\xe5l (nb)\n'
+            '        %s\n'
+            '    Dutch (nl)\n'
+            '        %s\n'
+            '    Portuguese, Brazil (pt_BR)\n'
+            '        %s\n'
+            '    Russian (ru)\n'
+            '        %s\n'
+            '\n'
+            'Documentation\n'
             '    %s\n'
             '\n'
             'Built With\n'
@@ -155,7 +205,19 @@ class Ui_AboutDialog(object):
             '    bring this software to you for free because\n'
             '    He has set us free.')) % (lead, u'\n    '.join(developers),
             u'\n    '.join(contributors), u'\n    '.join(testers),
-            u'\n    '.join(packagers)))
+            u'\n    '.join(packagers), u'\n        '.join(translators[u'af']),
+            u'\n        '.join(translators[u'de']),
+            u'\n        '.join(translators[u'en_GB']),
+            u'\n        '.join(translators[u'en_ZA']),
+            u'\n        '.join(translators[u'et']),
+            u'\n        '.join(translators[u'fr']),
+            u'\n        '.join(translators[u'hu']),
+            u'\n        '.join(translators[u'ja']),
+            u'\n        '.join(translators[u'nb']),
+            u'\n        '.join(translators[u'nl']),
+            u'\n        '.join(translators[u'pt_BR']),
+            u'\n        '.join(translators[u'ru']),
+            u'\n    '.join(documentors)))
         self.aboutNotebook.setTabText(
             self.aboutNotebook.indexOf(self.creditsTab),
             translate('OpenLP.AboutForm', 'Credits'))
@@ -164,7 +226,7 @@ class Ui_AboutDialog(object):
             'Portions copyright \xa9 2004-2011 '
             'Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri,\n'
             'Meinert Jordan, Andreas Preikschat, Christian Richter, Philip\n'
-            'Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Carstenn'
+            'Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Carsten\n'
             'Tinggaard, Frode Woldsund')
         licence = translate('OpenLP.AboutForm',
             'This program is free software; you can redistribute it and/or '
