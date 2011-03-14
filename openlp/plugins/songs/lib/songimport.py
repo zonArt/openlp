@@ -62,6 +62,7 @@ class SongImport(QtCore.QObject):
         else:
             raise KeyError(u'Keyword arguments "filename[s]" not supplied.')
         log.debug(self.import_source)
+        self.import_wizard = None
         self.song = None
         self.stop_import_flag = False
         self.set_defaults()
