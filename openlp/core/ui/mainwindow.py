@@ -472,7 +472,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.screens = screens
         self.applicationVersion = applicationVersion
         self.clipboard = clipboard
-        #self.firstTime = firstTime
         # Set up settings sections for the main application
         # (not for use by plugins)
         self.uiSettingsSection = u'user interface'
@@ -671,7 +670,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def firstTime(self):
         # Import themes if first time
-        #if self.firstTime:
         Receiver.send_message(u'openlp_process_events')
         self.themeManagerContents.firstTime()
         for plugin in self.pluginManager.plugins:
