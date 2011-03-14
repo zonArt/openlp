@@ -357,7 +357,8 @@ class MainDisplay(DisplayWidget):
             self.mediaObject.stop()
             self.mediaObject.clearQueue()
             self.mediaObject.setCurrentSource(Phonon.MediaSource(videoPath))
-            # Need the timer to trigger
+            # Need the timer to trigger set the trigger to 200ms
+            # Value taken from web documentation.
             if self.serviceItem.start_time != 0:
                 self.mediaObject.setTickInterval(200)
             self.mediaObject.play()
@@ -374,6 +375,7 @@ class MainDisplay(DisplayWidget):
         Start the video at a predetermined point.
         """
         if newState == Phonon.PlayingState:
+            # set start time in milliseconds
             self.mediaObject.seek(self.serviceItem.start_time * 1000)
 
     def videoFinished(self):
@@ -389,7 +391,7 @@ class MainDisplay(DisplayWidget):
     def videoTick(self, tick):
         """
         Triggered on video tick every 200 milli seconds
-        Will be used to manage Stop time later
+        Will be used to manage stop time later
         """
         pass
 
