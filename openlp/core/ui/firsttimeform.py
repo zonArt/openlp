@@ -53,7 +53,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         # check to see if we have web access
         self.web = u'http://openlp.org/files/frw/'
         self.config = SafeConfigParser()
-        self.webAccess = get_web_page(u'%s%s' % (self.web, u'download.cfg'))
+        self.webAccess = get_web_page(u'%s%s' % (self.web, u'download.cfg?99'))
         if self.webAccess:
             files = self.webAccess.read()
             self.config.readfp(io.BytesIO(files))
@@ -111,17 +111,19 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             self.biblesTreeWidget.expandAll()
             themes = self.config.get(u'themes', u'files')
             themes = themes.split(u',')
+            if not os.path.exists(os.path.join(gettempdir(), u'openlp')):
+                os.makedirs(os.path.join(gettempdir(), u'openlp'))
             for theme in themes:
                 title = self.config.get(u'theme_%s' % theme, u'title')
                 filename = self.config.get(u'theme_%s' % theme, u'filename')
                 screenshot = self.config.get(u'theme_%s' % theme, u'screenshot')
                 urllib.urlretrieve(u'%s/%s' % (self.web, screenshot),
-                    os.path.join(gettempdir(), screenshot))
+                    os.path.join(gettempdir(), u'openlp', screenshot))
                 item = QtGui.QListWidgetItem(title, self.themesListWidget)
                 item.setData(QtCore.Qt.UserRole,
                     QtCore.QVariant(filename))
                 item.setIcon(build_icon(
-                    os.path.join(gettempdir(), screenshot)))
+                    os.path.join(gettempdir(), u'openlp', screenshot)))
                 item.setCheckState(QtCore.Qt.Unchecked)
                 item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
 
@@ -230,7 +232,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self._setPluginStatus(self.songUsageCheckBox, u'songusage/status')
         self._setPluginStatus(self.alertCheckBox, u'alerts/status')
         # Build directories for downloads
-        songs_destination = AppLocation.get_section_data_path(u'songs')
+        songs_destination = os.path.join(unicode(gettempdir()), u'openlp')
         bibles_destination = AppLocation.get_section_data_path(u'bibles')
         themes_destination = AppLocation.get_section_data_path(u'themes')
         # Install songs
@@ -239,18 +241,18 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             if item.checkState() == QtCore.Qt.Checked:
                 filename = item.data(QtCore.Qt.UserRole).toString()
                 self._incrementProgressBar(self.downloading % filename)
-                destination = os.path.join(songs_destination, u'songs.sqlite')
-                if os.path.exists(destination):
-                    if QtGui.QMessageBox.question(self,
-                        translate('OpenLP.FirstTimeWizard',
-                        'Overwrite Existing Songs?'),
-                        translate('OpenLP.FirstTimeWizard', 'Your songs '
-                        'database already exists and your current songs will '
-                        'be permanently lost, are you sure you want to '
-                        'replace it ?'),
-                        QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
-                        QtGui.QMessageBox.No) != QtGui.QMessageBox.Yes:
-                        continue
+                destination = os.path.join(songs_destination, unicode(filename))
+                #if os.path.exists(destination):
+                #    if QtGui.QMessageBox.question(self,
+                #        translate('OpenLP.FirstTimeWizard',
+                #        'Overwrite Existing Songs?'),
+                #        translate('OpenLP.FirstTimeWizard', 'Your songs '
+                #        'database already exists and your current songs will '
+                #        'be permanently lost, are you sure you want to '
+                #        'replace it ?'),
+                #        QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
+                #        QtGui.QMessageBox.No) != QtGui.QMessageBox.Yes:
+                #        continue
                 urllib.urlretrieve(u'%s%s' % (self.web, filename), destination)
         # Install Bibles
         bibles_iterator = QtGui.QTreeWidgetItemIterator(self.biblesTreeWidget)
