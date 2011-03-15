@@ -106,8 +106,33 @@ window.OpenLP = {
         $("#slide-controller div[data-role=content] ul[data-role=listview]").listview("refresh");
       }
     );
+  },
+  pollServer: function () {
+    $.getJSON(
+      "/api/poll",
+      function (data, status) {
+        OpenLP.currentSlide = data.results.slide;
+        OpenLP.currentItem = data.results.item;
+        if ($("#service-manager").is(":visible")) {
+          $("#service-manager > div[data-role=content] ul[data-role=listview] li a").each(function () {
+            var item = $(this);
+            if (item.text() == OpenLP.currentItem) {
+              $("#service-manager > div[data-role=content] ul[data-role=listview] li").attr("data-theme", "c").removeClass("ui-btn-up-e").addClass("ui-btn-up-c");
+              while (item[0].tagName != "LI") {
+                item = item.parent();
+              }
+              item.attr("data-theme", "e").removeClass("ui-btn-up-c").addClass("ui-btn-up-e");
+              $("#slide-controller div[data-role=content] ul[data-role=listview]").listview("refresh");
+              return false;
+            }
+          });
+        }
+      }
+    );
   }
 }
 
 $("#service-manager").live("pagebeforeshow", OpenLP.loadService);
 $("#slide-controller").live("pagebeforeshow", OpenLP.loadController);
+// Poll the server twice a second to get any updates.
+setInterval("OpenLP.pollServer();", 500);
