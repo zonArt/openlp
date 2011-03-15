@@ -302,6 +302,9 @@ class OpenLyrics(object):
         else:
             return None
         song = Song()
+        # Values will be set when cleaning the song.
+        song.search_lyrics = u''
+        song.verse_order = u''
         self._process_copyright(properties, song)
         self._process_cclinumber(properties, song)
         self._process_titles(properties, song)
@@ -459,7 +462,6 @@ class OpenLyrics(object):
             if self._get(verse, u'lang'):
                 lang = self._get(verse, u'lang')
             sxml.add_verse_to_lyrics(verse_type, verse_number, text, lang)
-        song.search_lyrics = u''
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
         # Process verse order
         if hasattr(properties, u'verseOrder'):

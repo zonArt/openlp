@@ -419,8 +419,7 @@ class SongMediaItem(MediaManagerItem):
         if self.plugin.status != PluginStatus.Active or not item.data_string:
             return
         search_results = self.parent.manager.get_all_objects(Song,
-            Song.search_title == re.compile(r'\W+', re.UNICODE).sub(u' ',
-            item.data_string[u'title'].split(u'@')[0].lower()).strip(),
+            Song.search_title == item.data_string[u'title'],
             Song.search_title.asc())
         author_list = item.data_string[u'authors'].split(u', ')
         # The service item always has an author (at least it has u'' as

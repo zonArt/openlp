@@ -257,15 +257,6 @@ def clean_song(manager, song):
     ``song``
         The song object.
     """
-    # The song does not have any author, add one.
-    if not song.authors:
-        name = SongStrings.AuthorUnknown
-        author = manager.get_object_filtered(
-            Author, Author.display_name == name)
-        if author is None:
-            author = Author.populate(
-                display_name=name, last_name=u'', first_name=u'')
-        song.authors.append(author)
     song.title = song.title.strip() if song.title else u''
     if song.alternate_title is None:
         song.alternate_title = u''
@@ -281,6 +272,15 @@ def clean_song(manager, song):
     verses = SongXML().get_verses(song.lyrics)
     lyrics = u' '.join([whitespace.sub(u' ', verse[1]) for verse in verses])
     song.search_lyrics = lyrics.lower()
+    # The song does not have any author, add one.
+    if not song.authors:
+        name = SongStrings.AuthorUnknown
+        author = manager.get_object_filtered(
+            Author, Author.display_name == name)
+        if author is None:
+            author = Author.populate(
+                display_name=name, last_name=u'', first_name=u'')
+        song.authors.append(author)
 
 from xml import OpenLyrics, SongXML
 from songstab import SongsTab
