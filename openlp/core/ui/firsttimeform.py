@@ -33,8 +33,7 @@ from ConfigParser import SafeConfigParser
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, PluginStatus, check_directory_exists, \
-    Receiver, build_icon
+from openlp.core.lib import translate, PluginStatus, Receiver, build_icon
 from openlp.core.utils import get_web_page, AppLocation
 from firsttimewizard import Ui_FirstTimeWizard, FirstTimePage
 
@@ -95,7 +94,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 language = unicode(self.config.get(
                     u'bibles_%s' % lang, u'title'), u'utf8')
                 langItem = QtGui.QTreeWidgetItem(
-                   self.biblesTreeWidget, QtCore.QStringList(language))
+                    self.biblesTreeWidget, QtCore.QStringList(language))
                 bibles = self.config.get(u'bibles_%s' % lang, u'translations')
                 bibles = bibles.split(u',')
                 for bible in bibles:
@@ -104,8 +103,9 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                     filename = unicode(self.config.get(
                         u'bible_%s' % bible, u'filename'))
                     item = QtGui.QTreeWidgetItem(
-                       langItem, QtCore.QStringList(title))
-                    item.setData(0, QtCore.Qt.UserRole, QtCore.QVariant(filename))
+                        langItem, QtCore.QStringList(title))
+                    item.setData(0, QtCore.Qt.UserRole,
+                        QtCore.QVariant(filename))
                     item.setCheckState(0, QtCore.Qt.Unchecked)
                     item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
             self.biblesTreeWidget.expandAll()
@@ -224,7 +224,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             'Enabling selected plugins...'))
         self._setPluginStatus(self.songsCheckBox, u'songs/status')
         self._setPluginStatus(self.bibleCheckBox, u'bibles/status')
-        self._setPluginStatus(self.presentationCheckBox, u'presentations/status')
+        self._setPluginStatus(self.presentationCheckBox,
+            u'presentations/status')
         self._setPluginStatus(self.imageCheckBox, u'images/status')
         self._setPluginStatus(self.mediaCheckBox, u'media/status')
         self._setPluginStatus(self.remoteCheckBox, u'remotes/status')
@@ -276,4 +277,3 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         status = PluginStatus.Active if field.checkState() \
             == QtCore.Qt.Checked else PluginStatus.Inactive
         QtCore.QSettings().setValue(tag, QtCore.QVariant(status))
-

@@ -166,20 +166,18 @@ class SongMediaItem(MediaManagerItem):
                 or_(Song.search_title.like(u'%' + self.whitespace.sub(u' ',
                 search_keywords.lower()) + u'%'),
                 Song.search_lyrics.like(u'%' + search_keywords.lower() + u'%'),
-                Song.comments.like(u'%' + search_keywords.lower() + u'%')),
-                Song.search_title.asc())
+                Song.comments.like(u'%' + search_keywords.lower() + u'%')))
             self.displayResultsSong(search_results)
         elif search_type == SongSearch.Titles:
             log.debug(u'Titles Search')
             search_results = self.parent.manager.get_all_objects(Song,
                 Song.search_title.like(u'%' + self.whitespace.sub(u' ',
-                search_keywords.lower()) + u'%'), Song.search_title.asc())
+                search_keywords.lower()) + u'%'))
             self.displayResultsSong(search_results)
         elif search_type == SongSearch.Lyrics:
             log.debug(u'Lyrics Search')
             search_results = self.parent.manager.get_all_objects(Song,
-                Song.search_lyrics.like(u'%' + search_keywords.lower() + u'%'),
-                Song.search_lyrics.asc())
+                Song.search_lyrics.like(u'%' + search_keywords.lower() + u'%'))
             self.displayResultsSong(search_results)
         elif search_type == SongSearch.Authors:
             log.debug(u'Authors Search')
@@ -190,7 +188,7 @@ class SongMediaItem(MediaManagerItem):
         elif search_type == SongSearch.Themes:
             log.debug(u'Theme Search')
             search_results = self.parent.manager.get_all_objects(Song,
-                Song.theme_name == search_keywords, Song.search_lyrics.asc())
+                Song.theme_name == search_keywords)
             self.displayResultsSong(search_results)
 
     def onSongListLoad(self):
@@ -461,4 +459,5 @@ class SongMediaItem(MediaManagerItem):
         """
         Locale aware collation of song titles
         """
-        return locale.strcoll(unicode(song_1.title), unicode(song_2.title))
+        return locale.strcoll(unicode(song_1.title.lower()), 
+             unicode(song_2.title.lower()))
