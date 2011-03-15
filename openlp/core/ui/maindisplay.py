@@ -426,7 +426,14 @@ class MainDisplay(DisplayWidget):
             if self.hideMode:
                 self.hideDisplay(self.hideMode)
             else:
-               self.setVisible(True)
+                # Single screen active
+                if self.screens.monitor_number == 0:
+                    # Only make visible if setting enabled
+                    if QtCore.QSettings().value(u'general/display on monitor',
+                        QtCore.QVariant(True)).toBool():
+                        self.setVisible(True)
+                else:
+                    self.setVisible(True)
         preview = QtGui.QImage(self.screen[u'size'].width(),
             self.screen[u'size'].height(),
             QtGui.QImage.Format_ARGB32_Premultiplied)
