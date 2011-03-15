@@ -143,7 +143,8 @@ class HttpServer(object):
         The connection has been closed. Clean up
         """
         log.debug(u'close http connection')
-        self.connections.remove(connection)
+        if connection in self.connections:
+            self.connections.remove(connection)
 
     def close(self):
         """
