@@ -167,6 +167,7 @@ class OpenLPSongImport(SongImport):
                 old_titles = song.search_title.split(u'@')
                 if len(old_titles) > 1:
                     new_song.alternate_title = old_titles[1]
+            # Values will be set when cleaning the song.
             new_song.search_title = u''
             new_song.search_lyrics = u''
             new_song.song_number = song.song_number

@@ -253,6 +253,7 @@ class SongImport(QtCore.QObject):
         song = Song()
         song.title = self.title
         song.alternate_title = self.alternate_title
+        # Values will be set when cleaning the song.
         song.search_title = u''
         song.search_lyrics = u''
         song.verse_order = u''
