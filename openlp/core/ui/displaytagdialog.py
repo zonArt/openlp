@@ -143,11 +143,11 @@ class Ui_DisplayTagDialog(object):
         self.tagTableWidget.horizontalHeaderItem(0).setText(
             translate('OpenLP.DisplayTagDialog', 'Description'))
         self.tagTableWidget.horizontalHeaderItem(1).setText(
-            translate('OpenLP.DisplayTagDialog', 'Tag id'))
+            translate('OpenLP.DisplayTagDialog', 'Tag Id'))
         self.tagTableWidget.horizontalHeaderItem(2).setText(
-            translate('OpenLP.DisplayTagDialog', 'Start Html'))
+            translate('OpenLP.DisplayTagDialog', 'Start HTML'))
         self.tagTableWidget.horizontalHeaderItem(3).setText(
-            translate('OpenLP.DisplayTagDialog', 'End Html'))
+            translate('OpenLP.DisplayTagDialog', 'End HTML'))
         self.tagTableWidget.setColumnWidth(0, 120)
         self.tagTableWidget.setColumnWidth(1, 40)
         self.tagTableWidget.setColumnWidth(2, 240)

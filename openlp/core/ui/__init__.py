@@ -51,6 +51,8 @@ class HideMode(object):
     Theme = 2
     Screen = 3
 
+from firsttimeform import FirstTimeForm
+from firsttimelanguageform import FirstTimeLanguageForm
 from themeform import ThemeForm
 from filerenameform import FileRenameForm
 from starttimeform import StartTimeForm
@@ -74,4 +76,4 @@ from thememanager import ThemeManager
 
 __all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainDisplay',
     'SlideController', 'ServiceManager', 'ThemeManager', 'MediaDockManager',
-    'ServiceItemEditForm']
+    'ServiceItemEditForm', u'FirstTimeForm']

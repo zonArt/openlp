@@ -96,7 +96,7 @@ class OooImport(SongImport):
         """
         if os.name == u'nt':
             self.start_ooo_process()
-            self.desktop = self.manager.createInstance(
+            self.desktop = self.ooo_manager.createInstance(
                 u'com.sun.star.frame.Desktop')
         else:
             context = uno.getComponentContext()
@@ -118,9 +118,9 @@ class OooImport(SongImport):
     def start_ooo_process(self):
         try:
             if os.name == u'nt':
-                self.manager = Dispatch(u'com.sun.star.ServiceManager')
-                self.manager._FlagAsMethod(u'Bridge_GetStruct')
-                self.manager._FlagAsMethod(u'Bridge_GetValueObject')
+                self.ooo_manager = Dispatch(u'com.sun.star.ServiceManager')
+                self.ooo_manager._FlagAsMethod(u'Bridge_GetStruct')
+                self.ooo_manager._FlagAsMethod(u'Bridge_GetValueObject')
             else:
                 cmd = get_uno_command()
                 process = QtCore.QProcess()
@@ -134,9 +134,11 @@ class OooImport(SongImport):
         """
         Open the passed file in OpenOffice.org Impress
         """
+        self.filepath = filepath
         if os.name == u'nt':
-            url = u'file:///' + filepath.replace(u'\\', u'/')
+            url = filepath.replace(u'\\', u'/')
             url = url.replace(u':', u'|').replace(u' ', u'%20')
+            url = u'file:///' + url
         else:
             url = uno.systemPathToFileUrl(filepath)
         properties = []
@@ -190,10 +192,7 @@ class OooImport(SongImport):
             if slidetext.strip() == u'':
                 slidetext = u'\f'
             text += slidetext
-        song = SongImport(self.manager)
-        songs = SongImport.process_songs_text(self.manager, text)
-        for song in songs:
-            song.finish()
+        self.process_songs_text(text)
         return
 
     def process_doc(self):
@@ -215,6 +214,16 @@ class OooImport(SongImport):
                     if textportion.BreakType in (PAGE_AFTER, PAGE_BOTH):
                         paratext += u'\f'
             text += paratext + u'\n'
-        songs = SongImport.process_songs_text(self.manager, text)
-        for song in songs:
-            song.finish()
+        self.process_songs_text(text)
+
+    def process_songs_text(self, text):
+        songtexts = self.tidy_text(text).split(u'\f')
+        self.set_defaults()
+        for songtext in songtexts:
+            if songtext.strip():
+                self.process_song_text(songtext.strip())
+                if self.check_complete():
+                    self.finish()
+                    self.set_defaults()
+        if self.check_complete():
+            self.finish()

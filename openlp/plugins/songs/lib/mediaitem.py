@@ -159,15 +159,15 @@ class SongMediaItem(MediaManagerItem):
     def onSearchTextButtonClick(self):
         search_keywords = unicode(self.searchTextEdit.displayText())
         search_results = []
-        # search_type = self.searchTypeComboBox.currentIndex()
         search_type = self.searchTextEdit.currentSearchType()
         if search_type == SongSearch.Entire:
             log.debug(u'Entire Song Search')
             search_results = self.parent.manager.get_all_objects(Song,
                 or_(Song.search_title.like(u'%' + self.whitespace.sub(u' ',
                 search_keywords.lower()) + u'%'),
-                Song.search_lyrics.like(u'%' + search_keywords.lower() + \
-                u'%')), Song.search_title.asc())
+                Song.search_lyrics.like(u'%' + search_keywords.lower() + u'%'),
+                Song.comments.like(u'%' + search_keywords.lower() + u'%')),
+                Song.search_title.asc())
             self.displayResultsSong(search_results)
         elif search_type == SongSearch.Titles:
             log.debug(u'Titles Search')
@@ -198,7 +198,7 @@ class SongMediaItem(MediaManagerItem):
         Handle the exit from the edit dialog and trigger remote updates
         of songs
         """
-        log.debug(u'onSongListLoad')
+        log.debug(u'onSongListLoad - start')
         # Called to redisplay the song list screen edit from a search
         # or from the exit of the Song edit dialog. If remote editing is active
         # Trigger it and clean up so it will not update again.
@@ -213,6 +213,7 @@ class SongMediaItem(MediaManagerItem):
             self.parent.serviceManager.replaceServiceItem(item)
         self.onRemoteEditClear()
         self.onSearchTextButtonClick()
+        log.debug(u'onSongListLoad - finished')
 
     def displayResultsSong(self, searchresults):
         log.debug(u'display results Song')
@@ -252,11 +253,13 @@ class SongMediaItem(MediaManagerItem):
         if self.searchAsYouType:
             search_length = 1
             if self.searchTextEdit.currentSearchType() == SongSearch.Entire:
-                search_length = 3
+                search_length = 4
             elif self.searchTextEdit.currentSearchType() == SongSearch.Lyrics:
-                search_length = 7
+                search_length = 3
             if len(text) > search_length:
                 self.onSearchTextButtonClick()
+            elif len(text) == 0:
+                self.onClearTextButtonClick()
 
     def onImportClick(self):
         if not hasattr(self, u'import_wizard'):
@@ -307,6 +310,7 @@ class SongMediaItem(MediaManagerItem):
             item_id = (self.editItem.data(QtCore.Qt.UserRole)).toInt()[0]
             self.edit_song_form.loadSong(item_id, False)
             self.edit_song_form.exec_()
+        self.editItem = None
 
     def onDeleteClick(self):
         """
@@ -330,7 +334,6 @@ class SongMediaItem(MediaManagerItem):
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
         log.debug(u'generateSlideData (%s:%s)' % (service_item, item))
-        raw_footer = []
         item_id = self._getIdOfItemToGenerate(item, self.remoteSong)
         service_item.add_capability(ItemCapabilities.AllowsEdit)
         service_item.add_capability(ItemCapabilities.AllowsPreview)
@@ -392,16 +395,15 @@ class SongMediaItem(MediaManagerItem):
                 service_item.add_from_text(slide[:30], unicode(slide))
         service_item.title = song.title
         author_list = [unicode(author.display_name) for author in song.authors]
-        raw_footer.append(song.title)
-        raw_footer.append(u', '.join(author_list))
-        raw_footer.append(song.copyright)
+        service_item.raw_footer.append(song.title)
+        service_item.raw_footer.append(u', '.join(author_list))
+        service_item.raw_footer.append(song.copyright)
         if QtCore.QSettings().value(u'general/ccli number',
             QtCore.QVariant(u'')).toString():
-            raw_footer.append(unicode(
+            service_item.raw_footer.append(unicode(
                 translate('SongsPlugin.MediaItem', 'CCLI License: ') +
                 QtCore.QSettings().value(u'general/ccli number',
                 QtCore.QVariant(u'')).toString()))
-        service_item.raw_footer = raw_footer
         service_item.audit = [
             song.title, author_list, song.copyright, unicode(song.ccli_number)
         ]
@@ -447,10 +449,9 @@ class SongMediaItem(MediaManagerItem):
                     add_song = False
                     editId = song.id
                     break
-        if add_song:
-            if self.addSongFromService:
-                editId = self.openLyrics.xml_to_song(item.xml_version)
-                self.onSearchTextButtonClick()
+        if add_song and self.addSongFromService:
+            editId = self.openLyrics.xml_to_song(item.xml_version)
+            self.onSearchTextButtonClick()
         # Update service with correct song id.
         if editId:
             Receiver.send_message(u'service_item_update',

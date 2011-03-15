@@ -40,7 +40,7 @@ class AlertsPlugin(Plugin):
     log.info(u'Alerts Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Alerts', u'1.9.4', plugin_helpers,
+        Plugin.__init__(self, u'Alerts', plugin_helpers,
             settingsTabClass=AlertsTab)
         self.weight = -3
         self.icon = build_icon(u':/plugins/plugin_alerts.png')
