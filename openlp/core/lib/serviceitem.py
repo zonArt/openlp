@@ -62,7 +62,7 @@ class ItemCapabilities(object):
     AddIfNewItem = 9
     ProvidesOwnDisplay = 10
     AllowsDetailedTitleDisplay = 11
-    AllowsVarableStartTime = 12
+    AllowsVariableStartTime = 12
 
 
 class ServiceItem(object):

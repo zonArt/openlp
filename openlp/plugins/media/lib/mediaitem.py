@@ -143,7 +143,7 @@ class MediaMediaItem(MediaManagerItem):
                     Receiver.send_message(u'openlp_process_events')
                 service_item.media_length = self.mediaLength
                 service_item.add_capability(
-                    ItemCapabilities.AllowsVarableStartTime)
+                    ItemCapabilities.AllowsVariableStartTime)
             service_item.add_from_command(path, name, frame)
             return True
         else:

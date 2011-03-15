@@ -618,7 +618,7 @@ class ServiceManager(QtGui.QWidget):
         if item.parent() is None:
             self.notesAction.setVisible(True)
         if serviceItem[u'service_item']\
-            .is_capable(ItemCapabilities.AllowsVarableStartTime):
+            .is_capable(ItemCapabilities.AllowsVariableStartTime):
             self.timeAction.setVisible(True)
         self.themeMenu.menuAction().setVisible(False)
         if serviceItem[u'service_item'].is_text():
@@ -905,7 +905,7 @@ class ServiceManager(QtGui.QWidget):
                 child.setText(0, text[:40])
                 child.setData(0, QtCore.Qt.UserRole, QtCore.QVariant(count))
                 if item[u'service_item'] \
-                    .is_capable(ItemCapabilities.AllowsVarableStartTime):
+                    .is_capable(ItemCapabilities.AllowsVariableStartTime):
                     tip = item[u'service_item'].get_media_time()
                     if tip:
                         child.setToolTip(0, tip)
