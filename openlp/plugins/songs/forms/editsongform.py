@@ -728,8 +728,10 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.song.title = unicode(self.titleEdit.text())
         self.song.alternate_title = unicode(self.alternativeEdit.text())
         self.song.copyright = unicode(self.copyrightEdit.text())
+         # Values will be set when cleaning the song.
         self.song.search_title = u''
         self.song.search_lyrics = u''
+        song.verse_order = u''
         self.song.comments = unicode(self.commentsEdit.toPlainText())
         ordertext = unicode(self.verseOrderEdit.text())
         order = []

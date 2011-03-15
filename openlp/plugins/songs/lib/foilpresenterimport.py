@@ -212,9 +212,13 @@ class FoilPresenter(object):
         # No xml get out of here.
         if not xml:
             return None
-        song = Song()
         if xml[:5] == u'<?xml':
             xml = xml[38:]
+        song = Song()
+        # Values will be set when cleaning the song.
+        song.search_lyrics = u''
+        song.verse_order = u''
+        song.search_title = u''
         # Because "text" seems to be an reserverd word, we have to recompile it.
         xml = re.compile(u'<text>').sub(u'<text_>', xml)
         xml = re.compile(u'</text>').sub(u'</text_>', xml)
@@ -482,7 +486,6 @@ class FoilPresenter(object):
                 numberx = temp_sortnr_liste[int(number)]
                 verse_order.append(temp_verse_order[unicode(numberx)])
         song.verse_order = u' '.join(verse_order)
-        song.search_lyrics = u''
 
     def _process_songbooks(self, foilpresenterfolie, song):
         """
@@ -533,7 +536,6 @@ class FoilPresenter(object):
                 song.alternate_title = u''
             else:
                 song.alternate_title = self._child(titelstring)
-        song.search_title = u''
 
     def _process_topics(self, foilpresenterfolie, song):
         """
