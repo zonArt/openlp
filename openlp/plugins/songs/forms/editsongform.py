@@ -762,7 +762,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             item = self.topicsListView.item(row)
             topicId = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.song.topics.append(self.manager.get_object(Topic, topicId))
-        clean_song(self.song)
+        clean_song(self.manager, self.song)
         self.manager.save_object(self.song)
         if not preview:
             self.song = None

@@ -262,9 +262,8 @@ def clean_song(manager, song):
         song.alternate_title = u''
     song.alternate_title = song.alternate_title.strip()
     whitespace = re.compile(r'\W+', re.UNICODE)
-    search_title = (whitespace.sub(u' ', song.title.lower()) +
-        u'@' + whitespace.sub(u' ', song.alternate_title.lower())).strip()
-    song.search_title = search_title if search_title else u''
+    song.search_title = (whitespace.sub(u' ', song.title.lower()) + u'@' +
+        whitespace.sub(u' ', song.alternate_title.lower())).strip()
     # Remove the "language" attribute from lyrics tag. This is not very
     # important, but this keeps the database clean. This can be removed
     # when everybody has cleaned his songs.

@@ -305,6 +305,7 @@ class OpenLyrics(object):
         # Values will be set when cleaning the song.
         song.search_lyrics = u''
         song.verse_order = u''
+        song.search_title = u''
         self._process_copyright(properties, song)
         self._process_cclinumber(properties, song)
         self._process_titles(properties, song)

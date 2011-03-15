@@ -254,6 +254,8 @@ class SongImport(QtCore.QObject):
         song.title = self.title
         song.alternate_title = self.alternate_title
         song.search_title = u''
+        song.search_lyrics = u''
+        song.verse_order = u''
         song.song_number = self.song_number
         verses_changed_to_other = {}
         sxml = SongXML()
@@ -279,7 +281,6 @@ class SongImport(QtCore.QObject):
             if verses_changed_to_other.has_key(current_verse_def):
                 self.verse_order_list[i] = \
                     verses_changed_to_other[current_verse_def]
-        song.search_lyrics = u''
         song.verse_order = u' '.join(self.verse_order_list)
         song.copyright = self.copyright
         song.comments = self.comments
