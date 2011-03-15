@@ -1,60 +1,63 @@
 
-#define DllExport extern "C"  __declspec( dllexport ) 
+#define DllExport extern "C"  __declspec(dllexport) 
+#define DEBUG(...)  if(debug) printf(__VA_ARGS__)
 
-enum PPTVIEWSTATE { PPT_CLOSED, PPT_STARTED, PPT_OPENED, PPT_LOADED, PPT_CLOSING};
+enum PPTVIEWSTATE {PPT_CLOSED, PPT_STARTED, PPT_OPENED, 
+    PPT_LOADED, PPT_CLOSING};
 
-DllExport int OpenPPT(char *filename, HWND hParentWnd, RECT rect, char *previewpath);
+DllExport int OpenPPT(char *filename, HWND h_parent_wnd, RECT rect, 
+    char *preview_path);
 DllExport BOOL CheckInstalled();
 DllExport void ClosePPT(int id);
 DllExport int GetCurrentSlide(int id);
 DllExport int GetSlideCount(int id);
 DllExport void NextStep(int id);
 DllExport void PrevStep(int id);
-DllExport void GotoSlide(int id, int slideno);
+DllExport void GotoSlide(int id, int slide_no);
 DllExport void RestartShow(int id);
 DllExport void Blank(int id);
 DllExport void Unblank(int id);
 DllExport void Stop(int id);
 DllExport void Resume(int id);
-DllExport void SetDebug(BOOL onoff);
+DllExport void SetDebug(BOOL on_off);
 
-LRESULT CALLBACK CbtProc(int nCode, WPARAM wParam, LPARAM lParam);
-LRESULT CALLBACK CwpProc(int nCode, WPARAM wParam, LPARAM lParam);
-LRESULT CALLBACK GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam);
-BOOL GetPPTViewerPath(char *pptviewerpath, int strsize);
-HBITMAP CaptureWindow (HWND hWnd);
-VOID SaveBitmap (CHAR* filename, HBITMAP hBmp) ;
-VOID CaptureAndSaveWindow(HWND hWnd, CHAR* filename);
+LRESULT CALLBACK CbtProc(int n_code, WPARAM w_param, LPARAM l_param);
+LRESULT CALLBACK CwpProc(int n_code, WPARAM w_param, LPARAM l_param);
+LRESULT CALLBACK GetMsgProc(int n_code, WPARAM w_param, LPARAM l_param);
+BOOL GetPPTViewerPath(char *pptviewer_path, int str_size);
+HBITMAP CaptureWindow (HWND h_wnd);
+VOID SaveBitmap (CHAR* filename, HBITMAP h_bmp);
+VOID CaptureAndSaveWindow(HWND h_wnd, CHAR* filename);
 BOOL GetPPTInfo(int id);
 BOOL SavePPTInfo(int id);
-BOOL InitPPTObject(int id, char *filename, HWND hParentWnd, 
-	RECT rect, char *previewpath);
+BOOL InitPPTObject(int id, char *filename, HWND h_parent_wnd, 
+	RECT rect, char *preview_path);
 BOOL StartPPTView(int id);
 
 void Unhook(int id);
 
-#define MAX_PPTOBJS 16
+#define MAX_PPTS 16
 #define MAX_SLIDES 256
 
-struct PPTVIEWOBJ 
+struct PPTVIEW 
 {
 	HHOOK hook;
 	HHOOK mhook;
-	HWND hWnd;
-	HWND hWnd2;
-	HWND hParentWnd;
-	HANDLE hProcess;
-	HANDLE hThread;
-	DWORD dwProcessId;
-	DWORD dwThreadId;
+	HWND h_wnd;         // The main pptview window 
+	HWND h_wnd_input;   // A child pptview window which takes windows messages
+	HWND h_parent_wnd;
+	HANDLE h_process;
+	HANDLE h_thread;
+	DWORD dw_process_id;
+	DWORD dw_thread_id;
 	RECT rect;
-	int slideCount;
-	int currentSlide;
-	int firstSlideSteps;
+	int slide_count;
+	int current_slide;
+	int first_slide_steps;
 	int steps;
-	int guess;
+	int guess;  // What the current slide might be, based on the last action
 	char filename[MAX_PATH];
-	char previewpath[MAX_PATH];
-	int slideNo[MAX_SLIDES];
+	char preview_path[MAX_PATH];
+	int slide_no[MAX_SLIDES];
 	PPTVIEWSTATE state;
 };
