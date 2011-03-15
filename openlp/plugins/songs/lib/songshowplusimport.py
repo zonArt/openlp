@@ -154,7 +154,7 @@ class SongShowPlusImport(SongImport):
                     elif blockKey == COMMENTS:
                         self.comments = unicode(data, u'cp1252')
                     elif blockKey == VERSE_ORDER:
-                        verseTag = self.toOpenLPVerseTag(data, 1)
+                        verseTag = self.toOpenLPVerseTag(data, True)
                         if verseTag:
                             self.sspVerseOrderList.append(unicode(verseTag,
                                 u'cp1252'))
@@ -175,7 +175,7 @@ class SongShowPlusImport(SongImport):
                     WizardStrings.ImportingType % file_name)
             return True
 
-    def toOpenLPVerseTag(self, verseName,  ignoreUnique = False):
+    def toOpenLPVerseTag(self, verseName,  ignoreUnique=False):
         if verseName.find(" ") != -1:
             verseParts = verseName.split(" ")
             verseType = verseParts[0]
