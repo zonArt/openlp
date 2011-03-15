@@ -26,7 +26,6 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import translate
 from openlp.core.utils import LanguageManager
 from firsttimelanguagedialog import Ui_FirstTimeLanguageDialog
 
