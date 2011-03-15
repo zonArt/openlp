@@ -247,9 +247,9 @@ def retrieve_windows_encoding(recommendation=None):
 
 def clean_song(manager, song):
     """
-    Cleans the serach title, rebuilds the serach lyrics, adds a default author
-    if the song does not have one and other clean ups. This should alsways
-    called when a new song is added.
+    Cleans the search title, rebuilds the serach lyrics, adds a default author
+    if the song does not have one and other clean ups. This should always
+    called when a new song is added or changed.
 
     ``manager``
         The song's manager.
