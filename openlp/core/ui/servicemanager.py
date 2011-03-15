@@ -49,6 +49,19 @@ class ServiceManagerList(QtGui.QTreeWidget):
         QtGui.QTreeWidget.__init__(self, parent)
         self.mainwindow = mainwindow
 
+    def keyPressEvent(self, event):
+        if isinstance(event, QtGui.QKeyEvent):
+            # here accept the event and do something
+            if event.key() == QtCore.Qt.Key_Up:
+                self.mainwindow.onMoveSelectionUp()
+                event.accept()
+            elif event.key() == QtCore.Qt.Key_Down:
+                self.mainwindow.onMoveSelectionDown()
+                event.accept()
+            event.ignore()
+        else:
+            event.ignore()
+
     def mouseMoveEvent(self, event):
         """
         Drag and drop event does not care what data is selected
@@ -197,13 +210,13 @@ class ServiceManager(QtGui.QWidget):
             u':/services/service_expand_all.png',
             translate('OpenLP.ServiceManager',
             'Expand all the service items.'),
-            self.onExpandAll)
+            self.onExpandAll, shortcut=QtCore.Qt.Key_Plus)
         self.serviceManagerList.collapse = self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', '&Collapse all'),
             u':/services/service_collapse_all.png',
             translate('OpenLP.ServiceManager',
             'Collapse all the service items.'),
-            self.onCollapseAll)
+            self.onCollapseAll, shortcut=QtCore.Qt.Key_Minus)
         self.orderToolbar.addSeparator()
         self.serviceManagerList.makeLive = self.orderToolbar.addToolbarButton(
             translate('OpenLP.ServiceManager', 'Go Live'),
@@ -293,7 +306,9 @@ class ServiceManager(QtGui.QWidget):
             self.serviceManagerList.moveTop,
             self.serviceManagerList.moveBottom,
             self.serviceManagerList.up,
-            self.serviceManagerList.down
+            self.serviceManagerList.down,
+            self.serviceManagerList.expand,
+            self.serviceManagerList.collapse
             ])
         self.configUpdated()
 
@@ -306,6 +321,9 @@ class ServiceManager(QtGui.QWidget):
         actionList.add_action(self.serviceManagerList.makeLive, u'Service')
         actionList.add_action(self.serviceManagerList.up, u'Service')
         actionList.add_action(self.serviceManagerList.down, u'Service')
+        actionList.add_action(self.serviceManagerList.expand, u'Service')
+        actionList.add_action(self.serviceManagerList.collapse, u'Service')
+
 
     def setModified(self, modified=True):
         """
