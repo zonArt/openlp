@@ -84,7 +84,7 @@ class PptviewController(PresentationController):
             dllpath = os.path.join(self.plugin.pluginManager.basepath,
                 u'presentations', u'lib', u'pptviewlib', u'pptviewlib.dll')
             self.process = cdll.LoadLibrary(dllpath)
-            if log.isEnabledFor(log.DEBUG):
+            if log.isEnabledFor(logging.DEBUG):
                 self.process.SetDebug(1)
 
         def kill(self):
