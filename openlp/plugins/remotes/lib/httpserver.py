@@ -24,6 +24,74 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+"""
+The :mod:`http` module contains the API web server. This is a lightweight web
+server used by remotes to interact with OpenLP. It uses JSON to communicate with
+the remotes.
+
+*Routes:*
+
+``/``
+    Go to the web interface.
+
+``/files/{filename}``
+    Serve a static file.
+
+``/api/poll``
+    Poll to see if there are any changes. Returns a JSON-encoded dict of
+    any changes that occurred::
+
+        {"results": {"type": "controller"}}
+
+    Or, if there were no results, False::
+
+        {"results": False}
+
+``/api/controller/{live|preview}/{action}``
+    Perform ``{action}`` on the live or preview controller. Valid actions
+    are:
+
+    ``next``
+        Load the next slide.
+
+    ``previous``
+        Load the previous slide.
+
+    ``jump``
+        Jump to a specific slide. Requires an id return in a JSON-encoded
+        dict like so::
+
+            {"request": {"id": 1}}
+
+    ``first``
+        Load the first slide.
+
+    ``last``
+        Load the last slide.
+
+    ``text``
+        Request the text of the current slide.
+
+``/api/service/{action}``
+    Perform ``{action}`` on the service manager (e.g. go live). Data is
+    passed as a json-encoded ``data`` parameter. Valid actions are:
+
+    ``next``
+        Load the next item in the service.
+
+    ``previous``
+        Load the previews item in the service.
+
+    ``jump``
+        Jump to a specific item in the service. Requires an id returned in
+        a JSON-encoded dict like so::
+
+            {"request": {"id": 1}}
+
+    ``list``
+        Request a list of items in the service.
+"""
+
 import logging
 import os
 import urlparse
@@ -143,7 +211,8 @@ class HttpServer(object):
         The connection has been closed. Clean up
         """
         log.debug(u'close http connection')
-        self.connections.remove(connection)
+        if connection in self.connections:
+            self.connections.remove(connection)
 
     def close(self):
         """
@@ -168,8 +237,6 @@ class HttpConnection(object):
         self.routes = [
             (u'^/$', self.serve_file),
             (r'^/files/(.*)$', self.serve_file),
-            #(r'^/send/(.*)$', self.process_event),
-            #(r'^/request/(.*)$', self.process_request),
             (r'^/api/poll$', self.poll),
             (r'^/api/controller/(live|preview)/(.*)$', self.controller),
             (r'^/api/service/(.*)$', self.service)
@@ -321,7 +388,10 @@ class HttpConnection(object):
         else:
             if self.url_params and self.url_params.get(u'data'):
                 data = json.loads(self.url_params[u'data'][0])
-                Receiver.send_message(event, data[u'request'][u'id'])
+                log.info(data)
+                # This slot expects an int within a list.
+                id = data[u'request'][u'id']
+                Receiver.send_message(event, [id])
             else:
                 Receiver.send_message(event)
             json_data = {u'results': {u'success': True}}

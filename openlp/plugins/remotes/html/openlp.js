@@ -46,7 +46,7 @@ window.OpenLP = {
         ul.html("");
         for (idx in data.results) {
           var li = $("<li data-icon=\"false\">").append(
-            $("<a href=\"#\">").attr("value", idx + 1).text(data.results[idx]["title"]));
+            $("<a href=\"#\">").attr("value", parseInt(idx, 10)).text(data.results[idx]["title"]));
           li.children("a").click(OpenLP.setItem);
           ul.append(li);
         }
@@ -62,7 +62,7 @@ window.OpenLP = {
         ul.html("");
         for (idx in data.results.slides) {
           var li = $("<li data-icon=\"false\">").append(
-            $("<a href=\"#\">").attr("value", idx + 1).html(data.results.slides[idx]["text"]));
+            $("<a href=\"#\">").attr("value", parseInt(idx, 10)).html(data.results.slides[idx]["text"]));
           if (data.results.slides[idx]["selected"]) {
             li.attr("data-theme", "e");
           }
@@ -92,6 +92,7 @@ window.OpenLP = {
   },
   setSlide: function (event) {
     var slide = OpenLP.getElement(event);
+    console.log(slide);
     var id = slide.attr("value");
     var text = JSON.stringify({"request": {"id": id}});
     $.getJSON(
@@ -114,18 +115,34 @@ window.OpenLP = {
         OpenLP.currentSlide = data.results.slide;
         OpenLP.currentItem = data.results.item;
         if ($("#service-manager").is(":visible")) {
-          $("#service-manager > div[data-role=content] ul[data-role=listview] li a").each(function () {
+          $("#service-manager div[data-role=content] ul[data-role=listview] li").attr("data-theme", "c").removeClass("ui-btn-up-e").addClass("ui-btn-up-c");
+          $("#service-manager div[data-role=content] ul[data-role=listview] li a").each(function () {
             var item = $(this);
             if (item.text() == OpenLP.currentItem) {
-              $("#service-manager > div[data-role=content] ul[data-role=listview] li").attr("data-theme", "c").removeClass("ui-btn-up-e").addClass("ui-btn-up-c");
               while (item[0].tagName != "LI") {
                 item = item.parent();
               }
               item.attr("data-theme", "e").removeClass("ui-btn-up-c").addClass("ui-btn-up-e");
-              $("#slide-controller div[data-role=content] ul[data-role=listview]").listview("refresh");
               return false;
             }
           });
+          $("#service-manager div[data-role=content] ul[data-role=listview]").listview("refresh");
+        }
+        if ($("#slide-controller").is(":visible")) {
+          var idx = 0;
+          $("#slide-controller div[data-role=content] ul[data-role=listview] li").attr("data-theme", "c").removeClass("ui-btn-up-e").addClass("ui-btn-up-c");
+          $("#slide-controller div[data-role=content] ul[data-role=listview] li a").each(function () {
+            var item = $(this);
+            if (idx == OpenLP.currentSlide) {
+              while (item[0].tagName != "LI") {
+                item = item.parent();
+              }
+              item.attr("data-theme", "e").removeClass("ui-btn-up-c").addClass("ui-btn-up-e");
+              return false;
+            }
+            idx++;
+          });
+          $("#slide-controller div[data-role=content] ul[data-role=listview]").listview("refresh");
         }
       }
     );
@@ -136,3 +153,4 @@ $("#service-manager").live("pagebeforeshow", OpenLP.loadService);
 $("#slide-controller").live("pagebeforeshow", OpenLP.loadController);
 // Poll the server twice a second to get any updates.
 setInterval("OpenLP.pollServer();", 500);
+OpenLP.pollServer();
