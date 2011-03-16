@@ -78,9 +78,6 @@ the remotes.
     ``last``
         Load the last slide.
 
-    ``text``
-        Request the text of the current slide.
-
 ``/api/service/{action}``
     Perform ``{action}`` on the service manager (e.g. go live). Data is
     passed as a json-encoded ``data`` parameter. Valid actions are:
@@ -188,23 +185,12 @@ class HttpServer(object):
         Slide change listener. Store the item and tell the clients
         """
         self.current_slide = row
-        #self.send_poll()
 
     def item_change(self, items):
         """
         Item (song) change listener. Store the slide and tell the clients
         """
         self.current_item = items[0]
-        #log.debug(pformat(items[0].__dict__, 2))
-        #self.send_poll()
-
-    def send_poll(self):
-        """
-        Tell the clients something has changed
-        """
-        Receiver.send_message(u'remotes_poll_response',
-            {'slide': self.current_slide,
-             'item': self.current_item})
 
     def new_connection(self):
         """
@@ -239,7 +225,7 @@ class HttpConnection(object):
     def __init__(self, parent, socket):
         """
         Initialise the http connection. Listen out for socket signals.
-                """
+        """
         log.debug(u'Initialise HttpConnection: %s' %
             socket.peerAddress().toString())
         self.socket = socket
@@ -418,8 +404,6 @@ class HttpConnection(object):
             else:
                 Receiver.send_message(event)
             json_data = {u'results': {u'success': True}}
-        #if action == u'text':
-        #    json_data = {u'results': }
         return HttpResponse(json.dumps(json_data),
             {u'Content-Type': u'application/json'})
 
