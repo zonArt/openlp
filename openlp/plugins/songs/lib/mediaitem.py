@@ -423,7 +423,7 @@ class SongMediaItem(MediaManagerItem):
             # should work for songs without alternate title.
             search_results = self.parent.manager.get_all_objects(Song,
                 Song.search_title == (re.compile(r'\W+', re.UNICODE).sub(u' ',
-                item.data_string[u'title'].strip()) + u'@'),
+                item.data_string[u'title'].strip()) + u'@').strip().lower(),
                 Song.search_title.asc())
         else:
             search_results = self.parent.manager.get_all_objects(Song,
