@@ -153,7 +153,7 @@ class MainDisplay(DisplayWidget):
             self.initialFrame = QtGui.QImage(
                 self.screens.current[u'size'].width(),
                 self.screens.current[u'size'].height(),
-                QtGui.QImage.Format_ARGB32_Premultiplied)            
+                QtGui.QImage.Format_ARGB32_Premultiplied)
             painter_image = QtGui.QPainter()
             painter_image.begin(self.initialFrame)
             painter_image.fillRect(self.initialFrame.rect(), background_color)
@@ -166,7 +166,7 @@ class MainDisplay(DisplayWidget):
             serviceItem.bg_image_bytes = image_to_byte(self.initialFrame)
             self.webView.setHtml(build_html(serviceItem, self.screen,
                 self.alertTab, self.isLive, None))
-            self.__hideMouse()  
+            self.__hideMouse()
             # To display or not to display?
             if not self.screen[u'primary']:
                 self.show()
@@ -199,7 +199,7 @@ class MainDisplay(DisplayWidget):
         `slide`
             The slide text to be displayed
         """
-        log.debug(u'alert to display')  
+        log.debug(u'alert to display')
         if self.height() != self.screen[u'size'].height() \
             or not self.isVisible() or self.videoWidget.isVisible():
             shrink = True
@@ -434,7 +434,14 @@ class MainDisplay(DisplayWidget):
             if self.hideMode:
                 self.hideDisplay(self.hideMode)
             else:
-                self.setVisible(True)
+                # Single screen active
+                if self.screens.monitor_number == 0:
+                    # Only make visible if setting enabled
+                    if QtCore.QSettings().value(u'general/display on monitor',
+                        QtCore.QVariant(True)).toBool():
+                        self.setVisible(True)
+                else:
+                    self.setVisible(True)
         preview = QtGui.QImage(self.screen[u'size'].width(),
             self.screen[u'size'].height(),
             QtGui.QImage.Format_ARGB32_Premultiplied)
