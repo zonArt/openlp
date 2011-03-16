@@ -267,8 +267,7 @@ class GeneralTab(SettingsTab):
             'Automatically preview next item in service'))
         self.timeoutLabel.setText(translate('OpenLP.GeneralTab',
             'Slide loop delay:'))
-        self.timeoutSpinBox.setSuffix(
-            translate('OpenLP.GeneralTab', ' sec'))
+        self.timeoutSpinBox.setSuffix(translate('OpenLP.GeneralTab', ' sec'))
         self.ccliGroupBox.setTitle(
             translate('OpenLP.GeneralTab', 'CCLI Details'))
         self.numberLabel.setText(UiStrings.CCLINumberLabel)
@@ -286,15 +285,13 @@ class GeneralTab(SettingsTab):
         self.currentHeightLabel.setText(
             translate('OpenLP.GeneralTab', 'Height'))
         self.currentHeightValueLabel.setText(u'0')
-        self.currentWidthLabel.setText(
-            translate('OpenLP.GeneralTab', 'Width'))
+        self.currentWidthLabel.setText(translate('OpenLP.GeneralTab', 'Width'))
         self.currentWidthValueLabel.setText(u'0')
         self.overrideCheckBox.setText(translate('OpenLP.GeneralTab',
             'Override display position'))
         self.customXLabel.setText(translate('OpenLP.GeneralTab', 'X'))
         self.customYLabel.setText(translate('OpenLP.GeneralTab', 'Y'))
-        self.customHeightLabel.setText(
-            translate('OpenLP.GeneralTab', 'Height'))
+        self.customHeightLabel.setText(translate('OpenLP.GeneralTab', 'Height'))
         self.customWidthLabel.setText(translate('OpenLP.GeneralTab', 'Width'))
 
     def load(self):
@@ -304,8 +301,7 @@ class GeneralTab(SettingsTab):
         settings = QtCore.QSettings()
         settings.beginGroup(self.settingsSection)
         self.monitorComboBox.clear()
-        for screen in self.screens.get_screen_list():
-            self.monitorComboBox.addItem(screen)
+        self.monitorComboBox.addItems(self.screens.get_screen_list())
         self.numberEdit.setText(unicode(settings.value(
             u'ccli number', QtCore.QVariant(u'')).toString()))
         self.usernameEdit.setText(unicode(settings.value(
@@ -328,14 +324,13 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(False)).toBool())
         self.timeoutSpinBox.setValue(settings.value(u'loop delay',
            QtCore.QVariant(5)).toInt()[0])
-        self.currentXValueLabel.setText(
-            unicode(self.screens.current[u'size'].x()))
-        self.currentYValueLabel.setText(
-            unicode(self.screens.current[u'size'].y()))
-        self.currentHeightValueLabel.setText(
-            unicode(self.screens.current[u'size'].height()))
-        self.currentWidthValueLabel.setText(
-            unicode(self.screens.current[u'size'].width()))
+        for screen in self.screens.screen_list:
+            if screen[u'number'] == self.monitorNumber:
+                size = screen[u'size'] 
+        self.currentXValueLabel.setText(unicode(size.x()))
+        self.currentYValueLabel.setText(unicode(size.y()))
+        self.currentHeightValueLabel.setText(unicode(size.height()))
+        self.currentWidthValueLabel.setText(unicode(size.width()))
         self.overrideCheckBox.setChecked(settings.value(u'override position',
             QtCore.QVariant(False)).toBool())
         self.customXValueEdit.setText(settings.value(u'x position',
