@@ -149,21 +149,38 @@ window.OpenLP = {
   },
   nextItem: function (event) {
     $.getJSON("/api/service/next");
+    return false;
   },
   previousItem: function (event) {
     $.getJSON("/api/service/previous");
+    return false;
   },
   nextSlide: function (event) {
     $.getJSON("/api/controller/live/next");
+    return false;
   },
   previousSlide: function (event) {
     $.getJSON("/api/controller/live/previous");
+    return false;
   },
   blankDisplay: function (event) {
     $.getJSON("/api/display/hide");
+    return false;
   },
   unblankDisplay: function (event) {
     $.getJSON("/api/display/show");
+    return false;
+  },
+  showAlert: function (event) {
+    var text = JSON.stringify({"request": {"text": $("#alert-text").val()}});
+    $.getJSON(
+      "/api/alert",
+      {"data": text},
+      function () {
+        $("#alert-text").val("");
+      }
+    );
+    return false;
   }
 }
 // Service Manager
@@ -180,6 +197,8 @@ $("#controller-next").live("click", OpenLP.nextSlide);
 $("#controller-previous").live("click", OpenLP.previousSlide);
 $("#controller-blank").live("click", OpenLP.blankDisplay);
 $("#controller-unblank").live("click", OpenLP.unblankDisplay);
+// Alerts
+$("#alert-submit").live("click", OpenLP.showAlert);
 // Poll the server twice a second to get any updates.
 setInterval("OpenLP.pollServer();", 500);
 OpenLP.pollServer();

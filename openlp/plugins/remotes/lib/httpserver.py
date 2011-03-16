@@ -50,6 +50,12 @@ the remotes.
 ``/api/display/{hide|show}``
     Blank or unblank the screen.
 
+``/api/alert``
+    Sends an alert message to the alerts plugin. This method expects a
+    JSON-encoded dict like this::
+    
+        {"request": {"text": "<your alert text>"}}
+
 ``/api/controller/{live|preview}/{action}``
     Perform ``{action}`` on the live or preview controller. Valid actions
     are:
@@ -244,7 +250,8 @@ class HttpConnection(object):
             (r'^/api/poll$', self.poll),
             (r'^/api/controller/(live|preview)/(.*)$', self.controller),
             (r'^/api/service/(.*)$', self.service),
-            (r'^/api/display/(hide|show)$', self.display)
+            (r'^/api/display/(hide|show)$', self.display),
+            (r'^/api/alert$', self.alert)
         ]
         QtCore.QObject.connect(self.socket, QtCore.SIGNAL(u'readyRead()'),
             self.ready_read)
@@ -294,16 +301,6 @@ class HttpConnection(object):
                         break
             if response:
                 self.send_response(response)
-                """
-                if hasattr(response, u'mimetype'):
-                    self.send_200_ok(response.mimetype)
-                else:
-                    self.send_200_ok()
-                if hasattr(response, u'content'):
-                    self.socket.write(response.content)
-                elif isinstance(response, basestring):
-                    self.socket.write(response)
-                """
             else:
                 self.send_response(HttpResponse(code='404 Not Found'))
             self.close()
@@ -372,6 +369,15 @@ class HttpConnection(object):
         """
         event = u'maindisplay_%s' % action
         Receiver.send_message(event, HideMode.Blank)
+        return HttpResponse(json.dumps({u'results': {u'success': True}}),
+            {u'Content-Type': u'application/json'})
+
+    def alert(self):
+        """
+        Send an alert.
+        """
+        text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
+        Receiver.send_message(u'alerts_text', [text])
         return HttpResponse(json.dumps({u'results': {u'success': True}}),
             {u'Content-Type': u'application/json'})
 
