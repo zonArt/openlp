@@ -175,7 +175,7 @@ class SongShowPlusImport(SongImport):
                     WizardStrings.ImportingType % file_name)
             return True
 
-    def toOpenLPVerseTag(self, verseName,  ignoreUnique=False):
+    def toOpenLPVerseTag(self, verseName, ignoreUnique=False):
         if verseName.find(" ") != -1:
             verseParts = verseName.split(" ")
             verseType = verseParts[0]
@@ -197,7 +197,7 @@ class SongShowPlusImport(SongImport):
         else:
             if not self.otherList.has_key(verseName):
                 if ignoreUnique:
-                    return False
+                    return None
                 self.otherCount = self.otherCount + 1
                 self.otherList[verseName] = str(self.otherCount)
             verseTag = "O"
