@@ -80,6 +80,7 @@ class PowerpointController(PresentationController):
             log.debug(u'start_process')
             if not self.process:
                 self.process = Dispatch(u'PowerPoint.Application')
+            self.process.Visible = True
             self.process.WindowState = 2
 
         def kill(self):
