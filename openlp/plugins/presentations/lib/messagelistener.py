@@ -80,7 +80,8 @@ class Controller(object):
         if self.doc.is_active():
             return
         if not self.doc.is_loaded():
-            self.doc.load_presentation()
+            if not self.doc.load_presentation():
+                return
         if self.is_live:
             self.doc.start_presentation()
             if self.doc.slidenumber > 1:

@@ -133,7 +133,7 @@ class PPTViewer(QtGui.QWidget):
     def OpenClick(self):
         oldid = self.pptid;
         rect = RECT(100,100,900,700)
-        filename = unicode(self.PPTEdit.text())
+        filename = str(self.PPTEdit.text().replace(u'/', u'\\'))        
         print filename
         self.pptid = pptdll.OpenPPT(filename, None, rect, 'c:\\temp\\slide')
         print "id: " + unicode(self.pptid)
