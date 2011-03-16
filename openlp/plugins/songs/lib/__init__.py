@@ -247,7 +247,7 @@ def retrieve_windows_encoding(recommendation=None):
 
 def clean_song(manager, song):
     """
-    Cleans the search title, rebuilds the serach lyrics, adds a default author
+    Cleans the search title, rebuilds the search lyrics, adds a default author
     if the song does not have one and other clean ups. This should always
     called when a new song is added or changed.
 
@@ -264,9 +264,9 @@ def clean_song(manager, song):
     whitespace = re.compile(r'\W+', re.UNICODE)
     song.search_title = (whitespace.sub(u' ', song.title).strip() + u'@' +
         whitespace.sub(u' ', song.alternate_title).strip()).strip().lower()
-    # Remove the "language" attribute from lyrics tag. This is not very
-    # important, but this keeps the database clean. This can be removed
-    # when everybody has cleaned his songs.
+    # Remove the old "language" attribute from lyrics tag (prior to 1.9.5). This
+    # is not very important, but this keeps the database clean. This can be
+    # removed when everybody has cleaned his songs.
     song.lyrics = song.lyrics.replace(u'<lyrics language="en">', u'<lyrics>')
     verses = SongXML().get_verses(song.lyrics)
     lyrics = u' '.join([whitespace.sub(u' ', verse[1]) for verse in verses])
