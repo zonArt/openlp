@@ -44,12 +44,12 @@ window.OpenLP = {
       function (data, status) {
         var ul = $("#service-manager > div[data-role=content] > ul[data-role=listview]");
         ul.html("");
-        for (idx in data.results) {
+        $.each(data.results.items, function (idx, value) {
           var li = $("<li data-icon=\"false\">").append(
-            $("<a href=\"#\">").attr("value", parseInt(idx, 10)).text(data.results[idx]["title"]));
+            $("<a href=\"#\">").attr("value", parseInt(idx, 10)).text(value["title"]));
           li.children("a").click(OpenLP.setItem);
           ul.append(li);
-        }
+        });
         ul.listview("refresh");
       }
     );
@@ -146,11 +146,40 @@ window.OpenLP = {
         }
       }
     );
+  },
+  nextItem: function (event) {
+    $.getJSON("/api/service/next");
+  },
+  previousItem: function (event) {
+    $.getJSON("/api/service/previous");
+  },
+  nextSlide: function (event) {
+    $.getJSON("/api/controller/live/next");
+  },
+  previousSlide: function (event) {
+    $.getJSON("/api/controller/live/previous");
+  },
+  blankDisplay: function (event) {
+    $.getJSON("/api/display/hide");
+  },
+  unblankDisplay: function (event) {
+    $.getJSON("/api/display/show");
   }
 }
-
+// Service Manager
 $("#service-manager").live("pagebeforeshow", OpenLP.loadService);
+$("#service-refresh").live("click", OpenLP.loadService);
+$("#service-next").live("click", OpenLP.nextItem);
+$("#service-previous").live("click", OpenLP.previousItem);
+$("#service-blank").live("click", OpenLP.blankDisplay);
+$("#service-unblank").live("click", OpenLP.unblankDisplay);
+// Slide Controller
 $("#slide-controller").live("pagebeforeshow", OpenLP.loadController);
+$("#controller-refresh").live("click", OpenLP.loadController);
+$("#controller-next").live("click", OpenLP.nextSlide);
+$("#controller-previous").live("click", OpenLP.previousSlide);
+$("#controller-blank").live("click", OpenLP.blankDisplay);
+$("#controller-unblank").live("click", OpenLP.unblankDisplay);
 // Poll the server twice a second to get any updates.
 setInterval("OpenLP.pollServer();", 500);
 OpenLP.pollServer();

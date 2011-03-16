@@ -47,6 +47,9 @@ the remotes.
 
         {"results": False}
 
+``/api/display/{hide|show}``
+    Blank or unblank the screen.
+
 ``/api/controller/{live|preview}/{action}``
     Perform ``{action}`` on the live or preview controller. Valid actions
     are:
@@ -57,9 +60,9 @@ the remotes.
     ``previous``
         Load the previous slide.
 
-    ``jump``
-        Jump to a specific slide. Requires an id return in a JSON-encoded
-        dict like so::
+    ``set``
+        Set a specific slide. Requires an id return in a JSON-encoded dict like
+        this::
 
             {"request": {"id": 1}}
 
@@ -82,9 +85,9 @@ the remotes.
     ``previous``
         Load the previews item in the service.
 
-    ``jump``
-        Jump to a specific item in the service. Requires an id returned in
-        a JSON-encoded dict like so::
+    ``set``
+        Set a specific item in the service. Requires an id returned in a
+        JSON-encoded dict like this::
 
             {"request": {"id": 1}}
 
@@ -106,6 +109,7 @@ except ImportError:
 from PyQt4 import QtCore, QtNetwork
 
 from openlp.core.lib import Receiver
+from openlp.core.ui import HideMode
 from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
@@ -239,7 +243,8 @@ class HttpConnection(object):
             (r'^/files/(.*)$', self.serve_file),
             (r'^/api/poll$', self.poll),
             (r'^/api/controller/(live|preview)/(.*)$', self.controller),
-            (r'^/api/service/(.*)$', self.service)
+            (r'^/api/service/(.*)$', self.service),
+            (r'^/api/display/(hide|show)$', self.display)
         ]
         QtCore.QObject.connect(self.socket, QtCore.SIGNAL(u'readyRead()'),
             self.ready_read)
@@ -356,7 +361,19 @@ class HttpConnection(object):
                 if self.parent.current_item else u''
         }
         return HttpResponse(json.dumps({u'results': result}),
-             {'Content-Type': 'application/json'})
+             {u'Content-Type': u'application/json'})
+
+    def display(self, action):
+        """
+        Hide or show the display screen.
+        
+        ``action``
+            This is the action, either ``hide`` or ``show``.
+        """
+        event = u'maindisplay_%s' % action
+        Receiver.send_message(event, HideMode.Blank)
+        return HttpResponse(json.dumps({u'results': {u'success': True}}),
+            {u'Content-Type': u'application/json'})
 
     def controller(self, type, action):
         """
@@ -398,14 +415,14 @@ class HttpConnection(object):
         #if action == u'text':
         #    json_data = {u'results': }
         return HttpResponse(json.dumps(json_data),
-            {'Content-Type': 'application/json'})
+            {u'Content-Type': u'application/json'})
 
     def service(self, action):
         event = u'servicemanager_%s' % action
         if action == u'list':
             return HttpResponse(
-                json.dumps({'results': self._get_service_items()}),
-                {'Content-Type': 'application/json'})
+                json.dumps({u'results': {u'items': self._get_service_items()}}),
+                {u'Content-Type': u'application/json'})
         else:
             event += u'_item'
         if self.url_params and self.url_params.get(u'data'):
@@ -413,113 +430,16 @@ class HttpConnection(object):
             Receiver.send_message(event, data[u'request'][u'id'])
         else:
             Receiver.send_message(event)
-        return HttpResponse(json.dumps({'results': {u'success': True}}),
-            {'Content-Type': 'application/json'})
-
-    def process_event(self, **kwargs):
-        """
-        Send a signal to openlp to perform an action.
-        Currently lets anything through. Later we should restrict and perform
-        basic parameter checking, otherwise rogue clients could crash openlp
-        """
-        event = kwargs.get(u'event')
-        log.debug(u'Processing event %s' % event)
-        if self.url_params:
-            Receiver.send_message(event, self.url_params)
-        else:
-            Receiver.send_message(event)
-        return json.dumps([u'OK'])
-
-    def process_request(self, **kwargs):
-        """
-        Client has requested data. Send the signal and parameters for openlp
-        to handle, then listen out for a corresponding ``_request`` signal
-        which will have the data to return.
-
-        For most events, timeout after 10 seconds (i.e. in case the signal
-        recipient isn't listening). ``remotes_poll_request`` is a special case
-        however, this is a ajax long poll which is just waiting for slide
-        change/song change activity. This can wait longer (one minute).
-
-        ``event``
-            The event from the web page.
-
-        ``params``
-            Parameters sent with the event.
-        """
-        event = kwargs.get(u'event')
-        log.debug(u'Processing request %s' % event)
-        if not event.endswith(u'_request'):
-            return None
-        self.event = event
-        response = event.replace(u'_request', u'_response')
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(response), self.process_response)
-        self.timer = QtCore.QTimer()
-        self.timer.setSingleShot(True)
-        QtCore.QObject.connect(self.timer,
-            QtCore.SIGNAL(u'timeout()'), self.timeout)
-        if event == 'remotes_poll_request':
-            self.timer.start(60000)
-        else:
-            self.timer.start(10000)
-        if self.url_params:
-            Receiver.send_message(event, self.url_params)
-        else:
-            Receiver.send_message(event)
-        return None
-
-    def process_response(self, data):
-        """
-        The recipient of a _request signal has sent data. Convert this to
-        json and return it to client
-        """
-        log.debug(u'Processing response for %s' % self.event)
-        if not self.socket:
-            return
-        self.timer.stop()
-        json_data = json.dumps(data)
-        self.send_200_ok()
-        self.socket.write(json_data)
-        self.close()
+        return HttpResponse(json.dumps({u'results': {u'success': True}}),
+            {u'Content-Type': u'application/json'})
 
     def send_response(self, response):
         http = u'HTTP/1.1 %s\r\n' % response.code
-        for header in response.headers.iteritems():
-            http += '%s: %s\r\n' % header
+        for header, value in response.headers.iteritems():
+            http += '%s: %s\r\n' % (header, value)
         http += '\r\n'
+        self.socket.write(http)
         self.socket.write(response.content)
-
-    def send_200_ok(self, mimetype='text/html; charset="utf-8"'):
-        """
-        Successful request. Send OK headers. Assume html for now.
-        """
-        self.socket.write(u'HTTP/1.1 200 OK\r\n' + \
-            u'Content-Type: %s\r\n\r\n' % mimetype)
-
-    def send_404_not_found(self):
-        """
-        Invalid url. Say so
-        """
-        self.socket.write(u'HTTP/1.1 404 Not Found\r\n'+ \
-            u'Content-Type: text/html; charset="utf-8"\r\n' + \
-            u'\r\n')
-
-    def send_408_timeout(self):
-        """
-        A _request hasn't returned anything in the timeout period.
-        Return timeout
-        """
-        self.socket.write(u'HTTP/1.1 408 Request Timeout\r\n')
-
-    def timeout(self):
-        """
-        Listener for timeout signal
-        """
-        if not self.socket:
-            return
-        self.send_408_timeout()
-        self.close()
 
     def disconnected(self):
         """
