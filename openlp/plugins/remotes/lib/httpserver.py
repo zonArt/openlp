@@ -78,6 +78,12 @@ the remotes.
     ``last``
         Load the last slide.
 
+    ``text``
+        Fetches the text of the current song. The output is a JSON-encoded
+        dict which looks like this::
+
+            {"result": {"slides": ["...", "..."]}}
+
 ``/api/service/{action}``
     Perform ``{action}`` on the service manager (e.g. go live). Data is
     passed as a json-encoded ``data`` parameter. Valid actions are:
@@ -95,7 +101,10 @@ the remotes.
             {"request": {"id": 1}}
 
     ``list``
-        Request a list of items in the service.
+        Request a list of items in the service. Returns a list of items in the
+        current service in a JSON-encoded dict like this::
+
+            {"results": {"items": [{...}, {...}]}}
 """
 
 import logging
