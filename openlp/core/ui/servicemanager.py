@@ -557,11 +557,19 @@ class ServiceManager(QtGui.QWidget):
         except (IOError, NameError):
             log.exception(u'Problem loading service file %s' % fileName)
         except zipfile.BadZipfile:
-            log.exception(u'Service file is corrupt: %s' % fileName)
-            QtGui.QMessageBox.information(self,
-                translate('OpenLP.ServiceManager', 'File Is Corrupt'),
-                translate('OpenLP.ServiceManager', 'This service file is '
-                'either corrupt or is not an OpenLP 2 service file.'))
+            if os.path.getsize(fileName) == 0:
+                log.exception(u'Service file is zero sized: %s' % fileName)
+                QtGui.QMessageBox.information(self,
+                    translate('OpenLP.ServiceManager', 'File Is Empty'),
+                    translate('OpenLP.ServiceManager', 'This service file is '
+                    'zero size and does not contain any data.'))
+            else:
+                log.exception(u'Service file is cannot be extracted as zip: '
+                    u'%s' % fileName)
+                QtGui.QMessageBox.information(self,
+                    translate('OpenLP.ServiceManager', 'File Is Corrupt'),
+                    translate('OpenLP.ServiceManager', 'This service file is '
+                    'either corrupt or is not an OpenLP 2 service file.'))
             return
         finally:
             if fileTo:
