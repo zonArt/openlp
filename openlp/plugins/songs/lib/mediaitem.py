@@ -416,9 +416,19 @@ class SongMediaItem(MediaManagerItem):
         log.debug(u'serviceLoad')
         if self.plugin.status != PluginStatus.Active or not item.data_string:
             return
-        search_results = self.parent.manager.get_all_objects(Song,
-            Song.search_title == item.data_string[u'title'],
-            Song.search_title.asc())
+        if item.data_string[u'title'].find(u'@') == -1:
+            # This file seems to be an old one, which means, that the search
+            # title (data_string[u'title']) is probably wrong. We add "@" to
+            # search title and hope that we do not add any duplicate. This
+            # should work for songs without alternate title.
+            search_results = self.parent.manager.get_all_objects(Song,
+                Song.search_title == (re.compile(r'\W+', re.UNICODE).sub(u' ',
+                item.data_string[u'title'].strip()) + u'@'),
+                Song.search_title.asc())
+        else:
+            search_results = self.parent.manager.get_all_objects(Song,
+                Song.search_title == item.data_string[u'title'],
+                Song.search_title.asc())
         author_list = item.data_string[u'authors'].split(u', ')
         # The service item always has an author (at least it has u'' as
         # author). However, songs saved in the database do not have to have
