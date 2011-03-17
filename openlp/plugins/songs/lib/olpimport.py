@@ -36,7 +36,7 @@ from sqlalchemy.orm.exc import UnmappedClassError
 
 from openlp.core.lib import translate
 from openlp.core.lib.db import BaseModel
-from openlp.plugins.songs.lib import add_author_unknown
+from openlp.plugins.songs.lib import clean_song
 from openlp.plugins.songs.lib.db import Author, Book, Song, Topic #, MediaFile
 from songimport import SongImport
 
@@ -167,12 +167,11 @@ class OpenLPSongImport(SongImport):
                 old_titles = song.search_title.split(u'@')
                 if len(old_titles) > 1:
                     new_song.alternate_title = old_titles[1]
-                else:
-                    new_song.alternate_title = u''
-            new_song.search_title = song.search_title.strip()
+            # Values will be set when cleaning the song.
+            new_song.search_title = u''
+            new_song.search_lyrics = u''
             new_song.song_number = song.song_number
             new_song.lyrics = song.lyrics
-            new_song.search_lyrics = song.search_lyrics
             new_song.verse_order = song.verse_order
             new_song.copyright = song.copyright
             new_song.comments = song.comments
@@ -181,31 +180,26 @@ class OpenLPSongImport(SongImport):
             for author in song.authors:
                 existing_author = self.manager.get_object_filtered(
                     Author, Author.display_name == author.display_name)
-                if existing_author:
-                    new_song.authors.append(existing_author)
-                else:
-                    new_song.authors.append(Author.populate(
+                if existing_author is None:
+                    existing_author = Author.populate(
                         first_name=author.first_name,
                         last_name=author.last_name,
-                        display_name=author.display_name))
-            if not new_song.authors:
-                add_author_unknown(self.manager, new_song)
+                        display_name=author.display_name)
+                new_song.authors.append(existing_author)
             if song.book:
                 existing_song_book = self.manager.get_object_filtered(
                     Book, Book.name == song.book.name)
-                if existing_song_book:
-                    new_song.book = existing_song_book
-                else:
-                    new_song.book = Book.populate(name=song.book.name,
+                if existing_song_book is None:
+                    existing_song_book = Book.populate(name=song.book.name,
                         publisher=song.book.publisher)
+                new_song.book = existing_song_book
             if song.topics:
                 for topic in song.topics:
                     existing_topic = self.manager.get_object_filtered(
                         Topic, Topic.name == topic.name)
-                    if existing_topic:
-                        new_song.topics.append(existing_topic)
-                    else:
-                        new_song.topics.append(Topic.populate(name=topic.name))
+                    if existing_topic is None:
+                        existing_topic = Topic.populate(name=topic.name)
+                    new_song.topics.append(existing_topic)
 #            if has_media_files:
 #                if song.media_files:
 #                    for media_file in song.media_files:
@@ -217,6 +211,7 @@ class OpenLPSongImport(SongImport):
 #                        else:
 #                            new_song.media_files.append(MediaFile.populate(
 #                                file_name=media_file.file_name))
+            clean_song(self.manager, new_song)
             self.manager.save_object(new_song)
             song_count += 1
             if self.stop_import_flag:

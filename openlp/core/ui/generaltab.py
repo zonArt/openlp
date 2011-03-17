@@ -192,6 +192,12 @@ class GeneralTab(SettingsTab):
         # Reload the tab, as the screen resolution/count may have changed.
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_screen_changed'), self.load)
+        # Remove for now
+        self.usernameLabel.setVisible(False)
+        self.usernameEdit.setVisible(False)
+        self.passwordLabel.setVisible(False)
+        self.passwordEdit.setVisible(False)
+
 
     def retranslateUi(self):
         """
