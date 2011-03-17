@@ -300,7 +300,8 @@ class BibleManager(object):
                             get_book_ref_id_by_name(book, language_id)
                         book = self.db_cache[bible].get_book_by_book_ref_id(
                             book_ref_id)
-                        new_reflist.append((book.name, item[1], item[2], item[3]))
+                        new_reflist.append((book.name, item[1], item[2], 
+                            item[3]))
                 reflist = new_reflist
             log.debug(u'BibleManager.get_verses("reflist: %s")', reflist)
             en_reflist = []
