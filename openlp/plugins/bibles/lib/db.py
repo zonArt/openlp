@@ -357,6 +357,17 @@ class BibleDB(QtCore.QObject, Manager):
         """
         return self.get_all_objects(Book, order_by_ref=Book.id)
 
+    def get_book_by_book_ref_id(self, id):
+        """
+        Return a book object from the database.
+
+        ``book``
+            The name of the book to return.
+        """
+        log.debug(u'BibleDb.get_book_by_book_ref_id("%s")', id)
+        db_book = self.get_object_filtered(Book, Book.book_reference_id.like(id))
+        return db_book
+
     def get_verses(self, reference_list, en_reference_list):
         """
         This is probably the most used function. It retrieves the list of
@@ -863,6 +874,26 @@ class SpellingDB(QtCore.QObject, Manager):
             return None
         else:
             return id[0]
+        
+    def get_book_name_by_reference_id(self, id, language):
+        """
+        Return the name of a book by id and language.
+
+        ``id``
+            The name to search the id.
+            
+        ``language``
+            The language for which should be searched
+        """
+        log.debug(u'SpellingDB.get_book_name_by_reference_id("%s", "%s")', id, 
+            language)
+        name = self.session.query(Spelling.name)\
+            .filter(Spelling.book_reference_id.like(id))\
+            .filter(Spelling.language_id.like(language)).first()
+        if not name:
+            return None
+        else:
+            return unicode(name[0])
 
     def create_spelling(self, name, book_reference_id, language_id):
         """

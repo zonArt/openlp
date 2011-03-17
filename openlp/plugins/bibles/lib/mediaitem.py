@@ -482,7 +482,7 @@ class BibleMediaItem(MediaManagerItem):
         self.search_results = self.parent.manager.get_verses(bible, versetext)
         if second_bible:
             self.second_search_results = self.parent.manager.get_verses(
-                second_bible, versetext)
+                second_bible, versetext, True)
         if self.advancedClearComboBox.currentIndex() == 0:
             self.listView.clear()
         if self.listView.count() != 0:
@@ -509,7 +509,7 @@ class BibleMediaItem(MediaManagerItem):
             self.search_results = self.parent.manager.get_verses(bible, text)
             if second_bible and self.search_results:
                 self.second_search_results = self.parent.manager.get_verses(
-                    second_bible, text)
+                    second_bible, text, True)
         else:
             # We are doing a 'Text Search'.
             Receiver.send_message(u'cursor_busy')

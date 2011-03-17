@@ -255,7 +255,7 @@ class BibleManager(object):
         book = self.get_book_ref(book, int(language_id.value))
         return self.db_cache[bible].get_verse_count(book, chapter)
 
-    def get_verses(self, bible, versetext):
+    def get_verses(self, bible, versetext, secondbible=False):
         """
         Parses a scripture reference, fetches the verses from the Bible
         specified, and returns a list of ``Verse`` objects.
@@ -286,13 +286,29 @@ class BibleManager(object):
             return None
         reflist = parse_reference(versetext)
         if reflist:
-            log.debug(u'reflist:%s', reflist)
+            # if we use a second bible we have to rename the book names
+            if secondbible:
+                log.debug(u'BibleManager.get_verses("secondbible true")')
+                meta =  self.db_cache[bible].get_object(BibleMeta, 
+                    u'language_id')
+                language_id = meta.value
+                new_reflist = []
+                for item in reflist:
+                    if item:
+                        book = self.get_book_ref(item[0])
+                        book_ref_id = self.parent.manager.\
+                            get_book_ref_id_by_name(book, language_id)
+                        book = self.db_cache[bible].get_book_by_book_ref_id(
+                            book_ref_id)
+                        new_reflist.append((book.name, item[1], item[2], item[3]))
+                reflist = new_reflist
+            log.debug(u'BibleManager.get_verses("reflist: %s")', reflist)
             en_reflist = []
             for item in reflist:
                 if item:
                     book = self.get_book_ref(item[0])
                     en_reflist.append((book, item[1], item[2], item[3]))
-            log.debug(u'en_reflist:%s', en_reflist)   
+            log.debug(u'BibleManager.get_verses("en_reflist: %s")', en_reflist)
             return self.db_cache[bible].get_verses(reflist, en_reflist)
         else:
             Receiver.send_message(u'openlp_information_message', {
