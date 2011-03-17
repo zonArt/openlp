@@ -147,7 +147,7 @@ class MediaMediaItem(MediaManagerItem):
                     tme = end - start
                     if tme.total_seconds() > 5:
                        break
-                if self.mediaLength > 0:
+                if self.mediaState:
                     service_item.media_length = self.mediaLength
                     service_item.add_capability(
                         ItemCapabilities.AllowsVariableStartTime)
