@@ -166,20 +166,18 @@ class SongMediaItem(MediaManagerItem):
                 or_(Song.search_title.like(u'%' + self.whitespace.sub(u' ',
                 search_keywords.lower()) + u'%'),
                 Song.search_lyrics.like(u'%' + search_keywords.lower() + u'%'),
-                Song.comments.like(u'%' + search_keywords.lower() + u'%')),
-                Song.search_title.asc())
+                Song.comments.like(u'%' + search_keywords.lower() + u'%')))
             self.displayResultsSong(search_results)
         elif search_type == SongSearch.Titles:
             log.debug(u'Titles Search')
             search_results = self.parent.manager.get_all_objects(Song,
                 Song.search_title.like(u'%' + self.whitespace.sub(u' ',
-                search_keywords.lower()) + u'%'), Song.search_title.asc())
+                search_keywords.lower()) + u'%'))
             self.displayResultsSong(search_results)
         elif search_type == SongSearch.Lyrics:
             log.debug(u'Lyrics Search')
             search_results = self.parent.manager.get_all_objects(Song,
-                Song.search_lyrics.like(u'%' + search_keywords.lower() + u'%'),
-                Song.search_lyrics.asc())
+                Song.search_lyrics.like(u'%' + search_keywords.lower() + u'%'))
             self.displayResultsSong(search_results)
         elif search_type == SongSearch.Authors:
             log.debug(u'Authors Search')
@@ -190,7 +188,7 @@ class SongMediaItem(MediaManagerItem):
         elif search_type == SongSearch.Themes:
             log.debug(u'Theme Search')
             search_results = self.parent.manager.get_all_objects(Song,
-                Song.theme_name == search_keywords, Song.search_lyrics.asc())
+                Song.theme_name == search_keywords)
             self.displayResultsSong(search_results)
 
     def onSongListLoad(self):
@@ -268,9 +266,8 @@ class SongMediaItem(MediaManagerItem):
             Receiver.send_message(u'songs_load_list')
 
     def onExportClick(self):
-        if not hasattr(self, u'export_wizard'):
-            self.export_wizard = SongExportForm(self, self.parent)
-        self.export_wizard.exec_()
+        export_wizard = SongExportForm(self, self.parent)
+        export_wizard.exec_()
 
     def onNewClick(self):
         log.debug(u'onNewClick')
@@ -414,29 +411,32 @@ class SongMediaItem(MediaManagerItem):
 
     def serviceLoad(self, item):
         """
-        Triggered by a song being loaded by the service item
+        Triggered by a song being loaded by the service manager.
         """
         log.debug(u'serviceLoad')
         if self.plugin.status != PluginStatus.Active or not item.data_string:
             return
-        search_results = self.parent.manager.get_all_objects(Song,
-            Song.search_title == re.compile(r'\W+', re.UNICODE).sub(u' ',
-            item.data_string[u'title'].split(u'@')[0].lower()).strip(),
-            Song.search_title.asc())
+        if item.data_string[u'title'].find(u'@') == -1:
+            # This file seems to be an old one (prior to 1.9.5), which means,
+            # that the search title (data_string[u'title']) is probably wrong.
+            # We add "@" to search title and hope that we do not add any
+            # duplicate. This should work for songs without alternate title.
+            search_results = self.parent.manager.get_all_objects(Song,
+                Song.search_title == (re.compile(r'\W+', re.UNICODE).sub(u' ',
+                item.data_string[u'title'].strip()) + u'@').strip().lower(),
+                Song.search_title.asc())
+        else:
+            search_results = self.parent.manager.get_all_objects(Song,
+                Song.search_title == item.data_string[u'title'],
+                Song.search_title.asc())
         author_list = item.data_string[u'authors'].split(u', ')
-        # The service item always has an author (at least it has u'' as
-        # author). However, songs saved in the database do not have to have
-        # an author.
-        if u'' in author_list:
-            author_list.remove(u'')
         editId = 0
         add_song = True
         if search_results:
             for song in search_results:
                 same_authors = True
                 # If the author counts are different, we do not have to do any
-                # further checking. This is also important when a song does not
-                # have any author (because we can not loop over an empty list).
+                # further checking.
                 if len(song.authors) == len(author_list):
                     for author in song.authors:
                         if author.display_name not in author_list:
@@ -461,4 +461,5 @@ class SongMediaItem(MediaManagerItem):
         """
         Locale aware collation of song titles
         """
-        return locale.strcoll(unicode(song_1.title), unicode(song_2.title))
+        return locale.strcoll(unicode(song_1.title.lower()), 
+             unicode(song_2.title.lower()))

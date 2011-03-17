@@ -33,8 +33,7 @@ from ConfigParser import SafeConfigParser
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, PluginStatus, check_directory_exists, \
-    Receiver, build_icon
+from openlp.core.lib import translate, PluginStatus, Receiver, build_icon
 from openlp.core.utils import get_web_page, AppLocation
 from firsttimewizard import Ui_FirstTimeWizard, FirstTimePage
 
@@ -95,7 +94,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 language = unicode(self.config.get(
                     u'bibles_%s' % lang, u'title'), u'utf8')
                 langItem = QtGui.QTreeWidgetItem(
-                   self.biblesTreeWidget, QtCore.QStringList(language))
+                    self.biblesTreeWidget, QtCore.QStringList(language))
                 bibles = self.config.get(u'bibles_%s' % lang, u'translations')
                 bibles = bibles.split(u',')
                 for bible in bibles:
@@ -104,24 +103,27 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                     filename = unicode(self.config.get(
                         u'bible_%s' % bible, u'filename'))
                     item = QtGui.QTreeWidgetItem(
-                       langItem, QtCore.QStringList(title))
-                    item.setData(0, QtCore.Qt.UserRole, QtCore.QVariant(filename))
+                        langItem, QtCore.QStringList(title))
+                    item.setData(0, QtCore.Qt.UserRole,
+                        QtCore.QVariant(filename))
                     item.setCheckState(0, QtCore.Qt.Unchecked)
                     item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
             self.biblesTreeWidget.expandAll()
             themes = self.config.get(u'themes', u'files')
             themes = themes.split(u',')
+            if not os.path.exists(os.path.join(gettempdir(), u'openlp')):
+                os.makedirs(os.path.join(gettempdir(), u'openlp'))
             for theme in themes:
                 title = self.config.get(u'theme_%s' % theme, u'title')
                 filename = self.config.get(u'theme_%s' % theme, u'filename')
                 screenshot = self.config.get(u'theme_%s' % theme, u'screenshot')
                 urllib.urlretrieve(u'%s/%s' % (self.web, screenshot),
-                    os.path.join(gettempdir(), screenshot))
+                    os.path.join(gettempdir(), u'openlp', screenshot))
                 item = QtGui.QListWidgetItem(title, self.themesListWidget)
                 item.setData(QtCore.Qt.UserRole,
                     QtCore.QVariant(filename))
                 item.setIcon(build_icon(
-                    os.path.join(gettempdir(), screenshot)))
+                    os.path.join(gettempdir(), u'openlp', screenshot)))
                 item.setCheckState(QtCore.Qt.Unchecked)
                 item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
 
@@ -222,7 +224,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             'Enabling selected plugins...'))
         self._setPluginStatus(self.songsCheckBox, u'songs/status')
         self._setPluginStatus(self.bibleCheckBox, u'bibles/status')
-        self._setPluginStatus(self.presentationCheckBox, u'presentations/status')
+        self._setPluginStatus(self.presentationCheckBox,
+            u'presentations/status')
         self._setPluginStatus(self.imageCheckBox, u'images/status')
         self._setPluginStatus(self.mediaCheckBox, u'media/status')
         self._setPluginStatus(self.remoteCheckBox, u'remotes/status')
@@ -230,29 +233,18 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self._setPluginStatus(self.songUsageCheckBox, u'songusage/status')
         self._setPluginStatus(self.alertCheckBox, u'alerts/status')
         # Build directories for downloads
-        songs_destination = AppLocation.get_section_data_path(u'songs')
+        songs_destination = os.path.join(unicode(gettempdir()), u'openlp')
         bibles_destination = AppLocation.get_section_data_path(u'bibles')
         themes_destination = AppLocation.get_section_data_path(u'themes')
-        # Install songs
+        # Download songs
         for i in xrange(self.songsListWidget.count()):
             item = self.songsListWidget.item(i)
             if item.checkState() == QtCore.Qt.Checked:
                 filename = item.data(QtCore.Qt.UserRole).toString()
                 self._incrementProgressBar(self.downloading % filename)
-                destination = os.path.join(songs_destination, u'songs.sqlite')
-                if os.path.exists(destination):
-                    if QtGui.QMessageBox.question(self,
-                        translate('OpenLP.FirstTimeWizard',
-                        'Overwrite Existing Songs?'),
-                        translate('OpenLP.FirstTimeWizard', 'Your songs '
-                        'database already exists and your current songs will '
-                        'be permanently lost, are you sure you want to '
-                        'replace it ?'),
-                        QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
-                        QtGui.QMessageBox.No) != QtGui.QMessageBox.Yes:
-                        continue
+                destination = os.path.join(songs_destination, unicode(filename))
                 urllib.urlretrieve(u'%s%s' % (self.web, filename), destination)
-        # Install Bibles
+        # Download Bibles
         bibles_iterator = QtGui.QTreeWidgetItemIterator(self.biblesTreeWidget)
         while bibles_iterator.value():
             item = bibles_iterator.value()
@@ -262,7 +254,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 urllib.urlretrieve(u'%s%s' % (self.web, bible),
                     os.path.join(bibles_destination, bible))
             bibles_iterator += 1
-        # Install themes
+        # Download themes
         for i in xrange(self.themesListWidget.count()):
             item = self.themesListWidget.item(i)
             if item.checkState() == QtCore.Qt.Checked:
@@ -285,4 +277,3 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         status = PluginStatus.Active if field.checkState() \
             == QtCore.Qt.Checked else PluginStatus.Inactive
         QtCore.QSettings().setValue(tag, QtCore.QVariant(status))
-
