@@ -52,7 +52,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         # check to see if we have web access
         self.web = u'http://openlp.org/files/frw/'
         self.config = SafeConfigParser()
-        self.webAccess = get_web_page(u'%s%s' % (self.web, u'download.cfg?99'))
+        self.webAccess = get_web_page(u'%s%s' % (self.web, u'download.cfg'))
         if self.webAccess:
             files = self.webAccess.read()
             self.config.readfp(io.BytesIO(files))
@@ -212,7 +212,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         for i in xrange(self.themesListWidget.count()):
             item = self.themesListWidget.item(i)
             if item.checkState() == QtCore.Qt.Checked:
-                filename, screenshot = item.data(QtCore.Qt.UserRole).toPyObject()
+                filename = item.data(QtCore.Qt.UserRole).toString()
                 size = self._getFileSize(u'%s%s' % (self.web, filename))
                 max_progress += size
         self.finishButton.setVisible(False)
