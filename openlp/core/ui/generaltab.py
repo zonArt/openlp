@@ -272,24 +272,14 @@ class GeneralTab(SettingsTab):
            QtCore.QVariant(5)).toInt()[0])
         self.overrideCheckBox.setChecked(settings.value(u'override position',
             QtCore.QVariant(False)).toBool())
-        if self.overrideCheckBox.isChecked():
-            self.customXValueEdit.setValue(settings.value(u'x position',
-                QtCore.QVariant(self.screens.current[u'size'].x())).toInt()[0])
-            self.customYValueEdit.setValue(settings.value(u'y position',
-                QtCore.QVariant(self.screens.current[u'size'].y())).toInt()[0])
-            self.customHeightValueEdit.setValue(
-                settings.value(u'height', QtCore.QVariant(
-                self.screens.current[u'size'].height())).toInt()[0])
-            self.customWidthValueEdit.setValue(
-                settings.value(u'width', QtCore.QVariant(
-                self.screens.current[u'size'].width())).toInt()[0])
-        else:
-            self.customXValueEdit.setValue(self.screens.current[u'size'].x())
-            self.customYValueEdit.setValue(self.screens.current[u'size'].y())
-            self.customHeightValueEdit.setValue(
-                self.screens.current[u'size'].height())
-            self.customWidthValueEdit.setValue(
-                self.screens.current[u'size'].width())
+        self.customXValueEdit.setValue(settings.value(u'x position',
+            QtCore.QVariant(self.screens.current[u'size'].x())).toInt()[0])
+        self.customYValueEdit.setValue(settings.value(u'y position',
+            QtCore.QVariant(self.screens.current[u'size'].y())).toInt()[0])
+        self.customHeightValueEdit.setValue(settings.value(u'height',
+            QtCore.QVariant(self.screens.current[u'size'].height())).toInt()[0])
+        self.customWidthValueEdit.setValue(settings.value(u'width',
+            QtCore.QVariant(self.screens.current[u'size'].width())).toInt()[0])
         settings.endGroup()
         self.customXValueEdit.setEnabled(self.overrideCheckBox.isChecked())
         self.customYValueEdit.setEnabled(self.overrideCheckBox.isChecked())
