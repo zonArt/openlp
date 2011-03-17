@@ -451,8 +451,12 @@ class OpenLyrics(object):
                 if text:
                     text += u'\n'
                 text += u'\n'.join([unicode(line) for line in lines.line])
-            verse_name = self._get(verse, u'name').lower()
-            verse_number = re.compile(u'[a-zA-Z]*').sub(u'', verse_name)
+            verse_tag = self._get(verse, u'name').lower()
+            if verse_tag[0] in VerseType.Tags:
+                verse_def = verse_tag[0]
+            else:
+                verse_def = VerseType.Tags[VerseType.Other]
+            verse_number = re.compile(u'[a-zA-Z]*').sub(u'', verse_tag)
             # OpenLyrics allows e. g. "c", but we need "c1". However, this does
             # not correct the verse order.
             if not verse_number:
@@ -460,7 +464,7 @@ class OpenLyrics(object):
             lang = None
             if self._get(verse, u'lang'):
                 lang = self._get(verse, u'lang')
-            sxml.add_verse_to_lyrics(verse_name[0], verse_number, text, lang)
+            sxml.add_verse_to_lyrics(verse_def, verse_number, text, lang)
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
         # Process verse order
         if hasattr(properties, u'verseOrder'):
