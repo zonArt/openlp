@@ -33,7 +33,7 @@ from openlp.core.lib import Receiver, translate
 from openlp.core.lib.ui import UiStrings, add_widget_completer, \
     critical_error_message_box
 from openlp.plugins.songs.forms import EditVerseForm
-from openlp.plugins.songs.lib import SongXML, VerseType
+from openlp.plugins.songs.lib import SongXML, VerseType, clean_song
 from openlp.plugins.songs.lib.db import Book, Song, Author, Topic
 from openlp.plugins.songs.lib.ui import SongStrings
 from editsongdialog import Ui_EditSongDialog
@@ -728,17 +728,15 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.song.title = unicode(self.titleEdit.text())
         self.song.alternate_title = unicode(self.alternativeEdit.text())
         self.song.copyright = unicode(self.copyrightEdit.text())
-        if self.song.alternate_title:
-            self.song.search_title = self.song.title + u'@' + \
-                self.song.alternate_title
-        else:
-            self.song.search_title = self.song.title
+         # Values will be set when cleaning the song.
+        self.song.search_title = u''
+        self.song.search_lyrics = u''
+        self.song.verse_order = u''
         self.song.comments = unicode(self.commentsEdit.toPlainText())
         ordertext = unicode(self.verseOrderEdit.text())
         order = []
         for item in ordertext.split():
-            verse_tag = VerseType.Tags[
-                VerseType.from_translated_tag(item[0])]
+            verse_tag = VerseType.Tags[VerseType.from_translated_tag(item[0])]
             verse_num = item[1:].lower()
             order.append(u'%s%s' % (verse_tag, verse_num))
         self.song.verse_order = u' '.join(order)
@@ -756,7 +754,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         else:
             self.song.theme_name = None
         self.processLyrics()
-        self.processTitle()
         self.song.authors = []
         for row in range(self.authorsListView.count()):
             item = self.authorsListView.item(row)
@@ -767,6 +764,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             item = self.topicsListView.item(row)
             topicId = (item.data(QtCore.Qt.UserRole)).toInt()[0]
             self.song.topics.append(self.manager.get_object(Topic, topicId))
+        clean_song(self.manager, self.song)
         self.manager.save_object(self.song)
         if not preview:
             self.song = None
@@ -779,7 +777,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         log.debug(u'processLyrics')
         try:
             sxml = SongXML()
-            text = u''
             multiple = []
             for i in range(0, self.verseListWidget.rowCount()):
                 item = self.verseListWidget.item(i, 0)
@@ -788,11 +785,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 verse_num = verseId[1:]
                 sxml.add_verse_to_lyrics(verse_tag, verse_num,
                     unicode(item.text()))
-                text = text + self.whitespace.sub(u' ',
-                    unicode(self.verseListWidget.item(i, 0).text())) + u' '
-                if (verse_num > u'1') and (verse_tag not in multiple):
+                if verse_num > u'1' and verse_tag not in multiple:
                     multiple.append(verse_tag)
-            self.song.search_lyrics = text.lower()
             self.song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
             for verse in multiple:
                 self.song.verse_order = re.sub(u'([' + verse.upper() +
@@ -801,13 +795,3 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         except:
             log.exception(u'Problem processing song Lyrics \n%s',
                 sxml.dump_xml())
-
-    def processTitle(self):
-        """
-        Process the song title entered by the user to remove stray punctuation
-        characters.
-        """
-        # This method must only be run after the self.song = Song() assignment.
-        log.debug(u'processTitle')
-        self.song.search_title = re.sub(r'[\'"`,;:(){}?]+', u'',
-            unicode(self.song.search_title)).lower().strip()

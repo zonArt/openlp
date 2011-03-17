@@ -29,7 +29,7 @@ import re
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, translate
-from openlp.plugins.songs.lib import add_author_unknown, VerseType
+from openlp.plugins.songs.lib import clean_song, VerseType
 from openlp.plugins.songs.lib.db import Song, Author, Topic, Book, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
 from openlp.plugins.songs.lib.xml import SongXML
@@ -245,12 +245,6 @@ class SongImport(QtCore.QObject):
         else:
             return True
 
-    def remove_punctuation(self, text):
-        """
-        Extracts alphanumeric words for searchable fields
-        """
-        return re.sub(r'\W+', u' ', text, re.UNICODE)
-
     def finish(self):
         """
         All fields have been set to this song. Write the song to disk.
@@ -259,11 +253,11 @@ class SongImport(QtCore.QObject):
         song = Song()
         song.title = self.title
         song.alternate_title = self.alternate_title
-        song.search_title = self.remove_punctuation(self.title).lower() \
-            + '@' + self.remove_punctuation(self.alternate_title).lower()
-        song.search_title = song.search_title.strip()
-        song.song_number = self.song_number
+        # Values will be set when cleaning the song.
+        song.search_title = u''
         song.search_lyrics = u''
+        song.verse_order = u''
+        song.song_number = self.song_number
         verses_changed_to_other = {}
         sxml = SongXML()
         other_count = 1
@@ -280,8 +274,6 @@ class SongImport(QtCore.QObject):
                     new_verse_def)
                 verse_def = new_verse_def
             sxml.add_verse_to_lyrics(verse_tag, verse_def[1:], verse_text, lang)
-            song.search_lyrics += u' ' + self.remove_punctuation(verse_text)
-        song.search_lyrics = song.search_lyrics.lower()
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
         if not len(self.verse_order_list) and \
             self.verse_order_list_generated_useful:
@@ -303,9 +295,6 @@ class SongImport(QtCore.QObject):
                     last_name=authortext.split(u' ')[-1],
                     first_name=u' '.join(authortext.split(u' ')[:-1]))
             song.authors.append(author)
-        # No author, add the default author.
-        if not song.authors:
-            add_author_unknown(self.manager, song)
         for filename in self.media_files:
             media_file = self.manager.get_object_filtered(MediaFile,
                 MediaFile.file_name == filename)
@@ -326,6 +315,7 @@ class SongImport(QtCore.QObject):
             if topic is None:
                 topic = Topic.populate(name=topictext)
             song.topics.append(topic)
+        clean_song(self.manager, song)
         self.manager.save_object(song)
         self.set_defaults()
 
