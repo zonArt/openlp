@@ -41,7 +41,8 @@ from openlp.core.lib import Receiver, translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, get_web_page
 from openlp.plugins.bibles.lib import SearchResults
-from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB,  Book
+from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB, \
+    SpellingDB, Book
 
 log = logging.getLogger(__name__)
 
@@ -123,6 +124,52 @@ class BGExtract(object):
             return None
         return SearchResults(bookname, chapter, verse_list)
 
+    def get_books_from_http(self, version):
+        """
+        Load a list of all books a bible contaions from BibleGateway website.
+
+        ``version``
+            The version of the bible like NIV for New International Version
+        """
+        log.debug(u'get_books_from_http %s', version)
+        url_params = urllib.urlencode(
+            {u'search': 'Bible-List', u'version': u'%s' % version})
+        reference_url = u'http://www.biblegateway.com/passage/?%s' % url_params
+        page = get_web_page(reference_url)
+        if not page:
+            send_error_message(u'download')
+            return None
+        page_source = page.read()
+        page_source = unicode(page_source, 'utf8')
+        page_source_temp = re.search(u'<table id="booklist".*?>.*?</table>',  \
+            page_source,  re.DOTALL)
+        if page_source_temp:
+            soup = page_source_temp.group(0)
+        else:
+            soup = None
+        try:
+            soup = BeautifulSoup(soup)
+        except HTMLParseError:
+            log.exception(u'BeautifulSoup could not parse the bible page.')
+        if not soup:
+            send_error_message(u'parse')
+            return None
+        Receiver.send_message(u'openlp_process_events')
+        content = soup.find(u'table', {u'id': u'booklist'})
+        content = content.findAll(u'tr')
+        #log.debug(content)
+        if not content:
+            log.exception(u'No books found in the Biblegateway response.')
+            send_error_message(u'parse')
+            return None
+        books = []
+        for book in content:
+            book = book.find(u'td')
+            if book:
+                books.append(book.contents[0])
+                log.debug(book.contents[0])
+        return books
+
 
 class BSExtract(object):
     """
@@ -167,6 +214,31 @@ class BSExtract(object):
             versenumber = int(verse_number.sub(r'\3', verse[u'class']))
             verses[versenumber] = verse.contents[1].rstrip(u'\n')
         return SearchResults(bookname, chapter, verses)
+
+    def get_books_from_http(self, version):
+        """
+        Load a list of all books a bible contains from Bibleserver mobile 
+        website.
+
+        ``version``
+            The version of the bible like NIV for New International Version
+        """
+        log.debug(u'get_books_from_http %s', version)
+        chapter_url = u'http://m.bibleserver.com/overlay/selectBook?'\
+            'translation=%s' % (version)
+        soup = get_soup_for_bible_ref(chapter_url)
+        if not soup:
+            return None
+        content = soup.find(u'ul')
+        if not content:
+            log.exception(u'No books found in the Bibleserver response.')
+            send_error_message(u'parse')
+            return None
+        content = content.findAll(u'li')
+        books = []
+        for book in content:
+            books.append(book.contents[0].contents[0])
+        return books
 
 
 class CWExtract(object):
@@ -237,6 +309,33 @@ class CWExtract(object):
             verses[versenumber] = versetext
         return SearchResults(bookname, chapter, verses)
 
+    def get_books_from_http(self, version):
+        """
+        Load a list of all books  a bible contain from the Crosswalk website.
+
+        ``version``
+            The version of the bible like NIV for New International Version
+        """
+        log.debug(u'get_books_from_http %s', version)
+        chapter_url = u'http://www.biblestudytools.com/%s/'\
+             % (version)
+        soup = get_soup_for_bible_ref(chapter_url)
+        if not soup:
+            return None
+        content = soup.find(u'div', {u'class': u'Body'})
+        content = content.find(u'ul', {u'class': u'parent'})
+        if not content:
+            log.exception(u'No books found in the Crosswalk response.')
+            send_error_message(u'parse')
+            return None
+        content = content.findAll(u'li')
+        books = []
+        for book in content:
+            book = book.find(u'a')
+            books.append(book.contents[0])
+            log.debug(book.contents[0])
+        return books
+
 
 class HTTPBible(BibleDB):
     log.info(u'%s HTTPBible loaded' , __name__)
@@ -252,6 +351,7 @@ class HTTPBible(BibleDB):
         Init confirms the bible exists and stores the database path.
         """
         BibleDB.__init__(self, parent, **kwargs)
+        self.parent = parent
         self.download_source = kwargs[u'download_source']
         self.download_name = kwargs[u'download_name']
         # TODO: Clean up proxy stuff. We probably want one global proxy per
@@ -259,6 +359,8 @@ class HTTPBible(BibleDB):
         self.proxy_server = None
         self.proxy_username = None
         self.proxy_password = None
+        if u'path' in kwargs:
+            self.path = kwargs[u'path']
         if u'proxy_server' in kwargs:
             self.proxy_server = kwargs[u'proxy_server']
         if u'proxy_username' in kwargs:
@@ -283,9 +385,37 @@ class HTTPBible(BibleDB):
         if self.proxy_password:
             # Store the proxy password.
             self.create_meta(u'proxy password', self.proxy_password)
+        if self.download_source.lower() == u'crosswalk':
+            handler = CWExtract(self.proxy_server)
+        elif self.download_source.lower() == u'biblegateway':
+            handler = BGExtract(self.proxy_server)
+        elif self.download_source.lower() == u'bibleserver':
+            handler = BSExtract(self.proxy_server)
+        books = handler.get_books_from_http(self.download_name)
+        if not books:
+            log.exception(u'Importing books from %s - download name: "%s" '\
+                'failed' % (self.download_source,  self.download_name))
+            return False
+        bible = BiblesResourcesDB.get_webbible(self.download_name, 
+                self.download_source.lower())
+        if bible[u'language_id']:
+            language_id = bible[u'language_id']
+        else:
+            language = self.parent.mediaItem.importRequest(u'language')
+            language = BiblesResourcesDB.get_language(language)
+            language_id = language[u'id']
+        # Store the language_id.
+        self.create_meta(u'language_id', language_id)
+        for book in books:
+            book_ref_id = self.parent.manager.get_book_ref_id_by_name(book, 
+                language_id)
+            book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
+            log.debug(u'Book details: Name:%s; id:%s; testament_id:%s', 
+                book, book_ref_id, book_details[u'testament_id'])
+            self.create_book(book, book_ref_id, book_details[u'testament_id'])
         return True
 
-    def get_verses(self, reference_list):
+    def get_verses(self, reference_list,  en_reference_list):
         """
         A reimplementation of the ``BibleDB.get_verses`` method, this one is
         specifically for web Bibles. It first checks to see if the particular
@@ -296,6 +426,13 @@ class HTTPBible(BibleDB):
         ``reference_list``
             This is the list of references the media manager item wants. It is
             a list of tuples, with the following format::
+
+                (book, chapter, start_verse, end_verse)
+        
+        ``en_reference_list``
+            This is the list of references the media manager item wants. It is
+            a list of tuples, with the following format with englisch book 
+            names::
 
                 (book, chapter, start_verse, end_verse)
 
@@ -311,17 +448,12 @@ class HTTPBible(BibleDB):
             book = reference[0]
             db_book = self.get_book(book)
             if not db_book:
-                book_details = BiblesResourcesDB.get_book(book)
-                if not book_details:
-                    critical_error_message_box(
-                        translate('BiblesPlugin', 'No Book Found'),
-                        translate('BiblesPlugin', 'No matching '
-                        'book could be found in this Bible. Check that you '
-                        'have spelled the name of the book correctly.'))
-                    return []
-                db_book = self.create_book(book_details[u'name'],
-                    book_details[u'abbreviation'],
-                    book_details[u'testament_id'])
+                critical_error_message_box(
+                    translate('BiblesPlugin', 'No Book Found'),
+                    translate('BiblesPlugin', 'No matching '
+                    'book could be found in this Bible. Check that you '
+                    'have spelled the name of the book correctly.'))
+                return []
             book = db_book.name
             if BibleDB.get_verse_count(self, book, reference[1]) == 0:
                 Receiver.send_message(u'cursor_busy')
@@ -340,7 +472,7 @@ class HTTPBible(BibleDB):
                     Receiver.send_message(u'openlp_process_events')
                 Receiver.send_message(u'cursor_normal')
             Receiver.send_message(u'openlp_process_events')
-        return BibleDB.get_verses(self, reference_list)
+        return BibleDB.get_verses(self, reference_list, en_reference_list)
 
     def get_chapter(self, book, chapter):
         """
@@ -360,8 +492,7 @@ class HTTPBible(BibleDB):
         """
         Return the list of books.
         """
-        return [Book.populate(name=book['name'])
-            for book in BiblesResourcesDB.get_books()]
+        return self.get_all_objects(Book, order_by_ref=Book.id)
 
     def get_chapter_count(self, book):
         """

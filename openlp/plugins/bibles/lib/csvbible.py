@@ -135,6 +135,7 @@ class CSVBible(BibleDB):
         self.wizard.progressBar.setMinimum(0)
         self.wizard.progressBar.setMaximum(66)
         success = True
+        #TODO: include create_meta language
         books_file = None
         book_list = {}
         # Populate the Tables
@@ -148,6 +149,8 @@ class CSVBible(BibleDB):
                 self.wizard.incrementProgressBar(unicode(
                     translate('BibleDB.Wizard', 'Importing books... %s')) %
                     unicode(line[2], details['encoding']))
+                #TODO: change create_book to the new database model 
+                #(name, bk_ref_id, testament)
                 self.create_book(unicode(line[2], details['encoding']),
                     unicode(line[3], details['encoding']), int(line[1]))
                 book_list[int(line[0])] = unicode(line[2], details['encoding'])

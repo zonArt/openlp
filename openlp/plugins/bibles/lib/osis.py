@@ -104,6 +104,7 @@ class OSISBible(BibleDB):
         finally:
             if detect_file:
                 detect_file.close()
+        #TODO: include create_meta language with try - except scheme
         try:
             osis = codecs.open(self.filename, u'r', details['encoding'])
             for file_record in osis:
@@ -120,6 +121,8 @@ class OSISBible(BibleDB):
                         log.debug(u'New book: "%s"', self.books[book][0])
                         if book == u'Matt' or book == u'Jdt':
                             testament += 1
+                        #TODO: change create_book to the new database model 
+                        #(name, bk_ref_id, testament)
                         db_book = self.create_book(
                             unicode(self.books[book][0]),
                             unicode(self.books[book][1]),

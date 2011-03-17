@@ -61,9 +61,12 @@ class OpenSongBible(BibleDB):
             file = open(self.filename, u'r')
             opensong = objectify.parse(file)
             bible = opensong.getroot()
+            #TODO: include create_meta language
             for book in bible.b:
                 if self.stop_import_flag:
                     break
+                #TODO: change create_book to the new database model 
+                #(name, bk_ref_id, testament)
                 db_book = self.create_book(unicode(book.attrib[u'n']),
                     unicode(book.attrib[u'n'][:4]))
                 for chapter in book.c:

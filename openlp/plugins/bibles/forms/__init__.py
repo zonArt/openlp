@@ -52,5 +52,6 @@ from the .ui files later if necessary.
 """
 
 from bibleimportform import BibleImportForm
+from bibleimportrequestform import BibleImportRequest
 
 __all__ = ['BibleImportForm']

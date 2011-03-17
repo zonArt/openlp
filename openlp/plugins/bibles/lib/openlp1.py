@@ -56,6 +56,7 @@ class OpenLP1Bible(BibleDB):
             cursor = connection.cursor()
         except:
             return False
+        #TODO: include create_meta language
         # Create all books.
         cursor.execute(u'SELECT id, testament_id, name, abbreviation FROM book')
         books = cursor.fetchall()
@@ -68,6 +69,8 @@ class OpenLP1Bible(BibleDB):
             testament_id = int(book[1])
             name = unicode(book[2], u'cp1252')
             abbreviation = unicode(book[3], u'cp1252')
+            #TODO: change create_book to the new database model 
+            #(name, bk_ref_id, testament)
             self.create_book(name, abbreviation, testament_id)
             # Update the progess bar.
             self.wizard.incrementProgressBar(WizardStrings.ImportingType % name)

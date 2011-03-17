@@ -220,19 +220,28 @@ class BibleManager(object):
             Unicode. The Bible to get the list of books from.
         """
         log.debug(u'BibleManager.get_books("%s")', bible)
-        return [
+        language_id = self.get_meta_data(bible, u'language_id')
+        books = []
+        for book in self.db_cache[bible].get_books():
+            book_id = self.get_book_ref_id_by_name(book.name, int(
+                language_id.value))
+            book_temp = BiblesResourcesDB.get_book_by_id(book_id)
+            book_ref = book_temp[u'name']
+            books.append(
             {
                 u'name': book.name,
-                u'chapters': self.db_cache[bible].get_chapter_count(book.name)
-            }
-            for book in self.db_cache[bible].get_books()
-        ]
+                u'chapters': self.db_cache[bible].get_chapter_count(book_ref)
+            })
+        return books
 
     def get_chapter_count(self, bible, book):
         """
         Returns the number of Chapters for a given book.
         """
-        log.debug(u'get_book_chapter_count %s', book)
+        log.debug(u'BibleManager.get_book_chapter_count ("%s", "%s")', bible, 
+            book)
+        language_id = self.get_meta_data(bible, u'language_id')
+        book = self.get_book_ref(book, int(language_id.value))
         return self.db_cache[bible].get_chapter_count(book)
 
     def get_verse_count(self, bible, book, chapter):
@@ -242,6 +251,8 @@ class BibleManager(object):
         """
         log.debug(u'BibleManager.get_verse_count("%s", "%s", %s)',
             bible, book, chapter)
+        language_id = self.get_meta_data(bible, u'language_id')
+        book = self.get_book_ref(book, int(language_id.value))
         return self.db_cache[bible].get_verse_count(book, chapter)
 
     def get_verses(self, bible, versetext):
@@ -275,7 +286,14 @@ class BibleManager(object):
             return None
         reflist = parse_reference(versetext)
         if reflist:
-            return self.db_cache[bible].get_verses(reflist)
+            log.debug(u'reflist:%s', reflist)
+            en_reflist = []
+            for item in reflist:
+                if item:
+                    book = self.get_book_ref(item[0])
+                    en_reflist.append((book, item[1], item[2], item[3]))
+            log.debug(u'en_reflist:%s', en_reflist)   
+            return self.db_cache[bible].get_verses(reflist, en_reflist)
         else:
             Receiver.send_message(u'openlp_information_message', {
                 u'title': translate('BiblesPlugin.BibleManager',
@@ -291,6 +309,40 @@ class BibleManager(object):
                 'Book Chapter:Verse-Verse,Chapter:Verse-Verse\n'
                 'Book Chapter:Verse-Chapter:Verse')
                 })
+            return None
+
+    def get_book_ref(self, book,  language_id=None):
+        log.debug(u'BibleManager.get_book_ref("%s", "%s")', book, language_id)
+        book_id = self.get_book_ref_id_by_name(book, language_id)
+        book_temp = BiblesResourcesDB.get_book_by_id(book_id)
+        log.debug(u'get_book_ref - Return:%s', book_temp[u'name'])
+        return book_temp[u'name']
+
+    def get_book_ref_id_by_name(self, book, language_id=None):
+        log.debug(u'BibleManager.get_book_ref_id_by_name:("%s", "%s")', book, 
+            language_id)
+        if BiblesResourcesDB.get_book(book):
+            book_temp = BiblesResourcesDB.get_book(book)
+            book_id = book_temp[u'id']
+        elif BiblesResourcesDB.get_spelling(book, language_id):
+            book_id = BiblesResourcesDB.get_spelling(book, language_id)
+        elif self.spelling_cache[u'spelling'].get_book_reference_id(book, 
+            language_id):
+            book_id = self.spelling_cache[u'spelling'].\
+                get_book_reference_id(book, language_id)
+        else:   
+            book_ref = self.parent.mediaItem.importRequest(u'book', book)
+            log.debug(book_ref)
+            book_temp = BiblesResourcesDB.get_book(book_ref)
+            log.debug(book_temp)
+            book_id = book_temp[u'id']
+            if book_id:
+                self.spelling_cache[u'spelling'].create_spelling(book, book_id, 
+                    language_id)
+        if book_id:
+            log.debug(u'get_book_ref_id_by_name - Return:%s', book_id)
+            return book_id
+        else:
             return None
 
     def verse_search(self, bible, second_bible, text):

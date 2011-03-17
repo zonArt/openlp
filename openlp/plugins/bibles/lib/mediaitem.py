@@ -36,6 +36,7 @@ from openlp.core.lib.ui import UiStrings, add_widget_completer, \
 from openlp.plugins.bibles.forms import BibleImportForm
 from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle, \
     get_reference_match
+from openlp.plugins.bibles.forms import BibleImportRequest
 
 log = logging.getLogger(__name__)
 
@@ -285,6 +286,11 @@ class BibleMediaItem(MediaManagerItem):
         # If the import was not cancelled then reload.
         if self.import_wizard.exec_():
             self.reloadBibles()
+
+    def importRequest(self, case, name=None):
+        self.import_request = BibleImportRequest(self)
+        if self.import_request.exec_(case, name):
+            return unicode(self.import_request.RequestComboBox.currentText())
 
     def loadBibles(self):
         log.debug(u'Loading Bibles')
