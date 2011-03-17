@@ -50,7 +50,8 @@ class BiblePlugin(Plugin):
             self.manager = BibleManager(self)
         Plugin.initialise(self)
         self.importBibleItem.setVisible(True)
-        self.exportBibleItem.setVisible(True)
+        # Set to invisible until we can export bibles
+        self.exportBibleItem.setVisible(False)
 
     def finalise(self):
         """
