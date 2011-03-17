@@ -33,7 +33,7 @@ import re
 
 from openlp.core.lib import Receiver, translate
 from openlp.core.utils import AppLocation
-from openlp.plugins.bibles.lib.db import BibleDB
+from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
 log = logging.getLogger(__name__)
 
@@ -46,6 +46,7 @@ class OSISBible(BibleDB):
     def __init__(self, parent, **kwargs):
         log.debug(self.__class__.__name__)
         BibleDB.__init__(self, parent, **kwargs)
+        self.parent = parent
         self.filename = kwargs[u'filename']
         fbibles = None
         self.books = {}
@@ -104,7 +105,11 @@ class OSISBible(BibleDB):
         finally:
             if detect_file:
                 detect_file.close()
-        #TODO: include create_meta language with try - except scheme
+        # Set meta language_id
+        language = self.parent.mediaItem.importRequest(u'language')
+        language = BiblesResourcesDB.get_language(language)
+        language_id = language[u'id']
+        self.create_meta(u'language_id', language_id)
         try:
             osis = codecs.open(self.filename, u'r', details['encoding'])
             for file_record in osis:
@@ -123,10 +128,13 @@ class OSISBible(BibleDB):
                             testament += 1
                         #TODO: change create_book to the new database model 
                         #(name, bk_ref_id, testament)
+                        book_ref_id = self.parent.manager.get_book_ref_id_by_name(
+                            unicode(self.books[book][0]), language_id)
+                        book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
                         db_book = self.create_book(
                             unicode(self.books[book][0]),
-                            unicode(self.books[book][1]),
-                            testament)
+                            book_ref_id,
+                            book_details[u'testament_id'])
                     if last_chapter == 0:
                         if book == u'Gen':
                             self.wizard.progressBar.setMaximum(1188)

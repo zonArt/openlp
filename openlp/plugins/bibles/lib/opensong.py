@@ -28,7 +28,7 @@ import logging
 from lxml import objectify
 
 from openlp.core.lib import Receiver, translate
-from openlp.plugins.bibles.lib.db import BibleDB
+from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
 log = logging.getLogger(__name__)
 
@@ -43,6 +43,7 @@ class OpenSongBible(BibleDB):
         """
         log.debug(self.__class__.__name__)
         BibleDB.__init__(self, parent, **kwargs)
+        self.parent = parent
         self.filename = kwargs['filename']
 
     def do_import(self):
@@ -61,14 +62,18 @@ class OpenSongBible(BibleDB):
             file = open(self.filename, u'r')
             opensong = objectify.parse(file)
             bible = opensong.getroot()
-            #TODO: include create_meta language
+            language = self.parent.mediaItem.importRequest(u'language')
+            language = BiblesResourcesDB.get_language(language)
+            language_id = language[u'id']
+            self.create_meta(u'language_id', language_id)
             for book in bible.b:
                 if self.stop_import_flag:
                     break
-                #TODO: change create_book to the new database model 
-                #(name, bk_ref_id, testament)
-                db_book = self.create_book(unicode(book.attrib[u'n']),
-                    unicode(book.attrib[u'n'][:4]))
+                book_ref_id = self.parent.manager.get_book_ref_id_by_name(
+                    unicode(book.attrib[u'n']), language_id)
+                book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
+                db_book = self.create_book(unicode(book.attrib[u'n']), 
+                    book_ref_id, book_details[u'testament_id'])
                 for chapter in book.c:
                     if self.stop_import_flag:
                         break

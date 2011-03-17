@@ -29,7 +29,7 @@ import sqlite
 
 from openlp.core.lib import Receiver
 from openlp.core.ui.wizard import WizardStrings
-from openlp.plugins.bibles.lib.db import BibleDB
+from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
 log = logging.getLogger(__name__)
 
@@ -43,6 +43,7 @@ class OpenLP1Bible(BibleDB):
         """
         log.debug(self.__class__.__name__)
         BibleDB.__init__(self, parent, **kwargs)
+        self.parent = parent
         self.filename = kwargs[u'filename']
 
     def do_import(self):
@@ -56,7 +57,11 @@ class OpenLP1Bible(BibleDB):
             cursor = connection.cursor()
         except:
             return False
-        #TODO: include create_meta language
+        #Create the bible language
+        language = self.parent.mediaItem.importRequest(u'language')
+        language = BiblesResourcesDB.get_language(language)
+        language_id = language[u'id']
+        self.create_meta(u'language_id', language_id)
         # Create all books.
         cursor.execute(u'SELECT id, testament_id, name, abbreviation FROM book')
         books = cursor.fetchall()
@@ -69,9 +74,10 @@ class OpenLP1Bible(BibleDB):
             testament_id = int(book[1])
             name = unicode(book[2], u'cp1252')
             abbreviation = unicode(book[3], u'cp1252')
-            #TODO: change create_book to the new database model 
-            #(name, bk_ref_id, testament)
-            self.create_book(name, abbreviation, testament_id)
+            book_ref_id = self.parent.manager.get_book_ref_id_by_name(name, 
+                language_id)
+            book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
+            self.create_book(name, book_ref_id, book_details[u'testament_id'])
             # Update the progess bar.
             self.wizard.incrementProgressBar(WizardStrings.ImportingType % name)
             # Import the verses for this book.

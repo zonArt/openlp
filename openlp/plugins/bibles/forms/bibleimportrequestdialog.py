@@ -53,7 +53,7 @@ class Ui_BibleImportRequest(object):
         font.setBold(True)
         self.headlineLabel.setFont(font)
         self.headlineLabel.setObjectName("HeadlineLabel")
-        self.verticalLayout.addWidget(self.HeadlineLabel)
+        self.verticalLayout.addWidget(self.headlineLabel)
         self.infoLabel = QtGui.QLabel(self.widget)
         self.infoLabel.setObjectName("InfoLabel")
         self.verticalLayout.addWidget(self.infoLabel)

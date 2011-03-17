@@ -70,7 +70,7 @@ import chardet
 import csv
 
 from openlp.core.lib import Receiver, translate
-from openlp.plugins.bibles.lib.db import BibleDB, Testament
+from openlp.plugins.bibles.lib.db import BibleDB, Testament, BiblesResourcesDB
 
 log = logging.getLogger(__name__)
 
@@ -86,6 +86,7 @@ class CSVBible(BibleDB):
         """
         log.info(self.__class__.__name__)
         BibleDB.__init__(self, parent, **kwargs)
+        self.parent = parent
         try:
             self.testamentsfile = kwargs[u'testamentsfile']
         except KeyError:
@@ -135,7 +136,10 @@ class CSVBible(BibleDB):
         self.wizard.progressBar.setMinimum(0)
         self.wizard.progressBar.setMaximum(66)
         success = True
-        #TODO: include create_meta language
+        language = self.parent.mediaItem.importRequest(u'language')
+        language = BiblesResourcesDB.get_language(language)
+        language_id = language[u'id']
+        self.create_meta(u'language_id', language_id)
         books_file = None
         book_list = {}
         # Populate the Tables
@@ -149,10 +153,11 @@ class CSVBible(BibleDB):
                 self.wizard.incrementProgressBar(unicode(
                     translate('BibleDB.Wizard', 'Importing books... %s')) %
                     unicode(line[2], details['encoding']))
-                #TODO: change create_book to the new database model 
-                #(name, bk_ref_id, testament)
+                book_ref_id = self.parent.manager.get_book_ref_id_by_name(
+                    unicode(line[2], details['encoding']), language_id)
+                book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
                 self.create_book(unicode(line[2], details['encoding']),
-                    unicode(line[3], details['encoding']), int(line[1]))
+                    book_ref_id, book_details[u'testament_id'])
                 book_list[int(line[0])] = unicode(line[2], details['encoding'])
             Receiver.send_message(u'openlp_process_events')
         except (IOError, IndexError):

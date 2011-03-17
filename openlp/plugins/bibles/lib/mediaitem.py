@@ -290,7 +290,7 @@ class BibleMediaItem(MediaManagerItem):
     def importRequest(self, case, name=None):
         self.import_request = BibleImportRequest(self)
         if self.import_request.exec_(case, name):
-            return unicode(self.import_request.RequestComboBox.currentText())
+            return unicode(self.import_request.requestComboBox.currentText())
 
     def loadBibles(self):
         log.debug(u'Loading Bibles')
