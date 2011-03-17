@@ -25,7 +25,6 @@
 ###############################################################################
 
 import logging
-import re
 import os
 from tempfile import gettempdir
 
@@ -35,8 +34,7 @@ from openlp.core.lib import Plugin, StringContent, build_icon, translate, \
     Receiver
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import UiStrings
-from openlp.plugins.songs.lib import add_author_unknown, SongMediaItem, \
-    SongsTab, SongXML
+from openlp.plugins.songs.lib import clean_song, SongMediaItem, SongsTab
 from openlp.plugins.songs.lib.db import init_schema, Song
 from openlp.plugins.songs.lib.importer import SongFormat
 from openlp.plugins.songs.lib.olpimport import OpenLPSongImport
@@ -62,7 +60,6 @@ class SongsPlugin(Plugin):
         self.manager = Manager(u'songs', init_schema)
         self.icon_path = u':/plugins/plugin_songs.png'
         self.icon = build_icon(self.icon_path)
-        self.whitespace = re.compile(r'\W+', re.UNICODE)
 
     def initialise(self):
         log.info(u'Songs Initialising')
@@ -141,38 +138,18 @@ class SongsPlugin(Plugin):
         Rebuild each song.
         """
         maxSongs = self.manager.get_object_count(Song)
+        if maxSongs == 0:
+            return
         progressDialog = QtGui.QProgressDialog(
             translate('SongsPlugin', 'Reindexing songs...'), UiStrings.Cancel,
-            0, maxSongs + 1, self.formparent)
+            0, maxSongs, self.formparent)
         progressDialog.setWindowModality(QtCore.Qt.WindowModal)
         songs = self.manager.get_all_objects(Song)
-        counter = 0
-        for song in songs:
-            counter += 1
-            # The song does not have any author, add one.
-            if not song.authors:
-                add_author_unknown(self.manager, song)
-            if song.title is None:
-                song.title = u''
-            if song.alternate_title is None:
-                song.alternate_title = u''
-            song.search_title = self.whitespace.sub(u' ', song.title.lower() +
-                u' ' + song.alternate_title.lower()).strip()
-            # Remove the "language" attribute from lyrics tag. This is not very
-            # important, but this keeps the database clean. This can be removed
-            # when everybody has run the reindex tool once.
-            song.lyrics = song.lyrics.replace(
-                u'<lyrics language="en">', u'<lyrics>')
-            lyrics = u''
-            verses = SongXML().get_verses(song.lyrics)
-            for verse in verses:
-                lyrics = lyrics + self.whitespace.sub(u' ', verse[1]) + u' '
-            song.search_lyrics = lyrics.lower()
-            progressDialog.setValue(counter)
+        for number, song in enumerate(songs):
+            clean_song(self.manager, song)
+            progressDialog.setValue(number + 1)
         self.manager.save_objects(songs)
-        progressDialog.setValue(counter + 1)
-        self.mediaItem.displayResultsSong(
-            self.manager.get_all_objects(Song, order_by_ref=Song.search_title))
+        self.mediaItem.onSearchTextButtonClick()
 
     def onSongImportItemClicked(self):
         if self.mediaItem:
@@ -183,10 +160,9 @@ class SongsPlugin(Plugin):
             self.mediaItem.onExportClick()
 
     def about(self):
-        about_text = translate('SongsPlugin', '<strong>Songs Plugin</strong>'
+        return translate('SongsPlugin', '<strong>Songs Plugin</strong>'
             '<br />The songs plugin provides the ability to display and '
             'manage songs.')
-        return about_text
 
     def usesTheme(self, theme):
         """
@@ -258,6 +234,7 @@ class SongsPlugin(Plugin):
         for sfile in os.listdir(db_dir):
             if sfile.startswith(u'songs_') and sfile.endswith(u'.sqlite'):
                 song_dbs.append(os.path.join(db_dir, sfile))
+        self.onToolsReindexItemTriggered()
         if len(song_dbs) == 0:
             return
         progress = QtGui.QProgressDialog(self.formparent)
@@ -273,9 +250,7 @@ class SongsPlugin(Plugin):
             importer = OpenLPSongImport(self.manager, filename=db)
             importer.do_import()
         progress.setValue(len(song_dbs))
-        self.mediaItem.displayResultsSong(
-            self.manager.get_all_objects(Song, order_by_ref=Song.search_title))
-        self.onToolsReindexItemTriggered()
+        self.mediaItem.onSearchTextButtonClick()
 
     def finalise(self):
         """

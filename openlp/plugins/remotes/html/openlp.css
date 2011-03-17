@@ -20,13 +20,10 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA                     *
  *****************************************************************************/
 
-/**
- * init.js - In certain browsers (yes, IE, I'm looking at you!), DocumentReady
- * JavaScript functions can only be run very last on the page. This file is the
- * last JavaScript file to be included on the page, and provides a work-around
- * for this bug in certain browsers.
- */
+.ui-icon-blank {
+  background-image: url(images/ui-icon-blank.png);
+}
 
-$(document).ready(function () {
-  OpenLP.Events.init();
-});
+.ui-icon-unblank {
+  background-image: url(images/ui-icon-unblank.png);
+}

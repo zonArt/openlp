@@ -217,8 +217,6 @@ class Ui_MainWindow(object):
         self.ModeDefaultItem.setChecked(True)
         self.ToolsAddToolItem = icon_action(mainWindow, u'ToolsAddToolItem',
             u':/tools/tools_add.png')
-        # Hide the entry, as it does not have any functionality yet.
-        self.ToolsAddToolItem.setVisible(False)
         mainWindow.actionList.add_action(self.ToolsAddToolItem, u'Tools')
         self.ToolsOpenDataFolder = icon_action(mainWindow,
             u'ToolsOpenDataFolder', u':/general/general_open.png')
@@ -300,6 +298,13 @@ class Ui_MainWindow(object):
         QtCore.QObject.connect(self.FileExitItem,
             QtCore.SIGNAL(u'triggered()'), mainWindow.close)
         QtCore.QMetaObject.connectSlotsByName(mainWindow)
+        # Hide the entry, as it does not have any functionality yet.
+        self.ToolsAddToolItem.setVisible(False)
+        self.ImportLanguageItem.setVisible(False)
+        self.ExportLanguageItem.setVisible(False)
+        self.SettingsShortcutsItem.setVisible(False)
+        self.HelpDocumentationItem.setVisible(False)
+        self.HelpOnlineHelpItem.setVisible(False)
 
     def retranslateUi(self, mainWindow):
         """

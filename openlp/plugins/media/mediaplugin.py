@@ -49,11 +49,13 @@ class MediaPlugin(Plugin):
             u'audio/ac3': [u'.ac3'],
             u'audio/flac': [u'.flac'],
             u'audio/x-m4a': [u'.m4a'],
+            u'audio/midi': [u'.mid', u'.midi'],
             u'audio/x-mp3': [u'.mp3'],
             u'audio/mpeg': [u'.mp3', u'.mp2', u'.mpga', u'.mpega', u'.m4a'],
             u'audio/qcelp': [u'.qcp'],
             u'audio/x-wma': [u'.wma'],
             u'audio/x-ms-wma': [u'.wma'],
+            u'video/x-flv': [u'.flv'],
             u'video/x-matroska': [u'.mpv', u'.mkv'],
             u'video/x-wmv': [u'.wmv'],
             u'video/x-ms-wmv': [u'.wmv']}

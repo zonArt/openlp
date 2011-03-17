@@ -66,7 +66,7 @@ import re
 
 from lxml import etree, objectify
 
-from openlp.plugins.songs.lib import add_author_unknown, VerseType
+from openlp.plugins.songs.lib import clean_song, VerseType
 from openlp.plugins.songs.lib.db import Author, Book, Song, Topic
 
 log = logging.getLogger(__name__)
@@ -236,10 +236,9 @@ class OpenLyrics(object):
             datetime.datetime.now().strftime(u'%Y-%m-%dT%H:%M:%S'))
         properties = etree.SubElement(song_xml, u'properties')
         titles = etree.SubElement(properties, u'titles')
-        self._add_text_to_element(u'title', titles, song.title.strip())
+        self._add_text_to_element(u'title', titles, song.title)
         if song.alternate_title:
-            self._add_text_to_element(
-                u'title', titles, song.alternate_title.strip())
+            self._add_text_to_element(u'title', titles, song.alternate_title)
         if song.comments:
             comments = etree.SubElement(properties, u'comments')
             self._add_text_to_element(u'comment', comments, song.comments)
@@ -303,6 +302,10 @@ class OpenLyrics(object):
         else:
             return None
         song = Song()
+        # Values will be set when cleaning the song.
+        song.search_lyrics = u''
+        song.verse_order = u''
+        song.search_title = u''
         self._process_copyright(properties, song)
         self._process_cclinumber(properties, song)
         self._process_titles(properties, song)
@@ -312,6 +315,7 @@ class OpenLyrics(object):
         self._process_authors(properties, song)
         self._process_songbooks(properties, song)
         self._process_topics(properties, song)
+        clean_song(self.manager, song)
         self.manager.save_object(song)
         return song.id
 
@@ -382,8 +386,6 @@ class OpenLyrics(object):
                     last_name=display_name.split(u' ')[-1],
                     first_name=u' '.join(display_name.split(u' ')[:-1]))
             song.authors.append(author)
-        if not song.authors:
-            add_author_unknown(self.manager, song)
 
     def _process_cclinumber(self, properties, song):
         """
@@ -443,7 +445,6 @@ class OpenLyrics(object):
             The song object.
         """
         sxml = SongXML()
-        search_text = u''
         for verse in lyrics.verse:
             text = u''
             for lines in verse.lines:
@@ -462,8 +463,6 @@ class OpenLyrics(object):
             if self._get(verse, u'lang'):
                 lang = self._get(verse, u'lang')
             sxml.add_verse_to_lyrics(verse_type, verse_number, text, lang)
-            search_text = search_text + text
-        song.search_lyrics = search_text.lower()
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
         # Process verse order
         if hasattr(properties, u'verseOrder'):
@@ -510,13 +509,9 @@ class OpenLyrics(object):
         for title in properties.titles.title:
             if not song.title:
                 song.title = self._text(title)
-                song.search_title = unicode(song.title)
                 song.alternate_title = u''
             else:
                 song.alternate_title = self._text(title)
-                song.search_title += u'@' + song.alternate_title
-        song.search_title = re.sub(r'[\'"`,;:(){}?]+', u'',
-            unicode(song.search_title)).lower().strip()
 
     def _process_topics(self, properties, song):
         """
