@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,8 +29,9 @@ import re
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, translate
-from openlp.plugins.songs.lib import VerseType
+from openlp.plugins.songs.lib import clean_song, VerseType
 from openlp.plugins.songs.lib.db import Song, Author, Topic, Book, MediaFile
+from openlp.plugins.songs.lib.ui import SongStrings
 from openlp.plugins.songs.lib.xml import SongXML
 
 log = logging.getLogger(__name__)
@@ -43,15 +44,26 @@ class SongImport(QtCore.QObject):
     whether the authors etc already exist and add them or refer to them
     as necessary
     """
-    def __init__(self, manager):
+    def __init__(self, manager, **kwargs):
         """
         Initialise and create defaults for properties
 
         ``manager``
             An instance of a SongManager, through which all database access is
             performed.
+
         """
         self.manager = manager
+        QtCore.QObject.__init__(self)
+        if kwargs.has_key(u'filename'):
+            self.import_source = kwargs[u'filename']
+        elif kwargs.has_key(u'filenames'):
+            self.import_source = kwargs[u'filenames']
+        else:
+            raise KeyError(u'Keyword arguments "filename[s]" not supplied.')
+        log.debug(self.import_source)
+        self.import_wizard = None
+        self.song = None
         self.stop_import_flag = False
         self.set_defaults()
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -74,13 +86,13 @@ class SongImport(QtCore.QObject):
         self.media_files = []
         self.song_book_name = u''
         self.song_book_pub = u''
+        self.verse_order_list_generated_useful = False
+        self.verse_order_list_generated = []
         self.verse_order_list = []
         self.verses = []
-        self.versecounts = {}
+        self.verse_counts = {}
         self.copyright_string = unicode(translate(
             'SongsPlugin.SongImport', 'copyright'))
-        self.copyright_symbol = unicode(translate(
-            'SongsPlugin.SongImport', '\xa9'))
 
     def stop_import(self):
         """
@@ -92,23 +104,7 @@ class SongImport(QtCore.QObject):
     def register(self, import_wizard):
         self.import_wizard = import_wizard
 
-    @staticmethod
-    def process_songs_text(manager, text):
-        songs = []
-        songtexts = SongImport.tidy_text(text).split(u'\f')
-        song = SongImport(manager)
-        for songtext in songtexts:
-            if songtext.strip():
-                song.process_song_text(songtext.strip())
-                if song.check_complete():
-                    songs.append(song)
-                    song = SongImport(manager)
-        if song.check_complete():
-            songs.append(song)
-        return songs
-
-    @staticmethod
-    def tidy_text(text):
+    def tidy_text(self, text):
         """
         Get rid of some dodgy unicode and formatting characters we're not
         interested in. Some can be converted to ascii.
@@ -127,20 +123,20 @@ class SongImport(QtCore.QObject):
         return text
 
     def process_song_text(self, text):
-        versetexts = text.split(u'\n\n')
-        for versetext in versetexts:
-            if versetext.strip() != u'':
-                self.process_verse_text(versetext.strip())
+        verse_texts = text.split(u'\n\n')
+        for verse_text in verse_texts:
+            if verse_text.strip() != u'':
+                self.process_verse_text(verse_text.strip())
 
     def process_verse_text(self, text):
         lines = text.split(u'\n')
         if text.lower().find(self.copyright_string) >= 0 \
-            or text.lower().find(self.copyright_symbol) >= 0:
+            or text.find(unicode(SongStrings.CopyrightSymbol)) >= 0:
             copyright_found = False
             for line in lines:
                 if (copyright_found or
                     line.lower().find(self.copyright_string) >= 0 or
-                    line.lower().find(self.copyright_symbol) >= 0):
+                    line.find(unicode(SongStrings.CopyrightSymbol)) >= 0):
                     copyright_found = True
                     self.add_copyright(line)
                 else:
@@ -197,44 +193,46 @@ class SongImport(QtCore.QObject):
             return
         self.media_files.append(filename)
 
-    def add_verse(self, versetext, versetag=u'V', lang=None):
+    def add_verse(self, verse_text, verse_def=u'v', lang=None):
         """
-        Add a verse. This is the whole verse, lines split by \n. It will also
+        Add a verse. This is the whole verse, lines split by \\n. It will also
         attempt to detect duplicates. In this case it will just add to the verse
         order.
 
-        ``versetext``
+        ``verse_text``
             The text of the verse.
 
-        ``versetag``
-            The verse tag can be V1/C1/B etc, or 'V' and 'C' (will count the
+        ``verse_def``
+            The verse tag can be v1/c1/b etc, or 'v' and 'c' (will count the
             verses/choruses itself) or None, where it will assume verse.
 
         ``lang``
             The language code (ISO-639) of the verse, for example *en* or *de*.
-        """
-        for (oldversetag, oldverse, oldlang) in self.verses:
-            if oldverse.strip() == versetext.strip():
-                self.verse_order_list.append(oldversetag)
-                return
-        if versetag[0] in self.versecounts:
-            self.versecounts[versetag[0]] += 1
-        else:
-            self.versecounts[versetag[0]] = 1
-        if len(versetag) == 1:
-            versetag += unicode(self.versecounts[versetag[0]])
-        elif int(versetag[1:]) > self.versecounts[versetag[0]]:
-            self.versecounts[versetag[0]] = int(versetag[1:])
-        self.verses.append([versetag, versetext.rstrip(), lang])
-        self.verse_order_list.append(versetag)
-        if versetag.startswith(u'V') and u'C1' in self.verse_order_list:
-            self.verse_order_list.append(u'C1')
 
+        """
+        for (old_verse_def, old_verse, old_lang) in self.verses:
+            if old_verse.strip() == verse_text.strip():
+                self.verse_order_list_generated.append(old_verse_def)
+                self.verse_order_list_generated_useful = True
+                return
+        if verse_def[0] in self.verse_counts:
+            self.verse_counts[verse_def[0]] += 1
+        else:
+            self.verse_counts[verse_def[0]] = 1
+        if len(verse_def) == 1:
+            verse_def += unicode(self.verse_counts[verse_def[0]])
+        elif int(verse_def[1:]) > self.verse_counts[verse_def[0]]:
+            self.verse_counts[verse_def[0]] = int(verse_def[1:])
+        self.verses.append([verse_def, verse_text.rstrip(), lang])
+        self.verse_order_list_generated.append(verse_def)
+        
     def repeat_verse(self):
         """
         Repeat the previous verse in the verse order
         """
-        self.verse_order_list.append(self.verse_order_list[-1])
+        self.verse_order_list_generated.append(
+            self.verse_order_list_generated[-1])
+        self.verse_order_list_generated_useful = True
 
     def check_complete(self):
         """
@@ -247,58 +245,43 @@ class SongImport(QtCore.QObject):
         else:
             return True
 
-    def remove_punctuation(self, text):
-        """
-        Extracts alphanumeric words for searchable fields
-        """
-        return re.sub(r'\W+', u' ', text, re.UNICODE)
-
     def finish(self):
         """
         All fields have been set to this song. Write the song to disk.
         """
-        if not self.authors:
-            self.authors.append(unicode(translate('SongsPlugin.SongImport',
-                'Author unknown')))
-        log.info(u'commiting song %s to database', self.title)
+        log.info(u'committing song %s to database', self.title)
         song = Song()
         song.title = self.title
         song.alternate_title = self.alternate_title
-        song.search_title = self.remove_punctuation(self.title).lower() \
-            + '@' + self.remove_punctuation(self.alternate_title).lower()
-        song.song_number = self.song_number
+        # Values will be set when cleaning the song.
+        song.search_title = u''
         song.search_lyrics = u''
+        song.verse_order = u''
+        song.song_number = self.song_number
         verses_changed_to_other = {}
         sxml = SongXML()
         other_count = 1
-        for (versetag, versetext, lang) in self.verses:
-            if versetag[0] == u'C':
-                versetype = VerseType.to_string(VerseType.Chorus)
-            elif versetag[0] == u'V':
-                versetype = VerseType.to_string(VerseType.Verse)
-            elif versetag[0] == u'B':
-                versetype = VerseType.to_string(VerseType.Bridge)
-            elif versetag[0] == u'I':
-                versetype = VerseType.to_string(VerseType.Intro)
-            elif versetag[0] == u'P':
-                versetype = VerseType.to_string(VerseType.PreChorus)
-            elif versetag[0] == u'E':
-                versetype = VerseType.to_string(VerseType.Ending)
+        for (verse_def, verse_text, lang) in self.verses:
+            if verse_def[0].lower() in VerseType.Tags:
+                verse_tag = verse_def[0].lower()
             else:
-                newversetag = u'O%d' % other_count
-                verses_changed_to_other[versetag] = newversetag
+                new_verse_def = u'%s%d' % (VerseType.Tags[VerseType.Other],
+                    other_count)
+                verses_changed_to_other[verse_def] = new_verse_def
                 other_count += 1
-                versetype = VerseType.to_string(VerseType.Other)
-                log.info(u'Versetype %s changing to %s' , versetag, newversetag)
-                versetag = newversetag
-            sxml.add_verse_to_lyrics(versetype, versetag[1:], versetext, lang)
-            song.search_lyrics += u' ' + self.remove_punctuation(versetext)
-        song.search_lyrics = song.search_lyrics.lower()
+                verse_tag = VerseType.Tags[VerseType.Other]
+                log.info(u'Versetype %s changing to %s' , verse_def,
+                    new_verse_def)
+                verse_def = new_verse_def
+            sxml.add_verse_to_lyrics(verse_tag, verse_def[1:], verse_text, lang)
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
-        for i, current_verse_tag in enumerate(self.verse_order_list):
-            if verses_changed_to_other.has_key(current_verse_tag):
+        if not len(self.verse_order_list) and \
+            self.verse_order_list_generated_useful:
+            self.verse_order_list = self.verse_order_list_generated
+        for i, current_verse_def in enumerate(self.verse_order_list):
+            if verses_changed_to_other.has_key(current_verse_def):
                 self.verse_order_list[i] = \
-                    verses_changed_to_other[current_verse_tag]
+                    verses_changed_to_other[current_verse_def]
         song.verse_order = u' '.join(self.verse_order_list)
         song.copyright = self.copyright
         song.comments = self.comments
@@ -308,7 +291,7 @@ class SongImport(QtCore.QObject):
             author = self.manager.get_object_filtered(Author,
                 Author.display_name == authortext)
             if not author:
-                author = Author.populate(display_name = authortext,
+                author = Author.populate(display_name=authortext,
                     last_name=authortext.split(u' ')[-1],
                     first_name=u' '.join(authortext.split(u' ')[:-1]))
             song.authors.append(author)
@@ -332,6 +315,7 @@ class SongImport(QtCore.QObject):
             if topic is None:
                 topic = Topic.populate(name=topictext)
             song.topics.append(topic)
+        clean_song(self.manager, song)
         self.manager.save_object(song)
         self.set_defaults()
 
@@ -339,13 +323,14 @@ class SongImport(QtCore.QObject):
         """
         For debugging
         """
-        print u'========================================'   \
+        print u'========================================' \
             + u'========================================'
         print u'TITLE: ' + self.title
         print u'ALT TITLE: ' + self.alternate_title
-        for (versetag, versetext, lang) in self.verses:
-            print u'VERSE ' + versetag + u': ' + versetext
+        for (verse_def, verse_text, lang) in self.verses:
+            print u'VERSE ' + verse_def + u': ' + verse_text
         print u'ORDER: ' + u' '.join(self.verse_order_list)
+        print u'GENERATED ORDER: ' + u' '.join(self.verse_order_list_generated)
         for author in self.authors:
             print u'AUTHOR: ' + author
         if self.copyright:

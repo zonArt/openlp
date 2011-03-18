@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -40,20 +40,13 @@ class AlertsPlugin(Plugin):
     log.info(u'Alerts Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Alerts', u'1.9.4', plugin_helpers)
+        Plugin.__init__(self, u'Alerts', plugin_helpers,
+            settingsTabClass=AlertsTab)
         self.weight = -3
         self.icon = build_icon(u':/plugins/plugin_alerts.png')
         self.alertsmanager = AlertsManager(self)
         self.manager = Manager(u'alerts', init_schema)
-        self.visible_name = self.getString(StringContent.VisibleName)
         self.alertForm = AlertForm(self)
-
-    def getSettingsTab(self):
-        """
-        Return the settings tab for the Alerts plugin
-        """
-        self.alertsTab = AlertsTab(self, self.visible_name[u'title'])
-        return self.alertsTab
 
     def addToolsMenuItem(self, tools_menu):
         """
@@ -81,7 +74,7 @@ class AlertsPlugin(Plugin):
         log.info(u'Alerts Initialising')
         Plugin.initialise(self)
         self.toolsAlertItem.setVisible(True)
-        self.liveController.alertTab = self.alertsTab
+        self.liveController.alertTab = self.settings_tab
 
     def finalise(self):
         """

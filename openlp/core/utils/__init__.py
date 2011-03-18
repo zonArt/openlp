@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,7 +24,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`utils` module provides the utility libraries for OpenLP
+The :mod:`openlp.core.utils` module provides the utility libraries for OpenLP.
 """
 import logging
 import os
@@ -35,6 +35,7 @@ import urllib2
 from datetime import datetime
 
 from PyQt4 import QtGui, QtCore
+
 if sys.platform != u'win32' and sys.platform != u'darwin':
     try:
         from xdg import BaseDirectory
@@ -134,7 +135,7 @@ class AppLocation(object):
         elif dir_type == AppLocation.LanguageDir:
             app_path = _get_frozen_path(
                 os.path.abspath(os.path.split(sys.argv[0])[0]),
-                os.path.split(openlp.__file__)[0])
+                _get_os_dir_path(dir_type))
             return os.path.join(app_path, u'i18n')
         else:
             return _get_os_dir_path(dir_type)
@@ -164,24 +165,40 @@ def _get_os_dir_path(dir_type):
     """
     Return a path based on which OS and environment we are running in.
     """
+    encoding = sys.getfilesystemencoding()
     if sys.platform == u'win32':
-        return os.path.join(os.getenv(u'APPDATA'), u'openlp')
+        if dir_type == AppLocation.DataDir:
+            return os.path.join(unicode(os.getenv(u'APPDATA'), encoding),
+                u'openlp', u'data')
+        elif dir_type == AppLocation.LanguageDir:
+            return os.path.split(openlp.__file__)[0]
+        return os.path.join(unicode(os.getenv(u'APPDATA'), encoding),
+            u'openlp')
     elif sys.platform == u'darwin':
         if dir_type == AppLocation.DataDir:
-            return os.path.join(os.getenv(u'HOME'), u'Library',
-                u'Application Support', u'openlp', u'Data')
-        return os.path.join(os.getenv(u'HOME'), u'Library',
-            u'Application Support', u'openlp')
+            return os.path.join(unicode(os.getenv(u'HOME'), encoding),
+                u'Library', u'Application Support', u'openlp', u'Data')
+        elif dir_type == AppLocation.LanguageDir:
+            return os.path.split(openlp.__file__)[0]
+        return os.path.join(unicode(os.getenv(u'HOME'), encoding),
+            u'Library', u'Application Support', u'openlp')
     else:
+        if dir_type == AppLocation.LanguageDir:
+            return os.path.join(u'/usr', u'share', u'openlp')
         if XDG_BASE_AVAILABLE:
             if dir_type == AppLocation.ConfigDir:
-                return os.path.join(BaseDirectory.xdg_config_home, u'openlp')
+                return os.path.join(unicode(BaseDirectory.xdg_config_home,
+                    encoding), u'openlp')
             elif dir_type == AppLocation.DataDir:
-                return os.path.join(BaseDirectory.xdg_data_home, u'openlp')
+                return os.path.join(
+                    unicode(BaseDirectory.xdg_data_home, encoding), u'openlp')
             elif dir_type == AppLocation.CacheDir:
-                return os.path.join(BaseDirectory.xdg_cache_home, u'openlp')
-        else:
-            return os.path.join(os.getenv(u'HOME'), u'.openlp')
+                return os.path.join(unicode(BaseDirectory.xdg_cache_home,
+                    encoding), u'openlp')
+        if dir_type == AppLocation.DataDir:
+            return os.path.join(unicode(os.getenv(u'HOME'), encoding),
+                u'.openlp', u'data')
+        return os.path.join(unicode(os.getenv(u'HOME'), encoding), u'.openlp')
 
 def _get_frozen_path(frozen_option, non_frozen_option):
     """
@@ -189,8 +206,7 @@ def _get_frozen_path(frozen_option, non_frozen_option):
     """
     if hasattr(sys, u'frozen') and sys.frozen == 1:
         return frozen_option
-    else:
-        return non_frozen_option
+    return non_frozen_option
 
 def check_latest_version(current_version):
     """
@@ -233,7 +249,7 @@ def add_actions(target, actions):
         The menu or toolbar to add actions to.
 
     ``actions``
-        The actions to be added.  An action consisting of the keyword 'None'
+        The actions to be added. An action consisting of the keyword 'None'
         will result in a separator being inserted into the target.
     """
     for action in actions:
@@ -309,7 +325,7 @@ def get_web_page(url, header=None, update_openlp=False):
         Tells OpenLP to update itself if the page is successfully downloaded.
         Defaults to False.
     """
-    # TODO: Add proxy usage.  Get proxy info from OpenLP settings, add to a
+    # TODO: Add proxy usage. Get proxy info from OpenLP settings, add to a
     # proxy_handler, build into an opener and install the opener into urllib2.
     # http://docs.python.org/library/urllib2.html
     if not url:
@@ -328,6 +344,7 @@ def get_web_page(url, header=None, update_openlp=False):
         return None
     if update_openlp:
         Receiver.send_message(u'openlp_process_events')
+    log.debug(page)
     return page
 
 def file_is_unicode(filename):
@@ -373,13 +390,13 @@ def get_uno_command():
     """
     Returns the UNO command to launch an openoffice.org instance.
     """
+    COMMAND = u'soffice'
+    OPTIONS = u'-nologo -norestore -minimized -nodefault -nofirststartwizard'
     if UNO_CONNECTION_TYPE == u'pipe':
-        return u'openoffice.org -nologo -norestore -minimized -invisible ' \
-            + u'-nofirststartwizard -accept=pipe,name=openlp_pipe;urp;'
+        CONNECTION = u'"-accept=pipe,name=openlp_pipe;urp;"'
     else:
-        return u'openoffice.org -nologo -norestore -minimized ' \
-            + u'-invisible -nofirststartwizard ' \
-            + u'-accept=socket,host=localhost,port=2002;urp;'
+        CONNECTION = u'"-accept=socket,host=localhost,port=2002;urp;"'
+    return u'%s %s %s' % (COMMAND, OPTIONS, CONNECTION)
 
 def get_uno_instance(resolver):
     """

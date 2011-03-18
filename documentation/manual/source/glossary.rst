@@ -18,7 +18,7 @@ The Main Window contains all the tools and plugins that make OpenLP function
 Media Manager
 -------------
 
-The Media Manager contains a number of tabs that plugins supply to OpenLP.
+The Media Manager contains a number of tabs the plugins supply to OpenLP.
 Each tab in the Media Manager is called a **Media Item**
 
 .. image:: pics/mediamanager.png
@@ -36,20 +36,20 @@ with them.
 Service File
 ------------
 
-A service file, is the file that is created when you save your work on OpenLP.
+A service file is the file that is created when you save your service in OpenLP.
 The service file consist of **Service Items**
 
 Service Item
 ------------
 
-A service item are the **media items** that are in the **service manager**
+Service items are the **media items** that are in the **service manager**
 
 Service Manger
 --------------
 
 The service manager contains the media items in your service file. This is the 
-area from which your media items go live, and you can also save, open, and edit 
-services files.
+area where your media items go live. You can also save, open, and edit 
+services files from here.
 
 .. image:: pics/servicemanager.png
 
@@ -65,6 +65,6 @@ Theme Manager
 -------------
 
 The theme manager is where themes are created and edited. Themes are the text
-styles backgrounds that you use to personalize your services.
+styles and backgrounds that you use to personalize your services.
 
 .. image:: pics/thememanager.png

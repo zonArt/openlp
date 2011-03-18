@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,20 +29,13 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    ItemCapabilities, SettingsManager, translate, check_item_selected, \
-    check_directory_exists, Receiver
-from openlp.core.lib.ui import critical_error_message_box
+from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
+    SettingsManager, translate, check_item_selected, check_directory_exists, \
+    Receiver
+from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file, get_images_filter
 
 log = logging.getLogger(__name__)
-
-# We have to explicitly create separate classes for each plugin
-# in order for DnD to the Service manager to work correctly.
-class ImageListView(BaseListWithDnD):
-    def __init__(self, parent=None):
-        self.PluginName = u'Images'
-        BaseListWithDnD.__init__(self, parent)
 
 class ImageMediaItem(MediaManagerItem):
     """
@@ -52,27 +45,20 @@ class ImageMediaItem(MediaManagerItem):
 
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'images/image'
-        # This next is a class, not an instance of a class - it will
-        # be instanced by the base MediaManagerItem.
-        self.ListViewWithDnD_class = ImageListView
         MediaManagerItem.__init__(self, parent, self, icon)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'live_theme_changed'), self.liveThemeChanged)
 
     def retranslateUi(self):
-        self.OnNewPrompt = translate('ImagePlugin.MediaItem',
+        self.onNewPrompt = translate('ImagePlugin.MediaItem',
             'Select Image(s)')
         file_formats = get_images_filter()
-        self.OnNewFileMasks = u'%s;;%s (*.*) (*)' % (file_formats,
-            unicode(translate('ImagePlugin.MediaItem', 'All Files')))
-        self.replaceAction.setText(
-            translate('ImagePlugin.MediaItem', 'Replace Background'))
-        self.replaceAction.setToolTip(
-            translate('ImagePlugin.MediaItem', 'Replace Live Background'))
-        self.resetAction.setText(
-            translate('ImagePlugin.MediaItem', 'Reset Background'))
-        self.resetAction.setToolTip(
-            translate('ImagePlugin.MediaItem', 'Reset Live Background'))
+        self.onNewFileMasks = u'%s;;%s (*.*) (*)' % (file_formats,
+            UiStrings.AllFiles)
+        self.replaceAction.setText(UiStrings.ReplaceBG)
+        self.replaceAction.setToolTip(UiStrings.ReplaceLiveBG)
+        self.resetAction.setText(UiStrings.ResetBG)
+        self.resetAction.setToolTip(UiStrings.ResetLiveBG)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -84,8 +70,6 @@ class ImageMediaItem(MediaManagerItem):
     def initialise(self):
         log.debug(u'initialise')
         self.listView.clear()
-        self.listView.setSelectionMode(
-            QtGui.QAbstractItemView.ExtendedSelection)
         self.listView.setIconSize(QtCore.QSize(88, 50))
         self.servicePath = os.path.join(
             AppLocation.get_section_data_path(self.settingsSection),
@@ -141,8 +125,7 @@ class ImageMediaItem(MediaManagerItem):
     def generateSlideData(self, service_item, item=None, xmlVersion=False):
         items = self.listView.selectedIndexes()
         if items:
-            service_item.title = unicode(
-                translate('ImagePlugin.MediaItem', 'Images'))
+            service_item.title = unicode(self.plugin.nameStrings[u'plural'])
             service_item.add_capability(ItemCapabilities.AllowsMaintain)
             service_item.add_capability(ItemCapabilities.AllowsPreview)
             service_item.add_capability(ItemCapabilities.AllowsLoop)
@@ -214,8 +197,7 @@ class ImageMediaItem(MediaManagerItem):
                 self.parent.liveController.display.directImage(name, filename)
                 self.resetAction.setVisible(True)
             else:
-                critical_error_message_box(
-                    translate('ImagePlugin.MediaItem', 'Live Background Error'),
+                critical_error_message_box(UiStrings.LiveBGError,
                     unicode(translate('ImagePlugin.MediaItem',
                     'There was a problem replacing your background, '
                     'the image file "%s" no longer exists.')) % filename)

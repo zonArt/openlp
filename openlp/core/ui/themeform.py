@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,9 +29,9 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, BackgroundType, BackgroundGradientType, \
-    Receiver
-from openlp.core.lib.ui import critical_error_message_box
+from openlp.core.lib import Receiver, translate
+from openlp.core.lib.theme import BackgroundType, BackgroundGradientType
+from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.utils import get_images_filter
 from themewizard import Ui_ThemeWizard
 
@@ -204,7 +204,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         # Do not trigger on start up
         if self.currentPage != self.welcomePage:
             self.updateTheme()
-            frame = self.thememanager.generateImage(self.theme, True)
+            self.thememanager.generateImage(self.theme, True)
 
     def updateLinesText(self, lines):
         """
@@ -301,7 +301,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
                 'Edit Theme - %s')) % self.theme.theme_name)
             self.next()
         else:
-            self.setWindowTitle(translate('OpenLP.ThemeWizard', 'New Theme'))
+            self.setWindowTitle(UiStrings.NewTheme)
         return QtGui.QWizard.exec_(self)
 
     def initializePage(self, id):
@@ -483,8 +483,8 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         Background Image button pushed.
         """
         images_filter = get_images_filter()
-        images_filter = '%s;;%s (*.*) (*)' % (images_filter,
-            translate('OpenLP.ThemeForm', 'All Files'))
+        images_filter = u'%s;;%s (*.*) (*)' % (
+            images_filter, UiStrings.AllFiles)
         filename = QtGui.QFileDialog.getOpenFileName(self,
             translate('OpenLP.ThemeForm', 'Select Image'), u'',
             images_filter)

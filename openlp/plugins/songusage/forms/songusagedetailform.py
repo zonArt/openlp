@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -88,6 +88,15 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         """
         log.debug(u'accept')
         path = unicode(self.fileLineEdit.text())
+        if path == u'':
+            Receiver.send_message(u'openlp_error_message', {
+                u'title': translate('SongUsagePlugin.SongUsageDetailForm',
+                'Output Path Not Selected'),
+                u'message': unicode(translate(
+                'SongUsagePlugin.SongUsageDetailForm', 'You have not set a '
+                'valid output location for your song usage report. Please '
+                'select an existing path on your computer.'))})
+            return
         check_directory_exists(path)
         filename = unicode(translate('SongUsagePlugin.SongUsageDetailForm',
             'usage_detail_%s_%s.txt')) % (
