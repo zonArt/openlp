@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,23 +29,13 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    SettingsManager, translate, check_item_selected, Receiver, ItemCapabilities
-from openlp.core.lib.ui import critical_error_message_box, media_item_combo_box
+from openlp.core.lib import MediaManagerItem, build_icon, SettingsManager, \
+    translate, check_item_selected, Receiver, ItemCapabilities
+from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
+    media_item_combo_box
 from openlp.plugins.presentations.lib import MessageListener
 
 log = logging.getLogger(__name__)
-
-class PresentationListView(BaseListWithDnD):
-    """
-    Class for the list of Presentations
-
-    We have to explicitly create separate classes for each plugin
-    in order for DnD to the Service manager to work correctly.
-    """
-    def __init__(self, parent=None):
-        self.PluginName = u'Presentations'
-        BaseListWithDnD.__init__(self, parent)
 
 class PresentationMediaItem(MediaManagerItem):
     """
@@ -61,9 +51,6 @@ class PresentationMediaItem(MediaManagerItem):
         self.controllers = controllers
         self.IconPath = u'presentations/presentation'
         self.Automatic = u''
-        # this next is a class, not an instance of a class - it will
-        # be instanced by the base MediaManagerItem
-        self.ListViewWithDnD_class = PresentationListView
         MediaManagerItem.__init__(self, parent, self, icon)
         self.message_listener = MessageListener(self)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -73,7 +60,7 @@ class PresentationMediaItem(MediaManagerItem):
         """
         The name of the plugin media displayed in UI
         """
-        self.OnNewPrompt = translate('PresentationPlugin.MediaItem',
+        self.onNewPrompt = translate('PresentationPlugin.MediaItem',
             'Select Presentation(s)')
         self.Automatic = translate('PresentationPlugin.MediaItem',
             'Automatic')
@@ -93,7 +80,7 @@ class PresentationMediaItem(MediaManagerItem):
                     if fileType.find(type) == -1:
                         fileType += u'*.%s ' % type
                         self.parent.serviceManager.supportedSuffixes(type)
-        self.OnNewFileMasks = unicode(translate('PresentationPlugin.MediaItem',
+        self.onNewFileMasks = unicode(translate('PresentationPlugin.MediaItem',
             'Presentations (%s)')) % fileType
 
     def requiredIcons(self):
@@ -186,7 +173,7 @@ class PresentationMediaItem(MediaManagerItem):
             controller_name = self.findControllerByType(filename)
             if controller_name:
                 controller = self.controllers[controller_name]
-                doc = controller.add_doc(unicode(file))
+                doc = controller.add_document(unicode(file))
                 thumb = os.path.join(doc.get_thumbnail_folder(), u'icon.png')
                 preview = doc.get_thumbnail_path(1, True)
                 if not preview and not initialLoad:
@@ -216,9 +203,7 @@ class PresentationMediaItem(MediaManagerItem):
         """
         Remove a presentation item from the list
         """
-        if check_item_selected(self.listView,
-            translate('PresentationPlugin.MediaItem',
-            'You must select an item to delete.')):
+        if check_item_selected(self.listView, UiStrings.SelectDelete):
             items = self.listView.selectedIndexes()
             row_list = [item.row() for item in items]
             row_list.sort(reverse=True)
@@ -226,7 +211,7 @@ class PresentationMediaItem(MediaManagerItem):
                 filepath = unicode(item.data(
                     QtCore.Qt.UserRole).toString())
                 for cidx in self.controllers:
-                    doc = self.controllers[cidx].add_doc(filepath)
+                    doc = self.controllers[cidx].add_document(filepath)
                     doc.presentation_deleted()
                     doc.close_presentation()
             for row in row_list:
@@ -260,7 +245,7 @@ class PresentationMediaItem(MediaManagerItem):
                             return False
                     controller = self.controllers[service_item.shortname]
                     (path, name) = os.path.split(filename)
-                    doc = controller.add_doc(filename)
+                    doc = controller.add_document(filename)
                     if doc.get_thumbnail_path(1, True) is None:
                         doc.load_presentation()
                     i = 1

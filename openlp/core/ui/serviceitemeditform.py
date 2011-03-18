@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -110,11 +110,12 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         temp = self.itemList[row]
         self.itemList.remove(self.itemList[row])
         if direction == u'up':
-            self.itemList.insert(row - 1, temp)
+            row -= 1
         else:
-            self.itemList.insert(row + 1, temp)
+            row += 1
+        self.itemList.insert(row, temp)
         self.loadData()
-        self.listWidget.setCurrentRow(row + 1)
+        self.listWidget.setCurrentRow(row)
 
     def onCurrentRowChanged(self, row):
         """

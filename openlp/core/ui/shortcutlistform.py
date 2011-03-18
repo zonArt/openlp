@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -95,8 +95,14 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             item = QtGui.QTreeWidgetItem([category.name])
             for action in category.actions:
                 actionText = REMOVE_AMPERSAND.sub('', unicode(action.text()))
-                shortcutText = action.shortcut().toString()
-                actionItem = QtGui.QTreeWidgetItem([actionText, shortcutText])
+                if (len(action.shortcuts()) == 2):
+                    shortcutText = action.shortcuts()[0].toString()
+                    alternateText = action.shortcuts()[1].toString()
+                else:
+                    shortcutText = action.shortcut().toString()
+                    alternateText = u''
+                actionItem = QtGui.QTreeWidgetItem(
+                    [actionText, shortcutText, alternateText])
                 actionItem.setIcon(0, action.icon())
                 item.addChild(actionItem)
             item.setExpanded(True)

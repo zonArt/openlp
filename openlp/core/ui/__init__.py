@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,7 +28,7 @@ The :mod:`ui` module provides the core user interface for OpenLP
 """
 from PyQt4 import QtGui
 
-from openlp.core.lib import translate, Receiver
+from openlp.core.lib import translate
 
 class HideMode(object):
     """
@@ -51,8 +51,11 @@ class HideMode(object):
     Theme = 2
     Screen = 3
 
+from firsttimeform import FirstTimeForm
+from firsttimelanguageform import FirstTimeLanguageForm
 from themeform import ThemeForm
 from filerenameform import FileRenameForm
+from starttimeform import StartTimeForm
 from maindisplay import MainDisplay
 from servicenoteform import ServiceNoteForm
 from serviceitemeditform import ServiceItemEditForm
@@ -62,10 +65,10 @@ from splashscreen import SplashScreen
 from generaltab import GeneralTab
 from themestab import ThemesTab
 from advancedtab import AdvancedTab
-from displaytagtab import DisplayTagTab
 from aboutform import AboutForm
 from pluginform import PluginForm
 from settingsform import SettingsForm
+from displaytagform import DisplayTagForm
 from shortcutlistform import ShortcutListForm
 from mediadockmanager import MediaDockManager
 from servicemanager import ServiceManager
@@ -73,4 +76,4 @@ from thememanager import ThemeManager
 
 __all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainDisplay',
     'SlideController', 'ServiceManager', 'ThemeManager', 'MediaDockManager',
-    'ServiceItemEditForm']
+    'ServiceItemEditForm', u'FirstTimeForm']

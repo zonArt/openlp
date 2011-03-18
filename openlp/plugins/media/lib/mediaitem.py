@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Andreas Preikschat, Christian      #
-# Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble,    #
-# Carsten Tinggaard, Frode Woldsund                                           #
+# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
+# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
+# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -24,22 +24,18 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+from datetime import datetime
 import logging
 import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, BaseListWithDnD, build_icon, \
-    ItemCapabilities, SettingsManager, translate, check_item_selected, Receiver
-from openlp.core.lib.ui import critical_error_message_box
+from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
+    SettingsManager, translate, check_item_selected, Receiver
+from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from PyQt4.phonon import Phonon
 
 log = logging.getLogger(__name__)
-
-class MediaListView(BaseListWithDnD):
-    def __init__(self, parent=None):
-        self.PluginName = u'Media'
-        BaseListWithDnD.__init__(self, parent)
-
 
 class MediaMediaItem(MediaManagerItem):
     """
@@ -50,30 +46,28 @@ class MediaMediaItem(MediaManagerItem):
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'images/image'
         self.background = False
-        # this next is a class, not an instance of a class - it will
-        # be instanced by the base MediaManagerItem
-        self.ListViewWithDnD_class = MediaListView
         self.PreviewFunction = QtGui.QPixmap(
             u':/media/media_video.png').toImage()
         MediaManagerItem.__init__(self, parent, self, icon)
         self.singleServiceItem = False
+        self.mediaObject = Phonon.MediaObject(self)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'video_background_replaced'),
             self.videobackgroundReplaced)
+        QtCore.QObject.connect(self.mediaObject,
+            QtCore.SIGNAL(u'stateChanged(Phonon::State, Phonon::State)'),
+            self.videoStart)
 
     def retranslateUi(self):
-        self.OnNewPrompt = translate('MediaPlugin.MediaItem', 'Select Media')
-        self.OnNewFileMasks = unicode(translate('MediaPlugin.MediaItem',
-            'Videos (%s);;Audio (%s);;All files (*)')) % \
-            (self.parent.video_list, self.parent.audio_list)
-        self.replaceAction.setText(
-            translate('MediaPlugin.MediaItem', 'Replace Background'))
-        self.replaceAction.setToolTip(
-            translate('MediaPlugin.MediaItem', 'Replace Live Background'))
-        self.resetAction.setText(
-            translate('MediaPlugin.MediaItem', 'Reset Background'))
-        self.resetAction.setToolTip(
-            translate('ImagePlugin.MediaItem', 'Reset Live Background'))
+        self.onNewPrompt = translate('MediaPlugin.MediaItem', 'Select Media')
+        self.onNewFileMasks = unicode(translate('MediaPlugin.MediaItem',
+            'Videos (%s);;Audio (%s);;%s (*)')) % (
+            u' '.join(self.parent.video_extensions_list),
+            u' '.join(self.parent.audio_extensions_list), UiStrings.AllFiles)
+        self.replaceAction.setText(UiStrings.ReplaceBG)
+        self.replaceAction.setToolTip(UiStrings.ReplaceLiveBG)
+        self.resetAction.setText(UiStrings.ResetBG)
+        self.resetAction.setToolTip(UiStrings.ResetLiveBG)
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)
@@ -120,8 +114,7 @@ class MediaMediaItem(MediaManagerItem):
                 self.parent.liveController.display.video(filename, 0, True)
                 self.resetAction.setVisible(True)
             else:
-                critical_error_message_box(translate('MediaPlugin.MediaItem',
-                    'Live Background Error'),
+                critical_error_message_box(UiStrings.LiveBGError,
                     unicode(translate('MediaPlugin.MediaItem',
                     'There was a problem replacing your background, '
                     'the media file "%s" no longer exists.')) % filename)
@@ -133,13 +126,30 @@ class MediaMediaItem(MediaManagerItem):
                 return False
         filename = unicode(item.data(QtCore.Qt.UserRole).toString())
         if os.path.exists(filename):
-            service_item.title = unicode(
-                translate('MediaPlugin.MediaItem', 'Media'))
+            self.mediaState = None
+            self.mediaObject.stop()
+            self.mediaObject.clearQueue()
+            self.mediaObject.setCurrentSource(Phonon.MediaSource(filename))
+            self.mediaObject.play()
+            service_item.title = unicode(self.plugin.nameStrings[u'singular'])
             service_item.add_capability(ItemCapabilities.RequiresMedia)
             # force a nonexistent theme
             service_item.theme = -1
             frame = u':/media/image_clapperboard.png'
             (path, name) = os.path.split(filename)
+            file_size = os.path.getsize(filename)
+            # File too big for processing
+            if file_size <= 52428800: # 50MiB
+                start = datetime.now()
+                while not self.mediaState:
+                    Receiver.send_message(u'openlp_process_events')
+                    tme = datetime.now() - start
+                    if tme.seconds > 5:
+                        break
+                if self.mediaState:
+                    service_item.media_length = self.mediaLength
+                    service_item.add_capability(
+                        ItemCapabilities.AllowsVariableStartTime)
             service_item.add_from_command(path, name, frame)
             return True
         else:
@@ -151,8 +161,7 @@ class MediaMediaItem(MediaManagerItem):
             return False
 
     def initialise(self):
-        self.listView.setSelectionMode(
-            QtGui.QAbstractItemView.ExtendedSelection)
+        self.listView.clear()
         self.listView.setIconSize(QtCore.QSize(88, 50))
         self.loadList(SettingsManager.load_list(self.settingsSection,
             self.settingsSection))
@@ -178,3 +187,12 @@ class MediaMediaItem(MediaManagerItem):
             item_name.setIcon(build_icon(img))
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.listView.addItem(item_name)
+
+    def videoStart(self, newState, oldState):
+        """
+        Start the video at a predetermined point.
+        """
+        if newState == Phonon.PlayingState:
+            self.mediaState = newState
+            self.mediaLength = self.mediaObject.totalTime()/1000
+            self.mediaObject.stop()
