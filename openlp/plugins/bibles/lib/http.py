@@ -406,6 +406,10 @@ class HTTPBible(BibleDB):
             language_id = bible[u'language_id']
         else:
             language = self.parent.mediaItem.importRequest(u'language')
+            if not language:
+                log.exception(u'Importing books from %s - download name: "%s" '\
+                    'failed' % (self.download_source,  self.download_name))
+                return False
             language = BiblesResourcesDB.get_language(language)
             language_id = language[u'id']
         # Store the language_id.
@@ -413,6 +417,10 @@ class HTTPBible(BibleDB):
         for book in books:
             book_ref_id = self.parent.manager.get_book_ref_id_by_name(book, 
                 language_id)
+            if not book_ref_id:
+                log.exception(u'Importing books from %s - download name: "%s" '\
+                    'failed' % (self.download_source,  self.download_name))
+                return False
             book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
             log.debug(u'Book details: Name:%s; id:%s; testament_id:%s', 
                 book, book_ref_id, book_details[u'testament_id'])

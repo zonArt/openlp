@@ -63,6 +63,10 @@ class OpenSongBible(BibleDB):
             opensong = objectify.parse(file)
             bible = opensong.getroot()
             language = self.parent.mediaItem.importRequest(u'language')
+            if not language:
+                log.exception(u'Importing books from %s   " '\
+                    'failed' % self.filename)
+            return False
             language = BiblesResourcesDB.get_language(language)
             language_id = language[u'id']
             self.create_meta(u'language_id', language_id)
@@ -71,6 +75,10 @@ class OpenSongBible(BibleDB):
                     break
                 book_ref_id = self.parent.manager.get_book_ref_id_by_name(
                     unicode(book.attrib[u'n']), language_id)
+                if not book_ref_id:
+                    log.exception(u'Importing books from %s " '\
+                        'failed' % self.filename)
+                    return False
                 book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
                 db_book = self.create_book(unicode(book.attrib[u'n']), 
                     book_ref_id, book_details[u'testament_id'])

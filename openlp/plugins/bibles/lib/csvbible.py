@@ -137,6 +137,10 @@ class CSVBible(BibleDB):
         self.wizard.progressBar.setMaximum(66)
         success = True
         language = self.parent.mediaItem.importRequest(u'language')
+        if not language:
+            log.exception(u'Importing books from %s " '\
+                'failed' % self.booksfile)
+            return False
         language = BiblesResourcesDB.get_language(language)
         language_id = language[u'id']
         self.create_meta(u'language_id', language_id)
@@ -155,6 +159,10 @@ class CSVBible(BibleDB):
                     unicode(line[2], details['encoding']))
                 book_ref_id = self.parent.manager.get_book_ref_id_by_name(
                     unicode(line[2], details['encoding']), language_id)
+                if not book_ref_id:
+                    log.exception(u'Importing books from %s " '\
+                        'failed' % self.booksfile)
+                    return False
                 book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
                 self.create_book(unicode(line[2], details['encoding']),
                     book_ref_id, book_details[u'testament_id'])

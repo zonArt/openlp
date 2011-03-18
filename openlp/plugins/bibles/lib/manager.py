@@ -352,7 +352,10 @@ class BibleManager(object):
             log.debug(book_ref)
             book_temp = BiblesResourcesDB.get_book(book_ref)
             log.debug(book_temp)
-            book_id = book_temp[u'id']
+            if book_temp:
+                book_id = book_temp[u'id']
+            else:
+                return None
             if book_id:
                 self.spelling_cache[u'spelling'].create_spelling(book, book_id, 
                     language_id)
