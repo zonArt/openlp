@@ -143,8 +143,7 @@ class MediaMediaItem(MediaManagerItem):
                 start = datetime.now()
                 while not self.mediaState:
                     Receiver.send_message(u'openlp_process_events')
-                    end = datetime.now()
-                    tme = end - start
+                    tme = datetime.now() - start
                     if tme.seconds > 5:
                        break
                 if self.mediaState:
