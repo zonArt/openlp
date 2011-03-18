@@ -160,6 +160,16 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             self._performWizard()
             self._postWizard()
 
+    def _getFileSize(self, url):
+        site = urllib.urlopen(url)
+        meta = site.info()
+        return int(meta.getheaders("Content-Length")[0])
+
+    def _downloadProgress(self, count, block_size, total_size):
+        increment = (count * block_size) - self.previous_size
+        self._incrementProgressBar(None, increment)
+        self.previous_size = count * block_size
+
     def _incrementProgressBar(self, status_text, increment=1):
         """
         Update the wizard progress page.
@@ -184,19 +194,27 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         max_progress = 2
         # Loop through the songs list and increase for each selected item
         for i in xrange(self.songsListWidget.count()):
-            if self.songsListWidget.item(i).checkState() == QtCore.Qt.Checked:
-                max_progress += 1
+            item = self.songsListWidget.item(i)
+            if item.checkState() == QtCore.Qt.Checked:
+                filename = item.data(QtCore.Qt.UserRole).toString()
+                size = self._getFileSize(u'%s%s' % (self.web, filename))
+                max_progress += size
         # Loop through the Bibles list and increase for each selected item
         iterator = QtGui.QTreeWidgetItemIterator(self.biblesTreeWidget)
         while iterator.value():
             item = iterator.value()
             if item.parent() and item.checkState(0) == QtCore.Qt.Checked:
-                max_progress += 1
+                filename = item.data(0, QtCore.Qt.UserRole).toString()
+                size = self._getFileSize(u'%s%s' % (self.web, filename))
+                max_progress += size
             iterator += 1
         # Loop through the themes list and increase for each selected item
         for i in xrange(self.themesListWidget.count()):
-            if self.themesListWidget.item(i).checkState() == QtCore.Qt.Checked:
-                max_progress += 1
+            item = self.themesListWidget.item(i)
+            if item.checkState() == QtCore.Qt.Checked:
+                filename = item.data(QtCore.Qt.UserRole).toString()
+                size = self._getFileSize(u'%s%s' % (self.web, filename))
+                max_progress += size
         self.finishButton.setVisible(False)
         self.progressBar.setValue(0)
         self.progressBar.setMinimum(0)
@@ -241,27 +259,33 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             item = self.songsListWidget.item(i)
             if item.checkState() == QtCore.Qt.Checked:
                 filename = item.data(QtCore.Qt.UserRole).toString()
-                self._incrementProgressBar(self.downloading % filename)
+                self._incrementProgressBar(self.downloading % filename, 0)
+                self.previous_size = 0
                 destination = os.path.join(songs_destination, unicode(filename))
-                urllib.urlretrieve(u'%s%s' % (self.web, filename), destination)
+                urllib.urlretrieve(u'%s%s' % (self.web, filename), destination,
+                    self._downloadProgress)
         # Download Bibles
         bibles_iterator = QtGui.QTreeWidgetItemIterator(self.biblesTreeWidget)
         while bibles_iterator.value():
             item = bibles_iterator.value()
             if item.parent() and item.checkState(0) == QtCore.Qt.Checked:
                 bible = unicode(item.data(0, QtCore.Qt.UserRole).toString())
-                self._incrementProgressBar(self.downloading % bible)
+                self._incrementProgressBar(self.downloading % bible, 0)
+                self.previous_size = 0
                 urllib.urlretrieve(u'%s%s' % (self.web, bible),
-                    os.path.join(bibles_destination, bible))
+                    os.path.join(bibles_destination, bible),
+                    self._downloadProgress)
             bibles_iterator += 1
         # Download themes
         for i in xrange(self.themesListWidget.count()):
             item = self.themesListWidget.item(i)
             if item.checkState() == QtCore.Qt.Checked:
                 theme = unicode(item.data(QtCore.Qt.UserRole).toString())
-                self._incrementProgressBar(self.downloading % theme)
+                self._incrementProgressBar(self.downloading % theme, 0)
+                self.previous_size = 0
                 urllib.urlretrieve(u'%s%s' % (self.web, theme),
-                    os.path.join(themes_destination, theme))
+                    os.path.join(themes_destination, theme),
+                    self._downloadProgress)
         # Set Default Display
         if self.displayComboBox.currentIndex() != -1:
             QtCore.QSettings().setValue(u'General/monitor',
