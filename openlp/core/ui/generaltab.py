@@ -32,27 +32,6 @@ from openlp.core.lib.ui import UiStrings
 
 log = logging.getLogger(__name__)
 
-class ValidEdit(QtGui.QLineEdit):
-    """
-    Only allow numeric characters to be edited
-    """
-    def __init__(self, parent):
-        """
-        Set up Override and Validator
-        """
-        QtGui.QLineEdit.__init__(self, parent)
-        self.setValidator(QtGui.QIntValidator(0, 9999, self))
-
-    def validText(self):
-        """
-        Only return Integers. Space is 0
-        """
-        if self.text().isEmpty():
-            return QtCore.QString(u'0')
-        else:
-            return self.text()
-
-
 class GeneralTab(SettingsTab):
     """
     GeneralTab is the general settings tab in the settings dialog.
@@ -164,30 +143,6 @@ class GeneralTab(SettingsTab):
         self.displayGroupBox.setObjectName(u'displayGroupBox')
         self.displayLayout = QtGui.QGridLayout(self.displayGroupBox)
         self.displayLayout.setObjectName(u'displayLayout')
-        self.currentXLabel = QtGui.QLabel(self.displayGroupBox)
-        self.currentXLabel.setObjectName(u'currentXLabel')
-        self.displayLayout.addWidget(self.currentXLabel, 0, 0)
-        self.currentXValueLabel = QtGui.QLabel(self.displayGroupBox)
-        self.currentXValueLabel.setObjectName(u'currentXValueLabel')
-        self.displayLayout.addWidget(self.currentXValueLabel, 1, 0)
-        self.currentYLabel = QtGui.QLabel(self.displayGroupBox)
-        self.currentYLabel.setObjectName(u'currentYLabel')
-        self.displayLayout.addWidget(self.currentYLabel, 0, 1)
-        self.currentYValueLabel = QtGui.QLabel(self.displayGroupBox)
-        self.currentYValueLabel.setObjectName(u'currentYValueLabel')
-        self.displayLayout.addWidget(self.currentYValueLabel, 1, 1)
-        self.currentWidthLabel = QtGui.QLabel(self.displayGroupBox)
-        self.currentWidthLabel.setObjectName(u'currentWidthLabel')
-        self.displayLayout.addWidget(self.currentWidthLabel, 0, 2)
-        self.currentWidthValueLabel = QtGui.QLabel(self.displayGroupBox)
-        self.currentWidthValueLabel.setObjectName(u'currentWidthValueLabel')
-        self.displayLayout.addWidget(self.currentWidthValueLabel, 1, 2)
-        self.currentHeightLabel = QtGui.QLabel(self.displayGroupBox)
-        self.currentHeightLabel.setObjectName(u'currentHeightLabel')
-        self.displayLayout.addWidget(self.currentHeightLabel, 0, 3)
-        self.currentHeightValueLabel = QtGui.QLabel(self.displayGroupBox)
-        self.currentHeightValueLabel.setObjectName(u'Height')
-        self.displayLayout.addWidget(self.currentHeightValueLabel, 1, 3)
         self.overrideCheckBox = QtGui.QCheckBox(self.displayGroupBox)
         self.overrideCheckBox.setObjectName(u'overrideCheckBox')
         self.displayLayout.addWidget(self.overrideCheckBox, 2, 0, 1, 4)
@@ -196,26 +151,30 @@ class GeneralTab(SettingsTab):
         self.customXLabel = QtGui.QLabel(self.displayGroupBox)
         self.customXLabel.setObjectName(u'customXLabel')
         self.displayLayout.addWidget(self.customXLabel, 3, 0)
-        self.customXValueEdit = ValidEdit(self.displayGroupBox)
+        self.customXValueEdit = QtGui.QSpinBox(self.displayGroupBox)
         self.customXValueEdit.setObjectName(u'customXValueEdit')
+        self.customXValueEdit.setMaximum(9999)
         self.displayLayout.addWidget(self.customXValueEdit, 4, 0)
         self.customYLabel = QtGui.QLabel(self.displayGroupBox)
         self.customYLabel.setObjectName(u'customYLabel')
         self.displayLayout.addWidget(self.customYLabel, 3, 1)
-        self.customYValueEdit = ValidEdit(self.displayGroupBox)
+        self.customYValueEdit = QtGui.QSpinBox(self.displayGroupBox)
         self.customYValueEdit.setObjectName(u'customYValueEdit')
+        self.customYValueEdit.setMaximum(9999)
         self.displayLayout.addWidget(self.customYValueEdit, 4, 1)
         self.customWidthLabel = QtGui.QLabel(self.displayGroupBox)
         self.customWidthLabel.setObjectName(u'customWidthLabel')
         self.displayLayout.addWidget(self.customWidthLabel, 3, 2)
-        self.customWidthValueEdit = ValidEdit(self.displayGroupBox)
+        self.customWidthValueEdit = QtGui.QSpinBox(self.displayGroupBox)
         self.customWidthValueEdit.setObjectName(u'customWidthValueEdit')
+        self.customWidthValueEdit.setMaximum(9999)
         self.displayLayout.addWidget(self.customWidthValueEdit, 4, 2)
         self.customHeightLabel = QtGui.QLabel(self.displayGroupBox)
         self.customHeightLabel.setObjectName(u'customHeightLabel')
         self.displayLayout.addWidget(self.customHeightLabel, 3, 3)
-        self.customHeightValueEdit = ValidEdit(self.displayGroupBox)
+        self.customHeightValueEdit = QtGui.QSpinBox(self.displayGroupBox)
         self.customHeightValueEdit.setObjectName(u'customHeightValueEdit')
+        self.customHeightValueEdit.setMaximum(9999)
         self.displayLayout.addWidget(self.customHeightValueEdit, 4, 3)
         self.rightLayout.addWidget(self.displayGroupBox)
         self.rightLayout.addStretch()
@@ -223,17 +182,13 @@ class GeneralTab(SettingsTab):
         QtCore.QObject.connect(self.overrideCheckBox,
             QtCore.SIGNAL(u'toggled(bool)'), self.onOverrideCheckBoxToggled)
         QtCore.QObject.connect(self.customHeightValueEdit,
-            QtCore.SIGNAL(u'textEdited(const QString&)'),
-            self.onDisplayPositionChanged)
+            QtCore.SIGNAL(u'valueChanged(int)'), self.onDisplayPositionChanged)
         QtCore.QObject.connect(self.customWidthValueEdit,
-            QtCore.SIGNAL(u'textEdited(const QString&)'),
-            self.onDisplayPositionChanged)
+            QtCore.SIGNAL(u'valueChanged(int)'), self.onDisplayPositionChanged)
         QtCore.QObject.connect(self.customYValueEdit,
-            QtCore.SIGNAL(u'textEdited(const QString&)'),
-            self.onDisplayPositionChanged)
+            QtCore.SIGNAL(u'valueChanged(int)'), self.onDisplayPositionChanged)
         QtCore.QObject.connect(self.customXValueEdit,
-            QtCore.SIGNAL(u'textEdited(const QString&)'),
-            self.onDisplayPositionChanged)
+            QtCore.SIGNAL(u'valueChanged(int)'), self.onDisplayPositionChanged)
         # Reload the tab, as the screen resolution/count may have changed.
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_screen_changed'), self.load)
@@ -273,8 +228,7 @@ class GeneralTab(SettingsTab):
             'Automatically preview next item in service'))
         self.timeoutLabel.setText(translate('OpenLP.GeneralTab',
             'Slide loop delay:'))
-        self.timeoutSpinBox.setSuffix(
-            translate('OpenLP.GeneralTab', ' sec'))
+        self.timeoutSpinBox.setSuffix(translate('OpenLP.GeneralTab', ' sec'))
         self.ccliGroupBox.setTitle(
             translate('OpenLP.GeneralTab', 'CCLI Details'))
         self.numberLabel.setText(UiStrings.CCLINumberLabel)
@@ -285,22 +239,11 @@ class GeneralTab(SettingsTab):
         # Moved from display tab
         self.displayGroupBox.setTitle(
             translate('OpenLP.GeneralTab', 'Display Position'))
-        self.currentXLabel.setText(translate('OpenLP.GeneralTab', 'X'))
-        self.currentXValueLabel.setText(u'0')
-        self.currentYLabel.setText(translate('OpenLP.GeneralTab', 'Y'))
-        self.currentYValueLabel.setText(u'0')
-        self.currentHeightLabel.setText(
-            translate('OpenLP.GeneralTab', 'Height'))
-        self.currentHeightValueLabel.setText(u'0')
-        self.currentWidthLabel.setText(
-            translate('OpenLP.GeneralTab', 'Width'))
-        self.currentWidthValueLabel.setText(u'0')
         self.overrideCheckBox.setText(translate('OpenLP.GeneralTab',
             'Override display position'))
         self.customXLabel.setText(translate('OpenLP.GeneralTab', 'X'))
         self.customYLabel.setText(translate('OpenLP.GeneralTab', 'Y'))
-        self.customHeightLabel.setText(
-            translate('OpenLP.GeneralTab', 'Height'))
+        self.customHeightLabel.setText(translate('OpenLP.GeneralTab', 'Height'))
         self.customWidthLabel.setText(translate('OpenLP.GeneralTab', 'Width'))
 
     def load(self):
@@ -310,8 +253,7 @@ class GeneralTab(SettingsTab):
         settings = QtCore.QSettings()
         settings.beginGroup(self.settingsSection)
         self.monitorComboBox.clear()
-        for screen in self.screens.get_screen_list():
-            self.monitorComboBox.addItem(screen)
+        self.monitorComboBox.addItems(self.screens.get_screen_list())
         self.numberEdit.setText(unicode(settings.value(
             u'ccli number', QtCore.QVariant(u'')).toString()))
         self.usernameEdit.setText(unicode(settings.value(
@@ -334,26 +276,16 @@ class GeneralTab(SettingsTab):
             QtCore.QVariant(False)).toBool())
         self.timeoutSpinBox.setValue(settings.value(u'loop delay',
            QtCore.QVariant(5)).toInt()[0])
-        self.currentXValueLabel.setText(
-            unicode(self.screens.current[u'size'].x()))
-        self.currentYValueLabel.setText(
-            unicode(self.screens.current[u'size'].y()))
-        self.currentHeightValueLabel.setText(
-            unicode(self.screens.current[u'size'].height()))
-        self.currentWidthValueLabel.setText(
-            unicode(self.screens.current[u'size'].width()))
         self.overrideCheckBox.setChecked(settings.value(u'override position',
             QtCore.QVariant(False)).toBool())
-        self.customXValueEdit.setText(settings.value(u'x position',
-            QtCore.QVariant(self.screens.current[u'size'].x())).toString())
-        self.customYValueEdit.setText(settings.value(u'y position',
-            QtCore.QVariant(self.screens.current[u'size'].y())).toString())
-        self.customHeightValueEdit.setText(
-            settings.value(u'height', QtCore.QVariant(
-            self.screens.current[u'size'].height())).toString())
-        self.customWidthValueEdit.setText(
-            settings.value(u'width', QtCore.QVariant(
-            self.screens.current[u'size'].width())).toString())
+        self.customXValueEdit.setValue(settings.value(u'x position',
+            QtCore.QVariant(self.screens.current[u'size'].x())).toInt()[0])
+        self.customYValueEdit.setValue(settings.value(u'y position',
+            QtCore.QVariant(self.screens.current[u'size'].y())).toInt()[0])
+        self.customHeightValueEdit.setValue(settings.value(u'height',
+            QtCore.QVariant(self.screens.current[u'size'].height())).toInt()[0])
+        self.customWidthValueEdit.setValue(settings.value(u'width',
+            QtCore.QVariant(self.screens.current[u'size'].width())).toInt()[0])
         settings.endGroup()
         self.customXValueEdit.setEnabled(self.overrideCheckBox.isChecked())
         self.customYValueEdit.setEnabled(self.overrideCheckBox.isChecked())
@@ -391,13 +323,13 @@ class GeneralTab(SettingsTab):
         settings.setValue(u'songselect password',
             QtCore.QVariant(self.passwordEdit.displayText()))
         settings.setValue(u'x position',
-            QtCore.QVariant(self.customXValueEdit.text()))
+            QtCore.QVariant(self.customXValueEdit.value()))
         settings.setValue(u'y position',
-            QtCore.QVariant(self.customYValueEdit.text()))
+            QtCore.QVariant(self.customYValueEdit.value()))
         settings.setValue(u'height',
-            QtCore.QVariant(self.customHeightValueEdit.text()))
+            QtCore.QVariant(self.customHeightValueEdit.value()))
         settings.setValue(u'width',
-            QtCore.QVariant(self.customWidthValueEdit.text()))
+            QtCore.QVariant(self.customWidthValueEdit.value()))
         settings.setValue(u'override position',
             QtCore.QVariant(self.overrideCheckBox.isChecked()))
         settings.endGroup()
@@ -421,10 +353,10 @@ class GeneralTab(SettingsTab):
         # Reset screens after initial definition
         if self.overrideChanged:
             self.screens.override[u'size'] = QtCore.QRect(
-                int(self.customXValueEdit.validText()),
-                int(self.customYValueEdit.validText()),
-                int(self.customWidthValueEdit.validText()),
-                int(self.customHeightValueEdit.validText()))
+                self.customXValueEdit.value(),
+                self.customYValueEdit.value(),
+                self.customWidthValueEdit.value(),
+                self.customHeightValueEdit.value())
         if self.overrideCheckBox.isChecked():
             self.screens.set_override_display()
         else:
