@@ -145,7 +145,7 @@ class MediaMediaItem(MediaManagerItem):
                     Receiver.send_message(u'openlp_process_events')
                     tme = datetime.now() - start
                     if tme.seconds > 5:
-                       break
+                        break
                 if self.mediaState:
                     service_item.media_length = self.mediaLength
                     service_item.add_capability(
