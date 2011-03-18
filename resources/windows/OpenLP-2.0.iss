@@ -31,9 +31,9 @@ OutputDir=..\..\dist
 OutputBaseFilename=OpenLP-{#RealVersion}-setup
 Compression=lzma
 SolidCompression=true
-SetupIconFile=C:\Program Files\Inno Setup 5\Examples\Setup.ico
-WizardImageFile=C:\Program Files\Inno Setup 5\WizModernImage-IS.bmp
-WizardSmallImageFile=C:\Program Files\Inno Setup 5\WizModernSmallImage-IS.bmp
+SetupIconFile=OpenLP.ico
+WizardImageFile=WizImageBig.bmp
+WizardSmallImageFile=WizImageSmall.bmp
 
 [Languages]
 Name: english; MessagesFile: compiler:Default.isl
