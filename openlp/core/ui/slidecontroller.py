@@ -117,7 +117,8 @@ class SlideController(QtGui.QWidget):
         self.previewListWidget.setColumnWidth(0, self.controller.width())
         self.previewListWidget.isLive = self.isLive
         self.previewListWidget.setObjectName(u'PreviewListWidget')
-        self.previewListWidget.setSelectionBehavior(1)
+        self.previewListWidget.setSelectionBehavior(
+            QtGui.QAbstractItemView.SelectRows)
         self.previewListWidget.setSelectionMode(
             QtGui.QAbstractItemView.SingleSelection)
         self.previewListWidget.setEditTriggers(

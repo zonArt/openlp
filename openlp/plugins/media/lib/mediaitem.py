@@ -24,6 +24,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+from datetime import datetime
 import logging
 import os
 
@@ -132,14 +133,23 @@ class MediaMediaItem(MediaManagerItem):
             self.mediaObject.play()
             service_item.title = unicode(self.plugin.nameStrings[u'singular'])
             service_item.add_capability(ItemCapabilities.RequiresMedia)
-            service_item.add_capability(ItemCapabilities.AllowsVarableStartTime)
             # force a nonexistent theme
             service_item.theme = -1
             frame = u':/media/image_clapperboard.png'
             (path, name) = os.path.split(filename)
-            while not self.mediaState:
-                Receiver.send_message(u'openlp_process_events')
-            service_item.media_length = self.mediaLength
+            file_size = os.path.getsize(filename)
+            # File too big for processing
+            if file_size <= 52428800: # 50MiB
+                start = datetime.now()
+                while not self.mediaState:
+                    Receiver.send_message(u'openlp_process_events')
+                    tme = datetime.now() - start
+                    if tme.seconds > 5:
+                        break
+                if self.mediaState:
+                    service_item.media_length = self.mediaLength
+                    service_item.add_capability(
+                        ItemCapabilities.AllowsVariableStartTime)
             service_item.add_from_command(path, name, frame)
             return True
         else:
