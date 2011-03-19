@@ -563,7 +563,7 @@ class ThemeManager(QtGui.QWidget):
                 theme = self._createThemeFromXml(filexml, self.path)
                 self.generateAndSaveImage(dir, themename, theme)
             # Only show the error message, when IOError was not raised (in this
-            # case the error message has already been show).
+            # case the error message has already been shown).
             elif zip is not None:
                 critical_error_message_box(
                     translate('OpenLP.ThemeManager', 'Validation Error'),
