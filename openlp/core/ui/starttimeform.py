@@ -27,6 +27,7 @@
 from PyQt4 import QtGui
 
 from starttimedialog import Ui_StartTimeDialog
+from openlp.core.lib.ui import UiStrings
 
 class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog):
     """
@@ -40,13 +41,30 @@ class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog):
         """
         Run the Dialog with correct heading.
         """
-        seconds = self.item[u'service_item'].start_time
+        hour, minutes, seconds = self._time_split(
+            self.item[u'service_item'].start_time)
+        self.hourSpinBox.setValue(hour)
+        self.minuteSpinBox.setValue(minutes)
+        self.secondSpinBox.setValue(seconds)
+        hours, minutes, seconds = self._time_split(
+            self.item[u'service_item'].media_length)
+        self.hourFinishSpinBox.setValue(hours)
+        self.minuteFinishSpinBox.setValue(minutes)
+        self.secondFinishSpinBox.setValue(seconds)
+        self.hourFinishLabel.setText(u'%s%s' % (unicode(hour), UiStrings.H))
+        self.minuteFinishLabel.setText(u'%s%s' %
+            (unicode(minutes), UiStrings.M))
+        self.secondFinishLabel.setText(u'%s%s' %
+            (unicode(seconds), UiStrings.S))
+        return QtGui.QDialog.exec_(self)
+
+    def accept(self):
+        return QtGui.QDialog.accept(self)
+
+    def _time_split(self, seconds):
         hours = seconds / 3600
         seconds -= 3600 * hours
         minutes = seconds / 60
         seconds -= 60 * minutes
-        self.hourSpinBox.setValue(hours)
-        self.minuteSpinBox.setValue(minutes)
-        self.secondSpinBox.setValue(seconds)
-        return QtGui.QDialog.exec_(self)
+        return hours, minutes, seconds
 

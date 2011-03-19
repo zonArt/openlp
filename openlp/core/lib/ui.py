@@ -56,6 +56,7 @@ class UiStrings(object):
     Export = translate('OpenLP.Ui', 'Export')
     FontSizePtUnit = translate('OpenLP.Ui', 'pt',
         'Abbreviated font pointsize unit')
+    H = translate('OpenLP.Ui', 'h', 'The abbreviated unit for hours')
     Image = translate('OpenLP.Ui', 'Image')
     Import = translate('OpenLP.Ui', 'Import')
     LengthTime = unicode(translate('OpenLP.Ui', 'Length %s'))
@@ -63,6 +64,7 @@ class UiStrings(object):
     LiveBGError = translate('OpenLP.Ui', 'Live Background Error')
     LivePanel = translate('OpenLP.Ui', 'Live Panel')
     Load = translate('OpenLP.Ui', 'Load')
+    M = translate('OpenLP.Ui', 'm', 'The abbreviated unit for minutes')
     Middle = translate('OpenLP.Ui', 'Middle')
     New = translate('OpenLP.Ui', 'New')
     NewService = translate('OpenLP.Ui', 'New Service')
