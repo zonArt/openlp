@@ -92,6 +92,7 @@
     <file>wizard_exportsong.bmp</file>
     <file>wizard_importsong.bmp</file>
     <file>wizard_importbible.bmp</file>
+    <file>wizard_firsttime.bmp</file>
     <file>wizard_createtheme.bmp</file>
   </qresource>
   <qresource prefix="services">

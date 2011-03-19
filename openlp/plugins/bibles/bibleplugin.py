@@ -37,7 +37,7 @@ class BiblePlugin(Plugin):
     log.info(u'Bible Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'Bibles', u'1.9.4', plugin_helpers,
+        Plugin.__init__(self, u'Bibles', plugin_helpers,
             BibleMediaItem, BiblesTab)
         self.weight = -9
         self.icon_path = u':/plugins/plugin_bibles.png'
@@ -50,7 +50,8 @@ class BiblePlugin(Plugin):
             self.manager = BibleManager(self)
         Plugin.initialise(self)
         self.importBibleItem.setVisible(True)
-        self.exportBibleItem.setVisible(True)
+        # Set to invisible until we can export bibles
+        self.exportBibleItem.setVisible(False)
 
     def finalise(self):
         """

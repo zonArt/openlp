@@ -24,19 +24,18 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import ConfigParser
 import io
 import logging
 import os
 import urllib
+from tempfile import gettempdir
+from ConfigParser import SafeConfigParser
 
 from PyQt4 import QtCore, QtGui
 
-from firsttimewizard import Ui_FirstTimeWizard
-
-from openlp.core.lib import translate, PluginStatus, check_directory_exists,  \
-    Receiver
+from openlp.core.lib import translate, PluginStatus, Receiver, build_icon
 from openlp.core.utils import get_web_page, AppLocation
+from firsttimewizard import Ui_FirstTimeWizard, FirstTimePage
 
 log = logging.getLogger(__name__)
 
@@ -48,24 +47,18 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
     log.info(u'ThemeWizardForm loaded')
 
     def __init__(self, screens, parent=None):
+        QtGui.QWizard.__init__(self, parent)
+        self.setupUi(self)
         # check to see if we have web access
         self.web = u'http://openlp.org/files/frw/'
-        self.config = ConfigParser.ConfigParser()
+        self.config = SafeConfigParser()
         self.webAccess = get_web_page(u'%s%s' % (self.web, u'download.cfg'))
         if self.webAccess:
             files = self.webAccess.read()
             self.config.readfp(io.BytesIO(files))
-        QtGui.QWizard.__init__(self, parent)
-        self.setupUi(self)
-        for screen in screens.get_screen_list():
-            self.displaySelectionComboBox.addItem(screen)
-        self.songsText = translate('OpenLP.FirstTimeWizard', 'Songs')
-        self.biblesText = translate('OpenLP.FirstTimeWizard', 'Bibles')
-        self.themesText = translate('OpenLP.FirstTimeWizard', 'Themes')
-        self.startUpdates = translate('OpenLP.FirstTimeWizard',
-            'Starting Updates')
+        self.displayComboBox.addItems(screens.get_screen_list())
         self.downloading = unicode(translate('OpenLP.FirstTimeWizard',
-            'Downloading %s'))
+            'Downloading %s...'))
         QtCore.QObject.connect(self,
             QtCore.SIGNAL(u'currentIdChanged(int)'),
             self.onCurrentIdChanged)
@@ -84,134 +77,227 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.restart()
         # Sort out internet access for downloads
         if self.webAccess:
-            self.internetGroupBox.setVisible(True)
-            self.noInternetLabel.setVisible(False)
-            # If songs database exists do not allow a copy
-            songs = os.path.join(AppLocation.get_section_data_path(u'songs'),
-                u'songs.sqlite')
-            if not os.path.exists(songs):
-                treewidgetitem = QtGui.QTreeWidgetItem(self.selectionTreeWidget)
-                treewidgetitem.setText(0, self.songsText)
-                self._loadChild(treewidgetitem, u'songs', u'languages', u'songs')
-            treewidgetitem = QtGui.QTreeWidgetItem(self.selectionTreeWidget)
-            treewidgetitem.setText(0, self.biblesText)
-            self._loadChild(treewidgetitem, u'bibles', u'translations',
-                u'bible')
-            treewidgetitem = QtGui.QTreeWidgetItem(self.selectionTreeWidget)
-            treewidgetitem.setText(0, self.themesText)
-            self._loadChild(treewidgetitem, u'themes', u'files', 'theme')
-        else:
-            self.internetGroupBox.setVisible(False)
-            self.noInternetLabel.setVisible(True)
+            songs = self.config.get(u'songs', u'languages')
+            songs = songs.split(u',')
+            for song in songs:
+                title = unicode(self.config.get(
+                    u'songs_%s' % song, u'title'), u'utf8')
+                filename = unicode(self.config.get(
+                    u'songs_%s' % song, u'filename'), u'utf8')
+                item = QtGui.QListWidgetItem(title, self.songsListWidget)
+                item.setData(QtCore.Qt.UserRole, QtCore.QVariant(filename))
+                item.setCheckState(QtCore.Qt.Unchecked)
+                item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
+            bible_languages = self.config.get(u'bibles', u'languages')
+            bible_languages = bible_languages.split(u',')
+            for lang in bible_languages:
+                language = unicode(self.config.get(
+                    u'bibles_%s' % lang, u'title'), u'utf8')
+                langItem = QtGui.QTreeWidgetItem(
+                    self.biblesTreeWidget, QtCore.QStringList(language))
+                bibles = self.config.get(u'bibles_%s' % lang, u'translations')
+                bibles = bibles.split(u',')
+                for bible in bibles:
+                    title = unicode(self.config.get(
+                        u'bible_%s' % bible, u'title'), u'utf8')
+                    filename = unicode(self.config.get(
+                        u'bible_%s' % bible, u'filename'))
+                    item = QtGui.QTreeWidgetItem(
+                        langItem, QtCore.QStringList(title))
+                    item.setData(0, QtCore.Qt.UserRole,
+                        QtCore.QVariant(filename))
+                    item.setCheckState(0, QtCore.Qt.Unchecked)
+                    item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
+            self.biblesTreeWidget.expandAll()
+            themes = self.config.get(u'themes', u'files')
+            themes = themes.split(u',')
+            if not os.path.exists(os.path.join(gettempdir(), u'openlp')):
+                os.makedirs(os.path.join(gettempdir(), u'openlp'))
+            for theme in themes:
+                title = self.config.get(u'theme_%s' % theme, u'title')
+                filename = self.config.get(u'theme_%s' % theme, u'filename')
+                screenshot = self.config.get(u'theme_%s' % theme, u'screenshot')
+                urllib.urlretrieve(u'%s/%s' % (self.web, screenshot),
+                    os.path.join(gettempdir(), u'openlp', screenshot))
+                item = QtGui.QListWidgetItem(title, self.themesListWidget)
+                item.setData(QtCore.Qt.UserRole,
+                    QtCore.QVariant(filename))
+                item.setIcon(build_icon(
+                    os.path.join(gettempdir(), u'openlp', screenshot)))
+                item.setCheckState(QtCore.Qt.Unchecked)
+                item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
 
-    def _loadChild(self, tree, list, tag, root):
-        files = self.config.get(list, tag)
-        files = files.split(u',')
-        for file in files:
-            if file:
-                child = QtGui.QTreeWidgetItem(tree)
-                child.setText(0, self.config.get(u'%s_%s'
-                    % (root, file), u'title'))
-                child.setData(0, QtCore.Qt.UserRole,
-                    QtCore.QVariant(self.config.get(u'%s_%s'
-                    % (root, file), u'filename')))
-                child.setCheckState(0, QtCore.Qt.Unchecked)
-                child.setFlags(QtCore.Qt.ItemIsUserCheckable |
-                    QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+    def nextId(self):
+        """
+        Determine the next page in the Wizard to go to.
+        """
+        if self.currentId() == FirstTimePage.Plugins:
+            if not self.webAccess:
+                return FirstTimePage.NoInternet
+            else:
+                return FirstTimePage.Songs
+        elif self.currentId() == FirstTimePage.Progress:
+            return -1
+        else:
+            return self.currentId() + 1
 
     def onCurrentIdChanged(self, pageId):
         """
         Detects Page changes and updates as approprate.
         """
-        if self.page(pageId) == self.DefaultsPage:
-            self.themeSelectionComboBox.clear()
-            listIterator = QtGui.QTreeWidgetItemIterator(
-                self.selectionTreeWidget)
-            while listIterator.value():
-                parent = listIterator.value().parent()
-                if parent and listIterator.value().checkState(0) \
-                    == QtCore.Qt.Checked:
-                    if unicode(parent.text(0)) == self.themesText:
-                        self.themeSelectionComboBox.addItem(
-                            listIterator.value().text(0))
-                listIterator += 1
+        if pageId == FirstTimePage.NoInternet:
+            self.finishButton.setVisible(True)
+            self.finishButton.setEnabled(True)
+            self.nextButton.setVisible(False)
+        elif pageId == FirstTimePage.Defaults:
+            self.themeComboBox.clear()
+            for iter in xrange(self.themesListWidget.count()):
+                item = self.themesListWidget.item(iter)
+                if item.checkState() == QtCore.Qt.Checked:
+                    self.themeComboBox.addItem(item.text())
+        elif pageId == FirstTimePage.Progress:
+            self._preWizard()
+            self._performWizard()
+            self._postWizard()
 
-    def accept(self):
-        Receiver.send_message(u'cursor_busy')
-        self._updateMessage(self.startUpdates)
-        # Set up the Plugin status's
-        self._pluginStatus(self.songsCheckBox, u'songs/status')
-        self._pluginStatus(self.bibleCheckBox, u'bibles/status')
-        self._pluginStatus(self.presentationCheckBox, u'presentations/status')
-        self._pluginStatus(self.imageCheckBox, u'images/status')
-        self._pluginStatus(self.mediaCheckBox, u'media/status')
-        self._pluginStatus(self.remoteCheckBox, u'remotes/status')
-        self._pluginStatus(self.customCheckBox, u'custom/status')
-        self._pluginStatus(self.songUsageCheckBox, u'songusage/status')
-        self._pluginStatus(self.alertCheckBox, u'alerts/status')
+    def _getFileSize(self, url):
+        site = urllib.urlopen(url)
+        meta = site.info()
+        return int(meta.getheaders("Content-Length")[0])
+
+    def _downloadProgress(self, count, block_size, total_size):
+        increment = (count * block_size) - self.previous_size
+        self._incrementProgressBar(None, increment)
+        self.previous_size = count * block_size
+
+    def _incrementProgressBar(self, status_text, increment=1):
+        """
+        Update the wizard progress page.
+
+        ``status_text``
+            Current status information to display.
+
+        ``increment``
+            The value to increment the progress bar by.
+        """
+        if status_text:
+            self.progressLabel.setText(status_text)
+        if increment > 0:
+            self.progressBar.setValue(self.progressBar.value() + increment)
+        Receiver.send_message(u'openlp_process_events')
+
+    def _preWizard(self):
+        """
+        Prepare the UI for the process.
+        """
+        # We start on 2 for plugins status setting plus a "finished" point.
+        max_progress = 2
+        # Loop through the songs list and increase for each selected item
+        for i in xrange(self.songsListWidget.count()):
+            item = self.songsListWidget.item(i)
+            if item.checkState() == QtCore.Qt.Checked:
+                filename = item.data(QtCore.Qt.UserRole).toString()
+                size = self._getFileSize(u'%s%s' % (self.web, filename))
+                max_progress += size
+        # Loop through the Bibles list and increase for each selected item
+        iterator = QtGui.QTreeWidgetItemIterator(self.biblesTreeWidget)
+        while iterator.value():
+            item = iterator.value()
+            if item.parent() and item.checkState(0) == QtCore.Qt.Checked:
+                filename = item.data(0, QtCore.Qt.UserRole).toString()
+                size = self._getFileSize(u'%s%s' % (self.web, filename))
+                max_progress += size
+            iterator += 1
+        # Loop through the themes list and increase for each selected item
+        for i in xrange(self.themesListWidget.count()):
+            item = self.themesListWidget.item(i)
+            if item.checkState() == QtCore.Qt.Checked:
+                filename = item.data(QtCore.Qt.UserRole).toString()
+                size = self._getFileSize(u'%s%s' % (self.web, filename))
+                max_progress += size
+        self.finishButton.setVisible(False)
+        self.progressBar.setValue(0)
+        self.progressBar.setMinimum(0)
+        self.progressBar.setMaximum(max_progress)
+
+    def _postWizard(self):
+        """
+        Clean up the UI after the process has finished.
+        """
+        self.progressBar.setValue(self.progressBar.maximum())
+        self.finishButton.setVisible(True)
+        self.finishButton.setEnabled(True)
+        self.cancelButton.setVisible(False)
+        self.nextButton.setVisible(False)
+        self.progressLabel.setText(translate('OpenLP.FirstTimeWizard',
+            'Download complete. Click the finish button to start OpenLP.'))
+        Receiver.send_message(u'openlp_process_events')
+
+    def _performWizard(self):
+        """
+        Run the tasks in the wizard.
+        """
+        # Set plugin states
+        self._incrementProgressBar(translate('OpenLP.FirstTimeWizard',
+            'Enabling selected plugins...'))
+        self._setPluginStatus(self.songsCheckBox, u'songs/status')
+        self._setPluginStatus(self.bibleCheckBox, u'bibles/status')
+        self._setPluginStatus(self.presentationCheckBox,
+            u'presentations/status')
+        self._setPluginStatus(self.imageCheckBox, u'images/status')
+        self._setPluginStatus(self.mediaCheckBox, u'media/status')
+        self._setPluginStatus(self.remoteCheckBox, u'remotes/status')
+        self._setPluginStatus(self.customCheckBox, u'custom/status')
+        self._setPluginStatus(self.songUsageCheckBox, u'songusage/status')
+        self._setPluginStatus(self.alertCheckBox, u'alerts/status')
         # Build directories for downloads
-        songsDestination = AppLocation.get_section_data_path(u'songs')
-        check_directory_exists(songsDestination)
-        bibleDestination = AppLocation.get_section_data_path(u'bibles')
-        check_directory_exists(bibleDestination)
-        themeDestination = AppLocation.get_section_data_path(u'themes')
-        check_directory_exists(themeDestination)
-        # Install Selected Items looping through them
-        listIterator = QtGui.QTreeWidgetItemIterator(self.selectionTreeWidget)
-        while listIterator.value():
-            type = listIterator.value().parent()
-            if listIterator.value().parent():
-                if listIterator.value().checkState(0) == QtCore.Qt.Checked:
-                    # Install items as theu have been selected
-                    item = unicode(listIterator.value().text(0))
-                    # Download Song database if selected
-                    if unicode(type.text(0)) == self.songsText:
-                        songs = unicode(listIterator.value().data(0,
-                            QtCore.Qt.UserRole).toString())
-                        message = self.downloading % item
-                        self._updateMessage(message)
-                        # Song database is a fixed file name
-                        urllib.urlretrieve(u'%s%s' % (self.web, songs),
-                            os.path.join(songsDestination, u'songs.sqlite'))
-                    # Download and selected Bibles
-                    if unicode(type.text(0)) == self.biblesText:
-                        bible = unicode(listIterator.value().data(0,
-                            QtCore.Qt.UserRole).toString())
-                        message = self.downloading % item
-                        self._updateMessage(message)
-                        urllib.urlretrieve(u'%s%s' % (self.web, bible),
-                            os.path.join(bibleDestination, bible))
-                    # Download any themes
-                    if unicode(type.text(0)) == self.themesText:
-                        theme = unicode(listIterator.value().data(0,
-                            QtCore.Qt.UserRole).toString())
-                        message = self.downloading % item
-                        self._updateMessage(message)
-                        urllib.urlretrieve(u'%s%s' % (self.web, theme),
-                            os.path.join(themeDestination, theme))
-            listIterator += 1
+        songs_destination = os.path.join(unicode(gettempdir()), u'openlp')
+        bibles_destination = AppLocation.get_section_data_path(u'bibles')
+        themes_destination = AppLocation.get_section_data_path(u'themes')
+        # Download songs
+        for i in xrange(self.songsListWidget.count()):
+            item = self.songsListWidget.item(i)
+            if item.checkState() == QtCore.Qt.Checked:
+                filename = item.data(QtCore.Qt.UserRole).toString()
+                self._incrementProgressBar(self.downloading % filename, 0)
+                self.previous_size = 0
+                destination = os.path.join(songs_destination, unicode(filename))
+                urllib.urlretrieve(u'%s%s' % (self.web, filename), destination,
+                    self._downloadProgress)
+        # Download Bibles
+        bibles_iterator = QtGui.QTreeWidgetItemIterator(self.biblesTreeWidget)
+        while bibles_iterator.value():
+            item = bibles_iterator.value()
+            if item.parent() and item.checkState(0) == QtCore.Qt.Checked:
+                bible = unicode(item.data(0, QtCore.Qt.UserRole).toString())
+                self._incrementProgressBar(self.downloading % bible, 0)
+                self.previous_size = 0
+                urllib.urlretrieve(u'%s%s' % (self.web, bible),
+                    os.path.join(bibles_destination, bible),
+                    self._downloadProgress)
+            bibles_iterator += 1
+        # Download themes
+        for i in xrange(self.themesListWidget.count()):
+            item = self.themesListWidget.item(i)
+            if item.checkState() == QtCore.Qt.Checked:
+                theme = unicode(item.data(QtCore.Qt.UserRole).toString())
+                self._incrementProgressBar(self.downloading % theme, 0)
+                self.previous_size = 0
+                urllib.urlretrieve(u'%s%s' % (self.web, theme),
+                    os.path.join(themes_destination, theme),
+                    self._downloadProgress)
         # Set Default Display
-        if self.displaySelectionComboBox.currentIndex() != -1:
+        if self.displayComboBox.currentIndex() != -1:
             QtCore.QSettings().setValue(u'General/monitor',
-                QtCore.QVariant(self.displaySelectionComboBox.
-                currentIndex()))
+                QtCore.QVariant(self.displayComboBox.currentIndex()))
         # Set Global Theme
-        if self.themeSelectionComboBox.currentIndex() != -1:
+        if self.themeComboBox.currentIndex() != -1:
             QtCore.QSettings().setValue(u'themes/global theme',
-                QtCore.QVariant(self.themeSelectionComboBox.currentText()))
-        QtCore.QSettings().setValue(u'general/first time',
-            QtCore.QVariant(False))
-        Receiver.send_message(u'cursor_normal')
-        return QtGui.QWizard.accept(self)
+                QtCore.QVariant(self.themeComboBox.currentText()))
+        QtCore.QSettings().setValue(u'general/has run wizard',
+            QtCore.QVariant(True))
 
-    def _pluginStatus(self, field, tag):
+    def _setPluginStatus(self, field, tag):
         status = PluginStatus.Active if field.checkState() \
             == QtCore.Qt.Checked else PluginStatus.Inactive
         QtCore.QSettings().setValue(tag, QtCore.QVariant(status))
-
-    def _updateMessage(self, text):
-        """
-        Keep screen up to date
-        """
-        self.updateLabel.setText(text)
-        Receiver.send_message(u'openlp_process_events')
