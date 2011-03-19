@@ -159,7 +159,7 @@ class ThemeManager(QtGui.QWidget):
         self.loadThemes()
         Receiver.send_message(u'cursor_normal')
 
-    def configUpdated(self, firstTime=False):
+    def configUpdated(self):
         """
         Triggered when Config dialog is updated.
         """
@@ -433,7 +433,7 @@ class ThemeManager(QtGui.QWidget):
         self.loadThemes()
         Receiver.send_message(u'cursor_normal')
 
-    def loadThemes(self):
+    def loadThemes(self, firstTime=False):
         """
         Loads the theme lists and triggers updates accross the whole system
         using direct calls or core functions and events for the plugins.
@@ -443,6 +443,24 @@ class ThemeManager(QtGui.QWidget):
         self.themelist = []
         self.themeListWidget.clear()
         dirList = os.listdir(self.path)
+        if firstTime:
+            found = False
+            for name in dirList:
+                if name.endswith(u'.png'):
+                    theme = os.path.join(self.path, name)
+                    if os.path.exists(theme):
+                        found = True
+                        break
+            # No themes have been found so create one
+            if not found:
+                theme = ThemeXML()
+                theme.theme_name = UiStrings.Default
+                self._writeTheme(theme, None, None)
+                QtCore.QSettings().setValue(
+                    self.settingsSection + u'/global theme',
+                    QtCore.QVariant(theme.theme_name))
+                self.configUpdated()
+                dirList = os.listdir(self.path)
         dirList.sort()
         for name in dirList:
             if name.endswith(u'.png'):
