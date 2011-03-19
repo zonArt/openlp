@@ -547,7 +547,7 @@ class ThemeManager(QtGui.QWidget):
                         else:
                             outfile = open(fullpath, u'wb')
                             outfile.write(zip.read(file))
-        except (IOError, NameError):
+        except (IOError, NameError, zipfile.BadZipfile):
             critical_error_message_box(
                 translate('OpenLP.ThemeManager', 'Validation Error'),
                 translate('OpenLP.ThemeManager', 'File is not a valid theme.'))
