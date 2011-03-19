@@ -141,4 +141,3 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
             else:
                 self.upButton.setEnabled(True)
             self.deleteButton.setEnabled(True)
-
