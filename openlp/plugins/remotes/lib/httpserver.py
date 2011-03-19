@@ -111,7 +111,6 @@ import logging
 import os
 import urlparse
 import re
-from pprint import pformat
 
 try:
     import json
