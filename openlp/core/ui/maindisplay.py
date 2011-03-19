@@ -110,7 +110,7 @@ class MainDisplay(DisplayWidget):
         Phonon.createPath(self.mediaObject, self.audio)
         QtCore.QObject.connect(self.mediaObject,
             QtCore.SIGNAL(u'stateChanged(Phonon::State, Phonon::State)'),
-            self.videoStart)
+            self.videoState)
         QtCore.QObject.connect(self.mediaObject,
             QtCore.SIGNAL(u'finished()'),
             self.videoFinished)
@@ -378,7 +378,7 @@ class MainDisplay(DisplayWidget):
             Receiver.send_message(u'maindisplay_active')
         return self.preview()
 
-    def videoStart(self, newState, oldState):
+    def videoState(self, newState, oldState):
         """
         Start the video at a predetermined point.
         """

@@ -148,6 +148,7 @@ class MediaMediaItem(MediaManagerItem):
                 == Phonon.MediaSource.Invalid:
                 # Due to string freeze, borrow a message from presentations
                 # This will be corrected in 1.9.6
+                self.mediaObject.stop()
                 critical_error_message_box(
                     translate('PresentationPlugin.MediaItem', 
                     'Unsupported File'),
