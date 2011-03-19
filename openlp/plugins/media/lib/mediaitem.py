@@ -54,9 +54,6 @@ class MediaMediaItem(MediaManagerItem):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'video_background_replaced'),
             self.videobackgroundReplaced)
-        QtCore.QObject.connect(self.mediaObject,
-            QtCore.SIGNAL(u'stateChanged(Phonon::State, Phonon::State)'),
-            self.videoStateChange)
 
     def retranslateUi(self):
         self.onNewPrompt = translate('MediaPlugin.MediaItem', 'Select Media')
@@ -134,7 +131,6 @@ class MediaMediaItem(MediaManagerItem):
             return False
         self.mediaObject.stop()
         self.mediaObject.clearQueue()
-        self.mediaState = None
         self.mediaObject.setCurrentSource(Phonon.MediaSource(filename))
         if not self.mediaStateWait(Phonon.StoppedState):
             # Due to string freeze, borrow a message from presentations
@@ -147,7 +143,9 @@ class MediaMediaItem(MediaManagerItem):
         # File too big for processing
         if os.path.getsize(filename) <= 52428800: # 50MiB
             self.mediaObject.play()
-            if not self.mediaStateWait(Phonon.PlayingState):
+            if not self.mediaStateWait(Phonon.PlayingState) \
+                or self.mediaObject.currentSource().type() \
+                == Phonon.MediaSource.Invalid:
                 # Due to string freeze, borrow a message from presentations
                 # This will be corrected in 1.9.6
                 critical_error_message_box(
@@ -176,8 +174,8 @@ class MediaMediaItem(MediaManagerItem):
         Wait no longer than 5 seconds. 
         """
         start = datetime.now()
-        while self.mediaState != mediaState:
-            if self.mediaState == Phonon.ErrorState:
+        while self.mediaObject.state() != mediaState:
+            if self.mediaObject.state() == Phonon.ErrorState:
                 return False
             Receiver.send_message(u'openlp_process_events')
             if (datetime.now() - start).seconds > 5:
@@ -211,9 +209,3 @@ class MediaMediaItem(MediaManagerItem):
             item_name.setIcon(build_icon(img))
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.listView.addItem(item_name)
-
-    def videoStateChange(self, newState, oldState):
-        """
-        Detect change of video state
-        """
-        self.mediaState = newState

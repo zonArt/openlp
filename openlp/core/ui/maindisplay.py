@@ -382,7 +382,9 @@ class MainDisplay(DisplayWidget):
         """
         Start the video at a predetermined point.
         """
-        if newState == Phonon.PlayingState:
+        if newState == Phonon.PlayingState \
+            and oldState != Phonon.PausedState \
+            and self.serviceItem.start_time > 0:
             # set start time in milliseconds
             self.mediaObject.seek(self.serviceItem.start_time * 1000)
 
