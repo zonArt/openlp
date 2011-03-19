@@ -271,6 +271,18 @@ def clean_song(manager, song):
     verses = SongXML().get_verses(song.lyrics)
     lyrics = u' '.join([whitespace.sub(u' ', verse[1]) for verse in verses])
     song.search_lyrics = lyrics.lower()
+    # We need a new and clean SongXML instance.
+    sxml = SongXML()
+    # Rebuild the song's verses, to remove any wrong verse names (for example
+    # translated ones), which might have been added prior to 1.9.5.
+    for verse in verses:
+        sxml.add_verse_to_lyrics(
+            VerseType.Tags[VerseType.from_loose_input(verse[0][u'type'])],
+            verse[0][u'label'],
+            verse[1],
+            verse[0][u'lang'] if verse[0].has_key(u'lang') else None
+        )
+    song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
     # The song does not have any author, add one.
     if not song.authors:
         name = SongStrings.AuthorUnknown
