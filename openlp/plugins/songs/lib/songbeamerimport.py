@@ -34,31 +34,32 @@ import os
 import re
 
 from openlp.core.ui.wizard import WizardStrings
+from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
 
 class SongBeamerTypes(object):
     MarkTypes = {
-        u'Refrain': u'C',
-        u'Chorus': u'C',
-        u'Vers': u'V',
-        u'Verse': u'V',
-        u'Strophe': u'V',
-        u'Intro': u'I',
-        u'Coda': u'E',
-        u'Ending': u'E',
-        u'Bridge': u'B',
-        u'Interlude': u'B',
-        u'Zwischenspiel': u'B',
-        u'Pre-Chorus': u'P',
-        u'Pre-Refrain': u'P',
-        u'Pre-Bridge': u'O',
-        u'Pre-Coda': u'O',
-        u'Unbekannt': u'O',
-        u'Unknown': u'O',
-        u'Unbenannt': u'O'
-        }
+        u'Refrain': VerseType.Tags[VerseType.Chorus],
+        u'Chorus': VerseType.Tags[VerseType.Chorus],
+        u'Vers': VerseType.Tags[VerseType.Verse],
+        u'Verse': VerseType.Tags[VerseType.Verse],
+        u'Strophe': VerseType.Tags[VerseType.Verse],
+        u'Intro': VerseType.Tags[VerseType.Intro],
+        u'Coda': VerseType.Tags[VerseType.Ending],
+        u'Ending': VerseType.Tags[VerseType.Ending],
+        u'Bridge': VerseType.Tags[VerseType.Bridge],
+        u'Interlude': VerseType.Tags[VerseType.Bridge],
+        u'Zwischenspiel': VerseType.Tags[VerseType.Bridge],
+        u'Pre-Chorus': VerseType.Tags[VerseType.PreChorus],
+        u'Pre-Refrain': VerseType.Tags[VerseType.PreChorus],
+        u'Pre-Bridge': VerseType.Tags[VerseType.Other],
+        u'Pre-Coda': VerseType.Tags[VerseType.Other],
+        u'Unbekannt': VerseType.Tags[VerseType.Other],
+        u'Unknown': VerseType.Tags[VerseType.Other],
+        u'Unbenannt': VerseType.Tags[VerseType.Other]
+    }
 
 
 class SongBeamerImport(SongImport):
@@ -84,7 +85,7 @@ class SongBeamerImport(SongImport):
                 # TODO: check that it is a valid SongBeamer file
                 self.set_defaults()
                 self.current_verse = u''
-                self.current_verse_type = u'V'
+                self.current_verse_type = VerseType.Tags[VerseType.Verse]
                 read_verses = False
                 file_name = os.path.split(file)[1]
                 self.import_wizard.incrementProgressBar(
@@ -111,7 +112,7 @@ class SongBeamerImport(SongImport):
                             self.add_verse(self.current_verse,
                                 self.current_verse_type)
                             self.current_verse = u''
-                            self.current_verse_type = u'V'
+                            self.current_verse_type = VerseType.Tags[VerseType.Verse]
                         read_verses = True
                         verse_start = True
                     elif read_verses:
@@ -157,7 +158,7 @@ class SongBeamerImport(SongImport):
             (u'<[/]?c.*?>', u''),
             (u'<align.*?>', u''),
             (u'<valign.*?>', u'')
-            ]
+        ]
         for pair in tag_pairs:
             self.current_verse = re.compile(pair[0]).sub(pair[1],
                 self.current_verse)

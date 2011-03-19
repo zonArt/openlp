@@ -31,7 +31,7 @@ The basic XML for storing the lyrics in the song database looks like this::
     <?xml version="1.0" encoding="UTF-8"?>
     <song version="1.0">
         <lyrics>
-            <verse type="Chorus" label="1" lang="en">
+            <verse type="c" label="1" lang="en">
                 <![CDATA[ ... ]]>
             </verse>
         </lyrics>

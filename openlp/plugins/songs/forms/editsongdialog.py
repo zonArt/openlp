@@ -71,6 +71,8 @@ class Ui_EditSongDialog(object):
         self.verseListWidget.setColumnCount(1)
         self.verseListWidget.setSelectionBehavior(
             QtGui.QAbstractItemView.SelectRows)
+        self.verseListWidget.setSelectionMode(
+            QtGui.QAbstractItemView.SingleSelection)
         self.verseListWidget.setEditTriggers(
             QtGui.QAbstractItemView.NoEditTriggers)
         self.verseListWidget.setObjectName(u'verseListWidget')
