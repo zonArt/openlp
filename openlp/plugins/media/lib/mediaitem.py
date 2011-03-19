@@ -24,6 +24,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+from datetime import datetime
 import logging
 import os
 
@@ -138,11 +139,16 @@ class MediaMediaItem(MediaManagerItem):
             file_size = os.path.getsize(filename)
             # File too big for processing
             if file_size <= 52428800: # 50MiB
+                start = datetime.now()
                 while not self.mediaState:
                     Receiver.send_message(u'openlp_process_events')
-                service_item.media_length = self.mediaLength
-                service_item.add_capability(
-                    ItemCapabilities.AllowsVariableStartTime)
+                    tme = datetime.now() - start
+                    if tme.seconds > 5:
+                        break
+                if self.mediaState:
+                    service_item.media_length = self.mediaLength
+                    service_item.add_capability(
+                        ItemCapabilities.AllowsVariableStartTime)
             service_item.add_from_command(path, name, frame)
             return True
         else:

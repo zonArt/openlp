@@ -220,10 +220,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         Removes the current row from the list.
         """
         self.slideListView.takeItem(self.slideListView.currentRow())
-        if self.slideListView.currentRow() == 0:
-            self.upButton.setEnabled(False)
-        if self.slideListView.currentRow() == self.slideListView.count():
-            self.downButton.setEnabled(False)
+        self.onCurrentRowChanged(self.slideListView.currentRow())
 
     def onCurrentRowChanged(self, row):
         """
