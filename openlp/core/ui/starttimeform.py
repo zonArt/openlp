@@ -27,7 +27,9 @@
 from PyQt4 import QtGui
 
 from starttimedialog import Ui_StartTimeDialog
-from openlp.core.lib.ui import UiStrings
+
+from openlp.core.lib import translate
+from openlp.core.lib.ui import UiStrings, critical_error_message_box
 
 class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog):
     """
@@ -59,6 +61,28 @@ class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog):
         return QtGui.QDialog.exec_(self)
 
     def accept(self):
+        start = self.hourSpinBox.value() * 3600 + \
+            self.minuteSpinBox.value() * 60 + \
+            self.secondSpinBox.value()
+        end = self.hourFinishSpinBox.value() * 3600 + \
+            self.minuteFinishSpinBox.value() * 60 + \
+            self.secondFinishSpinBox.value()
+        if end > self.item[u'service_item'].media_length:
+            critical_error_message_box(
+                title=translate('OpenLP.StartTimeForm',
+                'Time Validation Error'),
+                message=translate('OpenLP.StartTimeForm',
+                'End time is after the end of the Media Item'))
+            return
+        elif start > end:
+            critical_error_message_box(
+                title=translate('OpenLP.StartTimeForm',
+                'Time Validation Error'),
+                message=translate('OpenLP.StartTimeForm',
+                'Start time is after the End of the Media Item'))
+            return
+        self.item[u'service_item'].start_time = start
+        self.item[u'service_item'].end_time = end
         return QtGui.QDialog.accept(self)
 
     def _time_split(self, seconds):
@@ -67,4 +91,3 @@ class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog):
         minutes = seconds / 60
         seconds -= 60 * minutes
         return hours, minutes, seconds
-

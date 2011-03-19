@@ -652,10 +652,6 @@ class ServiceManager(QtGui.QWidget):
         item = self.findServiceItem()[0]
         self.startTimeForm.item = self.serviceItems[item]
         if self.startTimeForm.exec_():
-            self.serviceItems[item][u'service_item'].start_time = \
-                self.startTimeForm.hourSpinBox.value() * 3600 + \
-                self.startTimeForm.minuteSpinBox.value() * 60 + \
-                self.startTimeForm.secondSpinBox.value()
             self.repaintServiceList(item, -1)
 
     def onServiceItemEditForm(self):

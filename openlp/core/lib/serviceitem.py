@@ -109,6 +109,7 @@ class ServiceItem(object):
         self.edit_id = None
         self.xml_version = None
         self.start_time = 0
+        self.end_time = 0
         self.media_length = 0
         self._new_item()
 
@@ -260,6 +261,7 @@ class ServiceItem(object):
             u'data': self.data_string,
             u'xml_version': self.xml_version,
             u'start_time': self.start_time,
+            u'end_time': self.end_time,
             u'media_length': self.media_length
         }
         service_data = []
@@ -306,6 +308,8 @@ class ServiceItem(object):
             self.xml_version = header[u'xml_version']
         if u'start_time' in header:
             self.start_time = header[u'start_time']
+        if u'end_time' in header:
+            self.end_time = header[u'end_time']
         if u'media_length' in header:
             self.media_length = header[u'media_length']
         if self.service_item_type == ServiceItemType.Text:
