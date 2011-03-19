@@ -184,8 +184,8 @@ class ServiceItem(object):
             log.error(u'Invalid value renderer :%s' % self.service_item_type)
         self.title = clean_tags(self.title)
         # The footer should never be None, but to be compatible with a few
-        # nightly between 1.9.4 and 1.9.5, we have to correct this to avoid
-        # tracebacks.
+        # nightly builds between 1.9.4 and 1.9.5, we have to correct this to
+        # avoid tracebacks.
         if self.raw_footer is None:
             self.raw_footer = []
         self.foot_text = \
