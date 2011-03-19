@@ -112,7 +112,8 @@ class SongBeamerImport(SongImport):
                             self.add_verse(self.current_verse,
                                 self.current_verse_type)
                             self.current_verse = u''
-                            self.current_verse_type = VerseType.Tags[VerseType.Verse]
+                            self.current_verse_type = \
+                                VerseType.Tags[VerseType.Verse]
                         read_verses = True
                         verse_start = True
                     elif read_verses:
