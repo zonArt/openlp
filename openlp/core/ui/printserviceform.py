@@ -33,12 +33,12 @@ from openlp.core.ui.printservicedialog import Ui_PrintServiceDialog, ZoomSize
 
 class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
 
-    def __init__(self, parent, serviceManager):
+    def __init__(self, mainWindow, serviceManager):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, parent)
-        self.parent = parent
+        QtGui.QDialog.__init__(self, mainWindow)
+        self.mainWindow = mainWindow
         self.serviceManager = serviceManager
         self.printer = QtGui.QPrinter()
         self.printDialog = QtGui.QPrintDialog(self.printer, self)
@@ -181,13 +181,14 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         """
         Copies the display text to the clipboard as plain text
         """
-        self.parent.clipboard.setText(self.document.toPlainText())
+        self.mainWindow.application.clipboard.setText(
+            self.document.toPlainText())
 
     def copyHtmlText(self):
         """
         Copies the display text to the clipboard as Html
         """
-        self.parent.clipboard.setText(self.document.toHtml())
+        self.mainWindow.application.clipboard.setText(self.document.toHtml())
 
     def printServiceOrder(self):
         """

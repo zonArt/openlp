@@ -468,7 +468,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     actionList = ActionList()
 
-    def __init__(self, screens, applicationVersion, clipboard):
+    def __init__(self, screens, applicationVersion, application):
         """
         This constructor sets up the interface, the various managers, and the
         plugins.
@@ -476,7 +476,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtGui.QMainWindow.__init__(self)
         self.screens = screens
         self.applicationVersion = applicationVersion
-        self.clipboard = clipboard
+        self.application = application
         # Set up settings sections for the main application
         # (not for use by plugins)
         self.uiSettingsSection = u'user interface'
@@ -658,7 +658,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.liveController.display.isVisible():
             self.liveController.display.setFocus()
         self.activateWindow()
-        if QtCore.QSettings().value(
+        if len(self.application.arguments()) > 0:
+            args = []
+            for a in self.application.arguments():
+                args.extend([a])
+            self.ServiceManagerContents.loadFile(unicode(args[0]))
+        elif QtCore.QSettings().value(
             self.generalSettingsSection + u'/auto open',
             QtCore.QVariant(False)).toBool():
             self.ServiceManagerContents.loadLastFile()
