@@ -36,7 +36,7 @@ from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from PyQt4.phonon import Phonon
 
 log = logging.getLogger(__name__)
-
+    
 class MediaMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for Media Slides.
@@ -56,7 +56,7 @@ class MediaMediaItem(MediaManagerItem):
             self.videobackgroundReplaced)
         QtCore.QObject.connect(self.mediaObject,
             QtCore.SIGNAL(u'stateChanged(Phonon::State, Phonon::State)'),
-            self.videoStart)
+            self.videoStateChange)
 
     def retranslateUi(self):
         self.onNewPrompt = translate('MediaPlugin.MediaItem', 'Select Media')
@@ -125,41 +125,65 @@ class MediaMediaItem(MediaManagerItem):
             if item is None:
                 return False
         filename = unicode(item.data(QtCore.Qt.UserRole).toString())
-        if os.path.exists(filename):
-            self.mediaState = None
-            self.mediaObject.stop()
-            self.mediaObject.clearQueue()
-            self.mediaObject.setCurrentSource(Phonon.MediaSource(filename))
-            self.mediaObject.play()
-            service_item.title = unicode(self.plugin.nameStrings[u'singular'])
-            service_item.add_capability(ItemCapabilities.RequiresMedia)
-            # force a nonexistent theme
-            service_item.theme = -1
-            frame = u':/media/image_clapperboard.png'
-            (path, name) = os.path.split(filename)
-            file_size = os.path.getsize(filename)
-            # File too big for processing
-            if file_size <= 52428800: # 50MiB
-                start = datetime.now()
-                while not self.mediaState:
-                    Receiver.send_message(u'openlp_process_events')
-                    tme = datetime.now() - start
-                    if tme.seconds > 5:
-                        break
-                if self.mediaState:
-                    service_item.media_length = self.mediaLength
-                    service_item.add_capability(
-                        ItemCapabilities.AllowsVariableStartTime)
-            service_item.add_from_command(path, name, frame)
-            return True
-        else:
+        if not os.path.exists(filename):
             # File is no longer present
             critical_error_message_box(
                 translate('MediaPlugin.MediaItem', 'Missing Media File'),
                 unicode(translate('MediaPlugin.MediaItem',
                 'The file %s no longer exists.')) % filename)
             return False
+        self.mediaObject.stop()
+        self.mediaObject.clearQueue()
+        self.mediaState = None
+        self.mediaObject.setCurrentSource(Phonon.MediaSource(filename))
+        if not self.mediaStateWait(Phonon.StoppedState):
+            # Due to string freeze, borrow a message from presentations
+            # This will be corrected in 1.9.6
+            critical_error_message_box(
+                translate('PresentationPlugin.MediaItem', 'Unsupported File'),
+                unicode(translate('PresentationPlugin.MediaItem', 
+                'Unsupported File')))
+            return False
+        # File too big for processing
+        if os.path.getsize(filename) <= 52428800: # 50MiB
+            self.mediaObject.play()
+            if not self.mediaStateWait(Phonon.PlayingState):
+                # Due to string freeze, borrow a message from presentations
+                # This will be corrected in 1.9.6
+                critical_error_message_box(
+                    translate('PresentationPlugin.MediaItem', 
+                    'Unsupported File'),
+                    unicode(translate('PresentationPlugin.MediaItem',
+                    'Unsupported File')))
+                return False
+            self.mediaLength = self.mediaObject.totalTime() / 1000
+            self.mediaObject.stop()
+            service_item.media_length = self.mediaLength
+            service_item.add_capability(
+                ItemCapabilities.AllowsVariableStartTime)
+        service_item.title = unicode(self.plugin.nameStrings[u'singular'])
+        service_item.add_capability(ItemCapabilities.RequiresMedia)
+        # force a non-existent theme
+        service_item.theme = -1
+        frame = u':/media/image_clapperboard.png'
+        (path, name) = os.path.split(filename)
+        service_item.add_from_command(path, name, frame)
+        return True
 
+    def mediaStateWait(self, mediaState):
+        """
+        Wait for the video to change its state
+        Wait no longer than 5 seconds. 
+        """
+        start = datetime.now()
+        while self.mediaState != mediaState:
+            if self.mediaState == Phonon.ErrorState:
+                return False
+            Receiver.send_message(u'openlp_process_events')
+            if (datetime.now() - start).seconds > 5:
+                return False
+        return True
+        
     def initialise(self):
         self.listView.clear()
         self.listView.setIconSize(QtCore.QSize(88, 50))
@@ -188,11 +212,8 @@ class MediaMediaItem(MediaManagerItem):
             item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
             self.listView.addItem(item_name)
 
-    def videoStart(self, newState, oldState):
+    def videoStateChange(self, newState, oldState):
         """
-        Start the video at a predetermined point.
+        Detect change of video state
         """
-        if newState == Phonon.PlayingState:
-            self.mediaState = newState
-            self.mediaLength = self.mediaObject.totalTime()/1000
-            self.mediaObject.stop()
+        self.mediaState = newState
