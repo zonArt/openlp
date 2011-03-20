@@ -461,5 +461,5 @@ class SongMediaItem(MediaManagerItem):
         """
         Locale aware collation of song titles
         """
-        return locale.strcoll(unicode(song_1.title.lower()), 
+        return locale.strcoll(unicode(song_1.title.lower()),
              unicode(song_2.title.lower()))

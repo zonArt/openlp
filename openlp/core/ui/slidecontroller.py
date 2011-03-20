@@ -46,7 +46,6 @@ class SlideList(QtGui.QTableWidget):
         QtGui.QTableWidget.__init__(self, parent.controller)
         self.parent = parent
 
-
 class SlideController(QtGui.QWidget):
     """
     SlideController is the slide controller widget. This widget is what the
@@ -858,6 +857,7 @@ class SlideController(QtGui.QWidget):
                     self.serviceItem.bg_image_bytes = None
                 self.slidePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
             self.selectedRow = row
+            self.__checkUpdateSelectedSlide(row)
         Receiver.send_message(u'slidecontroller_%s_changed' % self.typePrefix,
             row)
 
