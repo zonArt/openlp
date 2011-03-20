@@ -77,7 +77,9 @@ class PowerpointController(PresentationController):
             """
             Loads PowerPoint process
             """
-            self.process = Dispatch(u'PowerPoint.Application')
+            log.debug(u'start_process')
+            if not self.process:
+                self.process = Dispatch(u'PowerPoint.Application')
             self.process.Visible = True
             self.process.WindowState = 2
 
@@ -120,13 +122,14 @@ class PowerpointDocument(PresentationDocument):
         ``presentation``
             The file name of the presentations to run.
         """
-        log.debug(u'LoadPresentation')
+        log.debug(u'load_presentation')
         if not self.controller.process or not self.controller.process.Visible:
             self.controller.start_process()
         try:
             self.controller.process.Presentations.Open(self.filepath, False,
                 False, True)
         except pywintypes.com_error:
+            log.debug(u'PPT open failed')
             return False
         self.presentation = self.controller.process.Presentations(
             self.controller.process.Presentations.Count)
@@ -145,6 +148,7 @@ class PowerpointDocument(PresentationDocument):
         However, for the moment, we want a physical file since it makes life
         easier elsewhere.
         """
+        log.debug(u'create_thumbnails')
         if self.check_thumbnails():
             return
         for num in range(0, self.presentation.Slides.Count):
@@ -170,6 +174,7 @@ class PowerpointDocument(PresentationDocument):
         """
         Returns ``True`` if a presentation is loaded.
         """
+        log.debug(u'is_loaded')
         try:
             if not self.controller.process.Visible:
                 return False
@@ -186,6 +191,7 @@ class PowerpointDocument(PresentationDocument):
         """
         Returns ``True`` if a presentation is currently active.
         """
+        log.debug(u'is_active')
         if not self.is_loaded():
             return False
         try:
@@ -201,6 +207,7 @@ class PowerpointDocument(PresentationDocument):
         """
         Unblanks (restores) the presentation.
         """
+        log.debug(u'unblank_screen')
         self.presentation.SlideShowSettings.Run()
         self.presentation.SlideShowWindow.View.State = 1
         self.presentation.SlideShowWindow.Activate()
@@ -209,12 +216,14 @@ class PowerpointDocument(PresentationDocument):
         """
         Blanks the screen.
         """
+        log.debug(u'blank_screen')
         self.presentation.SlideShowWindow.View.State = 3
 
     def is_blank(self):
         """
         Returns ``True`` if screen is blank.
         """
+        log.debug(u'is_blank')
         if self.is_active():
             return self.presentation.SlideShowWindow.View.State == 3
         else:
@@ -224,6 +233,7 @@ class PowerpointDocument(PresentationDocument):
         """
         Stops the current presentation and hides the output.
         """
+        log.debug(u'stop_presentation')
         self.presentation.SlideShowWindow.View.Exit()
 
     if os.name == u'nt':
@@ -231,6 +241,7 @@ class PowerpointDocument(PresentationDocument):
             """
             Starts a presentation from the beginning.
             """
+            log.debug(u'start_presentation')
             #SlideShowWindow measures its size/position by points, not pixels
             try:
                 dpi = win32ui.GetActiveWindow().GetDC().GetDeviceCaps(88)
@@ -253,30 +264,35 @@ class PowerpointDocument(PresentationDocument):
         """
         Returns the current slide number.
         """
+        log.debug(u'get_slide_number')
         return self.presentation.SlideShowWindow.View.CurrentShowPosition
 
     def get_slide_count(self):
         """
         Returns total number of slides.
         """
+        log.debug(u'get_slide_count')
         return self.presentation.Slides.Count
 
     def goto_slide(self, slideno):
         """
         Moves to a specific slide in the presentation.
         """
+        log.debug(u'goto_slide')
         self.presentation.SlideShowWindow.View.GotoSlide(slideno)
 
     def next_step(self):
         """
         Triggers the next effect of slide on the running presentation.
         """
+        log.debug(u'next_step')
         self.presentation.SlideShowWindow.View.Next()
 
     def previous_step(self):
         """
         Triggers the previous slide on the running presentation.
         """
+        log.debug(u'previous_step')
         self.presentation.SlideShowWindow.View.Previous()
 
     def get_slide_text(self, slide_no):

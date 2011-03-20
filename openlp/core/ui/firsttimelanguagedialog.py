@@ -46,7 +46,8 @@ class Ui_FirstTimeLanguageDialog(object):
         self.languageLabel.setObjectName(u'languageLabel')
         self.languageLayout.addWidget(self.languageLabel)
         self.languageComboBox = QtGui.QComboBox(languageDialog)
-        self.languageComboBox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
+        self.languageComboBox.setSizeAdjustPolicy(
+            QtGui.QComboBox.AdjustToContents)
         self.languageComboBox.setObjectName("languageComboBox")
         self.languageLayout.addWidget(self.languageComboBox)
         self.dialogLayout.addLayout(self.languageLayout)

@@ -23,6 +23,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+import re
 
 from PyQt4 import QtGui
 
@@ -244,9 +245,11 @@ def retrieve_windows_encoding(recommendation=None):
         return None
     return filter(lambda item: item[1] == choice[0], encodings)[0][0]
 
-def add_author_unknown(manager, song):
+def clean_song(manager, song):
     """
-    Add the default author *Author Unknown* to the song.
+    Cleans the search title, rebuilds the search lyrics, adds a default author
+    if the song does not have one and other clean ups. This should always
+    called when a new song is added or changed.
 
     ``manager``
         The song's manager.
@@ -254,12 +257,60 @@ def add_author_unknown(manager, song):
     ``song``
         The song object.
     """
-    name = SongStrings.AuthorUnknown
-    author = manager.get_object_filtered(Author, Author.display_name == name)
-    if author is None:
-        author = Author.populate(
-            display_name=name, last_name=u'', first_name=u'')
-    song.authors.append(author)
+    song.title = song.title.strip() if song.title else u''
+    if song.alternate_title is None:
+        song.alternate_title = u''
+    song.alternate_title = song.alternate_title.strip()
+    whitespace = re.compile(r'\W+', re.UNICODE)
+    song.search_title = (whitespace.sub(u' ', song.title).strip() + u'@' +
+        whitespace.sub(u' ', song.alternate_title).strip()).strip().lower()
+    # Remove the old "language" attribute from lyrics tag (prior to 1.9.5). This
+    # is not very important, but this keeps the database clean. This can be
+    # removed when everybody has cleaned his songs.
+    song.lyrics = song.lyrics.replace(u'<lyrics language="en">', u'<lyrics>')
+    verses = SongXML().get_verses(song.lyrics)
+    lyrics = u' '.join([whitespace.sub(u' ', verse[1]) for verse in verses])
+    song.search_lyrics = lyrics.lower()
+    # We need a new and clean SongXML instance.
+    sxml = SongXML()
+    # Rebuild the song's verses, to remove any wrong verse names (for example
+    # translated ones), which might have been added prior to 1.9.5.
+    # List for later comparison.
+    compare_order = []
+    for verse in verses:
+        type = VerseType.Tags[VerseType.from_loose_input(verse[0][u'type'])]
+        sxml.add_verse_to_lyrics(
+            type,
+            verse[0][u'label'],
+            verse[1],
+            verse[0][u'lang'] if verse[0].has_key(u'lang') else None
+        )
+        compare_order.append((u'%s%s' % (type, verse[0][u'label'])).upper())
+    song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
+    # Rebuild the verse order, to convert translated verse tags, which might
+    # have been added prior to 1.9.5.
+    order = song.verse_order.strip().split()
+    new_order = []
+    for verse_def in order:
+        new_order.append((u'%s%s' % (
+            VerseType.Tags[VerseType.from_loose_input(verse_def[0])],
+            verse_def[1:])).upper()
+        )
+    song.verse_order = u' '.join(new_order)
+    # Check if the verse order contains tags for verses which do not exist.
+    for order in new_order:
+        if order not in compare_order:
+            song.verse_order = u''
+            break
+    # The song does not have any author, add one.
+    if not song.authors:
+        name = SongStrings.AuthorUnknown
+        author = manager.get_object_filtered(
+            Author, Author.display_name == name)
+        if author is None:
+            author = Author.populate(
+                display_name=name, last_name=u'', first_name=u'')
+        song.authors.append(author)
 
 from xml import OpenLyrics, SongXML
 from songstab import SongsTab
