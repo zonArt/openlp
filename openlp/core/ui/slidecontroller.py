@@ -944,6 +944,7 @@ class SlideController(QtGui.QWidget):
             self.onSlideSelected()
 
     def __checkUpdateSelectedSlide(self, row):
+        print row, self.previewListWidget.rowCount()
         if row + 1 < self.previewListWidget.rowCount():
             self.previewListWidget.scrollToItem(
                 self.previewListWidget.item(row + 1, 0))
