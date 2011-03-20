@@ -35,7 +35,7 @@ from openlp.core.lib.ui import UiStrings, add_widget_completer, \
     media_item_combo_box, critical_error_message_box
 from openlp.plugins.bibles.forms import BibleImportForm
 from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle, \
-    get_reference_match
+    VerseReferenceList, get_reference_match
 
 log = logging.getLogger(__name__)
 
@@ -637,6 +637,8 @@ class BibleMediaItem(MediaManagerItem):
         old_chapter = -1
         raw_slides = []
         raw_title = []
+        verses = VerseReferenceList()
+        current = None
         for item in items:
             bitem = self.listView.item(item.row())
             book = self._decodeQtObject(bitem, 'book')
@@ -653,15 +655,16 @@ class BibleMediaItem(MediaManagerItem):
             second_permissions = \
                 self._decodeQtObject(bitem, 'second_permissions')
             second_text = self._decodeQtObject(bitem, 'second_text')
+            verses.add(book, chapter, verse, version, copyright, permissions)
             verse_text = self.formatVerse(old_chapter, chapter, verse)
-            footer = u'%s (%s %s %s)' % (book, version, copyright, permissions)
-            if footer not in service_item.raw_footer:
-                service_item.raw_footer.append(footer)
+            #footer = u'%s (%s %s %s)' % (book, version, copyright, permissions)
+            #if footer not in service_item.raw_footer:
+            #    service_item.raw_footer.append(footer)
             if second_bible:
-                footer = u'%s (%s %s %s)' % (book, second_version,
-                    second_copyright, second_permissions)
-                if footer not in service_item.raw_footer:
-                    service_item.raw_footer.append(footer)
+            #    footer = u'%s (%s %s %s)' % (book, second_version,
+            #        second_copyright, second_permissions)
+            #    if footer not in service_item.raw_footer:
+            #        service_item.raw_footer.append(footer)
                 bible_text = u'%s&nbsp;%s\n\n%s&nbsp;%s' % (verse_text, text,
                     verse_text, second_text)
                 raw_slides.append(bible_text.rstrip())
@@ -684,6 +687,12 @@ class BibleMediaItem(MediaManagerItem):
                 start_item = item
             old_item = item
             old_chapter = chapter
+        # Add footer
+        service_item.raw_footer.append(verses.format_verses())
+        if second_bible:
+            verses.add_version(second_version, second_copyright,
+                second_permissions)
+        service_item.raw_footer.append(verses.format_versions())
         raw_title.append(self.formatTitle(start_item, item))
         # If there are no more items we check whether we have to add bible_text.
         if bible_text:
