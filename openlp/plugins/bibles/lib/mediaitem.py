@@ -638,7 +638,6 @@ class BibleMediaItem(MediaManagerItem):
         raw_slides = []
         raw_title = []
         verses = VerseReferenceList()
-        current = None
         for item in items:
             bitem = self.listView.item(item.row())
             book = self._decodeQtObject(bitem, 'book')
@@ -657,14 +656,7 @@ class BibleMediaItem(MediaManagerItem):
             second_text = self._decodeQtObject(bitem, 'second_text')
             verses.add(book, chapter, verse, version, copyright, permissions)
             verse_text = self.formatVerse(old_chapter, chapter, verse)
-            #footer = u'%s (%s %s %s)' % (book, version, copyright, permissions)
-            #if footer not in service_item.raw_footer:
-            #    service_item.raw_footer.append(footer)
             if second_bible:
-            #    footer = u'%s (%s %s %s)' % (book, second_version,
-            #        second_copyright, second_permissions)
-            #    if footer not in service_item.raw_footer:
-            #        service_item.raw_footer.append(footer)
                 bible_text = u'%s&nbsp;%s\n\n%s&nbsp;%s' % (verse_text, text,
                     verse_text, second_text)
                 raw_slides.append(bible_text.rstrip())
