@@ -676,7 +676,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def firstTime(self):
         # Import themes if first time
         Receiver.send_message(u'openlp_process_events')
-        self.themeManagerContents.firstTime()
         for plugin in self.pluginManager.plugins:
             if hasattr(plugin, u'firstTime'):
                 Receiver.send_message(u'openlp_process_events')
