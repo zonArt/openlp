@@ -73,7 +73,7 @@ class OpenLP(QtGui.QApplication):
     """
     log.info(u'OpenLP Application Loaded')
 
-    def _get_version(self):
+    def get_version(self):
         """
         Load and store current Application Version
         """
@@ -163,10 +163,6 @@ class OpenLP(QtGui.QApplication):
             QtCore.SIGNAL(u'cursor_busy'), self.setBusyCursor)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'cursor_normal'), self.setNormalCursor)
-        self.setOrganizationName(u'OpenLP')
-        self.setOrganizationDomain(u'openlp.org')
-        self.setApplicationName(u'OpenLP')
-        self.setApplicationVersion(app_version[u'version'])
         # Decide how many screens we have and their size
         screens = ScreenList(self.desktop())
         # First time checks in settings
@@ -271,11 +267,12 @@ def main():
     qInitResources()
     # Now create and actually run the application.
     app = OpenLP(qt_args)
-    # Define the settings environment
-    settings = QtCore.QSettings(u'OpenLP', u'OpenLP')
+    app.setOrganizationName(u'OpenLP')
+    app.setOrganizationDomain(u'openlp.org')
+    app.setApplicationName(u'OpenLP')
+    app.setApplicationVersion(app.get_version()[u'version'])
     # First time checks in settings
-    # Use explicit reference as not inside a QT environment yet
-    if not settings.value(u'general/has run wizard',
+    if not QSettings().value(u'general/has run wizard',
         QtCore.QVariant(False)).toBool():
         if not FirstTimeLanguageForm().exec_():
             # if cancel then stop processing
