@@ -424,12 +424,12 @@ class ThemeManager(QtGui.QWidget):
             unicode(translate('OpenLP.ThemeManager',
             'OpenLP Themes (*.theme *.otz)')))
         log.info(u'New Themes %s', unicode(files))
+        if not files:
+            return
         Receiver.send_message(u'cursor_busy')
-        if files:
-            for file in files:
-                SettingsManager.set_last_dir(
-                    self.settingsSection, unicode(file))
-                self.unzipTheme(file, self.path)
+        for file in files:
+            SettingsManager.set_last_dir(self.settingsSection, unicode(file))
+            self.unzipTheme(file, self.path)
         self.loadThemes()
         Receiver.send_message(u'cursor_normal')
 
@@ -502,16 +502,16 @@ class ThemeManager(QtGui.QWidget):
     def unzipTheme(self, filename, dir):
         """
         Unzip the theme, remove the preview file if stored
-        Generate a new preview fileCheck the XML theme version and upgrade if
+        Generate a new preview file. Check the XML theme version and upgrade if
         necessary.
         """
         log.debug(u'Unzipping theme %s', filename)
         filename = unicode(filename)
         zip = None
         outfile = None
+        filexml = None
         try:
             zip = zipfile.ZipFile(filename)
-            filexml = None
             themename = None
             for file in zip.namelist():
                 ucsfile = file_is_unicode(file)
@@ -547,7 +547,7 @@ class ThemeManager(QtGui.QWidget):
                         else:
                             outfile = open(fullpath, u'wb')
                             outfile.write(zip.read(file))
-        except (IOError, NameError):
+        except (IOError, NameError, zipfile.BadZipfile):
             critical_error_message_box(
                 translate('OpenLP.ThemeManager', 'Validation Error'),
                 translate('OpenLP.ThemeManager', 'File is not a valid theme.'))
@@ -562,7 +562,9 @@ class ThemeManager(QtGui.QWidget):
             if filexml:
                 theme = self._createThemeFromXml(filexml, self.path)
                 self.generateAndSaveImage(dir, themename, theme)
-            else:
+            # Only show the error message, when IOError was not raised (in this
+            # case the error message has already been shown).
+            elif zip is not None:
                 critical_error_message_box(
                     translate('OpenLP.ThemeManager', 'Validation Error'),
                     translate('OpenLP.ThemeManager',
