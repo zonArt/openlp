@@ -33,7 +33,8 @@ from ConfigParser import SafeConfigParser
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, PluginStatus, Receiver, build_icon
+from openlp.core.lib import translate, PluginStatus, Receiver, build_icon, \
+    check_directory_exists
 from openlp.core.utils import get_web_page, AppLocation
 from firsttimewizard import Ui_FirstTimeWizard, FirstTimePage
 
@@ -60,8 +61,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.downloading = unicode(translate('OpenLP.FirstTimeWizard',
             'Downloading %s...'))
         QtCore.QObject.connect(self,
-            QtCore.SIGNAL(u'currentIdChanged(int)'),
-            self.onCurrentIdChanged)
+            QtCore.SIGNAL(u'currentIdChanged(int)'), self.onCurrentIdChanged)
 
     def exec_(self, edit=False):
         """
@@ -75,6 +75,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         Set up display at start of theme edit.
         """
         self.restart()
+        check_directory_exists(os.path.join(gettempdir(), u'openlp'))
         # Sort out internet access for downloads
         if self.webAccess:
             songs = self.config.get(u'songs', u'languages')
@@ -111,8 +112,6 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             self.biblesTreeWidget.expandAll()
             themes = self.config.get(u'themes', u'files')
             themes = themes.split(u',')
-            if not os.path.exists(os.path.join(gettempdir(), u'openlp')):
-                os.makedirs(os.path.join(gettempdir(), u'openlp'))
             for theme in themes:
                 title = self.config.get(u'theme_%s' % theme, u'title')
                 filename = self.config.get(u'theme_%s' % theme, u'filename')
@@ -294,8 +293,6 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         if self.themeComboBox.currentIndex() != -1:
             QtCore.QSettings().setValue(u'themes/global theme',
                 QtCore.QVariant(self.themeComboBox.currentText()))
-        QtCore.QSettings().setValue(u'general/has run wizard',
-            QtCore.QVariant(True))
 
     def _setPluginStatus(self, field, tag):
         status = PluginStatus.Active if field.checkState() \
