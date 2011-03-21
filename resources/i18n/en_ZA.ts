@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="en_ZA">
+<!DOCTYPE TS>
+<TS version="2.0" language="en_ZA">
 <context>
     <name>AlertPlugin.AlertForm</name>
     <message>
@@ -48,19 +49,19 @@ Do you want to continue anyway?</translation>
         <location filename="openlp/plugins/alerts/alertsplugin.py" line="109"/>
         <source>Alert</source>
         <comment>name singular</comment>
-        <translation type="unfinished">Alert</translation>
+        <translation>Alert</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/alertsplugin.py" line="110"/>
         <source>Alerts</source>
         <comment>name plural</comment>
-        <translation type="unfinished">Alerts</translation>
+        <translation>Alerts</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/alertsplugin.py" line="114"/>
         <source>Alerts</source>
         <comment>container title</comment>
-        <translation type="unfinished">Alerts</translation>
+        <translation>Alerts</translation>
     </message>
 </context>
 <context>
@@ -268,24 +269,24 @@ Do you want to continue anyway?</translation>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="124"/>
         <source>Bible</source>
         <comment>name singular</comment>
-        <translation type="unfinished">Bible</translation>
+        <translation>Bible</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="125"/>
         <source>Bibles</source>
         <comment>name plural</comment>
-        <translation type="unfinished">Bibles</translation>
+        <translation>Bibles</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="129"/>
         <source>Bibles</source>
         <comment>container title</comment>
-        <translation type="unfinished">Bibles</translation>
+        <translation>Bibles</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/http.py" line="456"/>
         <source>No Book Found</source>
-        <translation type="unfinished">No Book Found</translation>
+        <translation>No Book Found</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/http.py" line="456"/>
@@ -775,7 +776,7 @@ demand and thus an internet connection is required.</translation>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="118"/>
         <source>Ed&amp;it All</source>
-        <translation type="unfinished">Ed&amp;it All</translation>
+        <translation>Ed&amp;it All</translation>
     </message>
 </context>
 <context>
@@ -824,19 +825,19 @@ demand and thus an internet connection is required.</translation>
         <location filename="openlp/plugins/custom/customplugin.py" line="100"/>
         <source>Custom</source>
         <comment>name singular</comment>
-        <translation type="unfinished">Custom</translation>
+        <translation>Custom</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="101"/>
         <source>Customs</source>
         <comment>name plural</comment>
-        <translation type="unfinished">Customs</translation>
+        <translation>Customs</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="105"/>
         <source>Custom</source>
         <comment>container title</comment>
-        <translation type="unfinished">Custom</translation>
+        <translation>Custom</translation>
     </message>
 </context>
 <context>
@@ -885,19 +886,19 @@ demand and thus an internet connection is required.</translation>
         <location filename="openlp/plugins/images/imageplugin.py" line="63"/>
         <source>Image</source>
         <comment>name singular</comment>
-        <translation type="unfinished">Image</translation>
+        <translation>Image</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/imageplugin.py" line="64"/>
         <source>Images</source>
         <comment>name plural</comment>
-        <translation type="unfinished">Images</translation>
+        <translation>Images</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/imageplugin.py" line="68"/>
         <source>Images</source>
         <comment>container title</comment>
-        <translation type="unfinished">Images</translation>
+        <translation>Images</translation>
     </message>
 </context>
 <context>
@@ -994,19 +995,19 @@ Do you want to add the other images anyway?</translation>
         <location filename="openlp/plugins/media/mediaplugin.py" line="105"/>
         <source>Media</source>
         <comment>name singular</comment>
-        <translation type="unfinished">Media</translation>
+        <translation>Media</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/mediaplugin.py" line="106"/>
         <source>Media</source>
         <comment>name plural</comment>
-        <translation type="unfinished">Media</translation>
+        <translation>Media</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/mediaplugin.py" line="110"/>
         <source>Media</source>
         <comment>container title</comment>
-        <translation type="unfinished">Media</translation>
+        <translation>Media</translation>
     </message>
 </context>
 <context>
@@ -1034,7 +1035,7 @@ Do you want to add the other images anyway?</translation>
     <message>
         <location filename="openlp/plugins/media/lib/mediaitem.py" line="104"/>
         <source>You must select a media file to replace the background with.</source>
-        <translation type="unfinished">You must select a media file to replace the background with.</translation>
+        <translation>You must select a media file to replace the background with.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/lib/mediaitem.py" line="114"/>
@@ -1151,7 +1152,7 @@ Translators
         %s
     Japanese (ja)
         %s
-    Norwegian Bokm&#xe5;l (nb)
+    Norwegian Bokmål (nb)
         %s
     Dutch (nl)
         %s
@@ -1244,8 +1245,8 @@ Final Credit
     </message>
     <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="224"/>
-        <source>Copyright &#xa9; 2004-2011 Raoul Snyman
-Portions copyright &#xa9; 2004-2011 Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri,
+        <source>Copyright © 2004-2011 Raoul Snyman
+Portions copyright © 2004-2011 Tim Bentley, Jonathan Corwin, Michael Gorven, Scott Guerrieri,
 Meinert Jordan, Andreas Preikschat, Christian Richter, Philip
 Ridout, Maikel Stuivenberg, Martin Thompson, Jon Tibble, Carsten
 Tinggaard, Frode Woldsund</source>
@@ -1717,7 +1718,7 @@ To cancel the First Time Wizard completely, press the finish button now.</transl
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="258"/>
         <source>Select default theme:</source>
-        <translation type="unfinished">Select default theme:</translation>
+        <translation>Select default theme:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="260"/>
@@ -2888,7 +2889,7 @@ The content encoding is not UTF-8.</translation>
     <message>
         <location filename="openlp/core/ui/themeform.py" line="488"/>
         <source>Select Image</source>
-        <translation type="unfinished">Select Image</translation>
+        <translation>Select Image</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themeform.py" line="570"/>
@@ -2913,7 +2914,7 @@ The content encoding is not UTF-8.</translation>
     <message>
         <location filename="openlp/core/ui/themeform.py" line="213"/>
         <source>(%d lines per slide)</source>
-        <translation type="unfinished">(%d lines per slide)</translation>
+        <translation>(%d lines per slide)</translation>
     </message>
 </context>
 <context>
@@ -3136,12 +3137,12 @@ The content encoding is not UTF-8.</translation>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="422"/>
         <source>Solid Color</source>
-        <translation type="unfinished">Solid Colour</translation>
+        <translation>Solid Colour</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="424"/>
         <source>Gradient</source>
-        <translation type="unfinished">Gradient</translation>
+        <translation>Gradient</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="474"/>
@@ -3151,22 +3152,22 @@ The content encoding is not UTF-8.</translation>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="433"/>
         <source>Gradient:</source>
-        <translation type="unfinished">Gradient:</translation>
+        <translation>Gradient:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="435"/>
         <source>Horizontal</source>
-        <translation type="unfinished">Horizontal</translation>
+        <translation>Horizontal</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="437"/>
         <source>Vertical</source>
-        <translation type="unfinished">Vertical</translation>
+        <translation>Vertical</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="439"/>
         <source>Circular</source>
-        <translation type="unfinished">Circular</translation>
+        <translation>Circular</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="441"/>
@@ -3191,12 +3192,12 @@ The content encoding is not UTF-8.</translation>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="473"/>
         <source>Font:</source>
-        <translation type="unfinished">Font:</translation>
+        <translation>Font:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="475"/>
         <source>Size:</source>
-        <translation type="unfinished">Size:</translation>
+        <translation>Size:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="455"/>
@@ -3216,7 +3217,7 @@ The content encoding is not UTF-8.</translation>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="465"/>
         <source>Bold</source>
-        <translation type="unfinished">Bold</translation>
+        <translation>Bold</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="466"/>
@@ -3251,17 +3252,17 @@ The content encoding is not UTF-8.</translation>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="484"/>
         <source>Left</source>
-        <translation type="unfinished">Left</translation>
+        <translation>Left</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="486"/>
         <source>Right</source>
-        <translation type="unfinished">Right</translation>
+        <translation>Right</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="488"/>
         <source>Center</source>
-        <translation type="unfinished">Centre</translation>
+        <translation>Centre</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="492"/>
@@ -3286,37 +3287,37 @@ The content encoding is not UTF-8.</translation>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="512"/>
         <source>X position:</source>
-        <translation type="unfinished">X position:</translation>
+        <translation>X position:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="524"/>
         <source>px</source>
-        <translation type="unfinished">px</translation>
+        <translation>px</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="515"/>
         <source>Y position:</source>
-        <translation type="unfinished">Y position:</translation>
+        <translation>Y position:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="518"/>
         <source>Width:</source>
-        <translation type="unfinished">Width:</translation>
+        <translation>Width:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="522"/>
         <source>Height:</source>
-        <translation type="unfinished">Height:</translation>
+        <translation>Height:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="526"/>
         <source>Use default location</source>
-        <translation type="unfinished">Use default location</translation>
+        <translation>Use default location</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="528"/>
         <source>Save and Preview</source>
-        <translation type="unfinished">Save and Preview</translation>
+        <translation>Save and Preview</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="530"/>
@@ -3397,12 +3398,12 @@ The content encoding is not UTF-8.</translation>
     <message>
         <location filename="openlp/core/lib/ui.py" line="55"/>
         <source>Error</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="52"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished">&amp;Delete</translation>
+        <translation>&amp;Delete</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="204"/>
@@ -3422,32 +3423,32 @@ The content encoding is not UTF-8.</translation>
     <message>
         <location filename="openlp/core/lib/ui.py" line="44"/>
         <source>&amp;Add</source>
-        <translation type="unfinished">&amp;Add</translation>
+        <translation>&amp;Add</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="45"/>
         <source>Advanced</source>
-        <translation type="unfinished">Advanced</translation>
+        <translation>Advanced</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="46"/>
         <source>All Files</source>
-        <translation type="unfinished">All Files</translation>
+        <translation>All Files</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="51"/>
         <source>Create a new service.</source>
-        <translation type="unfinished">Create a new service.</translation>
+        <translation>Create a new service.</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="53"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished">&amp;Edit</translation>
+        <translation>&amp;Edit</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="60"/>
         <source>Import</source>
-        <translation type="unfinished">Import</translation>
+        <translation>Import</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="61"/>
@@ -3457,12 +3458,12 @@ The content encoding is not UTF-8.</translation>
     <message>
         <location filename="openlp/core/lib/ui.py" line="62"/>
         <source>Live</source>
-        <translation type="unfinished">Live</translation>
+        <translation>Live</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="65"/>
         <source>Load</source>
-        <translation type="unfinished">Load</translation>
+        <translation>Load</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="67"/>
@@ -3472,32 +3473,32 @@ The content encoding is not UTF-8.</translation>
     <message>
         <location filename="openlp/core/lib/ui.py" line="68"/>
         <source>New Service</source>
-        <translation type="unfinished">New Service</translation>
+        <translation>New Service</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="75"/>
         <source>OpenLP 2.0</source>
-        <translation type="unfinished">OpenLP 2.0</translation>
+        <translation>OpenLP 2.0</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="76"/>
         <source>Open Service</source>
-        <translation type="unfinished">Open Service</translation>
+        <translation>Open Service</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="77"/>
         <source>Preview</source>
-        <translation type="unfinished">Preview</translation>
+        <translation>Preview</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="80"/>
         <source>Replace Background</source>
-        <translation type="unfinished">Replace Background</translation>
+        <translation>Replace Background</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="81"/>
         <source>Replace Live Background</source>
-        <translation type="unfinished">Replace Live Background</translation>
+        <translation>Replace Live Background</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="82"/>
@@ -3507,17 +3508,17 @@ The content encoding is not UTF-8.</translation>
     <message>
         <location filename="openlp/core/lib/ui.py" line="83"/>
         <source>Reset Live Background</source>
-        <translation type="unfinished">Reset Live Background</translation>
+        <translation>Reset Live Background</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="89"/>
         <source>Save Service</source>
-        <translation type="unfinished">Save Service</translation>
+        <translation>Save Service</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="90"/>
         <source>Service</source>
-        <translation type="unfinished">Service</translation>
+        <translation>Service</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="91"/>
@@ -3532,27 +3533,27 @@ The content encoding is not UTF-8.</translation>
     <message>
         <location filename="openlp/core/lib/ui.py" line="94"/>
         <source>Top</source>
-        <translation type="unfinished">Top</translation>
+        <translation>Top</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="66"/>
         <source>Middle</source>
-        <translation type="unfinished">Middle</translation>
+        <translation>Middle</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="47"/>
         <source>Bottom</source>
-        <translation type="unfinished">Bottom</translation>
+        <translation>Bottom</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="43"/>
         <source>About</source>
-        <translation type="unfinished">About</translation>
+        <translation>About</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="48"/>
         <source>Browse...</source>
-        <translation type="unfinished">Browse...</translation>
+        <translation>Browse...</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="49"/>
@@ -3562,7 +3563,7 @@ The content encoding is not UTF-8.</translation>
     <message>
         <location filename="openlp/core/lib/ui.py" line="50"/>
         <source>CCLI number:</source>
-        <translation type="unfinished">CCLI number:</translation>
+        <translation>CCLI number:</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="54"/>
@@ -3578,12 +3579,12 @@ The content encoding is not UTF-8.</translation>
         <location filename="openlp/core/lib/ui.py" line="57"/>
         <source>pt</source>
         <comment>Abbreviated font pointsize unit</comment>
-        <translation type="unfinished">pt</translation>
+        <translation>pt</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="59"/>
         <source>Image</source>
-        <translation type="unfinished">Image</translation>
+        <translation>Image</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="63"/>
@@ -3598,7 +3599,7 @@ The content encoding is not UTF-8.</translation>
     <message>
         <location filename="openlp/core/lib/ui.py" line="69"/>
         <source>New Theme</source>
-        <translation type="unfinished">New Theme</translation>
+        <translation>New Theme</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="70"/>
@@ -3622,12 +3623,12 @@ The content encoding is not UTF-8.</translation>
         <location filename="openlp/core/lib/ui.py" line="73"/>
         <source>No Items Selected</source>
         <comment>Plural</comment>
-        <translation type="unfinished">No Items Selected</translation>
+        <translation>No Items Selected</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="74"/>
         <source>openlp.org 1.x</source>
-        <translation type="unfinished">openlp.org 1.x</translation>
+        <translation>openlp.org 1.x</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="78"/>
@@ -3643,39 +3644,39 @@ The content encoding is not UTF-8.</translation>
         <location filename="openlp/core/lib/ui.py" line="84"/>
         <source>s</source>
         <comment>The abbreviated unit for seconds</comment>
-        <translation type="unfinished">s</translation>
+        <translation>s</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="85"/>
         <source>Save &amp;&amp; Preview</source>
-        <translation type="unfinished">Save &amp;&amp; Preview</translation>
+        <translation>Save &amp;&amp; Preview</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="86"/>
         <source>Search</source>
-        <translation type="unfinished">Search</translation>
+        <translation>Search</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="87"/>
         <source>You must select an item to delete.</source>
-        <translation type="unfinished">You must select an item to delete.</translation>
+        <translation>You must select an item to delete.</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="88"/>
         <source>You must select an item to edit.</source>
-        <translation type="unfinished">You must select an item to edit.</translation>
+        <translation>You must select an item to edit.</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="92"/>
         <source>Theme</source>
         <comment>Singular</comment>
-        <translation type="unfinished">Theme</translation>
+        <translation>Theme</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="93"/>
         <source>Themes</source>
         <comment>Plural</comment>
-        <translation type="unfinished">Themes</translation>
+        <translation>Themes</translation>
     </message>
     <message>
         <location filename="openlp/core/lib/ui.py" line="95"/>
@@ -3685,27 +3686,27 @@ The content encoding is not UTF-8.</translation>
     <message>
         <location filename="openlp/core/ui/wizard.py" line="59"/>
         <source>Finished import.</source>
-        <translation type="unfinished">Finished import.</translation>
+        <translation>Finished import.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/wizard.py" line="60"/>
         <source>Format:</source>
-        <translation type="unfinished">Format:</translation>
+        <translation>Format:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/wizard.py" line="62"/>
         <source>Importing</source>
-        <translation type="unfinished">Importing</translation>
+        <translation>Importing</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/wizard.py" line="63"/>
         <source>Importing &quot;%s&quot;...</source>
-        <translation type="unfinished">Importing &quot;%s&quot;...</translation>
+        <translation>Importing &quot;%s&quot;...</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/wizard.py" line="64"/>
         <source>Select Import Source</source>
-        <translation type="unfinished">Select Import Source</translation>
+        <translation>Select Import Source</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/wizard.py" line="65"/>
@@ -3715,7 +3716,7 @@ The content encoding is not UTF-8.</translation>
     <message>
         <location filename="openlp/core/ui/wizard.py" line="67"/>
         <source>The openlp.org 1.x importer has been disabled due to a missing Python module. If you want to use this importer, you will need to install the &quot;python-sqlite&quot; module.</source>
-        <translation type="unfinished">The openlp.org 1.x importer has been disabled due to a missing Python module. If you want to use this importer, you will need to install the &quot;python-sqlite&quot; module.</translation>
+        <translation>The openlp.org 1.x importer has been disabled due to a missing Python module. If you want to use this importer, you will need to install the &quot;python-sqlite&quot; module.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/wizard.py" line="71"/>
@@ -3725,17 +3726,17 @@ The content encoding is not UTF-8.</translation>
     <message>
         <location filename="openlp/core/ui/wizard.py" line="72"/>
         <source>%p%</source>
-        <translation type="unfinished">%p%</translation>
+        <translation>%p%</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/wizard.py" line="73"/>
         <source>Ready.</source>
-        <translation type="unfinished">Ready.</translation>
+        <translation>Ready.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="242"/>
         <source>Starting import...</source>
-        <translation type="unfinished">Starting import...</translation>
+        <translation>Starting import...</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/wizard.py" line="75"/>
@@ -3746,7 +3747,7 @@ The content encoding is not UTF-8.</translation>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="355"/>
         <source>Welcome to the Bible Import Wizard</source>
-        <translation type="unfinished">Welcome to the Bible Import Wizard</translation>
+        <translation>Welcome to the Bible Import Wizard</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/songexportform.py" line="167"/>
@@ -3756,7 +3757,7 @@ The content encoding is not UTF-8.</translation>
     <message>
         <location filename="openlp/plugins/songs/forms/songimportform.py" line="218"/>
         <source>Welcome to the Song Import Wizard</source>
-        <translation type="unfinished">Welcome to the Song Import Wizard</translation>
+        <translation>Welcome to the Song Import Wizard</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/ui.py" line="37"/>
@@ -3768,42 +3769,42 @@ The content encoding is not UTF-8.</translation>
         <location filename="openlp/plugins/songs/lib/ui.py" line="38"/>
         <source>Authors</source>
         <comment>Plural</comment>
-        <translation type="unfinished">Authors</translation>
+        <translation>Authors</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/ui.py" line="40"/>
-        <source>&#xa9;</source>
+        <source>©</source>
         <comment>Copyright symbol.</comment>
-        <translation type="unfinished">©</translation>
+        <translation>©</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/ui.py" line="41"/>
         <source>Song Book</source>
         <comment>Singular</comment>
-        <translation type="unfinished">Song Book</translation>
+        <translation>Song Book</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/ui.py" line="42"/>
         <source>Song Books</source>
         <comment>Plural</comment>
-        <translation type="unfinished">Song Books</translation>
+        <translation>Song Books</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/ui.py" line="43"/>
         <source>Song Maintenance</source>
-        <translation type="unfinished">Song Maintenance</translation>
+        <translation>Song Maintenance</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/ui.py" line="44"/>
         <source>Topic</source>
         <comment>Singular</comment>
-        <translation type="unfinished">Topic</translation>
+        <translation>Topic</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/ui.py" line="45"/>
         <source>Topics</source>
         <comment>Plural</comment>
-        <translation type="unfinished">Topics</translation>
+        <translation>Topics</translation>
     </message>
 </context>
 <context>
@@ -3850,19 +3851,19 @@ The content encoding is not UTF-8.</translation>
         <location filename="openlp/plugins/presentations/presentationplugin.py" line="159"/>
         <source>Presentation</source>
         <comment>name singular</comment>
-        <translation type="unfinished">Presentation</translation>
+        <translation>Presentation</translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/presentationplugin.py" line="161"/>
         <source>Presentations</source>
         <comment>name plural</comment>
-        <translation type="unfinished">Presentations</translation>
+        <translation>Presentations</translation>
     </message>
     <message>
         <location filename="openlp/plugins/presentations/presentationplugin.py" line="166"/>
         <source>Presentations</source>
         <comment>container title</comment>
-        <translation type="unfinished">Presentations</translation>
+        <translation>Presentations</translation>
     </message>
 </context>
 <context>
@@ -3952,13 +3953,13 @@ The content encoding is not UTF-8.</translation>
         <location filename="openlp/plugins/remotes/remoteplugin.py" line="81"/>
         <source>Remote</source>
         <comment>name singular</comment>
-        <translation type="unfinished">Remote</translation>
+        <translation>Remote</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/remoteplugin.py" line="82"/>
         <source>Remotes</source>
         <comment>name plural</comment>
-        <translation type="unfinished">Remotes</translation>
+        <translation>Remotes</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/remoteplugin.py" line="86"/>
@@ -4031,13 +4032,13 @@ The content encoding is not UTF-8.</translation>
         <location filename="openlp/plugins/songusage/songusageplugin.py" line="178"/>
         <source>SongUsage</source>
         <comment>name singular</comment>
-        <translation type="unfinished">SongUsage</translation>
+        <translation>SongUsage</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songusage/songusageplugin.py" line="180"/>
         <source>SongUsage</source>
         <comment>name plural</comment>
-        <translation type="unfinished">SongUsage</translation>
+        <translation>SongUsage</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songusage/songusageplugin.py" line="185"/>
@@ -4123,7 +4124,7 @@ has been successfully created. </translation>
     <message>
         <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="92"/>
         <source>Output Path Not Selected</source>
-        <translation type="unfinished">Output Path Not Selected</translation>
+        <translation>Output Path Not Selected</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songusage/forms/songusagedetailform.py" line="92"/>
@@ -4197,19 +4198,19 @@ has been successfully created. </translation>
         <location filename="openlp/plugins/songs/songsplugin.py" line="206"/>
         <source>Song</source>
         <comment>name singular</comment>
-        <translation type="unfinished">Song</translation>
+        <translation>Song</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="207"/>
         <source>Songs</source>
         <comment>name plural</comment>
-        <translation type="unfinished">Songs</translation>
+        <translation>Songs</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/songsplugin.py" line="211"/>
         <source>Songs</source>
         <comment>container title</comment>
-        <translation type="unfinished">Songs</translation>
+        <translation>Songs</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/__init__.py" line="211"/>
