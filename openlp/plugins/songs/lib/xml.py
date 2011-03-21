@@ -31,7 +31,7 @@ The basic XML for storing the lyrics in the song database looks like this::
     <?xml version="1.0" encoding="UTF-8"?>
     <song version="1.0">
         <lyrics>
-            <verse type="Chorus" label="1" lang="en">
+            <verse type="c" label="1" lang="en">
                 <![CDATA[ ... ]]>
             </verse>
         </lyrics>
@@ -89,8 +89,8 @@ class SongXML(object):
         Add a verse to the ``<lyrics>`` tag.
 
         ``type``
-            A string denoting the type of verse. Possible values are *Verse*,
-            *Chorus*, *Bridge*, *Pre-Chorus*, *Intro*, *Ending* and *Other*.
+            A string denoting the type of verse. Possible values are *v*,
+            *c*, *b*, *p*, *i*, *e* and *o*.
             Any other type is **not** allowed, this also includes translated
             types.
 
@@ -128,8 +128,8 @@ class SongXML(object):
 
         The returned list has the following format::
 
-            [[{'lang': 'en', 'type': 'Verse', 'label': '1'}, u"English verse"],
-            [{'lang': 'en', 'type': 'Chorus', 'label': '1'}, u"English chorus"]]
+            [[{'lang': 'en', 'type': 'v', 'label': '1'}, u"English verse"],
+            [{'lang': 'en', 'type': 'c', 'label': '1'}, u"English chorus"]]
         """
         self.song_xml = None
         if xml[:5] == u'<?xml':
@@ -451,10 +451,12 @@ class OpenLyrics(object):
                 if text:
                     text += u'\n'
                 text += u'\n'.join([unicode(line) for line in lines.line])
-            verse_name = self._get(verse, u'name')
-            verse_type_index = VerseType.from_tag(verse_name[0])
-            verse_type = VerseType.Names[verse_type_index]
-            verse_number = re.compile(u'[a-zA-Z]*').sub(u'', verse_name)
+            verse_def = self._get(verse, u'name').lower()
+            if verse_def[0] in VerseType.Tags:
+                verse_tag = verse_def[0]
+            else:
+                verse_tag = VerseType.Tags[VerseType.Other]
+            verse_number = re.compile(u'[a-zA-Z]*').sub(u'', verse_def)
             # OpenLyrics allows e. g. "c", but we need "c1". However, this does
             # not correct the verse order.
             if not verse_number:
@@ -462,7 +464,7 @@ class OpenLyrics(object):
             lang = None
             if self._get(verse, u'lang'):
                 lang = self._get(verse, u'lang')
-            sxml.add_verse_to_lyrics(verse_type, verse_number, text, lang)
+            sxml.add_verse_to_lyrics(verse_tag, verse_number, text, lang)
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
         # Process verse order
         if hasattr(properties, u'verseOrder'):

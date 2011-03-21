@@ -309,7 +309,7 @@ class SofImport(OooImport):
         self.add_verse(lyrics, tag)
         if not self.is_chorus and u'C1' in self.verse_order_list_generated:
             self.verse_order_list_generated.append(u'C1')
-            self.verse_order_list_generated_useful = True                    
+            self.verse_order_list_generated_useful = True
 
     def uncap_text(self, text):
         """
