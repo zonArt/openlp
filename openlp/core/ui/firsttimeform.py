@@ -169,6 +169,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         """
         self.displayComboBox.clear()
         self.displayComboBox.addItems(self.screens.get_screen_list())
+        self.displayComboBox.setCurrentIndex(self.displayComboBox.count() - 1)
 
     def _getFileSize(self, url):
         site = urllib.urlopen(url)
