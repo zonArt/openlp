@@ -116,8 +116,15 @@ dist_path = os.path.join(branch_path, u'dist', u'OpenLP')
 enchant_path = os.path.join(site_packages, u'enchant')
 
 def update_code():
-    print u'Updating the code...'
     os.chdir(branch_path)
+    print u'Reverting any changes to the code...'
+    bzr = Popen((u'bzr', u'revert'), stdout=PIPE)
+    output, error = bzr.communicate()
+    code = bzr.wait()
+    if code != 0:
+       print output
+       raise Exception(u'Error reverting the code')
+    print u'Updating the code...'
     bzr = Popen((u'bzr', u'update'), stdout=PIPE)
     output, error = bzr.communicate()
     code = bzr.wait()

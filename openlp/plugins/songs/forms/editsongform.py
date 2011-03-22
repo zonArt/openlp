@@ -543,8 +543,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
 
     def onVerseDeleteButtonClicked(self):
         self.verseListWidget.removeRow(self.verseListWidget.currentRow())
-        self.verseEditButton.setEnabled(False)
-        self.verseDeleteButton.setEnabled(False)
+        if not self.verseListWidget.selectedItems():
+            self.verseEditButton.setEnabled(False)
+            self.verseDeleteButton.setEnabled(False)
 
     def _validate_song(self):
         """

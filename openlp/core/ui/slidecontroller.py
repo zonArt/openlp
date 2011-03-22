@@ -46,7 +46,6 @@ class SlideList(QtGui.QTableWidget):
         QtGui.QTableWidget.__init__(self, parent.controller)
         self.parent = parent
 
-
 class SlideController(QtGui.QWidget):
     """
     SlideController is the slide controller widget. This widget is what the
@@ -117,7 +116,8 @@ class SlideController(QtGui.QWidget):
         self.previewListWidget.setColumnWidth(0, self.controller.width())
         self.previewListWidget.isLive = self.isLive
         self.previewListWidget.setObjectName(u'PreviewListWidget')
-        self.previewListWidget.setSelectionBehavior(1)
+        self.previewListWidget.setSelectionBehavior(
+            QtGui.QAbstractItemView.SelectRows)
         self.previewListWidget.setSelectionMode(
             QtGui.QAbstractItemView.SingleSelection)
         self.previewListWidget.setEditTriggers(
@@ -857,6 +857,7 @@ class SlideController(QtGui.QWidget):
                     self.serviceItem.bg_image_bytes = None
                 self.slidePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
             self.selectedRow = row
+            self.__checkUpdateSelectedSlide(row)
         Receiver.send_message(u'slidecontroller_%s_changed' % self.typePrefix,
             row)
 
