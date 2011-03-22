@@ -71,7 +71,7 @@ class VerseReferenceList(object):
                 continue
             prev = index - 1
             if self.verse_list[prev][u'version'] != verse[u'version']:
-                result = u'%s (%s)' % (result, verse[u'version'])
+                result = u'%s (%s)' % (result, self.verse_list[prev][u'version'])
             result = result + u', '
             if self.verse_list[prev][u'book'] != verse[u'book']:
                 result = u'%s%s %s:' % (result, verse[u'book'],

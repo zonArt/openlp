@@ -158,8 +158,6 @@ class Ui_FirstTimeWizard(object):
         self.displayComboBox = QtGui.QComboBox(self.defaultsPage)
         self.displayComboBox.setEditable(False)
         self.displayComboBox.setInsertPolicy(QtGui.QComboBox.NoInsert)
-        self.displayComboBox.setSizeAdjustPolicy(
-            QtGui.QComboBox.AdjustToContents)
         self.displayComboBox.setObjectName(u'displayComboBox')
         self.defaultsLayout.addRow(self.displayLabel, self.displayComboBox)
         self.themeLabel = QtGui.QLabel(self.defaultsPage)

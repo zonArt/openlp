@@ -50,6 +50,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
     def __init__(self, screens, parent=None):
         QtGui.QWizard.__init__(self, parent)
         self.setupUi(self)
+        self.screens = screens
         # check to see if we have web access
         self.web = u'http://openlp.org/files/frw/'
         self.config = SafeConfigParser()
@@ -57,11 +58,13 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         if self.webAccess:
             files = self.webAccess.read()
             self.config.readfp(io.BytesIO(files))
-        self.displayComboBox.addItems(screens.get_screen_list())
+        self.updateScreenListCombo()
         self.downloading = unicode(translate('OpenLP.FirstTimeWizard',
             'Downloading %s...'))
         QtCore.QObject.connect(self,
             QtCore.SIGNAL(u'currentIdChanged(int)'), self.onCurrentIdChanged)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'config_screen_changed'), self.updateScreenListCombo)
 
     def exec_(self, edit=False):
         """
@@ -158,6 +161,15 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             self._preWizard()
             self._performWizard()
             self._postWizard()
+
+    def updateScreenListCombo(self):
+        """
+        The user changed screen resolution or enabled/disabled more screens, so
+        we need to update the combo box.
+        """
+        self.displayComboBox.clear()
+        self.displayComboBox.addItems(self.screens.get_screen_list())
+        self.displayComboBox.setCurrentIndex(self.displayComboBox.count() - 1)
 
     def _getFileSize(self, url):
         site = urllib.urlopen(url)
