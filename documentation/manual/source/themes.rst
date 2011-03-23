@@ -152,7 +152,8 @@ The Delete Button:
 will delete a selected theme or by right-clicking your theme and selecting 
 the appropriate action.
 
-**Note:** deleting the currently selected global theme is not possible.
+**Note:** deleting the currently selected global theme or the 
+default theme is not possible.
 
 Exporting Themes
 ================
@@ -172,7 +173,8 @@ The fourth button in the Theme Manager:
 
 will allow you to Import an Exported theme. Click the Import button, select the
 folder and the theme file, and click OK. Your imported theme will be in the 
-Theme Manager. Import Theme will also handle version 1 Exports
+Theme Manager. Import Theme will also handle version 1 Exports. You will need to
+check your imported theme since many of the values will have been defaulted.
 
 Rename Theme
 ============

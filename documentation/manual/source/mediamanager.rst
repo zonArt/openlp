@@ -175,6 +175,9 @@ Manager.
 
 `Replace Live Background:` With an Image selected, clicking this button will 
 immediately replace the live background being displayed with your selection.
+The Image will replace the theme background until the theme changes or the 
+"Remove Background" button is pressed.
+
 
 Right clicking on an Image file will bring up some of the same options.
 

@@ -74,23 +74,14 @@ CCLI Details
 If you subscribe to CCLI, this box is for your License number. This number is
 also displayed in the Song Footer box.
 
-**SongSelect username** 
-
-Enter your username for SongSelect.
-
-**SongSelect password**
-
-Enter your password for SongSelect. The username and password entries will let 
-you automatically login to SongSelect web site through OpenLP.
-
 Display Position
 ^^^^^^^^^^^^^^^^
-This setting will default to your computer monitor. It also overrides the
-output display combo box.  If your projector display is different, select the
-Override display position and make the changes here to match your projector 
-display. This option also comes in handy when you have the "Display if a single 
-screen" box selected. You can make the display smaller so it does not cover your 
-whole screen.
+This setting will default to your computer monitor. It will override the output 
+display combo box.  If your projector display is different, select the Override 
+display position and make the changes here to match your projector display. This 
+option also comes in handy when you have the "Display if a single screen" box 
+selected. You can make the display smaller so it does not cover your whole 
+screen.
 
 Themes Tab
 ==========
@@ -114,9 +105,7 @@ Choose from one of three options for the default use of your theme.
 With this level selected, your theme is associated with the song. The theme is
 controlled by adding or editing a song in the Song editor and  your song theme
 takes priority. If your song does not have a theme associated with it, OpenLP
-will use the theme set in the Service Manager. If you do not associate a theme
-when adding Bible verses to the Service Manager, the verses will default to the
-theme use in the Service Manager.
+will use the theme set in the Service Manager.
 
 **Service Level:** 
 
@@ -151,7 +140,7 @@ was closed on.
 **Double-click to send items straight to live:**
 
 With this box selected, double-clicking on anything in the Media Manager will
-immediately send it live.
+immediately send it live instead of to Preview.
 
 **Expand new service items on creation:**
 
@@ -188,9 +177,11 @@ Manager if you add it again.
 
 **Add missing songs when opening service:**
 
-With this box selected, if you open an order of service created on another
+With this box selected, when you open an order of service created on another
 computer, or if one of the songs are no longer in your Media Manager, it will
-automatically enter the song in your Songs Media Manager. 
+automatically enter the song in your Songs Media Manager. If this box is not 
+checked, the song is available in the service but will not be added to the 
+Media Manager.
 
 Bibles Tab
 ==========
@@ -227,7 +218,8 @@ if chapter is selected to show above.
 
 OpenLP has the ability to display the same verse in two different Bible
 versions for comparison. With this option selected, there will be a Second
-choice in the Bible Media Manager to use this option.   
+choice in the Bible Media Manager to use this option. Verses will display with 
+one verse per slide with the second Bible verse below.   
 
 **Bible theme:**
 
@@ -250,7 +242,7 @@ presentations, and use Impress, PowerPoint, or PowerPoint Viewer to display
 them and they are controlled from within OpenLP. Please remember that in order
 to use this function, you must have Impress, PowerPoint or PowerPoint Viewer
 installed on your computer because OpenLP uses these programs to open and run
-the presentation. You may select your default controller here in this tab. 
+the presentation. You may select your default controllers here in this tab. 
 
 Advanced
 ^^^^^^^^
@@ -327,16 +319,19 @@ screen, Top, Middle or Bottom.
 
 Your choices will be displayed here.
 
-Remotes Tab
+Remote Tab
 ===========
 
 .. image:: pics/configureremotes.png
 
 OpenLP gives you the ability to control your Service Manager from a remote
-computer through a web browser. For example, one use for this would be if you
-have a missionary with a PowerPoint presentation, it may be easier for that 
-missionary to remotely connect to your projection computer and change the
-slides when he wants to. 
+computer through a web browser. This was written actually for a nursery or day 
+care where a "come and get YYYY" message could be triggered remotely. It has
+now become an interface to control the whole service remotely.
+
+An example of one use for this would be if you have a missionary with a 
+PowerPoint presentation, it may be easier for that missionary to remotely 
+connect to your projection computer and change the slides when he wants to. 
 
 To use this feature you will need to be on a network, wired or wireless, know
 the IP address of the projection computer and enter that IP address and port 

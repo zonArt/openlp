@@ -127,8 +127,7 @@ OpenLP provides a Web Download method to import Bibles when you do not have a
 locally installed Bible available. The Web Download method registers the Bible
 in OpenLP like the other bibles only it downloads the verses as you need them.
 This import is not meant to be used as your sole source for Bibles, but rather
-as an emergency resource and, requires an internet connection.
-
+as another option and does require an internet connection.
 
 To use the web download feature select web download from the import wizard.
 
@@ -143,7 +142,6 @@ from where you get the best performance or has the translation you need.
 You can also select a proxy server if needed from the `Proxy Server` tab. Your
 network administrator will know if this is necessary, in most cases this will
 not be needed.
-
 
 .. image:: pics/webbibleproxy1.png
 
@@ -175,9 +173,3 @@ After you have selected the file locations you can click :guilabel:`Next`
 
 Click :guilabel:`Finish` and you should now be ready to use your imported CSV
 Bible
-
-
-
-
-
-
