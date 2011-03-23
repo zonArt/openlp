@@ -111,6 +111,7 @@ class ServiceItem(object):
         self.start_time = 0
         self.end_time = 0
         self.media_length = 0
+        self.from_service = False
         self._new_item()
 
     def _new_item(self):

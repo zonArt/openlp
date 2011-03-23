@@ -655,6 +655,7 @@ class SlideController(QtGui.QWidget):
         """
         Utility method to update the selected slide in the list.
         """
+        print "c", slideno
         if slideno > self.previewListWidget.rowCount():
             self.previewListWidget.selectRow(
                 self.previewListWidget.rowCount() - 1)
@@ -944,7 +945,6 @@ class SlideController(QtGui.QWidget):
             self.onSlideSelected()
 
     def __checkUpdateSelectedSlide(self, row):
-        print row, self.previewListWidget.rowCount()
         if row + 1 < self.previewListWidget.rowCount():
             self.previewListWidget.scrollToItem(
                 self.previewListWidget.item(row + 1, 0))
@@ -1014,8 +1014,12 @@ class SlideController(QtGui.QWidget):
         """
         row = self.previewListWidget.currentRow()
         if row > -1 and row < self.previewListWidget.rowCount():
-            self.parent.liveController.addServiceManagerItem(
-                self.serviceItem, row)
+            if self.serviceItem.from_service:
+                Receiver.send_message('servicemanager_preview_live',
+                    u'%s:%s' % (self.serviceItem._uuid, row))
+            else:
+                self.parent.liveController.addServiceManagerItem(
+                    self.serviceItem, row)
 
     def onMediaStart(self, item):
         """
