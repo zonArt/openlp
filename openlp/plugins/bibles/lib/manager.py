@@ -33,8 +33,8 @@ from openlp.core.lib import Receiver, SettingsManager, translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file
 from openlp.plugins.bibles.lib import parse_reference
-from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta, SpellingDB,  \
-    BiblesResourcesDB
+from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta, \
+    AlternativeBookNamesDB, BiblesResourcesDB
 from csvbible import CSVBible
 from http import HTTPBible
 from opensong import OpenSongBible
@@ -131,7 +131,7 @@ class BibleManager(object):
         self.suffix = u'.sqlite'
         self.import_wizard = None
         self.reload_bibles()
-        self.reload_spelling()
+        self.reload_alternative_book_names()
         self.media = None
 
     def reload_bibles(self):
@@ -169,16 +169,15 @@ class BibleManager(object):
                 self.db_cache[name] = web_bible
         log.debug(u'Bibles reloaded')
 
-    def reload_spelling(self):
+    def reload_alternative_book_names(self):
         """
-        Reloads the Spelling from the Spelling table and spelling_extension 
+        Reloads the alternative book names from the local alternative book names
         database on disk.
         """
-        log.debug(u'Reload spelling')
-        self.spelling_cache = {}
-        self.spelling_cache[u'spelling'] = SpellingDB(self.parent, 
+        log.debug(u'Reload AlternativeBookNames')
+        self.alternative_book_names_cache = AlternativeBookNamesDB(self.parent, 
             path=self.path)
-        log.debug(u'Spelling reloaded')
+        log.debug(u'AlternativeBookNames reloaded')
 
     def set_process_dialog(self, wizard):
         """
@@ -335,12 +334,13 @@ class BibleManager(object):
         if BiblesResourcesDB.get_book(book):
             book_temp = BiblesResourcesDB.get_book(book)
             book_id = book_temp[u'id']
-        elif BiblesResourcesDB.get_spelling(book, language_id):
-            book_id = BiblesResourcesDB.get_spelling(book, language_id)
-        elif self.spelling_cache[u'spelling'].get_book_reference_id(book, 
+        elif BiblesResourcesDB.get_alternative_book_name(book, language_id):
+            book_id = BiblesResourcesDB.get_alternative_book_name(book, 
+                language_id)
+        elif self.alternative_book_names_cache.get_book_reference_id(book, 
             language_id):
-            book_id = self.spelling_cache[u'spelling'].\
-                get_book_reference_id(book, language_id)
+            book_id = self.alternative_book_names_cache.get_book_reference_id(
+                book, language_id)
         else:   
             book_ref = self.parent.mediaItem.importRequest(u'book', book)
             log.debug(book_ref)
@@ -351,8 +351,8 @@ class BibleManager(object):
             else:
                 return None
             if book_id:
-                self.spelling_cache[u'spelling'].create_spelling(book, book_id, 
-                    language_id)
+                self.alternative_book_names_cache.create_alternative_book_name(
+                    book, book_id, language_id)
         if book_id:
             return book_id
         else:

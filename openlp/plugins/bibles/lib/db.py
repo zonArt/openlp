@@ -70,9 +70,9 @@ class Verse(BaseModel):
     """
     pass
 
-class Spelling(BaseModel):
+class AlternativeBookNames(BaseModel):
     """
-    Spelling model
+    Alternative Book Names model
     """
     pass
 
@@ -136,16 +136,17 @@ def init_schema(url):
     metadata.create_all(checkfirst=True)
     return session
 
-def init_schema_spelling_extension(url):
+def init_schema_alternative_book_names(url):
     """
-    Setup a spelling database connection and initialise the database schema.
+    Setup a alternative book names database connection and initialise the 
+    database schema.
 
     ``url``
         The database to setup.
     """
     session, metadata = init_db(url)
 
-    spelling_table = Table(u'spelling', metadata,
+    alternative_book_names_table = Table(u'alternative_book_names', metadata,
         Column(u'id', types.Integer, primary_key=True),
         Column(u'book_reference_id', types.Integer),
         Column(u'language_id', types.Integer),
@@ -153,9 +154,9 @@ def init_schema_spelling_extension(url):
     )
 
     try:
-        class_mapper(Spelling)
+        class_mapper(AlternativeBookNames)
     except UnmappedClassError:
-        mapper(Spelling, spelling_table)
+        mapper(AlternativeBookNames, alternative_book_names_table)
 
     metadata.create_all(checkfirst=True)
     return session
@@ -508,7 +509,7 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
     A wrapper class around a small SQLite database which contains the download
     resources, a biblelist from the different download resources, the books,
     chapter counts and verse counts for the web download Bibles, a language 
-    reference, the testament reference and some basic spelling variants. This 
+    reference, the testament reference and some alternative book names. This 
     class contains a singleton "cursor" so that only one connection to the 
     SQLite database is ever used.
     """
@@ -756,19 +757,20 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
             return None
 
     @staticmethod
-    def get_spelling(name, language_id=None):
+    def get_alternative_book_name(name, language_id=None):
         """
         Return a book_reference_id if the name matches.
         """
-        log.debug(u'BiblesResourcesDB.get_spelling("%s", "%s")', name, 
-            language_id)
+        log.debug(u'BiblesResourcesDB.get_alternative_book_name("%s", "%s")', 
+            name, language_id)
         if language_id:
             id = BiblesResourcesDB.run_sql(u'SELECT book_reference_id '
-                u'FROM spelling WHERE name = ? and language_id = ? ORDER BY id',
-                (name, language_id))
+                u'FROM alternative_book_names WHERE name = ? and language_id '
+                u'= ? ORDER BY id', (name, language_id))
         else:
             id = BiblesResourcesDB.run_sql(u'SELECT book_reference_id '
-                u'FROM spelling WHERE name = ? ORDER BY id', (name, ))
+                u'FROM alternative_book_names WHERE name = ? ORDER BY id', (
+                name, ))
         if id:
             return int(id[0][0])
         else:
@@ -834,9 +836,9 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
             })
         return testament_list
 
-class SpellingDB(QtCore.QObject, Manager):
+class AlternativeBookNamesDB(QtCore.QObject, Manager):
     """
-    This class represents a database-bound spelling. 
+    This class represents a database-bound alternative book names system. 
     """
 
     def __init__(self, parent, **kwargs):
@@ -853,18 +855,18 @@ class SpellingDB(QtCore.QObject, Manager):
             The name of the database. This is also used as the file name for
             SQLite databases.
         """
-        log.info(u'SpellingDB loaded')
+        log.info(u'AlternativeBookNamesDB loaded')
         QtCore.QObject.__init__(self)
         self.bible_plugin = parent
         if u'path' not in kwargs:
             raise KeyError(u'Missing keyword argument "path".')
         self.stop_import_flag = False
-        self.name = u'spelling_extension.sqlite'
+        self.name = u'alternative_book_names.sqlite'
         if not isinstance(self.name, unicode):
             self.name = unicode(self.name, u'utf-8')
         self.file = self.name
         Manager.__init__(self, u'bibles/resources', 
-            init_schema_spelling_extension, self.file)
+            init_schema_alternative_book_names, self.file)
         self.wizard = None
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
@@ -886,35 +888,36 @@ class SpellingDB(QtCore.QObject, Manager):
         ``language``
             The language for which should be searched
         """
-        log.debug(u'SpellingDB.get_book_reference_id("%s")', name)
+        log.debug(u'AlternativeBookNamesDB.get_book_reference_id("%s")', name)
         if language:
-            id = self.session.query(Spelling.book_reference_id)\
-                .filter(Spelling.name.like(name))\
-                .filter(Spelling.language_id.like(language)).first()
+            id = self.session.query(AlternativeBookNames.book_reference_id)\
+                .filter(AlternativeBookNames.name.like(name))\
+                .filter(AlternativeBookNames.language_id.like(language)).first()
         else:
-            id = self.get_object_filtered(Spelling.book_reference_id,
-                Spelling.name.like(name))
+            id = self.get_object_filtered(AlternativeBookNames.book_reference_id,
+                AlternativeBookNames.name.like(name))
         if not id:
             return None
         else:
             return id[0]
 
-    def create_spelling(self, name, book_reference_id, language_id):
+    def create_alternative_book_name(self, name, book_reference_id, 
+        language_id):
         """
-        Add a spelling to the database.
+        Add an alternative book name to the database.
 
         ``name``
-            The name of the spelling.
+            The name of the alternative book name.
 
         ``book_reference_id``
             The book_reference_id of the book.
 
         ``language_id``
-            The language which the spelling of the book name is.
+            The language to which the alternative book name belong.
         """
-        log.debug(u'SpellingDBcreate_spelling("%s", "%s", "%s"',  
-            name, book_reference_id, language_id)
-        spelling = Spelling.populate(name=name, 
+        log.debug(u'AlternativeBookNamesDB.create_alternative_book_name("%s", '
+            '"%s", "%s"', name, book_reference_id, language_id)
+        alternative_book_name = AlternativeBookNames.populate(name=name, 
             book_reference_id=book_reference_id, language_id=language_id)
-        self.save_object(spelling)
-        return spelling
+        self.save_object(alternative_book_name)
+        return alternative_book_name
