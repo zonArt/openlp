@@ -30,10 +30,11 @@ import os
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, SettingsManager, translate
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file
 from openlp.plugins.bibles.lib import parse_reference
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta, SpellingDB,  \
-    Spelling, BiblesResourcesDB
+    BiblesResourcesDB
 from csvbible import CSVBible
 from http import HTTPBible
 from opensong import OpenSongBible
@@ -223,14 +224,10 @@ class BibleManager(object):
         language_id = self.get_meta_data(bible, u'language_id')
         books = []
         for book in self.db_cache[bible].get_books():
-            book_id = self.get_book_ref_id_by_name(book.name, int(
-                language_id.value))
-            book_temp = BiblesResourcesDB.get_book_by_id(book_id)
-            book_ref = book_temp[u'name']
             books.append(
             {
                 u'name': book.name,
-                u'chapters': self.db_cache[bible].get_chapter_count(book_ref)
+                u'chapters': self.db_cache[bible].get_chapter_count(book.book_reference_id)
             })
         return books
 
@@ -240,8 +237,6 @@ class BibleManager(object):
         """
         log.debug(u'BibleManager.get_book_chapter_count ("%s", "%s")', bible, 
             book)
-        language_id = self.get_meta_data(bible, u'language_id')
-        book = self.get_book_ref(book, int(language_id.value))
         return self.db_cache[bible].get_chapter_count(book)
 
     def get_verse_count(self, bible, book, chapter):
@@ -251,11 +246,11 @@ class BibleManager(object):
         """
         log.debug(u'BibleManager.get_verse_count("%s", "%s", %s)',
             bible, book, chapter)
-        language_id = self.get_meta_data(bible, u'language_id')
-        book = self.get_book_ref(book, int(language_id.value))
-        return self.db_cache[bible].get_verse_count(book, chapter)
+        db_book = self.db_cache[bible].get_book(book)
+        book_ref_id = db_book.book_reference_id
+        return self.db_cache[bible].get_verse_count(book_ref_id, chapter)
 
-    def get_verses(self, bible, versetext, secondbible=False):
+    def get_verses(self, bible, versetext, firstbible=False):
         """
         Parses a scripture reference, fetches the verses from the Bible
         specified, and returns a list of ``Verse`` objects.
@@ -286,31 +281,29 @@ class BibleManager(object):
             return None
         reflist = parse_reference(versetext)
         if reflist:
-            # if we use a second bible we have to rename the book names
-            if secondbible:
-                log.debug(u'BibleManager.get_verses("secondbible true")')
-                meta =  self.db_cache[bible].get_object(BibleMeta, 
-                    u'language_id')
-                language_id = meta.value
-                new_reflist = []
-                for item in reflist:
-                    if item:
-                        book = self.get_book_ref(item[0])
-                        book_ref_id = self.parent.manager.\
-                            get_book_ref_id_by_name(book, language_id)
-                        book = self.db_cache[bible].get_book_by_book_ref_id(
-                            book_ref_id)
-                        new_reflist.append((book.name, item[1], item[2], 
-                            item[3]))
-                reflist = new_reflist
-            log.debug(u'BibleManager.get_verses("reflist: %s")', reflist)
-            en_reflist = []
+            new_reflist = []
             for item in reflist:
                 if item:
-                    book = self.get_book_ref(item[0])
-                    en_reflist.append((book, item[1], item[2], item[3]))
-            log.debug(u'BibleManager.get_verses("en_reflist: %s")', en_reflist)
-            return self.db_cache[bible].get_verses(reflist, en_reflist)
+                    if firstbible:
+                        db_book = self.db_cache[firstbible].get_book(item[0])
+                        db_book = self.db_cache[bible].get_book_by_book_ref_id(
+                            db_book.book_reference_id)
+                    else:
+                        db_book = self.db_cache[bible].get_book(item[0])
+                    if db_book:
+                        book_id = db_book.book_reference_id
+                        log.debug(u'Book name corrected to "%s"', db_book.name)
+                        new_reflist.append((book_id, item[1], item[2], 
+                            item[3]))
+                    else:
+                        log.debug(u'OpenLP failed to find book %s', item[0])
+                        critical_error_message_box(
+                            translate('BiblesPlugin', 'No Book Found'),
+                            translate('BiblesPlugin', 'No matching book '
+                            'could be found in this Bible. Check that you have '
+                            'spelled the name of the book correctly.'))
+            reflist = new_reflist
+            return self.db_cache[bible].get_verses(reflist)
         else:
             Receiver.send_message(u'openlp_information_message', {
                 u'title': translate('BiblesPlugin.BibleManager',
@@ -332,7 +325,8 @@ class BibleManager(object):
         log.debug(u'BibleManager.get_book_ref("%s", "%s")', book, language_id)
         book_id = self.get_book_ref_id_by_name(book, language_id)
         book_temp = BiblesResourcesDB.get_book_by_id(book_id)
-        log.debug(u'get_book_ref - Return:%s', book_temp[u'name'])
+        log.debug(u'BibleManager.get_book_ref("Return: %s")', 
+            book_temp[u'name'])
         return book_temp[u'name']
 
     def get_book_ref_id_by_name(self, book, language_id=None):
@@ -360,7 +354,6 @@ class BibleManager(object):
                 self.spelling_cache[u'spelling'].create_spelling(book, book_id, 
                     language_id)
         if book_id:
-            log.debug(u'get_book_ref_id_by_name - Return:%s', book_id)
             return book_id
         else:
             return None

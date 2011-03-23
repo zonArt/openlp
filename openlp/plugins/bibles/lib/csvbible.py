@@ -70,7 +70,7 @@ import chardet
 import csv
 
 from openlp.core.lib import Receiver, translate
-from openlp.plugins.bibles.lib.db import BibleDB, Testament, BiblesResourcesDB
+from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB#, Testament
 
 log = logging.getLogger(__name__)
 
@@ -87,13 +87,16 @@ class CSVBible(BibleDB):
         log.info(self.__class__.__name__)
         BibleDB.__init__(self, parent, **kwargs)
         self.parent = parent
+        #TODO: Delete unused code
+        '''
         try:
             self.testamentsfile = kwargs[u'testamentsfile']
         except KeyError:
             self.testamentsfile = None
+        '''
         self.booksfile = kwargs[u'booksfile']
         self.versesfile = kwargs[u'versefile']
-
+    '''
     def setup_testaments(self):
         """
         Overrides parent method so we can handle importing a testament file.
@@ -127,7 +130,7 @@ class CSVBible(BibleDB):
                 'BibleDB.Wizard', 'Importing testaments... done.')), 2)
         else:
             BibleDB.setup_testaments(self)
-
+    '''
     def do_import(self):
         """
         Import the bible books and verses.

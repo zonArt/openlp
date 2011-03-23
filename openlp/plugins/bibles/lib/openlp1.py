@@ -85,7 +85,8 @@ class OpenLP1Bible(BibleDB):
                     'failed' % self.filename)
                 return False
             book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
-            self.create_book(name, book_ref_id, book_details[u'testament_id'])
+            db_book = self.create_book(name, book_ref_id, 
+                book_details[u'testament_id'])
             # Update the progess bar.
             self.wizard.incrementProgressBar(WizardStrings.ImportingType % name)
             # Import the verses for this book.
@@ -99,7 +100,7 @@ class OpenLP1Bible(BibleDB):
                 chapter = int(verse[0])
                 verse_number = int(verse[1])
                 text = unicode(verse[2], u'cp1252')
-                self.create_verse(book_id, chapter, verse_number, text)
+                self.create_verse(db_book.id, chapter, verse_number, text)
                 Receiver.send_message(u'openlp_process_events')
             self.session.commit()
         connection.close()

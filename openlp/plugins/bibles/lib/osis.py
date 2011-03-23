@@ -92,7 +92,8 @@ class OSISBible(BibleDB):
         osis = None
         success = True
         last_chapter = 0
-        testament = 1
+        #TODO: Delete unused code
+        #testament = 1
         match_count = 0
         self.wizard.incrementProgressBar(translate('BiblesPlugin.OsisImport',
             'Detecting encoding (this may take a few minutes)...'))
@@ -128,15 +129,18 @@ class OSISBible(BibleDB):
                     verse_text = match.group(4)
                     if not db_book or db_book.name != self.books[book][0]:
                         log.debug(u'New book: "%s"', self.books[book][0])
-                        if book == u'Matt' or book == u'Jdt':
-                            testament += 1
-                        book_ref_id = self.parent.manager.get_book_ref_id_by_name(
+                        #TODO: Delete unused code
+                        #if book == u'Matt' or book == u'Jdt':
+                        #    testament += 1
+                        book_ref_id = self.parent.manager.\
+                            get_book_ref_id_by_name(
                             unicode(self.books[book][0]), language_id)
                         if not book_ref_id:
                             log.exception(u'Importing books from %s " '\
                                 'failed' % self.filename)
                             return False
-                        book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
+                        book_details = BiblesResourcesDB.get_book_by_id(
+                            book_ref_id)
                         db_book = self.create_book(
                             unicode(self.books[book][0]),
                             book_ref_id,
