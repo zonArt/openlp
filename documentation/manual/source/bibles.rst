@@ -61,7 +61,10 @@ Importing OSIS Bibles
 **About OSIS Formatted Bibles**
 
 OSIS is a format intended to provide a common format for Bibles. More
-information can be found out here: http://www.bibletechnologies.net/
+information can be found out here: http://www.bibletechnologies.net/ 
+
+If you have any software installed that is part of the Sword Project 
+http://www.crosswire.org/sword/index.jsp it can be easily converted.
 
 Importing OSIS files is very simple. Select your OSIS Bible file and click
 :guilabel:`Next`
@@ -76,11 +79,11 @@ some time to convert your Bibles so please be patient.
 Click :guilabel:`Finish` and you should be ready to use your OpenLP Version
 1 Bibles.
 
-If you have any software installed that is part of the Sword Project 
-http://www.crosswire.org/sword/index.jsp
-You can easily convert Bibles from that software to OSIS format. This will work
-in all platforms, but the command is case sensitive across all platforms. To
-convert a Bible you would type::
+You can use the commands below convert Bibles from that software to OSIS format. 
+
+The following commands are used in all platforms and the commands are case 
+sensitive across all platforms. To convert a Bible using Command Prompt in 
+Windows or a Terminal in Linux or MAC you would type::
 
     mod2osis biblename > biblename.osis
 
@@ -90,7 +93,9 @@ something similar to this::
     mod2osis KJV > kjv.osis
 
 You may also wish to dictate a file location for the conversion to place the 
-osis file for example:: mod2osis KJV > /home/user/bibles/kjv.osis
+osis file for example::
+
+    mod2osis KJV > /home/user/bibles/kjv.osis
 
 Importing OpenSong Bibles
 ^^^^^^^^^^^^^^^^^^^^^^^^^
