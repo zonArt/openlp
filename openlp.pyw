@@ -170,7 +170,9 @@ class OpenLP(QtGui.QApplication):
         has_run_wizard = QtCore.QSettings().value(
             u'general/has run wizard', QtCore.QVariant(False)).toBool()
         if not has_run_wizard:
-            FirstTimeForm(screens).exec_()
+            if FirstTimeForm(screens).exec_() == QtGui.QDialog.Accepted:
+                QtCore.QSettings().setValue(u'general/has run wizard',
+                    QtCore.QVariant(True))
         if os.name == u'nt':
             self.setStyleSheet(application_stylesheet)
         show_splash = QtCore.QSettings().value(
