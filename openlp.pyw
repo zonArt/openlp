@@ -27,6 +27,11 @@
 import os
 import sys
 import logging
+# Import uuid now, to avoid the rare bug described in the support system:
+# http://support.openlp.org/issues/102
+# If https://bugs.gentoo.org/show_bug.cgi?id=317557 is fixed, the import can be
+# removed.
+import uuid
 from optparse import OptionParser
 from traceback import format_exception
 from subprocess import Popen, PIPE
