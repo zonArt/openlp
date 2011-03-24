@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -112,32 +112,32 @@ class Ui_AboutDialog(object):
             u'Andreas "googol" Preikschat', u'Raoul "superfly" Snyman',
             u'Martin "mijiti" Thompson', u'Jon "Meths" Tibble']
         contributors = [u'Scott "sguerrieri" Guerrieri',
-            u'Meinert "m2j" Jordan', u'Armin "orangeshirt" K\xf6hler',
+            u'Matthias "matthub" Hub', u'Meinert "m2j" Jordan',
+            u'Armin "orangeshirt" K\xf6hler', u'Mattias "mahfiaz" P\xf5ldaru',
             u'Christian "crichter" Richter', u'Philip "Phill" Ridout',
             u'Jeffrey "whydoubt" Smith', u'Maikel Stuivenberg',
-            u'Carsten "catini" Tingaard', u'Frode "frodus" Woldsund']
+            u'Frode "frodus" Woldsund']
         testers = [u'Philip "Phill" Ridout', u'Wesley "wrst" Stout',
             u'John "jseagull1" Cegalis (lead)']
         packagers = ['Thomas "tabthorpe" Abthorpe (FreeBSD)',
             u'Tim "TRB143" Bentley (Fedora)',
-            u'Michael "cocooncrash" Gorven (Ubuntu)',
             u'Matthias "matthub" Hub (Mac OS X)',
-            u'Raoul "superfly" Snyman (Windows, Ubuntu)']
+            u'Stevan "StevanP" Pettit (Windows)',
+            u'Raoul "superfly" Snyman (Ubuntu)']
         translators = {
             u'af': [u'Johan "nuvolari" Mynhardt'],
             u'de': [u'Patrick "madmuffin" Br\xfcckner',
-                u'Meinert "m2j" Jordan',
-                u'Andreas "googol" Preikschat',
+                u'Meinert "m2j" Jordan', u'Andreas "googol" Preikschat',
                 u'Christian "crichter" Richter'],
             u'en_GB': [u'Tim "TRB143" Bentley', u'Jonathan "gushie" Corwin'],
             u'en_ZA': [u'Raoul "superfly" Snyman'],
             u'et': [u'Mattias "mahfiaz" P\xf5ldaru'],
             u'fr': [u'Stephan\xe9 "stbrunner" Brunner'],
-            u'hu': [u'Gyuris Gellért'],
+            u'hu': [u'Gyuris Gell\xe9t'],
             u'ja': [u'Kunio "Kunio" Nakamaru'],
             u'nb': [u'Atle "pendlaren" Weibell', u'Frode "frodus" Woldsund'],
             u'nl': [u'Arjen "typovar" van Voorst'],
-            u'pt_BR': [u'Rafael "rafaellerm" Lerm'],
+            u'pt_BR': [u'Rafael "rafaellerm" Lerm', u'Gustavo Bim'],
             u'ru': [u'Sergey "ratz" Ratz']
         }
         documentors = [u'Wesley "wrst" Stout',
