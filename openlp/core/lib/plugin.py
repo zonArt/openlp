@@ -32,6 +32,7 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver
 from openlp.core.lib.ui import UiStrings
+from openlp.core.utils import get_application_version
 
 log = logging.getLogger(__name__)
 
@@ -145,7 +146,10 @@ class Plugin(QtCore.QObject):
         self.textStrings = {}
         self.setPluginTextStrings()
         self.nameStrings = self.textStrings[StringContent.Name]
-        self.version = version if version else u'1.9.4'
+        if version:
+            self.version = version
+        else:
+            self.version = get_application_version()[u'version']
         self.settingsSection = self.name.lower()
         self.icon = None
         self.mediaItemClass = mediaItemClass

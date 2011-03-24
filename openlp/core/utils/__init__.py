@@ -33,6 +33,7 @@ import sys
 import time
 import urllib2
 from datetime import datetime
+from subprocess import Popen, PIPE
 
 from PyQt4 import QtGui, QtCore
 
@@ -50,6 +51,7 @@ log = logging.getLogger(__name__)
 IMAGES_FILTER = None
 UNO_CONNECTION_TYPE = u'pipe'
 #UNO_CONNECTION_TYPE = u'socket'
+APPLICATION_VERSION = u''
 
 class VersionThread(QtCore.QThread):
     """
@@ -205,6 +207,91 @@ def _get_frozen_path(frozen_option, non_frozen_option):
     if hasattr(sys, u'frozen') and sys.frozen == 1:
         return frozen_option
     return non_frozen_option
+
+def get_application_version(dev_version=False):
+    """
+    Returns the application version of the running instance of OpenLP::
+
+        {u'full': u'1.9.4-bzr1249', u'version': u'1.9.4', u'build': u'bzr1249'}
+
+    ``dev_version``
+        If ``True``, then it is assumed, that we are running a dev version and
+        attempt to receive the version number using bzr. **Note**, that this
+        argument is only important the first time the function is called.
+    """
+    global APPLICATION_VERSION
+    if APPLICATION_VERSION:
+        # We already know the version, so just return it.
+        return APPLICATION_VERSION
+    if dev_version:
+        # If we're running the dev version, let's use bzr to get the version.
+        try:
+            # If bzrlib is available, use it.
+            from bzrlib.branch import Branch
+            b = Branch.open_containing('.')[0]
+            b.lock_read()
+            try:
+                # Get the branch's latest revision number.
+                revno = b.revno()
+                # Convert said revision number into a bzr revision id.
+                revision_id = b.dotted_revno_to_revision_id((revno,))
+                # Get a dict of tags, with the revision id as the key.
+                tags = b.tags.get_reverse_tag_dict()
+                # Check if the latest
+                if revision_id in tags:
+                    full_version = u'%s' % tags[revision_id][0]
+                else:
+                    full_version = '%s-bzr%s' % \
+                        (sorted(b.tags.get_tag_dict().keys())[-1], revno)
+            finally:
+                b.unlock()
+        except:
+            # Otherwise run the command line bzr client.
+            bzr = Popen((u'bzr', u'tags', u'--sort', u'time'), stdout=PIPE)
+            output, error = bzr.communicate()
+            code = bzr.wait()
+            if code != 0:
+                raise Exception(u'Error running bzr tags')
+            lines = output.splitlines()
+            if len(lines) == 0:
+                tag = u'0.0.0'
+                revision = u'0'
+            else:
+                tag, revision = lines[-1].split()
+            bzr = Popen((u'bzr', u'log', u'--line', u'-r', u'-1'), stdout=PIPE)
+            output, error = bzr.communicate()
+            code = bzr.wait()
+            if code != 0:
+                raise Exception(u'Error running bzr log')
+            latest = output.split(u':')[0]
+            full_version = latest == revision and tag or \
+               u'%s-bzr%s' % (tag, latest)
+    else:
+        # We're not running the development version, let's use the file.
+        filepath = AppLocation.get_directory(AppLocation.VersionDir)
+        filepath = os.path.join(filepath, u'.version')
+        fversion = None
+        try:
+            fversion = open(filepath, u'r')
+            full_version = unicode(fversion.read()).rstrip()
+        except IOError:
+            log.exception('Error in version file.')
+            full_version = u'0.0.0-bzr000'
+        finally:
+            if fversion:
+                fversion.close()
+    bits = full_version.split(u'-')
+    APPLICATION_VERSION = {
+        u'full': full_version,
+        u'version': bits[0],
+        u'build': bits[1] if len(bits) > 1 else None
+    }
+    if APPLICATION_VERSION[u'build']:
+        log.info(u'Openlp version %s build %s',
+            APPLICATION_VERSION[u'version'], APPLICATION_VERSION[u'build'])
+    else:
+        log.info(u'Openlp version %s' % APPLICATION_VERSION[u'version'])
+    return APPLICATION_VERSION
 
 def check_latest_version(current_version):
     """

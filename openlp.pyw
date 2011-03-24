@@ -29,7 +29,6 @@ import sys
 import logging
 from optparse import OptionParser
 from traceback import format_exception
-from subprocess import Popen, PIPE
 
 from PyQt4 import QtCore, QtGui
 
@@ -40,7 +39,8 @@ from openlp.core.ui.firsttimelanguageform import FirstTimeLanguageForm
 from openlp.core.ui.firsttimeform import FirstTimeForm
 from openlp.core.ui.exceptionform import ExceptionForm
 from openlp.core.ui import SplashScreen, ScreenList
-from openlp.core.utils import AppLocation, LanguageManager, VersionThread
+from openlp.core.utils import AppLocation, LanguageManager, VersionThread, \
+    get_application_version
 
 log = logging.getLogger()
 
@@ -73,89 +73,12 @@ class OpenLP(QtGui.QApplication):
     """
     log.info(u'OpenLP Application Loaded')
 
-    def _get_version(self):
-        """
-        Load and store current Application Version
-        """
-        if u'--dev-version' in sys.argv or u'-d' in sys.argv:
-            # If we're running the dev version, let's use bzr to get the version
-            try:
-                # If bzrlib is availble, use it
-                from bzrlib.branch import Branch
-                b = Branch.open_containing('.')[0]
-                b.lock_read()
-                try:
-                    # Get the branch's latest revision number.
-                    revno = b.revno()
-                    # Convert said revision number into a bzr revision id.
-                    revision_id = b.dotted_revno_to_revision_id((revno,))
-                    # Get a dict of tags, with the revision id as the key.
-                    tags = b.tags.get_reverse_tag_dict()
-                    # Check if the latest
-                    if revision_id in tags:
-                        full_version = u'%s' % tags[revision_id][0]
-                    else:
-                        full_version = '%s-bzr%s' % \
-                            (sorted(b.tags.get_tag_dict().keys())[-1], revno)
-                finally:
-                    b.unlock()
-            except:
-                # Otherwise run the command line bzr client
-                bzr = Popen((u'bzr', u'tags', u'--sort', u'time'), stdout=PIPE)
-                output, error = bzr.communicate()
-                code = bzr.wait()
-                if code != 0:
-                    raise Exception(u'Error running bzr tags')
-                lines = output.splitlines()
-                if len(lines) == 0:
-                    tag = u'0.0.0'
-                    revision = u'0'
-                else:
-                    tag, revision = lines[-1].split()
-                bzr = Popen((u'bzr', u'log', u'--line', u'-r', u'-1'),
-                    stdout=PIPE)
-                output, error = bzr.communicate()
-                code = bzr.wait()
-                if code != 0:
-                    raise Exception(u'Error running bzr log')
-                latest = output.split(u':')[0]
-                full_version = latest == revision and tag or \
-                    u'%s-bzr%s' % (tag, latest)
-        else:
-            # We're not running the development version, let's use the file
-            filepath = AppLocation.get_directory(AppLocation.VersionDir)
-            filepath = os.path.join(filepath, u'.version')
-            fversion = None
-            try:
-                fversion = open(filepath, u'r')
-                full_version = unicode(fversion.read()).rstrip()
-            except IOError:
-                log.exception('Error in version file.')
-                full_version = u'0.0.0-bzr000'
-            finally:
-                if fversion:
-                    fversion.close()
-        bits = full_version.split(u'-')
-        app_version = {
-            u'full': full_version,
-            u'version': bits[0],
-            u'build': bits[1] if len(bits) > 1 else None
-        }
-        if app_version[u'build']:
-            log.info(
-                u'Openlp version %s build %s',
-                app_version[u'version'],
-                app_version[u'build']
-            )
-        else:
-            log.info(u'Openlp version %s' % app_version[u'version'])
-        return app_version
-
     def run(self):
         """
         Run the OpenLP application.
         """
-        app_version = self._get_version()
+        app_version = get_application_version(
+            u'--dev-version' in sys.argv or u'-d' in sys.argv)
         # provide a listener for widgets to reqest a screen update.
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlp_process_events'), self.processEvents)

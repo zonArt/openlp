@@ -46,6 +46,7 @@ class SlideList(QtGui.QTableWidget):
         QtGui.QTableWidget.__init__(self, parent.controller)
         self.parent = parent
 
+
 class SlideController(QtGui.QWidget):
     """
     SlideController is the slide controller widget. This widget is what the

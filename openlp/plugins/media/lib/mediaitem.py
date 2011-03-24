@@ -36,7 +36,7 @@ from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from PyQt4.phonon import Phonon
 
 log = logging.getLogger(__name__)
-    
+
 class MediaMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for Media Slides.
@@ -182,7 +182,7 @@ class MediaMediaItem(MediaManagerItem):
             if (datetime.now() - start).seconds > 5:
                 return False
         return True
-        
+
     def initialise(self):
         self.listView.clear()
         self.listView.setIconSize(QtCore.QSize(88, 50))
