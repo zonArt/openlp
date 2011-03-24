@@ -489,7 +489,11 @@ class MainDisplay(DisplayWidget):
             self.footer(serviceItem.foot_text)
         # if was hidden keep it hidden
         if self.hideMode and self.isLive:
-            self.hideDisplay(self.hideMode)
+            if QtCore.QSettings().value(u'general/auto unblank',
+                QtCore.QVariant(False)).toBool():
+                Receiver.send_message(u'slidecontroller_live_unblank')
+            else:
+                self.hideDisplay(self.hideMode)
         # display hidden for video end we have a new item so must be shown
         if self.videoHide and self.isLive:
             self.videoHide = False
