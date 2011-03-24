@@ -64,8 +64,7 @@ class Ui_PrintServiceDialog(object):
             'Options'))
         self.optionsButton.setToolButtonStyle(
             QtCore.Qt.ToolButtonTextBesideIcon)
-        self.optionsButton.setIcon(QtGui.QIcon(
-            build_icon(u':/system/system_configure.png')))
+        self.optionsButton.setIcon(build_icon(u':/system/system_configure.png'))
         self.optionsButton.setCheckable(True)
         self.toolbar.addWidget(self.optionsButton)
         self.closeButton = self.toolbar.addAction(
@@ -80,24 +79,23 @@ class Ui_PrintServiceDialog(object):
             translate('OpenLP.PrintServiceForm', 'Copy as HTML'))
         self.toolbar.addSeparator()
         self.zoomInButton = QtGui.QToolButton(self.toolbar)
-        self.zoomInButton.setIcon(QtGui.QIcon(
-            build_icon(u':/general/general_zoom_in.png')))
+        self.zoomInButton.setIcon(build_icon(u':/general/general_zoom_in.png'))
         self.zoomInButton.setToolTip(translate('OpenLP.PrintServiceForm',
             'Zoom In'))
         self.zoomInButton.setObjectName(u'zoomInButton')
         self.zoomInButton.setIconSize(QtCore.QSize(22, 22))
         self.toolbar.addWidget(self.zoomInButton)
         self.zoomOutButton = QtGui.QToolButton(self.toolbar)
-        self.zoomOutButton.setIcon(QtGui.QIcon(
-            build_icon(u':/general/general_zoom_out.png')))
+        self.zoomOutButton.setIcon(
+            build_icon(u':/general/general_zoom_out.png'))
         self.zoomOutButton.setToolTip(translate('OpenLP.PrintServiceForm',
             'Zoom Out'))
         self.zoomOutButton.setObjectName(u'zoomOutButton')
         self.zoomOutButton.setIconSize(QtCore.QSize(22, 22))
         self.toolbar.addWidget(self.zoomOutButton)
         self.zoomOriginalButton = QtGui.QToolButton(self.toolbar)
-        self.zoomOriginalButton.setIcon(QtGui.QIcon(
-            build_icon(u':/general/general_zoom_original.png')))
+        self.zoomOriginalButton.setIcon(
+            build_icon(u':/general/general_zoom_original.png'))
         self.zoomOriginalButton.setToolTip(translate('OpenLP.PrintServiceForm',
             'Zoom Original'))
         self.zoomOriginalButton.setObjectName(u'zoomOriginalButton')

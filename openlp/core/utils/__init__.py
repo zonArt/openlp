@@ -44,7 +44,7 @@ if sys.platform != u'win32' and sys.platform != u'darwin':
         XDG_BASE_AVAILABLE = False
 
 import openlp
-from openlp.core.lib import Receiver, translate
+from openlp.core.lib import Receiver, translate, check_directory_exists
 
 log = logging.getLogger(__name__)
 IMAGES_FILTER = None
@@ -146,8 +146,7 @@ class AppLocation(object):
         Return the path OpenLP stores all its data under.
         """
         path = AppLocation.get_directory(AppLocation.DataDir)
-        if not os.path.exists(path):
-            os.makedirs(path)
+        check_directory_exists(path)
         return path
 
     @staticmethod
@@ -157,8 +156,7 @@ class AppLocation(object):
         """
         data_path = AppLocation.get_data_path()
         path = os.path.join(data_path, section)
-        if not os.path.exists(path):
-            os.makedirs(path)
+        check_directory_exists(path)
         return path
 
 def _get_os_dir_path(dir_type):
