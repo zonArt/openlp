@@ -4,9 +4,9 @@
 * --------------------------------------------------------------------------- *
 * Copyright (c) 2008-2011 Raoul Snyman                                        *
 * Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      *
-* Gorven, Scott Guerrieri, Meinert Jordan, Armin K�hler, Andreas Preikschat,  *
-* Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  *
-* Tibble, Carsten Tinggaard, Frode Woldsund                                   *
+* Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        *
+* Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      *
+* Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             *
 * --------------------------------------------------------------------------- *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -22,7 +22,7 @@
 * Temple Place, Suite 330, Boston, MA 02111-1307 USA                          *
 ******************************************************************************/
 
-#define WIN32_LEAN_AND_MEAN  
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <string.h>
 #include <stdlib.h>
@@ -32,13 +32,13 @@
 #include <sys/stat.h>
 #include "pptviewlib.h"
 
-// Because of the callbacks used by SetWindowsHookEx, the memory used needs to 
-// be sharable across processes (the callbacks are done from a different 
+// Because of the callbacks used by SetWindowsHookEx, the memory used needs to
+// be sharable across processes (the callbacks are done from a different
 // process) Therefore use data_seg with RWS memory.
 //
 // See http://msdn.microsoft.com/en-us/library/aa366551(VS.85).aspx for
 // alternative method of holding memory, removing fixed limits which would allow
-// dynamic number of items, rather than a fixed number. Use a Local\ mapping, 
+// dynamic number of items, rather than a fixed number. Use a Local\ mapping,
 // since global has UAC issues in Vista.
 
 #pragma data_seg(".PPTVIEWLIB")
@@ -50,7 +50,7 @@ BOOL debug = FALSE;
 
 HINSTANCE hInstance = NULL;
 
-BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ulReasonForCall, 
+BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ulReasonForCall,
     LPVOID lpReserved)
 {
     hInstance = (HINSTANCE)hModule;
@@ -66,7 +66,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ulReasonForCall,
             //DEBUG("THREAD_DETACH\n");
             break;
         case DLL_PROCESS_DETACH:
-            // Clean up... hopefully there is only the one process attached? 
+            // Clean up... hopefully there is only the one process attached?
             // We'll find out soon enough during tests!
             DEBUG("PROCESS_DETACH\n");
             for (int i = 0; i < MAX_PPTS; i++)
@@ -94,10 +94,10 @@ DllExport BOOL CheckInstalled()
 // Open the PointPoint, count the slides and take a snapshot of each slide
 // for use in previews
 // previewpath is a prefix for the location to put preview images of each slide.
-// "<n>.bmp" will be appended to complete the path. E.g. "c:\temp\slide" would 
+// "<n>.bmp" will be appended to complete the path. E.g. "c:\temp\slide" would
 // create "c:\temp\slide1.bmp" slide2.bmp, slide3.bmp etc.
 // It will also create a *info.txt containing information about the ppt
-DllExport int OpenPPT(char *filename, HWND hParentWnd, RECT rect, 
+DllExport int OpenPPT(char *filename, HWND hParentWnd, RECT rect,
     char *previewPath)
 {
     STARTUPINFO si;
@@ -106,7 +106,7 @@ DllExport int OpenPPT(char *filename, HWND hParentWnd, RECT rect,
     int id;
 
     DEBUG("OpenPPT start: %s; %s\n", filename, previewPath);
-    DEBUG("OpenPPT start: %u; %i, %i, %i, %i\n", hParentWnd, rect.top, 
+    DEBUG("OpenPPT start: %u; %i, %i, %i, %i\n", hParentWnd, rect.top,
         rect.left, rect.bottom, rect.right);
     if (GetPPTViewerPath(cmdLine, sizeof(cmdLine)) == FALSE)
     {
@@ -166,9 +166,9 @@ DllExport int OpenPPT(char *filename, HWND hParentWnd, RECT rect,
     memset(&si, 0, sizeof(si));
     memset(&pi, 0, sizeof(pi));
     BOOL gotInfo = GetPPTInfo(id);
-    /* 
-     * I'd really like to just hook on the new threadid. However this always 
-     * gives error 87. Perhaps I'm hooking to soon? No idea... however can't 
+    /*
+     * I'd really like to just hook on the new threadid. However this always
+     * gives error 87. Perhaps I'm hooking to soon? No idea... however can't
      * wait since I need to ensure I pick up the WM_CREATE as this is the only
      * time the window can be resized in such away the content scales correctly
      *
@@ -186,7 +186,7 @@ DllExport int OpenPPT(char *filename, HWND hParentWnd, RECT rect,
         return -1;
     }
     pptView[id].state = PPT_STARTED;
-    Sleep(10); 
+    Sleep(10);
     if (!CreateProcess(NULL, cmdLine, NULL, NULL, FALSE, 0, 0, NULL, &si, &pi))
     {
         DEBUG("OpenPPT: CreateProcess failed\n");
@@ -218,24 +218,24 @@ DllExport int OpenPPT(char *filename, HWND hParentWnd, RECT rect,
                 DEBUG("OpenPPT: Step %d/%d\n", steps, pptView[id].steps);
                 steps++;
                 NextStep(id);
-            } 
+            }
             Sleep(10);
         }
         DEBUG("OpenPPT: Slides %d, Steps %d, first slide steps %d\n",
-            pptView[id].slideCount, pptView[id].steps, 
+            pptView[id].slideCount, pptView[id].steps,
             pptView[id].firstSlideSteps);
         for(int i = 1; i <= pptView[id].slideCount; i++)
         {
             DEBUG("OpenPPT: Slide %d = %d\n", i, pptView[id].slideNos[i]);
         }
         SavePPTInfo(id);
-        if (pptView[id].state == PPT_CLOSING 
+        if (pptView[id].state == PPT_CLOSING
             || pptView[id].slideCount <= 0)
         {
             ClosePPT(id);
             id=-1;
         }
-        else 
+        else
         {
                RestartShow(id);
         }
@@ -278,14 +278,14 @@ BOOL GetPPTInfo(int id)
         return FALSE;
     }
     fgets(buf, 100, pFile); // version == 1
-    fgets(buf, 100, pFile); 
+    fgets(buf, 100, pFile);
     if (fileStats.st_mtime != atoi(buf))
     {
         DEBUG("GetPPTInfo: date changed\n");
         fclose (pFile);
         return FALSE;
     }
-    fgets(buf, 100, pFile);    
+    fgets(buf, 100, pFile);
     if (fileStats.st_size != atoi(buf))
     {
         DEBUG("GetPPTInfo: size changed\n");
@@ -350,13 +350,13 @@ BOOL GetPPTViewerPath(char *pptViewerPath, int stringSize)
     LRESULT lResult;
 
     DEBUG("GetPPTViewerPath: start\n");
-    if ((RegOpenKeyEx(HKEY_CLASSES_ROOT, 
+    if ((RegOpenKeyEx(HKEY_CLASSES_ROOT,
         "PowerPointViewer.Show.12\\shell\\Show\\command", 0, KEY_READ, &hKey)
         != ERROR_SUCCESS)
-        && (RegOpenKeyEx(HKEY_CLASSES_ROOT, 
+        && (RegOpenKeyEx(HKEY_CLASSES_ROOT,
         "Applications\\PPTVIEW.EXE\\shell\\open\\command", 0, KEY_READ, &hKey)
         != ERROR_SUCCESS)
-        && (RegOpenKeyEx(HKEY_CLASSES_ROOT, 
+        && (RegOpenKeyEx(HKEY_CLASSES_ROOT,
         "Applications\\PPTVIEW.EXE\\shell\\Show\\command", 0, KEY_READ, &hKey)
         != ERROR_SUCCESS))
     {
@@ -364,7 +364,7 @@ BOOL GetPPTViewerPath(char *pptViewerPath, int stringSize)
     }
     dwType = REG_SZ;
     dwSize = (DWORD)stringSize;
-    lResult = RegQueryValueEx(hKey, NULL, NULL, &dwType, (LPBYTE)pptViewerPath, 
+    lResult = RegQueryValueEx(hKey, NULL, NULL, &dwType, (LPBYTE)pptViewerPath,
         &dwSize);
     RegCloseKey(hKey);
     if (lResult != ERROR_SUCCESS)
@@ -372,16 +372,16 @@ BOOL GetPPTViewerPath(char *pptViewerPath, int stringSize)
         return FALSE;
     }
     // remove "%1" from end of key value
-    pptViewerPath[strlen(pptViewerPath) - 4] = '\0';    
+    pptViewerPath[strlen(pptViewerPath) - 4] = '\0';
     DEBUG("GetPPTViewerPath: exit ok\n");
     return TRUE;
 }
 
-// Unhook the Windows hook 
+// Unhook the Windows hook
 void Unhook(int id)
 {
     DEBUG("Unhook: start %d\n", id);
-    if (pptView[id].hook != NULL)    
+    if (pptView[id].hook != NULL)
     {
         UnhookWindowsHookEx(pptView[id].hook);
     }
@@ -418,18 +418,18 @@ DllExport void ClosePPT(int id)
 DllExport void Resume(int id)
 {
     DEBUG("Resume: %d\n", id);
-    MoveWindow(pptView[id].hWnd, pptView[id].rect.left, 
-        pptView[id].rect.top, 
-        pptView[id].rect.right - pptView[id].rect.left, 
+    MoveWindow(pptView[id].hWnd, pptView[id].rect.left,
+        pptView[id].rect.top,
+        pptView[id].rect.right - pptView[id].rect.left,
         pptView[id].rect.bottom - pptView[id].rect.top, TRUE);
-    Unblank(id);                                
+    Unblank(id);
 }
 // Moves the show off the screen so it can't be seen
 DllExport void Stop(int id)
 {
     DEBUG("Stop:%d\n", id);
-    MoveWindow(pptView[id].hWnd, -32000, -32000, 
-        pptView[id].rect.right - pptView[id].rect.left, 
+    MoveWindow(pptView[id].hWnd, -32000, -32000,
+        pptView[id].rect.right - pptView[id].rect.left,
         pptView[id].rect.bottom - pptView[id].rect.top, TRUE);
 }
 
@@ -461,7 +461,7 @@ DllExport int GetCurrentSlide(int id)
     }
 }
 
-// Take a step forwards through the show 
+// Take a step forwards through the show
 DllExport void NextStep(int id)
 {
     DEBUG("NextStep:%d (%d)\n", id, pptView[id].currentSlide);
@@ -470,11 +470,11 @@ DllExport void NextStep(int id)
     {
         pptView[id].guess = pptView[id].currentSlide + 1;
     }
-    PostMessage(pptView[id].hWnd2, WM_MOUSEWHEEL, MAKEWPARAM(0, -WHEEL_DELTA), 
+    PostMessage(pptView[id].hWnd2, WM_MOUSEWHEEL, MAKEWPARAM(0, -WHEEL_DELTA),
         0);
 }
 
-// Take a step backwards through the show 
+// Take a step backwards through the show
 DllExport void PrevStep(int id)
 {
     DEBUG("PrevStep:%d (%d)\n", id, pptView[id].currentSlide);
@@ -482,16 +482,16 @@ DllExport void PrevStep(int id)
     {
         pptView[id].guess = pptView[id].currentSlide - 1;
     }
-    PostMessage(pptView[id].hWnd2, WM_MOUSEWHEEL, MAKEWPARAM(0, WHEEL_DELTA), 
+    PostMessage(pptView[id].hWnd2, WM_MOUSEWHEEL, MAKEWPARAM(0, WHEEL_DELTA),
         0);
 }
 
 // Blank the show (black screen)
 DllExport void Blank(int id)
-{    
+{
     // B just toggles blank on/off. However pressing any key unblanks.
-    // So send random unmapped letter first (say 'A'), then we can 
-    // better guarantee B will blank instead of trying to guess 
+    // So send random unmapped letter first (say 'A'), then we can
+    // better guarantee B will blank instead of trying to guess
     // whether it was already blank or not.
     DEBUG("Blank:%d\n", id);
     HWND h1 = GetForegroundWindow();
@@ -499,7 +499,7 @@ DllExport void Blank(int id)
     SetForegroundWindow(pptView[id].hWnd);
     SetFocus(pptView[id].hWnd);
     // slight pause, otherwise event triggering this call may grab focus back!
-    Sleep(50);    
+    Sleep(50);
     keybd_event((int)'A', 0, 0, 0);
     keybd_event((int)'A', 0, KEYEVENTF_KEYUP, 0);
     keybd_event((int)'B', 0, 0, 0);
@@ -507,21 +507,21 @@ DllExport void Blank(int id)
     SetForegroundWindow(h1);
     SetFocus(h2);
 }
-// Unblank the show 
+// Unblank the show
 DllExport void Unblank(int id)
-{    
+{
     DEBUG("Unblank:%d\n", id);
-    // Pressing any key resumes. 
+    // Pressing any key resumes.
     // For some reason SendMessage works for unblanking, but not blanking.
     SendMessage(pptView[id].hWnd2, WM_CHAR, 'A', 0);
 }
 
 // Go directly to a slide
 DllExport void GotoSlide(int id, int slideNo)
-{    
+{
     DEBUG("GotoSlide %i %i:\n", id, slideNo);
     // Did try WM_KEYDOWN/WM_CHAR/WM_KEYUP with SendMessage but didn't work
-    // perhaps I was sending to the wrong window? No idea. 
+    // perhaps I was sending to the wrong window? No idea.
     // Anyway fall back to keybd_event, which is OK as long we makesure
     // the slideshow has focus first
     char ch[10];
@@ -534,7 +534,7 @@ DllExport void GotoSlide(int id, int slideNo)
     SetForegroundWindow(pptView[id].hWnd);
     SetFocus(pptView[id].hWnd);
     // slight pause, otherwise event triggering this call may grab focus back!
-    Sleep(50);    
+    Sleep(50);
     for (int i=0; i<10; i++)
     {
         if (ch[i] == '\0') break;
@@ -550,11 +550,11 @@ DllExport void GotoSlide(int id, int slideNo)
 // Restart the show from the beginning
 DllExport void RestartShow(int id)
 {
-    // If we just go direct to slide one, then it remembers that all other 
-    // slides have been animated, so ends up just showing the completed slides 
-    // of those slides that have been animated next time we advance. 
-    // Only way I've found to get around this is to step backwards all the way 
-    // through. Lets move the window out of the way first so the audience 
+    // If we just go direct to slide one, then it remembers that all other
+    // slides have been animated, so ends up just showing the completed slides
+    // of those slides that have been animated next time we advance.
+    // Only way I've found to get around this is to step backwards all the way
+    // through. Lets move the window out of the way first so the audience
     // doesn't see this.
     DEBUG("RestartShow:%d\n", id);
     Stop(id);
@@ -604,20 +604,20 @@ LRESULT CALLBACK CbtProc(int nCode, WPARAM wParam, LPARAM lParam)
                 {
                     pptView[id].hWnd2 = hCurrWnd;
                 }
-                else        
+                else
                 {
                     pptView[id].hWnd = hCurrWnd;
                     CBT_CREATEWND* cw = (CBT_CREATEWND*)lParam;
-                    if (pptView[id].hParentWnd != NULL) 
+                    if (pptView[id].hParentWnd != NULL)
                     {
                         cw->lpcs->hwndParent = pptView[id].hParentWnd;
                     }
-                    cw->lpcs->cy = pptView[id].rect.bottom 
+                    cw->lpcs->cy = pptView[id].rect.bottom
                         - pptView[id].rect.top;
                     cw->lpcs->cx = pptView[id].rect.right
                         - pptView[id].rect.left;
-                    cw->lpcs->y = -32000; 
-                    cw->lpcs->x = -32000; 
+                    cw->lpcs->y = -32000;
+                    cw->lpcs->x = -32000;
                 }
                 if ((pptView[id].hWnd != NULL) && (pptView[id].hWnd2 != NULL))
                 {
@@ -633,12 +633,12 @@ LRESULT CALLBACK CbtProc(int nCode, WPARAM wParam, LPARAM lParam)
             }
         }
     }
-    return CallNextHookEx(hook, nCode, wParam, lParam); 
+    return CallNextHookEx(hook, nCode, wParam, lParam);
 }
 
 // This hook exists whilst the slideshow is loading but only listens on the
 // slideshows thread. It listens out for mousewheel events
-LRESULT CALLBACK GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam) 
+LRESULT CALLBACK GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
     HHOOK hook = NULL;
     MSG *pMSG = (MSG *)lParam;
@@ -653,7 +653,7 @@ LRESULT CALLBACK GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam)
             break;
         }
     }
-    if (id >= 0 && nCode == HC_ACTION && wParam == PM_REMOVE 
+    if (id >= 0 && nCode == HC_ACTION && wParam == PM_REMOVE
         && pMSG->message == WM_MOUSEWHEEL)
     {
         if (pptView[id].state != PPT_LOADED)
@@ -697,24 +697,24 @@ LRESULT CALLBACK CwpProc(int nCode, WPARAM wParam, LPARAM lParam){
                     && (pptView[id].previewPath != NULL
                     && strlen(pptView[id].previewPath) > 0))
                 {
-                    sprintf_s(filename, MAX_PATH, "%s%i.bmp", 
-                        pptView[id].previewPath, 
+                    sprintf_s(filename, MAX_PATH, "%s%i.bmp",
+                        pptView[id].previewPath,
                         pptView[id].currentSlide);
                     CaptureAndSaveWindow(cwp->hwnd, filename);
                 }
-                if (((cwp->wParam == 0) 
+                if (((cwp->wParam == 0)
                     || (pptView[id].slideNos[1] == cwp->wParam))
                     && (pptView[id].currentSlide > 0))
                 {
                     pptView[id].state = PPT_LOADED;
                     pptView[id].currentSlide = pptView[id].slideCount + 1;
-                } 
-                else 
+                }
+                else
                 {
-                    if (cwp->wParam > 0) 
+                    if (cwp->wParam > 0)
                     {
                         pptView[id].currentSlide = pptView[id].currentSlide + 1;
-                        pptView[id].slideNos[pptView[id].currentSlide] 
+                        pptView[id].slideNos[pptView[id].currentSlide]
                             = cwp->wParam;
                         pptView[id].slideCount = pptView[id].currentSlide;
                         pptView[id].lastSlideSteps = 0;
@@ -723,9 +723,9 @@ LRESULT CALLBACK CwpProc(int nCode, WPARAM wParam, LPARAM lParam){
             }
             else
             {
-                if (cwp->wParam > 0) 
+                if (cwp->wParam > 0)
                 {
-                    if(pptView[id].guess > 0 
+                    if(pptView[id].guess > 0
                         && pptView[id].slideNos[pptView[id].guess] == 0)
                     {
                         pptView[id].currentSlide = 0;
@@ -744,7 +744,7 @@ LRESULT CALLBACK CwpProc(int nCode, WPARAM wParam, LPARAM lParam){
                         pptView[id].currentSlide = pptView[id].guess;
                     }
                     pptView[id].guess = 0;
-                } 
+                }
             }
         }
         if ((pptView[id].state != PPT_CLOSED)
@@ -754,13 +754,13 @@ LRESULT CALLBACK CwpProc(int nCode, WPARAM wParam, LPARAM lParam){
             pptView[id].state = PPT_CLOSING;
         }
     }
-    return CallNextHookEx(hook, nCode, wParam, lParam); 
+    return CallNextHookEx(hook, nCode, wParam, lParam);
 }
 
 VOID CaptureAndSaveWindow(HWND hWnd, CHAR* filename)
 {
     HBITMAP hBmp;
-    if ((hBmp = CaptureWindow(hWnd)) == NULL) 
+    if ((hBmp = CaptureWindow(hWnd)) == NULL)
     {
         return;
     }
@@ -769,13 +769,13 @@ VOID CaptureAndSaveWindow(HWND hWnd, CHAR* filename)
     UINT uiBytesPerRow = 3 * client.right; // RGB takes 24 bits
     UINT uiRemainderForPadding;
 
-    if ((uiRemainderForPadding = uiBytesPerRow % sizeof(DWORD)) > 0) 
+    if ((uiRemainderForPadding = uiBytesPerRow % sizeof(DWORD)) > 0)
         uiBytesPerRow += (sizeof(DWORD) - uiRemainderForPadding);
 
     UINT uiBytesPerAllRows = uiBytesPerRow * client.bottom;
     PBYTE pDataBits;
 
-    if ((pDataBits = new BYTE[uiBytesPerAllRows]) != NULL) 
+    if ((pDataBits = new BYTE[uiBytesPerAllRows]) != NULL)
     {
         BITMAPINFOHEADER bmi = {0};
         BITMAPFILEHEADER bmf = {0};
@@ -801,13 +801,13 @@ VOID CaptureAndSaveWindow(HWND hWnd, CHAR* filename)
         // Writing:
         FILE* pFile;
         int err = fopen_s(&pFile, filename, "wb");
-        if (err == 0) 
+        if (err == 0)
         {
             fwrite(&bmf, sizeof(bmf), 1, pFile);
             fwrite(&bmi, sizeof(bmi), 1, pFile);
             fwrite(pDataBits, sizeof(BYTE), uiBytesPerAllRows, pFile);
             fclose(pFile);
-        } 
+        }
         delete [] pDataBits;
     }
     DeleteObject(hBmp);
@@ -822,25 +822,25 @@ HBITMAP CaptureWindow(HWND hWnd)
     RECT rcClient;
     GetClientRect(hWnd, &rcClient);
     if ((hImage = CreateCompatibleBitmap(hDC, rcClient.right, rcClient.bottom))
-        != NULL) 
+        != NULL)
     {
         HDC hMemDC;
         HBITMAP hDCBmp;
 
-        if ((hMemDC = CreateCompatibleDC(hDC)) != NULL) 
+        if ((hMemDC = CreateCompatibleDC(hDC)) != NULL)
         {
             hDCBmp = (HBITMAP)SelectObject(hMemDC, hImage);
             HMODULE hLib = LoadLibrary("User32");
             // PrintWindow works for windows outside displayable area
-            // but was only introduced in WinXP. BitBlt requires the window to  
+            // but was only introduced in WinXP. BitBlt requires the window to
             // be topmost and within the viewable area of the display
             if (GetProcAddress(hLib, "PrintWindow") == NULL)
             {
-                SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE); 
-                BitBlt(hMemDC, 0, 0, rcClient.right, rcClient.bottom, hDC, 0, 
+                SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE);
+                BitBlt(hMemDC, 0, 0, rcClient.right, rcClient.bottom, hDC, 0,
                     0, SRCCOPY);
-                SetWindowPos(hWnd, HWND_NOTOPMOST, -32000, -32000, 0, 0, 
-                    SWP_NOSIZE); 
+                SetWindowPos(hWnd, HWND_NOTOPMOST, -32000, -32000, 0, 0,
+                    SWP_NOSIZE);
             }
             else
             {
@@ -852,9 +852,9 @@ HBITMAP CaptureWindow(HWND hWnd)
         }
     }
     ReleaseDC(hWnd, hDC);
-    if (!bOk) 
+    if (!bOk)
     {
-        if (hImage) 
+        if (hImage)
         {
             DeleteObject(hImage);
             hImage = NULL;
