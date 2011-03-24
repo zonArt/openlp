@@ -145,7 +145,7 @@ class Plugin(QtCore.QObject):
         self.textStrings = {}
         self.setPluginTextStrings()
         self.nameStrings = self.textStrings[StringContent.Name]
-        self.version = version if version else u'1.9.4'
+        self.version = version if version else u'1.9.5'
         self.settingsSection = self.name.lower()
         self.icon = None
         self.mediaItemClass = mediaItemClass
