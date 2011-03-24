@@ -655,7 +655,6 @@ class SlideController(QtGui.QWidget):
         """
         Utility method to update the selected slide in the list.
         """
-        print "c", slideno
         if slideno > self.previewListWidget.rowCount():
             self.previewListWidget.selectRow(
                 self.previewListWidget.rowCount() - 1)
