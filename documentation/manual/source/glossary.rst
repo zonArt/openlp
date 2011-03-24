@@ -25,6 +25,12 @@ Each tab in the Media Manager is called a **Media Item**
 
 From the Media Manager you can send Media Items to the Preview or Live screens.
 
+Platform
+--------
+
+When the word platform is used, it is usually referring to your operating system,
+Windows, Linux or MAC OS.
+
 Preview 
 -------
 
