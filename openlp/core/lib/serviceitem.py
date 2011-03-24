@@ -183,8 +183,9 @@ class ServiceItem(object):
         else:
             log.error(u'Invalid value renderer :%s' % self.service_item_type)
         self.title = clean_tags(self.title)
-        # The footer should never be None, but to be compatible with older
-        # release of OpenLP, we have to correct this to avoid tracebacks.
+        # The footer should never be None, but to be compatible with a few
+        # nightly builds between 1.9.4 and 1.9.5, we have to correct this to
+        # avoid tracebacks.
         if self.raw_footer is None:
             self.raw_footer = []
         self.foot_text = \
@@ -448,3 +449,4 @@ class ServiceItem(object):
             return end
         else:
             return u'%s : %s' % (start, end)
+

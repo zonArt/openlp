@@ -131,7 +131,7 @@ class SongShowPlusImport(SongImport):
                         lengthDescriptor, = struct.unpack("B", songData.read(1))
                     data = songData.read(lengthDescriptor)
                     if blockKey == TITLE:
-                        self.title =  unicode(data, u'cp1252')
+                        self.title = unicode(data, u'cp1252')
                     elif blockKey == AUTHOR:
                         authors = data.split(" / ")
                         for author in authors:

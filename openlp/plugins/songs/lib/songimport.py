@@ -225,7 +225,7 @@ class SongImport(QtCore.QObject):
             self.verse_counts[verse_def[0]] = int(verse_def[1:])
         self.verses.append([verse_def, verse_text.rstrip(), lang])
         self.verse_order_list_generated.append(verse_def)
-        
+
     def repeat_verse(self):
         """
         Repeat the previous verse in the verse order
