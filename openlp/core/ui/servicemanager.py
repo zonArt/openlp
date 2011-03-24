@@ -481,16 +481,14 @@ class ServiceManager(QtGui.QWidget):
         # Usual Zip file cannot exceed 2GiB, file with Zip64 cannot be
         # extracted using unzip in UNIX.
         allow_zip_64 = (total_size > 2147483648 + len(service_content))
-        log.debug(u'ServiceManager.saveFile - allowZip64 is %s' %
-            allow_zip_64)
+        log.debug(u'ServiceManager.saveFile - allowZip64 is %s' % allow_zip_64)
         zip = None
         try:
             zip = zipfile.ZipFile(path_file_name, 'w', zipfile.ZIP_STORED,
                 allow_zip_64)
             # First we add service contents.
             # We save ALL filenames into ZIP using UTF-8.
-            zip.writestr(service_file_name.encode(u'utf-8'),
-                service_content)
+            zip.writestr(service_file_name.encode(u'utf-8'), service_content)
             # Finally add all the listed media files.
             for path_from in write_list:
                 zip.write(path_from, path_from.encode(u'utf-8'))
@@ -566,24 +564,27 @@ class ServiceManager(QtGui.QWidget):
                         Receiver.send_message(u'%s_service_load' %
                             serviceItem.name.lower(), serviceItem)
                 delete_file(p_file)
+                self.setFileName(fileName)
+                self.mainwindow.addRecentFile(fileName)
+                self.setModified(False)
+                QtCore.QSettings().setValue(
+                    'service/last file', QtCore.QVariant(fileName))
                 Receiver.send_message(u'cursor_normal')
             else:
                 critical_error_message_box(
                     message=translate('OpenLP.ServiceManager',
                     'File is not a valid service.'))
                 log.exception(u'File contains no service data')
-        except (IOError, NameError):
+        except (IOError, NameError, zipfile.BadZipfile):
+            critical_error_message_box(
+                message=translate('OpenLP.ServiceManager',
+                'File could not be opened because it is corrupt.'))
             log.exception(u'Problem loading service file %s' % fileName)
         finally:
             if fileTo:
                 fileTo.close()
             if zip:
                 zip.close()
-        self.setFileName(fileName)
-        self.mainwindow.addRecentFile(fileName)
-        self.setModified(False)
-        QtCore.QSettings(). \
-            setValue(u'service/last file', QtCore.QVariant(fileName))
 
     def loadLastFile(self):
         """
@@ -1257,3 +1258,4 @@ class ServiceManager(QtGui.QWidget):
         """
         settingDialog = PrintServiceForm(self.mainwindow, self)
         settingDialog.exec_()
+
