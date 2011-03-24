@@ -7,9 +7,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -173,7 +173,9 @@ class OpenLP(QtGui.QApplication):
         has_run_wizard = QtCore.QSettings().value(
             u'general/has run wizard', QtCore.QVariant(False)).toBool()
         if not has_run_wizard:
-            FirstTimeForm(screens).exec_()
+            if FirstTimeForm(screens).exec_() == QtGui.QDialog.Accepted:
+                QtCore.QSettings().setValue(u'general/has run wizard',
+                    QtCore.QVariant(True))
         if os.name == u'nt':
             self.setStyleSheet(application_stylesheet)
         show_splash = QtCore.QSettings().value(
