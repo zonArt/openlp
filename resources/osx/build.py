@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin K�hler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -46,31 +46,31 @@ PyInstaller
 
     To install PyInstaller, first checkout trunk from Subversion. The
     easiest way is to do a
-    
+
         svn co http://svn.pyinstaller.org/trunk
 
     Then you need to copy the two hook-*.py files from the "pyinstaller"
     subdirectory in OpenLP's "resources" directory into PyInstaller's
     "hooks" directory.
-    
+
 openlp.cfg
     The configuration file contains settings of the version string to include
     in the bundle as well as directory and file settings for different
     purposes (e.g. PyInstaller location or installer background image)
-    
-To start the build process do a 
+
+To start the build process do a
 
    make
 
 inside the resources/osx directory. The result should be a {openlp_dmgname}.dmg
 file in the same directory. If something went wrong - this sometimes happen
-with the graphical commands in the Apple script - do a 
+with the graphical commands in the Apple script - do a
 
    make clean
-   
+
 and start the build process again. If you want to execute only parts of the
 build process you can specify different make targets
-  
+
     make view -- runs the Apple scripts to set the icons
     make package -- creates the dmg file and copies the application files
     make bundle -- compresses the dmg file and sets the dmg file icon
@@ -98,12 +98,12 @@ def build_application(settings, app_name_lower, app_dir):
         logging.error('[%s] The pyinstaller build reported an error, cannot \
             continue!', script_name)
         sys.exit(1)
-    
+
     logging.info('[%s] copying the qt_menu files...', script_name)
     # see http://www.pyinstaller.org/ticket/157
     result = os.system('cp -R %(qt_menu_directory)s \
         %(application_directory)s/Contents/Resources' \
-        % { 'qt_menu_directory' : settings['qt_menu_basedir'], 
+        % { 'qt_menu_directory' : settings['qt_menu_basedir'],
             'application_directory' : app_dir })
     if (result != 0):
         logging.error('[%s] could not copy the qt_menu files, cannot \
@@ -115,7 +115,7 @@ def build_application(settings, app_name_lower, app_dir):
     logging.info('[%s] copying the new plugins...', script_name)
     result = os.system('cp -R %(openlp_directory)s/openlp/plugins \
         %(application_directory)s/Contents/MacOS' \
-        % { 'openlp_directory' : settings['openlp_basedir'], 
+        % { 'openlp_directory' : settings['openlp_basedir'],
             'application_directory' : app_dir })
     if (result != 0):
         logging.error('[%s] could not copy plugins, dmg creation failed!',
@@ -126,7 +126,7 @@ def build_application(settings, app_name_lower, app_dir):
         script_name)
     result = os.system('cp %(icon_file)s \
         %(application_directory)s/Contents/Resources' \
-        % { 'icon_file' : settings['openlp_icon_file'], 
+        % { 'icon_file' : settings['openlp_icon_file'],
             'application_directory' : app_dir })
     if (result != 0):
         logging.error('[%s] could not copy the icon, dmg creation failed!',
@@ -135,16 +135,16 @@ def build_application(settings, app_name_lower, app_dir):
 
     logging.info('[%s] copying the version file...', script_name)
     result = os.system('CpMac %s/.version %s/Contents/MacOS' % (os.getcwd(),
-        app_dir)) 
+        app_dir))
     if (result != 0):
         logging.error('[%s] could not copy the version file, dmg creation \
             failed!', script_name)
         sys.exit(1)
-    
+
     logging.info('[%s] copying the new Info.plist...', script_name)
     result = os.system('cp %(target_directory)s/Info.plist \
         %(application_directory)s/Contents' \
-        % { 'target_directory' : os.getcwd(), 
+        % { 'target_directory' : os.getcwd(),
             'application_directory' : app_dir })
     if (result != 0):
         logging.error('[%s] could not copy the info file, dmg creation \
@@ -162,7 +162,7 @@ def deploy_qt(settings):
 
 def create_dmg(settings):
     logging.info('[%s] creating the dmg...', script_name)
-    dmg_file = os.getcwd() + '/' + settings['openlp_dmgname'] + '.dmg' 
+    dmg_file = os.getcwd() + '/' + settings['openlp_dmgname'] + '.dmg'
     result = os.system('hdiutil create %(dmg_file)s~ -ov -megabytes \
         %(vol_size)s -fs HFS+ -volname %(vol_name)s' \
         % { 'dmg_file' : dmg_file,
@@ -204,7 +204,7 @@ def create_dmg(settings):
         logging.error('[%s] could not copy the background image, dmg creation\
             failed!', script_name)
         sys.exit(1)
-    
+
     return (volume_basedir, dmg_file)
 
 def unmount_dmg(settings, volume_basedir):
@@ -282,7 +282,7 @@ if __name__ == '__main__':
     do_create_dmg = True
     do_compress_dmg = True
     do_deploy_qt = True
-    
+
     parser = optparse.OptionParser()
     parser.add_option('-c', '--config', dest='config', help='config file',
         metavar='CONFIG')
@@ -301,9 +301,9 @@ if __name__ == '__main__':
     parser.add_option('-b', '--basedir', dest='basedir',
         help='volume basedir like /Volumes/OpenLP', metavar='BASEDIR',
         default='/Volumes/OpenLP')
-    
+
     (options, args) = parser.parse_args()
-    
+
     # if an option is set, false all
     if (options.package_view is True or options.compress_view is True
         or options.package is True or options.compress is True):
@@ -323,10 +323,10 @@ if __name__ == '__main__':
         '%a, %d %b %Y %H:%M:%S'))
     logging.getLogger().addHandler(logHandler)
     logging.getLogger().setLevel(logging.DEBUG)
- 
+
     config = ConfigParser.RawConfigParser()
     config.readfp(open(options.config, 'r'))
- 
+
     if not config.has_section('openlp'):
         logging.error('[%s] config file "%s" lacks an [openlp] section',
                       script_name, options.config)
@@ -386,7 +386,7 @@ if __name__ == '__main__':
 
     if (do_deploy_qt is True):
         deploy_qt(settings)
-        
+
     if (do_create_dmg is True):
         (volume_basedir, dmg_file) = create_dmg(settings)
     else:
