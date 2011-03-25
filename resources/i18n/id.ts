@@ -1451,102 +1451,102 @@ Version: %s
 <context>
     <name>OpenLP.FirstTimeWizard</name>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="61"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="62"/>
         <source>Downloading %s...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="231"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="243"/>
         <source>Download complete. Click the finish button to start OpenLP.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="240"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="252"/>
         <source>Enabling selected plugins...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="193"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="191"/>
         <source>First Time Wizard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="195"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="193"/>
         <source>Welcome to the First Time Wizard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="199"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="197"/>
         <source>This wizard will help you to configure OpenLP for initial use. Click the next button below to start the process of selection your initial options. </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="203"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="201"/>
         <source>Activate required Plugins</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="205"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="203"/>
         <source>Select the Plugins you wish to use. </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="207"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="205"/>
         <source>Songs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="208"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="206"/>
         <source>Custom Text</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="210"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="208"/>
         <source>Bible</source>
         <translation type="unfinished">Alkitab</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="211"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="209"/>
         <source>Images</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="213"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="211"/>
         <source>Presentations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="215"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="213"/>
         <source>Media (Audio and Video)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="217"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="215"/>
         <source>Allow remote access</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="219"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="217"/>
         <source>Monitor Song Usage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="221"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="219"/>
         <source>Allow Alerts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="223"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="221"/>
         <source>No Internet Connection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="225"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="223"/>
         <source>Unable to detect an Internet connection.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="228"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="226"/>
         <source>No Internet connection was found. The First Time Wizard needs an Internet connection in order to be able to download sample songs, Bibles and themes.
 
 To re-run the First Time Wizard and import this sample data at a later stage, press the cancel button now, check your Internet connection, and restart OpenLP.
@@ -1555,67 +1555,67 @@ To cancel the First Time Wizard completely, press the finish button now.</source
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="236"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="234"/>
         <source>Sample Songs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="238"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="236"/>
         <source>Select and download public domain songs.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="240"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="238"/>
         <source>Sample Bibles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="242"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="240"/>
         <source>Select and download free Bibles.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="244"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="242"/>
         <source>Sample Themes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="246"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="244"/>
         <source>Select and download sample themes.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="248"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="246"/>
         <source>Default Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="250"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="248"/>
         <source>Set up default settings to be used by OpenLP.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="252"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="250"/>
         <source>Setting Up And Importing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="254"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="252"/>
         <source>Please wait while OpenLP is set up and your data is imported.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="256"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="254"/>
         <source>Default output display:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="258"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="256"/>
         <source>Select default theme:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="260"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="258"/>
         <source>Starting configuration process...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1741,12 +1741,12 @@ To cancel the First Time Wizard completely, press the finish button now.</source
 <context>
     <name>OpenLP.LanguageManager</name>
     <message>
-        <location filename="openlp/core/utils/languagemanager.py" line="132"/>
+        <location filename="openlp/core/utils/languagemanager.py" line="130"/>
         <source>Language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/utils/languagemanager.py" line="132"/>
+        <location filename="openlp/core/utils/languagemanager.py" line="130"/>
         <source>Please restart OpenLP to use your new language setting.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1762,369 +1762,369 @@ To cancel the First Time Wizard completely, press the finish button now.</source
 <context>
     <name>OpenLP.MainWindow</name>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="315"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="313"/>
         <source>&amp;File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="316"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="314"/>
         <source>&amp;Import</source>
         <translation type="unfinished">&amp;Impor</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="317"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="315"/>
         <source>&amp;Export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="318"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="316"/>
         <source>&amp;View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="319"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="317"/>
         <source>M&amp;ode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="320"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="318"/>
         <source>&amp;Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="321"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="319"/>
         <source>&amp;Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="370"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="368"/>
         <source>&amp;Language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="324"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="322"/>
         <source>&amp;Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="325"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="323"/>
         <source>Media Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="327"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="325"/>
         <source>Service Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="329"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="327"/>
         <source>Theme Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="331"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="329"/>
         <source>&amp;New</source>
         <translation type="unfinished">&amp;Baru</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="334"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="332"/>
         <source>Ctrl+N</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="335"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="333"/>
         <source>&amp;Open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="337"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="335"/>
         <source>Open an existing service.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="339"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="337"/>
         <source>Ctrl+O</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="340"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="338"/>
         <source>&amp;Save</source>
         <translation type="unfinished">&amp;Simpan</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="342"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="340"/>
         <source>Save the current service to disk.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="344"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="342"/>
         <source>Ctrl+S</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="345"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="343"/>
         <source>Save &amp;As...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="347"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="345"/>
         <source>Save Service As</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="349"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="347"/>
         <source>Save the current service under a new name.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="351"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="349"/>
         <source>Ctrl+Shift+S</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="358"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="356"/>
         <source>E&amp;xit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="360"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="358"/>
         <source>Quit OpenLP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="362"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="360"/>
         <source>Alt+F4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="368"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="366"/>
         <source>&amp;Theme</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="376"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="374"/>
         <source>&amp;Configure OpenLP...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="378"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="376"/>
         <source>&amp;Media Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="380"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="378"/>
         <source>Toggle Media Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="382"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="380"/>
         <source>Toggle the visibility of the media manager.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="384"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="382"/>
         <source>F8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="386"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="384"/>
         <source>&amp;Theme Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="388"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="386"/>
         <source>Toggle Theme Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="390"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="388"/>
         <source>Toggle the visibility of the theme manager.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="392"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="390"/>
         <source>F10</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="394"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="392"/>
         <source>&amp;Service Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="396"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="394"/>
         <source>Toggle Service Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="398"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="396"/>
         <source>Toggle the visibility of the service manager.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="400"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="398"/>
         <source>F9</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="402"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="400"/>
         <source>&amp;Preview Panel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="404"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="402"/>
         <source>Toggle Preview Panel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="406"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="404"/>
         <source>Toggle the visibility of the preview panel.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="408"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="406"/>
         <source>F11</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="410"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="408"/>
         <source>&amp;Live Panel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="412"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="410"/>
         <source>Toggle Live Panel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="414"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="412"/>
         <source>Toggle the visibility of the live panel.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="416"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="414"/>
         <source>F12</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="418"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="416"/>
         <source>&amp;Plugin List</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="420"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="418"/>
         <source>List the Plugins</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="422"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="420"/>
         <source>Alt+F7</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="424"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="422"/>
         <source>&amp;User Guide</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="426"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="424"/>
         <source>&amp;About</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="427"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="425"/>
         <source>More information about OpenLP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="429"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="427"/>
         <source>Ctrl+F1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="431"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="429"/>
         <source>&amp;Online Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="433"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="434"/>
         <source>&amp;Web Site</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="441"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="442"/>
         <source>Use the system language, if available.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="437"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="438"/>
         <source>Set the interface language to %s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="443"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="444"/>
         <source>Add &amp;Tool...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="445"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="446"/>
         <source>Add an application to the list of tools.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="451"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="452"/>
         <source>&amp;Default</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="453"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="454"/>
         <source>Set the view mode back to the default.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="455"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="456"/>
         <source>&amp;Setup</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="456"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="457"/>
         <source>Set the view mode to Setup.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="458"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="459"/>
         <source>&amp;Live</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="459"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="460"/>
         <source>Set the view mode to Live.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="645"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="648"/>
         <source>Version %s of OpenLP is now available for download (you are currently running version %s). 
 
 You can download the latest version from http://openlp.org/.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="649"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="652"/>
         <source>OpenLP Version Updated</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="701"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="704"/>
         <source>OpenLP Main Display Blanked</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="701"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="704"/>
         <source>The Main Display has been blanked out</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="910"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="920"/>
         <source>Default Theme: %s</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2135,47 +2135,47 @@ You can download the latest version from http://openlp.org/.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="372"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="370"/>
         <source>Configure &amp;Shortcuts...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="832"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="842"/>
         <source>Close OpenLP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="832"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="842"/>
         <source>Are you sure you want to close OpenLP?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="354"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="352"/>
         <source>Print the current Service Order.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="356"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="354"/>
         <source>Ctrl+P</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="447"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="448"/>
         <source>Open &amp;Data Folder...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="449"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="450"/>
         <source>Open the folder where songs, bibles and other data resides.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="374"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="372"/>
         <source>&amp;Configure Display Tags</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="439"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="440"/>
         <source>&amp;Autodetect</source>
         <translation type="unfinished"></translation>
     </message>
