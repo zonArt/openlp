@@ -48,19 +48,18 @@ import openlp
 from openlp.core.lib import Receiver, translate, check_directory_exists
 
 log = logging.getLogger(__name__)
+APPLICATION_VERSION = {}
 IMAGES_FILTER = None
 UNO_CONNECTION_TYPE = u'pipe'
 #UNO_CONNECTION_TYPE = u'socket'
-APPLICATION_VERSION = u''
 
 class VersionThread(QtCore.QThread):
     """
     A special Qt thread class to fetch the version of OpenLP from the website.
     This is threaded so that it doesn't affect the loading time of OpenLP.
     """
-    def __init__(self, parent, app_version):
+    def __init__(self, parent):
         QtCore.QThread.__init__(self, parent)
-        self.app_version = app_version
         self.version_splitter = re.compile(
             r'([0-9]+).([0-9]+).([0-9]+)(?:-bzr([0-9]+))?')
 
@@ -70,7 +69,8 @@ class VersionThread(QtCore.QThread):
         """
         time.sleep(1)
         Receiver.send_message(u'maindisplay_blank_check')
-        version = check_latest_version(self.app_version)
+        app_version = get_application_version()
+        version = check_latest_version(app_version)
         remote_version = {}
         local_version = {}
         match = self.version_splitter.match(version)
@@ -82,7 +82,7 @@ class VersionThread(QtCore.QThread):
                 remote_version[u'revision'] = int(match.group(4))
         else:
             return
-        match = self.version_splitter.match(self.app_version[u'full'])
+        match = self.version_splitter.match(app_version[u'full'])
         if match:
             local_version[u'major'] = int(match.group(1))
             local_version[u'minor'] = int(match.group(2))
@@ -208,22 +208,16 @@ def _get_frozen_path(frozen_option, non_frozen_option):
         return frozen_option
     return non_frozen_option
 
-def get_application_version(dev_version=False):
+def get_application_version():
     """
     Returns the application version of the running instance of OpenLP::
 
         {u'full': u'1.9.4-bzr1249', u'version': u'1.9.4', u'build': u'bzr1249'}
-
-    ``dev_version``
-        If ``True``, then it is assumed, that we are running a dev version and
-        attempt to receive the version number using bzr. **Note**, that this
-        argument is only important the first time the function is called.
     """
     global APPLICATION_VERSION
     if APPLICATION_VERSION:
-        # We already know the version, so just return it.
         return APPLICATION_VERSION
-    if dev_version:
+    if u'--dev-version' in sys.argv or u'-d' in sys.argv:
         # If we're running the dev version, let's use bzr to get the version.
         try:
             # If bzrlib is available, use it.

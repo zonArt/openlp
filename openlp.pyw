@@ -71,7 +71,6 @@ class OpenLP(QtGui.QApplication):
     The core application class. This class inherits from Qt's QApplication
     class in order to provide the core of the application.
     """
-    app_version = None
 
     def run(self):
         """
@@ -103,8 +102,7 @@ class OpenLP(QtGui.QApplication):
         # make sure Qt really display the splash screen
         self.processEvents()
         # start the main app window
-        self.mainWindow = MainWindow(screens, self.app_version,
-            self.clipboard())
+        self.mainWindow = MainWindow(screens, self.clipboard())
         self.mainWindow.show()
         if show_splash:
             # now kill the splashscreen
@@ -116,7 +114,7 @@ class OpenLP(QtGui.QApplication):
         update_check = QtCore.QSettings().value(
             u'general/update check', QtCore.QVariant(True)).toBool()
         if update_check:
-            VersionThread(self.mainWindow, self.app_version).start()
+            VersionThread(self.mainWindow).start()
         return self.exec_()
 
     def hookException(self, exctype, value, traceback):
@@ -194,7 +192,7 @@ def main():
     app.setOrganizationName(u'OpenLP')
     app.setOrganizationDomain(u'openlp.org')
     app.setApplicationName(u'OpenLP')
-    app.setApplicationVersion(app.get_version()[u'version'])
+    app.setApplicationVersion(get_application_version()[u'version'])
     # First time checks in settings
     if not QtCore.QSettings().value(u'general/has run wizard',
         QtCore.QVariant(False)).toBool():
