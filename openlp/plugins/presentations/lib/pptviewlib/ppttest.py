@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -78,7 +78,7 @@ class PPTViewer(QtGui.QWidget):
         grid.addWidget(self.widthEdit, row, 1)
         grid.addWidget(height_label, row, 2)
         grid.addWidget(self.heightEdit, row, 3)
-        row = row + 1        
+        row = row + 1
         grid.addWidget(ppt_label, row, 0)
         grid.addWidget(self.pptEdit, row, 1)
         grid.addWidget(ppt_dlg_btn, row, 2)
@@ -121,14 +121,14 @@ class PPTViewer(QtGui.QWidget):
         app.processEvents()
 
     def nextClick(self):
-        if self.pptid < 0: 
+        if self.pptid < 0:
             return
         self.pptdll.NextStep(self.pptid)
         self.updateCurrSlide()
         app.processEvents()
 
     def blankClick(self):
-        if self.pptid < 0: 
+        if self.pptid < 0:
             return
         self.pptdll.Blank(self.pptid)
         app.processEvents()
@@ -140,14 +140,14 @@ class PPTViewer(QtGui.QWidget):
         app.processEvents()
 
     def restartClick(self):
-        if self.pptid < 0: 
+        if self.pptid < 0:
             return
         self.pptdll.RestartShow(self.pptid)
         self.updateCurrSlide()
         app.processEvents()
 
     def stopClick(self):
-        if self.pptid < 0: 
+        if self.pptid < 0:
             return
         self.pptdll.Stop(self.pptid)
         app.processEvents()
@@ -159,7 +159,7 @@ class PPTViewer(QtGui.QWidget):
         app.processEvents()
 
     def closeClick(self):
-        if self.pptid < 0: 
+        if self.pptid < 0:
             return
         self.pptdll.ClosePPT(self.pptid)
         self.pptid = -1
@@ -167,10 +167,10 @@ class PPTViewer(QtGui.QWidget):
 
     def openClick(self):
         oldid = self.pptid;
-        rect = RECT(int(self.xEdit.text()), int(self.yEdit.text()), 
+        rect = RECT(int(self.xEdit.text()), int(self.yEdit.text()),
             int(self.widthEdit.text()), int(self.heightEdit.text()))
-        filename = str(self.pptEdit.text().replace(u'/', u'\\'))   
-        folder = str(self.folderEdit.text().replace(u'/', u'\\'))   
+        filename = str(self.pptEdit.text().replace(u'/', u'\\'))
+        folder = str(self.folderEdit.text().replace(u'/', u'\\'))
         print filename, folder
         self.pptid = self.pptdll.OpenPPT(filename, None, rect, folder)
         print u'id: ' + unicode(self.pptid)
@@ -182,7 +182,7 @@ class PPTViewer(QtGui.QWidget):
         self.updateCurrSlide()
 
     def updateCurrSlide(self):
-        if self.pptid < 0: 
+        if self.pptid < 0:
             return
         slide = unicode(self.pptdll.GetCurrentSlide(self.pptid))
         print u'currslide: ' + slide
@@ -190,7 +190,7 @@ class PPTViewer(QtGui.QWidget):
         app.processEvents()
 
     def gotoClick(self):
-        if self.pptid < 0: 
+        if self.pptid < 0:
             return
         print self.slideEdit.text()
         self.pptdll.GotoSlide(self.pptid, int(self.slideEdit.text()))
@@ -198,7 +198,7 @@ class PPTViewer(QtGui.QWidget):
         app.processEvents()
 
     def openDialog(self):
-        self.pptEdit.setText(QtGui.QFileDialog.getOpenFileName(self, 
+        self.pptEdit.setText(QtGui.QFileDialog.getOpenFileName(self,
             u'Open file'))
 
 if __name__ == '__main__':
