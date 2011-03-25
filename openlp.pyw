@@ -146,11 +146,11 @@ class OpenLP(QtGui.QApplication):
         if self.app_version[u'build']:
             log.info(
                 u'Openlp version %s build %s',
-                app_version[u'version'],
-                app_version[u'build']
+                self.app_version[u'version'],
+                self.app_version[u'build']
             )
         else:
-            log.info(u'Openlp version %s' % app_version[u'version'])
+            log.info(u'Openlp version %s' % self.app_version[u'version'])
         return self.app_version
 
     def run(self):
