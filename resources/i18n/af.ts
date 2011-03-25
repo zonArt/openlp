@@ -1552,102 +1552,102 @@ Version: %s
 <context>
     <name>OpenLP.FirstTimeWizard</name>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="61"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="62"/>
         <source>Downloading %s...</source>
         <translation>Aflaai %s...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="231"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="243"/>
         <source>Download complete. Click the finish button to start OpenLP.</source>
         <translation>Aflaai voltooi. Klik op die klaar knoppie om OpenLP te begin.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="240"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="252"/>
         <source>Enabling selected plugins...</source>
         <translation>Skakel geselekteerde miniprogramme aan...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="193"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="191"/>
         <source>First Time Wizard</source>
         <translation>Eerste-keer Gids</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="195"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="193"/>
         <source>Welcome to the First Time Wizard</source>
         <translation>Welkom by die Eerste-keer Gids</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="199"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="197"/>
         <source>This wizard will help you to configure OpenLP for initial use. Click the next button below to start the process of selection your initial options. </source>
         <translation>Hierdie gids sal bystand verleen in die proses om OpenLP op te stel vir eerste gebruik. Klik die volgende knoppie hieronder om die seleksie proses te begin.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="203"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="201"/>
         <source>Activate required Plugins</source>
         <translation>Aktiveer nodige Miniprogramme</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="205"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="203"/>
         <source>Select the Plugins you wish to use. </source>
         <translation>Kies die Miniprogramme wat gebruik moet word.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="207"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="205"/>
         <source>Songs</source>
         <translation>Liedere</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="208"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="206"/>
         <source>Custom Text</source>
         <translation>Verpersoonlike Teks</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="210"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="208"/>
         <source>Bible</source>
         <translation>Bybel</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="211"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="209"/>
         <source>Images</source>
         <translation type="unfinished">Beelde</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="213"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="211"/>
         <source>Presentations</source>
         <translation>Aanbiedinge</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="215"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="213"/>
         <source>Media (Audio and Video)</source>
         <translation>Media (Klank en Video)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="217"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="215"/>
         <source>Allow remote access</source>
         <translation>Laat afgeleë toegang toe</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="219"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="217"/>
         <source>Monitor Song Usage</source>
         <translation>Monitor Lied-Gebruik</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="221"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="219"/>
         <source>Allow Alerts</source>
         <translation>Laat Waarskuwings Toe</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="223"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="221"/>
         <source>No Internet Connection</source>
         <translation>Geen Internet Verbinding</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="225"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="223"/>
         <source>Unable to detect an Internet connection.</source>
         <translation>Nie in staat om &apos;n Internet verbinding op te spoor nie.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="228"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="226"/>
         <source>No Internet connection was found. The First Time Wizard needs an Internet connection in order to be able to download sample songs, Bibles and themes.
 
 To re-run the First Time Wizard and import this sample data at a later stage, press the cancel button now, check your Internet connection, and restart OpenLP.
@@ -1659,67 +1659,67 @@ Om die Eerste-gebruik Gids later te gebruik om hierde data in te trek, druk die 
 Om die Eerste-keer gids heeltemal te kanselleer, druk die vollledig-knoppie hieronder.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="236"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="234"/>
         <source>Sample Songs</source>
         <translation>Voorbeeld Liedere</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="238"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="236"/>
         <source>Select and download public domain songs.</source>
         <translation>Kies en laai liedere vanaf die publieke domein.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="240"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="238"/>
         <source>Sample Bibles</source>
         <translation>Voorbeeld Bybels</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="242"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="240"/>
         <source>Select and download free Bibles.</source>
         <translation>Kies en laai gratis Bybels af.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="244"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="242"/>
         <source>Sample Themes</source>
         <translation>Voorbeeld Temas</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="246"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="244"/>
         <source>Select and download sample themes.</source>
         <translation>Kies en laai voorbeeld temas af.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="248"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="246"/>
         <source>Default Settings</source>
         <translation>Verstek Instellings</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="250"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="248"/>
         <source>Set up default settings to be used by OpenLP.</source>
         <translation>Stel verstek instellings wat deur OpenLP gebruik moet word.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="252"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="250"/>
         <source>Setting Up And Importing</source>
         <translation>Opstel en Invoer</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="254"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="252"/>
         <source>Please wait while OpenLP is set up and your data is imported.</source>
         <translation>Wag asseblief terwyl OpenLP opgestel word en die data ingevoer word.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="256"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="254"/>
         <source>Default output display:</source>
         <translation>Verstek uitgaande vertoning:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="258"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="256"/>
         <source>Select default theme:</source>
         <translation>Kies verstek tema:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="260"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="258"/>
         <source>Starting configuration process...</source>
         <translation>Konfigurasie proses begin...</translation>
     </message>

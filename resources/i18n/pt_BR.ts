@@ -1552,102 +1552,102 @@ Agradecemos se for possível escrever seu relatório em inglês.</translation>
 <context>
     <name>OpenLP.FirstTimeWizard</name>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="61"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="62"/>
         <source>Downloading %s...</source>
         <translation>Baixando %s...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="231"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="243"/>
         <source>Download complete. Click the finish button to start OpenLP.</source>
         <translation>Download finalizado. Clique no botão terminar para iniciar o OpenLP.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimeform.py" line="240"/>
+        <location filename="openlp/core/ui/firsttimeform.py" line="252"/>
         <source>Enabling selected plugins...</source>
         <translation>Habilitando os plugins selecionados...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="193"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="191"/>
         <source>First Time Wizard</source>
         <translation>Assistente de Primeira Utilização</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="195"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="193"/>
         <source>Welcome to the First Time Wizard</source>
         <translation>Bem vindo ao Assistente de Primeira Utilização</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="199"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="197"/>
         <source>This wizard will help you to configure OpenLP for initial use. Click the next button below to start the process of selection your initial options. </source>
         <translation>O assistente irá ajudá-lo na configuração do OpenLP para o primeiro uso. Clique no botão &quot;Próximo&quot; abaixo para iniciar a seleção das opções iniciais.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="203"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="201"/>
         <source>Activate required Plugins</source>
         <translation>Ativar os Plugins Requeridos</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="205"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="203"/>
         <source>Select the Plugins you wish to use. </source>
         <translation>Selecione os Plugins aos quais você deseja utilizar.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="207"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="205"/>
         <source>Songs</source>
         <translation type="unfinished">Músicas</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="208"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="206"/>
         <source>Custom Text</source>
         <translation>Texto Customizado</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="210"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="208"/>
         <source>Bible</source>
         <translation type="unfinished">Bíblia</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="211"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="209"/>
         <source>Images</source>
         <translation type="unfinished">Imagens</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="213"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="211"/>
         <source>Presentations</source>
         <translation type="unfinished">Apresentações</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="215"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="213"/>
         <source>Media (Audio and Video)</source>
         <translation>Mídia (Áudio e Vídeo)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="217"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="215"/>
         <source>Allow remote access</source>
         <translation>Permitir acesso remoto</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="219"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="217"/>
         <source>Monitor Song Usage</source>
         <translation>Monitor de Utilização das Músicas</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="221"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="219"/>
         <source>Allow Alerts</source>
         <translation>Permitir Alertas</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="223"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="221"/>
         <source>No Internet Connection</source>
         <translation>Conexão com a Internet Indisponível</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="225"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="223"/>
         <source>Unable to detect an Internet connection.</source>
         <translation>Não foi possível detectar uma conexão com a Internet.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="228"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="226"/>
         <source>No Internet connection was found. The First Time Wizard needs an Internet connection in order to be able to download sample songs, Bibles and themes.
 
 To re-run the First Time Wizard and import this sample data at a later stage, press the cancel button now, check your Internet connection, and restart OpenLP.
@@ -1660,67 +1660,67 @@ Para executar o assistente novamente mais tarde e importar os dados de exemplo, 
 Para cancelar o assistente completamente, clique no botão finalizar.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="236"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="234"/>
         <source>Sample Songs</source>
         <translation>Músicas de Exemplo</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="238"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="236"/>
         <source>Select and download public domain songs.</source>
         <translation>Selecione e baixe músicas de domínio público.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="240"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="238"/>
         <source>Sample Bibles</source>
         <translation>Bíblias de Exemplo</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="242"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="240"/>
         <source>Select and download free Bibles.</source>
         <translation>Selecione e baixe Bíblias gratuitas.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="244"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="242"/>
         <source>Sample Themes</source>
         <translation>Temas de Exemplo</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="246"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="244"/>
         <source>Select and download sample themes.</source>
         <translation>Selecione e baixe temas de exemplo.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="248"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="246"/>
         <source>Default Settings</source>
         <translation>Configurações Padrão</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="250"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="248"/>
         <source>Set up default settings to be used by OpenLP.</source>
         <translation>Configure as configurações padrão que serão utilizadas pelo OpenLP.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="252"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="250"/>
         <source>Setting Up And Importing</source>
         <translation>Configurando e Importando</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="254"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="252"/>
         <source>Please wait while OpenLP is set up and your data is imported.</source>
         <translation>Por Favor aguarde enquanto o OpenLP é configurado e os seus dados importados.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="256"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="254"/>
         <source>Default output display:</source>
         <translation>Painel de Projeção Padrão:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="258"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="256"/>
         <source>Select default theme:</source>
         <translation>Selecione um tema padrão:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/firsttimewizard.py" line="260"/>
+        <location filename="openlp/core/ui/firsttimewizard.py" line="258"/>
         <source>Starting configuration process...</source>
         <translation>Iniciando o processo de configuração...</translation>
     </message>
