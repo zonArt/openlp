@@ -231,7 +231,7 @@ class ServiceManager(QtGui.QWidget):
         QtCore.QObject.connect(self.themeComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onThemeComboBoxSelected)
         QtCore.QObject.connect(self.serviceManagerList,
-            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.makeLive)
+            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onMakeLive)
         QtCore.QObject.connect(self.serviceManagerList,
            QtCore.SIGNAL(u'itemCollapsed(QTreeWidgetItem*)'), self.collapsed)
         QtCore.QObject.connect(self.serviceManagerList,
@@ -1088,12 +1088,20 @@ class ServiceManager(QtGui.QWidget):
         else:
             return self.serviceItems[item][u'service_item']
 
+    def onMakeLive(self):
+        """
+        Send the current item to the Live slide controller but triggered
+        by a tablewidget click event.
+        """
+        self.makeLive()
+
     def makeLive(self, row=-1):
         """
         Send the current item to the Live slide controller
 
         ``row``
-            Row number to be displayed if from preview
+            Row number to be displayed if from preview.
+            -1 is passed if the value is not set
         """
         item, child = self.findServiceItem()
         if row != -1:
