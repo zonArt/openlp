@@ -71,12 +71,14 @@ class OpenLP(QtGui.QApplication):
     The core application class. This class inherits from Qt's QApplication
     class in order to provide the core of the application.
     """
-    log.info(u'OpenLP Application Loaded')
+    app_version = None
 
-    def _get_version(self):
+    def get_version(self):
         """
         Load and store current Application Version
         """
+        if self.app_version:
+            return self.app_version
         if u'--dev-version' in sys.argv or u'-d' in sys.argv:
             # If we're running the dev version, let's use bzr to get the version
             try:
@@ -136,26 +138,25 @@ class OpenLP(QtGui.QApplication):
                 if fversion:
                     fversion.close()
         bits = full_version.split(u'-')
-        app_version = {
+        self.app_version = {
             u'full': full_version,
             u'version': bits[0],
             u'build': bits[1] if len(bits) > 1 else None
         }
-        if app_version[u'build']:
+        if self.app_version[u'build']:
             log.info(
                 u'Openlp version %s build %s',
-                app_version[u'version'],
-                app_version[u'build']
+                self.app_version[u'version'],
+                self.app_version[u'build']
             )
         else:
-            log.info(u'Openlp version %s' % app_version[u'version'])
-        return app_version
+            log.info(u'Openlp version %s' % self.app_version[u'version'])
+        return self.app_version
 
     def run(self):
         """
         Run the OpenLP application.
         """
-        app_version = self._get_version()
         # provide a listener for widgets to reqest a screen update.
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'openlp_process_events'), self.processEvents)
@@ -163,10 +164,6 @@ class OpenLP(QtGui.QApplication):
             QtCore.SIGNAL(u'cursor_busy'), self.setBusyCursor)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'cursor_normal'), self.setNormalCursor)
-        self.setOrganizationName(u'OpenLP')
-        self.setOrganizationDomain(u'openlp.org')
-        self.setApplicationName(u'OpenLP')
-        self.setApplicationVersion(app_version[u'version'])
         # Decide how many screens we have and their size
         screens = ScreenList(self.desktop())
         # First time checks in settings
@@ -186,7 +183,8 @@ class OpenLP(QtGui.QApplication):
         # make sure Qt really display the splash screen
         self.processEvents()
         # start the main app window
-        self.mainWindow = MainWindow(screens, app_version, self.clipboard())
+        self.mainWindow = MainWindow(screens, self.app_version,
+            self.clipboard())
         self.mainWindow.show()
         if show_splash:
             # now kill the splashscreen
@@ -198,7 +196,7 @@ class OpenLP(QtGui.QApplication):
         update_check = QtCore.QSettings().value(
             u'general/update check', QtCore.QVariant(True)).toBool()
         if update_check:
-            VersionThread(self.mainWindow, app_version).start()
+            VersionThread(self.mainWindow, self.app_version).start()
         return self.exec_()
 
     def hookException(self, exctype, value, traceback):
@@ -273,11 +271,12 @@ def main():
     qInitResources()
     # Now create and actually run the application.
     app = OpenLP(qt_args)
-    # Define the settings environment
-    settings = QtCore.QSettings(u'OpenLP', u'OpenLP')
+    app.setOrganizationName(u'OpenLP')
+    app.setOrganizationDomain(u'openlp.org')
+    app.setApplicationName(u'OpenLP')
+    app.setApplicationVersion(app.get_version()[u'version'])
     # First time checks in settings
-    # Use explicit reference as not inside a QT environment yet
-    if not settings.value(u'general/has run wizard',
+    if not QtCore.QSettings().value(u'general/has run wizard',
         QtCore.QVariant(False)).toBool():
         if not FirstTimeLanguageForm().exec_():
             # if cancel then stop processing
