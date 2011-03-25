@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -256,7 +256,6 @@ class Ui_MainWindow(object):
             u':/system/system_about.png')
         mainWindow.actionList.add_action(self.HelpAboutItem, u'Help')
         self.HelpOnlineHelpItem = base_action(mainWindow, u'HelpOnlineHelpItem')
-        self.HelpOnlineHelpItem.setEnabled(False)
         mainWindow.actionList.add_action(self.HelpOnlineHelpItem, u'Help')
         self.helpWebSiteItem = base_action(mainWindow, u'helpWebSiteItem')
         mainWindow.actionList.add_action(self.helpWebSiteItem, u'Help')
@@ -304,7 +303,6 @@ class Ui_MainWindow(object):
         self.ExportLanguageItem.setVisible(False)
         self.SettingsShortcutsItem.setVisible(False)
         self.HelpDocumentationItem.setVisible(False)
-        self.HelpOnlineHelpItem.setVisible(False)
 
     def retranslateUi(self, mainWindow):
         """
@@ -430,6 +428,9 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', 'Ctrl+F1'))
         self.HelpOnlineHelpItem.setText(
             translate('OpenLP.MainWindow', '&Online Help'))
+        # Uncomment after 1.9.5 beta string freeze
+        #self.HelpOnlineHelpItem.setShortcut(
+        #    translate('OpenLP.MainWindow', 'F1'))
         self.helpWebSiteItem.setText(
             translate('OpenLP.MainWindow', '&Web Site'))
         for item in self.LanguageGroup.actions():
@@ -530,6 +531,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.ViewThemeManagerItem.setChecked)
         QtCore.QObject.connect(self.helpWebSiteItem,
             QtCore.SIGNAL(u'triggered()'), self.onHelpWebSiteClicked)
+        QtCore.QObject.connect(self.HelpOnlineHelpItem,
+            QtCore.SIGNAL(u'triggered()'), self.onHelpOnLineHelpClicked)
         QtCore.QObject.connect(self.HelpAboutItem,
             QtCore.SIGNAL(u'triggered()'), self.onHelpAboutItemClicked)
         QtCore.QObject.connect(self.ToolsOpenDataFolder,
@@ -719,6 +722,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         import webbrowser
         webbrowser.open_new(u'http://openlp.org/')
+
+    def onHelpOnLineHelpClicked(self):
+        """
+        Load the online OpenLP manual
+        """
+        import webbrowser
+        webbrowser.open_new(u'http://manual.openlp.org/')
 
     def onHelpAboutItemClicked(self):
         """
