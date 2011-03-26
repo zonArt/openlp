@@ -190,7 +190,7 @@ some work arounds.
 
 **Resolution Issue**
 
-There is a limitation with certain cards that limits the total resolution to
+There is a limitation with certain cards which limits the total resolution to
 2048x2048, so both monitors can not have a total resolution totaling more than
 that. To work around this it may be necessary to position your monitor as a top
 or bottom monitor as opposed to the typical side by side setup. This can easily
@@ -211,15 +211,11 @@ without your projector connected to your computer::
   
 This will give you a long string of output. Screen names will be something along 
 the lines of LVDM, VGA-0 or some convention similar to that. Without your
-projector connected to your computer only one monitor show as being connected.
-That will be the monitor you will need as the primary. Now connect your 
-projector and enter::
+projector connected to your computer only one monitor will show as being
+connected. That will be the monitor you will need to use as the primary. Now
+connect your projector and enter::
 
   user@linux:~ $ xrandr --output LVDM --primary
 
 **Note** it has been reported that when this issue is occurring you will not 
 want to connect your projector until your desktop is running. 
-
-
-
-
