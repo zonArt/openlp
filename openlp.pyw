@@ -34,6 +34,7 @@ from subprocess import Popen, PIPE
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, check_directory_exists
+from openlp.core.lib.ui import UiStrings
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
 from openlp.core.ui.firsttimelanguageform import FirstTimeLanguageForm
@@ -151,6 +152,13 @@ class OpenLP(QtGui.QApplication):
             log.info(u'Openlp version %s' % app_version[u'version'])
         return app_version
 
+    def exec_(self):
+        """
+        Override exec method to allow the shared memory to be released on exit
+        """
+        QtGui.QApplication.exec_()
+        self.sharedMemory.detach()
+
     def run(self):
         """
         Run the OpenLP application.
@@ -200,6 +208,17 @@ class OpenLP(QtGui.QApplication):
         if update_check:
             VersionThread(self.mainWindow, app_version).start()
         return self.exec_()
+
+    def isAlreadyRunning(self):
+        self.sharedMemory = QtCore.QSharedMemory('OpenLP')
+        if self.sharedMemory.attach():
+            QtGui.QMessageBox.critical(None,
+                UiStrings.Error, UiStrings.OpenLPStart,
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+            return True
+        else:
+            self.sharedMemory.create(1)
+            return False
 
     def hookException(self, exctype, value, traceback):
         if not hasattr(self, u'mainWindow'):
@@ -275,6 +294,9 @@ def main():
     app = OpenLP(qt_args)
     # Define the settings environment
     settings = QtCore.QSettings(u'OpenLP', u'OpenLP')
+    # Instance check
+    if app.isAlreadyRunning():
+        sys.exit()
     # First time checks in settings
     # Use explicit reference as not inside a QT environment yet
     if not settings.value(u'general/has run wizard',

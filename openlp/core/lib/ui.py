@@ -75,6 +75,7 @@ class UiStrings(object):
     NISp = translate('OpenLP.Ui', 'No Items Selected', 'Plural')
     OLPV1 = translate('OpenLP.Ui', 'openlp.org 1.x')
     OLPV2 = translate('OpenLP.Ui', 'OpenLP 2.0')
+    OpenLPStart = translate('OpenLP.Ui', 'OpenLP is already running')
     OpenService = translate('OpenLP.Ui', 'Open Service')
     Preview = translate('OpenLP.Ui', 'Preview')
     PreviewPanel = translate('OpenLP.Ui', 'Preview Panel')
