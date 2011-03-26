@@ -189,7 +189,7 @@ class PresentationMediaItem(MediaManagerItem):
                     icon = build_icon(u':/general/general_delete.png')
                 else:
                     critical_error_message_box(
-                        self, translate('PresentationPlugin.MediaItem',
+                        translate('PresentationPlugin.MediaItem',
                         'Unsupported File'),
                         translate('PresentationPlugin.MediaItem',
                         'This type of presentation is not supported.'))

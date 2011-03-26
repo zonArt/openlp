@@ -26,6 +26,8 @@
 
 from PyQt4 import QtCore, QtGui
 
+import sys
+
 from openlp.core.lib import translate
 from openlp.core.lib.ui import add_welcome_page
 
@@ -77,7 +79,10 @@ class Ui_FirstTimeWizard(object):
         self.imageCheckBox.setObjectName(u'imageCheckBox')
         self.pluginLayout.addWidget(self.imageCheckBox)
         self.presentationCheckBox = QtGui.QCheckBox(self.pluginPage)
-        self.presentationCheckBox.setChecked(True)
+        if sys.platform == "darwin":
+             self.presentationCheckBox.setChecked(False)
+        else:
+             self.presentationCheckBox.setChecked(True)
         self.presentationCheckBox.setObjectName(u'presentationCheckBox')
         self.pluginLayout.addWidget(self.presentationCheckBox)
         self.mediaCheckBox = QtGui.QCheckBox(self.pluginPage)
@@ -210,6 +215,8 @@ class Ui_FirstTimeWizard(object):
             'Images'))
         self.presentationCheckBox.setText(translate('OpenLP.FirstTimeWizard',
             'Presentations'))
+        if sys.platform == "darwin":
+            self.presentationCheckBox.setEnabled(False)
         self.mediaCheckBox.setText(translate('OpenLP.FirstTimeWizard',
             'Media (Audio and Video)'))
         self.remoteCheckBox.setText(translate('OpenLP.FirstTimeWizard',

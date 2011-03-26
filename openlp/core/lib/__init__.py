@@ -316,8 +316,11 @@ def check_directory_exists(dir):
         Theme directory to make sure exists
     """
     log.debug(u'check_directory_exists %s' % dir)
-    if not os.path.exists(dir):
-        os.makedirs(dir)
+    try:
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+    except IOError:
+        pass
 
 from listwidgetwithdnd import ListWidgetWithDnD
 from displaytags import DisplayTags
