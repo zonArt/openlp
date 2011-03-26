@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -36,7 +36,7 @@ from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from PyQt4.phonon import Phonon
 
 log = logging.getLogger(__name__)
-    
+
 class MediaMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for Media Slides.
@@ -136,7 +136,7 @@ class MediaMediaItem(MediaManagerItem):
             # This will be corrected in 1.9.6
             critical_error_message_box(
                 translate('PresentationPlugin.MediaItem', 'Unsupported File'),
-                unicode(translate('PresentationPlugin.MediaItem', 
+                unicode(translate('PresentationPlugin.MediaItem',
                 'Unsupported File')))
             return False
         # File too big for processing
@@ -149,7 +149,7 @@ class MediaMediaItem(MediaManagerItem):
                 # This will be corrected in 1.9.6
                 self.mediaObject.stop()
                 critical_error_message_box(
-                    translate('PresentationPlugin.MediaItem', 
+                    translate('PresentationPlugin.MediaItem',
                     'Unsupported File'),
                     unicode(translate('PresentationPlugin.MediaItem',
                     'Unsupported File')))
@@ -171,7 +171,7 @@ class MediaMediaItem(MediaManagerItem):
     def mediaStateWait(self, mediaState):
         """
         Wait for the video to change its state
-        Wait no longer than 5 seconds. 
+        Wait no longer than 5 seconds.
         """
         start = datetime.now()
         while self.mediaObject.state() != mediaState:
@@ -181,7 +181,7 @@ class MediaMediaItem(MediaManagerItem):
             if (datetime.now() - start).seconds > 5:
                 return False
         return True
-        
+
     def initialise(self):
         self.listView.clear()
         self.listView.setIconSize(QtCore.QSize(88, 50))
