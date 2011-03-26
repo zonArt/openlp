@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -110,7 +110,7 @@ class MainDisplay(DisplayWidget):
         Phonon.createPath(self.mediaObject, self.audio)
         QtCore.QObject.connect(self.mediaObject,
             QtCore.SIGNAL(u'stateChanged(Phonon::State, Phonon::State)'),
-            self.videoStart)
+            self.videoState)
         QtCore.QObject.connect(self.mediaObject,
             QtCore.SIGNAL(u'finished()'),
             self.videoFinished)
@@ -378,11 +378,13 @@ class MainDisplay(DisplayWidget):
             Receiver.send_message(u'maindisplay_active')
         return self.preview()
 
-    def videoStart(self, newState, oldState):
+    def videoState(self, newState, oldState):
         """
         Start the video at a predetermined point.
         """
-        if newState == Phonon.PlayingState:
+        if newState == Phonon.PlayingState \
+            and oldState != Phonon.PausedState \
+            and self.serviceItem.start_time > 0:
             # set start time in milliseconds
             self.mediaObject.seek(self.serviceItem.start_time * 1000)
 

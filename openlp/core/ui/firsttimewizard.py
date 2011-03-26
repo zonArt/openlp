@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -158,8 +158,6 @@ class Ui_FirstTimeWizard(object):
         self.displayComboBox = QtGui.QComboBox(self.defaultsPage)
         self.displayComboBox.setEditable(False)
         self.displayComboBox.setInsertPolicy(QtGui.QComboBox.NoInsert)
-        self.displayComboBox.setSizeAdjustPolicy(
-            QtGui.QComboBox.AdjustToContents)
         self.displayComboBox.setObjectName(u'displayComboBox')
         self.defaultsLayout.addRow(self.displayLabel, self.displayComboBox)
         self.themeLabel = QtGui.QLabel(self.defaultsPage)
