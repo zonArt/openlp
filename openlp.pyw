@@ -133,10 +133,13 @@ class OpenLP(QtGui.QApplication):
     def isAlreadyRunning(self):
         self.sharedMemory = QtCore.QSharedMemory('OpenLP')
         if self.sharedMemory.attach():
-            QtGui.QMessageBox.critical(None,
+            status = QtGui.QMessageBox.critical(None,
                 UiStrings.Error, UiStrings.OpenLPStart,
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
-            return True
+                QtGui.QMessageBox.StandardButtons(
+                QtGui.QMessageBox.Yes | QtGui.QMessageBox.No))
+            if status == QtGui.QMessageBox.No:
+                return True
+            return False
         else:
             self.sharedMemory.create(1)
             return False
