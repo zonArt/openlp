@@ -27,7 +27,7 @@
 import logging
 import os
 import chardet
-import codecs
+import codecsu
 
 from openlp.core.lib import translate
 from openlp.plugins.songs.lib import VerseType
@@ -168,9 +168,9 @@ class CCLIFileImport(SongImport):
             elif line.startswith(u'[S A'):
                 self.ccli_number = line[4:-3].strip()
             elif line.startswith(u'Fields='):
-                #Fields contain single line indicating verse, chorus, etc,
-                #/t delimited, same as with words field. store seperately
-                #and process at end.
+                # Fields contain single line indicating verse, chorus, etc,
+                # /t delimited, same as with words field. store seperately
+                # and process at end.
                 song_fields = line[7:].strip()
             elif line.startswith(u'Words='):
                 song_words = line[6:].strip()
