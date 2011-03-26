@@ -49,6 +49,7 @@ class UiStrings(object):
     Cancel = translate('OpenLP.Ui', 'Cancel')
     CCLINumberLabel = translate('OpenLP.Ui', 'CCLI number:')
     CreateService = translate('OpenLP.Ui', 'Create a new service.')
+    Default = unicode(translate('OpenLP.Ui', 'Default'))
     Delete = translate('OpenLP.Ui', '&Delete')
     Edit = translate('OpenLP.Ui', '&Edit')
     EmptyField = translate('OpenLP.Ui', 'Empty Field')

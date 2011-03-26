@@ -621,9 +621,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Call the initialise method to setup plugins.
         log.info(u'initialise plugins')
         self.pluginManager.initialise_plugins()
-        # Once all components are initialised load the Themes
-        log.info(u'Load Themes')
-        self.themeManagerContents.loadThemes()
         log.info(u'Load data from Settings')
         if QtCore.QSettings().value(u'advanced/save current plugin',
             QtCore.QVariant(False)).toBool():
@@ -632,6 +629,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             if savedPlugin != -1:
                 self.MediaToolBox.setCurrentIndex(savedPlugin)
         self.settingsForm.postSetUp()
+        # Once all components are initialised load the Themes
+        log.info(u'Load Themes')
+        self.themeManagerContents.loadThemes(True)
         Receiver.send_message(u'cursor_normal')
 
     def setAutoLanguage(self, value):
@@ -678,7 +678,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def firstTime(self):
         # Import themes if first time
         Receiver.send_message(u'openlp_process_events')
-        self.themeManagerContents.firstTime()
         for plugin in self.pluginManager.plugins:
             if hasattr(plugin, u'firstTime'):
                 Receiver.send_message(u'openlp_process_events')
