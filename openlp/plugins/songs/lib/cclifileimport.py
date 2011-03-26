@@ -37,9 +37,9 @@ log = logging.getLogger(__name__)
 
 class CCLIFileImport(SongImport):
     """
-    The :class:`CCLIFileImport` class provides OpenLP with the ability to
-    import CCLI SongSelect song files in both .txt and .usr formats.
-    See http://www.ccli.com/ for more details.
+    The :class:`CCLIFileImport` class provides OpenLP with the ability to import
+    CCLI SongSelect song files in both .txt and .usr formats. See
+    `<http://www.ccli.com/>`_ for more details.
     """
 
     def __init__(self, manager, **kwargs):
@@ -56,7 +56,7 @@ class CCLIFileImport(SongImport):
 
     def do_import(self):
         """
-        Import either a .usr or a .txt SongSelect file
+        Import either a ``.usr`` or a ``.txt`` SongSelect file.
         """
         log.debug(u'Starting CCLI File Import')
         song_total = len(self.import_source)
@@ -83,12 +83,10 @@ class CCLIFileImport(SongImport):
                 lines = infile.readlines()
                 ext = os.path.splitext(filename)[1]
                 if ext.lower() == u'.usr':
-                    log.info(u'SongSelect .usr format file found %s: ',
-                        filename)
+                    log.info(u'SongSelect .usr format file found: %s', filename)
                     self.do_import_usr_file(lines)
                 elif ext.lower() == u'.txt':
-                    log.info(u'SongSelect .txt format file found %s: ',
-                        filename)
+                    log.info(u'SongSelect .txt format file found: %s', filename)
                     self.do_import_txt_file(lines)
                 else:
                     log.info(u'Extension %s is not valid', filename)
@@ -99,9 +97,8 @@ class CCLIFileImport(SongImport):
 
     def do_import_usr_file(self, textList):
         """
-        The :func:`do_import_usr_file` method provides OpenLP
-        with the ability to import CCLI SongSelect songs in
-        *USR* file format
+        The :func:`do_import_usr_file` method provides OpenLP with the ability
+        to import CCLI SongSelect songs in *USR* file format.
 
         ``textList``
             An array of strings containing the usr file content.
@@ -225,9 +222,8 @@ class CCLIFileImport(SongImport):
 
     def do_import_txt_file(self, textList):
         """
-        The :func:`do_import_txt_file` method provides OpenLP
-        with the ability to import CCLI SongSelect songs in
-        *TXT* file format
+        The :func:`do_import_txt_file` method provides OpenLP with the ability
+        to import CCLI SongSelect songs in *TXT* file format.
 
         ``textList``
             An array of strings containing the txt file content.
@@ -261,7 +257,6 @@ class CCLIFileImport(SongImport):
         check_first_verse_line = False
         verse_text = u''
         song_author = u''
-        song_topics = u''
         verse_start = False
         for line in textList:
             clean_line = line.strip()
@@ -296,8 +291,8 @@ class CCLIFileImport(SongImport):
                             elif verse_desc_parts[0].startswith(u'Br'):
                                 verse_type = VerseType.Tags[VerseType.Bridge]
                             else:
-                                #we need to analyse the next line for
-                                #verse type, so set flag
+                                # we need to analyse the next line for
+                                # verse type, so set flag
                                 verse_type = VerseType.Tags[VerseType.Other]
                                 check_first_verse_line = True
                             verse_number = verse_desc_parts[1]
@@ -306,7 +301,7 @@ class CCLIFileImport(SongImport):
                             verse_number = 1
                         verse_start = True
                     else:
-                        #check first line for verse type
+                        # check first line for verse type
                         if check_first_verse_line:
                             if line.startswith(u'(PRE-CHORUS'):
                                 verse_type = VerseType.Tags[VerseType.PreChorus]
