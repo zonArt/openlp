@@ -279,7 +279,7 @@ class CCLIFileImport(SongImport):
                     if clean_line.startswith(u'CCLI'):
                         line_number += 1
                         ccli_parts = clean_line.split(' ')
-                        self.ccli_number = ccli_parts[len(ccli_parts)-1]
+                        self.ccli_number = ccli_parts[len(ccli_parts) - 1]
                     elif not verse_start:
                         # We have the verse descriptor
                         verse_desc_parts = clean_line.split(u' ')
