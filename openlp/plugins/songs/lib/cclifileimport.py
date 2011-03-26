@@ -27,7 +27,7 @@
 import logging
 import os
 import chardet
-import codecsu
+import codecs
 
 from openlp.core.lib import translate
 from openlp.plugins.songs.lib import VerseType
