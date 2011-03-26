@@ -106,7 +106,7 @@ class Ui_StartTimeDialog(object):
 
     def retranslateUi(self, StartTimeDialog):
         self.setWindowTitle(translate('OpenLP.StartTimeForm',
-            'Item Start and Fnish Time'))
+            'Item Start and Finish Time'))
         self.hourSpinBox.setSuffix(UiStrings.Hours)
         self.minuteSpinBox.setSuffix(UiStrings.Minutes)
         self.secondSpinBox.setSuffix(UiStrings.Seconds)

@@ -220,8 +220,6 @@ def main():
     qInitResources()
     # Now create and actually run the application.
     app = OpenLP(qt_args)
-    # Define the settings environment
-    settings = QtCore.QSettings(u'OpenLP', u'OpenLP')
     # Instance check
     if app.isAlreadyRunning():
         sys.exit()
