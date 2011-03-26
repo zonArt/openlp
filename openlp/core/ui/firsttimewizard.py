@@ -80,9 +80,9 @@ class Ui_FirstTimeWizard(object):
         self.pluginLayout.addWidget(self.imageCheckBox)
         self.presentationCheckBox = QtGui.QCheckBox(self.pluginPage)
         if sys.platform == "darwin":
-             self.presentationCheckBox.setChecked(False)
+            self.presentationCheckBox.setChecked(False)
         else:
-             self.presentationCheckBox.setChecked(True)
+            self.presentationCheckBox.setChecked(True)
         self.presentationCheckBox.setObjectName(u'presentationCheckBox')
         self.pluginLayout.addWidget(self.presentationCheckBox)
         self.mediaCheckBox = QtGui.QCheckBox(self.pluginPage)
