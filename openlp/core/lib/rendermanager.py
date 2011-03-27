@@ -242,7 +242,6 @@ class RenderManager(object):
             Add line endings after each line of text used for bibles.
         """
         log.debug(u'format slide')
-        print words
         return self.renderer.format_slide(words, line_break, self.force_page)
 
     def calculate_default(self, screen):
