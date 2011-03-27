@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -116,8 +116,15 @@ dist_path = os.path.join(branch_path, u'dist', u'OpenLP')
 enchant_path = os.path.join(site_packages, u'enchant')
 
 def update_code():
-    print u'Updating the code...'
     os.chdir(branch_path)
+    print u'Reverting any changes to the code...'
+    bzr = Popen((u'bzr', u'revert'), stdout=PIPE)
+    output, error = bzr.communicate()
+    code = bzr.wait()
+    if code != 0:
+       print output
+       raise Exception(u'Error reverting the code')
+    print u'Updating the code...'
     bzr = Popen((u'bzr', u'update'), stdout=PIPE)
     output, error = bzr.communicate()
     code = bzr.wait()

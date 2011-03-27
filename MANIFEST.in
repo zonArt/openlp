@@ -4,6 +4,7 @@ recursive-include openlp *.csv
 recursive-include openlp *.html
 recursive-include openlp *.js
 recursive-include openlp *.css
+recursive-include openlp *.png
 recursive-include documentation *
 recursive-include resources *
 recursive-include scripts *

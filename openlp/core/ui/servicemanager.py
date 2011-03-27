@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -481,28 +481,30 @@ class ServiceManager(QtGui.QWidget):
         # Usual Zip file cannot exceed 2GiB, file with Zip64 cannot be
         # extracted using unzip in UNIX.
         allow_zip_64 = (total_size > 2147483648 + len(service_content))
-        log.debug(u'ServiceManager.saveFile - allowZip64 is %s' %
-            allow_zip_64)
+        log.debug(u'ServiceManager.saveFile - allowZip64 is %s' % allow_zip_64)
         zip = None
+        success = True
         try:
             zip = zipfile.ZipFile(path_file_name, 'w', zipfile.ZIP_STORED,
                 allow_zip_64)
             # First we add service contents.
             # We save ALL filenames into ZIP using UTF-8.
-            zip.writestr(service_file_name.encode(u'utf-8'),
-                service_content)
+            zip.writestr(service_file_name.encode(u'utf-8'), service_content)
             # Finally add all the listed media files.
             for path_from in write_list:
                 zip.write(path_from, path_from.encode(u'utf-8'))
         except IOError:
             log.exception(u'Failed to save service to disk')
-            return False
+            success = False
         finally:
             if zip:
                 zip.close()
-        self.mainwindow.addRecentFile(path_file_name)
-        self.setModified(False)
-        return True
+        if success:
+            self.mainwindow.addRecentFile(path_file_name)
+            self.setModified(False)
+        else:
+            delete_file(path_file_name)
+        return success
 
     def saveFileAs(self):
         """
@@ -527,8 +529,9 @@ class ServiceManager(QtGui.QWidget):
     def loadFile(self, fileName):
         if not fileName:
             return False
-        else:
-            fileName = unicode(fileName)
+        fileName = unicode(fileName)
+        if not os.path.exists(fileName):
+            return False
         zip = None
         fileTo = None
         try:
@@ -566,24 +569,27 @@ class ServiceManager(QtGui.QWidget):
                         Receiver.send_message(u'%s_service_load' %
                             serviceItem.name.lower(), serviceItem)
                 delete_file(p_file)
+                self.setFileName(fileName)
+                self.mainwindow.addRecentFile(fileName)
+                self.setModified(False)
+                QtCore.QSettings().setValue(
+                    'service/last file', QtCore.QVariant(fileName))
                 Receiver.send_message(u'cursor_normal')
             else:
                 critical_error_message_box(
                     message=translate('OpenLP.ServiceManager',
                     'File is not a valid service.'))
                 log.exception(u'File contains no service data')
-        except (IOError, NameError):
+        except (IOError, NameError, zipfile.BadZipfile):
+            critical_error_message_box(
+                message=translate('OpenLP.ServiceManager',
+                'File could not be opened because it is corrupt.'))
             log.exception(u'Problem loading service file %s' % fileName)
         finally:
             if fileTo:
                 fileTo.close()
             if zip:
                 zip.close()
-        self.setFileName(fileName)
-        self.mainwindow.addRecentFile(fileName)
-        self.setModified(False)
-        QtCore.QSettings(). \
-            setValue(u'service/last file', QtCore.QVariant(fileName))
 
     def loadLastFile(self):
         """

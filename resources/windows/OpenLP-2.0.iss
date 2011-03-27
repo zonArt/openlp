@@ -31,9 +31,9 @@ OutputDir=..\..\dist
 OutputBaseFilename=OpenLP-{#RealVersion}-setup
 Compression=lzma
 SolidCompression=true
-SetupIconFile=C:\Program Files\Inno Setup 5\Examples\Setup.ico
-WizardImageFile=C:\Program Files\Inno Setup 5\WizModernImage-IS.bmp
-WizardSmallImageFile=C:\Program Files\Inno Setup 5\WizModernSmallImage-IS.bmp
+SetupIconFile=OpenLP.ico
+WizardImageFile=WizImageBig.bmp
+WizardSmallImageFile=WizImageSmall.bmp
 
 [Languages]
 Name: english; MessagesFile: compiler:Default.isl
@@ -78,15 +78,6 @@ Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\{#AppName}; Filenam
 Filename: {app}\{#AppExeName}; Description: {cm:LaunchProgram,{#AppName}}; Flags: nowait postinstall skipifsilent
 
 [Registry]
-Root: HKCU; SubKey: Software\OpenLP\OpenLP\alerts; ValueType: dword; ValueName: status; ValueData: $00000001
-Root: HKCU; SubKey: Software\OpenLP\OpenLP\bibles; ValueType: dword; ValueName: status; ValueData: $00000001
-Root: HKCU; SubKey: Software\OpenLP\OpenLP\custom; ValueType: dword; ValueName: status; ValueData: $00000001
-Root: HKCU; SubKey: Software\OpenLP\OpenLP\images; ValueType: dword; ValueName: status; ValueData: $00000001
-Root: HKCU; SubKey: Software\OpenLP\OpenLP\media; ValueType: dword; ValueName: status; ValueData: $00000001
-Root: HKCU; SubKey: Software\OpenLP\OpenLP\presentations; ValueType: dword; ValueName: status; ValueData: $00000001
-Root: HKCU; SubKey: Software\OpenLP\OpenLP\remotes; ValueType: dword; ValueName: status; ValueData: $00000000
-Root: HKCU; SubKey: Software\OpenLP\OpenLP\songs; ValueType: dword; ValueName: status; ValueData: $00000001
-Root: HKCU; SubKey: Software\OpenLP\OpenLP\songusage; ValueType: dword; ValueName: status; ValueData: $00000001
 
 [Code]
 function GetUninstallString(): String;

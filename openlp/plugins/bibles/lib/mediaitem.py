@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -35,7 +35,7 @@ from openlp.core.lib.ui import UiStrings, add_widget_completer, \
     media_item_combo_box, critical_error_message_box
 from openlp.plugins.bibles.forms import BibleImportForm
 from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle, \
-    get_reference_match
+    VerseReferenceList, get_reference_match
 
 log = logging.getLogger(__name__)
 
@@ -551,64 +551,52 @@ class BibleMediaItem(MediaManagerItem):
         further action is saved for/in each row.
         """
         verse_separator = get_reference_match(u'sep_v_display')
-        version = self.parent.manager.get_meta_data(bible, u'Version')
-        copyright = self.parent.manager.get_meta_data(bible, u'Copyright')
-        permissions = self.parent.manager.get_meta_data(bible, u'Permissions')
+        version = self.parent.manager.get_meta_data(bible, u'Version').value
+        copyright = self.parent.manager.get_meta_data(bible, u'Copyright').value
+        permissions = \
+            self.parent.manager.get_meta_data(bible, u'Permissions').value
+        second_version = u''
+        second_copyright = u''
+        second_permissions = u''
         if second_bible:
-            second_version = self.parent.manager.get_meta_data(second_bible,
-                u'Version')
-            second_copyright = self.parent.manager.get_meta_data(second_bible,
-                u'Copyright')
-            second_permissions = self.parent.manager.get_meta_data(second_bible,
-                u'Permissions')
-            if not second_permissions:
-                second_permissions = u''
+            second_version = self.parent.manager.get_meta_data(
+                second_bible, u'Version').value
+            second_copyright = self.parent.manager.get_meta_data(
+                second_bible, u'Copyright').value
+            second_permissions = self.parent.manager.get_meta_data(
+                second_bible, u'Permissions').value
         for count, verse in enumerate(self.search_results):
+            data = {
+                'book': QtCore.QVariant(verse.book.name),
+                'chapter': QtCore.QVariant(verse.chapter),
+                'verse': QtCore.QVariant(verse.verse),
+                'bible': QtCore.QVariant(bible),
+                'version': QtCore.QVariant(version),
+                'copyright': QtCore.QVariant(copyright),
+                'permissions': QtCore.QVariant(permissions),
+                'text': QtCore.QVariant(verse.text),
+                'second_bible': QtCore.QVariant(second_bible),
+                'second_version': QtCore.QVariant(second_version),
+                'second_copyright': QtCore.QVariant(second_copyright),
+                'second_permissions': QtCore.QVariant(second_permissions),
+                'second_text': QtCore.QVariant(u'')
+            }
             if second_bible:
                 try:
-                    vdict = {
-                        'book': QtCore.QVariant(verse.book.name),
-                        'chapter': QtCore.QVariant(verse.chapter),
-                        'verse': QtCore.QVariant(verse.verse),
-                        'bible': QtCore.QVariant(bible),
-                        'version': QtCore.QVariant(version.value),
-                        'copyright': QtCore.QVariant(copyright.value),
-                        'permissions': QtCore.QVariant(permissions.value),
-                        'text': QtCore.QVariant(verse.text),
-                        'second_bible': QtCore.QVariant(second_bible),
-                        'second_version': QtCore.QVariant(second_version.value),
-                        'second_copyright': QtCore.QVariant(
-                            second_copyright.value),
-                        'second_permissions': QtCore.QVariant(
-                            second_permissions.value),
-                        'second_text': QtCore.QVariant(
-                            self.second_search_results[count].text)
-                    }
+                    data[u'second_text'] = QtCore.QVariant(
+                        self.second_search_results[count].text)
                 except IndexError:
+                    log.exception(u'The second_search_results does not have as '
+                    'many verses as the search_results.')
                     break
                 bible_text = u' %s %d%s%d (%s, %s)' % (verse.book.name,
-                    verse.chapter, verse_separator, verse.verse, version.value,
-                    second_version.value)
+                    verse.chapter, verse_separator, verse.verse, version,
+                    second_version)
             else:
-                vdict = {
-                    'book': QtCore.QVariant(verse.book.name),
-                    'chapter': QtCore.QVariant(verse.chapter),
-                    'verse': QtCore.QVariant(verse.verse),
-                    'bible': QtCore.QVariant(bible),
-                    'version': QtCore.QVariant(version.value),
-                    'copyright': QtCore.QVariant(copyright.value),
-                    'permissions': QtCore.QVariant(permissions.value),
-                    'text': QtCore.QVariant(verse.text),
-                    'second_bible': QtCore.QVariant(u''),
-                    'second_version': QtCore.QVariant(u''),
-                    'second_copyright': QtCore.QVariant(u''),
-                    'second_permissions': QtCore.QVariant(u''),
-                    'second_text': QtCore.QVariant(u'')
-                }
                 bible_text = u'%s %d%s%d (%s)' % (verse.book.name,
-                    verse.chapter, verse_separator, verse.verse, version.value)
+                    verse.chapter, verse_separator, verse.verse, version)
             bible_verse = QtGui.QListWidgetItem(bible_text)
-            bible_verse.setData(QtCore.Qt.UserRole, QtCore.QVariant(vdict))
+            bible_verse.setData(QtCore.Qt.UserRole, QtCore.QVariant(data))
             self.listView.addItem(bible_verse)
         self.listView.selectAll()
         self.search_results = {}
@@ -637,6 +625,7 @@ class BibleMediaItem(MediaManagerItem):
         old_chapter = -1
         raw_slides = []
         raw_title = []
+        verses = VerseReferenceList()
         for item in items:
             bitem = self.listView.item(item.row())
             book = self._decodeQtObject(bitem, 'book')
@@ -653,15 +642,9 @@ class BibleMediaItem(MediaManagerItem):
             second_permissions = \
                 self._decodeQtObject(bitem, 'second_permissions')
             second_text = self._decodeQtObject(bitem, 'second_text')
+            verses.add(book, chapter, verse, version, copyright, permissions)
             verse_text = self.formatVerse(old_chapter, chapter, verse)
-            footer = u'%s (%s %s %s)' % (book, version, copyright, permissions)
-            if footer not in service_item.raw_footer:
-                service_item.raw_footer.append(footer)
             if second_bible:
-                footer = u'%s (%s %s %s)' % (book, second_version,
-                    second_copyright, second_permissions)
-                if footer not in service_item.raw_footer:
-                    service_item.raw_footer.append(footer)
                 bible_text = u'%s&nbsp;%s\n\n%s&nbsp;%s' % (verse_text, text,
                     verse_text, second_text)
                 raw_slides.append(bible_text.rstrip())
@@ -684,6 +667,12 @@ class BibleMediaItem(MediaManagerItem):
                 start_item = item
             old_item = item
             old_chapter = chapter
+        # Add footer
+        service_item.raw_footer.append(verses.format_verses())
+        if second_bible:
+            verses.add_version(second_version, second_copyright,
+                second_permissions)
+        service_item.raw_footer.append(verses.format_versions())
         raw_title.append(self.formatTitle(start_item, item))
         # If there are no more items we check whether we have to add bible_text.
         if bible_text:
@@ -809,11 +798,9 @@ class BibleMediaItem(MediaManagerItem):
         else:
             verse_text = unicode(verse)
         if self.settings.display_style == DisplayStyle.Round:
-            verse_text = u'{su}(' + verse_text + u'){/su}'
-        elif self.settings.display_style == DisplayStyle.Curly:
-            verse_text = u'{su}{' + verse_text + u'}{/su}'
-        elif self.settings.display_style == DisplayStyle.Square:
-            verse_text = u'{su}[' + verse_text + u']{/su}'
-        else:
-            verse_text = u'{su}' + verse_text + u'{/su}'
-        return verse_text
+            return u'{su}(%s){/su}' % verse_text
+        if self.settings.display_style == DisplayStyle.Curly:
+            return u'{su}{%s}{/su}' % verse_text
+        if self.settings.display_style == DisplayStyle.Square:
+            return u'{su}[%s]{/su}' % verse_text
+        return u'{su}%s{/su}' % verse_text
