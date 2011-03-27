@@ -28,25 +28,26 @@ from PyQt4 import QtCore, QtGui
 
 from aboutdialog import Ui_AboutDialog
 from openlp.core.lib import translate
+from openlp.core.utils import get_application_version
 
 class AboutForm(QtGui.QDialog, Ui_AboutDialog):
     """
     The About dialog
     """
 
-    def __init__(self, parent, applicationVersion):
+    def __init__(self, parent):
         """
         Do some initialisation stuff
         """
         QtGui.QDialog.__init__(self, parent)
-        self.applicationVersion = applicationVersion
+        applicationVersion = get_application_version()
         self.setupUi(self)
         about_text = self.aboutTextEdit.toPlainText()
         about_text = about_text.replace(u'<version>',
-            self.applicationVersion[u'version'])
-        if self.applicationVersion[u'build']:
+            applicationVersion[u'version'])
+        if applicationVersion[u'build']:
             build_text = unicode(translate('OpenLP.AboutForm', ' build %s')) % \
-                self.applicationVersion[u'build']
+                applicationVersion[u'build']
         else:
             build_text = u''
         about_text = about_text.replace(u'<revision>', build_text)
