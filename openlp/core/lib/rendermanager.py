@@ -146,7 +146,8 @@ class RenderManager(object):
             else:
                 self.theme = self.service_theme
         else:
-            if theme:
+            # Images have a theme of -1
+            if theme and theme != -1:
                 self.theme = theme
             elif theme_level == ThemeLevel.Song or \
                 theme_level == ThemeLevel.Service:
