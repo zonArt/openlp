@@ -38,7 +38,7 @@ from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
     ThemeManager, SlideController, PluginForm, MediaDockManager, \
     ShortcutListForm, DisplayTagForm
 from openlp.core.utils import AppLocation, add_actions, LanguageManager, \
-    ActionList
+    ActionList, get_application_version
 
 log = logging.getLogger(__name__)
 
@@ -256,7 +256,6 @@ class Ui_MainWindow(object):
             u':/system/system_about.png')
         mainWindow.actionList.add_action(self.HelpAboutItem, u'Help')
         self.HelpOnlineHelpItem = base_action(mainWindow, u'HelpOnlineHelpItem')
-        self.HelpOnlineHelpItem.setEnabled(False)
         mainWindow.actionList.add_action(self.HelpOnlineHelpItem, u'Help')
         self.helpWebSiteItem = base_action(mainWindow, u'helpWebSiteItem')
         mainWindow.actionList.add_action(self.helpWebSiteItem, u'Help')
@@ -304,7 +303,6 @@ class Ui_MainWindow(object):
         self.ExportLanguageItem.setVisible(False)
         self.SettingsShortcutsItem.setVisible(False)
         self.HelpDocumentationItem.setVisible(False)
-        self.HelpOnlineHelpItem.setVisible(False)
 
     def retranslateUi(self, mainWindow):
         """
@@ -430,6 +428,9 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', 'Ctrl+F1'))
         self.HelpOnlineHelpItem.setText(
             translate('OpenLP.MainWindow', '&Online Help'))
+        # Uncomment after 1.9.5 beta string freeze
+        #self.HelpOnlineHelpItem.setShortcut(
+        #    translate('OpenLP.MainWindow', 'F1'))
         self.helpWebSiteItem.setText(
             translate('OpenLP.MainWindow', '&Web Site'))
         for item in self.LanguageGroup.actions():
@@ -468,15 +469,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     actionList = ActionList()
 
-    def __init__(self, screens, applicationVersion, clipboard):
+    def __init__(self, screens, application):
         """
         This constructor sets up the interface, the various managers, and the
         plugins.
         """
         QtGui.QMainWindow.__init__(self)
         self.screens = screens
-        self.applicationVersion = applicationVersion
-        self.clipboard = clipboard
+
+        self.application = application
         # Set up settings sections for the main application
         # (not for use by plugins)
         self.uiSettingsSection = u'user interface'
@@ -486,7 +487,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.serviceNotSaved = False
         self.actionList = ActionList()
         self.settingsmanager = SettingsManager(screens)
-        self.aboutForm = AboutForm(self, applicationVersion)
+        self.aboutForm = AboutForm(self)
         self.settingsForm = SettingsForm(self.screens, self, self)
         self.displayTagForm = DisplayTagForm(self)
         self.shortcutForm = ShortcutListForm(self)
@@ -530,6 +531,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.ViewThemeManagerItem.setChecked)
         QtCore.QObject.connect(self.helpWebSiteItem,
             QtCore.SIGNAL(u'triggered()'), self.onHelpWebSiteClicked)
+        QtCore.QObject.connect(self.HelpOnlineHelpItem,
+            QtCore.SIGNAL(u'triggered()'), self.onHelpOnLineHelpClicked)
         QtCore.QObject.connect(self.HelpAboutItem,
             QtCore.SIGNAL(u'triggered()'), self.onHelpAboutItemClicked)
         QtCore.QObject.connect(self.ToolsOpenDataFolder,
@@ -619,9 +622,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Call the initialise method to setup plugins.
         log.info(u'initialise plugins')
         self.pluginManager.initialise_plugins()
-        # Once all components are initialised load the Themes
-        log.info(u'Load Themes')
-        self.themeManagerContents.loadThemes()
         log.info(u'Load data from Settings')
         if QtCore.QSettings().value(u'advanced/save current plugin',
             QtCore.QVariant(False)).toBool():
@@ -630,6 +630,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             if savedPlugin != -1:
                 self.MediaToolBox.setCurrentIndex(savedPlugin)
         self.settingsForm.postSetUp()
+        # Once all components are initialised load the Themes
+        log.info(u'Load Themes')
+        self.themeManagerContents.loadThemes(True)
         Receiver.send_message(u'cursor_normal')
 
     def setAutoLanguage(self, value):
@@ -648,7 +651,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             'version from http://openlp.org/.'))
         QtGui.QMessageBox.question(self,
             translate('OpenLP.MainWindow', 'OpenLP Version Updated'),
-            version_text % (version, self.applicationVersion[u'full']))
+            version_text % (version, get_application_version()[u'full']))
 
     def show(self):
         """
@@ -658,7 +661,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.liveController.display.isVisible():
             self.liveController.display.setFocus()
         self.activateWindow()
-        if QtCore.QSettings().value(
+        if len(self.application.arguments()) > 0:
+            args = []
+            for a in self.application.arguments():
+                args.extend([a])
+            self.ServiceManagerContents.loadFile(unicode(args[0]))
+        elif QtCore.QSettings().value(
             self.generalSettingsSection + u'/auto open',
             QtCore.QVariant(False)).toBool():
             self.ServiceManagerContents.loadLastFile()
@@ -676,7 +684,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def firstTime(self):
         # Import themes if first time
         Receiver.send_message(u'openlp_process_events')
-        self.themeManagerContents.firstTime()
         for plugin in self.pluginManager.plugins:
             if hasattr(plugin, u'firstTime'):
                 Receiver.send_message(u'openlp_process_events')
@@ -720,11 +727,17 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         import webbrowser
         webbrowser.open_new(u'http://openlp.org/')
 
+    def onHelpOnLineHelpClicked(self):
+        """
+        Load the online OpenLP manual
+        """
+        import webbrowser
+        webbrowser.open_new(u'http://manual.openlp.org/')
+
     def onHelpAboutItemClicked(self):
         """
         Show the About form
         """
-        self.aboutForm.applicationVersion = self.applicationVersion
         self.aboutForm.exec_()
 
     def onPluginItemClicked(self):
