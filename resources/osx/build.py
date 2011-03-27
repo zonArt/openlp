@@ -394,10 +394,7 @@ if __name__ == '__main__':
         --template Info.plist.master \
         --expandto %(target_directory)s/Info.plist' \
         % { 'config_file' : options.config, 'target_directory' : os.getcwd() })
-    os.system('python expander.py --config %(config_file)s \
-        --template version.master \
-        --expandto %(target_directory)s/.version' \
-        % { 'config_file' : options.config, 'target_directory' : os.getcwd() })
+    os.system('python get_version.py > .version')
 
     # prepare variables
     app_name_lower = settings['openlp_appname'].lower()
