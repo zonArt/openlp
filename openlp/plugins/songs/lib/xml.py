@@ -226,7 +226,6 @@ class OpenLyrics(object):
         Convert the song to OpenLyrics Format.
         """
         sxml = SongXML()
-        verse_list = sxml.get_verses(song.lyrics)
         song_xml = objectify.fromstring(u'<song/>')
         # Append the necessary meta data to the song.
         song_xml.set(u'xmlns', u'http://openlyrics.info/namespace/2009/song')
@@ -268,17 +267,26 @@ class OpenLyrics(object):
             themes = etree.SubElement(properties, u'themes')
             for topic in song.topics:
                 self._add_text_to_element(u'theme', themes, topic.name)
+        # Process the song's lyrics.
         lyrics = etree.SubElement(song_xml, u'lyrics')
+        verse_list = sxml.get_verses(song.lyrics)
         for verse in verse_list:
-            verse_tag = u'%s%s' % (
-                verse[0][u'type'][0].lower(), verse[0][u'label'])
-            element = \
-                self._add_text_to_element(u'verse', lyrics, None, verse_tag)
-            if verse[0].has_key(u'lang'):
-                element.set(u'lang', verse[0][u'lang'])
-            element = self._add_text_to_element(u'lines', element)
-            for line in unicode(verse[1]).split(u'\n'):
-                self._add_text_to_element(u'line', element, line)
+            verse_tag = verse[0][u'type'][0].lower()
+            verse_number = verse[0][u'label']
+            # Create a list with all "sub" verses.
+            sub_verses = verse[1].split(u'[---]')
+            for sub_index, sub_verse in enumerate(sub_verses):
+                verse_def = verse_tag + verse_number
+                # We have more than one sub verse, consequently we need "v1a".
+                if len(sub_verses) > 1:
+                    verse_def += list(u'abcdefghijklmnopqrstuvwxyz')[sub_index]
+                element = \
+                    self._add_text_to_element(u'verse', lyrics, None, verse_def)
+                if verse[0].has_key(u'lang'):
+                    element.set(u'lang', verse[0][u'lang'])
+                element = self._add_text_to_element(u'lines', element)
+                for line in sub_verse.strip(u'\n').split(u'\n'):
+                    self._add_text_to_element(u'line', element, line)
         return self._extract_xml(song_xml)
 
     def xml_to_song(self, xml):
@@ -446,6 +454,7 @@ class OpenLyrics(object):
             The song object.
         """
         sxml = SongXML()
+        verses = {}
         for verse in lyrics.verse:
             text = u''
             for lines in verse.lines:
@@ -465,7 +474,13 @@ class OpenLyrics(object):
             lang = None
             if self._get(verse, u'lang'):
                 lang = self._get(verse, u'lang')
-            sxml.add_verse_to_lyrics(verse_tag, verse_number, text, lang)
+            if verses.has_key((verse_tag, verse_number, lang)):
+                verses[(verse_tag, verse_number, lang)] += u'\n[---]\n' + text
+            else:
+                verses[(verse_tag, verse_number, lang)] = text
+        for verse in verses:
+            sxml.add_verse_to_lyrics(
+                verse[0], verse[1], verses[verse], verse[2])
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
         # Process verse order
         if hasattr(properties, u'verseOrder'):
