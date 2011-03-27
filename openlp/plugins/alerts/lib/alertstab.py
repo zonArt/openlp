@@ -112,7 +112,7 @@ class AlertsTab(SettingsTab):
         self.FontSizeSpinBox.setSuffix(UiStrings.FontSizePtUnit)
         self.TimeoutLabel.setText(
             translate('AlertsPlugin.AlertsTab', 'Alert timeout:'))
-        self.TimeoutSpinBox.setSuffix(UiStrings.S)
+        self.TimeoutSpinBox.setSuffix(UiStrings.Seconds)
         self.PreviewGroupBox.setTitle(UiStrings.Preview)
         self.FontPreview.setText(UiStrings.OLPV2)
 

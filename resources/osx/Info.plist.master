@@ -18,9 +18,9 @@
 <string>MacOS/openlp</string>
 <key>CFBundleName</key>
 <string>%(openlp_appname)s</string>
-<key>CFBundleGetInfoString</string>
+<key>CFBundleGetInfoString</key>
 <string>%(openlp_appname)s %(openlp_version)s</string>
-<key>LSHasLocalizedDisplayName</string>
+<key>LSHasLocalizedDisplayName</key>
 <false/>
 <key>NSAppleScriptEnabled</key>
 <false/>
