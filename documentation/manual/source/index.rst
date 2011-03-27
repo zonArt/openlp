@@ -14,5 +14,8 @@ Contents:
    introduction
    glossary
    dualmonitors
+   configure
+   bibles
+   themes
    mediamanager
    songs

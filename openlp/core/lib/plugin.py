@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -32,6 +32,7 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver
 from openlp.core.lib.ui import UiStrings
+from openlp.core.utils import get_application_version
 
 log = logging.getLogger(__name__)
 
@@ -145,7 +146,10 @@ class Plugin(QtCore.QObject):
         self.textStrings = {}
         self.setPluginTextStrings()
         self.nameStrings = self.textStrings[StringContent.Name]
-        self.version = version if version else u'1.9.4'
+        if version:
+            self.version = version
+        else:
+            self.version = get_application_version()[u'version']
         self.settingsSection = self.name.lower()
         self.icon = None
         self.mediaItemClass = mediaItemClass
