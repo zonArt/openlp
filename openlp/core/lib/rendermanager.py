@@ -26,9 +26,10 @@
 
 import logging
 
-from PyQt4 import QtCore
+from PyQt4 import QtCore, QtWebKit
 
-from openlp.core.lib import Renderer, ServiceItem, ImageManager
+from openlp.core.lib import ServiceItem, ImageManager, expand_tags, \
+    build_lyrics_format_css, build_lyrics_outline_css, Receiver
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.ui import MainDisplay
 
@@ -70,25 +71,25 @@ class RenderManager(object):
         self.display = MainDisplay(self, screens, False)
         self.display.imageManager = self.image_manager
         self.theme_manager = theme_manager
-        self.renderer = Renderer()
-        self.calculate_default(self.screens.current[u'size'])
         self.theme = u''
         self.service_theme = u''
         self.theme_level = u''
         self.override_background = None
         self.theme_data = None
         self.force_page = False
+        self.r_theme_name = None
+        self._r_theme = None
 
     def update_display(self):
         """
         Updates the render manager's information about the current screen.
         """
         log.debug(u'Update Display')
-        self.calculate_default(self.screens.current[u'size'])
+        self._calculate_default(self.screens.current[u'size'])
         self.display = MainDisplay(self, self.screens, False)
         self.display.imageManager = self.image_manager
         self.display.setup()
-        self.renderer.bg_frame = None
+        self.bg_frame = None
         self.theme_data = None
         self.image_manager.update_display(self.width, self.height)
 
@@ -155,7 +156,7 @@ class RenderManager(object):
                     self.theme = self.service_theme
             else:
                 self.theme = self.global_theme
-        if self.theme != self.renderer.theme_name or self.theme_data is None \
+        if self.theme != self.r_theme_name or self.theme_data is None \
             or overrideLevels:
             log.debug(u'theme is now %s', self.theme)
             # Force the theme to be the one passed in.
@@ -163,37 +164,12 @@ class RenderManager(object):
                 self.theme_data = theme
             else:
                 self.theme_data = self.theme_manager.getThemeData(self.theme)
-            self.calculate_default(self.screens.current[u'size'])
-            self.renderer.set_theme(self.theme_data)
-            self.build_text_rectangle(self.theme_data)
+            self._calculate_default(self.screens.current[u'size'])
+            self._set_theme(self.theme_data)
+            self._build_text_rectangle(self.theme_data)
             self.image_manager.add_image(self.theme_data.theme_name,
                 self.theme_data.background_filename)
-        return self.renderer._rect, self.renderer._rect_footer
-
-    def build_text_rectangle(self, theme):
-        """
-        Builds a text block using the settings in ``theme``
-        and the size of the display screen.height.
-
-        ``theme``
-            The theme to build a text block for.
-        """
-        log.debug(u'build_text_rectangle')
-        main_rect = None
-        footer_rect = None
-        if not theme.font_main_override:
-            main_rect = QtCore.QRect(10, 0, self.width - 20, self.footer_start)
-        else:
-            main_rect = QtCore.QRect(theme.font_main_x, theme.font_main_y,
-                theme.font_main_width - 1, theme.font_main_height - 1)
-        if not theme.font_footer_override:
-            footer_rect = QtCore.QRect(10, self.footer_start, self.width - 20,
-                self.height - self.footer_start)
-        else:
-            footer_rect = QtCore.QRect(theme.font_footer_x,
-                theme.font_footer_y, theme.font_footer_width - 1,
-                theme.font_footer_height - 1)
-        self.renderer.set_text_rectangle(main_rect, footer_rect)
+        return self._rect, self._rect_footer
 
     def generate_preview(self, theme_data, force_page=False):
         """
@@ -227,7 +203,7 @@ class RenderManager(object):
             raw_html = serviceItem.get_rendered_frame(0)
             preview = self.display.text(raw_html)
             # Reset the real screen size for subsequent render requests
-            self.calculate_default(self.screens.current[u'size'])
+            self._calculate_default(self.screens.current[u'size'])
             return preview
 
     def format_slide(self, words, line_break):
@@ -241,9 +217,9 @@ class RenderManager(object):
             Add line endings after each line of text used for bibles.
         """
         log.debug(u'format slide')
-        return self.renderer.format_slide(words, line_break, self.force_page)
+        return self._format_slide(words, line_break, self.force_page)
 
-    def calculate_default(self, screen):
+    def _calculate_default(self, screen):
         """
         Calculate the default dimentions of the screen.
 
@@ -258,3 +234,124 @@ class RenderManager(object):
             self.width, self.height, self.screen_ratio)
         # 90% is start of footer
         self.footer_start = int(self.height * 0.90)
+
+    def _build_text_rectangle(self, theme):
+        """
+        Builds a text block using the settings in ``theme``
+        and the size of the display screen.height.
+
+        ``theme``
+            The theme to build a text block for.
+        """
+        log.debug(u'_build_text_rectangle')
+        main_rect = None
+        footer_rect = None
+        if not theme.font_main_override:
+            main_rect = QtCore.QRect(10, 0, self.width - 20, self.footer_start)
+        else:
+            main_rect = QtCore.QRect(theme.font_main_x, theme.font_main_y,
+                theme.font_main_width - 1, theme.font_main_height - 1)
+        if not theme.font_footer_override:
+            footer_rect = QtCore.QRect(10, self.footer_start, self.width - 20,
+                self.height - self.footer_start)
+        else:
+            footer_rect = QtCore.QRect(theme.font_footer_x,
+                theme.font_footer_y, theme.font_footer_width - 1,
+                theme.font_footer_height - 1)
+        self._set_text_rectangle(main_rect, footer_rect)
+
+    def _set_theme(self, theme):
+        """
+        Set the theme to be used.
+
+        ``theme``
+            The theme to be used.
+        """
+        log.debug(u'set theme')
+        self._r_theme = theme
+        self.r_theme_name = theme.theme_name
+
+    def _set_text_rectangle(self, rect_main, rect_footer):
+        """
+        Sets the rectangle within which text should be rendered.
+
+        ``rect_main``
+            The main text block.
+
+        ``rect_footer``
+            The footer text block.
+        """
+        log.debug(u'set_text_rectangle %s , %s' % (rect_main, rect_footer))
+        self._rect = rect_main
+        self._rect_footer = rect_footer
+        self.page_width = self._rect.width()
+        self.page_height = self._rect.height()
+        if self._r_theme.font_main_shadow:
+            self.page_width -= int(self._r_theme.font_main_shadow_size)
+            self.page_height -= int(self._r_theme.font_main_shadow_size)
+        self.web = QtWebKit.QWebView()
+        self.web.setVisible(False)
+        self.web.resize(self.page_width, self.page_height)
+        self.web_frame = self.web.page().mainFrame()
+        # Adjust width and height to account for shadow. outline done in css
+        self.page_shell = u'<html><head><style>' \
+            u'*{margin: 0; padding: 0; border: 0;} '\
+            u'#main {position:absolute; top:0px; %s %s}</style><body>' \
+            u'<div id="main">' % \
+            (build_lyrics_format_css(self._r_theme, self.page_width,
+            self.page_height), build_lyrics_outline_css(self._r_theme))
+
+    def _format_slide(self, words, line_break, force_page=False):
+        """
+        Figure out how much text can appear on a slide, using the current
+        theme settings.
+
+        ``words``
+            The words to be fitted on the slide.
+
+        ``line_break``
+            Add line endings after each line of text used for bibles.
+
+        ``force_page``
+            Flag to tell message lines in page.
+
+        """
+        log.debug(u'format_slide - Start')
+        line_end = u''
+        if line_break:
+            line_end = u'<br>'
+        words = words.replace(u'\r\n', u'\n')
+        verses_text = words.split(u'\n')
+        text = []
+        for verse in verses_text:
+            lines = verse.split(u'\n')
+            for line in lines:
+                text.append(line)
+        formatted = []
+        html_text = u''
+        styled_text = u''
+        line_count = 0
+        for line in text:
+            if line_count != -1:
+                line_count += 1
+            styled_line = expand_tags(line) + line_end
+            styled_text += styled_line
+            html = self.page_shell + styled_text + u'</div></body></html>'
+            self.web.setHtml(html)
+            # Text too long so go to next page
+            if self.web_frame.contentsSize().height() > self.page_height:
+                if force_page and line_count > 0:
+                    Receiver.send_message(u'theme_line_count', line_count)
+                line_count = -1
+                if html_text.endswith(u'<br>'):
+                    html_text = html_text[:len(html_text)-4]
+                formatted.append(html_text)
+                html_text = u''
+                styled_text = styled_line
+            html_text += line + line_end
+        if html_text.endswith(u'<br>'):
+            html_text = html_text[:len(html_text)-4]
+        formatted.append(html_text)
+        log.debug(u'format_slide - End')
+        return formatted
+
