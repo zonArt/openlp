@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -156,10 +156,9 @@ class ThemeManager(QtGui.QWidget):
             file = os.path.join(self.path, file).encode(encoding)
             self.unzipTheme(file, self.path)
             delete_file(file)
-        self.loadThemes()
         Receiver.send_message(u'cursor_normal')
 
-    def configUpdated(self, firstTime=False):
+    def configUpdated(self):
         """
         Triggered when Config dialog is updated.
         """
@@ -433,7 +432,7 @@ class ThemeManager(QtGui.QWidget):
         self.loadThemes()
         Receiver.send_message(u'cursor_normal')
 
-    def loadThemes(self):
+    def loadThemes(self, firstTime=False):
         """
         Loads the theme lists and triggers updates accross the whole system
         using direct calls or core functions and events for the plugins.
@@ -443,31 +442,44 @@ class ThemeManager(QtGui.QWidget):
         self.themelist = []
         self.themeListWidget.clear()
         dirList = os.listdir(self.path)
-        dirList.sort()
-        for name in dirList:
-            if name.endswith(u'.png'):
-                # check to see file is in theme root directory
-                theme = os.path.join(self.path, name)
-                if os.path.exists(theme):
-                    textName = os.path.splitext(name)[0]
-                    if textName == self.global_theme:
-                        name = unicode(translate('OpenLP.ThemeManager',
-                            '%s (default)')) % textName
-                    else:
-                        name = textName
-                    thumb = os.path.join(self.thumbPath, u'%s.png' % textName)
-                    item_name = QtGui.QListWidgetItem(name)
-                    if os.path.exists(thumb):
-                        icon = build_icon(thumb)
-                    else:
-                        icon = build_icon(theme)
-                        pixmap = icon.pixmap(QtCore.QSize(88, 50))
-                        pixmap.save(thumb, u'png')
-                    item_name.setIcon(icon)
-                    item_name.setData(QtCore.Qt.UserRole,
-                        QtCore.QVariant(textName))
-                    self.themeListWidget.addItem(item_name)
-                    self.themelist.append(textName)
+        files = SettingsManager.get_files(self.settingsSection, u'.png')
+        if firstTime:
+            self.firstTime()
+            # No themes have been found so create one
+            if len(files) == 0:
+                theme = ThemeXML()
+                theme.theme_name = UiStrings.Default
+                self._writeTheme(theme, None, None)
+                QtCore.QSettings().setValue(
+                    self.settingsSection + u'/global theme',
+                    QtCore.QVariant(theme.theme_name))
+                self.configUpdated()
+                files = SettingsManager.get_files(self.settingsSection, u'.png')
+        files.sort()
+        # now process the file list of png files
+        for name in files:
+            # check to see file is in theme root directory
+            theme = os.path.join(self.path, name)
+            if os.path.exists(theme):
+                textName = os.path.splitext(name)[0]
+                if textName == self.global_theme:
+                    name = unicode(translate('OpenLP.ThemeManager',
+                        '%s (default)')) % textName
+                else:
+                    name = textName
+                thumb = os.path.join(self.thumbPath, u'%s.png' % textName)
+                item_name = QtGui.QListWidgetItem(name)
+                if os.path.exists(thumb):
+                    icon = build_icon(thumb)
+                else:
+                    icon = build_icon(theme)
+                    pixmap = icon.pixmap(QtCore.QSize(88, 50))
+                    pixmap.save(thumb, u'png')
+                item_name.setIcon(icon)
+                item_name.setData(QtCore.Qt.UserRole,
+                    QtCore.QVariant(textName))
+                self.themeListWidget.addItem(item_name)
+                self.themelist.append(textName)
         self._pushThemes()
 
     def _pushThemes(self):

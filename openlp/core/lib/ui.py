@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -49,6 +49,7 @@ class UiStrings(object):
     Cancel = translate('OpenLP.Ui', 'Cancel')
     CCLINumberLabel = translate('OpenLP.Ui', 'CCLI number:')
     CreateService = translate('OpenLP.Ui', 'Create a new service.')
+    Default = unicode(translate('OpenLP.Ui', 'Default'))
     Delete = translate('OpenLP.Ui', '&Delete')
     Edit = translate('OpenLP.Ui', '&Edit')
     EmptyField = translate('OpenLP.Ui', 'Empty Field')
@@ -56,6 +57,7 @@ class UiStrings(object):
     Export = translate('OpenLP.Ui', 'Export')
     FontSizePtUnit = translate('OpenLP.Ui', 'pt',
         'Abbreviated font pointsize unit')
+    Hours = translate('OpenLP.Ui', 'h', 'The abbreviated unit for hours')
     Image = translate('OpenLP.Ui', 'Image')
     Import = translate('OpenLP.Ui', 'Import')
     LengthTime = unicode(translate('OpenLP.Ui', 'Length %s'))
@@ -63,6 +65,7 @@ class UiStrings(object):
     LiveBGError = translate('OpenLP.Ui', 'Live Background Error')
     LivePanel = translate('OpenLP.Ui', 'Live Panel')
     Load = translate('OpenLP.Ui', 'Load')
+    Minutes = translate('OpenLP.Ui', 'm', 'The abbreviated unit for minutes')
     Middle = translate('OpenLP.Ui', 'Middle')
     New = translate('OpenLP.Ui', 'New')
     NewService = translate('OpenLP.Ui', 'New Service')
@@ -73,6 +76,8 @@ class UiStrings(object):
     NISp = translate('OpenLP.Ui', 'No Items Selected', 'Plural')
     OLPV1 = translate('OpenLP.Ui', 'openlp.org 1.x')
     OLPV2 = translate('OpenLP.Ui', 'OpenLP 2.0')
+    OpenLPStart = translate('OpenLP.Ui', 'OpenLP is already running. Do you '
+        'wish to continue?')
     OpenService = translate('OpenLP.Ui', 'Open Service')
     Preview = translate('OpenLP.Ui', 'Preview')
     PreviewPanel = translate('OpenLP.Ui', 'Preview Panel')
@@ -81,7 +86,7 @@ class UiStrings(object):
     ReplaceLiveBG = translate('OpenLP.Ui', 'Replace Live Background')
     ResetBG = translate('OpenLP.Ui', 'Reset Background')
     ResetLiveBG = translate('OpenLP.Ui', 'Reset Live Background')
-    S = translate('OpenLP.Ui', 's', 'The abbreviated unit for seconds')
+    Seconds = translate('OpenLP.Ui', 's', 'The abbreviated unit for seconds')
     SaveAndPreview = translate('OpenLP.Ui', 'Save && Preview')
     Search = translate('OpenLP.Ui', 'Search')
     SelectDelete = translate('OpenLP.Ui', 'You must select an item to delete.')

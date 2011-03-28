@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,6 +25,8 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+
+import sys
 
 from openlp.core.lib import translate
 from openlp.core.lib.ui import add_welcome_page
@@ -77,7 +79,10 @@ class Ui_FirstTimeWizard(object):
         self.imageCheckBox.setObjectName(u'imageCheckBox')
         self.pluginLayout.addWidget(self.imageCheckBox)
         self.presentationCheckBox = QtGui.QCheckBox(self.pluginPage)
-        self.presentationCheckBox.setChecked(True)
+        if sys.platform == "darwin":
+             self.presentationCheckBox.setChecked(False)
+        else:
+             self.presentationCheckBox.setChecked(True)
         self.presentationCheckBox.setObjectName(u'presentationCheckBox')
         self.pluginLayout.addWidget(self.presentationCheckBox)
         self.mediaCheckBox = QtGui.QCheckBox(self.pluginPage)
@@ -210,6 +215,8 @@ class Ui_FirstTimeWizard(object):
             'Images'))
         self.presentationCheckBox.setText(translate('OpenLP.FirstTimeWizard',
             'Presentations'))
+        if sys.platform == "darwin":
+            self.presentationCheckBox.setEnabled(False)
         self.mediaCheckBox.setText(translate('OpenLP.FirstTimeWizard',
             'Media (Audio and Video)'))
         self.remoteCheckBox.setText(translate('OpenLP.FirstTimeWizard',
