@@ -29,7 +29,8 @@ import logging
 from PyQt4 import QtCore, QtWebKit
 
 from openlp.core.lib import ServiceItem, ImageManager, expand_tags, \
-    build_lyrics_format_css, build_lyrics_outline_css, Receiver
+    build_lyrics_format_css, build_lyrics_outline_css, Receiver, \
+    ItemCapabilities
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.ui import MainDisplay
 
@@ -77,8 +78,6 @@ class RenderManager(object):
         self.override_background = None
         self.theme_data = None
         self.force_page = False
-        self.r_theme_name = None
-        self._r_theme = None
 
     def update_display(self):
         """
@@ -157,19 +156,16 @@ class RenderManager(object):
                     self.theme = self.service_theme
             else:
                 self.theme = self.global_theme
-        if self.theme != self.r_theme_name or self.theme_data is None \
-            or overrideLevels:
-            log.debug(u'theme is now %s', self.theme)
-            # Force the theme to be the one passed in.
-            if overrideLevels:
-                self.theme_data = theme
-            else:
-                self.theme_data = self.theme_manager.getThemeData(self.theme)
-            self._calculate_default(self.screens.current[u'size'])
-            self._set_theme(self.theme_data)
-            self._build_text_rectangle(self.theme_data)
-            self.image_manager.add_image(self.theme_data.theme_name,
-                self.theme_data.background_filename)
+        log.debug(u'theme is now %s', self.theme)
+        # Force the theme to be the one passed in.
+        if overrideLevels:
+            self.theme_data = theme
+        else:
+            self.theme_data = self.theme_manager.getThemeData(self.theme)
+        self._calculate_default(self.screens.current[u'size'])
+        self._build_text_rectangle(self.theme_data)
+        self.image_manager.add_image(self.theme_data.theme_name,
+            self.theme_data.background_filename)
         return self._rect, self._rect_footer
 
     def generate_preview(self, theme_data, force_page=False):
@@ -207,18 +203,29 @@ class RenderManager(object):
             self._calculate_default(self.screens.current[u'size'])
             return preview
 
-    def format_slide(self, words, line_break):
+    def format_slide(self, slide, line_break, item):
         """
         Calculate how much text can fit on a slide.
 
-        ``words``
+        ``slide``
             The words to go on the slides.
 
         ``line_break``
             Add line endings after each line of text used for bibles.
         """
         log.debug(u'format slide')
-        return self._format_slide(words, line_break, self.force_page)
+        # clean up line endings
+        slide = slide.replace(u'\r\n', u'\n')
+        lines = self._lines(slide)
+        pages = self._paginate_slide(lines, line_break, self.force_page)
+        if len(pages) > 1:
+            if item.is_capable(ItemCapabilities.AllowsVirtualSplit):
+                lines = self._words(slide)
+                pages = self._paginate_slide(lines, line_break, self.force_page)
+            elif item.is_capable(ItemCapabilities.AllowsWordSplit):
+                lines = self._words(slide)
+                pages = self._paginate_slide(lines, False, self.force_page)
+        return pages
 
     def _calculate_default(self, screen):
         """
@@ -261,17 +268,6 @@ class RenderManager(object):
                 theme.font_footer_height - 1)
         self._set_text_rectangle(main_rect, footer_rect)
 
-    def _set_theme(self, theme):
-        """
-        Set the theme to be used.
-
-        ``theme``
-            The theme to be used.
-        """
-        log.debug(u'set theme')
-        self._r_theme = theme
-        self.r_theme_name = theme.theme_name
-
     def _set_text_rectangle(self, rect_main, rect_footer):
         """
         Sets the rectangle within which text should be rendered.
@@ -287,9 +283,9 @@ class RenderManager(object):
         self._rect_footer = rect_footer
         self.page_width = self._rect.width()
         self.page_height = self._rect.height()
-        if self._r_theme.font_main_shadow:
-            self.page_width -= int(self._r_theme.font_main_shadow_size)
-            self.page_height -= int(self._r_theme.font_main_shadow_size)
+        if self.theme_data.font_main_shadow:
+            self.page_width -= int(self.theme_data.font_main_shadow_size)
+            self.page_height -= int(self.theme_data.font_main_shadow_size)
         self.web = QtWebKit.QWebView()
         self.web.setVisible(False)
         self.web.resize(self.page_width, self.page_height)
@@ -299,16 +295,16 @@ class RenderManager(object):
             u'*{margin: 0; padding: 0; border: 0;} '\
             u'#main {position:absolute; top:0px; %s %s}</style><body>' \
             u'<div id="main">' % \
-            (build_lyrics_format_css(self._r_theme, self.page_width,
-            self.page_height), build_lyrics_outline_css(self._r_theme))
+            (build_lyrics_format_css(self.theme_data, self.page_width,
+            self.page_height), build_lyrics_outline_css(self.theme_data))
 
-    def _format_slide(self, words, line_break, force_page=False):
+    def _paginate_slide(self, lines, line_break, force_page=False):
         """
         Figure out how much text can appear on a slide, using the current
         theme settings.
 
-        ``words``
-            The words to be fitted on the slide.
+        ``lines``
+            The words to be fitted on the slide split into lines.
 
         ``line_break``
             Add line endings after each line of text used for bibles.
@@ -321,18 +317,11 @@ class RenderManager(object):
         line_end = u''
         if line_break:
             line_end = u'<br>'
-        words = words.replace(u'\r\n', u'\n')
-        verses_text = words.split(u'\n')
-        text = []
-        for verse in verses_text:
-            lines = verse.split(u'\n')
-            for line in lines:
-                text.append(line)
         formatted = []
         html_text = u''
         styled_text = u''
         line_count = 0
-        for line in text:
+        for line in lines:
             if line_count != -1:
                 line_count += 1
             styled_line = expand_tags(line) + line_end
@@ -355,4 +344,32 @@ class RenderManager(object):
         formatted.append(html_text)
         log.debug(u'format_slide - End')
         return formatted
+
+    def _lines(self, words):
+        """
+        Split the slide up by physical line
+        """
+        # this parse we do not want to use this so remove it
+        words = words.replace(u'[---]', u'')
+        verses_text = words.split(u'\n')
+        text = []
+        for verse in verses_text:
+            lines = verse.split(u'\n')
+            for line in lines:
+                text.append(line)
+        return text
+
+    def _words(self, words):
+        """
+        Split the slide up by word so can wrap better
+        """
+        # this parse we are wordy
+        words = words.replace(u'\n', u' ')
+        verses_text = words.split(u' ')
+        text = []
+        for verse in verses_text:
+            lines = verse.split(u' ')
+            for line in lines:
+                text.append(line + u' ')
+        return text
 
