@@ -476,8 +476,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         QtGui.QMainWindow.__init__(self)
         self.screens = screens
-
-        #self.application = application
         self.clipboard = clipboard
         self.arguments = arguments
         # Set up settings sections for the main application

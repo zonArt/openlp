@@ -78,13 +78,13 @@ class OpenLP(QtGui.QApplication):
     class in order to provide the core of the application.
     """
 
-    #def exec_(self):
-        #"""
-        #Override exec method to allow the shared memory to be released on exit
-        #"""
-        #return QtGui.QApplication.exec_()
-        #self.sharedMemory.detach()
-        #return i
+    def exec_(self):
+        """
+        Override exec method to allow the shared memory to be released on exit
+        """
+        return QtGui.QApplication.exec_()
+        self.sharedMemory.detach()
+        return i
 
     def run(self):
         """
