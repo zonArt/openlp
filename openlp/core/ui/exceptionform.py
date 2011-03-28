@@ -57,6 +57,7 @@ except ImportError:
 from openlp.core.lib import translate, SettingsManager
 from openlp.core.lib.mailto import mailto
 from openlp.core.lib.ui import UiStrings
+from openlp.core.utils import get_application_version
 
 from exceptiondialog import Ui_ExceptionDialog
 
@@ -78,7 +79,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         return QtGui.QDialog.exec_(self)
 
     def _createReport(self):
-        openlp_version = self.parent().applicationVersion[u'full']
+        openlp_version = get_application_version()
         description = unicode(self.descriptionTextEdit.toPlainText())
         traceback = unicode(self.exceptionTextEdit.toPlainText())
         system = unicode(translate('OpenLP.ExceptionForm',
