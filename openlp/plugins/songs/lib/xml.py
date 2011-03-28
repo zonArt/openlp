@@ -68,6 +68,7 @@ from lxml import etree, objectify
 
 from openlp.plugins.songs.lib import clean_song, VerseType
 from openlp.plugins.songs.lib.db import Author, Book, Song, Topic
+from openlp.core.utils import get_application_version
 
 log = logging.getLogger(__name__)
 
@@ -230,8 +231,8 @@ class OpenLyrics(object):
         # Append the necessary meta data to the song.
         song_xml.set(u'xmlns', u'http://openlyrics.info/namespace/2009/song')
         song_xml.set(u'version', OpenLyrics.IMPLEMENTED_VERSION)
-        song_xml.set(u'createdIn', u'OpenLP 1.9.5')  # Use variable
-        song_xml.set(u'modifiedIn', u'OpenLP 1.9.5')  # Use variable
+        song_xml.set(u'createdIn', get_application_version()[u'version'])
+        song_xml.set(u'modifiedIn', get_application_version()[u'version'])
         song_xml.set(u'modifiedDate',
             datetime.datetime.now().strftime(u'%Y-%m-%dT%H:%M:%S'))
         properties = etree.SubElement(song_xml, u'properties')

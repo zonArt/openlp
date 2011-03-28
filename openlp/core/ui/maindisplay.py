@@ -367,7 +367,7 @@ class MainDisplay(DisplayWidget):
             self.mediaObject.setCurrentSource(Phonon.MediaSource(videoPath))
             # Need the timer to trigger set the trigger to 200ms
             # Value taken from web documentation.
-            if self.serviceItem.start_time != 0:
+            if self.serviceItem.end_time != 0:
                 self.mediaObject.setTickInterval(200)
             self.mediaObject.play()
             self.webView.setVisible(False)
@@ -401,9 +401,9 @@ class MainDisplay(DisplayWidget):
     def videoTick(self, tick):
         """
         Triggered on video tick every 200 milli seconds
-        Will be used to manage stop time later
         """
-        pass
+        if tick > self.serviceItem.end_time * 1000:
+            self.videoFinished()
 
     def isWebLoaded(self):
         """
@@ -489,7 +489,11 @@ class MainDisplay(DisplayWidget):
             self.footer(serviceItem.foot_text)
         # if was hidden keep it hidden
         if self.hideMode and self.isLive:
-            self.hideDisplay(self.hideMode)
+            if QtCore.QSettings().value(u'general/auto unblank',
+                QtCore.QVariant(False)).toBool():
+                Receiver.send_message(u'slidecontroller_live_unblank')
+            else:
+                self.hideDisplay(self.hideMode)
         # display hidden for video end we have a new item so must be shown
         if self.videoHide and self.isLive:
             self.videoHide = False
