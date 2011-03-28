@@ -82,6 +82,7 @@ import ConfigParser
 import logging
 import optparse
 import sys
+import glob
 import platform
 import re
 import subprocess as subp
@@ -122,6 +123,15 @@ def build_application(settings, app_name_lower, app_dir):
             script_name)
         sys.exit(1)
 
+    logging.info('[%s] removing the presentations plugin...', script_name)
+    result = os.system('rm -rf \
+        %(application_directory)s/Contents/MacOS/plugins/presentations' \
+        % { 'application_directory' : app_dir })
+    if (result != 0):
+        logging.error('[%s] could not remove presentations plugins, dmg \
+            creation failed!', script_name)
+        sys.exit(1)
+
     logging.info('[%s] copying the icons to the resource directory...',
         script_name)
     result = os.system('cp %(icon_file)s \
@@ -150,6 +160,19 @@ def build_application(settings, app_name_lower, app_dir):
         logging.error('[%s] could not copy the info file, dmg creation \
             failed!', script_name)
         sys.exit(1)
+
+    logging.info('[%s] copying the translations...', script_name)
+    os.mkdir(app_dir + '/Contents/MacOS/i18n')
+    for ts_file in glob.glob(os.path.join(settings['openlp_basedir']
+        + '/resources/i18n/', '*ts')):
+        result = os.system('lconvert -i %(ts_file)s \
+            -o %(target_directory)s/Contents/MacOS/i18n/%(base)s.qm' \
+            % { 'ts_file' : ts_file, 'target_directory' : app_dir,
+            'base': os.path.splitext(os.path.basename(ts_file))[0] })
+        if (result != 0):
+            logging.error('[%s] could not copy the translations, dmg \
+                creation failed!', script_name)
+            sys.exit(1)
 
 def deploy_qt(settings):
     logging.info('[%s] running mac deploy qt on %s.app...', script_name,
@@ -371,10 +394,7 @@ if __name__ == '__main__':
         --template Info.plist.master \
         --expandto %(target_directory)s/Info.plist' \
         % { 'config_file' : options.config, 'target_directory' : os.getcwd() })
-    os.system('python expander.py --config %(config_file)s \
-        --template version.master \
-        --expandto %(target_directory)s/.version' \
-        % { 'config_file' : options.config, 'target_directory' : os.getcwd() })
+    os.system('python get_version.py > .version')
 
     # prepare variables
     app_name_lower = settings['openlp_appname'].lower()

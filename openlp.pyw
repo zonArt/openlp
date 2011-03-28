@@ -27,12 +27,18 @@
 import os
 import sys
 import logging
+# Import uuid now, to avoid the rare bug described in the support system:
+# http://support.openlp.org/issues/102
+# If https://bugs.gentoo.org/show_bug.cgi?id=317557 is fixed, the import can be
+# removed.
+import uuid
 from optparse import OptionParser
 from traceback import format_exception
 
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, check_directory_exists
+from openlp.core.lib.ui import UiStrings
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
 from openlp.core.ui.firsttimelanguageform import FirstTimeLanguageForm
@@ -72,6 +78,13 @@ class OpenLP(QtGui.QApplication):
     class in order to provide the core of the application.
     """
 
+    def exec_(self):
+        """
+        Override exec method to allow the shared memory to be released on exit
+        """
+        QtGui.QApplication.exec_()
+        self.sharedMemory.detach()
+
     def run(self):
         """
         Run the OpenLP application.
@@ -102,7 +115,7 @@ class OpenLP(QtGui.QApplication):
         # make sure Qt really display the splash screen
         self.processEvents()
         # start the main app window
-        self.mainWindow = MainWindow(screens, self.clipboard())
+        self.mainWindow = MainWindow(screens, self)
         self.mainWindow.show()
         if show_splash:
             # now kill the splashscreen
@@ -116,6 +129,24 @@ class OpenLP(QtGui.QApplication):
         if update_check:
             VersionThread(self.mainWindow).start()
         return self.exec_()
+
+    def isAlreadyRunning(self):
+        """
+        Look to see if OpenLP is already running and ask if a 2nd copy
+        is to be started.
+        """
+        self.sharedMemory = QtCore.QSharedMemory('OpenLP')
+        if self.sharedMemory.attach():
+            status = QtGui.QMessageBox.critical(None,
+                UiStrings.Error, UiStrings.OpenLPStart,
+                QtGui.QMessageBox.StandardButtons(
+                QtGui.QMessageBox.Yes | QtGui.QMessageBox.No))
+            if status == QtGui.QMessageBox.No:
+                return True
+            return False
+        else:
+            self.sharedMemory.create(1)
+            return False
 
     def hookException(self, exctype, value, traceback):
         if not hasattr(self, u'mainWindow'):
@@ -189,6 +220,9 @@ def main():
     qInitResources()
     # Now create and actually run the application.
     app = OpenLP(qt_args)
+    # Instance check
+    if app.isAlreadyRunning():
+        sys.exit()
     app.setOrganizationName(u'OpenLP')
     app.setOrganizationDomain(u'openlp.org')
     app.setApplicationName(u'OpenLP')

@@ -469,14 +469,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     actionList = ActionList()
 
-    def __init__(self, screens, clipboard):
+    def __init__(self, screens, application):
         """
         This constructor sets up the interface, the various managers, and the
         plugins.
         """
         QtGui.QMainWindow.__init__(self)
         self.screens = screens
-        self.clipboard = clipboard
+
+        self.application = application
         # Set up settings sections for the main application
         # (not for use by plugins)
         self.uiSettingsSection = u'user interface'
@@ -621,9 +622,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Call the initialise method to setup plugins.
         log.info(u'initialise plugins')
         self.pluginManager.initialise_plugins()
-        # Once all components are initialised load the Themes
-        log.info(u'Load Themes')
-        self.themeManagerContents.loadThemes()
         log.info(u'Load data from Settings')
         if QtCore.QSettings().value(u'advanced/save current plugin',
             QtCore.QVariant(False)).toBool():
@@ -632,6 +630,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             if savedPlugin != -1:
                 self.MediaToolBox.setCurrentIndex(savedPlugin)
         self.settingsForm.postSetUp()
+        # Once all components are initialised load the Themes
+        log.info(u'Load Themes')
+        self.themeManagerContents.loadThemes(True)
         Receiver.send_message(u'cursor_normal')
 
     def setAutoLanguage(self, value):
@@ -660,7 +661,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.liveController.display.isVisible():
             self.liveController.display.setFocus()
         self.activateWindow()
-        if QtCore.QSettings().value(
+        if len(self.application.arguments()) > 0:
+            args = []
+            for a in self.application.arguments():
+                args.extend([a])
+            self.ServiceManagerContents.loadFile(unicode(args[0]))
+        elif QtCore.QSettings().value(
             self.generalSettingsSection + u'/auto open',
             QtCore.QVariant(False)).toBool():
             self.ServiceManagerContents.loadLastFile()
@@ -678,7 +684,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def firstTime(self):
         # Import themes if first time
         Receiver.send_message(u'openlp_process_events')
-        self.themeManagerContents.firstTime()
         for plugin in self.pluginManager.plugins:
             if hasattr(plugin, u'firstTime'):
                 Receiver.send_message(u'openlp_process_events')

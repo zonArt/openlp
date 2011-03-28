@@ -231,13 +231,15 @@ class ServiceManager(QtGui.QWidget):
         QtCore.QObject.connect(self.themeComboBox,
             QtCore.SIGNAL(u'activated(int)'), self.onThemeComboBoxSelected)
         QtCore.QObject.connect(self.serviceManagerList,
-            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.makeLive)
+            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onMakeLive)
         QtCore.QObject.connect(self.serviceManagerList,
            QtCore.SIGNAL(u'itemCollapsed(QTreeWidgetItem*)'), self.collapsed)
         QtCore.QObject.connect(self.serviceManagerList,
            QtCore.SIGNAL(u'itemExpanded(QTreeWidgetItem*)'), self.expanded)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'theme_update_list'), self.updateThemeList)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'servicemanager_preview_live'), self.previewLive)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'servicemanager_next_item'), self.nextItem)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -481,28 +483,30 @@ class ServiceManager(QtGui.QWidget):
         # Usual Zip file cannot exceed 2GiB, file with Zip64 cannot be
         # extracted using unzip in UNIX.
         allow_zip_64 = (total_size > 2147483648 + len(service_content))
-        log.debug(u'ServiceManager.saveFile - allowZip64 is %s' %
-            allow_zip_64)
+        log.debug(u'ServiceManager.saveFile - allowZip64 is %s' % allow_zip_64)
         zip = None
+        success = True
         try:
             zip = zipfile.ZipFile(path_file_name, 'w', zipfile.ZIP_STORED,
                 allow_zip_64)
             # First we add service contents.
             # We save ALL filenames into ZIP using UTF-8.
-            zip.writestr(service_file_name.encode(u'utf-8'),
-                service_content)
+            zip.writestr(service_file_name.encode(u'utf-8'), service_content)
             # Finally add all the listed media files.
             for path_from in write_list:
                 zip.write(path_from, path_from.encode(u'utf-8'))
         except IOError:
             log.exception(u'Failed to save service to disk')
-            return False
+            success = False
         finally:
             if zip:
                 zip.close()
-        self.mainwindow.addRecentFile(path_file_name)
-        self.setModified(False)
-        return True
+        if success:
+            self.mainwindow.addRecentFile(path_file_name)
+            self.setModified(False)
+        else:
+            delete_file(path_file_name)
+        return success
 
     def saveFileAs(self):
         """
@@ -527,8 +531,9 @@ class ServiceManager(QtGui.QWidget):
     def loadFile(self, fileName):
         if not fileName:
             return False
-        else:
-            fileName = unicode(fileName)
+        fileName = unicode(fileName)
+        if not os.path.exists(fileName):
+            return False
         zip = None
         fileTo = None
         try:
@@ -558,6 +563,7 @@ class ServiceManager(QtGui.QWidget):
                 self.newFile()
                 for item in items:
                     serviceItem = ServiceItem()
+                    serviceItem.from_service = True
                     serviceItem.render_manager = self.mainwindow.renderManager
                     serviceItem.set_from_service(item, self.servicePath)
                     self.validateItem(serviceItem)
@@ -566,24 +572,27 @@ class ServiceManager(QtGui.QWidget):
                         Receiver.send_message(u'%s_service_load' %
                             serviceItem.name.lower(), serviceItem)
                 delete_file(p_file)
+                self.setFileName(fileName)
+                self.mainwindow.addRecentFile(fileName)
+                self.setModified(False)
+                QtCore.QSettings().setValue(
+                    'service/last file', QtCore.QVariant(fileName))
                 Receiver.send_message(u'cursor_normal')
             else:
                 critical_error_message_box(
                     message=translate('OpenLP.ServiceManager',
                     'File is not a valid service.'))
                 log.exception(u'File contains no service data')
-        except (IOError, NameError):
+        except (IOError, NameError, zipfile.BadZipfile):
+            critical_error_message_box(
+                message=translate('OpenLP.ServiceManager',
+                'File could not be opened because it is corrupt.'))
             log.exception(u'Problem loading service file %s' % fileName)
         finally:
             if fileTo:
                 fileTo.close()
             if zip:
                 zip.close()
-        self.setFileName(fileName)
-        self.mainwindow.addRecentFile(fileName)
-        self.setModified(False)
-        QtCore.QSettings(). \
-            setValue(u'service/last file', QtCore.QVariant(fileName))
 
     def loadLastFile(self):
         """
@@ -652,10 +661,6 @@ class ServiceManager(QtGui.QWidget):
         item = self.findServiceItem()[0]
         self.startTimeForm.item = self.serviceItems[item]
         if self.startTimeForm.exec_():
-            self.serviceItems[item][u'service_item'].start_time = \
-                self.startTimeForm.hourSpinBox.value() * 3600 + \
-                self.startTimeForm.minuteSpinBox.value() * 60 + \
-                self.startTimeForm.secondSpinBox.value()
             self.repaintServiceList(item, -1)
 
     def onServiceItemEditForm(self):
@@ -665,6 +670,19 @@ class ServiceManager(QtGui.QWidget):
         if self.serviceItemEditForm.exec_():
             self.addServiceItem(self.serviceItemEditForm.getServiceItem(),
                 replace=True, expand=self.serviceItems[item][u'expanded'])
+
+    def previewLive(self, message):
+        """
+        Called by the SlideController to request a preview item be made live
+        and allows the next preview to be updated if relevent.
+        """
+        id, row = message.split(u':')
+        for sitem in self.serviceItems:
+            if sitem[u'service_item']._uuid == id:
+                item = self.serviceManagerList.topLevelItem(sitem[u'order'] - 1)
+                self.serviceManagerList.setCurrentItem(item)
+                self.makeLive(int(row))
+                return
 
     def nextItem(self):
         """
@@ -1021,6 +1039,7 @@ class ServiceManager(QtGui.QWidget):
         if expand is None:
             expand = self.expandTabs
         item.render()
+        item.from_service = True
         if replace:
             sitem, child = self.findServiceItem()
             item.merge(self.serviceItems[sitem][u'service_item'])
@@ -1075,11 +1094,24 @@ class ServiceManager(QtGui.QWidget):
         else:
             return self.serviceItems[item][u'service_item']
 
-    def makeLive(self):
+    def onMakeLive(self):
+        """
+        Send the current item to the Live slide controller but triggered
+        by a tablewidget click event.
+        """
+        self.makeLive()
+
+    def makeLive(self, row=-1):
         """
         Send the current item to the Live slide controller
+
+        ``row``
+            Row number to be displayed if from preview.
+            -1 is passed if the value is not set
         """
         item, child = self.findServiceItem()
+        if row != -1:
+            child = row
         if self.serviceItems[item][u'service_item'].is_valid:
             self.mainwindow.liveController.addServiceManagerItem(
                 self.serviceItems[item][u'service_item'], child)
