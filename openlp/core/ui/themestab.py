@@ -147,7 +147,7 @@ class ThemesTab(SettingsTab):
         settings.setValue(u'global theme',
             QtCore.QVariant(self.global_theme))
         settings.endGroup()
-        self.parent.renderManager.set_global_theme(
+        self.parent.renderer.set_global_theme(
             self.global_theme, self.theme_level)
         Receiver.send_message(u'theme_update_global', self.global_theme)
 
@@ -165,7 +165,7 @@ class ThemesTab(SettingsTab):
 
     def onDefaultComboBoxChanged(self, value):
         self.global_theme = unicode(self.DefaultComboBox.currentText())
-        self.parent.renderManager.set_global_theme(
+        self.parent.renderer.set_global_theme(
             self.global_theme, self.theme_level)
         self.__previewGlobalTheme()
 

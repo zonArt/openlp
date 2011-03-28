@@ -564,7 +564,7 @@ class ServiceManager(QtGui.QWidget):
                 for item in items:
                     serviceItem = ServiceItem()
                     serviceItem.from_service = True
-                    serviceItem.render_manager = self.mainwindow.renderManager
+                    serviceItem.renderer = self.mainwindow.renderer
                     serviceItem.set_from_service(item, self.servicePath)
                     self.validateItem(serviceItem)
                     self.addServiceItem(serviceItem)
@@ -958,7 +958,7 @@ class ServiceManager(QtGui.QWidget):
         """
         log.debug(u'onThemeComboBoxSelected')
         self.service_theme = unicode(self.themeComboBox.currentText())
-        self.mainwindow.renderManager.set_service_theme(self.service_theme)
+        self.mainwindow.renderer.set_service_theme(self.service_theme)
         QtCore.QSettings().setValue(
             self.mainwindow.serviceSettingsSection + u'/service theme',
             QtCore.QVariant(self.service_theme))

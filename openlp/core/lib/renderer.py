@@ -60,7 +60,7 @@ class Renderer(object):
     ``screen_number``
         Defaults to *0*. The index of the output/display screen.
     """
-    log.info(u'RenderManager Loaded')
+    log.info(u'Renderer Loaded')
 
     def __init__(self, theme_manager, screens):
         """
