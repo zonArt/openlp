@@ -220,8 +220,15 @@ class RenderManager(object):
         pages = self._paginate_slide(lines, line_break, self.force_page)
         if len(pages) > 1:
             if item.is_capable(ItemCapabilities.AllowsVirtualSplit):
-                lines = self._words(slide)
-                pages = self._paginate_slide(lines, line_break, self.force_page)
+                # do not forget the line breaks !
+                slides = slide.split(u'\n[###]\n')
+                pages = []
+                for slide in slides:
+                    lines = self._lines(slide)
+                    new_pages = self._paginate_slide(lines, line_break,
+                        self.force_page)
+                    for page in new_pages:
+                        pages.append(page)
             elif item.is_capable(ItemCapabilities.AllowsWordSplit):
                 lines = self._words(slide)
                 pages = self._paginate_slide(lines, False, self.force_page)
