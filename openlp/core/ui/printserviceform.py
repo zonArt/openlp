@@ -33,12 +33,12 @@ from openlp.core.ui.printservicedialog import Ui_PrintServiceDialog, ZoomSize
 
 class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
 
-    def __init__(self, parent, serviceManager):
+    def __init__(self, mainWindow, serviceManager):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, parent)
-        self.parent = parent
+        QtGui.QDialog.__init__(self, mainWindow)
+        self.mainWindow = mainWindow
         self.serviceManager = serviceManager
         self.printer = QtGui.QPrinter()
         self.printDialog = QtGui.QPrintDialog(self.printer, self)
@@ -134,9 +134,12 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
                         item.notes.replace(u'\n', u'<br />'))
             # Add play length of media files.
             if item.is_media() and self.metaDataCheckBox.isChecked():
+                tme = item.media_length
+                if item.end_time > 0:
+                    tme = item.end_time - item.start_time
                 text += u'<p><strong>%s</strong> %s</p>' % (translate(
                     'OpenLP.ServiceManager', u'Playing time:'),
-                    unicode(datetime.timedelta(seconds=item.media_length)))
+                    unicode(datetime.timedelta(seconds=tme)))
         if self.footerTextEdit.toPlainText():
             text += u'<h4>%s</h4>%s' % (translate('OpenLP.ServiceManager',
                 u'Custom Service Notes:'), self.footerTextEdit.toPlainText())
@@ -181,13 +184,14 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         """
         Copies the display text to the clipboard as plain text
         """
-        self.parent.clipboard.setText(self.document.toPlainText())
+        self.mainWindow.application.clipboard.setText(
+            self.document.toPlainText())
 
     def copyHtmlText(self):
         """
         Copies the display text to the clipboard as Html
         """
-        self.parent.clipboard.setText(self.document.toHtml())
+        self.mainWindow.application.clipboard.setText(self.document.toHtml())
 
     def printServiceOrder(self):
         """

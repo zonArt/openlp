@@ -551,64 +551,52 @@ class BibleMediaItem(MediaManagerItem):
         further action is saved for/in each row.
         """
         verse_separator = get_reference_match(u'sep_v_display')
-        version = self.parent.manager.get_meta_data(bible, u'Version')
-        copyright = self.parent.manager.get_meta_data(bible, u'Copyright')
-        permissions = self.parent.manager.get_meta_data(bible, u'Permissions')
+        version = self.parent.manager.get_meta_data(bible, u'Version').value
+        copyright = self.parent.manager.get_meta_data(bible, u'Copyright').value
+        permissions = \
+            self.parent.manager.get_meta_data(bible, u'Permissions').value
+        second_version = u''
+        second_copyright = u''
+        second_permissions = u''
         if second_bible:
-            second_version = self.parent.manager.get_meta_data(second_bible,
-                u'Version')
-            second_copyright = self.parent.manager.get_meta_data(second_bible,
-                u'Copyright')
-            second_permissions = self.parent.manager.get_meta_data(second_bible,
-                u'Permissions')
-            if not second_permissions:
-                second_permissions = u''
+            second_version = self.parent.manager.get_meta_data(
+                second_bible, u'Version').value
+            second_copyright = self.parent.manager.get_meta_data(
+                second_bible, u'Copyright').value
+            second_permissions = self.parent.manager.get_meta_data(
+                second_bible, u'Permissions').value
         for count, verse in enumerate(self.search_results):
+            data = {
+                'book': QtCore.QVariant(verse.book.name),
+                'chapter': QtCore.QVariant(verse.chapter),
+                'verse': QtCore.QVariant(verse.verse),
+                'bible': QtCore.QVariant(bible),
+                'version': QtCore.QVariant(version),
+                'copyright': QtCore.QVariant(copyright),
+                'permissions': QtCore.QVariant(permissions),
+                'text': QtCore.QVariant(verse.text),
+                'second_bible': QtCore.QVariant(second_bible),
+                'second_version': QtCore.QVariant(second_version),
+                'second_copyright': QtCore.QVariant(second_copyright),
+                'second_permissions': QtCore.QVariant(second_permissions),
+                'second_text': QtCore.QVariant(u'')
+            }
             if second_bible:
                 try:
-                    vdict = {
-                        'book': QtCore.QVariant(verse.book.name),
-                        'chapter': QtCore.QVariant(verse.chapter),
-                        'verse': QtCore.QVariant(verse.verse),
-                        'bible': QtCore.QVariant(bible),
-                        'version': QtCore.QVariant(version.value),
-                        'copyright': QtCore.QVariant(copyright.value),
-                        'permissions': QtCore.QVariant(permissions.value),
-                        'text': QtCore.QVariant(verse.text),
-                        'second_bible': QtCore.QVariant(second_bible),
-                        'second_version': QtCore.QVariant(second_version.value),
-                        'second_copyright': QtCore.QVariant(
-                            second_copyright.value),
-                        'second_permissions': QtCore.QVariant(
-                            second_permissions.value),
-                        'second_text': QtCore.QVariant(
-                            self.second_search_results[count].text)
-                    }
+                    data[u'second_text'] = QtCore.QVariant(
+                        self.second_search_results[count].text)
                 except IndexError:
+                    log.exception(u'The second_search_results does not have as '
+                    'many verses as the search_results.')
                     break
                 bible_text = u' %s %d%s%d (%s, %s)' % (verse.book.name,
-                    verse.chapter, verse_separator, verse.verse, version.value,
-                    second_version.value)
+                    verse.chapter, verse_separator, verse.verse, version,
+                    second_version)
             else:
-                vdict = {
-                    'book': QtCore.QVariant(verse.book.name),
-                    'chapter': QtCore.QVariant(verse.chapter),
-                    'verse': QtCore.QVariant(verse.verse),
-                    'bible': QtCore.QVariant(bible),
-                    'version': QtCore.QVariant(version.value),
-                    'copyright': QtCore.QVariant(copyright.value),
-                    'permissions': QtCore.QVariant(permissions.value),
-                    'text': QtCore.QVariant(verse.text),
-                    'second_bible': QtCore.QVariant(u''),
-                    'second_version': QtCore.QVariant(u''),
-                    'second_copyright': QtCore.QVariant(u''),
-                    'second_permissions': QtCore.QVariant(u''),
-                    'second_text': QtCore.QVariant(u'')
-                }
                 bible_text = u'%s %d%s%d (%s)' % (verse.book.name,
-                    verse.chapter, verse_separator, verse.verse, version.value)
+                    verse.chapter, verse_separator, verse.verse, version)
             bible_verse = QtGui.QListWidgetItem(bible_text)
-            bible_verse.setData(QtCore.Qt.UserRole, QtCore.QVariant(vdict))
+            bible_verse.setData(QtCore.Qt.UserRole, QtCore.QVariant(data))
             self.listView.addItem(bible_verse)
         self.listView.selectAll()
         self.search_results = {}
@@ -810,11 +798,9 @@ class BibleMediaItem(MediaManagerItem):
         else:
             verse_text = unicode(verse)
         if self.settings.display_style == DisplayStyle.Round:
-            verse_text = u'{su}(' + verse_text + u'){/su}'
-        elif self.settings.display_style == DisplayStyle.Curly:
-            verse_text = u'{su}{' + verse_text + u'}{/su}'
-        elif self.settings.display_style == DisplayStyle.Square:
-            verse_text = u'{su}[' + verse_text + u']{/su}'
-        else:
-            verse_text = u'{su}' + verse_text + u'{/su}'
-        return verse_text
+            return u'{su}(%s){/su}' % verse_text
+        if self.settings.display_style == DisplayStyle.Curly:
+            return u'{su}{%s}{/su}' % verse_text
+        if self.settings.display_style == DisplayStyle.Square:
+            return u'{su}[%s]{/su}' % verse_text
+        return u'{su}%s{/su}' % verse_text

@@ -93,7 +93,6 @@ window.OpenLP = {
   },
   setSlide: function (event) {
     var slide = OpenLP.getElement(event);
-    console.log(slide);
     var id = slide.attr("value");
     var text = JSON.stringify({"request": {"id": id}});
     $.getJSON(

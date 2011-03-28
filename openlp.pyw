@@ -27,20 +27,26 @@
 import os
 import sys
 import logging
+# Import uuid now, to avoid the rare bug described in the support system:
+# http://support.openlp.org/issues/102
+# If https://bugs.gentoo.org/show_bug.cgi?id=317557 is fixed, the import can be
+# removed.
+import uuid
 from optparse import OptionParser
 from traceback import format_exception
-from subprocess import Popen, PIPE
 
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, check_directory_exists
+from openlp.core.lib.ui import UiStrings
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
 from openlp.core.ui.firsttimelanguageform import FirstTimeLanguageForm
 from openlp.core.ui.firsttimeform import FirstTimeForm
 from openlp.core.ui.exceptionform import ExceptionForm
 from openlp.core.ui import SplashScreen, ScreenList
-from openlp.core.utils import AppLocation, LanguageManager, VersionThread
+from openlp.core.utils import AppLocation, LanguageManager, VersionThread, \
+    get_application_version
 
 log = logging.getLogger()
 
@@ -71,87 +77,13 @@ class OpenLP(QtGui.QApplication):
     The core application class. This class inherits from Qt's QApplication
     class in order to provide the core of the application.
     """
-    app_version = None
 
-    def get_version(self):
+    def exec_(self):
         """
-        Load and store current Application Version
+        Override exec method to allow the shared memory to be released on exit
         """
-        if self.app_version:
-            return self.app_version
-        if u'--dev-version' in sys.argv or u'-d' in sys.argv:
-            # If we're running the dev version, let's use bzr to get the version
-            try:
-                # If bzrlib is availble, use it
-                from bzrlib.branch import Branch
-                b = Branch.open_containing('.')[0]
-                b.lock_read()
-                try:
-                    # Get the branch's latest revision number.
-                    revno = b.revno()
-                    # Convert said revision number into a bzr revision id.
-                    revision_id = b.dotted_revno_to_revision_id((revno,))
-                    # Get a dict of tags, with the revision id as the key.
-                    tags = b.tags.get_reverse_tag_dict()
-                    # Check if the latest
-                    if revision_id in tags:
-                        full_version = u'%s' % tags[revision_id][0]
-                    else:
-                        full_version = '%s-bzr%s' % \
-                            (sorted(b.tags.get_tag_dict().keys())[-1], revno)
-                finally:
-                    b.unlock()
-            except:
-                # Otherwise run the command line bzr client
-                bzr = Popen((u'bzr', u'tags', u'--sort', u'time'), stdout=PIPE)
-                output, error = bzr.communicate()
-                code = bzr.wait()
-                if code != 0:
-                    raise Exception(u'Error running bzr tags')
-                lines = output.splitlines()
-                if len(lines) == 0:
-                    tag = u'0.0.0'
-                    revision = u'0'
-                else:
-                    tag, revision = lines[-1].split()
-                bzr = Popen((u'bzr', u'log', u'--line', u'-r', u'-1'),
-                    stdout=PIPE)
-                output, error = bzr.communicate()
-                code = bzr.wait()
-                if code != 0:
-                    raise Exception(u'Error running bzr log')
-                latest = output.split(u':')[0]
-                full_version = latest == revision and tag or \
-                    u'%s-bzr%s' % (tag, latest)
-        else:
-            # We're not running the development version, let's use the file
-            filepath = AppLocation.get_directory(AppLocation.VersionDir)
-            filepath = os.path.join(filepath, u'.version')
-            fversion = None
-            try:
-                fversion = open(filepath, u'r')
-                full_version = unicode(fversion.read()).rstrip()
-            except IOError:
-                log.exception('Error in version file.')
-                full_version = u'0.0.0-bzr000'
-            finally:
-                if fversion:
-                    fversion.close()
-        bits = full_version.split(u'-')
-        self.app_version = {
-            u'full': full_version,
-            u'version': bits[0],
-            u'build': bits[1] if len(bits) > 1 else None
-        }
-        if self.app_version[u'build']:
-            log.info(
-                u'Openlp version %s build %s',
-                self.app_version[u'version'],
-                self.app_version[u'build']
-            )
-        else:
-            log.info(u'Openlp version %s' % self.app_version[u'version'])
-        return self.app_version
+        QtGui.QApplication.exec_()
+        self.sharedMemory.detach()
 
     def run(self):
         """
@@ -183,8 +115,7 @@ class OpenLP(QtGui.QApplication):
         # make sure Qt really display the splash screen
         self.processEvents()
         # start the main app window
-        self.mainWindow = MainWindow(screens, self.app_version,
-            self.clipboard())
+        self.mainWindow = MainWindow(screens, self)
         self.mainWindow.show()
         if show_splash:
             # now kill the splashscreen
@@ -196,8 +127,26 @@ class OpenLP(QtGui.QApplication):
         update_check = QtCore.QSettings().value(
             u'general/update check', QtCore.QVariant(True)).toBool()
         if update_check:
-            VersionThread(self.mainWindow, self.app_version).start()
+            VersionThread(self.mainWindow).start()
         return self.exec_()
+
+    def isAlreadyRunning(self):
+        """
+        Look to see if OpenLP is already running and ask if a 2nd copy
+        is to be started.
+        """
+        self.sharedMemory = QtCore.QSharedMemory('OpenLP')
+        if self.sharedMemory.attach():
+            status = QtGui.QMessageBox.critical(None,
+                UiStrings.Error, UiStrings.OpenLPStart,
+                QtGui.QMessageBox.StandardButtons(
+                QtGui.QMessageBox.Yes | QtGui.QMessageBox.No))
+            if status == QtGui.QMessageBox.No:
+                return True
+            return False
+        else:
+            self.sharedMemory.create(1)
+            return False
 
     def hookException(self, exctype, value, traceback):
         if not hasattr(self, u'mainWindow'):
@@ -271,10 +220,13 @@ def main():
     qInitResources()
     # Now create and actually run the application.
     app = OpenLP(qt_args)
+    # Instance check
+    if app.isAlreadyRunning():
+        sys.exit()
     app.setOrganizationName(u'OpenLP')
     app.setOrganizationDomain(u'openlp.org')
     app.setApplicationName(u'OpenLP')
-    app.setApplicationVersion(app.get_version()[u'version'])
+    app.setApplicationVersion(get_application_version()[u'version'])
     # First time checks in settings
     if not QtCore.QSettings().value(u'general/has run wizard',
         QtCore.QVariant(False)).toBool():

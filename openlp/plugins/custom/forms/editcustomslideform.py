@@ -45,7 +45,7 @@ class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
         self.setupUi(self)
         # Connecting signals and slots
         QtCore.QObject.connect(self.splitButton,
-            QtCore.SIGNAL(u'pressed()'), self.onSplitButtonPressed)
+            QtCore.SIGNAL(u'clicked()'), self.onSplitButtonPressed)
 
     def setText(self, text):
         """
