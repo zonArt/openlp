@@ -78,12 +78,13 @@ class OpenLP(QtGui.QApplication):
     class in order to provide the core of the application.
     """
 
-    def exec_(self):
-        """
-        Override exec method to allow the shared memory to be released on exit
-        """
-        QtGui.QApplication.exec_()
-        self.sharedMemory.detach()
+    #def exec_(self):
+        #"""
+        #Override exec method to allow the shared memory to be released on exit
+        #"""
+        #return QtGui.QApplication.exec_()
+        #self.sharedMemory.detach()
+        #return i
 
     def run(self):
         """
@@ -115,7 +116,8 @@ class OpenLP(QtGui.QApplication):
         # make sure Qt really display the splash screen
         self.processEvents()
         # start the main app window
-        self.mainWindow = MainWindow(screens, self)
+        self.mainWindow = MainWindow(screens, self.clipboard(),
+             self.arguments())
         self.mainWindow.show()
         if show_splash:
             # now kill the splashscreen

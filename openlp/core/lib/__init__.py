@@ -65,9 +65,8 @@ base_html_expands.append({u'desc': u'White', u'start tag': u'{w}',
     u'start html': u'<span style="-webkit-text-fill-color:white">',
     u'end tag': u'{/w}', u'end html': u'</span>', u'protected': True})
 base_html_expands.append({u'desc': u'Superscript', u'start tag': u'{su}',
-    u'start html': u'<span style=" font-size:0.6em; vertical-align:top;'
-    + u' position:relative; top:-0.3em;">', u'end tag': u'{/su}',
-    u'end html': u'</span>', u'protected': True})
+    u'start html': u'<sup>', u'end tag': u'{/su}', u'end html': u'</sup>',
+    u'protected': True})
 base_html_expands.append({u'desc': u'Subscript', u'start tag': u'{sb}',
     u'start html': u'<sub>', u'end tag': u'{/sb}', u'end html': u'</sub>',
     u'protected': True})
