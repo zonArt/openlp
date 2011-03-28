@@ -82,9 +82,8 @@ class OpenLP(QtGui.QApplication):
         """
         Override exec method to allow the shared memory to be released on exit
         """
-        return QtGui.QApplication.exec_()
+        QtGui.QApplication.exec_()
         self.sharedMemory.detach()
-        return i
 
     def run(self):
         """
