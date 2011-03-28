@@ -191,7 +191,7 @@ class ThemesTab(SettingsTab):
             id = 0 # Not Found
             self.global_theme = u''
         self.DefaultComboBox.setCurrentIndex(id)
-        self.parent.renderManager.set_global_theme(
+        self.parent.renderer.set_global_theme(
             self.global_theme, self.theme_level)
         if self.global_theme is not u'':
             self.__previewGlobalTheme()

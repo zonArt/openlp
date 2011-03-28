@@ -338,5 +338,5 @@ from htmlbuilder import build_html, build_lyrics_format_css, \
     build_lyrics_outline_css
 from toolbar import OpenLPToolbar
 from dockwidget import OpenLPDockWidget
-from rendermanager import RenderManager
+from renderer import Renderer
 from mediamanageritem import MediaManagerItem
