@@ -274,7 +274,7 @@ class OpenLyrics(object):
             verse_tag = verse[0][u'type'][0].lower()
             verse_number = verse[0][u'label']
             # Create a list with all "sub" verses.
-            sub_verses = verse[1].split(u'[---]')
+            sub_verses = verse[1].split(u'[###]')
             for sub_index, sub_verse in enumerate(sub_verses):
                 verse_def = verse_tag + verse_number
                 # We have more than one sub verse, consequently we need "v1a".
@@ -475,7 +475,7 @@ class OpenLyrics(object):
             if self._get(verse, u'lang'):
                 lang = self._get(verse, u'lang')
             if verses.has_key((verse_tag, verse_number, lang)):
-                verses[(verse_tag, verse_number, lang)] += u'\n[---]\n' + text
+                verses[(verse_tag, verse_number, lang)] += u'\n[###]\n' + text
             else:
                 verses[(verse_tag, verse_number, lang)] = text
         for verse in verses:
