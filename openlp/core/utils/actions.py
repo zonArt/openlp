@@ -184,7 +184,7 @@ class ActionList(object):
             self.categories[category].actions.append(action)
         else:
             self.categories[category].actions.add(action, weight)
-        self.signal.emit(QtCore.SIGNAL(u'addedAction()'))
+        self.signal.emit(QtCore.SIGNAL(u'addedAction(QtGui.QAction, QString)'), action, QtCore.QString(category))
 
 
 class Emit(QtCore.QObject):

@@ -45,6 +45,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
 #TODO: ability to remove actions
 #TODO: Save shortcuts
 #TODO: doc
+#TODO: Fix Preview/Live controller (have the same shortcut)
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
@@ -89,7 +90,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         # The dialog is opened the first time
         if self.treeWidget.topLevelItemCount() == 0:
             QtCore.QObject.connect(actionList.signal,
-                QtCore.SIGNAL(u'addedAction()'), self.initialiseActionList)
+                QtCore.SIGNAL(u'addedAction()'), self.asdf)
             self.initialiseActionList()
         self.refreshActionList()
         return QtGui.QDialog.exec_(self)
@@ -115,6 +116,18 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             iterator += 1
 
     def initialiseActionList(self):
+        for category in actionList.categories:
+            item = QtGui.QTreeWidgetItem([category.name])
+            for action in category.actions:
+                actionItem = QtGui.QTreeWidgetItem()
+                actionItem.setIcon(0, action.icon())
+                actionItem.setData(0, QtCore.Qt.UserRole, QtCore.QVariant(action))
+                item.addChild(actionItem)
+            item.setExpanded(True)
+            self.treeWidget.addTopLevelItem(item)
+
+    def asdf(self, action, category):
+        print action
         for category in actionList.categories:
             item = QtGui.QTreeWidgetItem([category.name])
             for action in category.actions:
