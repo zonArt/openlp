@@ -239,41 +239,47 @@ def create_up_down_push_button_set(parent):
         QtCore.SIGNAL(u'clicked()'), parent.onDownButtonClicked)
     return up_button, down_button
 
-def base_action(parent, name):
+def base_action(parent, name, category=None):
     """
     Return the most basic action with the object name set.
     """
     action = QtGui.QAction(parent)
     action.setObjectName(name)
+    if category is not None:
+        actionList.add_action(action, category)
     return action
 
-def checkable_action(parent, name, checked=None):
+def checkable_action(parent, name, checked=None, category=None):
     """
     Return a standard action with the checkable attribute set.
     """
-    action = base_action(parent, name)
+    action = base_action(parent, name, category)
     action.setCheckable(True)
     if checked is not None:
         action.setChecked(checked)
     return action
 
-def icon_action(parent, name, icon, checked=None):
+def icon_action(parent, name, icon, checked=None, category=None):
     """
     Return a standard action with an icon.
+
+    ``category``
+        The category the action should be listed in the shortcut dialog. If you
+        not wish, that this action is added to the shortcut dialog, then do not
+        state any.
     """
     if checked is not None:
-        action = checkable_action(parent, name, checked)
+        action = checkable_action(parent, name, checked, category)
     else:
-        action = base_action(parent, name)
+        action = base_action(parent, name, category)
     action.setIcon(build_icon(icon))
-    #actionList.add_action(action, name)
     return action
 
-def shortcut_action(parent, text, shortcuts, function):
+def shortcut_action(parent, text, shortcuts, function, category=None):
     """
     Return a shortcut enabled action.
     """
-    action = QtGui.QAction(text, parent)
+    action = base_action(parent, text, category)
     action.setShortcuts(shortcuts)
     action.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
     QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered()'), function)

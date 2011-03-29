@@ -39,7 +39,7 @@ from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
     ShortcutListForm, DisplayTagForm
 from openlp.core.utils import AppLocation, add_actions, LanguageManager, \
     get_application_version
-from openlp.core.utils.actions import actionList
+#from openlp.core.utils.actions import actionList
 
 log = logging.getLogger(__name__)
 
@@ -163,72 +163,60 @@ class Ui_MainWindow(object):
             self.themeManagerDock)
         # Create the menu items
         self.FileNewItem = icon_action(mainWindow, u'FileNewItem',
-            u':/general/general_new.png')
-        actionList.add_action(self.FileNewItem, u'File')
+            u':/general/general_new.png', category=u'File')
         self.FileOpenItem = icon_action(mainWindow, u'FileOpenItem',
-            u':/general/general_open.png')
-        actionList.add_action(self.FileOpenItem, u'File')
+            u':/general/general_open.png', category=u'File')
         self.FileSaveItem = icon_action(mainWindow, u'FileSaveItem',
-            u':/general/general_save.png')
-        actionList.add_action(self.FileSaveItem, u'File')
-        self.FileSaveAsItem = base_action(mainWindow, u'FileSaveAsItem')
-        actionList.add_action(self.FileSaveAsItem, u'File')
+            u':/general/general_save.png', category=u'File')
+        self.FileSaveAsItem = base_action(
+            mainWindow, u'FileSaveAsItem', u'File')
         self.printServiceOrderItem = base_action(
-            mainWindow, u'printServiceItem')
-        actionList.add_action(self.printServiceOrderItem, u'File')
+            mainWindow, u'printServiceItem', u'File')
         self.FileExitItem = icon_action(mainWindow, u'FileExitItem',
-            u':/system/system_exit.png')
-        actionList.add_action(self.FileExitItem, u'File')
-        self.ImportThemeItem = base_action(mainWindow, u'ImportThemeItem')
-        actionList.add_action(self.ImportThemeItem, u'Import')
-        self.ImportLanguageItem = base_action(mainWindow, u'ImportLanguageItem')
-        actionList.add_action(self.ImportLanguageItem, u'Import')
-        self.ExportThemeItem = base_action(mainWindow, u'ExportThemeItem')
-        actionList.add_action(self.ExportThemeItem, u'Export')
-        self.ExportLanguageItem = base_action(mainWindow, u'ExportLanguageItem')
-        actionList.add_action(self.ExportLanguageItem, u'Export')
+            u':/system/system_exit.png', category=u'File')
+        self.ImportThemeItem = base_action(
+            mainWindow, u'ImportThemeItem', u'Import')
+        self.ImportLanguageItem = base_action(
+            mainWindow, u'ImportLanguageItem', u'Import')
+        self.ExportThemeItem = base_action(
+            mainWindow, u'ExportThemeItem', u'Export')
+        self.ExportLanguageItem = base_action(
+            mainWindow, u'ExportLanguageItem', u'Export')
         self.ViewMediaManagerItem = icon_action(mainWindow,
             u'ViewMediaManagerItem', u':/system/system_mediamanager.png',
-            self.mediaManagerDock.isVisible())
+            self.mediaManagerDock.isVisible(), u'View')
         self.ViewThemeManagerItem = icon_action(mainWindow,
             u'ViewThemeManagerItem', u':/system/system_thememanager.png',
-            self.themeManagerDock.isVisible())
-        actionList.add_action(self.ViewMediaManagerItem, u'View')
+            self.themeManagerDock.isVisible(), u'View')
         self.ViewServiceManagerItem = icon_action(mainWindow,
             u'ViewServiceManagerItem', u':/system/system_servicemanager.png',
-            self.serviceManagerDock.isVisible())
-        actionList.add_action(self.ViewServiceManagerItem, u'View')
+            self.serviceManagerDock.isVisible(), u'View')
         self.ViewPreviewPanel = checkable_action(mainWindow,
-            u'ViewPreviewPanel', previewVisible)
-        actionList.add_action(self.ViewPreviewPanel, u'View')
-        self.ViewLivePanel = checkable_action(mainWindow, u'ViewLivePanel',
-            liveVisible)
-        actionList.add_action(self.ViewLivePanel, u'View')
-        self.ModeDefaultItem = checkable_action(mainWindow, u'ModeDefaultItem')
-        actionList.add_action(self.ModeDefaultItem, u'View Mode')
-        self.ModeSetupItem = checkable_action(mainWindow, u'ModeLiveItem')
-        actionList.add_action(self.ModeSetupItem, u'View Mode')
-        self.ModeLiveItem = checkable_action(mainWindow, u'ModeLiveItem', True)
-        actionList.add_action(self.ModeLiveItem, u'View Mode')
+            u'ViewPreviewPanel', previewVisible, u'View')
+        self.ViewLivePanel = checkable_action(
+            mainWindow, u'ViewLivePanel', liveVisible, u'View')
+        self.ModeDefaultItem = checkable_action(
+            mainWindow, u'ModeDefaultItem', category=u'View Mode')
+        self.ModeSetupItem = checkable_action(
+            mainWindow, u'ModeLiveItem', category=u'View Mode')
+        self.ModeLiveItem = checkable_action(
+            mainWindow, u'ModeLiveItem', True, u'View Mode')
         self.ModeGroup = QtGui.QActionGroup(mainWindow)
         self.ModeGroup.addAction(self.ModeDefaultItem)
         self.ModeGroup.addAction(self.ModeSetupItem)
         self.ModeGroup.addAction(self.ModeLiveItem)
         self.ModeDefaultItem.setChecked(True)
         self.ToolsAddToolItem = icon_action(mainWindow, u'ToolsAddToolItem',
-            u':/tools/tools_add.png')
-        actionList.add_action(self.ToolsAddToolItem, u'Tools')
-        self.ToolsOpenDataFolder = icon_action(mainWindow,
-            u'ToolsOpenDataFolder', u':/general/general_open.png')
-        actionList.add_action(self.ToolsOpenDataFolder, u'Tools')
+            u':/tools/tools_add.png', category=u'Tools')
+        self.ToolsOpenDataFolder = icon_action(mainWindow, u'ToolsOpenDataFolder',
+            u':/general/general_open.png', category=u'Tools')
         self.settingsPluginListItem = icon_action(mainWindow,
-            u'settingsPluginListItem', u':/system/settings_plugin_list.png')
-        actionList.add_action(self.settingsPluginListItem,
-            u'Settings')
+            u'settingsPluginListItem', u':/system/settings_plugin_list.png',
+            category=u'Settings')
         # i18n Language Items
         self.AutoLanguageItem = checkable_action(mainWindow,
             u'AutoLanguageItem', LanguageManager.auto_language)
-        actionList.add_action(self.AutoLanguageItem, u'Settings')
+        #actionList.add_action(self.AutoLanguageItem, u'Settings')
         self.LanguageGroup = QtGui.QActionGroup(mainWindow)
         self.LanguageGroup.setExclusive(True)
         self.LanguageGroup.setObjectName(u'LanguageGroup')
@@ -241,24 +229,22 @@ class Ui_MainWindow(object):
             add_actions(self.LanguageGroup, [languageItem])
         self.SettingsShortcutsItem = icon_action(mainWindow,
             u'SettingsShortcutsItem',
-            u':/system/system_configure_shortcuts.png')
+            u':/system/system_configure_shortcuts.png', category=u'Settings')
         self.DisplayTagItem = icon_action(mainWindow,
-            u'DisplayTagItem', u':/system/tag_editor.png')
+            u'DisplayTagItem', u':/system/tag_editor.png', category=u'Settings')
         self.SettingsConfigureItem = icon_action(mainWindow,
-            u'SettingsConfigureItem', u':/system/system_settings.png')
-        actionList.add_action(self.SettingsShortcutsItem,
-            u'Settings')
+            u'SettingsConfigureItem', u':/system/system_settings.png',
+            category=u'Settings')
         self.HelpDocumentationItem = icon_action(mainWindow,
-            u'HelpDocumentationItem', u':/system/system_help_contents.png')
+            u'HelpDocumentationItem', u':/system/system_help_contents.png',
+            category=None)#u'Help')
         self.HelpDocumentationItem.setEnabled(False)
-        actionList.add_action(self.HelpDocumentationItem, u'Help')
         self.HelpAboutItem = icon_action(mainWindow, u'HelpAboutItem',
-            u':/system/system_about.png')
-        actionList.add_action(self.HelpAboutItem, u'Help')
-        self.HelpOnlineHelpItem = base_action(mainWindow, u'HelpOnlineHelpItem')
-        actionList.add_action(self.HelpOnlineHelpItem, u'Help')
-        self.helpWebSiteItem = base_action(mainWindow, u'helpWebSiteItem')
-        actionList.add_action(self.helpWebSiteItem, u'Help')
+            u':/system/system_about.png', category=None)#u'Help')
+        self.HelpOnlineHelpItem = base_action(
+            mainWindow, u'HelpOnlineHelpItem', category=u'Help')
+        self.helpWebSiteItem = base_action(
+            mainWindow, u'helpWebSiteItem', category=u'Help')
         add_actions(self.FileImportMenu,
             (self.ImportThemeItem, self.ImportLanguageItem))
         add_actions(self.FileExportMenu,

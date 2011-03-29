@@ -62,7 +62,6 @@ class AlertsPlugin(Plugin):
         log.info(u'add tools menu')
         self.toolsAlertItem = icon_action(tools_menu, u'toolsAlertItem',
             u':/plugins/plugin_alerts.png')
-        actionList.add_action(self.toolsAlertItem, u'Extra')
         self.toolsAlertItem.setText(translate('AlertsPlugin', '&Alert'))
         self.toolsAlertItem.setStatusTip(
             translate('AlertsPlugin', 'Show an alert message.'))
@@ -76,6 +75,7 @@ class AlertsPlugin(Plugin):
         log.info(u'Alerts Initialising')
         Plugin.initialise(self)
         self.toolsAlertItem.setVisible(True)
+        actionList.add_action(self.toolsAlertItem, u'Tools')
         self.liveController.alertTab = self.settings_tab
 
     def finalise(self):
@@ -86,6 +86,7 @@ class AlertsPlugin(Plugin):
         self.manager.finalise()
         Plugin.finalise(self)
         self.toolsAlertItem.setVisible(False)
+        #TODO: remove the action from the actionList
 
     def toggleAlertsState(self):
         self.alertsActive = not self.alertsActive

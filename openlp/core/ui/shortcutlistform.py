@@ -45,6 +45,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
 #TODO: ability to remove actions
 #TODO: Save shortcuts
 #TODO: doc
+#TODO: Fix Preview/Live controller (have the same shortcut)
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
