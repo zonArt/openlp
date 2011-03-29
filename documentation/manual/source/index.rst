@@ -13,6 +13,7 @@ Contents:
 
    introduction
    glossary
+   wizard
    dualmonitors
    configure
    bibles
