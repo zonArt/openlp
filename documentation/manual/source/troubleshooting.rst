@@ -73,13 +73,18 @@ documentation at https://wiki.archlinux.org/index.php/Codecs
 Debian Linux
 ^^^^^^^^^^^^
 
-You will need to add the Debian Multimedia Repository. So to /etc/apt/sources.list::
+You will need to add the Debian Multimedia Repository. So add the folowing to
+/etc/apt/sources.list::
 
   deb http://www.debian-multimedia.org testing main non-free
 
+Then update the repository info::
+
+  root@linux:~ # apt-get update
+
 Then install the following packages::
 
-  root@linux:~ # apt-get install gstreamer0.10-ffmpeg gstreamer0.10-ffmpeg-dbg gstreamer0.10-lame gstreamer0.10-plugins-really-bad gstreamer0.10-plugins-bad gstreamer0.10-plugins-ugly gstreamer0.10-plugins-good gstreamer0.10-x264
+  root@linux:~ # apt-get install gstreamer0.10-ffmpeg gstreamer0.10-lame gstreamer0.10-plugins-really-bad gstreamer0.10-plugins-bad gstreamer0.10-plugins-ugly gstreamer0.10-plugins-good gstreamer0.10-x264
 
 Fedora Linux
 ^^^^^^^^^^^^
@@ -115,3 +120,13 @@ enable and select **active** from the drop down box to the right.
 
 By default all plugins should be enabled during the first run wizard except the
 remotes plugin, unless you specify differently.
+
+I can not see the book, chapter, and verse when I display scripture
+===================================================================
+
+The book, chapter, and verse should be displayed when you display scripture. If
+you can not see this your theme probably has the text size too small for the 
+info to be seen. See the section of the manual on themes if you need more info
+on text sizes in themes.
+
+
