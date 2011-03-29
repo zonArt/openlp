@@ -221,7 +221,7 @@ class Renderer(object):
         if len(pages) > 1:
             if item.is_capable(ItemCapabilities.AllowsVirtualSplit):
                 # do not forget the line breaks !
-                slides = slide.split(u'\n[===]\n')
+                slides = slide.split(u'\n[---]\n')
                 pages = []
                 for slide in slides:
                     lines = self._lines(slide)

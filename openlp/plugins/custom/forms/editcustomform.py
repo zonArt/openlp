@@ -173,7 +173,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             item = self.slideListView.item(row)
             slide_list += item.text()
             if row != self.slideListView.count() - 1:
-                slide_list += u'\n[---]\n'
+                slide_list += u'\n[===]\n'
         self.editSlideForm.setText(slide_list)
         if self.editSlideForm.exec_():
             self.updateSlideList(self.editSlideForm.getText(), True)
