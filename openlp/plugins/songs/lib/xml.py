@@ -273,19 +273,19 @@ class OpenLyrics(object):
         for verse in verse_list:
             verse_tag = verse[0][u'type'][0].lower()
             verse_number = verse[0][u'label']
-            # Create a list with all "sub" verses.
-            sub_verses = verse[1].split(u'[###]')
-            for sub_index, sub_verse in enumerate(sub_verses):
+            # Create a list with all "virtual" verses.
+            virtual_verses = verse[1].split(u'[###]')
+            for index, virtual_verse in enumerate(virtual_verses):
                 verse_def = verse_tag + verse_number
-                # We have more than one sub verse, consequently we need "v1a".
-                if len(sub_verses) > 1:
-                    verse_def += list(u'abcdefghijklmnopqrstuvwxyz')[sub_index]
+                # We need "v1a" because we have more than one virtual verse.
+                if len(virtual_verses) > 1:
+                    verse_def += list(u'abcdefghijklmnopqrstuvwxyz')[index]
                 element = \
                     self._add_text_to_element(u'verse', lyrics, None, verse_def)
                 if verse[0].has_key(u'lang'):
                     element.set(u'lang', verse[0][u'lang'])
                 element = self._add_text_to_element(u'lines', element)
-                for line in sub_verse.strip(u'\n').split(u'\n'):
+                for line in virtual_verse.strip(u'\n').split(u'\n'):
                     self._add_text_to_element(u'line', element, line)
         return self._extract_xml(song_xml)
 
