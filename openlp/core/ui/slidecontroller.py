@@ -34,6 +34,7 @@ from openlp.core.lib import OpenLPToolbar, Receiver, resize_image, \
     ItemCapabilities, translate
 from openlp.core.lib.ui import icon_action, UiStrings, shortcut_action
 from openlp.core.ui import HideMode, MainDisplay
+from openlp.core.utils.actions import actionList
 
 log = logging.getLogger(__name__)
 
@@ -362,14 +363,12 @@ class SlideController(QtGui.QWidget):
             QtCore.SIGNAL(u'config_screen_changed'), self.screenSizeChanged)
 
     def setPreviewHotkeys(self, parent=None):
-        actionList = self.parent.actionList
         self.previousItem.setShortcuts([QtCore.Qt.Key_Up, 0])
         actionList.add_action(self.previousItem, u'Preview')
         self.nextItem.setShortcuts([QtCore.Qt.Key_Down, 0])
         actionList.add_action(self.nextItem, u'Preview')
 
     def setLiveHotkeys(self, parent=None):
-        actionList = self.parent.actionList
         self.previousItem.setShortcuts([QtCore.Qt.Key_Up, QtCore.Qt.Key_PageUp])
         self.previousItem.setShortcutContext(
             QtCore.Qt.WidgetWithChildrenShortcut)

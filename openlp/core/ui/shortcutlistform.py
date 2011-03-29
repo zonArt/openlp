@@ -30,6 +30,7 @@ import re
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.utils import translate
+from openlp.core.utils.actions import actionList
 from shortcutlistdialog import Ui_ShortcutListDialog
 
 REMOVE_AMPERSAND = re.compile(r'&{1}')
@@ -40,21 +41,24 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
     """
     The shortcut list dialog
     """
-
-    def __init__(self, parent):
-        """
-        Do some initialisation stuff
-        """
+#TODO: do not close on ESC
+#TODO: ability to remove actions
+#TODO: Save shortcuts
+#TODO: doc
+    def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-        self.actionList = None
-        self.captureShortcut = False
+        self.assingedShortcuts = []
+        self.shortcutButton.setText(u'')
         QtCore.QObject.connect(self.shortcutButton,
             QtCore.SIGNAL(u'toggled(bool)'), self.onShortcutButtonClicked)
+        QtCore.QObject.connect(self.treeWidget,
+            QtCore.SIGNAL(u'itemPressed(QTreeWidgetItem*, int)'),
+            self.onItemPressed)
 
     def keyReleaseEvent(self, event):
         Qt = QtCore.Qt
-        if not self.captureShortcut:
+        if not self.shortcutButton.isChecked():
             return
         key = event.key()
         if key == Qt.Key_Shift or key == Qt.Key_Control or \
@@ -68,45 +72,80 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         if event.modifiers() & Qt.ShiftModifier == Qt.ShiftModifier:
             key_string = u'Shift+' + key_string
         key_sequence = QtGui.QKeySequence(key_string)
-        existing_key = QtGui.QKeySequence(u'Ctrl+Shift+F8')
-        if key_sequence == existing_key:
-            QtGui.QMessageBox.warning(
-                self,
+        if key_sequence in self.assingedShortcuts:
+            QtGui.QMessageBox.warning(self,
                 translate('OpenLP.ShortcutListDialog', 'Duplicate Shortcut'),
                 unicode(translate('OpenLP.ShortcutListDialog', 'The shortcut '
-                    '"%s" is already assigned to another action, please '
-                    'use a different shortcut.')) % key_sequence.toString(),
+                '"%s" is already assigned to another action, please '
+                'use a different shortcut.')) % key_sequence.toString(),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok),
                 QtGui.QMessageBox.Ok
             )
         else:
             self.shortcutButton.setText(key_sequence.toString())
-        self.shortcutButton.setChecked(False)
-        self.captureShortcut = False
+            self.shortcutButton.setChecked(False)
 
-    def exec_(self, actionList):
-        self.actionList = actionList
-        self.refreshActions()
+    def exec_(self):
+        # The dialog is opened the first time
+        if self.treeWidget.topLevelItemCount() == 0:
+            QtCore.QObject.connect(actionList.signal,
+                QtCore.SIGNAL(u'addedAction()'), self.initialiseActionList)
+            self.initialiseActionList()
+        self.refreshActionList()
         return QtGui.QDialog.exec_(self)
 
-    def refreshActions(self):
-        self.treeWidget.clear()
-        for category in self.actionList.categories:
-            item = QtGui.QTreeWidgetItem([category.name])
-            for action in category.actions:
+    def refreshActionList(self):
+        self.assingedShortcuts = []
+        iterator = QtGui.QTreeWidgetItemIterator(self.treeWidget)
+        while iterator.value():
+            treewidgetItem = iterator.value()
+            action = treewidgetItem.data(0, QtCore.Qt.UserRole).toPyObject()
+            if action is not None:
                 actionText = REMOVE_AMPERSAND.sub('', unicode(action.text()))
-                if (len(action.shortcuts()) == 2):
+                if len(action.shortcuts()) == 2:
                     shortcutText = action.shortcuts()[0].toString()
                     alternateText = action.shortcuts()[1].toString()
                 else:
                     shortcutText = action.shortcut().toString()
                     alternateText = u''
-                actionItem = QtGui.QTreeWidgetItem(
-                    [actionText, shortcutText, alternateText])
+                self.assingedShortcuts.extend(action.shortcuts())
+                treewidgetItem.setText(0, actionText)
+                treewidgetItem.setText(1, shortcutText)
+                treewidgetItem.setText(2,  alternateText)
+            iterator += 1
+
+    def initialiseActionList(self):
+        for category in actionList.categories:
+            item = QtGui.QTreeWidgetItem([category.name])
+            for action in category.actions:
+                actionItem = QtGui.QTreeWidgetItem()
                 actionItem.setIcon(0, action.icon())
+                actionItem.setData(0, QtCore.Qt.UserRole, QtCore.QVariant(action))
                 item.addChild(actionItem)
             item.setExpanded(True)
             self.treeWidget.addTopLevelItem(item)
 
     def onShortcutButtonClicked(self, toggled):
-        self.captureShortcut = toggled
+        if toggled:
+            return
+        item = self.treeWidget.currentItem()
+        action = item.data(0, QtCore.Qt.UserRole).toPyObject()
+        if action is None:
+            return
+        # TODO: Sort out which shortcuts should be kept.
+        action.setShortcuts(QtGui.QKeySequence(self.shortcutButton.text()))
+        self.refreshActionList()
+
+    def onItemPressed(self, item, column):
+        item = self.treeWidget.currentItem()
+        action = item.data(0, QtCore.Qt.UserRole).toPyObject()
+        if action is None:
+            text = u''
+        else:
+            if len(action.shortcuts()) == 0:
+               text = u''
+            elif len(action.shortcuts()) == 2 and column == 2:
+                text = action.shortcuts()[1].toString()
+            else:
+                text = action.shortcuts()[0].toString()
+        self.shortcutButton.setText(text)

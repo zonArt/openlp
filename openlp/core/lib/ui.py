@@ -31,6 +31,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon, Receiver, translate
+from openlp.core.utils.actions import actionList
 
 log = logging.getLogger(__name__)
 
@@ -265,6 +266,7 @@ def icon_action(parent, name, icon, checked=None):
     else:
         action = base_action(parent, name)
     action.setIcon(build_icon(icon))
+    #actionList.add_action(action, name)
     return action
 
 def shortcut_action(parent, text, shortcuts, function):

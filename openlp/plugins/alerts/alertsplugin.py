@@ -30,6 +30,8 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
+from openlp.core.lib.ui import icon_action
+from openlp.core.utils.actions import actionList
 from openlp.plugins.alerts.lib import AlertsManager, AlertsTab
 from openlp.plugins.alerts.lib.db import init_schema
 from openlp.plugins.alerts.forms import AlertForm
@@ -58,9 +60,9 @@ class AlertsPlugin(Plugin):
             use it as their parent.
         """
         log.info(u'add tools menu')
-        self.toolsAlertItem = QtGui.QAction(tools_menu)
-        self.toolsAlertItem.setIcon(build_icon(u':/plugins/plugin_alerts.png'))
-        self.toolsAlertItem.setObjectName(u'toolsAlertItem')
+        self.toolsAlertItem = icon_action(tools_menu, u'toolsAlertItem',
+            u':/plugins/plugin_alerts.png')
+        actionList.add_action(self.toolsAlertItem, u'Extra')
         self.toolsAlertItem.setText(translate('AlertsPlugin', '&Alert'))
         self.toolsAlertItem.setStatusTip(
             translate('AlertsPlugin', 'Show an alert message.'))
