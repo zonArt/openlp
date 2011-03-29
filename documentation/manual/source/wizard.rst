@@ -3,9 +3,8 @@ First Run Wizard
 ================
 
 When using OpenLP for the first time, the **First Run Wizard** will help you 
-with setting up your installation. This is not a comprehensive setup but will 
-give you the basics for first time use. This wizard will help you configure 
-OpenLP for initial use.
+with setting up your installation. This wizard is not intended to be a 
+comprehensive setup but will help you with the basics for first time use.
 
 **Select Translation**
 
