@@ -182,7 +182,7 @@ class Renderer(object):
         # save value for use in format_slide
         self.force_page = force_page
         # set the default image size for previews
-        self.calculate_default(self.screens.preview[u'size'])
+        self._calculate_default(self.screens.preview[u'size'])
         # build a service item to generate preview
         serviceItem = ServiceItem()
         serviceItem.theme = theme_data
@@ -192,7 +192,7 @@ class Renderer(object):
         else:
             self.image_manager.del_image(theme_data.theme_name)
             serviceItem.add_from_text(u'', VERSE, FOOTER)
-        serviceItem.render_manager = self
+        serviceItem.renderer = self
         serviceItem.raw_footer = FOOTER
         serviceItem.render(True)
         if not self.force_page:
