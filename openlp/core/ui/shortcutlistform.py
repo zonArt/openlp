@@ -41,8 +41,10 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
     """
     The shortcut list dialog
     """
-#TODO: do not close on ESC, ability to remove actions, save/load shortcuts, docs
-#TODO: Fix Preview/Live controller (have the same shortcut)
+#TODO: do not close on ESC, ability to remove actions (e. g. reindex tool)
+#TODO: save/load shortcuts, docs
+#TODO: Fix Preview/Live controller (have the same shortcut), make sure
+
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)

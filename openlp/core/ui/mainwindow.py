@@ -39,7 +39,6 @@ from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
     ShortcutListForm, DisplayTagForm
 from openlp.core.utils import AppLocation, add_actions, LanguageManager, \
     get_application_version
-#from openlp.core.utils.actions import actionList
 
 log = logging.getLogger(__name__)
 
@@ -216,7 +215,6 @@ class Ui_MainWindow(object):
         # i18n Language Items
         self.AutoLanguageItem = checkable_action(mainWindow,
             u'AutoLanguageItem', LanguageManager.auto_language)
-        #actionList.add_action(self.AutoLanguageItem, u'Settings')
         self.LanguageGroup = QtGui.QActionGroup(mainWindow)
         self.LanguageGroup.setExclusive(True)
         self.LanguageGroup.setObjectName(u'LanguageGroup')
