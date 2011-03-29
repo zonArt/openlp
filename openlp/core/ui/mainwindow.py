@@ -469,15 +469,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     actionList = ActionList()
 
-    def __init__(self, screens, application):
+    def __init__(self, screens, clipboard, arguments):
         """
         This constructor sets up the interface, the various managers, and the
         plugins.
         """
         QtGui.QMainWindow.__init__(self)
         self.screens = screens
-
-        self.application = application
+        self.clipboard = clipboard
+        self.arguments = arguments
         # Set up settings sections for the main application
         # (not for use by plugins)
         self.uiSettingsSection = u'user interface'
@@ -661,9 +661,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.liveController.display.isVisible():
             self.liveController.display.setFocus()
         self.activateWindow()
-        if len(self.application.arguments()) > 0:
+        # On Windows, arguments contains the entire commandline
+        # So args[0]=='python' args[1]=='openlp.pyw'
+        # Therefore this approach is not going to work
+        # Bypass for now.
+        if len(self.arguments) and os.name != u'nt':
             args = []
-            for a in self.application.arguments():
+            for a in self.arguments:
                 args.extend([a])
             self.ServiceManagerContents.loadFile(unicode(args[0]))
         elif QtCore.QSettings().value(
