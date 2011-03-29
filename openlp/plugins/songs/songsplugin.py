@@ -33,7 +33,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Plugin, StringContent, build_icon, translate, \
     Receiver
 from openlp.core.lib.db import Manager
-from openlp.core.lib.ui import UiStrings
+from openlp.core.lib.ui import UiStrings, base_action, icon_action
 from openlp.plugins.songs.lib import clean_song, SongMediaItem, SongsTab
 from openlp.plugins.songs.lib.db import init_schema, Song
 from openlp.plugins.songs.lib.importer import SongFormat
@@ -78,8 +78,8 @@ class SongsPlugin(Plugin):
             use it as their parent.
         """
         # Main song import menu item - will eventually be the only one
-        self.SongImportItem = QtGui.QAction(import_menu)
-        self.SongImportItem.setObjectName(u'SongImportItem')
+        self.SongImportItem = base_action(
+            import_menu, u'SongImportItem', u'Import')
         self.SongImportItem.setText(translate(
             'SongsPlugin', '&Song'))
         self.SongImportItem.setToolTip(translate('SongsPlugin',
@@ -99,8 +99,7 @@ class SongsPlugin(Plugin):
             use it as their parent.
         """
         # Main song import menu item - will eventually be the only one
-        self.SongExportItem = QtGui.QAction(export_menu)
-        self.SongExportItem.setObjectName(u'SongExportItem')
+        self.SongExportItem = base_action(export_menu, u'SongExportItem', u'Export')
         self.SongExportItem.setText(translate(
             'SongsPlugin', '&Song'))
         self.SongExportItem.setToolTip(translate('SongsPlugin',
@@ -120,9 +119,8 @@ class SongsPlugin(Plugin):
             use it as their parent.
         """
         log.info(u'add tools menu')
-        self.toolsReindexItem = QtGui.QAction(tools_menu)
-        self.toolsReindexItem.setIcon(build_icon(u':/plugins/plugin_songs.png'))
-        self.toolsReindexItem.setObjectName(u'toolsReindexItem')
+        self.toolsReindexItem = icon_action(tools_menu, u'toolsReindexItem',
+            u':/plugins/plugin_songs.png', category=u'Tools')
         self.toolsReindexItem.setText(
             translate('SongsPlugin', '&Re-index Songs'))
         self.toolsReindexItem.setStatusTip(

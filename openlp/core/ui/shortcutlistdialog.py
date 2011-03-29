@@ -30,6 +30,7 @@ from openlp.core.lib import translate, build_icon
 
 class Ui_ShortcutListDialog(object):
     def setupUi(self, shortcutListDialog):
+        shortcutListDialog.resize(440, 450)
         shortcutListDialog.setObjectName(u'shortcutListDialog')
         self.dialogLayout = QtGui.QVBoxLayout(shortcutListDialog)
         self.dialogLayout.setObjectName(u'dialogLayout')
@@ -52,6 +53,7 @@ class Ui_ShortcutListDialog(object):
             build_icon(u':/system/system_configure_shortcuts.png'))
         self.shortcutButton.setCheckable(True)
         self.shortcutButton.setObjectName(u'shortcutButton')
+        self.shortcutButton.setFixedSize(150, 30)
         self.customLayout.addWidget(self.shortcutButton)
         self.clearShortcutButton = QtGui.QToolButton(shortcutListDialog)
         self.clearShortcutButton.setIcon(

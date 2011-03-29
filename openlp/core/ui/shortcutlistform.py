@@ -41,10 +41,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
     """
     The shortcut list dialog
     """
-#TODO: do not close on ESC
-#TODO: ability to remove actions
-#TODO: Save shortcuts
-#TODO: doc
+#TODO: do not close on ESC, ability to remove actions, save/load shortcuts, docs
 #TODO: Fix Preview/Live controller (have the same shortcut)
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
@@ -87,21 +84,17 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             self.shortcutButton.setChecked(False)
 
     def exec_(self):
-        # The dialog is opened the first time
-        if self.treeWidget.topLevelItemCount() == 0:
-            QtCore.QObject.connect(actionList.signal,
-                QtCore.SIGNAL(u'addedAction()'), self.initialiseActionList)
-            self.initialiseActionList()
         self.refreshActionList()
         return QtGui.QDialog.exec_(self)
 
     def refreshActionList(self):
+        # As refreshing does not work, the check does not work either.
         self.assingedShortcuts = []
-        iterator = QtGui.QTreeWidgetItemIterator(self.treeWidget)
-        while iterator.value():
-            treewidgetItem = iterator.value()
-            action = treewidgetItem.data(0, QtCore.Qt.UserRole).toPyObject()
-            if action is not None:
+        #self.treeWidget.clear()
+        for category in actionList.categories:
+            item = QtGui.QTreeWidgetItem([category.name])
+            for action in category.actions:
+                self.assingedShortcuts.extend(action.shortcuts())
                 actionText = REMOVE_AMPERSAND.sub('', unicode(action.text()))
                 if len(action.shortcuts()) == 2:
                     shortcutText = action.shortcuts()[0].toString()
@@ -109,19 +102,11 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                 else:
                     shortcutText = action.shortcut().toString()
                     alternateText = u''
-                self.assingedShortcuts.extend(action.shortcuts())
-                treewidgetItem.setText(0, actionText)
-                treewidgetItem.setText(1, shortcutText)
-                treewidgetItem.setText(2,  alternateText)
-            iterator += 1
-
-    def initialiseActionList(self):
-        for category in actionList.categories:
-            item = QtGui.QTreeWidgetItem([category.name])
-            for action in category.actions:
-                actionItem = QtGui.QTreeWidgetItem()
+                actionItem = QtGui.QTreeWidgetItem(
+                    [actionText, shortcutText, alternateText])
                 actionItem.setIcon(0, action.icon())
-                actionItem.setData(0, QtCore.Qt.UserRole, QtCore.QVariant(action))
+                actionItem.setData(0,
+                    QtCore.Qt.UserRole, QtCore.QVariant(action))
                 item.addChild(actionItem)
             item.setExpanded(True)
             self.treeWidget.addTopLevelItem(item)
@@ -135,13 +120,16 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             return
         # TODO: Sort out which shortcuts should be kept.
         action.setShortcuts(QtGui.QKeySequence(self.shortcutButton.text()))
+        item.setText(1, self.shortcutButton.text())
         self.refreshActionList()
 
     def onItemPressed(self, item, column):
         item = self.treeWidget.currentItem()
         action = item.data(0, QtCore.Qt.UserRole).toPyObject()
+        self.shortcutButton.setEnabled(action is not None)
         if action is None:
             text = u''
+            self.shortcutButton.setChecked(False)
         else:
             if len(action.shortcuts()) == 0:
                text = u''
@@ -150,3 +138,21 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             else:
                 text = action.shortcuts()[0].toString()
         self.shortcutButton.setText(text)
+
+    def saveShortcuts(self):
+        """
+        Save the shortcuts.
+        """
+        settings = QtCore.QSettings()
+        settings.beginGroup(u'shortcuts')
+        # TODO: Save shortcuts
+        settings.endGroup()
+
+    def loadShortcuts(self):
+        """
+        Load the shortcuts.
+        """
+        settings = QtCore.QSettings()
+        settings.beginGroup(u'shortcuts')
+        # TODO: Load shortcuts
+        settings.endGroup()

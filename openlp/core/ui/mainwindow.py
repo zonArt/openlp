@@ -177,11 +177,11 @@ class Ui_MainWindow(object):
         self.ImportThemeItem = base_action(
             mainWindow, u'ImportThemeItem', u'Import')
         self.ImportLanguageItem = base_action(
-            mainWindow, u'ImportLanguageItem', u'Import')
+            mainWindow, u'ImportLanguageItem')#, u'Import')
         self.ExportThemeItem = base_action(
             mainWindow, u'ExportThemeItem', u'Export')
         self.ExportLanguageItem = base_action(
-            mainWindow, u'ExportLanguageItem', u'Export')
+            mainWindow, u'ExportLanguageItem')#, u'Export')
         self.ViewMediaManagerItem = icon_action(mainWindow,
             u'ViewMediaManagerItem', u':/system/system_mediamanager.png',
             self.mediaManagerDock.isVisible(), u'View')
@@ -240,7 +240,7 @@ class Ui_MainWindow(object):
             category=None)#u'Help')
         self.HelpDocumentationItem.setEnabled(False)
         self.HelpAboutItem = icon_action(mainWindow, u'HelpAboutItem',
-            u':/system/system_about.png', category=None)#u'Help')
+            u':/system/system_about.png', category=u'Help')
         self.HelpOnlineHelpItem = base_action(
             mainWindow, u'HelpOnlineHelpItem', category=u'Help')
         self.helpWebSiteItem = base_action(
