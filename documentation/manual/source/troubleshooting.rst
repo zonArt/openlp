@@ -30,7 +30,7 @@ Microsoft Windows
 Later versions of Microsoft Windows (Vista, Windows 7) generally come with 
 everything you need to play most media formats. If for some reason you need 
 additional codecs we have seen success from the Combined Community Codec Pack
-(CCCP): http://www.cccp-project.net/  You might also wish to check out the
+(CCCP): `<http://www.cccp-project.net/>`_.  You might also wish to check out the
 K-Lite Codec Pack. If you are having issues, results do seem to vary with the 
 different options. What works for some may not for others, so some trial and 
 error may be required.
@@ -40,7 +40,7 @@ Mac
 
 If you are using a Mac. You may wish to play Windows formats. flip4mac enables
 you to use popular Windows formats such as .wmv on your Mac. You can get it 
-here http://dynamic.telestream.net/downloads/download-flip4macwmv.htm
+here `<http://dynamic.telestream.net/downloads/download-flip4macwmv.htm>`_.
 
 Ubuntu Linux (and variants)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -57,7 +57,7 @@ ubuntu-restricted-extras and Kubuntu-restricted-extras, or from the terminal::
 ubuntu-restricted-extras meta-package
 
 For more information on Ubuntu and multimedia issues please check out
-https://help.ubuntu.com/community/RestrictedFormats/
+`<https://help.ubuntu.com/community/RestrictedFormats/>`_.
 
 Arch Linux
 ^^^^^^^^^^
@@ -68,7 +68,7 @@ Linux::
   root@linux:~ # pacman -S gstreamer0.10-{base,good,bad,ugly}-plugins gstreamer0.10-ffmpeg
 
 If you need more help with Arch Linux and multimedia please see the Arch Linux
-documentation at https://wiki.archlinux.org/index.php/Codecs
+documentation at `<https://wiki.archlinux.org/index.php/Codecs>`_.
 
 Debian Linux
 ^^^^^^^^^^^^
@@ -92,7 +92,7 @@ You will need to set up Fedora to play most media formats. This is relatively
 simple using the rpmfusion repository. 
 
 **Note** the following commands will enable a third party repository to your 
-system. Please check out http://rpmfusion.org for more information.
+system. Please check out `<http://rpmfusion.org>`_. for more information.
 
 To enable both the free and nonfree components for any Fedora official release
 enter the following commands::
@@ -104,7 +104,7 @@ list, perform any updates and search for gstreamer-good, bad, and ugly and
 install.
 
 Here is a good tutorial video on the rpmfusion repository 
-http://www.linuxjournal.com/video/getting-mp3-support-fedora-using-rpmfusion-repositories
+`<http://www.linuxjournal.com/video/getting-mp3-support-fedora-using-rpmfusion-repositories>`_.
 
 The Media Manager appears to be missing some features
 =====================================================
