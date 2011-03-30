@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -117,7 +117,8 @@ class SlideController(QtGui.QWidget):
         self.previewListWidget.setColumnWidth(0, self.controller.width())
         self.previewListWidget.isLive = self.isLive
         self.previewListWidget.setObjectName(u'PreviewListWidget')
-        self.previewListWidget.setSelectionBehavior(1)
+        self.previewListWidget.setSelectionBehavior(
+            QtGui.QAbstractItemView.SelectRows)
         self.previewListWidget.setSelectionMode(
             QtGui.QAbstractItemView.SingleSelection)
         self.previewListWidget.setEditTriggers(
@@ -184,7 +185,7 @@ class SlideController(QtGui.QWidget):
             self.delaySpinBox.setMinimum(1)
             self.delaySpinBox.setMaximum(180)
             self.toolbar.addToolbarWidget(u'Image SpinBox', self.delaySpinBox)
-            self.delaySpinBox.setSuffix(UiStrings.S)
+            self.delaySpinBox.setSuffix(UiStrings.Seconds)
             self.delaySpinBox.setToolTip(translate('OpenLP.SlideController',
                 'Delay between slides in seconds'))
         else:
@@ -857,6 +858,7 @@ class SlideController(QtGui.QWidget):
                     self.serviceItem.bg_image_bytes = None
                 self.slidePreview.setPixmap(QtGui.QPixmap.fromImage(frame))
             self.selectedRow = row
+            self.__checkUpdateSelectedSlide(row)
         Receiver.send_message(u'slidecontroller_%s_changed' % self.typePrefix,
             row)
 
@@ -1012,8 +1014,12 @@ class SlideController(QtGui.QWidget):
         """
         row = self.previewListWidget.currentRow()
         if row > -1 and row < self.previewListWidget.rowCount():
-            self.parent.liveController.addServiceManagerItem(
-                self.serviceItem, row)
+            if self.serviceItem.from_service:
+                Receiver.send_message('servicemanager_preview_live',
+                    u'%s:%s' % (self.serviceItem._uuid, row))
+            else:
+                self.parent.liveController.addServiceManagerItem(
+                    self.serviceItem, row)
 
     def onMediaStart(self, item):
         """

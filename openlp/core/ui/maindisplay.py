@@ -6,9 +6,9 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Meinert Jordan, Armin Köhler, Andreas Preikschat,  #
-# Christian Richter, Philip Ridout, Maikel Stuivenberg, Martin Thompson, Jon  #
-# Tibble, Carsten Tinggaard, Frode Woldsund                                   #
+# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -110,7 +110,7 @@ class MainDisplay(DisplayWidget):
         Phonon.createPath(self.mediaObject, self.audio)
         QtCore.QObject.connect(self.mediaObject,
             QtCore.SIGNAL(u'stateChanged(Phonon::State, Phonon::State)'),
-            self.videoStart)
+            self.videoState)
         QtCore.QObject.connect(self.mediaObject,
             QtCore.SIGNAL(u'finished()'),
             self.videoFinished)
@@ -150,23 +150,22 @@ class MainDisplay(DisplayWidget):
             if not background_color.isValid():
                 background_color = QtCore.Qt.white
             splash_image = QtGui.QImage(image_file)
-            initialFrame = QtGui.QImage(
+            self.initialFrame = QtGui.QImage(
                 self.screens.current[u'size'].width(),
                 self.screens.current[u'size'].height(),
                 QtGui.QImage.Format_ARGB32_Premultiplied)
             painter_image = QtGui.QPainter()
-            painter_image.begin(initialFrame)
-            painter_image.fillRect(initialFrame.rect(), background_color)
+            painter_image.begin(self.initialFrame)
+            painter_image.fillRect(self.initialFrame.rect(), background_color)
             painter_image.drawImage(
                 (self.screens.current[u'size'].width() -
                 splash_image.width()) / 2,
                 (self.screens.current[u'size'].height()
                 - splash_image.height()) / 2, splash_image)
             serviceItem = ServiceItem()
-            serviceItem.bg_image_bytes = image_to_byte(initialFrame)
+            serviceItem.bg_image_bytes = image_to_byte(self.initialFrame)
             self.webView.setHtml(build_html(serviceItem, self.screen,
                 self.alertTab, self.isLive, None))
-            self.initialFrame = True
             self.__hideMouse()
             # To display or not to display?
             if not self.screen[u'primary']:
@@ -188,6 +187,7 @@ class MainDisplay(DisplayWidget):
         # Wait for the webview to update before displaying text.
         while not self.webLoaded:
             Receiver.send_message(u'openlp_process_events')
+        self.setGeometry(self.screen[u'size'])
         self.frame.evaluateJavaScript(u'show_text("%s")' % \
             slide.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
         return self.preview()
@@ -215,12 +215,18 @@ class MainDisplay(DisplayWidget):
             else:
                 shrinkItem = self
             if text:
-                shrinkItem.resize(self.width(), int(height.toString()))
+                alert_height = int(height.toString())
+                shrinkItem.resize(self.width(), alert_height)
                 shrinkItem.setVisible(True)
+                if self.alertTab.location == 1:
+                    shrinkItem.move(self.screen[u'size'].left(),
+                    (self.screen[u'size'].height() - alert_height) / 2)
+                elif self.alertTab.location == 2:
+                    shrinkItem.move(self.screen[u'size'].left(),
+                        self.screen[u'size'].height() - alert_height)
             else:
                 shrinkItem.setVisible(False)
-                shrinkItem.resize(self.screen[u'size'].width(),
-                    self.screen[u'size'].height())
+                self.setGeometry(self.screen[u'size'])
 
     def directImage(self, name, path):
         """
@@ -250,6 +256,7 @@ class MainDisplay(DisplayWidget):
         """
         Display an image, as is.
         """
+        self.setGeometry(self.screen[u'size'])
         if image:
             js = u'show_image("data:image/png;base64,%s");' % image
         else:
@@ -344,6 +351,7 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'video')
         self.webLoaded = True
+        self.setGeometry(self.screen[u'size'])
         # We are running a background theme
         self.override[u'theme'] = u''
         self.override[u'video'] = True
@@ -359,7 +367,7 @@ class MainDisplay(DisplayWidget):
             self.mediaObject.setCurrentSource(Phonon.MediaSource(videoPath))
             # Need the timer to trigger set the trigger to 200ms
             # Value taken from web documentation.
-            if self.serviceItem.start_time != 0:
+            if self.serviceItem.end_time != 0:
                 self.mediaObject.setTickInterval(200)
             self.mediaObject.play()
             self.webView.setVisible(False)
@@ -370,11 +378,13 @@ class MainDisplay(DisplayWidget):
             Receiver.send_message(u'maindisplay_active')
         return self.preview()
 
-    def videoStart(self, newState, oldState):
+    def videoState(self, newState, oldState):
         """
         Start the video at a predetermined point.
         """
-        if newState == Phonon.PlayingState:
+        if newState == Phonon.PlayingState \
+            and oldState != Phonon.PausedState \
+            and self.serviceItem.start_time > 0:
             # set start time in milliseconds
             self.mediaObject.seek(self.serviceItem.start_time * 1000)
 
@@ -391,9 +401,9 @@ class MainDisplay(DisplayWidget):
     def videoTick(self, tick):
         """
         Triggered on video tick every 200 milli seconds
-        Will be used to manage stop time later
         """
-        pass
+        if tick > self.serviceItem.end_time * 1000:
+            self.videoFinished()
 
     def isWebLoaded(self):
         """
@@ -426,7 +436,14 @@ class MainDisplay(DisplayWidget):
             if self.hideMode:
                 self.hideDisplay(self.hideMode)
             else:
-                self.setVisible(True)
+                # Single screen active
+                if self.screens.monitor_number == 0:
+                    # Only make visible if setting enabled
+                    if QtCore.QSettings().value(u'general/display on monitor',
+                        QtCore.QVariant(True)).toBool():
+                        self.setVisible(True)
+                else:
+                    self.setVisible(True)
         preview = QtGui.QImage(self.screen[u'size'].width(),
             self.screen[u'size'].height(),
             QtGui.QImage.Format_ARGB32_Premultiplied)
@@ -443,7 +460,7 @@ class MainDisplay(DisplayWidget):
         """
         log.debug(u'buildHtml')
         self.webLoaded = False
-        self.initialFrame = False
+        self.initialFrame = None
         self.serviceItem = serviceItem
         background = None
         # We have an image override so keep the image till the theme changes
@@ -472,7 +489,11 @@ class MainDisplay(DisplayWidget):
             self.footer(serviceItem.foot_text)
         # if was hidden keep it hidden
         if self.hideMode and self.isLive:
-            self.hideDisplay(self.hideMode)
+            if QtCore.QSettings().value(u'general/auto unblank',
+                QtCore.QVariant(False)).toBool():
+                Receiver.send_message(u'slidecontroller_live_unblank')
+            else:
+                self.hideDisplay(self.hideMode)
         # display hidden for video end we have a new item so must be shown
         if self.videoHide and self.isLive:
             self.videoHide = False

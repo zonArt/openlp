@@ -17,3 +17,9 @@ Helper Classes & Functions
 
 .. automodule:: openlp.plugins.remotes.lib
    :members:
+
+.. autoclass:: openlp.plugins.remotes.lib.httpserver.HttpConnection
+   :members:
+
+.. autoclass:: openlp.plugins.remotes.lib.httpserver.HttpResponse
+   :members:
