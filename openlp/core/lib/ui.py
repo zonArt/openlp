@@ -242,6 +242,11 @@ def create_up_down_push_button_set(parent):
 def base_action(parent, name, category=None):
     """
     Return the most basic action with the object name set.
+
+    ``category``
+        The category the action should be listed in the shortcut dialog. If you
+        not wish, that this action is added to the shortcut dialog, then do not
+        state any.
     """
     action = QtGui.QAction(parent)
     action.setObjectName(name)
@@ -262,11 +267,6 @@ def checkable_action(parent, name, checked=None, category=None):
 def icon_action(parent, name, icon, checked=None, category=None):
     """
     Return a standard action with an icon.
-
-    ``category``
-        The category the action should be listed in the shortcut dialog. If you
-        not wish, that this action is added to the shortcut dialog, then do not
-        state any.
     """
     if checked is not None:
         action = checkable_action(parent, name, checked, category)
