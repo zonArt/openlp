@@ -19,3 +19,4 @@ Contents:
    themes
    mediamanager
    songs
+   troubleshooting
