@@ -86,7 +86,7 @@ class AlertsPlugin(Plugin):
         self.manager.finalise()
         Plugin.finalise(self)
         self.toolsAlertItem.setVisible(False)
-        #TODO: remove the action from the actionList
+        actionList.remove_action(self.toolsAlertItem, u'Tools')
 
     def toggleAlertsState(self):
         self.alertsActive = not self.alertsActive

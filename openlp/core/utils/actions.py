@@ -71,7 +71,7 @@ class CategoryActionList(object):
             raise StopIteration
         else:
             self.index += 1
-            return self.actions[self.index - 1][1:]
+            return self.actions[self.index - 1][1]
 
     def next(self):
         """
@@ -92,8 +92,14 @@ class CategoryActionList(object):
         self.add(name, weight)
 
     def add(self, action, weight=0):
-        self.actions.append((weight, action, action.shortcuts()))
+        self.actions.append((weight, action))
         self.actions.sort(key=lambda act: act[0])
+
+    def remove(self, remove_action):
+        for action in self.actions:
+            if action[1] == remove_action:
+                self.actions.remove(action)
+                return
 
 
 class CategoryList(object):
@@ -176,12 +182,17 @@ class ActionList(object):
     def __init__(self):
         self.categories = CategoryList()
 
-    def add_action(self, action, category=u'Default', weight=None):
+    def add_action(self, action, category, weight=None):
         if category not in self.categories:
             self.categories.append(category)
         if weight is None:
             self.categories[category].actions.append(action)
         else:
             self.categories[category].actions.add(action, weight)
+
+    def remove_action(self, action, category):
+        if category not in self.categories:
+            return
+        self.categories[category].actions.remove(action)
 
 actionList = ActionList()
