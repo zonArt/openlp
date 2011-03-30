@@ -20,3 +20,4 @@ Contents:
    themes
    mediamanager
    songs
+   alert
