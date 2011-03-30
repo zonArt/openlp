@@ -83,8 +83,7 @@ class SongsPlugin(Plugin):
         """
         # Main song import menu item - will eventually be the only one
         self.SongImportItem = base_action(import_menu, u'SongImportItem')
-        self.SongImportItem.setText(translate(
-            'SongsPlugin', '&Song'))
+        self.SongImportItem.setText(translate('SongsPlugin', '&Song'))
         self.SongImportItem.setToolTip(translate('SongsPlugin',
             'Import songs using the import wizard.'))
         import_menu.addAction(self.SongImportItem)
@@ -103,8 +102,7 @@ class SongsPlugin(Plugin):
         """
         # Main song import menu item - will eventually be the only one
         self.SongExportItem = base_action(export_menu, u'SongExportItem')
-        self.SongExportItem.setText(translate(
-            'SongsPlugin', '&Song'))
+        self.SongExportItem.setText(translate('SongsPlugin', '&Song'))
         self.SongExportItem.setToolTip(translate('SongsPlugin',
             'Exports songs using the export wizard.'))
         export_menu.addAction(self.SongExportItem)
