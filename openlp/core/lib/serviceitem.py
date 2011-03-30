@@ -406,28 +406,24 @@ class ServiceItem(object):
 
     def get_rendered_frame(self, row):
         """
-        Returns the correct frame for a given list and renders it if required.
+        Returns the correct frame for a given list and
+        renders it if required.
         """
-        try:
-            if self.service_item_type == ServiceItemType.Text:
-                frame = self._display_frames[row][u'html'].split(u'\n')[0]
-            elif self.service_item_type == ServiceItemType.Image:
-                frame = self._raw_frames[row][u'title']
-            else:
-                frame = self._raw_frames[row][u'image']
-        except IndexError:
-            frame = u''
-        return frame
+        if self.service_item_type == ServiceItemType.Text:
+            return self._display_frames[row][u'html'].split(u'\n')[0]
+        elif self.service_item_type == ServiceItemType.Image:
+            return self._raw_frames[row][u'title']
+        else:
+            return self._raw_frames[row][u'image']
 
     def get_frame_title(self, row=0):
         """
         Returns the title of the raw frame
         """
         try:
-            title = self._raw_frames[row][u'title']
+            return self._raw_frames[row][u'title']
         except IndexError:
-            title = u''
-        return title
+            return u''
 
     def get_frame_path(self, row=0):
         """

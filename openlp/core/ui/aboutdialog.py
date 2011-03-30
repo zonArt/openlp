@@ -133,7 +133,7 @@ class Ui_AboutDialog(object):
             u'en_ZA': [u'Raoul "superfly" Snyman'],
             u'et': [u'Mattias "mahfiaz" P\xf5ldaru'],
             u'fr': [u'Stephan\xe9 "stbrunner" Brunner'],
-            u'hu': [u'Gyuris Gell\xe9t'],
+            u'hu': [u'Gyuris Gell\xe9rt'],
             u'ja': [u'Kunio "Kunio" Nakamaru'],
             u'nb': [u'Atle "pendlaren" Weibell', u'Frode "frodus" Woldsund'],
             u'nl': [u'Arjen "typovar" van Voorst'],
