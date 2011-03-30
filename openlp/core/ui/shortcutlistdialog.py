@@ -39,15 +39,8 @@ class Ui_ShortcutListDialog(object):
         self.treeWidget.setObjectName(u'treeWidget')
         self.treeWidget.setColumnCount(3)
         self.dialogLayout.addWidget(self.treeWidget)
-        self.defaultButton = QtGui.QRadioButton(shortcutListDialog)
-        self.defaultButton.setChecked(True)
-        self.defaultButton.setObjectName(u'defaultButton')
-        self.dialogLayout.addWidget(self.defaultButton)
         self.customLayout = QtGui.QHBoxLayout()
         self.customLayout.setObjectName(u'customLayout')
-        self.customButton = QtGui.QRadioButton(shortcutListDialog)
-        self.customButton.setObjectName(u'customButton')
-        self.customLayout.addWidget(self.customButton)
         self.shortcutButton = QtGui.QPushButton(shortcutListDialog)
         self.shortcutButton.setIcon(
             build_icon(u':/system/system_configure_shortcuts.png'))
@@ -82,9 +75,5 @@ class Ui_ShortcutListDialog(object):
             translate('OpenLP.ShortcutListDialog', 'Action'),
             translate('OpenLP.ShortcutListDialog', 'Shortcut'),
             translate('OpenLP.ShortcutListDialog', 'Alternate')])
-        self.defaultButton.setText(
-            translate('OpenLP.ShortcutListDialog', 'Default: %s'))
-        self.customButton.setText(
-            translate('OpenLP.ShortcutListDialog', 'Custom:'))
         self.shortcutButton.setText(
             translate('OpenLP.ShortcutListDialog', 'None'))

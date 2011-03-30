@@ -27,9 +27,9 @@
 The :mod:`~openlp.core.utils.actions` module provides action list classes used
 by the shortcuts system.
 """
-class Category(object):
+class ActionCategory(object):
     """
-    The :class:`~openlp.core.utils.Category` class encapsulates a
+    The :class:`~openlp.core.utils.ActionCategory` class encapsulates a
     category for the :class:`~openlp.core.utils.CategoryList` class.
     """
     def __init__(self, name, weight=0):
@@ -161,7 +161,7 @@ class CategoryList(object):
             self.add(name, weight)
 
     def add(self, name, weight=0, actions=None):
-        category = Category(name, weight)
+        category = ActionCategory(name, weight)
         if actions:
             for action in actions:
                 if isinstance(action, tuple):
@@ -185,6 +185,7 @@ class ActionList(object):
     def add_action(self, action, category, weight=None):
         if category not in self.categories:
             self.categories.append(category)
+        action.defaultShortcuts = action.shortcuts()
         if weight is None:
             self.categories[category].actions.append(action)
         else:

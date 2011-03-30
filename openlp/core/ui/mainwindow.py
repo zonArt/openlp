@@ -761,7 +761,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Show the shortcuts dialog
         """
-        self.shortcutForm.exec_()
+        if self.shortcutForm.exec_():
+            self.shortcutForm.saveShortcuts()
 
     def onModeDefaultItemClicked(self):
         """
