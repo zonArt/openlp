@@ -87,10 +87,10 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             self.shortcutButton.setChecked(False)
 
     def exec_(self):
-        self.refreshActionList()
+        self.reloadActionList()
         return QtGui.QDialog.exec_(self)
 
-    def refreshActionList(self):
+    def reloadActionList(self):
         self.assingedShortcuts = []
         self.treeWidget.clear()
         for category in actionList.categories:
@@ -147,36 +147,23 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         action = item.data(0, QtCore.Qt.UserRole).toPyObject()
         self.shortcutButton.setEnabled(True)
         text = u''
-        if action is None or column not in [1, 2] or \
-            len(action.shortcuts()) == 0:
+        if action is None or column not in [1, 2]:
             self.shortcutButton.setEnabled(False)
-        elif column == 1:
+        elif column == 1 and len(action.shortcuts()) != 0:
             text = action.shortcuts()[0].toString()
-        elif len(action.shortcuts()) == 2:
+        elif len(action.shortcuts()) == 2 and len(action.shortcuts()) != 0:
             text = action.shortcuts()[1].toString()
         self.shortcutButton.setText(text)
 
-    def saveShortcuts(self):
+    def save(self):
         """
-        Save the shortcuts.
+        Save the shortcuts. **Note**, that we do not have to load the shortcuts,
+        as they are loaded in :class:`~openlp.core.utils.ActionList`.
         """
         settings = QtCore.QSettings()
         settings.beginGroup(u'shortcuts')
         for category in actionList.categories:
-            break
             for action in category.actions:
-                if action.defaultShortcuts != action.shortcuts():
-                    settings.setValue(action.text(),
-                    QtCore.QVariant(action.shortcuts()))
-        settings.endGroup()
-
-    def loadShortcuts(self):
-        """
-        Load the shortcuts.
-        """
-        settings = QtCore.QSettings()
-        settings.beginGroup(u'shortcuts')
-        for shortcut in settings.allKeys():
-            pass
-        # TODO: Load shortcuts
+                settings.setValue(
+                    action.objectName(), QtCore.QVariant(action.shortcuts()))
         settings.endGroup()

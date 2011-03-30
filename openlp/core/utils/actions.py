@@ -27,6 +27,10 @@
 The :mod:`~openlp.core.utils.actions` module provides action list classes used
 by the shortcuts system.
 """
+from PyQt4 import QtCore, QtGui
+
+from openlp.core.lib import translate
+
 class ActionCategory(object):
     """
     The :class:`~openlp.core.utils.ActionCategory` class encapsulates a
@@ -190,6 +194,14 @@ class ActionList(object):
             self.categories[category].actions.append(action)
         else:
             self.categories[category].actions.add(action, weight)
+        # Load the shortcut from the config.
+        settings = QtCore.QSettings()
+        settings.beginGroup(u'shortcuts')
+        shortcuts = settings.value(action.objectName(),
+            QtCore.QVariant(action.shortcuts())).toStringList()
+        action.setShortcuts(
+            [QtGui.QKeySequence(shortcut) for shortcut in shortcuts])
+        settings.endGroup()
 
     def remove_action(self, action, category):
         if category not in self.categories:
