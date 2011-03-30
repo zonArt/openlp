@@ -4,72 +4,99 @@ First Run Wizard
 
 When using OpenLP for the first time, the **First Run Wizard** will help you 
 with setting up your installation. This wizard is not intended to be a 
-comprehensive setup but will help you with the basics for first time use.
+comprehensive setup but will help you with the basics.
 
-**Select Translation**
+Select Translation
+------------------
 
 .. image:: pics/001-first-time-language.png
 
-You may choose the language translation you want to use or let OpenLP 
-"Autodetect" it. Click OK after your selection.
+You can choose the translation you want to use or let OpenLP 
+automatically select it based on your operating system locale. Click 
+:guilabel:`OK` to continue.
 
-The Welcome to the First Time Wizard dialog box will appear next. Click Next.
+The "Welcome to the First Time Wizard" dialog box will appear next. Click 
+:guilabel:`Next`.
 
 .. image:: pics/002-first-time-wizard-welcome.png
 
-**Activate required Plugins**
+Activate required Plugins
+-------------------------
 
 .. image:: pics/003-first-time-wizard-plugins.png
 
-OpenLP has many plugins you may choose to use. By default they are all checked 
-except Allow remote access. These plugins are explained in detail in the manual 
-under Media Manager. If you are not familiar with what the plugins provide, you 
-should leave them checked and activated for your first time use. You may easily 
-change your choice when OpenLP is running under Settings/Plugin List. Click Next.
+OpenLP has several plugins to choose from. By default, all plugins are enabled, 
+except the *Remote Access* plugin. For more information on these plugins, please 
+read the :doc:`mediamanager` section in the manual. If you are not sure of which 
+plugins to enable or disable, leave the selection as-is. You can easily activate 
+or deactivate plugins later, when OpenLP is running, by going to 
+:menuselection:`Settings --> Plugin List`. Click :guilabel:`Next` to continue.
 
-**Sample Songs**
+Sample Songs
+------------
 
 .. image:: pics/004-first-time-wizard-songs.png
 
-You may add Sample Songs to your song database. This is convenient if you are a 
-new user and would like to see how the songs appear in the database and are 
-formatted. If you already have songs in your database, adding these samples will 
-not overwrite your database. You may check the box for English or Deutsch and 
-click Next.
+OpenLP provides some sample songs in a few languages for downloading and 
+importing into your new song database. This is convenient for new users who do 
+not have any songs yet. If you already have songs in your database, OpenLP will 
+simply add these sample songs to your database, leaving your existing songs 
+intact. Once you are happy with which songs you'd like, click :guilabel:`Next`.
 
-**Sample Bibles**
+Sample Bibles
+-------------
 
 .. image:: pics/005-first-time-wizard-bibles.png
 
-OpenLP comes with a number of free Bibles you may install. Click the box next to
-the Bible you wish to install. If none of these Bibles meet your needs, you may
-continue on without selecting any of them by clicking Next.
+There are also a number of free Bibles that you can download and install. Using 
+the check box next to each Bible, select each Bible that you would like 
+installed. If you do not wish to install any Bibles, simply leave them all 
+unchecked. Once you are happy with your selection, click :guilabel:`Next` to 
+continue.
 
-**Sample Themes**
+Sample Themes
+-------------
 
 .. image:: pics/006-first-time-wizard-themes.png
 
-You may add Sample Themes by checking the box next to the theme. As with the 
-songs, this is useful if you are a new user and would like to see how the themes
-are formatted. You can easily delete the themes at a later time if you do not 
-have a use for them. Click Next.
+Some sample themes are also available for download and installation into OpenLP. 
+As with the Bibles, simply check the check box next to each theme to select it. 
+If you are a new user, these themes can help you understand how themes work. If 
+you are happy with your selected themes, click :guilabel:`Next` to continue.
 
-**Default Settings**
+Default Settings
+----------------
 
 .. image:: pics/007-first-time-wizard-settings.png
 
-`Default output display`
-If you are connected to your projector or second monitor you will want to select
-Screen 2. If you are installing OpenLP and not connected at this time, you may 
-change this in Configure OpenLP under the General tab. 
+Default Display Monitor
+^^^^^^^^^^^^^^^^^^^^^^^
 
-`Select default theme`
-This box gives you the option of selecting your default theme. If you do not 
-have any themes, you will not be able to make the selection. Click Next.
+Screen 2. If you are installing OpenLP but are not connected to a second output 
+at the time, you can set this up later by going to 
+:menuselection:`Settings --> Configure OpenLP`.
 
-`Setting Up`
+Default Theme
+^^^^^^^^^^^^^
+
+If you have selected one or more themes on the themes page of the wizard, you 
+can select which theme you'd like to be the default theme.
+
+If you are happy with the selections you have made, click :guilabel:`Next` to 
+continue to the next page.
+
+.. image:: pics/009-first-time-wizard-progress.png
+
+Making progress.
 
 .. image:: pics/010-first-time-wizard-finished.png
 
-OpenLP will now setup the software with the selections you have chosen. Click 
-Finish and OpenLP will start.
+On the last page of the wizard, OpenLP will download the sample songs, Bibles 
+and themes, and set up OpenLP for you. Click :guilabel:`Finish` and OpenLP will 
+start.
+
+.. image:: pics/011-first-time-wizard-song-import.png
+
+The main window.
+
+.. image:: pics/012-openlp-main-window.png
