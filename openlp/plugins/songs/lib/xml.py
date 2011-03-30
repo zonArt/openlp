@@ -32,7 +32,7 @@ The basic XML for storing the lyrics in the song database looks like this::
     <song version="1.0">
         <lyrics>
             <verse type="c" label="1" lang="en">
-                <![CDATA[ ... ]]>
+                <![CDATA[Chorus virtual slide 1[---]Chorus  virtual slide 2]]>
             </verse>
         </lyrics>
     </song>
@@ -129,7 +129,8 @@ class SongXML(object):
 
         The returned list has the following format::
 
-            [[{'lang': 'en', 'type': 'v', 'label': '1'}, u"English verse"],
+            [[{'type': 'v', 'label': '1'},
+            u"virtual slide 1[---]virtual slide 2"],
             [{'lang': 'en', 'type': 'c', 'label': '1'}, u"English chorus"]]
         """
         self.song_xml = None
@@ -274,7 +275,7 @@ class OpenLyrics(object):
             verse_tag = verse[0][u'type'][0].lower()
             verse_number = verse[0][u'label']
             # Create a list with all "virtual" verses.
-            virtual_verses = verse[1].split(u'[###]')
+            virtual_verses = verse[1].split(u'[---]')
             for index, virtual_verse in enumerate(virtual_verses):
                 verse_def = verse_tag + verse_number
                 # We need "v1a" because we have more than one virtual verse.
@@ -455,6 +456,7 @@ class OpenLyrics(object):
         """
         sxml = SongXML()
         verses = {}
+        verse_def_list = []
         for verse in lyrics.verse:
             text = u''
             for lines in verse.lines:
@@ -475,10 +477,12 @@ class OpenLyrics(object):
             if self._get(verse, u'lang'):
                 lang = self._get(verse, u'lang')
             if verses.has_key((verse_tag, verse_number, lang)):
-                verses[(verse_tag, verse_number, lang)] += u'\n[###]\n' + text
+                verses[(verse_tag, verse_number, lang)] += u'\n[---]\n' + text
             else:
                 verses[(verse_tag, verse_number, lang)] = text
-        for verse in verses:
+                verse_def_list.append((verse_tag, verse_number, lang))
+        # We have to use a list to keep the order, as dicts are not sorted.
+        for verse in verse_def_list:
             sxml.add_verse_to_lyrics(
                 verse[0], verse[1], verses[verse], verse[2])
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
