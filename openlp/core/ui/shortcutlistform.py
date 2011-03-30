@@ -90,12 +90,11 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         return QtGui.QDialog.exec_(self)
 
     def refreshActionList(self):
-        # As refreshing does not work, the check does not work either.
         self.assingedShortcuts = []
-        #self.treeWidget.clear()
+        self.treeWidget.clear()
         for category in actionList.categories:
             item = QtGui.QTreeWidgetItem([category.name])
-            for action in category.actions:
+            for action, default in category.actions:
                 self.assingedShortcuts.extend(action.shortcuts())
                 actionText = REMOVE_AMPERSAND.sub('', unicode(action.text()))
                 if len(action.shortcuts()) == 2:

@@ -27,9 +27,9 @@
 The :mod:`~openlp.core.utils.actions` module provides action list classes used
 by the shortcuts system.
 """
-class ActionCategory(object):
+class Category(object):
     """
-    The :class:`~openlp.core.utils.ActionCategory` class encapsulates a
+    The :class:`~openlp.core.utils.Category` class encapsulates a
     category for the :class:`~openlp.core.utils.CategoryList` class.
     """
     def __init__(self, name, weight=0):
@@ -67,10 +67,11 @@ class CategoryActionList(object):
         Python 3 "next" method.
         """
         if self.index >= len(self.actions):
+            self.index = 0
             raise StopIteration
         else:
             self.index += 1
-            return self.actions[self.index - 1][1]
+            return self.actions[self.index - 1][1:]
 
     def next(self):
         """
@@ -91,7 +92,7 @@ class CategoryActionList(object):
         self.add(name, weight)
 
     def add(self, action, weight=0):
-        self.actions.append((weight, action))
+        self.actions.append((weight, action, action.shortcuts()))
         self.actions.sort(key=lambda act: act[0])
 
 
@@ -126,6 +127,7 @@ class CategoryList(object):
         Python 3 "next" method for iterator.
         """
         if self.index >= len(self.categories):
+            self.index = 0
             raise StopIteration
         else:
             self.index += 1
@@ -153,7 +155,7 @@ class CategoryList(object):
             self.add(name, weight)
 
     def add(self, name, weight=0, actions=None):
-        category = ActionCategory(name, weight)
+        category = Category(name, weight)
         if actions:
             for action in actions:
                 if isinstance(action, tuple):
