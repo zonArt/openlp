@@ -42,9 +42,9 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
     The shortcut list dialog
     """
 #TODO: do not close on ESC
-#TODO: save/load shortcuts, docs
-#TODO: Fix Preview/Live controller (have the same shortcut), make sure
-
+#TODO: Fix Preview/Live controller (have the same shortcut)
+#TODO: double click event
+#TODO: refresh self.assingedShortcuts
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
@@ -91,6 +91,9 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         return QtGui.QDialog.exec_(self)
 
     def reloadActionList(self):
+        """
+        Reload the ``treeWidget`` list to add new and remove old actions.
+        """
         self.assingedShortcuts = []
         self.treeWidget.clear()
         for category in actionList.categories:
@@ -114,6 +117,9 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             self.treeWidget.addTopLevelItem(item)
 
     def onShortcutButtonClicked(self, toggled):
+        """
+        Save the new shortcut to the action if the button is unchanged.
+        """
         if toggled:
             return
         item = self.treeWidget.currentItem()
@@ -142,6 +148,10 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         action.setShortcuts(shortcuts)
 
     def onItemPressed(self, item, column):
+        """
+        A item has been pressed. We adjust the button's text to the action's
+        shortcut which is encapsulate in the item.
+        """
         self.column = column
         item = self.treeWidget.currentItem()
         action = item.data(0, QtCore.Qt.UserRole).toPyObject()
