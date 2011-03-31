@@ -42,9 +42,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
     The shortcut list dialog
     """
 #TODO: do not close on ESC
-#TODO: Fix Preview/Live controller (have the same shortcut)
-#TODO: double click event
-#TODO: refresh self.assingedShortcuts
+#TODO: Fix Preview/Live controller (have the same shortcut
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
@@ -56,6 +54,11 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         QtCore.QObject.connect(self.treeWidget,
             QtCore.SIGNAL(u'itemPressed(QTreeWidgetItem*, int)'),
             self.onItemPressed)
+        QtCore.QObject.connect(self.treeWidget,
+            QtCore.SIGNAL(u'itemDoubleClicked(QTreeWidgetItem*, int)'),
+            self.onItemDoubleClicked)
+        QtCore.QObject.connect(self.clearShortcutButton,
+            QtCore.SIGNAL(u'clicked(bool)'), self.onClearShortcutButtonClicked)
 
     def keyReleaseEvent(self, event):
         Qt = QtCore.Qt
@@ -87,34 +90,50 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             self.shortcutButton.setChecked(False)
 
     def exec_(self):
-        self.reloadActionList()
+        self.reloadShortcutList()
         return QtGui.QDialog.exec_(self)
 
-    def reloadActionList(self):
+    def reloadShortcutList(self):
         """
         Reload the ``treeWidget`` list to add new and remove old actions.
         """
-        self.assingedShortcuts = []
         self.treeWidget.clear()
         for category in ActionList.categories:
             item = QtGui.QTreeWidgetItem([category.name])
             for action in category.actions:
-                self.assingedShortcuts.extend(action.shortcuts())
                 actionText = REMOVE_AMPERSAND.sub('', unicode(action.text()))
-                if len(action.shortcuts()) == 2:
-                    shortcutText = action.shortcuts()[0].toString()
-                    alternateText = action.shortcuts()[1].toString()
-                else:
-                    shortcutText = action.shortcut().toString()
-                    alternateText = u''
-                actionItem = QtGui.QTreeWidgetItem(
-                    [actionText, shortcutText, alternateText])
+                actionItem = QtGui.QTreeWidgetItem([actionText])
                 actionItem.setIcon(0, action.icon())
                 actionItem.setData(0,
                     QtCore.Qt.UserRole, QtCore.QVariant(action))
                 item.addChild(actionItem)
             item.setExpanded(True)
             self.treeWidget.addTopLevelItem(item)
+        self.refreshShortcutList()
+
+    def refreshShortcutList(self):
+        """
+        This refreshes the item's shortcuts shown in the list. Note, this
+        neither adds new actions nor removes old actions.
+        """
+        self.assingedShortcuts = []
+        iterator = QtGui.QTreeWidgetItemIterator(self.treeWidget)
+        while iterator.value():
+            item = iterator.value()
+            iterator += 1
+            action = item.data(0, QtCore.Qt.UserRole).toPyObject()
+            if action is None:
+                continue
+            self.assingedShortcuts.extend(action.shortcuts())
+            if len(action.shortcuts()) == 0:
+                item.setText(1, u'')
+                item.setText(2, u'')
+            elif len(action.shortcuts()) == 1:
+                item.setText(1, action.shortcuts()[0].toString())
+                item.setText(2, u'')
+            else:
+                item.setText(1, action.shortcuts()[0].toString())
+                item.setText(2, action.shortcuts()[1].toString())
 
     def onShortcutButtonClicked(self, toggled):
         """
@@ -127,25 +146,30 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         if action is None:
             return
         shortcuts = []
+        # We are changing the primary shortcut.
         if self.column == 1:
-            # We are changing the primary shortcut.
             shortcuts.append(QtGui.QKeySequence(self.shortcutButton.text()))
             if len(action.shortcuts()) == 2:
                 shortcuts.append(action.shortcuts()[1])
-            else:
-                shortcuts.append(0)
-            item.setText(1, self.shortcutButton.text())
+        # We are changing the secondary shortcut.
         elif self.column == 2:
-            # We are changing the secondary shortcut.
             if len(action.shortcuts()) == 1:
                 shortcuts.append(action.shortcuts()[0])
-            else:
-                shortcuts.append(0)
             shortcuts.append(QtGui.QKeySequence(self.shortcutButton.text()))
-            item.setText(2, self.shortcutButton.text())
         else:
             return
         action.setShortcuts(shortcuts)
+        self.refreshShortcutList()
+
+    def onItemDoubleClicked(self, item, column):
+        """
+        """
+        item = self.treeWidget.currentItem()
+        action = item.data(0, QtCore.Qt.UserRole).toPyObject()
+        self.shortcutButton.setChecked(True)
+        if action is None or column not in [1, 2]:
+            self.shortcutButton.setChecked(False)
+        self.onItemPressed(item, column)
 
     def onItemPressed(self, item, column):
         """
@@ -164,6 +188,22 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         elif len(action.shortcuts()) == 2 and len(action.shortcuts()) != 0:
             text = action.shortcuts()[1].toString()
         self.shortcutButton.setText(text)
+
+    def onClearShortcutButtonClicked(self, toggled):
+        """
+        Restore the defaults of this 
+        """
+        item = self.treeWidget.currentItem()
+        if item is None:
+            return
+        action = item.data(0, QtCore.Qt.UserRole).toPyObject()
+        if action is None:
+            return
+        #FIXME: defaultShortcuts
+        action.setShortcuts(action.defaultShortcuts)
+        self.shortcutButton.setChecked(False)
+        self.shortcutButton.setText(u'')
+        self.refreshShortcutList()
 
     def save(self):
         """
