@@ -269,6 +269,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 if index is None:
                     index = VerseType.Other
                 verse[0][u'type'] = VerseType.Tags[index]
+                if verse[0][u'label'] == u'':
+                    verse[0][u'label'] = u'1'
                 verse_def = u'%s%s' % (verse[0][u'type'], verse[0][u'label'])
                 item = QtGui.QTableWidgetItem(verse[1])
                 item.setData(QtCore.Qt.UserRole, QtCore.QVariant(verse_def))

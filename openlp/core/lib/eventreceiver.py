@@ -101,6 +101,10 @@ class EventReceiver(QtCore.QObject):
     ``servicemanager_previous_item``
         Display the previous item in the service
 
+    ``servicemanager_preview_live``
+        Requests a Preview item from the Service Manager to update live and
+        add a new item to the preview panel
+
     ``servicemanager_next_item``
         Display the next item in the service
 
