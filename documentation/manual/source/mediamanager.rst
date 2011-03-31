@@ -17,7 +17,7 @@ this is what the `Media Manager` looks like with all the plugins enabled.
 
 To enable the plugins navigate to :menuselection:`Settings --> Plugins` or
 press :kbd:`Alt+F7`. You will want to click on the plugin to the left that you
-want to enable and select **active** from the drop down box to the right.
+would like to enable and select **active** from the drop down box to the right.
 
 .. image:: pics/plugins.png
 

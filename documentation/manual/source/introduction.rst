@@ -13,20 +13,21 @@ hundreds of churches around the world.
 
 OpenLP can contain a searchable database of songs and Bible verses allowing
 them to be projected instantly or saved in a pre-prepared order of service
-file. Themes allow for a veriety of presentation options and allow you to add
-attractvie visuals to enhance your presentations. PowerPoint and Open Office
+file. Themes allow for a variety of presentation options and allow you to add
+attractive visuals to enhance your presentations. PowerPoint and OpenOffice
 presentations, videos, and audio files can be run from within the program
 removing the need to switch between different programs. Alert messages can be
 displayed so the nursery or car park stewards can notify the congregation easily.
 Remote capability allows the worship leader to change songs, or for alert
-messages to be sent from anywhere on the network, even via a phone.
+messages to be sent from anywhere on the network, even via a smart phone or 
+tablet.
 
-Being free, this software can be installed on as many PC's as required, even on
-the home PC's of worship leaders without additional cost. Compared to the
-expensive site licenses and restrictions of commercial software we believe 
-OpenLP cannot be beat for value. Still in active development by a growing team
-of enthusiastic developers, features are being added all the time, meaning the
-software just improves all the time.
+Being free, this software can be installed on as many PC's as required, 
+including the home PC's of worship leaders without additional cost. Compared to
+the expensive site licenses and restrictions of commercial software we believe 
+OpenLP is the perfect choice for quality and value. Still in active development
+by a growing team of enthusiastic developers, features are being added all the 
+time, meaning the software just improves all the time.
 
 OpenLP is licensed under the GNU Generic Public License, which means
 that it is free to use, distribute, modify, and it stays free.
