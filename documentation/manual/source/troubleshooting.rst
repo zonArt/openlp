@@ -147,7 +147,7 @@ or 2007 Viewer. Download the PowerPoint 2007 viewer for free here:
 I have PowerPoint installed but it does not show as a presentation option
 =========================================================================
 
-Try installing the Visual C++ Runtime Redistrutable you can find it here:
+Try installing the Visual C++ Runtime Redistributable you can find it here:
 `<http://www.microsoft.com/downloads/en/details.aspx?FamilyID=9b2da534-3e03-4391-8a4d-074b9f2bc1bf&displaylang=en>`_
 
 I have JPG images and they will not work on my system
@@ -173,5 +173,5 @@ I chose to use a web Bible but it did not download the entire Bible
 Due to copyright restrictions OpenLP cannot download an entire Bible. It can
 only download the section you search for. If you do not have an internet 
 connection where you intend to use OpenLP you will need to have another source
-for scripture. For more information please see :ref:`bibleimporter` for more 
-options to acquire Bibles.
+for scripture. For more information and options on acquiring bibles please see
+:ref:`bibleimporter` for more information.
