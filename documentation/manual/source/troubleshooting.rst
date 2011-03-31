@@ -132,14 +132,16 @@ on text sizes in themes.
 I am running Mac OS X and I do not have a presentations plugin
 ==============================================================
 
-Due to software limitations with Keynote and OpenOffice Impress the
+Due to software limitations with Keynote and OpenOffice Impress, the
 presentations plugin on OS X is not currently available.
 
 I am using PowerPoint 2010 or PowerPoint Viewer 2010 and presentations do not work
 ==================================================================================
 
-Currently OpenLP does not support PowerPont 2010. We suggest using the
-PowerPoint 2003 or 2007 Viewer. Download the PowerPoint 2007 viewer here:
+Currently OpenLP does not support PowerPoint Viewer 2010. PowerPoint 2010 should
+work correctly but there have been some issues whne it does not work. If you 
+have issues with PowerPoint 2010 or PowerPoint Viewer 2010 try PowerPoint 2003
+or 2007 Viewer. Download the PowerPoint 2007 viewer for free here:
 `<http://www.microsoft.com/downloads/en/details.aspx?FamilyID=048dc840-14e1-467d-8dca-19d2a8fd7485&displaylang=en>`_.
 
 I have PowerPoint installed but it does not show as a presentation option
@@ -168,11 +170,8 @@ resolve the problem::
 I chose to use a web Bible but it did not download the entire Bible
 ===================================================================
 
-Due to copyright restrictions OpenLP can not download an entire Bible. It can
+Due to copyright restrictions OpenLP cannot download an entire Bible. It can
 only download the section you search for. If you do not have an internet 
 connection where you intend to use OpenLP you will need to have another source
 for scripture. For more information please see :ref:`bibleimporter` for more 
 options to acquire Bibles.
-
-
-
