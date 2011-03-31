@@ -5,30 +5,30 @@ Introduction
 About
 -----
 
-OpenLP stands for "Open source Lyric Projection" and is presentation software
+OpenLP stands for "Open Source Lyric Projection" and is presentation software
 developed for churches to provide a single easy to use interface for the
-projection needs of a typical act of worship. First created in 2004, it has
+projection needs of a typical worship service. First created in 2004, it has
 steadily grown in features and maturity such that is it now a mainstay in
 hundreds of churches around the world.
 
-It can hold a searchable database of song lyrics and Bible verses allowing them
-to be projected instantly or saved in a pre-prepared order of service file.
-Themes allow song backgrounds to be changed instantly. PowerPoint presentations,
-videos and audio files can be run from within the program removing the need to
-switch between different programs. Alert messages can be displayed so the
-nursery or car park stewards can notify the congregation easily. Remote
-capability allows the worship leader to change songs, or for alert messages to
-be sent from anywhere on the network, even via a phone.
+OpenLP can contain a searchable database of songs and Bible verses allowing
+them to be projected instantly or saved in a pre-prepared order of service
+file. Themes allow for a veriety of presentation options and allow you to add
+attractvie visuals to enhance your presentations. PowerPoint and Open Office
+presentations, videos, and audio files can be run from within the program
+removing the need to switch between different programs. Alert messages can be
+displayed so the nursery or car park stewards can notify the congregation easily.
+Remote capability allows the worship leader to change songs, or for alert
+messages to be sent from anywhere on the network, even via a phone.
 
 Being free, this software can be installed on as many PC's as required, even on
 the home PC's of worship leaders without additional cost. Compared to the
-expensive site licenses or restrictions of commercial software we believe 
-OpenLP cannot be beaten for value. Still in active development by a growing
-team of enthusiastic developers, features are being added all the time, meaning
-the software just improves all the time.
+expensive site licenses and restrictions of commercial software we believe 
+OpenLP cannot be beat for value. Still in active development by a growing team
+of enthusiastic developers, features are being added all the time, meaning the
+software just improves all the time.
 
-OpenLP is an open source lyrics projection application developed specifically
-for churches. It is licensed under the GNU Generic Public License, which means
+OpenLP is licensed under the GNU Generic Public License, which means
 that it is free to use, distribute, modify, and it stays free.
 
 GNU General Public License
