@@ -40,5 +40,5 @@ to charge for the software, and that you have to distribute the source code as
 well.
 
 You can find a copy of the GNU General Public License from the Help menu 
-selecting about OpenLP or on-line 
-at: `<http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt>`_.
+selecting about OpenLP or on-line at:
+`<http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt>`_.
